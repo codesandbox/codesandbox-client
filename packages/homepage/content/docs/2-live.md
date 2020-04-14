@@ -2,44 +2,35 @@
 title: Collaboration with Live
 authors: ['CompuIves']
 description:
-  With CodeSandbox Live you can open up your sandbox for real time
-  collaboration.
+  With CodeSandbox Live you can share your sandbox for real time collaboration.
 ---
 
-## What is Live
+## What is Live?
 
-![Live Sidebar](./images/live-screenshot.png)
+All sandboxes on CodeSandbox are live, meaning you can share your sandbox with
+others for real time collaboration on code. You can simultaneously create,
+delete, edit for real time collaboration on code. You can simultaneously create,
+delete, edit and move files and code with others in a sandbox, as well as chat
+about your and move files and code with others in a sandbox, as well as chat
+about your changes. It's like Google Docs, but for coding. changes. It's like
+Google Docs, but for coding.
 
-Live is a mode in CodeSandbox that allows you to share your sandbox with others
-for real time collaboration. You can simultaneously create, delete, edit and
-move files in real time. It's like Google Docs, but for your code! You can
-access Live under the Live tab in the sidebar:
-
-![Live Sidebar](./images/live-sidebar.png)
-
-## Demo
-
-We recorded a demo to show what CodeSandbox Live exactly is, you can watch it
-here:
-
-<iframe width="740" height="370" src="https://www.youtube.com/embed/DnnJ0sLn28s" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><br />
-
-We also made an announcement blog post, which you can read
-[here](https://medium.com/@compuives/introducing-codesandbox-live-real-time-code-collaboration-in-the-browser-6d508cfc70c9).
+![Live mode](./images/live-screenshot.png?v1)
 
 ## Going Live
 
-You can go live by simply pressing the 'Go Live' button in the sidebar. This
-will give you a URL that you can share with others to join the session. Others
-can only make edits to the sandbox while they are in the live session, they
-cannot do this when just viewing the sandbox.
+All sandboxes are live by default, you can invite contributors to join the
+sandbox using the share button from the top bar in the editor. In addition, if
+you go to the Live tab from the activity bar, you can get a Live URL to share
+with guests (non-members of the sandbox) so they can temporarily join the
+session. Guest editors can only make edits to the sandbox while they are in the
+live session, they cannot do this when just viewing the sandbox.
+
+Invited editors can simultaneously edit, create, rename and update files and
+code, as well as add and remove dependencies. You can also see which file other
+collaborators are looking at and what their current selections are.
 
 ![Going Live](./images/live-live.png)
-
-Others will be able to simultaneously edit, create, rename and update files.
-They will also be able to add and remove dependencies, as those settings are
-also file based. You can also see which file other collaborators are watching
-and what their current selections are.
 
 ## Classroom Mode
 
@@ -47,11 +38,9 @@ With Classroom Mode you can define who can edit the sandbox. This is especially
 useful when working with large groups. You will only see the cursors of the
 users that are 'editor'.
 
-You can give someone editor rights by pressing the '+' icon next to their name.
+You can enable Classroom Mode from the Live Mode drop-down menu.
 
-![Going Live](./images/live-make-editor.png)
+![Classroom mode](./images/live-classroom.png)
 
-And you can make someone a spectator by clicking the '-' icon next to their
-name.
-
-![Going Live](./images/live-make-spectator.png)
+You can give someone editor rights by pressing the '+' icon next to their name,
+or you can make someone a spectator by clicking the '-' icon next to their name.

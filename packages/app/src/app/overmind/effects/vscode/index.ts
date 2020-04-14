@@ -10,19 +10,24 @@ import {
   Sandbox,
   SandboxFs,
   Settings,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
   NotificationMessage,
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
+import { Reference } from 'app/graphql/types';
 import { Reaction } from 'app/overmind';
+import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import prettify from 'app/src/app/utils/prettify';
 import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
+import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
+import { json } from 'overmind';
 import io from 'socket.io-client';
 
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
@@ -32,6 +37,7 @@ import {
   initializeExtensionsFolder,
   initializeSettings,
   initializeThemeCache,
+  initializeSnippetDirectory,
 } from './initializers';
 import { Linter } from './Linter';
 import {
@@ -52,7 +58,17 @@ export type VsCodeOptions = {
   getCurrentUser: () => CurrentUser | null;
   onCodeChange: (data: OnFileChangeData) => void;
   onOperationApplied: (data: OnOperationAppliedData) => void;
-  onSelectionChange: (selection: onSelectionChangeData) => void;
+  onSelectionChanged: (selection: onSelectionChangeData) => void;
+  onViewRangeChanged: (viewRange: UserViewRange) => void;
+  onCommentClick: (payload: {
+    commentIds: string[];
+    bounds: {
+      left: number;
+      top: number;
+      bottom: number;
+      right: number;
+    };
+  }) => void;
   reaction: Reaction;
   // These two should be removed
   getSignal: any;
@@ -102,6 +118,8 @@ export class VSCodeEffect {
   private linter: Linter | null;
   private modelsHandler: ModelsHandler;
   private modelSelectionListener: { dispose: Function };
+  private modelCursorPositionListener: { dispose: Function };
+  private modelViewRangeListener: { dispose: Function };
   private readOnly: boolean;
   private elements = {
     editor: document.createElement('div'),
@@ -114,7 +132,7 @@ export class VSCodeEffect {
     getCustomEditor: () => null,
   };
 
-  onSelectionChangeDebounced: VsCodeOptions['onSelectionChange'] & {
+  onSelectionChangeDebounced: VsCodeOptions['onSelectionChanged'] & {
     cancel(): void;
   };
 
@@ -124,9 +142,24 @@ export class VSCodeEffect {
       getState: options.getState,
       getSignal: options.getSignal,
     };
-    this.onSelectionChangeDebounced = debounce(options.onSelectionChange, 500);
+    this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 200);
 
     this.prepareElements();
+
+    if (COMMENTS) {
+      this.options.reaction(
+        state => ({
+          fileComments: json(state.comments.fileComments),
+          currentCommentId: state.comments.currentCommentId,
+        }),
+        ({ fileComments, currentCommentId }) => {
+          if (this.modelsHandler) {
+            this.modelsHandler.applyComments(fileComments, currentCommentId);
+          }
+        }
+      );
+      this.listenToCommentClick();
+    }
 
     // We instantly create a sandbox sync, as we want our
     // extension host to get its messages handled to initialize
@@ -158,6 +191,8 @@ export class VSCodeEffect {
       initializeCustomTheme();
       initializeThemeCache();
       initializeSettings();
+      initializeSnippetDirectory();
+
       this.setVimExtensionEnabled(
         localStorage.getItem('settings.vimmode') === 'true'
       );
@@ -183,6 +218,45 @@ export class VSCodeEffect {
     });
 
     return this.initialized;
+  }
+
+  public isModuleOpened(module: Module) {
+    return this.modelsHandler.isModuleOpened(module);
+  }
+
+  public async getCodeReferenceBoundary(
+    commentId: string,
+    reference: Reference
+  ) {
+    this.revealPositionInCenterIfOutsideViewport(reference.metadata.anchor, 1);
+
+    return new Promise<DOMRect>((resolve, reject) => {
+      let checkCount = 0;
+      function findActiveComment() {
+        checkCount++;
+
+        if (checkCount === 20) {
+          reject(new Error('Could not find the comment glyph'));
+          return;
+        }
+
+        setTimeout(() => {
+          const commentGlyphs = document.querySelectorAll(
+            '.editor-comments-glyph'
+          );
+          const el = Array.from(commentGlyphs).find(glyphEl =>
+            glyphEl.className.includes(commentId)
+          );
+
+          if (el) {
+            resolve(el.getBoundingClientRect());
+          } else {
+            findActiveComment();
+          }
+        }, 10);
+      }
+      findActiveComment();
+    });
   }
 
   public getEditorElement(
@@ -248,8 +322,8 @@ export class VSCodeEffect {
     }
   }
 
-  public revertModule(module: Module) {
-    this.modelsHandler.revertModule(module);
+  public syncModule(module: Module) {
+    this.modelsHandler.syncModule(module);
   }
 
   public async applyOperation(
@@ -438,20 +512,22 @@ export class VSCodeEffect {
     // allowing for a paint, like selections in explorer. For this to work we have to ensure
     // that we are actually indeed still trying to open this file, as we might have changed
     // the file
-    requestAnimationFrame(async () => {
-      const currentModule = this.options.getCurrentModule();
-      if (currentModule && module.id === currentModule.id) {
-        try {
-          const model = await this.modelsHandler.changeModule(module);
-
-          this.lint(module.title, model);
-        } catch (error) {
-          // We might try to open a module that is not actually opened in the editor,
-          // but the configuration wizard.. currently this throws an error as there
-          // is really no good way to identify when it happen. This needs to be
-          // improved in next version
+    return new Promise(resolve => {
+      requestAnimationFrame(async () => {
+        const currentModule = this.options.getCurrentModule();
+        if (currentModule && module.id === currentModule.id) {
+          try {
+            const model = await this.modelsHandler.changeModule(module);
+            this.lint(module.title, model);
+            resolve();
+          } catch (error) {
+            // We might try to open a module that is not actually opened in the editor,
+            // but the configuration wizard.. currently this throws an error as there
+            // is really no good way to identify when it happen. This needs to be
+            // improved in next version
+          }
         }
-      }
+      });
     });
   }
 
@@ -496,6 +572,40 @@ export class VSCodeEffect {
     }
   };
 
+  public async openDiff(sandboxId: string, module: Module, oldCode: string) {
+    if (!module.path) {
+      return;
+    }
+
+    const recoverPath = `/recover/${sandboxId}/recover-${module.path.replace(
+      /\//g,
+      ' '
+    )}`;
+    const filePath = `/sandbox${module.path}`;
+    const fileSystem = window.BrowserFS.BFSRequire('fs');
+
+    // We have to write a recover file to the filesystem, we save it behind
+    // the sandboxId
+    if (!fileSystem.existsSync(`/recover/${sandboxId}`)) {
+      fileSystem.mkdirSync(`/recover/${sandboxId}`);
+    }
+    // We write the recover file with the old code, as the new code is already applied
+    fileSystem.writeFileSync(recoverPath, oldCode);
+
+    // We open a conflict resolution editor for the files
+    this.editorApi.editorService.openEditor({
+      leftResource: this.monaco.Uri.from({
+        scheme: 'conflictResolution',
+        path: recoverPath,
+      }),
+      rightResource: this.monaco.Uri.file(filePath),
+      label: `Recover - ${module.path}`,
+      options: {
+        pinned: true,
+      },
+    });
+  }
+
   public setCorrections = (corrections: ModuleCorrection[]) => {
     const activeEditor = this.editorApi.getActiveCodeEditor();
     if (activeEditor) {
@@ -537,6 +647,86 @@ export class VSCodeEffect {
       }
     }
   };
+
+  /**
+   * Reveal position in editor
+   * @param scrollType 0 = smooth, 1 = immediate
+   */
+  revealPositionInCenterIfOutsideViewport(pos: number, scrollType: 0 | 1 = 0) {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+
+    if (activeEditor) {
+      const model = activeEditor.getModel();
+
+      if (model) {
+        const lineColumnPos = indexToLineAndColumn(
+          model.getLinesContent() || [],
+          pos
+        );
+
+        activeEditor.revealPositionInCenterIfOutsideViewport(
+          lineColumnPos,
+          scrollType
+        );
+      }
+    }
+  }
+
+  /**
+   * Reveal line in editor
+   * @param scrollType 0 = smooth, 1 = immediate
+   */
+  revealLine(lineNumber: number, scrollType: 0 | 1 = 0) {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+
+    if (activeEditor) {
+      activeEditor.revealLine(lineNumber, scrollType);
+    }
+  }
+
+  /**
+   * Reveal revealLine in editor
+   * @param scrollType 0 = smooth, 1 = immediate
+   */
+  revealRange(range: UserViewRange, scrollType: 0 | 1 = 0) {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+
+    if (activeEditor) {
+      activeEditor.revealRange(range, scrollType);
+    }
+  }
+
+  /**
+   * Set the selection inside the editor
+   * @param head Start of the selection
+   * @param anchor End of the selection
+   */
+  setSelection(head: number, anchor: number) {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+    if (!activeEditor) {
+      return;
+    }
+
+    const model = activeEditor.getModel();
+    if (!model) {
+      return;
+    }
+
+    const headPos = indexToLineAndColumn(model.getLinesContent() || [], head);
+    const anchorPos = indexToLineAndColumn(
+      model.getLinesContent() || [],
+      anchor
+    );
+    const range = new this.monaco.Range(
+      headPos.lineNumber,
+      headPos.column,
+      anchorPos.lineNumber,
+      anchorPos.column
+    );
+
+    this.revealRange(range);
+    activeEditor.setSelection(range);
+  }
 
   // Communicates the endpoint for the WebsocketLSP
   private createContainerForkHandler() {
@@ -633,9 +823,18 @@ export class VSCodeEffect {
         )
       ),
       this.createFileSystem('InMemory', {}),
+      this.createFileSystem('InMemory', {}),
     ]);
 
-    const [root, sandbox, vscode, home, extensions, customTheme] = fileSystems;
+    const [
+      root,
+      sandbox,
+      vscode,
+      home,
+      extensions,
+      customTheme,
+      recover,
+    ] = fileSystems;
 
     const mfs = await this.createFileSystem('MountableFileSystem', {
       '/': root,
@@ -644,6 +843,7 @@ export class VSCodeEffect {
       '/home': home,
       '/extensions': extensions,
       '/extensions/custom-theme': customTheme,
+      '/recover': recover,
     });
 
     window.BrowserFS.initialize(mfs);
@@ -689,7 +889,7 @@ export class VSCodeEffect {
       { IEditorService },
       { ICodeEditorService },
       { ITextFileService },
-
+      { ILifecycleService },
       { IEditorGroupsService },
       { IStatusbarService },
       { IExtensionService },
@@ -705,6 +905,7 @@ export class VSCodeEffect {
       r('vs/workbench/services/editor/common/editorService'),
       r('vs/editor/browser/services/codeEditorService'),
       r('vs/workbench/services/textfile/common/textfiles'),
+      r('vs/platform/lifecycle/common/lifecycle'),
       r('vs/workbench/services/editor/common/editorGroupsService'),
       r('vs/platform/statusbar/common/statusbar'),
       r('vs/workbench/services/extensions/common/extensions'),
@@ -809,6 +1010,15 @@ export class VSCodeEffect {
         if (this.settings.lintEnabled) {
           this.createLinter();
         }
+
+        const lifecycleService = accessor.get(ILifecycleService);
+
+        // Trigger all VSCode lifecycle listeners
+        lifecycleService.phase = 2; // Restoring
+        requestAnimationFrame(() => {
+          lifecycleService.phase = 3; // Running
+        });
+
         resolve();
       });
     });
@@ -918,12 +1128,23 @@ export class VSCodeEffect {
       this.modelSelectionListener.dispose();
     }
 
+    if (this.modelCursorPositionListener) {
+      this.modelCursorPositionListener.dispose();
+    }
+
+    if (this.modelViewRangeListener) {
+      this.modelViewRangeListener.dispose();
+    }
+
     const activeEditor = this.editorApi.getActiveCodeEditor();
 
     if (activeEditor && activeEditor.getModel()) {
       const modulePath = activeEditor.getModel().uri.path;
+      const currentModule = this.options.getCurrentModule();
 
-      activeEditor.updateOptions({ readOnly: this.readOnly });
+      activeEditor.updateOptions({
+        readOnly: this.readOnly || currentModule?.isBinary,
+      });
 
       if (!modulePath.startsWith('/sandbox')) {
         return;
@@ -939,16 +1160,16 @@ export class VSCodeEffect {
         );
       }
 
-      const currentModule = this.options.getCurrentModule();
-
       if (
         currentModule &&
         modulePath === `/sandbox${currentModule.path}` &&
         currentModule.code !== undefined &&
-        activeEditor.getValue() !== currentModule.code
+        activeEditor.getValue() !== currentModule.code &&
+        !currentModule.isBinary
       ) {
         // This means that the file in Cerebral is dirty and has changed,
         // VSCode only gets saved contents. In this case we manually set the value correctly.
+
         this.modelsHandler.isApplyingOperation = true;
         const model = activeEditor.getModel();
         model.applyEdits([
@@ -960,9 +1181,42 @@ export class VSCodeEffect {
         this.modelsHandler.isApplyingOperation = false;
       }
 
+      let lastViewRange = null;
+      const isDifferentViewRange = (r1: UserViewRange, r2: UserViewRange) =>
+        r1.startLineNumber !== r2.startLineNumber ||
+        r1.startColumn !== r2.startColumn ||
+        r1.endLineNumber !== r2.endLineNumber ||
+        r1.endColumn !== r2.endColumn;
+
+      this.modelViewRangeListener = activeEditor.onDidScrollChange(e => {
+        const [range] = activeEditor.getVisibleRanges();
+
+        if (
+          lastViewRange == null ||
+          (range && isDifferentViewRange(lastViewRange!, range))
+        ) {
+          lastViewRange = range;
+          this.options.onViewRangeChanged(range);
+        }
+      });
+
+      this.modelCursorPositionListener = activeEditor.onDidChangeCursorPosition(
+        cursor => {
+          if (COMMENTS) {
+            const model = activeEditor.getModel();
+
+            this.modelsHandler.updateLineCommentIndication(
+              model,
+              cursor.position.lineNumber
+            );
+          }
+        }
+      );
+
       this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
         selectionChange => {
-          const lines = activeEditor.getModel().getLinesContent() || [];
+          const model = activeEditor.getModel();
+          const lines = model.getLinesContent() || [];
           const data: onSelectionChangeData = {
             primary: getSelection(lines, selectionChange.selection),
             secondary: selectionChange.secondarySelections.map(s =>
@@ -978,7 +1232,7 @@ export class VSCodeEffect {
             /* click inside a selection */ selectionChange.source === 'api'
           ) {
             this.onSelectionChangeDebounced.cancel();
-            this.options.onSelectionChange(data);
+            this.options.onSelectionChanged(data);
           } else {
             // This is just on typing, we send a debounced selection update as a
             // safeguard to make sure we are in sync
@@ -1005,8 +1259,8 @@ export class VSCodeEffect {
 
         if (lineNumber || column) {
           options.selection = {
-            startLineNumber: lineNumber,
-            startColumn: column || 0,
+            startLineNumber: +lineNumber,
+            startColumn: +(column || 0),
           };
         }
 
@@ -1069,6 +1323,35 @@ export class VSCodeEffect {
       status: getStatus(),
       sticky: options.sticky,
       actions: options.actions,
+    });
+  }
+
+  private listenToCommentClick() {
+    window.addEventListener('click', event => {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('editor-comments-glyph')) {
+        /*
+          We grab the id of the commenthread by getting the last classname.
+          The last part of the classname is the id.
+        */
+        const lastClass = Array.from(target.classList).pop();
+
+        if (lastClass) {
+          const commentIds = lastClass.startsWith('editor-comments-ids-')
+            ? (lastClass.split('editor-comments-ids-').pop() || '').split('_')
+            : [];
+          const boundingRect = target.getBoundingClientRect();
+          this.options.onCommentClick({
+            commentIds,
+            bounds: {
+              left: boundingRect.left,
+              top: boundingRect.top,
+              right: boundingRect.right,
+              bottom: boundingRect.bottom,
+            },
+          });
+        }
+      }
     });
   }
 }

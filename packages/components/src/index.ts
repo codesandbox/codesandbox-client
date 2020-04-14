@@ -14,10 +14,12 @@ export * from './components/SearchInput';
 export * from './components/Select';
 export * from './components/Stats';
 export * from './components/Menu';
+export * from './components/SkeletonText';
 export * from './components/Switch';
 export * from './components/Text';
 export * from './components/Textarea';
 export * from './components/FormField';
+export * from './components/Checkbox';
 
 // molecules
 export * from './components/Collapsible';

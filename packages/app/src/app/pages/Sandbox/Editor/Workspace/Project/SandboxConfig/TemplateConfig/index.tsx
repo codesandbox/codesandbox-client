@@ -2,7 +2,7 @@ import * as templates from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent, useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
 import { Link } from 'react-router-dom';
-import { useClickAway } from 'react-use';
+import useClickAway from 'react-use/lib/useClickAway';
 
 import { useOvermind } from 'app/overmind';
 

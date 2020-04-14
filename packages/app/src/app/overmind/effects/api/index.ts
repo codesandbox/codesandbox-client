@@ -112,12 +112,16 @@ export default {
       `/sandboxes/${sandboxId}/modules/${moduleShortid}`
     );
   },
-  saveModuleCode(sandboxId: string, module: Module): Promise<Module> {
+  saveModuleCode(
+    sandboxId: string,
+    moduleShortid: string,
+    code: string
+  ): Promise<Module> {
     return api
       .put<IModuleAPIResponse>(
-        `/sandboxes/${sandboxId}/modules/${module.shortid}`,
+        `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
         {
-          module: { code: module.code },
+          module: { code },
         }
       )
       .then(transformModule);

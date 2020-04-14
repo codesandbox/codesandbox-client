@@ -3,6 +3,10 @@ import css from '@styled-system/css';
 import { Element } from '../Element';
 import { Stack } from '../Stack';
 
+type ListActionProps = {
+  disabled?: boolean;
+};
+
 export const List = styled(Element).attrs({ as: 'ul' })(
   css({
     listStyle: 'none',
@@ -22,17 +26,16 @@ export const ListItem = styled(Stack).attrs({
   })
 );
 
-export const ListAction = styled(ListItem)<{ disabled?: boolean }>(
-  ({ disabled }) =>
-    css({
-      ':hover, &[aria-selected="true"]': {
-        cursor: !disabled ? 'pointer' : 'disabled',
-        color: !disabled ? 'list.hoverForeground' : 'inherit',
-        backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
-      },
-      ':focus-within': {
-        color: !disabled ? 'list.hoverForeground' : 'inherit',
-        backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
-      },
-    })
+export const ListAction = styled(ListItem)<ListActionProps>(({ disabled }) =>
+  css({
+    ':hover, &[aria-selected="true"]': {
+      cursor: !disabled ? 'pointer' : 'disabled',
+      color: !disabled ? 'list.hoverForeground' : 'inherit',
+      backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
+    },
+    ':focus-within': {
+      color: !disabled ? 'list.hoverForeground' : 'inherit',
+      backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
+    },
+  })
 );

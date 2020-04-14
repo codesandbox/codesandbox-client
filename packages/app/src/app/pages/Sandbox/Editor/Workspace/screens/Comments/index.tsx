@@ -1,11 +1,11 @@
 import { CommentsFilterOption } from '@codesandbox/common/lib/types';
 import {
+  Icon,
   List,
   Menu,
+  SidebarRow,
   Stack,
   Text,
-  SidebarRow,
-  Icon,
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
@@ -13,15 +13,19 @@ import React from 'react';
 
 import { AddComment } from './AddComment';
 import { Comment } from './Comment';
-import { CommentDialog } from './Dialog';
 
 export const Comments: React.FC = () => {
   const {
     state: {
-      editor: { selectedCommentsFilter, currentComments, currentCommentId },
+      comments: {
+        selectedCommentsFilter,
+        currentComments,
+        currentCommentsByDate,
+      },
     },
-    actions: { editor: editorActions },
+    actions: { comments: commentsActions },
   } = useOvermind();
+  const scrollRef = React.useRef(null);
   const options = Object.values(CommentsFilterOption);
 
   const getSelectedFilter = () => {
@@ -35,9 +39,30 @@ export const Comments: React.FC = () => {
     }
   };
 
-  const all =
-    selectedCommentsFilter === CommentsFilterOption.OPEN ||
-    selectedCommentsFilter === CommentsFilterOption.ALL;
+  const getFilterName = () => {
+    switch (selectedCommentsFilter) {
+      case CommentsFilterOption.ALL:
+        return 'All';
+      case CommentsFilterOption.RESOLVED:
+        return 'Resolved';
+      case CommentsFilterOption.OPEN:
+        return 'Open';
+      default:
+        return 'new';
+    }
+  };
+
+  const onSubmit = value => {
+    commentsActions.addComment({
+      content: value,
+    });
+    scrollRef.current.scrollTop = 0;
+  };
+
+  const iconColor =
+    selectedCommentsFilter !== CommentsFilterOption.ALL
+      ? 'button.background'
+      : 'inherit';
 
   const Empty = () => (
     <Stack
@@ -49,19 +74,18 @@ export const Comments: React.FC = () => {
     >
       <Icon
         name="comments"
-        size={20}
+        size={80}
         color="mutedForeground"
         css={{ opacity: 0.2 }}
       />
-      <Text block align="center" variant="muted">
-        There are no {getSelectedFilter()} comments.{' '}
-        {all && (
-          <>
-            {/* Leave a comment by clicking anywhere within a file or */}
-            Write a global comment below.
-          </>
-        )}
-      </Text>
+      <div>
+        <Text block align="center" variant="muted">
+          There are no {getSelectedFilter()} comments.
+        </Text>
+        <Text block align="center" variant="muted">
+          Comment on code by clicking within a file, or add a comment below.
+        </Text>
+      </div>
     </Stack>
   );
 
@@ -81,19 +105,35 @@ export const Comments: React.FC = () => {
             minHeight: '35px',
           })}
         >
-          <Text>Comments</Text>
+          <Text>
+            Comments
+            <Text css={{ textTransform: 'capitalize' }}>
+              {' '}
+              ({getFilterName()})
+            </Text>
+          </Text>
           <Menu>
             <Menu.IconButton
               className="icon-button"
               name="filter"
               title="Filter comments"
-              size={3}
+              size={12}
+              css={css({
+                color: iconColor,
+                ':hover:not(:disabled)': {
+                  color: iconColor,
+                },
+                ':focus:not(:disabled)': {
+                  color: iconColor,
+                  backgroundColor: 'transparent',
+                },
+              })}
             />
             <Menu.List>
               {options.map(option => (
                 <Menu.Item
                   key={option}
-                  onSelect={() => editorActions.selectCommentsFilter(option)}
+                  onSelect={() => commentsActions.selectCommentsFilter(option)}
                 >
                   {option}
                 </Menu.Item>
@@ -104,22 +144,43 @@ export const Comments: React.FC = () => {
 
         {currentComments.length ? (
           <List
+            itemProp="mainEntity"
+            itemScope
+            itemType="http://schema.org/Conversation"
+            ref={scrollRef}
             marginTop={4}
             css={{
               // stretch within container, leaving space for comment box
               height: 'calc(100% - 32px)',
               overflow: 'auto',
+              scrollBehavior: 'smooth',
             }}
           >
-            {currentComments.map(comment => (
-              <Comment key={comment.id} comment={comment} />
-            ))}
+            {currentCommentsByDate.today.length ? (
+              <>
+                <Text size={3} weight="bold" block margin={2}>
+                  Today
+                </Text>
+                {currentCommentsByDate.today.map(comment => (
+                  <Comment key={comment.id} comment={comment} />
+                ))}
+              </>
+            ) : null}
+            {currentCommentsByDate.prev.length ? (
+              <>
+                <Text size={3} weight="bold" block margin={2} marginTop={4}>
+                  Earlier
+                </Text>
+                {currentCommentsByDate.prev.map(comment => (
+                  <Comment key={comment.id} comment={comment} />
+                ))}
+              </>
+            ) : null}
           </List>
         ) : null}
       </div>
       {currentComments.length ? null : <Empty />}
-      <AddComment />
-      {currentCommentId && <CommentDialog />}
+      <AddComment onSubmit={onSubmit} />
     </Stack>
   );
 };

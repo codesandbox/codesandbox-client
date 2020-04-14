@@ -39,7 +39,7 @@ export const CreateRepo = () => {
 
   return (
     <Collapsible
-      title={originalGit ? 'Export to GitHub' : 'Github'}
+      title={originalGit ? 'Export to GitHub' : 'GitHub'}
       defaultOpen={!originalGit}
     >
       <Element paddingX={2}>

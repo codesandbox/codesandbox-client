@@ -1,19 +1,23 @@
 import {
   Element,
-  Avatar,
+  Icon,
   Link,
   ListAction,
   Menu,
   Stack,
   Text,
-  Icon,
 } from '@codesandbox/components';
+import VisuallyHidden from '@reach/visually-hidden';
 import { css } from '@styled-system/css';
+import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
-import { formatDistance } from 'date-fns';
 import React from 'react';
 
-export const Comment = React.memo(({ comment }: any) => {
+import { AvatarBlock } from './components/AvatarBlock';
+
+export const Comment = React.memo<{
+  comment: CommentFragment;
+}>(({ comment }) => {
   const { state, actions } = useOvermind();
 
   const truncateText = {
@@ -41,78 +45,118 @@ export const Comment = React.memo(({ comment }: any) => {
         opacity: comment.isResolved ? 0.2 : 1,
         paddingRight: 0, // the actions menu should be at the edge
       })}
+      id={comment.id}
+      onClick={event => {
+        // don't trigger comment if you click on the menu
+        // we have to handle this because of an upstream
+        // bug in reach/menu-button
+        const target = event.target as HTMLElement;
+        if (target.tagName === 'button' || target.tagName === 'svg') {
+          return;
+        }
+
+        const currentTarget = event.currentTarget as HTMLElement;
+        const boundingRect = currentTarget.getBoundingClientRect();
+        actions.comments.selectComment({
+          commentId: comment.id,
+          bounds: {
+            left: boundingRect.left,
+            right: boundingRect.right,
+            top: boundingRect.top,
+            bottom: boundingRect.bottom,
+          },
+        });
+      }}
     >
-      <Stack align="flex-start" justify="space-between" marginBottom={4}>
-        <Stack
-          gap={2}
-          align="center"
-          onClick={() => actions.editor.selectComment(comment.id)}
-        >
-          <Avatar user={comment.originalMessage.author} />
-          <Stack direction="vertical" justify="center">
-            <Link
-              size={3}
-              weight="bold"
-              href={`/u/${comment.originalMessage.author.username}`}
-              variant="body"
-            >
-              {comment.originalMessage.author.username}
-            </Link>
-            <Text size={2} variant="muted">
-              {formatDistance(new Date(comment.insertedAt), new Date(), {
-                addSuffix: true,
-              })}
-            </Text>
-          </Stack>
-        </Stack>
-        <Stack align="center">
-          {comment.isResolved && (
-            <Icon name="check" title="Resolved" color="green" />
-          )}
-          <Menu>
-            <Menu.IconButton name="more" title="Comment actions" size={3} />
-            <Menu.List>
-              <Menu.Item
-                onSelect={() =>
-                  actions.editor.updateComment({
-                    id: comment.id,
-                    data: { isResolved: !comment.isResolved },
-                  })
-                }
-              >
-                Mark as {comment.isResolved ? 'Unr' : 'r'}esolved
-              </Menu.Item>
-              <Menu.Item onSelect={() => {}}>Share Comment</Menu.Item>
-              {state.user.id === comment.originalMessage.author.id && (
+      <Element
+        as="article"
+        itemProp="comment"
+        itemScope
+        itemType="http://schema.org/Comment"
+      >
+        <Stack align="flex-start" justify="space-between" marginBottom={4}>
+          <AvatarBlock comment={comment} />
+          <Stack align="center">
+            {comment.isResolved && (
+              <Icon name="check" title="Resolved" color="green" />
+            )}
+            <Menu>
+              <Menu.IconButton name="more" title="Comment actions" size={12} />
+              <Menu.List>
                 <Menu.Item
                   onSelect={() =>
-                    actions.editor.deleteComment({ id: comment.id })
+                    actions.comments.resolveComment({
+                      commentId: comment.id,
+                      isResolved: !comment.isResolved,
+                    })
                   }
                 >
-                  Delete
+                  Mark as {comment.isResolved ? 'unresolved' : 'resolved'}
                 </Menu.Item>
-              )}
-            </Menu.List>
-          </Menu>
+                <Menu.Item
+                  onSelect={() =>
+                    actions.comments.copyPermalinkToClipboard(comment.id)
+                  }
+                >
+                  Share Comment
+                </Menu.Item>
+                {state.user.id === comment.user.id && (
+                  <Menu.Item
+                    onSelect={() =>
+                      actions.comments.deleteComment({
+                        commentId: comment.id,
+                      })
+                    }
+                  >
+                    Delete
+                  </Menu.Item>
+                )}
+              </Menu.List>
+            </Menu>
+          </Stack>
         </Stack>
-      </Stack>
-      <Element
-        onClick={() => actions.editor.selectComment(comment.id)}
-        as="p"
-        marginY={0}
-        marginRight={2 /** Adjust for the missing margin in ListAction */}
-        paddingBottom={6 /** Use padding instead of margin for inset border */}
-        css={css({
-          borderBottom: '1px solid',
-          borderColor: 'sideBar.border',
-        })}
-      >
-        <Text block css={truncateText} marginBottom={2}>
-          {comment.originalMessage.content}
-        </Text>
-        <Text variant="muted" size={2}>
-          {getRepliesString(comment.replies.length)}
-        </Text>
+        {comment.references[0] && (
+          <Link
+            variant="muted"
+            css={css({
+              marginTop: -2,
+              opacity: 0.6,
+              paddingBottom: 2,
+              display: 'block',
+              transition: 'all ease',
+              transitionDuration: theme => theme.speeds[1],
+
+              ':hover': {
+                opacity: 1,
+                color: 'sidebar.foreground',
+              },
+            })}
+          >
+            {comment.references[0].metadata.path}
+          </Link>
+        )}
+        <Element
+          as="p"
+          marginY={0}
+          marginRight={2 /** Adjust for the missing margin in ListAction */}
+          paddingBottom={
+            6 /** Use padding instead of margin for inset border */
+          }
+          css={css({
+            borderBottom: '1px solid',
+            borderColor: 'sideBar.border',
+          })}
+        >
+          <Text itemProp="text" block css={truncateText} marginBottom={2}>
+            {comment.content}
+          </Text>
+          <Text variant="muted" size={2}>
+            {getRepliesString(comment.replyCount)}
+            <VisuallyHidden itemProp="commentCount">
+              {comment.replyCount}
+            </VisuallyHidden>
+          </Text>
+        </Element>
       </Element>
     </ListAction>
   );

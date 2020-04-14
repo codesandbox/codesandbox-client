@@ -25,6 +25,7 @@ import { Navigation as NavigationOld } from './NavigationOld';
 import { ContentSkeleton } from './Skeleton';
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
+import { CommentsAPI } from './Workspace/screens/Comments/API';
 
 const STATUS_BAR_SIZE = 22;
 
@@ -34,10 +35,12 @@ const StatusBar = styled.div`
   }
 `;
 
-const ContentSplit = () => {
+const Editor = () => {
   const { state, actions, effects, reaction } = useOvermind();
   const statusbarEl = useRef(null);
-  const [showSkeleton, setShowSkeleton] = useState(true);
+  const [showSkeleton, setShowSkeleton] = useState(
+    !state.editor.hasLoadedInitialModule
+  );
   const [localState, setLocalState] = useState({
     theme: {
       colors: {},
@@ -227,8 +230,11 @@ const ContentSplit = () => {
 
         <ForkFrozenSandboxModal />
       </Container>
+      <NewThemeProvider theme={localState.theme.vscodeTheme}>
+        <CommentsAPI />
+      </NewThemeProvider>
     </ThemeProvider>
   );
 };
 
-export default ContentSplit;
+export default Editor;

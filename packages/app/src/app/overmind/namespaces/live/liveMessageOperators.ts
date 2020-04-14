@@ -6,17 +6,19 @@ import {
   LiveUser,
   Module,
   UserSelection,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
   live_user_id: string;
-}>> = mutate(({ effects, state }, { data }) => {
+}>> = mutate(({ effects, actions, state }, { data }) => {
   state.live.liveUserId = data.live_user_id;
 
   // Show message to confirm that you've joined a live session if you're not the owner
@@ -25,9 +27,15 @@ export const onJoin: Operator<LiveMessage<{
   }
 
   if (state.live.reconnecting) {
+    // We reconnected!
     effects.live.getAllClients().forEach(client => {
       client.serverReconnect();
     });
+
+    if (state.live.roomInfo) {
+      // Clear all user selections
+      actions.live.internal.clearUserSelections(null);
+    }
   }
 
   state.live.reconnecting = false;
@@ -53,7 +61,7 @@ export const onUsersChanged: Operator<LiveMessage<{
   users: LiveUser[];
   editor_ids: string[];
   owner_ids: string[];
-}>> = mutate(({ state, effects, actions }, { data }) => {
+}>> = mutate(({ state, actions }, { data }) => {
   if (state.live.isLoading || !state.live.roomInfo || !state.live.isLive) {
     return;
   }
@@ -65,10 +73,9 @@ export const onUsersChanged: Operator<LiveMessage<{
   state.live.roomInfo.ownerIds = data.owner_ids;
 
   if (state.editor.currentModule) {
-    effects.vscode.updateUserSelections(
-      state.editor.currentModule,
-      actions.live.internal.getSelectionsForModule(state.editor.currentModule)
-    );
+    actions.editor.internal.updateSelectionsOfModule({
+      module: state.editor.currentModule,
+    });
   }
 });
 
@@ -89,15 +96,15 @@ export const onUserEntered: Operator<LiveMessage<{
   state.live.roomInfo.ownerIds = data.owner_ids;
 
   if (state.editor.currentModule) {
-    effects.vscode.updateUserSelections(
-      state.editor.currentModule,
-      actions.live.internal.getSelectionsForModule(state.editor.currentModule)
-    );
+    actions.editor.internal.updateSelectionsOfModule({
+      module: state.editor.currentModule,
+    });
   }
 
-  // Send our own selections to everyone, just to let the others know where
+  // Send our own selections and viewranges to everyone, just to let the others know where
   // we are
   actions.live.sendCurrentSelection();
+  actions.live.sendCurrentViewRange();
 
   if (data.joined_user_id === state.live.liveUserId) {
     return;
@@ -105,7 +112,11 @@ export const onUserEntered: Operator<LiveMessage<{
 
   const user = data.users.find(u => u.id === data.joined_user_id);
 
-  if (!state.live.notificationsHidden && user) {
+  if (
+    !state.live.notificationsHidden &&
+    user &&
+    !state.user?.experiments.collaborator
+  ) {
     effects.notificationToast.add({
       message: `${user.username} joined the live session.`,
       status: NotificationStatus.NOTICE,
@@ -127,7 +138,11 @@ export const onUserLeft: Operator<LiveMessage<{
     const { users } = state.live.roomInfo;
     const user = users ? users.find(u => u.id === data.left_user_id) : null;
 
-    if (user && user.id !== state.live.liveUserId) {
+    if (
+      user &&
+      user.id !== state.live.liveUserId &&
+      !state.user?.experiments.collaborator
+    ) {
       effects.notificationToast.add({
         message: `${user.username} left the live session.`,
         status: NotificationStatus.NOTICE,
@@ -135,7 +150,7 @@ export const onUserLeft: Operator<LiveMessage<{
     }
   }
 
-  actions.live.internal.clearUserSelections(data.left_user_id);
+  actions.live.onUserLeft({ liveUserId: data.left_user_id });
 
   const users = camelizeKeys(data.users) as LiveUser[];
 
@@ -156,16 +171,20 @@ export const onModuleSaved: Operator<LiveMessage<{
   );
 
   if (module) {
-    module.isNotSynced = false;
-
     actions.editor.internal.setModuleSavedCode({
       moduleShortid: data.moduleShortid,
       savedCode: data.module.savedCode,
     });
 
     effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
-    // We revert the module so that VSCode will flag saved indication correctly
-    effects.vscode.revertModule(module);
+    const savedCode = getSavedCode(module.code, module.savedCode);
+    if (!effects.vscode.isModuleOpened(module)) {
+      module.code = savedCode;
+    }
+    if (module.code === savedCode) {
+      // We revert the module so that VSCode will flag saved indication correctly
+      effects.vscode.syncModule(module);
+    }
     actions.editor.internal.updatePreviewCode();
   }
 });
@@ -370,7 +389,7 @@ export const onUserSelection: Operator<LiveMessage<{
   liveUserId: string;
   moduleShortid: string;
   selection: UserSelection;
-}>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
+}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
   if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
     return;
   }
@@ -390,7 +409,13 @@ export const onUserSelection: Operator<LiveMessage<{
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
   );
-  if (module && state.live.isEditor(userSelectionLiveUserId)) {
+
+  const isFollowingUser =
+    state.live.followingUserId === userSelectionLiveUserId;
+  if (
+    module &&
+    (state.live.isEditor(userSelectionLiveUserId) || isFollowingUser)
+  ) {
     const user = state.live.roomInfo.users.find(
       u => u.id === userSelectionLiveUserId
     );
@@ -404,6 +429,12 @@ export const onUserSelection: Operator<LiveMessage<{
           color: json(user.color),
         },
       ]);
+
+      if (isFollowingUser) {
+        actions.live.revealCursorPosition({
+          liveUserId: userSelectionLiveUserId,
+        });
+      }
     }
   }
 });
@@ -441,6 +472,41 @@ export const onUserCurrentModule: Operator<LiveMessage<{
     actions.editor.moduleSelected({
       id: module.id,
     });
+  }
+});
+
+export const onUserViewRange: Operator<LiveMessage<{
+  liveUserId: string;
+  moduleShortid: string;
+  viewRange: UserViewRange;
+}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
+  if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
+    return;
+  }
+
+  const userSelectionLiveUserId = data.liveUserId;
+  const { moduleShortid } = data;
+  const { viewRange } = data;
+  const userIndex = state.live.roomInfo.users.findIndex(
+    u => u.id === userSelectionLiveUserId
+  );
+
+  if (userIndex !== -1) {
+    state.live.roomInfo.users[userIndex].currentModuleShortid = moduleShortid;
+    state.live.roomInfo.users[userIndex].viewRange = viewRange;
+  }
+
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+  if (module) {
+    const user = state.live.roomInfo.users.find(
+      u => u.id === userSelectionLiveUserId
+    );
+
+    if (user && state.live.followingUserId === userSelectionLiveUserId) {
+      effects.vscode.revealRange(viewRange);
+    }
   }
 });
 
@@ -484,14 +550,15 @@ export const onLiveAddEditor: Operator<LiveMessage<{
 
 export const onLiveRemoveEditor: Operator<LiveMessage<{
   editor_user_id: string;
-}>> = mutate(({ state }, { _isOwnMessage, data }) => {
+}>> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
   if (!state.live.roomInfo) {
     return;
   }
 
-  if (!_isOwnMessage) {
-    const userId = data.editor_user_id;
+  const userId = data.editor_user_id;
+  actions.live.internal.clearUserSelections(userId);
 
+  if (!_isOwnMessage) {
     const editors = state.live.roomInfo.editorIds;
     const newEditors = editors.filter(id => id !== userId);
 
@@ -531,7 +598,7 @@ export const onConnectionLoss: Operator<LiveMessage> = mutate(
           message: 'We lost connection with the live server, reconnecting...',
           status: NotificationStatus.ERROR,
         });
-      }, 2000);
+      }, 30000);
 
       state.live.reconnecting = true;
 

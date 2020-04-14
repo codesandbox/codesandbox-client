@@ -2,12 +2,12 @@ import { GlobeIcon } from '@codesandbox/common/lib/components/icons/Globe';
 import { LinkIcon } from '@codesandbox/common/lib/components/icons/Link';
 import { LockIcon } from '@codesandbox/common/lib/components/icons/Lock';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { Select, Stack, Text } from '@codesandbox/components';
+import { Stack, Text, Menu, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Authorization } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { formatDistanceToNow } from 'date-fns';
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 
 import { Mail, WarningIcon } from './icons';
 import { PermissionSelect } from './PermissionSelect';
@@ -21,9 +21,7 @@ interface ICollaboratorItemProps {
   subtext?: string;
   avatarUrl?: string;
   avatarComponent?: JSX.Element | null;
-  onChange?: (
-    event: ChangeEvent<HTMLSelectElement> & ChangeEvent<HTMLInputElement>
-  ) => void;
+  onChange?: (value: string) => void;
   fillAvatar?: boolean;
   permissionText?: string;
   readOnly?: boolean;
@@ -135,8 +133,8 @@ export const Collaborator = ({
 }: ICollaboratorProps) => {
   const { actions, state } = useOvermind();
 
-  const updateAuthorization = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (event.target.value === 'remove') {
+  const updateAuthorization = (value: string) => {
+    if (value === 'remove') {
       actions.editor.removeCollaborator({
         username,
         sandboxId: state.editor.currentSandbox.id,
@@ -145,7 +143,7 @@ export const Collaborator = ({
       actions.editor.changeCollaboratorAuthorization({
         username,
         sandboxId: state.editor.currentSandbox.id,
-        authorization: event.target.value as Authorization,
+        authorization: value as Authorization,
       });
     }
   };
@@ -181,9 +179,9 @@ interface IInvitationProps {
 export const Invitation = ({ id, email, authorization }: IInvitationProps) => {
   const { actions, state } = useOvermind();
 
-  const updateAuthorization = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const updateAuthorization = (value: string) => {
     // We have to do something here
-    if (event.target.value === 'remove') {
+    if (value === 'remove') {
       actions.editor.revokeSandboxInvitation({
         invitationId: id,
         sandboxId: state.editor.currentSandbox.id,
@@ -192,7 +190,7 @@ export const Invitation = ({ id, email, authorization }: IInvitationProps) => {
       actions.editor.changeInvitationAuthorization({
         invitationId: id,
         sandboxId: state.editor.currentSandbox.id,
-        authorization: event.target.value as Authorization,
+        authorization: value as Authorization,
       });
     }
   };
@@ -206,6 +204,12 @@ export const Invitation = ({ id, email, authorization }: IInvitationProps) => {
       authorization={authorization}
     />
   );
+};
+
+const privacyToName = {
+  0: 'Public',
+  1: 'Unlisted',
+  2: 'Private',
 };
 
 const privacyToIcon = {
@@ -229,31 +233,35 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
   const { privacy } = state.editor.currentSandbox;
   const isPatron = state.isPatron;
 
-  const Icon = privacyToIcon[privacy];
+  const PrivacyIcon = privacyToIcon[privacy];
 
   const isReadOnly = readOnly || !isPatron;
+
+  const onChange = value => {
+    actions.workspace.sandboxPrivacyChanged({
+      privacy: Number(value) as 0 | 1 | 2,
+      source: 'collaboratorss',
+    });
+  };
 
   return (
     <Stack gap={4} align="center" direction="vertical">
       <CollaboratorItem
-        avatarComponent={<Icon />}
+        avatarComponent={<PrivacyIcon />}
         name={
-          <Select
-            variant="link"
-            onChange={e => {
-              actions.workspace.sandboxPrivacyChanged({
-                privacy: Number(e.target.value) as 0 | 1 | 2,
-                source: 'collaboratorss',
-              });
-            }}
-            value={privacy}
-            css={css({ paddingLeft: 0 })}
-            disabled={isReadOnly}
-          >
-            <option value="0">Public</option>
-            <option value="1">Unlisted</option>
-            <option value="2">Private</option>
-          </Select>
+          <Menu>
+            <Menu.Button disabled={isReadOnly}>
+              {privacyToName[privacy]}{' '}
+              <Icon name="caret" size={8} marginLeft={1} />
+            </Menu.Button>
+            <Menu.List>
+              {Object.keys(privacyToName).map(p => (
+                <Menu.Item key={p} onSelect={() => onChange(p)}>
+                  {privacyToName[p]}
+                </Menu.Item>
+              ))}
+            </Menu.List>
+          </Menu>
         }
         authorization={Authorization.Read}
         permissions={[]}

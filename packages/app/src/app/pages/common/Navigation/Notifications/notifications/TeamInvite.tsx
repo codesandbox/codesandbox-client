@@ -61,7 +61,7 @@ export const TeamInvite: FunctionComponent<Props> = ({
             mutation={ACCEPT_TEAM_INVITATION}
             refetchQueries={['RecentNotifications', 'TeamsSidebar']}
             onCompleted={() => {
-              acceptTeamInvitation({ teamName });
+              acceptTeamInvitation({ teamName, teamId });
 
               history.push(teamOverviewUrl(teamId));
             }}

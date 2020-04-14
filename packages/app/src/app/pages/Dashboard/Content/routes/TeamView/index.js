@@ -186,7 +186,7 @@ class TeamView extends React.PureComponent {
                                 creatorId={data.me.team.creatorId}
                                 currentUserId={currentUser.id}
                                 userId={user.id}
-                                name={user.name || user.usermame}
+                                name={user.name || user.username}
                                 teamId={teamId}
                                 totalMemberSize={
                                   data.me.team.users.length +

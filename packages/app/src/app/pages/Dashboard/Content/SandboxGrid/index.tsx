@@ -195,7 +195,7 @@ class SandboxGridComponent extends React.Component<
     permanentlyDeleteSandboxes(this.props.selectedSandboxes);
   };
 
-  setSandboxesPrivacy = (privacy: number) => {
+  setSandboxesPrivacy = (privacy: 0 | 1 | 2) => {
     track('Sandbox - Update Privacy', {
       privacy,
       source: 'dashboard',

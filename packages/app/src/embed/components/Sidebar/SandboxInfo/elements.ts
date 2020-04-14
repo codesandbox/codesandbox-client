@@ -9,7 +9,7 @@ export const Container = styled.div(
   })
 );
 
-export const Title = styled.h2(
+export const Title = styled.h1(
   css({
     fontSize: 3,
     fontWeight: 'medium',
@@ -18,9 +18,10 @@ export const Title = styled.h2(
   })
 );
 
-export const Description = styled.div(
+export const Description = styled.h2(
   css({
     fontSize: 2,
+    fontWeight: 'normal',
     color: 'sideBar.foreground',
     marginBottom: 4,
   })
@@ -30,6 +31,7 @@ export const Stats = styled(CommonStats)(
   css({
     fontSize: 2,
     color: 'grays.400',
+    marginBottom: 2,
     // ouch ouch ouch, modifying a child of
     // a common element is just pure evil
     // this will definitely break on the
@@ -38,6 +40,28 @@ export const Stats = styled(CommonStats)(
     // justify as an input
     [CenteredText]: {
       justifyContent: 'start',
+    },
+  })
+);
+
+export const Button = styled.a(
+  css({
+    transition: '0.3s ease background-color',
+    backgroundColor: theme => (theme.light ? 'grays.200' : 'grays.500'),
+    padding: 2,
+    display: 'block',
+    color: theme => (theme.light ? 'grays.800' : 'white'),
+    border: 'none',
+    outline: 'none',
+    borderRadius: 2,
+    width: '100%',
+    fontSize: 3,
+    boxSizing: 'border-box',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    textAlign: 'center',
+    ':hover': {
+      backgroundColor: theme => (theme.light ? 'grays.300' : 'grays.600'),
     },
   })
 );

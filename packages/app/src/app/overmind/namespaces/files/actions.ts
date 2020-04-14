@@ -6,12 +6,12 @@ import {
 import getDefinition from '@codesandbox/common/lib/templates';
 import { Directory, Module, UploadFile } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
-import { INormalizedModules } from 'codesandbox-import-util-types';
-
-import { AsyncAction } from 'app/overmind';
+import { Action, AsyncAction } from 'app/overmind';
+import { RecoverData } from 'app/overmind/effects/moduleRecover';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import { createOptimisticModule } from 'app/overmind/utils/common';
+import { INormalizedModules } from 'codesandbox-import-util-types';
+import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 
 import {
   resolveDirectoryWrapped,
@@ -20,6 +20,58 @@ import {
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
+
+export const applyRecover: Action<Array<{
+  module: Module;
+  recoverData: RecoverData;
+}>> = ({ state, effects, actions }, recoveredList) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
+  effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
+  recoveredList.forEach(({ recoverData, module }) => {
+    actions.editor.codeChanged({
+      moduleShortid: module.shortid,
+      code: recoverData.code,
+    });
+    effects.vscode.setModuleCode(module);
+  });
+
+  effects.analytics.track('Files Recovered', {
+    fileCount: recoveredList.length,
+  });
+};
+
+export const createRecoverDiffs: Action<Array<{
+  module: Module;
+  recoverData: RecoverData;
+}>> = ({ state, effects, actions }, recoveredList) => {
+  const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+  effects.moduleRecover.clearSandbox(sandbox.id);
+  recoveredList.forEach(({ recoverData, module }) => {
+    const oldCode = module.code;
+    actions.editor.codeChanged({
+      moduleShortid: module.shortid,
+      code: recoverData.code,
+    });
+    effects.vscode.openDiff(sandbox.id, module, oldCode);
+  });
+
+  effects.analytics.track('Files Recovered', {
+    fileCount: recoveredList.length,
+  });
+};
+
+export const discardRecover: Action = ({ effects, state }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+  effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
+};
 
 export const moduleRenamed: AsyncAction<{
   title: string;
@@ -268,7 +320,7 @@ export const directoryMovedToDirectory: AsyncAction<{
 );
 
 export const directoryDeleted: AsyncAction<{
-  directoryShortid;
+  directoryShortid: string;
 }> = withOwnedSandbox(
   async ({ state, actions, effects }, { directoryShortid }) => {
     const sandbox = state.editor.currentSandbox;
@@ -657,7 +709,7 @@ export const moduleCreated: AsyncAction<{
         // Update server with latest data
         effects.live.sendCodeUpdate(
           module.shortid,
-          getTextOperation('', module.code)
+          getTextOperation(updatedModule.code || '', module.code)
         );
       }
     } catch (error) {
@@ -766,12 +818,9 @@ export const syncSandbox: AsyncAction<any[]> = async (
           if (newModule) {
             if (oldModule) {
               const modulePos = oldSandbox.modules.indexOf(oldModule);
-              Object.assign(
-                state.editor.sandboxes[oldSandbox.id].modules[modulePos],
-                newModule
-              );
+              Object.assign(oldSandbox.modules[modulePos], newModule);
             } else {
-              state.editor.sandboxes[oldSandbox.id].modules.push(newModule);
+              oldSandbox.modules.push(newModule);
             }
           }
         } else if (op === 'delete' && oldModule) {
@@ -785,9 +834,7 @@ export const syncSandbox: AsyncAction<any[]> = async (
           // Create
           const newDirectory = resolveDirectoryNew(path);
           if (newDirectory) {
-            state.editor.sandboxes[oldSandbox.id].directories.push(
-              newDirectory
-            );
+            oldSandbox.directories.push(newDirectory);
           }
         } else {
           const oldDirectory = resolveDirectoryOld(path);

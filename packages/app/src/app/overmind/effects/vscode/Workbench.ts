@@ -4,6 +4,7 @@ import {
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
 
+import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { KeyCode, KeyMod } from './keyCodes';
 
 // Copied from 'common/actions' in vscode
@@ -160,6 +161,17 @@ export class Workbench {
         primary: KeyMod.WinCtrl | KeyMod.Alt | KeyCode.KEY_F,
       },
     });
+
+    if (COMMENTS) {
+      this.addWorkbenchAction({
+        id: 'comments.add',
+        label: 'Comment on code',
+        category: 'Comments',
+        run: () => {
+          this.controller.getSignal('comments.createComment')();
+        },
+      });
+    }
 
     this.appendMenuItem(MenuId.MenubarFileMenu, {
       group: '1_new',
@@ -359,6 +371,17 @@ export class Workbench {
         title: 'Join Us on S&&pectrum',
       },
     });
+
+    if (COMMENTS) {
+      this.appendMenuItem(MenuId.EditorContext, {
+        group: '0_comments',
+        order: 0,
+        command: {
+          id: 'comments.add',
+          title: 'Comment on code',
+        },
+      });
+    }
   }
 
   private addWorkbenchAction({

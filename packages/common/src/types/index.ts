@@ -64,7 +64,7 @@ export type Module = {
   isBinary: boolean;
   insertedAt: string;
   updatedAt: string;
-  path: string | null;
+  path: string;
   type: 'file';
 };
 
@@ -112,10 +112,10 @@ export type Badge = {
 
 export type CurrentUser = {
   id: string;
-  email: string | null;
+  email: string;
   name: string | null;
   username: string;
-  avatarUrl: string | null;
+  avatarUrl: string;
   jwt: string | null;
   subscription: {
     since: string;
@@ -211,6 +211,7 @@ export type User = {
 export type LiveUser = {
   username: string;
   selection: UserSelection | null;
+  viewRange: UserViewRange | null;
   id: string;
   currentModuleShortid: string | null;
   color: [number, number, number];
@@ -314,7 +315,6 @@ export enum CommentsFilterOption {
   ALL = 'All',
   OPEN = 'Open',
   RESOLVED = 'Resolved',
-  MENTIONS = 'Mentions',
 }
 
 export type Sandbox = {
@@ -488,6 +488,13 @@ export type EditorSelection = {
   name: string | null;
   selection: UserSelection | null;
   color: number[];
+};
+
+export type UserViewRange = {
+  startLineNumber: number;
+  endLineNumber: number;
+  startColumn: number;
+  endColumn: number;
 };
 
 export enum WindowOrientation {
@@ -704,6 +711,7 @@ export enum LiveMessageEvent {
   DIRECTORY_DELETED = 'directory:deleted',
   USER_SELECTION = 'user:selection',
   USER_CURRENT_MODULE = 'user:current-module',
+  USER_VIEW_RANGE = 'user:view-range',
   LIVE_MODE = 'live:mode',
   LIVE_CHAT_ENABLED = 'live:chat_enabled',
   LIVE_ADD_EDITOR = 'live:add-editor',

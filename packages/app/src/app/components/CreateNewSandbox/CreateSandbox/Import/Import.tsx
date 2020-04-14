@@ -31,20 +31,8 @@ import {
 const getFullGitHubUrl = (url: string) =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
 
-const copyToClipboard = (str: string) => {
-  const el = document.createElement('textarea');
-  el.value = str;
-  el.setAttribute('readonly', '');
-  el.style.position = 'absolute';
-  el.style.left = '-9999px';
-  document.body.appendChild(el);
-  el.select();
-  document.execCommand('copy');
-  document.body.removeChild(el);
-};
-
 export const Import = () => {
-  const { state, actions } = useOvermind();
+  const { state, actions, effects } = useOvermind();
   const [error, setError] = useState(null);
   const [transformedUrl, setTransformedUrl] = useState('');
   const [url, setUrl] = useState('');
@@ -117,9 +105,7 @@ export const Import = () => {
               <Button
                 small
                 style={{ fontSize: 11 }}
-                onClick={() => {
-                  copyToClipboard(transformedUrl);
-                }}
+                onClick={() => effects.browser.copyToClipboard(transformedUrl)}
                 disabled={!transformedUrl}
               >
                 Copy Link

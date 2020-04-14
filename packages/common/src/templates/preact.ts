@@ -13,5 +13,6 @@ export default new Template(
     extraConfigurations: {
       '/.babelrc': configurations.babelrc,
     },
+    defaultOpenedFile: ['/src/app.js'],
   }
 );
