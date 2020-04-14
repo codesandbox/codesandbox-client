@@ -174,7 +174,7 @@ export function initializeCustomTheme() {
   const customTheme = localStorage.getItem('settings.manualCustomVSCodeTheme');
 
   if (customTheme) {
-    installCustomTheme('custom', 'Custom Theme', customTheme);
+    installCustomTheme('custom', 'Custom Theme', JSON.parse(customTheme));
   }
 }
 
