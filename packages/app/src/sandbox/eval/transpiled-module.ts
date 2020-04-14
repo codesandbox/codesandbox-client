@@ -771,7 +771,7 @@ export default class TranspiledModule {
     }
   };
 
-  isCompilationCached = (globals: undefined | object) => {
+  isCompilationCached = (globals?: object) => {
     if (!this.compilation || !this.compilation.exports) {
       return false;
     }
