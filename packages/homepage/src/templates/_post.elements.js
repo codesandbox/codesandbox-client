@@ -90,6 +90,7 @@ export const Header = styled.section`
     font-size: 1rem;
     line-height: 4rem;
     border-bottom: 1px solid transparent;
+    transition: all 100ms ease-in;
   }
 
   > a:hover {
