@@ -179,22 +179,28 @@ export const SubTitle = styled.h2`
 // All for the B variant for A/B test
 
 export const SandboxButtons = styled.section`
-  height: 4rem;
+  height: auto;
   width: auto;
   margin: 4rem 0;
 `;
 
 export const Sandbox = styled.a`
   display: inline-block;
-  width: 4rem;
-  height: 4rem;
-  margin: 0 2rem;
+  width: 2rem;
+  height: 2rem;
+  margin: 0 0.75rem;
   opacity: 0.2;
   border: none;
   background-color: transparent;
   background-size: cover;
   transform: scale(1);
   transition: all 100ms ease-in;
+
+  @media screen and (min-width: 768px) {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 2rem;
+  }
 
   :hover {
     transform: scale(0.9);
