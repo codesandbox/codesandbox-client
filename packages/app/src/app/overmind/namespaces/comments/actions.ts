@@ -233,7 +233,7 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
           )
         : '',
       path: state.editor.currentModule.path,
-      sandboxVersion: sandbox.version,
+      updatedAt: state.editor.currentModule.updatedAt,
     };
   }
 
@@ -522,25 +522,19 @@ export const onCommentAdded: Action<CommentAddedSubscription> = (
     const module = sandbox.modules.find(
       moduleItem => moduleItem.path === codeReference.path
     );
-    // We do a check here to catch if our assumption was wrong on always having the updated file
-    // when receiving a comment update
-    if (sandbox.version === codeReference.sandboxVersion) {
-      // We create a diff operation which is applied to the comment to ensure
-      // any operations received in the meantime is applied
-      const diffOperation = getTextOperation(module.savedCode, module.code);
-      const range = new Selection.Range(
-        codeReference.anchor,
-        codeReference.head
-      );
-      const newRange = range.transform(diffOperation);
 
-      codeReference.anchor = newRange.anchor;
-      codeReference.head = newRange.head;
-    } else {
-      captureException(
-        new Error('Received comment add update before file was updated')
-      );
+    if (!module) {
+      return;
     }
+
+    // We create a diff operation which is applied to the comment to ensure
+    // any operations received in the meantime is applied
+    const diffOperation = getTextOperation(module.savedCode, module.code);
+    const range = new Selection.Range(codeReference.anchor, codeReference.head);
+    const newRange = range.transform(diffOperation);
+
+    codeReference.anchor = newRange.anchor;
+    codeReference.head = newRange.head;
   }
 
   state.comments.comments[comment.sandbox.id][comment.id] = comment;
