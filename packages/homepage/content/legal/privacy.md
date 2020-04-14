@@ -1,11 +1,11 @@
 ---
 title: Privacy Policy
-lastEdited: 2020-04-09
+lastEdited: 2020-04-16
 ---
 
 # Privacy Policy
 
-_This version 0.90 has been last updated April 8, 2020 ([list of revisions](https://github.com/codesandbox/codesandbox-client/commits/6e360f3797795ab42bd81fa6d405d81e8728d8ac/packages/homepage/content/legal/policy.md))._
+_This version 0.90 has been last updated April 16, 2020 ([list of revisions](https://github.com/codesandbox/codesandbox-client/commits/6e360f3797795ab42bd81fa6d405d81e8728d8ac/packages/homepage/content/legal/privacy.md))._
 
 This privacy policy allows you to learn about the way CodeSandbox B.V. (“CodeSandbox”) controls and processes data about you or data that may allow anyone with access, to identify you or anyone on your team with a CodeSandbox account as a natural person. Additionally, the types of data we collect and how we use, share and secure this data and how you can exercise your privacy rights are outlined.
 
@@ -15,7 +15,7 @@ This policy is further intended to apply to anyone exposed to any CodeSandbox se
 
 Please reach out to us via our contact details below as soon as possible if you or anyone in your company using CodeSandbox feels uninformed, finds anything on our websites to be unfair, incompletely explained or surprising.
 
-## **In short**
+## In short
 
 We want to be as open as possible about how we treat your personal data, how you should be able to access and control your data and how you can use our services. We will not sell, rent or lease your personal data to anyone, except in case we sell our business or part thereof to another company.
 
@@ -28,11 +28,11 @@ A few take-home points are good to keep in mind:
 - We may enrich your (personal) data with publicly accessible data;
 - We are operationally based in The Netherlands and therefore you are dealing with applicable Dutch and/or EU law.
 
-## **What does CodeSandbox collect and why?**
+## What does CodeSandbox collect and why?
 
 Personal data is collected via various sources on anyone exposed to any CodeSandbox service. Typically, users who create an account (as defined below) could provide more data. For examples, see the data types section below. You can limit or change the amount of personal data we process and store by limiting the data you provide to us in your account settings or by reaching out to us.
 
-### **Why we are collecting data**
+### Why we are collecting data
 
 Processing of personal data may be deemed necessary or reasonable when we:
 
@@ -52,7 +52,7 @@ Amongst other examples mentioned throughout this document, we collect and use su
 - Invite you to participate in surveys, where necessary subject to your consent;
 - Prevent misuse of or stop other illegal activities from being conducted through our services.
 
-### **Data types we are collecting and using**
+### Data types we are collecting and using
 
 Account basics. When you create an account, you are asked permission to authorize GitHub to share personal data with CodeSandbox. If available from GitHub, we collect and store: avatar, name, first name, last name, bio, email and username and -id. Please note that most of this information is already publicly available via GitHub's API.
 
@@ -68,7 +68,7 @@ Marketing. We may use any combination of services in order to enhance what we kn
 
 Financial. We use Stripe as a payment service provider and do not collect nor store credit card or other financial data in our databases. We do have access to Stripe's database for the purpose of complying with support requests and administration requirements, but no level of access exposes full credit card details. Only the last four digits can be read and are typically used for verification purposes during support interactions.
 
-### **Use of third parties, sharing data and sub-processors**
+### Use of third parties, sharing data and sub-processors
 
 We use third party service providers to deliver to us what we have chosen not to develop ourselves. As many of them provide vital functions in the CodeSandbox infrastructure such as hosting or analytics, we refer to them as partners or sub-processors.
 
@@ -80,7 +80,7 @@ As part of our checkout flow, our Stripe integration can be considered a clear e
 
 We have certain practices in place to ensure our partners adhere to legal standards and we typically interview new partners to get a sense of how they are treating user data. We have Data Processing Agreements in place with our partners and our sub-processors.
 
-### **Sub-processors & Data locations**
+### Sub-processors & Data locations
 
 Syntax: (Company Name (“a.k.a.”), Location, Purpose, Link)
 
@@ -97,11 +97,11 @@ Syntax: (Company Name (“a.k.a.”), Location, Purpose, Link)
 
 Your personal data may be transferred, stored and processed in the European Economic Area (“EEA”), United States (“US”) or any other country in which our service providers maintain facilities. By using our domains, you consent to any transfer, storing or processing of personal data outside of your country of residence and outside the EEA. We will take all steps reasonably necessary to ensure that your data is treated securely and in accordance with this policy.
 
-### **Retaining data**
+### Retaining data
 
 We will not retain your personal data for a period longer than necessary to fulfill the purposes described in this policy, unless we have to keep it for legitimate tax, business or legal purposes.
 
-### **Securing data**
+### Securing data
 
 You probably know that no company can ever guarantee 100% security in data transmission on the web and that breaches unfortunately can happen. We promise CodeSandbox is developed with the best security practices in mind. Here are some examples of how we are securing your personal data:
 
@@ -110,7 +110,7 @@ You probably know that no company can ever guarantee 100% security in data trans
 - We obtain certifications to test our practices against public or industry standards;
 - When we receive reports of abuse, data breaches pertaining to the integrity of our users or our own, investigation immediately follows upon learning about it and reasonable action is taken as swiftly as possible in accordance with applicable privacy laws.
 
-## **Your rights and how to contact us**
+## Your rights and how to contact us
 
 Please know your rights by learning about the [EU General Data Protection Regulation](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679) also more commonly known as GDPR or your local privacy laws and reach out to us for questions or concerns. Summarizing some of your key rights, you may:
 
@@ -119,26 +119,26 @@ Please know your rights by learning about the [EU General Data Protection Regula
 - Under particular circumstances you may restrict processing, such as direct marketing and/or on the basis of legitimate interests following GDPR [Article 6 sub 1 (f)](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679&from=EN#d1e1888-1-1);
 - Rectify any personal data that may be inaccurate or incomplete and request us to erase your account, including personal data we and any of our partners have collected;
 - The personal data collected by us and requested by you should be delivered to you in a common, portable and machine-readable format;
-- Objections can be made for example by filing a complaint with your local privacy authority. For the Netherlands this is the [Dutch Data Protection Authority](https://autoriteitpersoonsgegevens.nl/nl) (*Autoriteit Persoonsgegevens*). For other countries in the EEA, please refer to: [https://edpb.europa.eu/about-edpb/board/members_en](https://edpb.europa.eu/about-edpb/board/members_en).
+- Objections can be made for example by filing a complaint with your local privacy authority. For the Netherlands this is the [Dutch Data Protection Authority](https://autoriteitpersoonsgegevens.nl/nl) (_Autoriteit Persoonsgegevens_). For other countries in the EEA, please refer to: [https://edpb.europa.eu/about-edpb/board/members_en](https://edpb.europa.eu/about-edpb/board/members_en).
 - You have the right not to be subject to a decision based solely on automated processing, including profiling, which adversely affects your legal rights or substantially impairs you in a similar manner.
 
 Some of these rights may be executed with a click of a button from our website, insofar as they are not please reach out to us by the following means.
 
-### **Contact us**
+### Contact us
 
-CodeSandbox B.V. in its role as data controller is a for profit company with its operational headquarters at Singel 542, 1017 AZ, Amsterdam, The Netherlands, available at +1 (650) 731-3185‬. To exercise any of the rights described above or in case of concerns, questions or inquiries, please email us at hello@codesandbox.io. 
+CodeSandbox B.V. in its role as data controller is a for profit company with its operational headquarters at Singel 542, 1017 AZ, Amsterdam, The Netherlands, available at +1 (650) 731-3185‬. To exercise any of the rights described above or in case of concerns, questions or inquiries, please email us at hello@codesandbox.io.
 
 We promise to respond as soon as possible and in any case within fourteen (14) business days of your request. For account deletion or data dumps, please mention "privacy" anywhere in the subject header.
 
-### **Age**
+### Age
 
 Our services are intended for anyone at any age who would like to experiment with and learn about design and code. However, if you are under the age of 16, please do not provide us with any personal information, have your parents or legal guardian reach out to us immediately with permission or questions. Please also be aware we have no ready access or instant knowledge of anyone’s age.
 
-### **Applicable law**
+### Applicable law
 
 CodeSandbox operates globally and you may have different rights under your local laws. We shall strive toward complying with laws beyond where we are based. This policy is construed under Dutch law. All privacy related disputes shall be exclusively submitted to a competent court in The Netherlands.
 
-## **Glossary**
+## Glossary
 
 For general concepts such as "personal data", "processor", “controller” and "pseudonymisation" we shall use the definitions given in GDPR [Article 4](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679&from=EN#d1e1489-1-1). The following apply to CodeSandbox specifically:
 
@@ -152,4 +152,4 @@ Services. CodeSandbox is a productivity toolkit serving ready-made and customiza
 
 User. Anyone exposed to any CodeSandbox Service. We consider several types: those who view or interact with CodeSandbox embeds via other websites, visitors not signed in and users with a CodeSandbox account who are signed in.
 
-Websites or Domains. [codesandbox.io](http://codesandbox.io/) and *.[csb.app](http://csb.app/) or any of its user-facing subdomains.
+Websites or Domains. [codesandbox.io](http://codesandbox.io/) and \*.[csb.app](http://csb.app/) or any of its user-facing subdomains.
