@@ -39,21 +39,24 @@ export const HeroWrapper = styled.section`
   text-align: center;
   overflow: hidden;
   padding: 0 2rem;
-
-  height: 80vh;
   min-height: 768px;
 
   perspective: 1000;
   } 
 
   @media screen and (min-width: 576px) {
-    min-height: 1024px;
+    min-height: 768px;
+
   }
 
+  @media screen and (min-width: 768px) {
+    min-height: 960px;
+
+  }
 
   @media screen and (min-width: 960px) {
-    min-height: 1200px;
-  }
+    min-height: 1024px;
+ }
 
 `;
 
@@ -138,14 +141,27 @@ export const InspiredText = styled.span`
 `;
 
 export const HeroImage = styled.img`
-  max-width: 1200px;
+  max-width: 576px;
   min-width: 100%;
+  padding: 0 1rem;
+
   overflow: hidden;
   border-radius: 4px;
   box-shadow: rgba(0, 0, 0, 0.3) 20px 14px 47px 0px;
 
-  ${props => props.theme.breakpoints.md} {
-    width: 120vw;
+  @media screen and (min-width: 576px) {
+    max-width: 576px;
+    padding: 0 1rem;
+  }
+
+  @media screen and (min-width: 768px) {
+    max-width: 768px;
+    padding: 0 1rem;
+  }
+
+  @media screen and (min-width: 960px) {
+    max-width: 960px;
+    padding: 0 1rem;
   }
 `;
 
@@ -188,7 +204,7 @@ export const SubTitle = styled.h2`
 export const SandboxButtons = styled.section`
   height: auto;
   width: auto;
-  margin: 4rem 0;
+  margin: 5rem 0;
 `;
 
 export const Sandbox = styled.a`
@@ -202,6 +218,12 @@ export const Sandbox = styled.a`
   background-size: cover;
   transform: scale(1);
   transition: all 100ms ease-in;
+
+  @media screen and (min-width: 576px) {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 1rem;
+  }
 
   @media screen and (min-width: 768px) {
     width: 4rem;
