@@ -1,5 +1,7 @@
 import React from 'react';
 import deepmerge from 'deepmerge';
+import styled, { keyframes } from 'styled-components';
+import VisuallyHidden from '@reach/visually-hidden';
 import { Element } from '../Element';
 
 const variantStyles = {
@@ -85,6 +87,10 @@ const commonStyles = {
     opacity: '0.4',
     cursor: 'not-allowed',
   },
+  '&[data-loading]': {
+    opacity: 1,
+    cursor: 'default',
+  },
 };
 
 const merge = (...objs) =>
@@ -104,8 +110,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const styles = merge(variantStyles[variant], commonStyles, css);
 
     return (
-      <Element as="button" css={styles} ref={ref} {...props}>
-        {loading ? 'loading...' : props.children}
+      <Element
+        as="button"
+        css={styles}
+        ref={ref}
+        disabled={props.disabled || loading}
+        data-loading={loading}
+        {...props}
+      >
+        {loading ? <AnimatingDots /> : props.children}
       </Element>
     );
   }
@@ -114,3 +127,28 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.defaultProps = {
   type: 'button',
 };
+
+/** Animation dots, we use the styled.span syntax
+ *  because keyframes aren't supported in the object syntax
+ */
+const transition = keyframes({
+  '0%': { opacity: 0.6 },
+  '50%': { opacity: 1 },
+  '100%': { opacity: 0.6 },
+});
+
+const Dot = styled.span`
+  font-size: 18px;
+  animation: ${transition} 1.5s ease-out infinite;
+`;
+
+const AnimatingDots = () => (
+  <>
+    <VisuallyHidden>Loading</VisuallyHidden>
+    <span role="presentation">
+      <Dot>·</Dot>
+      <Dot style={{ animationDelay: '200ms' }}>·</Dot>
+      <Dot style={{ animationDelay: '400ms' }}>·</Dot>
+    </span>
+  </>
+);
