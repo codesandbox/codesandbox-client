@@ -11,7 +11,7 @@ const pulse = keyframes`
 
 export const SkeletonText = styled(Element)(props => {
   const color = props.theme.colors.sideBar.border;
-  const themeType = props.theme.type;
+  const themeType = props.theme.type || props.theme.vscodeTheme.type;
 
   /**
    * This is fun,

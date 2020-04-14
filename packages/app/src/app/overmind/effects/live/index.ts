@@ -1,6 +1,6 @@
 import {
   Directory,
-  IModuleState,
+  IModuleStateModule,
   LiveMessageEvent,
   Module,
   RoomInfo,
@@ -12,6 +12,7 @@ import {
   logBreadcrumb,
 } from '@codesandbox/common/lib/utils/analytics/sentry';
 import _debug from '@codesandbox/common/lib/utils/debug';
+import VERSION from '@codesandbox/common/lib/version';
 import { camelizeKeys } from 'humps';
 import { SerializedTextOperation, TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
@@ -28,9 +29,7 @@ type Options = {
   provideJwtToken(): string;
   onOperationError(payload: {
     moduleShortid: string;
-    code: string;
-    revision: number;
-    saved_code: string;
+    moduleInfo: IModuleStateModule;
   }): void;
 };
 
@@ -38,7 +37,13 @@ type JoinChannelResponse = {
   liveUserId: string;
   reconnectToken: string;
   roomInfo: RoomInfo;
-  moduleState: IModuleState;
+  moduleState: {
+    [moduleId: string]: IModuleStateModule;
+  };
+};
+
+type JoinChannelErrorResponse = {
+  reason: 'room not found' | string;
 };
 
 declare global {
@@ -60,9 +65,7 @@ class Live {
   private onApplyOperation: (moduleShortid: string, operation: any) => void;
   private onOperationError: (payload: {
     moduleShortid: string;
-    code: string;
-    revision: number;
-    saved_code: string;
+    moduleInfo: IModuleStateModule;
   }) => void;
 
   private operationToElixir(ot: (number | string)[]) {
@@ -113,7 +116,7 @@ class Live {
       captureException(error);
       if (error.module_state) {
         this.onOperationError({
-          ...error.module_state[moduleShortid],
+          moduleInfo: error.module_state[moduleShortid],
           moduleShortid,
         });
       }
@@ -147,25 +150,8 @@ class Live {
       this.socket = new Socket(`${protocol}://${location.host}/socket`, {
         params: {
           guardian_token: this.provideJwtToken(),
+          client_version: VERSION,
         },
-      });
-
-      this.socket.onClose(e => {
-        captureException(
-          new Error('Connection loss with live, reason: ' + e.code)
-        );
-
-        // if (e.code === 1006) {
-        //   // This is an abrupt close, the server probably restarted or carshed. We don't want to overload
-        //   // the server, so we manually wait and try to connect;
-        //   this.socket.disconnect();
-
-        //   const waitTime = 500 + 5000 * Math.random();
-
-        //   window.setTimeout(() => {
-        //     this.socket.connect();
-        //   }, waitTime);
-        // }
       });
 
       this.socket.connect();
@@ -202,13 +188,17 @@ class Live {
     });
   }
 
-  joinChannel(roomId: string): Promise<JoinChannelResponse> {
+  joinChannel(
+    roomId: string,
+    onError: (reason: string) => void
+  ): Promise<JoinChannelResponse> {
     return new Promise((resolve, reject) => {
       this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
       this.channel
         .join()
         .receive('ok', resp => {
           const result = camelizeKeys(resp) as JoinChannelResponse;
+          result.moduleState = resp.module_state; // Don't camelize this!!
 
           // We rewrite what our reconnect params are by adding the reconnect token.
           // This token makes sure that you can retain state between reconnects and restarts
@@ -226,7 +216,15 @@ class Live {
 
           resolve(result);
         })
-        .receive('error', resp => reject(camelizeKeys(resp)));
+        .receive('error', (resp: JoinChannelErrorResponse) => {
+          if (resp.reason === 'room not found') {
+            if (this.channel) {
+              this.channel.leave();
+            }
+            onError(resp.reason);
+          }
+          reject(camelizeKeys(resp));
+        });
     });
   }
 
@@ -247,12 +245,6 @@ class Live {
         (data == null || Object.keys(data).length === 0) &&
         event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
-
-      if (event === 'phx_error') {
-        captureException(
-          new Error('Received phoenix error: ' + JSON.stringify(data))
-        );
-      }
 
       const _isOwnMessage = Boolean(
         data && data._messageId && this.pendingMessages.delete(data._messageId)
@@ -318,6 +310,14 @@ class Live {
   sendCodeUpdate(moduleShortid: string, operation: TextOperation) {
     if (!operation) {
       return;
+    }
+
+    if (operation.ops.length === 1) {
+      const [op] = operation.ops;
+      if (typeof op === 'number' && op >= 0) {
+        // Useless to send a single retain operation, ignore
+        return;
+      }
     }
 
     if (moduleShortid.startsWith(OPTIMISTIC_ID_PREFIX)) {
@@ -402,6 +402,14 @@ class Live {
     });
   }
 
+  sendModuleSaved(module: Module) {
+    return this.send('module:saved', {
+      type: 'module',
+      module,
+      moduleShortid: module.shortid,
+    });
+  }
+
   sendClosed() {
     return this.send('live:close', {});
   }
@@ -456,7 +464,12 @@ class Live {
     const client = this.clientsManager.get(module.shortid);
     await client.awaitSynchronized?.promise;
 
-    return this.send<{ saved_code: string; version: number }>('save', {
+    return this.send<{
+      saved_code: string;
+      updated_at: string;
+      inserted_at: string;
+      version: number;
+    }>('save', {
       path: module.path,
       revision: client.revision - 1,
     });
@@ -468,6 +481,14 @@ class Live {
 
   resetClient(moduleShortid: string, revision: number) {
     this.clientsManager.reset(moduleShortid, revision);
+  }
+
+  hasClient(moduleShortid: string) {
+    return this.clientsManager.has(moduleShortid);
+  }
+
+  getClient(moduleShortid: string) {
+    return this.clientsManager.get(moduleShortid);
   }
 
   getAllClients() {

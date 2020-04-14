@@ -177,3 +177,13 @@ export function initializeCustomTheme() {
     installCustomTheme('custom', 'Custom Theme', customTheme);
   }
 }
+
+export function initializeSnippetDirectory() {
+  const fs = window.BrowserFS.BFSRequire('fs');
+
+  const folder = `/vscode/snippets`;
+  const folderExists = fs.existsSync(folder);
+  if (!folderExists) {
+    fs.mkdirSync(folder);
+  }
+}

@@ -12,6 +12,7 @@ import {
   Settings,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
+import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
   NotificationMessage,
@@ -26,7 +27,7 @@ import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
+import { TextOperation } from 'ot';
 import { json } from 'overmind';
 import io from 'socket.io-client';
 
@@ -36,6 +37,7 @@ import {
   initializeCustomTheme,
   initializeExtensionsFolder,
   initializeSettings,
+  initializeSnippetDirectory,
   initializeThemeCache,
 } from './initializers';
 import { Linter } from './Linter';
@@ -190,6 +192,8 @@ export class VSCodeEffect {
       initializeCustomTheme();
       initializeThemeCache();
       initializeSettings();
+      initializeSnippetDirectory();
+
       this.setVimExtensionEnabled(
         localStorage.getItem('settings.vimmode') === 'true'
       );
@@ -215,6 +219,10 @@ export class VSCodeEffect {
     });
 
     return this.initialized;
+  }
+
+  public isModuleOpened(module: Module) {
+    return this.modelsHandler.isModuleOpened(module);
   }
 
   public async getCodeReferenceBoundary(
@@ -319,10 +327,7 @@ export class VSCodeEffect {
     this.modelsHandler.syncModule(module);
   }
 
-  public async applyOperation(
-    moduleShortid: string,
-    operation: (string | number)[]
-  ) {
+  public async applyOperation(moduleShortid: string, operation: TextOperation) {
     if (!this.modelsHandler) {
       return;
     }
@@ -565,6 +570,40 @@ export class VSCodeEffect {
     }
   };
 
+  public async openDiff(sandboxId: string, module: Module, oldCode: string) {
+    if (!module.path) {
+      return;
+    }
+
+    const recoverPath = `/recover/${sandboxId}/recover-${module.path.replace(
+      /\//g,
+      ' '
+    )}`;
+    const filePath = `/sandbox${module.path}`;
+    const fileSystem = window.BrowserFS.BFSRequire('fs');
+
+    // We have to write a recover file to the filesystem, we save it behind
+    // the sandboxId
+    if (!fileSystem.existsSync(`/recover/${sandboxId}`)) {
+      fileSystem.mkdirSync(`/recover/${sandboxId}`);
+    }
+    // We write the recover file with the old code, as the new code is already applied
+    fileSystem.writeFileSync(recoverPath, oldCode);
+
+    // We open a conflict resolution editor for the files
+    this.editorApi.editorService.openEditor({
+      leftResource: this.monaco.Uri.from({
+        scheme: 'conflictResolution',
+        path: recoverPath,
+      }),
+      rightResource: this.monaco.Uri.file(filePath),
+      label: `Recover - ${module.path}`,
+      options: {
+        pinned: true,
+      },
+    });
+  }
+
   public setCorrections = (corrections: ModuleCorrection[]) => {
     const activeEditor = this.editorApi.getActiveCodeEditor();
     if (activeEditor) {
@@ -782,9 +821,18 @@ export class VSCodeEffect {
         )
       ),
       this.createFileSystem('InMemory', {}),
+      this.createFileSystem('InMemory', {}),
     ]);
 
-    const [root, sandbox, vscode, home, extensions, customTheme] = fileSystems;
+    const [
+      root,
+      sandbox,
+      vscode,
+      home,
+      extensions,
+      customTheme,
+      recover,
+    ] = fileSystems;
 
     const mfs = await this.createFileSystem('MountableFileSystem', {
       '/': root,
@@ -793,6 +841,7 @@ export class VSCodeEffect {
       '/home': home,
       '/extensions': extensions,
       '/extensions/custom-theme': customTheme,
+      '/recover': recover,
     });
 
     window.BrowserFS.initialize(mfs);
@@ -838,7 +887,7 @@ export class VSCodeEffect {
       { IEditorService },
       { ICodeEditorService },
       { ITextFileService },
-
+      { ILifecycleService },
       { IEditorGroupsService },
       { IStatusbarService },
       { IExtensionService },
@@ -854,6 +903,7 @@ export class VSCodeEffect {
       r('vs/workbench/services/editor/common/editorService'),
       r('vs/editor/browser/services/codeEditorService'),
       r('vs/workbench/services/textfile/common/textfiles'),
+      r('vs/platform/lifecycle/common/lifecycle'),
       r('vs/workbench/services/editor/common/editorGroupsService'),
       r('vs/platform/statusbar/common/statusbar'),
       r('vs/workbench/services/extensions/common/extensions'),
@@ -958,6 +1008,15 @@ export class VSCodeEffect {
         if (this.settings.lintEnabled) {
           this.createLinter();
         }
+
+        const lifecycleService = accessor.get(ILifecycleService);
+
+        // Trigger all VSCode lifecycle listeners
+        lifecycleService.phase = 2; // Restoring
+        requestAnimationFrame(() => {
+          lifecycleService.phase = 3; // Running
+        });
+
         resolve();
       });
     });
@@ -1079,8 +1138,11 @@ export class VSCodeEffect {
 
     if (activeEditor && activeEditor.getModel()) {
       const modulePath = activeEditor.getModel().uri.path;
+      const currentModule = this.options.getCurrentModule();
 
-      activeEditor.updateOptions({ readOnly: this.readOnly });
+      activeEditor.updateOptions({
+        readOnly: this.readOnly || currentModule?.isBinary,
+      });
 
       if (!modulePath.startsWith('/sandbox')) {
         return;
@@ -1096,16 +1158,16 @@ export class VSCodeEffect {
         );
       }
 
-      const currentModule = this.options.getCurrentModule();
-
       if (
         currentModule &&
         modulePath === `/sandbox${currentModule.path}` &&
         currentModule.code !== undefined &&
-        activeEditor.getValue() !== currentModule.code
+        activeEditor.getValue() !== currentModule.code &&
+        !currentModule.isBinary
       ) {
         // This means that the file in Cerebral is dirty and has changed,
         // VSCode only gets saved contents. In this case we manually set the value correctly.
+
         this.modelsHandler.isApplyingOperation = true;
         const model = activeEditor.getModel();
         model.applyEdits([

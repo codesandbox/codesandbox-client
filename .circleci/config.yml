@@ -381,20 +381,13 @@ workflows:
       - create-docker-image:
           requires:
             - build-prod
-      - deploy-production-approval:
-          type: approval
-          filters:
-            branches:
-              only:
-                - master
       - deploy-to-production:
           requires:
-            - deploy-production-approval
             - create-docker-image
             - build-prod
             - lint
             - typecheck
-            # - test-integrations
+            - test-integrations
             - test-jest
           filters:
             branches:
@@ -402,7 +395,15 @@ workflows:
                 - master
       - deploy-staging-approval:
           type: approval
+          filters:
+            branches:
+              ignore:
+                - master
       - deploy-to-staging:
           requires:
             - deploy-staging-approval
             - create-docker-image
+          filters:
+            branches:
+              ignore:
+                - master

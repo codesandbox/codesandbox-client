@@ -1,10 +1,43 @@
 import postcss, { ProcessOptions } from 'postcss';
 import postcssImportPlugin from 'postcss-import';
+import { join } from 'path';
+import { isDependencyPath } from 'sandbox/eval/utils/is-dependency-path';
 
-import { LoaderContext } from '../../../transpiled-module';
+import TranspiledModule, { LoaderContext } from '../../../transpiled-module';
 
 import trim from './plugins/trim';
 import scopeId from './plugins/scope-id';
+
+async function resolveCSSFile(
+  loaderContext: LoaderContext,
+  path: string,
+  basePath: string
+): Promise<TranspiledModule> {
+  const isDependency = isDependencyPath(path);
+
+  if (isDependency) {
+    // First try to resolve the package.json, in case it has a style field
+    try {
+      const pkgJson = await loaderContext.resolveTranspiledModuleAsync(
+        join(path, 'package.json')
+      );
+      const parsedPkg = JSON.parse(pkgJson.module.code);
+
+      if (parsedPkg.style) {
+        const fullPath = join(path, parsedPkg.style);
+
+        return loaderContext.resolveTranspiledModuleAsync(fullPath);
+      }
+    } catch (e) {
+      /* Move to step 2 */
+    }
+
+    return loaderContext.resolveTranspiledModuleAsync(path);
+  }
+
+  const fullPath = path.charAt(0) === '/' ? path : join(basePath, path);
+  return loaderContext.resolveTranspiledModuleAsync(fullPath);
+}
 
 export default function(
   code: string,
@@ -24,9 +57,9 @@ export default function(
     // TODO autoprefixer
     const plugins = [
       postcssImportPlugin({
-        resolve: async (id: string) => {
+        resolve: async (id: string, root: string) => {
           try {
-            const result = await loaderContext.resolveTranspiledModuleAsync(id);
+            const result = await resolveCSSFile(loaderContext, id, root);
 
             return result.module.path;
           } catch (e) {

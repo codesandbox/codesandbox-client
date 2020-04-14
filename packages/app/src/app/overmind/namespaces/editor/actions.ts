@@ -91,6 +91,10 @@ export const loadCursorFromUrl: AsyncAction = async ({
 
   await actions.editor.moduleSelected({ id: module.id });
 
+  if (!selection) {
+    return;
+  }
+
   const [parsedHead, parsedAnchor] = selection.split('-').map(Number);
   if (!isNaN(parsedHead) && !isNaN(parsedAnchor)) {
     effects.vscode.setSelection(parsedHead, parsedAnchor);
@@ -142,20 +146,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     await actions.editor.internal.initializeSandbox(
       state.editor.currentSandbox
     );
-
-    // We now need to send all dirty files that came over from the last sandbox.
-    // There is the scenario where you edit a file and press fork. Then the server
-    // doesn't know about how you got to that dirty state.
-    const changedModules = state.editor.currentSandbox.modules.filter(
-      m => getSavedCode(m.code, m.savedCode) !== m.code
-    );
-    changedModules.forEach(m => {
-      // Update server with latest data
-      effects.live.sendCodeUpdate(
-        m.shortid,
-        getTextOperation(m.savedCode || '', m.code || '')
-      );
-    });
 
     state.editor.isForkingSandbox = false;
     return;
@@ -263,9 +253,11 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   await actions.editor.internal.initializeSandbox(sandbox);
 
+  // We only recover files at this point if we are not live. When live we recover them
+  // when the module_state is received
   if (
-    hasPermission(sandbox.authorization, 'write_code') &&
-    !state.live.isLive
+    !state.live.isLive &&
+    hasPermission(sandbox.authorization, 'write_code')
   ) {
     actions.files.internal.recoverFiles();
   }
@@ -346,13 +338,14 @@ export const onOperationApplied: Action<{
     return;
   }
 
-  actions.editor.internal.setStateModuleCode({
+  actions.editor.internal.updateModuleCode({
     module,
     code,
   });
 
   actions.editor.internal.updatePreviewCode();
 
+  // If we are in a state of sync, we set "revertModule" to set it as saved
   if (module.savedCode !== null && module.code === module.savedCode) {
     effects.vscode.syncModule(module);
   }
@@ -379,12 +372,17 @@ export const codeChanged: Action<{
     return;
   }
 
-  // module.code !== code check is there to make sure that we don't end up sending
-  // duplicate updates to live. module.code === code only when VSCode detected a change
-  // from the filesystem (fs changed, vscode sees it, sends update). If this happens we
-  // never want to send that code update, since this actual code change goes through this
-  // specific code flow already.
-  if (state.live.isLive && module.code !== code) {
+  const savedCode = getSavedCode(module.code, module.savedCode);
+  const isSavedCode = savedCode === code;
+  const isFirstChange =
+    !effects.live.hasClient(module.shortid) ||
+    (effects.live.getClient(moduleShortid).revision === 0 &&
+      effects.live.getClient(moduleShortid).state.name === 'Synchronized');
+
+  // Don't send saved code of a moduke that has not been registered with yet, since the server
+  // will take the saved code as base. Which means that the change that would generate the saved code
+  // would be applied on the saved code by the server.
+  if (state.live.isLive && !(isSavedCode && isFirstChange)) {
     let operation: TextOperation;
     if (event) {
       logBreadcrumb({
@@ -414,10 +412,11 @@ export const codeChanged: Action<{
     });
   }
 
-  actions.editor.internal.setStateModuleCode({
+  actions.editor.internal.updateModuleCode({
     module,
     code,
   });
+
   if (module.savedCode !== null && module.code === module.savedCode) {
     effects.vscode.syncModule(module);
   }
@@ -442,9 +441,54 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
         state.editor.changedModuleShortids.includes(module.shortid)
       );
 
-      await Promise.all(
-        changedModules.map(module => effects.live.saveModule(module))
-      );
+      if (COMMENTS) {
+        const versions = await Promise.all(
+          changedModules.map(module =>
+            effects.live
+              .saveModule(module)
+              .then(({ saved_code, updated_at, inserted_at, version }) => {
+                module.savedCode = saved_code;
+                module.updatedAt = updated_at;
+                module.insertedAt = inserted_at;
+
+                return version;
+              })
+          )
+        );
+        sandbox.version = Math.max(...versions);
+      } else {
+        const updatedModules = await effects.api.saveModules(
+          sandbox.id,
+          changedModules
+        );
+
+        updatedModules.forEach(updatedModule => {
+          const module = sandbox.modules.find(
+            moduleItem => moduleItem.shortid === updatedModule.shortid
+          );
+
+          if (module) {
+            module.insertedAt = updatedModule.insertedAt;
+            module.updatedAt = updatedModule.updatedAt;
+
+            module.savedCode =
+              updatedModule.code === module.code ? null : updatedModule.code;
+
+            effects.vscode.sandboxFsSync.writeFile(
+              state.editor.modulesByPath,
+              module
+            );
+
+            effects.moduleRecover.remove(sandbox.id, module);
+          } else {
+            // We might not have the module, as it was created by the server. In
+            // this case we put it in. There is an edge case here where the user
+            // might delete the module while it is being updated, but it will very
+            // likely not happen
+            sandbox.modules.push(updatedModule);
+          }
+        });
+      }
 
       if (
         sandbox.originalGit &&
@@ -474,13 +518,26 @@ export const forkExternalSandbox: AsyncAction<{
   sandboxId: string;
   openInNewWindow?: boolean;
   body?: { collectionId: string };
-}> = async ({ effects, state }, { sandboxId, openInNewWindow, body }) => {
+}> = async (
+  { effects, state, actions },
+  { sandboxId, openInNewWindow, body }
+) => {
   effects.analytics.track('Fork Sandbox', { type: 'external' });
 
-  const forkedSandbox = await effects.api.forkSandbox(sandboxId, body);
+  try {
+    const forkedSandbox = await effects.api.forkSandbox(sandboxId, body);
 
-  state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
-  effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
+    state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
+    effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
+  } catch (error) {
+    console.error(error);
+    actions.internal.handleError({
+      message: 'We were unable to fork the sandbox',
+      error,
+    });
+
+    throw error;
+  }
 };
 
 export const forkSandboxClicked: AsyncAction = async ({

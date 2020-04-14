@@ -10,11 +10,16 @@ function getSentry(): Promise<typeof import('@sentry/browser')> {
 }
 
 let latestVersionPromise: Promise<string>;
+const versionTimeout = 1 * 60 * 1000;
 function getLatestVersion() {
   if (!latestVersionPromise) {
     latestVersionPromise = fetch('/version.txt')
       .then(x => x.text())
       .catch(x => '');
+
+    setTimeout(() => {
+      latestVersionPromise = undefined;
+    }, versionTimeout);
   }
 
   return latestVersionPromise;

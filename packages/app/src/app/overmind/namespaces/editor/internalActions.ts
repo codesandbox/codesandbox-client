@@ -8,10 +8,7 @@ import {
   ServerContainerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
-import {
-  captureException,
-  logBreadcrumb,
-} from '@codesandbox/common/lib/utils/analytics/sentry';
+import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import {
@@ -106,14 +103,6 @@ export const setModuleSavedCode: Action<{
   if (moduleIndex > -1) {
     const module = state.editor.sandboxes[sandbox.id].modules[moduleIndex];
 
-    if (savedCode === undefined) {
-      logBreadcrumb({
-        type: 'error',
-        message: `SETTING UNDEFINED SAVEDCODE FOR CODE: ${module.code}`,
-      });
-      captureException(new Error('SETTING UNDEFINED SAVEDCODE'));
-    }
-
     module.savedCode = module.code === savedCode ? null : savedCode;
   }
 };
@@ -138,11 +127,19 @@ export const saveCode: AsyncAction<{
   }
 
   try {
-    if (state.live.isLive) {
-      const { saved_code, version } = await effects.live.saveModule(module);
+    if (COMMENTS) {
+      const {
+        saved_code,
+        updated_at,
+        inserted_at,
+        version,
+      } = await effects.live.saveModule(module);
       module.savedCode = saved_code;
+      module.updatedAt = updated_at;
+      module.insertedAt = inserted_at;
       sandbox.version = version;
     } else {
+      await effects.live.saveModule(module);
       const updatedModule = await effects.api.saveModuleCode(
         sandbox.id,
         module.shortid,
@@ -151,18 +148,32 @@ export const saveCode: AsyncAction<{
 
       module.insertedAt = updatedModule.insertedAt;
       module.updatedAt = updatedModule.updatedAt;
+      module.isBinary = updatedModule.isBinary;
 
+      if (!effects.vscode.isModuleOpened(module)) {
+        module.code = updatedModule.code;
+      }
       const savedCode =
         updatedModule.code === module.code ? null : updatedModule.code;
 
       module.savedCode = savedCode;
 
-      effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, {
-        ...module,
-        code,
-      });
-      effects.moduleRecover.remove(sandbox.id, module);
+      if (savedCode === null) {
+        // If the savedCode is also module.code
+        effects.moduleRecover.remove(sandbox.id, module);
+      }
+
+      if (state.live.isLive && state.live.isCurrentEditor) {
+        setTimeout(() => {
+          // Send the save event 50ms later so the operation can be sent first (the operation that says the
+          // file difference created by VSCode due to the file watch event). If the other client gets the save before the operation,
+          // the other client will also send an operation with the same difference resulting in a duplicate event.
+          effects.live.sendModuleSaved(module);
+        }, 50);
+      }
     }
+
+    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
 
     if (cbID) {
       effects.vscode.callCallback(cbID);
@@ -333,7 +344,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   });
 };
 
-export const setStateModuleCode: Action<{
+export const updateModuleCode: Action<{
   module: Module;
   code: string;
 }> = ({ state, effects }, { module, code }) => {
@@ -356,16 +367,10 @@ export const setStateModuleCode: Action<{
     tab.dirty = false;
   }
 
-  // Save the code to localStorage so we can recover in case of a crash
-  effects.moduleRecover.save(
-    currentSandbox.id,
-    currentSandbox.version,
-    module,
-    code,
-    module.savedCode
-  );
-
   module.code = code;
+
+  // Save the code to localStorage so we can recover in case of a crash
+  effects.moduleRecover.save(currentSandbox.id, currentSandbox.version, module);
 };
 
 export const forkSandbox: AsyncAction<{

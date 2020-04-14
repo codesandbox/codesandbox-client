@@ -11,6 +11,7 @@ import {
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
 
@@ -184,16 +185,20 @@ export const onModuleSaved: Operator<LiveMessage<{
   );
 
   if (module) {
-    module.isNotSynced = false;
-
     actions.editor.internal.setModuleSavedCode({
       moduleShortid: data.moduleShortid,
       savedCode: data.module.savedCode,
     });
 
     effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
-    // We revert the module so that VSCode will flag saved indication correctly
-    effects.vscode.syncModule(module);
+    const savedCode = getSavedCode(module.code, module.savedCode);
+    if (!effects.vscode.isModuleOpened(module)) {
+      module.code = savedCode;
+    }
+    if (module.code === savedCode) {
+      // We revert the module so that VSCode will flag saved indication correctly
+      effects.vscode.syncModule(module);
+    }
     actions.editor.internal.updatePreviewCode();
   }
 });

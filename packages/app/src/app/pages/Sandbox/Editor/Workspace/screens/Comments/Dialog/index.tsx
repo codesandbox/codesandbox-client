@@ -1,5 +1,6 @@
-import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { ENTER, ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+
 import {
   Avatar,
   Element,
@@ -33,7 +34,7 @@ export const CommentDialog = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
 export const Dialog: React.FC = () => {
-  const { state } = useOvermind();
+  const { state, actions } = useOvermind();
   const controller = useAnimation();
 
   const comment = state.comments.currentComment;
@@ -76,6 +77,7 @@ export const Dialog: React.FC = () => {
     isCodeComment,
     isNewComment,
     repliesRendered,
+    comment.comments.length,
   ]);
 
   React.useEffect(() => {
@@ -95,6 +97,17 @@ export const Dialog: React.FC = () => {
   const onDragHandlerPanEnd = () => {
     setDragging(false);
   };
+
+  React.useEffect(() => {
+    const listener = event => {
+      if (event.which === ESC) {
+        actions.comments.closeComment();
+      }
+    };
+
+    document.addEventListener('keydown', listener);
+    return () => document.removeEventListener('keydown', listener);
+  }, [actions.comments]);
 
   if (!currentCommentPositions) {
     return null;
@@ -152,9 +165,11 @@ export const Dialog: React.FC = () => {
                 />
 
                 <Replies
+                  key={comment.id}
                   replies={replies}
                   replyCount={comment.replyCount}
                   repliesRenderedCallback={() => setRepliesRendered(true)}
+                  listRef={listRef}
                 />
               </Element>
               <AddReply
@@ -279,6 +294,7 @@ const DialogHeader = ({ comment, hasShadow }) => {
   } = useOvermind();
 
   const closeDialog = () => comments.closeComment();
+
   const canResolve =
     hasPermission(editor.currentSandbox.authorization, 'write_project') ||
     comment.user.id === user.id;
@@ -412,7 +428,7 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
   );
 };
 
-const Replies = ({ replies, replyCount, repliesRenderedCallback }) => {
+const Replies = ({ replies, replyCount, listRef, repliesRenderedCallback }) => {
   /**
    * Loading animations:
    * 0. Wait for the dialog to have animated in view and scaled up.
@@ -424,19 +440,22 @@ const Replies = ({ replies, replyCount, repliesRenderedCallback }) => {
    *
    */
 
-  const skeletonController = useAnimation();
-  const repliesController = useAnimation();
-
-  /** Wait another <delay>ms after the dialog has transitioned into view */
-  const delay = DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY;
-  const REPLY_TRANSITION_DURATION = Math.max(replyCount * 0.15, 0.5);
-  const SKELETON_FADE_DURATION = 0.25;
-  const SKELETON_HEIGHT = 146;
-  const repliesLoaded = replies.length === replyCount;
   // initial status of replies -
   // this is false when it's the first time this specific comment is opened
   // after that it will be true because we cache replies in state
+  const repliesLoaded = replies.length === replyCount;
   const repliesAlreadyLoadedOnFirstRender = React.useRef(repliesLoaded);
+
+  /** CONSTANTS:
+   * Wait another <delay> after the dialog has transitioned into view
+   * These are in s not ms
+   */
+  const delay = DIALOG_TRANSITION_DURATION + REPLY_TRANSITION_DELAY;
+  const SKELETON_FADE_DURATION = 0.25;
+  const SKELETON_HEIGHT = 146;
+  const REPLY_TRANSITION_DURATION = repliesLoaded
+    ? 0
+    : Math.max(replyCount * 0.15, 0.5);
 
   // current status of replies-
   /** Welcome to the imperative world of timeline animations
@@ -455,6 +474,8 @@ const Replies = ({ replies, replyCount, repliesRenderedCallback }) => {
    */
 
   const [T, setStepInTimeline] = React.useState(-1);
+  const skeletonController = useAnimation();
+  const repliesController = useAnimation();
 
   /*
    * T = 0 (DOM has rendered, animations can be started)
@@ -472,7 +493,14 @@ const Replies = ({ replies, replyCount, repliesRenderedCallback }) => {
       skeletonController.set({ height: SKELETON_HEIGHT, opacity: 1 });
       setStepInTimeline(0);
     }
-  }, [skeletonController, repliesController, replies.length, T, replyCount]);
+  }, [
+    skeletonController,
+    repliesController,
+    replies.length,
+    T,
+    replyCount,
+    repliesRenderedCallback,
+  ]);
 
   /**
    * T = 1 (Dialog's enter animation has completed, hence the delay)
@@ -491,10 +519,14 @@ const Replies = ({ replies, replyCount, repliesRenderedCallback }) => {
           transition: { duration: SKELETON_FADE_DURATION },
         });
         repliesController.set({ opacity: 1 });
-        repliesController.start({
-          height: 'auto',
-          transition: { duration: REPLY_TRANSITION_DURATION },
-        });
+        repliesController
+          .start({
+            height: 'auto',
+            transition: { duration: REPLY_TRANSITION_DURATION },
+          })
+          .then(() => {
+            repliesRenderedCallback();
+          });
 
         setStepInTimeline(2);
       } else {
@@ -509,6 +541,7 @@ const Replies = ({ replies, replyCount, repliesRenderedCallback }) => {
     delay,
     REPLY_TRANSITION_DURATION,
     T,
+    repliesRenderedCallback,
   ]);
 
   /**
@@ -540,6 +573,22 @@ const Replies = ({ replies, replyCount, repliesRenderedCallback }) => {
     skeletonController,
     repliesController,
   ]);
+
+  React.useEffect(() => {
+    // when the animations are done, scroll to last reply
+    let timeout;
+
+    if (T === 2) {
+      timeout = window.setTimeout(() => {
+        listRef.current.scrollTo({
+          top: listRef.current.scrollHeight,
+          behavior: 'smooth',
+        });
+      }, REPLY_TRANSITION_DURATION * 1000);
+    }
+
+    return () => window.clearTimeout(timeout);
+  }, [T, listRef, REPLY_TRANSITION_DURATION]);
 
   return (
     <>
@@ -574,12 +623,13 @@ const AddReply = ({ comment, ...props }) => {
   const { actions } = useOvermind();
   const [value, setValue] = useState('');
 
-  const onSubmit = () => {
-    setValue('');
+  const onSubmit = e => {
+    e.preventDefault();
     actions.comments.addComment({
       content: value,
       parentCommentId: comment.id,
     });
+    setValue('');
     if (props.onSubmit) props.onSubmit();
   };
 
@@ -598,8 +648,10 @@ const AddReply = ({ comment, ...props }) => {
       value={value}
       onChange={e => setValue(e.target.value)}
       placeholder="Reply..."
-      onKeyDown={event => {
-        if (event.keyCode === ENTER && !event.shiftKey) onSubmit();
+      onKeyDown={e => {
+        if (e.keyCode === ENTER && !e.shiftKey) {
+          onSubmit(e);
+        }
       }}
     />
   );

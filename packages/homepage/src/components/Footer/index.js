@@ -33,11 +33,11 @@ const Footer = () => (
             <Link to="/team">Teams</Link>
           </P>
         </li>
-        {/* <li>
+        <li>
           <P small muted>
-            <a href="">What’s New</a>
+            <Link to="/changelog">What’s New</Link>
           </P>
-        </li> */}
+        </li>
       </ul>
       <ul>
         <li>

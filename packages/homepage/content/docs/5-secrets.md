@@ -30,12 +30,11 @@ Pro tip: It's good practice to name your secrets all in uppercase.
 After clicking the "Add Secret" button the secret is added, the sandbox is
 restarted, and you can see the list of all your secrets above the form.
 
-![Secrets](./images/secrets-3.png)
-
 Secrets are environment variables, meaning they are defined on `process.env`. In
 the example above, we can read the API key from
 `process.env.GOOGLE_MAPS_API_KEY`. See the example below, showing how to access
-secrets in your server-side code.
+secrets in your server-side code (though obviously you wouldn't want to share a
+secret like this, it justs illustrates how to access them).
 
 <iframe
      src="https://codesandbox.io/embed/broken-resonance-35lyl?codemirror=1&fontsize=14&hidenavigation=1&theme=dark"
@@ -48,9 +47,7 @@ secrets in your server-side code.
 ## Editing secrets
 
 You can edit and remove existing secrets. Click on the pencil to edit the name
-and value of your secret:
-
-![Icons](./images/secrets-4.png)
+and value of your secret.
 
 Once saved, this will take effect automatically, restarting your sandbox to make
 sure we use the new value.

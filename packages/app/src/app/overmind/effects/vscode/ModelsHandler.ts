@@ -153,6 +153,11 @@ export class ModelsHandler {
     );
   }
 
+  public isModuleOpened(module: Module) {
+    const moduleModel = this.getModuleModelByPath(module.path);
+    return Boolean(moduleModel?.model);
+  }
+
   public changeModule = async (module: Module) => {
     const moduleModel = this.getOrCreateModuleModelByPath(module.path);
 
@@ -334,7 +339,11 @@ export class ModelsHandler {
       const model = moduleModel.model;
 
       decorations.forEach(decorationId => {
-        if (decorationId.startsWith(userId + model.id)) {
+        const userDecorationIdPrefix = this.getSelectionDecorationId(
+          userId,
+          model.id
+        );
+        if (decorationId.startsWith(userDecorationIdPrefix)) {
           this.userSelectionDecorations[decorationId] = model.deltaDecorations(
             this.userSelectionDecorations[decorationId] || [],
             []
@@ -346,9 +355,9 @@ export class ModelsHandler {
 
   private getSelectionDecorationId = (
     userId: string,
-    modelId: string,
-    shortid: string
-  ) => [userId, modelId, shortid].join('|');
+    modelId: string = '',
+    shortid: string = ''
+  ) => [userId, modelId, shortid].join('|').replace(/\|\|$/, '|');
 
   private cleanUserSelections = (
     model: any,

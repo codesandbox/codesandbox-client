@@ -5,7 +5,7 @@ import getTemplateDefinition, {
   TemplateType,
 } from '@codesandbox/common/lib/templates';
 import { useOvermind } from 'app/overmind';
-import { useKey } from 'react-use';
+import useKey from 'react-use/lib/useKey';
 import { isMac } from '@codesandbox/common/lib/utils/platform';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import history from 'app/utils/history';

@@ -165,6 +165,10 @@ export class CodesandboxOTClientsManager {
     return Array.from(this.modules.values());
   }
 
+  has(moduleShortid: string) {
+    return this.modules.has(moduleShortid);
+  }
+
   get(moduleShortid, revision = 0, force = false) {
     let client = this.modules.get(moduleShortid);
 
