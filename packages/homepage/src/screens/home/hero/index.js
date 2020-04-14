@@ -145,7 +145,7 @@ export default () => {
           />
           <Sandbox href="/s/vue" style={{ backgroundImage: `url(${vue})` }} />
           <Sandbox
-            href="/s/angulair"
+            href="/s/angular"
             style={{ backgroundImage: `url(${angulair})` }}
           />
           <Sandbox href="/s" style={{ backgroundImage: `url(${more})` }} />
