@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState, useCallback } from 'react';
 
 import { useOvermind } from 'app/overmind';
 import { ListAction, Text, Element } from '@codesandbox/components';
@@ -57,8 +57,10 @@ export const TemplateConfig: FunctionComponent = () => {
       },
     },
   } = useOvermind();
+  const [popupVisible, setPopupVisible] = useState(false);
   const iconPopover = usePopoverState({
     placement: 'top',
+    visible: popupVisible,
   });
   const [selectedIcon, setSelectedIcon] = useState(
     customTemplate.iconUrl || ''
@@ -66,11 +68,15 @@ export const TemplateConfig: FunctionComponent = () => {
 
   const DefaultIcon = getIcon(template);
 
-  const setIcon = (key: string) => {
-    setSelectedIcon(key);
-    iconPopover.hide();
-    editTemplate({ ...customTemplate, iconUrl: key });
-  };
+  const setIcon = useCallback(
+    (key: string) => {
+      setSelectedIcon(key);
+      setPopupVisible(false);
+      editTemplate({ ...customTemplate, iconUrl: key });
+    },
+    [customTemplate, editTemplate, setSelectedIcon, setPopupVisible]
+  );
+
   const TemplateIcon = Icons[selectedIcon];
 
   return (
@@ -95,9 +101,8 @@ export const TemplateConfig: FunctionComponent = () => {
               {Object.keys(Icons).map((i: string) => {
                 const TemplateIconMap = Icons[i];
                 return (
-                  // eslint-disable-next-line
-                  <li onClick={() => setIcon(i)} role="button" tabIndex={0}>
-                    <IconButton>
+                  <li key={i}>
+                    <IconButton onClick={() => setIcon(i)}>
                       <TemplateIconMap width={24} />
                     </IconButton>
                   </li>

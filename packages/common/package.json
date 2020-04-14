@@ -70,6 +70,7 @@
     "react-input-autosize": "2.2.1",
     "react-router-dom": "^5.0.1",
     "react-spring": "^8.0.25",
+    "react-scrollbars-custom": "^4.0.20",
     "react-textarea-autosize": "^6.1.0",
     "semver": "^5.6.0",
     "sha1": "^1.1.1",

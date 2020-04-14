@@ -63,27 +63,33 @@ class BabelTranspiler extends WorkerTranspiler {
         }
       }
 
-      // When we find a node_module that already is commonjs we will just get the
-      // dependencies from the file and return the same code. We get the dependencies
-      // with a regex since commonjs modules just have `require` and regex is MUCH
-      // faster than generating an AST from the code.
-      if (
-        (loaderContext.options.simpleRequire ||
-          path.startsWith('/node_modules')) &&
-        !shouldTranspile(newCode, path)
-      ) {
-        regexGetRequireStatements(newCode).forEach(dependency => {
-          if (dependency.isGlob) {
-            loaderContext.addDependenciesInDirectory(dependency.path);
-          } else {
-            loaderContext.addDependency(dependency.path);
-          }
-        });
+      try {
+        // When we find a node_module that already is commonjs we will just get the
+        // dependencies from the file and return the same code. We get the dependencies
+        // with a regex since commonjs modules just have `require` and regex is MUCH
+        // faster than generating an AST from the code.
+        if (
+          (loaderContext.options.simpleRequire ||
+            path.startsWith('/node_modules')) &&
+          !shouldTranspile(newCode, path)
+        ) {
+          regexGetRequireStatements(newCode).forEach(dependency => {
+            if (dependency.isGlob) {
+              loaderContext.addDependenciesInDirectory(dependency.path);
+            } else {
+              loaderContext.addDependency(dependency.path);
+            }
+          });
 
-        resolve({
-          transpiledCode: newCode,
-        });
-        return;
+          resolve({
+            transpiledCode: newCode,
+          });
+          return;
+        }
+      } catch (e) {
+        console.warn(
+          `Error when reading dependencies of '${path}' using quick method: '${e.message}'`
+        );
       }
 
       const configs = loaderContext.options.configurations;

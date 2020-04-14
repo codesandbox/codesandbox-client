@@ -8,10 +8,6 @@ import {
   ServerContainerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
-import {
-  captureException,
-  logBreadcrumb,
-} from '@codesandbox/common/lib/utils/analytics/sentry';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import {
@@ -42,9 +38,7 @@ export const initializeSandbox: AsyncAction<Sandbox> = async (
   sandbox
 ) => {
   await Promise.all([
-    actions.editor.internal
-      .initializeLiveSandbox(sandbox)
-      .then(() => effects.live.sendModuleStateSyncRequest()),
+    actions.editor.internal.initializeLiveSandbox(sandbox),
     actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
     actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id }),
   ]);
@@ -64,12 +58,31 @@ export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
       return;
     }
 
-    await actions.live.internal.disconnect();
+    if (
+      // If the joinSource is /live/ and the user is only a viewer,
+      // we won't get the roomId and the user will disconnect automatically,
+      // we want to prevent this by only re-initializing the live session on joinSource === 'sandbox'. Because
+      // for joinSource === 'sandbox' we know for sure that the user will get a roomId if they have permissions
+      // to join
+      state.live.joinSource === 'sandbox'
+    ) {
+      actions.live.internal.disconnect();
+    }
   }
 
   if (sandbox.roomId) {
     await actions.live.internal.initialize(sandbox.roomId);
   }
+};
+
+export const updateSelectionsOfModule: AsyncAction<{ module: Module }> = async (
+  { actions, effects },
+  { module }
+) => {
+  effects.vscode.updateUserSelections(
+    module,
+    actions.live.internal.getSelectionsForModule(module)
+  );
 };
 
 export const setModuleSavedCode: Action<{
@@ -88,14 +101,6 @@ export const setModuleSavedCode: Action<{
 
   if (moduleIndex > -1) {
     const module = state.editor.sandboxes[sandbox.id].modules[moduleIndex];
-
-    if (savedCode === undefined) {
-      logBreadcrumb({
-        type: 'error',
-        message: `SETTING UNDEFINED SAVEDCODE FOR CODE: ${module.code}`,
-      });
-      captureException(new Error('SETTING UNDEFINED SAVEDCODE'));
-    }
 
     module.savedCode = module.code === savedCode ? null : savedCode;
   }
@@ -120,31 +125,31 @@ export const saveCode: AsyncAction<{
     return;
   }
 
-  if (module.code !== code) {
-    actions.editor.codeChanged({ moduleShortid, code });
-  }
-
   try {
     await effects.live.saveModule(module);
-    const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
+    const updatedModule = await effects.api.saveModuleCode(
+      sandbox.id,
+      module.shortid,
+      code
+    );
 
     module.insertedAt = updatedModule.insertedAt;
     module.updatedAt = updatedModule.updatedAt;
+    module.isBinary = updatedModule.isBinary;
 
+    if (!effects.vscode.isModuleOpened(module)) {
+      module.code = updatedModule.code;
+    }
     const savedCode =
       updatedModule.code === module.code ? null : updatedModule.code;
-    if (savedCode === undefined) {
-      logBreadcrumb({
-        type: 'error',
-        message: `SETTING UNDEFINED SAVEDCODE FOR CODE: ${updatedModule.code}`,
-      });
-      captureException(new Error('SETTING UNDEFINED SAVEDCODE'));
-    }
 
     module.savedCode = savedCode;
 
     effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
-    effects.moduleRecover.remove(sandbox.id, module);
+    if (savedCode === null) {
+      // If the savedCode is also module.code
+      effects.moduleRecover.remove(sandbox.id, module);
+    }
 
     if (cbID) {
       effects.vscode.callCallback(cbID);
@@ -171,7 +176,12 @@ export const saveCode: AsyncAction<{
     }
 
     if (state.live.isLive && state.live.isCurrentEditor) {
-      effects.live.sendModuleSaved(module);
+      setTimeout(() => {
+        // Send the save event 50ms later so the operation can be sent first (the operation that says the
+        // file difference created by VSCode due to the file watch event). If the other client gets the save before the operation,
+        // the other client will also send an operation with the same difference resulting in a duplicate event.
+        effects.live.sendModuleSaved(module);
+      }, 50);
     }
 
     await actions.editor.internal.updateCurrentTemplate();
@@ -301,7 +311,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   });
 };
 
-export const setStateModuleCode: Action<{
+export const updateModuleCode: Action<{
   module: Module;
   code: string;
 }> = ({ state, effects }, { module, code }) => {
@@ -324,16 +334,10 @@ export const setStateModuleCode: Action<{
     tab.dirty = false;
   }
 
-  // Save the code to localStorage so we can recover in case of a crash
-  effects.moduleRecover.save(
-    currentSandbox.id,
-    currentSandbox.version,
-    module,
-    code,
-    module.savedCode
-  );
-
   module.code = code;
+
+  // Save the code to localStorage so we can recover in case of a crash
+  effects.moduleRecover.save(currentSandbox.id, currentSandbox.version, module);
 };
 
 export const forkSandbox: AsyncAction<{
@@ -345,8 +349,9 @@ export const forkSandbox: AsyncAction<{
   { sandboxId: id, body, openInNewWindow = false }
 ) => {
   const sandbox = state.editor.currentSandbox;
+  const currentSandboxId = state.editor.currentId;
 
-  if (!sandbox) {
+  if (!sandbox || !currentSandboxId) {
     return;
   }
 
@@ -382,6 +387,7 @@ export const forkSandbox: AsyncAction<{
 
         return {
           ...module,
+          savedCode: foundEquivalentModule.savedCode,
           code: foundEquivalentModule.code,
         };
       }),
@@ -391,7 +397,7 @@ export const forkSandbox: AsyncAction<{
     state.workspace.project.description = forkedSandbox.description || '';
     state.workspace.project.alias = forkedSandbox.alias || '';
 
-    Object.assign(state.editor.sandboxes[sandbox.id], forkedSandbox);
+    Object.assign(state.editor.sandboxes[currentSandboxId]!, forkedSandbox);
     state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
       forkedSandbox
     );

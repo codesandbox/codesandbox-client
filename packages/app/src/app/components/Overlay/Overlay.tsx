@@ -1,7 +1,13 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, {
+  useState,
+  useLayoutEffect,
+  useEffect,
+  useCallback,
+} from 'react';
 import { motion } from 'framer-motion';
 import track from '@codesandbox/common/lib/utils/analytics';
 import Portal from '@codesandbox/common/lib/components/Portal';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Container, ContentContainer } from './elements';
 
 interface IOverlayProps {
@@ -63,7 +69,7 @@ export const Overlay: React.FC<IOverlayProps> = ({
     };
   }, []);
 
-  const handleClick = () => {
+  const handleClose = useCallback(() => {
     if (openState) {
       if (event) {
         track(`Closed ${event}`);
@@ -76,7 +82,25 @@ export const Overlay: React.FC<IOverlayProps> = ({
         setOpen(false);
       }
     }
-  };
+  }, [openState, isControlled, onClose, setOpen, event]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (!e.defaultPrevented && e.keyCode === ESC) {
+        handleClose();
+      }
+    };
+
+    if (openState) {
+      document.addEventListener('keydown', handleEscape);
+    } else {
+      document.removeEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [handleClose, openState]);
 
   const handleOpen = () => {
     if (event) {
@@ -97,7 +121,7 @@ export const Overlay: React.FC<IOverlayProps> = ({
 
       {openState && (
         <Portal>
-          <ContentContainer onClick={handleClick}>
+          <ContentContainer onClick={handleClose}>
             <motion.div
               onClick={e => e.stopPropagation()}
               style={{

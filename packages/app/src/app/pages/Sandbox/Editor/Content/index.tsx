@@ -2,11 +2,13 @@ import css from '@styled-system/css';
 
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import { BACKTICK } from '@codesandbox/common/lib/utils/keycodes';
 import { Icons } from 'app/components/CodeEditor/elements';
 import { VSCode as CodeEditor } from 'app/components/CodeEditor/VSCode';
 import { DevTools } from 'app/components/Preview/DevTools';
 import { useOvermind } from 'app/overmind';
-import React, { useCallback, useEffect, useRef } from 'react';
+import useKey from 'react-use/lib/useKey';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import QuestionIcon from 'react-icons/lib/go/question';
 import SplitPane from 'react-split-pane';
 import { ThemeProvider } from 'styled-components';
@@ -20,6 +22,9 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
   const { state, actions, effects, reaction } = useOvermind();
   const editorEl = useRef(null);
   const contentEl = useRef(null);
+  const [showConsoleDevtool, setShowConsoleDevtool] = useState(false);
+  const [consoleDevtoolIndex, setConsoleDevtoolIndex] = useState(-1);
+
   const updateEditorSize = useCallback(
     function updateEditorSize() {
       if (editorEl.current) {
@@ -61,12 +66,32 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
     };
   }, [actions.editor, effects.vscode, reaction, updateEditorSize]);
 
+  const views = state.editor.devToolTabs;
+
+  useEffect(() => {
+    setConsoleDevtoolIndex(() =>
+      views.findIndex(
+        ({ views: panes }) =>
+          panes.findIndex(pane => pane.id === 'codesandbox.console') !== -1
+      )
+    );
+  }, [views]);
+
+  useKey(
+    e => e.ctrlKey && e.keyCode === BACKTICK,
+    e => {
+      e.preventDefault();
+      setShowConsoleDevtool(value => !value);
+    },
+    {},
+    []
+  );
+
   const { currentModule } = state.editor;
   const sandbox = state.editor.currentSandbox;
   const { preferences } = state;
   const windowVisible = state.editor.previewWindowVisible;
   const template = sandbox && getTemplateDefinition(sandbox.template);
-  const views = state.editor.devToolTabs;
   const currentPosition = state.editor.currentDevToolsPosition;
   const modulePath = currentModule.path;
   const config = template && template.configurationFiles[modulePath];
@@ -252,46 +277,60 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
             id="csb-devtools" // used for tabs for highlighting
           >
             {sandbox &&
-              views.map((v, i) => (
-                <DevTools
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={i}
-                  devToolIndex={i}
-                  addedViews={{
-                    'codesandbox.browser': browserConfig,
-                  }}
-                  setDragging={dragging => {
-                    if (dragging) {
-                      actions.editor.resizingStarted();
-                    } else {
-                      actions.editor.resizingStopped();
+              views.map((v, i) => {
+                // show console devtool if showConsoleDevtool is enabled and if it's in the current view(v)
+                const devToolsOpen =
+                  showConsoleDevtool && consoleDevtoolIndex === i;
+
+                return (
+                  <DevTools
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={i}
+                    devToolIndex={i}
+                    devToolsOpen={devToolsOpen}
+                    addedViews={{
+                      'codesandbox.browser': browserConfig,
+                    }}
+                    setDragging={dragging => {
+                      if (dragging) {
+                        actions.editor.resizingStarted();
+                      } else {
+                        actions.editor.resizingStopped();
+                      }
+                    }}
+                    sandboxId={sandbox.id}
+                    template={sandbox.template}
+                    shouldExpandDevTools={state.preferences.showDevtools}
+                    zenMode={preferences.settings.zenMode}
+                    setDevToolsOpen={open => {
+                      actions.preferences.setDevtoolsOpen(open);
+
+                      if (
+                        consoleDevtoolIndex === i &&
+                        showConsoleDevtool !== open
+                      ) {
+                        setShowConsoleDevtool(open);
+                      }
+                    }}
+                    owned={sandbox.owned}
+                    primary={i === 0}
+                    viewConfig={v}
+                    moveTab={(prevPos, nextPos) => {
+                      actions.editor.onDevToolsTabMoved({ prevPos, nextPos });
+                    }}
+                    closeTab={pos => {
+                      actions.editor.onDevToolsTabClosed({ pos });
+                    }}
+                    currentDevToolIndex={currentPosition.devToolIndex}
+                    currentTabPosition={currentPosition.tabPosition}
+                    setPane={position =>
+                      actions.editor.onDevToolsPositionChanged({
+                        position,
+                      })
                     }
-                  }}
-                  sandboxId={sandbox.id}
-                  template={sandbox.template}
-                  shouldExpandDevTools={state.preferences.showDevtools}
-                  zenMode={preferences.settings.zenMode}
-                  setDevToolsOpen={open =>
-                    actions.preferences.setDevtoolsOpen(open)
-                  }
-                  owned={sandbox.owned}
-                  primary={i === 0}
-                  viewConfig={v}
-                  moveTab={(prevPos, nextPos) => {
-                    actions.editor.onDevToolsTabMoved({ prevPos, nextPos });
-                  }}
-                  closeTab={pos => {
-                    actions.editor.onDevToolsTabClosed({ pos });
-                  }}
-                  currentDevToolIndex={currentPosition.devToolIndex}
-                  currentTabPosition={currentPosition.tabPosition}
-                  setPane={position =>
-                    actions.editor.onDevToolsPositionChanged({
-                      position,
-                    })
-                  }
-                />
-              ))}
+                  />
+                );
+              })}
           </div>
         </SplitPane>
       </div>

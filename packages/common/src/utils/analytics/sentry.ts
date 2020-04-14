@@ -10,11 +10,16 @@ function getSentry(): Promise<typeof import('@sentry/browser')> {
 }
 
 let latestVersionPromise: Promise<string>;
+const versionTimeout = 1 * 60 * 1000;
 function getLatestVersion() {
   if (!latestVersionPromise) {
     latestVersionPromise = fetch('/version.txt')
       .then(x => x.text())
       .catch(x => '');
+
+    setTimeout(() => {
+      latestVersionPromise = undefined;
+    }, versionTimeout);
   }
 
   return latestVersionPromise;
@@ -54,7 +59,7 @@ export async function initialize(dsn: string) {
         "undefined is not an object (evaluating 'window.__pad.performLoop')", // Only happens on Safari, but spams our servers. Doesn't break anything
       ],
       whitelistUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
-      maxBreadcrumbs: 20,
+      maxBreadcrumbs: 100,
       /**
        * Don't send messages from the sandbox, so don't send from eg.
        * new.codesandbox.io or new.csb.app

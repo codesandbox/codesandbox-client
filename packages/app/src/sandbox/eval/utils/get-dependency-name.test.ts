@@ -22,4 +22,10 @@ describe('getDependencyName', () => {
       '@angular/core/4.4.3'
     );
   });
+
+  it('can find a simple dependency name with beta tag', () => {
+    expect(getDependencyName('reakit/1.0.0-beta.16/lib/Component')).toBe(
+      'reakit/1.0.0-beta.16'
+    );
+  });
 });

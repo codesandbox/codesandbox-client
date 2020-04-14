@@ -15,7 +15,7 @@ export function transformModule(module: IModuleAPIResponse): Module {
     errors: [],
     corrections: [],
     type: 'file' as 'file',
-    path: null,
+    path: '', // We have to use a temporary string due to typing
   };
 }
 

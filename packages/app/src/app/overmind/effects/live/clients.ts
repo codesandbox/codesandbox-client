@@ -1,6 +1,9 @@
-import { TextOperation } from 'ot';
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+import {
+  logBreadcrumb,
+  captureException,
+} from '@codesandbox/common/lib/utils/analytics/sentry';
 import { Blocker, blocker } from 'app/utils/blocker';
+import { TextOperation } from 'ot';
 
 import { OTClient, synchronized_ } from './ot/client';
 
@@ -41,6 +44,7 @@ export class CodeSandboxOTClient extends OTClient {
   ) {
     super(revision);
     this.moduleShortid = moduleShortid;
+    this.lastAcknowledgedRevision = revision - 1;
     this.onSendOperation = onSendOperation;
     this.onApplyOperation = onApplyOperation;
   }
@@ -57,7 +61,7 @@ export class CodeSandboxOTClient extends OTClient {
     return this.onSendOperation(revision, operation)
       .then(() => {
         logBreadcrumb({
-          type: 'ot',
+          category: 'ot',
           message: `Acknowledging ${JSON.stringify({
             moduleShortid: this.moduleShortid,
             revision,
@@ -65,10 +69,19 @@ export class CodeSandboxOTClient extends OTClient {
           })}`,
         });
 
-        // We make sure to not acknowledge the same revision twice
-        if (this.lastAcknowledgedRevision < revision) {
-          this.lastAcknowledgedRevision = revision;
-          this.serverAck();
+        try {
+          this.safeServerAck(revision);
+        } catch (err) {
+          captureException(
+            new Error(
+              `Server Ack ERROR ${JSON.stringify({
+                moduleShortid: this.moduleShortid,
+                currentRevision: this.revision,
+                currentState: this.state.name,
+                operation,
+              })}`
+            )
+          );
         }
       })
       .catch(error => {
@@ -87,28 +100,50 @@ export class CodeSandboxOTClient extends OTClient {
     this.onApplyOperation(operation);
   }
 
-  serverAck() {
-    try {
-      super.serverAck();
-
-      // If we are back in synchronized state we resolve the blocker
-      if (this.state === synchronized_ && this.awaitSynchronized) {
-        const awaitSynchronized = this.awaitSynchronized;
-        this.awaitSynchronized = null;
-        awaitSynchronized.resolve();
-      }
-    } catch (e) {
-      // Undo the revision increment again
-      super.revision--;
-      throw e;
+  resetAwaitSynchronized() {
+    // If we are back in synchronized state we resolve the blocker
+    if (this.state === synchronized_ && this.awaitSynchronized) {
+      const awaitSynchronized = this.awaitSynchronized;
+      this.awaitSynchronized = null;
+      awaitSynchronized.resolve();
     }
   }
 
+  safeServerAck(revision: number) {
+    // We make sure to not acknowledge the same revision twice
+    if (this.lastAcknowledgedRevision < revision) {
+      this.lastAcknowledgedRevision = revision;
+      super.serverAck();
+    }
+
+    this.resetAwaitSynchronized();
+  }
+
   applyClient(operation: TextOperation) {
+    logBreadcrumb({
+      category: 'ot',
+      message: `Apply Client ${JSON.stringify({
+        moduleShortid: this.moduleShortid,
+        currentRevision: this.revision,
+        currentState: this.state.name,
+        operation,
+      })}`,
+    });
+
     super.applyClient(operation);
   }
 
   applyServer(operation: TextOperation) {
+    logBreadcrumb({
+      category: 'ot',
+      message: `Apply Server ${JSON.stringify({
+        moduleShortid: this.moduleShortid,
+        currentRevision: this.revision,
+        currentState: this.state.name,
+        operation,
+      })}`,
+    });
+
     super.applyServer(operation);
   }
 
@@ -120,24 +155,17 @@ export class CodeSandboxOTClient extends OTClient {
 export default (
   sendOperation: SendOperation,
   applyOperation: ApplyOperation
-): {
-  getAll(): CodeSandboxOTClient[];
-  get(
-    moduleShortid: string,
-    revision?: number,
-    force?: boolean
-  ): CodeSandboxOTClient;
-  create(moduleShortid: string, revision: number): CodeSandboxOTClient;
-  clear(): void;
-  reset(moduleShortid: string, revision: number): void;
-} => {
+) => {
   const modules = new Map<string, CodeSandboxOTClient>();
 
   return {
     getAll() {
       return Array.from(modules.values());
     },
-    get(moduleShortid, revision = 0, force = false) {
+    has(moduleShortid: string) {
+      return modules.has(moduleShortid);
+    },
+    get(moduleShortid: string, revision = 0, force = false) {
       let client = modules.get(moduleShortid);
 
       if (!client || force) {
@@ -146,9 +174,9 @@ export default (
 
       return client!;
     },
-    create(moduleShortid, initialRevision) {
+    create(moduleShortid: string, initialRevision: number) {
       const client = new CodeSandboxOTClient(
-        initialRevision,
+        initialRevision || 0,
         moduleShortid,
         (revision, operation) =>
           sendOperation(moduleShortid, revision, operation),
@@ -160,7 +188,7 @@ export default (
 
       return client;
     },
-    reset(moduleShortid, revision) {
+    reset(moduleShortid: string, revision: number) {
       modules.delete(moduleShortid);
       this.create(moduleShortid, revision);
     },

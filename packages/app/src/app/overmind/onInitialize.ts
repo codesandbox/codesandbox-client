@@ -22,6 +22,13 @@ export const onInitialize: OnInitialize = async (
 
   effects.flows.initialize(overmindInstance.reaction);
 
+  // We consider recover mode something to be done when browser actually crashes, meaning there is no unmount
+  effects.browser.onUnload(() => {
+    if (state.editor.currentSandbox && state.connected) {
+      effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
+    }
+  });
+
   effects.api.initialize({
     provideJwtToken,
     getParsedConfigurations() {
@@ -83,12 +90,16 @@ export const onInitialize: OnInitialize = async (
     getCurrentUser: () => state.user,
     onOperationApplied: actions.editor.onOperationApplied,
     onCodeChange: actions.editor.codeChanged,
-    onSelectionChanged: actions.live.onSelectionChanged,
+    onSelectionChanged: selection => {
+      actions.editor.onSelectionChanged(selection);
+      actions.live.onSelectionChanged(selection);
+    },
     onViewRangeChanged: actions.live.onViewRangeChanged,
+    onCommentClick: actions.comments.onCommentClick,
     reaction: overmindInstance.reaction,
-    getState: path =>
+    getState: (path: string) =>
       path ? path.split('.').reduce((aggr, key) => aggr[key], state) : state,
-    getSignal: path =>
+    getSignal: (path: string) =>
       path.split('.').reduce((aggr, key) => aggr[key], actions),
   });
 

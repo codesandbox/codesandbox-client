@@ -19,7 +19,7 @@ interface IPermissionSelectProps {
   permissions?: Authorization[];
   pretext?: string;
   value: Authorization;
-  onChange: (Authorization) => void;
+  onChange: (value: string) => void;
   disabled?: boolean;
 }
 
@@ -32,7 +32,7 @@ export const PermissionSelect = ({
   ...props
 }: IPermissionSelectProps) => (
   <Menu>
-    <Menu.Button disabled={disabled} {...props}>
+    <Menu.Button css={{ paddingRight: 0 }} disabled={disabled} {...props}>
       {authToName[selectedValue]} <Icon name="caret" size={8} marginLeft={1} />
     </Menu.Button>
     <Menu.List>

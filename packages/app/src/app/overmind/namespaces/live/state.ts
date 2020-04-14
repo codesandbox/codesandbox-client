@@ -16,6 +16,10 @@ type State = {
   followingUserId: string | null;
   liveUserId: string | null;
   roomInfo: RoomInfo | null;
+  /**
+   * Whether we joined from /s/ or from /live/
+   */
+  joinSource: 'sandbox' | 'live';
   currentSelection: UserSelection | null;
   currentViewRange: UserViewRange | null;
   liveUser: Derive<State, LiveUser | null>;
@@ -25,7 +29,7 @@ type State = {
   liveUsersByModule: Derive<
     State,
     {
-      [id: string]: string[];
+      [id: string]: number[][];
     }
   >;
 };
@@ -40,8 +44,16 @@ export const state: State = {
   error: null,
   liveUserId: null,
   roomInfo: null,
-  currentSelection: null,
+  currentSelection: {
+    primary: {
+      cursorPosition: 0,
+      selection: [],
+    },
+    secondary: [],
+    source: 'overmind',
+  },
   currentViewRange: null,
+  joinSource: 'sandbox',
   liveUser: currentState =>
     currentState.roomInfo?.users.find(u => u.id === currentState.liveUserId) ||
     null,
@@ -64,7 +76,7 @@ export const state: State = {
         currentState.roomInfo?.ownerIds.includes(currentState.liveUserId)
     ),
   liveUsersByModule: currentState => {
-    const usersByModule = {};
+    const usersByModule: { [id: string]: number[][] } = {};
 
     if (!currentState.isLive || !currentState.roomInfo) {
       return {};
@@ -74,7 +86,7 @@ export const state: State = {
 
     currentState.roomInfo.users.forEach(user => {
       const userId = user.id;
-      if (userId !== liveUserId && user.currentModuleShortid) {
+      if (user && userId !== liveUserId && user.currentModuleShortid) {
         usersByModule[user.currentModuleShortid] =
           usersByModule[user.currentModuleShortid] || [];
         usersByModule[user.currentModuleShortid].push(user.color);

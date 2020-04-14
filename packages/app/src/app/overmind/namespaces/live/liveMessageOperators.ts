@@ -13,11 +13,12 @@ import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
   live_user_id: string;
-}>> = mutate(({ effects, state }, { data }) => {
+}>> = mutate(({ effects, actions, state }, { data }) => {
   state.live.liveUserId = data.live_user_id;
 
   // Show message to confirm that you've joined a live session if you're not the owner
@@ -26,9 +27,15 @@ export const onJoin: Operator<LiveMessage<{
   }
 
   if (state.live.reconnecting) {
+    // We reconnected!
     effects.live.getAllClients().forEach(client => {
       client.serverReconnect();
     });
+
+    if (state.live.roomInfo) {
+      // Clear all user selections
+      actions.live.internal.clearUserSelections(null);
+    }
   }
 
   state.live.reconnecting = false;
@@ -54,7 +61,7 @@ export const onUsersChanged: Operator<LiveMessage<{
   users: LiveUser[];
   editor_ids: string[];
   owner_ids: string[];
-}>> = mutate(({ state, effects, actions }, { data }) => {
+}>> = mutate(({ state, actions }, { data }) => {
   if (state.live.isLoading || !state.live.roomInfo || !state.live.isLive) {
     return;
   }
@@ -66,10 +73,9 @@ export const onUsersChanged: Operator<LiveMessage<{
   state.live.roomInfo.ownerIds = data.owner_ids;
 
   if (state.editor.currentModule) {
-    effects.vscode.updateUserSelections(
-      state.editor.currentModule,
-      actions.live.internal.getSelectionsForModule(state.editor.currentModule)
-    );
+    actions.editor.internal.updateSelectionsOfModule({
+      module: state.editor.currentModule,
+    });
   }
 });
 
@@ -90,10 +96,9 @@ export const onUserEntered: Operator<LiveMessage<{
   state.live.roomInfo.ownerIds = data.owner_ids;
 
   if (state.editor.currentModule) {
-    effects.vscode.updateUserSelections(
-      state.editor.currentModule,
-      actions.live.internal.getSelectionsForModule(state.editor.currentModule)
-    );
+    actions.editor.internal.updateSelectionsOfModule({
+      module: state.editor.currentModule,
+    });
   }
 
   // Send our own selections and viewranges to everyone, just to let the others know where
@@ -145,7 +150,7 @@ export const onUserLeft: Operator<LiveMessage<{
     }
   }
 
-  actions.live.internal.clearUserSelections(data.left_user_id);
+  actions.live.onUserLeft({ liveUserId: data.left_user_id });
 
   const users = camelizeKeys(data.users) as LiveUser[];
 
@@ -166,16 +171,20 @@ export const onModuleSaved: Operator<LiveMessage<{
   );
 
   if (module) {
-    module.isNotSynced = false;
-
     actions.editor.internal.setModuleSavedCode({
       moduleShortid: data.moduleShortid,
       savedCode: data.module.savedCode,
     });
 
     effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
-    // We revert the module so that VSCode will flag saved indication correctly
-    effects.vscode.revertModule(module);
+    const savedCode = getSavedCode(module.code, module.savedCode);
+    if (!effects.vscode.isModuleOpened(module)) {
+      module.code = savedCode;
+    }
+    if (module.code === savedCode) {
+      // We revert the module so that VSCode will flag saved indication correctly
+      effects.vscode.syncModule(module);
+    }
     actions.editor.internal.updatePreviewCode();
   }
 });
@@ -400,7 +409,13 @@ export const onUserSelection: Operator<LiveMessage<{
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
   );
-  if (module && state.live.isEditor(userSelectionLiveUserId)) {
+
+  const isFollowingUser =
+    state.live.followingUserId === userSelectionLiveUserId;
+  if (
+    module &&
+    (state.live.isEditor(userSelectionLiveUserId) || isFollowingUser)
+  ) {
     const user = state.live.roomInfo.users.find(
       u => u.id === userSelectionLiveUserId
     );
@@ -415,7 +430,7 @@ export const onUserSelection: Operator<LiveMessage<{
         },
       ]);
 
-      if (state.live.followingUserId === userSelectionLiveUserId) {
+      if (isFollowingUser) {
         actions.live.revealCursorPosition({
           liveUserId: userSelectionLiveUserId,
         });
@@ -535,14 +550,15 @@ export const onLiveAddEditor: Operator<LiveMessage<{
 
 export const onLiveRemoveEditor: Operator<LiveMessage<{
   editor_user_id: string;
-}>> = mutate(({ state }, { _isOwnMessage, data }) => {
+}>> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
   if (!state.live.roomInfo) {
     return;
   }
 
-  if (!_isOwnMessage) {
-    const userId = data.editor_user_id;
+  const userId = data.editor_user_id;
+  actions.live.internal.clearUserSelections(userId);
 
+  if (!_isOwnMessage) {
     const editors = state.live.roomInfo.editorIds;
     const newEditors = editors.filter(id => id !== userId);
 
@@ -582,7 +598,7 @@ export const onConnectionLoss: Operator<LiveMessage> = mutate(
           message: 'We lost connection with the live server, reconnecting...',
           status: NotificationStatus.ERROR,
         });
-      }, 10000);
+      }, 30000);
 
       state.live.reconnecting = true;
 

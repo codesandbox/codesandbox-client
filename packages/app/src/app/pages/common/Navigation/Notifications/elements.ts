@@ -44,7 +44,7 @@ export const NotificationContainer = styled.div<{
   read?: boolean;
   success?: boolean;
 }>`
-  transition: 0.3s ease border-color;
+  transition: 0.3s ease all;
   padding: 0.75rem 1rem;
 
   border-left: 2px solid transparent;
@@ -54,14 +54,18 @@ export const NotificationContainer = styled.div<{
   ${props =>
     props.read
       ? css`
-          border-left-color: rgba(0, 0, 0, 0.3);
-          opacity: 0.6;
+          border-left-color: transparent;
+
+          &:hover {
+            background-color: ${props.theme.background2};
+          }
         `
       : css`
-          border-left-color: ${props.theme.secondary.clearer(0.2)()};
+          border-left-color: ${props.theme.secondary.clearer(0.3)()};
 
           &:hover {
             border-left-color: ${props.theme.secondary()};
+            background-color: ${props.theme.background2};
           }
         `};
 

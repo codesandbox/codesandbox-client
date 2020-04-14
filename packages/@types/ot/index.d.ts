@@ -2,6 +2,8 @@ declare module 'ot' {
   export type SerializedTextOperation = (string | number)[];
 
   class TextOperation {
+    ops: SerializedTextOperation;
+
     delete(length: number): TextOperation;
     insert(str: string): TextOperation;
     retain(length: number): TextOperation;
@@ -21,5 +23,16 @@ declare module 'ot' {
     toJSON(): SerializedTextOperation;
   }
 
-  export { TextOperation };
+  interface Range {
+    new (anchor: number, head: number): Range;
+    transform(operation: TextOperation): Range;
+    anchor: number;
+    head: number;
+  }
+
+  class Selection {
+    static Range: Range;
+  }
+
+  export { TextOperation, Selection };
 }

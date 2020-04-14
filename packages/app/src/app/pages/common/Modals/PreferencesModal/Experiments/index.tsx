@@ -1,7 +1,6 @@
 import React from 'react';
 import { Text, Element } from '@codesandbox/components';
 import { Rule, SubContainer } from '../elements';
-import { NewSidebar } from './NewSidebar';
 import { Comments } from './Comments';
 import { ContainerLSP } from './ContainerLSP';
 
@@ -12,13 +11,12 @@ export const Experiments: React.FunctionComponent = () => (
     </Text>
     <SubContainer>
       <Element paddingTop={2}>
-        {process.env.NODE_ENV === 'development' && (
-          <>
-            <Comments /> <Rule />
-          </>
-        )}
-        <NewSidebar />
-        <Rule />
+        {process.env.NODE_ENV === 'development' ||
+          (process.env.NODE_ENV === 'staging' && (
+            <>
+              <Comments /> <Rule />
+            </>
+          ))}
         <ContainerLSP />
       </Element>
     </SubContainer>

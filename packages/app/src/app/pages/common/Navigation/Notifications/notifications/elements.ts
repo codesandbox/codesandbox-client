@@ -3,6 +3,8 @@ import { NotificationContainer } from '../elements';
 
 export const Container = styled(NotificationContainer)`
   display: flex;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.6);
 `;
 
 export const Buttons = styled.div`
@@ -44,5 +46,5 @@ export const Button = styled.div<{ decline?: boolean; disabled?: boolean }>`
 `;
 
 export const W = styled.span`
-  color: white;
+  color: rgba(255, 255, 255, 0.95);
 `;

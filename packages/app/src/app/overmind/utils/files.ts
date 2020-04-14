@@ -4,7 +4,7 @@ import { Sandbox } from '@codesandbox/common/lib/types';
 
 import { resolveModuleWrapped } from './resolve-module-wrapped';
 
-export const getModuleCode = (sandbox: Sandbox, prettierConfig) => {
+export const getModuleCode = (sandbox: Sandbox, prettierConfig: unknown) => {
   const path = getModulePath(sandbox.modules, sandbox.directories, module.id);
   const template = getDefinition(sandbox.template);
   const config = template.configurationFiles[path];

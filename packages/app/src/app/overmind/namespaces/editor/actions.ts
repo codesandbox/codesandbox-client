@@ -1,14 +1,16 @@
+import { debounce } from 'lodash-es';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
-  CommentsFilterOption,
   EnvironmentVariable,
   ModuleCorrection,
   ModuleError,
   ModuleTab,
   WindowOrientation,
+  Module,
+  UserSelection,
 } from '@codesandbox/common/lib/types';
-import { TextOperation } from 'ot';
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
@@ -18,9 +20,7 @@ import { NotificationStatus } from '@codesandbox/notifications';
 import {
   Authorization,
   CollaboratorFragment,
-  Comment,
   InvitationFragment,
-  CommentThread,
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
@@ -32,6 +32,8 @@ import {
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
+import { Selection, TextOperation } from 'ot';
 import { json } from 'overmind';
 
 import eventToTransform from '../../utils/event-to-transform';
@@ -41,6 +43,63 @@ import * as internalActions from './internalActions';
 export const internal = internalActions;
 
 export const onNavigateAway: Action = () => {};
+
+export const persistCursorToUrl: Action<{
+  module: Module;
+  selection?: UserSelection;
+}> = debounce(({ effects }, { module, selection }) => {
+  let parameter = module.path;
+
+  if (selection?.primary?.selection?.length) {
+    const [head, anchor] = selection.primary.selection;
+    const serializedSelection = head + '-' + anchor;
+    parameter += `:${serializedSelection}`;
+  }
+
+  const newUrl = new URL(document.location.href);
+  newUrl.searchParams.set('file', parameter);
+
+  // Restore the URI encoded parts to their original values. Our server handles this well
+  // and all the browsers do too.
+  effects.router.replace(
+    newUrl
+      .toString()
+      .replace(/%2F/g, '/')
+      .replace('%3A', ':')
+  );
+}, 500);
+
+export const loadCursorFromUrl: AsyncAction = async ({
+  effects,
+  actions,
+  state,
+}) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
+  const parameter = effects.router.getParameter('file');
+  if (!parameter) {
+    return;
+  }
+  const [path, selection] = parameter.split(':');
+
+  const module = state.editor.currentSandbox.modules.find(m => m.path === path);
+  if (!module) {
+    return;
+  }
+
+  await actions.editor.moduleSelected({ id: module.id });
+
+  if (!selection) {
+    return;
+  }
+
+  const [parsedHead, parsedAnchor] = selection.split('-').map(Number);
+  if (!isNaN(parsedHead) && !isNaN(parsedAnchor)) {
+    effects.vscode.setSelection(parsedHead, parsedAnchor);
+  }
+};
 
 export const addNpmDependency: AsyncAction<{
   name: string;
@@ -194,43 +253,27 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   await actions.editor.internal.initializeSandbox(sandbox);
 
+  // We only recover files at this point if we are not live. When live we recover them
+  // when the module_state is received
   if (
-    hasPermission(sandbox.authorization, 'write_code') &&
-    !state.live.isLive
+    !state.live.isLive &&
+    hasPermission(sandbox.authorization, 'write_code')
   ) {
     actions.files.internal.recoverFiles();
-  } else if (state.live.isLive) {
-    await effects.live.sendModuleStateSyncRequest();
   }
 
   effects.vscode.openModule(state.editor.currentModule);
+  try {
+    await actions.editor.loadCursorFromUrl();
+  } catch (e) {
+    /**
+     * This is not extremely important logic, if it breaks (which is possible because of user input)
+     * we don't want to crash the whole editor. That's why we try...catch this.
+     */
+  }
 
-  if (COMMENTS) {
-    try {
-      const {
-        sandbox: sandboxComments,
-      } = await effects.gql.queries.commentThreads({
-        sandboxId: sandbox.id,
-      });
-
-      if (!sandboxComments || !sandboxComments.commentThreads) {
-        return;
-      }
-
-      state.editor.commentThreads[
-        sandbox.id
-      ] = sandboxComments.commentThreads.reduce((aggr, comment) => {
-        aggr[comment.id] = comment;
-
-        return aggr;
-      }, {});
-    } catch (e) {
-      state.editor.commentThreads[sandbox.id] = {};
-      effects.notificationToast.add({
-        status: NotificationStatus.NOTICE,
-        message: `There as a problem getting the sandbox comments`,
-      });
-    }
+  if (COMMENTS && hasPermission(sandbox.authorization, 'comment')) {
+    actions.comments.getSandboxComments(sandbox.id);
   }
 
   state.editor.isLoading = false;
@@ -295,15 +338,16 @@ export const onOperationApplied: Action<{
     return;
   }
 
-  actions.editor.internal.setStateModuleCode({
+  actions.editor.internal.updateModuleCode({
     module,
     code,
   });
 
   actions.editor.internal.updatePreviewCode();
 
+  // If we are in a state of sync, we set "revertModule" to set it as saved
   if (module.savedCode !== null && module.code === module.savedCode) {
-    effects.vscode.revertModule(module);
+    effects.vscode.syncModule(module);
   }
 };
 
@@ -318,6 +362,8 @@ export const codeChanged: Action<{
     return;
   }
 
+  const sandbox = state.editor.currentSandbox;
+
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
   );
@@ -326,28 +372,53 @@ export const codeChanged: Action<{
     return;
   }
 
-  // module.code !== code check is there to make sure that we don't end up sending
-  // duplicate updates to live. module.code === code only when VSCode detected a change
-  // from the filesystem (fs changed, vscode sees it, sends update). If this happens we
-  // never want to send that code update, since this actual code change goes through this
-  // specific code flow already.
-  if (state.live.isLive && module.code !== code) {
+  const savedCode = getSavedCode(module.code, module.savedCode);
+  const isSavedCode = savedCode === code;
+  const isFirstChange =
+    !effects.live.hasClient(module.shortid) ||
+    (effects.live.getClient(moduleShortid).revision === 0 &&
+      effects.live.getClient(moduleShortid).state.name === 'Synchronized');
+
+  // Don't send saved code of a moduke that has not been registered with yet, since the server
+  // will take the saved code as base. Which means that the change that would generate the saved code
+  // would be applied on the saved code by the server.
+  if (state.live.isLive && !(isSavedCode && isFirstChange)) {
     let operation: TextOperation;
     if (event) {
+      logBreadcrumb({
+        category: 'ot',
+        message: `Change Event ${JSON.stringify({
+          moduleShortid: module.shortid,
+          event,
+        })}`,
+      });
       operation = eventToTransform(event, module.code).operation;
     } else {
       operation = getTextOperation(module.code, code);
     }
 
     effects.live.sendCodeUpdate(moduleShortid, operation);
+
+    const comments = state.comments.fileComments[module.path] || [];
+    comments.forEach(fileComment => {
+      const range = new Selection.Range(...fileComment.range);
+      const newRange = range.transform(operation);
+      const comment =
+        state.comments.comments[sandbox.id][fileComment.commentId];
+      if (comment.references && comment.references[0].type === 'code') {
+        comment.references[0].metadata.anchor = newRange.anchor;
+        comment.references[0].metadata.head = newRange.head;
+      }
+    });
   }
 
-  actions.editor.internal.setStateModuleCode({
+  actions.editor.internal.updateModuleCode({
     module,
     code,
   });
+
   if (module.savedCode !== null && module.code === module.savedCode) {
-    effects.vscode.revertModule(module);
+    effects.vscode.syncModule(module);
   }
 
   const { isServer } = getTemplate(state.editor.currentSandbox.template);
@@ -368,6 +439,10 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
     try {
       const changedModules = sandbox.modules.filter(module =>
         state.editor.changedModuleShortids.includes(module.shortid)
+      );
+
+      await Promise.all(
+        changedModules.map(module => effects.live.saveModule(module))
       );
 
       const updatedModules = await effects.api.saveModules(
@@ -391,6 +466,7 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
             state.editor.modulesByPath,
             module
           );
+
           effects.moduleRecover.remove(sandbox.id, module);
         } else {
           // We might not have the module, as it was created by the server. In
@@ -429,13 +505,26 @@ export const forkExternalSandbox: AsyncAction<{
   sandboxId: string;
   openInNewWindow?: boolean;
   body?: { collectionId: string };
-}> = async ({ effects, state }, { sandboxId, openInNewWindow, body }) => {
+}> = async (
+  { effects, state, actions },
+  { sandboxId, openInNewWindow, body }
+) => {
   effects.analytics.track('Fork Sandbox', { type: 'external' });
 
-  const forkedSandbox = await effects.api.forkSandbox(sandboxId, body);
+  try {
+    const forkedSandbox = await effects.api.forkSandbox(sandboxId, body);
 
-  state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
-  effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
+    state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
+    effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
+  } catch (error) {
+    console.error(error);
+    actions.internal.handleError({
+      message: 'We were unable to fork the sandbox',
+      error,
+    });
+
+    throw error;
+  }
 };
 
 export const forkSandboxClicked: AsyncAction = async ({
@@ -467,7 +556,7 @@ export const likeSandboxToggled: AsyncAction<string> = async (
   state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
 };
 
-export const moduleSelected: Action<
+export const moduleSelected: AsyncAction<
   | {
       // Id means it is coming from Explorer
       id: string;
@@ -478,7 +567,7 @@ export const moduleSelected: Action<
       id?: undefined;
       path: string;
     }
-> = ({ actions, effects, state }, { id, path }) => {
+> = async ({ actions, effects, state }, { id, path }) => {
   effects.analytics.track('Open File');
 
   state.editor.hasLoadedInitialModule = true;
@@ -498,17 +587,19 @@ export const moduleSelected: Action<
         )
       : sandbox.modules.filter(moduleItem => moduleItem.id === id)[0];
 
-    if (module.shortid === state.editor.currentModuleShortid) {
+    if (module.shortid === state.editor.currentModuleShortid && path) {
+      // If this comes from VSCode we can return, but if this call comes from CodeSandbox
+      // we shouldn't return, since the promise would resolve sooner than VSCode loaded
+      // the file
       return;
     }
 
-    actions.editor.internal.setCurrentModule(module);
+    await actions.editor.internal.setCurrentModule(module);
+
+    actions.editor.persistCursorToUrl({ module });
 
     if (state.live.isLive && state.live.liveUser && state.live.roomInfo) {
-      effects.vscode.updateUserSelections(
-        module,
-        actions.live.internal.getSelectionsForModule(module)
-      );
+      actions.editor.internal.updateSelectionsOfModule({ module });
       state.live.liveUser.currentModuleShortid = module.shortid;
 
       if (state.live.followingUserId) {
@@ -683,7 +774,7 @@ export const discardModuleChanges: Action<{
   }
 
   module.updatedAt = new Date().toString();
-  effects.vscode.revertModule(module);
+  effects.vscode.syncModule(module);
 };
 
 export const fetchEnvironmentVariables: AsyncAction = async ({
@@ -768,6 +859,20 @@ export const showEnvironmentVariablesNotification: AsyncAction = async ({
       },
     });
   }
+};
+
+export const onSelectionChanged: Action<UserSelection> = (
+  { actions, state },
+  selection
+) => {
+  if (!state.editor.currentModule) {
+    return;
+  }
+
+  actions.editor.persistCursorToUrl({
+    module: state.editor.currentModule,
+    selection,
+  });
 };
 
 export const toggleEditorPreviewLayout: Action = ({ state, effects }) => {
@@ -1229,6 +1334,10 @@ export const changeCollaboratorAuthorization: AsyncAction<{
   authorization: Authorization;
   sandboxId: string;
 }> = async ({ state, effects }, { username, authorization, sandboxId }) => {
+  effects.analytics.track('Update Collaborator Authorization', {
+    authorization,
+  });
+
   const existingCollaborator = state.editor.collaborators.find(
     c => c.user.username === username
   );
@@ -1258,6 +1367,7 @@ export const addCollaborator: AsyncAction<{
   sandboxId: string;
   authorization: Authorization;
 }> = async ({ state, effects }, { username, sandboxId, authorization }) => {
+  effects.analytics.track('Add Collaborator', { authorization });
   const newCollaborator: CollaboratorFragment = {
     lastSeenAt: null,
     id: 'OPTIMISTIC_ID',
@@ -1293,6 +1403,7 @@ export const removeCollaborator: AsyncAction<{
   username: string;
   sandboxId: string;
 }> = async ({ state, effects }, { username, sandboxId }) => {
+  effects.analytics.track('Remove Collaborator');
   const existingCollaborator = state.editor.collaborators.find(
     c => c.user.username === username
   );
@@ -1321,6 +1432,8 @@ export const inviteCollaborator: AsyncAction<{
   sandboxId: string;
   authorization: Authorization;
 }> = async ({ state, effects }, { email, sandboxId, authorization }) => {
+  effects.analytics.track('Invite Collaborator (Email)', { authorization });
+
   const newInvitation: InvitationFragment = {
     id: 'OPTIMISTIC_ID',
     authorization,
@@ -1364,6 +1477,8 @@ export const revokeSandboxInvitation: AsyncAction<{
   invitationId: string;
   sandboxId: string;
 }> = async ({ state, effects }, { invitationId, sandboxId }) => {
+  effects.analytics.track('Cancel Invite Collaborator (Email)');
+
   const existingInvitation = state.editor.invitations.find(
     c => c.id === invitationId
   );
@@ -1385,201 +1500,6 @@ export const revokeSandboxInvitation: AsyncAction<{
       ];
     }
   }
-};
-
-export const getComments: AsyncAction<{
-  id: string;
-  sandboxId: string;
-}> = async ({ state, effects }, { sandboxId, id }) => {
-  try {
-    const { sandbox } = await effects.gql.queries.comments({
-      sandboxId,
-      commentThreadId: id,
-    });
-
-    if (!sandbox || !sandbox.commentThread) {
-      return;
-    }
-
-    state.editor.commentThreads[sandboxId][id].comments =
-      sandbox.commentThread.comments;
-  } catch (e) {
-    effects.notificationToast.error(
-      'Unable to get your comment, please try again'
-    );
-  }
-};
-
-export const selectCommentThread: Action<string> = ({ state }, id) => {
-  state.editor.currentCommentThreadId = id;
-};
-
-export const addCommentThread: AsyncAction<{
-  content: string;
-  open?: boolean;
-}> = async ({ state, effects, actions }, { content, open }) => {
-  if (!state.user || !state.editor.currentSandbox) {
-    return;
-  }
-
-  const id = `${content}-${state.user.username}`;
-  const sandboxId = state.editor.currentSandbox.id;
-  const now = new Date().toString();
-  const comment: Comment = {
-    id,
-    insertedAt: now,
-    updatedAt: now,
-    content,
-    user: {
-      id: state.user.id,
-      name: state.user.name,
-      username: state.user.username,
-      avatarUrl: state.user.avatarUrl,
-    },
-  };
-  const optimisticCommentThread: CommentThread = {
-    id,
-    insertedAt: now,
-    updatedAt: now,
-    isResolved: false,
-    initialComment: comment,
-    comments: [],
-  };
-  const commentThreads = state.editor.commentThreads;
-
-  commentThreads[sandboxId][id] = optimisticCommentThread;
-  state.editor.selectedCommentsFilter = CommentsFilterOption.OPEN;
-  try {
-    const {
-      createCommentThread: commentThread,
-    } = await effects.gql.mutations.createCommentThread({
-      sandboxId,
-      content,
-    });
-
-    delete commentThreads[sandboxId][id];
-    commentThreads[sandboxId][commentThread.id] = commentThread;
-    if (open) {
-      actions.editor.getComments({ id: commentThread.id, sandboxId });
-    }
-  } catch (error) {
-    effects.notificationToast.error(
-      'Unable to create your comment, please try again'
-    );
-    delete commentThreads[sandboxId][id];
-  }
-};
-
-export const deleteComment: AsyncAction<{
-  commentId: string;
-  threadId: string;
-  reply?: boolean;
-}> = async ({ state, effects }, { commentId, threadId, reply }) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-  const sandboxId = state.editor.currentSandbox.id;
-  const commentThreads = state.editor.commentThreads;
-  const deletedComment = commentThreads[sandboxId][threadId];
-
-  if (reply) {
-    const index = commentThreads[sandboxId][threadId].comments.findIndex(
-      comment => comment.id === commentId
-    );
-    commentThreads[sandboxId][threadId].comments.splice(index, 1);
-  } else {
-    delete commentThreads[sandboxId][threadId];
-    state.editor.currentCommentThreadId = null;
-  }
-
-  try {
-    await effects.gql.mutations.deleteComment({
-      commentId,
-      sandboxId,
-    });
-  } catch (error) {
-    effects.notificationToast.error(
-      'Unable to delete your comment, please try again'
-    );
-    commentThreads[sandboxId][threadId] = deletedComment;
-  }
-};
-
-export const resolveCommentThread: AsyncAction<{
-  commentThreadId: string;
-  isResolved: boolean;
-}> = async ({ effects, state }, { commentThreadId, isResolved }) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-  const commentThreads = state.editor.commentThreads;
-  const sandboxId = state.editor.currentSandbox.id;
-  const oldIsResolved = commentThreads[sandboxId][commentThreadId].isResolved;
-  const currentCommentThread = state.editor.currentCommentThread;
-  const updateIsCurrent =
-    currentCommentThread &&
-    commentThreads[sandboxId][commentThreadId].id === currentCommentThread.id;
-
-  commentThreads[sandboxId][commentThreadId].isResolved = isResolved;
-
-  if (updateIsCurrent && currentCommentThread) {
-    currentCommentThread.isResolved = isResolved;
-  }
-
-  try {
-    await effects.gql.mutations.toggleCommentThreadResolved({
-      commentThreadId,
-      isResolved,
-      sandboxId,
-    });
-  } catch (error) {
-    effects.notificationToast.error(
-      'Unable to update your comment, please try again'
-    );
-    commentThreads[sandboxId][commentThreadId].isResolved = oldIsResolved;
-  }
-};
-
-export const updateComment: AsyncAction<{
-  commentId: string;
-  content: string;
-  threadId: string;
-  reply?: boolean;
-}> = async ({ effects, state }, { commentId, content, threadId, reply }) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-  const id = threadId;
-  const sandboxId = state.editor.currentSandbox.id;
-  const commentThread = state.editor.commentThreads[sandboxId][id];
-  const commentToUpdate = reply
-    ? commentThread.comments.find(comment => comment.id === commentId)
-    : commentThread.initialComment;
-
-  if (!commentToUpdate) {
-    return;
-  }
-
-  commentToUpdate.content = content;
-
-  try {
-    await effects.gql.mutations.updateComment({
-      commentId,
-      content,
-      sandboxId,
-    });
-  } catch (error) {
-    effects.notificationToast.error(
-      'Unable to update your comment, please try again'
-    );
-  }
-};
-
-export const selectCommentsFilter: Action<CommentsFilterOption> = (
-  { state },
-  option
-) => {
-  state.editor.selectedCommentsFilter = option;
 };
 
 export const changeInvitationAuthorization: AsyncAction<{
@@ -1608,57 +1528,5 @@ export const changeInvitationAuthorization: AsyncAction<{
     if (existingInvitation && oldAuthorization) {
       existingInvitation.authorization = oldAuthorization;
     }
-  }
-};
-
-export const addComment: AsyncAction<string> = async (
-  { state, effects },
-  comment
-) => {
-  const id = state.editor.currentCommentThreadId;
-
-  if (
-    !state.editor.currentCommentThread ||
-    !id ||
-    !state.user ||
-    !state.editor.currentSandbox
-  ) {
-    return;
-  }
-  const sandboxId = state.editor.currentSandbox.id;
-  const fakeId = `${comment}-${state.user.username}`;
-  const commentThread = state.editor.commentThreads[sandboxId][id];
-
-  commentThread.comments.push({
-    insertedAt: new Date(),
-    updatedAt: new Date(),
-    id: fakeId,
-    content: comment,
-    user: {
-      id: state.user.id,
-      avatarUrl: state.user.avatarUrl,
-      name: state.user.name,
-      username: state.user.username,
-    },
-  });
-
-  const optimisticComment =
-    commentThread.comments[commentThread.comments.length - 1];
-
-  try {
-    const {
-      createComment: newComment,
-    } = await effects.gql.mutations.createComment({
-      commentThreadId: id,
-      content: comment,
-      sandboxId,
-    });
-
-    Object.assign(optimisticComment, newComment);
-  } catch (e) {
-    commentThread.comments.splice(
-      commentThread.comments.indexOf(optimisticComment),
-      1
-    );
   }
 };
