@@ -144,7 +144,7 @@ export default class TestRunner {
     test.skip = skip;
 
     const it = test;
-    const { window: jsdomWindow } = this.dom;
+    const jsdomWindow = this.dom.window.document.defaultView;
     const { document: jsdomDocument } = jsdomWindow;
 
     // Set the modules that are not set on JSDOM
@@ -258,6 +258,20 @@ export default class TestRunner {
     });
   }
 
+  oldEnvVars: { [key: string]: string };
+  async setup() {
+    this.oldEnvVars = { ...this.manager.envVariables };
+    this.manager.envVariables.NODE_ENV = 'test';
+  }
+
+  async teardown() {
+    const global = this.dom.window.document.defaultView;
+    global.close();
+    Object.defineProperty(global, 'document', { value: null });
+    this.dom = null;
+    this.manager.envVariables = this.oldEnvVars;
+  }
+
   /* istanbul ignore next */
   async runTests(force: boolean = false) {
     if (!this.watching && !force) {
@@ -313,6 +327,8 @@ export default class TestRunner {
 
     resetTestState();
 
+    await this.setup();
+
     await Promise.all(
       tests.map(async t => {
         dispatch(actions.error.clear(t.path, 'jest'));
@@ -341,6 +357,7 @@ export default class TestRunner {
     );
 
     await run();
+    await this.teardown();
 
     setTimeout(() => {
       this.sendMessage(messages.TOTAL_TEST_END);
