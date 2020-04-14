@@ -878,7 +878,7 @@ export default class TranspiledModule {
       id: this.getId(),
       exports: {},
       globals,
-      hot: manager.envVariables.NODE_ENV !== 'test' && {
+      hot: {
         accept: (path: string | Array<string>, cb) => {
           if (
             typeof path === 'undefined' ||
