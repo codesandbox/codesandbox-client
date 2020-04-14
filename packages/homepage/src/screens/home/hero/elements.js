@@ -93,7 +93,7 @@ export const StyledEditorLink = styled.a`
 
 export const HeroBottom = styled.div`
   position: absolute;
-  bottom: -30%;
+  bottom: -10%;
   left: 0;
   right: 0;
   display: flex;
@@ -142,7 +142,7 @@ export const HeroImage = styled.img`
 `;
 
 export const Title = styled.h1`
-  font-size: 2.5rem;
+  font-size: 3rem;
   line-height: 57px;
   font-family: ${props => props.theme.homepage.appleFont};
 
@@ -166,11 +166,37 @@ export const SubTitle = styled.h2`
   font-weight: normal;
   font-size: 1.125rem;
   line-height: 1.3;
-  color: ${props => props.theme.homepage.white};
+  color: ${props => props.theme.homepage.gray};
   margin: 0;
   margin-bottom: 1rem;
 
   ${props => props.theme.breakpoints.sm} {
     font-size: 0.875rem;
+  }
+`;
+
+// All for the B variant for A/B test
+
+export const SandboxButtons = styled.section`
+  height: 4rem;
+  width: auto;
+  margin: 4rem 0;
+`;
+
+export const Sandbox = styled.a`
+  display: inline-block;
+  width: 4rem;
+  height: 4rem;
+  margin: 0 2rem;
+  opacity: 0.2;
+  border: none;
+  background-color: transparent;
+  background-size: cover;
+  transform: scale(1);
+  transition: all 100ms ease-in;
+
+  :hover {
+    transform: scale(0.9);
+    opacity: 1;
   }
 `;
