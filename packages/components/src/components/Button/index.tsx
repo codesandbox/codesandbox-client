@@ -2,7 +2,7 @@ import React from 'react';
 import deepmerge from 'deepmerge';
 import styled, { keyframes } from 'styled-components';
 import VisuallyHidden from '@reach/visually-hidden';
-import { Element } from '../Element';
+import { Element, IElementProps } from '../Element';
 
 const variantStyles = {
   primary: {
@@ -99,10 +99,10 @@ const merge = (...objs) =>
   }, {});
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    IElementProps {
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
   loading?: boolean;
-  css?: Object;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
