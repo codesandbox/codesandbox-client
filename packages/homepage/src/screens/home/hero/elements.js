@@ -40,14 +40,21 @@ export const HeroWrapper = styled.section`
   overflow: hidden;
   padding: 0 2rem;
 
-  height: 100vh;
-  min-height: 1080px;
+  height: 80vh;
+  min-height: 768px;
 
   perspective: 1000;
+  } 
 
-  ${props => props.theme.breakpoints.sm} {
-    min-height: 800px;
+  @media screen and (min-width: 576px) {
+    min-height: 1024px;
   }
+
+
+  @media screen and (min-width: 960px) {
+    min-height: 1200px;
+  }
+
 `;
 
 export const SignUp = styled.p`
