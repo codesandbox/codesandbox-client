@@ -25,7 +25,7 @@ import hero from '../../../assets/images/hero-ide-home.png';
 import react from '../../../assets/icons/home-react.svg';
 import vanilla from '../../../assets/icons/home-js.svg';
 import vue from '../../../assets/icons/home-vue.svg';
-import angulair from '../../../assets/icons/home-angulair.svg';
+import angular from '../../../assets/icons/home-angular.svg';
 import more from '../../../assets/icons/home-more.svg';
 
 // import BoxAnimation from './BoxAnimation';
@@ -145,8 +145,8 @@ export default () => {
           />
           <Sandbox href="/s/vue" style={{ backgroundImage: `url(${vue})` }} />
           <Sandbox
-            href="/s/angulair"
-            style={{ backgroundImage: `url(${angulair})` }}
+            href="/s/angular"
+            style={{ backgroundImage: `url(${angular})` }}
           />
           <Sandbox href="/s" style={{ backgroundImage: `url(${more})` }} />
         </SandboxButtons>
