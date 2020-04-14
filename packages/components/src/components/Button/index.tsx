@@ -98,14 +98,13 @@ export interface ButtonProps
   css?: Object;
 }
 
-export const Button: React.FC<ButtonProps> = React.forwardRef(function Button(
-  { variant = 'primary', css = {}, ...props },
-  ref
-) {
-  const styles = merge(variantStyles[variant], commonStyles, css);
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  function Button({ variant = 'primary', css = {}, ...props }, ref) {
+    const styles = merge(variantStyles[variant], commonStyles, css);
 
-  return <Element as="button" css={styles} ref={ref} {...props} />;
-});
+    return <Element as="button" css={styles} ref={ref} {...props} />;
+  }
+);
 
 Button.defaultProps = {
   type: 'button',
