@@ -95,14 +95,19 @@ const merge = (...objs) =>
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
+  loading?: boolean;
   css?: Object;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button({ variant = 'primary', css = {}, ...props }, ref) {
+  function Button({ variant = 'primary', loading, css = {}, ...props }, ref) {
     const styles = merge(variantStyles[variant], commonStyles, css);
 
-    return <Element as="button" css={styles} ref={ref} {...props} />;
+    return (
+      <Element as="button" css={styles} ref={ref} {...props}>
+        {loading ? 'loading...' : props.children}
+      </Element>
+    );
   }
 );
 
