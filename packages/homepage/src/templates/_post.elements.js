@@ -74,11 +74,28 @@ export const Article = styled.article`
   padding: 1rem 0rem;
 `;
 
+export const Back = styled.div`
+  background: red;
+`;
+
 export const Header = styled.section`
   text-align: center;
   padding: 6rem 0 2.5em 0;
   color: rgb(242, 242, 242);
   margin-bottom: 2rem;
+
+  > a {
+    text-decoration: none;
+    color: #757575;
+    font-size: 1rem;
+    line-height: 4rem;
+    border-bottom: 1px solid transparent;
+  }
+
+  > a:hover {
+    color: #fff;
+    border-bottom: 1px solid #fff;
+  }
 `;
 
 export const PostTitle = styled.h1`
@@ -128,7 +145,7 @@ export const AuthorContainer = styled.div`
   }
 
   > date {
-    color: #9999;
+    color: #757575;
     font-size: 1rem;
     line-height: 22px;
   }

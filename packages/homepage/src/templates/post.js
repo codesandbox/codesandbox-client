@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 import React from 'react';
 
 import Layout from '../components/layout';
@@ -37,6 +37,8 @@ export default ({
       />
 
       <Header>
+        <Link to="blog">CodeSandbox Blog</Link>
+
         <PostTitle>{title}</PostTitle>
 
         <MetaData>
