@@ -122,7 +122,7 @@ export default function initialize() {
   let initialized = false;
   let refreshInitialized = false;
   const preset = new Preset(
-    'create-react-app-v3',
+    'create-react-app',
     ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx'],
     aliases,
     {
