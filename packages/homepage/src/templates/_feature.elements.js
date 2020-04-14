@@ -56,7 +56,6 @@ export const Banner = styled.div`
     /* border-radius: 4px; */
     clip-path: inset(0px round 0.5rem);
     -webkit-mask-image: -webkit-radial-gradient(white, black);
-
     overflow: hidden;
 
     ${props => props.theme.breakpoints.lg} {
