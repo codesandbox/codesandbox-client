@@ -1,19 +1,16 @@
 import { format } from 'date-fns';
-import { graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 import React from 'react';
 
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
-import {
-  Author,
-  AuthorImage,
-  Container,
-  PostDate,
-  Title,
-} from '../components/PostElements';
+import { AuthorImage } from '../components/PostElements';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import {
+  Article,
+  Header,
+  PostTitle,
   AuthorContainer,
   Image,
   MetaData,
@@ -32,37 +29,36 @@ export default ({
   },
 }) => (
   <Layout>
-    <Container style={{ overflowX: 'auto' }}>
+    <Article>
       <TitleAndMetaTags
         description={description}
         image={banner}
         title={`${title} - CodeSandbox Blog`}
       />
 
-      <PageContainer width={800}>
-        <Title>{title}</Title>
+      <Header>
+        <Link to="blog">CodeSandbox Blog</Link>
+
+        <PostTitle>{title}</PostTitle>
 
         <MetaData>
-          <div style={{ flex: 1 }}>
-            {authors.map(author => (
-              <AuthorContainer key={author}>
-                {authors.length === 1 && (
-                  <AuthorImage alt={author} src={photo} />
-                )}
+          {authors.map(author => (
+            <AuthorContainer key={author}>
+              {authors.length === 1 && <AuthorImage alt={author} src={photo} />}
 
-                <Author>{author}</Author>
-              </AuthorContainer>
-            ))}
-          </div>
-
-          <PostDate>{format(date, 'MMM DD, YYYY')}</PostDate>
+              <h4>{author}</h4>
+              <date>{format(date, 'MMM / DD / YYYY')}</date>
+            </AuthorContainer>
+          ))}
         </MetaData>
+      </Header>
 
-        <Image alt={title} src={banner} />
+      <Image alt={title} src={banner} />
 
+      <PageContainer width={768}>
         <PostContainer dangerouslySetInnerHTML={{ __html: html }} />
       </PageContainer>
-    </Container>
+    </Article>
   </Layout>
 );
 
