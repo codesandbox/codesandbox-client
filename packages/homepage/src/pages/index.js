@@ -2,7 +2,8 @@ import React from 'react';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
-import Hero from '../screens/home/hero';
+import HeroB from '../screens/home/heroB';
+// import HeroA from '../screens/home/hero';
 import Prototype from '../screens/home/prototype';
 import Started from '../screens/home/started';
 import LoadInView from '../components/LoadInView';
@@ -25,7 +26,8 @@ const Homepage = () => (
         margin-bottom: 8rem;
       `}
     >
-      <Hero />
+      <HeroB />
+      {/* A/B Test Components HeroA = Old, HeroB is New  */}
     </section>
 
     <div style={WRAPPER_STYLING}>
