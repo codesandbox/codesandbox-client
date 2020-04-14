@@ -213,10 +213,20 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     actions.workspace.openDefaultItem();
   } catch (error) {
     state.editor.notFound = true;
-    let detail = error.response?.data?.errors?.detail;
+    const errors = error.response?.data?.errors;
+    let detail = errors?.detail;
+    if (error.response.status === 422) {
+      state.editor.unprocessableEntityError = true;
+    }
+
     if (Array.isArray(detail)) {
       detail = detail[0];
     }
+
+    if (typeof errors === 'object') {
+      detail = errors[Object.keys(errors)[0]];
+    }
+
     state.editor.error = detail || error.message;
     state.editor.isLoading = false;
     return;

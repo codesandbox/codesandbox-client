@@ -52,7 +52,11 @@ export const Sandbox = React.memo<Props>(
     );
 
     function getContent() {
-      const { hasLogIn, isLoggedIn } = state;
+      const {
+        hasLogIn,
+        isLoggedIn,
+        editor: { unprocessableEntityError },
+      } = state;
 
       if (state.editor.error) {
         const isGithub = match.params.id.includes('github');
@@ -81,7 +85,7 @@ export const Sandbox = React.memo<Props>(
                 {hasLogIn ? 'Dashboard' : 'Homepage'}
               </Button>
             </div>
-            {isLoggedIn && isGithub && (
+            {isLoggedIn && isGithub && !unprocessableEntityError && (
               <div
                 style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}
               >

@@ -45,6 +45,7 @@ type State = {
   isLoading: boolean;
   notFound: boolean;
   error: string | null;
+  unprocessableEntityError: boolean;
   isResizing: boolean;
   changedModuleShortids: Derive<State, string[]>;
   currentTabId: string | null;
@@ -87,6 +88,7 @@ export const state: State = {
   isLoading: true,
   notFound: false,
   error: null,
+  unprocessableEntityError: false,
   isResizing: false,
   modulesByPath: {},
   collaborators: [],
