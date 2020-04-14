@@ -1,5 +1,4 @@
-import styled from 'styled-components';
-import css from '@styled-system/css';
+import React from 'react';
 import deepmerge from 'deepmerge';
 import { Element } from '../Element';
 
@@ -57,56 +56,56 @@ const variantStyles = {
   },
 };
 
+const commonStyles = {
+  display: 'inline-flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flex: 'none', // as a flex child
+  cursor: 'pointer',
+  fontFamily: 'Inter, sans-serif',
+  paddingY: 0,
+  paddingX: 2,
+  height: '26px', // match with inputs
+  width: '100%',
+  fontSize: 2,
+  fontWeight: 'medium',
+  lineHeight: 1, // trust the height
+  border: 'none',
+  borderRadius: 'small',
+  transition: 'all ease-in',
+  transitionDuration: theme => theme.speeds[2],
+
+  ':focus': {
+    outline: 'none',
+  },
+  ':active:not(:disabled)': {
+    transform: 'scale(0.98)',
+  },
+  ':disabled': {
+    opacity: '0.4',
+    cursor: 'not-allowed',
+  },
+};
+
+const merge = (...objs) =>
+  objs.reduce(function mergeAll(merged, currentValue = {}) {
+    return deepmerge(merged, currentValue);
+  }, {});
+
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
+  css?: Object;
 }
 
-export const Button = styled(Element).attrs({ as: 'button' })<ButtonProps>(
-  ({ variant = 'primary', ...props }) =>
-    css(
-      deepmerge(
-        // @ts-ignore deepmerge allows functions as values
-        // it overrides instead of merging, which is what we want
-        // but it's types don't like it. so we're going to ignore that
-        // TODO: raise a pull request for deepmerge or pick a different
-        // library to deep merge objects
-        variantStyles[variant],
-        // static styles:
-        {
-          display: 'inline-flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flex: 'none', // as a flex child
-          cursor: 'pointer',
-          fontFamily: 'Inter, sans-serif',
-          paddingY: 0,
-          paddingX: 2,
-          height: '26px', // match with inputs
-          width: '100%',
-          fontSize: 2,
-          fontWeight: 'medium',
-          lineHeight: 1, // trust the height
-          border: 'none',
-          borderRadius: 'small',
-          transition: 'all ease-in',
-          transitionDuration: theme => theme.speeds[2],
+export const Button: React.FC<ButtonProps> = React.forwardRef(function Button(
+  { variant = 'primary', css = {}, ...props },
+  ref
+) {
+  const styles = merge(variantStyles[variant], commonStyles, css);
 
-          ':focus': {
-            outline: 'none',
-          },
-          ':active:not(:disabled)': {
-            transform: 'scale(0.98)',
-          },
-          ':disabled': {
-            opacity: '0.4',
-            cursor: 'not-allowed',
-          },
-          ...props.css,
-        }
-      )
-    )
-);
+  return <Element as="button" css={styles} ref={ref} {...props} />;
+});
 
 Button.defaultProps = {
   type: 'button',
