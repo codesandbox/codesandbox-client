@@ -31,6 +31,7 @@ export const EditorElement = styled.img`
 `;
 
 export const HeroWrapper = styled.section`
+  border-bottom: 1px solid #242424;
   position: relative;
   display: flex;
   justify-content: center;
