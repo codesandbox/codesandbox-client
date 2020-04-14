@@ -60,7 +60,7 @@ const Blog = ({
                   `}
                   to={`post/${slug}`}
                 >
-                  <Thumbnail src={banner} />
+                  <Thumbnail alt={title} src={banner} />
 
                   <CardContent>
                     <Title>{title}</Title>
