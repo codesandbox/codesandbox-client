@@ -10,5 +10,3 @@ export const Privacy: FunctionComponent = () => (
     <span>close</span>
   </Toastcontainer>
 );
-
-export default Privacy;
