@@ -16,7 +16,7 @@ files that end with `.test.js`, `.spec.js`, `.test.ts(x)` and `.spec.js(x)`. We
 will automatically detect these test files and show the results in the Tests
 tab.
 
-Note: In [Container sandboxes](<(/docs/environment)>) you can still use Jest (or
+Note: In [Container sandboxes](/docs/environment) you can still use Jest (or
 whichever test framework you want), but we don't auto-detect these and you'd
 need to set it up yourself as you would locally.
 
@@ -40,10 +40,10 @@ A failed test looks like this in the Test View:
 
 And will also show squiggles in the editor:
 
-![Test Squiggles](./images/jest-squiggles.png)
+![Test Squiggles](./images/jest-squiggles.png?v2)
 
 ## Example
 
 Here's a failing Jest test running in a sandbox:
 
-<iframe src="https://codesandbox.io/embed/n9m2w9q8x0?view=preview" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/n9m2w9q8x0?view=preview" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>

@@ -1,26 +1,29 @@
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { Element, FormField, Textarea } from '@codesandbox/components';
 import { css } from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
 import React, { useState } from 'react';
 
-export const AddComment: React.FC = () => {
-  const [value, setValue] = useState('');
-  const { actions } = useOvermind();
+type Props = {
+  onSubmit: (value: string) => void;
+};
 
-  const onSubmit = e => {
-    e.preventDefault();
+export const AddComment: React.FC<Props> = ({ onSubmit }) => {
+  const [value, setValue] = useState('');
+
+  const submit = event => {
+    event.preventDefault();
     if (value) {
-      actions.comments.addComment({
-        content: value,
-      });
+      onSubmit(value);
       setValue('');
     }
   };
 
   // Form elements submit on Enter, except Textarea :)
   const submitOnEnter = event => {
-    if (event.keyCode === ENTER && !event.shiftKey) onSubmit(event);
+    if (event.keyCode === ENTER && !event.shiftKey) {
+      event.preventDefault();
+      submit(event);
+    }
   };
 
   return (
@@ -34,7 +37,7 @@ export const AddComment: React.FC = () => {
         boxShadow: theme => `0px -32px 32px ${theme.colors.dialog.background}`,
       })}
     >
-      <form onSubmit={onSubmit}>
+      <form onSubmit={submit}>
         <FormField label="Add a comment" hideLabel>
           <Textarea
             autosize
@@ -42,8 +45,7 @@ export const AddComment: React.FC = () => {
             onChange={e => setValue(e.target.value)}
             onKeyDown={submitOnEnter}
             placeholder="Write a comment"
-            css={css({ minHeight: 8 })}
-            style={{ lineHeight: 1.2 }}
+            style={{ lineHeight: 1.2, minHeight: 32 }}
           />
         </FormField>
       </form>

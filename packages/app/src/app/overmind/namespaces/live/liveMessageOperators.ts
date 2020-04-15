@@ -13,6 +13,7 @@ import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
@@ -60,7 +61,7 @@ export const onUsersChanged: Operator<LiveMessage<{
   users: LiveUser[];
   editor_ids: string[];
   owner_ids: string[];
-}>> = mutate(({ state, effects, actions }, { data }) => {
+}>> = mutate(({ state, actions }, { data }) => {
   if (state.live.isLoading || !state.live.roomInfo || !state.live.isLive) {
     return;
   }
@@ -72,10 +73,9 @@ export const onUsersChanged: Operator<LiveMessage<{
   state.live.roomInfo.ownerIds = data.owner_ids;
 
   if (state.editor.currentModule) {
-    effects.vscode.updateUserSelections(
-      state.editor.currentModule,
-      actions.live.internal.getSelectionsForModule(state.editor.currentModule)
-    );
+    actions.editor.internal.updateSelectionsOfModule({
+      module: state.editor.currentModule,
+    });
   }
 });
 
@@ -96,10 +96,9 @@ export const onUserEntered: Operator<LiveMessage<{
   state.live.roomInfo.ownerIds = data.owner_ids;
 
   if (state.editor.currentModule) {
-    effects.vscode.updateUserSelections(
-      state.editor.currentModule,
-      actions.live.internal.getSelectionsForModule(state.editor.currentModule)
-    );
+    actions.editor.internal.updateSelectionsOfModule({
+      module: state.editor.currentModule,
+    });
   }
 
   // Send our own selections and viewranges to everyone, just to let the others know where
@@ -172,16 +171,20 @@ export const onModuleSaved: Operator<LiveMessage<{
   );
 
   if (module) {
-    module.isNotSynced = false;
-
     actions.editor.internal.setModuleSavedCode({
       moduleShortid: data.moduleShortid,
       savedCode: data.module.savedCode,
     });
 
     effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
-    // We revert the module so that VSCode will flag saved indication correctly
-    effects.vscode.syncModule(module);
+    const savedCode = getSavedCode(module.code, module.savedCode);
+    if (!effects.vscode.isModuleOpened(module)) {
+      module.code = savedCode;
+    }
+    if (module.code === savedCode) {
+      // We revert the module so that VSCode will flag saved indication correctly
+      effects.vscode.syncModule(module);
+    }
     actions.editor.internal.updatePreviewCode();
   }
 });
@@ -406,7 +409,13 @@ export const onUserSelection: Operator<LiveMessage<{
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
   );
-  if (module && state.live.isEditor(userSelectionLiveUserId)) {
+
+  const isFollowingUser =
+    state.live.followingUserId === userSelectionLiveUserId;
+  if (
+    module &&
+    (state.live.isEditor(userSelectionLiveUserId) || isFollowingUser)
+  ) {
     const user = state.live.roomInfo.users.find(
       u => u.id === userSelectionLiveUserId
     );
@@ -421,7 +430,7 @@ export const onUserSelection: Operator<LiveMessage<{
         },
       ]);
 
-      if (state.live.followingUserId === userSelectionLiveUserId) {
+      if (isFollowingUser) {
         actions.live.revealCursorPosition({
           liveUserId: userSelectionLiveUserId,
         });

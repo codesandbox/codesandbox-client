@@ -128,7 +128,7 @@ export const Actions = () => {
         </>
       )}
 
-      {false && user?.curatorAt && (
+      {user?.curatorAt && (
         <Button
           variant="secondary"
           css={css({ paddingX: 3 })}

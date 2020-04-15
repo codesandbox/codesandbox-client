@@ -15,7 +15,7 @@ import CIIcon from '../../assets/icons/Ci';
 import TeamsIcon from '../../assets/icons/Teams';
 import SearchIcon from '../../assets/icons/Search';
 import HighlightedICon from '../../assets/icons/Highlighted';
-// import NewIcon from '../../assets/icons/New';
+import NewIcon from '../../assets/icons/New';
 import {
   Header,
   Nav,
@@ -306,14 +306,14 @@ const Navigation = () => {
                       ),
                       Label: () => <Link to="/team">Teams</Link>,
                     },
-                    // {
-                    //   Icon: () => (
-                    //     <a>
-                    //       <NewIcon />
-                    //     </a>
-                    //   ),
-                    //   Label: () => <a>What’s New</a>,
-                    // },
+                    {
+                      Icon: () => (
+                        <Link to="/changelog">
+                          <NewIcon />
+                        </Link>
+                      ),
+                      Label: () => <Link to="/changelog">What's New</Link>,
+                    },
                   ]}
                 />
                 <SubNav

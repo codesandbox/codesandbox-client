@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import Color from 'color';
 
 export default createGlobalStyle`
 .ReactModal__Content div[class^='Modal__ModalBody'] {
@@ -22,8 +23,12 @@ export default createGlobalStyle`
   }
 
   .ais-Pagination-link {
+    &:not(.ais-Pagination-link--selected) {
       color: ${props =>
-        props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
+        Color(props.theme.colors.dialog.foreground)
+          .alpha(0.6)
+          .rgbString()} !important;
+    }
   }
 
   .ais-Pagination-item--selected {
@@ -32,14 +37,21 @@ export default createGlobalStyle`
   }
 
   .ais-Highlight-highlighted {
-       color: ${props => props.theme['button.hoverBackground']};
+    color: ${props => props.theme.colors.button.background};
   }
 
-  .ais-PoweredBy-link svg path:nth-child(4) {
-        fill: ${props =>
-          props.theme.light
-            ? 'rgba(0, 0, 0, 0.8)'
-            : 'rgba(255, 255, 255, 0.8)'} !important;
+  .ais-PoweredBy-link svg {
+    fill: ${props =>
+      Color(props.theme.colors.dialog.foreground)
+        .alpha(0.8)
+        .rgbString()} !important;
+
+    path:nth-child(4) {
+      fill: ${props =>
+        Color(props.theme.colors.dialog.foreground)
+          .alpha(0.8)
+          .rgbString()} !important;
+    }
   }
 
   footer {
@@ -47,9 +59,8 @@ export default createGlobalStyle`
     background-color: ${props => props.theme['sideBar.background']};
 
     .ais-PoweredBy {
-          color: ${props =>
-            props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
-
+      color: ${props =>
+        Color(props.theme.colors.dialog.foreground).rgbString()} !important;
     }
   }
 }

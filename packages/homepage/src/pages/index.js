@@ -1,11 +1,15 @@
 import React from 'react';
+import { identify } from '@codesandbox/common/lib/utils/analytics';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
 
+
 import Privacy from '../components/Toast';
 
-import Hero from '../screens/home/hero';
+
+import HeroA from '../screens/home/hero';
+
 import Prototype from '../screens/home/prototype';
 import Started from '../screens/home/started';
 import LoadInView from '../components/LoadInView';
@@ -29,7 +33,7 @@ const Homepage = () => (
         margin-bottom: 8rem;
       `}
     >
-      <Hero />
+      <HeroA />
     </section>
 
     <div style={WRAPPER_STYLING}>
@@ -61,5 +65,7 @@ const Homepage = () => (
     <Privacy />
   </Layout>
 );
+
+identify('hero0420', 'A');
 
 export default Homepage;

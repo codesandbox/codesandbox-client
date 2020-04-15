@@ -3,6 +3,7 @@ import track, {
   logError,
   setAnonymousId,
   setUserId,
+  setGroup,
 } from '@codesandbox/common/lib/utils/analytics';
 
 export default (() => {
@@ -21,5 +22,6 @@ export default (() => {
     identify,
     setAnonymousId,
     setUserId,
+    setGroup,
   };
 })();

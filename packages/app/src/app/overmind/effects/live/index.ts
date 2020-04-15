@@ -4,18 +4,21 @@ import {
   Module,
   RoomInfo,
   UserViewRange,
+  UserSelection,
 } from '@codesandbox/common/lib/types';
 import {
   captureException,
   logBreadcrumb,
 } from '@codesandbox/common/lib/utils/analytics/sentry';
 import _debug from '@codesandbox/common/lib/utils/debug';
+import VERSION from '@codesandbox/common/lib/version';
 import { Blocker, blocker } from 'app/utils/blocker';
 import { camelizeKeys } from 'humps';
 import { SerializedTextOperation, TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
 import uuid from 'uuid';
 
+import { IModuleStateModule } from 'app/overmind/namespaces/live/types';
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
 import clientsFactory from './clients';
 
@@ -28,9 +31,7 @@ type Options = {
   isLiveBlockerExperiement(): boolean;
   onOperationError(payload: {
     moduleShortid: string;
-    code: string;
-    revision: number;
-    saved_code: string;
+    moduleInfo: IModuleStateModule;
   }): void;
 };
 
@@ -38,6 +39,13 @@ type JoinChannelResponse = {
   liveUserId: string;
   reconnectToken: string;
   roomInfo: RoomInfo;
+  moduleState: {
+    [moduleId: string]: IModuleStateModule;
+  };
+};
+
+type JoinChannelErrorResponse = {
+  reason: 'room not found' | string;
 };
 
 declare global {
@@ -62,14 +70,12 @@ class Live {
     we use a blocker to just hold the sending of the messages until an additional
     connection enters
   */
-  private awaitSend: Blocker<void> | null = blocker<void>();
+  private awaitSend: Blocker<void> | null = null;
   private presence: Presence;
   private provideJwtToken: () => string;
   private onOperationError: (payload: {
     moduleShortid: string;
-    code: string;
-    revision: number;
-    saved_code: string;
+    moduleInfo: IModuleStateModule;
   }) => void;
 
   private operationToElixir(ot: (number | string)[]) {
@@ -89,6 +95,11 @@ class Live {
   private isLiveBlockerExperiement: () => boolean;
   private connectionsCount = 0;
   private setAwaitSend() {
+    if (this.awaitSend) {
+      // There was already one set and never resolved. We need to resolve it to prevent
+      // messages from getting stuck
+      this.awaitSend.resolve();
+    }
     this.awaitSend = blocker();
     clearTimeout(this.awaitSendTimer);
     this.awaitSendTimer = window.setTimeout(async () => {
@@ -157,7 +168,7 @@ class Live {
       captureException(error);
       if (error.module_state) {
         this.onOperationError({
-          ...error.module_state[moduleShortid],
+          moduleInfo: error.module_state[moduleShortid],
           moduleShortid,
         });
       }
@@ -191,25 +202,8 @@ class Live {
       this.socket = new Socket(`${protocol}://${location.host}/socket`, {
         params: {
           guardian_token: this.provideJwtToken(),
+          client_version: VERSION,
         },
-      });
-
-      this.socket.onClose(e => {
-        captureException(
-          new Error('Connection loss with live, reason: ' + e.code)
-        );
-
-        // if (e.code === 1006) {
-        //   // This is an abrupt close, the server probably restarted or carshed. We don't want to overload
-        //   // the server, so we manually wait and try to connect;
-        //   this.socket.disconnect();
-
-        //   const waitTime = 500 + 5000 * Math.random();
-
-        //   window.setTimeout(() => {
-        //     this.socket.connect();
-        //   }, waitTime);
-        // }
       });
 
       this.socket.connect();
@@ -246,7 +240,10 @@ class Live {
     });
   }
 
-  joinChannel(roomId: string): Promise<JoinChannelResponse> {
+  joinChannel(
+    roomId: string,
+    onError: (reason: string) => void
+  ): Promise<JoinChannelResponse> {
     return new Promise((resolve, reject) => {
       this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
 
@@ -274,6 +271,7 @@ class Live {
         .join()
         .receive('ok', resp => {
           const result = camelizeKeys(resp) as JoinChannelResponse;
+          result.moduleState = resp.module_state; // Don't camelize this!!
 
           // We rewrite what our reconnect params are by adding the reconnect token.
           // This token makes sure that you can retain state between reconnects and restarts
@@ -286,7 +284,15 @@ class Live {
 
           resolve(result);
         })
-        .receive('error', resp => reject(camelizeKeys(resp)));
+        .receive('error', (resp: JoinChannelErrorResponse) => {
+          if (resp.reason === 'room not found') {
+            if (this.channel) {
+              this.channel.leave();
+            }
+            onError(resp.reason);
+          }
+          reject(camelizeKeys(resp));
+        });
     });
   }
 
@@ -307,12 +313,6 @@ class Live {
         (data == null || Object.keys(data).length === 0) &&
         event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
-
-      if (event === 'phx_error') {
-        captureException(
-          new Error('Received phoenix error: ' + JSON.stringify(data))
-        );
-      }
 
       const _isOwnMessage = Boolean(
         data && data._messageId && this.pendingMessages.delete(data._messageId)
@@ -396,6 +396,14 @@ class Live {
       return;
     }
 
+    if (operation.ops.length === 1) {
+      const [op] = operation.ops;
+      if (typeof op === 'number' && op >= 0) {
+        // Useless to send a single retain operation, ignore
+        return;
+      }
+    }
+
     if (moduleShortid.startsWith(OPTIMISTIC_ID_PREFIX)) {
       // Module is an optimistic module, we will send a full code update
       // once the module has been created, until then, send nothing!
@@ -461,7 +469,7 @@ class Live {
   }
 
   sendLiveMode(mode: string) {
-    return this.send('live:mode', {
+    return this.sendImmediately('live:mode', {
       mode,
     });
   }
@@ -497,7 +505,7 @@ class Live {
   }
 
   sendChatEnabled(enabled: boolean) {
-    return this.send('live:chat_enabled', { enabled });
+    return this.sendImmediately('live:chat_enabled', { enabled });
   }
 
   sendModuleStateSyncRequest() {
@@ -519,7 +527,7 @@ class Live {
   sendUserSelection(
     moduleShortid: string | null,
     liveUserId: string,
-    selection: any
+    selection: UserSelection
   ) {
     return this.send('user:selection', {
       liveUserId,
@@ -538,6 +546,14 @@ class Live {
 
   resetClient(moduleShortid: string, revision: number) {
     this.clients.reset(moduleShortid, revision);
+  }
+
+  hasClient(moduleShortid: string) {
+    return this.clients.has(moduleShortid);
+  }
+
+  getClient(moduleShortid: string) {
+    return this.clients.get(moduleShortid);
   }
 
   getAllClients() {

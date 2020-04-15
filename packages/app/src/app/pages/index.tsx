@@ -88,8 +88,11 @@ const RoutesComponent: React.FC = () => {
     <Container>
       <Route
         path="/"
-        render={({ location }) => {
-          if (process.env.NODE_ENV === 'production') {
+        render={({ location, history }) => {
+          if (
+            process.env.NODE_ENV === 'production' &&
+            history.action !== 'REPLACE'
+          ) {
             routeDebugger(
               `Sending '${location.pathname + location.search}' to analytics.`
             );

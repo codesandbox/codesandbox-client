@@ -1,0 +1,3 @@
+export const DIALOG_TRANSITION_DURATION = 0.25;
+export const DIALOG_WIDTH = 420;
+export const REPLY_TRANSITION_DELAY = 0.5;

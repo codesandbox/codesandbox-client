@@ -30,7 +30,7 @@ export default {
     return confirm(message); // eslint-disable-line no-alert,no-restricted-globals
   },
   onUnload(cb) {
-    window.onbeforeunload = cb;
+    window.addEventListener('beforeunload', cb);
   },
   openWindow(url) {
     window.open(url, '_blank');
@@ -88,5 +88,28 @@ export default {
     set(key: string, value: any) {
       localStorage.setItem(key, JSON.stringify(value));
     },
+  },
+  /**
+   * Wait at least MS before resolving the value
+   */
+  waitAtLeast<T>(ms: number, cb: () => Promise<T>): Promise<T> {
+    return new Promise((resolve, reject) => {
+      let resolveValue: T;
+      setTimeout(() => {
+        if (!resolveValue) {
+          return;
+        }
+        resolve(resolveValue);
+      }, ms);
+      const startTime = Date.now();
+      cb()
+        .then(value => {
+          resolveValue = value;
+          if (Date.now() - startTime > ms) {
+            resolve(resolveValue);
+          }
+        })
+        .catch(reject);
+    });
   },
 };

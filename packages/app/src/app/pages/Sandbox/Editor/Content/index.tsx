@@ -7,7 +7,7 @@ import { Icons } from 'app/components/CodeEditor/elements';
 import { VSCode as CodeEditor } from 'app/components/CodeEditor/VSCode';
 import { DevTools } from 'app/components/Preview/DevTools';
 import { useOvermind } from 'app/overmind';
-import { useKey } from 'react-use';
+import useKey from 'react-use/lib/useKey';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import QuestionIcon from 'react-icons/lib/go/question';
 import SplitPane from 'react-split-pane';

@@ -10,7 +10,6 @@ import getWorkspaceItems, { getDisabledItems } from 'app/overmind/utils/items';
 import React from 'react';
 import { withTheme } from 'styled-components';
 
-import { Advertisement } from './Advertisement';
 import { Chat } from './Chat';
 import { Chat as ChatOld } from './ChatOld';
 import { ConnectionNotice } from './ConnectionNotice';
@@ -30,8 +29,6 @@ import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 import { ProjectInfo } from './items/ProjectInfo';
 import { Server } from './items/Server';
 import { Comments } from './screens/Comments';
-import { MultiComment } from './screens/Comments/components/MultiComment';
-import { CommentDialog } from './screens/Comments/Dialog';
 import { ConfigurationFiles as ConfigurationFilesNew } from './screens/ConfigurationFiles';
 import { Deployment as DeploymentNew } from './screens/Deployment/index';
 import { Explorer } from './screens/Explorer';
@@ -66,8 +63,6 @@ if (COMMENTS && NEW_SIDEBAR) {
 export const WorkspaceComponent = ({ theme }) => {
   const { state } = useOvermind();
   const {
-    editor: { currentSandbox },
-    isPatron,
     live: { isLive, roomInfo },
     preferences: {
       settings: { zenMode },
@@ -110,22 +105,11 @@ export const WorkspaceComponent = ({ theme }) => {
             ) : (
               <Chat />
             ))}
-
-          {NEW_SIDEBAR &&
-            !(isPatron || (currentSandbox && currentSandbox.owned)) &&
-            !(isLive && roomInfo.chatEnabled) && <Advertisement />}
-
-          {state.comments.currentCommentId && <CommentDialog />}
-          {state.comments.multiCommentsSelector && (
-            <MultiComment {...state.comments.multiCommentsSelector} />
-          )}
         </>
       </WorkspaceWrapper>
 
       {!zenMode && !NEW_SIDEBAR && (
         <>
-          {!(isPatron || currentSandbox.owned) && <Advertisement />}
-
           <ContactContainer>
             <SocialInfo style={{ display: 'inline-block' }} />
 

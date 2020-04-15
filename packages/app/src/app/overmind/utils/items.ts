@@ -81,7 +81,11 @@ export function getDisabledItems(store: any): INavigationItem[] {
   }
 
   if (!currentSandbox.owned || !store.isLoggedIn) {
-    return [GITHUB, DEPLOYMENT, LIVE];
+    const returnedItems = [GITHUB, DEPLOYMENT];
+    if (!store.live.isLive) {
+      returnedItems.push(LIVE);
+    }
+    return returnedItems;
   }
 
   return [];

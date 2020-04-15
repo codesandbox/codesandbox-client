@@ -87,6 +87,9 @@ if (process.env.NODE_ENV === 'production') {
     'track',
     'editor.previewActionReceived',
     'live.onSelectionChanged',
+    'live.onViewRangeChanged',
+    'editor.onSelectionChanged',
+    'editor.persistCursorToUrl',
   ];
 
   try {

@@ -61,7 +61,7 @@ module.exports = {
     `gatsby-plugin-styled-components`,
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-remove-trailing-slashes`,
-    `gatsby-plugin-sitemap`,
+    { resolve: `gatsby-plugin-sitemap`, options: { exclude: ['/index2'] } },
     {
       resolve: `gatsby-plugin-google-tagmanager`,
       options: {

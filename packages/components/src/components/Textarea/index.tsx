@@ -21,6 +21,7 @@ export const TextareaComponent: any = styled(Input).attrs({
     padding: 2,
     width: '100%',
     resize: 'none',
+    lineHeight: 1.2,
     // autosize styles
     overflow: 'hidden',
     transitionProperty: 'height',
@@ -79,14 +80,14 @@ export const Textarea: React.FC<ITextareaProps> = ({
   return (
     <>
       <Wrapper>
-        <Autosize value={innerValue}>
+        <Autosize value={innerValue} style={props.style}>
           {(height: number) => (
             <TextareaComponent
               value={innerValue}
               onChange={internalOnChange}
               maxLength={maxLength}
-              style={{ height }}
               {...props}
+              style={{ ...(props.style || {}), height }}
             />
           )}
         </Autosize>
@@ -101,7 +102,7 @@ export const Textarea: React.FC<ITextareaProps> = ({
   );
 };
 
-const Autosize = ({ value, ...props }) => (
+const Autosize = ({ value, style = {}, ...props }) => (
   <Rect>
     {({ rect, ref }) => (
       <>
@@ -113,15 +114,16 @@ const Autosize = ({ value, ...props }) => (
             style={{
               // match textarea styles
               whiteSpace: 'pre',
-              lineHeight: 1,
+              lineHeight: 1.2,
               minHeight: 64,
               padding: 8,
+              ...style,
             }}
           >
             {value + ' '}
           </Text>
         </VisuallyHidden>
-        {props.children(rect ? rect.height + 8 : 0)}
+        {props.children(rect ? rect.height + 20 : 0)}
       </>
     )}
   </Rect>

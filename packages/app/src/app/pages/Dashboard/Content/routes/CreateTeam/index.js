@@ -110,19 +110,19 @@ export default class CreateTeam extends React.PureComponent {
                     <QuestionHeader>
                       What if I{"'"}m a{' '}
                       <a target="_blank" href="/patron">
-                        <span>Patron</span>
+                        <span>Pro</span>
                       </a>
                       ?
                     </QuestionHeader>
 
                     <Description>
-                      You can benefit from all Patron features. This means that
-                      you can create unlimited private and unlisted sandboxes as
-                      a Patron in your team.
+                      You can benefit from all Pro features. This means that you
+                      can create unlimited private and unlisted sandboxes as a
+                      Pro in your team.
                       <br />
                       <br />
                       When we release Team Pro it will be required to have a Pro
-                      subscription to get the Patron functionality.
+                      subscription to get the Pro functionality.
                     </Description>
                   </PatronInfo>
 

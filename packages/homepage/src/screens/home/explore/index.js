@@ -96,7 +96,8 @@ const Sandbox = ({
           big={big}
           title={id}
           src={`https://codesandbox.io/embed/${id}?fontsize=14&hidenavigation=1&view=preview&hidedevtools=1`}
-          sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
+          allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr"
+          sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
         />
       ) : (
         <Button href={`https://codesandbox.io/s/${id}`} target="_blank">

@@ -1,5 +1,3 @@
-import './icons.css';
-
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
@@ -39,6 +37,7 @@ import {
   initializeExtensionsFolder,
   initializeSettings,
   initializeThemeCache,
+  initializeSnippetDirectory,
 } from './initializers';
 import { Linter } from './Linter';
 import {
@@ -143,7 +142,7 @@ export class VSCodeEffect {
       getState: options.getState,
       getSignal: options.getSignal,
     };
-    this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 500);
+    this.onSelectionChangeDebounced = debounce(options.onSelectionChanged, 200);
 
     this.prepareElements();
 
@@ -192,6 +191,8 @@ export class VSCodeEffect {
       initializeCustomTheme();
       initializeThemeCache();
       initializeSettings();
+      initializeSnippetDirectory();
+
       this.setVimExtensionEnabled(
         localStorage.getItem('settings.vimmode') === 'true'
       );
@@ -217,6 +218,10 @@ export class VSCodeEffect {
     });
 
     return this.initialized;
+  }
+
+  public isModuleOpened(module: Module) {
+    return this.modelsHandler.isModuleOpened(module);
   }
 
   public async getCodeReferenceBoundary(
@@ -567,6 +572,40 @@ export class VSCodeEffect {
     }
   };
 
+  public async openDiff(sandboxId: string, module: Module, oldCode: string) {
+    if (!module.path) {
+      return;
+    }
+
+    const recoverPath = `/recover/${sandboxId}/recover-${module.path.replace(
+      /\//g,
+      ' '
+    )}`;
+    const filePath = `/sandbox${module.path}`;
+    const fileSystem = window.BrowserFS.BFSRequire('fs');
+
+    // We have to write a recover file to the filesystem, we save it behind
+    // the sandboxId
+    if (!fileSystem.existsSync(`/recover/${sandboxId}`)) {
+      fileSystem.mkdirSync(`/recover/${sandboxId}`);
+    }
+    // We write the recover file with the old code, as the new code is already applied
+    fileSystem.writeFileSync(recoverPath, oldCode);
+
+    // We open a conflict resolution editor for the files
+    this.editorApi.editorService.openEditor({
+      leftResource: this.monaco.Uri.from({
+        scheme: 'conflictResolution',
+        path: recoverPath,
+      }),
+      rightResource: this.monaco.Uri.file(filePath),
+      label: `Recover - ${module.path}`,
+      options: {
+        pinned: true,
+      },
+    });
+  }
+
   public setCorrections = (corrections: ModuleCorrection[]) => {
     const activeEditor = this.editorApi.getActiveCodeEditor();
     if (activeEditor) {
@@ -619,15 +658,17 @@ export class VSCodeEffect {
     if (activeEditor) {
       const model = activeEditor.getModel();
 
-      const lineColumnPos = indexToLineAndColumn(
-        model.getLinesContent() || [],
-        pos
-      );
+      if (model) {
+        const lineColumnPos = indexToLineAndColumn(
+          model.getLinesContent() || [],
+          pos
+        );
 
-      activeEditor.revealPositionInCenterIfOutsideViewport(
-        lineColumnPos,
-        scrollType
-      );
+        activeEditor.revealPositionInCenterIfOutsideViewport(
+          lineColumnPos,
+          scrollType
+        );
+      }
     }
   }
 
@@ -653,6 +694,38 @@ export class VSCodeEffect {
     if (activeEditor) {
       activeEditor.revealRange(range, scrollType);
     }
+  }
+
+  /**
+   * Set the selection inside the editor
+   * @param head Start of the selection
+   * @param anchor End of the selection
+   */
+  setSelection(head: number, anchor: number) {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+    if (!activeEditor) {
+      return;
+    }
+
+    const model = activeEditor.getModel();
+    if (!model) {
+      return;
+    }
+
+    const headPos = indexToLineAndColumn(model.getLinesContent() || [], head);
+    const anchorPos = indexToLineAndColumn(
+      model.getLinesContent() || [],
+      anchor
+    );
+    const range = new this.monaco.Range(
+      headPos.lineNumber,
+      headPos.column,
+      anchorPos.lineNumber,
+      anchorPos.column
+    );
+
+    this.revealRange(range);
+    activeEditor.setSelection(range);
   }
 
   // Communicates the endpoint for the WebsocketLSP
@@ -750,9 +823,18 @@ export class VSCodeEffect {
         )
       ),
       this.createFileSystem('InMemory', {}),
+      this.createFileSystem('InMemory', {}),
     ]);
 
-    const [root, sandbox, vscode, home, extensions, customTheme] = fileSystems;
+    const [
+      root,
+      sandbox,
+      vscode,
+      home,
+      extensions,
+      customTheme,
+      recover,
+    ] = fileSystems;
 
     const mfs = await this.createFileSystem('MountableFileSystem', {
       '/': root,
@@ -761,6 +843,7 @@ export class VSCodeEffect {
       '/home': home,
       '/extensions': extensions,
       '/extensions/custom-theme': customTheme,
+      '/recover': recover,
     });
 
     window.BrowserFS.initialize(mfs);
@@ -806,7 +889,7 @@ export class VSCodeEffect {
       { IEditorService },
       { ICodeEditorService },
       { ITextFileService },
-
+      { ILifecycleService },
       { IEditorGroupsService },
       { IStatusbarService },
       { IExtensionService },
@@ -822,6 +905,7 @@ export class VSCodeEffect {
       r('vs/workbench/services/editor/common/editorService'),
       r('vs/editor/browser/services/codeEditorService'),
       r('vs/workbench/services/textfile/common/textfiles'),
+      r('vs/platform/lifecycle/common/lifecycle'),
       r('vs/workbench/services/editor/common/editorGroupsService'),
       r('vs/platform/statusbar/common/statusbar'),
       r('vs/workbench/services/extensions/common/extensions'),
@@ -926,6 +1010,15 @@ export class VSCodeEffect {
         if (this.settings.lintEnabled) {
           this.createLinter();
         }
+
+        const lifecycleService = accessor.get(ILifecycleService);
+
+        // Trigger all VSCode lifecycle listeners
+        lifecycleService.phase = 2; // Restoring
+        requestAnimationFrame(() => {
+          lifecycleService.phase = 3; // Running
+        });
+
         resolve();
       });
     });
@@ -1047,8 +1140,11 @@ export class VSCodeEffect {
 
     if (activeEditor && activeEditor.getModel()) {
       const modulePath = activeEditor.getModel().uri.path;
+      const currentModule = this.options.getCurrentModule();
 
-      activeEditor.updateOptions({ readOnly: this.readOnly });
+      activeEditor.updateOptions({
+        readOnly: this.readOnly || currentModule?.isBinary,
+      });
 
       if (!modulePath.startsWith('/sandbox')) {
         return;
@@ -1064,16 +1160,16 @@ export class VSCodeEffect {
         );
       }
 
-      const currentModule = this.options.getCurrentModule();
-
       if (
         currentModule &&
         modulePath === `/sandbox${currentModule.path}` &&
         currentModule.code !== undefined &&
-        activeEditor.getValue() !== currentModule.code
+        activeEditor.getValue() !== currentModule.code &&
+        !currentModule.isBinary
       ) {
         // This means that the file in Cerebral is dirty and has changed,
         // VSCode only gets saved contents. In this case we manually set the value correctly.
+
         this.modelsHandler.isApplyingOperation = true;
         const model = activeEditor.getModel();
         model.applyEdits([

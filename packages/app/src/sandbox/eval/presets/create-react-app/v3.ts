@@ -11,6 +11,7 @@ import rawTranspiler from '../../transpilers/raw';
 import svgrTranspiler from '../../transpilers/svgr';
 import sassTranspiler from '../../transpilers/sass';
 import refreshTranspiler from '../../transpilers/react/refresh-transpiler';
+import styleProcessor from '../../transpilers/postcss';
 import {
   hasRefresh,
   aliases,
@@ -121,7 +122,7 @@ export default function initialize() {
   let initialized = false;
   let refreshInitialized = false;
   const preset = new Preset(
-    'create-react-app-v3',
+    'create-react-app',
     ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx'],
     aliases,
     {
@@ -131,7 +132,7 @@ export default function initialize() {
           dependencies['react-dom'] &&
           isMinimalReactVersion(dependencies['react-dom'], '16.9.0')
         ) {
-          return { ...dependencies, 'react-refresh': '0.7.2' };
+          return { ...dependencies, 'react-refresh': '0.8.1' };
         }
 
         return dependencies;
@@ -190,6 +191,7 @@ export default function initialize() {
             module => /\.module\.s[c|a]ss$/.test(module.path),
             [
               { transpiler: sassTranspiler },
+              { transpiler: styleProcessor },
               {
                 transpiler: stylesTranspiler,
                 options: { module: true, hmrEnabled: isRefresh },
@@ -199,6 +201,7 @@ export default function initialize() {
           preset.registerTranspiler(
             module => /\.module\.css$/.test(module.path),
             [
+              { transpiler: styleProcessor },
               {
                 transpiler: stylesTranspiler,
                 options: { module: true, hmrEnabled: isRefresh },
@@ -207,6 +210,7 @@ export default function initialize() {
           );
 
           preset.registerTranspiler(module => /\.css$/.test(module.path), [
+            { transpiler: styleProcessor },
             {
               transpiler: stylesTranspiler,
               options: { hmrEnabled: isRefresh },
@@ -214,6 +218,7 @@ export default function initialize() {
           ]);
           preset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
             { transpiler: sassTranspiler },
+            { transpiler: styleProcessor },
             {
               transpiler: stylesTranspiler,
               options: { hmrEnabled: isRefresh },

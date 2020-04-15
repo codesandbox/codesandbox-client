@@ -25,6 +25,7 @@ export const Comments: React.FC = () => {
     },
     actions: { comments: commentsActions },
   } = useOvermind();
+  const scrollRef = React.useRef(null);
   const options = Object.values(CommentsFilterOption);
 
   const getSelectedFilter = () => {
@@ -37,6 +38,31 @@ export const Comments: React.FC = () => {
         return 'new';
     }
   };
+
+  const getFilterName = () => {
+    switch (selectedCommentsFilter) {
+      case CommentsFilterOption.ALL:
+        return 'All';
+      case CommentsFilterOption.RESOLVED:
+        return 'Resolved';
+      case CommentsFilterOption.OPEN:
+        return 'Open';
+      default:
+        return 'new';
+    }
+  };
+
+  const onSubmit = value => {
+    commentsActions.addComment({
+      content: value,
+    });
+    scrollRef.current.scrollTop = 0;
+  };
+
+  const iconColor =
+    selectedCommentsFilter !== CommentsFilterOption.ALL
+      ? 'button.background'
+      : 'inherit';
 
   const Empty = () => (
     <Stack
@@ -79,13 +105,29 @@ export const Comments: React.FC = () => {
             minHeight: '35px',
           })}
         >
-          <Text>Comments</Text>
+          <Text>
+            Comments
+            <Text css={{ textTransform: 'capitalize' }}>
+              {' '}
+              ({getFilterName()})
+            </Text>
+          </Text>
           <Menu>
             <Menu.IconButton
               className="icon-button"
               name="filter"
               title="Filter comments"
               size={12}
+              css={css({
+                color: iconColor,
+                ':hover:not(:disabled)': {
+                  color: iconColor,
+                },
+                ':focus:not(:disabled)': {
+                  color: iconColor,
+                  backgroundColor: 'transparent',
+                },
+              })}
             />
             <Menu.List>
               {options.map(option => (
@@ -102,11 +144,16 @@ export const Comments: React.FC = () => {
 
         {currentComments.length ? (
           <List
+            itemProp="mainEntity"
+            itemScope
+            itemType="http://schema.org/Conversation"
+            ref={scrollRef}
             marginTop={4}
             css={{
               // stretch within container, leaving space for comment box
               height: 'calc(100% - 32px)',
               overflow: 'auto',
+              scrollBehavior: 'smooth',
             }}
           >
             {currentCommentsByDate.today.length ? (
@@ -133,7 +180,7 @@ export const Comments: React.FC = () => {
         ) : null}
       </div>
       {currentComments.length ? null : <Empty />}
-      <AddComment />
+      <AddComment onSubmit={onSubmit} />
     </Stack>
   );
 };

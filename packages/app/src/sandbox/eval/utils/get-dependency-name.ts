@@ -5,7 +5,7 @@ export default function getDependencyName(path: string) {
   if (path.startsWith('@')) {
     dependencyName += `/${dependencyParts.shift()}`;
   }
-  if (dependencyParts[0] && /^\d+\.\d+\.\d+$/.test(dependencyParts[0])) {
+  if (dependencyParts[0] && /^\d+\.\d+\.\d+.*$/.test(dependencyParts[0])) {
     // Make sure to include the aliased version if it's part of it
     dependencyName += `/${dependencyParts.shift()}`;
   }
