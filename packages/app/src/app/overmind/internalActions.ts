@@ -508,3 +508,17 @@ export const handleError: Action<{
       : {}),
   });
 };
+
+export const setCurrentTeams: AsyncAction = async ({ state, effects }) => {
+  const { me } = await effects.gql.queries.teams({});
+  if (me) {
+    effects.analytics.setGroup(
+      'teamName',
+      me.teams.map(m => m.name)
+    );
+    effects.analytics.setGroup(
+      'teamId',
+      me.teams.map(m => m.id)
+    );
+  }
+};
