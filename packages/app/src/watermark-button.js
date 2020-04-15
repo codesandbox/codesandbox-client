@@ -66,6 +66,15 @@ const createIframe = () => {
 
   const iframeId = `sb__open-sandbox${Math.floor(Math.random() * 100)}`;
   iframe.setAttribute('id', iframeId);
+
+  clearInterval(interval);
+  interval = setInterval(() => {
+    // Check every second whether the button is still there
+    if (!document.getElementById(iframeId)) {
+      createIframe();
+    }
+  }, 1000);
+
   const link = document.createElement('a');
   setIframeStyle(iframe);
 
@@ -94,14 +103,6 @@ const createIframe = () => {
       childList: true,
       subtree: true,
     });
-
-    clearInterval(interval);
-    interval = setInterval(() => {
-      // Check every second whether the button is still there
-      if (!document.getElementById(iframeId)) {
-        createIframe();
-      }
-    }, 1000);
   };
 
   document.body.appendChild(iframe);
