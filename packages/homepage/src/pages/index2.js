@@ -1,4 +1,5 @@
 import React from 'react';
+import { identify } from '@codesandbox/common/lib/utils/analytics';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
@@ -57,14 +58,6 @@ const Homepage = () => (
   </Layout>
 );
 
-if (typeof window !== 'undefined') {
-  window.addEventListener('load', () => {
-    try {
-      window.amplitude.identify('hero0420', 'B');
-    } catch (e) {
-      console.warn(e);
-    }
-  });
-}
+identify('hero0420', 'B');
 
 export default Homepage;
