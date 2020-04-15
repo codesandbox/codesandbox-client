@@ -28,7 +28,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
       css={deepmerge(
         {
           width: '26px', // same width as (height of the button)
-          padding: 0,
+          paddingX: 0,
           borderRadius: '50%',
           ':hover:not(:disabled)': {
             backgroundColor: 'secondaryButton.background',
