@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-
 import { motion } from 'framer-motion';
 import { Socket } from 'phoenix';
 
@@ -108,6 +107,8 @@ export default () => {
 
   return (
     <HeroWrapper>
+      <BoxAnimation boxes={boxes} showPlane={showPlane} />
+
       <motion.div
         initial={{ opacity: 0, y: 140 }}
         animate={{ opacity: 1, y: 0 }}
@@ -127,7 +128,6 @@ export default () => {
         >
           An instant IDE and prototyping tool for rapid web development.
         </SubTitle>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -151,8 +151,6 @@ export default () => {
           delay: 1,
         }}
       >
-        <BoxAnimation boxes={boxes} showPlane={showPlane} />
-
         <HeroBottom>
           <div ref={ideRef}>
             <CountText>
