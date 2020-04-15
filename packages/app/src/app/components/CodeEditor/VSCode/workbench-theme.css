@@ -234,3 +234,8 @@
 .context-view.monaco-menu-container {
   font-size: 0.75rem;
 }
+
+/* Fixes https://github.com/codesandbox/codesandbox-client/issues/3882 */
+.monaco-editor .parameter-hints-widget {
+  overflow-y: scroll;
+}
