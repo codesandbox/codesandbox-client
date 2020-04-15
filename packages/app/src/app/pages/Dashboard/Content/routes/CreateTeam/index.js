@@ -3,7 +3,7 @@ import { Mutation } from 'react-apollo';
 
 import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import track, { setGroup } from '@codesandbox/common/lib/utils/analytics';
+import track from '@codesandbox/common/lib/utils/analytics';
 import history from 'app/utils/history';
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
@@ -88,9 +88,6 @@ export default class CreateTeam extends React.PureComponent {
                   });
                 },
               }).then(({ data }) => {
-                setGroup('teamName', data.createTeam.name);
-                setGroup('teamId', data.createTeam.id);
-
                 notificationState.addNotification({
                   message: `Succesfully created team '${data.createTeam.name}'`,
                   status: NotificationStatus.SUCCESS,
