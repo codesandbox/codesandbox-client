@@ -140,9 +140,10 @@ export type LoaderContext = {
 };
 /* eslint-enable */
 
-type Compilation = {
+export type Compilation = {
   id: string;
   exports: any;
+  globals: object | undefined;
   hot: {
     accept: (() => void) | ((arg: string | string[], cb: () => void) => void);
     decline: (path: string | Array<string>) => void;
@@ -770,12 +771,24 @@ export default class TranspiledModule {
     }
   };
 
+  isCompilationCached = (globals?: object) => {
+    if (!this.compilation || !this.compilation.exports) {
+      return false;
+    }
+
+    if (this.compilation.globals === globals) {
+      return true;
+    }
+
+    return false;
+  };
+
   evaluate(
     manager: Manager,
     {
       asUMD = false,
       force = false,
-      globals = {},
+      globals,
     }: { asUMD?: boolean; force?: boolean; globals?: any } = {},
     initiator?: TranspiledModule
   ) {
@@ -845,7 +858,7 @@ export default class TranspiledModule {
       ) {
         return this.compilation.exports;
       }
-    } else if (this.compilation && this.compilation.exports && !this.isEntry) {
+    } else if (this.isCompilationCached(globals) && !this.isEntry) {
       return this.compilation.exports;
     }
 
@@ -864,6 +877,7 @@ export default class TranspiledModule {
     this.compilation = this.compilation || {
       id: this.getId(),
       exports: {},
+      globals,
       hot: {
         accept: (path: string | Array<string>, cb) => {
           if (
@@ -926,7 +940,9 @@ export default class TranspiledModule {
         removeStatusHandler: manager.removeStatusHandler,
       },
     };
-    this.compilation.hot.data = hotData;
+    if (this.compilation.hot) {
+      this.compilation.hot.data = hotData;
+    }
 
     const transpiledModule = this;
 
@@ -985,7 +1001,7 @@ export default class TranspiledModule {
         // of that compilation
         const cache = requiredTranspiledModule.compilation;
 
-        return cache
+        return requiredTranspiledModule.isCompilationCached(globals)
           ? cache.exports
           : manager.evaluateTranspiledModule(
               requiredTranspiledModule,
@@ -1001,15 +1017,16 @@ export default class TranspiledModule {
         return foundModule.path;
       };
 
-      globals.__dirname = pathUtils.dirname(this.module.path);
-      globals.__filename = this.module.path;
+      const usedGlobals = globals || {};
+      usedGlobals.__dirname = pathUtils.dirname(this.module.path);
+      usedGlobals.__filename = this.module.path;
 
       const exports = evaluate(
         this.source.compiledCode,
         require,
         this.compilation,
         manager.envVariables,
-        globals,
+        usedGlobals,
         { asUMD }
       );
 

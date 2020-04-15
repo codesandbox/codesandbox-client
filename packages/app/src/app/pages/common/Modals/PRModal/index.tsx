@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 
 import { GitProgress } from 'app/components/GitProgress';
 import { useOvermind } from 'app/overmind';
-import { Stack, Button, Text } from '@codesandbox/components';
+import { Stack, Link, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const PRModal: FunctionComponent = () => {
@@ -24,8 +24,7 @@ export const PRModal: FunctionComponent = () => {
             </Text>
 
             <Stack justify="flex-end">
-              <Button
-                as="a"
+              <Link
                 css={css({
                   width: 'auto',
                   textDecoration: 'none',
@@ -35,7 +34,7 @@ export const PRModal: FunctionComponent = () => {
                 target="_blank"
               >
                 Click here if nothing happens.
-              </Button>
+              </Link>
             </Stack>
           </>
         )

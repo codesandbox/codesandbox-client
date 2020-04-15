@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { Stack, Button, Text } from '@codesandbox/components';
+import { Stack, Link, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 import { GitProgress } from 'app/components/GitProgress';
@@ -29,8 +29,7 @@ const CommitModal: FunctionComponent = () => {
             instead.
           </Text>
           <Stack justify="flex-end">
-            <Button
-              as="a"
+            <Link
               css={css({
                 textDecoration: 'none',
                 width: 'auto',
@@ -40,7 +39,7 @@ const CommitModal: FunctionComponent = () => {
               rel="noreferrer noopener"
             >
               Open a PR
-            </Button>
+            </Link>
           </Stack>
         </>
       );

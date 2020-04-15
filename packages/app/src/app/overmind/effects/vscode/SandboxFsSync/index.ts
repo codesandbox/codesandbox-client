@@ -21,7 +21,7 @@ import { appendFile, mkdir, rename, rmdir, unlink, writeFile } from './utils';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
-const SERVICE_URL = 'https://ata-fetcher.cloud/api/v5/typings';
+const SERVICE_URL = 'https://ata.codesandbox.io/api/v8';
 
 declare global {
   interface Window {
@@ -395,7 +395,8 @@ class SandboxFsSync {
   }
 
   private async fetchDependencyTypingFiles(name: string, version: string) {
-    const fetchRequest = await fetch(`${SERVICE_URL}/${name}@${version}.json`);
+    const dependencyQuery = encodeURIComponent(`${name}@${version}`);
+    const fetchRequest = await fetch(`${SERVICE_URL}/${dependencyQuery}.json`);
 
     if (!fetchRequest.ok) {
       throw new Error('Fetch error');

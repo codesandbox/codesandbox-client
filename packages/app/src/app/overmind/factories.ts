@@ -35,6 +35,11 @@ export const withLoadApp = <T>(
       actions.internal.setSignedInCookie();
       effects.analytics.identify('signed_in', true);
       effects.analytics.setUserId(state.user.id);
+      try {
+        actions.internal.trackCurrentTeams();
+      } catch (e) {
+        // Not majorly important
+      }
       actions.internal.showUserSurveyIfNeeded();
       effects.live.connect();
       actions.userNotifications.internal.initialize();
