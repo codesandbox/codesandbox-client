@@ -20,8 +20,13 @@ export const ContainerLSP: FunctionComponent = () => {
         type="boolean"
         value={user.experiments.containerLsp}
       />
-
-      <Text size={3} variant="muted">
+      <Text
+        size={3}
+        variant="muted"
+        marginTop={2}
+        block
+        style={{ maxWidth: '60%' }}
+      >
         As part of making containers more powerful we now allow the language
         server to run there. Please help us test it :-)
       </Text>

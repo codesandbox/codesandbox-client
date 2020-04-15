@@ -16,7 +16,7 @@ export const OpenVSCodeSettingsButton: FunctionComponent = () => {
   };
 
   return (
-    <Button marginTop={4} onClick={openCommand} size="small">
+    <Button marginTop={4} onClick={openCommand} style={{ width: 'auto' }}>
       Open VSCode Settings
     </Button>
   );

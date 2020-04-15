@@ -4,6 +4,8 @@ import { Rule, SubContainer } from '../elements';
 import { Comments } from './Comments';
 import { ContainerLSP } from './ContainerLSP';
 
+const dev = process.env.NODE_ENV === 'development';
+
 export const Experiments: React.FunctionComponent = () => (
   <>
     <Text size={4} marginBottom={4} block variant="muted" weight="bold">
@@ -11,12 +13,11 @@ export const Experiments: React.FunctionComponent = () => (
     </Text>
     <SubContainer>
       <Element paddingTop={2}>
-        {process.env.NODE_ENV === 'development' ||
-          (process.env.NODE_ENV === 'staging' && (
-            <>
-              <Comments /> <Rule />
-            </>
-          ))}
+        {dev && (
+          <>
+            <Comments /> <Rule />
+          </>
+        )}
         <ContainerLSP />
       </Element>
     </SubContainer>

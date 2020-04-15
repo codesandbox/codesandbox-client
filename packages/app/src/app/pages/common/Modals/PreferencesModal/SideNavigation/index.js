@@ -10,7 +10,7 @@ export const SideNavigation = ({ menuItems, itemId, setItem }) => (
       borderWidth: 1,
       borderRightStyle: 'solid',
       borderColor: 'sideBar.border',
-      width: 200,
+      width: 220,
     })}
   >
     <Text

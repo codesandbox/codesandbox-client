@@ -99,7 +99,7 @@ export const PaymentInfo: FunctionComponent = () => {
               <Text weight="bold" size={3}>
                 {brand}
               </Text>{' '}
-              <Text variant="muted">ending in ****</Text>
+              <Text variant="muted">ending in </Text>
               <Text weight="bold" size={3}>
                 {last4}
               </Text>
