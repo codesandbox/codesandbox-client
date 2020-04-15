@@ -1,3 +1,4 @@
+// Just lock out a CI build
 const { spawn } = require('child_process');
 const { argv } = require('yargs');
 const username = require('username');
