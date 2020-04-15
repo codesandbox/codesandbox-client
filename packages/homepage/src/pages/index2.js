@@ -57,4 +57,14 @@ const Homepage = () => (
   </Layout>
 );
 
+if (typeof window !== 'undefined') {
+  window.addEventListener('load', () => {
+    try {
+      window.amplitude.identify('hero0420', 'B');
+    } catch (e) {
+      console.warn(e);
+    }
+  });
+}
+
 export default Homepage;
