@@ -36,7 +36,7 @@ export const withLoadApp = <T>(
       effects.analytics.identify('signed_in', true);
       effects.analytics.setUserId(state.user.id);
       try {
-        actions.internal.setCurrentTeams();
+        actions.internal.trackCurrentTeams();
       } catch (e) {
         // Not majorly important
       }

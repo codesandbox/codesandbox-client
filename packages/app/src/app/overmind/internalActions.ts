@@ -509,7 +509,7 @@ export const handleError: Action<{
   });
 };
 
-export const setCurrentTeams: AsyncAction = async ({ state, effects }) => {
+export const trackCurrentTeams: AsyncAction = async ({ state, effects }) => {
   const { me } = await effects.gql.queries.teams({});
   if (me) {
     effects.analytics.setGroup(
