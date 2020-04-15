@@ -35,3 +35,20 @@ export const Disabled = () => (
     </Button>
   </Stack>
 );
+
+export const Loading = () => (
+  <Stack direction="vertical" gap={4} style={{ width: 200 }}>
+    <Button loading variant="primary">
+      primary by default
+    </Button>
+    <Button loading variant="secondary">
+      Save as Template
+    </Button>
+    <Button loading variant="link">
+      Open sandbox
+    </Button>
+    <Button loading variant="danger">
+      Go live
+    </Button>
+  </Stack>
+);
