@@ -6,7 +6,7 @@ import { colors as tokens } from '@codesandbox/components/lib/design-language/co
 
   the object style is better authoring experience, it helps
   organizing the file better, let's us lint the file and find
-  duplicates / clashingstyles.
+  duplicates / clashing styles.
 */
 
 const colors = {
