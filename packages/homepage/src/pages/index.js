@@ -2,6 +2,9 @@ import React from 'react';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
+
+import Privacy from '../components/Toast';
+
 import Hero from '../screens/home/hero';
 import Prototype from '../screens/home/prototype';
 import Started from '../screens/home/started';
@@ -20,6 +23,7 @@ console.log(
 const Homepage = () => (
   <Layout noWrapperStyling>
     <TitleAndMetaTags />
+
     <section
       css={`
         margin-bottom: 8rem;
@@ -53,6 +57,8 @@ const Homepage = () => (
         <Join />
       </LoadInView>
     </div>
+
+    <Privacy />
   </Layout>
 );
 
