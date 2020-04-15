@@ -54,13 +54,16 @@ function isStandalone() {
   return !window.opener && window.parent === window;
 }
 
+let interval;
 const createIframe = () => {
   if (!isStandalone()) {
     return;
   }
 
   const iframe = document.createElement('iframe');
-  iframe.setAttribute('id', 'open-sandbox');
+
+  const iframeId = `sb__open-sandbox${Math.floor(Math.random() * 100)}`;
+  iframe.setAttribute('id', iframeId);
   const link = document.createElement('a');
   setIframeStyle(iframe);
 
@@ -89,14 +92,24 @@ const createIframe = () => {
       childList: true,
       subtree: true,
     });
+
+    clearInterval(interval);
+    interval = setInterval(() => {
+      // Check every second whether the button is still there
+      if (!document.getElementById(iframeId)) {
+        createIframe();
+      }
+    }, 1000);
   };
 
   document.body.appendChild(iframe);
 };
-window.addEventListener('load', () => {
-  try {
+
+try {
+  setTimeout(() => {
     createIframe();
-  } catch (e) {
-    /* ignore */
-  }
-});
+  }, 250);
+} catch (e) {
+  console.error(e);
+  /* catch */
+}
