@@ -168,7 +168,7 @@
     "onigasm": "^2.2.1",
     "ot": "^0.0.15",
     "overmind": "^23.0.2-1583315924305",
-    "overmind-devtools": "^19.0.0",
+    "overmind-devtools": "^23.1.0",
     "overmind-graphql": "^3.1.0-1583324447920",
     "overmind-react": "^24.0.2-1583315924305",
     "phoenix": "^1.4.11",
