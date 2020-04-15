@@ -31,7 +31,6 @@ export const EditorElement = styled.img`
 `;
 
 export const HeroWrapper = styled.section`
-  border-bottom: 1px solid #242424;
   position: relative;
   display: flex;
   justify-content: center;
@@ -39,25 +38,15 @@ export const HeroWrapper = styled.section`
   text-align: center;
   overflow: hidden;
   padding: 0 2rem;
-  min-height: 768px;
+
+  height: 100vh;
+  min-height: 1080px;
 
   perspective: 1000;
-  } 
 
-  @media screen and (min-width: 576px) {
-    min-height: 768px;
-
+  ${props => props.theme.breakpoints.sm} {
+    min-height: 800px;
   }
-
-  @media screen and (min-width: 768px) {
-    min-height: 960px;
-
-  }
-
-  @media screen and (min-width: 960px) {
-    min-height: 1024px;
- }
-
 `;
 
 export const SignUp = styled.p`
@@ -104,7 +93,7 @@ export const StyledEditorLink = styled.a`
 
 export const HeroBottom = styled.div`
   position: absolute;
-  bottom: -10%;
+  bottom: -30%;
   left: 0;
   right: 0;
   display: flex;
@@ -141,32 +130,19 @@ export const InspiredText = styled.span`
 `;
 
 export const HeroImage = styled.img`
-  max-width: 576px;
+  max-width: 1200px;
   min-width: 100%;
-  padding: 0 1rem;
-
   overflow: hidden;
   border-radius: 4px;
   box-shadow: rgba(0, 0, 0, 0.3) 20px 14px 47px 0px;
 
-  @media screen and (min-width: 576px) {
-    max-width: 576px;
-    padding: 0 1rem;
-  }
-
-  @media screen and (min-width: 768px) {
-    max-width: 768px;
-    padding: 0 1rem;
-  }
-
-  @media screen and (min-width: 960px) {
-    max-width: 960px;
-    padding: 0 1rem;
+  ${props => props.theme.breakpoints.md} {
+    width: 120vw;
   }
 `;
 
 export const Title = styled.h1`
-  font-size: 3rem;
+  font-size: 2.5rem;
   line-height: 57px;
   font-family: ${props => props.theme.homepage.appleFont};
 
@@ -190,49 +166,11 @@ export const SubTitle = styled.h2`
   font-weight: normal;
   font-size: 1.125rem;
   line-height: 1.3;
-  color: ${props => props.theme.homepage.gray};
+  color: ${props => props.theme.homepage.white};
   margin: 0;
   margin-bottom: 1rem;
 
   ${props => props.theme.breakpoints.sm} {
     font-size: 0.875rem;
-  }
-`;
-
-// All for the B variant for A/B test
-
-export const SandboxButtons = styled.section`
-  height: auto;
-  width: auto;
-  margin: 5rem 0;
-`;
-
-export const Sandbox = styled.a`
-  display: inline-block;
-  width: 2rem;
-  height: 2rem;
-  margin: 0 0.75rem;
-  opacity: 0.2;
-  border: none;
-  background-color: transparent;
-  background-size: cover;
-  transform: scale(1);
-  transition: all 100ms ease-in;
-
-  @media screen and (min-width: 576px) {
-    width: 3rem;
-    height: 3rem;
-    margin: 0 1rem;
-  }
-
-  @media screen and (min-width: 768px) {
-    width: 4rem;
-    height: 4rem;
-    margin: 0 2rem;
-  }
-
-  :hover {
-    transform: scale(0.9);
-    opacity: 1;
   }
 `;
