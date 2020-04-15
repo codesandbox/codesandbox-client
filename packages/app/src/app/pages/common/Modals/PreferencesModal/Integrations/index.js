@@ -10,7 +10,7 @@ export function Integrations() {
   return (
     <div>
       <Text size={4} marginBottom={4} block variant="muted" weight="bold">
-        Preview
+        Integrations
       </Text>
 
       <Container>
