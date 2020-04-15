@@ -9,7 +9,7 @@ export const SideNavigation = ({ menuItems, itemId, setItem }) => (
       backgroundColor: 'sideBar.background',
       borderWidth: 1,
       borderRightStyle: 'solid',
-      borderColor: 'activityBarBadge.background',
+      borderColor: 'sideBar.border',
       width: 200,
     })}
   >
@@ -30,7 +30,7 @@ export const SideNavigation = ({ menuItems, itemId, setItem }) => (
           css={css({
             transition: '0.3s ease all',
             fontSize: 3,
-            paddingLeft: 6,
+            paddingX: 6,
             cursor: 'pointer',
             height: 6,
             marginBottom: 2,

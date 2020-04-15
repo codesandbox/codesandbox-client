@@ -34,11 +34,11 @@ export const EditorTheme: FunctionComponent = () => {
 
       <Rule />
 
-      <Text variant="muted" size={3} marginBottom={4}>
+      <Text variant="muted" size={3} marginBottom={2} block>
         Custom VSCode Theme
       </Text>
 
-      <Text variant="muted" size={3} marginBottom={4}>
+      <Text variant="muted" size={3} marginBottom={4} block>
         After changing this setting you
         {"'"}
         ll have to reload the browser and select {'"'}

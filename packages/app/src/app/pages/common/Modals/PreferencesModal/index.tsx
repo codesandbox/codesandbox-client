@@ -114,7 +114,7 @@ const PreferencesModal: React.FC = () => {
       />
       <Alert
         css={css({
-          backgroundColor: 'input.border',
+          backgroundColor: 'separator.background',
           maxHeight: 'auto',
           width: '100%',
           '*': {
