@@ -93,5 +93,10 @@ const createIframe = () => {
 
   document.body.appendChild(iframe);
 };
-
-createIframe();
+window.addEventListener('load', () => {
+  try {
+    createIframe();
+  } catch (e) {
+    /* ignore */
+  }
+});
