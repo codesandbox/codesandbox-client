@@ -4,9 +4,7 @@ import { identify } from '@codesandbox/common/lib/utils/analytics';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
 
-
-import Privacy from '../components/Toast';
-
+import { Privacy } from '../components/Toast';
 
 import HeroA from '../screens/home/hero';
 
