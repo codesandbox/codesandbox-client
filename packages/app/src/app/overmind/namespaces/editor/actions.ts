@@ -211,7 +211,9 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
     actions.internal.setCurrentSandbox(sandbox);
     actions.workspace.openDefaultItem();
+    state.editor.unprocessableEntityError = false;
   } catch (error) {
+    state.editor.unprocessableEntityError = false;
     state.editor.notFound = true;
     const errors = error.response?.data?.errors;
     let detail = errors?.detail;
