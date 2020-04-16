@@ -46,7 +46,7 @@ type State = {
   error: {
     status: number;
     message: string;
-  };
+  } | null;
   isResizing: boolean;
   changedModuleShortids: Derive<State, string[]>;
   currentTabId: string | null;
