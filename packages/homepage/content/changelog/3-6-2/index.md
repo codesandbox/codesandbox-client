@@ -47,3 +47,4 @@ description: This release includes bug fixes.
 - Thanks to
   [@jyash97](https://github.com/codesandbox/codesandbox-client/pull/3836) we now
   hide delete buttons on the liked sandboxes page of user profiles
+- We now support showing type definitions from dependencies that have git dependencies
