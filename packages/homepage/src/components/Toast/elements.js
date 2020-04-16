@@ -4,12 +4,12 @@ export const Toastcontainer = styled.div`
   min-width: 320px;
   font-size: 0.65rem;
   line-height: 2rem;
-
+  color: #999999;
   text-align: center;
   padding: 0.25rem 0 0.25rem 0.5rem;
   display: block;
   background: #151515;
-  border: 1px solid #242424;
+  border-top: 1px solid #242424;
   position: fixed;
   z-index: 99999999;
   bottom: 2rem;
@@ -25,8 +25,8 @@ export const Toastcontainer = styled.div`
   }
 
   @media screen and (min-width: 576px) {
-    min-width: 360px;
-    font-size: 0.75rem;
+    min-width: 440px;
+    font-size: 1rem;
     line-height: 2rem;
     padding: 0.125rem 0 0.125rem 2rem;
     border-radius: 0.25rem;
@@ -35,15 +35,10 @@ export const Toastcontainer = styled.div`
       0px 16px 32px rgba(0, 0, 0, 0.24);
   }
 
-  @media screen and (min-width: 768px) {
-    min-width: 440px;
-    font-size: 1rem;
-    line-height: 2rem;
-  }
-
   a {
     text-decoration: none;
     color: #0971f1;
+    font-weight: 500;
     border-bottom: 1px solid transparant;
     transform: all 100ms ease-out;
   }
@@ -53,6 +48,7 @@ export const Toastcontainer = styled.div`
   }
 
   span {
+    cursor: pointer;
     overflow: hidden;
     text-indent: 99px;
     float: right;
