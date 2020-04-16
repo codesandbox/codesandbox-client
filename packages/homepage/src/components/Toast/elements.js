@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
-export const Toastcontainer = styled.div`
+export const ToastContainer = styled(motion.div)`
   min-width: 320px;
   font-size: 0.6rem;
   line-height: 2rem;
@@ -48,11 +49,15 @@ export const Toastcontainer = styled.div`
     border-bottom: 1px solid;
   }
 
-  span {
+  button {
+    appearance: none;
+    background: transparent;
+    border: none;
     cursor: pointer;
     overflow: hidden;
     text-indent: 99px;
     float: right;
+    outline: none;
     display: block;
     width: 2em;
     height: 2rem;
