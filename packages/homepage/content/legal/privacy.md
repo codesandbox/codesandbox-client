@@ -5,7 +5,7 @@ lastEdited: 2020-04-16
 
 # Privacy Policy
 
-_This version 0.90 has been last updated April 16, 2020 ([list of revisions](https://github.com/codesandbox/codesandbox-client/commits/6e360f3797795ab42bd81fa6d405d81e8728d8ac/packages/homepage/content/legal/privacy.md))._
+_This version 0.90 has been last updated April 16, 2020 ([list of revisions](https://github.com/codesandbox/codesandbox-client/commits/master/packages/homepage/content/legal/privacy.md))._
 
 This privacy policy allows you to learn about the way CodeSandbox B.V. (“CodeSandbox”) controls and processes data about you or data that may allow anyone with access, to identify you or anyone on your team with a CodeSandbox account as a natural person. Additionally, the types of data we collect and how we use, share and secure this data and how you can exercise your privacy rights are outlined.
 
