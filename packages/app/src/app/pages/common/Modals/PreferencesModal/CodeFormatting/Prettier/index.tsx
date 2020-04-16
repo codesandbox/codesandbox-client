@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react';
-import { Text } from '@codesandbox/components';
+import { Text, Element } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 
 import {
@@ -55,22 +56,26 @@ export const Prettier: FunctionComponent = () => {
         </Text>
 
         <Rule />
-
-        <PaddedPreference
-          style={{ opacity: prettierConfig.fluid ? 0.5 : 1 }}
-          title="Print width"
-          type="number"
-          {...bindValue('printWidth')}
-        />
-
-        <Text
-          size={2}
-          variant="muted"
-          style={{ opacity: prettierConfig.fluid ? 0.5 : 1 }}
+        <Element
+          css={css({
+            pointerEvents: prettierConfig.fluid ? 'none' : 'all',
+          })}
         >
-          Specify the line length that the printer will wrap on.
-        </Text>
+          <PaddedPreference
+            style={{ opacity: prettierConfig.fluid ? 0.5 : 1 }}
+            title="Print width"
+            type="number"
+            {...bindValue('printWidth')}
+          />
 
+          <Text
+            size={2}
+            variant="muted"
+            style={{ opacity: prettierConfig.fluid ? 0.5 : 1 }}
+          >
+            Specify the line length that the printer will wrap on.
+          </Text>
+        </Element>
         <Rule />
 
         <PaddedPreference

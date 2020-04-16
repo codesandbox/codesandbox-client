@@ -23,7 +23,7 @@ export const EditorTheme: FunctionComponent = () => {
 
   return (
     <div>
-      <Text block size={4} marginTop={4} marginBottom={2}>
+      <Text block size={3} marginTop={8} marginBottom={2}>
         Editor Theme
       </Text>
 

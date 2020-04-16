@@ -15,5 +15,9 @@ export const PreferenceSwitch: FunctionComponent<Props> = ({
     setValue(!value);
   };
 
-  return <Switch onChange={handleClick} on={value} />;
+  return (
+    <div style={{ transform: 'scale(1.5)', marginRight: 8 }}>
+      <Switch onChange={handleClick} on={value} />
+    </div>
+  );
 };

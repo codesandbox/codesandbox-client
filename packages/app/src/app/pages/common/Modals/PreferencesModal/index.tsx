@@ -114,9 +114,9 @@ const PreferencesModal: React.FC = () => {
       />
       <Alert
         css={css({
-          backgroundColor: 'separator.background',
-          maxHeight: 'auto',
+          height: 482,
           width: '100%',
+          padding: 6,
           '*': {
             boxSizing: 'border-box',
           },

@@ -16,7 +16,7 @@ export const SideNavigation = ({ menuItems, itemId, setItem }) => (
     <Text
       paddingLeft={6}
       paddingTop={6}
-      paddingBottom={4}
+      paddingBottom={6}
       size={4}
       block
       weight="bold"
@@ -35,10 +35,10 @@ export const SideNavigation = ({ menuItems, itemId, setItem }) => (
             height: 6,
             marginBottom: 2,
             color:
-              itemId === item.id ? 'sideBar.foreground' : 'mutedForeground',
+              itemId === item.id ? 'list.hoverForeground' : 'mutedForeground',
             '&:hover': {
-              backgroundColor: 'activityBarBadge.background',
-              color: 'sideBar.foreground',
+              backgroundColor: 'list.hoverBackground',
+              color: 'list.hoverForeground',
             },
           })}
           onClick={() => setItem({ itemId: item.id })}

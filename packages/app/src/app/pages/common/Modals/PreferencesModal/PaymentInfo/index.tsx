@@ -78,55 +78,61 @@ export const PaymentInfo: FunctionComponent = () => {
 
     return (
       <>
-        <Text block size={4} marginTop={4} marginBottom={2}>
-          Current card
-        </Text>
-        <Stack align="flex-start" paddingY={4}>
-          <Element
-            paddingRight={2}
-            marginTop={1}
-            css={css({
-              svg: {
-                height: 16,
-                width: 'auto',
-              },
-            })}
-          >
-            {Icon(brand)()}
+        <Stack gap={4}>
+          <Element>
+            <Text block size={3} marginTop={4} marginBottom={4}>
+              Update card info
+            </Text>
+            <SubscribeForm
+              buttonName="Update"
+              loadingText="Updating Card Info..."
+              name={name}
+              subscribe={updatePaymentDetails}
+            />
           </Element>
           <Element>
-            <Element>
-              <Text weight="bold" size={3}>
-                {brand}
-              </Text>{' '}
-              <Text variant="muted">ending in </Text>
-              <Text weight="bold" size={3}>
-                {last4}
-              </Text>
-            </Element>
-            <Element>
-              <Text weight="bold" size={3}>
-                {name}
-              </Text>
-            </Element>
+            <Text block size={3} marginTop={4} marginBottom={2}>
+              Current card
+            </Text>
+            <Stack align="flex-start" paddingY={4}>
+              <Element
+                paddingRight={2}
+                marginTop={1}
+                css={css({
+                  svg: {
+                    height: 16,
+                    width: 'auto',
+                  },
+                })}
+              >
+                {Icon(brand)()}
+              </Element>
+              <Element>
+                <Element>
+                  <Text weight="bold" size={3}>
+                    {brand}
+                  </Text>{' '}
+                  <Text variant="muted">ending in </Text>
+                  <Text weight="bold" size={3}>
+                    {last4}
+                  </Text>
+                </Element>
+                <Element>
+                  <Text weight="bold" size={3}>
+                    {name}
+                  </Text>
+                </Element>
+              </Element>
+            </Stack>
           </Element>
         </Stack>
-        <Text block size={4} marginTop={4} marginBottom={4}>
-          Update card info
-        </Text>
-        <SubscribeForm
-          buttonName="Update"
-          loadingText="Updating Card Info..."
-          name={name}
-          subscribe={updatePaymentDetails}
-        />
       </>
     );
   };
 
   return (
     <Element>
-      <Text size={4} marginBottom={4} block variant="muted" weight="bold">
+      <Text size={4} marginBottom={6} block variant="muted" weight="bold">
         Payment Info
       </Text>
       <Body />

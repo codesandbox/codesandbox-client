@@ -35,7 +35,7 @@ export const EditorSettings: React.FC = () => {
 
   return (
     <>
-      <Text size={4} marginBottom={4} block variant="muted" weight="bold">
+      <Text size={4} marginBottom={6} block variant="muted" weight="bold">
         Appearance
       </Text>
 
@@ -50,7 +50,13 @@ export const EditorSettings: React.FC = () => {
               type="boolean"
               {...bindValue('vimMode')}
             />
-            <Text size={3} variant="muted">
+            <Text
+              marginTop={2}
+              block
+              size={3}
+              variant="muted"
+              style={{ maxWidth: '60%', lineHeight: 1.5 }}
+            >
               Toggling the VIM extension will require a refresh. When enabled,
               use the command palette to control VIM
             </Text>

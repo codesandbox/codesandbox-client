@@ -15,11 +15,11 @@ export const Badges: FunctionComponent = () => {
 
   return (
     <>
-      <Text size={4} marginBottom={4} block variant="muted" weight="bold">
+      <Text size={4} marginBottom={6} block variant="muted" weight="bold">
         Badges
       </Text>
 
-      <Text size={3} weight="bold">
+      <Text size={3}>
         You currently have {badges.length} badge
         {badges.length === 1 ? '' : 's'}. You can click on the badges to toggle
         visibility.
