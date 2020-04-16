@@ -184,7 +184,7 @@ export const selectComment: AsyncAction<{
       // update comment position with precise info
       const referenceBounds = await effects.vscode.getCodeReferenceBoundary(
         commentId,
-        comment.references[0]
+        comment.references[0].metadata
       );
 
       if (state.comments.currentCommentId === OPTIMISTIC_COMMENT_ID) {
@@ -233,7 +233,7 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
           )
         : '',
       path: state.editor.currentModule.path,
-      updatedAt: state.editor.currentModule.updatedAt,
+      lastUpdatedAt: state.editor.currentModule.updatedAt,
     };
   }
 
@@ -277,7 +277,7 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
     bottom,
   } = await effects.vscode.getCodeReferenceBoundary(
     id,
-    optimisticComment.references[0]
+    optimisticComment.references[0].metadata
   );
   state.comments.currentCommentId = id;
   state.comments.currentCommentPositions = {
@@ -305,7 +305,8 @@ export const addComment: AsyncAction<{
     return;
   }
 
-  const sandboxId = state.editor.currentSandbox.id;
+  const sandbox = state.editor.currentSandbox;
+  const sandboxId = sandbox.id;
   const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   const comments = state.comments.comments;
 
@@ -363,7 +364,13 @@ export const addComment: AsyncAction<{
       sandboxId,
       content,
       codeReference: optimisticComment.references.length
-        ? optimisticComment.references[0].metadata
+        ? {
+            ...optimisticComment.references[0].metadata,
+            lastUpdatedAt: sandbox.modules.find(
+              module =>
+                module.path === optimisticComment.references[0].metadata.path
+            )?.updatedAt,
+          }
         : null,
     });
   }
@@ -529,7 +536,10 @@ export const onCommentAdded: Action<CommentAddedSubscription> = (
 
     // We create a diff operation which is applied to the comment to ensure
     // any operations received in the meantime is applied
-    const diffOperation = getTextOperation(module.savedCode, module.code);
+    const diffOperation = getTextOperation(
+      module.savedCode || module.code,
+      module.code
+    );
     const range = new Selection.Range(codeReference.anchor, codeReference.head);
     const newRange = range.transform(diffOperation);
 

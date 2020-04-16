@@ -18,7 +18,7 @@ import {
   NotificationMessage,
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
-import { Reference } from 'app/graphql/types';
+import { CodeReferenceMetadataFragment } from 'app/graphql/types';
 import { Reaction } from 'app/overmind';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import prettify from 'app/src/app/utils/prettify';
@@ -227,9 +227,9 @@ export class VSCodeEffect {
 
   public async getCodeReferenceBoundary(
     commentId: string,
-    reference: Reference
+    reference: CodeReferenceMetadataFragment
   ) {
-    this.revealPositionInCenterIfOutsideViewport(reference.metadata.anchor, 1);
+    this.revealPositionInCenterIfOutsideViewport(reference.anchor, 1);
 
     return new Promise<DOMRect>((resolve, reject) => {
       let checkCount = 0;

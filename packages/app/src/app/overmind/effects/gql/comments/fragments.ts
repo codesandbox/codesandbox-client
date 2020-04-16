@@ -1,5 +1,14 @@
 import gql from 'graphql-tag';
 
+export const codeReferenceMetadataFragment = gql`
+  fragment CodeReferenceMetadata on CodeReferenceMetadata {
+    anchor
+    code
+    head
+    path
+  }
+`;
+
 export const commentFragment = gql`
   fragment Comment on Comment {
     id
@@ -11,12 +20,7 @@ export const commentFragment = gql`
       id
       metadata {
         ... on CodeReferenceMetadata {
-          anchor
-          code
-          head
-          path
-          sandboxVersion
-          sandboxId
+          ...CodeReferenceMetadata
         }
       }
       resource
@@ -33,6 +37,7 @@ export const commentFragment = gql`
     }
     replyCount
   }
+  ${codeReferenceMetadataFragment}
 `;
 
 export const commentWithRepliesFragment = gql`
@@ -46,12 +51,7 @@ export const commentWithRepliesFragment = gql`
       id
       metadata {
         ... on CodeReferenceMetadata {
-          anchor
-          code
-          head
-          path
-          sandboxVersion
-          sandboxId
+          ...CodeReferenceMetadata
         }
       }
       resource
@@ -72,4 +72,5 @@ export const commentWithRepliesFragment = gql`
     }
   }
   ${commentFragment}
+  ${codeReferenceMetadataFragment}
 `;
