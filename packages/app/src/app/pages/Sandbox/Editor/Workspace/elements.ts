@@ -103,8 +103,8 @@ export const EntryContainer = styled.div<{
   }};
 `;
 
-export const Container = styled.div<{ REDESIGNED_SIDEBAR: boolean }>`
-  ${({ REDESIGNED_SIDEBAR, theme }) => css`
+export const Container = styled.div`
+  ${({ theme }) => css`
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -116,20 +116,9 @@ export const Container = styled.div<{ REDESIGNED_SIDEBAR: boolean }>`
     overflow-y: overlay;
     overflow-x: auto;
 
-    ${REDESIGNED_SIDEBAR &&
-      css`
-        * {
-          box-sizing: border-box;
-        }
-      `}
-  `};
-`;
-
-export const ContactContainer = styled.div`
-  ${({ theme }) => css`
-    padding: 1rem;
-    color: ${theme.white ? '#636363' : 'rgba(255, 255, 255, 0.6)'};
-    font-size: 1.25rem;
+    * {
+      box-sizing: border-box;
+    }
   `};
 `;
 
@@ -204,22 +193,6 @@ export const WorkspaceInputContainer = styled.div<{ errorMessage?: string }>`
   `};
 `;
 
-export const ItemTitle = styled.div`
-  ${({ theme }) => css`
-    font-size: 0.875rem;
-
-    padding: 0 1rem;
-    margin-bottom: 0.25rem;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    text-transform: uppercase;
-    font-weight: 700;
-
-    color: ${theme.light ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)'};
-  `};
-`;
-
 export const Description = styled.div`
   ${({ theme }) => css`
     margin: 0.5rem 1rem;
@@ -232,18 +205,5 @@ export const Description = styled.div`
 export const ErrorDescription = styled(Description)`
   ${({ theme }) => css`
     color: ${theme.red};
-  `};
-`;
-
-export const VersionContainer = styled.div`
-  ${({ theme }) => css`
-    display: inline-flex;
-    align-items: center;
-    float: right;
-    font-size: 0.6rem;
-    height: 28px;
-    vertical-align: middle;
-    font-weight: 600;
-    color: ${theme.light ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'};
   `};
 `;
