@@ -14,7 +14,6 @@ import { ConfigurationFiles } from './screens/ConfigurationFiles';
 import { Live } from './screens/Live';
 import { Server } from './screens/Server';
 import { Comments } from './screens/Comments';
-import { More } from './items/More';
 
 import { Chat } from './Chat';
 import { Container } from './elements';
@@ -28,7 +27,6 @@ const workspaceTabs = {
   config: ConfigurationFiles,
   live: Live,
   server: Server,
-  more: More,
 };
 
 if (COMMENTS) {
