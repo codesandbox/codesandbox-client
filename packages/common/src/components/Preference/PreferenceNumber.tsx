@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FunctionComponent } from 'react';
 
-import { Input } from './elements';
+import { Input } from '@codesandbox/components';
 
 type Props = {
   setValue: (value: number) => void;

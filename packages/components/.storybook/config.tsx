@@ -6,7 +6,7 @@ import { addDecorator, addParameters, configure } from '@storybook/react';
 import { themes } from '@storybook/theming';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 // @ts-ignore
-import global from '@codesandbox/common/lib/global.css';
+import global from './global.css';
 import { makeTheme, getThemes } from '../src/components/ThemeProvider';
 import { withThemesProvider } from './storybook-addon-styled-component-theme';
 

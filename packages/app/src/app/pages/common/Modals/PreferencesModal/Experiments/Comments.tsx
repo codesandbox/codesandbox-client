@@ -1,7 +1,8 @@
 import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import React, { useState, useEffect } from 'react';
+import { Text } from '@codesandbox/components';
 
-import { SubDescription, PaddedPreference } from '../elements';
+import { PaddedPreference } from '../elements';
 
 export const Comments: React.FunctionComponent = () => {
   const [comments, setComments] = useState(false);
@@ -26,9 +27,15 @@ export const Comments: React.FunctionComponent = () => {
         value={comments}
         setValue={setValue}
       />
-      <SubDescription>
+      <Text
+        size={3}
+        variant="muted"
+        marginTop={2}
+        block
+        style={{ maxWidth: '60%' }}
+      >
         This will refresh the page, make sure to save your changes.
-      </SubDescription>
+      </Text>
     </>
   );
 };

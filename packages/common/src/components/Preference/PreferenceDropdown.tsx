@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FunctionComponent } from 'react';
 
-import Select from '../Select';
+import { Select } from '@codesandbox/components';
 
 type Props = {
   mapName?: (param: string) => string;
@@ -15,7 +15,7 @@ export const PreferenceDropdown: FunctionComponent<Props> = ({
   setValue,
   value,
 }) => {
-  const handleChange = ({ target }: ChangeEvent<HTMLSelectElement>) => {
+  const handleChange = ({ target }: ChangeEvent<any>) => {
     setValue(target.value);
   };
 

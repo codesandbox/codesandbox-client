@@ -1,9 +1,10 @@
 import React, { FunctionComponent } from 'react';
 
 import { useOvermind } from 'app/overmind';
+import { Text } from '@codesandbox/components';
 
-import { Rule, SubDescription } from '../../elements';
-import { BigTitle, PreferenceText } from './elements';
+import { Rule } from '../../elements';
+import { PreferenceText } from './elements';
 
 export const EditorTheme: FunctionComponent = () => {
   const {
@@ -22,29 +23,32 @@ export const EditorTheme: FunctionComponent = () => {
 
   return (
     <div>
-      <BigTitle>Editor Theme</BigTitle>
+      <Text block size={3} marginTop={8} marginBottom={2}>
+        Editor Theme
+      </Text>
 
-      <SubDescription>
+      <Text variant="muted" size={3} block>
         You can select your editor theme by selecting File {'->'} Preferences{' '}
         {'->'} Color Theme in the menu bar.
-      </SubDescription>
+      </Text>
 
       <Rule />
 
-      <SubDescription style={{ marginBottom: '1rem' }}>
+      <Text size={3} marginBottom={2} block>
         Custom VSCode Theme
-      </SubDescription>
+      </Text>
 
-      <SubDescription style={{ marginBottom: '1rem' }}>
+      <Text variant="muted" size={3} marginBottom={4} block>
         After changing this setting you
         {"'"}
         ll have to reload the browser and select {'"'}
         Custom
         {'"'} as your color theme.
-      </SubDescription>
+      </Text>
 
       <PreferenceText
         block
+        style={{ minHeight: 130 }}
         isTextArea
         placeholder={`You can use your own theme from VSCode directly:
 1. Open VSCode
