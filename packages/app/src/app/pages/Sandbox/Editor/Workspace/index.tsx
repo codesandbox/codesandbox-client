@@ -8,26 +8,26 @@ import { ThemeProvider } from '@codesandbox/components';
 import { Chat } from './Chat';
 import { Container } from './elements';
 
-import { ProjectInfo as ProjectInfoNew } from './screens/ProjectInfo';
-import { NotOwnedSandboxInfo as NotOwnedSandboxInfoNew } from './screens/NotOwnedSandboxInfo';
-import { GitHub as GitHubNew } from './screens/GitHub';
+import { ProjectInfo } from './screens/ProjectInfo';
+import { NotOwnedSandboxInfo } from './screens/NotOwnedSandboxInfo';
+import { GitHub } from './screens/GitHub';
 import { Explorer } from './screens/Explorer';
-import { Deployment as DeploymentNew } from './screens/Deployment/index';
-import { ConfigurationFiles as ConfigurationFilesNew } from './screens/ConfigurationFiles';
-import { Live as LiveNew } from './screens/Live';
-import { Server as ServerNew } from './screens/Server';
+import { Deployment } from './screens/Deployment/index';
+import { ConfigurationFiles } from './screens/ConfigurationFiles';
+import { Live } from './screens/Live';
+import { Server } from './screens/Server';
 import { Comments } from './screens/Comments';
 import { More } from './items/More';
 
 const workspaceTabs = {
-  project: ProjectInfoNew,
-  'project-summary': NotOwnedSandboxInfoNew,
-  github: GitHubNew,
+  project: ProjectInfo,
+  'project-summary': NotOwnedSandboxInfo,
+  github: GitHub,
   files: Explorer,
-  deploy: DeploymentNew,
-  config: ConfigurationFilesNew,
-  live: LiveNew,
-  server: ServerNew,
+  deploy: Deployment,
+  config: ConfigurationFiles,
+  live: Live,
+  server: Server,
   more: More,
 };
 
