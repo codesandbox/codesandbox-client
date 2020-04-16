@@ -111,7 +111,7 @@ export const onInitialize: OnInitialize = async (
   if (!effects.browser.storage.get(seenTermsKey)) {
     effects.notificationToast.add({
       message:
-        "Hello, our privacy policy has been updated effective April 1. What's new? CodeSandbox e-mails. Please read and contact us for questions and feedback.",
+        'Hello, our privacy policy has been updated recently. What’s new? CodeSandbox emails. Please read and reach out.',
       title: 'Updated Privacy',
       status: convertTypeToStatus('notice'),
       sticky: true,
