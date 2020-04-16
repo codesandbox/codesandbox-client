@@ -33,7 +33,7 @@ import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
 import { debounce } from 'lodash-es';
-import { Selection, TextOperation } from 'ot';
+import { TextOperation } from 'ot';
 import { json } from 'overmind';
 
 import eventToTransform from '../../utils/event-to-transform';
@@ -335,8 +335,9 @@ export const codeSaved: AsyncAction<{
 
 export const onOperationApplied: Action<{
   moduleShortid: string;
+  operation: TextOperation;
   code: string;
-}> = ({ state, effects, actions }, { code, moduleShortid }) => {
+}> = ({ state, effects, actions }, { code, moduleShortid, operation }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -348,6 +349,8 @@ export const onOperationApplied: Action<{
   if (!module) {
     return;
   }
+
+  actions.comments.transposeComments({ module, operation });
 
   actions.editor.internal.updateModuleCode({
     module,
@@ -372,8 +375,6 @@ export const codeChanged: Action<{
   if (!state.editor.currentSandbox) {
     return;
   }
-
-  const sandbox = state.editor.currentSandbox;
 
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
@@ -410,17 +411,7 @@ export const codeChanged: Action<{
 
     effects.live.sendCodeUpdate(moduleShortid, operation);
 
-    const comments = state.comments.fileComments[module.path] || [];
-    comments.forEach(fileComment => {
-      const range = new Selection.Range(...fileComment.range);
-      const newRange = range.transform(operation);
-      const comment =
-        state.comments.comments[sandbox.id][fileComment.commentId];
-      if (comment.references && comment.references[0].type === 'code') {
-        comment.references[0].metadata.anchor = newRange.anchor;
-        comment.references[0].metadata.head = newRange.head;
-      }
-    });
+    actions.comments.transposeComments({ module, operation });
   }
 
   actions.editor.internal.updateModuleCode({

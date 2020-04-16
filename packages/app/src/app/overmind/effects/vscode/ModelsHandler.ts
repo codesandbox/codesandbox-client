@@ -41,6 +41,7 @@ export type onSelectionChangeData = UserSelection;
 
 export type OnOperationAppliedData = {
   moduleShortid: string;
+  operation: TextOperation;
   title: string;
   code: string;
   model: any;
@@ -294,6 +295,7 @@ export class ModelsHandler {
     this.isApplyingOperation = false;
     this.onOperationAppliedCallback({
       code: model.getValue(),
+      operation,
       moduleShortid: module.shortid,
       title: module.title,
       model,

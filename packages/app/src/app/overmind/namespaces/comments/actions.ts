@@ -1,4 +1,4 @@
-import { CommentsFilterOption } from '@codesandbox/common/lib/types';
+import { CommentsFilterOption, Module } from '@codesandbox/common/lib/types';
 import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import {
@@ -14,7 +14,7 @@ import {
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { utcToZonedTime } from 'date-fns-tz';
-import { Selection } from 'ot';
+import { Selection, TextOperation } from 'ot';
 import * as uuid from 'uuid';
 
 import { OPTIMISTIC_COMMENT_ID } from './state';
@@ -569,4 +569,24 @@ export const onCommentRemoved: Action<CommentRemovedSubscription> = (
   { commentRemoved: comment }
 ) => {
   delete state.comments.comments[comment.sandbox.id][comment.id];
+};
+
+export const transposeComments: Action<{
+  module: Module;
+  operation: TextOperation;
+}> = ({ state }, { module, operation }) => {
+  const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+  const comments = state.comments.fileComments[module.path] || [];
+  comments.forEach(fileComment => {
+    const range = new Selection.Range(...fileComment.range);
+    const newRange = range.transform(operation);
+    const comment = state.comments.comments[sandbox.id][fileComment.commentId];
+    if (comment.references && comment.references[0].type === 'code') {
+      comment.references[0].metadata.anchor = newRange.anchor;
+      comment.references[0].metadata.head = newRange.head;
+    }
+  });
 };
