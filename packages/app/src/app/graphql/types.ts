@@ -1016,6 +1016,16 @@ export type CommentRemovedSubscription = {
   } & CommentFragment;
 };
 
+export type TeamsQueryVariables = {};
+
+export type TeamsQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
+    }
+  >;
+};
+
 export type UnbookmarkTemplateFromDashboardMutationVariables = {
   template: Scalars['ID'];
   teamId: Maybe<Scalars['ID']>;

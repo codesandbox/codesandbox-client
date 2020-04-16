@@ -326,7 +326,7 @@ export default class Manager {
 
   evaluateModule(
     module: Module,
-    { force = false, globals = {} }: { force?: boolean; globals?: object } = {}
+    { force = false, globals }: { force?: boolean; globals?: object } = {}
   ) {
     if (this.hardReload && !this.isFirstLoad) {
       // Do a hard reload
@@ -364,7 +364,7 @@ export default class Manager {
   evaluateTranspiledModule(
     transpiledModule: TranspiledModule,
     initiator?: TranspiledModule,
-    { force = false, globals = {} }: { force?: boolean; globals?: object } = {}
+    { force = false, globals }: { force?: boolean; globals?: object } = {}
   ) {
     if (force && transpiledModule.compilation) {
       transpiledModule.compilation = null;

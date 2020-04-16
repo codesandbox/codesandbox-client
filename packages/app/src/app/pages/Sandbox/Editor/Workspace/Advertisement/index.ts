@@ -1,1 +1,0 @@
-export { Advertisement } from './Advertisement';

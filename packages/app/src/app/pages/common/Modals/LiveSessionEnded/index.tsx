@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import { Button, Stack } from '@codesandbox/components';
+import { Button, Link, Stack } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
 import { Alert } from '../Common/Alert';
@@ -56,8 +56,7 @@ export const LiveSessionEnded: FunctionComponent = () => {
             Fork Sandbox
           </Button>
         )}
-        <Button
-          as="a"
+        <Link
           href="/s"
           css={css({
             width: 'auto',
@@ -66,7 +65,7 @@ export const LiveSessionEnded: FunctionComponent = () => {
           onClick={modalClosed}
         >
           Create Sandbox
-        </Button>
+        </Link>
       </Stack>
     </Alert>
   );

@@ -148,7 +148,7 @@ preset.
 
 We call a template configuration for the bundler in CodeSandbox a 'Preset'. All
 currently installed presets are defined in the
-[index.ts](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/index.js)
+[index.ts](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/index.ts)
 file under `codesandbox-client/packages/app/src/sandbox/eval/presets`.
 
 In order to understand how this configuration works, we recommend you to take a
