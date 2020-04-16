@@ -12,13 +12,17 @@ export const Toastcontainer = styled.div`
   border: 1px solid #242424;
   position: fixed;
   z-index: 99999999;
-  bottom: 0rem;
+  bottom: 2rem;
   left: 50%;
   border-radius: 0.25rem;
   transform: translateX(-50%);
   box-shadow: 0px 0px 1rem rgba(0, 0, 0, 0.12),
     0px 16px 32px rgba(0, 0, 0, 0.24);
   white-space: nowrap;
+
+  @media screen and (max-width: 320px) {
+    bottom: 0rem;
+  }
 
   @media screen and (min-width: 576px) {
     min-width: 360px;
