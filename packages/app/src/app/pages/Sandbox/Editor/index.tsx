@@ -197,6 +197,7 @@ const Editor = () => {
 
           <NewThemeProvider theme={localState.theme.vscodeTheme}>
             <Stack
+              justify="space-between"
               align="center"
               className=".monaco-workbench"
               css={css({
@@ -212,12 +213,12 @@ const Editor = () => {
               })}
             >
               <FakeStatusBarText>
-                {'Version: ' + VERSION.split('-').pop()}
+                Version: {VERSION.split('-').pop()}
               </FakeStatusBarText>
               <StatusBar
                 className="monaco-workbench mac nopanel"
                 ref={statusbarEl}
-                style={{ width: 'calc(100% - 112px)' }}
+                style={{ width: 'calc(100% - 126px)' }}
               />
             </Stack>
           </NewThemeProvider>
@@ -262,7 +263,7 @@ const FakeStatusBarText = props => {
       })}
       {...props}
     >
-      <span className="statusbar-item">
+      <span className="statusbar-item" style={{ paddingLeft: '10px' }}>
         <a
           title="Copy version"
           style={{ color: 'inherit', padding: '0 5px' }}
