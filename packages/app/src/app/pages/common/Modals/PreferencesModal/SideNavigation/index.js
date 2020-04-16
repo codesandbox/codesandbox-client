@@ -31,9 +31,9 @@ export const SideNavigation = ({ menuItems, itemId, setItem }) => (
             transition: '0.3s ease all',
             fontSize: 3,
             paddingX: 6,
+            paddingY: 2,
             cursor: 'pointer',
-            height: 6,
-            marginBottom: 2,
+            lineHeight: 1,
             color:
               itemId === item.id ? 'list.hoverForeground' : 'mutedForeground',
             '&:hover': {

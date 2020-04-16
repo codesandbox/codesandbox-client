@@ -53,7 +53,7 @@ export const EditorSettings: React.FC = () => {
             <Text
               marginTop={2}
               block
-              size={3}
+              size={2}
               variant="muted"
               style={{ maxWidth: '60%', lineHeight: 1.5 }}
             >

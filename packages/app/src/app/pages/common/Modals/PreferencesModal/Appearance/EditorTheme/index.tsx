@@ -34,7 +34,7 @@ export const EditorTheme: FunctionComponent = () => {
 
       <Rule />
 
-      <Text variant="muted" size={3} marginBottom={2} block>
+      <Text size={3} marginBottom={2} block>
         Custom VSCode Theme
       </Text>
 
