@@ -308,7 +308,7 @@ export class ModelsHandler {
    */
   public setModuleCode(module: Module, triggerChangeEvent = false) {
     const moduleModel = this.getModuleModelByPath(module.path);
-    const model = moduleModel.model;
+    const model = moduleModel?.model;
 
     if (!model) {
       return;

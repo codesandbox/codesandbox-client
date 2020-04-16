@@ -8,7 +8,6 @@ import {
   ServerContainerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import {
@@ -127,7 +126,7 @@ export const saveCode: AsyncAction<{
   }
 
   try {
-    if (COMMENTS) {
+    if (state.user?.experiments.comments) {
       const {
         saved_code,
         updated_at,
@@ -273,6 +272,7 @@ export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
   name
 ) => {
   if (
+    !state.editor.currentSandbox ||
     !state.editor.currentPackageJSONCode ||
     !state.editor.currentPackageJSON
   ) {
@@ -309,6 +309,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   isDev: boolean;
 }> = async ({ state, actions, effects }, { name, isDev, version }) => {
   if (
+    !state.editor.currentSandbox ||
     !state.editor.currentPackageJSONCode ||
     !state.editor.currentPackageJSON
   ) {
@@ -522,9 +523,7 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   const code = JSON.stringify(parsed, null, 2);
   const moduleShortid = state.editor.currentPackageJSON.shortid;
 
-  const module = state.editor.currentSandbox.modules.find(
-    m => m.shortid === moduleShortid
-  );
+  const module = sandbox.modules.find(m => m.shortid === moduleShortid);
 
   if (!module) {
     return;

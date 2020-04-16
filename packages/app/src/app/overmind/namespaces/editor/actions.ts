@@ -441,7 +441,7 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
         state.editor.changedModuleShortids.includes(module.shortid)
       );
 
-      if (COMMENTS) {
+      if (state.user?.experiments.comments) {
         const versions = await Promise.all(
           changedModules.map(module =>
             effects.live

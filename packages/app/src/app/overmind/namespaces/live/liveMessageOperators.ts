@@ -17,15 +17,27 @@ import { json, mutate } from 'overmind';
 
 export const onSave: Operator<LiveMessage<{
   saved_code: string;
+  updated_at: string;
+  inserted_at: string;
   version: number;
   path: string;
-}>> = mutate(({ effects, actions, state }, { data }) => {
+}>> = mutate(({ state }, { data }) => {
   const sandbox = state.editor.currentSandbox;
+
+  if (!sandbox) {
+    return;
+  }
   const module = sandbox.modules.find(
     moduleItem => moduleItem.path === data.path
   );
 
+  if (!module) {
+    return;
+  }
+
   module.savedCode = data.saved_code;
+  module.updatedAt = data.updated_at;
+  module.insertedAt = data.inserted_at;
   sandbox.version = data.version;
 });
 

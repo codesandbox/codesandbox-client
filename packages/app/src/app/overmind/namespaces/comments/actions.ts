@@ -369,7 +369,7 @@ export const addComment: AsyncAction<{
             lastUpdatedAt: sandbox.modules.find(
               module =>
                 module.path === optimisticComment.references[0].metadata.path
-            )?.updatedAt,
+            )!.updatedAt,
           }
         : null,
     });
@@ -526,6 +526,10 @@ export const onCommentAdded: Action<CommentAddedSubscription> = (
   if (comment.references[0] && comment.references[0].type === 'code') {
     const codeReference = comment.references[0].metadata;
     const sandbox = state.editor.currentSandbox;
+    if (!sandbox) {
+      return;
+    }
+
     const module = sandbox.modules.find(
       moduleItem => moduleItem.path === codeReference.path
     );

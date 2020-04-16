@@ -209,7 +209,7 @@ class Live {
             reconnect_token: result.reconnectToken,
           });
 
-          this.presence = new Presence(this.channel);
+          this.presence = new Presence(this.channel!);
           this.presence.onSync(() => {
             this.connectionsCount = this.presence.list().length;
           });
