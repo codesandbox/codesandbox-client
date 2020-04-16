@@ -2,11 +2,11 @@ import styled from 'styled-components';
 
 export const Toastcontainer = styled.div`
   min-width: 320px;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   line-height: 2rem;
   color: #999999;
   text-align: center;
-  padding: 0.25rem 0 0.25rem 0.5rem;
+  padding: 0.125rem 0 0.125rem 0.5rem;
   display: block;
   background: #151515;
   border-top: 1px solid #242424;
@@ -21,6 +21,7 @@ export const Toastcontainer = styled.div`
   white-space: nowrap;
 
   @media screen and (max-width: 320px) {
+    border-radius: 0rem;
     bottom: 0rem;
   }
 
