@@ -168,7 +168,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   }
 
   state.editor.isLoading = !hasExistingSandbox;
-  state.editor.notFound = false;
 
   const url = new URL(document.location.href);
   const invitationToken = url.searchParams.get('ts');
@@ -211,26 +210,26 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
     actions.internal.setCurrentSandbox(sandbox);
     actions.workspace.openDefaultItem();
-    state.editor.unprocessableEntityError = false;
   } catch (error) {
-    state.editor.unprocessableEntityError = false;
-    state.editor.notFound = true;
-    const errors = error.response?.data?.errors;
+    const data = error.response?.data;
+    const errors = data?.errors;
     let detail = errors?.detail;
-    if (error.response.status === 422) {
-      state.editor.unprocessableEntityError = true;
-    }
 
     if (Array.isArray(detail)) {
       detail = detail[0];
-    }
-
-    if (typeof errors === 'object') {
+    } else if (typeof errors === 'object') {
       detail = errors[Object.keys(errors)[0]];
+    } else if (data?.error) {
+      detail = data?.error;
     }
 
-    state.editor.error = detail || error.message;
+    state.editor.error = {
+      message: detail || error.message,
+      status: error.response.status,
+    };
+
     state.editor.isLoading = false;
+
     return;
   }
 

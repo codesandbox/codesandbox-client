@@ -43,9 +43,10 @@ type State = {
   // EditorPreview is using it... weird stuff
   devToolTabs: Derive<State, ViewConfig[]>;
   isLoading: boolean;
-  notFound: boolean;
-  error: string | null;
-  unprocessableEntityError: boolean;
+  error: {
+    status: number;
+    message: string;
+  };
   isResizing: boolean;
   changedModuleShortids: Derive<State, string[]>;
   currentTabId: string | null;
@@ -86,9 +87,7 @@ export const state: State = {
   currentModuleShortid: null,
   mainModuleShortid: null,
   isLoading: true,
-  notFound: false,
   error: null,
-  unprocessableEntityError: false,
   isResizing: false,
   modulesByPath: {},
   collaborators: [],

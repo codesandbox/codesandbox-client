@@ -7,7 +7,6 @@ import { Title } from 'app/components/Title';
 import { useOvermind } from 'app/overmind';
 import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 import { Navigation } from 'app/pages/common/Navigation';
-import { NotFound } from 'app/pages/common/NotFound';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
@@ -55,10 +54,10 @@ export const Sandbox = React.memo<Props>(
       const {
         hasLogIn,
         isLoggedIn,
-        editor: { unprocessableEntityError },
+        editor: { error },
       } = state;
 
-      if (state.editor.error) {
+      if (error) {
         const isGithub = match.params.id.includes('github');
 
         return (
@@ -74,7 +73,7 @@ export const Sandbox = React.memo<Props>(
               Something went wrong
             </div>
             <Title style={{ fontSize: '1.25rem', marginBottom: 0 }}>
-              {state.editor.error}
+              {error.message}
             </Title>
             <br />
             <div style={{ display: 'flex', maxWidth: 400, width: '100%' }}>
@@ -85,7 +84,7 @@ export const Sandbox = React.memo<Props>(
                 {hasLogIn ? 'Dashboard' : 'Homepage'}
               </Button>
             </div>
-            {isLoggedIn && isGithub && !unprocessableEntityError && (
+            {isLoggedIn && isGithub && error.status !== 422 && (
               <div
                 style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}
               >
@@ -129,10 +128,6 @@ export const Sandbox = React.memo<Props>(
             )}
           </>
         );
-      }
-
-      if (state.editor.notFound) {
-        return <NotFound />;
       }
 
       return null;
