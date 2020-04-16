@@ -7,7 +7,7 @@ const Privacy = () => (
   <Toastcontainer>
     By using our site you agree with our{' '}
     <Link to="/legal/privacy">Privacy Policy</Link>
-    <span>close</span>
+    <span />
   </Toastcontainer>
 );
 
