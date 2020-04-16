@@ -14,6 +14,8 @@ description: This release includes bug fixes.
 2. We no longer show ads in the editor to anonymous users
 3. [@jyash97](https://github.com/codesandbox/codesandbox-client/pull/3886) added
    a copy sandbox link option for sandboxes on the dashboard
+4. We added a button when viewing previews fullscreen to protect folks from
+  phishing attempts
 
 #### Fixes
 
@@ -31,8 +33,6 @@ description: This release includes bug fixes.
 - We now show the reason why an import has failed rather than just the error
   code
 - Fixed-up an error message when opening markdown files
-- We added a button when viewing previews fullscreen to protect folks from
-  phishing attempts
 - Fixed bundler issues resolving Sass imports and importing CSS from npm
   dependencies
 - We now show the anonymous sandbox limit error if it’s reached when forking
