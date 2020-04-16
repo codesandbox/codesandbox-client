@@ -3,6 +3,7 @@ import { ThemeProvider } from 'styled-components';
 
 import theme from '@codesandbox/common/lib/theme';
 import { VisuallyHidden } from './style';
+import Privacy from './Toast';
 import '../css/typography.css';
 import '../css/global.css';
 import Navigation from './Navigation/index';
@@ -65,6 +66,7 @@ const TemplateWrapper = ({ children, noWrapperStyling }) => (
       </main>
       <Footer />
     </div>
+    <Privacy />
   </ThemeProvider>
 );
 
