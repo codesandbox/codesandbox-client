@@ -1,14 +1,6 @@
 import React from 'react';
 import Relative from '@codesandbox/common/lib/components/Relative';
-import { SocialInfo } from 'app/components/SocialInfo';
-import {
-  Container,
-  SocialContainer,
-  Title,
-  ITEM_HEIGHT,
-  Item,
-  Selector,
-} from './elements';
+import { Container, Title, ITEM_HEIGHT, Item, Selector } from './elements';
 
 export const SideNavigation = ({ menuItems, itemId, setItem }) => {
   const itemIndex = menuItems.findIndex(item => item.id === itemId);
@@ -32,9 +24,6 @@ export const SideNavigation = ({ menuItems, itemId, setItem }) => {
         ))}
         <Selector offset={itemIndex * ITEM_HEIGHT} />
       </Relative>
-      <SocialContainer>
-        <SocialInfo />
-      </SocialContainer>
     </Container>
   );
 };
