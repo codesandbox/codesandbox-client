@@ -93,6 +93,7 @@ export const uploadFiles: AsyncAction<
         const extension = filePath.split('.').pop();
 
         if (
+          extension &&
           (textExtensions.includes(extension) ||
             file.type.startsWith('text/') ||
             file.type === 'application/json') &&
