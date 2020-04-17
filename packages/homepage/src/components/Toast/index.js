@@ -6,7 +6,7 @@ import { AnimatePresence } from 'framer-motion';
 import { ToastContainer } from './elements';
 
 const Privacy = () => {
-  const key = 'ACCEPTED_TERMS_CODESANDBOX_HOME';
+  const key = 'ACCEPTED_TERMS_CODESANDBOX';
   const [show, setShow] = useState(false);
 
   useEffect(() => {
