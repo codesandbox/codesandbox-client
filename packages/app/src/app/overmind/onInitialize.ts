@@ -108,7 +108,11 @@ export const onInitialize: OnInitialize = async (
   effects.preview.initialize(overmindInstance.reaction);
 
   // show terms message on first visit since new terms
-  if (!effects.browser.storage.get(seenTermsKey) && !state.isFirstVisit) {
+  if (effects.browser.storage.get(seenTermsKey)) {
+    return;
+  }
+
+  if (!state.isFirstVisit) {
     effects.analytics.track('Saw Privacy Policy Notification');
     effects.notificationToast.add({
       message:
