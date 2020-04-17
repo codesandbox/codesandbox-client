@@ -115,7 +115,7 @@ export const onInitialize: OnInitialize = async (
         'Hello, our privacy policy has been updated recently. What’s new? CodeSandbox emails. Please read and reach out.',
       title: 'Updated Privacy',
       status: NotificationStatus.NOTICE,
-      timeAlive: 20_000,
+      sticky: true,
       actions: {
         primary: [
           {

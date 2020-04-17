@@ -57,13 +57,13 @@ export async function setAnonymousId() {
   }
 }
 
-export async function setUserId(userId: string) {
+export async function setUserId(userId: string, email: string) {
   if (!DO_NOT_TRACK_ENABLED) {
     const hashedId = getHashedUserId(userId);
 
     amplitude.setUserId(hashedId);
     sentry.setUserId(hashedId);
-    vero.setUserId(hashedId);
+    vero.setUserId(hashedId, email);
   }
 }
 
