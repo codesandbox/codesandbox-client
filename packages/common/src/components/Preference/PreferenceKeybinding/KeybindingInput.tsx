@@ -1,5 +1,5 @@
 import React from 'react';
-import Input from '../../Input';
+import { Input } from '@codesandbox/components';
 import { normalizeKey, formatKey } from '../../../utils/keybindings';
 
 const SPECIAL_KEYS = ['Meta', 'Control', 'Alt', 'Shift', 'Enter', 'Backspace'];
