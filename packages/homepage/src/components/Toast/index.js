@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect } from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { Link } from 'gatsby';
 import { AnimatePresence } from 'framer-motion';
 
@@ -10,8 +11,13 @@ const Privacy = () => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    setShow(!window.localStorage.getItem(key));
-    window.localStorage.setItem(key, true);
+    const hasSeen = !!window.localStorage.getItem(key);
+    if (!hasSeen) {
+      setShow(true);
+      window.localStorage.setItem(key, true);
+
+      track('Saw Privacy Policy Notification');
+    }
   }, []);
 
   return (

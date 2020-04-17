@@ -1,4 +1,4 @@
-import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { OnInitialize } from '.';
 
 export const onInitialize: OnInitialize = async (
@@ -109,12 +109,13 @@ export const onInitialize: OnInitialize = async (
 
   // show terms message on first visit since new terms
   if (!effects.browser.storage.get(seenTermsKey) && !state.isFirstVisit) {
+    effects.analytics.track('Saw Privacy Policy Notification');
     effects.notificationToast.add({
       message:
         'Hello, our privacy policy has been updated recently. What’s new? CodeSandbox emails. Please read and reach out.',
       title: 'Updated Privacy',
-      status: convertTypeToStatus('notice'),
-      sticky: true,
+      status: NotificationStatus.NOTICE,
+      timeAlive: 20_000,
       actions: {
         primary: [
           {
