@@ -1,4 +1,3 @@
-import { NotificationStatus } from '@codesandbox/notifications';
 import { OnInitialize } from '.';
 
 export const onInitialize: OnInitialize = async (
@@ -6,7 +5,6 @@ export const onInitialize: OnInitialize = async (
   overmindInstance
 ) => {
   const provideJwtToken = () => state.jwt || effects.jwt.get();
-  const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX';
 
   state.isFirstVisit = Boolean(
     !effects.jwt.get() && !effects.browser.storage.get('hasVisited')
@@ -107,30 +105,5 @@ export const onInitialize: OnInitialize = async (
 
   effects.preview.initialize(overmindInstance.reaction);
 
-  // show terms message on first visit since new terms
-  if (effects.browser.storage.get(seenTermsKey)) {
-    return;
-  }
-
-  if (!state.isFirstVisit) {
-    effects.analytics.track('Saw Privacy Policy Notification');
-    effects.notificationToast.add({
-      message:
-        'Hello, our privacy policy has been updated recently. What’s new? CodeSandbox emails. Please read and reach out.',
-      title: 'Updated Privacy',
-      status: NotificationStatus.NOTICE,
-      sticky: true,
-      actions: {
-        primary: [
-          {
-            label: 'Open Privacy Policy',
-            run: () => {
-              window.open('https://codesandbox.io/legal/privacy', '_blank');
-            },
-          },
-        ],
-      },
-    });
-  }
-  effects.browser.storage.set(seenTermsKey, true);
+  actions.internal.showPrivacyPolicyNotification();
 };
