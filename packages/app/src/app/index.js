@@ -139,6 +139,7 @@ window.getSignal = path =>
 overmind.initialized.then(() => {
   requirePolyfills().then(() => {
     if (isSafari) {
+      // eslint-disable-next-line
       import('subworkers');
     }
 
