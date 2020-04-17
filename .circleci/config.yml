@@ -389,7 +389,6 @@ workflows:
             - typecheck
             - test-integrations
             - test-jest
-            - test-visual-regressions
           filters:
             branches:
               only:
