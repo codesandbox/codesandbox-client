@@ -118,7 +118,7 @@ export class VersionEntry extends React.PureComponent<Props, State> {
           onMouseEnter={this.onMouseEnter}
           onMouseLeave={this.onMouseLeave}
         >
-          <Link href={`https://www.npmjs.com/package/${dependency}`}>
+          <Link href={`/examples/package/${dependency}`}>
             {dependency}
           </Link>
           <VersionSelect
