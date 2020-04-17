@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 export const ToastContainer = styled(motion.div)`
-  min-width: 320px;
-  font-size: 0.6rem;
+  min-width: 360px;
+  font-size: 0.8rem;
   line-height: 2rem;
   color: #999999;
   text-align: center;
@@ -22,6 +22,9 @@ export const ToastContainer = styled(motion.div)`
   white-space: nowrap;
 
   @media screen and (max-width: 320px) {
+    font-size: 0.7rem;
+    line-height: 2rem;
+    min-width: 320px;
     border-radius: 0rem;
     bottom: 0rem;
   }
