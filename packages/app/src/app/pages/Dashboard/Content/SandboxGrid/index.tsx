@@ -335,11 +335,11 @@ class SandboxGridComponent extends React.Component<
     this.scrolling = isScrolling;
 
     let index = rowIndex * this.columnCount + columnIndex;
-    const { sandboxes } = this.props;
+    const { sandboxes, ExtraElement } = this.props;
 
-    if (this.props.ExtraElement) {
+    if (ExtraElement) {
       if (index === 0) {
-        return <this.props.ExtraElement key="extra" style={style} />;
+        return <ExtraElement key="extra" style={style} />;
       }
 
       index--;
