@@ -1,12 +1,12 @@
 import React, { FunctionComponent } from 'react';
-
+import { Text, Element } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 
 import {
   SubContainer,
   PreferenceContainer,
   PaddedPreference,
-  SubDescription,
   Rule,
 } from '../../elements';
 
@@ -31,7 +31,7 @@ export const Prettier: FunctionComponent = () => {
   return (
     <SubContainer>
       <PreferenceContainer>
-        <SubDescription>
+        <Text size={3} variant="muted">
           This configuration can be overridden by a{' '}
           <a
             href="https://prettier.io/docs/en/configuration.html"
@@ -41,7 +41,7 @@ export const Prettier: FunctionComponent = () => {
             .prettierrc
           </a>{' '}
           JSON file at the root of the sandbox.
-        </SubDescription>
+        </Text>
 
         <Rule />
 
@@ -51,23 +51,31 @@ export const Prettier: FunctionComponent = () => {
           {...bindValue('fluid')}
         />
 
-        <SubDescription>
+        <Text size={2} variant="muted">
           Wrap the code based on the editor width.
-        </SubDescription>
+        </Text>
 
         <Rule />
+        <Element
+          css={css({
+            pointerEvents: prettierConfig.fluid ? 'none' : 'all',
+          })}
+        >
+          <PaddedPreference
+            style={{ opacity: prettierConfig.fluid ? 0.5 : 1 }}
+            title="Print width"
+            type="number"
+            {...bindValue('printWidth')}
+          />
 
-        <PaddedPreference
-          style={{ opacity: prettierConfig.fluid ? 0.5 : 1 }}
-          title="Print width"
-          type="number"
-          {...bindValue('printWidth')}
-        />
-
-        <SubDescription style={{ opacity: prettierConfig.fluid ? 0.5 : 1 }}>
-          Specify the line length that the printer will wrap on.
-        </SubDescription>
-
+          <Text
+            size={2}
+            variant="muted"
+            style={{ opacity: prettierConfig.fluid ? 0.5 : 1 }}
+          >
+            Specify the line length that the printer will wrap on.
+          </Text>
+        </Element>
         <Rule />
 
         <PaddedPreference
@@ -76,9 +84,9 @@ export const Prettier: FunctionComponent = () => {
           {...bindValue('tabWidth')}
         />
 
-        <SubDescription>
+        <Text size={2} variant="muted">
           Specify the number of spaces per indentation-level.
-        </SubDescription>
+        </Text>
 
         <Rule />
 
@@ -88,9 +96,9 @@ export const Prettier: FunctionComponent = () => {
           {...bindValue('useTabs')}
         />
 
-        <SubDescription>
+        <Text size={2} variant="muted">
           Indent lines with tabs instead of spaces.
-        </SubDescription>
+        </Text>
 
         <Rule />
 
@@ -100,9 +108,9 @@ export const Prettier: FunctionComponent = () => {
           {...bindValue('semi')}
         />
 
-        <SubDescription>
+        <Text size={2} variant="muted">
           Print semicolons at the ends of statements.
-        </SubDescription>
+        </Text>
 
         <Rule />
 
@@ -112,9 +120,9 @@ export const Prettier: FunctionComponent = () => {
           {...bindValue('singleQuote')}
         />
 
-        <SubDescription>
+        <Text size={2} variant="muted">
           Use {"'"}single{"'"} quotes instead of {'"'}double{'"'} quotes.
-        </SubDescription>
+        </Text>
 
         <Rule />
 
@@ -125,9 +133,9 @@ export const Prettier: FunctionComponent = () => {
           {...bindValue('trailingComma')}
         />
 
-        <SubDescription>
+        <Text size={2} variant="muted">
           Print trailing commas wherever possible.
-        </SubDescription>
+        </Text>
 
         <Rule />
 
@@ -137,9 +145,9 @@ export const Prettier: FunctionComponent = () => {
           {...bindValue('bracketSpacing')}
         />
 
-        <SubDescription>
+        <Text size={2} variant="muted">
           Print spaces between brackets in object literals.
-        </SubDescription>
+        </Text>
 
         <Rule />
 
@@ -149,10 +157,10 @@ export const Prettier: FunctionComponent = () => {
           {...bindValue('jsxBracketSameLine')}
         />
 
-        <SubDescription>
+        <Text size={2} variant="muted">
           Put the `{'>'}` of a multi-line JSX element at the end of the last
           line instead of being alone on the next line.
-        </SubDescription>
+        </Text>
 
         <Rule />
 
@@ -163,9 +171,9 @@ export const Prettier: FunctionComponent = () => {
           {...bindValue('arrowParens')}
         />
 
-        <SubDescription>
+        <Text size={2} variant="muted">
           Include parentheses around a sole arrow function parameter.
-        </SubDescription>
+        </Text>
       </PreferenceContainer>
     </SubContainer>
   );

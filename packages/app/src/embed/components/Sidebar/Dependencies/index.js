@@ -24,9 +24,8 @@ function Dependencies({ sandbox }) {
       {Object.keys(npmDependencies).map(dep => (
         <Row key={dep}>
           <Link
-            href={`https://npmjs.com/package/${dep}`}
+            href={`/examples/package/${dep}`}
             target="_blank"
-            rel="noopener noreferrer"
           >
             {dep}
           </Link>

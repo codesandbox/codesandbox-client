@@ -3,7 +3,6 @@ import { identify } from '@codesandbox/common/lib/utils/analytics';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
-
 import HeroB from '../screens/home/heroB';
 import Prototype from '../screens/home/prototype';
 import Started from '../screens/home/started';

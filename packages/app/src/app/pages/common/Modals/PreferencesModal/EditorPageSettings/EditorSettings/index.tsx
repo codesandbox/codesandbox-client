@@ -2,14 +2,10 @@ import { Alert } from 'app/components/Alert';
 import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
+import { Text, Element } from '@codesandbox/components';
+import { Preference } from '@codesandbox/common/lib/components/Preference';
 
-import {
-  PaddedPreference,
-  PreferenceContainer,
-  SubContainer,
-  SubDescription,
-  Title,
-} from '../../elements';
+import { PreferenceContainer } from '../../elements';
 import { VSCodePlaceholder } from '../../VSCodePlaceholder';
 
 const isSafari: boolean = /^((?!chrome|android).)*safari/i.test(
@@ -38,32 +34,38 @@ export const EditorSettings: React.FC = () => {
   });
 
   return (
-    <div>
-      <Title>Editor</Title>
+    <>
+      <Text size={4} marginBottom={6} block variant="muted" weight="bold">
+        Appearance
+      </Text>
 
-      <SubContainer>
+      <Element>
         <VSCodePlaceholder />
 
         {/* {Vim mode does not work on FF or Safari */}
-        <PreferenceContainer disabled={isSafari || isFF}>
-          <PaddedPreference
-            title="Enable VIM extension"
-            type="boolean"
-            {...bindValue('vimMode')}
-          />
-          <SubDescription>
-            Toggling the VIM extension will require a refresh. When enabled, use
-            the command palette to control VIM
-          </SubDescription>
-        </PreferenceContainer>
+        <Element marginTop={4}>
+          <PreferenceContainer disabled={isSafari || isFF}>
+            <Preference
+              title="Enable VIM extension"
+              type="boolean"
+              {...bindValue('vimMode')}
+            />
+            <Text
+              marginTop={2}
+              block
+              size={2}
+              variant="muted"
+              style={{ maxWidth: '60%', lineHeight: 1.5 }}
+            >
+              Toggling the VIM extension will require a refresh. When enabled,
+              use the command palette to control VIM
+            </Text>
+          </PreferenceContainer>
+        </Element>
         {isSafari || isFF ? (
-          <SubDescription
-            css={`
-              margin-top: 0.5rem;
-            `}
-          >
+          <Text size={2} variant="muted" marginBottom={2} block marginTop={2}>
             The VIM extension currently only works on Chrome and Microsoft Edge.
-          </SubDescription>
+          </Text>
         ) : null}
         <Modal
           isOpen={showModal}
@@ -79,7 +81,7 @@ export const EditorSettings: React.FC = () => {
             }}
           />
         </Modal>
-      </SubContainer>
-    </div>
+      </Element>
+    </>
   );
 };

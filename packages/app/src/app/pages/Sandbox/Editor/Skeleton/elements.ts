@@ -99,6 +99,15 @@ export const SkeletonDevtoolsNavigator = styled.div`
     ${props => props.theme.colors?.sideBar.border || 'rgba(0, 0, 0, 0.5)'};
 `;
 export const SkeletonDevtoolsIframe = styled.div`
-  height: 100%;
+  height: calc(100% - 22px);
   background-color: #fff;
+`;
+export const SkeletonStatusBar = styled.div`
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 22px;
+  background-color: ${props =>
+    props.theme.colors?.statusBar.background || 'rgba(0, 0, 0, 0.5)'};
 `;
