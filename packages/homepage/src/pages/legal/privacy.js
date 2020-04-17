@@ -6,7 +6,7 @@ import Wrapper from './_wrapper';
 const PRIVACY = graphql`
   {
     allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/legal/policy.md/" } }
+      filter: { fileAbsolutePath: { regex: "/legal/privacy.md/" } }
     ) {
       edges {
         node {
