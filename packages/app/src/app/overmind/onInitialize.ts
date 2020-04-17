@@ -108,7 +108,7 @@ export const onInitialize: OnInitialize = async (
   effects.preview.initialize(overmindInstance.reaction);
 
   // show terms message on first visit since new terms
-  if (!effects.browser.storage.get(seenTermsKey)) {
+  if (!effects.browser.storage.get(seenTermsKey) && !state.isFirstVisit) {
     effects.notificationToast.add({
       message:
         'Hello, our privacy policy has been updated recently. What’s new? CodeSandbox emails. Please read and reach out.',
