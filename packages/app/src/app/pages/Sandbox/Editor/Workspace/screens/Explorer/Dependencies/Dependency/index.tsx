@@ -117,7 +117,7 @@ export const Dependency = ({
         })}
       >
         <Link
-          href={`https://www.npmjs.com/package/${dependency}`}
+          href={`/examples/package/${dependency}`}
           target="_blank"
           css={{ position: 'absolute', zIndex: 2 }}
         >

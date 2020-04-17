@@ -3,6 +3,7 @@ import { identify } from '@codesandbox/common/lib/utils/analytics';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
+
 import HeroA from '../screens/home/hero';
 import Prototype from '../screens/home/prototype';
 import Started from '../screens/home/started';
@@ -21,6 +22,7 @@ console.log(
 const Homepage = () => (
   <Layout noWrapperStyling>
     <TitleAndMetaTags />
+
     <section
       css={`
         margin-bottom: 8rem;
