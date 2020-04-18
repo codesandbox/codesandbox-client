@@ -6,7 +6,6 @@ import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { Title } from 'app/components/Title';
 import { useOvermind } from 'app/overmind';
 import { ThemeProvider } from '@codesandbox/components';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
@@ -139,7 +138,7 @@ export const Sandbox = React.memo<Props>(
 
     if (content) {
       return (
-        <ThemeProvider theme={codesandboxBlack}>
+        <ThemeProvider>
           <Fullscreen>
             <Padding
               style={{

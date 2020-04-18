@@ -5,7 +5,6 @@ import React, { useEffect } from 'react';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
 import { ThemeProvider, Switch } from '@codesandbox/components';
 
 import { useOvermind } from 'app/overmind';
@@ -103,7 +102,7 @@ const ProPage: React.FC = () => {
   };
 
   return (
-    <ThemeProvider theme={codeSandboxBlackTheme}>
+    <ThemeProvider>
       <Page>
         <Helmet>
           <title>Pro - CodeSandbox</title>

@@ -14,6 +14,7 @@ import {
 import designLanguage from '../../design-language/theme';
 import VSCodeThemes from '../../themes';
 import polyfillTheme from '../../utils/polyfill-theme';
+import codesandboxBlack from '../../themes/codesandbox-black';
 
 export const getThemes = () => {
   const results = VSCodeThemes.map(theme => ({
@@ -79,4 +80,8 @@ export const ThemeProvider = ({ theme, children }) => {
       <BaseThemeProvider theme={usableTheme}>{children}</BaseThemeProvider>
     </>
   );
+};
+
+ThemeProvider.defaultProps = {
+  theme: codesandboxBlack,
 };
