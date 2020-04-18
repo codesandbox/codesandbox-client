@@ -293,6 +293,11 @@ jobs:
       - checkout_with_cache
       - build_deps
   build-prod:
+    executor: node
+    steps:
+      - checkout_with_cache
+      - build_prod
+  build-prod-master:
     executor: node-xlarge
     steps:
       - checkout_with_cache
@@ -396,14 +401,25 @@ workflows:
       - build-prod:
           requires:
             - build-deps
+          filters:
+            branches:
+              ignore:
+                - master
+      - build-prod-master:
+          requires:
             - build-deps-master
+          filters:
+            branches:
+              only:
+                - master
       - create-docker-image:
           requires:
             - build-prod
+            - build-prod-master
       - deploy-to-production:
           requires:
             - create-docker-image
-            - build-prod
+            - build-prod-master
             - lint
             - typecheck
             - test-integrations
