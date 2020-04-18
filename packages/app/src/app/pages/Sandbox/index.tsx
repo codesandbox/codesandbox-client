@@ -10,6 +10,7 @@ import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
+import { ThemeProvider } from '@codesandbox/components';
 
 import Editor from './Editor';
 
@@ -61,7 +62,7 @@ export const Sandbox = React.memo<Props>(
         const isGithub = match.params.id.includes('github');
 
         return (
-          <>
+          <ThemeProvider>
             <div
               style={{
                 fontWeight: 300,
@@ -126,7 +127,7 @@ export const Sandbox = React.memo<Props>(
                 </div>
               </div>
             )}
-          </>
+          </ThemeProvider>
         );
       }
 
