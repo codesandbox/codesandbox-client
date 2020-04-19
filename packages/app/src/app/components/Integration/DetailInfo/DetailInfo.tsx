@@ -2,7 +2,7 @@ import React from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { Button } from '@codesandbox/components';
 import { Details, Heading, Info, Action } from './elements';
 
 interface IDetailInfoProps {
@@ -31,7 +31,7 @@ export const DetailInfo: React.FC<IDetailInfoProps> = ({
         </Action>
       </Tooltip>
     ) : (
-      <Button small onClick={onSignIn}>
+      <Button style={{ width: 'auto' }} onClick={onSignIn}>
         Sign in
       </Button>
     )}

@@ -78,6 +78,9 @@ export const uploadFiles: AsyncAction<
   const filePaths = Object.keys(files);
   const chunkedFilePaths = chunk(filePaths, 5);
 
+  const textExtensions = (await import('textextensions/source/index.json'))
+    .default;
+
   // We traverse all files and upload them when necessary, then add them to the
   // parsedFiles object
   /* eslint-disable no-restricted-syntax, no-await-in-loop */
@@ -87,20 +90,10 @@ export const uploadFiles: AsyncAction<
         const file = files[filePath];
         const { dataURI } = file;
 
+        const extension = filePath.split('.').pop();
+
         if (
-          (/\.(j|t)sx?$/.test(filePath) ||
-            /\.coffee$/.test(filePath) ||
-            /\.json$/.test(filePath) ||
-            /\.html$/.test(filePath) ||
-            /\.vue$/.test(filePath) ||
-            /\.styl$/.test(filePath) ||
-            /\.(le|sc|sa)ss$/.test(filePath) ||
-            /\.haml$/.test(filePath) ||
-            /\.pug$/.test(filePath) ||
-            /\.svg$/.test(filePath) ||
-            /\.md$/.test(filePath) ||
-            /\.svelte$/.test(filePath) ||
-            /\.hbs$/.test(filePath) ||
+          ((extension && textExtensions.includes(extension)) ||
             file.type.startsWith('text/') ||
             file.type === 'application/json') &&
           dataURI.length < MAX_FILE_SIZE

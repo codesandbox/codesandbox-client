@@ -222,6 +222,7 @@
     "subworkers": "^1.0.1",
     "svg-react-loader": "^0.4.4",
     "tern": "^0.21.0",
+    "textextensions": "^3.3.0",
     "use-interval": "^1.2.1",
     "util": "0.11.1",
     "vue": "^2.5.2",

@@ -2,8 +2,9 @@ import React from 'react';
 import { StripeProvider, Elements } from 'react-stripe-elements';
 import { STRIPE_API_KEY } from '@codesandbox/common/lib/utils/config';
 import { useScript } from 'app/hooks';
+import { Element } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { CheckoutForm } from './CheckoutForm';
-import { Container } from './elements';
 
 interface ISubscribeFormProps {
   name: string;
@@ -37,7 +38,12 @@ export const SubscribeForm: React.FC<ISubscribeFormProps> = ({
 
   return (
     <>
-      <Container>
+      <Element
+        css={css({
+          width: 300,
+          borderRadius: 3,
+        })}
+      >
         <StripeProvider stripe={stripe}>
           <Elements>
             <CheckoutForm
@@ -51,7 +57,7 @@ export const SubscribeForm: React.FC<ISubscribeFormProps> = ({
             />
           </Elements>
         </StripeProvider>
-      </Container>
+      </Element>
     </>
   );
 };

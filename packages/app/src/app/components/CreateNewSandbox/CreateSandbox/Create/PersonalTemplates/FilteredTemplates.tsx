@@ -25,8 +25,8 @@ export const FilteredTemplates = ({
           threshold: 0.3,
           distance: 10,
           keys: [
-            { name: 'sandbox.title', weight: 0.5 },
-            { name: 'sandbox.description', weight: 0.5 },
+            { name: 'sandbox.title', weight: 0.3 },
+            { name: 'sandbox.description', weight: 0.25 },
             { name: 'sandbox.alias', weight: 0.2 },
             { name: 'sandbox.source.template', weight: 0.2 },
             { name: 'sandbox.id', weight: 0.05 },

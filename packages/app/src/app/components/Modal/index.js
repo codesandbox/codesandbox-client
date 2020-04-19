@@ -74,6 +74,7 @@ class ModalComponent extends React.Component {
       left: 0,
       right: 0,
       margin: `0 auto ${top}vh`,
+      fontFamily: "'Inter', sans-serif",
       outline: 'none',
     },
   });
