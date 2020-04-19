@@ -127,6 +127,6 @@ export const onInitialize: OnInitialize = async (
         ],
       },
     });
-    effects.browser.storage.set(seenTermsKey, true);
   }
+  effects.browser.storage.set(seenTermsKey, true);
 };
