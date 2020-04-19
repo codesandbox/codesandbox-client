@@ -143,8 +143,8 @@ const RoutesComponent: React.FC = () => {
             <Route component={NotFound} />
           </Switch>
         </Content>
+        <Modals />
       </Boundary>
-      <Modals />
     </Container>
   );
 };
