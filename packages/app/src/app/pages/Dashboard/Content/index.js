@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
+import codesandbox from '@codesandbox/components/lib/themes/codesandbox.json';
 import { ThemeProvider } from '@codesandbox/components';
 
 import { RecentSandboxes } from './routes/RecentSandboxes';
@@ -13,7 +13,7 @@ import CreateTeam from './routes/CreateTeam';
 import TeamView from './routes/TeamView';
 
 const Content = () => (
-  <ThemeProvider theme={codesandboxBlack}>
+  <ThemeProvider theme={codesandbox}>
     <Switch>
       <Route path="/dashboard/recent" component={RecentSandboxes} />
       <Route path="/dashboard/trash" component={DeletedSandboxes} />
