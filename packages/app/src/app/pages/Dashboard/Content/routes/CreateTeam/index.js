@@ -54,7 +54,7 @@ export default class CreateTeam extends React.PureComponent {
 
         <Mutation mutation={CREATE_TEAM_MUTATION}>
           {mutate => {
-            const submit = (e) => {
+            const submit = e => {
               e.preventDefault();
               e.stopPropagation();
               const name = this.state.inputValue;
