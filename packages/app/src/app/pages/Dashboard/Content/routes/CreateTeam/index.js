@@ -38,7 +38,7 @@ const PRO_POINTS = [
 export default class CreateTeam extends React.PureComponent {
   state = { inputValue: '' };
 
-  handleChange = (e) => {
+  handleChange = e => {
     this.setState({ inputValue: e.target.value });
   };
 
