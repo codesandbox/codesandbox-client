@@ -205,8 +205,6 @@ export class ModelsHandler {
 
     // Ensure we have the moduleModels
     Object.keys(commentThreadsByPath).forEach(path => {
-      // TODO(@christianalfoni): We should probably make this dynamic on model load instead of
-      // on editor load? Preferably we don't keep all moduleModels for files that are not opened.
       this.getOrCreateModuleModelByPath(path).comments =
         commentThreadsByPath[path];
     });
@@ -214,17 +212,15 @@ export class ModelsHandler {
     // Apply the decorations
     Object.keys(this.moduleModels).forEach(path => {
       const moduleModel = this.moduleModels[path];
-      const relativePath = path.replace('/sandbox', '');
       const model = moduleModel.model;
 
       if (!model) {
         return;
       }
 
-      const commentThreads = commentThreadsByPath[relativePath] || [];
       const existingDecorationComments = moduleModel.currentCommentDecorations;
       const newDecorationComments = this.createCommentDecorations(
-        commentThreads,
+        moduleModel.comments,
         model,
         currentCommentThreadId,
         moduleModel.currentLine
@@ -234,8 +230,6 @@ export class ModelsHandler {
         existingDecorationComments,
         newDecorationComments
       );
-
-      moduleModel.comments = commentThreads;
     });
   }
 
@@ -736,7 +730,9 @@ export class ModelsHandler {
           const csbPath = model.uri.path.replace('/sandbox', '');
           dispatch(actions.correction.clear(csbPath, 'eslint'));
 
-          delete this.moduleModels[model.uri.path];
+          // We only delete the model, because the state contains things
+          // like comments, which we want to keep
+          delete this.moduleModels[model.uri.path].model;
         }
       }
     );
