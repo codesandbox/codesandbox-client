@@ -118,6 +118,11 @@ executors:
     docker:
       - image: circleci/node:10
     working_directory: ~/codesandbox-client
+  node-xlarge:
+    docker:
+      - image: circleci/node:10
+    resource_class: xlarge
+    working_directory: ~/codesandbox-client
   node-with-puppeteer:
     docker:
       - image: codesandbox/node-puppeteer
@@ -278,12 +283,12 @@ commands:
 
 jobs:
   build-deps:
-    executor: node
+    executor: node-xlarge
     steps:
       - checkout_with_cache
       - build_deps
   build-prod:
-    executor: node
+    executor: node-xlarge
     steps:
       - checkout_with_cache
       - build_prod
@@ -320,7 +325,7 @@ jobs:
   deploy-to-production:
     executor: node
     environment:
-      ENVIRONMENT: production
+      ENVIRONMENT: prod
     steps:
       - checkout_with_cache
       - restore_cache: *restore_deps_cache
@@ -376,27 +381,30 @@ workflows:
       - create-docker-image:
           requires:
             - build-prod
-            - lint
-            - typecheck
-            # - test-integrations
-            - test-jest
-      - deploy-production-approval:
-          type: approval
-          filters:
-            branches:
-              only:
-                - master
       - deploy-to-production:
           requires:
-            - deploy-production-approval
             - create-docker-image
+            - build-prod
+            - lint
+            - typecheck
+            - test-integrations
+            - test-jest
+            - test-visual-regressions
           filters:
             branches:
               only:
                 - master
       - deploy-staging-approval:
           type: approval
+          filters:
+            branches:
+              ignore:
+                - master
       - deploy-to-staging:
           requires:
             - deploy-staging-approval
             - create-docker-image
+          filters:
+            branches:
+              ignore:
+                - master

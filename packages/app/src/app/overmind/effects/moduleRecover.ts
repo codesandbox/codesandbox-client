@@ -1,24 +1,25 @@
 import { Module } from '@codesandbox/common/lib/types';
 
-const getKey = (id, moduleShortid) => `recover:${id}:${moduleShortid}:code`;
+const getKey = (id: string, moduleShortid: string) =>
+  `recover:${id}:${moduleShortid}:code`;
+
+export type RecoverData = {
+  code: string;
+  version: number;
+  timestamp: number;
+  sandboxId: string;
+};
 
 export default {
-  save(
-    currentId: string,
-    version: number,
-    module: Module,
-    code: string,
-    savedCode: string | null
-  ) {
+  save(sandboxId: string, version: number, module: Module) {
     try {
       localStorage.setItem(
-        getKey(currentId, module.shortid),
+        getKey(sandboxId, module.shortid),
         JSON.stringify({
-          code,
-          savedCode,
+          code: module.code,
           version,
           timestamp: new Date().getTime(),
-          sandboxId: currentId,
+          sandboxId,
         })
       );
     } catch (e) {
@@ -26,18 +27,27 @@ export default {
     }
   },
 
-  remove(currentId: string, module: Module) {
+  get(sandboxId: string, moduleShortid: string): RecoverData | null {
+    return JSON.parse(
+      localStorage.getItem(getKey(sandboxId, moduleShortid)) || 'null'
+    );
+  },
+
+  remove(sandboxId: string, module: Module) {
     try {
-      localStorage.removeItem(getKey(currentId, module.shortid));
+      const recoverData = this.get(sandboxId, module.shortid);
+      if (recoverData && recoverData.code === module.code) {
+        localStorage.removeItem(getKey(sandboxId, module.shortid));
+      }
     } catch (e) {
       // Too bad
     }
   },
 
-  clearSandbox(currentId: string) {
+  clearSandbox(sandboxId: string) {
     try {
       Object.keys(localStorage)
-        .filter(key => key.startsWith(`recover:${currentId}`))
+        .filter(key => key.startsWith(`recover:${sandboxId}`))
         .forEach(key => {
           localStorage.removeItem(key);
         });
@@ -46,19 +56,22 @@ export default {
     }
   },
 
-  getRecoverList(currentId: string, modules: Module[]) {
+  getRecoverList(sandboxId: string, modules: Module[]) {
     const localKeys = Object.keys(localStorage).filter(key =>
-      key.startsWith(`recover:${currentId}`)
+      key.startsWith(`recover:${sandboxId}`)
     );
 
     return modules
-      .filter(m => localKeys.includes(getKey(currentId, m.shortid)))
+      .filter(m => localKeys.includes(getKey(sandboxId, m.shortid)))
       .map(module => {
-        const key = getKey(currentId, module.shortid);
+        const key = getKey(sandboxId, module.shortid);
 
         try {
-          const recoverData = JSON.parse(localStorage.getItem(key) || 'null');
-          if (recoverData && recoverData.code !== module.code) {
+          const recoverData: RecoverData = JSON.parse(
+            localStorage.getItem(key) || 'null'
+          );
+
+          if (recoverData) {
             return { recoverData, module };
           }
         } catch (e) {
@@ -67,6 +80,6 @@ export default {
 
         return null;
       })
-      .filter(Boolean);
+      .filter(Boolean) as Array<{ recoverData: RecoverData; module: Module }>;
   },
 };

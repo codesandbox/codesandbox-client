@@ -37,6 +37,23 @@ import HTML5Backend from './pages/common/HTML5BackendWithFolderSupport';
 
 const debug = _debug('cs:app');
 
+/**
+ * Get rid of a tippy warning that spams the console, and doesn't seem valid.
+ */
+const warn = console.warn;
+console.warn = (...args) => {
+  if (
+    args &&
+    args[0] &&
+    typeof args[0].includes === 'function' &&
+    args[0].includes('Cannot update plugins')
+  ) {
+    return;
+  }
+
+  warn(...args);
+};
+
 window.setImmediate = (func, delay) => setTimeout(func, delay);
 
 window.addEventListener('unhandledrejection', e => {
@@ -50,8 +67,11 @@ window.addEventListener('unhandledrejection', e => {
 window.__isTouch = !matchMedia('(pointer:fine)').matches;
 
 const overmind = createOvermind(config, {
+  delimiter: ' ',
   devtools:
-    (window.opener && window.opener !== window) || !window.chrome
+    (window.opener && window.opener !== window) ||
+    !window.chrome ||
+    location.search.includes('noDevtools')
       ? false
       : 'localhost:3031',
   name:
@@ -67,6 +87,9 @@ if (process.env.NODE_ENV === 'production') {
     'track',
     'editor.previewActionReceived',
     'live.onSelectionChanged',
+    'live.onViewRangeChanged',
+    'editor.onSelectionChanged',
+    'editor.persistCursorToUrl',
   ];
 
   try {
@@ -116,6 +139,7 @@ window.getSignal = path =>
 overmind.initialized.then(() => {
   requirePolyfills().then(() => {
     if (isSafari) {
+      // eslint-disable-next-line
       import('subworkers');
     }
 

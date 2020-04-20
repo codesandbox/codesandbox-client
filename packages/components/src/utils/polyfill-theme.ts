@@ -5,10 +5,10 @@
  * collapsible icon
  *
  */
-import dot from 'dot-object';
 import deepmerge from 'deepmerge';
 import Color from 'color';
-import designLanguage from '@codesandbox/common/lib/design-language/theme';
+import { object } from './dot';
+import designLanguage from '../design-language';
 import codesandboxBlack from '../themes/codesandbox-black';
 import codesandboxLight from '../themes/codesandbox-light.json';
 
@@ -35,19 +35,23 @@ const polyfillTheme = vsCodeTheme => {
     list: {},
     sideBar: {},
     activityBar: {},
+    titleBar: {},
+    quickInput: {},
+    menuList: {},
+    dialog: {},
   };
 
   const type = vsCodeTheme.type || guessType(vsCodeTheme);
 
   //  Step 1: Initialise with vscode theme
-  const vsCodeColors = dot.object(vsCodeTheme.colors || {});
+  const vsCodeColors = object(vsCodeTheme.colors || {});
   uiColors = deepmerge(uiColors, vsCodeColors);
 
   // Step 2: Fill missing values from existing values or codesandbox dark/light
 
   const codesandboxColors = ['dark', 'lc'].includes(type)
-    ? dot.object(codesandboxBlack.colors)
-    : dot.object(codesandboxLight.colors);
+    ? object(codesandboxBlack.colors)
+    : object(codesandboxLight.colors);
 
   // 2.1 First, lets fill in core values that are used to infer other values
 
@@ -77,6 +81,11 @@ const polyfillTheme = vsCodeTheme => {
     placeholderForeground:
       uiColors.input.placeholderForeground ||
       codesandboxColors.input.placeholderForeground,
+  };
+
+  uiColors.quickInput = {
+    background: uiColors.quickInput.background || uiColors.sideBar.background,
+    foreground: uiColors.quickInput.foreground || uiColors.sideBar.foreground,
   };
 
   uiColors.inputOption.activeBorder =
@@ -120,11 +129,34 @@ const polyfillTheme = vsCodeTheme => {
     );
   }
 
+  if (uiColors.list.hoverBackground === uiColors.sideBar.background) {
+    if (
+      uiColors.list.inactiveSelectionBackground &&
+      uiColors.list.hoverBackground !==
+        uiColors.list.inactiveSelectionBackground
+    ) {
+      uiColors.list.hoverBackground = uiColors.list.inactiveSelectionBackground;
+    } else {
+      // if that didnt work, its math time
+      uiColors.list.hoverBackground = decreaseContrast(
+        uiColors.sideBar.background,
+        0.25
+      );
+    }
+  }
+
   uiColors.list.foreground = uiColors.list.foreground || mutedForeground;
   uiColors.list.hoverForeground =
     uiColors.list.hoverForeground || uiColors.sideBar.foreground;
   uiColors.list.hoverBackground =
     uiColors.list.hoverBackground || uiColors.sideBar.hoverBackground;
+
+  uiColors.titleBar.activeBackground =
+    uiColors.titleBar.activeBackground || uiColors.sideBar.background;
+  uiColors.titleBar.activeForeground =
+    uiColors.titleBar.activeForeground || uiColors.sideBar.foreground;
+  uiColors.titleBar.border =
+    uiColors.titleBar.border || uiColors.sideBar.border;
 
   // Step 3.2
   // On the same theme of design decisions for interfaces,
@@ -135,7 +167,7 @@ const polyfillTheme = vsCodeTheme => {
   const addedColors = {
     mutedForeground,
     activityBar: {
-      selected: uiColors.sideBar.foreground,
+      selectedForeground: uiColors.sideBar.foreground,
       inactiveForeground: mutedForeground,
       hoverBackground: uiColors.sideBar.border,
     },
@@ -162,6 +194,17 @@ const polyfillTheme = vsCodeTheme => {
       backgroundOn: uiColors.button.background,
       toggle: designLanguage.colors.white,
     },
+    dialog: {
+      background: uiColors.quickInput.background,
+      foreground: uiColors.quickInput.foreground,
+      border: uiColors.sideBar.border,
+    },
+    menuList: {
+      background: uiColors.sideBar.background,
+      border: uiColors.sideBar.border,
+      hoverBackground: uiColors.sideBar.border,
+      foreground: uiColors.sideBar.foreground,
+    },
   };
 
   uiColors = deepmerge(uiColors, addedColors);
@@ -174,6 +217,14 @@ const polyfillTheme = vsCodeTheme => {
     // default is white, we make it a little darker
     uiColors.switch.toggle = designLanguage.colors.grays[200];
   }
+
+  // ensure enough contrast from inactive state
+  uiColors.activityBar.selectedForeground = withContrast(
+    uiColors.activityBar.selectedForeground,
+    uiColors.activityBar.inactiveForeground,
+    type,
+    'icon'
+  );
 
   return uiColors;
 };
@@ -195,13 +246,21 @@ const darken = (color, value) =>
     .darken(value)
     .hex();
 
-const withContrast = (color, background, type) => {
-  if (Color(color).contrast(Color(background)) > 4.5) return color;
+const withContrast = (color, background, type, contrastType = 'text') => {
+  const contrastRatio = { text: 4.5, icon: 1.6 };
+  const contrast = contrastRatio[contrastType];
+
+  if (Color(color).contrast(Color(background)) > contrast) return color;
 
   // can't fix that
   if (color === '#FFFFFF' || color === '#000000') return color;
 
   // recursively increase contrast
   const increaseContrast = type === 'dark' ? lighten : darken;
-  return withContrast(increaseContrast(color, 0.1), background, type);
+  return withContrast(
+    increaseContrast(color, 0.1),
+    background,
+    type,
+    contrastType
+  );
 };

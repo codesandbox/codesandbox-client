@@ -46,6 +46,7 @@ export const LiveNow = () => {
       live: {
         notificationsHidden,
         isOwner,
+        reconnecting,
         roomInfo: {
           startTime,
           roomId,
@@ -76,8 +77,14 @@ export const LiveNow = () => {
           <Stack justify="space-between" align="center" marginBottom={2}>
             <Text variant="danger">
               <Stack align="center" gap={2}>
-                <LiveIcon />
-                <span>You&apos;re live!</span>
+                {reconnecting ? (
+                  'Reconnecting...'
+                ) : (
+                  <>
+                    <LiveIcon />
+                    <span>You&apos;re live!</span>
+                  </>
+                )}
               </Stack>
             </Text>
             <Timer startTime={startTime} />
@@ -88,6 +95,7 @@ export const LiveNow = () => {
           </Text>
 
           <Input
+            readOnly
             defaultValue={`https://codesandbox.io/live/${roomId}`}
             marginBottom={2}
             onFocus={({ target }: { target: any }) => target.select()}

@@ -46,7 +46,7 @@ const SwitchContainer = styled(Element)(
       backgroundColor: 'switch.backgroundOn',
     },
     'input:checked + [data-component=SwitchBackground] [data-component=SwitchToggle]': {
-      left: theme => theme.space[4] - 4,
+      left: theme => theme.space[4] - 4 + 'px',
     },
   })
 );
@@ -55,7 +55,7 @@ interface ISwitchProps {
   id?: string;
   on?: boolean;
   defaultOn?: boolean;
-  onChange?: (event: any) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const Switch: React.FC<ISwitchProps> = ({ on, defaultOn, ...props }) => (

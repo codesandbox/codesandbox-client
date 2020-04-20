@@ -1,10 +1,9 @@
 import { UploadFile } from '@codesandbox/common/lib/types';
 import React, { FunctionComponent } from 'react';
-import DeleteIcon from 'react-icons/lib/md/delete';
+import css from '@styled-system/css';
 
 import { useOvermind } from 'app/overmind';
-
-import { Button } from './Button';
+import { Button, Icon } from '@codesandbox/components';
 
 type Props = Pick<UploadFile, 'id'>;
 export const DeleteFileButton: FunctionComponent<Props> = ({ id }) => {
@@ -16,9 +15,19 @@ export const DeleteFileButton: FunctionComponent<Props> = ({ id }) => {
 
   return (
     <Button
-      Icon={DeleteIcon}
+      css={css({
+        width: 'auto',
+        '&:hover': {
+          background: theme =>
+            theme.colors.dangerButton.background + ' !important',
+          color: 'dangerButton.foreground',
+        },
+      })}
+      variant="secondary"
       onClick={() => deletedUploadedFile(id)}
-      tooltip="Delete File"
-    />
+      title="Delete File"
+    >
+      <Icon name="trash" />
+    </Button>
   );
 };

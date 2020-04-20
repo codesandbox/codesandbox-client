@@ -13,7 +13,7 @@ import { DeleteIcon, EditIcon } from './Icons';
 import { VarForm } from './VarForm';
 
 export const EnvVars = () => {
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState(null);
   const {
     actions: { editor },
     state: {
@@ -39,35 +39,34 @@ export const EnvVars = () => {
         </Text>
       </Element>
       {envVars ? (
-        <List marginTop={4}>
+        <List paddingTop={4}>
           {Object.keys(envVars).map(keyName => (
             <>
-              {editMode ? (
+              {editMode === keyName || !envVars[keyName] ? (
                 <VarForm
                   name={keyName}
                   value={envVars[keyName]}
-                  onCancel={() => setEditMode(false)}
+                  onCancel={() => setEditMode(null)}
                   onSubmit={({ name, value }) => {
                     editor.updateEnvironmentVariables({ name, value });
-                    setEditMode(false);
+                    setEditMode(null);
                   }}
                 />
-              ) : null}
-              <ListItem justify="space-between" marginTop={editMode ? 4 : 0}>
-                <Text>{keyName}</Text>
-                {!editMode ? (
+              ) : (
+                <ListItem justify="space-between" marginTop={editMode ? 4 : 0}>
+                  <Text>{keyName}</Text>
                   <Stack gap={2}>
                     <EditIcon
                       style={{ cursor: 'pointer' }}
-                      onClick={() => setEditMode(true)}
+                      onClick={() => setEditMode(keyName)}
                     />
                     <DeleteIcon
                       style={{ cursor: 'pointer' }}
                       onClick={() => deleteEnv(keyName)}
                     />
                   </Stack>
-                ) : null}
-              </ListItem>
+                </ListItem>
+              )}
             </>
           ))}
         </List>

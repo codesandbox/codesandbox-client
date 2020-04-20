@@ -14,6 +14,7 @@ export type SSEContainerStatus =
 export type SSEManagerStatus = 'connected' | 'disconnected' | 'initializing';
 
 export type PermissionType =
+  | 'owner'
   | 'write_code'
   | 'write_project'
   | 'comment'
@@ -63,7 +64,7 @@ export type Module = {
   isBinary: boolean;
   insertedAt: string;
   updatedAt: string;
-  path: string | null;
+  path: string;
   type: 'file';
 };
 
@@ -111,10 +112,10 @@ export type Badge = {
 
 export type CurrentUser = {
   id: string;
-  email: string | null;
+  email: string;
   name: string | null;
   username: string;
-  avatarUrl: string | null;
+  avatarUrl: string;
   jwt: string | null;
   subscription: {
     since: string;
@@ -123,6 +124,9 @@ export type CurrentUser = {
     plan: 'pro' | 'patron';
     duration: 'monthly' | 'yearly';
   } | null;
+  experiments: {
+    [key: string]: boolean;
+  };
   curatorAt: string;
   badges: Badge[];
   integrations: {
@@ -207,10 +211,12 @@ export type User = {
 export type LiveUser = {
   username: string;
   selection: UserSelection | null;
+  viewRange: UserViewRange | null;
   id: string;
   currentModuleShortid: string | null;
   color: [number, number, number];
   avatarUrl: string;
+  userId: string | null;
 };
 
 export type RoomInfo = {
@@ -305,6 +311,12 @@ export type SandboxAuthor = {
   subscriptionSince: string | null;
 };
 
+export enum CommentsFilterOption {
+  ALL = 'All',
+  OPEN = 'Open',
+  RESOLVED = 'Resolved',
+}
+
 export type Sandbox = {
   id: string;
   alias: string | null;
@@ -316,6 +328,9 @@ export type Sandbox = {
   userLiked: boolean;
   modules: Module[];
   directories: Directory[];
+  featureFlags: {
+    [key: string]: boolean;
+  };
   collection?: {
     path: string;
   };
@@ -442,10 +457,10 @@ export type PackageJSON = {
   keywords?: string[];
   main?: string;
   module?: string;
-  scripts?: { [command: string]: string; };
-  dependencies?: { [dependency: string]: string; };
-  devDependencies?: { [dependency: string]: string; };
-  jest?: { setupFilesAfterEnv?: string[]; };
+  scripts?: { [command: string]: string };
+  dependencies?: { [dependency: string]: string };
+  devDependencies?: { [dependency: string]: string };
+  jest?: { setupFilesAfterEnv?: string[] };
   resolutions?: { [dependency: string]: string };
 };
 
@@ -473,6 +488,13 @@ export type EditorSelection = {
   name: string | null;
   selection: UserSelection | null;
   color: number[];
+};
+
+export type UserViewRange = {
+  startLineNumber: number;
+  endLineNumber: number;
+  startColumn: number;
+  endColumn: number;
 };
 
 export enum WindowOrientation {
@@ -677,6 +699,7 @@ export enum LiveMessageEvent {
   MODULE_STATE = 'module_state',
   USER_ENTERED = 'user:entered',
   USER_LEFT = 'user:left',
+  USERS_CHANGED = 'users:changed',
   MODULE_SAVED = 'module:saved',
   MODULE_CREATED = 'module:created',
   MODULE_MASS_CREATED = 'module:mass-created',
@@ -688,6 +711,7 @@ export enum LiveMessageEvent {
   DIRECTORY_DELETED = 'directory:deleted',
   USER_SELECTION = 'user:selection',
   USER_CURRENT_MODULE = 'user:current-module',
+  USER_VIEW_RANGE = 'user:view-range',
   LIVE_MODE = 'live:mode',
   LIVE_CHAT_ENABLED = 'live:chat_enabled',
   LIVE_ADD_EDITOR = 'live:add-editor',

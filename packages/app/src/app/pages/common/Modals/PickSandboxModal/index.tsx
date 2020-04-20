@@ -1,13 +1,18 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Row from '@codesandbox/common/lib/components/flex/Row';
+/* eslint-disable jsx-a11y/accessible-emoji */
+// @ts-nocheck
 import React, { FormEvent, FunctionComponent, useState } from 'react';
 
+import {
+  FormField,
+  Button,
+  Text,
+  Stack,
+  Input,
+  Textarea,
+} from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-
-import { Explanation, Heading } from '../elements';
-import { Container } from '../LiveSessionEnded/elements';
-
-import { Field, Input, Label, TextArea } from './elements';
+import css from '@styled-system/css';
+import { Alert } from '../Common/Alert';
 
 export const PickSandboxModal: FunctionComponent = () => {
   const {
@@ -25,60 +30,72 @@ export const PickSandboxModal: FunctionComponent = () => {
   const [title, setTitle] = useState(details.title);
 
   return (
-    <Container>
-      <Heading>Pick this sandbox</Heading>
-
-      <Explanation>
-        Please add a title and description to this sandbox if none exists or you
-        think you have a better description for it. This title and description
-        will be the ones used in the explore page.
-      </Explanation>
-
+    <Alert
+      title="Pick this sandbox"
+      description="Please add a title and description to this sandbox if none exists or you think you have a better description for it. This title and description will be the ones used in the explore page."
+    >
       <form
         onSubmit={(event: FormEvent<HTMLFormElement>) => {
           event.preventDefault();
-
           pickSandbox({ description, id, title });
         }}
       >
-        <Field>
-          <Label htmlFor="title">Sandbox name</Label>
-
+        <FormField
+          style={{ padding: 0 }}
+          marginBottom={4}
+          direction="vertical"
+          label="Sandbox name"
+        >
           <Input
+            marginTop={2}
             id="title"
             name="title"
-            onChange={({ target: { value } }) => setTitle(value)}
+            onChange={e => setTitle(e.target.value)}
             required
             value={title}
           />
-        </Field>
+        </FormField>
 
-        <Field>
-          <Label htmlFor="description">Sandbox Description</Label>
-
-          <TextArea
+        <FormField
+          style={{ padding: 0 }}
+          marginBottom={4}
+          direction="vertical"
+          label="Sandbox Description"
+        >
+          <Textarea
+            marginTop={2}
             id="description"
             name="description"
-            onChange={({ target: { value } }) => setDescription(value)}
+            onChange={e => setDescription(e.target.value)}
             required
             rows={3}
             value={description}
           />
-        </Field>
+        </FormField>
 
-        <Row justifyContent="space-around">
-          <Button type="submit">
-            Ship it{' '}
-            <span role="img" aria-label="rocket">
-              🚀
-            </span>
-          </Button>
-
-          <Button danger onClick={() => modalClosed()}>
+        <Stack justify="flex-end" gap={2}>
+          <Button
+            css={css({
+              width: 'auto',
+            })}
+            variant="link"
+            onClick={modalClosed}
+          >
             Cancel
           </Button>
-        </Row>
+          <Button
+            type="submit"
+            css={css({
+              width: 'auto',
+            })}
+          >
+            Ship it{' '}
+            <Text as="span" paddingLeft={1} role="img" aria-label="rocket">
+              🚀
+            </Text>
+          </Button>
+        </Stack>
       </form>
-    </Container>
+    </Alert>
   );
 };

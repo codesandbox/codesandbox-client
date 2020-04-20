@@ -18,13 +18,13 @@ const SignIn = () => {
     state,
     actions: { genericPageMounted },
   } = useOvermind();
-  const redirectTo = new URL(location.href).searchParams.get('continue') || '/';
+  const redirectTo = new URL(location.href).searchParams.get('continue');
 
   useEffect(() => {
     genericPageMounted();
   }, [genericPageMounted]);
 
-  if (state.hasLogIn) {
+  if (state.hasLogIn && !redirectTo) {
     return <Redirect to={dashboardUrl()} />;
   }
 

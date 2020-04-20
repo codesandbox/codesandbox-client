@@ -5,17 +5,25 @@ import delay from '../delay';
 const NEW_SESSION_TIME = 1000 * 60 * 30;
 
 const getLastTimeEventSent = () => {
-  const lastTime = localStorage.getItem('csb-last-event-sent');
+  try {
+    const lastTime = localStorage.getItem('csb-last-event-sent');
 
-  if (lastTime === null) {
+    if (lastTime === null) {
+      return 0;
+    }
+
+    return +lastTime;
+  } catch (e) {
     return 0;
   }
-
-  return +lastTime;
 };
 
 const markLastTimeEventSent = () => {
-  localStorage.setItem('csb-last-event-sent', Date.now().toString());
+  try {
+    localStorage.setItem('csb-last-event-sent', Date.now().toString());
+  } catch (e) {
+    console.warn(e);
+  }
 };
 
 const getAmplitude = async (): Promise<any | false> => {
@@ -97,5 +105,13 @@ export const track = async (eventName: string, data: any) => {
       '[Amplitude] NOT tracking because Amplitude is not loaded',
       eventName
     );
+  }
+};
+
+export const setGroup = async (group: string, value: string | string[]) => {
+  const amplitude = await getAmplitude();
+  if (amplitude) {
+    debug('[Amplitude] Grouping', group, value);
+    amplitude.setGroup(group, value);
   }
 };

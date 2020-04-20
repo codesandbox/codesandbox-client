@@ -11,7 +11,7 @@ import media from '../utils/media';
 const Navigation = styled.nav`
   padding-top: 2rem;
   margin-right: 1rem;
-  width: 300px;
+  width: 250px;
 
   ${props =>
     props.fixed &&
@@ -69,7 +69,6 @@ const SecondaryNavigationLink = styled(Link)`
   color: rgba(255, 255, 255, 0.7);
   font-size: 1rem;
   font-weight: 500;
-  margin-left: 1rem;
 
   &:hover {
     color: ${props => props.theme.homepage.white};
@@ -96,7 +95,7 @@ const SubLink = ({
 }) => (
   <ul style={{ marginTop: '.5rem' }}>
     {headings.map(({ value }) => (
-      <li key={value}>
+      <li key={value} style={{ marginLeft: '1rem' }}>
         <SecondaryNavigationLink to={`docs${slug}#${slugify(value)}`}>
           {value}
         </SecondaryNavigationLink>

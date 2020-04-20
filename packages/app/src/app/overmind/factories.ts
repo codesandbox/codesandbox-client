@@ -34,7 +34,12 @@ export const withLoadApp = <T>(
       actions.internal.setPatronPrice();
       actions.internal.setSignedInCookie();
       effects.analytics.identify('signed_in', true);
-      effects.analytics.setUserId(state.user.id);
+      effects.analytics.setUserId(state.user.id, state.user.email);
+      try {
+        actions.internal.trackCurrentTeams();
+      } catch (e) {
+        // Not majorly important
+      }
       actions.internal.showUserSurveyIfNeeded();
       effects.live.connect();
       actions.userNotifications.internal.initialize();
@@ -103,7 +108,7 @@ export const withOwnedSandbox = <T>(
       if (modalResponse === 'fork') {
         try {
           await actions.editor.internal.forkSandbox({
-            sandboxId: state.editor.currentId!,
+            sandboxId: sandbox.id,
           });
         } catch (e) {
           return cancelAction(context, payload);

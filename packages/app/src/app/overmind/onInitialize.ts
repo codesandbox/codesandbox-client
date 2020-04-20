@@ -1,3 +1,4 @@
+import { NotificationStatus } from '@codesandbox/notifications';
 import { OnInitialize } from '.';
 
 export const onInitialize: OnInitialize = async (
@@ -5,6 +6,7 @@ export const onInitialize: OnInitialize = async (
   overmindInstance
 ) => {
   const provideJwtToken = () => state.jwt || effects.jwt.get();
+  const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX';
 
   state.isFirstVisit = Boolean(
     !effects.jwt.get() && !effects.browser.storage.get('hasVisited')
@@ -15,9 +17,19 @@ export const onInitialize: OnInitialize = async (
   effects.live.initialize({
     provideJwtToken,
     onApplyOperation: actions.live.applyTransformation,
+    isLiveBlockerExperiement: () =>
+      Boolean(state.user?.experiments.liveBlocker),
+    onOperationError: actions.live.onOperationError,
   });
 
   effects.flows.initialize(overmindInstance.reaction);
+
+  // We consider recover mode something to be done when browser actually crashes, meaning there is no unmount
+  effects.browser.onUnload(() => {
+    if (state.editor.currentSandbox && state.connected) {
+      effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
+    }
+  });
 
   effects.api.initialize({
     provideJwtToken,
@@ -25,6 +37,16 @@ export const onInitialize: OnInitialize = async (
       return state.editor.parsedConfigurations;
     },
   });
+
+  effects.gql.initialize(
+    {
+      endpoint: `${location.origin}/api/graphql`,
+      headers: () => ({
+        Authorization: `Bearer ${state.jwt}`,
+      }),
+    },
+    () => (effects.jwt.get() ? effects.live.getSocket() : null)
+  );
 
   effects.notifications.initialize({
     provideSocket() {
@@ -67,15 +89,44 @@ export const onInitialize: OnInitialize = async (
     getCurrentSandbox: () => state.editor.currentSandbox,
     getCurrentModule: () => state.editor.currentModule,
     getSandboxFs: () => state.editor.modulesByPath,
+    getCurrentUser: () => state.user,
     onOperationApplied: actions.editor.onOperationApplied,
     onCodeChange: actions.editor.codeChanged,
-    onSelectionChange: actions.live.onSelectionChanged,
+    onSelectionChanged: selection => {
+      actions.editor.onSelectionChanged(selection);
+      actions.live.onSelectionChanged(selection);
+    },
+    onViewRangeChanged: actions.live.onViewRangeChanged,
+    onCommentClick: actions.comments.onCommentClick,
     reaction: overmindInstance.reaction,
-    getState: path =>
+    getState: (path: string) =>
       path ? path.split('.').reduce((aggr, key) => aggr[key], state) : state,
-    getSignal: path =>
+    getSignal: (path: string) =>
       path.split('.').reduce((aggr, key) => aggr[key], actions),
   });
 
   effects.preview.initialize(overmindInstance.reaction);
+
+  // show terms message on first visit since new terms
+  if (!effects.browser.storage.get(seenTermsKey) && !state.isFirstVisit) {
+    effects.analytics.track('Saw Privacy Policy Notification');
+    effects.notificationToast.add({
+      message:
+        'Hello, our privacy policy has been updated recently. What’s new? CodeSandbox emails. Please read and reach out.',
+      title: 'Updated Privacy',
+      status: NotificationStatus.NOTICE,
+      sticky: true,
+      actions: {
+        primary: [
+          {
+            label: 'Open Privacy Policy',
+            run: () => {
+              window.open('https://codesandbox.io/legal/privacy', '_blank');
+            },
+          },
+        ],
+      },
+    });
+  }
+  effects.browser.storage.set(seenTermsKey, true);
 };

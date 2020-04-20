@@ -1,8 +1,10 @@
 import React from 'react';
+import { identify } from '@codesandbox/common/lib/utils/analytics';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
-import Hero from '../screens/home/hero';
+
+import HeroA from '../screens/home/hero';
 import Prototype from '../screens/home/prototype';
 import Started from '../screens/home/started';
 import LoadInView from '../components/LoadInView';
@@ -14,18 +16,19 @@ import Explore from '../screens/home/explore';
 
 // eslint-disable-next-line
 console.log(
-  'Hi, We love curious people that dive in to see how things are working! We are always looking for talented, hard working people. Drop us a line and show us your work We are hiring!'
+  'Hi, We love curious people that dive in to see how things are working! We are always looking for talented, hard working people. Drop us a line and show us your work. We are hiring: https://codesandbox.io/jobs'
 );
 
 const Homepage = () => (
   <Layout noWrapperStyling>
     <TitleAndMetaTags />
+
     <section
       css={`
         margin-bottom: 8rem;
       `}
     >
-      <Hero />
+      <HeroA />
     </section>
 
     <div style={WRAPPER_STYLING}>
@@ -55,5 +58,7 @@ const Homepage = () => (
     </div>
   </Layout>
 );
+
+identify('hero0420', 'A');
 
 export default Homepage;

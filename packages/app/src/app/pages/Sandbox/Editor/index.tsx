@@ -1,23 +1,32 @@
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
+import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
+import {
+  ThemeProvider as NewThemeProvider,
+  Stack,
+  Element,
+} from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
-import { ThemeProvider as NewThemeProvider } from '@codesandbox/components';
+import VERSION from '@codesandbox/common/lib/version';
+import VisuallyHidden from '@reach/visually-hidden';
 
 import Content from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 import { Header } from './Header';
+import { Header as HeaderOld } from './HeaderOld';
 import { Navigation } from './Navigation';
 import { Navigation as NavigationOld } from './NavigationOld';
-
+import { ContentSkeleton } from './Skeleton';
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
+import { CommentsAPI } from './Workspace/screens/Comments/API';
 
 const STATUS_BAR_SIZE = 22;
 
@@ -27,9 +36,12 @@ const StatusBar = styled.div`
   }
 `;
 
-const ContentSplit = () => {
-  const { state, actions, effects } = useOvermind();
+const Editor = () => {
+  const { state, actions, effects, reaction } = useOvermind();
   const statusbarEl = useRef(null);
+  const [showSkeleton, setShowSkeleton] = useState(
+    !state.editor.hasLoadedInitialModule
+  );
   const [localState, setLocalState] = useState({
     theme: {
       colors: {},
@@ -37,6 +49,20 @@ const ContentSplit = () => {
     },
     customVSCodeTheme: null,
   });
+
+  useEffect(() => {
+    let timeout;
+    const dispose = reaction(
+      reactionState => reactionState.editor.hasLoadedInitialModule,
+      () => {
+        timeout = setTimeout(() => setShowSkeleton(false), 500);
+      }
+    );
+    return () => {
+      dispose();
+      clearTimeout(timeout);
+    };
+  }, [reaction]);
 
   useEffect(() => {
     async function loadTheme() {
@@ -82,9 +108,21 @@ const ContentSplit = () => {
         ...localState.theme,
       }}
     >
-      <Container style={{ lineHeight: 'initial' }} className="monaco-workbench">
-        <Header zenMode={state.preferences.settings.zenMode} />
-
+      <Container
+        style={{ lineHeight: 'initial', backgroundColor: 'transparent' }}
+        className="monaco-workbench"
+      >
+        {REDESIGNED_SIDEBAR === 'true' ? (
+          <>
+            {state.preferences.settings.zenMode ? null : (
+              <NewThemeProvider theme={localState.theme.vscodeTheme}>
+                <Header />
+              </NewThemeProvider>
+            )}
+          </>
+        ) : (
+          <HeaderOld zenMode={state.preferences.settings.zenMode} />
+        )}
         <Fullscreen style={{ width: 'initial' }}>
           {!hideNavigation &&
             (REDESIGNED_SIDEBAR === 'true' ? (
@@ -113,6 +151,7 @@ const ContentSplit = () => {
               split="vertical"
               defaultSize={17 * 16}
               minSize={0}
+              resizerStyle={state.editor.isLoading ? { display: 'none' } : null}
               onDragStarted={() => actions.editor.resizingStarted()}
               onDragFinished={() => actions.editor.resizingStopped()}
               onChange={size => {
@@ -137,27 +176,107 @@ const ContentSplit = () => {
               }}
             >
               {state.workspace.workspaceHidden ? <div /> : <Workspace />}
-              <Content />
+              {<Content theme={localState.theme} />}
             </SplitPane>
-
-            <StatusBar
-              style={{
-                position: 'fixed',
-                display: statusBar ? 'block' : 'none',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: STATUS_BAR_SIZE,
-              }}
-              className="monaco-workbench mac nopanel"
-              ref={statusbarEl}
-            />
+            {showSkeleton ? (
+              <NewThemeProvider theme={localState.theme.vscodeTheme}>
+                <ContentSkeleton
+                  style={
+                    state.editor.hasLoadedInitialModule
+                      ? {
+                          opacity: 0,
+                        }
+                      : {
+                          opacity: 1,
+                        }
+                  }
+                />
+              </NewThemeProvider>
+            ) : null}
           </div>
+
+          <NewThemeProvider theme={localState.theme.vscodeTheme}>
+            <Stack
+              justify="space-between"
+              align="center"
+              className=".monaco-workbench"
+              css={css({
+                backgroundColor: 'statusBar.background',
+                color: 'statusBar.foreground',
+                position: 'fixed',
+                display: statusBar ? 'flex' : 'none',
+                bottom: 0,
+                right: 0,
+                left: 0,
+                width: '100%',
+                height: STATUS_BAR_SIZE,
+              })}
+            >
+              <FakeStatusBarText>
+                Version: {VERSION.split('-').pop()}
+              </FakeStatusBarText>
+              <StatusBar
+                className="monaco-workbench mac nopanel"
+                ref={statusbarEl}
+                style={{ width: 'calc(100% - 126px)' }}
+              />
+            </Stack>
+          </NewThemeProvider>
         </Fullscreen>
+
         <ForkFrozenSandboxModal />
       </Container>
+      <NewThemeProvider theme={localState.theme.vscodeTheme}>
+        <CommentsAPI />
+      </NewThemeProvider>
     </ThemeProvider>
   );
 };
 
-export default ContentSplit;
+export default Editor;
+
+/** To use the same styles + behavior of the vscode status bar,
+ *  we recreate the html structure outside of the status bar
+ *  the code is garbage
+ */
+/* eslint-disable */
+const FakeStatusBarText = props => {
+  const [copied, setCopied] = React.useState(false);
+
+  const copyText = () => {
+    const inputElement = document.querySelector('#status-bar-version');
+    // @ts-ignore it's not even a button!
+    inputElement.select();
+    document.execCommand('copy');
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <Element
+      as="span"
+      className="part statusbar"
+      css={css({
+        width: 'auto !important',
+        minWidth: '120px',
+        color: 'statusBar.foreground',
+      })}
+      {...props}
+    >
+      <span className="statusbar-item" style={{ paddingLeft: '10px' }}>
+        <a
+          title="Copy version"
+          style={{ color: 'inherit', padding: '0 5px' }}
+          onClick={copyText}
+        >
+          {copied ? 'Copied!' : props.children}
+        </a>
+
+        <VisuallyHidden>
+          <input id="status-bar-version" defaultValue={props.children} />
+        </VisuallyHidden>
+      </span>
+    </Element>
+  );
+};
+/* eslint-enable */

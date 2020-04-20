@@ -183,4 +183,4 @@ the new terms, please stop using the Service.
 ## Contact Us
 
 If you have any questions about these Terms, please contact us at
-hello@codesandbox.io
+[hello@codesandbox.io](mailto:hello@codesandbox.io).

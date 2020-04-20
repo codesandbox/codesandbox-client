@@ -4,6 +4,7 @@ import { Emitter } from './utils/events';
 export interface NotificationAction {
   label: string;
   run: (event?: any) => void;
+  hideOnClick?: boolean;
 }
 
 export enum NotificationStatus {

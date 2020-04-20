@@ -1,41 +1,25 @@
-import { format } from 'date-fns';
 import { graphql, Link } from 'gatsby';
+
 import React from 'react';
 
 import Layout from '../../components/layout';
 import PageContainer from '../../components/PageContainer';
-import {
-  Author,
-  AuthorImage,
-  PostDate,
-  Title,
-} from '../../components/PostElements';
+
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 
 import {
   Posts,
   Subtitle,
-  Thumbnail,
+  Grid,
   Wrapper,
-  Aside,
+  CardContent,
+  Thumbnail,
+  Title,
+  PublishDate,
   Header,
   PageTitle,
   PageSubtitle,
 } from './_elements';
-
-const Info = ({ authors, date, mobile, photo, ...props }) => (
-  <Aside mobile={mobile} {...props}>
-    <PostDate>{format(date, 'MMM DD, YYYY')}</PostDate>
-
-    {authors.map(author => (
-      <section key={author.name}>
-        <AuthorImage src={photo} alt={author} />
-
-        <Author>{author}</Author>
-      </section>
-    ))}
-  </Aside>
-);
 
 const Blog = ({
   data: {
@@ -43,65 +27,52 @@ const Blog = ({
   },
 }) => (
   <Layout>
-    <PageContainer width={1440}>
+    <PageContainer>
       <TitleAndMetaTags
         description="Here you can find articles written by the team and external contributors"
         title="Blog - CodeSandbox"
       />
 
       <Header>
-        <PageTitle>Blog</PageTitle>
+        <PageTitle>CodeSandbox Blog</PageTitle>
 
         <PageSubtitle>
-          Welcome to the CodeSandbox blog. Here you can find posts about new
-          releases, tips and tricks and how we made CodeSandbox.
+          Read all about new releases, tips, tricks and how CodeSandbox is build
         </PageSubtitle>
       </Header>
 
-      {blogPosts.map(
-        ({
-          node: {
-            fields: { authors, date, description, photo, slug, title },
-            frontmatter: {
-              banner: { publicURL: banner },
+      <Grid>
+        {blogPosts.map(
+          ({
+            node: {
+              fields: { authors, description, slug, title },
+              frontmatter: {
+                banner: { publicURL: banner },
+              },
+              id,
             },
-            id,
-          },
-        }) => (
-          <Wrapper key={id}>
-            <Info authors={authors} date={date} photo={photo} />
-
-            <Posts>
-              {banner && (
-                <Link
-                  css={`
-                    display: contents;
-                    text-decoration: none;
-                  `}
-                  to={`post/${slug}`}
-                >
-                  <Thumbnail alt={title} src={banner} width="340" />
-                </Link>
-              )}
-
-              <div>
+          }) => (
+            <Wrapper key={id} width={768}>
+              <Posts>
                 <Link
                   css={`
                     text-decoration: none;
                   `}
                   to={`post/${slug}`}
                 >
-                  <Title>{title}</Title>
+                  <Thumbnail alt={title} src={banner} />
+
+                  <CardContent>
+                    <Title>{title}</Title>
+                    <PublishDate>{authors}</PublishDate>
+                    <Subtitle>{description}</Subtitle>
+                  </CardContent>
                 </Link>
-
-                <Subtitle>{description}</Subtitle>
-              </div>
-
-              <Info authors={authors} date={date} mobile photo={photo} />
-            </Posts>
-          </Wrapper>
-        )
-      )}
+              </Posts>
+            </Wrapper>
+          )
+        )}
+      </Grid>
     </PageContainer>
   </Layout>
 );
@@ -115,9 +86,9 @@ export const query = graphql`
       edges {
         node {
           fields {
-            authors
             date
             description
+            authors
             photo
             slug
             title

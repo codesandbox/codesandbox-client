@@ -4,10 +4,12 @@ import {
   CardElement,
   ReactStripeElements,
 } from 'react-stripe-elements';
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { withTheme } from 'styled-components';
+import css from '@styled-system/css';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
+import { Button, Label, Element } from '@codesandbox/components';
 
-import { CardContainer, StripeInput, ErrorText, Label } from './elements';
+import { CardContainer, StripeInput, ErrorText } from './elements';
 
 interface Props {
   name: string;
@@ -18,6 +20,7 @@ interface Props {
   stripe?: ReactStripeElements.StripeProps;
   error?: Error | string;
   hasCoupon?: boolean;
+  theme?: any;
 }
 
 interface State {
@@ -106,6 +109,7 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
       isLoading,
       error,
       hasCoupon = false,
+      theme,
     } = this.props;
     const { errors, loading: stateLoading } = this.state;
 
@@ -115,34 +119,61 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
 
     return (
       <form onSubmit={this.handleSubmit}>
-        <Label>Cardholder Name</Label>
+        <Label variant="muted" size={3} paddingBottom={1}>
+          Cardholder Name
+        </Label>
         {errors.name != null && <ErrorText>{errors.name}</ErrorText>}
-        <div>
+        <Element>
           <StripeInput
             value={this.state.name}
             onChange={this.setName}
             placeholder="Please enter your name"
           />
-        </div>
+        </Element>
 
-        <Label>Card</Label>
+        <Label variant="muted" size={3} paddingBottom={1}>
+          Card
+        </Label>
         {stripeError != null && <ErrorText>{stripeError}</ErrorText>}
         <CardContainer>
-          <CardElement
-            style={{ base: { color: 'white', fontWeight: '500' } }}
-          />
+          <Element
+            css={css({
+              height: '32px',
+              paddingTop: '6px',
+              width: '100%',
+              paddingX: 2,
+              fontSize: 3,
+              lineHeight: 1, // trust the height
+              fontFamily: 'Inter, sans-serif',
+              borderRadius: 'small',
+              backgroundColor: 'input.background',
+              border: '1px solid',
+              borderColor: 'input.border',
+              color: 'input.foreground',
+            })}
+          >
+            <CardElement
+              style={{
+                base: {
+                  color: theme.colors.input.foreground,
+                },
+              }}
+            />
+          </Element>
         </CardContainer>
 
         {hasCoupon && (
           <>
-            <Label>Coupon</Label>
-            <div>
+            <Label variant="muted" size={3} paddingBottom={1}>
+              Coupon
+            </Label>
+            <Element>
               <StripeInput
                 value={this.state.coupon}
                 onChange={this.setCoupon}
                 placeholder="Coupon or Discount Code"
               />
-            </div>
+            </Element>
           </>
         )}
 
@@ -157,5 +188,5 @@ class CheckoutFormComponent extends React.PureComponent<Props, State> {
     );
   }
 }
-
-export const CheckoutForm = injectStripe(CheckoutFormComponent);
+// @ts-ignore
+export const CheckoutForm = injectStripe(withTheme(CheckoutFormComponent));

@@ -49,6 +49,7 @@ type Modal = {
   title: string;
   body: React.ReactNode;
   onConfirm: () => void;
+  primaryMessage?: string;
 };
 
 interface Props {
@@ -259,6 +260,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
   const confirmDiscardChanges = (moduleShortid: string, moduleName: string) => {
     setModalConfirm({
       title: 'Discard Changes',
+      primaryMessage: 'Discard',
       body: (
         <span>
           Are you sure you want to discard changes on <b>{moduleName}</b>?
@@ -325,6 +327,12 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
           />
         </EntryContainer>
       )}
+
+      <DirectoryEntryModal
+        isOpen={Boolean(modalConfirm)}
+        onClose={closeModals}
+        {...modalConfirm}
+      />
       {open && (
         <Opener>
           {creating === 'directory' && (
@@ -349,11 +357,6 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
             markTabsNotDirty={markTabsNotDirty}
             discardModuleChanges={confirmDiscardChanges}
             getModulePath={getModulePath}
-          />
-          <DirectoryEntryModal
-            isOpen={Boolean(modalConfirm)}
-            onClose={closeModals}
-            {...modalConfirm}
           />
           {creating === 'module' && (
             <Entry

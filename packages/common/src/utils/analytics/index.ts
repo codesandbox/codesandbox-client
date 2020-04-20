@@ -1,6 +1,5 @@
 import VERSION from '../../version';
 import * as amplitude from './amplitude';
-import * as chameleon from './chameleon';
 import * as google from './google';
 import * as sentry from './sentry';
 import {
@@ -41,7 +40,7 @@ export async function identify(key: string, value: any) {
 }
 
 export async function setAnonymousId() {
-  if (!DO_NOT_TRACK_ENABLED) {
+  if (!DO_NOT_TRACK_ENABLED && typeof localStorage !== 'undefined') {
     let anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);
 
     if (!anonymousUid) {
@@ -54,19 +53,17 @@ export async function setAnonymousId() {
       localStorage.setItem(ANONYMOUS_UID_KEY, anonymousUid);
     }
 
-    chameleon.setAnonymousUserId(anonymousUid);
     vero.setAnonymousUserId(anonymousUid);
   }
 }
 
-export async function setUserId(userId: string) {
+export async function setUserId(userId: string, email: string) {
   if (!DO_NOT_TRACK_ENABLED) {
     const hashedId = getHashedUserId(userId);
 
     amplitude.setUserId(hashedId);
     sentry.setUserId(hashedId);
-    chameleon.setUserId(hashedId);
-    vero.setUserId(hashedId);
+    vero.setUserId(hashedId, email);
   }
 }
 
@@ -87,6 +84,15 @@ export function trackPageview() {
     amplitude.track('pageview', data);
     vero.trackPageview();
     google.trackPageView();
+  }
+}
+
+/**
+ * Assign the user to a group. Can be multiple under one key.
+ */
+export function setGroup(name: string, value: string | string[]) {
+  if (!DO_NOT_TRACK_ENABLED) {
+    amplitude.setGroup(name, value);
   }
 }
 

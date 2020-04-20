@@ -22,6 +22,7 @@ import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import {
   sandboxUrl,
   profileUrl,
+  githubRepoUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { Icons } from '@codesandbox/template-icons';
@@ -31,6 +32,7 @@ import css from '@styled-system/css';
 import { TemplateConfig } from './TemplateConfig';
 import { PenIcon } from './icons';
 import { EditSummary } from './EditSummary';
+import { GitHubIcon } from '../GitHub/Icons';
 
 export const Summary = () => {
   const {
@@ -60,7 +62,8 @@ export const Summary = () => {
     }
   }, [customTemplate, frozenUpdated]);
 
-  const updateFrozenState = () => {
+  const updateFrozenState = e => {
+    e.preventDefault();
     if (customTemplate) {
       return sessionFreezeOverride({ frozen: !sessionFrozen });
     }
@@ -91,10 +94,12 @@ export const Summary = () => {
                       iconUrl={customTemplate.iconUrl}
                       environment={template}
                     />
-                    <Text maxWidth={190}>{getSandboxName(currentSandbox)}</Text>
+                    <Text maxWidth="100%">
+                      {getSandboxName(currentSandbox)}
+                    </Text>
                   </Stack>
                 ) : (
-                  <Text maxWidth={190}>{getSandboxName(currentSandbox)}</Text>
+                  <Text maxWidth="100%">{getSandboxName(currentSandbox)}</Text>
                 )}
                 <Button
                   variant="link"
@@ -128,11 +133,43 @@ export const Summary = () => {
                     {author.username}
                   </Text>
                   {team && (
-                    <Text size={2} marginTop={1} variant="muted">
+                    <Text
+                      size={2}
+                      marginTop={1}
+                      variant="muted"
+                      maxWidth="100%"
+                    >
                       {team.name}
                     </Text>
                   )}
                 </Element>
+              </Stack>
+            </Link>
+          ) : null}
+
+          {!author && currentSandbox.git ? (
+            <Link href={githubRepoUrl(currentSandbox.git)} target="_blank">
+              <Stack gap={2} align="center">
+                <Stack
+                  justify="center"
+                  align="center"
+                  css={css({
+                    size: 8,
+                    minWidth: 8,
+                    borderRadius: 'small',
+                    border: '1px solid',
+                    borderColor: 'avatar.border',
+                  })}
+                >
+                  <GitHubIcon
+                    title="GitHub repository"
+                    width={20}
+                    height={20}
+                  />
+                </Stack>
+                <Link variant="muted" maxWidth="100%">
+                  {currentSandbox.git.username}/{currentSandbox.git.repo}
+                </Link>
               </Stack>
             </Link>
           ) : null}
@@ -164,9 +201,14 @@ export const Summary = () => {
               </Link>
             </ListItem>
           ) : null}
-          <ListItem justify="space-between">
+          <ListItem justify="space-between" gap={2}>
             <Text>Environment</Text>
-            <Link variant="muted" href={templateUrl} target="_blank">
+            <Link
+              variant="muted"
+              href={templateUrl}
+              target="_blank"
+              maxWidth="100%"
+            >
               {template}
             </Link>
           </ListItem>

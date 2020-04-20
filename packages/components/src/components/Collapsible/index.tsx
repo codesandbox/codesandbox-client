@@ -14,6 +14,7 @@ const Section = styled(Element).attrs({ as: 'section' })(
 
 export const Header = styled(SidebarRow).attrs({ gap: 2 })(
   css({
+    minHeight: '35px',
     paddingX: 3,
     borderBottom: '1px solid',
     // Note: sideBarSectionHeader exists but we dont use it because it is rarely implemented
@@ -47,7 +48,6 @@ export const Body = styled(Element)<{
   css({
     borderBottom: props.open ? '1px solid' : 'none',
     borderColor: 'sideBar.border',
-    maxHeight: props.open ? '1000px' : 0,
     overflow: props.open ? 'auto' : 'hidden',
     paddingTop: props.open ? 4 : 0,
     paddingBottom: props.open ? 8 : 0,

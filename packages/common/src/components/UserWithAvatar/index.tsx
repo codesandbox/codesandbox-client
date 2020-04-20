@@ -1,9 +1,15 @@
 import React, { ComponentProps, FunctionComponent } from 'react';
 
-import ContributorHelm from '../ContributorsBadge';
 import { PatronStar } from '../PatronStar';
 
-import { CenteredText, AuthorName, Image, Names, Username } from './elements';
+import {
+  AuthorName,
+  CenteredText,
+  ContributorsBadge,
+  Image,
+  Names,
+  Username,
+} from './elements';
 
 type Props = ComponentProps<typeof CenteredText> & {
   avatarUrl: string;
@@ -43,12 +49,7 @@ export const UserWithAvatar: FunctionComponent<Props> = ({
         />
       )}
 
-      {!hideBadge && (
-        <ContributorHelm
-          style={{ margin: '0 .5rem', fontSize: '1.25em' }}
-          username={username}
-        />
-      )}
+      {!hideBadge && <ContributorsBadge username={username} />}
     </AuthorName>
   </CenteredText>
 );

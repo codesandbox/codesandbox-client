@@ -57,7 +57,7 @@ function getModulesToSend(sandbox: Sandbox): IFiles {
  * Until we run Overmind as our state management we'll have to put this as a singleton for now.
  */
 export class ExecutorsManager {
-  executor: IExecutor | null;
+  executor: IExecutor | null = null;
 
   async initializeExecutor(sandbox: Sandbox) {
     const { isServer } = getDefinition(sandbox.template);

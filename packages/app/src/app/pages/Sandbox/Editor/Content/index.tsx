@@ -1,21 +1,30 @@
+import css from '@styled-system/css';
+
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import { BACKTICK } from '@codesandbox/common/lib/utils/keycodes';
 import { Icons } from 'app/components/CodeEditor/elements';
 import { VSCode as CodeEditor } from 'app/components/CodeEditor/VSCode';
 import { DevTools } from 'app/components/Preview/DevTools';
 import { useOvermind } from 'app/overmind';
-import React, { useCallback, useEffect, useRef } from 'react';
+import useKey from 'react-use/lib/useKey';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import QuestionIcon from 'react-icons/lib/go/question';
 import SplitPane from 'react-split-pane';
 import { ThemeProvider } from 'styled-components';
 
+import { LiveUser } from '@codesandbox/common/lib/types';
+import { Stack } from '@codesandbox/components';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import { Preview } from './Preview';
 
-export const MainWorkspace: React.FC = () => {
+export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
   const { state, actions, effects, reaction } = useOvermind();
   const editorEl = useRef(null);
   const contentEl = useRef(null);
+  const [showConsoleDevtool, setShowConsoleDevtool] = useState(false);
+  const [consoleDevtoolIndex, setConsoleDevtoolIndex] = useState(-1);
+
   const updateEditorSize = useCallback(
     function updateEditorSize() {
       if (editorEl.current) {
@@ -57,15 +66,44 @@ export const MainWorkspace: React.FC = () => {
     };
   }, [actions.editor, effects.vscode, reaction, updateEditorSize]);
 
+  const views = state.editor.devToolTabs;
+
+  useEffect(() => {
+    setConsoleDevtoolIndex(() =>
+      views.findIndex(
+        ({ views: panes }) =>
+          panes.findIndex(pane => pane.id === 'codesandbox.console') !== -1
+      )
+    );
+  }, [views]);
+
+  useKey(
+    e => e.ctrlKey && e.keyCode === BACKTICK,
+    e => {
+      e.preventDefault();
+      setShowConsoleDevtool(value => !value);
+    },
+    {},
+    []
+  );
+
   const { currentModule } = state.editor;
   const sandbox = state.editor.currentSandbox;
   const { preferences } = state;
   const windowVisible = state.editor.previewWindowVisible;
-  const template = getTemplateDefinition(sandbox.template);
-  const views = state.editor.devToolTabs;
+  const template = sandbox && getTemplateDefinition(sandbox.template);
   const currentPosition = state.editor.currentDevToolsPosition;
   const modulePath = currentModule.path;
-  const config = template.configurationFiles[modulePath];
+  const config = template && template.configurationFiles[modulePath];
+
+  const followingUserId = state.live.followingUserId;
+  let followingUser: LiveUser | undefined;
+
+  if (followingUserId && state.live.roomInfo && state.live.isLive) {
+    followingUser = state.live.roomInfo.users.find(
+      u => u.id === followingUserId
+    );
+  }
 
   const browserConfig = {
     id: 'codesandbox.browser',
@@ -85,10 +123,14 @@ export const MainWorkspace: React.FC = () => {
 
   return (
     <ThemeProvider
-      theme={{
-        templateColor: template.color,
-        templateBackgroundColor: template.backgroundColor,
-      }}
+      theme={
+        template
+          ? {
+              templateColor: template.color,
+              templateBackgroundColor: template.backgroundColor,
+            }
+          : theme
+      }
     >
       <div
         id="workbench.main.container"
@@ -99,6 +141,7 @@ export const MainWorkspace: React.FC = () => {
           overflow: 'visible', // For VSCode Context Menu
           display: 'flex',
           flexDirection: 'column',
+          backgroundColor: 'transparent',
         }}
         ref={contentEl}
       >
@@ -110,6 +153,7 @@ export const MainWorkspace: React.FC = () => {
           onDragStarted={() => {
             actions.editor.resizingStarted();
           }}
+          resizerStyle={state.editor.isLoading ? { display: 'none' } : null}
           onChange={() => {
             updateEditorSize();
           }}
@@ -160,26 +204,67 @@ export const MainWorkspace: React.FC = () => {
                 bottom: 0,
               }}
             >
-              {config ? (
-                <Icons>
-                  {config.partialSupportDisclaimer ? (
-                    <Tooltip
-                      placement="bottom"
-                      content={config.partialSupportDisclaimer}
-                      style={{
-                        display: 'flex',
-                        'align-items': 'center',
-                      }}
-                    >
-                      Partially Supported Config{' '}
-                      <QuestionIcon style={{ marginLeft: '.5rem' }} />
-                    </Tooltip>
-                  ) : (
-                    <div>Supported Configuration</div>
-                  )}
-                </Icons>
-              ) : null}
-              <CodeEditor />
+              <Stack
+                css={css({
+                  position: 'absolute',
+                  top: 34,
+                  zIndex: 45,
+                  right: 0,
+                })}
+                gap={1}
+                direction="vertical"
+                align="flex-end"
+              >
+                {followingUser && (
+                  <div
+                    css={{
+                      transition: '0.3s ease opacity',
+                      background: `rgb(${followingUser.color.join(',')})`,
+                      padding: '2px 8px',
+                      fontSize: '12px',
+                      float: 'right',
+                      width: 'max-content',
+                      borderBottomLeftRadius: 2,
+                      color:
+                        (followingUser.color[0] * 299 +
+                          followingUser.color[1] * 587 +
+                          followingUser.color[2] * 114) /
+                          1000 >
+                        128
+                          ? 'rgba(0, 0, 0, 0.8)'
+                          : 'white',
+
+                      ':hover': {
+                        opacity: 0.5,
+                      },
+                    }}
+                  >
+                    Following {followingUser.username}
+                  </div>
+                )}
+
+                {config ? (
+                  <Icons>
+                    {config.partialSupportDisclaimer ? (
+                      <Tooltip
+                        placement="bottom"
+                        content={config.partialSupportDisclaimer}
+                        style={{
+                          display: 'flex',
+                          'align-items': 'center',
+                        }}
+                      >
+                        Partially Supported Config{' '}
+                        <QuestionIcon style={{ marginLeft: '.5rem' }} />
+                      </Tooltip>
+                    ) : (
+                      <div>Supported Configuration</div>
+                    )}
+                  </Icons>
+                ) : null}
+              </Stack>
+
+              {state.editor.isLoading ? null : <CodeEditor />}
             </div>
           </div>
 
@@ -191,46 +276,61 @@ export const MainWorkspace: React.FC = () => {
             }}
             id="csb-devtools" // used for tabs for highlighting
           >
-            {views.map((v, i) => (
-              <DevTools
-                // eslint-disable-next-line react/no-array-index-key
-                key={i}
-                devToolIndex={i}
-                addedViews={{
-                  'codesandbox.browser': browserConfig,
-                }}
-                setDragging={dragging => {
-                  if (dragging) {
-                    actions.editor.resizingStarted();
-                  } else {
-                    actions.editor.resizingStopped();
-                  }
-                }}
-                sandboxId={sandbox.id}
-                template={sandbox.template}
-                shouldExpandDevTools={state.preferences.showDevtools}
-                zenMode={preferences.settings.zenMode}
-                setDevToolsOpen={open =>
-                  actions.preferences.setDevtoolsOpen(open)
-                }
-                owned={sandbox.owned}
-                primary={i === 0}
-                viewConfig={v}
-                moveTab={(prevPos, nextPos) => {
-                  actions.editor.onDevToolsTabMoved({ prevPos, nextPos });
-                }}
-                closeTab={pos => {
-                  actions.editor.onDevToolsTabClosed({ pos });
-                }}
-                currentDevToolIndex={currentPosition.devToolIndex}
-                currentTabPosition={currentPosition.tabPosition}
-                setPane={position =>
-                  actions.editor.onDevToolsPositionChanged({
-                    position,
-                  })
-                }
-              />
-            ))}
+            {sandbox &&
+              views.map((v, i) => {
+                // show console devtool if showConsoleDevtool is enabled and if it's in the current view(v)
+                const devToolsOpen =
+                  showConsoleDevtool && consoleDevtoolIndex === i;
+
+                return (
+                  <DevTools
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={i}
+                    devToolIndex={i}
+                    devToolsOpen={devToolsOpen}
+                    addedViews={{
+                      'codesandbox.browser': browserConfig,
+                    }}
+                    setDragging={dragging => {
+                      if (dragging) {
+                        actions.editor.resizingStarted();
+                      } else {
+                        actions.editor.resizingStopped();
+                      }
+                    }}
+                    sandboxId={sandbox.id}
+                    template={sandbox.template}
+                    shouldExpandDevTools={state.preferences.showDevtools}
+                    zenMode={preferences.settings.zenMode}
+                    setDevToolsOpen={open => {
+                      actions.preferences.setDevtoolsOpen(open);
+
+                      if (
+                        consoleDevtoolIndex === i &&
+                        showConsoleDevtool !== open
+                      ) {
+                        setShowConsoleDevtool(open);
+                      }
+                    }}
+                    owned={sandbox.owned}
+                    primary={i === 0}
+                    viewConfig={v}
+                    moveTab={(prevPos, nextPos) => {
+                      actions.editor.onDevToolsTabMoved({ prevPos, nextPos });
+                    }}
+                    closeTab={pos => {
+                      actions.editor.onDevToolsTabClosed({ pos });
+                    }}
+                    currentDevToolIndex={currentPosition.devToolIndex}
+                    currentTabPosition={currentPosition.tabPosition}
+                    setPane={position =>
+                      actions.editor.onDevToolsPositionChanged({
+                        position,
+                      })
+                    }
+                  />
+                );
+              })}
           </div>
         </SplitPane>
       </div>

@@ -90,11 +90,15 @@ export const EditSummary = ({ setEditing }) => {
         <TagInput value={newTags} onChange={setNewTags} />
       </Stack>
 
-      <Stack paddingX={2}>
-        <Button variant="link" onClick={() => setEditing(false)}>
+      <Stack justify="space-between" paddingX={2}>
+        <Button
+          variant="link"
+          css={{ flex: 1 }}
+          onClick={() => setEditing(false)}
+        >
           Cancel
         </Button>
-        <Button type="submit" variant="secondary">
+        <Button type="submit" css={{ flex: 1 }} variant="secondary">
           Save
         </Button>
       </Stack>

@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 
 import { TeamInvite } from './notifications/TeamInvite';
 import { TeamAccepted } from './notifications/TeamAccepted';
+import { SandboxInvitation } from './notifications/SandboxInvitation';
 
 import {
   Container,
@@ -53,6 +54,19 @@ const getNotificationComponent = (type, data, read) => {
       />
     );
   }
+  if (type === 'sandbox_invitation') {
+    return (
+      <SandboxInvitation
+        read={read}
+        inviterAvatar={parsedData.inviter_avatar}
+        inviterName={parsedData.inviter_name}
+        sandboxId={parsedData.sandbox_id}
+        sandboxAlias={parsedData.sandbox_alias}
+        sandboxTitle={parsedData.sandbox_title}
+        authorization={parsedData.authorization.toUpperCase()}
+      />
+    );
+  }
 
   return <div />;
 };
@@ -85,9 +99,8 @@ export const Notifications = props => (
 
           return (
             <div>
-              {data.me.notifications.map((notification, i) => (
-                /* eslint-disable react/no-array-index-key */
-                <div key={i}>
+              {data.me.notifications.map(notification => (
+                <div key={notification.id}>
                   {getNotificationComponent(
                     notification.type,
                     notification.data,

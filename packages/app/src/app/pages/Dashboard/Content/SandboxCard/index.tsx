@@ -81,6 +81,18 @@ type State = {
 export const DELETE_SANDBOX_DROP_KEY = 'delete';
 export const MAKE_TEMPLATE_DROP_KEY = 'makeTemplate';
 
+const copyToClipboard = (str: string) => {
+  const el = document.createElement('textarea');
+  el.value = str;
+  el.setAttribute('readonly', '');
+  el.style.position = 'absolute';
+  el.style.left = '-9999px';
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+};
+
 class SandboxItemComponent extends React.PureComponent<Props, State> {
   el: HTMLDivElement;
   screenshotTimeout: number;
@@ -291,6 +303,13 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
           },
         },
         {
+          title: 'Copy Sandbox Link',
+          action: () => {
+            this.copySandboxURL();
+            return true;
+          },
+        },
+        {
           title: 'Fork Sandbox',
           action: () => {
             this.props.forkSandbox(this.props.id);
@@ -379,6 +398,14 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
         history.push(url);
       }
     }
+
+    return true;
+  };
+
+  copySandboxURL = () => {
+    const url = sandboxUrl({ id: this.props.id, alias: this.props.alias });
+    // TODO: Use effects.browse.copyToClipboard after refactoring to Function Component
+    copyToClipboard(`https://codesandbox.io${url}`);
 
     return true;
   };

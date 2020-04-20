@@ -5,7 +5,10 @@ import * as fit from 'xterm/lib/addons/fit/fit';
 
 import ResizeObserver from 'resize-observer-polyfill';
 
-import getTerminalTheme, { VSTheme } from '../terminal-theme';
+import getTerminalTheme, {
+  VSTheme,
+  flattenTerminalTheme,
+} from '../terminal-theme';
 import { TerminalWithFit } from '../types';
 
 type Props = {
@@ -23,9 +26,14 @@ export class TerminalComponentNoTheme extends React.PureComponent<Props> {
   observer: ResizeObserver;
 
   startTerminal = () => {
+    let theme = this.props.theme;
+    // @ts-ignore ignore because it shouldnt exist :)
+    if (this.props.theme.vscodeTheme.colors.terminal) {
+      theme = flattenTerminalTheme(theme);
+    }
     // @ts-ignore
     this.term = new Terminal({
-      theme: getTerminalTheme(this.props.theme),
+      theme: getTerminalTheme(theme),
       fontFamily: 'Source Code Pro',
       fontWeight: 'normal',
       fontWeightBold: 'bold',

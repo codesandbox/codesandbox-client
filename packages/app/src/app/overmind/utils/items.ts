@@ -1,4 +1,8 @@
 import getTemplate from '@codesandbox/common/lib/templates';
+import {
+  COMMENTS as COMMENTS_ON,
+  REDESIGNED_SIDEBAR,
+} from '@codesandbox/common/lib/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 export interface INavigationItem {
@@ -64,34 +68,50 @@ export const SERVER: INavigationItem = {
   name: 'Server Control Panel',
 };
 
+export const COMMENTS: INavigationItem = {
+  id: 'comments',
+  name: 'Comments',
+};
+
 export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
 
+  if (!currentSandbox) {
+    return [PROJECT_SUMMARY, CONFIGURATION, GITHUB, DEPLOYMENT, SERVER, LIVE];
+  }
+
   if (!currentSandbox.owned || !store.isLoggedIn) {
-    return [GITHUB, DEPLOYMENT, LIVE];
+    const returnedItems = [GITHUB, DEPLOYMENT];
+    if (!store.live.isLive) {
+      returnedItems.push(LIVE);
+    }
+    return returnedItems;
   }
 
   return [];
 }
 
 export default function getItems(store: any): INavigationItem[] {
+  if (!store.editor.currentSandbox) {
+    return [];
+  }
   if (
     store.live.isLive &&
-    !store.editor.currentSandbox.git &&
     !(
       store.live.isOwner ||
       (store.user &&
         store.live &&
         store.live.roomInfo &&
         store.live.roomInfo.ownerIds.indexOf(store.user.id) > -1)
-    )
+    ) &&
+    !hasPermission(store.editor.currentSandbox.authorization, 'write_project')
   ) {
     return [FILES, LIVE];
   }
 
   const { currentSandbox } = store.editor;
 
-  if (!currentSandbox.owned) {
+  if (!currentSandbox || !currentSandbox.owned) {
     return [PROJECT_SUMMARY, CONFIGURATION];
   }
 
@@ -110,7 +130,15 @@ export default function getItems(store: any): INavigationItem[] {
   }
 
   if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
-    items.push(GITHUB);
+    if (
+      COMMENTS_ON &&
+      REDESIGNED_SIDEBAR === 'true' &&
+      hasPermission(currentSandbox.authorization, 'comment')
+    ) {
+      items.push(GITHUB, COMMENTS);
+    } else {
+      items.push(GITHUB);
+    }
   }
 
   if (store.isLoggedIn) {

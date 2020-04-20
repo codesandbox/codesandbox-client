@@ -5,10 +5,13 @@ import {
   Sandbox,
   UserSelection,
 } from '@codesandbox/common/lib/types';
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { actions, dispatch } from 'codesandbox-api';
 import { css } from 'glamor';
-import { TextOperation } from 'ot';
+import { TextOperation, SerializedTextOperation } from 'ot';
 
 import { getCurrentModelPath } from './utils';
 
@@ -48,10 +51,12 @@ export type OnFileChangeCallback = (data: OnFileChangeData) => void;
 export type OnOperationAppliedCallback = (data: OnOperationAppliedData) => void;
 
 export type ModuleModel = {
-  changeListener: { dispose: Function };
-  selections: any[];
+  changeListener: { dispose: Function } | null;
+  currentLine: number;
   path: string;
-  model: Promise<any>;
+  model: Promise<any> | null;
+  comments: Array<{ commentId: string; range: [number, number] }>;
+  currentCommentDecorations: string[];
 };
 
 export class ModelsHandler {
@@ -66,7 +71,7 @@ export class ModelsHandler {
   private monaco;
   private userClassesGenerated = {};
   private userSelectionDecorations = {};
-
+  private currentCommentThreadId: string | null = null;
   constructor(
     editorApi,
     monaco,
@@ -86,8 +91,9 @@ export class ModelsHandler {
     this.modelAddedListener.dispose();
     this.modelRemovedListener.dispose();
     Object.keys(this.moduleModels).forEach(path => {
-      if (this.moduleModels[path].changeListener) {
-        this.moduleModels[path].changeListener.dispose();
+      const changeListener = this.moduleModels[path].changeListener;
+      if (changeListener) {
+        changeListener.dispose();
       }
     });
     this.moduleModels = {};
@@ -95,7 +101,7 @@ export class ModelsHandler {
     return null;
   }
 
-  public async revertModule(module: Module) {
+  public async syncModule(module: Module) {
     const fileModel = this.editorApi.textFileService
       .getFileModels()
       .find(
@@ -104,12 +110,56 @@ export class ModelsHandler {
       );
 
     if (fileModel) {
+      this.isApplyingOperation = true;
       fileModel.revert();
+      this.isApplyingOperation = false;
     }
   }
 
+  private getModuleModelByPath(path: string): ModuleModel | undefined {
+    const fullPath = '/sandbox' + path;
+
+    return this.moduleModels[fullPath];
+  }
+
+  private getOrCreateModuleModelByPath(path: string): ModuleModel {
+    const fullPath = '/sandbox' + path;
+    this.moduleModels[fullPath] = this.getModuleModelByPath(path) || {
+      changeListener: null,
+      model: null,
+      currentLine: 0,
+      path: fullPath,
+      comments: [],
+      currentCommentDecorations: [],
+    };
+
+    return this.moduleModels[fullPath];
+  }
+
+  public updateLineCommentIndication(model: any, lineNumber: number) {
+    const moduleModel = this.moduleModels[model.uri.path];
+
+    moduleModel.currentLine = lineNumber;
+
+    const newDecorationComments = this.createCommentDecorations(
+      moduleModel.comments,
+      model,
+      this.currentCommentThreadId,
+      moduleModel.currentLine
+    );
+    moduleModel.currentCommentDecorations = model.deltaDecorations(
+      moduleModel.currentCommentDecorations,
+      newDecorationComments
+    );
+  }
+
+  public isModuleOpened(module: Module) {
+    const moduleModel = this.getModuleModelByPath(module.path);
+    return Boolean(moduleModel?.model);
+  }
+
   public changeModule = async (module: Module) => {
-    const moduleModel = this.getModuleModel(module);
+    const moduleModel = this.getOrCreateModuleModelByPath(module.path);
 
     if (getCurrentModelPath(this.editorApi) !== module.path) {
       await this.editorApi.openFile(module.path);
@@ -120,10 +170,73 @@ export class ModelsHandler {
       .then(textFileEditorModel => textFileEditorModel.load())
       .then(textFileEditorModel => textFileEditorModel.textEditorModel);
 
-    this.updateUserSelections(module, moduleModel.selections);
+    const model = await moduleModel.model;
+
+    if (COMMENTS) {
+      const newDecorationComments = this.createCommentDecorations(
+        moduleModel.comments,
+        model,
+        this.currentCommentThreadId,
+        moduleModel.currentLine
+      );
+      moduleModel.currentCommentDecorations = model.deltaDecorations(
+        moduleModel.currentCommentDecorations,
+        newDecorationComments
+      );
+    }
 
     return moduleModel.model;
   };
+
+  public async applyComments(
+    commentThreadsByPath: {
+      [path: string]: Array<{
+        commentId: string;
+        range: [number, number];
+      }>;
+    },
+    currentCommentThreadId: string | null
+  ) {
+    // We keep a local reference to the current commentThread id,
+    // because when opening modules we want to highlight any currently
+    // selected comment
+    this.currentCommentThreadId = currentCommentThreadId;
+
+    // Ensure we have the moduleModels
+    Object.keys(commentThreadsByPath).forEach(path => {
+      // TODO(@christianalfoni): We should probably make this dynamic on model load instead of
+      // on editor load? Preferably we don't keep all moduleModels for files that are not opened.
+      this.getOrCreateModuleModelByPath(path).comments =
+        commentThreadsByPath[path];
+    });
+
+    // Apply the decorations
+    Object.keys(this.moduleModels).forEach(async path => {
+      const moduleModel = this.moduleModels[path];
+      const relativePath = path.replace('/sandbox', '');
+      const model = await moduleModel.model;
+
+      if (!model) {
+        return;
+      }
+
+      const commentThreads = commentThreadsByPath[relativePath] || [];
+      const existingDecorationComments = moduleModel.currentCommentDecorations;
+      const newDecorationComments = this.createCommentDecorations(
+        commentThreads,
+        model,
+        currentCommentThreadId,
+        moduleModel.currentLine
+      );
+
+      moduleModel.currentCommentDecorations = model.deltaDecorations(
+        existingDecorationComments,
+        newDecorationComments
+      );
+
+      moduleModel.comments = commentThreads;
+    });
+  }
 
   public async updateTabsPath(oldPath: string, newPath: string) {
     const oldModelPath = '/sandbox' + oldPath;
@@ -146,14 +259,17 @@ export class ModelsHandler {
     );
   }
 
-  public async applyOperation(moduleShortid: string, operation: any) {
+  public async applyOperation(
+    moduleShortid: string,
+    operation: SerializedTextOperation
+  ) {
     const module = this.sandbox.modules.find(m => m.shortid === moduleShortid);
 
     if (!module) {
       return;
     }
 
-    const moduleModel = this.getModuleModel(module);
+    const moduleModel = this.getOrCreateModuleModelByPath(module.path);
 
     const modelEditor = this.editorApi.editorService.editors.find(
       editor => editor.resource && editor.resource.path === moduleModel.path
@@ -188,15 +304,17 @@ export class ModelsHandler {
   }
 
   public async setModuleCode(module: Module) {
-    const moduleModel = this.getModuleModel(module);
-    const model = await moduleModel.model;
+    const moduleModel = this.getModuleModelByPath(module.path);
 
-    if (!model) {
+    if (!moduleModel || !moduleModel.model) {
       return;
     }
+    const model = await moduleModel.model;
 
+    const oldCode = model.getValue();
+    const changeOperation = getTextOperation(oldCode, module.code);
     this.isApplyingOperation = true;
-    await model.setValue(module.code);
+    this.applyOperationToModel(changeOperation, false, model);
     this.isApplyingOperation = false;
   }
 
@@ -207,14 +325,18 @@ export class ModelsHandler {
     Object.keys(this.moduleModels).forEach(async key => {
       const moduleModel = this.moduleModels[key];
 
-      if (!moduleModel.model) {
+      if (!moduleModel?.model) {
         return;
       }
 
       const model = await moduleModel.model;
 
       decorations.forEach(decorationId => {
-        if (decorationId.startsWith(userId + model.id)) {
+        const userDecorationIdPrefix = this.getSelectionDecorationId(
+          userId,
+          model.id
+        );
+        if (decorationId.startsWith(userDecorationIdPrefix)) {
           this.userSelectionDecorations[decorationId] = model.deltaDecorations(
             this.userSelectionDecorations[decorationId] || [],
             []
@@ -224,28 +346,69 @@ export class ModelsHandler {
     });
   }
 
+  private getSelectionDecorationId = (
+    userId: string,
+    modelId: string = '',
+    shortid: string = ''
+  ) => [userId, modelId, shortid].join('|').replace(/\|\|$/, '|');
+
+  private cleanUserSelections = (
+    model: any,
+    moduleShortid: string,
+    userSelectionsToKeep: EditorSelection[]
+  ) => {
+    const existingSelectionDecorations = Object.keys(
+      this.userSelectionDecorations
+    ).filter(s => s.endsWith([model.id, moduleShortid].join('|')));
+
+    const newUserSelections = {};
+    for (let i = 0; i < userSelectionsToKeep.length; i++) {
+      newUserSelections[userSelectionsToKeep[i].userId] =
+        userSelectionsToKeep[i];
+    }
+
+    existingSelectionDecorations.forEach(existingDecorationId => {
+      const userId = existingDecorationId.split('|')[0];
+      if (!newUserSelections[userId]) {
+        const decorationId = this.getSelectionDecorationId(
+          userId,
+          model.id,
+          moduleShortid
+        );
+        this.userSelectionDecorations[decorationId] = model.deltaDecorations(
+          this.userSelectionDecorations[decorationId] || [],
+          []
+        );
+      }
+    });
+  };
+
   nameTagTimeouts: { [name: string]: number } = {};
 
   public async updateUserSelections(
-    module,
+    module: Module,
     userSelections: EditorSelection[],
     showNameTag = true
   ) {
-    const moduleModel = this.getModuleModel(module);
+    const moduleModel = this.getModuleModelByPath(module.path);
 
-    moduleModel.selections = userSelections;
-
-    if (!moduleModel.model) {
+    if (!moduleModel?.model) {
       return;
     }
 
     const model = await moduleModel.model;
     const lines = model.getLinesContent() || [];
 
+    this.cleanUserSelections(model, module.shortid, userSelections);
+
     userSelections.forEach((data: EditorSelection) => {
       const { userId } = data;
 
-      const decorationId = userId + model.id + module.shortid;
+      const decorationId = this.getSelectionDecorationId(
+        userId,
+        model.id,
+        module.shortid
+      );
       if (data.selection === null) {
         this.userSelectionDecorations[decorationId] = model.deltaDecorations(
           this.userSelectionDecorations[decorationId] || [],
@@ -292,6 +455,7 @@ export class ModelsHandler {
           ),
           options: {
             className: this.userClassesGenerated[className],
+            stickiness: 3, // GrowsOnlyWhenTypingAfter
           },
         };
       };
@@ -536,7 +700,7 @@ export class ModelsHandler {
             this.sandbox.directories
           );
 
-          const moduleModel = this.getModuleModel(module);
+          const moduleModel = this.getOrCreateModuleModelByPath(module.path);
 
           moduleModel.model = model;
           moduleModel.changeListener = this.getModelContentChangeListener(
@@ -552,7 +716,11 @@ export class ModelsHandler {
     this.modelRemovedListener = this.editorApi.textFileService.modelService.onModelRemoved(
       model => {
         if (this.moduleModels[model.uri.path]) {
-          this.moduleModels[model.uri.path].changeListener.dispose();
+          const changeListener = this.moduleModels[model.uri.path]
+            .changeListener;
+          if (changeListener) {
+            changeListener.dispose();
+          }
 
           const csbPath = model.uri.path.replace('/sandbox', '');
           dispatch(actions.correction.clear(csbPath, 'eslint'));
@@ -591,15 +759,117 @@ export class ModelsHandler {
     });
   }
 
-  private getModuleModel(module: Module) {
-    const path = '/sandbox' + module.path;
-    this.moduleModels[path] = this.moduleModels[path] || {
-      changeListener: null,
-      model: null,
-      path,
-      selections: [],
-    };
+  private createCommentDecorations(
+    commentThreadDecorations: Array<{
+      commentId: string;
+      range: [number, number];
+    }>,
+    model: any,
+    currentCommentThreadId: string | null,
+    currentLineNumber: number
+  ) {
+    if (!hasPermission(this.sandbox.authorization, 'comment')) {
+      return [];
+    }
+    const commentDecorationsByLineNumber = commentThreadDecorations.reduce<{
+      [lineNumber: string]: Array<{
+        commentId: string;
+        range: [number, number];
+      }>;
+    }>((aggr, commentDecoration) => {
+      const { lineNumber } = indexToLineAndColumn(
+        model.getLinesContent() || [],
+        commentDecoration.range[0]
+      );
 
-    return this.moduleModels[path];
+      if (!aggr[lineNumber]) {
+        aggr[lineNumber] = [];
+      }
+
+      aggr[lineNumber].push(commentDecoration);
+
+      return aggr;
+    }, {});
+
+    const initialDecorations: any[] =
+      currentLineNumber === -1 ||
+      currentLineNumber in commentDecorationsByLineNumber
+        ? []
+        : [
+            {
+              range: new this.monaco.Range(
+                currentLineNumber,
+                1,
+                currentLineNumber,
+                1
+              ),
+              options: {
+                isWholeLine: true,
+                glyphMarginClassName: `editor-comments-glyph editor-comments-multi editor-comments-add`,
+              },
+            },
+          ];
+
+    return Object.keys(commentDecorationsByLineNumber).reduce(
+      (aggr, lineNumberKey) => {
+        const lineCommentDecorations =
+          commentDecorationsByLineNumber[lineNumberKey];
+        const lineNumber = Number(lineNumberKey);
+        const activeCommentDecoration = lineCommentDecorations.find(
+          commentDecoration =>
+            commentDecoration.commentId === currentCommentThreadId
+        );
+        const ids = lineCommentDecorations.map(
+          commentDecoration => commentDecoration.commentId
+        );
+        const commentRange = activeCommentDecoration
+          ? [
+              indexToLineAndColumn(
+                model.getLinesContent() || [],
+                activeCommentDecoration.range[0]
+              ),
+              indexToLineAndColumn(
+                model.getLinesContent() || [],
+                activeCommentDecoration.range[1]
+              ),
+            ]
+          : null;
+
+        return aggr.concat(
+          {
+            range: new this.monaco.Range(lineNumber, 1, lineNumber, 1),
+            options: {
+              // comment-id- class needs to be the LAST class!
+              glyphMarginClassName: `editor-comments-glyph ${
+                activeCommentDecoration ? 'editor-comments-active ' : ''
+              }${
+                ids.length > 1
+                  ? `editor-comments-multi editor-comments-multi-${ids.length} `
+                  : ''
+              }editor-comments-ids-${ids.join('_')}`,
+            },
+          },
+          commentRange
+            ? {
+                range: new this.monaco.Range(
+                  commentRange[0].lineNumber,
+                  commentRange[0].column,
+                  commentRange[1].lineNumber,
+                  commentRange[1].column
+                ),
+                options: {
+                  isWholeLine:
+                    commentRange[0].lineNumber === commentRange[1].lineNumber &&
+                    commentRange[0].column === commentRange[1].column,
+                  className: activeCommentDecoration
+                    ? 'editor-comments-highlight'
+                    : undefined,
+                },
+              }
+            : []
+        );
+      },
+      initialDecorations
+    );
   }
 }

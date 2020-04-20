@@ -63,11 +63,20 @@ export const VarForm = props => {
       </FormField>
       <Stack paddingX={2} marginTop={2}>
         {props.name && props.value ? (
-          <Button variant="link" onClick={onCancel}>
+          <Button
+            variant="link"
+            css={{ flex: 1 }}
+            onClick={() => props.onCancel()}
+          >
             Cancel
           </Button>
         ) : null}
-        <Button variant="secondary">
+        <Button
+          type="submit"
+          variant="secondary"
+          css={{ flex: 1 }}
+          disabled={!name || !value}
+        >
           {props.name && props.value ? 'Save' : 'Add Secret'}
         </Button>
       </Stack>

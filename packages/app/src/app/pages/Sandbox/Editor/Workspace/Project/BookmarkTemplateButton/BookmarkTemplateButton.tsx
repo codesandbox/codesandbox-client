@@ -129,6 +129,7 @@ export const BookmarkTemplateButton = ({ style }: IBookmarkTemplateButton) => {
             <ButtonIcon>
               {bookmarkInfos[i].isBookmarked ? <Checked /> : <Unchecked />}
             </ButtonIcon>
+            {bookmarkInfos[i].isBookmarked ? 'Remove from ' : 'Add to '}
             {i === 0 ? 'My Bookmarks' : name}
           </button>
         ))}

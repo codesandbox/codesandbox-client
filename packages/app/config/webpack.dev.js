@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const merge = require('webpack-merge');
 // const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
@@ -19,7 +20,7 @@ module.exports = merge(
   },
   commonConfig,
   {
-    devtool: 'eval',
+    devtool: false,
     mode: 'development',
     output: {
       filename: 'static/js/[name].js',
@@ -32,6 +33,9 @@ module.exports = merge(
     },
     plugins: [
       new WebpackBar(),
+      new webpack.EvalSourceMapDevToolPlugin({
+        include: /src\/app/,
+      }),
       // new webpack.HotModuleReplacementPlugin(),
     ],
   }

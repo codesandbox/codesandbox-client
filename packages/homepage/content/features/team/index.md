@@ -5,8 +5,8 @@ description:
 slug: team
 tweetText: CodeSandbox is easy to use and has amazing integrations.
 tweetJob: UX Engineer, LogMeIn
-tweetName: Emma Wedekind
-tweetHandle: EmmaWedekind
+tweetName: Emma Bostian
+tweetHandle: EmmaBostian
 bgColor: EB455A
 coverImage: ./team.svg
 coverReversed: true

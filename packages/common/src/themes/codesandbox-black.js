@@ -1,12 +1,12 @@
 import dot from 'dot-object';
-import { colors as tokens } from '../design-language/colors';
+import { colors as tokens } from '@codesandbox/components/lib/design-language/colors';
 
 /*
   we use dot to convert objects to vscode dot notation
 
   the object style is better authoring experience, it helps
-  organising the file better, let's us lint the file and find
-  duplicates / classhing styles.
+  organizing the file better, let's us lint the file and find
+  duplicates / clashing styles.
 */
 
 const colors = {
@@ -40,7 +40,7 @@ const colors = {
     lineHighlightBackground: tokens.grays[600],
     lineHighlightBorder: tokens.grays[600],
     rangeHighlightBackground: tokens.grays[600],
-    selectionBackground: tokens.grays[600],
+    selectionBackground: tokens.blues[500] + '33', // 20% opacity
     selectionHighlightBackground: tokens.grays[600],
     wordHighlightStrongBackground: tokens.grays[600],
     wordHighlightBackground: tokens.grays[600],
@@ -63,7 +63,7 @@ const colors = {
   editorGroup: {
     background: tokens.grays[700],
     border: tokens.grays[600],
-    dropBackground: tokens.grays[700],
+    dropBackground: tokens.blues[500] + '1a',
   },
   editorGroupHeader: {
     noTabsBackground: null,
@@ -86,8 +86,8 @@ const colors = {
     activeForeground: tokens.grays[300],
   },
   editorLineNumber: {
-    foreground: tokens.grays[600],
-    activeForeground: tokens.grays[400],
+    foreground: tokens.grays[400],
+    activeForeground: tokens.grays[200],
   },
   editorRuler: {
     foreground: tokens.white,
@@ -172,7 +172,7 @@ const colors = {
   },
   peekViewEditor: {
     background: tokens.grays[600],
-    matchHighlightBackground: tokens.blues[300],
+    matchHighlightBackground: tokens.blues[500] + '33', // 20% opacity
   },
   peekViewEditorGutter: {
     background: null,
@@ -181,7 +181,7 @@ const colors = {
     background: tokens.grays[600],
     fileForeground: tokens.white,
     lineForeground: tokens.white,
-    matchHighlightBackground: tokens.blues[300],
+    matchHighlightBackground: tokens.blues[500] + '33', // 20% opacity,
     selectionBackground: tokens.grays[600],
     selectionForeground: tokens.white,
   },
@@ -201,7 +201,7 @@ const colors = {
     hoverBackground: null,
   },
   selection: {
-    background: tokens.blues[700],
+    background: tokens.blues[500] + '40', // 25% opacity
   },
   separator: {
     background: tokens.grays[900],
@@ -250,7 +250,7 @@ const colors = {
     unfocusedInactiveForeground: tokens.grays[400],
   },
   terminal: {
-    background: tokens.grays[900],
+    background: tokens.grays[700],
     foreground: tokens.white,
     ansiBrightBlack: tokens.blues[700],
     ansiBrightRed: tokens.reds[500],

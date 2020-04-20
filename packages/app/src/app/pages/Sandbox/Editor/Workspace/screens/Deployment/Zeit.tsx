@@ -10,7 +10,7 @@ import {
   ListItem,
   List,
 } from '@codesandbox/components';
-import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { useOvermind } from 'app/overmind';
 import { ZeitIcon, VisitIcon, TrashIcon } from './icons';
 import { State } from './elements';
@@ -57,7 +57,7 @@ export const Zeit = () => {
                         {deploy.state.toString().toLowerCase()}
                       </State>
                       <Text variant="muted" marginLeft={2}>
-                        {`(${distanceInWordsToNow(deploy.created)} ago)`}
+                        {`(${formatDistanceToNow(deploy.created)} ago)`}
                       </Text>
                     </ListItem>
                     <ListAction
@@ -98,7 +98,7 @@ export const Zeit = () => {
             <Button
               disabled={deploying}
               onClick={signInZeitClicked}
-              css={{ width: 50 }}
+              css={{ width: 'auto' }}
             >
               Sign in
             </Button>

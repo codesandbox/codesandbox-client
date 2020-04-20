@@ -1,3 +1,4 @@
+import deepmerge from 'deepmerge';
 /**
  * There are 3 layers to our component styles.
  *
@@ -6,12 +7,11 @@
  * polyfill - color tokens missing from vscode
  */
 import React from 'react';
-import deepmerge from 'deepmerge';
-import designLanguage from '@codesandbox/common/lib/design-language';
 import {
   ThemeProvider as BaseThemeProvider,
   createGlobalStyle,
 } from 'styled-components';
+import designLanguage from '../../design-language/theme';
 import VSCodeThemes from '../../themes';
 import polyfillTheme from '../../utils/polyfill-theme';
 
@@ -23,7 +23,16 @@ export const getThemes = () => {
 
   return results.filter(a => a);
 };
-export const makeTheme = (vsCodeTheme, name?: string) => {
+
+const guessType = theme => {
+  if (theme.type) return theme.type;
+
+  if (theme.name && theme.name.toLowerCase().includes('light')) return 'light';
+
+  return 'dark';
+};
+
+export const makeTheme = (vsCodeTheme = {}, name?: string) => {
   // Our interface does not map 1-1 with vscode.
   // To add styles that remain themeable, we add
   // some polyfills to the theme tokens.
@@ -34,9 +43,12 @@ export const makeTheme = (vsCodeTheme, name?: string) => {
     colors: polyfilledVSCodeColors,
   });
 
+  const type = guessType(vsCodeTheme);
+
   if (name) {
     return {
       name,
+      type,
       ...theme,
     };
   }
@@ -53,6 +65,12 @@ export const ThemeProvider = ({ theme, children }) => {
     .Resizer {
       background-color: ${usableTheme.colors.sideBar.border} !important;
     }
+
+    .editor-comments-highlight {
+      background-color: ${usableTheme.colors.button.background};
+      opacity: 0.2
+    }
+
   `;
 
   return (

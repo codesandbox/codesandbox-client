@@ -31,7 +31,7 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
     actions.internal.setPatronPrice();
     actions.internal.setSignedInCookie();
     effects.analytics.identify('signed_in', true);
-    effects.analytics.setUserId(state.user.id);
+    effects.analytics.setUserId(state.user.id, state.user.email);
     actions.internal.setStoredSettings();
     effects.live.connect();
     actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
@@ -272,21 +272,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   actions.server.startContainer(sandbox);
 };
 
-export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
-  { state },
-  sandbox
-) => {
-  if (!state.editor.currentSandbox) {
-    return;
-  }
-
-  state.editor.currentSandbox.team = sandbox.team || null;
-  state.editor.currentSandbox.collection = sandbox.collection;
-  state.editor.currentSandbox.owned = sandbox.owned;
-  state.editor.currentSandbox.userLiked = sandbox.userLiked;
-  state.editor.currentSandbox.title = sandbox.title;
-};
-
 export const ensurePackageJSON: AsyncAction = async ({
   state,
   actions,
@@ -522,4 +507,18 @@ export const handleError: Action<{
       ? { actions: notificationActions }
       : {}),
   });
+};
+
+export const trackCurrentTeams: AsyncAction = async ({ state, effects }) => {
+  const { me } = await effects.gql.queries.teams({});
+  if (me) {
+    effects.analytics.setGroup(
+      'teamName',
+      me.teams.map(m => m.name)
+    );
+    effects.analytics.setGroup(
+      'teamId',
+      me.teams.map(m => m.id)
+    );
+  }
 };

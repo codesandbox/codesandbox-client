@@ -1,11 +1,11 @@
-import React from 'react';
-import { useOvermind } from 'app/overmind';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { Collapsible, SidebarRow } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React from 'react';
 
-import DirectoryEntry from './DirectoryEntry/index';
 import EditIcons from './DirectoryEntry/Entry/EditIcons';
+import DirectoryEntry from './DirectoryEntry/index';
 
 export const Files = () => {
   const {
@@ -17,13 +17,16 @@ export const Files = () => {
 
   const { currentSandbox: sandbox } = editorState;
 
-  const _getModulePath = moduleId => {
-    try {
-      return getModulePath(sandbox.modules, sandbox.directories, moduleId);
-    } catch (e) {
-      return '';
-    }
-  };
+  const _getModulePath = React.useCallback(
+    moduleId => {
+      try {
+        return getModulePath(sandbox.modules, sandbox.directories, moduleId);
+      } catch (e) {
+        return '';
+      }
+    },
+    [sandbox.directories, sandbox.modules]
+  );
 
   return (
     <>

@@ -16,8 +16,10 @@ import {
   SandboxFs,
   Tabs,
   WindowOrientation,
+  Directory,
 } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
+import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
 import { Derive } from 'app/overmind';
 import immer from 'immer';
 
@@ -25,6 +27,9 @@ import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
 
 type State = {
+  /**
+   * Never use this! It doesn't reflect the id of the current sandbox. Use editor.currentSandbox.id instead.
+   */
   currentId: string | null;
   currentModuleShortid: string | null;
   isForkingSandbox: boolean;
@@ -32,12 +37,16 @@ type State = {
   sandboxes: {
     [id: string]: Sandbox;
   };
+  collaborators: CollaboratorFragment[];
+  invitations: InvitationFragment[];
   // TODO: What is this really? Could not find it in Cerebral, but
   // EditorPreview is using it... weird stuff
   devToolTabs: Derive<State, ViewConfig[]>;
   isLoading: boolean;
-  notFound: boolean;
-  error: string | null;
+  error: {
+    status: number;
+    message: string;
+  } | null;
   isResizing: boolean;
   changedModuleShortids: Derive<State, string[]>;
   currentTabId: string | null;
@@ -67,19 +76,22 @@ type State = {
   shouldDirectoryBeOpen: Derive<State, (directoryShortid: string) => boolean>;
   currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
+  hasLoadedInitialModule: boolean;
 };
 
 export const state: State = {
+  hasLoadedInitialModule: false,
   sandboxes: {},
   currentId: null,
   isForkingSandbox: false,
   currentModuleShortid: null,
   mainModuleShortid: null,
   isLoading: true,
-  notFound: false,
   error: null,
   isResizing: false,
   modulesByPath: {},
+  collaborators: [],
+  invitations: [],
   changedModuleShortids: ({ currentSandbox }) => {
     if (!currentSandbox) {
       return [];
@@ -268,7 +280,11 @@ export const state: State = {
 };
 
 // This should be moved somewhere else
-function getModuleParents(modules, directories, id): string[] {
+function getModuleParents(
+  modules: Module[],
+  directories: Directory[],
+  id: string
+): string[] {
   const module = modules.find(moduleEntry => moduleEntry.id === id);
 
   if (!module) return [];
@@ -278,9 +294,9 @@ function getModuleParents(modules, directories, id): string[] {
   );
   let directoryIds: string[] = [];
   while (directory != null) {
-    directoryIds = [...directoryIds, directory.id];
+    directoryIds = [...directoryIds, directory!.id];
     directory = directories.find(
-      directoryEntry => directoryEntry.shortid === directory.directoryShortid // eslint-disable-line
+      directoryEntry => directoryEntry.shortid === directory!.directoryShortid // eslint-disable-line
     );
   }
 

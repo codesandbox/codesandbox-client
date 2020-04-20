@@ -6,19 +6,30 @@ import { Text } from '../Text';
 
 interface IAvatarProps {
   user: {
-    id: string;
+    id?: string;
     username: string;
-    name: string;
+    name?: string;
     avatarUrl: string;
-    badges: any[];
-    subscriptionSince: string | null;
+    badges?: any[];
+    subscriptionSince?: string | null;
   };
 }
 
+export const AvatarContainer = styled(Element).attrs({ as: 'span' })(
+  css({
+    display: 'inline-block',
+    height: 8,
+    width: 8,
+    position: 'relative',
+    flexShrink: 0, // avatars should never shrink inside flex
+  })
+);
+
 export const AvatarImage = styled.img(
   css({
-    width: 8,
-    height: 8,
+    height: '100%',
+    width: '100%',
+    boxSizing: 'border-box',
     borderRadius: 'small',
     border: '1px solid',
     borderColor: 'avatar.border',
@@ -38,15 +49,15 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
     position: 'absolute',
     height: 3,
     lineHeight: '10px', // same as height + border
-    top: 'calc(100% - 12px)', // position it snugly in the corner
+    bottom: '-4px',
     right: '-4px',
   })
 );
 
 export const Avatar = ({ user, ...props }: IAvatarProps) =>
   user && (
-    <Element as="span" style={{ position: 'relative' }} {...props}>
+    <AvatarContainer {...props}>
       <AvatarImage src={user.avatarUrl} alt={user.username} />
       {user.subscriptionSince ? <Pro>Pro</Pro> : null}
-    </Element>
+    </AvatarContainer>
   );

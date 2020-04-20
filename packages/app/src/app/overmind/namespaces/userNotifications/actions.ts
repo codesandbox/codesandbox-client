@@ -18,6 +18,18 @@ export const notificationsOpened: AsyncAction = async ({ state }) => {
       }
     `,
   });
+
+  setTimeout(async () => {
+    await client.mutate({
+      mutation: gql`
+        mutation MarkNotificationsAsRead {
+          markAllNotificationsAsRead {
+            id
+          }
+        }
+      `,
+    });
+  }, 500);
 };
 
 export const notificationsClosed: Action = ({ state }) => {

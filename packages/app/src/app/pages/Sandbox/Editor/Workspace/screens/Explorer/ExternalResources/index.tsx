@@ -44,54 +44,55 @@ export const ExternalResources: FunctionComponent = () => {
   return (
     <Collapsible title="External resources">
       <Stack direction="vertical" gap={6}>
-        <List>
-          {otherResources.map(resource => (
-            <ListAction
-              key={resource}
-              justify="space-between"
-              css={{
-                button: { opacity: 0 },
-                ':hover, :focus-within': { button: { opacity: 1 } },
-              }}
-            >
-              <Link href={resource} target="_blank">
-                {getName(resource)}
-              </Link>
-              <Button
-                variant="link"
-                css={css({ width: 'auto' })}
-                onClick={() => externalResourceRemoved(resource)}
+        {otherResources.length || fonts.length ? (
+          <List>
+            {otherResources.map(resource => (
+              <ListAction
+                key={resource}
+                justify="space-between"
+                css={{
+                  button: { opacity: 0 },
+                  ':hover, :focus-within': { button: { opacity: 1 } },
+                }}
               >
-                <CrossIcon />
-              </Button>
-            </ListAction>
-          ))}
+                <Link href={resource} target="_blank">
+                  {getName(resource)}
+                </Link>
+                <Button
+                  variant="link"
+                  css={css({ width: 'auto' })}
+                  onClick={() => externalResourceRemoved(resource)}
+                >
+                  <CrossIcon />
+                </Button>
+              </ListAction>
+            ))}
 
-          {fonts.map(resource => (
-            <ListAction
-              key={resource}
-              justify="space-between"
-              css={{
-                button: { opacity: 0 },
-                ':hover, :focus-within': { button: { opacity: 1 } },
-              }}
-            >
-              <Link href={resource} target="_blank">
-                {getFontFamily(resource).name}
-              </Link>
-              <Button
-                variant="link"
-                css={css({ width: 'auto' })}
-                onClick={() => externalResourceRemoved(resource)}
+            {fonts.map(resource => (
+              <ListAction
+                key={resource}
+                justify="space-between"
+                css={{
+                  button: { opacity: 0 },
+                  ':hover, :focus-within': { button: { opacity: 1 } },
+                }}
               >
-                <CrossIcon />
-              </Button>
-            </ListAction>
-          ))}
-        </List>
+                <Link href={resource} target="_blank">
+                  {getFontFamily(resource).name}
+                </Link>
+                <Button
+                  variant="link"
+                  css={css({ width: 'auto' })}
+                  onClick={() => externalResourceRemoved(resource)}
+                >
+                  <CrossIcon />
+                </Button>
+              </ListAction>
+            ))}
+          </List>
+        ) : null}
 
         <form
-          key={otherResources.length}
           onSubmit={event => {
             event.preventDefault();
             const url = event.target[0].value.trim();
@@ -99,17 +100,21 @@ export const ExternalResources: FunctionComponent = () => {
           }}
         >
           <FormField label="External URL" direction="vertical">
-            <Input type="text" placeholder="https://cdn.com/bootstrap.css" />
+            <Input
+              type="text"
+              required
+              placeholder="https://cdn.com/bootstrap.css"
+              key={otherResources.length}
+            />
           </FormField>
           <SidebarRow marginX={2}>
-            <Button variant="secondary" type="submit">
+            <Button type="submit" variant="secondary">
               Add resource
             </Button>
           </SidebarRow>
         </form>
 
         <form
-          key={fonts.length}
           onSubmit={event => {
             event.preventDefault();
             const fontName = event.target[0].value.trim().replace(/ /g, '+');
@@ -118,14 +123,20 @@ export const ExternalResources: FunctionComponent = () => {
           }}
         >
           <FormField label="Google Fonts" direction="vertical">
-            <Select placeholder="Select a font family">
+            <Select
+              required
+              placeholder="Select a font family"
+              key={fonts.length}
+            >
               {listOfFonts.sort().map(name => (
                 <option key={name}>{name}</option>
               ))}
             </Select>
           </FormField>
           <SidebarRow marginX={2}>
-            <Button variant="secondary">Add font</Button>
+            <Button type="submit" variant="secondary">
+              Add font
+            </Button>
           </SidebarRow>
         </form>
       </Stack>
@@ -151,7 +162,7 @@ const getName = (resource: string) => {
 const getFontFamily = (search: string) => {
   const hashes = search.slice(search.indexOf('?') + 1).split('&');
   const family = hashes
-    .find(hash => hash.split('=')[0] === 'family')
+    .find(hash => hash && hash.split('=')[0] === 'family')
     .split('=')[1];
 
   return {

@@ -5,8 +5,8 @@ import { Element } from '../Element';
 export const Stack = styled(Element)<{
   gap?: number; // theme.space token
   direction?: 'horizontal' | 'vertical';
-  justify?: string;
-  align?: string;
+  justify?: React.CSSProperties['justifyContent'];
+  align?: React.CSSProperties['alignItems'];
   inline?: boolean;
 }>(({ gap = 0, direction = 'horizontal', justify, align, inline }) =>
   css({

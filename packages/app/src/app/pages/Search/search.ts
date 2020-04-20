@@ -209,10 +209,10 @@ const styles = css`
           svg {
             height: 1.2em;
             vertical-align: bottom;
-            fill: rgba(255, 255, 255, 0.8) !important;
+            fill: rgba(255, 255, 255, 0.8);
 
             path:nth-child(4) {
-              fill: rgba(255, 255, 255, 0.8) !important;
+              fill: rgba(255, 255, 255, 0.8);
             }
           }
         }
