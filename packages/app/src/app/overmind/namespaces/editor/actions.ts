@@ -529,9 +529,6 @@ export const forkExternalSandbox: AsyncAction<{
   try {
     const forkedSandbox = await effects.api.forkSandbox(sandboxId, body);
 
-    // We currently have to delete the comments due to smooth forking. This will get better
-    // with EditorSandbox class
-    delete state.comments.comments[sandboxId];
     state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
   } catch (error) {

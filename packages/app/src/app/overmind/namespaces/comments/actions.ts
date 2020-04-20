@@ -340,6 +340,7 @@ export const addComment: AsyncAction<{
   if (isOptimistic) {
     optimisticComment = {
       ...state.comments.comments[sandboxId][OPTIMISTIC_COMMENT_ID],
+      content,
       id,
     };
     state.comments.comments[sandboxId][id] = optimisticComment;
