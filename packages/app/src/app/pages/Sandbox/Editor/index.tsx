@@ -213,7 +213,7 @@ const Editor = () => {
               })}
             >
               <FakeStatusBarText>
-                Version: {VERSION.split('-').pop()}
+                {`Version: ${VERSION.split('-').pop()}`}
               </FakeStatusBarText>
               <StatusBar
                 className="monaco-workbench mac nopanel"
