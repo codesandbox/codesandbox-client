@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { Button } from '@codesandbox/components';
+
 import { useMutation } from '@apollo/react-hooks';
 
-import Input from '@codesandbox/common/lib/components/Input';
-import { Button } from '@codesandbox/common/lib/components/Button';
 import track from '@codesandbox/common/lib/utils/analytics';
+
+import { UserSearchInput } from 'app/components/UserSearchInput';
 
 import { useOvermind } from 'app/overmind';
 import { INVITE_TO_TEAM } from '../../../../queries';
@@ -21,13 +23,13 @@ const ErrorMessage = styled.div`
 export const AddTeamMember: React.FC<IAddTeamMemberProps> = ({ teamId }) => {
   const { actions } = useOvermind();
   const [inviteToTeam, { loading, error }] = useMutation(INVITE_TO_TEAM);
-  let input: HTMLInputElement = null;
+  const [inviteValue, setInviteValue] = React.useState('');
 
   const submit: React.FormEventHandler = e => {
     e.preventDefault();
     e.stopPropagation();
 
-    let isEmail = input.value.includes('@');
+    let isEmail = inviteValue.includes('@');
 
     track('Team - Add Member', { email: isEmail });
 
@@ -37,23 +39,22 @@ export const AddTeamMember: React.FC<IAddTeamMemberProps> = ({ teamId }) => {
 
     const variables: IMutationVariables = { teamId };
 
-    const { value } = input;
     if (isEmail) {
-      variables.email = value;
+      variables.email = inviteValue;
     } else {
-      variables.username = value;
+      variables.username = inviteValue;
     }
 
     inviteToTeam({
       variables,
     }).then(() => {
       actions.notificationAdded({
-        title: `${value} has been invited!`,
+        title: `${inviteValue} has been invited!`,
         notificationType: 'success',
       });
     });
 
-    input.value = '';
+    setInviteValue('');
   };
 
   const errorMessage =
@@ -63,14 +64,13 @@ export const AddTeamMember: React.FC<IAddTeamMemberProps> = ({ teamId }) => {
     <>
       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       <form style={{ display: 'flex' }} onSubmit={loading ? undefined : submit}>
-        <Input
-          ref={node => {
-            input = node;
+        <UserSearchInput
+          inputValue={inviteValue}
+          onInputValueChange={val => {
+            setInviteValue(val);
           }}
-          placeholder="Add member by username"
-          block
         />
-        <Button type="submit" disabled={loading} style={{ width: 200 }} small>
+        <Button type="submit" loading={loading} style={{ width: 200 }}>
           {loading ? 'Adding Member...' : 'Add Member'}
         </Button>
       </form>
