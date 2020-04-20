@@ -1,30 +1,13 @@
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import css from '@styled-system/css';
 import React, { useEffect, FunctionComponent } from 'react';
 import { Redirect } from 'react-router-dom';
-import { createGlobalStyle } from 'styled-components';
 import { client } from 'app/graphql/client';
 import { useOvermind } from 'app/overmind';
 import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
-import { Element, ThemeProvider, Stack } from '@codesandbox/components';
+import { ThemeProvider, Stack } from '@codesandbox/components';
 import { Sidebar } from './Sidebar';
-
-type Theme = {
-  colors: any;
-  name: string;
-};
-
-const GlobalStyle = createGlobalStyle`
-  html body {
-    font-family: 'Inter', sans-serif;
-    background: ${({ theme }: { theme: Theme }) =>
-      theme.colors.sideBar.background} !important;
-    color: ${({ theme }: { theme: Theme }) => theme.colors.sideBar.foreground};
-
-    * {
-      box-sizing: border-box;
-    }
-  }
-`;
+import { Content } from './Content';
 
 export const Dashboard: FunctionComponent = () => {
   const {
@@ -47,10 +30,18 @@ export const Dashboard: FunctionComponent = () => {
 
   return (
     <ThemeProvider theme={codesandboxBlack}>
-      <GlobalStyle />
-      <Stack gap={6} style={{ minHeight: '100vh' }}>
+      <Stack
+        gap={6}
+        css={css({
+          backgroundColor: 'sideBar.background',
+          fontFamily: "'Inter', sans-serif",
+          color: 'sideBar.foreground',
+          minHeight: '100vh',
+          width: '100vw',
+        })}
+      >
         <Sidebar />
-        <Element>I AM THE CONTENT</Element>
+        <Content />
       </Stack>
     </ThemeProvider>
   );
