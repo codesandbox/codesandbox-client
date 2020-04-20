@@ -8,6 +8,7 @@ export const Container = styled.div<{
     display: inline-flex;
     width: 100%;
     border-radius: 4px;
+    border: 1px solid ${theme.colors.avatar.border};
     color: ${theme.light ? css`#636363` : css`rgba(255, 255, 255, 0.8)`};
     overflow: hidden;
 

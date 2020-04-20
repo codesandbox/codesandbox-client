@@ -1,10 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
-
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import { Text, Element } from '@codesandbox/components';
 import Badge from '@codesandbox/common/lib/utils/badges/Badge';
-
-import { Title } from '../elements';
 
 export const Badges: FunctionComponent = () => {
   const {
@@ -17,16 +14,18 @@ export const Badges: FunctionComponent = () => {
   } = useOvermind();
 
   return (
-    <div>
-      <Title>Badges</Title>
+    <>
+      <Text size={4} marginBottom={6} block variant="muted" weight="bold">
+        Badges
+      </Text>
 
-      <strong>
+      <Text size={3}>
         You currently have {badges.length} badge
         {badges.length === 1 ? '' : 's'}. You can click on the badges to toggle
         visibility.
-      </strong>
+      </Text>
 
-      <Margin top={2}>
+      <Element marginTop={4}>
         {badges.map(badge => (
           <Badge
             badge={badge}
@@ -39,7 +38,7 @@ export const Badges: FunctionComponent = () => {
             visible={badge.visible}
           />
         ))}
-      </Margin>
-    </div>
+      </Element>
+    </>
   );
 };

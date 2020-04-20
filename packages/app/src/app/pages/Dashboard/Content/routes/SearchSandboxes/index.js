@@ -30,8 +30,8 @@ const SearchSandboxes = () => (
               threshold: 0.1,
               distance: 1000,
               keys: [
-                { name: 'title', weight: 0.5 },
-                { name: 'description', weight: 0.3 },
+                { name: 'title', weight: 0.4 },
+                { name: 'description', weight: 0.2 },
                 { name: 'alias', weight: 0.2 },
                 { name: 'source.template', weight: 0.1 },
                 { name: 'id', weight: 0.1 },

@@ -11,7 +11,6 @@ import {
   List,
 } from '@codesandbox/components';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-
 import { useOvermind } from 'app/overmind';
 import { ZeitIcon, VisitIcon, TrashIcon } from './icons';
 import { State } from './elements';

@@ -2,12 +2,19 @@ import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
-import { ThemeProvider as NewThemeProvider } from '@codesandbox/components';
+import {
+  ThemeProvider as NewThemeProvider,
+  Stack,
+  Element,
+} from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
+import VERSION from '@codesandbox/common/lib/version';
+import VisuallyHidden from '@reach/visually-hidden';
 
 import Content from './Content';
 import { Container } from './elements';
@@ -188,18 +195,33 @@ const Editor = () => {
             ) : null}
           </div>
 
-          <StatusBar
-            style={{
-              position: 'fixed',
-              display: statusBar ? 'block' : 'none',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: STATUS_BAR_SIZE,
-            }}
-            className="monaco-workbench mac nopanel"
-            ref={statusbarEl}
-          />
+          <NewThemeProvider theme={localState.theme.vscodeTheme}>
+            <Stack
+              justify="space-between"
+              align="center"
+              className=".monaco-workbench"
+              css={css({
+                backgroundColor: 'statusBar.background',
+                color: 'statusBar.foreground',
+                position: 'fixed',
+                display: statusBar ? 'flex' : 'none',
+                bottom: 0,
+                right: 0,
+                left: 0,
+                width: '100%',
+                height: STATUS_BAR_SIZE,
+              })}
+            >
+              <FakeStatusBarText>
+                Version: {VERSION.split('-').pop()}
+              </FakeStatusBarText>
+              <StatusBar
+                className="monaco-workbench mac nopanel"
+                ref={statusbarEl}
+                style={{ width: 'calc(100% - 126px)' }}
+              />
+            </Stack>
+          </NewThemeProvider>
         </Fullscreen>
 
         <ForkFrozenSandboxModal />
@@ -212,3 +234,49 @@ const Editor = () => {
 };
 
 export default Editor;
+
+/** To use the same styles + behavior of the vscode status bar,
+ *  we recreate the html structure outside of the status bar
+ *  the code is garbage
+ */
+/* eslint-disable */
+const FakeStatusBarText = props => {
+  const [copied, setCopied] = React.useState(false);
+
+  const copyText = () => {
+    const inputElement = document.querySelector('#status-bar-version');
+    // @ts-ignore it's not even a button!
+    inputElement.select();
+    document.execCommand('copy');
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <Element
+      as="span"
+      className="part statusbar"
+      css={css({
+        width: 'auto !important',
+        minWidth: '120px',
+        color: 'statusBar.foreground',
+      })}
+      {...props}
+    >
+      <span className="statusbar-item" style={{ paddingLeft: '10px' }}>
+        <a
+          title="Copy version"
+          style={{ color: 'inherit', padding: '0 5px' }}
+          onClick={copyText}
+        >
+          {copied ? 'Copied!' : props.children}
+        </a>
+
+        <VisuallyHidden>
+          <input id="status-bar-version" defaultValue={props.children} />
+        </VisuallyHidden>
+      </span>
+    </Element>
+  );
+};
+/* eslint-enable */

@@ -5,6 +5,8 @@ import Padding from '@codesandbox/common/lib/components/spacing/Padding';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { Title } from 'app/components/Title';
 import { useOvermind } from 'app/overmind';
+import { ThemeProvider } from '@codesandbox/components';
+import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
@@ -137,26 +139,28 @@ export const Sandbox = React.memo<Props>(
 
     if (content) {
       return (
-        <Fullscreen>
-          <Padding
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100vw',
-              height: '100vh',
-            }}
-            margin={1}
-          >
-            <Navigation title="Sandbox Editor" />
-            <Centered
-              style={{ flex: 1, width: '100%', height: '100%' }}
-              horizontal
-              vertical
+        <ThemeProvider theme={codesandboxBlack}>
+          <Fullscreen>
+            <Padding
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100vw',
+                height: '100vh',
+              }}
+              margin={1}
             >
-              {content}
-            </Centered>
-          </Padding>
-        </Fullscreen>
+              <Navigation title="Sandbox Editor" />
+              <Centered
+                style={{ flex: 1, width: '100%', height: '100%' }}
+                horizontal
+                vertical
+              >
+                {content}
+              </Centered>
+            </Padding>
+          </Fullscreen>
+        </ThemeProvider>
       );
     }
 

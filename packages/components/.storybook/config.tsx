@@ -5,10 +5,13 @@ import { withA11y } from '@storybook/addon-a11y';
 import { addDecorator, addParameters, configure } from '@storybook/react';
 import { themes } from '@storybook/theming';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
-// @ts-ignore
-import global from '@codesandbox/common/lib/global.css';
 import { makeTheme, getThemes } from '../src/components/ThemeProvider';
 import { withThemesProvider } from './storybook-addon-styled-component-theme';
+
+type Theme = {
+  colors: any;
+  name: string;
+};
 
 const viewports = {
   mobile: {
@@ -32,19 +35,34 @@ const viewports = {
 // new globals based on theme?
 // using sidebar as the styles for body for now 🤷
 const GlobalStyle = createGlobalStyle`
-  ${global};
+
+
   html body {
     font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: auto;
+    -moz-font-smoothing: auto;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-smooth: always;
+    min-height: 100%;
+    height: 100%;
+    font-size: 16px;
     width: 400px;
     margin: 0;
-    background-color: ${props =>
-      // @ts-ignore
-      props.theme.colors.sideBar.background} !important;
-    color: ${props =>
-      // @ts-ignore
-      props.theme.colors.sideBar.foreground} !important;
+    background-color: ${({ theme }: { theme: Theme }) =>
+      theme.colors.sideBar.background};
+    color: ${({ theme }: { theme: Theme }) => theme.colors.sideBar.foreground};
+
     * {
       box-sizing: border-box;
+    }
+
+    a {
+      color: #40a9f3;
     }
 
   }
@@ -53,7 +71,7 @@ const allThemes = getThemes();
 const vsCodeThemes = allThemes.map(b => makeTheme(b, b.name));
 
 const blackCodesandbox = vsCodeThemes.find(
-  theme => theme.name === 'CodeSandbox Black'
+  (theme: Theme) => theme.name === 'CodeSandbox Black'
 );
 
 if (!isChromatic()) {
@@ -64,7 +82,9 @@ if (!isChromatic()) {
     </>
   );
 
-  const rest = vsCodeThemes.filter(theme => theme.name !== 'CodeSandbox Black');
+  const rest = vsCodeThemes.filter(
+    (theme: Theme) => theme.name !== 'CodeSandbox Black'
+  );
   addDecorator(withGlobal);
   addDecorator(withThemesProvider([blackCodesandbox, ...rest]));
 } else {

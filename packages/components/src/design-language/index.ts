@@ -1,3 +1,3 @@
-import designLanguage from '@codesandbox/common/lib/design-language/theme';
+import designLanguage from './theme';
 
 export default designLanguage;
