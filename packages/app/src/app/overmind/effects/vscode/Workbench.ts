@@ -1,10 +1,10 @@
+import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
   NotificationMessage,
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
 
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { KeyCode, KeyMod } from './keyCodes';
 
 // Copied from 'common/actions' in vscode
@@ -168,7 +168,9 @@ export class Workbench {
         label: 'Comment on code',
         category: 'Comments',
         run: () => {
-          this.controller.getSignal('comments.createComment')();
+          this.controller.getSignal('comments.createComment')({
+            isLineComment: false,
+          });
         },
       });
     }

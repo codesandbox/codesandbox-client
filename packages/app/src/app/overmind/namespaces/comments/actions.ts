@@ -13,6 +13,10 @@ import {
   CommentRemovedSubscription,
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
+import {
+  indexToLineAndColumn,
+  lineAndColumnToIndex,
+} from 'app/overmind/utils/common';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Selection, TextOperation } from 'ot';
 import * as uuid from 'uuid';
@@ -111,7 +115,9 @@ export const onCommentClick: Action<{
   }
 
   if (!commentIds.length) {
-    actions.comments.createComment();
+    actions.comments.createComment({
+      isLineComment: true,
+    });
   } else if (commentIds.length === 1) {
     actions.comments.selectComment({
       commentId: commentIds[0],
@@ -211,7 +217,9 @@ export const selectComment: AsyncAction<{
   }
 };
 
-export const createComment: AsyncAction = async ({ state, effects }) => {
+export const createComment: AsyncAction<{
+  isLineComment: boolean;
+}> = async ({ state, effects }, { isLineComment }) => {
   if (!state.user || !state.editor.currentSandbox) {
     return;
   }
@@ -222,10 +230,23 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
   let codeReference: CodeReference | null = null;
   const selection = state.live.currentSelection;
   if (selection) {
+    let anchor =
+      selection.primary.selection[0] || selection.primary.cursorPosition;
+    let head =
+      selection.primary.selection[1] || selection.primary.cursorPosition;
+
+    if (isLineComment) {
+      const codeLines = state.editor.currentModule.code.split('\n');
+      const { lineNumber } = indexToLineAndColumn(codeLines, anchor);
+      const newAnchor = lineAndColumnToIndex(codeLines, lineNumber, 1);
+
+      anchor = newAnchor;
+      head = newAnchor;
+    }
+
     codeReference = {
-      anchor:
-        selection.primary.selection[0] || selection.primary.cursorPosition,
-      head: selection.primary.selection[1] || selection.primary.cursorPosition,
+      anchor,
+      head,
       code: selection.primary.selection.length
         ? state.editor.currentModule.code.substr(
             selection.primary.selection[0],
