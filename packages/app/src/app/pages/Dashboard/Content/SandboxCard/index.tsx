@@ -404,7 +404,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
 
   copySandboxURL = () => {
     const url = sandboxUrl({ id: this.props.id, alias: this.props.alias });
-
+    // TODO: Use effects.browse.copyToClipboard after refactoring to Function Component
     copyToClipboard(`https://codesandbox.io${url}`);
 
     return true;

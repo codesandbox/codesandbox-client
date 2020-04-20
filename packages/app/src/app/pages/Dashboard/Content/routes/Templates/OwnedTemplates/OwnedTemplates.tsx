@@ -29,6 +29,9 @@ export const OwnedTemplates = (props: OwnedTemplatesProps) => {
     actions: {
       dashboard: { deleteTemplate },
     },
+    effects: {
+      browser: { copyToClipboard },
+    },
   } = useOvermind();
   const { teamId } = props;
   const { loading, error, data, refetch } = useQuery<
@@ -96,6 +99,15 @@ export const OwnedTemplates = (props: OwnedTemplatesProps) => {
                   action: () => {
                     track('Template - Removed', { source: 'Context Menu' });
                     unmakeTemplates([template.sandbox.id]);
+                    return true;
+                  },
+                },
+                {
+                  title: 'Copy Template Link',
+                  action: () => {
+                    copyToClipboard(
+                      `https://codesandbox.io${sandboxUrl(template.sandbox)}`
+                    );
                     return true;
                   },
                 },
