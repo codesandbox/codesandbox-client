@@ -53,7 +53,7 @@ export default class CreateTeam extends React.PureComponent {
         </Description>
 
         <Mutation mutation={CREATE_TEAM_MUTATION}>
-          {(mutate) => {
+          {mutate => {
             const submit = (e) => {
               e.preventDefault();
               e.stopPropagation();
