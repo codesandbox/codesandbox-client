@@ -38,7 +38,7 @@ const PRO_POINTS = [
 export default class CreateTeam extends React.PureComponent {
   state = { inputValue: '' };
 
-  handleChange = e => {
+  handleChange = (e) => {
     this.setState({ inputValue: e.target.value });
   };
 
@@ -53,8 +53,8 @@ export default class CreateTeam extends React.PureComponent {
         </Description>
 
         <Mutation mutation={CREATE_TEAM_MUTATION}>
-          {mutate => {
-            const submit = e => {
+          {(mutate) => {
+            const submit = (e) => {
               e.preventDefault();
               e.stopPropagation();
               const name = this.state.inputValue;
@@ -89,7 +89,7 @@ export default class CreateTeam extends React.PureComponent {
                 },
               }).then(({ data }) => {
                 notificationState.addNotification({
-                  message: `Succesfully created team '${data.createTeam.name}'`,
+                  message: `Successfully created team '${data.createTeam.name}'`,
                   status: NotificationStatus.SUCCESS,
                 });
 
