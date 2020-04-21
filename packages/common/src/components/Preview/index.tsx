@@ -513,11 +513,11 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   refreshHashedUrl = url => {
-    if (url.includes('#')) {
-      dispatch({
-        type: 'refresh',
-      });
+    if (!url.includes('#')) {
+      return;
     }
+
+    dispatch({ type: 'refresh' });
   };
 
   handleBack = () => {
