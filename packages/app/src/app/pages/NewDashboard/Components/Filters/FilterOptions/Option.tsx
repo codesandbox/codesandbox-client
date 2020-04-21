@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { Option as Container, OptionName, CheckBox } from './elements';
+import { Element, Checkbox, Text } from '@codesandbox/components';
 
 interface Props {
   color: string;
@@ -21,8 +20,8 @@ export const Option = ({
 }: Props) => {
   const checkBoxName = `${id}-checkbox`;
   return (
-    <Container
-      selected={selected}
+    <Element
+      // selected={selected}
       onClick={e => {
         e.preventDefault();
         toggleTemplate(id, !selected);
@@ -35,8 +34,8 @@ export const Option = ({
       <label htmlFor={checkBoxName} style={{ display: 'none' }}>
         {checkBoxName}
       </label>
-      <CheckBox id={checkBoxName} color={color} selected={selected} />
-      <OptionName style={{ fontWeight: 500 }}>{niceName}</OptionName>
-    </Container>
+      <Checkbox id={checkBoxName} color={color} checked={selected} />
+      <Text>{niceName}</Text>
+    </Element>
   );
 };
