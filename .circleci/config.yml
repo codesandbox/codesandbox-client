@@ -214,13 +214,13 @@ commands:
             JEST_JUNIT_OUTPUT: '/tmp/test-results/js-test-results.xml'
       - store_test_results: *store_test_results
       - store_artifacts: *store_artifacts
-  test_visual_regressions:
-    description: "Test Chromatic with 'yarn chromatic'"
-    steps:
-      - restore_cache: *restore_deps_cache
-      - attach_workspace: *attach_deps_workspace
-      - run:
-          command: yarn chromatic
+  # test_visual_regressions:
+  #   description: "Test Chromatic with 'yarn chromatic'"
+  #   steps:
+  #     - restore_cache: *restore_deps_cache
+  #     - attach_workspace: *attach_deps_workspace
+  #     - run:
+  #         command: yarn chromatic
   test_jest:
     description: 'Test with `yarn test`'
     steps:
