@@ -67,7 +67,7 @@ export const StartSandboxes = () => {
           columnGap={6}
           marginBottom={8}
           css={css({
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
           })}
         >
           {templates.map(({ sandbox }) => (
@@ -87,14 +87,13 @@ export const StartSandboxes = () => {
           columnGap={6}
           marginBottom={8}
           css={css({
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
           })}
         >
           <Column>
             <Button
               onClick={() => modalOpened({ modal: 'newSandbox' })}
               css={css({
-                width: 220,
                 height: 240,
                 border: '1px solid',
                 borderColor: 'grays.600',
