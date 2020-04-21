@@ -1,11 +1,13 @@
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import css from '@styled-system/css';
 import React, { useEffect, FunctionComponent } from 'react';
 import { Redirect } from 'react-router-dom';
 import { client } from 'app/graphql/client';
 import { useOvermind } from 'app/overmind';
 import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { ThemeProvider, Stack } from '@codesandbox/components';
+import css from '@styled-system/css';
+
+import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { Content } from './Content';
 
@@ -30,18 +32,21 @@ export const Dashboard: FunctionComponent = () => {
 
   return (
     <ThemeProvider theme={codesandboxBlack}>
-      <Stack
-        gap={6}
-        css={css({
-          backgroundColor: 'sideBar.background',
-          fontFamily: "'Inter', sans-serif",
-          color: 'sideBar.foreground',
-          minHeight: '100vh',
-          width: '100vw',
-        })}
-      >
-        <Sidebar />
-        <Content />
+      <Stack direction="vertical">
+        <Header />
+        <Stack
+          gap={6}
+          css={css({
+            backgroundColor: 'sideBar.background',
+            fontFamily: "'Inter', sans-serif",
+            color: 'sideBar.foreground',
+            minHeight: 'calc(100vh - 48px)',
+            width: '100vw',
+          })}
+        >
+          <Sidebar />
+          <Content />
+        </Stack>
       </Stack>
     </ThemeProvider>
   );
