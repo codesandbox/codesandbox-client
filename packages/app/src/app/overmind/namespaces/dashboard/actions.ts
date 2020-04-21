@@ -17,6 +17,12 @@ export const setTrashSandboxes: Action<{
   state.dashboard.trashSandboxIds = sandboxIds;
 };
 
+export const setActiveTeam: Action<{
+  id: string;
+}> = ({ state, effects }, { id }) => {
+  state.dashboard.activeTeam = id;
+};
+
 export const dragChanged: Action<{ isDragging: boolean }> = (
   { state },
   { isDragging }
@@ -82,6 +88,16 @@ export const deleteTemplate: AsyncAction<{
   }
 };
 
+export const getTeams: AsyncAction = async ({ state, effects }) => {
+  if (!state.user) return;
+  const teams = await effects.gql.queries.getTeams({});
+
+  if (!teams || !teams.me) {
+    return;
+  }
+
+  state.dashboard.teams = teams.me.teams;
+};
 export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
   const { dashboard, user } = state;
   dashboard.loadingPage = true;
@@ -113,7 +129,7 @@ export const getDrafts: AsyncAction = async ({ state, effects }) => {
   try {
     const data = await effects.gql.queries.sandboxesByPath({
       path: '/',
-      teamId: null,
+      teamId: state.dashboard.activeTeam,
     });
     if (!data || !data.me || !data.me.collection) {
       return;
@@ -161,7 +177,11 @@ export const getTemplateSandboxes: AsyncAction = async ({ state, effects }) => {
       return;
     }
 
-    dashboard.templateSandboxes = data.me.templates;
+    const templates = state.dashboard.activeTeam
+      ? data.me.teams.find(t => t.id === state.dashboard.activeTeam)?.templates
+      : data.me.templates;
+
+    dashboard.templateSandboxes = templates;
     dashboard.loadingPage = false;
   } catch (error) {
     dashboard.loadingPage = false;

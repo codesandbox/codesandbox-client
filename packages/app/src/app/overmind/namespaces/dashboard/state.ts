@@ -4,6 +4,7 @@ import isSameWeek from 'date-fns/isSameWeek';
 import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
 import { Derive } from 'app/overmind';
+import { Team } from 'app/graphql/types';
 
 export type OrderBy = {
   field: string;
@@ -17,6 +18,8 @@ type State = {
     recent: any[];
     templates: any[];
   };
+  teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
+  activeTeam: string;
   draftSandboxes: any[];
   deletedSandboxes: any[];
   recentSandboxes: any[];
@@ -49,8 +52,10 @@ type State = {
 };
 
 export const state: State = {
+  activeTeam: null,
   loadingPage: false,
   startPageSandboxes: { recent: [], templates: [] },
+  teams: [],
   templateSandboxes: [],
   draftSandboxes: [],
   recentSandboxes: [],

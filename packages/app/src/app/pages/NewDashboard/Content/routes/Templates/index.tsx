@@ -9,13 +9,13 @@ export const Templates = () => {
     actions,
     state: {
       user,
-      dashboard: { templateSandboxes, loadingPage },
+      dashboard: { templateSandboxes, loadingPage, activeTeam },
     },
   } = useOvermind();
 
   useEffect(() => {
     actions.dashboard.getTemplateSandboxes();
-  }, [actions.dashboard, user]);
+  }, [actions.dashboard, user, activeTeam]);
 
   if (loadingPage) {
     return <Element>Loading</Element>;

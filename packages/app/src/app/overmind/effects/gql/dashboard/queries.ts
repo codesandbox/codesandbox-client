@@ -9,6 +9,8 @@ import {
   ListTemplatesQueryVariables,
   ListPersonalTemplatesQuery,
   ListPersonalTemplatesQueryVariables,
+  TeamsQueryVariables,
+  TeamsQuery,
 } from 'app/graphql/types';
 import gql from 'graphql-tag';
 import { Query } from 'overmind-graphql';
@@ -79,6 +81,17 @@ export const ownedTemplates: Query<
   }
 
   ${templateFragment}
+`;
+
+export const getTeams: Query<TeamsQuery, TeamsQueryVariables> = gql`
+  query TeamsSidebar {
+    me {
+      teams {
+        id
+        name
+      }
+    }
+  }
 `;
 
 export const listPersonalTemplates: Query<

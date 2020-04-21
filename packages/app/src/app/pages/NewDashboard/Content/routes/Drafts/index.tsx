@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Element, Text } from '@codesandbox/components';
 
-import css from '@styled-system/css';
 import { Filters } from 'app/pages/NewDashboard/Components/Filters';
 import { useOvermind } from 'app/overmind';
+import { AutoSizer, List } from 'react-virtualized';
 import { getPossibleTemplates } from '../../utils';
 import { SandboxCard } from '../../../Components/SandboxCard';
 
@@ -12,35 +12,47 @@ export const Drafts = () => {
     actions,
     state: {
       user,
-      dashboard: { draftSandboxes, getFilteredSandboxes, loadingPage },
+      dashboard: {
+        draftSandboxes,
+        getFilteredSandboxes,
+        loadingPage,
+        activeTeam,
+      },
     },
   } = useOvermind();
 
   useEffect(() => {
     actions.dashboard.getDrafts();
-  }, [actions.dashboard, user]);
+  }, [actions.dashboard, user, activeTeam]);
 
   if (loadingPage) {
     return <Text>loading</Text>;
   }
 
+  const filtered = getFilteredSandboxes(draftSandboxes);
+
+  function rowRenderer({ key, index, style }) {
+    return <SandboxCard sandbox={filtered[index]} key={key} style={style} />;
+  }
+
   return (
-    <Element>
+    <Element style={{ height: '100%' }}>
       <Text marginBottom={4} block>
         Drafts
       </Text>
       <Filters possibleTemplates={getPossibleTemplates(draftSandboxes)} />
-      <Element
-        css={css({
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4,1fr)',
-          gridGap: 6,
-        })}
-      >
-        {getFilteredSandboxes(draftSandboxes).map(sandbox => (
-          <SandboxCard sandbox={sandbox} key={sandbox.id} />
-        ))}
-      </Element>
+      <AutoSizer>
+        {({ height, width }) => (
+          <List
+            width={width}
+            height={height}
+            rowCount={filtered.length}
+            rowHeight={240}
+            rowRenderer={rowRenderer}
+          />
+        )}
+      </AutoSizer>
+      ,
     </Element>
   );
 };

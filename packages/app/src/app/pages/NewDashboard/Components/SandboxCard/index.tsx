@@ -3,7 +3,7 @@ import React from 'react';
 import { Stack, Element, Text, Menu, Stats } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-export const SandboxCard = ({ sandbox }) => (
+export const SandboxCard = ({ sandbox, ...props }) => (
   <Stack
     direction="vertical"
     gap={2}
@@ -20,6 +20,7 @@ export const SandboxCard = ({ sandbox }) => (
         transform: 'scale(0.98)',
       },
     })}
+    {...props}
   >
     <Element
       as="div"
