@@ -10,7 +10,7 @@ import {
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 
-import {MaxWidth} from './elements'
+import { MaxWidth } from './elements';
 
 export const NewSandbox: FunctionComponent = () => {
   const {

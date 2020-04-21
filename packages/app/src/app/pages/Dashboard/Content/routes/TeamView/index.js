@@ -1,5 +1,5 @@
 import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextArea';
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { Button } from '@codesandbox/components';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -133,20 +133,18 @@ class TeamView extends React.PureComponent {
                                     }}
                                   >
                                     <Button
-                                      style={{ marginRight: '.5rem' }}
-                                      red
-                                      small
+                                      style={{ marginRight: '.5rem', flex: 1 }}
+                                      variant="danger"
                                       onClick={stopEditing}
                                       type="reset"
-                                      disabled={descriptionLoading}
+                                      loading={descriptionLoading}
                                     >
                                       Cancel
                                     </Button>
                                     <Button
-                                      style={{ marginLeft: '.5rem' }}
-                                      small
+                                      style={{ marginLeft: '.5rem', flex: 1 }}
                                       type="submit"
-                                      disabled={descriptionLoading}
+                                      loading={descriptionLoading}
                                     >
                                       Confirm
                                     </Button>
