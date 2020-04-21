@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import css from '@styled-system/css';
 import { Element, Text } from '@codesandbox/components';
 import { useQuery } from '@apollo/react-hooks';
@@ -9,7 +9,7 @@ import {
 import { LIST_OWNED_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 import { SandboxCard } from '../../../Components/SandboxCard';
 
-export const Templates = () => {
+export const Templates: FunctionComponent = () => {
   const { loading, error, data } = useQuery<
     ListTemplatesQuery,
     ListTemplatesQueryVariables
@@ -25,7 +25,7 @@ export const Templates = () => {
     return <Text>loading</Text>;
   }
 
-  const templates = data && data.me && data.me.templates;
+  const templates = data.me.templates;
 
   return (
     <Element>

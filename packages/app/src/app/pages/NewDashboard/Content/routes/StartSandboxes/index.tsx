@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import css from '@styled-system/css';
 import { Element, Text, Button } from '@codesandbox/components';
 import { useQuery } from '@apollo/react-hooks';
+
 import { useOvermind } from 'app/overmind';
 import {
   RecentSandboxesQuery,
@@ -13,7 +14,7 @@ import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries
 import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 import { SandboxCard } from '../../../Components/SandboxCard';
 
-export const StartSandboxes = () => {
+export const StartSandboxes: FunctionComponent = () => {
   const {
     state,
     actions: { modalOpened },
@@ -49,11 +50,8 @@ export const StartSandboxes = () => {
     return <Text>loading</Text>;
   }
 
-  const sandboxes = data && data.me && data.me.sandboxes;
-  const templates =
-    templatesData &&
-    templatesData.me &&
-    templatesData.me.recentlyUsedTemplates.slice(0, 4);
+  const sandboxes = data.me.sandboxes;
+  const templates = templatesData.me.recentlyUsedTemplates.slice(0, 4);
 
   return (
     <Element>

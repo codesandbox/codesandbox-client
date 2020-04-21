@@ -1,5 +1,5 @@
-import React from 'react';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import React, { FunctionComponent } from 'react';
+import { Redirect, Route, Switch } from 'react-router-dom';
 
 // import { RecentSandboxes } from './routes/RecentSandboxes';
 // import PathedSandboxes from './routes/PathedSandboxes';
@@ -12,7 +12,7 @@ import { Element } from '@codesandbox/components';
 import { StartSandboxes } from './routes/StartSandboxes';
 import { Templates } from './routes/Templates';
 
-const ContentComponent = () => (
+export const Content: FunctionComponent = () => (
   <Element style={{ width: 960, margin: '40px auto' }}>
     <Switch>
       <Route path="/new-dashboard/start" component={StartSandboxes} />
@@ -36,5 +36,3 @@ const ContentComponent = () => (
     </Switch>
   </Element>
 );
-
-export const Content = withRouter(ContentComponent);
