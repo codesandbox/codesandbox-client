@@ -35,7 +35,7 @@ export const Header = () => {
       <Input
         type="text"
         placeholder="Search all sandboxes"
-        css={{ maxWidth: 480 }}
+        css={css({ maxWidth: 480, display: ['none', 'none', 'block'] })}
       />
       <Stack align="center" gap={2}>
         <Button

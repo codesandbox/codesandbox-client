@@ -1,8 +1,9 @@
 import React from 'react';
-import css from '@styled-system/css';
-import { Element, Text, Button } from '@codesandbox/components';
 import { useQuery } from '@apollo/react-hooks';
 import { useOvermind } from 'app/overmind';
+import { Text, Button, Grid, Column } from '@codesandbox/components';
+import css from '@styled-system/css';
+
 import {
   RecentSandboxesQuery,
   RecentSandboxesQueryVariables,
@@ -56,40 +57,60 @@ export const StartSandboxes = () => {
     templatesData.me.recentlyUsedTemplates.slice(0, 4);
 
   return (
-    <Element>
-      <Text marginBottom={4} block>
-        Recently used Templates
-      </Text>
-      <Element
-        css={css({
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4,1fr)',
-          gridGap: 6,
-        })}
-        marginBottom={8}
-      >
-        {templates.map(({ sandbox }) => (
-          <SandboxCard sandbox={sandbox} key={sandbox.id} />
-        ))}
-      </Element>
+    <>
+      <section>
+        <Text marginBottom={4} block>
+          Recently used Templates
+        </Text>
+        <Grid
+          rowGap={6}
+          columnGap={6}
+          marginBottom={8}
+          css={css({
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          })}
+        >
+          {templates.map(({ sandbox }) => (
+            <Column key={sandbox.id}>
+              <SandboxCard sandbox={sandbox} />
+            </Column>
+          ))}
+        </Grid>
+      </section>
 
-      <Text marginBottom={4} block>
-        Your Recent Sandboxes
-      </Text>
-      <Element
-        css={css({
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4,1fr)',
-          gridGap: 6,
-        })}
-      >
-        <Button onClick={() => modalOpened({ modal: 'newSandbox' })}>
-          New Sandbox
-        </Button>
-        {sandboxes.map(sandbox => (
-          <SandboxCard sandbox={sandbox} key={sandbox.id} />
-        ))}
-      </Element>
-    </Element>
+      <section>
+        <Text marginBottom={4} block>
+          Your Recent Sandboxes
+        </Text>
+        <Grid
+          rowGap={6}
+          columnGap={6}
+          marginBottom={8}
+          css={css({
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          })}
+        >
+          <Column>
+            <Button
+              onClick={() => modalOpened({ modal: 'newSandbox' })}
+              css={css({
+                width: 220,
+                height: 240,
+                border: '1px solid',
+                borderColor: 'grays.600',
+                borderRadius: 'medium',
+              })}
+            >
+              New Sandbox
+            </Button>
+          </Column>
+          {sandboxes.map(sandbox => (
+            <Column key={sandbox.id}>
+              <SandboxCard sandbox={sandbox} />
+            </Column>
+          ))}
+        </Grid>
+      </section>
+    </>
   );
 };
