@@ -19,7 +19,7 @@ type State = {
     templates: any[];
   };
   teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
-  activeTeam: string;
+  activeTeam: string | null;
   draftSandboxes: any[];
   deletedSandboxes: any[];
   recentSandboxes: any[];

@@ -19,7 +19,7 @@ export const setTrashSandboxes: Action<{
 
 export const setActiveTeam: Action<{
   id: string;
-}> = ({ state, effects }, { id }) => {
+}> = ({ state }, { id }) => {
   state.dashboard.activeTeam = id;
 };
 
@@ -177,9 +177,14 @@ export const getTemplateSandboxes: AsyncAction = async ({ state, effects }) => {
       return;
     }
 
-    const templates = state.dashboard.activeTeam
-      ? data.me.teams.find(t => t.id === state.dashboard.activeTeam)?.templates
-      : data.me.templates;
+    const templates =
+      state.dashboard.activeTeam && data.me.teams
+        ? (
+            data.me.teams.find(t => t.id === state.dashboard.activeTeam) || {
+              templates: [],
+            }
+          ).templates
+        : data.me.templates;
 
     dashboard.templateSandboxes = templates;
     dashboard.loadingPage = false;
