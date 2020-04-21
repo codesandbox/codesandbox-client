@@ -13,7 +13,7 @@ integrated services. To deploy your app, you need to own the sandbox.
 
 ## Vercel
 
-To deploy to Vercel (https://vercel.com), access the Preferences menu and
+To deploy to [Vercel](https://vercel.com), access the Preferences menu and
 select the Integrations tab, then log into your Vercel account.
 
 ### Deploying
