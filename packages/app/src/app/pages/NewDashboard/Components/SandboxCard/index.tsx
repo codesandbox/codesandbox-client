@@ -14,8 +14,8 @@ export const SandboxCard = ({ sandbox }) => (
       borderColor: 'grays.600',
       borderRadius: 'medium',
       overflow: 'hidden',
-      transition: 'all ease-in',
-      transitionDuration: theme => theme.speeds[2],
+      transition: 'all ease-in-out',
+      transitionDuration: theme => theme.speeds[4],
       ':hover, :focus': {
         transform: 'scale(0.98)',
       },
