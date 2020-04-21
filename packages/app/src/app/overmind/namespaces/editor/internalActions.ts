@@ -431,6 +431,7 @@ export const forkSandbox: AsyncAction<{
     state.workspace.project.description = forkedSandbox.description || '';
     state.workspace.project.alias = forkedSandbox.alias || '';
 
+    effects.vscode.clearComments();
     Object.assign(state.editor.sandboxes[currentSandboxId]!, forkedSandbox);
     state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
       forkedSandbox

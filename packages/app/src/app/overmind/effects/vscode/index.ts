@@ -604,6 +604,10 @@ export class VSCodeEffect {
     });
   }
 
+  public clearComments() {
+    this.modelsHandler.clearComments();
+  }
+
   public setCorrections = (corrections: ModuleCorrection[]) => {
     const activeEditor = this.editorApi.getActiveCodeEditor();
     if (activeEditor) {

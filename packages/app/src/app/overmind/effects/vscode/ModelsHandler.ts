@@ -154,6 +154,21 @@ export class ModelsHandler {
     );
   }
 
+  public clearComments() {
+    if (COMMENTS) {
+      Object.values(this.moduleModels).forEach(moduleModel => {
+        if (!moduleModel.model) {
+          return;
+        }
+        moduleModel.comments = [];
+        moduleModel.currentCommentDecorations = moduleModel.model.deltaDecorations(
+          moduleModel.currentCommentDecorations,
+          []
+        );
+      });
+    }
+  }
+
   public isModuleOpened(module: Module) {
     const moduleModel = this.getModuleModelByPath(module.path);
     return Boolean(moduleModel?.model);
