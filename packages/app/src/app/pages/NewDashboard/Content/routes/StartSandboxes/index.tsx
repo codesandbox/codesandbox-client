@@ -92,12 +92,19 @@ export const StartSandboxes = () => {
         >
           <Column>
             <Button
+              variant="link"
               onClick={() => modalOpened({ modal: 'newSandbox' })}
               css={css({
                 height: 240,
+                fontSize: 3,
                 border: '1px solid',
                 borderColor: 'grays.600',
                 borderRadius: 'medium',
+                transition: 'all ease-in',
+                transitionDuration: theme => theme.speeds[2],
+                ':hover, :focus': {
+                  transform: 'scale(0.98)',
+                },
               })}
             >
               New Sandbox
