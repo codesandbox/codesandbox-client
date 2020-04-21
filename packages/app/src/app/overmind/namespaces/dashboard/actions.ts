@@ -1,5 +1,6 @@
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
+import { Direction } from 'app/graphql/types';
 import { OrderBy } from './state';
 
 export const dashboardMounted: AsyncAction = withLoadApp();
@@ -78,5 +79,73 @@ export const deleteTemplate: AsyncAction<{
     effects.notificationToast.success('Template Deleted');
   } catch (error) {
     effects.notificationToast.error('Could not delete custom template');
+  }
+};
+
+export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
+  const { dashboard, user } = state;
+  dashboard.loadingPage = true;
+  if (!user) return;
+  try {
+    const data = await effects.gql.queries.recentSandboxesPage({
+      orderField: dashboard.orderBy.field,
+      orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
+    });
+    if (!data || !data.me) {
+      return;
+    }
+
+    dashboard.recentSandboxes = data.me.sandboxes;
+    dashboard.loadingPage = false;
+  } catch (error) {
+    dashboard.loadingPage = false;
+    effects.notificationToast.error(
+      'There was a problem getting your recent Sandboxes'
+    );
+  }
+};
+
+export const getDrafts: AsyncAction = async ({ state, effects }) => {
+  const { dashboard, user } = state;
+  dashboard.loadingPage = true;
+  if (!user) return;
+  try {
+    const data = await effects.gql.queries.sandboxesByPath({
+      path: '/',
+      teamId: null,
+    });
+    if (!data || !data.me || !data.me.collection) {
+      return;
+    }
+
+    dashboard.draftSandboxes = data.me.collection.sandboxes.filter(
+      s => !s.customTemplate
+    );
+    dashboard.loadingPage = false;
+  } catch (error) {
+    dashboard.loadingPage = false;
+    effects.notificationToast.error(
+      'There was a problem getting your recent Sandboxes'
+    );
+  }
+};
+
+export const getDeletedSandboxes: AsyncAction = async ({ state, effects }) => {
+  const { dashboard, user } = state;
+  dashboard.loadingPage = true;
+  if (!user) return;
+  try {
+    const data = await effects.gql.queries.deletedSandboxes({});
+    if (!data || !data.me) {
+      return;
+    }
+
+    dashboard.deletedSandboxes = data.me.sandboxes;
+    dashboard.loadingPage = false;
+  } catch (error) {
+    dashboard.loadingPage = false;
+    effects.notificationToast.error(
+      'There was a problem getting your recent Sandboxes'
+    );
   }
 };

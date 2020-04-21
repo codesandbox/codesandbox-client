@@ -232,6 +232,20 @@ export const RECENT_SANDBOXES_CONTENT_QUERY = gql`
   ${SANDBOX_FRAGMENT}
 `;
 
+export const RECENT_SANDBOXES_PAGE_QUERY = gql`
+  query RecentSandboxes($orderField: String!, $orderDirection: Direction!) {
+    me {
+      sandboxes(
+        limit: 50
+        orderBy: { field: $orderField, direction: $orderDirection }
+      ) {
+        ...Sandbox
+      }
+    }
+  }
+  ${SANDBOX_FRAGMENT}
+`;
+
 export const SEARCH_SANDBOXES_QUERY = gql`
   query SearchSandboxes {
     me {
