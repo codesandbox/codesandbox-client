@@ -13,6 +13,7 @@ import css from '@styled-system/css';
 import { StartSandboxes } from './routes/StartSandboxes';
 import { Templates } from './routes/Templates';
 import { Deleted } from './routes/Deleted';
+import { Drafts } from './routes/Drafts';
 
 const ContentComponent = () => (
   <Element
@@ -28,6 +29,7 @@ const ContentComponent = () => (
       <Route path="/new-dashboard/start" component={StartSandboxes} />
       <Route path="/new-dashboard/templates" component={Templates} />
       <Route path="/new-dashboard/deleted" component={Deleted} />
+      <Route path="/new-dashboard/drafts" component={Drafts} />
       {/* <Route path="/dashboard/trash" component={DeletedSandboxes} />
     <Route path="/dashboard/templates" exact component={Templates} />
     <Route path="/dashboard/sandboxes/:path*" component={PathedSandboxes} />
