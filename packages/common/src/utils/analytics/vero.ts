@@ -59,6 +59,7 @@ export const setAnonymousUserId = (userId: string) => {
     'user',
     {
       id: userId,
+      email: 'anon@codesandbox.io',
     },
   ]);
   processArray();
