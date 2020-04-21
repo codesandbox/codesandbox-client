@@ -11,16 +11,16 @@ integrated services. To deploy your app, you need to own the sandbox.
 
 ![Deployment Sidebar](./images/deployment-sidebar.png)
 
-## ZEIT
+## Vercel
 
-To deploy to ZEIT's [Now](https://zeit.co/now), access the Preferences menu and
-select the Integrations tab, then log into your ZEIT account.
+To deploy to Vercel's [Now](https://vercel.com/now), access the Preferences menu and
+select the Integrations tab, then log into your Vercel account.
 
 ### Deploying
 
 Go to any of your sandboxes, click on the Deployment menu, which is the rocket
 icon in left-hand activity bar in the editor. Select "Now". You'll need to sign
-in to [Now](https://zeit.co/now) when you're deploying for the first time. After
+in to [Vercel Now](https://vercel.com/now) when you're deploying for the first time. After
 you've signed in, you will be able to click "Deploy Now". It will deploy the
 sandbox and give you a URL.
 
