@@ -27,6 +27,9 @@ const ContentComponent = () => {
     >
       <Stack gap={2}>
         <Button
+          variant={
+            state.dashboard.activeTeam === null ? 'primary' : 'secondary'
+          }
           style={{ width: 'auto' }}
           onClick={() => actions.dashboard.setActiveTeam({ id: null })}
         >
@@ -34,6 +37,9 @@ const ContentComponent = () => {
         </Button>
         {state.dashboard.teams.map(team => (
           <Button
+            variant={
+              state.dashboard.activeTeam === team.id ? 'primary' : 'secondary'
+            }
             onClick={() => actions.dashboard.setActiveTeam({ id: team.id })}
             style={{ width: 'auto' }}
           >

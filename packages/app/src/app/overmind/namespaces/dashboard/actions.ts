@@ -3,7 +3,19 @@ import { withLoadApp } from 'app/overmind/factories';
 import { Direction } from 'app/graphql/types';
 import { OrderBy } from './state';
 
-export const dashboardMounted: AsyncAction = withLoadApp();
+const TEAM_ID_LOCAL_STORAGE = 'codesandbox-selected-team-id';
+
+export const dashboardMounted: AsyncAction = async (context, value) => {
+  await withLoadApp()(context, value);
+  const {
+    effects: { browser },
+    state: { dashboard },
+  } = context;
+  const localStorageTeam = browser.storage.get(TEAM_ID_LOCAL_STORAGE);
+  if (localStorageTeam) {
+    dashboard.activeTeam = localStorageTeam;
+  }
+};
 
 export const sandboxesSelected: Action<{
   sandboxIds: string[];
@@ -19,8 +31,9 @@ export const setTrashSandboxes: Action<{
 
 export const setActiveTeam: Action<{
   id: string;
-}> = ({ state }, { id }) => {
+}> = ({ state, effects }, { id }) => {
   state.dashboard.activeTeam = id;
+  effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
 };
 
 export const dragChanged: Action<{ isDragging: boolean }> = (
