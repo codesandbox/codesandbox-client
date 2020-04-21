@@ -21,7 +21,7 @@
     "start": "yarn tsc --watch",
     "start:storybook": "start-storybook",
     "typecheck": "tsc --noEmit --pretty",
-    "chromatic": "if-env CIRCLE_BRANCH=master && yarn chromatic:master || yarn chromatic:branch",
+    "chromatic": "!(git diff --quiet ./src) && (if-env CIRCLE_BRANCH=master && yarn chromatic:master || yarn chromatic:branch)",
     "chromatic:master": "./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes --auto-accept-changes --project-token=nffds42ndde",
     "chromatic:branch": "./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes --project-token=nffds42ndde",
     "prepublish": "yarn build"
