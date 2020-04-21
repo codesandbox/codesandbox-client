@@ -9,11 +9,8 @@ description:
 
 All sandboxes on CodeSandbox are live, meaning you can share your sandbox with
 others for real time collaboration on code. You can simultaneously create,
-delete, edit for real time collaboration on code. You can simultaneously create,
 delete, edit and move files and code with others in a sandbox, as well as chat
-about your and move files and code with others in a sandbox, as well as chat
-about your changes. It's like Google Docs, but for coding. changes. It's like
-Google Docs, but for coding.
+about your changes. It's like Google Docs, but for coding.
 
 ![Live mode](./images/live-screenshot.png?v1)
 
