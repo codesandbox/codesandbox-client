@@ -5,28 +5,19 @@ import {
   PathedSandboxesQueryVariables,
   DeletedSandboxesQuery,
   DeletedSandboxesQueryVariables,
+  ListTemplatesQuery,
+  ListTemplatesQueryVariables,
+  ListPersonalTemplatesQuery,
+  ListPersonalTemplatesQueryVariables,
 } from 'app/graphql/types';
 import gql from 'graphql-tag';
 import { Query } from 'overmind-graphql';
 
-import { sandboxFragment, sidebarCollection } from './fragments';
-
-export const recentSandboxesPage: Query<
-  RecentSandboxesQuery,
-  RecentSandboxesQueryVariables
-> = gql`
-  query RecentSandboxes($orderField: String!, $orderDirection: Direction!) {
-    me {
-      sandboxes(
-        limit: 50
-        orderBy: { field: $orderField, direction: $orderDirection }
-      ) {
-        ...Sandbox
-      }
-    }
-  }
-  ${sandboxFragment}
-`;
+import {
+  sandboxFragment,
+  sidebarCollection,
+  templateFragment,
+} from './fragments';
 
 export const deletedSandboxes: Query<
   DeletedSandboxesQuery,
@@ -65,4 +56,93 @@ export const sandboxesByPath: Query<
   }
   ${sandboxFragment}
   ${sidebarCollection}
+`;
+
+export const ownedTemplates: Query<
+  ListTemplatesQuery,
+  ListTemplatesQueryVariables
+> = gql`
+  query ListTemplates($showAll: Boolean) {
+    me {
+      templates(showAll: $showAll) {
+        ...Template
+      }
+
+      teams {
+        id
+        name
+        templates {
+          ...Template
+        }
+      }
+    }
+  }
+
+  ${templateFragment}
+`;
+
+export const listPersonalTemplates: Query<
+  ListPersonalTemplatesQuery,
+  ListPersonalTemplatesQueryVariables
+> = gql`
+  query ListPersonalTemplates {
+    me {
+      templates {
+        ...Template
+      }
+
+      recentlyUsedTemplates {
+        ...Template
+
+        sandbox {
+          git {
+            id
+            username
+            commitSha
+            path
+            repo
+            branch
+          }
+        }
+      }
+
+      bookmarkedTemplates {
+        ...Template
+      }
+
+      teams {
+        id
+        name
+        bookmarkedTemplates {
+          ...Template
+        }
+        templates {
+          ...Template
+        }
+      }
+    }
+  }
+
+  ${templateFragment}
+`;
+
+export const recentSandboxes: Query<
+  RecentSandboxesQuery,
+  RecentSandboxesQueryVariables
+> = gql`
+  query RecentSandboxes(
+    $limit: Int!
+    $orderField: String!
+    $orderDirection: Direction!
+  ) {
+    me {
+      sandboxes(
+        limit: $limit
+        orderBy: { field: $orderField, direction: $orderDirection }
+      ) {
+        ...Sandbox
+      }
+    }
+  }
+  ${sandboxFragment}
 `;

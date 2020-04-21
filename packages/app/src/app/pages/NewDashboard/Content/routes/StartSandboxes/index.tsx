@@ -1,60 +1,25 @@
-import React from 'react';
-import { useQuery } from '@apollo/react-hooks';
+import React, { useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
-import { Text, Button, Grid, Column } from '@codesandbox/components';
+import { Text, Button, Grid, Column, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
-
-import {
-  RecentSandboxesQuery,
-  RecentSandboxesQueryVariables,
-  ListPersonalTemplatesQuery,
-  ListPersonalTemplatesQueryVariables,
-} from 'app/graphql/types';
-import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
-import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 import { SandboxCard } from '../../../Components/SandboxCard';
 
 export const StartSandboxes = () => {
   const {
-    state,
-    actions: { modalOpened },
-  } = useOvermind();
-  const { loading, error, data } = useQuery<
-    RecentSandboxesQuery,
-    RecentSandboxesQueryVariables
-  >(RECENT_SANDBOXES_CONTENT_QUERY, {
-    variables: {
-      orderField: state.dashboard.orderBy.field,
-      // @ts-ignore
-      orderDirection: state.dashboard.orderBy.order.toUpperCase(),
+    actions,
+    state: {
+      user,
+      dashboard: { startPageSandboxes, loadingPage },
     },
-  });
+  } = useOvermind();
 
-  const {
-    data: templatesData,
-    error: templatesError,
-    loading: templatesLoading,
-  } = useQuery<ListPersonalTemplatesQuery, ListPersonalTemplatesQueryVariables>(
-    LIST_PERSONAL_TEMPLATES,
-    {
-      variables: {},
-      fetchPolicy: 'cache-and-network',
-    }
-  );
+  useEffect(() => {
+    actions.dashboard.getStartPageSandboxes();
+  }, [actions.dashboard, user]);
 
-  if (error || templatesError) {
-    return <Text>Error</Text>;
+  if (loadingPage) {
+    return <Element>Loading</Element>;
   }
-
-  if (loading || templatesLoading) {
-    return <Text>loading</Text>;
-  }
-
-  const sandboxes = data && data.me && data.me.sandboxes;
-  const templates =
-    templatesData &&
-    templatesData.me &&
-    templatesData.me.recentlyUsedTemplates.slice(0, 4);
 
   return (
     <>
@@ -70,7 +35,7 @@ export const StartSandboxes = () => {
             gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
           })}
         >
-          {templates.map(({ sandbox }) => (
+          {startPageSandboxes.templates.map(({ sandbox }) => (
             <Column key={sandbox.id}>
               <SandboxCard sandbox={sandbox} />
             </Column>
@@ -93,7 +58,7 @@ export const StartSandboxes = () => {
           <Column>
             <Button
               variant="link"
-              onClick={() => modalOpened({ modal: 'newSandbox' })}
+              onClick={() => actions.modalOpened({ modal: 'newSandbox' })}
               css={css({
                 height: 240,
                 fontSize: 3,
@@ -110,7 +75,7 @@ export const StartSandboxes = () => {
               New Sandbox
             </Button>
           </Column>
-          {sandboxes.map(sandbox => (
+          {startPageSandboxes.recent.map(sandbox => (
             <Column key={sandbox.id}>
               <SandboxCard sandbox={sandbox} />
             </Column>

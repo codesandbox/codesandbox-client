@@ -39,3 +39,34 @@ export const sidebarCollection = gql`
     path
   }
 `;
+
+export const templateFragment = gql`
+  fragment Template on Template {
+    id
+    color
+    iconUrl
+    published
+    sandbox {
+      id
+      alias
+      title
+      description
+      insertedAt
+      updatedAt
+
+      collection {
+        team {
+          name
+        }
+      }
+
+      author {
+        username
+      }
+
+      source {
+        template
+      }
+    }
+  }
+`;

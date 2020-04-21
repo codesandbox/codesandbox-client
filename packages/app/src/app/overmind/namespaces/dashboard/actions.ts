@@ -87,7 +87,8 @@ export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
   dashboard.loadingPage = true;
   if (!user) return;
   try {
-    const data = await effects.gql.queries.recentSandboxesPage({
+    const data = await effects.gql.queries.recentSandboxes({
+      limit: 50,
       orderField: dashboard.orderBy.field,
       orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
     });
@@ -125,7 +126,7 @@ export const getDrafts: AsyncAction = async ({ state, effects }) => {
   } catch (error) {
     dashboard.loadingPage = false;
     effects.notificationToast.error(
-      'There was a problem getting your recent Sandboxes'
+      'There was a problem getting your Sandboxes'
     );
   }
 };
@@ -145,7 +146,67 @@ export const getDeletedSandboxes: AsyncAction = async ({ state, effects }) => {
   } catch (error) {
     dashboard.loadingPage = false;
     effects.notificationToast.error(
-      'There was a problem getting your recent Sandboxes'
+      'There was a problem getting your deleted Sandboxes'
+    );
+  }
+};
+
+export const getTemplateSandboxes: AsyncAction = async ({ state, effects }) => {
+  const { dashboard, user } = state;
+  dashboard.loadingPage = true;
+  if (!user) return;
+  try {
+    const data = await effects.gql.queries.ownedTemplates({ showAll: false });
+    if (!data || !data.me) {
+      return;
+    }
+
+    dashboard.templateSandboxes = data.me.templates;
+    dashboard.loadingPage = false;
+  } catch (error) {
+    dashboard.loadingPage = false;
+    effects.notificationToast.error(
+      'There was a problem getting your Templates'
+    );
+  }
+};
+
+export const getStartPageSandboxes: AsyncAction = async ({
+  state,
+  effects,
+}) => {
+  const { dashboard, user } = state;
+  dashboard.loadingPage = true;
+  if (!user) return;
+  try {
+    const recentSandboxes = await effects.gql.queries.recentSandboxes({
+      limit: 7,
+      orderField: dashboard.orderBy.field,
+      orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
+    });
+
+    const usedTemplates = await effects.gql.queries.listPersonalTemplates({});
+
+    if (
+      !usedTemplates ||
+      !usedTemplates.me ||
+      !recentSandboxes ||
+      !recentSandboxes.me
+    ) {
+      return;
+    }
+    const recent = recentSandboxes.me.sandboxes;
+    const templates = usedTemplates.me.recentlyUsedTemplates.slice(0, 4);
+
+    dashboard.startPageSandboxes = {
+      recent,
+      templates,
+    };
+    dashboard.loadingPage = false;
+  } catch (error) {
+    dashboard.loadingPage = false;
+    effects.notificationToast.error(
+      'There was a problem getting your Sandboxes'
     );
   }
 };

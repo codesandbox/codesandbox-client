@@ -12,6 +12,11 @@ export type OrderBy = {
 
 type State = {
   loadingPage: boolean;
+  templateSandboxes: any[];
+  startPageSandboxes: {
+    recent: any[];
+    templates: any[];
+  };
   draftSandboxes: any[];
   deletedSandboxes: any[];
   recentSandboxes: any[];
@@ -45,6 +50,8 @@ type State = {
 
 export const state: State = {
   loadingPage: false,
+  startPageSandboxes: { recent: [], templates: [] },
+  templateSandboxes: [],
   draftSandboxes: [],
   recentSandboxes: [],
   recentSandboxesByTime: ({ recentSandboxes }) => {
