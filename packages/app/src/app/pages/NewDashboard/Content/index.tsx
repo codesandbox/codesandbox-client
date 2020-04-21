@@ -11,12 +11,14 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { Element } from '@codesandbox/components';
 import { StartSandboxes } from './routes/StartSandboxes';
 import { Templates } from './routes/Templates';
+import { Deleted } from './routes/Deleted';
 
 const ContentComponent = () => (
   <Element style={{ width: 960, margin: '40px auto' }}>
     <Switch>
       <Route path="/new-dashboard/start" component={StartSandboxes} />
       <Route path="/new-dashboard/templates" component={Templates} />
+      <Route path="/new-dashboard/deleted" component={Deleted} />
       {/* <Route path="/dashboard/trash" component={DeletedSandboxes} />
     <Route path="/dashboard/templates" exact component={Templates} />
     <Route path="/dashboard/sandboxes/:path*" component={PathedSandboxes} />
