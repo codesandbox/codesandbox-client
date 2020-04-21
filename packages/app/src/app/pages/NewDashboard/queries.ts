@@ -222,7 +222,7 @@ export const RECENT_SANDBOXES_CONTENT_QUERY = gql`
   query RecentSandboxes($orderField: String!, $orderDirection: Direction!) {
     me {
       sandboxes(
-        limit: 20
+        limit: 7
         orderBy: { field: $orderField, direction: $orderDirection }
       ) {
         ...Sandbox
