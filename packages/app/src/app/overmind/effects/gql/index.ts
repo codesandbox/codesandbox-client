@@ -8,6 +8,8 @@ import * as commentsQueries from './comments/queries';
 import * as commentSubscriptions from './comments/subscriptions';
 import * as teamsQueries from './teams/queries';
 
+import * as dashboardQueries from './dashboard/queries';
+
 export default graphql({
   subscriptions: {
     ...collaboratorsSubscriptions,
@@ -17,6 +19,7 @@ export default graphql({
     ...collaboratorsQueries,
     ...commentsQueries,
     ...teamsQueries,
+    ...dashboardQueries,
   },
   mutations: {
     ...collaboratorsMutations,
