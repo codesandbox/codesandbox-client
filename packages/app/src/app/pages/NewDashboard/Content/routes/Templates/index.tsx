@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import css from '@styled-system/css';
 import { Element, Text } from '@codesandbox/components';
 import { SandboxCard } from '../../../Components/SandboxCard';
+import { Loading } from '../../../Components/Loading';
 
 export const Templates = () => {
   const {
@@ -17,26 +18,26 @@ export const Templates = () => {
     actions.dashboard.getTemplateSandboxes();
   }, [actions.dashboard, user, activeTeam]);
 
-  if (loadingPage) {
-    return <Element>Loading</Element>;
-  }
-
   return (
-    <Element>
+    <Element css={css({ position: 'relative' })}>
       <Text marginBottom={4} block>
         Templates
       </Text>
-      <Element
-        css={css({
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4,1fr)',
-          gridGap: 6,
-        })}
-      >
-        {templateSandboxes.map(({ sandbox }) => (
-          <SandboxCard sandbox={sandbox} key={sandbox.id} />
-        ))}
-      </Element>
+      {!loadingPage ? (
+        <Element
+          css={css({
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4,1fr)',
+            gridGap: 6,
+          })}
+        >
+          {templateSandboxes.map(({ sandbox }) => (
+            <SandboxCard sandbox={sandbox} key={sandbox.id} />
+          ))}
+        </Element>
+      ) : (
+        <Loading />
+      )}
     </Element>
   );
 };

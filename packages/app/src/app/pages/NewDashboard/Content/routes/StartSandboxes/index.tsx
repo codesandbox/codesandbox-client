@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
-import { Text, Button, Grid, Column, Element } from '@codesandbox/components';
+import { Text, Button, Grid, Column } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { SandboxCard } from '../../../Components/SandboxCard';
+import { SandboxCard } from 'app/pages/NewDashboard/Components/SandboxCard';
+import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 
 export const StartSandboxes = () => {
   const {
@@ -17,70 +18,78 @@ export const StartSandboxes = () => {
     actions.dashboard.getStartPageSandboxes();
   }, [actions.dashboard, user]);
 
-  if (loadingPage) {
-    return <Element>Loading</Element>;
-  }
-
   return (
     <>
-      <section>
+      <section style={{ position: 'relative' }}>
         <Text marginBottom={4} block>
           Recently used Templates
         </Text>
-        <Grid
-          rowGap={6}
-          columnGap={6}
-          marginBottom={8}
-          css={css({
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          })}
-        >
-          {startPageSandboxes.templates.map(({ sandbox }) => (
-            <Column key={sandbox.id}>
-              <SandboxCard sandbox={sandbox} />
-            </Column>
-          ))}
-        </Grid>
+        {!loadingPage ? (
+          <Grid
+            rowGap={6}
+            columnGap={6}
+            marginBottom={8}
+            css={css({
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            })}
+          >
+            {startPageSandboxes.templates.map(({ sandbox }) => (
+              <Column key={sandbox.id}>
+                <SandboxCard sandbox={sandbox} />
+              </Column>
+            ))}
+          </Grid>
+        ) : (
+          <Loading />
+        )}
       </section>
 
-      <section>
-        <Text marginBottom={4} block>
+      <section style={{ position: 'relative' }}>
+        <Text
+          marginBottom={4}
+          block
+          css={css({ position: 'relative', zIndex: 99 })}
+        >
           Your Recent Sandboxes
         </Text>
-        <Grid
-          rowGap={6}
-          columnGap={6}
-          marginBottom={8}
-          css={css({
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          })}
-        >
-          <Column>
-            <Button
-              variant="link"
-              onClick={() => actions.modalOpened({ modal: 'newSandbox' })}
-              css={css({
-                height: 240,
-                fontSize: 3,
-                border: '1px solid',
-                borderColor: 'grays.600',
-                borderRadius: 'medium',
-                transition: 'all ease-in',
-                transitionDuration: theme => theme.speeds[2],
-                ':hover, :focus': {
-                  transform: 'scale(0.98)',
-                },
-              })}
-            >
-              New Sandbox
-            </Button>
-          </Column>
-          {startPageSandboxes.recent.map(sandbox => (
-            <Column key={sandbox.id}>
-              <SandboxCard sandbox={sandbox} />
+        {!loadingPage ? (
+          <Grid
+            rowGap={6}
+            columnGap={6}
+            marginBottom={8}
+            css={css({
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            })}
+          >
+            <Column>
+              <Button
+                variant="link"
+                onClick={() => actions.modalOpened({ modal: 'newSandbox' })}
+                css={css({
+                  height: 240,
+                  fontSize: 3,
+                  border: '1px solid',
+                  borderColor: 'grays.600',
+                  borderRadius: 'medium',
+                  transition: 'all ease-in',
+                  transitionDuration: theme => theme.speeds[2],
+                  ':hover, :focus': {
+                    transform: 'scale(0.98)',
+                  },
+                })}
+              >
+                New Sandbox
+              </Button>
             </Column>
-          ))}
-        </Grid>
+            {startPageSandboxes.recent.map(sandbox => (
+              <Column key={sandbox.id}>
+                <SandboxCard sandbox={sandbox} />
+              </Column>
+            ))}
+          </Grid>
+        ) : (
+          <Loading />
+        )}
       </section>
     </>
   );
