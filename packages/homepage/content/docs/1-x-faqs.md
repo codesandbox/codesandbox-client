@@ -118,7 +118,7 @@ avatar menu. After completing that you need to reload the browser and select
 
 ## I can't edit my code because of an infinite loop
 
-While we do have infinite loop protection as a [configurable option](https://codesandbox.io/docs/configuration), it's not possible to catch all scenarios where infinite loops can occur, such as with incomplete code. This can cause problems in being able to edit your code to resolve it. In this case, you can append `runonclick=1` to the editor URL to stop the code from being automatically executed e.g. [https://codesandbox.io/s/new?runonclick=1](https://codesandbox.io/s/new?runonclick=1).
+While we do have infinite loop protection as a [configurable option](https://codesandbox.io/docs/configuration) it doesn't prevent all scenarios where infinite loops can occur, such as with incomplete code. When this happens, you can append `runonclick=1` to the editor URL to stop the code from being automatically executed enabling you to edit your code to resolve it. For example: [https://codesandbox.io/s/new?runonclick=1](https://codesandbox.io/s/new?runonclick=1)
 
 ## How do I cancel my Pro or Patron plan?
 
