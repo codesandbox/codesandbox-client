@@ -1,5 +1,7 @@
 import React from 'react';
 import sortBy from 'lodash/sortBy';
+import { withTheme } from 'styled-components';
+import { ThemeProvider } from '@codesandbox/components';
 import * as templates from '../../../templates';
 import Template from '../../../templates/template';
 
@@ -87,36 +89,37 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
   });
 
   return (
-    <div>
-      <PaddedConfig>
-        <ConfigItem>
-          <PaddedPreference
-            title="Infinite Loop Protection"
-            type="boolean"
-            {...bindValue(parsedFile, 'infiniteLoopProtection')}
-          />
-        </ConfigItem>
-        <ConfigDescription>
-          Whether we should stop execution of the code when we detect an
-          infinite loop.
-        </ConfigDescription>
-      </PaddedConfig>
+    <ThemeProvider theme={props.theme.vscodeTheme}>
+      <div>
+        <PaddedConfig>
+          <ConfigItem>
+            <PaddedPreference
+              title="Infinite Loop Protection"
+              type="boolean"
+              {...bindValue(parsedFile, 'infiniteLoopProtection')}
+            />
+          </ConfigItem>
+          <ConfigDescription>
+            Whether we should stop execution of the code when we detect an
+            infinite loop.
+          </ConfigDescription>
+        </PaddedConfig>
 
-      <PaddedConfig>
-        <ConfigItem>
-          <PaddedPreference
-            title="Hard Reload on Change"
-            type="boolean"
-            {...bindValue(parsedFile, 'hardReloadOnChange')}
-          />
-        </ConfigItem>
-        <ConfigDescription>
-          Force refresh the sandbox for a change. This is helpful for sandboxes
-          with global state, like intervals.
-        </ConfigDescription>
-      </PaddedConfig>
+        <PaddedConfig>
+          <ConfigItem>
+            <PaddedPreference
+              title="Hard Reload on Change"
+              type="boolean"
+              {...bindValue(parsedFile, 'hardReloadOnChange')}
+            />
+          </ConfigItem>
+          <ConfigDescription>
+            Force refresh the sandbox for a change. This is helpful for
+            sandboxes with global state, like intervals.
+          </ConfigDescription>
+        </PaddedConfig>
 
-      {/* <PaddedConfig>
+        {/* <PaddedConfig>
           <ConfigItem>
             <PaddedPreference
               title="Default View"
@@ -130,36 +133,38 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
           </ConfigDescription>
         </PaddedConfig> */}
 
-      <PaddedConfig>
-        <ConfigItem>
-          <PaddedPreference
-            title="Template"
-            type="dropdown"
-            options={templateOptions}
-            mapName={name => templateNameMap[name]}
-            {...bindValue(parsedFile, 'template', currentTemplate.name)}
-          />
-        </ConfigItem>
-        <ConfigDescription>
-          Which template to use for this sandbox.
-        </ConfigDescription>
-      </PaddedConfig>
-      {currentTemplate.isServer ? (
         <PaddedConfig>
-          <PaddedPreference
-            title="Port"
-            type="number"
-            {...bindValue(parsedFile, 'container.port')}
-          />
+          <ConfigItem>
+            <PaddedPreference
+              title="Template"
+              type="dropdown"
+              options={templateOptions}
+              mapName={name => templateNameMap[name]}
+              {...bindValue(parsedFile, 'template', currentTemplate.name)}
+            />
+          </ConfigItem>
           <ConfigDescription>
-            What is the main port of your application. Values from 1024 to 65535
+            Which template to use for this sandbox.
           </ConfigDescription>
         </PaddedConfig>
-      ) : null}
-    </div>
+        {currentTemplate.isServer ? (
+          <PaddedConfig>
+            <PaddedPreference
+              title="Port"
+              type="number"
+              {...bindValue(parsedFile, 'container.port')}
+            />
+            <ConfigDescription>
+              What is the main port of your application. Values from 1024 to
+              65535
+            </ConfigDescription>
+          </PaddedConfig>
+        ) : null}
+      </div>
+    </ThemeProvider>
   );
 };
 
 export default {
-  ConfigWizard,
+  ConfigWizard: withTheme(ConfigWizard),
 };
