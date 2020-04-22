@@ -29,5 +29,4 @@ export type ConfigurationUIProps = {
   file: string;
   updateFile: (code: string) => void;
   sandbox: Sandbox;
-  theme: any;
 };

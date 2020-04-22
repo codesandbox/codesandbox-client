@@ -1,4 +1,6 @@
 import { ConfigurationFile } from '@codesandbox/common/lib/templates/configuration/types';
+import { withTheme } from 'styled-components';
+import { ThemeProvider } from '@codesandbox/components';
 import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import theme from '@codesandbox/common/lib/theme';
 import { Module } from '@codesandbox/common/lib/types';
@@ -23,9 +25,10 @@ type Props = EditorProps & {
   onChangeVSCode: (val: string) => void;
   onDispose: (cb: () => void) => void;
   openText: () => void;
+  theme: any;
 };
 
-export class Configuration extends React.PureComponent<Props>
+export class ConfigurationComponent extends React.PureComponent<Props>
   implements Editor {
   disposeInitializer: Function;
   currentModule: Module;
@@ -147,13 +150,16 @@ export class Configuration extends React.PureComponent<Props>
             More info...
           </a>
         </Description>
-
-        <ConfigWizard
-          sandbox={sandbox}
-          updateFile={this.updateFile}
-          file={this.props.getCode()}
-        />
+        <ThemeProvider theme={this.props.theme.vscodeTheme}>
+          <ConfigWizard
+            sandbox={sandbox}
+            updateFile={this.updateFile}
+            file={this.props.getCode()}
+          />
+        </ThemeProvider>
       </Container>
     );
   }
 }
+
+export const Configuration = withTheme(ConfigurationComponent);
