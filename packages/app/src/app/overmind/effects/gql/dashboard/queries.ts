@@ -84,7 +84,7 @@ export const ownedTemplates: Query<
 `;
 
 export const getTeams: Query<TeamsQuery, TeamsQueryVariables> = gql`
-  query TeamsSidebar {
+  query Teams {
     me {
       teams {
         id

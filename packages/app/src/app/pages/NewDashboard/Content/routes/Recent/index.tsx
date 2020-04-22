@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
 import { Text, Element, Grid, Column, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-
+import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { Filters } from 'app/pages/NewDashboard/Components/Filters';
 import { getPossibleTemplates } from '../../utils';
 import { SandboxCard } from '../../../Components/SandboxCard';
@@ -26,10 +26,6 @@ export const Recent = () => {
   }, [actions.dashboard, user]);
 
   const possibleTemplates = getPossibleTemplates(recentSandboxes);
-
-  if (loadingPage) {
-    return <Element>Loading</Element>;
-  }
 
   const Group = ({ title, time }) =>
     getFilteredSandboxes(recentSandboxesByTime[time]).length ? (
@@ -56,17 +52,23 @@ export const Recent = () => {
 
   return (
     <>
-      <section>
+      <section style={{ position: 'relative' }}>
         <Stack>
           <Text marginBottom={4} block>
             Recently Modified Sandboxes
           </Text>
           <Filters possibleTemplates={possibleTemplates} />
         </Stack>
-        <Group title="Today" time="day" />
-        <Group title="Last 7 Days" time="week" />
-        <Group title="Earlier this month" time="month" />
-        <Group title="Older" time="older" />
+        {!loadingPage ? (
+          <>
+            <Group title="Today" time="day" />
+            <Group title="Last 7 Days" time="week" />
+            <Group title="Earlier this month" time="month" />
+            <Group title="Older" time="older" />
+          </>
+        ) : (
+          <Loading />
+        )}
       </section>
     </>
   );
