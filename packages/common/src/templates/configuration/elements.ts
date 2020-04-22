@@ -6,6 +6,14 @@ export const PaddedPreference = (styled(Preference)`
   width: 100%;
   padding: 0;
   font-weight: 400;
+
+  span[data-component='SwitchToggle'] {
+    top: 1px;
+  }
+
+  input[type='checkbox']:focus {
+    display: none;
+  }
 ` as unknown) as typeof Preference;
 
 export const PaddedConfig = styled.div`
