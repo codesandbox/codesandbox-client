@@ -20,9 +20,9 @@ select the Integrations tab, then log into your Vercel account.
 
 Go to any of your sandboxes, click on the Deployment menu, which is the rocket
 icon in left-hand activity bar in the editor. Select "Now". You'll need to sign
-in to [Vercel](https://vercel.com) when you're deploying for the first time. After
-you've signed in, you will be able to click "Deploy Now". It will deploy the
-sandbox and give you a URL.
+in to [Vercel](https://vercel.com) when you're deploying for the first time.
+After you've signed in, you will be able to click "Deploy Now". It will deploy
+the sandbox and give you a URL.
 
 ### More Features
 
