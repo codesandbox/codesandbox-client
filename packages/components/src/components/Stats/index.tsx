@@ -40,8 +40,8 @@ export const formatNumber = (count: number): string | number => {
   return count;
 };
 
-export const Stats = ({ sandbox }) => (
-  <Stack gap={4}>
+export const Stats = ({ sandbox, ...props }) => (
+  <Stack gap={4} {...props}>
     <Stack gap={1} align="center">
       <Text variant="muted" style={{ display: 'flex', alignItems: 'center' }}>
         <HeartIcon />

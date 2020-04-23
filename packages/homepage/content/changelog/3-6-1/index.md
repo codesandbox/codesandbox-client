@@ -1,5 +1,5 @@
 ---
-banner:
+banner: ./images/3-6-1.jpg
 title: v3.6.1
 slug: bug fixes v3.6.1
 date: 2020-04-01
