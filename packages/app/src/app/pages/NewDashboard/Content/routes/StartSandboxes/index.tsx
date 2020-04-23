@@ -34,7 +34,7 @@ export const StartSandboxes = () => {
           >
             {startPageSandboxes.templates.map(({ sandbox }) => (
               <Column key={sandbox.id}>
-                <SandboxCard sandbox={sandbox} />
+                <SandboxCard template sandbox={sandbox} />
               </Column>
             ))}
           </Grid>

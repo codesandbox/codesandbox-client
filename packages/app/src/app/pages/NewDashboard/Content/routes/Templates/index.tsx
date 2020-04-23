@@ -31,7 +31,7 @@ export const Templates = () => {
           })}
         >
           {templateSandboxes.map(({ sandbox }) => (
-            <SandboxCard sandbox={sandbox} key={sandbox.id} />
+            <SandboxCard template sandbox={sandbox} key={sandbox.id} />
           ))}
         </Element>
       ) : (

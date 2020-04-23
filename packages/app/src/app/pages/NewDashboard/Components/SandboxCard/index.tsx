@@ -1,17 +1,29 @@
-import React from 'react';
-// import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { Stack, Element, Text, Menu, Stats } from '@codesandbox/components';
+import React, { useState } from 'react';
+import { Stack, Element, Text, Stats, Input } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { MenuOptions } from './Menu';
 
-export const SandboxCard = ({ sandbox, ...props }) => {
-  const { effects, actions } = useOvermind();
+type Props = {
+  sandbox: any;
+  template?: boolean;
+  style?: any;
+};
 
-  const url = sandboxUrl({
-    id: sandbox.id,
-    alias: sandbox.alias,
-  });
+export const SandboxCard = ({ sandbox, template, ...props }: Props) => {
+  const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
+  const { actions } = useOvermind();
+  const [edit, setEdit] = useState(false);
+  const [newName, setNewName] = useState(sandboxTitle);
+
+  const editSandboxTitle = async e => {
+    e.preventDefault();
+    await actions.dashboard.renameSandbox({
+      id: sandbox.id,
+      title: newName,
+    });
+    setEdit(false);
+  };
 
   return (
     <Stack
@@ -36,57 +48,23 @@ export const SandboxCard = ({ sandbox, ...props }) => {
         as="div"
         css={{
           height: 160,
-          backgroundImage: `url(https://codesandbox.io/api/v1/sandboxes/${sandbox.id}/screenshot.png)`,
+          backgroundImage: `url(${sandbox.screenshotUrl})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
         }}
       />
       <Stack justify="space-between" align="center" marginLeft={4}>
-        <Text size={3} weight="medium">
-          {sandbox.title || sandbox.alias || sandbox.id}
-        </Text>
-        <Menu>
-          <Menu.IconButton name="more" size={9} title="Sandbox options" />
-          <Menu.List>
-            <Menu.Item onSelect={() => {}}>Show in Folder</Menu.Item>
-            <Menu.Item
-              onSelect={() => {
-                window.open(`https://codesandbox.io${url}`);
-              }}
-            >
-              Open sandbox
-            </Menu.Item>
-            <Menu.Item onSelect={() => {}}>Open sandbox in new tab</Menu.Item>
-            <Menu.Item
-              onSelect={() => {
-                effects.browser.copyToClipboard(`https://codesandbox.io${url}`);
-              }}
-            >
-              Copy sandbox link
-            </Menu.Item>
-            <Menu.Item
-              onSelect={() => {
-                actions.editor.forkExternalSandbox({
-                  sandboxId: sandbox.id,
-                  openInNewWindow: true,
-                });
-              }}
-            >
-              Fork sandbox
-            </Menu.Item>
-            <Menu.Item onSelect={() => {}}>Export sandbox</Menu.Item>
-            <Menu.Item onSelect={() => {}}>Rename sandbox</Menu.Item>
-            <Menu.Item onSelect={() => {}}>Make sandbox a template</Menu.Item>
-            <Menu.Item
-              onSelect={() => {
-                actions.dashboard.deleteSandbox([sandbox.id]);
-              }}
-            >
-              Delete sandbox
-            </Menu.Item>
-          </Menu.List>
-        </Menu>
+        {edit ? (
+          <form onSubmit={editSandboxTitle}>
+            <Input value={newName} onChange={e => setNewName(e.target.value)} />
+          </form>
+        ) : (
+          <Text size={3} weight="medium">
+            {sandboxTitle}
+          </Text>
+        )}
+        <MenuOptions sandbox={sandbox} template={template} setEdit={setEdit} />
       </Stack>
       <Stack marginX={4}>
         <Stats
@@ -102,7 +80,7 @@ export const SandboxCard = ({ sandbox, ...props }) => {
   );
 };
 
-const kFormatter = (num: number): number | string => {
+const kFormatter = (num: number): string => {
   if (num > 999999) {
     return (num / 1000000).toFixed(1) + 'M';
   }
@@ -111,5 +89,5 @@ const kFormatter = (num: number): number | string => {
     return (num / 1000).toFixed(1) + 'K';
   }
 
-  return num;
+  return num.toString();
 };

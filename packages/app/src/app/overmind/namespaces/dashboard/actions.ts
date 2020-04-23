@@ -1,6 +1,8 @@
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, TEAM_ID_LOCAL_STORAGE } from 'app/overmind/factories';
-import { Direction } from 'app/graphql/types';
+import downloadZip from 'app/overmind/effects/zip/create-zip';
+import { uniq } from 'lodash-es';
+import { Direction, SandboxFragmentDashboardFragment } from 'app/graphql/types';
 import { OrderBy } from './state';
 
 // DELETE WHEN NEW DAHSBOARD ONLINE
@@ -235,23 +237,51 @@ export const getStartPageSandboxes: AsyncAction = withLoadApp(
 );
 
 export const deleteSandboxFromState: Action<string[]> = (
-  { state: { dashboard }, effects },
+  { state: { dashboard } },
   ids
 ) => {
   // eslint-disable-next-line array-callback-return
   ids.map(id => {
-    dashboard.startPageSandboxes = {
-      recent: dashboard.startPageSandboxes.recent.filter(
+    if (dashboard.startPageSandboxes.recent) {
+      dashboard.startPageSandboxes = {
+        recent: dashboard.startPageSandboxes.recent.filter(
+          sandbox => sandbox.id !== id
+        ),
+        templates: dashboard.startPageSandboxes.templates,
+      };
+    }
+    if (dashboard.draftSandboxes) {
+      dashboard.draftSandboxes = dashboard.draftSandboxes.filter(
         sandbox => sandbox.id !== id
-      ),
-      templates: dashboard.startPageSandboxes.templates,
-    };
-    dashboard.draftSandboxes = dashboard.draftSandboxes.filter(
-      sandbox => sandbox.id !== id
-    );
-    dashboard.recentSandboxes = dashboard.recentSandboxes.filter(
-      sandbox => sandbox.id !== id
-    );
+      );
+    }
+    if (dashboard.recentSandboxes) {
+      dashboard.recentSandboxes = dashboard.recentSandboxes.filter(
+        sandbox => sandbox.id !== id
+      );
+    }
+  });
+};
+
+export const deleteTemplateFromState: Action<string[]> = (
+  { state: { dashboard } },
+  ids
+) => {
+  // eslint-disable-next-line array-callback-return
+  ids.map(id => {
+    if (dashboard.startPageSandboxes.templates) {
+      dashboard.startPageSandboxes = {
+        recent: dashboard.startPageSandboxes.recent,
+        templates: dashboard.startPageSandboxes.templates.filter(
+          ({ sandbox }) => sandbox.id !== id
+        ),
+      };
+    }
+    if (dashboard.templateSandboxes) {
+      dashboard.templateSandboxes = dashboard.templateSandboxes.filter(
+        ({ sandbox }) => sandbox.id !== id
+      );
+    }
   });
 };
 
@@ -269,6 +299,118 @@ export const deleteSandbox: AsyncAction<string[]> = async (
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem deleting your Sandbox'
+    );
+  }
+};
+
+export const unmakeTemplate: AsyncAction<string[]> = async (
+  { effects, actions },
+  ids
+) => {
+  try {
+    await effects.gql.mutations.unmakeSandboxesTemplate({
+      sandboxIds: ids,
+    });
+    actions.dashboard.deleteTemplateFromState(ids);
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem reverting your template'
+    );
+  }
+};
+
+export const renameSandboxInState: Action<
+  {
+    id: string;
+    title: string;
+    key: string;
+  },
+  SandboxFragmentDashboardFragment[]
+> = ({ state: { dashboard } }, { id, title, key }) => {
+  let tag = dashboard[key];
+  if (key.includes('.')) {
+    const keys = key.split('.');
+    tag = dashboard[keys[0]][keys[1]];
+  }
+  const sandboxes = tag.map(sandbox => {
+    if (sandbox.id === id) {
+      return {
+        ...sandbox,
+        title,
+      };
+    }
+
+    return sandbox;
+  });
+
+  return sandboxes;
+};
+
+export const renameSandbox: AsyncAction<{ id: string; title: string }> = async (
+  { state: { dashboard }, effects, actions },
+  { id, title }
+) => {
+  try {
+    await effects.gql.mutations.renameSandbox({
+      id,
+      title,
+    });
+    if (dashboard.startPageSandboxes.recent) {
+      dashboard.startPageSandboxes = {
+        recent: actions.dashboard.renameSandboxInState({
+          id,
+          title,
+          key: 'startPageSandboxes.recent',
+        }),
+        templates: dashboard.startPageSandboxes.templates,
+      };
+    }
+    if (dashboard.draftSandboxes) {
+      dashboard.draftSandboxes = actions.dashboard.renameSandboxInState({
+        id,
+        title,
+        key: 'draftSandboxes',
+      });
+    }
+    if (dashboard.recentSandboxes) {
+      dashboard.recentSandboxes = actions.dashboard.renameSandboxInState({
+        id,
+        title,
+        key: 'recentSandboxes',
+      });
+    }
+  } catch {
+    effects.notificationToast.error('There was a problem renaming you sandbox');
+  }
+};
+
+export const makeTemplate: AsyncAction<string[]> = async (
+  { effects, actions },
+  ids
+) => {
+  try {
+    await effects.gql.mutations.makeSandboxesTemplate({
+      sandboxIds: ids,
+    });
+    actions.dashboard.deleteSandboxFromState(ids);
+  } catch (error) {
+    effects.notificationToast.error('There was a problem making your template');
+  }
+};
+
+export const downloadSandboxes: AsyncAction<string[]> = async (
+  { effects },
+  ids
+) => {
+  try {
+    const sandboxIds = uniq(ids);
+    const sandboxes = await Promise.all(
+      sandboxIds.map(s => effects.api.getSandbox(s))
+    );
+    Promise.all(sandboxes.map(s => downloadZip(s, s.modules, s.directories)));
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem reverting your template'
     );
   }
 };

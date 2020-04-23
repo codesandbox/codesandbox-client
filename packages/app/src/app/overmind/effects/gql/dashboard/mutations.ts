@@ -1,4 +1,6 @@
 import {
+  UnmakeSandboxesTemplateMutation,
+  UnmakeSandboxesTemplateMutationVariables,
   CreateCommentMutation,
   CreateCollectionMutationVariables,
   RenameFolderMutation,
@@ -31,6 +33,8 @@ import {
   _CreateTeamMutationVariables,
   _RenameSandboxMutation,
   _RenameSandboxMutationVariables,
+  MakeSandboxesTemplateMutation,
+  MakeSandboxesTemplateMutationVariables,
 } from 'app/graphql/types';
 import gql from 'graphql-tag';
 import { Query } from 'overmind-graphql';
@@ -244,4 +248,26 @@ export const setTeamDescription: Query<
     }
   }
   ${teamFragmentDashboard}
+`;
+
+export const unmakeSandboxesTemplate: Query<
+  UnmakeSandboxesTemplateMutation,
+  UnmakeSandboxesTemplateMutationVariables
+> = gql`
+  mutation _UnmakeSandboxesTemplate($sandboxIds: [ID!]!) {
+    unmakeSandboxesTemplates(sandboxIds: $sandboxIds) {
+      id
+    }
+  }
+`;
+
+export const makeSandboxesTemplate: Query<
+  MakeSandboxesTemplateMutation,
+  MakeSandboxesTemplateMutationVariables
+> = gql`
+  mutation _MakeSandboxesTemplate($sandboxIds: [ID!]!) {
+    makeSandboxesTemplates(sandboxIds: $sandboxIds) {
+      id
+    }
+  }
 `;
