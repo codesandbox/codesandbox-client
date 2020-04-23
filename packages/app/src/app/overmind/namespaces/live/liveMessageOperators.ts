@@ -21,7 +21,7 @@ export const onSave: Operator<LiveMessage<{
   inserted_at: string;
   version: number;
   path: string;
-}>> = mutate(({ state }, { data }) => {
+}>> = mutate(({ state, effects }, { data }) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox) {
@@ -39,6 +39,7 @@ export const onSave: Operator<LiveMessage<{
   module.updatedAt = data.updated_at;
   module.insertedAt = data.inserted_at;
   sandbox.version = data.version;
+  effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
 });
 
 export const onJoin: Operator<LiveMessage<{
