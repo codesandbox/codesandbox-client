@@ -1,10 +1,13 @@
-import { Sandbox } from '@codesandbox/common/lib/types';
 import { sortBy } from 'lodash-es';
 import isSameWeek from 'date-fns/isSameWeek';
 import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
 import { Derive } from 'app/overmind';
-import { Team } from 'app/graphql/types';
+import {
+  Team,
+  SandboxFragmentDashboardFragment as Sandbox,
+  TemplateFragmentDashboardFragment as Template,
+} from 'app/graphql/types';
 
 export type OrderBy = {
   field: string;
@@ -12,18 +15,16 @@ export type OrderBy = {
 };
 
 type State = {
-  loaded: boolean;
-  loadingPage: boolean;
-  templateSandboxes: any[];
+  templateSandboxes: Template[] | null;
   startPageSandboxes: {
-    recent: any[];
-    templates: any[];
+    recent: Sandbox[] | null;
+    templates: Template[] | null;
   };
   teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
   activeTeam: string | null;
-  draftSandboxes: any[];
-  deletedSandboxes: any[];
-  recentSandboxes: any[];
+  draftSandboxes: Sandbox[] | null;
+  deletedSandboxes: Sandbox[] | null;
+  recentSandboxes: any[] | null;
   selectedSandboxes: string[];
   trashSandboxIds: string[];
   isDragging: boolean;
@@ -53,15 +54,14 @@ type State = {
 };
 
 export const state: State = {
-  loaded: false,
   activeTeam: null,
-  loadingPage: false,
-  startPageSandboxes: { recent: [], templates: [] },
+  startPageSandboxes: { recent: null, templates: null },
   teams: [],
-  templateSandboxes: [],
-  draftSandboxes: [],
-  recentSandboxes: [],
+  templateSandboxes: null,
+  draftSandboxes: null,
+  recentSandboxes: null,
   recentSandboxesByTime: ({ recentSandboxes }) => {
+    if (!recentSandboxes) return { recent: null, templates: null };
     const noTemplateSandboxes = recentSandboxes.filter(s => !s.customTemplate);
     const timeSandboxes = noTemplateSandboxes.reduce(
       (accumulator, currentValue: any) => {
@@ -95,8 +95,13 @@ export const state: State = {
 
     return timeSandboxes;
   },
-  deletedSandboxes: [],
+  deletedSandboxes: null,
   deletedSandboxesByTime: ({ deletedSandboxes }) => {
+    if (!deletedSandboxes)
+      return {
+        week: [],
+        older: [],
+      };
     const noTemplateSandboxes = deletedSandboxes.filter(s => !s.customTemplate);
     const timeSandboxes = noTemplateSandboxes.reduce(
       (accumulator, currentValue) => {

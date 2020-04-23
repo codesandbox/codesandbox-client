@@ -48,11 +48,26 @@ const ContentComponent = () => {
         ))}
       </Stack>
       <Switch>
-        <Route path="/new-dashboard/start" component={StartSandboxes} />
-        <Route path="/new-dashboard/templates" component={Templates} />
-        <Route path="/new-dashboard/deleted" component={Deleted} />
-        <Route path="/new-dashboard/drafts" component={Drafts} />
-        <Route path="/new-dashboard/recent" component={Recent} />
+        <Route
+          path="/new-dashboard/start"
+          render={() => <StartSandboxes key={state.dashboard.activeTeam} />}
+        />
+        <Route
+          path="/new-dashboard/templates"
+          render={() => <Templates key={state.dashboard.activeTeam} />}
+        />
+        <Route
+          path="/new-dashboard/deleted"
+          render={() => <Deleted key={state.dashboard.activeTeam} />}
+        />
+        <Route
+          path="/new-dashboard/drafts"
+          render={() => <Drafts key={state.dashboard.activeTeam} />}
+        />
+        <Route
+          path="/new-dashboard/recent"
+          render={() => <Recent key={state.dashboard.activeTeam} />}
+        />
         {/* <Route path="/dashboard/trash" component={DeletedSandboxes} />
     <Route path="/dashboard/templates" exact component={Templates} />
     <Route path="/dashboard/sandboxes/:path*" component={PathedSandboxes} />

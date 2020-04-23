@@ -9,14 +9,13 @@ export const StartSandboxes = () => {
   const {
     actions,
     state: {
-      user,
-      dashboard: { startPageSandboxes, loadingPage },
+      dashboard: { startPageSandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
     actions.dashboard.getStartPageSandboxes();
-  }, [actions.dashboard, user]);
+  }, [actions.dashboard]);
 
   return (
     <>
@@ -24,7 +23,7 @@ export const StartSandboxes = () => {
         <Text marginBottom={4} block>
           Recently used Templates
         </Text>
-        {!loadingPage ? (
+        {startPageSandboxes.templates ? (
           <Grid
             rowGap={6}
             columnGap={6}
@@ -52,7 +51,7 @@ export const StartSandboxes = () => {
         >
           Your Recent Sandboxes
         </Text>
-        {!loadingPage ? (
+        {startPageSandboxes.recent ? (
           <Grid
             rowGap={6}
             columnGap={6}

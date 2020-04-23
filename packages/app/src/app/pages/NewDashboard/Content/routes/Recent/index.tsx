@@ -16,7 +16,6 @@ export const Recent = () => {
         recentSandboxesByTime,
         recentSandboxes,
         getFilteredSandboxes,
-        loadingPage,
       },
     },
   } = useOvermind();
@@ -25,7 +24,9 @@ export const Recent = () => {
     actions.dashboard.getRecentSandboxes();
   }, [actions.dashboard, user]);
 
-  const possibleTemplates = getPossibleTemplates(recentSandboxes);
+  const possibleTemplates = recentSandboxes
+    ? getPossibleTemplates(recentSandboxes)
+    : [];
 
   const Group = ({ title, time }) =>
     getFilteredSandboxes(recentSandboxesByTime[time]).length ? (
@@ -59,7 +60,7 @@ export const Recent = () => {
           </Text>
           <Filters possibleTemplates={possibleTemplates} />
         </Stack>
-        {!loadingPage ? (
+        {recentSandboxes ? (
           <>
             <Group title="Today" time="day" />
             <Group title="Last 7 Days" time="week" />

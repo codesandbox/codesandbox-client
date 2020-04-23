@@ -12,6 +12,9 @@ export const sandboxFragmentDashboard = gql`
     privacy
     screenshotUrl
     screenshotOutdated
+    likeCount
+    forkCount
+    viewCount
 
     source {
       template
@@ -53,6 +56,9 @@ export const templateFragmentDashboard = gql`
       description
       insertedAt
       updatedAt
+      likeCount
+      forkCount
+      viewCount
 
       collection {
         team {

@@ -9,21 +9,20 @@ export const Templates = () => {
   const {
     actions,
     state: {
-      user,
-      dashboard: { templateSandboxes, loadingPage, activeTeam },
+      dashboard: { templateSandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
     actions.dashboard.getTemplateSandboxes();
-  }, [actions.dashboard, user, activeTeam]);
+  }, [actions.dashboard]);
 
   return (
     <Element css={css({ position: 'relative' })}>
       <Text marginBottom={4} block>
         Templates
       </Text>
-      {!loadingPage ? (
+      {templateSandboxes ? (
         <Element
           css={css({
             display: 'grid',

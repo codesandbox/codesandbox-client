@@ -78,7 +78,13 @@ export const SandboxCard = ({ sandbox, ...props }) => {
             <Menu.Item onSelect={() => {}}>Export sandbox</Menu.Item>
             <Menu.Item onSelect={() => {}}>Rename sandbox</Menu.Item>
             <Menu.Item onSelect={() => {}}>Make sandbox a template</Menu.Item>
-            <Menu.Item onSelect={() => {}}>Delete sandbox</Menu.Item>
+            <Menu.Item
+              onSelect={() => {
+                actions.dashboard.deleteSandbox([sandbox.id]);
+              }}
+            >
+              Delete sandbox
+            </Menu.Item>
           </Menu.List>
         </Menu>
       </Stack>
@@ -86,9 +92,9 @@ export const SandboxCard = ({ sandbox, ...props }) => {
         <Stats
           css={css({ fontSize: 2 })}
           sandbox={{
-            viewCount: kFormatter(10300),
-            likeCount: kFormatter(800),
-            forkCount: kFormatter(25),
+            viewCount: kFormatter(sandbox.viewCount),
+            likeCount: kFormatter(sandbox.likeCount),
+            forkCount: kFormatter(sandbox.forkCount),
           }}
         />
       </Stack>

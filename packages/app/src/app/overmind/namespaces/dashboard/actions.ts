@@ -1,21 +1,11 @@
 import { Action, AsyncAction } from 'app/overmind';
-import { withLoadApp } from 'app/overmind/factories';
+import { withLoadApp, TEAM_ID_LOCAL_STORAGE } from 'app/overmind/factories';
 import { Direction } from 'app/graphql/types';
 import { OrderBy } from './state';
 
-const TEAM_ID_LOCAL_STORAGE = 'codesandbox-selected-team-id';
-
+// DELETE WHEN NEW DAHSBOARD ONLINE
 export const dashboardMounted: AsyncAction = async (context, value) => {
   await withLoadApp()(context, value);
-  const {
-    effects: { browser },
-    state: { dashboard },
-  } = context;
-  const localStorageTeam = browser.storage.get(TEAM_ID_LOCAL_STORAGE);
-  if (localStorageTeam) {
-    dashboard.activeTeam = localStorageTeam;
-  }
-  dashboard.loaded = true;
 };
 
 export const sandboxesSelected: Action<{
@@ -112,144 +102,173 @@ export const getTeams: AsyncAction = async ({ state, effects }) => {
 
   state.dashboard.teams = teams.me.teams;
 };
-export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
-  const { dashboard, user } = state;
-  dashboard.loadingPage = true;
-  if (!user || !dashboard.loaded) return;
-  try {
-    const data = await effects.gql.queries.recentSandboxes({
-      limit: 50,
-      orderField: dashboard.orderBy.field,
-      orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
-    });
-    if (!data || !data.me) {
-      return;
-    }
-
-    dashboard.recentSandboxes = data.me.sandboxes;
-    dashboard.loadingPage = false;
-  } catch (error) {
-    dashboard.loadingPage = false;
-    effects.notificationToast.error(
-      'There was a problem getting your recent Sandboxes'
-    );
-  }
-};
-
-export const getDrafts: AsyncAction = async ({ state, effects }) => {
-  const { dashboard, user } = state;
-  dashboard.loadingPage = true;
-  if (!user || !dashboard.loaded) return;
-  try {
-    const data = await effects.gql.queries.sandboxesByPath({
-      path: '/',
-      teamId: state.dashboard.activeTeam,
-    });
-    if (!data || !data.me || !data.me.collection) {
-      return;
-    }
-
-    dashboard.draftSandboxes = data.me.collection.sandboxes.filter(
-      s => !s.customTemplate
-    );
-    dashboard.loadingPage = false;
-  } catch (error) {
-    dashboard.loadingPage = false;
-    effects.notificationToast.error(
-      'There was a problem getting your Sandboxes'
-    );
-  }
-};
-
-export const getDeletedSandboxes: AsyncAction = async ({ state, effects }) => {
-  const { dashboard, user } = state;
-  dashboard.loadingPage = true;
-  if (!user || !dashboard.loaded) return;
-  try {
-    const data = await effects.gql.queries.deletedSandboxes({});
-    if (!data || !data.me) {
-      return;
-    }
-
-    dashboard.deletedSandboxes = data.me.sandboxes;
-    dashboard.loadingPage = false;
-  } catch (error) {
-    dashboard.loadingPage = false;
-    effects.notificationToast.error(
-      'There was a problem getting your deleted Sandboxes'
-    );
-  }
-};
-
-export const getTemplateSandboxes: AsyncAction = async ({ state, effects }) => {
-  const { dashboard, user } = state;
-  dashboard.loadingPage = true;
-  if (!user || !dashboard.loaded) return;
-  try {
-    if (dashboard.activeTeam) {
-      const data = await effects.gql.queries.teamTemplates({
-        id: dashboard.activeTeam,
+export const getRecentSandboxes: AsyncAction = withLoadApp(
+  async ({ state, effects }) => {
+    const { dashboard } = state;
+    try {
+      const data = await effects.gql.queries.recentSandboxes({
+        limit: 50,
+        orderField: dashboard.orderBy.field,
+        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
       });
-
-      if (!data || !data.me || !data.me.team) {
-        return;
-      }
-
-      dashboard.templateSandboxes = data.me.team.templates;
-      dashboard.loadingPage = false;
-    } else {
-      const data = await effects.gql.queries.ownedTemplates({ showAll: false });
       if (!data || !data.me) {
         return;
       }
 
-      dashboard.templateSandboxes = data.me.templates;
-      dashboard.loadingPage = false;
+      dashboard.recentSandboxes = data.me.sandboxes;
+    } catch (error) {
+      effects.notificationToast.error(
+        'There was a problem getting your recent Sandboxes'
+      );
     }
-  } catch (error) {
-    dashboard.loadingPage = false;
-    effects.notificationToast.error(
-      'There was a problem getting your Templates'
-    );
   }
+);
+
+export const getDrafts: AsyncAction = withLoadApp(
+  async ({ state, effects }) => {
+    const { dashboard } = state;
+    try {
+      const data = await effects.gql.queries.sandboxesByPath({
+        path: '/',
+        teamId: state.dashboard.activeTeam,
+      });
+      if (!data || !data.me || !data.me.collection) {
+        return;
+      }
+
+      dashboard.draftSandboxes = data.me.collection.sandboxes.filter(
+        s => !s.customTemplate
+      );
+    } catch (error) {
+      effects.notificationToast.error(
+        'There was a problem getting your Sandboxes'
+      );
+    }
+  }
+);
+
+export const getDeletedSandboxes: AsyncAction = withLoadApp(
+  async ({ state, effects }) => {
+    const { dashboard } = state;
+    try {
+      const data = await effects.gql.queries.deletedSandboxes({});
+      if (!data || !data.me) {
+        return;
+      }
+
+      dashboard.deletedSandboxes = data.me.sandboxes;
+    } catch (error) {
+      effects.notificationToast.error(
+        'There was a problem getting your deleted Sandboxes'
+      );
+    }
+  }
+);
+
+export const getTemplateSandboxes: AsyncAction = withLoadApp(
+  async ({ state, effects }) => {
+    const { dashboard } = state;
+    try {
+      if (dashboard.activeTeam) {
+        dashboard.templateSandboxes = null;
+        const data = await effects.gql.queries.teamTemplates({
+          id: dashboard.activeTeam,
+        });
+
+        if (!data || !data.me || !data.me.team) {
+          return;
+        }
+
+        dashboard.templateSandboxes = data.me.team.templates;
+      } else {
+        dashboard.templateSandboxes = null;
+        const data = await effects.gql.queries.ownedTemplates({
+          showAll: false,
+        });
+        if (!data || !data.me) {
+          return;
+        }
+
+        dashboard.templateSandboxes = data.me.templates;
+      }
+    } catch (error) {
+      effects.notificationToast.error(
+        'There was a problem getting your Templates'
+      );
+    }
+  }
+);
+
+export const getStartPageSandboxes: AsyncAction = withLoadApp(
+  async ({ state, effects }) => {
+    const { dashboard } = state;
+    try {
+      const recentSandboxes = await effects.gql.queries.recentSandboxes({
+        limit: 7,
+        orderField: dashboard.orderBy.field,
+        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
+      });
+
+      const usedTemplates = await effects.gql.queries.listPersonalTemplates({});
+
+      if (
+        !usedTemplates ||
+        !usedTemplates.me ||
+        !recentSandboxes ||
+        !recentSandboxes.me
+      ) {
+        return;
+      }
+      const recent = recentSandboxes.me.sandboxes;
+      const templates = usedTemplates.me.recentlyUsedTemplates.slice(0, 4);
+
+      dashboard.startPageSandboxes = {
+        recent,
+        templates,
+      };
+    } catch (error) {
+      effects.notificationToast.error(
+        'There was a problem getting your Sandboxes'
+      );
+    }
+  }
+);
+
+export const deleteSandboxFromState: Action<string[]> = (
+  { state: { dashboard }, effects },
+  ids
+) => {
+  // eslint-disable-next-line array-callback-return
+  ids.map(id => {
+    dashboard.startPageSandboxes = {
+      recent: dashboard.startPageSandboxes.recent.filter(
+        sandbox => sandbox.id !== id
+      ),
+      templates: dashboard.startPageSandboxes.templates,
+    };
+    dashboard.draftSandboxes = dashboard.draftSandboxes.filter(
+      sandbox => sandbox.id !== id
+    );
+    dashboard.recentSandboxes = dashboard.recentSandboxes.filter(
+      sandbox => sandbox.id !== id
+    );
+  });
 };
 
-export const getStartPageSandboxes: AsyncAction = async ({
-  state,
-  effects,
-}) => {
-  const { dashboard, user } = state;
-  dashboard.loadingPage = true;
-  if (!user || !dashboard.loaded) return;
+export const deleteSandbox: AsyncAction<string[]> = async (
+  { state, effects, actions },
+  ids
+) => {
+  const { user } = state;
+  if (!user) return;
   try {
-    const recentSandboxes = await effects.gql.queries.recentSandboxes({
-      limit: 7,
-      orderField: dashboard.orderBy.field,
-      orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
+    await effects.gql.mutations.deleteSandboxes({
+      sandboxIds: ids,
     });
-
-    const usedTemplates = await effects.gql.queries.listPersonalTemplates({});
-
-    if (
-      !usedTemplates ||
-      !usedTemplates.me ||
-      !recentSandboxes ||
-      !recentSandboxes.me
-    ) {
-      return;
-    }
-    const recent = recentSandboxes.me.sandboxes;
-    const templates = usedTemplates.me.recentlyUsedTemplates.slice(0, 4);
-
-    dashboard.startPageSandboxes = {
-      recent,
-      templates,
-    };
-    dashboard.loadingPage = false;
+    actions.dashboard.deleteSandboxFromState(ids);
   } catch (error) {
-    dashboard.loadingPage = false;
     effects.notificationToast.error(
-      'There was a problem getting your Sandboxes'
+      'There was a problem deleting your Sandbox'
     );
   }
 };

@@ -1,5 +1,5 @@
 # source: https://codesandbox.io/api/graphql
-# timestamp: Wed Apr 22 2020 17:54:05 GMT+0200 (Central European Summer Time)
+# timestamp: Thu Apr 23 2020 16:02:07 GMT+0200 (Central European Summer Time)
 
 schema {
   query: RootQuery
@@ -163,12 +163,39 @@ The metadata of a reference
 union ReferenceMetadata = CodeReferenceMetadata
 
 type RootMutation {
-  revokeSandboxInvitation(invitationId: ID!, sandboxId: ID!): Invitation!
+  """
+  Clear notification unread count
+  """
+  clearNotificationCount: User
 
   """
-  Remove someone from a team
+  Leave a team
   """
-  removeFromTeam(teamId: ID!, userId: ID!): Team
+  leaveTeam(teamId: ID!): String
+
+  """
+  Delete sandboxes
+  """
+  deleteSandboxes(sandboxIds: [ID!]!): [Sandbox!]!
+
+  """
+  Add a collaborator
+  """
+  addCollaborator(
+    authorization: Authorization!
+    sandboxId: ID!
+    username: String!
+  ): Collaborator!
+
+  """
+  Create a collection
+  """
+  createCollection(path: String!, teamId: ID): Collection!
+
+  """
+  Revoke an invitation to a team
+  """
+  revokeTeamInvitation(teamId: ID!, userId: ID!): Team
 
   """
   Rename a collection and all subfolders
@@ -181,126 +208,6 @@ type RootMutation {
   ): [Collection!]!
 
   """
-  Invite someone to a team
-  """
-  inviteToTeam(email: String, teamId: ID!, username: String): Team
-
-  """
-  Mark all notifications as read
-  """
-  markAllNotificationsAsRead: User
-  renameSandbox(id: ID!, title: String!): Sandbox!
-  permanentlyDeleteSandboxes(sandboxIds: [ID!]!): [Sandbox!]!
-
-  """
-  Delete a collection and all subfolders
-  """
-  deleteCollection(path: String!, teamId: ID): [Collection!]!
-  changeSandboxInvitationAuthorization(
-    authorization: Authorization!
-    invitationId: ID!
-    sandboxId: ID!
-  ): Invitation!
-  createComment(
-    codeReference: CodeReference
-    content: String!
-    id: ID
-    parentCommentId: ID
-    sandboxId: ID!
-  ): Comment!
-
-  """
-  Create a collection
-  """
-  createCollection(path: String!, teamId: ID): Collection!
-
-  """
-  Leave a team
-  """
-  leaveTeam(teamId: ID!): String
-
-  """
-  Set the description of the team
-  """
-  setTeamDescription(description: String!, teamId: ID!): Team
-  createSandboxInvitation(
-    authorization: Authorization!
-    email: String!
-    sandboxId: ID!
-  ): Invitation!
-
-  """
-  Reject an invitation to a team
-  """
-  rejectTeamInvitation(teamId: ID!): String
-
-  """
-  Create a team
-  """
-  createTeam(name: String!): Team
-
-  """
-  Delete sandboxes
-  """
-  deleteSandboxes(sandboxIds: [ID!]!): [Sandbox!]!
-
-  """
-  Clear notification unread count
-  """
-  clearNotificationCount: User
-  setSandboxesPrivacy(privacy: Int, sandboxIds: [ID!]!): [Sandbox!]!
-  updateComment(commentId: ID!, content: String, sandboxId: ID!): Comment!
-
-  """
-  Remove a collaborator
-  """
-  removeCollaborator(sandboxId: ID!, username: String!): Collaborator!
-
-  """
-  Revoke an invitation to a team
-  """
-  revokeTeamInvitation(teamId: ID!, userId: ID!): Team
-
-  """
-  Make templates from sandboxes
-  """
-  makeSandboxesTemplates(sandboxIds: [ID!]!): [Template!]!
-
-  """
-  Unbookmark a template
-  """
-  unbookmarkTemplate(teamId: ID, templateId: ID!): Template
-
-  """
-  Accept an invitation to a team
-  """
-  acceptTeamInvitation(teamId: ID!): Team
-
-  """
-  Add a collaborator
-  """
-  addCollaborator(
-    authorization: Authorization!
-    sandboxId: ID!
-    username: String!
-  ): Collaborator!
-
-  """
-  Convert templates back to sandboxes
-  """
-  unmakeSandboxesTemplates(sandboxIds: [ID!]!): [Template!]!
-
-  """
-  Change authorization of a collaborator
-  """
-  changeCollaboratorAuthorization(
-    authorization: Authorization!
-    sandboxId: ID!
-    username: String!
-  ): Collaborator!
-  unresolveComment(commentId: ID!, sandboxId: ID!): Comment!
-
-  """
   Add sandboxes to a collection
   """
   addToCollection(
@@ -310,16 +217,108 @@ type RootMutation {
   ): Collection!
 
   """
+  bookmark a template
+  """
+  bookmarkTemplate(teamId: ID, templateId: ID!): Template
+  createComment(
+    codeReference: CodeReference
+    content: String!
+    id: ID
+    parentCommentId: ID
+    sandboxId: ID!
+  ): Comment!
+
+  """
+  Change authorization of a collaborator
+  """
+  changeCollaboratorAuthorization(
+    authorization: Authorization!
+    sandboxId: ID!
+    username: String!
+  ): Collaborator!
+
+  """
+  Create a team
+  """
+  createTeam(name: String!): Team
+
+  """
+  Invite someone to a team
+  """
+  inviteToTeam(email: String, teamId: ID!, username: String): Team
+  changeSandboxInvitationAuthorization(
+    authorization: Authorization!
+    invitationId: ID!
+    sandboxId: ID!
+  ): Invitation!
+
+  """
+  Reject an invitation to a team
+  """
+  rejectTeamInvitation(teamId: ID!): String
+
+  """
+  Convert templates back to sandboxes
+  """
+  unmakeSandboxesTemplates(sandboxIds: [ID!]!): [Template!]!
+  updateComment(commentId: ID!, content: String, sandboxId: ID!): Comment!
+
+  """
+  Unbookmark a template
+  """
+  unbookmarkTemplate(teamId: ID, templateId: ID!): Template
+
+  """
+  Remove someone from a team
+  """
+  removeFromTeam(teamId: ID!, userId: ID!): Team
+
+  """
+  Accept an invitation to a team
+  """
+  acceptTeamInvitation(teamId: ID!): Team
+  revokeSandboxInvitation(invitationId: ID!, sandboxId: ID!): Invitation!
+
+  """
+  Remove a collaborator
+  """
+  removeCollaborator(sandboxId: ID!, username: String!): Collaborator!
+  resolveComment(commentId: ID!, sandboxId: ID!): Comment!
+  setSandboxesPrivacy(privacy: Int, sandboxIds: [ID!]!): [Sandbox!]!
+  createSandboxInvitation(
+    authorization: Authorization!
+    email: String!
+    sandboxId: ID!
+  ): Invitation!
+  permanentlyDeleteSandboxes(sandboxIds: [ID!]!): [Sandbox!]!
+
+  """
+  Make templates from sandboxes
+  """
+  makeSandboxesTemplates(sandboxIds: [ID!]!): [Template!]!
+
+  """
+  Set the description of the team
+  """
+  setTeamDescription(description: String!, teamId: ID!): Team
+
+  """
+  Delete a collection and all subfolders
+  """
+  deleteCollection(path: String!, teamId: ID): [Collection!]!
+
+  """
   Soft delete a comment. Note: all child comments will also be deleted.
   """
   deleteComment(commentId: ID!, sandboxId: ID!): Comment!
   redeemSandboxInvitation(invitationToken: String!, sandboxId: ID!): Invitation!
+  renameSandbox(id: ID!, title: String!): Sandbox!
+  unresolveComment(commentId: ID!, sandboxId: ID!): Comment!
 
   """
-  bookmark a template
+  Mark all notifications as read
   """
-  bookmarkTemplate(teamId: ID, templateId: ID!): Template
-  resolveComment(commentId: ID!, sandboxId: ID!): Comment!
+  markAllNotificationsAsRead: User
 }
 
 type RootQuery {
@@ -364,6 +363,7 @@ type Sandbox {
   """
   customTemplate: Template
   description: String
+  forkCount: Int!
   forkedTemplate: Template
 
   """
@@ -373,6 +373,7 @@ type Sandbox {
   id: ID!
   insertedAt: String!
   invitations: [Invitation!]!
+  likeCount: Int!
   privacy: Int!
   removedAt: String
   screenshotOutdated: Boolean!
@@ -380,6 +381,7 @@ type Sandbox {
   source: Source!
   title: String
   updatedAt: String!
+  viewCount: Int!
 }
 
 type Source {
