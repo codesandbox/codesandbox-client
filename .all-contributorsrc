@@ -1531,6 +1531,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "johansenja",
+      "name": "johansenja",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/43235608?v=4",
+      "profile": "https://github.com/johansenja",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
