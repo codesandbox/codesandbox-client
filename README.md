@@ -251,6 +251,7 @@ Thanks goes to these wonderful people
   <tr>
     <td align="center"><a href="http://mcmunder.de"><img src="https://avatars3.githubusercontent.com/u/5681686?v=4" width="100px;" alt=""/><br /><sub><b>Matthias Christoph Munder</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3Amcmunder" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=mcmunder" title="Code">💻</a></td>
     <td align="center"><a href="http://anuraghazra.github.io"><img src="https://avatars3.githubusercontent.com/u/35374649?v=4" width="100px;" alt=""/><br /><sub><b>Anurag Hazra</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=anuraghazra" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/johansenja"><img src="https://avatars1.githubusercontent.com/u/43235608?v=4" width="100px;" alt=""/><br /><sub><b>johansenja</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=johansenja" title="Documentation">📖</a></td>
   </tr>
 </table>
 
