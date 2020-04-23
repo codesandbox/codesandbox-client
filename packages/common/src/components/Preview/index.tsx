@@ -487,6 +487,8 @@ class BasePreview extends React.Component<Props, State> {
         back: false,
         forward: false,
       });
+
+      this.refreshHashedUrl(urlInAddressBar);
     }
   };
 
@@ -497,7 +499,10 @@ class BasePreview extends React.Component<Props, State> {
     const urlToSet = urlInAddressBar || url;
 
     if (this.element) {
-      this.element.src = urlToSet || this.currentUrl();
+      const iframeSRC = urlToSet || this.currentUrl();
+      this.element.src = iframeSRC;
+
+      this.refreshHashedUrl(iframeSRC);
     }
 
     this.setState({
@@ -505,6 +510,14 @@ class BasePreview extends React.Component<Props, State> {
       back: false,
       forward: false,
     });
+  };
+
+  refreshHashedUrl = url => {
+    if (!url.includes('#')) {
+      return;
+    }
+
+    dispatch({ type: 'refresh' });
   };
 
   handleBack = () => {

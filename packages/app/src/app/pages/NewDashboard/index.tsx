@@ -32,18 +32,18 @@ export const Dashboard: FunctionComponent = () => {
 
   return (
     <ThemeProvider theme={codesandboxBlack}>
-      <Stack direction="vertical">
+      <Stack
+        direction="vertical"
+        css={css({
+          fontFamily: "'Inter', sans-serif",
+          backgroundColor: 'sideBar.background',
+          color: 'sideBar.foreground',
+          width: '100vw',
+          minHeight: '100vh',
+        })}
+      >
         <Header />
-        <Stack
-          gap={6}
-          css={css({
-            backgroundColor: 'sideBar.background',
-            fontFamily: "'Inter', sans-serif",
-            color: 'sideBar.foreground',
-            minHeight: 'calc(100vh - 48px)',
-            width: '100vw',
-          })}
-        >
+        <Stack css={{ flexGrow: 1 }}>
           <Sidebar />
           <Content />
         </Stack>

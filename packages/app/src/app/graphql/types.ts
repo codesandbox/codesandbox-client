@@ -1243,6 +1243,7 @@ export type PathedSandboxesQuery = { __typename?: 'RootQueryType' } & {
 export type RecentSandboxesQueryVariables = {
   orderField: Scalars['String'];
   orderDirection: Direction;
+  limit: Number;
 };
 
 export type RecentSandboxesQuery = { __typename?: 'RootQueryType' } & {

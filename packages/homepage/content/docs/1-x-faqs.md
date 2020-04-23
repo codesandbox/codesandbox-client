@@ -58,7 +58,7 @@ other package. Since npm runs scripts with the local `./node_modules/.bin` in
 the `PATH` ahead of the system copy, this means you can use this local version
 of node instead of the system version.
 
-## Can I open the terminal / console / test panel instead of the browser in a sandbox?
+## Can I open the terminal or console or test panel instead of the browser in a sandbox?
 
 Yes, the terminal, console, and problems tabs are all draggable. Click on the
 tab and drag it up into the bar alongside browser and tests. You can then
@@ -116,7 +116,11 @@ copy the contents and paste it into Preferences > Appearance from the top-right
 avatar menu. After completing that you need to reload the browser and select
 "Custom" as your color theme from File > Preferences > Color Theme.
 
-## How do I cancel my Pro/Patron plan?
+## I can't edit my code because of an infinite loop
+
+While we do have infinite loop protection as a [configurable option](https://codesandbox.io/docs/configuration) it doesn't prevent all scenarios where infinite loops can occur, such as with incomplete code. When this happens, you can append `runonclick=1` to the editor URL to stop the code from being automatically executed enabling you to edit your code to resolve it. For example: [https://codesandbox.io/s/new?runonclick=1](https://codesandbox.io/s/new?runonclick=1)
+
+## How do I cancel my Pro or Patron plan?
 
 For Pro users, you can cancel your subscription on the
 [Pro page](https://codesandbox.io/pro). For legacy Patron users, you can cancel
