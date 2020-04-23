@@ -12,6 +12,7 @@ export type OrderBy = {
 };
 
 type State = {
+  loaded: boolean;
   loadingPage: boolean;
   templateSandboxes: any[];
   startPageSandboxes: {
@@ -52,6 +53,7 @@ type State = {
 };
 
 export const state: State = {
+  loaded: false,
   activeTeam: null,
   loadingPage: false,
   startPageSandboxes: { recent: [], templates: [] },

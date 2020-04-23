@@ -15,6 +15,7 @@ export const dashboardMounted: AsyncAction = async (context, value) => {
   if (localStorageTeam) {
     dashboard.activeTeam = localStorageTeam;
   }
+  dashboard.loaded = true;
 };
 
 export const sandboxesSelected: Action<{
@@ -114,7 +115,7 @@ export const getTeams: AsyncAction = async ({ state, effects }) => {
 export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
   const { dashboard, user } = state;
   dashboard.loadingPage = true;
-  if (!user) return;
+  if (!user || !dashboard.loaded) return;
   try {
     const data = await effects.gql.queries.recentSandboxes({
       limit: 50,
@@ -138,7 +139,7 @@ export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
 export const getDrafts: AsyncAction = async ({ state, effects }) => {
   const { dashboard, user } = state;
   dashboard.loadingPage = true;
-  if (!user) return;
+  if (!user || !dashboard.loaded) return;
   try {
     const data = await effects.gql.queries.sandboxesByPath({
       path: '/',
@@ -163,7 +164,7 @@ export const getDrafts: AsyncAction = async ({ state, effects }) => {
 export const getDeletedSandboxes: AsyncAction = async ({ state, effects }) => {
   const { dashboard, user } = state;
   dashboard.loadingPage = true;
-  if (!user) return;
+  if (!user || !dashboard.loaded) return;
   try {
     const data = await effects.gql.queries.deletedSandboxes({});
     if (!data || !data.me) {
@@ -183,24 +184,28 @@ export const getDeletedSandboxes: AsyncAction = async ({ state, effects }) => {
 export const getTemplateSandboxes: AsyncAction = async ({ state, effects }) => {
   const { dashboard, user } = state;
   dashboard.loadingPage = true;
-  if (!user) return;
+  if (!user || !dashboard.loaded) return;
   try {
-    const data = await effects.gql.queries.ownedTemplates({ showAll: false });
-    if (!data || !data.me) {
-      return;
+    if (dashboard.activeTeam) {
+      const data = await effects.gql.queries.teamTemplates({
+        id: dashboard.activeTeam,
+      });
+
+      if (!data || !data.me || !data.me.team) {
+        return;
+      }
+
+      dashboard.templateSandboxes = data.me.team.templates;
+      dashboard.loadingPage = false;
+    } else {
+      const data = await effects.gql.queries.ownedTemplates({ showAll: false });
+      if (!data || !data.me) {
+        return;
+      }
+
+      dashboard.templateSandboxes = data.me.templates;
+      dashboard.loadingPage = false;
     }
-
-    const templates =
-      state.dashboard.activeTeam && data.me.teams
-        ? (
-            data.me.teams.find(t => t.id === state.dashboard.activeTeam) || {
-              templates: [],
-            }
-          ).templates
-        : data.me.templates;
-
-    dashboard.templateSandboxes = templates;
-    dashboard.loadingPage = false;
   } catch (error) {
     dashboard.loadingPage = false;
     effects.notificationToast.error(
@@ -215,7 +220,7 @@ export const getStartPageSandboxes: AsyncAction = async ({
 }) => {
   const { dashboard, user } = state;
   dashboard.loadingPage = true;
-  if (!user) return;
+  if (!user || !dashboard.loaded) return;
   try {
     const recentSandboxes = await effects.gql.queries.recentSandboxes({
       limit: 7,
