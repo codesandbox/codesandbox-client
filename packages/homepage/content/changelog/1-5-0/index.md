@@ -1,5 +1,5 @@
 ---
-banner:
+banner:  ./images/1-5-0.jpg
 title: v1.5.0
 slug: 1-5-0
 date: 2017-08-16

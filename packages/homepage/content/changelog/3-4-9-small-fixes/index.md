@@ -1,5 +1,5 @@
 ---
-banner:
+banner: ./images/3-4-9.jpg
 title: v3.4.9
 slug: bug fixes v3.4.9
 date: 2020-02-24

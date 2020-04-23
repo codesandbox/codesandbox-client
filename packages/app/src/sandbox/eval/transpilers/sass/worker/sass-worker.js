@@ -50,7 +50,7 @@ const resolveAsyncModule = (
     self.addEventListener('message', resolveFunc);
   });
 
-const SUPPORTED_EXTS = ['css', 'sass', 'scss'];
+const SUPPORTED_EXTS = ['scss', 'sass', 'css'];
 
 const existsPromise = (fs, file) =>
   new Promise(r => {
