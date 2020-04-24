@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import { Element, Button, Stack } from '@codesandbox/components';
+import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { StartSandboxes } from './routes/StartSandboxes';
@@ -11,10 +11,7 @@ import { Recent } from './routes/Recent';
 import { All } from './routes/All';
 
 export const Content = () => {
-  const { actions, state } = useOvermind();
-  useEffect(() => {
-    actions.dashboard.getTeams();
-  }, [actions.dashboard, state.user]);
+  const { state } = useOvermind();
 
   return (
     <Element
@@ -26,28 +23,6 @@ export const Content = () => {
         margin: '40px auto',
       })}
     >
-      <Stack gap={2}>
-        <Button
-          variant={
-            state.dashboard.activeTeam === null ? 'primary' : 'secondary'
-          }
-          style={{ width: 'auto' }}
-          onClick={() => actions.dashboard.setActiveTeam({ id: null })}
-        >
-          Me
-        </Button>
-        {state.dashboard.teams.map(team => (
-          <Button
-            variant={
-              state.dashboard.activeTeam === team.id ? 'primary' : 'secondary'
-            }
-            onClick={() => actions.dashboard.setActiveTeam({ id: team.id })}
-            style={{ width: 'auto' }}
-          >
-            {team.name}
-          </Button>
-        ))}
-      </Stack>
       <Switch>
         <Route
           path="/new-dashboard/start"
@@ -75,9 +50,7 @@ export const Content = () => {
         />
         <Route
           path="/new-dashboard/all/:path*"
-          render={({ match }) => (
-            <All key={state.dashboard.activeTeam + window.location.pathname} />
-          )}
+          render={({ match }) => <All key={window.location.pathname} />}
         />
 
         <Redirect to="/new-dashboard/start" />

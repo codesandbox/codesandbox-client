@@ -29,7 +29,7 @@ export const StartSandboxes = () => {
             columnGap={6}
             marginBottom={8}
             css={css({
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
             })}
           >
             {startPageSandboxes.templates.map(({ sandbox }) => (
@@ -57,7 +57,7 @@ export const StartSandboxes = () => {
             columnGap={6}
             marginBottom={8}
             css={css({
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
             })}
           >
             <Column>

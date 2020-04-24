@@ -147,7 +147,16 @@ export const getAllFolders: AsyncAction = withLoadApp(
         };
       });
 
-      state.dashboard.allCollections = collectionsByLevel;
+      state.dashboard.allCollections = [
+        {
+          id: 'drafts-fake-id',
+          parent: '',
+          name: 'Drafts',
+          level: 0,
+          path: '/drafts',
+        },
+        ...collectionsByLevel.filter(c => c.id),
+      ];
     } catch {
       effects.notificationToast.error(
         'There was a problem getting your Sandboxes'
@@ -179,27 +188,27 @@ export const getDrafts: AsyncAction = withLoadApp(
   }
 );
 
-export const getSandboxesByPath: AsyncAction = withLoadApp(
+export const getSandboxesByPath: AsyncAction<string> = withLoadApp(
   async ({ state, effects }, path) => {
     const { dashboard } = state;
-    // try {
-    const data = await effects.gql.queries.sandboxesByPath({
-      path: '/' + path,
-      teamId: state.dashboard.activeTeam,
-    });
-    if (!data || !data.me || !data.me.collection) {
-      return;
-    }
+    try {
+      const data = await effects.gql.queries.sandboxesByPath({
+        path: '/' + path,
+        teamId: state.dashboard.activeTeam,
+      });
+      if (!data || !data.me || !data.me.collection) {
+        return;
+      }
 
-    dashboard.sandboxesByPath = {};
-    dashboard.sandboxesByPath[
-      path.split(' ').join('')
-    ] = data.me.collection.sandboxes.filter(s => !s.customTemplate);
-    // } catch (error) {
-    //   effects.notificationToast.error(
-    //     'There was a problem getting your Sandboxes'
-    //   );
-    // }
+      dashboard.sandboxesByPath = {};
+      dashboard.sandboxesByPath[
+        path.split(' ').join('')
+      ] = data.me.collection.sandboxes.filter(s => !s.customTemplate);
+    } catch (error) {
+      effects.notificationToast.error(
+        'There was a problem getting your Sandboxes'
+      );
+    }
   }
 );
 

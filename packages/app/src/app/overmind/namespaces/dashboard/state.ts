@@ -15,7 +15,11 @@ export type OrderBy = {
   order: 'desc' | 'asc';
 };
 
-export type DELETE_ME_COLLECTION = Collection & { name: string; level: number };
+export type DELETE_ME_COLLECTION = Collection & {
+  name: string;
+  level: number;
+  parent: string;
+};
 
 type State = {
   templateSandboxes: Template[] | null;

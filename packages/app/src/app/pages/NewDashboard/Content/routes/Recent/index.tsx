@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
-import { Text, Element, Grid, Column, Stack } from '@codesandbox/components';
+import { Text, Element, Grid, Column } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
-import { Filters } from 'app/pages/NewDashboard/Components/Filters';
+import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { getPossibleTemplates } from '../../utils';
 import { SandboxCard } from '../../../Components/SandboxCard';
 
@@ -39,7 +39,7 @@ export const Recent = () => {
           columnGap={6}
           marginBottom={8}
           css={css({
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
           })}
         >
           {getFilteredSandboxes(recentSandboxesByTime[time]).map(sandbox => (
@@ -53,13 +53,11 @@ export const Recent = () => {
 
   return (
     <>
+      <Header
+        title="Recently Modified Sandboxes"
+        templates={possibleTemplates}
+      />
       <section style={{ position: 'relative' }}>
-        <Stack>
-          <Text marginBottom={4} block>
-            Recently Modified Sandboxes
-          </Text>
-          <Filters possibleTemplates={possibleTemplates} />
-        </Stack>
         {recentSandboxes ? (
           <>
             <Group title="Today" time="day" />

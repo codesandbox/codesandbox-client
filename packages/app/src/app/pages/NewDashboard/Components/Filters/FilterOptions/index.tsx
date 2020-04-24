@@ -101,7 +101,10 @@ export const FilterOptions: FunctionComponent<Props> = ({
     >
       {open => (
         <Element>
-          Showing <Text onClick={open}>{templateMessage}</Text>
+          Showing{' '}
+          <Text variant="muted" onClick={open}>
+            {templateMessage}
+          </Text>
         </Element>
       )}
     </OverlayComponent>

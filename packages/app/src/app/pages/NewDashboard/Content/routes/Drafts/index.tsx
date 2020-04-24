@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { Element, Text } from '@codesandbox/components';
-
-import { Filters } from 'app/pages/NewDashboard/Components/Filters';
+import { Element } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { AutoSizer, List } from 'react-virtualized';
+import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { getPossibleTemplates } from '../../utils';
 import { SandboxCard } from '../../../Components/SandboxCard';
@@ -31,10 +30,7 @@ export const Drafts = () => {
 
   return (
     <Element style={{ height: '100%', position: 'relative' }}>
-      <Text marginBottom={4} block>
-        Drafts
-      </Text>
-      <Filters possibleTemplates={possibleTemplates} />
+      <Header path="Drafts" templates={possibleTemplates} />
       {draftSandboxes ? (
         <AutoSizer>
           {({ height, width }) => (

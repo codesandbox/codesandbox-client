@@ -1,36 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import { Element, Text, Column, Grid, Link } from '@codesandbox/components';
+import { Element, Column, Grid } from '@codesandbox/components';
 
 import css from '@styled-system/css';
-import { withRouter, Link as LinkBase } from 'react-router-dom';
-import { Filters } from 'app/pages/NewDashboard/Components/Filters';
+import { withRouter } from 'react-router-dom';
+import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { useOvermind } from 'app/overmind';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { getPossibleTemplates } from '../../utils';
-
 import { SandboxCard } from '../../../Components/SandboxCard';
+import { FolderCard } from '../../../Components/FolderCard';
 
-export const AllPage = ({ match: { params } }) => {
+export const AllPage = ({ match: { params }, history }) => {
   const [level, setLevel] = useState(0);
   const param = params.path || '';
   const cleanParam = param.split(' ').join('');
   const {
     actions,
     state: {
-      dashboard: { allCollections, sandboxesByPath },
+      dashboard: { allCollections, sandboxesByPath, activeTeam },
     },
   } = useOvermind();
+  const [localTeam, setLocalTeam] = useState(activeTeam);
 
   useEffect(() => {
     actions.dashboard.getAllFolders();
-  }, [actions.dashboard]);
+  }, [actions.dashboard, activeTeam]);
+
+  useEffect(() => {
+    if (localTeam !== activeTeam) {
+      setLocalTeam(activeTeam);
+
+      if (params) {
+        history.push('/new-dashboard/all/');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTeam]);
 
   useEffect(() => {
     if (param) {
       setLevel(param ? param.split('/').length : 0);
       actions.dashboard.getSandboxesByPath(param);
     }
-  }, [param, actions.dashboard]);
+  }, [param, actions.dashboard, activeTeam]);
 
   const getFoldersByPath =
     allCollections &&
@@ -38,50 +50,25 @@ export const AllPage = ({ match: { params } }) => {
       collection => collection.level === level && collection.parent === param
     );
 
-  const makeLink = p =>
-    param && param.split('/').length > 2
-      ? `/new-dashboard/all/${param
-          .split('/')
-          .slice(0, -1)
-          .map(a => a)}` +
-        '/' +
-        p
-      : `/new-dashboard/all/${p}`;
-
   const possibleTemplates = allCollections
     ? getPossibleTemplates(allCollections)
     : [];
 
   return (
     <Element style={{ height: '100%', position: 'relative' }}>
-      <Text marginBottom={4} block>
-        <Link to="/new-dashboard/all/" as={LinkBase}>
-          All Sandboxes
-        </Link>{' '}
-        &gt;{' '}
-        {param
-          ? param.split('/').map(p => (
-              <Link as={LinkBase} to={makeLink(p)}>
-                {p} &gt;{' '}
-              </Link>
-            ))
-          : null}
-      </Text>
-      <Filters possibleTemplates={possibleTemplates} />
+      <Header path={param} templates={possibleTemplates} />
       {allCollections ? (
         <Grid
           rowGap={6}
           columnGap={6}
           marginBottom={8}
           css={css({
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
           })}
         >
           {getFoldersByPath.map(folder => (
             <Column key={folder.id}>
-              <Link as={LinkBase} to={`/new-dashboard/all` + folder.path}>
-                {folder.name}
-              </Link>
+              <FolderCard {...folder} />
             </Column>
           ))}
           {sandboxesByPath &&
