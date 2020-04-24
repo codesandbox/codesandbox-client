@@ -18,7 +18,7 @@ export const Deleted = () => {
 
   return (
     <Element style={{ position: 'relative' }}>
-      <Text marginBottom={2} block>
+      <Text marginBottom={1} block weight="bold" size={5}>
         Recently Deleted
       </Text>
       <Text variant="muted" block marginBottom={11}>

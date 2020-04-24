@@ -84,6 +84,7 @@ export const Sidebar = props => {
                 </Menu.Item>
                 {dashboard.teams.map(team => (
                   <Menu.Item
+                    key={team.id}
                     as={Menu.Item}
                     css={{ textAlign: 'left' }}
                     onSelect={() =>

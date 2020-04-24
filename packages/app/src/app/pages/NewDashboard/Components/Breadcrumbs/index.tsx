@@ -25,6 +25,7 @@ export const Breadcrumbs = ({ param }) => {
       {param
         ? param.split('/').map((p, i) => (
             <Link
+              key={p}
               as={LinkBase}
               to={makeLink(p)}
               variant={i < param.split('/').length - 1 ? 'muted' : 'body'}

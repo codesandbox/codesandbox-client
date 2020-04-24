@@ -1,11 +1,14 @@
-import React, { useEffect } from 'react';
-import { Element } from '@codesandbox/components';
+import React, { useEffect, useState } from 'react';
+import { Element, Column, Grid } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-import { AutoSizer, List } from 'react-virtualized';
+import css from '@styled-system/css';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { getPossibleTemplates } from '../../utils';
 import { SandboxCard } from '../../../Components/SandboxCard';
+
+const SCROLLING_ELEMENT = document.getElementById('root');
+const NUMBER_OF_SANDBOXES = 30;
 
 export const Drafts = () => {
   const {
@@ -14,16 +17,38 @@ export const Drafts = () => {
       dashboard: { draftSandboxes, getFilteredSandboxes },
     },
   } = useOvermind();
+  const [visibleSandboxes, setVisibleSandboxes] = useState([]);
 
   useEffect(() => {
     actions.dashboard.getDrafts();
   }, [actions.dashboard]);
 
-  function rowRenderer({ key, index, style }) {
-    return <SandboxCard sandbox={filtered[index]} key={key} style={style} />;
-  }
+  useEffect(() => {
+    window.addEventListener('scroll', () => {
+      if (
+        SCROLLING_ELEMENT.getBoundingClientRect().bottom - 200 <=
+          window.innerHeight &&
+        draftSandboxes
+      ) {
+        setVisibleSandboxes(sandboxes =>
+          sandboxes.concat(
+            draftSandboxes.slice(
+              sandboxes.length,
+              sandboxes.length + NUMBER_OF_SANDBOXES
+            )
+          )
+        );
+      }
+    });
+  });
 
-  const filtered = draftSandboxes ? getFilteredSandboxes(draftSandboxes) : [];
+  useEffect(() => {
+    if (draftSandboxes) {
+      setVisibleSandboxes(draftSandboxes.slice(0, NUMBER_OF_SANDBOXES));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftSandboxes]);
+
   const possibleTemplates = draftSandboxes
     ? getPossibleTemplates(draftSandboxes)
     : [];
@@ -32,17 +57,20 @@ export const Drafts = () => {
     <Element style={{ height: '100%', position: 'relative' }}>
       <Header path="Drafts" templates={possibleTemplates} />
       {draftSandboxes ? (
-        <AutoSizer>
-          {({ height, width }) => (
-            <List
-              width={width}
-              height={height}
-              rowCount={filtered.length}
-              rowHeight={240}
-              rowRenderer={rowRenderer}
-            />
-          )}
-        </AutoSizer>
+        <Grid
+          rowGap={6}
+          columnGap={6}
+          marginBottom={8}
+          css={css({
+            gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
+          })}
+        >
+          {getFilteredSandboxes(visibleSandboxes).map(sandbox => (
+            <Column key={sandbox.id}>
+              <SandboxCard sandbox={sandbox} />
+            </Column>
+          ))}
+        </Grid>
       ) : (
         <Loading />
       )}

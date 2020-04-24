@@ -23,12 +23,14 @@ export const Header = ({ templates, path, title }: Props) => (
       borderColor: 'grays.500',
     })}
   >
-    {path && <Breadcrumbs param={path} />}
-    {title && (
+    {title ? (
       <Text marginBottom={1} block weight="bold" size={5}>
         {title}
       </Text>
+    ) : (
+      <Breadcrumbs param={path} />
     )}
+
     <Filters possibleTemplates={templates} />
   </Stack>
 );
