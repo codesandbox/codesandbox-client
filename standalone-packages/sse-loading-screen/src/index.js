@@ -204,7 +204,7 @@ const NICE_TITLES = {
   'starting-container': 'Initializing Sandbox Container',
   'installing-packages': 'Installing Packages',
   'starting-sandbox': 'Starting Sandbox',
-  started: 'Succesfully Initialized!',
+  started: 'Successfully Initialized!',
 };
 
 const CRAWL_TIME = {
