@@ -24,7 +24,7 @@ type State = {
   activeTeam: string | null;
   draftSandboxes: Sandbox[] | null;
   deletedSandboxes: Sandbox[] | null;
-  recentSandboxes: any[] | null;
+  recentSandboxes: Sandbox[] | null;
   selectedSandboxes: string[];
   trashSandboxIds: string[];
   isDragging: boolean;
@@ -61,7 +61,13 @@ export const state: State = {
   draftSandboxes: null,
   recentSandboxes: null,
   recentSandboxesByTime: ({ recentSandboxes }) => {
-    if (!recentSandboxes) return { recent: null, templates: null };
+    if (!recentSandboxes)
+      return {
+        day: [],
+        week: [],
+        month: [],
+        older: [],
+      };
     const noTemplateSandboxes = recentSandboxes.filter(s => !s.customTemplate);
     const timeSandboxes = noTemplateSandboxes.reduce(
       (accumulator, currentValue: any) => {
