@@ -7,6 +7,7 @@ import {
   Team,
   SandboxFragmentDashboardFragment as Sandbox,
   TemplateFragmentDashboardFragment as Template,
+  SidebarCollectionDashboardFragment as Collection,
 } from 'app/graphql/types';
 
 export type OrderBy = {
@@ -14,13 +15,19 @@ export type OrderBy = {
   order: 'desc' | 'asc';
 };
 
+export type DELETE_ME_COLLECTION = Collection & { name: string; level: number };
+
 type State = {
   templateSandboxes: Template[] | null;
   startPageSandboxes: {
     recent: Sandbox[] | null;
     templates: Template[] | null;
   };
+  sandboxesByPath: {
+    [path: string]: Sandbox[];
+  } | null;
   teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
+  allCollections: DELETE_ME_COLLECTION[] | null;
   activeTeam: string | null;
   draftSandboxes: Sandbox[] | null;
   deletedSandboxes: Sandbox[] | null;
@@ -54,6 +61,8 @@ type State = {
 };
 
 export const state: State = {
+  sandboxesByPath: null,
+  allCollections: null,
   activeTeam: null,
   startPageSandboxes: { recent: null, templates: null },
   teams: [],

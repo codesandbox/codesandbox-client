@@ -13,6 +13,8 @@ import {
   ListUserTemplatesQueryVariables,
   LatestSandboxesQuery,
   LatestSandboxesQueryVariables,
+  AllCollectionsQuery,
+  AllCollectionsQueryVariables,
 } from 'app/graphql/types';
 import gql from 'graphql-tag';
 import { Query } from 'overmind-graphql';
@@ -59,6 +61,20 @@ export const sandboxesByPath: Query<
     }
   }
   ${sandboxFragmentDashboard}
+  ${sidebarCollectionDashboard}
+`;
+
+export const getCollections: Query<
+  AllCollectionsQuery,
+  AllCollectionsQueryVariables
+> = gql`
+  query AllCollections($teamId: ID) {
+    me {
+      collections(teamId: $teamId) {
+        ...sidebarCollectionDashboard
+      }
+    }
+  }
   ${sidebarCollectionDashboard}
 `;
 
