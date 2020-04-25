@@ -2,18 +2,38 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { withRouter } from 'react-router-dom';
 
-export const MenuOptions = ({ sandbox, template, setEdit }) => {
+export const MenuOptionsComponent = ({
+  sandbox,
+  template,
+  setEdit,
+  history,
+}) => {
   const { effects, actions } = useOvermind();
   const url = sandboxUrl({
     id: sandbox.id,
     alias: sandbox.alias,
   });
+
+  const getFolderUrl = (path, isTemplate) => {
+    if (isTemplate) return '/new-dashboard/templates';
+    if (path === '/' || !path) return '/new-dashboard/all/drafts';
+
+    return '/new-dashboard/all' + path;
+  };
+
   return (
     <Menu>
       <Menu.IconButton name="more" size={9} title="Sandbox options" />
       <Menu.List>
-        <Menu.Item onSelect={() => {}}>Show in Folder</Menu.Item>
+        <Menu.Item
+          onSelect={() => {
+            history.push(getFolderUrl(sandbox.collection.path, template));
+          }}
+        >
+          Show in Folder
+        </Menu.Item>
         <Menu.Item
           onSelect={() => {
             window.open(`https://codesandbox.io${url}`);
@@ -85,3 +105,6 @@ export const MenuOptions = ({ sandbox, template, setEdit }) => {
     </Menu>
   );
 };
+
+// @ts-ignore
+export const MenuOptions = withRouter(MenuOptionsComponent);

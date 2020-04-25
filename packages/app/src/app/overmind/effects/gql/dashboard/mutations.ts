@@ -85,18 +85,8 @@ export const renameFolder: Query<
   RenameFolderMutation,
   RenameFolderMutationVariables
 > = gql`
-  mutation renameFolder(
-    $path: String!
-    $newPath: String!
-    $teamId: ID
-    $newTeamId: ID
-  ) {
-    renameCollection(
-      path: $path
-      newPath: $newPath
-      teamId: $teamId
-      newTeamId: $newTeamId
-    ) {
+  mutation renameFolder($path: String!, $newPath: String!) {
+    renameCollection(path: $path, newPath: $newPath) {
       ...sidebarCollectionDashboard
     }
   }

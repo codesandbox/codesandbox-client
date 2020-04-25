@@ -447,6 +447,50 @@ export const renameSandbox: AsyncAction<{ id: string; title: string }> = async (
   }
 };
 
+export const renameFolder: AsyncAction<{
+  name: string;
+  path: string;
+  newPath: string;
+}> = async ({ state: { dashboard }, effects }, { name, path, newPath }) => {
+  try {
+    await effects.gql.mutations.renameFolder({
+      newPath,
+      path,
+    });
+
+    dashboard.allCollections = dashboard.allCollections.map(folder => {
+      if (folder.path === path) {
+        return {
+          ...folder,
+          path: newPath,
+          name,
+        };
+      }
+
+      return folder;
+    });
+  } catch {
+    effects.notificationToast.error('There was a problem renaming you folder');
+  }
+};
+
+export const deleteFolder: AsyncAction<{
+  path: string;
+}> = async ({ state: { dashboard }, effects }, { path }) => {
+  try {
+    await effects.gql.mutations.deleteFolder({
+      path,
+      teamId: dashboard.activeTeam,
+    });
+
+    dashboard.allCollections = dashboard.allCollections.filter(
+      folder => folder.path !== path
+    );
+  } catch {
+    effects.notificationToast.error('There was a problem deleting you folder');
+  }
+};
+
 export const makeTemplate: AsyncAction<string[]> = async (
   { effects, actions },
   ids

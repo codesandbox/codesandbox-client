@@ -14,9 +14,10 @@ export const Drafts = () => {
   const {
     actions,
     state: {
-      dashboard: { draftSandboxes, getFilteredSandboxes },
+      dashboard: { draftSandboxes, getFilteredSandboxes, orderBy },
     },
   } = useOvermind();
+  const filtered = draftSandboxes ? getFilteredSandboxes(draftSandboxes) : null;
   const [visibleSandboxes, setVisibleSandboxes] = useState([]);
 
   useEffect(() => {
@@ -26,13 +27,13 @@ export const Drafts = () => {
   useEffect(() => {
     window.addEventListener('scroll', () => {
       if (
-        SCROLLING_ELEMENT.getBoundingClientRect().bottom - 200 <=
+        SCROLLING_ELEMENT.getBoundingClientRect().bottom - 400 <=
           window.innerHeight &&
         draftSandboxes
       ) {
         setVisibleSandboxes(sandboxes =>
           sandboxes.concat(
-            draftSandboxes.slice(
+            filtered.slice(
               sandboxes.length,
               sandboxes.length + NUMBER_OF_SANDBOXES
             )
@@ -43,19 +44,22 @@ export const Drafts = () => {
   });
 
   useEffect(() => {
+    if (filtered) {
+      setVisibleSandboxes(filtered.slice(0, visibleSandboxes.length));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderBy]);
+
+  useEffect(() => {
     if (draftSandboxes) {
-      setVisibleSandboxes(draftSandboxes.slice(0, NUMBER_OF_SANDBOXES));
+      setVisibleSandboxes(filtered.slice(0, NUMBER_OF_SANDBOXES));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draftSandboxes]);
 
-  const possibleTemplates = draftSandboxes
-    ? getPossibleTemplates(draftSandboxes)
-    : [];
-
   return (
     <Element style={{ height: '100%', position: 'relative' }}>
-      <Header path="Drafts" templates={possibleTemplates} />
+      <Header path="Drafts" templates={getPossibleTemplates(filtered || [])} />
       {draftSandboxes ? (
         <Grid
           rowGap={6}
@@ -65,7 +69,7 @@ export const Drafts = () => {
             gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
           })}
         >
-          {getFilteredSandboxes(visibleSandboxes).map(sandbox => (
+          {visibleSandboxes.map(sandbox => (
             <Column key={sandbox.id}>
               <SandboxCard sandbox={sandbox} />
             </Column>
