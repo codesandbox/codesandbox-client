@@ -21,21 +21,33 @@ export type DELETE_ME_COLLECTION = Collection & {
   parent: string;
 };
 
+export enum sandboxesTypes {
+  DRAFTS = 'DRAFTS',
+  TEMPLATES = 'TEMPLATES',
+  DELETED = 'DELETED',
+  RECENT = 'RECENT',
+  START_PAGE = 'START_PAGE',
+  TEMPLATE_START_PAGE = 'TEMPLATE_START_PAGE',
+  RECENT_START_PAGE = 'RECENT_START_PAGE',
+  ALL = 'ALL',
+}
+
 type State = {
-  templateSandboxes: Template[] | null;
-  startPageSandboxes: {
-    recent: Sandbox[] | null;
-    templates: Template[] | null;
+  sandboxes: {
+    DRAFTS: Sandbox[] | null;
+    TEMPLATES: Template[] | null;
+    DELETED: Sandbox[] | null;
+    RECENT: Sandbox[] | null;
+    START_PAGE: Sandbox[] | null;
+    TEMPLATE_START_PAGE: Template[] | null;
+    RECENT_START_PAGE: Sandbox[] | null;
+    ALL: {
+      [path: string]: Sandbox[];
+    } | null;
   };
-  sandboxesByPath: {
-    [path: string]: Sandbox[];
-  } | null;
   teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
   allCollections: DELETE_ME_COLLECTION[] | null;
   activeTeam: string | null;
-  draftSandboxes: Sandbox[] | null;
-  deletedSandboxes: Sandbox[] | null;
-  recentSandboxes: Sandbox[] | null;
   selectedSandboxes: string[];
   trashSandboxIds: string[];
   isDragging: boolean;
@@ -65,22 +77,30 @@ type State = {
 };
 
 export const state: State = {
-  sandboxesByPath: null,
+  sandboxes: {
+    DRAFTS: null,
+    TEMPLATES: null,
+    DELETED: null,
+    RECENT: null,
+    START_PAGE: null,
+    TEMPLATE_START_PAGE: null,
+    RECENT_START_PAGE: null,
+    ALL: null,
+  },
   allCollections: null,
   activeTeam: null,
-  startPageSandboxes: { recent: null, templates: null },
   teams: [],
-  templateSandboxes: null,
-  draftSandboxes: null,
-  recentSandboxes: null,
-  recentSandboxesByTime: ({ recentSandboxes }) => {
-    if (!recentSandboxes)
+  recentSandboxesByTime: ({ sandboxes }) => {
+    const recentSandboxes = sandboxes.RECENT;
+    if (!recentSandboxes) {
       return {
         day: [],
         week: [],
         month: [],
         older: [],
       };
+    }
+
     const noTemplateSandboxes = recentSandboxes.filter(s => !s.customTemplate);
     const timeSandboxes = noTemplateSandboxes.reduce(
       (accumulator, currentValue: any) => {
@@ -114,8 +134,8 @@ export const state: State = {
 
     return timeSandboxes;
   },
-  deletedSandboxes: null,
-  deletedSandboxesByTime: ({ deletedSandboxes }) => {
+  deletedSandboxesByTime: ({ sandboxes }) => {
+    const deletedSandboxes = sandboxes.DELETED;
     if (!deletedSandboxes)
       return {
         week: [],

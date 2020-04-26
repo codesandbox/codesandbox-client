@@ -9,7 +9,7 @@ export const StartSandboxes = () => {
   const {
     actions,
     state: {
-      dashboard: { startPageSandboxes },
+      dashboard: { sandboxes },
     },
   } = useOvermind();
 
@@ -23,7 +23,7 @@ export const StartSandboxes = () => {
         <Text marginBottom={4} block>
           Recently used Templates
         </Text>
-        {startPageSandboxes.templates ? (
+        {sandboxes.TEMPLATE_START_PAGE ? (
           <Grid
             rowGap={6}
             columnGap={6}
@@ -32,7 +32,7 @@ export const StartSandboxes = () => {
               gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
             })}
           >
-            {startPageSandboxes.templates.map(({ sandbox }) => (
+            {sandboxes.TEMPLATE_START_PAGE.map(({ sandbox }) => (
               <Column key={sandbox.id}>
                 <SandboxCard template sandbox={sandbox} />
               </Column>
@@ -51,7 +51,7 @@ export const StartSandboxes = () => {
         >
           Your Recent Sandboxes
         </Text>
-        {startPageSandboxes.recent ? (
+        {sandboxes.RECENT_START_PAGE ? (
           <Grid
             rowGap={6}
             columnGap={6}
@@ -80,7 +80,7 @@ export const StartSandboxes = () => {
                 New Sandbox
               </Button>
             </Column>
-            {startPageSandboxes.recent.map(sandbox => (
+            {sandboxes.RECENT_START_PAGE.map(sandbox => (
               <Column key={sandbox.id}>
                 <SandboxCard sandbox={sandbox} />
               </Column>

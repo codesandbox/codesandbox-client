@@ -14,10 +14,12 @@ export const Drafts = () => {
   const {
     actions,
     state: {
-      dashboard: { draftSandboxes, getFilteredSandboxes, orderBy },
+      dashboard: { sandboxes, getFilteredSandboxes, orderBy },
     },
   } = useOvermind();
-  const filtered = draftSandboxes ? getFilteredSandboxes(draftSandboxes) : null;
+  const filtered = sandboxes.DRAFTS
+    ? getFilteredSandboxes(sandboxes.DRAFTS)
+    : null;
   const [visibleSandboxes, setVisibleSandboxes] = useState([]);
 
   useEffect(() => {
@@ -29,15 +31,11 @@ export const Drafts = () => {
       if (
         SCROLLING_ELEMENT.getBoundingClientRect().bottom - 400 <=
           window.innerHeight &&
-        draftSandboxes
+        sandboxes.DRAFTS &&
+        filtered
       ) {
-        setVisibleSandboxes(sandboxes =>
-          sandboxes.concat(
-            filtered.slice(
-              sandboxes.length,
-              sandboxes.length + NUMBER_OF_SANDBOXES
-            )
-          )
+        setVisibleSandboxes(s =>
+          s.concat(filtered.slice(s.length, s.length + NUMBER_OF_SANDBOXES))
         );
       }
     });
@@ -51,16 +49,16 @@ export const Drafts = () => {
   }, [orderBy]);
 
   useEffect(() => {
-    if (draftSandboxes) {
+    if (sandboxes.DRAFTS) {
       setVisibleSandboxes(filtered.slice(0, NUMBER_OF_SANDBOXES));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draftSandboxes]);
+  }, [sandboxes.DRAFTS]);
 
   return (
     <Element style={{ height: '100%', position: 'relative' }}>
       <Header path="Drafts" templates={getPossibleTemplates(filtered || [])} />
-      {draftSandboxes ? (
+      {sandboxes.DRAFTS ? (
         <Grid
           rowGap={6}
           columnGap={6}

@@ -12,11 +12,7 @@ export const Recent = () => {
     actions,
     state: {
       user,
-      dashboard: {
-        recentSandboxesByTime,
-        recentSandboxes,
-        getFilteredSandboxes,
-      },
+      dashboard: { recentSandboxesByTime, sandboxes, getFilteredSandboxes },
     },
   } = useOvermind();
 
@@ -24,8 +20,8 @@ export const Recent = () => {
     actions.dashboard.getRecentSandboxes();
   }, [actions.dashboard, user]);
 
-  const possibleTemplates = recentSandboxes
-    ? getPossibleTemplates(recentSandboxes)
+  const possibleTemplates = sandboxes.RECENT
+    ? getPossibleTemplates(sandboxes.RECENT)
     : [];
 
   const Group = ({ title, time }) =>
@@ -58,7 +54,7 @@ export const Recent = () => {
         templates={possibleTemplates}
       />
       <section style={{ position: 'relative' }}>
-        {recentSandboxes ? (
+        {sandboxes.RECENT ? (
           <>
             <Group title="Today" time="day" />
             <Group title="Last 7 Days" time="week" />

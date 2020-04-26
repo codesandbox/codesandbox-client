@@ -10,7 +10,7 @@ export const Templates = () => {
   const {
     actions,
     state: {
-      dashboard: { templateSandboxes },
+      dashboard: { sandboxes },
     },
   } = useOvermind();
 
@@ -21,7 +21,7 @@ export const Templates = () => {
   return (
     <Element css={css({ position: 'relative' })}>
       <Header title="Templates" />
-      {templateSandboxes ? (
+      {sandboxes.TEMPLATES ? (
         <Grid
           rowGap={6}
           columnGap={6}
@@ -30,7 +30,7 @@ export const Templates = () => {
             gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
           })}
         >
-          {templateSandboxes.map(({ sandbox }) => (
+          {sandboxes.TEMPLATES.map(({ sandbox }) => (
             <SandboxCard template sandbox={sandbox} key={sandbox.id} />
           ))}
         </Grid>

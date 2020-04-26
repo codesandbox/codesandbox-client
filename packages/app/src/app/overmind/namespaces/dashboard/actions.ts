@@ -2,10 +2,10 @@ import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, TEAM_ID_LOCAL_STORAGE } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { uniq } from 'lodash-es';
-import { Direction, SandboxFragmentDashboardFragment } from 'app/graphql/types';
-import { OrderBy } from './state';
+import { Direction } from 'app/graphql/types';
+import { OrderBy, sandboxesTypes } from './state';
 
-// DELETE WHEN NEW DAHSBOARD ONLINE
+// DELETE WHEN NEW DASHBOARD ONLINE
 export const dashboardMounted: AsyncAction = async (context, value) => {
   await withLoadApp()(context, value);
 };
@@ -117,7 +117,7 @@ export const getRecentSandboxes: AsyncAction = withLoadApp(
         return;
       }
 
-      dashboard.recentSandboxes = data.me.sandboxes;
+      dashboard.sandboxes[sandboxesTypes.RECENT] = data.me.sandboxes;
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your recent Sandboxes'
@@ -177,9 +177,9 @@ export const getDrafts: AsyncAction = withLoadApp(
         return;
       }
 
-      dashboard.draftSandboxes = data.me.collection.sandboxes.filter(
-        s => !s.customTemplate
-      );
+      dashboard.sandboxes[
+        sandboxesTypes.DRAFTS
+      ] = data.me.collection.sandboxes.filter(s => !s.customTemplate);
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your Sandboxes'
@@ -200,8 +200,8 @@ export const getSandboxesByPath: AsyncAction<string> = withLoadApp(
         return;
       }
 
-      dashboard.sandboxesByPath = {};
-      dashboard.sandboxesByPath[
+      dashboard.sandboxes[sandboxesTypes.ALL] = {};
+      dashboard.sandboxes[sandboxesTypes.ALL][
         path.split(' ').join('')
       ] = data.me.collection.sandboxes.filter(s => !s.customTemplate);
     } catch (error) {
@@ -220,8 +220,7 @@ export const getDeletedSandboxes: AsyncAction = withLoadApp(
       if (!data || !data.me) {
         return;
       }
-
-      dashboard.deletedSandboxes = data.me.sandboxes;
+      dashboard.sandboxes[sandboxesTypes.DELETED] = data.me.sandboxes;
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your deleted Sandboxes'
@@ -235,7 +234,7 @@ export const getTemplateSandboxes: AsyncAction = withLoadApp(
     const { dashboard } = state;
     try {
       if (dashboard.activeTeam) {
-        dashboard.templateSandboxes = null;
+        dashboard.sandboxes[sandboxesTypes.TEMPLATES] = null;
         const data = await effects.gql.queries.teamTemplates({
           id: dashboard.activeTeam,
         });
@@ -244,9 +243,9 @@ export const getTemplateSandboxes: AsyncAction = withLoadApp(
           return;
         }
 
-        dashboard.templateSandboxes = data.me.team.templates;
+        dashboard.sandboxes[sandboxesTypes.TEMPLATES] = data.me.team.templates;
       } else {
-        dashboard.templateSandboxes = null;
+        dashboard.sandboxes[sandboxesTypes.TEMPLATES] = null;
         const data = await effects.gql.queries.ownedTemplates({
           showAll: false,
         });
@@ -254,7 +253,7 @@ export const getTemplateSandboxes: AsyncAction = withLoadApp(
           return;
         }
 
-        dashboard.templateSandboxes = data.me.templates;
+        dashboard.sandboxes[sandboxesTypes.TEMPLATES] = data.me.templates;
       }
     } catch (error) {
       effects.notificationToast.error(
@@ -268,29 +267,27 @@ export const getStartPageSandboxes: AsyncAction = withLoadApp(
   async ({ state, effects }) => {
     const { dashboard } = state;
     try {
+      const usedTemplates = await effects.gql.queries.listPersonalTemplates({});
+
+      if (!usedTemplates || !usedTemplates.me) {
+        return;
+      }
+
+      dashboard.sandboxes.TEMPLATE_START_PAGE = usedTemplates.me.recentlyUsedTemplates.slice(
+        0,
+        4
+      );
+
       const recentSandboxes = await effects.gql.queries.recentSandboxes({
         limit: 7,
         orderField: dashboard.orderBy.field,
         orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
       });
 
-      const usedTemplates = await effects.gql.queries.listPersonalTemplates({});
-
-      if (
-        !usedTemplates ||
-        !usedTemplates.me ||
-        !recentSandboxes ||
-        !recentSandboxes.me
-      ) {
+      if (!recentSandboxes || !recentSandboxes.me) {
         return;
       }
-      const recent = recentSandboxes.me.sandboxes;
-      const templates = usedTemplates.me.recentlyUsedTemplates.slice(0, 4);
-
-      dashboard.startPageSandboxes = {
-        recent,
-        templates,
-      };
+      dashboard.sandboxes.RECENT_START_PAGE = recentSandboxes.me.sandboxes;
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your Sandboxes'
@@ -303,26 +300,23 @@ export const deleteSandboxFromState: Action<string[]> = (
   { state: { dashboard } },
   ids
 ) => {
-  // eslint-disable-next-line array-callback-return
   ids.map(id => {
-    if (dashboard.startPageSandboxes.recent) {
-      dashboard.startPageSandboxes = {
-        recent: dashboard.startPageSandboxes.recent.filter(
-          sandbox => sandbox.id !== id
-        ),
-        templates: dashboard.startPageSandboxes.templates,
-      };
-    }
-    if (dashboard.draftSandboxes) {
-      dashboard.draftSandboxes = dashboard.draftSandboxes.filter(
-        sandbox => sandbox.id !== id
-      );
-    }
-    if (dashboard.recentSandboxes) {
-      dashboard.recentSandboxes = dashboard.recentSandboxes.filter(
-        sandbox => sandbox.id !== id
-      );
-    }
+    const values = Object.keys(dashboard.sandboxes).map(type => {
+      if (dashboard.sandboxes[type]) {
+        return dashboard.sandboxes[type].filter(sandbox => sandbox.id !== id);
+      }
+
+      return null;
+    });
+
+    dashboard.sandboxes = values.reduce(
+      (initial, current, i) =>
+        Object.assign(initial, {
+          [Object.keys(dashboard.sandboxes)[i]]: current,
+        }),
+      {}
+    );
+    return null;
   });
 };
 
@@ -330,21 +324,16 @@ export const deleteTemplateFromState: Action<string[]> = (
   { state: { dashboard } },
   ids
 ) => {
-  // eslint-disable-next-line array-callback-return
+  const { sandboxes } = dashboard;
   ids.map(id => {
-    if (dashboard.startPageSandboxes.templates) {
-      dashboard.startPageSandboxes = {
-        recent: dashboard.startPageSandboxes.recent,
-        templates: dashboard.startPageSandboxes.templates.filter(
-          ({ sandbox }) => sandbox.id !== id
-        ),
-      };
-    }
-    if (dashboard.templateSandboxes) {
-      dashboard.templateSandboxes = dashboard.templateSandboxes.filter(
-        ({ sandbox }) => sandbox.id !== id
-      );
-    }
+    sandboxes.TEMPLATE_START_PAGE = sandboxes.TEMPLATE_START_PAGE
+      ? sandboxes.TEMPLATES.filter(({ sandbox }) => sandbox.id !== id)
+      : null;
+    sandboxes.TEMPLATES = sandboxes.TEMPLATES
+      ? sandboxes.TEMPLATES.filter(({ sandbox }) => sandbox.id !== id)
+      : null;
+
+    return null;
   });
 };
 
@@ -382,35 +371,38 @@ export const unmakeTemplate: AsyncAction<string[]> = async (
   }
 };
 
-export const renameSandboxInState: Action<
-  {
-    id: string;
-    title: string;
-    key: string;
-  },
-  SandboxFragmentDashboardFragment[]
-> = ({ state: { dashboard } }, { id, title, key }) => {
-  let tag = dashboard[key];
-  if (key.includes('.')) {
-    const keys = key.split('.');
-    tag = dashboard[keys[0]][keys[1]];
-  }
-  const sandboxes = tag.map(sandbox => {
-    if (sandbox.id === id) {
-      return {
-        ...sandbox,
-        title,
-      };
+export const renameSandboxInState: Action<{
+  id: string;
+  title: string;
+}> = ({ state: { dashboard } }, { id, title }) => {
+  const values = Object.keys(dashboard.sandboxes).map(type => {
+    if (dashboard.sandboxes[type]) {
+      return dashboard.sandboxes[type].map(sandbox => {
+        if (sandbox.id === id) {
+          return {
+            ...sandbox,
+            title,
+          };
+        }
+
+        return sandbox;
+      });
     }
 
-    return sandbox;
+    return null;
   });
 
-  return sandboxes;
+  dashboard.sandboxes = values.reduce(
+    (initial, current, i) =>
+      Object.assign(initial, {
+        [Object.keys(dashboard.sandboxes)[i]]: current,
+      }),
+    {}
+  );
 };
 
 export const renameSandbox: AsyncAction<{ id: string; title: string }> = async (
-  { state: { dashboard }, effects, actions },
+  { effects, actions },
   { id, title }
 ) => {
   try {
@@ -418,30 +410,10 @@ export const renameSandbox: AsyncAction<{ id: string; title: string }> = async (
       id,
       title,
     });
-    if (dashboard.startPageSandboxes.recent) {
-      dashboard.startPageSandboxes = {
-        recent: actions.dashboard.renameSandboxInState({
-          id,
-          title,
-          key: 'startPageSandboxes.recent',
-        }),
-        templates: dashboard.startPageSandboxes.templates,
-      };
-    }
-    if (dashboard.draftSandboxes) {
-      dashboard.draftSandboxes = actions.dashboard.renameSandboxInState({
-        id,
-        title,
-        key: 'draftSandboxes',
-      });
-    }
-    if (dashboard.recentSandboxes) {
-      dashboard.recentSandboxes = actions.dashboard.renameSandboxInState({
-        id,
-        title,
-        key: 'recentSandboxes',
-      });
-    }
+    actions.dashboard.renameSandboxInState({
+      id,
+      title,
+    });
   } catch {
     effects.notificationToast.error('There was a problem renaming you sandbox');
   }

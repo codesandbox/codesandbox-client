@@ -8,7 +8,7 @@ export const Deleted = () => {
   const {
     actions,
     state: {
-      dashboard: { deletedSandboxesByTime, deletedSandboxes },
+      dashboard: { deletedSandboxesByTime, sandboxes },
     },
   } = useOvermind();
 
@@ -24,7 +24,7 @@ export const Deleted = () => {
       <Text variant="muted" block marginBottom={11}>
         Sandboxes, Templates and Folders are permanently deleted after 30 days{' '}
       </Text>
-      {deletedSandboxes ? (
+      {sandboxes.DELETED ? (
         <>
           {deletedSandboxesByTime.week.length && (
             <Element marginBottom={14}>

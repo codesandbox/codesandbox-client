@@ -59,6 +59,8 @@ export const templateFragmentDashboard = gql`
       likeCount
       forkCount
       viewCount
+      screenshotUrl
+      screenshotOutdated
 
       collection {
         team {

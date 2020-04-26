@@ -17,7 +17,7 @@ export const AllPage = ({ match: { params }, history }) => {
   const {
     actions,
     state: {
-      dashboard: { allCollections, sandboxesByPath, activeTeam },
+      dashboard: { allCollections, sandboxes, activeTeam },
     },
   } = useOvermind();
   const [localTeam, setLocalTeam] = useState(activeTeam);
@@ -71,9 +71,9 @@ export const AllPage = ({ match: { params }, history }) => {
               <FolderCard {...folder} />
             </Column>
           ))}
-          {sandboxesByPath &&
-            sandboxesByPath[cleanParam] &&
-            sandboxesByPath[cleanParam].map(sandbox => (
+          {sandboxes.ALL &&
+            sandboxes.ALL[cleanParam] &&
+            sandboxes.ALL[cleanParam].map(sandbox => (
               <Column key={sandbox.id}>
                 <SandboxCard sandbox={sandbox} />
               </Column>
