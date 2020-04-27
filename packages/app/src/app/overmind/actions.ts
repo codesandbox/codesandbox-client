@@ -33,11 +33,11 @@ export const notificationAdded: Action<{
   title: string;
   notificationType: NotificationType;
   timeAlive?: number;
-}> = ({ effects }, { title, notificationType, timeAlive = 1 }) => {
+}> = ({ effects }, { title, notificationType, timeAlive }) => {
   effects.notificationToast.add({
     message: title,
     status: convertTypeToStatus(notificationType),
-    timeAlive: timeAlive * 1000,
+    timeAlive: timeAlive ? timeAlive * 1000 : undefined,
   });
 };
 
