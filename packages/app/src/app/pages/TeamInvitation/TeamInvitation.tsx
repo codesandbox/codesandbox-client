@@ -166,11 +166,9 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
   return <Redirect to={teamOverviewUrl(teamId)} />;
 };
 
-export const TeamInvitation = ({
-  match,
-}: {
+export const TeamInvitation: React.FC<{
   match: { params: { token: string } };
-}) => {
+}> = ({ match }) => {
   const { state } = useOvermind();
   const inviteToken = match?.params?.token;
 
