@@ -58,6 +58,7 @@ const TEAM_FRAGMENT = gql`
   fragment Team on Team {
     id
     name
+    inviteToken
     description
     creatorId
 
@@ -457,6 +458,12 @@ export const INVITE_TO_TEAM = gql`
     }
   }
   ${TEAM_FRAGMENT}
+`;
+
+export const INVITE_TO_TEAM_VIA_EMAIL = gql`
+  mutation InviteToTeamViaEmail($teamId: ID!, $email: String!) {
+    inviteToTeamViaEmail(teamId: $teamId, email: $email)
+  }
 `;
 
 export const REVOKE_TEAM_INVITATION = gql`
