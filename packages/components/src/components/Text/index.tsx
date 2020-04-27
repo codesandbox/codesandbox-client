@@ -6,6 +6,7 @@ const variants = {
   body: 'inherit',
   muted: 'mutedForeground',
   danger: 'errorForeground',
+  active: 'button.background',
 };
 
 const overflowStyles = {
@@ -21,7 +22,7 @@ export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   fontStyle?: string;
   block?: boolean;
   maxWidth?: number | string;
-  variant?: 'body' | 'muted' | 'danger';
+  variant?: 'body' | 'muted' | 'danger' | 'active';
   dateTime?: string;
 }
 

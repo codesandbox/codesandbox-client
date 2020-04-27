@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useOvermind } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import {
@@ -9,11 +9,26 @@ import {
   IconButton,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { withRouter } from 'react-router-dom';
 
-export const Header = () => {
+export const HeaderComponent = ({ history }) => {
+  const [value, setValue] = useState();
   const {
     actions: { modalOpened },
   } = useOvermind();
+
+  const searchQuery = new URLSearchParams(window.location.search).get('query');
+
+  const onChange = e => {
+    setValue(e.target.value);
+    if (!e.target.value) {
+      history.push(`/new-dashboard/all`);
+    }
+
+    if (e.target.value.length >= 2) {
+      history.push(`/new-dashboard/search?query=${e.target.value}`);
+    }
+  };
 
   return (
     <Stack
@@ -33,6 +48,13 @@ export const Header = () => {
     >
       <IconButton name="menu" size={18} title="Menu" />
       <Input
+        value={value || searchQuery || ''}
+        onChange={onChange}
+        onKeyDown={e => {
+          if (e.key === 'Enter' && value) {
+            history.push(`/new-dashboard/search?query=${e.target.value}`);
+          }
+        }}
         type="text"
         placeholder="Search all sandboxes"
         css={css({ maxWidth: 480, display: ['none', 'none', 'block'] })}
@@ -57,3 +79,5 @@ export const Header = () => {
     </Stack>
   );
 };
+
+export const Header = withRouter(HeaderComponent);

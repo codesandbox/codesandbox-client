@@ -30,6 +30,7 @@ export enum sandboxesTypes {
   TEMPLATE_START_PAGE = 'TEMPLATE_START_PAGE',
   RECENT_START_PAGE = 'RECENT_START_PAGE',
   ALL = 'ALL',
+  SEARCH = 'SEARCH',
 }
 
 type State = {
@@ -38,7 +39,7 @@ type State = {
     TEMPLATES: Template[] | null;
     DELETED: Sandbox[] | null;
     RECENT: Sandbox[] | null;
-    START_PAGE: Sandbox[] | null;
+    SEARCH: Sandbox[] | null;
     TEMPLATE_START_PAGE: Template[] | null;
     RECENT_START_PAGE: Sandbox[] | null;
     ALL: {
@@ -82,10 +83,10 @@ export const state: State = {
     TEMPLATES: null,
     DELETED: null,
     RECENT: null,
-    START_PAGE: null,
     TEMPLATE_START_PAGE: null,
     RECENT_START_PAGE: null,
     ALL: null,
+    SEARCH: null,
   },
   allCollections: null,
   activeTeam: null,

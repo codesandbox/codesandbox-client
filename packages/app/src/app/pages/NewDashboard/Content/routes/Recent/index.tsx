@@ -1,51 +1,27 @@
 import React, { useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
-import { Text, Element, Grid, Column } from '@codesandbox/components';
-import css from '@styled-system/css';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { getPossibleTemplates } from '../../utils';
-import { SandboxCard } from '../../../Components/SandboxCard';
+
+import { SandboxesGroup } from './SandboxesGroup';
 
 export const Recent = () => {
   const {
     actions,
     state: {
-      user,
-      dashboard: { recentSandboxesByTime, sandboxes, getFilteredSandboxes },
+      dashboard: { sandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.getRecentSandboxes();
-  }, [actions.dashboard, user]);
+    actions.dashboard.getPage(sandboxesTypes.RECENT);
+  }, [actions.dashboard]);
 
   const possibleTemplates = sandboxes.RECENT
     ? getPossibleTemplates(sandboxes.RECENT)
     : [];
-
-  const Group = ({ title, time }) =>
-    getFilteredSandboxes(recentSandboxesByTime[time]).length ? (
-      <Element marginBottom={14}>
-        <Text marginBottom={6} block>
-          {title}
-        </Text>
-        <Grid
-          rowGap={6}
-          columnGap={6}
-          marginBottom={8}
-          css={css({
-            gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
-          })}
-        >
-          {getFilteredSandboxes(recentSandboxesByTime[time]).map(sandbox => (
-            <Column key={sandbox.id}>
-              <SandboxCard sandbox={sandbox} />
-            </Column>
-          ))}
-        </Grid>
-      </Element>
-    ) : null;
 
   return (
     <>
@@ -56,10 +32,10 @@ export const Recent = () => {
       <section style={{ position: 'relative' }}>
         {sandboxes.RECENT ? (
           <>
-            <Group title="Today" time="day" />
-            <Group title="Last 7 Days" time="week" />
-            <Group title="Earlier this month" time="month" />
-            <Group title="Older" time="older" />
+            <SandboxesGroup title="Today" time="day" />
+            <SandboxesGroup title="Last 7 Days" time="week" />
+            <SandboxesGroup title="Earlier this month" time="month" />
+            <SandboxesGroup title="Older" time="older" />
           </>
         ) : (
           <Loading />

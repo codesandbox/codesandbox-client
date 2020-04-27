@@ -1383,6 +1383,18 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
+export type _SearchSandboxesQueryVariables = {};
+
+export type _SearchSandboxesQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      sandboxes: Array<
+        { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
+      >;
+    }
+  >;
+};
+
 export type ListUserTemplatesQueryVariables = {};
 
 export type ListUserTemplatesQuery = { __typename?: 'RootQueryType' } & {

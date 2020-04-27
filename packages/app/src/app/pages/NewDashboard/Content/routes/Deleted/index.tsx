@@ -3,6 +3,7 @@ import { Element, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { SandboxCard } from 'app/pages/NewDashboard/Components/SandboxCard';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 
 export const Deleted = () => {
   const {
@@ -13,7 +14,7 @@ export const Deleted = () => {
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.getDeletedSandboxes();
+    actions.dashboard.getPage(sandboxesTypes.DELETED);
   }, [actions.dashboard]);
 
   return (

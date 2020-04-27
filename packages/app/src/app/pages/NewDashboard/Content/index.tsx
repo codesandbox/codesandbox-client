@@ -9,9 +9,12 @@ import { Deleted } from './routes/Deleted';
 import { Drafts } from './routes/Drafts';
 import { Recent } from './routes/Recent';
 import { All } from './routes/All';
+import { Search } from './routes/Search';
 
 export const Content = () => {
-  const { state } = useOvermind();
+  const {
+    state: { dashboard },
+  } = useOvermind();
 
   return (
     <Element
@@ -26,27 +29,31 @@ export const Content = () => {
       <Switch>
         <Route
           path="/new-dashboard/start"
-          render={() => <StartSandboxes key={state.dashboard.activeTeam} />}
+          render={() => <StartSandboxes key={dashboard.activeTeam} />}
         />
         <Route
           path="/new-dashboard/templates"
-          render={() => <Templates key={state.dashboard.activeTeam} />}
+          render={() => <Templates key={dashboard.activeTeam} />}
         />
         <Route
           path="/new-dashboard/deleted"
-          render={() => <Deleted key={state.dashboard.activeTeam} />}
+          render={() => <Deleted key={dashboard.activeTeam} />}
         />
         <Route
           path="/new-dashboard/drafts"
-          render={() => <Drafts key={state.dashboard.activeTeam} />}
+          render={() => <Drafts key={dashboard.activeTeam} />}
         />
         <Route
           path="/new-dashboard/recent"
-          render={() => <Recent key={state.dashboard.activeTeam} />}
+          render={() => <Recent key={dashboard.activeTeam} />}
         />
         <Route
           path="/new-dashboard/all/drafts"
-          render={() => <Drafts key={state.dashboard.activeTeam} />}
+          render={() => <Drafts key={dashboard.activeTeam} />}
+        />
+        <Route
+          path="/new-dashboard/search"
+          render={() => <Search key={dashboard.activeTeam} />}
         />
         <Route
           path="/new-dashboard/all/:path*"

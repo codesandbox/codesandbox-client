@@ -3,6 +3,7 @@ import { withLoadApp, TEAM_ID_LOCAL_STORAGE } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { uniq } from 'lodash-es';
 import { Direction } from 'app/graphql/types';
+import Fuse from 'fuse.js';
 import { OrderBy, sandboxesTypes } from './state';
 
 // DELETE WHEN NEW DASHBOARD ONLINE
@@ -491,5 +492,77 @@ export const downloadSandboxes: AsyncAction<string[]> = async (
     effects.notificationToast.error(
       'There was a problem reverting your template'
     );
+  }
+};
+
+export const getSearchSandboxes: AsyncAction<string> = withLoadApp(
+  async ({ state, effects }, search) => {
+    const { dashboard } = state;
+    try {
+      const data = await effects.gql.queries.searchSandboxes({});
+      if (!data || !data.me || !data.me.sandboxes) {
+        return;
+      }
+      let lastSandboxes = null;
+      let searchIndex = null;
+      const sandboxes = data.me.sandboxes;
+
+      if (lastSandboxes === null || lastSandboxes !== sandboxes) {
+        searchIndex = new Fuse(sandboxes, {
+          threshold: 0.1,
+          distance: 1000,
+          keys: [
+            { name: 'title', weight: 0.4 },
+            { name: 'description', weight: 0.2 },
+            { name: 'alias', weight: 0.2 },
+            { name: 'source.template', weight: 0.1 },
+            { name: 'id', weight: 0.1 },
+          ],
+        });
+
+        lastSandboxes = sandboxes;
+      }
+
+      dashboard.sandboxes[
+        sandboxesTypes.SEARCH
+      ] = state.dashboard
+        .getFilteredSandboxes(searchIndex.search(search))
+        .filter(x => !x.customTemplate);
+    } catch (error) {
+      effects.notificationToast.error(
+        'There was a problem getting your Sandboxes'
+      );
+    }
+  }
+);
+
+export const getPage: AsyncAction<sandboxesTypes> = async (
+  { actions: { dashboard } },
+  page
+) => {
+  switch (page) {
+    case sandboxesTypes.RECENT:
+      dashboard.getRecentSandboxes();
+      break;
+    case sandboxesTypes.START_PAGE:
+      dashboard.getStartPageSandboxes();
+      break;
+    case sandboxesTypes.DELETED:
+      dashboard.getDeletedSandboxes();
+      break;
+    case sandboxesTypes.DRAFTS:
+      dashboard.getDrafts();
+      break;
+    case sandboxesTypes.TEMPLATES:
+      dashboard.getTemplateSandboxes();
+      break;
+    case sandboxesTypes.SEARCH:
+      dashboard.getSearchSandboxes(
+        new URLSearchParams(window.location.search).get('query')
+      );
+      break;
+
+    default:
+      break;
   }
 };

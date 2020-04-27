@@ -1,63 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Element, Column, Grid } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import css from '@styled-system/css';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { getPossibleTemplates } from '../../utils';
 import { SandboxCard } from '../../../Components/SandboxCard';
-
-const SCROLLING_ELEMENT = document.getElementById('root');
-const NUMBER_OF_SANDBOXES = 30;
+import { useBottomScroll } from './useBottomScroll';
 
 export const Drafts = () => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes, getFilteredSandboxes, orderBy },
+      dashboard: { sandboxes },
     },
   } = useOvermind();
-  const filtered = sandboxes.DRAFTS
-    ? getFilteredSandboxes(sandboxes.DRAFTS)
-    : null;
-  const [visibleSandboxes, setVisibleSandboxes] = useState([]);
+  const [visibleSandboxes] = useBottomScroll('DRAFTS');
 
   useEffect(() => {
-    actions.dashboard.getDrafts();
+    actions.dashboard.getPage(sandboxesTypes.DRAFTS);
   }, [actions.dashboard]);
-
-  useEffect(() => {
-    window.addEventListener('scroll', () => {
-      if (
-        SCROLLING_ELEMENT.getBoundingClientRect().bottom - 400 <=
-          window.innerHeight &&
-        sandboxes.DRAFTS &&
-        filtered
-      ) {
-        setVisibleSandboxes(s =>
-          s.concat(filtered.slice(s.length, s.length + NUMBER_OF_SANDBOXES))
-        );
-      }
-    });
-  });
-
-  useEffect(() => {
-    if (filtered) {
-      setVisibleSandboxes(filtered.slice(0, visibleSandboxes.length));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orderBy]);
-
-  useEffect(() => {
-    if (sandboxes.DRAFTS) {
-      setVisibleSandboxes(filtered.slice(0, NUMBER_OF_SANDBOXES));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sandboxes.DRAFTS]);
 
   return (
     <Element style={{ height: '100%', position: 'relative' }}>
-      <Header path="Drafts" templates={getPossibleTemplates(filtered || [])} />
+      <Header
+        path="Drafts"
+        templates={getPossibleTemplates(sandboxes.DRAFTS || [])}
+      />
       {sandboxes.DRAFTS ? (
         <Grid
           rowGap={6}

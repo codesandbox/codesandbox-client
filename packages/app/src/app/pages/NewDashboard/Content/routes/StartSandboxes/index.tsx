@@ -4,6 +4,7 @@ import { Text, Button, Grid, Column } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SandboxCard } from 'app/pages/NewDashboard/Components/SandboxCard';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 
 export const StartSandboxes = () => {
   const {
@@ -14,7 +15,7 @@ export const StartSandboxes = () => {
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.getStartPageSandboxes();
+    actions.dashboard.getPage(sandboxesTypes.START_PAGE);
   }, [actions.dashboard]);
 
   return (

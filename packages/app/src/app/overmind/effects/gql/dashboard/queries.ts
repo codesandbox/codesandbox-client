@@ -15,6 +15,8 @@ import {
   LatestSandboxesQueryVariables,
   AllCollectionsQuery,
   AllCollectionsQueryVariables,
+  _SearchSandboxesQuery,
+  _SearchSandboxesQueryVariables,
 } from 'app/graphql/types';
 import gql from 'graphql-tag';
 import { Query } from 'overmind-graphql';
@@ -121,6 +123,20 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
       }
     }
   }
+`;
+
+export const searchSandboxes: Query<
+  _SearchSandboxesQuery,
+  _SearchSandboxesQueryVariables
+> = gql`
+  query _SearchSandboxes {
+    me {
+      sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
+        ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
 `;
 
 export const listPersonalTemplates: Query<

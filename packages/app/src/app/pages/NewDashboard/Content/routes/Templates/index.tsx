@@ -1,6 +1,7 @@
 import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
 import css from '@styled-system/css';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { Element, Grid } from '@codesandbox/components';
 import { SandboxCard } from '../../../Components/SandboxCard';
@@ -15,7 +16,7 @@ export const Templates = () => {
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.getTemplateSandboxes();
+    actions.dashboard.getPage(sandboxesTypes.TEMPLATES);
   }, [actions.dashboard]);
 
   return (

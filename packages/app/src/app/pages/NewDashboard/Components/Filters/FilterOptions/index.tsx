@@ -1,10 +1,8 @@
 import { orderBy } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { Overlay as OverlayComponent } from 'app/components/Overlay';
-import { Element, Text } from '@codesandbox/components';
-import { Option } from './Option';
+import { Text, Menu, Checkbox } from '@codesandbox/components';
 
 type Template = {
   id: string;
@@ -15,6 +13,7 @@ type Template = {
 type Props = {
   possibleTemplates?: Template[];
 };
+
 export const FilterOptions: FunctionComponent<Props> = ({
   possibleTemplates = [],
 }) => {
@@ -41,72 +40,64 @@ export const FilterOptions: FunctionComponent<Props> = ({
     isTemplateSelected(id)
   );
 
-  const Overlay = () => (
-    <Element>
-      {possibleTemplates.length > 0 ? (
-        <>
-          {orderBy(possibleTemplates, 'niceName').map(
-            ({ color, id, name, niceName }) => {
-              const selected = isTemplateSelected(id);
-
-              return (
-                <Option
-                  color={color}
-                  id={id}
-                  key={name}
-                  niceName={niceName || name}
-                  selected={selected}
-                  toggleTemplate={toggleTemplate}
-                />
-              );
-            }
-          )}
-
-          <Option
-            color="#374140"
-            id="all"
-            niceName="Select All"
-            selected={allSelected}
-            style={{ marginTop: '1rem' }}
-            toggleTemplate={() => {
-              if (allSelected) {
-                return blacklistedTemplatesChanged(
-                  possibleTemplates.map(({ id }) => id)
-                );
-              }
-
-              return blacklistedTemplatesCleared();
-            }}
-          />
-        </>
-      ) : (
-        'No environments found'
-      )}
-    </Element>
-  );
-
-  const templateCount = possibleTemplates.length - blacklistedTemplates.length;
-  const templateMessage =
-    templateCount === possibleTemplates.length && templateCount > 0
-      ? 'all environments'
-      : `${Math.max(0, templateCount)} ${
-          templateCount === 1 ? 'environment' : 'environments'
-        }`;
+  const templates = possibleTemplates && possibleTemplates.length > 0;
 
   return (
-    <OverlayComponent
-      width={200}
-      content={Overlay}
-      event="Dashboard - Order By"
-    >
-      {open => (
-        <Element>
-          Showing{' '}
-          <Text variant="muted" onClick={open}>
-            {templateMessage}
+    <>
+      <Menu>
+        <Menu.Button>
+          <Text
+            variant={blacklistedTemplates.length ? 'active' : 'muted'}
+            paddingRight={2}
+          >
+            Filters
           </Text>
-        </Element>
-      )}
-    </OverlayComponent>
+        </Menu.Button>
+        <Menu.List>
+          {templates ? (
+            orderBy(possibleTemplates, 'niceName').map(
+              ({ id, name, niceName }) => {
+                const selected = isTemplateSelected(id);
+                return (
+                  <Menu.Item
+                    field="title"
+                    key={id}
+                    onSelect={() => toggleTemplate(id, !selected)}
+                    css={css({
+                      label: {
+                        color: selected ? 'inherit' : 'mutedForeground',
+                      },
+                    })}
+                  >
+                    <Checkbox checked={selected} label={niceName || name} />
+                  </Menu.Item>
+                );
+              }
+            )
+          ) : (
+            <Menu.Item>No environments found</Menu.Item>
+          )}
+          {templates && (
+            <Menu.Item
+              key="all"
+              onSelect={() => {
+                if (allSelected) {
+                  return blacklistedTemplatesChanged(
+                    possibleTemplates.map(({ id }) => id)
+                  );
+                }
+
+                return blacklistedTemplatesCleared();
+              }}
+              css={css({
+                color: allSelected ? 'body' : 'muted',
+              })}
+            >
+              <Checkbox checked={allSelected} label="Select All" />
+            </Menu.Item>
+          )}
+        </Menu.List>
+      </Menu>
+    </>
   );
 };
