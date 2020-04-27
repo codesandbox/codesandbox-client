@@ -166,9 +166,13 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
   return <Redirect to={teamOverviewUrl(teamId)} />;
 };
 
-export const TeamInvitation = ({ match }) => {
+export const TeamInvitation = ({
+  match,
+}: {
+  match: { params: { token: string } };
+}) => {
   const { state } = useOvermind();
-  const inviteToken = match.params.token;
+  const inviteToken = match?.params?.token;
 
   const content = (() => {
     if (!state.hasLogIn) {
