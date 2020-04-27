@@ -248,6 +248,7 @@ export const acceptTeamInvitation: Action<{
   teamName: string;
   teamId: string;
 }> = ({ effects, actions }, { teamName }) => {
+  effects.analytics.track('Team - Join Team', { source: 'invitation' });
   effects.analytics.track('Team - Invitation Accepted', {});
 
   actions.internal.trackCurrentTeams();
@@ -259,7 +260,7 @@ export const rejectTeamInvitation: Action<{ teamName: string }> = (
   { effects },
   { teamName }
 ) => {
-  effects.analytics.track('Team - Invitation Accepted', {});
+  effects.analytics.track('Team - Invitation Rejected', {});
 
   effects.notificationToast.success(`Rejected invitation to ${teamName}`);
 };

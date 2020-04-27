@@ -17,6 +17,7 @@ import {
   teamOverviewUrl,
   dashboardUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { PageContainer, ContentContainer } from './elements';
 import { teamByToken, joinTeamMutation } from './queries';
 
@@ -138,6 +139,8 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
   React.useEffect(() => {
     const join = async () => {
       try {
+        track('Team - Join Team', { source: 'url' });
+
         const result = await joinTeam({ variables: { inviteToken } });
         const team = result.data.redeemTeamInviteToken;
         effects.notificationToast.success(
