@@ -36,7 +36,7 @@ const InfoDialog = ({
     css={css({ borderRadius: 8, backgroundColor: 'grays.900' })}
   >
     <Stack gap={12} direction="vertical" align="center">
-      <LogoIcon height={64} width={64} />
+      <LogoIcon height={56} width={56} />
       <Stack
         gap={3}
         direction="vertical"
