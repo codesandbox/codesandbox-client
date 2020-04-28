@@ -56,6 +56,14 @@ const CLI = Loadable(() =>
   }))
 );
 
+const TeamInvitation = Loadable(() =>
+  import(
+    /* webpackChunkName: 'page-team-invitation' */ './TeamInvitation'
+  ).then(module => ({
+    default: module.TeamInvitation,
+  }))
+);
+
 const GitHub = Loadable(() =>
   import(/* webpackChunkName: 'page-github' */ './GitHub').then(module => ({
     default: module.GitHub,
@@ -122,6 +130,7 @@ const RoutesComponent: React.FC = () => {
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />
             <Route exact path="/s2" component={NewSandbox} />
+            <Route path="/invite/:token" component={TeamInvitation} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/new-dashboard" component={NewDashboard} />
             <Route path="/curator" component={Curator} />
