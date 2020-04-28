@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Element, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-import { SandboxItem } from 'app/pages/NewDashboard/Components/SandboxItem';
+import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
@@ -29,7 +29,7 @@ export const Deleted = () => {
                 Archived this week
               </Text>
               {deletedSandboxesByTime.week.map(sandbox => (
-                <SandboxItem sandbox={sandbox} key={sandbox.id} />
+                <Sandbox sandbox={sandbox} key={sandbox.id} />
               ))}
             </Element>
           )}
@@ -39,7 +39,7 @@ export const Deleted = () => {
                 Archived Earlier
               </Text>
               {deletedSandboxesByTime.older.map(sandbox => (
-                <SandboxItem sandbox={sandbox} key={sandbox.id} />
+                <Sandbox sandbox={sandbox} key={sandbox.id} />
               ))}
             </>
           )}

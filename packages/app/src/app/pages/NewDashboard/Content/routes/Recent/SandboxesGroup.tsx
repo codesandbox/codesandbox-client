@@ -1,8 +1,8 @@
 import React from 'react';
-import { Text, Element, Grid, Column } from '@codesandbox/components';
+import { Text, Element, Grid } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { SandboxCard } from '../../../Components/SandboxCard';
+import { Sandbox } from '../../../Components/Sandbox';
 
 export const SandboxesGroup = ({ title, time }) => {
   const {
@@ -25,9 +25,7 @@ export const SandboxesGroup = ({ title, time }) => {
         })}
       >
         {getFilteredSandboxes(recentSandboxesByTime[time]).map(sandbox => (
-          <Column key={sandbox.id}>
-            <SandboxCard sandbox={sandbox} />
-          </Column>
+          <Sandbox key={sandbox.id} sandbox={sandbox} />
         ))}
       </Grid>
     </Element>
