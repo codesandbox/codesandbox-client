@@ -4,19 +4,19 @@ import { Text, Button, Grid, Column } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SandboxCard } from 'app/pages/NewDashboard/Components/SandboxCard';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 
 export const StartSandboxes = () => {
   const {
     actions,
     state: {
-      user,
-      dashboard: { startPageSandboxes, loadingPage },
+      dashboard: { sandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.getStartPageSandboxes();
-  }, [actions.dashboard, user]);
+    actions.dashboard.getPage(sandboxesTypes.START_PAGE);
+  }, [actions.dashboard]);
 
   return (
     <>
@@ -24,18 +24,18 @@ export const StartSandboxes = () => {
         <Text marginBottom={4} block>
           Recently used Templates
         </Text>
-        {!loadingPage ? (
+        {sandboxes.TEMPLATE_START_PAGE ? (
           <Grid
             rowGap={6}
             columnGap={6}
             marginBottom={8}
             css={css({
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
             })}
           >
-            {startPageSandboxes.templates.map(({ sandbox }) => (
+            {sandboxes.TEMPLATE_START_PAGE.map(({ sandbox }) => (
               <Column key={sandbox.id}>
-                <SandboxCard sandbox={sandbox} />
+                <SandboxCard template sandbox={sandbox} />
               </Column>
             ))}
           </Grid>
@@ -52,13 +52,13 @@ export const StartSandboxes = () => {
         >
           Your Recent Sandboxes
         </Text>
-        {!loadingPage ? (
+        {sandboxes.RECENT_START_PAGE ? (
           <Grid
             rowGap={6}
             columnGap={6}
             marginBottom={8}
             css={css({
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
             })}
           >
             <Column>
@@ -81,7 +81,7 @@ export const StartSandboxes = () => {
                 New Sandbox
               </Button>
             </Column>
-            {startPageSandboxes.recent.map(sandbox => (
+            {sandboxes.RECENT_START_PAGE.map(sandbox => (
               <Column key={sandbox.id}>
                 <SandboxCard sandbox={sandbox} />
               </Column>

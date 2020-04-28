@@ -10,13 +10,14 @@ description: This release includes bug fixes.
 
 #### Features
 
-1. Added a config option to specify a custom start script in container sandboxes
+1. You can now invite team members via email or by sharing a link
 2. Usernames now autocomplete when inviting team members
-3. [@jyash97](https://github.com/codesandbox/codesandbox-client/pull/3936) added
+3. Added a config option to specify a custom start script in container sandboxes
+4. [@jyash97](https://github.com/codesandbox/codesandbox-client/pull/3936) added
    a copy link to templates in the context menu on the dashboard
-4. Updated the styling of the preferences menu to match design changes in the
+5. Updated the styling of the preferences menu to match design changes in the
    editor
-5. We now link to example sandboxes that use a dependency from the list of
+6. We now link to example sandboxes that use a dependency from the list of
    dependencies in the editor
 
 #### Fixes

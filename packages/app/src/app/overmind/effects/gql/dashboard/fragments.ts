@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
-export const sandboxFragment = gql`
-  fragment Sandbox on Sandbox {
+export const sandboxFragmentDashboard = gql`
+  fragment sandboxFragmentDashboard on Sandbox {
     id
     alias
     title
@@ -12,6 +12,9 @@ export const sandboxFragment = gql`
     privacy
     screenshotUrl
     screenshotOutdated
+    likeCount
+    forkCount
+    viewCount
 
     source {
       template
@@ -33,15 +36,15 @@ export const sandboxFragment = gql`
   }
 `;
 
-export const sidebarCollection = gql`
-  fragment SidebarCollection on Collection {
+export const sidebarCollectionDashboard = gql`
+  fragment sidebarCollectionDashboard on Collection {
     id
     path
   }
 `;
 
-export const templateFragment = gql`
-  fragment Template on Template {
+export const templateFragmentDashboard = gql`
+  fragment templateFragmentDashboard on Template {
     id
     color
     iconUrl
@@ -53,6 +56,11 @@ export const templateFragment = gql`
       description
       insertedAt
       updatedAt
+      likeCount
+      forkCount
+      viewCount
+      screenshotUrl
+      screenshotOutdated
 
       collection {
         team {
@@ -67,6 +75,29 @@ export const templateFragment = gql`
       source {
         template
       }
+    }
+  }
+`;
+
+export const teamFragmentDashboard = gql`
+  fragment teamFragmentDashboard on Team {
+    id
+    name
+    description
+    creatorId
+
+    users {
+      id
+      name
+      username
+      avatarUrl
+    }
+
+    invitees {
+      id
+      name
+      username
+      avatarUrl
     }
   }
 `;

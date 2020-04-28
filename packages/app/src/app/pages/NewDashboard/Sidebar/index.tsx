@@ -97,6 +97,7 @@ export const Sidebar = props => {
                 </Menu.Item>
                 {dashboard.teams.map(team => (
                   <Menu.Item
+                    key={team.id}
                     as={Menu.Item}
                     css={{ textAlign: 'left' }}
                     onSelect={() =>
@@ -112,7 +113,7 @@ export const Sidebar = props => {
         </ListAction>
 
         <ListAction align="center" css={css({ paddingX: 0 })}>
-          <Link as={RouterLink} to="start" style={linkStyles}>
+          <Link as={RouterLink} to="/new-dashboard/start" style={linkStyles}>
             <Stack
               as="span"
               css={css({ width: 4 })}
@@ -126,7 +127,7 @@ export const Sidebar = props => {
           </Link>
         </ListAction>
         <ListAction align="center" css={css({ paddingX: 0 })}>
-          <Link as={RouterLink} to="drafts" style={linkStyles}>
+          <Link as={RouterLink} to="/new-dashboard/drafts" style={linkStyles}>
             <Stack
               as="span"
               css={css({ width: 4 })}
@@ -140,7 +141,7 @@ export const Sidebar = props => {
           </Link>
         </ListAction>
         <ListAction align="center" css={css({ paddingX: 0 })}>
-          <Link as={RouterLink} to="recent" style={linkStyles}>
+          <Link as={RouterLink} to="/new-dashboard/recent" style={linkStyles}>
             <Stack
               as="span"
               css={css({ width: 4 })}
@@ -154,7 +155,7 @@ export const Sidebar = props => {
           </Link>
         </ListAction>
         <ListAction align="center" css={css({ paddingX: 0 })}>
-          <Link as={RouterLink} to="all" style={linkStyles}>
+          <Link as={RouterLink} to="/new-dashboard/all" style={linkStyles}>
             <Stack
               as="span"
               css={css({ width: 4 })}
@@ -168,7 +169,11 @@ export const Sidebar = props => {
           </Link>
         </ListAction>
         <ListAction align="center" css={css({ paddingX: 0 })}>
-          <Link as={RouterLink} to="templates" style={linkStyles}>
+          <Link
+            as={RouterLink}
+            to="/new-dashboard/templates"
+            style={linkStyles}
+          >
             <Stack
               as="span"
               css={css({ width: 4 })}
@@ -182,7 +187,7 @@ export const Sidebar = props => {
           </Link>
         </ListAction>
         <ListAction align="center" css={css({ paddingX: 0 })}>
-          <Link as={RouterLink} to="deleted" style={linkStyles}>
+          <Link as={RouterLink} to="/new-dashboard/deleted" style={linkStyles}>
             <Stack
               as="span"
               css={css({ width: 4 })}

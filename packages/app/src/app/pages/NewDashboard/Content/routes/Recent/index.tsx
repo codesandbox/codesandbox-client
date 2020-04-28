@@ -1,70 +1,41 @@
 import React, { useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
-import { Text, Element, Grid, Column, Stack } from '@codesandbox/components';
-import css from '@styled-system/css';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
-import { Filters } from 'app/pages/NewDashboard/Components/Filters';
+import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { getPossibleTemplates } from '../../utils';
-import { SandboxCard } from '../../../Components/SandboxCard';
+
+import { SandboxesGroup } from './SandboxesGroup';
 
 export const Recent = () => {
   const {
     actions,
     state: {
-      user,
-      dashboard: {
-        recentSandboxesByTime,
-        recentSandboxes,
-        getFilteredSandboxes,
-        loadingPage,
-      },
+      dashboard: { sandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.getRecentSandboxes();
-  }, [actions.dashboard, user]);
+    actions.dashboard.getPage(sandboxesTypes.RECENT);
+  }, [actions.dashboard]);
 
-  const possibleTemplates = getPossibleTemplates(recentSandboxes);
-
-  const Group = ({ title, time }) =>
-    getFilteredSandboxes(recentSandboxesByTime[time]).length ? (
-      <Element marginBottom={14}>
-        <Text marginBottom={6} block>
-          {title}
-        </Text>
-        <Grid
-          rowGap={6}
-          columnGap={6}
-          marginBottom={8}
-          css={css({
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          })}
-        >
-          {getFilteredSandboxes(recentSandboxesByTime[time]).map(sandbox => (
-            <Column key={sandbox.id}>
-              <SandboxCard sandbox={sandbox} />
-            </Column>
-          ))}
-        </Grid>
-      </Element>
-    ) : null;
+  const possibleTemplates = sandboxes.RECENT
+    ? getPossibleTemplates(sandboxes.RECENT)
+    : [];
 
   return (
     <>
+      <Header
+        title="Recently Modified Sandboxes"
+        templates={possibleTemplates}
+      />
       <section style={{ position: 'relative' }}>
-        <Stack>
-          <Text marginBottom={4} block>
-            Recently Modified Sandboxes
-          </Text>
-          <Filters possibleTemplates={possibleTemplates} />
-        </Stack>
-        {!loadingPage ? (
+        {sandboxes.RECENT ? (
           <>
-            <Group title="Today" time="day" />
-            <Group title="Last 7 Days" time="week" />
-            <Group title="Earlier this month" time="month" />
-            <Group title="Older" time="older" />
+            <SandboxesGroup title="Today" time="day" />
+            <SandboxesGroup title="Last 7 Days" time="week" />
+            <SandboxesGroup title="Earlier this month" time="month" />
+            <SandboxesGroup title="Older" time="older" />
           </>
         ) : (
           <Loading />
