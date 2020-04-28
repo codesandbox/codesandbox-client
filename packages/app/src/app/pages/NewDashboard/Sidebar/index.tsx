@@ -16,6 +16,18 @@ import css from '@styled-system/css';
 
 const SIDEBAR_WIDTH = 240;
 
+// I hate this! but we need this until I refactor how
+// components are structured — Sid
+// https://linear.app/issue/CSB-118
+const linkStyles = {
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  paddingLeft: 24,
+  paddingRight: 8,
+};
+
 export const Sidebar = props => {
   const {
     state: { dashboard, user },
@@ -54,8 +66,8 @@ export const Sidebar = props => {
         display: ['none', 'none', 'block'],
       })}
     >
-      <List>
-        <ListAction gap={2} css={{ padding: 0 }}>
+      <List css={css({ '> li': { height: 10 } })}>
+        <ListAction gap={2}>
           {user && (
             <Menu>
               <Stack
@@ -97,33 +109,40 @@ export const Sidebar = props => {
             </Menu>
           )}
         </ListAction>
-        <ListAction>
-          <Link to="start" as={RouterLink}>
+
+        <ListAction align="center" css={css({ paddingX: 0 })}>
+          <Link as={RouterLink} to="start" style={linkStyles}>
+            <Icon name="file" marginRight={2} />
             Start
           </Link>
         </ListAction>
-        <ListAction>
-          <Link to="drafts" as={RouterLink}>
+        <ListAction align="center" css={css({ paddingX: 0 })}>
+          <Link as={RouterLink} to="drafts" style={linkStyles}>
+            <Icon name="file" marginRight={2} />
             Drafts
           </Link>
         </ListAction>
-        <ListAction>
-          <Link to="recent" as={RouterLink}>
+        <ListAction align="center" css={css({ paddingX: 0 })}>
+          <Link as={RouterLink} to="recent" style={linkStyles}>
+            <Icon name="clock" marginRight={2} />
             Recent
           </Link>
         </ListAction>
-        <ListAction>
-          <Link to="all" as={RouterLink}>
+        <ListAction align="center" css={css({ paddingX: 0 })}>
+          <Link as={RouterLink} to="all" style={linkStyles}>
+            <Icon name="folder" marginRight={2} />
             All Sandboxes
           </Link>
         </ListAction>
-        <ListAction>
-          <Link to="templates" as={RouterLink}>
+        <ListAction align="center" css={css({ paddingX: 0 })}>
+          <Link as={RouterLink} to="templates" style={linkStyles}>
+            <Icon name="star" marginRight={2} />
             Templates
           </Link>
         </ListAction>
-        <ListAction>
-          <Link to="deleted" as={RouterLink}>
+        <ListAction align="center" css={css({ paddingX: 0 })}>
+          <Link as={RouterLink} to="deleted" style={linkStyles}>
+            <Icon name="trash" marginRight={2} />
             Recently Deleted
           </Link>
         </ListAction>
