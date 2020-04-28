@@ -376,6 +376,10 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
         return errors; // eslint-disable-line no-param-reassign
       }
     } else if (result.error) {
+      if (result.error.message) {
+        return result.error.message;
+      }
+
       return result.error; // eslint-disable-line no-param-reassign
     } else if (response?.status === 413) {
       return 'File too large, upload limit is 5MB.';
