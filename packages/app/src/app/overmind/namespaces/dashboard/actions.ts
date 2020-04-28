@@ -362,12 +362,15 @@ export const deleteSandbox: AsyncAction<string[]> = async (
 ) => {
   const { user } = state;
   if (!user) return;
-  await effects.gql.mutations.deleteSandboxes({
-    sandboxIds: ids,
-  });
+  const oldSandboxes = state.dashboard.sandboxes;
+  actions.dashboard.deleteSandboxFromState(ids);
+
   try {
-    actions.dashboard.deleteSandboxFromState(ids);
+    await effects.gql.mutations.deleteSandboxes({
+      sandboxIds: ids,
+    });
   } catch (error) {
+    state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error(
       'There was a problem deleting your Sandbox'
     );
