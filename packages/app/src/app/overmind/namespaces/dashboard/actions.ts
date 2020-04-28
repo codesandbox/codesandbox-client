@@ -205,12 +205,13 @@ export const getSandboxesByPath: AsyncAction<string> = withLoadApp(
         return;
       }
 
-      dashboard.sandboxes.ALL = {};
-      if (dashboard.sandboxes.ALL) {
-        dashboard.sandboxes.ALL[
-          cleanPath
-        ] = data.me.collection.sandboxes.filter(s => !s.customTemplate);
+      if (!dashboard.sandboxes.ALL) {
+        dashboard.sandboxes.ALL = {};
       }
+
+      dashboard.sandboxes.ALL[cleanPath] = data.me.collection.sandboxes.filter(
+        s => !s.customTemplate
+      );
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your Sandboxes'
