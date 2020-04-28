@@ -360,7 +360,7 @@ export const addComment: AsyncAction<{
             ...codeReference,
             lastUpdatedAt: sandbox.modules.find(
               module => module.path === codeReference.path
-            )?.updatedAt,
+            )!.updatedAt,
           }
         : null,
     });
