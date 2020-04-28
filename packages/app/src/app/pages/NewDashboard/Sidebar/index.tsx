@@ -24,7 +24,7 @@ const linkStyles = {
   height: '100%',
   display: 'flex',
   alignItems: 'center',
-  paddingLeft: 24,
+  paddingLeft: 8,
   paddingRight: 8,
 };
 
@@ -77,11 +77,18 @@ export const Sidebar = props => {
                 css={css({
                   width: '100%',
                   height: '100%',
-                  paddingLeft: 5,
+                  paddingLeft: 2,
                 })}
               >
-                <Stack as="span" gap={2} align="center">
-                  <Avatar user={activeAccount} css={css({ size: 5 })} />
+                <Stack as="span" align="center">
+                  <Stack
+                    as="span"
+                    css={css({ width: 10 })}
+                    align="center"
+                    justify="center"
+                  >
+                    <Avatar user={activeAccount} css={css({ size: 6 })} />
+                  </Stack>
                   <Text size={4} weight="normal">
                     {activeAccount.username}
                   </Text>
@@ -116,12 +123,11 @@ export const Sidebar = props => {
           <Link as={RouterLink} to="/new-dashboard/start" style={linkStyles}>
             <Stack
               as="span"
-              css={css({ width: 4 })}
-              marginRight={2}
+              css={css({ width: 10 })}
               align="center"
               justify="center"
             >
-              <Icon name="box" size={14} />
+              <Icon name="box" />
             </Stack>
             Start
           </Link>
@@ -130,12 +136,11 @@ export const Sidebar = props => {
           <Link as={RouterLink} to="/new-dashboard/drafts" style={linkStyles}>
             <Stack
               as="span"
-              css={css({ width: 4 })}
-              marginRight={2}
+              css={css({ width: 10 })}
               align="center"
               justify="center"
             >
-              <Icon name="file" size={14} />
+              <Icon name="file" />
             </Stack>
             Drafts
           </Link>
@@ -144,12 +149,11 @@ export const Sidebar = props => {
           <Link as={RouterLink} to="/new-dashboard/recent" style={linkStyles}>
             <Stack
               as="span"
-              css={css({ width: 4 })}
-              marginRight={2}
+              css={css({ width: 10 })}
               align="center"
               justify="center"
             >
-              <Icon name="clock" size={14} />
+              <Icon name="clock" />
             </Stack>
             Recent
           </Link>
@@ -158,12 +162,11 @@ export const Sidebar = props => {
           <Link as={RouterLink} to="/new-dashboard/all" style={linkStyles}>
             <Stack
               as="span"
-              css={css({ width: 4 })}
-              marginRight={2}
+              css={css({ width: 10 })}
               align="center"
               justify="center"
             >
-              <Icon name="folder" size={14} />
+              <Icon name="folder" />
             </Stack>
             All Sandboxes
           </Link>
@@ -176,12 +179,11 @@ export const Sidebar = props => {
           >
             <Stack
               as="span"
-              css={css({ width: 4 })}
-              marginRight={2}
+              css={css({ width: 10 })}
               align="center"
               justify="center"
             >
-              <Icon name="star" size={14} />
+              <Icon name="star" />
             </Stack>
             Templates
           </Link>
@@ -190,12 +192,11 @@ export const Sidebar = props => {
           <Link as={RouterLink} to="/new-dashboard/deleted" style={linkStyles}>
             <Stack
               as="span"
-              css={css({ width: 4 })}
-              marginRight={2}
+              css={css({ width: 10 })}
               align="center"
               justify="center"
             >
-              <Icon name="trash" size={14} />
+              <Icon name="trash" />
             </Stack>
             Recently Deleted
           </Link>
