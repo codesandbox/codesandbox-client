@@ -535,6 +535,7 @@ export const permanentlyDeleteSandboxes: AsyncAction<string[]> = async (
   { effects, state },
   ids
 ) => {
+  if (!state.dashboard.sandboxes.DELETED) return;
   const oldDeleted = state.dashboard.sandboxes.DELETED;
   state.dashboard.sandboxes.DELETED = oldDeleted.filter(
     sandbox => !ids.includes(sandbox.id)
@@ -553,6 +554,7 @@ export const recoverSandboxes: AsyncAction<string[]> = async (
   { effects, state },
   ids
 ) => {
+  if (!state.dashboard.sandboxes.DELETED) return;
   const oldDeleted = state.dashboard.sandboxes.DELETED;
   state.dashboard.sandboxes.DELETED = oldDeleted.filter(
     sandbox => !ids.includes(sandbox.id)
@@ -566,7 +568,7 @@ export const recoverSandboxes: AsyncAction<string[]> = async (
   } catch (error) {
     state.dashboard.sandboxes.DELETED = [...oldDeleted];
     effects.notificationToast.error(
-      'There was a problem deleting your sandbox'
+      'There was a problem recovering your sandbox'
     );
   }
 };
