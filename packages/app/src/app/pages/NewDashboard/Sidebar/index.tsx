@@ -16,6 +16,18 @@ import css from '@styled-system/css';
 
 const SIDEBAR_WIDTH = 240;
 
+// I hate this! but we need this until I refactor how
+// components are structured — Sid
+// https://linear.app/issue/CSB-118
+const linkStyles = {
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  paddingLeft: 8,
+  paddingRight: 8,
+};
+
 export const Sidebar = props => {
   const {
     state: { dashboard, user },
@@ -54,8 +66,8 @@ export const Sidebar = props => {
         display: ['none', 'none', 'block'],
       })}
     >
-      <List>
-        <ListAction gap={2} css={{ padding: 0 }}>
+      <List css={css({ '> li': { height: 10 } })}>
+        <ListAction gap={2} css={css({ paddingX: 0 })}>
           {user && (
             <Menu>
               <Stack
@@ -64,11 +76,19 @@ export const Sidebar = props => {
                 align="center"
                 css={css({
                   width: '100%',
-                  height: 8,
+                  height: '100%',
+                  paddingLeft: 2,
                 })}
               >
-                <Stack gap={2} align="center">
-                  <Avatar user={activeAccount} css={css({ size: 5 })} />
+                <Stack as="span" align="center">
+                  <Stack
+                    as="span"
+                    css={css({ width: 10 })}
+                    align="center"
+                    justify="center"
+                  >
+                    <Avatar user={activeAccount} css={css({ size: 6 })} />
+                  </Stack>
                   <Text size={4} weight="normal">
                     {activeAccount.username}
                   </Text>
@@ -98,33 +118,86 @@ export const Sidebar = props => {
             </Menu>
           )}
         </ListAction>
-        <ListAction>
-          <Link to="/new-dashboard/start" as={RouterLink}>
+
+        <ListAction align="center" css={css({ paddingX: 0 })}>
+          <Link as={RouterLink} to="/new-dashboard/start" style={linkStyles}>
+            <Stack
+              as="span"
+              css={css({ width: 10 })}
+              align="center"
+              justify="center"
+            >
+              <Icon name="box" />
+            </Stack>
             Start
           </Link>
         </ListAction>
-        <ListAction>
-          <Link to="/new-dashboard/drafts" as={RouterLink}>
+        <ListAction align="center" css={css({ paddingX: 0 })}>
+          <Link as={RouterLink} to="/new-dashboard/drafts" style={linkStyles}>
+            <Stack
+              as="span"
+              css={css({ width: 10 })}
+              align="center"
+              justify="center"
+            >
+              <Icon name="file" />
+            </Stack>
             Drafts
           </Link>
         </ListAction>
-        <ListAction>
-          <Link to="/new-dashboard/recent" as={RouterLink}>
+        <ListAction align="center" css={css({ paddingX: 0 })}>
+          <Link as={RouterLink} to="/new-dashboard/recent" style={linkStyles}>
+            <Stack
+              as="span"
+              css={css({ width: 10 })}
+              align="center"
+              justify="center"
+            >
+              <Icon name="clock" />
+            </Stack>
             Recent
           </Link>
         </ListAction>
-        <ListAction>
-          <Link to="/new-dashboard/all" as={RouterLink}>
+        <ListAction align="center" css={css({ paddingX: 0 })}>
+          <Link as={RouterLink} to="/new-dashboard/all" style={linkStyles}>
+            <Stack
+              as="span"
+              css={css({ width: 10 })}
+              align="center"
+              justify="center"
+            >
+              <Icon name="folder" />
+            </Stack>
             All Sandboxes
           </Link>
         </ListAction>
-        <ListAction>
-          <Link to="/new-dashboard/templates" as={RouterLink}>
+        <ListAction align="center" css={css({ paddingX: 0 })}>
+          <Link
+            as={RouterLink}
+            to="/new-dashboard/templates"
+            style={linkStyles}
+          >
+            <Stack
+              as="span"
+              css={css({ width: 10 })}
+              align="center"
+              justify="center"
+            >
+              <Icon name="star" />
+            </Stack>
             Templates
           </Link>
         </ListAction>
-        <ListAction>
-          <Link to="/new-dashboard/deleted" as={RouterLink}>
+        <ListAction align="center" css={css({ paddingX: 0 })}>
+          <Link as={RouterLink} to="/new-dashboard/deleted" style={linkStyles}>
+            <Stack
+              as="span"
+              css={css({ width: 10 })}
+              align="center"
+              justify="center"
+            >
+              <Icon name="trash" />
+            </Stack>
             Recently Deleted
           </Link>
         </ListAction>
