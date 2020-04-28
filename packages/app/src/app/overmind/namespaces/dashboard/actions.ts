@@ -362,12 +362,15 @@ export const deleteSandbox: AsyncAction<string[]> = async (
 ) => {
   const { user } = state;
   if (!user) return;
+  const oldSandboxes = state.dashboard.sandboxes;
+  actions.dashboard.deleteSandboxFromState(ids);
+
   try {
     await effects.gql.mutations.deleteSandboxes({
       sandboxIds: ids,
     });
-    actions.dashboard.deleteSandboxFromState(ids);
   } catch (error) {
+    state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error(
       'There was a problem deleting your Sandbox'
     );
@@ -375,15 +378,23 @@ export const deleteSandbox: AsyncAction<string[]> = async (
 };
 
 export const unmakeTemplate: AsyncAction<string[]> = async (
-  { effects, actions },
+  { effects, actions, state },
   ids
 ) => {
+  const oldTemplates = {
+    TEMPLATE_START_PAGE: state.dashboard.sandboxes.TEMPLATE_START_PAGE,
+    TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
+  };
+  actions.dashboard.deleteTemplateFromState(ids);
   try {
-    await effects.gql.mutations.unmakeSandboxesTemplate({
-      sandboxIds: ids,
-    });
-    actions.dashboard.deleteTemplateFromState(ids);
+    await effects.gql.mutations.unmakeSandboxesTemplate({ sandboxIds: ids });
   } catch (error) {
+    state.dashboard.sandboxes.TEMPLATES = oldTemplates.TEMPLATES
+      ? [...oldTemplates.TEMPLATES]
+      : null;
+    state.dashboard.sandboxes.TEMPLATE_START_PAGE = oldTemplates.TEMPLATE_START_PAGE
+      ? [...oldTemplates.TEMPLATE_START_PAGE]
+      : null;
     effects.notificationToast.error(
       'There was a problem reverting your template'
     );
@@ -420,6 +431,24 @@ export const renameSandboxInState: Action<{
   );
 };
 
+export const renameFolderInState: Action<{ path: string; newPath: string }> = (
+  { state: { dashboard } },
+  { path, newPath }
+) => {
+  if (!dashboard.allCollections) return;
+  dashboard.allCollections = dashboard.allCollections.map(folder => {
+    if (folder.path === path) {
+      return {
+        ...folder,
+        path: newPath,
+        name,
+      };
+    }
+
+    return folder;
+  });
+};
+
 export const renameSandbox: AsyncAction<{
   id: string;
   title: string;
@@ -444,38 +473,24 @@ export const renameSandbox: AsyncAction<{
 };
 
 export const renameFolder: AsyncAction<{
-  name: string;
   path: string;
   newPath: string;
-}> = async ({ state: { dashboard }, effects }, { name, path, newPath }) => {
+}> = async ({ state: { dashboard }, effects, actions }, { path, newPath }) => {
   if (!dashboard.allCollections) return;
-  dashboard.allCollections = dashboard.allCollections.map(folder => {
-    if (folder.path === path) {
-      return {
-        ...folder,
-        path: newPath,
-        name,
-      };
-    }
-
-    return folder;
+  actions.dashboard.renameFolderInState({
+    path,
+    newPath,
   });
+
   try {
     await effects.gql.mutations.renameFolder({
       newPath,
       path,
     });
   } catch {
-    dashboard.allCollections = dashboard.allCollections.map(folder => {
-      if (folder.path === newPath) {
-        return {
-          ...folder,
-          path,
-          name,
-        };
-      }
-
-      return folder;
+    actions.dashboard.renameFolderInState({
+      path: newPath,
+      newPath: path,
     });
     effects.notificationToast.error('There was a problem renaming you folder');
   }
@@ -485,30 +500,33 @@ export const deleteFolder: AsyncAction<{
   path: string;
 }> = async ({ state: { dashboard }, effects }, { path }) => {
   if (!dashboard.allCollections) return;
+  const oldCollections = dashboard.allCollections;
+  dashboard.allCollections = dashboard.allCollections.filter(
+    folder => folder.path !== path
+  );
   try {
     await effects.gql.mutations.deleteFolder({
       path,
       teamId: dashboard.activeTeam,
     });
-
-    dashboard.allCollections = dashboard.allCollections.filter(
-      folder => folder.path !== path
-    );
   } catch {
+    dashboard.allCollections = oldCollections;
     effects.notificationToast.error('There was a problem deleting you folder');
   }
 };
 
 export const makeTemplate: AsyncAction<string[]> = async (
-  { effects, actions },
+  { effects, state, actions },
   ids
 ) => {
+  const oldSandboxes = state.dashboard.sandboxes;
+  actions.dashboard.deleteSandboxFromState(ids);
   try {
     await effects.gql.mutations.makeSandboxesTemplate({
       sandboxIds: ids,
     });
-    actions.dashboard.deleteSandboxFromState(ids);
   } catch (error) {
+    state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error('There was a problem making your template');
   }
 };
