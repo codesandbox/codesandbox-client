@@ -230,6 +230,7 @@ export const createComment: AsyncAction = async ({ state, effects }) => {
           )
         : '',
       path: state.editor.currentModule.path,
+      lastUpdatedAt: state.editor.currentModule.updatedAt,
     };
   }
 
@@ -301,26 +302,26 @@ export const addComment: AsyncAction<{
     return;
   }
 
-  const sandboxId = state.editor.currentSandbox.id;
+  const sandbox = state.editor.currentSandbox;
   const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   const comments = state.comments.comments;
 
-  if (!comments[sandboxId]) {
-    comments[sandboxId] = {};
+  if (!comments[sandbox.id]) {
+    comments[sandbox.id] = {};
   }
 
   const id = uuid.v4();
   let optimisticComment: CommentFragment;
   if (isOptimistic) {
     optimisticComment = {
-      ...state.comments.comments[sandboxId][OPTIMISTIC_COMMENT_ID],
+      ...state.comments.comments[sandbox.id][OPTIMISTIC_COMMENT_ID],
       id,
     };
-    state.comments.comments[sandboxId][id] = optimisticComment;
+    state.comments.comments[sandbox.id][id] = optimisticComment;
     state.comments.currentCommentId = state.comments.currentCommentId
       ? id
       : null;
-    delete state.comments.comments[sandboxId][OPTIMISTIC_COMMENT_ID];
+    delete state.comments.comments[sandbox.id][OPTIMISTIC_COMMENT_ID];
   } else {
     optimisticComment = {
       parentComment: parentCommentId ? { id: parentCommentId } : null,
@@ -338,37 +339,43 @@ export const addComment: AsyncAction<{
       references: [],
       replyCount: 0,
     };
-    comments[sandboxId][id] = optimisticComment;
+    comments[sandbox.id][id] = optimisticComment;
   }
 
   state.comments.selectedCommentsFilter = CommentsFilterOption.OPEN;
 
   if (parentCommentId) {
-    comments[sandboxId][parentCommentId].replyCount++;
+    comments[sandbox.id][parentCommentId].replyCount++;
   }
 
   try {
+    const codeReference = optimisticComment.references[0]?.metadata ?? null;
     const response = await effects.gql.mutations.createComment({
       id,
       parentCommentId: parentCommentId || null,
-      sandboxId,
+      sandboxId: sandbox.id,
       content,
-      codeReference: optimisticComment.references.length
-        ? optimisticComment.references[0].metadata
+      codeReference: codeReference
+        ? {
+            ...codeReference,
+            lastUpdatedAt: sandbox.modules.find(
+              module => module.path === codeReference.path
+            )?.updatedAt,
+          }
         : null,
     });
 
     const comment = response.createComment;
 
-    delete comments[sandboxId][id];
-    comments[sandboxId][comment.id] = comment;
+    delete comments[sandbox.id][id];
+    comments[sandbox.id][comment.id] = comment;
   } catch (error) {
     effects.notificationToast.error(
       'Unable to create your comment, please try again'
     );
-    delete comments[sandboxId][id];
+    delete comments[sandbox.id][id];
     if (parentCommentId) {
-      comments[sandboxId][parentCommentId].replyCount--;
+      comments[sandbox.id][parentCommentId].replyCount--;
     }
   }
 };
