@@ -21,7 +21,6 @@ export const FolderCard = ({ name, path, ...props }: Props) => {
     await actions.dashboard.renameFolder({
       path,
       newPath: join(dirname(path), newName),
-      name: newName,
     });
     setEdit(false);
   };
