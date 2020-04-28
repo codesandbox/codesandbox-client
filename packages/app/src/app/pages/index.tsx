@@ -12,9 +12,9 @@ import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
 import { Dashboard } from './Dashboard';
-import { Dashboard as NewDashboard } from './NewDashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
+import { Dashboard as NewDashboard } from './NewDashboard';
 import { NewSandbox } from './NewSandbox';
 import { Sandbox } from './Sandbox';
 
