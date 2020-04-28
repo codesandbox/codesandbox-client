@@ -375,15 +375,23 @@ export const deleteSandbox: AsyncAction<string[]> = async (
 };
 
 export const unmakeTemplate: AsyncAction<string[]> = async (
-  { effects, actions },
+  { effects, actions, state },
   ids
 ) => {
+  const oldTemplates = {
+    TEMPLATE_START_PAGE: state.dashboard.sandboxes.TEMPLATE_START_PAGE,
+    TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
+  };
+  actions.dashboard.deleteTemplateFromState(ids);
   try {
-    await effects.gql.mutations.unmakeSandboxesTemplate({
-      sandboxIds: ids,
-    });
-    actions.dashboard.deleteTemplateFromState(ids);
+    await effects.gql.mutations.unmakeSandboxesTemplate({ sandboxIds: ids });
   } catch (error) {
+    state.dashboard.sandboxes.TEMPLATES = oldTemplates.TEMPLATES
+      ? [...oldTemplates.TEMPLATES]
+      : null;
+    state.dashboard.sandboxes.TEMPLATE_START_PAGE = oldTemplates.TEMPLATE_START_PAGE
+      ? [...oldTemplates.TEMPLATE_START_PAGE]
+      : null;
     effects.notificationToast.error(
       'There was a problem reverting your template'
     );
@@ -461,13 +469,9 @@ export const renameSandbox: AsyncAction<{
 };
 
 export const renameFolder: AsyncAction<{
-  name: string;
   path: string;
   newPath: string;
-}> = async (
-  { state: { dashboard }, effects, actions },
-  { name, path, newPath }
-) => {
+}> = async ({ state: { dashboard }, effects, actions }, { path, newPath }) => {
   if (!dashboard.allCollections) return;
   actions.dashboard.renameFolderInState({
     path,
@@ -508,15 +512,17 @@ export const deleteFolder: AsyncAction<{
 };
 
 export const makeTemplate: AsyncAction<string[]> = async (
-  { effects, actions },
+  { effects, state, actions },
   ids
 ) => {
+  const oldSandboxes = state.dashboard.sandboxes;
+  actions.dashboard.deleteSandboxFromState(ids);
   try {
     await effects.gql.mutations.makeSandboxesTemplate({
       sandboxIds: ids,
     });
-    actions.dashboard.deleteSandboxFromState(ids);
   } catch (error) {
+    state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error('There was a problem making your template');
   }
 };
