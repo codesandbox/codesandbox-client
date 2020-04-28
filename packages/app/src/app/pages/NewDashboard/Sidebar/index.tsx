@@ -67,7 +67,7 @@ export const Sidebar = props => {
       })}
     >
       <List css={css({ '> li': { height: 10 } })}>
-        <ListAction gap={2}>
+        <ListAction gap={2} css={css({ paddingX: 0 })}>
           {user && (
             <Menu>
               <Stack
@@ -76,10 +76,11 @@ export const Sidebar = props => {
                 align="center"
                 css={css({
                   width: '100%',
-                  height: 8,
+                  height: '100%',
+                  paddingLeft: 5,
                 })}
               >
-                <Stack gap={2} align="center">
+                <Stack as="span" gap={2} align="center">
                   <Avatar user={activeAccount} css={css({ size: 5 })} />
                   <Text size={4} weight="normal">
                     {activeAccount.username}
@@ -112,37 +113,85 @@ export const Sidebar = props => {
 
         <ListAction align="center" css={css({ paddingX: 0 })}>
           <Link as={RouterLink} to="start" style={linkStyles}>
-            <Icon name="file" marginRight={2} />
+            <Stack
+              as="span"
+              css={css({ width: 4 })}
+              marginRight={2}
+              align="center"
+              justify="center"
+            >
+              <Icon name="box" size={14} />
+            </Stack>
             Start
           </Link>
         </ListAction>
         <ListAction align="center" css={css({ paddingX: 0 })}>
           <Link as={RouterLink} to="drafts" style={linkStyles}>
-            <Icon name="file" marginRight={2} />
+            <Stack
+              as="span"
+              css={css({ width: 4 })}
+              marginRight={2}
+              align="center"
+              justify="center"
+            >
+              <Icon name="file" size={14} />
+            </Stack>
             Drafts
           </Link>
         </ListAction>
         <ListAction align="center" css={css({ paddingX: 0 })}>
           <Link as={RouterLink} to="recent" style={linkStyles}>
-            <Icon name="clock" marginRight={2} />
+            <Stack
+              as="span"
+              css={css({ width: 4 })}
+              marginRight={2}
+              align="center"
+              justify="center"
+            >
+              <Icon name="clock" size={14} />
+            </Stack>
             Recent
           </Link>
         </ListAction>
         <ListAction align="center" css={css({ paddingX: 0 })}>
           <Link as={RouterLink} to="all" style={linkStyles}>
-            <Icon name="folder" marginRight={2} />
+            <Stack
+              as="span"
+              css={css({ width: 4 })}
+              marginRight={2}
+              align="center"
+              justify="center"
+            >
+              <Icon name="folder" size={14} />
+            </Stack>
             All Sandboxes
           </Link>
         </ListAction>
         <ListAction align="center" css={css({ paddingX: 0 })}>
           <Link as={RouterLink} to="templates" style={linkStyles}>
-            <Icon name="star" marginRight={2} />
+            <Stack
+              as="span"
+              css={css({ width: 4 })}
+              marginRight={2}
+              align="center"
+              justify="center"
+            >
+              <Icon name="star" size={14} />
+            </Stack>
             Templates
           </Link>
         </ListAction>
         <ListAction align="center" css={css({ paddingX: 0 })}>
           <Link as={RouterLink} to="deleted" style={linkStyles}>
-            <Icon name="trash" marginRight={2} />
+            <Stack
+              as="span"
+              css={css({ width: 4 })}
+              marginRight={2}
+              align="center"
+              justify="center"
+            >
+              <Icon name="trash" size={14} />
+            </Stack>
             Recently Deleted
           </Link>
         </ListAction>
