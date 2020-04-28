@@ -55,6 +55,7 @@ type Modal = {
 interface Props {
   id: string;
   root?: boolean;
+  readonly?: boolean;
   initializeProperties?: Function;
   shortid?: string;
   store?: any;
@@ -82,6 +83,7 @@ interface Props {
 
 const DirectoryEntry: React.FunctionComponent<Props> = ({
   id,
+  readonly,
   root,
   initializeProperties,
   shortid,
@@ -338,6 +340,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
           <Entry
             id={id}
             shortid={shortid}
+            readonly={readonly}
             title={title}
             depth={depth}
             type={open ? 'directory-open' : 'directory'}
@@ -346,7 +349,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
             onClick={toggleOpen}
             renameValidator={validateDirectoryTitle}
             discardModuleChanges={confirmDiscardChanges}
-            rename={!root && renameDirectory}
+            rename={!readonly && !root && renameDirectory}
             onCreateModuleClick={onCreateModuleClick}
             onCreateDirectoryClick={onCreateDirectoryClick}
             onUploadFileClick={isLoggedIn && privacy === 0 && onUploadFileClick}
@@ -378,6 +381,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
           )}
           <DirectoryChildren
             depth={depth}
+            readonly={readonly}
             renameModule={renameModule}
             parentShortid={shortid}
             renameValidator={validateModuleTitle}
@@ -443,6 +447,7 @@ const entryTarget = {
   },
 
   canDrop: (props, monitor) => {
+    if (props.readonly) return false;
     if (monitor == null) return false;
     const source = monitor.getItem();
     if (source == null) return false;

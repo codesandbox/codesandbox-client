@@ -33,6 +33,7 @@ import { ConfigurationFiles as ConfigurationFilesNew } from './screens/Configura
 import { Deployment as DeploymentNew } from './screens/Deployment/index';
 import { Explorer } from './screens/Explorer';
 import { GitHub as GitHubNew } from './screens/GitHub';
+import { GithubSummary } from './screens/GithubSummary';
 import { Live as LiveNew } from './screens/Live';
 import { NotOwnedSandboxInfo as NotOwnedSandboxInfoNew } from './screens/NotOwnedSandboxInfo';
 import { ProjectInfo as ProjectInfoNew } from './screens/ProjectInfo';
@@ -46,6 +47,7 @@ const WorkspaceWrapper = NEW_SIDEBAR ? ThemeProvider : React.Fragment;
 const workspaceTabs = {
   project: NEW_SIDEBAR ? ProjectInfoNew : ProjectInfo,
   'project-summary': NEW_SIDEBAR ? NotOwnedSandboxInfoNew : NotOwnedSandboxInfo,
+  'github-summary': GithubSummary,
   github: NEW_SIDEBAR ? GitHubNew : GitHub,
   files: NEW_SIDEBAR ? Explorer : FilesItem,
   deploy: NEW_SIDEBAR ? DeploymentNew : Deployment,

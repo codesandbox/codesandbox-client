@@ -4,6 +4,8 @@ import {
   REDESIGNED_SIDEBAR,
 } from '@codesandbox/common/lib/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { config } from 'app/overmind';
+import { Overmind } from 'overmind';
 
 export interface INavigationItem {
   id: string;
@@ -30,6 +32,12 @@ export const PROJECT_TEMPLATE: INavigationItem = {
 export const PROJECT_SUMMARY: INavigationItem = {
   id: 'project-summary',
   name: 'Sandbox Info',
+  hasCustomHeader: true,
+};
+
+export const GITHUB_SUMMARY: INavigationItem = {
+  id: 'github-summary',
+  name: 'Github Info',
   hasCustomHeader: true,
 };
 
@@ -91,10 +99,13 @@ export function getDisabledItems(store: any): INavigationItem[] {
   return [];
 }
 
-export default function getItems(store: any): INavigationItem[] {
+export default function getItems(
+  store: Overmind<typeof config>['state']
+): INavigationItem[] {
   if (!store.editor.currentSandbox) {
     return [];
   }
+
   if (
     store.live.isLive &&
     !(
@@ -110,6 +121,10 @@ export default function getItems(store: any): INavigationItem[] {
   }
 
   const { currentSandbox } = store.editor;
+
+  if (currentSandbox.git) {
+    return [GITHUB_SUMMARY];
+  }
 
   if (!currentSandbox || !currentSandbox.owned) {
     return [PROJECT_SUMMARY, CONFIGURATION];
