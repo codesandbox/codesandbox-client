@@ -362,10 +362,10 @@ export const deleteSandbox: AsyncAction<string[]> = async (
 ) => {
   const { user } = state;
   if (!user) return;
+  await effects.gql.mutations.deleteSandboxes({
+    sandboxIds: ids,
+  });
   try {
-    await effects.gql.mutations.deleteSandboxes({
-      sandboxIds: ids,
-    });
     actions.dashboard.deleteSandboxFromState(ids);
   } catch (error) {
     effects.notificationToast.error(
@@ -420,6 +420,23 @@ export const renameSandboxInState: Action<{
   );
 };
 
+export const renameFolderInState: Action<{ path: string; newPath: string }> = (
+  { state: { dashboard } },
+  { path, newPath }
+) => {
+  dashboard.allCollections = dashboard.allCollections.map(folder => {
+    if (folder.path === path) {
+      return {
+        ...folder,
+        path: newPath,
+        name,
+      };
+    }
+
+    return folder;
+  });
+};
+
 export const renameSandbox: AsyncAction<{
   id: string;
   title: string;
@@ -447,35 +464,25 @@ export const renameFolder: AsyncAction<{
   name: string;
   path: string;
   newPath: string;
-}> = async ({ state: { dashboard }, effects }, { name, path, newPath }) => {
+}> = async (
+  { state: { dashboard }, effects, actions },
+  { name, path, newPath }
+) => {
   if (!dashboard.allCollections) return;
-  dashboard.allCollections = dashboard.allCollections.map(folder => {
-    if (folder.path === path) {
-      return {
-        ...folder,
-        path: newPath,
-        name,
-      };
-    }
-
-    return folder;
+  actions.dashboard.renameFolderInState({
+    path,
+    newPath,
   });
+
   try {
     await effects.gql.mutations.renameFolder({
       newPath,
       path,
     });
   } catch {
-    dashboard.allCollections = dashboard.allCollections.map(folder => {
-      if (folder.path === newPath) {
-        return {
-          ...folder,
-          path,
-          name,
-        };
-      }
-
-      return folder;
+    actions.dashboard.renameFolderInState({
+      path: newPath,
+      newPath: path,
     });
     effects.notificationToast.error('There was a problem renaming you folder');
   }
@@ -485,16 +492,17 @@ export const deleteFolder: AsyncAction<{
   path: string;
 }> = async ({ state: { dashboard }, effects }, { path }) => {
   if (!dashboard.allCollections) return;
+  const oldCollections = dashboard.allCollections;
+  dashboard.allCollections = dashboard.allCollections.filter(
+    folder => folder.path !== path
+  );
   try {
     await effects.gql.mutations.deleteFolder({
       path,
       teamId: dashboard.activeTeam,
     });
-
-    dashboard.allCollections = dashboard.allCollections.filter(
-      folder => folder.path !== path
-    );
   } catch {
+    dashboard.allCollections = oldCollections;
     effects.notificationToast.error('There was a problem deleting you folder');
   }
 };
