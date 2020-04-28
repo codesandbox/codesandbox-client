@@ -4,8 +4,8 @@ import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { Grid, Column } from '@codesandbox/components';
-import { SandboxCard } from 'app/pages/NewDashboard/Components/SandboxCard';
+import { Grid } from '@codesandbox/components';
+import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
 import css from '@styled-system/css';
 import { getPossibleTemplates } from '../../utils';
 
@@ -21,10 +21,6 @@ export const SearchComponent = ({ location }) => {
     actions.dashboard.getPage(sandboxesTypes.SEARCH);
   }, [actions.dashboard, location.search, filters, orderBy]);
 
-  const possibleTemplates = sandboxes.SEARCH
-    ? getPossibleTemplates(sandboxes.SEARCH)
-    : [];
-
   const query = location.search.split('query=')[1];
   const length = (sandboxes.SEARCH || []).length;
   const title = `${length} ${
@@ -33,7 +29,10 @@ export const SearchComponent = ({ location }) => {
 
   return (
     <>
-      <Header title={title} templates={possibleTemplates} />
+      <Header
+        title={title}
+        templates={getPossibleTemplates(sandboxes.SEARCH)}
+      />
       <section style={{ position: 'relative' }}>
         {sandboxes.SEARCH ? (
           <Grid
@@ -45,9 +44,7 @@ export const SearchComponent = ({ location }) => {
             })}
           >
             {sandboxes.SEARCH.map(sandbox => (
-              <Column key={sandbox.id}>
-                <SandboxCard template sandbox={sandbox} />
-              </Column>
+              <Sandbox key={sandbox.id} template sandbox={sandbox} />
             ))}
           </Grid>
         ) : (

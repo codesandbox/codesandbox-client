@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Element, Column, Grid } from '@codesandbox/components';
+import { Element, Grid } from '@codesandbox/components';
 
 import css from '@styled-system/css';
 import { withRouter } from 'react-router-dom';
@@ -7,7 +7,7 @@ import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { useOvermind } from 'app/overmind';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { getPossibleTemplates } from '../../utils';
-import { SandboxCard } from '../../../Components/SandboxCard';
+import { Sandbox } from '../../../Components/Sandbox';
 import { FolderCard } from '../../../Components/FolderCard';
 
 export const AllPage = ({ match: { params }, history }) => {
@@ -50,13 +50,9 @@ export const AllPage = ({ match: { params }, history }) => {
       collection => collection.level === level && collection.parent === param
     );
 
-  const possibleTemplates = allCollections
-    ? getPossibleTemplates(allCollections)
-    : [];
-
   return (
     <Element style={{ height: '100%', position: 'relative' }}>
-      <Header path={param} templates={possibleTemplates} />
+      <Header path={param} templates={getPossibleTemplates(allCollections)} />
       {allCollections ? (
         <Grid
           rowGap={6}
@@ -67,16 +63,12 @@ export const AllPage = ({ match: { params }, history }) => {
           })}
         >
           {getFoldersByPath.map(folder => (
-            <Column key={folder.id}>
-              <FolderCard {...folder} />
-            </Column>
+            <FolderCard key={folder.id} {...folder} />
           ))}
           {sandboxes.ALL &&
             sandboxes.ALL[cleanParam] &&
             sandboxes.ALL[cleanParam].map(sandbox => (
-              <Column key={sandbox.id}>
-                <SandboxCard sandbox={sandbox} />
-              </Column>
+              <Sandbox key={sandbox.id} sandbox={sandbox} />
             ))}
         </Grid>
       ) : (

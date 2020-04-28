@@ -52,6 +52,7 @@ type State = {
   selectedSandboxes: string[];
   trashSandboxIds: string[];
   isDragging: boolean;
+  viewMode: 'grid' | 'list';
   orderBy: OrderBy;
   filters: {
     blacklistedTemplates: string[];
@@ -88,6 +89,7 @@ export const state: State = {
     ALL: null,
     SEARCH: null,
   },
+  viewMode: 'grid',
   allCollections: null,
   activeTeam: null,
   teams: [],

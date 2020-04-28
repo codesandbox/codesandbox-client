@@ -31,6 +31,6 @@ export const Header = ({ templates, path, title }: Props) => (
       <Breadcrumbs param={path} />
     )}
 
-    <Filters possibleTemplates={templates} />
+    {templates && <Filters possibleTemplates={templates} />}
   </Stack>
 );

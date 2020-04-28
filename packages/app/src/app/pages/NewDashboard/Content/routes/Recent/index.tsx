@@ -19,15 +19,11 @@ export const Recent = () => {
     actions.dashboard.getPage(sandboxesTypes.RECENT);
   }, [actions.dashboard]);
 
-  const possibleTemplates = sandboxes.RECENT
-    ? getPossibleTemplates(sandboxes.RECENT)
-    : [];
-
   return (
     <>
       <Header
         title="Recently Modified Sandboxes"
-        templates={possibleTemplates}
+        templates={getPossibleTemplates(sandboxes.RECENT)}
       />
       <section style={{ position: 'relative' }}>
         {sandboxes.RECENT ? (

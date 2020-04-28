@@ -4,7 +4,7 @@ import css from '@styled-system/css';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { Element, Grid } from '@codesandbox/components';
-import { SandboxCard } from '../../../Components/SandboxCard';
+import { Sandbox } from '../../../Components/Sandbox';
 import { Loading } from '../../../Components/Loading';
 
 export const Templates = () => {
@@ -32,7 +32,7 @@ export const Templates = () => {
           })}
         >
           {sandboxes.TEMPLATES.map(({ sandbox }) => (
-            <SandboxCard template sandbox={sandbox} key={sandbox.id} />
+            <Sandbox template sandbox={sandbox} key={sandbox.id} />
           ))}
         </Grid>
       ) : (

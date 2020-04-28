@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { Element, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-import { SandboxCard } from 'app/pages/NewDashboard/Components/SandboxCard';
+import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
+import { Header } from 'app/pages/NewDashboard/Components/Header';
 
 export const Deleted = () => {
   const {
@@ -19,12 +20,7 @@ export const Deleted = () => {
 
   return (
     <Element style={{ position: 'relative' }}>
-      <Text marginBottom={1} block weight="bold" size={5}>
-        Recently Deleted
-      </Text>
-      <Text variant="muted" block marginBottom={11}>
-        Sandboxes, Templates and Folders are permanently deleted after 30 days{' '}
-      </Text>
+      <Header title="Recently Deleted" />
       {sandboxes.DELETED ? (
         <>
           {deletedSandboxesByTime.week.length && (
@@ -33,7 +29,7 @@ export const Deleted = () => {
                 Archived this week
               </Text>
               {deletedSandboxesByTime.week.map(sandbox => (
-                <SandboxCard sandbox={sandbox} key={sandbox.id} />
+                <Sandbox sandbox={sandbox} key={sandbox.id} />
               ))}
             </Element>
           )}
@@ -43,7 +39,7 @@ export const Deleted = () => {
                 Archived Earlier
               </Text>
               {deletedSandboxesByTime.older.map(sandbox => (
-                <SandboxCard sandbox={sandbox} key={sandbox.id} />
+                <Sandbox sandbox={sandbox} key={sandbox.id} />
               ))}
             </>
           )}
