@@ -402,20 +402,25 @@ export const renameSandboxInState: Action<{
   );
 };
 
-export const renameSandbox: AsyncAction<{ id: string; title: string }> = async (
-  { effects, actions },
-  { id, title }
-) => {
+export const renameSandbox: AsyncAction<{
+  id: string;
+  title: string;
+  oldTitle: string;
+}> = async ({ effects, actions }, { id, title, oldTitle }) => {
+  actions.dashboard.renameSandboxInState({
+    id,
+    title,
+  });
   try {
     await effects.gql.mutations.renameSandbox({
       id,
       title,
     });
+  } catch {
     actions.dashboard.renameSandboxInState({
       id,
-      title,
+      title: oldTitle,
     });
-  } catch {
     effects.notificationToast.error('There was a problem renaming you sandbox');
   }
 };
@@ -425,24 +430,34 @@ export const renameFolder: AsyncAction<{
   path: string;
   newPath: string;
 }> = async ({ state: { dashboard }, effects }, { name, path, newPath }) => {
+  dashboard.allCollections = dashboard.allCollections.map(folder => {
+    if (folder.path === path) {
+      return {
+        ...folder,
+        path: newPath,
+        name,
+      };
+    }
+
+    return folder;
+  });
   try {
     await effects.gql.mutations.renameFolder({
       newPath,
       path,
     });
-
+  } catch {
     dashboard.allCollections = dashboard.allCollections.map(folder => {
-      if (folder.path === path) {
+      if (folder.path === newPath) {
         return {
           ...folder,
-          path: newPath,
+          path,
           name,
         };
       }
 
       return folder;
     });
-  } catch {
     effects.notificationToast.error('There was a problem renaming you folder');
   }
 };
