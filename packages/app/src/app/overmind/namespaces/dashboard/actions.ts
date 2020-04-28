@@ -435,6 +435,7 @@ export const renameFolderInState: Action<{ path: string; newPath: string }> = (
   { state: { dashboard } },
   { path, newPath }
 ) => {
+  if (!dashboard.allCollections) return;
   dashboard.allCollections = dashboard.allCollections.map(folder => {
     if (folder.path === path) {
       return {
