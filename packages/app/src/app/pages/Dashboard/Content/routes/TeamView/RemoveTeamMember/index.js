@@ -54,8 +54,8 @@ export const RemoveTeamMember = ({
           onCompleted={() => {
             notificationState.addNotification({
               message: isOwnUser
-                ? 'Succesfully left the team'
-                : 'Succesfully removed from team',
+                ? 'Successfully left the team'
+                : 'Successfully removed from team',
               status: NotificationStatus.SUCCESS,
             });
 

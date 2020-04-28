@@ -3,6 +3,7 @@ import { identify } from '@codesandbox/common/lib/utils/analytics';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
+
 import HeroA from '../screens/home/hero';
 import Prototype from '../screens/home/prototype';
 import Started from '../screens/home/started';
@@ -13,6 +14,8 @@ import Share from '../screens/home/share';
 import Join from '../screens/home/join';
 import Explore from '../screens/home/explore';
 
+import { identifyFromCookie } from '../utils/identifyFromCookie';
+
 // eslint-disable-next-line
 console.log(
   'Hi, We love curious people that dive in to see how things are working! We are always looking for talented, hard working people. Drop us a line and show us your work. We are hiring: https://codesandbox.io/jobs'
@@ -21,6 +24,7 @@ console.log(
 const Homepage = () => (
   <Layout noWrapperStyling>
     <TitleAndMetaTags />
+
     <section
       css={`
         margin-bottom: 8rem;
@@ -57,6 +61,8 @@ const Homepage = () => (
   </Layout>
 );
 
-identify('hero0420', 'A');
+
+identifyFromCookie('heroAB', 'hero0420');
+
 
 export default Homepage;

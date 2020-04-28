@@ -5,7 +5,10 @@ import { Text, ITextProps } from '../Text';
 
 type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
   React.AnchorHTMLAttributes<HTMLSpanElement> &
-  ITextProps;
+  ITextProps & {
+    as?: any;
+    to?: string;
+  };
 
 const LinkElement = styled(Text).attrs({ as: 'a' })<LinkProps>(
   css({

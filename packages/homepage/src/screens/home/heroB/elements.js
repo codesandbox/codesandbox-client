@@ -217,11 +217,13 @@ export const Sandbox = styled.a`
   background-color: transparent;
   background-size: cover;
 
+
   transition: all 100ms ease-in;
 
   animation: easeInOutBack 1s cubic-bezier(0.68, -0.6, 0.12, 2);
   animation-iteration-count: 1;
   animation-fill-mode: backwards;
+
 
   @media screen and (min-width: 576px) {
     width: 3rem;
@@ -240,6 +242,7 @@ export const Sandbox = styled.a`
     opacity: 1;
   }
 
+
   @keyframes easeInOutBack {
     0% {
       opacity: 0;
@@ -251,4 +254,5 @@ export const Sandbox = styled.a`
       transform: scale(1);
     }
   }
+
 `;

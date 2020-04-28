@@ -1,8 +1,7 @@
 import React, { MouseEvent } from 'react';
-import VERSION from '@codesandbox/common/lib/version';
 import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
-import { Button, Stack, Text, Element, Link } from '@codesandbox/components';
+import { Button, Stack, Element, Link } from '@codesandbox/components';
 import { SpectrumLogo, GithubIcon, TwitterIcon } from './icons';
 
 const links = [
@@ -64,13 +63,6 @@ export const Delete = () => {
             </Link>
           ))}
         </Stack>
-        <Text
-          size={1}
-          block
-          css={css({ color: 'sideBar.border', textAlign: 'right' })}
-        >
-          {VERSION}
-        </Text>
       </Element>
     </Element>
   );

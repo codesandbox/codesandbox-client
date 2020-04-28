@@ -214,13 +214,13 @@ commands:
             JEST_JUNIT_OUTPUT: '/tmp/test-results/js-test-results.xml'
       - store_test_results: *store_test_results
       - store_artifacts: *store_artifacts
-  test_visual_regressions:
-    description: "Test Chromatic with 'yarn chromatic'"
-    steps:
-      - restore_cache: *restore_deps_cache
-      - attach_workspace: *attach_deps_workspace
-      - run:
-          command: yarn chromatic
+  # test_visual_regressions:
+  #   description: "Test Chromatic with 'yarn chromatic'"
+  #   steps:
+  #     - restore_cache: *restore_deps_cache
+  #     - attach_workspace: *attach_deps_workspace
+  #     - run:
+  #         command: yarn chromatic
   test_jest:
     description: 'Test with `yarn test`'
     steps:
@@ -298,11 +298,11 @@ jobs:
     steps:
       - checkout_with_cache
       - test_integrations
-  test-visual-regressions:
-    executor: node
-    steps:
-      - checkout_with_cache
-      - test_visual_regressions
+  # test-visual-regressions:
+  #   executor: node
+  #   steps:
+  #     - checkout_with_cache
+  #     - test_visual_regressions
   test-jest:
     executor: node
     steps:
@@ -363,9 +363,9 @@ workflows:
       - test-integrations:
           requires:
             - build-deps
-      - test-visual-regressions:
-          requires:
-            - build-deps
+      # - test-visual-regressions:
+      #     requires:
+      #       - build-deps
       - typecheck:
           requires:
             - build-deps
@@ -389,6 +389,7 @@ workflows:
             - typecheck
             - test-integrations
             - test-jest
+            # - test-visual-regressions
           filters:
             branches:
               only:

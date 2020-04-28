@@ -33,11 +33,11 @@ export const notificationAdded: Action<{
   title: string;
   notificationType: NotificationType;
   timeAlive?: number;
-}> = ({ effects }, { title, notificationType, timeAlive = 1 }) => {
+}> = ({ effects }, { title, notificationType, timeAlive }) => {
   effects.notificationToast.add({
     message: title,
     status: convertTypeToStatus(notificationType),
-    timeAlive: timeAlive * 1000,
+    timeAlive: timeAlive ? timeAlive * 1000 : undefined,
   });
 };
 
@@ -247,11 +247,11 @@ export const refetchSandboxInfo: AsyncAction = async ({
 export const acceptTeamInvitation: Action<{
   teamName: string;
   teamId: string;
-}> = ({ effects }, { teamName, teamId }) => {
+}> = ({ effects, actions }, { teamName }) => {
+  effects.analytics.track('Team - Join Team', { source: 'invitation' });
   effects.analytics.track('Team - Invitation Accepted', {});
 
-  effects.analytics.setGroup('teamName', teamName);
-  effects.analytics.setGroup('teamId', teamId);
+  actions.internal.trackCurrentTeams();
 
   effects.notificationToast.success(`Accepted invitation to ${teamName}`);
 };
@@ -260,7 +260,7 @@ export const rejectTeamInvitation: Action<{ teamName: string }> = (
   { effects },
   { teamName }
 ) => {
-  effects.analytics.track('Team - Invitation Accepted', {});
+  effects.analytics.track('Team - Invitation Rejected', {});
 
   effects.notificationToast.success(`Rejected invitation to ${teamName}`);
 };

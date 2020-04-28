@@ -39,9 +39,10 @@ export const Description = styled.h2`
 export const Banner = styled.div`
   ${({ color, reverse, coverSmaller }) => css`
     background: #${color};
+
     height: ${coverSmaller ? '380px' : '480px'};
     width: 100%;
-    border-radius: 4px;
+
     margin-bottom: 7.5rem;
     margin-top: 3.75rem;
     position: relative;
@@ -52,6 +53,9 @@ export const Banner = styled.div`
     align-items: flex-end;
     flex-grow: 0;
     flex-shrink: 1;
+    /* border-radius: 4px; */
+    clip-path: inset(0px round 0.5rem);
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
     overflow: hidden;
 
     ${props => props.theme.breakpoints.lg} {

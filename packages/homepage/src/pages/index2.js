@@ -1,5 +1,5 @@
 import React from 'react';
-import { identify } from '@codesandbox/common/lib/utils/analytics';
+
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
@@ -13,6 +13,10 @@ import Teams from '../screens/home/teams';
 import Share from '../screens/home/share';
 import Join from '../screens/home/join';
 import Explore from '../screens/home/explore';
+
+
+import { identifyFromCookie } from '../utils/identifyFromCookie';
+
 
 // eslint-disable-next-line
 console.log(
@@ -58,6 +62,8 @@ const Homepage = () => (
   </Layout>
 );
 
-identify('hero0420', 'B');
+
+identifyFromCookie('heroAB', 'hero0420');
+
 
 export default Homepage;

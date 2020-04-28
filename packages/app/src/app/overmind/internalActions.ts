@@ -31,7 +31,7 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
     actions.internal.setPatronPrice();
     actions.internal.setSignedInCookie();
     effects.analytics.identify('signed_in', true);
-    effects.analytics.setUserId(state.user.id);
+    effects.analytics.setUserId(state.user.id, state.user.email);
     actions.internal.setStoredSettings();
     effects.live.connect();
     actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
@@ -507,4 +507,18 @@ export const handleError: Action<{
       ? { actions: notificationActions }
       : {}),
   });
+};
+
+export const trackCurrentTeams: AsyncAction = async ({ state, effects }) => {
+  const { me } = await effects.gql.queries.teams({});
+  if (me) {
+    effects.analytics.setGroup(
+      'teamName',
+      me.teams.map(m => m.name)
+    );
+    effects.analytics.setGroup(
+      'teamId',
+      me.teams.map(m => m.id)
+    );
+  }
 };

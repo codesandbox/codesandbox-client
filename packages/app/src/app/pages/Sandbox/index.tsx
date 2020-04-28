@@ -5,9 +5,10 @@ import Padding from '@codesandbox/common/lib/components/spacing/Padding';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { Title } from 'app/components/Title';
 import { useOvermind } from 'app/overmind';
+import { ThemeProvider } from '@codesandbox/components';
+import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 import { Navigation } from 'app/pages/common/Navigation';
-import { NotFound } from 'app/pages/common/NotFound';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
@@ -52,9 +53,13 @@ export const Sandbox = React.memo<Props>(
     );
 
     function getContent() {
-      const { hasLogIn, isLoggedIn } = state;
+      const {
+        hasLogIn,
+        isLoggedIn,
+        editor: { error },
+      } = state;
 
-      if (state.editor.error) {
+      if (error) {
         const isGithub = match.params.id.includes('github');
 
         return (
@@ -70,7 +75,7 @@ export const Sandbox = React.memo<Props>(
               Something went wrong
             </div>
             <Title style={{ fontSize: '1.25rem', marginBottom: 0 }}>
-              {state.editor.error}
+              {error.message}
             </Title>
             <br />
             <div style={{ display: 'flex', maxWidth: 400, width: '100%' }}>
@@ -81,7 +86,7 @@ export const Sandbox = React.memo<Props>(
                 {hasLogIn ? 'Dashboard' : 'Homepage'}
               </Button>
             </div>
-            {isLoggedIn && isGithub && (
+            {isLoggedIn && isGithub && error.status !== 422 && (
               <div
                 style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}
               >
@@ -127,10 +132,6 @@ export const Sandbox = React.memo<Props>(
         );
       }
 
-      if (state.editor.notFound) {
-        return <NotFound />;
-      }
-
       return null;
     }
 
@@ -138,26 +139,28 @@ export const Sandbox = React.memo<Props>(
 
     if (content) {
       return (
-        <Fullscreen>
-          <Padding
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100vw',
-              height: '100vh',
-            }}
-            margin={1}
-          >
-            <Navigation title="Sandbox Editor" />
-            <Centered
-              style={{ flex: 1, width: '100%', height: '100%' }}
-              horizontal
-              vertical
+        <ThemeProvider theme={codesandboxBlack}>
+          <Fullscreen>
+            <Padding
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100vw',
+                height: '100vh',
+              }}
+              margin={1}
             >
-              {content}
-            </Centered>
-          </Padding>
-        </Fullscreen>
+              <Navigation title="Sandbox Editor" />
+              <Centered
+                style={{ flex: 1, width: '100%', height: '100%' }}
+                horizontal
+                vertical
+              >
+                {content}
+              </Centered>
+            </Padding>
+          </Fullscreen>
+        </ThemeProvider>
       );
     }
 

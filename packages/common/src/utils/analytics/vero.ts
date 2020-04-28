@@ -59,12 +59,13 @@ export const setAnonymousUserId = (userId: string) => {
     'user',
     {
       id: userId,
+      email: 'anon@codesandbox.io',
     },
   ]);
   processArray();
 };
 
-export const setUserId = (userId: string) => {
+export const setUserId = (userId: string, email: string) => {
   if (!_script) {
     _script = loadScript();
   }
@@ -74,6 +75,7 @@ export const setUserId = (userId: string) => {
       'user',
       {
         id: userId,
+        email,
       },
     ]);
   } else {

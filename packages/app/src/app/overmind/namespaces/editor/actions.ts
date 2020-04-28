@@ -168,7 +168,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   }
 
   state.editor.isLoading = !hasExistingSandbox;
-  state.editor.notFound = false;
 
   const url = new URL(document.location.href);
   const invitationToken = url.searchParams.get('ts');
@@ -212,13 +211,25 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     actions.internal.setCurrentSandbox(sandbox);
     actions.workspace.openDefaultItem();
   } catch (error) {
-    state.editor.notFound = true;
-    let detail = error.response?.data?.errors?.detail;
+    const data = error.response?.data;
+    const errors = data?.errors;
+    let detail = errors?.detail;
+
     if (Array.isArray(detail)) {
       detail = detail[0];
+    } else if (typeof errors === 'object') {
+      detail = errors[Object.keys(errors)[0]];
+    } else if (data?.error) {
+      detail = data?.error;
     }
-    state.editor.error = detail || error.message;
+
+    state.editor.error = {
+      message: detail || error.message,
+      status: error.response.status,
+    };
+
     state.editor.isLoading = false;
+
     return;
   }
 

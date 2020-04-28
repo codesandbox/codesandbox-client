@@ -1,5 +1,5 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import theme from '@codesandbox/common/lib/design-language/theme';
+import theme from '@codesandbox/components/lib/design-language/theme';
 import track from '@codesandbox/common/lib/utils/analytics';
 import React, { FunctionComponent } from 'react';
 import { ThemeProvider } from 'styled-components';

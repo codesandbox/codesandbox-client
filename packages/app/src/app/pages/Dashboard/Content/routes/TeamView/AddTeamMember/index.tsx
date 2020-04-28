@@ -1,14 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { Button } from '@codesandbox/components';
+
 import { useMutation } from '@apollo/react-hooks';
 
-import Input from '@codesandbox/common/lib/components/Input';
-import { Button } from '@codesandbox/common/lib/components/Button';
 import track from '@codesandbox/common/lib/utils/analytics';
 
+import { UserSearchInput } from 'app/components/UserSearchInput';
+
 import { useOvermind } from 'app/overmind';
-import { INVITE_TO_TEAM } from '../../../../queries';
+import { INVITE_TO_TEAM, INVITE_TO_TEAM_VIA_EMAIL } from '../../../../queries';
 import { IAddTeamMemberProps, IMutationVariables } from './types';
 
 const ErrorMessage = styled.div`
@@ -20,57 +22,77 @@ const ErrorMessage = styled.div`
 
 export const AddTeamMember: React.FC<IAddTeamMemberProps> = ({ teamId }) => {
   const { actions } = useOvermind();
-  const [inviteToTeam, { loading, error }] = useMutation(INVITE_TO_TEAM);
-  let input: HTMLInputElement = null;
+  const [inviteToTeam] = useMutation(INVITE_TO_TEAM);
+  const [inviteToTeamViaEmail] = useMutation(INVITE_TO_TEAM_VIA_EMAIL);
 
-  const submit: React.FormEventHandler = e => {
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<
+    null | (Error & { graphQLErrors: Error[] })
+  >(null);
+  const [inviteValue, setInviteValue] = React.useState('');
+
+  const submit: React.FormEventHandler = async e => {
     e.preventDefault();
     e.stopPropagation();
+    setLoading(true);
+    setError(null);
 
-    let isEmail = input.value.includes('@');
+    try {
+      const isEmail = inviteValue.includes('@');
 
-    track('Team - Add Member', { email: isEmail });
+      track('Team - Add Member', { email: isEmail });
 
-    isEmail = false;
+      // We don't enable email for now for privacy reasons
 
-    // We don't enable email for now for privacy reasons
+      const variables: IMutationVariables = { teamId };
 
-    const variables: IMutationVariables = { teamId };
+      const inviteVar = inviteValue;
+      setInviteValue('');
 
-    const { value } = input;
-    if (isEmail) {
-      variables.email = value;
-    } else {
-      variables.username = value;
-    }
+      if (isEmail) {
+        variables.email = inviteVar;
+        await inviteToTeamViaEmail({
+          variables,
+        });
+      } else {
+        variables.username = inviteVar;
+        await inviteToTeam({
+          variables,
+        });
+      }
 
-    inviteToTeam({
-      variables,
-    }).then(() => {
       actions.notificationAdded({
-        title: `${value} has been invited!`,
+        title: `${inviteVar} has been invited!`,
         notificationType: 'success',
       });
-    });
-
-    input.value = '';
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const errorMessage =
-    error && error.graphQLErrors && error.graphQLErrors[0].message;
+    error &&
+    error.graphQLErrors &&
+    error.graphQLErrors[0] &&
+    error.graphQLErrors[0].message;
 
   return (
     <>
       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       <form style={{ display: 'flex' }} onSubmit={loading ? undefined : submit}>
-        <Input
-          ref={node => {
-            input = node;
+        <UserSearchInput
+          inputValue={inviteValue}
+          onInputValueChange={val => {
+            setInviteValue(val);
           }}
-          placeholder="Add member by username"
-          block
         />
-        <Button type="submit" disabled={loading} style={{ width: 200 }} small>
+        <Button
+          type="submit"
+          loading={loading}
+          style={{ width: 200, marginLeft: 8 }}
+        >
           {loading ? 'Adding Member...' : 'Add Member'}
         </Button>
       </form>

@@ -1,21 +1,25 @@
 import React from 'react';
-
-import { PreferenceContainer, Rule, SubContainer, Title } from '../elements';
+import { Text, Element } from '@codesandbox/components';
+import { Rule, SubContainer } from '../elements';
 import { Comments } from './Comments';
 import { ContainerLSP } from './ContainerLSP';
 
+const dev = process.env.NODE_ENV === 'development';
+
 export const Experiments: React.FunctionComponent = () => (
-  <div>
-    <Title>Experiments</Title>
+  <>
+    <Text size={4} marginBottom={6} block variant="muted" weight="bold">
+      Experiments
+    </Text>
     <SubContainer>
-      <PreferenceContainer>
-        {process.env.NODE_ENV === 'development' && (
+      <Element paddingTop={2}>
+        {dev && (
           <>
             <Comments /> <Rule />
           </>
         )}
         <ContainerLSP />
-      </PreferenceContainer>
+      </Element>
     </SubContainer>
-  </div>
+  </>
 );

@@ -12,6 +12,7 @@ import {
   SandboxFs,
 } from '@codesandbox/common/lib/types';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
+import delay from '@codesandbox/common/lib/utils/delay';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { json } from 'overmind';
@@ -21,7 +22,50 @@ import { appendFile, mkdir, rename, rmdir, unlink, writeFile } from './utils';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
-const SERVICE_URL = 'https://ata-fetcher.cloud/api/v5/typings';
+const SERVICE_URL = 'https://ata.codesandbox.io/api/v8';
+const BUCKET_URL = 'https://prod-packager-packages.codesandbox.io/v1/typings';
+
+async function callApi(url: string, method = 'GET') {
+  const response = await fetch(url, {
+    method,
+  });
+
+  if (!response.ok) {
+    const error = new Error(response.statusText || '' + response.status);
+    const message = await response.json();
+    // @ts-ignore
+    error.response = message;
+    // @ts-ignore
+    error.statusCode = response.status;
+    throw error;
+  }
+
+  return response.json();
+}
+
+async function requestPackager(url: string, retryCount = 0, method = 'GET') {
+  let retries = 0;
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      const manifest = await callApi(url, method); // eslint-disable-line no-await-in-loop
+
+      return manifest;
+    } catch (e) {
+      if (e.response && e.statusCode !== 504) {
+        throw new Error(e.response.error);
+      }
+      // 403 status code means the bundler is still bundling
+      if (retries < retryCount) {
+        retries += 1;
+        await delay(1000 * 2); // eslint-disable-line no-await-in-loop
+      } else {
+        throw e;
+      }
+    }
+  }
+}
 
 declare global {
   interface Window {
@@ -395,13 +439,19 @@ class SandboxFsSync {
   }
 
   private async fetchDependencyTypingFiles(name: string, version: string) {
-    const fetchRequest = await fetch(`${SERVICE_URL}/${name}@${version}.json`);
+    const dependencyQuery = encodeURIComponent(`${name}@${version}`);
 
-    if (!fetchRequest.ok) {
-      throw new Error('Fetch error');
+    try {
+      const url = `${BUCKET_URL}/${name}/${version}.json`;
+      return await requestPackager(url, 0).then(x => x.files);
+    } catch (e) {
+      // Hasn't been generated
     }
 
-    const { files } = await fetchRequest.json();
+    const { files } = await requestPackager(
+      `${SERVICE_URL}/${dependencyQuery}.json`,
+      3
+    );
 
     return files;
   }

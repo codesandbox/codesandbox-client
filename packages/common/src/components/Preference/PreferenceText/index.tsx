@@ -1,6 +1,6 @@
 import { ChangeEvent, createElement, FunctionComponent } from 'react';
 
-import { Input, TextArea } from './elements';
+import { Input, Textarea } from '@codesandbox/components';
 
 type Props = {
   block?: boolean;
@@ -9,6 +9,7 @@ type Props = {
   rows?: number;
   setValue: (value: string) => void;
   value: string;
+  style?: any;
 };
 
 export const PreferenceText: FunctionComponent<Props> = ({
@@ -18,11 +19,13 @@ export const PreferenceText: FunctionComponent<Props> = ({
   value,
   ...props
 }) => {
-  const handleChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
-    setValue(target.value);
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setValue(e.target.value);
   };
 
-  return createElement(isTextArea ? TextArea : Input, {
+  return createElement(isTextArea ? Textarea : Input, {
     onChange: handleChange,
     placeholder,
     value,
