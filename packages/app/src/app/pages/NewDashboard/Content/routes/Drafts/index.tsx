@@ -26,7 +26,7 @@ export const Drafts = () => {
     <Element style={{ height: '100%', position: 'relative' }}>
       <Header
         path="Drafts"
-        templates={getPossibleTemplates(sandboxes.DRAFTS || [])}
+        templates={getPossibleTemplates(sandboxes.DRAFTS)}
       />
       {sandboxes.DRAFTS ? (
         <Grid

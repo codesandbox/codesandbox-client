@@ -50,13 +50,9 @@ export const AllPage = ({ match: { params }, history }) => {
       collection => collection.level === level && collection.parent === param
     );
 
-  const possibleTemplates = allCollections
-    ? getPossibleTemplates(allCollections)
-    : [];
-
   return (
     <Element style={{ height: '100%', position: 'relative' }}>
-      <Header path={param} templates={possibleTemplates} />
+      <Header path={param} templates={getPossibleTemplates(allCollections)} />
       {allCollections ? (
         <Grid
           rowGap={6}

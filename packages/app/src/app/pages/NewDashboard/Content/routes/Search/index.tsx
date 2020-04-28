@@ -21,10 +21,6 @@ export const SearchComponent = ({ location }) => {
     actions.dashboard.getPage(sandboxesTypes.SEARCH);
   }, [actions.dashboard, location.search, filters, orderBy]);
 
-  const possibleTemplates = sandboxes.SEARCH
-    ? getPossibleTemplates(sandboxes.SEARCH)
-    : [];
-
   const query = location.search.split('query=')[1];
   const length = (sandboxes.SEARCH || []).length;
   const title = `${length} ${
@@ -33,7 +29,10 @@ export const SearchComponent = ({ location }) => {
 
   return (
     <>
-      <Header title={title} templates={possibleTemplates} />
+      <Header
+        title={title}
+        templates={getPossibleTemplates(sandboxes.SEARCH)}
+      />
       <section style={{ position: 'relative' }}>
         {sandboxes.SEARCH ? (
           <Grid
