@@ -2,7 +2,10 @@ import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, TEAM_ID_LOCAL_STORAGE } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { uniq } from 'lodash-es';
-import { Direction } from 'app/graphql/types';
+import {
+  Direction,
+  TemplateFragmentDashboardFragment,
+} from 'app/graphql/types';
 import Fuse from 'fuse.js';
 import { OrderBy, sandboxesTypes } from './state';
 
@@ -192,6 +195,7 @@ export const getDrafts: AsyncAction = withLoadApp(
 export const getSandboxesByPath: AsyncAction<string> = withLoadApp(
   async ({ state, effects }, path) => {
     const { dashboard } = state;
+    const cleanPath = path.split(' ').join('');
     try {
       const data = await effects.gql.queries.sandboxesByPath({
         path: '/' + path,
@@ -201,10 +205,12 @@ export const getSandboxesByPath: AsyncAction<string> = withLoadApp(
         return;
       }
 
-      dashboard.sandboxes[sandboxesTypes.ALL] = {};
-      dashboard.sandboxes[sandboxesTypes.ALL][
-        path.split(' ').join('')
-      ] = data.me.collection.sandboxes.filter(s => !s.customTemplate);
+      dashboard.sandboxes.ALL = {};
+      if (dashboard.sandboxes.ALL) {
+        dashboard.sandboxes.ALL[
+          cleanPath
+        ] = data.me.collection.sandboxes.filter(s => !s.customTemplate);
+      }
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your Sandboxes'
@@ -327,12 +333,23 @@ export const deleteTemplateFromState: Action<string[]> = (
 ) => {
   const { sandboxes } = dashboard;
   ids.map(id => {
-    sandboxes.TEMPLATE_START_PAGE = sandboxes.TEMPLATE_START_PAGE
-      ? sandboxes.TEMPLATES.filter(({ sandbox }) => sandbox.id !== id)
-      : null;
-    sandboxes.TEMPLATES = sandboxes.TEMPLATES
-      ? sandboxes.TEMPLATES.filter(({ sandbox }) => sandbox.id !== id)
-      : null;
+    if (sandboxes.TEMPLATE_START_PAGE) {
+      sandboxes.TEMPLATE_START_PAGE = sandboxes.TEMPLATE_START_PAGE
+        ? sandboxes.TEMPLATE_START_PAGE.filter(
+            ({ sandbox }: TemplateFragmentDashboardFragment) =>
+              sandbox && sandbox.id !== id
+          )
+        : null;
+    }
+
+    if (sandboxes.TEMPLATES) {
+      sandboxes.TEMPLATES = sandboxes.TEMPLATES
+        ? sandboxes.TEMPLATES.filter(
+            ({ sandbox }: TemplateFragmentDashboardFragment) =>
+              sandbox && sandbox.id !== id
+          )
+        : null;
+    }
 
     return null;
   });
@@ -430,6 +447,7 @@ export const renameFolder: AsyncAction<{
   path: string;
   newPath: string;
 }> = async ({ state: { dashboard }, effects }, { name, path, newPath }) => {
+  if (!dashboard.allCollections) return;
   dashboard.allCollections = dashboard.allCollections.map(folder => {
     if (folder.path === path) {
       return {
@@ -465,6 +483,7 @@ export const renameFolder: AsyncAction<{
 export const deleteFolder: AsyncAction<{
   path: string;
 }> = async ({ state: { dashboard }, effects }, { path }) => {
+  if (!dashboard.allCollections) return;
   try {
     await effects.gql.mutations.deleteFolder({
       path,
@@ -510,7 +529,7 @@ export const downloadSandboxes: AsyncAction<string[]> = async (
   }
 };
 
-export const getSearchSandboxes: AsyncAction<string> = withLoadApp(
+export const getSearchSandboxes: AsyncAction<string | null> = withLoadApp(
   async ({ state, effects }, search) => {
     const { dashboard } = state;
     try {
@@ -518,8 +537,8 @@ export const getSearchSandboxes: AsyncAction<string> = withLoadApp(
       if (!data || !data.me || !data.me.sandboxes) {
         return;
       }
-      let lastSandboxes = null;
-      let searchIndex = null;
+      let lastSandboxes: any = null;
+      let searchIndex: any = null;
       const sandboxes = data.me.sandboxes;
 
       if (lastSandboxes === null || lastSandboxes !== sandboxes) {

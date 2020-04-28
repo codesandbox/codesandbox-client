@@ -105,22 +105,28 @@ export const state: State = {
     const noTemplateSandboxes = recentSandboxes.filter(s => !s.customTemplate);
     const timeSandboxes = noTemplateSandboxes.reduce(
       (accumulator, currentValue: any) => {
+        if (!currentValue.updatedAt) return accumulator;
         if (isSameDay(new Date(currentValue.updatedAt), new Date())) {
+          // these errors make no sense
+          // @ts-ignore
           accumulator.day.push(currentValue);
 
           return accumulator;
         }
         if (isSameWeek(new Date(currentValue.updatedAt), new Date())) {
+          // @ts-ignore
           accumulator.week.push(currentValue);
 
           return accumulator;
         }
         if (isSameMonth(new Date(currentValue.updatedAt), new Date())) {
+          // @ts-ignore
           accumulator.month.push(currentValue);
 
           return accumulator;
         }
 
+        // @ts-ignore
         accumulator.older.push(currentValue);
 
         return accumulator;
@@ -145,12 +151,15 @@ export const state: State = {
     const noTemplateSandboxes = deletedSandboxes.filter(s => !s.customTemplate);
     const timeSandboxes = noTemplateSandboxes.reduce(
       (accumulator, currentValue) => {
+        if (!currentValue.removedAt) return accumulator;
         if (isSameWeek(new Date(currentValue.removedAt), new Date())) {
+          // these errors make no sense
+          // @ts-ignore
           accumulator.week.push(currentValue);
 
           return accumulator;
         }
-
+        // @ts-ignore
         accumulator.older.push(currentValue);
 
         return accumulator;
@@ -195,7 +204,10 @@ export const state: State = {
 
       return s[orderField];
     }) as Sandbox[]).filter(
-      x => x.source && blacklistedTemplates.indexOf(x.source.template) === -1
+      x =>
+        x.source &&
+        x.source.template &&
+        blacklistedTemplates.indexOf(x.source.template) === -1
     );
 
     if (orderOrder === 'desc') {
