@@ -84,6 +84,7 @@ export const Sidebar = props => {
                 </Menu.Item>
                 {dashboard.teams.map(team => (
                   <Menu.Item
+                    key={team.id}
                     as={Menu.Item}
                     css={{ textAlign: 'left' }}
                     onSelect={() =>
@@ -98,32 +99,32 @@ export const Sidebar = props => {
           )}
         </ListAction>
         <ListAction>
-          <Link to="start" as={RouterLink}>
+          <Link to="/new-dashboard/start" as={RouterLink}>
             Start
           </Link>
         </ListAction>
         <ListAction>
-          <Link to="drafts" as={RouterLink}>
+          <Link to="/new-dashboard/drafts" as={RouterLink}>
             Drafts
           </Link>
         </ListAction>
         <ListAction>
-          <Link to="recent" as={RouterLink}>
+          <Link to="/new-dashboard/recent" as={RouterLink}>
             Recent
           </Link>
         </ListAction>
         <ListAction>
-          <Link to="all" as={RouterLink}>
+          <Link to="/new-dashboard/all" as={RouterLink}>
             All Sandboxes
           </Link>
         </ListAction>
         <ListAction>
-          <Link to="templates" as={RouterLink}>
+          <Link to="/new-dashboard/templates" as={RouterLink}>
             Templates
           </Link>
         </ListAction>
         <ListAction>
-          <Link to="deleted" as={RouterLink}>
+          <Link to="/new-dashboard/deleted" as={RouterLink}>
             Recently Deleted
           </Link>
         </ListAction>

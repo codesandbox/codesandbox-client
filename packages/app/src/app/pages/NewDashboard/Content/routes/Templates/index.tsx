@@ -1,7 +1,9 @@
 import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
 import css from '@styled-system/css';
-import { Element, Text } from '@codesandbox/components';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
+import { Header } from 'app/pages/NewDashboard/Components/Header';
+import { Element, Grid } from '@codesandbox/components';
 import { SandboxCard } from '../../../Components/SandboxCard';
 import { Loading } from '../../../Components/Loading';
 
@@ -9,32 +11,30 @@ export const Templates = () => {
   const {
     actions,
     state: {
-      user,
-      dashboard: { templateSandboxes, loadingPage, activeTeam },
+      dashboard: { sandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.getTemplateSandboxes();
-  }, [actions.dashboard, user, activeTeam]);
+    actions.dashboard.getPage(sandboxesTypes.TEMPLATES);
+  }, [actions.dashboard]);
 
   return (
     <Element css={css({ position: 'relative' })}>
-      <Text marginBottom={4} block>
-        Templates
-      </Text>
-      {!loadingPage ? (
-        <Element
+      <Header title="Templates" />
+      {sandboxes.TEMPLATES ? (
+        <Grid
+          rowGap={6}
+          columnGap={6}
+          marginBottom={8}
           css={css({
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4,1fr)',
-            gridGap: 6,
+            gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
           })}
         >
-          {templateSandboxes.map(({ sandbox }) => (
-            <SandboxCard sandbox={sandbox} key={sandbox.id} />
+          {sandboxes.TEMPLATES.map(({ sandbox }) => (
+            <SandboxCard template sandbox={sandbox} key={sandbox.id} />
           ))}
-        </Element>
+        </Grid>
       ) : (
         <Loading />
       )}

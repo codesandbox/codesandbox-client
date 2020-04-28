@@ -3,29 +3,29 @@ import { Element, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { SandboxCard } from 'app/pages/NewDashboard/Components/SandboxCard';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 
 export const Deleted = () => {
   const {
     actions,
     state: {
-      user,
-      dashboard: { deletedSandboxesByTime, loadingPage },
+      dashboard: { deletedSandboxesByTime, sandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.getDeletedSandboxes();
-  }, [actions.dashboard, user]);
+    actions.dashboard.getPage(sandboxesTypes.DELETED);
+  }, [actions.dashboard]);
 
   return (
     <Element style={{ position: 'relative' }}>
-      <Text marginBottom={2} block>
+      <Text marginBottom={1} block weight="bold" size={5}>
         Recently Deleted
       </Text>
       <Text variant="muted" block marginBottom={11}>
         Sandboxes, Templates and Folders are permanently deleted after 30 days{' '}
       </Text>
-      {!loadingPage ? (
+      {sandboxes.DELETED ? (
         <>
           {deletedSandboxesByTime.week.length && (
             <Element marginBottom={14}>
