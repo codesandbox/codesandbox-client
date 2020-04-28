@@ -21,6 +21,7 @@ export const SandboxCard = ({ sandbox, template, ...props }: Props) => {
     await actions.dashboard.renameSandbox({
       id: sandbox.id,
       title: newName,
+      oldTitle: sandboxTitle,
     });
     setEdit(false);
   };
