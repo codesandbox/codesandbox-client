@@ -9,7 +9,7 @@ import {
 import Fuse from 'fuse.js';
 import { OrderBy, sandboxesTypes } from './state';
 
-const VIEW_MODE_DASHBOARD = 'VIEW_MODE_CODESANDBOX_DASHBOARD';
+const VIEW_MODE_DASHBOARD = 'VIEW_MODE_DASHBOARD';
 
 // DELETE WHEN NEW DASHBOARD ONLINE
 export const dashboardMounted: AsyncAction = async (context, value) => {
