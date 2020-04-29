@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Element, Grid } from '@codesandbox/components';
-
-import css from '@styled-system/css';
 import { withRouter } from 'react-router-dom';
-import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { useOvermind } from 'app/overmind';
-import { Loading } from 'app/pages/NewDashboard/Components/Loading';
+import { Element, Column } from '@codesandbox/components';
+import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { getPossibleTemplates } from '../../utils';
+import { SandboxGrid } from '../../../Components/SandboxGrid';
 import { Sandbox } from '../../../Components/Sandbox';
 import { FolderCard } from '../../../Components/FolderCard';
+import { SkeletonCard } from '../../../Components/SandboxCard';
 
 export const AllPage = ({ match: { params }, history }) => {
   const [level, setLevel] = useState(0);
@@ -54,25 +53,28 @@ export const AllPage = ({ match: { params }, history }) => {
     <Element style={{ height: '100%', position: 'relative' }}>
       <Header path={param} templates={getPossibleTemplates(allCollections)} />
       {allCollections ? (
-        <Grid
-          rowGap={6}
-          columnGap={6}
-          marginBottom={8}
-          css={css({
-            gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
-          })}
-        >
+        <SandboxGrid>
           {getFoldersByPath.map(folder => (
-            <FolderCard key={folder.id} {...folder} />
+            <Column>
+              <FolderCard key={folder.id} {...folder} />
+            </Column>
           ))}
           {sandboxes.ALL &&
             sandboxes.ALL[cleanParam] &&
             sandboxes.ALL[cleanParam].map(sandbox => (
-              <Sandbox key={sandbox.id} sandbox={sandbox} />
+              <Column>
+                <Sandbox key={sandbox.id} sandbox={sandbox} />
+              </Column>
             ))}
-        </Grid>
+        </SandboxGrid>
       ) : (
-        <Loading />
+        <SandboxGrid>
+          {Array.from(Array(8).keys()).map(n => (
+            <Column key={n}>
+              <SkeletonCard />
+            </Column>
+          ))}
+        </SandboxGrid>
       )}
     </Element>
   );

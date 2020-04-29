@@ -23,7 +23,6 @@ export const Content = () => {
 
   return (
     <Element
-      as="main"
       css={css({
         maxWidth: 992,
         paddingX: 4,

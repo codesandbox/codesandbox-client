@@ -3,12 +3,17 @@ import React, { FunctionComponent } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
-import { ThemeProvider, Stack } from '@codesandbox/components';
+import { ThemeProvider, Stack, Element } from '@codesandbox/components';
+import { createGlobalStyle } from 'styled-components';
 import css from '@styled-system/css';
 
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { Content } from './Content';
+
+const GlobalStyles = createGlobalStyle({
+  body: { overflow: 'hidden' },
+});
 
 export const Dashboard: FunctionComponent = () => {
   const {
@@ -21,6 +26,7 @@ export const Dashboard: FunctionComponent = () => {
 
   return (
     <ThemeProvider theme={codesandboxBlack}>
+      <GlobalStyles />
       <Stack
         direction="vertical"
         css={css({
@@ -34,7 +40,17 @@ export const Dashboard: FunctionComponent = () => {
         <Header />
         <Stack css={{ flexGrow: 1 }}>
           <Sidebar />
-          <Content />
+
+          <Element
+            as="main"
+            css={{
+              width: '100%',
+              height: 'calc(100vh - 48px)',
+              overflowY: 'scroll',
+            }}
+          >
+            <Content />
+          </Element>
         </Stack>
       </Stack>
     </ThemeProvider>

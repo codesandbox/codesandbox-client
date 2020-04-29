@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Stack, Element, Text, Stats, Input } from '@codesandbox/components';
+import {
+  Stack,
+  Element,
+  Text,
+  Stats,
+  Input,
+  SkeletonText,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { MenuOptions } from './Menu';
@@ -93,3 +100,26 @@ const kFormatter = (num: number): string => {
 
   return num.toString();
 };
+
+export const SkeletonCard = () => (
+  <Stack
+    direction="vertical"
+    gap={4}
+    css={css({
+      width: '100%',
+      height: 240,
+      border: '1px solid',
+      borderColor: 'grays.600',
+      borderRadius: 'medium',
+      overflow: 'hidden',
+      transition: 'all ease-in-out',
+      transitionDuration: theme => theme.speeds[4],
+    })}
+  >
+    <SkeletonText css={{ width: '100%', height: 160 }} />
+    <Stack direction="vertical" gap={2} marginX={4}>
+      <SkeletonText css={{ width: 120 }} />
+      <SkeletonText css={{ width: 180 }} />
+    </Stack>
+  </Stack>
+);

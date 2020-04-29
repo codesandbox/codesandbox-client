@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import {
   Stack,
-  Grid,
   Column,
   Text,
   Link,
@@ -11,9 +11,8 @@ import {
   Icon,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { SandboxCard } from 'app/pages/NewDashboard/Components/SandboxCard';
-import { Loading } from 'app/pages/NewDashboard/Components/Loading';
-import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
+import { SandboxGrid } from '../../../Components/SandboxGrid';
+import { SandboxCard, SkeletonCard } from '../../../Components/SandboxCard';
 
 export const StartSandboxes = () => {
   const {
@@ -35,22 +34,21 @@ export const StartSandboxes = () => {
         </Stack>
 
         {sandboxes.TEMPLATE_START_PAGE ? (
-          <Grid
-            rowGap={6}
-            columnGap={6}
-            marginBottom={8}
-            css={css({
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            })}
-          >
+          <SandboxGrid>
             {sandboxes.TEMPLATE_START_PAGE.map(({ sandbox }) => (
               <Column key={sandbox.id}>
                 <SandboxCard template sandbox={sandbox} />
               </Column>
             ))}
-          </Grid>
+          </SandboxGrid>
         ) : (
-          <Loading />
+          <SandboxGrid>
+            {Array.from(Array(4).keys()).map(n => (
+              <Column key={n}>
+                <SkeletonCard />
+              </Column>
+            ))}
+          </SandboxGrid>
         )}
       </section>
 
@@ -63,7 +61,20 @@ export const StartSandboxes = () => {
         </Stack>
 
         {sandboxes.RECENT_START_PAGE ? (
-          <Grid
+          <SandboxGrid>
+            <Column>
+              <NewSandbox
+                onClick={() => actions.modalOpened({ modal: 'newSandbox' })}
+              />
+            </Column>
+            {sandboxes.RECENT_START_PAGE.map(sandbox => (
+              <Column key={sandbox.id}>
+                <SandboxCard sandbox={sandbox} />
+              </Column>
+            ))}
+          </SandboxGrid>
+        ) : (
+          <SandboxGrid
             rowGap={6}
             columnGap={6}
             marginBottom={8}
@@ -72,38 +83,42 @@ export const StartSandboxes = () => {
             })}
           >
             <Column>
-              <Button
-                variant="link"
+              <NewSandbox
                 onClick={() => actions.modalOpened({ modal: 'newSandbox' })}
-                css={css({
-                  height: 240,
-                  fontSize: 3,
-                  border: '1px solid',
-                  borderColor: 'grays.600',
-                  borderRadius: 'medium',
-                  transition: 'all ease-in',
-                  transitionDuration: theme => theme.speeds[2],
-                  ':hover, :focus': {
-                    transform: 'scale(0.98)',
-                  },
-                })}
-              >
-                <Stack direction="vertical" align="center" gap={4}>
-                  <Icon name="plusInCircle" size={24} />
-                  <Text>New Sandbox</Text>
-                </Stack>
-              </Button>
+              />
             </Column>
-            {sandboxes.RECENT_START_PAGE.map(sandbox => (
-              <Column key={sandbox.id}>
-                <SandboxCard sandbox={sandbox} />
+            {Array.from(Array(7).keys()).map(n => (
+              <Column key={n}>
+                <SkeletonCard />
               </Column>
             ))}
-          </Grid>
-        ) : (
-          <Loading />
+          </SandboxGrid>
         )}
       </section>
     </>
   );
 };
+
+const NewSandbox = ({ onClick }) => (
+  <Button
+    variant="link"
+    onClick={onClick}
+    css={css({
+      height: 240,
+      fontSize: 3,
+      border: '1px solid',
+      borderColor: 'grays.600',
+      borderRadius: 'medium',
+      transition: 'all ease-in',
+      transitionDuration: theme => theme.speeds[2],
+      ':hover, :focus': {
+        transform: 'scale(0.98)',
+      },
+    })}
+  >
+    <Stack direction="vertical" align="center" gap={4}>
+      <Icon name="plusInCircle" size={24} />
+      <Text>New Sandbox</Text>
+    </Stack>
+  </Button>
+);

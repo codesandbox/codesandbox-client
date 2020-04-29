@@ -2,10 +2,11 @@ import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
 import css from '@styled-system/css';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { Element, Grid } from '@codesandbox/components';
+import { Element, Column } from '@codesandbox/components';
+import { Header } from '../../../Components/Header';
+import { SandboxGrid } from '../../../Components/SandboxGrid';
 import { Sandbox } from '../../../Components/Sandbox';
-import { Loading } from '../../../Components/Loading';
+import { SkeletonCard } from '../../../Components/SandboxCard';
 
 export const Templates = () => {
   const {
@@ -23,20 +24,21 @@ export const Templates = () => {
     <Element css={css({ position: 'relative' })}>
       <Header title="Templates" />
       {sandboxes.TEMPLATES ? (
-        <Grid
-          rowGap={6}
-          columnGap={6}
-          marginBottom={8}
-          css={css({
-            gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
-          })}
-        >
+        <SandboxGrid>
           {sandboxes.TEMPLATES.map(({ sandbox }) => (
-            <Sandbox template sandbox={sandbox} key={sandbox.id} />
+            <Column>
+              <Sandbox template sandbox={sandbox} key={sandbox.id} />
+            </Column>
           ))}
-        </Grid>
+        </SandboxGrid>
       ) : (
-        <Loading />
+        <SandboxGrid>
+          {Array.from(Array(8).keys()).map(n => (
+            <Column key={n}>
+              <SkeletonCard />
+            </Column>
+          ))}
+        </SandboxGrid>
       )}
     </Element>
   );
