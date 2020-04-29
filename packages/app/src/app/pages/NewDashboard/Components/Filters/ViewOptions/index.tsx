@@ -35,6 +35,7 @@ export const ViewOptions: FunctionComponent = () => {
         <Menu.List>
           {STATES.map(viewState => (
             <Menu.Item
+              key={viewState.key}
               field={viewState.key}
               onSelect={() => viewModeChanged({ mode: viewState.key })}
             >

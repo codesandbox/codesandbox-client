@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link as LinkBase } from 'react-router-dom';
-import { Stack, Text, Input, Link } from '@codesandbox/components';
+import { Stack, Text, Input, Link, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { join, dirname } from 'path';
@@ -8,10 +8,11 @@ import { MenuOptions } from './Menu';
 
 type Props = {
   name: string;
+  sandboxes: number;
   path: string;
 };
 
-export const FolderCard = ({ name, path, ...props }: Props) => {
+export const FolderCard = ({ name, path, sandboxes, ...props }: Props) => {
   const { actions } = useOvermind();
   const [edit, setEdit] = useState(false);
   const [newName, setNewName] = useState(name);
@@ -66,18 +67,23 @@ export const FolderCard = ({ name, path, ...props }: Props) => {
           </svg>
         </Stack>
         <Stack justify="space-between" align="center" marginLeft={4}>
-          {edit ? (
-            <form onSubmit={editFolderName}>
-              <Input
-                value={newName}
-                onChange={e => setNewName(e.target.value)}
-              />
-            </form>
-          ) : (
-            <Text size={3} weight="medium" paddingTop={2}>
-              {name}
+          <Element>
+            {edit ? (
+              <form onSubmit={editFolderName}>
+                <Input
+                  value={newName}
+                  onChange={e => setNewName(e.target.value)}
+                />
+              </form>
+            ) : (
+              <Text size={3} weight="medium" paddingTop={2}>
+                {name}
+              </Text>
+            )}
+            <Text marginTop={2} size={3} block variant="muted">
+              {sandboxes} {sandboxes === 1 ? 'sandbox' : 'sandboxes'}
             </Text>
-          )}
+          </Element>
           <MenuOptions path={path} setEdit={setEdit} />
         </Stack>
       </Stack>

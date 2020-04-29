@@ -74,6 +74,9 @@ export const getCollections: Query<
     me {
       collections(teamId: $teamId) {
         ...sidebarCollectionDashboard
+        sandboxes {
+          id
+        }
       }
     }
   }
