@@ -1,6 +1,14 @@
 import React, { useEffect } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Text, Button, Grid, Column } from '@codesandbox/components';
+import {
+  Stack,
+  Grid,
+  Column,
+  Text,
+  Link,
+  Button,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SandboxCard } from 'app/pages/NewDashboard/Components/SandboxCard';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
@@ -21,16 +29,17 @@ export const StartSandboxes = () => {
   return (
     <>
       <section style={{ position: 'relative' }}>
-        <Text marginBottom={4} block>
-          Recently used Templates
-        </Text>
+        <Stack justify="space-between" marginBottom={4}>
+          <Text>Recently Used Templates</Text>
+        </Stack>
+
         {sandboxes.TEMPLATE_START_PAGE ? (
           <Grid
             rowGap={6}
             columnGap={6}
             marginBottom={8}
             css={css({
-              gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
             })}
           >
             {sandboxes.TEMPLATE_START_PAGE.map(({ sandbox }) => (
@@ -45,20 +54,20 @@ export const StartSandboxes = () => {
       </section>
 
       <section style={{ position: 'relative' }}>
-        <Text
-          marginBottom={4}
-          block
-          css={css({ position: 'relative', zIndex: 99 })}
-        >
-          Your Recent Sandboxes
-        </Text>
+        <Stack justify="space-between" align="center" marginBottom={4}>
+          <Text>Your Recent Sandboxes</Text>
+          <Link as={RouterLink} to="recent" size={3} variant="muted">
+            Show more
+          </Link>
+        </Stack>
+
         {sandboxes.RECENT_START_PAGE ? (
           <Grid
             rowGap={6}
             columnGap={6}
             marginBottom={8}
             css={css({
-              gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
             })}
           >
             <Column>

@@ -54,10 +54,10 @@ const PortalStyles = createGlobalStyle(
       '&[data-selected]': {
         outline: 'none',
         backgroundColor: 'menuList.hoverBackground',
-        color: 'menuList.foreground',
+        color: 'menuList.hoverForeground',
       },
       // override reach ui styles
-      font: 'ineherit',
+      font: 'inherit',
     },
   }),
   styledcss`

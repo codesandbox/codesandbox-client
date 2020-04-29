@@ -47,13 +47,14 @@ export const SandboxCard = ({ sandbox, template, ...props }: Props) => {
     >
       <Element
         as="div"
-        css={{
+        css={css({
           height: 160,
+          backgroundColor: 'grays.600',
           backgroundImage: `url(${sandbox.screenshotUrl})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-        }}
+        })}
       />
       <Stack justify="space-between" align="center" marginLeft={4}>
         {edit ? (
