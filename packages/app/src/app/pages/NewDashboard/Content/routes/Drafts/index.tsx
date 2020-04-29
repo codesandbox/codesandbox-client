@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
-import { Element, Grid } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import css from '@styled-system/css';
-import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { Loading } from 'app/pages/NewDashboard/Components/Loading';
+import { Element, Column } from '@codesandbox/components';
+
 import { getPossibleTemplates } from '../../utils';
+import { Header } from '../../../Components/Header';
+
+import { SandboxGrid } from '../../../Components/SandboxGrid';
 import { Sandbox } from '../../../Components/Sandbox';
+import { SkeletonCard } from '../../../Components/SandboxCard';
 import { useBottomScroll } from './useBottomScroll';
 
 export const Drafts = () => {
@@ -29,20 +31,19 @@ export const Drafts = () => {
         templates={getPossibleTemplates(sandboxes.DRAFTS)}
       />
       {sandboxes.DRAFTS ? (
-        <Grid
-          rowGap={6}
-          columnGap={6}
-          marginBottom={8}
-          css={css({
-            gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
-          })}
-        >
+        <SandboxGrid>
           {visibleSandboxes.map(sandbox => (
             <Sandbox key={sandbox.id} sandbox={sandbox} />
           ))}
-        </Grid>
+        </SandboxGrid>
       ) : (
-        <Loading />
+        <SandboxGrid>
+          {Array.from(Array(8).keys()).map(n => (
+            <Column key={n}>
+              <SkeletonCard />
+            </Column>
+          ))}
+        </SandboxGrid>
       )}
     </Element>
   );

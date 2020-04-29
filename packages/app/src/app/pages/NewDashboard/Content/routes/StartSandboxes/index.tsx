@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import {
   Stack,
-  Grid,
   Column,
   Text,
   Link,
@@ -11,11 +11,8 @@ import {
   Icon,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import {
-  SandboxCard,
-  SkeletonCard,
-} from 'app/pages/NewDashboard/Components/SandboxCard';
-import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
+import { SandboxGrid } from '../../../Components/SandboxGrid';
+import { SandboxCard, SkeletonCard } from '../../../Components/SandboxCard';
 
 export const StartSandboxes = () => {
   const {
@@ -37,35 +34,21 @@ export const StartSandboxes = () => {
         </Stack>
 
         {sandboxes.TEMPLATE_START_PAGE ? (
-          <Grid
-            rowGap={6}
-            columnGap={6}
-            marginBottom={8}
-            css={css({
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            })}
-          >
+          <SandboxGrid>
             {sandboxes.TEMPLATE_START_PAGE.map(({ sandbox }) => (
               <Column key={sandbox.id}>
                 <SandboxCard template sandbox={sandbox} />
               </Column>
             ))}
-          </Grid>
+          </SandboxGrid>
         ) : (
-          <Grid
-            rowGap={6}
-            columnGap={6}
-            marginBottom={8}
-            css={css({
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            })}
-          >
+          <SandboxGrid>
             {Array.from(Array(4).keys()).map(n => (
               <Column key={n}>
                 <SkeletonCard />
               </Column>
             ))}
-          </Grid>
+          </SandboxGrid>
         )}
       </section>
 
@@ -78,14 +61,7 @@ export const StartSandboxes = () => {
         </Stack>
 
         {sandboxes.RECENT_START_PAGE ? (
-          <Grid
-            rowGap={6}
-            columnGap={6}
-            marginBottom={8}
-            css={css({
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            })}
-          >
+          <SandboxGrid>
             <Column>
               <NewSandbox
                 onClick={() => actions.modalOpened({ modal: 'newSandbox' })}
@@ -96,9 +72,9 @@ export const StartSandboxes = () => {
                 <SandboxCard sandbox={sandbox} />
               </Column>
             ))}
-          </Grid>
+          </SandboxGrid>
         ) : (
-          <Grid
+          <SandboxGrid
             rowGap={6}
             columnGap={6}
             marginBottom={8}
@@ -116,7 +92,7 @@ export const StartSandboxes = () => {
                 <SkeletonCard />
               </Column>
             ))}
-          </Grid>
+          </SandboxGrid>
         )}
       </section>
     </>
