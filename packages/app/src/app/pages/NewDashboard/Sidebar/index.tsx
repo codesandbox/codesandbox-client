@@ -78,6 +78,9 @@ export const Sidebar = props => {
                   width: '100%',
                   height: '100%',
                   paddingLeft: 2,
+                  borderBottom: '1px solid',
+                  borderColor: 'sideBar.border',
+                  borderRadius: 0,
                 })}
               >
                 <Stack as="span" align="center">
@@ -95,12 +98,31 @@ export const Sidebar = props => {
                 </Stack>
                 <Icon name="caret" size={8} />
               </Stack>
-              <Menu.List css={{ width: SIDEBAR_WIDTH }}>
+              <Menu.List style={{ width: SIDEBAR_WIDTH, borderRadius: 0 }}>
                 <Menu.Item
                   css={{ textAlign: 'left' }}
                   onSelect={() => actions.dashboard.setActiveTeam({ id: null })}
                 >
-                  <Text size={3}>{user.username} (Personal)</Text>
+                  <Stack align="center">
+                    <Stack
+                      as="span"
+                      css={css({ width: 8 })}
+                      align="center"
+                      justify="center"
+                    >
+                      <Avatar user={user} css={css({ size: 5 })} />
+                    </Stack>
+                    <Text
+                      size={3}
+                      weight={
+                        activeAccount.username === user.username
+                          ? 'semibold'
+                          : 'normal'
+                      }
+                    >
+                      {user.username} (Personal)
+                    </Text>
+                  </Stack>
                 </Menu.Item>
                 {dashboard.teams.map(team => (
                   <Menu.Item
@@ -111,7 +133,32 @@ export const Sidebar = props => {
                       actions.dashboard.setActiveTeam({ id: team.id })
                     }
                   >
-                    <Text size={3}>{team.name}</Text>
+                    <Stack align="center">
+                      <Stack
+                        as="span"
+                        css={css({ width: 8 })}
+                        align="center"
+                        justify="center"
+                      >
+                        <Avatar
+                          user={{
+                            username: team.name,
+                            avatarUrl: 'https://github.com/github.png',
+                          }}
+                          css={css({ size: 5 })}
+                        />
+                      </Stack>
+                      <Text
+                        size={3}
+                        weight={
+                          activeAccount.username === team.name
+                            ? 'semibold'
+                            : 'normal'
+                        }
+                      >
+                        {team.name}
+                      </Text>
+                    </Stack>
                   </Menu.Item>
                 ))}
               </Menu.List>
