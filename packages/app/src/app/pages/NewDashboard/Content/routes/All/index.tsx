@@ -69,7 +69,7 @@ export const AllPage = ({ match: { params }, history }) => {
         </SandboxGrid>
       ) : (
         <SandboxGrid>
-          {Array.from(Array(4).keys()).map(n => (
+          {Array.from(Array(8).keys()).map(n => (
             <Column key={n}>
               <SkeletonCard />
             </Column>
