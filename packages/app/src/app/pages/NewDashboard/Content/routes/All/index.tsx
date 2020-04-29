@@ -11,6 +11,7 @@ import { SkeletonCard } from '../../../Components/SandboxCard';
 
 export const AllPage = ({ match: { params }, history }) => {
   const [level, setLevel] = useState(0);
+  const [creating, setCreating] = useState(false);
   const param = params.path || '';
   const cleanParam = param.split(' ').join('');
   const {
@@ -43,6 +44,12 @@ export const AllPage = ({ match: { params }, history }) => {
     }
   }, [param, actions.dashboard, activeTeam]);
 
+  const createNewFolder = (name: string) => {
+    setCreating(false);
+    const newPath = params.path ? `/${param}/${name}` : `${param}/${name}`;
+    actions.dashboard.createFolder(newPath);
+  };
+
   const getFoldersByPath =
     allCollections &&
     allCollections.filter(
@@ -51,20 +58,21 @@ export const AllPage = ({ match: { params }, history }) => {
 
   return (
     <Element style={{ height: '100%', position: 'relative' }}>
-      <Header path={param} templates={getPossibleTemplates(allCollections)} />
+      <Header
+        path={param}
+        templates={getPossibleTemplates(allCollections)}
+        createNewFolder={() => setCreating(true)}
+      />
       {allCollections ? (
         <SandboxGrid>
+          {creating && <FolderCard key="fake" newFolder={createNewFolder} />}
           {getFoldersByPath.map(folder => (
-            <Column>
-              <FolderCard key={folder.id} {...folder} />
-            </Column>
+            <FolderCard key={folder.id} {...folder} />
           ))}
           {sandboxes.ALL &&
             sandboxes.ALL[cleanParam] &&
             sandboxes.ALL[cleanParam].map(sandbox => (
-              <Column>
-                <Sandbox key={sandbox.id} sandbox={sandbox} />
-              </Column>
+              <Sandbox key={sandbox.id} sandbox={sandbox} />
             ))}
         </SandboxGrid>
       ) : (

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Element } from '@codesandbox/components';
 import { withRouter } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { SandboxItem } from '../SandboxItem';
@@ -10,7 +11,11 @@ export const SandboxComponent = props => {
   } = useOvermind();
 
   if (dashboard.viewMode === 'list' || props.match.path.includes('deleted')) {
-    return <SandboxItem {...props} />;
+    return (
+      <Element style={{ gridColumn: '1/-1' }}>
+        <SandboxItem {...props} />
+      </Element>
+    );
   }
   return <SandboxCard {...props} />;
 };

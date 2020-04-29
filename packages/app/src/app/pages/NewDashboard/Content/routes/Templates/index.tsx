@@ -22,13 +22,11 @@ export const Templates = () => {
 
   return (
     <Element css={css({ position: 'relative' })}>
-      <Header title="Templates" />
+      <Header title="Templates" templates={[]} />
       {sandboxes.TEMPLATES ? (
         <SandboxGrid>
           {sandboxes.TEMPLATES.map(({ sandbox }) => (
-            <Column>
-              <Sandbox template sandbox={sandbox} key={sandbox.id} />
-            </Column>
+            <Sandbox template sandbox={sandbox} key={sandbox.id} />
           ))}
         </SandboxGrid>
       ) : (
