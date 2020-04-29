@@ -1,5 +1,5 @@
 # source: https://codesandbox.io/api/graphql
-# timestamp: Tue Apr 28 2020 12:51:15 GMT+0200 (Central European Summer Time)
+# timestamp: Wed Apr 29 2020 14:46:25 GMT+0200 (Central European Summer Time)
 
 schema {
   query: RootQuery

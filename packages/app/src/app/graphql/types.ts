@@ -1346,7 +1346,9 @@ export type AllCollectionsQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
       collections: Array<
-        { __typename?: 'Collection' } & SidebarCollectionDashboardFragment
+        { __typename?: 'Collection' } & {
+          sandboxes: Array<{ __typename?: 'Sandbox' } & Pick<Sandbox, 'id'>>;
+        } & SidebarCollectionDashboardFragment
       >;
     }
   >;

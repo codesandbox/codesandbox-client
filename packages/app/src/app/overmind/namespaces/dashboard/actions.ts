@@ -161,6 +161,7 @@ export const getAllFolders: AsyncAction = withLoadApp(
         const split = collection.path.split('/');
         return {
           ...collection,
+          sandboxes: collection.sandboxes.length,
           parent: split.slice(0, split.length - 1).find(a => a) || '',
           level: split.length - 2,
           name: split[split.length - 1],
@@ -170,12 +171,17 @@ export const getAllFolders: AsyncAction = withLoadApp(
       state.dashboard.allCollections = [
         {
           id: 'drafts-fake-id',
+          sandboxes: (
+            data.me.collections.find(folder => folder.path === '/') || {
+              sandboxes: [],
+            }
+          ).sandboxes.length,
           parent: '',
           name: 'Drafts',
           level: 0,
           path: '/drafts',
         },
-        ...collectionsByLevel.filter(c => c.id),
+        ...collectionsByLevel.filter(c => c.id && c.name),
       ];
     } catch {
       effects.notificationToast.error(
