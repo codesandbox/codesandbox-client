@@ -11,8 +11,10 @@ import {
   Icon,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { SandboxCard } from 'app/pages/NewDashboard/Components/SandboxCard';
-import { Loading } from 'app/pages/NewDashboard/Components/Loading';
+import {
+  SandboxCard,
+  SkeletonCard,
+} from 'app/pages/NewDashboard/Components/SandboxCard';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 
 export const StartSandboxes = () => {
@@ -50,7 +52,20 @@ export const StartSandboxes = () => {
             ))}
           </Grid>
         ) : (
-          <Loading />
+          <Grid
+            rowGap={6}
+            columnGap={6}
+            marginBottom={8}
+            css={css({
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            })}
+          >
+            {Array.from(Array(4).keys()).map(n => (
+              <Column key={n}>
+                <SkeletonCard />
+              </Column>
+            ))}
+          </Grid>
         )}
       </section>
 
@@ -72,27 +87,9 @@ export const StartSandboxes = () => {
             })}
           >
             <Column>
-              <Button
-                variant="link"
+              <NewSandbox
                 onClick={() => actions.modalOpened({ modal: 'newSandbox' })}
-                css={css({
-                  height: 240,
-                  fontSize: 3,
-                  border: '1px solid',
-                  borderColor: 'grays.600',
-                  borderRadius: 'medium',
-                  transition: 'all ease-in',
-                  transitionDuration: theme => theme.speeds[2],
-                  ':hover, :focus': {
-                    transform: 'scale(0.98)',
-                  },
-                })}
-              >
-                <Stack direction="vertical" align="center" gap={4}>
-                  <Icon name="plusInCircle" size={24} />
-                  <Text>New Sandbox</Text>
-                </Stack>
-              </Button>
+              />
             </Column>
             {sandboxes.RECENT_START_PAGE.map(sandbox => (
               <Column key={sandbox.id}>
@@ -101,9 +98,51 @@ export const StartSandboxes = () => {
             ))}
           </Grid>
         ) : (
-          <Loading />
+          <Grid
+            rowGap={6}
+            columnGap={6}
+            marginBottom={8}
+            css={css({
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            })}
+          >
+            <Column>
+              <NewSandbox
+                onClick={() => actions.modalOpened({ modal: 'newSandbox' })}
+              />
+            </Column>
+            {Array.from(Array(7).keys()).map(n => (
+              <Column key={n}>
+                <SkeletonCard />
+              </Column>
+            ))}
+          </Grid>
         )}
       </section>
     </>
   );
 };
+
+const NewSandbox = ({ onClick }) => (
+  <Button
+    variant="link"
+    onClick={onClick}
+    css={css({
+      height: 240,
+      fontSize: 3,
+      border: '1px solid',
+      borderColor: 'grays.600',
+      borderRadius: 'medium',
+      transition: 'all ease-in',
+      transitionDuration: theme => theme.speeds[2],
+      ':hover, :focus': {
+        transform: 'scale(0.98)',
+      },
+    })}
+  >
+    <Stack direction="vertical" align="center" gap={4}>
+      <Icon name="plusInCircle" size={24} />
+      <Text>New Sandbox</Text>
+    </Stack>
+  </Button>
+);
