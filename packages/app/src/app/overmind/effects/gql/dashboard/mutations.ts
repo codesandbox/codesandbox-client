@@ -1,8 +1,6 @@
 import {
   UnmakeSandboxesTemplateMutation,
   UnmakeSandboxesTemplateMutationVariables,
-  CreateCommentMutation,
-  CreateCollectionMutationVariables,
   RenameFolderMutation,
   DeleteFolderMutation,
   DeleteFolderMutationVariables,
@@ -35,6 +33,8 @@ import {
   _RenameSandboxMutationVariables,
   MakeSandboxesTemplateMutation,
   MakeSandboxesTemplateMutationVariables,
+  CreateFolderMutation,
+  CreateFolderMutationVariables,
 } from 'app/graphql/types';
 import gql from 'graphql-tag';
 import { Query } from 'overmind-graphql';
@@ -58,8 +58,8 @@ export const createTeam: Query<
 `;
 
 export const createFolder: Query<
-  CreateCommentMutation,
-  CreateCollectionMutationVariables
+  CreateFolderMutation,
+  CreateFolderMutationVariables
 > = gql`
   mutation createFolder($path: String!, $teamId: ID) {
     createCollection(path: $path, teamId: $teamId) {

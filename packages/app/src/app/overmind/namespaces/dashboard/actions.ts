@@ -191,6 +191,51 @@ export const getAllFolders: AsyncAction = withLoadApp(
   }
 );
 
+export const createFolder: AsyncAction<string> = async (
+  { effects, state },
+  path
+) => {
+  if (!state.dashboard.allCollections) return;
+  const split = path.split('/');
+  const oldFolders = state.dashboard.allCollections;
+  state.dashboard.allCollections = [
+    {
+      path,
+      id: 'FAKE_ID',
+      sandboxes: 0,
+      parent: split.slice(0, split.length - 1).find(a => a) || '',
+      level: split.length - 2,
+      name: split[split.length - 1],
+    },
+    ...state.dashboard.allCollections,
+  ];
+  try {
+    const { createCollection } = await effects.gql.mutations.createFolder({
+      // only way to pass, null is a value in the BE
+      // @ts-ignore
+      teamId: state.dashboard.activeTeam || undefined,
+      path,
+    });
+
+    state.dashboard.allCollections = state.dashboard.allCollections.map(
+      folder => {
+        if (folder.id === 'FAKE_ID') {
+          return {
+            ...folder,
+            id: createCollection.id,
+            path: createCollection.path,
+          };
+        }
+
+        return folder;
+      }
+    );
+  } catch {
+    state.dashboard.allCollections = [...oldFolders];
+    effects.notificationToast.error('There was a problem creating your folder');
+  }
+};
+
 export const getDrafts: AsyncAction = withLoadApp(
   async ({ state, effects }) => {
     const { dashboard } = state;
@@ -585,7 +630,9 @@ export const recoverSandboxes: AsyncAction<string[]> = async (
     await effects.gql.mutations.addSandboxToFolder({
       sandboxIds: ids,
       collectionPath: '/',
-      teamId: state.dashboard.activeTeam,
+      // only way to pass, null is a value in the BE
+      // @ts-ignore
+      teamId: state.dashboard.activeTeam || undefined,
     });
   } catch (error) {
     state.dashboard.sandboxes.DELETED = [...oldDeleted];

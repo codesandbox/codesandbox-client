@@ -7,27 +7,37 @@ import { join, dirname } from 'path';
 import { MenuOptions } from './Menu';
 
 type Props = {
-  name: string;
-  sandboxes: number;
-  path: string;
+  name?: string;
+  sandboxes?: number;
+  path?: string;
+  newFolder?: (a: string) => void;
 };
 
-export const FolderCard = ({ name, path, sandboxes, ...props }: Props) => {
+export const FolderCard = ({
+  newFolder,
+  name,
+  path,
+  sandboxes,
+  ...props
+}: Props) => {
   const { actions } = useOvermind();
   const [edit, setEdit] = useState(false);
   const [newName, setNewName] = useState(name);
 
   const editFolderName = async e => {
     e.preventDefault();
+    if (newFolder) {
+      return newFolder(newName);
+    }
     await actions.dashboard.renameFolder({
       path,
       newPath: join(dirname(path), newName),
     });
-    setEdit(false);
+    return setEdit(false);
   };
 
   return (
-    <Link as={LinkBase} to={`/new-dashboard/all` + path}>
+    <Link as={newFolder ? Element : LinkBase} to={`/new-dashboard/all` + path}>
       <Stack
         direction="vertical"
         gap={2}
@@ -68,7 +78,7 @@ export const FolderCard = ({ name, path, sandboxes, ...props }: Props) => {
         </Stack>
         <Stack justify="space-between" align="center" marginLeft={4}>
           <Element>
-            {edit ? (
+            {edit || newFolder ? (
               <form onSubmit={editFolderName}>
                 <Input
                   value={newName}
@@ -81,10 +91,10 @@ export const FolderCard = ({ name, path, sandboxes, ...props }: Props) => {
               </Text>
             )}
             <Text marginTop={2} size={3} block variant="muted">
-              {sandboxes} {sandboxes === 1 ? 'sandbox' : 'sandboxes'}
+              {sandboxes || 0} {sandboxes === 1 ? 'sandbox' : 'sandboxes'}
             </Text>
           </Element>
-          <MenuOptions path={path} setEdit={setEdit} />
+          {path ? <MenuOptions path={path} setEdit={setEdit} /> : null}
         </Stack>
       </Stack>
     </Link>

@@ -1,6 +1,7 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import css from '@styled-system/css';
-import { Stack, Text } from '@codesandbox/components';
+import { Stack, Text, Button } from '@codesandbox/components';
 import { Breadcrumbs } from '../Breadcrumbs';
 import { Filters } from '../Filters';
 
@@ -8,9 +9,17 @@ type Props = {
   templates?: any[];
   path?: string;
   title?: string;
+  match: any;
+  createNewFolder: () => void;
 };
 
-export const Header = ({ templates, path, title }: Props) => (
+export const HeaderComponent = ({
+  createNewFolder,
+  match,
+  templates,
+  path,
+  title,
+}: Props) => (
   <Stack
     align="center"
     justify="space-between"
@@ -30,7 +39,25 @@ export const Header = ({ templates, path, title }: Props) => (
     ) : (
       <Breadcrumbs param={path} />
     )}
-
-    {templates && <Filters possibleTemplates={templates} />}
+    <Stack gap={4} align="center">
+      {match.path.includes('all') && (
+        <Button
+          onClick={createNewFolder}
+          variant="link"
+          css={css({
+            fontSize: 3,
+            color: 'mutedForeground',
+            padding: 0,
+            width: 'auto',
+          })}
+        >
+          + New Folder
+        </Button>
+      )}
+      {templates && <Filters possibleTemplates={templates} />}
+    </Stack>
   </Stack>
 );
+
+// @ts-ignore
+export const Header = withRouter(HeaderComponent);
