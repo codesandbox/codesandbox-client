@@ -9,11 +9,19 @@ import {
 import Fuse from 'fuse.js';
 import { OrderBy, sandboxesTypes } from './state';
 
+const VIEW_MODE_DASHBOARD = 'VIEW_MODE_DASHBOARD';
+
 // DELETE WHEN NEW DASHBOARD ONLINE
 export const dashboardMounted: AsyncAction = async (context, value) => {
   await withLoadApp()(context, value);
 };
 
+export const newDashboardMounted: Action = ({ state, effects }) => {
+  const localStorageViewMode = effects.browser.storage.get(VIEW_MODE_DASHBOARD);
+  if (localStorageViewMode) {
+    state.dashboard.viewMode = localStorageViewMode;
+  }
+};
 export const sandboxesSelected: Action<{
   sandboxIds: string[];
 }> = ({ state }, { sandboxIds }) => {
@@ -76,6 +84,14 @@ export const searchChanged: Action<{ search: string }> = (
   { search }
 ) => {
   state.dashboard.filters.search = search;
+};
+
+export const viewModeChanged: Action<{ mode: 'grid' | 'list' }> = (
+  { state, effects },
+  { mode }
+) => {
+  state.dashboard.viewMode = mode;
+  effects.browser.storage.set(VIEW_MODE_DASHBOARD, mode);
 };
 
 export const createSandboxClicked: AsyncAction<{
