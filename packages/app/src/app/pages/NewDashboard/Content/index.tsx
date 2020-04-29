@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -14,7 +14,12 @@ import { Search } from './routes/Search';
 export const Content = () => {
   const {
     state: { dashboard },
+    actions,
   } = useOvermind();
+
+  useEffect(() => {
+    actions.dashboard.newDashboardMounted();
+  }, [actions.dashboard]);
 
   return (
     <Element

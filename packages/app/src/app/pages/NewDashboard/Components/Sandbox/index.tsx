@@ -12,7 +12,7 @@ export const SandboxComponent = props => {
 
   if (dashboard.viewMode === 'list' || props.match.path.includes('deleted')) {
     return (
-      <Element style={{ gridColumnStart: 4 }}>
+      <Element style={{ gridColumn: '1/-1' }}>
         <SandboxItem {...props} />
       </Element>
     );
