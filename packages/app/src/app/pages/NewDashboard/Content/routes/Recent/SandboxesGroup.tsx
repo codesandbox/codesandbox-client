@@ -1,8 +1,9 @@
 import React from 'react';
-import { Text, Element, Grid } from '@codesandbox/components';
-import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import { Text, Column } from '@codesandbox/components';
 import { Sandbox } from '../../../Components/Sandbox';
+import { SandboxGrid } from '../../../Components/SandboxGrid';
+import { SkeletonCard } from '../../../Components/SandboxCard';
 
 export const SandboxesGroup = ({ title, time }) => {
   const {
@@ -12,22 +13,32 @@ export const SandboxesGroup = ({ title, time }) => {
   } = useOvermind();
 
   return getFilteredSandboxes(recentSandboxesByTime[time]).length ? (
-    <Element marginBottom={14}>
+    <>
       <Text marginBottom={6} block>
         {title}
       </Text>
-      <Grid
-        rowGap={6}
-        columnGap={6}
-        marginBottom={8}
-        css={css({
-          gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
-        })}
-      >
+      <SandboxGrid>
         {getFilteredSandboxes(recentSandboxesByTime[time]).map(sandbox => (
-          <Sandbox key={sandbox.id} sandbox={sandbox} />
+          <Column>
+            <Sandbox key={sandbox.id} sandbox={sandbox} />
+          </Column>
         ))}
-      </Grid>
-    </Element>
+      </SandboxGrid>
+    </>
   ) : null;
 };
+
+export const SkeletonGroup = ({ title, time }) => (
+  <>
+    <Text marginBottom={6} block>
+      {title}
+    </Text>
+    <SandboxGrid>
+      {Array.from(Array(4).keys()).map(n => (
+        <Column key={n}>
+          <SkeletonCard />
+        </Column>
+      ))}
+    </SandboxGrid>
+  </>
+);
