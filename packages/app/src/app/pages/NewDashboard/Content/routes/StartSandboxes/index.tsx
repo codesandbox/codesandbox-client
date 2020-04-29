@@ -8,6 +8,7 @@ import {
   Text,
   Link,
   Button,
+  Icon,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SandboxCard } from 'app/pages/NewDashboard/Components/SandboxCard';
@@ -87,7 +88,10 @@ export const StartSandboxes = () => {
                   },
                 })}
               >
-                New Sandbox
+                <Stack direction="vertical" align="center" gap={4}>
+                  <Icon name="plusInCircle" size={24} />
+                  <Text>New Sandbox</Text>
+                </Stack>
               </Button>
             </Column>
             {sandboxes.RECENT_START_PAGE.map(sandbox => (
