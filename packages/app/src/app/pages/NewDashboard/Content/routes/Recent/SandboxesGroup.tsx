@@ -19,9 +19,7 @@ export const SandboxesGroup = ({ title, time }) => {
       </Text>
       <SandboxGrid>
         {getFilteredSandboxes(recentSandboxesByTime[time]).map(sandbox => (
-          <Column>
-            <Sandbox key={sandbox.id} sandbox={sandbox} />
-          </Column>
+          <Sandbox key={sandbox.id} sandbox={sandbox} />
         ))}
       </SandboxGrid>
     </>

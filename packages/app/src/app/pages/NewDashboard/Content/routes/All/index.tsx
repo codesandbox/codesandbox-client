@@ -67,16 +67,12 @@ export const AllPage = ({ match: { params }, history }) => {
         <SandboxGrid>
           {creating && <FolderCard key="fake" newFolder={createNewFolder} />}
           {getFoldersByPath.map(folder => (
-            <Column>
-              <FolderCard key={folder.id} {...folder} />
-            </Column>
+            <FolderCard key={folder.id} {...folder} />
           ))}
           {sandboxes.ALL &&
             sandboxes.ALL[cleanParam] &&
             sandboxes.ALL[cleanParam].map(sandbox => (
-              <Column>
-                <Sandbox key={sandbox.id} sandbox={sandbox} />
-              </Column>
+              <Sandbox key={sandbox.id} sandbox={sandbox} />
             ))}
         </SandboxGrid>
       ) : (
