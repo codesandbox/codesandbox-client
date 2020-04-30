@@ -2,15 +2,11 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
-export const MenuOptionsComponent = ({
-  sandbox,
-  template,
-  setEdit,
-  history,
-}) => {
+export const MenuOptions = ({ sandbox, template, setEdit }) => {
   const { effects, actions } = useOvermind();
+  const history = useHistory();
   const url = sandboxUrl({
     id: sandbox.id,
     alias: sandbox.alias,
@@ -25,7 +21,7 @@ export const MenuOptionsComponent = ({
 
   return (
     <Menu>
-      <Menu.IconButton name="more" size={9} title="Sandbox options" />
+      <Menu.IconButton name="more" size={9} title="Sandbox actions" />
       <Menu.List>
         <Menu.Item
           onSelect={() => {
@@ -36,7 +32,7 @@ export const MenuOptionsComponent = ({
         </Menu.Item>
         <Menu.Item
           onSelect={() => {
-            window.open(`https://codesandbox.io${url}`);
+            history.push(url);
           }}
         >
           Open sandbox
@@ -105,6 +101,3 @@ export const MenuOptionsComponent = ({
     </Menu>
   );
 };
-
-// @ts-ignore
-export const MenuOptions = withRouter(MenuOptionsComponent);

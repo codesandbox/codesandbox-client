@@ -131,4 +131,21 @@ Menu.IconButton = MenuIconButton;
 Menu.List = MenuList;
 Menu.Item = MenuItem;
 
+export const isMenuClicked = event => {
+  // don't trigger comment if you click on the menu
+  // we handle this because of an upstream
+  // bug in reach/menu-button
+  const target = event.target as HTMLElement;
+
+  if (
+    target.tagName === 'BUTTON' ||
+    target.tagName === 'svg' ||
+    target.tagName === 'path'
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
 export { Menu };

@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useOvermind } from 'app/overmind';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
   Stack,
   Element,
@@ -6,9 +9,9 @@ import {
   Stats,
   Input,
   SkeletonText,
+  isMenuClicked,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
 import { MenuOptions } from './Menu';
 
 type Props = {
@@ -22,6 +25,12 @@ export const SandboxCard = ({ sandbox, template, ...props }: Props) => {
   const { actions } = useOvermind();
   const [edit, setEdit] = useState(false);
   const [newName, setNewName] = useState(sandboxTitle);
+  const history = useHistory();
+
+  const url = sandboxUrl({
+    id: sandbox.id,
+    alias: sandbox.alias,
+  });
 
   const editSandboxTitle = async e => {
     e.preventDefault();
@@ -46,11 +55,16 @@ export const SandboxCard = ({ sandbox, template, ...props }: Props) => {
         overflow: 'hidden',
         transition: 'all ease-in-out',
         transitionDuration: theme => theme.speeds[4],
-        ':hover, :focus': {
+        ':hover, :focus, :focus-within': {
+          cursor: 'pointer',
           transform: 'scale(0.98)',
         },
       })}
       {...props}
+      onClick={event => {
+        if (isMenuClicked(event)) return;
+        history.push(url);
+      }}
     >
       <Element
         as="div"
