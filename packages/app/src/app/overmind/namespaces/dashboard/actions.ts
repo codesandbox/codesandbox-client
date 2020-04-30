@@ -37,6 +37,9 @@ export const setTrashSandboxes: Action<{
 export const setActiveTeam: Action<{
   id: string;
 }> = ({ state, effects }, { id }) => {
+  // ignore if its already selected
+  if (id === state.dashboard.activeTeam) return;
+
   state.dashboard.activeTeam = id;
   effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
   state.dashboard.sandboxes = {
