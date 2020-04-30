@@ -14,13 +14,7 @@ import {
 import css from '@styled-system/css';
 import { MenuOptions } from './Menu';
 
-type Props = {
-  sandbox: any;
-  template?: boolean;
-  style?: any;
-};
-
-export const SandboxCard = ({ sandbox, template, ...props }: Props) => {
+export const SandboxCard = ({ sandbox, template, ...props }) => {
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
   const { actions } = useOvermind();
   const [edit, setEdit] = useState(false);
