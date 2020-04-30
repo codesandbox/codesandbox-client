@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, KeyboardEvent, ChangeEvent, BlurEvent } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import {
   Stack,
   Element,
@@ -26,14 +27,34 @@ export const SandboxCard = ({ sandbox, isTemplate = false, ...props }) => {
     alias: sandbox.alias,
   });
 
-  const editSandboxTitle = async e => {
-    e.preventDefault();
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setNewName(event.target.value);
+  };
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === ESC) {
+      // Reset value and exit without saving
+      setNewName(sandboxTitle);
+      setEdit(false);
+    }
+  };
+
+  const onSubmit = async (event: BlurEvent<HTMLInputElement>) => {
+    event.preventDefault();
     await actions.dashboard.renameSandbox({
       id: sandbox.id,
       title: newName,
       oldTitle: sandboxTitle,
     });
     setEdit(false);
+  };
+
+  const inputRef = React.useRef(null);
+  const enterEditing = () => {
+    setEdit(true);
+    // Menu defaults to sending focus back to Menu Button
+    // Send focus to input in the next tick
+    // after menu is done closing.
+    setTimeout(() => inputRef.current.focus());
   };
 
   return (
@@ -50,13 +71,13 @@ export const SandboxCard = ({ sandbox, isTemplate = false, ...props }) => {
         transition: 'all ease-in-out',
         transitionDuration: theme => theme.speeds[4],
         ':hover, :focus, :focus-within': {
-          cursor: 'pointer',
+          cursor: edit ? 'normal' : 'pointer',
           transform: 'scale(0.98)',
         },
       })}
       {...props}
       onClick={event => {
-        if (isMenuClicked(event)) return;
+        if (edit || isMenuClicked(event)) return;
         history.push(url);
       }}
     >
@@ -73,8 +94,14 @@ export const SandboxCard = ({ sandbox, isTemplate = false, ...props }) => {
       />
       <Stack justify="space-between" align="center" marginLeft={4}>
         {edit ? (
-          <form onSubmit={editSandboxTitle}>
-            <Input value={newName} onChange={e => setNewName(e.target.value)} />
+          <form onSubmit={onSubmit}>
+            <Input
+              value={newName}
+              ref={inputRef}
+              onChange={onChange}
+              onKeyDown={onKeyDown}
+              onBlur={onSubmit}
+            />
           </form>
         ) : (
           <Text size={3} weight="medium">
@@ -84,7 +111,7 @@ export const SandboxCard = ({ sandbox, isTemplate = false, ...props }) => {
         <MenuOptions
           sandbox={sandbox}
           isTemplate={isTemplate}
-          setEdit={setEdit}
+          onRename={enterEditing}
         />
       </Stack>
       <Stack marginX={4}>

@@ -4,7 +4,7 @@ import { Menu } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useHistory } from 'react-router-dom';
 
-export const MenuOptions = ({ sandbox, isTemplate, setEdit }) => {
+export const MenuOptions = ({ sandbox, isTemplate, onRename }) => {
   const { effects, actions } = useOvermind();
   const history = useHistory();
   const url = sandboxUrl({
@@ -68,7 +68,7 @@ export const MenuOptions = ({ sandbox, isTemplate, setEdit }) => {
         >
           Export {isTemplate ? 'template' : 'sandbox'}
         </Menu.Item>
-        <Menu.Item onSelect={() => setEdit(true)}>Rename sandbox</Menu.Item>
+        <Menu.Item onSelect={onRename}>Rename sandbox</Menu.Item>
         {isTemplate ? (
           <Menu.Item
             onSelect={() => {
