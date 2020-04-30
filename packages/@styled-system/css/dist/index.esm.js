@@ -1,22 +1,5 @@
 /* eslint-disable */
 
-function _extends() {
-  _extends =
-    Object.assign ||
-    function(target) {
-      for (let i = 1; i < arguments.length; i++) {
-        const source = arguments[i];
-        for (const key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-          }
-        }
-      }
-      return target;
-    };
-  return _extends.apply(this, arguments);
-}
-
 // based on https://github.com/developit/dlv
 export var get = function get(obj, key, def, p, undef) {
   key = key && key.split ? key.split('.') : [key];
@@ -30,10 +13,6 @@ export var get = function get(obj, key, def, p, undef) {
 const defaultBreakpoints = [40, 52, 64].map(function(n) {
   return n + 'em';
 });
-const defaultTheme = {
-  space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
-  fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 72],
-};
 const aliases = {
   bg: 'backgroundColor',
   m: 'margin',
