@@ -14,7 +14,7 @@ import {
 import css from '@styled-system/css';
 import { MenuOptions } from './Menu';
 
-export const SandboxCard = ({ sandbox, template, ...props }) => {
+export const SandboxCard = ({ sandbox, isTemplate = false, ...props }) => {
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
   const { actions } = useOvermind();
   const [edit, setEdit] = useState(false);
@@ -81,7 +81,11 @@ export const SandboxCard = ({ sandbox, template, ...props }) => {
             {sandboxTitle}
           </Text>
         )}
-        <MenuOptions sandbox={sandbox} template={template} setEdit={setEdit} />
+        <MenuOptions
+          sandbox={sandbox}
+          isTemplate={isTemplate}
+          setEdit={setEdit}
+        />
       </Stack>
       <Stack marginX={4}>
         <Stats

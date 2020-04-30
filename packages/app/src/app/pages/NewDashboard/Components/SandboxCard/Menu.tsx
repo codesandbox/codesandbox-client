@@ -4,7 +4,7 @@ import { Menu } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useHistory } from 'react-router-dom';
 
-export const MenuOptions = ({ sandbox, template, setEdit }) => {
+export const MenuOptions = ({ sandbox, isTemplate, setEdit }) => {
   const { effects, actions } = useOvermind();
   const history = useHistory();
   const url = sandboxUrl({
@@ -12,7 +12,7 @@ export const MenuOptions = ({ sandbox, template, setEdit }) => {
     alias: sandbox.alias,
   });
 
-  const getFolderUrl = (path, isTemplate) => {
+  const getFolderUrl = path => {
     if (isTemplate) return '/new-dashboard/templates';
     if (path === '/' || !path) return '/new-dashboard/all/drafts';
 
@@ -25,7 +25,7 @@ export const MenuOptions = ({ sandbox, template, setEdit }) => {
       <Menu.List>
         <Menu.Item
           onSelect={() => {
-            history.push(getFolderUrl(sandbox.collection.path, template));
+            history.push(getFolderUrl(sandbox.collection.path));
           }}
         >
           Show in Folder
@@ -66,10 +66,10 @@ export const MenuOptions = ({ sandbox, template, setEdit }) => {
             actions.dashboard.downloadSandboxes([sandbox.id]);
           }}
         >
-          Export {template ? 'template' : 'sandbox'}
+          Export {isTemplate ? 'template' : 'sandbox'}
         </Menu.Item>
         <Menu.Item onSelect={() => setEdit(true)}>Rename sandbox</Menu.Item>
-        {template ? (
+        {isTemplate ? (
           <Menu.Item
             onSelect={() => {
               actions.dashboard.unmakeTemplate([sandbox.id]);
@@ -86,7 +86,7 @@ export const MenuOptions = ({ sandbox, template, setEdit }) => {
             Make sandbox a template
           </Menu.Item>
         )}
-        {template ? (
+        {isTemplate ? (
           <Menu.Item onSelect={() => {}}>Delete template</Menu.Item>
         ) : (
           <Menu.Item
