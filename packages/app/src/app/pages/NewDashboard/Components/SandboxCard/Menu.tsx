@@ -68,7 +68,7 @@ export const MenuOptions = ({ sandbox, isTemplate, onRename }) => {
         >
           Export {isTemplate ? 'template' : 'sandbox'}
         </Menu.Item>
-        <Menu.Item onSelect={onRename}>Rename sandbox</Menu.Item>
+        <Menu.Item onSelect={() => onRename()}>Rename sandbox</Menu.Item>
         {isTemplate ? (
           <Menu.Item
             onSelect={() => {

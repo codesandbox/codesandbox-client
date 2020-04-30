@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent, ChangeEvent, BlurEvent } from 'react';
+import React, { useState, KeyboardEvent, ChangeEvent, FormEvent } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -38,14 +38,19 @@ export const SandboxCard = ({ sandbox, isTemplate = false, ...props }) => {
     }
   };
 
-  const onSubmit = async (event: BlurEvent<HTMLInputElement>) => {
-    event.preventDefault();
+  const onSubmit = async (event?: FormEvent<HTMLFormElement>) => {
+    if (event) event.preventDefault();
     await actions.dashboard.renameSandbox({
       id: sandbox.id,
       title: newName,
       oldTitle: sandboxTitle,
     });
     setEdit(false);
+  };
+
+  const onBlur = () => {
+    // save value when you click outside or tab away
+    onSubmit();
   };
 
   const inputRef = React.useRef(null);
@@ -100,7 +105,7 @@ export const SandboxCard = ({ sandbox, isTemplate = false, ...props }) => {
               ref={inputRef}
               onChange={onChange}
               onKeyDown={onKeyDown}
-              onBlur={onSubmit}
+              onBlur={onBlur}
             />
           </form>
         ) : (
