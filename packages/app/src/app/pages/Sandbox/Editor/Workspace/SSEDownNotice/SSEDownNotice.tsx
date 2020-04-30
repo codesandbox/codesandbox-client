@@ -44,12 +44,12 @@ export const SSEDownNotice: FunctionComponent = () => {
         {"'"}t resolved with in a minute it would greatly help us if you could
         let us know on{' '}
         <a
-          href="https://spectrum.chat/codesandbox"
+          href="https://github.com/codesandbox/codesandbox-client/discussions"
           rel="noopener noreferrer"
           style={{ color: '#FFFFFF' }}
           target="_blank"
         >
-          Spectrum
+          GitHub
         </a>
         .
       </p>
