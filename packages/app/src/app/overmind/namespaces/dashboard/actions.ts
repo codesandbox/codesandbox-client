@@ -687,11 +687,16 @@ export const getSearchSandboxes: AsyncAction<string | null> = withLoadApp(
         lastSandboxes = sandboxes;
       }
 
-      dashboard.sandboxes[
-        sandboxesTypes.SEARCH
-      ] = state.dashboard
+      const sandboxesToShow = state.dashboard
         .getFilteredSandboxes(searchIndex.search(search))
-        .filter(x => !x.customTemplate);
+        .filter(x => !x.customTemplate)
+        .filter(
+          sandbox =>
+            (sandbox.collection || { collection: {} }).teamId ===
+            state.dashboard.activeTeam
+        );
+
+      dashboard.sandboxes[sandboxesTypes.SEARCH] = sandboxesToShow;
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your Sandboxes'
