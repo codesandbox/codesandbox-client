@@ -4,9 +4,8 @@ import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { Grid } from '@codesandbox/components';
+import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
 import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
-import css from '@styled-system/css';
 import { getPossibleTemplates } from '../../utils';
 
 export const SearchComponent = ({ location }) => {
@@ -35,18 +34,11 @@ export const SearchComponent = ({ location }) => {
       />
       <section style={{ position: 'relative' }}>
         {sandboxes.SEARCH ? (
-          <Grid
-            rowGap={6}
-            columnGap={6}
-            marginBottom={8}
-            css={css({
-              gridTemplateColumns: 'repeat(auto-fit,minmax(220px,0.2fr))',
-            })}
-          >
+          <SandboxGrid>
             {sandboxes.SEARCH.map(sandbox => (
               <Sandbox key={sandbox.id} template sandbox={sandbox} />
             ))}
-          </Grid>
+          </SandboxGrid>
         ) : (
           <Loading />
         )}
