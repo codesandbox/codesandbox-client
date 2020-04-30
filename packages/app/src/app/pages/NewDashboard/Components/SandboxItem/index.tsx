@@ -7,11 +7,15 @@ import { MenuOptions } from './Menu';
 
 type Props = {
   sandbox: any;
-  template?: boolean;
+  isTemplate?: boolean;
   style?: any;
 };
 
-export const SandboxItem = ({ sandbox, template, ...props }: Props) => {
+export const SandboxItem = ({
+  sandbox,
+  isTemplate = false,
+  ...props
+}: Props) => {
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
   const { actions } = useOvermind();
   const [edit, setEdit] = useState(false);
@@ -79,7 +83,11 @@ export const SandboxItem = ({ sandbox, template, ...props }: Props) => {
           Updated {formatDistanceToNow(new Date(sandbox.updatedAt))} ago
         </Text>
       )}
-      <MenuOptions sandbox={sandbox} template={template} setEdit={setEdit} />
+      <MenuOptions
+        sandbox={sandbox}
+        isTemplate={isTemplate}
+        setEdit={setEdit}
+      />
     </Stack>
   );
 };
