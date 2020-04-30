@@ -155,17 +155,6 @@ export const saveCode: AsyncAction<{
       effects.vscode.callCallback(cbID);
     }
 
-    if (
-      sandbox.originalGit &&
-      state.workspace.openedWorkspaceItem === 'github'
-    ) {
-      state.git.isFetching = true;
-      state.git.originalGitChanges = await effects.api.getGitChanges(
-        sandbox.id
-      );
-      state.git.isFetching = false;
-    }
-
     // If the executor is a server we only should send updates if the sandbox has been
     // started already
     if (

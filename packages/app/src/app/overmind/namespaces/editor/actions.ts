@@ -154,6 +154,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   await effects.vscode.closeAllTabs();
 
   state.editor.error = null;
+  state.git.sourceSandboxId = null;
 
   let newId = id;
 
@@ -263,7 +264,9 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   actions.internal.ensurePackageJSON();
 
-  await actions.editor.internal.initializeSandbox(sandbox);
+  if (!sandbox.git) {
+    await actions.editor.internal.initializeSandbox(sandbox);
+  }
 
   // We only recover files at this point if we are not live. When live we recover them
   // when the module_state is received
@@ -286,6 +289,12 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   if (COMMENTS && hasPermission(sandbox.authorization, 'comment')) {
     actions.comments.getSandboxComments(sandbox.id);
+  }
+
+  state.editor.currentSandbox.prNumber = 1;
+
+  if (sandbox.originalGit) {
+    actions.git.loadGitSource(sandbox.originalGit);
   }
 
   state.editor.isLoading = false;
@@ -438,6 +447,10 @@ export const codeChanged: Action<{
   if (!isServer && state.preferences.settings.livePreviewEnabled) {
     actions.editor.internal.updatePreviewCode();
   }
+
+  if (sandbox.originalGit) {
+    actions.git.updateGitChanges();
+  }
 };
 
 export const saveClicked: AsyncAction = withOwnedSandbox(
@@ -488,13 +501,6 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
           sandbox.modules.push(updatedModule);
         }
       });
-
-      if (
-        sandbox.originalGit &&
-        state.workspace.openedWorkspaceItem === 'github'
-      ) {
-        actions.git.internal.fetchGitChanges();
-      }
 
       effects.preview.executeCodeImmediately();
     } catch (error) {

@@ -278,12 +278,41 @@ export type GitCommit = {
 };
 
 export type GitPr = {
-  git: GitInfo;
-  newBranch: string;
-  sha: string;
-  url: string;
-  prURL: string;
+  number: number;
+  repo: string;
+  username: string;
+  branch: string;
+  merged: boolean;
+  mergeable: boolean;
+  mergeable_state: string;
+  commitSha: string;
+  baseCommitSha: string;
+  rebaseable: boolean;
+  commits: number;
+  additions: number;
+  deletions: number;
+  changed_files: number;
 };
+
+export type GitFileCompare = {
+  additions: number;
+  changes: number;
+  deletions: number;
+  filename: string;
+  status: 'added' | 'modified' | 'deleted';
+  content?: string;
+};
+
+export enum SandboxGitState {
+  OUT_OF_SYNC_PR = 'out of sync with PR',
+  OUT_OF_SYNC_SOURCE = 'out of sync with source',
+  SYNCED = 'synced',
+  CONFLICT_PR = 'conflict with PR',
+  CONFLICT_SOURCE = 'conflict with source',
+  SYNCING = 'syncing',
+  DETACHED = 'detached',
+  RESOLVING = 'resolving',
+}
 
 export type PopularSandboxes = {
   startDate: string;
@@ -375,6 +404,8 @@ export type Sandbox = {
   template: TemplateType;
   entry: string;
   originalGit: GitInfo | null;
+  baseGit: GitInfo | null;
+  prNumber: number | null;
   originalGitCommitSha: string | null;
   originalGitChanges: {
     added: string[];

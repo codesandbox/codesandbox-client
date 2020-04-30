@@ -7,6 +7,7 @@ import {
   EnvironmentVariable,
   GitChanges,
   GitCommit,
+  GitFileCompare,
   GitInfo,
   GitPr,
   Module,
@@ -328,6 +329,28 @@ export default {
       id: sandboxId,
       message,
     });
+  },
+  async compareGit(
+    sandboxId: string,
+    username: string,
+    ref: string,
+    includeContents = false
+  ): Promise<GitFileCompare[]> {
+    const response: any = await api.post(
+      `/sandboxes/${sandboxId}/git/compare`,
+      {
+        base: {
+          username,
+          ref,
+        },
+        includeContents,
+      }
+    );
+
+    return response.files;
+  },
+  getGitPr(sandboxId: string, prNumber: number): Promise<GitPr> {
+    return api.get(`/sandboxes/${sandboxId}/git/prs/${prNumber}`);
   },
   createGitPr(sandboxId: string, message: string): Promise<GitPr> {
     return api.post(`/sandboxes/${sandboxId}/git/pr`, {

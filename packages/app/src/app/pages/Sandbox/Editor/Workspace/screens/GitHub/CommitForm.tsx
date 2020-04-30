@@ -1,38 +1,19 @@
-import React, { ChangeEvent } from 'react';
-import css from '@styled-system/css';
-import {
-  FormField,
-  Stack,
-  Input,
-  Textarea,
-  Button,
-} from '@codesandbox/components';
+import { Button, FormField, Stack, Textarea } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import React, { ChangeEvent } from 'react';
 
 export const CommitForm = () => {
   const {
     actions: {
-      git: {
-        createCommitClicked,
-        createPrClicked,
-        descriptionChanged,
-        subjectChanged,
-      },
+      git: { createPrClicked, descriptionChanged },
     },
     state: {
       editor: { isAllModulesSynced },
-      git: { description, originalGitChanges, subject },
+      git: { description },
     },
   } = useOvermind();
 
-  const hasWriteAccess = (rights: string = '') =>
-    ['admin', 'write'].includes(rights);
-
   const modulesNotSaved = !isAllModulesSynced;
-
-  const changeSubject = ({
-    target: { value },
-  }: ChangeEvent<HTMLInputElement>) => subjectChanged({ subject: value });
 
   const changeDescription = ({
     target: { value },
@@ -47,14 +28,6 @@ export const CommitForm = () => {
         gap={1}
         onSubmit={event => event.preventDefault()}
       >
-        <FormField direction="vertical" label="Commit message">
-          <Input
-            css={css({ marginTop: 2 })}
-            placeholder="Subject"
-            onChange={changeSubject}
-            value={subject}
-          />
-        </FormField>
         <FormField direction="vertical" label="Commit description" hideLabel>
           <Textarea
             maxLength={280}
@@ -70,22 +43,12 @@ export const CommitForm = () => {
             button: { width: '40%' },
           }}
         >
-          {hasWriteAccess(originalGitChanges?.rights) && (
-            <Button
-              variant="secondary"
-              disabled={!subject || modulesNotSaved}
-              onClick={() => createCommitClicked()}
-            >
-              Commit
-            </Button>
-          )}
-
           <Button
             variant="secondary"
-            disabled={!subject || modulesNotSaved}
+            disabled={!description || modulesNotSaved}
             onClick={() => createPrClicked()}
           >
-            Open PR
+            Update PR
           </Button>
         </Stack>
       </Stack>

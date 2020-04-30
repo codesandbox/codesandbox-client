@@ -1,15 +1,13 @@
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
-import React, { ChangeEvent, FunctionComponent, useEffect } from 'react';
-
 import { useOvermind } from 'app/overmind';
+import React, { ChangeEvent, FunctionComponent } from 'react';
 
 import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../../elements';
-
-import { Container, Buttons, ErrorMessage, NoChanges } from './elements';
+import { Buttons, Container, ErrorMessage, NoChanges } from './elements';
 import { TotalChanges } from './TotalChanges';
 
 const hasWriteAccess = (rights: string = '') =>
@@ -22,7 +20,7 @@ export const Git: FunctionComponent = () => {
         createCommitClicked,
         createPrClicked,
         descriptionChanged,
-        gitMounted,
+
         subjectChanged,
       },
     },
@@ -31,13 +29,9 @@ export const Git: FunctionComponent = () => {
         currentSandbox: { originalGit },
         isAllModulesSynced,
       },
-      git: { description, isFetching, originalGitChanges: gitChanges, subject },
+      git: { description, isFetching, gitChanges, subject },
     },
   } = useOvermind();
-
-  useEffect(() => {
-    gitMounted();
-  }, [gitMounted]);
 
   const createCommit = () => createCommitClicked();
   const createPR = () => createPrClicked();
