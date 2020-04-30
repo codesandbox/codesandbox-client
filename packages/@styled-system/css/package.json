@@ -2,6 +2,7 @@
   "name": "@styled-system/css",
   "version": "5.1.5",
   "description": "Styled System for the `css` prop",
+  "main": "dist/index.esm.js",
   "module": "dist/index.esm.js",
   "sideEffects": false,
   "keywords": [
