@@ -103,6 +103,7 @@ export class VSCodeEffect {
   public initialized: Promise<unknown>;
   public sandboxFsSync: SandboxFsSync;
   private mountableFilesystem: any;
+  private isRunningExtensionHost = true;
 
   private monaco: any;
   private editorApi: any;
@@ -468,14 +469,31 @@ export class VSCodeEffect {
 
     setFs(this.sandboxFsSync.create(sandbox));
 
-    if (isFirstLoad) {
-      this.sandboxFsSync.sync(() => {});
-    } else {
-      this.editorApi.extensionService.stopExtensionHost();
-      this.sandboxFsSync.sync(() => {
-        this.editorApi.extensionService.startExtensionHost();
-      });
+    return new Promise(resolve => {
+      if (isFirstLoad) {
+        // Do no start extension host
+        this.sandboxFsSync.sync(resolve);
+      } else {
+        this.stopExtensionHost();
+        this.sandboxFsSync.sync(resolve);
+      }
+    });
+  }
+
+  public startExtensionHost() {
+    if (this.isRunningExtensionHost) {
+      return;
     }
+    this.editorApi.extensionService.startExtensionHost();
+    this.isRunningExtensionHost = true;
+  }
+
+  public stopExtensionHost() {
+    if (!this.isRunningExtensionHost) {
+      return;
+    }
+    this.editorApi.extensionService.stopExtensionHost();
+    this.isRunningExtensionHost = false;
   }
 
   public async setModuleCode(module: Module) {

@@ -18,12 +18,15 @@ export const restartContainer: Action = ({ state, effects }) => {
   effects.executor.emit('sandbox:restart-container');
 };
 
-export const statusChanged: Action<ServerStatus> = ({ state }, status) => {
+export const statusChanged: Action<ServerStatus> = (
+  { state, effects },
+  status
+) => {
   state.server.status = status;
 };
 
 export const containerStatusChanged: Action<ServerContainerStatus> = (
-  { state },
+  { state, actions },
   status
 ) => {
   state.server.containerStatus = status;
@@ -45,14 +48,17 @@ export const onSSEMessage: Action<{
       ) {
         server.status = ServerStatus.DISCONNECTED;
         effects.codesandboxApi.disconnectSSE();
+        effects.vscode.stopExtensionHost();
       }
       break;
     case 'sandbox:start':
       server.containerStatus = ServerContainerStatus.SANDBOX_STARTED;
+      effects.vscode.startExtensionHost();
       break;
     case 'sandbox:stop':
       if (server.containerStatus !== ServerContainerStatus.HIBERNATED) {
         server.containerStatus = ServerContainerStatus.STOPPED;
+        effects.vscode.stopExtensionHost();
       }
       break;
     case 'sandbox:update':
@@ -61,12 +67,14 @@ export const onSSEMessage: Action<{
     case 'sandbox:hibernate':
       server.containerStatus = ServerContainerStatus.HIBERNATED;
       effects.executor.closeExecutor();
+      effects.vscode.stopExtensionHost();
       break;
     case 'sandbox:status':
       if (data.status === 'starting-container') {
         server.containerStatus = ServerContainerStatus.INITIALIZING;
       } else if (data.status === 'installing-packages') {
         server.containerStatus = ServerContainerStatus.CONTAINER_STARTED;
+        effects.vscode.startExtensionHost();
       }
       break;
     case 'sandbox:log':

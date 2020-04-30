@@ -1,8 +1,8 @@
 import {
   LiveMessage,
   LiveMessageEvent,
-  UserViewRange,
   UserSelection,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
@@ -76,6 +76,8 @@ export const roomJoined: AsyncAction<{
   await effects.vscode.changeSandbox(sandbox, fs => {
     state.editor.modulesByPath = fs;
   });
+
+  effects.vscode.startExtensionHost();
 
   effects.live.sendModuleStateSyncRequest();
   effects.vscode.openModule(state.editor.currentModule);

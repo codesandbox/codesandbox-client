@@ -1,14 +1,13 @@
-import { debounce } from 'lodash-es';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
   EnvironmentVariable,
+  Module,
   ModuleCorrection,
   ModuleError,
   ModuleTab,
-  WindowOrientation,
-  Module,
   UserSelection,
+  WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
@@ -24,6 +23,7 @@ import {
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 import {
   addDevToolsTab as addDevToolsTabUtil,
   closeDevToolsTab as closeDevToolsTabUtil,
@@ -32,7 +32,7 @@ import {
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
-import { getSavedCode } from 'app/overmind/utils/sandbox';
+import { debounce } from 'lodash-es';
 import { Selection, TextOperation } from 'ot';
 import { json } from 'overmind';
 
@@ -238,6 +238,12 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   await effects.vscode.changeSandbox(sandbox, fs => {
     state.editor.modulesByPath = fs;
   });
+
+  if (sandbox.featureFlags?.containerLsp) {
+    effects.vscode.stopExtensionHost();
+  } else {
+    effects.vscode.startExtensionHost();
+  }
 
   if (sandbox.featureFlags?.containerLsp && !sandbox.owned) {
     effects.vscode.setReadOnly(true);
