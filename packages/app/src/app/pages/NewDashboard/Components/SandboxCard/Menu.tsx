@@ -44,6 +44,7 @@ export const MenuOptions = ({ sandbox, isTemplate, setEdit }) => {
         >
           Open sandbox in new tab
         </Menu.Item>
+        <Menu.Divider />
         <Menu.Item
           onSelect={() => {
             effects.browser.copyToClipboard(`https://codesandbox.io${url}`);
@@ -68,6 +69,7 @@ export const MenuOptions = ({ sandbox, isTemplate, setEdit }) => {
         >
           Export {isTemplate ? 'template' : 'sandbox'}
         </Menu.Item>
+        <Menu.Divider />
         <Menu.Item onSelect={() => setEdit(true)}>Rename sandbox</Menu.Item>
         {isTemplate ? (
           <Menu.Item
@@ -86,6 +88,7 @@ export const MenuOptions = ({ sandbox, isTemplate, setEdit }) => {
             Make sandbox a template
           </Menu.Item>
         )}
+        <Menu.Divider />
         {isTemplate ? (
           <Menu.Item onSelect={() => {}}>Delete template</Menu.Item>
         ) : (

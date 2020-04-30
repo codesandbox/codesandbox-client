@@ -59,6 +59,12 @@ const PortalStyles = createGlobalStyle(
       // override reach ui styles
       font: 'inherit',
     },
+    '[data-component=MenuDivider]': {
+      margin: 0,
+      border: 'none',
+      borderBottom: '1px solid',
+      borderColor: 'menuList.border',
+    },
   }),
   styledcss`
       [data-reach-menu-list][data-trigger=MenuButton] {
@@ -126,10 +132,15 @@ const MenuItem = props => (
   <Element as={ReachMenu.MenuItem} data-component="MenuItem" {...props} />
 );
 
+const MenuDivider = props => (
+  <Element as="hr" data-component="MenuDivider" {...props} />
+);
+
 Menu.Button = MenuButton;
 Menu.IconButton = MenuIconButton;
 Menu.List = MenuList;
 Menu.Item = MenuItem;
+Menu.Divider = MenuDivider;
 
 export const isMenuClicked = event => {
   // don't trigger comment if you click on the menu
