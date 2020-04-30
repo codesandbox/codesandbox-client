@@ -691,7 +691,9 @@ export const getSearchSandboxes: AsyncAction<string | null> = withLoadApp(
         .getFilteredSandboxes(searchIndex.search(search))
         .filter(x => !x.customTemplate)
         .filter(
-          sandbox => sandbox.collection.teamId === state.dashboard.activeTeam
+          sandbox =>
+            (sandbox.collection || { collection: {} }).teamId ===
+            state.dashboard.activeTeam
         );
 
       dashboard.sandboxes[sandboxesTypes.SEARCH] = sandboxesToShow;
