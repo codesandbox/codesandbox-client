@@ -147,7 +147,9 @@ export const getRecentSandboxes: AsyncAction = withLoadApp(
 
       dashboard.sandboxes[sandboxesTypes.RECENT] = data.me.sandboxes
         .filter(
-          sandbox => sandbox.collection.teamId === state.dashboard.activeTeam
+          sandbox =>
+            (sandbox.collection || { collection: {} }).teamId ===
+            state.dashboard.activeTeam
         )
         .slice(0, 50);
     } catch (error) {
