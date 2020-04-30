@@ -64,12 +64,15 @@
     "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
     "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
     "chromatic": "lerna run chromatic --scope=@codesandbox/components --stream",
-    "typecheck": "lerna run typecheck"
+    "typecheck": "lerna run typecheck",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
-    "opencollective": "^1.0.3"
+    "opencollective": "^1.0.3",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "all-contributors-cli": "^6.9.2",
@@ -113,5 +116,6 @@
     "type": "opencollective",
     "url": "https://opencollective.com/codesandbox",
     "logo": "https://opencollective.com/codesandbox/logo.txt"
-  }
+  },
+  "snyk": true
 }
