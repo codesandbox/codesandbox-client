@@ -39,6 +39,14 @@ export const setActiveTeam: Action<{
 }> = ({ state, effects }, { id }) => {
   state.dashboard.activeTeam = id;
   effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
+  state.dashboard.sandboxes = {
+    ...state.dashboard.sandboxes,
+    DRAFTS: null,
+    TEMPLATES: null,
+    RECENT: null,
+    SEARCH: null,
+    ALL: null,
+  };
 };
 
 export const dragChanged: Action<{ isDragging: boolean }> = (
@@ -129,7 +137,7 @@ export const getRecentSandboxes: AsyncAction = withLoadApp(
     const { dashboard } = state;
     try {
       const data = await effects.gql.queries.recentSandboxes({
-        limit: 50,
+        limit: 200,
         orderField: dashboard.orderBy.field,
         orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
       });
@@ -137,7 +145,11 @@ export const getRecentSandboxes: AsyncAction = withLoadApp(
         return;
       }
 
-      dashboard.sandboxes[sandboxesTypes.RECENT] = data.me.sandboxes;
+      dashboard.sandboxes[sandboxesTypes.RECENT] = data.me.sandboxes
+        .filter(
+          sandbox => sandbox.collection.teamId === state.dashboard.activeTeam
+        )
+        .slice(0, 50);
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your recent Sandboxes'
