@@ -1,0 +1,126 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - airtable > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - vue-eslint-parser > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - http-proxy-middleware > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - react-color > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - styled-components > @babel/traverse > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - styled-components > babel-plugin-styled-components > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - eslint-plugin-vue > vue-eslint-parser > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - overmind-devtools > electron-json-storage > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - react-color > reactcss > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - react-instantsearch > react-instantsearch-core > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - react-instantsearch > react-instantsearch-dom > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - styled-components > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/components > styled-components > @babel/traverse > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/components > styled-components > babel-plugin-styled-components > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - overmind-devtools > electron-json-storage > async > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - react-error-overlay > react-dev-utils > inquirer > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - react-instantsearch > react-instantsearch-core > algoliasearch-helper > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - react-instantsearch > react-instantsearch-dom > algoliasearch-helper > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - react-instantsearch > react-instantsearch-dom > react-instantsearch-core > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - react-instantsearch > react-instantsearch-native > react-instantsearch-core > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - svg-react-loader > xml2js > xmlbuilder > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@vue/babel-preset-app > @babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - styled-components > babel-plugin-styled-components > @babel/helper-annotate-as-pure > @babel/types > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/components > styled-components > @babel/traverse > @babel/generator > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - styled-components > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > styled-components > @babel/traverse > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > styled-components > babel-plugin-styled-components > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > babel-plugin-transform-es2015-modules-commonjs > babel-types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > babel-plugin-transform-es2015-modules-commonjs > babel-template > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - react-instantsearch > react-instantsearch-dom > react-instantsearch-core > algoliasearch-helper > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - react-instantsearch > react-instantsearch-native > react-instantsearch-core > algoliasearch-helper > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@vue/babel-preset-app > @babel/preset-env > @babel/plugin-transform-unicode-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/components > styled-components > babel-plugin-styled-components > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > styled-components > @babel/traverse > @babel/generator > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - console-feed > emotion > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - overmind-devtools > emotion > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - console-feed > react-emotion > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - styled-components > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/components > styled-components > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > @codesandbox/notifications > styled-components > @babel/traverse > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > @codesandbox/notifications > styled-components > babel-plugin-styled-components > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > babel-plugin-transform-es2015-modules-commonjs > babel-plugin-transform-strict-mode > babel-types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > babel-plugin-transform-es2015-modules-commonjs > babel-template > babel-types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > babel-plugin-transform-es2015-modules-commonjs > babel-template > babel-traverse > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@vue/babel-preset-app > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > styled-components > babel-plugin-styled-components > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > @codesandbox/notifications > styled-components > @babel/traverse > @babel/generator > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/components > styled-components > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > styled-components > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > babel-plugin-transform-es2015-modules-commonjs > babel-template > babel-traverse > babel-types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@svgr/core > h2x-core > h2x-parse > jsdom > request-promise-native > request-promise-core > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > @codesandbox/notifications > styled-components > babel-plugin-styled-components > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@vue/babel-preset-app > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/generator > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > styled-components > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > @codesandbox/notifications > styled-components > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@vue/babel-preset-app > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@codesandbox/executors > @codesandbox/common > @codesandbox/notifications > styled-components > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
+    - '@vue/babel-preset-app > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2020-05-01T03:44:20.287Z'
