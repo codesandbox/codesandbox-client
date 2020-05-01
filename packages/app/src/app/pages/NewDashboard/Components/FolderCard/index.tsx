@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
-import { Link as LinkBase } from 'react-router-dom';
-import { Stack, Text, Input, Link, Element } from '@codesandbox/components';
+import { Link as RouterLink } from 'react-router-dom';
+import {
+  Stack,
+  Text,
+  Input,
+  Link,
+  Element,
+  isMenuClicked,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { join, dirname } from 'path';
@@ -37,7 +44,13 @@ export const FolderCard = ({
   };
 
   return (
-    <Link as={newFolder ? Element : LinkBase} to={`/new-dashboard/all` + path}>
+    <Link
+      as={newFolder ? Element : RouterLink}
+      to={`/new-dashboard/all` + path}
+      onClick={event => {
+        if (isMenuClicked(event)) event.preventDefault();
+      }}
+    >
       <Stack
         direction="vertical"
         gap={2}
