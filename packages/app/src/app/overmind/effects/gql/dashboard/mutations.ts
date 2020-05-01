@@ -19,6 +19,8 @@ import {
   _RemoveFromTeamMutationVariables,
   _InviteToTeamMutation,
   _InviteToTeamMutationVariables,
+  _InviteToTeamViaEmailMutation,
+  _InviteToTeamViaEmailMutationVariables,
   _RevokeTeamInvitationMutation,
   _RevokeTeamInvitationMutationVariables,
   _AcceptTeamInvitationMutation,
@@ -193,6 +195,15 @@ export const inviteToTeam: Query<
     }
   }
   ${teamFragmentDashboard}
+`;
+
+export const inviteToTeamVieEmail: Query<
+  _InviteToTeamViaEmailMutation,
+  _InviteToTeamViaEmailMutationVariables
+> = gql`
+  mutation _InviteToTeamViaEmail($teamId: ID!, $email: String!) {
+    inviteToTeamViaEmail(teamId: $teamId, email: $email)
+  }
 `;
 
 export const revokeTeamInvitation: Query<

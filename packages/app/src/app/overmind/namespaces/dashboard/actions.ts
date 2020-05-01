@@ -39,7 +39,7 @@ export const setTrashSandboxes: Action<{
 };
 
 export const setActiveTeam: Action<{
-  id: string;
+  id: string | null;
 }> = ({ state, effects }, { id }) => {
   // ignore if its already selected
   if (id === state.dashboard.activeTeam) return;
@@ -152,6 +152,92 @@ export const getTeam: AsyncAction = withLoadApp(async ({ state, effects }) => {
 
   state.dashboard.activeTeamInfo = team.me.team;
 });
+
+export const removeFromTeam: AsyncAction<string> = async (
+  { state, effects },
+  id
+) => {
+  if (!state.dashboard.activeTeam || !state.dashboard.activeTeamInfo) return;
+  try {
+    await effects.gql.mutations.removeFromTeam({
+      teamId: state.dashboard.activeTeam,
+      userId: id,
+    });
+
+    state.dashboard.activeTeamInfo = {
+      ...state.dashboard.activeTeamInfo,
+      users: (state.dashboard.activeTeamInfo.users || []).filter(
+        user => user.id !== id
+      ),
+    };
+  } catch {
+    effects.notificationToast.error(
+      'There has been a problem removing them from your team'
+    );
+  }
+};
+
+export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
+  if (!state.dashboard.activeTeam || !state.dashboard.activeTeamInfo) return;
+  try {
+    await effects.gql.mutations.leaveTeam({
+      teamId: state.dashboard.activeTeam,
+    });
+
+    actions.dashboard.setActiveTeam({ id: null });
+    actions.dashboard.getTeams();
+
+    effects.notificationToast.success(
+      `You successfully left the ${state.dashboard.activeTeamInfo.name} team`
+    );
+  } catch (e) {
+    effects.notificationToast.error(
+      'There has been a problem removing your from the team'
+    );
+  }
+};
+
+export const inviteToTeam: AsyncAction<string> = async (
+  { state, effects },
+  value
+) => {
+  if (!state.dashboard.activeTeam) return;
+  const isEmail = value.includes('@');
+  try {
+    let data: any = null;
+    if (isEmail) {
+      const emailInvited = await effects.gql.mutations.inviteToTeamVieEmail({
+        teamId: state.dashboard.activeTeam,
+        email: value,
+      });
+
+      data = emailInvited.inviteToTeamViaEmail;
+    } else {
+      const usernameInvited = await effects.gql.mutations.inviteToTeam({
+        teamId: state.dashboard.activeTeam,
+        username: value,
+      });
+
+      data = usernameInvited.inviteToTeam;
+    }
+
+    if (!data) {
+      return;
+    }
+
+    effects.notificationToast.success(
+      `Successfully invited ${value} to your team`
+    );
+  } catch (e) {
+    const errorMessageExists =
+      e.response && e.response.errors && e.response.errors.length;
+    effects.notificationToast.error(
+      errorMessageExists
+        ? e.response.errors[0].message
+        : `There was a problem inviting ${value} to your team`
+    );
+  }
+};
 
 export const getRecentSandboxes: AsyncAction = withLoadApp(
   async ({ state, effects }) => {
