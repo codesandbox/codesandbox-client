@@ -1471,7 +1471,10 @@ export type GetTeamQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
       team: Maybe<
-        { __typename?: 'Team' } & Pick<Team, 'id' | 'creatorId'> & {
+        { __typename?: 'Team' } & Pick<
+          Team,
+          'id' | 'creatorId' | 'description' | 'name'
+        > & {
             users: Array<
               { __typename?: 'User' } & Pick<
                 User,

@@ -14,7 +14,7 @@ export const UserSettings = () => {
 
   useEffect(() => {
     actions.dashboard.newDashboardMounted();
-  });
+  }, [actions.dashboard]);
 
   if (!user) {
     return <Header title="User Settings" />;
@@ -43,7 +43,9 @@ export const UserSettings = () => {
               </Text>
               <Text>{user.name}</Text>
               <Text>{user.email}</Text>
-              <Link href="https://github.com">Managed by Github</Link>
+              <Link href="https://github.com" target="_blank">
+                Managed by Github
+              </Link>
             </Element>
           </Stack>
         </Box>

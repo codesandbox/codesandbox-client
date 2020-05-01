@@ -139,6 +139,20 @@ export const getTeams: AsyncAction = async ({ state, effects }) => {
 
   state.dashboard.teams = teams.me.teams;
 };
+
+export const getTeam: AsyncAction = withLoadApp(async ({ state, effects }) => {
+  if (!state.dashboard.activeTeam) return;
+  const team = await effects.gql.queries.getTeam({
+    teamId: state.dashboard.activeTeam,
+  });
+
+  if (!team || !team.me) {
+    return;
+  }
+
+  state.dashboard.activeTeamInfo = team.me.team;
+});
+
 export const getRecentSandboxes: AsyncAction = withLoadApp(
   async ({ state, effects }) => {
     const { dashboard } = state;
