@@ -10,6 +10,7 @@ import { Drafts } from './routes/Drafts';
 import { Recent } from './routes/Recent';
 import { All } from './routes/All';
 import { Search } from './routes/Search';
+import { Settings } from './routes/Settings';
 
 export const Content = () => {
   const {
@@ -61,7 +62,11 @@ export const Content = () => {
         />
         <Route
           path="/new-dashboard/all/:path*"
-          render={({ match }) => <All key={window.location.pathname} />}
+          render={() => <All key={window.location.pathname} />}
+        />
+        <Route
+          path="/new-dashboard/settings"
+          render={() => <Settings key={dashboard.activeTeam} />}
         />
 
         <Redirect to="/new-dashboard/start" />

@@ -16,12 +16,16 @@ export const dashboardMounted: AsyncAction = async (context, value) => {
   await withLoadApp()(context, value);
 };
 
-export const newDashboardMounted: Action = ({ state, effects }) => {
-  const localStorageViewMode = effects.browser.storage.get(VIEW_MODE_DASHBOARD);
-  if (localStorageViewMode) {
-    state.dashboard.viewMode = localStorageViewMode;
+export const newDashboardMounted: AsyncAction = withLoadApp(
+  async ({ state, effects }) => {
+    const localStorageViewMode = effects.browser.storage.get(
+      VIEW_MODE_DASHBOARD
+    );
+    if (localStorageViewMode) {
+      state.dashboard.viewMode = localStorageViewMode;
+    }
   }
-};
+);
 export const sandboxesSelected: Action<{
   sandboxIds: string[];
 }> = ({ state }, { sandboxIds }) => {
