@@ -16,16 +16,12 @@ export const dashboardMounted: AsyncAction = async (context, value) => {
   await withLoadApp()(context, value);
 };
 
-export const newDashboardMounted: AsyncAction = withLoadApp(
-  async ({ state, effects }) => {
-    const localStorageViewMode = effects.browser.storage.get(
-      VIEW_MODE_DASHBOARD
-    );
-    if (localStorageViewMode) {
-      state.dashboard.viewMode = localStorageViewMode;
-    }
+export const newDashboardMounted: Action = ({ state, effects }) => {
+  const localStorageViewMode = effects.browser.storage.get(VIEW_MODE_DASHBOARD);
+  if (localStorageViewMode) {
+    state.dashboard.viewMode = localStorageViewMode;
   }
-);
+};
 export const sandboxesSelected: Action<{
   sandboxIds: string[];
 }> = ({ state }, { sandboxIds }) => {
@@ -139,20 +135,6 @@ export const getTeams: AsyncAction = async ({ state, effects }) => {
 
   state.dashboard.teams = teams.me.teams;
 };
-
-export const getTeam: AsyncAction = withLoadApp(async ({ state, effects }) => {
-  if (!state.dashboard.activeTeam) return;
-  const team = await effects.gql.queries.getTeam({
-    teamId: state.dashboard.activeTeam,
-  });
-
-  if (!team || !team.me) {
-    return;
-  }
-
-  state.dashboard.activeTeamInfo = team.me.team;
-});
-
 export const getRecentSandboxes: AsyncAction = withLoadApp(
   async ({ state, effects }) => {
     const { dashboard } = state;
