@@ -39,7 +39,7 @@ export const setTrashSandboxes: Action<{
 };
 
 export const setActiveTeam: Action<{
-  id: string;
+  id: string | null;
 }> = ({ state, effects }, { id }) => {
   // ignore if its already selected
   if (id === state.dashboard.activeTeam) return;
@@ -153,7 +153,10 @@ export const getTeam: AsyncAction = withLoadApp(async ({ state, effects }) => {
   state.dashboard.activeTeamInfo = team.me.team;
 });
 
-export const removeFromTeam: AsyncAction = async ({ state, effects }, id) => {
+export const removeFromTeam: AsyncAction<string> = async (
+  { state, effects },
+  id
+) => {
   if (!state.dashboard.activeTeam || !state.dashboard.activeTeamInfo) return;
   try {
     await effects.gql.mutations.removeFromTeam({
@@ -194,11 +197,14 @@ export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
   }
 };
 
-export const inviteToTeam: AsyncAction = async ({ state, effects }, value) => {
+export const inviteToTeam: AsyncAction<string> = async (
+  { state, effects },
+  value
+) => {
   if (!state.dashboard.activeTeam) return;
   const isEmail = value.includes('@');
   try {
-    let data = null;
+    let data: any = null;
     if (isEmail) {
       const emailInvited = await effects.gql.mutations.inviteToTeamVieEmail({
         teamId: state.dashboard.activeTeam,
