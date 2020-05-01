@@ -248,6 +248,19 @@ export const Sidebar = props => {
             Recently Deleted
           </Link>
         </ListAction>
+        <ListAction align="center" css={css({ paddingX: 0 })}>
+          <Link as={RouterLink} to="/new-dashboard/settings" style={linkStyles}>
+            <Stack
+              as="span"
+              css={css({ width: 10 })}
+              align="center"
+              justify="center"
+            >
+              <Icon name="gear" />
+            </Stack>
+            Settings (temp)
+          </Link>
+        </ListAction>
       </List>
     </Element>
   );
