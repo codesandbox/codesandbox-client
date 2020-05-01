@@ -17,8 +17,6 @@ import {
   AllCollectionsQueryVariables,
   _SearchSandboxesQuery,
   _SearchSandboxesQueryVariables,
-  GetTeamQuery,
-  GetTeamQueryVariables,
 } from 'app/graphql/types';
 import gql from 'graphql-tag';
 import { Query } from 'overmind-graphql';
@@ -208,24 +206,4 @@ export const recentSandboxes: Query<
     }
   }
   ${sandboxFragmentDashboard}
-`;
-
-export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
-  query getTeam($teamId: ID!) {
-    me {
-      team(id: $teamId) {
-        id
-        creatorId
-        description
-        name
-        users {
-          avatarUrl
-          name
-          lastName
-          username
-          id
-        }
-      }
-    }
-  }
 `;
