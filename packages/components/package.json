@@ -24,7 +24,7 @@
     "chromatic": "(if-env CIRCLE_BRANCH=master && yarn chromatic:master) || yarn chromatic:branch",
     "chromatic:base": "./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes --project-token=nffds42ndde",
     "chromatic:master": "yarn chromatic:base --auto-accept-changes",
-    "chromatic:branch": "(!(git diff master...HEAD --quiet ./src) && yarn chromatic:base) || echo 'Not running Chromatic...'",
+    "chromatic:branch": "(!(git diff master...HEAD --exit-code ./src) && echo 'RUN yarn chromatic:base') || echo 'Not running Chromatic...'",
     "prepublish": "yarn build"
   },
   "dependencies": {
