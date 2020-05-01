@@ -1,0 +1,350 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - '@codesandbox/common > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-plugin-sharp > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-remark-autolink-headers > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-remark-copy-linked-files > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-remark-images > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-transformer-remark > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - typography > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - styled-components > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > @babel/core > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - styled-components > babel-plugin-styled-components > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > css-loader > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > devcert > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > eslint > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > eslint-plugin-flowtype > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > eslint-plugin-graphql > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-telemetry > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-telemetry > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-plugin-page-creator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-plugin-sharp > async > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > webpack-merge > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-remark-copy-linked-files > cheerio > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-remark-images > cheerio > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-source-airtable > airtable > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - styled-components > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > @typescript-eslint/parser > @typescript-eslint/typescript-estree > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-block-scoping > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > babel-eslint > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @babel/core > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > styled-components > @babel/traverse > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > styled-components > babel-plugin-styled-components > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > babel-plugin-transform-es2015-modules-commonjs > babel-types > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > babel-plugin-transform-es2015-modules-commonjs > babel-template > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > eslint > inquirer > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > yurnalist > inquirer > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > eslint > table > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > eslint-plugin-graphql > graphql-config > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > gatsby-telemetry > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-telemetry > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-plugin-page-creator > gatsby-page-utils > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > optimize-css-assets-webpack-plugin > last-call-webpack-plugin > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > react-dev-utils > inquirer > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > webpack-dev-server > http-proxy-middleware > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - styled-components > babel-plugin-styled-components > @babel/helper-annotate-as-pure > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > styled-components > @babel/traverse > @babel/generator > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - styled-components > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > @typescript-eslint/parser > @typescript-eslint/experimental-utils > @typescript-eslint/typescript-estree > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/mdx > @babel/core > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > babel-eslint > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-block-scoping > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > babel-eslint > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @babel/core > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > @codesandbox/notifications > styled-components > @babel/traverse > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > @codesandbox/notifications > styled-components > babel-plugin-styled-components > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > babel-plugin-transform-es2015-modules-commonjs > babel-plugin-transform-strict-mode > babel-types > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > babel-plugin-transform-es2015-modules-commonjs > babel-template > babel-types > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > babel-plugin-transform-es2015-modules-commonjs > babel-template > babel-traverse > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > import-jsx > @babel/core > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > @pmmmwh/react-refresh-webpack-plugin > react-dev-utils > inquirer > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > yurnalist > inquirer > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > eslint-plugin-graphql > graphql-config > graphql-import > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > gatsby-telemetry > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > webpack-dev-server > portfinder > async > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-plugin-react-svg > svg-react-loader > xml2js > xmlbuilder > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > styled-components > babel-plugin-styled-components > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > @codesandbox/notifications > styled-components > @babel/traverse > @babel/generator > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-unicode-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > styled-components > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > babel-eslint > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/mdx > @babel/core > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - styled-components > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > babel-eslint > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-block-scoping > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > import-jsx > @babel/core > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > babel-eslint > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > babel-plugin-transform-es2015-modules-commonjs > babel-template > babel-traverse > babel-types > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > import-jsx > @babel/core > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > @codesandbox/notifications > styled-components > babel-plugin-styled-components > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-unicode-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - babel-preset-gatsby > @babel/preset-env > @babel/preset-modules > @babel/plugin-transform-dotall-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > @codesandbox/notifications > styled-components > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > babel-eslint > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > import-jsx > @babel/core > @babel/helpers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > styled-components > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > babel-eslint > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > babel-eslint > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-block-scoping > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > import-jsx > @babel/core > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-unicode-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > babel-preset-gatsby > @babel/preset-env > @babel/preset-modules > @babel/plugin-transform-dotall-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > import-jsx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > @babel/helpers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > babel-eslint > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > import-jsx > @babel/core > @babel/helpers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helpers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - '@codesandbox/common > @codesandbox/notifications > styled-components > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > babel-eslint > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-unicode-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/preset-modules > @babel/plugin-transform-dotall-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > import-jsx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > @babel/helpers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > import-jsx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helpers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helpers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > babel-eslint > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/preset-modules > @babel/plugin-transform-dotall-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > import-jsx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > import-jsx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helpers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > import-jsx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > import-jsx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > import-jsx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > babel-preset-gatsby > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
+    - gatsby > gatsby-cli > gatsby-recipes > @mdx-js/runtime > @mdx-js/mdx > remark-mdx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T07:33:52.561Z'
