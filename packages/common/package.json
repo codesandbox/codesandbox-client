@@ -17,11 +17,12 @@
     "build:storybook": "build-storybook -c .storybook -o public",
     "clean": "rimraf lib && yarn rimraf node_modules/@types/react-native",
     "lint": "eslint --ext .js,.ts,.tsx src",
-    "prepublish": "yarn build",
+    "prepublish": "npm run snyk-protect && yarn build",
     "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg,woff,woff2}\" lib --watch)",
     "start:storybook": "start-storybook",
     "test": "cross-env NODE_ENV=test jest --maxWorkers 2",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "snyk-protect": "snyk protect"
   },
   "jest": {
     "moduleDirectories": [
@@ -75,7 +76,8 @@
     "semver": "^5.6.0",
     "sha1": "^1.1.1",
     "styled-components": "^4.2.0",
-    "typeface-inter": "^3.10.0"
+    "typeface-inter": "^3.10.0",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -116,5 +118,6 @@
     "rimraf": "^2.6.3",
     "typescript": "3.7.4",
     "yarn": "^1.17.3"
-  }
+  },
+  "snyk": true
 }
