@@ -11,8 +11,15 @@ type TextProps = {
   size?: number;
 };
 
-export const Link = ({ href, children }) => (
-  <LinkBase size={3} css={css({ color: 'button.background' })} href={href}>
+type LinkProps = { href: string; children: any; target?: string };
+
+export const Link = ({ href, children, ...props }: LinkProps) => (
+  <LinkBase
+    size={3}
+    css={css({ color: 'button.background' })}
+    href={href}
+    {...props}
+  >
     {children}
   </LinkBase>
 );

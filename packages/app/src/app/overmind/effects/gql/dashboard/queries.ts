@@ -216,6 +216,8 @@ export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
       team(id: $teamId) {
         id
         creatorId
+        description
+        name
         users {
           avatarUrl
           name

@@ -107,6 +107,7 @@ export interface ButtonProps
   href?: string;
   to?: string;
   as?: any;
+  target?: any;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
