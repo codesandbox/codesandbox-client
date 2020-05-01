@@ -77,7 +77,7 @@ export const SandboxCard = ({ sandbox, isTemplate = false, ...props }) => {
         transitionDuration: theme => theme.speeds[4],
         ':hover, :focus, :focus-within': {
           cursor: edit ? 'normal' : 'pointer',
-          transform: 'scale(0.98)',
+          boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
         },
       })}
       {...props}
