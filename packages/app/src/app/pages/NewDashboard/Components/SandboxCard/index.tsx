@@ -1,5 +1,5 @@
 import React, { useState, KeyboardEvent, ChangeEvent, FormEvent } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
@@ -7,6 +7,7 @@ import {
   Stack,
   Element,
   Text,
+  Link,
   Stats,
   Input,
   SkeletonText,
@@ -20,7 +21,6 @@ export const SandboxCard = ({ sandbox, isTemplate = false, ...props }) => {
   const { actions } = useOvermind();
   const [edit, setEdit] = useState(false);
   const [newName, setNewName] = useState(sandboxTitle);
-  const history = useHistory();
 
   const url = sandboxUrl({
     id: sandbox.id,
@@ -63,73 +63,77 @@ export const SandboxCard = ({ sandbox, isTemplate = false, ...props }) => {
   };
 
   return (
-    <Stack
-      direction="vertical"
-      gap={2}
-      css={css({
-        width: '100%',
-        height: 240,
-        border: '1px solid',
-        borderColor: 'grays.600',
-        borderRadius: 'medium',
-        overflow: 'hidden',
-        transition: 'all ease-in-out',
-        transitionDuration: theme => theme.speeds[4],
-        ':hover, :focus, :focus-within': {
-          cursor: edit ? 'normal' : 'pointer',
-          transform: 'scale(0.98)',
-        },
-      })}
-      {...props}
+    <Link
+      as={RouterLink}
+      to={url}
       onClick={event => {
-        if (edit || isMenuClicked(event)) return;
-        history.push(url);
+        if (edit || isMenuClicked(event)) event.preventDefault();
       }}
     >
-      <Element
-        as="div"
+      <Stack
+        direction="vertical"
+        gap={2}
         css={css({
-          height: 160,
-          backgroundColor: 'grays.600',
-          backgroundImage: `url(${sandbox.screenshotUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat',
+          width: '100%',
+          height: 240,
+          border: '1px solid',
+          borderColor: 'grays.600',
+          borderRadius: 'medium',
+          overflow: 'hidden',
+          transition: 'all ease-in-out',
+          transitionDuration: theme => theme.speeds[4],
+          ':hover, :focus, :focus-within': {
+            cursor: edit ? 'normal' : 'pointer',
+            boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+          },
         })}
-      />
-      <Stack justify="space-between" align="center" marginLeft={4}>
-        {edit ? (
-          <form onSubmit={onSubmit}>
-            <Input
-              value={newName}
-              ref={inputRef}
-              onChange={onChange}
-              onKeyDown={onKeyDown}
-              onBlur={onBlur}
-            />
-          </form>
-        ) : (
-          <Text size={3} weight="medium">
-            {sandboxTitle}
-          </Text>
-        )}
-        <MenuOptions
-          sandbox={sandbox}
-          isTemplate={isTemplate}
-          onRename={enterEditing}
+        {...props}
+      >
+        <Element
+          as="div"
+          css={css({
+            height: 160,
+            backgroundColor: 'grays.600',
+            backgroundImage: `url(${sandbox.screenshotUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',
+          })}
         />
+        <Stack justify="space-between" align="center" marginLeft={4}>
+          {edit ? (
+            <form onSubmit={onSubmit}>
+              <Input
+                value={newName}
+                ref={inputRef}
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+                onBlur={onBlur}
+              />
+            </form>
+          ) : (
+            <Text size={3} weight="medium">
+              {sandboxTitle}
+            </Text>
+          )}
+          <MenuOptions
+            sandbox={sandbox}
+            isTemplate={isTemplate}
+            onRename={enterEditing}
+          />
+        </Stack>
+        <Stack marginX={4}>
+          <Stats
+            css={css({ fontSize: 2 })}
+            sandbox={{
+              viewCount: kFormatter(sandbox.viewCount),
+              likeCount: kFormatter(sandbox.likeCount),
+              forkCount: kFormatter(sandbox.forkCount),
+            }}
+          />
+        </Stack>
       </Stack>
-      <Stack marginX={4}>
-        <Stats
-          css={css({ fontSize: 2 })}
-          sandbox={{
-            viewCount: kFormatter(sandbox.viewCount),
-            likeCount: kFormatter(sandbox.likeCount),
-            forkCount: kFormatter(sandbox.forkCount),
-          }}
-        />
-      </Stack>
-    </Stack>
+    </Link>
   );
 };
 
