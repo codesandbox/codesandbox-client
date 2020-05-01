@@ -12,7 +12,9 @@
     "build": "next build",
     "dev": "cross-env LOCAL_SERVER=1 LOCAL_DEV=1 node server.js",
     "lint": "eslint .",
-    "start": "NODE_ENV=production node server.js"
+    "start": "NODE_ENV=production node server.js",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "jest": {
     "moduleDirectories": [
@@ -40,7 +42,8 @@
     "react-helmet": "^5.2.0",
     "react-spring": "^8.0.25",
     "react-visibility-sensor": "^5.0.2",
-    "styled-components": "^4.2.0"
+    "styled-components": "^4.2.0",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.2.0",
@@ -48,5 +51,6 @@
     "cross-env": "^5.2.0",
     "file-loader": "^3.0.1",
     "jest": "^24.9.0"
-  }
+  },
+  "snyk": true
 }
