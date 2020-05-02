@@ -1,31 +1,40 @@
 {
   "name": "@codesandbox/components",
-  "version": "0.0.2",
+  "version": "0.0.3",
+  "main": "lib/index",
+  "source": true,
+  "contributors": [
+    "Sara Vieira <sara@codesandbox.io> (https://iamsaravieira.com)",
+    "Siddharth Kshetrapal <sid@codesandbox.io> (https://sid.st)"
+  ],
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
     "directory": "packages/components"
   },
+  "bugs": {
+    "url": "https://github.com/codesandbox/codesandbox-client/issues"
+  },
+  "homepage": "https://github.com/codesandbox/codesandbox-client/tree/master/packages/components",
   "files": [
     "lib"
   ],
-  "main": "lib/index",
-  "source": true,
   "scripts": {
     "build": "yarn build:lib",
     "build:dev": "yarn build",
     "build:lib": "yarn clean && yarn tsc",
     "build:storybook": "build-storybook -c .storybook -o public",
-    "clean": "rimraf lib && yarn rimraf node_modules/@types/react && yarn rimraf node_modules/@types/react-native",
-    "lint": "eslint --ext .js,.ts,.tsx src",
-    "start": "yarn tsc --watch",
-    "start:storybook": "start-storybook",
-    "typecheck": "tsc --noEmit --pretty",
     "chromatic": "(if-env CIRCLE_BRANCH=master && yarn chromatic:master) || yarn chromatic:branch",
     "chromatic:base": "./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes --project-token=nffds42ndde",
-    "chromatic:master": "yarn chromatic:base --auto-accept-changes",
     "chromatic:branch": "(!(git diff master...HEAD --quiet ./src) && yarn chromatic:base) || echo 'Not running Chromatic...'",
-    "prepublish": "yarn build"
+    "chromatic:master": "yarn chromatic:base --auto-accept-changes",
+    "clean": "rimraf lib && yarn rimraf node_modules/@types/react && yarn rimraf node_modules/@types/react-native",
+    "lint": "eslint --ext .js,.ts,.tsx src",
+    "prepublish": "yarn build",
+    "start": "yarn tsc --watch",
+    "start:storybook": "start-storybook",
+    "typecheck": "tsc --noEmit --pretty"
   },
   "dependencies": {
     "@reach/auto-id": "^0.10.5",
@@ -61,5 +70,8 @@
   "peerDependencies": {
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
+  },
+  "engines": {
+    "node": "^10.0.0"
   }
 }
