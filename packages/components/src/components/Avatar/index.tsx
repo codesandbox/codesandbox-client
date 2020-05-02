@@ -1,22 +1,11 @@
-import React from 'react';
+import { User } from '@codesandbox/common/lib/types';
 import css from '@styled-system/css';
+import React, { ComponentProps, FunctionComponent } from 'react';
 import styled from 'styled-components';
-import { Element } from '../Element';
-import { Text } from '../Text';
 
-interface IAvatarProps {
-  user: {
-    id?: string;
-    username: string;
-    name?: string;
-    avatarUrl: string;
-    badges?: any[];
-    subscriptionSince?: string | null;
-  };
-  className?: string;
-}
+import { Element, Text } from '../..';
 
-export const AvatarContainer = styled(Element).attrs({ as: 'span' })(
+const AvatarContainer = styled(Element).attrs({ as: 'span' })(
   css({
     display: 'inline-block',
     height: 8,
@@ -26,7 +15,7 @@ export const AvatarContainer = styled(Element).attrs({ as: 'span' })(
   })
 );
 
-export const AvatarImage = styled.img(
+const AvatarImage = styled.img(
   css({
     height: '100%',
     width: '100%',
@@ -38,7 +27,7 @@ export const AvatarImage = styled.img(
   })
 );
 
-export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
+const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
   css({
     backgroundColor: 'blues.700',
     color: 'white',
@@ -55,10 +44,18 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
   })
 );
 
-export const Avatar = ({ user, ...props }: IAvatarProps) =>
-  user && (
+type Props = Omit<ComponentProps<typeof AvatarContainer>, 'children'> & {
+  user?: Pick<User, 'avatarUrl' | 'subscriptionSince' | 'username'>;
+};
+export const Avatar: FunctionComponent<Props> = ({
+  user,
+  user: { avatarUrl, subscriptionSince, username } = {},
+  ...props
+}) =>
+  user ? (
     <AvatarContainer {...props}>
-      <AvatarImage src={user.avatarUrl} alt={user.username} />
-      {user.subscriptionSince ? <Pro>Pro</Pro> : null}
+      <AvatarImage alt={username} src={avatarUrl} />
+
+      {subscriptionSince ? <Pro>Pro</Pro> : null}
     </AvatarContainer>
-  );
+  ) : null;

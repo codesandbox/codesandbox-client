@@ -37,6 +37,7 @@
     "typecheck": "tsc --noEmit --pretty"
   },
   "dependencies": {
+    "@codesandbox/common": "^1.0.8",
     "@reach/auto-id": "0.10.3",
     "@reach/menu-button": "0.10.3",
     "@reach/skip-nav": "^0.10.4",
