@@ -1,0 +1,40 @@
+{
+  "name": "@codesandbox/types",
+  "version": "0.1.0",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "source": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/types"
+  },
+  "bugs": {
+    "url": "https://github.com/codesandbox/codesandbox-client/issues"
+  },
+  "homepage": "https://github.com/codesandbox/codesandbox-client/tree/master/packages/types",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "yarn build:lib",
+    "build:dev": "yarn build",
+    "build:lib": "yarn clean && yarn tsc",
+    "clean": "rimraf lib",
+    "prepublish": "yarn build",
+    "start": "tsc --watch",
+    "typecheck": "tsc --noEmit --pretty"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {},
+  "engines": {
+    "node": ">=10.13.0",
+    "npm": ">=6",
+    "yarn": ">=1"
+  },
+  "funding": {
+    "url": "https://codesandbox.io/pricing"
+  }
+}
