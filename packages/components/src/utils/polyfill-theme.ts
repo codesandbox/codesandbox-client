@@ -49,7 +49,7 @@ const polyfillTheme = vsCodeTheme => {
 
   // Step 2: Fill missing values from existing values or codesandbox dark/light
 
-  const codesandboxColors = ['dark', 'lc'].includes(type)
+  const codesandboxColors: any = ['dark', 'lc'].includes(type)
     ? object(codesandboxBlack.colors)
     : object(codesandboxLight.colors);
 
