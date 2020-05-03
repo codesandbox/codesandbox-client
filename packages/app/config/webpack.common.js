@@ -133,11 +133,12 @@ module.exports = {
           require.resolve('./polyfills'),
           path.join(paths.appSrc, 'index.js'),
         ],
-        sandbox: [
+        /* sandbox: [
           require.resolve('./polyfills'),
           path.join(paths.sandboxSrc, 'index.js'),
-        ],
+        ], 
         'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
+        */
         'watermark-button': path.join(paths.src, 'watermark-button.js'),
         embed: [
           require.resolve('./polyfills'),
