@@ -12,7 +12,10 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SandboxGrid } from '../../../Components/SandboxGrid';
-import { SandboxCard, SkeletonCard } from '../../../Components/SandboxCard';
+import {
+  SandboxCard,
+  SkeletonCard,
+} from '../../../Components/Sandbox/SandboxCard';
 
 export const StartSandboxes = () => {
   const {

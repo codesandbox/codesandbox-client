@@ -1,9 +1,8 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { Element } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
 import { SandboxCard } from './SandboxCard';
 import { SandboxListItem } from './SandboxListItem';
 
@@ -75,11 +74,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   const location = useLocation();
   if (dashboard.viewMode === 'list' || location.pathname.includes('deleted')) {
-    return (
-      <Element style={{ gridColumn: '1/-1' }}>
-        <SandboxListItem {...sandboxProps} {...props} />
-      </Element>
-    );
+    return <SandboxListItem {...sandboxProps} {...props} />;
   }
   return <SandboxCard {...sandboxProps} {...props} />;
 };

@@ -3,7 +3,7 @@ import { useOvermind } from 'app/overmind';
 import { Text, Column } from '@codesandbox/components';
 import { Sandbox } from '../../../Components/Sandbox';
 import { SandboxGrid } from '../../../Components/SandboxGrid';
-import { SkeletonCard } from '../../../Components/SandboxCard';
+import { SkeletonCard } from '../../../Components/Sandbox/SandboxCard';
 
 export const SandboxesGroup = ({ title, time }) => {
   const {
