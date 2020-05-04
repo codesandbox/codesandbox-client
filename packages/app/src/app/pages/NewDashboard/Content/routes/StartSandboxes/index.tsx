@@ -12,10 +12,8 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SandboxGrid } from '../../../Components/SandboxGrid';
-import {
-  SandboxCard,
-  SkeletonCard,
-} from '../../../Components/Sandbox/SandboxCard';
+import { Sandbox } from '../../../Components/Sandbox';
+import { SkeletonCard } from '../../../Components/Sandbox/SandboxCard';
 
 export const StartSandboxes = () => {
   const {
@@ -40,7 +38,7 @@ export const StartSandboxes = () => {
           <SandboxGrid>
             {sandboxes.TEMPLATE_START_PAGE.map(({ sandbox }) => (
               <Column key={sandbox.id}>
-                <SandboxCard template sandbox={sandbox} />
+                <Sandbox template sandbox={sandbox} />
               </Column>
             ))}
           </SandboxGrid>
@@ -72,7 +70,7 @@ export const StartSandboxes = () => {
             </Column>
             {sandboxes.RECENT_START_PAGE.map(sandbox => (
               <Column key={sandbox.id}>
-                <SandboxCard sandbox={sandbox} />
+                <Sandbox sandbox={sandbox} />
               </Column>
             ))}
           </SandboxGrid>

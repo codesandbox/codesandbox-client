@@ -1,11 +1,22 @@
 import React from 'react';
-import { Grid } from '@codesandbox/components';
+import { useLocation } from 'react-router-dom';
+import { useOvermind } from 'app/overmind';
+import { Grid, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const SandboxGrid = props => {
+  const {
+    state: { dashboard },
+  } = useOvermind();
+
   const numberOfItems = React.Children.toArray(props.children).filter(
     React.isValidElement
   ).length;
+
+  const location = useLocation();
+  if (dashboard.viewMode === 'list' || location.pathname.includes('deleted')) {
+    return <Stack direction="vertical">{props.children}</Stack>;
+  }
 
   return (
     <Grid

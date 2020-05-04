@@ -30,7 +30,6 @@ export const SandboxListItem = ({
   <Link
     as={RouterLink}
     to={url}
-    style={{ gridColumn: '1/-1' }}
     onClick={event => {
       if (edit || isMenuClicked(event)) event.preventDefault();
     }}
