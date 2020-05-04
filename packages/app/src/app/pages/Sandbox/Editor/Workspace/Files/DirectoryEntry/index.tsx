@@ -274,9 +274,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     });
   };
 
-  const toggleOpen = () => {
-    setOpen(!open);
-  };
+  const toggleOpen = () => setOpen(!open);
 
   const closeTree = () => setOpen(false);
 
