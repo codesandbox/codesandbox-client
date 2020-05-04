@@ -61,7 +61,6 @@ interface Props {
   connectDropTarget?: Function;
   isOver?: boolean;
   canDrop?: boolean;
-  siblings?: any;
   signals?: any;
   title?: string;
   sandboxId?: string;
@@ -275,7 +274,9 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     });
   };
 
-  const toggleOpen = () => setOpen(!open);
+  const toggleOpen = () => {
+    setOpen(!open);
+  };
 
   const closeTree = () => setOpen(false);
 
