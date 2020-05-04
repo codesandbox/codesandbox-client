@@ -2,21 +2,17 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
-export const MenuOptionsComponent = ({
-  sandbox,
-  template,
-  setEdit,
-  history,
-}) => {
+export const MenuOptions = ({ sandbox, isTemplate, onRename }) => {
   const { effects, actions } = useOvermind();
+  const history = useHistory();
   const url = sandboxUrl({
     id: sandbox.id,
     alias: sandbox.alias,
   });
 
-  const getFolderUrl = (path, isTemplate) => {
+  const getFolderUrl = path => {
     if (isTemplate) return '/new-dashboard/templates';
     if (path === '/' || !path) return '/new-dashboard/all/drafts';
 
@@ -25,18 +21,18 @@ export const MenuOptionsComponent = ({
 
   return (
     <Menu>
-      <Menu.IconButton name="more" size={9} title="Sandbox options" />
+      <Menu.IconButton name="more" size={9} title="Sandbox actions" />
       <Menu.List>
         <Menu.Item
           onSelect={() => {
-            history.push(getFolderUrl(sandbox.collection.path, template));
+            history.push(getFolderUrl(sandbox.collection.path));
           }}
         >
           Show in Folder
         </Menu.Item>
         <Menu.Item
           onSelect={() => {
-            window.open(`https://codesandbox.io${url}`);
+            history.push(url);
           }}
         >
           Open sandbox
@@ -48,6 +44,7 @@ export const MenuOptionsComponent = ({
         >
           Open sandbox in new tab
         </Menu.Item>
+        <Menu.Divider />
         <Menu.Item
           onSelect={() => {
             effects.browser.copyToClipboard(`https://codesandbox.io${url}`);
@@ -70,10 +67,11 @@ export const MenuOptionsComponent = ({
             actions.dashboard.downloadSandboxes([sandbox.id]);
           }}
         >
-          Export {template ? 'template' : 'sandbox'}
+          Export {isTemplate ? 'template' : 'sandbox'}
         </Menu.Item>
-        <Menu.Item onSelect={() => setEdit(true)}>Rename sandbox</Menu.Item>
-        {template ? (
+        <Menu.Divider />
+        <Menu.Item onSelect={() => onRename()}>Rename sandbox</Menu.Item>
+        {isTemplate ? (
           <Menu.Item
             onSelect={() => {
               actions.dashboard.unmakeTemplate([sandbox.id]);
@@ -90,7 +88,8 @@ export const MenuOptionsComponent = ({
             Make sandbox a template
           </Menu.Item>
         )}
-        {template ? (
+        <Menu.Divider />
+        {isTemplate ? (
           <Menu.Item onSelect={() => {}}>Delete template</Menu.Item>
         ) : (
           <Menu.Item
@@ -105,6 +104,3 @@ export const MenuOptionsComponent = ({
     </Menu>
   );
 };
-
-// @ts-ignore
-export const MenuOptions = withRouter(MenuOptionsComponent);

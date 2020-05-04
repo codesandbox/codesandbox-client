@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 
 export const MenuOptionsComponent = ({
   sandbox,
-  template,
+  isTemplate = false,
   setEdit,
   history,
 }) => {
@@ -16,7 +16,7 @@ export const MenuOptionsComponent = ({
     alias: sandbox.alias,
   });
 
-  const getFolderUrl = (path, isTemplate) => {
+  const getFolderUrl = path => {
     if (isTemplate) return '/new-dashboard/templates';
     if (path === '/' || !path) return '/new-dashboard/all/drafts';
 
@@ -53,7 +53,7 @@ export const MenuOptionsComponent = ({
       <Menu.List>
         <Menu.Item
           onSelect={() => {
-            history.push(getFolderUrl(sandbox.collection.path, template));
+            history.push(getFolderUrl(sandbox.collection.path));
           }}
         >
           Show in Folder
@@ -94,10 +94,10 @@ export const MenuOptionsComponent = ({
             actions.dashboard.downloadSandboxes([sandbox.id]);
           }}
         >
-          Export {template ? 'template' : 'sandbox'}
+          Export {isTemplate ? 'template' : 'sandbox'}
         </Menu.Item>
         <Menu.Item onSelect={() => setEdit(true)}>Rename sandbox</Menu.Item>
-        {template ? (
+        {isTemplate ? (
           <Menu.Item
             onSelect={() => {
               actions.dashboard.unmakeTemplate([sandbox.id]);
@@ -114,7 +114,7 @@ export const MenuOptionsComponent = ({
             Make sandbox a template
           </Menu.Item>
         )}
-        {template ? (
+        {isTemplate ? (
           <Menu.Item onSelect={() => {}}>Delete template</Menu.Item>
         ) : (
           <Menu.Item

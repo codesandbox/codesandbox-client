@@ -513,7 +513,7 @@ export const handleError: Action<{
   });
 };
 
-export const trackCurrentTeams: AsyncAction = async ({ state, effects }) => {
+export const trackCurrentTeams: AsyncAction = async ({ effects }) => {
   const { me } = await effects.gql.queries.teams({});
   if (me) {
     effects.analytics.setGroup(
@@ -525,4 +525,34 @@ export const trackCurrentTeams: AsyncAction = async ({ state, effects }) => {
       me.teams.map(m => m.id)
     );
   }
+};
+
+const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX';
+export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
+  if (effects.browser.storage.get(seenTermsKey)) {
+    return;
+  }
+
+  if (!state.isFirstVisit) {
+    effects.analytics.track('Saw Privacy Policy Notification');
+    effects.notificationToast.add({
+      message:
+        'Hello, our privacy policy has been updated recently. What’s new? CodeSandbox emails. Please read and reach out.',
+      title: 'Updated Privacy',
+      status: NotificationStatus.NOTICE,
+      sticky: true,
+      actions: {
+        primary: [
+          {
+            label: 'Open Privacy Policy',
+            run: () => {
+              window.open('https://codesandbox.io/legal/privacy', '_blank');
+            },
+          },
+        ],
+      },
+    });
+  }
+
+  effects.browser.storage.set(seenTermsKey, true);
 };

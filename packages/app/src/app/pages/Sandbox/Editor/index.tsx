@@ -212,9 +212,7 @@ const Editor = () => {
                 height: STATUS_BAR_SIZE,
               })}
             >
-              <FakeStatusBarText>
-                Version: {VERSION.split('-').pop()}
-              </FakeStatusBarText>
+              <FakeStatusBarText>{VERSION.split('-').pop()}</FakeStatusBarText>
               <StatusBar
                 className="monaco-workbench mac nopanel"
                 ref={statusbarEl}

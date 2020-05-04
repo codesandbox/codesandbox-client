@@ -384,7 +384,6 @@ workflows:
       - deploy-to-production:
           requires:
             - create-docker-image
-            - build-prod
             - lint
             - typecheck
             - test-integrations

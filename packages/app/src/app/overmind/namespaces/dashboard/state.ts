@@ -50,6 +50,7 @@ type State = {
   teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
   allCollections: DELETE_ME_COLLECTION[] | null;
   activeTeam: string | null;
+  activeTeamInfo: any | null;
   selectedSandboxes: string[];
   trashSandboxIds: string[];
   isDragging: boolean;
@@ -93,6 +94,7 @@ export const state: State = {
   viewMode: 'grid',
   allCollections: null,
   activeTeam: null,
+  activeTeamInfo: null,
   teams: [],
   recentSandboxesByTime: ({ sandboxes }) => {
     const recentSandboxes = sandboxes.RECENT;

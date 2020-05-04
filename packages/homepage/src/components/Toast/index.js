@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect } from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Link } from 'gatsby';
@@ -6,12 +5,12 @@ import { AnimatePresence } from 'framer-motion';
 
 import { ToastContainer } from './elements';
 
+const key = 'ACCEPTED_TERMS_CODESANDBOX';
 const Privacy = () => {
-  const key = 'ACCEPTED_TERMS_CODESANDBOX';
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const hasSeen = !!window.localStorage.getItem(key);
+    const hasSeen = Boolean(window.localStorage.getItem(key));
     if (!hasSeen) {
       setShow(true);
       window.localStorage.setItem(key, true);
@@ -33,7 +32,7 @@ const Privacy = () => {
           <Link to="/legal/privacy">Privacy Policy</Link>
           <button
             type="button"
-            ariaLabel="Close"
+            aria-label="Close"
             onClick={() => setShow(false)}
           />
         </ToastContainer>

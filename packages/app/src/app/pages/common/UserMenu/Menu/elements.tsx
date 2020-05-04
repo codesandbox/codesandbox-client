@@ -55,6 +55,7 @@ const StyledMenu = styled(Link)<{ href?: string; to?: string }>`
 
 const StyledMenuA = StyledMenu.withComponent('a');
 const StyledMenuButton = StyledMenu.withComponent('button');
+const StyledMenuLink = StyledMenu.withComponent(Link);
 
 export const ItemA = forwardRef<
   HTMLAnchorElement,
@@ -66,7 +67,7 @@ export const ItemButton = forwardRef<
 >((props, ref) => <StyledMenuButton {...props} ref={ref} />);
 export const ItemLink = forwardRef<
   HTMLAnchorElement,
-  ComponentProps<typeof StyledMenu>
+  ComponentProps<typeof StyledMenuLink>
 >((props, ref) => <StyledMenu {...props} innerRef={ref} />);
 
 export const Icon = styled.span`

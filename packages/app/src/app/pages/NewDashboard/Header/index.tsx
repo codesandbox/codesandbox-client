@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 import { useOvermind } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import {
@@ -12,22 +13,21 @@ import css from '@styled-system/css';
 import { withRouter } from 'react-router-dom';
 
 export const HeaderComponent = ({ history }) => {
-  const [value, setValue] = useState();
+  const [value, setValue] = useState('');
   const {
     actions: { modalOpened },
   } = useOvermind();
 
   const searchQuery = new URLSearchParams(window.location.search).get('query');
 
-  const onChange = e => {
-    setValue(e.target.value);
-    if (!e.target.value) {
-      history.push(`/new-dashboard/all`);
-    }
+  const search = query => history.push(`/new-dashboard/search?query=${query}`);
+  const [debouncedSearch] = useDebouncedCallback(search, 250);
 
-    if (e.target.value.length >= 2) {
-      history.push(`/new-dashboard/search?query=${e.target.value}`);
-    }
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+
+    if (!e.target.value) history.push(`/new-dashboard/all`);
+    if (e.target.value.length >= 2) debouncedSearch(e.target.value);
   };
 
   return (
@@ -48,14 +48,9 @@ export const HeaderComponent = ({ history }) => {
     >
       <IconButton name="menu" size={18} title="Menu" />
       <Input
+        type="text"
         value={value || searchQuery || ''}
         onChange={onChange}
-        onKeyDown={e => {
-          if (e.key === 'Enter' && value) {
-            history.push(`/new-dashboard/search?query=${e.target.value}`);
-          }
-        }}
-        type="text"
         placeholder="Search all sandboxes"
         css={css({ maxWidth: 480, display: ['none', 'none', 'block'] })}
       />

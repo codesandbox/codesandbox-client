@@ -16,12 +16,16 @@ export const dashboardMounted: AsyncAction = async (context, value) => {
   await withLoadApp()(context, value);
 };
 
-export const newDashboardMounted: Action = ({ state, effects }) => {
-  const localStorageViewMode = effects.browser.storage.get(VIEW_MODE_DASHBOARD);
-  if (localStorageViewMode) {
-    state.dashboard.viewMode = localStorageViewMode;
+export const newDashboardMounted: AsyncAction = withLoadApp(
+  async ({ state, effects }) => {
+    const localStorageViewMode = effects.browser.storage.get(
+      VIEW_MODE_DASHBOARD
+    );
+    if (localStorageViewMode) {
+      state.dashboard.viewMode = localStorageViewMode;
+    }
   }
-};
+);
 export const sandboxesSelected: Action<{
   sandboxIds: string[];
 }> = ({ state }, { sandboxIds }) => {
@@ -35,10 +39,21 @@ export const setTrashSandboxes: Action<{
 };
 
 export const setActiveTeam: Action<{
-  id: string;
+  id: string | null;
 }> = ({ state, effects }, { id }) => {
+  // ignore if its already selected
+  if (id === state.dashboard.activeTeam) return;
+
   state.dashboard.activeTeam = id;
   effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
+  state.dashboard.sandboxes = {
+    ...state.dashboard.sandboxes,
+    DRAFTS: null,
+    TEMPLATES: null,
+    RECENT: null,
+    SEARCH: null,
+    ALL: null,
+  };
 };
 
 export const dragChanged: Action<{ isDragging: boolean }> = (
@@ -124,12 +139,112 @@ export const getTeams: AsyncAction = async ({ state, effects }) => {
 
   state.dashboard.teams = teams.me.teams;
 };
+
+export const getTeam: AsyncAction = withLoadApp(async ({ state, effects }) => {
+  if (!state.dashboard.activeTeam) return;
+  const team = await effects.gql.queries.getTeam({
+    teamId: state.dashboard.activeTeam,
+  });
+
+  if (!team || !team.me) {
+    return;
+  }
+
+  state.dashboard.activeTeamInfo = team.me.team;
+});
+
+export const removeFromTeam: AsyncAction<string> = async (
+  { state, effects },
+  id
+) => {
+  if (!state.dashboard.activeTeam || !state.dashboard.activeTeamInfo) return;
+  try {
+    await effects.gql.mutations.removeFromTeam({
+      teamId: state.dashboard.activeTeam,
+      userId: id,
+    });
+
+    state.dashboard.activeTeamInfo = {
+      ...state.dashboard.activeTeamInfo,
+      users: (state.dashboard.activeTeamInfo.users || []).filter(
+        user => user.id !== id
+      ),
+    };
+  } catch {
+    effects.notificationToast.error(
+      'There has been a problem removing them from your team'
+    );
+  }
+};
+
+export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
+  if (!state.dashboard.activeTeam || !state.dashboard.activeTeamInfo) return;
+  try {
+    await effects.gql.mutations.leaveTeam({
+      teamId: state.dashboard.activeTeam,
+    });
+
+    actions.dashboard.setActiveTeam({ id: null });
+    actions.dashboard.getTeams();
+
+    effects.notificationToast.success(
+      `You successfully left the ${state.dashboard.activeTeamInfo.name} team`
+    );
+  } catch (e) {
+    effects.notificationToast.error(
+      'There has been a problem removing your from the team'
+    );
+  }
+};
+
+export const inviteToTeam: AsyncAction<string> = async (
+  { state, effects },
+  value
+) => {
+  if (!state.dashboard.activeTeam) return;
+  const isEmail = value.includes('@');
+  try {
+    let data: any = null;
+    if (isEmail) {
+      const emailInvited = await effects.gql.mutations.inviteToTeamVieEmail({
+        teamId: state.dashboard.activeTeam,
+        email: value,
+      });
+
+      data = emailInvited.inviteToTeamViaEmail;
+    } else {
+      const usernameInvited = await effects.gql.mutations.inviteToTeam({
+        teamId: state.dashboard.activeTeam,
+        username: value,
+      });
+
+      data = usernameInvited.inviteToTeam;
+    }
+
+    if (!data) {
+      return;
+    }
+
+    effects.notificationToast.success(
+      `Successfully invited ${value} to your team`
+    );
+  } catch (e) {
+    const errorMessageExists =
+      e.response && e.response.errors && e.response.errors.length;
+    effects.notificationToast.error(
+      errorMessageExists
+        ? e.response.errors[0].message
+        : `There was a problem inviting ${value} to your team`
+    );
+  }
+};
+
 export const getRecentSandboxes: AsyncAction = withLoadApp(
   async ({ state, effects }) => {
     const { dashboard } = state;
     try {
       const data = await effects.gql.queries.recentSandboxes({
-        limit: 50,
+        limit: 200,
         orderField: dashboard.orderBy.field,
         orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
       });
@@ -137,7 +252,13 @@ export const getRecentSandboxes: AsyncAction = withLoadApp(
         return;
       }
 
-      dashboard.sandboxes[sandboxesTypes.RECENT] = data.me.sandboxes;
+      dashboard.sandboxes[sandboxesTypes.RECENT] = data.me.sandboxes
+        .filter(
+          sandbox =>
+            (sandbox.collection || { collection: {} }).teamId ===
+            state.dashboard.activeTeam
+        )
+        .slice(0, 50);
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your recent Sandboxes'
@@ -687,11 +808,16 @@ export const getSearchSandboxes: AsyncAction<string | null> = withLoadApp(
         lastSandboxes = sandboxes;
       }
 
-      dashboard.sandboxes[
-        sandboxesTypes.SEARCH
-      ] = state.dashboard
+      const sandboxesToShow = state.dashboard
         .getFilteredSandboxes(searchIndex.search(search))
-        .filter(x => !x.customTemplate);
+        .filter(x => !x.customTemplate)
+        .filter(
+          sandbox =>
+            (sandbox.collection || { collection: {} }).teamId ===
+            state.dashboard.activeTeam
+        );
+
+      dashboard.sandboxes[sandboxesTypes.SEARCH] = sandboxesToShow;
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your Sandboxes'
