@@ -16,7 +16,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
   const [edit, setEdit] = React.useState(false);
-  const [newName, setNewName] = React.useState(sandboxTitle);
+  const [newTitle, setNewTitle] = React.useState(sandboxTitle);
 
   const url = sandboxUrl({
     id: sandbox.id,
@@ -24,12 +24,12 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   });
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewName(event.target.value);
+    setNewTitle(event.target.value);
   };
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === ESC) {
       // Reset value and exit without saving
-      setNewName(sandboxTitle);
+      setNewTitle(sandboxTitle);
       setEdit(false);
     }
   };
@@ -38,7 +38,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     if (event) event.preventDefault();
     await actions.dashboard.renameSandbox({
       id: sandbox.id,
-      title: newName,
+      title: newTitle,
       oldTitle: sandboxTitle,
     });
     setEdit(false);
@@ -69,7 +69,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   return (
     <SandboxCard
       sandboxTitle={sandboxTitle}
-      newName={newName}
+      newTitle={newTitle}
       sandbox={sandbox}
       isTemplate={isTemplate}
       url={url}

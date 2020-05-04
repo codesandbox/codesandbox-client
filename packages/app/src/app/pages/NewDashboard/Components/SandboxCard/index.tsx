@@ -17,7 +17,7 @@ export const SandboxCard = ({
   sandbox,
   isTemplate = false,
   sandboxTitle,
-  newName,
+  newTitle,
   url,
   edit,
   inputRef,
@@ -69,7 +69,7 @@ export const SandboxCard = ({
         {edit ? (
           <form onSubmit={onSubmit}>
             <Input
-              value={newName}
+              value={newTitle}
               ref={inputRef}
               onChange={onChange}
               onKeyDown={onKeyDown}
