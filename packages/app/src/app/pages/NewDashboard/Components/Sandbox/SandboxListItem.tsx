@@ -12,7 +12,7 @@ import {
 import css from '@styled-system/css';
 import { MenuOptions } from './Menu';
 
-export const SandboxItem = ({
+export const SandboxListItem = ({
   sandbox,
   isTemplate = false,
   sandboxTitle,
