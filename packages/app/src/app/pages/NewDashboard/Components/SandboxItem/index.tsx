@@ -1,37 +1,39 @@
-import React, { useState } from 'react';
-import { Stack, Element, Text, Input } from '@codesandbox/components';
+import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import {
+  Stack,
+  Element,
+  Text,
+  Input,
+  Link,
+  isMenuClicked,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
 import { MenuOptions } from './Menu';
-
-type Props = {
-  sandbox: any;
-  isTemplate?: boolean;
-  style?: any;
-};
 
 export const SandboxItem = ({
   sandbox,
   isTemplate = false,
+  sandboxTitle,
+  newTitle,
+  url,
+  edit,
+  inputRef,
+  onChange,
+  onKeyDown,
+  onSubmit,
+  onBlur,
+  enterEditing,
   ...props
-}: Props) => {
-  const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
-  const { actions } = useOvermind();
-  const [edit, setEdit] = useState(false);
-  const [newName, setNewName] = useState(sandboxTitle);
-
-  const editSandboxTitle = async e => {
-    e.preventDefault();
-    await actions.dashboard.renameSandbox({
-      id: sandbox.id,
-      title: newName,
-      oldTitle: sandboxTitle,
-    });
-    setEdit(false);
-  };
-
-  return (
+}) => (
+  <Link
+    as={RouterLink}
+    to={url}
+    onClick={event => {
+      if (edit || isMenuClicked(event)) event.preventDefault();
+    }}
+  >
     <Stack
       gap={2}
       align="center"
@@ -61,10 +63,13 @@ export const SandboxItem = ({
         />
         <Element style={{ width: 150 }}>
           {edit ? (
-            <form onSubmit={editSandboxTitle}>
+            <form onSubmit={onSubmit}>
               <Input
-                value={newName}
-                onChange={e => setNewName(e.target.value)}
+                value={newTitle}
+                ref={inputRef}
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+                onBlur={onBlur}
               />
             </form>
           ) : (
@@ -86,8 +91,8 @@ export const SandboxItem = ({
       <MenuOptions
         sandbox={sandbox}
         isTemplate={isTemplate}
-        setEdit={setEdit}
+        onRename={enterEditing}
       />
     </Stack>
-  );
-};
+  </Link>
+);

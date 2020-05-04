@@ -58,29 +58,28 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     setTimeout(() => inputRef.current.focus());
   };
 
+  const sandboxProps = {
+    sandboxTitle,
+    newTitle,
+    sandbox,
+    isTemplate,
+    url,
+    edit,
+    inputRef,
+    onChange,
+    onKeyDown,
+    onSubmit,
+    onBlur,
+    enterEditing,
+  };
+
   const location = useLocation();
   if (dashboard.viewMode === 'list' || location.pathname.includes('deleted')) {
     return (
       <Element style={{ gridColumn: '1/-1' }}>
-        <SandboxItem sandbox={sandbox} isTemplate={isTemplate} {...props} />
+        <SandboxItem {...sandboxProps} {...props} />
       </Element>
     );
   }
-  return (
-    <SandboxCard
-      sandboxTitle={sandboxTitle}
-      newTitle={newTitle}
-      sandbox={sandbox}
-      isTemplate={isTemplate}
-      url={url}
-      edit={edit}
-      inputRef={inputRef}
-      onChange={onChange}
-      onKeyDown={onKeyDown}
-      onSubmit={onSubmit}
-      onBlur={onBlur}
-      enterEditing={enterEditing}
-      {...props}
-    />
-  );
+  return <SandboxCard {...sandboxProps} {...props} />;
 };
