@@ -17,9 +17,10 @@ export const VSCode: React.FunctionComponent = () => {
   const { state, actions, effects } = useOvermind();
   const containerEl = useRef(null);
 
-  const getCurrentModule = React.useCallback(() => state.editor.currentModule, [
-    state,
-  ]);
+  const getCurrentModule = React.useCallback(
+    () => state.editor.currentModule,
+    [] // eslint-disable-line
+  );
 
   useEffect(() => {
     const rootEl = containerEl.current;
