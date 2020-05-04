@@ -17,6 +17,11 @@ export const VSCode: React.FunctionComponent = () => {
   const { state, actions, effects } = useOvermind();
   const containerEl = useRef(null);
 
+  const getCurrentModule = React.useCallback(
+    () => state.editor.currentModule,
+    [] // eslint-disable-line
+  );
+
   useEffect(() => {
     const rootEl = containerEl.current;
     const mainContainer = effects.vscode.getEditorElement(
@@ -36,7 +41,7 @@ export const VSCode: React.FunctionComponent = () => {
                     actions.editor.codeChanged({ code, moduleShortid })
                   }
                   // Copy the object, we don't want mutations in the component
-                  currentModule={json(state.editor.currentModule)}
+                  currentModule={json(getCurrentModule())}
                   config={config}
                   sandbox={state.editor.currentSandbox}
                   {...(extraProps as any)}
@@ -60,9 +65,9 @@ export const VSCode: React.FunctionComponent = () => {
   }, [
     actions.editor,
     effects.vscode,
-    state.editor.currentModule,
     state.editor.currentSandbox,
     state.editor.currentSandbox.template,
+    getCurrentModule,
   ]);
 
   return (
