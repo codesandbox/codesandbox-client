@@ -169,6 +169,7 @@ export const saveCode: AsyncAction<{
     if (savedCode === null) {
       // If the savedCode is also module.code
       effects.moduleRecover.remove(sandbox.id, module);
+      effects.vscode.syncModule(module);
     }
 
     if (
@@ -305,8 +306,7 @@ export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
     return;
   }
 
-  effects.vscode.setModuleCode({ ...module, code }, true);
-  module.code = code;
+  actions.editor.setCode({ moduleShortid, code });
 
   await actions.editor.codeSaved({
     code,
@@ -347,8 +347,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
     return;
   }
 
-  effects.vscode.setModuleCode({ ...module, code }, true);
-  module.code = code;
+  actions.editor.setCode({ moduleShortid, code });
 
   await actions.editor.codeSaved({
     code,
@@ -542,8 +541,7 @@ export const updateSandboxPackageJson: AsyncAction = async ({
     return;
   }
 
-  effects.vscode.setModuleCode({ ...module, code }, true);
-  module.code = code;
+  actions.editor.setCode({ moduleShortid, code });
 
   await actions.editor.codeSaved({
     code,

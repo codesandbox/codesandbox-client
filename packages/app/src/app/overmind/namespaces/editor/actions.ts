@@ -365,6 +365,32 @@ export const onOperationApplied: Action<{
   }
 };
 
+export const setCode: Action<{
+  moduleShortid: string;
+  code: string;
+}> = ({ effects, state, actions }, { code, moduleShortid }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+  // If the code is opened in VSCode, change the code in VSCode and let
+  // other clients know via the event triggered by VSCode. Otherwise
+  // send a manual event and just change the state.
+  if (effects.vscode.isModuleOpened(module)) {
+    effects.vscode.setModuleCode({ ...module, code }, true);
+  } else {
+    actions.editor.codeChanged({ moduleShortid, code });
+  }
+};
+
 export const codeChanged: Action<{
   moduleShortid: string;
   code: string;

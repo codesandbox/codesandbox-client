@@ -35,11 +35,15 @@ export const onSave: Operator<LiveMessage<{
     return;
   }
 
-  module.savedCode = data.saved_code;
+  module.savedCode = module.code === data.saved_code ? null : data.saved_code;
   module.updatedAt = data.updated_at;
   module.insertedAt = data.inserted_at;
   sandbox.version = data.version;
   effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
+
+  if (module.savedCode === null) {
+    effects.vscode.syncModule(module);
+  }
 });
 
 export const onJoin: Operator<LiveMessage<{
