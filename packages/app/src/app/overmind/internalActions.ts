@@ -438,9 +438,7 @@ export const handleError: Action<{
         primary: [
           {
             label: 'Sign in',
-            run: () => {
-              actions.signInClicked();
-            },
+            run: () => actions.signInClicked(),
           },
         ],
       },

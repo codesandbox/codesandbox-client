@@ -1,6 +1,5 @@
 import { Button } from '@codesandbox/common/lib/components/Button';
 import theme from '@codesandbox/common/lib/theme';
-
 import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
@@ -155,7 +154,7 @@ const RoutesComponent: React.FC = () => {
               <Route path="/auth/dev" component={DevAuthPage} />
             )}
             {process.env.NODE_ENV === `development` && (
-              <Route path="/codesadbox" render={CodeSadbox} />
+              <Route path="/codesadbox" component={CodeSadbox} />
             )}
             <Route component={NotFound} />
           </Switch>

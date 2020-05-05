@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { ThemeProvider, Stack } from '@codesandbox/components';
 import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import OutsideClickHandler from 'react-outside-click-handler';
@@ -11,17 +11,17 @@ export const SignInModal = () => {
     state: { redirectOnLogin },
   } = useOvermind();
 
-  const closeModal = event => {
-    if (event.keyCode === 27 && open) {
-      toggleSignInModal();
-    }
-  };
+  const closeModal = useCallback(
+    event => {
+      if (event.keyCode === 27 && open) toggleSignInModal();
+    },
+    [toggleSignInModal]
+  );
 
   useEffect(() => {
     document.addEventListener('keydown', closeModal, false);
     return () => document.removeEventListener('keydown', closeModal, false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [closeModal]);
 
   return (
     <ThemeProvider theme={codeSandboxBlack}>

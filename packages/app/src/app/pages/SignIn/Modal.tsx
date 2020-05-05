@@ -18,7 +18,7 @@ export const SignInModalElementComponent = ({ redirectTo, location }) => {
 
   const handleSignIn = async () => {
     await signInButtonClicked({ useExtraScopes: false });
-    if (query) {
+    if (query === 'dashboard') {
       window.top.location.href = 'https://codesandbox.io/dashboard';
     } else {
       history.push(redirectTo.replace(location.origin, ''));
