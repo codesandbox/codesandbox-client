@@ -114,7 +114,9 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
   } = useOvermind();
 
   const [creating, setCreating] = React.useState<ItemTypes>(null);
-  const [open, setOpen] = React.useState(root || shouldDirectoryBeOpen(id));
+  const [open, setOpen] = React.useState(
+    root || shouldDirectoryBeOpen({ directoryId: id })
+  );
   const [modalConfirm, setModalConfirm] = React.useState<Modal | null>(null);
 
   React.useEffect(() => {
@@ -131,12 +133,19 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
   React.useEffect(
     () =>
       reaction(
-        ({ editor }) => editor.currentModuleShortid,
-        () => {
-          setOpen(isOpen => isOpen || shouldDirectoryBeOpen(id));
+        ({ editor }) => editor.currentModule,
+        currentModule => {
+          setOpen(
+            isOpen =>
+              isOpen ||
+              shouldDirectoryBeOpen({ directoryId: id, module: currentModule })
+          );
         }
       ),
-    [id, reaction, shouldDirectoryBeOpen]
+
+    // shouldDirectoryOpen causes this to unmount for some reason, which bugs out how directories open and close
+    // eslint-disable-next-line
+    [id, reaction]
   );
 
   React.useEffect(() => {
