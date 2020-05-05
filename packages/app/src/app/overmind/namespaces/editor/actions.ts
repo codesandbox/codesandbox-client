@@ -365,6 +365,14 @@ export const onOperationApplied: Action<{
   }
 };
 
+/**
+ * Set the code of the module and send it if live is turned on. Keep in mind that this overwrites the editor state,
+ * which means that if the user was typing something else in the file, it will get overwritten(!).
+ *
+ * There is some extra logic to handle files that are opened and not opened. If the file is opened we will set the code
+ * within VSCode and let the event that VSCode generates handle the rest, however, if the file is not opened in VSCode,
+ * we'll just update it in the state and send a live message based on the diff.
+ */
 export const setCode: Action<{
   moduleShortid: string;
   code: string;
