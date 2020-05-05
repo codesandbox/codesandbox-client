@@ -61,7 +61,6 @@ interface Props {
   connectDropTarget?: Function;
   isOver?: boolean;
   canDrop?: boolean;
-  siblings?: any;
   signals?: any;
   title?: string;
   sandboxId?: string;
