@@ -280,11 +280,6 @@ export class Workbench {
       'Follow Us on Twitter',
       'https://twitter.com/codesandbox'
     );
-    addBrowserNavigationCommand(
-      'codesandbox.help.spectrum',
-      'Join Us on Spectrum',
-      'https://spectrum.chat/codesandbox'
-    );
 
     this.addWorkbenchAction({
       id: 'codesandbox.help.feedback',
@@ -362,15 +357,6 @@ export class Workbench {
       command: {
         id: 'codesandbox.help.twitter',
         title: 'Follow Us on &&Twitter',
-      },
-    });
-
-    this.appendMenuItem(MenuId.MenubarHelpMenu, {
-      group: '3_social',
-      order: 3,
-      command: {
-        id: 'codesandbox.help.spectrum',
-        title: 'Join Us on S&&pectrum',
       },
     });
 

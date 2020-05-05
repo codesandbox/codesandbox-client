@@ -1,42 +1,42 @@
 import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
 import css from '@styled-system/css';
-import { Element, Text } from '@codesandbox/components';
-import { SandboxCard } from '../../../Components/SandboxCard';
-import { Loading } from '../../../Components/Loading';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
+import { Element, Column } from '@codesandbox/components';
+import { Header } from '../../../Components/Header';
+import { SandboxGrid } from '../../../Components/SandboxGrid';
+import { Sandbox } from '../../../Components/Sandbox';
+import { SkeletonCard } from '../../../Components/SandboxCard';
 
 export const Templates = () => {
   const {
     actions,
     state: {
-      user,
-      dashboard: { templateSandboxes, loadingPage, activeTeam },
+      dashboard: { sandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.getTemplateSandboxes();
-  }, [actions.dashboard, user, activeTeam]);
+    actions.dashboard.getPage(sandboxesTypes.TEMPLATES);
+  }, [actions.dashboard]);
 
   return (
     <Element css={css({ position: 'relative' })}>
-      <Text marginBottom={4} block>
-        Templates
-      </Text>
-      {!loadingPage ? (
-        <Element
-          css={css({
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4,1fr)',
-            gridGap: 6,
-          })}
-        >
-          {templateSandboxes.map(({ sandbox }) => (
-            <SandboxCard sandbox={sandbox} key={sandbox.id} />
+      <Header title="Templates" templates={[]} />
+      {sandboxes.TEMPLATES ? (
+        <SandboxGrid>
+          {sandboxes.TEMPLATES.map(({ sandbox }) => (
+            <Sandbox template sandbox={sandbox} key={sandbox.id} />
           ))}
-        </Element>
+        </SandboxGrid>
       ) : (
-        <Loading />
+        <SandboxGrid>
+          {Array.from(Array(8).keys()).map(n => (
+            <Column key={n}>
+              <SkeletonCard />
+            </Column>
+          ))}
+        </SandboxGrid>
       )}
     </Element>
   );

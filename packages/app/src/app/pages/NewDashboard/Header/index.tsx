@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 import { useOvermind } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import {
@@ -9,11 +10,25 @@ import {
   IconButton,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { withRouter } from 'react-router-dom';
 
-export const Header = () => {
+export const HeaderComponent = ({ history }) => {
+  const [value, setValue] = useState('');
   const {
     actions: { modalOpened },
   } = useOvermind();
+
+  const searchQuery = new URLSearchParams(window.location.search).get('query');
+
+  const search = query => history.push(`/new-dashboard/search?query=${query}`);
+  const [debouncedSearch] = useDebouncedCallback(search, 250);
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+
+    if (!e.target.value) history.push(`/new-dashboard/all`);
+    if (e.target.value.length >= 2) debouncedSearch(e.target.value);
+  };
 
   return (
     <Stack
@@ -34,6 +49,8 @@ export const Header = () => {
       <IconButton name="menu" size={18} title="Menu" />
       <Input
         type="text"
+        value={value || searchQuery || ''}
+        onChange={onChange}
         placeholder="Search all sandboxes"
         css={css({ maxWidth: 480, display: ['none', 'none', 'block'] })}
       />
@@ -57,3 +74,5 @@ export const Header = () => {
     </Stack>
   );
 };
+
+export const Header = withRouter(HeaderComponent);

@@ -469,7 +469,7 @@ export default class Manager {
         envCode.split('\n').forEach(envLine => {
           const [name, ...val] = envLine.split('=');
 
-          this.envVariables[name] = val.join('=');
+          this.envVariables[name] = val.join('=').replace(/^('|")|('|")$/g, '');
         });
       } catch (e) {
         console.error(e);

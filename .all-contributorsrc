@@ -1531,6 +1531,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "johansenja",
+      "name": "johansenja",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/43235608?v=4",
+      "profile": "https://github.com/johansenja",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Developerayo",
+      "name": "Shodipo Ayomide",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/20538832?v=4",
+      "profile": "https://shodipoayomide.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

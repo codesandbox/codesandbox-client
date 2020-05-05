@@ -219,3 +219,5 @@ export function getSandboxId() {
 
   return result;
 }
+export const teamInviteLink = (inviteToken: string) =>
+  `${protocolAndHost()}/invite/${inviteToken}`;

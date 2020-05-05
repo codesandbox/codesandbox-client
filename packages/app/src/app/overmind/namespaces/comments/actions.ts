@@ -331,8 +331,8 @@ export const addComment: AsyncAction<{
   const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   const comments = state.comments.comments;
 
-  if (!comments[sandboxId]) {
-    comments[sandboxId] = {};
+  if (!comments[sandbox.id]) {
+    comments[sandbox.id] = {};
   }
 
   const id = uuid.v4();
@@ -343,11 +343,11 @@ export const addComment: AsyncAction<{
       content,
       id,
     };
-    state.comments.comments[sandboxId][id] = optimisticComment;
+    state.comments.comments[sandbox.id][id] = optimisticComment;
     state.comments.currentCommentId = state.comments.currentCommentId
       ? id
       : null;
-    delete state.comments.comments[sandboxId][OPTIMISTIC_COMMENT_ID];
+    delete state.comments.comments[sandbox.id][OPTIMISTIC_COMMENT_ID];
   } else {
     optimisticComment = {
       parentComment: parentCommentId ? { id: parentCommentId } : null,
@@ -365,13 +365,13 @@ export const addComment: AsyncAction<{
       references: [],
       replyCount: 0,
     };
-    comments[sandboxId][id] = optimisticComment;
+    comments[sandbox.id][id] = optimisticComment;
   }
 
   state.comments.selectedCommentsFilter = CommentsFilterOption.OPEN;
 
   if (parentCommentId) {
-    comments[sandboxId][parentCommentId].replyCount++;
+    comments[sandbox.id][parentCommentId].replyCount++;
   }
 
   // The server might be ahead on sandbox version, so we need to try to save
@@ -380,10 +380,11 @@ export const addComment: AsyncAction<{
 
   async function saveComment() {
     tryCount++;
+
     await effects.gql.mutations.createComment({
       id,
       parentCommentId: parentCommentId || null,
-      sandboxId,
+      sandboxId: sandbox.id,
       content,
       codeReference: optimisticComment.references.length
         ? {

@@ -1,12 +1,13 @@
 import React from 'react';
-import { Element } from '@codesandbox/components';
+import { Stack } from '@codesandbox/components';
 import { FilterOptions } from './FilterOptions';
+import { ViewOptions } from './ViewOptions';
 import { SortOptions } from './SortOptions';
 
 export const Filters = ({ possibleTemplates }) => (
-  <Element>
+  <Stack gap={4}>
     <FilterOptions possibleTemplates={possibleTemplates} />
-
     <SortOptions />
-  </Element>
+    <ViewOptions />
+  </Stack>
 );

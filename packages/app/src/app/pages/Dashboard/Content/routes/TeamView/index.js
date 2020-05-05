@@ -24,6 +24,7 @@ import {
   TeamContainer,
 } from './elements';
 import { RemoveTeamMember } from './RemoveTeamMember';
+import { InviteLink } from './InviteLink';
 
 const User = ({ user, rightElement }) => (
   <div
@@ -247,6 +248,9 @@ class TeamView extends React.PureComponent {
 
                         <Margin top={1}>
                           <AddTeamMember teamId={teamId} />
+                        </Margin>
+                        <Margin top={0.5}>
+                          <InviteLink inviteToken={data.me.team.inviteToken} />
                         </Margin>
                       </Members>
                     </Section>

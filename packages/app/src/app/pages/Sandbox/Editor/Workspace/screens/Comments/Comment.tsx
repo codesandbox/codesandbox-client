@@ -6,6 +6,7 @@ import {
   Menu,
   Stack,
   Text,
+  isMenuClicked,
 } from '@codesandbox/components';
 import VisuallyHidden from '@reach/visually-hidden';
 import { css } from '@styled-system/css';
@@ -50,10 +51,7 @@ export const Comment = React.memo<{
         // don't trigger comment if you click on the menu
         // we have to handle this because of an upstream
         // bug in reach/menu-button
-        const target = event.target as HTMLElement;
-        if (target.tagName === 'button' || target.tagName === 'svg') {
-          return;
-        }
+        if (isMenuClicked(event)) return;
 
         const currentTarget = event.currentTarget as HTMLElement;
         const boundingRect = currentTarget.getBoundingClientRect();
