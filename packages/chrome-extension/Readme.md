@@ -1,6 +1,6 @@
 # Browser Extension
 
-![Image](https://user-images.githubusercontent.com/1051509/46907462-fc0ef600-cf12-11e8-8d73-05b95577364e.png)
+![Image](https://github.com/codesandbox/codesandbox-client/blob/garethx-addon/packages/chrome-extension/assets/still2.png)
 
 [![available in the chrome store](https://developer.chrome.com/webstore/images/ChromeWebStore_Badge_v2_206x58.png)](https://chrome.google.com/webstore/detail/jkhbnhagngalpojoeijaleemepfpefmp)
 [Download for firefox](https://addons.mozilla.org/en-US/firefox/addon/open-in-codesandbox/)
