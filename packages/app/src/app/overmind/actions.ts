@@ -118,10 +118,7 @@ export const signInButtonClicked: AsyncAction<{
   state.signInModalOpen = false;
 };
 
-export const signInButtonCliClicked: AsyncAction = async ({
-  state,
-  actions,
-}) => {
+export const signInCliClicked: AsyncAction = async ({ state, actions }) => {
   await actions.internal.signIn({
     useExtraScopes: false,
   });
