@@ -374,7 +374,10 @@ export const onOperationApplied: Action<{
  * we'll just update it in the state and send a live message based on the diff.
  *
  * The difference between `setCode` and `codeChanged` is small but important to keep in mind. Calling this method will *always*
- * cause `codeChanged` to be called. But from different sources based on whether the file is currently open. The two cases:
+ * cause `codeChanged` to be called. But from different sources based on whether the file is currently open. I'd recommend to always
+ * call this function if you're aiming to manually set code (like updating package.json), while editors shouild call codeChanged.
+ *
+ * The two cases:
  *
  * ### Already opened in VSCode
  *  1. set code in VSCode
