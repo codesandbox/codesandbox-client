@@ -42,7 +42,7 @@ const SignIn = () => {
           align="center"
           justify="center"
         >
-          <SignInModalElement />
+          <SignInModalElement redirectTo={redirectTo} />
         </Stack>
       </Element>
     </ThemeProvider>

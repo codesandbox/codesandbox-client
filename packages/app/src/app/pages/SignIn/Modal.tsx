@@ -5,11 +5,10 @@ import { Element, Text, Button } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import history from 'app/utils/history';
 
-export const SignInModalElement = () => {
+export const SignInModalElement = ({ redirectTo }) => {
   const {
     actions: { signInClicked },
   } = useOvermind();
-  const redirectTo = new URL(location.href).searchParams.get('continue');
 
   const handleSignIn = async () => {
     await signInClicked({ useExtraScopes: false });
