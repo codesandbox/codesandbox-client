@@ -1,5 +1,6 @@
 import { Button } from '@codesandbox/common/lib/components/Button';
 import theme from '@codesandbox/common/lib/theme';
+
 import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
@@ -7,6 +8,7 @@ import { NotificationStatus, Toasts } from '@codesandbox/notifications';
 import { useOvermind } from 'app/overmind';
 import Loadable from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
+import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 
 import { ErrorBoundary } from './common/ErrorBoundary';
@@ -90,6 +92,7 @@ const Boundary = withRouter(ErrorBoundary);
 const RoutesComponent: React.FC = () => {
   const {
     actions: { appUnmounted },
+    state: { signInModalOpen, user },
   } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
@@ -156,6 +159,7 @@ const RoutesComponent: React.FC = () => {
         </Content>
       </Boundary>
       <Modals />
+      {signInModalOpen && !user ? <SignInModal /> : null}
     </Container>
   );
 };

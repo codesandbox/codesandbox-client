@@ -94,15 +94,38 @@ export const modalClosed: Action = ({ state }) => {
   state.currentModal = null;
 };
 
-export const signInClicked: AsyncAction<{ useExtraScopes: boolean }> = (
-  { actions },
-  options
-) => actions.internal.signIn(options);
+export const signInClicked: Action<{
+  redirectTo?: string;
+  useExtraScopes?: boolean;
+}> = ({ state }, { redirectTo }) => {
+  state.signInModalOpen = true;
+  state.redirectOnLogin = redirectTo || '';
+};
 
-export const signInCliClicked: AsyncAction = async ({ state, actions }) => {
+export const toggleSignInModal: Action = ({ state }) => {
+  state.signInModalOpen = !state.signInModalOpen;
+};
+
+export const signInButtonClicked: AsyncAction<{
+  useExtraScopes: boolean;
+}> = async ({ actions, state }, options) => {
+  if (!options) {
+    await actions.internal.signIn({
+      useExtraScopes: false,
+    });
+  }
+  await actions.internal.signIn(options);
+  state.signInModalOpen = false;
+};
+
+export const signInButtonCliClicked: AsyncAction = async ({
+  state,
+  actions,
+}) => {
   await actions.internal.signIn({
     useExtraScopes: false,
   });
+  state.signInModalOpen = false;
 
   if (state.user) {
     await actions.internal.authorize();

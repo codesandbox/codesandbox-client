@@ -7,11 +7,11 @@ import history from 'app/utils/history';
 
 export const SignInModalElement = ({ redirectTo }) => {
   const {
-    actions: { signInClicked },
+    actions: { signInButtonClicked },
   } = useOvermind();
 
   const handleSignIn = async () => {
-    await signInClicked({ useExtraScopes: false });
+    await signInButtonClicked({ useExtraScopes: false });
     history.push(redirectTo.replace(location.origin, ''));
   };
   return (
@@ -94,11 +94,21 @@ export const SignInModalElement = ({ redirectTo }) => {
             justifyContent: 'flex-start',
             marginBottom: 8,
             borderRadius: 'medium',
+            transition: 'all 200ms ease',
+
+            '&:hover': {
+              boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.24)',
+              transform: 'scale(1.05)',
+            },
+
+            '&:focus': {
+              boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.24)',
+              transform: 'scale(1)',
+            },
 
             ':hover, :focus': {
               background: 'transparent !important',
               backgroundColor: 'white',
-              boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
               color: 'grays.900',
             },
           })}

@@ -63,7 +63,7 @@ export const Actions = () => {
   }, [fadeIn]);
 
   const handleSignIn = async () => {
-    await signInClicked({ useExtraScopes: false });
+    await signInClicked({});
   };
 
   let primaryAction;

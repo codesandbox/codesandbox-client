@@ -117,7 +117,7 @@ const TeamSignIn = ({ inviteToken }: { inviteToken: string }) => {
         action={
           <Button
             onClick={() => {
-              actions.signInClicked({ useExtraScopes: false });
+              actions.signInClicked({});
             }}
           >
             Sign in to GitHub
