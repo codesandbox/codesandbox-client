@@ -1,4 +1,8 @@
+/* eslint-disable jsx-a11y/interactive-supports-focus */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
+import OutsideClickHandler from 'react-outside-click-handler';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, Location } from '@reach/router';
 import { useTheme } from '../layout';
@@ -31,6 +35,7 @@ import MobileNav from './MobileNav';
 
 const Navigation = () => {
   const [user, setUser] = useState(null);
+  const [openModal, setOpenModal] = useState(true);
   const [openedNav, setOpenedNav] = useState();
   const [hasOpened, setHasOpened] = useState(false);
   const muted = useTheme().homepage.muted;
@@ -82,271 +87,302 @@ const Navigation = () => {
   }, [openedNav]);
 
   return (
-    <Location>
-      {({ location: { pathname } }) => (
-        <div onMouseLeave={() => setOpenedNav(null)}>
-          <motion.div
-            initial={{
-              opacity: pathname === '/' ? 0 : 1,
-              y: pathname === '/' ? -20 : 0,
-            }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.5,
-              ease: 'easeIn',
-            }}
-          >
-            <Header>
-              <Nav>
-                <Wrapper>
-                  <LogoWrapper to="/">
-                    <LogoImage src={Logo} alt="CodeSandbox Logo" />
-                    CodeSandbox
-                  </LogoWrapper>
-                  <List>
-                    <li>
-                      <button
-                        onMouseEnter={() => setOpenedNav('features')}
-                        type="button"
-                      >
-                        Features
-                        <DownButton />
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        onMouseEnter={() => setOpenedNav('explore')}
-                        type="button"
-                      >
-                        Explore
-                        <DownButton />
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        onMouseEnter={() => setOpenedNav('resources')}
-                        type="button"
-                      >
-                        Resources
-                        <DownButton />
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        onMouseEnter={() => setOpenedNav('support')}
-                        type="button"
-                      >
-                        Support
-                        <DownButton />
-                      </button>
-                    </li>
-
-                    <li>
-                      <Link
-                        to="/pricing"
-                        onMouseEnter={() => setOpenedNav(null)}
-                      >
-                        Pricing
-                      </Link>
-                    </li>
-                  </List>
-                  <List>
-                    {!user && (
-                      <li className="tablet-remove">
-                        <a
-                          onMouseEnter={() => setOpenedNav(null)}
-                          href="https://codesandbox.io/signin"
+    <>
+      <Location>
+        {({ location: { pathname } }) => (
+          <div onMouseLeave={() => setOpenedNav(null)}>
+            <motion.div
+              initial={{
+                opacity: pathname === '/' ? 0 : 1,
+                y: pathname === '/' ? -20 : 0,
+              }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                ease: 'easeIn',
+              }}
+            >
+              <Header>
+                <Nav>
+                  <Wrapper>
+                    <LogoWrapper to="/">
+                      <LogoImage src={Logo} alt="CodeSandbox Logo" />
+                      CodeSandbox
+                    </LogoWrapper>
+                    <List>
+                      <li>
+                        <button
+                          onMouseEnter={() => setOpenedNav('features')}
+                          type="button"
                         >
-                          Sign In
-                        </a>
+                          Features
+                          <DownButton />
+                        </button>
                       </li>
-                    )}
-                    <LogIn onMouseEnter={() => setOpenedNav(null)}>
-                      <Button className="button" href="/s">
-                        Create Sandbox
-                      </Button>
-                      {user && (
-                        <a style={{ display: 'flex' }} href="/dashboard">
-                          <UserAvatar
-                            className="tablet-remove"
-                            src={user.avatar_url}
-                            alt={user.username}
-                          />
-                        </a>
+                      <li>
+                        <button
+                          onMouseEnter={() => setOpenedNav('explore')}
+                          type="button"
+                        >
+                          Explore
+                          <DownButton />
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onMouseEnter={() => setOpenedNav('resources')}
+                          type="button"
+                        >
+                          Resources
+                          <DownButton />
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onMouseEnter={() => setOpenedNav('support')}
+                          type="button"
+                        >
+                          Support
+                          <DownButton />
+                        </button>
+                      </li>
+
+                      <li>
+                        <Link
+                          to="/pricing"
+                          onMouseEnter={() => setOpenedNav(null)}
+                        >
+                          Pricing
+                        </Link>
+                      </li>
+                    </List>
+                    <List>
+                      {!user && (
+                        <li className="tablet-remove">
+                          <a
+                            role="button"
+                            onClick={() => setOpenModal(true)}
+                            onMouseEnter={() => setOpenedNav(null)}
+                          >
+                            Sign In
+                          </a>
+                        </li>
                       )}
-                    </LogIn>
-                  </List>
-                </Wrapper>
-              </Nav>
-              <MobileNav />
-            </Header>
-          </motion.div>
-          <AnimatePresence initial={false}>
-            {openedNav ? (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 109 }}
-                exit={{ opacity: 0, height: 0 }}
-                css={`
-                  position: absolute;
-                  width: 100%;
-                  background: #151515;
-                  overflow: hidden;
-                  border-bottom: 1px solid ${props => props.theme.homepage.grey};
-                  z-index: 99;
-                  box-shadow: 0, 8px, 1rem rgba(0, 0, 0, 0.12), 0, 4px,
-                    2px rgba(0, 0, 0, 0.24);
-                  display: flex;
-                  align-items: center;
-                `}
-                transition={{
-                  duration: 0.2,
-                  ease: 'easeIn',
-                }}
-              >
-                <SubNav
-                  openedNav={openedNav}
-                  hasOpened={hasOpened}
-                  name="resources"
-                  components={[
-                    {
-                      Icon: () => (
-                        <Link to="/docs" title="Documentation">
-                          <DocsIcon />
-                        </Link>
-                      ),
-                      Label: () => (
-                        <a href="https://codesandbox.io/docs">Documentation</a>
-                      ),
-                    },
-                    {
-                      Icon: () => (
-                        <Link to="/blog">
-                          <BlogIcon />
-                        </Link>
-                      ),
-                      Label: () => <Link to="/blog">Blog</Link>,
-                    },
-                  ]}
-                />
-                <SubNav
-                  openedNav={openedNav}
-                  hasOpened={hasOpened}
-                  name="support"
-                  components={[
-                    {
-                      Icon: () => (
-                        <a href="mailto:hello@codesandbox.io" title="Support">
-                          <SupportIcon />
-                        </a>
-                      ),
-                      Label: () => (
-                        <a href="mailto:hello@codesandbox.io">
-                          Contact Support
-                        </a>
-                      ),
-                    },
-                    {
-                      Icon: () => (
-                        <a
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          href="https://status.codesandbox.io"
-                          title="Status"
-                        >
-                          <StatusIcon />
-                        </a>
-                      ),
-                      Label: () => (
-                        <a
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          href="https://status.codesandbox.io"
-                        >
-                          Status
-                        </a>
-                      ),
-                    },
-                  ]}
-                />
-                <SubNav
-                  openedNav={openedNav}
-                  hasOpened={hasOpened}
-                  name="features"
-                  components={[
-                    {
-                      Icon: () => (
-                        <Link to="/ide">
-                          <IDEIcon />
-                        </Link>
-                      ),
-                      Label: () => <Link to="/ide">IDE</Link>,
-                    },
-                    {
-                      Icon: () => (
-                        <Link to="/embeds">
-                          <EmbedIcon />
-                        </Link>
-                      ),
-                      Label: () => <Link to="/embeds">Embed</Link>,
-                    },
-                    {
-                      Icon: () => (
-                        <Link to="/ci">
-                          <CIIcon />
-                        </Link>
-                      ),
-                      Label: () => <Link to="/ci">CI</Link>,
-                    },
-                    {
-                      Icon: () => (
-                        <Link to="/team">
-                          <TeamsIcon />
-                        </Link>
-                      ),
-                      Label: () => <Link to="/team">Teams</Link>,
-                    },
-                    {
-                      Icon: () => (
-                        <Link to="/changelog">
-                          <NewIcon />
-                        </Link>
-                      ),
-                      Label: () => <Link to="/changelog">What's New</Link>,
-                    },
-                  ]}
-                />
-                <SubNav
-                  openedNav={openedNav}
-                  hasOpened={hasOpened}
-                  name="explore"
-                  components={[
-                    {
-                      Icon: () => (
-                        <Link to="/explore">
-                          <HighlightedICon />
-                        </Link>
-                      ),
-                      Label: () => (
-                        <Link to="/explore">Featured Sandboxes</Link>
-                      ),
-                    },
-                    {
-                      Icon: () => (
-                        <a href="/search">
-                          <SearchIcon />
-                        </a>
-                      ),
-                      Label: () => <a href="/search">Search Sandboxes</a>,
-                    },
-                  ]}
-                />
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
+                      <LogIn onMouseEnter={() => setOpenedNav(null)}>
+                        <Button className="button" href="/s">
+                          Create Sandbox
+                        </Button>
+                        {user && (
+                          <a style={{ display: 'flex' }} href="/dashboard">
+                            <UserAvatar
+                              className="tablet-remove"
+                              src={user.avatar_url}
+                              alt={user.username}
+                            />
+                          </a>
+                        )}
+                      </LogIn>
+                    </List>
+                  </Wrapper>
+                </Nav>
+                <MobileNav />
+              </Header>
+            </motion.div>
+            <AnimatePresence initial={false}>
+              {openedNav ? (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 109 }}
+                  exit={{ opacity: 0, height: 0 }}
+                  css={`
+                    position: absolute;
+                    width: 100%;
+                    background: #151515;
+                    overflow: hidden;
+                    border-bottom: 1px solid
+                      ${props => props.theme.homepage.grey};
+                    z-index: 99;
+                    box-shadow: 0, 8px, 1rem rgba(0, 0, 0, 0.12), 0, 4px,
+                      2px rgba(0, 0, 0, 0.24);
+                    display: flex;
+                    align-items: center;
+                  `}
+                  transition={{
+                    duration: 0.2,
+                    ease: 'easeIn',
+                  }}
+                >
+                  <SubNav
+                    openedNav={openedNav}
+                    hasOpened={hasOpened}
+                    name="resources"
+                    components={[
+                      {
+                        Icon: () => (
+                          <Link to="/docs" title="Documentation">
+                            <DocsIcon />
+                          </Link>
+                        ),
+                        Label: () => (
+                          <a href="https://codesandbox.io/docs">
+                            Documentation
+                          </a>
+                        ),
+                      },
+                      {
+                        Icon: () => (
+                          <Link to="/blog">
+                            <BlogIcon />
+                          </Link>
+                        ),
+                        Label: () => <Link to="/blog">Blog</Link>,
+                      },
+                    ]}
+                  />
+                  <SubNav
+                    openedNav={openedNav}
+                    hasOpened={hasOpened}
+                    name="support"
+                    components={[
+                      {
+                        Icon: () => (
+                          <a href="mailto:hello@codesandbox.io" title="Support">
+                            <SupportIcon />
+                          </a>
+                        ),
+                        Label: () => (
+                          <a href="mailto:hello@codesandbox.io">
+                            Contact Support
+                          </a>
+                        ),
+                      },
+                      {
+                        Icon: () => (
+                          <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href="https://status.codesandbox.io"
+                            title="Status"
+                          >
+                            <StatusIcon />
+                          </a>
+                        ),
+                        Label: () => (
+                          <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href="https://status.codesandbox.io"
+                          >
+                            Status
+                          </a>
+                        ),
+                      },
+                    ]}
+                  />
+                  <SubNav
+                    openedNav={openedNav}
+                    hasOpened={hasOpened}
+                    name="features"
+                    components={[
+                      {
+                        Icon: () => (
+                          <Link to="/ide">
+                            <IDEIcon />
+                          </Link>
+                        ),
+                        Label: () => <Link to="/ide">IDE</Link>,
+                      },
+                      {
+                        Icon: () => (
+                          <Link to="/embeds">
+                            <EmbedIcon />
+                          </Link>
+                        ),
+                        Label: () => <Link to="/embeds">Embed</Link>,
+                      },
+                      {
+                        Icon: () => (
+                          <Link to="/ci">
+                            <CIIcon />
+                          </Link>
+                        ),
+                        Label: () => <Link to="/ci">CI</Link>,
+                      },
+                      {
+                        Icon: () => (
+                          <Link to="/team">
+                            <TeamsIcon />
+                          </Link>
+                        ),
+                        Label: () => <Link to="/team">Teams</Link>,
+                      },
+                      {
+                        Icon: () => (
+                          <Link to="/changelog">
+                            <NewIcon />
+                          </Link>
+                        ),
+                        Label: () => <Link to="/changelog">What's New</Link>,
+                      },
+                    ]}
+                  />
+                  <SubNav
+                    openedNav={openedNav}
+                    hasOpened={hasOpened}
+                    name="explore"
+                    components={[
+                      {
+                        Icon: () => (
+                          <Link to="/explore">
+                            <HighlightedICon />
+                          </Link>
+                        ),
+                        Label: () => (
+                          <Link to="/explore">Featured Sandboxes</Link>
+                        ),
+                      },
+                      {
+                        Icon: () => (
+                          <a href="/search">
+                            <SearchIcon />
+                          </a>
+                        ),
+                        Label: () => <a href="/search">Search Sandboxes</a>,
+                      },
+                    ]}
+                  />
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </div>
+        )}
+      </Location>
+      {openModal ? (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9999,
+            background: 'rgba(21, 21, 21, 0.9)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <OutsideClickHandler onOutsideClick={() => setOpenModal(false)}>
+            <iframe
+              title="login"
+              style={{ width: 670, height: 400, border: 'none', padding: 0 }}
+              sandbox="allow-top-navigation allow-scripts allow-forms allow-same-origin allow-popups"
+              src="/login-from-homepage?redirect=dashboard"
+            />
+          </OutsideClickHandler>
         </div>
-      )}
-    </Location>
+      ) : null}
+    </>
   );
 };
 
