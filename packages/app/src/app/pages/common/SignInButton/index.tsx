@@ -12,7 +12,7 @@ export const SignInButton: FunctionComponent<Props> = props => {
   return (
     <Button
       {...props}
-      onClick={() => actions.signInClicked({ redirectTo: props.redirectTo })}
+      onClick={() => actions.signInClicked(props.redirectTo)}
       small
     >
       <Row>

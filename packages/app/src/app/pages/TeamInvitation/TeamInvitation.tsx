@@ -115,11 +115,7 @@ const TeamSignIn = ({ inviteToken }: { inviteToken: string }) => {
         }
         description="Please sign in to GitHub to continue"
         action={
-          <Button
-            onClick={() => {
-              actions.signInClicked({});
-            }}
-          >
+          <Button onClick={() => actions.signInClicked()}>
             Sign in to GitHub
           </Button>
         }

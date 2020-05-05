@@ -26,7 +26,7 @@ export const NotLoggedIn = () => {
             You need to be signed in to deploy this sandbox.
           </Text>
         </Stack>
-        <Button variant="primary" onClick={() => signInClicked({})}>
+        <Button variant="primary" onClick={() => signInClicked()}>
           Sign in with GitHub
         </Button>
       </Element>

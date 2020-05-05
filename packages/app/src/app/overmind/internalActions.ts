@@ -439,7 +439,7 @@ export const handleError: Action<{
           {
             label: 'Sign in',
             run: () => {
-              actions.signInClicked({});
+              actions.signInClicked();
             },
           },
         ],

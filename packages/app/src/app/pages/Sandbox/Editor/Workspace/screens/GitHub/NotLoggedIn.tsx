@@ -23,7 +23,7 @@ export const NotLoggedIn = () => {
             commits and pull requests to it.
           </Text>
         </Stack>
-        <Button variant="primary" onClick={() => signInClicked({})}>
+        <Button variant="primary" onClick={() => signInClicked()}>
           Sign in with GitHub
         </Button>
       </Element>

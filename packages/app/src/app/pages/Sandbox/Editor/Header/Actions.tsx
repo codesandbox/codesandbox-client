@@ -62,9 +62,7 @@ export const Actions = () => {
     return () => {};
   }, [fadeIn]);
 
-  const handleSignIn = async () => {
-    await signInClicked({});
-  };
+  const handleSignIn = () => signInClicked();
 
   let primaryAction;
   if (!hasLogIn) primaryAction = 'Sign in';
