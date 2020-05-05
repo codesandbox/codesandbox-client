@@ -126,50 +126,62 @@ export const saveCode: AsyncAction<{
   }
 
   try {
+    let updatedModule: {
+      updatedAt: string;
+      insertedAt: string;
+      code: string;
+      isBinary: boolean;
+    };
     if (state.user?.experiments.comments) {
       const {
         saved_code,
         updated_at,
         inserted_at,
-        version,
       } = await effects.live.saveModule(module);
-      module.savedCode = saved_code;
-      module.updatedAt = updated_at;
-      module.insertedAt = inserted_at;
-      sandbox.version = version;
+
+      updatedModule = {
+        code: saved_code,
+        updatedAt: updated_at,
+        insertedAt: inserted_at,
+        isBinary: false,
+      };
     } else {
       await effects.live.saveModule(module);
-      const updatedModule = await effects.api.saveModuleCode(
+      updatedModule = await effects.api.saveModuleCode(
         sandbox.id,
         module.shortid,
         code
       );
+    }
 
-      module.insertedAt = updatedModule.insertedAt;
-      module.updatedAt = updatedModule.updatedAt;
-      module.isBinary = updatedModule.isBinary;
+    module.insertedAt = updatedModule.insertedAt;
+    module.updatedAt = updatedModule.updatedAt;
+    module.isBinary = updatedModule.isBinary;
 
-      if (!effects.vscode.isModuleOpened(module)) {
-        module.code = updatedModule.code;
-      }
-      const savedCode =
-        updatedModule.code === module.code ? null : updatedModule.code;
+    if (!effects.vscode.isModuleOpened(module)) {
+      module.code = updatedModule.code;
+    }
+    const savedCode =
+      updatedModule.code === module.code ? null : updatedModule.code;
 
-      module.savedCode = savedCode;
+    module.savedCode = savedCode;
 
-      if (savedCode === null) {
-        // If the savedCode is also module.code
-        effects.moduleRecover.remove(sandbox.id, module);
-      }
+    if (savedCode === null) {
+      // If the savedCode is also module.code
+      effects.moduleRecover.remove(sandbox.id, module);
+    }
 
-      if (state.live.isLive && state.live.isCurrentEditor) {
-        setTimeout(() => {
-          // Send the save event 50ms later so the operation can be sent first (the operation that says the
-          // file difference created by VSCode due to the file watch event). If the other client gets the save before the operation,
-          // the other client will also send an operation with the same difference resulting in a duplicate event.
-          effects.live.sendModuleSaved(module);
-        }, 50);
-      }
+    if (
+      state.live.isLive &&
+      state.live.isCurrentEditor &&
+      !state.user?.experiments.comments
+    ) {
+      setTimeout(() => {
+        // Send the save event 50ms later so the operation can be sent first (the operation that says the
+        // file difference created by VSCode due to the file watch event). If the other client gets the save before the operation,
+        // the other client will also send an operation with the same difference resulting in a duplicate event.
+        effects.live.sendModuleSaved(module);
+      }, 50);
     }
 
     effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
