@@ -372,6 +372,17 @@ export const onOperationApplied: Action<{
  * There is some extra logic to handle files that are opened and not opened. If the file is opened we will set the code
  * within VSCode and let the event that VSCode generates handle the rest, however, if the file is not opened in VSCode,
  * we'll just update it in the state and send a live message based on the diff.
+ *
+ * The difference between `setCode` and `codeChanged` is small but important to keep in mind. Calling this method will *always*
+ * cause `codeChanged` to be called. But from different sources based on whether the file is currently open. The two cases:
+ *
+ * ### Already opened in VSCode
+ *  1. set code in VSCode
+ *  2. which generates an event
+ *  3. which triggers codeChanged
+ *
+ * ### Not opened in VSCode
+ *  1. codeChanged called directly
  */
 export const setCode: Action<{
   moduleShortid: string;
