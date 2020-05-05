@@ -227,7 +227,7 @@ export class VSCodeEffect {
 
   public async getCodeReferenceBoundary(
     commentId: string,
-    reference: CommentFragment['references'][0]
+    reference: CommentFragment['references'][0]['metadata']
   ) {
     this.revealPositionInCenterIfOutsideViewport(reference.anchor, 1);
 
