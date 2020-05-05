@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Link } from '@reach/router';
 
 export const Header = styled.header`
@@ -118,6 +118,25 @@ export const LogoImage = styled.img`
   margin-right: 1rem;
 `;
 
+const buttonCSS = css`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: ${props => props.theme.homepage.muted};
+  transition: all 200ms ease;
+  outline: none;
+  padding: 0;
+
+  &:hover {
+    color: ${props => props.theme.homepage.white};
+
+    svg path {
+      fill: ${props => props.theme.homepage.white};
+    }
+  }
+`;
+
 export const List = styled.ul`
   list-style: none;
   margin: 0;
@@ -139,23 +158,15 @@ export const List = styled.ul`
 
   a:not(.button),
   button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    color: ${props => props.theme.homepage.muted};
-    transition: all 200ms ease;
-    outline: none;
-    padding: 0;
-
-    &:hover {
-      color: ${props => props.theme.homepage.white};
-
-      svg path {
-        fill: ${props => props.theme.homepage.white};
-      }
-    }
+    ${buttonCSS}
   }
+`;
+
+export const LinkButton = styled.button`
+  ${buttonCSS}
+  color: white;
+  margin-right: 8px;
+  margin-right: 1rem;
 `;
 
 export const LogIn = styled.li`

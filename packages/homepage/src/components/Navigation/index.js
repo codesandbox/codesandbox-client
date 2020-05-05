@@ -1,7 +1,4 @@
 /* eslint-disable import/no-cycle */
-/* eslint-disable jsx-a11y/interactive-supports-focus */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -36,7 +33,7 @@ import MobileNav from './MobileNav';
 
 const Navigation = () => {
   const [user, setUser] = useState(null);
-  const [openModal, setOpenModal] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
   const [openedNav, setOpenedNav] = useState();
   const [hasOpened, setHasOpened] = useState(false);
   const muted = useTheme().homepage.muted;
@@ -160,13 +157,13 @@ const Navigation = () => {
                     <List>
                       {!user && (
                         <li className="tablet-remove">
-                          <a
-                            role="button"
+                          <button
+                            type="button"
                             onClick={() => setOpenModal(true)}
                             onMouseEnter={() => setOpenedNav(null)}
                           >
                             Sign In
-                          </a>
+                          </button>
                         </li>
                       )}
                       <LogIn onMouseEnter={() => setOpenedNav(null)}>
@@ -186,7 +183,7 @@ const Navigation = () => {
                     </List>
                   </Wrapper>
                 </Nav>
-                <MobileNav />
+                <MobileNav showMenu={() => setOpenModal(true)} />
               </Header>
             </motion.div>
             <AnimatePresence initial={false}>
@@ -376,9 +373,17 @@ const Navigation = () => {
           <OutsideClickHandler onOutsideClick={() => setOpenModal(false)}>
             <iframe
               title="login"
-              style={{ width: 670, height: 400, border: 'none', padding: 0 }}
+              style={{
+                width: 670,
+                height: 400,
+                border: 'none',
+                padding: 0,
+                maxWidth: '80%',
+                margin: 'auto',
+                display: 'block',
+              }}
               sandbox="allow-top-navigation allow-scripts allow-forms allow-same-origin allow-popups"
-              src="/login-from-homepage?redirect=dashboard"
+              src="http://localhost:3000/login-from-homepage?redirect=dashboard"
             />
           </OutsideClickHandler>
         </div>

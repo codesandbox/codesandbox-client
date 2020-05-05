@@ -40,6 +40,10 @@ export const SignInModalElementComponent = ({ redirectTo, location }) => {
           display: 'grid',
           gridTemplateColumns: '50% 50%',
           overflow: 'hidden',
+
+          '@media screen and (max-width: 779px)': {
+            gridTemplateColumns: '1fr',
+          },
         })}
       >
         <Element
@@ -47,6 +51,9 @@ export const SignInModalElementComponent = ({ redirectTo, location }) => {
           css={css({
             color: 'white',
             backgroundColor: 'grays.800',
+            '@media screen and (max-width: 779px)': {
+              display: 'none',
+            },
           })}
         >
           <Text weight="bold" size={5} paddingBottom={4} block>
