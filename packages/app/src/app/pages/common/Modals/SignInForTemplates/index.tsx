@@ -12,7 +12,7 @@ const SignInForTemplates: FunctionComponent = () => {
       title="Sign in to create templates"
       description="You can only create templates as a logged in user."
       onCancel={modalClosed}
-      onPrimaryAction={signInClicked}
+      onPrimaryAction={() => signInClicked()}
       confirmMessage="Sign in with GitHub"
     />
   );
