@@ -194,7 +194,7 @@ export default () => (
             <Quote> "{tweet.quote}"</Quote>
             <div>
               <img
-                src={`https://avatars.io/twitter/${tweet.username}`}
+                src={`https://twitter-avatar.now.sh/${tweet.username}`}
                 alt={tweet.quote}
                 onError={e => {
                   e.target.src = `https://avatars.io/static/default_128.jpg`;
