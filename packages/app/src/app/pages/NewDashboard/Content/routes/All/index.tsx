@@ -7,7 +7,7 @@ import { getPossibleTemplates } from '../../utils';
 import { SandboxGrid } from '../../../Components/SandboxGrid';
 import { Sandbox } from '../../../Components/Sandbox';
 import { FolderCard } from '../../../Components/FolderCard';
-import { SkeletonCard } from '../../../Components/SandboxCard';
+import { SkeletonCard } from '../../../Components/Sandbox/SandboxCard';
 
 export const AllPage = ({ match: { params }, history }) => {
   const [level, setLevel] = useState(0);
