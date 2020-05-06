@@ -73,7 +73,13 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   };
 
   const location = useLocation();
-  if (dashboard.viewMode === 'list' || location.pathname.includes('deleted')) {
+
+  let viewMode;
+  if (location.pathname.includes('deleted')) viewMode = 'list';
+  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else viewMode = dashboard.viewMode;
+
+  if (viewMode === 'list') {
     return <SandboxListItem {...sandboxProps} {...props} />;
   }
   return <SandboxCard {...sandboxProps} {...props} />;

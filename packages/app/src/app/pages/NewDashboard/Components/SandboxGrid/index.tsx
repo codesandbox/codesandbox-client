@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Grid, Stack } from '@codesandbox/components';
+import { Grid, List } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const SandboxGrid = props => {
@@ -14,8 +14,14 @@ export const SandboxGrid = props => {
   ).length;
 
   const location = useLocation();
-  if (dashboard.viewMode === 'list' || location.pathname.includes('deleted')) {
-    return <Stack direction="vertical">{props.children}</Stack>;
+
+  let viewMode;
+  if (location.pathname.includes('deleted')) viewMode = 'list';
+  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else viewMode = dashboard.viewMode;
+
+  if (viewMode === 'list') {
+    return <List>{props.children}</List>;
   }
 
   return (
