@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { SandboxCard } from './SandboxCard';
-import { SandboxListItem } from './SandboxListItem';
+import { SandboxCard, SkeletonCard } from './SandboxCard';
+import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 
 export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const {
@@ -83,4 +83,22 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     return <SandboxListItem {...sandboxProps} {...props} />;
   }
   return <SandboxCard {...sandboxProps} {...props} />;
+};
+
+export const SkeletonSandbox = props => {
+  const {
+    state: { dashboard },
+  } = useOvermind();
+
+  const location = useLocation();
+
+  let viewMode;
+  if (location.pathname.includes('deleted')) viewMode = 'list';
+  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else viewMode = dashboard.viewMode;
+
+  if (viewMode === 'list') {
+    return <SkeletonListItem {...props} />;
+  }
+  return <SkeletonCard {...props} />;
 };
