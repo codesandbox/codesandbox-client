@@ -99,7 +99,7 @@ export const signInClicked: Action<string | void> = (
   redirectTo = ''
 ) => {
   state.signInModalOpen = true;
-  state.redirectOnLogin = redirectTo;
+  state.redirectOnLogin = redirectTo || '';
 };
 
 export const toggleSignInModal: Action = ({ state }) => {
