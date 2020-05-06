@@ -1,0 +1,22 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - gatsby > gatsby-plugin-typescript > @babel/core > lodash:
+        patched: '2020-05-06T03:07:16.359Z'
+    - gatsby > gatsby-plugin-typescript > @babel/core > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-06T03:07:16.359Z'
+    - gatsby > gatsby-plugin-typescript > @babel/core > @babel/helpers > @babel/traverse > lodash:
+        patched: '2020-05-06T03:07:16.359Z'
+    - gatsby > gatsby-plugin-typescript > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > lodash:
+        patched: '2020-05-06T03:07:16.359Z'
+    - gatsby > gatsby-plugin-typescript > @babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > lodash:
+        patched: '2020-05-06T03:07:16.359Z'
+    - gatsby > gatsby-plugin-typescript > @babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-06T03:07:16.359Z'
+    - gatsby > gatsby-plugin-typescript > @babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-06T03:07:16.359Z'
+    - gatsby > gatsby-plugin-typescript > @babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-06T03:07:16.359Z'
