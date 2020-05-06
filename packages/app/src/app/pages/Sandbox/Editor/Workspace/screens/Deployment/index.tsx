@@ -34,7 +34,7 @@ export const Deployment: FunctionComponent = () => {
       <Element paddingX={2}>
         <Text variant="muted" block marginBottom={6}>
           You can deploy a production version of your sandbox using one of our
-          supported providers - Netlify or ZEIT.
+          supported providers - Netlify or Vercel.
         </Text>
         <Stack direction="vertical" gap={5}>
           <Zeit />

@@ -142,7 +142,7 @@ export default () => (
         <div>
           <img
             src={Zeit}
-            alt="Zeit"
+            alt="Vercel"
             css={`
               height: 97px;
             `}

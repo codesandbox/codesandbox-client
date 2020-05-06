@@ -17,7 +17,7 @@ export const getZeitUserDetails: AsyncAction = async ({
       state.user.integrations.zeit.email = zeitDetails.email;
     } catch (error) {
       actions.internal.handleError({
-        message: 'Could not authorize with ZEIT',
+        message: 'Could not authorize with Vercel',
         error,
       });
     }

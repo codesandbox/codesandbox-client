@@ -141,10 +141,9 @@ export default () => (
           <IconWrapper>
             <Deploy />
           </IconWrapper>
-          <BigTitles>Deploy to ZEIT or Netlify</BigTitles>
+          <BigTitles>Deploy to Vercel or Netlify</BigTitles>
           <P muted center>
-            Deploy a production version of your sandbox with ZEIT Now or
-            Netlify.
+            Deploy a production version of your sandbox with Vercel or Netlify.
           </P>
         </div>
         <div>
