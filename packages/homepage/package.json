@@ -19,7 +19,9 @@
     "lint": "eslint .",
     "start": "gatsby develop --host=0.0.0.0",
     "start:dev": "LOCAL_SERVER=1 LOCAL_DEV=1 gatsby develop",
-    "test": "echo \"Todo: no test specified\" && exit 0"
+    "test": "echo \"Todo: no test specified\" && exit 0",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "browserslist": [
     "> 1%",
@@ -79,7 +81,8 @@
     "styled-breakpoints": "^6.9.1",
     "styled-components": "^4.4.1",
     "three": "^0.111.0",
-    "typography": "^0.16.17"
+    "typography": "^0.16.17",
+    "snyk": "^1.319.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -87,5 +90,6 @@
     "dotenv": "^6.2.0",
     "rimraf": "^2.6.2",
     "terser": "^3.17.0"
-  }
+  },
+  "snyk": true
 }
