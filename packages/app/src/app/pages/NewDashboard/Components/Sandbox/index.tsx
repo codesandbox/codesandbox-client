@@ -1,8 +1,10 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import { isMenuClicked } from '@codesandbox/components';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 
@@ -21,6 +23,8 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     id: sandbox.id,
     alias: sandbox.alias,
   });
+
+  /* Edit logic */
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTitle(event.target.value);
@@ -57,13 +61,43 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     setTimeout(() => inputRef.current.focus());
   };
 
+  /* Drag logic */
+
+  const [dragging, setDragging] = React.useState(false);
+
+  const onDragStart = () => {
+    setDragging(true);
+  };
+
+  const onDragEnd = () => {
+    // delay by a frame so that click happens first
+    window.requestAnimationFrame(() => setDragging(false));
+  };
+
+  /* View logic */
+  const location = useLocation();
+
+  let viewMode: string;
+  if (location.pathname.includes('deleted')) viewMode = 'list';
+  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else viewMode = dashboard.viewMode;
+
+  const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
+
+  /* Prevent opening sandbox while interacting */
+  const onClick = event => {
+    if (edit || dragging || isMenuClicked(event)) event.preventDefault();
+  };
+
   const sandboxProps = {
     sandboxTitle,
-    newTitle,
     sandbox,
     isTemplate,
     url,
+    onClick,
+    // edit mode
     edit,
+    newTitle,
     inputRef,
     onChange,
     onKeyDown,
@@ -72,17 +106,24 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     enterEditing,
   };
 
-  const location = useLocation();
+  const dragProps = {
+    drag: true,
+    // boundaries beyond which dragging is constrained
+    // setting it to 0 brings card back to its position
+    dragConstraints: { top: 0, bottom: 0, left: 0, right: 0 },
+    // To allow drag dispite constraints, we can allow
+    // movement outside constraints (it still springs back)
+    dragElastic: 1,
+    // event handlers
+    onDragStart,
+    onDragEnd,
+  };
 
-  let viewMode;
-  if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
-  else viewMode = dashboard.viewMode;
-
-  if (viewMode === 'list') {
-    return <SandboxListItem {...sandboxProps} {...props} />;
-  }
-  return <SandboxCard {...sandboxProps} {...props} />;
+  return (
+    <motion.div {...dragProps}>
+      <Component {...sandboxProps} {...props} />
+    </motion.div>
+  );
 };
 
 export const SkeletonSandbox = props => {

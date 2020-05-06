@@ -8,7 +8,6 @@ import {
   Stats,
   Input,
   SkeletonText,
-  isMenuClicked,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { MenuOptions } from './Menu';
@@ -28,19 +27,14 @@ export const SandboxCard = ({
   enterEditing,
   ...props
 }) => (
-  <Link
-    as={RouterLink}
-    to={url}
-    onClick={event => {
-      if (edit || isMenuClicked(event)) event.preventDefault();
-    }}
-  >
+  <Link as={RouterLink} to={url} {...props}>
     <Stack
       direction="vertical"
       gap={2}
       css={css({
         width: '100%',
         height: 240,
+        backgroundColor: 'grays.700',
         border: '1px solid',
         borderColor: 'grays.600',
         borderRadius: 'medium',
@@ -52,7 +46,6 @@ export const SandboxCard = ({
           boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
         },
       })}
-      {...props}
     >
       <Element
         as="div"
