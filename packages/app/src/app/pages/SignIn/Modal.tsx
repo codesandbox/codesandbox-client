@@ -26,7 +26,12 @@ export const SignInModalElement = ({
     if (onSignIn) {
       return onSignIn();
     }
-    return history.push(redirectTo.replace(location.origin, ''));
+
+    if (redirectTo) {
+      return history.push(redirectTo.replace(location.origin, ''));
+    }
+
+    return window.reload();
   };
 
   return (
