@@ -70,6 +70,20 @@ const Navigation = () => {
     setUser(data);
   };
 
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  useEffect(() => {
+    window.document.addEventListener('myCustomEvent', handleCloseModal, false);
+
+    return window.document.removeEventListener(
+      'myCustomEvent',
+      handleCloseModal,
+      false
+    );
+  }, []);
+
   useEffect(() => {
     if (localStorage.getItem('jwt')) {
       fetchCurrentUser();
@@ -380,7 +394,7 @@ const Navigation = () => {
                 <iframe
                   title="login"
                   style={{
-                    width: 670,
+                    width: '100vw',
                     height: 400,
                     border: 'none',
                     padding: 0,
@@ -389,7 +403,7 @@ const Navigation = () => {
                     display: 'block',
                   }}
                   sandbox="allow-top-navigation allow-scripts allow-forms allow-same-origin allow-popups"
-                  src="/login-from-homepage?redirect=dashboard"
+                  src="http://localhost:3000/login-from-homepage?redirect=dashboard"
                 />
               </OutsideClickHandler>
             </div>

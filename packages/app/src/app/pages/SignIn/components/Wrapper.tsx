@@ -8,9 +8,9 @@ export const Wrapper = ({ children }) => (
   <ThemeProvider theme={codesandboxBlack}>
     <AnimatePresence>
       <motion.div
-        initial={{ scale: 0.9, y: 5 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.9, y: 0 }}
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.9 }}
       >
         <Element
           css={css({

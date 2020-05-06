@@ -4,26 +4,31 @@ import { github as GitHubIcon } from '@codesandbox/components/lib/components/Ico
 import { Element, Text } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import history from 'app/utils/history';
-import { withRouter } from 'react-router-dom';
 import { LeftSide } from './components/LeftSide';
 import { Wrapper } from './components/Wrapper';
 import { Button } from './components/Button';
 
-export const SignInModalElementComponent = ({ redirectTo, location }) => {
+type SignInModalElementProps = {
+  redirectTo?: string;
+  onSignIn?: () => void;
+};
+
+export const SignInModalElement = ({
+  redirectTo,
+  onSignIn,
+}: SignInModalElementProps) => {
   const {
     actions: { signInButtonClicked },
   } = useOvermind();
 
-  const query = location.search ? location.search.split('redirect=')[1] : false;
-
   const handleSignIn = async () => {
     await signInButtonClicked({ useExtraScopes: false });
-    if (query === 'dashboard') {
-      window.top.location.href = 'https://codesandbox.io/dashboard';
-    } else {
-      history.push(redirectTo.replace(location.origin, ''));
+    if (onSignIn) {
+      return onSignIn();
     }
+    return history.push(redirectTo.replace(location.origin, ''));
   };
+
   return (
     <Wrapper>
       <LeftSide />
@@ -60,6 +65,3 @@ export const SignInModalElementComponent = ({ redirectTo, location }) => {
     </Wrapper>
   );
 };
-
-// @ts-ignore
-export const SignInModalElement = withRouter(SignInModalElementComponent);
