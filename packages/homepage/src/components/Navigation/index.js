@@ -356,37 +356,45 @@ const Navigation = () => {
         )}
       </Location>
       {openModal ? (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 9999,
-            background: 'rgba(0, 0, 0, 0.75)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <OutsideClickHandler onOutsideClick={() => setOpenModal(false)}>
-            <iframe
-              title="login"
+        <AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0, zIndex: 9999 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div
               style={{
-                width: 670,
-                height: 400,
-                border: 'none',
-                padding: 0,
-                maxWidth: '80%',
-                margin: 'auto',
-                display: 'block',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 9999,
+                background: 'rgba(0, 0, 0, 0.75)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
-              sandbox="allow-top-navigation allow-scripts allow-forms allow-same-origin allow-popups"
-              src="/login-from-homepage?redirect=dashboard"
-            />
-          </OutsideClickHandler>
-        </div>
+            >
+              <OutsideClickHandler onOutsideClick={() => setOpenModal(false)}>
+                <iframe
+                  title="login"
+                  style={{
+                    width: 670,
+                    height: 400,
+                    border: 'none',
+                    padding: 0,
+                    maxWidth: '80%',
+                    margin: 'auto',
+                    display: 'block',
+                  }}
+                  sandbox="allow-top-navigation allow-scripts allow-forms allow-same-origin allow-popups"
+                  src="/login-from-homepage?redirect=dashboard"
+                />
+              </OutsideClickHandler>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       ) : null}
     </>
   );

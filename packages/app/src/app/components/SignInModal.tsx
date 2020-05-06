@@ -4,6 +4,7 @@ import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-bla
 import OutsideClickHandler from 'react-outside-click-handler';
 import { SignInModalElement } from 'app/pages/SignIn/Modal';
 import { useOvermind } from 'app/overmind';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const SignInModal = () => {
   const {
@@ -25,23 +26,31 @@ export const SignInModal = () => {
 
   return (
     <ThemeProvider theme={codeSandboxBlack}>
-      <Stack
-        align="center"
-        justify="center"
-        css={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 9999,
-          background: 'rgba(0, 0, 0, 0.75)',
-        }}
-      >
-        <OutsideClickHandler onOutsideClick={toggleSignInModal}>
-          <SignInModalElement redirectTo={redirectOnLogin} />
-        </OutsideClickHandler>
-      </Stack>
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0, zIndex: 9999 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <Stack
+            align="center"
+            justify="center"
+            css={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 9999,
+              background: 'rgba(0, 0, 0, 0.75)',
+            }}
+          >
+            <OutsideClickHandler onOutsideClick={toggleSignInModal}>
+              <SignInModalElement redirectTo={redirectOnLogin} />
+            </OutsideClickHandler>
+          </Stack>
+        </motion.div>
+      </AnimatePresence>
     </ThemeProvider>
   );
 };
