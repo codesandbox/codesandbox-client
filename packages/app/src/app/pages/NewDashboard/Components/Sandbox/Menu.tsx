@@ -25,13 +25,6 @@ export const MenuOptions = ({ sandbox, isTemplate, onRename }) => {
       <Menu.List>
         <Menu.Item
           onSelect={() => {
-            history.push(getFolderUrl(sandbox.collection.path));
-          }}
-        >
-          Show in Folder
-        </Menu.Item>
-        <Menu.Item
-          onSelect={() => {
             history.push(url);
           }}
         >
@@ -43,6 +36,13 @@ export const MenuOptions = ({ sandbox, isTemplate, onRename }) => {
           }}
         >
           Open sandbox in new tab
+        </Menu.Item>
+        <Menu.Item
+          onSelect={() => {
+            history.push(getFolderUrl(sandbox.collection.path));
+          }}
+        >
+          Show in Folder
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item

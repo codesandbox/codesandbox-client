@@ -8,7 +8,7 @@ import { Header } from '../../../Components/Header';
 
 import { SandboxGrid } from '../../../Components/SandboxGrid';
 import { Sandbox } from '../../../Components/Sandbox';
-import { SkeletonCard } from '../../../Components/SandboxCard';
+import { SkeletonCard } from '../../../Components/Sandbox/SandboxCard';
 import { useBottomScroll } from './useBottomScroll';
 
 export const Drafts = () => {
