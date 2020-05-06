@@ -197,7 +197,7 @@ export default () => (
                 src={`https://twitter-avatar.now.sh/${tweet.username}`}
                 alt={tweet.quote}
                 onError={e => {
-                  e.target.src = `https://avatars.io/static/default_128.jpg`;
+                  e.target.src = `https://twitter-avatar.now.sh/codesandbox`;
                 }}
               />
               <TweetAuthor>{tweet.name}</TweetAuthor>
