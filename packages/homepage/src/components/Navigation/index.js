@@ -403,7 +403,7 @@ const Navigation = () => {
                     display: 'block',
                   }}
                   sandbox="allow-top-navigation allow-scripts allow-forms allow-same-origin allow-popups"
-                  src="http://localhost:3000/login-from-homepage?redirect=dashboard"
+                  src="/login-from-homepage?redirect=dashboard"
                 />
               </OutsideClickHandler>
             </div>

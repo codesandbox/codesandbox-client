@@ -31,7 +31,7 @@ export const SignInModalElement = ({
       return history.push(redirectTo.replace(location.origin, ''));
     }
 
-    return window.reload();
+    return location.reload();
   };
 
   return (

@@ -94,9 +94,12 @@ export const modalClosed: Action = ({ state }) => {
   state.currentModal = null;
 };
 
-export const signInClicked: Action<string | void> = ({ state }, redirectTo) => {
+export const signInClicked: Action<string | void> = (
+  { state },
+  redirectTo = ''
+) => {
   state.signInModalOpen = true;
-  state.redirectOnLogin = redirectTo || '';
+  state.redirectOnLogin = redirectTo;
 };
 
 export const toggleSignInModal: Action = ({ state }) => {
