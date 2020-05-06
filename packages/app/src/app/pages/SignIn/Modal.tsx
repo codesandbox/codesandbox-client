@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useOvermind } from 'app/overmind';
 import { github as GitHubIcon } from '@codesandbox/components/lib/components/Icon/icons';
 import { Element, Text } from '@codesandbox/components';
@@ -20,9 +20,12 @@ export const SignInModalElement = ({
   const {
     actions: { signInButtonClicked },
   } = useOvermind();
+  const [loading, setLoading] = useState(false);
 
   const handleSignIn = async () => {
+    setLoading(true);
     await signInButtonClicked({ useExtraScopes: false });
+
     if (onSignIn) {
       return onSignIn();
     }
@@ -30,8 +33,9 @@ export const SignInModalElement = ({
     if (redirectTo) {
       return history.push(redirectTo.replace(location.origin, ''));
     }
+    setLoading(false);
 
-    return location.reload();
+    return null;
   };
 
   return (
@@ -45,7 +49,7 @@ export const SignInModalElement = ({
           Test your ideas early and often.
         </Text>
 
-        <Button onClick={handleSignIn}>
+        <Button loading={loading} onClick={handleSignIn}>
           <GitHubIcon width="20" height="20" />
           <Element css={css({ width: '100%' })}>Sign in with GitHub</Element>
         </Button>

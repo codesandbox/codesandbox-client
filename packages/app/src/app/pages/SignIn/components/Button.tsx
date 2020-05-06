@@ -3,8 +3,9 @@ import React from 'react';
 import { Button as BaseButton } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 
-export const Button = ({ children, ...props }) => (
+export const Button = ({ children, loading, ...props }) => (
   <BaseButton
+    loading={loading}
     {...props}
     css={css({
       fontSize: '1em',
@@ -17,6 +18,13 @@ export const Button = ({ children, ...props }) => (
       marginBottom: 8,
       borderRadius: 'medium',
       transition: 'all 200ms ease',
+
+      '> span': {
+        display: 'flex',
+        justifyContent: 'center',
+        width: '100%',
+        transform: 'scale(1.5)',
+      },
 
       '&:hover': {
         boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.24)',
