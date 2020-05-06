@@ -35,7 +35,7 @@ export const SignInModal = () => {
           right: 0,
           bottom: 0,
           zIndex: 9999,
-          background: 'rgba(21, 21, 21, 0.9)',
+          background: 'rgba(0, 0, 0, 0.75)',
         }}
       >
         <OutsideClickHandler onOutsideClick={toggleSignInModal}>

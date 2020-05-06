@@ -21,6 +21,8 @@ export const Wrapper = ({ children }) => (
         display: 'grid',
         gridTemplateColumns: '50% 50%',
         overflow: 'hidden',
+        maxWidth: '80vw',
+        margin: 'auto',
 
         '@media screen and (max-width: 779px)': {
           gridTemplateColumns: '1fr',
