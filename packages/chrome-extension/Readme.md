@@ -1,12 +1,12 @@
 # Browser Extension
 
-![Image](https://github.com/codesandbox/codesandbox-client/blob/garethx-addon/packages/chrome-extension/assets/still2.png)
+![Image](https://github.com/codesandbox/codesandbox-client/blob/master/packages/chrome-extension/assets/still2.png)
 
 [![available in the chrome store](https://developer.chrome.com/webstore/images/ChromeWebStore_Badge_v2_206x58.png)](https://chrome.google.com/webstore/detail/jkhbnhagngalpojoeijaleemepfpefmp)
 [Download for firefox](https://addons.mozilla.org/en-US/firefox/addon/open-in-codesandbox/)
 
-This extension adds a button to all github repos that will open that repo in
-CodeSandbox in a new window
+This extension adds a button to all GitHub repos that will open that repo in
+CodeSandbox in a new window.
 
 ## How to run in Chrome
 
@@ -21,9 +21,3 @@ CodeSandbox in a new window
 - Open about:debugging
 - Click "Load Temporary Add-on"
 - Open the extension's directory and select any file inside the extension.
-
-## How to publish
-
-Unfortunately there is a need for a key to in order to update apps so as soon as
-something gets merged pls ping me at @SaraVieira in the PR and I will create a
-new version
