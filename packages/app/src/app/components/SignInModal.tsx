@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { ThemeProvider, Stack } from '@codesandbox/components';
 import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import OutsideClickHandler from 'react-outside-click-handler';
@@ -14,7 +15,9 @@ export const SignInModal = () => {
 
   const closeModal = useCallback(
     event => {
-      if (event.keyCode === 27 && open) toggleSignInModal();
+      if (event.keyCode === ESC && open) {
+        toggleSignInModal();
+      }
     },
     [toggleSignInModal]
   );
