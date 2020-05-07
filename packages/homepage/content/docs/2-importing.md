@@ -39,7 +39,7 @@ Change the GitHub URL:
 https://github.com/reduxjs/redux/tree/master/examples/todomvc.
 
 To:
-[https://githubbox.com/reactjs/redux/tree/master/examples/todomvc](https://githubbox.com/reactjs/redux/tree/master/examples/todomvc).
+https://githubbox.com/reactjs/redux/tree/master/examples/todomvc.
 
 The result is we take the last part of the url (everything after github.com) and 
 use it in our importer at codesandbox.io/s/github/, adding the repo to CodeSandbox.
