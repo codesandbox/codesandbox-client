@@ -304,13 +304,10 @@ export type GitFileCompare = {
 };
 
 export enum SandboxGitState {
-  OUT_OF_SYNC_PR = 'out of sync with PR',
-  OUT_OF_SYNC_SOURCE = 'out of sync with source',
   SYNCED = 'synced',
-  CONFLICT_PR = 'conflict with PR',
-  CONFLICT_SOURCE = 'conflict with source',
+  CONFLICT_SOURCE = 'conflict in source',
+  CONFLICT_PR = 'conflict in pr',
   SYNCING = 'syncing',
-  DETACHED = 'detached',
   RESOLVING = 'resolving',
 }
 
@@ -690,11 +687,20 @@ export type DiffTab = {
 
 export type Tabs = Array<ModuleTab | DiffTab>;
 
-export type GitChanges = {
+export type GitPathChanges = {
   added: string[];
   deleted: string[];
   modified: string[];
-  rights: string;
+};
+
+export type GitChanges = {
+  added: Array<{ path: string; content: string; encoding: 'utf-8' | 'binary' }>;
+  deleted: string[];
+  modified: Array<{
+    path: string;
+    content: string;
+    encoding: 'utf-8' | 'binary';
+  }>;
 };
 
 export type EnvironmentVariable = {

@@ -408,6 +408,10 @@ export const forkSandbox: AsyncAction<{
     }
 
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
+
+    if (sandbox.originalGit) {
+      actions.git.loadGitSource();
+    }
   } catch (error) {
     console.error(error);
     actions.internal.handleError({

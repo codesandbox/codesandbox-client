@@ -324,25 +324,28 @@ export default {
   ): Promise<GitInfo> {
     return api.post(`/sandboxes/${sandboxId}/git/repo/${repoTitle}`, data);
   },
-  createGitCommit(sandboxId: string, message: string): Promise<GitCommit> {
+  createGitCommit(
+    sandboxId: string,
+    message: string,
+    changes: GitChanges
+  ): Promise<GitCommit> {
     return api.post(`/sandboxes/${sandboxId}/git/commit`, {
       id: sandboxId,
       message,
+      changes,
     });
   },
   async compareGit(
     sandboxId: string,
-    username: string,
-    ref: string,
+    baseRef: string,
+    headRef: string,
     includeContents = false
   ): Promise<GitFileCompare[]> {
     const response: any = await api.post(
       `/sandboxes/${sandboxId}/git/compare`,
       {
-        base: {
-          username,
-          ref,
-        },
+        baseRef,
+        headRef,
         includeContents,
       }
     );
@@ -352,10 +355,22 @@ export default {
   getGitPr(sandboxId: string, prNumber: number): Promise<GitPr> {
     return api.get(`/sandboxes/${sandboxId}/git/prs/${prNumber}`);
   },
-  createGitPr(sandboxId: string, message: string): Promise<GitPr> {
+  async getGitRights(sandboxId: string) {
+    const response = await api.get<{ permission: 'admin' | 'write' | 'read' }>(
+      `/sandboxes/${sandboxId}/git/rights`
+    );
+
+    return response.permission;
+  },
+  createGitPr(
+    sandboxId: string,
+    title: string,
+    description: string
+  ): Promise<GitPr> {
     return api.post(`/sandboxes/${sandboxId}/git/pr`, {
-      id: sandboxId,
-      message,
+      sandboxId,
+      title,
+      description,
     });
   },
   async createLiveRoom(sandboxId: string): Promise<string> {

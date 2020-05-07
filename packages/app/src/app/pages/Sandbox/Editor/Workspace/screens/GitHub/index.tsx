@@ -20,15 +20,12 @@ import { NotOwner } from './NotOwner';
 export const GitHub = () => {
   const {
     state: {
-      git: { gitChanges, originalGitChanges, pr, gitState },
+      git: { gitChanges, gitState },
       editor: {
         currentSandbox: { originalGit, owned },
       },
       isLoggedIn,
       user,
-    },
-    actions: {
-      git: { resolveOutOfSyncPR, updateOutOfSyncPR },
     },
   } = useOvermind();
 
@@ -42,62 +39,21 @@ export const GitHub = () => {
   if (!owned) return <NotOwner />;
   if (!user.integrations.github) return <GithubLogin />;
 
-  const originalChanges = Object.values(originalGitChanges).reduce(
-    (aggr, file) => {
-      aggr[file.status].push(file.filename);
-
-      return aggr;
-    },
-    { added: [], deleted: [], modified: [] }
-  );
-
-  const originalChangeCount = originalChanges
-    ? originalChanges.added.length +
-      originalChanges.modified.length +
-      originalChanges.deleted.length
-    : 0;
-
   if (gitState === SandboxGitState.SYNCING) {
     return <h4>Loading...</h4>;
   }
 
-  if (!pr) {
-    return <h1>Create PR</h1>;
-  }
-
   function getContent() {
-    if (gitState === SandboxGitState.OUT_OF_SYNC_PR) {
-      return (
-        <Stack direction="vertical">
-          <Text size={3} block>
-            You are out of sync with the PR, click update to get the latest
-            code.
-          </Text>
-          <button type="button" onClick={() => updateOutOfSyncPR()}>
-            Update
-          </button>
-          <Text size={3} block marginTop={4} marginBottom={2} marginX={2}>
-            PR Changes ({originalChangeCount})
-          </Text>
-          <Changes {...originalChanges} />
-        </Stack>
-      );
-    }
-
-    if (gitState === SandboxGitState.CONFLICT_PR) {
+    if (gitState === SandboxGitState.CONFLICT) {
       return (
         <Stack direction="vertical">
           <Text size={3} block>
             You are IN CONFLICT with the PR, please click resolve to start
             resolving the issues.
           </Text>
-          <button type="button" onClick={() => resolveOutOfSyncPR()}>
+          <button type="button" onClick={() => {}}>
             Resolve
           </button>
-          <Text size={3} block marginTop={4} marginBottom={2} marginX={2}>
-            PR Changes ({originalChangeCount})
-          </Text>
-          <Changes {...originalChanges} />
         </Stack>
       );
     }
@@ -108,13 +64,9 @@ export const GitHub = () => {
           <Text size={3} block>
             Resolving conflict with PR
           </Text>
-          <button type="button" onClick={() => updateOutOfSyncPR()}>
+          <button type="button" onClick={() => {}}>
             Resolved!
           </button>
-          <Text size={3} block marginTop={4} marginBottom={2} marginX={2}>
-            PR Changes ({originalChangeCount})
-          </Text>
-          <Changes {...originalChanges} />
         </Stack>
       );
     }
@@ -122,21 +74,10 @@ export const GitHub = () => {
     return (
       <>
         <Text size={3} block marginBottom={2} marginX={2}>
-          Local Changes ({changeCount})
+          Changes ({changeCount})
         </Text>
         <Changes {...gitChanges} />
-        {changeCount > 0 && <CommitForm />}
-        {changeCount === 0 && (
-          <Element paddingX={2}>
-            <Text variant="muted" weight="bold">
-              There are no local changes
-            </Text>
-          </Element>
-        )}
-        <Text size={3} block marginTop={4} marginBottom={2} marginX={2}>
-          PR Changes ({originalChangeCount})
-        </Text>
-        <Changes {...originalChanges} />
+        <CommitForm />
       </>
     );
   }

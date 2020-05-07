@@ -52,6 +52,7 @@ const IconComponent: FunctionComponent<IconProps> = ({
     },
     state: {
       workspace: { openedWorkspaceItem, workspaceHidden },
+      git: { gitChanges },
     },
   } = useOvermind();
 
@@ -61,6 +62,9 @@ const IconComponent: FunctionComponent<IconProps> = ({
   return (
     <Tooltip content={name} singleton={singleton}>
       <IconContainer
+        css={{
+          position: 'relative',
+        }}
         justify="center"
         align="center"
         isDisabled={isDisabled}
@@ -77,6 +81,27 @@ const IconComponent: FunctionComponent<IconProps> = ({
         }}
       >
         <Icon aria-hidden />
+        {id === 'github' && (
+          <span
+            style={{
+              position: 'absolute',
+              bottom: 5,
+              right: 5,
+              backgroundColor: 'blue',
+              borderRadius: '50%',
+              width: 15,
+              height: 15,
+              fontSize: 10,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {gitChanges.added.length +
+              gitChanges.deleted.length +
+              gitChanges.modified.length}
+          </span>
+        )}
       </IconContainer>
     </Tooltip>
   );

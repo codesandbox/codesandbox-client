@@ -210,6 +210,10 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     const sandbox = await effects.api.getSandbox(newId);
 
     actions.internal.setCurrentSandbox(sandbox);
+    console.log(
+      JSON.stringify(sandbox.modules),
+      JSON.stringify(sandbox.directories)
+    );
     actions.workspace.openDefaultItem();
     effects.vscode.setReadOnly(Boolean(sandbox.git));
   } catch (error) {
@@ -291,10 +295,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     actions.comments.getSandboxComments(sandbox.id);
   }
 
-  state.editor.currentSandbox.prNumber = 1;
-
   if (sandbox.originalGit) {
-    actions.git.loadGitSource(sandbox.originalGit);
+    actions.git.loadGitSource();
   }
 
   state.editor.isLoading = false;
@@ -369,6 +371,10 @@ export const onOperationApplied: Action<{
   // If we are in a state of sync, we set "revertModule" to set it as saved
   if (module.savedCode !== null && module.code === module.savedCode) {
     effects.vscode.syncModule(module);
+  }
+
+  if (state.editor.currentSandbox.originalGit) {
+    actions.git.updateGitChanges();
   }
 };
 

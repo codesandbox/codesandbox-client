@@ -1,7 +1,7 @@
 import {
-  GitChanges,
   GitCommit,
   GitFileCompare,
+  GitPathChanges,
   GitPr,
   Module,
   SandboxGitState,
@@ -15,20 +15,18 @@ type State = {
   isExported: boolean;
   showExportedModal: boolean;
   isFetching: boolean;
-  subject: string;
+  title: string;
   description: string;
   commit: GitCommit | null;
   pr: GitPr | null;
   isCommitting: boolean;
   isCreatingPr: boolean;
-  gitChanges: GitChanges;
-  originalGitChanges: {
-    [path: string]: GitFileCompare;
-  };
-  outOfSyncChanges: {
+  gitChanges: GitPathChanges;
+  sourceGitChanges: {
     [path: string]: GitFileCompare;
   };
   sourceModulesByPath: { [path: string]: Module };
+  permission: 'admin' | 'write' | 'read';
 };
 
 export const state: State = {
@@ -39,19 +37,18 @@ export const state: State = {
   isExported: false,
   showExportedModal: false,
   isFetching: false,
-  subject: '',
+  title: '',
   description: '',
   commit: null,
   pr: null,
   isCommitting: false,
   isCreatingPr: false,
+  permission: 'read',
   sourceModulesByPath: {},
   gitChanges: {
     added: [],
     deleted: [],
     modified: [],
-    rights: '',
   },
-  originalGitChanges: {},
-  outOfSyncChanges: {},
+  sourceGitChanges: {},
 };
