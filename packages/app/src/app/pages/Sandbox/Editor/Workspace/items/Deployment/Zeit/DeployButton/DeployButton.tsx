@@ -29,8 +29,12 @@ export const DeployButton: FunctionComponent<Props> = ({ isOpen, toggle }) => {
         onToggle={toggle}
       >
         Deploy your sandbox on{' '}
-        <a href="https://zeit.co/now" rel="noreferrer noopener" target="_blank">
-          <span>ZEIT Now</span>
+        <a
+          href="https://vercel.com/home"
+          rel="noreferrer noopener"
+          target="_blank"
+        >
+          <span>Vercel</span>
         </a>
       </DeploymentIntegration>
     </DeployButtonContainer>
