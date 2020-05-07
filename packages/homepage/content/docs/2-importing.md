@@ -28,6 +28,7 @@ This means that any change to the GitHub repository will be reflected
 immediately in the sandbox.
 
 ### Using GitHubBox.com
+
 An easy way to import a repo to CodeSandbox via URL is with GitHubBox.com. Append 
 'box' to your github.com URL in between 'hub' and '.com' and it will redirect to 
 CodeSandbox.
