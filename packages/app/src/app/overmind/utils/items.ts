@@ -1,8 +1,5 @@
 import getTemplate from '@codesandbox/common/lib/templates';
-import {
-  COMMENTS as COMMENTS_ON,
-  REDESIGNED_SIDEBAR,
-} from '@codesandbox/common/lib/utils/feature-flags';
+import { COMMENTS as COMMENTS_ON } from '@codesandbox/common/lib/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 export interface INavigationItem {
@@ -130,11 +127,7 @@ export default function getItems(store: any): INavigationItem[] {
   }
 
   if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
-    if (
-      COMMENTS_ON &&
-      REDESIGNED_SIDEBAR === 'true' &&
-      hasPermission(currentSandbox.authorization, 'comment')
-    ) {
+    if (COMMENTS_ON && hasPermission(currentSandbox.authorization, 'comment')) {
       items.push(GITHUB, COMMENTS);
     } else {
       items.push(GITHUB);
