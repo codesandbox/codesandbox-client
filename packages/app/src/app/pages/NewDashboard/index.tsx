@@ -8,7 +8,7 @@ import { createGlobalStyle } from 'styled-components';
 import css from '@styled-system/css';
 
 import { Header } from './Header';
-import { Sidebar } from './Sidebar';
+import { Sidebar, SIDEBAR_WIDTH } from './Sidebar';
 import { Content } from './Content';
 
 const GlobalStyles = createGlobalStyle({
@@ -39,15 +39,25 @@ export const Dashboard: FunctionComponent = () => {
       >
         <Header />
         <Stack css={{ flexGrow: 1 }}>
-          <Sidebar />
+          <Sidebar
+            css={css({
+              position: 'absolute',
+              borderRight: '1px solid',
+              borderColor: 'sideBar.border',
+              width: [0, 0, SIDEBAR_WIDTH],
+              flexShrink: 0,
+              display: ['none', 'none', 'block'],
+            })}
+          />
 
           <Element
             as="main"
-            css={{
+            css={css({
               width: '100%',
               height: 'calc(100vh - 48px)',
               overflowY: 'scroll',
-            }}
+              paddingLeft: [0, 0, SIDEBAR_WIDTH],
+            })}
           >
             <Content />
           </Element>

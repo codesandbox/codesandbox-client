@@ -14,8 +14,6 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-const SIDEBAR_WIDTH = 240;
-
 // I hate this! but we need this until I refactor how
 // components are structured — Sid
 // https://linear.app/issue/CSB-118
@@ -27,6 +25,8 @@ const linkStyles = {
   paddingLeft: 8,
   paddingRight: 8,
 };
+
+export const SIDEBAR_WIDTH = 240;
 
 export const Sidebar = props => {
   const {
@@ -55,17 +55,7 @@ export const Sidebar = props => {
   }
 
   return (
-    <Element
-      as="aside"
-      {...props}
-      css={css({
-        borderRight: '1px solid',
-        borderColor: 'sideBar.border',
-        width: [0, 0, SIDEBAR_WIDTH],
-        flexShrink: 0,
-        display: ['none', 'none', 'block'],
-      })}
-    >
+    <Element as="aside" {...props}>
       <List css={css({ '> li': { height: 10 } })}>
         <ListAction gap={2} css={css({ paddingX: 0 })}>
           {user && (
