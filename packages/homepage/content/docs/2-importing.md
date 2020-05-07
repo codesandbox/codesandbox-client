@@ -35,7 +35,7 @@ CodeSandbox.
 Here's an example:
 
 Change the GitHub URL:
-[https://github.com/reduxjs/redux/tree/master/examples/todomvc](https://github.com/reduxjs/redux/tree/master/examples/todomvc).
+https://github.com/reduxjs/redux/tree/master/examples/todomvc.
 
 To:
 [https://githubbox.com/reactjs/redux/tree/master/examples/todomvc](https://githubbox.com/reactjs/redux/tree/master/examples/todomvc).
