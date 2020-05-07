@@ -73,7 +73,10 @@ type State = {
   currentTab: Derive<State, ModuleTab | DiffTab | undefined>;
   modulesByPath: SandboxFs;
   isAdvancedEditor: Derive<State, boolean>;
-  shouldDirectoryBeOpen: Derive<State, (directoryShortid: string) => boolean>;
+  shouldDirectoryBeOpen: Derive<
+    State,
+    (params: { directoryId: string; module?: Module }) => boolean
+  >;
   currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
   hasLoadedInitialModule: boolean;
@@ -203,21 +206,23 @@ export const state: State = {
       ? currentPackageJSON.code
       : generateFileFromSandbox(currentSandbox);
   },
-  shouldDirectoryBeOpen: ({ currentSandbox, currentModule }) => (
-    directoryShortid: string
-  ) => {
+  shouldDirectoryBeOpen: ({ currentSandbox, currentModule }) => ({
+    directoryId,
+    module = currentModule,
+  }) => {
     if (!currentSandbox) {
       return false;
     }
 
     const { modules, directories } = currentSandbox;
-    const currentModuleId = currentModule.id;
+    const currentModuleId = module.id;
     const currentModuleParents = getModuleParents(
       modules,
       directories,
       currentModuleId
     );
-    const isParentOfModule = currentModuleParents.includes(directoryShortid);
+
+    const isParentOfModule = currentModuleParents.includes(directoryId);
 
     return isParentOfModule;
   },

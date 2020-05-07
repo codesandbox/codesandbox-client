@@ -1,5 +1,5 @@
 import React from 'react';
-import isChromatic from 'storybook-chromatic/isChromatic';
+import isChromatic from 'chromatic/isChromatic';
 import { withKnobs } from '@storybook/addon-knobs';
 import { withA11y } from '@storybook/addon-a11y';
 import { addDecorator, addParameters, configure } from '@storybook/react';

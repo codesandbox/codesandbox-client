@@ -3,9 +3,9 @@ import { ConfigurationFile } from '../types';
 const config: ConfigurationFile = {
   title: 'now.json',
   type: 'now',
-  description: 'Configuration for your deployments on ZEIT Now.',
+  description: 'Configuration for your deployments on Vercel.',
   moreInfoUrl:
-    'https://zeit.co/docs/configuration#introduction/configuration-reference',
+    'https://vercel.com/docs/configuration#introduction/configuration-reference',
 
   getDefaultCode: () => JSON.stringify({}, null, 2),
 };

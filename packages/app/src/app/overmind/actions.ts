@@ -33,11 +33,11 @@ export const notificationAdded: Action<{
   title: string;
   notificationType: NotificationType;
   timeAlive?: number;
-}> = ({ effects }, { title, notificationType, timeAlive = 1 }) => {
+}> = ({ effects }, { title, notificationType, timeAlive }) => {
   effects.notificationToast.add({
     message: title,
     status: convertTypeToStatus(notificationType),
-    timeAlive: timeAlive * 1000,
+    timeAlive: timeAlive ? timeAlive * 1000 : undefined,
   });
 };
 
@@ -147,12 +147,12 @@ export const signInZeitClicked: AsyncAction = async ({
       await actions.deployment.internal.getZeitUserDetails();
     } catch (error) {
       actions.internal.handleError({
-        message: 'Could not authorize with ZEIT',
+        message: 'Could not authorize with Vercel',
         error,
       });
     }
   } else {
-    notificationToast.error('Could not authorize with ZEIT');
+    notificationToast.error('Could not authorize with Vercel');
   }
 
   state.isLoadingZeit = false;
@@ -248,6 +248,7 @@ export const acceptTeamInvitation: Action<{
   teamName: string;
   teamId: string;
 }> = ({ effects, actions }, { teamName }) => {
+  effects.analytics.track('Team - Join Team', { source: 'invitation' });
   effects.analytics.track('Team - Invitation Accepted', {});
 
   actions.internal.trackCurrentTeams();
@@ -259,7 +260,7 @@ export const rejectTeamInvitation: Action<{ teamName: string }> = (
   { effects },
   { teamName }
 ) => {
-  effects.analytics.track('Team - Invitation Accepted', {});
+  effects.analytics.track('Team - Invitation Rejected', {});
 
   effects.notificationToast.success(`Rejected invitation to ${teamName}`);
 };

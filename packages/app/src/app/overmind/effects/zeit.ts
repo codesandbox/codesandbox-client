@@ -44,7 +44,7 @@ export default (() => {
     const token = _options.getToken();
 
     if (!token) {
-      throw new Error('You have no Zeit token');
+      throw new Error('You have no Vercel token');
     }
 
     return {
@@ -196,7 +196,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
   // We'll omit the homepage-value from package.json as it creates wrong assumptions over the now deployment environment.
   packageJSON = omit(packageJSON, 'homepage');
 
-  // We force the sandbox id, so ZEIT will always group the deployments to a
+  // We force the sandbox id, so Vercel will always group the deployments to a
   // single sandbox
   packageJSON.name = nowJSON.name || nowDefaults.name;
 

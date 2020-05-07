@@ -10,7 +10,7 @@ const getZeitErrorMessage = (error: AxiosError) =>
   get(
     error,
     'response.data.error.message',
-    'An unknown error occurred when connecting to ZEIT'
+    'An unknown error occurred when connecting to Vercel'
   );
 
 export const deployWithNetlify: AsyncAction = async ({
@@ -140,7 +140,7 @@ export const deploySandboxClicked: AsyncAction = async ({
 
   if (!zeitIntegration || !zeitIntegration.token) {
     effects.notificationToast.error(
-      'You are not authorized with Zeit, please refresh and log in again'
+      'You are not authorized with Vercel, please refresh and log in again'
     );
     return;
   }
@@ -154,7 +154,7 @@ export const deploySandboxClicked: AsyncAction = async ({
       }
     } catch (error) {
       actions.internal.handleError({
-        message: 'Could not authorize with ZEIT',
+        message: 'Could not authorize with Vercel',
         error,
       });
     }

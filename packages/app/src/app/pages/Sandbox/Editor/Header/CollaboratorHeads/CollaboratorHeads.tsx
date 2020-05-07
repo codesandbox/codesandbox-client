@@ -145,6 +145,12 @@ export const CollaboratorHeads: FunctionComponent = () => {
   const firstLiveUsers = orderedLiveUsers.slice(0, USER_OVERFLOW_LIMIT);
   const restLiveUsers = orderedLiveUsers.slice(USER_OVERFLOW_LIMIT);
 
+  // It doesn't make sense to show a "More" button for live users if there's
+  // only one in it.
+  if (restLiveUsers.length === 1) {
+    firstLiveUsers.push(restLiveUsers.pop());
+  }
+
   return (
     <Stack justify="center">
       <SingletonTooltip interactive>

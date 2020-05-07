@@ -12,6 +12,7 @@ import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
 import { Dashboard } from './Dashboard';
+import { Dashboard as NewDashboard } from './NewDashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 import { NewSandbox } from './NewSandbox';
@@ -52,6 +53,14 @@ const Search = Loadable(() =>
 const CLI = Loadable(() =>
   import(/* webpackChunkName: 'page-cli' */ './CLI').then(module => ({
     default: module.CLI,
+  }))
+);
+
+const TeamInvitation = Loadable(() =>
+  import(
+    /* webpackChunkName: 'page-team-invitation' */ './TeamInvitation'
+  ).then(module => ({
+    default: module.TeamInvitation,
   }))
 );
 
@@ -121,7 +130,9 @@ const RoutesComponent: React.FC = () => {
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />
             <Route exact path="/s2" component={NewSandbox} />
+            <Route path="/invite/:token" component={TeamInvitation} />
             <Route path="/dashboard" component={Dashboard} />
+            <Route path="/new-dashboard" component={NewDashboard} />
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
