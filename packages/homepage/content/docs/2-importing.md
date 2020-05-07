@@ -48,6 +48,7 @@ use it in our importer at codesandbox.io/s/github/, adding the repo to CodeSandb
 We have browswer extensions for [Chrome](https://chrome.google.com/webstore/detail/open-in-codesandbox/hdidglkcgdolpoijdckmafdnddjoglia) and [Firefox](https://addons.mozilla.org/en-GB/firefox/addon/codesandbox/), which add an 'Open in CodeSandbox' button to GitHub repo pages. This makes it easy to import existing projects from GitHub in to CodeSandbox.
 
 ### Setting inference
+
 When importting, we infer sandbox settings based on several files in a repository.
 
 | Sandbox Setting | Inferred from                                                                                                                                         |
