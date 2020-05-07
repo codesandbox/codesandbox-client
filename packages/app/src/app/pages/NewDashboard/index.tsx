@@ -45,6 +45,7 @@ export const Dashboard: FunctionComponent = () => {
               borderRight: '1px solid',
               borderColor: 'sideBar.border',
               width: [0, 0, SIDEBAR_WIDTH],
+              height: '100%',
               flexShrink: 0,
               display: ['none', 'none', 'block'],
             })}
