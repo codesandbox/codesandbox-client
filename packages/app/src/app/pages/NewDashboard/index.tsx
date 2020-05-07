@@ -41,6 +41,9 @@ export const Dashboard: FunctionComponent = () => {
         <Stack css={{ flexGrow: 1 }}>
           <Sidebar
             css={css({
+              // We set sidebar as absolute so that content can
+              // take 100% width, this helps us enable dragging
+              // sandboxes onto the sidebar more freely.
               position: 'absolute',
               borderRight: '1px solid',
               borderColor: 'sideBar.border',
