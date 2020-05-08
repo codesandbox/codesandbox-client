@@ -18,6 +18,7 @@ export const Button = ({ children, loading, ...props }) => (
       marginBottom: 8,
       borderRadius: 'medium',
       transition: 'all 200ms ease',
+      cursor: 'pointer',
 
       '> span': {
         display: 'flex',

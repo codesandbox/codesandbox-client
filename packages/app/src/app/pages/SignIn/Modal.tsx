@@ -46,7 +46,7 @@ export const SignInModalElement = ({
           Sign in to CodeSandbox
         </Text>
         <Text variant="muted" size={3} paddingBottom={60} block>
-          Test your ideas early and often.
+          Get a free account, no credit card required
         </Text>
 
         <Button loading={loading} onClick={handleSignIn}>
@@ -60,6 +60,8 @@ export const SignInModalElement = ({
           block
           css={css({
             lineHeight: '13px',
+            maxWidth: '200px',
+            margin: 'auto',
 
             a: {
               color: 'inherit',
@@ -67,7 +69,7 @@ export const SignInModalElement = ({
           })}
         >
           By continuing, you agree to CodeSandbox{' '}
-          <a href="https://codesandbox.io/legal/terms">Terms of Service</a>,
+          <a href="https://codesandbox.io/legal/terms">Terms of Service</a>,{' '}
           <a href="https://codesandbox.io/legal/privacy">Privacy Policy</a>
         </Text>
       </Element>

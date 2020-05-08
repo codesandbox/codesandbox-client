@@ -8,43 +8,41 @@ export const LeftSide = () => (
     css={css({
       color: 'white',
       backgroundColor: 'grays.800',
+      lineHeight: 1.2,
       '@media screen and (max-width: 779px)': {
         display: 'none',
       },
     })}
   >
-    <Text weight="bold" size={5} paddingBottom={4} block>
-      CodeSandbox
+    <Text weight="bold" size={5} paddingBottom={9} block>
+      Join millions of people prototyping what’s next
     </Text>
     <Text block marginBottom={2} variant="muted">
       <Text variant="active" paddingRight={1}>
         ✓
       </Text>
-      Development & Prototyping
+      Code Anywhere
+      <Text size={3} block marginTop={2} marginBottom={8}>
+        An instant IDE on any device with a web browser.
+      </Text>
     </Text>
     <Text block marginBottom={2} variant="muted">
       <Text variant="active" paddingRight={1}>
         ✓
       </Text>
-      Online IDE
+      Start Quickly
+      <Text size={3} block marginTop={2} marginBottom={8}>
+        No setup, and templates for all popular frameworks.
+      </Text>
     </Text>
     <Text block marginBottom={2} variant="muted">
       <Text variant="active" paddingRight={1}>
         ✓
       </Text>
-      Embeds
-    </Text>
-    <Text block marginBottom={2} variant="muted">
-      <Text variant="active" paddingRight={1}>
-        ✓
+      Prototype Rapidly
+      <Text size={3} block marginTop={2} marginBottom={8}>
+        Create web apps, test ideas, and share creations easily.
       </Text>
-      CodeSandbox CI
-    </Text>
-    <Text block marginBottom={2} variant="muted">
-      <Text variant="active" paddingRight={1}>
-        ✓
-      </Text>
-      Teams
     </Text>
   </Element>
 );
