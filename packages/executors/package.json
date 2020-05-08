@@ -22,7 +22,8 @@
     "@codesandbox/common": "^1.0.8",
     "codesandbox-api": "0.0.24",
     "debug": "^4.1.1",
-    "socket.io-client": "^2.2.0"
+    "socket.io-client": "^2.2.0",
+    "template-icons": "^1.0.0"
   },
   "devDependencies": {
     "@types/jest": "24.0.13",

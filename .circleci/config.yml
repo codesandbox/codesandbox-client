@@ -18,6 +18,7 @@ aliases:
       - packages/executors/dist
       - packages/node-services/lib
       - packages/notifications/lib
+      - packages/template-icons/lib
       - packages/sse-hooks/dist
       - standalone-packages/codesandbox-browserfs/dist
       - standalone-packages/codesandbox-browserfs/build
@@ -38,6 +39,7 @@ aliases:
       - packages/chrome-extension/node_modules
       - packages/codesandbox-api/node_modules
       - packages/components/node_modules
+      - packages/template-icons/node_modules
       - packages/common/node_modules
       - packages/dynamic-pages/node_modules
       - packages/deps/node_modules

@@ -1,4 +1,4 @@
-import { ColorIcons as Icons } from '@codesandbox/template-icons';
+import { ColorIcons as Icons } from 'template-icons';
 import getColorIcons from '../templates/icons';
 
 export const getTemplateIcon = (iconUrl, environment) => {

@@ -17,6 +17,7 @@
   "dependencies": {
     "react-spring": "^8.0.25",
     "styled-components": "^4.4.1",
+    "template-icons": "^1.0.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

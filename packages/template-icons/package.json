@@ -1,5 +1,5 @@
 {
-  "name": "@codesandbox/template-icons",
+  "name": "template-icons",
   "version": "1.0.0",
   "description": "Collection of SVG icons as React Components for usage with CodeSandbox Templates.",
   "license": "MIT",

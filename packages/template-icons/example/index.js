@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 // eslint-disable-next-line
-import { ColorIcons } from '@codesandbox/template-icons';
+import { ColorIcons } from 'template-icons';
 
 import './style.css';
 
