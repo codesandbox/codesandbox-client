@@ -94,10 +94,7 @@ export const modalClosed: Action = ({ state }) => {
   state.currentModal = null;
 };
 
-export const signInClicked: Action<string | void> = (
-  { state },
-  redirectTo = ''
-) => {
+export const signInClicked: Action<string | void> = ({ state }, redirectTo) => {
   state.signInModalOpen = true;
   state.redirectOnLogin = redirectTo || '';
 };
@@ -108,11 +105,13 @@ export const toggleSignInModal: Action = ({ state }) => {
 
 export const signInButtonClicked: AsyncAction<{
   useExtraScopes: boolean;
-}> = async ({ actions, state }, options) => {
+} | void> = async ({ actions, state }, options) => {
   if (!options) {
     await actions.internal.signIn({
       useExtraScopes: false,
     });
+    state.signInModalOpen = false;
+    return;
   }
   await actions.internal.signIn(options);
   state.signInModalOpen = false;
