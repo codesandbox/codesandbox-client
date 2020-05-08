@@ -36,6 +36,7 @@ const Navigation = () => {
   const [openModal, setOpenModal] = useState(false);
   const [openedNav, setOpenedNav] = useState();
   const [hasOpened, setHasOpened] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const muted = useTheme().homepage.muted;
 
   const DownButton = () => (
@@ -72,6 +73,7 @@ const Navigation = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    setLoaded(false);
   };
 
   useEffect(() => {
@@ -372,7 +374,8 @@ const Navigation = () => {
       {openModal ? (
         <AnimatePresence>
           <motion.div
-            initial={{ opacity: 0, zIndex: 9999 }}
+            style={{ zIndex: 9999 }}
+            initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
@@ -390,12 +393,16 @@ const Navigation = () => {
                 justifyContent: 'center',
               }}
             >
-              <OutsideClickHandler onOutsideClick={() => setOpenModal(false)}>
+              <OutsideClickHandler onOutsideClick={handleCloseModal}>
                 <iframe
+                  onLoad={() => {
+                    setLoaded(true);
+                  }}
                   title="login"
                   style={{
+                    visibility: loaded ? 'visible' : 'hidden',
                     width: '100vw',
-                    height: 400,
+                    height: 450,
                     border: 'none',
                     padding: 0,
                     maxWidth: '80%',
@@ -403,7 +410,8 @@ const Navigation = () => {
                     display: 'block',
                   }}
                   sandbox="allow-top-navigation allow-scripts allow-forms allow-same-origin allow-popups"
-                  src="/login-from-homepage?redirect=dashboard"
+                  src="login-from-homepage?redirect=dashboard"
+                  // src="http://localhost:3000/login-from-homepage?redirect=dashboard"
                 />
               </OutsideClickHandler>
             </div>
