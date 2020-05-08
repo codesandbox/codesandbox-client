@@ -30,7 +30,7 @@ export const DeploymentModal: FunctionComponent = () => {
   return (
     <Alert
       title="Deployment"
-      description="Deploy a production version of your Sandbox to ZEIT Now"
+      description="Deploy a production version of your Sandbox to Vercel"
     >
       {url ? (
         <Element marginBottom={4}>
@@ -44,7 +44,7 @@ export const DeploymentModal: FunctionComponent = () => {
             You can manage your deployments{' '}
             <Link
               variant="muted"
-              href="https://zeit.co/dashboard"
+              href="https://vercel.com/dashboard"
               target="_blank"
               rel="noreferrer noopener"
             >

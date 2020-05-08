@@ -9,7 +9,6 @@ import {
   Link,
   ListAction,
   SkeletonText,
-  isMenuClicked,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { MenuOptions } from './Menu';
@@ -30,14 +29,7 @@ export const SandboxListItem = ({
   ...props
 }) => (
   <ListAction css={css({ paddingX: 0 })}>
-    <Link
-      as={RouterLink}
-      to={url}
-      onClick={event => {
-        if (edit || isMenuClicked(event)) event.preventDefault();
-      }}
-      style={{ width: '100%' }}
-    >
+    <Link as={RouterLink} to={url} style={{ width: '100%' }} {...props}>
       <Stack
         gap={2}
         align="center"
@@ -49,7 +41,6 @@ export const SandboxListItem = ({
           borderBottomColor: 'grays.600',
           overflow: 'hidden',
         })}
-        {...props}
       >
         <Stack gap={4} align="center">
           <Element

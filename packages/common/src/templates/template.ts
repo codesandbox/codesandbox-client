@@ -206,7 +206,7 @@ export default class Template {
   }
 
   /**
-   * Alter the apiData to ZEIT for making deployment work
+   * Alter the apiData to Vercel for making deployment work
    */
   alterDeploymentData = (apiData: any) => {
     const packageJSONFile = apiData.files.find(x => x.file === 'package.json');
