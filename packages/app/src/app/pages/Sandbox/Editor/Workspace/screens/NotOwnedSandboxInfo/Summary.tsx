@@ -8,8 +8,7 @@ import {
   githubRepoUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { ColorIcons as Icons } from '@codesandbox/template-icons';
-import getIcon from '@codesandbox/common/lib/templates/icons';
+import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 
 import {
   Element,
@@ -168,8 +167,9 @@ export const Summary = () => {
 };
 
 const TemplateIcon = ({ iconUrl, environment }) => {
-  const Icon = Icons[iconUrl] || getIcon(environment);
-  return <Icon />;
+  const { UserIcon } = getTemplateIcon(iconUrl, environment);
+
+  return <UserIcon />;
 };
 
 const Divider = props => (
