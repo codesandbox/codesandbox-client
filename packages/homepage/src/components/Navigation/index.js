@@ -77,10 +77,14 @@ const Navigation = () => {
   };
 
   useEffect(() => {
-    window.document.addEventListener('myCustomEvent', handleCloseModal, false);
+    window.document.addEventListener(
+      'closeLoginModal',
+      handleCloseModal,
+      false
+    );
 
     return window.document.removeEventListener(
-      'myCustomEvent',
+      'closeLoginModal',
       handleCloseModal,
       false
     );
