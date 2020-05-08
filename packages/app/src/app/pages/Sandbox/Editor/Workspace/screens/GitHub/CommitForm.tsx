@@ -20,10 +20,18 @@ export const CommitForm = () => {
       },
     },
     state: {
-      editor: { currentSandbox },
-      git: { description, title, permission, gitChanges },
+      editor: { currentSandbox, isAllModulesSynced },
+      git: {
+        description,
+        title,
+        permission,
+        gitChanges,
+        isCommitting,
+        isCreatingPr,
+      },
     },
   } = useOvermind();
+  const [directCommit, setDirectCommit] = React.useState(false);
 
   const changeDescription = ({
     target: { value },
@@ -32,12 +40,27 @@ export const CommitForm = () => {
   const changeTitle = ({ target: { value } }: ChangeEvent<HTMLInputElement>) =>
     titleChanged(value);
 
+  const getButtonTitle = (buttonTitle: string) => {
+    if (isCommitting) {
+      return 'Updating...';
+    }
+
+    if (!isAllModulesSynced) {
+      return 'Save all files first...';
+    }
+
+    return buttonTitle;
+  };
+
   const canUpdate =
     Boolean(
       gitChanges.added.length ||
         gitChanges.deleted.length ||
         gitChanges.modified.length
-    ) && description;
+    ) &&
+    description &&
+    isAllModulesSynced &&
+    !isCommitting;
 
   if (currentSandbox.prNumber) {
     return (
@@ -61,7 +84,7 @@ export const CommitForm = () => {
             disabled={!canUpdate}
             onClick={() => updatePrClicked()}
           >
-            Update PR
+            {getButtonTitle('Update PR')}
           </Button>
         </Stack>
       </Stack>
@@ -90,10 +113,39 @@ export const CommitForm = () => {
         <Stack marginX={2}>
           <Button
             variant="secondary"
-            disabled={!title || !canUpdate}
+            disabled={!title || !canUpdate || isCreatingPr}
             onClick={() => createPrClicked()}
           >
-            Create PR
+            {getButtonTitle('Create PR')}
+          </Button>
+        </Stack>
+      </Stack>
+    );
+  }
+
+  if (directCommit) {
+    return (
+      <Stack
+        as="form"
+        direction="vertical"
+        gap={1}
+        onSubmit={event => event.preventDefault()}
+      >
+        <FormField direction="vertical" label="message" hideLabel>
+          <Textarea
+            maxLength={280}
+            placeholder="Message"
+            onChange={changeDescription}
+            value={description}
+          />
+        </FormField>
+        <Stack marginX={2}>
+          <Button
+            variant="secondary"
+            disabled={!canUpdate}
+            onClick={() => createCommitClicked()}
+          >
+            {getButtonTitle(`Commit to ${currentSandbox.baseGit.branch}`)}
           </Button>
         </Stack>
       </Stack>
@@ -107,10 +159,16 @@ export const CommitForm = () => {
       gap={1}
       onSubmit={event => event.preventDefault()}
     >
-      <FormField direction="vertical" label="message" hideLabel>
+      <button type="button" onClick={() => setDirectCommit(true)}>
+        Do direct commit
+      </button>
+      <FormField direction="vertical" label="PR title" hideLabel>
+        <Input placeholder="Title" onChange={changeTitle} value={title} />
+      </FormField>
+      <FormField direction="vertical" label="PR description" hideLabel>
         <Textarea
           maxLength={280}
-          placeholder="Message"
+          placeholder="Description"
           onChange={changeDescription}
           value={description}
         />
@@ -118,10 +176,10 @@ export const CommitForm = () => {
       <Stack marginX={2}>
         <Button
           variant="secondary"
-          disabled={!canUpdate}
-          onClick={() => createCommitClicked()}
+          disabled={!title || !canUpdate}
+          onClick={() => createPrClicked()}
         >
-          Commit to {currentSandbox.baseGit.branch}
+          {getButtonTitle('Create PR')}
         </Button>
       </Stack>
     </Stack>

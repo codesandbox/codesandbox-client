@@ -20,12 +20,15 @@ import { NotOwner } from './NotOwner';
 export const GitHub = () => {
   const {
     state: {
-      git: { gitChanges, gitState },
+      git: { gitChanges, gitState, conflicts },
       editor: {
         currentSandbox: { originalGit, owned },
       },
       isLoggedIn,
       user,
+    },
+    actions: {
+      git: { resolveConflicts },
     },
   } = useOvermind();
 
@@ -34,6 +37,7 @@ export const GitHub = () => {
       gitChanges.modified.length +
       gitChanges.deleted.length
     : 0;
+  const conflictPaths = conflicts.map(conflict => '/' + conflict.filename);
 
   if (!isLoggedIn) return <NotLoggedIn />;
   if (!owned) return <NotOwner />;
@@ -44,28 +48,40 @@ export const GitHub = () => {
   }
 
   function getContent() {
-    if (gitState === SandboxGitState.CONFLICT) {
+    if (gitState === SandboxGitState.CONFLICT_SOURCE) {
       return (
         <Stack direction="vertical">
           <Text size={3} block>
-            You are IN CONFLICT with the PR, please click resolve to start
-            resolving the issues.
+            You are IN CONFLICT with {originalGit.branch}, please click resolve
+            to start resolving the issues.
           </Text>
-          <button type="button" onClick={() => {}}>
+          <button
+            type="button"
+            onClick={() => {
+              resolveConflicts();
+            }}
+          >
             Resolve
           </button>
         </Stack>
       );
     }
 
-    if (gitState === SandboxGitState.RESOLVING) {
+    if (gitState === SandboxGitState.CONFLICT_PR) {
       return (
         <Stack direction="vertical">
           <Text size={3} block>
-            Resolving conflict with PR
+            You are IN CONFLICT with the PR, please click resolve to start
+            resolving the issues.
           </Text>
-          <button type="button" onClick={() => {}}>
-            Resolved!
+          <Changes conflicts={conflictPaths} {...gitChanges} />
+          <button
+            type="button"
+            onClick={() => {
+              resolveConflicts();
+            }}
+          >
+            Resolve
           </button>
         </Stack>
       );
@@ -76,7 +92,7 @@ export const GitHub = () => {
         <Text size={3} block marginBottom={2} marginX={2}>
           Changes ({changeCount})
         </Text>
-        <Changes {...gitChanges} />
+        <Changes conflicts={conflictPaths} {...gitChanges} />
         <CommitForm />
       </>
     );

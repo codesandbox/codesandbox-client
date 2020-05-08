@@ -365,12 +365,14 @@ export default {
   createGitPr(
     sandboxId: string,
     title: string,
-    description: string
+    description: string,
+    changes: GitChanges
   ): Promise<GitPr> {
     return api.post(`/sandboxes/${sandboxId}/git/pr`, {
       sandboxId,
       title,
       description,
+      changes,
     });
   },
   async createLiveRoom(sandboxId: string): Promise<string> {

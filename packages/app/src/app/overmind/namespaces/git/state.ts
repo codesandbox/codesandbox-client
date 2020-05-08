@@ -1,9 +1,7 @@
 import {
-  GitCommit,
   GitFileCompare,
   GitPathChanges,
   GitPr,
-  Module,
   SandboxGitState,
 } from '@codesandbox/common/lib/types';
 
@@ -17,15 +15,15 @@ type State = {
   isFetching: boolean;
   title: string;
   description: string;
-  commit: GitCommit | null;
   pr: GitPr | null;
   isCommitting: boolean;
   isCreatingPr: boolean;
+  conflicts: GitFileCompare[];
   gitChanges: GitPathChanges;
   sourceGitChanges: {
     [path: string]: GitFileCompare;
   };
-  sourceModulesByPath: { [path: string]: Module };
+  sourceModulesByPath: { [path: string]: string };
   permission: 'admin' | 'write' | 'read';
 };
 
@@ -39,12 +37,12 @@ export const state: State = {
   isFetching: false,
   title: '',
   description: '',
-  commit: null,
   pr: null,
   isCommitting: false,
   isCreatingPr: false,
   permission: 'read',
   sourceModulesByPath: {},
+  conflicts: [],
   gitChanges: {
     added: [],
     deleted: [],
