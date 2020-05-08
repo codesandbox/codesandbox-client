@@ -19,25 +19,3 @@ export const AdonisIcon: React.FC<ISVGIconProps> = ({ ...props }) => (
     />
   </SVGIcon>
 );
-
-export const AdonisIconDark: React.FC<ISVGIconProps> = ({ ...props }) => (
-  <SVGIcon {...props}>
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M14.8734 10.5077L11.6196 4L2 23.2392H8.50764L6.50359 27.2473H29.5618L18.0327 4.18918L14.8734 10.5077ZM9.50406 23.2392H21.2392L15.3717 11.5041L17.9015 6.44444L27.8029 26.2473H8.00001L9.50406 23.2392Z"
-      fill="black"
-    />
-  </SVGIcon>
-);
-
-export const AdonisIconLight: React.FC<ISVGIconProps> = ({ ...props }) => (
-  <SVGIcon {...props}>
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M14.8734 10.5077L11.6196 4L2 23.2392H8.50764L6.50359 27.2473H29.5618L18.0327 4.18918L14.8734 10.5077ZM9.50406 23.2392H21.2392L15.3717 11.5041L17.9015 6.44444L27.8029 26.2473H8.00001L9.50406 23.2392Z"
-      fill="white"
-    />
-  </SVGIcon>
-);

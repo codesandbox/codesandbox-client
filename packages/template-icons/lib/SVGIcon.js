@@ -1,37 +1,3 @@
-"use strict";
+const _react=_interopRequireDefault(require("react"));
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SVGIcon = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
-function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
-
-function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
-
-var SVGIcon = function SVGIcon(_ref) {
-  var _ref$scale = _ref.scale,
-      scale = _ref$scale === void 0 ? 1 : _ref$scale,
-      _ref$width = _ref.width,
-      width = _ref$width === void 0 ? 32 : _ref$width,
-      _ref$height = _ref.height,
-      height = _ref$height === void 0 ? 32 : _ref$height,
-      children = _ref.children,
-      props = _objectWithoutProperties(_ref, ["scale", "width", "height", "children"]);
-
-  return /*#__PURE__*/_react.default.createElement("svg", _extends({
-    width: scale * width,
-    height: scale * height,
-    viewBox: "0 0 32 32",
-    fill: "none",
-    xmlns: "http://www.w3.org/2000/svg"
-  }, props), children);
-};
-
-exports.SVGIcon = SVGIcon;
+Object.defineProperty(exports,"__esModule",{value:!0}),exports.SVGIcon=void 0;function _interopRequireDefault(a){return a&&a.__esModule?a:{default:a}}function _extends(){return _extends=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(const d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends.apply(this,arguments)}function _objectWithoutProperties(a,b){if(a==null)return{};let c; let d; const e=_objectWithoutPropertiesLoose(a,b);if(Object.getOwnPropertySymbols){const f=Object.getOwnPropertySymbols(a);for(d=0;d<f.length;d++)c=f[d],!(b.indexOf(c)>=0)&&Object.prototype.propertyIsEnumerable.call(a,c)&&(e[c]=a[c])}return e}function _objectWithoutPropertiesLoose(a,b){if(a==null)return{};let c; let d; const e={}; const f=Object.keys(a);for(d=0;d<f.length;d++)c=f[d],b.indexOf(c)>=0||(e[c]=a[c]);return e}const SVGIcon=function(a){const b=a.scale; const c=void 0===b?1:b; const d=a.width; const e=void 0===d?32:d; const f=a.height; const g=void 0===f?32:f; const h=a.children; const i=_objectWithoutProperties(a,["scale","width","height","children"]);return/* #__PURE__ */_react.default.createElement("svg",{width:c*e,height:c*g,viewBox:"0 0 32 32",fill:"none",xmlns:"http://www.w3.org/2000/svg",...i},h)};exports.SVGIcon=SVGIcon;

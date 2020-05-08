@@ -36,27 +36,3 @@ export const ElmIcon: React.FC<ISVGIconProps> = ({ ...props }) => {
     </SVGIcon>
   );
 };
-
-export const ElmIconDark: React.FC<ISVGIconProps> = ({ ...props }) => (
-  <SVGIcon {...props}>
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M30 14.4476V2H17.5523L30 14.4476ZM2 2.76804L15.232 16L2 29.2321V2.76804ZM16 16.768L2.76811 30H29.232L16 16.768ZM24.1301 23.3621L30 29.2321V17.4922L24.1301 23.3621ZM29.986 15.9697L23.392 9.37562L16.7678 15.9998L23.3619 22.5939L29.986 15.9697ZM2.76794 2L8.86285 8.095H22.1114L16.0164 2H2.76794ZM22.0508 9.18114L16 15.232L9.94909 9.18114H22.0508Z"
-      fill="black"
-      fillOpacity="0.9"
-    />
-  </SVGIcon>
-);
-
-export const ElmIconLight: React.FC<ISVGIconProps> = ({ ...props }) => (
-  <SVGIcon {...props}>
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M30 14.4476V2H17.5523L30 14.4476ZM2 2.76804L15.232 16L2 29.2321V2.76804ZM16 16.768L2.76811 30H29.232L16 16.768ZM24.1301 23.3621L30 29.2321V17.4922L24.1301 23.3621ZM29.986 15.9697L23.392 9.37562L16.7678 15.9998L23.3619 22.5939L29.986 15.9697ZM2.76794 2L8.86285 8.095H22.1114L16.0164 2H2.76794ZM22.0508 9.18114L16 15.232L9.94909 9.18114H22.0508Z"
-      fill="white"
-      fillOpacity="0.9"
-    />
-  </SVGIcon>
-);
