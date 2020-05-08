@@ -1,0 +1,17 @@
+# Package Directories
+node_modules
+
+# Ignored Directories
+.coverage
+.cache
+/pkg
+/build
+/.awcache
+/.ssh
+dist
+.cache
+
+# Ignored Files
+.DS_STORE
+npm-debug.log*
+yarn-error.log*

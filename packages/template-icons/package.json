@@ -1,0 +1,62 @@
+{
+  "name": "@codesandbox/template-icons",
+  "version": "1.0.0",
+  "description": "Collection of SVG icons as React Components for usage with CodeSandbox Templates.",
+  "license": "MIT",
+  "author": "Drake Costa <drake@codesandbox.io> (https://github.com/Saeris)",
+  "contributors": [
+    "Ives van Hoorne <ives@codesandbox.io> (https://github.com/CompuIves)",
+    "Sara Vieira <sara@codesandbox.io> (https://github.com/SaraVieira)"
+  ],
+  "homepage": "https://codesandbox.io/",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index",
+  "scripts": {
+    "dev": "nodemon --watch src --watch example --exec run-s build",
+    "start": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
+    "deploy": "run-s build build:example",
+    "watch": "babel --watch src --out-dir lib --extensions '.ts,.tsx'",
+    "build": "babel src --out-dir lib --extensions '.ts,.tsx'",
+    "build:dev": "npm run build",
+    "build:example": "react-scripts build",
+    "lint": "eslint ./src",
+    "test": "yarn lint && yarn typecheck && jest -c ./jest.config.js",
+    "test:watch": "jest -c ./jest.config.js --watch",
+    "test:coverage": "jest -c ./jest.config.js && codecov",
+    "typecheck": "tsc --noEmit",
+    "version": "yarn build"
+  },
+  "dependencies": {
+    "@babel/preset-react": "^7.9.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-typescript": "^7.9.0",
+    "@emotion/core": "^10.0.22",
+    "@emotion/styled": "^10.0.23",
+    "@testing-library/react": "^9.4.0",
+    "@types/react": "16.9.17",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.7.1",
+    "codecov": "^3.3.0",
+    "core-js": "3.6.0",
+    "husky": "^3.1.0",
+    "lint-staged": "^9.5.0",
+    "nodemon": "2.0.2",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1",
+    "typescript": "^3.8.3"
+  },
+  "peerDependencies": {
+    "react": "^16.x.x"
+  }
+}

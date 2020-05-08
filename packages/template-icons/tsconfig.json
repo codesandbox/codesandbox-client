@@ -1,0 +1,17 @@
+{
+  "exclude": ["node_modules", "pkg"],
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "ES6",
+    "lib": ["es6", "dom", "es2017.object", "es2017.sharedmemory"],
+    "resolveJsonModule": true,
+    "jsx": "preserve",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node"
+  },
+  "include": ["src"]
+}

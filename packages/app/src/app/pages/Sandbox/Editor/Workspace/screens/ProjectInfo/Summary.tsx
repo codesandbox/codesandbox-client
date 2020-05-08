@@ -25,7 +25,7 @@ import {
   githubRepoUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { Icons } from '@codesandbox/template-icons';
+import { ColorIcons as Icons } from '@codesandbox/template-icons';
 import getIcon from '@codesandbox/common/lib/templates/icons';
 
 import css from '@styled-system/css';
