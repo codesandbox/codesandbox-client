@@ -6,7 +6,9 @@ import {
   Button,
   Avatar,
   Text,
+  Link,
 } from '@codesandbox/components';
+import { Link as LinkBase } from 'react-router-dom';
 import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import css from '@styled-system/css';
 
@@ -21,6 +23,7 @@ export const Navigation: FunctionComponent<Props> = ({ title }) => {
     actions: { modalOpened, signInClicked },
     state: { isLoggedIn, isAuthenticating, user },
   } = useOvermind();
+  const link = isLoggedIn ? '/dashboard' : '/';
 
   return (
     <ThemeProvider theme={codeSandboxBlack}>
@@ -39,7 +42,9 @@ export const Navigation: FunctionComponent<Props> = ({ title }) => {
         })}
       >
         <Stack gap={4} align="center">
-          <Logo />
+          <Link to={link} as={LinkBase}>
+            <Logo />
+          </Link>
           <Text
             size={3}
             css={css({

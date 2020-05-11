@@ -16,7 +16,6 @@ import {
   Container,
   Content,
   Header,
-  Nav,
   Subtitle,
   Title,
 } from './elements';
@@ -38,10 +37,9 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = ({
   return (
     <Container>
       <Header>
-        <Nav>
-          <Navigation title="CodeSadbox" />
-        </Nav>
+        <Navigation title="CodeSadbox" />
       </Header>
+
       <Content>
         <Title>Oh no! Something broke!</Title>
         <Sadbox scale={3} />
