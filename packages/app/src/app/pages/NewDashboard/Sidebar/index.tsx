@@ -14,18 +14,6 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-// I hate this! but we need this until I refactor how
-// components are structured — Sid
-// https://linear.app/issue/CSB-118
-const linkStyles = {
-  width: '100%',
-  height: '100%',
-  display: 'flex',
-  alignItems: 'center',
-  paddingLeft: 8,
-  paddingRight: 8,
-};
-
 export const SIDEBAR_WIDTH = 240;
 
 export const Sidebar = props => {
@@ -156,102 +144,37 @@ export const Sidebar = props => {
           )}
         </ListAction>
 
-        <ListAction align="center" css={css({ paddingX: 0 })}>
-          <Link as={RouterLink} to="/new-dashboard/start" style={linkStyles}>
-            <Stack
-              as="span"
-              css={css({ width: 10 })}
-              align="center"
-              justify="center"
-            >
-              <Icon name="box" />
-            </Stack>
-            Start
-          </Link>
-        </ListAction>
-        <ListAction align="center" css={css({ paddingX: 0 })}>
-          <Link as={RouterLink} to="/new-dashboard/drafts" style={linkStyles}>
-            <Stack
-              as="span"
-              css={css({ width: 10 })}
-              align="center"
-              justify="center"
-            >
-              <Icon name="file" />
-            </Stack>
-            Drafts
-          </Link>
-        </ListAction>
-        <ListAction align="center" css={css({ paddingX: 0 })}>
-          <Link as={RouterLink} to="/new-dashboard/recent" style={linkStyles}>
-            <Stack
-              as="span"
-              css={css({ width: 10 })}
-              align="center"
-              justify="center"
-            >
-              <Icon name="clock" />
-            </Stack>
-            Recent
-          </Link>
-        </ListAction>
-        <ListAction align="center" css={css({ paddingX: 0 })}>
-          <Link as={RouterLink} to="/new-dashboard/all" style={linkStyles}>
-            <Stack
-              as="span"
-              css={css({ width: 10 })}
-              align="center"
-              justify="center"
-            >
-              <Icon name="folder" />
-            </Stack>
-            All Sandboxes
-          </Link>
-        </ListAction>
-        <ListAction align="center" css={css({ paddingX: 0 })}>
-          <Link
-            as={RouterLink}
-            to="/new-dashboard/templates"
-            style={linkStyles}
-          >
-            <Stack
-              as="span"
-              css={css({ width: 10 })}
-              align="center"
-              justify="center"
-            >
-              <Icon name="star" />
-            </Stack>
-            Templates
-          </Link>
-        </ListAction>
-        <ListAction align="center" css={css({ paddingX: 0 })}>
-          <Link as={RouterLink} to="/new-dashboard/deleted" style={linkStyles}>
-            <Stack
-              as="span"
-              css={css({ width: 10 })}
-              align="center"
-              justify="center"
-            >
-              <Icon name="trash" />
-            </Stack>
-            Recently Deleted
-          </Link>
-        </ListAction>
-        <ListAction align="center" css={css({ paddingX: 0 })}>
-          <Link as={RouterLink} to="/new-dashboard/settings" style={linkStyles}>
-            <Stack
-              as="span"
-              css={css({ width: 10 })}
-              align="center"
-              justify="center"
-            >
-              <Icon name="gear" />
-            </Stack>
-            Settings (temp)
-          </Link>
-        </ListAction>
+        <RowItem name="Start" path="start" icon="box" />
+        <RowItem name="Drafts" path="drafts" icon="file" />
+        <RowItem name="Recent" path="recent" icon="clock" />
+        <RowItem name="All Sandboxes" path="all" icon="folder" />
+        <RowItem name="Templates" path="templates" icon="star" />
+        <RowItem name="Recently Deleted" path="deleted" icon="trash" />
+        <RowItem name="Settings (temp)" path="settings" icon="gear" />
       </List>
     </Element>
   );
 };
+
+// I hate this! but we need this until I refactor how
+// components are structured — Sid
+// https://linear.app/issue/CSB-118
+const linkStyles = {
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  paddingLeft: 8,
+  paddingRight: 8,
+};
+
+const RowItem = ({ name, path, icon }) => (
+  <ListAction align="center" css={css({ paddingX: 0 })}>
+    <Link as={RouterLink} to={`/new-dashboard/${path}`} style={linkStyles}>
+      <Stack as="span" css={css({ width: 10 })} align="center" justify="center">
+        <Icon name={icon} />
+      </Stack>
+      {name}
+    </Link>
+  </ListAction>
+);
