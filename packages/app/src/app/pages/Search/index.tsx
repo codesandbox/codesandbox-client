@@ -90,7 +90,7 @@ export const Search: FunctionComponent<Props> = ({ history, location }) => {
 
       <MaxWidth>
         <Margin vertical={1.5}>
-          <Navigation title="Search" searchNoInput />
+          <Navigation title="Search" />
 
           <Content>
             <InstantSearch
