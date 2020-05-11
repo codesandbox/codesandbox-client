@@ -18,6 +18,7 @@ const babelProd = require('./babel.prod');
 
 const NODE_ENV = JSON.parse(env.default['process.env.NODE_ENV']);
 const SANDBOX_ONLY = !!process.env.SANDBOX_ONLY;
+const APP_HOT = !!process.env.APP_HOT;
 const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
@@ -128,17 +129,23 @@ module.exports = {
         ],
         'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
       }
+    : APP_HOT
+    ? {
+        app: [
+          require.resolve('./polyfills'),
+          path.join(paths.appSrc, 'index.js'),
+        ],
+      }
     : {
         app: [
           require.resolve('./polyfills'),
           path.join(paths.appSrc, 'index.js'),
         ],
-        /* sandbox: [
+        sandbox: [
           require.resolve('./polyfills'),
           path.join(paths.sandboxSrc, 'index.js'),
-        ], 
+        ],
         'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
-        */
         'watermark-button': path.join(paths.src, 'watermark-button.js'),
         embed: [
           require.resolve('./polyfills'),

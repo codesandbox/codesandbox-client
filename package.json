@@ -51,6 +51,7 @@
     "start:dev_api": "concurrently --raw \"cd packages/app && yarn start:dev_api\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
     "start:fast": "cross-env NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
+    "start:hot": "cross-env NODE_ENV=development APP_ONLY=true concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:fast:stream": "cross-env STAGING_API=1 NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:home": "yarn build:deps && yarn start:home:fast",
     "start:home:fast": "cd packages/homepage && yarn start",

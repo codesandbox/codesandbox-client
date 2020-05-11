@@ -6,14 +6,18 @@ const commonConfig = require('./webpack.common');
 
 const devEntries = ['webpack-dev-server/client?/'];
 
+const APP_HOT = !!process.env.APP_HOT;
+
 module.exports = merge(
   {
     entry: {
-      app: [
-        'webpack-dev-server/client?http://localhost:3000',
-        'webpack-hot-middleware/client',
-      ],
-      embed: devEntries,
+      app: APP_HOT
+        ? [
+            'webpack-dev-server/client?http://localhost:3000',
+            'webpack-hot-middleware/client',
+          ]
+        : devEntries,
+      ...(APP_HOT ? {} : { embed: devEntries }),
     },
   },
   commonConfig,
