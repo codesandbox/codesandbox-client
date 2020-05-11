@@ -54,45 +54,46 @@ export const Navigation: FunctionComponent<Props> = ({ title }) => {
             CodeSandbox - {title}
           </Text>
         </Stack>
-        <Stack align="center" gap={6}>
-          {!isLoggedIn ? (
-            <Button
-              css={{ width: 'auto' }}
-              variant="link"
-              onClick={() => signInClicked()}
-              loading={isAuthenticating}
-            >
-              Sign In
-            </Button>
-          ) : null}
-          <Button
-            variant="primary"
-            css={css({ width: 'auto', paddingX: 3 })}
-            onClick={() => modalOpened({ modal: 'newSandbox' })}
-          >
-            Create Sandbox
-          </Button>
-          {isLoggedIn ? (
-            <UserMenu>
+        {!isAuthenticating ? (
+          <Stack align="center" gap={6}>
+            {!isLoggedIn ? (
               <Button
-                variant="secondary"
-                css={css({
-                  padding: 0,
-                  height: 'auto',
-                  border: 'none',
-                })}
+                css={{ width: 'auto' }}
+                variant="link"
+                onClick={() => signInClicked()}
               >
-                <Avatar
-                  css={css({
-                    width: 26,
-                    height: 26,
-                  })}
-                  user={user}
-                />
+                Sign In
               </Button>
-            </UserMenu>
-          ) : null}
-        </Stack>
+            ) : null}
+            <Button
+              variant="primary"
+              css={css({ width: 'auto', paddingX: 3 })}
+              onClick={() => modalOpened({ modal: 'newSandbox' })}
+            >
+              Create Sandbox
+            </Button>
+            {isLoggedIn ? (
+              <UserMenu>
+                <Button
+                  variant="secondary"
+                  css={css({
+                    padding: 0,
+                    height: 'auto',
+                    border: 'none',
+                  })}
+                >
+                  <Avatar
+                    css={css({
+                      width: 26,
+                      height: 26,
+                    })}
+                    user={user}
+                  />
+                </Button>
+              </UserMenu>
+            ) : null}
+          </Stack>
+        ) : null}
       </Stack>
     </ThemeProvider>
   );
