@@ -66,9 +66,7 @@
     "preset": "ts-jest",
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
   },
-  "dependencies": {
-    "template-icons": "^1.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/debug": "^0.0.30",
     "@types/glob": "^7.1.1",
