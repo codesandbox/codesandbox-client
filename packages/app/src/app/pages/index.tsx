@@ -18,7 +18,6 @@ import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 import { NewSandbox } from './NewSandbox';
 import { Sandbox } from './Sandbox';
-import { SignInModalHomepage } from './SignInModalHomepage';
 
 const routeDebugger = _debug('cs:app:router');
 
@@ -148,11 +147,6 @@ const RoutesComponent: React.FC = () => {
             <Route path="/cli/login" component={CLI} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
-            {/* For Homepage Login in */}
-            <Route
-              path="/login-from-homepage"
-              component={SignInModalHomepage}
-            />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (
               <Route path="/auth/dev" component={DevAuthPage} />
             )}
