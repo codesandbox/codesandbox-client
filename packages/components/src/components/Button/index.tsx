@@ -88,7 +88,7 @@ const commonStyles = {
     opacity: '0.4',
     cursor: 'not-allowed',
   },
-  '&[data-loading]': {
+  '&[data-loading="true"]': {
     opacity: 1,
     cursor: 'default',
   },
