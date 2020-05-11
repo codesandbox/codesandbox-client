@@ -1,1 +1,0 @@
-export { Functions } from './Functions';

@@ -26,18 +26,18 @@ export const Zeit = () => {
   const { deploySandboxClicked, setDeploymentToDelete } = deployment;
 
   return (
-    <Integration icon={ZeitIcon} title="ZEIT Now">
+    <Integration icon={ZeitIcon} title="Vercel">
       {integrations.zeit ? (
         <>
           <Element marginX={2} marginBottom={sandboxDeploys.length ? 6 : 0}>
             <Text variant="muted" block marginBottom={4}>
               Deploy your sandbox to{' '}
-              <Link href="https://zeit.co/now" target="_blank">
-                ZEIT Now
+              <Link href="https://vercel.com/home" target="_blank">
+                Vercel
               </Link>
             </Text>
             <Button disabled={deploying} onClick={deploySandboxClicked}>
-              Deploy to Zeit
+              Deploy to Vercel
             </Button>
           </Element>
 

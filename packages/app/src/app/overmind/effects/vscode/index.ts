@@ -12,12 +12,13 @@ import {
   Settings,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
+import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
   NotificationMessage,
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
-import { Reference } from 'app/graphql/types';
+import { CommentFragment } from 'app/graphql/types';
 import { Reaction } from 'app/overmind';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import prettify from 'app/src/app/utils/prettify';
@@ -26,7 +27,6 @@ import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { json } from 'overmind';
 import io from 'socket.io-client';
 
@@ -36,8 +36,8 @@ import {
   initializeCustomTheme,
   initializeExtensionsFolder,
   initializeSettings,
-  initializeThemeCache,
   initializeSnippetDirectory,
+  initializeThemeCache,
 } from './initializers';
 import { Linter } from './Linter';
 import {
@@ -226,7 +226,7 @@ export class VSCodeEffect {
 
   public async getCodeReferenceBoundary(
     commentId: string,
-    reference: Reference
+    reference: CommentFragment['references'][0]
   ) {
     this.revealPositionInCenterIfOutsideViewport(reference.metadata.anchor, 1);
 

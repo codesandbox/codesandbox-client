@@ -2,7 +2,7 @@ import React, { MouseEvent } from 'react';
 import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
 import { Button, Stack, Element, Link } from '@codesandbox/components';
-import { SpectrumLogo, GithubIcon, TwitterIcon } from './icons';
+import { GithubIcon, TwitterIcon } from './icons';
 
 const links = [
   { href: 'https://twitter.com/codesandbox', icon: <TwitterIcon /> },
@@ -10,7 +10,6 @@ const links = [
     href: 'https://github.com/codesandbox/codesandbox-client',
     icon: <GithubIcon />,
   },
-  { href: 'https://spectrum.chat/codesandbox', icon: <SpectrumLogo /> },
 ];
 
 export const Delete = () => {

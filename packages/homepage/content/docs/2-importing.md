@@ -19,20 +19,43 @@ and begin creating your own sandbox.
 
 ## Import from GitHub
 
-You can import a GitHub repository in to CodeSandbox from the
+You can import a GitHub repository in to CodeSandbox using our
 [import wizard](https://codesandbox.io/s/github) and pasting the URL to your
-GitHub repository. Note that we just take the last part of the url (everything
-after github.com) and append it after codesandbox.io/s/github/. We support
-custom branches and subdirectories. Here is an example URL:
-[https://codesandbox.io/s/github/reactjs/redux/tree/master/examples/todomvc](https://codesandbox.io/s/github/reactjs/redux/tree/master/examples/todomvc).
+GitHub repository. We support custom branches and subdirectories.
 
 The imported repository will always stay up to date with your latest commits.
 This means that any change to the GitHub repository will be reflected
-immediately to the sandbox.
+immediately in the sandbox.
+
+### Using GitHubBox.com
+
+An easy way to import a repo to CodeSandbox via URL is with GitHubBox.com.
+Append 'box' to your github.com URL in between 'hub' and '.com' and it will
+redirect to CodeSandbox.
+
+Here's an example:
+
+Change the GitHub URL:
+https://github.com/reduxjs/redux/tree/master/examples/todomvc.
+
+To: https://githubbox.com/reactjs/redux/tree/master/examples/todomvc.
+
+The result is we take the last part of the url (everything after github.com) and
+use it in our importer at codesandbox.io/s/github/, adding the repo to
+CodeSandbox.
+
+### Using a Browser Extension
+
+We have browswer extensions for
+[Chrome](https://chrome.google.com/webstore/detail/open-in-codesandbox/hdidglkcgdolpoijdckmafdnddjoglia)
+and [Firefox](https://addons.mozilla.org/en-GB/firefox/addon/codesandbox/),
+which add an 'Open in CodeSandbox' button to GitHub repo pages. This makes it
+easy to import existing projects from GitHub in to CodeSandbox.
 
 ### Setting inference
 
-We infer sandbox settings based on several files in a repository.
+When importting, we infer sandbox settings based on several files in a
+repository.
 
 | Sandbox Setting | Inferred from                                                                                                                                         |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -41,19 +64,15 @@ We infer sandbox settings based on several files in a repository.
 | Tags            | `keywords` field in `package.json`                                                                                                                    |
 | Template        | Based on [this](https://github.com/codesandbox-app/codesandbox-importers/blob/master/packages/import-utils/src/create-sandbox/templates.ts#L63) logic |
 
-Additionally, you may specify a `template` property in your
-`./sandbox.config.json` file to override the detected template.
+If the correct template isn't automatically being used when importing, then you
+may specify a `template` property in your `./sandbox.config.json` file to
+override the detected template.
 
 ```json
 {
   "template": "node"
 }
 ```
-
-### Source
-
-You can find the source of our git extractor
-[here](https://github.com/codesandbox-app/git-extractor).
 
 ## Import Local projects via CLI
 

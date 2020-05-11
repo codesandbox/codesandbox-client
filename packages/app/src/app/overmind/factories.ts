@@ -4,6 +4,7 @@ import { IDerive, IState } from 'overmind';
 
 import { AsyncAction } from '.';
 
+export const TEAM_ID_LOCAL_STORAGE = 'codesandbox-selected-team-id';
 /*
   Ensures that we have loaded the app with the initial user
   and settings
@@ -35,6 +36,12 @@ export const withLoadApp = <T>(
       actions.internal.setSignedInCookie();
       effects.analytics.identify('signed_in', true);
       effects.analytics.setUserId(state.user.id, state.user.email);
+      const localStorageTeam = effects.browser.storage.get(
+        TEAM_ID_LOCAL_STORAGE
+      );
+      if (localStorageTeam) {
+        state.dashboard.activeTeam = localStorageTeam;
+      }
       try {
         actions.internal.trackCurrentTeams();
       } catch (e) {

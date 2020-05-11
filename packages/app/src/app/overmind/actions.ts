@@ -147,12 +147,12 @@ export const signInZeitClicked: AsyncAction = async ({
       await actions.deployment.internal.getZeitUserDetails();
     } catch (error) {
       actions.internal.handleError({
-        message: 'Could not authorize with ZEIT',
+        message: 'Could not authorize with Vercel',
         error,
       });
     }
   } else {
-    notificationToast.error('Could not authorize with ZEIT');
+    notificationToast.error('Could not authorize with Vercel');
   }
 
   state.isLoadingZeit = false;
