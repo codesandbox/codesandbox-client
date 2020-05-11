@@ -6,7 +6,7 @@ const commonConfig = require('./webpack.common');
 
 const devEntries = ['webpack-dev-server/client?/'];
 
-const APP_HOT = !!process.env.APP_HOT;
+const APP_HOT = Boolean(process.env.APP_HOT);
 
 module.exports = merge(
   {

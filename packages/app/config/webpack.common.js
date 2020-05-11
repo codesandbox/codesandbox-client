@@ -18,7 +18,7 @@ const babelProd = require('./babel.prod');
 
 const NODE_ENV = JSON.parse(env.default['process.env.NODE_ENV']);
 const SANDBOX_ONLY = !!process.env.SANDBOX_ONLY;
-const APP_HOT = !!process.env.APP_HOT;
+const APP_HOT = Boolean(process.env.APP_HOT);
 const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
