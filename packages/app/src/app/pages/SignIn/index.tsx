@@ -33,7 +33,7 @@ const SignIn = () => {
           fontFamily: 'Inter, sans-serif',
         })}
       >
-        <Navigation float title="Sign In" />
+        <Navigation title="Sign In" />
         <Stack
           css={css({
             width: '100vw',
