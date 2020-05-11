@@ -38,58 +38,7 @@ export const loadGitSource: AsyncAction = async ({
   await actions.git._compareWithSource();
 
   if (sandbox.prNumber) {
-    state.git.pr = await effects.api.getGitPr(sandbox.id, sandbox.prNumber);
-
-    const baseChanges = await effects.api.compareGit(
-      sandbox.id,
-      sandbox.baseGit.branch,
-      sandbox.originalGit.branch
-    );
-
-    const updates = await actions.git._evaluateGitChanges(baseChanges);
-
-    state.git.conflicts = updates.conflicts;
-
-    if (updates.changesCount || updates.conflicts.length) {
-      effects.notificationToast.add({
-        message: `The sandbox has been synced from "${
-          sandbox.baseGit.branch
-        }" ${updates.conflicts.length ? ', but there are conflicts' : ''}`,
-        title: 'Sandbox synced',
-        status: convertTypeToStatus(
-          updates.conflicts.length ? 'error' : 'notice'
-        ),
-        sticky: true,
-        actions: {
-          primary: (updates.conflicts.length
-            ? [
-                {
-                  label: 'Resolve',
-                  run: () => {
-                    actions.git.resolveConflicts();
-                  },
-                },
-              ]
-            : []
-          ).concat([
-            {
-              label: 'See changes',
-              run: () => {
-                effects.browser.openWindow(
-                  `https://github.com/${sandbox.originalGit.username}/${sandbox.originalGit.repo}/compare/${sandbox.baseGit.branch}...${sandbox.originalGit.branch}`
-                );
-              },
-            },
-          ]),
-        },
-      });
-      effects.preview.refresh();
-      state.git.gitState = updates.conflicts.length
-        ? SandboxGitState.CONFLICT_PR
-        : SandboxGitState.SYNCED;
-    } else {
-      state.git.gitState = SandboxGitState.SYNCED;
-    }
+    await actions.git._compareWithPr();
   }
 
   actions.git._setGitChanges();
@@ -259,6 +208,8 @@ export const createPrClicked: AsyncAction = async ({
     username: pr.username,
     path: '',
   };
+  sandbox.originalGitCommitSha = pr.commitSha;
+  sandbox.prNumber = pr.number;
   git.pr = pr;
   git.isCreatingPr = false;
   git.title = '';
@@ -500,6 +451,67 @@ export const _compareWithSource: AsyncAction = async ({
     effects.preview.refresh();
     state.git.gitState = updates.conflicts.length
       ? SandboxGitState.CONFLICT_SOURCE
+      : SandboxGitState.SYNCED;
+  } else {
+    state.git.gitState = SandboxGitState.SYNCED;
+  }
+};
+
+export const _compareWithPr: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  const sandbox = state.editor.currentSandbox;
+
+  state.git.pr = await effects.api.getGitPr(sandbox.id, sandbox.prNumber);
+
+  const baseChanges = await effects.api.compareGit(
+    sandbox.id,
+    sandbox.baseGit.branch,
+    sandbox.originalGit.branch
+  );
+
+  const updates = await actions.git._evaluateGitChanges(baseChanges);
+
+  state.git.conflicts = updates.conflicts;
+
+  if (updates.changesCount || updates.conflicts.length) {
+    effects.notificationToast.add({
+      message: `The sandbox has been synced from "${sandbox.baseGit.branch}" ${
+        updates.conflicts.length ? ', but there are conflicts' : ''
+      }`,
+      title: 'Sandbox synced',
+      status: convertTypeToStatus(
+        updates.conflicts.length ? 'error' : 'notice'
+      ),
+      sticky: true,
+      actions: {
+        primary: (updates.conflicts.length
+          ? [
+              {
+                label: 'Resolve',
+                run: () => {
+                  actions.git.resolveConflicts();
+                },
+              },
+            ]
+          : []
+        ).concat([
+          {
+            label: 'See changes',
+            run: () => {
+              effects.browser.openWindow(
+                `https://github.com/${sandbox.originalGit.username}/${sandbox.originalGit.repo}/compare/${sandbox.baseGit.branch}...${sandbox.originalGit.branch}`
+              );
+            },
+          },
+        ]),
+      },
+    });
+    effects.preview.refresh();
+    state.git.gitState = updates.conflicts.length
+      ? SandboxGitState.CONFLICT_PR
       : SandboxGitState.SYNCED;
   } else {
     state.git.gitState = SandboxGitState.SYNCED;

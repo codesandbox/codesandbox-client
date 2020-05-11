@@ -176,7 +176,7 @@ export const CommitForm = () => {
       <Stack marginX={2}>
         <Button
           variant="secondary"
-          disabled={!title || !canUpdate}
+          disabled={!title || !canUpdate || isCreatingPr}
           onClick={() => createPrClicked()}
         >
           {getButtonTitle('Create PR')}
