@@ -8,7 +8,11 @@ import {
   Text,
   Link,
 } from '@codesandbox/components';
-import { Link as LinkBase, withRouter } from 'react-router-dom';
+import {
+  Link as LinkBase,
+  withRouter,
+  RouteComponentProps,
+} from 'react-router-dom';
 import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import css from '@styled-system/css';
 
@@ -16,11 +20,10 @@ import { UserMenu } from '../UserMenu';
 import { Logo } from './Icons';
 
 type Props = {
-  match?: any;
   title?: string;
-};
+} & RouteComponentProps;
 
-export const Navigation = withRouter(({ title, match }: Props) => {
+export const NavigationComponent = ({ title, match }: Props) => {
   const {
     actions: { modalOpened, signInClicked },
     state: { isLoggedIn, isAuthenticating, user },
@@ -105,4 +108,6 @@ export const Navigation = withRouter(({ title, match }: Props) => {
       </Stack>
     </ThemeProvider>
   );
-});
+};
+
+export const Navigation = withRouter(NavigationComponent);

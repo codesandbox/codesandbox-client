@@ -31,6 +31,7 @@ const SignIn = () => {
           backgroundColor: 'sideBar.background',
           minHeight: '100vh',
           fontFamily: 'Inter, sans-serif',
+          overflow: 'hidden',
         })}
       >
         <Navigation title="Sign In" />
@@ -38,6 +39,7 @@ const SignIn = () => {
           css={css({
             width: '100vw',
             height: '100%',
+            marginBottom: 100,
           })}
           align="center"
           justify="center"
