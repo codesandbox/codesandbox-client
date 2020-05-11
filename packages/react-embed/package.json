@@ -21,8 +21,7 @@
     "watch": "tsc --watch"
   },
   "dependencies": {
-    "react-codesandboxer": "^3.0.1",
-    "template-icons": "^1.0.0"
+    "react-codesandboxer": "^3.0.1"
   },
   "devDependencies": {
     "@types/react": "^16.9.17",
