@@ -4,6 +4,7 @@ import { Element, Button, ThemeProvider, Text } from '@codesandbox/components';
 import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { useOvermind } from 'app/overmind';
 import styled, { keyframes } from 'styled-components';
+import { Navigation } from '../Navigation';
 
 const noiseAnimation = keyframes`
   0% {
@@ -43,13 +44,13 @@ const Glitch = styled(Text)`
     animation: ${noiseAnimation} 3s infinite linear alternate-reverse;
     left: 2px;
     text-shadow: -1px 0 red;
-    background: #040404;
+    background: ${props => props.theme.colors.grays[900]};
   }
   &::after {
     animation: ${noiseAnimation} 6s infinite linear alternate-reverse;
     left: -2px;
     text-shadow: -1px 0 blue;
-    background: #040404;
+    background: ${props => props.theme.colors.grays[900]};
   }
 `;
 
@@ -66,13 +67,24 @@ export const NotFound: FunctionComponent = () => {
           alignItems: 'center',
           flexDirection: 'column',
           justifyContent: 'center',
-          backgroundColor: 'sideBar.background',
+          backgroundColor: 'grays.900',
           height: '100vh',
           width: '100vw',
           fontFamily: 'Inter, sans-serif',
           color: 'white',
         })}
       >
+        <Element
+          css={css({
+            width: 1280,
+            maxWidth: '80%',
+            margin: 'auto',
+            position: 'absolute',
+            top: 0,
+          })}
+        >
+          <Navigation float title="CodeSandbox - Not Found" />
+        </Element>
         <Glitch
           data-text="404"
           block
