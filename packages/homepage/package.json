@@ -78,7 +78,6 @@
     "rellax": "^1.10.0",
     "styled-breakpoints": "^6.9.1",
     "styled-components": "^4.4.1",
-    "template-icons": "^1.0.0",
     "three": "^0.111.0",
     "typography": "^0.16.17"
   },
