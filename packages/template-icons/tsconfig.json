@@ -1,17 +1,14 @@
 {
-  "exclude": ["node_modules", "pkg"],
+  "extends": "../tsconfig.json",
+  "exclude": ["node_modules", "./**/*.test.ts"],
+  "include": ["./src/**/*"],
+
   "compilerOptions": {
-    "module": "esnext",
-    "target": "ES6",
     "lib": ["es6", "dom", "es2017.object", "es2017.sharedmemory"],
-    "resolveJsonModule": true,
+    "declaration": true,
+    "allowJs": false,
     "jsx": "preserve",
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node"
-  },
-  "include": ["src"]
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  }
 }

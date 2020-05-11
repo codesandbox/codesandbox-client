@@ -29,8 +29,7 @@
     "install-dependencies": "npm install --ignore-scripts"
   },
   "dependencies": {
-    "oniguruma": "^7.0.0",
-    "template-icons": "^1.0.0"
+    "oniguruma": "^7.0.0"
   },
   "devDependencies": {
     "@types/mocha": "2.2.39",

@@ -18,18 +18,14 @@
   "main": "lib/index",
   "scripts": {
     "dev": "nodemon --watch src --watch example --exec run-s build",
-    "start": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
-    "deploy": "run-s build build:example",
     "watch": "babel --watch src --out-dir lib --extensions '.ts,.tsx'",
     "build": "babel src --out-dir lib --extensions '.ts,.tsx'",
     "build:dev": "npm run build",
-    "build:example": "react-scripts build",
     "lint": "eslint ./src",
     "test": "yarn lint && yarn typecheck && jest -c ./jest.config.js",
     "test:watch": "jest -c ./jest.config.js --watch",
     "test:coverage": "jest -c ./jest.config.js && codecov",
-    "typecheck": "tsc --noEmit",
-    "version": "yarn build"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {},
   "devDependencies": {

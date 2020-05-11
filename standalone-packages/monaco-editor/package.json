@@ -33,7 +33,5 @@
     "uncss": "^0.16.2",
     "vinyl": "^0.5.3"
   },
-  "dependencies": {
-    "template-icons": "^1.0.0"
-  }
+  "dependencies": {}
 }

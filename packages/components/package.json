@@ -41,7 +41,6 @@
     "react-router-dom": "^5.1.2",
     "react-tagsinput": "^3.19.0",
     "styled-components": "^4.4.1",
-    "template-icons": "^1.0.0",
     "typeface-inter": "^3.11.2"
   },
   "devDependencies": {
