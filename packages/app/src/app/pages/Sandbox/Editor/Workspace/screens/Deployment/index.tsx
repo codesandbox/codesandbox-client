@@ -5,7 +5,7 @@ import { useOvermind } from 'app/overmind';
 import { Element, Collapsible, Stack, Text } from '@codesandbox/components';
 
 import { Netlify } from './Netlify';
-import { Zeit } from './Zeit';
+import { Vercel } from './Vercel';
 import { NotLoggedIn } from './NotLoggedIn';
 import { NotOwner } from './NotOwner';
 
@@ -37,7 +37,7 @@ export const Deployment: FunctionComponent = () => {
           supported providers - Netlify or Vercel.
         </Text>
         <Stack direction="vertical" gap={5}>
-          <Zeit />
+          <Vercel />
           <Netlify />
         </Stack>
       </Element>

@@ -52,9 +52,9 @@ export const onInitialize: OnInitialize = async (
     },
   });
 
-  effects.zeit.initialize({
+  effects.vercel.initialize({
     getToken() {
-      return state.user?.integrations.zeit?.token ?? null;
+      return state.user?.integrations.vercel?.token ?? null;
     },
   });
 

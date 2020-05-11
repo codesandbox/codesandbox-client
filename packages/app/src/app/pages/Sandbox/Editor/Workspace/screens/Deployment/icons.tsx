@@ -24,7 +24,7 @@ export const NetlifyIcon = props => (
   </svg>
 );
 
-export const ZeitIcon = props => (
+export const VercelIcon = props => (
   <svg width={12} height={10} fill="none" viewBox="0 0 12 10" {...props}>
     <path fill="currentColor" d="M6 0l6 10H0L6 0z" />
   </svg>

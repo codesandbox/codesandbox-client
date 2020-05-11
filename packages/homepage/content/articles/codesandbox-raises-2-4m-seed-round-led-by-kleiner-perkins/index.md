@@ -6,7 +6,7 @@ photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
 title: CodeSandbox Raises $2.4M Seed Round led by Kleiner Perkins
 description:
   We're super excited to share that we've raised a seed round from Kleiner
-  Perkins, Arches Capital, and the founders of Figma, Framer, Netlify, ZEIT,
+  Perkins, Arches Capital, and the founders of Figma, Framer, Netlify, Vercel,
   Sourcegraph and Catawiki!
 date: 2019-05-07
 ---
@@ -24,7 +24,7 @@ application in a single click. We handle setting up the development environment,
 the tooling and the provisioning for you. This way you can focus on creating the
 application instead of all the tooling. You can always share your project by
 just sharing the URL, and we have integrations with popular deployment targets
-like [ZEIT](https://zeit.co) and [Netlify](https://netlify.com) and source
+like [Vercel](https://vercel.com) and [Netlify](https://netlify.com) and source
 control providers like [GitHub](https://github.com).
 
 It turned out that I wasn't the only one who wanted to have something like this.
@@ -59,7 +59,7 @@ many companies that are improving the flow of developing applications, like
 [Christian Bach](https://twitter.com/Chr_Bach) &
 [Mathias Biilmann](https://twitter.com/biilmann) (Founders Netlify),
 [Dylan Field](https://twitter.com/zoink) (Co-Founder Figma),
-[Guillermo Rauch](https://twitter.com/rauchg) (Founder ZEIT), Koen Bok
+[Guillermo Rauch](https://twitter.com/rauchg) (Founder Vercel), Koen Bok
 (Co-Founder [Framer](https://framer.com)),
 [Marco Jansen](https://linkedin.com/in/marcojansen) (Co-Founder and former CTO
 Catawiki), Petri Parvinen ([Angel Investor](http://arctum.fi)) and

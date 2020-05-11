@@ -15,7 +15,7 @@ import ArchesCapital from './images/arches-capital.svg';
 import Figma from './images/figma.svg';
 import Framer from './images/framer.svg';
 import Netlify from './images/netlify.svg';
-import Zeit from './images/zeit.svg';
+import Vercel from './images/vercel.svg';
 import Sourcegraph from './images/sourcegraph.svg';
 import company from '../../assets/images/company.png';
 import company2x from '../../assets/images/company@2x.png';
@@ -141,7 +141,7 @@ export default () => (
         </div>
         <div>
           <img
-            src={Zeit}
+            src={Vercel}
             alt="Vercel"
             css={`
               height: 97px;
