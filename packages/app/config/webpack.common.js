@@ -176,7 +176,7 @@ module.exports = {
           new RegExp(`${sepRe}node_modules${sepRe}.*gsap`),
           new RegExp(`${sepRe}node_modules${sepRe}.*babel-plugin-macros`),
           new RegExp(`sandbox-hooks`),
-          new RegExp(`tenplate-icons`),
+          new RegExp(`template-icons`),
           new RegExp(
             `${sepRe}node_modules${sepRe}vue-template-es2015-compiler`
           ),
