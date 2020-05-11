@@ -1,9 +1,8 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { Text, Column } from '@codesandbox/components';
-import { Sandbox } from '../../../Components/Sandbox';
+import { Sandbox, SkeletonSandbox } from '../../../Components/Sandbox';
 import { SandboxGrid } from '../../../Components/SandboxGrid';
-import { SkeletonCard } from '../../../Components/SandboxCard';
 
 export const SandboxesGroup = ({ title, time }) => {
   const {
@@ -34,7 +33,7 @@ export const SkeletonGroup = ({ title, time }) => (
     <SandboxGrid>
       {Array.from(Array(4).keys()).map(n => (
         <Column key={n}>
-          <SkeletonCard />
+          <SkeletonSandbox />
         </Column>
       ))}
     </SandboxGrid>

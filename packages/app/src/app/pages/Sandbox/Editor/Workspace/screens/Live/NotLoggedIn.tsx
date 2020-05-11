@@ -29,10 +29,7 @@ export const NotLoggedIn = () => {
             Sign in to live share this sandbox!
           </Text>
         </Stack>
-        <Button
-          variant="primary"
-          onClick={() => signInClicked({ useExtraScopes: false })}
-        >
+        <Button variant="primary" onClick={() => signInClicked()}>
           Sign in with GitHub
         </Button>
       </Element>

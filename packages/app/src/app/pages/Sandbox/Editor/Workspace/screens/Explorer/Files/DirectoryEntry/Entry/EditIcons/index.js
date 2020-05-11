@@ -14,8 +14,7 @@ import {
   // eslint-disable-next-line import/extensions
 } from '../../../icons.tsx';
 
-import { Icon } from '../../../../../../elements';
-import { Container } from './elements';
+import { Container, Icon } from './elements';
 
 const handleClick = func => e => {
   e.preventDefault();

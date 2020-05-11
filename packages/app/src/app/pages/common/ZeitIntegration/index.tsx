@@ -15,7 +15,7 @@ export const ZeitIntegration: FunctionComponent<Props> = ({ small }) => {
 
   return (
     <Integration
-      name="ZEIT"
+      name="Vercel"
       small={small}
       bgColor="black"
       description="Deployments"
