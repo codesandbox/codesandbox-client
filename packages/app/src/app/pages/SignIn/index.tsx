@@ -28,7 +28,7 @@ const SignIn = () => {
     <ThemeProvider theme={codeSandboxBlack}>
       <Element
         css={css({
-          backgroundColor: 'sidebar.background',
+          backgroundColor: 'sideBar.background',
           minHeight: '100vh',
           fontFamily: 'Inter, sans-serif',
         })}
