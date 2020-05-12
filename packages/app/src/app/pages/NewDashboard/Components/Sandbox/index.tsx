@@ -78,6 +78,8 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     }),
   });
 
+  const thumbnailRef = React.useRef();
+
   /* View logic */
   const location = useLocation();
 
@@ -108,9 +110,14 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onSubmit,
     onBlur,
     enterEditing,
+    // drag preview
+    thumbnailRef,
+    opacity: isDragging ? 0.25 : 1,
   };
 
-  const dragProps = {};
+  const dragProps = {
+    ref: drag,
+  };
 
   React.useEffect(() => {
     preview(getEmptyImage(), { captureDraggingState: true });
@@ -118,10 +125,10 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   return (
     <>
-      <div ref={drag} {...dragProps}>
+      <div {...dragProps}>
         <Component {...sandboxProps} {...props} />
       </div>
-      {isDragging ? <DragPreview /> : null}
+      {isDragging ? <DragPreview {...sandboxProps} /> : null}
     </>
   );
 };

@@ -1,53 +1,57 @@
 import React from 'react';
 import { useDragLayer } from 'react-dnd';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Stack } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { SIDEBAR_WIDTH } from '../../Sidebar';
 
-const layerStyles = {
-  position: 'fixed',
-  pointerEvents: 'none',
-  zIndex: 100,
-  left: 0,
-  top: 0,
-  width: '100%',
-  height: '100%',
-};
-
-function getItemStyles(initialOffset, currentOffset, isOver) {
+function getItemStyles(initialOffset, currentOffset, thumbnailRef) {
   if (!initialOffset || !currentOffset) {
-    return {
-      display: 'none',
-    };
+    return { display: 'none' };
   }
+
   const { x, y } = currentOffset;
+  const isOver = currentOffset && currentOffset.x < SIDEBAR_WIDTH;
+
+  const thumbnailElement = thumbnailRef.current;
+  const thumbnailRect = thumbnailElement.getBoundingClientRect();
 
   const size = isOver
     ? { width: 100, height: 50 }
-    : { width: 200, height: 100 };
+    : {
+        width: thumbnailRect.width,
+        height: thumbnailRect.height,
+      };
 
   return { x, y, ...size };
 }
 
-export const DragPreview = () => {
-  const { isDragging, item, initialOffset, currentOffset } = useDragLayer(
+export const DragPreview = ({ sandbox, thumbnailRef }) => {
+  const { isDragging, initialOffset, currentOffset } = useDragLayer(
     monitor => ({
-      item: monitor.getItem(),
-      itemType: monitor.getItemType(),
+      isDragging: monitor.isDragging(),
       initialOffset: monitor.getInitialSourceClientOffset(),
       currentOffset: monitor.getSourceClientOffset(),
-      isDragging: monitor.isDragging(),
     })
   );
 
-  const isOver = currentOffset && currentOffset.x < SIDEBAR_WIDTH;
-
   return (
-    <div style={layerStyles}>
+    <Stack
+      css={{
+        position: 'fixed',
+        pointerEvents: 'none',
+        zIndex: 100,
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+      }}
+    >
       <AnimatePresence>
         {isDragging && (
           <motion.div
-            initial={getItemStyles(initialOffset, currentOffset, isOver)}
-            animate={getItemStyles(initialOffset, currentOffset, isOver)}
+            initial={getItemStyles(initialOffset, currentOffset, thumbnailRef)}
+            animate={getItemStyles(initialOffset, currentOffset, thumbnailRef)}
             exit={{
               ...initialOffset,
               transition: {
@@ -55,16 +59,23 @@ export const DragPreview = () => {
                 ease: progress => progress * progress,
               },
             }}
-            style={{
-              border: '1px dashed black',
-              background: 'grey',
-              marginBottom: '1.5rem',
-            }}
           >
-            {item && item.name}
+            <Stack
+              css={css({
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'grays.600',
+                backgroundImage: `url(${sandbox.screenshotUrl})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center center',
+                backgroundRepeat: 'no-repeat',
+                borderRadius: 'medium',
+                boxShadow: 2,
+              })}
+            />
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </Stack>
   );
 };
