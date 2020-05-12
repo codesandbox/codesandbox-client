@@ -215,7 +215,7 @@ export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
 export const sendUnsavedChanges: Action<{
   sandbox: Sandbox;
   moduleState: IModuleState;
-}> = ({ effects }, { sandbox, moduleState }) => {
+}> = ({ effects, actions }, { sandbox, moduleState }) => {
   // We now need to send all dirty files that came over from the last sandbox.
   // There is the scenario where you edit a file and press fork. Then the server
   // doesn't know about how you got to that dirty state.
@@ -230,6 +230,11 @@ export const sendUnsavedChanges: Action<{
         m.shortid,
         getTextOperation(savedCode, m.code || '')
       );
+      actions.editor.internal.saveCode({
+        code: m.code || '',
+        moduleShortid: m.shortid,
+        cbID: null,
+      });
     }
   });
 };

@@ -318,7 +318,11 @@ export const codeSaved: AsyncAction<{
   moduleShortid: string;
   cbID: string | null;
 }> = withOwnedSandbox(
-  async ({ actions }, { code, moduleShortid, cbID }) => {
+  async ({ state, actions }, { code, moduleShortid, cbID }) => {
+    // We rather save after LIVE has been updated
+    if (state.editor.isForkingSandbox) {
+      return;
+    }
     actions.editor.internal.saveCode({
       code,
       moduleShortid,
