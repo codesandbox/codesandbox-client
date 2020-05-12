@@ -37,8 +37,8 @@ export const loadGitSource: AsyncAction = async ({
   // Now let us compare with whatever has changed at the source
   await actions.git._compareWithSource();
 
-  if (sandbox.prNumber) {
-    await actions.git._compareWithPr();
+  if (state.git.gitState === SandboxGitState.SYNCED && sandbox.prNumber) {
+    await actions.git._compareWithBase();
   }
 
   actions.git._setGitChanges();
@@ -101,10 +101,10 @@ export const createCommitClicked: AsyncAction = async ({
   git.isCommitting = true;
 
   if (git.gitState === SandboxGitState.SYNCED) {
-    if (sandbox.prNumber) {
-      await actions.git._compareWithPr();
-    } else {
-      await actions.git._compareWithSource();
+    await actions.git._compareWithSource();
+
+    if (sandbox.prNumber && git.gitState === SandboxGitState.SYNCED) {
+      await actions.git._compareWithBase();
     }
 
     if (state.git.gitState !== SandboxGitState.SYNCED) {
@@ -515,7 +515,7 @@ export const _compareWithSource: AsyncAction = async ({
   }
 };
 
-export const _compareWithPr: AsyncAction = async ({
+export const _compareWithBase: AsyncAction = async ({
   state,
   effects,
   actions,
@@ -526,8 +526,9 @@ export const _compareWithPr: AsyncAction = async ({
 
   const baseChanges = await effects.api.compareGit(
     sandbox.id,
+    sandbox.originalGitCommitSha,
     sandbox.baseGit.branch,
-    sandbox.originalGit.branch
+    true
   );
 
   const updates = await actions.git._evaluateGitChanges(baseChanges);
