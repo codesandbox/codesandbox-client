@@ -5,33 +5,12 @@ import { Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SIDEBAR_WIDTH } from '../../Sidebar';
 
-function getItemStyles(initialOffset, currentOffset, thumbnailRef) {
-  if (!initialOffset || !currentOffset) {
-    return { display: 'none' };
-  }
-
-  const { x, y } = currentOffset;
-  const isOver = currentOffset && currentOffset.x < SIDEBAR_WIDTH;
-
-  const thumbnailElement = thumbnailRef.current;
-  const thumbnailRect = thumbnailElement.getBoundingClientRect();
-
-  const size = isOver
-    ? { width: 100, height: 50 }
-    : {
-        width: thumbnailRect.width,
-        height: thumbnailRect.height,
-      };
-
-  return { x, y, ...size };
-}
-
 export const DragPreview = ({ sandbox, thumbnailRef }) => {
   const { isDragging, initialOffset, currentOffset } = useDragLayer(
     monitor => ({
-      isDragging: monitor.isDragging(),
       initialOffset: monitor.getInitialSourceClientOffset(),
       currentOffset: monitor.getSourceClientOffset(),
+      isDragging: monitor.isDragging(),
     })
   );
 
@@ -79,3 +58,24 @@ export const DragPreview = ({ sandbox, thumbnailRef }) => {
     </Stack>
   );
 };
+
+function getItemStyles(initialOffset, currentOffset, thumbnailRef) {
+  if (!initialOffset || !currentOffset) {
+    return { display: 'none' };
+  }
+
+  const { x, y } = currentOffset;
+  const isOver = currentOffset && currentOffset.x < SIDEBAR_WIDTH;
+
+  const thumbnailElement = thumbnailRef.current;
+  const thumbnailRect = thumbnailElement.getBoundingClientRect();
+
+  const size = isOver
+    ? { width: 100, height: 50 }
+    : {
+        width: thumbnailRect.width,
+        height: thumbnailRect.height,
+      };
+
+  return { x, y, ...size };
+}

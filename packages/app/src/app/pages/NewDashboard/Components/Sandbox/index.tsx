@@ -66,7 +66,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   /* Drag logic */
 
   const [{ isDragging }, drag, preview] = useDrag({
-    item: { name, type: 'sandbox' },
+    item: { id: sandbox.id, type: 'sandbox' },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
       if (item && dropResult) {
