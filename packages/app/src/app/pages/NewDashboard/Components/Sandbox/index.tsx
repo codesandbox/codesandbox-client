@@ -69,13 +69,18 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   const [{ isDragging }, dragRef, preview] = useDrag({
     item: { id: sandbox.id, type: 'sandbox' },
-    end: (item: ItemTypes, monitor) => {
-      const dropResult = monitor.getDropResult();
-      if (item && dropResult) {
-        if (dropResult.path === 'deleted') {
-          actions.dashboard.deleteSandbox([item.id]);
-        }
+    end: (item, monitor) => {
+      if (!item) return;
+      const { path } = monitor.getDropResult();
+
+      if (path === 'deleted') {
+        actions.dashboard.deleteSandbox([sandbox.id]);
+      } else if (path === 'templates') {
+        actions.dashboard.makeTemplate([sandbox.id]);
+      } else if (path === 'all') {
+        // move sandbox to "All folder"?
       }
+      // else if move to favorite folders
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
