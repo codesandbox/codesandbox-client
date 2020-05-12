@@ -29,6 +29,7 @@ export const NavigationComponent = ({ title, match }: Props) => {
     state: { isLoggedIn, isAuthenticating, user },
   } = useOvermind();
   const link = isLoggedIn ? '/dashboard' : '/';
+
   return (
     <ThemeProvider theme={codeSandboxBlack}>
       <Stack

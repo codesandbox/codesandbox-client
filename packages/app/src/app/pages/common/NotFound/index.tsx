@@ -1,5 +1,5 @@
 import { css } from '@styled-system/css';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { Element, Button, ThemeProvider, Text } from '@codesandbox/components';
 import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { useOvermind } from 'app/overmind';
@@ -56,8 +56,13 @@ const Glitch = styled(Text)`
 
 export const NotFound: FunctionComponent = () => {
   const {
+    actions: { genericPageMounted },
     state: { hasLogIn },
   } = useOvermind();
+
+  useEffect(() => {
+    genericPageMounted();
+  }, [genericPageMounted]);
 
   return (
     <ThemeProvider theme={codeSandboxBlack}>
