@@ -122,7 +122,6 @@ export const LivePage: React.FC<Props> = ({ match }) => {
             width: '100vw',
             height: '100vh',
           }}
-          margin={1}
         >
           <Navigation title="Live Session" />
           <Centered
