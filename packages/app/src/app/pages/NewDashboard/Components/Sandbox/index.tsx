@@ -65,7 +65,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   /* Drag logic */
 
-  const [{ isDragging }, drag, preview] = useDrag({
+  const [{ isDragging }, dragRef, preview] = useDrag({
     item: { id: sandbox.id, type: 'sandbox' },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
@@ -116,7 +116,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   };
 
   const dragProps = {
-    ref: drag,
+    ref: dragRef,
   };
 
   React.useEffect(() => {

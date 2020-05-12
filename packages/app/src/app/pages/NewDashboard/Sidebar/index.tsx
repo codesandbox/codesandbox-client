@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { useDrop } from 'react-dnd';
 import { useOvermind } from 'app/overmind';
 import {
   Element,
@@ -168,13 +169,45 @@ const linkStyles = {
   paddingRight: 8,
 };
 
-const RowItem = ({ name, path, icon }) => (
-  <ListAction align="center" css={css({ paddingX: 0 })}>
-    <Link as={RouterLink} to={`/new-dashboard/${path}`} style={linkStyles}>
-      <Stack as="span" css={css({ width: 10 })} align="center" justify="center">
-        <Icon name={icon} />
-      </Stack>
-      {name}
-    </Link>
-  </ListAction>
-);
+const canAcceptSandboxes = ['all', 'templates', 'deleted'];
+
+const RowItem = ({ name, path, icon }) => {
+  const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
+    accept: canAcceptSandboxes.includes(path) ? 'sandbox' : 'nope',
+    drop: () => ({ path }),
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop(),
+      isDragging: !!monitor.getItem(),
+    }),
+  });
+
+  return (
+    <ListAction
+      ref={dropRef}
+      align="center"
+      css={css({
+        paddingX: 0,
+        opacity: isDragging && !canDrop ? 0.25 : 1,
+        color:
+          isDragging && canDrop ? 'list.hoverForeground' : 'list.foreground',
+        backgroundColor:
+          canDrop && isOver ? 'list.hoverBackground' : 'transparent',
+        transition: 'all ease-in',
+        transitionDuration: theme => theme.speeds[4],
+      })}
+    >
+      <Link as={RouterLink} to={`/new-dashboard/${path}`} style={linkStyles}>
+        <Stack
+          as="span"
+          css={css({ width: 10 })}
+          align="center"
+          justify="center"
+        >
+          <Icon name={icon} />
+        </Stack>
+        {name}
+      </Link>
+    </ListAction>
+  );
+};
