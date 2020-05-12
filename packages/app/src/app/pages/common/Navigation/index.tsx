@@ -29,6 +29,7 @@ export const NavigationComponent = ({ title, match }: Props) => {
     state: { isLoggedIn, isAuthenticating, user },
   } = useOvermind();
   const link = isLoggedIn ? '/dashboard' : '/';
+
   return (
     <ThemeProvider theme={codeSandboxBlack}>
       <Stack
@@ -50,7 +51,7 @@ export const NavigationComponent = ({ title, match }: Props) => {
           align="center"
         >
           <Stack gap={4} align="center">
-            <Link to={link} as={LinkBase}>
+            <Link css={css({ display: 'flex' })} to={link} as={LinkBase}>
               <Logo />
             </Link>
             <Text
