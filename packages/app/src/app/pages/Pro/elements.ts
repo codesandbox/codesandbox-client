@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import { SignInButton as CommonSignInButton } from 'app/pages/common/SignInButton';
 import { LinkButton as AppLinkButton } from 'app/components/LinkButton';
 
 export const Page = styled.div(
@@ -210,57 +209,6 @@ export const ErrorText = styled.div(
   css({
     color: 'reds.500',
     marginTop: 2,
-  })
-);
-
-export const ModalBackdrop = styled.div(
-  css({
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'grays.700',
-    opacity: 0.8,
-  })
-);
-
-export const SignInModal = styled.div(
-  css({
-    width: 400,
-    position: 'absolute',
-    boxSizing: 'border-box',
-    top: 'calc(50% - 150px)',
-    left: 'calc(50% - 200px)',
-    backgroundColor: 'grays.500',
-    borderRadius: 'medium',
-    padding: 10,
-    textAlign: 'center',
-    zIndex: 2,
-
-    p: {
-      fontSize: '20px',
-      fontWeight: 'medium',
-      margin: 0,
-      marginBottom: 4,
-    },
-  })
-);
-
-export const SignInButton = styled(CommonSignInButton)(
-  css({
-    width: '100%',
-    backgroundColor: 'blues.600',
-    borderColor: 'blues.600',
-
-    ':hover': {
-      backgroundColor: 'blues.500',
-      borderColor: 'blues.500',
-    },
-
-    '> div': {
-      justifyContent: 'center',
-    },
   })
 );
 

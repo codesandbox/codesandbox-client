@@ -31,13 +31,15 @@ const SignIn = () => {
           backgroundColor: 'sideBar.background',
           minHeight: '100vh',
           fontFamily: 'Inter, sans-serif',
+          overflow: 'hidden',
         })}
       >
-        <Navigation float title="Sign In" />
+        <Navigation title="Sign In" />
         <Stack
           css={css({
             width: '100vw',
             height: '100%',
+            marginBottom: 100,
           })}
           align="center"
           justify="center"
