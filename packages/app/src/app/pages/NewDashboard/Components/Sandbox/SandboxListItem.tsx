@@ -19,6 +19,7 @@ export const SandboxListItem = ({
   sandboxTitle,
   newTitle,
   url,
+  // edit mode
   edit,
   inputRef,
   onChange,
@@ -26,6 +27,9 @@ export const SandboxListItem = ({
   onSubmit,
   onBlur,
   enterEditing,
+  // drag preview
+  thumbnailRef,
+  opacity,
   ...props
 }) => (
   <ListAction css={css({ paddingX: 0 })}>
@@ -45,6 +49,7 @@ export const SandboxListItem = ({
         <Stack gap={4} align="center">
           <Element
             as="div"
+            ref={thumbnailRef}
             css={css({
               borderRadius: 'small',
               height: 32,
@@ -53,6 +58,7 @@ export const SandboxListItem = ({
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',
+              opacity,
             })}
           />
           <Element style={{ width: 150 }}>
