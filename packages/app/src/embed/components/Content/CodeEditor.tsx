@@ -14,6 +14,8 @@ import { Title } from 'app/components/Title';
 import Loadable from 'app/utils/Loadable';
 import React from 'react';
 import UIIcon from 'react-icons/lib/md/dvr';
+import { ThemeProvider } from '@codesandbox/components';
+import { codesandboxBlack } from '@codesandbox/components/lib/themes/codesandbox-black';
 
 import { ImageViewer } from './ImageViewer';
 import MonacoDiff from './MonacoDiff';
@@ -123,12 +125,14 @@ export class CodeEditor extends React.PureComponent<
 
     if (config && getUI(config.type) && this.state.showConfigUI) {
       return (
-        <Configuration
-          {...props}
-          dependencies={dependencies}
-          config={config}
-          toggleConfigUI={this.toggleConfigUI}
-        />
+        <ThemeProvider theme={codesandboxBlack}>
+          <Configuration
+            {...props}
+            dependencies={dependencies}
+            config={config}
+            toggleConfigUI={this.toggleConfigUI}
+          />
+        </ThemeProvider>
       );
     }
 
