@@ -83,7 +83,7 @@ export const NotFound: FunctionComponent = () => {
             top: 0,
           })}
         >
-          <Navigation float title="CodeSandbox - Not Found" />
+          <Navigation title="CodeSandbox - Not Found" />
         </Element>
         <Glitch
           data-text="404"
