@@ -92,7 +92,7 @@ in order to
 ### 1. Add template logo
 
 Add the logo for your template in the
-[templates repo](https://github.com/codesandbox/codesandbox-templates/tree/master/packages/template-icons/src)
+[templates repo](https://github.com/codesandbox/codesandbox-client/tree/master/packages/template-icons/src)
 (`codesandbox-templates/packages/template-icons/src`).
 
 #### SVG logos
@@ -102,8 +102,8 @@ content. If your template's name is "Banana", name your logo file "BananaIcon".
 
 Examples:
 
-- [Vue logo](https://github.com/codesandbox/codesandbox-templates/blob/master/packages/template-icons/src/VueIcon.tsx)
-- [React logo](https://github.com/codesandbox/codesandbox-templates/blob/master/packages/template-icons/src/ReactIcon.tsx)
+- [Vue logo](https://github.com/codesandbox/codesandbox-client/tree/master/packages/template-icons/src/VueIcon.tsx)
+- [React logo](https://github.com/codesandbox/codesandbox-client/tree/master/packages/template-icons/src/ReactIcon.tsx)
 
 ### 2. Add template definition
 
