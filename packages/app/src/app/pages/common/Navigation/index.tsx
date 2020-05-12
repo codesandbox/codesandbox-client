@@ -51,7 +51,7 @@ export const NavigationComponent = ({ title, match }: Props) => {
           align="center"
         >
           <Stack gap={4} align="center">
-            <Link to={link} as={LinkBase}>
+            <Link css={css({ display: 'flex' })} to={link} as={LinkBase}>
               <Logo />
             </Link>
             <Text
