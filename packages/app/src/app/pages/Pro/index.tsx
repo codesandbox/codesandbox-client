@@ -103,13 +103,13 @@ const ProPage: React.FC = () => {
   return (
     <ThemeProvider theme={codeSandboxBlackTheme}>
       <Page>
+        <Navigation title="CodeSandbox Pro" />
+
         <Helmet>
           <title>Pro - CodeSandbox</title>
         </Helmet>
 
         <Margin vertical={1.5} horizontal={1.5}>
-          <Navigation title="CodeSandbox Pro" />
-
           <MaxWidth width={1024}>
             <Content>{getContent()}</Content>
           </MaxWidth>

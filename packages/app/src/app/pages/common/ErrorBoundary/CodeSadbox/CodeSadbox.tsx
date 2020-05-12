@@ -4,6 +4,7 @@ import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
 import GoHome from 'react-icons/lib/go/home';
+import { Element } from '@codesandbox/components';
 import GoIssueOpened from 'react-icons/lib/go/issue-opened';
 // @ts-ignore
 import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
@@ -15,7 +16,6 @@ import {
   ButtonIcon,
   Container,
   Content,
-  Header,
   Subtitle,
   Title,
 } from './elements';
@@ -35,45 +35,46 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = ({
   }, [codesadboxMounted]);
 
   return (
-    <Container>
-      <Header>
-        <Navigation title="CodeSadbox" />
-      </Header>
+    <Element
+      style={{ width: '100vw', height: '100vh', background: 'rgb(17,21,24)' }}
+    >
+      <Navigation title="CodeSadbox" />
+      <Container>
+        <Content>
+          <Title>Oh no! Something broke!</Title>
+          <Sadbox scale={3} />
+          <Subtitle>CodeSadbox</Subtitle>
+          <Actions>
+            {isLoggedIn ? (
+              <Button small secondary href={dashboardUrl()}>
+                <ButtonIcon>
+                  <Dashboard />
+                </ButtonIcon>
+                Go to Dashboard
+              </Button>
+            ) : (
+              <Button small secondary href="/">
+                <ButtonIcon>
+                  <GoHome />
+                </ButtonIcon>
+                Back to Home
+              </Button>
+            )}
 
-      <Content>
-        <Title>Oh no! Something broke!</Title>
-        <Sadbox scale={3} />
-        <Subtitle>CodeSadbox</Subtitle>
-        <Actions>
-          {isLoggedIn ? (
-            <Button small secondary href={dashboardUrl()}>
+            <Button
+              small
+              target="_blank"
+              rel="noopener"
+              href={buildCrashReport({ error, trace })}
+            >
               <ButtonIcon>
-                <Dashboard />
+                <GoIssueOpened />
               </ButtonIcon>
-              Go to Dashboard
+              Report Crash
             </Button>
-          ) : (
-            <Button small secondary href="/">
-              <ButtonIcon>
-                <GoHome />
-              </ButtonIcon>
-              Back to Home
-            </Button>
-          )}
-
-          <Button
-            small
-            target="_blank"
-            rel="noopener"
-            href={buildCrashReport({ error, trace })}
-          >
-            <ButtonIcon>
-              <GoIssueOpened />
-            </ButtonIcon>
-            Report Crash
-          </Button>
-        </Actions>
-      </Content>
-    </Container>
+          </Actions>
+        </Content>
+      </Container>
+    </Element>
   );
 };

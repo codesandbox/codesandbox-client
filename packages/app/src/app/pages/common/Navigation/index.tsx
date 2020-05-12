@@ -34,17 +34,18 @@ export const NavigationComponent = ({ title, match }: Props) => {
       <Stack
         as="header"
         paddingX={4}
+        paddingY={0}
         css={css({
           boxSizing: 'border-box',
           fontFamily: 'Inter, sans-serif',
-          height: 12,
+          height: 48,
           color: 'titleBar.activeForeground',
           borderBottom: '1px solid',
           borderColor: 'titleBar.border',
         })}
       >
         <Stack
-          css={css({ maxWith: '80%', width: 1080, marginX: 'auto' })}
+          css={css({ maxWidth: '80%', width: 1080, marginX: 'auto' })}
           justify="space-between"
           align="center"
         >
