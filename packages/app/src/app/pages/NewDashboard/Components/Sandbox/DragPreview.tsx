@@ -1,11 +1,16 @@
 import React from 'react';
 import { useDragLayer } from 'react-dnd';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Stack } from '@codesandbox/components';
+import { Stack, Element, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SIDEBAR_WIDTH } from '../../Sidebar';
 
-export const DragPreview = ({ sandbox, thumbnailRef }) => {
+export const DragPreview = ({
+  sandbox,
+  sandboxTitle,
+  viewMode,
+  thumbnailRef,
+}) => {
   const { isDragging, initialOffset, currentOffset } = useDragLayer(
     monitor => ({
       initialOffset: monitor.getInitialSourceClientOffset(),
@@ -28,9 +33,30 @@ export const DragPreview = ({ sandbox, thumbnailRef }) => {
     >
       <AnimatePresence>
         {isDragging && (
-          <motion.div
-            initial={getItemStyles(initialOffset, currentOffset, thumbnailRef)}
-            animate={getItemStyles(initialOffset, currentOffset, thumbnailRef)}
+          <Stack
+            gap={2}
+            align="center"
+            as={motion.div}
+            css={css({
+              backgroundColor: viewMode === 'list' ? 'grays.600' : 'none',
+              border: viewMode === 'list' ? '1px solid' : 'none',
+              borderColor: 'grays.700',
+              padding: viewMode === 'list' ? 2 : 0,
+              borderRadius: 'medium',
+              boxShadow: 2,
+            })}
+            initial={getItemStyles({
+              initialOffset,
+              currentOffset,
+              viewMode,
+              thumbnailRef,
+            })}
+            animate={getItemStyles({
+              initialOffset,
+              currentOffset,
+              viewMode,
+              thumbnailRef,
+            })}
             exit={{
               ...initialOffset,
               transition: {
@@ -39,27 +65,36 @@ export const DragPreview = ({ sandbox, thumbnailRef }) => {
               },
             }}
           >
-            <Stack
+            <Element
               css={css({
-                width: '100%',
-                height: '100%',
+                width: viewMode === 'list' ? 32 : '100%',
+                height: viewMode === 'list' ? 32 : '100%',
                 backgroundColor: 'grays.600',
                 backgroundImage: `url(${sandbox.screenshotUrl})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center center',
                 backgroundRepeat: 'no-repeat',
-                borderRadius: 'medium',
-                boxShadow: 2,
+                borderRadius: viewMode === 'list' ? 'small' : 'medium',
               })}
             />
-          </motion.div>
+            {viewMode === 'list' ? (
+              <Text size={3} weight="medium" css={{ flexShrink: 0 }}>
+                {sandboxTitle}
+              </Text>
+            ) : null}
+          </Stack>
         )}
       </AnimatePresence>
     </Stack>
   );
 };
 
-function getItemStyles(initialOffset, currentOffset, thumbnailRef) {
+function getItemStyles({
+  initialOffset,
+  currentOffset,
+  viewMode,
+  thumbnailRef,
+}) {
   if (!initialOffset || !currentOffset) {
     return { display: 'none' };
   }
@@ -67,15 +102,17 @@ function getItemStyles(initialOffset, currentOffset, thumbnailRef) {
   const { x, y } = currentOffset;
   const isOver = currentOffset && currentOffset.x < SIDEBAR_WIDTH;
 
-  const thumbnailElement = thumbnailRef.current;
-  const thumbnailRect = thumbnailElement.getBoundingClientRect();
+  let size: { width: number; height: number };
 
-  const size = isOver
-    ? { width: 100, height: 50 }
-    : {
-        width: thumbnailRect.width,
-        height: thumbnailRect.height,
-      };
+  if (viewMode === 'list') {
+    size = { width: 'auto', height: 32 + 16 };
+  } else if (isOver) {
+    size = { width: 100, height: 50 };
+  } else {
+    const thumbnailElement = thumbnailRef.current;
+    const thumbnailRect = thumbnailElement.getBoundingClientRect();
+    size = { width: thumbnailRect.width, height: thumbnailRect.height };
+  }
 
   return { x, y, ...size };
 }

@@ -128,7 +128,9 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
       <div {...dragProps}>
         <Component {...sandboxProps} {...props} />
       </div>
-      {isDragging ? <DragPreview {...sandboxProps} /> : null}
+      {isDragging ? (
+        <DragPreview viewMode={viewMode} {...sandboxProps} />
+      ) : null}
     </>
   );
 };
