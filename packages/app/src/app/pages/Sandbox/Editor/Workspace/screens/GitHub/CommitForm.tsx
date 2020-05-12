@@ -16,7 +16,6 @@ export const CommitForm = () => {
         createCommitClicked,
         titleChanged,
         descriptionChanged,
-        updatePrClicked,
       },
     },
     state: {
@@ -82,7 +81,7 @@ export const CommitForm = () => {
           <Button
             variant="secondary"
             disabled={!canUpdate}
-            onClick={() => updatePrClicked()}
+            onClick={() => createCommitClicked()}
           >
             {getButtonTitle('Update PR')}
           </Button>

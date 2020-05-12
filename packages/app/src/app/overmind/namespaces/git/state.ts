@@ -25,6 +25,7 @@ type State = {
   };
   sourceModulesByPath: { [path: string]: string };
   permission: 'admin' | 'write' | 'read';
+  conflictsResolving: string[];
 };
 
 export const state: State = {
@@ -49,4 +50,5 @@ export const state: State = {
     modified: [],
   },
   sourceGitChanges: {},
+  conflictsResolving: [],
 };

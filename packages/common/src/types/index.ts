@@ -299,7 +299,7 @@ export type GitFileCompare = {
   changes: number;
   deletions: number;
   filename: string;
-  status: 'added' | 'modified' | 'deleted';
+  status: 'added' | 'modified' | 'removed';
   content?: string;
 };
 
@@ -308,7 +308,7 @@ export enum SandboxGitState {
   CONFLICT_SOURCE = 'conflict in source',
   CONFLICT_PR = 'conflict in pr',
   SYNCING = 'syncing',
-  RESOLVING = 'resolving',
+  RESOLVED = 'resolved',
 }
 
 export type PopularSandboxes = {

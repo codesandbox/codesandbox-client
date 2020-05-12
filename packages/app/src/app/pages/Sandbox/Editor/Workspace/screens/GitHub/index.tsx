@@ -1,4 +1,4 @@
-import { SandboxGitState } from '@codesandbox/common/lib/types';
+import { GitFileCompare, SandboxGitState } from '@codesandbox/common/lib/types';
 import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
   Collapsible,
@@ -17,18 +17,62 @@ import { GitHubIcon } from './Icons';
 import { NotLoggedIn } from './NotLoggedIn';
 import { NotOwner } from './NotOwner';
 
+enum ConflictType {
+  SOURCE_ADDED_SANDBOX_DELETED,
+  SOURCE_ADDED_SANDBOX_MODIFIED,
+  SOURCE_DELETED_SANDBOX_MODIFIED,
+  SOURCE_MODIFIED_SANDBOX_MODIFIED,
+  SOURCE_MODIFIED_SANDBOX_DELETED,
+  UNKNOWN,
+}
+
+function getConflictType(
+  conflict: GitFileCompare,
+  modulesByPath: { [path: string]: any }
+) {
+  if (conflict.status === 'added' && !modulesByPath['/' + conflict.filename]) {
+    return ConflictType.SOURCE_ADDED_SANDBOX_DELETED;
+  }
+  if (conflict.status === 'added' && modulesByPath['/' + conflict.filename]) {
+    return ConflictType.SOURCE_ADDED_SANDBOX_MODIFIED;
+  }
+  if (conflict.status === 'removed' && modulesByPath['/' + conflict.filename]) {
+    return ConflictType.SOURCE_DELETED_SANDBOX_MODIFIED;
+  }
+  if (
+    conflict.status === 'modified' &&
+    modulesByPath['/' + conflict.filename]
+  ) {
+    return ConflictType.SOURCE_MODIFIED_SANDBOX_MODIFIED;
+  }
+  if (
+    conflict.status === 'modified' &&
+    !modulesByPath['/' + conflict.filename]
+  ) {
+    return ConflictType.SOURCE_MODIFIED_SANDBOX_DELETED;
+  }
+
+  return ConflictType.UNKNOWN;
+}
+
 export const GitHub = () => {
   const {
     state: {
-      git: { gitChanges, gitState, conflicts },
+      git: { gitChanges, gitState, conflicts, conflictsResolving },
       editor: {
         currentSandbox: { originalGit, owned },
+        modulesByPath,
       },
       isLoggedIn,
       user,
     },
     actions: {
-      git: { resolveConflicts },
+      git: {
+        addConflictedFile,
+        deleteConflictedFile,
+        diffConflictedFile,
+        ignoreConflict,
+      },
     },
   } = useOvermind();
 
@@ -47,6 +91,117 @@ export const GitHub = () => {
     return <h4>Loading...</h4>;
   }
 
+  function getConflictText(branch: string, conflict: GitFileCompare) {
+    const conflictType = getConflictType(conflict, modulesByPath);
+
+    if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_DELETED) {
+      return `${branch} added this file, but you deleted it`;
+    }
+    if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_MODIFIED) {
+      return `${branch} added this file, but you modified it`;
+    }
+    if (conflictType === ConflictType.SOURCE_DELETED_SANDBOX_MODIFIED) {
+      return `${branch} deleted this file, but you modified it`;
+    }
+    if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_MODIFIED) {
+      return `${branch} modified this file and you did as well`;
+    }
+    if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_DELETED) {
+      return `${branch} modified this file, but you deleted it`;
+    }
+
+    return 'No idea what happened here?';
+  }
+
+  function getConflictButtons(conflict: GitFileCompare) {
+    const conflictType = getConflictType(conflict, modulesByPath);
+
+    if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_DELETED) {
+      return (
+        <>
+          <button
+            type="button"
+            disabled={conflictsResolving.includes(conflict.filename)}
+            onClick={() => {
+              addConflictedFile(conflict);
+            }}
+          >
+            Add file
+          </button>
+          <button
+            type="button"
+            disabled={conflictsResolving.includes(conflict.filename)}
+            onClick={() => deleteConflictedFile(conflict)}
+          >
+            Delete file
+          </button>
+        </>
+      );
+    }
+    if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_MODIFIED) {
+      return (
+        <>
+          <button type="button" onClick={() => diffConflictedFile(conflict)}>
+            Resolve by diff
+          </button>
+        </>
+      );
+    }
+    if (conflictType === ConflictType.SOURCE_DELETED_SANDBOX_MODIFIED) {
+      return (
+        <>
+          <button
+            type="button"
+            disabled={conflictsResolving.includes(conflict.filename)}
+            onClick={() => {
+              ignoreConflict(conflict);
+            }}
+          >
+            Keep file
+          </button>
+          <button
+            type="button"
+            disabled={conflictsResolving.includes(conflict.filename)}
+            onClick={() => deleteConflictedFile(conflict)}
+          >
+            Delete file
+          </button>
+        </>
+      );
+    }
+    if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_MODIFIED) {
+      return (
+        <>
+          <button type="button" onClick={() => diffConflictedFile(conflict)}>
+            Resolve by diff
+          </button>
+        </>
+      );
+    }
+    if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_DELETED) {
+      return (
+        <>
+          <button
+            type="button"
+            disabled={conflictsResolving.includes(conflict.filename)}
+            onClick={() => addConflictedFile(conflict)}
+          >
+            Add file
+          </button>
+          <button
+            type="button"
+            disabled={conflictsResolving.includes(conflict.filename)}
+            onClick={() => ignoreConflict(conflict)}
+          >
+            Delete file
+          </button>
+        </>
+      );
+    }
+
+    return null;
+  }
+
   function getContent() {
     if (gitState === SandboxGitState.CONFLICT_SOURCE) {
       return (
@@ -55,14 +210,16 @@ export const GitHub = () => {
             You are IN CONFLICT with {originalGit.branch}, please click resolve
             to start resolving the issues.
           </Text>
-          <button
-            type="button"
-            onClick={() => {
-              resolveConflicts();
-            }}
-          >
-            Resolve
-          </button>
+          {conflicts.map(conflict => (
+            <div style={{ padding: '1rem', margin: '1rem 0' }}>
+              <div>{conflict.filename}</div>
+              <div>{getConflictText(originalGit.branch, conflict)}</div>
+              <div>
+                {conflict.additions} / {conflict.deletions} / {conflict.changes}
+              </div>
+              <div>{getConflictButtons(conflict)}</div>
+            </div>
+          ))}
         </Stack>
       );
     }
