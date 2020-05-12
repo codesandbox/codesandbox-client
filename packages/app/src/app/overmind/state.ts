@@ -39,6 +39,8 @@ type State = {
   usedStorage: number;
   updateStatus: string | null;
   isContributor: Derive<State, (username: String) => boolean>;
+  signInModalOpen: boolean;
+  redirectOnLogin: string | null;
 };
 
 export const state: State = {
@@ -79,4 +81,6 @@ export const state: State = {
   maxStorage: 0,
   usedStorage: 0,
   updateStatus: null,
+  signInModalOpen: false,
+  redirectOnLogin: null,
 };

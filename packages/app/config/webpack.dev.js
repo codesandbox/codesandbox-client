@@ -4,18 +4,20 @@ const merge = require('webpack-merge');
 const WebpackBar = require('webpackbar');
 const commonConfig = require('./webpack.common');
 
-const devEntries = [
-  // 'react-hot-loader/patch',
-  'webpack-dev-server/client?/',
-  // 'webpack/hot/only-dev-server',
-];
+const devEntries = ['webpack-dev-server/client?/'];
+
+const APP_HOT = Boolean(process.env.APP_HOT);
 
 module.exports = merge(
-  // these go first, because "react-hot-loader/patch" has to be the first entry
   {
     entry: {
-      app: devEntries,
-      embed: devEntries,
+      app: APP_HOT
+        ? [
+            'webpack-dev-server/client?http://localhost:3000',
+            'webpack-hot-middleware/client',
+          ]
+        : devEntries,
+      ...(APP_HOT ? {} : { embed: devEntries }),
     },
   },
   commonConfig,
@@ -36,7 +38,7 @@ module.exports = merge(
       new webpack.EvalSourceMapDevToolPlugin({
         include: /src\/app/,
       }),
-      // new webpack.HotModuleReplacementPlugin(),
+      new webpack.HotModuleReplacementPlugin(),
     ],
   }
 );

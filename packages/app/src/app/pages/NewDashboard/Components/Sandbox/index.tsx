@@ -1,12 +1,14 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { useDrag } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { isMenuClicked } from '@codesandbox/components';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
+import { DragPreview } from './DragPreview';
 
 export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const {
@@ -63,16 +65,20 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   /* Drag logic */
 
-  const [dragging, setDragging] = React.useState(false);
+  const [{ isDragging }, drag, preview] = useDrag({
+    item: { id: sandbox.id, type: 'sandbox' },
+    end: (item, monitor) => {
+      const dropResult = monitor.getDropResult();
+      if (item && dropResult) {
+        // onMove(name, dropResult.name);
+      }
+    },
+    collect: monitor => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
 
-  const onDragStart = () => {
-    setDragging(true);
-  };
-
-  const onDragEnd = () => {
-    // delay by a frame so that click happens first
-    window.requestAnimationFrame(() => setDragging(false));
-  };
+  const thumbnailRef = React.useRef();
 
   /* View logic */
   const location = useLocation();
@@ -86,7 +92,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   /* Prevent opening sandbox while interacting */
   const onClick = event => {
-    if (edit || dragging || isMenuClicked(event)) event.preventDefault();
+    if (edit || isDragging || isMenuClicked(event)) event.preventDefault();
   };
 
   const sandboxProps = {
@@ -104,25 +110,28 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onSubmit,
     onBlur,
     enterEditing,
+    // drag preview
+    thumbnailRef,
+    opacity: isDragging ? 0.25 : 1,
   };
 
   const dragProps = {
-    drag: true,
-    // boundaries beyond which dragging is constrained
-    // setting it to 0 brings card back to its position
-    dragConstraints: { top: 0, bottom: 0, left: 0, right: 0 },
-    // To allow drag dispite constraints, we can allow
-    // movement outside constraints (it still springs back)
-    dragElastic: 1,
-    // event handlers
-    onDragStart,
-    onDragEnd,
+    ref: drag,
   };
 
+  React.useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, [preview]);
+
   return (
-    <motion.div {...dragProps}>
-      <Component {...sandboxProps} {...props} />
-    </motion.div>
+    <>
+      <div {...dragProps}>
+        <Component {...sandboxProps} {...props} />
+      </div>
+      {isDragging ? (
+        <DragPreview viewMode={viewMode} {...sandboxProps} />
+      ) : null}
+    </>
   );
 };
 

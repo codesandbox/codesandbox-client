@@ -18,6 +18,7 @@ export const SandboxCard = ({
   sandboxTitle,
   newTitle,
   url,
+  // editing
   edit,
   inputRef,
   onChange,
@@ -25,6 +26,9 @@ export const SandboxCard = ({
   onSubmit,
   onBlur,
   enterEditing,
+  // drag preview
+  thumbnailRef,
+  opacity,
   ...props
 }) => (
   <Link as={RouterLink} to={url} {...props}>
@@ -41,6 +45,7 @@ export const SandboxCard = ({
         overflow: 'hidden',
         transition: 'all ease-in-out',
         transitionDuration: theme => theme.speeds[4],
+        opacity,
         ':hover, :focus, :focus-within': {
           cursor: edit ? 'normal' : 'pointer',
           boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
@@ -49,6 +54,7 @@ export const SandboxCard = ({
     >
       <Element
         as="div"
+        ref={thumbnailRef}
         css={css({
           height: 160,
           backgroundColor: 'grays.600',
