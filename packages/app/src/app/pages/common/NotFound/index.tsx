@@ -81,9 +81,7 @@ export const NotFound: FunctionComponent = () => {
       >
         <Element
           css={css({
-            width: 1280,
-            maxWidth: '80%',
-            margin: 'auto',
+            width: '100vw',
             position: 'absolute',
             top: 0,
           })}
