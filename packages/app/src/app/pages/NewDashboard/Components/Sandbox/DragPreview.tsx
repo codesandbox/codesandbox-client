@@ -102,7 +102,7 @@ function getItemStyles({
   const { x, y } = currentOffset;
   const isOver = currentOffset && currentOffset.x < SIDEBAR_WIDTH;
 
-  let size: { width: number; height: number };
+  let size: { width: number | string; height: number };
 
   if (viewMode === 'list') {
     size = { width: 'auto', height: 32 + 16 };
