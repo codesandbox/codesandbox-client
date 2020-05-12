@@ -146,7 +146,6 @@ export const saveCode: AsyncAction<{
         isBinary: false,
       };
     } else {
-      await effects.live.saveModule(module);
       updatedModule = await effects.api.saveModuleCode(
         sandbox.id,
         module.shortid,
