@@ -113,15 +113,20 @@ export const NotFound: FunctionComponent = () => {
         >
           We can’t seem to find the page you’re looking for
         </Text>
-
-        <Button
-          css={css({
-            width: 'auto',
-          })}
+        <a
           href="/"
+          css={css({
+            textDecoration: 'none',
+          })}
         >
-          Go to {hasLogIn ? 'Dashboard' : 'Homepage'}
-        </Button>
+          <Button
+            css={css({
+              width: 'auto',
+            })}
+          >
+            Go to {hasLogIn ? 'Dashboard' : 'Homepage'}
+          </Button>
+        </a>
       </Element>
     </ThemeProvider>
   );
