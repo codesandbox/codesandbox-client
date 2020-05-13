@@ -1,6 +1,5 @@
 import { ENTER, ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-
 import {
   Avatar,
   Element,

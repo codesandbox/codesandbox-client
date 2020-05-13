@@ -126,12 +126,32 @@ export const saveCode: AsyncAction<{
   }
 
   try {
-    await effects.live.saveModule(module);
-    const updatedModule = await effects.api.saveModuleCode(
-      sandbox.id,
-      module.shortid,
-      code
-    );
+    let updatedModule: {
+      updatedAt: string;
+      insertedAt: string;
+      code: string;
+      isBinary: boolean;
+    };
+    if (state.user?.experiments.comments) {
+      const {
+        saved_code,
+        updated_at,
+        inserted_at,
+      } = await effects.live.saveModule(module);
+
+      updatedModule = {
+        code: saved_code,
+        updatedAt: updated_at,
+        insertedAt: inserted_at,
+        isBinary: false,
+      };
+    } else {
+      updatedModule = await effects.api.saveModuleCode(
+        sandbox.id,
+        module.shortid,
+        code
+      );
+    }
 
     module.insertedAt = updatedModule.insertedAt;
     module.updatedAt = updatedModule.updatedAt;
@@ -145,11 +165,26 @@ export const saveCode: AsyncAction<{
 
     module.savedCode = savedCode;
 
-    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
     if (savedCode === null) {
       // If the savedCode is also module.code
       effects.moduleRecover.remove(sandbox.id, module);
+      effects.vscode.syncModule(module);
     }
+
+    if (
+      state.live.isLive &&
+      state.live.isCurrentEditor &&
+      !state.user?.experiments.comments
+    ) {
+      setTimeout(() => {
+        // Send the save event 50ms later so the operation can be sent first (the operation that says the
+        // file difference created by VSCode due to the file watch event). If the other client gets the save before the operation,
+        // the other client will also send an operation with the same difference resulting in a duplicate event.
+        effects.live.sendModuleSaved(module);
+      }, 50);
+    }
+
+    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
 
     if (cbID) {
       effects.vscode.callCallback(cbID);
@@ -175,27 +210,9 @@ export const saveCode: AsyncAction<{
       effects.executor.updateFiles(sandbox);
     }
 
-    if (state.live.isLive && state.live.isCurrentEditor) {
-      setTimeout(() => {
-        // Send the save event 50ms later so the operation can be sent first (the operation that says the
-        // file difference created by VSCode due to the file watch event). If the other client gets the save before the operation,
-        // the other client will also send an operation with the same difference resulting in a duplicate event.
-        effects.live.sendModuleSaved(module);
-      }, 50);
-    }
-
     await actions.editor.internal.updateCurrentTemplate();
 
     effects.vscode.runCommand('workbench.action.keepEditor');
-
-    const tabs = state.editor.tabs as ModuleTab[];
-    const tab = tabs.find(
-      tabItem => tabItem.moduleShortid === updatedModule.shortid
-    );
-
-    if (tab) {
-      tab.dirty = false;
-    }
   } catch (error) {
     actions.internal.handleError({
       message: 'There was a problem with saving the code, please try again',
@@ -263,10 +280,11 @@ export const updateCurrentTemplate: AsyncAction = async ({
 };
 
 export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
-  { state, actions },
+  { state, actions, effects },
   name
 ) => {
   if (
+    !state.editor.currentSandbox ||
     !state.editor.currentPackageJSONCode ||
     !state.editor.currentPackageJSON
   ) {
@@ -277,9 +295,21 @@ export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
 
   delete packageJson.dependencies[name];
 
+  const code = JSON.stringify(packageJson, null, 2);
+  const moduleShortid = state.editor.currentPackageJSON.shortid;
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+  actions.editor.setCode({ moduleShortid, code });
+
   await actions.editor.codeSaved({
-    code: JSON.stringify(packageJson, null, 2),
-    moduleShortid: state.editor.currentPackageJSON.shortid,
+    code,
+    moduleShortid,
     cbID: null,
   });
 };
@@ -288,8 +318,9 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   name: string;
   version?: string;
   isDev: boolean;
-}> = async ({ state, actions }, { name, isDev, version }) => {
+}> = async ({ state, actions, effects }, { name, isDev, version }) => {
   if (
+    !state.editor.currentSandbox ||
     !state.editor.currentPackageJSONCode ||
     !state.editor.currentPackageJSON
   ) {
@@ -304,9 +335,22 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   packageJson[type][name] = version || 'latest';
   packageJson[type] = sortObjectByKeys(packageJson[type]);
 
+  const code = JSON.stringify(packageJson, null, 2);
+  const moduleShortid = state.editor.currentPackageJSON.shortid;
+
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+  actions.editor.setCode({ moduleShortid, code });
+
   await actions.editor.codeSaved({
-    code: JSON.stringify(packageJson, null, 2),
-    moduleShortid: state.editor.currentPackageJSON.shortid,
+    code,
+    moduleShortid,
     cbID: null,
   });
 };
@@ -397,6 +441,7 @@ export const forkSandbox: AsyncAction<{
     state.workspace.project.description = forkedSandbox.description || '';
     state.workspace.project.alias = forkedSandbox.alias || '';
 
+    effects.vscode.clearComments();
     Object.assign(state.editor.sandboxes[currentSandboxId]!, forkedSandbox);
     state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
       forkedSandbox
@@ -463,6 +508,7 @@ export const setCurrentModule: AsyncAction<Module> = async (
 
 export const updateSandboxPackageJson: AsyncAction = async ({
   state,
+  effects,
   actions,
 }) => {
   const sandbox = state.editor.currentSandbox;
@@ -488,6 +534,14 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   const code = JSON.stringify(parsed, null, 2);
   const moduleShortid = state.editor.currentPackageJSON.shortid;
 
+  const module = sandbox.modules.find(m => m.shortid === moduleShortid);
+
+  if (!module) {
+    return;
+  }
+
+  actions.editor.setCode({ moduleShortid, code });
+
   await actions.editor.codeSaved({
     code,
     moduleShortid,
@@ -507,6 +561,10 @@ export const updateDevtools: AsyncAction<{
       state.editor.modulesByPath['/.codesandbox/workspace.json'];
 
     if (devtoolsModule) {
+      actions.editor.codeChanged({
+        moduleShortid: devtoolsModule.shortid,
+        code,
+      });
       await actions.editor.codeSaved({
         code,
         moduleShortid: devtoolsModule.shortid,
