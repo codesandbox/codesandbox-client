@@ -437,7 +437,7 @@ export default {
     });
   },
   createVercelIntegration(code: string): Promise<CurrentUser> {
-    return api.post(`/users/current_user/integrations/vercel`, {
+    return api.post(`/users/current_user/integrations/zeit`, {
       code,
     });
   },
@@ -448,7 +448,7 @@ export default {
     return api.delete(`/users/current_user/integrations/github`);
   },
   signoutVercel(): Promise<void> {
-    return api.delete(`/users/current_user/integrations/vercel`);
+    return api.delete(`/users/current_user/integrations/zeit`);
   },
   preloadTemplates() {
     client.query({ query: LIST_PERSONAL_TEMPLATES, variables: {} });
