@@ -3,12 +3,16 @@ import {
   FormField,
   Input,
   Stack,
+  Menu,
   Textarea,
+  Text,
+  Icon,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 
 export const CommitForm = () => {
+  const [currentAction, setCurrentAction] = useState('pr');
   const {
     actions: {
       git: {
@@ -30,7 +34,6 @@ export const CommitForm = () => {
       },
     },
   } = useOvermind();
-  const [directCommit, setDirectCommit] = React.useState(false);
 
   const changeDescription = ({
     target: { value },
@@ -57,7 +60,6 @@ export const CommitForm = () => {
         gitChanges.deleted.length ||
         gitChanges.modified.length
     ) &&
-    description &&
     isAllModulesSynced &&
     !isCommitting;
 
@@ -90,66 +92,16 @@ export const CommitForm = () => {
     );
   }
 
-  if (permission === 'read') {
-    return (
-      <Stack
-        as="form"
-        direction="vertical"
-        gap={1}
-        onSubmit={event => event.preventDefault()}
-      >
-        <FormField direction="vertical" label="PR title" hideLabel>
-          <Input placeholder="Title" onChange={changeTitle} value={title} />
-        </FormField>
-        <FormField direction="vertical" label="PR description" hideLabel>
-          <Textarea
-            maxLength={280}
-            placeholder="Description"
-            onChange={changeDescription}
-            value={description}
-          />
-        </FormField>
-        <Stack marginX={2}>
-          <Button
-            variant="secondary"
-            disabled={!title || !canUpdate || isCreatingPr}
-            onClick={() => createPrClicked()}
-          >
-            {getButtonTitle('Create PR')}
-          </Button>
-        </Stack>
-      </Stack>
-    );
-  }
-
-  if (directCommit) {
-    return (
-      <Stack
-        as="form"
-        direction="vertical"
-        gap={1}
-        onSubmit={event => event.preventDefault()}
-      >
-        <FormField direction="vertical" label="message" hideLabel>
-          <Textarea
-            maxLength={280}
-            placeholder="Message"
-            onChange={changeDescription}
-            value={description}
-          />
-        </FormField>
-        <Stack marginX={2}>
-          <Button
-            variant="secondary"
-            disabled={!canUpdate}
-            onClick={() => createCommitClicked()}
-          >
-            {getButtonTitle(`Commit to ${currentSandbox.baseGit.branch}`)}
-          </Button>
-        </Stack>
-      </Stack>
-    );
-  }
+  const actions = {
+    master: {
+      action: createCommitClicked,
+      text: getButtonTitle(`Commit to ${currentSandbox.baseGit.branch}`),
+    },
+    pr: {
+      action: createPrClicked,
+      text: getButtonTitle('Create PR'),
+    },
+  };
 
   return (
     <Stack
@@ -158,9 +110,6 @@ export const CommitForm = () => {
       gap={1}
       onSubmit={event => event.preventDefault()}
     >
-      <button type="button" onClick={() => setDirectCommit(true)}>
-        Do direct commit
-      </button>
       <FormField direction="vertical" label="PR title" hideLabel>
         <Input placeholder="Title" onChange={changeTitle} value={title} />
       </FormField>
@@ -173,14 +122,52 @@ export const CommitForm = () => {
         />
       </FormField>
       <Stack marginX={2}>
-        <Button
-          variant="secondary"
-          disabled={!title || !canUpdate || isCreatingPr}
-          onClick={() => createPrClicked()}
-        >
-          {getButtonTitle('Create PR')}
-        </Button>
+        <Stack css={{ width: '100%' }}>
+          <Button
+            css={{
+              width: 'calc(100% - 26px)',
+              borderTopRightRadius: 0,
+              borderBottomRightRadius: 0,
+            }}
+            disabled={!title || !canUpdate || isCreatingPr}
+            onClick={() => actions[currentAction].action()}
+          >
+            {actions[currentAction].text}
+          </Button>
+          {permission !== 'read' ? (
+            <>
+              <Menu>
+                <Menu.Button
+                  disabled={!title || !canUpdate || isCreatingPr}
+                  variant="primary"
+                  css={{
+                    width: '26px',
+                    borderTopLeftRadius: 0,
+                    borderBottomLeftRadius: 0,
+                  }}
+                >
+                  <Icon size={8} name="caret" />
+                </Menu.Button>
+                <Menu.List>
+                  <Menu.Item onSelect={() => setCurrentAction('pr')}>
+                    {getButtonTitle('Create PR')}
+                  </Menu.Item>
+                  <Menu.Item onSelect={() => setCurrentAction('master')}>
+                    {getButtonTitle(
+                      `Commit to ${currentSandbox.baseGit.branch}`
+                    )}
+                  </Menu.Item>
+                </Menu.List>
+              </Menu>
+            </>
+          ) : null}
+        </Stack>
       </Stack>
+      {currentAction === 'master' ? (
+        <Text paddingX={8} paddingTop={2} size={3} variant="muted">
+          Caution, committing to Master
+        </Text>
+      ) : null}
     </Stack>
   );
 };

@@ -7,9 +7,10 @@ import getWorkspaceItems, {
   INavigationItem,
   getDisabledItems,
 } from 'app/overmind/utils/items';
+import css from '@styled-system/css';
 import React, { FunctionComponent } from 'react';
 import PlusIcon from 'react-icons/lib/go/plus';
-
+import { Element } from '@codesandbox/components';
 import { Container, IconContainer } from './elements';
 import {
   CommentsIcon,
@@ -58,6 +59,11 @@ const IconComponent: FunctionComponent<IconProps> = ({
 
   const Icon = IDS_TO_ICONS[id];
   const selected = !workspaceHidden && id === openedWorkspaceItem;
+  const hasChanges =
+    gitChanges.added.length +
+      gitChanges.deleted.length +
+      gitChanges.modified.length >
+    0;
 
   return (
     <Tooltip content={name} singleton={singleton}>
@@ -81,26 +87,19 @@ const IconComponent: FunctionComponent<IconProps> = ({
         }}
       >
         <Icon aria-hidden />
-        {id === 'github' && (
-          <span
-            style={{
+        {id === 'github' && hasChanges && (
+          <Element
+            css={css({
               position: 'absolute',
-              bottom: 5,
-              right: 5,
-              backgroundColor: 'blue',
+              left: 31,
+              top: 0,
+              backgroundColor: 'reds.500',
               borderRadius: '50%',
-              width: 15,
-              height: 15,
-              fontSize: 10,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {gitChanges.added.length +
-              gitChanges.deleted.length +
-              gitChanges.modified.length}
-          </span>
+              width: '6px',
+              height: '6px',
+              transform: 'translateY(50%)',
+            })}
+          />
         )}
       </IconContainer>
     </Tooltip>
