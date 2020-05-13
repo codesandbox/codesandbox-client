@@ -230,11 +230,6 @@ export const sendUnsavedChanges: Action<{
         m.shortid,
         getTextOperation(savedCode, m.code || '')
       );
-      actions.editor.internal.saveCode({
-        code: m.code || '',
-        moduleShortid: m.shortid,
-        cbID: null,
-      });
     }
   });
 };
