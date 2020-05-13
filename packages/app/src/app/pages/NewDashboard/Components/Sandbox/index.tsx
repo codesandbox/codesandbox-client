@@ -78,10 +78,17 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
         actions.dashboard.deleteSandbox([sandbox.id]);
       } else if (dropResult.path === 'templates') {
         actions.dashboard.makeTemplate([sandbox.id]);
-      } else if (dropResult.path === 'all') {
-        // move sandbox to "All folder"?
+      } else if (dropResult.path === 'drafts') {
+        actions.dashboard.addSandboxesToFolder({
+          sandboxIds: [sandbox.id],
+          collectionPath: '/',
+        });
+      } else {
+        actions.dashboard.addSandboxesToFolder({
+          sandboxIds: [sandbox.id],
+          collectionPath: dropResult.path,
+        });
       }
-      // else if move to favorite folders
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),

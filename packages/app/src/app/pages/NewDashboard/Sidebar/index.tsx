@@ -235,7 +235,7 @@ const canNotAcceptSandboxes = ['start', 'recent', 'all', 'settings'];
 const RowItem = ({ name, path, icon, isNested = false }) => {
   const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
     accept: !canNotAcceptSandboxes.includes(path) ? 'sandbox' : 'nope',
-    drop: () => ({ path }),
+    drop: () => ({ path: path.replace('all', '') }),
     collect: monitor => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),

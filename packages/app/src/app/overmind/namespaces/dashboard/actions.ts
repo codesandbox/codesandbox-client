@@ -856,3 +856,18 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
       break;
   }
 };
+
+export const addSandboxesToFolder: AsyncAction<{
+  sandboxIds: string[];
+  collectionPath: string;
+}> = async ({ state, effects, actions }, { sandboxIds, collectionPath }) => {
+  try {
+    await effects.gql.mutations.addSandboxToFolder({
+      sandboxIds,
+      collectionPath,
+      teamId: state.dashboard.activeTeam || undefined,
+    });
+  } catch {
+    effects.notificationToast.error('There was a problem moving your sandbox');
+  }
+};
