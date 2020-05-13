@@ -3,17 +3,21 @@ import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
   Collapsible,
   Element,
+  Button,
   Link,
   Stack,
   Text,
+  List,
+  ListItem,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import css from '@styled-system/css';
 import React from 'react';
 
+import { ChangedIcon, DeletedIcon, GitHubIcon } from './Icons';
 import { Changes } from './Changes';
 import { CommitForm } from './CommitForm';
 import { GithubLogin } from './GithubLogin';
-import { GitHubIcon } from './Icons';
 import { NotLoggedIn } from './NotLoggedIn';
 import { NotOwner } from './NotOwner';
 
@@ -91,6 +95,26 @@ export const GitHub = () => {
     return <h4>Loading...</h4>;
   }
 
+  function getConflictIcon(branch: string, conflict: GitFileCompare) {
+    const conflictType = getConflictType(conflict, modulesByPath);
+
+    if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_DELETED) {
+      return <DeletedIcon />;
+    }
+    if (
+      conflictType === ConflictType.SOURCE_ADDED_SANDBOX_MODIFIED ||
+      conflictType === ConflictType.SOURCE_DELETED_SANDBOX_MODIFIED ||
+      conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_MODIFIED
+    ) {
+      return <ChangedIcon />;
+    }
+    if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_DELETED) {
+      return <DeletedIcon />;
+    }
+
+    return 'No idea what happened here?';
+  }
+
   function getConflictText(branch: string, conflict: GitFileCompare) {
     const conflictType = getConflictType(conflict, modulesByPath);
 
@@ -119,82 +143,104 @@ export const GitHub = () => {
     if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_DELETED) {
       return (
         <>
-          <button
+          <Button
+            css={css({ width: 'auto' })}
             type="button"
+            variant="secondary"
             disabled={conflictsResolving.includes(conflict.filename)}
             onClick={() => {
               addConflictedFile(conflict);
             }}
           >
             Add file
-          </button>
-          <button
+          </Button>
+          <Button
+            css={css({ width: 'auto' })}
+            variant="danger"
             type="button"
             disabled={conflictsResolving.includes(conflict.filename)}
             onClick={() => deleteConflictedFile(conflict)}
           >
             Delete file
-          </button>
+          </Button>
         </>
       );
     }
     if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_MODIFIED) {
       return (
         <>
-          <button type="button" onClick={() => diffConflictedFile(conflict)}>
+          <Button
+            css={css({ width: 'auto' })}
+            type="button"
+            variant="secondary"
+            onClick={() => diffConflictedFile(conflict)}
+          >
             Resolve by diff
-          </button>
+          </Button>
         </>
       );
     }
     if (conflictType === ConflictType.SOURCE_DELETED_SANDBOX_MODIFIED) {
       return (
         <>
-          <button
+          <Button
+            css={css({ width: 'auto' })}
             type="button"
+            variant="secondary"
             disabled={conflictsResolving.includes(conflict.filename)}
             onClick={() => {
               ignoreConflict(conflict);
             }}
           >
             Keep file
-          </button>
-          <button
+          </Button>
+          <Button
+            css={css({ width: 'auto' })}
+            variant="danger"
             type="button"
             disabled={conflictsResolving.includes(conflict.filename)}
             onClick={() => deleteConflictedFile(conflict)}
           >
             Delete file
-          </button>
+          </Button>
         </>
       );
     }
     if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_MODIFIED) {
       return (
         <>
-          <button type="button" onClick={() => diffConflictedFile(conflict)}>
+          <Button
+            css={css({ width: 'auto' })}
+            type="button"
+            variant="secondary"
+            onClick={() => diffConflictedFile(conflict)}
+          >
             Resolve by diff
-          </button>
+          </Button>
         </>
       );
     }
     if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_DELETED) {
       return (
         <>
-          <button
+          <Button
+            css={css({ width: 'auto' })}
             type="button"
+            variant="secondary"
             disabled={conflictsResolving.includes(conflict.filename)}
             onClick={() => addConflictedFile(conflict)}
           >
             Add file
-          </button>
-          <button
+          </Button>
+          <Button
+            css={css({ width: 'auto' })}
+            variant="danger"
             type="button"
             disabled={conflictsResolving.includes(conflict.filename)}
             onClick={() => ignoreConflict(conflict)}
           >
             Delete file
-          </button>
+          </Button>
         </>
       );
     }
@@ -206,75 +252,88 @@ export const GitHub = () => {
     if (gitState === SandboxGitState.CONFLICT_SOURCE) {
       return (
         <Stack direction="vertical">
-          <Text size={3} block>
-            You are IN CONFLICT with {originalGit.branch}, please click resolve
-            to start resolving the issues.
-          </Text>
-          {conflicts.map(conflict => (
-            <div style={{ padding: '1rem', margin: '1rem 0' }}>
-              <div>{conflict.filename}</div>
-              <div>{getConflictText(originalGit.branch, conflict)}</div>
-              <div>
-                {conflict.additions} / {conflict.deletions} / {conflict.changes}
-              </div>
-              <div>{getConflictButtons(conflict)}</div>
-            </div>
-          ))}
+          <List paddingBottom={6}>
+            {conflicts.map(conflict => (
+              <ListItem
+                gap={2}
+                key={conflict.filename}
+                css={{ display: 'block' }}
+              >
+                <Stack gap={3} align="center" marginBottom={4}>
+                  {getConflictIcon(originalGit.branch, conflict)}
+                  <Text variant="muted">{conflict.filename}</Text>
+                </Stack>
+                <Text paddingBottom={4} size={3} block>
+                  {getConflictText(originalGit.branch, conflict)}
+                </Text>
+                {getConflictButtons(conflict)}
+              </ListItem>
+            ))}
+          </List>
         </Stack>
       );
     }
 
     if (gitState === SandboxGitState.CONFLICT_PR) {
       return (
-        <Stack direction="vertical">
-          <Text size={3} block>
-            You are IN CONFLICT with the PR, please click resolve to start
-            resolving the issues.
-          </Text>
+        <Stack direction="vertical" padding={2}>
           <Changes conflicts={conflictPaths} {...gitChanges} />
-          <button
+          <Button
             type="button"
             onClick={() => {
               resolveConflicts();
             }}
           >
             Resolve
-          </button>
+          </Button>
         </Stack>
       );
     }
 
     return (
       <>
-        <Text size={3} block marginBottom={2} marginX={2}>
-          Changes ({changeCount})
-        </Text>
         <Changes conflicts={conflictPaths} {...gitChanges} />
         <CommitForm />
       </>
     );
   }
 
+  const title = () => {
+    if (gitState === SandboxGitState.CONFLICT_PR) {
+      return `Conflicts (${conflictPaths.length})`;
+    }
+    if (gitState === SandboxGitState.CONFLICT_SOURCE) {
+      return `Conflicts (${conflictPaths.length})`;
+    }
+
+    return `Changes (${changeCount})`;
+  };
+
   return (
     <>
       {originalGit ? (
-        <Collapsible title="Github" defaultOpen>
-          <Element paddingX={2}>
-            <Link
-              target="_blank"
-              rel="noopener noreferrer"
-              href={githubRepoUrl(originalGit)}
-            >
-              <Stack gap={2} marginBottom={6} align="center">
-                <GitHubIcon />
-                <Text size={2}>
-                  {originalGit.username}/{originalGit.repo}
-                </Text>
-              </Stack>
-            </Link>
-          </Element>
-          <Element>{getContent()}</Element>
-        </Collapsible>
+        <>
+          <Collapsible title="Git Repository" defaultOpen>
+            <Element paddingX={2}>
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={githubRepoUrl(originalGit)}
+              >
+                <Stack gap={2} marginBottom={6} align="center">
+                  <GitHubIcon />
+                  <Text size={2}>
+                    {originalGit.username}/{originalGit.repo}#
+                    {originalGit.branch}
+                  </Text>
+                </Stack>
+              </Link>
+            </Element>
+          </Collapsible>
+          <Collapsible title={title()} defaultOpen>
+            <Element>{getContent()}</Element>
+          </Collapsible>
+        </>
       ) : null}
     </>
   );
