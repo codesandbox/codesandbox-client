@@ -860,7 +860,14 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
 export const addSandboxesToFolder: AsyncAction<{
   sandboxIds: string[];
   collectionPath: string;
-}> = async ({ state, effects, actions }, { sandboxIds, collectionPath }) => {
+  moveFromCollectionPath: string;
+}> = async (
+  { state, effects, actions },
+  { sandboxIds, collectionPath, moveFromCollectionPath }
+) => {
+  const oldSandboxes = state.dashboard.sandboxes;
+  actions.dashboard.deleteSandboxFromState(sandboxIds);
+
   try {
     await effects.gql.mutations.addSandboxToFolder({
       sandboxIds,
@@ -868,6 +875,7 @@ export const addSandboxesToFolder: AsyncAction<{
       teamId: state.dashboard.activeTeam || undefined,
     });
   } catch {
+    state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error('There was a problem moving your sandbox');
   }
 };

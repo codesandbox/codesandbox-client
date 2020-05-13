@@ -74,6 +74,11 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
       if (!dropResult || !dropResult.path) return;
 
+      const currentCollectionPath = location.pathname.replace(
+        '/new-dashboard',
+        ''
+      );
+
       if (dropResult.path === 'deleted') {
         actions.dashboard.deleteSandbox([sandbox.id]);
       } else if (dropResult.path === 'templates') {
@@ -82,11 +87,13 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds: [sandbox.id],
           collectionPath: '/',
+          moveFromCollectionPath: currentCollectionPath,
         });
       } else {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds: [sandbox.id],
           collectionPath: dropResult.path,
+          moveFromCollectionPath: currentCollectionPath,
         });
       }
     },
