@@ -32,11 +32,11 @@ const Live = Loadable(() =>
     default: module.LivePage,
   }))
 );
-const ZeitSignIn = Loadable(() =>
-  import(/* webpackChunkName: 'page-zeit' */ './ZeitAuth')
+const VercelSignIn = Loadable(() =>
+  import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
 );
 const PreviewAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-zeit' */ './PreviewAuth')
+  import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
 );
 const NotFound = Loadable(() =>
   import(/* webpackChunkName: 'page-not-found' */ './common/NotFound').then(
@@ -149,7 +149,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/patron" component={Patron} />
             <Route path="/pro" component={Pro} />
             <Route path="/cli/login" component={CLI} />
-            <Route path="/auth/zeit" component={ZeitSignIn} />
+            <Route path="/auth/vercel" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (
               <Route path="/auth/dev" component={DevAuthPage} />

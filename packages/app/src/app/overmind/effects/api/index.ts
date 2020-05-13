@@ -436,8 +436,8 @@ export default {
       },
     });
   },
-  createZeitIntegration(code: string): Promise<CurrentUser> {
-    return api.post(`/users/current_user/integrations/zeit`, {
+  createVercelIntegration(code: string): Promise<CurrentUser> {
+    return api.post(`/users/current_user/integrations/vercel`, {
       code,
     });
   },
@@ -447,8 +447,8 @@ export default {
   signoutGithubIntegration(): Promise<void> {
     return api.delete(`/users/current_user/integrations/github`);
   },
-  signoutZeit(): Promise<void> {
-    return api.delete(`/users/current_user/integrations/zeit`);
+  signoutVercel(): Promise<void> {
+    return api.delete(`/users/current_user/integrations/vercel`);
   },
   preloadTemplates() {
     client.query({ query: LIST_PERSONAL_TEMPLATES, variables: {} });
