@@ -39,7 +39,11 @@ const PreviewAuth = Loadable(() =>
   import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
 );
 const NotFound = Loadable(() =>
-  import(/* webpackChunkName: 'page-not-found' */ './common/NotFound')
+  import(/* webpackChunkName: 'page-not-found' */ './common/NotFound').then(
+    module => ({
+      default: module.NotFound,
+    })
+  )
 );
 const Profile = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile').then(module => ({

@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
+import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
@@ -64,14 +65,23 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   };
 
   /* Drag logic */
+  type ItemTypes = { id: string; type: string };
 
-  const [{ isDragging }, drag, preview] = useDrag({
+  const [{ isDragging }, dragRef, preview] = useDrag({
     item: { id: sandbox.id, type: 'sandbox' },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
-      if (item && dropResult) {
-        // onMove(name, dropResult.name);
+
+      if (!dropResult.path) return;
+
+      if (dropResult.path === 'deleted') {
+        actions.dashboard.deleteSandbox([sandbox.id]);
+      } else if (dropResult.path === 'templates') {
+        actions.dashboard.makeTemplate([sandbox.id]);
+      } else if (dropResult.path === 'all') {
+        // move sandbox to "All folder"?
       }
+      // else if move to favorite folders
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
@@ -116,7 +126,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   };
 
   const dragProps = {
-    ref: drag,
+    ref: dragRef,
   };
 
   React.useEffect(() => {
@@ -126,7 +136,15 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   return (
     <>
       <div {...dragProps}>
-        <Component {...sandboxProps} {...props} />
+        <motion.div
+          layoutTransition={{
+            type: 'spring',
+            damping: 300,
+            stiffness: 300,
+          }}
+        >
+          <Component {...sandboxProps} {...props} />
+        </motion.div>
       </div>
       {isDragging ? (
         <DragPreview viewMode={viewMode} {...sandboxProps} />

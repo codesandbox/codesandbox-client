@@ -27,7 +27,6 @@
     "prepublish": "yarn build"
   },
   "dependencies": {
-    "@codesandbox/template-icons": "^1.1.0",
     "@reach/auto-id": "^0.7.1",
     "@reach/menu-button": "^0.8.5",
     "@reach/tooltip": "^0.8.6",
