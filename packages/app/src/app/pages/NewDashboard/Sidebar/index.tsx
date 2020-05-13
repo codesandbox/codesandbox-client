@@ -43,6 +43,12 @@ export const Sidebar = props => {
     activeAccount = { username: user.username, avatarUrl: user.avatarUrl };
   }
 
+  React.useEffect(() => {
+    actions.dashboard.getAllFolders();
+  }, [actions.dashboard]);
+
+  const folders = dashboard.allCollections || [];
+
   return (
     <Element as="aside" {...props}>
       <List css={css({ '> li': { height: 10 } })}>
@@ -144,11 +150,20 @@ export const Sidebar = props => {
             </Menu>
           )}
         </ListAction>
-
         <RowItem name="Start" path="start" icon="box" />
-        <RowItem name="Drafts" path="drafts" icon="file" />
         <RowItem name="Recent" path="recent" icon="clock" />
+        <RowItem name="Drafts" path="drafts" icon="file" />
         <RowItem name="All Sandboxes" path="all" icon="folder" />
+
+        {folders.map(folder => (
+          <RowItem
+            name={folder.name}
+            path={'all' + folder.path}
+            icon="folder"
+            isNested
+          />
+        ))}
+
         <RowItem name="Templates" path="templates" icon="star" />
         <RowItem name="Recently Deleted" path="deleted" icon="trash" />
         <RowItem name="Settings (temp)" path="settings" icon="gear" />
@@ -169,11 +184,11 @@ const linkStyles = {
   paddingRight: 8,
 };
 
-const canAcceptSandboxes = ['all', 'templates', 'deleted'];
+const canNotAcceptSandboxes = ['start', 'recent', 'all', 'settings'];
 
-const RowItem = ({ name, path, icon }) => {
+const RowItem = ({ name, path, icon, isNested = false }) => {
   const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
-    accept: canAcceptSandboxes.includes(path) ? 'sandbox' : 'nope',
+    accept: !canNotAcceptSandboxes.includes(path) ? 'sandbox' : 'nope',
     drop: () => ({ path }),
     collect: monitor => ({
       isOver: monitor.isOver(),
@@ -188,6 +203,7 @@ const RowItem = ({ name, path, icon }) => {
       align="center"
       css={css({
         paddingX: 0,
+        paddingLeft: isNested ? 4 : 0,
         opacity: isDragging && !canDrop ? 0.25 : 1,
         color:
           isDragging && canDrop ? 'list.hoverForeground' : 'list.foreground',
@@ -196,6 +212,9 @@ const RowItem = ({ name, path, icon }) => {
         transition: 'all ease-in',
         transitionDuration: theme => theme.speeds[4],
       })}
+      style={{
+        height: isNested ? 32 : 40,
+      }}
     >
       <Link as={RouterLink} to={`/new-dashboard/${path}`} style={linkStyles}>
         <Stack
