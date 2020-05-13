@@ -88,6 +88,10 @@ export function getDisabledItems(store: any): INavigationItem[] {
     return [PROJECT_SUMMARY, CONFIGURATION, GITHUB, DEPLOYMENT, SERVER, LIVE];
   }
 
+  if (currentSandbox.git) {
+    return [];
+  }
+
   if (!currentSandbox.owned || !store.isLoggedIn) {
     const returnedItems = [GITHUB, DEPLOYMENT];
     if (!store.live.isLive) {
