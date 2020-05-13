@@ -72,7 +72,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
 
-      if (!dropResult.path) return;
+      if (!dropResult || !dropResult.path) return;
 
       if (dropResult.path === 'deleted') {
         actions.dashboard.deleteSandbox([sandbox.id]);
