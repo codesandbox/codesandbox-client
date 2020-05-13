@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import {
   protocolAndHost,
@@ -7,15 +7,15 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Title } from 'app/components/Title';
 
-// eslint-disable-next-line import/no-default-export
-export default class VercelSignIn extends React.PureComponent {
-  constructor(props) {
-    super(props);
+const VercelSignIn = () => {
+  const [redirect, setRedirect] = useState(null);
+  const [jwt] = useState(null);
+  const [error, setError] = useState(null);
 
-    // eslint-disable-next-line no-unused-vars
-    const [_, code] = document.location.search.match(/\?code=(.*)/);
-
-    if (code) {
+  useEffect(() => {
+    if (document.location.search.match(/\?code=(.*)/)) {
+      // eslint-disable-next-line
+      const [_, code] = document.location.search.match(/\?code=(.*)/);
       if (window.opener) {
         if (window.opener.location.origin === window.location.origin) {
           window.opener.postMessage(
@@ -30,27 +30,24 @@ export default class VercelSignIn extends React.PureComponent {
         }
         return;
       }
-      this.state = {
-        redirect: '/',
-      };
+      setRedirect('/');
+
       return;
     }
 
-    this.state = {
-      error: 'no message received',
-    };
-  }
+    setError('no message received');
+  }, []);
 
-  getMessage = () => {
-    if (this.state.redirect) {
+  const getMessage = () => {
+    if (redirect) {
       document.location.href = newSandboxUrl();
       return 'Redirecting to sandbox page';
     }
-    if (this.state.error) {
-      return `Something went wrong while signing in: ${this.state.error}`;
+    if (error) {
+      return `Something went wrong while signing in: ${error}`;
     }
-    if (this.state.jwt) return 'Signing in...';
-    if (this.state.jwt == null) {
+    if (jwt) return 'Signing in...';
+    if (jwt == null) {
       setTimeout(() => {
         document.location.href = signInUrl();
       }, 2000);
@@ -60,11 +57,11 @@ export default class VercelSignIn extends React.PureComponent {
     return 'Hey';
   };
 
-  render() {
-    return (
-      <Centered horizontal vertical>
-        <Title>{this.getMessage()}</Title>
-      </Centered>
-    );
-  }
-}
+  return (
+    <Centered horizontal vertical>
+      <Title>{getMessage()}</Title>
+    </Centered>
+  );
+};
+
+export default VercelSignIn;
