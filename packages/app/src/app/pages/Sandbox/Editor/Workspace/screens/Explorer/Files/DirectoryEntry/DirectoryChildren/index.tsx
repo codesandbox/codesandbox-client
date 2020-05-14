@@ -64,8 +64,6 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
         .map(dir => (
           <DirectoryEntry
             key={dir.id}
-            readonly={readonly}
-            siblings={[...directories, ...modules]}
             depth={depth + 1}
             signals={{ files, editor }}
             store={{ editor: editorState, isLoggedIn }}

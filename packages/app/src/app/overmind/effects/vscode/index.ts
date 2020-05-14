@@ -12,12 +12,13 @@ import {
   Settings,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
+import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
   NotificationMessage,
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
-import { Reference } from 'app/graphql/types';
+import { CommentFragment } from 'app/graphql/types';
 import { Reaction } from 'app/overmind';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import prettify from 'app/src/app/utils/prettify';
@@ -26,7 +27,7 @@ import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
+import { TextOperation } from 'ot';
 import { json } from 'overmind';
 import io from 'socket.io-client';
 
@@ -36,8 +37,8 @@ import {
   initializeCustomTheme,
   initializeExtensionsFolder,
   initializeSettings,
-  initializeThemeCache,
   initializeSnippetDirectory,
+  initializeThemeCache,
 } from './initializers';
 import { Linter } from './Linter';
 import {
@@ -226,9 +227,9 @@ export class VSCodeEffect {
 
   public async getCodeReferenceBoundary(
     commentId: string,
-    reference: Reference
+    reference: CommentFragment['references'][0]['metadata']
   ) {
-    this.revealPositionInCenterIfOutsideViewport(reference.metadata.anchor, 1);
+    this.revealPositionInCenterIfOutsideViewport(reference.anchor, 1);
 
     return new Promise<DOMRect>((resolve, reject) => {
       let checkCount = 0;
@@ -326,10 +327,7 @@ export class VSCodeEffect {
     this.modelsHandler.syncModule(module);
   }
 
-  public async applyOperation(
-    moduleShortid: string,
-    operation: (string | number)[]
-  ) {
+  public async applyOperation(moduleShortid: string, operation: TextOperation) {
     if (!this.modelsHandler) {
       return;
     }
@@ -478,12 +476,12 @@ export class VSCodeEffect {
     }
   }
 
-  public async setModuleCode(module: Module) {
+  public setModuleCode(module: Module, triggerChangeEvent = false) {
     if (!this.modelsHandler) {
       return;
     }
 
-    await this.modelsHandler.setModuleCode(module);
+    this.modelsHandler.setModuleCode(module, triggerChangeEvent);
   }
 
   public async closeAllTabs() {
@@ -604,6 +602,10 @@ export class VSCodeEffect {
         pinned: true,
       },
     });
+  }
+
+  public clearComments() {
+    this.modelsHandler.clearComments();
   }
 
   public setCorrections = (corrections: ModuleCorrection[]) => {

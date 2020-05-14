@@ -1,57 +1,49 @@
 import React, { useEffect } from 'react';
-import { Element, Text } from '@codesandbox/components';
-
-import { Filters } from 'app/pages/NewDashboard/Components/Filters';
 import { useOvermind } from 'app/overmind';
-import { AutoSizer, List } from 'react-virtualized';
-import { Loading } from 'app/pages/NewDashboard/Components/Loading';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
+import { Element, Column } from '@codesandbox/components';
+
 import { getPossibleTemplates } from '../../utils';
-import { SandboxCard } from '../../../Components/SandboxCard';
+import { Header } from '../../../Components/Header';
+
+import { SandboxGrid } from '../../../Components/SandboxGrid';
+import { Sandbox } from '../../../Components/Sandbox';
+import { SkeletonCard } from '../../../Components/Sandbox/SandboxCard';
+import { useBottomScroll } from './useBottomScroll';
 
 export const Drafts = () => {
   const {
     actions,
     state: {
-      user,
-      dashboard: {
-        draftSandboxes,
-        getFilteredSandboxes,
-        loadingPage,
-        activeTeam,
-      },
+      dashboard: { sandboxes },
     },
   } = useOvermind();
+  const [visibleSandboxes] = useBottomScroll('DRAFTS');
 
   useEffect(() => {
-    actions.dashboard.getDrafts();
-  }, [actions.dashboard, user, activeTeam]);
-
-  function rowRenderer({ key, index, style }) {
-    return <SandboxCard sandbox={filtered[index]} key={key} style={style} />;
-  }
-
-  const filtered = getFilteredSandboxes(draftSandboxes);
+    actions.dashboard.getPage(sandboxesTypes.DRAFTS);
+  }, [actions.dashboard]);
 
   return (
     <Element style={{ height: '100%', position: 'relative' }}>
-      <Text marginBottom={4} block>
-        Drafts
-      </Text>
-      <Filters possibleTemplates={getPossibleTemplates(draftSandboxes)} />
-      {!loadingPage ? (
-        <AutoSizer>
-          {({ height, width }) => (
-            <List
-              width={width}
-              height={height}
-              rowCount={filtered.length}
-              rowHeight={240}
-              rowRenderer={rowRenderer}
-            />
-          )}
-        </AutoSizer>
+      <Header
+        path="Drafts"
+        templates={getPossibleTemplates(sandboxes.DRAFTS)}
+      />
+      {sandboxes.DRAFTS ? (
+        <SandboxGrid>
+          {visibleSandboxes.map(sandbox => (
+            <Sandbox key={sandbox.id} sandbox={sandbox} />
+          ))}
+        </SandboxGrid>
       ) : (
-        <Loading />
+        <SandboxGrid>
+          {Array.from(Array(8).keys()).map(n => (
+            <Column key={n}>
+              <SkeletonCard />
+            </Column>
+          ))}
+        </SandboxGrid>
       )}
     </Element>
   );

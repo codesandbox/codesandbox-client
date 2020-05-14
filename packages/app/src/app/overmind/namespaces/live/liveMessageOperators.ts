@@ -8,12 +8,43 @@ import {
   UserSelection,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
-import { logError } from '@codesandbox/common/lib/utils/analytics';
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
+
+export const onSave: Operator<LiveMessage<{
+  saved_code: string;
+  updated_at: string;
+  inserted_at: string;
+  version: number;
+  path: string;
+}>> = mutate(({ state, effects }, { data }) => {
+  const sandbox = state.editor.currentSandbox;
+
+  if (!sandbox) {
+    return;
+  }
+  const module = sandbox.modules.find(
+    moduleItem => moduleItem.path === data.path
+  );
+
+  if (!module) {
+    return;
+  }
+
+  module.savedCode = module.code === data.saved_code ? null : data.saved_code;
+  module.updatedAt = data.updated_at;
+  module.insertedAt = data.inserted_at;
+  sandbox.version = data.version;
+  effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
+
+  if (module.savedCode === null) {
+    effects.vscode.syncModule(module);
+  }
+});
 
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
@@ -598,7 +629,12 @@ export const onOperation: Operator<LiveMessage<{
       // Something went wrong, probably a sync mismatch. Request new version
       console.error('Something went wrong with applying OT operation');
 
-      logError(e);
+      logBreadcrumb({
+        category: 'ot',
+        message: `Apply operation from server to OT client failed ${JSON.stringify(
+          data
+        )}`,
+      });
 
       effects.live.sendModuleStateSyncRequest();
     }

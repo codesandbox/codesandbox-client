@@ -28,6 +28,7 @@ module.exports = {
     require.resolve('@babel/preset-react'),
   ].filter(Boolean),
   plugins: [
+    require.resolve('react-hot-loader/babel'),
     require.resolve('@babel/plugin-transform-template-literals'),
     require.resolve('@babel/plugin-transform-destructuring'),
     require.resolve('@babel/plugin-proposal-object-rest-spread'),

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ColorIcons as Icons } from '@codesandbox/template-icons';
+import { ColorIcons as Icons } from 'template-icons';
 import { Template } from '../../types/index';
 import getIcon from '../../templates/icons';
 import { ENTER } from '../../utils/keycodes';

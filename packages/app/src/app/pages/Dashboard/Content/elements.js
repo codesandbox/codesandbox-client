@@ -16,6 +16,16 @@ export const HeaderContainer = styled.div`
   @media (max-width: 768px) {
     margin-left: 1rem;
   }
+
+  svg {
+    display: none;
+  }
+
+  &:hover {
+    svg {
+      display: block;
+    }
+  }
 `;
 
 export const Description = styled.p`

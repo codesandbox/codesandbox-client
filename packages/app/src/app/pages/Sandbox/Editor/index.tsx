@@ -1,11 +1,9 @@
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
-import { REDESIGNED_SIDEBAR } from '@codesandbox/common/lib/utils/feature-flags';
 import VERSION from '@codesandbox/common/lib/version';
 import {
-  Element,
-  ThemeProvider as NewThemeProvider,
+  ThemeProvider as ComponentsThemeProvider,
   Stack,
 } from '@codesandbox/components';
 import VisuallyHidden from '@reach/visually-hidden';
@@ -20,9 +18,7 @@ import Content from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 import { Header } from './Header';
-import { Header as HeaderOld } from './HeaderOld';
 import { Navigation } from './Navigation';
-import { Navigation as NavigationOld } from './NavigationOld';
 import { ContentSkeleton } from './Skeleton';
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
@@ -113,29 +109,18 @@ const Editor = () => {
         style={{ lineHeight: 'initial', backgroundColor: 'transparent' }}
         className="monaco-workbench"
       >
-        {REDESIGNED_SIDEBAR === 'true' ? (
-          <>
-            {state.preferences.settings.zenMode ? null : (
-              <NewThemeProvider theme={localState.theme.vscodeTheme}>
-                <Header />
-              </NewThemeProvider>
-            )}
-          </>
-        ) : (
-          <HeaderOld zenMode={state.preferences.settings.zenMode} />
+        {state.preferences.settings.zenMode ? null : (
+          <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
+            <Header />
+          </ComponentsThemeProvider>
         )}
+
         <Fullscreen style={{ width: 'initial' }}>
-          {!hideNavigation &&
-            (REDESIGNED_SIDEBAR === 'true' ? (
-              <NewThemeProvider theme={localState.theme.vscodeTheme}>
-                <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
-              </NewThemeProvider>
-            ) : (
-              <NavigationOld
-                topOffset={topOffset}
-                bottomOffset={bottomOffset}
-              />
-            ))}
+          {!hideNavigation && (
+            <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
+              <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
+            </ComponentsThemeProvider>
+          )}
 
           <div
             style={{
@@ -180,7 +165,7 @@ const Editor = () => {
               {<Content theme={localState.theme} />}
             </SplitPane>
             {showSkeleton ? (
-              <NewThemeProvider theme={localState.theme.vscodeTheme}>
+              <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
                 <ContentSkeleton
                   style={
                     state.editor.hasLoadedInitialModule
@@ -192,11 +177,11 @@ const Editor = () => {
                         }
                   }
                 />
-              </NewThemeProvider>
+              </ComponentsThemeProvider>
             ) : null}
           </div>
 
-          <NewThemeProvider theme={localState.theme.vscodeTheme}>
+          <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
             <Stack
               justify="space-between"
               align="center"
@@ -213,23 +198,21 @@ const Editor = () => {
                 height: STATUS_BAR_SIZE,
               })}
             >
-              <FakeStatusBarText>
-                Version: {VERSION.split('-').pop()}
-              </FakeStatusBarText>
+              <FakeStatusBarText>{VERSION.split('-').pop()}</FakeStatusBarText>
               <StatusBar
                 className="monaco-workbench mac nopanel"
                 ref={statusbarEl}
                 style={{ width: 'calc(100% - 126px)' }}
               />
             </Stack>
-          </NewThemeProvider>
+          </ComponentsThemeProvider>
         </Fullscreen>
 
         <ForkFrozenSandboxModal />
       </Container>
-      <NewThemeProvider theme={localState.theme.vscodeTheme}>
+      <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
         <CommentsAPI />
-      </NewThemeProvider>
+      </ComponentsThemeProvider>
     </ThemeProvider>
   );
 };

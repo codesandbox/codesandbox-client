@@ -75,6 +75,7 @@ const commonStyles = {
   border: 'none',
   borderRadius: 'small',
   transition: 'all ease-in',
+  textDecoration: 'none',
   transitionDuration: theme => theme.speeds[2],
 
   ':focus': {
@@ -87,7 +88,7 @@ const commonStyles = {
     opacity: '0.4',
     cursor: 'not-allowed',
   },
-  '&[data-loading]': {
+  '&[data-loading="true"]': {
     opacity: 1,
     cursor: 'default',
   },
@@ -103,6 +104,10 @@ export interface ButtonProps
     IElementProps {
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
   loading?: boolean;
+  href?: string;
+  to?: string;
+  as?: any;
+  target?: any;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

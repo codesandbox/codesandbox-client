@@ -9,7 +9,7 @@ const Tweet = ({
   <TweetsWrapper css={style} href={url} target="_blank" right={right}>
     <Quote>“{quote}”</Quote>
     <Author>
-      <Avatar src={`https://avatars.io/twitter/${username}`} alt={name} />
+      <Avatar src={`https://twitter-avatar.now.sh/${username}`} alt={name} />
       <div>
         <Info>{name}</Info>
         <Info>{job}</Info>

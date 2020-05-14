@@ -5,7 +5,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Button, Element, Stack, Text } from '@codesandbox/components';
-import { GitHubIcon } from '@codesandbox/template-icons';
+import { github as GitHubIcon } from '@codesandbox/components/lib/components/Icon/icons';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React, {

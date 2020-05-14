@@ -94,15 +94,34 @@ export const modalClosed: Action = ({ state }) => {
   state.currentModal = null;
 };
 
-export const signInClicked: AsyncAction<{ useExtraScopes: boolean }> = (
-  { actions },
-  options
-) => actions.internal.signIn(options);
+export const signInClicked: Action<string | void> = ({ state }, redirectTo) => {
+  state.signInModalOpen = true;
+  state.redirectOnLogin = redirectTo || '';
+};
+
+export const toggleSignInModal: Action = ({ state }) => {
+  state.signInModalOpen = !state.signInModalOpen;
+};
+
+export const signInButtonClicked: AsyncAction<{
+  useExtraScopes: boolean;
+} | void> = async ({ actions, state }, options) => {
+  if (!options) {
+    await actions.internal.signIn({
+      useExtraScopes: false,
+    });
+    state.signInModalOpen = false;
+    return;
+  }
+  await actions.internal.signIn(options);
+  state.signInModalOpen = false;
+};
 
 export const signInCliClicked: AsyncAction = async ({ state, actions }) => {
   await actions.internal.signIn({
     useExtraScopes: false,
   });
+  state.signInModalOpen = false;
 
   if (state.user) {
     await actions.internal.authorize();
@@ -147,12 +166,12 @@ export const signInZeitClicked: AsyncAction = async ({
       await actions.deployment.internal.getZeitUserDetails();
     } catch (error) {
       actions.internal.handleError({
-        message: 'Could not authorize with ZEIT',
+        message: 'Could not authorize with Vercel',
         error,
       });
     }
   } else {
-    notificationToast.error('Could not authorize with ZEIT');
+    notificationToast.error('Could not authorize with Vercel');
   }
 
   state.isLoadingZeit = false;

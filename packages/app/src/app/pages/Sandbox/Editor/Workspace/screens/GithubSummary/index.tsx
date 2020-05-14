@@ -1,5 +1,5 @@
 import { Button, Collapsible, Stack, Text } from '@codesandbox/components';
-import { GitHubIcon } from '@codesandbox/template-icons';
+import { github as GitHubIcon } from '@codesandbox/components/lib/components/Icon/icons';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
