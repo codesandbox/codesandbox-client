@@ -1081,6 +1081,9 @@ export const previewActionReceived: Action<any> = (
 
     case 'source.module.set-code': {
       const sandbox = state.editor.currentSandbox;
+      if (!sandbox) {
+        return;
+      }
       const module = effects.utils.resolveModule(
         action.path.replace(/^\//, ''),
         sandbox.modules,
