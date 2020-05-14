@@ -40,7 +40,7 @@ export const CreateSandbox: React.FC = props => {
   useEffect(() => {
     const infoData = getInfoFromMarkdown(latestChangelog);
     setInfo(infoData);
-    const key = 'last-changelog_viewed';
+    const key = 'last_changelog_viewed_create_sandbox_modal';
     if (browser.storage.get(key) !== infoData.title) {
       setNewChangelogToSee(true);
     }
