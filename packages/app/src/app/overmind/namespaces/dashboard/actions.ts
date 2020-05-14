@@ -499,6 +499,16 @@ export const deleteSandboxFromState: Action<string[]> = (
   ids.map(id => {
     const values = Object.keys(dashboard.sandboxes).map(type => {
       if (dashboard.sandboxes[type]) {
+        if (!Array.isArray(dashboard.sandboxes[type])) {
+          const object = dashboard.sandboxes[type];
+          const a = Object.keys(object).map(t => ({
+            [t]: object[t].filter(sandbox => sandbox.id !== id),
+          }));
+          return {
+            ...dashboard.sandboxes[type],
+            ...a[a.length - 1],
+          };
+        }
         return dashboard.sandboxes[type].filter(sandbox => sandbox.id !== id);
       }
 
