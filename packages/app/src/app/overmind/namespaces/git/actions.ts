@@ -26,7 +26,7 @@ export const loadGitSource: AsyncAction = async ({
   effects,
 }) => {
   const sandbox = state.editor.currentSandbox;
-
+  state.git.isFetching = true;
   await actions.git._loadSourceSandbox();
 
   state.git.permission = await effects.api.getGitRights(sandbox.id);
@@ -42,6 +42,7 @@ export const loadGitSource: AsyncAction = async ({
   }
 
   actions.git._setGitChanges();
+  state.git.isFetching = false;
 };
 
 export const createRepoClicked: AsyncAction = async ({ state, effects }) => {

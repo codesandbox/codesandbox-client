@@ -1,12 +1,12 @@
 import {
   Button,
   FormField,
-  Input,
-  Stack,
-  Menu,
-  Textarea,
-  Text,
   Icon,
+  Input,
+  Menu,
+  Stack,
+  Text,
+  Textarea,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import React, { ChangeEvent, useState } from 'react';
@@ -43,10 +43,6 @@ export const CommitForm = () => {
     titleChanged(value);
 
   const getButtonTitle = (buttonTitle: string) => {
-    if (isCommitting) {
-      return 'Updating...';
-    }
-
     if (!isAllModulesSynced) {
       return 'Save all files first...';
     }
@@ -54,14 +50,13 @@ export const CommitForm = () => {
     return buttonTitle;
   };
 
+  const hasChanges = Boolean(
+    gitChanges.added.length ||
+      gitChanges.deleted.length ||
+      gitChanges.modified.length
+  );
   const canUpdate =
-    Boolean(
-      gitChanges.added.length ||
-        gitChanges.deleted.length ||
-        gitChanges.modified.length
-    ) &&
-    isAllModulesSynced &&
-    !isCommitting;
+    hasChanges && isAllModulesSynced && !isCommitting && !isCreatingPr;
 
   if (currentSandbox.prNumber) {
     return (
@@ -111,25 +106,32 @@ export const CommitForm = () => {
       onSubmit={event => event.preventDefault()}
     >
       <FormField direction="vertical" label="PR title" hideLabel>
-        <Input placeholder="Title" onChange={changeTitle} value={title} />
+        <Input
+          placeholder="Title"
+          onChange={changeTitle}
+          value={title}
+          disabled={!hasChanges}
+        />
       </FormField>
       <FormField direction="vertical" label="PR description" hideLabel>
         <Textarea
           maxLength={280}
-          placeholder="Description"
+          placeholder="Optional description..."
           onChange={changeDescription}
           value={description}
+          disabled={!hasChanges}
         />
       </FormField>
       <Stack marginX={2}>
         <Stack css={{ width: '100%' }}>
           <Button
+            loading={isCommitting || isCreatingPr}
             css={{
               width: 'calc(100% - 26px)',
               borderTopRightRadius: 0,
               borderBottomRightRadius: 0,
             }}
-            disabled={!title || !canUpdate || isCreatingPr}
+            disabled={!title || !canUpdate}
             onClick={() => actions[currentAction].action()}
           >
             {actions[currentAction].text}
@@ -138,7 +140,6 @@ export const CommitForm = () => {
             <>
               <Menu>
                 <Menu.Button
-                  disabled={!title || !canUpdate || isCreatingPr}
                   variant="primary"
                   css={{
                     width: '26px',
@@ -165,7 +166,7 @@ export const CommitForm = () => {
       </Stack>
       {currentAction === 'master' ? (
         <Text paddingX={8} paddingTop={2} size={3} variant="muted">
-          Caution, committing to Master
+          Caution, committing to <Text weight="bold">master</Text>
         </Text>
       ) : null}
     </Stack>

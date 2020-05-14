@@ -1,23 +1,23 @@
 import { GitFileCompare, SandboxGitState } from '@codesandbox/common/lib/types';
 import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
+  Button,
   Collapsible,
   Element,
-  Button,
   Link,
-  Stack,
-  Text,
   List,
   ListItem,
+  Stack,
+  Text,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
 import React from 'react';
 
-import { ChangedIcon, DeletedIcon, GitHubIcon } from './Icons';
 import { Changes } from './Changes';
 import { CommitForm } from './CommitForm';
 import { GithubLogin } from './GithubLogin';
+import { ChangedIcon, DeletedIcon, GitHubIcon } from './Icons';
 import { NotLoggedIn } from './NotLoggedIn';
 import { NotOwner } from './NotOwner';
 
@@ -62,7 +62,7 @@ function getConflictType(
 export const GitHub = () => {
   const {
     state: {
-      git: { gitChanges, gitState, conflicts, conflictsResolving },
+      git: { gitChanges, gitState, conflicts, conflictsResolving, permission },
       editor: {
         currentSandbox: { originalGit, owned },
         modulesByPath,
@@ -321,12 +321,24 @@ export const GitHub = () => {
                 href={githubRepoUrl(originalGit)}
               >
                 <Stack gap={2} marginBottom={6} align="center">
-                  <GitHubIcon />
+                  <GitHubIcon width={20} />
                   <Text size={2}>
-                    {originalGit.username}/{originalGit.repo}#
-                    {originalGit.branch}
+                    {originalGit.username}/{originalGit.repo}
                   </Text>
                 </Stack>
+                {permission === 'admin' || permission === 'write' ? (
+                  <Text variant="muted" size={3} paddingBottom={4}>
+                    You have access to commit changes directly to{' '}
+                    <Text weight="bold">{originalGit.branch}</Text>, but we
+                    recommend creating a PR
+                  </Text>
+                ) : (
+                  <Text variant="muted" size={3} paddingBottom={4}>
+                    You do not have access to commit directly to{' '}
+                    <Text weight="bold">{originalGit.branch}</Text>, please
+                    create a PR after you have made your changes.
+                  </Text>
+                )}
               </Link>
             </Element>
           </Collapsible>

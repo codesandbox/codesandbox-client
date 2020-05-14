@@ -1,16 +1,17 @@
 import Tooltip, {
   SingletonTooltip,
 } from '@codesandbox/common/lib/components/Tooltip';
+import { Element } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { TippyProps } from '@tippy.js/react';
 import { useOvermind } from 'app/overmind';
 import getWorkspaceItems, {
   INavigationItem,
   getDisabledItems,
 } from 'app/overmind/utils/items';
-import css from '@styled-system/css';
 import React, { FunctionComponent } from 'react';
 import PlusIcon from 'react-icons/lib/go/plus';
-import { Element } from '@codesandbox/components';
+
 import { Container, IconContainer } from './elements';
 import {
   CommentsIcon,
@@ -53,7 +54,7 @@ const IconComponent: FunctionComponent<IconProps> = ({
     },
     state: {
       workspace: { openedWorkspaceItem, workspaceHidden },
-      git: { gitChanges },
+      git: { gitChanges, isFetching, conflicts },
     },
   } = useOvermind();
 
@@ -64,6 +65,7 @@ const IconComponent: FunctionComponent<IconProps> = ({
       gitChanges.deleted.length +
       gitChanges.modified.length >
     0;
+  const hasConflicts = Boolean(conflicts.length);
 
   return (
     <Tooltip content={name} singleton={singleton}>
@@ -87,13 +89,18 @@ const IconComponent: FunctionComponent<IconProps> = ({
         }}
       >
         <Icon aria-hidden />
-        {id === 'github' && hasChanges && (
+        {id === 'github' && (hasChanges || isFetching || hasConflicts) && (
           <Element
             css={css({
               position: 'absolute',
               left: 31,
               top: 0,
-              backgroundColor: 'reds.500',
+              // eslint-disable-next-line no-nested-ternary
+              backgroundColor: isFetching
+                ? 'yellow'
+                : hasConflicts
+                ? 'reds.500'
+                : 'blues.500',
               borderRadius: '50%',
               width: '6px',
               height: '6px',

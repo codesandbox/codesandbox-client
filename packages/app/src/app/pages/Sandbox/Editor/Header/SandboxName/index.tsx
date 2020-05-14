@@ -5,6 +5,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Button, Element, Stack, Text } from '@codesandbox/components';
+import { GitHubIcon } from '@codesandbox/template-icons';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React, {
@@ -165,7 +166,10 @@ export const SandboxName: FunctionComponent = () => {
           </Element>
         ) : null}
 
-        {!updatingName && currentSandbox.customTemplate ? (
+        {!updatingName &&
+        currentSandbox.customTemplate &&
+        !currentSandbox.git &&
+        !currentSandbox.baseGit ? (
           <Tooltip
             content={
               <>
@@ -181,6 +185,32 @@ export const SandboxName: FunctionComponent = () => {
             placement="bottom"
           >
             <TemplateBadge color={customTemplate.color}>Template</TemplateBadge>
+          </Tooltip>
+        ) : null}
+        {!updatingName && (currentSandbox.git || currentSandbox.baseGit) ? (
+          <Tooltip
+            content={
+              <>
+                This sandbox is a Githbub sandbox, you can learn more about
+                Github sandboxes in the{' '}
+                <Link target="_blank" to="/docs/git">
+                  docs
+                </Link>
+                .
+              </>
+            }
+            delay={0}
+            interactive
+            placement="bottom"
+          >
+            <TemplateBadge>
+              <GitHubIcon width={15} />{' '}
+              <Text paddingLeft={2}>
+                {currentSandbox.git
+                  ? `${currentSandbox.git.username}/${currentSandbox.git.repo}/${currentSandbox.git.branch}`
+                  : `${currentSandbox.baseGit.username}/${currentSandbox.baseGit.repo}/${currentSandbox.baseGit.branch}`}
+              </Text>
+            </TemplateBadge>
           </Tooltip>
         ) : null}
       </Stack>
