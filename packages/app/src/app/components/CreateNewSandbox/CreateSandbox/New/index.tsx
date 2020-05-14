@@ -53,7 +53,7 @@ export const New = ({
         <Wrapper
           css={css({
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
+            gridTemplateColumns: '30% 1fr',
             gridGap: 6,
           })}
         >

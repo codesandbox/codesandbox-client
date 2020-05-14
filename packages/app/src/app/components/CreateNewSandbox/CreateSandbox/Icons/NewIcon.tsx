@@ -1,7 +1,8 @@
 import React from 'react';
+import IconBase from 'react-icons/IconBase';
 
 export const NewIcon = props => (
-  <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
+  <IconBase viewBox="0 0 16 16" {...props}>
     <path
       fill="#fff"
       d="M7.111 9.263H.89v5.053c0 .93.796 1.684 1.778 1.684H7.11V9.263zM8.889 16h4.444c.982 0 1.778-.754 1.778-1.684V9.263H8.89V16z"
@@ -16,5 +17,5 @@ export const NewIcon = props => (
       fill="#fff"
       d="M1.778 4.21C.796 4.21 0 4.966 0 5.896v1.684h7.111V4.211H1.778zM8.889 4.21V7.58H16V5.895c0-.93-.796-1.684-1.778-1.684H8.89z"
     />
-  </svg>
+  </IconBase>
 );
