@@ -882,6 +882,10 @@ export type OnSandboxChangedSubscription = {
   __typename?: 'RootSubscriptionType';
 } & { sandboxChanged: { __typename?: 'Sandbox' } & SandboxChangedFragment };
 
+export type CodeReferenceMetadataFragment = {
+  __typename?: 'CodeReferenceMetadata';
+} & Pick<CodeReferenceMetadata, 'anchor' | 'code' | 'head' | 'path'>;
+
 export type CommentFragment = { __typename?: 'Comment' } & Pick<
   Comment,
   'id' | 'content' | 'insertedAt' | 'updatedAt' | 'isResolved' | 'replyCount'
@@ -891,10 +895,9 @@ export type CommentFragment = { __typename?: 'Comment' } & Pick<
         Reference,
         'id' | 'resource' | 'type'
       > & {
-          metadata: { __typename?: 'CodeReferenceMetadata' } & Pick<
-            CodeReferenceMetadata,
-            'anchor' | 'code' | 'head' | 'path'
-          >;
+          metadata: {
+            __typename?: 'CodeReferenceMetadata';
+          } & CodeReferenceMetadataFragment;
         }
     >;
     user: { __typename?: 'User' } & Pick<
@@ -913,10 +916,9 @@ export type CommentWithRepliesFragment = { __typename?: 'Comment' } & Pick<
         Reference,
         'id' | 'resource' | 'type'
       > & {
-          metadata: { __typename?: 'CodeReferenceMetadata' } & Pick<
-            CodeReferenceMetadata,
-            'anchor' | 'code' | 'head' | 'path'
-          >;
+          metadata: {
+            __typename?: 'CodeReferenceMetadata';
+          } & CodeReferenceMetadataFragment;
         }
     >;
     user: { __typename?: 'User' } & Pick<

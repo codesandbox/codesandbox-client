@@ -23,7 +23,8 @@
       "packages/dynamic-pages",
       "packages/notifications",
       "packages/deps",
-      "packages/executors"
+      "packages/executors",
+      "packages/template-icons"
     ],
     "nohoist": [
       "**/react-codemirror2",

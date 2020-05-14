@@ -1,10 +1,11 @@
 import {
   Directory,
+  IModuleStateModule,
   LiveMessageEvent,
   Module,
   RoomInfo,
-  UserViewRange,
   UserSelection,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import {
   captureException,
@@ -12,15 +13,13 @@ import {
 } from '@codesandbox/common/lib/utils/analytics/sentry';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import VERSION from '@codesandbox/common/lib/version';
-import { Blocker, blocker } from 'app/utils/blocker';
 import { camelizeKeys } from 'humps';
 import { SerializedTextOperation, TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
 import uuid from 'uuid';
 
-import { IModuleStateModule } from 'app/overmind/namespaces/live/types';
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
-import clientsFactory from './clients';
+import { CodesandboxOTClientsManager } from './clients';
 
 type Options = {
   onApplyOperation(args: {
@@ -28,7 +27,6 @@ type Options = {
     operation: TextOperation;
   }): void;
   provideJwtToken(): string;
-  isLiveBlockerExperiement(): boolean;
   onOperationError(payload: {
     moduleShortid: string;
     moduleInfo: IModuleStateModule;
@@ -54,25 +52,17 @@ declare global {
   }
 }
 
-const TIME_TO_THROTTLE_SOLO_MODE_SENDS = 2000;
-
 class Live {
   private identifier = uuid.v4();
   private pendingMessages = new Map();
   private debug = _debug('cs:socket');
   private channel: Channel | null;
   private messageIndex = 0;
-  private clients: ReturnType<typeof clientsFactory>;
-  private awaitSendTimer: number;
+  private clientsManager: CodesandboxOTClientsManager;
   private socket: Socket;
-  /*
-    Since in "Solo mode" we want to batch up operations and other events later,
-    we use a blocker to just hold the sending of the messages until an additional
-    connection enters
-  */
-  private awaitSend: Blocker<void> | null = null;
   private presence: Presence;
   private provideJwtToken: () => string;
+  private onApplyOperation: (moduleShortid: string, operation: any) => void;
   private onOperationError: (payload: {
     moduleShortid: string;
     moduleInfo: IModuleStateModule;
@@ -92,55 +82,13 @@ class Live {
     });
   }
 
-  private isLiveBlockerExperiement: () => boolean;
   private connectionsCount = 0;
-  private setAwaitSend() {
-    if (this.awaitSend) {
-      // There was already one set and never resolved. We need to resolve it to prevent
-      // messages from getting stuck
-      this.awaitSend.resolve();
-    }
-    this.awaitSend = blocker();
-    clearTimeout(this.awaitSendTimer);
-    this.awaitSendTimer = window.setTimeout(async () => {
-      if (this.connectionsCount === 1) {
-        // We await the currently resolved blocker before setting it back,
-        // so that messages gets through
-        await this.resolveAwaitSend();
-        this.setAwaitSend();
-      }
-    }, TIME_TO_THROTTLE_SOLO_MODE_SENDS);
-  }
-
-  private resolveAwaitSend() {
-    if (!this.awaitSend) {
-      return Promise.resolve();
-    }
-    clearTimeout(this.awaitSendTimer);
-    const awaitSend = this.awaitSend;
-    this.awaitSend = null;
-    awaitSend.resolve();
-    return awaitSend.promise;
-  }
-
-  private async awaitSynchronizedModule(moduleShortid: string) {
-    const client = this.clients.get(moduleShortid);
-    if (client.awaitSynchronized) {
-      await client.awaitSynchronized.promise;
-    }
-  }
 
   private onSendOperation = async (
     moduleShortid: string,
     revision: number,
     operation: TextOperation
   ) => {
-    // If we are to await a send, we do it. It will be resolved
-    // related to number of connections changing
-    if (this.isLiveBlockerExperiement() && this.awaitSend) {
-      await this.awaitSend.promise;
-    }
-
     logBreadcrumb({
       category: 'ot',
       message: `Sending ${JSON.stringify({
@@ -181,14 +129,14 @@ class Live {
   initialize(options: Options) {
     this.provideJwtToken = options.provideJwtToken;
     this.onOperationError = options.onOperationError;
-    this.isLiveBlockerExperiement = options.isLiveBlockerExperiement;
-    this.clients = clientsFactory(
+    this.onApplyOperation = (moduleShortid, operation) =>
+      options.onApplyOperation({
+        moduleShortid,
+        operation,
+      });
+    this.clientsManager = new CodesandboxOTClientsManager(
       this.onSendOperation,
-      (moduleShortid, operation) =>
-        options.onApplyOperation({
-          moduleShortid,
-          operation,
-        })
+      this.onApplyOperation
     );
   }
 
@@ -246,27 +194,6 @@ class Live {
   ): Promise<JoinChannelResponse> {
     return new Promise((resolve, reject) => {
       this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
-
-      /*
-        When active we activate or deactivate the sending blocker depending
-        on the number of connections we have. When "solo" we hold operation messages
-        until we get a new connection. If we go back to "solo" we bring in the blocker
-        again
-      */
-      if (this.isLiveBlockerExperiement()) {
-        this.presence = new Presence(this.channel);
-        this.presence.onSync(() => {
-          const currentCount = this.connectionsCount;
-
-          this.connectionsCount = this.presence.list().length;
-          if (currentCount !== 1 && this.connectionsCount === 1) {
-            this.setAwaitSend();
-          } else if (currentCount === 1 && this.connectionsCount > 1) {
-            this.resolveAwaitSend();
-          }
-        });
-      }
-
       this.channel
         .join()
         .receive('ok', resp => {
@@ -280,6 +207,11 @@ class Live {
           this.channel.joinPush.payload = () => ({
             version: 2,
             reconnect_token: result.reconnectToken,
+          });
+
+          this.presence = new Presence(this.channel!);
+          this.presence.onSync(() => {
+            this.connectionsCount = this.presence.list().length;
           });
 
           resolve(result);
@@ -333,7 +265,7 @@ class Live {
     };
   }
 
-  private sendImmediately(event, payload) {
+  private send<T>(event, payload: any = {}): Promise<T> {
     const _messageId = this.identifier + this.messageIndex++;
     // eslint-disable-next-line
     payload._messageId = _messageId;
@@ -353,26 +285,10 @@ class Live {
     });
   }
 
-  send(event: string, payload: { _messageId?: string; [key: string]: any }) {
-    if (this.isLiveBlockerExperiement() && this.awaitSend) {
-      return Promise.resolve();
-    }
-
-    return this.sendImmediately(event, payload);
-  }
-
-  async saveModule(module: Module) {
-    /*
-      If we save a module we will temporarily lift the message blocker,
-      passing any operations through. As soon as the client of the module
-      is back in synchronized state we can move on with the save
-    */
-    if (this.isLiveBlockerExperiement() && this.awaitSend) {
-      this.resolveAwaitSend();
-      await this.awaitSynchronizedModule(module.shortid);
-      this.setAwaitSend();
-    }
-    // Send the save message
+  awaitModuleSynced(moduleShortid: string) {
+    return Promise.resolve(
+      this.clientsManager.get(moduleShortid).awaitSynchronized?.promise
+    );
   }
 
   sendModuleUpdate(module: Module) {
@@ -411,7 +327,7 @@ class Live {
     }
 
     try {
-      this.clients.get(moduleShortid).applyClient(operation);
+      this.clientsManager.get(moduleShortid).applyClient(operation);
     } catch (e) {
       e.name = 'OperationFailure';
       captureException(e);
@@ -469,7 +385,7 @@ class Live {
   }
 
   sendLiveMode(mode: string) {
-    return this.sendImmediately('live:mode', {
+    return this.send('live:mode', {
       mode,
     });
   }
@@ -486,6 +402,14 @@ class Live {
     });
   }
 
+  sendModuleSaved(module: Module) {
+    return this.send('module:saved', {
+      type: 'module',
+      module,
+      moduleShortid: module.shortid,
+    });
+  }
+
   sendClosed() {
     return this.send('live:close', {});
   }
@@ -496,20 +420,12 @@ class Live {
     });
   }
 
-  sendModuleSaved(module: Module) {
-    return this.send('module:saved', {
-      type: 'module',
-      module,
-      moduleShortid: module.shortid,
-    });
-  }
-
   sendChatEnabled(enabled: boolean) {
-    return this.sendImmediately('live:chat_enabled', { enabled });
+    return this.send('live:chat_enabled', { enabled });
   }
 
   sendModuleStateSyncRequest() {
-    return this.sendImmediately('live:module_state', {});
+    return this.send('live:module_state', {});
   }
 
   sendUserViewRange(
@@ -517,6 +433,10 @@ class Live {
     liveUserId: string,
     viewRange: UserViewRange
   ) {
+    if (this.connectionsCount === 1) {
+      return Promise.resolve();
+    }
+
     return this.send('user:view-range', {
       liveUserId,
       moduleShortid,
@@ -529,6 +449,10 @@ class Live {
     liveUserId: string,
     selection: UserSelection
   ) {
+    if (this.connectionsCount === 1) {
+      return Promise.resolve();
+    }
+
     return this.send('user:selection', {
       liveUserId,
       moduleShortid,
@@ -536,48 +460,59 @@ class Live {
     });
   }
 
+  async saveModule(module: Module) {
+    const client = this.clientsManager.get(module.shortid);
+    await client.awaitSynchronized?.promise;
+
+    return this.send<{
+      saved_code: string;
+      updated_at: string;
+      inserted_at: string;
+      version: number;
+    }>('save', {
+      path: module.path,
+      revision: client.revision - 1,
+    });
+  }
+
   reset() {
-    this.clients.clear();
-
-    clearTimeout(this.awaitSendTimer);
-
-    this.awaitSend = null;
+    this.clientsManager.clear();
   }
 
   resetClient(moduleShortid: string, revision: number) {
-    this.clients.reset(moduleShortid, revision);
+    this.clientsManager.reset(moduleShortid, revision);
   }
 
   hasClient(moduleShortid: string) {
-    return this.clients.has(moduleShortid);
+    return this.clientsManager.has(moduleShortid);
   }
 
   getClient(moduleShortid: string) {
-    return this.clients.get(moduleShortid);
+    return this.clientsManager.get(moduleShortid);
   }
 
   getAllClients() {
-    return this.clients.getAll();
+    return this.clientsManager.getAll();
   }
 
   applyClient(moduleShortid: string, operation: SerializedTextOperation) {
-    return this.clients
+    return this.clientsManager
       .get(moduleShortid)
       .applyClient(TextOperation.fromJSON(operation));
   }
 
   applyServer(moduleShortid: string, operation: SerializedTextOperation) {
-    return this.clients
+    return this.clientsManager
       .get(moduleShortid)
       .applyServer(TextOperation.fromJSON(operation));
   }
 
   serverAck(moduleShortid: string) {
-    return this.clients.get(moduleShortid).serverAck();
+    return this.clientsManager.get(moduleShortid).serverAck();
   }
 
   createClient(moduleShortid: string, revision: number) {
-    return this.clients.create(moduleShortid, revision);
+    return this.clientsManager.create(moduleShortid, revision);
   }
 }
 

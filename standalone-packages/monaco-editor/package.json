@@ -32,5 +32,6 @@
     "typescript": "^2.8.3",
     "uncss": "^0.16.2",
     "vinyl": "^0.5.3"
-  }
+  },
+  "dependencies": {}
 }

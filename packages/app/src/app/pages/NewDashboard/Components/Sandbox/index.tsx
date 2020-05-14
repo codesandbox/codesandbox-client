@@ -1,5 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { useDrag } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -7,6 +9,7 @@ import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { isMenuClicked } from '@codesandbox/components';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
+import { DragPreview } from './DragPreview';
 
 export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const {
@@ -62,17 +65,44 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   };
 
   /* Drag logic */
+  type ItemTypes = { id: string; type: string };
 
-  const [dragging, setDragging] = React.useState(false);
+  const [{ isDragging }, dragRef, preview] = useDrag({
+    item: { id: sandbox.id, type: 'sandbox' },
+    end: (item, monitor) => {
+      const dropResult = monitor.getDropResult();
 
-  const onDragStart = () => {
-    setDragging(true);
-  };
+      if (!dropResult || !dropResult.path) return;
 
-  const onDragEnd = () => {
-    // delay by a frame so that click happens first
-    window.requestAnimationFrame(() => setDragging(false));
-  };
+      const currentCollectionPath = location.pathname.replace(
+        '/new-dashboard',
+        ''
+      );
+
+      if (dropResult.path === 'deleted') {
+        actions.dashboard.deleteSandbox([sandbox.id]);
+      } else if (dropResult.path === 'templates') {
+        actions.dashboard.makeTemplate([sandbox.id]);
+      } else if (dropResult.path === 'drafts') {
+        actions.dashboard.addSandboxesToFolder({
+          sandboxIds: [sandbox.id],
+          collectionPath: '/',
+          moveFromCollectionPath: currentCollectionPath,
+        });
+      } else {
+        actions.dashboard.addSandboxesToFolder({
+          sandboxIds: [sandbox.id],
+          collectionPath: dropResult.path,
+          moveFromCollectionPath: currentCollectionPath,
+        });
+      }
+    },
+    collect: monitor => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const thumbnailRef = React.useRef();
 
   /* View logic */
   const location = useLocation();
@@ -86,7 +116,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   /* Prevent opening sandbox while interacting */
   const onClick = event => {
-    if (edit || dragging || isMenuClicked(event)) event.preventDefault();
+    if (edit || isDragging || isMenuClicked(event)) event.preventDefault();
   };
 
   const sandboxProps = {
@@ -104,25 +134,36 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onSubmit,
     onBlur,
     enterEditing,
+    // drag preview
+    thumbnailRef,
+    opacity: isDragging ? 0.25 : 1,
   };
 
   const dragProps = {
-    drag: true,
-    // boundaries beyond which dragging is constrained
-    // setting it to 0 brings card back to its position
-    dragConstraints: { top: 0, bottom: 0, left: 0, right: 0 },
-    // To allow drag dispite constraints, we can allow
-    // movement outside constraints (it still springs back)
-    dragElastic: 1,
-    // event handlers
-    onDragStart,
-    onDragEnd,
+    ref: dragRef,
   };
 
+  React.useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, [preview]);
+
   return (
-    <motion.div {...dragProps}>
-      <Component {...sandboxProps} {...props} />
-    </motion.div>
+    <>
+      <div {...dragProps}>
+        <motion.div
+          layoutTransition={{
+            type: 'spring',
+            damping: 300,
+            stiffness: 300,
+          }}
+        >
+          <Component {...sandboxProps} {...props} />
+        </motion.div>
+      </div>
+      {isDragging ? (
+        <DragPreview viewMode={viewMode} {...sandboxProps} />
+      ) : null}
+    </>
   );
 };
 

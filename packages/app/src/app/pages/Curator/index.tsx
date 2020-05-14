@@ -5,6 +5,7 @@ import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { SubTitle } from 'app/components/SubTitle';
 import { useOvermind } from 'app/overmind';
+import { Element } from '@codesandbox/components';
 import { Navigation } from 'app/pages/common/Navigation';
 import { format, getTime, subMonths, subWeeks } from 'date-fns';
 import React, {
@@ -65,71 +66,72 @@ export const Curator: FunctionComponent = () => {
   );
 
   return (
-    <MaxWidth>
-      <Margin horizontal={1.5} vertical={1.5}>
-        <Navigation title="Curator Page" />
+    <Element style={{ width: '100vw', height: '100vh' }}>
+      <Navigation title="Curator Page" />
+      <MaxWidth>
+        <Margin horizontal={1.5} vertical={1.5}>
+          <Heading>Curator Page</Heading>
 
-        <Heading>Curator Page</Heading>
+          <SubTitle>
+            Here you can choose the sandboxes that go in the explore page
+          </SubTitle>
 
-        <SubTitle>
-          Here you can choose the sandboxes that go in the explore page
-        </SubTitle>
+          <Buttons>
+            Most popular sandboxes in the:
+            <Button
+              onClick={() =>
+                fetchPopularSandboxes(getTime(subWeeks(new Date(), 1)))
+              }
+              small
+            >
+              Last Week
+            </Button>
+            <Button
+              onClick={() =>
+                fetchPopularSandboxes(getTime(subMonths(new Date(), 1)))
+              }
+              small
+            >
+              Last Month
+            </Button>
+            <Button
+              onClick={() =>
+                fetchPopularSandboxes(getTime(subMonths(new Date(), 6)))
+              }
+              small
+            >
+              Last 6 Months
+            </Button>
+            <Button onClick={() => setShowPicker(show => !show)} small>
+              {selectedDate
+                ? format(new Date(selectedDate), 'dd/MM/yyyy')
+                : 'Custom'}
+            </Button>
+            {showPicker ? (
+              <PickerWrapper>
+                <DayPicker
+                  onDayClick={handleDayClick}
+                  selectedDays={selectedDate}
+                />
+              </PickerWrapper>
+            ) : null}
+          </Buttons>
 
-        <Buttons>
-          Most popular sandboxes in the:
-          <Button
-            onClick={() =>
-              fetchPopularSandboxes(getTime(subWeeks(new Date(), 1)))
-            }
-            small
-          >
-            Last Week
-          </Button>
-          <Button
-            onClick={() =>
-              fetchPopularSandboxes(getTime(subMonths(new Date(), 1)))
-            }
-            small
-          >
-            Last Month
-          </Button>
-          <Button
-            onClick={() =>
-              fetchPopularSandboxes(getTime(subMonths(new Date(), 6)))
-            }
-            small
-          >
-            Last 6 Months
-          </Button>
-          <Button onClick={() => setShowPicker(show => !show)} small>
-            {selectedDate
-              ? format(new Date(selectedDate), 'dd/MM/yyyy')
-              : 'Custom'}
-          </Button>
-          {showPicker ? (
-            <PickerWrapper>
-              <DayPicker
-                onDayClick={handleDayClick}
-                selectedDays={selectedDate}
-              />
-            </PickerWrapper>
-          ) : null}
-        </Buttons>
-
-        {popularSandboxes ? (
-          <Container>
-            {popularSandboxes.sandboxes.map(sandbox => (
-              <SandboxCard
-                key={sandbox.id}
-                {...sandbox}
-                pickSandbox={pickSandbox}
-              />
-            ))}
-          </Container>
-        ) : (
-          <DelayedAnimation>Fetching Sandboxes...</DelayedAnimation>
-        )}
-      </Margin>
-    </MaxWidth>
+          {popularSandboxes ? (
+            <Container>
+              {popularSandboxes.sandboxes.map(sandbox => (
+                <SandboxCard
+                  key={sandbox.id}
+                  {...sandbox}
+                  pickSandbox={pickSandbox}
+                />
+              ))}
+            </Container>
+          ) : (
+            <DelayedAnimation>Fetching Sandboxes...</DelayedAnimation>
+          )}
+        </Margin>
+      </MaxWidth>
+    </Element>
   );
 };

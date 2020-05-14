@@ -27,6 +27,7 @@ import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
+import { TextOperation } from 'ot';
 import { json } from 'overmind';
 import io from 'socket.io-client';
 
@@ -226,9 +227,9 @@ export class VSCodeEffect {
 
   public async getCodeReferenceBoundary(
     commentId: string,
-    reference: CommentFragment['references'][0]
+    reference: CommentFragment['references'][0]['metadata']
   ) {
-    this.revealPositionInCenterIfOutsideViewport(reference.metadata.anchor, 1);
+    this.revealPositionInCenterIfOutsideViewport(reference.anchor, 1);
 
     return new Promise<DOMRect>((resolve, reject) => {
       let checkCount = 0;
@@ -326,10 +327,7 @@ export class VSCodeEffect {
     this.modelsHandler.syncModule(module);
   }
 
-  public async applyOperation(
-    moduleShortid: string,
-    operation: (string | number)[]
-  ) {
+  public async applyOperation(moduleShortid: string, operation: TextOperation) {
     if (!this.modelsHandler) {
       return;
     }
@@ -478,12 +476,12 @@ export class VSCodeEffect {
     }
   }
 
-  public async setModuleCode(module: Module) {
+  public setModuleCode(module: Module, triggerChangeEvent = false) {
     if (!this.modelsHandler) {
       return;
     }
 
-    await this.modelsHandler.setModuleCode(module);
+    this.modelsHandler.setModuleCode(module, triggerChangeEvent);
   }
 
   public async closeAllTabs() {
@@ -604,6 +602,10 @@ export class VSCodeEffect {
         pinned: true,
       },
     });
+  }
+
+  public clearComments() {
+    this.modelsHandler.clearComments();
   }
 
   public setCorrections = (corrections: ModuleCorrection[]) => {

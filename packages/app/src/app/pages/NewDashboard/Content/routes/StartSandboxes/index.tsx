@@ -107,6 +107,7 @@ const NewSandbox = ({ onClick }) => (
     css={css({
       height: 240,
       fontSize: 3,
+      backgroundColor: 'grays.700',
       border: '1px solid',
       borderColor: 'grays.600',
       borderRadius: 'medium',

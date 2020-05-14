@@ -130,6 +130,15 @@ will be in the sandbox, an example body would be:
 }
 ```
 
+You can import binary files by setting `isBinary` to `true` and `content` as a URL to the file hosted externally. For example:
+
+```json
+{
+  "isBinary": true,
+  "content": "https://..."
+}
+```
+
 Every request **requires** a `package.json`. This file can either be a string or
 an object. We determine all information of the sandbox from the files, like we
 do with the GitHub import.
