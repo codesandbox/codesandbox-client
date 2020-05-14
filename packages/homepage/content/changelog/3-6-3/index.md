@@ -6,8 +6,6 @@ date: 2020-04-23
 description: This release includes bug fixes.
 ---
 
-###
-
 #### Features
 
 1. You can now invite team members via email or by sharing a link

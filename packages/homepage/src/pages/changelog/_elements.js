@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 // header
 
@@ -113,50 +113,12 @@ export const Postitle = styled.h2`
   }
 `;
 
-export const Post = styled.div`
-  font-size: 1.1rem;
-  line-height: 1.6rem;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.75);
-  margin-top: 0.8em;
-  margin-bottom: 2rem;
-  grid-area: content;
-
-  > p a {
-    text-decoration: none;
-  }
-
-  > p {
-    margin-bottom: 2rem;
-  }
-
-  > h3 {
-    color: #fff;
-    font-size: 19px;
-    margin-top: 1rem;
-  }
-
-  > h4 {
-    color: #fff;
-    font-size: 19px;
-    margin-top: 0rem;
-  }
-
-  > h5 {
-    color: #fff;
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 700;
-  }
-
-  > image {
-    margin: 0;
-  }
-
+export const listStyles = css`
   > ul,
   ol {
     padding: 0;
     margin: 1rem 0 3rem 0;
+    color: rgba(255, 255, 255, 0.75);
   }
 
   > ul li,
@@ -202,4 +164,47 @@ export const Post = styled.div`
   ol li a:hover {
     border-bottom: 1px solid rgba(255, 255, 255, 1);
   }
+`;
+
+export const Post = styled.div`
+  font-size: 1.1rem;
+  line-height: 1.6rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 0.8em;
+  margin-bottom: 2rem;
+  grid-area: content;
+
+  > p a {
+    text-decoration: none;
+  }
+
+  > p {
+    margin-bottom: 2rem;
+  }
+
+  > h3 {
+    color: #fff;
+    font-size: 19px;
+    margin-top: 1rem;
+  }
+
+  > h4 {
+    color: #fff;
+    font-size: 19px;
+    margin-top: 0rem;
+  }
+
+  > h5 {
+    color: #fff;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  > image {
+    margin: 0;
+  }
+
+  ${listStyles}
 `;

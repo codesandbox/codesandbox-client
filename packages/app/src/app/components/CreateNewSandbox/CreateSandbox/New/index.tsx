@@ -1,22 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Text, Element, Stack, Link } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
+import css from '@styled-system/css';
+import format from 'date-fns/format';
+import styled from 'styled-components';
+import { listStyles } from 'homepage/src/pages/changelog/_elements';
 import changelog from 'homepage/content/changelog';
+import ReactMarkdown from 'react-markdown';
 import parse from 'remark-parse';
 import stringify from 'remark-stringify';
 import unified from 'unified';
 import frontmatter from 'remark-frontmatter';
 import { Header } from '../elements';
-import { ListWrapper } from './elements';
 
-export const New = ({ goToTab }: { goToTab: (event: any) => void }) => {
+const Wrapper = styled(Element)`
+  ${listStyles}
+`;
+
+export const New = ({
+  goToTab,
+  getVersion,
+}: {
+  goToTab: (event: any) => void;
+  getVersion: (title: string) => void;
+}) => {
   useEffect(() => {
-    track('Create Sandbox Tab Open', { tab: 'welcome' });
+    track('Create Sandbox Tab Open', { tab: 'new' });
   }, []);
-  const latestChangelog = changelog[changelog.length - 3];
-  const [markdown, setMarkdown] = useState(null);
 
-  // eslint-disable-next-line
+  const latestChangelog = changelog[changelog.length - 1];
+  const [info, setInfo] = useState(null);
+
   useEffect(() => {
     let desc = false;
     const rawMarkdown = unified()
@@ -25,9 +39,9 @@ export const New = ({ goToTab }: { goToTab: (event: any) => void }) => {
       .use(frontmatter, ['yaml'])
       .parse(latestChangelog);
 
-    setMarkdown(() => ({
-      content: rawMarkdown.children.slice(1),
-      info: rawMarkdown.children[0].value.split('\n').reduce((acc, current) => {
+    const infoData = rawMarkdown.children[0].value
+      .split('\n')
+      .reduce((acc, current) => {
         const [key, value] = current.split(':');
 
         if (desc) {
@@ -42,9 +56,11 @@ export const New = ({ goToTab }: { goToTab: (event: any) => void }) => {
         }
 
         return acc;
-      }, {}),
-    }));
-  }, [latestChangelog]);
+      }, {});
+
+    setInfo(infoData);
+    getVersion(infoData.title);
+  }, [getVersion, latestChangelog]);
 
   return (
     <>
@@ -54,72 +70,42 @@ export const New = ({ goToTab }: { goToTab: (event: any) => void }) => {
           Show all
         </Link>
       </Header>
-      <Element padding={6} style={{ maxHeight: '100%', overflow: 'auto' }}>
-        {markdown ? (
+
+      <Element padding={6} css={css({ maxHeight: '100%', overflow: 'auto' })}>
+        {info ? (
           <>
             <Text weight="bold" size={24} block paddingBottom={1}>
-              {markdown.info.title}
+              {info.title}
             </Text>
             <Text variant="muted" block paddingBottom={3} size={3}>
-              {markdown.info.date}
+              {format(new Date(info.date), 'MMMM d yyyy')}
             </Text>
-            <Element
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gridGap: 24,
-              }}
-            >
-              <Text size={16} style={{ lineHeight: '23px' }}>
-                {markdown.info.description}
-              </Text>
-              <Element>
-                {markdown.content.map(content => {
-                  if (content.type === 'heading' && content.children.length) {
-                    return (
-                      <Text weight="bold" paddingBottom={2} block>
-                        {content.children[0].value}
-                      </Text>
-                    );
-                  }
-
-                  if (content.type === 'paragraph' && content.children.length) {
-                    return (
-                      <Text style={{ lineHeight: 1.2 }} paddingBottom={6} block>
-                        {content.children[0].value}
-                      </Text>
-                    );
-                  }
-
-                  if (content.type === 'list' && content.children.length) {
-                    const List = content.ordered ? 'ol' : 'ul';
-                    return (
-                      <ListWrapper>
-                        <List>
-                          {content.children.map(
-                            item =>
-                              item.children[0].children[0].value && (
-                                <li>{item.children[0].children[0].value}</li>
-                              )
-                          )}
-                        </List>
-                      </ListWrapper>
-                    );
-                  }
-                })}
-              </Element>
-            </Element>
+            <Text size={16} css={css({ lineHeight: '23px' })}>
+              {info.description}
+            </Text>
           </>
         ) : null}
+        <Wrapper
+          css={css({
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gridGap: 6,
+          })}
+        >
+          <ReactMarkdown source={latestChangelog.split('---')[2]} />
+        </Wrapper>
       </Element>
       <Stack
         justify="flex-end"
         paddingY={2}
         paddingRight={6}
         marginTop={4}
-        style={{ borderTop: '1px solid #242424' }}
+        css={css({
+          borderTop: '1px solid transparent',
+          borderTopColor: 'grays.600',
+        })}
       >
-        <Button style={{ width: 'auto' }} onClick={goToTab}>
+        <Button css={css({ width: 'auto' })} onClick={goToTab}>
           Create Sandbox
         </Button>
       </Stack>
