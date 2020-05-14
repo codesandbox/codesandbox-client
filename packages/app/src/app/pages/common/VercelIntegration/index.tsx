@@ -20,7 +20,7 @@ export const VercelIntegration: FunctionComponent<Props> = ({ small }) => {
       bgColor="black"
       description="Deployments"
       Icon={VercelLogo}
-      userInfo={user.integrations.vercel}
+      userInfo={user.integrations.zeit}
       onSignIn={signInVercelClicked}
       onSignOut={signOutVercelClicked}
       loading={isLoadingVercel}

@@ -74,7 +74,7 @@ export const getNetlifyDeploys: AsyncAction = async ({ state, effects }) => {
 export const getDeploys: AsyncAction = async ({ state, actions, effects }) => {
   if (
     !state.user ||
-    !state.user.integrations.vercel ||
+    !state.user.integrations.zeit ||
     !state.editor.currentSandbox
   ) {
     return;
@@ -136,7 +136,7 @@ export const deploySandboxClicked: AsyncAction = async ({
 }) => {
   state.currentModal = 'deployment';
 
-  const vercelIntegration = state.user && state.user.integrations.vercel;
+  const vercelIntegration = state.user && state.user.integrations.zeit;
 
   if (!vercelIntegration || !vercelIntegration.token) {
     effects.notificationToast.error(
@@ -149,8 +149,8 @@ export const deploySandboxClicked: AsyncAction = async ({
     try {
       const user = await effects.vercel.getUser();
 
-      if (state.user && state.user.integrations.vercel) {
-        state.user.integrations.vercel.email = user.email;
+      if (state.user && state.user.integrations.zeit) {
+        state.user.integrations.zeit.email = user.email;
       }
     } catch (error) {
       actions.internal.handleError({

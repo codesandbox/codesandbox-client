@@ -178,9 +178,9 @@ export const signInVercelClicked: AsyncAction = async ({
 };
 
 export const signOutVercelClicked: AsyncAction = async ({ state, effects }) => {
-  if (state.user?.integrations?.vercel) {
+  if (state.user?.integrations?.zeit) {
     await effects.api.signoutVercel();
-    delete state.user.integrations.vercel;
+    delete state.user.integrations.zeit;
   }
 };
 

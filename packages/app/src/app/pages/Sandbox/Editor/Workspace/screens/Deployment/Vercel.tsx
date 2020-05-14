@@ -27,7 +27,7 @@ export const Vercel = () => {
 
   return (
     <Integration icon={VercelIcon} title="Vercel">
-      {integrations.vercel ? (
+      {integrations.zeit ? (
         <>
           <Element marginX={2} marginBottom={sandboxDeploys.length ? 6 : 0}>
             <Text variant="muted" block marginBottom={4}>
