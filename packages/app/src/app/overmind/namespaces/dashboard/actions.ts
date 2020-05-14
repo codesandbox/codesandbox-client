@@ -860,7 +860,7 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
 export const addSandboxesToFolder: AsyncAction<{
   sandboxIds: string[];
   collectionPath: string;
-  moveFromCollectionPath: string;
+  moveFromCollectionPath: string | undefined;
 }> = async (
   { state, effects, actions },
   { sandboxIds, collectionPath, moveFromCollectionPath }
