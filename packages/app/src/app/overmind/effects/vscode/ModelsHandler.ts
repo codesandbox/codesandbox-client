@@ -11,7 +11,7 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { actions, dispatch } from 'codesandbox-api';
 import { css } from 'glamor';
-import { TextOperation, SerializedTextOperation } from 'ot';
+import { TextOperation } from 'ot';
 
 import { getCurrentModelPath } from './utils';
 
@@ -41,6 +41,7 @@ export type onSelectionChangeData = UserSelection;
 
 export type OnOperationAppliedData = {
   moduleShortid: string;
+  operation: TextOperation;
   title: string;
   code: string;
   model: any;
@@ -54,7 +55,7 @@ export type ModuleModel = {
   changeListener: { dispose: Function } | null;
   currentLine: number;
   path: string;
-  model: Promise<any> | null;
+  model: null | any;
   comments: Array<{ commentId: string; range: [number, number] }>;
   currentCommentDecorations: string[];
 };
@@ -153,6 +154,21 @@ export class ModelsHandler {
     );
   }
 
+  public clearComments() {
+    if (COMMENTS) {
+      Object.values(this.moduleModels).forEach(moduleModel => {
+        if (!moduleModel.model) {
+          return;
+        }
+        moduleModel.comments = [];
+        moduleModel.currentCommentDecorations = moduleModel.model.deltaDecorations(
+          moduleModel.currentCommentDecorations,
+          []
+        );
+      });
+    }
+  }
+
   public isModuleOpened(module: Module) {
     const moduleModel = this.getModuleModelByPath(module.path);
     return Boolean(moduleModel?.model);
@@ -170,7 +186,7 @@ export class ModelsHandler {
       .then(textFileEditorModel => textFileEditorModel.load())
       .then(textFileEditorModel => textFileEditorModel.textEditorModel);
 
-    const model = await moduleModel.model;
+    const model = moduleModel.model;
 
     if (COMMENTS) {
       const newDecorationComments = this.createCommentDecorations(
@@ -204,26 +220,22 @@ export class ModelsHandler {
 
     // Ensure we have the moduleModels
     Object.keys(commentThreadsByPath).forEach(path => {
-      // TODO(@christianalfoni): We should probably make this dynamic on model load instead of
-      // on editor load? Preferably we don't keep all moduleModels for files that are not opened.
       this.getOrCreateModuleModelByPath(path).comments =
         commentThreadsByPath[path];
     });
 
     // Apply the decorations
-    Object.keys(this.moduleModels).forEach(async path => {
+    Object.keys(this.moduleModels).forEach(path => {
       const moduleModel = this.moduleModels[path];
-      const relativePath = path.replace('/sandbox', '');
-      const model = await moduleModel.model;
+      const model = moduleModel.model;
 
       if (!model) {
         return;
       }
 
-      const commentThreads = commentThreadsByPath[relativePath] || [];
       const existingDecorationComments = moduleModel.currentCommentDecorations;
       const newDecorationComments = this.createCommentDecorations(
-        commentThreads,
+        moduleModel.comments,
         model,
         currentCommentThreadId,
         moduleModel.currentLine
@@ -233,8 +245,6 @@ export class ModelsHandler {
         existingDecorationComments,
         newDecorationComments
       );
-
-      moduleModel.comments = commentThreads;
     });
   }
 
@@ -243,9 +253,9 @@ export class ModelsHandler {
     const newModelPath = '/sandbox' + newPath;
 
     return Promise.all(
-      Object.keys(this.moduleModels).map(async path => {
+      Object.keys(this.moduleModels).map(path => {
         if (oldModelPath === path && this.moduleModels[path].model) {
-          const model = await this.moduleModels[path].model;
+          const model = this.moduleModels[path].model;
 
           // This runs remove/add automatically
           return this.editorApi.textFileService.move(
@@ -259,10 +269,7 @@ export class ModelsHandler {
     );
   }
 
-  public async applyOperation(
-    moduleShortid: string,
-    operation: SerializedTextOperation
-  ) {
+  public async applyOperation(moduleShortid: string, operation: TextOperation) {
     const module = this.sandbox.modules.find(m => m.shortid === moduleShortid);
 
     if (!module) {
@@ -280,56 +287,67 @@ export class ModelsHandler {
     // the model is actually resolved. This creates a "natural" queue
     if (!moduleModel.model) {
       if (modelEditor) {
-        moduleModel.model = modelEditor.textModelReference.then(
+        moduleModel.model = await modelEditor.textModelReference.then(
           ref => ref.object.textEditorModel
         );
       } else {
-        moduleModel.model = this.editorApi.textFileService.models
+        moduleModel.model = await this.editorApi.textFileService.models
           .loadOrCreate(this.monaco.Uri.file(moduleModel.path))
           .then(model => model.textEditorModel);
       }
     }
 
-    const model = await moduleModel.model;
+    const model = moduleModel.model;
 
     this.isApplyingOperation = true;
     this.applyOperationToModel(operation, false, model);
     this.isApplyingOperation = false;
     this.onOperationAppliedCallback({
       code: model.getValue(),
+      operation,
       moduleShortid: module.shortid,
       title: module.title,
       model,
     });
   }
 
-  public async setModuleCode(module: Module) {
+  /**
+   * Sets the code of a model in VSCode. This means that we directly change the in-memory
+   * model and the user will immediately see the code.
+   * @param module The module to apply the changes of
+   * @param triggerChangeEvent Whether we should trigger this event to listeners listening to the model (for eg. live)
+   */
+  public setModuleCode(module: Module, triggerChangeEvent = false) {
     const moduleModel = this.getModuleModelByPath(module.path);
+    const model = moduleModel?.model;
 
-    if (!moduleModel || !moduleModel.model) {
+    if (!model) {
       return;
     }
-    const model = await moduleModel.model;
 
     const oldCode = model.getValue();
     const changeOperation = getTextOperation(oldCode, module.code);
-    this.isApplyingOperation = true;
+    if (!triggerChangeEvent) {
+      this.isApplyingOperation = true;
+    }
     this.applyOperationToModel(changeOperation, false, model);
-    this.isApplyingOperation = false;
+    if (!triggerChangeEvent) {
+      this.isApplyingOperation = false;
+    }
   }
 
   public clearUserSelections(userId: string) {
     const decorations = Object.keys(this.userSelectionDecorations).filter(d =>
       d.startsWith(userId)
     );
-    Object.keys(this.moduleModels).forEach(async key => {
+    Object.keys(this.moduleModels).forEach(key => {
       const moduleModel = this.moduleModels[key];
 
       if (!moduleModel?.model) {
         return;
       }
 
-      const model = await moduleModel.model;
+      const model = moduleModel.model;
 
       decorations.forEach(decorationId => {
         const userDecorationIdPrefix = this.getSelectionDecorationId(
@@ -385,7 +403,7 @@ export class ModelsHandler {
 
   nameTagTimeouts: { [name: string]: number } = {};
 
-  public async updateUserSelections(
+  public updateUserSelections(
     module: Module,
     userSelections: EditorSelection[],
     showNameTag = true
@@ -396,7 +414,7 @@ export class ModelsHandler {
       return;
     }
 
-    const model = await moduleModel.model;
+    const model = moduleModel.model;
     const lines = model.getLinesContent() || [];
 
     this.cleanUserSelections(model, module.shortid, userSelections);
@@ -610,7 +628,7 @@ export class ModelsHandler {
   }
 
   private applyOperationToModel(
-    operation,
+    operation: TextOperation,
     pushStack = false,
     model = this.editorApi.getActiveCodeEditor().getModel()
   ) {
@@ -633,8 +651,9 @@ export class ModelsHandler {
     for (let i = 0; i < operation.ops.length; i++) {
       const op = operation.ops[i];
       if (TextOperation.isRetain(op)) {
-        index += op;
+        index += op as number;
       } else if (TextOperation.isInsert(op)) {
+        const textOp = op as string;
         const { lineNumber, column } = indexToLineAndColumn(
           model.getValue().split(/\n/) || [],
           index
@@ -647,8 +666,8 @@ export class ModelsHandler {
         );
 
         // if there's a new line
-        if (/\n/.test(op)) {
-          const eol = /\r\n/.test(op) ? 2 : 1;
+        if (/\n/.test(textOp)) {
+          const eol = /\r\n/.test(textOp) ? 2 : 1;
           if (eol !== currentEOLLength) {
             // With this insert the EOL of the document changed on the other side. We need
             // to accomodate our EOL to it.
@@ -658,13 +677,14 @@ export class ModelsHandler {
 
         results.push({
           range,
-          text: op,
+          text: textOp,
           forceMoveMarkers: true,
         });
       } else if (TextOperation.isDelete(op)) {
+        const delOp = op as number;
         const lines = model.getValue().split(/\n/) || [];
         const from = indexToLineAndColumn(lines, index);
-        const to = indexToLineAndColumn(lines, index - op);
+        const to = indexToLineAndColumn(lines, index - delOp);
         results.push({
           range: new this.monaco.Range(
             from.lineNumber,
@@ -674,7 +694,7 @@ export class ModelsHandler {
           ),
           text: '',
         });
-        index -= op;
+        index -= delOp;
       }
     }
 
@@ -725,7 +745,9 @@ export class ModelsHandler {
           const csbPath = model.uri.path.replace('/sandbox', '');
           dispatch(actions.correction.clear(csbPath, 'eslint'));
 
-          delete this.moduleModels[model.uri.path];
+          // We only delete the model, because the state contains things
+          // like comments, which we want to keep
+          delete this.moduleModels[model.uri.path].model;
         }
       }
     );

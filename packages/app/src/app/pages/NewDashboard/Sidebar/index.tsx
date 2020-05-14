@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { useDrop } from 'react-dnd';
 import { useOvermind } from 'app/overmind';
 import {
   Element,
@@ -11,6 +12,7 @@ import {
   Menu,
   Stack,
   Icon,
+  IconButton,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -41,6 +43,13 @@ export const Sidebar = props => {
   } else if (user) {
     activeAccount = { username: user.username, avatarUrl: user.avatarUrl };
   }
+
+  React.useEffect(() => {
+    actions.dashboard.getAllFolders();
+  }, [actions.dashboard]);
+
+  const folders = dashboard.allCollections || [];
+  const [foldersVisible, setFoldersVisibility] = React.useState(false);
 
   return (
     <Element as="aside" {...props}>
@@ -143,11 +152,64 @@ export const Sidebar = props => {
             </Menu>
           )}
         </ListAction>
-
         <RowItem name="Start" path="start" icon="box" />
-        <RowItem name="Drafts" path="drafts" icon="file" />
         <RowItem name="Recent" path="recent" icon="clock" />
-        <RowItem name="All Sandboxes" path="all" icon="folder" />
+        <RowItem name="Drafts" path="drafts" icon="file" />
+
+        <ListAction
+          justify="space-between"
+          align="center"
+          css={css({
+            paddingX: 0,
+            button: { opacity: 0 },
+            ':hover, :focus-within': { button: { opacity: 1 } },
+          })}
+        >
+          <IconButton
+            name="caret"
+            size={8}
+            title="Toggle folders"
+            onClick={() => setFoldersVisibility(!foldersVisible)}
+            css={css({
+              width: 5,
+              height: '100%',
+              borderRadius: 0,
+              svg: {
+                transform: foldersVisible ? 'rotate(0deg)' : 'rotate(-90deg)',
+                transition: 'transform ease-in-out',
+                transitionDuration: theme => theme.speeds[2],
+              },
+            })}
+          />
+          <Link
+            as={RouterLink}
+            to="/new-dashboard/all"
+            style={{ ...linkStyles, paddingLeft: 0 }}
+          >
+            <Stack align="center" gap={2}>
+              <Stack
+                as="span"
+                css={css({ width: 4 })}
+                align="center"
+                justify="center"
+              >
+                <Icon name="folder" />
+              </Stack>
+              <Text>All Sandboxes</Text>
+            </Stack>
+          </Link>
+        </ListAction>
+
+        {foldersVisible &&
+          folders.map(folder => (
+            <RowItem
+              name={folder.name}
+              path={'all' + folder.path}
+              icon="folder"
+              isNested
+            />
+          ))}
+
         <RowItem name="Templates" path="templates" icon="star" />
         <RowItem name="Recently Deleted" path="deleted" icon="trash" />
         <RowItem name="Settings (temp)" path="settings" icon="gear" />
@@ -168,13 +230,49 @@ const linkStyles = {
   paddingRight: 8,
 };
 
-const RowItem = ({ name, path, icon }) => (
-  <ListAction align="center" css={css({ paddingX: 0 })}>
-    <Link as={RouterLink} to={`/new-dashboard/${path}`} style={linkStyles}>
-      <Stack as="span" css={css({ width: 10 })} align="center" justify="center">
-        <Icon name={icon} />
-      </Stack>
-      {name}
-    </Link>
-  </ListAction>
-);
+const canNotAcceptSandboxes = ['start', 'recent', 'all', 'settings'];
+
+const RowItem = ({ name, path, icon, isNested = false }) => {
+  const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
+    accept: !canNotAcceptSandboxes.includes(path) ? 'sandbox' : 'nope',
+    drop: () => ({ path: path.replace('all', '') }),
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop(),
+      isDragging: !!monitor.getItem(),
+    }),
+  });
+
+  return (
+    <ListAction
+      ref={dropRef}
+      align="center"
+      css={css({
+        paddingX: 0,
+        paddingLeft: isNested ? 4 : 0,
+        opacity: isDragging && !canDrop ? 0.25 : 1,
+        color:
+          isDragging && canDrop ? 'list.hoverForeground' : 'list.foreground',
+        backgroundColor:
+          canDrop && isOver ? 'list.hoverBackground' : 'transparent',
+        transition: 'all ease-in',
+        transitionDuration: theme => theme.speeds[4],
+      })}
+      style={{
+        height: isNested ? 32 : 40,
+      }}
+    >
+      <Link as={RouterLink} to={`/new-dashboard/${path}`} style={linkStyles}>
+        <Stack
+          as="span"
+          css={css({ width: 10 })}
+          align="center"
+          justify="center"
+        >
+          <Icon name={icon} />
+        </Stack>
+        {name}
+      </Link>
+    </ListAction>
+  );
+};

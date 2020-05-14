@@ -26,6 +26,10 @@ export const VSCode: React.FunctionComponent = () => {
     const rootEl = containerEl.current;
     const mainContainer = effects.vscode.getEditorElement(
       (modulePath: string) => {
+        if (!state.editor.currentSandbox) {
+          return false;
+        }
+
         const template = getTemplate(state.editor.currentSandbox.template);
         const config = template.configurationFiles[modulePath];
 
@@ -66,7 +70,7 @@ export const VSCode: React.FunctionComponent = () => {
     actions.editor,
     effects.vscode,
     state.editor.currentSandbox,
-    state.editor.currentSandbox.template,
+    state.editor.currentSandbox?.template,
     getCurrentModule,
   ]);
 
