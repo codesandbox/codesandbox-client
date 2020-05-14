@@ -171,7 +171,7 @@ export const Post = styled.div`
   line-height: 1.6rem;
   font-weight: 300;
   color: rgba(255, 255, 255, 0.75);
-  margin-top: 0.8em;
+  margin-top: 1.8em;
   margin-bottom: 2rem;
   grid-area: content;
 
