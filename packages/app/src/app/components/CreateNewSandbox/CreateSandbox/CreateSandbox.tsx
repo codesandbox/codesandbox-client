@@ -1,9 +1,12 @@
 import { useOvermind } from 'app/overmind';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTabState } from 'reakit/Tab';
 import css from '@styled-system/css';
+
+import changelog from 'homepage/content/changelog';
 import { ThemeProvider, Element } from '@codesandbox/components';
 import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
+import { getInfoFromMarkdown } from './utils/getInfoFromMarkdown';
 import { Create } from './Create';
 import { Container, Tab, TabContent, Tabs } from './elements';
 import { Explore } from './Explore';
@@ -21,19 +24,28 @@ import { New } from './New';
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
 export const CreateSandbox: React.FC = props => {
-  const { state, effects } = useOvermind();
+  const {
+    state: { isFirstVisit },
+    effects: { browser },
+  } = useOvermind();
   const [newChangelogToSee, setNewChangelogToSee] = useState(false);
   const tab = useTabState({
     orientation: 'vertical',
-    selectedId: state.isFirstVisit ? 'Welcome' : 'Create',
+    selectedId: isFirstVisit ? 'Welcome' : 'Create',
   });
 
-  const checkForNew = (title: string) => {
-    if (effects.browser.storage.get('last-changelog_viewed') !== title) {
+  const latestChangelog = changelog[changelog.length - 1];
+  const [info, setInfo] = useState(null);
+
+  useEffect(() => {
+    const infoData = getInfoFromMarkdown(latestChangelog);
+    setInfo(infoData);
+    const key = 'last-changelog_viewed';
+    if (browser.storage.get(key) !== infoData.title) {
       setNewChangelogToSee(true);
     }
-    effects.browser.storage.set('last-changelog_viewed', title);
-  };
+    browser.storage.set(key, infoData.title);
+  }, [browser.storage, latestChangelog]);
 
   return (
     <ThemeProvider theme={codesandboxBlack}>
@@ -57,7 +69,7 @@ export const CreateSandbox: React.FC = props => {
             <NewIcon scale={0.5} />
             What{"'"}s new
           </Tab>
-          {state.isFirstVisit ? (
+          {isFirstVisit ? (
             <Tab {...tab} stopId="Welcome">
               <CodeSandboxIcon scale={0.5} />
               Welcome
@@ -76,7 +88,7 @@ export const CreateSandbox: React.FC = props => {
             Import Project
           </Tab>
         </Tabs>
-        {state.isFirstVisit ? (
+        {isFirstVisit ? (
           <TabContent {...tab} stopId="Welcome">
             {rProps =>
               !rProps.hidden && (
@@ -102,7 +114,8 @@ export const CreateSandbox: React.FC = props => {
             !rProps.hidden && (
               <div {...rProps}>
                 <New
-                  getVersion={checkForNew}
+                  latestChangelog={latestChangelog}
+                  info={info}
                   goToTab={() => tab.select('Create')}
                 />
               </div>

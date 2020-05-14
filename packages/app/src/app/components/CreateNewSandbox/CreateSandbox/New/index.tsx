@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Text, Element, Stack, Link } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import css from '@styled-system/css';
 import format from 'date-fns/format';
 import styled from 'styled-components';
 import { listStyles } from 'homepage/src/pages/changelog/_elements';
-import changelog from 'homepage/content/changelog';
+
 import ReactMarkdown from 'react-markdown';
-import parse from 'remark-parse';
-import stringify from 'remark-stringify';
-import unified from 'unified';
-import frontmatter from 'remark-frontmatter';
+
 import { Header } from '../elements';
 
 const Wrapper = styled(Element)`
@@ -19,48 +16,16 @@ const Wrapper = styled(Element)`
 
 export const New = ({
   goToTab,
-  getVersion,
+  info,
+  latestChangelog,
 }: {
   goToTab: (event: any) => void;
-  getVersion: (title: string) => void;
+  info: any;
+  latestChangelog: string;
 }) => {
   useEffect(() => {
     track('Create Sandbox Tab Open', { tab: 'new' });
   }, []);
-
-  const latestChangelog = changelog[changelog.length - 1];
-  const [info, setInfo] = useState(null);
-
-  useEffect(() => {
-    let desc = false;
-    const rawMarkdown = unified()
-      .use(parse)
-      .use(stringify)
-      .use(frontmatter, ['yaml'])
-      .parse(latestChangelog);
-
-    const infoData = rawMarkdown.children[0].value
-      .split('\n')
-      .reduce((acc, current) => {
-        const [key, value] = current.split(':');
-
-        if (desc) {
-          acc.description += key;
-        }
-
-        if (key === 'description' && !value) {
-          acc[key] = '';
-          desc = true;
-        } else {
-          acc[key] = value;
-        }
-
-        return acc;
-      }, {});
-
-    setInfo(infoData);
-    getVersion(infoData.title);
-  }, [getVersion, latestChangelog]);
 
   return (
     <>
