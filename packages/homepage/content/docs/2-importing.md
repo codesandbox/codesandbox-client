@@ -134,8 +134,8 @@ You can import binary files by setting `isBinary` to `true` and `content` as a U
 
 ```json
 {
-  isBinary: true,
-  content: 'https://...'
+  "isBinary": true,
+  "content": "https://..."
 }
 ```
 
