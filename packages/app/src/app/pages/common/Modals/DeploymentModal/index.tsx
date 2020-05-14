@@ -23,7 +23,7 @@ export const DeploymentModal: FunctionComponent = () => {
   }
 
   const {
-    integrations: { vercel },
+    integrations: { zeit: vercel },
   } = user;
   const vercelSignedIn = Boolean(vercel);
 

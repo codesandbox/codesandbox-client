@@ -130,7 +130,7 @@ export type CurrentUser = {
   curatorAt: string;
   badges: Badge[];
   integrations: {
-    vercel: {
+    zeit: {
       token: string;
       email?: string;
     } | null;
