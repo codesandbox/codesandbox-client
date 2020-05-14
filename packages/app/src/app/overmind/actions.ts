@@ -155,7 +155,7 @@ export const signInVercelClicked: AsyncAction = async ({
 }) => {
   state.isLoadingVercel = true;
 
-  const popup = browser.openPopup('/auth/vercel', 'sign in');
+  const popup = browser.openPopup('/auth/zeit', 'sign in');
   const data: { code: string } = await browser.waitForMessage('signin');
 
   popup.close();
