@@ -37,7 +37,7 @@ export const LiveNow = () => {
     actions: {
       live: {
         onSessionCloseClicked,
-        onChatEnabledChange,
+        onChatEnabledToggle,
         onToggleNotificationsHidden,
         onModeChanged,
       },
@@ -46,6 +46,7 @@ export const LiveNow = () => {
       live: {
         notificationsHidden,
         isOwner,
+        reconnecting,
         roomInfo: {
           startTime,
           roomId,
@@ -72,12 +73,18 @@ export const LiveNow = () => {
   return (
     <>
       <Collapsible title="Live" defaultOpen>
-        <Element css={css({ paddingX: 2 })}>
+        <Element paddingX={2}>
           <Stack justify="space-between" align="center" marginBottom={2}>
             <Text variant="danger">
               <Stack align="center" gap={2}>
-                <LiveIcon />
-                <span>You&apos;re live!</span>
+                {reconnecting ? (
+                  'Reconnecting...'
+                ) : (
+                  <>
+                    <LiveIcon />
+                    <span>You&apos;re live!</span>
+                  </>
+                )}
               </Stack>
             </Text>
             <Timer startTime={startTime} />
@@ -88,8 +95,10 @@ export const LiveNow = () => {
           </Text>
 
           <Input
+            readOnly
             defaultValue={`https://codesandbox.io/live/${roomId}`}
             marginBottom={2}
+            onFocus={({ target }: { target: any }) => target.select()}
           />
 
           {isOwner && (
@@ -105,14 +114,14 @@ export const LiveNow = () => {
         <List>
           {isOwner && (
             <ListAction
-              onClick={() => onChatEnabledChange(!chatEnabled)}
               justify="space-between"
+              onClick={() => onChatEnabledToggle()}
             >
               <Label htmlFor="chat_enabled">Chat enabled</Label>
               <Switch
                 id="chat_enabled"
                 on={chatEnabled}
-                onChange={() => onChatEnabledChange(!chatEnabled)}
+                onChange={() => onChatEnabledToggle()}
               />
             </ListAction>
           )}
@@ -131,7 +140,7 @@ export const LiveNow = () => {
       </Collapsible>
 
       <Collapsible title="Live Mode" defaultOpen>
-        <Stack direction="vertical" gap={2} css={css({ paddingX: 2 })}>
+        <Stack direction="vertical" gap={2} paddingX={2}>
           <Select
             icon={mode === 'open' ? OpenIcon : ClassroomIcon}
             value={mode}
@@ -150,7 +159,7 @@ export const LiveNow = () => {
       </Collapsible>
 
       <Collapsible title="Editors" defaultOpen>
-        <Element css={css({ paddingX: 2 })}>
+        <Stack direction="vertical" gap={2} paddingX={2}>
           {owners.map(user => (
             <User key={user.id} user={user} liveRole="owner" />
           ))}
@@ -161,12 +170,12 @@ export const LiveNow = () => {
             spectators.map(user => (
               <User key={user.id} user={user} liveRole="editor" />
             ))}
-        </Element>
+        </Stack>
       </Collapsible>
 
       {mode === 'classroom' && (
         <Collapsible title="Viewers" defaultOpen>
-          <Element css={css({ paddingX: 2 })}>
+          <Stack direction="vertical" gap={2} paddingX={2}>
             {spectators.map(user => (
               <User key={user.id} user={user} liveRole="spectator" />
             ))}
@@ -174,7 +183,7 @@ export const LiveNow = () => {
             {spectators.length
               ? null
               : 'No other users in session, invite them! '}
-          </Element>
+          </Stack>
         </Collapsible>
       )}
     </>
@@ -216,7 +225,10 @@ const User = ({ user, liveRole }) => {
       }}
     >
       <Stack gap={2} align="center">
-        <Avatar user={user} />
+        <Avatar
+          user={user}
+          css={{ img: { borderColor: `rgb(${user.color.join(',')})` } }}
+        />
         <span>
           <Text size={2} block>
             {user.username}

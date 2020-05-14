@@ -326,7 +326,7 @@ export default class Manager {
 
   evaluateModule(
     module: Module,
-    { force = false, globals = {} }: { force?: boolean; globals?: object } = {}
+    { force = false, globals }: { force?: boolean; globals?: object } = {}
   ) {
     if (this.hardReload && !this.isFirstLoad) {
       // Do a hard reload
@@ -364,7 +364,7 @@ export default class Manager {
   evaluateTranspiledModule(
     transpiledModule: TranspiledModule,
     initiator?: TranspiledModule,
-    { force = false, globals = {} }: { force?: boolean; globals?: object } = {}
+    { force = false, globals }: { force?: boolean; globals?: object } = {}
   ) {
     if (force && transpiledModule.compilation) {
       transpiledModule.compilation = null;
@@ -469,7 +469,7 @@ export default class Manager {
         envCode.split('\n').forEach(envLine => {
           const [name, ...val] = envLine.split('=');
 
-          this.envVariables[name] = val.join('=');
+          this.envVariables[name] = val.join('=').replace(/^('|")|('|")$/g, '');
         });
       } catch (e) {
         console.error(e);

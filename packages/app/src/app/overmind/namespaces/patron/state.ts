@@ -1,11 +1,11 @@
+import { PatronBadge, PatronTier } from '@codesandbox/common/lib/types';
 import { Derive } from 'app/overmind';
-import { PatronTier, PatronBadge } from '@codesandbox/common/lib/types';
 
 type State = {
   price: number;
   isUpdatingSubscription: boolean;
   tier: Derive<State, PatronTier>;
-  error: string;
+  error: string | null;
   badge: Derive<State, PatronBadge>;
 };
 

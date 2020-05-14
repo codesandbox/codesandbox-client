@@ -315,6 +315,10 @@ function initializeRequires() {
     return require('assert');
   });
 
+  global.require.define('punycode', [], () => {
+    return require('punycode');
+  });
+
   global.require.define('vs/base/common/amd', [], () => ({
     getPathFromAmdModule: (_, relativePath) =>
       require('path').join('/vs', relativePath),
@@ -367,7 +371,7 @@ function initializeRequires() {
 export default function(isVSCode: boolean, requiredModule?: string[]) {
   var METADATA = isVSCode ? VSCODE_METADATA : MONACO_METADATA;
   var IS_FILE_PROTOCOL = global.location.protocol === 'file:';
-  var DIRNAME = null;
+  var DIRNAME: string | null = null;
   if (IS_FILE_PROTOCOL) {
     var port = global.location.port;
     if (port.length > 0) {

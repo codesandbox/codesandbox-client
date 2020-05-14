@@ -1,9 +1,19 @@
-# source: https://codesandbox.stream/api/graphql
-# timestamp: Fri Jan 31 2020 13:46:04 GMT+0000 (Greenwich Mean Time)
+# source: https://codesandbox.io/api/graphql
+# timestamp: Fri May 01 2020 14:54:19 GMT+0200 (Central European Summer Time)
 
 schema {
   query: RootQuery
   mutation: RootMutation
+  subscription: RootSubscriptionType
+}
+
+enum Authorization {
+  COMMENT
+  NONE
+  OWNER
+  READ
+  WRITE_CODE
+  WRITE_PROJECT
 }
 
 type Bookmarked {
@@ -16,31 +26,85 @@ A team or the current user
 """
 union BookmarkEntity = Team | User
 
+input CodeReference {
+  anchor: Int!
+  code: String!
+  head: Int!
+  lastUpdatedAt: String!
+  path: String!
+}
+
+type CodeReferenceMetadata {
+  anchor: Int!
+  code: String!
+  head: Int!
+  path: String!
+  sandboxId: String!
+}
+
+"""
+A collaborator on a sandbox
+"""
+type Collaborator {
+  authorization: Authorization!
+  id: ID!
+  lastSeenAt: DateTime
+  sandbox: Sandbox!
+  user: User!
+  warning: String
+}
+
 type Collection {
   id: ID
-  path: String
-  sandboxes: [Sandbox]
+  path: String!
+  sandboxes: [Sandbox!]!
   team: Team
   teamId: ID
   user: User
 }
 
+"""
+A comment on a sandbox. A comment can also have replies and references.
+"""
+type Comment {
+  comments: [Comment!]!
+  content: String
+  id: ID!
+  insertedAt: NaiveDateTime!
+  isRead: Boolean!
+  isResolved: Boolean!
+  parentComment: Comment
+  references: [Reference!]!
+  replyCount: Int!
+  sandbox: Sandbox!
+  updatedAt: NaiveDateTime!
+  user: User!
+}
+
 type CurrentUser {
-  bookmarkedTemplates: [Template]
+  bookmarkedTemplates: [Template!]!
   collection(path: String!, teamId: ID): Collection
-  collections(teamId: ID): [Collection]
-  email: String
+  collections(teamId: ID): [Collection!]!
+  email: String!
   firstName: String
-  id: ID
+  id: ID!
   lastName: String
   notifications(limit: Int, orderBy: OrderBy): [Notification]
-  recentlyUsedTemplates: [Template]
-  sandboxes(limit: Int, orderBy: OrderBy, showDeleted: Boolean): [Sandbox]
+  recentlyUsedTemplates: [Template!]!
+  sandboxes(limit: Int, orderBy: OrderBy, showDeleted: Boolean): [Sandbox!]!
   team(id: ID!): Team
-  teams: [Team]
-  templates(showAll: Boolean, teamId: ID): [Template]
-  username: String
+  teams: [Team!]!
+  templates(showAll: Boolean, teamId: ID): [Template!]!
+  username: String!
 }
+
+"""
+The `DateTime` scalar type represents a date and time in the UTC
+timezone. The DateTime appears in a JSON response as an ISO8601 formatted
+string, including UTC timezone ("Z"). The parsed date and time string will
+be converted to UTC and any UTC offset other than 0 will be rejected.
+"""
+scalar DateTime
 
 enum Direction {
   ASC
@@ -56,6 +120,24 @@ type Git {
   username: String
 }
 
+"""
+An invitation to a sandbox
+"""
+type Invitation {
+  authorization: Authorization!
+  email: String
+  id: ID
+  sandbox: Sandbox!
+  token: String!
+}
+
+"""
+The `Naive DateTime` scalar type represents a naive date and time without
+timezone. The DateTime appears in a JSON response as an ISO8601 formatted
+string.
+"""
+scalar NaiveDateTime
+
 type Notification {
   data: String
   id: ID
@@ -68,76 +150,49 @@ input OrderBy {
   field: String!
 }
 
+type Reference {
+  id: ID!
+  metadata: ReferenceMetadata!
+  resource: String!
+  type: String!
+}
+
+"""
+The metadata of a reference
+"""
+union ReferenceMetadata = CodeReferenceMetadata
+
 type RootMutation {
   """
-  Accept an invitation to a team
+  Redeem an invite token from a team
   """
-  acceptTeamInvitation(teamId: ID!): Team
-
-  """
-  Add sandboxes to a collection
-  """
-  addToCollection(
-    collectionPath: String!
-    sandboxIds: [ID]!
-    teamId: ID
-  ): Collection
-
-  """
-  bookmark a template
-  """
-  bookmarkTemplate(teamId: ID, templateId: ID!): Template
-
-  """
-  Clear notification unread count
-  """
-  clearNotificationCount: User
-
-  """
-  Create a collection
-  """
-  createCollection(path: String!, teamId: ID): Collection
-
-  """
-  Create a team
-  """
-  createTeam(name: String!): Team
-
-  """
-  Delete a collection and all subfolders
-  """
-  deleteCollection(path: String!, teamId: ID): [Collection]
-
-  """
-  Delete sandboxes
-  """
-  deleteSandboxes(sandboxIds: [ID]!): [Sandbox]
-
-  """
-  Invite someone to a team
-  """
-  inviteToTeam(teamId: ID!, username: String): Team
-
-  """
-  Leave a team
-  """
-  leaveTeam(teamId: ID!): String
-
-  """
-  Make templates from sandboxes
-  """
-  makeSandboxesTemplates(sandboxIds: [ID]!): [Template]
-  permanentlyDeleteSandboxes(sandboxIds: [ID]!): [Sandbox]
-
-  """
-  Reject an invitation to a team
-  """
-  rejectTeamInvitation(teamId: ID!): String
+  redeemTeamInviteToken(inviteToken: String!): Team!
+  changeSandboxInvitationAuthorization(
+    authorization: Authorization!
+    invitationId: ID!
+    sandboxId: ID!
+  ): Invitation!
+  renameSandbox(id: ID!, title: String!): Sandbox!
 
   """
   Remove someone from a team
   """
-  removeFromTeam(teamId: ID!, userId: ID!): Team
+  removeFromTeam(teamId: ID!, userId: ID!): Team!
+
+  """
+  Revoke an invitation to a team
+  """
+  revokeTeamInvitation(teamId: ID!, userId: ID!): Team!
+
+  """
+  Invite someone to a team via email
+  """
+  inviteToTeamViaEmail(email: String!, teamId: ID!): String!
+
+  """
+  Delete sandboxes
+  """
+  deleteSandboxes(sandboxIds: [ID!]!): [Sandbox!]!
 
   """
   Rename a collection and all subfolders
@@ -147,19 +202,67 @@ type RootMutation {
     newTeamId: ID
     path: String!
     teamId: ID
-  ): [Collection]
-  renameSandbox(id: ID!, title: String!): Sandbox
+  ): [Collection!]!
 
   """
-  Revoke an invitation to a team
+  Clear notification unread count
   """
-  revokeTeamInvitation(teamId: ID!, userId: ID!): Team
-  setSandboxesPrivacy(privacy: Int, sandboxIds: [ID]!): [Sandbox]
+  clearNotificationCount: User
+  resolveComment(commentId: ID!, sandboxId: ID!): Comment!
 
   """
-  Set the description of the team
+  Accept an invitation to a team
   """
-  setTeamDescription(description: String!, teamId: ID!): Team
+  acceptTeamInvitation(teamId: ID!): Team!
+
+  """
+  bookmark a template
+  """
+  bookmarkTemplate(teamId: ID, templateId: ID!): Template
+
+  """
+  Add sandboxes to a collection
+  """
+  addToCollection(
+    collectionPath: String!
+    sandboxIds: [ID]!
+    teamId: ID
+  ): Collection!
+
+  """
+  Remove a collaborator
+  """
+  removeCollaborator(sandboxId: ID!, username: String!): Collaborator!
+  updateComment(commentId: ID!, content: String, sandboxId: ID!): Comment!
+
+  """
+  Invite someone to a team
+  """
+  inviteToTeam(teamId: ID!, username: String!): Team!
+
+  """
+  Convert templates back to sandboxes
+  """
+  unmakeSandboxesTemplates(sandboxIds: [ID!]!): [Template!]!
+
+  """
+  Add a collaborator
+  """
+  addCollaborator(
+    authorization: Authorization!
+    sandboxId: ID!
+    username: String!
+  ): Collaborator!
+
+  """
+  Leave a team
+  """
+  leaveTeam(teamId: ID!): String!
+
+  """
+  Delete a collection and all subfolders
+  """
+  deleteCollection(path: String!, teamId: ID): [Collection!]!
 
   """
   Unbookmark a template
@@ -167,9 +270,65 @@ type RootMutation {
   unbookmarkTemplate(teamId: ID, templateId: ID!): Template
 
   """
-  Convert templates back to sandboxes
+  Set the description of the team
   """
-  unmakeSandboxesTemplates(sandboxIds: [ID]!): [Template]
+  setTeamDescription(description: String!, teamId: ID!): Team!
+
+  """
+  Soft delete a comment. Note: all child comments will also be deleted.
+  """
+  deleteComment(commentId: ID!, sandboxId: ID!): Comment!
+  createSandboxInvitation(
+    authorization: Authorization!
+    email: String!
+    sandboxId: ID!
+  ): Invitation!
+  revokeSandboxInvitation(invitationId: ID!, sandboxId: ID!): Invitation!
+
+  """
+  Mark all notifications as read
+  """
+  markAllNotificationsAsRead: User
+  unresolveComment(commentId: ID!, sandboxId: ID!): Comment!
+
+  """
+  Make templates from sandboxes
+  """
+  makeSandboxesTemplates(sandboxIds: [ID!]!): [Template!]!
+  redeemSandboxInvitation(invitationToken: String!, sandboxId: ID!): Invitation!
+  createComment(
+    codeReference: CodeReference
+    content: String!
+    id: ID
+    parentCommentId: ID
+    sandboxId: ID!
+  ): Comment!
+
+  """
+  Change authorization of a collaborator
+  """
+  changeCollaboratorAuthorization(
+    authorization: Authorization!
+    sandboxId: ID!
+    username: String!
+  ): Collaborator!
+  setSandboxesPrivacy(privacy: Int, sandboxIds: [ID!]!): [Sandbox!]!
+
+  """
+  Create a collection
+  """
+  createCollection(path: String!, teamId: ID): Collection!
+
+  """
+  Create a team
+  """
+  createTeam(name: String!): Team!
+
+  """
+  Reject an invitation to a team
+  """
+  rejectTeamInvitation(teamId: ID!): String!
+  permanentlyDeleteSandboxes(sandboxIds: [ID!]!): [Sandbox!]!
 }
 
 type RootQuery {
@@ -182,6 +341,24 @@ type RootQuery {
   Get a sandbox
   """
   sandbox(sandboxId: ID!): Sandbox
+
+  """
+  A team from an invite token
+  """
+  teamByToken(inviteToken: String!): Team
+}
+
+type RootSubscriptionType {
+  collaboratorAdded(sandboxId: ID!): Collaborator!
+  collaboratorChanged(sandboxId: ID!): Collaborator!
+  collaboratorRemoved(sandboxId: ID!): Collaborator!
+  commentAdded(sandboxId: ID!): Comment!
+  commentChanged(sandboxId: ID!): Comment!
+  commentRemoved(sandboxId: ID!): Comment!
+  invitationChanged(sandboxId: ID!): Invitation!
+  invitationCreated(sandboxId: ID!): Invitation!
+  invitationRemoved(sandboxId: ID!): Invitation!
+  sandboxChanged(sandboxId: ID!): Sandbox!
 }
 
 """
@@ -190,28 +367,36 @@ A Sandbox
 type Sandbox {
   alias: String
   author: User
+  authorization: Authorization!
+  collaborators: [Collaborator!]!
   collection: Collection
+  comment(commentId: ID!): Comment
+  comments: [Comment!]!
 
   """
   If the sandbox is a template this will be set
   """
   customTemplate: Template
   description: String
+  forkCount: Int!
   forkedTemplate: Template
 
   """
   If the sandbox has a git repo tied to it this will be set
   """
   git: Git
-  id: ID
-  insertedAt: String
-  privacy: Int
+  id: ID!
+  insertedAt: String!
+  invitations: [Invitation!]!
+  likeCount: Int!
+  privacy: Int!
   removedAt: String
-  screenshotOutdated: Boolean
+  screenshotOutdated: Boolean!
   screenshotUrl: String
-  source: Source
+  source: Source!
   title: String
-  updatedAt: String
+  updatedAt: String!
+  viewCount: Int!
 }
 
 type Source {
@@ -220,15 +405,16 @@ type Source {
 }
 
 type Team {
-  bookmarkedTemplates: [Template]
-  collections: [Collection]
+  bookmarkedTemplates: [Template!]!
+  collections: [Collection!]!
   creatorId: ID
   description: String
-  id: ID
-  invitees: [User]
-  name: String
-  templates: [Template]
-  users: [User]
+  id: ID!
+  inviteToken: String!
+  invitees: [User!]!
+  name: String!
+  templates: [Template!]!
+  users: [User!]!
 }
 
 """
@@ -251,11 +437,10 @@ type Template {
 A CodeSandbox User
 """
 type User {
-  avatarUrl: String
-  email: String
+  avatarUrl: String!
   firstName: String
-  id: ID
+  id: ID!
   lastName: String
   name: String
-  username: String
+  username: String!
 }

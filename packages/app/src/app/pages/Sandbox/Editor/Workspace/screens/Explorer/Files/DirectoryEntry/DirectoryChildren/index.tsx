@@ -62,7 +62,6 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
         .map(dir => (
           <DirectoryEntry
             key={dir.id}
-            siblings={[...directories, ...modules]}
             depth={depth + 1}
             signals={{ files, editor }}
             store={{ editor: editorState, isLoggedIn }}
@@ -74,7 +73,6 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
             mainModuleId={mainModule.id}
             modules={modules}
             directories={directories}
-            currentModuleShortid={currentModuleShortid}
             isInProjectView={isInProjectView}
             markTabsNotDirty={markTabsNotDirty}
             getModulePath={getModulePath}
@@ -95,6 +93,7 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
           discardModuleChanges={discardModuleChanges}
           getModulePath={getModulePath}
           renameValidator={renameValidator}
+          isActive={m.shortid === currentModuleShortid}
         />
       ))}
     </div>

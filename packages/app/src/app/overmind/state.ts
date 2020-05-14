@@ -13,12 +13,12 @@ type State = {
   isFirstVisit: boolean;
   isLoggedIn: Derive<State, boolean>;
   hasLogIn: Derive<State, boolean>;
-  popularSandboxes: Sandbox[];
+  popularSandboxes: Sandbox[] | null;
   hasLoadedApp: boolean;
-  jwt: string;
+  jwt: string | null;
   isAuthenticating: boolean;
-  authToken: string;
-  error: string;
+  authToken: string | null;
+  error: string | null;
   contributors: string[];
   user: CurrentUser | null;
   connected: boolean;
@@ -33,12 +33,14 @@ type State = {
     y: number;
   };
   currentModal: string | null;
-  currentModalMessage: string;
+  currentModalMessage: string | null;
   uploadedFiles: UploadFile[] | null;
   maxStorage: number;
   usedStorage: number;
-  updateStatus: string;
+  updateStatus: string | null;
   isContributor: Derive<State, (username: String) => boolean>;
+  signInModalOpen: boolean;
+  redirectOnLogin: string | null;
 };
 
 export const state: State = {
@@ -79,4 +81,6 @@ export const state: State = {
   maxStorage: 0,
   usedStorage: 0,
   updateStatus: null,
+  signInModalOpen: false,
+  redirectOnLogin: null,
 };

@@ -1,14 +1,16 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Stack, Input } from '../..';
+import Rect from '@reach/rect';
+import VisuallyHidden from '@reach/visually-hidden';
+import { Stack, Input, Text } from '../..';
 
 interface ITextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   maxLength?: number;
   autosize?: boolean;
-  ref?: any;
   value?: string;
+  defaultValue?: string;
 }
 
 export const TextareaComponent: any = styled(Input).attrs({
@@ -19,10 +21,11 @@ export const TextareaComponent: any = styled(Input).attrs({
     padding: 2,
     width: '100%',
     resize: 'none',
-    // no transition because it breaks autoshrink :(
-    // leaving this comment here to save time of the brave
-    // soul who tries this again
-    // transition: 'height 150ms',
+    lineHeight: 1.2,
+    // autosize styles
+    overflow: 'hidden',
+    transitionProperty: 'height',
+    transitionDuration: theme => theme.speeds[2],
   })
 );
 
@@ -37,30 +40,30 @@ const Count = styled.div<{ limit: boolean }>(({ limit }) =>
 
 export const Textarea: React.FC<ITextareaProps> = ({
   maxLength,
+  defaultValue = '',
+  value = '',
   onChange,
   onKeyPress,
   autosize,
   ...props
 }) => {
-  const [wordCount, setWordCount] = useState(0);
-  const [value, setValue] = useState('');
+  const [innerValue, setInnerValue] = React.useState<string>(defaultValue);
 
-  const updateValues = v => {
-    if (maxLength) {
-      const trimmedText = v.substring(0, maxLength);
-      setValue(trimmedText);
-      setWordCount(trimmedText.length);
-    } else {
-      setValue(v);
-    }
+  /**
+   * To support both contolled and uncontrolled components
+   * We sync props.value with internalValue
+   */
+  React.useEffect(
+    function syncValue() {
+      setInnerValue(value);
+    },
+    [value]
+  );
+
+  const internalOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (onChange) onChange(event);
+    setInnerValue(event.target.value);
   };
-
-  useEffect(() => {
-    if (props.value) {
-      updateValues(props.value);
-    }
-    // eslint-disable-next-line
-  }, []);
 
   const Wrapper = useCallback(
     ({ children }) =>
@@ -74,45 +77,54 @@ export const Textarea: React.FC<ITextareaProps> = ({
     [maxLength]
   );
 
-  // eslint-disable-next-line consistent-return
-  const update = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (onChange) onChange(e);
-    updateValues(e.target.value);
-    if (autosize) resize(e.target as HTMLTextAreaElement);
-  };
-
-  const keyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (onKeyPress) onKeyPress(e);
-    if (maxLength) {
-      if (maxLength <= wordCount) {
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  const resize = (element: HTMLTextAreaElement) => {
-    const offset = 2; // for borders on both sides
-    element.style.height = ''; // reset before setting again
-    element.style.height = element.scrollHeight + offset + 'px';
-  };
-
   return (
     <>
       <Wrapper>
-        <TextareaComponent
-          value={value}
-          onChange={update}
-          onKeyPress={keyPress}
-          {...props}
-        />
+        <Autosize value={innerValue} style={props.style}>
+          {(height: number) => (
+            <TextareaComponent
+              value={innerValue}
+              onChange={internalOnChange}
+              maxLength={maxLength}
+              {...props}
+              style={{ ...(props.style || {}), height }}
+            />
+          )}
+        </Autosize>
+
         {maxLength ? (
-          <Count limit={maxLength <= wordCount}>
-            {wordCount}/{maxLength}
+          <Count limit={maxLength <= innerValue.length}>
+            {innerValue.length}/{maxLength}
           </Count>
         ) : null}
       </Wrapper>
     </>
   );
 };
+
+const Autosize = ({ value, style = {}, ...props }) => (
+  <Rect>
+    {({ rect, ref }) => (
+      <>
+        <VisuallyHidden>
+          <Text
+            block
+            ref={ref}
+            size={3}
+            style={{
+              // match textarea styles
+              whiteSpace: 'pre',
+              lineHeight: 1.2,
+              minHeight: 64,
+              padding: 8,
+              ...style,
+            }}
+          >
+            {value + ' '}
+          </Text>
+        </VisuallyHidden>
+        {props.children(rect ? rect.height + 20 : 0)}
+      </>
+    )}
+  </Rect>
+);

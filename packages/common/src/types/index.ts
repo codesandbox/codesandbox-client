@@ -13,6 +13,14 @@ export type SSEContainerStatus =
 
 export type SSEManagerStatus = 'connected' | 'disconnected' | 'initializing';
 
+export type PermissionType =
+  | 'owner'
+  | 'write_code'
+  | 'write_project'
+  | 'comment'
+  | 'read'
+  | 'none';
+
 export type ModuleError = {
   message: string;
   line: number;
@@ -43,7 +51,7 @@ export type ModuleCorrection = {
 };
 
 export type Module = {
-  id?: string;
+  id: string;
   title: string;
   code: string;
   savedCode: string | null;
@@ -57,7 +65,6 @@ export type Module = {
   insertedAt: string;
   updatedAt: string;
   path: string;
-  now?: any;
   type: 'file';
 };
 
@@ -73,7 +80,7 @@ export type Directory = {
   title: string;
   directoryShortid: string | null;
   shortid: string;
-  path: string;
+  path: string | null;
   sourceId: string;
   type: 'directory';
 };
@@ -104,11 +111,11 @@ export type Badge = {
 };
 
 export type CurrentUser = {
-  id: string | null;
-  email: string | null;
+  id: string;
+  email: string;
   name: string | null;
   username: string;
-  avatarUrl: string | null;
+  avatarUrl: string;
   jwt: string | null;
   subscription: {
     since: string;
@@ -117,16 +124,19 @@ export type CurrentUser = {
     plan: 'pro' | 'patron';
     duration: 'monthly' | 'yearly';
   } | null;
+  experiments: {
+    [key: string]: boolean;
+  };
   curatorAt: string;
   badges: Badge[];
   integrations: {
-    zeit?: {
+    zeit: {
       token: string;
       email?: string;
-    };
-    github?: {
+    } | null;
+    github: {
       email: string;
-    };
+    } | null;
   };
   sendSurvey: boolean;
 };
@@ -145,7 +155,7 @@ export type GitInfo = {
   username: string;
   path: string;
   branch: string;
-  commitSha: string;
+  commitSha: string | null;
 };
 
 export type SmallSandbox = {
@@ -200,11 +210,13 @@ export type User = {
 
 export type LiveUser = {
   username: string;
-  selection: UserSelection;
+  selection: UserSelection | null;
+  viewRange: UserViewRange | null;
   id: string;
   currentModuleShortid: string | null;
   color: [number, number, number];
   avatarUrl: string;
+  userId: string | null;
 };
 
 export type RoomInfo = {
@@ -299,21 +311,31 @@ export type SandboxAuthor = {
   subscriptionSince: string | null;
 };
 
+export enum CommentsFilterOption {
+  ALL = 'All',
+  OPEN = 'Open',
+  RESOLVED = 'Resolved',
+}
+
 export type Sandbox = {
   id: string;
   alias: string | null;
   title: string | null;
-  description: string | null;
+  description: string;
   viewCount: number;
   likeCount: number;
   forkCount: number;
   userLiked: boolean;
   modules: Module[];
   directories: Directory[];
+  featureFlags: {
+    [key: string]: boolean;
+  };
   collection?: {
     path: string;
   };
   owned: boolean;
+  authorization: PermissionType;
   npmDependencies: {
     [dep: string]: string;
   };
@@ -405,9 +427,8 @@ export type Settings = {
   trailingComma: string;
   useTabs: boolean;
   enableLigatures: boolean;
-  customVSCodeTheme: string;
-  manualCustomVSCodeTheme: string;
-  experimentVSCode: boolean;
+  customVSCodeTheme: string | null;
+  manualCustomVSCodeTheme: string | null;
 };
 
 export type NotificationButton = {
@@ -436,18 +457,10 @@ export type PackageJSON = {
   keywords?: string[];
   main?: string;
   module?: string;
-  scripts?: {
-    [command: string]: string;
-  };
-  dependencies?: {
-    [dep: string]: string;
-  };
-  devDependencies?: {
-    [dep: string]: string;
-  };
-  jest?: {
-    setupFilesAfterEnv?: string[];
-  };
+  scripts?: { [command: string]: string };
+  dependencies?: { [dependency: string]: string };
+  devDependencies?: { [dependency: string]: string };
+  jest?: { setupFilesAfterEnv?: string[] };
   resolutions?: { [dependency: string]: string };
 };
 
@@ -474,7 +487,14 @@ export type EditorSelection = {
   userId: string;
   name: string | null;
   selection: UserSelection | null;
-  color: number[] | null;
+  color: number[];
+};
+
+export type UserViewRange = {
+  startLineNumber: number;
+  endLineNumber: number;
+  startColumn: number;
+  endColumn: number;
 };
 
 export enum WindowOrientation {
@@ -623,7 +643,7 @@ export enum TabType {
 
 export type ModuleTab = {
   type: TabType.MODULE;
-  moduleShortid: string;
+  moduleShortid: string | null;
   dirty: boolean;
 };
 
@@ -658,9 +678,9 @@ export type UploadedFilesInfo = {
 };
 
 export type SandboxUrlSourceData = {
-  id: string;
-  alias: string | null;
-  git?: GitInfo;
+  id?: string | null;
+  alias?: string | null;
+  git?: GitInfo | null;
 };
 
 export type DevToolsTabPosition = {
@@ -679,6 +699,7 @@ export enum LiveMessageEvent {
   MODULE_STATE = 'module_state',
   USER_ENTERED = 'user:entered',
   USER_LEFT = 'user:left',
+  USERS_CHANGED = 'users:changed',
   MODULE_SAVED = 'module:saved',
   MODULE_CREATED = 'module:created',
   MODULE_MASS_CREATED = 'module:mass-created',
@@ -690,6 +711,7 @@ export enum LiveMessageEvent {
   DIRECTORY_DELETED = 'directory:deleted',
   USER_SELECTION = 'user:selection',
   USER_CURRENT_MODULE = 'user:current-module',
+  USER_VIEW_RANGE = 'user:view-range',
   LIVE_MODE = 'live:mode',
   LIVE_CHAT_ENABLED = 'live:chat_enabled',
   LIVE_ADD_EDITOR = 'live:add-editor',

@@ -1,4 +1,3 @@
-import { DiffTab, TabType } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Action, AsyncAction } from 'app/overmind';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
@@ -8,50 +7,54 @@ import { chunk } from 'lodash-es';
 export const recoverFiles: Action = ({ effects, actions, state }) => {
   const sandbox = state.editor.currentSandbox;
 
+  if (!sandbox) {
+    return;
+  }
+
   const recoverList = effects.moduleRecover.getRecoverList(
     sandbox.id,
     sandbox.modules
   );
-  effects.moduleRecover.clearSandbox(sandbox.id);
 
-  const recoveredList = recoverList
-    .map(({ recoverData, module }) => {
-      if (module.code === recoverData.savedCode) {
-        const titleA = `saved '${module.title}'`;
-        const titleB = `recovered '${module.title}'`;
-        const tab: DiffTab = {
-          type: TabType.DIFF,
-          codeA: module.code || '',
-          codeB: recoverData.code || '',
-          titleA,
-          titleB,
-          fileTitle: module.title,
-          id: `${titleA} - ${titleB}`,
-        };
-        state.editor.tabs.push(tab);
+  const recoveredList = recoverList.reduce((aggr, item) => {
+    if (!item) {
+      return aggr;
+    }
+    const { recoverData, module } = item;
 
-        actions.editor.codeChanged({
-          code: recoverData.code,
-          moduleShortid: module.shortid,
-        });
+    if (module.code !== recoverData.code) {
+      return aggr.concat(item);
+    }
 
-        return true;
-      }
+    return aggr;
+  }, [] as typeof recoverList);
 
-      return false;
-    })
-    .filter(Boolean);
-  const numRecoveredFiles = recoveredList.length;
-
-  if (numRecoveredFiles > 0) {
-    effects.analytics.track('Files Recovered', {
-      fileCount: numRecoveredFiles,
-    });
-
+  if (recoveredList.length > 0) {
     effects.notificationToast.add({
-      message: `We recovered ${numRecoveredFiles} unsaved ${
-        numRecoveredFiles > 1 ? 'files' : 'file'
-      } from a previous session`,
+      sticky: true,
+      message: `We recovered ${recoveredList.length} unsaved ${
+        recoveredList.length > 1 ? 'files' : 'file'
+      } from a previous session, what do you want to do?`,
+      actions: {
+        primary: [
+          {
+            label: 'Apply changes',
+            run: () => actions.files.applyRecover(recoveredList),
+          },
+        ],
+        secondary: [
+          {
+            label: 'Compare',
+            hideOnClick: true,
+            run: () => actions.files.createRecoverDiffs(recoveredList),
+          },
+          {
+            label: 'Discard',
+            hideOnClick: true,
+            run: () => actions.files.discardRecover(),
+          },
+        ],
+      },
       status: NotificationStatus.NOTICE,
     });
   }
@@ -67,11 +70,16 @@ export const uploadFiles: AsyncAction<
     directories: any;
   }
 > = async ({ effects }, { files, directoryShortid }) => {
-  const parsedFiles = {};
+  const parsedFiles: {
+    [key: string]: { isBinary: boolean; content: string };
+  } = {};
   // We first create chunks so we don't overload the server with 100 multiple
   // upload requests
   const filePaths = Object.keys(files);
   const chunkedFilePaths = chunk(filePaths, 5);
+
+  const textExtensions = (await import('textextensions/source/index.json'))
+    .default;
 
   // We traverse all files and upload them when necessary, then add them to the
   // parsedFiles object
@@ -82,19 +90,10 @@ export const uploadFiles: AsyncAction<
         const file = files[filePath];
         const { dataURI } = file;
 
+        const extension = filePath.split('.').pop();
+
         if (
-          (/\.(j|t)sx?$/.test(filePath) ||
-            /\.coffee$/.test(filePath) ||
-            /\.json$/.test(filePath) ||
-            /\.html$/.test(filePath) ||
-            /\.vue$/.test(filePath) ||
-            /\.styl$/.test(filePath) ||
-            /\.(le|sc|sa)ss$/.test(filePath) ||
-            /\.haml$/.test(filePath) ||
-            /\.pug$/.test(filePath) ||
-            /\.svg$/.test(filePath) ||
-            /\.md$/.test(filePath) ||
-            /\.svelte$/.test(filePath) ||
+          ((extension && textExtensions.includes(extension)) ||
             file.type.startsWith('text/') ||
             file.type === 'application/json') &&
           dataURI.length < MAX_FILE_SIZE

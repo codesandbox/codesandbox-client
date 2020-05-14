@@ -52,7 +52,7 @@ export const Dependencies: FunctionComponent = () => {
               dependency={dependency}
               key={dependency}
               onRefresh={(name, version) => addNpmDependency({ name, version })}
-              onRemove={name => npmDependencyRemoved({ name })}
+              onRemove={npmDependencyRemoved}
             />
           ))}
       </List>

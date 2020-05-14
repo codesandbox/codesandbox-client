@@ -1,13 +1,13 @@
 import {
-  ServerStatus,
   ServerContainerStatus,
   ServerPort,
+  ServerStatus,
 } from '@codesandbox/common/lib/types';
 
 type State = {
   status: ServerStatus;
   containerStatus: ServerContainerStatus;
-  error: string;
+  error: string | null;
   hasUnrecoverableError: false;
   ports: ServerPort[];
 };

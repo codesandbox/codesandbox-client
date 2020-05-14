@@ -6,20 +6,45 @@ const variants = {
   body: 'inherit',
   muted: 'mutedForeground',
   danger: 'errorForeground',
+  active: 'button.background',
 };
 
-export const Text = styled(Element).attrs({ as: 'span' })<{
+const overflowStyles = {
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+};
+
+export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   size?: number;
   align?: string;
   weight?: string;
+  fontStyle?: string;
   block?: boolean;
-  variant?: 'body' | 'muted' | 'danger';
-}>(({ size, align, weight, block, variant = 'body', ...props }) =>
-  css({
-    fontSize: size || 'inherit', // from theme.fontSizes
-    textAlign: align || 'left',
-    fontWeight: weight || null, // from theme.fontWeights
-    display: block ? 'block' : 'inline',
-    color: variants[variant],
-  })
+  maxWidth?: number | string;
+  variant?: 'body' | 'muted' | 'danger' | 'active';
+  dateTime?: string;
+}
+
+export const Text = styled(Element).attrs({ as: 'span' })<ITextProps>(
+  ({
+    size,
+    fontStyle,
+    align,
+    weight,
+    block,
+    variant = 'body',
+    maxWidth,
+    ...props
+  }) =>
+    css({
+      fontSize: size || 'inherit', // from theme.fontSizes
+      textAlign: align || 'left',
+      fontWeight: weight || null, // from theme.fontWeights
+      fontStyle: fontStyle || null, // from theme.fontWeights
+      display: block || maxWidth ? 'block' : 'inline',
+      color: variants[variant],
+      maxWidth,
+      ...(maxWidth ? overflowStyles : {}),
+    })
 );

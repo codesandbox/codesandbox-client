@@ -1,10 +1,10 @@
 import getTemplate from '@codesandbox/common/lib/templates';
 import { CustomTemplate } from '@codesandbox/common/lib/types';
+import track from '@codesandbox/common/lib/utils/analytics';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
-import track from '@codesandbox/common/lib/utils/analytics';
 
 export const valueChanged: Action<{
   field: string;
@@ -21,6 +21,10 @@ export const tagAdded: AsyncAction = withOwnedSandbox(
   async ({ state, effects, actions }) => {
     const { tagName } = state.workspace.tags;
     const sandbox = state.editor.currentSandbox;
+
+    if (!sandbox) {
+      return;
+    }
 
     const cleanTag = tagName.replace(/#/g, '');
 
@@ -41,6 +45,11 @@ export const tagAdded: AsyncAction = withOwnedSandbox(
 export const tagRemoved: AsyncAction<string> = withOwnedSandbox(
   async ({ state, effects, actions }, tag) => {
     const sandbox = state.editor.currentSandbox;
+
+    if (!sandbox) {
+      return;
+    }
+
     const tagIndex = sandbox.tags.indexOf(tag);
 
     sandbox.tags.splice(tagIndex, 1);
@@ -48,8 +57,21 @@ export const tagRemoved: AsyncAction<string> = withOwnedSandbox(
     try {
       sandbox.tags = await effects.api.deleteTag(sandbox.id, tag);
 
+      if (
+        !state.editor.parsedConfigurations ||
+        !state.editor.currentPackageJSON
+      ) {
+        return;
+      }
       // Create a "joint action" on this
+      if (!state.editor.parsedConfigurations.package) {
+        return;
+      }
       const { parsed } = state.editor.parsedConfigurations.package;
+
+      if (!parsed) {
+        return;
+      }
 
       parsed.keywords = sandbox.tags;
       parsed.name = slugify(sandbox.title || sandbox.id);
@@ -58,7 +80,7 @@ export const tagRemoved: AsyncAction<string> = withOwnedSandbox(
       const code = JSON.stringify(parsed, null, 2);
       const moduleShortid = state.editor.currentPackageJSON.shortid;
 
-      await actions.editor.internal.saveCode({
+      await actions.editor.codeSaved({
         code,
         moduleShortid,
         cbID: null,
@@ -74,23 +96,57 @@ export const tagsChanged: AsyncAction<{
   newTags: string[];
   removedTags: string[];
 }> = async ({ actions, effects, state }, { newTags, removedTags }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
   const { tags } = state.editor.currentSandbox;
   if (tags.length > 5) {
-    return effects.notificationToast.error('You can have a maximum of 5 tags');
+    effects.notificationToast.error('You can have a maximum of 5 tags');
+    return;
   }
 
   const tagWasRemoved =
     newTags.length < tags.length && removedTags.length === 1;
   if (tagWasRemoved) {
-    return removedTags.forEach(actions.workspace.tagRemoved);
+    removedTags.forEach(actions.workspace.tagRemoved);
+    return;
   }
 
-  return actions.workspace.tagAdded();
+  await actions.workspace.tagAdded();
 };
+
+/** tagsChanged2 takes new tags and does the diffing on its own
+ * This is v2 of tagsChanged. It's used in the redesign
+ */
+export const tagsChanged2: AsyncAction<string[]> = withOwnedSandbox(
+  async ({ state, effects, actions }, newTags) => {
+    const sandbox = state.editor.currentSandbox;
+    if (!sandbox) return;
+
+    const { tags: oldTags } = sandbox;
+
+    const removedTags = oldTags.filter(tag => !newTags.includes(tag));
+    const addedTags = newTags.filter(tag => !oldTags.includes(tag));
+
+    removedTags.forEach(actions.workspace.tagRemoved);
+
+    addedTags.forEach(async tag => {
+      const cleanTag = tag.replace(/#/g, '');
+
+      // use old methods to update tags
+      actions.workspace.tagChanged(cleanTag);
+      await actions.workspace.tagAdded();
+    });
+  }
+);
 
 export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
   async ({ state, effects, actions }) => {
     const sandbox = state.editor.currentSandbox;
+    if (!sandbox) {
+      return;
+    }
     const { project } = state.workspace;
     const hasChangedTitle =
       project.title.trim() && sandbox.title !== project.title;
@@ -122,6 +178,11 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
           alias: project.alias,
         });
 
+        if (!updatedSandbox) {
+          effects.notificationToast.error('Could not update Sandbox');
+          return;
+        }
+
         effects.router.replaceSandboxUrl(updatedSandbox);
 
         await actions.editor.internal.updateSandboxPackageJson();
@@ -138,6 +199,9 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
 
 export const externalResourceAdded: AsyncAction<string> = withOwnedSandbox(
   async ({ effects, state, actions }, resource) => {
+    if (!state.editor.currentSandbox) {
+      return;
+    }
     const { externalResources } = state.editor.currentSandbox;
 
     externalResources.push(resource);
@@ -166,6 +230,10 @@ export const externalResourceAdded: AsyncAction<string> = withOwnedSandbox(
 
 export const externalResourceRemoved: AsyncAction<string> = withOwnedSandbox(
   async ({ effects, state, actions }, resource) => {
+    if (!state.editor.currentSandbox) {
+      return;
+    }
+
     const { externalResources } = state.editor.currentSandbox;
     const resourceIndex = externalResources.indexOf(resource);
 
@@ -207,6 +275,10 @@ export const sandboxDeleted: AsyncAction = async ({
 }) => {
   actions.modalClosed();
 
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
   await effects.api.deleteSandbox(state.editor.currentSandbox.id);
 
   // Not sure if this is in use?
@@ -220,6 +292,10 @@ export const sandboxPrivacyChanged: AsyncAction<{
   privacy: 0 | 1 | 2;
   source?: string;
 }> = async ({ actions, effects, state }, { privacy, source = 'generic' }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
   track('Sandbox - Update Privacy', {
     privacy,
     source,
@@ -278,12 +354,17 @@ export const deleteTemplate: AsyncAction = async ({
   effects,
 }) => {
   effects.analytics.track('Template - Removed', { source: 'editor' });
-  const sandboxId = state.editor.currentSandbox.id;
+  if (
+    !state.editor.currentSandbox ||
+    !state.editor.currentSandbox.customTemplate
+  ) {
+    return;
+  }
+  const sandbox = state.editor.currentSandbox;
   const templateId = state.editor.currentSandbox.customTemplate.id;
 
   try {
-    await effects.api.deleteTemplate(sandboxId, templateId);
-    const sandbox = state.editor.sandboxes[sandboxId];
+    await effects.api.deleteTemplate(sandbox.id, templateId);
 
     sandbox.isFrozen = false;
     sandbox.customTemplate = null;
@@ -301,6 +382,10 @@ export const editTemplate: AsyncAction<CustomTemplate> = async (
   { state, actions, effects },
   template
 ) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
   effects.analytics.track('Template - Edited', { source: 'editor' });
 
   const sandboxId = state.editor.currentSandbox.id;
@@ -327,6 +412,10 @@ export const addedTemplate: AsyncAction<{
   description: string;
   title: string;
 }> = async ({ state, actions, effects }, template) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
   effects.analytics.track('Template - Created', { source: 'editor' });
 
   const sandboxId = state.editor.currentSandbox.id;

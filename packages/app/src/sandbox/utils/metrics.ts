@@ -108,20 +108,19 @@ getGlobal().measurements = {
   getMeasurements,
 };
 
-const MEASUREMENT_API = `https://col.ops.csb.dev/data/sandpack`;
+const MEASUREMENT_API = `https://col.csbops.io/data/sandpack`;
 
 export function persistMeasurements(data: {
   sandboxId: string;
   cacheUsed: boolean;
   browser: string;
   version: string;
-}) {
+}): Promise<Response | void> {
   const body = [
     {
       measurement: 'load_times',
       tags: {
         browser: data.browser,
-        sandbox_id: data.sandboxId,
         cache_used: data.cacheUsed,
         version: data.version,
       },

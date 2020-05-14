@@ -164,7 +164,9 @@ export function ignoreNextCache() {
 
 export async function consumeCache(manager: Manager) {
   try {
-    const shouldIgnoreCache = localStorage.getItem('ignoreCache');
+    const shouldIgnoreCache =
+      localStorage.getItem('ignoreCache') ||
+      localStorage.getItem('ignoreCacheDev');
     if (shouldIgnoreCache) {
       localStorage.removeItem('ignoreCache');
 

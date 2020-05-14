@@ -1,4 +1,3 @@
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import {
   COLUMN_MEDIA_THRESHOLD,
@@ -8,9 +7,8 @@ import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 import Loadable from 'app/utils/Loadable';
-import { templateColor } from 'app/utils/template-color';
-import React, { useCallback, useEffect, useReducer } from 'react';
-import { ThemeProvider } from 'styled-components';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { ThemeProvider } from '@codesandbox/components';
 
 import CommitModal from './CommitModal';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
@@ -26,7 +24,7 @@ import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import PreferencesModal from './PreferencesModal';
-import PRModal from './PRModal';
+import { PRModal } from './PRModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
 import { ShareModal } from './ShareModal';
@@ -36,7 +34,9 @@ import { SurveyModal } from './SurveyModal';
 import UploadModal from './UploadModal';
 
 const MoveSandboxFolderModal = Loadable(() =>
-  import('./MoveSandboxFolderModal')
+  import('./MoveSandboxFolderModal').then(module => ({
+    default: module.MoveSandboxFolderModal,
+  }))
 );
 
 const modals = {
@@ -54,7 +54,7 @@ const modals = {
   },
   deployment: {
     Component: DeploymentModal,
-    width: 750,
+    width: 400,
   },
   exportGithub: {
     Component: ExportGitHubModal,
@@ -106,15 +106,15 @@ const modals = {
   },
   liveSessionEnded: {
     Component: LiveSessionEnded,
-    width: 600,
+    width: 400,
   },
   liveVersionMismatch: {
     Component: LiveSessionVersionMismatch,
-    width: 600,
+    width: 400,
   },
   uploading: {
     Component: UploadModal,
-    width: 600,
+    width: 400,
   },
   storageManagement: {
     Component: StorageManagementModal,
@@ -122,7 +122,7 @@ const modals = {
   },
   forkServerModal: {
     Component: ForkServerModal,
-    width: 500,
+    width: 400,
   },
   moveSandbox: {
     Component: MoveSandboxFolderModal,
@@ -138,11 +138,10 @@ const modals = {
   },
 };
 
-const Modals: React.FC = () => {
+const Modals: FunctionComponent = () => {
   const {
     actions,
     state: {
-      editor: { currentSandbox },
       preferences: {
         settings: { customVSCodeTheme },
       },
@@ -150,46 +149,32 @@ const Modals: React.FC = () => {
     },
   } = useOvermind();
 
-  const [state, setState] = useReducer((s, a) => ({ ...s, ...a }), {
+  const [localState, setLocalState] = useState({
     theme: {
       colors: {},
       vscodeTheme: codesandbox,
     },
-    customVSCodeTheme,
+    customVSCodeTheme: null,
   });
 
-  const loadTheme = useCallback(async () => {
-    try {
-      const theme = await getVSCodeTheme('', customVSCodeTheme);
-      setState({ theme, customVSCodeTheme });
-    } catch (e) {
-      console.error(e);
+  useEffect(() => {
+    async function loadTheme() {
+      try {
+        const t = await getVSCodeTheme('', customVSCodeTheme);
+        setLocalState({ theme: t, customVSCodeTheme });
+      } catch (e) {
+        console.error(e);
+      }
     }
-  }, [customVSCodeTheme]);
-
-  useEffect(() => {
-    loadTheme();
-  }, [loadTheme]);
-
-  useEffect(() => {
-    if (customVSCodeTheme !== state.customVSCodeTheme) {
+    if (localState.customVSCodeTheme !== customVSCodeTheme) {
       loadTheme();
     }
-  });
-
-  const sandbox = currentSandbox;
-  const templateDef = sandbox && getTemplateDefinition(sandbox.template);
+  }, [localState.customVSCodeTheme, customVSCodeTheme]);
 
   const modal = currentModal && modals[currentModal];
 
   return (
-    <ThemeProvider
-      theme={{
-        templateColor: templateColor(sandbox, templateDef),
-        templateBackgroundColor: templateDef && templateDef.backgroundColor,
-        ...state.theme,
-      }}
-    >
+    <ThemeProvider theme={localState.theme.vscodeTheme}>
       <Modal
         isOpen={Boolean(modal)}
         width={
@@ -207,4 +192,5 @@ const Modals: React.FC = () => {
     </ThemeProvider>
   );
 };
+
 export { Modals };

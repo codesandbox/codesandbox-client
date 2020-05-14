@@ -1,5 +1,4 @@
-import * as templates from '@codesandbox/common/lib/templates';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState, useCallback } from 'react';
 
 import { useOvermind } from 'app/overmind';
 import { ListAction, Text, Element } from '@codesandbox/components';
@@ -13,13 +12,6 @@ const buttonStyles = css`
   border: 0;
   background: transparent;
   cursor: pointer;
-`;
-
-export const Button = styled(PopoverDisclosure)<{ color: string }>`
-  ${({ color }) => css`
-    color: ${color};
-    ${buttonStyles}
-  `};
 `;
 
 export const IconButton = styled.button`
@@ -37,10 +29,11 @@ export const IconWrapper = styled(Popover)`
 export const IconList = styled.ul`
   list-style: none;
   display: grid;
-  padding: 0;
+  padding: ${props => props.theme.space[2]}px;
   margin: 0;
   grid-template-columns: repeat(7, 24px);
   grid-gap: 10px;
+  border: 1px solid ${props => props.theme.colors.sideBar.border};
 
   li {
     cursor: pointer;
@@ -48,9 +41,7 @@ export const IconList = styled.ul`
 `;
 
 const OpenPopover = styled(PopoverDisclosure)`
-  padding: 0;
-  background: transparent;
-  border: 0;
+  ${buttonStyles}
   color: inherit;
   width: 100%;
 `;
@@ -66,21 +57,26 @@ export const TemplateConfig: FunctionComponent = () => {
       },
     },
   } = useOvermind();
+  const [popupVisible, setPopupVisible] = useState(false);
   const iconPopover = usePopoverState({
     placement: 'top',
+    visible: popupVisible,
   });
   const [selectedIcon, setSelectedIcon] = useState(
     customTemplate.iconUrl || ''
   );
 
   const DefaultIcon = getIcon(template);
-  const defaultColor = templates.default(template).color();
 
-  const setIcon = (key: string) => {
-    setSelectedIcon(key);
-    iconPopover.hide();
-    editTemplate({ ...customTemplate, iconUrl: key });
-  };
+  const setIcon = useCallback(
+    (key: string) => {
+      setSelectedIcon(key);
+      setPopupVisible(false);
+      editTemplate({ ...customTemplate, iconUrl: key });
+    },
+    [customTemplate, editTemplate, setSelectedIcon, setPopupVisible]
+  );
+
   const TemplateIcon = Icons[selectedIcon];
 
   return (
@@ -88,13 +84,13 @@ export const TemplateConfig: FunctionComponent = () => {
       <ListAction justify="space-between" gap={2}>
         <Text>Template Icon</Text>
         <Element>
-          <Button {...iconPopover} color={defaultColor}>
+          <Element>
             {selectedIcon && TemplateIcon ? (
               <TemplateIcon width={24} />
             ) : (
               <DefaultIcon width={24} />
             )}
-          </Button>
+          </Element>
           <IconWrapper
             aria-label="Choose an Icon"
             hideOnClickOutside
@@ -105,9 +101,8 @@ export const TemplateConfig: FunctionComponent = () => {
               {Object.keys(Icons).map((i: string) => {
                 const TemplateIconMap = Icons[i];
                 return (
-                  // eslint-disable-next-line
-                  <li onClick={() => setIcon(i)} role="button" tabIndex={0}>
-                    <IconButton>
+                  <li key={i}>
+                    <IconButton onClick={() => setIcon(i)}>
                       <TemplateIconMap width={24} />
                     </IconButton>
                   </li>

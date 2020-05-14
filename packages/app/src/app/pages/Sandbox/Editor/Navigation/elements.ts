@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
+import { Stack } from '@codesandbox/components';
 
-export const Container = styled.div`
+export const Container = styled(Stack)`
   ${({
     topOffset,
     bottomOffset,
@@ -14,66 +15,58 @@ export const Container = styled.div`
     top: ${topOffset}px;
     bottom: ${bottomOffset}px;
     left: 0;
-    display: flex;
-    flex-direction: column;
-    width: 3.5rem;
-    border-right: 1px solid ${theme['activityBar.border'] || 'transparent'};
-    flex: 0 0 3.5rem;
+    padding: ${theme.space[2]}px;
+    border-right: 1px solid ${theme.colors.activityBar.border};
     height: 100%;
-    color: ${theme[`activityBar.inactiveForeground`] ||
-      css`rgba(255, 255, 255, 0.5)`};
+    color: ${theme.colors.mutedForeground};
     font-size: 1.4rem;
-    align-items: center;
-    background-color: ${theme[`activityBar.background`] || css`inherit`};
+    background-color: ${theme.colors.activityBar.background};
   `}
 `;
 
-export const IconContainer = styled.div<{
+export const IconContainer = styled(Stack)<{
   selected: boolean;
   isDisabled: boolean;
-}>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: 0.3s ease all;
-  height: 3.5rem;
-  width: 3.5rem;
-  font-size: 1.875rem;
-  color: ${props =>
-    props.theme[`activityBar.inactiveForeground`] ||
-    css`rgba(255, 255, 255, 0.5)`};
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  appearance: none;
-  outline: 0;
+}>(
+  props => css`
+    transition: ${props.theme.speeds[1]}ms ease all;
+    height: ${props.theme.space[9]}px;
+    width: ${props.theme.space[10]}px;
+    color: ${props.theme.colors.activityBar.inactiveForeground};
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    border-radius: ${props.theme.radii.small}px;
+    box-sizing: border-box;
+    padding: 0;
 
-  &:hover {
-    color: ${props => props.theme[`activityBar.foreground`] || css`white`};
-  }
+    &:hover {
+      background: ${props.theme.colors.activityBar.hoverBackground};
+    }
 
-  ${props =>
-    props.selected &&
-    css`
-      color: ${props.theme[`activityBar.foreground`] || css`white`};
-    `};
+    &:focus {
+      outline: none;
+      background: ${props.theme.colors.activityBar.hoverBackground};
+    }
 
-  ${props =>
-    props.isDisabled &&
-    !props.selected &&
-    css`
-      opacity: 0.4;
-    `}
-`;
+    ${props.selected &&
+      css`
+        color: ${props.theme.colors.activityBar.selectedForeground};
+      `};
+
+    ${props.isDisabled &&
+      !props.selected &&
+      css`
+        opacity: 0.4;
+      `}
+  `
+);
 
 export const Separator = styled.hr`
   width: calc(100% - 20px);
   height: 1px;
-  background-color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255,0.1)'};
-
+  background-color: ${props => props.theme.colors.sideBar.border};
   margin: 0.25rem 0;
-
   outline: none;
   border: none;
 `;

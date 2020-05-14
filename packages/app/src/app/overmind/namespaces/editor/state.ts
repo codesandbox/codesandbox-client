@@ -16,8 +16,10 @@ import {
   SandboxFs,
   Tabs,
   WindowOrientation,
+  Directory,
 } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
+import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
 import { Derive } from 'app/overmind';
 import immer from 'immer';
 
@@ -25,22 +27,29 @@ import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
 
 type State = {
-  currentId: string;
+  /**
+   * Never use this! It doesn't reflect the id of the current sandbox. Use editor.currentSandbox.id instead.
+   */
+  currentId: string | null;
   currentModuleShortid: string | null;
   isForkingSandbox: boolean;
-  mainModuleShortid: string;
+  mainModuleShortid: string | null;
   sandboxes: {
     [id: string]: Sandbox;
   };
+  collaborators: CollaboratorFragment[];
+  invitations: InvitationFragment[];
   // TODO: What is this really? Could not find it in Cerebral, but
   // EditorPreview is using it... weird stuff
   devToolTabs: Derive<State, ViewConfig[]>;
   isLoading: boolean;
-  notFound: boolean;
-  error: string | null;
+  error: {
+    status: number;
+    message: string;
+  } | null;
   isResizing: boolean;
   changedModuleShortids: Derive<State, string[]>;
-  currentTabId: string;
+  currentTabId: string | null;
   tabs: Tabs;
   errors: ModuleError[];
   corrections: ModuleCorrection[];
@@ -53,32 +62,39 @@ type State = {
   workspaceConfigCode: string;
   statusBar: boolean;
   previewWindowOrientation: WindowOrientation;
+  canWriteCode: Derive<State, boolean>;
   isAllModulesSynced: Derive<State, boolean>;
-  currentSandbox: Derive<State, Sandbox>;
+  currentSandbox: Derive<State, Sandbox | null>;
   currentModule: Derive<State, Module>;
-  mainModule: Derive<State, Module>;
-  currentPackageJSON: Derive<State, Module>;
-  currentPackageJSONCode: Derive<State, string>;
-  parsedConfigurations: Derive<State, ParsedConfigurationFiles> | null;
-  currentTab: Derive<State, ModuleTab | DiffTab>;
+  mainModule: Derive<State, Module | null>;
+  currentPackageJSON: Derive<State, Module | null>;
+  currentPackageJSONCode: Derive<State, string | null>;
+  parsedConfigurations: Derive<State, ParsedConfigurationFiles | null>;
+  currentTab: Derive<State, ModuleTab | DiffTab | undefined>;
   modulesByPath: SandboxFs;
   isAdvancedEditor: Derive<State, boolean>;
-  shouldDirectoryBeOpen: Derive<State, (directoryShortid: string) => boolean>;
+  shouldDirectoryBeOpen: Derive<
+    State,
+    (params: { directoryId: string; module?: Module }) => boolean
+  >;
   currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
+  hasLoadedInitialModule: boolean;
 };
 
 export const state: State = {
+  hasLoadedInitialModule: false,
   sandboxes: {},
   currentId: null,
   isForkingSandbox: false,
   currentModuleShortid: null,
   mainModuleShortid: null,
   isLoading: true,
-  notFound: false,
   error: null,
   isResizing: false,
   modulesByPath: {},
+  collaborators: [],
+  invitations: [],
   changedModuleShortids: ({ currentSandbox }) => {
     if (!currentSandbox) {
       return [];
@@ -90,7 +106,7 @@ export const state: State = {
       }
 
       return aggr;
-    }, []);
+    }, [] as string[]);
   },
   currentTabId: null,
   tabs: [],
@@ -120,7 +136,16 @@ export const state: State = {
     devToolIndex: 0,
     tabPosition: 0,
   },
-  currentSandbox: ({ sandboxes, currentId }) => sandboxes[currentId],
+  canWriteCode: ({ currentSandbox }) =>
+    currentSandbox?.authorization === 'write_code',
+  currentSandbox: ({ sandboxes, currentId }) => {
+    if (currentId && sandboxes[currentId]) {
+      return sandboxes[currentId];
+    }
+
+    return null;
+  },
+
   isAllModulesSynced: ({ changedModuleShortids }) =>
     !changedModuleShortids.length,
   currentModule: ({ currentSandbox, currentModuleShortid }) =>
@@ -170,10 +195,10 @@ export const state: State = {
       m => m.directoryShortid == null && m.title === 'package.json'
     );
 
-    return module;
+    return module || null;
   },
   currentPackageJSONCode: ({ currentSandbox, currentPackageJSON }) => {
-    if (!currentPackageJSON) {
+    if (!currentPackageJSON || !currentSandbox) {
       return null;
     }
 
@@ -181,18 +206,23 @@ export const state: State = {
       ? currentPackageJSON.code
       : generateFileFromSandbox(currentSandbox);
   },
-  shouldDirectoryBeOpen: ({
-    currentSandbox,
-    currentModule,
-  }) => directoryShortid => {
+  shouldDirectoryBeOpen: ({ currentSandbox, currentModule }) => ({
+    directoryId,
+    module = currentModule,
+  }) => {
+    if (!currentSandbox) {
+      return false;
+    }
+
     const { modules, directories } = currentSandbox;
-    const currentModuleId = currentModule.id;
+    const currentModuleId = module.id;
     const currentModuleParents = getModuleParents(
       modules,
       directories,
       currentModuleId
     );
-    const isParentOfModule = currentModuleParents.includes(directoryShortid);
+
+    const isParentOfModule = currentModuleParents.includes(directoryId);
 
     return isParentOfModule;
   },
@@ -201,7 +231,7 @@ export const state: State = {
     parsedConfigurations,
     workspaceConfigCode: intermediatePreviewCode,
   }) => {
-    if (!sandbox) {
+    if (!sandbox || !parsedConfigurations) {
       return [];
     }
 
@@ -255,7 +285,11 @@ export const state: State = {
 };
 
 // This should be moved somewhere else
-function getModuleParents(modules, directories, id) {
+function getModuleParents(
+  modules: Module[],
+  directories: Directory[],
+  id: string
+): string[] {
   const module = modules.find(moduleEntry => moduleEntry.id === id);
 
   if (!module) return [];
@@ -263,11 +297,11 @@ function getModuleParents(modules, directories, id) {
   let directory = directories.find(
     directoryEntry => directoryEntry.shortid === module.directoryShortid
   );
-  let directoryIds = [];
+  let directoryIds: string[] = [];
   while (directory != null) {
-    directoryIds = [...directoryIds, directory.id];
+    directoryIds = [...directoryIds, directory!.id];
     directory = directories.find(
-      directoryEntry => directoryEntry.shortid === directory.directoryShortid // eslint-disable-line
+      directoryEntry => directoryEntry.shortid === directory!.directoryShortid // eslint-disable-line
     );
   }
 

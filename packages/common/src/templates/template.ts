@@ -22,6 +22,7 @@ export type Options = {
   main?: boolean;
   backgroundColor?: () => string;
   mainFile?: string[];
+  defaultOpenedFile?: string[];
 };
 
 export type ConfigurationFiles = {
@@ -96,6 +97,7 @@ export default class Template {
   showCube: boolean;
   isServer: boolean;
   mainFile: undefined | string[];
+  defaultOpenedFile: string[];
 
   constructor(
     name: TemplateType,
@@ -131,6 +133,7 @@ export default class Template {
     this.backgroundColor = options.backgroundColor;
 
     this.showCube = options.showCube != null ? options.showCube : true;
+    this.defaultOpenedFile = options.defaultOpenedFile || [];
   }
 
   // eslint-disable-next-line
@@ -184,7 +187,7 @@ export default class Template {
   getDefaultOpenedFiles(
     configurationFiles: ParsedConfigurationFiles
   ): string[] {
-    return this.getEntries(configurationFiles);
+    return [...this.defaultOpenedFile, ...this.getEntries(configurationFiles)];
   }
 
   /**
@@ -203,7 +206,7 @@ export default class Template {
   }
 
   /**
-   * Alter the apiData to ZEIT for making deployment work
+   * Alter the apiData to Vercel for making deployment work
    */
   alterDeploymentData = (apiData: any) => {
     const packageJSONFile = apiData.files.find(x => x.file === 'package.json');

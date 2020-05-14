@@ -10,7 +10,7 @@ var historyApiFallback = require('connect-history-api-fallback');
 var execSync = require('child_process').execSync;
 var opn = require('opn');
 var http = require('http');
-var proxy = require('http-proxy-middleware');
+var { createProxyMiddleware } = require('http-proxy-middleware');
 var path = require('path');
 var httpProxy = require('http-proxy');
 const { platform } = require('os');
@@ -230,7 +230,7 @@ function addMiddleware(devServer, index) {
         credentials: true,
       })
     );
-    wsProxy = proxy({
+    wsProxy = createProxyMiddleware({
       target: PROXY_DOMAIN.replace('https', 'wss'),
       changeOrigin: true,
       ws: true,
@@ -243,7 +243,7 @@ function addMiddleware(devServer, index) {
     devServer.use('/socket', wsProxy);
     devServer.use(
       '/api',
-      proxy({
+      createProxyMiddleware({
         target: PROXY_DOMAIN,
         changeOrigin: true,
       })
@@ -252,7 +252,7 @@ function addMiddleware(devServer, index) {
   if (process.env.VSCODE) {
     devServer.use(
       ['/vscode**', '/node_modules**', '/monaco**'],
-      proxy({
+      createProxyMiddleware({
         target: 'http://localhost:8080',
         changeOrigin: true,
       })
@@ -281,12 +281,14 @@ function runDevServer(port, protocol, index) {
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
     // contentBase: paths.staticPath,
+    public: 'localhost:3000',
     host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.test',
     disableHostCheck: !process.env.LOCAL_SERVER,
     contentBase: false,
     clientLogLevel: 'warning',
     overlay: true,
-    inline: false,
+    inline: true,
+    hot: true,
     liveReload: process.env['DISABLE_REFRESH'] ? false : true,
   });
 

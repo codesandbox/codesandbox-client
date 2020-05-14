@@ -1,46 +1,38 @@
-import React, { FunctionComponent } from 'react';
-import PlusIcon from 'react-icons/lib/go/plus';
+import Tooltip, {
+  SingletonTooltip,
+} from '@codesandbox/common/lib/components/Tooltip';
+import { TippyProps } from '@tippy.js/react';
 import { useOvermind } from 'app/overmind';
 import getWorkspaceItems, {
   INavigationItem,
   getDisabledItems,
 } from 'app/overmind/utils/items';
-import Tooltip, {
-  SingletonTooltip,
-} from '@codesandbox/common/lib/components/Tooltip';
-import { TippyProps } from '@tippy.js/react';
-import ConfigurationIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/cog.svg';
-// @ts-ignore
-// eslint-disable-next-line import/no-unresolved
-import FilesIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/file-activity-bar.svg';
-// @ts-ignore
-// eslint-disable-next-line import/no-unresolved
-import GitHubIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/github.svg';
-// @ts-ignore
-// eslint-disable-next-line import/no-unresolved
-import LiveIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/live.svg';
-// @ts-ignore
-// eslint-disable-next-line import/no-unresolved
-import RocketIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/rocket.svg';
-// @ts-ignore
-// eslint-disable-next-line import/no-unresolved
-import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
-// @ts-ignore
-// eslint-disable-next-line import/no-unresolved
+import React, { FunctionComponent } from 'react';
+import PlusIcon from 'react-icons/lib/go/plus';
 
-import { Container, IconContainer, Separator } from './elements';
-import ServerIcon from './ServerIcon';
+import { Container, IconContainer } from './elements';
+import {
+  CommentsIcon,
+  DeployIcon,
+  ExplorerIcon,
+  GithubIcon,
+  InfoIcon,
+  LiveIcon,
+  ServerIcon,
+  SettingsIcon,
+} from './icons';
 
 const IDS_TO_ICONS = {
   project: InfoIcon,
   'project-summary': InfoIcon,
-  files: FilesIcon,
-  github: GitHubIcon,
-  deploy: RocketIcon,
-  config: ConfigurationIcon,
+  files: ExplorerIcon,
+  github: GithubIcon,
+  deploy: DeployIcon,
+  config: SettingsIcon,
   live: LiveIcon,
   more: PlusIcon,
   server: ServerIcon,
+  comments: CommentsIcon,
 };
 
 type IconProps = {
@@ -68,6 +60,8 @@ const IconComponent: FunctionComponent<IconProps> = ({
   return (
     <Tooltip content={name} singleton={singleton}>
       <IconContainer
+        justify="center"
+        align="center"
         isDisabled={isDisabled}
         selected={selected}
         as="button"
@@ -96,14 +90,18 @@ export const Navigation: FunctionComponent<Props> = ({
   bottomOffset,
 }) => {
   const { state } = useOvermind();
-
   const shownItems = getWorkspaceItems(state);
   const disabledItems = getDisabledItems(state);
 
   return (
+    // @ts-ignore
     <Container
+      align="center"
+      direction="vertical"
+      gap={4}
       topOffset={topOffset}
       bottomOffset={bottomOffset}
+      // @ts-ignore
       as="nav"
       aria-label="Sandbox Navigation"
     >
@@ -113,8 +111,6 @@ export const Navigation: FunctionComponent<Props> = ({
             {shownItems.map(item => (
               <IconComponent key={item.id} item={item} singleton={singleton} />
             ))}
-
-            {disabledItems.length > 0 && <Separator />}
 
             {disabledItems.map(item => (
               <IconComponent

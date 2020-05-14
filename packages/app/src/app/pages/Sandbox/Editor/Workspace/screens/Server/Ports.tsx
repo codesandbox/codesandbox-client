@@ -6,7 +6,7 @@ import {
   Text,
   Stack,
 } from '@codesandbox/components';
-import { css } from '@styled-system/css';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { ServerPort } from '@codesandbox/common/lib/types';
 import BrowserIcon from 'react-icons/lib/go/browser';
@@ -59,7 +59,7 @@ export const Ports = () => {
           ))
         ) : (
           <Text block variant="muted" paddingX={2}>
-            No ports are opened. Maybe the server is still starting or it doesn
+            No ports are open. Maybe the server is still starting or it doesn
             {"'"}t open any ports.
           </Text>
         )}

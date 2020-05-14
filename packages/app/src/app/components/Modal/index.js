@@ -1,8 +1,10 @@
 import React from 'react';
 import Modal from 'react-modal';
 import { createGlobalStyle } from 'styled-components';
+import css from '@styled-system/css';
+import { Text } from '@codesandbox/components';
 
-import { CLOSE_TIMEOUT_MS, BaseModal, ModalTitle, ModalBody } from './elements';
+const CLOSE_TIMEOUT_MS = 300;
 
 if (document.getElementById('root')) {
   Modal.setAppElement('#root');
@@ -72,8 +74,8 @@ class ModalComponent extends React.Component {
       left: 0,
       right: 0,
       margin: `0 auto ${top}vh`,
-      border: 'none',
-      borderRadius: '4px',
+      fontFamily: "'Inter', sans-serif",
+      outline: 'none',
     },
   });
 
@@ -101,15 +103,28 @@ class ModalComponent extends React.Component {
             onClose(e.type === 'keydown');
           }}
           contentLabel={title || 'Modal'}
+          css={css({
+            border: '1px solid',
+            borderColor: 'sideBar.border',
+            borderRadius: 'medium',
+            backgroundColor: 'sideBar.background',
+            boxShadow: 2,
+            color: 'sideBar.foreground',
+            lineHeight: 1.2,
+          })}
           style={this.getStyles(width, top)}
           closeTimeoutMS={CLOSE_TIMEOUT_MS}
           htmlOpenClassName="ReactModal__Html--open"
           {...props}
         >
-          <BaseModal>
-            {title && <ModalTitle>{title}</ModalTitle>}
-            <ModalBody>{children}</ModalBody>
-          </BaseModal>
+          <div>
+            {title && (
+              <Text weight="bold" block size={4} paddingBottom={2}>
+                {title}
+              </Text>
+            )}
+            <div>{children}</div>
+          </div>
         </Modal>
       </>
     );

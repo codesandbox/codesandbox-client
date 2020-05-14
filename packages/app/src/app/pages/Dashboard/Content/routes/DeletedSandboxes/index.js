@@ -33,9 +33,15 @@ const DeletedSandboxes = () => (
             const orderedSandboxes = state.dashboard.getFilteredSandboxes(
               sandboxes
             );
-            actions.dashboard.setTrashSandboxes({
-              sandboxIds: orderedSandboxes.map(i => i.id),
-            });
+            const trashSandboxIds = orderedSandboxes.map(i => i.id);
+            if (
+              JSON.stringify(state.dashboard.trashSandboxIds) !==
+              JSON.stringify(trashSandboxIds)
+            ) {
+              actions.dashboard.setTrashSandboxes({
+                sandboxIds: trashSandboxIds,
+              });
+            }
 
             return (
               <Sandboxes

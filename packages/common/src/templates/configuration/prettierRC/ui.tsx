@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   ConfigDescription,
   PaddedConfig,
@@ -43,7 +42,6 @@ export class ConfigWizard extends React.Component<ConfigurationUIProps> {
     if (!parsedFile) {
       return <div>Could not parse .prettierrc</div>;
     }
-
     return (
       <div>
         <PaddedConfig>

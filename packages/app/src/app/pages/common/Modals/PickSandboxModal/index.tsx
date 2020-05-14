@@ -1,89 +1,101 @@
-import React, { useState } from 'react';
+/* eslint-disable jsx-a11y/accessible-emoji */
+// @ts-nocheck
+import React, { FormEvent, FunctionComponent, useState } from 'react';
 
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Row from '@codesandbox/common/lib/components/flex/Row';
-import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
-
+import {
+  FormField,
+  Button,
+  Text,
+  Stack,
+  Input,
+  Textarea,
+} from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import css from '@styled-system/css';
+import { Alert } from '../Common/Alert';
 
-import { Container } from '../LiveSessionEnded/elements';
-import { Heading, Explanation } from '../elements';
-
-import { Field, Label } from './elements';
-
-export const PickSandboxModal: React.FC = () => {
+export const PickSandboxModal: FunctionComponent = () => {
   const {
-    state: {
-      explore: { pickedSandboxDetails },
+    actions: {
+      explore: { pickSandbox },
+      modalClosed,
     },
-    actions,
+    state: {
+      explore: {
+        pickedSandboxDetails: { id, ...details },
+      },
+    },
   } = useOvermind();
-
-  const [title, setTitle] = useState(pickedSandboxDetails.title || '');
-  const [description, setDescription] = useState(
-    pickedSandboxDetails.description || ''
-  );
-
-  const { id } = pickedSandboxDetails;
+  const [description, setDescription] = useState(details.description);
+  const [title, setTitle] = useState(details.title);
 
   return (
-    <Container>
-      <Heading>Pick this sandbox</Heading>
-      <Explanation>
-        Please add a title and description to this sandbox if none exists or you
-        think you have a better description for it. This title and description
-        will be the ones used in the explore page.
-      </Explanation>
+    <Alert
+      title="Pick this sandbox"
+      description="Please add a title and description to this sandbox if none exists or you think you have a better description for it. This title and description will be the ones used in the explore page."
+    >
       <form
-        onSubmit={e => {
-          e.preventDefault();
-          actions.explore.pickSandbox({
-            id,
-            title,
-            description,
-          });
+        onSubmit={(event: FormEvent<HTMLFormElement>) => {
+          event.preventDefault();
+          pickSandbox({ description, id, title });
         }}
       >
-        <Field>
-          <Label htmlFor="title">Sandbox name</Label>
+        <FormField
+          style={{ padding: 0 }}
+          marginBottom={4}
+          direction="vertical"
+          label="Sandbox name"
+        >
           <Input
-            style={{
-              width: '100%',
-            }}
-            value={title}
-            onChange={event => setTitle(event.target.value)}
-            name="title"
+            marginTop={2}
             id="title"
+            name="title"
+            onChange={e => setTitle(e.target.value)}
             required
+            value={title}
           />
-        </Field>
-        <Field>
-          <Label htmlFor="description">Sandbox Description</Label>
-          <TextArea
-            style={{
-              width: '100%',
-            }}
-            value={description}
-            onChange={event => setDescription(event.target.value)}
-            name="description"
+        </FormField>
+
+        <FormField
+          style={{ padding: 0 }}
+          marginBottom={4}
+          direction="vertical"
+          label="Sandbox Description"
+        >
+          <Textarea
+            marginTop={2}
             id="description"
+            name="description"
+            onChange={e => setDescription(e.target.value)}
             required
             rows={3}
+            value={description}
           />
-        </Field>
+        </FormField>
 
-        <Row justifyContent="space-around">
-          <Button type="submit">
-            Ship it{' '}
-            <span role="img" aria-label="rocket">
-              🚀
-            </span>
-          </Button>
-          <Button danger onClick={() => actions.modalClosed()}>
+        <Stack justify="flex-end" gap={2}>
+          <Button
+            css={css({
+              width: 'auto',
+            })}
+            variant="link"
+            onClick={modalClosed}
+          >
             Cancel
           </Button>
-        </Row>
+          <Button
+            type="submit"
+            css={css({
+              width: 'auto',
+            })}
+          >
+            Ship it{' '}
+            <Text as="span" paddingLeft={1} role="img" aria-label="rocket">
+              🚀
+            </Text>
+          </Button>
+        </Stack>
       </form>
-    </Container>
+    </Alert>
   );
 };

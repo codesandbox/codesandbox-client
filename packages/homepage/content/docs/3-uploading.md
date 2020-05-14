@@ -30,7 +30,7 @@ You can use an uploaded file in multiple sandboxes at the same time. For this
 reason we have a separate 'Storage Management' that allows you to see which
 files you have uploaded. You can find the manager in your user menu.
 
-![Storage Management in User Menu](./images/storage-management-user.png)
+![Storage Management in User Menu](./images/storage-management-users.png?v2)
 
 You are able to view your storage usage with the option to either open uploaded
 files, add uploaded files to the opened sandbox or to delete an uploaded file.

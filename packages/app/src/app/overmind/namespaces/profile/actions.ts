@@ -25,18 +25,21 @@ export const profileMounted: AsyncAction<string> = withLoadApp(
   }
 );
 
-export const sandboxesPageChanged: AsyncAction<{
-  page: number;
-  force?: boolean;
-}> = async ({ state, effects }, { page, force }) => {
+export const sandboxesPageChanged: AsyncAction<number> = async (
+  { effects, state },
+  page
+) => {
   state.profile.isLoadingSandboxes = true;
   state.profile.currentSandboxesPage = page;
+
+  if (!state.profile.current) {
+    return;
+  }
 
   const { username } = state.profile.current;
   if (
     !state.profile.sandboxes[username] ||
-    !state.profile.sandboxes[username][page] ||
-    force
+    !state.profile.sandboxes[username][page]
   ) {
     const data = await effects.api.getUserSandboxes(username, page);
     if (!state.profile.sandboxes[username]) {
@@ -48,11 +51,16 @@ export const sandboxesPageChanged: AsyncAction<{
   state.profile.isLoadingSandboxes = false;
 };
 
-export const likedSandboxesPageChanged: AsyncAction<{
-  page: number;
-}> = async ({ state, effects }, { page }) => {
+export const likedSandboxesPageChanged: AsyncAction<number> = async (
+  { effects, state },
+  page
+) => {
   state.profile.isLoadingSandboxes = true;
   state.profile.currentLikedSandboxesPage = page;
+
+  if (!state.profile.current) {
+    return;
+  }
 
   const { username } = state.profile.current;
 
@@ -88,10 +96,19 @@ export const newSandboxShowcaseSelected: AsyncAction<string> = async (
   id
 ) => {
   state.currentModal = null;
+
+  if (!state.profile.currentProfileId) {
+    return;
+  }
+
   state.profile.profiles[
     state.profile.currentProfileId
   ].showcasedSandboxShortid = id;
   state.profile.isLoadingProfile = true;
+
+  if (!state.user) {
+    return;
+  }
 
   const [sandbox] = await Promise.all([
     state.editor.sandboxes[id] ? null : effects.api.getSandbox(id),
@@ -105,9 +122,7 @@ export const newSandboxShowcaseSelected: AsyncAction<string> = async (
   state.profile.isLoadingProfile = false;
 };
 
-export const deleteSandboxClicked: Action<{
-  id;
-}> = ({ state }, { id }) => {
+export const deleteSandboxClicked: Action<string> = ({ state }, id) => {
   state.profile.sandboxToDeleteId = id;
   state.currentModal = 'deleteProfileSandbox';
 };
@@ -117,6 +132,10 @@ export const sandboxDeleted: AsyncAction = async ({ state, effects }) => {
   state.currentModal = null;
 
   const sandboxId = state.profile.sandboxToDeleteId;
+
+  if (!sandboxId || !state.profile.current || !state.user) {
+    return;
+  }
 
   await effects.api.deleteSandbox(sandboxId);
 

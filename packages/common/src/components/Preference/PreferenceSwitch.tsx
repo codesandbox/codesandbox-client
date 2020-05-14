@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import Switch from '../Switch';
+import { Switch } from '@codesandbox/components';
 
 type Props = {
   setValue: (value: boolean) => void;
@@ -16,13 +16,8 @@ export const PreferenceSwitch: FunctionComponent<Props> = ({
   };
 
   return (
-    <Switch
-      offMode
-      onClick={handleClick}
-      right={value}
-      secondary
-      small
-      style={{ width: '3rem' }}
-    />
+    <div style={{ transform: 'scale(1.5)', marginRight: 8 }}>
+      <Switch onChange={handleClick} on={value} />
+    </div>
   );
 };

@@ -1,5 +1,4 @@
 import { Badge } from '@codesandbox/common/lib/types';
-import { json } from 'overmind';
 
 import { Action, AsyncAction } from 'app/overmind';
 
@@ -23,12 +22,6 @@ export const itemIdChanged: AsyncAction<{
   itemId: string;
 }> = async ({ state, actions, effects }, { itemId }) => {
   state.preferences.itemId = itemId;
-
-  if (itemId === 'keybindings') {
-    effects.keybindingManager.pause();
-  } else {
-    effects.keybindingManager.start();
-  }
 
   if (itemId === 'integrations') {
     await actions.deployment.internal.getZeitUserDetails();
@@ -64,9 +57,13 @@ export const setBadgeVisibility: AsyncAction<Pick<
   Badge,
   'id' | 'visible'
 >> = async ({ effects, state }, { id, visible }) => {
-  state.user.badges.forEach((badge, index) => {
+  const user = state.user;
+  if (!user) {
+    return;
+  }
+  user.badges.forEach((badge, index) => {
     if (badge.id === id) {
-      state.user.badges[index].visible = visible;
+      user.badges[index].visible = visible;
     }
   });
 
@@ -125,8 +122,6 @@ export const keybindingChanged: Action<{
   );
 
   effects.settingsStore.set('keybindings', keybindingsValue);
-
-  effects.keybindingManager.set(json(state.preferences.settings.keybindings));
 };
 
 export const zenModeToggled: Action = ({ state }) => {
@@ -135,4 +130,31 @@ export const zenModeToggled: Action = ({ state }) => {
 
 export const codeMirrorForced: Action = ({ state }) => {
   state.preferences.settings.codeMirror = true;
+};
+
+export const toggleContainerLspExperiment: AsyncAction = async ({
+  effects,
+  state,
+}) => {
+  if (!state.user) {
+    return;
+  }
+  try {
+    await effects.api.updateExperiments({
+      container_lsp: !state.user.experiments.containerLsp,
+    });
+    state.user.experiments.containerLsp = !state.user.experiments.containerLsp;
+    // Allow the flush to go through and flip button
+    requestAnimationFrame(() => {
+      if (
+        effects.browser.confirm(
+          'We need to refresh for this to take effect, or you can refresh later'
+        )
+      ) {
+        effects.browser.reload();
+      }
+    });
+  } catch (error) {
+    effects.notificationToast.error('Unable to toggl LSP experiment');
+  }
 };

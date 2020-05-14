@@ -1,4 +1,6 @@
 import getTemplate from '@codesandbox/common/lib/templates';
+import { COMMENTS as COMMENTS_ON } from '@codesandbox/common/lib/utils/feature-flags';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 export interface INavigationItem {
   id: string;
@@ -12,68 +14,84 @@ export interface INavigationItem {
   showAsDisabledIfHidden?: boolean;
 }
 
-const PROJECT: INavigationItem = {
+export const PROJECT: INavigationItem = {
   id: 'project',
   name: 'Sandbox Info',
 };
 
-const PROJECT_TEMPLATE: INavigationItem = {
+export const PROJECT_TEMPLATE: INavigationItem = {
   ...PROJECT,
   name: 'Template Info',
 };
 
-const PROJECT_SUMMARY: INavigationItem = {
+export const PROJECT_SUMMARY: INavigationItem = {
   id: 'project-summary',
   name: 'Sandbox Info',
   hasCustomHeader: true,
 };
 
-const FILES: INavigationItem = {
+export const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
   defaultOpen: true,
 };
 
-const GITHUB: INavigationItem = {
+export const GITHUB: INavigationItem = {
   id: 'github',
   name: 'GitHub',
   showAsDisabledIfHidden: true,
 };
 
-const DEPLOYMENT: INavigationItem = {
+export const DEPLOYMENT: INavigationItem = {
   id: 'deploy',
   name: 'Deployment',
   showAsDisabledIfHidden: true,
 };
 
-const CONFIGURATION: INavigationItem = {
+export const CONFIGURATION: INavigationItem = {
   id: 'config',
   name: 'Configuration Files',
 };
 
-const LIVE: INavigationItem = {
+export const LIVE: INavigationItem = {
   id: 'live',
   name: 'Live',
   showAsDisabledIfHidden: true,
 };
 
-const SERVER: INavigationItem = {
+export const SERVER: INavigationItem = {
   id: 'server',
   name: 'Server Control Panel',
+};
+
+export const COMMENTS: INavigationItem = {
+  id: 'comments',
+  name: 'Comments',
 };
 
 export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
 
+  if (!currentSandbox) {
+    return [PROJECT_SUMMARY, CONFIGURATION, GITHUB, DEPLOYMENT, SERVER, LIVE];
+  }
+
   if (!currentSandbox.owned || !store.isLoggedIn) {
-    return [GITHUB, DEPLOYMENT, LIVE];
+    const returnedItems = [GITHUB, DEPLOYMENT];
+    if (!store.live.isLive) {
+      returnedItems.push(LIVE);
+    }
+    return returnedItems;
   }
 
   return [];
 }
 
 export default function getItems(store: any): INavigationItem[] {
+  if (!store.editor.currentSandbox) {
+    return [];
+  }
   if (
     store.live.isLive &&
     !(
@@ -82,14 +100,15 @@ export default function getItems(store: any): INavigationItem[] {
         store.live &&
         store.live.roomInfo &&
         store.live.roomInfo.ownerIds.indexOf(store.user.id) > -1)
-    )
+    ) &&
+    !hasPermission(store.editor.currentSandbox.authorization, 'write_project')
   ) {
     return [FILES, LIVE];
   }
 
   const { currentSandbox } = store.editor;
 
-  if (!currentSandbox.owned) {
+  if (!currentSandbox || !currentSandbox.owned) {
     return [PROJECT_SUMMARY, CONFIGURATION];
   }
 
@@ -108,14 +127,22 @@ export default function getItems(store: any): INavigationItem[] {
   }
 
   if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
-    items.push(GITHUB);
+    if (COMMENTS_ON && hasPermission(currentSandbox.authorization, 'comment')) {
+      items.push(GITHUB, COMMENTS);
+    } else {
+      items.push(GITHUB);
+    }
   }
 
   if (store.isLoggedIn) {
     items.push(DEPLOYMENT);
   }
 
-  if (store.isLoggedIn) {
+  if (
+    store.isLoggedIn &&
+    currentSandbox &&
+    hasPermission(currentSandbox.authorization, 'write_code')
+  ) {
     items.push(LIVE);
   }
 

@@ -50,7 +50,7 @@ const resolveAsyncModule = (
     self.addEventListener('message', resolveFunc);
   });
 
-const SUPPORTED_EXTS = ['css', 'sass', 'scss'];
+const SUPPORTED_EXTS = ['scss', 'sass', 'css'];
 
 const existsPromise = (fs, file) =>
   new Promise(r => {
@@ -119,18 +119,11 @@ const resolveSass = (fs, p, path) => {
         extensions: ['.scss', '.css', '.sass'],
         moduleDirectory: ['node_modules'],
         packageFilter,
-        isFile: async (pp, cb) => {
+        isFile: async (pp, c, cb) => {
           const exists = !!(await getExistingPath(fs, pp));
+          const callback = c || cb;
 
-          if (!exists) {
-            const err = new Error('Could not find ' + pp);
-            // $FlowIssue
-            err.code = 'ENOENT';
-
-            return cb(err);
-          }
-
-          return cb(null, exists);
+          return callback(null, exists);
         },
         readFile: async (pp, encoding, cb) => {
           const foundPath = await getExistingPath(fs, pp);

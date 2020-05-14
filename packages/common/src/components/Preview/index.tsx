@@ -187,8 +187,7 @@ class BasePreview extends React.Component<Props, State> {
     if (!this.props.url && normalUrl !== fallbackUrl) {
       fetch(normalUrl, { mode: 'no-cors' })
         .then(() => {
-          // Succeeded
-          track(TRACKING_NAME, { needed: false });
+          // Succeeded, don't send anything
         })
         .catch(() => {
           // Failed, use fallback
@@ -488,6 +487,8 @@ class BasePreview extends React.Component<Props, State> {
         back: false,
         forward: false,
       });
+
+      this.refreshHashedUrl(urlInAddressBar);
     }
   };
 
@@ -498,7 +499,10 @@ class BasePreview extends React.Component<Props, State> {
     const urlToSet = urlInAddressBar || url;
 
     if (this.element) {
-      this.element.src = urlToSet || this.currentUrl();
+      const iframeSRC = urlToSet || this.currentUrl();
+      this.element.src = iframeSRC;
+
+      this.refreshHashedUrl(iframeSRC);
     }
 
     this.setState({
@@ -506,6 +510,14 @@ class BasePreview extends React.Component<Props, State> {
       back: false,
       forward: false,
     });
+  };
+
+  refreshHashedUrl = url => {
+    if (!url.includes('#')) {
+      return;
+    }
+
+    dispatch({ type: 'refresh' });
   };
 
   handleBack = () => {
@@ -596,8 +608,8 @@ class BasePreview extends React.Component<Props, State> {
           {(style: { opacity: number }) => (
             <>
               <StyledFrame
-                sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-                allow="geolocation; microphone; camera;midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
+                allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr"
+                sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
                 src={this.state.url}
                 ref={this.setIframeElement}
                 title={getSandboxName(sandbox)}

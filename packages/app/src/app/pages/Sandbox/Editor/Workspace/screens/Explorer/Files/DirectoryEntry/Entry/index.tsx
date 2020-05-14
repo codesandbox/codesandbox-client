@@ -187,10 +187,16 @@ const Entry: React.FC<IEntryProps> = ({
               : 'calc(1rem - 2px)',
             // live user
             borderRight: '2px solid',
+            minHeight: 28,
             borderColor: rightColors[0] || 'transparent',
+            ':hover:not([aria-selected="true"])': {
+              // override ListAction to keep background same as before
+              // we do this to diffrentiate between hover and selected
+              backgroundColor: 'inherit',
+            },
           }}
         >
-          <Stack gap={2} align="center">
+          <Stack gap={2} align="center" css={{ width: '100%' }}>
             <EntryIcons type={type} error={moduleHasError} />
             {state === 'editing' ? (
               <FileInput
@@ -200,18 +206,17 @@ const Entry: React.FC<IEntryProps> = ({
                 onCancel={resetState}
                 onCommit={handleRename}
                 error={error}
+                css={css({
+                  // i know how this looks, but to make the input feel like
+                  // it's editing in place, we move it back half the space
+                  // 0.5 * gap of 2 = 1 and then another 1px for the border
+                  // :upside-down:smile:
+                  marginLeft: '-5px',
+                  paddingLeft: 1,
+                })}
               />
             ) : (
-              <Text
-                css={{
-                  maxWidth: 150,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {title}
-              </Text>
+              <Text maxWidth="100%">{title}</Text>
             )}
             {isNotSynced && !state && (
               <NotSyncedIcon css={css({ color: 'blues.300' })} />

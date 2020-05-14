@@ -147,15 +147,6 @@ export default () => (
                   Twitter
                 </a>
               </li>
-              <li>
-                <a
-                  href="https://spectrum.chat/codesandbox"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Spectrum
-                </a>
-              </li>
             </List>
           </Column>
         </Container>

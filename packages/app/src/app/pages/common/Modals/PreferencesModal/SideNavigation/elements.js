@@ -60,10 +60,3 @@ export const Selector = styled.div`
 
   transform: translateY(${props => props.offset + 1}px);
 `;
-
-export const SocialContainer = styled.div`
-  position: absolute;
-  bottom: 2em;
-  margin-top: 2em;
-  margin-left: 2em;
-`;

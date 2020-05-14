@@ -1,12 +1,10 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
-
+import { Text } from '@codesandbox/components';
 import {
-  Title,
   SubContainer,
   PreferenceContainer,
   PaddedPreference,
-  SubDescription,
   Rule,
 } from '../../elements';
 
@@ -23,7 +21,9 @@ export const PreviewSettings: React.FC = () => {
 
   return (
     <div>
-      <Title>Preview</Title>
+      <Text size={4} marginBottom={6} block variant="muted" weight="bold">
+        Preview
+      </Text>
 
       <SubContainer>
         <PreferenceContainer>
@@ -33,9 +33,9 @@ export const PreviewSettings: React.FC = () => {
             {...bindValue('livePreviewEnabled')}
             tooltip="Only update on save"
           />
-          <SubDescription>
+          <Text size={2} variant="muted">
             Preview the latest code without saving.
-          </SubDescription>
+          </Text>
           <Rule />
           <PaddedPreference
             title="Clear console"
@@ -43,16 +43,18 @@ export const PreviewSettings: React.FC = () => {
             {...bindValue('clearConsoleEnabled')}
             tooltip="Clear console when executing"
           />
-          <SubDescription>
+          <Text size={2} variant="muted">
             Clear your developer console between every execution.
-          </SubDescription>
+          </Text>
           <Rule />
           <PaddedPreference
             title="Instant preview"
             type="boolean"
             {...bindValue('instantPreviewEnabled')}
           />
-          <SubDescription>Show preview on every keypress.</SubDescription>
+          <Text size={2} variant="muted">
+            Show preview on every keypress.
+          </Text>
         </PreferenceContainer>
       </SubContainer>
     </div>

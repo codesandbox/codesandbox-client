@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "typeRoots": ["./src/app/graphql", "../../node_modules/@types"],
+    "paths": {
+      "app/*": ["./src/app/*"],
+      "embed/*": ["./src/embed/*"],
+      "sandbox/*": ["./src/sandbox/*"]
+    },
+    "plugins": [
+      {
+        "name": "@divyenduz/ts-graphql-plugin"
+      }
+    ]
+  }
+}

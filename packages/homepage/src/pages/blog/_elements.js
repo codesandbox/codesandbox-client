@@ -1,103 +1,124 @@
-import styled, { css } from 'styled-components';
-
-export const Posts = styled.article`
-  display: flex;
-  align-items: flex-start;
-  background: ${props => props.theme.background2};
-  border-radius: 4px;
-  padding: 1rem;
-  margin-bottom: 30px;
-
-  @media screen and (max-width: 1200px) {
-    flex-direction: column;
-  }
-`;
-
-export const Subtitle = styled.h3`
-  font-weight: 500;
-  font-size: 1rem;
-  line-height: 1.5;
-
-  color: #b8b9ba;
-`;
-
-export const Thumbnail = styled.img`
-  margin-right: 25px;
-
-  @media screen and (max-width: 1200px) {
-    margin-bottom: 25px;
-    width: 100%;
-  }
-`;
-
-export const Aside = styled.aside`
-  section {
-    display: flex;
-    align-items: center;
-  }
-
-  ${({ mobile }) =>
-    !mobile &&
-    css`
-      @media screen and (max-width: 850px) {
-        display: none;
-      }
-    `};
-  ${({ mobile }) =>
-    mobile &&
-    css`
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      flex-direction: row-reverse;
-      margin-top: 25px;
-      width: 100%;
-      @media screen and (min-width: 851px) {
-        display: none;
-      }
-    `};
-`;
-
-export const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: 250px 1fr;
-  grid-gap: 90px;
-
-  @media screen and (max-width: 850px) {
-    grid-template-columns: 1fr;
-  }
-`;
+import styled from 'styled-components';
 
 export const Header = styled.section`
-  background: linear-gradient(
-    279.97deg,
-    rgba(64, 169, 243, 0.9) 0%,
-    rgba(13, 123, 201, 0.9) 100%
-  );
-  border-radius: 4px;
-  padding: 30px;
-  color: #f2f2f2;
+  text-align: center;
+  padding: 1rem 0rem;
+  color: rgb(242, 242, 242);
+  margin-bottom: 2rem;
+  word-break: normal;
 
-  margin-bottom: 30px;
+  @media screen and (min-width: 768px) {
+    padding: 4rem 0rem;
+  }
 
-  width: calc(100% - 340px);
-  margin-left: 340px;
-
-  @media screen and (max-width: 850px) {
-    width: 100%;
-    margin-left: 0;
+  @media screen and (min-width: 960px) {
+    padding: 8rem;
   }
 `;
 
 export const PageTitle = styled.h1`
-  font-weight: 600;
-  font-size: 36px;
-  letter-spacing: -0.04em;
+  font-size: 2.5rem;
+  line-height: 3rem;
+  font-weight: 700;
+
+  letter-spacing: -0.02rem;
+
+  @media screen and (min-width: 768px) {
+    font-size: 4rem;
+    line-height: 5rem;
+  }
+
+  @media screen and (min-width: 960px) {
+    font-size: 4.5rem;
+    line-height: 5.5rem;
+  }
 `;
 
-export const PageSubtitle = styled.h2`
-  font-weight: 600;
-  font-size: 18px;
+export const PageSubtitle = styled.h3`
+  font-size: 1.5rem;
   line-height: 1.5;
-  margin-bottom: 0;
+  font-weight: 400;
+  padding: 0 2rem;
+  margin: 0 0 1.0875rem;
+}
+
+@media screen and (min-width: 768px) {
+  font-size: 2rem;
+  line-height: 1.5;
+  }
+`;
+
+export const Grid = styled.div`
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-column-gap: 2rem;
+  grid-row-gap: 4rem;
+
+  > div {
+    transform: scale(1);
+    transition: all 0.2s ease-in-out;
+  }
+
+  > div :hover {
+    transform: scale(0.98);
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.25);
+  }
+
+  @media screen and (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+
+    > div:nth-child(-n + 1) {
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+  }
+`;
+
+export const Wrapper = styled.div`
+  border: 1px solid #242424;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  border-radius: 0.5rem;
+  clip-path: inset(0px round 0.5rem);
+  background: #151515;
+`;
+
+export const CardContent = styled.div`
+  padding: 2.5rem 2rem 3rem 2rem;
+`;
+
+export const Thumbnail = styled.img`
+  border: none;
+  border-bottom: 1px solid #242424;
+  min-width: 100%;
+  background-size: cover;
+  background-position: center center;
+`;
+
+export const Posts = styled.article``;
+
+export const Title = styled.h2`
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+  font-size: 23px;
+  line-height: 1.5;
+  font-weight: 700;
+`;
+
+export const Subtitle = styled.p`
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+  line-height: 1.6rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.75);
+`;
+
+export const PublishDate = styled.p`
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1rem;
+  line-height: 1;
+  font-weight: 300;
 `;

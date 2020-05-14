@@ -11,8 +11,8 @@ import {
   Sandbox,
   SandboxFs,
 } from '@codesandbox/common/lib/types';
-import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
+import delay from '@codesandbox/common/lib/utils/delay';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { json } from 'overmind';
@@ -22,7 +22,50 @@ import { appendFile, mkdir, rename, rmdir, unlink, writeFile } from './utils';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
-const SERVICE_URL = 'https://ata-fetcher.cloud/api/v5/typings';
+const SERVICE_URL = 'https://ata.codesandbox.io/api/v8';
+const BUCKET_URL = 'https://prod-packager-packages.codesandbox.io/v1/typings';
+
+async function callApi(url: string, method = 'GET') {
+  const response = await fetch(url, {
+    method,
+  });
+
+  if (!response.ok) {
+    const error = new Error(response.statusText || '' + response.status);
+    const message = await response.json();
+    // @ts-ignore
+    error.response = message;
+    // @ts-ignore
+    error.statusCode = response.status;
+    throw error;
+  }
+
+  return response.json();
+}
+
+async function requestPackager(url: string, retryCount = 0, method = 'GET') {
+  let retries = 0;
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      const manifest = await callApi(url, method); // eslint-disable-line no-await-in-loop
+
+      return manifest;
+    } catch (e) {
+      if (e.response && e.statusCode !== 504) {
+        throw new Error(e.response.error);
+      }
+      // 403 status code means the bundler is still bundling
+      if (retries < retryCount) {
+        retries += 1;
+        await delay(1000 * 2); // eslint-disable-line no-await-in-loop
+      } else {
+        throw e;
+      }
+    }
+  }
+}
 
 declare global {
   interface Window {
@@ -114,7 +157,7 @@ class SandboxFsSync {
     this.send('append-file', copy);
 
     const savedCode = getSavedCode(module.code, module.savedCode);
-    browserFs.appendFile(join('/sandbox', module.path), savedCode, () => {});
+    browserFs.appendFile(join('/sandbox', module.path!), savedCode, () => {});
   }
 
   public writeFile(fs: SandboxFs, module: Module) {
@@ -124,7 +167,7 @@ class SandboxFsSync {
     this.send('write-file', copy);
 
     const savedCode = getSavedCode(module.code, module.savedCode);
-    browserFs.writeFile(join('/sandbox', module.path), savedCode, () => {});
+    browserFs.writeFile(join('/sandbox', module.path!), savedCode, () => {});
 
     if (module.title === 'package.json') {
       this.syncDependencyTypings();
@@ -149,7 +192,7 @@ class SandboxFsSync {
 
     rmdir(fs, copy);
     this.send('rmdir', copy);
-    browserFs.rmdir(join('/sandbox', directory.path), () => {});
+    browserFs.rmdir(join('/sandbox', directory.path!), () => {});
   }
 
   public unlink(fs: SandboxFs, module: Module) {
@@ -157,7 +200,7 @@ class SandboxFsSync {
 
     unlink(fs, copy);
     this.send('unlink', copy);
-    browserFs.unlink(join('/sandbox', module.path), () => {});
+    browserFs.unlink(join('/sandbox', module.path!), () => {});
   }
 
   public mkdir(fs: SandboxFs, directory: Directory) {
@@ -165,7 +208,7 @@ class SandboxFsSync {
 
     mkdir(fs, copy);
     this.send('mkdir', copy);
-    browserFs.mkdir(join('/sandbox', directory.path), () => {});
+    browserFs.mkdir(join('/sandbox', directory.path!), () => {});
   }
 
   private onWorkerMessage = evt => {
@@ -281,7 +324,7 @@ class SandboxFsSync {
   private async getDependencyTypingsSyncDetails(): Promise<{
     dependencies: { [name: string]: string };
     autoInstall: boolean;
-  }> {
+  } | null> {
     return new Promise((resolve, reject) => {
       try {
         browserFs.stat('/sandbox/package.json', (packageJsonError, stat) => {
@@ -364,8 +407,7 @@ class SandboxFsSync {
       if (
         autoInstallTypes &&
         this.typesInfo[dep.name] &&
-        !dep.name.startsWith('@types/') &&
-        isAbsoluteVersion(dep.version)
+        !dep.name.startsWith('@types/')
       ) {
         const name = `@types/${dep.name}`;
         this.fetchDependencyTypingFiles(name, this.typesInfo[dep.name].latest)
@@ -397,13 +439,19 @@ class SandboxFsSync {
   }
 
   private async fetchDependencyTypingFiles(name: string, version: string) {
-    const fetchRequest = await fetch(`${SERVICE_URL}/${name}@${version}.json`);
+    const dependencyQuery = encodeURIComponent(`${name}@${version}`);
 
-    if (!fetchRequest.ok) {
-      throw new Error('Fetch error');
+    try {
+      const url = `${BUCKET_URL}/${name}/${version}.json`;
+      return await requestPackager(url, 0).then(x => x.files);
+    } catch (e) {
+      // Hasn't been generated
     }
 
-    const { files } = await fetchRequest.json();
+    const { files } = await requestPackager(
+      `${SERVICE_URL}/${dependencyQuery}.json`,
+      3
+    );
 
     return files;
   }

@@ -138,12 +138,15 @@ export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
                 }}
               >
                 {toast.notification.actions.primary &&
-                  toast.notification.actions.primary[0] && (
+                  toast.notification.actions.primary.map(primary => (
                     <Button
                       small
                       onClick={() => {
-                        removeToast(toast.id);
-                        toast.notification.actions.primary[0].run();
+                        // By default we hide the notification on clicking primary buttons
+                        if (primary.hideOnClick !== false) {
+                          removeToast(toast.id);
+                        }
+                        primary.run();
                       }}
                       style={{
                         marginTop: '1rem',
@@ -151,27 +154,30 @@ export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
                         lineHeight: 1,
                       }}
                     >
-                      {toast.notification.actions.primary[0].label}
+                      {primary.label}
                     </Button>
-                  )}
+                  ))}
 
                 {toast.notification.actions.secondary &&
-                  toast.notification.actions.secondary[0] && (
+                  toast.notification.actions.secondary.map(secondary => (
                     <Button
                       secondary
                       small
                       onClick={() => {
-                        toast.notification.actions.secondary[0].run();
+                        if (secondary.hideOnClick) {
+                          removeToast(toast.id);
+                        }
+                        secondary.run();
                       }}
                       style={{
                         marginTop: '1rem',
-                        marginLeft: '0.5rem',
+                        marginRight: '0.75rem',
                         lineHeight: 1,
                       }}
                     >
-                      {toast.notification.actions.secondary[0].label}
+                      {secondary.label}
                     </Button>
-                  )}
+                  ))}
               </div>
             )}
           </div>

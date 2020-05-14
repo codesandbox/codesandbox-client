@@ -33,11 +33,11 @@ export const notificationAdded: Action<{
   title: string;
   notificationType: NotificationType;
   timeAlive?: number;
-}> = ({ effects }, { title, notificationType, timeAlive = 1 }) => {
+}> = ({ effects }, { title, notificationType, timeAlive }) => {
   effects.notificationToast.add({
     message: title,
     status: convertTypeToStatus(notificationType),
-    timeAlive: timeAlive * 1000,
+    timeAlive: timeAlive ? timeAlive * 1000 : undefined,
   });
 };
 
@@ -73,39 +73,55 @@ type ModalName =
   | 'searchDependencies'
   | 'share'
   | 'signInForTemplates'
-  | 'userSurvey';
+  | 'userSurvey'
+  | 'liveSessionEnded';
 
 export const modalOpened: Action<{
   modal: ModalName;
   message?: string;
   itemId?: string;
-}> = ({ state, effects }, { modal, message, itemId }) => {
-  effects.analytics.track('Open Modal', { modal });
-  state.currentModalMessage = message;
-  state.currentModal = modal;
-  if (state.currentModal === 'preferences') {
-    state.preferences.itemId = itemId;
+}> = ({ state, effects }, props) => {
+  effects.analytics.track('Open Modal', { modal: props.modal });
+  state.currentModal = props.modal;
+  if (props.modal === 'preferences' && props.itemId) {
+    state.preferences.itemId = props.itemId;
+  } else {
+    state.currentModalMessage = props.message || null;
   }
 };
 
-export const modalClosed: Action = ({ state, effects }) => {
-  // We just start it whenever it closes, if already started nothing happens
-  if (state.currentModal === 'preferences') {
-    effects.keybindingManager.start();
-  }
-
+export const modalClosed: Action = ({ state }) => {
   state.currentModal = null;
 };
 
-export const signInClicked: AsyncAction<{ useExtraScopes: boolean }> = (
-  { actions },
-  options
-) => actions.internal.signIn(options);
+export const signInClicked: Action<string | void> = ({ state }, redirectTo) => {
+  state.signInModalOpen = true;
+  state.redirectOnLogin = redirectTo || '';
+};
+
+export const toggleSignInModal: Action = ({ state }) => {
+  state.signInModalOpen = !state.signInModalOpen;
+};
+
+export const signInButtonClicked: AsyncAction<{
+  useExtraScopes: boolean;
+} | void> = async ({ actions, state }, options) => {
+  if (!options) {
+    await actions.internal.signIn({
+      useExtraScopes: false,
+    });
+    state.signInModalOpen = false;
+    return;
+  }
+  await actions.internal.signIn(options);
+  state.signInModalOpen = false;
+};
 
 export const signInCliClicked: AsyncAction = async ({ state, actions }) => {
   await actions.internal.signIn({
     useExtraScopes: false,
   });
+  state.signInModalOpen = false;
 
   if (state.user) {
     await actions.internal.authorize();
@@ -150,20 +166,22 @@ export const signInZeitClicked: AsyncAction = async ({
       await actions.deployment.internal.getZeitUserDetails();
     } catch (error) {
       actions.internal.handleError({
-        message: 'Could not authorize with ZEIT',
+        message: 'Could not authorize with Vercel',
         error,
       });
     }
   } else {
-    notificationToast.error('Could not authorize with ZEIT');
+    notificationToast.error('Could not authorize with Vercel');
   }
 
   state.isLoadingZeit = false;
 };
 
 export const signOutZeitClicked: AsyncAction = async ({ state, effects }) => {
-  await effects.api.signoutZeit();
-  state.user.integrations.zeit = null;
+  if (state.user?.integrations?.zeit) {
+    await effects.api.signoutZeit();
+    delete state.user.integrations.zeit;
+  }
 };
 
 export const authTokenRequested: AsyncAction = async ({ actions }) => {
@@ -200,8 +218,10 @@ export const signOutGithubIntegration: AsyncAction = async ({
   state,
   effects,
 }) => {
-  await effects.api.signoutGithubIntegration();
-  state.user.integrations.github = null;
+  if (state.user?.integrations?.github) {
+    await effects.api.signoutGithubIntegration();
+    delete state.user.integrations.github;
+  }
 };
 
 export const setUpdateStatus: Action<{ status: string }> = (
@@ -219,30 +239,38 @@ export const track: Action<{ name: string; data: any }> = (
 };
 
 export const refetchSandboxInfo: AsyncAction = async ({
-  state,
-  effects,
   actions,
+  effects,
+  state,
 }) => {
   const sandbox = state.editor.currentSandbox;
-  if (sandbox && sandbox.id) {
-    const updatedSandbox = await effects.api.getSandbox(sandbox.id);
 
-    sandbox.collection = updatedSandbox.collection;
-    sandbox.owned = updatedSandbox.owned;
-    sandbox.userLiked = updatedSandbox.userLiked;
-    sandbox.title = updatedSandbox.title;
-    sandbox.team = updatedSandbox.team;
-    sandbox.roomId = updatedSandbox.roomId;
-
-    await actions.editor.internal.initializeLiveSandbox(sandbox);
+  if (!sandbox?.id) {
+    return;
   }
+
+  const updatedSandbox = await effects.api.getSandbox(sandbox.id);
+
+  sandbox.collection = updatedSandbox.collection;
+  sandbox.owned = updatedSandbox.owned;
+  sandbox.userLiked = updatedSandbox.userLiked;
+  sandbox.title = updatedSandbox.title;
+  sandbox.team = updatedSandbox.team;
+  sandbox.roomId = updatedSandbox.roomId;
+  sandbox.authorization = updatedSandbox.authorization;
+  sandbox.privacy = updatedSandbox.privacy;
+
+  await actions.editor.internal.initializeSandbox(sandbox);
 };
 
-export const acceptTeamInvitation: Action<{ teamName: string }> = (
-  { effects },
-  { teamName }
-) => {
+export const acceptTeamInvitation: Action<{
+  teamName: string;
+  teamId: string;
+}> = ({ effects, actions }, { teamName }) => {
+  effects.analytics.track('Team - Join Team', { source: 'invitation' });
   effects.analytics.track('Team - Invitation Accepted', {});
+
+  actions.internal.trackCurrentTeams();
 
   effects.notificationToast.success(`Accepted invitation to ${teamName}`);
 };
@@ -251,7 +279,7 @@ export const rejectTeamInvitation: Action<{ teamName: string }> = (
   { effects },
   { teamName }
 ) => {
-  effects.analytics.track('Team - Invitation Accepted', {});
+  effects.analytics.track('Team - Invitation Rejected', {});
 
   effects.notificationToast.success(`Rejected invitation to ${teamName}`);
 };

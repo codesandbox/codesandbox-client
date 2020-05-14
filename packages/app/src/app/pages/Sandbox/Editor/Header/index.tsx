@@ -1,71 +1,55 @@
+import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
-import React, { ComponentProps, FunctionComponent } from 'react';
+import { Link, Stack } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { UserMenu } from 'app/pages/common/UserMenu';
-import {
-  ForkButton,
-  LikeButton,
-  NewSandboxButton,
-  PickButton,
-  PreferencesButton,
-  RefreshButton,
-  ShareButton,
-} from './Buttons';
-import {
-  AccountContainer,
-  Centered,
-  Container,
-  DashboardIcon,
-  DashboardLink,
-  Left,
-  Right,
-  SignInButton,
-  UserMenuContainer,
-} from './elements';
-import { Logo } from './Logo';
+import React from 'react';
+
+import { Actions } from './Actions';
+import { DashboardIcon } from './icons';
 import { MenuBar } from './MenuBar';
 import { SandboxName } from './SandboxName';
 
-type Props = Pick<ComponentProps<typeof Container>, 'zenMode'>;
-export const Header: FunctionComponent<Props> = ({ zenMode }) => {
+export const Header = () => {
   const {
-    state: { hasLogIn, isLoggedIn, updateStatus, user },
+    state: { hasLogIn, editor, isAuthenticating },
   } = useOvermind();
 
   return (
-    <Container as="header" zenMode={zenMode}>
-      <Left>
+    <Stack
+      as="header"
+      justify="space-between"
+      align="center"
+      paddingX={2}
+      css={css({
+        boxSizing: 'border-box',
+        fontFamily: 'Inter, sans-serif',
+        height: 12,
+        backgroundColor: 'titleBar.activeBackground',
+        color: 'titleBar.activeForeground',
+        borderBottom: '1px solid',
+        borderColor: 'titleBar.border',
+      })}
+    >
+      <Stack align="center">
         {hasLogIn ? (
-          <DashboardLink to={dashboardUrl()}>
+          <Link
+            variant="muted"
+            href={dashboardUrl()}
+            css={{ lineHeight: 0 /* micro adjustment */ }}
+          >
             <DashboardIcon />
-          </DashboardLink>
+          </Link>
         ) : (
-          <Logo />
+          <Link href="/" css={{ padding: '2px' /* micro adjustment */ }}>
+            <LogoIcon height={24} />
+          </Link>
         )}
         <MenuBar />
-      </Left>
-      <Centered>
-        <SandboxName />
-      </Centered>
+      </Stack>
 
-      <Right>
-        {updateStatus === 'available' && <RefreshButton />}
-        {!isLoggedIn && <PreferencesButton />}
-        <NewSandboxButton />
-        {isLoggedIn && <LikeButton />}
-        {user?.curatorAt && <PickButton />}
-        <ShareButton />
-        <ForkButton />
-        <AccountContainer>
-          {isLoggedIn ? (
-            <UserMenuContainer>
-              <UserMenu />
-            </UserMenuContainer>
-          ) : (
-            <SignInButton />
-          )}
-        </AccountContainer>
-      </Right>
-    </Container>
+      {editor.currentSandbox && !isAuthenticating ? <SandboxName /> : null}
+      {editor.currentSandbox && !isAuthenticating ? <Actions /> : null}
+    </Stack>
   );
 };

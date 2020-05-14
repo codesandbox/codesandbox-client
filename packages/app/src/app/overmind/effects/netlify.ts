@@ -1,12 +1,12 @@
-import axios from 'axios';
-import { Sandbox, NetlifySite } from '@codesandbox/common/lib/types';
 import getTemplate from '@codesandbox/common/lib/templates';
+import { NetlifySite, Sandbox } from '@codesandbox/common/lib/types';
 import getNetlifyConfig from 'app/utils/getNetlifyConfig';
+import axios from 'axios';
 
 const NetlifyBaseURL = 'https://netlify.deploy.codesandbox.io/site';
 
 type Options = {
-  getUserId(): string;
+  getUserId(): string | null;
 };
 
 export default (() => {

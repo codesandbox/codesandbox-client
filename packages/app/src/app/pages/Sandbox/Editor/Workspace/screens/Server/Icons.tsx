@@ -17,3 +17,18 @@ export const DeleteIcon = props => (
     />
   </svg>
 );
+
+export const RestartServerIcon = props => (
+  <svg width={12} height={11} fill="none" viewBox="0 0 12 11" {...props}>
+    <path
+      fill="#fff"
+      fillRule="evenodd"
+      d="M6.458 9.041a3.875 3.875 0 10-3.832-4.448h1.249L1.937 7.176l-.44-.588-.005.006a4.659 4.659 0 01-.006-.02L0 4.593h1.323a5.167 5.167 0 111.85 4.562l.92-.92a3.858 3.858 0 002.365.806z"
+      clipRule="evenodd"
+    />
+    <path
+      fill="#fff"
+      d="M8.22 4.934a.23.23 0 01-.012.381L5.85 6.782a.23.23 0 01-.35-.194V3.444a.23.23 0 01.362-.187l2.357 1.677z"
+    />
+  </svg>
+);

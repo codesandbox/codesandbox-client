@@ -33,8 +33,8 @@ export const Deployment: FunctionComponent = () => {
     <Collapsible title="Deployment" defaultOpen>
       <Element paddingX={2}>
         <Text variant="muted" block marginBottom={6}>
-          You can deploy a production version of your sandbox using one our
-          supported providers.
+          You can deploy a production version of your sandbox using one of our
+          supported providers - Netlify or Vercel.
         </Text>
         <Stack direction="vertical" gap={5}>
           <Zeit />

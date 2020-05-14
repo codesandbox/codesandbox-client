@@ -4,19 +4,16 @@ import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import Row from '@codesandbox/common/lib/components/flex/Row';
 import Padding from '@codesandbox/common/lib/components/spacing/Padding';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { Skeleton } from 'app/components/Skeleton';
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
-import { QuickActions } from 'app/pages/Sandbox/QuickActions';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import { Link } from 'react-router-dom';
 
 import Editor from '../Sandbox/Editor';
-import { BlinkingDot } from './BlinkingDot';
 
 interface Props {
   match: {
@@ -110,30 +107,6 @@ export const LivePage: React.FC<Props> = ({ match }) => {
       );
     }
 
-    if (
-      state.isAuthenticating ||
-      state.editor.isLoading ||
-      state.live.isLoading ||
-      !state.editor.currentSandbox
-    ) {
-      return (
-        <>
-          <Skeleton
-            titles={[
-              {
-                content: <BlinkingDot />,
-                delay: 0,
-              },
-              {
-                content: 'Joining Live Session...',
-                delay: 0.5,
-              },
-            ]}
-          />
-        </>
-      );
-    }
-
     return null;
   }
 
@@ -174,7 +147,6 @@ export const LivePage: React.FC<Props> = ({ match }) => {
         </Helmet>
       )}
       <Editor />
-      <QuickActions />
     </>
   );
 };

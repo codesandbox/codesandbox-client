@@ -4,7 +4,7 @@ import { Files } from './Files';
 import { Dependencies } from './Dependencies';
 import { ExternalResources } from './ExternalResources';
 
-export const Explorer = ({ filesDefaultOpen = true }) => {
+export const Explorer = () => {
   const {
     state: { editor },
   } = useOvermind();
@@ -13,7 +13,7 @@ export const Explorer = ({ filesDefaultOpen = true }) => {
 
   return (
     <>
-      <Files defaultOpen={filesDefaultOpen} />
+      <Files />
       {template !== 'static' && (
         <>
           <Dependencies />

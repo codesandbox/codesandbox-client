@@ -5,8 +5,8 @@ import Tooltip from '../../components/Tooltip';
 import { isContributor } from './is-contributor';
 
 type Props = {
+  className?: string;
   username: string;
-  style?: React.CSSProperties;
 };
 
 type State = {
@@ -33,7 +33,7 @@ export default class ContributorsBadge extends React.Component<Props, State> {
   }
 
   render() {
-    const { username, style } = this.props;
+    const { className, username } = this.props;
     if (!this.state.isContributor) {
       return false;
     }
@@ -42,20 +42,15 @@ export default class ContributorsBadge extends React.Component<Props, State> {
       <a
         target="_blank"
         rel="noreferrer noopener"
-        onClick={e => {
-          e.stopPropagation();
-        }}
-        href={
-          'https://github.com/codesandbox/codesandbox-client/commits?author=' +
-          username
-        }
+        onClick={e => e.stopPropagation()}
+        href={`https://github.com/codesandbox/codesandbox-client/commits?author=${username}`}
       >
         <Tooltip
           style={{ display: 'flex' }}
           content="Open Source Contributor to CodeSandbox"
         >
           <IconBase
-            style={style}
+            className={className}
             width="1em"
             height="0.67em"
             viewBox="0 0 284 192"

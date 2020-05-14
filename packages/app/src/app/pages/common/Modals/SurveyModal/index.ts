@@ -1,1 +1,0 @@
-export { SurveyModal } from './SurveyModal';

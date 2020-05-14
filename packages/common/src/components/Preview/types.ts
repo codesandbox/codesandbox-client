@@ -13,7 +13,6 @@ export type Settings = {
   tabWidth: number;
   enableLigatures: boolean;
   forceRefresh: boolean;
-  experimentVSCode: boolean;
   prettierConfig: Object;
   zenMode: boolean;
 };

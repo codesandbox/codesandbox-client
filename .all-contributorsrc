@@ -475,7 +475,7 @@
       "login": "mdxprograms",
       "name": "Josh Waller",
       "avatar_url": "https://avatars1.githubusercontent.com/u/1900735?v=4",
-      "profile": "https://www.joshwaller.me",
+      "profile": "https://joshwaller.dev",
       "contributions": [
         "bug",
         "code",
@@ -1521,6 +1521,33 @@
       "contributions": [
         "bug",
         "code"
+      ]
+    },
+    {
+      "login": "anuraghazra",
+      "name": "Anurag Hazra",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/35374649?v=4",
+      "profile": "http://anuraghazra.github.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "johansenja",
+      "name": "johansenja",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/43235608?v=4",
+      "profile": "https://github.com/johansenja",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Developerayo",
+      "name": "Shodipo Ayomide",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/20538832?v=4",
+      "profile": "https://shodipoayomide.com",
+      "contributions": [
+        "doc"
       ]
     }
   ],

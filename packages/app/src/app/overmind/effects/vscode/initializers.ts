@@ -1,5 +1,8 @@
-import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
+import JSON5 from 'json5';
 import codeSandboxTheme from '@codesandbox/common/lib/themes/codesandbox.json';
+import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 
 export function initializeThemeCache() {
   try {
@@ -37,6 +40,7 @@ export function initializeSettings() {
           'editor.minimap.enabled': false,
           'workbench.editor.openSideBySideDirection': 'down',
           'svelte.plugin.typescript.diagnostics.enable': false,
+          'typescript.locale': 'en',
         },
         null,
         2
@@ -52,15 +56,44 @@ export function initializeSettings() {
     // and applies them 100ms later. There is no check for cursor or anything else.
     // This doesn't happen in VSCode Live Share itself, because there they share the LSP between
     // multiple users. This way the request is not duplicated among multiple users.
-    const settings = JSON.parse(
+    const settings = JSON5.parse(
       fs.readFileSync('/vscode/settings.json').toString()
     );
-    settings['javascript.autoClosingTags'] = false;
-    settings['typescript.autoClosingTags'] = false;
-    fs.writeFileSync(
-      '/vscode/settings.json',
-      JSON.stringify(settings, null, 2)
+
+    let settingsChanged = false;
+    const changeIfNeeded = (field: string, value: unknown) => {
+      if (settings[field] !== value) {
+        settings[field] = value;
+        return true;
+      }
+      return settingsChanged || false;
+    };
+
+    settingsChanged = changeIfNeeded('javascript.autoClosingTags', false);
+    settingsChanged = changeIfNeeded('typescript.autoClosingTags', false);
+    settingsChanged = changeIfNeeded('html.autoClosingTags', false);
+    settingsChanged = changeIfNeeded('typescript.locale', 'en');
+    settingsChanged = changeIfNeeded(
+      'typescript.tsserver.useSeparateSyntaxServer',
+      false
     );
+
+    if (!settings['workbench.colorTheme']) {
+      // if you have not changed the theme ever,
+      // we set codesandbox black as the theme for you
+
+      settingsChanged = changeIfNeeded(
+        'workbench.colorTheme',
+        'CodeSandbox Black'
+      );
+    }
+
+    if (settingsChanged) {
+      fs.writeFileSync(
+        '/vscode/settings.json',
+        JSON5.stringify(settings, { quote: '"', space: 2, replacer: null })
+      );
+    }
   } catch (e) {
     console.warn(e);
   }
@@ -73,6 +106,11 @@ export function initializeCodeSandboxTheme() {
   fs.writeFileSync(
     '/extensions/ngryman.codesandbox-theme-0.0.1/themes/CodeSandbox-color-theme.json',
     JSON.stringify(codeSandboxTheme)
+  );
+
+  fs.writeFileSync(
+    '/extensions/codesandbox-black-0.0.1/themes/codesandbox-black.json',
+    JSON.stringify(codeSandboxBlackTheme)
   );
 }
 
@@ -140,12 +178,34 @@ export function initializeCustomTheme() {
   const customTheme = localStorage.getItem('settings.manualCustomVSCodeTheme');
 
   if (customTheme) {
-    installCustomTheme('custom', 'Custom Theme', customTheme);
+    try {
+      installCustomTheme('custom', 'Custom Theme', JSON.parse(customTheme));
+    } catch (e) {
+      notificationState.addNotification({
+        title: 'Something went wrong while installing the custom extension',
+        message: e.message,
+        status: NotificationStatus.ERROR,
+        actions: {
+          primary: [
+            {
+              label: 'Clear Custom Theme',
+              run: () => {
+                localStorage.removeItem('settings.manualCustomVSCodeTheme');
+              },
+            },
+          ],
+        },
+      });
+    }
   }
+}
 
-  installCustomTheme(
-    'codesandbox-black-0.0.1',
-    'CodeSandbox Black.',
-    JSON.stringify(codeSandboxBlackTheme)
-  );
+export function initializeSnippetDirectory() {
+  const fs = window.BrowserFS.BFSRequire('fs');
+
+  const folder = `/vscode/snippets`;
+  const folderExists = fs.existsSync(folder);
+  if (!folderExists) {
+    fs.mkdirSync(folder);
+  }
 }

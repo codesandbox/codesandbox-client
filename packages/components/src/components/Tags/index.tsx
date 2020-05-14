@@ -1,26 +1,29 @@
 import React from 'react';
 import { Stack } from '../Stack';
-import { Element } from '../Element';
 import { Tag } from './Tag';
 
 type Props = {
   tags: Array<string>;
-  align?: 'right' | 'left';
   style?: React.CSSProperties;
   onRemove?: (tag: string) => void;
 };
 
-export function Tags({ tags, align, ...props }: Props) {
+export function Tags({ tags, ...props }: Props) {
   return (
-    <Stack justify={align === 'right' ? 'flex-end' : 'flex-stat'} {...props}>
-      {tags
-        .slice()
-        .sort()
-        .map(tag => (
-          <Element key={tag} marginX={1} marginY={1}>
-            <Tag tag={tag} {...props} />
-          </Element>
-        ))}
+    <Stack
+      align="center"
+      gap={1}
+      css={{
+        flexWrap: 'wrap',
+        // we add margin instead for multiline tags
+        // because stack doesn't support multilines
+        '> *': { marginBottom: 1 },
+      }}
+      {...props}
+    >
+      {tags.slice().map(tag => (
+        <Tag key={tag} tag={tag} {...props} />
+      ))}
     </Stack>
   );
 }

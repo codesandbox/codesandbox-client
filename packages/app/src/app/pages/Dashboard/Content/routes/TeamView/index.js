@@ -1,5 +1,5 @@
 import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextArea';
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { Button } from '@codesandbox/components';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -24,6 +24,7 @@ import {
   TeamContainer,
 } from './elements';
 import { RemoveTeamMember } from './RemoveTeamMember';
+import { InviteLink } from './InviteLink';
 
 const User = ({ user, rightElement }) => (
   <div
@@ -133,20 +134,18 @@ class TeamView extends React.PureComponent {
                                     }}
                                   >
                                     <Button
-                                      style={{ marginRight: '.5rem' }}
-                                      red
-                                      small
+                                      style={{ marginRight: '.5rem', flex: 1 }}
+                                      variant="danger"
                                       onClick={stopEditing}
                                       type="reset"
-                                      disabled={descriptionLoading}
+                                      loading={descriptionLoading}
                                     >
                                       Cancel
                                     </Button>
                                     <Button
-                                      style={{ marginLeft: '.5rem' }}
-                                      small
+                                      style={{ marginLeft: '.5rem', flex: 1 }}
                                       type="submit"
-                                      disabled={descriptionLoading}
+                                      loading={descriptionLoading}
                                     >
                                       Confirm
                                     </Button>
@@ -186,7 +185,7 @@ class TeamView extends React.PureComponent {
                                 creatorId={data.me.team.creatorId}
                                 currentUserId={currentUser.id}
                                 userId={user.id}
-                                name={user.name || user.usermame}
+                                name={user.name || user.username}
                                 teamId={teamId}
                                 totalMemberSize={
                                   data.me.team.users.length +
@@ -249,6 +248,9 @@ class TeamView extends React.PureComponent {
 
                         <Margin top={1}>
                           <AddTeamMember teamId={teamId} />
+                        </Margin>
+                        <Margin top={0.5}>
+                          <InviteLink inviteToken={data.me.team.inviteToken} />
                         </Margin>
                       </Members>
                     </Section>

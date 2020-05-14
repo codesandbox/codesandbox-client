@@ -1,6 +1,13 @@
 import styled from 'styled-components';
 import Row from '@codesandbox/common/lib/components/flex/Row';
 
+export const UserMenuContainer = styled.div`
+  display: absolute;
+  z-index: 999999999999;
+  margin: 5px 0;
+  font-size: 0.8rem;
+`;
+
 export const ClickableContainer = styled(Row)`
   cursor: pointer;
   background: transparent;

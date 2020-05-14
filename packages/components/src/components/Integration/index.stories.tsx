@@ -37,7 +37,7 @@ const ZeitIcon = props => (
 
 export const IntegrationZeit = () => (
   <div style={{ width: 184 }}>
-    <Integration icon={ZeitIcon} title="ZEIT">
+    <Integration icon={ZeitIcon} title="Vercel">
       <Element marginX={2}>
         <Stack direction="vertical">
           <Text variant="muted">Enables</Text>

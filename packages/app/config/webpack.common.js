@@ -18,6 +18,7 @@ const babelProd = require('./babel.prod');
 
 const NODE_ENV = JSON.parse(env.default['process.env.NODE_ENV']);
 const SANDBOX_ONLY = !!process.env.SANDBOX_ONLY;
+const APP_HOT = Boolean(process.env.APP_HOT);
 const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
@@ -128,6 +129,13 @@ module.exports = {
         ],
         'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
       }
+    : APP_HOT
+    ? {
+        app: [
+          require.resolve('./polyfills'),
+          path.join(paths.appSrc, 'index.js'),
+        ],
+      }
     : {
         app: [
           require.resolve('./polyfills'),
@@ -138,6 +146,7 @@ module.exports = {
           path.join(paths.sandboxSrc, 'index.js'),
         ],
         'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
+        'watermark-button': path.join(paths.src, 'watermark-button.js'),
         embed: [
           require.resolve('./polyfills'),
           path.join(paths.embedSrc, 'index.js'),
@@ -163,31 +172,6 @@ module.exports = {
 
   module: {
     rules: [
-      {
-        test: /\.(graphql|gql)$/,
-        exclude: /node_modules/,
-        loader: `graphql-tag/loader`,
-      },
-      {
-        test: /\.wasm$/,
-        loader: 'file-loader',
-        type: 'javascript/auto',
-      },
-      {
-        test: /\.scss$/,
-        use: getStyleLoaders(
-          {
-            importLoaders: 2,
-            sourceMap: true,
-          },
-          'sass-loader'
-        ),
-        // Don't consider CSS imports dead code even if the
-        // containing package claims to have no side effects.
-        // Remove this when webpack adds a warning or an error for this.
-        // See https://github.com/webpack/webpack/issues/6571
-        sideEffects: true,
-      },
       // Transpile node dependencies, node deps are often not transpiled for IE11
       {
         test: [
@@ -209,6 +193,8 @@ module.exports = {
         ],
         loader: 'babel-loader',
         query: {
+          retainLines: true,
+          cacheDirectory: true,
           presets: [
             '@babel/preset-flow',
             [
@@ -233,6 +219,31 @@ module.exports = {
             '@babel/plugin-transform-runtime',
           ],
         },
+      },
+      {
+        test: /\.(graphql|gql)$/,
+        exclude: /node_modules/,
+        loader: `graphql-tag/loader`,
+      },
+      {
+        test: /\.wasm$/,
+        loader: 'file-loader',
+        type: 'javascript/auto',
+      },
+      {
+        test: /\.scss$/,
+        use: getStyleLoaders(
+          {
+            importLoaders: 2,
+            sourceMap: true,
+          },
+          'sass-loader'
+        ),
+        // Don't consider CSS imports dead code even if the
+        // containing package claims to have no side effects.
+        // Remove this when webpack adds a warning or an error for this.
+        // See https://github.com/webpack/webpack/issues/6571
+        sideEffects: true,
       },
       {
         test: /\.(j|t)sx?$/,

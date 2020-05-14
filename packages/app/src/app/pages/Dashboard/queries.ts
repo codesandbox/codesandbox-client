@@ -1,18 +1,18 @@
-import gql from 'graphql-tag';
 import { client } from 'app/graphql/client';
-import immer from 'immer';
 import {
-  PathedSandboxesQuery,
-  DeleteSandboxesMutation,
-  DeleteSandboxesMutationVariables,
-  PermanentlyDeleteSandboxesMutation,
-  PermanentlyDeleteSandboxesMutationVariables,
-  DeletedSandboxesQuery,
   AddToCollectionMutation,
   AddToCollectionMutationVariables,
-  PathedSandboxesQueryVariables,
+  DeleteSandboxesMutation,
+  DeleteSandboxesMutationVariables,
+  DeletedSandboxesQuery,
   DeletedSandboxesQueryVariables,
+  PathedSandboxesQuery,
+  PathedSandboxesQueryVariables,
+  PermanentlyDeleteSandboxesMutation,
+  PermanentlyDeleteSandboxesMutationVariables,
 } from 'app/graphql/types';
+import gql from 'graphql-tag';
+import immer from 'immer';
 
 const SIDEBAR_COLLECTION_FRAGMENT = gql`
   fragment SidebarCollection on Collection {
@@ -58,6 +58,7 @@ const TEAM_FRAGMENT = gql`
   fragment Team on Team {
     id
     name
+    inviteToken
     description
     creatorId
 
@@ -148,7 +149,7 @@ export const RENAME_FOLDER_MUTATION = gql`
 export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
   mutation AddToCollection(
     $collectionPath: String!
-    $sandboxIds: [ID]!
+    $sandboxIds: [ID!]!
     $teamId: ID
   ) {
     addToCollection(
@@ -165,7 +166,7 @@ export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
 `;
 
 export const DELETE_SANDBOXES_MUTATION = gql`
-  mutation DeleteSandboxes($sandboxIds: [ID]!) {
+  mutation DeleteSandboxes($sandboxIds: [ID!]!) {
     deleteSandboxes(sandboxIds: $sandboxIds) {
       ...Sandbox
     }
@@ -174,7 +175,7 @@ export const DELETE_SANDBOXES_MUTATION = gql`
 `;
 
 export const SET_SANDBOXES_PRIVACY_MUTATION = gql`
-  mutation SetSandboxesPrivacy($sandboxIds: [ID]!, $privacy: Int!) {
+  mutation SetSandboxesPrivacy($sandboxIds: [ID!]!, $privacy: Int!) {
     setSandboxesPrivacy(sandboxIds: $sandboxIds, privacy: $privacy) {
       ...Sandbox
     }
@@ -192,12 +193,11 @@ export const RENAME_SANDBOX_MUTATION = gql`
 `;
 
 export const PERMANENTLY_DELETE_SANDBOXES_MUTATION = gql`
-  mutation PermanentlyDeleteSandboxes($sandboxIds: [ID]!) {
+  mutation PermanentlyDeleteSandboxes($sandboxIds: [ID!]!) {
     permanentlyDeleteSandboxes(sandboxIds: $sandboxIds) {
-      ...Sandbox
+      id
     }
   }
-  ${SANDBOX_FRAGMENT}
 `;
 
 export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
@@ -261,7 +261,7 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
 export function addSandboxesToFolder(
   selectedSandboxes,
   path: string,
-  teamId?: string
+  teamId: string | null
 ) {
   return client.mutate<
     AddToCollectionMutation,
@@ -290,12 +290,12 @@ export function addSandboxesToFolder(
 export function undeleteSandboxes(selectedSandboxes) {
   client.mutate<AddToCollectionMutation, AddToCollectionMutationVariables>({
     mutation: ADD_SANDBOXES_TO_FOLDER_MUTATION,
+    // @ts-ignore
     variables: {
       sandboxIds: selectedSandboxes.toJS
         ? selectedSandboxes.toJS()
         : selectedSandboxes,
       collectionPath: '/',
-      teamId: undefined,
     },
     optimisticResponse: {
       __typename: 'RootMutationType',
@@ -311,16 +311,14 @@ export function undeleteSandboxes(selectedSandboxes) {
   });
 }
 
-export function permanentlyDeleteSandboxes(selectedSandboxes) {
-  client.mutate<
+export function permanentlyDeleteSandboxes(selectedSandboxes: string[]) {
+  return client.mutate<
     PermanentlyDeleteSandboxesMutation,
     PermanentlyDeleteSandboxesMutationVariables
   >({
     mutation: PERMANENTLY_DELETE_SANDBOXES_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS
-        ? selectedSandboxes.toJS()
-        : selectedSandboxes,
+      sandboxIds: selectedSandboxes,
     },
     update: cache => {
       try {
@@ -334,8 +332,8 @@ export function permanentlyDeleteSandboxes(selectedSandboxes) {
         const newDeleteCache = {
           ...oldDeleteCache,
           me: {
-            ...oldDeleteCache.me,
-            sandboxes: oldDeleteCache.me.sandboxes.filter(
+            ...(oldDeleteCache && oldDeleteCache.me ? oldDeleteCache.me : null),
+            sandboxes: (oldDeleteCache?.me?.sandboxes || []).filter(
               x => !selectedSandboxes.includes(x.id)
             ),
           },
@@ -384,19 +382,27 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
             });
 
             const data = immer(oldFolderCacheData, draft => {
+              if (
+                !draft?.me?.collection ||
+                !oldFolderCacheData?.me?.collection?.sandboxes
+              ) {
+                return;
+              }
               draft.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
-                x => !selectedSandboxes.includes(x.id)
+                x => !selectedSandboxes.includes(x?.id)
               );
             });
 
-            cache.writeQuery<
-              PathedSandboxesQuery,
-              PathedSandboxesQueryVariables
-            >({
-              query: PATHED_SANDBOXES_CONTENT_QUERY,
-              variables,
-              data,
-            });
+            if (data) {
+              cache.writeQuery<
+                PathedSandboxesQuery,
+                PathedSandboxesQueryVariables
+              >({
+                query: PATHED_SANDBOXES_CONTENT_QUERY,
+                variables,
+                data,
+              });
+            }
           } catch (e) {
             // cache doesn't exist, no biggie!
           }
@@ -406,13 +412,14 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
   });
 }
 
-export function setSandboxesPrivacy(selectedSandboxes, privacy) {
+export function setSandboxesPrivacy(
+  selectedSandboxes: string[],
+  privacy: 0 | 1 | 2
+) {
   client.mutate({
     mutation: SET_SANDBOXES_PRIVACY_MUTATION,
     variables: {
-      sandboxIds: selectedSandboxes.toJS
-        ? selectedSandboxes.toJS()
-        : selectedSandboxes,
+      sandboxIds: selectedSandboxes,
       privacy,
     },
   });
@@ -451,6 +458,12 @@ export const INVITE_TO_TEAM = gql`
     }
   }
   ${TEAM_FRAGMENT}
+`;
+
+export const INVITE_TO_TEAM_VIA_EMAIL = gql`
+  mutation InviteToTeamViaEmail($teamId: ID!, $email: String!) {
+    inviteToTeamViaEmail(teamId: $teamId, email: $email)
+  }
 `;
 
 export const REVOKE_TEAM_INVITATION = gql`

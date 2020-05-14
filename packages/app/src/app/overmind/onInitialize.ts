@@ -15,11 +15,19 @@ export const onInitialize: OnInitialize = async (
   effects.live.initialize({
     provideJwtToken,
     onApplyOperation: actions.live.applyTransformation,
+    isLiveBlockerExperiement: () =>
+      Boolean(state.user?.experiments.liveBlocker),
+    onOperationError: actions.live.onOperationError,
   });
 
   effects.flows.initialize(overmindInstance.reaction);
 
-  effects.keybindingManager.initialize(overmindInstance);
+  // We consider recover mode something to be done when browser actually crashes, meaning there is no unmount
+  effects.browser.onUnload(() => {
+    if (state.editor.currentSandbox && state.connected) {
+      effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
+    }
+  });
 
   effects.api.initialize({
     provideJwtToken,
@@ -27,6 +35,16 @@ export const onInitialize: OnInitialize = async (
       return state.editor.parsedConfigurations;
     },
   });
+
+  effects.gql.initialize(
+    {
+      endpoint: `${location.origin}/api/graphql`,
+      headers: () => ({
+        Authorization: `Bearer ${state.jwt}`,
+      }),
+    },
+    () => (effects.jwt.get() ? effects.live.getSocket() : null)
+  );
 
   effects.notifications.initialize({
     provideSocket() {
@@ -36,13 +54,13 @@ export const onInitialize: OnInitialize = async (
 
   effects.zeit.initialize({
     getToken() {
-      return state.user.integrations.zeit && state.user.integrations.zeit.token;
+      return state.user?.integrations.zeit?.token ?? null;
     },
   });
 
   effects.netlify.initialize({
     getUserId() {
-      return state.user.id;
+      return state.user?.id ?? null;
     },
   });
 
@@ -52,7 +70,7 @@ export const onInitialize: OnInitialize = async (
     },
     getPrettierConfig() {
       let config = state.preferences.settings.prettierConfig;
-      const configFromSandbox = state.editor.currentSandbox.modules.find(
+      const configFromSandbox = state.editor.currentSandbox?.modules.find(
         module =>
           module.directoryShortid == null && module.title === '.prettierrc'
       );
@@ -69,15 +87,23 @@ export const onInitialize: OnInitialize = async (
     getCurrentSandbox: () => state.editor.currentSandbox,
     getCurrentModule: () => state.editor.currentModule,
     getSandboxFs: () => state.editor.modulesByPath,
+    getCurrentUser: () => state.user,
     onOperationApplied: actions.editor.onOperationApplied,
     onCodeChange: actions.editor.codeChanged,
-    onSelectionChange: actions.live.onSelectionChanged,
+    onSelectionChanged: selection => {
+      actions.editor.onSelectionChanged(selection);
+      actions.live.onSelectionChanged(selection);
+    },
+    onViewRangeChanged: actions.live.onViewRangeChanged,
+    onCommentClick: actions.comments.onCommentClick,
     reaction: overmindInstance.reaction,
-    getState: path =>
+    getState: (path: string) =>
       path ? path.split('.').reduce((aggr, key) => aggr[key], state) : state,
-    getSignal: path =>
+    getSignal: (path: string) =>
       path.split('.').reduce((aggr, key) => aggr[key], actions),
   });
 
   effects.preview.initialize(overmindInstance.reaction);
+
+  actions.internal.showPrivacyPolicyNotification();
 };

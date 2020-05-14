@@ -7,13 +7,15 @@ import { NotificationStatus, Toasts } from '@codesandbox/notifications';
 import { useOvermind } from 'app/overmind';
 import Loadable from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
+import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
-import Dashboard from './Dashboard';
+import { Dashboard } from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
+import { Dashboard as NewDashboard } from './NewDashboard';
 import { NewSandbox } from './NewSandbox';
 import { Sandbox } from './Sandbox';
 
@@ -55,6 +57,14 @@ const CLI = Loadable(() =>
   }))
 );
 
+const TeamInvitation = Loadable(() =>
+  import(
+    /* webpackChunkName: 'page-team-invitation' */ './TeamInvitation'
+  ).then(module => ({
+    default: module.TeamInvitation,
+  }))
+);
+
 const GitHub = Loadable(() =>
   import(/* webpackChunkName: 'page-github' */ './GitHub').then(module => ({
     default: module.GitHub,
@@ -81,6 +91,7 @@ const Boundary = withRouter(ErrorBoundary);
 const RoutesComponent: React.FC = () => {
   const {
     actions: { appUnmounted },
+    state: { signInModalOpen, user },
   } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
@@ -88,8 +99,11 @@ const RoutesComponent: React.FC = () => {
     <Container>
       <Route
         path="/"
-        render={({ location }) => {
-          if (process.env.NODE_ENV === 'production') {
+        render={({ location, history }) => {
+          if (
+            process.env.NODE_ENV === 'production' &&
+            history.action !== 'REPLACE'
+          ) {
             routeDebugger(
               `Sending '${location.pathname + location.search}' to analytics.`
             );
@@ -118,7 +132,9 @@ const RoutesComponent: React.FC = () => {
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />
             <Route exact path="/s2" component={NewSandbox} />
+            <Route path="/invite/:token" component={TeamInvitation} />
             <Route path="/dashboard" component={Dashboard} />
+            <Route path="/new-dashboard" component={NewDashboard} />
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
@@ -142,6 +158,7 @@ const RoutesComponent: React.FC = () => {
         </Content>
       </Boundary>
       <Modals />
+      {signInModalOpen && !user ? <SignInModal /> : null}
     </Container>
   );
 };

@@ -3,7 +3,6 @@ import { Link } from 'gatsby';
 import { P } from '../Typography';
 import Github from '../../assets/icons/github';
 import Twitter from '../../assets/icons/twitter';
-import Spectrum from '../../assets/icons/spectrum';
 import { FooterWrapper, Nav, Social } from './elements';
 
 const Footer = () => (
@@ -33,11 +32,11 @@ const Footer = () => (
             <Link to="/team">Teams</Link>
           </P>
         </li>
-        {/* <li>
+        <li>
           <P small muted>
-            <a href="">What’s New</a>
+            <Link to="/changelog">What’s New</Link>
           </P>
-        </li> */}
+        </li>
       </ul>
       <ul>
         <li>
@@ -159,11 +158,6 @@ const Footer = () => (
       <li>
         <a title="Go to Twitter" href="https://twitter.com/codesandbox">
           <Twitter />
-        </a>
-      </li>
-      <li>
-        <a title="Go to Spectrum" href="https://spectrum.chat/codesandbox">
-          <Spectrum />
         </a>
       </li>
     </Social>

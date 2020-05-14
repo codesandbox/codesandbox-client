@@ -1,7 +1,13 @@
 import React, { useEffect } from 'react';
-import { Collapsible, Text, Element, Stack } from '@codesandbox/components';
+import {
+  Collapsible,
+  Text,
+  Element,
+  Stack,
+  Link,
+} from '@codesandbox/components';
+import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
-import { css } from '@styled-system/css';
 import { GitHubIcon } from './Icons';
 import { CommitForm } from './CommitForm';
 import { Changes } from './Changes';
@@ -24,6 +30,7 @@ export const GitHub = () => {
       user,
     },
   } = useOvermind();
+
   useEffect(() => {
     gitMounted();
   }, [gitMounted]);
@@ -42,13 +49,19 @@ export const GitHub = () => {
     <>
       {originalGit ? (
         <Collapsible title="Github" defaultOpen>
-          <Element css={css({ paddingX: 2 })}>
-            <Stack gap={2} marginBottom={6} align="center">
-              <GitHubIcon />
-              <Text size={2}>
-                {originalGit.username}/{originalGit.repo}
-              </Text>
-            </Stack>
+          <Element paddingX={2}>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href={githubRepoUrl(originalGit)}
+            >
+              <Stack gap={2} marginBottom={6} align="center">
+                <GitHubIcon />
+                <Text size={2}>
+                  {originalGit.username}/{originalGit.repo}
+                </Text>
+              </Stack>
+            </Link>
           </Element>
           <Element>
             <Text size={3} block marginBottom={2} marginX={2}>
@@ -57,7 +70,7 @@ export const GitHub = () => {
             {!isFetching ? (
               gitChanges && <Changes {...gitChanges} />
             ) : (
-              <Element css={css({ paddingX: 2 })}>
+              <Element paddingX={2}>
                 <Text variant="muted">Fetching changes...</Text>
               </Element>
             )}
@@ -65,7 +78,7 @@ export const GitHub = () => {
               <>
                 {changeCount > 0 && <CommitForm />}
                 {changeCount === 0 && (
-                  <Element css={css({ paddingX: 2 })}>
+                  <Element paddingX={2}>
                     <Text variant="muted" weight="bold">
                       There are no changes
                     </Text>

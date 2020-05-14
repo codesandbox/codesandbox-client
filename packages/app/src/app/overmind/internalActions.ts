@@ -31,7 +31,7 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
     actions.internal.setPatronPrice();
     actions.internal.setSignedInCookie();
     effects.analytics.identify('signed_in', true);
-    effects.analytics.setUserId(state.user.id);
+    effects.analytics.setUserId(state.user.id, state.user.email);
     actions.internal.setStoredSettings();
     effects.live.connect();
     actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
@@ -55,7 +55,7 @@ export const setStoredSettings: Action = ({ state, effects }) => {
           key,
           bindings: settings.keybindings[key],
         }),
-      []
+      [] as Array<{ key: string; bindings: string }>
     );
   }
 
@@ -63,6 +63,10 @@ export const setStoredSettings: Action = ({ state, effects }) => {
 };
 
 export const setPatronPrice: Action = ({ state }) => {
+  if (!state.user) {
+    return;
+  }
+
   state.patron.price = state.user.subscription
     ? Number(state.user.subscription.amount)
     : 10;
@@ -73,7 +77,7 @@ export const setSignedInCookie: Action = ({ state }) => {
 };
 
 export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
-  if (state.user.sendSurvey) {
+  if (state.user?.sendSurvey) {
     // Let the server know that we've seen the survey
     effects.api.markSurveySeen();
 
@@ -112,7 +116,7 @@ export const addNotification: Action<{
     id: now,
     title,
     type,
-    buttons,
+    buttons: buttons || [],
     endTime: now + (timeAlive || timeAliveDefault) * 1000,
   });
 };
@@ -166,7 +170,6 @@ export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
   }
 
   state.currentModal = null;
-  effects.keybindingManager.start();
 };
 
 export const setCurrentSandbox: AsyncAction<Sandbox> = async (
@@ -233,11 +236,13 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
 
   state.editor.tabs = [newTab];
 
-  state.preferences.showPreview =
-    sandboxOptions.isPreviewScreen || sandboxOptions.isSplitScreen;
+  state.preferences.showPreview = Boolean(
+    sandboxOptions.isPreviewScreen || sandboxOptions.isSplitScreen
+  );
 
-  state.preferences.showEditor =
-    sandboxOptions.isEditorScreen || sandboxOptions.isSplitScreen;
+  state.preferences.showEditor = Boolean(
+    sandboxOptions.isEditorScreen || sandboxOptions.isSplitScreen
+  );
 
   if (sandboxOptions.initialPath)
     state.editor.initialPath = sandboxOptions.initialPath;
@@ -267,23 +272,16 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   actions.server.startContainer(sandbox);
 };
 
-export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
-  { state },
-  sandbox
-) => {
-  state.editor.currentSandbox.team = sandbox.team || null;
-  state.editor.currentSandbox.collection = sandbox.collection;
-  state.editor.currentSandbox.owned = sandbox.owned;
-  state.editor.currentSandbox.userLiked = sandbox.userLiked;
-  state.editor.currentSandbox.title = sandbox.title;
-};
-
 export const ensurePackageJSON: AsyncAction = async ({
   state,
   actions,
   effects,
 }) => {
   const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+
   const existingPackageJson = sandbox.modules.find(
     module => module.directoryShortid == null && module.title === 'package.json'
   );
@@ -297,7 +295,7 @@ export const ensurePackageJSON: AsyncAction = async ({
       path: '/package.json',
     });
 
-    state.editor.currentSandbox.modules.push(optimisticModule as Module);
+    sandbox.modules.push(optimisticModule as Module);
     optimisticModule.path = getModulePath(
       sandbox.modules,
       sandbox.directories,
@@ -358,7 +356,7 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
   /*
     Update error message with what is coming from the server
   */
-  const result = response.data;
+  const result = response?.data;
 
   if (result) {
     if (typeof result === 'string') {
@@ -369,14 +367,21 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
       const fields = Object.keys(result.errors);
       if (Array.isArray(errors)) {
         if (errors[0]) {
+          if (fields[0] === 'detail') {
+            return errors[0];
+          }
           return `${fields[0]}: ${errors[0]}`; // eslint-disable-line no-param-reassign,prefer-destructuring
         }
       } else {
         return errors; // eslint-disable-line no-param-reassign
       }
     } else if (result.error) {
+      if (result.error.message) {
+        return result.error.message;
+      }
+
       return result.error; // eslint-disable-line no-param-reassign
-    } else if (response.status === 413) {
+    } else if (response?.status === 413) {
       return 'File too large, upload limit is 5MB.';
     }
   }
@@ -420,7 +425,7 @@ export const handleError: Action<{
 
   const { response } = error as ApiError;
 
-  if (response.status === 401) {
+  if (response?.status === 401) {
     // Reset existing sign in info
     effects.jwt.reset();
     effects.analytics.setAnonymousId();
@@ -433,9 +438,7 @@ export const handleError: Action<{
         primary: [
           {
             label: 'Sign in',
-            run: () => {
-              actions.signInClicked({ useExtraScopes: false });
-            },
+            run: () => actions.signInClicked(),
           },
         ],
       },
@@ -447,7 +450,7 @@ export const handleError: Action<{
   error.message = actions.internal.getErrorMessage({ error });
 
   const notificationActions = {
-    primary: [],
+    primary: [] as Array<{ label: string; run: () => void }>,
   };
 
   if (error.message.startsWith('You need to sign in to create more than')) {
@@ -506,4 +509,48 @@ export const handleError: Action<{
       ? { actions: notificationActions }
       : {}),
   });
+};
+
+export const trackCurrentTeams: AsyncAction = async ({ effects }) => {
+  const { me } = await effects.gql.queries.teams({});
+  if (me) {
+    effects.analytics.setGroup(
+      'teamName',
+      me.teams.map(m => m.name)
+    );
+    effects.analytics.setGroup(
+      'teamId',
+      me.teams.map(m => m.id)
+    );
+  }
+};
+
+const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX';
+export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
+  if (effects.browser.storage.get(seenTermsKey)) {
+    return;
+  }
+
+  if (!state.isFirstVisit) {
+    effects.analytics.track('Saw Privacy Policy Notification');
+    effects.notificationToast.add({
+      message:
+        'Hello, our privacy policy has been updated recently. What’s new? CodeSandbox emails. Please read and reach out.',
+      title: 'Updated Privacy',
+      status: NotificationStatus.NOTICE,
+      sticky: true,
+      actions: {
+        primary: [
+          {
+            label: 'Open Privacy Policy',
+            run: () => {
+              window.open('https://codesandbox.io/legal/privacy', '_blank');
+            },
+          },
+        ],
+      },
+    });
+  }
+
+  effects.browser.storage.set(seenTermsKey, true);
 };

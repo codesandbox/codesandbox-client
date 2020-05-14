@@ -1,5 +1,4 @@
 import React from 'react';
-import css from '@styled-system/css';
 
 import {
   Element,
@@ -17,7 +16,7 @@ export const NotLoggedIn = () => {
 
   return (
     <Collapsible title="Live" defaultOpen>
-      <Element css={css({ paddingX: 2 })}>
+      <Element paddingX={2}>
         <Text block weight="medium" marginBottom={2}>
           Collaborate in real-time
         </Text>
@@ -30,10 +29,7 @@ export const NotLoggedIn = () => {
             Sign in to live share this sandbox!
           </Text>
         </Stack>
-        <Button
-          variant="primary"
-          onClick={() => signInClicked({ useExtraScopes: false })}
-        >
+        <Button variant="primary" onClick={() => signInClicked()}>
           Sign in with GitHub
         </Button>
       </Element>

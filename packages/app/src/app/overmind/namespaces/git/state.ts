@@ -1,16 +1,16 @@
-import { GitCommit, GitPr, GitChanges } from '@codesandbox/common/lib/types';
+import { GitChanges, GitCommit, GitPr } from '@codesandbox/common/lib/types';
 
 type State = {
   repoTitle: string;
-  error: string;
+  error: string | null;
   isExported: boolean;
   showExportedModal: boolean;
   isFetching: boolean;
   subject: string;
   description: string;
-  originalGitChanges: GitChanges;
-  commit: GitCommit;
-  pr: GitPr;
+  originalGitChanges: GitChanges | null;
+  commit: GitCommit | null;
+  pr: GitPr | null;
   isCommitting: boolean;
   isCreatingPr: boolean;
 };

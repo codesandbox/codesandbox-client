@@ -2,11 +2,11 @@ import { Directory, Module, SandboxFs } from '@codesandbox/common/lib/types';
 import { json } from 'overmind';
 
 export const appendFile = (fs: SandboxFs, module: Module) => {
-  fs[module.path] = module;
+  fs[module.path!] = module;
 };
 
 export const writeFile = (fs: SandboxFs, module: Module) => {
-  fs[module.path] = module;
+  fs[module.path!] = module;
 };
 
 export const rename = (fs: SandboxFs, fromPath: string, toPath: string) => {
@@ -23,16 +23,16 @@ export const rename = (fs: SandboxFs, fromPath: string, toPath: string) => {
 
 export const rmdir = (fs: SandboxFs, directory: Directory) => {
   Object.keys(fs).forEach(path => {
-    if (path.startsWith(directory.path)) {
+    if (path.startsWith(directory.path!)) {
       delete fs[path];
     }
   });
 };
 
 export const unlink = (fs: SandboxFs, module: Module) => {
-  delete fs[module.path];
+  delete fs[module.path!];
 };
 
 export const mkdir = (fs: SandboxFs, directory: Directory) => {
-  fs[directory.path] = directory;
+  fs[directory.path!] = directory;
 };

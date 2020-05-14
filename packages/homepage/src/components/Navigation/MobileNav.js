@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import React, { useState } from 'react';
 import { Link } from 'gatsby';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,6 +11,7 @@ import {
   Headers,
   Items,
   Pricing,
+  LinkButton,
 } from './elements';
 import SupportIcon from '../../assets/icons/Support';
 import StatusIcon from '../../assets/icons/Status';
@@ -26,7 +28,7 @@ import HighlightedICon from '../../assets/icons/Highlighted';
 import Button from '../Button';
 // import NewIcon from '../../assets/icons/New';
 
-export default () => {
+export default ({ showMenu }) => {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -36,7 +38,9 @@ export default () => {
           CodeSandbox
         </LogoWrapper>
         <div>
-          <a href="https://codesandbox.io/signin">Sign In</a>
+          <LinkButton type="button" onClick={showMenu}>
+            Sign In
+          </LinkButton>
           {open ? (
             <svg
               onClick={() => setOpen(!open)}

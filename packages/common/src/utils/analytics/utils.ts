@@ -67,19 +67,38 @@ export const WHITELISTED_VSCODE_EVENTS = [
   'code-runner.run',
 ];
 
-export const DO_NOT_TRACK_ENABLED =
-  typeof window !== 'undefined' &&
-  Boolean(
-    // @ts-ignore
-    global.doNotTrack === '1' ||
-      // @ts-ignore
-      global.navigator.doNotTrack === '1' ||
-      // @ts-ignore
-      global.navigator.msDoNotTrack === '1' ||
-      localStorage.getItem('DO_NOT_TRACK_ENABLED') ||
-      process.env.NODE_ENV === 'development' ||
-      process.env.STAGING
-  );
+const isDoNotTrackEnabled = () => {
+  try {
+    if (typeof window !== 'undefined') {
+      let localStorageValue = true;
+      try {
+        localStorageValue =
+          typeof localStorage !== 'undefined' &&
+          localStorage.getItem('DO_NOT_TRACK_ENABLED') === 'true';
+      } catch (e) {
+        /* ignore */
+      }
+
+      return Boolean(
+        // @ts-ignore
+        global.doNotTrack === '1' ||
+          // @ts-ignore
+          global.navigator.doNotTrack === '1' ||
+          // @ts-ignore
+          global.navigator.msDoNotTrack === '1' ||
+          localStorageValue ||
+          process.env.NODE_ENV === 'development' ||
+          process.env.STAGING
+      );
+    }
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+export const DO_NOT_TRACK_ENABLED = isDoNotTrackEnabled();
 
 export const isAllowedEvent = (eventName, secondArg) => {
   try {
