@@ -856,3 +856,29 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
       break;
   }
 };
+
+export const addSandboxesToFolder: AsyncAction<{
+  sandboxIds: string[];
+  collectionPath: string;
+  moveFromCollectionPath: string | undefined;
+}> = async (
+  { state, effects, actions },
+  { sandboxIds, collectionPath, moveFromCollectionPath }
+) => {
+  const oldSandboxes = state.dashboard.sandboxes;
+  // TODO: delete from state fails on nested objects
+  // actions.dashboard.deleteSandboxFromState(sandboxIds);
+
+  try {
+    await effects.gql.mutations.addSandboxToFolder({
+      sandboxIds,
+      collectionPath,
+      // only way to pass, null is a value in the BE
+      // @ts-ignore
+      teamId: state.dashboard.activeTeam || undefined,
+    });
+  } catch {
+    state.dashboard.sandboxes = { ...oldSandboxes };
+    effects.notificationToast.error('There was a problem moving your sandbox');
+  }
+};

@@ -72,16 +72,30 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
 
-      if (!dropResult.path) return;
+      if (!dropResult || !dropResult.path) return;
+
+      const currentCollectionPath = location.pathname.replace(
+        '/new-dashboard',
+        ''
+      );
 
       if (dropResult.path === 'deleted') {
         actions.dashboard.deleteSandbox([sandbox.id]);
       } else if (dropResult.path === 'templates') {
         actions.dashboard.makeTemplate([sandbox.id]);
-      } else if (dropResult.path === 'all') {
-        // move sandbox to "All folder"?
+      } else if (dropResult.path === 'drafts') {
+        actions.dashboard.addSandboxesToFolder({
+          sandboxIds: [sandbox.id],
+          collectionPath: '/',
+          moveFromCollectionPath: currentCollectionPath,
+        });
+      } else {
+        actions.dashboard.addSandboxesToFolder({
+          sandboxIds: [sandbox.id],
+          collectionPath: dropResult.path,
+          moveFromCollectionPath: currentCollectionPath,
+        });
       }
-      // else if move to favorite folders
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
