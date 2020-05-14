@@ -35,7 +35,8 @@ export function initializeSettings() {
         {
           'editor.formatOnSave': true,
           'editor.fontSize': 15,
-          'editor.fontFamily': "dm, Menlo, Monaco, 'Courier New', monospace",
+          'editor.fontFamily':
+            "MonoLisa, Menlo, Monaco, 'Courier New', monospace",
           'editor.tabSize': 2,
           'editor.minimap.enabled': false,
           'workbench.editor.openSideBySideDirection': 'down',
@@ -68,6 +69,13 @@ export function initializeSettings() {
       }
       return settingsChanged || false;
     };
+
+    if (settings['editor.fontFamily'].startsWith('dm,')) {
+      settingsChanged = changeIfNeeded(
+        'editor.fontFamily',
+        "MonoLisa, Menlo, Monaco, 'Courier New', monospace"
+      );
+    }
 
     settingsChanged = changeIfNeeded('javascript.autoClosingTags', false);
     settingsChanged = changeIfNeeded('typescript.autoClosingTags', false);

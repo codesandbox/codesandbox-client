@@ -65,7 +65,7 @@ class MonacoEditor extends React.PureComponent {
         firstFont = JSON.parse(firstFont);
       }
 
-      if (firstFont === 'dm') {
+      if (firstFont === 'MonoLisa') {
         const font = new FontFaceObserver(firstFont);
 
         font.load().then(

@@ -38,7 +38,7 @@ export const NetlifyLogs: FunctionComponent = () => {
         marginY={6}
         padding={4}
         css={css({
-          fontFamily: "'dm'",
+          fontFamily: "'MonoLisa'",
           maxHeight: 400,
           overflow: 'auto',
           wordBreak: 'break-word',

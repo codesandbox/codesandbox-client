@@ -39,7 +39,7 @@ export const Code = withTheme(({ value, language, theme }) => {
                 whiteSpace: 'pre-wrap',
                 maxHeight: 400,
                 overflow: 'scroll',
-                fontFamily: "'dm', menlo, monospace",
+                fontFamily: "'MonoLisa', menlo, monospace",
 
                 '*': {
                   wordBreak: 'break-all',

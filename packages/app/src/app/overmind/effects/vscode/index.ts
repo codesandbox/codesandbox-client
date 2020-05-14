@@ -198,7 +198,7 @@ export class VSCodeEffect {
         localStorage.getItem('settings.vimmode') === 'true'
       );
 
-      return new FontFaceObserver('dm').load();
+      return new FontFaceObserver('MonoLisa').load();
     });
 
     // Only set the read only state when the editor is initialized.
