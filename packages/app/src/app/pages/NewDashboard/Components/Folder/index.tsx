@@ -1,5 +1,7 @@
 import React from 'react';
 import { join, dirname } from 'path';
+import { useDrop } from 'react-dnd';
+import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { isMenuClicked } from '@codesandbox/components';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
@@ -105,13 +107,18 @@ export const Folder = ({
 
   /* Drag logic */
 
-  const dragProps = {
+  const [{ isOver }, dropRef] = useDrop({
+    accept: 'sandbox',
+    drop: () => ({ path: path.replace('all', '') }),
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  const dropProps = {
+    ref: dropRef,
     opacity: 1,
   };
-
-  // React.useEffect(() => {
-  //   preview(getEmptyImage(), { captureDraggingState: true });
-  // }, [preview]);
 
   /* View logic */
 
@@ -123,8 +130,12 @@ export const Folder = ({
   const Component = viewMode === 'list' ? FolderListItem : FolderCard;
 
   return (
-    <>
-      <Component {...folderProps} {...dragProps} {...props} />
-    </>
+    <motion.div
+      initial={{ scale: 1 }}
+      animate={{ scale: isOver ? 1.02 : 1 }}
+      {...dropProps}
+    >
+      <Component {...folderProps} isOver={isOver} {...props} />
+    </motion.div>
   );
 };

@@ -18,13 +18,20 @@ export const FolderListItem = ({
   onKeyDown,
   onSubmit,
   onBlur,
+  // drop target
+  isOver,
   // drag preview
-  opacity,
+  // opacity,
   // menu conflict
   onClick,
   ...props
 }) => (
-  <ListAction css={css({ paddingX: 0 })}>
+  <ListAction
+    css={css({
+      paddingX: 0,
+      backgroundColor: isOver ? 'list.hoverBackground' : 'inherit',
+    })}
+  >
     <Link
       as={RouterLink}
       to={`/new-dashboard/all` + path}
