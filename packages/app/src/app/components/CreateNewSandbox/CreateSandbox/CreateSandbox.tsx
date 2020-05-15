@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useTabState } from 'reakit/Tab';
 import css from '@styled-system/css';
 
-import changelog from 'homepage/content/changelog';
+import latestChangelog from 'homepage/content/changelog';
 import { ThemeProvider, Element } from '@codesandbox/components';
 import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { getInfoFromMarkdown } from './utils/getInfoFromMarkdown';
@@ -34,7 +34,6 @@ export const CreateSandbox: React.FC = props => {
     selectedId: isFirstVisit ? 'Welcome' : 'Create',
   });
 
-  const latestChangelog = changelog[changelog.length - 1];
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
@@ -45,7 +44,7 @@ export const CreateSandbox: React.FC = props => {
       setNewChangelogToSee(true);
     }
     browser.storage.set(key, infoData.title);
-  }, [browser.storage, latestChangelog]);
+  }, [browser.storage]);
 
   return (
     <ThemeProvider theme={codesandboxBlack}>
@@ -57,7 +56,7 @@ export const CreateSandbox: React.FC = props => {
                 css={css({
                   width: '5px',
                   height: '5px',
-                  left: 33,
+                  left: 29,
                   top: 0,
                   transform: 'translateY(100%)',
                   borderRadius: '50%',
