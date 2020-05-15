@@ -36,9 +36,9 @@ export const SandboxListItem = ({
     <Link as={RouterLink} to={url} style={{ width: '100%' }} {...props}>
       <Stack
         gap={2}
+        justify="space-between"
         align="center"
         paddingX={2}
-        justify="space-between"
         css={css({
           height: 64,
           borderBottom: '1px solid',
@@ -58,6 +58,8 @@ export const SandboxListItem = ({
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',
+              border: '1px solid',
+              borderColor: 'grays.600',
               opacity,
             })}
           />

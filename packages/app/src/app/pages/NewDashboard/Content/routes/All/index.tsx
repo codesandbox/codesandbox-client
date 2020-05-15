@@ -6,7 +6,7 @@ import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { getPossibleTemplates } from '../../utils';
 import { SandboxGrid } from '../../../Components/SandboxGrid';
 import { Sandbox } from '../../../Components/Sandbox';
-import { FolderCard } from '../../../Components/FolderCard';
+import { Folder } from '../../../Components/Folder';
 import { SkeletonCard } from '../../../Components/Sandbox/SandboxCard';
 
 export const AllPage = ({ match: { params }, history }) => {
@@ -44,12 +44,6 @@ export const AllPage = ({ match: { params }, history }) => {
     }
   }, [param, actions.dashboard, activeTeam]);
 
-  const createNewFolder = (name: string) => {
-    setCreating(false);
-    const newPath = params.path ? `/${param}/${name}` : `${param}/${name}`;
-    actions.dashboard.createFolder(newPath);
-  };
-
   const getFoldersByPath =
     allCollections &&
     allCollections.filter(
@@ -65,9 +59,9 @@ export const AllPage = ({ match: { params }, history }) => {
       />
       {allCollections ? (
         <SandboxGrid>
-          {creating && <FolderCard key="fake" newFolder={createNewFolder} />}
+          {creating && <Folder key="new" setCreating={setCreating} />}
           {getFoldersByPath.map(folder => (
-            <FolderCard key={folder.id} {...folder} />
+            <Folder key={folder.id} {...folder} setCreating={setCreating} />
           ))}
           {sandboxes.ALL &&
             sandboxes.ALL[cleanParam] &&

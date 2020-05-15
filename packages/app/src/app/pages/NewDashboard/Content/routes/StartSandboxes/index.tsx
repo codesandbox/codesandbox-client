@@ -113,8 +113,8 @@ const NewSandbox = ({ onClick }) => (
       borderRadius: 'medium',
       transition: 'all ease-in',
       transitionDuration: theme => theme.speeds[2],
-      ':hover, :focus': {
-        transform: 'scale(0.98)',
+      ':hover, :focus, :focus-within': {
+        boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
       },
     })}
   >
