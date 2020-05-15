@@ -7,14 +7,24 @@ import { useOvermind } from 'app/overmind';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
 
-export const Folder = ({ name = '', path = '', sandboxes = 0, ...props }) => {
+export const Folder = ({
+  name = '',
+  path = null,
+  sandboxes = 0,
+  setCreating,
+  ...props
+}) => {
   const {
     state: { dashboard },
     actions,
   } = useOvermind();
 
+  const isNewFolder = !path;
+
+  const location = useLocation();
+
   /* Edit logic */
-  const [editing, setEditing] = React.useState(false);
+  const [editing, setEditing] = React.useState(isNewFolder || false);
   const [newName, setNewName] = React.useState(name);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,21 +35,31 @@ export const Folder = ({ name = '', path = '', sandboxes = 0, ...props }) => {
       // Reset value and exit without saving
       setNewName(name);
       setEditing(false);
+      setCreating(false);
     }
   };
 
   const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
     if (event) event.preventDefault();
 
-    // if (newFolder) {
-    //   return newFolder(newName);
-    // }
+    if (name === newName) {
+      // do nothing
+    } else if (isNewFolder) {
+      if (newName) {
+        const folderLocation = location.pathname.split(
+          '/new-dashboard/all/'
+        )[1];
+        const folderPath = `/${folderLocation}/${newName}`;
+        await actions.dashboard.createFolder(folderPath);
+      }
+    } else {
+      await actions.dashboard.renameFolder({
+        path,
+        newPath: join(dirname(path), newName),
+      });
+    }
 
-    await actions.dashboard.renameFolder({
-      path,
-      newPath: join(dirname(path), newName),
-    });
-
+    setCreating(false);
     return setEditing(false);
   };
 
@@ -56,6 +76,10 @@ export const Folder = ({ name = '', path = '', sandboxes = 0, ...props }) => {
     // after menu is done closing.
     setTimeout(() => inputRef.current.focus());
   };
+  // If it's a new folder, enter editing and focus on render
+  React.useEffect(() => {
+    if (isNewFolder) enterEditing();
+  }, [isNewFolder]);
 
   /* Prevent opening sandbox while interacting */
   const onClick = event => {
@@ -70,6 +94,7 @@ export const Folder = ({ name = '', path = '', sandboxes = 0, ...props }) => {
     // edit mode
     editing,
     enterEditing,
+    isNewFolder,
     newName,
     inputRef,
     onChange,
@@ -89,7 +114,6 @@ export const Folder = ({ name = '', path = '', sandboxes = 0, ...props }) => {
   // }, [preview]);
 
   /* View logic */
-  const location = useLocation();
 
   let viewMode: string;
   if (location.pathname.includes('deleted')) viewMode = 'list';

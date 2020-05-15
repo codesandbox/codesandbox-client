@@ -11,6 +11,7 @@ export const FolderCard = ({
   // editing
   editing,
   enterEditing,
+  isNewFolder,
   newName,
   inputRef,
   onChange,
@@ -85,14 +86,18 @@ export const FolderCard = ({
             {name}
           </Text>
         )}
-        <MenuOptions path={path} onRename={enterEditing} />
+        {!isNewFolder ? (
+          <MenuOptions path={path} onRename={enterEditing} />
+        ) : null}
       </Stack>
-      <Stack marginLeft={4}>
-        <Text size={3} block variant="muted">
-          {numberOfSandboxes || 0}{' '}
-          {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}
-        </Text>
-      </Stack>
+      {!isNewFolder ? (
+        <Stack marginLeft={4}>
+          <Text size={3} block variant="muted">
+            {numberOfSandboxes || 0}{' '}
+            {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}
+          </Text>
+        </Stack>
+      ) : null}
     </Stack>
   </Link>
 );

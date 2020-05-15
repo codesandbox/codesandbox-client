@@ -44,12 +44,6 @@ export const AllPage = ({ match: { params }, history }) => {
     }
   }, [param, actions.dashboard, activeTeam]);
 
-  // const createNewFolder = (name: string) => {
-  //   setCreating(false);
-  //   const newPath = params.path ? `/${param}/${name}` : `${param}/${name}`;
-  //   actions.dashboard.createFolder(newPath);
-  // };
-
   const getFoldersByPath =
     allCollections &&
     allCollections.filter(
@@ -65,9 +59,9 @@ export const AllPage = ({ match: { params }, history }) => {
       />
       {allCollections ? (
         <SandboxGrid>
-          {creating && <Folder key="fake" />}
+          {creating && <Folder key="new" setCreating={setCreating} />}
           {getFoldersByPath.map(folder => (
-            <Folder key={folder.id} {...folder} />
+            <Folder key={folder.id} {...folder} setCreating={setCreating} />
           ))}
           {sandboxes.ALL &&
             sandboxes.ALL[cleanParam] &&
