@@ -105,7 +105,7 @@ export const Folder = ({
     onBlur,
   };
 
-  /* Drag logic */
+  /* Drop target logic */
 
   const [{ isOver }, dropRef] = useDrop({
     accept: 'sandbox',

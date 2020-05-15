@@ -17,6 +17,7 @@ import {
 import css from '@styled-system/css';
 
 export const SIDEBAR_WIDTH = 240;
+const isTopLevelFolder = folder => !folder.parent;
 
 export const Sidebar = props => {
   const {
@@ -48,7 +49,7 @@ export const Sidebar = props => {
     actions.dashboard.getAllFolders();
   }, [actions.dashboard]);
 
-  const folders = dashboard.allCollections || [];
+  const folders = dashboard.allCollections.filter(isTopLevelFolder) || [];
   const [foldersVisible, setFoldersVisibility] = React.useState(false);
 
   return (
