@@ -25,7 +25,6 @@ export const Tabs = styled(TabList)`
 `;
 
 export const Tab = styled(BaseTab)`
-  position: relative;
   display: flex;
   align-items: center;
   padding: 0.5rem 1rem;

@@ -7,4 +7,3 @@ export { InfoIcon } from './InfoIcon';
 export { StackbitIcon } from './StackbitIcon';
 export { StarIcon } from './StarIcon';
 export { UploadIcon } from './UploadIcon';
-export { NewIcon } from './NewIcon';
