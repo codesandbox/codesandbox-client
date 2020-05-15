@@ -546,7 +546,7 @@ export type ServerPort = {
   name?: string;
 };
 
-export type ZeitUser = {
+export type VercelUser = {
   uid: string;
   email: string;
   name: string;
@@ -568,23 +568,23 @@ export type ZeitUser = {
   }>;
 };
 
-export type ZeitCreator = {
+export type VercelCreator = {
   uid: string;
 };
 
-export type ZeitScale = {
+export type VercelScale = {
   current: number;
   min: number;
   max: number;
 };
 
-export type ZeitAlias = {
+export type VercelAlias = {
   alias: string;
   created: string;
   uid: string;
 };
 
-export enum ZeitDeploymentState {
+export enum VercelDeploymentState {
   DEPLOYING = 'DEPLOYING',
   INITIALIZING = 'INITIALIZING',
   DEPLOYMENT_ERROR = 'DEPLOYMENT_ERROR',
@@ -596,27 +596,27 @@ export enum ZeitDeploymentState {
   ERROR = 'ERROR',
 }
 
-export enum ZeitDeploymentType {
+export enum VercelDeploymentType {
   'NPM',
   'DOCKER',
   'STATIC',
   'LAMBDAS',
 }
 
-export type ZeitDeployment = {
+export type VercelDeployment = {
   uid: string;
   name: string;
   url: string;
   created: number;
-  state: ZeitDeploymentState;
+  state: VercelDeploymentState;
   instanceCount: number;
-  alias: ZeitAlias[];
-  scale: ZeitScale;
-  createor: ZeitCreator;
-  type: ZeitDeploymentType;
+  alias: VercelAlias[];
+  scale: VercelScale;
+  createor: VercelCreator;
+  type: VercelDeploymentType;
 };
 
-export type ZeitConfig = {
+export type VercelConfig = {
   name?: string;
   alias?: string;
 };

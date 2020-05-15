@@ -1,4 +1,4 @@
-import { NetlifySite, ZeitDeployment } from '@codesandbox/common/lib/types';
+import { NetlifySite, VercelDeployment } from '@codesandbox/common/lib/types';
 
 type State = {
   hasAlias: boolean;
@@ -11,7 +11,7 @@ type State = {
   deploying: boolean;
   url: string | null;
   gettingDeploys: boolean;
-  sandboxDeploys: ZeitDeployment[];
+  sandboxDeploys: VercelDeployment[];
 };
 
 export const state: State = {

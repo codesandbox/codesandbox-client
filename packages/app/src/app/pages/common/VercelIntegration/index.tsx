@@ -1,16 +1,16 @@
 import React, { FunctionComponent } from 'react';
 
 import { Integration } from 'app/components/Integration';
-import { ZeitLogo } from 'app/components/ZeitLogo';
+import { VercelLogo } from 'app/components/VercelLogo';
 import { useOvermind } from 'app/overmind';
 
 type Props = {
   small: boolean;
 };
-export const ZeitIntegration: FunctionComponent<Props> = ({ small }) => {
+export const VercelIntegration: FunctionComponent<Props> = ({ small }) => {
   const {
-    actions: { signInZeitClicked, signOutZeitClicked },
-    state: { user, isLoadingZeit },
+    actions: { signInVercelClicked, signOutVercelClicked },
+    state: { user, isLoadingVercel },
   } = useOvermind();
 
   return (
@@ -19,11 +19,11 @@ export const ZeitIntegration: FunctionComponent<Props> = ({ small }) => {
       small={small}
       bgColor="black"
       description="Deployments"
-      Icon={ZeitLogo}
+      Icon={VercelLogo}
       userInfo={user.integrations.zeit}
-      onSignIn={signInZeitClicked}
-      onSignOut={signOutZeitClicked}
-      loading={isLoadingZeit}
+      onSignIn={signInVercelClicked}
+      onSignOut={signOutVercelClicked}
+      loading={isLoadingVercel}
     />
   );
 };

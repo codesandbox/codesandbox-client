@@ -1,9 +1,9 @@
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
   Sandbox,
-  ZeitConfig,
-  ZeitDeployment,
-  ZeitUser,
+  VercelConfig,
+  VercelDeployment,
+  VercelUser,
 } from '@codesandbox/common/lib/types';
 import axios from 'axios';
 import { omit } from 'lodash-es';
@@ -55,7 +55,7 @@ export default (() => {
   async function deploysByID(id) {
     try {
       const response = await axios.get(
-        `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
+        `https://api.vercel.com/v2/now/deployments/${id}/aliases`,
         {
           headers: getDefaultHeaders(),
         }
@@ -72,7 +72,7 @@ export default (() => {
     initialize(options: Options) {
       _options = options;
     },
-    getConfig(sandbox: Sandbox): ZeitConfig {
+    getConfig(sandbox: Sandbox): VercelConfig {
       const nowConfigs = sandbox.modules
         .filter(
           m =>
@@ -88,9 +88,9 @@ export default (() => {
 
       return nowData;
     },
-    async getDeployments(name: string): Promise<ZeitDeployment[]> {
-      const response = await axios.get<{ deployments: ZeitDeployment[] }>(
-        'https://api.zeit.co/v4/now/deployments',
+    async getDeployments(name: string): Promise<VercelDeployment[]> {
+      const response = await axios.get<{ deployments: VercelDeployment[] }>(
+        'https://api.vercel.com/v4/now/deployments',
         {
           headers: getDefaultHeaders(),
         }
@@ -113,16 +113,16 @@ export default (() => {
 
       return Promise.all(deploysNoAlias.map(assignAlias));
     },
-    async getUser(): Promise<ZeitUser> {
-      const response = await axios.get('https://api.zeit.co/www/user', {
+    async getUser(): Promise<VercelUser> {
+      const response = await axios.get('https://api.vercel.com/www/user', {
         headers: getDefaultHeaders(),
       });
 
       return response.data.user;
     },
-    async deleteDeployment(id: string): Promise<ZeitDeployment[]> {
+    async deleteDeployment(id: string): Promise<VercelDeployment[]> {
       const response = await axios.delete(
-        `https://api.zeit.co/v9/now/deployments/${id}`,
+        `https://api.vercel.com/v9/now/deployments/${id}`,
         {
           headers: getDefaultHeaders(),
         }
@@ -134,7 +134,7 @@ export default (() => {
       const deploymentVersion = apiData.version === 2 ? 'v9' : 'v3';
 
       const response = await axios.post(
-        `https://api.zeit.co/${deploymentVersion}/now/deployments?forceNew=1`,
+        `https://api.vercel.com/${deploymentVersion}/now/deployments?forceNew=1`,
         apiData,
         {
           headers: getDefaultHeaders(),
@@ -143,10 +143,13 @@ export default (() => {
 
       return `https://${response.data.url}`;
     },
-    async aliasDeployment(id: string, zeitConfig: ZeitConfig): Promise<string> {
+    async aliasDeployment(
+      id: string,
+      vercelConfig: VercelConfig
+    ): Promise<string> {
       const response = await axios.post(
-        `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
-        { alias: zeitConfig.alias },
+        `https://api.vercel.com/v2/now/deployments/${id}/aliases`,
+        { alias: vercelConfig.alias },
         {
           headers: getDefaultHeaders(),
         }
