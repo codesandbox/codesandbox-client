@@ -26,12 +26,14 @@ export const SandboxCard = ({
   onSubmit,
   onBlur,
   enterEditing,
+  // menu conflict
+  onClick,
   // drag preview
   thumbnailRef,
   opacity,
   ...props
 }) => (
-  <Link as={RouterLink} to={url} {...props}>
+  <Link as={RouterLink} to={url} onClick={onClick} {...props}>
     <Stack
       direction="vertical"
       gap={2}
