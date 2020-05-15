@@ -5,6 +5,7 @@ import { isMenuClicked } from '@codesandbox/components';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { useOvermind } from 'app/overmind';
 import { FolderCard } from './FolderCard';
+import { FolderListItem } from './FolderListItem';
 
 export const Folder = ({ name, path, sandboxes, newFolder, ...props }) => {
   const {
@@ -95,7 +96,7 @@ export const Folder = ({ name, path, sandboxes, newFolder, ...props }) => {
   else if (location.pathname.includes('start')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
-  const Component = viewMode === 'list' ? FolderCard : FolderCard;
+  const Component = viewMode === 'list' ? FolderListItem : FolderCard;
 
   return (
     <>

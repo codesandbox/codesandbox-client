@@ -85,7 +85,7 @@ export const FolderCard = ({
             {name}
           </Text>
         )}
-        {path ? <MenuOptions path={path} onRename={enterEditing} /> : null}
+        <MenuOptions path={path} onRename={enterEditing} />
       </Stack>
       <Stack marginLeft={4}>
         <Text size={3} block variant="muted">
