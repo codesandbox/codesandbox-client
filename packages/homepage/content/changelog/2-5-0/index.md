@@ -6,6 +6,8 @@ date: 2018-02-07
 description: An editor redesign and major new features
 ---
 
+###
+
 #### Features
 
 1. Thanks to [@xyc](https://github.com/xyc), the console now supports multiline
