@@ -705,7 +705,9 @@ export const deleteFolder: AsyncAction<{
   try {
     await effects.gql.mutations.deleteFolder({
       path,
-      teamId: dashboard.activeTeam,
+      // only way to pass, null is a value in the BE
+      // @ts-ignore
+      teamId: dashboard.activeTeam || undefined,
     });
   } catch {
     dashboard.allCollections = oldCollections;
@@ -876,8 +878,7 @@ export const addSandboxesToFolder: AsyncAction<{
   { sandboxIds, collectionPath, moveFromCollectionPath }
 ) => {
   const oldSandboxes = state.dashboard.sandboxes;
-  // TODO: delete from state fails on nested objects
-  // actions.dashboard.deleteSandboxFromState(sandboxIds);
+  actions.dashboard.deleteSandboxFromState(sandboxIds);
 
   try {
     await effects.gql.mutations.addSandboxToFolder({

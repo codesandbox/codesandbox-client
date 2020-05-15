@@ -18,8 +18,10 @@ export const FolderCard = ({
   onKeyDown,
   onSubmit,
   onBlur,
+  // drop target
+  isOver,
   // drag preview
-  opacity,
+  // opacity,
   // menu conflict
   onClick,
   ...props
@@ -38,12 +40,12 @@ export const FolderCard = ({
         height: 240,
         backgroundColor: 'grays.700',
         border: '1px solid',
-        borderColor: 'grays.500',
+        borderColor: isOver ? 'grays.400' : 'grays.500',
         borderRadius: 'medium',
         overflow: 'hidden',
         transition: 'all ease-in-out',
         transitionDuration: theme => theme.speeds[4],
-        opacity,
+        // opacity,
         ':hover, :focus, :focus-within': {
           cursor: editing ? 'normal' : 'pointer',
           boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],

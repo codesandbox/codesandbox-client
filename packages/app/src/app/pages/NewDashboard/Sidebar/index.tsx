@@ -201,14 +201,17 @@ export const Sidebar = props => {
         </ListAction>
 
         {foldersVisible &&
-          folders.map(folder => (
-            <RowItem
-              name={folder.name}
-              path={'all' + folder.path}
-              icon="folder"
-              isNested
-            />
-          ))}
+          folders
+            .filter(isTopLevelFolder)
+            .map(folder => (
+              <RowItem
+                key={folder.path}
+                name={folder.name}
+                path={'all' + folder.path}
+                icon="folder"
+                isNested
+              />
+            ))}
 
         <RowItem name="Templates" path="templates" icon="star" />
         <RowItem name="Recently Deleted" path="deleted" icon="trash" />
@@ -217,6 +220,8 @@ export const Sidebar = props => {
     </Element>
   );
 };
+
+const isTopLevelFolder = folder => !folder.parent;
 
 // I hate this! but we need this until I refactor how
 // components are structured — Sid
@@ -234,7 +239,7 @@ const canNotAcceptSandboxes = ['start', 'recent', 'all', 'settings'];
 
 const RowItem = ({ name, path, icon, isNested = false }) => {
   const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
-    accept: !canNotAcceptSandboxes.includes(path) ? 'sandbox' : 'nope',
+    accept: canNotAcceptSandboxes.includes(path) ? 'nope' : 'sandbox',
     drop: () => ({ path: path.replace('all', '') }),
     collect: monitor => ({
       isOver: monitor.isOver(),
