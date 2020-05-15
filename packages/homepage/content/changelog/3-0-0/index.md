@@ -6,6 +6,8 @@ date: 2019-03-19
 description: Redesigned editor and VS Code extensions support
 ---
 
+###
+
 #### Features
 
 1. VS Code is now the core editor in CodeSandbox, enabling keybindings, user
