@@ -11,6 +11,7 @@ export const FolderListItem = ({
   // editing
   editing,
   enterEditing,
+  isNewFolder,
   newName,
   inputRef,
   onChange,
@@ -77,12 +78,16 @@ export const FolderListItem = ({
             )}
           </Stack>
         </Stack>
-        <Text size={3} block variant="muted">
-          {numberOfSandboxes || 0}{' '}
-          {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}
-        </Text>
+        {!isNewFolder ? (
+          <Text size={3} block variant="muted">
+            {numberOfSandboxes || 0}{' '}
+            {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}
+          </Text>
+        ) : null}
 
-        <MenuOptions path={path} onRename={enterEditing} />
+        {!isNewFolder ? (
+          <MenuOptions path={path} onRename={enterEditing} />
+        ) : null}
       </Stack>
     </Link>
   </ListAction>
