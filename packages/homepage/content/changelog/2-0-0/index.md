@@ -6,6 +6,8 @@ date: 2017-11-16
 description: Integrating with GitHub
 ---
 
+###
+
 #### Features
 
 1. You can now commit and open PRs on GitHub as well as create repositories from
