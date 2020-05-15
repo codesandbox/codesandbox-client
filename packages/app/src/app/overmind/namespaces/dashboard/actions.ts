@@ -705,7 +705,9 @@ export const deleteFolder: AsyncAction<{
   try {
     await effects.gql.mutations.deleteFolder({
       path,
-      teamId: dashboard.activeTeam,
+      // only way to pass, null is a value in the BE
+      // @ts-ignore
+      teamId: dashboard.activeTeam || undefined,
     });
   } catch {
     dashboard.allCollections = oldCollections;
