@@ -43,6 +43,7 @@ export const Explore = () => {
     };
   }, []);
 
+  const isLoading = (!exploreTemplates.length && !search) || loading;
   return (
     <>
       <Header>
@@ -55,11 +56,10 @@ export const Explore = () => {
           />
         </div>
       </Header>
-
       <Scrollable>
-        {loading ? (
-          <Loader />
-        ) : search ? (
+        {isLoading ? <Loader /> : null}
+
+        {search ? (
           <SearchResults search={search} />
         ) : (
           <DynamicWidthTemplateList
