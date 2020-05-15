@@ -44,11 +44,11 @@ export const AllPage = ({ match: { params }, history }) => {
     }
   }, [param, actions.dashboard, activeTeam]);
 
-  const createNewFolder = (name: string) => {
-    setCreating(false);
-    const newPath = params.path ? `/${param}/${name}` : `${param}/${name}`;
-    actions.dashboard.createFolder(newPath);
-  };
+  // const createNewFolder = (name: string) => {
+  //   setCreating(false);
+  //   const newPath = params.path ? `/${param}/${name}` : `${param}/${name}`;
+  //   actions.dashboard.createFolder(newPath);
+  // };
 
   const getFoldersByPath =
     allCollections &&
@@ -65,7 +65,7 @@ export const AllPage = ({ match: { params }, history }) => {
       />
       {allCollections ? (
         <SandboxGrid>
-          {creating && <Folder key="fake" newFolder={createNewFolder} />}
+          {creating && <Folder key="fake" />}
           {getFoldersByPath.map(folder => (
             <Folder key={folder.id} {...folder} />
           ))}

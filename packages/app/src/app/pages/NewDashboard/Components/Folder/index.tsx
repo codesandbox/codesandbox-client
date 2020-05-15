@@ -7,7 +7,7 @@ import { useOvermind } from 'app/overmind';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
 
-export const Folder = ({ name, path, sandboxes, newFolder, ...props }) => {
+export const Folder = ({ name = '', path = '', sandboxes = 0, ...props }) => {
   const {
     state: { dashboard },
     actions,
@@ -31,9 +31,9 @@ export const Folder = ({ name, path, sandboxes, newFolder, ...props }) => {
   const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
     if (event) event.preventDefault();
 
-    if (newFolder) {
-      return newFolder(newName);
-    }
+    // if (newFolder) {
+    //   return newFolder(newName);
+    // }
 
     await actions.dashboard.renameFolder({
       path,
