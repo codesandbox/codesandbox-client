@@ -878,8 +878,7 @@ export const addSandboxesToFolder: AsyncAction<{
   { sandboxIds, collectionPath, moveFromCollectionPath }
 ) => {
   const oldSandboxes = state.dashboard.sandboxes;
-  // TODO: delete from state fails on nested objects
-  // actions.dashboard.deleteSandboxFromState(sandboxIds);
+  actions.dashboard.deleteSandboxFromState(sandboxIds);
 
   try {
     await effects.gql.mutations.addSandboxToFolder({
