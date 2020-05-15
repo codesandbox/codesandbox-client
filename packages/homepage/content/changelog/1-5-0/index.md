@@ -6,6 +6,8 @@ date: 2017-08-16
 description: A new editor and offline support
 ---
 
+###
+
 #### Features
 
 1. We now use the Monaco editor adding support for IntelliSense, so you can use

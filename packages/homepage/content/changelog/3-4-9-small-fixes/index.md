@@ -6,6 +6,8 @@ date: 2020-02-24
 description: This release includes bug fixes.
 ---
 
+###
+
 #### Fixes
 
 - Improved performance when switching between active files
