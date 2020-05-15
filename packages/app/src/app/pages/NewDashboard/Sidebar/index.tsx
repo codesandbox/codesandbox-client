@@ -17,7 +17,6 @@ import {
 import css from '@styled-system/css';
 
 export const SIDEBAR_WIDTH = 240;
-const isTopLevelFolder = folder => !folder.parent;
 
 export const Sidebar = props => {
   const {
@@ -49,7 +48,7 @@ export const Sidebar = props => {
     actions.dashboard.getAllFolders();
   }, [actions.dashboard]);
 
-  const folders = dashboard.allCollections.filter(isTopLevelFolder) || [];
+  const folders = dashboard.allCollections || [];
   const [foldersVisible, setFoldersVisibility] = React.useState(false);
 
   return (
@@ -202,14 +201,17 @@ export const Sidebar = props => {
         </ListAction>
 
         {foldersVisible &&
-          folders.map(folder => (
-            <RowItem
-              name={folder.name}
-              path={'all' + folder.path}
-              icon="folder"
-              isNested
-            />
-          ))}
+          folders
+            .filter(isTopLevelFolder)
+            .map(folder => (
+              <RowItem
+                key={folder.path}
+                name={folder.name}
+                path={'all' + folder.path}
+                icon="folder"
+                isNested
+              />
+            ))}
 
         <RowItem name="Templates" path="templates" icon="star" />
         <RowItem name="Recently Deleted" path="deleted" icon="trash" />
@@ -218,6 +220,8 @@ export const Sidebar = props => {
     </Element>
   );
 };
+
+const isTopLevelFolder = folder => !folder.parent;
 
 // I hate this! but we need this until I refactor how
 // components are structured — Sid
