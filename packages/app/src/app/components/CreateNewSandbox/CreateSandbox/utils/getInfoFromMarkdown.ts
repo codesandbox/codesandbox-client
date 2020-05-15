@@ -25,7 +25,7 @@ export const getInfoFromMarkdown = latestChangelog => {
           acc[key] = '';
           desc = true;
         } else {
-          acc[key] = value;
+          acc[key] = value.trim();
         }
 
         return acc;

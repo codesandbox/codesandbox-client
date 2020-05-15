@@ -57,7 +57,20 @@ export const New = ({
             gridGap: 6,
           })}
         >
-          <ReactMarkdown source={latestChangelog.split('---')[2]} />
+          <ReactMarkdown
+            renderers={{
+              heading: props => {
+                if (!props.children.length) return null;
+
+                return React.createElement(
+                  `h${props.level}`,
+                  {},
+                  props.children
+                );
+              },
+            }}
+            source={latestChangelog.split('---')[2]}
+          />
         </Wrapper>
       </Element>
       <Stack
