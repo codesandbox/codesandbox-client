@@ -12,12 +12,12 @@ import {
 } from '@codesandbox/components';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { useOvermind } from 'app/overmind';
-import { ZeitIcon, VisitIcon, TrashIcon } from './icons';
+import { VercelIcon, VisitIcon, TrashIcon } from './icons';
 import { State } from './elements';
 
-export const Zeit = () => {
+export const Vercel = () => {
   const {
-    actions: { modalOpened, deployment, signInZeitClicked },
+    actions: { modalOpened, deployment, signInVercelClicked },
     state: {
       deployment: { deploying, sandboxDeploys, deploysBeingDeleted },
       user: { integrations },
@@ -26,7 +26,7 @@ export const Zeit = () => {
   const { deploySandboxClicked, setDeploymentToDelete } = deployment;
 
   return (
-    <Integration icon={ZeitIcon} title="Vercel">
+    <Integration icon={VercelIcon} title="Vercel">
       {integrations.zeit ? (
         <>
           <Element marginX={2} marginBottom={sandboxDeploys.length ? 6 : 0}>
@@ -37,7 +37,7 @@ export const Zeit = () => {
               </Link>
             </Text>
             <Button disabled={deploying} onClick={deploySandboxClicked}>
-              Deploy to Vercel
+              Deploy with Vercel
             </Button>
           </Element>
 
@@ -97,7 +97,7 @@ export const Zeit = () => {
 
             <Button
               disabled={deploying}
-              onClick={signInZeitClicked}
+              onClick={signInVercelClicked}
               css={{ width: 'auto' }}
             >
               Sign in

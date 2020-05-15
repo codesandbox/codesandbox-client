@@ -1,19 +1,19 @@
-import { ZeitDeploymentState } from '@codesandbox/common/lib/types';
+import { VercelDeploymentState } from '@codesandbox/common/lib/types';
 import styled, { css } from 'styled-components';
 import { Text } from '@codesandbox/components';
 
-const mapColorToState = (state: ZeitDeploymentState, theme: any) => {
+const mapColorToState = (state: VercelDeploymentState, theme: any) => {
   const STARTING = [
-    ZeitDeploymentState.BUILDING,
-    ZeitDeploymentState.DEPLOYING,
-    ZeitDeploymentState.INITIALIZING,
+    VercelDeploymentState.BUILDING,
+    VercelDeploymentState.DEPLOYING,
+    VercelDeploymentState.INITIALIZING,
   ];
   const ERROR = [
-    ZeitDeploymentState.BUILD_ERROR,
-    ZeitDeploymentState.DEPLOYMENT_ERROR,
-    ZeitDeploymentState.ERROR,
+    VercelDeploymentState.BUILD_ERROR,
+    VercelDeploymentState.DEPLOYMENT_ERROR,
+    VercelDeploymentState.ERROR,
   ];
-  const STARTED = [ZeitDeploymentState.BOOTED, ZeitDeploymentState.READY];
+  const STARTED = [VercelDeploymentState.BOOTED, VercelDeploymentState.READY];
 
   if (STARTING.includes(state)) {
     return '#FCCB7E';
@@ -24,14 +24,14 @@ const mapColorToState = (state: ZeitDeploymentState, theme: any) => {
   if (STARTED.includes(state)) {
     return theme.green;
   }
-  if (state === ZeitDeploymentState.FROZEN) {
+  if (state === VercelDeploymentState.FROZEN) {
     return theme.blue;
   }
 
   return theme.gray;
 };
 
-export const State = styled(Text)<{ state: ZeitDeploymentState }>`
+export const State = styled(Text)<{ state: VercelDeploymentState }>`
   ${({ state, theme }) => css`
     display: flex;
     align-items: center;

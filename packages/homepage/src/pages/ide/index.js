@@ -350,7 +350,7 @@ export default () => (
       <Grid>
         <div>
           <H6>Configuration UI</H6>
-          Edit config files for npm, Prettier, Netlify, Now, TypeScript,
+          Edit config files for npm, Prettier, Netlify, Vercel, TypeScript,
           JavaScript, and your sandbox easily.
         </div>
         <div>
