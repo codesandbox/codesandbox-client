@@ -6,7 +6,7 @@ import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { getPossibleTemplates } from '../../utils';
 import { SandboxGrid } from '../../../Components/SandboxGrid';
 import { Sandbox } from '../../../Components/Sandbox';
-import { FolderCard } from '../../../Components/FolderCard';
+import { Folder } from '../../../Components/Folder';
 import { SkeletonCard } from '../../../Components/Sandbox/SandboxCard';
 
 export const AllPage = ({ match: { params }, history }) => {
@@ -65,9 +65,9 @@ export const AllPage = ({ match: { params }, history }) => {
       />
       {allCollections ? (
         <SandboxGrid>
-          {creating && <FolderCard key="fake" newFolder={createNewFolder} />}
+          {creating && <Folder key="fake" newFolder={createNewFolder} />}
           {getFoldersByPath.map(folder => (
-            <FolderCard key={folder.id} {...folder} />
+            <Folder key={folder.id} {...folder} />
           ))}
           {sandboxes.ALL &&
             sandboxes.ALL[cleanParam] &&
