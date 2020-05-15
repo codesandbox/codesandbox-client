@@ -6,6 +6,8 @@ date: 2020-04-01
 description: This release includes bug fixes.
 ---
 
+###
+
 #### Features
 
 1. Following of read-only users and seeing their cursors if you follow them
