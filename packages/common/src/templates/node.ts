@@ -4,7 +4,7 @@ import { decorateSelector } from '../utils/decorate-selector';
 export default new Template(
   'node',
   'Node',
-  'https://codesandbox.io/docs',
+  'https://codesandbox.io/docs/environment#container-environment',
   'node',
   decorateSelector(() => '#66cc33'),
   {
