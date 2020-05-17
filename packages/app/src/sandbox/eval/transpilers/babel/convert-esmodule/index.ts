@@ -15,6 +15,7 @@ import {
   generateEsModuleSpecifier,
   generateInteropRequire,
   generateInteropRequireExpression,
+  generateExportGetter,
 } from './utils';
 import { customGenerator } from './generator';
 
@@ -143,6 +144,14 @@ export function convertEsModule(code: string) {
         }
         i++;
         program.body.splice(i, 0, generateExportStatement(varName, varName));
+      } else if (statement.specifiers) {
+        program.body.splice(i, 1);
+        statement.specifiers.forEach(specifier => {
+          i++;
+          program.body.unshift(
+            generateExportGetter(specifier.exported.name, specifier.local.name)
+          );
+        });
       }
     } else if (statement.type === n.ExportDefaultDeclaration) {
       addEsModuleSpecifier();
@@ -260,11 +269,26 @@ export function convertEsModule(code: string) {
 
       // Create require statement instead of the import
       program.body[i] = generateRequireStatement(varName, source.value);
-      i++;
 
       statement.specifiers.reverse().forEach(specifier => {
         let localName: string;
         let importName: string;
+
+        if (specifier.type === n.ImportSpecifier) {
+          // import {Test} from 'test';
+          // const _test = require('test');
+          // var Test = _test.Test;
+
+          // Mark that we need to rename all references to this variable
+          // to the new require statement. This will happen in the second pass.
+          varsToRename[specifier.local.name] = [
+            varName,
+            specifier.imported.name,
+          ];
+
+          return;
+        }
+        i++;
 
         if (specifier.type === n.ImportDefaultSpecifier) {
           // import Test from 'test';
@@ -279,21 +303,6 @@ export function convertEsModule(code: string) {
             0,
             generateInteropRequireExpression(varName, localName)
           );
-          return;
-        }
-
-        if (specifier.type === n.ImportSpecifier) {
-          // import {Test} from 'test';
-          // const _test = require('test');
-          // var Test = _test.Test;
-
-          // Mark that we need to rename all references to this variable
-          // to the new require statement. This will happen in the second pass.
-          varsToRename[specifier.local.name] = [
-            varName,
-            specifier.imported.name,
-          ];
-
           return;
         }
 

@@ -151,6 +151,13 @@ exports.Field = $csb__Field.default;
 "
 `;
 
+exports[`convert-esmodule handles default imports 1`] = `
+"var $csb__react = require(\\"react\\");
+var React = $csb__react;
+console.log(React.Component);
+"
+`;
+
 exports[`convert-esmodule handles export mutations 1`] = `
 "Object.defineProperty(exports, \\"__esModule\\", {
   value: true
@@ -167,6 +174,34 @@ exports[`convert-esmodule handles export mutations with no named function 1`] = 
 });
 function $csb__default() {}
 exports.default = $csb__default;
+"
+`;
+
+exports[`convert-esmodule handles named exports 1`] = `
+"Object.defineProperty(exports, \\"a\\", {
+  enumerable: true,
+  get: function get() {
+    return a;
+  }
+});
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+const a = \\"c\\";
+"
+`;
+
+exports[`convert-esmodule handles re-exports in named exports 1`] = `
+"Object.defineProperty(exports, \\"a\\", {
+  enumerable: true,
+  get: function get() {
+    return $csb__b.a;
+  }
+});
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var $csb__b = require(\\"./b\\");
 "
 `;
 

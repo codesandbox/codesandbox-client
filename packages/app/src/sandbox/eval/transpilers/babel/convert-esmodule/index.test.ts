@@ -158,6 +158,31 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('handles named exports', () => {
+    const code = `
+    const a = 'c';
+    export { a };
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles re-exports in named exports', () => {
+    const code = `
+    import { a } from './b';
+    export { a };
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles default imports', () => {
+    const code = `
+    import * as React from 'react';
+
+    console.log(React.Component);
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('parses and writes chars with linebreaks', () => {
     const code =
       "var WS_CHARS = 'u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff'";

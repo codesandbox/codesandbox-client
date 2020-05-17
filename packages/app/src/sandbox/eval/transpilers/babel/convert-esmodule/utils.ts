@@ -292,6 +292,99 @@ export function generateEsModuleSpecifier() {
   };
 }
 
+/**
+ * Object.defineProperty(exports, $exportName, {
+ *   enumerable: true,
+ *   get: function get() {
+ *     return $localName;
+ *   }
+ * })
+ */
+export function generateExportGetter(exportName, localName) {
+  return {
+    type: n.ExpressionStatement,
+    expression: {
+      type: n.CallExpression,
+      callee: {
+        type: n.MemberExpression,
+        computed: false,
+        object: {
+          type: n.Identifier,
+          name: 'Object',
+        },
+        property: {
+          type: n.Identifier,
+          name: 'defineProperty',
+        },
+      },
+      arguments: [
+        {
+          type: n.Identifier,
+          name: 'exports',
+        },
+        {
+          type: n.Literal,
+          value: exportName,
+        },
+        {
+          type: n.ObjectExpression,
+          properties: [
+            {
+              type: n.Property,
+              key: {
+                type: n.Identifier,
+                name: 'enumerable',
+              },
+              computed: false,
+              value: {
+                type: n.Literal,
+                value: true,
+                raw: 'true',
+              },
+              kind: 'init' as 'init',
+              method: false,
+              shorthand: false,
+            },
+            {
+              type: n.Property,
+              key: {
+                type: n.Identifier,
+                name: 'get',
+              },
+              computed: false,
+              value: {
+                type: 'FunctionDeclaration',
+                id: {
+                  type: 'Identifier',
+                  name: 'get',
+                },
+                generator: false,
+                async: false,
+                params: [],
+                body: {
+                  type: 'BlockStatement',
+                  body: [
+                    {
+                      type: 'ReturnStatement',
+                      argument: {
+                        type: 'Identifier',
+                        name: localName,
+                      },
+                    },
+                  ],
+                },
+              },
+              kind: 'init' as 'init',
+              method: false,
+              shorthand: false,
+            },
+          ],
+        },
+      ],
+    },
+  };
+}
+
 export function generateInteropRequire() {
   return {
     type: n.FunctionDeclaration,
