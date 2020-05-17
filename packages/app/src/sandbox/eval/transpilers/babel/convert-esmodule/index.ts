@@ -2,6 +2,7 @@
 /* eslint-disable no-loop-func, no-continue */
 import * as meriyah from 'meriyah';
 import * as astring from 'astring';
+import * as escope from 'escope';
 import { basename } from 'path';
 import { walk } from 'estree-walker';
 import { AssignmentExpression, ExpressionStatement } from 'meriyah/dist/estree';
@@ -22,6 +23,7 @@ import { customGenerator } from './generator';
  */
 export function convertEsModule(code: string) {
   const usedVarNames = [];
+  const varsToRename = {};
 
   const getVarName = (name: string) => {
     let usedName = name.replace(/[.-]/g, '');
@@ -279,13 +281,23 @@ export function convertEsModule(code: string) {
           );
           return;
         }
+
         if (specifier.type === n.ImportSpecifier) {
           // import {Test} from 'test';
           // const _test = require('test');
           // var Test = _test.Test;
-          localName = specifier.local.name;
-          importName = specifier.imported.name;
-        } else if (specifier.type === n.ImportNamespaceSpecifier) {
+
+          // Mark that we need to rename all references to this variable
+          // to the new require statement. This will happen in the second pass.
+          varsToRename[specifier.local.name] = [
+            varName,
+            specifier.imported.name,
+          ];
+
+          return;
+        }
+
+        if (specifier.type === n.ImportNamespaceSpecifier) {
           // import * as Test from 'test';
           // const _test = require('test');
           // var Test = _test;
@@ -326,6 +338,21 @@ export function convertEsModule(code: string) {
       });
     }
   }
+
+  // A second pass where we rename all references to imports that were marked before.
+  const scopeManager = escope.analyze(program);
+
+  scopeManager.acquire(program);
+  scopeManager.scopes.forEach(scope => {
+    scope.references.forEach(ref => {
+      // If the variable cannot be resolved, it must be the var that we had
+      // just changed.
+      if (varsToRename[ref.identifier.name] && ref.resolved === null) {
+        ref.identifier.name = varsToRename[ref.identifier.name].join('.');
+      }
+    });
+  });
+  scopeManager.detach();
 
   return astring.generate(program as any, {
     generator: customGenerator,

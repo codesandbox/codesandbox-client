@@ -55,13 +55,40 @@ describe('convert-esmodule', () => {
   it('can convert named imports', () => {
     const code = `
       import {a, b, c} from './b';
+
+      a();
+      b();
+      c();
     `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('can convert named imports with different scopes', () => {
+    const code = `
+      import {a} from './b';
+
+      a();
+
+      function test1() {
+        a();
+      }
+      function test2(a) {
+        a();
+
+        function test3() {
+          a();
+        }
+      }
+    `;
+
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
   it('can handle as imports', () => {
     const code = `
       import { a as b } from './b';
+
+      const func = b();
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });
@@ -76,6 +103,9 @@ describe('convert-esmodule', () => {
   it('can handle inline comments', () => {
     const code = `
       import { a as b, /* HELLO WORLD */ c } from './b';
+
+      b();
+      c();
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });

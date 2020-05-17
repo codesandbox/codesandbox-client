@@ -44,9 +44,24 @@ exports.Test = Test;
 
 exports[`convert-esmodule can convert named imports 1`] = `
 "var $csb__b = require(\\"./b\\");
-var a = $csb__b.a;
-var b = $csb__b.b;
-var c = $csb__b.c;
+$csb__b.a();
+$csb__b.b();
+$csb__b.c();
+"
+`;
+
+exports[`convert-esmodule can convert named imports with different scopes 1`] = `
+"var $csb__b = require(\\"./b\\");
+$csb__b.a();
+function test1() {
+  $csb__b.a();
+}
+function test2(a) {
+  a();
+  function test3() {
+    a();
+  }
+}
 "
 `;
 
@@ -83,7 +98,7 @@ exports.default = $csb__default;
 
 exports[`convert-esmodule can handle as imports 1`] = `
 "var $csb__b = require(\\"./b\\");
-var b = $csb__b.a;
+const func = $csb__b.a();
 "
 `;
 
@@ -122,8 +137,8 @@ function $_csb__interopRequireDefault(obj) {
 
 exports[`convert-esmodule can handle inline comments 1`] = `
 "var $csb__b = require(\\"./b\\");
-var b = $csb__b.a;
-var c = $csb__b.c;
+$csb__b.a();
+$csb__b.c();
 "
 `;
 
