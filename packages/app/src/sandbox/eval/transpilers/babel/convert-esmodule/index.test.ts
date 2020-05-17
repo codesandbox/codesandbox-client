@@ -174,6 +174,15 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('handles re-exports in named exports with a alias', () => {
+    const code = `
+    import { a } from './b';
+    const c = 'test';
+    export { a as b, c };
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('handles default imports', () => {
     const code = `
     import * as React from 'react';

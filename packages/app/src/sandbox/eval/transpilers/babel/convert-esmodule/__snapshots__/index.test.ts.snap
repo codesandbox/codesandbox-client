@@ -205,6 +205,27 @@ var $csb__b = require(\\"./b\\");
 "
 `;
 
+exports[`convert-esmodule handles re-exports in named exports with a alias 1`] = `
+"Object.defineProperty(exports, \\"c\\", {
+  enumerable: true,
+  get: function get() {
+    return c;
+  }
+});
+Object.defineProperty(exports, \\"b\\", {
+  enumerable: true,
+  get: function get() {
+    return $csb__b.a;
+  }
+});
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var $csb__b = require(\\"./b\\");
+const c = \\"test\\";
+"
+`;
+
 exports[`convert-esmodule ignores comments 1`] = `""`;
 
 exports[`convert-esmodule parses and writes chars with linebreaks 1`] = `

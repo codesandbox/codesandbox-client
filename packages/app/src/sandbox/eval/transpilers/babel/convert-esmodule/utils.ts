@@ -300,7 +300,7 @@ export function generateEsModuleSpecifier() {
  *   }
  * })
  */
-export function generateExportGetter(exportName, localName) {
+export function generateExportGetter(exportName: string, localName: string) {
   return {
     type: n.ExpressionStatement,
     expression: {
@@ -353,21 +353,21 @@ export function generateExportGetter(exportName, localName) {
               },
               computed: false,
               value: {
-                type: 'FunctionDeclaration',
+                type: n.FunctionExpression,
                 id: {
-                  type: 'Identifier',
+                  type: n.Identifier,
                   name: 'get',
                 },
                 generator: false,
                 async: false,
                 params: [],
                 body: {
-                  type: 'BlockStatement',
+                  type: n.BlockStatement,
                   body: [
                     {
-                      type: 'ReturnStatement',
+                      type: n.ReturnStatement,
                       argument: {
-                        type: 'Identifier',
+                        type: n.Identifier,
                         name: localName,
                       },
                     },

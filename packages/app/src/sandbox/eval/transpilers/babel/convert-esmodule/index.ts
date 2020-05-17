@@ -147,10 +147,15 @@ export function convertEsModule(code: string) {
       } else if (statement.specifiers) {
         program.body.splice(i, 1);
         statement.specifiers.forEach(specifier => {
-          i++;
-          program.body.unshift(
-            generateExportGetter(specifier.exported.name, specifier.local.name)
-          );
+          if (specifier.type === n.ExportSpecifier) {
+            i++;
+            program.body.unshift(
+              generateExportGetter(
+                specifier.exported.name,
+                specifier.local.name
+              )
+            );
+          }
         });
       }
     } else if (statement.type === n.ExportDefaultDeclaration) {
