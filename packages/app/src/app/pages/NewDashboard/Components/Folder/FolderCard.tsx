@@ -19,9 +19,10 @@ export const FolderCard = ({
   onSubmit,
   onBlur,
   // drop target
-  isOver,
+  showDropStyles,
   // drag preview
-  // opacity,
+  thumbnailRef,
+  opacity,
   // menu conflict
   onClick,
   ...props
@@ -40,12 +41,18 @@ export const FolderCard = ({
         height: 240,
         backgroundColor: 'grays.700',
         border: '1px solid',
-        borderColor: isOver ? 'grays.400' : 'grays.500',
         borderRadius: 'medium',
         overflow: 'hidden',
         transition: 'all ease-in-out',
         transitionDuration: theme => theme.speeds[4],
-        // opacity,
+        // drop target
+        borderColor: showDropStyles ? 'grays.400' : 'grays.500',
+        boxShadow: theme =>
+          showDropStyles ? '0 4px 16px 0 ' + theme.colors.grays[900] : null,
+
+        // drag state,
+        opacity,
+
         ':hover, :focus, :focus-within': {
           cursor: editing ? 'normal' : 'pointer',
           boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
@@ -56,6 +63,7 @@ export const FolderCard = ({
         as="div"
         justify="center"
         align="center"
+        ref={thumbnailRef}
         css={css({
           height: 160,
           borderStyle: 'solid',

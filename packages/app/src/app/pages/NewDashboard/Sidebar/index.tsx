@@ -236,14 +236,33 @@ const linkStyles = {
 };
 
 const canNotAcceptSandboxes = ['start', 'recent', 'all', 'settings'];
+const canNotAcceptFolders = [
+  'start',
+  'recent',
+  'drafts',
+  'all',
+  'templates',
+  'settings',
+];
+
+const isSamePath = (draggedItem, selfPath) => {
+  if (draggedItem && draggedItem.path === selfPath.replace('all', '')) {
+    return true;
+  }
+  return false;
+};
 
 const RowItem = ({ name, path, icon, isNested = false }) => {
+  const accepts = [];
+  if (!canNotAcceptSandboxes.includes(path)) accepts.push('sandbox');
+  if (!canNotAcceptFolders.includes(path)) accepts.push('folder');
+
   const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
-    accept: canNotAcceptSandboxes.includes(path) ? 'nope' : 'sandbox',
+    accept: accepts,
     drop: () => ({ path: path.replace('all', '') }),
     collect: monitor => ({
       isOver: monitor.isOver(),
-      canDrop: monitor.canDrop(),
+      canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path),
       isDragging: !!monitor.getItem(),
     }),
   });
