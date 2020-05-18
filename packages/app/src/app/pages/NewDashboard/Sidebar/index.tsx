@@ -245,8 +245,10 @@ const canNotAcceptFolders = [
   'settings',
 ];
 
-const isSamePath = (item, path) => {
-  if (item && item.path === path.replace('all', '')) return true;
+const isSamePath = (draggedItem, selfPath) => {
+  if (draggedItem && draggedItem.path === selfPath.replace('all', '')) {
+    return true;
+  }
   return false;
 };
 
@@ -255,13 +257,12 @@ const RowItem = ({ name, path, icon, isNested = false }) => {
   if (!canNotAcceptSandboxes.includes(path)) accepts.push('sandbox');
   if (!canNotAcceptFolders.includes(path)) accepts.push('folder');
 
-  const [{ canDrop, isOver, item, isDragging }, dropRef] = useDrop({
+  const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
     accept: accepts,
     drop: () => ({ path: path.replace('all', '') }),
     collect: monitor => ({
       isOver: monitor.isOver(),
-      item: monitor.getItem(),
-      canDrop: monitor.canDrop() && !isSamePath(item, path),
+      canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path),
       isDragging: !!monitor.getItem(),
     }),
   });

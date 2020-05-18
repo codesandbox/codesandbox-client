@@ -178,7 +178,7 @@ export const Folder = ({
   );
 };
 
-const isSamePath = (item, path) => {
-  if (item && item.path === path) return true;
+const isSamePath = (draggedItem, selfPath) => {
+  if (draggedItem && draggedItem.path === selfPath) return true;
   return false;
 };
