@@ -23,7 +23,7 @@ export const Deleted = () => {
       <Header title="Recently Deleted" />
       {sandboxes.DELETED ? (
         <>
-          {deletedSandboxesByTime.week.length && (
+          {deletedSandboxesByTime.week.length ? (
             <Element marginBottom={14}>
               <Text marginBottom={6} block>
                 Archived this week
@@ -32,8 +32,8 @@ export const Deleted = () => {
                 <Sandbox sandbox={sandbox} key={sandbox.id} />
               ))}
             </Element>
-          )}
-          {deletedSandboxesByTime.older.length && (
+          ) : null}
+          {deletedSandboxesByTime.older.length ? (
             <>
               <Text marginBottom={6} block>
                 Archived Earlier
@@ -42,7 +42,7 @@ export const Deleted = () => {
                 <Sandbox sandbox={sandbox} key={sandbox.id} />
               ))}
             </>
-          )}
+          ) : null}
         </>
       ) : (
         <Loading />
