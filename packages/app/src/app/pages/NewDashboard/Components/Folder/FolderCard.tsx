@@ -40,11 +40,14 @@ export const FolderCard = ({
         height: 240,
         backgroundColor: 'grays.700',
         border: '1px solid',
-        borderColor: isOver ? 'grays.400' : 'grays.500',
         borderRadius: 'medium',
         overflow: 'hidden',
         transition: 'all ease-in-out',
         transitionDuration: theme => theme.speeds[4],
+        // drop target
+        borderColor: isOver ? 'grays.400' : 'grays.500',
+        boxShadow: theme =>
+          isOver ? '0 4px 16px 0 ' + theme.colors.grays[900] : null,
         // opacity,
         ':hover, :focus, :focus-within': {
           cursor: editing ? 'normal' : 'pointer',
