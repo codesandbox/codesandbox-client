@@ -26,10 +26,21 @@ type State = {
   sourceModulesByPath: { [path: string]: string };
   permission: 'admin' | 'write' | 'read';
   conflictsResolving: string[];
+  outOfSyncUpdates: {
+    added: GitFileCompare[];
+    deleted: GitFileCompare[];
+    modified: GitFileCompare[];
+  };
+  // Rename source to original
+  sourceCommitSha: string | null;
+  baseCommitSha: string | null;
+  isResolving: boolean;
 };
 
 export const state: State = {
   gitState: SandboxGitState.SYNCING,
+  sourceCommitSha: null,
+  baseCommitSha: null,
   repoTitle: '',
   sourceSandboxId: null,
   error: null,
@@ -41,6 +52,7 @@ export const state: State = {
   pr: null,
   isCommitting: false,
   isCreatingPr: false,
+  isResolving: false,
   permission: 'read',
   sourceModulesByPath: {},
   conflicts: [],
@@ -51,4 +63,9 @@ export const state: State = {
   },
   sourceGitChanges: {},
   conflictsResolving: [],
+  outOfSyncUpdates: {
+    added: [],
+    deleted: [],
+    modified: [],
+  },
 };

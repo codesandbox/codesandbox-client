@@ -327,12 +327,14 @@ export default {
   createGitCommit(
     sandboxId: string,
     message: string,
-    changes: GitChanges
+    changes: GitChanges,
+    parentCommitShas: string[]
   ): Promise<GitCommit> {
     return api.post(`/sandboxes/${sandboxId}/git/commit`, {
       id: sandboxId,
       message,
       changes,
+      parentCommitShas,
     });
   },
   async compareGit(
@@ -340,7 +342,11 @@ export default {
     baseRef: string,
     headRef: string,
     includeContents = false
-  ): Promise<GitFileCompare[]> {
+  ): Promise<{
+    baseCommitSha: string;
+    headCommitSha: string;
+    files: GitFileCompare[];
+  }> {
     const response: any = await api.post(
       `/sandboxes/${sandboxId}/git/compare`,
       {
@@ -350,7 +356,7 @@ export default {
       }
     );
 
-    return response.files;
+    return response;
   },
   getGitPr(sandboxId: string, prNumber: number): Promise<GitPr> {
     return api.get(`/sandboxes/${sandboxId}/git/prs/${prNumber}`);

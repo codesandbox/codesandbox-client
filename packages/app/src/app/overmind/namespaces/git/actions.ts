@@ -10,6 +10,7 @@ import { Action, AsyncAction, Operator } from 'app/overmind';
 import { debounce, mutate, pipe } from 'overmind';
 
 import * as internalActions from './internalActions';
+import { createDiff } from './utils';
 
 export const internal = internalActions;
 
@@ -27,14 +28,13 @@ export const loadGitSource: AsyncAction = async ({
 }) => {
   const sandbox = state.editor.currentSandbox;
   state.git.isFetching = true;
+  // We go grab the current version of the source
   await actions.git._loadSourceSandbox();
 
   state.git.permission = await effects.api.getGitRights(sandbox.id);
 
-  // First let us see what is changed from our KNOWN latest gitCommitSha
-  actions.git._setGitChanges();
-
-  // Now let us compare with whatever has changed at the source
+  // Now let us compare whatever has changed between our current
+  // state and the source
   await actions.git._compareWithSource();
 
   if (state.git.gitState === SandboxGitState.SYNCED && sandbox.prNumber) {
@@ -117,8 +117,9 @@ export const createCommitClicked: AsyncAction = async ({
   const changes = actions.git._getGitChanges();
   const commit = await effects.api.createGitCommit(
     sandbox.id,
-    git.description,
-    changes
+    `${git.title}\n${git.description}`,
+    changes,
+    [git.sourceCommitSha]
   );
   changes.added.forEach(change => {
     git.sourceModulesByPath['/' + change.path] = change.content;
@@ -133,6 +134,7 @@ export const createCommitClicked: AsyncAction = async ({
   sandbox.originalGit.commitSha = commit.sha;
   sandbox.originalGitCommitSha = commit.sha;
   state.git.isCommitting = false;
+  state.git.title = '';
   state.git.description = '';
   state.git.conflicts = [];
   state.git.gitState = SandboxGitState.SYNCED;
@@ -210,6 +212,21 @@ export const updateGitChanges: Operator = pipe(
   mutate(({ actions }) => actions.git._setGitChanges())
 );
 
+export const resolveConflicts: Action<Module> = (
+  { state, actions },
+  module
+) => {
+  const conflict = state.git.conflicts.find(
+    conflictItem => module.path === '/' + conflictItem.filename
+  );
+
+  if (conflict && module.code.indexOf('<<<<<<< Codesandbox') === -1) {
+    state.git.conflicts.splice(state.git.conflicts.indexOf(conflict), 1);
+
+    actions.git._tryResolveConflict();
+  }
+};
+
 export const addConflictedFile: AsyncAction<GitFileCompare> = async (
   { state, actions },
   conflict
@@ -228,19 +245,16 @@ export const addConflictedFile: AsyncAction<GitFileCompare> = async (
   );
   state.git.conflicts.splice(state.git.conflicts.indexOf(conflict), 1);
 
-  actions.git._setGitChanges();
-
-  if (state.git.conflicts.length === 0) {
-    state.git.gitState = SandboxGitState.RESOLVED;
-  }
+  actions.git._tryResolveConflict();
 };
 
-export const ignoreConflict: Action<GitFileCompare> = ({ state }, conflict) => {
+export const ignoreConflict: Action<GitFileCompare> = (
+  { state, actions },
+  conflict
+) => {
   state.git.conflicts.splice(state.git.conflicts.indexOf(conflict), 1);
 
-  if (state.git.conflicts.length === 0) {
-    state.git.gitState = SandboxGitState.RESOLVED;
-  }
+  actions.git._tryResolveConflict();
 };
 
 export const deleteConflictedFile: AsyncAction<GitFileCompare> = async (
@@ -259,26 +273,115 @@ export const deleteConflictedFile: AsyncAction<GitFileCompare> = async (
   );
   state.git.conflicts.splice(state.git.conflicts.indexOf(conflict), 1);
 
-  actions.git._setGitChanges();
-
-  if (state.git.conflicts.length === 0) {
-    state.git.gitState = SandboxGitState.RESOLVED;
-  }
+  actions.git._tryResolveConflict();
 };
 
 export const diffConflictedFile: Action<GitFileCompare> = (
-  { state, effects },
+  { state, actions },
   conflict
 ) => {
-  const sandbox = state.editor.currentSandbox;
   const module = state.editor.modulesByPath['/' + conflict.filename] as Module;
-  effects.vscode.openDiff(sandbox.id, module, conflict.content);
 
-  state.git.conflicts.splice(state.git.conflicts.indexOf(conflict), 1);
+  actions.editor.setCode({
+    moduleShortid: module.shortid,
+    code: createDiff(module.code, conflict.content),
+  });
+};
 
-  if (state.git.conflicts.length === 0) {
-    state.git.gitState = SandboxGitState.RESOLVED;
+export const resolveOutOfSync: AsyncAction = async ({
+  state,
+  actions,
+  effects,
+}) => {
+  const git = state.git;
+  const { added, deleted, modified } = git.outOfSyncUpdates;
+  git.isResolving = true;
+  if (added.length) {
+    await actions.files.createModulesByPath({
+      files: added.reduce((aggr, change) => {
+        aggr[change.filename] = { content: change.content };
+
+        return aggr;
+      }, {}),
+    });
+    // We optimistically keep source in sync
+    added.forEach(change => {
+      git.sourceModulesByPath['/' + change.filename] = change.content;
+    });
   }
+
+  if (deleted.length) {
+    await Promise.all(
+      deleted.map(change => {
+        const module = state.editor.modulesByPath['/' + change.filename];
+
+        return actions.files.moduleDeleted({ moduleShortid: module.shortid });
+      })
+    );
+    // We optimistically keep source in sync
+    deleted.forEach(change => {
+      delete git.sourceModulesByPath['/' + change.filename];
+    });
+  }
+  if (modified.length) {
+    await Promise.all(
+      modified.map(change => {
+        const module = state.editor.modulesByPath['/' + change.filename];
+        // TODO: This one needs to trigger a LIVE code change as well, better way to do it?
+        actions.editor.codeChanged({
+          moduleShortid: module.shortid,
+          code: change.content,
+        });
+        return actions.editor.codeSaved({
+          moduleShortid: module.shortid,
+          code: change.content,
+          cbID: null,
+        });
+      })
+    );
+    // We optimistically keep source in sync
+    modified.forEach(change => {
+      git.sourceModulesByPath['/' + change.filename] = change.content;
+    });
+  }
+
+  // When we have a PR and the source is out of sync, we need to create a PR to update it
+  if (git.pr && git.gitState === SandboxGitState.OUT_OF_SYNC_SOURCE) {
+    const sandbox = state.editor.currentSandbox;
+    const changes: GitChanges = {
+      added: added.map(change => ({
+        path: change.filename,
+        content: change.content,
+        encoding: 'utf-8',
+      })),
+      deleted: deleted.map(change => change.filename),
+      modified: modified.map(change => ({
+        path: change.filename,
+        content: change.content,
+        encoding: 'utf-8',
+      })),
+    };
+    const commit = await effects.api.createGitCommit(
+      sandbox.id,
+      `Update from ${sandbox.baseGit.branch}`,
+      changes,
+      [git.sourceCommitSha]
+    );
+    actions.git._setGitChanges();
+    sandbox.originalGit.commitSha = commit.sha;
+    sandbox.originalGitCommitSha = commit.sha;
+
+    // If working directly we just need to update the commitSha, as
+    // we are already in sync now
+  } else {
+    // Make call to server to update commitSha
+  }
+
+  git.outOfSyncUpdates.added = [];
+  git.outOfSyncUpdates.deleted = [];
+  git.outOfSyncUpdates.modified = [];
+  git.gitState = SandboxGitState.SYNCED;
+  git.isResolving = false;
 };
 
 export const _setGitChanges: Action = ({ state }) => {
@@ -309,35 +412,33 @@ export const _evaluateGitChanges: AsyncAction<
     changesCount: number;
     conflicts: GitFileCompare[];
   }
-> = async ({ state, actions }, changes) => {
+> = async ({ state }, changes) => {
   const conflicts = changes.reduce((aggr, change) => {
     const path = '/' + change.filename;
 
-    // We are in conflict if a file has been added in the sandbox, but
-    // it is removed or has changed content in the source
-    if (
-      state.git.gitChanges.added.includes(path) &&
-      (change.status === 'removed' ||
-        (change.status === 'modified' &&
-          (state.editor.modulesByPath[path] as Module).code !== change.content))
-    ) {
+    // We are in conflict if a file has been removed and it is still present
+    // in the sandbox
+    if (change.status === 'removed' && state.editor.modulesByPath[path]) {
       return aggr.concat(change);
     }
+
     // We are in conflict if a file has been deleted in the sandbox, but
     // is still present in the source
     if (
-      state.git.gitChanges.deleted.includes(path) &&
-      (change.status === 'modified' || change.status === 'added')
+      (change.status === 'modified' || change.status === 'added') &&
+      !state.editor.modulesByPath[path]
     ) {
       return aggr.concat(change);
     }
-    // We are in conflict if a file has been modified in the sandbox, but
-    // it is removed or has changed content in the Sandbox
+
+    // We are in conflict if the file exists in the sandbox, but
+    // the contents is different than both the change and the
     if (
-      state.git.gitChanges.modified.includes(path) &&
-      (change.status === 'removed' ||
-        (change.status === 'modified' &&
-          (state.editor.modulesByPath[path] as Module).code !== change.content))
+      (change.status === 'added' || change.status === 'modified') &&
+      (state.editor.modulesByPath[path] as Module).code !== change.content &&
+      // When working directly we do an additional check to avoid getting a conflict
+      (!state.git.pr && (state.editor.modulesByPath[path] as Module)).code !==
+        state.git.sourceModulesByPath[path]
     ) {
       return aggr.concat(change);
     }
@@ -351,7 +452,7 @@ export const _evaluateGitChanges: AsyncAction<
   } = { added: [], deleted: [], modified: [] };
 
   if (changes.length) {
-    const { added, deleted, modified } = changes.reduce((aggr, change) => {
+    state.git.outOfSyncUpdates = changes.reduce((aggr, change) => {
       // If the change is a conflict, we do not set it up for a Sandbox update, we need
       // to handle the conflict explicitly
       if (conflicts.includes(change)) {
@@ -372,52 +473,8 @@ export const _evaluateGitChanges: AsyncAction<
         aggr[change.status].push(change);
       }
 
-      // Not matter we always want the source Sandbox to reflect the latest updates
-      if (change.status === 'added') {
-        state.git.sourceModulesByPath['/' + change.filename] = change.content;
-      } else if (change.status === 'removed') {
-        delete state.git.sourceModulesByPath['/' + change.filename];
-      } else if (change.status === 'modified') {
-        state.git.sourceModulesByPath['/' + change.filename] = change.content;
-      }
-
       return aggr;
     }, toUpdate);
-    if (added.length) {
-      await actions.files.createModulesByPath({
-        files: added.reduce((aggr, change) => {
-          aggr[change.filename] = { content: change.content };
-
-          return aggr;
-        }, {}),
-      });
-    }
-    if (deleted.length) {
-      await Promise.all(
-        deleted.map(change => {
-          const module = state.editor.modulesByPath['/' + change.filename];
-
-          return actions.files.moduleDeleted({ moduleShortid: module.shortid });
-        })
-      );
-    }
-    if (modified.length) {
-      await Promise.all(
-        modified.map(change => {
-          const module = state.editor.modulesByPath['/' + change.filename];
-          // TODO: This one needs to trigger a LIVE code change as well, better way to do it?
-          actions.editor.codeChanged({
-            moduleShortid: module.shortid,
-            code: change.content,
-          });
-          return actions.editor.codeSaved({
-            moduleShortid: module.shortid,
-            code: change.content,
-            cbID: null,
-          });
-        })
-      );
-    }
   }
 
   return {
@@ -470,32 +527,27 @@ export const _compareWithSource: AsyncAction = async ({
     true
   );
 
-  const updates = await actions.git._evaluateGitChanges(originalChanges);
+  const updates = await actions.git._evaluateGitChanges(originalChanges.files);
 
+  state.git.sourceCommitSha = originalChanges.headCommitSha;
   state.git.conflicts = updates.conflicts;
 
   if (updates.changesCount || updates.conflicts.length) {
     effects.notificationToast.add({
-      message: `The sandbox has been synced from "${sandbox.baseGit.branch}" ${
-        updates.conflicts.length ? ', but there are conflicts' : ''
+      message: `The sandbox is out of sync with "${sandbox.baseGit.branch}" ${
+        updates.conflicts.length ? 'and there are conflicts' : ''
       }`,
-      title: 'Sandbox CONFLICT',
-      status: convertTypeToStatus(
-        updates.conflicts.length ? 'error' : 'notice'
-      ),
+      title: 'Out of sync',
+      status: convertTypeToStatus('notice'),
       sticky: false,
       actions: {
-        primary: (updates.conflicts.length
-          ? [
-              {
-                label: 'Resolve',
-                run: () => {
-                  actions.workspace.setWorkspaceItem({ item: 'github' });
-                },
-              },
-            ]
-          : []
-        ).concat([
+        primary: [
+          {
+            label: 'Resolve',
+            run: () => {
+              actions.workspace.setWorkspaceItem({ item: 'github' });
+            },
+          },
           {
             label: 'See changes',
             run: () => {
@@ -504,13 +556,19 @@ export const _compareWithSource: AsyncAction = async ({
               );
             },
           },
-        ]),
+        ],
       },
     });
     effects.preview.refresh();
-    state.git.gitState = updates.conflicts.length
-      ? SandboxGitState.CONFLICT_SOURCE
-      : SandboxGitState.SYNCED;
+    if (sandbox.prNumber) {
+      state.git.gitState = updates.conflicts.length
+        ? SandboxGitState.CONFLICT_PR
+        : SandboxGitState.OUT_OF_SYNC_PR;
+    } else {
+      state.git.gitState = updates.conflicts.length
+        ? SandboxGitState.CONFLICT_SOURCE
+        : SandboxGitState.OUT_OF_SYNC_SOURCE;
+    }
   } else {
     state.git.gitState = SandboxGitState.SYNCED;
   }
@@ -525,6 +583,10 @@ export const _compareWithBase: AsyncAction = async ({
 
   state.git.pr = await effects.api.getGitPr(sandbox.id, sandbox.prNumber);
 
+  if (state.git.pr.mergeableState === 'clean') {
+    return;
+  }
+
   const baseChanges = await effects.api.compareGit(
     sandbox.id,
     sandbox.originalGitCommitSha,
@@ -532,32 +594,27 @@ export const _compareWithBase: AsyncAction = async ({
     true
   );
 
-  const updates = await actions.git._evaluateGitChanges(baseChanges);
+  const updates = await actions.git._evaluateGitChanges(baseChanges.files);
 
+  state.git.baseCommitSha = baseChanges.headCommitSha;
   state.git.conflicts = updates.conflicts;
 
   if (updates.changesCount || updates.conflicts.length) {
     effects.notificationToast.add({
-      message: `The sandbox has been synced from "${sandbox.baseGit.branch}" ${
-        updates.conflicts.length ? ', but there are conflicts' : ''
+      message: `The sandbox is out of sync with "${sandbox.baseGit.branch}" ${
+        updates.conflicts.length ? 'and there are conflicts' : ''
       }`,
-      title: 'Sandbox synced',
-      status: convertTypeToStatus(
-        updates.conflicts.length ? 'error' : 'notice'
-      ),
+      title: 'Out of sync',
+      status: convertTypeToStatus('notice'),
       sticky: false,
       actions: {
-        primary: (updates.conflicts.length
-          ? [
-              {
-                label: 'Resolve',
-                run: () => {
-                  actions.workspace.setWorkspaceItem({ item: 'github' });
-                },
-              },
-            ]
-          : []
-        ).concat([
+        primary: [
+          {
+            label: 'Resolve',
+            run: () => {
+              actions.workspace.setWorkspaceItem({ item: 'github' });
+            },
+          },
           {
             label: 'See changes',
             run: () => {
@@ -566,13 +623,13 @@ export const _compareWithBase: AsyncAction = async ({
               );
             },
           },
-        ]),
+        ],
       },
     });
     effects.preview.refresh();
     state.git.gitState = updates.conflicts.length
-      ? SandboxGitState.CONFLICT_PR
-      : SandboxGitState.SYNCED;
+      ? SandboxGitState.CONFLICT_SOURCE
+      : SandboxGitState.OUT_OF_SYNC_SOURCE;
   } else {
     state.git.gitState = SandboxGitState.SYNCED;
   }
@@ -607,4 +664,41 @@ export const _getGitChanges: Action<void, GitChanges> = ({ state }) => {
       };
     }),
   };
+};
+
+export const _tryResolveConflict: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  const git = state.git;
+  actions.git._setGitChanges();
+
+  if (git.conflicts.length === 0) {
+    state.git.isCommitting = true;
+    const sandbox = state.editor.currentSandbox;
+    const changes = actions.git._getGitChanges();
+    const commit = await effects.api.createGitCommit(
+      sandbox.id,
+      'Resolved conflict',
+      changes,
+      [git.sourceCommitSha].concat(git.baseCommitSha || [])
+    );
+    changes.added.forEach(change => {
+      git.sourceModulesByPath['/' + change.path] = change.content;
+    });
+    changes.modified.forEach(change => {
+      git.sourceModulesByPath['/' + change.path] = change.content;
+    });
+    changes.deleted.forEach(path => {
+      delete git.sourceModulesByPath['/' + path];
+    });
+    actions.git._setGitChanges();
+    sandbox.originalGit.commitSha = commit.sha;
+    sandbox.originalGitCommitSha = commit.sha;
+    git.isCommitting = false;
+    git.title = '';
+    git.description = '';
+    git.gitState = SandboxGitState.SYNCED;
+  }
 };

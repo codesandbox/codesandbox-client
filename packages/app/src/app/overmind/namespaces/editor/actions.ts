@@ -210,10 +210,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     const sandbox = await effects.api.getSandbox(newId);
 
     actions.internal.setCurrentSandbox(sandbox);
-    console.log(
-      JSON.stringify(sandbox.modules),
-      JSON.stringify(sandbox.directories)
-    );
     actions.workspace.openDefaultItem();
     effects.vscode.setReadOnly(Boolean(sandbox.git));
   } catch (error) {
@@ -493,8 +489,9 @@ export const codeChanged: Action<{
     actions.editor.internal.updatePreviewCode();
   }
 
-  if (sandbox.originalGit) {
+  if (state.editor.currentSandbox.originalGit) {
     actions.git.updateGitChanges();
+    actions.git.resolveConflicts(module)
   }
 };
 

@@ -17,7 +17,7 @@ import React from 'react';
 import { Changes } from './Changes';
 import { CommitForm } from './CommitForm';
 import { GithubLogin } from './GithubLogin';
-import { ChangedIcon, DeletedIcon, GitHubIcon } from './Icons';
+import { AddedIcon, ChangedIcon, DeletedIcon, GitHubIcon } from './Icons';
 import { NotLoggedIn } from './NotLoggedIn';
 import { NotOwner } from './NotOwner';
 
@@ -62,9 +62,22 @@ function getConflictType(
 export const GitHub = () => {
   const {
     state: {
-      git: { gitChanges, gitState, conflicts, conflictsResolving, permission },
+      git: {
+        gitChanges,
+        gitState,
+        conflicts,
+        conflictsResolving,
+        permission,
+        isResolving,
+      },
       editor: {
-        currentSandbox: { originalGit, owned },
+        currentSandbox: {
+          originalGit,
+          baseGit,
+          owned,
+          originalGitCommitSha,
+          prNumber,
+        },
         modulesByPath,
       },
       isLoggedIn,
@@ -76,8 +89,10 @@ export const GitHub = () => {
         deleteConflictedFile,
         diffConflictedFile,
         ignoreConflict,
+        resolveOutOfSync,
       },
     },
+    effects,
   } = useOvermind();
 
   const changeCount = gitChanges
@@ -98,17 +113,21 @@ export const GitHub = () => {
   function getConflictIcon(branch: string, conflict: GitFileCompare) {
     const conflictType = getConflictType(conflict, modulesByPath);
 
-    if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_DELETED) {
-      return <DeletedIcon />;
-    }
     if (
       conflictType === ConflictType.SOURCE_ADDED_SANDBOX_MODIFIED ||
-      conflictType === ConflictType.SOURCE_DELETED_SANDBOX_MODIFIED ||
+      conflictType === ConflictType.SOURCE_ADDED_SANDBOX_DELETED
+    ) {
+      return <AddedIcon />;
+    }
+
+    if (
+      conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_DELETED ||
       conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_MODIFIED
     ) {
       return <ChangedIcon />;
     }
-    if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_DELETED) {
+
+    if (conflictType === ConflictType.SOURCE_DELETED_SANDBOX_MODIFIED) {
       return <DeletedIcon />;
     }
 
@@ -119,19 +138,44 @@ export const GitHub = () => {
     const conflictType = getConflictType(conflict, modulesByPath);
 
     if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_DELETED) {
-      return `${branch} added this file, but you deleted it`;
+      return (
+        <Text>
+          <Text weight="bold">{branch}</Text> added this file, but you deleted
+          it
+        </Text>
+      );
     }
     if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_MODIFIED) {
-      return `${branch} added this file, but you modified it`;
+      return (
+        <Text>
+          <Text weight="bold">{branch}</Text> added this file, but you modified
+          it
+        </Text>
+      );
     }
     if (conflictType === ConflictType.SOURCE_DELETED_SANDBOX_MODIFIED) {
-      return `${branch} deleted this file, but you modified it`;
+      return (
+        <Text>
+          <Text weight="bold">{branch}</Text> deleted this file, but you
+          modified it
+        </Text>
+      );
     }
     if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_MODIFIED) {
-      return `${branch} modified this file and you did as well`;
+      return (
+        <Text>
+          <Text weight="bold">{branch}</Text> modified this file and you did as
+          well
+        </Text>
+      );
     }
     if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_DELETED) {
-      return `${branch} modified this file, but you deleted it`;
+      return (
+        <Text>
+          <Text weight="bold">{branch}</Text> modified this file, but you
+          deleted it
+        </Text>
+      );
     }
 
     return 'No idea what happened here?';
@@ -248,66 +292,194 @@ export const GitHub = () => {
     return null;
   }
 
-  function getContent() {
-    if (gitState === SandboxGitState.CONFLICT_SOURCE) {
+  function getText() {
+    if (gitState === SandboxGitState.OUT_OF_SYNC_SOURCE) {
       return (
         <Stack direction="vertical">
-          <List paddingBottom={6}>
-            {conflicts.map(conflict => (
-              <ListItem
-                gap={2}
-                key={conflict.filename}
-                css={{ display: 'block' }}
-              >
-                <Stack gap={3} align="center" marginBottom={4}>
-                  {getConflictIcon(originalGit.branch, conflict)}
-                  <Text variant="muted">{conflict.filename}</Text>
-                </Stack>
-                <Text paddingBottom={4} size={3} block>
-                  {getConflictText(originalGit.branch, conflict)}
-                </Text>
-                {getConflictButtons(conflict)}
-              </ListItem>
-            ))}
-          </List>
+          <Text variant="muted" size={3} paddingBottom={4}>
+            You are out of sync with changes in{' '}
+            <Text weight="bold">{baseGit.branch}</Text>, though you can safely
+            just update the sandbox
+          </Text>
+          <Button
+            loading={isResolving}
+            onClick={() => {
+              resolveOutOfSync();
+            }}
+          >
+            Update sandbox from {baseGit.branch}
+          </Button>
+          <Button
+            marginTop={4}
+            variant="link"
+            onClick={() => {
+              effects.browser.openWindow(
+                `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${baseGit.branch}`
+              );
+            }}
+          >
+            See changes from {baseGit.branch}
+          </Button>
         </Stack>
       );
     }
 
-    if (gitState === SandboxGitState.CONFLICT_PR) {
+    if (gitState === SandboxGitState.OUT_OF_SYNC_PR) {
       return (
-        <Stack direction="vertical" padding={2}>
-          <Changes conflicts={conflictPaths} {...gitChanges} />
+        <Stack direction="vertical">
+          <Text variant="muted" size={3} paddingBottom={4}>
+            You are out of sync with changes in the PR, though you can safely
+            just update the sandbox
+          </Text>
           <Button
-            type="button"
+            loading={isResolving}
             onClick={() => {
-              resolveConflicts();
+              resolveOutOfSync();
             }}
           >
-            Resolve
+            Update sandbox from PR
+          </Button>
+          <Button
+            marginTop={4}
+            variant="link"
+            onClick={() => {
+              effects.browser.openWindow(
+                `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${originalGit.branch}`
+              );
+            }}
+          >
+            See changes from PR
+          </Button>
+        </Stack>
+      );
+    }
+
+    if (conflicts.length && gitState === SandboxGitState.CONFLICT_SOURCE) {
+      return (
+        <Stack direction="vertical">
+          <Text variant="muted" size={3} paddingBottom={4}>
+            You are in conflict with changes in{' '}
+            <Text weight="bold">{baseGit.branch}</Text>, please resolve the
+            conflicts and commit your changes
+          </Text>
+          <Button
+            variant="link"
+            onClick={() => {
+              effects.browser.openWindow(
+                `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${baseGit.branch}`
+              );
+            }}
+          >
+            See changes from {baseGit.branch}
+          </Button>
+        </Stack>
+      );
+    }
+    if (conflicts.length && gitState === SandboxGitState.CONFLICT_PR) {
+      return (
+        <Stack direction="vertical">
+          <Text variant="muted" size={3} paddingBottom={4}>
+            You are in conflict with changes made on the PR, please resolve the
+            conflicts and update the PR
+          </Text>
+          <Button
+            variant="link"
+            onClick={() => {
+              effects.browser.openWindow(
+                `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${originalGit.branch}`
+              );
+            }}
+          >
+            See changes from PR
+          </Button>
+        </Stack>
+      );
+    }
+    if (!prNumber && (permission === 'admin' || permission === 'write')) {
+      return (
+        <Text variant="muted" size={3} paddingBottom={4}>
+          You have access to commit changes directly to{' '}
+          <Text weight="bold">{originalGit.branch}</Text>, but we recommend
+          creating a PR
+        </Text>
+      );
+    }
+
+    if (prNumber) {
+      return (
+        <Stack direction="vertical">
+          <Text variant="muted" size={3} paddingBottom={4}>
+            This PR is pointing to the branch{' '}
+            <Text weight="bold">{originalGit.branch}</Text>, any PR updates will
+            be committed there.
+          </Text>
+          <Button
+            variant="link"
+            onClick={() => {
+              effects.browser.openWindow(
+                `https://github.com/${baseGit.username}/${baseGit.repo}/pull/${prNumber}`
+              );
+            }}
+          >
+            Open PR
           </Button>
         </Stack>
       );
     }
 
     return (
-      <>
-        <Changes conflicts={conflictPaths} {...gitChanges} />
-        <CommitForm />
-      </>
+      <Text variant="muted" size={3} paddingBottom={4}>
+        You do not have access to commit directly to{' '}
+        <Text weight="bold">{originalGit.branch}</Text>, please create a PR
+        after you have made your changes.
+      </Text>
     );
   }
 
-  const title = () => {
-    if (gitState === SandboxGitState.CONFLICT_PR) {
-      return `Conflicts (${conflictPaths.length})`;
-    }
-    if (gitState === SandboxGitState.CONFLICT_SOURCE) {
-      return `Conflicts (${conflictPaths.length})`;
+  function getContent() {
+    if (conflicts.length) {
+      return (
+        <Collapsible title={`Conflicts (${conflictPaths.length})`} defaultOpen>
+          <Element>
+            <Stack direction="vertical">
+              <List paddingBottom={6}>
+                {conflicts.map(conflict => (
+                  <ListItem
+                    gap={2}
+                    key={conflict.filename}
+                    css={{ display: 'block' }}
+                  >
+                    <Stack gap={3} align="center" marginBottom={4}>
+                      {getConflictIcon(originalGit.branch, conflict)}
+                      <Text variant="muted">{conflict.filename}</Text>
+                    </Stack>
+                    <Text paddingBottom={4} size={3} block>
+                      {getConflictText(
+                        gitState === SandboxGitState.CONFLICT_SOURCE && prNumber
+                          ? baseGit.branch
+                          : originalGit.branch,
+                        conflict
+                      )}
+                    </Text>
+                    {getConflictButtons(conflict)}
+                  </ListItem>
+                ))}
+              </List>
+            </Stack>
+          </Element>
+        </Collapsible>
+      );
     }
 
-    return `Changes (${changeCount})`;
-  };
+    return (
+      <Collapsible title={`Changes (${changeCount})`} defaultOpen>
+        <Element>
+          <Changes conflicts={conflictPaths} {...gitChanges} />
+          <CommitForm />
+        </Element>
+      </Collapsible>
+    );
+  }
 
   return (
     <>
@@ -326,25 +498,11 @@ export const GitHub = () => {
                     {originalGit.username}/{originalGit.repo}
                   </Text>
                 </Stack>
-                {permission === 'admin' || permission === 'write' ? (
-                  <Text variant="muted" size={3} paddingBottom={4}>
-                    You have access to commit changes directly to{' '}
-                    <Text weight="bold">{originalGit.branch}</Text>, but we
-                    recommend creating a PR
-                  </Text>
-                ) : (
-                  <Text variant="muted" size={3} paddingBottom={4}>
-                    You do not have access to commit directly to{' '}
-                    <Text weight="bold">{originalGit.branch}</Text>, please
-                    create a PR after you have made your changes.
-                  </Text>
-                )}
               </Link>
+              {getText()}
             </Element>
           </Collapsible>
-          <Collapsible title={title()} defaultOpen>
-            <Element>{getContent()}</Element>
-          </Collapsible>
+          {getContent()}
         </>
       ) : null}
     </>

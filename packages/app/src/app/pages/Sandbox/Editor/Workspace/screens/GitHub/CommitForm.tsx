@@ -57,6 +57,7 @@ export const CommitForm = () => {
   );
   const canUpdate =
     hasChanges && isAllModulesSynced && !isCommitting && !isCreatingPr;
+  const showSelector = permission !== 'read' && !(isCommitting || isCreatingPr);
 
   if (currentSandbox.prNumber) {
     return (
@@ -76,7 +77,8 @@ export const CommitForm = () => {
         </FormField>
         <Stack marginX={2}>
           <Button
-            variant="secondary"
+            loading={isCommitting}
+            variant="primary"
             disabled={!canUpdate}
             onClick={() => createCommitClicked()}
           >
@@ -110,7 +112,7 @@ export const CommitForm = () => {
           placeholder="Title"
           onChange={changeTitle}
           value={title}
-          disabled={!hasChanges}
+          disabled={!hasChanges || isCommitting || isCreatingPr}
         />
       </FormField>
       <FormField direction="vertical" label="PR description" hideLabel>
@@ -119,24 +121,30 @@ export const CommitForm = () => {
           placeholder="Optional description..."
           onChange={changeDescription}
           value={description}
-          disabled={!hasChanges}
+          disabled={!hasChanges || isCommitting || isCreatingPr}
         />
       </FormField>
       <Stack marginX={2}>
         <Stack css={{ width: '100%' }}>
           <Button
             loading={isCommitting || isCreatingPr}
-            css={{
-              width: 'calc(100% - 26px)',
-              borderTopRightRadius: 0,
-              borderBottomRightRadius: 0,
-            }}
+            css={
+              showSelector
+                ? {
+                    width: 'calc(100% - 26px)',
+                    borderTopRightRadius: 0,
+                    borderBottomRightRadius: 0,
+                  }
+                : {
+                    width: '100%',
+                  }
+            }
             disabled={!title || !canUpdate}
             onClick={() => actions[currentAction].action()}
           >
             {actions[currentAction].text}
           </Button>
-          {permission !== 'read' ? (
+          {showSelector ? (
             <>
               <Menu>
                 <Menu.Button

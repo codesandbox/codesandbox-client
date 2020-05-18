@@ -284,7 +284,7 @@ export type GitPr = {
   branch: string;
   merged: boolean;
   mergeable: boolean;
-  mergeable_state: string;
+  mergeableState: string;
   commitSha: string;
   baseCommitSha: string;
   rebaseable: boolean;
@@ -307,6 +307,8 @@ export enum SandboxGitState {
   SYNCED = 'synced',
   CONFLICT_SOURCE = 'conflict in source',
   CONFLICT_PR = 'conflict in pr',
+  OUT_OF_SYNC_SOURCE = 'out of sync with source',
+  OUT_OF_SYNC_PR = 'out of sync with PR',
   SYNCING = 'syncing',
   RESOLVED = 'resolved',
 }
