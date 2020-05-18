@@ -92,11 +92,12 @@ export const Folder = ({
 
   /* Drop target logic */
 
-  const [{ isOver }, dropRef] = useDrop({
-    accept: 'sandbox',
+  const [{ isOver, canDrop }, dropRef] = useDrop({
+    accept: ['sandbox', 'folder'],
     drop: () => ({ path: path.replace('all', '') }),
     collect: monitor => ({
       isOver: monitor.isOver(),
+      canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path),
     }),
   });
 
@@ -110,8 +111,7 @@ export const Folder = ({
   const [{ isDragging }, dragRef, preview] = useDrag({
     item: { path, type: 'folder' },
     end: (item, monitor) => {
-      const dropResult = monitor.getDropResult();
-
+      // const dropResult = monitor.getDropResult();
       // if (!dropResult || !dropResult.path) return;
     },
     collect: monitor => ({
@@ -163,13 +163,22 @@ export const Folder = ({
       <div {...dragProps}>
         <motion.div
           initial={{ scale: 1 }}
-          animate={{ scale: isOver ? 1.02 : 1 }}
+          animate={{ scale: isOver && canDrop ? 1.02 : 1 }}
           {...dropProps}
         >
-          <Component {...folderProps} isOver={isOver} {...props} />
+          <Component
+            {...folderProps}
+            showDropStyles={isOver && canDrop}
+            {...props}
+          />
         </motion.div>
       </div>
       {isDragging ? <DragPreview viewMode={viewMode} {...folderProps} /> : null}
     </>
   );
+};
+
+const isSamePath = (item, path) => {
+  if (item && item.path === path) return true;
+  return false;
 };

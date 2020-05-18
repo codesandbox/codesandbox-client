@@ -19,7 +19,7 @@ export const FolderCard = ({
   onSubmit,
   onBlur,
   // drop target
-  isOver,
+  showDropStyles,
   // drag preview
   thumbnailRef,
   opacity,
@@ -46,9 +46,9 @@ export const FolderCard = ({
         transition: 'all ease-in-out',
         transitionDuration: theme => theme.speeds[4],
         // drop target
-        borderColor: isOver ? 'grays.400' : 'grays.500',
+        borderColor: showDropStyles ? 'grays.400' : 'grays.500',
         boxShadow: theme =>
-          isOver ? '0 4px 16px 0 ' + theme.colors.grays[900] : null,
+          showDropStyles ? '0 4px 16px 0 ' + theme.colors.grays[900] : null,
 
         // drag state,
         opacity,

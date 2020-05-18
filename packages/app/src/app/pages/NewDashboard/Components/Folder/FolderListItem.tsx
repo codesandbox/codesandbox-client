@@ -19,7 +19,7 @@ export const FolderListItem = ({
   onSubmit,
   onBlur,
   // drop target
-  isOver,
+  showDropStyles,
   // drag preview
   // opacity,
   // menu conflict
@@ -29,7 +29,7 @@ export const FolderListItem = ({
   <ListAction
     css={css({
       paddingX: 0,
-      backgroundColor: isOver ? 'list.hoverBackground' : 'inherit',
+      backgroundColor: showDropStyles ? 'list.hoverBackground' : 'inherit',
     })}
   >
     <Link
