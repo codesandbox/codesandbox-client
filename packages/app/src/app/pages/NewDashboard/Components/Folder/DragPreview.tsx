@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDragLayer } from 'react-dnd';
 import { motion } from 'framer-motion';
-import { Stack, Element, Text } from '@codesandbox/components';
+import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SIDEBAR_WIDTH } from '../../Sidebar';
 
