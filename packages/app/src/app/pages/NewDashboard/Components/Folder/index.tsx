@@ -119,7 +119,7 @@ export const Folder = ({
       if (isSamePath(dropResult, path)) return;
 
       if (dropResult.path === 'deleted') {
-        actions.dashboard.deleteFolder(dropResult.path);
+        actions.dashboard.deleteFolder({ path });
       }
     },
     collect: monitor => ({
