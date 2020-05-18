@@ -69,6 +69,7 @@ export const GitHub = () => {
         conflictsResolving,
         permission,
         isResolving,
+        isFetching,
       },
       editor: {
         currentSandbox: {
@@ -106,7 +107,7 @@ export const GitHub = () => {
   if (!owned) return <NotOwner />;
   if (!user.integrations.github) return <GithubLogin />;
 
-  if (gitState === SandboxGitState.SYNCING) {
+  if (isFetching) {
     return <h4>Loading...</h4>;
   }
 
@@ -200,7 +201,7 @@ export const GitHub = () => {
           </Button>
           <Button
             css={css({ width: 'auto' })}
-            variant="danger"
+            variant="secondary"
             type="button"
             disabled={conflictsResolving.includes(conflict.filename)}
             onClick={() => deleteConflictedFile(conflict)}
@@ -240,7 +241,7 @@ export const GitHub = () => {
           </Button>
           <Button
             css={css({ width: 'auto' })}
-            variant="danger"
+            variant="secondary"
             type="button"
             disabled={conflictsResolving.includes(conflict.filename)}
             onClick={() => deleteConflictedFile(conflict)}
@@ -278,7 +279,7 @@ export const GitHub = () => {
           </Button>
           <Button
             css={css({ width: 'auto' })}
-            variant="danger"
+            variant="secondary"
             type="button"
             disabled={conflictsResolving.includes(conflict.filename)}
             onClick={() => ignoreConflict(conflict)}
@@ -296,10 +297,46 @@ export const GitHub = () => {
     if (gitState === SandboxGitState.OUT_OF_SYNC_SOURCE) {
       return (
         <Stack direction="vertical">
-          <Text variant="muted" size={3} paddingBottom={4}>
-            You are out of sync with changes in{' '}
-            <Text weight="bold">{baseGit.branch}</Text>, though you can safely
-            just update the sandbox
+          <Text size={3} paddingBottom={4}>
+            <Text variant="muted">You are out of sync with changes in </Text>
+            {prNumber ? 'PR' : baseGit.branch}
+            <Text variant="muted">
+              , though you can safely just update the sandbox
+            </Text>
+          </Text>
+          <Button
+            loading={isResolving}
+            disabled={Boolean(changeCount)}
+            onClick={() => {
+              resolveOutOfSync();
+            }}
+          >
+            Update sandbox from {prNumber ? 'PR' : baseGit.branch}
+          </Button>
+          <Button
+            marginTop={4}
+            variant="link"
+            onClick={() => {
+              effects.browser.openWindow(
+                `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${originalGit.branch}`
+              );
+            }}
+          >
+            See changes from {prNumber ? 'PR' : baseGit.branch}
+          </Button>
+        </Stack>
+      );
+    }
+
+    if (gitState === SandboxGitState.OUT_OF_SYNC_PR_BASE) {
+      return (
+        <Stack direction="vertical">
+          <Text size={3} paddingBottom={4}>
+            <Text variant="muted">You are out of sync with changes on </Text>
+            {baseGit.branch}
+            <Text variant="muted">
+              , though you can safely just update the sandbox
+            </Text>
           </Text>
           <Button
             loading={isResolving}
@@ -324,23 +361,17 @@ export const GitHub = () => {
       );
     }
 
-    if (gitState === SandboxGitState.OUT_OF_SYNC_PR) {
+    if (conflicts.length && gitState === SandboxGitState.CONFLICT_SOURCE) {
       return (
         <Stack direction="vertical">
-          <Text variant="muted" size={3} paddingBottom={4}>
-            You are out of sync with changes in the PR, though you can safely
-            just update the sandbox
+          <Text size={3} paddingBottom={4}>
+            <Text variant="muted">You are in conflict with changes on </Text>
+            {prNumber ? 'PR' : baseGit.branch}
+            <Text variant="muted">
+              , please resolve the conflicts and commit your changes
+            </Text>
           </Text>
           <Button
-            loading={isResolving}
-            onClick={() => {
-              resolveOutOfSync();
-            }}
-          >
-            Update sandbox from PR
-          </Button>
-          <Button
-            marginTop={4}
             variant="link"
             onClick={() => {
               effects.browser.openWindow(
@@ -348,19 +379,23 @@ export const GitHub = () => {
               );
             }}
           >
-            See changes from PR
+            See changes from {prNumber ? 'PR' : originalGit.branch}
           </Button>
         </Stack>
       );
     }
-
-    if (conflicts.length && gitState === SandboxGitState.CONFLICT_SOURCE) {
+    if (conflicts.length && gitState === SandboxGitState.CONFLICT_PR_BASE) {
       return (
         <Stack direction="vertical">
-          <Text variant="muted" size={3} paddingBottom={4}>
-            You are in conflict with changes in{' '}
-            <Text weight="bold">{baseGit.branch}</Text>, please resolve the
-            conflicts and commit your changes
+          <Text size={3} paddingBottom={4}>
+            <Text variant="muted">
+              You are in conflict with changes made on{' '}
+            </Text>
+            {baseGit.branch}
+            <Text variant="muted">
+              , please resolve the conflicts and update the{' '}
+            </Text>{' '}
+            PR
           </Text>
           <Button
             variant="link"
@@ -375,32 +410,14 @@ export const GitHub = () => {
         </Stack>
       );
     }
-    if (conflicts.length && gitState === SandboxGitState.CONFLICT_PR) {
-      return (
-        <Stack direction="vertical">
-          <Text variant="muted" size={3} paddingBottom={4}>
-            You are in conflict with changes made on the PR, please resolve the
-            conflicts and update the PR
-          </Text>
-          <Button
-            variant="link"
-            onClick={() => {
-              effects.browser.openWindow(
-                `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${originalGit.branch}`
-              );
-            }}
-          >
-            See changes from PR
-          </Button>
-        </Stack>
-      );
-    }
     if (!prNumber && (permission === 'admin' || permission === 'write')) {
       return (
-        <Text variant="muted" size={3} paddingBottom={4}>
-          You have access to commit changes directly to{' '}
-          <Text weight="bold">{originalGit.branch}</Text>, but we recommend
-          creating a PR
+        <Text size={3} paddingBottom={4}>
+          <Text variant="muted">
+            You have access to commit changes directly to{' '}
+          </Text>
+          {originalGit.branch}
+          <Text variant="muted">, but we recommend creating a </Text>PR
         </Text>
       );
     }
@@ -408,10 +425,11 @@ export const GitHub = () => {
     if (prNumber) {
       return (
         <Stack direction="vertical">
-          <Text variant="muted" size={3} paddingBottom={4}>
-            This PR is pointing to the branch{' '}
-            <Text weight="bold">{originalGit.branch}</Text>, any PR updates will
-            be committed there.
+          <Text size={3} paddingBottom={4}>
+            <Text variant="muted">This</Text> Pull PR{' '}
+            <Text variant="muted">is pointing to the branch </Text>
+            {originalGit.branch}
+            <Text variant="muted">, any updates will be committed there.</Text>
           </Text>
           <Button
             variant="link"
@@ -428,10 +446,13 @@ export const GitHub = () => {
     }
 
     return (
-      <Text variant="muted" size={3} paddingBottom={4}>
-        You do not have access to commit directly to{' '}
-        <Text weight="bold">{originalGit.branch}</Text>, please create a PR
-        after you have made your changes.
+      <Text size={3} paddingBottom={4}>
+        <Text variant="muted">
+          You do not have access to commit directly to{' '}
+        </Text>
+        {originalGit.branch}
+        <Text variant="muted">, please create a </Text>PR{' '}
+        <Text variant="muted">after you have made your changes</Text>
       </Text>
     );
   }
@@ -455,7 +476,7 @@ export const GitHub = () => {
                     </Stack>
                     <Text paddingBottom={4} size={3} block>
                       {getConflictText(
-                        gitState === SandboxGitState.CONFLICT_SOURCE && prNumber
+                        gitState === SandboxGitState.CONFLICT_PR_BASE
                           ? baseGit.branch
                           : originalGit.branch,
                         conflict

@@ -119,7 +119,11 @@ export const createCommitClicked: AsyncAction = async ({
     sandbox.id,
     `${git.title}\n${git.description}`,
     changes,
-    [git.sourceCommitSha]
+    // If we have resolved a conflict and it is a PR source conflict, we need to commit
+    // it with a reference to the conflicting sha as well
+    git.gitState === SandboxGitState.RESOLVED_PR_SOURCE && git.baseCommitSha
+      ? [git.sourceCommitSha, git.baseCommitSha]
+      : [git.sourceCommitSha]
   );
   changes.added.forEach(change => {
     git.sourceModulesByPath['/' + change.path] = change.content;
@@ -212,7 +216,7 @@ export const updateGitChanges: Operator = pipe(
   mutate(({ actions }) => actions.git._setGitChanges())
 );
 
-export const resolveConflicts: Action<Module> = (
+export const resolveConflicts: AsyncAction<Module> = async (
   { state, actions },
   module
 ) => {
@@ -222,6 +226,12 @@ export const resolveConflicts: Action<Module> = (
 
   if (conflict && module.code.indexOf('<<<<<<< Codesandbox') === -1) {
     state.git.conflicts.splice(state.git.conflicts.indexOf(conflict), 1);
+
+    await actions.editor.codeSaved({
+      moduleShortid: module.shortid,
+      code: module.code,
+      cbID: null,
+    });
 
     actions.git._tryResolveConflict();
   }
@@ -327,8 +337,8 @@ export const resolveOutOfSync: AsyncAction = async ({
     await Promise.all(
       modified.map(change => {
         const module = state.editor.modulesByPath['/' + change.filename];
-        // TODO: This one needs to trigger a LIVE code change as well, better way to do it?
-        actions.editor.codeChanged({
+
+        actions.editor.setCode({
           moduleShortid: module.shortid,
           code: change.content,
         });
@@ -345,9 +355,10 @@ export const resolveOutOfSync: AsyncAction = async ({
     });
   }
 
-  // When we have a PR and the source is out of sync, we need to create a PR to update it
-  if (git.pr && git.gitState === SandboxGitState.OUT_OF_SYNC_SOURCE) {
-    const sandbox = state.editor.currentSandbox;
+  const sandbox = state.editor.currentSandbox;
+
+  // When we have a PR and the source is out of sync with base, we need to create a commit to update it
+  if (git.gitState === SandboxGitState.OUT_OF_SYNC_PR_BASE) {
     const changes: GitChanges = {
       added: added.map(change => ({
         path: change.filename,
@@ -374,7 +385,9 @@ export const resolveOutOfSync: AsyncAction = async ({
     // If working directly we just need to update the commitSha, as
     // we are already in sync now
   } else {
-    // Make call to server to update commitSha
+    await effects.api.saveGitOriginalCommitSha(sandbox.id, git.sourceCommitSha);
+    sandbox.originalGit.commitSha = git.sourceCommitSha;
+    sandbox.originalGitCommitSha = git.sourceCommitSha;
   }
 
   git.outOfSyncUpdates.added = [];
@@ -436,8 +449,7 @@ export const _evaluateGitChanges: AsyncAction<
     if (
       (change.status === 'added' || change.status === 'modified') &&
       (state.editor.modulesByPath[path] as Module).code !== change.content &&
-      // When working directly we do an additional check to avoid getting a conflict
-      (!state.git.pr && (state.editor.modulesByPath[path] as Module)).code !==
+      (state.editor.modulesByPath[path] as Module).code !==
         state.git.sourceModulesByPath[path]
     ) {
       return aggr.concat(change);
@@ -560,15 +572,9 @@ export const _compareWithSource: AsyncAction = async ({
       },
     });
     effects.preview.refresh();
-    if (sandbox.prNumber) {
-      state.git.gitState = updates.conflicts.length
-        ? SandboxGitState.CONFLICT_PR
-        : SandboxGitState.OUT_OF_SYNC_PR;
-    } else {
-      state.git.gitState = updates.conflicts.length
-        ? SandboxGitState.CONFLICT_SOURCE
-        : SandboxGitState.OUT_OF_SYNC_SOURCE;
-    }
+    state.git.gitState = updates.conflicts.length
+      ? SandboxGitState.CONFLICT_SOURCE
+      : SandboxGitState.OUT_OF_SYNC_SOURCE;
   } else {
     state.git.gitState = SandboxGitState.SYNCED;
   }
@@ -582,10 +588,8 @@ export const _compareWithBase: AsyncAction = async ({
   const sandbox = state.editor.currentSandbox;
 
   state.git.pr = await effects.api.getGitPr(sandbox.id, sandbox.prNumber);
-
-  if (state.git.pr.mergeableState === 'clean') {
-    return;
-  }
+  state.git.sourceCommitSha = state.git.pr.commitSha;
+  state.git.baseCommitSha = state.git.pr.baseCommitSha;
 
   const baseChanges = await effects.api.compareGit(
     sandbox.id,
@@ -628,8 +632,8 @@ export const _compareWithBase: AsyncAction = async ({
     });
     effects.preview.refresh();
     state.git.gitState = updates.conflicts.length
-      ? SandboxGitState.CONFLICT_SOURCE
-      : SandboxGitState.OUT_OF_SYNC_SOURCE;
+      ? SandboxGitState.CONFLICT_PR_BASE
+      : SandboxGitState.OUT_OF_SYNC_PR_BASE;
   } else {
     state.git.gitState = SandboxGitState.SYNCED;
   }
@@ -675,25 +679,31 @@ export const _tryResolveConflict: AsyncAction = async ({
   actions.git._setGitChanges();
 
   if (git.conflicts.length === 0) {
+    git.gitState =
+      git.gitState === SandboxGitState.CONFLICT_PR_BASE
+        ? SandboxGitState.RESOLVED_PR_BASE
+        : SandboxGitState.RESOLVED_SOURCE;
+  }
+
+  // When the conflict is from a PR base and we just override it, we still have to create a commit to update the PR
+  if (
+    git.gitState === SandboxGitState.RESOLVED_PR_BASE &&
+    !git.gitChanges.added.length &&
+    !git.gitChanges.deleted.length &&
+    !git.gitChanges.modified.length
+  ) {
     state.git.isCommitting = true;
     const sandbox = state.editor.currentSandbox;
     const changes = actions.git._getGitChanges();
+    state.git.title = 'Resolve conflict';
     const commit = await effects.api.createGitCommit(
       sandbox.id,
       'Resolved conflict',
       changes,
-      [git.sourceCommitSha].concat(git.baseCommitSha || [])
+      git.baseCommitSha
+        ? [git.sourceCommitSha, git.baseCommitSha]
+        : [git.sourceCommitSha]
     );
-    changes.added.forEach(change => {
-      git.sourceModulesByPath['/' + change.path] = change.content;
-    });
-    changes.modified.forEach(change => {
-      git.sourceModulesByPath['/' + change.path] = change.content;
-    });
-    changes.deleted.forEach(path => {
-      delete git.sourceModulesByPath['/' + path];
-    });
-    actions.git._setGitChanges();
     sandbox.originalGit.commitSha = commit.sha;
     sandbox.originalGitCommitSha = commit.sha;
     git.isCommitting = false;

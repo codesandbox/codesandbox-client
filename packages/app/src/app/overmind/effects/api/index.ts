@@ -137,6 +137,14 @@ export default {
   getGitChanges(sandboxId: string): Promise<GitChanges> {
     return api.get(`/sandboxes/${sandboxId}/git/diff`);
   },
+  saveGitOriginalCommitSha(
+    sandboxId: string,
+    commitSha: string
+  ): Promise<void> {
+    return api.patch(`/sandboxes/${sandboxId}/original_git_commit_sha`, {
+      original_git_commit_sha: commitSha,
+    });
+  },
   saveTemplate(sandboxId: string, template: TemplateType): Promise<void> {
     return api.put(`/sandboxes/${sandboxId}/`, {
       sandbox: { template },

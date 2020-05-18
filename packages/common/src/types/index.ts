@@ -306,11 +306,12 @@ export type GitFileCompare = {
 export enum SandboxGitState {
   SYNCED = 'synced',
   CONFLICT_SOURCE = 'conflict in source',
-  CONFLICT_PR = 'conflict in pr',
+  CONFLICT_PR_BASE = 'conflict in pr base',
   OUT_OF_SYNC_SOURCE = 'out of sync with source',
-  OUT_OF_SYNC_PR = 'out of sync with PR',
+  OUT_OF_SYNC_PR_SOURCE = 'out of sync with pr source',
   SYNCING = 'syncing',
-  RESOLVED = 'resolved',
+  RESOLVED_SOURCE = 'resolved source',
+  RESOLVED_PR_BASE = 'resolved pr base',
 }
 
 export type PopularSandboxes = {

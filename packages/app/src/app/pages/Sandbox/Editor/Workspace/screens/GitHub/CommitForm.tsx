@@ -67,12 +67,21 @@ export const CommitForm = () => {
         gap={1}
         onSubmit={event => event.preventDefault()}
       >
-        <FormField direction="vertical" label="message" hideLabel>
+        <FormField direction="vertical" label="Title" hideLabel>
+          <Input
+            placeholder="Title"
+            onChange={changeTitle}
+            value={title}
+            disabled={!hasChanges || isCommitting || isCreatingPr}
+          />
+        </FormField>
+        <FormField direction="vertical" label="Description" hideLabel>
           <Textarea
             maxLength={280}
-            placeholder="Message"
+            placeholder="Optional description..."
             onChange={changeDescription}
             value={description}
+            disabled={!hasChanges || isCommitting || isCreatingPr}
           />
         </FormField>
         <Stack marginX={2}>
@@ -107,7 +116,7 @@ export const CommitForm = () => {
       gap={1}
       onSubmit={event => event.preventDefault()}
     >
-      <FormField direction="vertical" label="PR title" hideLabel>
+      <FormField direction="vertical" label="Title" hideLabel>
         <Input
           placeholder="Title"
           onChange={changeTitle}
@@ -115,7 +124,7 @@ export const CommitForm = () => {
           disabled={!hasChanges || isCommitting || isCreatingPr}
         />
       </FormField>
-      <FormField direction="vertical" label="PR description" hideLabel>
+      <FormField direction="vertical" label="Description" hideLabel>
         <Textarea
           maxLength={280}
           placeholder="Optional description..."
@@ -157,7 +166,13 @@ export const CommitForm = () => {
                 >
                   <Icon size={8} name="caret" />
                 </Menu.Button>
-                <Menu.List>
+                <Menu.List
+                  css={{
+                    marginLeft: '-228px',
+                    marginTop: '-2px',
+                    width: '252px',
+                  }}
+                >
                   <Menu.Item onSelect={() => setCurrentAction('pr')}>
                     {getButtonTitle('Create PR')}
                   </Menu.Item>
@@ -173,8 +188,8 @@ export const CommitForm = () => {
         </Stack>
       </Stack>
       {currentAction === 'master' ? (
-        <Text paddingX={8} paddingTop={2} size={3} variant="muted">
-          Caution, committing to <Text weight="bold">master</Text>
+        <Text paddingX={8} paddingTop={2} size={3}>
+          <Text variant="muted">Caution, committing to </Text> master
         </Text>
       ) : null}
     </Stack>
