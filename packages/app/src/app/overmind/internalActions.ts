@@ -554,3 +554,11 @@ export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
 
   effects.browser.storage.set(seenTermsKey, true);
 };
+
+const VIEW_MODE_DASHBOARD = 'VIEW_MODE_DASHBOARD';
+export const setViewModeForDashboard: Action = ({ effects, state }) => {
+  const localStorageViewMode = effects.browser.storage.get(VIEW_MODE_DASHBOARD);
+  if (localStorageViewMode) {
+    state.dashboard.viewMode = localStorageViewMode;
+  }
+};

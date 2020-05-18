@@ -13,7 +13,7 @@ export const UserSettings = () => {
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.newDashboardMounted();
+    actions.dashboard.dashboardMounted();
   }, [actions.dashboard]);
 
   if (!user) {
