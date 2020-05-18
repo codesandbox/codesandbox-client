@@ -53,7 +53,10 @@ export const Folder = ({
         const folderLocation = location.pathname.split(
           '/new-dashboard/all/'
         )[1];
-        const folderPath = `/${folderLocation}/${newName}`;
+
+        const folderPath =
+          '' + (folderLocation && '/' + folderLocation) + '/' + newName;
+
         await actions.dashboard.createFolder(folderPath);
       }
     } else {
@@ -111,8 +114,13 @@ export const Folder = ({
   const [{ isDragging }, dragRef, preview] = useDrag({
     item: { path, type: 'folder' },
     end: (item, monitor) => {
-      // const dropResult = monitor.getDropResult();
-      // if (!dropResult || !dropResult.path) return;
+      const dropResult = monitor.getDropResult();
+      if (!dropResult || !dropResult.path) return;
+      if (isSamePath(dropResult, path)) return;
+
+      if (dropResult.path === 'deleted') {
+        actions.dashboard.deleteFolder(dropResult.path);
+      }
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
