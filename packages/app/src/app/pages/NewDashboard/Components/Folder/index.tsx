@@ -120,6 +120,13 @@ export const Folder = ({
 
       if (dropResult.path === 'deleted') {
         actions.dashboard.deleteFolder({ path });
+      } else {
+        // moving folders into another folder
+        // is the same as changing it's path
+        actions.dashboard.renameFolder({
+          path,
+          newPath: dropResult.path + '/' + name,
+        });
       }
     },
     collect: monitor => ({
