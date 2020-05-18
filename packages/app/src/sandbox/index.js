@@ -12,9 +12,12 @@ import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import compile, { getCurrentManager } from './compile';
 import { endMeasure } from './utils/metrics';
+import { injectHook } from './devtools/hook';
 
 const host = process.env.CODESANDBOX_HOST;
 const debug = _debug('cs:sandbox');
+
+injectHook();
 
 export const SCRIPT_VERSION =
   document.currentScript && document.currentScript.src;
