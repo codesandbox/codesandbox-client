@@ -1,6 +1,7 @@
 import React from 'react';
 import { join, dirname } from 'path';
-import { useDrop } from 'react-dnd';
+import { useDrop, useDrag } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { isMenuClicked } from '@codesandbox/components';
@@ -8,6 +9,7 @@ import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { useOvermind } from 'app/overmind';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
+import { DragPreview } from './DragPreview';
 
 export const Folder = ({
   name = '',
@@ -88,6 +90,54 @@ export const Folder = ({
     if (editing || isMenuClicked(event)) event.preventDefault();
   };
 
+  /* Drop target logic */
+
+  const [{ isOver }, dropRef] = useDrop({
+    accept: 'sandbox',
+    drop: () => ({ path: path.replace('all', '') }),
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  const dropProps = {
+    ref: dropRef,
+  };
+
+  /* Drag logic */
+  type ItemTypes = { id: string; type: string };
+
+  const [{ isDragging }, dragRef, preview] = useDrag({
+    item: { path, type: 'folder' },
+    end: (item, monitor) => {
+      const dropResult = monitor.getDropResult();
+
+      // if (!dropResult || !dropResult.path) return;
+    },
+    collect: monitor => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const dragProps = {
+    ref: dragRef,
+  };
+
+  const thumbnailRef = React.useRef();
+
+  React.useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, [preview]);
+
+  /* View logic */
+
+  let viewMode: string;
+  if (location.pathname.includes('deleted')) viewMode = 'list';
+  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else viewMode = dashboard.viewMode;
+
+  const Component = viewMode === 'list' ? FolderListItem : FolderCard;
+
   const folderProps = {
     name,
     path,
@@ -103,39 +153,23 @@ export const Folder = ({
     onKeyDown,
     onSubmit,
     onBlur,
+    // drag preview
+    thumbnailRef,
+    opacity: isDragging ? 0.25 : 1,
   };
-
-  /* Drop target logic */
-
-  const [{ isOver }, dropRef] = useDrop({
-    accept: 'sandbox',
-    drop: () => ({ path: path.replace('all', '') }),
-    collect: monitor => ({
-      isOver: monitor.isOver(),
-    }),
-  });
-
-  const dropProps = {
-    ref: dropRef,
-    opacity: 1,
-  };
-
-  /* View logic */
-
-  let viewMode: string;
-  if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
-  else viewMode = dashboard.viewMode;
-
-  const Component = viewMode === 'list' ? FolderListItem : FolderCard;
 
   return (
-    <motion.div
-      initial={{ scale: 1 }}
-      animate={{ scale: isOver ? 1.02 : 1 }}
-      {...dropProps}
-    >
-      <Component {...folderProps} isOver={isOver} {...props} />
-    </motion.div>
+    <>
+      <div {...dragProps}>
+        <motion.div
+          initial={{ scale: 1 }}
+          animate={{ scale: isOver ? 1.02 : 1 }}
+          {...dropProps}
+        >
+          <Component {...folderProps} isOver={isOver} {...props} />
+        </motion.div>
+      </div>
+      {isDragging ? <DragPreview viewMode={viewMode} {...folderProps} /> : null}
+    </>
   );
 };
