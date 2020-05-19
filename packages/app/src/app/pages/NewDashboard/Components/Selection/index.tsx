@@ -54,8 +54,8 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
         sandboxesInRange.push(sandboxId);
       }
 
-      // Missing feature: If end < start and all the elements in betweeen
-      // are selected, you're probably trying to remove them
+      // Missing feature: When you create a new selection that overlaps
+      // with the existing selection, you're probably trying to unselect them
       // commonIds = sandboxesInRange.filter(id => selectedIds.length)
       // remove the common ones while adding the rest
 
