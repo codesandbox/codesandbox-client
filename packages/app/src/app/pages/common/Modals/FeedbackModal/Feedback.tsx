@@ -37,17 +37,18 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
   const [feedback, setFeedback] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    window.addEventListener('keydown', listenForEsc);
-
-    return () => window.removeEventListener('keydown', listenForEsc);
-  }, [listenForEsc]);
-
   const listenForEsc = e => {
     if (e.keyCode === ESC) {
       modalClosed();
     }
   };
+
+  useEffect(() => {
+    window.addEventListener('keydown', listenForEsc);
+
+    return () => window.removeEventListener('keydown', listenForEsc);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const noop = () => undefined;
