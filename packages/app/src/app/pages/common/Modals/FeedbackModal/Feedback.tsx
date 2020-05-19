@@ -3,6 +3,7 @@ import VERSION from '@codesandbox/common/lib/version';
 import { CurrentUser } from '@codesandbox/common/lib/types';
 import { useOvermind } from 'app/overmind';
 import pushToAirtable from 'app/overmind/utils/pushToAirtable';
+import pushToFront from 'app/overmind/utils/pushToFront';
 import {
   Element,
   Input,
@@ -59,6 +60,15 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
       browser: browser(),
     })
       .then(() => {
+        pushToFront({
+          sandboxId: id || '',
+          feedback,
+          emoji,
+          username: (user || {}).username,
+          email,
+          version: VERSION,
+          browser: browser(),
+        })      
         setEmoji(null);
         setFeedback('');
         setLoading(false);
