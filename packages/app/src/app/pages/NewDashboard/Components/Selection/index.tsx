@@ -22,7 +22,6 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
       } else {
         setSelectedIds([...selectedIds, sandboxId]);
       }
-
       event.stopPropagation();
     } else if (event.shiftKey) {
       // start = find index for last inserted
