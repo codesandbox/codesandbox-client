@@ -2,12 +2,12 @@ import React from 'react';
 import { Element } from '@codesandbox/components';
 
 const Context = React.createContext({
-  selectedIds: null,
+  selectedIds: [],
   onClick: (event: React.MouseEvent<HTMLDivElement>, sandboxId: string) => {},
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
 });
 
-export const SelectionProvider = props => {
+export const SelectionProvider = ({ sandboxes = [], ...props }) => {
   const [selectedIds, setSelectedIds] = React.useState([]);
 
   const onClick = (
