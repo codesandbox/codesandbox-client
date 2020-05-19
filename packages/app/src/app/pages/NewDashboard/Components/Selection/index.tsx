@@ -1,4 +1,5 @@
 import React from 'react';
+import { Element } from '@codesandbox/components';
 
 const Context = React.createContext({
   selectedIds: null,
@@ -17,15 +18,15 @@ export const SelectionProvider = props => {
       // select multiple with modifier
 
       setSelectedIds([...selectedIds, sandboxId]);
+      event.stopPropagation();
     } else {
       setSelectedIds([sandboxId]);
+      event.stopPropagation();
     }
   };
 
   const onBlur = (event: React.FocusEvent<HTMLDivElement>) => {
-    // TODO: This doesn't work because blur events dont get modifier keys
-    // @ts-ignore i'll fix it, thanks!
-    if (event.ctrlKey || event.metaKey) {
+    if (!event.bubbles) {
       // do nothing, another sandbox was selected
     } else {
       // reset selection
@@ -33,9 +34,14 @@ export const SelectionProvider = props => {
     }
   };
 
+  const onContainerClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    // global blur
+    setSelectedIds([]);
+  };
+
   return (
     <Context.Provider value={{ selectedIds, onClick, onBlur }}>
-      <div style={{ position: 'relative' }}>{props.children}</div>
+      <Element onClick={onContainerClick}>{props.children}</Element>
     </Context.Provider>
   );
 };

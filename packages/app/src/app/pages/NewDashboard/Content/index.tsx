@@ -24,15 +24,16 @@ export const Content = () => {
   }, [actions.dashboard]);
 
   return (
-    <Element
-      css={css({
-        maxWidth: 992,
-        paddingX: 4,
-        width: '100%',
-        margin: '40px auto',
-      })}
-    >
-      <SelectionProvider>
+    <SelectionProvider>
+      <Element
+        css={css({
+          maxWidth: 992,
+          paddingX: 4,
+          paddingY: 10,
+          width: '100%',
+          margin: '0 auto',
+        })}
+      >
         <Switch>
           <Route
             path="/new-dashboard/start"
@@ -73,7 +74,7 @@ export const Content = () => {
 
           <Redirect to="/new-dashboard/start" />
         </Switch>
-      </SelectionProvider>
-    </Element>
+      </Element>
+    </SelectionProvider>
   );
 };
