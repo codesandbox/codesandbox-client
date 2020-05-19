@@ -10,6 +10,7 @@ import { isMenuClicked } from '@codesandbox/components';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { DragPreview } from './DragPreview';
+import { useSelection } from '../Selection';
 
 export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const {
@@ -50,7 +51,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     setEdit(false);
   };
 
-  const onBlur = () => {
+  const onInputBlur = () => {
     // save value when you click outside or tab away
     onSubmit();
   };
@@ -115,14 +116,13 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
 
-  /** interactions */
-
-  const [selected, setSelected] = React.useState(false);
+  // interactions
+  const { selectedId, onClick: onSelectionClick, onBlur } = useSelection();
+  const selected = sandbox.id === selectedId;
 
   const onClick = event => {
     if (edit || isDragging || isMenuClicked(event)) return;
-
-    setSelected(!selected);
+    onSelectionClick(event, sandbox.id);
   };
 
   const history = useHistory();
@@ -135,15 +135,19 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
       history.push(url);
     }
   };
+  const interactionProps = {
+    tabIndex: 0, // make div focusable
+    style: { outline: 'none' }, // we handle outline with border
+    selected,
+    onClick,
+    onDoubleClick,
+    onBlur,
+  };
 
   const sandboxProps = {
     sandboxTitle,
     sandbox,
     isTemplate,
-    // interactions
-    selected,
-    onClick,
-    onDoubleClick,
     // edit mode
     edit,
     newTitle,
@@ -151,7 +155,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onChange,
     onKeyDown,
     onSubmit,
-    onBlur,
+    onInputBlur,
     enterEditing,
     // drag preview
     thumbnailRef,
@@ -176,7 +180,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
             stiffness: 300,
           }}
         >
-          <Component {...sandboxProps} {...props} />
+          <Component {...sandboxProps} {...interactionProps} {...props} />
         </motion.div>
       </div>
       {isDragging ? (

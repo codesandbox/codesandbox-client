@@ -25,7 +25,7 @@ export const SandboxListItem = ({
   onChange,
   onKeyDown,
   onSubmit,
-  onBlur,
+  onInputBlur,
   enterEditing,
   // drag preview
   thumbnailRef,
@@ -75,7 +75,7 @@ export const SandboxListItem = ({
                 ref={inputRef}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
-                onBlur={onBlur}
+                onBlur={onInputBlur}
               />
             </form>
           ) : (

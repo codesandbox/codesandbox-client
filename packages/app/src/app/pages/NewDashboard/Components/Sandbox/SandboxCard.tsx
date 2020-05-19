@@ -19,13 +19,14 @@ export const SandboxCard = ({
   selected,
   onClick,
   onDoubleClick,
+  onBlur,
   // editing
   edit,
   inputRef,
   onChange,
   onKeyDown,
   onSubmit,
-  onBlur,
+  onInputBlur,
   enterEditing,
   // drag preview
   thumbnailRef,
@@ -37,6 +38,7 @@ export const SandboxCard = ({
     gap={2}
     onClick={onClick}
     onDoubleClick={onDoubleClick}
+    onBlur={onBlur}
     {...props}
     css={css({
       width: '100%',
@@ -75,7 +77,7 @@ export const SandboxCard = ({
             ref={inputRef}
             onChange={onChange}
             onKeyDown={onKeyDown}
-            onBlur={onBlur}
+            onBlur={onInputBlur}
           />
         </form>
       ) : (

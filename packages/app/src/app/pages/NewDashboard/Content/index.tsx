@@ -11,6 +11,7 @@ import { Recent } from './routes/Recent';
 import { All } from './routes/All';
 import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
+import { SelectionProvider } from '../Components/Selection';
 
 export const Content = () => {
   const {
@@ -31,46 +32,48 @@ export const Content = () => {
         margin: '40px auto',
       })}
     >
-      <Switch>
-        <Route
-          path="/new-dashboard/start"
-          render={() => <StartSandboxes key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/templates"
-          render={() => <Templates key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/deleted"
-          render={() => <Deleted key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/drafts"
-          render={() => <Drafts key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/recent"
-          render={() => <Recent key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/all/drafts"
-          render={() => <Drafts key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/search"
-          render={() => <Search key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/all/:path*"
-          render={() => <All key={window.location.pathname} />}
-        />
-        <Route
-          path="/new-dashboard/settings"
-          render={() => <Settings key={dashboard.activeTeam} />}
-        />
+      <SelectionProvider>
+        <Switch>
+          <Route
+            path="/new-dashboard/start"
+            render={() => <StartSandboxes key={dashboard.activeTeam} />}
+          />
+          <Route
+            path="/new-dashboard/templates"
+            render={() => <Templates key={dashboard.activeTeam} />}
+          />
+          <Route
+            path="/new-dashboard/deleted"
+            render={() => <Deleted key={dashboard.activeTeam} />}
+          />
+          <Route
+            path="/new-dashboard/drafts"
+            render={() => <Drafts key={dashboard.activeTeam} />}
+          />
+          <Route
+            path="/new-dashboard/recent"
+            render={() => <Recent key={dashboard.activeTeam} />}
+          />
+          <Route
+            path="/new-dashboard/all/drafts"
+            render={() => <Drafts key={dashboard.activeTeam} />}
+          />
+          <Route
+            path="/new-dashboard/search"
+            render={() => <Search key={dashboard.activeTeam} />}
+          />
+          <Route
+            path="/new-dashboard/all/:path*"
+            render={() => <All key={window.location.pathname} />}
+          />
+          <Route
+            path="/new-dashboard/settings"
+            render={() => <Settings key={dashboard.activeTeam} />}
+          />
 
-        <Redirect to="/new-dashboard/start" />
-      </Switch>
+          <Redirect to="/new-dashboard/start" />
+        </Switch>
+      </SelectionProvider>
     </Element>
   );
 };
