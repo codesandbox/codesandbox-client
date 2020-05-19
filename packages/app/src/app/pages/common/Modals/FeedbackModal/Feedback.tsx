@@ -68,7 +68,7 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
           email,
           version: VERSION,
           browser: browser(),
-        })      
+        });      
         setEmoji(null);
         setFeedback('');
         setLoading(false);
