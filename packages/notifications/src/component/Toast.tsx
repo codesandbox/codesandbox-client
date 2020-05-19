@@ -1,8 +1,9 @@
 import * as React from 'react';
+import { Button, Stack, Element, Text } from '@codesandbox/components';
+import theme from '@codesandbox/components/lib/design-language/theme';
 
 import { NotificationToast } from './Toasts';
 import { NotificationStatus } from '../state';
-
 import { ErrorIcon } from './icons/ErrorIcon';
 import { SuccessIcon } from './icons/SuccessIcon';
 import { WarningIcon } from './icons/WarningIcon';
@@ -34,155 +35,122 @@ export interface IColors {
   [NotificationStatus.NOTICE]: string;
 }
 
-export type IButtonType = React.ComponentType<{
-  small?: boolean;
-  secondary?: boolean;
-  style?: React.CSSProperties;
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-}>;
-
 export type Props = {
   toast: NotificationToast;
   removeToast: (id: string) => void;
   getRef?: React.LegacyRef<HTMLDivElement>;
   colors: IColors;
-  Button: IButtonType;
 };
 
-export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
-  const Icon = getIcon(toast.notification.status);
+export function Toast({ toast, removeToast, getRef, colors }: Props) {
+  const {
+    notification: { actions, title, message, status },
+  } = toast;
+  const Icon = getIcon(status);
+  const fullWidth = { width: '100%' };
   return (
-    <div
+    <Stack
+      // @ts-ignore
       ref={getRef}
+      marginBottom={2}
       style={{
-        display: 'flex',
-        backgroundColor: '#141618',
-        color: 'white',
-        borderRadius: 3,
+        background: theme.colors.grays[700],
+        border: `1px solid ${theme.colors.grays[600]}`,
+        boxSizing: 'border-box',
+        boxShadow: theme.shadows[2],
+        borderRadius: theme.radii.medium,
         position: 'relative',
-
+        fontSize: theme.fontSizes[3],
+        color: theme.colors.white,
         width: 450,
         overflow: 'hidden',
-        marginBottom: '0.5rem',
       }}
     >
-      <div
+      <Element
         style={{
           position: 'absolute',
           left: 0,
           top: 0,
           bottom: 0,
-          backgroundColor: getColor(colors, toast.notification.status),
+          backgroundColor: getColor(colors, status),
           width: 4,
         }}
       />
-      <div style={{ display: 'flex', padding: '.75rem 1rem', width: '100%' }}>
-        <div
-          style={{
-            color: getColor(colors, toast.notification.status),
-            width: 32,
-            fontSize: '1.25rem',
-            lineHeight:
-              toast.notification.message && toast.notification.title
-                ? 1.4
-                : undefined,
-            verticalAlign: 'middle',
-          }}
-        >
-          <Icon />
-        </div>
-        <div style={{ width: '100%' }}>
-          <div style={{ display: 'flex', width: '100%' }}>
-            <div style={{ width: '100%' }}>
-              <div
-                style={{
-                  fontSize: '.875rem',
-                  fontWeight: 500,
-                  color: 'white',
-                  fontFamily: 'Poppins, sans-serif',
-                  marginBottom:
-                    toast.notification.title && toast.notification.message
-                      ? '.5rem'
-                      : 0,
-                  lineHeight: 1.6,
-                }}
+      <Stack style={fullWidth} paddingX={3} paddingY={4}>
+        <Element style={fullWidth}>
+          <Stack style={fullWidth}>
+            <Element style={fullWidth}>
+              <Stack
+                marginBottom={title && message ? 3 : 0}
+                align="center"
+                gap={2}
               >
-                {toast.notification.title
-                  ? toast.notification.title
-                  : toast.notification.message}
-              </div>
-
-              {toast.notification.title && (
-                <div
+                <Icon />
+                <Text
                   style={{
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    fontSize: '.875rem',
+                    fontWeight: 500,
                   }}
                 >
-                  {toast.notification.message}
-                </div>
+                  {title || message}
+                </Text>
+              </Stack>
+
+              {title && (
+                <Text size={3} block>
+                  {message}
+                </Text>
               )}
-            </div>
+            </Element>
 
-            <div style={{ width: 24 }}>
-              <StyledCrossIcon onClick={() => removeToast(toast.id)} />
-            </div>
-          </div>
+            <StyledCrossIcon onClick={() => removeToast(toast.id)} />
+          </Stack>
 
-          <div>
-            {toast.notification.actions && (
-              <div
-                style={{
-                  display: 'flex',
-                  fontSize: '.875rem',
-                }}
-              >
-                {toast.notification.actions.primary &&
-                  toast.notification.actions.primary.map(primary => (
-                    <Button
-                      small
-                      onClick={() => {
-                        // By default we hide the notification on clicking primary buttons
-                        if (primary.hideOnClick !== false) {
-                          removeToast(toast.id);
-                        }
-                        primary.run();
-                      }}
-                      style={{
-                        marginTop: '1rem',
-                        marginRight: '0.75rem',
-                        lineHeight: 1,
-                      }}
-                    >
-                      {primary.label}
-                    </Button>
-                  ))}
+          <Element>
+            {actions && (
+              <Stack marginTop={3} gap={2}>
+                {actions.primary && (
+                  <Button
+                    variant="secondary"
+                    style={{
+                      width: 'auto',
+                      background: !actions.secondary
+                        ? theme.colors.grays[600]
+                        : 'transparent',
+                      border: !actions.secondary
+                        ? 'none'
+                        : `1px solid ${theme.colors.grays[600]}`,
+                    }}
+                    onClick={() => {
+                      // By default we hide the notification on clicking primary buttons
+                      if (actions.primary.hideOnClick !== false) {
+                        removeToast(toast.id);
+                      }
+                      actions.primary.run();
+                    }}
+                  >
+                    {actions.primary.title}
+                  </Button>
+                )}
 
-                {toast.notification.actions.secondary &&
-                  toast.notification.actions.secondary.map(secondary => (
-                    <Button
-                      secondary
-                      small
-                      onClick={() => {
-                        if (secondary.hideOnClick) {
-                          removeToast(toast.id);
-                        }
-                        secondary.run();
-                      }}
-                      style={{
-                        marginTop: '1rem',
-                        marginRight: '0.75rem',
-                        lineHeight: 1,
-                      }}
-                    >
-                      {secondary.label}
-                    </Button>
-                  ))}
-              </div>
+                {actions.secondary && (
+                  <Button
+                    style={{ width: 'auto' }}
+                    variant="secondary"
+                    onClick={() => {
+                      if (actions.secondary.hideOnClick) {
+                        removeToast(toast.id);
+                      }
+                      actions.secondary.run();
+                    }}
+                  >
+                    {actions.secondary.title}
+                  </Button>
+                )}
+              </Stack>
             )}
-          </div>
-        </div>
-      </div>
-    </div>
+          </Element>
+        </Element>
+      </Stack>
+    </Stack>
   );
 }

@@ -10,13 +10,11 @@ export const NotificationContainer = styled.div`
 
 export const StyledCrossIcon = styled(CrossIcon)`
   transition: 0.3s ease color;
-
-  font-size: 1rem;
-  margin-left: 0.5rem;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.75);
 
   &:hover {
-    color: white;
+    path {
+      opacity: 0.4;
+    }
   }
 `;
