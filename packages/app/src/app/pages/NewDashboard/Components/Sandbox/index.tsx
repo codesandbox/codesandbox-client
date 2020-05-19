@@ -117,8 +117,8 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
 
   // interactions
-  const { selectedId, onClick: onSelectionClick, onBlur } = useSelection();
-  const selected = sandbox.id === selectedId;
+  const { selectedIds, onClick: onSelectionClick, onBlur } = useSelection();
+  const selected = selectedIds.includes(sandbox.id);
 
   const onClick = event => {
     if (edit || isDragging || isMenuClicked(event)) return;

@@ -1,30 +1,46 @@
 import React from 'react';
 
 const Context = React.createContext({
-  selectedId: null,
-  onClick: (event, sandboxId) => {},
-  onBlur: event => {},
+  selectedIds: null,
+  onClick: (event: React.MouseEvent<HTMLDivElement>, sandboxId: string) => {},
+  onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
 });
 
 export const SelectionProvider = props => {
-  const [selectedId, setSelectedId] = React.useState(null);
+  const [selectedIds, setSelectedIds] = React.useState([]);
 
-  const onBlur = event => {
-    setSelectedId(null);
+  const onClick = (
+    event: React.MouseEvent<HTMLDivElement>,
+    sandboxId: string
+  ) => {
+    if (event.ctrlKey || event.metaKey) {
+      // select multiple with modifier
+
+      setSelectedIds([...selectedIds, sandboxId]);
+    } else {
+      setSelectedIds([sandboxId]);
+    }
   };
 
-  const onClick = (event, sandboxId) => {
-    setSelectedId(sandboxId);
+  const onBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+    // TODO: This doesn't work because blur events dont get modifier keys
+    // @ts-ignore i'll fix it, thanks!
+    if (event.ctrlKey || event.metaKey) {
+      // do nothing, another sandbox was selected
+    } else {
+      // reset selection
+      setSelectedIds([]);
+    }
   };
 
   return (
-    <Context.Provider value={{ selectedId, onClick, onBlur }}>
+    <Context.Provider value={{ selectedIds, onClick, onBlur }}>
       <div style={{ position: 'relative' }}>{props.children}</div>
     </Context.Provider>
   );
 };
 
 export const useSelection = () => {
-  const { selectedId, onClick, onBlur } = React.useContext(Context);
-  return { selectedId, onClick, onBlur };
+  const { selectedIds, onClick, onBlur } = React.useContext(Context);
+  return { selectedIds, onClick, onBlur };
 };
