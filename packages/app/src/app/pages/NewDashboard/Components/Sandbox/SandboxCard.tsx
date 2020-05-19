@@ -95,26 +95,14 @@ export const SandboxCard = ({
       <Stats
         css={css({ fontSize: 2 })}
         sandbox={{
-          viewCount: kFormatter(sandbox.viewCount),
-          likeCount: kFormatter(sandbox.likeCount),
-          forkCount: kFormatter(sandbox.forkCount),
+          viewCount: sandbox.viewCount,
+          likeCount: sandbox.likeCount,
+          forkCount: sandbox.forkCount,
         }}
       />
     </Stack>
   </Stack>
 );
-
-const kFormatter = (num: number): string => {
-  if (num > 999999) {
-    return (num / 1000000).toFixed(1) + 'M';
-  }
-
-  if (num > 999) {
-    return (num / 1000).toFixed(1) + 'K';
-  }
-
-  return num.toString();
-};
 
 export const SkeletonCard = () => (
   <Stack
