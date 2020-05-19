@@ -18,7 +18,8 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     actions,
   } = useOvermind();
 
-  const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
+  // const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
+  const sandboxTitle = sandbox.id;
 
   const [edit, setEdit] = React.useState(false);
   const [newTitle, setNewTitle] = React.useState(sandboxTitle);
@@ -33,7 +34,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTitle(event.target.value);
   };
-  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === ESC) {
       // Reset value and exit without saving
       setNewTitle(sandboxTitle);
@@ -117,7 +118,13 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
 
   // interactions
-  const { selectedIds, onClick: onSelectionClick, onBlur } = useSelection();
+  const {
+    selectedIds,
+    onClick: onSelectionClick,
+    onBlur,
+    onKeyDown,
+  } = useSelection();
+
   const selected = selectedIds.includes(sandbox.id);
 
   const onClick = event => {
@@ -142,6 +149,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onClick,
     onDoubleClick,
     onBlur,
+    onKeyDown,
   };
 
   const sandboxProps = {
@@ -153,7 +161,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     newTitle,
     inputRef,
     onChange,
-    onKeyDown,
+    onInputKeyDown,
     onSubmit,
     onInputBlur,
     enterEditing,

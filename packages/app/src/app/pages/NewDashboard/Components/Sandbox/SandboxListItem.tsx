@@ -19,11 +19,13 @@ export const SandboxListItem = ({
   // interactions
   onClick,
   onDoubleClick,
+  onBlur,
+  onKeyDown,
   // edit mode
   edit,
   inputRef,
   onChange,
-  onKeyDown,
+  onInputKeyDown,
   onSubmit,
   onInputBlur,
   enterEditing,
@@ -36,6 +38,8 @@ export const SandboxListItem = ({
     css={css({ paddingX: 0, opacity })}
     onClick={onClick}
     onDoubleClick={onDoubleClick}
+    onBlur={onBlur}
+    onKeyDown={onKeyDown}
     {...props}
   >
     <Stack
@@ -74,7 +78,7 @@ export const SandboxListItem = ({
                 value={newTitle}
                 ref={inputRef}
                 onChange={onChange}
-                onKeyDown={onKeyDown}
+                onKeyDown={onInputKeyDown}
                 onBlur={onInputBlur}
               />
             </form>

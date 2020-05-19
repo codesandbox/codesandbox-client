@@ -1,10 +1,15 @@
 import React from 'react';
 import { Element } from '@codesandbox/components';
+import {
+  ARROW_LEFT,
+  ARROW_RIGHT,
+} from '@codesandbox/common/lib/utils/keycodes';
 
 const Context = React.createContext({
   selectedIds: [],
   onClick: (event: React.MouseEvent<HTMLDivElement>, sandboxId: string) => {},
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
+  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {},
 });
 
 export const SelectionProvider = ({ sandboxes = [], ...props }) => {
@@ -22,6 +27,7 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
       } else {
         setSelectedIds([...selectedIds, sandboxId]);
       }
+
       event.stopPropagation();
     } else if (event.shiftKey) {
       // start = find index for last inserted
@@ -32,7 +38,7 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
       );
       const end = sandboxes.findIndex(sandbox => sandbox.id === sandboxId);
 
-      const sandboxesToAdd = [];
+      const sandboxesInRange = [];
 
       if (start >= 0 && end >= 0) {
         const increment = end > start ? +1 : -1;
@@ -42,13 +48,19 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
           increment > 0 ? index <= end : index >= end;
           index += increment
         ) {
-          sandboxesToAdd.push(sandboxes[index].id);
+          sandboxesInRange.push(sandboxes[index].id);
         }
       } else {
-        sandboxesToAdd.push(sandboxId);
+        sandboxesInRange.push(sandboxId);
       }
 
-      setSelectedIds([...selectedIds, ...sandboxesToAdd]);
+      // Missing feature: If end < start and all the elements in betweeen
+      // are selected, you're probably trying to remove them
+      // commonIds = sandboxesInRange.filter(id => selectedIds.length)
+      // remove the common ones while adding the rest
+
+      setSelectedIds([...selectedIds, ...sandboxesInRange]);
+
       event.stopPropagation();
     } else {
       setSelectedIds([sandboxId]);
@@ -70,14 +82,47 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
     setSelectedIds([]);
   };
 
+  const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!selectedIds.length) return;
+    if (event.keyCode !== ARROW_RIGHT && event.keyCode !== ARROW_LEFT) return;
+
+    const lastSelectedSandboxId = selectedIds[selectedIds.length - 1];
+
+    const index = sandboxes.findIndex(
+      sandbox => sandbox.id === lastSelectedSandboxId
+    );
+
+    const direction = event.keyCode === ARROW_RIGHT ? 'forward' : 'backward';
+    const nextSandbox = sandboxes[index + (direction === 'forward' ? 1 : -1)];
+
+    // boundary conditions
+    if (!nextSandbox) return;
+
+    // just moving around
+    if (!event.shiftKey) {
+      setSelectedIds([nextSandbox.id]);
+      return;
+    }
+
+    // selection:
+    // going back! remove the last one
+    if (selectedIds.includes(nextSandbox.id)) {
+      setSelectedIds(selectedIds.slice(0, -1));
+      return;
+    }
+
+    // select one more
+    setSelectedIds([...selectedIds, nextSandbox.id]);
+  };
+
   return (
-    <Context.Provider value={{ selectedIds, onClick, onBlur }}>
+    <Context.Provider value={{ selectedIds, onClick, onBlur, onKeyDown }}>
       <Element onClick={onContainerClick}>{props.children}</Element>
     </Context.Provider>
   );
 };
 
 export const useSelection = () => {
-  const { selectedIds, onClick, onBlur } = React.useContext(Context);
-  return { selectedIds, onClick, onBlur };
+  const { selectedIds, onClick, onBlur, onKeyDown } = React.useContext(Context);
+  return { selectedIds, onClick, onBlur, onKeyDown };
 };
