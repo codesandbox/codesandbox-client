@@ -214,7 +214,6 @@
     "reakit": "^1.0.0-beta.4",
     "remark-frontmatter": "^2.0.0",
     "resize-observer-polyfill": "^1.5.1",
-    "request": "^2.88.2",    
     "sha1": "^1.1.1",
     "shelljs": "^0.7.8",
     "store": "^2.0.12",
