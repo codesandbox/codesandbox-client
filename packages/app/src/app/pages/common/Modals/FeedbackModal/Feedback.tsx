@@ -28,7 +28,7 @@ type Props = {
   user?: CurrentUser;
 };
 
-const Feedback: FunctionComponent<Props> = ({ id, user }) => {
+export const Feedback: FunctionComponent<Props> = ({ id, user }) => {
   const {
     actions: { notificationAdded, modalClosed },
   } = useOvermind();
@@ -163,5 +163,3 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
     </Alert>
   );
 };
-
-export default Feedback;
