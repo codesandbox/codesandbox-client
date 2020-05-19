@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
@@ -102,29 +102,48 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     }),
   });
 
+  // attach to thumbnail, we use this to calculate size
   const thumbnailRef = React.useRef();
 
   /* View logic */
+  let viewMode: string;
   const location = useLocation();
 
-  let viewMode: string;
   if (location.pathname.includes('deleted')) viewMode = 'list';
   else if (location.pathname.includes('start')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
 
-  /* Prevent opening sandbox while interacting */
+  /** interactions */
+
+  const [selected, setSelected] = React.useState(false);
+
   const onClick = event => {
-    if (edit || isDragging || isMenuClicked(event)) event.preventDefault();
+    if (edit || isDragging || isMenuClicked(event)) return;
+
+    setSelected(!selected);
+  };
+
+  const history = useHistory();
+  const onDoubleClick = event => {
+    if (edit || isDragging || isMenuClicked(event)) return;
+
+    if (event.ctrlKey || event.metaKey) {
+      window.open(url, '_blank');
+    } else {
+      history.push(url);
+    }
   };
 
   const sandboxProps = {
     sandboxTitle,
     sandbox,
     isTemplate,
-    url,
+    // interactions
+    selected,
     onClick,
+    onDoubleClick,
     // edit mode
     edit,
     newTitle,
