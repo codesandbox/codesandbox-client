@@ -61,15 +61,6 @@ export function Toast({ toast, removeToast, getRef, colors }: Props) {
     return null;
   };
 
-  if (
-    actions &&
-    (Array.isArray(actions.primary) || Array.isArray(actions.secondary))
-  ) {
-    console.error(
-      `Please update the "${title ||
-        message}" notification, it still uses arrays`
-    );
-  }
   return (
     <Container
       // @ts-ignore
