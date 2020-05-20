@@ -167,6 +167,7 @@ export class VSCodeEffect {
     // correctly
     this.sandboxFsSync = new SandboxFsSync({
       getSandboxFs: () => ({}),
+      getJwt: () => '',
     });
 
     import(
@@ -804,6 +805,7 @@ export class VSCodeEffect {
       this.createFileSystem('CodeSandboxEditorFS', {
         api: {
           getSandboxFs: this.options.getSandboxFs,
+          getJwt: () => this.options.getState().jwt,
         },
       }),
       this.createFileSystem('LocalStorage', {}),
