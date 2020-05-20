@@ -52,6 +52,19 @@ export function Toast({ toast, removeToast, getRef, colors }: Props) {
   } = toast;
   const Icon = getIcon(status);
   const fullWidth = { width: '100%' };
+  const secondary = Array.isArray(actions.secondary)
+    ? actions.secondary[0]
+    : actions.secondary;
+  const primary = Array.isArray(actions.primary)
+    ? actions.primary[0]
+    : actions.primary;
+
+  if (Array.isArray(actions.primary) || Array.isArray(actions.secondary)) {
+    console.error(
+      `Please update the "${title ||
+        message}" notification, it still uses arrays`
+    );
+  }
   return (
     <Container
       // @ts-ignore
@@ -91,20 +104,20 @@ export function Toast({ toast, removeToast, getRef, colors }: Props) {
           <Element>
             {actions && (
               <Stack marginTop={3} gap={2} justify="flex-end">
-                {actions.secondary && (
+                {secondary && (
                   <TertiaryButton
                     variant="secondary"
                     onClick={() => {
-                      if (actions.secondary.hideOnClick) {
+                      if (secondary.hideOnClick) {
                         removeToast(toast.id);
                       }
-                      actions.secondary.run();
+                      secondary.run();
                     }}
                   >
-                    {actions.secondary.label}
+                    {secondary.label}
                   </TertiaryButton>
                 )}
-                {actions.primary && (
+                {primary && (
                   <Button
                     variant="secondary"
                     style={{
@@ -112,13 +125,13 @@ export function Toast({ toast, removeToast, getRef, colors }: Props) {
                     }}
                     onClick={() => {
                       // By default we hide the notification on clicking primary buttons
-                      if (actions.primary.hideOnClick !== false) {
+                      if (primary.hideOnClick !== false) {
                         removeToast(toast.id);
                       }
-                      actions.primary.run();
+                      primary.run();
                     }}
                   >
-                    {actions.primary.label}
+                    {primary.label}
                   </Button>
                 )}
               </Stack>
