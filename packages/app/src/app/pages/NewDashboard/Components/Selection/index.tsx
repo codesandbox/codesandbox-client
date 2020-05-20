@@ -1,8 +1,12 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
+import { useOvermind } from 'app/overmind';
 import { Element } from '@codesandbox/components';
 import {
   ARROW_LEFT,
   ARROW_RIGHT,
+  ARROW_DOWN,
+  ARROW_UP,
 } from '@codesandbox/common/lib/utils/keycodes';
 
 const Context = React.createContext({
@@ -14,6 +18,10 @@ const Context = React.createContext({
 
 export const SelectionProvider = ({ sandboxes = [], ...props }) => {
   const [selectedIds, setSelectedIds] = React.useState([]);
+
+  const {
+    state: { dashboard },
+  } = useOvermind();
 
   const onClick = (
     event: React.MouseEvent<HTMLDivElement>,
@@ -82,9 +90,30 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
     setSelectedIds([]);
   };
 
+  let viewMode: string;
+  const location = useLocation();
+
+  if (location.pathname.includes('deleted')) viewMode = 'list';
+  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else viewMode = dashboard.viewMode;
+
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!selectedIds.length) return;
-    if (event.keyCode !== ARROW_RIGHT && event.keyCode !== ARROW_LEFT) return;
+
+    // if isn't one of the handled keys, skip
+    if (
+      (viewMode === 'grid' &&
+        event.keyCode !== ARROW_RIGHT &&
+        event.keyCode !== ARROW_LEFT) ||
+      (viewMode === 'list' &&
+        event.keyCode !== ARROW_DOWN &&
+        event.keyCode !== ARROW_UP)
+    ) {
+      return;
+    }
+
+    // cancel scroll events
+    event.preventDefault();
 
     const lastSelectedSandboxId = selectedIds[selectedIds.length - 1];
 
@@ -92,11 +121,16 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
       sandbox => sandbox.id === lastSelectedSandboxId
     );
 
-    const direction = event.keyCode === ARROW_RIGHT ? 'forward' : 'backward';
+    const direction = [ARROW_RIGHT, ARROW_DOWN].includes(event.keyCode)
+      ? 'forward'
+      : 'backward';
     const nextSandbox = sandboxes[index + (direction === 'forward' ? 1 : -1)];
 
     // boundary conditions
     if (!nextSandbox) return;
+
+    // scroll to newly selected element into view imperatively
+    scrollIntoViewport(nextSandbox.id);
 
     // just moving around
     if (!event.shiftKey) {
@@ -125,4 +159,15 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
 export const useSelection = () => {
   const { selectedIds, onClick, onBlur, onKeyDown } = React.useContext(Context);
   return { selectedIds, onClick, onBlur, onKeyDown };
+};
+
+const scrollIntoViewport = sandboxId => {
+  // we use data attributes to target element
+  const element = document.querySelector(`[data-sandbox="${sandboxId}"]`);
+
+  // if it's outside viewport, scroll to it
+  const { top, bottom } = element.getBoundingClientRect();
+  if (bottom > window.innerHeight || top < 0) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
 };

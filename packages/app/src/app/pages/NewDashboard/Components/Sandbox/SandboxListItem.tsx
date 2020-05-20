@@ -17,6 +17,7 @@ export const SandboxListItem = ({
   sandboxTitle,
   newTitle,
   // interactions
+  selected,
   onClick,
   onDoubleClick,
   onBlur,
@@ -53,6 +54,8 @@ export const SandboxListItem = ({
         borderBottom: '1px solid',
         borderBottomColor: 'grays.600',
         overflow: 'hidden',
+        boxShadow: theme =>
+          selected ? `0px 0px 1px 1px ${theme.colors.blues[600]}` : null,
       })}
     >
       <Stack gap={4} align="center">

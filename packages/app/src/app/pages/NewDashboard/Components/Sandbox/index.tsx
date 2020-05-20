@@ -149,6 +149,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onDoubleClick,
     onBlur,
     onKeyDown,
+    'data-sandbox': sandbox.id,
   };
 
   const sandboxProps = {
