@@ -2,6 +2,7 @@ import {
   NotificationType,
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
+import { identify } from '@codesandbox/common/lib/utils/analytics';
 
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
@@ -190,7 +191,8 @@ export const signOutClicked: AsyncAction = async ({
     actions.live.internal.disconnect();
   }
   await effects.api.signout();
-  effects.jwt.reset();
+  identify('signed_in', false);
+  document.cookie = 'signedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   state.user = null;
   effects.browser.reload();
 };

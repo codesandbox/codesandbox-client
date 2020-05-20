@@ -119,15 +119,11 @@ export default class Navigation extends React.PureComponent {
   };
 
   fetchCurrentUser = () => {
-    const jwt = JSON.parse(localStorage.getItem('jwt'));
-
     const BASE =
       process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
 
     window
-      .fetch(BASE + '/api/v1/users/current', {
-        headers: { Authorization: `Bearer ${jwt}` },
-      })
+      .fetch(BASE + '/api/v1/users/current')
       .then(x => x.json())
       .then(({ data }) => this.setState({ user: data }))
       .catch(() => {
@@ -136,7 +132,7 @@ export default class Navigation extends React.PureComponent {
   };
 
   componentDidMount() {
-    if (localStorage.getItem('jwt')) {
+    if (document.cookie.indexOf('signedIn') > -1) {
       this.fetchCurrentUser();
     }
   }

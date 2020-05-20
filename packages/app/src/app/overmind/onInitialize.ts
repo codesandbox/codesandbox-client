@@ -7,7 +7,7 @@ export const onInitialize: OnInitialize = async (
   const provideJwtToken = () => effects.api.getJWTToken();
 
   state.isFirstVisit = Boolean(
-    !effects.jwt.get() && !effects.browser.storage.get('hasVisited')
+    !state.hasLogIn && !effects.browser.storage.get('hasVisited')
   );
 
   effects.browser.storage.set('hasVisited', true);
@@ -35,15 +35,13 @@ export const onInitialize: OnInitialize = async (
     },
   });
 
-  // effects.gql.initialize(
-  //   {
-  //     endpoint: `${location.origin}/api/graphql`,
-  //     headers: () => ({
-  //       Authorization: `Bearer ${state.jwt}`,
-  //     }),
-  //   },
-  //   () => (effects.jwt.get() ? effects.live.getSocket() : null)
-  // );
+  const socket = await effects.live.getSocket();
+  effects.gql.initialize(
+    {
+      endpoint: `${location.origin}/api/graphql`,
+    },
+    () => socket
+  );
 
   // effects.notifications.initialize({
   //   provideSocket() {

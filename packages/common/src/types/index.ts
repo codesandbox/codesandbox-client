@@ -116,7 +116,6 @@ export type CurrentUser = {
   name: string | null;
   username: string;
   avatarUrl: string;
-  jwt: string | null;
   subscription: {
     since: string;
     amount: number;

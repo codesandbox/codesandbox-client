@@ -1,4 +1,5 @@
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import { identify } from '@codesandbox/common/lib/utils/analytics';
 import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import {
   Module,
@@ -25,11 +26,9 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
 ) => {
   effects.analytics.track('Sign In', {});
   try {
-    const jwt = await actions.internal.signInGithub(options);
-    actions.internal.setJwt(jwt);
+    await actions.internal.signInGithub(options);
     state.user = await effects.api.getCurrentUser();
     actions.internal.setPatronPrice();
-    actions.internal.setSignedInCookie();
     effects.analytics.identify('signed_in', true);
     effects.analytics.setUserId(state.user.id, state.user.email);
     actions.internal.setStoredSettings();
@@ -70,10 +69,6 @@ export const setPatronPrice: Action = ({ state }) => {
   state.patron.price = state.user.subscription
     ? Number(state.user.subscription.amount)
     : 10;
-};
-
-export const setSignedInCookie: Action = ({ state }) => {
-  document.cookie = 'signedIn=true; Path=/;';
 };
 
 export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
@@ -131,7 +126,7 @@ export const authorize: AsyncAction = async ({ state, effects }) => {
 
 export const signInGithub: Action<
   { useExtraScopes?: boolean },
-  Promise<string>
+  Promise<void>
 > = ({ effects }, options) => {
   const authPath =
     process.env.LOCAL_SERVER || process.env.STAGING
@@ -140,24 +135,9 @@ export const signInGithub: Action<
 
   const popup = effects.browser.openPopup(authPath, 'sign in');
 
-  return effects.browser
-    .waitForMessage<{ jwt: string }>('signin')
-    .then(data => {
-      const { jwt } = data;
-
-      popup.close();
-
-      if (jwt) {
-        return jwt;
-      }
-
-      throw new Error('Could not get sign in token');
-    });
-};
-
-export const setJwt: Action<string> = ({ state, effects }, jwt) => {
-  effects.jwt.set(jwt);
-  state.jwt = jwt;
+  return effects.browser.waitForMessage('signin').then(() => {
+    popup.close();
+  });
 };
 
 export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
@@ -427,7 +407,7 @@ export const handleError: Action<{
 
   if (response?.status === 401) {
     // Reset existing sign in info
-    effects.jwt.reset();
+    identify('signed_in', false);
     effects.analytics.setAnonymousId();
 
     // Allow user to sign in again in notification

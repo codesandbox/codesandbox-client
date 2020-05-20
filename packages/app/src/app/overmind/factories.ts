@@ -1,5 +1,6 @@
 import { Contributor, PermissionType } from '@codesandbox/common/lib/types';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { identify } from '@codesandbox/common/lib/utils/analytics';
 import { IDerive, IState } from 'overmind';
 
 import { AsyncAction } from '.';
@@ -23,17 +24,15 @@ export const withLoadApp = <T>(
   }
 
   state.isAuthenticating = true;
-  state.jwt = effects.jwt.get() || null;
 
   effects.connection.addListener(actions.connectionChanged);
   actions.internal.setStoredSettings();
   effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
 
-  if (state.jwt) {
+  if (state.hasLogIn) {
     try {
       state.user = await effects.api.getCurrentUser();
       actions.internal.setPatronPrice();
-      actions.internal.setSignedInCookie();
       effects.analytics.identify('signed_in', true);
       effects.analytics.setUserId(state.user.id, state.user.email);
       const localStorageTeam = effects.browser.storage.get(
@@ -58,7 +57,7 @@ export const withLoadApp = <T>(
       });
     }
   } else {
-    effects.jwt.reset();
+    identify('signed_in', false);
     effects.analytics.setAnonymousId();
   }
 

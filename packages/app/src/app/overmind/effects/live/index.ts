@@ -199,11 +199,21 @@ class Live {
   async connect(): Promise<Socket> {
     if (!this.socket) {
       const protocol = process.env.LOCAL_SERVER ? 'ws' : 'wss';
+      let jwt = await this.provideJwtToken();
+      const params = () => ({
+        guardian_token: jwt,
+        client_version: VERSION,
+      });
+
       this.socket = new Socket(`${protocol}://${location.host}/socket`, {
-        params: {
-          guardian_token: await this.provideJwtToken(),
-          client_version: VERSION,
-        },
+        params,
+      });
+
+      this.socket.onError(async () => {
+        // Regenerate a new JWT for the reconnect. This can be out of sync or happen more often than needed, but it's important
+        // to try multiple times in case there's a connection issue.
+        const newJwt = await this.provideJwtToken();
+        jwt = newJwt;
       });
 
       this.socket.connect();

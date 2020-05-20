@@ -4,9 +4,9 @@ import {
   Sandbox,
   UploadFile,
 } from '@codesandbox/common/lib/types';
-import store from 'store/dist/store.modern';
 
 import { Derive } from '.';
+import { hasLogIn } from './utils/user';
 
 type State = {
   isPatron: Derive<State, boolean>;
@@ -15,7 +15,6 @@ type State = {
   hasLogIn: Derive<State, boolean>;
   popularSandboxes: Sandbox[] | null;
   hasLoadedApp: boolean;
-  jwt: string | null;
   isAuthenticating: boolean;
   authToken: string | null;
   error: string | null;
@@ -45,10 +44,8 @@ export const state: State = {
   isFirstVisit: false,
   isPatron: ({ user }) =>
     Boolean(user && user.subscription && user.subscription.since),
-  isLoggedIn: ({ jwt, user }) => Boolean(jwt) && Boolean(user),
-  // TODO: Should not reference store directly here, rather initialize
-  // the state with "onInitialize" setting the jwt
-  hasLogIn: ({ jwt }) => !!jwt || !!store.get('jwt'),
+  isLoggedIn: ({ user }) => hasLogIn() && Boolean(user),
+  hasLogIn: () => hasLogIn(),
   isContributor: ({ contributors }) => username =>
     contributors.findIndex(
       contributor =>
@@ -56,7 +53,6 @@ export const state: State = {
     ) > -1,
   popularSandboxes: null,
   hasLoadedApp: false,
-  jwt: null,
   isAuthenticating: true,
   authToken: null,
   error: null,
