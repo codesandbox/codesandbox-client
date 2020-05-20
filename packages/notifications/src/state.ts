@@ -2,7 +2,7 @@ import * as uuid from 'uuid';
 import { Emitter } from './utils/events';
 
 export interface NotificationAction {
-  title: string;
+  label: string;
   run: (event?: any) => void;
   hideOnClick?: boolean;
 }

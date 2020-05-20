@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Button, Stack, Element, Text } from '@codesandbox/components';
-import theme from '@codesandbox/components/lib/design-language/theme';
 
 import { NotificationToast } from './Toasts';
 import { NotificationStatus } from '../state';
@@ -8,7 +7,12 @@ import { ErrorIcon } from './icons/ErrorIcon';
 import { SuccessIcon } from './icons/SuccessIcon';
 import { WarningIcon } from './icons/WarningIcon';
 import { InfoIcon } from './icons/InfoIcon';
-import { StyledCrossIcon } from './elements';
+import {
+  StyledCrossIcon,
+  Container,
+  ColorLine,
+  TertiaryButton,
+} from './elements';
 
 const getColor = (colors: IColors, status: NotificationStatus) =>
   colors[status];
@@ -49,33 +53,12 @@ export function Toast({ toast, removeToast, getRef, colors }: Props) {
   const Icon = getIcon(status);
   const fullWidth = { width: '100%' };
   return (
-    <Stack
+    <Container
       // @ts-ignore
       ref={getRef}
       marginBottom={2}
-      style={{
-        background: theme.colors.grays[700],
-        border: `1px solid ${theme.colors.grays[600]}`,
-        boxSizing: 'border-box',
-        boxShadow: theme.shadows[2],
-        borderRadius: theme.radii.medium,
-        position: 'relative',
-        fontSize: theme.fontSizes[3],
-        color: theme.colors.white,
-        width: 450,
-        overflow: 'hidden',
-      }}
     >
-      <Element
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          backgroundColor: getColor(colors, status),
-          width: 4,
-        }}
-      />
+      <ColorLine bg={getColor(colors, status)} />
       <Stack style={fullWidth} paddingX={3} paddingY={4}>
         <Element style={fullWidth}>
           <Stack style={fullWidth}>
@@ -107,18 +90,25 @@ export function Toast({ toast, removeToast, getRef, colors }: Props) {
 
           <Element>
             {actions && (
-              <Stack marginTop={3} gap={2}>
+              <Stack marginTop={3} gap={2} justify="flex-end">
+                {actions.secondary && (
+                  <TertiaryButton
+                    variant="secondary"
+                    onClick={() => {
+                      if (actions.secondary.hideOnClick) {
+                        removeToast(toast.id);
+                      }
+                      actions.secondary.run();
+                    }}
+                  >
+                    {actions.secondary.label}
+                  </TertiaryButton>
+                )}
                 {actions.primary && (
                   <Button
                     variant="secondary"
                     style={{
                       width: 'auto',
-                      background: !actions.secondary
-                        ? theme.colors.grays[600]
-                        : 'transparent',
-                      border: !actions.secondary
-                        ? 'none'
-                        : `1px solid ${theme.colors.grays[600]}`,
                     }}
                     onClick={() => {
                       // By default we hide the notification on clicking primary buttons
@@ -128,22 +118,7 @@ export function Toast({ toast, removeToast, getRef, colors }: Props) {
                       actions.primary.run();
                     }}
                   >
-                    {actions.primary.title}
-                  </Button>
-                )}
-
-                {actions.secondary && (
-                  <Button
-                    style={{ width: 'auto' }}
-                    variant="secondary"
-                    onClick={() => {
-                      if (actions.secondary.hideOnClick) {
-                        removeToast(toast.id);
-                      }
-                      actions.secondary.run();
-                    }}
-                  >
-                    {actions.secondary.title}
+                    {actions.primary.label}
                   </Button>
                 )}
               </Stack>
@@ -151,6 +126,6 @@ export function Toast({ toast, removeToast, getRef, colors }: Props) {
           </Element>
         </Element>
       </Stack>
-    </Stack>
+    </Container>
   );
 }

@@ -25,7 +25,7 @@ state.addNotification({
   actions: {
     primary: {
       run: () => alert('hello!'),
-      title: 'Run My Command!!',
+      label: 'Run My Command!!',
     },
   },
   status: NotificationStatus.SUCCESS,
@@ -38,11 +38,11 @@ state.addNotification({
   actions: {
     primary: {
       run: () => alert('hello!'),
-      title: 'Run My Command!!',
+      label: 'Run My Command!!',
     },
     secondary: {
       run: () => alert('bye!'),
-      title: 'Bye',
+      label: 'Bye',
     },
   },
 });
@@ -131,7 +131,7 @@ function App() {
               actions: {
                 primary: {
                   run: () => alert('hello!'),
-                  title: 'primary',
+                  label: 'primary',
                 },
               },
             });
@@ -149,11 +149,11 @@ function App() {
               actions: {
                 primary: {
                   run: () => alert('hello!'),
-                  title: 'primary',
+                  label: 'primary',
                 },
                 secondary: {
                   run: () => alert('hello!'),
-                  title: 'secondary',
+                  label: 'secondary',
                 },
               },
             });
