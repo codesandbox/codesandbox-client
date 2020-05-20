@@ -3,12 +3,13 @@ import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Element, Column } from '@codesandbox/components';
 
-import { getPossibleTemplates } from '../../utils';
-import { Header } from '../../../Components/Header';
+import { Header } from 'app/pages/NewDashboard/Components/Header';
+import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
+import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
+import { SkeletonCard } from 'app/pages/NewDashboard/Components/Sandbox/SandboxCard';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 
-import { SandboxGrid } from '../../../Components/SandboxGrid';
-import { Sandbox } from '../../../Components/Sandbox';
-import { SkeletonCard } from '../../../Components/Sandbox/SandboxCard';
+import { getPossibleTemplates } from '../../utils';
 import { useBottomScroll } from './useBottomScroll';
 
 export const Drafts = () => {
@@ -25,26 +26,28 @@ export const Drafts = () => {
   }, [actions.dashboard]);
 
   return (
-    <Element style={{ height: '100%', position: 'relative' }}>
-      <Header
-        path="Drafts"
-        templates={getPossibleTemplates(sandboxes.DRAFTS)}
-      />
-      {sandboxes.DRAFTS ? (
-        <SandboxGrid>
-          {visibleSandboxes.map(sandbox => (
-            <Sandbox key={sandbox.id} sandbox={sandbox} />
-          ))}
-        </SandboxGrid>
-      ) : (
-        <SandboxGrid>
-          {Array.from(Array(8).keys()).map(n => (
-            <Column key={n}>
-              <SkeletonCard />
-            </Column>
-          ))}
-        </SandboxGrid>
-      )}
-    </Element>
+    <SelectionProvider sandboxes={visibleSandboxes}>
+      <Element style={{ height: '100%', position: 'relative' }}>
+        <Header
+          path="Drafts"
+          templates={getPossibleTemplates(sandboxes.DRAFTS)}
+        />
+        {sandboxes.DRAFTS ? (
+          <SandboxGrid>
+            {visibleSandboxes.map(sandbox => (
+              <Sandbox key={sandbox.id} sandbox={sandbox} />
+            ))}
+          </SandboxGrid>
+        ) : (
+          <SandboxGrid>
+            {Array.from(Array(8).keys()).map(n => (
+              <Column key={n}>
+                <SkeletonCard />
+              </Column>
+            ))}
+          </SandboxGrid>
+        )}
+      </Element>
+    </SelectionProvider>
   );
 };

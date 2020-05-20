@@ -6,6 +6,7 @@ import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
 import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { getPossibleTemplates } from '../../utils';
 
 export const SearchComponent = ({ location }) => {
@@ -27,7 +28,7 @@ export const SearchComponent = ({ location }) => {
   } for "${query}"`;
 
   return (
-    <>
+    <SelectionProvider sandoxes={sandboxes.SEARCH}>
       <Header
         title={title}
         templates={getPossibleTemplates(sandboxes.SEARCH)}
@@ -43,7 +44,7 @@ export const SearchComponent = ({ location }) => {
           <Loading />
         )}
       </section>
-    </>
+    </SelectionProvider>
   );
 };
 
