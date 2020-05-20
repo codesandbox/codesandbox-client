@@ -64,10 +64,11 @@ interface Props {
 }
 
 const DEFAULT_COLORS = {
-  [NotificationStatus.ERROR]: '#FF453A',
+  [NotificationStatus.ERROR]:
+    codesandboxBlack.colors['editorWarning.foreground'],
   [NotificationStatus.WARNING]: '#F69935',
-  [NotificationStatus.SUCCESS]: '#5BC266',
-  [NotificationStatus.NOTICE]: '#0971F1',
+  [NotificationStatus.SUCCESS]: codesandboxBlack.colors['terminal.ansiGreen'],
+  [NotificationStatus.NOTICE]: codesandboxBlack.colors['button.background'],
 };
 
 export function Toasts({ state, colors = DEFAULT_COLORS }: Props) {
