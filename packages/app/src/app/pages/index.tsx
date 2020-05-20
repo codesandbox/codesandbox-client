@@ -1,4 +1,3 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
 import theme from '@codesandbox/common/lib/theme';
 import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
 import _debug from '@codesandbox/common/lib/utils/debug';
@@ -126,7 +125,6 @@ const RoutesComponent: React.FC = () => {
           [NotificationStatus.WARNING]: theme.primary(),
         }}
         state={notificationState}
-        Button={Button}
       />
       <Boundary>
         <Content>

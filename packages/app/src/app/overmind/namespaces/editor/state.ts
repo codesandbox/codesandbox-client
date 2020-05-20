@@ -80,6 +80,7 @@ type State = {
   currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
   hasLoadedInitialModule: boolean;
+  recoveredFiles: any[];
 };
 
 export const state: State = {
@@ -120,6 +121,7 @@ export const state: State = {
   quickActionsOpen: false,
   previewWindowVisible: true,
   statusBar: true,
+  recoveredFiles: [],
   previewWindowOrientation:
     window.innerHeight / window.innerWidth > 0.9
       ? WindowOrientation.HORIZONTAL
