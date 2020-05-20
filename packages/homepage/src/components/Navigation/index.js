@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, Location } from '@reach/router';
+import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useTheme } from '../layout';
 import Button from '../Button';
 import Logo from '../../assets/images/logo.svg';
@@ -155,7 +156,7 @@ const Navigation = () => {
                       <li className="tablet-remove">
                         <a
                           onMouseEnter={() => setOpenedNav(null)}
-                          href="https://codesandbox.io/signin"
+                          href={signInPageUrl()}
                         >
                           Sign In
                         </a>

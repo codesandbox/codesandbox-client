@@ -19,7 +19,7 @@ export const Content = () => {
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.newDashboardMounted();
+    actions.dashboard.dashboardMounted();
   }, [actions.dashboard]);
 
   return (

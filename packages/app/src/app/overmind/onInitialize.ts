@@ -104,4 +104,5 @@ export const onInitialize: OnInitialize = async (
   effects.preview.initialize(overmindInstance.reaction);
 
   actions.internal.showPrivacyPolicyNotification();
+  actions.internal.setViewModeForDashboard();
 };

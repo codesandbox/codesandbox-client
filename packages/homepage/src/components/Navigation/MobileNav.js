@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'gatsby';
 import { motion, AnimatePresence } from 'framer-motion';
+import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import Logo from '../../assets/images/logo.svg';
 import {
   MobileNav,
@@ -28,7 +29,7 @@ import HighlightedICon from '../../assets/icons/Highlighted';
 import Button from '../Button';
 // import NewIcon from '../../assets/icons/New';
 
-export default ({ showMenu }) => {
+export default () => {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -38,7 +39,7 @@ export default ({ showMenu }) => {
           CodeSandbox
         </LogoWrapper>
         <div>
-          <LinkButton type="button" onClick={showMenu}>
+          <LinkButton as="a" href={signInPageUrl()}>
             Sign In
           </LinkButton>
           {open ? (
