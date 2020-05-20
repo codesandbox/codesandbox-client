@@ -26,53 +26,37 @@ export type Api = {
 };
 
 export type ApiConfig = {
-  provideJwtToken: () => string;
   getParsedConfigurations: () => any;
 };
 
 export default (config: ApiConfig) => {
-  const createHeaders = (jwt: string) =>
-    jwt
-      ? {
-          Authorization: `Bearer ${jwt}`,
-        }
-      : {};
-
   const api: Api = {
     get(path, params, options) {
       return axios
         .get(API_ROOT + path, {
           params,
-          headers: createHeaders(config.provideJwtToken()),
         })
         .then(response => handleResponse(response, options));
     },
     post(path, body, options) {
       return axios
-        .post(API_ROOT + path, decamelizeKeys(body), {
-          headers: createHeaders(config.provideJwtToken()),
-        })
+        .post(API_ROOT + path, decamelizeKeys(body), {})
         .then(response => handleResponse(response, options));
     },
     patch(path, body, options) {
       return axios
-        .patch(API_ROOT + path, decamelizeKeys(body), {
-          headers: createHeaders(config.provideJwtToken()),
-        })
+        .patch(API_ROOT + path, decamelizeKeys(body), {})
         .then(response => handleResponse(response, options));
     },
     put(path, body, options) {
       return axios
-        .put(API_ROOT + path, decamelizeKeys(body), {
-          headers: createHeaders(config.provideJwtToken()),
-        })
+        .put(API_ROOT + path, decamelizeKeys(body), {})
         .then(response => handleResponse(response, options));
     },
     delete(path, params, options) {
       return axios
         .delete(API_ROOT + path, {
           params,
-          headers: createHeaders(config.provideJwtToken()),
         })
         .then(response => handleResponse(response, options));
     },
@@ -82,7 +66,6 @@ export default (config: ApiConfig) => {
           Object.assign(requestConfig, {
             url: API_ROOT + requestConfig.url,
             data: requestConfig.data ? camelizeKeys(requestConfig.data) : null,
-            headers: createHeaders(config.provideJwtToken()),
           })
         )
         .then(response => handleResponse(response, options));

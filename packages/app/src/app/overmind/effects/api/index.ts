@@ -45,6 +45,11 @@ export default {
 
     return response.token;
   },
+  async getJWTToken(): Promise<string> {
+    const response = await api.get<{ jwt: string }>('/auth/jwt');
+
+    return response.jwt;
+  },
   createPatronSubscription(
     token: string,
     amount: number,

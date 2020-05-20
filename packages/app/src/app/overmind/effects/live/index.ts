@@ -27,7 +27,7 @@ type Options = {
     moduleShortid: string;
     operation: TextOperation;
   }): void;
-  provideJwtToken(): string;
+  provideJwtToken(): Promise<string>;
   isLiveBlockerExperiement(): boolean;
   onOperationError(payload: {
     moduleShortid: string;
@@ -72,7 +72,7 @@ class Live {
   */
   private awaitSend: Blocker<void> | null = null;
   private presence: Presence;
-  private provideJwtToken: () => string;
+  private provideJwtToken: () => Promise<string>;
   private onOperationError: (payload: {
     moduleShortid: string;
     moduleInfo: IModuleStateModule;
@@ -196,12 +196,12 @@ class Live {
     return this.socket || this.connect();
   }
 
-  connect(): Socket {
+  async connect(): Promise<Socket> {
     if (!this.socket) {
       const protocol = process.env.LOCAL_SERVER ? 'ws' : 'wss';
       this.socket = new Socket(`${protocol}://${location.host}/socket`, {
         params: {
-          guardian_token: this.provideJwtToken(),
+          guardian_token: await this.provideJwtToken(),
           client_version: VERSION,
         },
       });
@@ -244,8 +244,9 @@ class Live {
     roomId: string,
     onError: (reason: string) => void
   ): Promise<JoinChannelResponse> {
-    return new Promise((resolve, reject) => {
-      this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
+    return new Promise(async (resolve, reject) => {
+      const socket = await this.getSocket();
+      this.channel = socket.channel(`live:${roomId}`, { version: 2 });
 
       /*
         When active we activate or deactivate the sending blocker depending
