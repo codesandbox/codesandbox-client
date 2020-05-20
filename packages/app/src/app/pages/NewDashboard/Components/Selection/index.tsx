@@ -124,6 +124,7 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
     const direction = [ARROW_RIGHT, ARROW_DOWN].includes(event.keyCode)
       ? 'forward'
       : 'backward';
+
     const nextSandbox = sandboxes[index + (direction === 'forward' ? 1 : -1)];
 
     // boundary conditions
