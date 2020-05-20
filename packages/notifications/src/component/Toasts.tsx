@@ -11,7 +11,7 @@ import {
   NotificationChange,
   NotificationStatus,
 } from '../state';
-import { Toast, IColors } from './Toast';
+import { Toast, IColors, IButtonType } from './Toast';
 
 export interface NotificationToast {
   id: string;
@@ -61,6 +61,7 @@ const TIME_ALIVE = {
 interface Props {
   state: NotificationState;
   colors?: IColors;
+  Button: IButtonType;
 }
 
 const DEFAULT_COLORS = {

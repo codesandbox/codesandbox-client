@@ -40,10 +40,9 @@ export interface IColors {
 }
 
 export type IButtonType = React.ComponentType<{
-  small?: boolean;
-  secondary?: boolean;
   style?: React.CSSProperties;
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  variant: 'primary' | 'secondary' | 'link' | 'danger';
 }>;
 
 export type Props = {
