@@ -47,9 +47,10 @@ export const withLoadApp = <T>(
         // Not majorly important
       }
       actions.internal.showUserSurveyIfNeeded();
-      effects.live.connect();
+      await effects.live.getSocket();
       actions.userNotifications.internal.initialize();
       effects.api.preloadTemplates();
+      state.hasLogIn = true;
     } catch (error) {
       actions.internal.handleError({
         message: 'We had trouble with signing you in',

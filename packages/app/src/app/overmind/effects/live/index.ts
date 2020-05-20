@@ -64,7 +64,7 @@ class Live {
   private messageIndex = 0;
   private clients: ReturnType<typeof clientsFactory>;
   private awaitSendTimer: number;
-  private socket: Socket;
+  public socket: Socket;
   /*
     Since in "Solo mode" we want to batch up operations and other events later,
     we use a blocker to just hold the sending of the messages until an additional
@@ -193,10 +193,15 @@ class Live {
   }
 
   getSocket() {
-    return this.socket || this.connect();
+    if (!this.connectionPromise) {
+      this.connectionPromise = this.connect();
+    }
+
+    return this.connectionPromise;
   }
 
-  async connect(): Promise<Socket> {
+  private connectionPromise: Promise<Socket>;
+  private async connect(): Promise<Socket> {
     if (!this.socket) {
       const protocol = process.env.LOCAL_SERVER ? 'ws' : 'wss';
       let jwt = await this.provideJwtToken();
@@ -250,12 +255,12 @@ class Live {
     });
   }
 
-  joinChannel(
+  async joinChannel(
     roomId: string,
     onError: (reason: string) => void
   ): Promise<JoinChannelResponse> {
-    return new Promise(async (resolve, reject) => {
-      const socket = await this.getSocket();
+    const socket = await this.getSocket();
+    return new Promise((resolve, reject) => {
       this.channel = socket.channel(`live:${roomId}`, { version: 2 });
 
       /*

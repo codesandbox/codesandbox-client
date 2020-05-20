@@ -12,7 +12,7 @@ type State = {
   isPatron: Derive<State, boolean>;
   isFirstVisit: boolean;
   isLoggedIn: Derive<State, boolean>;
-  hasLogIn: Derive<State, boolean>;
+  hasLogIn: boolean;
   popularSandboxes: Sandbox[] | null;
   hasLoadedApp: boolean;
   isAuthenticating: boolean;
@@ -45,7 +45,7 @@ export const state: State = {
   isPatron: ({ user }) =>
     Boolean(user && user.subscription && user.subscription.since),
   isLoggedIn: ({ user }) => hasLogIn() && Boolean(user),
-  hasLogIn: () => hasLogIn(),
+  hasLogIn: hasLogIn(),
   isContributor: ({ contributors }) => username =>
     contributors.findIndex(
       contributor =>

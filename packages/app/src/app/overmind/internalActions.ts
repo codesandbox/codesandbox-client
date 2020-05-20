@@ -28,13 +28,14 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
   try {
     await actions.internal.signInGithub(options);
     state.user = await effects.api.getCurrentUser();
+    await effects.live.getSocket();
     actions.internal.setPatronPrice();
     effects.analytics.identify('signed_in', true);
     effects.analytics.setUserId(state.user.id, state.user.email);
     actions.internal.setStoredSettings();
-    effects.live.connect();
     actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
     actions.refetchSandboxInfo();
+    state.hasLogIn = true;
     state.isAuthenticating = false;
   } catch (error) {
     actions.internal.handleError({

@@ -193,6 +193,7 @@ export const signOutClicked: AsyncAction = async ({
   await effects.api.signout();
   identify('signed_in', false);
   document.cookie = 'signedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  state.hasLogIn = false;
   state.user = null;
   effects.browser.reload();
 };

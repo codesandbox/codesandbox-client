@@ -35,19 +35,18 @@ export const onInitialize: OnInitialize = async (
     },
   });
 
-  const socket = await effects.live.getSocket();
   effects.gql.initialize(
     {
       endpoint: `${location.origin}/api/graphql`,
     },
-    () => socket
+    () => effects.live.socket
   );
 
-  // effects.notifications.initialize({
-  //   provideSocket() {
-  //     return effects.live.getSocket();
-  //   },
-  // });
+  effects.notifications.initialize({
+    provideSocket() {
+      return effects.live.getSocket();
+    },
+  });
 
   effects.zeit.initialize({
     getToken() {
