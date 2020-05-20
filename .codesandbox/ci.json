@@ -1,0 +1,4 @@
+{
+  "packages": ["./packages/notifications"],
+  "buildCommand": "build:deps"
+}
