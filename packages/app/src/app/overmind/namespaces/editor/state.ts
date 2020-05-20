@@ -121,7 +121,7 @@ export const state: State = {
   quickActionsOpen: false,
   previewWindowVisible: true,
   statusBar: true,
-  recoveredFiles: [],
+  recoveredFiles: Array<{ recoverData: RecoverData; module: Module }>,
   previewWindowOrientation:
     window.innerHeight / window.innerWidth > 0.9
       ? WindowOrientation.HORIZONTAL
