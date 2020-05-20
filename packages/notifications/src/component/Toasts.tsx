@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useTransition, animated } from 'react-spring';
-import { ThemeProvider } from '@codesandbox/components';
+import { ThemeProvider, Button as ButtonBase } from '@codesandbox/components';
 import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import Portal from './Portal';
 import { NotificationContainer } from './elements';
@@ -71,7 +71,11 @@ const DEFAULT_COLORS = {
   [NotificationStatus.NOTICE]: codesandboxBlack.colors['button.background'],
 };
 
-export function Toasts({ state, colors = DEFAULT_COLORS }: Props) {
+export function Toasts({
+  state,
+  colors = DEFAULT_COLORS,
+  Button = ButtonBase,
+}: Props) {
   const [refMap] = React.useState(
     () => new WeakMap<NotificationToast, HTMLDivElement>()
   );
@@ -185,6 +189,7 @@ export function Toasts({ state, colors = DEFAULT_COLORS }: Props) {
           {transitions.map(({ item, props, key }) => (
             <animated.div key={key} style={props}>
               <Toast
+                Button={Button}
                 colors={colors}
                 getRef={ref => ref && refMap.set(item, ref)}
                 toast={item}

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Stack, Element, Text } from '@codesandbox/components';
+import { Stack, Element, Text } from '@codesandbox/components';
 
 import { NotificationToast } from './Toasts';
 import { NotificationStatus } from '../state';
@@ -39,14 +39,22 @@ export interface IColors {
   [NotificationStatus.NOTICE]: string;
 }
 
+export type IButtonType = React.ComponentType<{
+  small?: boolean;
+  secondary?: boolean;
+  style?: React.CSSProperties;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}>;
+
 export type Props = {
   toast: NotificationToast;
   removeToast: (id: string) => void;
   getRef?: React.LegacyRef<HTMLDivElement>;
   colors: IColors;
+  Button: IButtonType;
 };
 
-export function Toast({ toast, removeToast, getRef, colors }: Props) {
+export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
   const {
     notification: { actions, title, message, status },
   } = toast;
