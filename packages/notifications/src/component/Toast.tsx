@@ -77,7 +77,9 @@ export function Toast({ toast, removeToast, getRef, colors }: Props) {
                 align="center"
                 gap={2}
               >
-                <Icon />
+                <Element style={{ color: getColor(colors, status) }}>
+                  <Icon />
+                </Element>
                 <Text
                   style={{
                     fontWeight: 500,
