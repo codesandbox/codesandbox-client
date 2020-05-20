@@ -15,7 +15,7 @@ export default ({
       email,
       body:
         feedback +
-        '\nSandbox: https://codesandbox.io' +
+        '\n\nSandbox: https://codesandbox.io/' +
         sandboxId +
         '\nVersion: ' +
         version +
