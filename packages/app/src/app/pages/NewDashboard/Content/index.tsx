@@ -27,8 +27,9 @@ export const Content = () => {
       css={css({
         maxWidth: 992,
         paddingX: 4,
+        paddingY: 10,
         width: '100%',
-        margin: '40px auto',
+        margin: '0 auto',
       })}
     >
       <Switch>

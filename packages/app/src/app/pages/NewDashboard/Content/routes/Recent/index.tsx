@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { useOvermind } from 'app/overmind';
 import { Stack } from '@codesandbox/components';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
@@ -15,12 +16,12 @@ export const Recent = () => {
     },
   } = useOvermind();
 
-  useEffect(() => {
+  React.useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.RECENT);
   }, [actions.dashboard]);
 
   return (
-    <>
+    <SelectionProvider sandboxes={sandboxes.RECENT}>
       <Header
         title="Recently Modified Sandboxes"
         templates={getPossibleTemplates(sandboxes.RECENT)}
@@ -42,6 +43,6 @@ export const Recent = () => {
           </Stack>
         )}
       </section>
-    </>
+    </SelectionProvider>
   );
 };

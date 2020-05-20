@@ -3,7 +3,9 @@ import Loadable from 'app/utils/Loadable';
 import React, { FunctionComponent } from 'react';
 
 const Feedback = Loadable(() =>
-  import(/* webpackChunkName: 'feedback' */ './Feedback')
+  import(/* webpackChunkName: 'feedback' */ './Feedback').then(module => ({
+    default: module.Feedback,
+  }))
 );
 
 export const FeedbackModal: FunctionComponent = () => {
