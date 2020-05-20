@@ -72,6 +72,36 @@ export default (() => {
     initialize(options: Options) {
       _options = options;
     },
+    async checkEnvironmentVariables(
+      sandbox: Sandbox,
+      envVars: {
+        [key: string]: string;
+      }
+    ) {
+      const nowData = this.getConfig(sandbox);
+      if (!nowData.env) return null;
+      const all = Object.keys(nowData.env).map(async envVar => {
+        const name = nowData.env[envVar].split('@')[1];
+
+        if (envVars[envVar]) {
+          try {
+            await axios.post(
+              `https://api.vercel.com/v3/now/secrets/`,
+              {
+                name,
+                value: envVars[envVar],
+              },
+              { headers: getDefaultHeaders() }
+            );
+            // eslint-disable-next-line no-empty
+          } catch {}
+        }
+      });
+
+      await Promise.all(all);
+
+      return null;
+    },
     getConfig(sandbox: Sandbox): VercelConfig {
       const nowConfigs = sandbox.modules
         .filter(
