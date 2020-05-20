@@ -1,14 +1,14 @@
-import { sortBy } from 'lodash-es';
-import isSameWeek from 'date-fns/isSameWeek';
+import {
+  SidebarCollectionDashboardFragment as Collection,
+  SandboxFragmentDashboardFragment as Sandbox,
+  Team,
+  TemplateFragmentDashboardFragment as Template,
+} from 'app/graphql/types';
 import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
-import { Derive } from 'app/overmind';
-import {
-  Team,
-  SandboxFragmentDashboardFragment as Sandbox,
-  TemplateFragmentDashboardFragment as Template,
-  SidebarCollectionDashboardFragment as Collection,
-} from 'app/graphql/types';
+import isSameWeek from 'date-fns/isSameWeek';
+import { sortBy } from 'lodash-es';
+import { derived } from 'overmind';
 
 export type OrderBy = {
   field: string;
@@ -60,24 +60,18 @@ type State = {
     blacklistedTemplates: string[];
     search: string;
   };
-  isTemplateSelected: Derive<State, (templateName: string) => boolean>;
-  getFilteredSandboxes: Derive<State, (sandboxes: Sandbox[]) => Sandbox[]>;
-  recentSandboxesByTime: Derive<
-    State,
-    {
-      day: Sandbox[];
-      week: Sandbox[];
-      month: Sandbox[];
-      older: Sandbox[];
-    }
-  >;
-  deletedSandboxesByTime: Derive<
-    State,
-    {
-      week: Sandbox[];
-      older: Sandbox[];
-    }
-  >;
+  isTemplateSelected: (templateName: string) => boolean;
+  getFilteredSandboxes: (sandboxes: Sandbox[]) => Sandbox[];
+  recentSandboxesByTime: {
+    day: Sandbox[];
+    week: Sandbox[];
+    month: Sandbox[];
+    older: Sandbox[];
+  };
+  deletedSandboxesByTime: {
+    week: Sandbox[];
+    older: Sandbox[];
+  };
 };
 
 export const state: State = {
@@ -96,7 +90,7 @@ export const state: State = {
   activeTeam: null,
   activeTeamInfo: null,
   teams: [],
-  recentSandboxesByTime: ({ sandboxes }) => {
+  recentSandboxesByTime: derived(({ sandboxes }: State) => {
     const recentSandboxes = sandboxes.RECENT;
     if (!recentSandboxes) {
       return {
@@ -145,8 +139,8 @@ export const state: State = {
     );
 
     return timeSandboxes;
-  },
-  deletedSandboxesByTime: ({ sandboxes }) => {
+  }),
+  deletedSandboxesByTime: derived(({ sandboxes }: State) => {
     const deletedSandboxes = sandboxes.DELETED;
     if (!deletedSandboxes)
       return {
@@ -176,7 +170,7 @@ export const state: State = {
     );
 
     return timeSandboxes;
-  },
+  }),
   selectedSandboxes: [],
   trashSandboxIds: [],
   isDragging: false,
@@ -188,9 +182,10 @@ export const state: State = {
     blacklistedTemplates: [],
     search: '',
   },
-  isTemplateSelected: ({ filters }) => templateName =>
-    !filters.blacklistedTemplates.includes(templateName),
-  getFilteredSandboxes: ({ orderBy, filters }) => sandboxes => {
+  isTemplateSelected: derived(({ filters }: State) => templateName =>
+    !filters.blacklistedTemplates.includes(templateName)
+  ),
+  getFilteredSandboxes: derived(({ orderBy, filters }: State) => sandboxes => {
     const orderField = orderBy.field;
     const orderOrder = orderBy.order;
     const { blacklistedTemplates } = filters;
@@ -220,5 +215,5 @@ export const state: State = {
     }
 
     return orderedSandboxes;
-  },
+  }),
 };

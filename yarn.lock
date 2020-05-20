@@ -1434,6 +1434,7 @@
   integrity sha512-T5j/hG0MfkwTXiEJiBAkAcJqPgaEWkpfmW7y9jchJrCJ40xkI5HuSgfA/VwNcYUuOqWhtaJWOKGuQ8x6IsELnQ==
   dependencies:
     "@codesandbox/common" "^1.0.8"
+    "@codesandbox/template-icons" "^1.1.0"
     "@reach/auto-id" "^0.7.1"
     "@reach/menu-button" "^0.8.5"
     "@reach/visually-hidden" "^0.7.0"
@@ -1447,6 +1448,11 @@
     react-tagsinput "^3.19.0"
     styled-components "^4.4.1"
     typeface-inter "^3.11.2"
+
+"@codesandbox/template-icons@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-1.1.0.tgz#ef37b97dc6057b63a500c6710fbca5f9c7a9730d"
+  integrity sha512-p14rcYOSfI1A6UkFO/aS+H/cuJvlVT4bLpjCEt7kv+KCFaRjd70FDEzfyKLHH/s57k0W2MWrhB25fqPZm89OXg==
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
@@ -5063,10 +5069,20 @@
   resolved "https://registry.yarnpkg.com/@types/stripe-v3/-/stripe-v3-3.1.7.tgz#7ae64076e663af2852d23706deb503d3c5ce7e67"
   integrity sha512-S0cfUfMna2FjLkpQOooyIZvx1OqQLXMoltzJFkDL5zAaXEWX0dsA8S6HKTj2j+dIJhKKw4xw1NE3esLYEeDk4Q==
 
-"@types/styled-components@^4.1.13", "@types/styled-components@^4.4.1", "@types/styled-components@^4.4.2":
+"@types/styled-components@^4.4.1":
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-4.4.2.tgz#709fa7afd7dc0963b8316a0159240f0fe19a026d"
   integrity sha512-dngFx2PuGoy0MGE68eHayAmJvLSqWrnTe9w+DnQruu8PS+waWEsKmoBRhkzL2h2pK1OJhzJhVfuiz+oZa4etpA==
+  dependencies:
+    "@types/hoist-non-react-statics" "*"
+    "@types/react" "*"
+    "@types/react-native" "*"
+    csstype "^2.2.0"
+
+"@types/styled-components@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-5.1.0.tgz#24d3412ba5395aa06e14fbc93c52f9454cebd0d6"
+  integrity sha512-ZFlLCuwF5r+4Vb7JUmd+Yr2S0UBdBGmI7ctFTgJMypIp3xOHI4LCFVn2dKMvpk6xDB2hLRykrEWMBwJEpUAUIQ==
   dependencies:
     "@types/hoist-non-react-statics" "*"
     "@types/react" "*"
@@ -7818,10 +7834,10 @@ betsy@1.0.2:
     "@types/node" "^10.5.1"
     tslib "^1.9.3"
 
-betsy@1.0.2-1588442797023:
-  version "1.0.2-1588442797023"
-  resolved "https://registry.yarnpkg.com/betsy/-/betsy-1.0.2-1588442797023.tgz#4a6740aacd977e19baadc12e985abb2eb464ddfb"
-  integrity sha512-aB1lgIgoHE65YDdZ8XfQINxVHAluuwrcdT8WHlDUCJEJMtGkxhqjS/xylQn425OY22QItPhEyifEAv2ZVzkn4A==
+betsy@1.0.2-1589978852854:
+  version "1.0.2-1589978852854"
+  resolved "https://registry.yarnpkg.com/betsy/-/betsy-1.0.2-1589978852854.tgz#57690d60acedfe3108cb7fbcedbf72928c351122"
+  integrity sha512-eeEJfvqnbfpE0/S3W163QqxZz6wbvrwYorjTzZL0HYesFXwummXvIJSt10AY0qlw609tU4hQzi/u9+c3fbevPQ==
 
 better-assert@~1.0.0:
   version "1.0.2"
@@ -15298,6 +15314,11 @@ graphql-tag@2.10.1, graphql-tag@^2.10.1, graphql-tag@^2.4.2:
   resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.10.1.tgz#10aa41f1cd8fae5373eaf11f1f67260a3cad5e02"
   integrity sha512-jApXqWBzNXQ8jYa/HLkZJaVw9jgwNqZkywa2zfFn16Iv1Zb7ELNHkJaXHR7Quvd5SIGsy6Ny7SUKATgnu05uEg==
 
+graphql-tag@^2.10.3:
+  version "2.10.3"
+  resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.10.3.tgz#ea1baba5eb8fc6339e4c4cf049dabe522b0edf03"
+  integrity sha512-4FOv3ZKfA4WdOKJeHdz6B3F/vxBLSgmBcGeAFPf4n1F64ltJUvOOerNj0rsJxONQGdhUMynQIvd6LzB+1J5oKA==
+
 graphql-toolkit@0.5.18:
   version "0.5.18"
   resolved "https://registry.yarnpkg.com/graphql-toolkit/-/graphql-toolkit-0.5.18.tgz#db6d5a5564bd91341620be88af472f611385d8df"
@@ -22679,16 +22700,16 @@ overmind-devtools@^19.0.0:
     react-dom "16.8.1"
     ws "^5.2.1"
 
-overmind-graphql@^3.1.0-1588442797023:
-  version "3.1.0-1588442797023"
-  resolved "https://registry.yarnpkg.com/overmind-graphql/-/overmind-graphql-3.1.0-1588442797023.tgz#bded04e0bfceb74db8301fe69270ad106fbd6cd4"
-  integrity sha512-LRh4/3P9zmr1VIleWNrXxdwyprvOu7Nu1UtgmZPJ/hmlv8ND6P+a9A0UOzkC7a931gncelhji/342MWOEsi0yA==
+overmind-graphql@^4.0.0-1589978852854:
+  version "4.0.0-1589978852854"
+  resolved "https://registry.yarnpkg.com/overmind-graphql/-/overmind-graphql-4.0.0-1589978852854.tgz#54c7b6fca6be24f2ffadc4f43d9216f6171946ac"
+  integrity sha512-+Mhw322eXK5nz1SYMOOPsT+xGsuQkFM5KMZyZI6jbB3lcrz5j2zmOs3T2cRk4MAvmCsyGDQo6UNp3VCXUPp7sg==
   dependencies:
     "@absinthe/socket" "^0.2.1"
     graphql "^14.5.8"
     graphql-request "^1.8.2"
-    graphql-tag "^2.10.1"
-    overmind "23.1.0-1588442797023"
+    graphql-tag "^2.10.3"
+    overmind "24.0.0-1589978852854"
     phoenix "^1.4.13"
 
 overmind-react@19.0.1:
@@ -22700,12 +22721,12 @@ overmind-react@19.0.1:
     overmind "18.0.1"
     tslib "^1.9.3"
 
-overmind-react@^24.1.0-1588442797023:
-  version "24.1.0-1588442797023"
-  resolved "https://registry.yarnpkg.com/overmind-react/-/overmind-react-24.1.0-1588442797023.tgz#e9c30829976efcddd6769698963a20be54108208"
-  integrity sha512-nepCCQpyPH6dYUKmbQArOR+GrON+Te4l4VxsWYow6A21MaQuUO/XOuRC/u4sdXVKLD1TDn+rJ6UvPZmYS1QnkQ==
+overmind-react@^25.0.0-1589978852854:
+  version "25.0.0-1589978852854"
+  resolved "https://registry.yarnpkg.com/overmind-react/-/overmind-react-25.0.0-1589978852854.tgz#af2857d4f7e48bb596540cdc7492e037e2b6c46f"
+  integrity sha512-f2gLi85GZzgBky4B+4DSsuWJuafdaKwdnNPq19UitMVz/4Og3XC2ClRpqQozp7sEsX1PZUrxx0/5E2gJ3giIdw==
   dependencies:
-    overmind "23.1.0-1588442797023"
+    overmind "24.0.0-1589978852854"
 
 overmind-themes@next:
   version "1.0.2-1562145138120"
@@ -22725,14 +22746,14 @@ overmind@18.0.1:
     proxy-state-tree "4.4.0"
     tslib "^1.9.3"
 
-overmind@23.1.0-1588442797023, overmind@^23.1.0-1588442797023:
-  version "23.1.0-1588442797023"
-  resolved "https://registry.yarnpkg.com/overmind/-/overmind-23.1.0-1588442797023.tgz#3995825e0ba6902f999eaaaf7952fa61eb81f80b"
-  integrity sha512-nQ7LFzAFEmcE6Bbr4LCttdLSTvD4Pp7iO0Gs6KHCEbcafYJHmOnWPIcX5hQl5YZl2hsSaxyWB9lyzD7gG5R8ag==
+overmind@24.0.0-1589978852854, overmind@^24.0.0-1589978852854:
+  version "24.0.0-1589978852854"
+  resolved "https://registry.yarnpkg.com/overmind/-/overmind-24.0.0-1589978852854.tgz#87b1404cc75426f94f936327a1febdf3474f2eb0"
+  integrity sha512-RQJc6yPZCkk0hOR/rEUOnvX8wWdcIgteIz7tSb8W7E9ZenhJz4WoonBNdpuiyszoHN7b0k/47axgxSIFfJPx6Q==
   dependencies:
-    betsy "1.0.2-1588442797023"
+    betsy "1.0.2-1589978852854"
     is-plain-obj "^1.1.0"
-    proxy-state-tree "5.0.1-1588442797023"
+    proxy-state-tree "5.0.1-1589978852854"
     tslib "^1.10.0"
 
 ow@^0.15.0:
@@ -25045,10 +25066,10 @@ proxy-state-tree@4.4.0:
   dependencies:
     is-plain-obj "^1.1.0"
 
-proxy-state-tree@5.0.1-1588442797023:
-  version "5.0.1-1588442797023"
-  resolved "https://registry.yarnpkg.com/proxy-state-tree/-/proxy-state-tree-5.0.1-1588442797023.tgz#28e3cd37d7bd94eb88f871a6f0028e17356f6884"
-  integrity sha512-ux/q27eDJlzQ9OMSThi8Aww9sW1HtOdr7WGpB3kqlY/VM0AEFkfae2IfT0uHEu2ilQS/cDiweQGdntgNDSOsGQ==
+proxy-state-tree@5.0.1-1589978852854:
+  version "5.0.1-1589978852854"
+  resolved "https://registry.yarnpkg.com/proxy-state-tree/-/proxy-state-tree-5.0.1-1589978852854.tgz#e18097d074b1c4b1a0556e1c921fd007bf5e4673"
+  integrity sha512-ir2rv3VqmYfnfbX39vr86EOu4zt8al7fwRPhexTYxeLcZ0bpLT2f0oZ900jX0yoBd4hogbJdk7o0NcmlHdOqRA==
   dependencies:
     is-plain-obj "^1.1.0"
 
@@ -30743,6 +30764,11 @@ typescript@3.7.2:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.2.tgz#27e489b95fa5909445e9fef5ee48d81697ad18fb"
   integrity sha512-ml7V7JfiN2Xwvcer+XAf2csGO1bPBdRbFCkYBczNZggrBZ9c7G3riSUeJmqEU5uOtXNPMhE3n+R4FA/3YOAWOQ==
+
+typescript@3.9.2:
+  version "3.9.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.2.tgz#64e9c8e9be6ea583c54607677dd4680a1cf35db9"
+  integrity sha512-q2ktq4n/uLuNNShyayit+DTobV2ApPEo/6so68JaD5ojvc/6GClBipedB9zNWYxRSAlZXAe405Rlijzl6qDiSw==
 
 typescript@^3.8.3:
   version "3.8.3"
