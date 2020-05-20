@@ -17,7 +17,7 @@ export const SandboxListItem = ({
   sandboxTitle,
   newTitle,
   // interactions
-  selection,
+  selected,
   onClick,
   onDoubleClick,
   onBlur,
