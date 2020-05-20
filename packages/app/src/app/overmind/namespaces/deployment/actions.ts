@@ -117,7 +117,7 @@ export const deployClicked: AsyncAction = async ({
     const zip = await effects.zip.create(sandbox);
     const contents = await effects.jsZip.loadAsync(zip.file);
 
-    if (sandbox.isSse) {
+    if (sandbox.isSse && state.editor.currentSandbox) {
       const envs = await effects.api.getEnvironmentVariables(
         state.editor.currentSandbox.id
       );

@@ -79,7 +79,7 @@ export default (() => {
       }
     ) {
       const nowData = this.getConfig(sandbox);
-      if (!nowData.env) return null;
+      if (!nowData || !nowData.env) return null;
       const all = Object.keys(nowData.env).map(async envVar => {
         const name = nowData.env[envVar].split('@')[1];
 
