@@ -18,6 +18,7 @@ import {
   WindowOrientation,
   Directory,
 } from '@codesandbox/common/lib/types';
+import { RecoverData } from 'app/overmind/effects/moduleRecover.ts';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
 import { Derive } from 'app/overmind';
@@ -80,7 +81,7 @@ type State = {
   currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
   hasLoadedInitialModule: boolean;
-  recoveredFiles: any[];
+  recoveredFiles: Array<{ recoverData: RecoverData; module: Module }>;
 };
 
 export const state: State = {
@@ -121,7 +122,7 @@ export const state: State = {
   quickActionsOpen: false,
   previewWindowVisible: true,
   statusBar: true,
-  recoveredFiles: Array<{ recoverData: RecoverData; module: Module }>,
+  recoveredFiles: [],
   previewWindowOrientation:
     window.innerHeight / window.innerWidth > 0.9
       ? WindowOrientation.HORIZONTAL
