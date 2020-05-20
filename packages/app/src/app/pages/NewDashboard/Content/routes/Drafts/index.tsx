@@ -26,7 +26,7 @@ export const Drafts = () => {
   }, [actions.dashboard]);
 
   return (
-    <SelectionProvider sandboxes={sandboxes.DRAFTS}>
+    <SelectionProvider sandboxes={visibleSandboxes}>
       <Element style={{ height: '100%', position: 'relative' }}>
         <Header
           path="Drafts"
