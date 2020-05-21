@@ -114,8 +114,8 @@ export const Chat: React.FC = () => {
                     >
                       <Avatar
                         color={color}
-                        alt={metadata.username}
-                        src={metadata.avatarUrl}
+                        alt={metadata && metadata.username}
+                        src={metadata && metadata.avatarUrl}
                       />
                       <Text block weight="bold">
                         {name}
