@@ -41,6 +41,7 @@ export const FolderListItem = ({
       align="center"
       paddingX={2}
       css={css({
+        width: '100%',
         height: 64,
         borderBottom: '1px solid',
         borderBottomColor: 'grays.600',
