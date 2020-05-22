@@ -3,6 +3,8 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { identify } from '@codesandbox/common/lib/utils/analytics';
 import { IDerive, IState } from 'overmind';
 
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { AsyncAction } from '.';
 
 export const TEAM_ID_LOCAL_STORAGE = 'codesandbox-selected-team-id';
@@ -28,6 +30,32 @@ export const withLoadApp = <T>(
   effects.connection.addListener(actions.connectionChanged);
   actions.internal.setStoredSettings();
   effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
+
+  if (localStorage.jwt) {
+    // We've introduced a new way of signing in to CodeSandbox, and we should let the user know to
+    // convert to it.
+
+    document.cookie =
+      'signedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    state.hasLogIn = false;
+    delete localStorage.jwt;
+    notificationState.addNotification({
+      title: 'Session Expired',
+      message:
+        'Whoops, your session has been expired! Please sign in again to continue.',
+      status: NotificationStatus.NOTICE,
+      actions: {
+        primary: [
+          {
+            label: 'Sign in',
+            run: () => {
+              actions.signInClicked({ useExtraScopes: false });
+            },
+          },
+        ],
+      },
+    });
+  }
 
   if (state.hasLogIn) {
     try {
