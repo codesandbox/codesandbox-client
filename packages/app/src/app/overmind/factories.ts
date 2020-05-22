@@ -41,6 +41,7 @@ export const withLoadApp = <T>(
     delete localStorage.jwt;
     notificationState.addNotification({
       title: 'Session Expired',
+      sticky: true,
       message:
         'Whoops, your session has been expired! Please sign in again to continue.',
       status: NotificationStatus.NOTICE,
