@@ -67,7 +67,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   /* Drag logic */
   type ItemTypes = { id: string; type: string };
 
-  const [{ isDragging }, dragRef, preview] = useDrag({
+  const [, dragRef, preview] = useDrag({
     item: { id: sandbox.id, type: 'sandbox' },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
@@ -97,9 +97,6 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
         });
       }
     },
-    collect: monitor => ({
-      isDragging: monitor.isDragging(),
-    }),
   });
 
   /* View logic */
@@ -119,6 +116,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onBlur,
     onKeyDown,
     thumbnailRef,
+    isDragging,
   } = useSelection();
 
   const selected = selectedIds.includes(sandbox.id);

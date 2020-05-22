@@ -17,6 +17,7 @@ const Context = React.createContext({
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {},
   thumbnailRef: null,
+  isDragging: false,
 });
 
 export const SelectionProvider = ({ sandboxes = [], ...props }) => {
@@ -156,23 +157,28 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
   // attach to thumbnail, we use this to calculate size
   const thumbnailRef = React.useRef<HTMLDivElement>();
 
+  // is anything being dragged?
+  const [isDragging, setDragging] = React.useState(false);
+
   return (
     <Context.Provider
       value={{
-        sandboxes: sandboxes || [],
+        sandboxes,
         selectedIds,
         onClick,
         onBlur,
         onKeyDown,
         thumbnailRef,
+        isDragging,
       }}
     >
       <Element onClick={onContainerClick}>{props.children}</Element>
       <DragPreview
-        sandboxes={sandboxes}
+        sandboxes={sandboxes || []}
         selectedIds={selectedIds}
         thumbnailRef={thumbnailRef}
         viewMode={viewMode}
+        setDragging={setDragging}
       />
     </Context.Provider>
   );
@@ -186,9 +192,18 @@ export const useSelection = () => {
     onBlur,
     onKeyDown,
     thumbnailRef,
+    isDragging,
   } = React.useContext(Context);
 
-  return { sandboxes, selectedIds, onClick, onBlur, onKeyDown, thumbnailRef };
+  return {
+    sandboxes,
+    selectedIds,
+    onClick,
+    onBlur,
+    onKeyDown,
+    thumbnailRef,
+    isDragging,
+  };
 };
 
 const scrollIntoViewport = sandboxId => {

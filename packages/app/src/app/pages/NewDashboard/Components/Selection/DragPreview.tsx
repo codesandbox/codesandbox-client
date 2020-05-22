@@ -10,6 +10,7 @@ export const DragPreview = ({
   selectedIds,
   viewMode,
   thumbnailRef,
+  setDragging,
 }) => {
   const { isDragging, initialOffset, currentOffset } = useDragLayer(
     monitor => ({
@@ -18,6 +19,8 @@ export const DragPreview = ({
       isDragging: monitor.isDragging(),
     })
   );
+
+  setDragging(isDragging);
 
   const selectedSandboxes = sandboxes.filter(sandbox =>
     selectedIds.includes(sandbox.id)
