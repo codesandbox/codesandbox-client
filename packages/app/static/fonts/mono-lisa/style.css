@@ -1,8 +1,0 @@
-@font-face {
-  font-family: 'MonoLisa';
-  font-style:  normal;
-  font-weight: 100;
-  font-display: swap;
-  src: url("/static/fonts/mono-lisa/MonoLisa-Regular.woff2") format("woff2"),
-       url("/static/fonts/mono-lisa/MonoLisa-Regular.woff") format("woff");
-}
