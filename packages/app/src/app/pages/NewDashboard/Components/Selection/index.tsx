@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Element } from '@codesandbox/components';
+import css from '@styled-system/css';
 import {
   ARROW_LEFT,
   ARROW_RIGHT,
@@ -172,7 +173,12 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
         isDragging,
       }}
     >
-      <Element onClick={onContainerClick}>{props.children}</Element>
+      <Element
+        onClick={onContainerClick}
+        css={css({ paddingX: 4, paddingY: 10 })}
+      >
+        {props.children}
+      </Element>
       <DragPreview
         sandboxes={sandboxes || []}
         selectedIds={selectedIds}
