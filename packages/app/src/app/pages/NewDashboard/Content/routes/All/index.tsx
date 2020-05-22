@@ -45,14 +45,17 @@ export const AllPage = ({ match: { params }, history }) => {
     }
   }, [param, actions.dashboard, activeTeam]);
 
-  const getFoldersByPath =
+  const folders =
     allCollections &&
     allCollections.filter(
       collection => collection.level === level && collection.parent === param
     );
 
   return (
-    <SelectionProvider sandboxes={sandboxes.ALL && sandboxes.ALL[cleanParam]}>
+    <SelectionProvider
+      sandboxes={sandboxes.ALL && sandboxes.ALL[cleanParam]}
+      folders={folders}
+    >
       <Element style={{ height: '100%', position: 'relative' }}>
         <Header
           path={param}
@@ -62,7 +65,7 @@ export const AllPage = ({ match: { params }, history }) => {
         {allCollections ? (
           <SandboxGrid>
             {creating && <Folder key="new" setCreating={setCreating} />}
-            {getFoldersByPath.map(folder => (
+            {folders.map(folder => (
               <Folder key={folder.id} {...folder} setCreating={setCreating} />
             ))}
             {sandboxes.ALL &&

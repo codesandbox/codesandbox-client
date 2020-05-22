@@ -138,7 +138,7 @@ export const Folder = ({
     onDoubleClick,
     onBlur,
     onKeyDown,
-    // 'data-sandbox': sandbox.id,
+    'data-selection-id': path,
   };
 
   /* Drop target logic */
@@ -210,7 +210,7 @@ export const Folder = ({
 
   return (
     <>
-      <div {...dragProps} onDragStart={onDragStart}>
+      <div {...dragProps} onDragStart={event => onDragStart(event, path)}>
         <motion.div
           initial={{ scale: 1 }}
           animate={{ scale: isOver && canDrop ? 1.02 : 1 }}

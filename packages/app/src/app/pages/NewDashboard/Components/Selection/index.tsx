@@ -25,7 +25,15 @@ const Context = React.createContext({
   isDragging: false,
 });
 
-export const SelectionProvider = ({ sandboxes = [], ...props }) => {
+export const SelectionProvider = ({
+  sandboxes = [],
+  folders = [],
+  ...props
+}) => {
+  const selectionItems = [
+    ...folders.map(folder => folder.path),
+    ...sandboxes.map(sandbox => sandbox.id),
+  ];
   const [selectedIds, setSelectedIds] = React.useState([]);
 
   const {
@@ -50,12 +58,12 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
       // start = find index for last inserted
       // end = find index for sandboxId
       // find everything in between and add them
-      const start = sandboxes.findIndex(
-        sandbox => sandbox.id === selectedIds[selectedIds.length - 1]
+      const start = selectionItems.findIndex(
+        id => id === selectedIds[selectedIds.length - 1]
       );
-      const end = sandboxes.findIndex(sandbox => sandbox.id === sandboxId);
+      const end = selectionItems.findIndex(id => id === sandboxId);
 
-      const sandboxesInRange = [];
+      const itemsInRange = [];
 
       if (start >= 0 && end >= 0) {
         const increment = end > start ? +1 : -1;
@@ -65,18 +73,18 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
           increment > 0 ? index <= end : index >= end;
           index += increment
         ) {
-          sandboxesInRange.push(sandboxes[index].id);
+          itemsInRange.push(selectionItems[index]);
         }
       } else {
-        sandboxesInRange.push(sandboxId);
+        itemsInRange.push(sandboxId);
       }
 
       // Missing feature: When you create a new selection that overlaps
       // with the existing selection, you're probably trying to unselect them
-      // commonIds = sandboxesInRange.filter(id => selectedIds.length)
+      // commonIds = itemsInRange.filter(id => selectedIds.length)
       // remove the common ones while adding the rest
 
-      setSelectedIds([...selectedIds, ...sandboxesInRange]);
+      setSelectedIds([...selectedIds, ...itemsInRange]);
 
       event.stopPropagation();
     } else {
@@ -124,39 +132,37 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
     // cancel scroll events
     event.preventDefault();
 
-    const lastSelectedSandboxId = selectedIds[selectedIds.length - 1];
+    const lastSelectedItemId = selectedIds[selectedIds.length - 1];
 
-    const index = sandboxes.findIndex(
-      sandbox => sandbox.id === lastSelectedSandboxId
-    );
+    const index = selectionItems.findIndex(id => id === lastSelectedItemId);
 
     const direction = [ARROW_RIGHT, ARROW_DOWN].includes(event.keyCode)
       ? 'forward'
       : 'backward';
 
-    const nextSandbox = sandboxes[index + (direction === 'forward' ? 1 : -1)];
+    const nextItem = selectionItems[index + (direction === 'forward' ? 1 : -1)];
 
     // boundary conditions
-    if (!nextSandbox) return;
+    if (!nextItem) return;
 
     // scroll to newly selected element into view imperatively
-    scrollIntoViewport(nextSandbox.id);
+    scrollIntoViewport(nextItem);
 
     // just moving around
     if (!event.shiftKey) {
-      setSelectedIds([nextSandbox.id]);
+      setSelectedIds([nextItem]);
       return;
     }
 
     // selection:
     // going back! remove the last one
-    if (selectedIds.includes(nextSandbox.id)) {
+    if (selectedIds.includes(nextItem)) {
       setSelectedIds(selectedIds.slice(0, -1));
       return;
     }
 
     // select one more
-    setSelectedIds([...selectedIds, nextSandbox.id]);
+    setSelectedIds([...selectedIds, nextItem]);
   };
 
   const onDragStart = (
@@ -229,9 +235,9 @@ export const useSelection = () => {
   };
 };
 
-const scrollIntoViewport = sandboxId => {
+const scrollIntoViewport = (id: string) => {
   // we use data attributes to target element
-  const element = document.querySelector(`[data-sandbox="${sandboxId}"]`);
+  const element = document.querySelector(`[data-selection-id="${id}"]`);
 
   // if it's outside viewport, scroll to it
   const { top, bottom } = element.getBoundingClientRect();
