@@ -117,11 +117,11 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onKeyDown,
     onDragStart,
     thumbnailRef,
-    isDragging: isAnySandboxDragging,
+    isDragging: isAnythingDragging,
   } = useSelection();
 
   const selected = selectedIds.includes(sandbox.id);
-  const isDragging = isAnySandboxDragging && selected;
+  const isDragging = isAnythingDragging && selected;
 
   const onClick = event => {
     if (edit || isDragging || isMenuClicked(event)) return;

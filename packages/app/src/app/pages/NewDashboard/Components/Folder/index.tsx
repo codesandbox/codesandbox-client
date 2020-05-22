@@ -3,7 +3,7 @@ import { join, dirname } from 'path';
 import { useDrop, useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { isMenuClicked } from '@codesandbox/components';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { useOvermind } from 'app/overmind';
@@ -93,6 +93,18 @@ export const Folder = ({
     if (editing || isMenuClicked(event)) event.preventDefault();
   };
 
+  const history = useHistory();
+  const onDoubleClick = event => {
+    if (editing || isDragging || isMenuClicked(event)) return;
+
+    const url = '/new-dashboard/all' + path;
+    if (event.ctrlKey || event.metaKey) {
+      window.open(url, '_blank');
+    } else {
+      history.push(url);
+    }
+  };
+
   /* Drop target logic */
 
   const [{ isOver, canDrop }, dropRef] = useDrop({
@@ -158,6 +170,7 @@ export const Folder = ({
     path,
     numberOfSandboxes: sandboxes,
     onClick,
+    onDoubleClick,
     // edit mode
     editing,
     enterEditing,
