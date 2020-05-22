@@ -14,13 +14,10 @@ import { DragPreview } from './DragPreview';
 const Context = React.createContext({
   sandboxes: [],
   selectedIds: [],
-  onClick: (event: React.MouseEvent<HTMLDivElement>, sandboxId: string) => {},
+  onClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {},
-  onDragStart: (
-    event: React.MouseEvent<HTMLDivElement>,
-    sandboxId: string
-  ) => {},
+  onDragStart: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
   thumbnailRef: null,
   isDragging: false,
 });
@@ -40,28 +37,25 @@ export const SelectionProvider = ({
     state: { dashboard },
   } = useOvermind();
 
-  const onClick = (
-    event: React.MouseEvent<HTMLDivElement>,
-    sandboxId: string
-  ) => {
+  const onClick = (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
     if (event.ctrlKey || event.metaKey) {
       // select multiple with modifier
 
-      if (selectedIds.includes(sandboxId)) {
-        setSelectedIds(selectedIds.filter(id => id !== sandboxId));
+      if (selectedIds.includes(itemId)) {
+        setSelectedIds(selectedIds.filter(id => id !== itemId));
       } else {
-        setSelectedIds([...selectedIds, sandboxId]);
+        setSelectedIds([...selectedIds, itemId]);
       }
 
       event.stopPropagation();
     } else if (event.shiftKey) {
       // start = find index for last inserted
-      // end = find index for sandboxId
+      // end = find index for itemId
       // find everything in between and add them
       const start = selectionItems.findIndex(
         id => id === selectedIds[selectedIds.length - 1]
       );
-      const end = selectionItems.findIndex(id => id === sandboxId);
+      const end = selectionItems.findIndex(id => id === itemId);
 
       const itemsInRange = [];
 
@@ -76,7 +70,7 @@ export const SelectionProvider = ({
           itemsInRange.push(selectionItems[index]);
         }
       } else {
-        itemsInRange.push(sandboxId);
+        itemsInRange.push(itemId);
       }
 
       // Missing feature: When you create a new selection that overlaps
@@ -88,7 +82,7 @@ export const SelectionProvider = ({
 
       event.stopPropagation();
     } else {
-      setSelectedIds([sandboxId]);
+      setSelectedIds([itemId]);
       event.stopPropagation();
     }
   };
@@ -167,11 +161,11 @@ export const SelectionProvider = ({
 
   const onDragStart = (
     event: React.MouseEvent<HTMLDivElement>,
-    sandboxId: string
+    itemId: string
   ) => {
     // if the dragged sandbox isn't selected. select it alone
-    if (!selectedIds.includes(sandboxId)) {
-      setSelectedIds([sandboxId]);
+    if (!selectedIds.includes(itemId)) {
+      setSelectedIds([itemId]);
     }
   };
 
