@@ -24,7 +24,6 @@ import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import prettify from 'app/src/app/utils/prettify';
 import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
-import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
 import { TextOperation } from 'ot';
@@ -197,8 +196,6 @@ export class VSCodeEffect {
       this.setVimExtensionEnabled(
         localStorage.getItem('settings.vimmode') === 'true'
       );
-
-      return new FontFaceObserver('MonoLisa').load();
     });
 
     // Only set the read only state when the editor is initialized.

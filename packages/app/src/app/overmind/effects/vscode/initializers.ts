@@ -70,7 +70,10 @@ export function initializeSettings() {
       return settingsChanged || false;
     };
 
-    if (settings['editor.fontFamily'].startsWith('dm,')) {
+    if (
+      settings['editor.fontFamily'].startsWith('dm') ||
+      settings['editor.fontFamily'].startsWith("'dm'")
+    ) {
       settingsChanged = changeIfNeeded(
         'editor.fontFamily',
         "MonoLisa, Menlo, Monaco, 'Courier New', monospace"
