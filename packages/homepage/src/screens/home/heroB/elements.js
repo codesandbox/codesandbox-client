@@ -205,6 +205,7 @@ export const SandboxButtons = styled.section`
   height: auto;
   width: auto;
   margin: 5rem 0;
+  transition: all 200ms ease-in;
 `;
 
 export const Sandbox = styled.a`
@@ -212,18 +213,33 @@ export const Sandbox = styled.a`
   width: 2rem;
   height: 2rem;
   margin: 0 0.75rem;
-  opacity: 0.2;
+  opacity: 0.4;
   border: none;
   background-color: transparent;
   background-size: cover;
 
+  transition: all 200ms ease-in;
 
-  transition: all 100ms ease-in;
+  animation: easeInOutBack 1s cubic-bezier(0, -0.6, 0.12, 2) 1s backwards;
 
-  animation: easeInOutBack 1s cubic-bezier(0.68, -0.6, 0.12, 2);
-  animation-iteration-count: 1;
-  animation-fill-mode: backwards;
+  @keyframes easeInOutBack {
+    0% {
+      opacity: 0;
+      transform: scale(0.01);
+    }
 
+    100% {
+      opacity: 0.4;
+      transform: scale(1);
+    }
+  }
+
+  :hover {
+    cursor: pointer;
+    animation-play-state: paused;
+    transform: scale(1.2);
+    opacity: 1;
+  }
 
   @media screen and (min-width: 576px) {
     width: 3rem;
@@ -236,23 +252,4 @@ export const Sandbox = styled.a`
     height: 4rem;
     margin: 0 2rem;
   }
-
-  :hover {
-    transform: scale(0.9);
-    opacity: 1;
-  }
-
-
-  @keyframes easeInOutBack {
-    0% {
-      opacity: 0;
-      transform: scale(0.1);
-    }
-
-    100% {
-      opacity: 0.2;
-      transform: scale(1);
-    }
-  }
-
 `;
