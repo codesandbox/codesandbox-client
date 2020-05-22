@@ -8,12 +8,15 @@ import {
   ARROW_DOWN,
   ARROW_UP,
 } from '@codesandbox/common/lib/utils/keycodes';
+import { DragPreview } from './DragPreview';
 
 const Context = React.createContext({
+  sandboxes: [],
   selectedIds: [],
   onClick: (event: React.MouseEvent<HTMLDivElement>, sandboxId: string) => {},
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {},
+  thumbnailRef: null,
 });
 
 export const SelectionProvider = ({ sandboxes = [], ...props }) => {
@@ -150,16 +153,42 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
     setSelectedIds([...selectedIds, nextSandbox.id]);
   };
 
+  // attach to thumbnail, we use this to calculate size
+  const thumbnailRef = React.useRef<HTMLDivElement>();
+
   return (
-    <Context.Provider value={{ selectedIds, onClick, onBlur, onKeyDown }}>
+    <Context.Provider
+      value={{
+        sandboxes: sandboxes || [],
+        selectedIds,
+        onClick,
+        onBlur,
+        onKeyDown,
+        thumbnailRef,
+      }}
+    >
       <Element onClick={onContainerClick}>{props.children}</Element>
+      <DragPreview
+        sandboxes={sandboxes}
+        selectedIds={selectedIds}
+        thumbnailRef={thumbnailRef}
+        viewMode={viewMode}
+      />
     </Context.Provider>
   );
 };
 
 export const useSelection = () => {
-  const { selectedIds, onClick, onBlur, onKeyDown } = React.useContext(Context);
-  return { selectedIds, onClick, onBlur, onKeyDown };
+  const {
+    sandboxes,
+    selectedIds,
+    onClick,
+    onBlur,
+    onKeyDown,
+    thumbnailRef,
+  } = React.useContext(Context);
+
+  return { sandboxes, selectedIds, onClick, onBlur, onKeyDown, thumbnailRef };
 };
 
 const scrollIntoViewport = sandboxId => {

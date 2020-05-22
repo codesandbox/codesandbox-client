@@ -9,7 +9,6 @@ import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { isMenuClicked } from '@codesandbox/components';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
-import { DragPreview } from './DragPreview';
 import { useSelection } from '../Selection';
 
 export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
@@ -18,8 +17,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     actions,
   } = useOvermind();
 
-  // const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
-  const sandboxTitle = sandbox.id;
+  const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
   const [edit, setEdit] = React.useState(false);
   const [newTitle, setNewTitle] = React.useState(sandboxTitle);
@@ -82,18 +80,18 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
       );
 
       if (dropResult.path === 'deleted') {
-        actions.dashboard.deleteSandbox([sandbox.id]);
+        actions.dashboard.deleteSandbox(selectedIds);
       } else if (dropResult.path === 'templates') {
-        actions.dashboard.makeTemplate([sandbox.id]);
+        actions.dashboard.makeTemplate(selectedIds);
       } else if (dropResult.path === 'drafts') {
         actions.dashboard.addSandboxesToFolder({
-          sandboxIds: [sandbox.id],
+          sandboxIds: selectedIds,
           collectionPath: '/',
           moveFromCollectionPath: currentCollectionPath,
         });
       } else {
         actions.dashboard.addSandboxesToFolder({
-          sandboxIds: [sandbox.id],
+          sandboxIds: selectedIds,
           collectionPath: dropResult.path,
           moveFromCollectionPath: currentCollectionPath,
         });
@@ -103,9 +101,6 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
       isDragging: monitor.isDragging(),
     }),
   });
-
-  // attach to thumbnail, we use this to calculate size
-  const thumbnailRef = React.useRef();
 
   /* View logic */
   let viewMode: string;
@@ -123,6 +118,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onClick: onSelectionClick,
     onBlur,
     onKeyDown,
+    thumbnailRef,
   } = useSelection();
 
   const selected = selectedIds.includes(sandbox.id);
@@ -192,9 +188,6 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
           <Component {...sandboxProps} {...interactionProps} {...props} />
         </motion.div>
       </div>
-      {isDragging ? (
-        <DragPreview viewMode={viewMode} {...sandboxProps} />
-      ) : null}
     </>
   );
 };
