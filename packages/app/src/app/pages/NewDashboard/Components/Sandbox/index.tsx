@@ -115,6 +115,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onClick: onSelectionClick,
     onBlur,
     onKeyDown,
+    onDragStart,
     thumbnailRef,
     isDragging: isAnySandboxDragging,
   } = useSelection();
@@ -176,7 +177,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   return (
     <>
-      <div {...dragProps}>
+      <div {...dragProps} onDragStart={event => onDragStart(event, sandbox.id)}>
         <motion.div
           layoutTransition={{
             type: 'spring',

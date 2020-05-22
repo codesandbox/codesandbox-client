@@ -17,6 +17,10 @@ const Context = React.createContext({
   onClick: (event: React.MouseEvent<HTMLDivElement>, sandboxId: string) => {},
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {},
+  onDragStart: (
+    event: React.MouseEvent<HTMLDivElement>,
+    sandboxId: string
+  ) => {},
   thumbnailRef: null,
   isDragging: false,
 });
@@ -155,6 +159,16 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
     setSelectedIds([...selectedIds, nextSandbox.id]);
   };
 
+  const onDragStart = (
+    event: React.MouseEvent<HTMLDivElement>,
+    sandboxId: string
+  ) => {
+    // if the dragged sandbox isn't selected. select it alone
+    if (!selectedIds.includes(sandboxId)) {
+      setSelectedIds([sandboxId]);
+    }
+  };
+
   // attach to thumbnail, we use this to calculate size
   const thumbnailRef = React.useRef<HTMLDivElement>();
 
@@ -169,6 +183,7 @@ export const SelectionProvider = ({ sandboxes = [], ...props }) => {
         onClick,
         onBlur,
         onKeyDown,
+        onDragStart,
         thumbnailRef,
         isDragging,
       }}
@@ -197,6 +212,7 @@ export const useSelection = () => {
     onClick,
     onBlur,
     onKeyDown,
+    onDragStart,
     thumbnailRef,
     isDragging,
   } = React.useContext(Context);
@@ -207,6 +223,7 @@ export const useSelection = () => {
     onClick,
     onBlur,
     onKeyDown,
+    onDragStart,
     thumbnailRef,
     isDragging,
   };
