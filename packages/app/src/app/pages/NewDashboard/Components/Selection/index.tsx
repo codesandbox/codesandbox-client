@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -8,7 +8,9 @@ import {
   ARROW_RIGHT,
   ARROW_DOWN,
   ARROW_UP,
+  ENTER,
 } from '@codesandbox/common/lib/utils/keycodes';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
 
 const Context = React.createContext({
@@ -108,8 +110,34 @@ export const SelectionProvider = ({
   else if (location.pathname.includes('start')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
+  const history = useHistory();
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!selectedIds.length) return;
+
+    // if only one thing is selected, open it
+    if (event.keyCode === ENTER && selectedIds.length === 1) {
+      const selectedId = selectedIds[0];
+
+      let url;
+      if (selectedId.startsWith('/')) {
+        // means its a folder
+        url = '/new-dashboard/all' + selectedId;
+      } else {
+        const seletedSandbox = sandboxes.find(
+          sandbox => sandbox.id === selectedId
+        );
+        url = sandboxUrl({
+          id: seletedSandbox.id,
+          alias: seletedSandbox.alias,
+        });
+      }
+
+      if (event.ctrlKey || event.metaKey) {
+        window.open(url, '_blank');
+      } else {
+        history.push(url);
+      }
+    }
 
     // if isn't one of the handled keys, skip
     if (
