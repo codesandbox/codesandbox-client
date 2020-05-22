@@ -77,7 +77,6 @@ export const New = ({
         justify="flex-end"
         paddingY={2}
         paddingRight={6}
-        marginTop={4}
         css={css({
           borderTop: '1px solid transparent',
           borderTopColor: 'grays.600',
