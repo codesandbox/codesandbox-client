@@ -1081,8 +1081,6 @@ export default class Manager {
 
               if (
                 !this.manifest.contents[tModule.module.path] ||
-                (tModule.module.path.endsWith('.js') &&
-                  tModule.module.requires == null) ||
                 tModule.module.downloaded
               ) {
                 // Only save modules that are not precomputed

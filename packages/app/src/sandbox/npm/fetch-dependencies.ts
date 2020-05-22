@@ -14,7 +14,7 @@ type Dependencies = {
 const RETRY_COUNT = 60;
 const debug = _debug('cs:sandbox:packager');
 
-const VERSION = 1;
+const VERSION = 2;
 
 // eslint-disable-next-line
 const DEV_URLS = {
@@ -29,7 +29,7 @@ const PROD_URLS = {
   bucket: 'https://prod-packager-packages.codesandbox.io',
 };
 
-const URLS = PROD_URLS;
+const URLS = DEV_URLS;
 const BUCKET_URL = URLS.bucket;
 const PACKAGER_URL = URLS.packager;
 
