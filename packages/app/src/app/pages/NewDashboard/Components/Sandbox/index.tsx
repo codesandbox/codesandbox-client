@@ -138,6 +138,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
       history.push(url);
     }
   };
+
   const interactionProps = {
     tabIndex: 0, // make div focusable
     style: { outline: 'none' }, // we handle outline with border

@@ -7,6 +7,10 @@ export const FolderCard = ({
   name,
   path,
   numberOfSandboxes,
+  // interactions
+  selected,
+  onClick,
+  onDoubleClick,
   // editing
   editing,
   enterEditing,
@@ -22,9 +26,6 @@ export const FolderCard = ({
   // drag preview
   thumbnailRef,
   opacity,
-  // menu conflict
-  onClick,
-  onDoubleClick,
   ...props
 }) => (
   <Stack
@@ -43,7 +44,7 @@ export const FolderCard = ({
       transition: 'all ease-in-out',
       transitionDuration: theme => theme.speeds[4],
       // drop target
-      borderColor: showDropStyles ? 'grays.400' : 'grays.500',
+      borderColor: getBorderColor(selected, showDropStyles),
       boxShadow: theme =>
         showDropStyles ? '0 4px 16px 0 ' + theme.colors.grays[900] : null,
 
@@ -107,3 +108,9 @@ export const FolderCard = ({
     ) : null}
   </Stack>
 );
+
+const getBorderColor = (selected, showDropStyles) => {
+  if (selected) return 'blues.600';
+  if (showDropStyles) return 'grays.400';
+  return 'grays.500';
+};

@@ -7,6 +7,10 @@ export const FolderListItem = ({
   name,
   path,
   numberOfSandboxes,
+  // interactions
+  selected,
+  onClick,
+  onDoubleClick,
   // editing
   editing,
   enterEditing,
@@ -14,16 +18,13 @@ export const FolderListItem = ({
   newName,
   inputRef,
   onChange,
-  onKeyDown,
+  onInputKeyDown,
   onSubmit,
-  onBlur,
+  onInputBlur,
   // drop target
   showDropStyles,
   // drag preview
   // opacity,
-  // menu conflict
-  onClick,
-  onDoubleClick,
   ...props
 }) => (
   <ListAction
@@ -33,6 +34,8 @@ export const FolderListItem = ({
     css={css({
       paddingX: 0,
       backgroundColor: showDropStyles ? 'list.hoverBackground' : 'inherit',
+      boxShadow: theme =>
+        selected ? `0px 0px 1px 1px ${theme.colors.blues[600]}` : null,
     })}
   >
     <Stack
@@ -71,8 +74,8 @@ export const FolderListItem = ({
                 value={newName}
                 ref={inputRef}
                 onChange={onChange}
-                onKeyDown={onKeyDown}
-                onBlur={onBlur}
+                onKeyDown={onInputKeyDown}
+                onBlur={onInputBlur}
               />
             </form>
           ) : (
