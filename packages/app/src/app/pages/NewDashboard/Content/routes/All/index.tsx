@@ -53,8 +53,8 @@ export const AllPage = ({ match: { params }, history }) => {
 
   return (
     <SelectionProvider
-      sandboxes={sandboxes.ALL && sandboxes.ALL[cleanParam]}
-      folders={folders}
+      sandboxes={(sandboxes.ALL && sandboxes.ALL[cleanParam]) || []}
+      folders={folders || []}
     >
       <Element style={{ height: '100%', position: 'relative' }}>
         <Header
