@@ -18,6 +18,9 @@ let transpileBeforeExec = detectOldBrowser();
 export const resetCache = () => {
   cache = {};
   cachedPaths = {};
+
+  isESModule('const test = "A"');
+  convertEsModule('const test = "a";');
 };
 
 export default function evaluate(
@@ -129,13 +132,13 @@ export default function evaluate(
 
     cache[id] = {};
 
-    if (isESModule(resolvedCode)) {
-      try {
-        resolvedCode = convertEsModule(resolvedCode);
-      } catch (e) {
-        /* ignore */
-      }
-    }
+    // if (isESModule(resolvedCode)) {
+    //   try {
+    //     resolvedCode = convertEsModule(resolvedCode);
+    //   } catch (e) {
+    //     /* ignore */
+    //   }
+    // }
 
     return evaluate(
       fs,
