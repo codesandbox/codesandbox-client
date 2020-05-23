@@ -1,7 +1,9 @@
 import resolve from 'browser-resolve';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
+import isESModule from 'sandbox/eval/utils/is-es-module';
 import getRequireStatements from './simple-get-require-statements';
 import { packageFilter } from '../../../utils/resolve-utils';
+import { convertEsModule } from '../convert-esmodule';
 
 const global = getGlobal();
 const path = global.BrowserFS.BFSRequire('path');
@@ -163,7 +165,14 @@ export async function downloadPath(
       /* ignore */
     }
 
-    const code = existingFile.toString();
+    let code = existingFile.toString();
+    try {
+      if (isESModule(code)) {
+        code = convertEsModule(code);
+      }
+    } catch (e) {
+      /* ignore */
+    }
     await downloadRequires(r.path, code);
 
     return {

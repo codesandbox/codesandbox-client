@@ -211,6 +211,12 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('works with native properties', () => {
+    const code = `var hasOwnProperty = objectProto.hasOwnProperty;`;
+
+    convertEsModule(code);
+  });
+
   it('has good perf', () => {
     /* eslint-disable */
     const code = require('./big-file');
