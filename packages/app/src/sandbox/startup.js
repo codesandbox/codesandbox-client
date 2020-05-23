@@ -13,7 +13,7 @@ for (let i = 0; i < 3; i++) {
 
   // Warm up the babel worker
   worker.postMessage({
-    type: 'warmup',
+    type: 'warmupaa',
     path: 'test.js',
     code: 'const a = "b"; export default a;',
     config: { presets: ['env'] },
