@@ -9,7 +9,6 @@ import isESModule from 'sandbox/eval/utils/is-es-module';
 import detectOldBrowser from '@codesandbox/common/lib/detect-old-browser';
 import { packageFilter } from '../../../utils/resolve-utils';
 import evaluateCode from '../../../loaders/eval';
-import { convertEsModule } from '../convert-esmodule';
 
 let cache = {};
 let cachedPaths = {};
@@ -18,9 +17,6 @@ let transpileBeforeExec = detectOldBrowser();
 export const resetCache = () => {
   cache = {};
   cachedPaths = {};
-
-  isESModule('const test = "A"');
-  convertEsModule('const test = "a";');
 };
 
 export default function evaluate(
@@ -123,7 +119,7 @@ export default function evaluate(
 
     cachedPaths[dirName][requirePath] = resolvedPath;
 
-    let resolvedCode = fs.readFileSync(resolvedPath).toString();
+    const resolvedCode = fs.readFileSync(resolvedPath).toString();
     const id = hashsum(resolvedCode + resolvedPath);
 
     if (cache[id]) {
@@ -167,7 +163,7 @@ export default function evaluate(
   }
   finalCode += `\n//# sourceURL=${location.origin}${path}`;
 
-  if (transpileBeforeExec) {
+  if (transpileBeforeExec || isESModule(finalCode)) {
     const { code: transpiledCode } = self.Babel.transform(finalCode, {
       presets: ['es2015', 'react', 'stage-0'],
       plugins: [
