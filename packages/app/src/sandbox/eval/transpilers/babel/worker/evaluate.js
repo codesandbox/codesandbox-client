@@ -5,9 +5,11 @@ import * as crypto from 'crypto';
 import * as util from 'util';
 import { dirname, basename } from 'path';
 import type FSType from 'fs';
+import isESModule from 'sandbox/eval/utils/is-es-module';
 import detectOldBrowser from '@codesandbox/common/lib/detect-old-browser';
 import { packageFilter } from '../../../utils/resolve-utils';
 import evaluateCode from '../../../loaders/eval';
+import { convertEsModule } from '../convert-esmodule';
 
 let cache = {};
 let cachedPaths = {};
@@ -16,7 +18,6 @@ let transpileBeforeExec = detectOldBrowser();
 export const resetCache = () => {
   cache = {};
   cachedPaths = {};
-  transpileBeforeExec = detectOldBrowser();
 };
 
 export default function evaluate(
@@ -119,7 +120,7 @@ export default function evaluate(
 
     cachedPaths[dirName][requirePath] = resolvedPath;
 
-    const resolvedCode = fs.readFileSync(resolvedPath).toString();
+    let resolvedCode = fs.readFileSync(resolvedPath).toString();
     const id = hashsum(resolvedCode + resolvedPath);
 
     if (cache[id]) {
@@ -127,6 +128,14 @@ export default function evaluate(
     }
 
     cache[id] = {};
+
+    if (isESModule(resolvedCode)) {
+      try {
+        resolvedCode = convertEsModule(resolvedCode);
+      } catch (e) {
+        /* ignore */
+      }
+    }
 
     return evaluate(
       fs,
