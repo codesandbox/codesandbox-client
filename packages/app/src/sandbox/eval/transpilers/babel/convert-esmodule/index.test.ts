@@ -223,10 +223,12 @@ describe('convert-esmodule', () => {
 
     const t = Date.now();
 
-    for (let i = 0; i < 1; i++) {
+    const runs = 10;
+
+    for (let i = 0; i < runs; i++) {
       convertEsModule(code);
     }
-    console.log(Date.now() - t);
+    console.log((Date.now() - t) / runs);
     /* eslint-enable */
   });
 });

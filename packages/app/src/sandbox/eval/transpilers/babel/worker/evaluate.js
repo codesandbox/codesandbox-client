@@ -18,7 +18,6 @@ let transpileBeforeExec = detectOldBrowser();
 export const resetCache = () => {
   cache = {};
   cachedPaths = {};
-  transpileBeforeExec = detectOldBrowser();
 };
 
 export default function evaluate(
