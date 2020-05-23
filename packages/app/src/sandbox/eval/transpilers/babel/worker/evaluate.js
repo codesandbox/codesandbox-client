@@ -5,11 +5,11 @@ import * as crypto from 'crypto';
 import * as util from 'util';
 import { dirname, basename } from 'path';
 import type FSType from 'fs';
+import isESModule from 'sandbox/eval/utils/is-es-module';
 import detectOldBrowser from '@codesandbox/common/lib/detect-old-browser';
 import { packageFilter } from '../../../utils/resolve-utils';
 import evaluateCode from '../../../loaders/eval';
 import { convertEsModule } from '../convert-esmodule';
-import isESModule from 'sandbox/eval/utils/is-es-module';
 
 let cache = {};
 let cachedPaths = {};
