@@ -130,7 +130,11 @@ export default function evaluate(
     cache[id] = {};
 
     if (isESModule(resolvedCode)) {
-      resolvedCode = convertEsModule(resolvedCode);
+      try {
+        resolvedCode = convertEsModule(resolvedCode);
+      } catch (e) {
+        /* ignore */
+      }
     }
 
     return evaluate(

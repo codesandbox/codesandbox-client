@@ -520,7 +520,7 @@ self.addEventListener('message', async event => {
     hasMacros,
   } = event.data;
 
-  if (type !== 'compile') {
+  if (type !== 'compile' && type !== 'warmup') {
     return;
   }
   try {
@@ -731,6 +731,15 @@ self.addEventListener('message', async event => {
           }
         })
     );
+
+    if (type === 'warmup') {
+      try {
+        Babel.transform(code, normalizeV7Config(customConfig));
+      } catch (er) {
+        /* ignore */
+      }
+      return;
+    }
 
     await compile(
       code,
