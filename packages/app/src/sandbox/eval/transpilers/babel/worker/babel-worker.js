@@ -10,6 +10,7 @@ import delay from '@codesandbox/common/lib/utils/delay';
 
 import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
 import { join } from '@codesandbox/common/lib/utils/path';
+import patchedMacrosPlugin from './utils/macrosPatch';
 import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
 import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
@@ -627,6 +628,8 @@ self.addEventListener('message', async event => {
         if (hasMacros) {
           await waitForFs();
         }
+
+        Babel.registerPlugin('babel-plugin-macros', patchedMacrosPlugin);
       }
 
       if (
