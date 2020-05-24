@@ -1,7 +1,6 @@
 /* eslint-disable global-require, no-console, no-use-before-define */
 import { flatten } from 'lodash-es';
 import codeFrame from 'babel-code-frame';
-import macrosPlugin from 'babel-plugin-macros';
 import refreshBabelPlugin from 'react-refresh/babel';
 import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
 import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
@@ -25,6 +24,7 @@ import {
   getPrefixedPluginName,
   getPrefixedPresetName,
 } from './get-prefixed-name';
+import { patchedResolve } from './utils/resolvePatch';
 
 let fsInitialized = false;
 let fsLoading = false;
@@ -44,6 +44,10 @@ self.process = {
 };
 // This one is called from the babel transpiler and babel-plugin-macros
 self.require = path => {
+  if (path === 'resolve') {
+    return patchedResolve();
+  }
+
   if (path === 'assert') {
     return require('assert');
   }
@@ -623,8 +627,6 @@ self.addEventListener('message', async event => {
         if (hasMacros) {
           await waitForFs();
         }
-
-        Babel.registerPlugin('babel-plugin-macros', macrosPlugin);
       }
 
       if (
