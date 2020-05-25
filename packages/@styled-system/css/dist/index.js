@@ -1,14 +1,16 @@
 /* eslint-disable */
+'use strict';
+
 exports.__esModule = true;
-exports.default = exports.css = exports.responsive = exports.get = void 0;
+exports['default'] = exports.css = exports.responsive = exports.get = void 0;
 
 function _extends() {
   _extends =
     Object.assign ||
     function(target) {
-      for (let i = 1; i < arguments.length; i++) {
-        const source = arguments[i];
-        for (const key in source) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+        for (var key in source) {
           if (Object.prototype.hasOwnProperty.call(source, key)) {
             target[key] = source[key];
           }
@@ -20,7 +22,7 @@ function _extends() {
 }
 
 // based on https://github.com/developit/dlv
-const get = function get(obj, key, def, p, undef) {
+var get = function get(obj, key, def, p, undef) {
   key = key && key.split ? key.split('.') : [key];
 
   for (p = 0; p < key.length; p++) {
@@ -31,14 +33,14 @@ const get = function get(obj, key, def, p, undef) {
 };
 
 exports.get = get;
-const defaultBreakpoints = [40, 52, 64].map(function(n) {
+var defaultBreakpoints = [40, 52, 64].map(function(n) {
   return n + 'em';
 });
-const defaultTheme = {
+var defaultTheme = {
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 72],
 };
-const aliases = {
+var aliases = {
   bg: 'backgroundColor',
   m: 'margin',
   mt: 'marginTop',
@@ -55,14 +57,14 @@ const aliases = {
   px: 'paddingX',
   py: 'paddingY',
 };
-const multiples = {
+var multiples = {
   marginX: ['marginLeft', 'marginRight'],
   marginY: ['marginTop', 'marginBottom'],
   paddingX: ['paddingLeft', 'paddingRight'],
   paddingY: ['paddingTop', 'paddingBottom'],
   size: ['width', 'height'],
 };
-const scales = {
+var scales = {
   color: 'colors',
   backgroundColor: 'colors',
   borderColor: 'colors',
@@ -136,18 +138,18 @@ const scales = {
   stroke: 'colors',
 };
 
-const positiveOrNegative = function positiveOrNegative(scale, value) {
+var positiveOrNegative = function positiveOrNegative(scale, value) {
   if (typeof value !== 'number' || value >= 0) {
     return get(scale, value, value);
   }
 
-  const absolute = Math.abs(value);
-  const n = get(scale, absolute, absolute);
+  var absolute = Math.abs(value);
+  var n = get(scale, absolute, absolute);
   if (typeof n === 'string') return '-' + n;
   return n * -1;
 };
 
-const transforms = [
+var transforms = [
   'margin',
   'marginTop',
   'marginRight',
@@ -160,26 +162,27 @@ const transforms = [
   'left',
   'right',
 ].reduce(function(acc, curr) {
-  let _extends2;
+  var _extends2;
 
-  return {
-    ...acc,
-    ...((_extends2 = {}), (_extends2[curr] = positiveOrNegative), _extends2),
-  };
+  return _extends(
+    {},
+    acc,
+    ((_extends2 = {}), (_extends2[curr] = positiveOrNegative), _extends2)
+  );
 }, {});
 
-const responsive = function responsive(styles) {
+var responsive = function responsive(styles) {
   return function(theme) {
-    const next = {};
-    const breakpoints = get(theme, 'breakpoints', defaultBreakpoints);
-    const mediaQueries = [null].concat(
+    var next = {};
+    var breakpoints = get(theme, 'breakpoints', defaultBreakpoints);
+    var mediaQueries = [null].concat(
       breakpoints.map(function(n) {
         return '@media screen and (min-width: ' + n + ')';
       })
     );
 
-    for (const key in styles) {
-      const value =
+    for (var key in styles) {
+      var value =
         typeof styles[key] === 'function' ? styles[key](theme) : styles[key];
       if (value == null) continue;
 
@@ -188,8 +191,8 @@ const responsive = function responsive(styles) {
         continue;
       }
 
-      for (let i = 0; i < value.slice(0, mediaQueries.length).length; i++) {
-        const media = mediaQueries[i];
+      for (var i = 0; i < value.slice(0, mediaQueries.length).length; i++) {
+        var media = mediaQueries[i];
 
         if (!media) {
           next[key] = value[i];
@@ -208,25 +211,25 @@ const responsive = function responsive(styles) {
 
 exports.responsive = responsive;
 
-const css = function css(args) {
+var css = function css(args) {
   return function(props) {
     if (props === void 0) {
       props = {};
     }
 
-    const theme = props.theme || props;
+    var theme = props.theme || props;
 
-    let result = {};
-    const obj = typeof args === 'function' ? args(theme) : args;
-    const styles = responsive(obj)(theme);
+    var result = {};
+    var obj = typeof args === 'function' ? args(theme) : args;
+    var styles = responsive(obj)(theme);
 
-    for (const key in styles) {
-      const x = styles[key];
-      const val = typeof x === 'function' ? x(theme) : x;
+    for (var key in styles) {
+      var x = styles[key];
+      var val = typeof x === 'function' ? x(theme) : x;
 
       if (key === 'variant') {
-        const variant = css(get(theme, val))(theme);
-        result = { ...result, ...variant };
+        var variant = css(get(theme, val))(theme);
+        result = _extends({}, result, {}, variant);
         continue;
       }
 
@@ -235,16 +238,16 @@ const css = function css(args) {
         continue;
       }
 
-      const prop = get(aliases, key, key);
-      const scaleName = get(scales, prop);
-      const scale = get(theme, scaleName, get(theme, prop, {}));
-      const transform = get(transforms, prop, get);
-      const value = transform(scale, val, val);
+      var prop = get(aliases, key, key);
+      var scaleName = get(scales, prop);
+      var scale = get(theme, scaleName, get(theme, prop, {}));
+      var transform = get(transforms, prop, get);
+      var value = transform(scale, val, val);
 
       if (multiples[prop]) {
-        const dirs = multiples[prop];
+        var dirs = multiples[prop];
 
-        for (let i = 0; i < dirs.length; i++) {
+        for (var i = 0; i < dirs.length; i++) {
           result[dirs[i]] = value;
         }
       } else {
@@ -257,5 +260,5 @@ const css = function css(args) {
 };
 
 exports.css = css;
-const _default = css;
-exports.default = _default;
+var _default = css;
+exports['default'] = _default;
