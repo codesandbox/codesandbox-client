@@ -505,7 +505,6 @@ export class DevTools extends React.PureComponent<Props, State> {
         <ContentContainer>
           {panes.map((view, i) => {
             const { Content } = this.getViews()[view.id];
-
             return (
               <Content
                 key={view.id + JSON.stringify(view.options)}

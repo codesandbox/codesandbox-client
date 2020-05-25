@@ -158,6 +158,10 @@ class ConsoleComponent extends React.Component<StyledProps> {
         },
       })
     );
+
+    if (method === 'error') {
+      this.props.openDevTools();
+    }
   }
 
   list;
