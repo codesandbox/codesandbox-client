@@ -1449,17 +1449,10 @@
     styled-components "^4.4.1"
     typeface-inter "^3.11.2"
 
-<<<<<<< HEAD
-"@codesandbox/template-icons@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-1.0.0.tgz#7b0dc79603ec3d6c9f65e2386be106b9eceb7c24"
-  integrity sha512-4rQ82ZPASUiXow4oRByIDHz46KBL2r6fNLHp6IeffGcQhMT6OpyvBCtxdd6i4EsOhw8mMfsbrxoRRszBx0hDjw==
-=======
 "@codesandbox/template-icons@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-1.1.0.tgz#ef37b97dc6057b63a500c6710fbca5f9c7a9730d"
   integrity sha512-p14rcYOSfI1A6UkFO/aS+H/cuJvlVT4bLpjCEt7kv+KCFaRjd70FDEzfyKLHH/s57k0W2MWrhB25fqPZm89OXg==
->>>>>>> master
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
