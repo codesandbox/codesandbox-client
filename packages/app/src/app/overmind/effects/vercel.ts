@@ -93,6 +93,9 @@ export default (() => {
               },
               { headers: getDefaultHeaders() }
             );
+            // We don't do anything with the error for two main reasons
+            // 1 - Vercel already shows an error if a ENV variable is missing and you try to deploy
+            // 2 - This will also fail if the user already has the secret in their account
             // eslint-disable-next-line no-empty
           } catch {}
         }
