@@ -180,7 +180,7 @@ export default function evaluate(
   }
   finalCode += `\n//# sourceURL=${location.origin}${path}`;
 
-  if (transpileBeforeExec || isESModule(finalCode)) {
+  if (transpileBeforeExec) {
     const { code: transpiledCode } = self.Babel.transform(finalCode, {
       presets: ['env'],
     });
