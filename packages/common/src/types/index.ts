@@ -308,7 +308,7 @@ export enum SandboxGitState {
   CONFLICT_SOURCE = 'conflict in source',
   CONFLICT_PR_BASE = 'conflict in pr base',
   OUT_OF_SYNC_SOURCE = 'out of sync with source',
-  OUT_OF_SYNC_PR_SOURCE = 'out of sync with pr source',
+  OUT_OF_SYNC_PR_BASE = 'out of sync with pr base',
   SYNCING = 'syncing',
   RESOLVED_SOURCE = 'resolved source',
   RESOLVED_PR_BASE = 'resolved pr base',

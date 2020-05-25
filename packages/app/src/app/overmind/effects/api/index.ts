@@ -9,6 +9,7 @@ import {
   GitCommit,
   GitFileCompare,
   GitInfo,
+  GitPathChanges,
   GitPr,
   Module,
   PaymentDetails,
@@ -134,7 +135,7 @@ export default {
       })
       .then(modulesResult => modulesResult.map(transformModule));
   },
-  getGitChanges(sandboxId: string): Promise<GitChanges> {
+  getGitChanges(sandboxId: string): Promise<GitPathChanges> {
     return api.get(`/sandboxes/${sandboxId}/git/diff`);
   },
   saveGitOriginalCommitSha(

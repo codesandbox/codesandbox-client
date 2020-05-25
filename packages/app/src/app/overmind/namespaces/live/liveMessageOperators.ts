@@ -296,7 +296,7 @@ export const onModuleUpdated: Operator<LiveMessage<{
   }
 
   actions.editor.internal.updatePreviewCode();
-  if (state.editor.currentSandbox.originalGit) {
+  if (state.editor.currentSandbox!.originalGit) {
     actions.git.updateGitChanges();
   }
 });
@@ -427,7 +427,7 @@ export const onDirectoryDeleted: Operator<LiveMessage<{
     effects.vscode.openModule(state.editor.mainModule);
   actions.editor.internal.updatePreviewCode();
 
-  if (state.editor.currentSandbox.originalGit) {
+  if (state.editor.currentSandbox!.originalGit) {
     actions.git.updateGitChanges();
   }
 });

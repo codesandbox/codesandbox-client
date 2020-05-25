@@ -3,15 +3,15 @@ export function createDiff(textA, textB) {
   const linesB = textB.split('\n');
   const lineCount = Math.max(linesA.length, linesB.length);
 
-  let result = [];
-  let currentConflict = null;
+  let result: string[] = [];
+  let currentConflict: { a: string[]; b: string[] } | null = null;
 
   function closeConflict(line) {
     result = result.concat(
       '<<<<<<< Codesandbox',
-      currentConflict.a,
+      currentConflict!.a,
       '=======',
-      currentConflict.b,
+      currentConflict!.b,
       '>>>>>>> Github',
       line
     );

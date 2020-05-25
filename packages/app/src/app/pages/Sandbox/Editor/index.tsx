@@ -4,6 +4,7 @@ import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import VERSION from '@codesandbox/common/lib/version';
 import {
   ThemeProvider as ComponentsThemeProvider,
+  Element,
   Stack,
 } from '@codesandbox/components';
 import VisuallyHidden from '@reach/visually-hidden';
