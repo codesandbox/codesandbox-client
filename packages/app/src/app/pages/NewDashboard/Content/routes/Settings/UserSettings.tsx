@@ -1,8 +1,7 @@
-import { Button, Element, Grid, Stack } from '@codesandbox/components';
-import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
-
+import { useOvermind } from 'app/overmind';
+import css from '@styled-system/css';
+import { Grid, Element, Stack, Button } from '@codesandbox/components';
 import { Header } from '../../../Components/Header';
 import { Box } from './components/Box';
 import { Link, Text } from './components/Typography';
@@ -18,7 +17,7 @@ export const UserSettings = () => {
   }, [actions.dashboard]);
 
   if (!user) {
-    return <Header />;
+    return <Header title="User Settings" />;
   }
 
   // @ts-ignore
@@ -27,7 +26,7 @@ export const UserSettings = () => {
 
   return (
     <>
-      <Header />
+      <Header title="User Settings" />
       <Grid
         columnGap={4}
         css={css({

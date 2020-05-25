@@ -1,21 +1,20 @@
+import React, { useEffect, useState } from 'react';
+import { useOvermind } from 'app/overmind';
+import css from '@styled-system/css';
 import {
-  Button,
-  Element,
   Grid,
+  Element,
+  Stack,
+  Button,
+  Menu,
   List,
   ListAction,
-  Menu,
-  Stack,
 } from '@codesandbox/components';
-import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
-import { useOvermind } from 'app/overmind';
-import React, { useEffect, useState } from 'react';
-
-import { Header } from '../../../Components/Header';
-import { randomColor } from '../../utils';
 import { Box } from './components/Box';
 import { Text } from './components/Typography';
+import { randomColor } from '../../utils';
+import { Header } from '../../../Components/Header';
 
 export const TeamSettings = () => {
   const [loading, setLoading] = useState(false);
@@ -41,12 +40,12 @@ export const TeamSettings = () => {
   };
 
   if (!team) {
-    return <Header />;
+    return <Header title="Team Settings" />;
   }
   const created = team.users.find(user => user.id === team.creatorId);
   return (
     <>
-      <Header />
+      <Header title="Team Settings" />
       <Grid
         columnGap={4}
         css={css({

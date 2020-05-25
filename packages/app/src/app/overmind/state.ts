@@ -4,14 +4,15 @@ import {
   Sandbox,
   UploadFile,
 } from '@codesandbox/common/lib/types';
-import { derived } from 'overmind';
 import store from 'store/dist/store.modern';
 
+import { Derive } from '.';
+
 type State = {
-  isPatron: boolean;
+  isPatron: Derive<State, boolean>;
   isFirstVisit: boolean;
-  isLoggedIn: boolean;
-  hasLogIn: boolean;
+  isLoggedIn: Derive<State, boolean>;
+  hasLogIn: Derive<State, boolean>;
   popularSandboxes: Sandbox[] | null;
   hasLoadedApp: boolean;
   jwt: string | null;
@@ -37,26 +38,24 @@ type State = {
   maxStorage: number;
   usedStorage: number;
   updateStatus: string | null;
-  isContributor: (username: String) => boolean;
+  isContributor: Derive<State, (username: String) => boolean>;
   signInModalOpen: boolean;
   redirectOnLogin: string | null;
 };
 
 export const state: State = {
   isFirstVisit: false,
-  isPatron: derived(({ user }: State) =>
-    Boolean(user && user.subscription && user.subscription.since)
-  ),
-  isLoggedIn: derived(({ jwt, user }: State) => Boolean(jwt) && Boolean(user)),
+  isPatron: ({ user }) =>
+    Boolean(user && user.subscription && user.subscription.since),
+  isLoggedIn: ({ jwt, user }) => Boolean(jwt) && Boolean(user),
   // TODO: Should not reference store directly here, rather initialize
   // the state with "onInitialize" setting the jwt
-  hasLogIn: derived(({ jwt }: State) => !!jwt || !!store.get('jwt')),
-  isContributor: derived(({ contributors }: State) => username =>
+  hasLogIn: ({ jwt }) => !!jwt || !!store.get('jwt'),
+  isContributor: ({ contributors }) => username =>
     contributors.findIndex(
       contributor =>
         contributor.toLocaleLowerCase() === username.toLocaleLowerCase()
-    ) > -1
-  ),
+    ) > -1,
   popularSandboxes: null,
   hasLoadedApp: false,
   jwt: null,

@@ -1,6 +1,5 @@
 import { Profile, Sandbox, UserSandbox } from '@codesandbox/common/lib/types';
-import { RootState } from 'app/overmind';
-import { derived } from 'overmind';
+import { Derive } from 'app/overmind';
 
 type State = {
   profiles: {
@@ -25,11 +24,11 @@ type State = {
   currentLikedSandboxesPage: number;
   isLoadingSandboxes: boolean;
   sandboxToDeleteId: string | null;
-  current: Profile | null;
-  isProfileCurrentUser: boolean;
-  showcasedSandbox: Sandbox | null;
-  currentSandboxes: { [page: string]: Sandbox[] };
-  currentLikedSandboxes: { [page: string]: Sandbox[] };
+  current: Derive<State, Profile | null>;
+  isProfileCurrentUser: Derive<State, boolean>;
+  showcasedSandbox: Derive<State, Sandbox | null>;
+  currentSandboxes: Derive<State, { [page: string]: Sandbox[] }>;
+  currentLikedSandboxes: Derive<State, { [page: string]: Sandbox[] }>;
 };
 
 export const state: State = {
@@ -45,29 +44,24 @@ export const state: State = {
   currentLikedSandboxesPage: 1,
   isLoadingSandboxes: false,
   sandboxToDeleteId: null,
-  isProfileCurrentUser: derived((currentState: State, rootState: RootState) =>
+  isProfileCurrentUser: (currentState, rootState) =>
     Boolean(
       rootState.user && rootState.user.id === currentState.currentProfileId
-    )
-  ),
-  current: derived((currentState: State) =>
+    ),
+  current: currentState =>
     currentState.currentProfileId
       ? currentState.profiles[currentState.currentProfileId]
-      : null
-  ),
-  showcasedSandbox: derived((currentState: State, rootState: RootState) =>
+      : null,
+  showcasedSandbox: (currentState, rootState) =>
     currentState.current && currentState.current.showcasedSandboxShortid
       ? rootState.editor.sandboxes[currentState.current.showcasedSandboxShortid]
-      : null
-  ),
-  currentLikedSandboxes: derived((currentState: State) =>
+      : null,
+  currentLikedSandboxes: currentState =>
     currentState.current
       ? currentState.likedSandboxes[currentState.current.username]
-      : []
-  ),
-  currentSandboxes: derived((currentState: State) =>
+      : [],
+  currentSandboxes: currentState =>
     currentState.current
       ? currentState.sandboxes[currentState.current.username]
-      : []
-  ),
+      : [],
 };
