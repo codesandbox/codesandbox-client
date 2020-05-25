@@ -55,13 +55,40 @@ describe('convert-esmodule', () => {
   it('can convert named imports', () => {
     const code = `
       import {a, b, c} from './b';
+
+      a();
+      b();
+      c();
     `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('can convert named imports with different scopes', () => {
+    const code = `
+      import {a} from './b';
+
+      a();
+
+      function test1() {
+        a();
+      }
+      function test2(a) {
+        a();
+
+        function test3() {
+          a();
+        }
+      }
+    `;
+
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
   it('can handle as imports', () => {
     const code = `
       import { a as b } from './b';
+
+      const func = b();
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });
@@ -76,6 +103,9 @@ describe('convert-esmodule', () => {
   it('can handle inline comments', () => {
     const code = `
       import { a as b, /* HELLO WORLD */ c } from './b';
+
+      b();
+      c();
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });
@@ -124,6 +154,40 @@ describe('convert-esmodule', () => {
   it('handles default as exports', () => {
     const code = `
     export { default as Field } from './Field';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles named exports', () => {
+    const code = `
+    const a = 'c';
+    export { a };
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles re-exports in named exports', () => {
+    const code = `
+    import { a } from './b';
+    export { a };
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles re-exports in named exports with a alias', () => {
+    const code = `
+    import { a } from './b';
+    const c = 'test';
+    export { a as b, c };
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles default imports', () => {
+    const code = `
+    import * as React from 'react';
+
+    console.log(React.Component);
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });

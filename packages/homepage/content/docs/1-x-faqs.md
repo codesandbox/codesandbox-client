@@ -68,6 +68,12 @@ The ordering is maintained within the sandbox. You can also achieve this change
 by setting a value for "view" in a
 [sandbox config file](/docs/configuration#sandbox-configuration).
 
+## How do I change the font used in the editor?
+
+Ensure the font you want to use has been installed on your computer, then put
+the name of it first in the comma-separated list under 'Editor: Font Family'
+from File > Preferences > Settings in the editor.
+
 ## Are there any limitations with sandboxes?
 
 - A sandbox cannot use more than 500 modules (files). Note though that

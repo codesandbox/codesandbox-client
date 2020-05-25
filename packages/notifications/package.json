@@ -16,9 +16,8 @@
   },
   "dependencies": {
     "react-spring": "^8.0.25",
-    "styled-components": "^4.4.1",
-    "uuid": "^3.3.2",
-    "@codesandbox/components": "^0.0.2"
+    "styled-components": "^5.1.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "rimraf": "^2.6.3"

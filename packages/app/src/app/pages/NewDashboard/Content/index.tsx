@@ -26,8 +26,6 @@ export const Content = () => {
     <Element
       css={css({
         maxWidth: 992,
-        paddingX: 4,
-        paddingY: 10,
         width: '100%',
         margin: '0 auto',
       })}

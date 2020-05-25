@@ -9,7 +9,7 @@ import { aliases, cleanUsingUnmount } from './utils';
 export default function initialize() {
   const preset = new Preset(
     'create-react-app',
-    ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx'],
+    ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx', 'mjs'],
     aliases,
     {
       hasDotEnv: true,

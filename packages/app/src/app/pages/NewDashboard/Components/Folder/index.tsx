@@ -3,13 +3,14 @@ import { join, dirname } from 'path';
 import { useDrop, useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { isMenuClicked } from '@codesandbox/components';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { useOvermind } from 'app/overmind';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
 import { DragPreview } from './DragPreview';
+import { useSelection } from '../Selection';
 
 export const Folder = ({
   name = '',
@@ -34,7 +35,7 @@ export const Folder = ({
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewName(event.target.value);
   };
-  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === ESC) {
       // Reset value and exit without saving
       setNewName(name);
@@ -70,7 +71,7 @@ export const Folder = ({
     return setEditing(false);
   };
 
-  const onBlur = () => {
+  const onInputBlur = () => {
     // save value when you click outside or tab away
     onSubmit();
   };
@@ -88,9 +89,56 @@ export const Folder = ({
     if (isNewFolder) enterEditing();
   }, [isNewFolder]);
 
+  /* View logic */
+
+  let viewMode: string;
+  if (location.pathname.includes('deleted')) viewMode = 'list';
+  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else viewMode = dashboard.viewMode;
+
+  const Component = viewMode === 'list' ? FolderListItem : FolderCard;
+
+  // interactions
+  const {
+    selectedIds,
+    onClick: onSelectionClick,
+    onBlur,
+    onKeyDown,
+    onDragStart,
+    thumbnailRef,
+    isDragging: isAnythingDragging,
+  } = useSelection();
+
+  const selected = selectedIds.includes(path);
+  const isDragging = isAnythingDragging && selected;
+
   /* Prevent opening sandbox while interacting */
   const onClick = event => {
     if (editing || isMenuClicked(event)) event.preventDefault();
+    onSelectionClick(event, path);
+  };
+
+  const history = useHistory();
+  const onDoubleClick = event => {
+    if (editing || isDragging || isMenuClicked(event)) return;
+
+    const url = '/new-dashboard/all' + path;
+    if (event.ctrlKey || event.metaKey) {
+      window.open(url, '_blank');
+    } else {
+      history.push(url);
+    }
+  };
+
+  const interactionProps = {
+    tabIndex: 0, // make div focusable
+    style: { outline: 'none' }, // we handle outline with border
+    selected,
+    onClick,
+    onDoubleClick,
+    onBlur,
+    onKeyDown,
+    'data-selection-id': path,
   };
 
   /* Drop target logic */
@@ -111,7 +159,7 @@ export const Folder = ({
   /* Drag logic */
   type ItemTypes = { id: string; type: string };
 
-  const [{ isDragging }, dragRef, preview] = useDrag({
+  const [, dragRef, preview] = useDrag({
     item: { path, type: 'folder' },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
@@ -129,35 +177,22 @@ export const Folder = ({
         });
       }
     },
-    collect: monitor => ({
-      isDragging: monitor.isDragging(),
-    }),
   });
 
   const dragProps = {
     ref: dragRef,
   };
 
-  const thumbnailRef = React.useRef();
-
   React.useEffect(() => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, [preview]);
-
-  /* View logic */
-
-  let viewMode: string;
-  if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
-  else viewMode = dashboard.viewMode;
-
-  const Component = viewMode === 'list' ? FolderListItem : FolderCard;
 
   const folderProps = {
     name,
     path,
     numberOfSandboxes: sandboxes,
     onClick,
+    onDoubleClick,
     // edit mode
     editing,
     enterEditing,
@@ -165,9 +200,9 @@ export const Folder = ({
     newName,
     inputRef,
     onChange,
-    onKeyDown,
+    onInputKeyDown,
     onSubmit,
-    onBlur,
+    onInputBlur,
     // drag preview
     thumbnailRef,
     opacity: isDragging ? 0.25 : 1,
@@ -175,7 +210,7 @@ export const Folder = ({
 
   return (
     <>
-      <div {...dragProps}>
+      <div {...dragProps} onDragStart={event => onDragStart(event, path)}>
         <motion.div
           initial={{ scale: 1 }}
           animate={{ scale: isOver && canDrop ? 1.02 : 1 }}
@@ -183,6 +218,7 @@ export const Folder = ({
         >
           <Component
             {...folderProps}
+            {...interactionProps}
             showDropStyles={isOver && canDrop}
             {...props}
           />
