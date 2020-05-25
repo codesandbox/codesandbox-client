@@ -28,6 +28,7 @@ import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
 import { TextOperation } from 'ot';
 import { json } from 'overmind';
+import FontFaceObserver from 'fontfaceobserver';
 import io from 'socket.io-client';
 
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
@@ -196,6 +197,8 @@ export class VSCodeEffect {
       this.setVimExtensionEnabled(
         localStorage.getItem('settings.vimmode') === 'true'
       );
+
+      return new FontFaceObserver('MonoLisa').load();
     });
 
     // Only set the read only state when the editor is initialized.

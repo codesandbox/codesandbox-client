@@ -1,4 +1,5 @@
 import React from 'react';
+import FontFaceObserver from 'fontfaceobserver';
 
 function noop() {}
 
@@ -65,9 +66,18 @@ class MonacoEditor extends React.PureComponent {
       }
 
       if (firstFont === 'MonoLisa') {
-        if (this.editor && this.props.getEditorOptions) {
-          this.editor.updateOptions(this.props.getEditorOptions());
-        }
+        const font = new FontFaceObserver(firstFont);
+
+        font.load().then(
+          () => {
+            if (this.editor && this.props.getEditorOptions) {
+              this.editor.updateOptions(this.props.getEditorOptions());
+            }
+          },
+          () => {
+            // Font was not loaded in 3s, do nothing
+          }
+        );
 
         appliedOptions.fontFamily = fonts.slice(1).join(', ');
       }
