@@ -115,6 +115,7 @@ function getItemStyles({
   // overlapping with sidebar
   const isOver = currentOffset && currentOffset.x < SIDEBAR_WIDTH;
   let backgroundColor = viewMode === 'list' ? 'rgba(36,36,36,1)' : null; // grays.600
+  const thumbnailElement = thumbnailRef.current;
 
   if (isOver) {
     if (viewMode === 'list') {
@@ -124,8 +125,7 @@ function getItemStyles({
     }
   } else if (viewMode === 'list') {
     size = { width: 'auto', height: 'fit-content' };
-  } else {
-    const thumbnailElement = thumbnailRef.current;
+  } else if (thumbnailElement) {
     const thumbnailRect = thumbnailElement.getBoundingClientRect();
     size = { width: thumbnailRect.width, height: thumbnailRect.height };
   }

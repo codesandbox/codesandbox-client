@@ -145,7 +145,7 @@ export const Folder = ({
 
   const [{ isOver, canDrop }, dropRef] = useDrop({
     accept: ['sandbox', 'folder'],
-    drop: () => ({ path: path.replace('all', '') }),
+    drop: () => ({ path }),
     collect: monitor => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path),
@@ -157,10 +157,14 @@ export const Folder = ({
   };
 
   /* Drag logic */
-  type ItemTypes = { id: string; type: string };
+
+  const parent = path
+    .split('/')
+    .slice(0, -1)
+    .join('/');
 
   const [, dragRef, preview] = useDrag({
-    item: { path, type: 'folder' },
+    item: { type: 'folder', path, parent },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
       if (!dropResult || !dropResult.path) return;
