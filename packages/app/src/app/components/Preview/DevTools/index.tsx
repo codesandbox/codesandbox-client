@@ -1,20 +1,19 @@
+import { TemplateType } from '@codesandbox/common/lib/templates';
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
+import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { Elastic, TweenMax } from 'gsap';
 import React from 'react';
-import { TweenMax, Elastic } from 'gsap';
 import FaAngleUp from 'react-icons/lib/fa/angle-up';
 import store from 'store/dist/store.modern';
 
-import { TemplateType } from '@codesandbox/common/lib/templates';
-import { ViewConfig } from '@codesandbox/common/lib/templates/template';
-import track from '@codesandbox/common/lib/utils/analytics';
-
-import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 import { console } from './Console';
-import { DevToolTabs } from './Tabs';
+import { Container, ContentContainer, Header } from './elements';
 import { problems } from './Problems';
 import { reactDevTools } from './React-Devtools';
+import { DevToolTabs } from './Tabs';
 import { terminal } from './Terminal';
 import { tests } from './Tests';
-import { Container, Header, ContentContainer } from './elements';
 
 function unFocus(document, window) {
   if (document.selection) {
@@ -45,14 +44,14 @@ export interface IViews {
 export interface IViewAction {
   title: string;
   onClick: () => void;
-  Icon: React.ComponentClass<any, any>;
+  Icon: React.ComponentType<any>;
   disabled?: boolean;
 }
 
 export interface IViewType {
   id: string;
   title: string | ((options: any) => string);
-  Content: React.ComponentType<DevToolProps>;
+  Content: React.ComponentType<any>;
   actions: IViewAction[] | ((info: { owned: boolean }) => IViewAction[]);
 }
 

@@ -130,7 +130,8 @@ will be in the sandbox, an example body would be:
 }
 ```
 
-You can import binary files by setting `isBinary` to `true` and `content` as a URL to the file hosted externally. For example:
+You can import binary files by setting `isBinary` to `true` and `content` as a
+URL to the file hosted externally. For example:
 
 ```json
 {

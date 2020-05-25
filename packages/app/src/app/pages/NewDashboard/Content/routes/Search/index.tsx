@@ -1,13 +1,12 @@
-import React, { useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
+import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
+import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
-import { getPossibleTemplates } from '../../utils';
+import React, { useEffect } from 'react';
+import { withRouter } from 'react-router-dom';
 
 export const SearchComponent = ({ location }) => {
   const {
@@ -21,18 +20,9 @@ export const SearchComponent = ({ location }) => {
     actions.dashboard.getPage(sandboxesTypes.SEARCH);
   }, [actions.dashboard, location.search, filters, orderBy]);
 
-  const query = location.search.split('query=')[1];
-  const length = (sandboxes.SEARCH || []).length;
-  const title = `${length} ${
-    length === 1 ? 'result' : 'results'
-  } for "${query}"`;
-
   return (
     <SelectionProvider sandoxes={sandboxes.SEARCH}>
-      <Header
-        title={title}
-        templates={getPossibleTemplates(sandboxes.SEARCH)}
-      />
+      <Header />
       <section style={{ position: 'relative' }}>
         {sandboxes.SEARCH ? (
           <SandboxGrid>

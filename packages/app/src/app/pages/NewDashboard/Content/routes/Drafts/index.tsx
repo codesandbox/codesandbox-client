@@ -1,15 +1,13 @@
-import React, { useEffect } from 'react';
+import { Column, Element } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Element, Column } from '@codesandbox/components';
-
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
 import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
 import { SkeletonCard } from 'app/pages/NewDashboard/Components/Sandbox/SandboxCard';
+import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import React, { useEffect } from 'react';
 
-import { getPossibleTemplates } from '../../utils';
 import { useBottomScroll } from './useBottomScroll';
 
 export const Drafts = () => {
@@ -28,10 +26,7 @@ export const Drafts = () => {
   return (
     <SelectionProvider sandboxes={visibleSandboxes}>
       <Element style={{ height: '100%', position: 'relative' }}>
-        <Header
-          path="Drafts"
-          templates={getPossibleTemplates(sandboxes.DRAFTS)}
-        />
+        <Header />
         {sandboxes.DRAFTS ? (
           <SandboxGrid>
             {visibleSandboxes.map(sandbox => (
