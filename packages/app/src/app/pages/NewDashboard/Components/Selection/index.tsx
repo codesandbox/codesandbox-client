@@ -20,6 +20,7 @@ const Context = React.createContext({
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {},
   onDragStart: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
+  onDrop: (droppedResult: any) => {},
   thumbnailRef: null,
   isDragging: false,
 });
@@ -30,13 +31,14 @@ export const SelectionProvider = ({
   ...props
 }) => {
   const selectionItems = [
-    ...folders.map(folder => folder.path),
-    ...sandboxes.map(sandbox => sandbox.id),
+    ...(folders || []).map(folder => folder.path),
+    ...(sandboxes || []).map(sandbox => sandbox.id),
   ];
   const [selectedIds, setSelectedIds] = React.useState([]);
 
   const {
     state: { dashboard },
+    actions,
   } = useOvermind();
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
@@ -197,6 +199,37 @@ export const SelectionProvider = ({
     }
   };
 
+  const onDrop = dropResult => {
+    const sandboxIds = selectedIds.filter(isSandboxId);
+    const folderPaths = selectedIds.filter(isFolderPath);
+
+    if (dropResult.path === 'deleted') {
+      actions.dashboard.deleteSandbox(sandboxIds);
+      folderPaths.forEach(path => actions.dashboard.deleteFolder({ path }));
+    } else if (dropResult.path === 'templates') {
+      actions.dashboard.makeTemplate(sandboxIds);
+    } else if (dropResult.path === 'drafts') {
+      actions.dashboard.addSandboxesToFolder({
+        sandboxIds,
+        collectionPath: '/',
+      });
+    } else {
+      actions.dashboard.addSandboxesToFolder({
+        sandboxIds,
+        collectionPath: dropResult.path,
+      });
+      // moving folders into another folder
+      // is the same as changing it's path
+      folderPaths.forEach(path => {
+        const { name } = folders.find(folder => folder.path === path);
+        actions.dashboard.renameFolder({
+          path,
+          newPath: dropResult.path + '/' + name,
+        });
+      });
+    }
+  };
+
   // attach to thumbnail, we use this to calculate size
   const thumbnailRef = React.useRef<HTMLDivElement>();
 
@@ -212,6 +245,7 @@ export const SelectionProvider = ({
         onBlur,
         onKeyDown,
         onDragStart,
+        onDrop,
         thumbnailRef,
         isDragging,
       }}
@@ -224,6 +258,8 @@ export const SelectionProvider = ({
       </Element>
       <DragPreview
         sandboxes={sandboxes || []}
+        folders={folders || []}
+        selectionItems={selectionItems}
         selectedIds={selectedIds}
         thumbnailRef={thumbnailRef}
         viewMode={viewMode}
@@ -241,6 +277,7 @@ export const useSelection = () => {
     onBlur,
     onKeyDown,
     onDragStart,
+    onDrop,
     thumbnailRef,
     isDragging,
   } = React.useContext(Context);
@@ -252,6 +289,7 @@ export const useSelection = () => {
     onBlur,
     onKeyDown,
     onDragStart,
+    onDrop,
     thumbnailRef,
     isDragging,
   };
@@ -267,3 +305,6 @@ const scrollIntoViewport = (id: string) => {
     element.scrollIntoView({ behavior: 'smooth' });
   }
 };
+
+const isFolderPath = id => id.startsWith('/');
+const isSandboxId = id => !id.startsWith('/');
