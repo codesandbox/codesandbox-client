@@ -1,13 +1,13 @@
+import { Column, Element } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
+import { Header } from 'app/pages/NewDashboard/Components/Header';
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
-import { Element, Column } from '@codesandbox/components';
-import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { getPossibleTemplates } from '../../utils';
-import { SandboxGrid } from '../../../Components/SandboxGrid';
-import { Sandbox } from '../../../Components/Sandbox';
+
 import { Folder } from '../../../Components/Folder';
+import { Sandbox } from '../../../Components/Sandbox';
 import { SkeletonCard } from '../../../Components/Sandbox/SandboxCard';
+import { SandboxGrid } from '../../../Components/SandboxGrid';
 
 export const AllPage = ({ match: { params }, history }) => {
   const [level, setLevel] = useState(0);
@@ -52,11 +52,7 @@ export const AllPage = ({ match: { params }, history }) => {
 
   return (
     <Element style={{ height: '100%', position: 'relative' }}>
-      <Header
-        path={param}
-        templates={getPossibleTemplates(allCollections)}
-        createNewFolder={() => setCreating(true)}
-      />
+      <Header />
       {allCollections ? (
         <SandboxGrid>
           {creating && <Folder key="new" setCreating={setCreating} />}

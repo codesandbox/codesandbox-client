@@ -1,12 +1,13 @@
-import { useOvermind } from 'app/overmind';
-import React, { useEffect } from 'react';
+import { Column, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Element, Column } from '@codesandbox/components';
+import React, { useEffect } from 'react';
+
 import { Header } from '../../../Components/Header';
-import { SandboxGrid } from '../../../Components/SandboxGrid';
 import { Sandbox } from '../../../Components/Sandbox';
 import { SkeletonCard } from '../../../Components/Sandbox/SandboxCard';
+import { SandboxGrid } from '../../../Components/SandboxGrid';
 
 export const Templates = () => {
   const {
@@ -22,7 +23,7 @@ export const Templates = () => {
 
   return (
     <Element css={css({ position: 'relative' })}>
-      <Header title="Templates" templates={[]} />
+      <Header />
       {sandboxes.TEMPLATES ? (
         <SandboxGrid>
           {sandboxes.TEMPLATES.map(({ sandbox }) => (

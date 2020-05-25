@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
-import { useOvermind } from 'app/overmind';
 import { Stack } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { getPossibleTemplates } from '../../utils';
+import React, { useEffect } from 'react';
 
 import { SandboxesGroup, SkeletonGroup } from './SandboxesGroup';
 
@@ -21,10 +20,7 @@ export const Recent = () => {
 
   return (
     <>
-      <Header
-        title="Recently Modified Sandboxes"
-        templates={getPossibleTemplates(sandboxes.RECENT)}
-      />
+      <Header />
       <section style={{ position: 'relative' }}>
         {sandboxes.RECENT ? (
           <Stack as="section" direction="vertical" gap={8}>

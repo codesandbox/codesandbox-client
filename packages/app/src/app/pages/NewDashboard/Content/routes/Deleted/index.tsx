@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
 import { Element, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
-import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
+import { Loading } from 'app/pages/NewDashboard/Components/Loading';
+import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
+import React, { useEffect } from 'react';
 
 export const Deleted = () => {
   const {
@@ -20,7 +20,7 @@ export const Deleted = () => {
 
   return (
     <Element style={{ position: 'relative' }}>
-      <Header title="Recently Deleted" />
+      <Header />
       {sandboxes.DELETED ? (
         <>
           {deletedSandboxesByTime.week.length ? (
