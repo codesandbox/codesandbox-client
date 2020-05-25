@@ -1,10 +1,8 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import {
   Stack,
   Element,
   Text,
-  Link,
   Stats,
   Input,
   SkeletonText,
@@ -17,100 +15,96 @@ export const SandboxCard = ({
   isTemplate = false,
   sandboxTitle,
   newTitle,
-  url,
+  // interactions
+  selected,
+  onClick,
+  onDoubleClick,
+  onBlur,
+  onKeyDown,
   // editing
   edit,
   inputRef,
   onChange,
-  onKeyDown,
+  onInputKeyDown,
   onSubmit,
-  onBlur,
+  onInputBlur,
   enterEditing,
   // drag preview
   thumbnailRef,
   opacity,
   ...props
 }) => (
-  <Link as={RouterLink} to={url} {...props}>
-    <Stack
-      direction="vertical"
-      gap={2}
+  <Stack
+    direction="vertical"
+    gap={2}
+    onClick={onClick}
+    onDoubleClick={onDoubleClick}
+    onBlur={onBlur}
+    onKeyDown={onKeyDown}
+    {...props}
+    css={css({
+      width: '100%',
+      height: 240,
+      backgroundColor: 'grays.700',
+      border: '1px solid',
+      borderColor: selected ? 'blues.600' : 'grays.600',
+      borderRadius: 'medium',
+      overflow: 'hidden',
+      transition: 'all ease-in-out',
+      transitionDuration: theme => theme.speeds[4],
+      opacity,
+      ':hover, :focus, :focus-within': {
+        cursor: edit ? 'normal' : 'pointer',
+        boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+      },
+    })}
+  >
+    <Element
+      as="div"
+      ref={thumbnailRef}
       css={css({
-        width: '100%',
-        height: 240,
-        backgroundColor: 'grays.700',
-        border: '1px solid',
-        borderColor: 'grays.600',
-        borderRadius: 'medium',
-        overflow: 'hidden',
-        transition: 'all ease-in-out',
-        transitionDuration: theme => theme.speeds[4],
-        opacity,
-        ':hover, :focus, :focus-within': {
-          cursor: edit ? 'normal' : 'pointer',
-          boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
-        },
+        height: 160,
+        backgroundColor: 'grays.600',
+        backgroundImage: `url(${sandbox.screenshotUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
       })}
-    >
-      <Element
-        as="div"
-        ref={thumbnailRef}
-        css={css({
-          height: 160,
-          backgroundColor: 'grays.600',
-          backgroundImage: `url(${sandbox.screenshotUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat',
-        })}
+    />
+    <Stack justify="space-between" align="center" marginLeft={4}>
+      {edit ? (
+        <form onSubmit={onSubmit}>
+          <Input
+            value={newTitle}
+            ref={inputRef}
+            onChange={onChange}
+            onKeyDown={onInputKeyDown}
+            onBlur={onInputBlur}
+          />
+        </form>
+      ) : (
+        <Text size={3} weight="medium">
+          {sandboxTitle}
+        </Text>
+      )}
+      <MenuOptions
+        sandbox={sandbox}
+        isTemplate={isTemplate}
+        onRename={enterEditing}
       />
-      <Stack justify="space-between" align="center" marginLeft={4}>
-        {edit ? (
-          <form onSubmit={onSubmit}>
-            <Input
-              value={newTitle}
-              ref={inputRef}
-              onChange={onChange}
-              onKeyDown={onKeyDown}
-              onBlur={onBlur}
-            />
-          </form>
-        ) : (
-          <Text size={3} weight="medium">
-            {sandboxTitle}
-          </Text>
-        )}
-        <MenuOptions
-          sandbox={sandbox}
-          isTemplate={isTemplate}
-          onRename={enterEditing}
-        />
-      </Stack>
-      <Stack marginX={4}>
-        <Stats
-          css={css({ fontSize: 2 })}
-          sandbox={{
-            viewCount: kFormatter(sandbox.viewCount),
-            likeCount: kFormatter(sandbox.likeCount),
-            forkCount: kFormatter(sandbox.forkCount),
-          }}
-        />
-      </Stack>
     </Stack>
-  </Link>
+    <Stack marginX={4}>
+      <Stats
+        css={css({ fontSize: 2 })}
+        sandbox={{
+          viewCount: sandbox.viewCount,
+          likeCount: sandbox.likeCount,
+          forkCount: sandbox.forkCount,
+        }}
+      />
+    </Stack>
+  </Stack>
 );
-
-const kFormatter = (num: number): string => {
-  if (num > 999999) {
-    return (num / 1000000).toFixed(1) + 'M';
-  }
-
-  if (num > 999) {
-    return (num / 1000).toFixed(1) + 'K';
-  }
-
-  return num.toString();
-};
 
 export const SkeletonCard = () => (
   <Stack

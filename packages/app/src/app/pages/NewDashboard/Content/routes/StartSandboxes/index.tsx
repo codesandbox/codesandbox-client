@@ -11,9 +11,10 @@ import {
   Icon,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { SandboxGrid } from '../../../Components/SandboxGrid';
-import { Sandbox } from '../../../Components/Sandbox';
-import { SkeletonCard } from '../../../Components/Sandbox/SandboxCard';
+import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
+import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
+import { SkeletonCard } from 'app/pages/NewDashboard/Components/Sandbox/SandboxCard';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 
 export const StartSandboxes = () => {
   const {
@@ -28,7 +29,12 @@ export const StartSandboxes = () => {
   }, [actions.dashboard]);
 
   return (
-    <>
+    <SelectionProvider
+      sandboxes={[
+        ...(sandboxes.TEMPLATE_START_PAGE || []),
+        ...(sandboxes.RECENT_START_PAGE || []),
+      ]}
+    >
       <section style={{ position: 'relative' }}>
         <Stack justify="space-between" marginBottom={4}>
           <Text>Recently Used Templates</Text>
@@ -96,7 +102,7 @@ export const StartSandboxes = () => {
           </SandboxGrid>
         )}
       </section>
-    </>
+    </SelectionProvider>
   );
 };
 
@@ -113,8 +119,8 @@ const NewSandbox = ({ onClick }) => (
       borderRadius: 'medium',
       transition: 'all ease-in',
       transitionDuration: theme => theme.speeds[2],
-      ':hover, :focus': {
-        transform: 'scale(0.98)',
+      ':hover, :focus, :focus-within': {
+        boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
       },
     })}
   >

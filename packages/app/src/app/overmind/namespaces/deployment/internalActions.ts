@@ -1,6 +1,6 @@
 import { AsyncAction } from 'app/overmind';
 
-export const getZeitUserDetails: AsyncAction = async ({
+export const getVercelUserDetails: AsyncAction = async ({
   state,
   actions,
   effects,
@@ -11,16 +11,16 @@ export const getZeitUserDetails: AsyncAction = async ({
     state.user.integrations.zeit.token &&
     !state.user.integrations.zeit.email
   ) {
-    state.isLoadingZeit = true;
+    state.isLoadingVercel = true;
     try {
-      const zeitDetails = await effects.zeit.getUser();
-      state.user.integrations.zeit.email = zeitDetails.email;
+      const vercelDetails = await effects.vercel.getUser();
+      state.user.integrations.zeit.email = vercelDetails.email;
     } catch (error) {
       actions.internal.handleError({
         message: 'Could not authorize with Vercel',
         error,
       });
     }
-    state.isLoadingZeit = false;
+    state.isLoadingVercel = false;
   }
 };

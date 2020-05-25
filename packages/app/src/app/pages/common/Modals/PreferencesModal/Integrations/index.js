@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ZeitIntegration } from 'app/pages/common/ZeitIntegration';
+import { VercelIntegration } from 'app/pages/common/VercelIntegration';
 import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 import { Text } from '@codesandbox/components';
 
@@ -14,7 +14,7 @@ export function Integrations() {
       </Text>
 
       <Container>
-        <ZeitIntegration />
+        <VercelIntegration />
         <GithubIntegration />
       </Container>
     </div>
