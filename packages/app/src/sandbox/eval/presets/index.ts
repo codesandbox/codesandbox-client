@@ -93,7 +93,7 @@ export default class Preset {
     this.alias = alias || {};
     this.aliasedPathCache = {};
     this.defaultAliases = alias || {};
-    this.ignoredExtensions = ignoredExtensions || ['js', 'jsx', 'json'];
+    this.ignoredExtensions = ignoredExtensions || ['js', 'jsx', 'json', 'mjs'];
 
     const noop = () => {};
     this.processDependencies = processDependencies || (async deps => deps);

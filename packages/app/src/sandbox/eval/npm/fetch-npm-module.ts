@@ -172,7 +172,7 @@ const getFetchProtocol = (depVersion: string, useFallback = false) => {
     return urlProtocols.jsDelivrGH;
   }
 
-  return useFallback ? urlProtocols.unpkg : urlProtocols.jsDelivrNPM;
+  return useFallback ? urlProtocols.jsDelivrNPM : urlProtocols.unpkg;
 };
 
 // Strips the version of a path, eg. test/1.3.0 -> test
@@ -271,7 +271,7 @@ function resolvePath(
   path: string,
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: Array<string> = ['js', 'jsx', 'json'],
+  defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs'],
   meta = {}
 ): Promise<string> {
   const currentPath = currentTModule.module.path;
@@ -380,7 +380,7 @@ type DependencyVersionResult =
 async function getDependencyVersion(
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: string[] = ['js', 'jsx', 'json'],
+  defaultExtensions: string[] = ['js', 'jsx', 'json', 'mjs'],
   dependencyName: string
 ): Promise<DependencyVersionResult | null> {
   const { manifest } = manager;
@@ -470,7 +470,7 @@ export default async function fetchModule(
   path: string,
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: Array<string> = ['js', 'jsx', 'json']
+  defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs']
 ): Promise<Module> {
   const currentPath = currentTModule.module.path;
   // Get the last part of the path as dependency name for paths like

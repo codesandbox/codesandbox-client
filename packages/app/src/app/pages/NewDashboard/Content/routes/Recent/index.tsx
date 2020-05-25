@@ -2,7 +2,8 @@ import { Stack } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import React, { useEffect } from 'react';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import React from 'react';
 
 import { SandboxesGroup, SkeletonGroup } from './SandboxesGroup';
 
@@ -14,12 +15,12 @@ export const Recent = () => {
     },
   } = useOvermind();
 
-  useEffect(() => {
+  React.useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.RECENT);
   }, [actions.dashboard]);
 
   return (
-    <>
+    <SelectionProvider sandboxes={sandboxes.RECENT}>
       <Header />
       <section style={{ position: 'relative' }}>
         {sandboxes.RECENT ? (
@@ -38,6 +39,6 @@ export const Recent = () => {
           </Stack>
         )}
       </section>
-    </>
+    </SelectionProvider>
   );
 };

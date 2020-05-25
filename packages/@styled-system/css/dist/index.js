@@ -1,7 +1,26 @@
 /* eslint-disable */
+exports.__esModule = true;
+exports.default = exports.css = exports.responsive = exports.get = void 0;
+
+function _extends() {
+  _extends =
+    Object.assign ||
+    function(target) {
+      for (let i = 1; i < arguments.length; i++) {
+        const source = arguments[i];
+        for (const key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+      return target;
+    };
+  return _extends.apply(this, arguments);
+}
 
 // based on https://github.com/developit/dlv
-export var get = function get(obj, key, def, p, undef) {
+const get = function get(obj, key, def, p, undef) {
   key = key && key.split ? key.split('.') : [key];
 
   for (p = 0; p < key.length; p++) {
@@ -10,9 +29,15 @@ export var get = function get(obj, key, def, p, undef) {
 
   return obj === undef ? def : obj;
 };
+
+exports.get = get;
 const defaultBreakpoints = [40, 52, 64].map(function(n) {
   return n + 'em';
 });
+const defaultTheme = {
+  space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
+  fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 72],
+};
 const aliases = {
   bg: 'backgroundColor',
   m: 'margin',
@@ -142,7 +167,8 @@ const transforms = [
     ...((_extends2 = {}), (_extends2[curr] = positiveOrNegative), _extends2),
   };
 }, {});
-export var responsive = function responsive(styles) {
+
+const responsive = function responsive(styles) {
   return function(theme) {
     const next = {};
     const breakpoints = get(theme, 'breakpoints', defaultBreakpoints);
@@ -179,7 +205,10 @@ export var responsive = function responsive(styles) {
     return next;
   };
 };
-export var css = function css(args) {
+
+exports.responsive = responsive;
+
+const css = function css(args) {
   return function(props) {
     if (props === void 0) {
       props = {};
@@ -226,4 +255,7 @@ export var css = function css(args) {
     return result;
   };
 };
-export default css;
+
+exports.css = css;
+const _default = css;
+exports.default = _default;

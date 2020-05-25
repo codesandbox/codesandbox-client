@@ -4,6 +4,7 @@ import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
 import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 
@@ -20,7 +21,7 @@ export const SearchComponent = ({ location }) => {
   }, [actions.dashboard, location.search, filters, orderBy]);
 
   return (
-    <>
+    <SelectionProvider sandoxes={sandboxes.SEARCH}>
       <Header />
       <section style={{ position: 'relative' }}>
         {sandboxes.SEARCH ? (
@@ -33,7 +34,7 @@ export const SearchComponent = ({ location }) => {
           <Loading />
         )}
       </section>
-    </>
+    </SelectionProvider>
   );
 };
 

@@ -4,7 +4,7 @@ import { Menu } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useHistory } from 'react-router-dom';
 
-export const MenuOptions = ({ sandbox, isTemplate, onRename }) => {
+export const Options = ({ sandbox, isTemplate, onRename }) => {
   const { effects, actions } = useOvermind();
   const history = useHistory();
   const url = sandboxUrl({
@@ -104,3 +104,6 @@ export const MenuOptions = ({ sandbox, isTemplate, onRename }) => {
     </Menu>
   );
 };
+
+// Once rendered, this component never needs to change
+export const MenuOptions = React.memo(Options, () => true);

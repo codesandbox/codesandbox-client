@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
@@ -9,7 +9,7 @@ import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { isMenuClicked } from '@codesandbox/components';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
-import { DragPreview } from './DragPreview';
+import { useSelection } from '../Selection';
 
 export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const {
@@ -32,7 +32,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTitle(event.target.value);
   };
-  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === ESC) {
       // Reset value and exit without saving
       setNewTitle(sandboxTitle);
@@ -50,7 +50,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     setEdit(false);
   };
 
-  const onBlur = () => {
+  const onInputBlur = () => {
     // save value when you click outside or tab away
     onSubmit();
   };
@@ -67,7 +67,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   /* Drag logic */
   type ItemTypes = { id: string; type: string };
 
-  const [{ isDragging }, dragRef, preview] = useDrag({
+  const [, dragRef, preview] = useDrag({
     item: { id: sandbox.id, type: 'sandbox' },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
@@ -80,59 +80,88 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
       );
 
       if (dropResult.path === 'deleted') {
-        actions.dashboard.deleteSandbox([sandbox.id]);
+        actions.dashboard.deleteSandbox(selectedIds);
       } else if (dropResult.path === 'templates') {
-        actions.dashboard.makeTemplate([sandbox.id]);
+        actions.dashboard.makeTemplate(selectedIds);
       } else if (dropResult.path === 'drafts') {
         actions.dashboard.addSandboxesToFolder({
-          sandboxIds: [sandbox.id],
+          sandboxIds: selectedIds,
           collectionPath: '/',
           moveFromCollectionPath: currentCollectionPath,
         });
       } else {
         actions.dashboard.addSandboxesToFolder({
-          sandboxIds: [sandbox.id],
+          sandboxIds: selectedIds,
           collectionPath: dropResult.path,
           moveFromCollectionPath: currentCollectionPath,
         });
       }
     },
-    collect: monitor => ({
-      isDragging: monitor.isDragging(),
-    }),
   });
 
-  const thumbnailRef = React.useRef();
-
   /* View logic */
+  let viewMode: string;
   const location = useLocation();
 
-  let viewMode: string;
   if (location.pathname.includes('deleted')) viewMode = 'list';
   else if (location.pathname.includes('start')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
 
-  /* Prevent opening sandbox while interacting */
+  // interactions
+  const {
+    selectedIds,
+    onClick: onSelectionClick,
+    onBlur,
+    onKeyDown,
+    onDragStart,
+    thumbnailRef,
+    isDragging: isAnythingDragging,
+  } = useSelection();
+
+  const selected = selectedIds.includes(sandbox.id);
+  const isDragging = isAnythingDragging && selected;
+
   const onClick = event => {
-    if (edit || isDragging || isMenuClicked(event)) event.preventDefault();
+    if (edit || isDragging || isMenuClicked(event)) return;
+    onSelectionClick(event, sandbox.id);
+  };
+
+  const history = useHistory();
+  const onDoubleClick = event => {
+    if (edit || isDragging || isMenuClicked(event)) return;
+
+    if (event.ctrlKey || event.metaKey) {
+      window.open(url, '_blank');
+    } else {
+      history.push(url);
+    }
+  };
+
+  const interactionProps = {
+    tabIndex: 0, // make div focusable
+    style: { outline: 'none' }, // we handle outline with border
+    selected,
+    onClick,
+    onDoubleClick,
+    onBlur,
+    onKeyDown,
+    'data-selection-id': sandbox.id,
   };
 
   const sandboxProps = {
     sandboxTitle,
     sandbox,
     isTemplate,
-    url,
-    onClick,
     // edit mode
     edit,
     newTitle,
     inputRef,
     onChange,
-    onKeyDown,
+    onInputKeyDown,
     onSubmit,
-    onBlur,
+    onInputBlur,
     enterEditing,
     // drag preview
     thumbnailRef,
@@ -149,7 +178,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   return (
     <>
-      <div {...dragProps}>
+      <div {...dragProps} onDragStart={event => onDragStart(event, sandbox.id)}>
         <motion.div
           layoutTransition={{
             type: 'spring',
@@ -157,12 +186,9 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
             stiffness: 300,
           }}
         >
-          <Component {...sandboxProps} {...props} />
+          <Component {...sandboxProps} {...interactionProps} {...props} />
         </motion.div>
       </div>
-      {isDragging ? (
-        <DragPreview viewMode={viewMode} {...sandboxProps} />
-      ) : null}
     </>
   );
 };

@@ -1,13 +1,13 @@
 import { Column, Element } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import { Folder } from 'app/pages/NewDashboard/Components/Folder';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
+import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
+import { SkeletonCard } from 'app/pages/NewDashboard/Components/Sandbox/SandboxCard';
+import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-
-import { Folder } from '../../../Components/Folder';
-import { Sandbox } from '../../../Components/Sandbox';
-import { SkeletonCard } from '../../../Components/Sandbox/SandboxCard';
-import { SandboxGrid } from '../../../Components/SandboxGrid';
 
 export const AllPage = ({ match: { params }, history }) => {
   const [level, setLevel] = useState(0);
@@ -44,37 +44,42 @@ export const AllPage = ({ match: { params }, history }) => {
     }
   }, [param, actions.dashboard, activeTeam]);
 
-  const getFoldersByPath =
+  const folders =
     allCollections &&
     allCollections.filter(
       collection => collection.level === level && collection.parent === param
     );
 
   return (
-    <Element style={{ height: '100%', position: 'relative' }}>
-      <Header />
-      {allCollections ? (
-        <SandboxGrid>
-          {creating && <Folder key="new" setCreating={setCreating} />}
-          {getFoldersByPath.map(folder => (
-            <Folder key={folder.id} {...folder} setCreating={setCreating} />
-          ))}
-          {sandboxes.ALL &&
-            sandboxes.ALL[cleanParam] &&
-            sandboxes.ALL[cleanParam].map(sandbox => (
-              <Sandbox key={sandbox.id} sandbox={sandbox} />
+    <SelectionProvider
+      sandboxes={(sandboxes.ALL && sandboxes.ALL[cleanParam]) || []}
+      folders={folders || []}
+    >
+      <Element style={{ height: '100%', position: 'relative' }}>
+        <Header />
+        {allCollections ? (
+          <SandboxGrid>
+            {creating && <Folder key="new" setCreating={setCreating} />}
+            {folders.map(folder => (
+              <Folder key={folder.id} {...folder} setCreating={setCreating} />
             ))}
-        </SandboxGrid>
-      ) : (
-        <SandboxGrid>
-          {Array.from(Array(8).keys()).map(n => (
-            <Column key={n}>
-              <SkeletonCard />
-            </Column>
-          ))}
-        </SandboxGrid>
-      )}
-    </Element>
+            {sandboxes.ALL &&
+              sandboxes.ALL[cleanParam] &&
+              sandboxes.ALL[cleanParam].map(sandbox => (
+                <Sandbox key={sandbox.id} sandbox={sandbox} />
+              ))}
+          </SandboxGrid>
+        ) : (
+          <SandboxGrid>
+            {Array.from(Array(8).keys()).map(n => (
+              <Column key={n}>
+                <SkeletonCard />
+              </Column>
+            ))}
+          </SandboxGrid>
+        )}
+      </Element>
+    </SelectionProvider>
   );
 };
 

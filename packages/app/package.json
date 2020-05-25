@@ -117,6 +117,7 @@
     "debug": "^2.6.8",
     "dot-object": "^1.9.0",
     "downshift": "^5.0.0",
+    "escope": "^3.6.0",
     "eslint-plugin-react-hooks": "1.6.0",
     "eslint-plugin-vue": "^4.2.2",
     "estree-walker": "^1.0.1",
