@@ -115,12 +115,13 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onClick: onSelectionClick,
     onBlur,
     onKeyDown,
+    onDragStart,
     thumbnailRef,
-    isDragging: isAnySandboxDragging,
+    isDragging: isAnythingDragging,
   } = useSelection();
 
   const selected = selectedIds.includes(sandbox.id);
-  const isDragging = isAnySandboxDragging && selected;
+  const isDragging = isAnythingDragging && selected;
 
   const onClick = event => {
     if (edit || isDragging || isMenuClicked(event)) return;
@@ -137,6 +138,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
       history.push(url);
     }
   };
+
   const interactionProps = {
     tabIndex: 0, // make div focusable
     style: { outline: 'none' }, // we handle outline with border
@@ -145,7 +147,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onDoubleClick,
     onBlur,
     onKeyDown,
-    'data-sandbox': sandbox.id,
+    'data-selection-id': sandbox.id,
   };
 
   const sandboxProps = {
@@ -176,7 +178,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   return (
     <>
-      <div {...dragProps}>
+      <div {...dragProps} onDragStart={event => onDragStart(event, sandbox.id)}>
         <motion.div
           layoutTransition={{
             type: 'spring',
