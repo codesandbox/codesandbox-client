@@ -307,7 +307,11 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
       }}
     >
       {props.children || (
-        <Link as={RouterLink} to={`/new-dashboard/${path}`} style={linkStyles}>
+        <Link
+          as={RouterLink}
+          to={`/new-dashboard${isNested ? '/all' : '/'}${path}`}
+          style={linkStyles}
+        >
           <Stack
             as="span"
             css={css({ width: 10 })}

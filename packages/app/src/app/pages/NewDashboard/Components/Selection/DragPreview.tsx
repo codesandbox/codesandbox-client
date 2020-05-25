@@ -1,12 +1,14 @@
 import React from 'react';
 import { useDragLayer } from 'react-dnd';
 import { motion } from 'framer-motion';
-import { Stack, Element, Text } from '@codesandbox/components';
+import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SIDEBAR_WIDTH } from '../../Sidebar';
 
 export const DragPreview = ({
   sandboxes,
+  folders,
+  selectionItems,
   selectedIds,
   viewMode,
   thumbnailRef,
@@ -22,9 +24,27 @@ export const DragPreview = ({
 
   setDragging(isDragging);
 
-  const selectedSandboxes = sandboxes.filter(sandbox =>
-    selectedIds.includes(sandbox.id)
-  );
+  // can be a sandbox or folder
+  const selectedItems = selectionItems
+    .filter(id => selectedIds.includes(id))
+    .map(id => {
+      if (id.startsWith('/')) {
+        const folder = folders.find(f => f.path === id);
+        return {
+          type: 'folder',
+          title: folder.name,
+          path: folder.path,
+        };
+      }
+
+      const sandbox = sandboxes.find(s => s.id === id);
+      return {
+        type: 'sandbox',
+        id: sandbox.id,
+        title: sandbox.title || sandbox.path || sandbox.alias,
+        url: sandbox.screenshotUrl,
+      };
+    });
 
   return (
     <Stack
@@ -55,19 +75,21 @@ export const DragPreview = ({
             currentOffset,
             viewMode,
             thumbnailRef,
-            count: selectedSandboxes.length,
+            count: selectedItems.length,
           })}
           animate={getItemStyles({
             initialOffset,
             currentOffset,
             viewMode,
             thumbnailRef,
-            count: selectedSandboxes.length,
+            count: selectedItems.length,
           })}
         >
-          {selectedSandboxes.map((sandbox, index) => (
-            <Stack gap={2} align="center" key={sandbox.id}>
-              <Element
+          {selectedItems.map((item, index) => (
+            <Stack gap={2} align="center" key={item.id || item.path}>
+              <Stack
+                justify="center"
+                align="center"
                 css={css({
                   position: viewMode === 'list' ? 'relative' : 'absolute',
                   top: 0,
@@ -75,7 +97,7 @@ export const DragPreview = ({
                   width: viewMode === 'list' ? 32 : '100%',
                   height: viewMode === 'list' ? 32 : '100%',
                   backgroundColor: 'grays.600',
-                  backgroundImage: `url(${sandbox.screenshotUrl})`,
+                  backgroundImage: `url(${item.url})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center center',
                   backgroundRepeat: 'no-repeat',
@@ -83,10 +105,25 @@ export const DragPreview = ({
                   transform:
                     viewMode === 'list' ? null : `rotate(${index * 2.5}deg)`,
                 })}
-              />
+              >
+                {item.type === 'folder' ? (
+                  <svg
+                    width="100%"
+                    height={viewMode === 'list' ? 24 : '33%'}
+                    fill="none"
+                    viewBox="0 0 56 49"
+                  >
+                    <path
+                      fill="#6CC7F6"
+                      d="M20.721 0H1.591A1.59 1.59 0 000 1.59v45.82C0 48.287.712 49 1.59 49h52.82A1.59 1.59 0 0056 47.41V7.607a1.59 1.59 0 00-1.59-1.59H28L21.788.41A1.59 1.59 0 0020.72 0z"
+                    />
+                  </svg>
+                ) : null}
+              </Stack>
+
               {viewMode === 'list' ? (
                 <Text size={3} weight="medium" css={{ flexShrink: 0 }}>
-                  {sandbox.title || sandbox.alias || sandbox.id}
+                  {item.title}
                 </Text>
               ) : null}
             </Stack>
@@ -110,7 +147,11 @@ function getItemStyles({
 
   const { x, y } = currentOffset;
 
-  let size: { width: number | string; height: number | string };
+  let size: {
+    width: number | string;
+    height: number | string;
+    minWidth?: number;
+  };
 
   // overlapping with sidebar
   const isOver = currentOffset && currentOffset.x < SIDEBAR_WIDTH;
@@ -124,7 +165,7 @@ function getItemStyles({
       size = { width: 100, height: 50 };
     }
   } else if (viewMode === 'list') {
-    size = { width: 'auto', height: 'fit-content' };
+    size = { width: 'auto', minWidth: 160, height: 'fit-content' };
   } else if (thumbnailElement) {
     const thumbnailRect = thumbnailElement.getBoundingClientRect();
     size = { width: thumbnailRect.width, height: thumbnailRect.height };

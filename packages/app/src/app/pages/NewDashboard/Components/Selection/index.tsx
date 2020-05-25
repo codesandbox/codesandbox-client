@@ -30,8 +30,8 @@ export const SelectionProvider = ({
   ...props
 }) => {
   const selectionItems = [
-    ...folders.map(folder => folder.path),
-    ...sandboxes.map(sandbox => sandbox.id),
+    ...(folders || []).map(folder => folder.path),
+    ...(sandboxes || []).map(sandbox => sandbox.id),
   ];
   const [selectedIds, setSelectedIds] = React.useState([]);
 
@@ -224,6 +224,8 @@ export const SelectionProvider = ({
       </Element>
       <DragPreview
         sandboxes={sandboxes || []}
+        folders={folders || []}
+        selectionItems={selectionItems}
         selectedIds={selectedIds}
         thumbnailRef={thumbnailRef}
         viewMode={viewMode}

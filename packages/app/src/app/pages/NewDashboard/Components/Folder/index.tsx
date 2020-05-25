@@ -9,7 +9,6 @@ import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { useOvermind } from 'app/overmind';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
-import { DragPreview } from './DragPreview';
 import { useSelection } from '../Selection';
 
 export const Folder = ({
@@ -228,7 +227,6 @@ export const Folder = ({
           />
         </motion.div>
       </div>
-      {isDragging ? <DragPreview viewMode={viewMode} {...folderProps} /> : null}
     </>
   );
 };
