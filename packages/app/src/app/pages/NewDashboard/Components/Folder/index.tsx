@@ -104,6 +104,7 @@ export const Folder = ({
     onBlur,
     onKeyDown,
     onDragStart,
+    onDrop,
     thumbnailRef,
     isDragging: isAnythingDragging,
   } = useSelection();
@@ -157,28 +158,21 @@ export const Folder = ({
 
   /* Drag logic */
 
-  const parent = path
-    .split('/')
-    .slice(0, -1)
-    .join('/');
+  const parent =
+    !isNewFolder &&
+    path
+      .split('/')
+      .slice(0, -1)
+      .join('/');
 
   const [, dragRef, preview] = useDrag({
-    item: { type: 'folder', path, parent },
+    item: { type: 'folder', path, parent, name },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
-      if (!dropResult || !dropResult.path) return;
-      if (isSamePath(dropResult, path)) return;
 
-      if (dropResult.path === 'deleted') {
-        actions.dashboard.deleteFolder({ path });
-      } else {
-        // moving folders into another folder
-        // is the same as changing it's path
-        actions.dashboard.renameFolder({
-          path,
-          newPath: dropResult.path + '/' + name,
-        });
-      }
+      if (!dropResult || !dropResult.path) return;
+
+      onDrop(dropResult);
     },
   });
 

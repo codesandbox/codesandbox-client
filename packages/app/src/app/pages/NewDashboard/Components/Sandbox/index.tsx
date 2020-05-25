@@ -82,23 +82,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
       if (!dropResult || !dropResult.path) return;
 
-      if (dropResult.path === 'deleted') {
-        actions.dashboard.deleteSandbox(selectedIds);
-      } else if (dropResult.path === 'templates') {
-        actions.dashboard.makeTemplate(selectedIds);
-      } else if (dropResult.path === 'drafts') {
-        actions.dashboard.addSandboxesToFolder({
-          sandboxIds: selectedIds,
-          collectionPath: '/',
-          moveFromCollectionPath: currentCollectionPath,
-        });
-      } else {
-        actions.dashboard.addSandboxesToFolder({
-          sandboxIds: selectedIds,
-          collectionPath: dropResult.path,
-          moveFromCollectionPath: currentCollectionPath,
-        });
-      }
+      onDrop(dropResult);
     },
   });
 
@@ -118,6 +102,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onBlur,
     onKeyDown,
     onDragStart,
+    onDrop,
     thumbnailRef,
     isDragging: isAnythingDragging,
   } = useSelection();
