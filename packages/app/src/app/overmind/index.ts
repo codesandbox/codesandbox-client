@@ -1,9 +1,11 @@
 import {
   IAction,
   IConfig,
+  IDerive,
   IOnInitialize,
   IOperator,
   IReaction,
+  IState,
   Overmind,
 } from 'overmind';
 import { createHook } from 'overmind-react';
@@ -57,14 +59,7 @@ export const config = merge(
   })
 );
 
-export interface Config
-  extends IConfig<{
-    state: typeof config.state;
-    actions: typeof config.actions;
-    effects: typeof config.effects;
-  }> {}
-
-export type RootState = typeof config.state;
+export interface Config extends IConfig<typeof config> {}
 
 export interface OnInitialize extends IOnInitialize<Config> {}
 
@@ -77,11 +72,14 @@ export interface AsyncAction<Input = void, Output = void>
 export interface Operator<Input = void, Output = Input>
   extends IOperator<Config, Input, Output> {}
 
+export interface Derive<Parent extends IState, Output>
+  extends IDerive<Config, Parent, Output> {}
+
 export interface Reaction extends IReaction<Config> {}
 
-export const connect = createConnect<Config>();
+export const connect = createConnect<typeof config>();
 
-export const useOvermind = createHook<Config>();
+export const useOvermind = createHook<typeof config>();
 
 export const Observer: React.FC<{
   children: <T>(overmind: {

@@ -1,6 +1,6 @@
-import Manager from '../manager';
-import { LoaderContext } from '../transpiled-module';
 import { SourceMap } from './utils/get-source-map';
+import { LoaderContext } from '../transpiled-module';
+import Manager from '../manager';
 
 export interface TranspilerResult {
   transpiledCode: any;

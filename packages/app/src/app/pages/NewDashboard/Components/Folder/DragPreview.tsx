@@ -99,13 +99,13 @@ function getItemStyles({
   const isOver = currentOffset && currentOffset.x < SIDEBAR_WIDTH;
 
   let size: { width: number | string; height: number };
+  const thumbnailElement = thumbnailRef.current;
 
   if (viewMode === 'list') {
     size = { width: 'auto', height: 32 + 16 };
   } else if (isOver) {
     size = { width: 100, height: 50 };
-  } else {
-    const thumbnailElement = thumbnailRef.current;
+  } else if (thumbnailElement) {
     const thumbnailRect = thumbnailElement.getBoundingClientRect();
     size = { width: thumbnailRect.width, height: thumbnailRect.height };
   }
