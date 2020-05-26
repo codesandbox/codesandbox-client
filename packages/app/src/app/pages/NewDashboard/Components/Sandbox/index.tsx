@@ -9,7 +9,6 @@ import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { isMenuClicked } from '@codesandbox/components';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
-import { DragPreview } from './DragPreview';
 import { useSelection } from '../Selection';
 
 export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
@@ -18,8 +17,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     actions,
   } = useOvermind();
 
-  // const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
-  const sandboxTitle = sandbox.id;
+  const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
   const [edit, setEdit] = React.useState(false);
   const [newTitle, setNewTitle] = React.useState(sandboxTitle);
@@ -67,49 +65,29 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   };
 
   /* Drag logic */
-  type ItemTypes = { id: string; type: string };
 
-  const [{ isDragging }, dragRef, preview] = useDrag({
-    item: { id: sandbox.id, type: 'sandbox' },
+  const location = useLocation();
+  const currentCollectionPath = location.pathname
+    .replace('/new-dashboard', '')
+    .replace('/all', '');
+
+  const [, dragRef, preview] = useDrag({
+    item: {
+      type: 'sandbox',
+      id: sandbox.id,
+      collectionPath: currentCollectionPath,
+    },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
 
       if (!dropResult || !dropResult.path) return;
 
-      const currentCollectionPath = location.pathname.replace(
-        '/new-dashboard',
-        ''
-      );
-
-      if (dropResult.path === 'deleted') {
-        actions.dashboard.deleteSandbox([sandbox.id]);
-      } else if (dropResult.path === 'templates') {
-        actions.dashboard.makeTemplate([sandbox.id]);
-      } else if (dropResult.path === 'drafts') {
-        actions.dashboard.addSandboxesToFolder({
-          sandboxIds: [sandbox.id],
-          collectionPath: '/',
-          moveFromCollectionPath: currentCollectionPath,
-        });
-      } else {
-        actions.dashboard.addSandboxesToFolder({
-          sandboxIds: [sandbox.id],
-          collectionPath: dropResult.path,
-          moveFromCollectionPath: currentCollectionPath,
-        });
-      }
+      onDrop(dropResult);
     },
-    collect: monitor => ({
-      isDragging: monitor.isDragging(),
-    }),
   });
-
-  // attach to thumbnail, we use this to calculate size
-  const thumbnailRef = React.useRef();
 
   /* View logic */
   let viewMode: string;
-  const location = useLocation();
 
   if (location.pathname.includes('deleted')) viewMode = 'list';
   else if (location.pathname.includes('start')) viewMode = 'grid';
@@ -123,9 +101,14 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onClick: onSelectionClick,
     onBlur,
     onKeyDown,
+    onDragStart,
+    onDrop,
+    thumbnailRef,
+    isDragging: isAnythingDragging,
   } = useSelection();
 
   const selected = selectedIds.includes(sandbox.id);
+  const isDragging = isAnythingDragging && selected;
 
   const onClick = event => {
     if (edit || isDragging || isMenuClicked(event)) return;
@@ -142,6 +125,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
       history.push(url);
     }
   };
+
   const interactionProps = {
     tabIndex: 0, // make div focusable
     style: { outline: 'none' }, // we handle outline with border
@@ -150,7 +134,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onDoubleClick,
     onBlur,
     onKeyDown,
-    'data-sandbox': sandbox.id,
+    'data-selection-id': sandbox.id,
   };
 
   const sandboxProps = {
@@ -181,7 +165,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   return (
     <>
-      <div {...dragProps}>
+      <div {...dragProps} onDragStart={event => onDragStart(event, sandbox.id)}>
         <motion.div
           layoutTransition={{
             type: 'spring',
@@ -192,9 +176,6 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
           <Component {...sandboxProps} {...interactionProps} {...props} />
         </motion.div>
       </div>
-      {isDragging ? (
-        <DragPreview viewMode={viewMode} {...sandboxProps} />
-      ) : null}
     </>
   );
 };

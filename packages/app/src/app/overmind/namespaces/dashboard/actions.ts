@@ -859,11 +859,7 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
 export const addSandboxesToFolder: AsyncAction<{
   sandboxIds: string[];
   collectionPath: string;
-  moveFromCollectionPath: string | undefined;
-}> = async (
-  { state, effects, actions },
-  { sandboxIds, collectionPath, moveFromCollectionPath }
-) => {
+}> = async ({ state, effects, actions }, { sandboxIds, collectionPath }) => {
   const oldSandboxes = state.dashboard.sandboxes;
   actions.dashboard.deleteSandboxFromState(sandboxIds);
 
