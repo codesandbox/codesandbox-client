@@ -13,8 +13,10 @@ import {
   Stack,
   Icon,
   IconButton,
+  Button,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import merge from 'deepmerge';
 
 export const SIDEBAR_WIDTH = 240;
 
@@ -52,7 +54,7 @@ export const Sidebar = props => {
   const [foldersVisible, setFoldersVisibility] = React.useState(false);
 
   return (
-    <Element as="aside" {...props}>
+    <Stack as="aside" direction="vertical" justify="space-between" {...props}>
       <List css={css({ '> li': { height: 10 } })}>
         <ListAction gap={2} css={css({ paddingX: 0 })}>
           {user && (
@@ -156,14 +158,14 @@ export const Sidebar = props => {
         <RowItem name="Recent" path="recent" icon="clock" />
         <RowItem name="Drafts" path="drafts" icon="file" />
 
-        <ListAction
-          justify="space-between"
-          align="center"
-          css={css({
-            paddingX: 0,
+        <RowItem
+          name="All sandboxes"
+          path="all"
+          icon="folder"
+          style={{
             button: { opacity: 0 },
             ':hover, :focus-within': { button: { opacity: 1 } },
-          })}
+          }}
         >
           <IconButton
             name="caret"
@@ -198,7 +200,7 @@ export const Sidebar = props => {
               <Text>All Sandboxes</Text>
             </Stack>
           </Link>
-        </ListAction>
+        </RowItem>
 
         {foldersVisible &&
           folders
@@ -207,7 +209,7 @@ export const Sidebar = props => {
               <RowItem
                 key={folder.path}
                 name={folder.name}
-                path={'all' + folder.path}
+                path={folder.path}
                 icon="folder"
                 isNested
               />
@@ -217,7 +219,13 @@ export const Sidebar = props => {
         <RowItem name="Recently Deleted" path="deleted" icon="trash" />
         <RowItem name="Settings (temp)" path="settings" icon="gear" />
       </List>
-    </Element>
+      <Element margin={4}>
+        <Button variant="secondary">
+          <Icon name="plus" size={10} marginRight={1} />
+          Create New Workspace
+        </Button>
+      </Element>
+    </Stack>
   );
 };
 
@@ -240,26 +248,38 @@ const canNotAcceptFolders = [
   'start',
   'recent',
   'drafts',
-  'all',
   'templates',
   'settings',
 ];
 
-const isSamePath = (draggedItem, selfPath) => {
-  if (draggedItem && draggedItem.path === selfPath.replace('all', '')) {
+const isSamePath = (draggedItem, dropPath) => {
+  if (!draggedItem) return false;
+
+  if (
+    draggedItem.type === 'sandbox' &&
+    draggedItem.collectionPath === dropPath
+  ) {
     return true;
   }
+
+  if (
+    draggedItem.type === 'folder' &&
+    (draggedItem.path === dropPath || draggedItem.parent === dropPath)
+  ) {
+    return true;
+  }
+
   return false;
 };
 
-const RowItem = ({ name, path, icon, isNested = false }) => {
+const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
   const accepts = [];
   if (!canNotAcceptSandboxes.includes(path)) accepts.push('sandbox');
   if (!canNotAcceptFolders.includes(path)) accepts.push('folder');
 
   const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
     accept: accepts,
-    drop: () => ({ path: path.replace('all', '') }),
+    drop: () => ({ path }),
     collect: monitor => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path),
@@ -271,32 +291,45 @@ const RowItem = ({ name, path, icon, isNested = false }) => {
     <ListAction
       ref={dropRef}
       align="center"
-      css={css({
-        paddingX: 0,
-        paddingLeft: isNested ? 4 : 0,
-        opacity: isDragging && !canDrop ? 0.25 : 1,
-        color:
-          isDragging && canDrop ? 'list.hoverForeground' : 'list.foreground',
-        backgroundColor:
-          canDrop && isOver ? 'list.hoverBackground' : 'transparent',
-        transition: 'all ease-in',
-        transitionDuration: theme => theme.speeds[4],
-      })}
+      css={css(
+        merge(
+          {
+            paddingX: 0,
+            paddingLeft: isNested ? 4 : 0,
+            opacity: isDragging && !canDrop ? 0.25 : 1,
+            color:
+              isDragging && canDrop
+                ? 'list.hoverForeground'
+                : 'list.foreground',
+            backgroundColor:
+              canDrop && isOver ? 'list.hoverBackground' : 'transparent',
+            transition: 'all ease-in',
+            transitionDuration: theme => theme.speeds[4],
+          },
+          props.style || {}
+        )
+      )}
       style={{
         height: isNested ? 32 : 40,
       }}
     >
-      <Link as={RouterLink} to={`/new-dashboard/${path}`} style={linkStyles}>
-        <Stack
-          as="span"
-          css={css({ width: 10 })}
-          align="center"
-          justify="center"
+      {props.children || (
+        <Link
+          as={RouterLink}
+          to={`/new-dashboard${isNested ? '/all' : '/'}${path}`}
+          style={linkStyles}
         >
-          <Icon name={icon} />
-        </Stack>
-        {name}
-      </Link>
+          <Stack
+            as="span"
+            css={css({ width: 10 })}
+            align="center"
+            justify="center"
+          >
+            <Icon name={icon} />
+          </Stack>
+          {name}
+        </Link>
+      )}
     </ListAction>
   );
 };

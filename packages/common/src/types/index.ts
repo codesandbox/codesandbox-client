@@ -389,6 +389,7 @@ export type Sandbox = {
   git: GitInfo | null;
   tags: string[];
   isFrozen: boolean;
+  isSse?: boolean;
   environmentVariables: {
     [key: string]: string;
   } | null;

@@ -1,17 +1,18 @@
-import gql from 'graphql-tag';
 import React from 'react';
 import { Query } from 'react-apollo';
+import gql from 'graphql-tag';
+
+import { TeamInvite } from './notifications/TeamInvite';
+import { TeamAccepted } from './notifications/TeamAccepted';
+import { SandboxInvitation } from './notifications/SandboxInvitation';
 
 import {
   Container,
-  Loading,
   NoNotifications,
   NotificationsContainer,
+  Loading,
   Title,
 } from './elements';
-import { SandboxInvitation } from './notifications/SandboxInvitation';
-import { TeamAccepted } from './notifications/TeamAccepted';
-import { TeamInvite } from './notifications/TeamInvite';
 
 export const VIEW_QUERY = gql`
   query RecentNotifications {
@@ -75,7 +76,7 @@ export const Notifications = props => (
     <Title>Notifications</Title>
     <NotificationsContainer>
       <Query fetchPolicy="cache-and-network" query={VIEW_QUERY}>
-        {({ loading, error, data }: any) => {
+        {({ loading, error, data }) => {
           if (error) {
             return (
               <NoNotifications>

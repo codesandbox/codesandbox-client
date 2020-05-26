@@ -1,6 +1,6 @@
 import { VercelDeploymentState } from '@codesandbox/common/lib/types';
-import styled, { css } from 'styled-components';
 import { Text } from '@codesandbox/components';
+import styled, { css } from 'styled-components';
 
 const mapColorToState = (state: VercelDeploymentState, theme: any) => {
   const STARTING = [
@@ -36,6 +36,7 @@ export const State = styled(Text)<{ state: VercelDeploymentState }>`
     display: flex;
     align-items: center;
     text-transform: capitalize;
+
     &:before {
       content: '';
       display: block;

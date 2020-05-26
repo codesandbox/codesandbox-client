@@ -1,19 +1,20 @@
-/* eslint-enable import/default */
-import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
-import isESModule from 'sandbox/eval/utils/is-es-module';
 /* eslint-disable import/default */
 // @ts-ignore
 import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index';
+/* eslint-enable import/default */
+import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
+
+import isESModule from 'sandbox/eval/utils/is-es-module';
+import { measure, endMeasure } from '../../../utils/metrics';
+import regexGetRequireStatements from './worker/simple-get-require-statements';
+import getBabelConfig from './babel-parser';
+import WorkerTranspiler from '../worker-transpiler';
+import { LoaderContext } from '../../transpiled-module';
+import Manager from '../../manager';
 
 import delay from '../../../utils/delay';
-import { endMeasure, measure } from '../../../utils/metrics';
-import Manager from '../../manager';
-import { LoaderContext } from '../../transpiled-module';
-import WorkerTranspiler from '../worker-transpiler';
-import getBabelConfig from './babel-parser';
 import { shouldTranspile } from './check';
 import { convertEsModule } from './convert-esmodule';
-import regexGetRequireStatements from './worker/simple-get-require-statements';
 
 const global = window as any;
 
@@ -170,7 +171,7 @@ class BabelTranspiler extends WorkerTranspiler {
         // @ts-ignore
         {},
         (err, data) => {
-          const { version, availablePlugins, availablePresets } = data as any;
+          const { version, availablePlugins, availablePresets } = data;
 
           resolve({
             ...baseConfig,
