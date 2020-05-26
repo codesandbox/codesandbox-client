@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.2.0",
-    "babel-plugin-styled-components": "^1.10.7",
+    "babel-plugin-styled-components": "1.9.4",
     "cross-env": "^5.2.0",
     "file-loader": "^3.0.1",
     "jest": "^24.9.0"
