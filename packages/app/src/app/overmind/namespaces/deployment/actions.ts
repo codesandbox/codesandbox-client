@@ -116,6 +116,16 @@ export const deployClicked: AsyncAction = async ({
     state.deployment.deploying = true;
     const zip = await effects.zip.create(sandbox);
     const contents = await effects.jsZip.loadAsync(zip.file);
+
+    if (sandbox.isSse && state.editor.currentSandbox) {
+      const envs = await effects.api.getEnvironmentVariables(
+        state.editor.currentSandbox.id
+      );
+      if (envs) {
+        await effects.vercel.checkEnvironmentVariables(sandbox, envs);
+      }
+    }
+
     state.deployment.url = await effects.vercel.deploy(contents, sandbox);
   } catch (error) {
     actions.internal.handleError({
@@ -130,9 +140,9 @@ export const deployClicked: AsyncAction = async ({
 };
 
 export const deploySandboxClicked: AsyncAction = async ({
-  state,
   actions,
   effects,
+  state,
 }) => {
   state.currentModal = 'deployment';
 
@@ -163,9 +173,7 @@ export const deploySandboxClicked: AsyncAction = async ({
   state.deployment.url = null;
 };
 
-export const setDeploymentToDelete: Action<{
-  id: string;
-}> = ({ state }, { id }) => {
+export const setDeploymentToDelete: Action<string> = ({ state }, id) => {
   state.deployment.deployToDelete = id;
 };
 

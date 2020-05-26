@@ -248,14 +248,12 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
       status: convertTypeToStatus('notice'),
       sticky: true,
       actions: {
-        primary: [
-          {
-            label: 'Fork',
-            run: () => {
-              actions.editor.forkSandboxClicked();
-            },
+        primary: {
+          label: 'Fork',
+          run: () => {
+            actions.editor.forkSandboxClicked();
           },
-        ],
+        },
       },
     });
   }
@@ -889,14 +887,12 @@ export const showEnvironmentVariablesNotification: AsyncAction = async ({
       title: 'Unset Secrets',
       message: `This sandbox has ${emptyVarCount} secrets that need to be set. You can set them in the server tab.`,
       actions: {
-        primary: [
-          {
-            label: 'Open Server Tab',
-            run: () => {
-              actions.workspace.setWorkspaceItem({ item: SERVER.id });
-            },
+        primary: {
+          label: 'Open Server Tab',
+          run: () => {
+            actions.workspace.setWorkspaceItem({ item: SERVER.id });
           },
-        ],
+        },
       },
     });
   }
