@@ -61,7 +61,7 @@ const TIME_ALIVE = {
 interface Props {
   state: NotificationState;
   colors?: IColors;
-  Button: IButtonType;
+  Button?: IButtonType;
 }
 
 const DEFAULT_COLORS = {
