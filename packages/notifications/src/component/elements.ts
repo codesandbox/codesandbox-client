@@ -24,12 +24,14 @@ export const InnerWrapper = styled(Stack)`
   ${({ theme }) => css`
     width: 100%;
     border: 1px solid ${theme.colors.grays[600]};
+    background: ${theme.colors.grays[700]};
+    border-top-right-radius: ${theme.radii.medium}px;
+    border-bottom-right-radius: ${theme.radii.medium}px;
   `}
 `;
 
 export const Container = styled(Stack)`
   ${({ theme }) => css`
-    background: ${theme.colors.grays[700]};
     box-sizing: border-box;
     box-shadow: ${theme.shadows[2]};
     border-radius: ${theme.radii.medium}px;
