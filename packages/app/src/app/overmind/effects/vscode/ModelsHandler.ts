@@ -233,6 +233,14 @@ export class ModelsHandler {
         return;
       }
 
+      // Clean out any removed comments
+      const currentCommentIds = (
+        commentThreadsByPath[path.replace('/sandbox', '')] || []
+      ).map(comment => comment.commentId);
+      moduleModel.comments = moduleModel.comments.filter(comment =>
+        currentCommentIds.includes(comment.commentId)
+      );
+
       const existingDecorationComments = moduleModel.currentCommentDecorations;
       const newDecorationComments = this.createCommentDecorations(
         moduleModel.comments,
