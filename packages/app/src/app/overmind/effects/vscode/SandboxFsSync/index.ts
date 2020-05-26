@@ -75,6 +75,7 @@ declare global {
 
 type SandboxFsSyncOptions = {
   getSandboxFs: () => SandboxFs;
+  getJwt: () => string;
 };
 
 class SandboxFsSync {
