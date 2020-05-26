@@ -559,26 +559,24 @@ export const _compareWithSource: AsyncAction = async ({
       status: convertTypeToStatus('notice'),
       sticky: false,
       actions: {
-        primary: [
-          {
-            label: 'Resolve',
-            run: () => {
-              actions.workspace.setWorkspaceItem({ item: 'github' });
-            },
+        primary: {
+          label: 'Resolve',
+          run: () => {
+            actions.workspace.setWorkspaceItem({ item: 'github' });
           },
-          {
-            label: 'See changes',
-            run: () => {
-              effects.browser.openWindow(
-                `https://github.com/${sandbox.originalGit!.username}/${
-                  sandbox.originalGit!.repo
-                }/compare/${originalGitCommitSha}...${
-                  sandbox.originalGit!.branch
-                }`
-              );
-            },
+        },
+        secondary: {
+          label: 'See changes',
+          run: () => {
+            effects.browser.openWindow(
+              `https://github.com/${sandbox.originalGit!.username}/${
+                sandbox.originalGit!.repo
+              }/compare/${originalGitCommitSha}...${
+                sandbox.originalGit!.branch
+              }`
+            );
           },
-        ],
+        },
       },
     });
     effects.preview.refresh();
@@ -622,26 +620,24 @@ export const _compareWithBase: AsyncAction = async ({
       status: convertTypeToStatus('notice'),
       sticky: false,
       actions: {
-        primary: [
-          {
-            label: 'Resolve',
-            run: () => {
-              actions.workspace.setWorkspaceItem({ item: 'github' });
-            },
+        primary: {
+          label: 'Resolve',
+          run: () => {
+            actions.workspace.setWorkspaceItem({ item: 'github' });
           },
-          {
-            label: 'See changes',
-            run: () => {
-              effects.browser.openWindow(
-                `https://github.com/${sandbox.originalGit!.username}/${
-                  sandbox.originalGit!.repo
-                }/compare/${sandbox.baseGit!.branch}...${
-                  sandbox.originalGit!.branch
-                }`
-              );
-            },
+        },
+        secondary: {
+          label: 'See changes',
+          run: () => {
+            effects.browser.openWindow(
+              `https://github.com/${sandbox.originalGit!.username}/${
+                sandbox.originalGit!.repo
+              }/compare/${sandbox.baseGit!.branch}...${
+                sandbox.originalGit!.branch
+              }`
+            );
           },
-        ],
+        },
       },
     });
     effects.preview.refresh();
