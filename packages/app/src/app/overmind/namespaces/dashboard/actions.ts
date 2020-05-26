@@ -487,18 +487,25 @@ export const deleteSandboxFromState: Action<string[]> = (
     const values = Object.keys(dashboard.sandboxes).map(type => {
       if (dashboard.sandboxes[type]) {
         if (!Array.isArray(dashboard.sandboxes[type])) {
-          const object = dashboard.sandboxes[type];
-          const a = Object.keys(object).map(t => ({
-            [t]: object[t].filter(sandbox => sandbox.id !== id),
+          const folderNames = dashboard.sandboxes[type];
+          const sandboxes = Object.keys(folderNames).map(folderName => ({
+            [folderName]: folderNames[folderName].filter(
+              sandbox => sandbox.id !== id
+            ),
           }));
           return {
             ...dashboard.sandboxes[type],
-            ...a[a.length - 1],
+            ...sandboxes.reduce(
+              (obj, item) =>
+                Object.assign(obj, {
+                  [Object.keys(item)[0]]: item[Object.keys(item)[0]],
+                }),
+              {}
+            ),
           };
         }
         return dashboard.sandboxes[type].filter(sandbox => sandbox.id !== id);
       }
-
       return null;
     });
 
