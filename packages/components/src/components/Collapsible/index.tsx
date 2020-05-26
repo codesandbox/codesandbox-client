@@ -1,10 +1,11 @@
+import VisuallyHidden from '@reach/visually-hidden';
+import css from '@styled-system/css';
 import React from 'react';
 import styled from 'styled-components';
-import css from '@styled-system/css';
-import VisuallyHidden from '@reach/visually-hidden';
+
 import { Element } from '../Element';
-import { Text } from '../Text';
 import { SidebarRow } from '../SidebarRow';
+import { Text } from '../Text';
 
 const Section = styled(Element).attrs({ as: 'section' })(
   css({
@@ -92,7 +93,7 @@ export const Collapsible: React.FC<ICollapsibleProps> = ({
         <ToggleIcon open={open} />
         <Text weight="medium">{title}</Text>
         <VisuallyHidden>
-          <input type="checkbox" checked={open} />
+          <input type="checkbox" checked={open} readOnly />
         </VisuallyHidden>
       </Header>
 
