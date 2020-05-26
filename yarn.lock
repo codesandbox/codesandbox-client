@@ -1428,7 +1428,7 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@codesandbox/components@^0.0.2":
+"@codesandbox/components@0.0.2", "@codesandbox/components@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@codesandbox/components/-/components-0.0.2.tgz#a5c7eb8e2efc50df020178d79d6e3e5e7fd686b4"
   integrity sha512-T5j/hG0MfkwTXiEJiBAkAcJqPgaEWkpfmW7y9jchJrCJ40xkI5HuSgfA/VwNcYUuOqWhtaJWOKGuQ8x6IsELnQ==
