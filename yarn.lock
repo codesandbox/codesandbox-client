@@ -1428,32 +1428,6 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@codesandbox/components@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@codesandbox/components/-/components-0.0.2.tgz#a5c7eb8e2efc50df020178d79d6e3e5e7fd686b4"
-  integrity sha512-T5j/hG0MfkwTXiEJiBAkAcJqPgaEWkpfmW7y9jchJrCJ40xkI5HuSgfA/VwNcYUuOqWhtaJWOKGuQ8x6IsELnQ==
-  dependencies:
-    "@codesandbox/common" "^1.0.8"
-    "@codesandbox/template-icons" "^1.1.0"
-    "@reach/auto-id" "^0.7.1"
-    "@reach/menu-button" "^0.8.5"
-    "@reach/visually-hidden" "^0.7.0"
-    "@styled-system/css" "^5.1.4"
-    codesandbox-api "0.0.24"
-    color "3.1.2"
-    date-fns "^2.8.1"
-    deepmerge "^4.2.2"
-    dot-object "^2.1.3"
-    react-router-dom "^5.1.2"
-    react-tagsinput "^3.19.0"
-    styled-components "^4.4.1"
-    typeface-inter "^3.11.2"
-
-"@codesandbox/template-icons@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-1.1.0.tgz#ef37b97dc6057b63a500c6710fbca5f9c7a9730d"
-  integrity sha512-p14rcYOSfI1A6UkFO/aS+H/cuJvlVT4bLpjCEt7kv+KCFaRjd70FDEzfyKLHH/s57k0W2MWrhB25fqPZm89OXg==
-
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
