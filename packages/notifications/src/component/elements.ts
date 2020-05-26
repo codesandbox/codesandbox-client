@@ -25,6 +25,8 @@ export const InnerWrapper = styled(Stack)`
     width: 100%;
     border: 1px solid ${theme.colors.grays[600]};
     background: ${theme.colors.grays[700]};
+    border-top-right-radius: ${theme.radii.medium}px;
+    border-bottom-right-radius: ${theme.radii.medium}px;
   `}
 `;
 
