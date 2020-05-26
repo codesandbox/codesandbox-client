@@ -27,6 +27,7 @@ export const sandboxFragmentDashboard = gql`
     forkedTemplate {
       id
       color
+      iconUrl
     }
 
     collection {

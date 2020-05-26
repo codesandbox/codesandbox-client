@@ -5,6 +5,7 @@ import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { isMenuClicked } from '@codesandbox/components';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
@@ -18,7 +19,11 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   } = useOvermind();
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
-  const template = sandbox.source.template;
+
+  const { UserIcon } = getTemplateIcon(
+    sandbox.forkedTemplate?.iconUrl,
+    sandbox.source.template
+  );
 
   const [edit, setEdit] = React.useState(false);
   const [newTitle, setNewTitle] = React.useState(sandboxTitle);
@@ -142,7 +147,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     sandboxTitle,
     sandbox,
     isTemplate,
-    template,
+    TemplateIcon: UserIcon,
     // edit mode
     edit,
     newTitle,

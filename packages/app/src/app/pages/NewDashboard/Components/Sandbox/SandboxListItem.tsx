@@ -17,7 +17,6 @@ import { MenuOptions } from './Menu';
 export const SandboxListItem = ({
   sandbox,
   sandboxTitle,
-  template,
   isTemplate = false,
   // interactions
   selected,
@@ -117,7 +116,7 @@ export const SandboxListItem = ({
       </Column>
       <Column span={[0, 3, 3]} as={Stack} align="center">
         <Text size={3} variant="muted" maxWidth="100%">
-          {template}
+          {sandbox.source.template}
         </Text>
       </Column>
     </Grid>
