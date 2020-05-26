@@ -238,10 +238,13 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
       const { isBinary, savedCode, code } = moduleInfo;
 
       if (isBinary) {
+        const jwt = this.api.getJwt && this.api.getJwt()
+        const headers: {} | {
+          Authorization: string
+        } = jwt ? { Authorization: `Bearer ${this.api.getJwt && this.api.getJwt()}` } : {};
+
         fetch(getCode(savedCode, code), {
-          headers: {
-            Authorization: `Bearer ${this.api.getJwt && this.api.getJwt()}`
-          }
+          headers 
         }).then(x => x.blob()).then(blob => {
           const stats = new Stats(FileType.FILE, blob.size, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
 
