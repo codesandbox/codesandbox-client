@@ -83,7 +83,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
-    "babel-plugin-styled-components": "1.9.4",
+    "babel-plugin-styled-components": "^1.10.7",
     "dotenv": "^6.2.0",
     "rimraf": "^2.6.2",
     "terser": "^3.17.0"
