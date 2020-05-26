@@ -52,8 +52,11 @@ export const SandboxListItem = ({
       borderBottom: '1px solid',
       borderBottomColor: 'grays.600',
       overflow: 'hidden',
-      boxShadow: theme =>
-        selected ? `0px 0px 1px 1px ${theme.colors.blues[600]}` : null,
+      backgroundColor: selected ? 'blues.600' : 'transparent',
+      color: selected ? 'white' : 'inherit',
+      ':hover, :focus, :focus-within': {
+        backgroundColor: selected ? 'blues.600' : 'list.hoverBackground',
+      },
     })}
   >
     <Grid css={{ width: '100%' }}>
