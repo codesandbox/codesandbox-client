@@ -220,7 +220,10 @@ export const Sidebar = props => {
         <RowItem name="Settings (temp)" path="settings" icon="gear" />
       </List>
       <Element margin={4}>
-        <Button variant="secondary">Create new workspace</Button>
+        <Button variant="secondary">
+          <Icon name="plus" size={10} marginRight={1} />
+          Create New Workspace
+        </Button>
       </Element>
     </Stack>
   );
