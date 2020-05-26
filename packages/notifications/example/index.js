@@ -35,16 +35,18 @@ state.addNotification({
   title: 'Test Notification 4',
   message: 'This is one of our notifications',
   status: NotificationStatus.ERROR,
-  actions: {
-    primary: {
-      run: () => alert('hello!'),
-      label: 'Run My Command!!',
+  actions: [
+    {
+      primary: {
+        run: () => alert('hello!'),
+        label: 'Run My Command!!',
+      },
+      secondary: {
+        run: () => alert('bye!'),
+        label: 'Bye',
+      },
     },
-    secondary: {
-      run: () => alert('bye!'),
-      label: 'Bye',
-    },
-  },
+  ],
 });
 
 function App() {

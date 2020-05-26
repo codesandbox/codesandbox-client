@@ -165,15 +165,14 @@ export function Toasts({
     NotificationToast,
     { overflow: string; opacity: number; height: number }
   >(notificationsToShow, n => n.id, {
-    from: { overflow: 'hidden', opacity: 0, height: 0 },
+    from: { opacity: 0, height: 0 },
     // @ts-ignore: not typed properly in react-spring
     enter: item => next =>
       next({
-        overflow: 'hidden',
         opacity: 1,
         height: refMap.get(item) ? refMap.get(item).offsetHeight + 16 : 0,
       }),
-    leave: { overflow: 'hidden', opacity: 0, height: 0 },
+    leave: { opacity: 0, height: 0 },
   });
 
   return (
