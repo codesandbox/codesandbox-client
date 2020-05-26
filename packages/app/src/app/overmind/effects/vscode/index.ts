@@ -167,7 +167,6 @@ export class VSCodeEffect {
     // correctly
     this.sandboxFsSync = new SandboxFsSync({
       getSandboxFs: () => ({}),
-      getJwt: () => '',
     });
 
     import(
