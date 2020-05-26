@@ -11,6 +11,7 @@ import {
   StyledCrossIcon,
   Container,
   ColorLine,
+  InnerWrapper,
   TertiaryButton,
 } from './elements';
 
@@ -75,7 +76,7 @@ export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
       marginBottom={2}
     >
       <ColorLine bg={getColor(colors, status)} />
-      <Stack style={fullWidth} paddingX={3} paddingY={4}>
+      <InnerWrapper paddingX={3} paddingY={4}>
         <Element style={fullWidth}>
           <Stack style={fullWidth}>
             <Element style={fullWidth}>
@@ -84,9 +85,9 @@ export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
                 align="center"
                 gap={2}
               >
-                <Element style={{ color: getColor(colors, status) }}>
+                <Stack style={{ color: getColor(colors, status) }}>
                   <Icon />
-                </Element>
+                </Stack>
                 <Text
                   style={{
                     fontWeight: 500,
@@ -143,7 +144,7 @@ export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
             )}
           </Element>
         </Element>
-      </Stack>
+      </InnerWrapper>
     </Container>
   );
 }

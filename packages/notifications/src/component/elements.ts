@@ -20,10 +20,16 @@ export const StyledCrossIcon = styled(CrossIcon)`
   }
 `;
 
+export const InnerWrapper = styled(Stack)`
+  ${({ theme }) => css`
+    width: 100%;
+    border: 1px solid ${theme.colors.grays[600]};
+  `}
+`;
+
 export const Container = styled(Stack)`
   ${({ theme }) => css`
     background: ${theme.colors.grays[700]};
-    border: 1px solid ${theme.colors.grays[600]};
     box-sizing: border-box;
     box-shadow: ${theme.shadows[2]};
     border-radius: ${theme.radii.medium}px;

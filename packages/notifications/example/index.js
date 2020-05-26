@@ -8,9 +8,9 @@ const state = new NotificationState();
 
 state.addNotification({
   sticky: true,
-  title: 'Test Notification 1',
-  message: 'This is one of our notifications',
-  status: NotificationStatus.NOTICE,
+  title: 'Forked Sandbox',
+  // message: 'This is one of our notifications',
+  status: NotificationStatus.SUCCESS,
 });
 state.addNotification({
   sticky: true,
