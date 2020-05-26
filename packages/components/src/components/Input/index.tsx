@@ -10,6 +10,8 @@ const placeholderStyles = {
 interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export const Input = styled(Element).attrs(p => ({
+  // TODO: change how we do this
+  // @ts-ignore Issue in styled-components
   as: p.as || 'input',
 }))<IInputProps>(
   css({

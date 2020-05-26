@@ -7,7 +7,11 @@ type ListActionProps = {
   disabled?: boolean;
 };
 
-export const List = styled(Element).attrs(p => ({ as: p.as || 'ul' }))(
+export const List = styled(Element).attrs(p => ({
+  // TODO: change how we do this
+  // @ts-ignore Issue in styled-components
+  as: p.as || 'ul',
+}))(
   css({
     listStyle: 'none',
     paddingLeft: 0,
