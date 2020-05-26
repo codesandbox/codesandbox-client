@@ -72,6 +72,39 @@ export default (() => {
     initialize(options: Options) {
       _options = options;
     },
+    async checkEnvironmentVariables(
+      sandbox: Sandbox,
+      envVars: {
+        [key: string]: string;
+      }
+    ) {
+      const nowData = this.getConfig(sandbox);
+      if (!nowData || !nowData.env) return null;
+      const all = Object.keys(nowData.env).map(async envVar => {
+        const name = nowData.env[envVar].split('@')[1];
+
+        if (envVars[envVar]) {
+          try {
+            await axios.post(
+              `https://api.vercel.com/v3/now/secrets/`,
+              {
+                name,
+                value: envVars[envVar],
+              },
+              { headers: getDefaultHeaders() }
+            );
+            // We don't do anything with the error for two main reasons
+            // 1 - Vercel already shows an error if a ENV variable is missing and you try to deploy
+            // 2 - This will also fail if the user already has the secret in their account
+            // eslint-disable-next-line no-empty
+          } catch {}
+        }
+      });
+
+      await Promise.all(all);
+
+      return null;
+    },
     getConfig(sandbox: Sandbox): VercelConfig {
       const nowConfigs = sandbox.modules
         .filter(
