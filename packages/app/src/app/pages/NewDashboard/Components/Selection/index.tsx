@@ -222,7 +222,7 @@ export const SelectionProvider = ({
       // is the same as changing it's path
       folderPaths.forEach(path => {
         const { name } = folders.find(folder => folder.path === path);
-        actions.dashboard.renameFolder({
+        actions.dashboard.moveFolder({
           path,
           newPath: dropResult.path + '/' + name,
         });

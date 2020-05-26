@@ -621,17 +621,19 @@ export const renameFolderInState: Action<{ path: string; newPath: string }> = (
   { path, newPath }
 ) => {
   if (!dashboard.allCollections) return;
-  dashboard.allCollections = dashboard.allCollections.map(folder => {
+  const newFolders = dashboard.allCollections.map(folder => {
     if (folder.path === path) {
+      const split = newPath.split('/');
       return {
         ...folder,
         path: newPath,
-        name,
+        name: split[split.length - 1],
       };
     }
 
     return folder;
   });
+  dashboard.allCollections = newFolders;
 };
 
 export const renameSandbox: AsyncAction<{
@@ -655,6 +657,17 @@ export const renameSandbox: AsyncAction<{
     });
     effects.notificationToast.error('There was a problem renaming you sandbox');
   }
+};
+
+export const moveFolder: AsyncAction<{
+  path: string;
+  newPath: string;
+}> = async ({ state: { dashboard }, actions }, { path, newPath }) => {
+  if (!dashboard.allCollections) return;
+  dashboard.allCollections = dashboard.allCollections.filter(
+    folder => folder.path !== path
+  );
+  actions.dashboard.renameFolder({ path, newPath });
 };
 
 export const renameFolder: AsyncAction<{
