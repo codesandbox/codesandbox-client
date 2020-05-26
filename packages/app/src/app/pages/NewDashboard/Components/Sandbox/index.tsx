@@ -18,6 +18,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   } = useOvermind();
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
+  const template = sandbox.source.template;
 
   const [edit, setEdit] = React.useState(false);
   const [newTitle, setNewTitle] = React.useState(sandboxTitle);
@@ -141,6 +142,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     sandboxTitle,
     sandbox,
     isTemplate,
+    template,
     // edit mode
     edit,
     newTitle,

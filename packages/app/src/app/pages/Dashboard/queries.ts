@@ -45,6 +45,7 @@ export const SANDBOX_FRAGMENT = gql`
     forkedTemplate {
       id
       color
+      iconUrl
     }
 
     collection {
