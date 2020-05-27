@@ -381,9 +381,7 @@ export function convertEsModule(code: string) {
       // If the variable cannot be resolved, it must be the var that we had
       // just changed.
       if (varsToRename[ref.identifier.name] && ref.resolved === null) {
-        if (!ref.identifier.$csbSkipRename) {
-          ref.identifier.name = varsToRename[ref.identifier.name].join('.');
-        }
+        ref.identifier.name = varsToRename[ref.identifier.name].join('.');
       }
     });
   });
