@@ -22,7 +22,19 @@ export const Templates = () => {
   }, [actions.dashboard]);
 
   return (
-    <SelectionProvider sandboxes={sandboxes.TEMPLATES}>
+    <SelectionProvider
+      sandboxes={
+        sandboxes.TEMPLATES &&
+        sandboxes.TEMPLATES.map(template => {
+          const { sandbox, ...templateValues } = template;
+          return {
+            ...sandbox,
+            isTemplate: true,
+            template: templateValues,
+          };
+        })
+      }
+    >
       <Element css={css({ position: 'relative' })}>
         <Header title="Templates" templates={[]} />
         {sandboxes.TEMPLATES ? (

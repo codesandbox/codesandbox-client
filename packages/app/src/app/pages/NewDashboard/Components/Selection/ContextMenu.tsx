@@ -1,7 +1,10 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useHistory } from 'react-router-dom';
-import { Sandbox } from '@codesandbox/common/lib/types';
+import {
+  SandboxFragmentDashboardFragment as Sandbox,
+  TemplateFragmentDashboardFragment as Template,
+} from 'app/graphql/types';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Stack, Element, Menu } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -66,7 +69,12 @@ const MenuItem = props => (
   <Element data-reach-menu-item="" data-component="MenuItem" {...props} />
 );
 
-const SandboxMenu = ({ sandbox }: { sandbox: Sandbox }) => {
+type SandboxItemType = Sandbox & {
+  isTemplate?: boolean;
+  template?: Pick<Template, 'id' | 'color' | 'iconUrl' | 'published'>;
+};
+
+const SandboxMenu = ({ sandbox }: { sandbox: SandboxItemType }) => {
   const { effects, actions } = useOvermind();
   const history = useHistory();
 
@@ -76,7 +84,7 @@ const SandboxMenu = ({ sandbox }: { sandbox: Sandbox }) => {
   });
 
   const getFolderUrl = () => {
-    if (sandbox.template) return '/new-dashboard/templates';
+    if (sandbox.isTemplate) return '/new-dashboard/templates';
 
     const path = sandbox.collection.path;
     if (path === '/' || !path) return '/new-dashboard/all/drafts';
@@ -124,11 +132,11 @@ const SandboxMenu = ({ sandbox }: { sandbox: Sandbox }) => {
           actions.dashboard.downloadSandboxes([sandbox.id]);
         }}
       >
-        Export {sandbox.template ? 'template' : 'sandbox'}
+        Export {sandbox.isTemplate ? 'template' : 'sandbox'}
       </MenuItem>
       <Menu.Divider />
       <MenuItem onClick={() => {}}>Rename sandbox</MenuItem>
-      {sandbox.template ? (
+      {sandbox.isTemplate ? (
         <MenuItem
           onClick={() => {
             actions.dashboard.unmakeTemplate([sandbox.id]);
@@ -146,8 +154,17 @@ const SandboxMenu = ({ sandbox }: { sandbox: Sandbox }) => {
         </MenuItem>
       )}
       <Menu.Divider />
-      {sandbox.template ? (
-        <MenuItem onClick={() => {}}>Delete template</MenuItem>
+      {sandbox.isTemplate ? (
+        <MenuItem
+          onClick={() =>
+            actions.dashboard.deleteTemplate({
+              sandboxId: sandbox.id,
+              templateId: sandbox.template.id,
+            })
+          }
+        >
+          Delete template
+        </MenuItem>
       ) : (
         <MenuItem
           onClick={() => {
