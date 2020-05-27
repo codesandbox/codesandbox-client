@@ -192,7 +192,7 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
-  it.only('converts object shorthands', () => {
+  it('converts object shorthands', () => {
     const code = `
     import { templateFactory } from './template-factory.js';
 
