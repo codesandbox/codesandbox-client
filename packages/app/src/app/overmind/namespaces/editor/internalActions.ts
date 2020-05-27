@@ -132,7 +132,7 @@ export const saveCode: AsyncAction<{
       code: string;
       isBinary: boolean;
     };
-    if (state.user?.experiments.comments) {
+    if (sandbox.featureFlags.comments) {
       const {
         saved_code,
         updated_at,
@@ -174,7 +174,7 @@ export const saveCode: AsyncAction<{
     if (
       state.live.isLive &&
       state.live.isCurrentEditor &&
-      !state.user?.experiments.comments
+      !sandbox.featureFlags.comments
     ) {
       setTimeout(() => {
         // Send the save event 50ms later so the operation can be sent first (the operation that says the
