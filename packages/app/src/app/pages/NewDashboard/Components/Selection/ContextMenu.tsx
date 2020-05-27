@@ -191,6 +191,7 @@ const FolderMenu = ({ folder }) => {
 };
 
 const MultiMenu = ({ selectedItems }) => {
+  const { actions } = useOvermind();
   /*
     sandbox options - export, make template, delete
     template options - export, unmake template, delete
@@ -206,26 +207,67 @@ const MultiMenu = ({ selectedItems }) => {
     item => item.type === 'sandbox' && !item.isTemplate
   );
 
+  const exportItems = () => {
+    const ids = [
+      ...sandboxes.map(sandbox => sandbox.id),
+      ...templates.map(template => template.id),
+    ];
+    actions.dashboard.downloadSandboxes(ids);
+  };
+
+  const convertToTemplates = () => {
+    actions.dashboard.makeTemplate(sandboxes.map(sandbox => sandbox.id));
+  };
+
+  const convertToSandboxes = () => {
+    actions.dashboard.unmakeTemplate(templates.map(template => template.id));
+  };
+
+  const deleteItems = () => {
+    folders.forEach(folder =>
+      actions.dashboard.deleteFolder({ path: folder.path })
+    );
+
+    templates.forEach(sandbox =>
+      actions.dashboard.deleteTemplate({
+        sandboxId: sandbox.id,
+        templateId: sandbox.template.id,
+      })
+    );
+
+    if (sandboxes.length) {
+      actions.dashboard.deleteSandbox(sandboxes.map(sandbox => sandbox.id));
+    }
+  };
+
+  const EXPORT = { label: 'Export items', fn: exportItems };
+  const DELETE = { label: 'Delete items', fn: deleteItems };
+  const CONVERT_TO_TEMPLATE = {
+    label: 'Convert to templates',
+    fn: convertToTemplates,
+  };
+  const CONVERT_TO_SANDBOX = {
+    label: 'Convert to sandboxes',
+    fn: convertToSandboxes,
+  };
+
   let options = [];
 
   if (folders.length) {
-    options = ['Delete items'];
+    options = [DELETE];
   } else if (sandboxes.length && templates.length) {
-    options = ['Export items', 'Delete items'];
+    options = [EXPORT, DELETE];
   } else if (templates.length) {
-    options = ['Export templates', 'Convert to sandboxes', 'Delete templates'];
+    options = [EXPORT, CONVERT_TO_SANDBOX, DELETE];
   } else if (sandboxes.length) {
-    options = ['Export sandboxes', 'Convert to templates', 'Delete sandboxes'];
-  } else {
-    options = ['Nothing to do here'];
+    options = [EXPORT, CONVERT_TO_TEMPLATE, DELETE];
   }
 
   return (
     <>
-      <MenuItem>None of these work yet</MenuItem>
       {options.map(option => (
-        <MenuItem key={option} onClick={() => {}}>
-          {option}
+        <MenuItem key={option.label} onClick={option.fn}>
+          {option.label}
         </MenuItem>
       ))}
     </>
