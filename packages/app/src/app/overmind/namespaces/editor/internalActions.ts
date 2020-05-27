@@ -133,6 +133,7 @@ export const saveCode: AsyncAction<{
       isBinary: boolean;
     };
     if (state.user?.experiments.comments) {
+      await effects.live.waitForLiveReady();
       const {
         saved_code,
         updated_at,

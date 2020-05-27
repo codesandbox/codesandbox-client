@@ -7,6 +7,7 @@ import {
   UserSelection,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
+import { blocker } from 'app/utils/blocker';
 import {
   captureException,
   logBreadcrumb,
@@ -67,6 +68,8 @@ class Live {
     moduleShortid: string;
     moduleInfo: IModuleStateModule;
   }) => void;
+
+  private liveInitialized = blocker();
 
   private operationToElixir(ot: (number | string)[]) {
     return ot.map((op: number | string) => {
@@ -475,8 +478,18 @@ class Live {
     });
   }
 
+  waitForLiveReady() {
+    return this.liveInitialized.promise;
+  }
+
+  markLiveReady() {
+    this.liveInitialized.resolve(undefined);
+  }
+
   reset() {
     this.clientsManager.clear();
+    this.liveInitialized.reject(undefined);
+    this.liveInitialized = blocker();
   }
 
   resetClient(moduleShortid: string, revision: number) {
