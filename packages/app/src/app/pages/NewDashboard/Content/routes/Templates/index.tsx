@@ -28,7 +28,7 @@ export const Templates = () => {
         {sandboxes.TEMPLATES ? (
           <SandboxGrid>
             {sandboxes.TEMPLATES.map(({ sandbox }) => (
-              <Sandbox template sandbox={sandbox} key={sandbox.id} />
+              <Sandbox isTemplate sandbox={sandbox} key={sandbox.id} />
             ))}
           </SandboxGrid>
         ) : (
