@@ -101,6 +101,7 @@ export const Folder = ({
   const {
     selectedIds,
     onClick: onSelectionClick,
+    onRightClick,
     onBlur,
     onKeyDown,
     onDragStart,
@@ -130,12 +131,19 @@ export const Folder = ({
     }
   };
 
+  const onContextMenu = event => {
+    event.preventDefault();
+    onSelectionClick(event, path);
+    onRightClick(event);
+  };
+
   const interactionProps = {
     tabIndex: 0, // make div focusable
     style: { outline: 'none' }, // we handle outline with border
     selected,
     onClick,
     onDoubleClick,
+    onContextMenu,
     onBlur,
     onKeyDown,
     'data-selection-id': path,

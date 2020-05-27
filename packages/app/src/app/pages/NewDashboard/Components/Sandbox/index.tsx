@@ -144,8 +144,8 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     style: { outline: 'none' }, // we handle outline with border
     selected,
     onClick,
-    onContextMenu,
     onDoubleClick,
+    onContextMenu,
     onBlur,
     onKeyDown,
     'data-selection-id': sandbox.id,

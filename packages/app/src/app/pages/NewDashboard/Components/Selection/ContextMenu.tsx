@@ -20,6 +20,26 @@ export const ContextMenu = ({
   }, [visible, setVisibility]);
 
   if (!visible) return null;
+
+  // const selectedItems = selectedIds.map(id => {
+  //   if (id.startsWith('/')) {
+  //     const folder = folders.find(f => f.path === id);
+  //     return {
+  //       type: 'folder',
+  //       title: folder.name,
+  //       path: folder.path,
+  //     };
+  //   }
+
+  //   const sandbox = sandboxes.find(s => s.id === id);
+  //   return {
+  //     type: 'sandbox',
+  //     id: sandbox.id,
+  //     title: sandbox.title || sandbox.path || sandbox.alias,
+  //     url: sandbox.screenshotUrl,
+  //   };
+  // });
+
   return (
     <>
       <Stack
