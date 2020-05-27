@@ -27,8 +27,7 @@ export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 export const Text = styled(Element).attrs(p => ({
-  // @ts-ignore SC issue
-  as: p.as || 'span',
+  as: ((p as unknown) as { as: string }).as || 'span',
 }))<ITextProps>(
   ({
     size,

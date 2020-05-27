@@ -8,9 +8,7 @@ type ListActionProps = {
 };
 
 export const List = styled(Element).attrs(p => ({
-  // TODO: change how we do this
-  // @ts-ignore Issue in styled-components
-  as: p.as || 'ul',
+  as: ((p as unknown) as { as: string }).as || 'ul',
 }))(
   css({
     listStyle: 'none',
