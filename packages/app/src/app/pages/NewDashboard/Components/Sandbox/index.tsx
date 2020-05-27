@@ -105,6 +105,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const {
     selectedIds,
     onClick: onSelectionClick,
+    onRightClick,
     onBlur,
     onKeyDown,
     onDragStart,
@@ -119,6 +120,11 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const onClick = event => {
     if (edit || isDragging || isMenuClicked(event)) return;
     onSelectionClick(event, sandbox.id);
+  };
+
+  const onContextMenu = event => {
+    event.preventDefault();
+    onRightClick(event, sandbox.id);
   };
 
   const history = useHistory();
@@ -138,6 +144,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     selected,
     onClick,
     onDoubleClick,
+    onContextMenu,
     onBlur,
     onKeyDown,
     'data-selection-id': sandbox.id,
