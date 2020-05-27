@@ -142,6 +142,14 @@ $csb__b.c();
 "
 `;
 
+exports[`convert-esmodule converts object shorthands 1`] = `
+"var $csb__templatefactory = require(\\"./template-factory.js\\");
+const short = {
+  templateFactory: $csb__templatefactory.templateFactory
+};
+"
+`;
+
 exports[`convert-esmodule handles default as exports 1`] = `
 "Object.defineProperty(exports, \\"__esModule\\", {
   value: true
