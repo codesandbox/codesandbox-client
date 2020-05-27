@@ -64,22 +64,6 @@ export function convertEsModule(code: string) {
     program.body.push(generateInteropRequire());
   }
 
-  // Convert all the object shorthands to not shorthands
-  // @ts-ignore
-  program = walk(program, {
-    enter(node, parent, prop, index) {
-      if (node.type === n.Property) {
-        const property = node as Property;
-        if (property.shorthand) {
-          property.value = {
-            ...property.key,
-          };
-          property.shorthand = false;
-        }
-      }
-    },
-  });
-
   for (; i < program.body.length; i++) {
     const statement = program.body[i];
 
@@ -373,20 +357,40 @@ export function convertEsModule(code: string) {
     }
   }
 
-  // A second pass where we rename all references to imports that were marked before.
-  const scopeManager = escope.analyze(program);
-
-  scopeManager.acquire(program);
-  scopeManager.scopes.forEach(scope => {
-    scope.references.forEach(ref => {
-      // If the variable cannot be resolved, it must be the var that we had
-      // just changed.
-      if (varsToRename[ref.identifier.name] && ref.resolved === null) {
-        ref.identifier.name = varsToRename[ref.identifier.name].join('.');
-      }
+  if (Object.keys(varsToRename).length > 0) {
+    // Convert all the object shorthands to not shorthands, needed later when we rename variables so we
+    // don't change to the key literals
+    // @ts-ignore
+    program = walk(program, {
+      enter(node, parent, prop, index) {
+        if (node.type === n.Property) {
+          const property = node as Property;
+          if (property.shorthand) {
+            property.value = {
+              ...property.key,
+            };
+            property.shorthand = false;
+          }
+        }
+      },
     });
-  });
-  scopeManager.detach();
+
+    // A second pass where we rename all references to imports that were marked before.
+    const scopeManager = escope.analyze(program);
+
+    scopeManager.acquire(program);
+    scopeManager.scopes.forEach(scope => {
+      scope.references.forEach(ref => {
+        // If the variable cannot be resolved, it must be the var that we had
+        // just changed.
+        if (varsToRename[ref.identifier.name] && ref.resolved === null) {
+          ref.identifier = { ...ref.identifier };
+          ref.identifier.name = varsToRename[ref.identifier.name].join('.');
+        }
+      });
+    });
+    scopeManager.detach();
+  }
 
   return astring.generate(program as any, {
     generator: customGenerator,
