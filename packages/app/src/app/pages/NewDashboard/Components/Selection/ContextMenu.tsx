@@ -178,6 +178,18 @@ const SandboxMenu = ({ sandbox }: { sandbox: SandboxItemType }) => {
   );
 };
 
-const FolderMenu = ({ folder }) => null;
+const FolderMenu = ({ folder }) => {
+  const { actions } = useOvermind();
+  return (
+    <>
+      <MenuItem onClick={() => {}}>Rename folder</MenuItem>
+      <MenuItem
+        onClick={() => actions.dashboard.deleteFolder({ path: folder.path })}
+      >
+        Delete folder
+      </MenuItem>
+    </>
+  );
+};
 
 const MultiMenu = ({ selectedItems }) => null;
