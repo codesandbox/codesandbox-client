@@ -1,14 +1,13 @@
-import { debounce } from 'lodash-es';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
   EnvironmentVariable,
+  Module,
   ModuleCorrection,
   ModuleError,
   ModuleTab,
-  WindowOrientation,
-  Module,
   UserSelection,
+  WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
@@ -24,6 +23,7 @@ import {
 } from 'app/graphql/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 import {
   addDevToolsTab as addDevToolsTabUtil,
   closeDevToolsTab as closeDevToolsTabUtil,
@@ -32,8 +32,8 @@ import {
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
-import { getSavedCode } from 'app/overmind/utils/sandbox';
-import { Selection, TextOperation } from 'ot';
+import { debounce } from 'lodash-es';
+import { TextOperation } from 'ot';
 import { json } from 'overmind';
 
 import eventToTransform from '../../utils/event-to-transform';
@@ -248,14 +248,12 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
       status: convertTypeToStatus('notice'),
       sticky: true,
       actions: {
-        primary: [
-          {
-            label: 'Fork',
-            run: () => {
-              actions.editor.forkSandboxClicked();
-            },
+        primary: {
+          label: 'Fork',
+          run: () => {
+            actions.editor.forkSandboxClicked();
           },
-        ],
+        },
       },
     });
   }
@@ -318,7 +316,7 @@ export const codeSaved: AsyncAction<{
   moduleShortid: string;
   cbID: string | null;
 }> = withOwnedSandbox(
-  async ({ actions }, { code, moduleShortid, cbID }) => {
+  async ({ state, actions }, { code, moduleShortid, cbID }) => {
     actions.editor.internal.saveCode({
       code,
       moduleShortid,
@@ -335,8 +333,9 @@ export const codeSaved: AsyncAction<{
 
 export const onOperationApplied: Action<{
   moduleShortid: string;
+  operation: TextOperation;
   code: string;
-}> = ({ state, effects, actions }, { code, moduleShortid }) => {
+}> = ({ state, effects, actions }, { code, moduleShortid, operation }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -348,6 +347,8 @@ export const onOperationApplied: Action<{
   if (!module) {
     return;
   }
+
+  actions.comments.transposeComments({ module, operation });
 
   actions.editor.internal.updateModuleCode({
     module,
@@ -362,6 +363,54 @@ export const onOperationApplied: Action<{
   }
 };
 
+/**
+ * Set the code of the module and send it if live is turned on. Keep in mind that this overwrites the editor state,
+ * which means that if the user was typing something else in the file, it will get overwritten(!).
+ *
+ * There is some extra logic to handle files that are opened and not opened. If the file is opened we will set the code
+ * within VSCode and let the event that VSCode generates handle the rest, however, if the file is not opened in VSCode,
+ * we'll just update it in the state and send a live message based on the diff.
+ *
+ * The difference between `setCode` and `codeChanged` is small but important to keep in mind. Calling this method will *always*
+ * cause `codeChanged` to be called. But from different sources based on whether the file is currently open. I'd recommend to always
+ * call this function if you're aiming to manually set code (like updating package.json), while editors shouild call codeChanged.
+ *
+ * The two cases:
+ *
+ * ### Already opened in VSCode
+ *  1. set code in VSCode
+ *  2. which generates an event
+ *  3. which triggers codeChanged
+ *
+ * ### Not opened in VSCode
+ *  1. codeChanged called directly
+ */
+export const setCode: Action<{
+  moduleShortid: string;
+  code: string;
+}> = ({ effects, state, actions }, { code, moduleShortid }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+  // If the code is opened in VSCode, change the code in VSCode and let
+  // other clients know via the event triggered by VSCode. Otherwise
+  // send a manual event and just change the state.
+  if (effects.vscode.isModuleOpened(module)) {
+    effects.vscode.setModuleCode({ ...module, code }, true);
+  } else {
+    actions.editor.codeChanged({ moduleShortid, code });
+  }
+};
+
 export const codeChanged: Action<{
   moduleShortid: string;
   code: string;
@@ -372,8 +421,6 @@ export const codeChanged: Action<{
   if (!state.editor.currentSandbox) {
     return;
   }
-
-  const sandbox = state.editor.currentSandbox;
 
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
@@ -410,17 +457,7 @@ export const codeChanged: Action<{
 
     effects.live.sendCodeUpdate(moduleShortid, operation);
 
-    const comments = state.comments.fileComments[module.path] || [];
-    comments.forEach(fileComment => {
-      const range = new Selection.Range(...fileComment.range);
-      const newRange = range.transform(operation);
-      const comment =
-        state.comments.comments[sandbox.id][fileComment.commentId];
-      if (comment.references && comment.references[0].type === 'code') {
-        comment.references[0].metadata.anchor = newRange.anchor;
-        comment.references[0].metadata.head = newRange.head;
-      }
-    });
+    actions.comments.transposeComments({ module, operation });
   }
 
   actions.editor.internal.updateModuleCode({
@@ -452,41 +489,54 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
         state.editor.changedModuleShortids.includes(module.shortid)
       );
 
-      await Promise.all(
-        changedModules.map(module => effects.live.saveModule(module))
-      );
+      if (state.user?.experiments.comments) {
+        const versions = await Promise.all(
+          changedModules.map(module =>
+            effects.live
+              .saveModule(module)
+              .then(({ saved_code, updated_at, inserted_at, version }) => {
+                module.savedCode = saved_code;
+                module.updatedAt = updated_at;
+                module.insertedAt = inserted_at;
 
-      const updatedModules = await effects.api.saveModules(
-        sandbox.id,
-        changedModules
-      );
-
-      updatedModules.forEach(updatedModule => {
-        const module = sandbox.modules.find(
-          moduleItem => moduleItem.shortid === updatedModule.shortid
+                return version;
+              })
+          )
+        );
+        sandbox.version = Math.max(...versions);
+      } else {
+        const updatedModules = await effects.api.saveModules(
+          sandbox.id,
+          changedModules
         );
 
-        if (module) {
-          module.insertedAt = updatedModule.insertedAt;
-          module.updatedAt = updatedModule.updatedAt;
-
-          module.savedCode =
-            updatedModule.code === module.code ? null : updatedModule.code;
-
-          effects.vscode.sandboxFsSync.writeFile(
-            state.editor.modulesByPath,
-            module
+        updatedModules.forEach(updatedModule => {
+          const module = sandbox.modules.find(
+            moduleItem => moduleItem.shortid === updatedModule.shortid
           );
 
-          effects.moduleRecover.remove(sandbox.id, module);
-        } else {
-          // We might not have the module, as it was created by the server. In
-          // this case we put it in. There is an edge case here where the user
-          // might delete the module while it is being updated, but it will very
-          // likely not happen
-          sandbox.modules.push(updatedModule);
-        }
-      });
+          if (module) {
+            module.insertedAt = updatedModule.insertedAt;
+            module.updatedAt = updatedModule.updatedAt;
+
+            module.savedCode =
+              updatedModule.code === module.code ? null : updatedModule.code;
+
+            effects.vscode.sandboxFsSync.writeFile(
+              state.editor.modulesByPath,
+              module
+            );
+
+            effects.moduleRecover.remove(sandbox.id, module);
+          } else {
+            // We might not have the module, as it was created by the server. In
+            // this case we put it in. There is an edge case here where the user
+            // might delete the module while it is being updated, but it will very
+            // likely not happen
+            sandbox.modules.push(updatedModule);
+          }
+        });
+      }
 
       if (
         sandbox.originalGit &&
@@ -674,28 +724,6 @@ export const tabMoved: Action<{
   state.editor.tabs.splice(nextIndex, 0, tab);
 };
 
-export const prettifyClicked: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
-  effects.analytics.track('Prettify Code');
-  const module = state.editor.currentModule;
-  if (!module.id) {
-    return;
-  }
-  const newCode = await effects.prettyfier.prettify(
-    module.id,
-    module.title,
-    module.code || ''
-  );
-
-  actions.editor.codeChanged({
-    code: newCode,
-    moduleShortid: module.shortid,
-  });
-};
-
 // TODO(@CompuIves): Look into whether we even want to call this function.
 // We can probably call the dispatch from the bundler itself instead.
 export const errorsCleared: Action = ({ state, effects }) => {
@@ -859,14 +887,12 @@ export const showEnvironmentVariablesNotification: AsyncAction = async ({
       title: 'Unset Secrets',
       message: `This sandbox has ${emptyVarCount} secrets that need to be set. You can set them in the server tab.`,
       actions: {
-        primary: [
-          {
-            label: 'Open Server Tab',
-            run: () => {
-              actions.workspace.setWorkspaceItem({ item: SERVER.id });
-            },
+        primary: {
+          label: 'Open Server Tab',
+          run: () => {
+            actions.workspace.setWorkspaceItem({ item: SERVER.id });
           },
-        ],
+        },
       },
     });
   }

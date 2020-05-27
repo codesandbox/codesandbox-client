@@ -25,7 +25,7 @@ type State = {
   notifications: Notification[];
   isLoadingCLI: boolean;
   isLoadingGithub: boolean;
-  isLoadingZeit: boolean;
+  isLoadingVercel: boolean;
   contextMenu: {
     show: boolean;
     items: string[];
@@ -66,7 +66,7 @@ export const state: State = {
   connected: true,
   notifications: [],
   contributors: [],
-  isLoadingZeit: false,
+  isLoadingVercel: false,
   isLoadingCLI: false,
   isLoadingGithub: false,
   contextMenu: {

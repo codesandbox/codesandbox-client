@@ -2,6 +2,7 @@
 /* eslint-disable no-loop-func, no-continue */
 import * as meriyah from 'meriyah';
 import * as astring from 'astring';
+import * as escope from 'escope';
 import { basename } from 'path';
 import { walk } from 'estree-walker';
 import { AssignmentExpression, ExpressionStatement } from 'meriyah/dist/estree';
@@ -14,6 +15,7 @@ import {
   generateEsModuleSpecifier,
   generateInteropRequire,
   generateInteropRequireExpression,
+  generateExportGetter,
 } from './utils';
 import { customGenerator } from './generator';
 
@@ -22,6 +24,7 @@ import { customGenerator } from './generator';
  */
 export function convertEsModule(code: string) {
   const usedVarNames = [];
+  const varsToRename = {};
 
   const getVarName = (name: string) => {
     let usedName = name.replace(/[.-]/g, '');
@@ -141,6 +144,19 @@ export function convertEsModule(code: string) {
         }
         i++;
         program.body.splice(i, 0, generateExportStatement(varName, varName));
+      } else if (statement.specifiers) {
+        program.body.splice(i, 1);
+        statement.specifiers.forEach(specifier => {
+          if (specifier.type === n.ExportSpecifier) {
+            i++;
+            program.body.unshift(
+              generateExportGetter(
+                specifier.exported.name,
+                specifier.local.name
+              )
+            );
+          }
+        });
       }
     } else if (statement.type === n.ExportDefaultDeclaration) {
       addEsModuleSpecifier();
@@ -258,11 +274,26 @@ export function convertEsModule(code: string) {
 
       // Create require statement instead of the import
       program.body[i] = generateRequireStatement(varName, source.value);
-      i++;
 
       statement.specifiers.reverse().forEach(specifier => {
         let localName: string;
         let importName: string;
+
+        if (specifier.type === n.ImportSpecifier) {
+          // import {Test} from 'test';
+          // const _test = require('test');
+          // var Test = _test.Test;
+
+          // Mark that we need to rename all references to this variable
+          // to the new require statement. This will happen in the second pass.
+          varsToRename[specifier.local.name] = [
+            varName,
+            specifier.imported.name,
+          ];
+
+          return;
+        }
+        i++;
 
         if (specifier.type === n.ImportDefaultSpecifier) {
           // import Test from 'test';
@@ -279,13 +310,8 @@ export function convertEsModule(code: string) {
           );
           return;
         }
-        if (specifier.type === n.ImportSpecifier) {
-          // import {Test} from 'test';
-          // const _test = require('test');
-          // var Test = _test.Test;
-          localName = specifier.local.name;
-          importName = specifier.imported.name;
-        } else if (specifier.type === n.ImportNamespaceSpecifier) {
+
+        if (specifier.type === n.ImportNamespaceSpecifier) {
           // import * as Test from 'test';
           // const _test = require('test');
           // var Test = _test;
@@ -326,6 +352,21 @@ export function convertEsModule(code: string) {
       });
     }
   }
+
+  // A second pass where we rename all references to imports that were marked before.
+  const scopeManager = escope.analyze(program);
+
+  scopeManager.acquire(program);
+  scopeManager.scopes.forEach(scope => {
+    scope.references.forEach(ref => {
+      // If the variable cannot be resolved, it must be the var that we had
+      // just changed.
+      if (varsToRename[ref.identifier.name] && ref.resolved === null) {
+        ref.identifier.name = varsToRename[ref.identifier.name].join('.');
+      }
+    });
+  });
+  scopeManager.detach();
 
   return astring.generate(program as any, {
     generator: customGenerator,

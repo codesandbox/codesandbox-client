@@ -148,12 +148,12 @@ export const removeNotification: Action<number> = ({ state }, id) => {
   state.notifications.splice(notificationToRemoveIndex, 1);
 };
 
-export const signInZeitClicked: AsyncAction = async ({
+export const signInVercelClicked: AsyncAction = async ({
   state,
   effects: { browser, api, notificationToast },
   actions,
 }) => {
-  state.isLoadingZeit = true;
+  state.isLoadingVercel = true;
 
   const popup = browser.openPopup('/auth/zeit', 'sign in');
   const data: { code: string } = await browser.waitForMessage('signin');
@@ -162,8 +162,8 @@ export const signInZeitClicked: AsyncAction = async ({
 
   if (data && data.code) {
     try {
-      state.user = await api.createZeitIntegration(data.code);
-      await actions.deployment.internal.getZeitUserDetails();
+      state.user = await api.createVercelIntegration(data.code);
+      await actions.deployment.internal.getVercelUserDetails();
     } catch (error) {
       actions.internal.handleError({
         message: 'Could not authorize with Vercel',
@@ -174,12 +174,12 @@ export const signInZeitClicked: AsyncAction = async ({
     notificationToast.error('Could not authorize with Vercel');
   }
 
-  state.isLoadingZeit = false;
+  state.isLoadingVercel = false;
 };
 
-export const signOutZeitClicked: AsyncAction = async ({ state, effects }) => {
+export const signOutVercelClicked: AsyncAction = async ({ state, effects }) => {
   if (state.user?.integrations?.zeit) {
-    await effects.api.signoutZeit();
+    await effects.api.signoutVercel();
     delete state.user.integrations.zeit;
   }
 };

@@ -38,7 +38,7 @@ Here's an example:
 Change the GitHub URL:
 https://github.com/reduxjs/redux/tree/master/examples/todomvc.
 
-To: https://githubbox.com/reactjs/redux/tree/master/examples/todomvc.
+To: https://githubbox.com/reduxjs/redux/tree/master/examples/todomvc.
 
 The result is we take the last part of the url (everything after github.com) and
 use it in our importer at codesandbox.io/s/github/, adding the repo to
@@ -127,6 +127,15 @@ will be in the sandbox, an example body would be:
       }
     }
   }
+}
+```
+
+You can import binary files by setting `isBinary` to `true` and `content` as a URL to the file hosted externally. For example:
+
+```json
+{
+  "isBinary": true,
+  "content": "https://..."
 }
 ```
 

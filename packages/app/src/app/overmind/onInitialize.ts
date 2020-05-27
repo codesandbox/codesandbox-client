@@ -15,8 +15,6 @@ export const onInitialize: OnInitialize = async (
   effects.live.initialize({
     provideJwtToken,
     onApplyOperation: actions.live.applyTransformation,
-    isLiveBlockerExperiement: () =>
-      Boolean(state.user?.experiments.liveBlocker),
     onOperationError: actions.live.onOperationError,
   });
 
@@ -52,7 +50,7 @@ export const onInitialize: OnInitialize = async (
     },
   });
 
-  effects.zeit.initialize({
+  effects.vercel.initialize({
     getToken() {
       return state.user?.integrations.zeit?.token ?? null;
     },
@@ -106,4 +104,5 @@ export const onInitialize: OnInitialize = async (
   effects.preview.initialize(overmindInstance.reaction);
 
   actions.internal.showPrivacyPolicyNotification();
+  actions.internal.setViewModeForDashboard();
 };

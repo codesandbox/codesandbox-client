@@ -130,7 +130,6 @@ export const UserSearchInput = ({
                       css={css({
                         borderRadius: 2,
                         marginRight: 2,
-                        paddingY: 1,
                       })}
                       width={24}
                       height={24}

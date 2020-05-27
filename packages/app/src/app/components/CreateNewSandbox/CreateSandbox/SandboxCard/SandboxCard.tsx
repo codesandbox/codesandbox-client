@@ -1,7 +1,6 @@
 import React from 'react';
-import { Icons } from '@codesandbox/template-icons';
-import getColorIcons from '@codesandbox/common/lib/templates/icons';
 import { TemplateType } from '@codesandbox/common/lib/templates';
+import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 
 import {
   Container,
@@ -44,11 +43,8 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
   DetailComponent,
   owner,
 }) => {
-  const UserIcon: React.FunctionComponent =
-    iconUrl && Icons[iconUrl] ? Icons[iconUrl] : getColorIcons(environment);
-  const OfficialIcon: React.FunctionComponent = getColorIcons(environment);
-
   const elRef = React.useRef<HTMLButtonElement>();
+  const { OfficialIcon, UserIcon } = getTemplateIcon(iconUrl, environment);
 
   React.useEffect(() => {
     const inputHasFocus =

@@ -67,7 +67,11 @@ export default () => {
           transition={{ duration: 0.5, ease: 'easeOut', delay: 0.5 }}
         >
           <Button
-            style={{ padding: '.75rem 2rem', marginBottom: '.5rem' }}
+            style={{
+              padding: '.75rem 2rem',
+              marginBottom: '.5rem',
+              borderRadius: '.25rem',
+            }}
             href="/s"
           >
             Create a Sandbox, it’s free

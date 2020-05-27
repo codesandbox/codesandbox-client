@@ -4,7 +4,7 @@ import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
 
 import { client } from 'app/graphql/client';
 import { useOvermind } from 'app/overmind';
-import { Navigation } from 'app/pages/common/Navigation';
+import { Navigation } from './Navigation';
 
 import Content from './Content';
 import {

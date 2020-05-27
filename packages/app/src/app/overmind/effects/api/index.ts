@@ -436,7 +436,7 @@ export default {
       },
     });
   },
-  createZeitIntegration(code: string): Promise<CurrentUser> {
+  createVercelIntegration(code: string): Promise<CurrentUser> {
     return api.post(`/users/current_user/integrations/zeit`, {
       code,
     });
@@ -447,7 +447,7 @@ export default {
   signoutGithubIntegration(): Promise<void> {
     return api.delete(`/users/current_user/integrations/github`);
   },
-  signoutZeit(): Promise<void> {
+  signoutVercel(): Promise<void> {
     return api.delete(`/users/current_user/integrations/zeit`);
   },
   preloadTemplates() {

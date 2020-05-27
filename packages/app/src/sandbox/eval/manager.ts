@@ -597,7 +597,7 @@ export default class Manager {
   async resolveModuleAsync(
     path: string,
     currentPath: string,
-    defaultExtensions = ['js', 'jsx', 'json']
+    defaultExtensions = ['js', 'jsx', 'json', 'mjs']
   ): Promise<Module> {
     const dirredPath = pathUtils.dirname(currentPath);
     if (this.cachedPaths[dirredPath] === undefined) {
@@ -711,7 +711,7 @@ export default class Manager {
   resolveModule(
     path: string,
     currentPath: string,
-    defaultExtensions: Array<string> = ['js', 'jsx', 'json']
+    defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs']
   ): Module {
     const dirredPath = pathUtils.dirname(currentPath);
     if (this.cachedPaths[dirredPath] === undefined) {

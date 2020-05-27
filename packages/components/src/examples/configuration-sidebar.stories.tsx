@@ -108,7 +108,7 @@ const NPMIcon = props => (
   </svg>
 );
 
-const ZeitIcon = props => (
+const VercelIcon = props => (
   <svg width={12} height={10} fill="none" viewBox="0 0 12 10" {...props}>
     <path fill="#fff" d="M6 0l6 10H0L6 0z" />
   </svg>
@@ -197,7 +197,7 @@ export const Basic = () => (
         </Element>
         <Element>
           <Stack gap={2} marginBottom={2}>
-            <ZeitIcon />
+            <VercelIcon />
             <Text size={2}>now.json</Text>
           </Stack>
           <Stack gap={4} align="flex-end" justify="space-between">

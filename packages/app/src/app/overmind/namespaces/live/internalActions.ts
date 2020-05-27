@@ -1,15 +1,16 @@
 import {
   EditorSelection,
+  IModuleState,
+  IModuleStateModule,
   Module,
   Sandbox,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { Action, AsyncAction } from 'app/overmind';
 import { json } from 'overmind';
 
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { getSavedCode } from '../../utils/sandbox';
-import { IModuleStateModule } from './types';
 
 export const clearUserSelections: Action<string | null> = (
   { state, effects },
@@ -99,10 +100,6 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
 
   return null;
 };
-
-interface IModuleState {
-  [moduleId: string]: IModuleStateModule;
-}
 
 export const initializeModuleFromState: Action<{
   moduleShortid: string;
@@ -218,7 +215,7 @@ export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
 export const sendUnsavedChanges: Action<{
   sandbox: Sandbox;
   moduleState: IModuleState;
-}> = ({ effects }, { sandbox, moduleState }) => {
+}> = ({ effects, actions }, { sandbox, moduleState }) => {
   // We now need to send all dirty files that came over from the last sandbox.
   // There is the scenario where you edit a file and press fork. Then the server
   // doesn't know about how you got to that dirty state.

@@ -1,6 +1,6 @@
 {
   "name": "@codesandbox/components",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
@@ -21,13 +21,13 @@
     "start": "yarn tsc --watch",
     "start:storybook": "start-storybook",
     "typecheck": "tsc --noEmit --pretty",
-    "chromatic": "if-env CIRCLE_BRANCH=master && yarn chromatic:master || yarn chromatic:branch",
-    "chromatic:master": "./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes --auto-accept-changes --project-token=nffds42ndde",
-    "chromatic:branch": "./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes --project-token=nffds42ndde",
+    "chromatic": "(if-env CIRCLE_BRANCH=master && yarn chromatic:master) || yarn chromatic:branch",
+    "chromatic:base": "./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes --project-token=nffds42ndde",
+    "chromatic:master": "yarn chromatic:base --auto-accept-changes",
+    "chromatic:branch": "(!(git diff master...HEAD --quiet ./src) && yarn chromatic:base) || echo 'Not running Chromatic...'",
     "prepublish": "yarn build"
   },
   "dependencies": {
-    "@codesandbox/template-icons": "^1.1.0",
     "@reach/auto-id": "^0.7.1",
     "@reach/menu-button": "^0.8.5",
     "@reach/tooltip": "^0.8.6",

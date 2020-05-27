@@ -18,7 +18,7 @@ import {
   NetlifyIcon,
   PrettierIcon,
   NPMIcon,
-  ZeitIcon,
+  VercelIcon,
   JSIcon,
   CodeSandboxIcon,
 } from './Icons';
@@ -27,7 +27,7 @@ const getIcon = name => {
   const icons = {
     'netlify.toml': NetlifyIcon,
     'package.json': NPMIcon,
-    'now.json': ZeitIcon,
+    'now.json': VercelIcon,
     '.prettierrc': PrettierIcon,
     'jsconfig.json': JSIcon,
     'tsconfig.json': TypescriptIcon,
