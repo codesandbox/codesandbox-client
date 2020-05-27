@@ -5,7 +5,11 @@ import * as astring from 'astring';
 import * as escope from 'escope';
 import { basename } from 'path';
 import { walk } from 'estree-walker';
-import { AssignmentExpression, ExpressionStatement } from 'meriyah/dist/estree';
+import {
+  AssignmentExpression,
+  ExpressionStatement,
+  Property,
+} from 'meriyah/dist/estree';
 import { Syntax as n } from './syntax';
 import {
   generateRequireStatement,
@@ -59,6 +63,21 @@ export function convertEsModule(code: string) {
 
     program.body.push(generateInteropRequire());
   }
+
+  // @ts-ignore
+  program = walk(program, {
+    enter(node, parent, prop, index) {
+      if (node.type === n.Property) {
+        const property = node as Property;
+        if (property.shorthand) {
+          property.value = {
+            ...property.key,
+          };
+          property.shorthand = false;
+        }
+      }
+    },
+  });
 
   for (; i < program.body.length; i++) {
     const statement = program.body[i];
@@ -362,7 +381,9 @@ export function convertEsModule(code: string) {
       // If the variable cannot be resolved, it must be the var that we had
       // just changed.
       if (varsToRename[ref.identifier.name] && ref.resolved === null) {
-        ref.identifier.name = varsToRename[ref.identifier.name].join('.');
+        if (!ref.identifier.$csbSkipRename) {
+          ref.identifier.name = varsToRename[ref.identifier.name].join('.');
+        }
       }
     });
   });

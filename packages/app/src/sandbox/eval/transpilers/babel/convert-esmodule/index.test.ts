@@ -196,7 +196,7 @@ describe('convert-esmodule', () => {
     const code = `
     import { templateFactory } from './template-factory.js';
 
-    const short = { templateFactory }
+    const short = { templateFactory };
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });
