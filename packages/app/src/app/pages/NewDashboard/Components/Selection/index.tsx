@@ -224,7 +224,7 @@ export const SelectionProvider = ({
         const { name } = folders.find(folder => folder.path === path);
         actions.dashboard.moveFolder({
           path,
-          newPath: dropResult.path + '/' + name,
+          newPath: dropResult.path.replace('all', '') + '/' + name,
         });
       });
     }
