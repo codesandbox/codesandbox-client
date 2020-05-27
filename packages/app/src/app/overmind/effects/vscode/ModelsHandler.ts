@@ -6,7 +6,6 @@ import {
   UserSelection,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { actions, dispatch } from 'codesandbox-api';
@@ -155,7 +154,7 @@ export class ModelsHandler {
   }
 
   public clearComments() {
-    if (COMMENTS) {
+    if (this.sandbox.featureFlags.comments) {
       Object.values(this.moduleModels).forEach(moduleModel => {
         if (!moduleModel.model) {
           return;
@@ -188,7 +187,7 @@ export class ModelsHandler {
 
     const model = moduleModel.model;
 
-    if (COMMENTS) {
+    if (this.sandbox.featureFlags.comments) {
       const newDecorationComments = this.createCommentDecorations(
         moduleModel.comments,
         model,

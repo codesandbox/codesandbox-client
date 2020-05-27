@@ -6,7 +6,6 @@ import {
   UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
@@ -82,7 +81,10 @@ export const roomJoined: AsyncAction<{
 
   effects.vscode.openModule(state.editor.currentModule);
 
-  if (COMMENTS && hasPermission(sandbox.authorization, 'comment')) {
+  if (
+    sandbox.featureFlags.comments &&
+    hasPermission(sandbox.authorization, 'comment')
+  ) {
     actions.comments.getSandboxComments(sandbox.id);
   }
 

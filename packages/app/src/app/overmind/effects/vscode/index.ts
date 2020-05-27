@@ -12,7 +12,6 @@ import {
   Settings,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
   NotificationMessage,
@@ -147,7 +146,7 @@ export class VSCodeEffect {
 
     this.prepareElements();
 
-    if (COMMENTS) {
+    if (this.options.getCurrentSandbox().featureFlags.comments) {
       this.options.reaction(
         state => ({
           fileComments: json(state.comments.fileComments),
@@ -1205,7 +1204,7 @@ export class VSCodeEffect {
 
       this.modelCursorPositionListener = activeEditor.onDidChangeCursorPosition(
         cursor => {
-          if (COMMENTS) {
+          if (this.options.getCurrentSandbox().featureFlags.comments) {
             const model = activeEditor.getModel();
 
             this.modelsHandler.updateLineCommentIndication(
