@@ -31,8 +31,8 @@ const PortalStyles = createGlobalStyle(
     '[data-reach-menu]': {
       zIndex: 11, // TODO: we need to sort out our z indexes!
     },
+    minWidth: 100,
     '[data-reach-menu-list][data-component=MenuList]': {
-      minWidth: 100,
       backgroundColor: 'menuList.background',
       borderRadius: 3,
       boxShadow: 2,
@@ -51,7 +51,7 @@ const PortalStyles = createGlobalStyle(
       cursor: 'pointer',
       outline: 'none',
       color: 'menuList.foreground',
-      '&[data-selected]': {
+      '&[data-selected], :hover': {
         outline: 'none',
         backgroundColor: 'menuList.hoverBackground',
         color: 'menuList.hoverForeground',

@@ -105,6 +105,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const {
     selectedIds,
     onClick: onSelectionClick,
+    onRightClick,
     onBlur,
     onKeyDown,
     onDragStart,
@@ -119,6 +120,12 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const onClick = event => {
     if (edit || isDragging || isMenuClicked(event)) return;
     onSelectionClick(event, sandbox.id);
+  };
+
+  const onContextMenu = event => {
+    event.preventDefault();
+    onSelectionClick(event, sandbox.id);
+    onRightClick(event);
   };
 
   const history = useHistory();
@@ -137,6 +144,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     style: { outline: 'none' }, // we handle outline with border
     selected,
     onClick,
+    onContextMenu,
     onDoubleClick,
     onBlur,
     onKeyDown,
