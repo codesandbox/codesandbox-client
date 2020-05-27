@@ -64,6 +64,7 @@ export function convertEsModule(code: string) {
     program.body.push(generateInteropRequire());
   }
 
+  // Convert all the object shorthands to not shorthands
   // @ts-ignore
   program = walk(program, {
     enter(node, parent, prop, index) {
