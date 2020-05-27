@@ -133,8 +133,7 @@ export const Folder = ({
 
   const onContextMenu = event => {
     event.preventDefault();
-    onSelectionClick(event, path);
-    onRightClick(event);
+    onRightClick(event, path);
   };
 
   const interactionProps = {

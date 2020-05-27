@@ -38,16 +38,14 @@ export const ContextMenu = ({
   });
 
   let menu;
-  if (selectedItems.length > 1)
+  if (selectedItems.length > 1) {
     menu = <MultiMenu selectedItems={selectedItems} />;
-
-  if (selectedItems[0].type === 'sandbox') {
+  } else if (selectedItems[0].type === 'sandbox') {
     menu = <SandboxMenu sandbox={selectedItems[0]} />;
-  }
-
-  if (selectedItems[0].type === 'folder') {
+  } else if (selectedItems[0].type === 'folder') {
     menu = <FolderMenu folder={selectedItems[0]} />;
   }
+
   return (
     <>
       <Stack
@@ -192,4 +190,44 @@ const FolderMenu = ({ folder }) => {
   );
 };
 
-const MultiMenu = ({ selectedItems }) => null;
+const MultiMenu = ({ selectedItems }) => {
+  /*
+    sandbox options - export, make template, delete
+    template options - export, unmake template, delete
+    folder options - delete
+
+    sandboxes + templates - export, delete
+    sandboxes + folders - delete
+  */
+
+  const folders = selectedItems.filter(item => item.type === 'folder');
+  const templates = selectedItems.filter(item => item.isTemplate);
+  const sandboxes = selectedItems.filter(
+    item => item.type === 'sandbox' && !item.isTemplate
+  );
+
+  let options = [];
+
+  if (folders.length) {
+    options = ['Delete items'];
+  } else if (sandboxes.length && templates.length) {
+    options = ['Export items', 'Delete items'];
+  } else if (templates.length) {
+    options = ['Export templates', 'Convert to sandboxes', 'Delete templates'];
+  } else if (sandboxes.length) {
+    options = ['Export sandboxes', 'Convert to templates', 'Delete sandboxes'];
+  } else {
+    options = ['Nothing to do here'];
+  }
+
+  return (
+    <>
+      <MenuItem>None of these work yet</MenuItem>
+      {options.map(option => (
+        <MenuItem key={option} onClick={() => {}}>
+          {option}
+        </MenuItem>
+      ))}
+    </>
+  );
+};

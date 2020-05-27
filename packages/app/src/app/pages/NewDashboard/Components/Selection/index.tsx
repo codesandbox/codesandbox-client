@@ -18,7 +18,7 @@ const Context = React.createContext({
   sandboxes: [],
   selectedIds: [],
   onClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
-  onRightClick: (event: React.MouseEvent<HTMLDivElement>) => {},
+  onRightClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {},
   onDragStart: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
@@ -94,11 +94,15 @@ export const SelectionProvider = ({
   };
 
   const [menuVisible, setMenuVisibility] = React.useState(true);
-  const [menuPosition, setPosition] = React.useState({ x: 0, y: 0 });
+  const [menuPosition, setMenuPosition] = React.useState({ x: 0, y: 0 });
 
-  const onRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const onRightClick = (
+    event: React.MouseEvent<HTMLDivElement>,
+    itemId: string
+  ) => {
+    if (!selectedIds.includes(itemId)) setSelectedIds([itemId]);
     setMenuVisibility(true);
-    setPosition({ x: event.clientX, y: event.clientY });
+    setMenuPosition({ x: event.clientX, y: event.clientY });
   };
 
   const onBlur = (event: React.FocusEvent<HTMLDivElement>) => {

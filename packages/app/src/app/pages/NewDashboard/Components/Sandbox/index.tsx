@@ -124,8 +124,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   const onContextMenu = event => {
     event.preventDefault();
-    onSelectionClick(event, sandbox.id);
-    onRightClick(event);
+    onRightClick(event, sandbox.id);
   };
 
   const history = useHistory();
