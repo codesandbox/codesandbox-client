@@ -146,7 +146,8 @@ export class VSCodeEffect {
 
     this.prepareElements();
 
-    if (this.options.getCurrentSandbox().featureFlags.comments) {
+    const sandbox = this.options.getCurrentSandbox();
+    if (sandbox?.featureFlags.comments) {
       this.options.reaction(
         state => ({
           fileComments: json(state.comments.fileComments),
@@ -1204,7 +1205,7 @@ export class VSCodeEffect {
 
       this.modelCursorPositionListener = activeEditor.onDidChangeCursorPosition(
         cursor => {
-          if (this.options.getCurrentSandbox().featureFlags.comments) {
+          if (sandbox?.featureFlags.comments) {
             const model = activeEditor.getModel();
 
             this.modelsHandler.updateLineCommentIndication(
