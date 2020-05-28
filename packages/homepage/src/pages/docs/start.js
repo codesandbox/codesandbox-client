@@ -1,24 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'gatsby';
-import styled, { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
 import { Element, Stack, Text } from '@codesandbox/components';
 import bg from '../../assets/images/bg-docs.png';
 import Layout from '../../components/new-layout';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
-
-const Global = createGlobalStyle`
-body {
-  .algolia-autocomplete.algolia-autocomplete-left .ds-dropdown-menu {
-    div[class^=ds-dataset-] {
-        background: #151515;
-        border: 1px solid #242424;
-        box-sizing: border-box;
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.12), 0px 16px 32px rgba(0, 0, 0, 0.24);
-        color: white;
-      }
-  }
-}
-`;
+import { Global } from './_global';
 
 const Wrapper = styled.div`
   width: 70%;
