@@ -15,6 +15,7 @@ import { DocumentationContent } from './_docs.elements';
 
 const Docs = ({
   location,
+  pageContext: { prev, next },
   data: {
     allDocs: { edges: docs },
     doc: {
@@ -116,6 +117,51 @@ const Docs = ({
           {description}
         </Text>
         <DocumentationContent dangerouslySetInnerHTML={{ __html: html }} />
+        <Stack
+          justify="space-between"
+          align="center"
+          paddingY={8}
+          marginTop={90}
+          css={`
+            border-top: 1px solid #242424;
+            border-bottom: 1px solid #242424;
+          `}
+        >
+          {prev.fields ? (
+            <Element>
+              <Link
+                to={`docs/${prev.fields.slug}`}
+                style={{ textDecoration: 'none' }}
+              >
+                <Text size={6} block style={{ color: 'white' }}>
+                  Previous
+                </Text>
+                <Text size={3} variant="muted">
+                  {prev.fields.title}
+                </Text>
+              </Link>
+            </Element>
+          ) : (
+            <div />
+          )}
+          {next.fields ? (
+            <Element style={{ textAlign: 'right' }}>
+              <Link
+                to={`docs/${next.fields.slug}`}
+                style={{ textDecoration: 'none' }}
+              >
+                <Text size={6} block style={{ color: 'white' }} align="right">
+                  Next
+                </Text>
+                <Text size={3} variant="muted">
+                  {next.fields.title}
+                </Text>
+              </Link>
+            </Element>
+          ) : (
+            <div />
+          )}
+        </Stack>
       </Element>
 
       {/* <DocSearch /> */}
