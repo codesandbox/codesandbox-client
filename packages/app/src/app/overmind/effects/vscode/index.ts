@@ -146,21 +146,18 @@ export class VSCodeEffect {
 
     this.prepareElements();
 
-    const sandbox = this.options.getCurrentSandbox();
-    if (sandbox?.featureFlags.comments) {
-      this.options.reaction(
-        state => ({
-          fileComments: json(state.comments.fileComments),
-          currentCommentId: state.comments.currentCommentId,
-        }),
-        ({ fileComments, currentCommentId }) => {
-          if (this.modelsHandler) {
-            this.modelsHandler.applyComments(fileComments, currentCommentId);
-          }
+    this.options.reaction(
+      state => ({
+        fileComments: json(state.comments.fileComments),
+        currentCommentId: state.comments.currentCommentId,
+      }),
+      ({ fileComments, currentCommentId }) => {
+        if (this.modelsHandler) {
+          this.modelsHandler.applyComments(fileComments, currentCommentId);
         }
-      );
-      this.listenToCommentClick();
-    }
+      }
+    );
+    this.listenToCommentClick();
 
     // We instantly create a sandbox sync, as we want our
     // extension host to get its messages handled to initialize
