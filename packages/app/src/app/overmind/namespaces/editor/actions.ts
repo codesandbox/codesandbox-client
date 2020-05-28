@@ -11,7 +11,6 @@ import {
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -281,7 +280,10 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
      */
   }
 
-  if (COMMENTS && hasPermission(sandbox.authorization, 'comment')) {
+  if (
+    sandbox.featureFlags.comments &&
+    hasPermission(sandbox.authorization, 'comment')
+  ) {
     actions.comments.getSandboxComments(sandbox.id);
   }
 
@@ -489,7 +491,7 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
         state.editor.changedModuleShortids.includes(module.shortid)
       );
 
-      if (state.user?.experiments.comments) {
+      if (sandbox.featureFlags.comments) {
         const versions = await Promise.all(
           changedModules.map(module =>
             effects.live

@@ -1,4 +1,3 @@
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
   NotificationMessage,
@@ -162,7 +161,9 @@ export class Workbench {
       },
     });
 
-    if (COMMENTS) {
+    if (
+      this.controller.getState().editor.currentSandbox?.featureFlags.comments
+    ) {
       this.addWorkbenchAction({
         id: 'comments.add',
         label: 'Comment on code',
@@ -360,7 +361,9 @@ export class Workbench {
       },
     });
 
-    if (COMMENTS) {
+    if (
+      this.controller.getState().editor.currentSandbox?.featureFlags.comments
+    ) {
       this.appendMenuItem(MenuId.EditorContext, {
         group: '0_comments',
         order: 0,
