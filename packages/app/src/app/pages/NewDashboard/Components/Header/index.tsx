@@ -23,8 +23,8 @@ export const HeaderComponent = ({
   <Stack
     align="center"
     justify="space-between"
+    marginX={4}
     paddingBottom={2}
-    marginBottom={7}
     css={css({
       borderStyle: 'solid',
       borderWidth: 0,

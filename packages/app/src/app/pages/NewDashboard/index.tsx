@@ -62,7 +62,6 @@ export const Dashboard: FunctionComponent = () => {
               css={css({
                 width: '100%',
                 height: 'calc(100vh - 48px)',
-                overflowY: 'scroll',
                 paddingLeft: [0, 0, SIDEBAR_WIDTH],
               })}
             >

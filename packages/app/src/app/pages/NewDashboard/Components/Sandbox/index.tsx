@@ -12,187 +12,192 @@ import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { useSelection } from '../Selection';
 
-export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
-  const {
-    state: { dashboard },
-    actions,
-  } = useOvermind();
+export const Sandbox = React.memo(
+  ({ sandbox, isTemplate = false, ...props }) => {
+    const {
+      state: { dashboard },
+      actions,
+    } = useOvermind();
 
-  const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
+    const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
-  const { UserIcon } = getTemplateIcon(
-    sandbox.forkedTemplate?.iconUrl,
-    sandbox.source.template
-  );
+    const { UserIcon } = getTemplateIcon(
+      sandbox.forkedTemplate?.iconUrl,
+      sandbox.source.template
+    );
 
-  const [edit, setEdit] = React.useState(false);
-  const [newTitle, setNewTitle] = React.useState(sandboxTitle);
+    const [edit, setEdit] = React.useState(false);
+    const [newTitle, setNewTitle] = React.useState(sandboxTitle);
 
-  const url = sandboxUrl({
-    id: sandbox.id,
-    alias: sandbox.alias,
-  });
-
-  /* Edit logic */
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTitle(event.target.value);
-  };
-  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.keyCode === ESC) {
-      // Reset value and exit without saving
-      setNewTitle(sandboxTitle);
-      setEdit(false);
-    }
-  };
-
-  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
-    if (event) event.preventDefault();
-    await actions.dashboard.renameSandbox({
+    const url = sandboxUrl({
       id: sandbox.id,
-      title: newTitle,
-      oldTitle: sandboxTitle,
+      alias: sandbox.alias,
     });
-    setEdit(false);
-  };
 
-  const onInputBlur = () => {
-    // save value when you click outside or tab away
-    onSubmit();
-  };
+    /* Edit logic */
 
-  const inputRef = React.useRef(null);
-  const enterEditing = () => {
-    setEdit(true);
-    // Menu defaults to sending focus back to Menu Button
-    // Send focus to input in the next tick
-    // after menu is done closing.
-    setTimeout(() => inputRef.current.focus());
-  };
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setNewTitle(event.target.value);
+    };
+    const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.keyCode === ESC) {
+        // Reset value and exit without saving
+        setNewTitle(sandboxTitle);
+        setEdit(false);
+      }
+    };
 
-  /* Drag logic */
+    const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
+      if (event) event.preventDefault();
+      await actions.dashboard.renameSandbox({
+        id: sandbox.id,
+        title: newTitle,
+        oldTitle: sandboxTitle,
+      });
+      setEdit(false);
+    };
 
-  const location = useLocation();
-  const currentCollectionPath = location.pathname
-    .replace('/new-dashboard', '')
-    .replace('/all', '');
+    const onInputBlur = () => {
+      // save value when you click outside or tab away
+      onSubmit();
+    };
 
-  const [, dragRef, preview] = useDrag({
-    item: {
-      type: 'sandbox',
-      id: sandbox.id,
-      collectionPath: currentCollectionPath,
-    },
-    end: (item, monitor) => {
-      const dropResult = monitor.getDropResult();
+    const inputRef = React.useRef(null);
+    const enterEditing = () => {
+      setEdit(true);
+      // Menu defaults to sending focus back to Menu Button
+      // Send focus to input in the next tick
+      // after menu is done closing.
+      setTimeout(() => inputRef.current.focus());
+    };
 
-      if (!dropResult || !dropResult.path) return;
+    /* Drag logic */
 
-      onDrop(dropResult);
-    },
-  });
+    const location = useLocation();
+    const currentCollectionPath = location.pathname
+      .replace('/new-dashboard', '')
+      .replace('/all', '');
 
-  /* View logic */
-  let viewMode: string;
+    const [, dragRef, preview] = useDrag({
+      item: {
+        type: 'sandbox',
+        id: sandbox.id,
+        collectionPath: currentCollectionPath,
+      },
+      end: (item, monitor) => {
+        const dropResult = monitor.getDropResult();
 
-  if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
-  else viewMode = dashboard.viewMode;
+        if (!dropResult || !dropResult.path) return;
 
-  const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
+        onDrop(dropResult);
+      },
+    });
 
-  // interactions
-  const {
-    selectedIds,
-    onClick: onSelectionClick,
-    onRightClick,
-    onBlur,
-    onKeyDown,
-    onDragStart,
-    onDrop,
-    thumbnailRef,
-    isDragging: isAnythingDragging,
-  } = useSelection();
+    /* View logic */
+    let viewMode: string;
 
-  const selected = selectedIds.includes(sandbox.id);
-  const isDragging = isAnythingDragging && selected;
+    if (location.pathname.includes('deleted')) viewMode = 'list';
+    else if (location.pathname.includes('start')) viewMode = 'grid';
+    else viewMode = dashboard.viewMode;
 
-  const onClick = event => {
-    if (edit || isDragging || isMenuClicked(event)) return;
-    onSelectionClick(event, sandbox.id);
-  };
+    const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
 
-  const onContextMenu = event => {
-    event.preventDefault();
-    onRightClick(event, sandbox.id);
-  };
+    // interactions
+    const {
+      selectedIds,
+      onClick: onSelectionClick,
+      onRightClick,
+      onBlur,
+      onKeyDown,
+      onDragStart,
+      onDrop,
+      thumbnailRef,
+      isDragging: isAnythingDragging,
+    } = useSelection();
 
-  const history = useHistory();
-  const onDoubleClick = event => {
-    if (edit || isDragging || isMenuClicked(event)) return;
+    const selected = selectedIds.includes(sandbox.id);
+    const isDragging = isAnythingDragging && selected;
 
-    if (event.ctrlKey || event.metaKey) {
-      window.open(url, '_blank');
-    } else {
-      history.push(url);
-    }
-  };
+    const onClick = event => {
+      if (edit || isDragging || isMenuClicked(event)) return;
+      onSelectionClick(event, sandbox.id);
+    };
 
-  const interactionProps = {
-    tabIndex: 0, // make div focusable
-    style: { outline: 'none' }, // we handle outline with border
-    selected,
-    onClick,
-    onDoubleClick,
-    onContextMenu,
-    onBlur,
-    onKeyDown,
-    'data-selection-id': sandbox.id,
-  };
+    const onContextMenu = event => {
+      event.preventDefault();
+      onRightClick(event, sandbox.id);
+    };
 
-  const sandboxProps = {
-    sandboxTitle,
-    sandbox,
-    isTemplate,
-    TemplateIcon: UserIcon,
-    // edit mode
-    edit,
-    newTitle,
-    inputRef,
-    onChange,
-    onInputKeyDown,
-    onSubmit,
-    onInputBlur,
-    enterEditing,
-    // drag preview
-    thumbnailRef,
-    opacity: isDragging ? 0.25 : 1,
-  };
+    const history = useHistory();
+    const onDoubleClick = event => {
+      if (edit || isDragging || isMenuClicked(event)) return;
 
-  const dragProps = {
-    ref: dragRef,
-  };
+      if (event.ctrlKey || event.metaKey) {
+        window.open(url, '_blank');
+      } else {
+        history.push(url);
+      }
+    };
 
-  React.useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true });
-  }, [preview]);
+    const interactionProps = {
+      tabIndex: 0, // make div focusable
+      style: { outline: 'none' }, // we handle outline with border
+      selected,
+      onClick,
+      onDoubleClick,
+      onContextMenu,
+      onBlur,
+      onKeyDown,
+      'data-selection-id': sandbox.id,
+    };
 
-  return (
-    <>
-      <div {...dragProps} onDragStart={event => onDragStart(event, sandbox.id)}>
-        <motion.div
-          layoutTransition={{
-            type: 'spring',
-            damping: 300,
-            stiffness: 300,
-          }}
+    const sandboxProps = {
+      sandboxTitle,
+      sandbox,
+      isTemplate,
+      TemplateIcon: UserIcon,
+      // edit mode
+      edit,
+      newTitle,
+      inputRef,
+      onChange,
+      onInputKeyDown,
+      onSubmit,
+      onInputBlur,
+      enterEditing,
+      // drag preview
+      thumbnailRef,
+      opacity: isDragging ? 0.25 : 1,
+    };
+
+    const dragProps = {
+      ref: dragRef,
+    };
+
+    React.useEffect(() => {
+      preview(getEmptyImage(), { captureDraggingState: true });
+    }, [preview]);
+
+    return (
+      <>
+        <div
+          {...dragProps}
+          onDragStart={event => onDragStart(event, sandbox.id)}
         >
-          <Component {...sandboxProps} {...interactionProps} {...props} />
-        </motion.div>
-      </div>
-    </>
-  );
-};
+          <motion.div
+            layoutTransition={{
+              type: 'spring',
+              damping: 300,
+              stiffness: 300,
+            }}
+          >
+            <Component {...sandboxProps} {...interactionProps} {...props} />
+          </motion.div>
+        </div>
+      </>
+    );
+  }
+);
 
 export const SkeletonSandbox = props => {
   const {

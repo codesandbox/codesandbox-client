@@ -25,7 +25,6 @@ export const Content = () => {
   return (
     <Element
       css={css({
-        maxWidth: 992,
         width: '100%',
         margin: '0 auto',
       })}
