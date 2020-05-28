@@ -116,7 +116,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Element
-        as="button"
+        as={props.href ? 'a' : 'button'}
         css={styles}
         ref={ref}
         disabled={props.disabled || loading}
