@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Element } from '@codesandbox/components';
 
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import {
@@ -27,17 +26,15 @@ export const Drafts = () => {
 
   return (
     <SelectionProvider sandboxes={visibleSandboxes}>
-      <Element style={{ height: '100%', position: 'relative' }}>
-        <Header
-          path="Drafts"
-          templates={getPossibleTemplates(sandboxes.DRAFTS)}
-        />
-        {sandboxes.DRAFTS ? (
-          <SandboxGrid sandboxes={visibleSandboxes} />
-        ) : (
-          <SkeletonGrid count={8} />
-        )}
-      </Element>
+      <Header
+        path="Drafts"
+        templates={getPossibleTemplates(sandboxes.DRAFTS)}
+      />
+      {sandboxes.DRAFTS ? (
+        <SandboxGrid sandboxes={visibleSandboxes} />
+      ) : (
+        <SkeletonGrid count={8} />
+      )}
     </SelectionProvider>
   );
 };

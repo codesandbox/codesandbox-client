@@ -5,6 +5,7 @@ import { Element, Grid, Column } from '@codesandbox/components';
 import { FixedSizeGrid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
+import { Folder } from '../Folder';
 
 const MIN_WIDTH = 220;
 const ITEM_HEIGHT = 240;
@@ -12,7 +13,12 @@ const GUTTER = 24;
 const GRID_VERTICAL_OFFSET = 120;
 const GAP_FROM_HEADER = 32;
 
-export const SandboxGrid = ({ sandboxes, ...props }) => {
+export const SandboxGrid = ({
+  sandboxes = [],
+  folders = [],
+  creating = false,
+  setCreating,
+}) => {
   const {
     state: { dashboard },
   } = useOvermind();
@@ -24,15 +30,25 @@ export const SandboxGrid = ({ sandboxes, ...props }) => {
   else if (location.pathname.includes('start')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
+  let items = [];
+  if (creating) items.push({ type: 'folder', setCreating });
+
+  items = [
+    ...items,
+    ...folders.map(folder => ({ type: 'folder', ...folder })),
+    ...sandboxes.map(sandbox => ({ type: 'sandbox', ...sandbox })),
+  ];
+
   const Item = ({ data, rowIndex, columnIndex, style }) => {
-    const sandbox = sandboxes[rowIndex * data.columnCount + columnIndex];
     const { columnCount } = data;
 
     // we need to make space for (n=columns-1) gutters and
     // the right margin by reducing width of (n=columns) items
     const widthReduction = GUTTER - 16 / columnCount;
 
-    return sandbox ? (
+    const item = items[rowIndex * data.columnCount + columnIndex];
+
+    return item ? (
       <div
         style={{
           ...style,
@@ -42,7 +58,11 @@ export const SandboxGrid = ({ sandboxes, ...props }) => {
           marginBottom: GAP_FROM_HEADER,
         }}
       >
-        <Sandbox sandbox={sandbox} />
+        {item.type === 'sandbox' ? (
+          <Sandbox sandbox={item} />
+        ) : (
+          <Folder {...item} />
+        )}
       </div>
     ) : (
       <div />
@@ -66,7 +86,7 @@ export const SandboxGrid = ({ sandboxes, ...props }) => {
           return (
             <FixedSizeGrid
               columnCount={viewMode === 'list' ? 1 : columnCount}
-              rowCount={Math.ceil(sandboxes.length / columnCount)}
+              rowCount={Math.ceil(items.length / columnCount)}
               columnWidth={width / columnCount}
               width={width}
               height={height}
