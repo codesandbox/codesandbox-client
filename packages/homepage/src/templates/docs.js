@@ -120,25 +120,27 @@ const Docs = ({
             {docs.map(({ node }) => (
               <Link
                 key={node.fields.title}
-                style={{ textDecoration: 'none' }}
+                css={`
+                  text-decoration: none;
+                `}
                 to={`docs/${node.fields.slug}`}
               >
                 <ListItem
-                  css={{
-                    padding: '0 16px',
-                    ':hover': {
-                      color: 'white',
-                      background: '#242424',
+                  css={`
+                    padding: 0 16px;
+                    :hover {
+                      color: white;
+                      background: #242424;
 
                       span: {
-                        color: 'white',
-                      },
-                    },
-                  }}
+                        color: white;
+                      }
+                    }
+                  `}
                 >
                   <Text
                     variant="muted"
-                    css={{
+                    style={{
                       color:
                         location.pathname.split('/docs')[1] ===
                           node.fields.slug && 'white',
@@ -207,9 +209,17 @@ const Docs = ({
               <Element>
                 <Link
                   to={`docs/${prev.fields.slug}`}
-                  style={{ textDecoration: 'none' }}
+                  css={`
+                    text-decoration: none;
+                  `}
                 >
-                  <Text size={6} block style={{ color: 'white' }}>
+                  <Text
+                    size={6}
+                    block
+                    css={`
+                      color: white;
+                    `}
+                  >
                     Previous
                   </Text>
                   <Text size={3} variant="muted">
@@ -221,12 +231,25 @@ const Docs = ({
               <div />
             )}
             {next.fields ? (
-              <Element style={{ textAlign: 'right' }}>
+              <Element
+                css={`
+                  text-align: right;
+                `}
+              >
                 <Link
                   to={`docs/${next.fields.slug}`}
-                  style={{ textDecoration: 'none' }}
+                  css={`
+                    text-decoration: none;
+                  `}
                 >
-                  <Text size={6} block style={{ color: 'white' }} align="right">
+                  <Text
+                    size={6}
+                    block
+                    css={`
+                      color: white;
+                    `}
+                    align="right"
+                  >
                     Next
                   </Text>
                   <Text size={3} variant="muted">
