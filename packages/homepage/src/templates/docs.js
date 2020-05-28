@@ -107,6 +107,7 @@ const Docs = ({
           <Element
             showMobileMenu={showMobileMenu}
             css={`
+              width: 320px;
               position: sticky;
               top: 32px;
               transition: all 200ms ease;
