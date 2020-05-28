@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'gatsby';
+import { Link, graphql } from 'gatsby';
 import styled from 'styled-components';
 import { Element, Stack, Text } from '@codesandbox/components';
 import bg from '../../assets/images/bg-docs.png';
@@ -72,8 +72,9 @@ const GridItem = styled(Element)`
   }
 `;
 
-const Docs = () => {
+const Docs = ({ data }) => {
   const [enabled, setEnabled] = useState(true);
+  const faq = data.faq.html;
 
   useEffect(() => {
     // Initialize Algolia search.
@@ -90,6 +91,27 @@ const Docs = () => {
 
       setEnabled(false);
     }
+  }, []);
+
+  useEffect(() => {
+    const toggleClasses = e => {
+      if (!e.target.localName === 'h2') return;
+
+      Array.from(document.getElementsByClassName('show')).map(element =>
+        element.classList.remove('show')
+      );
+
+      Array.from(e.target.parentNode.getElementsByTagName('p')).map(p =>
+        p.classList.toggle('show')
+      );
+
+      Array.from(e.target.parentNode.getElementsByTagName('ul')).map(p =>
+        p.classList.toggle('show')
+      );
+    };
+    document.addEventListener('click', toggleClasses);
+
+    return () => document.removeEventListener('click', toggleClasses);
   }, []);
 
   return (
@@ -234,36 +256,85 @@ const Docs = () => {
             </Link>
           </GridItem>
         </Element>
+        <Element marginTop={132}>
+          <Text align="center" block weight="bold" marginBottom={56} size={40}>
+            Frequently Asked Questions
+          </Text>
+          <Element
+            dangerouslySetInnerHTML={{ __html: faq }}
+            css={`
+              h2 {
+                font-size: 16px;
+                padding: 40px 0;
+                box-shadow: 0px -1px 0px #242424;
+                margin: 0;
+                cursor: pointer;
+              }
 
-        <Text block marginTop={144} weight="bold" size={5} align="center">
-          Still haven't found what you are looking for?
-        </Text>
-        <Text
-          block
-          variant="muted"
-          marginTop={6}
-          align="center"
-          css={`
-            a {
-              color: inherit;
-            }
-          `}
-        >
-          <a href="mailto:hello@codesandbox.io">Contact</a> Developer Support or{' '}
-          <a
-            href="https://github.com/codesandbox/codesandbox-client"
-            target="_blank"
-            without
-            rel="noopener noreferrer"
-          >
-            open an issue here
-          </a>
-          .
-        </Text>
+              section .show:last-child {
+                padding-bottom: 40px;
+              }
+
+              img {
+                border: 1px solid #242424;
+                border-radius: 4px;
+              }
+
+              a {
+                color: white;
+              }
+
+              ul {
+                display: none;
+                opacity: 0;
+                transition: opacity 200ms ease;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 16px;
+                line-height: 23px;
+                color: #999999;
+
+                &.show {
+                  display: block;
+                  opacity: 1;
+                }
+              }
+              p {
+                font-style: normal;
+                font-weight: normal;
+                font-size: 16px;
+                line-height: 23px;
+                color: #999999;
+                display: none;
+                opacity: 0;
+                transition: opacity 200ms ease;
+
+                &.show {
+                  display: block;
+                  opacity: 1;
+                }
+              }
+            `}
+          />
+        </Element>
       </Element>
       <Global />
     </Layout>
   );
 };
+
+export const query = graphql`
+  {
+    faq: markdownRemark(fields: { slug: { eq: "/faqs" } }) {
+      fields {
+        description
+        editLink
+        title
+      }
+      rawMarkdownBody
+      html
+    }
+  }
+`;
 
 export default Docs;

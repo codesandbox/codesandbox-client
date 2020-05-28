@@ -275,7 +275,10 @@ export default Docs;
 export const pageQuery = graphql`
   query Docs($slug: String!) {
     allDocs: allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/docs/" } }
+      filter: {
+        fileAbsolutePath: { regex: "/docs/" }
+        fields: { slug: { ne: "/faqs" } }
+      }
       sort: { fields: [fileAbsolutePath], order: [ASC] }
     ) {
       edges {
@@ -290,6 +293,7 @@ export const pageQuery = graphql`
         }
       }
     }
+
     doc: markdownRemark(
       fileAbsolutePath: { regex: "/docs/" }
       fields: { slug: { eq: $slug } }
