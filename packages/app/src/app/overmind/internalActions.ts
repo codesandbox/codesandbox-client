@@ -520,17 +520,18 @@ export const trackCurrentTeams: AsyncAction = async ({ effects }) => {
 };
 
 export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
-  if (state.user) {
-    effects.analytics.identify('pilot', state.user.experiments.inPilot);
-  }
+  const user = state.user;
+  if (user) {
+    effects.analytics.identify('pilot', user.experiments.inPilot);
 
-  const profileData = await effects.api.getProfile(state.user.username);
-  effects.analytics.identify('sandboxCount', profileData.sandboxCount);
-  effects.analytics.identify('pro', Boolean(profileData.subscriptionSince));
-  effects.analytics.identify(
-    'receivedViewCount',
-    Boolean(profileData.viewCount)
-  );
+    const profileData = await effects.api.getProfile(user.username);
+    effects.analytics.identify('sandboxCount', profileData.sandboxCount);
+    effects.analytics.identify('pro', Boolean(profileData.subscriptionSince));
+    effects.analytics.identify(
+      'receivedViewCount',
+      Boolean(profileData.viewCount)
+    );
+  }
 };
 
 const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX';
