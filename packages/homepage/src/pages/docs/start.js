@@ -5,7 +5,7 @@ import { Element, Stack, Text } from '@codesandbox/components';
 import bg from '../../assets/images/bg-docs.png';
 import Layout from '../../components/new-layout';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
-import { Global } from './_global';
+import { Global, FAQStyle } from './_global';
 
 const Wrapper = styled.div`
   width: 70%;
@@ -55,7 +55,7 @@ const Input = styled.input`
 
 const IconWrapper = styled(Element)`
   background: ${props => props.bg};
-  height: 163px;
+  height: 231px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -95,20 +95,18 @@ const Docs = ({ data }) => {
 
   useEffect(() => {
     const toggleClasses = e => {
-      if (!e.target.localName === 'h2') return;
+      if (e.target.localName !== 'h2') return;
+      const parent = e.target.parentNode;
 
-      Array.from(document.getElementsByClassName('show')).map(element =>
-        element.classList.remove('show')
-      );
-
-      Array.from(e.target.parentNode.getElementsByTagName('p')).map(p =>
+      Array.from(parent.getElementsByTagName('p')).map(p =>
         p.classList.toggle('show')
       );
 
-      Array.from(e.target.parentNode.getElementsByTagName('ul')).map(p =>
+      Array.from(parent.getElementsByTagName('ul')).map(p =>
         p.classList.toggle('show')
       );
     };
+
     document.addEventListener('click', toggleClasses);
 
     return () => document.removeEventListener('click', toggleClasses);
@@ -153,7 +151,7 @@ const Docs = ({ data }) => {
           marginTop={10}
           css={`
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             grid-gap: 40px;
           `}
         >
@@ -220,102 +218,12 @@ const Docs = ({ data }) => {
               </Element>
             </Link>
           </GridItem>
-          <GridItem>
-            <Link
-              to="/docs/FAQ"
-              css={`
-                color: inherit;
-                text-decoration: none;
-              `}
-            >
-              <IconWrapper bg="#bf5af2">
-                <svg width={106} height={73} fill="none">
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M0 30.92v-.238C0 13.737 13.737 0 30.682 0s30.682 13.737 30.682 30.682-13.736 30.682-30.681 30.682H0V30.919z"
-                    fill="#fff"
-                  />
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M53.917 58.524c7.963-6.651 13.03-16.655 13.03-27.842a36.25 36.25 0 00-1.648-10.839 27.774 27.774 0 0112.808-3.108C93.512 16.735 106 29.223 106 44.628l-.002.338V72.52H78.107c-10.345 0-19.374-5.631-24.19-13.996z"
-                    fill="#fff"
-                    fillOpacity={0.4}
-                  />
-                </svg>
-              </IconWrapper>
-              <Element padding={4}>
-                <Text block weight="bold" size={5}>
-                  FAQ
-                </Text>
-                <Text variant="muted" size={3}>
-                  Answers to the most frequently asked questions
-                </Text>
-              </Element>
-            </Link>
-          </GridItem>
         </Element>
         <Element marginTop={132}>
           <Text align="center" block weight="bold" marginBottom={56} size={40}>
             Frequently Asked Questions
           </Text>
-          <Element
-            dangerouslySetInnerHTML={{ __html: faq }}
-            css={`
-              h2 {
-                font-size: 16px;
-                padding: 40px 0;
-                box-shadow: 0px -1px 0px #242424;
-                margin: 0;
-                cursor: pointer;
-              }
-
-              section .show:last-child {
-                padding-bottom: 40px;
-              }
-
-              img {
-                border: 1px solid #242424;
-                border-radius: 4px;
-              }
-
-              a {
-                color: white;
-              }
-
-              ul {
-                display: none;
-                opacity: 0;
-                transition: opacity 200ms ease;
-                font-style: normal;
-                font-weight: normal;
-                font-size: 16px;
-                line-height: 23px;
-                color: #999999;
-
-                &.show {
-                  display: block;
-                  opacity: 1;
-                }
-              }
-              p {
-                font-style: normal;
-                font-weight: normal;
-                font-size: 16px;
-                line-height: 23px;
-                color: #999999;
-                display: none;
-                opacity: 0;
-                transition: opacity 200ms ease;
-
-                &.show {
-                  display: block;
-                  opacity: 1;
-                }
-              }
-            `}
-          />
+          <Element dangerouslySetInnerHTML={{ __html: faq }} css={FAQStyle} />
         </Element>
       </Element>
       <Global />

@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, css } from 'styled-components';
 
 export const Global = createGlobalStyle`
   body {
@@ -42,6 +42,69 @@ export const Global = createGlobalStyle`
           box-shadow: none;
         }
       }
+    }
+  }
+`;
+
+export const FAQStyle = css`
+  h2 {
+    font-size: 16px;
+    padding: 40px 0;
+    box-shadow: 0px -1px 0px #242424;
+    margin: 0;
+    user-select: none;
+    cursor: pointer;
+  }
+
+  code {
+    background: #151515;
+    padding: 0.2em 0.4em;
+    font-size: 85%;
+    margin: 0;
+    border-radius: 3px;
+  }
+
+  section .show:last-child {
+    padding-bottom: 40px;
+  }
+
+  img {
+    border: 1px solid #242424;
+    border-radius: 4px;
+  }
+
+  a {
+    color: white;
+  }
+
+  ul {
+    display: none;
+    opacity: 0;
+    transition: opacity 200ms ease;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 23px;
+    color: #999999;
+
+    &.show {
+      display: block;
+      opacity: 1;
+    }
+  }
+  p {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 23px;
+    color: #999999;
+    display: none;
+    opacity: 0;
+    transition: opacity 200ms ease;
+
+    &.show {
+      display: block;
+      opacity: 1;
     }
   }
 `;
