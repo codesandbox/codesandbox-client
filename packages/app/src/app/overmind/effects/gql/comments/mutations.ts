@@ -34,8 +34,8 @@ export const createComment: Query<
     ) {
       ...Comment
     }
-    ${commentFragment}
   }
+  ${commentFragment}
 `;
 
 export const deleteComment: Query<
