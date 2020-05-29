@@ -34,17 +34,16 @@ module.exports = merge(commonConfig, {
   // optimization: {
   //   minimize: false,
   // },
-
   optimization: {
     minimize: true,
     minimizer: [
       new TerserJSPlugin({
-        exclude: [new RegExp('transpilers/babel/worker/index.js')],
         // Use multi-process parallel running to improve the build speed
         // Default number of concurrent runs: os.cpus().length - 1
         // Disabled on WSL (Windows Subsystem for Linux) due to an issue with Terser
         // https://github.com/webpack-contrib/terser-webpack-plugin/issues/21
         parallel: 2,
+
         cache: true,
         sourceMap: true,
       }),
