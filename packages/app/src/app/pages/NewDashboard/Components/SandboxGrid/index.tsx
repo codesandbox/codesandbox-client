@@ -9,7 +9,8 @@ import { NewSandbox } from '../Sandbox/NewSandbox';
 import { Folder } from '../Folder';
 
 const MIN_WIDTH = 220;
-const ITEM_HEIGHT = 240;
+const ITEM_HEIGHT_GRID = 240;
+const ITEM_HEIGHT_LIST = 64;
 const HEADER_HEIGHT = 64;
 const GUTTER = 24;
 const GRID_VERTICAL_OFFSET = 120;
@@ -35,6 +36,8 @@ export const SandboxGrid = ({ items }) => {
   else if (location.pathname.includes('start')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
+  const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
+
   const Item = ({ data, rowIndex, columnIndex, style }) => {
     const { columnCount, filledItems } = data;
 
@@ -49,16 +52,18 @@ export const SandboxGrid = ({ items }) => {
     const Component = ComponentForTypes[item.type];
     const isHeader = item.type === 'header';
 
+    const margins = {
+      marginTop: isHeader ? ITEM_VERTICAL_OFFSET + 16 : ITEM_VERTICAL_OFFSET,
+      marginBottom: viewMode === 'list' || isHeader ? 0 : ITEM_VERTICAL_OFFSET,
+    };
+
     return (
       <div
         style={{
           ...style,
           width: style.width - widthReduction,
           height: style.height - GUTTER,
-          marginTop: isHeader
-            ? ITEM_VERTICAL_OFFSET + 16
-            : ITEM_VERTICAL_OFFSET,
-          marginBottom: isHeader ? 0 : ITEM_VERTICAL_OFFSET,
+          ...margins,
         }}
       >
         <Component {...item} />
@@ -71,19 +76,33 @@ export const SandboxGrid = ({ items }) => {
 
     if (item.type === 'header') return HEADER_HEIGHT;
     if (item.type === 'blank') return 0;
-    return ITEM_HEIGHT + GUTTER;
+    return ITEM_HEIGHT + (viewMode === 'list' ? 0 : GUTTER);
   };
 
   const gridRef = React.useRef(null);
-  const hasHeader = items.find(item => item.type === 'header');
 
   const onResize = () => {
     // force height re-calculation on resize
     // only useful for views with group headers
-    if (gridRef.current && hasHeader) {
-      gridRef.current.resetAfterRowIndex(0, true);
+    if (gridRef.current) {
+      gridRef.current.resetAfterIndices({
+        columnIndex: 0,
+        rowIndex: 0,
+        shouldForceUpdate: true,
+      });
     }
   };
+
+  // if view mode changes, recalculate everything
+  React.useEffect(() => {
+    if (gridRef.current) {
+      gridRef.current.resetAfterIndices({
+        columnIndex: 0,
+        rowIndex: 0,
+        shouldForceUpdate: true,
+      });
+    }
+  }, [viewMode]);
 
   return (
     <Element
@@ -94,10 +113,10 @@ export const SandboxGrid = ({ items }) => {
     >
       <AutoSizer onResize={onResize}>
         {({ width, height }) => {
-          const columnCount = Math.max(
-            1,
-            Math.floor(width / (MIN_WIDTH + GUTTER))
-          );
+          const columnCount =
+            viewMode === 'list'
+              ? 1
+              : Math.max(1, Math.floor(width / (MIN_WIDTH + GUTTER)));
 
           const filledItems = [];
           const blankItem = { type: 'blank' };
@@ -119,23 +138,25 @@ export const SandboxGrid = ({ items }) => {
           });
 
           return (
-            <VariableSizeGrid
-              ref={gridRef}
-              columnCount={viewMode === 'list' ? 1 : columnCount}
-              rowCount={Math.ceil(filledItems.length / columnCount)}
-              width={width}
-              height={height}
-              columnWidth={index => width / columnCount}
-              rowHeight={rowIndex =>
-                getRowHeight(rowIndex, columnCount, filledItems)
-              }
-              estimatedColumnWidth={width / columnCount}
-              estimatedRowHeight={ITEM_HEIGHT}
-              itemData={{ columnCount, filledItems }}
-              style={{ overflowX: 'hidden' }}
-            >
-              {Item}
-            </VariableSizeGrid>
+            <>
+              <VariableSizeGrid
+                ref={gridRef}
+                columnCount={columnCount}
+                rowCount={Math.ceil(filledItems.length / columnCount)}
+                width={width}
+                height={height}
+                columnWidth={index => width / columnCount}
+                rowHeight={rowIndex =>
+                  getRowHeight(rowIndex, columnCount, filledItems)
+                }
+                estimatedColumnWidth={width / columnCount}
+                estimatedRowHeight={ITEM_HEIGHT}
+                itemData={{ columnCount, filledItems }}
+                style={{ overflowX: 'hidden' }}
+              >
+                {Item}
+              </VariableSizeGrid>
+            </>
           );
         }}
       </AutoSizer>
