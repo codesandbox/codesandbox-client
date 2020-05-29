@@ -2,10 +2,11 @@ import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Loading } from 'app/pages/NewDashboard/Components/Loading';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
-import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
+import {
+  SandboxGrid,
+  SkeletonGrid,
+} from 'app/pages/NewDashboard/Components/SandboxGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { getPossibleTemplates } from '../../utils';
 
@@ -35,13 +36,17 @@ export const SearchComponent = ({ location }) => {
       />
       <section style={{ position: 'relative' }}>
         {sandboxes.SEARCH ? (
-          <SandboxGrid>
-            {sandboxes.SEARCH.map(sandbox => (
-              <Sandbox key={sandbox.id} template sandbox={sandbox} />
-            ))}
-          </SandboxGrid>
+          <SandboxGrid
+            items={
+              sandboxes.SEARCH &&
+              sandboxes.SEARCH.map(sandbox => ({
+                type: 'sandbox',
+                ...sandbox,
+              }))
+            }
+          />
         ) : (
-          <Loading />
+          <SkeletonGrid count={4} />
         )}
       </section>
     </SelectionProvider>
