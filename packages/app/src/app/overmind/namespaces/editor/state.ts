@@ -8,6 +8,7 @@ import {
 import {
   DevToolsTabPosition,
   DiffTab,
+  Directory,
   Module,
   ModuleCorrection,
   ModuleError,
@@ -16,13 +17,12 @@ import {
   SandboxFs,
   Tabs,
   WindowOrientation,
-  Directory,
 } from '@codesandbox/common/lib/types';
 import { RecoverData } from 'app/overmind/effects/moduleRecover.ts';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
-import { Derive } from 'app/overmind';
 import immer from 'immer';
+import { derived } from 'overmind';
 
 import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
@@ -42,14 +42,14 @@ type State = {
   invitations: InvitationFragment[];
   // TODO: What is this really? Could not find it in Cerebral, but
   // EditorPreview is using it... weird stuff
-  devToolTabs: Derive<State, ViewConfig[]>;
+  devToolTabs: ViewConfig[];
   isLoading: boolean;
   error: {
     status: number;
     message: string;
   } | null;
   isResizing: boolean;
-  changedModuleShortids: Derive<State, string[]>;
+  changedModuleShortids: string[];
   currentTabId: string | null;
   tabs: Tabs;
   errors: ModuleError[];
@@ -63,21 +63,21 @@ type State = {
   workspaceConfigCode: string;
   statusBar: boolean;
   previewWindowOrientation: WindowOrientation;
-  canWriteCode: Derive<State, boolean>;
-  isAllModulesSynced: Derive<State, boolean>;
-  currentSandbox: Derive<State, Sandbox | null>;
-  currentModule: Derive<State, Module>;
-  mainModule: Derive<State, Module | null>;
-  currentPackageJSON: Derive<State, Module | null>;
-  currentPackageJSONCode: Derive<State, string | null>;
-  parsedConfigurations: Derive<State, ParsedConfigurationFiles | null>;
-  currentTab: Derive<State, ModuleTab | DiffTab | undefined>;
+  canWriteCode: boolean;
+  isAllModulesSynced: boolean;
+  currentSandbox: Sandbox | null;
+  currentModule: Module;
+  mainModule: Module | null;
+  currentPackageJSON: Module | null;
+  currentPackageJSONCode: string | null;
+  parsedConfigurations: ParsedConfigurationFiles | null;
+  currentTab: ModuleTab | DiffTab | undefined;
   modulesByPath: SandboxFs;
-  isAdvancedEditor: Derive<State, boolean>;
-  shouldDirectoryBeOpen: Derive<
-    State,
-    (params: { directoryId: string; module?: Module }) => boolean
-  >;
+  isAdvancedEditor: boolean;
+  shouldDirectoryBeOpen: (params: {
+    directoryId: string;
+    module?: Module;
+  }) => boolean;
   currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
   hasLoadedInitialModule: boolean;
@@ -97,7 +97,7 @@ export const state: State = {
   modulesByPath: {},
   collaborators: [],
   invitations: [],
-  changedModuleShortids: ({ currentSandbox }) => {
+  changedModuleShortids: derived(({ currentSandbox }: State) => {
     if (!currentSandbox) {
       return [];
     }
@@ -109,7 +109,7 @@ export const state: State = {
 
       return aggr;
     }, [] as string[]);
-  },
+  }),
   currentTabId: null,
   tabs: [],
   errors: [],
@@ -139,25 +139,30 @@ export const state: State = {
     devToolIndex: 0,
     tabPosition: 0,
   },
-  canWriteCode: ({ currentSandbox }) =>
-    currentSandbox?.authorization === 'write_code',
-  currentSandbox: ({ sandboxes, currentId }) => {
+  canWriteCode: derived(
+    ({ currentSandbox }: State) =>
+      currentSandbox?.authorization === 'write_code'
+  ),
+  currentSandbox: derived(({ sandboxes, currentId }: State) => {
     if (currentId && sandboxes[currentId]) {
       return sandboxes[currentId];
     }
 
     return null;
-  },
+  }),
 
-  isAllModulesSynced: ({ changedModuleShortids }) =>
-    !changedModuleShortids.length,
-  currentModule: ({ currentSandbox, currentModuleShortid }) =>
-    (currentSandbox &&
-      currentSandbox.modules.find(
-        module => module.shortid === currentModuleShortid
-      )) ||
-    ({} as Module),
-  currentTab: ({ currentTabId, currentModuleShortid, tabs }) => {
+  isAllModulesSynced: derived(
+    ({ changedModuleShortids }: State) => !changedModuleShortids.length
+  ),
+  currentModule: derived(
+    ({ currentSandbox, currentModuleShortid }: State) =>
+      (currentSandbox &&
+        currentSandbox.modules.find(
+          module => module.shortid === currentModuleShortid
+        )) ||
+      ({} as Module)
+  ),
+  currentTab: derived(({ currentTabId, currentModuleShortid, tabs }: State) => {
     if (currentTabId) {
       const foundTab = tabs.find(tab => 'id' in tab && tab.id === currentTabId);
 
@@ -170,13 +175,13 @@ export const state: State = {
       tab =>
         'moduleShortid' in tab && tab.moduleShortid === currentModuleShortid
     );
-  },
+  }),
   /**
    * We have two types of editors in CodeSandbox: an editor focused on smaller projects and
    * an editor that works with bigger projects that run on a container. The advanced editor
    * only has added features, so it's a subset on top of the existing editor.
    */
-  isAdvancedEditor: ({ currentSandbox }) => {
+  isAdvancedEditor: derived(({ currentSandbox }: State) => {
     if (!currentSandbox) {
       return false;
     }
@@ -184,12 +189,14 @@ export const state: State = {
     const { isServer } = getTemplate(currentSandbox.template);
 
     return isServer && currentSandbox.owned;
-  },
-  parsedConfigurations: ({ currentSandbox }) =>
-    currentSandbox ? parseConfigurations(currentSandbox) : null,
-  mainModule: ({ currentSandbox, parsedConfigurations }) =>
-    currentSandbox ? getMainModule(currentSandbox, parsedConfigurations) : null,
-  currentPackageJSON: ({ currentSandbox }) => {
+  }),
+  parsedConfigurations: derived(({ currentSandbox }: State) =>
+    currentSandbox ? parseConfigurations(currentSandbox) : null
+  ),
+  mainModule: derived(({ currentSandbox, parsedConfigurations }: State) =>
+    currentSandbox ? getMainModule(currentSandbox, parsedConfigurations) : null
+  ),
+  currentPackageJSON: derived(({ currentSandbox }: State) => {
     if (!currentSandbox) {
       return null;
     }
@@ -199,92 +206,98 @@ export const state: State = {
     );
 
     return module || null;
-  },
-  currentPackageJSONCode: ({ currentSandbox, currentPackageJSON }) => {
-    if (!currentPackageJSON || !currentSandbox) {
-      return null;
+  }),
+  currentPackageJSONCode: derived(
+    ({ currentSandbox, currentPackageJSON }: State) => {
+      if (!currentPackageJSON || !currentSandbox) {
+        return null;
+      }
+
+      return currentPackageJSON.code
+        ? currentPackageJSON.code
+        : generateFileFromSandbox(currentSandbox);
     }
+  ),
+  shouldDirectoryBeOpen: derived(
+    ({ currentSandbox, currentModule }: State) => ({
+      directoryId,
+      module = currentModule,
+    }) => {
+      if (!currentSandbox) {
+        return false;
+      }
 
-    return currentPackageJSON.code
-      ? currentPackageJSON.code
-      : generateFileFromSandbox(currentSandbox);
-  },
-  shouldDirectoryBeOpen: ({ currentSandbox, currentModule }) => ({
-    directoryId,
-    module = currentModule,
-  }) => {
-    if (!currentSandbox) {
-      return false;
-    }
-
-    const { modules, directories } = currentSandbox;
-    const currentModuleId = module.id;
-    const currentModuleParents = getModuleParents(
-      modules,
-      directories,
-      currentModuleId
-    );
-
-    const isParentOfModule = currentModuleParents.includes(directoryId);
-
-    return isParentOfModule;
-  },
-  devToolTabs: ({
-    currentSandbox: sandbox,
-    parsedConfigurations,
-    workspaceConfigCode: intermediatePreviewCode,
-  }) => {
-    if (!sandbox || !parsedConfigurations) {
-      return [];
-    }
-
-    const views = getPreviewTabs(
-      sandbox,
-      parsedConfigurations,
-      intermediatePreviewCode
-    );
-
-    // Do it in an immutable manner, prevents changing the original object
-    return immer(views, draft => {
-      const sandboxConfig = sandbox.modules.find(
-        x => x.directoryShortid == null && x.title === 'sandbox.config.json'
+      const { modules, directories } = currentSandbox;
+      const currentModuleId = module.id;
+      const currentModuleParents = getModuleParents(
+        modules,
+        directories,
+        currentModuleId
       );
-      let view = 'browser';
-      if (sandboxConfig) {
-        try {
-          view = JSON.parse(sandboxConfig.code || '').view || 'browser';
-        } catch (e) {
-          /* swallow */
+
+      const isParentOfModule = currentModuleParents.includes(directoryId);
+
+      return isParentOfModule;
+    }
+  ),
+  devToolTabs: derived(
+    ({
+      currentSandbox: sandbox,
+      parsedConfigurations,
+      workspaceConfigCode: intermediatePreviewCode,
+    }: State) => {
+      if (!sandbox || !parsedConfigurations) {
+        return [];
+      }
+
+      const views = getPreviewTabs(
+        sandbox,
+        parsedConfigurations,
+        intermediatePreviewCode
+      );
+
+      // Do it in an immutable manner, prevents changing the original object
+      return immer(views, draft => {
+        const sandboxConfig = sandbox.modules.find(
+          x => x.directoryShortid == null && x.title === 'sandbox.config.json'
+        );
+        let view = 'browser';
+        if (sandboxConfig) {
+          try {
+            view = JSON.parse(sandboxConfig.code || '').view || 'browser';
+          } catch (e) {
+            /* swallow */
+          }
         }
-      }
 
-      const sandboxOptions = getSandboxOptions(location.href);
-      if (
-        sandboxOptions.previewWindow &&
-        (sandboxOptions.previewWindow === 'tests' ||
-          sandboxOptions.previewWindow === 'console')
-      ) {
-        // Backwards compatibility for ?previewwindow=
+        const sandboxOptions = getSandboxOptions(location.href);
+        if (
+          sandboxOptions.previewWindow &&
+          (sandboxOptions.previewWindow === 'tests' ||
+            sandboxOptions.previewWindow === 'console')
+        ) {
+          // Backwards compatibility for ?previewwindow=
 
-        view = sandboxOptions.previewWindow;
-      }
-
-      if (view !== 'browser') {
-        // Backwards compatibility for sandbox.config.json
-        if (view === 'console') {
-          draft[0].views = draft[0].views.filter(
-            t => t.id !== 'codesandbox.console'
-          );
-          draft[0].views.unshift({ id: 'codesandbox.console' });
-        } else if (view === 'tests') {
-          draft[0].views = draft[0].views.filter(
-            t => t.id !== 'codesandbox.tests'
-          );
-          draft[0].views.unshift({ id: 'codesandbox.tests' });
+          view = sandboxOptions.previewWindow;
         }
-      }
-    });
-  },
+
+        if (view !== 'browser') {
+          // Backwards compatibility for sandbox.config.json
+          if (view === 'console') {
+            draft[0].views = draft[0].views.filter(
+              t => t.id !== 'codesandbox.console'
+            );
+            draft[0].views.unshift({ id: 'codesandbox.console' });
+          } else if (view === 'tests') {
+            draft[0].views = draft[0].views.filter(
+              t => t.id !== 'codesandbox.tests'
+            );
+            draft[0].views.unshift({ id: 'codesandbox.tests' });
+          }
+        }
+      });
+    }
+  ),
 };
 
 // This should be moved somewhere else

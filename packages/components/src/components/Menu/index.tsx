@@ -51,7 +51,7 @@ const PortalStyles = createGlobalStyle(
       cursor: 'pointer',
       outline: 'none',
       color: 'menuList.foreground',
-      '&[data-selected]': {
+      '&[data-selected], :hover': {
         outline: 'none',
         backgroundColor: 'menuList.hoverBackground',
         color: 'menuList.hoverForeground',

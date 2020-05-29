@@ -15,6 +15,7 @@ export const SandboxCard = ({
   isTemplate = false,
   sandboxTitle,
   newTitle,
+  TemplateIcon,
   // interactions
   selected,
   onClick,
@@ -43,6 +44,7 @@ export const SandboxCard = ({
     onKeyDown={onKeyDown}
     {...props}
     css={css({
+      position: 'relative',
       width: '100%',
       height: 240,
       backgroundColor: 'grays.700',
@@ -71,6 +73,20 @@ export const SandboxCard = ({
         backgroundRepeat: 'no-repeat',
       })}
     />
+    <Element
+      css={css({
+        position: 'absolute',
+        top: 1,
+        right: 1,
+        size: 6,
+        background: 'white',
+        border: '4px solid',
+        borderColor: 'grays.500',
+        borderRadius: 'medium',
+      })}
+    >
+      <TemplateIcon width="16" height="16" />
+    </Element>
     <Stack justify="space-between" align="center" marginLeft={4}>
       {edit ? (
         <form onSubmit={onSubmit}>
@@ -87,6 +103,7 @@ export const SandboxCard = ({
           {sandboxTitle}
         </Text>
       )}
+
       <MenuOptions
         sandbox={sandbox}
         isTemplate={isTemplate}

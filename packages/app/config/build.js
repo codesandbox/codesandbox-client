@@ -34,6 +34,12 @@ const staticAssets = [
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
+    to: 'static/browserfs10',
+  },
+  {
+    from: isDev
+      ? 'standalone-packages/codesandbox-browserfs/build'
+      : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs9',
   },
   {
@@ -55,13 +61,6 @@ const staticAssets = [
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs6',
-  },
-  // For caching purposes
-  {
-    from: isDev
-      ? 'standalone-packages/codesandbox-browserfs/build'
-      : 'standalone-packages/codesandbox-browserfs/dist',
-    to: 'static/browserfs5',
   },
   // For Monaco
   {

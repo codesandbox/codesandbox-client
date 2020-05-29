@@ -12,11 +12,13 @@ import {
 } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
+import { ContextMenu } from './ContextMenu';
 
 const Context = React.createContext({
   sandboxes: [],
   selectedIds: [],
   onClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
+  onRightClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {},
   onDragStart: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
@@ -89,6 +91,18 @@ export const SelectionProvider = ({
       setSelectedIds([itemId]);
       event.stopPropagation();
     }
+  };
+
+  const [menuVisible, setMenuVisibility] = React.useState(true);
+  const [menuPosition, setMenuPosition] = React.useState({ x: 0, y: 0 });
+
+  const onRightClick = (
+    event: React.MouseEvent<HTMLDivElement>,
+    itemId: string
+  ) => {
+    if (!selectedIds.includes(itemId)) setSelectedIds([itemId]);
+    setMenuVisibility(true);
+    setMenuPosition({ x: event.clientX, y: event.clientY });
   };
 
   const onBlur = (event: React.FocusEvent<HTMLDivElement>) => {
@@ -222,9 +236,9 @@ export const SelectionProvider = ({
       // is the same as changing it's path
       folderPaths.forEach(path => {
         const { name } = folders.find(folder => folder.path === path);
-        actions.dashboard.renameFolder({
+        actions.dashboard.moveFolder({
           path,
-          newPath: dropResult.path + '/' + name,
+          newPath: dropResult.path.replace('all', '') + '/' + name,
         });
       });
     }
@@ -243,6 +257,7 @@ export const SelectionProvider = ({
         selectedIds,
         onClick,
         onBlur,
+        onRightClick,
         onKeyDown,
         onDragStart,
         onDrop,
@@ -265,6 +280,14 @@ export const SelectionProvider = ({
         viewMode={viewMode}
         setDragging={setDragging}
       />
+      <ContextMenu
+        visible={menuVisible}
+        position={menuPosition}
+        setVisibility={setMenuVisibility}
+        selectedIds={selectedIds}
+        sandboxes={sandboxes || []}
+        folders={folders || []}
+      />
     </Context.Provider>
   );
 };
@@ -275,6 +298,7 @@ export const useSelection = () => {
     selectedIds,
     onClick,
     onBlur,
+    onRightClick,
     onKeyDown,
     onDragStart,
     onDrop,
@@ -287,6 +311,7 @@ export const useSelection = () => {
     selectedIds,
     onClick,
     onBlur,
+    onRightClick,
     onKeyDown,
     onDragStart,
     onDrop,

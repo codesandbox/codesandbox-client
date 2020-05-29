@@ -1,5 +1,4 @@
 import getTemplate from '@codesandbox/common/lib/templates';
-import { COMMENTS as COMMENTS_ON } from '@codesandbox/common/lib/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { config } from 'app/overmind';
 import { Overmind } from 'overmind';
@@ -146,7 +145,10 @@ export default function getItems(
   }
 
   if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
-    if (COMMENTS_ON && hasPermission(currentSandbox.authorization, 'comment')) {
+    if (
+      currentSandbox.featureFlags.comments &&
+      hasPermission(currentSandbox.authorization, 'comment')
+    ) {
       items.push(GITHUB, COMMENTS);
     } else {
       items.push(GITHUB);

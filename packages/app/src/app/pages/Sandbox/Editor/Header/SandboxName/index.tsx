@@ -129,7 +129,7 @@ export const SandboxName: FunctionComponent = () => {
             <Form onSubmit={submitNameChange}>
               <NameInput
                 autoFocus
-                innerRef={(el: HTMLInputElement) => {
+                ref={(el: HTMLInputElement) => {
                   if (el) {
                     el.focus();
                   }
