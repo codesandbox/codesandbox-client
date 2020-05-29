@@ -13,6 +13,10 @@ const Wrapper = styled.div`
   margin: auto;
   position: relative;
 
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
+
   &:before {
     width: 23px;
     height: 24px;
@@ -35,6 +39,10 @@ const Input = styled.input`
   padding-left: 65px;
   padding-right: 40px;
   border: none;
+
+  @media screen and (max-width: 768px) {
+    border-radius: 10px;
+  }
 
   ::-webkit-input-placeholder {
     font-size: 23px;
@@ -108,6 +116,10 @@ const Docs = ({ data }) => {
           max-width: 80%;
           margin: auto;
 
+          @media screen and (max-width: 768px) {
+            padding-top: 60px;
+          }
+
           .algolia-autocomplete {
             width: 100%;
           }
@@ -136,6 +148,10 @@ const Docs = ({ data }) => {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-gap: 40px;
+
+            @media screen and (max-width: 768px) {
+              grid-template-columns: 1fr;
+            }
           `}
         >
           <GridItem>

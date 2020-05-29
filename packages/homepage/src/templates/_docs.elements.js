@@ -41,6 +41,12 @@ export const DocumentationContent = styled.div`
       display: block;
     }
 
+    table {
+      max-width: 100%;
+      overflow: scroll;
+      display: block;
+    }
+
     code {
       background: #151515;
       padding: 0.2em 0.4em;

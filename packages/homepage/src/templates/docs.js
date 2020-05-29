@@ -124,7 +124,7 @@ const Docs = ({
                 css={`
                   text-decoration: none;
                 `}
-                to={`docs/${node.fields.slug}`}
+                to={`docs${node.fields.slug}`}
               >
                 <ListItem
                   css={`
@@ -165,6 +165,10 @@ const Docs = ({
               width: auto;
               padding: 0 40px;
             }
+
+            @media screen and (max-width: 768px) {
+              max-width: 100%;
+            }
           `}
           marginX="auto"
           marginTop={15}
@@ -180,6 +184,8 @@ const Docs = ({
               @media screen and (max-width: 1100px) {
                 position: relative;
                 transform: none;
+                float: none;
+                top: -20px;
               }
             `}
             variant="secondary"
@@ -209,7 +215,7 @@ const Docs = ({
             {prev.fields ? (
               <Element>
                 <Link
-                  to={`docs/${prev.fields.slug}`}
+                  to={`docs${prev.fields.slug}`}
                   css={`
                     text-decoration: none;
                   `}
@@ -238,7 +244,7 @@ const Docs = ({
                 `}
               >
                 <Link
-                  to={`docs/${next.fields.slug}`}
+                  to={`docs${next.fields.slug}`}
                   css={`
                     text-decoration: none;
                   `}
