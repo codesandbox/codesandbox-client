@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import {
   SandboxGrid,
@@ -20,7 +19,7 @@ export const Drafts = () => {
   } = useOvermind();
   const [visibleSandboxes] = useBottomScroll('DRAFTS');
 
-  useEffect(() => {
+  React.useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.DRAFTS);
   }, [actions.dashboard]);
 

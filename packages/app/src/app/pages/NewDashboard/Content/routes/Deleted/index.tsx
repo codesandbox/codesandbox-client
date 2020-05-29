@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
-
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-
 import { Stack, Text, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Header } from 'app/pages/NewDashboard/Components/Header';

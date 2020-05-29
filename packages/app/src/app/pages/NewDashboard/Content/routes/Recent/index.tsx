@@ -9,7 +9,6 @@ import {
   SandboxGrid,
   SkeletonGrid,
 } from 'app/pages/NewDashboard/Components/SandboxGrid';
-import { getPossibleTemplates } from '../../utils';
 
 export const Recent = () => {
   const {
@@ -46,10 +45,7 @@ export const Recent = () => {
 
   return (
     <SelectionProvider sandboxes={sandboxes.RECENT}>
-      <Header
-        title="Recently Modified Sandboxes"
-        templates={getPossibleTemplates(sandboxes.RECENT)}
-      />
+      <Header />
       <section style={{ position: 'relative' }}>
         {sandboxes.RECENT ? (
           <>

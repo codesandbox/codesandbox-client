@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
@@ -10,8 +10,8 @@ import {
 import { getPossibleTemplates } from '../../utils';
 
 export const AllPage = ({ match: { params }, history }) => {
-  const [level, setLevel] = useState(0);
-  const [creating, setCreating] = useState(false);
+  const [level, setLevel] = React.useState(0);
+  const [creating, setCreating] = React.useState(false);
   const param = params.path || '';
   const cleanParam = param.split(' ').join('');
   const {
@@ -20,13 +20,13 @@ export const AllPage = ({ match: { params }, history }) => {
       dashboard: { allCollections, sandboxes, activeTeam },
     },
   } = useOvermind();
-  const [localTeam, setLocalTeam] = useState(activeTeam);
+  const [localTeam, setLocalTeam] = React.useState(activeTeam);
 
-  useEffect(() => {
+  React.useEffect(() => {
     actions.dashboard.getAllFolders();
   }, [actions.dashboard, activeTeam]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (localTeam !== activeTeam) {
       setLocalTeam(activeTeam);
 
@@ -37,7 +37,7 @@ export const AllPage = ({ match: { params }, history }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTeam]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (param) {
       setLevel(param ? param.split('/').length : 0);
       actions.dashboard.getSandboxesByPath(param);

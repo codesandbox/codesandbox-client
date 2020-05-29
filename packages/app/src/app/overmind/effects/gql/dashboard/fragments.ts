@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from 'overmind-graphql';
 
 export const sandboxFragmentDashboard = gql`
   fragment sandboxFragmentDashboard on Sandbox {
