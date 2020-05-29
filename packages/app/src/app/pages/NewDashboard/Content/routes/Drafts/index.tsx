@@ -31,7 +31,12 @@ export const Drafts = () => {
         templates={getPossibleTemplates(sandboxes.DRAFTS)}
       />
       {sandboxes.DRAFTS ? (
-        <SandboxGrid sandboxes={visibleSandboxes} />
+        <SandboxGrid
+          items={visibleSandboxes.map(sandbox => ({
+            type: 'sandbox',
+            ...sandbox,
+          }))}
+        />
       ) : (
         <SkeletonGrid count={8} />
       )}

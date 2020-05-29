@@ -44,11 +44,23 @@ export const AllPage = ({ match: { params }, history }) => {
     }
   }, [param, actions.dashboard, activeTeam]);
 
+  const sandboxesForPath = (sandboxes.ALL && sandboxes.ALL[cleanParam]) || [];
+
   const folders =
-    allCollections &&
-    allCollections.filter(
-      collection => collection.level === level && collection.parent === param
-    );
+    (allCollections &&
+      allCollections.filter(
+        collection => collection.level === level && collection.parent === param
+      )) ||
+    [];
+
+  let items = [];
+  if (creating) items.push({ type: 'folder', setCreating });
+
+  items = [
+    ...items,
+    ...folders.map(folder => ({ type: 'folder', ...folder })),
+    ...sandboxesForPath.map(sandbox => ({ type: 'sandbox', ...sandbox })),
+  ];
 
   return (
     <SelectionProvider
@@ -61,12 +73,7 @@ export const AllPage = ({ match: { params }, history }) => {
         createNewFolder={() => setCreating(true)}
       />
       {allCollections ? (
-        <SandboxGrid
-          sandboxes={(sandboxes.ALL && sandboxes.ALL[cleanParam]) || []}
-          folders={folders || []}
-          creating={creating}
-          setCreating={setCreating}
-        />
+        <SandboxGrid items={items} />
       ) : (
         <SkeletonGrid count={8} />
       )}

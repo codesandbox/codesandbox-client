@@ -1,24 +1,47 @@
 import React from 'react';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { useOvermind } from 'app/overmind';
-import { Stack } from '@codesandbox/components';
+import { Stack, Text } from '@codesandbox/components';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
+import {
+  SandboxGrid,
+  SkeletonGrid,
+} from 'app/pages/NewDashboard/Components/SandboxGrid';
 import { getPossibleTemplates } from '../../utils';
-
-import { SandboxesGroup, SkeletonGroup } from './SandboxesGroup';
 
 export const Recent = () => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes },
+      dashboard: { sandboxes, recentSandboxesByTime, getFilteredSandboxes },
     },
   } = useOvermind();
 
   React.useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.RECENT);
   }, [actions.dashboard]);
+
+  const getSection = (title, time) => {
+    const recentSandboxes = getFilteredSandboxes(recentSandboxesByTime[time]);
+
+    if (!recentSandboxes.length) return [];
+
+    return [
+      { type: 'header', title },
+      ...recentSandboxes.map(sandbox => ({
+        type: 'sandbox',
+        ...sandbox,
+      })),
+    ];
+  };
+
+  const items = [
+    ...getSection('Today', 'day'),
+    ...getSection('Last 7 days', 'week'),
+    ...getSection('Earlier this month', 'month'),
+    ...getSection('Older', 'older'),
+  ];
 
   return (
     <SelectionProvider sandboxes={sandboxes.RECENT}>
@@ -28,12 +51,9 @@ export const Recent = () => {
       />
       <section style={{ position: 'relative' }}>
         {sandboxes.RECENT ? (
-          <Stack as="section" direction="vertical" gap={8}>
-            <SandboxesGroup title="Today" time="day" />
-            <SandboxesGroup title="Last 7 Days" time="week" />
-            <SandboxesGroup title="Earlier this month" time="month" />
-            <SandboxesGroup title="Older" time="older" />
-          </Stack>
+          <>
+            <SandboxGrid items={items} />
+          </>
         ) : (
           <Stack as="section" direction="vertical" gap={8}>
             <SkeletonGroup title="Today" time="day" />
@@ -46,3 +66,12 @@ export const Recent = () => {
     </SelectionProvider>
   );
 };
+
+const SkeletonGroup = ({ title, time }) => (
+  <>
+    <Text marginBottom={6} block>
+      {title}
+    </Text>
+    <SkeletonGrid count={4} />
+  </>
+);

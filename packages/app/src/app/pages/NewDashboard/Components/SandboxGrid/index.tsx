@@ -1,24 +1,27 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Element, Grid, Column } from '@codesandbox/components';
-import { FixedSizeGrid } from 'react-window';
+import { Element, Grid, Column, Text } from '@codesandbox/components';
+import { VariableSizeGrid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { Folder } from '../Folder';
 
 const MIN_WIDTH = 220;
 const ITEM_HEIGHT = 240;
+const HEADER_HEIGHT = 64;
 const GUTTER = 24;
 const GRID_VERTICAL_OFFSET = 120;
-const GAP_FROM_HEADER = 32;
+const ITEM_VERTICAL_OFFSET = 32;
 
-export const SandboxGrid = ({
-  sandboxes = [],
-  folders = [],
-  creating = false,
-  setCreating,
-}) => {
+const ComponentForTypes = {
+  sandbox: props => <Sandbox sandbox={props} />,
+  folder: props => <Folder {...props} />,
+  header: props => <Text block>{props.title}</Text>,
+  blank: () => <div />,
+};
+
+export const SandboxGrid = ({ items }) => {
   const {
     state: { dashboard },
   } = useOvermind();
@@ -30,43 +33,54 @@ export const SandboxGrid = ({
   else if (location.pathname.includes('start')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
-  let items = [];
-  if (creating) items.push({ type: 'folder', setCreating });
-
-  items = [
-    ...items,
-    ...folders.map(folder => ({ type: 'folder', ...folder })),
-    ...sandboxes.map(sandbox => ({ type: 'sandbox', ...sandbox })),
-  ];
-
   const Item = ({ data, rowIndex, columnIndex, style }) => {
-    const { columnCount } = data;
+    const { columnCount, filledItems } = data;
 
     // we need to make space for (n=columns-1) gutters and
     // the right margin by reducing width of (n=columns) items
     const widthReduction = GUTTER - 16 / columnCount;
 
-    const item = items[rowIndex * data.columnCount + columnIndex];
+    const index = rowIndex * data.columnCount + columnIndex;
+    const item = filledItems[index];
+    if (!item) return null;
 
-    return item ? (
+    const Component = ComponentForTypes[item.type];
+    const isHeader = item.type === 'header';
+
+    return (
       <div
         style={{
           ...style,
           width: style.width - widthReduction,
           height: style.height - GUTTER,
-          marginTop: GAP_FROM_HEADER,
-          marginBottom: GAP_FROM_HEADER,
+          marginTop: isHeader
+            ? ITEM_VERTICAL_OFFSET + 16
+            : ITEM_VERTICAL_OFFSET,
+          marginBottom: isHeader ? 0 : ITEM_VERTICAL_OFFSET,
         }}
       >
-        {item.type === 'sandbox' ? (
-          <Sandbox sandbox={item} />
-        ) : (
-          <Folder {...item} />
-        )}
+        <Component {...item} />
       </div>
-    ) : (
-      <div />
     );
+  };
+
+  const getRowHeight = (rowIndex, columnCount, filledItems) => {
+    const item = filledItems[rowIndex * columnCount];
+
+    if (item.type === 'header') return HEADER_HEIGHT;
+    if (item.type === 'blank') return 0;
+    return ITEM_HEIGHT + GUTTER;
+  };
+
+  const gridRef = React.useRef(null);
+  const hasHeader = items.find(item => item.type === 'header');
+
+  const onResize = () => {
+    // force height re-calculation on resize
+    // only useful for views with group headers
+    if (gridRef.current && hasHeader) {
+      gridRef.current.resetAfterRowIndex(0, true);
+    }
   };
 
   return (
@@ -76,26 +90,50 @@ export const SandboxGrid = ({
         marginLeft: 16,
       }}
     >
-      <AutoSizer>
+      <AutoSizer onResize={onResize}>
         {({ width, height }) => {
           const columnCount = Math.max(
             1,
             Math.floor(width / (MIN_WIDTH + GUTTER))
           );
 
+          const filledItems = [];
+          const blankItem = { type: 'blank' };
+
+          items.forEach((item, index) => {
+            filledItems.push(item);
+            if (item.type === 'header') {
+              const blanks = columnCount - 1;
+              for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
+            } else if (item.type === 'sandbox') {
+              const nextItem = items[index + 1];
+              if (nextItem && nextItem.type === 'header') {
+                const currentIndex = filledItems.length - 1;
+                const rowIndex = currentIndex % columnCount;
+                const blanks = columnCount - rowIndex - 1;
+                for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
+              }
+            }
+          });
+
           return (
-            <FixedSizeGrid
+            <VariableSizeGrid
+              ref={gridRef}
               columnCount={viewMode === 'list' ? 1 : columnCount}
-              rowCount={Math.ceil(items.length / columnCount)}
-              columnWidth={width / columnCount}
+              rowCount={Math.ceil(filledItems.length / columnCount)}
               width={width}
               height={height}
-              rowHeight={ITEM_HEIGHT + GUTTER}
-              itemData={{ columnCount }}
+              columnWidth={index => width / columnCount}
+              rowHeight={rowIndex =>
+                getRowHeight(rowIndex, columnCount, filledItems)
+              }
+              estimatedColumnWidth={width / columnCount}
+              estimatedRowHeight={ITEM_HEIGHT}
+              itemData={{ columnCount, filledItems }}
               style={{ overflowX: 'hidden' }}
             >
               {Item}
-            </FixedSizeGrid>
+            </VariableSizeGrid>
           );
         }}
       </AutoSizer>
@@ -108,7 +146,7 @@ export const SkeletonGrid = ({ count }) => (
     rowGap={6}
     columnGap={6}
     marginBottom={8}
-    marginTop={GAP_FROM_HEADER}
+    marginTop={ITEM_VERTICAL_OFFSET}
     marginX={4}
     css={{
       gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
