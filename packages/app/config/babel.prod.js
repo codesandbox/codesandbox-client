@@ -10,9 +10,6 @@ module.exports = {
     [
       require.resolve('@babel/preset-env'),
       {
-        targets: {
-          ie: 11,
-        },
         // Disable polyfill transforms
         useBuiltIns: false,
         modules: false,

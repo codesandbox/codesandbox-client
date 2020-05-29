@@ -13,6 +13,7 @@ module.exports = {
       require.resolve('@babel/preset-env'),
       {
         // Disable polyfill transforms
+        modules: false,
         useBuiltIns: false,
         forceAllTransforms: !process.env.LOCAL_DEV,
       },
