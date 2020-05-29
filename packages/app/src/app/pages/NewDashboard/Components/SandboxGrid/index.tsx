@@ -5,6 +5,7 @@ import { Element, Grid, Column, Text } from '@codesandbox/components';
 import { VariableSizeGrid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
+import { NewSandbox } from '../Sandbox/NewSandbox';
 import { Folder } from '../Folder';
 
 const MIN_WIDTH = 220;
@@ -17,6 +18,7 @@ const ITEM_VERTICAL_OFFSET = 32;
 const ComponentForTypes = {
   sandbox: props => <Sandbox sandbox={props} />,
   folder: props => <Folder {...props} />,
+  'new-sandbox': props => <NewSandbox {...props} />,
   header: props => <Text block>{props.title}</Text>,
   blank: () => <div />,
 };
