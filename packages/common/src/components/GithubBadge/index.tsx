@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useCallback } from 'react';
-import GithubIcon from 'react-icons/lib/go/mark-github';
-import { BorderRadius, Text, Icon, StyledA } from './elements';
+import { GoMarkGithub } from 'react-icons/go';
+
+import { BorderRadius, Icon, StyledA, Text } from './elements';
 
 type BadgeProps = {
   username: string;
@@ -48,7 +49,7 @@ const GithubBadge: FunctionComponent<BadgeProps> = ({
     <DivOrA {...props} href={url}>
       <BorderRadius hasUrl={Boolean(url)}>
         <Icon>
-          <GithubIcon />
+          <GoMarkGithub />
         </Icon>
         <Text>
           {username}/{repo}

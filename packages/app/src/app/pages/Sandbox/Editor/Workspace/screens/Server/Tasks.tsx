@@ -1,12 +1,9 @@
-import React from 'react';
-import { dispatch } from 'codesandbox-api';
-
-import BuildIcon from 'react-icons/lib/fa/wrench';
-import FlaskIcon from 'react-icons/lib/fa/flask';
-import DownloadIcon from 'react-icons/lib/fa/download';
-import NodeIcon from 'react-icons/lib/io/social-nodejs';
+import { Collapsible, List, ListAction, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-import { List, ListAction, Text, Collapsible } from '@codesandbox/components';
+import { dispatch } from 'codesandbox-api';
+import React from 'react';
+import { FaDownload, FaFlask, FaWrench } from 'react-icons/fa';
+import { IoLogoNodejs } from 'react-icons/io';
 
 // These scripts are only supposed to run on the main thread.
 const blacklistedScripts = ['dev', 'develop', 'serve', 'start'];
@@ -15,13 +12,13 @@ const getIcon = (scriptName: string) => {
   switch (scriptName) {
     case 'test':
     case 'lint':
-      return <FlaskIcon />;
+      return <FaFlask />;
     case 'node':
-      return <NodeIcon />;
+      return <IoLogoNodejs />;
     case 'install':
-      return <DownloadIcon />;
+      return <FaDownload />;
     default: {
-      return <BuildIcon />;
+      return <FaWrench />;
     }
   }
 };

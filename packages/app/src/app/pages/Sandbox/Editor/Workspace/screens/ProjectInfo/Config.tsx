@@ -1,7 +1,7 @@
-import React, { MouseEvent } from 'react';
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { useOvermind } from 'app/overmind';
+import getTemplateDefinition from '@codesandbox/common/es/templates';
 import { Button, Element } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
+import React, { MouseEvent } from 'react';
 
 export const Config = () => {
   const {

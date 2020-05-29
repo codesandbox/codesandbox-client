@@ -1,20 +1,18 @@
-import React from 'react';
-import { withRouter } from 'react-router-dom';
-import { DropTarget } from 'react-dnd';
-import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
-import { Query } from 'react-apollo';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
+import React from 'react';
+import { Query } from 'react-apollo';
+import { DropTarget } from 'react-dnd';
+import { MdCreateNewFolder } from 'react-icons/md';
+import { withRouter } from 'react-router-dom';
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
-import { Item } from '../Item';
-import { Container } from './elements';
-import { DropFolderEntry } from './FolderEntry';
-import { CreateFolderEntry } from './FolderEntry/CreateFolderEntry';
-
-import { entryTarget, collectTarget } from './folder-drop-target';
-
-import getChildCollections from '../../utils/get-child-collections';
 
 import { PATHED_SANDBOXES_FOLDER_QUERY } from '../../queries';
+import getChildCollections from '../../utils/get-child-collections';
+import { Item } from '../Item';
+import { Container } from './elements';
+import { collectTarget, entryTarget } from './folder-drop-target';
+import { DropFolderEntry } from './FolderEntry';
+import { CreateFolderEntry } from './FolderEntry/CreateFolderEntry';
 
 class SandboxesItemComponent extends React.Component {
   state = {
@@ -62,7 +60,7 @@ class SandboxesItemComponent extends React.Component {
           contextItems={[
             {
               title: 'Create Folder',
-              icon: AddFolderIcon,
+              icon: MdCreateNewFolder,
               action: () => {
                 this.setState({ creatingDirectory: true });
                 return true;

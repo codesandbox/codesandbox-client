@@ -1,8 +1,8 @@
 import React from 'react';
-import PlusIcon from 'react-icons/lib/md/add';
+import { MdAdd } from 'react-icons/md';
 
-import { Container, Tab, CrossIcon, PlusContainer } from './elements';
 import { ShellT } from '../types';
+import { Container, CrossIcon, PlusContainer, Tab } from './elements';
 
 type Props = {
   shells: ShellT[];
@@ -42,7 +42,7 @@ export class ShellTabs extends React.PureComponent<Props> {
           </Tab>
         ))}
         <PlusContainer onClick={() => createShell()}>
-          <PlusIcon />
+          <MdAdd />
         </PlusContainer>
       </Container>
     );

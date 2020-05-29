@@ -1,9 +1,8 @@
-import { ServerContainerStatus } from '@codesandbox/common/lib/types';
-import BasePreview from '@codesandbox/common/lib/components/Preview';
-import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
-import React, { FunctionComponent, useState } from 'react';
-
+import BasePreview from '@codesandbox/common/es/components/Preview';
+import RunOnClick from '@codesandbox/common/es/components/RunOnClick';
+import { ServerContainerStatus } from '@codesandbox/common/es/types';
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent, useState } from 'react';
 
 type Props = {
   hidden?: boolean;

@@ -1,7 +1,7 @@
-import fileSvg from '@codesandbox/common/lib/icons/file.svg';
-import imageSvg from '@codesandbox/common/lib/icons/image.svg';
-import codesandboxSvg from '@codesandbox/common/lib/icons/codesandbox.svg';
-import nowSvg from '@codesandbox/common/lib/icons/now.svg';
+import fileSvg from '@codesandbox/common/es/icons/file.svg';
+import imageSvg from '@codesandbox/common/es/icons/image.svg';
+import codesandboxSvg from '@codesandbox/common/es/icons/codesandbox.svg';
+import nowSvg from '@codesandbox/common/es/icons/now.svg';
 import folderSvg from './folder.svg';
 import folderOpenSvg from './folderOpen.svg';
 

@@ -1,4 +1,4 @@
-import { GitChanges, GitCommit, GitPr } from '@codesandbox/common/lib/types';
+import { GitChanges, GitCommit, GitPr } from '@codesandbox/common/es/types';
 
 type State = {
   repoTitle: string;

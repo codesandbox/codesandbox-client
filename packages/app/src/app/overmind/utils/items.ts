@@ -1,6 +1,6 @@
-import getTemplate from '@codesandbox/common/lib/templates';
-import { COMMENTS as COMMENTS_ON } from '@codesandbox/common/lib/utils/feature-flags';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import getTemplate from '@codesandbox/common/es/templates';
+import { COMMENTS as COMMENTS_ON } from '@codesandbox/common/es/utils/feature-flags';
+import { hasPermission } from '@codesandbox/common/es/utils/permission';
 
 export interface INavigationItem {
   id: string;

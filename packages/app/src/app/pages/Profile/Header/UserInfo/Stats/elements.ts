@@ -1,4 +1,4 @@
-import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
+import delayEffect from '@codesandbox/common/es/utils/animation/delay-effect';
 import styled from 'styled-components';
 
 export const Container = styled.div`

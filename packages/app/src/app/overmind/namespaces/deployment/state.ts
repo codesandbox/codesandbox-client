@@ -1,4 +1,4 @@
-import { NetlifySite, VercelDeployment } from '@codesandbox/common/lib/types';
+import { NetlifySite, VercelDeployment } from '@codesandbox/common/es/types';
 
 type State = {
   hasAlias: boolean;

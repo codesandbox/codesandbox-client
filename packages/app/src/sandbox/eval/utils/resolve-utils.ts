@@ -1,4 +1,4 @@
-import { PackageJSON } from '@codesandbox/common/lib/types';
+import { PackageJSON } from '@codesandbox/common/es/types';
 
 export function packageFilter(p: PackageJSON) {
   if (p.module && !p.main) {

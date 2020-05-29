@@ -1,8 +1,8 @@
 import React from 'react';
-import IconBase from 'react-icons/IconBase';
+import { IconBase } from 'react-icons';
 
 export const TerminalIcon = props => (
-  <IconBase viewBox="0 0 21 16" {...props}>
+  <IconBase attr={undefined} viewBox="0 0 21 16" {...props}>
     <path
       fill="currentColor"
       fillRule="evenodd"

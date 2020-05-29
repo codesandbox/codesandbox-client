@@ -4,10 +4,10 @@ import {
   LiveMessageEvent,
   UserSelection,
   UserViewRange,
-} from '@codesandbox/common/lib/types';
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+} from '@codesandbox/common/es/types';
+import { logBreadcrumb } from '@codesandbox/common/es/utils/analytics/sentry';
+import { COMMENTS } from '@codesandbox/common/es/utils/feature-flags';
+import { hasPermission } from '@codesandbox/common/es/utils/permission';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';

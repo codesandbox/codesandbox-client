@@ -1,6 +1,6 @@
-import getDefinition from '@codesandbox/common/lib/templates';
-import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
-import { Sandbox } from '@codesandbox/common/lib/types';
+import getDefinition from '@codesandbox/common/es/templates';
+import { generateFileFromSandbox } from '@codesandbox/common/es/templates/configuration/package-json';
+import { Sandbox } from '@codesandbox/common/es/types';
 import {
   IExecutor,
   SandboxExecutor,

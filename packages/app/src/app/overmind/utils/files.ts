@@ -1,6 +1,6 @@
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import getDefinition from '@codesandbox/common/lib/templates';
-import { Sandbox } from '@codesandbox/common/lib/types';
+import { getModulePath } from '@codesandbox/common/es/sandbox/modules';
+import getDefinition from '@codesandbox/common/es/templates';
+import { Sandbox } from '@codesandbox/common/es/types';
 
 import { resolveModuleWrapped } from './resolve-module-wrapped';
 

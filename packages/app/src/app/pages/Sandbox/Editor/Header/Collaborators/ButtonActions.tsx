@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import { Button, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { motion } from 'framer-motion';
-import { Stack, Button } from '@codesandbox/components';
-import CheckIcon from 'react-icons/lib/md/check';
 import { useOvermind } from 'app/overmind';
+import { motion } from 'framer-motion';
+import React, { useEffect } from 'react';
+import { MdCheck } from 'react-icons/md';
 
 export const ButtonActions = () => {
   const [linkCopied, setLinkCopied] = React.useState(false);
@@ -64,7 +64,7 @@ export const ButtonActions = () => {
               animate={{ scale: 1, rotate: 0, opacity: 1 }}
               css={css({ marginRight: 1 })}
             >
-              <CheckIcon />
+              <MdCheck />
             </motion.div>{' '}
             Copied!
           </motion.div>

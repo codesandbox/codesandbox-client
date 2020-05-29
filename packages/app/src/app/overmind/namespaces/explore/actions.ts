@@ -1,4 +1,4 @@
-import { PickedSandboxDetails } from '@codesandbox/common/lib/types';
+import { PickedSandboxDetails } from '@codesandbox/common/es/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 

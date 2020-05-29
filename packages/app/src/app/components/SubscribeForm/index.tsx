@@ -1,9 +1,10 @@
-import React from 'react';
-import { StripeProvider, Elements } from 'react-stripe-elements';
-import { STRIPE_API_KEY } from '@codesandbox/common/lib/utils/config';
-import { useScript } from 'app/hooks';
+import { STRIPE_API_KEY } from '@codesandbox/common/es/utils/config';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useScript } from 'app/hooks';
+import React from 'react';
+import { Elements, StripeProvider } from 'react-stripe-elements';
+
 import { CheckoutForm } from './CheckoutForm';
 
 interface ISubscribeFormProps {

@@ -1,30 +1,27 @@
-/* eslint-disable global-require, no-console, no-use-before-define */
-import { flatten } from 'lodash-es';
+import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
+import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
+import * as envPreset from '@babel/preset-env';
+import delay from '@codesandbox/common/es/utils/delay';
+import { join } from '@codesandbox/common/es/utils/path';
 import codeFrame from 'babel-code-frame';
 import macrosPlugin from 'babel-plugin-macros';
+/* eslint-disable global-require, no-console, no-use-before-define */
+import { flatten } from 'lodash-es';
 import refreshBabelPlugin from 'react-refresh/babel';
-import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
-import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
-import * as envPreset from '@babel/preset-env';
-
-import delay from '@codesandbox/common/lib/utils/delay';
-
 import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
-import { join } from '@codesandbox/common/lib/utils/path';
-import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
-import detective from './plugins/babel-plugin-detective';
-import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
-import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
 
 import { buildWorkerError } from '../../utils/worker-error-handler';
-import getDependencies from './get-require-statements';
 import { downloadFromError, downloadPath } from './dynamic-download';
-
 import { evaluateFromPath, resetCache } from './evaluate';
 import {
   getPrefixedPluginName,
   getPrefixedPresetName,
 } from './get-prefixed-name';
+import getDependencies from './get-require-statements';
+import detective from './plugins/babel-plugin-detective';
+import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
+import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
+import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
 
 let fsInitialized = false;
 let fsLoading = false;

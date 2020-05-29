@@ -1,5 +1,5 @@
+import getTemplate from '@codesandbox/common/es/templates';
 import { countBy } from 'lodash-es';
-import getTemplate from '@codesandbox/common/lib/templates';
 
 export default function getMostUsedTemplate(sandboxes) {
   const countedByTemplates = countBy(sandboxes, s => s.source.template);

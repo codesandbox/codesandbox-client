@@ -1,8 +1,8 @@
 import {
-  resolveModule,
   resolveDirectory,
-} from '@codesandbox/common/lib/sandbox/modules';
-import { Module, Sandbox, Directory } from '@codesandbox/common/lib/types';
+  resolveModule,
+} from '@codesandbox/common/es/sandbox/modules';
+import { Directory, Module, Sandbox } from '@codesandbox/common/es/types';
 
 export const resolveModuleWrapped = (sandbox: Sandbox) => (
   path: string

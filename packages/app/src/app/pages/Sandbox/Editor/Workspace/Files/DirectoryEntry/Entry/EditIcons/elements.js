@@ -1,5 +1,5 @@
+import fadeIn from '@codesandbox/common/es/utils/animation/fade-in';
 import styled from 'styled-components';
-import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
 
 export const Container = styled.div`
   display: flex;

@@ -4,16 +4,16 @@ import { dirname, join } from 'path';
 import {
   getDirectoryPath,
   getModulePath,
-} from '@codesandbox/common/lib/sandbox/modules';
+} from '@codesandbox/common/es/sandbox/modules';
 import {
   Directory,
   Module,
   Sandbox,
   SandboxFs,
-} from '@codesandbox/common/lib/types';
-import { getGlobal } from '@codesandbox/common/lib/utils/global';
-import delay from '@codesandbox/common/lib/utils/delay';
-import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+} from '@codesandbox/common/es/types';
+import delay from '@codesandbox/common/es/utils/delay';
+import { getGlobal } from '@codesandbox/common/es/utils/global';
+import { protocolAndHost } from '@codesandbox/common/es/utils/url-generator';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { json } from 'overmind';
 

@@ -1,35 +1,33 @@
-import { flattenDeep, uniq, values } from 'lodash-es';
-import { Protocol } from 'codesandbox-api';
+import { ParsedConfigurationFiles } from '@codesandbox/common/es/templates/template';
+import _debug from '@codesandbox/common/es/utils/debug';
+import { getGlobal } from '@codesandbox/common/es/utils/global';
+import * as pathUtils from '@codesandbox/common/es/utils/path';
 import resolve from 'browser-resolve';
-
-import * as pathUtils from '@codesandbox/common/lib/utils/path';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { getGlobal } from '@codesandbox/common/lib/utils/global';
-import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
+import { Protocol } from 'codesandbox-api';
+import { flattenDeep, uniq, values } from 'lodash-es';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
+import dependenciesToQuery from '../npm/dependencies-to-query';
 import { generateBenchmarkInterface } from '../utils/benchmark';
-import { Module } from './types/module';
+import { endMeasure, measure } from '../utils/metrics';
+import { clearIndexedDBCache, deleteAPICache, ignoreNextCache } from './cache';
+import fetchModule, {
+  combinedMetas,
+  setCombinedMetas,
+} from './npm/fetch-npm-module';
+import coreLibraries from './npm/get-core-libraries';
+import Preset from './presets';
 import TranspiledModule, {
   ChildModule,
   SerializedTranspiledModule,
 } from './transpiled-module';
-import Preset from './presets';
-import { SCRIPT_VERSION } from '..';
-import fetchModule, {
-  setCombinedMetas,
-  combinedMetas,
-} from './npm/fetch-npm-module';
-import coreLibraries from './npm/get-core-libraries';
-import getDependencyName from './utils/get-dependency-name';
-import dependenciesToQuery from '../npm/dependencies-to-query';
-import { packageFilter } from './utils/resolve-utils';
-
-import { ignoreNextCache, deleteAPICache, clearIndexedDBCache } from './cache';
 import { shouldTranspile } from './transpilers/babel/check';
+import { Module } from './types/module';
+import getDependencyName from './utils/get-dependency-name';
 import { splitQueryFromPath } from './utils/query-path';
-import { measure, endMeasure } from '../utils/metrics';
+import { packageFilter } from './utils/resolve-utils';
+import { SCRIPT_VERSION } from '..';
 
 declare const BrowserFS: any;
 

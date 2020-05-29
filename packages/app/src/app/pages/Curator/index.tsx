@@ -1,11 +1,11 @@
 import 'react-day-picker/lib/style.css';
 
-import { Button } from '@codesandbox/common/lib/components/Button';
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import { Button } from '@codesandbox/common/es/components/Button';
+import MaxWidth from '@codesandbox/common/es/components/flex/MaxWidth';
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
+import { Element } from '@codesandbox/components';
 import { SubTitle } from 'app/components/SubTitle';
 import { useOvermind } from 'app/overmind';
-import { Element } from '@codesandbox/components';
 import { Navigation } from 'app/pages/common/Navigation';
 import { format, getTime, subMonths, subWeeks } from 'date-fns';
 import React, {

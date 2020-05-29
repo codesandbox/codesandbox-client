@@ -1,7 +1,8 @@
+import applicationTheme from '@codesandbox/common/es/theme';
+import codesandboxBlack from '@codesandbox/common/es/themes/codesandbox-black';
+import codesandboxLight from '@codesandbox/common/es/themes/codesandbox-light.json';
 import dot from 'dot-object';
-import applicationTheme from '@codesandbox/common/lib/theme';
-import codesandboxBlack from '@codesandbox/common/lib/themes/codesandbox-black';
-import codesandboxLight from '@codesandbox/common/lib/themes/codesandbox-light.json';
+
 import tokens from './tokens';
 
 export function getTheme(variant) {

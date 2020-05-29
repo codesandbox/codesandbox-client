@@ -1,7 +1,7 @@
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import React, { FunctionComponent } from 'react';
+import MaxWidth from '@codesandbox/common/es/components/flex/MaxWidth';
 import { Element } from '@codesandbox/components';
 import { Navigation } from 'app/pages/common/Navigation';
+import React, { FunctionComponent } from 'react';
 
 import { FullWidthMargin, FullWidthPadding, Top } from './elements';
 import { UserInfo } from './UserInfo';

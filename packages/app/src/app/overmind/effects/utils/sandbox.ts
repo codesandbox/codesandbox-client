@@ -1,4 +1,4 @@
-import { Directory, Module } from '@codesandbox/common/lib/types';
+import { Directory, Module } from '@codesandbox/common/es/types';
 
 import {
   IDirectoryAPIResponse,

@@ -3,10 +3,11 @@
  * that used to be used in Patron page
  */
 
-import React from 'react';
-import { StripeProvider, Elements } from 'react-stripe-elements';
-import { STRIPE_API_KEY } from '@codesandbox/common/lib/utils/config';
+import { STRIPE_API_KEY } from '@codesandbox/common/es/utils/config';
 import { useScript } from 'app/hooks';
+import React from 'react';
+import { Elements, StripeProvider } from 'react-stripe-elements';
+
 import { CheckoutForm } from './checkout-form';
 
 interface ISubscribeFormProps {

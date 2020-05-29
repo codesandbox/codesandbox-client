@@ -1,5 +1,5 @@
-import { Button as ButtonBase } from '@codesandbox/common/lib/components/Button';
-import Input from '@codesandbox/common/lib/components/Input';
+import { Button as ButtonBase } from '@codesandbox/common/es/components/Button';
+import Input from '@codesandbox/common/es/components/Input';
 import styled from 'styled-components';
 
 export const SmallText = styled.div`

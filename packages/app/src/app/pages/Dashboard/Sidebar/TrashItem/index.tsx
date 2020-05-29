@@ -1,11 +1,10 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
-import TrashIcon from 'react-icons/lib/md/delete';
+import { MdDelete } from 'react-icons/md';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { withRouter, RouteComponentProps } from 'react-router-dom';
-
-import { Item } from '../Item';
 import { DELETE_SANDBOX_DROP_KEY } from '../../Content/SandboxCard';
+import { Item } from '../Item';
 
 interface Props {
   currentPath: string;
@@ -25,7 +24,7 @@ const TrashItemComponent: React.FC<Props & RouteComponentProps> = ({
       <Item
         active={currentPath === '/dashboard/trash'}
         path="/dashboard/trash"
-        Icon={TrashIcon}
+        Icon={MdDelete}
         name="Trash"
         style={
           isOver && canDrop ? { backgroundColor: 'rgba(0, 0, 0, 0.3)' } : {}

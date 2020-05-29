@@ -1,7 +1,7 @@
+import theme from '@codesandbox/common/es/theme';
 import React from 'react';
-import theme from '@codesandbox/common/lib/theme';
 
-import { Container, Name, Points, CheckBox } from './elements';
+import { CheckBox, Container, Name, Points } from './elements';
 
 /* eslint-disable react/no-array-index-key) */
 export default ({ name, points, selected }) => (

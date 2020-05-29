@@ -1,10 +1,10 @@
-import getTemplate from '@codesandbox/common/lib/templates';
+import getTemplate from '@codesandbox/common/es/templates';
 import {
   Sandbox,
   VercelConfig,
   VercelDeployment,
   VercelUser,
-} from '@codesandbox/common/lib/types';
+} from '@codesandbox/common/es/types';
 import axios from 'axios';
 import { omit } from 'lodash-es';
 

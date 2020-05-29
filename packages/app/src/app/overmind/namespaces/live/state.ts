@@ -3,7 +3,7 @@ import {
   RoomInfo,
   UserSelection,
   UserViewRange,
-} from '@codesandbox/common/lib/types';
+} from '@codesandbox/common/es/types';
 import { derived } from 'overmind';
 
 type State = {

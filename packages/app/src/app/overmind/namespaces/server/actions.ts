@@ -1,10 +1,10 @@
-import { ViewTab } from '@codesandbox/common/lib/templates/template';
+import { ViewTab } from '@codesandbox/common/es/templates/template';
 import {
   Sandbox,
   ServerContainerStatus,
   ServerPort,
   ServerStatus,
-} from '@codesandbox/common/lib/types';
+} from '@codesandbox/common/es/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Action, AsyncAction } from 'app/overmind';
 import { getDevToolsTabPosition } from 'app/overmind/utils/server';

@@ -1,11 +1,11 @@
+import { Stack, Text, ThemeProvider } from '@codesandbox/components';
 import Modal from 'app/components/Modal';
-import { withTheme } from 'styled-components';
-import { ThemeProvider, Stack, Text } from '@codesandbox/components';
-import { Alert } from 'app/pages/common/Modals/Common/Alert';
 import { useOvermind } from 'app/overmind';
+import { Alert } from 'app/pages/common/Modals/Common/Alert';
 import React, { FunctionComponent } from 'react';
+import { MdKeyboardReturn } from 'react-icons/md';
 import useKeyPressEvent from 'react-use/lib/useKeyPressEvent';
-import ReturnIcon from 'react-icons/lib/md/keyboard-return';
+import { withTheme } from 'styled-components';
 
 const ModalContent: React.FC = () => {
   const {
@@ -49,7 +49,7 @@ const ModalContent: React.FC = () => {
       confirmMessage={
         <Stack gap={2} align="center">
           <Text size={3}>Fork</Text>
-          <ReturnIcon />
+          <MdKeyboardReturn />
         </Stack>
       }
     />

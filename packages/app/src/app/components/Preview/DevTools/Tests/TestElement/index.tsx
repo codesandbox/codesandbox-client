@@ -1,26 +1,22 @@
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import * as React from 'react';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-
-import PlayIcon from 'react-icons/lib/go/playback-play';
-import FileIcon from 'react-icons/lib/md/insert-drive-file';
-import ExpandTestsIcon from 'react-icons/lib/fa/expand';
-import CollapseTestsIcon from 'react-icons/lib/fa/minus';
-
-import { File, Status } from '..';
-
-import {
-  Container,
-  FileName,
-  Path,
-  Tests,
-  FileData,
-  Test,
-  Block,
-  TestName,
-  Actions,
-} from './elements';
+import { FaExpand, FaMinus } from 'react-icons/fa';
+import { GoPlay } from 'react-icons/go';
+import { MdInsertDriveFile } from 'react-icons/md';
 
 import { StatusElements } from '../elements';
+import {
+  Actions,
+  Block,
+  Container,
+  FileData,
+  FileName,
+  Path,
+  Test,
+  TestName,
+  Tests,
+} from './elements';
+import { File, Status } from '..';
 
 type Props = {
   file: File;
@@ -74,10 +70,10 @@ export class TestElement extends React.Component<Props> {
           <FileName>{fileName}</FileName>
           <Actions>
             <Tooltip content="Open File">
-              <FileIcon onClick={this.openFile} />
+              <MdInsertDriveFile onClick={this.openFile} />
             </Tooltip>
             <Tooltip content="Run Tests">
-              <PlayIcon onClick={this.runTests} />
+              <GoPlay onClick={this.runTests} />
             </Tooltip>
             <Tooltip
               content={
@@ -85,9 +81,9 @@ export class TestElement extends React.Component<Props> {
               }
             >
               {this.props.isExpanded ? (
-                <CollapseTestsIcon onClick={this.toggleFileExpansion} />
+                <FaMinus onClick={this.toggleFileExpansion} />
               ) : (
-                <ExpandTestsIcon onClick={this.toggleFileExpansion} />
+                <FaExpand onClick={this.toggleFileExpansion} />
               )}
             </Tooltip>
           </Actions>

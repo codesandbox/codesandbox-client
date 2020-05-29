@@ -1,12 +1,12 @@
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { withTheme } from 'styled-components';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import getDefinition from '@codesandbox/common/lib/templates';
-import getUI from '@codesandbox/common/lib/templates/configuration/ui';
-import { Sandbox } from '@codesandbox/common/lib/types';
-import isImage from '@codesandbox/common/lib/utils/is-image';
+import Centered from '@codesandbox/common/es/components/flex/Centered';
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import { getModulePath } from '@codesandbox/common/es/sandbox/modules';
+import getDefinition from '@codesandbox/common/es/templates';
+import getUI from '@codesandbox/common/es/templates/configuration/ui';
+import { Sandbox } from '@codesandbox/common/es/types';
+import isImage from '@codesandbox/common/es/utils/is-image';
+import { ThemeProvider } from '@codesandbox/components';
 import { Configuration } from 'app/components/CodeEditor/Configuration';
 import { Icon, Icons } from 'app/components/CodeEditor/elements';
 import { Props } from 'app/components/CodeEditor/types'; // eslint-disable-line
@@ -14,8 +14,8 @@ import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
 import Loadable from 'app/utils/Loadable';
 import React from 'react';
-import UIIcon from 'react-icons/lib/md/dvr';
-import { ThemeProvider } from '@codesandbox/components';
+import { MdDvr } from 'react-icons/md';
+import { withTheme } from 'styled-components';
 
 import { ImageViewer } from './ImageViewer';
 import MonacoDiff from './MonacoDiff';
@@ -192,7 +192,7 @@ export class CodeEditorComponent extends React.PureComponent<
           <Icons>
             <Tooltip content="Switch to UI Configuration">
               <Icon onClick={this.toggleConfigUI}>
-                <UIIcon />
+                <MdDvr />
               </Icon>
             </Tooltip>
           </Icons>

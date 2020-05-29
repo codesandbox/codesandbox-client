@@ -1,4 +1,4 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import React, { FunctionComponent } from 'react';
 
 type Props = {

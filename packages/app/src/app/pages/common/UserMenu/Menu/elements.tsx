@@ -1,4 +1,4 @@
-import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
+import delayEffect from '@codesandbox/common/es/utils/animation/delay-effect';
 import React, { ComponentProps, forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 import { MenuSeparator } from 'reakit';

@@ -1,11 +1,10 @@
-import React, { FunctionComponent, useState, useCallback } from 'react';
-
+import getIcon from '@codesandbox/common/es/templates/icons';
+import { ColorIcons as Icons } from '@codesandbox/common/es/utils/getTemplateIcon';
+import { Element, ListAction, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-import { ListAction, Text, Element } from '@codesandbox/components';
+import React, { FunctionComponent, useCallback, useState } from 'react';
+import { Popover, PopoverDisclosure, usePopoverState } from 'reakit/Popover';
 import styled, { css } from 'styled-components';
-import getIcon from '@codesandbox/common/lib/templates/icons';
-import { ColorIcons as Icons } from '@codesandbox/common/lib/utils/getTemplateIcon';
-import { Popover, usePopoverState, PopoverDisclosure } from 'reakit/Popover';
 
 const buttonStyles = css`
   padding: 0;

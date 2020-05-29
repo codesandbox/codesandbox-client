@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
-
-import { useOvermind } from 'app/overmind';
-import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { dashboardUrl } from '@codesandbox/common/es/utils/url-generator';
 import { Element, Stack, ThemeProvider } from '@codesandbox/components';
 import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { css } from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React, { useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
+
 import { Navigation } from '../common/Navigation';
 import { SignInModalElement } from './Modal';
 

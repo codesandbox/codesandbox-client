@@ -1,8 +1,7 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import React, { FunctionComponent } from 'react';
-import PlusIcon from 'react-icons/lib/go/plus';
-
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
+import { GoPlus } from 'react-icons/go';
 
 import { Action } from '../elements';
 
@@ -19,7 +18,7 @@ export const NewSandboxAction: FunctionComponent = () => {
       style={{ fontSize: '1.125rem' }}
     >
       <Tooltip content="New Sandbox" placement="bottom">
-        <PlusIcon height={35} />
+        <GoPlus height={35} />
       </Tooltip>
     </Action>
   );

@@ -1,5 +1,5 @@
-import ContributorsBadgeBase from '@codesandbox/common/lib/components/ContributorsBadge';
-import MarginBase from '@codesandbox/common/lib/components/spacing/Margin';
+import ContributorsBadgeBase from '@codesandbox/common/es/components/ContributorsBadge';
+import MarginBase from '@codesandbox/common/es/components/spacing/Margin';
 import styled from 'styled-components';
 
 export const ContributorsBadge = styled(ContributorsBadgeBase)`

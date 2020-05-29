@@ -1,6 +1,7 @@
+import { GoQuestion } from 'react-icons/go';
+import { MdLock } from 'react-icons/md';
 import styled, { css } from 'styled-components';
-import Question from 'react-icons/lib/go/question';
-import Private from 'react-icons/lib/md/lock';
+
 import { UnlistedIcon } from './UnlistedIcon';
 
 const iconStyles = css`
@@ -10,9 +11,9 @@ const iconStyles = css`
 export const StyledUnlisted = styled(UnlistedIcon)`
   ${iconStyles}
 `;
-export const StyledPrivate = styled(Private)`
+export const StyledPrivate = styled(MdLock)`
   ${iconStyles}
 `;
-export const Icon = styled(Question)`
+export const Icon = styled(GoQuestion)`
   ${iconStyles}
 `;

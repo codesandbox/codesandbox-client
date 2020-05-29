@@ -1,12 +1,12 @@
-import BasePreview from '@codesandbox/common/lib/components/Preview';
-import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
+import BasePreview from '@codesandbox/common/es/components/Preview';
+import RunOnClick from '@codesandbox/common/es/components/RunOnClick';
 import {
   findMainModule,
   resolveModule,
-} from '@codesandbox/common/lib/sandbox/modules';
-import getTemplate from '@codesandbox/common/lib/templates';
-import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
-import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
+} from '@codesandbox/common/es/sandbox/modules';
+import getTemplate from '@codesandbox/common/es/templates';
+import { parseSandboxConfigurations } from '@codesandbox/common/es/templates/configuration/parse-sandbox-configurations';
+import { getPreviewTabs } from '@codesandbox/common/es/templates/devtools';
 import {
   DevToolsTabPosition,
   Module,
@@ -14,7 +14,7 @@ import {
   ModuleError,
   Sandbox,
   Settings,
-} from '@codesandbox/common/lib/types';
+} from '@codesandbox/common/es/types';
 import { Editor } from 'app/components/CodeEditor/types'; // eslint-disable-line
 import {
   DevToolProps,

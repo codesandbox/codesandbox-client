@@ -1,16 +1,16 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-import Row from '@codesandbox/common/lib/components/flex/Row';
-import Padding from '@codesandbox/common/lib/components/spacing/Padding';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { Button } from '@codesandbox/common/es/components/Button';
+import Centered from '@codesandbox/common/es/components/flex/Centered';
+import Fullscreen from '@codesandbox/common/es/components/flex/Fullscreen';
+import Row from '@codesandbox/common/es/components/flex/Row';
+import Padding from '@codesandbox/common/es/components/spacing/Padding';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import GithubIcon from 'react-icons/lib/go/mark-github';
+import { GoMarkGithub } from 'react-icons/go';
 import { Link } from 'react-router-dom';
 
 import Editor from '../Sandbox/Editor';
@@ -63,7 +63,7 @@ export const LivePage: React.FC<Props> = ({ match }) => {
               small
             >
               <Row>
-                <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with
+                <GoMarkGithub style={{ marginRight: '0.5rem' }} /> Sign in with
                 GitHub
               </Row>
             </Button>

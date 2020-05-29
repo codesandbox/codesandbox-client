@@ -1,10 +1,10 @@
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { dispatch, actions } from 'codesandbox-api';
+import _debug from '@codesandbox/common/es/utils/debug';
+import { actions, dispatch } from 'codesandbox-api';
 
-import Transpiler, { TranspilerResult } from '.';
-import { parseWorkerError } from './utils/worker-error-handler';
-import { LoaderContext } from '../transpiled-module';
 import Manager from '../manager';
+import { LoaderContext } from '../transpiled-module';
+import { parseWorkerError } from './utils/worker-error-handler';
+import Transpiler, { TranspilerResult } from '.';
 
 const debug = _debug('cs:compiler:worker-transpiler');
 

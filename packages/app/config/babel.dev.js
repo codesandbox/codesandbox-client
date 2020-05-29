@@ -12,14 +12,8 @@ module.exports = {
     [
       require.resolve('@babel/preset-env'),
       {
-        targets: {
-          chrome: 70,
-          // We currently minify with uglify
-          // Remove after https://github.com/mishoo/UglifyJS2/issues/448
-        },
         // Disable polyfill transforms
         useBuiltIns: false,
-        modules: false,
         forceAllTransforms: !process.env.LOCAL_DEV,
       },
     ],

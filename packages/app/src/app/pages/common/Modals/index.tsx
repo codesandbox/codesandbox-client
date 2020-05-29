@@ -1,4 +1,5 @@
-import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
+import codesandbox from '@codesandbox/common/es/themes/codesandbox.json';
+import { ThemeProvider } from '@codesandbox/components';
 import {
   COLUMN_MEDIA_THRESHOLD,
   CreateSandbox,
@@ -8,7 +9,6 @@ import { useOvermind } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 import Loadable from 'app/utils/Loadable';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { ThemeProvider } from '@codesandbox/components';
 
 import CommitModal from './CommitModal';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';

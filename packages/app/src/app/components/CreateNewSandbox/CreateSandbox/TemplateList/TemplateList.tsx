@@ -1,20 +1,20 @@
-import React from 'react';
-import { TemplateFragment } from 'app/graphql/types';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import getTemplateDefinition, {
   TemplateType,
-} from '@codesandbox/common/lib/templates';
+} from '@codesandbox/common/es/templates';
+import track from '@codesandbox/common/es/utils/analytics';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
+import { isMac } from '@codesandbox/common/es/utils/platform';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
+import { TemplateFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
-import useKey from 'react-use/lib/useKey';
-import { isMac } from '@codesandbox/common/lib/utils/platform';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import history from 'app/utils/history';
-import MdEditIcon from 'react-icons/lib/md/edit';
+import React from 'react';
+import { MdEdit } from 'react-icons/md';
+import useKey from 'react-use/lib/useKey';
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import track from '@codesandbox/common/lib/utils/analytics';
+import { Grid, SubHeader } from '../elements';
 import { SandboxCard } from '../SandboxCard';
-import { SubHeader, Grid } from '../elements';
 import { EditIcon, TemplateInfoContainer } from './elements';
 
 export interface ITemplateInfo {
@@ -424,7 +424,7 @@ export const TemplateList = ({
                                   }}
                                   to={sandboxUrl(template.sandbox)}
                                 >
-                                  <MdEditIcon />
+                                  <MdEdit />
                                 </EditIcon>
                               </Tooltip>
                             )

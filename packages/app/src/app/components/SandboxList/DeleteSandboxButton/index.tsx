@@ -1,8 +1,7 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import React, { FunctionComponent } from 'react';
-import DeleteIcon from 'react-icons/lib/md/delete';
-
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
+import { MdDelete } from 'react-icons/md';
 
 import { Button } from './elements';
 
@@ -19,7 +18,7 @@ export const DeleteSandboxButton: FunctionComponent<Props> = ({ id }) => {
   return (
     <Tooltip content="Delete Sandbox">
       <Button onClick={() => deleteSandboxClicked(id)}>
-        <DeleteIcon />
+        <MdDelete />
       </Button>
     </Tooltip>
   );

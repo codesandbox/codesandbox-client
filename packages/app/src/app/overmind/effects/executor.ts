@@ -1,4 +1,4 @@
-import { Sandbox } from '@codesandbox/common/lib/types';
+import { Sandbox } from '@codesandbox/common/es/types';
 import { executorsManager } from 'app/utils/executor-manager';
 
 export default {

@@ -1,13 +1,13 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import theme from '@codesandbox/common/lib/theme';
-import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { Button } from '@codesandbox/common/es/components/Button';
+import theme from '@codesandbox/common/es/theme';
+import { DNT, trackPageview } from '@codesandbox/common/es/utils/analytics';
+import _debug from '@codesandbox/common/es/utils/debug';
+import { notificationState } from '@codesandbox/common/es/utils/notifications';
 import { NotificationStatus, Toasts } from '@codesandbox/notifications';
+import { SignInModal } from 'app/components/SignInModal';
 import { useOvermind } from 'app/overmind';
 import Loadable from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
-import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 
 import { ErrorBoundary } from './common/ErrorBoundary';

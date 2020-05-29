@@ -1,8 +1,6 @@
+import { GoCheck, GoPrimitiveDot, GoX } from 'react-icons/go';
 import styled, { css } from 'styled-components';
 
-import Check from 'react-icons/lib/go/check';
-import Cross from 'react-icons/lib/go/x';
-import DotIcon from 'react-icons/lib/go/primitive-dot';
 import { LoadingBubbles } from './LoadingBubbles';
 
 export const Container = styled.div`
@@ -45,17 +43,17 @@ export const Loading = styled(LoadingBubbles)`
   color: ${props => props.theme.secondary};
 `;
 
-export const Success = styled(Check)`
+export const Success = styled(GoCheck)`
   ${iconStyles};
   color: ${props => props.theme.green};
 `;
 
-export const Fail = styled(Cross)`
+export const Fail = styled(GoX)`
   ${iconStyles};
   color: ${props => props.theme.red};
 `;
 
-export const Dot = styled(DotIcon)`
+export const Dot = styled(GoPrimitiveDot)`
   ${iconStyles};
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'};

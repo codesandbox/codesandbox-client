@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react';
-import delay from '@codesandbox/common/lib/utils/delay';
+import delay from '@codesandbox/common/es/utils/delay';
+import { actions, dispatch, listen } from 'codesandbox-api';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import * as reactDevtools from 'react-devtools-inline/frontend';
-import { dispatch, actions, listen } from 'codesandbox-api';
 import { ThemeContext } from 'styled-components';
 
 import { Container } from './elements';

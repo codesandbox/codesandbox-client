@@ -1,15 +1,15 @@
-import React from 'react';
+import { ServerPort } from '@codesandbox/common/es/types';
 import {
   Collapsible,
   List,
   ListAction,
-  Text,
   Stack,
+  Text,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { ServerPort } from '@codesandbox/common/lib/types';
-import BrowserIcon from 'react-icons/lib/go/browser';
+import React from 'react';
+import { GoBrowser } from 'react-icons/go';
 
 export const Ports = () => {
   const {
@@ -50,7 +50,7 @@ export const Ports = () => {
                 })}
               >
                 <Stack align="center">
-                  <BrowserIcon />
+                  <GoBrowser />
                   <Text marginLeft={2}>{port.name || port.port}</Text>
                 </Stack>
                 {port.main && <Text weight="medium">main</Text>}
@@ -67,7 +67,7 @@ export const Ports = () => {
         {['gatsby', 'gridsome'].includes(sandbox.template) && ports.length ? (
           <ListAction onClick={openGraphiQLPort}>
             <Stack align="center">
-              <BrowserIcon />
+              <GoBrowser />
               <Text marginLeft={2}>GraphiQL</Text>
             </Stack>
           </ListAction>

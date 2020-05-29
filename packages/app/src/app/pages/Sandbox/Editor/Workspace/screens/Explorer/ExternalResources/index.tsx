@@ -1,21 +1,20 @@
-import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import CrossIcon from 'react-icons/lib/md/clear';
-
+import getTemplateDefinition from '@codesandbox/common/es/templates';
 import {
+  Button,
   Collapsible,
-  Link,
-  Stack,
-  Input,
-  Select,
   FormField,
+  Input,
+  Link,
   List,
   ListAction,
+  Select,
   SidebarRow,
-  Button,
+  Stack,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
+import { MdClear } from 'react-icons/md';
 
 import { fonts as listOfFonts } from './google-fonts';
 
@@ -63,7 +62,7 @@ export const ExternalResources: FunctionComponent = () => {
                   css={css({ width: 'auto' })}
                   onClick={() => externalResourceRemoved(resource)}
                 >
-                  <CrossIcon />
+                  <MdClear />
                 </Button>
               </ListAction>
             ))}
@@ -85,7 +84,7 @@ export const ExternalResources: FunctionComponent = () => {
                   css={css({ width: 'auto' })}
                   onClick={() => externalResourceRemoved(resource)}
                 >
-                  <CrossIcon />
+                  <MdClear />
                 </Button>
               </ListAction>
             ))}

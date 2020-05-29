@@ -1,19 +1,18 @@
-import React, { useEffect } from 'react';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import { useOvermind } from 'app/overmind';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import TabContainer from './TabContainer';
-import PreviewIcon from './PreviewIcon';
+import React, { useEffect } from 'react';
 
 import {
   Container,
-  TabsContainer,
   IconContainer,
-  StyledPrettierIcon,
   IconWrapper,
   Line,
+  StyledPrettierIcon,
+  TabsContainer,
 } from './elements';
-
 import ModuleTab from './ModuleTab';
+import PreviewIcon from './PreviewIcon';
+import TabContainer from './TabContainer';
 
 interface IEditorTabsProps {
   currentModuleId: string | number;

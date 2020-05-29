@@ -6,13 +6,13 @@ import {
   RoomInfo,
   UserSelection,
   UserViewRange,
-} from '@codesandbox/common/lib/types';
+} from '@codesandbox/common/es/types';
 import {
   captureException,
   logBreadcrumb,
-} from '@codesandbox/common/lib/utils/analytics/sentry';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import VERSION from '@codesandbox/common/lib/version';
+} from '@codesandbox/common/es/utils/analytics/sentry';
+import _debug from '@codesandbox/common/es/utils/debug';
+import VERSION from '@codesandbox/common/es/version';
 import { camelizeKeys } from 'humps';
 import { SerializedTextOperation, TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';

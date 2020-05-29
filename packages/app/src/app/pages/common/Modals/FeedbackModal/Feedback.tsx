@@ -1,27 +1,28 @@
-import css from '@styled-system/css';
-import VERSION from '@codesandbox/common/lib/version';
-import { CurrentUser } from '@codesandbox/common/lib/types';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { useOvermind } from 'app/overmind';
-import pushToAirtable from 'app/overmind/utils/pushToAirtable';
-import pushToFront from 'app/overmind/utils/pushToFront';
+import { CurrentUser } from '@codesandbox/common/es/types';
+import { ESC } from '@codesandbox/common/es/utils/keycodes';
+import VERSION from '@codesandbox/common/es/version';
 import {
+  Button,
   Element,
   Input,
   Stack,
-  Button,
-  Textarea,
   Text,
+  Textarea,
 } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import pushToAirtable from 'app/overmind/utils/pushToAirtable';
+import pushToFront from 'app/overmind/utils/pushToFront';
 import React, {
   ChangeEvent,
   FormEvent,
   FunctionComponent,
-  useState,
   useEffect,
+  useState,
 } from 'react';
-import { browser } from './getBrowser';
+
 import { Alert } from '../Common/Alert';
+import { browser } from './getBrowser';
 
 type Props = {
   id?: string;

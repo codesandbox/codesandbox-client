@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import Check from 'react-icons/lib/md/check';
+import { MdCheck } from 'react-icons/md';
 
 import { Container, IconContainer } from './elements';
 
@@ -19,7 +19,7 @@ export const Option: FunctionComponent<Props> = ({
 
   return (
     <Container onClick={() => setField(field)} selected={selected}>
-      <IconContainer>{selected && <Check />}</IconContainer> {name}
+      <IconContainer>{selected && <MdCheck />}</IconContainer> {name}
     </Container>
   );
 };

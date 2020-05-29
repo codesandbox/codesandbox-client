@@ -1,8 +1,9 @@
 import * as React from 'react';
-import IconBase from 'react-icons/lib/IconBase';
+import { IconBase } from 'react-icons';
 
 export const LoadingBubbles = props => (
   <IconBase
+    attr={undefined}
     width="1em"
     height="1em"
     viewBox="0 0 32 32"

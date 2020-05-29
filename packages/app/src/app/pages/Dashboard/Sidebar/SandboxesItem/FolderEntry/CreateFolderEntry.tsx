@@ -1,21 +1,19 @@
+import Input from '@codesandbox/common/es/components/Input';
+import track from '@codesandbox/common/es/utils/analytics';
+import { ESC } from '@codesandbox/common/es/utils/keycodes';
 import React from 'react';
 import { Mutation } from 'react-apollo';
-
-import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
-import Input from '@codesandbox/common/lib/components/Input';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import { MdCreateNewFolder } from 'react-icons/md';
 
 import {
+  CREATE_FOLDER_MUTATION,
+  PATHED_SANDBOXES_FOLDER_QUERY,
+} from '../../../queries';
+import {
+  AnimatedChevron,
   CreateDirectoryContainer,
   IconContainer,
-  AnimatedChevron,
 } from './elements';
-
-import {
-  PATHED_SANDBOXES_FOLDER_QUERY,
-  CREATE_FOLDER_MUTATION,
-} from '../../../queries';
 
 interface Props {
   basePath: string;
@@ -85,7 +83,7 @@ export const CreateFolderEntry = ({
           <CreateDirectoryContainer depth={depth + 1}>
             <IconContainer style={{ marginRight: '0.25rem' }}>
               <AnimatedChevron open={false} />
-              <AddFolderIcon />
+              <MdCreateNewFolder />
             </IconContainer>{' '}
             <Input
               placeholder="Folder Name"

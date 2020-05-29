@@ -1,8 +1,9 @@
 import React from 'react';
-import IconBase from 'react-icons/IconBase';
+import { IconBase } from 'react-icons';
 
 export const TeamIcon = props => (
   <IconBase
+    attr={undefined}
     viewBox="0 0 33 32"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

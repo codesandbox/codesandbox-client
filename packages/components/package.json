@@ -7,16 +7,20 @@
     "directory": "packages/components"
   },
   "files": [
-    "lib"
+    "lib",
+    "es"
   ],
   "main": "lib/index",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
   "source": true,
   "scripts": {
-    "build": "yarn build:lib",
+    "build": "yarn clean && yarn build:lib && yarn build:es",
     "build:dev": "yarn build",
-    "build:lib": "yarn clean && yarn tsc",
+    "build:lib": "yarn tsc",
+    "build:es": "yarn tsc -p tsconfig.es.json",
     "build:storybook": "build-storybook -c .storybook -o public",
-    "clean": "rimraf lib && yarn rimraf node_modules/@types/react && yarn rimraf node_modules/@types/react-native",
+    "clean": "rimraf lib,es && yarn rimraf node_modules/@types/react && yarn rimraf node_modules/@types/react-native",
     "lint": "eslint --ext .js,.ts,.tsx src",
     "start": "yarn tsc --watch",
     "start:storybook": "start-storybook",

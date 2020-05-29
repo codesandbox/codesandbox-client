@@ -1,7 +1,8 @@
-import styled, { css, keyframes } from 'styled-components';
-import delayInEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
-import { OpaqueLogo as BaseOpaqueLogo } from 'app/components/OpaqueLogo';
+import delayInEffect from '@codesandbox/common/es/utils/animation/delay-effect';
 import { GitHubLogo as BaseGitHubLogo } from 'app/components/GitHubLogo';
+import { OpaqueLogo as BaseOpaqueLogo } from 'app/components/OpaqueLogo';
+import styled, { css, keyframes } from 'styled-components';
+
 import { Cube as BaseCube } from '../Cube';
 
 export const DeployAnimationContainer = styled.div<{ deploying: boolean }>`

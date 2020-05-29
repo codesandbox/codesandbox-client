@@ -1,17 +1,16 @@
-import { messages } from '@codesandbox/common/lib/utils/jest-lite';
+import { messages } from '@codesandbox/common/es/utils/jest-lite';
 import { actions, dispatch, listen } from 'codesandbox-api';
 import immer from 'immer';
 import { debounce } from 'lodash-es';
 import React from 'react';
 import SplitPane from 'react-split-pane';
 
-import { DevToolProps } from '..';
-
-import { Container, TestDetails, TestContainer } from './elements';
-import { TestElement } from './TestElement';
+import { Container, TestContainer, TestDetails } from './elements';
 import { TestDetails as TestDetailsContent } from './TestDetails';
-import { TestSummary } from './TestSummary';
+import { TestElement } from './TestElement';
 import { TestOverview } from './TestOverview';
+import { TestSummary } from './TestSummary';
+import { DevToolProps } from '..';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';

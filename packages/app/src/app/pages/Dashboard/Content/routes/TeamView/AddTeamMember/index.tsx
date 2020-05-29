@@ -1,15 +1,11 @@
+import { useMutation } from '@apollo/react-hooks';
+import track from '@codesandbox/common/es/utils/analytics';
+import { Button } from '@codesandbox/components';
+import { UserSearchInput } from 'app/components/UserSearchInput';
+import { useOvermind } from 'app/overmind';
 import React from 'react';
 import styled from 'styled-components';
 
-import { Button } from '@codesandbox/components';
-
-import { useMutation } from '@apollo/react-hooks';
-
-import track from '@codesandbox/common/lib/utils/analytics';
-
-import { UserSearchInput } from 'app/components/UserSearchInput';
-
-import { useOvermind } from 'app/overmind';
 import { INVITE_TO_TEAM, INVITE_TO_TEAM_VIA_EMAIL } from '../../../../queries';
 import { IAddTeamMemberProps, IMutationVariables } from './types';
 

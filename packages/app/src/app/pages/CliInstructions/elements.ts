@@ -1,5 +1,5 @@
+import Centered from '@codesandbox/common/es/components/flex/Centered';
 import styled from 'styled-components';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
 
 export const Container = styled.div`
   height: 100%;

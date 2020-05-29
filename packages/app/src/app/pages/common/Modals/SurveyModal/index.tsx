@@ -1,8 +1,7 @@
-import hash from '@codesandbox/common/lib/utils/hash';
+import hash from '@codesandbox/common/es/utils/hash';
 import * as typeformEmbed from '@typeform/embed';
-import React, { FunctionComponent } from 'react';
-
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
 
 import { Alert } from '../Common/Alert';
 

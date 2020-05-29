@@ -1,6 +1,6 @@
-import { VercelDeploymentState } from '@codesandbox/common/lib/types';
-import styled, { css } from 'styled-components';
+import { VercelDeploymentState } from '@codesandbox/common/es/types';
 import { Text } from '@codesandbox/components';
+import styled, { css } from 'styled-components';
 
 const mapColorToState = (state: VercelDeploymentState, theme: any) => {
   const STARTING = [

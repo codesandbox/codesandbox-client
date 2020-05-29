@@ -1,5 +1,5 @@
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { getModulePath } from '@codesandbox/common/es/sandbox/modules';
+import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/es/templates/configuration/package-json';
 import {
   Module,
   ModuleTab,
@@ -8,8 +8,8 @@ import {
   ServerContainerStatus,
   ServerStatus,
   TabType,
-} from '@codesandbox/common/lib/types';
-import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
+} from '@codesandbox/common/es/types';
+import { patronUrl } from '@codesandbox/common/es/utils/url-generator';
 import { NotificationStatus } from '@codesandbox/notifications';
 import values from 'lodash-es/values';
 

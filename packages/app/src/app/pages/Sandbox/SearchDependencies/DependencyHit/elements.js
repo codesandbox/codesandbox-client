@@ -1,8 +1,8 @@
-import styled from 'styled-components';
-import Color from 'color';
-import Select from '@codesandbox/common/lib/components/Select';
-import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
+import Select from '@codesandbox/common/es/components/Select';
+import { UserWithAvatar } from '@codesandbox/common/es/components/UserWithAvatar';
 import { GitHubLogo } from 'app/components/GitHubLogo';
+import Color from 'color';
+import styled from 'styled-components';
 
 export const GitHubLogoStyled = styled(GitHubLogo)``;
 

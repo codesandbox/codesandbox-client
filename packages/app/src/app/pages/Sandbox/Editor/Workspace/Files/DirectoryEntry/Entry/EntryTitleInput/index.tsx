@@ -1,12 +1,11 @@
+import { ENTER, ESC } from '@codesandbox/common/es/utils/keycodes';
 import React, {
-  useState,
   ChangeEvent,
-  KeyboardEvent,
   FunctionComponent,
+  KeyboardEvent,
+  useState,
 } from 'react';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
-
-import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
 
 import { InputContainer, InputError } from './elements';
 

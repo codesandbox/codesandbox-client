@@ -1,6 +1,6 @@
-import semver from 'semver';
-import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
+import { getAbsoluteDependencies } from '@codesandbox/common/es/utils/dependencies';
 import Manager from 'sandbox/eval/manager';
+import semver from 'semver';
 
 function isMinimalSemverVersion(version: string, minimalVersion: string) {
   try {

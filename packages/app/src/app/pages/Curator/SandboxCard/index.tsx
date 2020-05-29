@@ -1,12 +1,11 @@
-import getTemplate from '@codesandbox/common/lib/templates';
-import { GitInfo, User } from '@codesandbox/common/lib/types';
+import getTemplate from '@codesandbox/common/es/templates';
+import { GitInfo, User } from '@codesandbox/common/es/types';
 import {
   profileUrl,
   sandboxUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
+} from '@codesandbox/common/es/utils/url-generator';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import EyeIcon from 'react-icons/lib/fa/eye';
-import GithubIcon from 'react-icons/lib/fa/github';
+import { FaEye, FaGithub } from 'react-icons/fa';
 
 import {
   Avatar,
@@ -145,7 +144,7 @@ export const SandboxCard: React.FC<Props> = ({
               ) : null}
 
               <FlexCenter onClick={openSandbox} role="button" tabIndex={0}>
-                <EyeIcon style={{ marginRight: '0.5rem' }} />
+                <FaEye style={{ marginRight: '0.5rem' }} />
 
                 {viewCount}
               </FlexCenter>
@@ -157,7 +156,7 @@ export const SandboxCard: React.FC<Props> = ({
                     rel="noopener noreferrer"
                     target="_blank"
                   >
-                    <GithubIcon style={{ marginRight: '0.5rem' }} />
+                    <FaGithub style={{ marginRight: '0.5rem' }} />
                   </a>
                 </FlexCenter>
               ) : null}

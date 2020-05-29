@@ -1,6 +1,7 @@
-import { GitInfo } from '@codesandbox/common/lib/types';
-import { getSandboxOptions } from '@codesandbox/common/lib/url';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { GitInfo } from '@codesandbox/common/es/types';
+import { getSandboxOptions } from '@codesandbox/common/es/url';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
+
 import history from '../../utils/history';
 
 export default new (class RouterEffect {

@@ -1,5 +1,5 @@
-import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
-import getTemplate from '@codesandbox/common/lib/templates';
+import { resolveModule } from '@codesandbox/common/es/sandbox/modules';
+import getTemplate from '@codesandbox/common/es/templates';
 import {
   EnvironmentVariable,
   Module,
@@ -8,13 +8,13 @@ import {
   ModuleTab,
   UserSelection,
   WindowOrientation,
-} from '@codesandbox/common/lib/types';
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
-import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+} from '@codesandbox/common/es/types';
+import { logBreadcrumb } from '@codesandbox/common/es/utils/analytics/sentry';
+import { getTextOperation } from '@codesandbox/common/es/utils/diff';
+import { COMMENTS } from '@codesandbox/common/es/utils/feature-flags';
+import { convertTypeToStatus } from '@codesandbox/common/es/utils/notifications';
+import { hasPermission } from '@codesandbox/common/es/utils/permission';
+import { signInPageUrl } from '@codesandbox/common/es/utils/url-generator';
 import { NotificationStatus } from '@codesandbox/notifications';
 import {
   Authorization,

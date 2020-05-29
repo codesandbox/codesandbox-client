@@ -1,7 +1,7 @@
 import {
   NotificationType,
   convertTypeToStatus,
-} from '@codesandbox/common/lib/utils/notifications';
+} from '@codesandbox/common/es/utils/notifications';
 
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';

@@ -1,10 +1,8 @@
-import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import React, { useState, useEffect, FunctionComponent } from 'react';
-import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
-
+import { signInPageUrl } from '@codesandbox/common/es/utils/url-generator';
 import { client } from 'app/graphql/client';
 import { useOvermind } from 'app/overmind';
-import { Navigation } from './Navigation';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
 
 import Content from './Content';
 import {
@@ -12,9 +10,10 @@ import {
   ContentContainer,
   LeftIcon,
   RightIcon,
-  SidebarContainer,
   ShowSidebarButton,
+  SidebarContainer,
 } from './elements';
+import { Navigation } from './Navigation';
 import { Sidebar } from './Sidebar';
 
 type Props = RouteComponentProps;

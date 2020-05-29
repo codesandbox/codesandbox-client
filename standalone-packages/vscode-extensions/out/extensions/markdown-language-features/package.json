@@ -255,7 +255,7 @@
 		"ts-loader": "^4.0.1",
 		"typescript": "^3.3.1",
 		"vscode": "^1.1.10",
-		"webpack": "^4.1.0",
+		"webpack": "^4.43.0",
 		"webpack-cli": "^2.0.10"
 	}
 }

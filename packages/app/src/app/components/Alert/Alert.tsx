@@ -1,6 +1,7 @@
+import { Button } from '@codesandbox/common/es/components/Button';
 import React from 'react';
-import { Button } from '@codesandbox/common/lib/components/Button';
-import { Container, Title, Text, Buttons } from './elements';
+
+import { Buttons, Container, Text, Title } from './elements';
 
 interface IAlertProps {
   title: string;

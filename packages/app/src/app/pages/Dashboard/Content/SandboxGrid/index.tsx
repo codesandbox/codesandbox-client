@@ -2,10 +2,12 @@ import 'react-virtualized/styles.css';
 
 import { basename } from 'path';
 
-import track from '@codesandbox/common/lib/utils/analytics';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { Sandbox } from '@codesandbox/common/es/types';
+import track from '@codesandbox/common/es/utils/analytics';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
+import { protocolAndHost } from '@codesandbox/common/es/utils/url-generator';
 import { makeTemplates } from 'app/components/CreateNewSandbox/queries';
+import { SandboxFragment } from 'app/graphql/types';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { formatDistanceToNow } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -17,8 +19,6 @@ import Grid from 'react-virtualized/dist/commonjs/Grid';
 import Table from 'react-virtualized/dist/commonjs/Table';
 import Column from 'react-virtualized/dist/commonjs/Table/Column';
 
-import { SandboxFragment } from 'app/graphql/types';
-import { Sandbox } from '@codesandbox/common/lib/types';
 import {
   deleteSandboxes,
   permanentlyDeleteSandboxes,

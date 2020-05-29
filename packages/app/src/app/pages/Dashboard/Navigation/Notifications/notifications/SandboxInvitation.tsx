@@ -1,8 +1,8 @@
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
+import { Authorization } from 'app/graphql/types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { Authorization } from 'app/graphql/types';
 import { NotificationImage as Image } from '../elements';
 import { Container, W } from './elements';
 

@@ -1,32 +1,30 @@
-import { format } from 'date-fns';
-import { Helmet } from 'react-helmet';
-import React, { useEffect } from 'react';
-
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
-import { ThemeProvider, Switch } from '@codesandbox/components';
-
+import Centered from '@codesandbox/common/es/components/flex/Centered';
+import MaxWidth from '@codesandbox/common/es/components/flex/MaxWidth';
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
+import codeSandboxBlackTheme from '@codesandbox/common/es/themes/codesandbox-black';
+import { Switch, ThemeProvider } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
+import { format } from 'date-fns';
+import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 
-import { SubscribeForm } from './subscribe-form';
+import { SignInModalElement } from '../SignIn/Modal';
 import {
-  Page,
-  Content,
   Avatar,
   Badge,
+  BillText,
   Button,
   ButtonAsLink,
+  Content,
+  DurationChoice,
   Heading,
   HelpText,
   LinkButton,
+  Page,
   SubHeading,
-  DurationChoice,
-  BillText,
 } from './elements';
-import { SignInModalElement } from '../SignIn/Modal';
+import { SubscribeForm } from './subscribe-form';
 
 const ProPage: React.FC = () => {
   const {

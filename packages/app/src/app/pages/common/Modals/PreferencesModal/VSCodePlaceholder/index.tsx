@@ -1,7 +1,7 @@
-import { editorUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { editorUrl } from '@codesandbox/common/es/utils/url-generator';
+import { Text } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
 import { Route } from 'react-router-dom';
-import { Text } from '@codesandbox/components';
 
 import { OpenVSCodeSettingsButton } from './OpenVSCodeSettingsButton';
 

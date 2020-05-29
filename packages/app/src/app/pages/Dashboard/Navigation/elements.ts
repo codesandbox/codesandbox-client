@@ -1,6 +1,6 @@
+import RowBase from '@codesandbox/common/es/components/flex/Row';
+import Logo from '@codesandbox/common/es/components/Logo';
 import styled, { css } from 'styled-components';
-import Logo from '@codesandbox/common/lib/components/Logo';
-import RowBase from '@codesandbox/common/lib/components/flex/Row';
 
 export const LogoWithBorder = styled(Logo)`
   padding-right: 1rem;

@@ -1,5 +1,5 @@
-import { HIDDEN_DIRECTORIES } from '@codesandbox/common/lib/templates/constants/files';
-import { Directory, Module } from '@codesandbox/common/lib/types';
+import { HIDDEN_DIRECTORIES } from '@codesandbox/common/es/templates/constants/files';
+import { Directory, Module } from '@codesandbox/common/es/types';
 import { useOvermind } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 import * as React from 'react';

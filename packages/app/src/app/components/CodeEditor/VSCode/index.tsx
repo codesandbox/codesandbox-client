@@ -1,9 +1,9 @@
 import './icon-theme.css';
 import './workbench-theme.css';
 
-import getTemplate from '@codesandbox/common/lib/templates';
-import getUI from '@codesandbox/common/lib/templates/configuration/ui';
-import theme from '@codesandbox/common/lib/theme';
+import getTemplate from '@codesandbox/common/es/templates';
+import getUI from '@codesandbox/common/es/templates/configuration/ui';
+import theme from '@codesandbox/common/es/theme';
 import { useOvermind } from 'app/overmind';
 import { json } from 'overmind';
 import React, { useEffect, useRef } from 'react';

@@ -1,9 +1,10 @@
-import React from 'react';
 import { Element } from '@codesandbox/components';
-import AddIcon from 'react-icons/lib/md/add';
-import RemoveIcon from 'react-icons/lib/md/remove';
-import FollowIcon from 'react-icons/lib/io/eye';
-import UnfollowIcon from 'react-icons/lib/io/eye-disabled';
+import React from 'react';
+import {
+  IoMdEye as FollowIcon,
+  IoMdEyeOff as UnfollowIcon,
+} from 'react-icons/io';
+import { MdAdd as AddIcon, MdRemove as RemoveIcon } from 'react-icons/md';
 
 export { AddIcon, RemoveIcon, FollowIcon, UnfollowIcon };
 

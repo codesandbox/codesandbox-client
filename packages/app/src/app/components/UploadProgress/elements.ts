@@ -1,7 +1,8 @@
-import styled, { css, keyframes } from 'styled-components';
-import LocalLogo from 'react-icons/lib/md/laptop';
-import delayInEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
+import delayInEffect from '@codesandbox/common/es/utils/animation/delay-effect';
 import { OpaqueLogo } from 'app/components/OpaqueLogo';
+import { MdLaptop } from 'react-icons/md';
+import styled, { css, keyframes } from 'styled-components';
+
 import { Cube } from '../Cube';
 
 export const UploadAnimationContainer = styled.div`
@@ -12,7 +13,7 @@ export const UploadAnimationContainer = styled.div`
   ${delayInEffect(0, false)}
 `;
 
-export const StyledLocalLogo = styled(LocalLogo)`
+export const StyledLocalLogo = styled(MdLaptop)`
   position: absolute;
   z-index: 20;
   font-size: 4rem;

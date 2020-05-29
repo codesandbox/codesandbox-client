@@ -1,5 +1,5 @@
+import getDefinition from '@codesandbox/common/es/templates';
 import { uniqBy } from 'lodash-es';
-import getDefinition from '@codesandbox/common/lib/templates';
 
 export function getPossibleTemplates(sandboxes: any[]) {
   return uniqBy(

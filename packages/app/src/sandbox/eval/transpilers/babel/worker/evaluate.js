@@ -1,13 +1,15 @@
+import * as crypto from 'crypto';
+import * as events from 'events';
+import type FSType from 'fs';
+import { basename, dirname } from 'path';
+import * as util from 'util';
+
+import detectOldBrowser from '@codesandbox/common/es/detect-old-browser';
 import resolve from 'browser-resolve';
 import hashsum from 'hash-sum';
-import * as events from 'events';
-import * as crypto from 'crypto';
-import * as util from 'util';
-import { dirname, basename } from 'path';
-import type FSType from 'fs';
-import detectOldBrowser from '@codesandbox/common/lib/detect-old-browser';
-import { packageFilter } from '../../../utils/resolve-utils';
+
 import evaluateCode from '../../../loaders/eval';
+import { packageFilter } from '../../../utils/resolve-utils';
 
 let cache = {};
 let cachedPaths = {};

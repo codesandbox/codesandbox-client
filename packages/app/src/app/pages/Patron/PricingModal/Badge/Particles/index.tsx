@@ -1,8 +1,8 @@
-import React from 'react';
+import { PatronBadge } from '@codesandbox/common/es/types';
+import badges from '@codesandbox/common/es/utils/badges/patron-info';
 import { forEach } from 'lodash-es';
+import React from 'react';
 
-import { PatronBadge } from '@codesandbox/common/lib/types';
-import badges from '@codesandbox/common/lib/utils/badges/patron-info';
 import { Particle } from './elements';
 
 const classNameRegex = /\shide/g;

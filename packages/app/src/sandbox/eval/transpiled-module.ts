@@ -1,28 +1,22 @@
+import _debug from '@codesandbox/common/es/utils/debug';
+import * as pathUtils from '@codesandbox/common/es/utils/path';
+import { actions, dispatch } from 'codesandbox-api';
+import hashsum from 'hash-sum';
 // eslint-disable-next-line max-classes-per-file
 import { flattenDeep } from 'lodash-es';
 
-import { actions, dispatch } from 'codesandbox-api';
-import _debug from '@codesandbox/common/lib/utils/debug';
-
-import hashsum from 'hash-sum';
-
-import * as pathUtils from '@codesandbox/common/lib/utils/path';
-
-import { Module } from './types/module';
-import { SourceMap } from './transpilers/utils/get-source-map';
+import delay from '../utils/delay';
+import { endMeasure, measure } from '../utils/metrics';
 import ModuleError from './errors/module-error';
 import ModuleWarning from './errors/module-warning';
-
-import { WarningStructure } from './transpilers/utils/worker-warning-handler';
-
+import HMR from './hmr';
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
-
 import Manager, { HMRStatus } from './manager';
-import HMR from './hmr';
+import { SourceMap } from './transpilers/utils/get-source-map';
+import { WarningStructure } from './transpilers/utils/worker-warning-handler';
+import { Module } from './types/module';
 import { splitQueryFromPath } from './utils/query-path';
-import delay from '../utils/delay';
-import { measure, endMeasure } from '../utils/metrics';
 
 declare const BrowserFS: any;
 

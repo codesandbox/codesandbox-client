@@ -1,12 +1,13 @@
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import { ViewTab } from '@codesandbox/common/es/templates/template';
+import { DevToolsTabPosition } from '@codesandbox/common/es/types';
 import React from 'react';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { ViewTab } from '@codesandbox/common/lib/templates/template';
-import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 
-import { Status, IViews } from '..';
 import { Actions, Container, Tabs } from './elements';
 import { DraggableTab, PaneTab, TabProps } from './Tab';
 import { TabDropZone, TabDropZoneProps } from './TabDropZone';
+import { IViews, Status } from '..';
+
 // import { AddTab } from './AddTab';
 
 export interface Props {

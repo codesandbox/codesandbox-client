@@ -1,11 +1,9 @@
 import React from 'react';
-
-import EyeIcon from 'react-icons/lib/fa/eye';
-import ForkIcon from 'react-icons/lib/go/repo-forked';
-import LikeHeart from 'react-icons/lib/go/heart';
-import Stat from './Stat';
+import { FaEye } from 'react-icons/fa';
+import { GoHeart, GoRepoForked } from 'react-icons/go';
 
 import { Stats } from './elements';
+import Stat from './Stat';
 
 type StatsComponentProps = {
   viewCount: number;
@@ -31,21 +29,21 @@ function StatsComponent({
         text={text ? 'views' : undefined}
         textOne={text ? 'view' : undefined}
         vertical={vertical}
-        Icon={<EyeIcon />}
+        Icon={<FaEye />}
         count={viewCount}
       />
       <Stat
         text={text ? 'likes' : undefined}
         textOne={text ? 'like' : undefined}
         vertical={vertical}
-        Icon={<LikeHeart />}
+        Icon={<GoHeart />}
         count={likeCount}
       />
       <Stat
         text={text ? 'forks' : undefined}
         textOne={text ? 'fork' : undefined}
         vertical={vertical}
-        Icon={<ForkIcon />}
+        Icon={<GoRepoForked />}
         count={forkCount}
       />
     </Stats>

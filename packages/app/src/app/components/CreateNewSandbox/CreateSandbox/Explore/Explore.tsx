@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
-import track from '@codesandbox/common/lib/utils/analytics';
+import { Scrollable } from '@codesandbox/common/es/components/Scrollable';
+import track from '@codesandbox/common/es/utils/analytics';
+import React, { useEffect, useState } from 'react';
+
 import { Header } from '../elements';
-import { SearchBox } from '../SearchBox';
-import { SearchResults } from './SearchResults';
 import { Loader } from '../Loader';
+import { SearchBox } from '../SearchBox';
 import { ITemplateInfo } from '../TemplateList';
 import { DynamicWidthTemplateList } from '../TemplateList/DynamicWidthTemplateList';
 import { getTemplateInfosFromAPI } from '../utils/api';
+import { SearchResults } from './SearchResults';
 
 export const Explore = () => {
   const [search, setSearch] = useState('');

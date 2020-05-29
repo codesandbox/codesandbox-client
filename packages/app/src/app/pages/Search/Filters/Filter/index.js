@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import Down from 'react-icons/lib/md/expand-more';
-import Up from 'react-icons/lib/md/expand-less';
+import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import { RefinementList } from 'react-instantsearch/dom';
 
 import { Button, Container, Title } from './elements';
@@ -23,7 +22,9 @@ const Filter = ({
       <Title>
         <span>{title}</span>
 
-        <Button onClick={toggle}>{open ? <Up /> : <Down />}</Button>
+        <Button onClick={toggle}>
+          {open ? <MdExpandLess /> : <MdExpandMore />}
+        </Button>
       </Title>
 
       <RefinementList

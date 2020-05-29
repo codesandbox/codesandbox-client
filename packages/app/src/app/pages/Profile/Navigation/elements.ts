@@ -1,5 +1,5 @@
-import Row from '@codesandbox/common/lib/components/flex/Row';
-import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
+import Row from '@codesandbox/common/es/components/flex/Row';
+import delayEffect from '@codesandbox/common/es/utils/animation/delay-effect';
 import { NavLink } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 

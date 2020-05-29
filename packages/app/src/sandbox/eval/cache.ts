@@ -1,8 +1,8 @@
+import _debug from '@codesandbox/common/es/utils/debug';
 // Responsible for consuming and syncing with the server/local cache
 import localforage from 'localforage';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import Manager from './manager';
 
+import Manager from './manager';
 import { SCRIPT_VERSION } from '..';
 
 const debug = _debug('cs:compiler:cache');

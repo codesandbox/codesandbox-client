@@ -1,24 +1,24 @@
+import type { Sandbox } from '@codesandbox/common/es/types';
+import track from '@codesandbox/common/es/utils/analytics';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
+import { embedUrl } from '@codesandbox/common/es/utils/url-generator';
 // @flow
 import * as React from 'react';
-import type { Sandbox } from '@codesandbox/common/lib/types';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { embedUrl } from '@codesandbox/common/lib/utils/url-generator';
-import track from '@codesandbox/common/lib/utils/analytics';
 
 import {
   Button,
-  Container,
-  Title,
-  RightAligned,
   CenterAligned,
-  LeftAligned,
-  MenuIcon,
+  Container,
+  EditorViewIcon,
   HeartButton,
   HeartIcon,
+  LeftAligned,
   LinkIcon,
-  EditorViewIcon,
-  SplitViewIcon,
+  MenuIcon,
   PreviewViewIcon,
+  RightAligned,
+  SplitViewIcon,
+  Title,
 } from './elements';
 
 type Props = {

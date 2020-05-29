@@ -1,7 +1,8 @@
+import { AlgoliaSandboxHit } from '@codesandbox/common/es/types/algolia';
 import React, { useEffect } from 'react';
-import { connectInfiniteHits } from 'react-instantsearch-dom';
 import { InfiniteHitsProvided } from 'react-instantsearch-core';
-import { AlgoliaSandboxHit } from '@codesandbox/common/lib/types/algolia';
+import { connectInfiniteHits } from 'react-instantsearch-dom';
+
 import { ITemplateInfo } from '../../TemplateList';
 import { DynamicWidthTemplateList } from '../../TemplateList/DynamicWidthTemplateList';
 

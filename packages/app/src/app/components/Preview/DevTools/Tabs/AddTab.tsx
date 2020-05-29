@@ -1,8 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-
-import PlusIcon from 'react-icons/lib/go/plus';
 import { ContextMenu } from 'app/components/ContextMenu';
+import React from 'react';
+import { GoPlus } from 'react-icons/go';
+import styled from 'styled-components';
 
 const Container = styled.button`
   transition: 0.3s ease color;
@@ -32,14 +31,14 @@ export function AddTab() {
       items={[
         {
           title: 'Browser Pane',
-          icon: PlusIcon,
+          icon: GoPlus,
           action: () => true,
         },
       ]}
     >
       {onContextMenu => (
         <Container onClick={onContextMenu}>
-          <PlusIcon />
+          <GoPlus />
         </Container>
       )}
     </ContextMenu>

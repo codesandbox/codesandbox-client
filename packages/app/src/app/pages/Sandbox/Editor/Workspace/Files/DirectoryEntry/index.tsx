@@ -1,13 +1,13 @@
-import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 import {
   getChildren as calculateChildren,
   inDirectory,
-} from '@codesandbox/common/lib/sandbox/modules';
-import { Directory, Module } from '@codesandbox/common/lib/types';
+} from '@codesandbox/common/es/sandbox/modules';
+import { Directory, Module } from '@codesandbox/common/es/types';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 import { DropTarget, DropTargetMonitor } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend';
+import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 
 import DirectoryChildren from './DirectoryChildren';
 import DirectoryEntryModal from './DirectoryEntryModal';

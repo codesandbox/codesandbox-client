@@ -1,4 +1,4 @@
-import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
+import { ParsedConfigurationFiles } from '@codesandbox/common/es/templates/template';
 
 export function getDependenciesFromConfig(
   configurations: ParsedConfigurationFiles

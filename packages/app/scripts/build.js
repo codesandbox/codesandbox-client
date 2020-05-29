@@ -11,7 +11,7 @@ const config = require('../config/webpack.prod');
 const paths = require('../config/paths');
 const recursive = require('recursive-readdir');
 const stripAnsi = require('strip-ansi');
-const version = require('@codesandbox/common/lib/version');
+const version = require('@codesandbox/common/es/version');
 
 // Input: /User/dan/app/build/static/js/main.82be8.js
 // Output: /static/js/main.js

@@ -1,7 +1,9 @@
 import React from 'react';
-import DeleteIcon from 'react-icons/lib/go/trashcan';
-import UndoIcon from 'react-icons/lib/md/undo';
-import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
+import {
+  GoTrashcan as DeleteIcon,
+  GoPrimitiveDot as NotSyncedIcon,
+} from 'react-icons/go';
+import { MdUndo as UndoIcon } from 'react-icons/md';
 
 const CrossIcon = props => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>

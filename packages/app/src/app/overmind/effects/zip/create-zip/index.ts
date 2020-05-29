@@ -1,15 +1,15 @@
 import {
   getModulePath,
   resolveModule,
-} from '@codesandbox/common/lib/sandbox/modules';
+} from '@codesandbox/common/es/sandbox/modules';
 import {
   preact,
   react,
   reactTs,
   svelte,
   vue,
-} from '@codesandbox/common/lib/templates/index';
-import { Directory, Module, Sandbox } from '@codesandbox/common/lib/types';
+} from '@codesandbox/common/es/templates/index';
+import { Directory, Module, Sandbox } from '@codesandbox/common/es/types';
 import { saveAs } from 'file-saver';
 import ignore from 'ignore';
 import JSZip from 'jszip';

@@ -3,8 +3,8 @@
 
 import { basename } from 'path';
 
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
+import _debug from '@codesandbox/common/es/utils/debug';
+import { commonPostMessage } from '@codesandbox/common/es/utils/global';
 import { default as Module } from 'node-services/lib/module';
 import resolve from 'resolve';
 

@@ -1,10 +1,11 @@
-import React from 'react';
-import IconBase from 'react-icons/lib/IconBase';
 import Color from 'color';
+import React from 'react';
+import { IconBase } from 'react-icons';
 import styled from 'styled-components';
-import Tooltip from '../Tooltip';
-import getIcon from '../../templates/icons';
+
 import getDefinition from '../../templates';
+import getIcon from '../../templates/icons';
+import Tooltip from '../Tooltip';
 
 const IconContainer = styled.div`
   max-width: 30%;
@@ -38,6 +39,7 @@ export default ({ style, sandboxesNumber, template }) => {
       }`}
     >
       <IconBase
+        attr={undefined}
         style={style}
         width="1em"
         height="0.67em"

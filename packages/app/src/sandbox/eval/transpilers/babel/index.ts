@@ -1,5 +1,5 @@
 /* eslint-enable import/default */
-import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
+import { isBabel7 } from '@codesandbox/common/es/utils/is-babel-7';
 import isESModule from 'sandbox/eval/utils/is-es-module';
 /* eslint-disable import/default */
 // @ts-ignore

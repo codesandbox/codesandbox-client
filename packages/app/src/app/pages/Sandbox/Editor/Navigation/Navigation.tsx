@@ -1,6 +1,6 @@
 import Tooltip, {
   SingletonTooltip,
-} from '@codesandbox/common/lib/components/Tooltip';
+} from '@codesandbox/common/es/components/Tooltip';
 import { TippyProps } from '@tippy.js/react';
 import { useOvermind } from 'app/overmind';
 import getWorkspaceItems, {
@@ -8,7 +8,7 @@ import getWorkspaceItems, {
   getDisabledItems,
 } from 'app/overmind/utils/items';
 import React, { FunctionComponent } from 'react';
-import PlusIcon from 'react-icons/lib/go/plus';
+import { GoPlus } from 'react-icons/go';
 
 import { Container, IconContainer } from './elements';
 import {
@@ -30,7 +30,7 @@ const IDS_TO_ICONS = {
   deploy: DeployIcon,
   config: SettingsIcon,
   live: LiveIcon,
-  more: PlusIcon,
+  more: GoPlus,
   server: ServerIcon,
   comments: CommentsIcon,
 };

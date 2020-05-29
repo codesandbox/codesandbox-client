@@ -1,33 +1,31 @@
-import React, { useEffect } from 'react';
-
+import { ChatIcon } from '@codesandbox/common/es/components/icons/Chat';
+import { CogIcon } from '@codesandbox/common/es/components/icons/Cog';
+import { CuratorIcon } from '@codesandbox/common/es/components/icons/Curator';
+import { DashboardIcon } from '@codesandbox/common/es/components/icons/Dashboard';
+import { DocumentationIcon } from '@codesandbox/common/es/components/icons/Documentation';
+import { ExitIcon } from '@codesandbox/common/es/components/icons/Exit';
+import { FolderIcon } from '@codesandbox/common/es/components/icons/Folder';
+import { PatronIcon } from '@codesandbox/common/es/components/icons/Patron';
+import { SearchIcon } from '@codesandbox/common/es/components/icons/Search';
+import { UserIcon } from '@codesandbox/common/es/components/icons/User';
+import track from '@codesandbox/common/es/utils/analytics';
 import {
-  profileUrl,
-  patronUrl,
   curatorUrl,
   dashboardUrl,
+  patronUrl,
+  profileUrl,
   searchUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
-
-import track from '@codesandbox/common/lib/utils/analytics';
-import { MenuItem, Menu as ReakitMenu, MenuStateReturn } from 'reakit/Menu';
-import { DocumentationIcon } from '@codesandbox/common/lib/components/icons/Documentation';
-import { SearchIcon } from '@codesandbox/common/lib/components/icons/Search';
-import { FolderIcon } from '@codesandbox/common/lib/components/icons/Folder';
-import { CogIcon } from '@codesandbox/common/lib/components/icons/Cog';
-import { UserIcon } from '@codesandbox/common/lib/components/icons/User';
-import { ExitIcon } from '@codesandbox/common/lib/components/icons/Exit';
-import { ChatIcon } from '@codesandbox/common/lib/components/icons/Chat';
-import { PatronIcon } from '@codesandbox/common/lib/components/icons/Patron';
-import { DashboardIcon } from '@codesandbox/common/lib/components/icons/Dashboard';
-import { CuratorIcon } from '@codesandbox/common/lib/components/icons/Curator';
+} from '@codesandbox/common/es/utils/url-generator';
+import React, { useEffect } from 'react';
+import { MenuItem, MenuStateReturn, Menu as ReakitMenu } from 'reakit/Menu';
 
 import {
   Container,
   Icon,
-  Separator,
-  ItemLink,
   ItemA,
   ItemButton,
+  ItemLink,
+  Separator,
 } from './elements';
 import { ProIcon } from './ProIcon';
 

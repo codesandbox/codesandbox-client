@@ -1,9 +1,8 @@
+import { teamInviteLink } from '@codesandbox/common/es/utils/url-generator';
+import { Button, Input, Stack } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
 import React from 'react';
 
-import { Button, Stack, Input } from '@codesandbox/components';
-import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
-
-import { useOvermind } from 'app/overmind';
 import { IInviteLinkProps } from './types';
 
 export const InviteLink: React.FC<IInviteLinkProps> = ({ inviteToken }) => {

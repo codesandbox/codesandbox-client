@@ -1,7 +1,7 @@
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import getTemplateDefinition from '@codesandbox/common/es/templates';
+import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent, useEffect } from 'react';
 
-import { useOvermind } from 'app/overmind';
 import { Alert } from '../Common/Alert';
 
 export const ForkServerModal: FunctionComponent = () => {

@@ -1,5 +1,5 @@
+import { GoPrimitiveDot } from 'react-icons/go';
 import styled from 'styled-components';
-import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 
 export const Right = styled.div`
   display: flex;
@@ -8,7 +8,7 @@ export const Right = styled.div`
   right: 1rem;
 `;
 
-export const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
+export const NotSyncedIconWithMargin = styled(GoPrimitiveDot)`
   margin-left: 2px;
   color: ${props => props.theme.templateColor || props.theme.secondary};
   vertical-align: middle;

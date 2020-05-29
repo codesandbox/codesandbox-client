@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ErrorIcon from 'react-icons/lib/md/error';
+import { MdError } from 'react-icons/md';
 
 import { RedIcon, SVGIcon } from './elements';
 import getIconURL from './GetIconURL';
@@ -39,7 +39,7 @@ class GetIcon extends Component<Props> {
     if (error) {
       return (
         <RedIcon width={width} height={height}>
-          <ErrorIcon width={width} height={height} />
+          <MdError width={width} height={height} />
         </RedIcon>
       );
     }

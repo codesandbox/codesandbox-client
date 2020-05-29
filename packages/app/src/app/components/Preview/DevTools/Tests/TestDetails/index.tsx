@@ -1,17 +1,15 @@
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import * as React from 'react';
-import FileIcon from 'react-icons/lib/md/insert-drive-file';
-import PlayIcon from 'react-icons/lib/go/playback-play';
+import { GoPlay } from 'react-icons/go';
+import { MdInsertDriveFile } from 'react-icons/md';
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { File, Status } from '..';
-
-import { Action, TestName, TestTitle, Blocks, ErrorNotice } from './elements';
 import { StatusElements, Tests } from '../elements';
-
-import { TestBlock } from './TestBlock';
-import { ErrorDetails } from './ErrorDetails';
-import { TestSummaryText } from '../TestSummaryText';
 import { TestProgressBar } from '../TestProgressBar';
+import { TestSummaryText } from '../TestSummaryText';
+import { Action, Blocks, ErrorNotice, TestName, TestTitle } from './elements';
+import { ErrorDetails } from './ErrorDetails';
+import { TestBlock } from './TestBlock';
+import { File, Status } from '..';
 
 type Props = {
   file: File;
@@ -62,7 +60,7 @@ export const TestDetails = ({ file, status, openFile, runTests }: Props) => {
         )}
         <Action>
           <Tooltip content="Open File">
-            <FileIcon
+            <MdInsertDriveFile
               onClick={e => {
                 e.stopPropagation();
                 openFile(file.fileName);
@@ -72,7 +70,7 @@ export const TestDetails = ({ file, status, openFile, runTests }: Props) => {
         </Action>
         <Action>
           <Tooltip content="Run Tests">
-            <PlayIcon
+            <GoPlay
               onClick={e => {
                 e.stopPropagation();
                 runTests(file);

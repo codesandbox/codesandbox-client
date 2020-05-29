@@ -1,13 +1,13 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { dispatch, actions } from 'codesandbox-api';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import { actions, dispatch } from 'codesandbox-api';
 import { sortBy } from 'lodash';
 import React from 'react';
-import FileIcon from 'react-icons/lib/md/insert-drive-file';
+import { MdInsertDriveFile } from 'react-icons/md';
 import { Animate } from 'react-show';
 
-import { MessageType } from '.';
-import { File, Path, FileName, Actions, AnimatedChevron } from './elements';
+import { Actions, AnimatedChevron, File, FileName, Path } from './elements';
 import { ProblemMessage } from './Message';
+import { MessageType } from '.';
 
 export interface Props {
   file: string;
@@ -39,7 +39,7 @@ export function FileErrors({ file, corrections }: Props) {
         <FileName>{fileName}</FileName>
         <Actions>
           <Tooltip content="Open File">
-            <FileIcon
+            <MdInsertDriveFile
               onClick={e => {
                 e.stopPropagation();
                 dispatch(actions.editor.openModule(file));

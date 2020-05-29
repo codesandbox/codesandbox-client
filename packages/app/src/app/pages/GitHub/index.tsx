@@ -1,23 +1,22 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { Element } from '@codesandbox/components';
+import { Button } from '@codesandbox/common/es/components/Button';
+import MaxWidth from '@codesandbox/common/es/components/flex/MaxWidth';
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
 import {
-  gitHubToSandboxUrl,
   gitHubRepoPattern,
+  gitHubToSandboxUrl,
   protocolAndHost,
-} from '@codesandbox/common/lib/utils/url-generator';
+} from '@codesandbox/common/es/utils/url-generator';
+import { Element } from '@codesandbox/components';
+import { SubTitle } from 'app/components/SubTitle';
+import { Title } from 'app/components/Title';
+import { useOvermind } from 'app/overmind';
+import { Navigation } from 'app/pages/common/Navigation';
 import React, {
   ChangeEvent,
   FunctionComponent,
   useEffect,
   useState,
 } from 'react';
-
-import { SubTitle } from 'app/components/SubTitle';
-import { Title } from 'app/components/Title';
-import { useOvermind } from 'app/overmind';
-import { Navigation } from 'app/pages/common/Navigation';
 
 import {
   Container,

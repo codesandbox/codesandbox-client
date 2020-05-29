@@ -1,7 +1,7 @@
 import {
   commonPostMessage,
   getGlobal,
-} from '@codesandbox/common/lib/utils/global';
+} from '@codesandbox/common/es/utils/global';
 import * as uuid from 'uuid';
 
 import { FileSystemConfiguration } from '../../../../../../../../../standalone-packages/codesandbox-browserfs';

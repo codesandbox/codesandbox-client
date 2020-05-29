@@ -1,24 +1,25 @@
-import React, { FunctionComponent } from 'react';
-import { format } from 'date-fns';
-import { PatronBadge } from '@codesandbox/common/lib/types';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Relative from '@codesandbox/common/lib/components/Relative';
-import badges from '@codesandbox/common/lib/utils/badges/patron-info';
-import { useOvermind } from 'app/overmind';
+import Centered from '@codesandbox/common/es/components/flex/Centered';
+import Relative from '@codesandbox/common/es/components/Relative';
+import { PatronBadge } from '@codesandbox/common/es/types';
+import badges from '@codesandbox/common/es/utils/badges/patron-info';
 import { SubscribeForm } from 'app/components/SubscribeForm';
-import { Range } from './Range';
-import { ChangeSubscription } from './ChangeSubscription';
-import { ThankYou } from './ThankYou';
+import { useOvermind } from 'app/overmind';
+import { format } from 'date-fns';
+import React, { FunctionComponent } from 'react';
+
 import { Title } from '../elements';
+import { ChangeSubscription } from './ChangeSubscription';
 import {
   Container,
-  PriceInput,
-  Month,
   Currency,
+  Month,
   Notice,
+  PriceInput,
   RangeContainer,
   StyledSignInButton,
 } from './elements';
+import { Range } from './Range';
+import { ThankYou } from './ThankYou';
 
 type Props = {
   badge: PatronBadge;

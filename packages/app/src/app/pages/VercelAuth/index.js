@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import Centered from '@codesandbox/common/es/components/flex/Centered';
 import {
+  newSandboxUrl,
   protocolAndHost,
   signInUrl,
-  newSandboxUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
+} from '@codesandbox/common/es/utils/url-generator';
 import { Title } from 'app/components/Title';
+import React, { useEffect, useState } from 'react';
 
 const VercelSignIn = () => {
   const [redirect, setRedirect] = useState(null);

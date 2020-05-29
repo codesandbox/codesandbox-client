@@ -1,25 +1,25 @@
-import React from 'react';
-import { sortBy } from 'lodash-es';
 import { useQuery } from '@apollo/react-hooks';
-
-import { DelayedAnimation } from 'app/components/DelayedAnimation';
+import CustomTemplate from '@codesandbox/common/es/components/CustomTemplate';
+import theme from '@codesandbox/common/es/theme';
+import track from '@codesandbox/common/es/utils/analytics';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
 import { ContextMenu } from 'app/components/ContextMenu';
-import { useOvermind } from 'app/overmind';
-import history from 'app/utils/history';
-import track from '@codesandbox/common/lib/utils/analytics';
-import theme from '@codesandbox/common/lib/theme';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import {
   LIST_OWNED_TEMPLATES,
   unmakeTemplates,
 } from 'app/components/CreateNewSandbox/queries';
+import { DelayedAnimation } from 'app/components/DelayedAnimation';
 import {
   ListTemplatesQuery,
   ListTemplatesQueryVariables,
 } from 'app/graphql/types';
-import { Grid, EmptyTitle } from '../elements';
+import { useOvermind } from 'app/overmind';
+import history from 'app/utils/history';
+import { sortBy } from 'lodash-es';
+import React from 'react';
+
+import { EmptyTitle, Grid } from '../elements';
 import { Navigation } from '../Navigation';
 
 type OwnedTemplatesProps = { teamId?: string };

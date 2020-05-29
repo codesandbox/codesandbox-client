@@ -1,25 +1,23 @@
-import React from 'react';
-import HomeIcon from 'react-icons/lib/io/home';
-import SearchIcon from 'react-icons/lib/go/search';
-import { Highlight } from 'react-instantsearch/dom';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import compareVersions from 'compare-versions';
-
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import React from 'react';
+import { GoSearch } from 'react-icons/go';
+import { IoHome } from 'react-icons/io';
+import { Highlight } from 'react-instantsearch/dom';
 
 import formatDownloads from '../formatDownloads';
-
 import {
   Container,
-  Left,
-  Right,
-  Row,
   Description,
   Downloads,
-  License,
+  GitHubLogoStyled,
   IconLink,
+  Left,
+  License,
+  Right,
+  Row,
   StyledSelect,
   StyledUserWithAvatar,
-  GitHubLogoStyled,
 } from './elements';
 
 const getDefaultSelectedVersion = tags => {
@@ -125,7 +123,7 @@ export default class DependencyHit extends React.PureComponent {
                   rel="noreferrer noopener"
                   onClick={this.stopPropagation}
                 >
-                  <HomeIcon />
+                  <IoHome />
                 </IconLink>
               </Tooltip>
             )}
@@ -136,7 +134,7 @@ export default class DependencyHit extends React.PureComponent {
                 rel="noreferrer noopener"
                 onClick={this.stopPropagation}
               >
-                <SearchIcon />
+                <GoSearch />
               </IconLink>
             </Tooltip>
             {hit.tags && (

@@ -1,5 +1,5 @@
+import { MdBrush } from 'react-icons/md';
 import styled, { css } from 'styled-components';
-import PrettierIcon from 'react-icons/lib/md/brush';
 
 const HEIGHT = '35px';
 
@@ -36,7 +36,7 @@ export const TabsContainer = styled.div`
 interface IStyledPrettierIconProps {
   disabled?: boolean;
 }
-export const StyledPrettierIcon = styled(PrettierIcon)`
+export const StyledPrettierIcon = styled(MdBrush)`
   transition: 0.3s ease opacity;
   width: 1.125rem;
   height: 1.125rem;

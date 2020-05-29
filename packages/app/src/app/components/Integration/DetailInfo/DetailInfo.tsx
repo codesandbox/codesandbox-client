@@ -1,9 +1,10 @@
-import React from 'react';
-import CrossIcon from 'react-icons/lib/md/clear';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import { Button } from '@codesandbox/components';
-import { Details, Heading, Info, Action } from './elements';
+import React from 'react';
+import { MdClear } from 'react-icons/md';
+
+import { Action, Details, Heading, Info } from './elements';
 
 interface IDetailInfoProps {
   heading: string;
@@ -27,7 +28,7 @@ export const DetailInfo: React.FC<IDetailInfoProps> = ({
     {onSignOut ? (
       <Tooltip content="Sign out">
         <Action onClick={onSignOut} red>
-          <CrossIcon />
+          <MdClear />
         </Action>
       </Tooltip>
     ) : (

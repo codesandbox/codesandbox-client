@@ -1,8 +1,7 @@
-import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
+import delayEffect from '@codesandbox/common/es/utils/animation/delay-effect';
+import { LikeHeart } from 'app/pages/common/LikeHeart';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
-import { LikeHeart } from 'app/pages/common/LikeHeart';
 
 export const Container = styled.div`
   background-color: #272c2e;

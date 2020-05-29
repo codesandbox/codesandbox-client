@@ -1,31 +1,29 @@
-import React from 'react';
-import { useOvermind } from 'app/overmind';
-
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import getTemplateDefinition from '@codesandbox/common/es/templates';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
+import { getTemplateIcon } from '@codesandbox/common/es/utils/getTemplateIcon';
 import {
-  sandboxUrl,
-  profileUrl,
   githubRepoUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
-
+  profileUrl,
+  sandboxUrl,
+} from '@codesandbox/common/es/utils/url-generator';
 import {
-  Element,
-  Collapsible,
-  Text,
-  Link,
   Avatar,
-  Stack,
+  Collapsible,
+  Element,
+  Link,
   List,
   ListItem,
+  Stack,
   Stats,
   Tags,
+  Text,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React from 'react';
 
-import { BookmarkTemplateButton } from './BookmarkTemplateButton';
 import { GitHubIcon } from '../GitHub/Icons';
+import { BookmarkTemplateButton } from './BookmarkTemplateButton';
 
 export const Summary = () => {
   const {

@@ -1,4 +1,4 @@
-import Row from '@codesandbox/common/lib/components/flex/Row';
+import Row from '@codesandbox/common/es/components/flex/Row';
 import React, { FunctionComponent } from 'react';
 
 import { ProfileInfo } from './ProfileInfo';

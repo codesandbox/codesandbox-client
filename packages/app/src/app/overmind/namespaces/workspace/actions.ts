@@ -1,7 +1,7 @@
-import getTemplate from '@codesandbox/common/lib/templates';
-import { CustomTemplate } from '@codesandbox/common/lib/types';
-import track from '@codesandbox/common/lib/utils/analytics';
-import slugify from '@codesandbox/common/lib/utils/slugify';
+import getTemplate from '@codesandbox/common/es/templates';
+import { CustomTemplate } from '@codesandbox/common/es/types';
+import track from '@codesandbox/common/es/utils/analytics';
+import slugify from '@codesandbox/common/es/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';

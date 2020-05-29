@@ -1,14 +1,12 @@
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import { notificationState } from '@codesandbox/common/es/utils/notifications';
+import { dashboardUrl } from '@codesandbox/common/es/utils/url-generator';
+import { NotificationStatus } from '@codesandbox/notifications';
+import history from 'app/utils/history';
 import React from 'react';
 import { Mutation } from 'react-apollo';
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import history from 'app/utils/history';
-import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { NotificationStatus } from '@codesandbox/notifications';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-
-import { REMOVE_FROM_TEAM, LEAVE_TEAM } from '../../../../queries';
-
+import { LEAVE_TEAM, REMOVE_FROM_TEAM } from '../../../../queries';
 import { StyledCrossIcon } from '../elements';
 
 export const RemoveTeamMember = ({

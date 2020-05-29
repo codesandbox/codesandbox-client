@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
-import { Button, Text, Element, Stack, Link } from '@codesandbox/components';
-import track from '@codesandbox/common/lib/utils/analytics';
+import track from '@codesandbox/common/es/utils/analytics';
+import { Button, Element, Link, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import format from 'date-fns/format';
-import styled from 'styled-components';
 import { listStyles } from 'homepage/src/pages/changelog/_elements';
-
+import React, { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import styled from 'styled-components';
 
 import { Header } from '../elements';
 

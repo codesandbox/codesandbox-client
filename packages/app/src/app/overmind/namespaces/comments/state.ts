@@ -1,4 +1,4 @@
-import { CommentsFilterOption } from '@codesandbox/common/lib/types';
+import { CommentsFilterOption } from '@codesandbox/common/es/types';
 import { CommentFragment, CommentWithRepliesFragment } from 'app/graphql/types';
 import { RootState } from 'app/overmind';
 import isToday from 'date-fns/isToday';

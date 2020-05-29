@@ -1,8 +1,5 @@
-import {
-  ViewConfig,
-  ViewTab,
-} from '@codesandbox/common/lib/templates/template';
-import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
+import { ViewConfig, ViewTab } from '@codesandbox/common/es/templates/template';
+import { DevToolsTabPosition } from '@codesandbox/common/es/types';
 
 // eslint-disable-next-line consistent-return
 export function getDevToolsTabPosition({

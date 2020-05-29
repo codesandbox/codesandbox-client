@@ -3,7 +3,7 @@ import {
   Notification,
   Sandbox,
   UploadFile,
-} from '@codesandbox/common/lib/types';
+} from '@codesandbox/common/es/types';
 import { derived } from 'overmind';
 import store from 'store/dist/store.modern';
 

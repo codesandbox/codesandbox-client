@@ -1,4 +1,4 @@
-import isImage from '@codesandbox/common/lib/utils/is-image';
+import isImage from '@codesandbox/common/es/utils/is-image';
 
 const svgRegex = /\.svg$/;
 

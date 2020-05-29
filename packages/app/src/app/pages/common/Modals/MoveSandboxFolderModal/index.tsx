@@ -1,14 +1,15 @@
-import track from '@codesandbox/common/lib/utils/analytics';
 import { basename } from 'path';
-import ChevronRight from 'react-icons/lib/md/chevron-right';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+
+import track from '@codesandbox/common/es/utils/analytics';
+import { Button, Element, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { Button, Stack, Element } from '@codesandbox/components';
-import { addSandboxesToFolder } from '../../../Dashboard/queries';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { MdChevronRight } from 'react-icons/md';
 
-import { DirectoryPicker } from './DirectoryPicker';
+import { addSandboxesToFolder } from '../../../Dashboard/queries';
 import { Alert } from '../Common/Alert';
+import { DirectoryPicker } from './DirectoryPicker';
 
 export const MoveSandboxFolderModal: FunctionComponent = () => {
   const {
@@ -118,7 +119,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
                   : `${teamId ? 'Our' : 'My'} Sandboxes`
               }`}
 
-              <ChevronRight />
+              <MdChevronRight />
             </>
           )}
         </Button>

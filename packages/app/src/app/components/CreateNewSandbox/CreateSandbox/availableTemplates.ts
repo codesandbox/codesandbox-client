@@ -1,6 +1,6 @@
-import * as templates from '@codesandbox/common/lib/templates';
+import * as templates from '@codesandbox/common/es/templates';
+import { Template } from '@codesandbox/common/es/types';
 import { sortBy } from 'lodash-es';
-import { Template } from '@codesandbox/common/lib/types';
 
 const usedTemplates = sortBy(
   Object.keys(templates)

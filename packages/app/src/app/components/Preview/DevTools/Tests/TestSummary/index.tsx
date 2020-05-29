@@ -1,22 +1,20 @@
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import * as React from 'react';
-import PlayIcon from 'react-icons/lib/go/playback-play';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-
-import { File, Test, Status } from '..';
-
-import {
-  Container,
-  Title,
-  Progress,
-  SuccessBar,
-  FailBar,
-  TestData,
-  IdleBar,
-  Actions,
-  SyncIconStyled,
-} from './elements';
+import { GoPlay } from 'react-icons/go';
 
 import { TestSummaryText } from '../TestSummaryText';
+import {
+  Actions,
+  Container,
+  FailBar,
+  IdleBar,
+  Progress,
+  SuccessBar,
+  SyncIconStyled,
+  TestData,
+  Title,
+} from './elements';
+import { File, Status, Test } from '..';
 
 type Props = {
   files: { [path: string]: File };
@@ -70,7 +68,7 @@ export const TestSummary = ({
               <SyncIconStyled watching={watching} onClick={toggleWatching} />
             </Tooltip>
             <Tooltip content="Run All Tests">
-              <PlayIcon onClick={runAllTests} />
+              <GoPlay onClick={runAllTests} />
             </Tooltip>
           </Actions>
         </Title>

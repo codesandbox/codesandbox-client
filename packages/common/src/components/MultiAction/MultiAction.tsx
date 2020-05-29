@@ -1,13 +1,13 @@
-import React, { memo, cloneElement, Children } from 'react';
-import GoChevronDown from 'react-icons/lib/go/chevron-down';
-import GoChevronUp from 'react-icons/lib/go/chevron-up';
-import { useMenuState, MenuStateReturn } from 'reakit/Menu';
+import React, { Children, cloneElement, memo } from 'react';
+import { GoChevronDown, GoChevronUp } from 'react-icons/go';
+import { MenuStateReturn, useMenuState } from 'reakit/Menu';
+
 import {
+  ActionsList,
   Container,
   PrimaryAction,
-  ToggleActionsList,
-  ActionsList,
   SecondaryAction,
+  ToggleActionsList,
 } from './elements';
 
 interface IMultiActionProps {

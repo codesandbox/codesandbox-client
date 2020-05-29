@@ -1,11 +1,10 @@
-import { Sandbox } from '@codesandbox/common/lib/types';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { Sandbox } from '@codesandbox/common/es/types';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
 import React, { FunctionComponent } from 'react';
 
 import AvatarBlock from '../AvatarBlock';
-
-import { Container, Description, Stats, Title, Button } from './elements';
+import { Button, Container, Description, Stats, Title } from './elements';
 
 type Props = {
   sandbox: Sandbox;

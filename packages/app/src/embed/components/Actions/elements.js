@@ -1,8 +1,9 @@
-import styled from 'styled-components';
+import { CodeSandboxIcon as CodeSandboxIconBase } from '@codesandbox/common/es/components/icons/CodeSandbox';
+import { PreviewIcon as PreviewIconBase } from '@codesandbox/common/es/components/icons/Preview';
 import css from '@styled-system/css';
-import { CodeSandboxIcon as CodeSandboxIconBase } from '@codesandbox/common/lib/components/icons/CodeSandbox';
-import { PreviewIcon as PreviewIconBase } from '@codesandbox/common/lib/components/icons/Preview';
-import { HeartIconSVG, ReloadIconSVG, NewWindowIconSVG } from './icons';
+import styled from 'styled-components';
+
+import { HeartIconSVG, NewWindowIconSVG, ReloadIconSVG } from './icons';
 
 export const Container = styled.div(props =>
   css({

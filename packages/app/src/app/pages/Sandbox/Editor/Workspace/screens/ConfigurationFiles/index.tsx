@@ -1,26 +1,26 @@
-import React from 'react';
+import { resolveModule } from '@codesandbox/common/es/sandbox/modules';
+import getDefinition from '@codesandbox/common/es/templates';
 import {
-  Element,
-  Collapsible,
-  Text,
-  Button,
-  Stack,
   Grid as BaseGrid,
+  Button,
+  Collapsible,
+  Element,
+  Stack,
+  Text,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import getDefinition from '@codesandbox/common/lib/templates';
-import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
-
-import { useOvermind } from 'app/overmind';
-import styled, { withTheme } from 'styled-components';
 import { TypescriptIcon } from 'app/components/TypescriptIcon';
+import { useOvermind } from 'app/overmind';
+import React from 'react';
+import styled, { withTheme } from 'styled-components';
+
 import {
+  CodeSandboxIcon,
+  JSIcon,
+  NPMIcon,
   NetlifyIcon,
   PrettierIcon,
-  NPMIcon,
   VercelIcon,
-  JSIcon,
-  CodeSandboxIcon,
 } from './Icons';
 
 const getIcon = name => {

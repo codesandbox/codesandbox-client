@@ -180,7 +180,6 @@ module.exports = {
           new RegExp(`${sepRe}node_modules${sepRe}.*jest`),
           new RegExp(`${sepRe}node_modules${sepRe}.*monaco-textmate`),
           new RegExp(`${sepRe}node_modules${sepRe}.*onigasm`),
-          new RegExp(`react-icons`),
           new RegExp(`${sepRe}node_modules${sepRe}.*gsap`),
           new RegExp(`${sepRe}node_modules${sepRe}.*babel-plugin-macros`),
           new RegExp(`sandbox-hooks`),
@@ -201,11 +200,6 @@ module.exports = {
             [
               '@babel/preset-env',
               {
-                targets: {
-                  ie: 11,
-                  esmodules: true,
-                },
-                modules: 'umd',
                 useBuiltIns: false,
               },
             ],

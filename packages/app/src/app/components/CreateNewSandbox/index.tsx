@@ -1,15 +1,14 @@
-import Template from '@codesandbox/common/lib/templates/template';
-import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import Template from '@codesandbox/common/es/templates/template';
+import { ENTER } from '@codesandbox/common/es/utils/keycodes';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
+import { useOvermind } from 'app/overmind';
+import history from 'app/utils/history';
 import React, {
   ComponentProps,
   FunctionComponent,
   HTMLAttributes,
   KeyboardEvent,
 } from 'react';
-
-import { useOvermind } from 'app/overmind';
-import history from 'app/utils/history';
 
 import { ButtonsContainer, Container } from './elements';
 import { MostUsedSandbox } from './MostUsedSandbox';

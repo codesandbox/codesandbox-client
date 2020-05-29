@@ -1,15 +1,15 @@
+import { logError } from '@codesandbox/common/es/utils/analytics';
+import { Button, Element, Label } from '@codesandbox/components';
+import css from '@styled-system/css';
 import React from 'react';
 import {
-  injectStripe,
   CardElement,
   ReactStripeElements,
+  injectStripe,
 } from 'react-stripe-elements';
 import { withTheme } from 'styled-components';
-import css from '@styled-system/css';
-import { logError } from '@codesandbox/common/lib/utils/analytics';
-import { Button, Label, Element } from '@codesandbox/components';
 
-import { CardContainer, StripeInput, ErrorText } from './elements';
+import { CardContainer, ErrorText, StripeInput } from './elements';
 
 interface Props {
   name: string;

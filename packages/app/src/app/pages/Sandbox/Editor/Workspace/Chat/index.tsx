@@ -1,17 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled, { css as c } from 'styled-components';
-import { sortBy, takeRight } from 'lodash-es';
-
-import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import { useOvermind } from 'app/overmind';
-import css from '@styled-system/css';
+import { ENTER } from '@codesandbox/common/es/utils/keycodes';
 import {
   Collapsible,
-  Text,
-  Stack,
-  Textarea,
   Element,
+  Stack,
+  Text,
+  Textarea,
 } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import { sortBy, takeRight } from 'lodash-es';
+import React, { useEffect, useRef, useState } from 'react';
+import styled, { css as c } from 'styled-components';
 
 const Container = styled(Stack)`
   min-height: 200px;

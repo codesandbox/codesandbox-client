@@ -1,22 +1,20 @@
-import theme from '@codesandbox/common/lib/theme';
-import { Directory, Module } from '@codesandbox/common/lib/types';
+import theme from '@codesandbox/common/es/theme';
+import { Directory, Module } from '@codesandbox/common/es/types';
+import { ListAction, Stack, Text } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { ContextMenu, Item } from 'app/components/ContextMenu';
 import React, { useState } from 'react';
 import { DragSource } from 'react-dnd';
 
-import { Stack, Text, ListAction } from '@codesandbox/components';
-import css from '@styled-system/css';
-
 import {
-  EditIcon,
-  DeleteIcon,
   AddDirectoryIcon,
-  UploadFileIcon,
   AddFileIcon,
-  UndoIcon,
+  DeleteIcon,
+  EditIcon,
   NotSyncedIcon,
+  UndoIcon,
+  UploadFileIcon,
 } from '../../icons';
-
 import EditIcons from './EditIcons';
 import EntryIcons from './EntryIcons';
 import { FileInput } from './FileInput';

@@ -1,4 +1,4 @@
-import { STRIPE_API_KEY } from '@codesandbox/common/lib/utils/config';
+import { STRIPE_API_KEY } from '@codesandbox/common/es/utils/config';
 
 declare let Stripe: any;
 

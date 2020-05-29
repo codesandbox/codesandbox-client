@@ -1,4 +1,4 @@
-import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
+import { commonPostMessage } from '@codesandbox/common/es/utils/global';
 import {
   IForkHandler,
   IForkHandlerCallback,

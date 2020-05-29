@@ -1,8 +1,8 @@
 import React from 'react';
-import IconBase from 'react-icons/IconBase';
+import { IconBase } from 'react-icons';
 
 export const NewWindowIcon = props => (
-  <IconBase fill="none" viewBox="0 0 24 24" {...props}>
+  <IconBase attr={undefined} fill="none" viewBox="0 0 24 24" {...props}>
     <path
       fill="#757575"
       fillRule="evenodd"

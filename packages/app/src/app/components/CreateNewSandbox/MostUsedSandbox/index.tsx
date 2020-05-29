@@ -1,9 +1,8 @@
-import { Template } from '@codesandbox/common/lib/types';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { Template } from '@codesandbox/common/es/types';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
 import React, { FunctionComponent } from 'react';
 
 import { Container } from '../elements';
-
 import { ContainerLink } from './elements';
 
 type Props = {

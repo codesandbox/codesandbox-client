@@ -1,5 +1,4 @@
-import RightIconBase from 'react-icons/lib/md/keyboard-arrow-right';
-import LeftIconBase from 'react-icons/lib/md/keyboard-arrow-left';
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
@@ -9,11 +8,11 @@ export const Container = styled.div`
   color: rgba(255, 255, 255, 0.8);
 `;
 
-export const LeftIcon = styled(LeftIconBase)`
+export const LeftIcon = styled(MdKeyboardArrowLeft)`
   color: #ffffff;
 `;
 
-export const RightIcon = styled(RightIconBase)`
+export const RightIcon = styled(MdKeyboardArrowRight)`
   color: #ffffff;
 `;
 

@@ -1,14 +1,13 @@
+import requirePolyfills from '@codesandbox/common/es/load-dynamic-polyfills';
+import registerServiceWorker from '@codesandbox/common/es/registerServiceWorker';
+import { getModulePath } from '@codesandbox/common/es/sandbox/modules';
+import { generateFileFromSandbox } from '@codesandbox/common/es/templates/configuration/package-json';
+import _debug from '@codesandbox/common/es/utils/debug';
+import { getSandboxId } from '@codesandbox/common/es/utils/url-generator';
+import { dispatch, isStandalone, listen } from 'codesandbox-api';
 import { camelizeKeys } from 'humps';
-import { isStandalone, listen, dispatch } from 'codesandbox-api';
-import _debug from '@codesandbox/common/lib/utils/debug';
-
-import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
-import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
-import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator';
-import { getPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { show404 } from 'sandbox-hooks/not-found-screen';
+import { getPreviewSecret } from 'sandbox-hooks/preview-secret';
 
 import compile, { getCurrentManager } from './compile';
 import { endMeasure } from './utils/metrics';

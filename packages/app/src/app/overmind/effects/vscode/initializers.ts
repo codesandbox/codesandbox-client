@@ -1,8 +1,8 @@
-import JSON5 from 'json5';
-import codeSandboxTheme from '@codesandbox/common/lib/themes/codesandbox.json';
-import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import codeSandboxBlackTheme from '@codesandbox/common/es/themes/codesandbox-black';
+import codeSandboxTheme from '@codesandbox/common/es/themes/codesandbox.json';
+import { notificationState } from '@codesandbox/common/es/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
+import JSON5 from 'json5';
 
 export function initializeThemeCache() {
   try {

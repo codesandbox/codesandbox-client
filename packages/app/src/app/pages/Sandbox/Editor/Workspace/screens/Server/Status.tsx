@@ -1,11 +1,11 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import { Stack, Text, Element } from '@codesandbox/components';
 import {
   SSEContainerStatus,
   SSEManagerStatus,
-} from '@codesandbox/common/lib/types';
+} from '@codesandbox/common/es/types';
+import { Element, Stack, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import React from 'react';
+import styled, { css } from 'styled-components';
 
 type StatusCircleProps = { theme: any; color: string };
 

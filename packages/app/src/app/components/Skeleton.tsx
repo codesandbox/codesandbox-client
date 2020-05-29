@@ -1,8 +1,8 @@
-import React from 'react';
-import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import { Title } from 'app/components/Title';
+import Centered from '@codesandbox/common/es/components/flex/Centered';
+import Fullscreen from '@codesandbox/common/es/components/flex/Fullscreen';
 import { SubTitle } from 'app/components/SubTitle';
+import { Title } from 'app/components/Title';
+import React from 'react';
 
 interface ISkeletonProps {
   titles: {

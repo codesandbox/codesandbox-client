@@ -1,13 +1,14 @@
-import React, {
-  useState,
-  useLayoutEffect,
-  useEffect,
-  useCallback,
-} from 'react';
+import Portal from '@codesandbox/common/es/components/Portal';
+import track from '@codesandbox/common/es/utils/analytics';
+import { ESC } from '@codesandbox/common/es/utils/keycodes';
 import { motion } from 'framer-motion';
-import track from '@codesandbox/common/lib/utils/analytics';
-import Portal from '@codesandbox/common/lib/components/Portal';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
+
 import { Container, ContentContainer } from './elements';
 
 interface IOverlayProps {

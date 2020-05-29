@@ -1,5 +1,5 @@
+import delay from '@codesandbox/common/es/utils/animation/delay-effect';
 import styled, { css } from 'styled-components';
-import delay from '@codesandbox/common/lib/utils/animation/delay-effect';
 
 export const Title = styled.div`
   ${({ color }) => css`

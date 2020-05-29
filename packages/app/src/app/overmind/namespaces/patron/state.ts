@@ -1,4 +1,4 @@
-import { PatronBadge, PatronTier } from '@codesandbox/common/lib/types';
+import { PatronBadge, PatronTier } from '@codesandbox/common/es/types';
 import { derived } from 'overmind';
 
 type State = {

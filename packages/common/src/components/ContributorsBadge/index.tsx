@@ -1,7 +1,7 @@
 import React from 'react';
-import IconBase from 'react-icons/lib/IconBase';
-import Tooltip from '../../components/Tooltip';
+import { IconBase } from 'react-icons';
 
+import Tooltip from '../../components/Tooltip';
 import { isContributor } from './is-contributor';
 
 type Props = {
@@ -50,6 +50,7 @@ export default class ContributorsBadge extends React.Component<Props, State> {
           content="Open Source Contributor to CodeSandbox"
         >
           <IconBase
+            attr={undefined}
             className={className}
             width="1em"
             height="0.67em"

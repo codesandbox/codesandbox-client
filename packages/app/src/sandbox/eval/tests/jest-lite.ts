@@ -1,35 +1,31 @@
-import { dispatch, actions, listen } from 'codesandbox-api';
-import { react, reactTs } from '@codesandbox/common/lib/templates';
-import { messages } from '@codesandbox/common/lib/utils/jest-lite';
+import path from 'path';
 
+import { react, reactTs } from '@codesandbox/common/es/templates';
+import { messages } from '@codesandbox/common/es/utils/jest-lite';
+import { actions, dispatch, listen } from 'codesandbox-api';
+import jestTestHooks from 'jest-circus';
+import {
+  ROOT_DESCRIBE_BLOCK_NAME,
+  addEventHandler,
+  dispatch as dispatchJest,
+  setState,
+} from 'jest-circus/build/state';
+import { makeDescribe } from 'jest-circus/build/utils';
+import { bind as bindEach } from 'jest-each';
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
-import jestTestHooks from 'jest-circus';
-
-import { makeDescribe } from 'jest-circus/build/utils';
-import path from 'path';
-import { bind as bindEach } from 'jest-each';
-
 import {
   addSerializer,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
-
-import {
-  addEventHandler,
-  setState,
-  dispatch as dispatchJest,
-  ROOT_DESCRIBE_BLOCK_NAME,
-} from 'jest-circus/build/state';
-import { parse } from 'sandbox-hooks/react-error-overlay/utils/parser';
 import { map } from 'sandbox-hooks/react-error-overlay/utils/mapper';
-
-import run from './run-circus';
+import { parse } from 'sandbox-hooks/react-error-overlay/utils/parser';
 
 import Manager from '../manager';
 import { Module } from '../types/module';
-import { Event, TestEntry, DescribeBlock, TestName, TestFn } from './types';
+import run from './run-circus';
+import { DescribeBlock, Event, TestEntry, TestFn, TestName } from './types';
 
 export { messages };
 

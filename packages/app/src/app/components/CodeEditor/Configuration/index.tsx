@@ -1,16 +1,15 @@
-import React from 'react';
-import { TextOperation } from 'ot';
-import { Module } from '@codesandbox/common/lib/types';
-import getUI from '@codesandbox/common/lib/templates/configuration/ui';
-import getType from 'app/utils/get-type';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import { ConfigurationFile } from '@codesandbox/common/es/templates/configuration/types';
+import getUI from '@codesandbox/common/es/templates/configuration/ui';
+import { Module } from '@codesandbox/common/es/types';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { ConfigurationFile } from '@codesandbox/common/lib/templates/configuration/types';
+import getType from 'app/utils/get-type';
+import { TextOperation } from 'ot';
+import React from 'react';
+import { MdCode } from 'react-icons/md';
 
-import CodeIcon from 'react-icons/lib/md/code';
-
-import { Props as EditorProps, Editor } from '../types'; // eslint-disable-line
-import { Container, Icon, Title, Description } from './elements';
+import { Editor, Props as EditorProps } from '../types'; // eslint-disable-line
+import { Container, Description, Icon, Title } from './elements';
 
 type Props = EditorProps & {
   config: ConfigurationFile;
@@ -102,7 +101,7 @@ export class Configuration extends React.PureComponent<Props>
 
           <Tooltip content="Show Code">
             <Icon onClick={this.props.toggleConfigUI}>
-              <CodeIcon />
+              <MdCode />
             </Icon>
           </Tooltip>
         </div>

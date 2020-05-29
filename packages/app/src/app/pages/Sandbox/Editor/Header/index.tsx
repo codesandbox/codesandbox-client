@@ -1,5 +1,5 @@
-import LogoIcon from '@codesandbox/common/lib/components/Logo';
-import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import LogoIcon from '@codesandbox/common/es/components/Logo';
+import { dashboardUrl } from '@codesandbox/common/es/utils/url-generator';
 import { Link, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';

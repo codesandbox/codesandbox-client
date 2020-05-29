@@ -2,10 +2,10 @@
 
 import type {
   Module,
-  Sandbox,
-  ModuleError,
   ModuleCorrection,
-} from '@codesandbox/common/lib/types';
+  ModuleError,
+  Sandbox,
+} from '@codesandbox/common/es/types';
 
 export type Settings = {
   autoCompleteEnabled: boolean,

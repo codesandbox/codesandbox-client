@@ -1,16 +1,17 @@
+import Centered from '@codesandbox/common/es/components/flex/Centered';
+import MaxWidth from '@codesandbox/common/es/components/flex/MaxWidth';
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
+import codeSandboxBlackTheme from '@codesandbox/common/es/themes/codesandbox-black';
+import { Element, ThemeProvider } from '@codesandbox/components';
+import { SubTitle } from 'app/components/SubTitle';
+import { Title } from 'app/components/Title';
+import { useOvermind } from 'app/overmind';
+import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import { useOvermind } from 'app/overmind';
-import { Title } from 'app/components/Title';
-import { SubTitle } from 'app/components/SubTitle';
-import { Navigation } from 'app/pages/common/Navigation';
-import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
-import { ThemeProvider, Element } from '@codesandbox/components';
-import { PricingModal } from './PricingModal';
+
 import { Content } from './elements';
+import { PricingModal } from './PricingModal';
 
 const Patron: React.FC = () => {
   const {

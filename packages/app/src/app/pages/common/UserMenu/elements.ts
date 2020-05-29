@@ -1,5 +1,5 @@
+import Row from '@codesandbox/common/es/components/flex/Row';
 import styled from 'styled-components';
-import Row from '@codesandbox/common/lib/components/flex/Row';
 
 export const UserMenuContainer = styled.div`
   display: absolute;

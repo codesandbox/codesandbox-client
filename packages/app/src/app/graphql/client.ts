@@ -1,14 +1,15 @@
-import { ApolloClient } from 'apollo-client';
-import { ApolloLink } from 'apollo-link';
-import { BatchHttpLink } from 'apollo-link-batch-http';
-import { setContext } from 'apollo-link-context';
+import { notificationState } from '@codesandbox/common/es/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 import {
   InMemoryCache,
   IntrospectionFragmentMatcher,
 } from 'apollo-cache-inmemory';
+import { ApolloClient } from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
+import { BatchHttpLink } from 'apollo-link-batch-http';
+import { setContext } from 'apollo-link-context';
 import { onError } from 'apollo-link-error';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
+
 import introspectionQueryResultData from './introspection-result';
 
 const fragmentMatcher = new IntrospectionFragmentMatcher({

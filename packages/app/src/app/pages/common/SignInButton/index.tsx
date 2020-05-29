@@ -1,8 +1,8 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Row from '@codesandbox/common/lib/components/flex/Row';
-import React, { ComponentProps, FunctionComponent } from 'react';
-import GithubIcon from 'react-icons/lib/go/mark-github';
+import { Button } from '@codesandbox/common/es/components/Button';
+import Row from '@codesandbox/common/es/components/flex/Row';
 import { useOvermind } from 'app/overmind';
+import React, { ComponentProps, FunctionComponent } from 'react';
+import { GoMarkGithub } from 'react-icons/go';
 
 type Props = Omit<ComponentProps<typeof Button>, 'onClick' | 'small'> & {
   redirectTo?: string;
@@ -16,7 +16,7 @@ export const SignInButton: FunctionComponent<Props> = props => {
       small
     >
       <Row>
-        <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with GitHub
+        <GoMarkGithub style={{ marginRight: '0.5rem' }} /> Sign in with GitHub
       </Row>
     </Button>
   );

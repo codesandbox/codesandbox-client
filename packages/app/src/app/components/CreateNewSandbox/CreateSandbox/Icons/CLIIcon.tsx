@@ -1,8 +1,8 @@
 import React from 'react';
-import IconBase from 'react-icons/IconBase';
+import { IconBase } from 'react-icons';
 
 export const CLIIcon = props => (
-  <IconBase viewBox="0 0 32 32" {...props}>
+  <IconBase attr={undefined} viewBox="0 0 32 32" {...props}>
     <path
       fillRule="evenodd"
       clipRule="evenodd"

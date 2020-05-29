@@ -1,4 +1,5 @@
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { getTextOperation } from '@codesandbox/common/es/utils/diff';
+
 import { CodeSandboxOTClient } from './clients';
 
 describe('OTClient', () => {

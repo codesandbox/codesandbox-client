@@ -1,4 +1,4 @@
-import { getModulesAndDirectoriesInDirectory } from '@codesandbox/common/lib/sandbox/modules';
+import { getModulesAndDirectoriesInDirectory } from '@codesandbox/common/es/sandbox/modules';
 import {
   Directory,
   LiveDisconnectReason,
@@ -7,8 +7,8 @@ import {
   Module,
   UserSelection,
   UserViewRange,
-} from '@codesandbox/common/lib/types';
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+} from '@codesandbox/common/es/types';
+import { logBreadcrumb } from '@codesandbox/common/es/utils/analytics/sentry';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
 import { getSavedCode } from 'app/overmind/utils/sandbox';

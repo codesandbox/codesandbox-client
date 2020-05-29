@@ -1,17 +1,16 @@
-import Select from '@codesandbox/common/lib/components/Select';
-import theme from '@codesandbox/common/lib/theme';
-import { listen, dispatch } from 'codesandbox-api';
-import { Decode, Console as ConsoleFeed } from 'console-feed';
+import Select from '@codesandbox/common/es/components/Select';
+import theme from '@codesandbox/common/es/theme';
+import { dispatch, listen } from 'codesandbox-api';
+import { Console as ConsoleFeed, Decode } from 'console-feed';
 import update from 'immutability-helper';
 import { debounce } from 'lodash-es';
 import React from 'react';
-import ClearIcon from 'react-icons/lib/md/block';
+import { MdBlock } from 'react-icons/md';
 import styled, { withTheme } from 'styled-components';
 
-import { DevToolProps } from '..';
-
-import { Container, Messages, inspectorTheme, FilterInput } from './elements';
+import { Container, FilterInput, Messages, inspectorTheme } from './elements';
 import { ConsoleInput } from './Input';
+import { DevToolProps } from '..';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -23,7 +22,7 @@ export type StyledProps = DevToolProps & {
   theme: typeof theme & { light: boolean };
 };
 
-const StyledClearIcon = styled(ClearIcon)`
+const StyledClearIcon = styled(MdBlock)`
   font-size: 0.8em;
 `;
 

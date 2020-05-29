@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import ErrorIcon from 'react-icons/lib/md/error';
+import { MdError } from 'react-icons/md';
 
 import { Container, RedIcon, SVGIcon } from './elements';
 import { getIconURL } from './getIconURL';
@@ -32,7 +32,7 @@ const EntryIcon: FunctionComponent<Props> = ({
   const Icon = () =>
     error ? (
       <RedIcon height={height} width={width}>
-        <ErrorIcon height={height} width={width} />
+        <MdError height={height} width={width} />
       </RedIcon>
     ) : (
       <SVGIcon height={height} url={icon} width={width} />

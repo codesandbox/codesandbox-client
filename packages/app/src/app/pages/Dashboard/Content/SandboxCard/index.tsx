@@ -1,36 +1,31 @@
+import Input from '@codesandbox/common/es/components/Input';
+import getTemplate, { TemplateType } from '@codesandbox/common/es/templates';
+import theme from '@codesandbox/common/es/theme';
+import track from '@codesandbox/common/es/utils/analytics';
+import { ENTER, ESC } from '@codesandbox/common/es/utils/keycodes';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
+import { SandboxFragment } from 'app/graphql/types';
+import history from 'app/utils/history';
 // @ts-check
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
-import history from 'app/utils/history';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { Mutation } from 'react-apollo';
 import { DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-import { Mutation } from 'react-apollo';
-import TrashIcon from 'react-icons/lib/md/delete';
+import { MdDelete, MdInsertLink, MdLock } from 'react-icons/md';
 
-import Unlisted from 'react-icons/lib/md/insert-link';
-import Private from 'react-icons/lib/md/lock';
-
-import Input from '@codesandbox/common/lib/components/Input';
-import getTemplate, { TemplateType } from '@codesandbox/common/lib/templates';
-import theme from '@codesandbox/common/lib/theme';
-import track from '@codesandbox/common/lib/utils/analytics';
-
-import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import { SandboxFragment } from 'app/graphql/types';
 import { RENAME_SANDBOX_MUTATION } from '../../queries';
-
 import {
   Container,
-  SandboxImageContainer,
-  StyledContextMenu,
-  SandboxImage,
-  SandboxInfo,
-  SandboxDetails,
   ImageMessage,
-  PrivacyIconContainer,
-  SandboxTitle,
   KebabIcon,
+  PrivacyIconContainer,
+  SandboxDetails,
+  SandboxImage,
+  SandboxImageContainer,
+  SandboxInfo,
+  SandboxTitle,
+  StyledContextMenu,
 } from './elements';
 
 type Props = {
@@ -117,14 +112,14 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
     if (this.props.privacy === 1) {
       return (
         <PrivacyIconContainer content="Unlisted Sandbox">
-          <Unlisted />
+          <MdInsertLink />
         </PrivacyIconContainer>
       );
     }
     if (this.props.privacy === 2) {
       return (
         <PrivacyIconContainer content="Private Sandbox">
-          <Private />
+          <MdLock />
         </PrivacyIconContainer>
       );
     }
@@ -448,7 +443,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
   getImageMessage = () => {
     if (this.props.removedAt) {
       return (
-        <TrashIcon
+        <MdDelete
           style={{
             fontSize: '3rem',
           }}
@@ -458,7 +453,7 @@ class SandboxItemComponent extends React.PureComponent<Props, State> {
 
     if (this.props.privacy === 2) {
       return (
-        <Private
+        <MdLock
           style={{
             fontSize: '3rem',
           }}

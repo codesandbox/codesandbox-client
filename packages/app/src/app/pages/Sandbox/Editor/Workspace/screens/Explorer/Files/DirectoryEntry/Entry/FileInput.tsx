@@ -1,12 +1,11 @@
-import React, {
-  useState,
-  ChangeEvent,
-  KeyboardEvent,
-  FunctionComponent,
-} from 'react';
-
-import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { ENTER, ESC } from '@codesandbox/common/es/utils/keycodes';
 import { FormField, Input } from '@codesandbox/components';
+import React, {
+  ChangeEvent,
+  FunctionComponent,
+  KeyboardEvent,
+  useState,
+} from 'react';
 
 function select(el) {
   if (el) {

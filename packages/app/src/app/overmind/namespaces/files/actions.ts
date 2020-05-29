@@ -2,10 +2,10 @@ import {
   getDirectoryPath,
   getModulePath,
   getModulesAndDirectoriesInDirectory,
-} from '@codesandbox/common/lib/sandbox/modules';
-import getDefinition from '@codesandbox/common/lib/templates';
-import { Directory, Module, UploadFile } from '@codesandbox/common/lib/types';
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+} from '@codesandbox/common/es/sandbox/modules';
+import getDefinition from '@codesandbox/common/es/templates';
+import { Directory, Module, UploadFile } from '@codesandbox/common/es/types';
+import { getTextOperation } from '@codesandbox/common/es/utils/diff';
 import { Action, AsyncAction } from 'app/overmind';
 import { RecoverData } from 'app/overmind/effects/moduleRecover';
 import { withOwnedSandbox } from 'app/overmind/factories';

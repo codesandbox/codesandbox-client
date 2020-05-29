@@ -1,9 +1,8 @@
-import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
-import React, { ComponentProps, FunctionComponent, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-
+import { dashboardUrl } from '@codesandbox/common/es/utils/url-generator';
 import { SandboxList } from 'app/components/SandboxList';
 import { useOvermind } from 'app/overmind';
+import React, { ComponentProps, FunctionComponent, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 import { NavButton, Navigation, Notice } from './elements';
 import { NoSandboxes } from './NoSandboxes';

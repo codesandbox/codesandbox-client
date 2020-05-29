@@ -1,16 +1,17 @@
-import React from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
-import { Element } from '@codesandbox/components';
-import css from '@styled-system/css';
 import {
+  ARROW_DOWN,
   ARROW_LEFT,
   ARROW_RIGHT,
-  ARROW_DOWN,
   ARROW_UP,
   ENTER,
-} from '@codesandbox/common/lib/utils/keycodes';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+} from '@codesandbox/common/es/utils/keycodes';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
+import { Element } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+
 import { DragPreview } from './DragPreview';
 
 const Context = React.createContext({

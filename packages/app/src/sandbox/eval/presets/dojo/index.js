@@ -1,12 +1,12 @@
-import { join, absolute } from '@codesandbox/common/lib/utils/path';
-import Preset from '..';
+import { absolute, join } from '@codesandbox/common/es/utils/path';
 
-import typescriptTranspiler from '../../transpilers/typescript';
-import rawTranspiler from '../../transpilers/raw';
-import jsonTranspiler from '../../transpilers/json';
-import stylesTranspiler from '../../transpilers/style';
-import dojoStylesTranspiler from './transpilers/style';
 import babelTranspiler from '../../transpilers/babel';
+import jsonTranspiler from '../../transpilers/json';
+import rawTranspiler from '../../transpilers/raw';
+import stylesTranspiler from '../../transpilers/style';
+import typescriptTranspiler from '../../transpilers/typescript';
+import dojoStylesTranspiler from './transpilers/style';
+import Preset from '..';
 
 export default function initialize() {
   const preset = new Preset(

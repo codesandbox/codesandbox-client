@@ -1,24 +1,22 @@
+import { Button } from '@codesandbox/common/es/components/Button';
+import Input from '@codesandbox/common/es/components/Input';
+import track from '@codesandbox/common/es/utils/analytics';
+import { notificationState } from '@codesandbox/common/es/utils/notifications';
+import { teamOverviewUrl } from '@codesandbox/common/es/utils/url-generator';
+import { NotificationStatus } from '@codesandbox/notifications';
+import history from 'app/utils/history';
 import React from 'react';
 import { Mutation } from 'react-apollo';
 
-import Input from '@codesandbox/common/lib/components/Input';
-import { Button } from '@codesandbox/common/lib/components/Button';
-import track from '@codesandbox/common/lib/utils/analytics';
-import history from 'app/utils/history';
-import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
-
+import { CREATE_TEAM_MUTATION, TEAMS_QUERY } from '../../../queries';
 import { Container, Description, HeaderContainer } from '../../elements';
 import {
-  Label,
   ComingSoon,
+  Label,
   Overlay,
   PatronInfo,
   QuestionHeader,
 } from './elements';
-import { CREATE_TEAM_MUTATION, TEAMS_QUERY } from '../../../queries';
-
 import Plan from './Plan';
 
 const FREE_POINTS = [

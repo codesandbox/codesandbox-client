@@ -1,12 +1,10 @@
-import React, { FunctionComponent } from 'react';
-import Column from '@codesandbox/common/lib/components/flex/Column';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { Button } from '@codesandbox/common/lib/components/Button';
-
+import { Button } from '@codesandbox/common/es/components/Button';
+import Column from '@codesandbox/common/es/components/flex/Column';
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
 
 import ShowcasePreview from '../../common/ShowcasePreview';
-
 import { SandboxInfoContainer, ShowcasePreviewContainer } from './elements';
 import { LoadingSandbox } from './LoadingSandbox';
 import { NoSandboxAvailable } from './NoSandboxAvailable';

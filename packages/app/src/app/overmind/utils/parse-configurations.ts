@@ -1,6 +1,7 @@
-import { Sandbox } from '@codesandbox/common/lib/types';
-import getDefinition from '@codesandbox/common/lib/templates';
-import parse from '@codesandbox/common/lib/templates/configuration/parse';
+import getDefinition from '@codesandbox/common/es/templates';
+import parse from '@codesandbox/common/es/templates/configuration/parse';
+import { Sandbox } from '@codesandbox/common/es/types';
+
 import { resolveModuleWrapped } from './resolve-module-wrapped';
 
 export function parseConfigurations(sandbox: Sandbox) {

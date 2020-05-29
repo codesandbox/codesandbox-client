@@ -1,7 +1,6 @@
-import ArrowDown from 'react-icons/lib/md/arrow-downward';
-import styled, { css } from 'styled-components';
-
 import { OrderBy } from 'app/overmind/namespaces/dashboard/state';
+import { MdArrowDownward } from 'react-icons/md';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div<{
   hideOrder: boolean;
@@ -31,7 +30,7 @@ export const OrderName = styled.span`
   }
 `;
 
-export const Arrow = styled(ArrowDown)<{ order: OrderBy['order'] }>`
+export const Arrow = styled(MdArrowDownward)<{ order: OrderBy['order'] }>`
   ${({ order }) => css`
     transition: 0.3s ease all;
     cursor: pointer;

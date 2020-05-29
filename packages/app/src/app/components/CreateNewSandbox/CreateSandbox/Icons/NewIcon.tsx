@@ -1,8 +1,8 @@
 import React from 'react';
-import IconBase from 'react-icons/IconBase';
+import { IconBase } from 'react-icons';
 
 export const NewIcon = props => (
-  <IconBase viewBox="0 0 16 16" {...props}>
+  <IconBase attr={undefined} viewBox="0 0 16 16" {...props}>
     <path
       fill="#fff"
       d="M7.111 9.263H.89v5.053c0 .93.796 1.684 1.778 1.684H7.11V9.263zM8.889 16h4.444c.982 0 1.778-.754 1.778-1.684V9.263H8.89V16z"

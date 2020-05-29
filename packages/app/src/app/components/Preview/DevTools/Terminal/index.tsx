@@ -1,13 +1,13 @@
 import './styles.css';
 
-import { listen, dispatch } from 'codesandbox-api';
+import { notificationState } from '@codesandbox/common/es/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
+import { dispatch, listen } from 'codesandbox-api';
 import React from 'react';
-import PlusIcon from 'react-icons/lib/md/add';
+import { MdAdd } from 'react-icons/md';
 import { withTheme } from 'styled-components';
 import uuid from 'uuid';
 
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
 import { Shell } from './Shell';
 import { TerminalComponent } from './Shell/Term';
 import { ShellTabs } from './ShellTabs';
@@ -216,7 +216,7 @@ export const terminal = {
             createShell();
           }
         },
-        Icon: PlusIcon,
+        Icon: MdAdd,
         disabled: !owned,
       },
     ].filter(Boolean),

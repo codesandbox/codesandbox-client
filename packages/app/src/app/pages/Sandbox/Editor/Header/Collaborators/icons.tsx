@@ -1,8 +1,9 @@
 import React from 'react';
-import IconBase from 'react-icons/IconBase';
+import { IconBase } from 'react-icons';
 
 export const Mail = props => (
   <IconBase
+    attr={undefined}
     fill="none"
     viewBox="0 0 32 32"
     xmlns="http://www.w3.org/2000/svg"
@@ -19,6 +20,7 @@ export const Mail = props => (
 
 export const WarningIcon = props => (
   <IconBase
+    attr={undefined}
     viewBox="0 0 12 12"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

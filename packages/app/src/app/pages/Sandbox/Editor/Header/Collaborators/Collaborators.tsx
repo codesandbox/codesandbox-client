@@ -1,14 +1,14 @@
-import React, { FunctionComponent } from 'react';
+import { hasPermission } from '@codesandbox/common/es/utils/permission';
 import { Element } from '@codesandbox/components';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Overlay } from 'app/components/Overlay';
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
 
-import { Container, HorizontalSeparator } from './elements';
 import { AddCollaboratorForm } from './AddCollaboratorForm';
-import { LinkPermissions } from './Collaborator';
 import { ButtonActions } from './ButtonActions';
+import { LinkPermissions } from './Collaborator';
 import { CollaboratorList } from './CollaboratorList';
+import { Container, HorizontalSeparator } from './elements';
 
 const CollaboratorContent = () => {
   const { state } = useOvermind();

@@ -1,4 +1,4 @@
-import { CommentsFilterOption } from '@codesandbox/common/lib/types';
+import { CommentsFilterOption } from '@codesandbox/common/es/types';
 import {
   Icon,
   List,

@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import CrossIcon from 'react-icons/lib/md/clear';
-import RefreshIcon from 'react-icons/lib/md/refresh';
-import ArrowDropDown from 'react-icons/lib/md/keyboard-arrow-down';
-import ArrowDropUp from 'react-icons/lib/md/keyboard-arrow-up';
-import algoliasearch from 'algoliasearch/lite';
-import compareVersions from 'compare-versions';
 import Tooltip, {
   SingletonTooltip,
-} from '@codesandbox/common/lib/components/Tooltip';
-import { formatVersion } from '@codesandbox/common/lib/utils/ci';
-
-import css from '@styled-system/css';
+} from '@codesandbox/common/es/components/Tooltip';
+import { formatVersion } from '@codesandbox/common/es/utils/ci';
 import {
-  ListAction,
-  Stack,
-  SidebarRow,
-  Select,
-  Text,
-  Link,
   Button,
+  Link,
+  ListAction,
+  Select,
+  SidebarRow,
+  Stack,
+  Text,
 } from '@codesandbox/components';
+import css from '@styled-system/css';
+import algoliasearch from 'algoliasearch/lite';
+import compareVersions from 'compare-versions';
+import React, { useEffect, useState } from 'react';
+import {
+  MdClear,
+  MdKeyboardArrowDown,
+  MdKeyboardArrowUp,
+  MdRefresh,
+} from 'react-icons/md';
 
 import { BundleSizes } from './BundleSizes';
 
@@ -176,7 +177,7 @@ export const Dependency = ({
                     onClick={() => setOpen(!open)}
                     css={css({ minWidth: 5 })}
                   >
-                    {open ? <ArrowDropUp /> : <ArrowDropDown />}
+                    {open ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
                   </Button>
                 </Tooltip>
                 <Tooltip
@@ -189,7 +190,7 @@ export const Dependency = ({
                     onClick={handleRefresh}
                     css={css({ minWidth: 5 })}
                   >
-                    <RefreshIcon />
+                    <MdRefresh />
                   </Button>
                 </Tooltip>
                 <Tooltip
@@ -202,7 +203,7 @@ export const Dependency = ({
                     onClick={handleRemove}
                     css={css({ minWidth: 5 })}
                   >
-                    <CrossIcon />
+                    <MdClear />
                   </Button>
                 </Tooltip>
               </>

@@ -1,16 +1,16 @@
 import { dirname, join } from 'path';
 
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import getTemplate from '@codesandbox/common/lib/templates';
+import { getModulePath } from '@codesandbox/common/es/sandbox/modules';
+import getTemplate from '@codesandbox/common/es/templates';
 import type {
   Directory,
   Module,
   ModuleCorrection,
   ModuleError,
   Sandbox,
-} from '@codesandbox/common/lib/types';
-import delay from '@codesandbox/common/lib/utils/delay';
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+} from '@codesandbox/common/es/types';
+import delay from '@codesandbox/common/es/utils/delay';
+import { getTextOperation } from '@codesandbox/common/es/utils/diff';
 import FuzzySearch from 'app/components/CodeEditor/FuzzySearch';
 import type { Editor, Props } from 'app/components/CodeEditor/types';
 import {

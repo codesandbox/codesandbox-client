@@ -1,7 +1,7 @@
-import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
 import { Menu } from '@codesandbox/components';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { useOvermind } from 'app/overmind';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 
 export const Options = ({ sandbox, isTemplate, onRename }) => {

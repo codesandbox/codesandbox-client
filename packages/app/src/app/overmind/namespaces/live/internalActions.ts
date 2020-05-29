@@ -4,9 +4,9 @@ import {
   IModuleStateModule,
   Module,
   Sandbox,
-} from '@codesandbox/common/lib/types';
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+} from '@codesandbox/common/es/types';
+import { logBreadcrumb } from '@codesandbox/common/es/utils/analytics/sentry';
+import { getTextOperation } from '@codesandbox/common/es/utils/diff';
 import { Action, AsyncAction } from 'app/overmind';
 import { json } from 'overmind';
 

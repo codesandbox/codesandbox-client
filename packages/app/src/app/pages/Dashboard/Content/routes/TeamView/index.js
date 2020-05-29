@@ -1,8 +1,8 @@
-import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextArea';
+import AutosizeTextArea from '@codesandbox/common/es/components/AutosizeTextArea';
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
+import { UserWithAvatar } from '@codesandbox/common/es/components/UserWithAvatar';
+import track from '@codesandbox/common/es/utils/analytics';
 import { Button, Input } from '@codesandbox/components';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
-import track from '@codesandbox/common/lib/utils/analytics';
 import { Observer } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 import React from 'react';
@@ -24,8 +24,8 @@ import {
   StyledEditIcon,
   TeamContainer,
 } from './elements';
-import { RemoveTeamMember } from './RemoveTeamMember';
 import { InviteLink } from './InviteLink';
+import { RemoveTeamMember } from './RemoveTeamMember';
 
 const User = ({ user, rightElement }) => (
   <div

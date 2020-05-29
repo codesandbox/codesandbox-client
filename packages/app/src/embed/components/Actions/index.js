@@ -1,16 +1,16 @@
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
 import React from 'react';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import {
-  Container,
   Button,
-  HeartIcon,
-  ReloadIcon,
-  NewWindowIcon,
   CodeSandboxIcon,
-  PreviewIcon,
+  Container,
+  HeartIcon,
   IconButton,
+  NewWindowIcon,
+  PreviewIcon,
+  ReloadIcon,
 } from './elements';
 
 export function GlobalActions({

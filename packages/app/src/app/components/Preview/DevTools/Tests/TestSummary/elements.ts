@@ -1,5 +1,5 @@
+import { GoSync } from 'react-icons/go';
 import styled from 'styled-components';
-import SyncIcon from 'react-icons/lib/go/sync';
 
 export const Container = styled.div`
   display: flex;
@@ -48,7 +48,7 @@ export const TestData = styled.div`
   font-size: 0.875rem;
 `;
 
-export const SyncIconStyled = styled(SyncIcon)<{ watching: boolean }>`
+export const SyncIconStyled = styled(GoSync)<{ watching: boolean }>`
   && {
     opacity: ${props => (props.watching ? 1 : undefined)};
   }

@@ -1,13 +1,13 @@
-import { ConfigurationFile } from '@codesandbox/common/lib/templates/configuration/types';
-import { withTheme } from 'styled-components';
+import { ConfigurationFile } from '@codesandbox/common/es/templates/configuration/types';
+import getUI from '@codesandbox/common/es/templates/configuration/ui';
+import theme from '@codesandbox/common/es/theme';
+import { Module } from '@codesandbox/common/es/types';
 import { ThemeProvider } from '@codesandbox/components';
-import getUI from '@codesandbox/common/lib/templates/configuration/ui';
-import theme from '@codesandbox/common/lib/theme';
-import { Module } from '@codesandbox/common/lib/types';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
 import { TextOperation } from 'ot';
 import React from 'react';
+import { withTheme } from 'styled-components';
 
 import { Editor, Props as EditorProps } from '../../types'; // eslint-disable-line
 import { Container, Description, Title } from './elements';

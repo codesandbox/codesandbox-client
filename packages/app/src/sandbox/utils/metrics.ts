@@ -1,5 +1,5 @@
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { getGlobal } from '@codesandbox/common/lib/utils/global';
+import _debug from '@codesandbox/common/es/utils/debug';
+import { getGlobal } from '@codesandbox/common/es/utils/global';
 
 const debug = _debug('cs:compiler:measurements');
 

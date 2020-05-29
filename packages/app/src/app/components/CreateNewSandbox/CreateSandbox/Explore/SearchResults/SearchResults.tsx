@@ -1,15 +1,16 @@
-import React from 'react';
 import {
   ALGOLIA_API_KEY,
   ALGOLIA_APPLICATION_ID,
-  ALGOLIA_DEFAULT_INDEX, // eslint-disable-line
-} from '@codesandbox/common/lib/utils/config';
-import { InstantSearch, Configure, Stats } from 'react-instantsearch/dom';
+  ALGOLIA_DEFAULT_INDEX,
+} from '@codesandbox/common/es/utils/config';
+import React from 'react';
 import { connectStateResults } from 'react-instantsearch-dom';
+import { Configure, InstantSearch, Stats } from 'react-instantsearch/dom';
+
 import { SubHeader } from '../../elements';
+import { Loader } from '../../Loader';
 import { GlobalSearchStyles } from './elements';
 import { ExploreResultList } from './ExploreResultList';
-import { Loader } from '../../Loader';
 
 const LoadingIndicator = connectStateResults(({ isSearchStalled }) =>
   isSearchStalled ? <Loader /> : null

@@ -1,14 +1,12 @@
-import * as React from 'react';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import getTemplateDefinition from '@codesandbox/common/es/templates';
+import { LiveUser } from '@codesandbox/common/es/types';
+import { Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { Icons } from 'app/components/CodeEditor/elements';
 import { useOvermind } from 'app/overmind';
-import QuestionIcon from 'react-icons/lib/go/question';
-
-import { LiveUser } from '@codesandbox/common/lib/types';
-import { Stack } from '@codesandbox/components';
+import * as React from 'react';
+import { GoQuestion } from 'react-icons/go';
 
 export const EditorToast = () => {
   const { state } = useOvermind();
@@ -80,7 +78,7 @@ export const EditorToast = () => {
               }}
             >
               Partially Supported Config{' '}
-              <QuestionIcon style={{ marginLeft: '.5rem' }} />
+              <GoQuestion style={{ marginLeft: '.5rem' }} />
             </Tooltip>
           ) : (
             <div>Supported Configuration</div>

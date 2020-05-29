@@ -1,5 +1,5 @@
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import InputBase from '@codesandbox/common/lib/components/Input';
+import Centered from '@codesandbox/common/es/components/flex/Centered';
+import InputBase from '@codesandbox/common/es/components/Input';
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div`

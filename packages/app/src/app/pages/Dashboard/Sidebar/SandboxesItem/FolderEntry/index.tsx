@@ -1,47 +1,42 @@
-import React from 'react';
+import { dirname, join } from 'path';
 
-import FolderIcon from 'react-icons/lib/md/folder';
-import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
-import RenameIcon from 'react-icons/lib/md/mode-edit';
-import TrashIcon from 'react-icons/lib/md/delete';
-import { Mutation } from 'react-apollo';
-import { DropTarget, DragSource } from 'react-dnd';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { withRouter } from 'react-router-dom';
-import { History } from 'history';
-import { client } from 'app/graphql/client';
-
-import { Animate as ReactShow } from 'react-show';
-import { join, dirname } from 'path';
-
-import theme from '@codesandbox/common/lib/theme';
-
-import { ContextMenu } from 'app/components/ContextMenu';
-
-import Input from '@codesandbox/common/lib/components/Input';
+import Input from '@codesandbox/common/es/components/Input';
+import theme from '@codesandbox/common/es/theme';
+import track from '@codesandbox/common/es/utils/analytics';
 import {
   ARROW_LEFT,
   ARROW_RIGHT,
   ESC,
-} from '@codesandbox/common/lib/utils/keycodes';
-
+} from '@codesandbox/common/es/utils/keycodes';
+import { ContextMenu } from 'app/components/ContextMenu';
+import { client } from 'app/graphql/client';
 import {
   PathedSandboxesFoldersQuery,
   PathedSandboxesFoldersQueryVariables,
 } from 'app/graphql/types';
-import { Container, AnimatedChevron, IconContainer } from './elements';
-
-import getDirectChildren from '../../../utils/get-direct-children';
-import { entryTarget, collectTarget } from '../folder-drop-target';
-
-import { CreateFolderEntry } from './CreateFolderEntry';
+import { History } from 'history';
+import React from 'react';
+import { Mutation } from 'react-apollo';
+import { DragSource, DropTarget } from 'react-dnd';
+import {
+  MdCreateNewFolder,
+  MdDelete,
+  MdFolder,
+  MdModeEdit,
+} from 'react-icons/md';
+import { withRouter } from 'react-router-dom';
+import { Animate as ReactShow } from 'react-show';
 
 import {
-  PATHED_SANDBOXES_FOLDER_QUERY,
-  PATHED_SANDBOXES_CONTENT_QUERY,
   DELETE_FOLDER_MUTATION,
+  PATHED_SANDBOXES_CONTENT_QUERY,
+  PATHED_SANDBOXES_FOLDER_QUERY,
   RENAME_FOLDER_MUTATION,
 } from '../../../queries';
+import getDirectChildren from '../../../utils/get-direct-children';
+import { collectTarget, entryTarget } from '../folder-drop-target';
+import { CreateFolderEntry } from './CreateFolderEntry';
+import { AnimatedChevron, Container, IconContainer } from './elements';
 
 type Props = {
   name: string;
@@ -154,7 +149,7 @@ class FolderEntry extends React.Component<Props, State> {
     const menuItems = [
       {
         title: 'Rename Folder',
-        icon: RenameIcon,
+        icon: MdModeEdit,
         action: () => {
           this.setState({ renamingDirectory: true });
           return true;
@@ -162,7 +157,7 @@ class FolderEntry extends React.Component<Props, State> {
       },
       {
         title: 'Delete Folder',
-        icon: TrashIcon,
+        icon: MdDelete,
         color: theme.red.darken(0.2)(),
         action: () => {
           track('Dashboard - Folder Deleted');
@@ -219,7 +214,7 @@ class FolderEntry extends React.Component<Props, State> {
     if (allowCreate) {
       menuItems.unshift({
         title: 'Create Folder',
-        icon: AddFolderIcon,
+        icon: MdCreateNewFolder,
         action: () => {
           this.setState({ creatingDirectory: true, open: true });
           return true;
@@ -264,7 +259,7 @@ class FolderEntry extends React.Component<Props, State> {
                     style={{ opacity: children.size > 0 ? 1 : 0 }}
                   />
                 ) : null}
-                <FolderIcon />
+                <MdFolder />
               </IconContainer>{' '}
               {this.state.renamingDirectory ? (
                 <Mutation mutation={RENAME_FOLDER_MUTATION}>

@@ -1,5 +1,5 @@
-import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-import MarginBase from '@codesandbox/common/lib/components/spacing/Margin';
+import Fullscreen from '@codesandbox/common/es/components/flex/Fullscreen';
+import MarginBase from '@codesandbox/common/es/components/spacing/Margin';
 import styled, { css } from 'styled-components';
 
 export const Container = styled(Fullscreen)`

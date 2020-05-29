@@ -1,5 +1,5 @@
+import { MdChevronRight } from 'react-icons/md';
 import styled from 'styled-components';
-import ChevronRight from 'react-icons/lib/md/chevron-right';
 
 export const Container = styled.div`
   background-color: ${props =>
@@ -53,7 +53,7 @@ export const Actions = styled.div`
   }
 `;
 
-export const AnimatedChevron = styled(ChevronRight)<{ show: boolean }>`
+export const AnimatedChevron = styled(MdChevronRight)<{ show: boolean }>`
   transition: 0.3s ease transform;
   transform: rotateZ(${props => (props.show ? 90 : 0)}deg);
   margin-right: 0.25rem;

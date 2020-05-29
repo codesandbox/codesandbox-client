@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import Down from 'react-icons/lib/fa/angle-down';
-import Right from 'react-icons/lib/fa/angle-right';
+import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import { Spring, animated } from 'react-spring/renderprops';
 
 import { Title as TitleElement } from './elements';
@@ -20,7 +19,7 @@ export const Title: React.FC<Props> = ({ open, title, children }) => {
   return (
     <>
       <TitleElement onClick={() => toggleShow()}>
-        {isOpen ? <Down /> : <Right />}
+        {isOpen ? <FaAngleDown /> : <FaAngleRight />}
         {title}
       </TitleElement>
       <Spring

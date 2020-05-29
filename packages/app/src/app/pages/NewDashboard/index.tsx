@@ -1,17 +1,17 @@
-import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { signInPageUrl } from '@codesandbox/common/es/utils/url-generator';
+import { Element, Stack, ThemeProvider } from '@codesandbox/components';
+import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
+import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
-import { Redirect } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
-import { useOvermind } from 'app/overmind';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
-import { ThemeProvider, Stack, Element } from '@codesandbox/components';
+import { Redirect } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
-import css from '@styled-system/css';
 
-import { Header } from './Header';
-import { Sidebar, SIDEBAR_WIDTH } from './Sidebar';
 import { Content } from './Content';
+import { Header } from './Header';
+import { SIDEBAR_WIDTH, Sidebar } from './Sidebar';
 
 const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },

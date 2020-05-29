@@ -1,11 +1,14 @@
+import 'instantsearch.css/themes/reset.css';
+
+import MaxWidth from '@codesandbox/common/es/components/flex/MaxWidth';
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
 import {
   ALGOLIA_API_KEY,
   ALGOLIA_APPLICATION_ID,
   ALGOLIA_DEFAULT_INDEX,
-} from '@codesandbox/common/lib/utils/config';
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { RouteComponentProps } from 'react-router-dom';
+} from '@codesandbox/common/es/utils/config';
+import { useOvermind } from 'app/overmind';
+import { Navigation } from 'app/pages/common/Navigation';
 import qs from 'qs';
 import React, {
   FunctionComponent,
@@ -21,11 +24,7 @@ import {
   PoweredBy,
   SearchBox,
 } from 'react-instantsearch/dom';
-
-import { useOvermind } from 'app/overmind';
-import { Navigation } from 'app/pages/common/Navigation';
-
-import 'instantsearch.css/themes/reset.css';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { Container, Content, Main, Title } from './elements';
 import Filters from './Filters';

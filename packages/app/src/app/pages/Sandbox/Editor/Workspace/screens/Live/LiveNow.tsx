@@ -1,35 +1,33 @@
-import React from 'react';
-import css from '@styled-system/css';
-import { sortBy } from 'lodash-es';
-import useInterval from 'use-interval';
-
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import {
-  Element,
-  Collapsible,
-  Stack,
   Avatar,
-  Text,
-  Label,
+  Button,
+  Collapsible,
+  Element,
   Input,
+  Label,
   List,
   ListAction,
   Select,
-  Button,
+  Stack,
   Switch,
+  Text,
 } from '@codesandbox/components';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import { sortBy } from 'lodash-es';
+import React from 'react';
+import useInterval from 'use-interval';
 
 import {
   AddIcon,
-  RemoveIcon,
-  UnfollowIcon,
-  LiveIcon,
-  StopIcon,
-  OpenIcon,
   ClassroomIcon,
   FollowIcon,
+  LiveIcon,
+  OpenIcon,
+  RemoveIcon,
+  StopIcon,
+  UnfollowIcon,
 } from './icons';
 
 export const LiveNow = () => {

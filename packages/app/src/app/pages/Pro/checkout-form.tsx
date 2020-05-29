@@ -3,25 +3,24 @@
  * that used to be used in Patron page
  */
 
-import React from 'react';
+import { logError } from '@codesandbox/common/es/utils/analytics';
 import { format } from 'date-fns';
+import React from 'react';
 import {
-  injectStripe,
   CardElement,
   ReactStripeElements,
+  injectStripe,
 } from 'react-stripe-elements';
 
-import { logError } from '@codesandbox/common/lib/utils/analytics';
-
 import {
+  Button,
   CardContainer,
+  ErrorText,
   Form,
   FormField,
-  Label,
-  Input,
-  Button,
-  ErrorText,
   HelpText,
+  Input,
+  Label,
 } from './elements';
 
 interface Props {

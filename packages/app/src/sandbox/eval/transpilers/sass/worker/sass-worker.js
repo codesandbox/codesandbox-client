@@ -1,7 +1,9 @@
-import resolve from 'browser-resolve';
-import { absolute } from '@codesandbox/common/lib/utils/path';
 import { extname } from 'path';
-import delay from '@codesandbox/common/lib/utils/delay';
+
+import delay from '@codesandbox/common/es/utils/delay';
+import { absolute } from '@codesandbox/common/es/utils/path';
+import resolve from 'browser-resolve';
+
 import { packageFilter } from '../../../utils/resolve-utils';
 
 self.importScripts([

@@ -1,5 +1,5 @@
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
+import _debug from '@codesandbox/common/es/utils/debug';
+import { getAbsoluteDependencies } from '@codesandbox/common/es/utils/dependencies';
 import { actions, dispatch } from 'codesandbox-api';
 import { mergeDependencies } from 'sandbox/version-resolving/merge-dependency';
 

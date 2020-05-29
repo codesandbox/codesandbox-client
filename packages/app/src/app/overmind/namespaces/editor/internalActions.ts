@@ -1,19 +1,19 @@
 import getTemplateDefinition, {
   TemplateType,
-} from '@codesandbox/common/lib/templates';
+} from '@codesandbox/common/es/templates';
 import {
   Module,
   ModuleTab,
   Sandbox,
   ServerContainerStatus,
   TabType,
-} from '@codesandbox/common/lib/types';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import slugify from '@codesandbox/common/lib/utils/slugify';
+} from '@codesandbox/common/es/types';
+import { hasPermission } from '@codesandbox/common/es/utils/permission';
+import slugify from '@codesandbox/common/es/utils/slugify';
 import {
   editorUrl,
   sandboxUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
+} from '@codesandbox/common/es/utils/url-generator';
 import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';

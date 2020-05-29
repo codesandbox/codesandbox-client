@@ -1,5 +1,5 @@
-import Preview from '@codesandbox/common/lib/components/Preview';
-import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
+import Preview from '@codesandbox/common/es/components/Preview';
+import { parseSandboxConfigurations } from '@codesandbox/common/es/templates/configuration/parse-sandbox-configurations';
 import { mainModule } from 'app/overmind/utils/main-module';
 import React from 'react';
 

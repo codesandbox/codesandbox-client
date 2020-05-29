@@ -1,11 +1,12 @@
+import { Button } from '@codesandbox/common/es/components/Button';
+import track from '@codesandbox/common/es/utils/analytics';
 import React, { useEffect } from 'react';
-import { Button } from '@codesandbox/common/lib/components/Button';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { CodeAnywhere } from './CodeAnywhere';
-import { StartQuickly } from './StartQuickly';
-import { PrototypeRapidly } from './PrototypeRapidly';
+
 import { Header } from '../elements';
-import { Features, FeatureName, FeatureText, Actions } from './elements';
+import { CodeAnywhere } from './CodeAnywhere';
+import { Actions, FeatureName, FeatureText, Features } from './elements';
+import { PrototypeRapidly } from './PrototypeRapidly';
+import { StartQuickly } from './StartQuickly';
 
 export const Welcome = ({ goToTab }: { goToTab: (event: any) => void }) => {
   useEffect(() => {

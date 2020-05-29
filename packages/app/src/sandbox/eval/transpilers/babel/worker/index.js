@@ -1,4 +1,4 @@
-import loadPolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
+import loadPolyfills from '@codesandbox/common/es/load-dynamic-polyfills';
 
 require('app/config/polyfills');
 

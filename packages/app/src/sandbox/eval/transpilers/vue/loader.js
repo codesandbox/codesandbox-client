@@ -2,15 +2,14 @@
 /* eslint-disable import/no-webpack-loader-syntax, prefer-template, no-use-before-define, no-shadow, operator-assignment, no-else-return */
 import querystring from 'querystring';
 
-import { basename, dirname } from '@codesandbox/common/lib/utils/path';
-
+import { basename, dirname } from '@codesandbox/common/es/utils/path';
 import componentNormalizerRaw from '!raw-loader!./component-normalizer';
 import vueHotReloadAPIRaw from '!raw-loader!vue-hot-reload-api';
+
 import type { LoaderContext } from '../../transpiled-module';
 import loaderUtils from '../utils/loader-utils';
-
-import genId from './utils/gen-id';
 import parse from './parser';
+import genId from './utils/gen-id';
 
 // When extracting parts from the source vue file, we want to apply the
 // loaders chained before vue-loader, but exclude some loaders that simply

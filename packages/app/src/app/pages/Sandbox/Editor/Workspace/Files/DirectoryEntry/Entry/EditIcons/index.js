@@ -1,16 +1,16 @@
-import React from 'react';
-
-import CrossIcon from 'react-icons/lib/md/clear';
-import EditIcon from 'react-icons/lib/go/pencil';
-import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
-import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
-import UploadFileIcon from 'react-icons/lib/md/file-upload';
-import DownloadIcon from 'react-icons/lib/md/file-download';
-import UndoIcon from 'react-icons/lib/md/undo';
-
 import Tooltip, {
   SingletonTooltip,
-} from '@codesandbox/common/lib/components/Tooltip';
+} from '@codesandbox/common/es/components/Tooltip';
+import React from 'react';
+import { GoPencil } from 'react-icons/go';
+import {
+  MdClear,
+  MdCreateNewFolder,
+  MdFileDownload,
+  MdFileUpload,
+  MdInsertDriveFile,
+  MdUndo,
+} from 'react-icons/md';
 
 import { Icon } from '../../../../elements';
 import { Container } from './elements';
@@ -50,49 +50,49 @@ function EditIcons({
                 {onDownload && (
                   <Tooltip content="Export to ZIP" singleton={singleton}>
                     <Icon onClick={handleClick(onDownload)}>
-                      <DownloadIcon />
+                      <MdFileDownload />
                     </Icon>
                   </Tooltip>
                 )}
                 {onUploadFile && (
                   <Tooltip content="Upload Files" singleton={singleton}>
                     <Icon onClick={handleClick(onUploadFile)}>
-                      <UploadFileIcon />
+                      <MdFileUpload />
                     </Icon>
                   </Tooltip>
                 )}
                 {onDiscardChanges && (
                   <Tooltip content="Discard Changes">
                     <Icon onClick={handleClick(onDiscardChanges)}>
-                      <UndoIcon />
+                      <MdUndo />
                     </Icon>
                   </Tooltip>
                 )}
                 {onEdit && (
                   <Tooltip content="Rename" singleton={singleton}>
                     <Icon onClick={handleClick(onEdit)}>
-                      <EditIcon />
+                      <GoPencil />
                     </Icon>
                   </Tooltip>
                 )}
                 {onCreateFile && (
                   <Tooltip content="New File" singleton={singleton}>
                     <Icon onClick={handleClick(onCreateFile)}>
-                      <AddFileIcon />
+                      <MdInsertDriveFile />
                     </Icon>
                   </Tooltip>
                 )}
                 {onCreateDirectory && (
                   <Tooltip content="New Directory" singleton={singleton}>
                     <Icon onClick={handleClick(onCreateDirectory)}>
-                      <AddDirectoryIcon />
+                      <MdCreateNewFolder />
                     </Icon>
                   </Tooltip>
                 )}
                 {onDelete && (
                   <Tooltip content="Delete" singleton={singleton}>
                     <Icon onClick={handleClick(onDelete)}>
-                      <CrossIcon />
+                      <MdClear />
                     </Icon>
                   </Tooltip>
                 )}

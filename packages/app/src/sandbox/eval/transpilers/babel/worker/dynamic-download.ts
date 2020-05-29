@@ -1,7 +1,8 @@
+import { getGlobal } from '@codesandbox/common/es/utils/global';
 import resolve from 'browser-resolve';
-import { getGlobal } from '@codesandbox/common/lib/utils/global';
-import getRequireStatements from './simple-get-require-statements';
+
 import { packageFilter } from '../../../utils/resolve-utils';
+import getRequireStatements from './simple-get-require-statements';
 
 const global = getGlobal();
 const path = global.BrowserFS.BFSRequire('path');

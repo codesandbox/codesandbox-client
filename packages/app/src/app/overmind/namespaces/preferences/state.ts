@@ -1,6 +1,6 @@
-import { PaymentDetails, Settings } from '@codesandbox/common/lib/types';
-import { KEYBINDINGS } from '@codesandbox/common/lib/utils/keybindings';
-import { isIOS } from '@codesandbox/common/lib/utils/platform';
+import { PaymentDetails, Settings } from '@codesandbox/common/es/types';
+import { KEYBINDINGS } from '@codesandbox/common/es/utils/keybindings';
+import { isIOS } from '@codesandbox/common/es/utils/platform';
 import { derived } from 'overmind';
 
 type State = {

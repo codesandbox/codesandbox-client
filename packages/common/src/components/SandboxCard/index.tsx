@@ -1,27 +1,24 @@
 import React from 'react';
-import ForkIcon from 'react-icons/lib/go/repo-forked';
-import EyeIcon from 'react-icons/lib/go/eye';
-import LikeIcon from 'react-icons/lib/go/heart';
+import { GoEye, GoHeart, GoRepoForked } from 'react-icons/go';
 
-import getIcon from '../../templates/icons';
 import getTemplate, { TemplateType } from '../../templates';
-import { profileUrl } from '../../utils/url-generator';
+import getIcon from '../../templates/icons';
 import { ENTER } from '../../utils/keycodes';
-
+import { profileUrl } from '../../utils/url-generator';
+import Tags from '../Tags';
 import {
+  Avatar,
   Container,
-  SandboxTitle,
-  SandboxDescription,
   Image,
   Overlay,
-  Avatar,
-  Stats,
-  SandboxStats,
+  SandboxDescription,
   SandboxImage,
   SandboxInfo,
+  SandboxStats,
+  SandboxTitle,
+  Stats,
   TemplateIcon,
 } from './elements';
-import Tags from '../Tags';
 
 const getScreenshot = (id: string) =>
   `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
@@ -126,15 +123,15 @@ export default class SandboxCard extends React.PureComponent<Props> {
         <SandboxStats>
           <Stats>
             <li>
-              <EyeIcon />
+              <GoEye />
               {kFormatter(sandbox.view_count)}
             </li>
             <li>
-              <ForkIcon />
+              <GoRepoForked />
               {kFormatter(sandbox.fork_count)}
             </li>
             <li>
-              <LikeIcon />
+              <GoHeart />
               {kFormatter(sandbox.like_count)}
             </li>
           </Stats>

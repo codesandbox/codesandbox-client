@@ -1,6 +1,6 @@
+import { GoPencil } from 'react-icons/go';
+import { MdClear } from 'react-icons/md';
 import styled from 'styled-components';
-import CrossIcon from 'react-icons/lib/md/clear';
-import EditIcon from 'react-icons/lib/go/pencil';
 
 export const TeamContainer = styled.div`
   display: flex;
@@ -35,7 +35,7 @@ export const MemberHeader = styled.div`
   color: rgba(255, 255, 255, 0.6);
 `;
 
-export const StyledCrossIcon = styled(CrossIcon)`
+export const StyledCrossIcon = styled(MdClear)`
   transition: 0.3s ease color;
   color: white;
   cursor: pointer;
@@ -45,7 +45,7 @@ export const StyledCrossIcon = styled(CrossIcon)`
   }
 `;
 
-export const StyledEditIcon = styled(EditIcon)`
+export const StyledEditIcon = styled(GoPencil)`
   transition: 0.3s ease color;
   vertical-align: middle;
   font-size: 1rem;

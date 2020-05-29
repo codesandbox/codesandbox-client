@@ -1,12 +1,13 @@
-import { Sandbox, Module, Directory } from '@codesandbox/common/lib/types';
+import { Directory, Module, Sandbox } from '@codesandbox/common/es/types';
 // @ts-ignore
 import files from 'buffer-loader!./files.zip'; // eslint-disable-line import/no-webpack-loader-syntax
+
 import {
-  getResourceTag,
-  getIndexHtmlBody,
-  createPackageJSON,
   createDirectoryWithFiles,
   createFile,
+  createPackageJSON,
+  getIndexHtmlBody,
+  getResourceTag,
 } from '..';
 
 /* eslint-disable no-useless-escape */

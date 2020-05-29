@@ -1,19 +1,16 @@
 // @flow
 
-import * as React from 'react';
-import { sortBy } from 'lodash-es';
-
+import { isMainModule } from '@codesandbox/common/es/sandbox/modules';
 import type {
-  Module,
   Directory as DirectoryType,
-} from '@codesandbox/common/lib/types';
-
-import { isMainModule } from '@codesandbox/common/lib/sandbox/modules';
+  Module,
+} from '@codesandbox/common/es/types';
 // eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
+import { sortBy } from 'lodash-es';
+import * as React from 'react';
 
 import File from '../File';
-
 import { Container } from './elements';
 
 type Props = {

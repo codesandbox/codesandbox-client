@@ -1,9 +1,8 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
+// @ts-ignore
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import { patronUrl } from '@codesandbox/common/es/utils/url-generator';
 import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
-
-// @ts-ignore
 import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg';
 
 import { Action } from '../elements';

@@ -1,11 +1,11 @@
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { getModulePath } from '@codesandbox/common/es/sandbox/modules';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
 import {
   embedUrl,
   optionsToParameterizedUrl,
   protocolAndHost,
   sandboxUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
+} from '@codesandbox/common/es/utils/url-generator';
 import { escapeHtml } from 'app/utils/escape';
 
 export const BUTTON_URL = `${process.env.CODESANDBOX_HOST}/static/img/play-codesandbox.svg`;

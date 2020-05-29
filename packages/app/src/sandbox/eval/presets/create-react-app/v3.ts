@@ -1,23 +1,22 @@
-import _debug from '@codesandbox/common/lib/utils/debug';
-
-import Manager from 'sandbox/eval/manager';
+import _debug from '@codesandbox/common/es/utils/debug';
 import { dispatch } from 'codesandbox-api';
-import Preset from '..';
+import Manager from 'sandbox/eval/manager';
 
-import stylesTranspiler from '../../transpilers/style';
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
-import rawTranspiler from '../../transpilers/raw';
-import svgrTranspiler from '../../transpilers/svgr';
-import sassTranspiler from '../../transpilers/sass';
-import refreshTranspiler from '../../transpilers/react/refresh-transpiler';
 import styleProcessor from '../../transpilers/postcss';
+import rawTranspiler from '../../transpilers/raw';
+import refreshTranspiler from '../../transpilers/react/refresh-transpiler';
+import sassTranspiler from '../../transpilers/sass';
+import stylesTranspiler from '../../transpilers/style';
+import svgrTranspiler from '../../transpilers/svgr';
 import {
-  hasRefresh,
   aliases,
   cleanUsingUnmount,
+  hasRefresh,
   isMinimalReactVersion,
 } from './utils';
+import Preset from '..';
 
 const debug = _debug('cs:compiler:cra');
 

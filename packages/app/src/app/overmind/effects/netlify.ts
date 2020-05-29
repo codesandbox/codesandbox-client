@@ -1,5 +1,5 @@
-import getTemplate from '@codesandbox/common/lib/templates';
-import { NetlifySite, Sandbox } from '@codesandbox/common/lib/types';
+import getTemplate from '@codesandbox/common/es/templates';
+import { NetlifySite, Sandbox } from '@codesandbox/common/es/types';
 import getNetlifyConfig from 'app/utils/getNetlifyConfig';
 import axios from 'axios';
 

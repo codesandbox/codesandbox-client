@@ -1,18 +1,15 @@
-import getIcon from '@codesandbox/common/lib/templates/icons';
-import { SmallSandbox } from '@codesandbox/common/lib/types';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import getIcon from '@codesandbox/common/es/templates/icons';
+import { SmallSandbox } from '@codesandbox/common/es/types';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
+import { useOvermind } from 'app/overmind';
 import { format } from 'date-fns';
 import React, { FunctionComponent } from 'react';
-import EyeIcon from 'react-icons/lib/fa/eye';
-import FullHeartIcon from 'react-icons/lib/fa/heart';
-import ForkIcon from 'react-icons/lib/go/repo-forked';
+import { FaEye, FaHeart } from 'react-icons/fa';
+import { GoRepoForked } from 'react-icons/go';
 import { Link } from 'react-router-dom';
 
-import { useOvermind } from 'app/overmind';
-
 import { PrivacyStatus } from '../PrivacyStatus';
-
 import { DeleteSandboxButton } from './DeleteSandboxButton';
 import {
   Body,
@@ -55,15 +52,15 @@ export const SandboxList: FunctionComponent<Props> = ({
           <StatTitle />
 
           <StatTitle>
-            <FullHeartIcon />
+            <FaHeart />
           </StatTitle>
 
           <StatTitle>
-            <EyeIcon />
+            <FaEye />
           </StatTitle>
 
           <StatTitle>
-            <ForkIcon />
+            <GoRepoForked />
           </StatTitle>
 
           {showDeleteButton ? <HeaderTitle /> : null}

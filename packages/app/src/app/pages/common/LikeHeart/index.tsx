@@ -1,13 +1,11 @@
-import { Sandbox } from '@codesandbox/common/lib/types';
-import React, { FunctionComponent, ComponentProps } from 'react';
-import { StyledComponentInnerOtherProps } from 'styled-components';
-
+// @ts-ignore
+// @ts-ignore
+import { Sandbox } from '@codesandbox/common/es/types';
 import { useOvermind } from 'app/overmind';
-
-// @ts-ignore
-import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
-// @ts-ignore
+import React, { ComponentProps, FunctionComponent } from 'react';
+import { StyledComponentInnerOtherProps } from 'styled-components';
 import FullHeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
 import { Container } from './elements';
 import { MaybeTooltip } from './MaybeTooltip';

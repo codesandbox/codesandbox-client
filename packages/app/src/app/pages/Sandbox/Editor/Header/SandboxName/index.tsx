@@ -1,9 +1,9 @@
 import { basename } from 'path';
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import track from '@codesandbox/common/es/utils/analytics';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
+import { ESC } from '@codesandbox/common/es/utils/keycodes';
 import { Button, Element, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';

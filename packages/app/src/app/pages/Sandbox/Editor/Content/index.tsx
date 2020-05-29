@@ -1,16 +1,16 @@
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { BACKTICK } from '@codesandbox/common/lib/utils/keycodes';
+import getTemplateDefinition from '@codesandbox/common/es/templates';
+import { BACKTICK } from '@codesandbox/common/es/utils/keycodes';
 import { VSCode as CodeEditor } from 'app/components/CodeEditor/VSCode';
 import { DevTools } from 'app/components/Preview/DevTools';
 import { useOvermind } from 'app/overmind';
-import useKey from 'react-use/lib/useKey';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
+import useKey from 'react-use/lib/useKey';
 import { ThemeProvider } from 'styled-components';
 
+import { EditorToast } from './EditorToast';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import { Preview } from './Preview';
-import { EditorToast } from './EditorToast';
 
 export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
   const { state, actions, effects, reaction } = useOvermind();

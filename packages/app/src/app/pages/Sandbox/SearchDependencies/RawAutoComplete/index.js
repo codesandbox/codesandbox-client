@@ -1,9 +1,7 @@
-import React from 'react';
+import { ARROW_RIGHT, ENTER } from '@codesandbox/common/es/utils/keycodes';
 import Downshift from 'downshift';
-
+import React from 'react';
 import { Pagination } from 'react-instantsearch/dom';
-
-import { ENTER, ARROW_RIGHT } from '@codesandbox/common/lib/utils/keycodes';
 
 import DependencyHit from '../DependencyHit';
 import { AutoCompleteInput, SuggestionInput } from './elements';

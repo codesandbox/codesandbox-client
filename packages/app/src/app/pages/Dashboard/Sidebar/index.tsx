@@ -1,11 +1,11 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Input from '@codesandbox/common/lib/components/Input';
-import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { Button } from '@codesandbox/common/es/components/Button';
+import Input from '@codesandbox/common/es/components/Input';
+import { teamOverviewUrl } from '@codesandbox/common/es/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 import history from 'app/utils/history';
 import React from 'react';
 import { Query } from 'react-apollo';
-import PeopleIcon from 'react-icons/lib/md/people';
+import { MdPeople } from 'react-icons/md';
 import { Route, withRouter } from 'react-router-dom';
 import DashboardIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
@@ -89,7 +89,7 @@ const SidebarComponent = () => {
                       <Items>
                         <CategoryHeader>{name}</CategoryHeader>
                         <Item
-                          Icon={PeopleIcon}
+                          Icon={MdPeople}
                           path={teamOverviewUrl(id)}
                           name="Team Overview"
                         />

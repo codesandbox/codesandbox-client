@@ -1,8 +1,8 @@
 import {
   getChildren as calculateChildren,
   inDirectory,
-} from '@codesandbox/common/lib/sandbox/modules';
-import { Directory, Module } from '@codesandbox/common/lib/types';
+} from '@codesandbox/common/es/sandbox/modules';
+import { Directory, Module } from '@codesandbox/common/es/types';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 import { DropTarget, DropTargetMonitor } from 'react-dnd';

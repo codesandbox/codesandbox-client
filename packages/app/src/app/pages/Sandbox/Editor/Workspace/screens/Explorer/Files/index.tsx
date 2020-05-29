@@ -1,4 +1,4 @@
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import { getModulePath } from '@codesandbox/common/es/sandbox/modules';
 import { Collapsible, SidebarRow } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';

@@ -1,4 +1,7 @@
-import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
+import { GoPrimitiveDot } from 'react-icons/go';
+
 import { StyledCloseIcon } from '../Tab/elements';
 
-export const StyledNotSyncedIcon = StyledCloseIcon.withComponent(NotSyncedIcon);
+export const StyledNotSyncedIcon = StyledCloseIcon.withComponent(
+  GoPrimitiveDot
+);

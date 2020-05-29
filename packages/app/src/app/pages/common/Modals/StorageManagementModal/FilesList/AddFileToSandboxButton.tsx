@@ -1,8 +1,7 @@
-import { UploadFile } from '@codesandbox/common/lib/types';
-import React, { FunctionComponent } from 'react';
-
-import { useOvermind } from 'app/overmind';
+import { UploadFile } from '@codesandbox/common/es/types';
 import { Button, Icon } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
 
 type Props = Pick<UploadFile, 'name' | 'url'>;
 export const AddFileToSandboxButton: FunctionComponent<Props> = ({

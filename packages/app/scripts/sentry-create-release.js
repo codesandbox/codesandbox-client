@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 const childProcess = require('child_process');
-const VERSION = require('@codesandbox/common/lib/version').default;
+const VERSION = require('@codesandbox/common/es/version').default;
 
 const COMMIT_HASH = childProcess
   .execSync('git rev-parse HEAD')

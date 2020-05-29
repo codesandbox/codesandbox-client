@@ -1,15 +1,15 @@
-import React from 'react';
-import css from '@styled-system/css';
+import { TeamIcon } from '@codesandbox/common/es/components/icons/Team';
+import { RoomInfo } from '@codesandbox/common/es/types';
+import { hasPermission } from '@codesandbox/common/es/utils/permission';
 import { Element } from '@codesandbox/components';
-import { AnimatePresence, motion } from 'framer-motion';
-
-import { useOvermind } from 'app/overmind';
-import { TeamIcon } from '@codesandbox/common/lib/components/icons/Team';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import css from '@styled-system/css';
 import { Authorization } from 'app/graphql/types';
+import { useOvermind } from 'app/overmind';
+import { AnimatePresence, motion } from 'framer-motion';
 import { sortBy } from 'lodash-es';
-import { RoomInfo } from '@codesandbox/common/lib/types';
-import { CollaboratorItem, Collaborator, Invitation } from './Collaborator';
+import React from 'react';
+
+import { Collaborator, CollaboratorItem, Invitation } from './Collaborator';
 
 const Animated = ({ showMountAnimations, ...props }) => (
   <motion.div

@@ -1,14 +1,13 @@
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import MaxWidth from '@codesandbox/common/es/components/flex/MaxWidth';
 import {
   profileLikesUrl,
   profileSandboxesUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
+} from '@codesandbox/common/es/utils/url-generator';
+import { useOvermind } from 'app/overmind';
+import { NotFound } from 'app/pages/common/NotFound';
 import React, { FunctionComponent, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Route, RouteComponentProps, Switch } from 'react-router-dom';
-
-import { useOvermind } from 'app/overmind';
-import { NotFound } from 'app/pages/common/NotFound';
 
 import { Container, Content, Margin } from './elements';
 import { Header } from './Header';

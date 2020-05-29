@@ -1,8 +1,7 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import React, { FunctionComponent } from 'react';
-import BellIcon from 'react-icons/lib/md/notifications';
-
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
+import { MdNotifications } from 'react-icons/md';
 
 import { Action, UnreadIcon } from '../elements';
 
@@ -31,7 +30,7 @@ export const ShowNotificationsAction: FunctionComponent<Props> = ({
         content={unreadCount > 0 ? 'Show Notifications' : 'No Notifications'}
         placement="bottom"
       >
-        <BellIcon height={35} />
+        <MdNotifications height={35} />
 
         {unreadCount > 0 && <UnreadIcon />}
       </Tooltip>

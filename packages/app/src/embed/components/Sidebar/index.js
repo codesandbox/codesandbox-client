@@ -1,13 +1,12 @@
+import type { Sandbox } from '@codesandbox/common/es/types';
 import * as React from 'react';
-import type { Sandbox } from '@codesandbox/common/lib/types';
 
-import Section from './Section';
-import { SandboxInfo } from './SandboxInfo';
-import FileTree from './FileTree';
 import Dependencies from './Dependencies';
-import ExternalResources from './ExternalResources';
-
 import { Container } from './elements';
+import ExternalResources from './ExternalResources';
+import FileTree from './FileTree';
+import { SandboxInfo } from './SandboxInfo';
+import Section from './Section';
 
 type Props = {
   sandbox: Sandbox,

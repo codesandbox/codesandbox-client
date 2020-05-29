@@ -1,6 +1,6 @@
 import './titlebar.css';
 
-import track from '@codesandbox/common/lib/utils/analytics';
+import track from '@codesandbox/common/es/utils/analytics';
 import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent, useEffect, useRef } from 'react';
 

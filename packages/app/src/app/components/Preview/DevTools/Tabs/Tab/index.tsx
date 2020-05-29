@@ -1,17 +1,17 @@
+import { DevToolsTabPosition } from '@codesandbox/common/es/types';
 import * as React from 'react';
 import {
-  DragSource,
   ConnectDragSource,
-  DropTarget,
   ConnectDropTarget,
-  DropTargetMonitor,
+  DragSource,
+  DropTarget,
   DropTargetConnector,
+  DropTargetMonitor,
 } from 'react-dnd';
-import CrossIcon from 'react-icons/lib/md/clear';
+import { MdClear } from 'react-icons/md';
 
-import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
-import { Tab, CloseTab } from './elements';
 import { IViewType, Status } from '../..';
+import { CloseTab, Tab } from './elements';
 import { UnreadDevToolsCount } from './UnreadDevToolsCount';
 
 export interface TabProps {
@@ -125,7 +125,7 @@ export const PaneTab = ({
               })
             }
           >
-            <CrossIcon />
+            <MdClear />
           </CloseTab>
         )}
       </Tab>

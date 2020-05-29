@@ -1,8 +1,8 @@
 import React from 'react';
-import IconBase from 'react-icons/IconBase';
+import { IconBase } from 'react-icons';
 
 export const CodeSandboxIcon = props => (
-  <IconBase fill="none" viewBox="0 0 24 24" {...props}>
+  <IconBase attr={undefined} fill="none" viewBox="0 0 24 24" {...props}>
     <g clipRule="evenodd" fillRule="evenodd">
       <path
         d="m12 11.8847v6.7437c.1174 0 .1945-.0255.3-.0856l5.3999-3.0857c.2132-.1222.3001-.3114.3001-.5572v-6.25701c0-.12328-.0259-.19703-.0858-.29999l-5.7415 3.2441c-.1068.061-.1727.1746-.1727.2977zm2.9999 3.8724c0 .1714-.0642.2571-.2143.3428l-1.7999 1.0286c-.1286.0857-.3.0429-.3-.1286v-4.5857c0-.1226.1079-.2816.2142-.3428l4.1143-2.35709c.1143-.06577.2143.03956.2143.17142v2.44287c0 .1266-.0597.2404-.1715.3l-1.8428.9857c-.1117.0595-.2143.1733-.2143.2999z"

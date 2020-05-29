@@ -1,30 +1,22 @@
-import React, { useMemo } from 'react';
-import { useOvermind } from 'app/overmind';
-import css from '@styled-system/css';
 import { Stack } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React, { useMemo } from 'react';
+import { FaCode, FaFlask, FaOutdent } from 'react-icons/fa';
+import { GoBrowser, GoKeyboard, GoStar } from 'react-icons/go';
+import { MdColorLens, MdCreditCard, MdDeviceHub } from 'react-icons/md';
 
-import AppearanceIcon from 'react-icons/lib/md/color-lens';
-import CodeIcon from 'react-icons/lib/fa/code';
-import CreditCardIcon from 'react-icons/lib/md/credit-card';
-import BrowserIcon from 'react-icons/lib/go/browser';
-import StarIcon from 'react-icons/lib/go/star';
-import FlaskIcon from 'react-icons/lib/fa/flask';
-import CodeFormatIcon from 'react-icons/lib/fa/dedent';
-import IntegrationIcon from 'react-icons/lib/md/device-hub';
-import KeyboardIcon from 'react-icons/lib/go/keyboard';
-
-import { SideNavigation } from './SideNavigation';
-
+import { Alert } from '../Common/Alert';
 import { Appearance } from './Appearance';
+import { Badges } from './Badges';
+import { CodeFormatting } from './CodeFormatting';
 import { EditorSettings } from './EditorPageSettings/EditorSettings';
 import { PreviewSettings } from './EditorPageSettings/PreviewSettings';
-import { CodeFormatting } from './CodeFormatting';
-import { PaymentInfo } from './PaymentInfo';
-import { Integrations } from './Integrations';
-import { Badges } from './Badges';
 import { Experiments } from './Experiments';
+import { Integrations } from './Integrations';
 import { KeyMapping } from './KeyMapping';
-import { Alert } from '../Common/Alert';
+import { PaymentInfo } from './PaymentInfo';
+import { SideNavigation } from './SideNavigation';
 
 const PreferencesModal: React.FC = () => {
   const {
@@ -44,55 +36,55 @@ const PreferencesModal: React.FC = () => {
         {
           id: 'appearance',
           title: 'Appearance',
-          icon: <AppearanceIcon />,
+          icon: <MdColorLens />,
           content: <Appearance />,
         },
         {
           id: 'editor',
           title: 'Editor',
-          icon: <CodeIcon />,
+          icon: <FaCode />,
           content: <EditorSettings />,
         },
         {
           id: 'prettierSettings',
           title: 'Prettier Settings',
-          icon: <CodeFormatIcon />,
+          icon: <FaOutdent />,
           content: <CodeFormatting />,
         },
         {
           id: 'preview',
           title: 'Preview',
-          icon: <BrowserIcon />,
+          icon: <GoBrowser />,
           content: <PreviewSettings />,
         },
         {
           id: 'keybindings',
           title: 'Key Bindings',
-          icon: <KeyboardIcon />,
+          icon: <GoKeyboard />,
           content: <KeyMapping />,
         },
         isLoggedIn && {
           id: 'integrations',
           title: 'Integrations',
-          icon: <IntegrationIcon />,
+          icon: <MdDeviceHub />,
           content: <Integrations />,
         },
         isPatron && {
           id: 'paymentInfo',
           title: 'Payment Info',
-          icon: <CreditCardIcon />,
+          icon: <MdCreditCard />,
           content: <PaymentInfo />,
         },
         isPatron && {
           id: 'badges',
           title: 'Badges',
-          icon: <StarIcon />,
+          icon: <GoStar />,
           content: <Badges />,
         },
         {
           id: 'experiments',
           title: 'Experiments',
-          icon: <FlaskIcon />,
+          icon: <FaFlask />,
           content: <Experiments />,
         },
       ].filter(Boolean),

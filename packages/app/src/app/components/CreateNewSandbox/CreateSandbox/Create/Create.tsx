@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
-import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
-import { useOvermind } from 'app/overmind';
+import { Scrollable } from '@codesandbox/common/es/components/Scrollable';
+import track from '@codesandbox/common/es/utils/analytics';
 import { LinkButton } from 'app/components/LinkButton';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { Header } from '../elements';
-import { CenteredMessage } from './elements';
+import { useOvermind } from 'app/overmind';
+import React, { useEffect } from 'react';
 
-import { PersonalTemplates } from './PersonalTemplates';
+import { Header } from '../elements';
 import { SearchBox } from '../SearchBox';
 import { getTemplateInfosFromAPI } from '../utils/api';
+import { CenteredMessage } from './elements';
+import { PersonalTemplates } from './PersonalTemplates';
 
 export const Create = () => {
   const { state, actions } = useOvermind();

@@ -2,7 +2,7 @@ import { Observer } from 'app/overmind';
 import React from 'react';
 import { Query } from 'react-apollo';
 import Helmet from 'react-helmet';
-import RemoveIcon from 'react-icons/lib/md/highlight-remove';
+import { MdHighlightRemove } from 'react-icons/md';
 
 import { DELETED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 import { Content as Sandboxes } from '../../Sandboxes';
@@ -54,7 +54,7 @@ const DeletedSandboxes = () => (
                     ? [
                         {
                           name: 'Empty Trash',
-                          Icon: <RemoveIcon />,
+                          Icon: <MdHighlightRemove />,
                           run: () => {
                             actions.modalOpened({
                               modal: 'emptyTrash',

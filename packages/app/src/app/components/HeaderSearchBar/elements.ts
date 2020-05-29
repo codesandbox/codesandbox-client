@@ -1,6 +1,6 @@
+import Relative from '@codesandbox/common/es/components/Relative';
+import { GoSearch } from 'react-icons/go';
 import styled, { css } from 'styled-components';
-import BaseSearchIcon from 'react-icons/lib/go/search';
-import Relative from '@codesandbox/common/lib/components/Relative';
 
 export const Container = styled(Relative)`
   display: flex;
@@ -50,7 +50,7 @@ export const SearchButton = styled.button.attrs({
   cursor: pointer;
 `;
 
-export const SearchIcon = styled(BaseSearchIcon)`
+export const SearchIcon = styled(GoSearch)`
   ${({ theme }) => css`
     color: ${theme.light
       ? css`rgba(0, 0, 0, 0.7)`

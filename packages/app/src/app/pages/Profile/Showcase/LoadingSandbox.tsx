@@ -1,5 +1,5 @@
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import Centered from '@codesandbox/common/es/components/flex/Centered';
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
 import React, { FunctionComponent } from 'react';
 
 import { ErrorTitle } from './elements';

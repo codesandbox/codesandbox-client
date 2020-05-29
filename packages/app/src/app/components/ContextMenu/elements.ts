@@ -1,7 +1,6 @@
-import styled from 'styled-components';
-
+import theme from '@codesandbox/common/es/theme';
 import { animated } from 'react-spring/renderprops';
-import theme from '@codesandbox/common/lib/theme';
+import styled from 'styled-components';
 
 export const Container = styled(animated.div)`
   position: fixed;

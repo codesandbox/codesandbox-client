@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 import { EventEmitter } from 'events';
 
-import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
+import requirePolyfills from '@codesandbox/common/es/load-dynamic-polyfills';
 
 const ctx: any = self as any;
 declare const __DEV__: boolean;

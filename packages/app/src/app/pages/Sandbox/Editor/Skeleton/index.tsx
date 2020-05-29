@@ -1,4 +1,4 @@
-import Navigator from '@codesandbox/common/lib/components/Preview/Navigator';
+import Navigator from '@codesandbox/common/es/components/Preview/Navigator';
 import { Collapsible, List, ListItem, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React from 'react';
@@ -11,9 +11,9 @@ import {
   SkeletonEditor,
   SkeletonEditorTop,
   SkeletonExplorer,
+  SkeletonStatusBar,
   SkeletonTextBlock,
   SkeletonWrapper,
-  SkeletonStatusBar,
 } from './elements';
 
 export const ContentSkeleton = ({ style }) => (

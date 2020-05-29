@@ -1,6 +1,5 @@
+import { MdChevronLeft, MdFullscreenExit } from 'react-icons/md';
 import styled from 'styled-components';
-import ChevronLeft from 'react-icons/lib/md/chevron-left';
-import ExitZen from 'react-icons/lib/md/fullscreen-exit';
 
 export const Container = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
@@ -15,7 +14,7 @@ export const Container = styled.div`
   padding: 0 0.5rem;
 `;
 
-export const Chevron = styled(ChevronLeft)`
+export const Chevron = styled(MdChevronLeft)`
   transition: 0.3s ease all;
   position: absolute;
   font-size: 1rem;
@@ -42,7 +41,7 @@ export const FileName = styled.div`
   flex: 1;
 `;
 
-export const StyledExitZen = styled(ExitZen)`
+export const StyledExitZen = styled(MdFullscreenExit)`
   transition: 0.3s ease opacity;
 
   cursor: pointer;

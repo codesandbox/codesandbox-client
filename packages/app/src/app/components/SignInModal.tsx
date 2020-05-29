@@ -1,11 +1,11 @@
-import React, { useEffect, useCallback } from 'react';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { ThemeProvider, Stack } from '@codesandbox/components';
+import { ESC } from '@codesandbox/common/es/utils/keycodes';
+import { Stack, ThemeProvider } from '@codesandbox/components';
 import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
-import OutsideClickHandler from 'react-outside-click-handler';
-import { SignInModalElement } from 'app/pages/SignIn/Modal';
 import { useOvermind } from 'app/overmind';
-import { motion, AnimatePresence } from 'framer-motion';
+import { SignInModalElement } from 'app/pages/SignIn/Modal';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { useCallback, useEffect } from 'react';
+import OutsideClickHandler from 'react-outside-click-handler';
 
 export const SignInModal = () => {
   const {

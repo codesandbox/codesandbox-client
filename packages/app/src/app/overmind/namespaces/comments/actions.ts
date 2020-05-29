@@ -1,6 +1,6 @@
-import { CommentsFilterOption, Module } from '@codesandbox/common/lib/types';
-import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { CommentsFilterOption, Module } from '@codesandbox/common/es/types';
+import { captureException } from '@codesandbox/common/es/utils/analytics/sentry';
+import { getTextOperation } from '@codesandbox/common/es/utils/diff';
 import {
   DIALOG_TRANSITION_DURATION,
   REPLY_TRANSITION_DELAY,

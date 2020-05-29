@@ -1,5 +1,5 @@
-import getTemplate from '@codesandbox/common/lib/templates';
-import { ALGOLIA_DEFAULT_INDEX } from '@codesandbox/common/lib/utils/config';
+import getTemplate from '@codesandbox/common/es/templates';
+import { ALGOLIA_DEFAULT_INDEX } from '@codesandbox/common/es/utils/config';
 import React from 'react';
 
 import { Container } from './elements';

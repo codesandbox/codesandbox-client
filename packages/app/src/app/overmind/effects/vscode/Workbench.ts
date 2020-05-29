@@ -1,5 +1,5 @@
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { COMMENTS } from '@codesandbox/common/es/utils/feature-flags';
+import { notificationState } from '@codesandbox/common/es/utils/notifications';
 import {
   NotificationMessage,
   NotificationStatus,

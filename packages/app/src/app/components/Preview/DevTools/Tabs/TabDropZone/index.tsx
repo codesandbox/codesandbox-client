@@ -1,12 +1,12 @@
+import { DevToolsTabPosition } from '@codesandbox/common/es/types';
 import * as React from 'react';
-import styled, { css } from 'styled-components';
 import {
-  DropTarget,
   ConnectDropTarget,
-  DropTargetMonitor,
+  DropTarget,
   DropTargetConnector,
+  DropTargetMonitor,
 } from 'react-dnd';
-import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
+import styled, { css } from 'styled-components';
 
 import { PREVIEW_TAB_ID } from '../Tab';
 

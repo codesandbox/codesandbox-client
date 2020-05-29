@@ -1,25 +1,26 @@
-import * as React from 'react';
-import css from '@styled-system/css';
-import { Link, Redirect } from 'react-router-dom';
+import { useMutation, useQuery } from '@apollo/react-hooks';
+import LogoIcon from '@codesandbox/common/es/components/Logo';
+import track from '@codesandbox/common/es/utils/analytics';
 import {
-  ThemeProvider,
-  Text,
-  Stack,
-  Element,
+  dashboardUrl,
+  teamOverviewUrl,
+} from '@codesandbox/common/es/utils/url-generator';
+import {
   Button,
+  Element,
+  Stack,
+  Text,
+  ThemeProvider,
 } from '@codesandbox/components';
 import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
-import LogoIcon from '@codesandbox/common/lib/components/Logo';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import * as React from 'react';
 import { Helmet } from 'react-helmet';
-import {
-  teamOverviewUrl,
-  dashboardUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { PageContainer, ContentContainer } from './elements';
-import { teamByToken, joinTeamMutation } from './queries';
+import { Link, Redirect } from 'react-router-dom';
+
+import { ContentContainer, PageContainer } from './elements';
+import { joinTeamMutation, teamByToken } from './queries';
 
 const InfoDialog = ({
   title,

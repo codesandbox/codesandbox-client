@@ -1,9 +1,6 @@
+import { ViewConfig, ViewTab } from '@codesandbox/common/es/templates/template';
+import { DevToolsTabPosition } from '@codesandbox/common/es/types';
 import immer from 'immer';
-import {
-  ViewConfig,
-  ViewTab,
-} from '@codesandbox/common/lib/templates/template';
-import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 
 const isEqual = (prevPos: DevToolsTabPosition, nextPos: DevToolsTabPosition) =>
   prevPos.devToolIndex === nextPos.devToolIndex &&

@@ -1,5 +1,5 @@
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import { Sandbox } from '@codesandbox/common/lib/types';
+import { getModulePath } from '@codesandbox/common/es/sandbox/modules';
+import { Sandbox } from '@codesandbox/common/es/types';
 import { lineAndColumnToIndex } from 'app/overmind/utils/common';
 
 export function getVSCodePath(sandbox: Sandbox, moduleId: string) {

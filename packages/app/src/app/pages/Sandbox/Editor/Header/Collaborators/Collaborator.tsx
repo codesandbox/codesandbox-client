@@ -1,8 +1,8 @@
-import { GlobeIcon } from '@codesandbox/common/lib/components/icons/Globe';
-import { LinkIcon } from '@codesandbox/common/lib/components/icons/Link';
-import { LockIcon } from '@codesandbox/common/lib/components/icons/Lock';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { Stack, Text, Menu, Icon } from '@codesandbox/components';
+import { GlobeIcon } from '@codesandbox/common/es/components/icons/Globe';
+import { LinkIcon } from '@codesandbox/common/es/components/icons/Link';
+import { LockIcon } from '@codesandbox/common/es/components/icons/Lock';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import { Icon, Menu, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Authorization } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';

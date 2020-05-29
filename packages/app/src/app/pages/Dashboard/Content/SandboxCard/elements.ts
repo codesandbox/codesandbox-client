@@ -1,7 +1,8 @@
-import styled from 'styled-components';
-import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import fadeIn from '@codesandbox/common/es/utils/animation/fade-in';
 import { ContextMenu } from 'app/components/ContextMenu';
+import styled from 'styled-components';
+
 import { KebabIcon as MoreInfoIcon } from './KebabIcon';
 
 export const PADDING = 32;

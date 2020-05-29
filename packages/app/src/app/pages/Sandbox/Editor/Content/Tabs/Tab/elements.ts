@@ -1,5 +1,5 @@
+import { GoX } from 'react-icons/go';
 import styled, { css } from 'styled-components';
-import CloseIcon from 'react-icons/lib/go/x';
 
 export const Container = styled.div<{
   isOver?: boolean;
@@ -66,7 +66,7 @@ export const TabDir = styled.div`
   white-space: nowrap;
 `;
 
-export const StyledCloseIcon = styled(CloseIcon)<{ show?: boolean | string }>`
+export const StyledCloseIcon = styled(GoX)<{ show?: boolean | string }>`
   transition: 0.1s ease opacity;
 
   float: right;

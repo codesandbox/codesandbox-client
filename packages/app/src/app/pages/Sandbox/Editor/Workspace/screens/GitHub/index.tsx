@@ -1,20 +1,21 @@
-import React, { useEffect } from 'react';
+import { githubRepoUrl } from '@codesandbox/common/es/utils/url-generator';
 import {
   Collapsible,
-  Text,
   Element,
-  Stack,
   Link,
+  Stack,
+  Text,
 } from '@codesandbox/components';
-import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
-import { GitHubIcon } from './Icons';
-import { CommitForm } from './CommitForm';
+import React, { useEffect } from 'react';
+
 import { Changes } from './Changes';
+import { CommitForm } from './CommitForm';
 import { CreateRepo } from './CreateRepo';
 import { GithubLogin } from './GithubLogin';
-import { NotOwner } from './NotOwner';
+import { GitHubIcon } from './Icons';
 import { NotLoggedIn } from './NotLoggedIn';
+import { NotOwner } from './NotOwner';
 
 export const GitHub = () => {
   const {

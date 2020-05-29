@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { searchUrl } from '@codesandbox/common/es/utils/url-generator';
 import history from 'app/utils/history';
-import { searchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import React, { useState } from 'react';
+
 import { Container, Input, SearchButton, SearchIcon } from './elements';
 
 export const HeaderSearchBar = () => {

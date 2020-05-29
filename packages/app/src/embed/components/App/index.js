@@ -1,22 +1,23 @@
-import * as React from 'react';
-import { ThemeProvider } from 'styled-components';
-import { camelizeKeys } from 'humps';
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import type { Module, Sandbox } from '@codesandbox/common/lib/types';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { getSandboxOptions } from '@codesandbox/common/lib/url';
+import Centered from '@codesandbox/common/es/components/flex/Centered';
 import {
   findCurrentModule,
   findMainModule,
-} from '@codesandbox/common/lib/sandbox/modules';
-import { Title } from 'app/components/Title';
+} from '@codesandbox/common/es/sandbox/modules';
+import getTemplateDefinition from '@codesandbox/common/es/templates';
+import type { Module, Sandbox } from '@codesandbox/common/es/types';
+import { getSandboxOptions } from '@codesandbox/common/es/url';
+import track from '@codesandbox/common/es/utils/analytics';
 import { SubTitle } from 'app/components/SubTitle';
+import { Title } from 'app/components/Title';
+import { camelizeKeys } from 'humps';
+import * as React from 'react';
+import { ThemeProvider } from 'styled-components';
+
+import { getTheme } from '../../theme';
+import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
 import Content from '../Content';
 import Sidebar from '../Sidebar';
 import { Container, Fullscreen, Moving } from './elements';
-import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
-import { getTheme } from '../../theme';
 
 // Okay, this looks veeeery strange, we need this because Webpack has a bug currently
 // that makes it think we havecore-js/es6/map available in embed, but we don't.

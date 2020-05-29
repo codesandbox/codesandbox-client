@@ -1,19 +1,17 @@
-import React from 'react';
-
 import Tooltip, {
   SingletonTooltip,
-} from '@codesandbox/common/lib/components/Tooltip';
-import {
-  CrossIcon,
-  EditIcon,
-  AddFileIcon,
-  AddDirectoryIcon,
-  UploadFileIcon,
-  DownloadIcon,
-  UndoIcon,
-  // eslint-disable-next-line import/extensions
-} from '../../../icons.tsx';
+} from '@codesandbox/common/es/components/Tooltip';
+import React from 'react';
 
+import {
+  AddDirectoryIcon,
+  AddFileIcon,
+  CrossIcon,
+  DownloadIcon,
+  EditIcon,
+  UndoIcon,
+  UploadFileIcon,
+} from '../../../icons';
 import { Container, Icon } from './elements';
 
 const handleClick = func => e => {

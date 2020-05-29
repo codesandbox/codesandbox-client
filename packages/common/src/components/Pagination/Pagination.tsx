@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import MdFirstPage from 'react-icons/lib/md/first-page';
-import MdChevronLeft from 'react-icons/lib/md/chevron-left';
-import MdChevronRight from 'react-icons/lib/md/chevron-right';
-import MdLastPage from 'react-icons/lib/md/last-page';
+import {
+  MdChevronLeft,
+  MdChevronRight,
+  MdFirstPage,
+  MdLastPage,
+} from 'react-icons/md';
+
 import { clamp, range } from '../../utils';
-import { Navigation, Controls, Button as DefaultButton } from './elements';
+import { Controls, Button as DefaultButton, Navigation } from './elements';
 
 type NavButton = React.FC<{
   disabled?: boolean;

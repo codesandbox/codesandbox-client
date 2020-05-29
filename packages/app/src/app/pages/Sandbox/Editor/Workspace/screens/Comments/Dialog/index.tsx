@@ -1,5 +1,5 @@
-import { ENTER, ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { ENTER, ESC } from '@codesandbox/common/es/utils/keycodes';
+import { hasPermission } from '@codesandbox/common/es/utils/permission';
 import {
   Avatar,
   Element,

@@ -1,6 +1,6 @@
-import QuestionBase from 'react-icons/lib/go/question';
+import { GoQuestion } from 'react-icons/go';
 import styled from 'styled-components';
 
-export const Question = styled(QuestionBase)`
+export const Question = styled(GoQuestion)`
   margin-bottom: 3px;
 `;

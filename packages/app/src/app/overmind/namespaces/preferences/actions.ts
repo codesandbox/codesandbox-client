@@ -1,5 +1,4 @@
-import { Badge } from '@codesandbox/common/lib/types';
-
+import { Badge } from '@codesandbox/common/es/types';
 import { Action, AsyncAction } from 'app/overmind';
 
 export const viewModeChanged: Action<{

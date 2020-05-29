@@ -1,4 +1,4 @@
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import { getModulePath } from '@codesandbox/common/es/sandbox/modules';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 

@@ -1,15 +1,15 @@
+import { TemplateType } from '@codesandbox/common/es/templates';
+import { getTemplateIcon } from '@codesandbox/common/es/utils/getTemplateIcon';
 import React from 'react';
-import { TemplateType } from '@codesandbox/common/lib/templates';
-import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 
 import {
   Container,
-  Icon,
+  Detail,
   Details,
+  Icon,
+  Owner,
   Row,
   Title,
-  Owner,
-  Detail,
 } from './elements';
 
 interface ISandboxCardProps {

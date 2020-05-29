@@ -1,10 +1,9 @@
-import React from 'react';
-
-import { Title } from 'app/components/Title';
+import { Button } from '@codesandbox/common/es/components/Button';
+import Input from '@codesandbox/common/es/components/Input';
+import { protocolAndHost } from '@codesandbox/common/es/utils/url-generator';
 import { SubTitle } from 'app/components/SubTitle';
-import Input from '@codesandbox/common/lib/components/Input';
-import { Button } from '@codesandbox/common/lib/components/Button';
-import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { Title } from 'app/components/Title';
+import React from 'react';
 
 import { Container } from './elements';
 

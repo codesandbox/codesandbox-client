@@ -1,15 +1,15 @@
-import React from 'react';
-import { useOvermind } from 'app/overmind';
-import css from '@styled-system/css';
+import { ENTER } from '@codesandbox/common/es/utils/keycodes';
 import {
-  Stack,
+  Button,
   FormField,
   Input,
-  Textarea,
-  Button,
+  Stack,
   TagInput,
+  Textarea,
 } from '@codesandbox/components';
-import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React from 'react';
 
 export const EditSummary = ({ setEditing }) => {
   const {

@@ -1,15 +1,16 @@
-import React, { FunctionComponent } from 'react';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { useOvermind } from 'app/overmind';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
 import {
-  Stack,
-  Text,
+  Element,
   List,
   ListAction,
-  Element,
+  Stack,
+  Text,
 } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
 import { format } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
+import React, { FunctionComponent } from 'react';
+
 import { Alert } from '../Common/Alert';
 
 export const SelectSandboxModal: FunctionComponent = () => {

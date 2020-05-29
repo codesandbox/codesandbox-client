@@ -1,8 +1,8 @@
 import React from 'react';
-import IconBase from 'react-icons/IconBase';
+import { IconBase } from 'react-icons';
 
 export const EyeIcon = () => (
-  <IconBase viewBox="0 0 14 10">
+  <IconBase attr={undefined} viewBox="0 0 14 10">
     <path
       fillRule="evenodd"
       clipRule="evenodd"

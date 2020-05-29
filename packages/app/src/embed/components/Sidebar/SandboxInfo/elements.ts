@@ -1,5 +1,5 @@
-import CommonStats from '@codesandbox/common/lib/components/Stats';
-import { CenteredText } from '@codesandbox/common/lib/components/Stats/Stat/elements';
+import CommonStats from '@codesandbox/common/es/components/Stats';
+import { CenteredText } from '@codesandbox/common/es/components/Stats/Stat/elements';
 import css from '@styled-system/css';
 import styled from 'styled-components';
 

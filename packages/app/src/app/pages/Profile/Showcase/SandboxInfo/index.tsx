@@ -1,10 +1,9 @@
-import Row from '@codesandbox/common/lib/components/flex/Row';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import React, { FunctionComponent } from 'react';
-
+import Row from '@codesandbox/common/es/components/flex/Row';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
 import { Stat } from 'app/components/Stat';
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
 
 import {
   Container,

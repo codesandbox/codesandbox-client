@@ -1,12 +1,11 @@
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import * as React from 'react';
-import FileIcon from 'react-icons/lib/md/insert-drive-file';
+import { MdInsertDriveFile } from 'react-icons/md';
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { Test } from '../..';
-
-import { BlockHeader, Container, Actions } from './elements';
-import { TestName } from './TestName';
 import { ErrorDetails } from '../ErrorDetails';
+import { Actions, BlockHeader, Container } from './elements';
+import { TestName } from './TestName';
 
 type Props = {
   test: Test;
@@ -20,7 +19,7 @@ export const TestBlock = ({ test, openFile }: Props) => (
       <Actions>
         {openFile && (
           <Tooltip content="Open File">
-            <FileIcon onClick={() => openFile(test.path)} />
+            <MdInsertDriveFile onClick={() => openFile(test.path)} />
           </Tooltip>
         )}
         <div>{test.duration != null ? `${test.duration}ms` : ''}</div>

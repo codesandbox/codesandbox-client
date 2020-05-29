@@ -1,6 +1,7 @@
-import { Sandbox } from '@codesandbox/common/lib/types';
+import { Sandbox } from '@codesandbox/common/es/types';
 import JSZip from 'jszip';
-import { createZip, BLOB_ID } from '../zip/create-zip';
+
+import { BLOB_ID, createZip } from '../zip/create-zip';
 
 interface IAPIModule {
   content: string;

@@ -1,5 +1,5 @@
+import { GoPrimitiveDot } from 'react-icons/go';
 import styled, { css } from 'styled-components';
-import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 
 export const Container = styled.div`
   position: absolute;
@@ -56,7 +56,7 @@ export const Entry = styled.div`
     `};
 `;
 
-export const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
+export const NotSyncedIconWithMargin = styled(GoPrimitiveDot)`
   position: absolute;
   left: 0.75rem;
   top: 0;

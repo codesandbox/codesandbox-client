@@ -1,33 +1,33 @@
 /* eslint-disable import/no-named-as-default-member, import/default, import/no-named-as-default */
 import {
-  react,
-  vue,
-  parcel,
-  svelte,
-  preact,
-  reactTs,
   angular,
-  cxjs,
   babel,
-  dojo,
   custom,
+  cxjs,
+  dojo,
+  parcel,
+  preact,
+  react,
+  reactTs,
   reason,
-} from '@codesandbox/common/lib/templates';
+  svelte,
+  vue,
+} from '@codesandbox/common/es/templates';
+import { PackageJSON } from '@codesandbox/common/es/types';
+import { isBabel7 } from '@codesandbox/common/es/utils/is-babel-7';
 
-import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
-import { PackageJSON } from '@codesandbox/common/lib/types';
+import angularPreset from './presets/angular-cli';
+import babelPreset from './presets/babel-repl';
 import { reactPresetV1, reactPresetV3 } from './presets/create-react-app';
 import reactTsPreset from './presets/create-react-app-typescript';
-import vuePreset from './presets/vue-cli';
-import preactPreset from './presets/preact-cli';
-import sveltePreset from './presets/svelte';
-import angularPreset from './presets/angular-cli';
-import parcelPreset from './presets/parcel';
-import babelPreset from './presets/babel-repl';
-import cxjsPreset from './presets/cxjs';
-import reasonPreset from './presets/reason';
-import dojoPreset from './presets/dojo';
 import customPreset from './presets/custom';
+import cxjsPreset from './presets/cxjs';
+import dojoPreset from './presets/dojo';
+import parcelPreset from './presets/parcel';
+import preactPreset from './presets/preact-cli';
+import reasonPreset from './presets/reason';
+import sveltePreset from './presets/svelte';
+import vuePreset from './presets/vue-cli';
 
 export default function getPreset(template: string, pkg: PackageJSON) {
   switch (template) {

@@ -1,9 +1,8 @@
-import { UploadFile } from '@codesandbox/common/lib/types';
-import React, { FunctionComponent } from 'react';
-import css from '@styled-system/css';
-
-import { useOvermind } from 'app/overmind';
+import { UploadFile } from '@codesandbox/common/es/types';
 import { Button, Icon } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
 
 type Props = Pick<UploadFile, 'id'>;
 export const DeleteFileButton: FunctionComponent<Props> = ({ id }) => {

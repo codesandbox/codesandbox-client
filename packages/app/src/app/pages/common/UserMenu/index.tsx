@@ -1,4 +1,4 @@
-import Relative from '@codesandbox/common/lib/components/Relative';
+import Relative from '@codesandbox/common/es/components/Relative';
 import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 import { MenuDisclosure, useMenuState } from 'reakit/Menu';

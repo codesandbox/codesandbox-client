@@ -1,5 +1,5 @@
-import { Contributor, PermissionType } from '@codesandbox/common/lib/types';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { Contributor, PermissionType } from '@codesandbox/common/es/types';
+import { hasPermission } from '@codesandbox/common/es/utils/permission';
 import { IState } from 'overmind';
 
 import { AsyncAction } from '.';

@@ -1,15 +1,17 @@
-import React from 'react';
-import { join, dirname } from 'path';
-import { useDrop, useDrag } from 'react-dnd';
-import { getEmptyImage } from 'react-dnd-html5-backend';
-import { motion } from 'framer-motion';
-import { useLocation, useHistory } from 'react-router-dom';
+import { dirname, join } from 'path';
+
+import { ESC } from '@codesandbox/common/es/utils/keycodes';
 import { isMenuClicked } from '@codesandbox/components';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { useOvermind } from 'app/overmind';
+import { motion } from 'framer-motion';
+import React from 'react';
+import { useDrag, useDrop } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
+import { useHistory, useLocation } from 'react-router-dom';
+
+import { useSelection } from '../Selection';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
-import { useSelection } from '../Selection';
 
 export const Folder = ({
   name = '',

@@ -3,7 +3,7 @@ import {
   PickedSandboxes,
   PopularSandboxes,
   Sandbox,
-} from '@codesandbox/common/lib/types';
+} from '@codesandbox/common/es/types';
 
 type State = {
   pickedSandboxesIndexes: string[] | null;

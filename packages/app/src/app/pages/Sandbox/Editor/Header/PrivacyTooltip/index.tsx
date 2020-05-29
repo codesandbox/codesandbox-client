@@ -1,5 +1,5 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import track from '@codesandbox/common/lib/utils/analytics';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import track from '@codesandbox/common/es/utils/analytics';
 import theme from '@codesandbox/components/lib/design-language/theme';
 import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';

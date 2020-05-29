@@ -1,19 +1,19 @@
-import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
+import Fullscreen from '@codesandbox/common/es/components/flex/Fullscreen';
+import getTemplateDefinition from '@codesandbox/common/es/templates';
+import codesandbox from '@codesandbox/common/es/themes/codesandbox.json';
+import VERSION from '@codesandbox/common/es/version';
 import {
   ThemeProvider as ComponentsThemeProvider,
-  Stack,
   Element,
+  Stack,
 } from '@codesandbox/components';
+import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
-import VERSION from '@codesandbox/common/lib/version';
-import VisuallyHidden from '@reach/visually-hidden';
 
 import Content from './Content';
 import { Container } from './elements';

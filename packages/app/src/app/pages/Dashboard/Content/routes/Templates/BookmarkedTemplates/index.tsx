@@ -1,25 +1,25 @@
-import React, { useEffect } from 'react';
-import { sortBy } from 'lodash-es';
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
-import { DelayedAnimation } from 'app/components/DelayedAnimation';
-import { Button } from '@codesandbox/common/lib/components/Button';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import history from 'app/utils/history';
-import track from '@codesandbox/common/lib/utils/analytics';
+import { useApolloClient, useMutation, useQuery } from '@apollo/react-hooks';
+import { Button } from '@codesandbox/common/es/components/Button';
+import CustomTemplate from '@codesandbox/common/es/components/CustomTemplate';
+import track from '@codesandbox/common/es/utils/analytics';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
 import { ContextMenu } from 'app/components/ContextMenu';
-import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { LIST_BOOKMARKED_TEMPLATES_QUERY } from 'app/components/CreateNewSandbox/queries';
+import { DelayedAnimation } from 'app/components/DelayedAnimation';
 import {
+  ListPersonalBookmarkedTemplatesQuery,
   UnbookmarkTemplateFromDashboardMutation,
   UnbookmarkTemplateFromDashboardMutationVariables,
-  ListPersonalBookmarkedTemplatesQuery,
 } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
-import { ButtonContainer } from './elements';
+import history from 'app/utils/history';
+import { sortBy } from 'lodash-es';
+import React, { useEffect } from 'react';
 
-import { Grid, EmptyTitle } from '../elements';
+import { EmptyTitle, Grid } from '../elements';
 import { Navigation } from '../Navigation';
+import { ButtonContainer } from './elements';
 import { UNBOOKMARK_TEMPLATE_FROM_DASHBOARD } from './mutations';
 
 type BookmarkedTemplatesProps = { teamId?: string };

@@ -1,15 +1,13 @@
-import React, { useEffect } from 'react';
-import { useOvermind } from 'app/overmind';
-import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-
+import Centered from '@codesandbox/common/es/components/flex/Centered';
+import Fullscreen from '@codesandbox/common/es/components/flex/Fullscreen';
 import {
-  signInPageUrl,
   frameUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
-
+  signInPageUrl,
+} from '@codesandbox/common/es/utils/url-generator';
 import { Title } from 'app/components/Title';
+import { useOvermind } from 'app/overmind';
+import React, { useEffect } from 'react';
+import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
 
 // This route is supposed to be opened in a new window.
 // It is called from a sandbox so that we can try to retrieve

@@ -1,12 +1,10 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { Button } from '@codesandbox/common/es/components/Button';
+import { dashboardUrl } from '@codesandbox/common/es/utils/url-generator';
+import { Element } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
-import GoHome from 'react-icons/lib/go/home';
-import { Element } from '@codesandbox/components';
-import GoIssueOpened from 'react-icons/lib/go/issue-opened';
-// @ts-ignore
+import { GoHome, GoIssueOpened } from 'react-icons/go';
 import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
 import { IFallbackComponentProps } from '../types';

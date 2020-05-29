@@ -1,6 +1,6 @@
-import RowBase from '@codesandbox/common/lib/components/flex/Row';
-import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
-import GitHubIconBase from 'react-icons/lib/go/mark-github';
+import RowBase from '@codesandbox/common/es/components/flex/Row';
+import delayEffect from '@codesandbox/common/es/utils/animation/delay-effect';
+import { GoMarkGithub } from 'react-icons/go';
 import styled, { css } from 'styled-components';
 
 export const ProfileImage = styled.img`
@@ -40,7 +40,7 @@ export const Username = styled.div<{ main: boolean }>`
   `};
 `;
 
-export const GitHubIcon = styled(GitHubIconBase)`
+export const GitHubIcon = styled(GoMarkGithub)`
   margin-left: 0.75rem;
   font-size: 1.1rem;
   color: white;

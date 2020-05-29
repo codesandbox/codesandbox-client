@@ -1,20 +1,20 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import { Avatar, Button, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
 
+import { CollaboratorHeads } from './CollaboratorHeads';
+import { Collaborators } from './Collaborators';
 import {
   EmbedIcon,
   ForkIcon,
   LikeIcon,
+  MoreMenuIcon,
   PreferenceIcon,
   ReloadIcon,
-  MoreMenuIcon,
 } from './icons';
-import { Collaborators } from './Collaborators';
-import { CollaboratorHeads } from './CollaboratorHeads';
 
 const TooltipButton = ({ tooltip, ...props }) => (
   <Tooltip content={tooltip}>

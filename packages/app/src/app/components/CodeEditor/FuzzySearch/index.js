@@ -1,21 +1,22 @@
-import * as React from 'react';
-import { sortBy, groupBy, flatten } from 'lodash-es';
-import Downshift from 'downshift';
-import matchSorter from 'match-sorter';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import Input from '@codesandbox/common/lib/components/Input';
+import Input from '@codesandbox/common/es/components/Input';
+import { getModulePath } from '@codesandbox/common/es/sandbox/modules';
+import { ESC } from '@codesandbox/common/es/utils/keycodes';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 // eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import Downshift from 'downshift';
+import { flatten, groupBy, sortBy } from 'lodash-es';
+import matchSorter from 'match-sorter';
+import * as React from 'react';
+
 import {
   Container,
+  CurrentModuleText,
+  Entry,
   InputContainer,
   Items,
-  Entry,
-  NotSyncedIconWithMargin,
-  CurrentModuleText,
   Name,
+  NotSyncedIconWithMargin,
   Path,
 } from './elements';
 

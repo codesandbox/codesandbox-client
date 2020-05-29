@@ -1,7 +1,7 @@
 import {
   captureException,
   logBreadcrumb,
-} from '@codesandbox/common/lib/utils/analytics/sentry';
+} from '@codesandbox/common/es/utils/analytics/sentry';
 import { Blocker, blocker } from 'app/utils/blocker';
 import { TextOperation } from 'ot';
 

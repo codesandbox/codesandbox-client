@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import { getModulePath } from '@codesandbox/common/es/sandbox/modules';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
+import * as React from 'react';
 
-import { Container, Chevron, FileName, StyledExitZen } from './elements';
+import { Chevron, Container, FileName, StyledExitZen } from './elements';
 
 export default class FilePath extends React.Component {
   state = {

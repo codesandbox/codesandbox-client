@@ -1,20 +1,17 @@
+import theme from '@codesandbox/common/es/theme';
+import {
+  ARROW_DOWN,
+  ARROW_UP,
+  ENTER,
+} from '@codesandbox/common/es/utils/keycodes';
+import { getCodeMirror } from 'app/utils/codemirror';
+import CodeMirror from 'codemirror';
 /* @flow */
 import React from 'react';
-import CodeMirror from 'codemirror';
+import { MdChevronRight } from 'react-icons/md';
 import styled from 'styled-components';
 
-import ChevronRight from 'react-icons/lib/md/chevron-right';
-import theme from '@codesandbox/common/lib/theme';
-
-import { getCodeMirror } from 'app/utils/codemirror';
-
-import {
-  ARROW_UP,
-  ARROW_DOWN,
-  ENTER,
-} from '@codesandbox/common/lib/utils/keycodes';
-
-import { IconContainer, CodeMirrorContainer } from './elements';
+import { CodeMirrorContainer, IconContainer } from './elements';
 
 const Container = styled.div`
   flex-shrink: 0;
@@ -126,7 +123,7 @@ export class ConsoleInput extends React.PureComponent<Props, State> {
     return (
       <Container>
         <IconContainer style={{ color: theme.secondary() }}>
-          <ChevronRight />
+          <MdChevronRight />
         </IconContainer>
         <InputWrapper>
           <CodeMirrorContainer>

@@ -1,14 +1,14 @@
-import React, { FunctionComponent } from 'react';
-import css from '@styled-system/css';
-import { AnimatePresence, motion } from 'framer-motion';
-import { sortBy } from 'lodash-es';
 import Tooltip, {
   SingletonTooltip,
-} from '@codesandbox/common/lib/components/Tooltip';
+} from '@codesandbox/common/es/components/Tooltip';
+import { LiveUser } from '@codesandbox/common/es/types';
+import { Avatar, Link, Menu, Stack, Text } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { TippyProps } from '@tippy.js/react';
 import { useOvermind } from 'app/overmind';
-import { Stack, Avatar, Text, Menu, Link } from '@codesandbox/components';
-import { LiveUser } from '@codesandbox/common/lib/types';
+import { AnimatePresence, motion } from 'framer-motion';
+import { sortBy } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
 
 interface ICollaboratorHeadProps {
   avatarUrl: string;

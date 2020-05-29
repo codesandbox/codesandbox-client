@@ -1,6 +1,7 @@
+import { formatVersion } from '@codesandbox/common/es/utils/ci';
 import React from 'react';
-import { formatVersion } from '@codesandbox/common/lib/utils/ci';
-import { Container, Row, Link } from './elements';
+
+import { Container, Link, Row } from './elements';
 
 function Dependencies({ sandbox }) {
   let { npmDependencies } = sandbox;

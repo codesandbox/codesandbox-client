@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import { Container as NavigatorContainer } from '@codesandbox/common/es/components/Preview/Navigator/elements';
 import css from '@styled-system/css';
-import { Container as NavigatorContainer } from '@codesandbox/common/lib/components/Preview/Navigator/elements';
+import styled from 'styled-components';
 
 export const Container = styled.div(
   css({

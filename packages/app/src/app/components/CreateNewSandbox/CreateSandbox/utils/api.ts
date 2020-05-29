@@ -1,4 +1,5 @@
-import { TemplateType } from '@codesandbox/common/lib/templates';
+import { TemplateType } from '@codesandbox/common/es/templates';
+
 import { ITemplateInfo } from '../TemplateList';
 
 interface IExploreTemplate {

@@ -1,12 +1,8 @@
+import theme from '@codesandbox/common/es/theme';
+import { actions, dispatch } from 'codesandbox-api';
 import React from 'react';
+import { MdError, MdInfo, MdWarning } from 'react-icons/md';
 
-import { dispatch, actions } from 'codesandbox-api';
-
-import NoticeIcon from 'react-icons/lib/md/info';
-import ErrorIcon from 'react-icons/lib/md/error';
-import WarningIcon from 'react-icons/lib/md/warning';
-
-import theme from '@codesandbox/common/lib/theme';
 import {
   MessageContainer,
   MessageIconContainer,
@@ -20,13 +16,13 @@ export interface Props {
 
 function getIcon(type: 'notice' | 'warning' | 'error') {
   if (type === 'error') {
-    return { Icon: ErrorIcon, color: theme.red() };
+    return { Icon: MdError, color: theme.red() };
   }
   if (type === 'warning') {
-    return { Icon: WarningIcon, color: theme.primary() };
+    return { Icon: MdWarning, color: theme.primary() };
   }
 
-  return { Icon: NoticeIcon, color: theme.secondary() };
+  return { Icon: MdInfo, color: theme.secondary() };
 }
 
 export function ProblemMessage({ message }: Props) {

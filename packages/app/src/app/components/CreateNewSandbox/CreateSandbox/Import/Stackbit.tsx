@@ -1,7 +1,7 @@
-import React from 'react';
+import { Button } from '@codesandbox/common/es/components/Button';
+import { gitHubToSandboxUrl } from '@codesandbox/common/es/utils/url-generator';
 import history from 'app/utils/history';
-import { Button } from '@codesandbox/common/lib/components/Button';
-import { gitHubToSandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import React from 'react';
 
 function openStackbit(username: string, closeModal: () => void) {
   const stackbitWindow = window.open(

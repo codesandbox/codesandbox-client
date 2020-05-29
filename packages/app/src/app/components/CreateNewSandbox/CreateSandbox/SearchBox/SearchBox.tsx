@@ -1,7 +1,8 @@
+import { ESC } from '@codesandbox/common/es/utils/keycodes';
 import React from 'react';
 import useKey from 'react-use/lib/useKey';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { SearchElement, InputWrapper } from './elements';
+
+import { InputWrapper, SearchElement } from './elements';
 
 type SearchProps = {
   value: string;

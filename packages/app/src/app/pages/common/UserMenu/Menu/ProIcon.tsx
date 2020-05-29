@@ -1,9 +1,9 @@
 // TODO; move this to a dynamic version used in the pro page
 import React from 'react';
-import IconBase from 'react-icons/lib/IconBase';
+import { IconBase } from 'react-icons';
 
 export const ProIcon = props => (
-  <IconBase viewBox="0 0 58 26" {...props}>
+  <IconBase attr={undefined} viewBox="0 0 58 26" {...props}>
     <rect
       x="1.20896"
       y="1.20896"

@@ -1,5 +1,6 @@
+import Logo from '@codesandbox/common/es/components/Logo';
 import React from 'react';
-import Logo from '@codesandbox/common/lib/components/Logo';
+
 import { FullscreenCentered, LogoContainer } from './elements';
 
 export const Loading = () => (

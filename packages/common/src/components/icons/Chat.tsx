@@ -1,8 +1,8 @@
 import React from 'react';
-import IconBase from 'react-icons/IconBase';
+import { IconBase } from 'react-icons';
 
 export const ChatIcon = props => (
-  <IconBase fill="none" viewBox="0 0 24 24" {...props}>
+  <IconBase attr={undefined} fill="none" viewBox="0 0 24 24" {...props}>
     <g clipRule="evenodd" fill="currentColor" fillRule="evenodd">
       <path d="m3.00015 10.9353c-.0001-.0135-.00015-.027-.00015-.0406 0-2.87766 2.33283-5.2105 5.21053-5.2105 2.87767 0 5.21057 2.33284 5.21057 5.2105 0 2.8777-2.3328 5.2105-5.21042 5.2106h-5.21053z" />
       <path

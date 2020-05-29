@@ -1,8 +1,9 @@
 import React from 'react';
-import IconBase from 'react-icons/lib/IconBase';
+import { IconBase } from 'react-icons';
 
 export default () => (
   <IconBase
+    attr={undefined}
     xmlns="http://www.w3.org/2000/svg"
     width="1em"
     height="1em"

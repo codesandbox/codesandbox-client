@@ -1,6 +1,6 @@
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
+import Padding from '@codesandbox/common/es/components/spacing/Padding';
 import styled from 'styled-components';
-import Padding from '@codesandbox/common/lib/components/spacing/Padding';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 
 export const Top = styled.div`
   display: flex;

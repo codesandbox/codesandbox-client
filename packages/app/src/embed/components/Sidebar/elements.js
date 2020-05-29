@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import { isIOS } from '@codesandbox/common/es/utils/platform';
 import css from '@styled-system/css';
-import { isIOS } from '@codesandbox/common/lib/utils/platform';
+import styled from 'styled-components';
 
 export const Container = styled.div(
   css({

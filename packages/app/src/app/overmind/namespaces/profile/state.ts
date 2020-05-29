@@ -1,4 +1,4 @@
-import { Profile, Sandbox, UserSandbox } from '@codesandbox/common/lib/types';
+import { Profile, Sandbox, UserSandbox } from '@codesandbox/common/es/types';
 import { RootState } from 'app/overmind';
 import { derived } from 'overmind';
 

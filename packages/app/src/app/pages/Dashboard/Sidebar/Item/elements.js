@@ -1,8 +1,8 @@
-import styled, { css } from 'styled-components';
+import { MdChevronRight } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
-import ChevronRight from 'react-icons/lib/md/chevron-right';
+import styled, { css } from 'styled-components';
 
-export const AnimatedChevron = styled(ChevronRight)`
+export const AnimatedChevron = styled(MdChevronRight)`
   transition: 0.25s ease transform;
   transform: rotate(${props => (props.open ? 90 : 0)}deg);
   margin-right: 0.25rem;

@@ -1,12 +1,12 @@
-import parseConfigurations from '@codesandbox/common/lib/templates/configuration/parse';
+import parseConfigurations from '@codesandbox/common/es/templates/configuration/parse';
 import getDefinition, {
   TemplateType,
-} from '@codesandbox/common/lib/templates/index';
-import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
-import { absolute } from '@codesandbox/common/lib/utils/path';
-import VERSION from '@codesandbox/common/lib/version';
+} from '@codesandbox/common/es/templates/index';
+import { ParsedConfigurationFiles } from '@codesandbox/common/es/templates/template';
+import _debug from '@codesandbox/common/es/utils/debug';
+import { isBabel7 } from '@codesandbox/common/es/utils/is-babel-7';
+import { absolute } from '@codesandbox/common/es/utils/path';
+import VERSION from '@codesandbox/common/es/version';
 import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
 import { flatten } from 'lodash';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
@@ -21,11 +21,11 @@ import defaultBoilerplates from './boilerplates/default-boilerplates';
 import createCodeSandboxOverlay from './codesandbox-overlay';
 import getPreset from './eval';
 import { consumeCache, deleteAPICache, saveCache } from './eval/cache';
-import { Module } from './eval/types/module';
 import Manager from './eval/manager';
 import TranspiledModule from './eval/transpiled-module';
+import { Module } from './eval/types/module';
 import handleExternalResources from './external-resources';
-import { loadDependencies, NPMDependencies } from './npm';
+import { NPMDependencies, loadDependencies } from './npm';
 import { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import * as metrics from './utils/metrics';

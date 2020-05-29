@@ -1,6 +1,6 @@
+import { PatronBadge } from '@codesandbox/common/es/types';
+import badges from '@codesandbox/common/es/utils/badges/patron-info';
 import styled, { css, keyframes } from 'styled-components';
-import badges from '@codesandbox/common/lib/utils/badges/patron-info';
-import { PatronBadge } from '@codesandbox/common/lib/types';
 
 const particleAnimation = (deg: number) => keyframes`
   0% {

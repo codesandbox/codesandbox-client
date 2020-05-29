@@ -1,5 +1,5 @@
-import track from '@codesandbox/common/lib/utils/analytics';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import track from '@codesandbox/common/es/utils/analytics';
+import { notificationState } from '@codesandbox/common/es/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { client } from 'app/graphql/client';
 import {

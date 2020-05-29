@@ -1,4 +1,4 @@
-import BasePreview from '@codesandbox/common/lib/components/Preview';
+import BasePreview from '@codesandbox/common/es/components/Preview';
 import { blocker } from 'app/utils/blocker';
 
 import { Reaction } from '..';

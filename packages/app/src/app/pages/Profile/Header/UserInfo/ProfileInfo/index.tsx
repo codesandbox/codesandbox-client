@@ -1,9 +1,8 @@
-import Column from '@codesandbox/common/lib/components/flex/Column';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { PatronStar } from '@codesandbox/common/lib/components/PatronStar';
-import React, { FunctionComponent } from 'react';
-
+import Column from '@codesandbox/common/es/components/flex/Column';
+import { PatronStar } from '@codesandbox/common/es/components/PatronStar';
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
 
 import { GitHubIcon, Name, ProfileImage, Row, Username } from './elements';
 

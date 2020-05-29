@@ -1,7 +1,7 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { Button } from '@codesandbox/common/es/components/Button';
+import track from '@codesandbox/common/es/utils/analytics';
+import { getSandboxName } from '@codesandbox/common/es/utils/get-sandbox-name';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 // eslint-disable-next-line
 import Files from 'embed/components/legacy/Files';

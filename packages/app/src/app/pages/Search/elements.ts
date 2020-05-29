@@ -1,7 +1,6 @@
-import Row from '@codesandbox/common/lib/components/flex/Row';
-import styled, { css } from 'styled-components';
-
+import Row from '@codesandbox/common/es/components/flex/Row';
 import { Title as TitleBase } from 'app/components/Title';
+import styled, { css } from 'styled-components';
 
 export const Content = styled.div`
   margin-top: 5%;

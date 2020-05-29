@@ -1,6 +1,7 @@
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
 import React from 'react';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { StyledUnlisted, StyledPrivate, Icon } from './elements';
+
+import { Icon, StyledPrivate, StyledUnlisted } from './elements';
 
 interface IPrivacyStatusProps {
   privacy: number;

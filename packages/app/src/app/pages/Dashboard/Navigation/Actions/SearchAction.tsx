@@ -1,11 +1,10 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { searchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import { searchUrl } from '@codesandbox/common/es/utils/url-generator';
+import { HeaderSearchBar } from 'app/components/HeaderSearchBar';
 import React, { FunctionComponent } from 'react';
-import SearchIcon from 'react-icons/lib/go/search';
+import { GoSearch } from 'react-icons/go';
 import Media from 'react-media';
 import { Link } from 'react-router-dom';
-
-import { HeaderSearchBar } from 'app/components/HeaderSearchBar';
 
 import { Action } from '../elements';
 
@@ -23,7 +22,7 @@ export const SearchAction: FunctionComponent<Props> = ({ searchNoInput }) => (
               style={{ color: 'white' }}
               to={searchUrl()}
             >
-              <SearchIcon height={35} />
+              <GoSearch height={35} />
             </Link>
           </Tooltip>
         ) : (

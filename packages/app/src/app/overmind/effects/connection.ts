@@ -1,4 +1,4 @@
-import addListener from '@codesandbox/common/lib/connection-manager';
+import addListener from '@codesandbox/common/es/connection-manager';
 
 const listeners = new Map();
 

@@ -1,24 +1,24 @@
 import 'react-hot-loader/patch';
-import '@codesandbox/common/lib/global.css';
+import '@codesandbox/common/es/global.css';
 import 'normalize.css';
 
 import './split-pane.css';
 
 import { ApolloProvider as HooksProvider } from '@apollo/react-hooks';
-import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
-import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
-import theme from '@codesandbox/common/lib/theme';
+import requirePolyfills from '@codesandbox/common/es/load-dynamic-polyfills';
+import registerServiceWorker from '@codesandbox/common/es/registerServiceWorker';
+import theme from '@codesandbox/common/es/theme';
 import {
   initializeSentry,
   logError,
-} from '@codesandbox/common/lib/utils/analytics';
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
-import _debug from '@codesandbox/common/lib/utils/debug';
+} from '@codesandbox/common/es/utils/analytics';
+import { logBreadcrumb } from '@codesandbox/common/es/utils/analytics/sentry';
+import _debug from '@codesandbox/common/es/utils/debug';
 import {
   convertTypeToStatus,
   notificationState,
-} from '@codesandbox/common/lib/utils/notifications';
-import { isSafari } from '@codesandbox/common/lib/utils/platform';
+} from '@codesandbox/common/es/utils/notifications';
+import { isSafari } from '@codesandbox/common/es/utils/platform';
 import { Severity } from '@sentry/browser';
 import { client } from 'app/graphql/client';
 import history from 'app/utils/history';

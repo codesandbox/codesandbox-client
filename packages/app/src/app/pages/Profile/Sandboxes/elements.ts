@@ -1,4 +1,4 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { Button } from '@codesandbox/common/es/components/Button';
 import styled from 'styled-components';
 
 export const Navigation = styled.div`

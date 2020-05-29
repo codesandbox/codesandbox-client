@@ -1,15 +1,16 @@
+import { ESC } from '@codesandbox/common/es/utils/keycodes';
+import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
+import { isMenuClicked } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
+import { motion } from 'framer-motion';
 import React from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-import { motion } from 'framer-motion';
-import { useOvermind } from 'app/overmind';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { isMenuClicked } from '@codesandbox/components';
+import { useHistory, useLocation } from 'react-router-dom';
+
+import { useSelection } from '../Selection';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
-import { useSelection } from '../Selection';
 
 export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const {

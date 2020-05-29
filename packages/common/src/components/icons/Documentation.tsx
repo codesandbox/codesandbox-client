@@ -1,8 +1,8 @@
 import React from 'react';
-import IconBase from 'react-icons/IconBase';
+import { IconBase } from 'react-icons';
 
 export const DocumentationIcon = props => (
-  <IconBase fill="none" viewBox="0 0 24 24">
+  <IconBase attr={undefined} fill="none" viewBox="0 0 24 24">
     <g fill="currentColor">
       <path d="m11.4707 19v-12.58019c0-3.35473-8.47058-2.09672-8.47058-1.57253l-.00001 12.05612c6.47751 0 5.35721 1.2778 8.47059 2.0966z" />
       <path

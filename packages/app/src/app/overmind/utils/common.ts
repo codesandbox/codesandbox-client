@@ -1,4 +1,4 @@
-import { Module } from '@codesandbox/common/lib/types';
+import { Module } from '@codesandbox/common/es/types';
 import { fromPairs, sortBy, toPairs } from 'lodash-es';
 
 export function sortObjectByKeys(object: object) {

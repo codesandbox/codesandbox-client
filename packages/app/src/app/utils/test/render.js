@@ -1,9 +1,9 @@
-import React from 'react';
-import renderer from 'react-test-renderer';
 import 'jest-styled-components';
 
+import theme from '@codesandbox/common/es/theme';
+import React from 'react';
+import renderer from 'react-test-renderer';
 import { ThemeProvider } from 'styled-components';
-import theme from '@codesandbox/common/lib/theme';
 
 export default Component => {
   const tree = renderer

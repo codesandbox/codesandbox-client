@@ -2,9 +2,9 @@ import track, {
   identify,
   logError,
   setAnonymousId,
-  setUserId,
   setGroup,
-} from '@codesandbox/common/lib/utils/analytics';
+  setUserId,
+} from '@codesandbox/common/es/utils/analytics';
 
 export default (() => {
   const trackedEvents = {};

@@ -1,6 +1,6 @@
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
-import React, { useState, useEffect } from 'react';
+import { COMMENTS } from '@codesandbox/common/es/utils/feature-flags';
 import { Text } from '@codesandbox/components';
+import React, { useEffect, useState } from 'react';
 
 import { PaddedPreference } from '../elements';
 

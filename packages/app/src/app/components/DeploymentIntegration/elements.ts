@@ -1,7 +1,6 @@
+import BaseNotice from '@codesandbox/common/es/components/Notice';
+import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import styled, { css } from 'styled-components';
-import BaseNotice from '@codesandbox/common/lib/components/Notice';
-import BaseUp from 'react-icons/lib/fa/angle-up';
-import BaseDown from 'react-icons/lib/fa/angle-down';
 
 export const Container = styled.div`
   ${({ theme }) => css`
@@ -55,10 +54,10 @@ const iconStyles = ({ light }: { light: boolean }) => css`
   cursor: pointer;
 `;
 
-export const Up = styled(BaseUp)`
+export const Up = styled(FaAngleUp)`
   ${iconStyles}
 `;
 
-export const Down = styled(BaseDown)`
+export const Down = styled(FaAngleDown)`
   ${iconStyles}
 `;

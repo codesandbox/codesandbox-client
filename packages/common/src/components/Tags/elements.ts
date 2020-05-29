@@ -1,5 +1,5 @@
+import { MdClear } from 'react-icons/md';
 import styled, { css } from 'styled-components';
-import CrossIcon from 'react-icons/lib/md/clear';
 
 export const TagContainer = styled.div<{ align: 'left' | 'right' }>`
   display: flex;
@@ -25,7 +25,7 @@ export const Container = styled.span<{ canRemove: boolean }>`
     `};
 `;
 
-export const DeleteIcon = styled(CrossIcon)`
+export const DeleteIcon = styled(MdClear)`
   transition: 0.3s ease all;
   position: absolute;
   right: 0.3rem;

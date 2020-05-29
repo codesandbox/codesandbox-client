@@ -1,10 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
 import css from '@styled-system/css';
-import CrossIcon from 'react-icons/lib/md/clear';
+import React from 'react';
+import { MdClear } from 'react-icons/md';
+import styled from 'styled-components';
 
-import { Stack } from '../Stack';
 import { Button } from '../Button';
+import { Stack } from '../Stack';
 import { Text } from '../Text';
 
 const TagElement = styled(Stack).attrs({
@@ -37,7 +37,7 @@ export function Tag({ tag, onRemove }: TagProps) {
           onClick={() => onRemove(tag)}
           marginLeft={1}
         >
-          <CrossIcon />
+          <MdClear />
         </Button>
       )}
     </TagElement>

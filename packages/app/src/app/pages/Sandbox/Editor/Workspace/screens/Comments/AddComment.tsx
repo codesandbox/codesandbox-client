@@ -1,4 +1,4 @@
-import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { ENTER } from '@codesandbox/common/es/utils/keycodes';
 import { Element, FormField, Textarea } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import React, { useState } from 'react';

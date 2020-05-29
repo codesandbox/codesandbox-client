@@ -1,9 +1,9 @@
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import getDefinition from '@codesandbox/common/lib/templates';
-import getUI from '@codesandbox/common/lib/templates/configuration/ui';
+import Tooltip from '@codesandbox/common/es/components/Tooltip';
+import { getModulePath } from '@codesandbox/common/es/sandbox/modules';
+import getDefinition from '@codesandbox/common/es/templates';
+import getUI from '@codesandbox/common/es/templates/configuration/ui';
 import React from 'react';
-import QuestionIcon from 'react-icons/lib/go/question';
+import { GoQuestion } from 'react-icons/go';
 
 import { Icons } from './elements';
 import { Props } from './types'; // eslint-disable-line
@@ -72,7 +72,7 @@ export class CodeEditor extends React.PureComponent<
                 }}
               >
                 Partially Supported Config{' '}
-                <QuestionIcon style={{ marginLeft: '.5rem' }} />
+                <GoQuestion style={{ marginLeft: '.5rem' }} />
               </Tooltip>
             ) : (
               <div>Supported Configuration</div>

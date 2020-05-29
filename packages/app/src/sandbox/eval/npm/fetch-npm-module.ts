@@ -1,15 +1,14 @@
-import * as pathUtils from '@codesandbox/common/lib/utils/path';
-import { CSB_PKG_PROTOCOL } from '@codesandbox/common/lib/utils/ci';
+import { CSB_PKG_PROTOCOL } from '@codesandbox/common/es/utils/ci';
+import * as pathUtils from '@codesandbox/common/es/utils/path';
 import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
-
 import delay from 'sandbox/utils/delay';
-import { Module } from '../types/module';
-import Manager from '../manager';
 
+import Manager from '../manager';
+import TranspiledModule from '../transpiled-module';
+import { Module } from '../types/module';
 import getDependencyName from '../utils/get-dependency-name';
 import { packageFilter } from '../utils/resolve-utils';
-import TranspiledModule from '../transpiled-module';
 
 type Meta = {
   [path: string]: any;

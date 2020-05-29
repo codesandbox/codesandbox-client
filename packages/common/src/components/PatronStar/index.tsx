@@ -1,9 +1,8 @@
 import { format } from 'date-fns';
 import React, { FunctionComponent } from 'react';
-import StarIcon from 'react-icons/lib/go/star';
+import { GoStar } from 'react-icons/go';
 
 import Tooltip from '../Tooltip';
-
 import { Container } from './elements';
 
 type Props = {
@@ -19,7 +18,7 @@ export const PatronStar: FunctionComponent<Props> = ({
     content={`Patron since ${format(new Date(subscriptionSince), 'MMM yyyy')}`}
   >
     <Container>
-      <StarIcon {...props} />
+      <GoStar {...props} />
     </Container>
   </Tooltip>
 );

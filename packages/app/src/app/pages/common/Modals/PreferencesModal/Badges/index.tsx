@@ -1,7 +1,7 @@
-import React, { FunctionComponent } from 'react';
+import Badge from '@codesandbox/common/es/utils/badges/Badge';
+import { Element, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-import { Text, Element } from '@codesandbox/components';
-import Badge from '@codesandbox/common/lib/utils/badges/Badge';
+import React, { FunctionComponent } from 'react';
 
 export const Badges: FunctionComponent = () => {
   const {

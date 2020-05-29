@@ -1,8 +1,7 @@
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
 import React from 'react';
 
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-
-import { Title, SubTitle } from './elements';
+import { SubTitle, Title } from './elements';
 
 interface ThankYouProps {
   color: string;

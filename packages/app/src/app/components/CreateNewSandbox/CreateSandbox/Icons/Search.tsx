@@ -1,8 +1,8 @@
 import React from 'react';
-import IconBase from 'react-icons/IconBase';
+import { IconBase } from 'react-icons';
 
 export const SearchIcon = props => (
-  <IconBase viewBox="0 0 13 12" {...props}>
+  <IconBase attr={undefined} viewBox="0 0 13 12" {...props}>
     <path
       fill="#fff"
       fillRule="evenodd"

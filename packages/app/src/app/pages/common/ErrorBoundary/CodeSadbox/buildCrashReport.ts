@@ -1,5 +1,5 @@
+import VERSION from '@codesandbox/common/es/version';
 import browser from 'browser-detect';
-import VERSION from '@codesandbox/common/lib/version';
 
 interface IbuildCrashReport {
   error?: Error;

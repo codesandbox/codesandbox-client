@@ -1,13 +1,13 @@
-import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import { resolveModule } from '@codesandbox/common/es/sandbox/modules';
 import {
   EditorSelection,
   Module,
   Sandbox,
   UserSelection,
-} from '@codesandbox/common/lib/types';
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+} from '@codesandbox/common/es/types';
+import { getTextOperation } from '@codesandbox/common/es/utils/diff';
+import { COMMENTS } from '@codesandbox/common/es/utils/feature-flags';
+import { hasPermission } from '@codesandbox/common/es/utils/permission';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { actions, dispatch } from 'codesandbox-api';
 import { css } from 'glamor';

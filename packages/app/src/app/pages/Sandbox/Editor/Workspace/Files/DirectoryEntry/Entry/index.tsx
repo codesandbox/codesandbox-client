@@ -1,14 +1,15 @@
-import theme from '@codesandbox/common/lib/theme';
-import { Directory, Module } from '@codesandbox/common/lib/types';
+import theme from '@codesandbox/common/es/theme';
+import { Directory, Module } from '@codesandbox/common/es/types';
 import { ContextMenu, Item } from 'app/components/ContextMenu';
 import React, { useState } from 'react';
 import { DragSource } from 'react-dnd';
-import EditIcon from 'react-icons/lib/go/pencil';
-import DeleteIcon from 'react-icons/lib/go/trashcan';
-import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
-import UploadFileIcon from 'react-icons/lib/md/file-upload';
-import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
-import UndoIcon from 'react-icons/lib/md/undo';
+import { GoPencil, GoTrashcan } from 'react-icons/go';
+import {
+  MdCreateNewFolder,
+  MdFileUpload,
+  MdInsertDriveFile,
+  MdUndo,
+} from 'react-icons/md';
 
 import { EntryContainer } from '../../../elements';
 import EditIcons from './EditIcons';
@@ -134,35 +135,35 @@ const Entry: React.FC<IEntryProps> = ({
       isNotSynced && {
         title: 'Discard Changes',
         action: discardModuleChangesAction,
-        icon: UndoIcon,
+        icon: MdUndo,
       },
     ].filter(Boolean),
     [
       onCreateModuleClick && {
         title: 'Create File',
         action: onCreateModuleClick,
-        icon: AddFileIcon,
+        icon: MdInsertDriveFile,
       },
       onCreateDirectoryClick && {
         title: 'Create Directory',
         action: onCreateDirectoryClick,
-        icon: AddDirectoryIcon,
+        icon: MdCreateNewFolder,
       },
       onUploadFileClick && {
         title: 'Upload Files',
         action: onUploadFileClick,
-        icon: UploadFileIcon,
+        icon: MdFileUpload,
       },
       rename && {
         title: 'Rename',
         action: renameAction,
-        icon: EditIcon,
+        icon: GoPencil,
       },
       deleteEntry && {
         title: 'Delete',
         action: deleteAction,
         color: theme.red.darken(0.2)(),
-        icon: DeleteIcon,
+        icon: GoTrashcan,
       },
     ].filter(Boolean),
   ].filter(Boolean) as Item[];

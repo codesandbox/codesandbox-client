@@ -1,10 +1,10 @@
-import { TemplateType } from '@codesandbox/common/lib/templates';
-import { ViewConfig } from '@codesandbox/common/lib/templates/template';
-import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
-import track from '@codesandbox/common/lib/utils/analytics';
+import { TemplateType } from '@codesandbox/common/es/templates';
+import { ViewConfig } from '@codesandbox/common/es/templates/template';
+import { DevToolsTabPosition } from '@codesandbox/common/es/types';
+import track from '@codesandbox/common/es/utils/analytics';
 import { Elastic, TweenMax } from 'gsap';
 import React from 'react';
-import FaAngleUp from 'react-icons/lib/fa/angle-up';
+import { FaAngleUp } from 'react-icons/fa';
 import store from 'store/dist/store.modern';
 
 import { console } from './Console';

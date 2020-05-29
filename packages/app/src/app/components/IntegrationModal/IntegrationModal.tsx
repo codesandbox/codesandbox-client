@@ -1,14 +1,15 @@
+import Centered from '@codesandbox/common/es/components/flex/Centered';
+import Relative from '@codesandbox/common/es/components/Relative';
+import Margin from '@codesandbox/common/es/components/spacing/Margin';
 import React from 'react';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import Relative from '@codesandbox/common/lib/components/Relative';
+
 import {
   Container,
-  Title,
-  PoweredBy,
-  Header,
-  Division,
   DisabledOverlay,
+  Division,
+  Header,
+  PoweredBy,
+  Title,
 } from './elements';
 
 interface IIntegrationModalProps {

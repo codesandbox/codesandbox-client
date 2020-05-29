@@ -1,4 +1,4 @@
-import { Sandbox } from '@codesandbox/common/lib/types';
+import { Sandbox } from '@codesandbox/common/es/types';
 import { useOvermind } from 'app/overmind';
 import { LikeHeart } from 'app/pages/common/LikeHeart';
 import React from 'react';

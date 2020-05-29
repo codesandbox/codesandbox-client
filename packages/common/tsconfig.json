@@ -4,9 +4,9 @@
     "./**/*.test.ts",
     "./**/*.test.tsx",
     "./**/*.stories.tsx",
-    "lib/"
+    "lib/",
+    "es/"
   ],
-  "include": ["./src/**/*"],
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES6",

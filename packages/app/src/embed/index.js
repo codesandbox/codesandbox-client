@@ -1,10 +1,12 @@
+import 'normalize.css';
+import '@codesandbox/common/es/global.css';
+
+import requirePolyfills from '@codesandbox/common/es/load-dynamic-polyfills';
+import track, { identify } from '@codesandbox/common/es/utils/analytics';
 // @flow
 import React from 'react';
 import { render } from 'react-dom';
-import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
-import 'normalize.css';
-import '@codesandbox/common/lib/global.css';
-import track, { identify } from '@codesandbox/common/lib/utils/analytics';
+
 import App from './components/App';
 
 try {

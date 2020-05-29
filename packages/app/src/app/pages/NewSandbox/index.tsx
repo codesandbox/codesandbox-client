@@ -1,15 +1,15 @@
-import css from '@styled-system/css';
-import { ThemeProvider, Element, Stack } from '@codesandbox/components';
+import MaxWidth from '@codesandbox/common/es/components/flex/MaxWidth';
+import { Element, Stack, ThemeProvider } from '@codesandbox/components';
 import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
-import React, { FunctionComponent, useEffect } from 'react';
-import Media from 'react-media';
+import css from '@styled-system/css';
 import {
-  CreateSandbox,
   COLUMN_MEDIA_THRESHOLD,
+  CreateSandbox,
 } from 'app/components/CreateNewSandbox/CreateSandbox';
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import React, { FunctionComponent, useEffect } from 'react';
+import Media from 'react-media';
 
 export const NewSandbox: FunctionComponent = () => {
   const {

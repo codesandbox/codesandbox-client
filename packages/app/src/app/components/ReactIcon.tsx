@@ -1,8 +1,8 @@
 import React from 'react';
-import IconBase from 'react-icons/lib/IconBase';
+import { IconBase } from 'react-icons';
 
 export const ReactIcon: React.FC<React.SVGAttributes<SVGElement>> = props => (
-  <IconBase viewBox="0 0 600 600" {...props}>
+  <IconBase attr={undefined} viewBox="0 0 600 600" {...props}>
     <g>
       <circle fill="currentColor" cx="299.529" cy="299.628" r="50.167" />
       <path

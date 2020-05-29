@@ -1,8 +1,9 @@
-import React, { FunctionComponent } from 'react';
-import { Element, Button, Text, Stack, Link } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import track from '@codesandbox/common/es/utils/analytics';
+import { Button, Element, Link, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
-import track from '@codesandbox/common/lib/utils/analytics';
+import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
+
 import { Alert } from '../Common/Alert';
 import { VercelIcon } from './VercelLogo';
 

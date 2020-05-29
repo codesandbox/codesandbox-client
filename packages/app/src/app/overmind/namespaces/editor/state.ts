@@ -1,10 +1,10 @@
-import getTemplate from '@codesandbox/common/lib/templates';
-import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
-import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
+import getTemplate from '@codesandbox/common/es/templates';
+import { generateFileFromSandbox } from '@codesandbox/common/es/templates/configuration/package-json';
+import { getPreviewTabs } from '@codesandbox/common/es/templates/devtools';
 import {
   ParsedConfigurationFiles,
   ViewConfig,
-} from '@codesandbox/common/lib/templates/template';
+} from '@codesandbox/common/es/templates/template';
 import {
   DevToolsTabPosition,
   DiffTab,
@@ -17,8 +17,8 @@ import {
   SandboxFs,
   Tabs,
   WindowOrientation,
-} from '@codesandbox/common/lib/types';
-import { getSandboxOptions } from '@codesandbox/common/lib/url';
+} from '@codesandbox/common/es/types';
+import { getSandboxOptions } from '@codesandbox/common/es/url';
 import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
 import immer from 'immer';
 import { derived } from 'overmind';

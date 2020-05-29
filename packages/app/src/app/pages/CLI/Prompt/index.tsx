@@ -1,9 +1,8 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import React, { FunctionComponent, useRef } from 'react';
-
+import { Button } from '@codesandbox/common/es/components/Button';
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
 import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent, useRef } from 'react';
 
 import { Buttons, Container, TokenInput } from './elements';
 

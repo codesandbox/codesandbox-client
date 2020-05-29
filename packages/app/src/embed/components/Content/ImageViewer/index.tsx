@@ -1,5 +1,5 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Input from '@codesandbox/common/lib/components/Input';
+import { Button } from '@codesandbox/common/es/components/Button';
+import Input from '@codesandbox/common/es/components/Input';
 import { Props } from 'app/components/CodeEditor/types'; // eslint-disable-line
 import React from 'react';
 

@@ -1,11 +1,12 @@
-import React, { memo } from 'react';
-import { PatronBadge } from '@codesandbox/common/lib/types';
-import Relative from '@codesandbox/common/lib/components/Relative';
-import badges from '@codesandbox/common/lib/utils/badges/patron-info';
 import './animations.css';
-import { Particles } from './Particles';
+
+import Relative from '@codesandbox/common/es/components/Relative';
+import { PatronBadge } from '@codesandbox/common/es/types';
+import badges from '@codesandbox/common/es/utils/badges/patron-info';
+import React, { memo } from 'react';
 
 import { BadgeContainer } from './elements';
+import { Particles } from './Particles';
 
 interface IBadgeProps {
   badge: PatronBadge;

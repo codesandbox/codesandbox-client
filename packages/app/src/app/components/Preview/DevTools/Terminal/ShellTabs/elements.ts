@@ -1,5 +1,5 @@
+import { MdClear } from 'react-icons/md';
 import styled, { css } from 'styled-components';
-import CrossIconClean from 'react-icons/lib/md/clear';
 
 export const Container = styled.div`
   display: flex;
@@ -14,7 +14,7 @@ export const Container = styled.div`
     props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.7)'};
 `;
 
-export const CrossIcon = styled(CrossIconClean)`
+export const CrossIcon = styled(MdClear)`
   transition: 0.3s ease color;
   position: absolute;
   right: 1rem;

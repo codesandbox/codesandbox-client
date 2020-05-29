@@ -1,6 +1,6 @@
-import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
-import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
-import getTemplate from '@codesandbox/common/lib/templates';
+import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/es/prettify-default-config';
+import { resolveModule } from '@codesandbox/common/es/sandbox/modules';
+import getTemplate from '@codesandbox/common/es/templates';
 import {
   CurrentUser,
   EditorSelection,
@@ -11,9 +11,9 @@ import {
   SandboxFs,
   Settings,
   UserViewRange,
-} from '@codesandbox/common/lib/types';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+} from '@codesandbox/common/es/types';
+import { COMMENTS } from '@codesandbox/common/es/utils/feature-flags';
+import { notificationState } from '@codesandbox/common/es/utils/notifications';
 import {
   NotificationMessage,
   NotificationStatus,

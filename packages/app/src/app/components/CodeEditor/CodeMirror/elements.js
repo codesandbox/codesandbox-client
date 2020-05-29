@@ -1,5 +1,5 @@
+import theme from '@codesandbox/common/es/theme';
 import styled, { css, keyframes } from 'styled-components';
-import theme from '@codesandbox/common/lib/theme';
 
 const fadeInAnimation = keyframes`
   0%   { background-color: #374140; }
