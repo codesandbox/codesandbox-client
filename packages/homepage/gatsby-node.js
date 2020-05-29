@@ -207,7 +207,12 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const allDocs = await graphql(`
     {
-      allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/docs/" } }) {
+      allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/docs/" }
+          fields: { slug: { nin: ["/api", "/faqs"] } }
+        }
+      ) {
         edges {
           node {
             fields {

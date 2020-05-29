@@ -1,35 +1,35 @@
+import React, { useState, useEffect } from 'react';
 import { graphql, Link } from 'gatsby';
-import React, { useState } from 'react';
-import {
-  Stack,
-  ListItem,
-  Text,
-  Element,
-  Button,
-} from '@codesandbox/components';
-import Layout from '../components/new-layout';
-import TitleAndMetaTags from '../components/TitleAndMetaTags';
+import { Stack, ListItem, Text, Element } from '@codesandbox/components';
+import Layout from '../../components/new-layout';
+import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import { APIStyle } from './_global';
 
-import { DocumentationContent } from './_docs.elements';
-
-const Docs = ({
-  location,
-  pageContext: { prev, next },
-  data: {
-    allDocs: { edges: docs },
-    doc: {
-      fields: { description, editLink, title },
-      html,
-    },
-  },
-}) => {
+const FAQS = ({ data, location }) => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [links, setLinks] = useState([]);
+  const hash = location.hash ? location.hash.split('#')[1] : '';
+
+  useEffect(() => {
+    const allH2 = document
+      .getElementsByClassName('html-faq')[0]
+      .getElementsByTagName('h2');
+
+    Array.from(allH2).map(link =>
+      setLinks(l =>
+        l.concat({
+          to: link.id,
+          text: link.innerText,
+        })
+      )
+    );
+  }, []);
 
   return (
     <Layout noWrapperStyling>
       <TitleAndMetaTags
-        description={description}
-        title={`${title} - CodeSandbox Documentation`}
+        description="CodeSandbox API Documentation"
+        title="CodeSandbox API Documentation"
       />
       <Stack
         css={`
@@ -65,7 +65,7 @@ const Docs = ({
             `}
             onClick={() => setShowMobileMenu(s => !s)}
           >
-            <Text weight="bold">Documentation</Text>
+            <Text weight="bold">API Documentation</Text>
             <svg width={28} height={18} fill="none">
               <g filter="url(#prefix__filter0_d)">
                 <path
@@ -118,13 +118,13 @@ const Docs = ({
               }
             `}
           >
-            {docs.map(({ node }) => (
+            {links.map(({ to, text }) => (
               <Link
-                key={node.fields.title}
+                key={to}
                 css={`
                   text-decoration: none;
                 `}
-                to={`docs${node.fields.slug}`}
+                to={`docs/api/#${to}`}
               >
                 <ListItem
                   css={`
@@ -142,15 +142,11 @@ const Docs = ({
                   <Text
                     variant="muted"
                     style={{
-                      color:
-                        location.pathname.split('/docs')[1] ===
-                          node.fields.slug && 'white',
-                      fontWeight:
-                        location.pathname.split('/docs')[1] ===
-                          node.fields.slug && 'bold',
+                      color: hash === to && 'white',
+                      fontWeight: hash === to && 'bold',
                     }}
                   >
-                    {node.fields.title}
+                    {text}
                   </Text>
                 </ListItem>
               </Link>
@@ -173,143 +169,35 @@ const Docs = ({
           marginX="auto"
           marginTop={15}
         >
-          <Button
-            css={`
-              position: sticky;
-              width: auto;
-              top: 20px;
-              float: right;
-              transform: translateX(calc(100% + 66px));
-
-              @media screen and (max-width: 1100px) {
-                position: relative;
-                transform: none;
-                float: none;
-                top: -20px;
-              }
-            `}
-            variant="secondary"
-            href={editLink}
-            rel="noreferrer noopener"
-            target="_blank"
-          >
-            Edit this page
-          </Button>
           <Text weight="bold" size={9} block paddingBottom={2}>
-            {title}
+            API
           </Text>
           <Text block paddingBottom={8}>
-            {description}
+            Here you can learn how to use CodeSandbox programmatically
           </Text>
-          <DocumentationContent dangerouslySetInnerHTML={{ __html: html }} />
-          <Stack
-            justify="space-between"
-            align="center"
-            paddingY={8}
-            marginTop={90}
-            css={`
-              border-top: 1px solid #242424;
-              border-bottom: 1px solid #242424;
-            `}
-          >
-            {prev.fields ? (
-              <Element>
-                <Link
-                  to={`docs${prev.fields.slug}`}
-                  css={`
-                    text-decoration: none;
-                  `}
-                >
-                  <Text
-                    size={6}
-                    block
-                    css={`
-                      color: white;
-                    `}
-                  >
-                    Previous
-                  </Text>
-                  <Text size={3} variant="muted">
-                    {prev.fields.title}
-                  </Text>
-                </Link>
-              </Element>
-            ) : (
-              <div />
-            )}
-            {next.fields ? (
-              <Element
-                css={`
-                  text-align: right;
-                `}
-              >
-                <Link
-                  to={`docs${next.fields.slug}`}
-                  css={`
-                    text-decoration: none;
-                  `}
-                >
-                  <Text
-                    size={6}
-                    block
-                    css={`
-                      color: white;
-                    `}
-                    align="right"
-                  >
-                    Next
-                  </Text>
-                  <Text size={3} variant="muted">
-                    {next.fields.title}
-                  </Text>
-                </Link>
-              </Element>
-            ) : (
-              <div />
-            )}
-          </Stack>
+          <Element
+            className="html-faq"
+            dangerouslySetInnerHTML={{ __html: data.api.html }}
+            css={APIStyle}
+          />
         </Element>
-
-        {/* <DocSearch /> */}
       </Stack>
     </Layout>
   );
 };
 
-export default Docs;
-
-export const pageQuery = graphql`
-  query Docs($slug: String!) {
-    allDocs: allMarkdownRemark(
-      filter: {
-        fileAbsolutePath: { regex: "/docs/" }
-        fields: { slug: { nin: ["/api", "/faqs"] } }
-      }
-      sort: { fields: [fileAbsolutePath], order: [ASC] }
-    ) {
-      edges {
-        node {
-          fields {
-            slug
-            title
-          }
-          headings(depth: h2) {
-            value
-          }
-        }
-      }
-    }
-
-    doc: markdownRemark(
-      fileAbsolutePath: { regex: "/docs/" }
-      fields: { slug: { eq: $slug } }
-    ) {
+export const query = graphql`
+  {
+    api: markdownRemark(fields: { slug: { eq: "/api" } }) {
       fields {
         description
         editLink
         title
       }
+      rawMarkdownBody
       html
     }
   }
 `;
+
+export default FAQS;

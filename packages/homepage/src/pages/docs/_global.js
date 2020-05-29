@@ -46,6 +46,137 @@ export const Global = createGlobalStyle`
   }
 `;
 
+export const APIStyle = css`
+  h2 {
+    font-size: 16px;
+    padding: 40px 0;
+    box-shadow: 0px -1px 0px #242424;
+    margin: 0;
+    position: relative;
+  }
+
+  p {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 23px;
+    color: #999999;
+  }
+  iframe {
+    display: block;
+    margin: 40px auto;
+    border: 0;
+    outline: 0;
+  }
+
+  table {
+    max-width: 100%;
+    overflow: scroll;
+    display: block;
+  }
+
+  h3 {
+    font-size: 20px;
+    margin: 16px 0;
+    display: block;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  .gatsby-highlight {
+    background: #151515;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+
+    pre {
+      margin-bottom: 0;
+    }
+
+    code {
+      background-color: transparent;
+      padding: 0;
+      margin: 0;
+      font-size: 100%;
+      height: auto !important;
+      line-height: 20px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  }
+
+  .token.comment {
+    color: #5c6370;
+    font-style: italic;
+  }
+  .token.keyword {
+    color: #c678dd;
+  }
+  .token.selector {
+    color: #c678dd;
+  }
+  .token.changed {
+    color: #c678dd;
+  }
+  .token.operator {
+    color: #abb2bf;
+  }
+  .token.property {
+    color: #abb2bf;
+  }
+  .token.constant {
+    color: #d19a66;
+  }
+  .token.number {
+    color: #d19a66;
+  }
+  .token.builtin {
+    color: #d19a66;
+  }
+  .token.attr-name {
+    color: #d19a66;
+  }
+  .token.char {
+    color: #56b6c2;
+  }
+  .token.symbol {
+    color: #56b6c2;
+  }
+  .token.variable {
+    color: #e06c75;
+  }
+  .token.tag {
+    color: #e06c75;
+  }
+  .token.deleted {
+    color: #e06c75;
+  }
+  .token.string {
+    color: #98c379;
+  }
+  .token.inserted {
+    color: #98c379;
+  }
+  .token.punctuation {
+    color: #5c6370;
+  }
+  .token.function {
+    color: #61afef;
+  }
+  .token.class-name {
+    color: #e5c07b;
+  }
+  .token.important,
+  .token.bold {
+    font-weight: bold;
+  }
+  .token.italic {
+    font-style: italic;
+  }
+`;
+
 export const FAQStyle = css`
   h2 {
     font-size: 16px;
