@@ -1,7 +1,8 @@
 import React from 'react';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { useOvermind } from 'app/overmind';
-import { Stack, Text } from '@codesandbox/components';
+import { Stack, Text, Element } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import {
@@ -56,7 +57,8 @@ export const Recent = () => {
           </>
         ) : (
           <Stack as="section" direction="vertical" gap={8}>
-            <SkeletonGroup title="Today" time="day" />
+            <Element css={css({ height: 4 })} />
+            <SkeletonGroup title="Today" time="day" count={2} />
             <SkeletonGroup title="Last 7 Days" time="week" />
             <SkeletonGroup title="Earlier this month" time="month" />
             <SkeletonGroup title="Older" time="older" />
@@ -67,11 +69,11 @@ export const Recent = () => {
   );
 };
 
-const SkeletonGroup = ({ title, time }) => (
+const SkeletonGroup = ({ title, time, count = 4 }) => (
   <>
-    <Text marginBottom={6} block>
+    <Text marginLeft={4} marginBottom={6} block>
       {title}
     </Text>
-    <SkeletonGrid count={4} />
+    <SkeletonGrid count={count} />
   </>
 );
