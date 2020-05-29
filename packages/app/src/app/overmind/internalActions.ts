@@ -519,6 +519,21 @@ export const trackCurrentTeams: AsyncAction = async ({ effects }) => {
   }
 };
 
+export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
+  const user = state.user;
+  if (user) {
+    effects.analytics.identify('pilot', user.experiments.inPilot);
+
+    const profileData = await effects.api.getProfile(user.username);
+    effects.analytics.identify('sandboxCount', profileData.sandboxCount);
+    effects.analytics.identify('pro', Boolean(profileData.subscriptionSince));
+    effects.analytics.identify(
+      'receivedViewCount',
+      Boolean(profileData.viewCount)
+    );
+  }
+};
+
 const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX';
 export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
   if (effects.browser.storage.get(seenTermsKey)) {

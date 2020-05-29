@@ -241,6 +241,9 @@ async function start() {
     transports: ['websocket'],
     reconnectionAttempts: 5,
     reconnectionDelayMax: 32000,
+    query: {
+      sandboxid: sandbox,
+    },
   });
 
   socket.on('connect', () => {
@@ -304,8 +307,8 @@ async function start() {
   });
 
   socket.on('sandbox:port', portList => {
-    portList.forEach(({ hostname, port: newPort }) => {
-      if (hostname === window.location.hostname || newPort.toString() === port) {
+    portList.forEach(({ port: newPort, main }) => {
+      if ((port === '' && main) || newPort.toString() === port) {
         setTimeout(() => {
           window.location.reload(true);
         }, SECOND);

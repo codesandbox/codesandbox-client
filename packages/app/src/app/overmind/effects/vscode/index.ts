@@ -12,7 +12,6 @@ import {
   Settings,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
   NotificationMessage,
@@ -147,20 +146,18 @@ export class VSCodeEffect {
 
     this.prepareElements();
 
-    if (COMMENTS) {
-      this.options.reaction(
-        state => ({
-          fileComments: json(state.comments.fileComments),
-          currentCommentId: state.comments.currentCommentId,
-        }),
-        ({ fileComments, currentCommentId }) => {
-          if (this.modelsHandler) {
-            this.modelsHandler.applyComments(fileComments, currentCommentId);
-          }
+    this.options.reaction(
+      state => ({
+        fileComments: json(state.comments.fileComments),
+        currentCommentId: state.comments.currentCommentId,
+      }),
+      ({ fileComments, currentCommentId }) => {
+        if (this.modelsHandler) {
+          this.modelsHandler.applyComments(fileComments, currentCommentId);
         }
-      );
-      this.listenToCommentClick();
-    }
+      }
+    );
+    this.listenToCommentClick();
 
     // We instantly create a sandbox sync, as we want our
     // extension host to get its messages handled to initialize
@@ -1205,7 +1202,7 @@ export class VSCodeEffect {
 
       this.modelCursorPositionListener = activeEditor.onDidChangeCursorPosition(
         cursor => {
-          if (COMMENTS) {
+          if (sandbox?.featureFlags.comments) {
             const model = activeEditor.getModel();
 
             this.modelsHandler.updateLineCommentIndication(
