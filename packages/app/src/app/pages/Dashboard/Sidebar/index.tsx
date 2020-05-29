@@ -1,20 +1,20 @@
-import React from 'react';
-import history from 'app/utils/history';
-import { useOvermind } from 'app/overmind';
-import { withRouter, Route } from 'react-router-dom';
-import { Query } from 'react-apollo';
-import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import PeopleIcon from 'react-icons/lib/md/people';
+import Input from '@codesandbox/common/lib/components/Input';
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { useOvermind } from 'app/overmind';
+import history from 'app/utils/history';
+import React from 'react';
+import { Query } from 'react-apollo';
+import PeopleIcon from 'react-icons/lib/md/people';
+import { Route, withRouter } from 'react-router-dom';
 import DashboardIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
+import { TEAMS_QUERY } from '../queries';
+import { CategoryHeader, InputWrapper, Items, SidebarStyled } from './elements';
 import { Item } from './Item';
 import { SandboxesItem } from './SandboxesItem';
-import { TrashItem } from './TrashItem';
-import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
-import { TEAMS_QUERY } from '../queries';
 import { TemplateItem } from './TemplateItem';
+import { TrashItem } from './TrashItem';
 
 const SidebarComponent = () => {
   const {
@@ -77,7 +77,7 @@ const SidebarComponent = () => {
               </Items>
 
               <Query query={TEAMS_QUERY}>
-                {({ loading, data, error }) => {
+                {({ loading, data, error }: any) => {
                   if (loading || error || !data.me || !(data && data.me)) {
                     return null;
                   }

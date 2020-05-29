@@ -70,7 +70,9 @@ by setting a value for "view" in a
 
 ## How do I change the font used in the editor?
 
-Ensure the font you want to use has been installed on your computer, then put the name of it first in the comma-separated list under 'Editor: Font Family' from File > Preferences > Settings in the editor.
+Ensure the font you want to use has been installed on your computer, then put
+the name of it first in the comma-separated list under 'Editor: Font Family'
+from File > Preferences > Settings in the editor.
 
 ## Are there any limitations with sandboxes?
 

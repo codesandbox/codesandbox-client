@@ -1,14 +1,13 @@
+import { Column, Element } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
+import { Folder } from 'app/pages/NewDashboard/Components/Folder';
+import { Header } from 'app/pages/NewDashboard/Components/Header';
+import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
+import { SkeletonCard } from 'app/pages/NewDashboard/Components/Sandbox/SandboxCard';
+import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
-import { Element, Column } from '@codesandbox/components';
-import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
-import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
-import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
-import { Folder } from 'app/pages/NewDashboard/Components/Folder';
-import { SkeletonCard } from 'app/pages/NewDashboard/Components/Sandbox/SandboxCard';
-import { getPossibleTemplates } from '../../utils';
 
 export const AllPage = ({ match: { params }, history }) => {
   const [level, setLevel] = useState(0);
@@ -57,11 +56,7 @@ export const AllPage = ({ match: { params }, history }) => {
       folders={folders || []}
     >
       <Element style={{ height: '100%', position: 'relative' }}>
-        <Header
-          path={param}
-          templates={getPossibleTemplates(allCollections)}
-          createNewFolder={() => setCreating(true)}
-        />
+        <Header />
         {allCollections ? (
           <SandboxGrid>
             {creating && <Folder key="new" setCreating={setCreating} />}
