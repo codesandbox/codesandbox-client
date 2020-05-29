@@ -10,7 +10,9 @@ type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
     to?: string;
   };
 
-const LinkElement = styled(Text).attrs({ as: 'a' })<LinkProps>(
+const LinkElement = styled(Text).attrs(p => ({
+  as: ((p as unknown) as { as: string }).as || 'a',
+}))<LinkProps>(
   css({
     cursor: 'pointer',
     textDecoration: 'none',

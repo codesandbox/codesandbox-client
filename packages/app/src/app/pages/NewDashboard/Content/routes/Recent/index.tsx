@@ -45,7 +45,7 @@ export const Recent = () => {
 
   return (
     <SelectionProvider sandboxes={sandboxes.RECENT}>
-      <Header />
+      <Header title="Recently Modified Sandboxes" />
       <section style={{ position: 'relative' }}>
         {sandboxes.RECENT ? (
           <>
