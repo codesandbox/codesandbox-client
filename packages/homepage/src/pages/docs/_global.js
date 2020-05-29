@@ -54,6 +54,22 @@ export const FAQStyle = css`
     margin: 0;
     user-select: none;
     cursor: pointer;
+    position: relative;
+
+    &.open:after {
+      transform: rotate(-90deg);
+    }
+
+    &:after {
+      content: '';
+      height: 14px;
+      width: 9px;
+      background-image: url('data:image/svg+xml,%3Csvg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M6.67512e-07 7.00014L9 1.03507e-06L9 14L6.67512e-07 7.00014Z" fill="%23343434"/%3E%3C/svg%3E%0A');
+      position: absolute;
+      transition: transform 200ms ease;
+
+      right: 0;
+    }
   }
 
   code {
@@ -78,18 +94,20 @@ export const FAQStyle = css`
   }
 
   ul {
-    display: none;
+    max-height: 0;
     opacity: 0;
-    transition: opacity 200ms ease;
+    transition: all 200ms ease;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
     line-height: 23px;
     color: #999999;
+    margin-bottom: 0;
 
     &.show {
-      display: block;
+      max-height: 800px;
       opacity: 1;
+      margin-bottom: 1.0875rem;
     }
   }
   p {
@@ -98,13 +116,15 @@ export const FAQStyle = css`
     font-size: 16px;
     line-height: 23px;
     color: #999999;
-    display: none;
+    max-height: 0;
     opacity: 0;
-    transition: opacity 200ms ease;
+    transition: all 200ms ease;
+    margin: 0;
 
     &.show {
-      display: block;
       opacity: 1;
+      max-height: 400px;
+      margin-bottom: 1.0875rem;
     }
   }
 `;

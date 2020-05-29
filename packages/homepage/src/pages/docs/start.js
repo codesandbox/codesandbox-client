@@ -6,6 +6,7 @@ import bg from '../../assets/images/bg-docs.png';
 import Layout from '../../components/new-layout';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 import { Global, FAQStyle } from './_global';
+import { useAccordion } from '../../utils/useAccordion';
 
 const Wrapper = styled.div`
   width: 70%;
@@ -75,6 +76,7 @@ const GridItem = styled(Element)`
 const Docs = ({ data }) => {
   const [enabled, setEnabled] = useState(true);
   const faq = data.faq.html;
+  useAccordion();
 
   useEffect(() => {
     // Initialize Algolia search.
@@ -91,25 +93,6 @@ const Docs = ({ data }) => {
 
       setEnabled(false);
     }
-  }, []);
-
-  useEffect(() => {
-    const toggleClasses = e => {
-      if (e.target.localName !== 'h2') return;
-      const parent = e.target.parentNode;
-
-      Array.from(parent.getElementsByTagName('p')).map(p =>
-        p.classList.toggle('show')
-      );
-
-      Array.from(parent.getElementsByTagName('ul')).map(p =>
-        p.classList.toggle('show')
-      );
-    };
-
-    document.addEventListener('click', toggleClasses);
-
-    return () => document.removeEventListener('click', toggleClasses);
   }, []);
 
   return (
