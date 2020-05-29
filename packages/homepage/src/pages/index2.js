@@ -59,6 +59,6 @@ const Homepage = () => (
   </Layout>
 );
 
-identifyFromCookie('heroAB', 'hero0420');
+identifyFromCookie('heroAB', 'hero0529');
 
 export default Homepage;
