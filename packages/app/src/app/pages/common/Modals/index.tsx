@@ -31,6 +31,7 @@ import { ShareModal } from './ShareModal';
 import SignInForTemplates from './SignInForTemplates';
 import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
+import { RecoverFilesModal } from './RecoverFilesModal';
 import UploadModal from './UploadModal';
 
 const MoveSandboxFolderModal = Loadable(() =>
@@ -54,6 +55,10 @@ const modals = {
   },
   deployment: {
     Component: DeploymentModal,
+    width: 400,
+  },
+  recoveredFiles: {
+    Component: RecoverFilesModal,
     width: 400,
   },
   exportGithub: {

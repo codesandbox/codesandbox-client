@@ -2,7 +2,7 @@ import { Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React, { useMemo } from 'react';
-import { FaCode, FaFlask, FaOutdent } from 'react-icons/fa';
+import { FaCode, FaFlask, FaIndent } from 'react-icons/fa';
 import { GoBrowser, GoKeyboard, GoStar } from 'react-icons/go';
 import { MdColorLens, MdCreditCard, MdDeviceHub } from 'react-icons/md';
 
@@ -48,7 +48,7 @@ const PreferencesModal: React.FC = () => {
         {
           id: 'prettierSettings',
           title: 'Prettier Settings',
-          icon: <FaOutdent />,
+          icon: <FaIndent />,
           content: <CodeFormatting />,
         },
         {

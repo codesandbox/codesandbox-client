@@ -1,5 +1,4 @@
 import getTemplate from '@codesandbox/common/es/templates';
-import { COMMENTS as COMMENTS_ON } from '@codesandbox/common/es/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/es/utils/permission';
 
 export interface INavigationItem {
@@ -127,7 +126,10 @@ export default function getItems(store: any): INavigationItem[] {
   }
 
   if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
-    if (COMMENTS_ON && hasPermission(currentSandbox.authorization, 'comment')) {
+    if (
+      currentSandbox.featureFlags.comments &&
+      hasPermission(currentSandbox.authorization, 'comment')
+    ) {
       items.push(GITHUB, COMMENTS);
     } else {
       items.push(GITHUB);

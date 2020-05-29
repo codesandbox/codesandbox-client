@@ -90,6 +90,7 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
 
     state.live.isLive = true;
     state.live.error = null;
+    effects.live.markLiveReady();
 
     return sandbox;
   } catch (error) {

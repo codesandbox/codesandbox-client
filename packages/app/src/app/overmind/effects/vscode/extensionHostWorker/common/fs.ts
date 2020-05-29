@@ -94,6 +94,7 @@ export async function initializeBrowserFS({
         options: {
           api: {
             getSandboxFs: () => currentSandboxFs,
+            getJwt: () => '',
           },
         },
       };

@@ -186,14 +186,12 @@ export function initializeCustomTheme() {
         message: e.message,
         status: NotificationStatus.ERROR,
         actions: {
-          primary: [
-            {
-              label: 'Clear Custom Theme',
-              run: () => {
-                localStorage.removeItem('settings.manualCustomVSCodeTheme');
-              },
+          primary: {
+            label: 'Clear Custom Theme',
+            run: () => {
+              localStorage.removeItem('settings.manualCustomVSCodeTheme');
             },
-          ],
+          },
         },
       });
     }

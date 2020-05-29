@@ -13,6 +13,7 @@ import {
   Stack,
   Icon,
   IconButton,
+  Button,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
@@ -53,7 +54,7 @@ export const Sidebar = props => {
   const [foldersVisible, setFoldersVisibility] = React.useState(false);
 
   return (
-    <Element as="aside" {...props}>
+    <Stack as="aside" direction="vertical" justify="space-between" {...props}>
       <List css={css({ '> li': { height: 10 } })}>
         <ListAction gap={2} css={css({ paddingX: 0 })}>
           {user && (
@@ -218,7 +219,13 @@ export const Sidebar = props => {
         <RowItem name="Recently Deleted" path="deleted" icon="trash" />
         <RowItem name="Settings (temp)" path="settings" icon="gear" />
       </List>
-    </Element>
+      <Element margin={4}>
+        <Button variant="secondary">
+          <Icon name="plus" size={10} marginRight={1} />
+          Create New Workspace
+        </Button>
+      </Element>
+    </Stack>
   );
 };
 

@@ -277,17 +277,15 @@ export function makeTemplates(
           }`,
           status: NotificationStatus.SUCCESS,
           actions: {
-            primary: [
-              {
-                label: 'Undo',
-                run: () => {
-                  track('Template - Removed', {
-                    source: 'Undo',
-                  });
-                  unmakeTemplates(unpackedSelectedSandboxes);
-                },
+            primary: {
+              label: 'Undo',
+              run: () => {
+                track('Template - Removed', {
+                  source: 'Undo',
+                });
+                unmakeTemplates(unpackedSelectedSandboxes);
               },
-            ],
+            },
           },
         });
       }),

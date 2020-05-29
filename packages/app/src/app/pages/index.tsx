@@ -1,9 +1,7 @@
-import { Button } from '@codesandbox/common/es/components/Button';
-import theme from '@codesandbox/common/es/theme';
-import { DNT, trackPageview } from '@codesandbox/common/es/utils/analytics';
-import _debug from '@codesandbox/common/es/utils/debug';
-import { notificationState } from '@codesandbox/common/es/utils/notifications';
-import { NotificationStatus, Toasts } from '@codesandbox/notifications';
+import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
+import _debug from '@codesandbox/common/lib/utils/debug';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { Toasts } from '@codesandbox/notifications';
 import { SignInModal } from 'app/components/SignInModal';
 import { useOvermind } from 'app/overmind';
 import Loadable from 'app/utils/Loadable';
@@ -118,16 +116,7 @@ const RoutesComponent: React.FC = () => {
           return null;
         }}
       />
-      <Toasts
-        colors={{
-          [NotificationStatus.ERROR]: theme.dangerBackground(),
-          [NotificationStatus.SUCCESS]: theme.green(),
-          [NotificationStatus.NOTICE]: theme.secondary(),
-          [NotificationStatus.WARNING]: theme.primary(),
-        }}
-        state={notificationState}
-        Button={Button}
-      />
+      <Toasts state={notificationState} />
       <Boundary>
         <Content>
           <Switch>

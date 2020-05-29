@@ -11,23 +11,23 @@ import {
   Text,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-import React, { useEffect } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 
 import { FileIcon, FlagIcon, NetlifyIcon, VisitIcon } from './icons';
 
-export const Netlify = () => {
+export const Netlify: FunctionComponent = () => {
   const {
     actions: {
-      modalOpened,
       deployment: { deployWithNetlify, getNetlifyDeploys },
+      modalOpened,
     },
     state: {
       deployment: {
-        deploying,
-        netlifySite,
         building,
-        netlifyLogs,
+        deploying,
         netlifyClaimUrl,
+        netlifyLogs,
+        netlifySite,
       },
       editor: { currentSandbox },
     },
@@ -43,17 +43,19 @@ export const Netlify = () => {
     template.netlify !== false && (
       <>
         <Integration icon={NetlifyIcon} title="Netlify">
-          <Element marginX={2} marginBottom={netlifySite ? 6 : 0}>
-            <Text variant="muted" block marginBottom={4}>
+          <Element marginBottom={netlifySite ? 6 : 0} marginX={2}>
+            <Text block marginBottom={4} variant="muted">
               Deploy your sandbox site to{' '}
               <Link href="https://www.netlify.com/" target="_blank">
                 Netlify
               </Link>
             </Text>
+
             <Button
               disabled={deploying || building}
               onClick={() => {
                 track('Deploy Clicked', { provider: 'netlify' });
+
                 deployWithNetlify();
               }}
             >
@@ -66,13 +68,14 @@ export const Netlify = () => {
               <ListItem>
                 <Text weight="bold">{netlifySite.name}</Text>
               </ListItem>
-              {building && !netlifyLogs && (
+
+              {building && !netlifyLogs ? (
                 <ListItem>
                   <Text variant="muted">Building</Text>
                 </ListItem>
-              )}
+              ) : null}
 
-              {netlifySite.url && (
+              {netlifySite.url ? (
                 <ListAction
                   onClick={() => window.open(netlifySite.url, '_blank')}
                 >
@@ -81,9 +84,9 @@ export const Netlify = () => {
                   </Element>{' '}
                   Visit Site
                 </ListAction>
-              )}
+              ) : null}
 
-              {netlifySite.url && (
+              {netlifySite.url ? (
                 <ListAction
                   onClick={() => window.open(netlifyClaimUrl, '_blank')}
                 >
@@ -92,9 +95,9 @@ export const Netlify = () => {
                   </Element>{' '}
                   Claim Site
                 </ListAction>
-              )}
+              ) : null}
 
-              {netlifyLogs && (
+              {netlifyLogs ? (
                 <ListAction
                   onClick={() => modalOpened({ modal: 'netlifyLogs' })}
                 >
@@ -103,7 +106,7 @@ export const Netlify = () => {
                   </Element>{' '}
                   View Logs
                 </ListAction>
-              )}
+              ) : null}
             </List>
           )}
         </Integration>

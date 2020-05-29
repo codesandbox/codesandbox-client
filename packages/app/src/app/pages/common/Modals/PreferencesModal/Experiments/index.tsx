@@ -1,10 +1,8 @@
+import { Element, Text } from '@codesandbox/components';
 import React from 'react';
-import { Text, Element } from '@codesandbox/components';
-import { Rule, SubContainer } from '../elements';
-import { Comments } from './Comments';
-import { ContainerLSP } from './ContainerLSP';
 
-const dev = process.env.NODE_ENV === 'development';
+import { SubContainer } from '../../elements';
+import { ContainerLSP } from './ContainerLSP';
 
 export const Experiments: React.FunctionComponent = () => (
   <>
@@ -13,11 +11,6 @@ export const Experiments: React.FunctionComponent = () => (
     </Text>
     <SubContainer>
       <Element paddingTop={2}>
-        {dev && (
-          <>
-            <Comments /> <Rule />
-          </>
-        )}
         <ContainerLSP />
       </Element>
     </SubContainer>

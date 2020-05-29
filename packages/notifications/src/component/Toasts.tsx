@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useTransition, animated } from 'react-spring';
-
+import { ThemeProvider, Button as ButtonBase } from '@codesandbox/components';
+import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import Portal from './Portal';
 import { NotificationContainer } from './elements';
 import {
@@ -59,24 +60,22 @@ const TIME_ALIVE = {
 
 interface Props {
   state: NotificationState;
-  Button?: IButtonType;
   colors?: IColors;
+  Button?: IButtonType;
 }
 
 const DEFAULT_COLORS = {
-  [NotificationStatus.ERROR]: '#DC3545',
-  [NotificationStatus.WARNING]: '#FFD399',
-  [NotificationStatus.SUCCESS]: '#5da700',
-  [NotificationStatus.NOTICE]: '#40A9F3',
+  [NotificationStatus.ERROR]:
+    codesandboxBlack.colors['editorWarning.foreground'],
+  [NotificationStatus.WARNING]: '#F69935',
+  [NotificationStatus.SUCCESS]: codesandboxBlack.colors['terminal.ansiGreen'],
+  [NotificationStatus.NOTICE]: codesandboxBlack.colors['button.background'],
 };
-
-const DEFAULT_BUTTON: IButtonType = props =>
-  React.createElement('button', props); // eslint-disable-line
 
 export function Toasts({
   state,
   colors = DEFAULT_COLORS,
-  Button = DEFAULT_BUTTON,
+  Button = ButtonBase,
 }: Props) {
   const [refMap] = React.useState(
     () => new WeakMap<NotificationToast, HTMLDivElement>()
@@ -166,41 +165,42 @@ export function Toasts({
     NotificationToast,
     { overflow: string; opacity: number; height: number }
   >(notificationsToShow, n => n.id, {
-    from: { overflow: 'hidden', opacity: 0, height: 0 },
+    from: { opacity: 0, height: 0 },
     // @ts-ignore: not typed properly in react-spring
     enter: item => next =>
       next({
-        overflow: 'hidden',
         opacity: 1,
         height: refMap.get(item) ? refMap.get(item).offsetHeight + 16 : 0,
       }),
-    leave: { overflow: 'hidden', opacity: 0, height: 0 },
+    leave: { opacity: 0, height: 0 },
   });
 
   return (
     <Portal>
-      <NotificationContainer
-        onMouseEnter={() => {
-          mouseOverRef.current = true;
-        }}
-        onMouseLeave={() => {
-          mouseOverRef.current = false;
-        }}
-      >
-        {transitions.map(({ item, props, key }) => (
-          <animated.div key={key} style={props}>
-            <Toast
-              colors={colors}
-              Button={Button}
-              getRef={ref => ref && refMap.set(item, ref)}
-              toast={item}
-              removeToast={(id: string) => {
-                removeNotification(id);
-              }}
-            />
-          </animated.div>
-        ))}
-      </NotificationContainer>
+      <ThemeProvider theme={codesandboxBlack}>
+        <NotificationContainer
+          onMouseEnter={() => {
+            mouseOverRef.current = true;
+          }}
+          onMouseLeave={() => {
+            mouseOverRef.current = false;
+          }}
+        >
+          {transitions.map(({ item, props, key }) => (
+            <animated.div key={key} style={props}>
+              <Toast
+                Button={Button}
+                colors={colors}
+                getRef={ref => ref && refMap.set(item, ref)}
+                toast={item}
+                removeToast={(id: string) => {
+                  removeNotification(id);
+                }}
+              />
+            </animated.div>
+          ))}
+        </NotificationContainer>
+      </ThemeProvider>
     </Portal>
   );
 }

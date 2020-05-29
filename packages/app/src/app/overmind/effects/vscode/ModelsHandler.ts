@@ -6,7 +6,6 @@ import {
   UserSelection,
 } from '@codesandbox/common/es/types';
 import { getTextOperation } from '@codesandbox/common/es/utils/diff';
-import { COMMENTS } from '@codesandbox/common/es/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/es/utils/permission';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { actions, dispatch } from 'codesandbox-api';
@@ -155,7 +154,7 @@ export class ModelsHandler {
   }
 
   public clearComments() {
-    if (COMMENTS) {
+    if (this.sandbox.featureFlags.comments) {
       Object.values(this.moduleModels).forEach(moduleModel => {
         if (!moduleModel.model) {
           return;
@@ -188,7 +187,7 @@ export class ModelsHandler {
 
     const model = moduleModel.model;
 
-    if (COMMENTS) {
+    if (this.sandbox.featureFlags.comments) {
       const newDecorationComments = this.createCommentDecorations(
         moduleModel.comments,
         model,
@@ -232,6 +231,14 @@ export class ModelsHandler {
       if (!model) {
         return;
       }
+
+      // Clean out any removed comments
+      const currentCommentIds = (
+        commentThreadsByPath[path.replace('/sandbox', '')] || []
+      ).map(comment => comment.commentId);
+      moduleModel.comments = moduleModel.comments.filter(comment =>
+        currentCommentIds.includes(comment.commentId)
+      );
 
       const existingDecorationComments = moduleModel.currentCommentDecorations;
       const newDecorationComments = this.createCommentDecorations(

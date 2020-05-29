@@ -1,4 +1,3 @@
-import { COMMENTS } from '@codesandbox/common/es/utils/feature-flags';
 import { ThemeProvider } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
@@ -25,12 +24,8 @@ const workspaceTabs = {
   config: ConfigurationFiles,
   live: Live,
   server: Server,
+  comments: Comments,
 };
-
-if (COMMENTS) {
-  // @ts-ignore
-  workspaceTabs.comments = Comments;
-}
 
 export const WorkspaceComponent = ({ theme }) => {
   const { state } = useOvermind();

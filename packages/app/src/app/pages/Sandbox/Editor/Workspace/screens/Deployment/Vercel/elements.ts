@@ -36,6 +36,7 @@ export const State = styled(Text)<{ state: VercelDeploymentState }>`
     display: flex;
     align-items: center;
     text-transform: capitalize;
+
     &:before {
       content: '';
       display: block;

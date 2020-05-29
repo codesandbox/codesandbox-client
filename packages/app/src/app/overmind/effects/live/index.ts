@@ -13,6 +13,7 @@ import {
 } from '@codesandbox/common/es/utils/analytics/sentry';
 import _debug from '@codesandbox/common/es/utils/debug';
 import VERSION from '@codesandbox/common/es/version';
+import { blocker } from 'app/utils/blocker';
 import { camelizeKeys } from 'humps';
 import { SerializedTextOperation, TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
@@ -67,6 +68,8 @@ class Live {
     moduleShortid: string;
     moduleInfo: IModuleStateModule;
   }) => void;
+
+  private liveInitialized = blocker();
 
   private operationToElixir(ot: (number | string)[]) {
     return ot.map((op: number | string) => {
@@ -475,8 +478,18 @@ class Live {
     });
   }
 
+  waitForLiveReady() {
+    return this.liveInitialized.promise;
+  }
+
+  markLiveReady() {
+    this.liveInitialized.resolve(undefined);
+  }
+
   reset() {
     this.clientsManager.clear();
+    this.liveInitialized.reject(undefined);
+    this.liveInitialized = blocker();
   }
 
   resetClient(moduleShortid: string, revision: number) {

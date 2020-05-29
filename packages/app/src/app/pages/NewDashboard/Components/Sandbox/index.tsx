@@ -1,3 +1,4 @@
+import { getTemplateIcon } from '@codesandbox/common/es/utils/getTemplateIcon';
 import { ESC } from '@codesandbox/common/es/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/es/utils/url-generator';
 import { isMenuClicked } from '@codesandbox/components';
@@ -19,6 +20,11 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   } = useOvermind();
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
+
+  const { UserIcon } = getTemplateIcon(
+    sandbox.forkedTemplate?.iconUrl,
+    sandbox.source.template
+  );
 
   const [edit, setEdit] = React.useState(false);
   const [newTitle, setNewTitle] = React.useState(sandboxTitle);
@@ -100,6 +106,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const {
     selectedIds,
     onClick: onSelectionClick,
+    onRightClick,
     onBlur,
     onKeyDown,
     onDragStart,
@@ -114,6 +121,11 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const onClick = event => {
     if (edit || isDragging || isMenuClicked(event)) return;
     onSelectionClick(event, sandbox.id);
+  };
+
+  const onContextMenu = event => {
+    event.preventDefault();
+    onRightClick(event, sandbox.id);
   };
 
   const history = useHistory();
@@ -133,6 +145,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     selected,
     onClick,
     onDoubleClick,
+    onContextMenu,
     onBlur,
     onKeyDown,
     'data-selection-id': sandbox.id,
@@ -142,6 +155,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     sandboxTitle,
     sandbox,
     isTemplate,
+    TemplateIcon: UserIcon,
     // edit mode
     edit,
     newTitle,

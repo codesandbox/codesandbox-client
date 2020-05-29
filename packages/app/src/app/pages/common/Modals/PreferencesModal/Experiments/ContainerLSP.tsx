@@ -1,7 +1,8 @@
-import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
 import { Text } from '@codesandbox/components';
-import { PaddedPreference } from '../elements';
+import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
+
+import { PaddedPreference } from '../../elements';
 
 export const ContainerLSP: FunctionComponent = () => {
   const {

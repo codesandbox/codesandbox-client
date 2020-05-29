@@ -33,9 +33,15 @@ export const FolderListItem = ({
     {...props}
     css={css({
       paddingX: 0,
-      backgroundColor: showDropStyles ? 'list.hoverBackground' : 'inherit',
-      boxShadow: theme =>
-        selected ? `0px 0px 1px 1px ${theme.colors.blues[600]}` : null,
+      backgroundColor: selected
+        ? 'blues.600'
+        : showDropStyles
+        ? 'list.hoverBackground'
+        : 'inherit',
+      color: selected ? 'white' : 'inherit',
+      ':hover, :focus, :focus-within': {
+        backgroundColor: selected ? 'blues.600' : 'list.hoverBackground',
+      },
     })}
   >
     <Stack
