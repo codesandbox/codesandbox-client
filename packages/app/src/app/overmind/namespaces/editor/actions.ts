@@ -260,8 +260,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     });
   }
 
-  actions.internal.ensurePackageJSON();
-
   await actions.editor.internal.initializeSandbox(sandbox);
 
   // We only recover files at this point if we are not live. When live we recover them
