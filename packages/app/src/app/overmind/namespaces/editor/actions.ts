@@ -11,7 +11,6 @@ import {
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -248,14 +247,12 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
       status: convertTypeToStatus('notice'),
       sticky: true,
       actions: {
-        primary: [
-          {
-            label: 'Fork',
-            run: () => {
-              actions.editor.forkSandboxClicked();
-            },
+        primary: {
+          label: 'Fork',
+          run: () => {
+            actions.editor.forkSandboxClicked();
           },
-        ],
+        },
       },
     });
   }
@@ -283,7 +280,10 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
      */
   }
 
-  if (COMMENTS && hasPermission(sandbox.authorization, 'comment')) {
+  if (
+    sandbox.featureFlags.comments &&
+    hasPermission(sandbox.authorization, 'comment')
+  ) {
     actions.comments.getSandboxComments(sandbox.id);
   }
 
@@ -491,7 +491,7 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
         state.editor.changedModuleShortids.includes(module.shortid)
       );
 
-      if (state.user?.experiments.comments) {
+      if (sandbox.featureFlags.comments) {
         const versions = await Promise.all(
           changedModules.map(module =>
             effects.live
@@ -889,14 +889,12 @@ export const showEnvironmentVariablesNotification: AsyncAction = async ({
       title: 'Unset Secrets',
       message: `This sandbox has ${emptyVarCount} secrets that need to be set. You can set them in the server tab.`,
       actions: {
-        primary: [
-          {
-            label: 'Open Server Tab',
-            run: () => {
-              actions.workspace.setWorkspaceItem({ item: SERVER.id });
-            },
+        primary: {
+          label: 'Open Server Tab',
+          run: () => {
+            actions.workspace.setWorkspaceItem({ item: SERVER.id });
           },
-        ],
+        },
       },
     });
   }

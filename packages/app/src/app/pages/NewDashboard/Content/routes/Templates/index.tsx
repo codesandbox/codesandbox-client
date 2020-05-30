@@ -22,13 +22,25 @@ export const Templates = () => {
   }, [actions.dashboard]);
 
   return (
-    <SelectionProvider sandboxes={sandboxes.TEMPLATES}>
+    <SelectionProvider
+      sandboxes={
+        sandboxes.TEMPLATES &&
+        sandboxes.TEMPLATES.map(template => {
+          const { sandbox, ...templateValues } = template;
+          return {
+            ...sandbox,
+            isTemplate: true,
+            template: templateValues,
+          };
+        })
+      }
+    >
       <Element css={css({ position: 'relative' })}>
         <Header />
         {sandboxes.TEMPLATES ? (
           <SandboxGrid>
             {sandboxes.TEMPLATES.map(({ sandbox }) => (
-              <Sandbox template sandbox={sandbox} key={sandbox.id} />
+              <Sandbox isTemplate sandbox={sandbox} key={sandbox.id} />
             ))}
           </SandboxGrid>
         ) : (

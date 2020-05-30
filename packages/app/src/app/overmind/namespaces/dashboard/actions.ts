@@ -487,18 +487,25 @@ export const deleteSandboxFromState: Action<string[]> = (
     const values = Object.keys(dashboard.sandboxes).map(type => {
       if (dashboard.sandboxes[type]) {
         if (!Array.isArray(dashboard.sandboxes[type])) {
-          const object = dashboard.sandboxes[type];
-          const a = Object.keys(object).map(t => ({
-            [t]: object[t].filter(sandbox => sandbox.id !== id),
+          const folderNames = dashboard.sandboxes[type];
+          const sandboxes = Object.keys(folderNames).map(folderName => ({
+            [folderName]: folderNames[folderName].filter(
+              sandbox => sandbox.id !== id
+            ),
           }));
           return {
             ...dashboard.sandboxes[type],
-            ...a[a.length - 1],
+            ...sandboxes.reduce(
+              (obj, item) =>
+                Object.assign(obj, {
+                  [Object.keys(item)[0]]: item[Object.keys(item)[0]],
+                }),
+              {}
+            ),
           };
         }
         return dashboard.sandboxes[type].filter(sandbox => sandbox.id !== id);
       }
-
       return null;
     });
 
@@ -621,17 +628,19 @@ export const renameFolderInState: Action<{ path: string; newPath: string }> = (
   { path, newPath }
 ) => {
   if (!dashboard.allCollections) return;
-  dashboard.allCollections = dashboard.allCollections.map(folder => {
+  const newFolders = dashboard.allCollections.map(folder => {
     if (folder.path === path) {
+      const split = newPath.split('/');
       return {
         ...folder,
         path: newPath,
-        name,
+        name: split[split.length - 1],
       };
     }
 
     return folder;
   });
+  dashboard.allCollections = newFolders;
 };
 
 export const renameSandbox: AsyncAction<{
@@ -655,6 +664,17 @@ export const renameSandbox: AsyncAction<{
     });
     effects.notificationToast.error('There was a problem renaming you sandbox');
   }
+};
+
+export const moveFolder: AsyncAction<{
+  path: string;
+  newPath: string;
+}> = async ({ state: { dashboard }, actions }, { path, newPath }) => {
+  if (!dashboard.allCollections) return;
+  dashboard.allCollections = dashboard.allCollections.filter(
+    folder => folder.path !== path
+  );
+  actions.dashboard.renameFolder({ path, newPath });
 };
 
 export const renameFolder: AsyncAction<{
@@ -859,11 +879,7 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
 export const addSandboxesToFolder: AsyncAction<{
   sandboxIds: string[];
   collectionPath: string;
-  moveFromCollectionPath: string | undefined;
-}> = async (
-  { state, effects, actions },
-  { sandboxIds, collectionPath, moveFromCollectionPath }
-) => {
+}> = async ({ state, effects, actions }, { sandboxIds, collectionPath }) => {
   const oldSandboxes = state.dashboard.sandboxes;
   actions.dashboard.deleteSandboxFromState(sandboxIds);
 

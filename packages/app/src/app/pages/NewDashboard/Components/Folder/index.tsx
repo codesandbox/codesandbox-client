@@ -9,7 +9,6 @@ import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { useOvermind } from 'app/overmind';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
-import { DragPreview } from './DragPreview';
 import { useSelection } from '../Selection';
 
 export const Folder = ({
@@ -102,9 +101,11 @@ export const Folder = ({
   const {
     selectedIds,
     onClick: onSelectionClick,
+    onRightClick,
     onBlur,
     onKeyDown,
     onDragStart,
+    onDrop,
     thumbnailRef,
     isDragging: isAnythingDragging,
   } = useSelection();
@@ -130,12 +131,18 @@ export const Folder = ({
     }
   };
 
+  const onContextMenu = event => {
+    event.preventDefault();
+    onRightClick(event, path);
+  };
+
   const interactionProps = {
     tabIndex: 0, // make div focusable
     style: { outline: 'none' }, // we handle outline with border
     selected,
     onClick,
     onDoubleClick,
+    onContextMenu,
     onBlur,
     onKeyDown,
     'data-selection-id': path,
@@ -145,7 +152,7 @@ export const Folder = ({
 
   const [{ isOver, canDrop }, dropRef] = useDrop({
     accept: ['sandbox', 'folder'],
-    drop: () => ({ path: path.replace('all', '') }),
+    drop: () => ({ path }),
     collect: monitor => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path),
@@ -157,25 +164,22 @@ export const Folder = ({
   };
 
   /* Drag logic */
-  type ItemTypes = { id: string; type: string };
+
+  const parent =
+    !isNewFolder &&
+    path
+      .split('/')
+      .slice(0, -1)
+      .join('/');
 
   const [, dragRef, preview] = useDrag({
-    item: { path, type: 'folder' },
+    item: { type: 'folder', path, parent, name },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
-      if (!dropResult || !dropResult.path) return;
-      if (isSamePath(dropResult, path)) return;
 
-      if (dropResult.path === 'deleted') {
-        actions.dashboard.deleteFolder({ path });
-      } else {
-        // moving folders into another folder
-        // is the same as changing it's path
-        actions.dashboard.renameFolder({
-          path,
-          newPath: dropResult.path + '/' + name,
-        });
-      }
+      if (!dropResult || !dropResult.path) return;
+
+      onDrop(dropResult);
     },
   });
 
@@ -224,7 +228,6 @@ export const Folder = ({
           />
         </motion.div>
       </div>
-      {isDragging ? <DragPreview viewMode={viewMode} {...folderProps} /> : null}
     </>
   );
 };

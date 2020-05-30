@@ -44,7 +44,8 @@ export const withLoadApp = <T>(
         state.dashboard.activeTeam = localStorageTeam;
       }
       try {
-        actions.internal.trackCurrentTeams();
+        actions.internal.trackCurrentTeams().catch(e => {});
+        actions.internal.identifyCurrentUser().catch(e => {});
       } catch (e) {
         // Not majorly important
       }

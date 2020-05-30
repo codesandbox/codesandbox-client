@@ -68,7 +68,7 @@ export const ItemButton = forwardRef<
 export const ItemLink = forwardRef<
   HTMLAnchorElement,
   ComponentProps<typeof StyledMenuLink>
->((props, ref) => <StyledMenu {...props} innerRef={ref} />);
+>((props, ref) => <StyledMenu {...props} ref={ref} />);
 
 export const Icon = styled.span`
   margin-right: 0.75rem;

@@ -30,6 +30,7 @@ export * from './components/Tags';
 export * from './components/Tags/Tag';
 export * from './components/TagInput';
 export * from './components/Menu';
+export * from './components/Tooltip';
 
 // layout
 export * from './components/Grid';

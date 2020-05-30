@@ -202,6 +202,16 @@ describe('convert-esmodule', () => {
     d.test();
     b.test();
     `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('converts object shorthands', () => {
+    const code = `
+    import { templateFactory } from './template-factory.js';
+
+    const short = { templateFactory };
+    `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 

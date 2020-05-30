@@ -537,7 +537,7 @@ export const getSandboxComments: AsyncAction<string> = async (
   } catch (e) {
     state.comments.comments[sandboxId] = {};
     effects.notificationToast.notice(
-      `There as a problem getting the sandbox comments`
+      `There was a problem getting the sandbox comments`
     );
   }
 };

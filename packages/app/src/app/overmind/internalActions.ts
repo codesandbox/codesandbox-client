@@ -88,16 +88,14 @@ export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
       status: NotificationStatus.NOTICE,
       sticky: true,
       actions: {
-        primary: [
-          {
-            label: 'Open Survey',
-            run: () => {
-              actions.modalOpened({
-                modal: 'userSurvey',
-              });
-            },
+        primary: {
+          label: 'Open Survey',
+          run: () => {
+            actions.modalOpened({
+              modal: 'userSurvey',
+            });
           },
-        ],
+        },
       },
     });
   }
@@ -435,12 +433,10 @@ export const handleError: Action<{
       message: 'Your session seems to be expired, please log in again...',
       status: NotificationStatus.ERROR,
       actions: {
-        primary: [
-          {
-            label: 'Sign in',
-            run: () => actions.signInClicked(),
-          },
-        ],
+        primary: {
+          label: 'Sign in',
+          run: () => actions.signInClicked(),
+        },
       },
     });
 
@@ -450,7 +446,7 @@ export const handleError: Action<{
   error.message = actions.internal.getErrorMessage({ error });
 
   const notificationActions = {
-    primary: [] as Array<{ label: string; run: () => void }>,
+    primary: {} as { label: string; run: () => void },
   };
 
   if (error.message.startsWith('You need to sign in to create more than')) {
@@ -459,23 +455,23 @@ export const handleError: Action<{
       errorMessage: error.message,
     });
 
-    notificationActions.primary.push({
+    notificationActions.primary = {
       label: 'Sign in',
       run: () => {
         actions.internal.signIn({});
       },
-    });
+    };
   } else if (error.message.startsWith('You reached the maximum of')) {
     effects.analytics.track('Non-Patron Sandbox Limit Reached', {
       errorMessage: error.message,
     });
 
-    notificationActions.primary.push({
+    notificationActions.primary = {
       label: 'Open Patron Page',
       run: () => {
         window.open(patronUrl(), '_blank');
       },
-    });
+    };
   } else if (
     error.message.startsWith(
       'You reached the limit of server sandboxes, you can create more server sandboxes as a patron.'
@@ -485,12 +481,12 @@ export const handleError: Action<{
       errorMessage: error.message,
     });
 
-    notificationActions.primary.push({
+    notificationActions.primary = {
       label: 'Open Patron Page',
       run: () => {
         window.open(patronUrl(), '_blank');
       },
-    });
+    };
   } else if (
     error.message.startsWith(
       'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
@@ -505,9 +501,7 @@ export const handleError: Action<{
     title: message,
     message: error.message,
     status: NotificationStatus.ERROR,
-    ...(notificationActions.primary.length
-      ? { actions: notificationActions }
-      : {}),
+    ...(notificationActions.primary ? { actions: notificationActions } : {}),
   });
 };
 
@@ -521,6 +515,21 @@ export const trackCurrentTeams: AsyncAction = async ({ effects }) => {
     effects.analytics.setGroup(
       'teamId',
       me.teams.map(m => m.id)
+    );
+  }
+};
+
+export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
+  const user = state.user;
+  if (user) {
+    effects.analytics.identify('pilot', user.experiments.inPilot);
+
+    const profileData = await effects.api.getProfile(user.username);
+    effects.analytics.identify('sandboxCount', profileData.sandboxCount);
+    effects.analytics.identify('pro', Boolean(profileData.subscriptionSince));
+    effects.analytics.identify(
+      'receivedViewCount',
+      Boolean(profileData.viewCount)
     );
   }
 };
@@ -540,14 +549,12 @@ export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
       status: NotificationStatus.NOTICE,
       sticky: true,
       actions: {
-        primary: [
-          {
-            label: 'Open Privacy Policy',
-            run: () => {
-              window.open('https://codesandbox.io/legal/privacy', '_blank');
-            },
+        primary: {
+          label: 'Open Privacy Policy',
+          run: () => {
+            window.open('https://codesandbox.io/legal/privacy', '_blank');
           },
-        ],
+        },
       },
     });
   }
