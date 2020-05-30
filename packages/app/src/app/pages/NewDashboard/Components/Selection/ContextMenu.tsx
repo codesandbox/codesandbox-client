@@ -6,6 +6,7 @@ import {
   TemplateFragmentDashboardFragment as Template,
 } from 'app/graphql/types';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Stack, Element, Menu } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -18,13 +19,33 @@ export const ContextMenu = ({
   folders,
 }) => {
   React.useEffect(() => {
+    // close when user clicks outside or scrolls away
     const handler = () => {
       if (visible) setVisibility(false);
     };
 
     document.addEventListener('click', handler);
-    return () => document.removeEventListener('click', handler);
+    document.addEventListener('scroll', handler, true);
+    return () => {
+      document.removeEventListener('click', handler);
+      document.removeEventListener('scroll', handler, true);
+    };
   }, [visible, setVisibility]);
+
+  React.useEffect(() => {
+    // handle key down events - close on escape + disable the rest
+    // TODO: handle arrow keys and space/enter.
+    const handler = event => {
+      if (!visible) return;
+      if (event.keyCode === ESC) setVisibility(false);
+      event.preventDefault();
+    };
+
+    document.addEventListener('keydown', handler);
+    return () => {
+      document.removeEventListener('keydown', handler);
+    };
+  });
 
   if (!visible || selectedIds.length === 0) return null;
 
@@ -46,6 +67,15 @@ export const ContextMenu = ({
     menu = <FolderMenu folder={selectedItems[0]} />;
   }
 
+  // tweak position to stay inside window
+  const MENU_WIDTH = 200;
+  const BOUNDARY_BUFFER = 8;
+
+  const tweakedPosition = {
+    x: Math.min(position.x, window.innerWidth - MENU_WIDTH - BOUNDARY_BUFFER),
+    y: position.y,
+  };
+
   return (
     <>
       <Stack
@@ -54,8 +84,9 @@ export const ContextMenu = ({
         data-component="MenuList"
         css={css({
           position: 'absolute',
-          top: position.y,
-          left: position.x,
+          width: MENU_WIDTH,
+          top: tweakedPosition.y,
+          left: tweakedPosition.x,
         })}
       >
         {menu}

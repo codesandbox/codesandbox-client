@@ -131,7 +131,6 @@ export const SelectionProvider = ({
     }
 
     const rect = menuElement.getBoundingClientRect();
-
     const position = {
       x: rect.x + rect.width / 2,
       y: rect.y + rect.height / 2,
@@ -165,6 +164,8 @@ export const SelectionProvider = ({
   const history = useHistory();
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!selectedIds.length) return;
+    // disable keyboard navigation if menu is open
+    if (menuVisible) return;
 
     if (event.keyCode === ALT) onMenuEvent(event);
 
