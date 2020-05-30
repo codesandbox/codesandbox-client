@@ -592,7 +592,7 @@ export default class TranspiledModule {
     let finalSourceMap = null;
 
     const { requires } = this.module;
-    if (false && this.query === '') {
+    if (requires != null && this.query === '') {
       // We now know that this has been transpiled on the server, so we shortcut
       const loaderContext = this.getLoaderContext(manager, {});
       // These are precomputed requires, for npm dependencies
