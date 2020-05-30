@@ -2,9 +2,9 @@ import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import {
-  SandboxGrid,
+  VariableGrid,
   SkeletonGrid,
-} from 'app/pages/NewDashboard/Components/SandboxGrid';
+} from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
@@ -26,7 +26,7 @@ export const SearchComponent = ({ location }) => {
       <Header />
       <section style={{ position: 'relative' }}>
         {sandboxes.SEARCH ? (
-          <SandboxGrid
+          <VariableGrid
             items={
               sandboxes.SEARCH &&
               sandboxes.SEARCH.map(sandbox => ({

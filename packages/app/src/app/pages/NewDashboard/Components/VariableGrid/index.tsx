@@ -24,7 +24,7 @@ const ComponentForTypes = {
   blank: () => <div />,
 };
 
-export const SandboxGrid = ({ items }) => {
+export const VariableGrid = ({ items }) => {
   const {
     state: { dashboard },
   } = useOvermind();
@@ -94,15 +94,53 @@ export const SandboxGrid = ({ items }) => {
   };
 
   // if view mode changes, recalculate everything
-  React.useEffect(() => {
-    if (gridRef.current) {
-      gridRef.current.resetAfterIndices({
-        columnIndex: 0,
-        rowIndex: 0,
-        shouldForceUpdate: true,
-      });
+  React.useEffect(
+    function resetRowHeights() {
+      if (gridRef.current) {
+        gridRef.current.resetAfterIndices({
+          columnIndex: 0,
+          rowIndex: 0,
+          shouldForceUpdate: true,
+        });
+      }
+    },
+    [viewMode]
+  );
+
+  /**
+   * Imperatively find and focus the selected item
+   * 1. Get event from Selection with id
+   * 2. Find the index for id in filledItems
+   * 3. Find the row number for index
+   * 4. scroll to the row
+   */
+  const filledItemsRef = React.useRef([]);
+  const containerRef = React.useRef();
+
+  React.useEffect(function imperativelyFindAndScroll() {
+    const containerElement = containerRef.current as HTMLElement;
+
+    const handler = (event: CustomEvent) => {
+      const index = filledItemsRef.current.findIndex(
+        item => item.id === event.detail
+      );
+
+      const columnCount = parseInt(containerElement.dataset.columnCount, 10);
+      const rowToFocus = Math.floor(index / columnCount) + 1;
+
+      gridRef.current.scrollToItem({ rowIndex: rowToFocus });
+    };
+
+    if (containerElement) {
+      containerElement.addEventListener('scrollToItem', handler, false);
     }
-  }, [viewMode]);
+
+    return () => {
+      if (containerElement) {
+        containerElement.removeEventListener('scrollToItem', handler, false);
+      }
+    };
+  });
 
   return (
     <Element
@@ -137,8 +175,14 @@ export const SandboxGrid = ({ items }) => {
             }
           });
 
+          filledItemsRef.current = filledItems;
+
           return (
-            <>
+            <div
+              id="variable-grid"
+              data-column-count={columnCount}
+              ref={containerRef}
+            >
               <VariableSizeGrid
                 ref={gridRef}
                 columnCount={columnCount}
@@ -151,12 +195,13 @@ export const SandboxGrid = ({ items }) => {
                 }
                 estimatedColumnWidth={width / columnCount}
                 estimatedRowHeight={ITEM_HEIGHT}
+                overscanRowCount={2}
                 itemData={{ columnCount, filledItems }}
                 style={{ overflowX: 'hidden' }}
               >
                 {Item}
               </VariableSizeGrid>
-            </>
+            </div>
           );
         }}
       </AutoSizer>

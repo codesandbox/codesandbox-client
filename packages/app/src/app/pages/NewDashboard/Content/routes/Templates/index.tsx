@@ -3,9 +3,9 @@ import React, { useEffect } from 'react';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import {
-  SandboxGrid,
+  VariableGrid,
   SkeletonGrid,
-} from 'app/pages/NewDashboard/Components/SandboxGrid';
+} from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 
 export const Templates = () => {
@@ -36,7 +36,7 @@ export const Templates = () => {
     >
       <Header title="Templates" templates={[]} />
       {sandboxes.TEMPLATES ? (
-        <SandboxGrid
+        <VariableGrid
           items={
             sandboxes.TEMPLATES &&
             sandboxes.TEMPLATES.map(template => {
