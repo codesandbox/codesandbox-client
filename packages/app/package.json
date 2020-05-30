@@ -211,6 +211,8 @@
     "react-tagsinput": "^3.19.0",
     "react-use": "^9.7.2",
     "react-virtualized": "^9.19.1",
+    "react-virtualized-auto-sizer": "^1.0.2",
+    "react-window": "^1.8.5",
     "reakit": "^1.0.0-beta.4",
     "remark-frontmatter": "^2.0.0",
     "resize-observer-polyfill": "^1.5.1",

@@ -41,7 +41,7 @@ export const TeamSettings = () => {
   };
 
   if (!team) {
-    return <Header />;
+    return <Header title="Settings" />;
   }
   const created = team.users.find(user => user.id === team.creatorId);
   return (

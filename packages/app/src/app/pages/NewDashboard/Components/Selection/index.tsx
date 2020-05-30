@@ -265,10 +265,7 @@ export const SelectionProvider = ({
         isDragging,
       }}
     >
-      <Element
-        onClick={onContainerClick}
-        css={css({ paddingX: 4, paddingY: 10 })}
-      >
+      <Element onClick={onContainerClick} css={css({ paddingTop: 10 })}>
         {props.children}
       </Element>
       <DragPreview
