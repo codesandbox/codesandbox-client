@@ -237,7 +237,7 @@ export default class TranspiledModule {
     // There are no other modules calling this module, so we run a function on
     // all transpilers that clears side effects if there are any. Example:
     // Remove CSS styles from the dom.
-    manager.preset.getLoaders(this.module, this.query).forEach(t => {
+    manager.preset.getLoaders(this.module, manager, this.query).forEach(t => {
       if (t.transpiler.cleanModule) {
         t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
       }
@@ -592,7 +592,7 @@ export default class TranspiledModule {
     let finalSourceMap = null;
 
     const { requires } = this.module;
-    if (requires != null && this.query === '') {
+    if (false && this.query === '') {
       // We now know that this has been transpiled on the server, so we shortcut
       const loaderContext = this.getLoaderContext(manager, {});
       // These are precomputed requires, for npm dependencies
@@ -608,7 +608,11 @@ export default class TranspiledModule {
       // eslint-disable-next-line
       code = this.module.code;
     } else {
-      const transpilers = manager.preset.getLoaders(this.module, this.query);
+      const transpilers = manager.preset.getLoaders(
+        this.module,
+        manager,
+        this.query
+      );
 
       for (let i = 0; i < transpilers.length; i += 1) {
         const transpilerConfig = transpilers[i];
@@ -678,7 +682,7 @@ export default class TranspiledModule {
       this.previousSource.compiledCode !== this.source.compiledCode
     ) {
       const hasHMR = manager.preset
-        .getLoaders(this.module, this.query)
+        .getLoaders(this.module, manager, this.query)
         .some(t =>
           t.transpiler.HMREnabled == null ? true : t.transpiler.HMREnabled
         );
@@ -1071,7 +1075,7 @@ export default class TranspiledModule {
     // For non cacheable transpilers we remove the cached evaluation
     if (
       manager.preset
-        .getLoaders(this.module, this.query)
+        .getLoaders(this.module, manager, this.query)
         .some(t =>
           t.transpiler.cacheable == null ? false : !t.transpiler.cacheable
         )
