@@ -9,6 +9,7 @@ import {
   ARROW_DOWN,
   ARROW_UP,
   ENTER,
+  ALT,
 } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
@@ -19,6 +20,12 @@ const Context = React.createContext({
   selectedIds: [],
   onClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
   onRightClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
+  onMenuEvent: (
+    event:
+      | React.MouseEvent<HTMLDivElement>
+      | React.KeyboardEvent<HTMLDivElement>,
+    itemId?: string
+  ) => {},
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {},
   onDragStart: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
@@ -97,12 +104,41 @@ export const SelectionProvider = ({
   const [menuPosition, setMenuPosition] = React.useState({ x: 0, y: 0 });
 
   const onRightClick = (
-    event: React.MouseEvent<HTMLDivElement>,
+    event: React.MouseEvent<HTMLDivElement> &
+      React.KeyboardEvent<HTMLDivElement>,
     itemId: string
   ) => {
     if (!selectedIds.includes(itemId)) setSelectedIds([itemId]);
     setMenuVisibility(true);
     setMenuPosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const onMenuEvent = (
+    event:
+      | React.MouseEvent<HTMLDivElement>
+      | React.KeyboardEvent<HTMLDivElement>,
+    itemId?: string
+  ) => {
+    if (itemId && !selectedIds.includes(itemId)) setSelectedIds([itemId]);
+
+    const target = event.target as HTMLButtonElement;
+
+    let menuElement = target;
+    if (target.dataset.selectionId) {
+      // if the event is fired on the sandbox/folder, we find
+      // the menu button to correctly position the menu
+      menuElement = target.querySelector('button');
+    }
+
+    const rect = menuElement.getBoundingClientRect();
+
+    const position = {
+      x: rect.x + rect.width / 2,
+      y: rect.y + rect.height / 2,
+    };
+
+    setMenuVisibility(true);
+    setMenuPosition(position);
   };
 
   const onBlur = (event: React.FocusEvent<HTMLDivElement>) => {
@@ -129,6 +165,8 @@ export const SelectionProvider = ({
   const history = useHistory();
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!selectedIds.length) return;
+
+    if (event.keyCode === ALT) onMenuEvent(event);
 
     // if only one thing is selected, open it
     if (event.keyCode === ENTER && selectedIds.length === 1) {
@@ -258,6 +296,7 @@ export const SelectionProvider = ({
         onClick,
         onBlur,
         onRightClick,
+        onMenuEvent,
         onKeyDown,
         onDragStart,
         onDrop,
@@ -296,6 +335,7 @@ export const useSelection = () => {
     onClick,
     onBlur,
     onRightClick,
+    onMenuEvent,
     onKeyDown,
     onDragStart,
     onDrop,
@@ -309,6 +349,7 @@ export const useSelection = () => {
     onClick,
     onBlur,
     onRightClick,
+    onMenuEvent,
     onKeyDown,
     onDragStart,
     onDrop,

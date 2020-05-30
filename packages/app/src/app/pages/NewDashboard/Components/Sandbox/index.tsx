@@ -105,6 +105,7 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
     selectedIds,
     onClick: onSelectionClick,
     onRightClick,
+    onMenuEvent,
     onBlur,
     onKeyDown,
     onDragStart,
@@ -122,7 +123,8 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   const onContextMenu = event => {
     event.preventDefault();
-    onRightClick(event, sandbox.id);
+    if (event.type === 'contextmenu') onRightClick(event, sandbox.id);
+    else onMenuEvent(event, sandbox.id);
   };
 
   const history = useHistory();

@@ -101,6 +101,7 @@ export const Folder = ({
     selectedIds,
     onClick: onSelectionClick,
     onRightClick,
+    onMenuEvent,
     onBlur,
     onKeyDown,
     onDragStart,
@@ -128,7 +129,9 @@ export const Folder = ({
 
   const onContextMenu = event => {
     event.preventDefault();
-    onRightClick(event, path);
+
+    if (event.type === 'contextmenu') onRightClick(event, path);
+    else onMenuEvent(event, path);
   };
 
   const interactionProps = {
