@@ -145,14 +145,6 @@ export default function evaluate(
 
     cache[id] = {};
 
-    // if (isESModule(resolvedCode)) {
-    //   try {
-    //     resolvedCode = convertEsModule(resolvedCode);
-    //   } catch (e) {
-    //     /* ignore */
-    //   }
-    // }
-
     return evaluate(
       fs,
       BFSRequire,
