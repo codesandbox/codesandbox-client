@@ -1,7 +1,12 @@
 import React from 'react';
-import { Stack, ListAction, Text, Input } from '@codesandbox/components';
+import {
+  Stack,
+  ListAction,
+  Text,
+  Input,
+  IconButton,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
-import { MenuOptions } from './Menu';
 
 export const FolderListItem = ({
   name,
@@ -11,6 +16,7 @@ export const FolderListItem = ({
   selected,
   onClick,
   onDoubleClick,
+  onContextMenu,
   // editing
   editing,
   enterEditing,
@@ -30,6 +36,7 @@ export const FolderListItem = ({
   <ListAction
     onClick={onClick}
     onDoubleClick={onDoubleClick}
+    onContextMenu={onContextMenu}
     {...props}
     css={css({
       paddingX: 0,
@@ -99,7 +106,12 @@ export const FolderListItem = ({
       ) : null}
 
       {!isNewFolder ? (
-        <MenuOptions path={path} onRename={enterEditing} />
+        <IconButton
+          name="more"
+          size={9}
+          title="Sandbox actions"
+          onClick={onContextMenu}
+        />
       ) : null}
     </Stack>
   </ListAction>

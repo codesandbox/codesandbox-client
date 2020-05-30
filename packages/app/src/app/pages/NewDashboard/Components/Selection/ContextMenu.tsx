@@ -49,6 +49,7 @@ export const ContextMenu = ({
   return (
     <>
       <Stack
+        direction="vertical"
         data-reach-menu-list
         data-component="MenuList"
         css={css({

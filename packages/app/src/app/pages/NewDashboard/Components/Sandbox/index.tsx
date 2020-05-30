@@ -7,7 +7,6 @@ import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { isMenuClicked } from '@codesandbox/components';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { useSelection } from '../Selection';
@@ -118,7 +117,6 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const isDragging = isAnythingDragging && selected;
 
   const onClick = event => {
-    if (edit || isDragging || isMenuClicked(event)) return;
     onSelectionClick(event, sandbox.id);
   };
 
@@ -129,8 +127,6 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   const history = useHistory();
   const onDoubleClick = event => {
-    if (edit || isDragging || isMenuClicked(event)) return;
-
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
     } else {
