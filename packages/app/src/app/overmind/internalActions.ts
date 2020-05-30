@@ -1,7 +1,4 @@
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import {
-  Module,
   ModuleTab,
   NotificationButton,
   Sandbox,
@@ -14,7 +11,6 @@ import { NotificationStatus } from '@codesandbox/notifications';
 import values from 'lodash-es/values';
 
 import { ApiError } from './effects/api/apiFactory';
-import { createOptimisticModule } from './utils/common';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
 import { Action, AsyncAction } from '.';
