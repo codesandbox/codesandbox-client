@@ -336,7 +336,7 @@ export function convertEsModule(code: string) {
           const property = node as Property;
           if (
             property.shorthand &&
-            property.value.type !== n.AssignmentPattern
+            property.value.type !== n.AssignmentPattern // Not a default initializer
           ) {
             property.value = {
               ...property.key,
