@@ -25,6 +25,11 @@ function pathWithHash(location) {
   return `${location.pathname}${location.hash}`;
 }
 
+function isInsiveVue(el) {
+  if (el === document.body) return false
+  return el.__vue__ || el._vnode || isInsideVue(el.parentElement)
+}
+
 export default function setupHistoryListeners() {
   function handleMessage(data, source) {
     if (source) {
@@ -109,7 +114,7 @@ export default function setupHistoryListeners() {
       const el = ev.target;
       if (
         el.nodeName === 'A' &&
-        !el.__vue__ && // workaround for vue-router <router-link>
+        !isInsideVue(el) && // workaround for vue-router <router-link>
         el.href.indexOf('#') !== -1 &&
         el.href.substr(-1) !== '#'
       ) {
