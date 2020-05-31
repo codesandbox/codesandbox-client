@@ -25,7 +25,7 @@ function pathWithHash(location) {
   return `${location.pathname}${location.hash}`;
 }
 
-function isInsiveVue(el) {
+function isInsideVue(el) {
   if (el === document.body) return false
   return el.__vue__ || el._vnode || isInsideVue(el.parentElement)
 }
