@@ -151,6 +151,28 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('handles export mutations with variables', () => {
+    const code = `
+    export var to;
+
+    function assign() {
+      to = "test"
+    }
+
+    function assign2(to) {
+      to = "test"
+    }
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it("doesn't set var definitions", () => {
+    const code = `
+    export var global = typeof window !== 'undefined' ? window : {};
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('handles default as exports', () => {
     const code = `
     export { default as Field } from './Field';
