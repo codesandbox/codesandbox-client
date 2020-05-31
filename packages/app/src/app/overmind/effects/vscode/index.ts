@@ -1007,7 +1007,7 @@ export class VSCodeEffect {
         editorService.onDidActiveEditorChange(this.onActiveEditorChange);
         this.initializeCodeSandboxAPIListener();
 
-        if (this.settings.lintEnabled) {
+        if (!this.linter && this.settings.lintEnabled) {
           this.createLinter();
         }
 
