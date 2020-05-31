@@ -185,6 +185,52 @@ exports.default = $csb__default;
 "
 `;
 
+exports[`convert-esmodule handles multiple aliased exports 1`] = `
+"Object.defineProperty(exports, \\"f\\", {
+  enumerable: true,
+  get: function get() {
+    return e;
+  }
+});
+Object.defineProperty(exports, \\"getSetObserver\\", {
+  enumerable: true,
+  get: function get() {
+    return _getSetObserver;
+  }
+});
+Object.defineProperty(exports, \\"d\\", {
+  enumerable: true,
+  get: function get() {
+    return c;
+  }
+});
+Object.defineProperty(exports, \\"getMapObserver\\", {
+  enumerable: true,
+  get: function get() {
+    return _getMapObserver;
+  }
+});
+Object.defineProperty(exports, \\"b\\", {
+  enumerable: true,
+  get: function get() {
+    return a;
+  }
+});
+Object.defineProperty(exports, \\"getArrayObserver\\", {
+  enumerable: true,
+  get: function get() {
+    return _getArrayObserver;
+  }
+});
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+f.test();
+d.test();
+b.test();
+"
+`;
+
 exports[`convert-esmodule handles named exports 1`] = `
 "Object.defineProperty(exports, \\"a\\", {
   enumerable: true,
