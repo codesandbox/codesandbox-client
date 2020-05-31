@@ -28,6 +28,8 @@ module.exports = {
   ].filter(Boolean),
   plugins: [
     require.resolve('react-hot-loader/babel'),
+    require.resolve('@babel/plugin-proposal-optional-chaining'),
+    require.resolve('@babel/plugin-proposal-nullish-coalescing-operator'),
     require.resolve('babel-plugin-lodash'),
     require.resolve('babel-plugin-styled-components'),
     require.resolve('babel-plugin-macros'),
