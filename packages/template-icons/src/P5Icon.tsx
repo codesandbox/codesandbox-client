@@ -2,7 +2,7 @@ import React from 'react';
 import { SVGIcon, ISVGIconProps } from './SVGIcon';
 
 export const P5Icon: React.FC<ISVGIconProps> = ({ ...props }) => (
-  <SVGIcon width={32} height={32} fill="none" {...props}>
+  <SVGIcon {...props}>
     <g clipPath="url(#prefix__clip0)">
       <path fill="#ED225D" d="M0 0h32v32H0z" />
       <path
