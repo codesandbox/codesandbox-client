@@ -18,7 +18,7 @@ export const UserSettings = () => {
   }, [actions.dashboard]);
 
   if (!user) {
-    return <Header />;
+    return <Header title="Settings" />;
   }
 
   // @ts-ignore
@@ -27,7 +27,7 @@ export const UserSettings = () => {
 
   return (
     <>
-      <Header />
+      <Header title="Settings" />
       <Grid
         columnGap={4}
         css={css({

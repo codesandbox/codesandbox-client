@@ -30,6 +30,7 @@ import { ignoreNextCache, deleteAPICache, clearIndexedDBCache } from './cache';
 import { shouldTranspile } from './transpilers/babel/check';
 import { splitQueryFromPath } from './utils/query-path';
 import { measure, endMeasure } from '../utils/metrics';
+import { IEvaluator } from './evaluator';
 
 declare const BrowserFS: any;
 
@@ -97,7 +98,7 @@ type TManagerOptions = {
   hasFileResolver: boolean;
 };
 
-export default class Manager {
+export default class Manager implements IEvaluator {
   id: string;
   transpiledModules: {
     [path: string]: {
@@ -188,6 +189,12 @@ export default class Manager {
     if (options.hasFileResolver) {
       this.setupFileResolver();
     }
+  }
+
+  async evaluate(path: string, basePath: string = '/'): Promise<any> {
+    const module = await this.resolveModuleAsync(path, basePath);
+    await this.transpileModules(module);
+    return this.evaluateModule(module);
   }
 
   async initializeTestRunner() {

@@ -12,7 +12,7 @@ import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { useSelection } from '../Selection';
 
-export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
+const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const {
     state: { dashboard },
     actions,
@@ -177,22 +177,23 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, [preview]);
 
+  const resizing = useResizing();
+  const motionProps = resizing
+    ? {}
+    : { layoutTransition: { type: 'spring', damping: 300, stiffness: 300 } };
+
   return (
     <>
       <div {...dragProps} onDragStart={event => onDragStart(event, sandbox.id)}>
-        <motion.div
-          layoutTransition={{
-            type: 'spring',
-            damping: 300,
-            stiffness: 300,
-          }}
-        >
+        <motion.div {...motionProps}>
           <Component {...sandboxProps} {...interactionProps} {...props} />
         </motion.div>
       </div>
     </>
   );
 };
+
+export const Sandbox = React.memo(GenericSandbox);
 
 export const SkeletonSandbox = props => {
   const {
@@ -210,4 +211,23 @@ export const SkeletonSandbox = props => {
     return <SkeletonListItem {...props} />;
   }
   return <SkeletonCard {...props} />;
+};
+
+const useResizing = () => {
+  const TIMEOUT = 250;
+  const [resizing, setResizing] = React.useState(false);
+
+  React.useEffect(() => {
+    let timeoutId = null;
+
+    const handler = () => {
+      setResizing(true);
+      window.clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(() => setResizing(false), TIMEOUT);
+    };
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+
+  return resizing;
 };

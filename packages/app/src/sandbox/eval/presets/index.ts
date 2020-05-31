@@ -6,6 +6,8 @@ import { Module } from '../types/module';
 import Manager from '../manager';
 import Transpiler from '../transpilers';
 import TranspiledModule from '../transpiled-module';
+import { WebpackTranspiler } from '../transpilers/webpack';
+import { IEvaluator } from '../evaluator';
 
 type TranspilerDefinition = {
   transpiler: Transpiler;
@@ -193,7 +195,11 @@ export default class Preset {
    * Get transpilers from the given query, the query is webpack like:
    * eg. !babel-loader!./test.js
    */
-  getLoaders(module: Module, query: string = ''): Array<TranspilerDefinition> {
+  getLoaders(
+    module: Module,
+    evaluator: IEvaluator,
+    query: string = ''
+  ): Array<TranspilerDefinition> {
     const loader = this.loaders.find(t => t.test(module));
 
     // Starting !, drop all transpilers
@@ -210,12 +216,15 @@ export default class Preset {
       .map(loaderName => {
         const [name, options] = loaderName.split('?');
 
-        const transpiler = Array.from(this.transpilers).find(
+        let transpiler = Array.from(this.transpilers).find(
           t => t.name === name
         );
 
         if (!transpiler) {
-          throw new Error(`Loader '${name}' could not be found.`);
+          const webpackLoader = new WebpackTranspiler(name, evaluator);
+          // If the loader is not installed, we try to run the webpack loader.
+          this.transpilers.add(webpackLoader);
+          transpiler = webpackLoader;
         }
 
         const parsedOptions = this.parseOptions(options);
@@ -244,8 +253,8 @@ export default class Preset {
   /**
    * Get the query syntax of the module
    */
-  getQuery(module: Module, query: string = '') {
-    const loaders = this.getLoaders(module, query);
+  getQuery(module: Module, evaluator: IEvaluator, query: string = '') {
+    const loaders = this.getLoaders(module, evaluator, query);
 
     return `!${loaders.map(t => t.transpiler.name).join('!')}`;
   }
