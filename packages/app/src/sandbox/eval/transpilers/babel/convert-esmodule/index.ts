@@ -355,12 +355,21 @@ export function convertEsModule(code: string) {
       scope.references.forEach(ref => {
         // If the variable cannot be resolved, it must be the var that we had
         // just changed.
-        if (varsToRename[ref.identifier.name] && ref.resolved === null) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            varsToRename,
+            ref.identifier.name
+          ) &&
+          ref.resolved === null
+        ) {
           ref.identifier.name = varsToRename[ref.identifier.name].join('.');
         }
 
         if (
-          trackedExports[ref.identifier.name] &&
+          Object.prototype.hasOwnProperty.call(
+            trackedExports,
+            ref.identifier.name
+          ) &&
           ref.isWrite() &&
           ref.resolved === null &&
           !ref.init
