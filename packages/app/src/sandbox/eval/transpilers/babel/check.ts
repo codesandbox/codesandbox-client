@@ -3,7 +3,7 @@ import isESModule from '../../utils/is-es-module';
 const JSXSyntax = /\n(.*?)<[A-z](.|\n)*?\/?>/;
 const regeneratorSyntax = /\n(.*?)(\s|^)regeneratorRuntime\./;
 
-function checkComment(match) {
+function checkComment(match: string[]) {
   const startOfLine = match[1];
 
   // If it's in a comment or string, we're extremely aggressive here because

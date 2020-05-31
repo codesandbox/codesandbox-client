@@ -1088,8 +1088,6 @@ export default class Manager implements IEvaluator {
 
               if (
                 !this.manifest.contents[tModule.module.path] ||
-                (tModule.module.path.endsWith('.js') &&
-                  tModule.module.requires == null) ||
                 tModule.module.downloaded
               ) {
                 // Only save modules that are not precomputed

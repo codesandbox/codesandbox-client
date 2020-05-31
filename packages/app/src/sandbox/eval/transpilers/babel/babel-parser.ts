@@ -1,29 +1,8 @@
 // @flow
 
 const DEFAULT_BABEL_CONFIG = {
-  presets: ['es2015', 'react', 'stage-0'],
-  plugins: [
-    'transform-async-to-generator',
-    'transform-object-rest-spread',
-    'transform-decorators-legacy',
-    'transform-class-properties',
-    // Polyfills the runtime needed for async/await and generators
-    [
-      'transform-runtime',
-      {
-        helpers: false,
-        polyfill: false,
-        regenerator: true,
-      },
-    ],
-    [
-      'transform-regenerator',
-      {
-        // Async functions are converted to generators by babel-preset-env
-        async: false,
-      },
-    ],
-  ],
+  presets: ['env', 'react'],
+  plugins: [],
 };
 
 /**
@@ -31,7 +10,7 @@ const DEFAULT_BABEL_CONFIG = {
  */
 export default function getBabelConfig(
   config: Object | undefined,
-  loaderOptions: Object,
+  loaderOptions: { disableCodeSandboxPlugins?: boolean },
   path: string,
   isV7: boolean = false
 ) {
@@ -41,7 +20,13 @@ export default function getBabelConfig(
     return resolvedConfig;
   }
 
-  const finalConfig = {
+  const finalConfig: Partial<{
+    sourceMaps: string;
+    sourceFileName: string;
+    filename: string;
+    plugins: string[];
+    presets: string[];
+  }> = {
     ...resolvedConfig,
     sourceMaps: 'inline',
     sourceFileName: path,

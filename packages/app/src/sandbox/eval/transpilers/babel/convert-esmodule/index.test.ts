@@ -192,6 +192,20 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('handles multiple aliased exports', () => {
+    const code = `
+    export { _getArrayObserver as getArrayObserver, a as b };
+    export { _getMapObserver as getMapObserver, c as d };
+    export { _getSetObserver as getSetObserver, e as f };
+
+    f.test();
+    d.test();
+    b.test();
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('converts object shorthands', () => {
     const code = `
     import { templateFactory } from './template-factory.js';

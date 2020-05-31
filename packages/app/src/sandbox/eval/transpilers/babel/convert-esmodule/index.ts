@@ -150,6 +150,7 @@ export function convertEsModule(code: string) {
         program.body.splice(i, 0, generateExportStatement(varName, varName));
       } else if (statement.specifiers) {
         program.body.splice(i, 1);
+        i--;
         statement.specifiers.forEach(specifier => {
           if (specifier.type === n.ExportSpecifier) {
             i++;
