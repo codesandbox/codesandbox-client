@@ -525,7 +525,7 @@ self.addEventListener('message', async event => {
     hasMacros,
   } = event.data;
 
-  if (type !== 'compile') {
+  if (type !== 'compile' && type !== 'warmup') {
     return;
   }
   try {
@@ -737,6 +737,11 @@ self.addEventListener('message', async event => {
         })
     );
 
+    if (type === 'warmup') {
+      Babel.transform(code, normalizeV7Config(customConfig));
+      return;
+    }
+
     await compile(
       code,
       version === 7 ? normalizeV7Config(customConfig) : customConfig,
@@ -744,6 +749,10 @@ self.addEventListener('message', async event => {
       version === 7
     );
   } catch (e) {
+    if (type === 'warmup') {
+      return;
+    }
+
     console.error(e);
     self.postMessage({
       type: 'error',

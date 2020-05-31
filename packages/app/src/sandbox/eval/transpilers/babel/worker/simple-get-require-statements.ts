@@ -39,7 +39,7 @@ export default function getRequireStatements(code: string) {
                 path: match[1],
               });
             }
-          } else if (match[2]) {
+          } else if (match[2] && /'|"|`/.test(match[2])) {
             if (!results.find(r => r.type === 'glob' && r.path === match[2])) {
               results.push({
                 type: 'glob',
