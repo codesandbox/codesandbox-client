@@ -150,6 +150,14 @@ const short = {
 "
 `;
 
+exports[`convert-esmodule doesn't remove object initializers 1`] = `
+"var $csb__shared = require(\\"@react-spring/shared\\");
+const createHost = (components, {a = () => {}} = {}) => {
+  $csb__shared.is();
+};
+"
+`;
+
 exports[`convert-esmodule doesn't set var definitions 1`] = `
 "Object.defineProperty(exports, \\"__esModule\\", {
   value: true

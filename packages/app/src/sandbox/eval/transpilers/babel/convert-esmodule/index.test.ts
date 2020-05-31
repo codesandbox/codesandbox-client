@@ -166,6 +166,19 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it("doesn't remove object initializers", () => {
+    const code = `
+    import { defineHidden, is, createInterpolator, each, getFluidConfig, isAnimatedString, useForceUpdate } from '@react-spring/shared';
+
+    const createHost = (components, {
+      a = () => {}
+    } = {}) => {
+     is()
+    };
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it("doesn't set var definitions", () => {
     const code = `
     export var global = typeof window !== 'undefined' ? window : {};

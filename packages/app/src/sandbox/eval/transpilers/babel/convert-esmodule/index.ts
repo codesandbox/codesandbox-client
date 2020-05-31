@@ -334,7 +334,10 @@ export function convertEsModule(code: string) {
       enter(node, parent, prop, index) {
         if (node.type === n.Property) {
           const property = node as Property;
-          if (property.shorthand) {
+          if (
+            property.shorthand &&
+            property.value.type !== n.AssignmentPattern
+          ) {
             property.value = {
               ...property.key,
             };
