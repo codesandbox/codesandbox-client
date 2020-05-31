@@ -7,7 +7,7 @@ export const P5Icon: React.FC<ISVGIconProps> = ({ ...props }) => {
 
   return (
     <SVGIcon {...props}>
-      <g clipPath={`url(#prefix__${id}`}>
+      <g clipPath={`url(#prefix__${id})`}>
         <path fill="#ED225D" d="M0 0h32v32H0z" />
         <path
           fillRule="evenodd"
