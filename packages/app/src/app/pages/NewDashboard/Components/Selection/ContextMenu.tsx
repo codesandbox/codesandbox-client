@@ -59,20 +59,23 @@ export const ContextMenu = ({
   });
 
   let menu;
+  let menuWidth;
   if (selectedItems.length > 1) {
     menu = <MultiMenu selectedItems={selectedItems} />;
+    menuWidth = 160;
   } else if (selectedItems[0].type === 'sandbox') {
     menu = <SandboxMenu sandbox={selectedItems[0]} />;
+    menuWidth = 200;
   } else if (selectedItems[0].type === 'folder') {
     menu = <FolderMenu folder={selectedItems[0]} />;
+    menuWidth = 120;
   }
 
   // tweak position to stay inside window
-  const MENU_WIDTH = 200;
   const BOUNDARY_BUFFER = 8;
 
   const tweakedPosition = {
-    x: Math.min(position.x, window.innerWidth - MENU_WIDTH - BOUNDARY_BUFFER),
+    x: Math.min(position.x, window.innerWidth - menuWidth - BOUNDARY_BUFFER),
     y: position.y,
   };
 
@@ -84,7 +87,7 @@ export const ContextMenu = ({
         data-component="MenuList"
         css={css({
           position: 'absolute',
-          width: MENU_WIDTH,
+          width: menuWidth,
           top: tweakedPosition.y,
           left: tweakedPosition.x,
         })}

@@ -61,9 +61,9 @@ export const SandboxListItem = ({
       },
     })}
   >
-    <Grid css={{ width: '100%' }}>
+    <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
       <Column span={[12, 5, 5]}>
-        <Stack gap={4} align="center">
+        <Stack gap={4} align="center" marginLeft={2}>
           <Element
             as="div"
             ref={thumbnailRef}
@@ -71,7 +71,6 @@ export const SandboxListItem = ({
               borderRadius: 'small',
               height: 32,
               width: 32,
-              marginLeft: 2,
               backgroundImage: `url(${sandbox.screenshotUrl})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center center',

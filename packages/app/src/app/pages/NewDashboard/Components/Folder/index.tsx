@@ -53,8 +53,9 @@ export const Folder = ({
           '/new-dashboard/all/'
         )[1];
 
-        const folderPath =
-          '' + (folderLocation && '/' + folderLocation) + '/' + newName;
+        let folderPath = '';
+        if (folderLocation) folderPath += '/' + folderLocation;
+        folderPath += '/' + newName;
 
         await actions.dashboard.createFolder(folderPath);
       }
@@ -176,6 +177,7 @@ export const Folder = ({
       const dropResult = monitor.getDropResult();
 
       if (!dropResult || !dropResult.path) return;
+      if (isSamePath(dropResult, path)) return;
 
       onDrop(dropResult);
     },
