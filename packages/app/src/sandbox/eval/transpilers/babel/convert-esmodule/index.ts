@@ -23,16 +23,16 @@ import { customGenerator } from './generator';
  * Converts esmodule code to commonjs code, built to be as fast as possible
  */
 export function convertEsModule(code: string) {
-  const usedVarNames = [];
+  const usedVarNames = {};
   const varsToRename = {};
   const trackedExports = {};
 
   const getVarName = (name: string) => {
     let usedName = name.replace(/[.-]/g, '');
-    while (usedVarNames.includes(usedName)) {
+    while (usedVarNames[usedName]) {
       usedName += '_';
     }
-    usedVarNames.push(usedName);
+    usedVarNames[usedName] = true;
     return usedName;
   };
 
