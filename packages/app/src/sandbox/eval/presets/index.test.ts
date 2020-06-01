@@ -69,7 +69,9 @@ describe('preset', () => {
         code: '',
       };
 
-      expect(preset.getQuery(module, evaluator)).toEqual('!babel-loader');
+      expect(preset.getQuery(module, evaluator)).toEqual(
+        '!babel-loader!codesandbox-dynamic-imports-loader'
+      );
     });
 
     it('generates the right query for 2 transpiler', () => {
@@ -79,7 +81,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator)).toEqual(
-        '!style-loader!modules-loader'
+        '!style-loader!modules-loader!codesandbox-dynamic-imports-loader'
       );
     });
 
@@ -90,7 +92,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator, '!babel-loader')).toEqual(
-        '!babel-loader'
+        '!babel-loader!codesandbox-dynamic-imports-loader'
       );
     });
 
@@ -101,7 +103,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator, 'babel-loader')).toEqual(
-        '!style-loader!modules-loader!babel-loader'
+        '!style-loader!modules-loader!babel-loader!codesandbox-dynamic-imports-loader'
       );
     });
   });

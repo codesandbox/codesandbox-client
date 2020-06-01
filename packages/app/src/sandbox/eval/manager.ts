@@ -191,12 +191,11 @@ export default class Manager implements IEvaluator {
     }
   }
 
-  async evaluate(path: string, basePath: string = '/'): Promise<any> {
-    const tModule = await this.resolveTranspiledModule(
+  async evaluate(path: string, baseTModule?: TranspiledModule): Promise<any> {
+    const tModule = await this.resolveTranspiledModuleAsync(
       path,
-      basePath,
-      this.preset.ignoredExtensions,
-      true
+      baseTModule,
+      this.preset.ignoredExtensions
     );
     await tModule.transpile(this);
     return tModule.evaluate(this);
@@ -680,7 +679,10 @@ export default class Manager implements IEvaluator {
 
             if (
               this.manifest.dependencies.find(d => d.name === dependencyName) ||
-              this.manifest.dependencyDependencies[dependencyName]
+              this.manifest.dependencyDependencies[dependencyName] ||
+              this.manifest.contents[
+                `/node_modules/${dependencyName}/package.json`
+              ]
             ) {
               promiseReject(
                 new ModuleNotFoundError(connectedPath, true, currentPath)
@@ -801,7 +803,8 @@ export default class Manager implements IEvaluator {
         // TODO: fix the stack hack
         if (
           this.manifest.dependencies.find(d => d.name === dependencyName) ||
-          this.manifest.dependencyDependencies[dependencyName]
+          this.manifest.dependencyDependencies[dependencyName] ||
+          this.manifest.contents[`/node_modules/${dependencyName}/package.json`]
         ) {
           throw new ModuleNotFoundError(connectedPath, true, currentPath);
         } else {
@@ -843,7 +846,7 @@ export default class Manager implements IEvaluator {
   resolveTranspiledModuleAsync = async (
     path: string,
     currentTModule?: TranspiledModule,
-    ignoredExtensions?: Array<string>
+    ignoredExtensions?: string[]
   ): Promise<TranspiledModule> => {
     const tModule =
       currentTModule || this.getTranspiledModule(this.modules['/package.json']); // Get arbitrary file from root

@@ -4,7 +4,7 @@ it('converts import expression', () => {
   const code = `import('test')`;
 
   expect(convertDynamicImport(code)).toMatchInlineSnapshot(
-    `"$csbImport('test')"`
+    `" $csbImport('test')"`
   );
 });
 
@@ -20,9 +20,21 @@ it('converts import expression with newline', () => {
   `);
 });
 
+it("doesn't convert funcs with different import name", () => {
+  const code = `__import(
+    'test'
+  )`;
+
+  expect(convertDynamicImport(code)).toMatchInlineSnapshot(`
+    "__import(
+        'test'
+      )"
+  `);
+});
+
 it('can convert quickly', () => {
   /* eslint-disable */
-  const code = require('../convert-esmodule/big-file');
+  const code = require('../../babel/convert-esmodule/big-file');
 
   const t = performance.now();
 
