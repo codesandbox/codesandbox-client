@@ -29,6 +29,7 @@ import * as childProcess from 'node-services/lib/child_process';
 import { TextOperation } from 'ot';
 import { json } from 'overmind';
 import io from 'socket.io-client';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
@@ -1202,7 +1203,11 @@ export class VSCodeEffect {
 
       this.modelCursorPositionListener = activeEditor.onDidChangeCursorPosition(
         cursor => {
-          if (sandbox?.featureFlags.comments) {
+          if (
+            sandbox &&
+            sandbox.featureFlags.comments &&
+            hasPermission(sandbox.authorization, 'comment')
+          ) {
             const model = activeEditor.getModel();
 
             this.modelsHandler.updateLineCommentIndication(
