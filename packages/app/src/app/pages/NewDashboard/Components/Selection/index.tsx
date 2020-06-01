@@ -257,20 +257,25 @@ export const SelectionProvider = ({
     const folderPaths = selectedIds.filter(isFolderPath);
 
     if (dropResult.path === 'deleted') {
-      actions.dashboard.deleteSandbox(sandboxIds);
+      if (sandboxIds.length) actions.dashboard.deleteSandbox(sandboxIds);
       folderPaths.forEach(path => actions.dashboard.deleteFolder({ path }));
     } else if (dropResult.path === 'templates') {
-      actions.dashboard.makeTemplate(sandboxIds);
+      if (sandboxIds.length) actions.dashboard.makeTemplate(sandboxIds);
     } else if (dropResult.path === 'drafts') {
-      actions.dashboard.addSandboxesToFolder({
-        sandboxIds,
-        collectionPath: '/',
-      });
+      if (sandboxIds.length) {
+        actions.dashboard.addSandboxesToFolder({
+          sandboxIds,
+          collectionPath: '/',
+        });
+      }
+      // no else case, folders can't be dropped in drafts
     } else {
-      actions.dashboard.addSandboxesToFolder({
-        sandboxIds,
-        collectionPath: dropResult.path,
-      });
+      if (sandboxIds.length) {
+        actions.dashboard.addSandboxesToFolder({
+          sandboxIds,
+          collectionPath: dropResult.path,
+        });
+      }
       // moving folders into another folder
       // is the same as changing it's path
       folderPaths.forEach(path => {
