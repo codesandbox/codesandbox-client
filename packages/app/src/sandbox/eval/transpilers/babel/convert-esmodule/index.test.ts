@@ -265,7 +265,7 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
-  it.only('has good perf', () => {
+  it('has good perf', () => {
     /* eslint-disable */
     const code = require('./big-file');
 
