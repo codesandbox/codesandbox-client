@@ -110,6 +110,10 @@ export default class Preset {
     this.teardown = teardown || noop;
     this.preEvaluate = preEvaluate || noop;
     this.htmlDisabled = htmlDisabled || false;
+
+    this.postTranspilers.forEach(transpiler => {
+      this.transpilers.add(transpiler.transpiler);
+    });
   }
 
   setAdditionalAliases = (aliases: { [path: string]: string }) => {
