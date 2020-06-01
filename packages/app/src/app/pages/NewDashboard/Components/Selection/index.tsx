@@ -385,7 +385,7 @@ export const SelectionProvider = ({
       >
         {props.children}
       </Element>
-      {drawingRect && (
+      {drawingRect && selectionRect.end.x && (
         <Element
           id="selection-rectangle"
           css={css({
