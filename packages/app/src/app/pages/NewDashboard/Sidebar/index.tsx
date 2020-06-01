@@ -2,6 +2,7 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useDrop } from 'react-dnd';
 import { useOvermind } from 'app/overmind';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Element,
   List,
@@ -20,7 +21,9 @@ import merge from 'deepmerge';
 
 export const SIDEBAR_WIDTH = 240;
 
-export const Sidebar = props => {
+const SidebarContext = React.createContext(null);
+
+export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
   const {
     state: { dashboard, user },
     actions,
@@ -43,7 +46,10 @@ export const Sidebar = props => {
         avatarUrl: 'https://github.com/github.png',
       };
   } else if (user) {
-    activeAccount = { username: user.username, avatarUrl: user.avatarUrl };
+    activeAccount = {
+      username: user.username,
+      avatarUrl: user.avatarUrl,
+    };
   }
 
   React.useEffect(() => {
@@ -54,72 +60,63 @@ export const Sidebar = props => {
   const [foldersVisible, setFoldersVisibility] = React.useState(false);
 
   return (
-    <Stack as="aside" direction="vertical" justify="space-between" {...props}>
-      <List css={css({ '> li': { height: 10 } })}>
-        <ListAction gap={2} css={css({ paddingX: 0 })}>
-          {user && (
-            <Menu>
-              <Stack
-                as={Menu.Button}
-                justify="space-between"
-                align="center"
-                css={css({
-                  width: '100%',
-                  height: '100%',
-                  paddingLeft: 2,
-                  borderBottom: '1px solid',
-                  borderColor: 'sideBar.border',
-                  borderRadius: 0,
-                })}
-              >
-                <Stack as="span" align="center">
-                  <Stack
-                    as="span"
-                    css={css({ width: 10 })}
-                    align="center"
-                    justify="center"
-                  >
-                    <Avatar user={activeAccount} css={css({ size: 6 })} />
-                  </Stack>
-                  <Text size={4} weight="normal">
-                    {activeAccount.username}
-                  </Text>
-                </Stack>
-                <Icon name="caret" size={8} />
-              </Stack>
-              <Menu.List style={{ width: SIDEBAR_WIDTH, borderRadius: 0 }}>
-                <Menu.Item
-                  css={{ textAlign: 'left' }}
-                  onSelect={() => actions.dashboard.setActiveTeam({ id: null })}
+    <SidebarContext.Provider value={{ onSidebarToggle }}>
+      <Stack
+        as={motion.aside}
+        direction="vertical"
+        justify="space-between"
+        animate={{
+          left: visible ? 0 : -1 * SIDEBAR_WIDTH,
+          transition: { duration: visible ? 0.2 : 0.15 },
+        }}
+        {...props}
+        css={css({
+          borderRight: '1px solid',
+          borderColor: 'sideBar.border',
+          backgroundColor: 'sideBar.background',
+          width: SIDEBAR_WIDTH,
+          flexShrink: 0,
+          zIndex: 3,
+          ...props.css,
+        })}
+      >
+        <List css={css({ '> li': { height: 10 } })}>
+          <ListAction gap={2} css={css({ paddingX: 0 })}>
+            {user && (
+              <Menu>
+                <Stack
+                  as={Menu.Button}
+                  justify="space-between"
+                  align="center"
+                  css={css({
+                    width: '100%',
+                    height: '100%',
+                    paddingLeft: 2,
+                    borderBottom: '1px solid',
+                    borderColor: 'sideBar.border',
+                    borderRadius: 0,
+                  })}
                 >
-                  <Stack align="center">
+                  <Stack as="span" align="center">
                     <Stack
                       as="span"
-                      css={css({ width: 8 })}
+                      css={css({ width: 10 })}
                       align="center"
                       justify="center"
                     >
-                      <Avatar user={user} css={css({ size: 5 })} />
+                      <Avatar user={activeAccount} css={css({ size: 6 })} />
                     </Stack>
-                    <Text
-                      size={3}
-                      weight={
-                        activeAccount.username === user.username
-                          ? 'semibold'
-                          : 'normal'
-                      }
-                    >
-                      {user.username} (Personal)
+                    <Text size={4} weight="normal">
+                      {activeAccount.username}
                     </Text>
                   </Stack>
-                </Menu.Item>
-                {dashboard.teams.map(team => (
+                  <Icon name="caret" size={8} />
+                </Stack>
+                <Menu.List style={{ width: SIDEBAR_WIDTH, borderRadius: 0 }}>
                   <Menu.Item
-                    key={team.id}
-                    as={Menu.Item}
                     css={{ textAlign: 'left' }}
                     onSelect={() =>
-                      actions.dashboard.setActiveTeam({ id: team.id })
+                      actions.dashboard.setActiveTeam({ id: null })
                     }
                   >
                     <Stack align="center">
@@ -129,103 +126,156 @@ export const Sidebar = props => {
                         align="center"
                         justify="center"
                       >
-                        <Avatar
-                          user={{
-                            username: team.name,
-                            avatarUrl: 'https://github.com/github.png',
-                          }}
-                          css={css({ size: 5 })}
-                        />
+                        <Avatar user={user} css={css({ size: 5 })} />
                       </Stack>
                       <Text
                         size={3}
                         weight={
-                          activeAccount.username === team.name
+                          activeAccount.username === user.username
                             ? 'semibold'
                             : 'normal'
                         }
                       >
-                        {team.name}
+                        {user.username} (Personal)
                       </Text>
                     </Stack>
                   </Menu.Item>
-                ))}
-              </Menu.List>
-            </Menu>
-          )}
-        </ListAction>
-        <RowItem name="Start" path="start" icon="box" />
-        <RowItem name="Recent" path="recent" icon="clock" />
-        <RowItem name="Drafts" path="drafts" icon="file" />
+                  {dashboard.teams.map(team => (
+                    <Menu.Item
+                      key={team.id}
+                      as={Menu.Item}
+                      css={{ textAlign: 'left' }}
+                      onSelect={() =>
+                        actions.dashboard.setActiveTeam({ id: team.id })
+                      }
+                    >
+                      <Stack align="center">
+                        <Stack
+                          as="span"
+                          css={css({ width: 8 })}
+                          align="center"
+                          justify="center"
+                        >
+                          <Avatar
+                            user={{
+                              username: team.name,
+                              avatarUrl: 'https://github.com/github.png',
+                            }}
+                            css={css({ size: 5 })}
+                          />
+                        </Stack>
+                        <Text
+                          size={3}
+                          weight={
+                            activeAccount.username === team.name
+                              ? 'semibold'
+                              : 'normal'
+                          }
+                        >
+                          {team.name}
+                        </Text>
+                      </Stack>
+                    </Menu.Item>
+                  ))}
+                </Menu.List>
+              </Menu>
+            )}
+          </ListAction>
+          <RowItem name="Start" path="start" icon="box" />
+          <RowItem name="Recent" path="recent" icon="clock" />
+          <RowItem name="Drafts" path="drafts" icon="file" />
 
-        <RowItem
-          name="All sandboxes"
-          path="all"
-          icon="folder"
-          style={{
-            button: { opacity: 0 },
-            ':hover, :focus-within': { button: { opacity: 1 } },
-          }}
-        >
-          <IconButton
-            name="caret"
-            size={8}
-            title="Toggle folders"
-            onClick={() => setFoldersVisibility(!foldersVisible)}
+          <RowItem
+            name="All sandboxes"
+            path="all"
+            icon="folder"
+            style={{
+              button: { opacity: 0 },
+              ':hover, :focus-within': { button: { opacity: 1 } },
+            }}
+          >
+            <IconButton
+              name="caret"
+              size={8}
+              title="Toggle folders"
+              onClick={event => {
+                setFoldersVisibility(!foldersVisible);
+                event.stopPropagation();
+              }}
+              css={css({
+                width: 5,
+                height: '100%',
+                borderRadius: 0,
+                svg: {
+                  transform: foldersVisible ? 'rotate(0deg)' : 'rotate(-90deg)',
+                  transition: 'transform ease-in-out',
+                  transitionDuration: theme => theme.speeds[2],
+                },
+              })}
+            />
+            <Link
+              as={RouterLink}
+              to="/new-dashboard/all"
+              style={{ ...linkStyles, paddingLeft: 0 }}
+            >
+              <Stack align="center" gap={2}>
+                <Stack
+                  as="span"
+                  css={css({ width: 4 })}
+                  align="center"
+                  justify="center"
+                >
+                  <Icon name="folder" />
+                </Stack>
+                <Text>All Sandboxes</Text>
+              </Stack>
+            </Link>
+          </RowItem>
+
+          {foldersVisible &&
+            folders
+              .filter(isTopLevelFolder)
+              .map(folder => (
+                <RowItem
+                  key={folder.path}
+                  name={folder.name}
+                  path={folder.path}
+                  icon="folder"
+                  isNested
+                />
+              ))}
+
+          <RowItem name="Templates" path="templates" icon="star" />
+          <RowItem name="Recently Deleted" path="deleted" icon="trash" />
+          <RowItem name="Settings (temp)" path="settings" icon="gear" />
+        </List>
+        <Element margin={4}>
+          <Button variant="secondary">
+            <Icon name="plus" size={10} marginRight={1} />
+            Create New Workspace
+          </Button>
+        </Element>
+      </Stack>
+      <AnimatePresence>
+        {visible && (
+          <Element
+            as={motion.div}
+            onClick={onSidebarToggle}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.9, transition: { duration: 0.2 } }}
+            exit={{ opacity: 0, transition: { duration: 0.15 } }}
             css={css({
-              width: 5,
-              height: '100%',
-              borderRadius: 0,
-              svg: {
-                transform: foldersVisible ? 'rotate(0deg)' : 'rotate(-90deg)',
-                transition: 'transform ease-in-out',
-                transitionDuration: theme => theme.speeds[2],
-              },
+              display: ['block', 'block', 'none'], // hide on biggest breakpoint
+              position: 'absolute',
+              backgroundColor: 'sideBar.background',
+              height: '100vh',
+              width: '100vw',
+              zIndex: 2,
             })}
           />
-          <Link
-            as={RouterLink}
-            to="/new-dashboard/all"
-            style={{ ...linkStyles, paddingLeft: 0 }}
-          >
-            <Stack align="center" gap={2}>
-              <Stack
-                as="span"
-                css={css({ width: 4 })}
-                align="center"
-                justify="center"
-              >
-                <Icon name="folder" />
-              </Stack>
-              <Text>All Sandboxes</Text>
-            </Stack>
-          </Link>
-        </RowItem>
-
-        {foldersVisible &&
-          folders
-            .filter(isTopLevelFolder)
-            .map(folder => (
-              <RowItem
-                key={folder.path}
-                name={folder.name}
-                path={folder.path}
-                icon="folder"
-                isNested
-              />
-            ))}
-
-        <RowItem name="Templates" path="templates" icon="star" />
-        <RowItem name="Recently Deleted" path="deleted" icon="trash" />
-        <RowItem name="Settings (temp)" path="settings" icon="gear" />
-      </List>
-      <Element margin={4}>
-        <Button variant="secondary">
-          <Icon name="plus" size={10} marginRight={1} />
-          Create New Workspace
-        </Button>
-      </Element>
-    </Stack>
+        )}
+      </AnimatePresence>
+    </SidebarContext.Provider>
   );
 };
 
@@ -287,10 +337,13 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
     }),
   });
 
+  const { onSidebarToggle } = React.useContext(SidebarContext);
+
   return (
     <ListAction
       ref={dropRef}
       align="center"
+      onClick={onSidebarToggle}
       css={css(
         merge(
           {
@@ -309,9 +362,7 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
           props.style || {}
         )
       )}
-      style={{
-        height: isNested ? 32 : 40,
-      }}
+      style={{ height: isNested ? 32 : 40 }}
     >
       {props.children || (
         <Link
