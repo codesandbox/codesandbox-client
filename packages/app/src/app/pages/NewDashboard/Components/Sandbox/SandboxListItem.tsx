@@ -61,7 +61,7 @@ export const SandboxListItem = ({
       },
     })}
   >
-    <Grid css={{ width: '100%' }}>
+    <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
       <Column span={[12, 5, 5]}>
         <Stack gap={4} align="center">
           <Element
