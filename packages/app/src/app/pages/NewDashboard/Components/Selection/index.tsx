@@ -289,6 +289,78 @@ export const SelectionProvider = ({
   // is anything being dragged?
   const [isDragging, setDragging] = React.useState(false);
 
+  const [drawingRect, setDrawingRect] = React.useState(false);
+  const [selectionRect, setSelectionRect] = React.useState({
+    start: { x: null, y: null },
+    end: { x: null, y: null },
+  });
+  const onContainerMouseDown = event => {
+    setDrawingRect(true);
+    setSelectionRect({
+      start: { x: event.clientX, y: event.clientY },
+      end: { x: null, y: null },
+    });
+  };
+
+  const callbackCalledAt = React.useRef(null);
+
+  const onContainerMouseMove = event => {
+    if (!drawingRect) return;
+
+    setSelectionRect({
+      start: selectionRect.start,
+      end: { x: event.clientX, y: event.clientY },
+    });
+
+    const callback = () => {
+      const selectionLeft = Math.min(
+        selectionRect.start.x,
+        selectionRect.end.x
+      );
+      const selectionRight = Math.max(
+        selectionRect.start.x,
+        selectionRect.end.x
+      );
+      const selectionTop = Math.min(selectionRect.start.y, selectionRect.end.y);
+      const selectionBottom = Math.max(
+        selectionRect.start.y,
+        selectionRect.end.y
+      );
+
+      const visibleItems = document.querySelectorAll('[data-selection-id]');
+      const overlappingItems = [];
+
+      visibleItems.forEach(item => {
+        const rect = item.getBoundingClientRect();
+
+        if (
+          ((rect.left > selectionLeft && rect.left < selectionRight) ||
+            (rect.right > selectionLeft && rect.right < selectionRight)) &&
+          ((rect.top > selectionTop && rect.top < selectionBottom) ||
+            (rect.bottom > selectionTop && rect.bottom < selectionBottom))
+        ) {
+          overlappingItems.push(item);
+        }
+      });
+
+      const overlappingIds = [];
+      overlappingItems.forEach(item => {
+        overlappingIds.push(item.dataset.selectionId);
+      });
+
+      setSelectedIds(overlappingIds);
+      callbackCalledAt.current = new Date().getTime();
+    };
+
+    // performance hack: don't fire the callback again if it was fired 60ms ago
+    if (!callbackCalledAt.current) callback();
+    else if (new Date().getTime() - callbackCalledAt.current > 60) callback();
+  };
+
+  const onContainerMouseUp = event => {
+    setDrawingRect(false);
+  };
+
   return (
     <Context.Provider
       value={{
@@ -305,9 +377,31 @@ export const SelectionProvider = ({
         isDragging,
       }}
     >
-      <Element onClick={onContainerClick} css={css({ paddingTop: 10 })}>
+      <Element
+        onClick={onContainerClick}
+        onMouseDown={onContainerMouseDown}
+        onMouseMove={onContainerMouseMove}
+        onMouseUp={onContainerMouseUp}
+        css={css({ paddingTop: 10 })}
+      >
         {props.children}
       </Element>
+      {drawingRect && (
+        <Element
+          id="selection-rectangle"
+          css={css({
+            position: 'absolute',
+            background: '#6CC7F640', // blues.300 with 25% opacity
+            border: '1px solid',
+            borderColor: 'blues.600',
+            left: Math.min(selectionRect.start.x, selectionRect.end.x),
+            top: Math.min(selectionRect.start.y, selectionRect.end.y),
+            width: Math.abs(selectionRect.end.x - selectionRect.start.x),
+            height: Math.abs(selectionRect.end.y - selectionRect.start.y),
+            pointerEvents: 'none', // disable selection
+          })}
+        />
+      )}
       <DragPreview
         sandboxes={sandboxes || []}
         folders={folders || []}
