@@ -3,7 +3,12 @@ import Transpiler from '..';
 class JSONTranspiler extends Transpiler {
   doTranspilation(code: string) {
     const result = `
-      module.exports = JSON.parse(${JSON.stringify(code || '')})
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports["default"] = void 0;
+    var _default = JSON.parse(${JSON.stringify(code || '')})
+    exports["default"] = _default;
     `;
 
     return Promise.resolve({
