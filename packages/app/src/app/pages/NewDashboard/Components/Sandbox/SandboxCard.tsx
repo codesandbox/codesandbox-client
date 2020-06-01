@@ -5,10 +5,10 @@ import {
   Text,
   Stats,
   Input,
+  IconButton,
   SkeletonText,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { MenuOptions } from './Menu';
 
 export const SandboxCard = ({
   sandbox,
@@ -22,6 +22,7 @@ export const SandboxCard = ({
   onDoubleClick,
   onBlur,
   onKeyDown,
+  onContextMenu,
   // editing
   edit,
   inputRef,
@@ -42,6 +43,7 @@ export const SandboxCard = ({
     onDoubleClick={onDoubleClick}
     onBlur={onBlur}
     onKeyDown={onKeyDown}
+    onContextMenu={onContextMenu}
     {...props}
     css={css({
       position: 'relative',
@@ -104,10 +106,11 @@ export const SandboxCard = ({
         </Text>
       )}
 
-      <MenuOptions
-        sandbox={sandbox}
-        isTemplate={isTemplate}
-        onRename={enterEditing}
+      <IconButton
+        name="more"
+        size={9}
+        title="Sandbox actions"
+        onClick={onContextMenu}
       />
     </Stack>
     <Stack marginX={4}>
