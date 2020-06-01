@@ -149,11 +149,6 @@ export const SelectionProvider = ({
     }
   };
 
-  const onContainerClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    // global blur
-    setSelectedIds([]);
-  };
-
   let viewMode: string;
   const location = useLocation();
 
@@ -295,7 +290,10 @@ export const SelectionProvider = ({
     end: { x: null, y: null },
   });
   const onContainerMouseDown = event => {
+    setSelectedIds([]); // global blur
+
     setDrawingRect(true);
+
     setSelectionRect({
       start: { x: event.clientX, y: event.clientY },
       end: { x: null, y: null },
@@ -333,8 +331,10 @@ export const SelectionProvider = ({
       visibleItems.forEach(item => {
         const rect = item.getBoundingClientRect();
 
+        // left-right doesn't matter for list view
         if (
-          ((rect.left > selectionLeft && rect.left < selectionRight) ||
+          (viewMode === 'list' ||
+            (rect.left > selectionLeft && rect.left < selectionRight) ||
             (rect.right > selectionLeft && rect.right < selectionRight)) &&
           ((rect.top > selectionTop && rect.top < selectionBottom) ||
             (rect.bottom > selectionTop && rect.bottom < selectionBottom))
@@ -358,7 +358,7 @@ export const SelectionProvider = ({
   };
 
   const onContainerMouseUp = event => {
-    setDrawingRect(false);
+    if (drawingRect) setDrawingRect(false);
   };
 
   return (
@@ -378,7 +378,6 @@ export const SelectionProvider = ({
       }}
     >
       <Element
-        onClick={onContainerClick}
         onMouseDown={onContainerMouseDown}
         onMouseMove={onContainerMouseMove}
         onMouseUp={onContainerMouseUp}
