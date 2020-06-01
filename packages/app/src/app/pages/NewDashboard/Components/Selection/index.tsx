@@ -9,6 +9,7 @@ import {
   ARROW_DOWN,
   ARROW_UP,
   ENTER,
+  ALT,
 } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
@@ -19,6 +20,12 @@ const Context = React.createContext({
   selectedIds: [],
   onClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
   onRightClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
+  onMenuEvent: (
+    event:
+      | React.MouseEvent<HTMLDivElement>
+      | React.KeyboardEvent<HTMLDivElement>,
+    itemId?: string
+  ) => {},
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {},
   onDragStart: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
@@ -97,12 +104,40 @@ export const SelectionProvider = ({
   const [menuPosition, setMenuPosition] = React.useState({ x: 0, y: 0 });
 
   const onRightClick = (
-    event: React.MouseEvent<HTMLDivElement>,
+    event: React.MouseEvent<HTMLDivElement> &
+      React.KeyboardEvent<HTMLDivElement>,
     itemId: string
   ) => {
     if (!selectedIds.includes(itemId)) setSelectedIds([itemId]);
     setMenuVisibility(true);
     setMenuPosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const onMenuEvent = (
+    event:
+      | React.MouseEvent<HTMLDivElement>
+      | React.KeyboardEvent<HTMLDivElement>,
+    itemId?: string
+  ) => {
+    if (itemId && !selectedIds.includes(itemId)) setSelectedIds([itemId]);
+
+    const target = event.target as HTMLButtonElement;
+
+    let menuElement = target;
+    if (target.dataset.selectionId) {
+      // if the event is fired on the sandbox/folder, we find
+      // the menu button to correctly position the menu
+      menuElement = target.querySelector('button');
+    }
+
+    const rect = menuElement.getBoundingClientRect();
+    const position = {
+      x: rect.x + rect.width / 2,
+      y: rect.y + rect.height / 2,
+    };
+
+    setMenuVisibility(true);
+    setMenuPosition(position);
   };
 
   const onBlur = (event: React.FocusEvent<HTMLDivElement>) => {
@@ -129,6 +164,10 @@ export const SelectionProvider = ({
   const history = useHistory();
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!selectedIds.length) return;
+    // disable keyboard navigation if menu is open
+    if (menuVisible) return;
+
+    if (event.keyCode === ALT) onMenuEvent(event);
 
     // if only one thing is selected, open it
     if (event.keyCode === ENTER && selectedIds.length === 1) {
@@ -159,7 +198,9 @@ export const SelectionProvider = ({
     if (
       (viewMode === 'grid' &&
         event.keyCode !== ARROW_RIGHT &&
-        event.keyCode !== ARROW_LEFT) ||
+        event.keyCode !== ARROW_LEFT &&
+        event.keyCode !== ARROW_UP &&
+        event.keyCode !== ARROW_DOWN) ||
       (viewMode === 'list' &&
         event.keyCode !== ARROW_DOWN &&
         event.keyCode !== ARROW_UP)
@@ -178,7 +219,20 @@ export const SelectionProvider = ({
       ? 'forward'
       : 'backward';
 
-    const nextItem = selectionItems[index + (direction === 'forward' ? 1 : -1)];
+    // column count is set by SandboxGrid
+    // to keep the state easy to manage, we imperatively
+    // read this value from data-column-count
+    const gridElement = document.querySelector(
+      '#variable-grid'
+    ) as HTMLButtonElement;
+    const columnCount = parseInt(gridElement.dataset.columnCount, 10);
+
+    const steps = [ARROW_UP, ARROW_DOWN].includes(event.keyCode)
+      ? columnCount
+      : 1;
+
+    const nextItem =
+      selectionItems[index + (direction === 'forward' ? steps : -1 * steps)];
 
     // boundary conditions
     if (!nextItem) return;
@@ -258,6 +312,7 @@ export const SelectionProvider = ({
         onClick,
         onBlur,
         onRightClick,
+        onMenuEvent,
         onKeyDown,
         onDragStart,
         onDrop,
@@ -296,6 +351,7 @@ export const useSelection = () => {
     onClick,
     onBlur,
     onRightClick,
+    onMenuEvent,
     onKeyDown,
     onDragStart,
     onDrop,
@@ -309,6 +365,7 @@ export const useSelection = () => {
     onClick,
     onBlur,
     onRightClick,
+    onMenuEvent,
     onKeyDown,
     onDragStart,
     onDrop,
@@ -318,14 +375,9 @@ export const useSelection = () => {
 };
 
 const scrollIntoViewport = (id: string) => {
-  // we use data attributes to target element
-  const element = document.querySelector(`[data-selection-id="${id}"]`);
-
-  // if it's outside viewport, scroll to it
-  const { top, bottom } = element.getBoundingClientRect();
-  if (bottom > window.innerHeight || top < 0) {
-    element.scrollIntoView({ behavior: 'smooth' });
-  }
+  const gridContainer = document.querySelector('#variable-grid');
+  const event = new CustomEvent('scrollToItem', { detail: id });
+  gridContainer.dispatchEvent(event);
 };
 
 const isFolderPath = id => id.startsWith('/');

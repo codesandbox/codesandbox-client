@@ -5,9 +5,9 @@ import { Stack, Text, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import {
-  SandboxGrid,
+  VariableGrid,
   SkeletonGrid,
-} from 'app/pages/NewDashboard/Components/SandboxGrid';
+} from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 
 export const Deleted = () => {
@@ -43,7 +43,7 @@ export const Deleted = () => {
     <SelectionProvider sandboxes={sandboxes.DELETED}>
       <Header title="Recently Deleted" />
       {sandboxes.DELETED ? (
-        <SandboxGrid items={items} />
+        <VariableGrid items={items} />
       ) : (
         <Stack as="section" direction="vertical" gap={8}>
           <Element css={css({ height: 4 })} />

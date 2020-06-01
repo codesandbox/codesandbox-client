@@ -1,7 +1,6 @@
 import React from 'react';
-import { Stack, Text, Input } from '@codesandbox/components';
+import { Stack, Text, Input, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { MenuOptions } from './Menu';
 
 export const FolderCard = ({
   name,
@@ -11,6 +10,7 @@ export const FolderCard = ({
   selected,
   onClick,
   onDoubleClick,
+  onContextMenu,
   // editing
   editing,
   enterEditing,
@@ -33,6 +33,7 @@ export const FolderCard = ({
     gap={2}
     onClick={onClick}
     onDoubleClick={onDoubleClick}
+    onContextMenu={onContextMenu}
     {...props}
     css={css({
       width: '100%',
@@ -95,7 +96,12 @@ export const FolderCard = ({
         </Text>
       )}
       {!isNewFolder ? (
-        <MenuOptions path={path} onRename={enterEditing} />
+        <IconButton
+          name="more"
+          size={9}
+          title="Sandbox actions"
+          onClick={onContextMenu}
+        />
       ) : null}
     </Stack>
     {!isNewFolder ? (
