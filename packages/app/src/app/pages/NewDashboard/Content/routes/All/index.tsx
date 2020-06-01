@@ -4,9 +4,9 @@ import { useOvermind } from 'app/overmind';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import {
-  SandboxGrid,
+  VariableGrid,
   SkeletonGrid,
-} from 'app/pages/NewDashboard/Components/SandboxGrid';
+} from 'app/pages/NewDashboard/Components/VariableGrid';
 import { getPossibleTemplates } from '../../utils';
 
 export const AllPage = ({ match: { params }, history }) => {
@@ -73,7 +73,7 @@ export const AllPage = ({ match: { params }, history }) => {
         createNewFolder={() => setCreating(true)}
       />
       {allCollections ? (
-        <SandboxGrid items={items} />
+        <VariableGrid items={items} />
       ) : (
         <SkeletonGrid count={8} />
       )}

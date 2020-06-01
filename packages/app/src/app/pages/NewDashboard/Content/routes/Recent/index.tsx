@@ -6,9 +6,9 @@ import css from '@styled-system/css';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import {
-  SandboxGrid,
+  VariableGrid,
   SkeletonGrid,
-} from 'app/pages/NewDashboard/Components/SandboxGrid';
+} from 'app/pages/NewDashboard/Components/VariableGrid';
 
 export const Recent = () => {
   const {
@@ -49,7 +49,7 @@ export const Recent = () => {
       <section style={{ position: 'relative' }}>
         {sandboxes.RECENT ? (
           <>
-            <SandboxGrid items={items} />
+            <VariableGrid items={items} />
           </>
         ) : (
           <Stack as="section" direction="vertical" gap={8}>

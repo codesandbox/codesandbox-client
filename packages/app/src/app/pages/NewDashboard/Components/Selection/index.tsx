@@ -198,7 +198,9 @@ export const SelectionProvider = ({
     if (
       (viewMode === 'grid' &&
         event.keyCode !== ARROW_RIGHT &&
-        event.keyCode !== ARROW_LEFT) ||
+        event.keyCode !== ARROW_LEFT &&
+        event.keyCode !== ARROW_UP &&
+        event.keyCode !== ARROW_DOWN) ||
       (viewMode === 'list' &&
         event.keyCode !== ARROW_DOWN &&
         event.keyCode !== ARROW_UP)
@@ -217,7 +219,20 @@ export const SelectionProvider = ({
       ? 'forward'
       : 'backward';
 
-    const nextItem = selectionItems[index + (direction === 'forward' ? 1 : -1)];
+    // column count is set by SandboxGrid
+    // to keep the state easy to manage, we imperatively
+    // read this value from data-column-count
+    const gridElement = document.querySelector(
+      '#variable-grid'
+    ) as HTMLButtonElement;
+    const columnCount = parseInt(gridElement.dataset.columnCount, 10);
+
+    const steps = [ARROW_UP, ARROW_DOWN].includes(event.keyCode)
+      ? columnCount
+      : 1;
+
+    const nextItem =
+      selectionItems[index + (direction === 'forward' ? steps : -1 * steps)];
 
     // boundary conditions
     if (!nextItem) return;
@@ -360,14 +375,9 @@ export const useSelection = () => {
 };
 
 const scrollIntoViewport = (id: string) => {
-  // we use data attributes to target element
-  const element = document.querySelector(`[data-selection-id="${id}"]`);
-
-  // if it's outside viewport, scroll to it
-  const { top, bottom } = element.getBoundingClientRect();
-  if (bottom > window.innerHeight || top < 0) {
-    element.scrollIntoView({ behavior: 'smooth' });
-  }
+  const gridContainer = document.querySelector('#variable-grid');
+  const event = new CustomEvent('scrollToItem', { detail: id });
+  gridContainer.dispatchEvent(event);
 };
 
 const isFolderPath = id => id.startsWith('/');

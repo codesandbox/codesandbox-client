@@ -32,9 +32,9 @@ export const ContextMenu = ({
     };
   }, [visible, setVisibility]);
 
+  // handle key down events - close on escape + disable the rest
+  // TODO: handle arrow keys and space/enter.
   React.useEffect(() => {
-    // handle key down events - close on escape + disable the rest
-    // TODO: handle arrow keys and space/enter.
     const handler = event => {
       if (!visible) return;
       if (event.keyCode === ESC) setVisibility(false);
