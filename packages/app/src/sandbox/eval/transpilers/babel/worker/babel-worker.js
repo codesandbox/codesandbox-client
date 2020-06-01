@@ -11,7 +11,6 @@ import delay from '@codesandbox/common/lib/utils/delay';
 import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
 import { join } from '@codesandbox/common/lib/utils/path';
 import patchedMacrosPlugin from './utils/macrosPatch';
-import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
 import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
 import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
@@ -469,7 +468,6 @@ let loadedTranspilerURL = null;
 let loadedEnvURL = null;
 
 function registerCodeSandboxPlugins() {
-  Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
   Babel.registerPlugin('babel-plugin-detective', detective);
   Babel.registerPlugin('dynamic-css-modules', dynamicCSSModules);
   Babel.registerPlugin(
@@ -554,8 +552,6 @@ self.addEventListener('message', async event => {
     const codeSandboxPlugins = [];
 
     if (!disableCodeSandboxPlugins) {
-      codeSandboxPlugins.push('dynamic-import-node');
-
       if (loaderOptions.dynamicCSSModules) {
         codeSandboxPlugins.push('dynamic-css-modules');
       }

@@ -192,9 +192,14 @@ export default class Manager implements IEvaluator {
   }
 
   async evaluate(path: string, basePath: string = '/'): Promise<any> {
-    const module = await this.resolveModuleAsync(path, basePath);
-    await this.transpileModules(module);
-    return this.evaluateModule(module);
+    const tModule = await this.resolveTranspiledModule(
+      path,
+      basePath,
+      this.preset.ignoredExtensions,
+      true
+    );
+    await tModule.transpile(this);
+    return tModule.evaluate(this);
   }
 
   async initializeTestRunner() {
