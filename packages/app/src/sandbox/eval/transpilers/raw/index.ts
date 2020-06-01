@@ -8,13 +8,7 @@ class RawTranspiler extends Transpiler {
   doTranspilation(code: string) {
     return Promise.resolve({
       transpiledCode: `
-      Object.defineProperty(exports, "__esModule", {
-        value: true
-      });
-      exports["default"] = void 0;
-      var _default = ${JSON.stringify(code)};
-      exports["default"] = _default;
-      `,
+      module.exports = ${JSON.stringify(code)};`,
     });
   }
 }
