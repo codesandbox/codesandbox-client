@@ -191,10 +191,14 @@ export default class Manager implements IEvaluator {
     }
   }
 
-  async evaluate(path: string, basePath: string = '/'): Promise<any> {
-    const module = await this.resolveModuleAsync(path, basePath);
-    await this.transpileModules(module);
-    return this.evaluateModule(module);
+  async evaluate(path: string, baseTModule?: TranspiledModule): Promise<any> {
+    const tModule = await this.resolveTranspiledModuleAsync(
+      path,
+      baseTModule,
+      this.preset.ignoredExtensions
+    );
+    await tModule.transpile(this);
+    return tModule.evaluate(this);
   }
 
   async initializeTestRunner() {
@@ -675,7 +679,10 @@ export default class Manager implements IEvaluator {
 
             if (
               this.manifest.dependencies.find(d => d.name === dependencyName) ||
-              this.manifest.dependencyDependencies[dependencyName]
+              this.manifest.dependencyDependencies[dependencyName] ||
+              this.manifest.contents[
+                `/node_modules/${dependencyName}/package.json`
+              ]
             ) {
               promiseReject(
                 new ModuleNotFoundError(connectedPath, true, currentPath)
@@ -796,7 +803,8 @@ export default class Manager implements IEvaluator {
         // TODO: fix the stack hack
         if (
           this.manifest.dependencies.find(d => d.name === dependencyName) ||
-          this.manifest.dependencyDependencies[dependencyName]
+          this.manifest.dependencyDependencies[dependencyName] ||
+          this.manifest.contents[`/node_modules/${dependencyName}/package.json`]
         ) {
           throw new ModuleNotFoundError(connectedPath, true, currentPath);
         } else {
@@ -838,7 +846,7 @@ export default class Manager implements IEvaluator {
   resolveTranspiledModuleAsync = async (
     path: string,
     currentTModule?: TranspiledModule,
-    ignoredExtensions?: Array<string>
+    ignoredExtensions?: string[]
   ): Promise<TranspiledModule> => {
     const tModule =
       currentTModule || this.getTranspiledModule(this.modules['/package.json']); // Get arbitrary file from root

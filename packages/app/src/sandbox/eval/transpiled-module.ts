@@ -1024,6 +1024,7 @@ export default class TranspiledModule {
       const usedGlobals = globals || {};
       usedGlobals.__dirname = pathUtils.dirname(this.module.path);
       usedGlobals.__filename = this.module.path;
+      usedGlobals.$csbImport = (path: string) => manager.evaluate(path, this);
 
       const exports = evaluate(
         this.source.compiledCode,

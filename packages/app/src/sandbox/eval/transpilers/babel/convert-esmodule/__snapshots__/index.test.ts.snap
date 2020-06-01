@@ -312,6 +312,18 @@ const c = \\"test\\";
 "
 `;
 
+exports[`convert-esmodule hoists imports at bottom 1`] = `
+"var $csb__proptypes = require(\\"prop-types\\");
+var PropTypes = $_csb__interopRequireDefault($csb__proptypes).default;
+const a = PropTypes.a;
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+"
+`;
+
 exports[`convert-esmodule ignores comments 1`] = `""`;
 
 exports[`convert-esmodule parses and writes chars with linebreaks 1`] = `
