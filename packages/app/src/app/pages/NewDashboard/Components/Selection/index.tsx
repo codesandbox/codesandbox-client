@@ -256,35 +256,42 @@ export const SelectionProvider = ({
     const sandboxIds = selectedIds.filter(isSandboxId);
     const folderPaths = selectedIds.filter(isFolderPath);
 
-    if (dropResult.path === 'deleted') {
-      if (sandboxIds.length) actions.dashboard.deleteSandbox(sandboxIds);
-      folderPaths.forEach(path => actions.dashboard.deleteFolder({ path }));
-    } else if (dropResult.path === 'templates') {
-      if (sandboxIds.length) actions.dashboard.makeTemplate(sandboxIds);
-    } else if (dropResult.path === 'drafts') {
-      if (sandboxIds.length) {
+    if (sandboxIds.length) {
+      if (dropResult.path === 'deleted') {
+        actions.dashboard.deleteSandbox(sandboxIds);
+      } else if (dropResult.path === 'templates') {
+        actions.dashboard.makeTemplate(sandboxIds);
+      } else if (dropResult.path === 'drafts') {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: '/',
         });
-      }
-      // no else case, folders can't be dropped in drafts
-    } else {
-      if (sandboxIds.length) {
+      } else {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: dropResult.path,
         });
       }
-      // moving folders into another folder
-      // is the same as changing it's path
-      folderPaths.forEach(path => {
-        const { name } = folders.find(folder => folder.path === path);
-        actions.dashboard.moveFolder({
-          path,
-          newPath: dropResult.path.replace('all', '') + '/' + name,
+    }
+
+    if (folderPaths.length) {
+      if (dropResult.path === 'deleted') {
+        folderPaths.forEach(path => actions.dashboard.deleteFolder({ path }));
+      } else if (dropResult.path === 'templates') {
+        // folders can't be dropped into templates
+      } else if (dropResult.path === 'drafts') {
+        // folders can't be dropped into drafts
+      } else {
+        // moving folders into another folder
+        // is the same as changing it's path
+        folderPaths.forEach(path => {
+          const { name } = folders.find(folder => folder.path === path);
+          actions.dashboard.moveFolder({
+            path,
+            newPath: dropResult.path.replace('all', '') + '/' + name,
+          });
         });
-      });
+      }
     }
   };
 
