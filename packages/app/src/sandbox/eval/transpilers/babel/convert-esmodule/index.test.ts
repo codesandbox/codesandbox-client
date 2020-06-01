@@ -265,16 +265,17 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
-  it('has good perf', () => {
+  it.only('has good perf', () => {
     /* eslint-disable */
     const code = require('./big-file');
 
     const t = Date.now();
+    const n = 5;
 
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < n; i++) {
       convertEsModule(code);
     }
-    console.log(Date.now() - t);
+    console.log((Date.now() - t) / n);
     /* eslint-enable */
   });
 
