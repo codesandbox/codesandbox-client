@@ -154,18 +154,16 @@ export class ModelsHandler {
   }
 
   public clearComments() {
-    if (this.sandbox.featureFlags.comments) {
-      Object.values(this.moduleModels).forEach(moduleModel => {
-        if (!moduleModel.model) {
-          return;
-        }
-        moduleModel.comments = [];
-        moduleModel.currentCommentDecorations = moduleModel.model.deltaDecorations(
-          moduleModel.currentCommentDecorations,
-          []
-        );
-      });
-    }
+    Object.values(this.moduleModels).forEach(moduleModel => {
+      if (!moduleModel.model) {
+        return;
+      }
+      moduleModel.comments = [];
+      moduleModel.currentCommentDecorations = moduleModel.model.deltaDecorations(
+        moduleModel.currentCommentDecorations,
+        []
+      );
+    });
   }
 
   public isModuleOpened(module: Module) {
