@@ -70,7 +70,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator)).toEqual(
-        '!babel-loader!codesandbox-dynamic-imports-loader'
+        '!codesandbox-dynamic-imports-loader!babel-loader'
       );
     });
 
@@ -81,7 +81,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator)).toEqual(
-        '!style-loader!modules-loader!codesandbox-dynamic-imports-loader'
+        '!codesandbox-dynamic-imports-loader!style-loader!modules-loader'
       );
     });
 
@@ -92,7 +92,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator, '!babel-loader')).toEqual(
-        '!babel-loader!codesandbox-dynamic-imports-loader'
+        '!codesandbox-dynamic-imports-loader!babel-loader'
       );
     });
 
@@ -103,7 +103,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator, 'babel-loader')).toEqual(
-        '!style-loader!modules-loader!babel-loader!codesandbox-dynamic-imports-loader'
+        '!codesandbox-dynamic-imports-loader!style-loader!modules-loader!babel-loader'
       );
     });
   });
