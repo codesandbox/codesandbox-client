@@ -74,7 +74,9 @@ export default class Preset {
     { transpiler: csbDynamicImportTranspiler },
   ];
 
-  postTranspilers: TranspilerDefinition[] = [];
+  postTranspilers: TranspilerDefinition[] = [
+    { transpiler: csbDynamicImportTranspiler },
+  ];
 
   constructor(
     name: string,
