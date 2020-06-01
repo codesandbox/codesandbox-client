@@ -200,7 +200,6 @@ export function convertEsModule(code: string) {
             0,
             generateExportStatement(statement.declaration.id.name, 'default')
           );
-          i++;
         } else {
           program.body[i] = {
             type: n.VariableDeclaration,

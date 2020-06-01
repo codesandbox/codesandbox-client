@@ -277,4 +277,15 @@ describe('convert-esmodule', () => {
     console.log(Date.now() - t);
     /* eslint-enable */
   });
+
+  it('handles import statement after default export', () => {
+    const code = `
+    export default function defaultOverscanIndicesGetter(_ref) {
+    }
+
+    import { bpfrpt_proptype_OverscanIndicesGetterParams } from './types';
+    `;
+
+    convertEsModule(code);
+  });
 });
