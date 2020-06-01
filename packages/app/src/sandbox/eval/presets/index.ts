@@ -70,9 +70,11 @@ export default class Preset {
    */
   preEvaluate: LifeCycleFunction;
 
-  postTranspilers: TranspilerDefinition[] = [
+  preTranspilers: TranspilerDefinition[] = [
     { transpiler: csbDynamicImportTranspiler },
   ];
+
+  postTranspilers: TranspilerDefinition[] = [];
 
   constructor(
     name: string,
@@ -245,6 +247,7 @@ export default class Preset {
       .reverse(); // Reverse, because webpack is also in reverse order
 
     const finalTranspilers = [
+      ...this.preTranspilers,
       ...transpilers,
       ...extraTranspilers,
       ...this.postTranspilers,
