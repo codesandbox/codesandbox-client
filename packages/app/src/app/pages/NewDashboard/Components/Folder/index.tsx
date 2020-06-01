@@ -177,6 +177,7 @@ export const Folder = ({
       const dropResult = monitor.getDropResult();
 
       if (!dropResult || !dropResult.path) return;
+      if (isSamePath(dropResult, path)) return;
 
       onDrop(dropResult);
     },
