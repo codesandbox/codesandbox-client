@@ -151,6 +151,41 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('handles export mutations with variables', () => {
+    const code = `
+    export var to;
+
+    function assign() {
+      to = "test"
+    }
+
+    function assign2(to) {
+      to = "test"
+    }
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it("doesn't remove object initializers", () => {
+    const code = `
+    import { defineHidden, is, createInterpolator, each, getFluidConfig, isAnimatedString, useForceUpdate } from '@react-spring/shared';
+
+    const createHost = (components, {
+      a = () => {}
+    } = {}) => {
+     is()
+    };
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it("doesn't set var definitions", () => {
+    const code = `
+    export var global = typeof window !== 'undefined' ? window : {};
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('handles default as exports', () => {
     const code = `
     export { default as Field } from './Field';
@@ -189,6 +224,20 @@ describe('convert-esmodule', () => {
 
     console.log(React.Component);
     `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles multiple aliased exports', () => {
+    const code = `
+    export { _getArrayObserver as getArrayObserver, a as b };
+    export { _getMapObserver as getMapObserver, c as d };
+    export { _getSetObserver as getSetObserver, e as f };
+
+    f.test();
+    d.test();
+    b.test();
+    `;
+
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 

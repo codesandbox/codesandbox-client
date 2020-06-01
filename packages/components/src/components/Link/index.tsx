@@ -27,6 +27,7 @@ const LinkElement = styled(Text).attrs(p => ({
 export const Link: React.FC<LinkProps> = props => (
   <LinkElement
     rel={props.target === '_blank' ? 'noopener noreferrer' : null}
+    as="a"
     {...props}
   />
 );

@@ -5,11 +5,7 @@ import * as astring from 'astring';
 import * as escope from 'escope';
 import { basename } from 'path';
 import { walk } from 'estree-walker';
-import {
-  AssignmentExpression,
-  ExpressionStatement,
-  Property,
-} from 'meriyah/dist/estree';
+import { Property } from 'meriyah/dist/estree';
 import { Syntax as n } from './syntax';
 import {
   generateRequireStatement,
@@ -29,6 +25,7 @@ import { customGenerator } from './generator';
 export function convertEsModule(code: string) {
   const usedVarNames = [];
   const varsToRename = {};
+  const trackedExports = {};
 
   const getVarName = (name: string) => {
     let usedName = name.replace(/[.-]/g, '');
@@ -144,12 +141,14 @@ export function convertEsModule(code: string) {
             continue;
           }
 
+          trackedExports[foundDeclaration.id.name] = foundDeclaration.id.name;
           varName = foundDeclaration.id.name;
         }
         i++;
         program.body.splice(i, 0, generateExportStatement(varName, varName));
       } else if (statement.specifiers) {
         program.body.splice(i, 1);
+        i--;
         statement.specifiers.forEach(specifier => {
           if (specifier.type === n.ExportSpecifier) {
             i++;
@@ -231,40 +230,7 @@ export function convertEsModule(code: string) {
           newDeclaration.type === n.ClassDeclaration ||
           newDeclaration.type === n.FunctionExpression
         ) {
-          // @ts-ignore Different libraries with the same types
-          program = walk(program, {
-            enter(node, parent, prop, index) {
-              if (node.type === n.AssignmentExpression) {
-                const { left } = node as AssignmentExpression;
-                if (
-                  left.type === n.Identifier &&
-                  left.name === newDeclaration.id.name
-                ) {
-                  this.replace({
-                    type: n.ExpressionStatement,
-                    expression: {
-                      type: n.AssignmentExpression,
-                      left: {
-                        type: n.MemberExpression,
-                        object: {
-                          type: n.Identifier,
-                          name: 'exports',
-                        },
-                        computed: false,
-                        property: {
-                          type: n.Identifier,
-                          name: 'default',
-                        },
-                      },
-                      operator: '=' as '=',
-                      right: node,
-                    },
-                  } as ExpressionStatement);
-                  this.skip();
-                }
-              }
-            },
-          });
+          trackedExports[newDeclaration.id.name] = 'default';
         }
       }
     } else if (statement.type === n.ImportDeclaration) {
@@ -357,7 +323,10 @@ export function convertEsModule(code: string) {
     }
   }
 
-  if (Object.keys(varsToRename).length > 0) {
+  if (
+    Object.keys(varsToRename).length > 0 ||
+    Object.keys(trackedExports).length > 0
+  ) {
     // Convert all the object shorthands to not shorthands, needed later when we rename variables so we
     // don't change to the key literals
     // @ts-ignore
@@ -365,7 +334,10 @@ export function convertEsModule(code: string) {
       enter(node, parent, prop, index) {
         if (node.type === n.Property) {
           const property = node as Property;
-          if (property.shorthand) {
+          if (
+            property.shorthand &&
+            property.value.type !== n.AssignmentPattern // Not a default initializer
+          ) {
             property.value = {
               ...property.key,
             };
@@ -383,8 +355,27 @@ export function convertEsModule(code: string) {
       scope.references.forEach(ref => {
         // If the variable cannot be resolved, it must be the var that we had
         // just changed.
-        if (varsToRename[ref.identifier.name] && ref.resolved === null) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            varsToRename,
+            ref.identifier.name
+          ) &&
+          ref.resolved === null
+        ) {
           ref.identifier.name = varsToRename[ref.identifier.name].join('.');
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(
+            trackedExports,
+            ref.identifier.name
+          ) &&
+          ref.isWrite() &&
+          ref.resolved === null &&
+          !ref.init
+        ) {
+          const name = trackedExports[ref.identifier.name];
+          ref.identifier.name = `exports.${name} = ${ref.identifier.name}`;
         }
       });
     });
