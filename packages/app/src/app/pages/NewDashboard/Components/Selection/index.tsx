@@ -19,6 +19,7 @@ const Context = React.createContext({
   sandboxes: [],
   selectedIds: [],
   onClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
+  onMouseDown: (event: React.MouseEvent<HTMLDivElement>) => {},
   onRightClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
   onMenuEvent: (
     event:
@@ -98,6 +99,11 @@ export const SelectionProvider = ({
       setSelectedIds([itemId]);
       event.stopPropagation();
     }
+  };
+
+  const onMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    // prevent collisions with mouse down on container
+    event.stopPropagation();
   };
 
   const [menuVisible, setMenuVisibility] = React.useState(true);
@@ -316,6 +322,14 @@ export const SelectionProvider = ({
     start: { x: null, y: null },
     end: { x: null, y: null },
   });
+  const resetSelectionRect = () => {
+    setDrawingRect(false);
+    setSelectionRect({
+      start: { x: null, y: null },
+      end: { x: null, y: null },
+    });
+  };
+
   const onContainerMouseDown = event => {
     setSelectedIds([]); // global blur
 
@@ -385,7 +399,7 @@ export const SelectionProvider = ({
   };
 
   const onContainerMouseUp = event => {
-    if (drawingRect) setDrawingRect(false);
+    if (drawingRect) resetSelectionRect();
   };
 
   return (
@@ -394,6 +408,7 @@ export const SelectionProvider = ({
         sandboxes,
         selectedIds,
         onClick,
+        onMouseDown,
         onBlur,
         onRightClick,
         onMenuEvent,
@@ -405,6 +420,7 @@ export const SelectionProvider = ({
       }}
     >
       <Element
+        id="selection-container"
         onMouseDown={onContainerMouseDown}
         onMouseMove={onContainerMouseMove}
         onMouseUp={onContainerMouseUp}
@@ -454,6 +470,7 @@ export const useSelection = () => {
     sandboxes,
     selectedIds,
     onClick,
+    onMouseDown,
     onBlur,
     onRightClick,
     onMenuEvent,
@@ -468,6 +485,7 @@ export const useSelection = () => {
     sandboxes,
     selectedIds,
     onClick,
+    onMouseDown,
     onBlur,
     onRightClick,
     onMenuEvent,
