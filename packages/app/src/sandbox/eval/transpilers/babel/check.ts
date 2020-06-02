@@ -21,11 +21,7 @@ function checkComment(match: string[]) {
   return true;
 }
 
-export function shouldTranspile(code: string, path: string) {
-  if (isESModule(code)) {
-    return true;
-  }
-
+export function hasNewSyntax(code: string, path: string) {
   if (path.endsWith('.min.js')) {
     // This needs no transpiling and often fools our JSX check with <a etc...
     return false;
@@ -42,4 +38,12 @@ export function shouldTranspile(code: string, path: string) {
   }
 
   return false;
+}
+
+export function shouldTranspile(code: string, path: string) {
+  if (isESModule(code)) {
+    return true;
+  }
+
+  return hasNewSyntax(code, path);
 }
