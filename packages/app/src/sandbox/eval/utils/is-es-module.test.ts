@@ -14,6 +14,6 @@ describe('is-es-module', () => {
     const start = performance.now();
     expect(isESModule(code)).toBe(true);
     const time = performance.now() - start;
-    expect(time).toBeLessThan(2);
+    expect(time).toBeLessThan(5);
   });
 });
