@@ -259,7 +259,7 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
-  it.only('works with variables that are named exports', () => {
+  it('works with variables that are named exports', () => {
     const code = `
     var exports = [eventedState, eventedShowHideState];
     export default exports;
