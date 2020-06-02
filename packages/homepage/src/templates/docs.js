@@ -26,7 +26,7 @@ const Docs = ({
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   return (
-    <Layout noWrapperStyling>
+    <Layout noWrapperStyling docs>
       <TitleAndMetaTags
         description={description}
         title={`${title} - CodeSandbox Documentation`}
@@ -160,7 +160,7 @@ const Docs = ({
         <Element
           css={`
             position: relative;
-            max-width: 709px;
+            max-width: 720px;
             @media screen and (max-width: 1100px) {
               width: auto;
               padding: 0 40px;

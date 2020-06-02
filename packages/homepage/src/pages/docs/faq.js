@@ -11,7 +11,7 @@ const FAQS = ({ data }) => {
   useAccordion();
 
   return (
-    <Layout noWrapperStyling>
+    <Layout noWrapperStyling docs>
       <TitleAndMetaTags description="CodeSandbox FAQ" title="CodeSandbox FAQ" />
       <Element
         paddingTop={132}

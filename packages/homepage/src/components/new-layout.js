@@ -9,7 +9,8 @@ import { VisuallyHidden } from './style';
 import Privacy from './Toast';
 import '../css/typography.css';
 import '../css/global.css';
-import Navigation from './Navigation/index';
+import Navigation from './Navigation';
+import DocsNavigation from './DocsNavigation';
 import Footer from './Footer';
 
 const text = number => `@media only screen and (max-width: ${number}px)`;
@@ -50,7 +51,7 @@ export const WRAPPER_STYLING = {
 
 export const useTheme = () => homepageTheme;
 
-const TemplateWrapper = ({ children, noWrapperStyling }) => (
+const TemplateWrapper = ({ children, noWrapperStyling, docs }) => (
   <ThemeProvider theme={homepageTheme}>
     <div style={{ fontFamily: 'Inter, sans-serif' }}>
       <div
@@ -65,7 +66,7 @@ const TemplateWrapper = ({ children, noWrapperStyling }) => (
           Skip to main content
         </VisuallyHidden>
       </div>
-      <Navigation />
+      {docs ? <DocsNavigation /> : <Navigation />}
 
       <NewThemeProvider theme={codesandboxBlack}>
         <main

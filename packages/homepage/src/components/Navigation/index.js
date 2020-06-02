@@ -212,7 +212,7 @@ const Navigation = () => {
                   components={[
                     {
                       Icon: () => (
-                        <Link to="/docs" title="Documentation">
+                        <Link to="/docs/start" title="Documentation">
                           <DocsIcon />
                         </Link>
                       ),
