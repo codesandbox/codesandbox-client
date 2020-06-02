@@ -29,7 +29,7 @@ const PROD_URLS = {
   bucket: 'https://prod-packager-packages.codesandbox.io',
 };
 
-const URLS = DEV_URLS;
+const URLS = PROD_URLS;
 const BUCKET_URL = URLS.bucket;
 const PACKAGER_URL = URLS.packager;
 
