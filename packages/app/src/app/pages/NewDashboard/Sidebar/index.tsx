@@ -190,7 +190,7 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                   </Menu.List>
                 </Menu>
 
-                <Link as={RouterLink} to="settings">
+                <Link as={RouterLink} to="/new-dashboard/settings">
                   <IconButton
                     name="gear"
                     size={8}
