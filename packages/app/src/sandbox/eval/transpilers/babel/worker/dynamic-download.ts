@@ -113,7 +113,7 @@ function downloadRequires(currentPath: string, code: string) {
             filename: currentPath,
             extensions: ['.js', '.json'],
             moduleDirectory: ['node_modules'],
-            packageFilter: packageFilter(this.isFile),
+            packageFilter: packageFilter(),
           });
         } catch (e) {
           await downloadFromError(e);

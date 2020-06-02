@@ -29,7 +29,7 @@ function replaceModuleField(
   return p;
 }
 
-export const packageFilter = (isFile: (p: string) => boolean) => (
+export const packageFilter = (isFile: (p: string) => boolean = () => true) => (
   p: PackageJSON,
   pkgLocation: string
 ) => {
