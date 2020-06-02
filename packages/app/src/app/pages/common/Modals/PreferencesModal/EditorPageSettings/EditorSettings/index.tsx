@@ -1,10 +1,10 @@
 import React from 'react';
-import { Alert } from 'app/components/Alert';
 import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
 import { Text, Element } from '@codesandbox/components';
 import { Preference } from '@codesandbox/common/lib/components/Preference';
 
+import { Alert } from '../../../Common/Alert';
 import { PreferenceContainer } from '../../elements';
 import { VSCodePlaceholder } from '../../VSCodePlaceholder';
 
@@ -15,7 +15,6 @@ const isFF: boolean = navigator.userAgent.toLowerCase().includes('firefox');
 
 export const EditorSettings: React.FC = () => {
   const [showModal, setShowModal] = React.useState(false);
-
   const {
     state: {
       preferences: { settings },
@@ -74,9 +73,9 @@ export const EditorSettings: React.FC = () => {
         >
           <Alert
             title="Toggle VIM extension"
-            body="You need to refresh the browser for this to take effect, do you want to do that now?"
+            description="You need to refresh the browser for this to take effect, do you want to do that now?"
             onCancel={() => setShowModal(false)}
-            onConfirm={() => {
+            onPrimaryAction={() => {
               location.reload(true);
             }}
           />
