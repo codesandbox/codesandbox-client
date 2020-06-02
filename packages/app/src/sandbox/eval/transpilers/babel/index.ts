@@ -114,7 +114,7 @@ class BabelTranspiler extends WorkerTranspiler {
         loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
 
       const hasMacros = Object.keys(dependencies).some(
-        d => d.indexOf('macro') > -1
+        d => d.indexOf('macro') > -1 || d.indexOf('codegen') > -1
       );
 
       const babelConfig = getBabelConfig(

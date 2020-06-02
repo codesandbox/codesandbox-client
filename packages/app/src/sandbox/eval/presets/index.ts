@@ -7,6 +7,7 @@ import Manager from '../manager';
 import Transpiler from '../transpilers';
 import TranspiledModule from '../transpiled-module';
 import { WebpackTranspiler } from '../transpilers/webpack';
+import csbDynamicImportTranspiler from '../transpilers/csb-dynamic-import';
 import { IEvaluator } from '../evaluator';
 
 type TranspilerDefinition = {
@@ -24,6 +25,11 @@ type LifeCycleFunction = (
   updatedModules: TranspiledModule[]
 ) => void | Promise<any>;
 
+type LoaderDefinition = {
+  test: (module: Module) => boolean;
+  transpilers: Array<TranspilerDefinition>;
+};
+
 /**
  * This is essentially where it all comes together. The manager is responsible for
  * doing evaluation and transpilation using the Transpiler and Loader classes.
@@ -36,10 +42,7 @@ type LifeCycleFunction = (
  * and loaders.
  */
 export default class Preset {
-  loaders: Array<{
-    test: (module: Module) => boolean;
-    transpilers: Array<TranspilerDefinition>;
-  }>;
+  loaders: Array<LoaderDefinition>;
 
   transpilers: Set<Transpiler>;
   name: string;
@@ -66,6 +69,14 @@ export default class Preset {
    * Code to run before evaluation
    */
   preEvaluate: LifeCycleFunction;
+
+  preTranspilers: TranspilerDefinition[] = [
+    { transpiler: csbDynamicImportTranspiler },
+  ];
+
+  postTranspilers: TranspilerDefinition[] = [
+    { transpiler: csbDynamicImportTranspiler },
+  ];
 
   constructor(
     name: string,
@@ -103,6 +114,10 @@ export default class Preset {
     this.teardown = teardown || noop;
     this.preEvaluate = preEvaluate || noop;
     this.htmlDisabled = htmlDisabled || false;
+
+    this.postTranspilers.forEach(transpiler => {
+      this.transpilers.add(transpiler.transpiler);
+    });
   }
 
   setAdditionalAliases = (aliases: { [path: string]: string }) => {
@@ -233,7 +248,12 @@ export default class Preset {
       })
       .reverse(); // Reverse, because webpack is also in reverse order
 
-    const finalTranspilers = [...transpilers, ...extraTranspilers];
+    const finalTranspilers = [
+      ...this.preTranspilers,
+      ...transpilers,
+      ...extraTranspilers,
+      ...this.postTranspilers,
+    ];
 
     return finalTranspilers;
   }

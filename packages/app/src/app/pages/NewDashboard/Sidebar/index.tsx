@@ -7,6 +7,7 @@ import {
   Element,
   List,
   ListAction,
+  ListItem,
   Link,
   Avatar,
   Text,
@@ -81,72 +82,51 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
         })}
       >
         <List css={css({ '> li': { height: 10 } })}>
-          <ListAction gap={2} css={css({ paddingX: 0 })}>
+          <ListItem gap={2} css={css({ paddingX: 0 })}>
             {user && (
-              <Menu>
-                <Stack
-                  as={Menu.Button}
-                  justify="space-between"
-                  align="center"
-                  css={css({
-                    width: '100%',
-                    height: '100%',
-                    paddingLeft: 2,
-                    borderBottom: '1px solid',
-                    borderColor: 'sideBar.border',
-                    borderRadius: 0,
-                  })}
-                >
-                  <Stack as="span" align="center">
-                    <Stack
-                      as="span"
-                      css={css({ width: 10 })}
-                      align="center"
-                      justify="center"
-                    >
-                      <Avatar user={activeAccount} css={css({ size: 6 })} />
-                    </Stack>
-                    <Text size={4} weight="normal">
-                      {activeAccount.username}
-                    </Text>
-                  </Stack>
-                  <Icon name="caret" size={8} />
-                </Stack>
-                <Menu.List style={{ width: SIDEBAR_WIDTH, borderRadius: 0 }}>
-                  <Menu.Item
-                    css={{ textAlign: 'left' }}
-                    onSelect={() =>
-                      actions.dashboard.setActiveTeam({ id: null })
-                    }
+              <Stack
+                css={{
+                  width: '100%',
+                  height: '100%',
+                  borderBottom: '1px solid',
+                  borderColor: 'sideBar.border',
+                }}
+              >
+                <Menu>
+                  <Stack
+                    as={Menu.Button}
+                    justify="space-between"
+                    align="center"
+                    css={css({
+                      width: SIDEBAR_WIDTH - 32,
+                      height: '100%',
+                      paddingLeft: 2,
+                      borderRadius: 0,
+                      ':hover, :focus-within': {
+                        backgroundColor: 'sideBar.hoverBackground',
+                      },
+                    })}
                   >
-                    <Stack align="center">
+                    <Stack as="span" align="center">
                       <Stack
                         as="span"
-                        css={css({ width: 8 })}
+                        css={css({ width: 10 })}
                         align="center"
                         justify="center"
                       >
-                        <Avatar user={user} css={css({ size: 5 })} />
+                        <Avatar user={activeAccount} css={css({ size: 6 })} />
                       </Stack>
-                      <Text
-                        size={3}
-                        weight={
-                          activeAccount.username === user.username
-                            ? 'semibold'
-                            : 'normal'
-                        }
-                      >
-                        {user.username} (Personal)
+                      <Text size={4} weight="normal" maxWidth={140}>
+                        {activeAccount.username}
                       </Text>
                     </Stack>
-                  </Menu.Item>
-                  {dashboard.teams.map(team => (
+                    <Icon name="caret" size={8} />
+                  </Stack>
+                  <Menu.List style={{ width: SIDEBAR_WIDTH, borderRadius: 0 }}>
                     <Menu.Item
-                      key={team.id}
-                      as={Menu.Item}
                       css={{ textAlign: 'left' }}
                       onSelect={() =>
-                        actions.dashboard.setActiveTeam({ id: team.id })
+                        actions.dashboard.setActiveTeam({ id: null })
                       }
                     >
                       <Stack align="center">
@@ -156,31 +136,71 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                           align="center"
                           justify="center"
                         >
-                          <Avatar
-                            user={{
-                              username: team.name,
-                              avatarUrl: 'https://github.com/github.png',
-                            }}
-                            css={css({ size: 5 })}
-                          />
+                          <Avatar user={user} css={css({ size: 5 })} />
                         </Stack>
                         <Text
                           size={3}
                           weight={
-                            activeAccount.username === team.name
+                            activeAccount.username === user.username
                               ? 'semibold'
                               : 'normal'
                           }
                         >
-                          {team.name}
+                          {user.username} (Personal)
                         </Text>
                       </Stack>
                     </Menu.Item>
-                  ))}
-                </Menu.List>
-              </Menu>
+                    {dashboard.teams.map(team => (
+                      <Menu.Item
+                        key={team.id}
+                        as={Menu.Item}
+                        css={{ textAlign: 'left' }}
+                        onSelect={() =>
+                          actions.dashboard.setActiveTeam({ id: team.id })
+                        }
+                      >
+                        <Stack align="center">
+                          <Stack
+                            as="span"
+                            css={css({ width: 8 })}
+                            align="center"
+                            justify="center"
+                          >
+                            <Avatar
+                              user={{
+                                username: team.name,
+                                avatarUrl: 'https://github.com/github.png',
+                              }}
+                              css={css({ size: 5 })}
+                            />
+                          </Stack>
+                          <Text
+                            size={3}
+                            weight={
+                              activeAccount.username === team.name
+                                ? 'semibold'
+                                : 'normal'
+                            }
+                          >
+                            {team.name}
+                          </Text>
+                        </Stack>
+                      </Menu.Item>
+                    ))}
+                  </Menu.List>
+                </Menu>
+
+                <Link as={RouterLink} to="settings">
+                  <IconButton
+                    name="gear"
+                    size={8}
+                    title="Settings"
+                    css={css({ width: 8, height: '100%', borderRadius: 0 })}
+                  />
+                </Link>
+              </Stack>
             )}
-          </ListAction>
+          </ListItem>
           <RowItem name="Start" path="start" icon="box" />
           <RowItem name="Recent" path="recent" icon="clock" />
           <RowItem name="Drafts" path="drafts" icon="file" />
@@ -247,7 +267,6 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
 
           <RowItem name="Templates" path="templates" icon="star" />
           <RowItem name="Recently Deleted" path="deleted" icon="trash" />
-          <RowItem name="Settings (temp)" path="settings" icon="gear" />
         </List>
         <Element margin={4}>
           <Button variant="secondary">
@@ -293,14 +312,8 @@ const linkStyles = {
   paddingRight: 8,
 };
 
-const canNotAcceptSandboxes = ['start', 'recent', 'all', 'settings'];
-const canNotAcceptFolders = [
-  'start',
-  'recent',
-  'drafts',
-  'templates',
-  'settings',
-];
+const canNotAcceptSandboxes = ['start', 'recent', 'all'];
+const canNotAcceptFolders = ['start', 'recent', 'drafts', 'templates'];
 
 const isSamePath = (draggedItem, dropPath) => {
   if (!draggedItem) return false;
