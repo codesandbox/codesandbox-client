@@ -342,6 +342,7 @@ exports[`convert-esmodule works with variables that are named exports 1`] = `
   value: true
 });
 var __$csb_exports = [eventedState, eventedShowHideState];
+__$csb_exports.push(\\"test\\");
 var $csb__default = __$csb_exports;
 exports.default = $csb__default;
 "
