@@ -72,10 +72,8 @@ export function convertEsModule(code: string) {
         // We don't rename exports vars in functions, only on root level
         if (parent.type === n.BlockStatement && exportsDefined === false) {
           this.skip();
-          return;
         }
-      }
-      if (node.type === n.VariableDeclarator) {
+      } else if (node.type === n.VariableDeclarator) {
         const declNode = node as meriyah.ESTree.VariableDeclarator;
         if (
           declNode.id.type === n.Identifier &&
@@ -89,6 +87,9 @@ export function convertEsModule(code: string) {
           idNode.name = '__$csb_exports';
           this.replace(idNode);
         }
+      } else if (!exportsDefined && parent != null) {
+        // Skip, we don't need to go deeper now
+        this.skip();
       }
     },
   });
