@@ -1,7 +1,7 @@
+import React from 'react';
 import { Alert } from 'app/components/Alert';
 import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
-import React from 'react';
 import { Text, Element } from '@codesandbox/components';
 import { Preference } from '@codesandbox/common/lib/components/Preference';
 
