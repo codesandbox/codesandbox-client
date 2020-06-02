@@ -104,6 +104,7 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const {
     selectedIds,
     onClick: onSelectionClick,
+    onMouseDown,
     onRightClick,
     onMenuEvent,
     onBlur,
@@ -141,6 +142,7 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
     style: { outline: 'none' }, // we handle outline with border
     selected,
     onClick,
+    onMouseDown,
     onDoubleClick,
     onContextMenu,
     onBlur,
