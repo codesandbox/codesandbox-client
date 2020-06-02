@@ -85,12 +85,12 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
           <ListItem gap={2} css={css({ paddingX: 0 })}>
             {user && (
               <Stack
-                css={{
+                css={css({
                   width: '100%',
                   height: '100%',
                   borderBottom: '1px solid',
                   borderColor: 'sideBar.border',
-                }}
+                })}
               >
                 <Menu>
                   <Stack
