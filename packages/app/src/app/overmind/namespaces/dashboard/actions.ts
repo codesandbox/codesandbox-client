@@ -105,13 +105,25 @@ export const createSandboxClicked: AsyncAction<{
 export const deleteTemplate: AsyncAction<{
   sandboxId: string;
   templateId: string;
-}> = async ({ actions, effects }, { sandboxId, templateId }) => {
+}> = async ({ actions, effects, state }, { sandboxId, templateId }) => {
+  const oldTemplates = {
+    TEMPLATE_START_PAGE: state.dashboard.sandboxes.TEMPLATE_START_PAGE,
+    TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
+  };
+  actions.dashboard.deleteTemplateFromState([sandboxId]);
+
   try {
     effects.analytics.track('Template - Removed', { source: 'Context Menu' });
     await effects.api.deleteTemplate(sandboxId, templateId);
     actions.modalClosed();
     effects.notificationToast.success('Template Deleted');
   } catch (error) {
+    state.dashboard.sandboxes.TEMPLATES = oldTemplates.TEMPLATES
+      ? [...oldTemplates.TEMPLATES]
+      : null;
+    state.dashboard.sandboxes.TEMPLATE_START_PAGE = oldTemplates.TEMPLATE_START_PAGE
+      ? [...oldTemplates.TEMPLATE_START_PAGE]
+      : null;
     effects.notificationToast.error('Could not delete custom template');
   }
 };
