@@ -67,7 +67,14 @@ export function convertEsModule(code: string) {
   let exportsDefined = false;
   // @ts-ignore
   program = walk(program, {
-    enter(node) {
+    enter(node, parent) {
+      if (node.type === n.VariableDeclaration) {
+        // We don't rename exports vars in functions, only on root level
+        if (parent.type === n.BlockStatement && exportsDefined === false) {
+          this.skip();
+          return;
+        }
+      }
       if (node.type === n.VariableDeclarator) {
         const declNode = node as meriyah.ESTree.VariableDeclarator;
         if (

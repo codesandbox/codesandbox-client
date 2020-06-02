@@ -167,6 +167,13 @@ exports.global = global;
 "
 `;
 
+exports[`convert-esmodule exports that are not on the root scope are not renamed 1`] = `
+"function a() {
+  var exports = \\"blaat\\";
+}
+"
+`;
+
 exports[`convert-esmodule handles default as exports 1`] = `
 "Object.defineProperty(exports, \\"__esModule\\", {
   value: true
@@ -334,6 +341,14 @@ var $csb__2 = require(\\"2\\");
 
 exports[`convert-esmodule parses and writes chars with linebreaks 1`] = `
 "var WS_CHARS = \\"u2000-     　﻿\\";
+"
+`;
+
+exports[`convert-esmodule renames exports that are already defined, even in block scope 1`] = `
+"var __$csb_exports = \\"testtest\\";
+function a() {
+  __$csb_exports = \\"blaat\\";
+}
 "
 `;
 

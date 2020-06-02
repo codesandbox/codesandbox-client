@@ -268,6 +268,25 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('exports that are not on the root scope are not renamed', () => {
+    const code = `
+    function a() {
+      var exports = 'blaat';
+    }
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('renames exports that are already defined, even in block scope', () => {
+    const code = `
+    var exports = 'testtest';
+    function a() {
+      exports = 'blaat';
+    }
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('keeps import order', () => {
     const code = `
     import '1';
