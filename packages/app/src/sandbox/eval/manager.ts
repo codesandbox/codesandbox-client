@@ -644,7 +644,7 @@ export default class Manager implements IEvaluator {
           filename: currentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
-          readFileSync: this.readFileSync,
+          readFile: this.readFileSync,
           packageFilter: packageFilter(this.isFile),
           moduleDirectory: this.getModuleDirectories(),
         },
