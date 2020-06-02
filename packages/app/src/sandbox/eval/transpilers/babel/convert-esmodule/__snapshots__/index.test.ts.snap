@@ -326,6 +326,12 @@ function $_csb__interopRequireDefault(obj) {
 
 exports[`convert-esmodule ignores comments 1`] = `""`;
 
+exports[`convert-esmodule keeps import order 1`] = `
+"var $csb__1 = require(\\"1\\");
+var $csb__2 = require(\\"2\\");
+"
+`;
+
 exports[`convert-esmodule parses and writes chars with linebreaks 1`] = `
 "var WS_CHARS = \\"u2000-     　﻿\\";
 "

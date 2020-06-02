@@ -39,6 +39,7 @@ export function convertEsModule(code: string) {
   let program = meriyah.parseModule(code, { next: true });
 
   let i = 0;
+  let importOffset = 0;
 
   let addedSpecifier = false;
   function addEsModuleSpecifier() {
@@ -268,7 +269,12 @@ export function convertEsModule(code: string) {
       // Remove this statement
       program.body.splice(i, 1);
       // Create require statement instead of the import
-      program.body.unshift(generateRequireStatement(varName, source.value));
+      program.body.splice(
+        importOffset,
+        0,
+        generateRequireStatement(varName, source.value)
+      );
+      importOffset++;
 
       statement.specifiers.reverse().forEach(specifier => {
         let localName: string;
@@ -300,10 +306,11 @@ export function convertEsModule(code: string) {
 
           program.body.splice(
             // After the require statement
-            1,
+            importOffset,
             0,
             generateInteropRequireExpression(varName, localName)
           );
+          importOffset++;
           return;
         }
 
@@ -316,7 +323,7 @@ export function convertEsModule(code: string) {
         }
 
         // insert in index 1 instead of 0 to be after the interopRequireDefault
-        program.body.splice(1, 0, {
+        program.body.splice(importOffset, 0, {
           type: n.VariableDeclaration,
           kind: 'var' as 'var',
           declarations: [
@@ -346,6 +353,7 @@ export function convertEsModule(code: string) {
             },
           ],
         });
+        importOffset++;
       });
     }
   }

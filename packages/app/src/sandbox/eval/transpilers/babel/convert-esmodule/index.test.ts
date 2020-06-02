@@ -267,6 +267,14 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('keeps import order', () => {
+    const code = `
+    import '1';
+    import '2';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('parses and writes chars with linebreaks', () => {
     const code =
       "var WS_CHARS = 'u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff'";

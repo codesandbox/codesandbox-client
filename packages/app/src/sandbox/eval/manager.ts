@@ -248,7 +248,7 @@ export default class Manager implements IEvaluator {
   }
 
   // Hoist these 2 functions to the top, since they get executed A LOT
-  isFile = (p: string, cb: Function | undefined, c: Function) => {
+  isFile = (p: string, cb?: Function | undefined, c?: Function) => {
     const callback = c || cb;
     const hasCallback = typeof callback === 'function';
 
@@ -645,7 +645,7 @@ export default class Manager implements IEvaluator {
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
           readFileSync: this.readFileSync,
-          packageFilter,
+          packageFilter: packageFilter(this.isFile),
           moduleDirectory: this.getModuleDirectories(),
         },
         (err, foundPath) => {
@@ -760,7 +760,7 @@ export default class Manager implements IEvaluator {
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
           readFileSync: this.readFileSync,
-          packageFilter,
+          packageFilter: packageFilter(this.isFile),
           moduleDirectory: this.getModuleDirectories(),
         });
         endMeasure(measureKey, { silent: true });

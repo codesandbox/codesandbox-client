@@ -276,10 +276,15 @@ function resolvePath(
 ): Promise<string> {
   const currentPath = currentTModule.module.path;
 
-  const isFile = (p, c, cb) => {
+  const isFile = (p: string, c?: any, cb?: any): any => {
     const callback = cb || c;
 
-    callback(null, Boolean(manager.transpiledModules[p]) || Boolean(meta[p]));
+    const result = Boolean(manager.transpiledModules[p]) || Boolean(meta[p]);
+    if (!callback) {
+      return result;
+    }
+
+    return callback(null, result);
   };
 
   return new Promise((res, reject) => {
@@ -288,7 +293,7 @@ function resolvePath(
       {
         filename: currentPath,
         extensions: defaultExtensions.map(ext => '.' + ext),
-        packageFilter,
+        packageFilter: packageFilter(isFile),
         moduleDirectory: [
           'node_modules',
           manager.envVariables.NODE_PATH,
