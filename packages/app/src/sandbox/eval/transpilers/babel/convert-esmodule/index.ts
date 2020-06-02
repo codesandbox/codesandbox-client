@@ -62,6 +62,30 @@ export function convertEsModule(code: string) {
     program.body.push(generateInteropRequire());
   }
 
+  // If there is a declaration of `exports` (`var exports = []`), we need to rename this
+  // variable as it's a reserved keyword
+  let exportsDefined = false;
+  // @ts-ignore
+  program = walk(program, {
+    enter(node) {
+      if (node.type === n.VariableDeclarator) {
+        const declNode = node as meriyah.ESTree.VariableDeclarator;
+        if (
+          declNode.id.type === n.Identifier &&
+          declNode.id.name === 'exports'
+        ) {
+          exportsDefined = true;
+        }
+      } else if (node.type === n.Identifier && exportsDefined) {
+        const idNode = node as meriyah.ESTree.Identifier;
+        if (idNode.name === 'exports') {
+          idNode.name = '__$csb_exports';
+          this.replace(idNode);
+        }
+      }
+    },
+  });
+
   for (; i < program.body.length; i++) {
     const statement = program.body[i];
 

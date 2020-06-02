@@ -259,6 +259,15 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('works with variables that are named exports', () => {
+    const code = `
+    var exports = [eventedState, eventedShowHideState];
+    exports.push('test');
+    export default exports;
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('keeps import order', () => {
     const code = `
     import '1';
