@@ -49,6 +49,10 @@ export const persistCursorToUrl: Action<{
 }> = debounce(({ effects }, { module, selection }) => {
   let parameter = module.path;
 
+  if (!parameter) {
+    return;
+  }
+
   if (selection?.primary?.selection?.length) {
     const [head, anchor] = selection.primary.selection;
     const serializedSelection = head + '-' + anchor;
@@ -259,11 +263,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     });
   }
 
-  actions.internal.ensurePackageJSON();
-
-  if (!sandbox.git) {
-    await actions.editor.internal.initializeSandbox(sandbox);
-  }
+  await actions.editor.internal.initializeSandbox(sandbox);
 
   // We only recover files at this point if we are not live. When live we recover them
   // when the module_state is received
@@ -491,7 +491,7 @@ export const codeChanged: Action<{
 
   if (state.editor.currentSandbox.originalGit) {
     actions.git.updateGitChanges();
-    actions.git.resolveConflicts(module)
+    actions.git.resolveConflicts(module);
   }
 };
 

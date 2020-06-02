@@ -4,7 +4,6 @@ import { useDrop, useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
 import { useLocation, useHistory } from 'react-router-dom';
-import { isMenuClicked } from '@codesandbox/components';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { useOvermind } from 'app/overmind';
 import { FolderCard } from './FolderCard';
@@ -54,8 +53,9 @@ export const Folder = ({
           '/new-dashboard/all/'
         )[1];
 
-        const folderPath =
-          '' + (folderLocation && '/' + folderLocation) + '/' + newName;
+        let folderPath = '';
+        if (folderLocation) folderPath += '/' + folderLocation;
+        folderPath += '/' + newName;
 
         await actions.dashboard.createFolder(folderPath);
       }
@@ -102,6 +102,7 @@ export const Folder = ({
     selectedIds,
     onClick: onSelectionClick,
     onRightClick,
+    onMenuEvent,
     onBlur,
     onKeyDown,
     onDragStart,
@@ -113,16 +114,12 @@ export const Folder = ({
   const selected = selectedIds.includes(path);
   const isDragging = isAnythingDragging && selected;
 
-  /* Prevent opening sandbox while interacting */
   const onClick = event => {
-    if (editing || isMenuClicked(event)) event.preventDefault();
     onSelectionClick(event, path);
   };
 
   const history = useHistory();
   const onDoubleClick = event => {
-    if (editing || isDragging || isMenuClicked(event)) return;
-
     const url = '/new-dashboard/all' + path;
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
@@ -133,7 +130,9 @@ export const Folder = ({
 
   const onContextMenu = event => {
     event.preventDefault();
-    onRightClick(event, path);
+
+    if (event.type === 'contextmenu') onRightClick(event, path);
+    else onMenuEvent(event, path);
   };
 
   const interactionProps = {
@@ -178,6 +177,7 @@ export const Folder = ({
       const dropResult = monitor.getDropResult();
 
       if (!dropResult || !dropResult.path) return;
+      if (isSamePath(dropResult, path)) return;
 
       onDrop(dropResult);
     },

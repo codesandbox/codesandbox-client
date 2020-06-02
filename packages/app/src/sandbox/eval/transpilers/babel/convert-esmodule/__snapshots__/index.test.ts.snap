@@ -150,6 +150,23 @@ const short = {
 "
 `;
 
+exports[`convert-esmodule doesn't remove object initializers 1`] = `
+"var $csb__shared = require(\\"@react-spring/shared\\");
+const createHost = (components, {a = () => {}} = {}) => {
+  $csb__shared.is();
+};
+"
+`;
+
+exports[`convert-esmodule doesn't set var definitions 1`] = `
+"Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var global = typeof window !== \\"undefined\\" ? window : {};
+exports.global = global;
+"
+`;
+
 exports[`convert-esmodule handles default as exports 1`] = `
 "Object.defineProperty(exports, \\"__esModule\\", {
   value: true
@@ -172,7 +189,7 @@ exports[`convert-esmodule handles export mutations 1`] = `
 });
 function test() {}
 exports.default = test;
-exports.default = test = 5;;
+exports.default = test = 5;
 "
 `;
 
@@ -182,6 +199,67 @@ exports[`convert-esmodule handles export mutations with no named function 1`] = 
 });
 function $csb__default() {}
 exports.default = $csb__default;
+"
+`;
+
+exports[`convert-esmodule handles export mutations with variables 1`] = `
+"Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var to;
+exports.to = to;
+function assign() {
+  exports.to = to = \\"test\\";
+}
+function assign2(to) {
+  to = \\"test\\";
+}
+"
+`;
+
+exports[`convert-esmodule handles multiple aliased exports 1`] = `
+"Object.defineProperty(exports, \\"f\\", {
+  enumerable: true,
+  get: function get() {
+    return e;
+  }
+});
+Object.defineProperty(exports, \\"getSetObserver\\", {
+  enumerable: true,
+  get: function get() {
+    return _getSetObserver;
+  }
+});
+Object.defineProperty(exports, \\"d\\", {
+  enumerable: true,
+  get: function get() {
+    return c;
+  }
+});
+Object.defineProperty(exports, \\"getMapObserver\\", {
+  enumerable: true,
+  get: function get() {
+    return _getMapObserver;
+  }
+});
+Object.defineProperty(exports, \\"b\\", {
+  enumerable: true,
+  get: function get() {
+    return a;
+  }
+});
+Object.defineProperty(exports, \\"getArrayObserver\\", {
+  enumerable: true,
+  get: function get() {
+    return _getArrayObserver;
+  }
+});
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+f.test();
+d.test();
+b.test();
 "
 `;
 
@@ -231,6 +309,18 @@ Object.defineProperty(exports, \\"__esModule\\", {
 });
 var $csb__b = require(\\"./b\\");
 const c = \\"test\\";
+"
+`;
+
+exports[`convert-esmodule hoists imports at bottom 1`] = `
+"var $csb__proptypes = require(\\"prop-types\\");
+var PropTypes = $_csb__interopRequireDefault($csb__proptypes).default;
+const a = PropTypes.a;
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
 "
 `;
 

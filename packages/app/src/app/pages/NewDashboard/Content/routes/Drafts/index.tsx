@@ -1,13 +1,13 @@
-import { Column, Element } from '@codesandbox/components';
+import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
-import { SkeletonCard } from 'app/pages/NewDashboard/Components/Sandbox/SandboxCard';
-import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
+import {
+  VariableGrid,
+  SkeletonGrid,
+} from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
-import React, { useEffect } from 'react';
-
+import { getPossibleTemplates } from '../../utils';
 import { useBottomScroll } from './useBottomScroll';
 
 export const Drafts = () => {
@@ -19,30 +19,26 @@ export const Drafts = () => {
   } = useOvermind();
   const [visibleSandboxes] = useBottomScroll('DRAFTS');
 
-  useEffect(() => {
+  React.useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.DRAFTS);
   }, [actions.dashboard]);
 
   return (
     <SelectionProvider sandboxes={visibleSandboxes}>
-      <Element style={{ height: '100%', position: 'relative' }}>
-        <Header />
-        {sandboxes.DRAFTS ? (
-          <SandboxGrid>
-            {visibleSandboxes.map(sandbox => (
-              <Sandbox key={sandbox.id} sandbox={sandbox} />
-            ))}
-          </SandboxGrid>
-        ) : (
-          <SandboxGrid>
-            {Array.from(Array(8).keys()).map(n => (
-              <Column key={n}>
-                <SkeletonCard />
-              </Column>
-            ))}
-          </SandboxGrid>
-        )}
-      </Element>
+      <Header
+        path="Drafts"
+        templates={getPossibleTemplates(sandboxes.DRAFTS)}
+      />
+      {sandboxes.DRAFTS ? (
+        <VariableGrid
+          items={visibleSandboxes.map(sandbox => ({
+            type: 'sandbox',
+            ...sandbox,
+          }))}
+        />
+      ) : (
+        <SkeletonGrid count={8} />
+      )}
     </SelectionProvider>
   );
 };

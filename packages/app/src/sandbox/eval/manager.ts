@@ -30,6 +30,7 @@ import { ignoreNextCache, deleteAPICache, clearIndexedDBCache } from './cache';
 import { shouldTranspile } from './transpilers/babel/check';
 import { splitQueryFromPath } from './utils/query-path';
 import { measure, endMeasure } from '../utils/metrics';
+import { IEvaluator } from './evaluator';
 
 declare const BrowserFS: any;
 
@@ -97,7 +98,7 @@ type TManagerOptions = {
   hasFileResolver: boolean;
 };
 
-export default class Manager {
+export default class Manager implements IEvaluator {
   id: string;
   transpiledModules: {
     [path: string]: {
@@ -188,6 +189,16 @@ export default class Manager {
     if (options.hasFileResolver) {
       this.setupFileResolver();
     }
+  }
+
+  async evaluate(path: string, baseTModule?: TranspiledModule): Promise<any> {
+    const tModule = await this.resolveTranspiledModuleAsync(
+      path,
+      baseTModule,
+      this.preset.ignoredExtensions
+    );
+    await tModule.transpile(this);
+    return tModule.evaluate(this);
   }
 
   async initializeTestRunner() {
@@ -668,7 +679,10 @@ export default class Manager {
 
             if (
               this.manifest.dependencies.find(d => d.name === dependencyName) ||
-              this.manifest.dependencyDependencies[dependencyName]
+              this.manifest.dependencyDependencies[dependencyName] ||
+              this.manifest.contents[
+                `/node_modules/${dependencyName}/package.json`
+              ]
             ) {
               promiseReject(
                 new ModuleNotFoundError(connectedPath, true, currentPath)
@@ -789,7 +803,8 @@ export default class Manager {
         // TODO: fix the stack hack
         if (
           this.manifest.dependencies.find(d => d.name === dependencyName) ||
-          this.manifest.dependencyDependencies[dependencyName]
+          this.manifest.dependencyDependencies[dependencyName] ||
+          this.manifest.contents[`/node_modules/${dependencyName}/package.json`]
         ) {
           throw new ModuleNotFoundError(connectedPath, true, currentPath);
         } else {
@@ -831,7 +846,7 @@ export default class Manager {
   resolveTranspiledModuleAsync = async (
     path: string,
     currentTModule?: TranspiledModule,
-    ignoredExtensions?: Array<string>
+    ignoredExtensions?: string[]
   ): Promise<TranspiledModule> => {
     const tModule =
       currentTModule || this.getTranspiledModule(this.modules['/package.json']); // Get arbitrary file from root
@@ -1081,8 +1096,6 @@ export default class Manager {
 
               if (
                 !this.manifest.contents[tModule.module.path] ||
-                (tModule.module.path.endsWith('.js') &&
-                  tModule.module.requires == null) ||
                 tModule.module.downloaded
               ) {
                 // Only save modules that are not precomputed

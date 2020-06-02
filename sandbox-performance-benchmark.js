@@ -1,8 +1,8 @@
 const puppeteer = require('puppeteer');
 
 function pageLoaded(page) {
-  return new Promise(async resolve => {
-    await page.exposeFunction('__puppeteer__', () => {
+  return new Promise(resolve => {
+    page.exposeFunction('__puppeteer__', () => {
       if (resolve) {
         resolve();
       }
@@ -10,7 +10,7 @@ function pageLoaded(page) {
   });
 }
 
-let browser = puppeteer.launch();
+let browser = puppeteer.launch({ headless: true });
 const SANDBOX_ID = process.argv[2];
 const results = [];
 
@@ -21,8 +21,7 @@ const results = [];
   for (let i = 0; i < (process.argv[3] || 10); i++) {
     const page = await browser.newPage();
     const waitFunction = pageLoaded(page);
-
-    page.goto('http://localhost:3002/#' + SANDBOX_ID);
+    page.goto('http://localhost:3000/#' + SANDBOX_ID);
     const a = Date.now();
     await waitFunction;
     const d = Date.now() - a;
@@ -32,4 +31,5 @@ const results = [];
   }
 
   console.log('Results', results.reduce((p, n) => p + n, 0) / results.length);
+  process.exit(0);
 })();

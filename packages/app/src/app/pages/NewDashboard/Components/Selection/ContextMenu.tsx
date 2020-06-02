@@ -6,6 +6,7 @@ import {
   TemplateFragmentDashboardFragment as Template,
 } from 'app/graphql/types';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Stack, Element, Menu } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -18,13 +19,33 @@ export const ContextMenu = ({
   folders,
 }) => {
   React.useEffect(() => {
+    // close when user clicks outside or scrolls away
     const handler = () => {
       if (visible) setVisibility(false);
     };
 
     document.addEventListener('click', handler);
-    return () => document.removeEventListener('click', handler);
+    document.addEventListener('scroll', handler, true);
+    return () => {
+      document.removeEventListener('click', handler);
+      document.removeEventListener('scroll', handler, true);
+    };
   }, [visible, setVisibility]);
+
+  // handle key down events - close on escape + disable the rest
+  // TODO: handle arrow keys and space/enter.
+  React.useEffect(() => {
+    const handler = event => {
+      if (!visible) return;
+      if (event.keyCode === ESC) setVisibility(false);
+      event.preventDefault();
+    };
+
+    document.addEventListener('keydown', handler);
+    return () => {
+      document.removeEventListener('keydown', handler);
+    };
+  });
 
   if (!visible || selectedIds.length === 0) return null;
 
@@ -38,23 +59,37 @@ export const ContextMenu = ({
   });
 
   let menu;
+  let menuWidth;
   if (selectedItems.length > 1) {
     menu = <MultiMenu selectedItems={selectedItems} />;
+    menuWidth = 160;
   } else if (selectedItems[0].type === 'sandbox') {
     menu = <SandboxMenu sandbox={selectedItems[0]} />;
+    menuWidth = 200;
   } else if (selectedItems[0].type === 'folder') {
     menu = <FolderMenu folder={selectedItems[0]} />;
+    menuWidth = 120;
   }
+
+  // tweak position to stay inside window
+  const BOUNDARY_BUFFER = 8;
+
+  const tweakedPosition = {
+    x: Math.min(position.x, window.innerWidth - menuWidth - BOUNDARY_BUFFER),
+    y: position.y,
+  };
 
   return (
     <>
       <Stack
+        direction="vertical"
         data-reach-menu-list
         data-component="MenuList"
         css={css({
           position: 'absolute',
-          top: position.y,
-          left: position.x,
+          width: menuWidth,
+          top: tweakedPosition.y,
+          left: tweakedPosition.x,
         })}
       >
         {menu}

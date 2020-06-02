@@ -7,12 +7,11 @@ import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { isMenuClicked } from '@codesandbox/components';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { useSelection } from '../Selection';
 
-export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
+const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const {
     state: { dashboard },
     actions,
@@ -106,6 +105,7 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     selectedIds,
     onClick: onSelectionClick,
     onRightClick,
+    onMenuEvent,
     onBlur,
     onKeyDown,
     onDragStart,
@@ -118,19 +118,17 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const isDragging = isAnythingDragging && selected;
 
   const onClick = event => {
-    if (edit || isDragging || isMenuClicked(event)) return;
     onSelectionClick(event, sandbox.id);
   };
 
   const onContextMenu = event => {
     event.preventDefault();
-    onRightClick(event, sandbox.id);
+    if (event.type === 'contextmenu') onRightClick(event, sandbox.id);
+    else onMenuEvent(event, sandbox.id);
   };
 
   const history = useHistory();
   const onDoubleClick = event => {
-    if (edit || isDragging || isMenuClicked(event)) return;
-
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
     } else {
@@ -177,22 +175,23 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, [preview]);
 
+  const resizing = useResizing();
+  const motionProps = resizing
+    ? {}
+    : { layoutTransition: { type: 'spring', damping: 300, stiffness: 300 } };
+
   return (
     <>
       <div {...dragProps} onDragStart={event => onDragStart(event, sandbox.id)}>
-        <motion.div
-          layoutTransition={{
-            type: 'spring',
-            damping: 300,
-            stiffness: 300,
-          }}
-        >
+        <motion.div {...motionProps}>
           <Component {...sandboxProps} {...interactionProps} {...props} />
         </motion.div>
       </div>
     </>
   );
 };
+
+export const Sandbox = React.memo(GenericSandbox);
 
 export const SkeletonSandbox = props => {
   const {
@@ -210,4 +209,23 @@ export const SkeletonSandbox = props => {
     return <SkeletonListItem {...props} />;
   }
   return <SkeletonCard {...props} />;
+};
+
+const useResizing = () => {
+  const TIMEOUT = 250;
+  const [resizing, setResizing] = React.useState(false);
+
+  React.useEffect(() => {
+    let timeoutId = null;
+
+    const handler = () => {
+      setResizing(true);
+      window.clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(() => setResizing(false), TIMEOUT);
+    };
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+
+  return resizing;
 };

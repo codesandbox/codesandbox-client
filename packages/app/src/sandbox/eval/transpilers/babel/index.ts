@@ -50,7 +50,9 @@ class BabelTranspiler extends WorkerTranspiler {
       const { path } = loaderContext;
       let newCode = code;
 
-      if (isESModule(newCode) && path.indexOf('/node_modules') > -1) {
+      const isNodeModule = path.startsWith('/node_modules');
+
+      if (isESModule(newCode) && isNodeModule) {
         try {
           measure(`esconvert-${path}`);
           newCode = convertEsModule(newCode);
@@ -68,8 +70,7 @@ class BabelTranspiler extends WorkerTranspiler {
         // with a regex since commonjs modules just have `require` and regex is MUCH
         // faster than generating an AST from the code.
         if (
-          (loaderContext.options.simpleRequire ||
-            path.startsWith('/node_modules')) &&
+          (loaderContext.options.simpleRequire || isNodeModule) &&
           !shouldTranspile(newCode, path)
         ) {
           regexGetRequireStatements(newCode).forEach(dependency => {
@@ -113,7 +114,7 @@ class BabelTranspiler extends WorkerTranspiler {
         loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
 
       const hasMacros = Object.keys(dependencies).some(
-        d => d.indexOf('macro') > -1
+        d => d.indexOf('macro') > -1 || d.indexOf('codegen') > -1
       );
 
       const babelConfig = getBabelConfig(
