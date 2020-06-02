@@ -259,6 +259,14 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it.only('works with variables that are named exports', () => {
+    const code = `
+    var exports = [eventedState, eventedShowHideState];
+    export default exports;
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('parses and writes chars with linebreaks', () => {
     const code =
       "var WS_CHARS = 'u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff'";
