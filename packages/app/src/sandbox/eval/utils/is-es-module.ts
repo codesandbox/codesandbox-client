@@ -1,4 +1,4 @@
-const expr = /(^|[^\w])(import|export)([^\w])/gm;
+const expr = /(^|[^\w\s."])(import|export)([^\w])/gm;
 
 export default function isESModule(code: string) {
   expr.lastIndex = 0;
