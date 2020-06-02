@@ -26,6 +26,7 @@ export const OrderName = styled.span`
   transition: 0.3s ease color;
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
+  margin-left: 1em;
 
   &:hover {
     color: white;
