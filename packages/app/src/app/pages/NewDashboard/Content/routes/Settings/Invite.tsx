@@ -12,6 +12,7 @@ import {
   ListItem,
   Avatar,
 } from '@codesandbox/components';
+import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 import { Card } from './components';
@@ -25,8 +26,7 @@ export const Invite = () => {
     effects,
   } = useOvermind();
 
-  // TODO: replace with invite link
-  const inviteLink = 'invite link goes here';
+  const inviteLink = team && teamInviteLink(team.inviteToken);
 
   React.useEffect(() => {
     actions.dashboard.getTeam();
