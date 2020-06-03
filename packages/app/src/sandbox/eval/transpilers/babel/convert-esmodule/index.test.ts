@@ -287,6 +287,15 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('does empty exports', () => {
+    const code = `
+    export {} from './column_sorting_draggable';
+    export { EuiDataGrid } from './data_grid';
+    export * from './data_grid_types';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('keeps import order', () => {
     const code = `
     import '1';

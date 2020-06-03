@@ -133,21 +133,23 @@ export function convertEsModule(code: string) {
         const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
 
         program.body[i] = generateRequireStatement(varName, source.value);
-        i++;
+        if (statement.specifiers.length) {
+          i++;
 
-        statement.specifiers
-          .reverse()
-          .forEach((specifier: meriyah.ESTree.ExportSpecifier) => {
-            program.body.splice(
-              i,
-              0,
-              generateExportMemberStatement(
-                varName,
-                specifier.exported.name,
-                specifier.local.name
-              )
-            );
-          });
+          statement.specifiers
+            .reverse()
+            .forEach((specifier: meriyah.ESTree.ExportSpecifier) => {
+              program.body.splice(
+                i,
+                0,
+                generateExportMemberStatement(
+                  varName,
+                  specifier.exported.name,
+                  specifier.local.name
+                )
+              );
+            });
+        }
       } else if (statement.declaration) {
         // First remove the export statement
         program.body[i] = statement.declaration;
