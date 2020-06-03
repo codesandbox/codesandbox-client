@@ -163,24 +163,29 @@ export function convertEsModule(code: string) {
           // export function test() {}
 
           varName = statement.declaration.id.name;
+          i++;
+          program.body.splice(i, 0, generateExportStatement(varName, varName));
         } else {
           // export const a = {}
 
           const declaration = statement.declaration as meriyah.ESTree.VariableDeclaration;
 
-          const foundDeclaration = declaration.declarations.find(
-            d => d.id.type === n.Identifier
-          ) as { id: meriyah.ESTree.Identifier };
+          declaration.declarations.forEach(decl => {
+            if (decl.id.type !== n.Identifier) {
+              return;
+            }
 
-          if (!foundDeclaration) {
-            continue;
-          }
+            trackedExports[decl.id.name] = decl.id.name;
+            varName = decl.id.name;
 
-          trackedExports[foundDeclaration.id.name] = foundDeclaration.id.name;
-          varName = foundDeclaration.id.name;
+            i++;
+            program.body.splice(
+              i,
+              0,
+              generateExportStatement(varName, varName)
+            );
+          });
         }
-        i++;
-        program.body.splice(i, 0, generateExportStatement(varName, varName));
       } else if (statement.specifiers) {
         program.body.splice(i, 1);
         i--;

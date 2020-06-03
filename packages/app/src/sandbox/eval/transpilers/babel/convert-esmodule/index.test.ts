@@ -227,6 +227,13 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('handles multiple var exports', () => {
+    const code = `
+    export const a = 5, b = 6;
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('handles multiple aliased exports', () => {
     const code = `
     export { _getArrayObserver as getArrayObserver, a as b };

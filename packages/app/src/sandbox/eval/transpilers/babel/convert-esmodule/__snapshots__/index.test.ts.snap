@@ -297,6 +297,16 @@ b.test();
 "
 `;
 
+exports[`convert-esmodule handles multiple var exports 1`] = `
+"Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+const a = 5, b = 6;
+exports.a = a;
+exports.b = b;
+"
+`;
+
 exports[`convert-esmodule handles named exports 1`] = `
 "Object.defineProperty(exports, \\"a\\", {
   enumerable: true,
