@@ -532,7 +532,7 @@ export default async function fetchModule(
     // Mark the path of the module as the real module, because during evaluation
     // we don't have meta to find which modules are browser modules and we still
     // need to return an empty module for browser modules.
-    const isDependency = /^(\w|@\w)/.test(path);
+    const isDependency = /^(\w|@\w|@-)/.test(path);
 
     return {
       path: isDependency
