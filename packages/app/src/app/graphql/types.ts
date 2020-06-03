@@ -1019,6 +1019,15 @@ export type CommentChangedSubscriptionVariables = {
   sandboxId: Scalars['ID'];
 };
 
+export type SetTeamNameMutationVariables = {
+  teamId: Scalars['ID'];
+  name: Scalars['String'];
+};
+
+export type SetTeamNameMutation = { __typename?: 'RootMutationType' } & {
+  setTeamName: { __typename?: 'Team' } & TeamFragment;
+};
+
 export type CommentChangedSubscription = {
   __typename?: 'RootSubscriptionType';
 } & {
