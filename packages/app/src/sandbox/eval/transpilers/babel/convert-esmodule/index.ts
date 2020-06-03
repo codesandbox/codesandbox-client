@@ -320,6 +320,8 @@ export function convertEsModule(code: string) {
             0,
             generateInteropRequireExpression(varName, localName)
           );
+
+          varsToRename[localName] = [localName, 'default'];
           importOffset++;
           return;
         }
@@ -405,7 +407,8 @@ export function convertEsModule(code: string) {
             varsToRename,
             ref.identifier.name
           ) &&
-          ref.resolved === null
+          ref.resolved === null &&
+          !ref.writeExpr
         ) {
           ref.identifier.name = varsToRename[ref.identifier.name].join('.');
         }
