@@ -1,7 +1,6 @@
 import { GitFileCompare, SandboxGitState } from '@codesandbox/common/lib/types';
 import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
-  Button,
   Collapsible,
   Element,
   Link,
@@ -10,68 +9,41 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
 import { Changes } from './Changes';
 import { CommitForm } from './CommitForm';
 import { GithubLogin } from './GithubLogin';
-import { AddedIcon, ChangedIcon, DeletedIcon, GitHubIcon } from './Icons';
+import { GitHubIcon } from './Icons';
 import { NotLoggedIn } from './NotLoggedIn';
 import { NotOwner } from './NotOwner';
-import { SkeletonTextBlock } from '../../../Skeleton/elements';
 
-enum ConflictType {
-  SOURCE_ADDED_SANDBOX_DELETED,
-  SOURCE_ADDED_SANDBOX_MODIFIED,
-  SOURCE_DELETED_SANDBOX_MODIFIED,
-  SOURCE_MODIFIED_SANDBOX_MODIFIED,
-  SOURCE_MODIFIED_SANDBOX_DELETED,
-  UNKNOWN,
-}
-
-function getConflictType(
-  conflict: GitFileCompare,
-  modulesByPath: { [path: string]: any }
-) {
-  if (conflict.status === 'added' && !modulesByPath['/' + conflict.filename]) {
-    return ConflictType.SOURCE_ADDED_SANDBOX_DELETED;
-  }
-  if (conflict.status === 'added' && modulesByPath['/' + conflict.filename]) {
-    return ConflictType.SOURCE_ADDED_SANDBOX_MODIFIED;
-  }
-  if (conflict.status === 'removed' && modulesByPath['/' + conflict.filename]) {
-    return ConflictType.SOURCE_DELETED_SANDBOX_MODIFIED;
-  }
-  if (
-    conflict.status === 'modified' &&
-    modulesByPath['/' + conflict.filename]
-  ) {
-    return ConflictType.SOURCE_MODIFIED_SANDBOX_MODIFIED;
-  }
-  if (
-    conflict.status === 'modified' &&
-    !modulesByPath['/' + conflict.filename]
-  ) {
-    return ConflictType.SOURCE_MODIFIED_SANDBOX_DELETED;
-  }
-
-  return ConflictType.UNKNOWN;
-}
+import { getConflictType } from './utils/getConflictType';
+import { Loading } from './components/Loading';
+import { getConflictIcon } from './utils/getConflictIcon';
+import { getConflictText } from './utils/getConflictsText';
+import { ConflictType } from './types';
+import { ConflictsSource } from './components/ConflictsSource';
+import { ConflictsPRBase } from './components/ConflictPRBase';
+import {
+  SandboxDeletedConflict,
+  SandboxModifiedConflict,
+  SourceDeletedConflict,
+  BothModifiedConflict,
+  SandboxDeletedSourceModifiedConflict,
+} from './components/ConflictButtons';
+import { OutOfSync, OutOfSyncPR } from './components/ConflictText';
+import {
+  CommitToPr,
+  CommitToMaster,
+  NoPermissions,
+} from './components/CommitText';
 
 export const GitHub = () => {
   const {
     state: {
-      git: {
-        gitChanges,
-        gitState,
-        conflicts,
-        conflictsResolving,
-        permission,
-        isResolving,
-        isFetching,
-      },
+      git: { gitChanges, gitState, conflicts, permission, isFetching },
       editor: {
         currentSandbox: {
           originalGit,
@@ -85,16 +57,6 @@ export const GitHub = () => {
       isLoggedIn,
       user,
     },
-    actions: {
-      git: {
-        addConflictedFile,
-        deleteConflictedFile,
-        diffConflictedFile,
-        ignoreConflict,
-        resolveOutOfSync,
-      },
-    },
-    effects,
   } = useOvermind();
 
   const changeCount = gitChanges
@@ -102,207 +64,31 @@ export const GitHub = () => {
       gitChanges.modified.length +
       gitChanges.deleted.length
     : 0;
+
   const conflictPaths = conflicts.map(conflict => '/' + conflict.filename);
 
   if (!isLoggedIn) return <NotLoggedIn />;
   if (!owned) return <NotOwner />;
   if (!user.integrations.github) return <GithubLogin />;
-
-  if (isFetching) {
-    return (
-      <Collapsible title="Git Repository" defaultOpen>
-        <List css={{ marginBottom: '32px' }}>
-          <ListItem justify="space-between">
-            <SkeletonTextBlock />
-          </ListItem>
-          <ListItem justify="space-between">
-            <SkeletonTextBlock />
-          </ListItem>
-          <ListItem justify="space-between">
-            <SkeletonTextBlock />
-          </ListItem>
-        </List>
-      </Collapsible>
-    );
-  }
-
-  function getConflictIcon(branch: string, conflict: GitFileCompare) {
-    const conflictType = getConflictType(conflict, modulesByPath);
-
-    if (
-      conflictType === ConflictType.SOURCE_ADDED_SANDBOX_MODIFIED ||
-      conflictType === ConflictType.SOURCE_ADDED_SANDBOX_DELETED
-    ) {
-      return <AddedIcon />;
-    }
-
-    if (
-      conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_DELETED ||
-      conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_MODIFIED
-    ) {
-      return <ChangedIcon />;
-    }
-
-    if (conflictType === ConflictType.SOURCE_DELETED_SANDBOX_MODIFIED) {
-      return <DeletedIcon />;
-    }
-
-    return 'No idea what happened here?';
-  }
-
-  function getConflictText(branch: string, conflict: GitFileCompare) {
-    const conflictType = getConflictType(conflict, modulesByPath);
-
-    if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_DELETED) {
-      return (
-        <Text>
-          <Text weight="bold">{branch}</Text> added this file, but you deleted
-          it
-        </Text>
-      );
-    }
-    if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_MODIFIED) {
-      return (
-        <Text>
-          <Text weight="bold">{branch}</Text> added this file, but you modified
-          it
-        </Text>
-      );
-    }
-    if (conflictType === ConflictType.SOURCE_DELETED_SANDBOX_MODIFIED) {
-      return (
-        <Text>
-          <Text weight="bold">{branch}</Text> deleted this file, but you
-          modified it
-        </Text>
-      );
-    }
-    if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_MODIFIED) {
-      return (
-        <Text>
-          <Text weight="bold">{branch}</Text> modified this file and you did as
-          well
-        </Text>
-      );
-    }
-    if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_DELETED) {
-      return (
-        <Text>
-          <Text weight="bold">{branch}</Text> modified this file, but you
-          deleted it
-        </Text>
-      );
-    }
-
-    return 'No idea what happened here?';
-  }
+  if (isFetching) return <Loading />;
 
   function getConflictButtons(conflict: GitFileCompare) {
     const conflictType = getConflictType(conflict, modulesByPath);
 
     if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_DELETED) {
-      return (
-        <>
-          <Button
-            css={css({ width: 'auto' })}
-            type="button"
-            variant="secondary"
-            disabled={conflictsResolving.includes(conflict.filename)}
-            onClick={() => {
-              addConflictedFile(conflict);
-            }}
-          >
-            Add file
-          </Button>
-          <Button
-            css={css({ width: 'auto' })}
-            variant="secondary"
-            type="button"
-            disabled={conflictsResolving.includes(conflict.filename)}
-            onClick={() => deleteConflictedFile(conflict)}
-          >
-            Delete file
-          </Button>
-        </>
-      );
+      return <SandboxDeletedConflict conflict={conflict} />;
     }
     if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_MODIFIED) {
-      return (
-        <>
-          <Button
-            css={css({ width: 'auto' })}
-            type="button"
-            variant="secondary"
-            onClick={() => diffConflictedFile(conflict)}
-          >
-            Resolve by diff
-          </Button>
-        </>
-      );
+      return <SandboxModifiedConflict conflict={conflict} />;
     }
     if (conflictType === ConflictType.SOURCE_DELETED_SANDBOX_MODIFIED) {
-      return (
-        <>
-          <Button
-            css={css({ width: 'auto' })}
-            type="button"
-            variant="secondary"
-            disabled={conflictsResolving.includes(conflict.filename)}
-            onClick={() => {
-              ignoreConflict(conflict);
-            }}
-          >
-            Keep file
-          </Button>
-          <Button
-            css={css({ width: 'auto' })}
-            variant="secondary"
-            type="button"
-            disabled={conflictsResolving.includes(conflict.filename)}
-            onClick={() => deleteConflictedFile(conflict)}
-          >
-            Delete file
-          </Button>
-        </>
-      );
+      return <SourceDeletedConflict conflict={conflict} />;
     }
     if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_MODIFIED) {
-      return (
-        <>
-          <Button
-            css={css({ width: 'auto' })}
-            type="button"
-            variant="secondary"
-            onClick={() => diffConflictedFile(conflict)}
-          >
-            Resolve by diff
-          </Button>
-        </>
-      );
+      return <BothModifiedConflict conflict={conflict} />;
     }
     if (conflictType === ConflictType.SOURCE_MODIFIED_SANDBOX_DELETED) {
-      return (
-        <>
-          <Button
-            css={css({ width: 'auto' })}
-            type="button"
-            variant="secondary"
-            disabled={conflictsResolving.includes(conflict.filename)}
-            onClick={() => addConflictedFile(conflict)}
-          >
-            Add file
-          </Button>
-          <Button
-            css={css({ width: 'auto' })}
-            variant="secondary"
-            type="button"
-            disabled={conflictsResolving.includes(conflict.filename)}
-            onClick={() => ignoreConflict(conflict)}
-          >
-            Delete file
-          </Button>
-        </>
-      );
+      return <SandboxDeletedSourceModifiedConflict conflict={conflict} />;
     }
 
     return null;
@@ -310,166 +96,41 @@ export const GitHub = () => {
 
   function getText() {
     if (gitState === SandboxGitState.OUT_OF_SYNC_SOURCE) {
-      return (
-        <Stack direction="vertical">
-          <Text size={3} paddingBottom={4} style={{ lineHeight: '19px' }}>
-            <Text variant="muted">You are out of sync with changes in </Text>
-            {prNumber ? 'PR' : baseGit.branch}
-            <Text variant="muted">
-              , though you can safely just update the sandbox
-            </Text>
-          </Text>
-          <Button
-            loading={isResolving}
-            disabled={Boolean(changeCount)}
-            onClick={() => {
-              resolveOutOfSync();
-            }}
-          >
-            Update sandbox from {prNumber ? 'PR' : baseGit.branch}
-          </Button>
-          <Button
-            marginTop={4}
-            variant="secondary"
-            onClick={() => {
-              effects.browser.openWindow(
-                `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${originalGit.branch}`
-              );
-            }}
-          >
-            View Changes on Github
-          </Button>
-        </Stack>
-      );
+      return <OutOfSync changeCount={changeCount} />;
     }
 
     if (gitState === SandboxGitState.OUT_OF_SYNC_PR_BASE) {
-      return (
-        <Stack direction="vertical">
-          <Text size={3} paddingBottom={4} style={{ lineHeight: '19px' }}>
-            <Text variant="muted">You are out of sync with changes on </Text>
-            {baseGit.branch}
-            <Text variant="muted">
-              , though you can safely just update the sandbox
-            </Text>
-          </Text>
-          <Button
-            loading={isResolving}
-            onClick={() => {
-              resolveOutOfSync();
-            }}
-          >
-            Update sandbox from {baseGit.branch}
-          </Button>
-          <Button
-            marginTop={4}
-            variant="secondary"
-            onClick={() => {
-              effects.browser.openWindow(
-                `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${baseGit.branch}`
-              );
-            }}
-          >
-            View Changes on Github
-          </Button>
-        </Stack>
-      );
+      return <OutOfSyncPR />;
     }
 
     if (conflicts.length && gitState === SandboxGitState.CONFLICT_SOURCE) {
       return (
-        <Stack direction="vertical">
-          <Text size={3} paddingBottom={4} style={{ lineHeight: '19px' }}>
-            <Text variant="muted">You are in conflict with changes on </Text>
-            {prNumber ? 'PR' : baseGit.branch}
-            <Text variant="muted">
-              , please resolve the conflicts and commit your changes
-            </Text>
-          </Text>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              effects.browser.openWindow(
-                `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${originalGit.branch}`
-              );
-            }}
-          >
-            View Changes on Github
-          </Button>
-        </Stack>
+        <ConflictsSource
+          prNumber={prNumber}
+          baseGit={baseGit}
+          originalGit={originalGit}
+          originalGitCommitSha={originalGitCommitSha}
+        />
       );
     }
     if (conflicts.length && gitState === SandboxGitState.CONFLICT_PR_BASE) {
       return (
-        <Stack direction="vertical" style={{ lineHeight: '19px' }}>
-          <Text size={3} paddingBottom={4}>
-            <Text variant="muted">
-              You are in conflict with changes made on{' '}
-            </Text>
-            {baseGit.branch}
-            <Text variant="muted">
-              , please resolve the conflicts and update the{' '}
-            </Text>{' '}
-            PR
-          </Text>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              effects.browser.openWindow(
-                `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${baseGit.branch}`
-              );
-            }}
-          >
-            View Changes on Github
-          </Button>
-        </Stack>
+        <ConflictsPRBase
+          baseGit={baseGit}
+          originalGit={originalGit}
+          originalGitCommitSha={originalGitCommitSha}
+        />
       );
     }
     if (!prNumber && (permission === 'admin' || permission === 'write')) {
-      return (
-        <Text size={3} paddingBottom={4}>
-          <Text variant="muted">
-            You have access to commit changes directly to{' '}
-          </Text>
-          {originalGit.branch}
-          <Text variant="muted">, but we recommend creating a </Text>PR
-        </Text>
-      );
+      return <CommitToMaster />;
     }
 
     if (prNumber) {
-      return (
-        <Stack direction="vertical">
-          <Text size={3} paddingBottom={4}>
-            <Text variant="muted">This</Text> Pull PR{' '}
-            <Text variant="muted">is pointing to the branch </Text>
-            {originalGit.branch}
-            <Text variant="muted">, any updates will be committed there.</Text>
-          </Text>
-          <Button
-            variant="link"
-            onClick={() => {
-              effects.browser.openWindow(
-                `https://github.com/${baseGit.username}/${baseGit.repo}/pull/${prNumber}`
-              );
-            }}
-          >
-            Open PR
-          </Button>
-        </Stack>
-      );
+      return <CommitToPr />;
     }
 
-    return (
-      <Text size={3} paddingBottom={4}>
-        <Text variant="muted">
-          You do not have access to commit directly to{' '}
-        </Text>
-        {originalGit.branch}
-        <Text variant="muted">, please create a </Text>PR{' '}
-        <Text variant="muted">after you have made your changes</Text>
-      </Text>
-    );
+    return <NoPermissions />;
   }
 
   function getContent() {
@@ -486,7 +147,11 @@ export const GitHub = () => {
                     css={{ display: 'block' }}
                   >
                     <Stack gap={3} align="center" marginBottom={4}>
-                      {getConflictIcon(originalGit.branch, conflict)}
+                      {getConflictIcon(
+                        originalGit.branch,
+                        conflict,
+                        modulesByPath
+                      )}
                       <Text variant="muted">{conflict.filename}</Text>
                     </Stack>
                     <Text paddingBottom={4} size={3} block>
@@ -494,7 +159,8 @@ export const GitHub = () => {
                         gitState === SandboxGitState.CONFLICT_PR_BASE
                           ? baseGit.branch
                           : originalGit.branch,
-                        conflict
+                        conflict,
+                        modulesByPath
                       )}
                     </Text>
                     {getConflictButtons(conflict)}
