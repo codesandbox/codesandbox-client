@@ -20,7 +20,6 @@ export const GithubSummary = () => {
       editor: { forkSandboxClicked },
     },
   } = useOvermind();
-
   return (
     <>
       <Collapsible title="Github Repository" defaultOpen>
@@ -38,18 +37,20 @@ export const GithubSummary = () => {
               </Text>
             </Stack>
           </Link>
-          <Text variant="muted" size={3} paddingBottom={4}>
+          <Text variant="muted" size={3}>
             This Sandbox is in sync with{' '}
             <Text weight="bold">{editor.currentSandbox.git.branch}</Text> on
             Github. To make changes, fork the Sandbox
           </Text>
           <Button
-            marginTop={2}
+            marginTop={8}
             variant="primary"
             loading={editor.isForkingSandbox}
             onClick={() => forkSandboxClicked()}
           >
-            {editor.isForkingSandbox ? 'Forking...' : 'Fork'}
+            {editor.isForkingSandbox
+              ? 'Forking Repository...'
+              : 'Fork Repository'}
           </Button>
         </Element>
       </Collapsible>

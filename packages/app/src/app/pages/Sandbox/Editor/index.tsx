@@ -89,8 +89,7 @@ const Editor = () => {
 
   const sandbox = state.editor.currentSandbox;
   const hideNavigation =
-    (state.preferences.settings.zenMode && state.workspace.workspaceHidden) ||
-    (sandbox && sandbox.git);
+    state.preferences.settings.zenMode && state.workspace.workspaceHidden;
   const { statusBar } = state.editor;
 
   const templateDef = sandbox && getTemplateDefinition(sandbox.template);

@@ -85,7 +85,7 @@ export function getDisabledItems(store: any): INavigationItem[] {
   }
 
   if (currentSandbox.git) {
-    return [];
+    return [CONFIGURATION, DEPLOYMENT, LIVE];
   }
 
   if (!currentSandbox.owned || !store.isLoggedIn) {
