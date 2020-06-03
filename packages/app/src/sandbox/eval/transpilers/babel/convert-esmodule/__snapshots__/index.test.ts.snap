@@ -20,7 +20,7 @@ exports.default = test;
 
 exports[`convert-esmodule can convert default imports 1`] = `
 "var $csb__b = require(\\"./b\\");
-var a = $_csb__interopRequireDefault($csb__b).default;
+var a = $_csb__interopRequireDefault($csb__b);
 function $_csb__interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     default: obj
@@ -104,7 +104,7 @@ const func = $csb__b.a();
 
 exports[`convert-esmodule can handle async code 1`] = `
 "var $csb__test = require(\\"./test\\");
-var T = $_csb__interopRequireDefault($csb__test).default;
+var T = $_csb__interopRequireDefault($csb__test);
 (async () => {
   const test = await test2();
 });
@@ -118,7 +118,7 @@ function $_csb__interopRequireDefault(obj) {
 
 exports[`convert-esmodule can handle class properties 1`] = `
 "var $csb__test = require(\\"./test\\");
-var T = $_csb__interopRequireDefault($csb__test).default;
+var T = $_csb__interopRequireDefault($csb__test);
 class T2 {
   a = () => {
     return \\"test\\";
@@ -195,6 +195,18 @@ exports[`convert-esmodule handles default as exports 1`] = `
 });
 var $csb__Field = require(\\"./Field\\");
 exports.Field = $csb__Field.default;
+"
+`;
+
+exports[`convert-esmodule handles default function exports 1`] = `
+"var $csb__rgb = require(\\"./rgb\\");
+var rgb = $_csb__interopRequireDefault($csb__rgb);
+rgb.default.a;
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
 "
 `;
 
@@ -336,8 +348,8 @@ const c = \\"test\\";
 
 exports[`convert-esmodule hoists imports at bottom 1`] = `
 "var $csb__proptypes = require(\\"prop-types\\");
-var PropTypes = $_csb__interopRequireDefault($csb__proptypes).default;
-const a = PropTypes.a;
+var PropTypes = $_csb__interopRequireDefault($csb__proptypes);
+const a = PropTypes.default.a;
 function $_csb__interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     default: obj

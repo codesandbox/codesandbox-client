@@ -296,6 +296,16 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('handles default function exports', () => {
+    const code = `
+    import rgb from './rgb';
+
+    rgb.a;
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('keeps import order', () => {
     const code = `
     import '1';
