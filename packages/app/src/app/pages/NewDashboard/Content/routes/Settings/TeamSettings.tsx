@@ -15,6 +15,7 @@ import {
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
+import { Card } from './components';
 
 export const TeamSettings = () => {
   const [loading, setLoading] = useState(false);
@@ -155,7 +156,7 @@ export const TeamSettings = () => {
                 >
                   <Grid css={{ width: '100%' }}>
                     <Column span={6}>
-                      <Stack gap={4} align="center">
+                      <Stack gap={4} align="center" css={{ height: '100%' }}>
                         <img
                           src={user.avatarUrl}
                           width={32}
@@ -165,7 +166,11 @@ export const TeamSettings = () => {
                       </Stack>
                     </Column>
                     <Column span={6}>
-                      <Stack justify="space-between">
+                      <Stack
+                        justify="space-between"
+                        align="center"
+                        css={{ height: '100%' }}
+                      >
                         <Text variant="muted" size={3}>
                           {user.id === team.creatorId ? 'Admin' : 'Member'}
                         </Text>
@@ -208,17 +213,3 @@ export const TeamSettings = () => {
     </>
   );
 };
-
-const Card = props => (
-  <Element
-    css={css({
-      height: 180,
-      padding: 6,
-      backgroundColor: 'grays.800',
-      border: '1px solid',
-      borderColor: 'grays.600',
-      borderRadius: 'medium',
-    })}
-    {...props}
-  />
-);
