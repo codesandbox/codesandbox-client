@@ -46,10 +46,10 @@ export const state: State = {
   isPatron: derived(({ user }: State) =>
     Boolean(user && user.subscription && user.subscription.since)
   ),
-  isLoggedIn: derived(({ jwt, user }: State) => hasLogIn() && Boolean(user)),
+  isLoggedIn: derived(({ hasLogIn: has, user }: State) => has && Boolean(user)),
   // TODO: Should not reference store directly here, rather initialize
   // the state with "onInitialize" setting the jwt
-  hasLogIn: derived(({ jwt }: State) => hasLogIn()),
+  hasLogIn: hasLogIn(),
   isContributor: derived(({ contributors }: State) => username =>
     contributors.findIndex(
       contributor =>
