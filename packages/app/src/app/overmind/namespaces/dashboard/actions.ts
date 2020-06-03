@@ -105,13 +105,25 @@ export const createSandboxClicked: AsyncAction<{
 export const deleteTemplate: AsyncAction<{
   sandboxId: string;
   templateId: string;
-}> = async ({ actions, effects }, { sandboxId, templateId }) => {
+}> = async ({ actions, effects, state }, { sandboxId, templateId }) => {
+  const oldTemplates = {
+    TEMPLATE_START_PAGE: state.dashboard.sandboxes.TEMPLATE_START_PAGE,
+    TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
+  };
+  actions.dashboard.deleteTemplateFromState([sandboxId]);
+
   try {
     effects.analytics.track('Template - Removed', { source: 'Context Menu' });
     await effects.api.deleteTemplate(sandboxId, templateId);
     actions.modalClosed();
     effects.notificationToast.success('Template Deleted');
   } catch (error) {
+    state.dashboard.sandboxes.TEMPLATES = oldTemplates.TEMPLATES
+      ? [...oldTemplates.TEMPLATES]
+      : null;
+    state.dashboard.sandboxes.TEMPLATE_START_PAGE = oldTemplates.TEMPLATE_START_PAGE
+      ? [...oldTemplates.TEMPLATE_START_PAGE]
+      : null;
     effects.notificationToast.error('Could not delete custom template');
   }
 };
@@ -894,5 +906,67 @@ export const addSandboxesToFolder: AsyncAction<{
   } catch {
     state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error('There was a problem moving your sandbox');
+  }
+};
+
+export const createTeam: AsyncAction<{
+  teamName: string;
+}> = async ({ effects, actions, state }, { teamName }) => {
+  try {
+    const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
+      name: teamName,
+    });
+    state.dashboard.teams = [...state.dashboard.teams, newTeam];
+    actions.dashboard.setActiveTeam({ id: newTeam.id });
+  } catch {
+    effects.notificationToast.error('There was a problem creating your team');
+  }
+};
+
+export const setTeamInfo: AsyncAction<{
+  name: string;
+  description: string | null;
+}> = async ({ effects, state }, { name, description }) => {
+  const oldTeamInfo = state.dashboard.teams.find(team => team.name === name);
+  const oldActiveTeamInfo = state.dashboard.activeTeamInfo;
+  try {
+    await effects.gql.mutations.setTeamName({
+      name,
+      // only way to pass, null is a value in the BE
+      // @ts-ignore
+      teamId: state.dashboard.activeTeam || undefined,
+    });
+
+    if (description) {
+      await effects.gql.mutations.setTeamDescription({
+        description,
+        // only way to pass, null is a value in the BE
+        // @ts-ignore
+        teamId: state.dashboard.activeTeam || undefined,
+      });
+    }
+    state.dashboard.teams = state.dashboard.teams.map(team => {
+      if (team.name === name) {
+        return {
+          ...team,
+          name,
+          description,
+        };
+      }
+
+      return team;
+    });
+
+    state.dashboard.activeTeamInfo = {
+      ...oldActiveTeamInfo,
+      name,
+      description,
+    };
+  } catch (e) {
+    state.dashboard.activeTeamInfo = { ...oldActiveTeamInfo };
+    if (state.dashboard.teams && oldTeamInfo) {
+      state.dashboard.teams = [...state.dashboard.teams, oldTeamInfo];
+    }
+    effects.notificationToast.error('There was a problem renaming your team');
   }
 };

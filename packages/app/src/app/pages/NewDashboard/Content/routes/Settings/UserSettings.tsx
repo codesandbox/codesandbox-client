@@ -1,11 +1,19 @@
-import { Button, Element, Grid, Stack } from '@codesandbox/components';
-import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
+import { useOvermind } from 'app/overmind';
+
+import {
+  Avatar,
+  Button,
+  Element,
+  Grid,
+  Stack,
+  Text,
+  Link,
+} from '@codesandbox/components';
+import css from '@styled-system/css';
 
 import { Header } from '../../../Components/Header';
-import { Box } from './components/Box';
-import { Link, Text } from './components/Typography';
+import { Card } from './components';
 
 export const UserSettings = () => {
   const {
@@ -27,88 +35,171 @@ export const UserSettings = () => {
 
   return (
     <>
-      <Header title="Settings" />
-      <Grid
-        columnGap={4}
+      <Header title="User Settings" />
+      <Element
         css={css({
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          height: 'calc(100vh - 140px)',
+          overflowY: 'scroll',
+          paddingX: 4,
+          paddingY: 10,
         })}
       >
-        <Box>
-          <Stack gap={4} align="flex-start">
-            <img src={user.avatarUrl} width="55" alt={user.username} />
+        <Stack
+          direction="vertical"
+          gap={8}
+          css={css({ maxWidth: 992, marginX: 'auto' })}
+        >
+          <Grid
+            columnGap={4}
+            css={css({
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            })}
+          >
+            <Card>
+              <Stack direction="vertical" gap={2}>
+                <Stack gap={4}>
+                  <Avatar user={user} css={css({ size: 14 })} />
+                  <Stack
+                    direction="vertical"
+                    gap={2}
+                    css={{ width: 'calc(100% - 64px)' }}
+                  >
+                    <Text size={6} weight="bold" maxWidth="100%">
+                      {user.username}
+                    </Text>
+                    <Text size={3} maxWidth="100%">
+                      {user.name}
+                    </Text>
+                    <Text size={3} maxWidth="100%">
+                      {user.email}
+                    </Text>
+                    <Link
+                      size={3}
+                      href={`https://github.com/${user.username}`}
+                      target="_blank"
+                    >
+                      Managed by Github
+                    </Link>
+                  </Stack>
+                </Stack>
+              </Stack>
+            </Card>
 
-            <Element>
-              <Text weight="bold" block marginBottom={4} size={6}>
-                {user.username}
-              </Text>
-              <Text>{user.name}</Text>
-              <Text>{user.email}</Text>
-              <Link href="https://github.com" target="_blank">
-                Managed by Github
-              </Link>
-            </Element>
-          </Stack>
-        </Box>
-        {!isPro ? (
-          <>
-            <Box title="User Details">
-              <Text>Community (Free)</Text>
-              <Link href="https://codesandbox.io/pro">Upgrade plan to Pro</Link>
-            </Box>
-
-            <Box
-              white
-              title={
-                <>
-                  Pro <Text weight="400">($9/Month)</Text>
-                </>
-              }
-            >
-              <Text marginBottom={4} white>
-                Everything in Community, plus:
-                <br /> + Unlimited Private Sandboxes <br />+ Private GitHub
-                Repos
-              </Text>
-              <Button href="https://codesandbox.io/pro" as="a">
-                Subscribe to Pro
-              </Button>
-            </Box>
-          </>
-        ) : (
-          <>
-            <Box title=" User Details">
-              <Text>Pro Plan</Text>
-              <Button
-                variant="link"
-                marginBottom={2}
-                css={css({
-                  color: 'button.background',
-                  padding: 0,
-                  width: 'auto',
-                  fontSize: 3,
-                  height: 'auto',
-                  display: 'block',
-                })}
-                onClick={() => {
-                  actions.modalOpened({
-                    modal: 'preferences',
-                    itemId: 'paymentInfo',
-                  });
-                }}
-              >
-                Change payment info
-              </Button>
-              <Link href="https://codesandbox.io/pro">Downgrade plan</Link>
-            </Box>
-            <Box title=" Invoice Details">
-              <Text>US${value}</Text>
-              <Text>Invoice are send to</Text>
-              <Text>{user.email}</Text>
-            </Box>
-          </>
-        )}
-      </Grid>
+            <Card>
+              <Stack direction="vertical" gap={2}>
+                <Stack direction="vertical" gap={2}>
+                  <Text size={6} weight="bold" maxWidth="100%">
+                    Plan
+                  </Text>
+                  <Text size={3} maxWidth="100%">
+                    {isPro ? 'Pro Plan' : 'Community Plan'}
+                  </Text>
+                  {isPro ? (
+                    <>
+                      <Button
+                        variant="link"
+                        css={css({
+                          width: 'fit-content',
+                          height: 'auto',
+                          fontSize: 3,
+                          color: 'button.background',
+                          padding: 0,
+                        })}
+                        onClick={() => {
+                          actions.modalOpened({
+                            modal: 'preferences',
+                            itemId: 'paymentInfo',
+                          });
+                        }}
+                      >
+                        Change payment info
+                      </Button>
+                      <Button
+                        variant="link"
+                        css={css({
+                          width: 'fit-content',
+                          height: 'auto',
+                          fontSize: 3,
+                          color: 'button.background',
+                          padding: 0,
+                        })}
+                        onClick={() => {
+                          actions.patron.cancelSubscriptionClicked();
+                        }}
+                      >
+                        Downgrade plan
+                      </Button>
+                    </>
+                  ) : null}
+                </Stack>
+              </Stack>
+            </Card>
+            {isPro ? (
+              <Card>
+                <Stack direction="vertical" gap={2}>
+                  <Stack direction="vertical" gap={2}>
+                    <Text size={6} weight="bold" maxWidth="100%">
+                      Invoice details
+                    </Text>
+                    <Text size={3} maxWidth="100%">
+                      US${value}
+                    </Text>
+                    <Text size={3} maxWidth="100%">
+                      Invoices are sent to
+                    </Text>
+                    <Text size={3} maxWidth="100%">
+                      {user.email}
+                    </Text>
+                  </Stack>
+                </Stack>
+              </Card>
+            ) : (
+              <Card style={{ backgroundColor: 'white' }}>
+                <Stack direction="vertical" gap={4}>
+                  <Text
+                    size={6}
+                    weight="bold"
+                    css={css({ color: 'grays.800' })}
+                  >
+                    Pro
+                  </Text>
+                  <Stack direction="vertical" gap={1}>
+                    <Text
+                      size={3}
+                      variant="muted"
+                      css={css({ color: 'grays.800' })}
+                    >
+                      Everything in Community, plus:
+                    </Text>
+                    <Text
+                      size={3}
+                      variant="muted"
+                      css={css({ color: 'grays.800' })}
+                    >
+                      + Unlimited Private Sandboxes
+                    </Text>
+                    <Text
+                      size={3}
+                      variant="muted"
+                      css={css({ color: 'grays.800' })}
+                    >
+                      + Private GitHub Repos
+                    </Text>
+                  </Stack>
+                  <Button
+                    as="a"
+                    href="https://airtable.com/shrlgLSJWiX8rYqyG"
+                    target="_blank"
+                    marginTop={2}
+                  >
+                    Subscribe to Pro
+                  </Button>
+                </Stack>
+              </Card>
+            )}
+          </Grid>
+        </Stack>
+      </Element>
     </>
   );
 };

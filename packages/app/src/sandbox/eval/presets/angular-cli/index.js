@@ -223,7 +223,7 @@ export default function initialize() {
     { transpiler: typescriptTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.js$/.test(module.path), [
+  preset.registerTranspiler(module => /\.m?js$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {

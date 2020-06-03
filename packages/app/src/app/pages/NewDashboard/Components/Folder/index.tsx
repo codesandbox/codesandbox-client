@@ -101,6 +101,7 @@ export const Folder = ({
   const {
     selectedIds,
     onClick: onSelectionClick,
+    onMouseDown,
     onRightClick,
     onMenuEvent,
     onBlur,
@@ -140,6 +141,7 @@ export const Folder = ({
     style: { outline: 'none' }, // we handle outline with border
     selected,
     onClick,
+    onMouseDown,
     onDoubleClick,
     onContextMenu,
     onBlur,

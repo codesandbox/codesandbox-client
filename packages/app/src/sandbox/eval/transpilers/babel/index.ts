@@ -11,7 +11,7 @@ import Manager from '../../manager';
 import { LoaderContext } from '../../transpiled-module';
 import WorkerTranspiler from '../worker-transpiler';
 import getBabelConfig from './babel-parser';
-import { shouldTranspile } from './check';
+import { hasNewSyntax } from './check';
 import { convertEsModule } from './convert-esmodule';
 import regexGetRequireStatements from './worker/simple-get-require-statements';
 
@@ -52,11 +52,13 @@ class BabelTranspiler extends WorkerTranspiler {
 
       const isNodeModule = path.startsWith('/node_modules');
 
+      let convertedToEsmodule = false;
       if (isESModule(newCode) && isNodeModule) {
         try {
           measure(`esconvert-${path}`);
           newCode = convertEsModule(newCode);
           endMeasure(`esconvert-${path}`, { silent: true });
+          convertedToEsmodule = true;
         } catch (e) {
           console.warn(
             `Error when converting '${path}' esmodule to commonjs: ${e.message}`
@@ -71,7 +73,8 @@ class BabelTranspiler extends WorkerTranspiler {
         // faster than generating an AST from the code.
         if (
           (loaderContext.options.simpleRequire || isNodeModule) &&
-          !shouldTranspile(newCode, path)
+          !hasNewSyntax(newCode, path) &&
+          !(isESModule(newCode) && !convertedToEsmodule)
         ) {
           regexGetRequireStatements(newCode).forEach(dependency => {
             if (dependency.isGlob) {

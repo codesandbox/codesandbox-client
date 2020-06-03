@@ -259,6 +259,61 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('works with variables that are named exports', () => {
+    const code = `
+    var exports = [eventedState, eventedShowHideState];
+    exports.push('test');
+    export default exports;
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('exports that are not on the root scope are not renamed', () => {
+    const code = `
+    function a() {
+      var exports = 'blaat';
+    }
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('renames exports that are already defined, even in block scope', () => {
+    const code = `
+    var exports = 'testtest';
+    function a() {
+      exports = 'blaat';
+    }
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('does empty exports', () => {
+    const code = `
+    export {} from './column_sorting_draggable';
+    export { EuiDataGrid } from './data_grid';
+    export * from './data_grid_types';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('changes default imports inline', () => {
+    const code = `
+    import rgb from './rgb';
+
+    rgb.a;
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('keeps import order', () => {
+    const code = `
+    import '1';
+    import '2';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('parses and writes chars with linebreaks', () => {
     const code =
       "var WS_CHARS = 'u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff'";

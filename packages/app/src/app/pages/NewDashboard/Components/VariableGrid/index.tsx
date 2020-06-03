@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Element, Grid, Column, Text } from '@codesandbox/components';
+import { Element, Grid, Column, Stack, Text } from '@codesandbox/components';
 import { VariableSizeGrid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
@@ -20,7 +20,11 @@ const ComponentForTypes = {
   sandbox: props => <Sandbox sandbox={props} />,
   folder: props => <Folder {...props} />,
   'new-sandbox': props => <NewSandbox {...props} />,
-  header: props => <Text block>{props.title}</Text>,
+  header: props => (
+    <Text block css={{ userSelect: 'none' }}>
+      {props.title}
+    </Text>
+  ),
   blank: () => <div />,
 };
 
@@ -209,21 +213,51 @@ export const VariableGrid = ({ items }) => {
   );
 };
 
-export const SkeletonGrid = ({ count }) => (
-  <Grid
-    rowGap={6}
-    columnGap={6}
-    marginBottom={8}
-    marginTop={ITEM_VERTICAL_OFFSET}
-    marginX={4}
-    css={{
-      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-    }}
-  >
-    {Array.from(Array(count).keys()).map(n => (
-      <Column key={n}>
-        <SkeletonSandbox />
-      </Column>
-    ))}
-  </Grid>
-);
+export const SkeletonGrid = ({ count }) => {
+  const {
+    state: { dashboard },
+  } = useOvermind();
+
+  const location = useLocation();
+
+  let viewMode;
+  if (location.pathname.includes('deleted')) viewMode = 'list';
+  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else viewMode = dashboard.viewMode;
+
+  if (viewMode === 'list') {
+    return (
+      <Stack
+        direction="vertical"
+        marginBottom={8}
+        marginTop={ITEM_VERTICAL_OFFSET}
+        marginX={4}
+      >
+        {Array.from(Array(count).keys()).map(n => (
+          <Column key={n}>
+            <SkeletonSandbox />
+          </Column>
+        ))}
+      </Stack>
+    );
+  }
+
+  return (
+    <Grid
+      rowGap={6}
+      columnGap={6}
+      marginBottom={8}
+      marginTop={ITEM_VERTICAL_OFFSET}
+      marginX={4}
+      css={{
+        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+      }}
+    >
+      {Array.from(Array(count).keys()).map(n => (
+        <Column key={n}>
+          <SkeletonSandbox />
+        </Column>
+      ))}
+    </Grid>
+  );
+};

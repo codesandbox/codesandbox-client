@@ -39,6 +39,7 @@ export function convertEsModule(code: string) {
   let program = meriyah.parseModule(code, { next: true });
 
   let i = 0;
+  let importOffset = 0;
 
   let addedSpecifier = false;
   function addEsModuleSpecifier() {
@@ -60,6 +61,38 @@ export function convertEsModule(code: string) {
 
     program.body.push(generateInteropRequire());
   }
+
+  // If there is a declaration of `exports` (`var exports = []`), we need to rename this
+  // variable as it's a reserved keyword
+  let exportsDefined = false;
+  // @ts-ignore
+  program = walk(program, {
+    enter(node, parent) {
+      if (node.type === n.VariableDeclaration) {
+        // We don't rename exports vars in functions, only on root level
+        if (parent.type === n.BlockStatement && exportsDefined === false) {
+          this.skip();
+        }
+      } else if (node.type === n.VariableDeclarator) {
+        const declNode = node as meriyah.ESTree.VariableDeclarator;
+        if (
+          declNode.id.type === n.Identifier &&
+          declNode.id.name === 'exports'
+        ) {
+          exportsDefined = true;
+        }
+      } else if (node.type === n.Identifier && exportsDefined) {
+        const idNode = node as meriyah.ESTree.Identifier;
+        if (idNode.name === 'exports') {
+          idNode.name = '__$csb_exports';
+          this.replace(idNode);
+        }
+      } else if (!exportsDefined && parent != null) {
+        // Skip, we don't need to go deeper now
+        this.skip();
+      }
+    },
+  });
 
   for (; i < program.body.length; i++) {
     const statement = program.body[i];
@@ -100,21 +133,23 @@ export function convertEsModule(code: string) {
         const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
 
         program.body[i] = generateRequireStatement(varName, source.value);
-        i++;
+        if (statement.specifiers.length) {
+          i++;
 
-        statement.specifiers
-          .reverse()
-          .forEach((specifier: meriyah.ESTree.ExportSpecifier) => {
-            program.body.splice(
-              i,
-              0,
-              generateExportMemberStatement(
-                varName,
-                specifier.exported.name,
-                specifier.local.name
-              )
-            );
-          });
+          statement.specifiers
+            .reverse()
+            .forEach((specifier: meriyah.ESTree.ExportSpecifier) => {
+              program.body.splice(
+                i,
+                0,
+                generateExportMemberStatement(
+                  varName,
+                  specifier.exported.name,
+                  specifier.local.name
+                )
+              );
+            });
+        }
       } else if (statement.declaration) {
         // First remove the export statement
         program.body[i] = statement.declaration;
@@ -244,7 +279,12 @@ export function convertEsModule(code: string) {
       // Remove this statement
       program.body.splice(i, 1);
       // Create require statement instead of the import
-      program.body.unshift(generateRequireStatement(varName, source.value));
+      program.body.splice(
+        importOffset,
+        0,
+        generateRequireStatement(varName, source.value)
+      );
+      importOffset++;
 
       statement.specifiers.reverse().forEach(specifier => {
         let localName: string;
@@ -276,10 +316,13 @@ export function convertEsModule(code: string) {
 
           program.body.splice(
             // After the require statement
-            1,
+            importOffset,
             0,
             generateInteropRequireExpression(varName, localName)
           );
+
+          varsToRename[localName] = [localName, 'default'];
+          importOffset++;
           return;
         }
 
@@ -292,7 +335,7 @@ export function convertEsModule(code: string) {
         }
 
         // insert in index 1 instead of 0 to be after the interopRequireDefault
-        program.body.splice(1, 0, {
+        program.body.splice(importOffset, 0, {
           type: n.VariableDeclaration,
           kind: 'var' as 'var',
           declarations: [
@@ -322,6 +365,7 @@ export function convertEsModule(code: string) {
             },
           ],
         });
+        importOffset++;
       });
     }
   }
@@ -363,7 +407,8 @@ export function convertEsModule(code: string) {
             varsToRename,
             ref.identifier.name
           ) &&
-          ref.resolved === null
+          ref.resolved === null &&
+          !ref.writeExpr
         ) {
           ref.identifier.name = varsToRename[ref.identifier.name].join('.');
         }
