@@ -46,14 +46,12 @@ export const withLoadApp = <T>(
         'Sorry, we had to sign you out. Please sign in again to continue.',
       status: NotificationStatus.NOTICE,
       actions: {
-        primary: [
-          {
-            label: 'Sign in',
-            run: () => {
-              actions.signInClicked({ useExtraScopes: false });
-            },
+        primary: {
+          label: 'Sign in',
+          run: () => {
+            actions.signInClicked();
           },
-        ],
+        },
       },
     });
   }
