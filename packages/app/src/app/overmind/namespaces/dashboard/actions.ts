@@ -922,3 +922,51 @@ export const createTeam: AsyncAction<{
     effects.notificationToast.error('There was a problem creating your team');
   }
 };
+
+export const setTeamInfo: AsyncAction<{
+  name: string;
+  description: string | null;
+}> = async ({ effects, state }, { name, description }) => {
+  const oldTeamInfo = state.dashboard.teams.find(team => team.name === name);
+  const oldActiveTeamInfo = state.dashboard.activeTeamInfo;
+  try {
+    await effects.gql.mutations.setTeamName({
+      name,
+      // only way to pass, null is a value in the BE
+      // @ts-ignore
+      teamId: state.dashboard.activeTeam || undefined,
+    });
+
+    if (description) {
+      await effects.gql.mutations.setTeamDescription({
+        description,
+        // only way to pass, null is a value in the BE
+        // @ts-ignore
+        teamId: state.dashboard.activeTeam || undefined,
+      });
+    }
+    state.dashboard.teams = state.dashboard.teams.map(team => {
+      if (team.name === name) {
+        return {
+          ...team,
+          name,
+          description,
+        };
+      }
+
+      return team;
+    });
+
+    state.dashboard.activeTeamInfo = {
+      ...oldActiveTeamInfo,
+      name,
+      description,
+    };
+  } catch (e) {
+    state.dashboard.activeTeamInfo = { ...oldActiveTeamInfo };
+    if (state.dashboard.teams && oldTeamInfo) {
+      state.dashboard.teams = [...state.dashboard.teams, oldTeamInfo];
+    }
+    effects.notificationToast.error('There was a problem renaming your team');
+  }
+};

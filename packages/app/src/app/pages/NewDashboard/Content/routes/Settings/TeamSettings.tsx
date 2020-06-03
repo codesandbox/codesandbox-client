@@ -34,9 +34,23 @@ export const TeamSettings = () => {
   }, [actions.dashboard]);
 
   const [editing, setEditing] = useState(false);
-  const onSubmit = event => {
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async event => {
     event.preventDefault();
-    // TODO: Save team
+    const name = event.target.name.value;
+    const description = event.target.description.value;
+    setLoading(true);
+    try {
+      await actions.dashboard.setTeamInfo({
+        name,
+        description,
+      });
+      setLoading(false);
+      setEditing(false);
+    } catch {
+      setLoading(false);
+    }
   };
 
   const [inviteValue, setInviteValue] = useState('');
@@ -87,6 +101,7 @@ export const TeamSettings = () => {
                   <Input
                     type="text"
                     name="name"
+                    required
                     defaultValue={team.name}
                     placeholder="Enter team name"
                   />
@@ -99,11 +114,17 @@ export const TeamSettings = () => {
                     <Button
                       variant="link"
                       css={{ width: 100 }}
+                      disabled={loading}
                       onClick={() => setEditing(false)}
                     >
                       Cancel
                     </Button>
-                    <Button type="submit" css={{ width: 100 }}>
+                    <Button
+                      type="submit"
+                      css={{ width: 100 }}
+                      disabled={loading}
+                      loading={loading}
+                    >
                       Save
                     </Button>
                   </Stack>

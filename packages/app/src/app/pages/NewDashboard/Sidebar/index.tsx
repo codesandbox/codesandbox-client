@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useDrop } from 'react-dnd';
 import { useOvermind } from 'app/overmind';
@@ -29,33 +29,35 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
     state: { dashboard, user },
     actions,
   } = useOvermind();
+  const [activeAccount, setActiveAccount] = useState({
+    username: null,
+    avatarUrl: null,
+  });
 
   React.useEffect(() => {
     actions.dashboard.getTeams();
   }, [actions.dashboard, user]);
 
-  let activeAccount: { username: string; avatarUrl: string } = {
-    username: null,
-    avatarUrl: null,
-  };
-
-  if (dashboard.activeTeam) {
-    const team = dashboard.teams.find(t => t.id === dashboard.activeTeam);
-    if (team)
-      activeAccount = {
-        username: team.name,
-        avatarUrl: 'https://github.com/github.png',
-      };
-  } else if (user) {
-    activeAccount = {
-      username: user.username,
-      avatarUrl: user.avatarUrl,
-    };
-  }
-
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
   }, [actions.dashboard]);
+
+  React.useEffect(() => {
+    if (dashboard.activeTeam) {
+      const team = dashboard.activeTeamInfo;
+      if (team) {
+        setActiveAccount({
+          username: team.name,
+          avatarUrl: 'https://github.com/github.png',
+        });
+      }
+    } else if (user) {
+      setActiveAccount({
+        username: user.username,
+        avatarUrl: user.avatarUrl,
+      });
+    }
+  }, [dashboard.activeTeam, dashboard.activeTeamInfo, dashboard.teams, user]);
 
   const folders = dashboard.allCollections || [];
   const [foldersVisible, setFoldersVisibility] = React.useState(false);
