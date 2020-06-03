@@ -157,6 +157,7 @@ export const CommitForm = () => {
             <>
               <Menu>
                 <Menu.Button
+                  disabled={!title || !canUpdate}
                   variant="primary"
                   css={{
                     width: '26px',

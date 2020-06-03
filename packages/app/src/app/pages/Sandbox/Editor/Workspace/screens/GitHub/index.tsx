@@ -20,6 +20,7 @@ import { GithubLogin } from './GithubLogin';
 import { AddedIcon, ChangedIcon, DeletedIcon, GitHubIcon } from './Icons';
 import { NotLoggedIn } from './NotLoggedIn';
 import { NotOwner } from './NotOwner';
+import { SkeletonTextBlock } from '../../../Skeleton/elements';
 
 enum ConflictType {
   SOURCE_ADDED_SANDBOX_DELETED,
@@ -108,7 +109,21 @@ export const GitHub = () => {
   if (!user.integrations.github) return <GithubLogin />;
 
   if (isFetching) {
-    return <h4>Loading...</h4>;
+    return (
+      <Collapsible title="Git Repository" defaultOpen>
+        <List css={{ marginBottom: '32px' }}>
+          <ListItem justify="space-between">
+            <SkeletonTextBlock />
+          </ListItem>
+          <ListItem justify="space-between">
+            <SkeletonTextBlock />
+          </ListItem>
+          <ListItem justify="space-between">
+            <SkeletonTextBlock />
+          </ListItem>
+        </List>
+      </Collapsible>
+    );
   }
 
   function getConflictIcon(branch: string, conflict: GitFileCompare) {
@@ -297,7 +312,7 @@ export const GitHub = () => {
     if (gitState === SandboxGitState.OUT_OF_SYNC_SOURCE) {
       return (
         <Stack direction="vertical">
-          <Text size={3} paddingBottom={4}>
+          <Text size={3} paddingBottom={4} style={{ lineHeight: '19px' }}>
             <Text variant="muted">You are out of sync with changes in </Text>
             {prNumber ? 'PR' : baseGit.branch}
             <Text variant="muted">
@@ -315,14 +330,14 @@ export const GitHub = () => {
           </Button>
           <Button
             marginTop={4}
-            variant="link"
+            variant="secondary"
             onClick={() => {
               effects.browser.openWindow(
                 `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${originalGit.branch}`
               );
             }}
           >
-            See changes from {prNumber ? 'PR' : baseGit.branch}
+            View Changes on Github
           </Button>
         </Stack>
       );
@@ -331,7 +346,7 @@ export const GitHub = () => {
     if (gitState === SandboxGitState.OUT_OF_SYNC_PR_BASE) {
       return (
         <Stack direction="vertical">
-          <Text size={3} paddingBottom={4}>
+          <Text size={3} paddingBottom={4} style={{ lineHeight: '19px' }}>
             <Text variant="muted">You are out of sync with changes on </Text>
             {baseGit.branch}
             <Text variant="muted">
@@ -348,14 +363,14 @@ export const GitHub = () => {
           </Button>
           <Button
             marginTop={4}
-            variant="link"
+            variant="secondary"
             onClick={() => {
               effects.browser.openWindow(
                 `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${baseGit.branch}`
               );
             }}
           >
-            See changes from {baseGit.branch}
+            View Changes on Github
           </Button>
         </Stack>
       );
@@ -364,7 +379,7 @@ export const GitHub = () => {
     if (conflicts.length && gitState === SandboxGitState.CONFLICT_SOURCE) {
       return (
         <Stack direction="vertical">
-          <Text size={3} paddingBottom={4}>
+          <Text size={3} paddingBottom={4} style={{ lineHeight: '19px' }}>
             <Text variant="muted">You are in conflict with changes on </Text>
             {prNumber ? 'PR' : baseGit.branch}
             <Text variant="muted">
@@ -372,21 +387,21 @@ export const GitHub = () => {
             </Text>
           </Text>
           <Button
-            variant="link"
+            variant="secondary"
             onClick={() => {
               effects.browser.openWindow(
                 `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${originalGit.branch}`
               );
             }}
           >
-            See changes from {prNumber ? 'PR' : originalGit.branch}
+            View Changes on Github
           </Button>
         </Stack>
       );
     }
     if (conflicts.length && gitState === SandboxGitState.CONFLICT_PR_BASE) {
       return (
-        <Stack direction="vertical">
+        <Stack direction="vertical" style={{ lineHeight: '19px' }}>
           <Text size={3} paddingBottom={4}>
             <Text variant="muted">
               You are in conflict with changes made on{' '}
@@ -398,14 +413,14 @@ export const GitHub = () => {
             PR
           </Text>
           <Button
-            variant="link"
+            variant="secondary"
             onClick={() => {
               effects.browser.openWindow(
                 `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${baseGit.branch}`
               );
             }}
           >
-            See changes from {baseGit.branch}
+            View Changes on Github
           </Button>
         </Stack>
       );

@@ -142,6 +142,8 @@ export const createCommitClicked: AsyncAction = async ({
   state.git.description = '';
   state.git.conflicts = [];
   state.git.gitState = SandboxGitState.SYNCED;
+
+  effects.notificationToast.success('Successfully created your commit');
 };
 
 export const titleChanged: Action<string> = ({ state }, title) => {
