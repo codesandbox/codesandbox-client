@@ -908,3 +908,17 @@ export const addSandboxesToFolder: AsyncAction<{
     effects.notificationToast.error('There was a problem moving your sandbox');
   }
 };
+
+export const createTeam: AsyncAction<{
+  teamName: string;
+}> = async ({ effects, actions, state }, { teamName }) => {
+  try {
+    const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
+      name: teamName,
+    });
+    state.dashboard.teams = [...state.dashboard.teams, newTeam];
+    actions.dashboard.setActiveTeam({ id: newTeam.id });
+  } catch {
+    effects.notificationToast.error('There was a problem creating your team');
+  }
+};
