@@ -41,9 +41,7 @@ export const Create = () => {
         {!state.hasLogIn && (
           <CenteredMessage>
             <div>
-              <LinkButton
-                onClick={() => actions.signInClicked({ useExtraScopes: false })}
-              >
+              <LinkButton onClick={() => actions.signInClicked()}>
                 Sign in
               </LinkButton>{' '}
               to create and bookmark templates for later use.

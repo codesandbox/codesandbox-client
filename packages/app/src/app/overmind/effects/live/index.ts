@@ -28,7 +28,6 @@ type Options = {
     operation: TextOperation;
   }): void;
   provideJwtToken(): Promise<string>;
-  isLiveBlockerExperiement(): boolean;
   onOperationError(payload: {
     moduleShortid: string;
     moduleInfo: IModuleStateModule;
@@ -55,13 +54,14 @@ declare global {
 }
 
 class Live {
+  public socket: Socket;
+
   private identifier = uuid.v4();
   private pendingMessages = new Map();
   private debug = _debug('cs:socket');
   private channel: Channel | null;
   private messageIndex = 0;
   private clientsManager: CodesandboxOTClientsManager;
-  private socket: Socket;
   private presence: Presence;
   private provideJwtToken: () => Promise<string>;
   private onApplyOperation: (moduleShortid: string, operation: any) => void;
