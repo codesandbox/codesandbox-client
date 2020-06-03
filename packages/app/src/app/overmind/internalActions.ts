@@ -123,12 +123,18 @@ export const signInGithub: Action<
   { useExtraScopes?: boolean },
   Promise<void>
 > = ({ effects }, options) => {
-  const authPath =
+  const authPath = new URL(
     process.env.LOCAL_SERVER || process.env.STAGING
       ? '/auth/dev'
-      : `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`;
+      : '/auth/github'
+  );
 
-  const popup = effects.browser.openPopup(authPath, 'sign in');
+  authPath.searchParams.set('version', '2');
+  if (options.useExtraScopes) {
+    authPath.searchParams.set('scope', 'user:email,repo');
+  }
+
+  const popup = effects.browser.openPopup(authPath.toString(), 'sign in');
 
   return effects.browser.waitForMessage('signin').then(() => {
     popup.close();
