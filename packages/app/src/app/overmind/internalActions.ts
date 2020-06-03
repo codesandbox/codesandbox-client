@@ -124,9 +124,10 @@ export const signInGithub: Action<
   Promise<void>
 > = ({ effects }, options) => {
   const authPath = new URL(
-    location.origin + process.env.LOCAL_SERVER || process.env.STAGING
-      ? '/auth/dev'
-      : '/auth/github'
+    location.origin +
+      (process.env.LOCAL_SERVER || process.env.STAGING
+        ? '/auth/dev'
+        : '/auth/github')
   );
 
   authPath.searchParams.set('version', '2');
