@@ -269,7 +269,11 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
           <RowItem name="Recently Deleted" path="deleted" icon="trash" />
         </List>
         <Element margin={4}>
-          <Button variant="secondary">
+          <Button
+            as={RouterLink}
+            to="/new-dashboard/settings/new"
+            variant="secondary"
+          >
             <Icon name="plus" size={10} marginRight={1} />
             Create New Workspace
           </Button>

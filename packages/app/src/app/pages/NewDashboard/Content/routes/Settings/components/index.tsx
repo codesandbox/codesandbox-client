@@ -4,6 +4,7 @@ import css from '@styled-system/css';
 
 export const Card = props => (
   <Element
+    {...props}
     css={css({
       height: 180,
       padding: 6,
@@ -11,7 +12,7 @@ export const Card = props => (
       border: '1px solid',
       borderColor: 'grays.600',
       borderRadius: 'medium',
+      ...(props.css || {}),
     })}
-    {...props}
   />
 );

@@ -11,6 +11,7 @@ import {
   Stack,
   Text,
   IconButton,
+  Avatar,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
@@ -144,24 +145,19 @@ export const TeamSettings = () => {
 
               return (
                 <ListAction
+                  key={user.username}
                   align="center"
                   justify="space-between"
                   css={css({
                     height: 64,
-                    borderWidth: 0,
-                    borderBottomWidth: 1,
-                    borderStyle: 'solid',
-                    borderBottomColor: 'grays.600',
+                    borderBottom: '1px solid',
+                    borderColor: 'grays.600',
                   })}
                 >
                   <Grid css={{ width: '100%' }}>
                     <Column span={6}>
                       <Stack gap={4} align="center" css={{ height: '100%' }}>
-                        <img
-                          src={user.avatarUrl}
-                          width={32}
-                          alt={user.username}
-                        />
+                        <Avatar user={user} />
                         <Text size={3}>{user.username}</Text>
                       </Stack>
                     </Column>
