@@ -216,6 +216,7 @@ export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
         id
         creatorId
         description
+        inviteToken
         name
         users {
           avatarUrl

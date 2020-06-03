@@ -1,22 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useOvermind } from 'app/overmind';
 import { Element, Stack, Text, Input, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
+import history from 'app/utils/history';
 import { Card } from './components';
 
 export const NewTeam = () => {
   const {
     state: { user },
+    actions: { dashboard },
   } = useOvermind();
+  const [loading, setLoading] = useState(false);
 
-  const onSubmit = event => {
+  const onSubmit = async event => {
     event.preventDefault();
     const teamName = event.target.name.value;
     console.warn(teamName, 'created by', user.username);
-
-    // after success:
-    // 1. set activeTeam to newTeam
-    // 2. redirect to /settings/invite
+    setLoading(true);
+    try {
+      await dashboard.createTeam({ teamName });
+      setLoading(false);
+      history.push('/new-dashboard/settings/invite');
+    } catch {
+      setLoading(false);
+    }
   };
 
   return (
@@ -56,7 +63,12 @@ export const NewTeam = () => {
                   autoFocus
                   css={css({ height: 8 })}
                 />
-                <Button type="submit" css={css({ height: 8, fontSize: 3 })}>
+                <Button
+                  loading={loading}
+                  disabled={loading}
+                  type="submit"
+                  css={css({ height: 8, fontSize: 3 })}
+                >
                   Create team
                 </Button>
               </Stack>
