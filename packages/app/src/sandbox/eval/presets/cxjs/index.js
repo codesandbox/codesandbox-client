@@ -17,7 +17,7 @@ export default function initialize() {
     {}
   );
 
-  cxjsPreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
+  cxjsPreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {

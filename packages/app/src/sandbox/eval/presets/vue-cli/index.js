@@ -117,10 +117,10 @@ export default function initialize() {
     });
   }
 
-  vuePreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
+  vuePreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
     { transpiler: babelTranspiler },
   ]);
-  vuePreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
+  vuePreset.registerTranspiler(module => /\.m?tsx?$/.test(module.path), [
     { transpiler: typescriptTranspiler },
   ]);
   vuePreset.registerTranspiler(module => /\.json$/.test(module.path), [
