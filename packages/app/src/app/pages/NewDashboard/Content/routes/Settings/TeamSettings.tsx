@@ -10,6 +10,8 @@ import {
   Menu,
   Stack,
   Text,
+  Input,
+  Textarea,
   IconButton,
   Avatar,
 } from '@codesandbox/components';
@@ -19,8 +21,6 @@ import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { Card } from './components';
 
 export const TeamSettings = () => {
-  const [loading, setLoading] = useState(false);
-  const [inviteValue, setInviteValue] = useState('');
   const {
     state: {
       user: stateUser,
@@ -33,12 +33,21 @@ export const TeamSettings = () => {
     actions.dashboard.getTeam();
   }, [actions.dashboard]);
 
-  const onSubmit = async e => {
-    e.preventDefault();
-    setLoading(true);
+  const [editing, setEditing] = useState(false);
+  const onSubmit = event => {
+    event.preventDefault();
+    // TODO: Save team
+  };
+
+  const [inviteValue, setInviteValue] = useState('');
+  const [inviteLoading, setInviteLoading] = useState(false);
+
+  const onInviteSubmit = async event => {
+    event.preventDefault();
+    setInviteLoading(true);
     setInviteValue('');
     await actions.dashboard.inviteToTeam(inviteValue);
-    setLoading(false);
+    setInviteLoading(false);
   };
 
   if (!team) {
@@ -68,19 +77,58 @@ export const TeamSettings = () => {
             })}
           >
             <Card>
-              <Stack direction="vertical" gap={2}>
-                <Stack justify="space-between">
-                  <Text size={6} weight="bold">
-                    {team.name}
-                  </Text>
-                  <IconButton name="edit" size={12} title="Edit team" />
+              {editing ? (
+                <Stack
+                  as="form"
+                  onSubmit={onSubmit}
+                  direction="vertical"
+                  gap={2}
+                >
+                  <Input
+                    type="text"
+                    name="name"
+                    defaultValue={team.name}
+                    placeholder="Enter team name"
+                  />
+                  <Textarea
+                    name="description"
+                    defaultValue={team.description}
+                    placeholder="Enter a description for your team"
+                  />
+                  <Stack justify="flex-end">
+                    <Button
+                      variant="link"
+                      css={{ width: 100 }}
+                      onClick={() => setEditing(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit" css={{ width: 100 }}>
+                      Save
+                    </Button>
+                  </Stack>
                 </Stack>
-                <Text size={3}>Community Plan (Free)</Text>
-                <Text size={3} variant="muted">
-                  {team.description}
-                </Text>
-              </Stack>
+              ) : (
+                <Stack direction="vertical" gap={2}>
+                  <Stack justify="space-between">
+                    <Text size={6} weight="bold">
+                      {team.name}
+                    </Text>
+                    <IconButton
+                      name="edit"
+                      size={12}
+                      title="Edit team"
+                      onClick={() => setEditing(true)}
+                    />
+                  </Stack>
+                  <Text size={3}>Community Plan (Free)</Text>
+                  <Text size={3} variant="muted">
+                    {team.description}
+                  </Text>
+                </Stack>
+              )}
             </Card>
+
             <Card>
               <Stack direction="vertical" gap={4}>
                 <Text size={6} weight="bold">
@@ -120,7 +168,7 @@ export const TeamSettings = () => {
             <Text size={4}>Members</Text>
             <Stack
               as="form"
-              onSubmit={loading ? undefined : onSubmit}
+              onSubmit={inviteLoading ? undefined : onInviteSubmit}
               css={{ display: 'flex', flexGrow: 1, maxWidth: 320 }}
             >
               <UserSearchInput
@@ -131,10 +179,10 @@ export const TeamSettings = () => {
               />
               <Button
                 type="submit"
-                loading={loading}
+                loading={inviteLoading}
                 style={{ width: 'auto', marginLeft: 8 }}
               >
-                {loading ? 'Adding Member...' : 'Add Member'}
+                Add Member
               </Button>
             </Stack>
           </Stack>
