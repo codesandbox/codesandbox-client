@@ -1,14 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Element, Column } from '@codesandbox/components';
-
+import { Header } from 'app/pages/NewDashboard/Components/Header';
+import {
+  VariableGrid,
+  SkeletonGrid,
+} from 'app/pages/NewDashboard/Components/VariableGrid';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { getPossibleTemplates } from '../../utils';
-import { Header } from '../../../Components/Header';
-
-import { SandboxGrid } from '../../../Components/SandboxGrid';
-import { Sandbox } from '../../../Components/Sandbox';
-import { SkeletonCard } from '../../../Components/SandboxCard';
 import { useBottomScroll } from './useBottomScroll';
 
 export const Drafts = () => {
@@ -20,31 +19,26 @@ export const Drafts = () => {
   } = useOvermind();
   const [visibleSandboxes] = useBottomScroll('DRAFTS');
 
-  useEffect(() => {
+  React.useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.DRAFTS);
   }, [actions.dashboard]);
 
   return (
-    <Element style={{ height: '100%', position: 'relative' }}>
+    <SelectionProvider sandboxes={visibleSandboxes}>
       <Header
         path="Drafts"
         templates={getPossibleTemplates(sandboxes.DRAFTS)}
       />
       {sandboxes.DRAFTS ? (
-        <SandboxGrid>
-          {visibleSandboxes.map(sandbox => (
-            <Sandbox key={sandbox.id} sandbox={sandbox} />
-          ))}
-        </SandboxGrid>
+        <VariableGrid
+          items={visibleSandboxes.map(sandbox => ({
+            type: 'sandbox',
+            ...sandbox,
+          }))}
+        />
       ) : (
-        <SandboxGrid>
-          {Array.from(Array(8).keys()).map(n => (
-            <Column key={n}>
-              <SkeletonCard />
-            </Column>
-          ))}
-        </SandboxGrid>
+        <SkeletonGrid count={8} />
       )}
-    </Element>
+    </SelectionProvider>
   );
 };

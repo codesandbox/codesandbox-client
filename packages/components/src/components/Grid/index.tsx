@@ -28,6 +28,7 @@ export const Column = styled(Element)<{
   const styles: {
     gridColumnStart?: number | Array<number | string>;
     gridColumnEnd?: number | string | Array<number> | Array<string>;
+    display?: string | Array<string>;
   } = {};
 
   if (Array.isArray(start)) styles.gridColumnStart = start.map(s => s);
@@ -38,6 +39,11 @@ export const Column = styled(Element)<{
 
   if (Array.isArray(span)) styles.gridColumnEnd = span.map(s => 'span  ' + s);
   else if (span) styles.gridColumnEnd = 'span ' + span;
+
+  // not sure if span=0 is a good idea, we'll find out
+  if (Array.isArray(span)) {
+    styles.display = span.map(s => (s === 0 ? 'none' : 'inherit'));
+  } else if (span === 0) styles.display = 'none';
 
   return css(styles);
 });

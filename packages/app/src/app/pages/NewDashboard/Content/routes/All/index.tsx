@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Element, Column } from '@codesandbox/components';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import {
+  VariableGrid,
+  SkeletonGrid,
+} from 'app/pages/NewDashboard/Components/VariableGrid';
 import { getPossibleTemplates } from '../../utils';
-import { SandboxGrid } from '../../../Components/SandboxGrid';
-import { Sandbox } from '../../../Components/Sandbox';
-import { FolderCard } from '../../../Components/FolderCard';
-import { SkeletonCard } from '../../../Components/SandboxCard';
 
 export const AllPage = ({ match: { params }, history }) => {
-  const [level, setLevel] = useState(0);
-  const [creating, setCreating] = useState(false);
+  const [level, setLevel] = React.useState(0);
+  const [creating, setCreating] = React.useState(false);
   const param = params.path || '';
   const cleanParam = param.split(' ').join('');
   const {
@@ -20,13 +20,13 @@ export const AllPage = ({ match: { params }, history }) => {
       dashboard: { allCollections, sandboxes, activeTeam },
     },
   } = useOvermind();
-  const [localTeam, setLocalTeam] = useState(activeTeam);
+  const [localTeam, setLocalTeam] = React.useState(activeTeam);
 
-  useEffect(() => {
+  React.useEffect(() => {
     actions.dashboard.getAllFolders();
   }, [actions.dashboard, activeTeam]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (localTeam !== activeTeam) {
       setLocalTeam(activeTeam);
 
@@ -37,54 +37,47 @@ export const AllPage = ({ match: { params }, history }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTeam]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (param) {
       setLevel(param ? param.split('/').length : 0);
       actions.dashboard.getSandboxesByPath(param);
     }
   }, [param, actions.dashboard, activeTeam]);
 
-  const createNewFolder = (name: string) => {
-    setCreating(false);
-    const newPath = params.path ? `/${param}/${name}` : `${param}/${name}`;
-    actions.dashboard.createFolder(newPath);
-  };
+  const sandboxesForPath = (sandboxes.ALL && sandboxes.ALL[cleanParam]) || [];
 
-  const getFoldersByPath =
-    allCollections &&
-    allCollections.filter(
-      collection => collection.level === level && collection.parent === param
-    );
+  const folders =
+    (allCollections &&
+      allCollections.filter(
+        collection => collection.level === level && collection.parent === param
+      )) ||
+    [];
+
+  let items = [];
+  if (creating) items.push({ type: 'folder', setCreating });
+
+  items = [
+    ...items,
+    ...folders.map(folder => ({ type: 'folder', ...folder })),
+    ...sandboxesForPath.map(sandbox => ({ type: 'sandbox', ...sandbox })),
+  ];
 
   return (
-    <Element style={{ height: '100%', position: 'relative' }}>
+    <SelectionProvider
+      sandboxes={(sandboxes.ALL && sandboxes.ALL[cleanParam]) || []}
+      folders={folders || []}
+    >
       <Header
         path={param}
         templates={getPossibleTemplates(allCollections)}
         createNewFolder={() => setCreating(true)}
       />
       {allCollections ? (
-        <SandboxGrid>
-          {creating && <FolderCard key="fake" newFolder={createNewFolder} />}
-          {getFoldersByPath.map(folder => (
-            <FolderCard key={folder.id} {...folder} />
-          ))}
-          {sandboxes.ALL &&
-            sandboxes.ALL[cleanParam] &&
-            sandboxes.ALL[cleanParam].map(sandbox => (
-              <Sandbox key={sandbox.id} sandbox={sandbox} />
-            ))}
-        </SandboxGrid>
+        <VariableGrid items={items} />
       ) : (
-        <SandboxGrid>
-          {Array.from(Array(8).keys()).map(n => (
-            <Column key={n}>
-              <SkeletonCard />
-            </Column>
-          ))}
-        </SandboxGrid>
+        <SkeletonGrid count={8} />
       )}
-    </Element>
+    </SelectionProvider>
   );
 };
 

@@ -1,4 +1,13 @@
-import gql from 'graphql-tag';
+import { gql } from 'overmind-graphql';
+
+export const codeReferenceMetadataFragment = gql`
+  fragment CodeReferenceMetadata on CodeReferenceMetadata {
+    anchor
+    code
+    head
+    path
+  }
+`;
 
 export const commentFragment = gql`
   fragment Comment on Comment {
@@ -11,10 +20,7 @@ export const commentFragment = gql`
       id
       metadata {
         ... on CodeReferenceMetadata {
-          anchor
-          code
-          head
-          path
+          ...CodeReferenceMetadata
         }
       }
       resource
@@ -31,6 +37,7 @@ export const commentFragment = gql`
     }
     replyCount
   }
+  ${codeReferenceMetadataFragment}
 `;
 
 export const commentWithRepliesFragment = gql`
@@ -44,10 +51,7 @@ export const commentWithRepliesFragment = gql`
       id
       metadata {
         ... on CodeReferenceMetadata {
-          anchor
-          code
-          head
-          path
+          ...CodeReferenceMetadata
         }
       }
       resource
@@ -68,4 +72,5 @@ export const commentWithRepliesFragment = gql`
     }
   }
   ${commentFragment}
+  ${codeReferenceMetadataFragment}
 `;

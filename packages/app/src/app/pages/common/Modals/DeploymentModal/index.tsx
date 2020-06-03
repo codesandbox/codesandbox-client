@@ -4,7 +4,7 @@ import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Alert } from '../Common/Alert';
-import { ZeitIcon } from './ZeitLogo';
+import { VercelIcon } from './VercelLogo';
 
 export const DeploymentModal: FunctionComponent = () => {
   const {
@@ -14,7 +14,7 @@ export const DeploymentModal: FunctionComponent = () => {
     },
     actions: {
       deployment: { deployClicked },
-      signInZeitClicked,
+      signInVercelClicked,
     },
   } = useOvermind();
 
@@ -23,14 +23,14 @@ export const DeploymentModal: FunctionComponent = () => {
   }
 
   const {
-    integrations: { zeit },
+    integrations: { zeit: vercel },
   } = user;
-  const zeitSignedIn = Boolean(zeit);
+  const vercelSignedIn = Boolean(vercel);
 
   return (
     <Alert
       title="Deployment"
-      description="Deploy a production version of your Sandbox to ZEIT Now"
+      description="Deploy a production version of your Sandbox to Vercel"
     >
       {url ? (
         <Element marginBottom={4}>
@@ -44,7 +44,7 @@ export const DeploymentModal: FunctionComponent = () => {
             You can manage your deployments{' '}
             <Link
               variant="muted"
-              href="https://zeit.co/dashboard"
+              href="https://vercel.com/dashboard"
               target="_blank"
               rel="noreferrer noopener"
             >
@@ -63,21 +63,21 @@ export const DeploymentModal: FunctionComponent = () => {
             borderRadius: 'medium',
           })}
         >
-          <ZeitIcon />
+          <VercelIcon />
           <Element paddingLeft={4}>
-            {zeitSignedIn ? (
+            {vercelSignedIn ? (
               <>
                 <Text size={3} block paddingBottom={1} variant="muted">
                   Signed in with
                 </Text>
-                <Text size={3}>{zeit.email || 'Loading...'}</Text>
+                <Text size={3}>{vercel.email || 'Loading...'}</Text>
               </>
             ) : (
               <>
                 <Text size={3} block paddingBottom={1}>
                   Please sign in
                 </Text>
-                <Button onClick={signInZeitClicked}>Sign In</Button>
+                <Button onClick={signInVercelClicked}>Sign In</Button>
               </>
             )}
           </Element>
@@ -87,10 +87,10 @@ export const DeploymentModal: FunctionComponent = () => {
         <Button
           css={css({ width: 'auto' })}
           onClick={() => {
-            track('Deploy Clicked', { provider: 'zeit' });
+            track('Deploy Clicked', { provider: 'vercel' });
             deployClicked();
           }}
-          disabled={!zeitSignedIn || deploying}
+          disabled={!vercelSignedIn || deploying}
         >
           {deploying ? 'Deploying' : 'Deploy Sandbox'}
         </Button>

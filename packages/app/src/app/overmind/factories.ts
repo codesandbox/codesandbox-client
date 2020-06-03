@@ -1,13 +1,14 @@
 import { Contributor, PermissionType } from '@codesandbox/common/lib/types';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { identify } from '@codesandbox/common/lib/utils/analytics';
-import { IDerive, IState } from 'overmind';
+import { IState } from 'overmind';
 
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { AsyncAction } from '.';
 
 export const TEAM_ID_LOCAL_STORAGE = 'codesandbox-selected-team-id';
+
 /*
   Ensures that we have loaded the app with the initial user
   and settings
@@ -70,7 +71,8 @@ export const withLoadApp = <T>(
         state.dashboard.activeTeam = localStorageTeam;
       }
       try {
-        actions.internal.trackCurrentTeams();
+        actions.internal.trackCurrentTeams().catch(e => {});
+        actions.internal.identifyCurrentUser().catch(e => {});
       } catch (e) {
         // Not majorly important
       }
@@ -172,7 +174,7 @@ export const createModals = <
   state: {
     current: keyof T | null;
   } & {
-    [K in keyof T]: T[K]['state'] & { isCurrent: IDerive<any, any, boolean> };
+    [K in keyof T]: T[K]['state'] & { isCurrent: boolean };
   };
   actions: {
     [K in keyof T]: {

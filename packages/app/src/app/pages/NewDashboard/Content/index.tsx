@@ -19,16 +19,14 @@ export const Content = () => {
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.newDashboardMounted();
+    actions.dashboard.dashboardMounted();
   }, [actions.dashboard]);
 
   return (
     <Element
       css={css({
-        maxWidth: 992,
-        paddingX: 4,
         width: '100%',
-        margin: '40px auto',
+        margin: '0 auto',
       })}
     >
       <Switch>

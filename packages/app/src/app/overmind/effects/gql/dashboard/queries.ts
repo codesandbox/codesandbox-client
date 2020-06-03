@@ -20,8 +20,7 @@ import {
   GetTeamQuery,
   GetTeamQueryVariables,
 } from 'app/graphql/types';
-import gql from 'graphql-tag';
-import { Query } from 'overmind-graphql';
+import { gql, Query } from 'overmind-graphql';
 
 import {
   sandboxFragmentDashboard,
@@ -217,6 +216,7 @@ export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
         id
         creatorId
         description
+        inviteToken
         name
         users {
           avatarUrl

@@ -48,6 +48,12 @@ describe('simple-get-require-statements', () => {
     ]);
   });
 
+  it('ignores dependencies with no quotes', () => {
+    const code = `require(test);`;
+
+    expect(getRequireStatements(code)).toStrictEqual([]);
+  });
+
   it('handles a * that looks like a comment', () => {
     const code = `$export($export.S + $export.F * !require('./_iter-detect')(function (iter) { Array.from(iter); }), 'Array', {`;
 

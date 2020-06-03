@@ -1,6 +1,6 @@
-import { SourceMap } from './utils/get-source-map';
-import { LoaderContext } from '../transpiled-module';
 import Manager from '../manager';
+import { LoaderContext } from '../transpiled-module';
+import { SourceMap } from './utils/get-source-map';
 
 export interface TranspilerResult {
   transpiledCode: any;
@@ -29,13 +29,13 @@ export default abstract class Transpiler {
   abstract doTranspilation(
     code: string,
     loaderContext: LoaderContext
-  ): Promise<TranspilerResult>;
+  ): Promise<TranspilerResult> | TranspilerResult;
   /* eslint-enable */
 
   transpile(
     code: string,
     loaderContext: LoaderContext
-  ): Promise<TranspilerResult> {
+  ): Promise<TranspilerResult> | TranspilerResult {
     return this.doTranspilation(code, loaderContext);
   }
 

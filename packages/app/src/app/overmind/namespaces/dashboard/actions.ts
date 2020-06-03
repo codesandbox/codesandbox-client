@@ -9,23 +9,10 @@ import {
 import Fuse from 'fuse.js';
 import { OrderBy, sandboxesTypes } from './state';
 
-const VIEW_MODE_DASHBOARD = 'VIEW_MODE_DASHBOARD';
-
-// DELETE WHEN NEW DASHBOARD ONLINE
 export const dashboardMounted: AsyncAction = async (context, value) => {
   await withLoadApp()(context, value);
 };
 
-export const newDashboardMounted: AsyncAction = withLoadApp(
-  async ({ state, effects }) => {
-    const localStorageViewMode = effects.browser.storage.get(
-      VIEW_MODE_DASHBOARD
-    );
-    if (localStorageViewMode) {
-      state.dashboard.viewMode = localStorageViewMode;
-    }
-  }
-);
 export const sandboxesSelected: Action<{
   sandboxIds: string[];
 }> = ({ state }, { sandboxIds }) => {
@@ -106,7 +93,7 @@ export const viewModeChanged: Action<{ mode: 'grid' | 'list' }> = (
   { mode }
 ) => {
   state.dashboard.viewMode = mode;
-  effects.browser.storage.set(VIEW_MODE_DASHBOARD, mode);
+  effects.browser.storage.set('VIEW_MODE_DASHBOARD', mode);
 };
 
 export const createSandboxClicked: AsyncAction<{
@@ -118,13 +105,25 @@ export const createSandboxClicked: AsyncAction<{
 export const deleteTemplate: AsyncAction<{
   sandboxId: string;
   templateId: string;
-}> = async ({ actions, effects }, { sandboxId, templateId }) => {
+}> = async ({ actions, effects, state }, { sandboxId, templateId }) => {
+  const oldTemplates = {
+    TEMPLATE_START_PAGE: state.dashboard.sandboxes.TEMPLATE_START_PAGE,
+    TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
+  };
+  actions.dashboard.deleteTemplateFromState([sandboxId]);
+
   try {
     effects.analytics.track('Template - Removed', { source: 'Context Menu' });
     await effects.api.deleteTemplate(sandboxId, templateId);
     actions.modalClosed();
     effects.notificationToast.success('Template Deleted');
   } catch (error) {
+    state.dashboard.sandboxes.TEMPLATES = oldTemplates.TEMPLATES
+      ? [...oldTemplates.TEMPLATES]
+      : null;
+    state.dashboard.sandboxes.TEMPLATE_START_PAGE = oldTemplates.TEMPLATE_START_PAGE
+      ? [...oldTemplates.TEMPLATE_START_PAGE]
+      : null;
     effects.notificationToast.error('Could not delete custom template');
   }
 };
@@ -499,9 +498,26 @@ export const deleteSandboxFromState: Action<string[]> = (
   ids.map(id => {
     const values = Object.keys(dashboard.sandboxes).map(type => {
       if (dashboard.sandboxes[type]) {
+        if (!Array.isArray(dashboard.sandboxes[type])) {
+          const folderNames = dashboard.sandboxes[type];
+          const sandboxes = Object.keys(folderNames).map(folderName => ({
+            [folderName]: folderNames[folderName].filter(
+              sandbox => sandbox.id !== id
+            ),
+          }));
+          return {
+            ...dashboard.sandboxes[type],
+            ...sandboxes.reduce(
+              (obj, item) =>
+                Object.assign(obj, {
+                  [Object.keys(item)[0]]: item[Object.keys(item)[0]],
+                }),
+              {}
+            ),
+          };
+        }
         return dashboard.sandboxes[type].filter(sandbox => sandbox.id !== id);
       }
-
       return null;
     });
 
@@ -624,17 +640,19 @@ export const renameFolderInState: Action<{ path: string; newPath: string }> = (
   { path, newPath }
 ) => {
   if (!dashboard.allCollections) return;
-  dashboard.allCollections = dashboard.allCollections.map(folder => {
+  const newFolders = dashboard.allCollections.map(folder => {
     if (folder.path === path) {
+      const split = newPath.split('/');
       return {
         ...folder,
         path: newPath,
-        name,
+        name: split[split.length - 1],
       };
     }
 
     return folder;
   });
+  dashboard.allCollections = newFolders;
 };
 
 export const renameSandbox: AsyncAction<{
@@ -658,6 +676,17 @@ export const renameSandbox: AsyncAction<{
     });
     effects.notificationToast.error('There was a problem renaming you sandbox');
   }
+};
+
+export const moveFolder: AsyncAction<{
+  path: string;
+  newPath: string;
+}> = async ({ state: { dashboard }, actions }, { path, newPath }) => {
+  if (!dashboard.allCollections) return;
+  dashboard.allCollections = dashboard.allCollections.filter(
+    folder => folder.path !== path
+  );
+  actions.dashboard.renameFolder({ path, newPath });
 };
 
 export const renameFolder: AsyncAction<{
@@ -695,7 +724,9 @@ export const deleteFolder: AsyncAction<{
   try {
     await effects.gql.mutations.deleteFolder({
       path,
-      teamId: dashboard.activeTeam,
+      // only way to pass, null is a value in the BE
+      // @ts-ignore
+      teamId: dashboard.activeTeam || undefined,
     });
   } catch {
     dashboard.allCollections = oldCollections;
@@ -854,5 +885,88 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
 
     default:
       break;
+  }
+};
+
+export const addSandboxesToFolder: AsyncAction<{
+  sandboxIds: string[];
+  collectionPath: string;
+}> = async ({ state, effects, actions }, { sandboxIds, collectionPath }) => {
+  const oldSandboxes = state.dashboard.sandboxes;
+  actions.dashboard.deleteSandboxFromState(sandboxIds);
+
+  try {
+    await effects.gql.mutations.addSandboxToFolder({
+      sandboxIds,
+      collectionPath,
+      // only way to pass, null is a value in the BE
+      // @ts-ignore
+      teamId: state.dashboard.activeTeam || undefined,
+    });
+  } catch {
+    state.dashboard.sandboxes = { ...oldSandboxes };
+    effects.notificationToast.error('There was a problem moving your sandbox');
+  }
+};
+
+export const createTeam: AsyncAction<{
+  teamName: string;
+}> = async ({ effects, actions, state }, { teamName }) => {
+  try {
+    const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
+      name: teamName,
+    });
+    state.dashboard.teams = [...state.dashboard.teams, newTeam];
+    actions.dashboard.setActiveTeam({ id: newTeam.id });
+  } catch {
+    effects.notificationToast.error('There was a problem creating your team');
+  }
+};
+
+export const setTeamInfo: AsyncAction<{
+  name: string;
+  description: string | null;
+}> = async ({ effects, state }, { name, description }) => {
+  const oldTeamInfo = state.dashboard.teams.find(team => team.name === name);
+  const oldActiveTeamInfo = state.dashboard.activeTeamInfo;
+  try {
+    await effects.gql.mutations.setTeamName({
+      name,
+      // only way to pass, null is a value in the BE
+      // @ts-ignore
+      teamId: state.dashboard.activeTeam || undefined,
+    });
+
+    if (description) {
+      await effects.gql.mutations.setTeamDescription({
+        description,
+        // only way to pass, null is a value in the BE
+        // @ts-ignore
+        teamId: state.dashboard.activeTeam || undefined,
+      });
+    }
+    state.dashboard.teams = state.dashboard.teams.map(team => {
+      if (team.name === name) {
+        return {
+          ...team,
+          name,
+          description,
+        };
+      }
+
+      return team;
+    });
+
+    state.dashboard.activeTeamInfo = {
+      ...oldActiveTeamInfo,
+      name,
+      description,
+    };
+  } catch (e) {
+    state.dashboard.activeTeamInfo = { ...oldActiveTeamInfo };
+    if (state.dashboard.teams && oldTeamInfo) {
+      state.dashboard.teams = [...state.dashboard.teams, oldTeamInfo];
+    }
+    effects.notificationToast.error('There was a problem renaming your team');
   }
 };

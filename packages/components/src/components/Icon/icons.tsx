@@ -372,3 +372,19 @@ export const gear = props => (
     />
   </Element>
 );
+
+export const edit = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M14.1144 0.618718C13.7727 0.27701 13.2253 0.270414 12.8917 0.603987L12.2877 1.20797L14.7626 3.68285L15.3666 3.07886C15.7002 2.74529 15.6936 2.19786 15.3519 1.85616L14.1144 0.618718ZM14.1586 4.28683L11.6837 1.81196L1.41596 12.0797L0.237445 15.7331L3.89083 14.5546L14.1586 4.28683Z"
+      fill="currentColor"
+    />
+  </Element>
+);

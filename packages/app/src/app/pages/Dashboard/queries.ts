@@ -498,3 +498,12 @@ export const SET_TEAM_DESCRIPTION = gql`
   }
   ${TEAM_FRAGMENT}
 `;
+
+export const SET_TEAM_NAME = gql`
+  mutation SetTeamName($teamId: ID!, $name: String!) {
+    setTeamName(teamId: $teamId, name: $name) {
+      ...Team
+    }
+  }
+  ${TEAM_FRAGMENT}
+`;

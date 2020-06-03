@@ -882,6 +882,10 @@ export type OnSandboxChangedSubscription = {
   __typename?: 'RootSubscriptionType';
 } & { sandboxChanged: { __typename?: 'Sandbox' } & SandboxChangedFragment };
 
+export type CodeReferenceMetadataFragment = {
+  __typename?: 'CodeReferenceMetadata';
+} & Pick<CodeReferenceMetadata, 'anchor' | 'code' | 'head' | 'path'>;
+
 export type CommentFragment = { __typename?: 'Comment' } & Pick<
   Comment,
   'id' | 'content' | 'insertedAt' | 'updatedAt' | 'isResolved' | 'replyCount'
@@ -891,10 +895,9 @@ export type CommentFragment = { __typename?: 'Comment' } & Pick<
         Reference,
         'id' | 'resource' | 'type'
       > & {
-          metadata: { __typename?: 'CodeReferenceMetadata' } & Pick<
-            CodeReferenceMetadata,
-            'anchor' | 'code' | 'head' | 'path'
-          >;
+          metadata: {
+            __typename?: 'CodeReferenceMetadata';
+          } & CodeReferenceMetadataFragment;
         }
     >;
     user: { __typename?: 'User' } & Pick<
@@ -913,10 +916,9 @@ export type CommentWithRepliesFragment = { __typename?: 'Comment' } & Pick<
         Reference,
         'id' | 'resource' | 'type'
       > & {
-          metadata: { __typename?: 'CodeReferenceMetadata' } & Pick<
-            CodeReferenceMetadata,
-            'anchor' | 'code' | 'head' | 'path'
-          >;
+          metadata: {
+            __typename?: 'CodeReferenceMetadata';
+          } & CodeReferenceMetadataFragment;
         }
     >;
     user: { __typename?: 'User' } & Pick<
@@ -1015,6 +1017,15 @@ export type CommentAddedSubscription = {
 
 export type CommentChangedSubscriptionVariables = {
   sandboxId: Scalars['ID'];
+};
+
+export type SetTeamNameMutationVariables = {
+  teamId: Scalars['ID'];
+  name: Scalars['String'];
+};
+
+export type SetTeamNameMutation = { __typename?: 'RootMutationType' } & {
+  setTeamName: { __typename?: 'Team' } & TeamFragment;
 };
 
 export type CommentChangedSubscription = {
@@ -1482,7 +1493,7 @@ export type GetTeamQuery = { __typename?: 'RootQueryType' } & {
       team: Maybe<
         { __typename?: 'Team' } & Pick<
           Team,
-          'id' | 'creatorId' | 'description' | 'name'
+          'id' | 'creatorId' | 'description' | 'name' | 'inviteToken'
         > & {
             users: Array<
               { __typename?: 'User' } & Pick<

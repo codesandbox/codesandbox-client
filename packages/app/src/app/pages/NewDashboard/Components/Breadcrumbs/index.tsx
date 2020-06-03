@@ -3,6 +3,8 @@ import { Text, Link } from '@codesandbox/components';
 import { Link as LinkBase } from 'react-router-dom';
 
 export const Breadcrumbs = ({ param }) => {
+  if (!param) return null;
+
   const makeLink = p =>
     param && param.split('/').length > 2
       ? `/new-dashboard/all/${param
@@ -18,7 +20,7 @@ export const Breadcrumbs = ({ param }) => {
       <Link
         to="/new-dashboard/all/"
         as={LinkBase}
-        variant={param.split('/').length ? 'muted' : 'body'}
+        variant={param && param.split('/').length ? 'muted' : 'body'}
       >
         All Sandboxes {param && ' / '}
       </Link>

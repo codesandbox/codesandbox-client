@@ -154,6 +154,9 @@ export const TemplateList = ({
   useKey(
     'ArrowRight',
     evt => {
+      if ((evt.target as HTMLInputElement).id === 'filter-templates') {
+        return;
+      }
       evt.preventDefault();
       safeSetFocusedTemplate(i => i + 1);
     },
@@ -164,6 +167,9 @@ export const TemplateList = ({
   useKey(
     'ArrowLeft',
     evt => {
+      if ((evt.target as HTMLInputElement).id === 'filter-templates') {
+        return;
+      }
       evt.preventDefault();
       safeSetFocusedTemplate(i => i - 1);
     },
@@ -174,6 +180,9 @@ export const TemplateList = ({
   useKey(
     'ArrowDown',
     evt => {
+      if ((evt.target as HTMLInputElement).id === 'filter-templates') {
+        return;
+      }
       evt.preventDefault();
       const { templateInfo, offset } = getTemplateInfoByIndex(
         focusedTemplateIndex
@@ -238,6 +247,9 @@ export const TemplateList = ({
   useKey(
     'ArrowUp',
     evt => {
+      if ((evt.target as HTMLInputElement).id === 'filter-templates') {
+        return;
+      }
       evt.preventDefault();
       const { templateInfo, offset } = getTemplateInfoByIndex(
         focusedTemplateIndex

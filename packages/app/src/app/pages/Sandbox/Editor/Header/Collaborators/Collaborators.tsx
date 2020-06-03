@@ -19,7 +19,7 @@ const CollaboratorContent = () => {
   );
 
   return (
-    <Container direction="vertical">
+    <Container direction="vertical" style={{ borderRadius: 4 }}>
       <Element padding={4}>
         <LinkPermissions readOnly={!isOwner} />
         {isOwner && (

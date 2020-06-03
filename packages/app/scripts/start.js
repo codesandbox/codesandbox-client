@@ -281,12 +281,14 @@ function runDevServer(port, protocol, index) {
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
     // contentBase: paths.staticPath,
+    public: 'localhost:3000',
     host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.test',
     disableHostCheck: !process.env.LOCAL_SERVER,
     contentBase: false,
     clientLogLevel: 'warning',
     overlay: true,
-    inline: false,
+    inline: true,
+    hot: true,
     liveReload: process.env['DISABLE_REFRESH'] ? false : true,
   });
 

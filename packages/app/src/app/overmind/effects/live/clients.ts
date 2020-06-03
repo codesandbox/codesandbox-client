@@ -1,6 +1,6 @@
 import {
-  logBreadcrumb,
   captureException,
+  logBreadcrumb,
 } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { Blocker, blocker } from 'app/utils/blocker';
 import { TextOperation } from 'ot';
@@ -152,48 +152,54 @@ export class CodeSandboxOTClient extends OTClient {
   }
 }
 
-export default (
-  sendOperation: SendOperation,
-  applyOperation: ApplyOperation
-) => {
-  const modules = new Map<string, CodeSandboxOTClient>();
+export class CodesandboxOTClientsManager {
+  private modules = new Map<string, CodeSandboxOTClient>();
+  private sendOperation: SendOperation;
+  private applyOperation: ApplyOperation;
+  constructor(sendOperation: SendOperation, applyOperation: ApplyOperation) {
+    this.sendOperation = sendOperation;
+    this.applyOperation = applyOperation;
+  }
 
-  return {
-    getAll() {
-      return Array.from(modules.values());
-    },
-    has(moduleShortid: string) {
-      return modules.has(moduleShortid);
-    },
-    get(moduleShortid: string, revision = 0, force = false) {
-      let client = modules.get(moduleShortid);
+  getAll() {
+    return Array.from(this.modules.values());
+  }
 
-      if (!client || force) {
-        client = this.create(moduleShortid, revision);
+  has(moduleShortid: string) {
+    return this.modules.has(moduleShortid);
+  }
+
+  get(moduleShortid, revision = 0, force = false) {
+    let client = this.modules.get(moduleShortid);
+
+    if (!client || force) {
+      client = this.create(moduleShortid, revision);
+    }
+
+    return client!;
+  }
+
+  create(moduleShortid, initialRevision) {
+    const client = new CodeSandboxOTClient(
+      initialRevision || 0,
+      moduleShortid,
+      (revision, operation) =>
+        this.sendOperation(moduleShortid, revision, operation),
+      operation => {
+        this.applyOperation(moduleShortid, operation);
       }
+    );
+    this.modules.set(moduleShortid, client);
 
-      return client!;
-    },
-    create(moduleShortid: string, initialRevision: number) {
-      const client = new CodeSandboxOTClient(
-        initialRevision || 0,
-        moduleShortid,
-        (revision, operation) =>
-          sendOperation(moduleShortid, revision, operation),
-        operation => {
-          applyOperation(moduleShortid, operation);
-        }
-      );
-      modules.set(moduleShortid, client);
+    return client;
+  }
 
-      return client;
-    },
-    reset(moduleShortid: string, revision: number) {
-      modules.delete(moduleShortid);
-      this.create(moduleShortid, revision);
-    },
-    clear() {
-      modules.clear();
-    },
-  };
-};
+  reset(moduleShortid, revision) {
+    this.modules.delete(moduleShortid);
+    this.create(moduleShortid, revision);
+  }
+
+  clear() {
+    this.modules.clear();
+  }
+}

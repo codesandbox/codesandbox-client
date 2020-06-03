@@ -1,12 +1,12 @@
 import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
-import css from '@styled-system/css';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Element, Column } from '@codesandbox/components';
-import { Header } from '../../../Components/Header';
-import { SandboxGrid } from '../../../Components/SandboxGrid';
-import { Sandbox } from '../../../Components/Sandbox';
-import { SkeletonCard } from '../../../Components/SandboxCard';
+import { Header } from 'app/pages/NewDashboard/Components/Header';
+import {
+  VariableGrid,
+  SkeletonGrid,
+} from 'app/pages/NewDashboard/Components/VariableGrid';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 
 export const Templates = () => {
   const {
@@ -21,23 +21,38 @@ export const Templates = () => {
   }, [actions.dashboard]);
 
   return (
-    <Element css={css({ position: 'relative' })}>
+    <SelectionProvider
+      sandboxes={
+        sandboxes.TEMPLATES &&
+        sandboxes.TEMPLATES.map(template => {
+          const { sandbox, ...templateValues } = template;
+          return {
+            ...sandbox,
+            isTemplate: true,
+            template: templateValues,
+          };
+        })
+      }
+    >
       <Header title="Templates" templates={[]} />
       {sandboxes.TEMPLATES ? (
-        <SandboxGrid>
-          {sandboxes.TEMPLATES.map(({ sandbox }) => (
-            <Sandbox template sandbox={sandbox} key={sandbox.id} />
-          ))}
-        </SandboxGrid>
+        <VariableGrid
+          items={
+            sandboxes.TEMPLATES &&
+            sandboxes.TEMPLATES.map(template => {
+              const { sandbox, ...templateValues } = template;
+              return {
+                ...sandbox,
+                type: 'sandbox',
+                isTemplate: true,
+                template: templateValues,
+              };
+            })
+          }
+        />
       ) : (
-        <SandboxGrid>
-          {Array.from(Array(8).keys()).map(n => (
-            <Column key={n}>
-              <SkeletonCard />
-            </Column>
-          ))}
-        </SandboxGrid>
+        <SkeletonGrid count={8} />
       )}
-    </Element>
+    </SelectionProvider>
   );
 };

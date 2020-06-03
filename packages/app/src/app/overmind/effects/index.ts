@@ -14,7 +14,7 @@ export { default as http } from './http';
 export { default as analytics } from './analytics';
 export { default as notificationToast } from './notificationToast';
 export { default as vscode } from './vscode';
-export { default as zeit } from './zeit';
+export { default as vercel } from './vercel';
 export { default as netlify } from './netlify';
 export { default as prettyfier } from './prettyfier';
 export { default as zip } from './zip';

@@ -23,10 +23,7 @@ function Dependencies({ sandbox }) {
     <Container>
       {Object.keys(npmDependencies).map(dep => (
         <Row key={dep}>
-          <Link
-            href={`/examples/package/${dep}`}
-            target="_blank"
-          >
+          <Link href={`/examples/package/${dep}`} target="_blank">
             {dep}
           </Link>
           <span>{formatVersion(npmDependencies[dep])}</span>

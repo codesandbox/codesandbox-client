@@ -50,13 +50,13 @@ recommend using a container sandbox.
 
 ## Can I change the Node version used in a container sandbox?
 
-Container sandboxes run Node v10.18.1 by default. While this system version
-can't be changed, you can instead make use of the
+Container sandboxes run Node v10.20.1 (LTS) by default. While this system
+version can't be changed, you can instead make use of the
 [node](https://www.npmjs.com/package/node) package. Add the version of the node
 package you would like to use to your sandbox in the same way you would any
-other package. Since npm runs scripts with the local `./node_modules/.bin` in
-the `PATH` ahead of the system copy, this means you can use this local version
-of node instead of the system version.
+other package. Then update the path to node you use to make use of this local
+version of node instead of the system version. Here's a
+[working example](https://codesandbox.io/s/node-custom-version-j7xvv).
 
 ## Can I open the terminal or console or test panel instead of the browser in a sandbox?
 
@@ -67,6 +67,12 @@ right in the list of tabs is what opens first when other folks view the sandbox.
 The ordering is maintained within the sandbox. You can also achieve this change
 by setting a value for "view" in a
 [sandbox config file](/docs/configuration#sandbox-configuration).
+
+## How do I change the font used in the editor?
+
+Ensure the font you want to use has been installed on your computer, then put
+the name of it first in the comma-separated list under 'Editor: Font Family'
+from File > Preferences > Settings in the editor.
 
 ## Are there any limitations with sandboxes?
 
@@ -118,7 +124,13 @@ avatar menu. After completing that you need to reload the browser and select
 
 ## I can't edit my code because of an infinite loop
 
-While we do have infinite loop protection as a [configurable option](https://codesandbox.io/docs/configuration) it doesn't prevent all scenarios where infinite loops can occur, such as with incomplete code. When this happens, you can append `runonclick=1` to the editor URL to stop the code from being automatically executed enabling you to edit your code to resolve it. For example: [https://codesandbox.io/s/new?runonclick=1](https://codesandbox.io/s/new?runonclick=1)
+While we do have infinite loop protection as a
+[configurable option](https://codesandbox.io/docs/configuration) it doesn't
+prevent all scenarios where infinite loops can occur, such as with incomplete
+code. When this happens, you can append `runonclick=1` to the editor URL to stop
+the code from being automatically executed enabling you to edit your code to
+resolve it. For example:
+[https://codesandbox.io/s/new?runonclick=1](https://codesandbox.io/s/new?runonclick=1)
 
 ## How do I cancel my Pro or Patron plan?
 

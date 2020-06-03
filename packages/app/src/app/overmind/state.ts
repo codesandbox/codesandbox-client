@@ -4,14 +4,13 @@ import {
   Sandbox,
   UploadFile,
 } from '@codesandbox/common/lib/types';
-
-import { Derive } from '.';
+import { derived } from 'overmind';
 import { hasLogIn } from './utils/user';
 
 type State = {
-  isPatron: Derive<State, boolean>;
+  isPatron: boolean;
   isFirstVisit: boolean;
-  isLoggedIn: Derive<State, boolean>;
+  isLoggedIn: boolean;
   hasLogIn: boolean;
   popularSandboxes: Sandbox[] | null;
   hasLoadedApp: boolean;
@@ -24,7 +23,7 @@ type State = {
   notifications: Notification[];
   isLoadingCLI: boolean;
   isLoadingGithub: boolean;
-  isLoadingZeit: boolean;
+  isLoadingVercel: boolean;
   contextMenu: {
     show: boolean;
     items: string[];
@@ -37,20 +36,26 @@ type State = {
   maxStorage: number;
   usedStorage: number;
   updateStatus: string | null;
-  isContributor: Derive<State, (username: String) => boolean>;
+  isContributor: (username: String) => boolean;
+  signInModalOpen: boolean;
+  redirectOnLogin: string | null;
 };
 
 export const state: State = {
   isFirstVisit: false,
-  isPatron: ({ user }) =>
-    Boolean(user && user.subscription && user.subscription.since),
-  isLoggedIn: ({ user }) => hasLogIn() && Boolean(user),
-  hasLogIn: hasLogIn(),
-  isContributor: ({ contributors }) => username =>
+  isPatron: derived(({ user }: State) =>
+    Boolean(user && user.subscription && user.subscription.since)
+  ),
+  isLoggedIn: derived(({ jwt, user }: State) => hasLogIn() && Boolean(user)),
+  // TODO: Should not reference store directly here, rather initialize
+  // the state with "onInitialize" setting the jwt
+  hasLogIn: derived(({ jwt }: State) => hasLogIn()),
+  isContributor: derived(({ contributors }: State) => username =>
     contributors.findIndex(
       contributor =>
         contributor.toLocaleLowerCase() === username.toLocaleLowerCase()
-    ) > -1,
+    ) > -1
+  ),
   popularSandboxes: null,
   hasLoadedApp: false,
   isAuthenticating: true,
@@ -60,7 +65,7 @@ export const state: State = {
   connected: true,
   notifications: [],
   contributors: [],
-  isLoadingZeit: false,
+  isLoadingVercel: false,
   isLoadingCLI: false,
   isLoadingGithub: false,
   contextMenu: {
@@ -75,4 +80,6 @@ export const state: State = {
   maxStorage: 0,
   usedStorage: 0,
   updateStatus: null,
+  signInModalOpen: false,
+  redirectOnLogin: null,
 };

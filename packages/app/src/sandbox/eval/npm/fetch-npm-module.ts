@@ -271,15 +271,20 @@ function resolvePath(
   path: string,
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: Array<string> = ['js', 'jsx', 'json'],
+  defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs'],
   meta = {}
 ): Promise<string> {
   const currentPath = currentTModule.module.path;
 
-  const isFile = (p, c, cb) => {
+  const isFile = (p: string, c?: any, cb?: any): any => {
     const callback = cb || c;
 
-    callback(null, Boolean(manager.transpiledModules[p]) || Boolean(meta[p]));
+    const result = Boolean(manager.transpiledModules[p]) || Boolean(meta[p]);
+    if (!callback) {
+      return result;
+    }
+
+    return callback(null, result);
   };
 
   return new Promise((res, reject) => {
@@ -288,7 +293,7 @@ function resolvePath(
       {
         filename: currentPath,
         extensions: defaultExtensions.map(ext => '.' + ext),
-        packageFilter,
+        packageFilter: packageFilter(isFile),
         moduleDirectory: [
           'node_modules',
           manager.envVariables.NODE_PATH,
@@ -380,7 +385,7 @@ type DependencyVersionResult =
 async function getDependencyVersion(
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: string[] = ['js', 'jsx', 'json'],
+  defaultExtensions: string[] = ['js', 'jsx', 'json', 'mjs'],
   dependencyName: string
 ): Promise<DependencyVersionResult | null> {
   const { manifest } = manager;
@@ -470,7 +475,7 @@ export default async function fetchModule(
   path: string,
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: Array<string> = ['js', 'jsx', 'json']
+  defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs']
 ): Promise<Module> {
   const currentPath = currentTModule.module.path;
   // Get the last part of the path as dependency name for paths like
