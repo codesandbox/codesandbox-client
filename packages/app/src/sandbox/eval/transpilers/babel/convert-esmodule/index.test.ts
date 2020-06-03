@@ -296,7 +296,7 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
-  it('handles default function exports', () => {
+  it('changes default imports inline', () => {
     const code = `
     import rgb from './rgb';
 
