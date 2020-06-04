@@ -1,4 +1,4 @@
-import { global, ANONYMOUS_UID_KEY } from './utils';
+import { debug, global, ANONYMOUS_UID_KEY } from './utils';
 
 let _script;
 const _veroq: any[] = [
@@ -66,6 +66,8 @@ export const setUserId = (userId: string, email: string) => {
     _script = loadScript();
   }
 
+  debug(`[Vero] Identifying user`);
+
   _veroq.push([
     'user',
     {
@@ -77,6 +79,7 @@ export const setUserId = (userId: string, email: string) => {
   try {
     const anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);
     if (anonymousUid) {
+      debug(`[Vero] Reidentifying from ${anonymousUid} to ${userId}`);
       _veroq.push(['reidentify', userId, anonymousUid]);
     }
   } catch (e) {
