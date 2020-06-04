@@ -24,50 +24,10 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
     sandbox.source.template
   );
 
-  const [edit, setEdit] = React.useState(false);
-  const [newTitle, setNewTitle] = React.useState(sandboxTitle);
-
   const url = sandboxUrl({
     id: sandbox.id,
     alias: sandbox.alias,
   });
-
-  /* Edit logic */
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTitle(event.target.value);
-  };
-  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.keyCode === ESC) {
-      // Reset value and exit without saving
-      setNewTitle(sandboxTitle);
-      setEdit(false);
-    }
-  };
-
-  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
-    if (event) event.preventDefault();
-    await actions.dashboard.renameSandbox({
-      id: sandbox.id,
-      title: newTitle,
-      oldTitle: sandboxTitle,
-    });
-    setEdit(false);
-  };
-
-  const onInputBlur = () => {
-    // save value when you click outside or tab away
-    onSubmit();
-  };
-
-  const inputRef = React.useRef(null);
-  const enterEditing = () => {
-    setEdit(true);
-    // Menu defaults to sending focus back to Menu Button
-    // Send focus to input in the next tick
-    // after menu is done closing.
-    setTimeout(() => inputRef.current.focus());
-  };
 
   /* Drag logic */
 
@@ -113,6 +73,8 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
     onDrop,
     thumbnailRef,
     isDragging: isAnythingDragging,
+    isRenaming,
+    setRenaming,
   } = useSelection();
 
   const selected = selectedIds.includes(sandbox.id);
@@ -137,9 +99,41 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
     }
   };
 
+  /* Edit logic */
+
+  const [newTitle, setNewTitle] = React.useState(sandboxTitle);
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTitle(event.target.value);
+  };
+  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === ESC) {
+      // Reset value and exit without saving
+      setNewTitle(sandboxTitle);
+      setRenaming(false);
+    }
+  };
+
+  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
+    if (event) event.preventDefault();
+    await actions.dashboard.renameSandbox({
+      id: sandbox.id,
+      title: newTitle,
+      oldTitle: sandboxTitle,
+    });
+    setRenaming(false);
+  };
+
+  const onInputBlur = () => {
+    // save value when you click outside or tab away
+    onSubmit();
+  };
+
   const interactionProps = {
     tabIndex: 0, // make div focusable
-    style: { outline: 'none' }, // we handle outline with border
+    style: {
+      outline: 'none',
+    }, // we handle outline with border
     selected,
     onClick,
     onMouseDown,
@@ -156,14 +150,12 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
     isTemplate,
     TemplateIcon: UserIcon,
     // edit mode
-    edit,
+    editing: isRenaming && selected,
     newTitle,
-    inputRef,
     onChange,
     onInputKeyDown,
     onSubmit,
     onInputBlur,
-    enterEditing,
     // drag preview
     thumbnailRef,
     opacity: isDragging ? 0.25 : 1,
@@ -174,13 +166,21 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
   };
 
   React.useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true });
+    preview(getEmptyImage(), {
+      captureDraggingState: true,
+    });
   }, [preview]);
 
   const resizing = useResizing();
   const motionProps = resizing
     ? {}
-    : { layoutTransition: { type: 'spring', damping: 300, stiffness: 300 } };
+    : {
+        layoutTransition: {
+          type: 'spring',
+          damping: 300,
+          stiffness: 300,
+        },
+      };
 
   return (
     <>

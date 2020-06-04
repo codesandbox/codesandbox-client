@@ -26,68 +26,6 @@ export const Folder = ({
 
   const location = useLocation();
 
-  /* Edit logic */
-  const [editing, setEditing] = React.useState(isNewFolder || false);
-  const [newName, setNewName] = React.useState(name);
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewName(event.target.value);
-  };
-  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.keyCode === ESC) {
-      // Reset value and exit without saving
-      setNewName(name);
-      setEditing(false);
-      setCreating(false);
-    }
-  };
-
-  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
-    if (event) event.preventDefault();
-
-    if (name === newName) {
-      // do nothing
-    } else if (isNewFolder) {
-      if (newName) {
-        const folderLocation = location.pathname.split(
-          '/new-dashboard/all/'
-        )[1];
-
-        let folderPath = '';
-        if (folderLocation) folderPath += '/' + folderLocation;
-        folderPath += '/' + newName;
-
-        await actions.dashboard.createFolder(folderPath);
-      }
-    } else {
-      await actions.dashboard.renameFolder({
-        path,
-        newPath: join(dirname(path), newName),
-      });
-    }
-
-    setCreating(false);
-    return setEditing(false);
-  };
-
-  const onInputBlur = () => {
-    // save value when you click outside or tab away
-    onSubmit();
-  };
-
-  const inputRef = React.useRef(null);
-  const enterEditing = () => {
-    setEditing(true);
-    // Menu defaults to sending focus back to Menu Button
-    // Send focus to input in the next tick
-    // after menu is done closing.
-    setTimeout(() => inputRef.current.focus());
-  };
-  // If it's a new folder, enter editing and focus on render
-  React.useEffect(() => {
-    if (isNewFolder) enterEditing();
-  }, [isNewFolder]);
-
   /* View logic */
 
   let viewMode: string;
@@ -110,6 +48,8 @@ export const Folder = ({
     onDrop,
     thumbnailRef,
     isDragging: isAnythingDragging,
+    isRenaming,
+    setRenaming,
   } = useSelection();
 
   const selected = selectedIds.includes(path);
@@ -193,6 +133,60 @@ export const Folder = ({
     preview(getEmptyImage(), { captureDraggingState: true });
   }, [preview]);
 
+  /* Edit logic */
+  const [newName, setNewName] = React.useState(name);
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewName(event.target.value);
+  };
+  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === ESC) {
+      // Reset value and exit without saving
+      setNewName(name);
+      setRenaming(false);
+      if (setCreating) setCreating(false);
+    }
+  };
+
+  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
+    if (event) event.preventDefault();
+
+    if (name === newName) {
+      // nothing to do here
+    } else if (isNewFolder) {
+      if (newName) {
+        const folderLocation = location.pathname.split(
+          '/new-dashboard/all/'
+        )[1];
+
+        let folderPath = '';
+        if (folderLocation) folderPath += '/' + folderLocation;
+        folderPath += '/' + newName;
+
+        await actions.dashboard.createFolder(folderPath);
+      }
+    } else {
+      await actions.dashboard.renameFolder({
+        path,
+        newPath: join(dirname(path), newName),
+      });
+    }
+
+    if (setCreating) setCreating(false);
+    return setRenaming(false);
+  };
+
+  const onInputBlur = () => {
+    // save value when you click outside or tab away
+    setRenaming(false);
+    onSubmit();
+  };
+
+  // If it's a new folder, enter editing and focus on render
+  React.useEffect(() => {
+    if (isNewFolder) setRenaming(true);
+  }, [isNewFolder, setRenaming]);
+
   const folderProps = {
     name,
     path,
@@ -200,11 +194,9 @@ export const Folder = ({
     onClick,
     onDoubleClick,
     // edit mode
-    editing,
-    enterEditing,
+    editing: isRenaming && selected,
     isNewFolder,
     newName,
-    inputRef,
     onChange,
     onInputKeyDown,
     onSubmit,
