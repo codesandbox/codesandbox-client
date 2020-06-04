@@ -1,4 +1,4 @@
-import { global } from './utils';
+import { global, ANONYMOUS_UID_KEY } from './utils';
 
 let _script;
 const _veroq: any[] = [
@@ -46,16 +46,10 @@ function loadScript() {
     });
 }
 
-let _hasSetAnonymousUserId = false;
-let _anonymousUserId = null;
-
 export const setAnonymousUserId = (userId: string) => {
   if (!_script) {
     _script = loadScript();
   }
-
-  _hasSetAnonymousUserId = true;
-  _anonymousUserId = userId;
 
   _veroq.push([
     'user',
@@ -80,8 +74,13 @@ export const setUserId = (userId: string, email: string) => {
     },
   ]);
 
-  if (_hasSetAnonymousUserId) {
-    _veroq.push(['reidentify', userId, _anonymousUserId]);
+  try {
+    const anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);
+    if (anonymousUid) {
+      _veroq.push(['reidentify', userId, anonymousUid]);
+    }
+  } catch (e) {
+    /* Ignore */
   }
 
   processArray();
