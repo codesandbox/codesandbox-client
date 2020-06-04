@@ -113,7 +113,7 @@ const SandboxMenu = ({
   setRenaming,
 }: {
   sandbox: SandboxItemType;
-  setRenaming: () => void;
+  setRenaming: (renaming: boolean) => void;
 }) => {
   const { effects, actions } = useOvermind();
   const history = useHistory();
@@ -220,6 +220,7 @@ const SandboxMenu = ({
 
 const FolderMenu = ({ folder, setRenaming }) => {
   const { actions } = useOvermind();
+
   return (
     <>
       <MenuItem onClick={() => setRenaming(true)}>Rename folder</MenuItem>
