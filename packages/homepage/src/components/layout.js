@@ -50,6 +50,63 @@ export const useTheme = () => homepageTheme;
 const TemplateWrapper = ({ children, noWrapperStyling }) => (
   <ThemeProvider theme={homepageTheme}>
     <div>
+      <div
+        css={`
+          padding: 16px;
+          text-align: center;
+          font-weight: bold;
+          font-family: Inter, sans-serif;
+        `}
+      >
+        <div
+          css={`
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            @media screen and (max-width: 768px) {
+              flex-direction: column;
+            }
+          `}
+        >
+          <span>Black Lives Matter.</span>
+          <a
+            css={`
+              margin-left: 8px;
+              padding-left: 8px;
+              padding-right: 8px;
+              padding-top: 0px;
+              padding-bottom: 0px;
+              background: #0971f1;
+              color: rgb(255, 255, 255);
+              display: inline-flex;
+              justify-content: center;
+              align-items: center;
+              cursor: pointer;
+              height: 26px;
+              width: 100%;
+              font-size: 13px;
+              font-weight: 500;
+              line-height: 1;
+              flex: 0 0 auto;
+              border-radius: 2px;
+              transition: all 100ms ease-in 0s;
+              text-decoration: none;
+              width: auto;
+
+              @media screen and (max-width: 768px) {
+                margin: 0;
+                margin-top: 16px;
+              }
+            `}
+            href="https://support.eji.org/give/153413/#!/donation/checkout"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Support the Equal Justice Initiative
+          </a>
+        </div>
+      </div>
       <div style={{ position: 'absolute', left: 0, right: 0, zIndex: 10 }}>
         <VisuallyHidden as="a" href="#main">
           Skip to main content
