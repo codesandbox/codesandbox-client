@@ -5,6 +5,7 @@ import css from '@styled-system/css';
 export const FolderCard = ({
   name,
   path,
+  isDrafts,
   numberOfSandboxes,
   // interactions
   selected,
@@ -93,7 +94,7 @@ export const FolderCard = ({
           {name}
         </Text>
       )}
-      {!isNewFolder ? (
+      {!(isNewFolder || isDrafts) ? (
         <IconButton
           name="more"
           size={9}
