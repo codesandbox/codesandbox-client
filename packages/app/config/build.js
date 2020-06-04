@@ -10,6 +10,10 @@ const staticAssets = [
     to: 'public/vscode-extensions/v13',
   },
   !SANDBOX_ONLY && {
+    from: 'node_modules/vscode-oniguruma/release/onig.wasm',
+    to: 'public/vscode-oniguruma/1.3.1/onig.wasm',
+  },
+  !SANDBOX_ONLY && {
     from: 'node_modules/onigasm/lib/onigasm.wasm',
     to: 'public/onigasm/2.2.1/onigasm.wasm',
   },
