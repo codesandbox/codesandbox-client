@@ -5,6 +5,7 @@ import css from '@styled-system/css';
 export const FolderCard = ({
   name,
   path,
+  isDrafts,
   numberOfSandboxes,
   // interactions
   selected,
@@ -13,10 +14,8 @@ export const FolderCard = ({
   onContextMenu,
   // editing
   editing,
-  enterEditing,
   isNewFolder,
   newName,
-  inputRef,
   onChange,
   onInputKeyDown,
   onSubmit,
@@ -83,8 +82,8 @@ export const FolderCard = ({
       {editing ? (
         <form onSubmit={onSubmit}>
           <Input
+            autoFocus
             value={newName}
-            ref={inputRef}
             onChange={onChange}
             onKeyDown={onInputKeyDown}
             onBlur={onInputBlur}
@@ -95,7 +94,7 @@ export const FolderCard = ({
           {name}
         </Text>
       )}
-      {!isNewFolder ? (
+      {!(isNewFolder || isDrafts) ? (
         <IconButton
           name="more"
           size={9}

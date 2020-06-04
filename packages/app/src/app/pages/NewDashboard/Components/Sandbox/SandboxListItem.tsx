@@ -17,7 +17,6 @@ import css from '@styled-system/css';
 export const SandboxListItem = ({
   sandbox,
   sandboxTitle,
-  isTemplate = false,
   // interactions
   selected,
   onClick,
@@ -26,14 +25,12 @@ export const SandboxListItem = ({
   onKeyDown,
   onContextMenu,
   // edit mode
+  editing,
   newTitle,
-  edit,
-  inputRef,
   onChange,
   onInputKeyDown,
   onSubmit,
   onInputBlur,
-  enterEditing,
   // drag preview
   thumbnailRef,
   opacity,
@@ -81,11 +78,11 @@ export const SandboxListItem = ({
             })}
           />
           <Element style={{ width: 150 }}>
-            {edit ? (
+            {editing ? (
               <form onSubmit={onSubmit}>
                 <Input
+                  autoFocus
                   value={newTitle}
-                  ref={inputRef}
                   onChange={onChange}
                   onKeyDown={onInputKeyDown}
                   onBlur={onInputBlur}

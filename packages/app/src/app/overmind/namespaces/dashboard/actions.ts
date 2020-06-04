@@ -611,16 +611,43 @@ export const renameSandboxInState: Action<{
 }> = ({ state: { dashboard } }, { id, title }) => {
   const values = Object.keys(dashboard.sandboxes).map(type => {
     if (dashboard.sandboxes[type]) {
-      return dashboard.sandboxes[type].map(sandbox => {
-        if (sandbox.id === id) {
-          return {
-            ...sandbox,
-            title,
-          };
-        }
+      if (Array.isArray(dashboard.sandboxes[type])) {
+        return dashboard.sandboxes[type].map(sandbox => {
+          if (sandbox.id === id) {
+            return {
+              ...sandbox,
+              title,
+            };
+          }
 
-        return sandbox;
-      });
+          return sandbox;
+        });
+      }
+
+      const folderNames = dashboard.sandboxes[type];
+      const sandboxes = Object.keys(folderNames).map(folderName => ({
+        [folderName]: folderNames[folderName].map(sandbox => {
+          if (sandbox.id === id) {
+            return {
+              ...sandbox,
+              title,
+            };
+          }
+
+          return sandbox;
+        }),
+      }));
+
+      return {
+        ...dashboard.sandboxes[type],
+        ...sandboxes.reduce(
+          (obj, item) =>
+            Object.assign(obj, {
+              [Object.keys(item)[0]]: item[Object.keys(item)[0]],
+            }),
+          {}
+        ),
+      };
     }
 
     return null;
@@ -906,5 +933,67 @@ export const addSandboxesToFolder: AsyncAction<{
   } catch {
     state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error('There was a problem moving your sandbox');
+  }
+};
+
+export const createTeam: AsyncAction<{
+  teamName: string;
+}> = async ({ effects, actions, state }, { teamName }) => {
+  try {
+    const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
+      name: teamName,
+    });
+    state.dashboard.teams = [...state.dashboard.teams, newTeam];
+    actions.dashboard.setActiveTeam({ id: newTeam.id });
+  } catch {
+    effects.notificationToast.error('There was a problem creating your team');
+  }
+};
+
+export const setTeamInfo: AsyncAction<{
+  name: string;
+  description: string | null;
+}> = async ({ effects, state }, { name, description }) => {
+  const oldTeamInfo = state.dashboard.teams.find(team => team.name === name);
+  const oldActiveTeamInfo = state.dashboard.activeTeamInfo;
+  try {
+    await effects.gql.mutations.setTeamName({
+      name,
+      // only way to pass, null is a value in the BE
+      // @ts-ignore
+      teamId: state.dashboard.activeTeam || undefined,
+    });
+
+    if (description) {
+      await effects.gql.mutations.setTeamDescription({
+        description,
+        // only way to pass, null is a value in the BE
+        // @ts-ignore
+        teamId: state.dashboard.activeTeam || undefined,
+      });
+    }
+    state.dashboard.teams = state.dashboard.teams.map(team => {
+      if (team.name === name) {
+        return {
+          ...team,
+          name,
+          description,
+        };
+      }
+
+      return team;
+    });
+
+    state.dashboard.activeTeamInfo = {
+      ...oldActiveTeamInfo,
+      name,
+      description,
+    };
+  } catch (e) {
+    state.dashboard.activeTeamInfo = { ...oldActiveTeamInfo };
+    if (state.dashboard.teams && oldTeamInfo) {
+      state.dashboard.teams = [...state.dashboard.teams, oldTeamInfo];
+    }
+    effects.notificationToast.error('There was a problem renaming your team');
   }
 };

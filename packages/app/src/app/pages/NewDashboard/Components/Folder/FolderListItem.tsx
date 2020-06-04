@@ -13,6 +13,7 @@ import css from '@styled-system/css';
 export const FolderListItem = ({
   name,
   path,
+  isDrafts,
   numberOfSandboxes,
   // interactions
   selected,
@@ -21,10 +22,8 @@ export const FolderListItem = ({
   onContextMenu,
   // editing
   editing,
-  enterEditing,
   isNewFolder,
   newName,
-  inputRef,
   onChange,
   onInputKeyDown,
   onSubmit,
@@ -79,8 +78,8 @@ export const FolderListItem = ({
             {editing ? (
               <form onSubmit={onSubmit}>
                 <Input
+                  autoFocus
                   value={newName}
-                  ref={inputRef}
                   onChange={onChange}
                   onKeyDown={onInputKeyDown}
                   onBlur={onInputBlur}
@@ -95,7 +94,7 @@ export const FolderListItem = ({
         </Stack>
       </Column>
       <Column span={[0, 4, 4]} as={Stack} align="center">
-        {!isNewFolder ? (
+        {!(isNewFolder || isDrafts) ? (
           <Text size={3} block variant="muted">
             {numberOfSandboxes || 0}{' '}
             {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}

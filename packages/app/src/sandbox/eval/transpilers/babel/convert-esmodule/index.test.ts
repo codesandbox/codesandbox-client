@@ -209,6 +209,13 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('generates parseable var name with @', () => {
+    const code = `
+    import { a } from './a-@kjaw';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('handles re-exports in named exports with a alias', () => {
     const code = `
     import { a } from './b';
@@ -223,6 +230,13 @@ describe('convert-esmodule', () => {
     import * as React from 'react';
 
     console.log(React.Component);
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles multiple var exports', () => {
+    const code = `
+    export const a = 5, b = 6;
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });
@@ -265,6 +279,44 @@ describe('convert-esmodule', () => {
     exports.push('test');
     export default exports;
     `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('exports that are not on the root scope are not renamed', () => {
+    const code = `
+    function a() {
+      var exports = 'blaat';
+    }
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('renames exports that are already defined, even in block scope', () => {
+    const code = `
+    var exports = 'testtest';
+    function a() {
+      exports = 'blaat';
+    }
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('does empty exports', () => {
+    const code = `
+    export {} from './column_sorting_draggable';
+    export { EuiDataGrid } from './data_grid';
+    export * from './data_grid_types';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('changes default imports inline', () => {
+    const code = `
+    import rgb from './rgb';
+
+    rgb.a;
+    `;
+
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 

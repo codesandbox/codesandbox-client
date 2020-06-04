@@ -541,7 +541,7 @@ export default class Manager implements IEvaluator {
    * @memberof Manager
    */
   getAliasedDependencyPath(path: string, currentPath: string) {
-    const isDependency = /^(\w|@\w)/.test(path);
+    const isDependency = /^(\w|@\w|@-)/.test(path);
 
     if (!isDependency) {
       return path;
@@ -660,7 +660,7 @@ export default class Manager implements IEvaluator {
 
             let connectedPath = shimmedPath;
             if (connectedPath.indexOf('/node_modules') !== 0) {
-              connectedPath = /^(\w|@\w)/.test(shimmedPath)
+              connectedPath = /^(\w|@\w|@-)/.test(shimmedPath)
                 ? pathUtils.join('/node_modules', shimmedPath)
                 : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
             }
@@ -785,7 +785,7 @@ export default class Manager implements IEvaluator {
 
         let connectedPath = shimmedPath;
         if (connectedPath.indexOf('/node_modules') !== 0) {
-          connectedPath = /^(\w|@\w)/.test(shimmedPath)
+          connectedPath = /^(\w|@\w|@-)/.test(shimmedPath)
             ? pathUtils.join('/node_modules', shimmedPath)
             : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
         }
