@@ -11,7 +11,7 @@ import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { useSelection } from '../Selection';
 
-const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
+const GenericSandbox = ({ sandbox, ...props }) => {
   const {
     state: { dashboard },
     actions,
@@ -147,7 +147,7 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const sandboxProps = {
     sandboxTitle,
     sandbox,
-    isTemplate,
+    isTemplate: sandbox.isTemplate,
     TemplateIcon: UserIcon,
     // edit mode
     editing: isRenaming && selected,
@@ -161,9 +161,12 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
     opacity: isDragging ? 0.25 : 1,
   };
 
-  const dragProps = {
-    ref: dragRef,
-  };
+  const dragProps = sandbox.isStartTemplate
+    ? {}
+    : {
+        ref: dragRef,
+        onDragStart: event => onDragStart(event, sandbox.id),
+      };
 
   React.useEffect(() => {
     preview(getEmptyImage(), {
@@ -184,7 +187,7 @@ const GenericSandbox = ({ sandbox, isTemplate = false, ...props }) => {
 
   return (
     <>
-      <div {...dragProps} onDragStart={event => onDragStart(event, sandbox.id)}>
+      <div {...dragProps}>
         <motion.div {...motionProps}>
           <Component {...sandboxProps} {...interactionProps} {...props} />
         </motion.div>

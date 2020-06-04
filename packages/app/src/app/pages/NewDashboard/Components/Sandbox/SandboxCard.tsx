@@ -12,7 +12,6 @@ import css from '@styled-system/css';
 
 export const SandboxCard = ({
   sandbox,
-  isTemplate = false,
   sandboxTitle,
   newTitle,
   TemplateIcon,

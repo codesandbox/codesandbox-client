@@ -1,10 +1,6 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useHistory } from 'react-router-dom';
-import {
-  SandboxFragmentDashboardFragment as Sandbox,
-  TemplateFragmentDashboardFragment as Template,
-} from 'app/graphql/types';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Stack, Element, Menu, Icon, Text } from '@codesandbox/components';
@@ -103,19 +99,18 @@ const MenuItem = props => (
   <Element data-reach-menu-item="" data-component="MenuItem" {...props} />
 );
 
-type SandboxItemType = Sandbox & {
-  isTemplate?: boolean;
-  template?: Pick<Template, 'id' | 'color' | 'iconUrl' | 'published'>;
-};
-
 const SandboxMenu = ({
   sandbox,
   setRenaming,
 }: {
-  sandbox: SandboxItemType;
+  sandbox;
   setRenaming: (renaming: boolean) => void;
 }) => {
-  const { effects, actions } = useOvermind();
+  const {
+    state: { user },
+    effects,
+    actions,
+  } = useOvermind();
   const history = useHistory();
 
   const url = sandboxUrl({
@@ -132,88 +127,113 @@ const SandboxMenu = ({
     return '/new-dashboard/all' + path;
   };
 
+  const label = sandbox.isTemplate ? 'template' : 'sandbox';
+  const isOwner =
+    !sandbox.isTemplate ||
+    (sandbox.author && sandbox.author.username === user.username);
+
   return (
     <>
-      <MenuItem onClick={() => history.push(url)}>Open sandbox</MenuItem>
+      {sandbox.isTemplate ? (
+        <MenuItem
+          onClick={() => {
+            actions.editor.forkExternalSandbox({
+              sandboxId: sandbox.id,
+              openInNewWindow: true,
+            });
+          }}
+        >
+          Fork Template
+        </MenuItem>
+      ) : null}
+      <MenuItem onClick={() => history.push(url)}>Open {label}</MenuItem>
       <MenuItem
         onClick={() => {
           window.open(`https://codesandbox.io${url}`, '_blank');
         }}
       >
-        Open sandbox in new tab
+        Open {label} in new tab
       </MenuItem>
-      <MenuItem
-        onClick={() => {
-          history.push(getFolderUrl());
-        }}
-      >
-        Show in Folder
-      </MenuItem>
+      {isOwner ? (
+        <MenuItem
+          onClick={() => {
+            history.push(getFolderUrl());
+          }}
+        >
+          Show in Folder
+        </MenuItem>
+      ) : null}
       <Menu.Divider />
       <MenuItem
         onClick={() => {
           effects.browser.copyToClipboard(`https://codesandbox.io${url}`);
         }}
       >
-        Copy sandbox link
+        Copy {label} link
       </MenuItem>
-      <MenuItem
-        onClick={() => {
-          actions.editor.forkExternalSandbox({
-            sandboxId: sandbox.id,
-            openInNewWindow: true,
-          });
-        }}
-      >
-        Fork sandbox
-      </MenuItem>
+      {!sandbox.isTemplate ? (
+        <MenuItem
+          onClick={() => {
+            actions.editor.forkExternalSandbox({
+              sandboxId: sandbox.id,
+              openInNewWindow: true,
+            });
+          }}
+        >
+          Fork sandbox
+        </MenuItem>
+      ) : null}
       <MenuItem
         onClick={() => {
           actions.dashboard.downloadSandboxes([sandbox.id]);
         }}
       >
-        Export {sandbox.isTemplate ? 'template' : 'sandbox'}
+        Export {label}
       </MenuItem>
-      <Menu.Divider />
-      <MenuItem onClick={() => setRenaming(true)}>Rename sandbox</MenuItem>
-      {sandbox.isTemplate ? (
-        <MenuItem
-          onClick={() => {
-            actions.dashboard.unmakeTemplate([sandbox.id]);
-          }}
-        >
-          Convert to Sandbox
-        </MenuItem>
-      ) : (
-        <MenuItem
-          onClick={() => {
-            actions.dashboard.makeTemplate([sandbox.id]);
-          }}
-        >
-          Make sandbox a template
-        </MenuItem>
-      )}
-      <Menu.Divider />
-      {sandbox.isTemplate ? (
-        <MenuItem
-          onClick={() =>
-            actions.dashboard.deleteTemplate({
-              sandboxId: sandbox.id,
-              templateId: sandbox.template.id,
-            })
-          }
-        >
-          Delete template
-        </MenuItem>
-      ) : (
-        <MenuItem
-          onClick={() => {
-            actions.dashboard.deleteSandbox([sandbox.id]);
-          }}
-        >
-          Delete sandbox
-        </MenuItem>
-      )}
+      {isOwner ? (
+        <>
+          <Menu.Divider />
+          <MenuItem onClick={() => setRenaming(true)}>Rename {label}</MenuItem>
+          {sandbox.isTemplate ? (
+            <MenuItem
+              onClick={() => {
+                actions.dashboard.unmakeTemplate([sandbox.id]);
+              }}
+            >
+              Convert to sandbox
+            </MenuItem>
+          ) : (
+            <MenuItem
+              onClick={() => {
+                actions.dashboard.makeTemplate([sandbox.id]);
+              }}
+            >
+              Make sandbox a template
+            </MenuItem>
+          )}
+          <Menu.Divider />
+          {sandbox.isTemplate ? (
+            <MenuItem
+              onClick={() =>
+                actions.dashboard.deleteTemplate({
+                  sandboxId: sandbox.id,
+                  templateId: sandbox.template.id,
+                })
+              }
+            >
+              Delete template
+            </MenuItem>
+          ) : (
+            <MenuItem
+              onClick={() => {
+                actions.dashboard.deleteSandbox([sandbox.id]);
+              }}
+            >
+              Delete sandbox
+            </MenuItem>
+          )}
+        </>
+      ) : null}
     </>
   );
 };
