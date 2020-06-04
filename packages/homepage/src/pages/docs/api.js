@@ -40,10 +40,11 @@ const FAQS = ({ data, location }) => {
       >
         <Stack
           direction="vertical"
-          paddingY={8}
+          paddingTop={8}
+          marginBottom={8}
           css={`
             border-right: 1px solid #343434;
-            min-width: 320;
+            min-width: 320px;
 
             @media screen and (max-width: 900px) {
               padding-top: 0;

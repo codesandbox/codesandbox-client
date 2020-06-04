@@ -20,7 +20,16 @@ export const Global = createGlobalStyle`
         box-sizing: border-box;
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.12), 0px 16px 32px rgba(0, 0, 0, 0.24);
         color: white;
+        max-width: calc(100vw - 32px);
       }
+
+      @media screen and (max-width: 768px) {
+        .algolia-docsearch-suggestion--content {
+          display: none;
+        }
+      }
+
+
 
       .algolia-docsearch-suggestion {
         background: #151515;
