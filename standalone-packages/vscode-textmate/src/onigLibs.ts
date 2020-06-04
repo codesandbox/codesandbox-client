@@ -11,12 +11,12 @@ let onigurumaLib: Thenable<IOnigLib> = null;
 
 async function getWasm() {
 	const wasmPath = '/public/vscode-oniguruma/1.3.1/onig.wasm';
-	const response = await window.fetch(wasmPath);
+	const response = await (window as any).fetch(wasmPath);
 
 	return response.arrayBuffer();
 }
 
-export async function getOnigasm(): Thenable<IOnigLib> {
+export async function getOnigasm(): Promise<IOnigLib> {
 	if (!onigasmLib) {
 		const onigasmModule = require('vscode-oniguruma');
 		const wasmBin = await getWasm()
