@@ -125,7 +125,8 @@ export const TeamSettings = () => {
           <Button
             type="submit"
             loading={loading}
-            style={{ width: 'auto', marginLeft: 8 }}
+            autoWidth
+            style={{ marginLeft: 8 }}
           >
             {loading ? 'Adding Member...' : 'Add Member'}
           </Button>
