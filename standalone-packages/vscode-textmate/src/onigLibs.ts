@@ -11,7 +11,7 @@ let onigurumaLib: Thenable<IOnigLib> = null;
 
 async function getWasm() {
 	const wasmPath = '/public/vscode-oniguruma/1.3.1/onig.wasm';
-	const response = await fetch(wasmPath);
+	const response = await window.fetch(wasmPath);
 
 	return response.arrayBuffer();
 }
