@@ -28,7 +28,7 @@ export function convertEsModule(code: string) {
   const trackedExports = {};
 
   const getVarName = (name: string) => {
-    let usedName = name.replace(/[.-]/g, '');
+    let usedName = name.replace(/(\.|-|@)/g, '');
     while (usedVarNames[usedName]) {
       usedName += '_';
     }

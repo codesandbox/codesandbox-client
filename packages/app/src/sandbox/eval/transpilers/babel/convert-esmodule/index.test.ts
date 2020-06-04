@@ -209,6 +209,13 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('generates parseable var name with @', () => {
+    const code = `
+    import { a } from './a-@kjaw';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('handles re-exports in named exports with a alias', () => {
     const code = `
     import { a } from './b';

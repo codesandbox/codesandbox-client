@@ -220,6 +220,12 @@ function a() {
 "
 `;
 
+exports[`convert-esmodule generates parseable var name with @ 1`] = `
+"\\"use strict\\";
+var $csb__akjaw = require(\\"./a-@kjaw\\");
+"
+`;
+
 exports[`convert-esmodule handles default as exports 1`] = `
 "\\"use strict\\";
 Object.defineProperty(exports, \\"__esModule\\", {
