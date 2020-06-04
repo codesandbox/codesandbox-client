@@ -611,16 +611,43 @@ export const renameSandboxInState: Action<{
 }> = ({ state: { dashboard } }, { id, title }) => {
   const values = Object.keys(dashboard.sandboxes).map(type => {
     if (dashboard.sandboxes[type]) {
-      return dashboard.sandboxes[type].map(sandbox => {
-        if (sandbox.id === id) {
-          return {
-            ...sandbox,
-            title,
-          };
-        }
+      if (Array.isArray(dashboard.sandboxes[type])) {
+        return dashboard.sandboxes[type].map(sandbox => {
+          if (sandbox.id === id) {
+            return {
+              ...sandbox,
+              title,
+            };
+          }
 
-        return sandbox;
-      });
+          return sandbox;
+        });
+      }
+
+      const folderNames = dashboard.sandboxes[type];
+      const sandboxes = Object.keys(folderNames).map(folderName => ({
+        [folderName]: folderNames[folderName].map(sandbox => {
+          if (sandbox.id === id) {
+            return {
+              ...sandbox,
+              title,
+            };
+          }
+
+          return sandbox;
+        }),
+      }));
+
+      return {
+        ...dashboard.sandboxes[type],
+        ...sandboxes.reduce(
+          (obj, item) =>
+            Object.assign(obj, {
+              [Object.keys(item)[0]]: item[Object.keys(item)[0]],
+            }),
+          {}
+        ),
+      };
     }
 
     return null;
