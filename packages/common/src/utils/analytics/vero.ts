@@ -47,6 +47,7 @@ function loadScript() {
 }
 
 let _hasSetAnonymousUserId = false;
+let _anonymousUserId = null;
 
 export const setAnonymousUserId = (userId: string) => {
   if (!_script) {
@@ -54,6 +55,7 @@ export const setAnonymousUserId = (userId: string) => {
   }
 
   _hasSetAnonymousUserId = true;
+  _anonymousUserId = userId;
 
   _veroq.push([
     'user',
@@ -70,17 +72,18 @@ export const setUserId = (userId: string, email: string) => {
     _script = loadScript();
   }
 
+  _veroq.push([
+    'user',
+    {
+      id: userId,
+      email,
+    },
+  ]);
+
   if (_hasSetAnonymousUserId) {
-    _veroq.push([
-      'user',
-      {
-        id: userId,
-        email,
-      },
-    ]);
-  } else {
-    _veroq.push(['reidentify', userId]);
+    _veroq.push(['reidentify', userId, _anonymousUserId]);
   }
+
   processArray();
 };
 
