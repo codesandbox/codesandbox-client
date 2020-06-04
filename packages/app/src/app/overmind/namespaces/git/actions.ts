@@ -28,6 +28,7 @@ export const loadGitSource: AsyncAction = async ({
 }) => {
   const sandbox = state.editor.currentSandbox!;
   state.git.isFetching = true;
+  state.git.isExported = false;
   // We go grab the current version of the source
   await actions.git._loadSourceSandbox();
 
@@ -88,6 +89,11 @@ export const createRepoClicked: AsyncAction = async ({ state, effects }) => {
   git.commitSha = null;
   state.git.isExported = true;
   state.currentModal = null;
+  effects.router.updateSandboxUrl({ git });
+};
+
+export const openSourceSandbox: Action = ({ state, effects }) => {
+  const git = state.editor.currentSandbox!.baseGit;
   effects.router.updateSandboxUrl({ git });
 };
 

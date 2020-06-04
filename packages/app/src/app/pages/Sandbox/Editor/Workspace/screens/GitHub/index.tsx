@@ -30,6 +30,7 @@ import { ConflictsPRBase } from './components/ConflictPRBase';
 import { ConflictsSource } from './components/ConflictsSource';
 import { OutOfSync, OutOfSyncPR } from './components/ConflictText';
 import { Loading } from './components/Loading';
+import { MergedPr } from './components/MergedPr';
 import { CreateRepo } from './CreateRepo';
 import { GithubLogin } from './GithubLogin';
 import { GitHubIcon } from './Icons';
@@ -50,6 +51,7 @@ export const GitHub = () => {
         permission,
         isFetching,
         isExported,
+        pr,
       },
       editor: {
         currentSandbox: {
@@ -78,6 +80,7 @@ export const GitHub = () => {
   if (!owned) return <NotOwner />;
   if (!user.integrations.github) return <GithubLogin />;
   if (isFetching || isExported) return <Loading />;
+  if (pr && pr.merged) return <MergedPr />;
 
   function getConflictButtons(conflict: GitFileCompare) {
     const conflictType = getConflictType(conflict, modulesByPath);
