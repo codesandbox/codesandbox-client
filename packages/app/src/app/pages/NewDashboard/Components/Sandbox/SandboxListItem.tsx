@@ -17,7 +17,6 @@ import css from '@styled-system/css';
 export const SandboxListItem = ({
   sandbox,
   sandboxTitle,
-  isTemplate = false,
   // interactions
   selected,
   onClick,
