@@ -92,8 +92,11 @@ export const Folder = ({
 
   /* Drop target logic */
 
+  const accepts = ['sandbox'];
+  if (!isDrafts) accepts.push('folder');
+
   const [{ isOver, canDrop }, dropRef] = useDrop({
-    accept: ['sandbox', 'folder'],
+    accept: accepts,
     drop: () => ({ path }),
     collect: monitor => ({
       isOver: monitor.isOver(),
@@ -194,7 +197,7 @@ export const Folder = ({
   const folderProps = {
     name,
     path,
-    isDrafts: path === '/drafts',
+    isDrafts,
     numberOfSandboxes: sandboxes,
     onClick,
     onDoubleClick,
