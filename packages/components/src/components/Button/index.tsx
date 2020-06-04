@@ -93,7 +93,7 @@ const commonStyles = {
     cursor: 'default',
   },
   '&[data-auto-width="true"]': {
-    width: 'auto',
+    width: 'fit-content',
   },
 };
 
