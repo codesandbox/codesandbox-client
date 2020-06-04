@@ -196,6 +196,7 @@ export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
   state.isLoadingGithub = true;
   await actions.internal.signIn({ useExtraScopes: true });
   state.isLoadingGithub = false;
+  actions.git.loadGitSource();
 };
 
 export const signOutClicked: AsyncAction = async ({
