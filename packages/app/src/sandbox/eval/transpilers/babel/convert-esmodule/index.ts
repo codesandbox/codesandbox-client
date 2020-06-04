@@ -435,7 +435,9 @@ export function convertEsModule(code: string) {
     scopeManager.detach();
   }
 
-  return astring.generate(program as any, {
+  const finalCode = astring.generate(program as any, {
     generator: customGenerator,
   });
+
+  return `"use strict";\n${finalCode}`;
 }
