@@ -17,6 +17,7 @@ export const ContextMenu = ({
   selectedIds,
   sandboxes,
   folders,
+  setRenaming,
 }) => {
   React.useEffect(() => {
     // close when user clicks outside or scrolls away
@@ -64,10 +65,10 @@ export const ContextMenu = ({
     menu = <MultiMenu selectedItems={selectedItems} />;
     menuWidth = 160;
   } else if (selectedItems[0].type === 'sandbox') {
-    menu = <SandboxMenu sandbox={selectedItems[0]} />;
+    menu = <SandboxMenu sandbox={selectedItems[0]} setRenaming={setRenaming} />;
     menuWidth = 200;
   } else if (selectedItems[0].type === 'folder') {
-    menu = <FolderMenu folder={selectedItems[0]} />;
+    menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
     menuWidth = 120;
   }
 
@@ -107,7 +108,13 @@ type SandboxItemType = Sandbox & {
   template?: Pick<Template, 'id' | 'color' | 'iconUrl' | 'published'>;
 };
 
-const SandboxMenu = ({ sandbox }: { sandbox: SandboxItemType }) => {
+const SandboxMenu = ({
+  sandbox,
+  setRenaming,
+}: {
+  sandbox: SandboxItemType;
+  setRenaming: (renaming: boolean) => void;
+}) => {
   const { effects, actions } = useOvermind();
   const history = useHistory();
 
@@ -168,7 +175,7 @@ const SandboxMenu = ({ sandbox }: { sandbox: SandboxItemType }) => {
         Export {sandbox.isTemplate ? 'template' : 'sandbox'}
       </MenuItem>
       <Menu.Divider />
-      <MenuItem onClick={() => {}}>Rename sandbox</MenuItem>
+      <MenuItem onClick={() => setRenaming(true)}>Rename sandbox</MenuItem>
       {sandbox.isTemplate ? (
         <MenuItem
           onClick={() => {
@@ -211,11 +218,12 @@ const SandboxMenu = ({ sandbox }: { sandbox: SandboxItemType }) => {
   );
 };
 
-const FolderMenu = ({ folder }) => {
+const FolderMenu = ({ folder, setRenaming }) => {
   const { actions } = useOvermind();
+
   return (
     <>
-      <MenuItem onClick={() => {}}>Rename folder</MenuItem>
+      <MenuItem onClick={() => setRenaming(true)}>Rename folder</MenuItem>
       <MenuItem
         onClick={() => actions.dashboard.deleteFolder({ path: folder.path })}
       >

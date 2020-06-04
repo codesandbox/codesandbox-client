@@ -33,6 +33,8 @@ const Context = React.createContext({
   onDrop: (droppedResult: any) => {},
   thumbnailRef: null,
   isDragging: false,
+  isRenaming: false,
+  setRenaming: (renaming: boolean) => {},
 });
 
 export const SelectionProvider = ({
@@ -155,6 +157,8 @@ export const SelectionProvider = ({
     }
   };
 
+  const [isRenaming, setRenaming] = React.useState(false);
+
   let viewMode: string;
   const location = useLocation();
 
@@ -171,7 +175,7 @@ export const SelectionProvider = ({
     if (event.keyCode === ALT) onMenuEvent(event);
 
     // if only one thing is selected, open it
-    if (event.keyCode === ENTER && selectedIds.length === 1) {
+    if (event.keyCode === ENTER && selectedIds.length === 1 && !isRenaming) {
       const selectedId = selectedIds[0];
 
       let url;
@@ -333,10 +337,16 @@ export const SelectionProvider = ({
   const onContainerMouseDown = event => {
     setSelectedIds([]); // global blur
 
+    // right click
+    if (!event.metaKey) return;
+
     setDrawingRect(true);
 
     setSelectionRect({
-      start: { x: event.clientX, y: event.clientY },
+      start: {
+        x: event.clientX,
+        y: event.clientY,
+      },
       end: { x: null, y: null },
     });
   };
@@ -417,6 +427,8 @@ export const SelectionProvider = ({
         onDrop,
         thumbnailRef,
         isDragging,
+        isRenaming,
+        setRenaming,
       }}
     >
       <Element
@@ -460,6 +472,7 @@ export const SelectionProvider = ({
         selectedIds={selectedIds}
         sandboxes={sandboxes || []}
         folders={folders || []}
+        setRenaming={setRenaming}
       />
     </Context.Provider>
   );
@@ -479,6 +492,8 @@ export const useSelection = () => {
     onDrop,
     thumbnailRef,
     isDragging,
+    isRenaming,
+    setRenaming,
   } = React.useContext(Context);
 
   return {
@@ -494,6 +509,8 @@ export const useSelection = () => {
     onDrop,
     thumbnailRef,
     isDragging,
+    isRenaming,
+    setRenaming,
   };
 };
 
@@ -504,4 +521,4 @@ const scrollIntoViewport = (id: string) => {
 };
 
 const isFolderPath = id => id.startsWith('/');
-const isSandboxId = id => !id.startsWith('/');
+const isSandboxId = id => !isFolderPath(id);

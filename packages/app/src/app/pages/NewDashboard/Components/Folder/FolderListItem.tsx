@@ -21,10 +21,8 @@ export const FolderListItem = ({
   onContextMenu,
   // editing
   editing,
-  enterEditing,
   isNewFolder,
   newName,
-  inputRef,
   onChange,
   onInputKeyDown,
   onSubmit,
@@ -79,8 +77,8 @@ export const FolderListItem = ({
             {editing ? (
               <form onSubmit={onSubmit}>
                 <Input
+                  autoFocus
                   value={newName}
-                  ref={inputRef}
                   onChange={onChange}
                   onKeyDown={onInputKeyDown}
                   onBlur={onInputBlur}
