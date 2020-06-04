@@ -53,7 +53,7 @@ export const Folder = ({
     setRenaming,
   } = useSelection();
 
-  const selected = selectedIds.includes(path);
+  const selected = selectedIds.includes(path) || isNewFolder;
   const isDragging = isAnythingDragging && selected;
 
   const onClick = event => {
