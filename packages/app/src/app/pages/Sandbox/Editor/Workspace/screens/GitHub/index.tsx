@@ -14,36 +14,43 @@ import React from 'react';
 
 import { Changes } from './Changes';
 import { CommitForm } from './CommitForm';
+import {
+  CommitToMaster,
+  CommitToPr,
+  NoPermissions,
+} from './components/CommitText';
+import {
+  BothModifiedConflict,
+  SandboxDeletedConflict,
+  SandboxDeletedSourceModifiedConflict,
+  SandboxModifiedConflict,
+  SourceDeletedConflict,
+} from './components/ConflictButtons';
+import { ConflictsPRBase } from './components/ConflictPRBase';
+import { ConflictsSource } from './components/ConflictsSource';
+import { OutOfSync, OutOfSyncPR } from './components/ConflictText';
+import { Loading } from './components/Loading';
+import { CreateRepo } from './CreateRepo';
 import { GithubLogin } from './GithubLogin';
 import { GitHubIcon } from './Icons';
 import { NotLoggedIn } from './NotLoggedIn';
 import { NotOwner } from './NotOwner';
-
-import { getConflictType } from './utils/getConflictType';
-import { Loading } from './components/Loading';
+import { ConflictType } from './types';
 import { getConflictIcon } from './utils/getConflictIcon';
 import { getConflictText } from './utils/getConflictsText';
-import { ConflictType } from './types';
-import { ConflictsSource } from './components/ConflictsSource';
-import { ConflictsPRBase } from './components/ConflictPRBase';
-import {
-  SandboxDeletedConflict,
-  SandboxModifiedConflict,
-  SourceDeletedConflict,
-  BothModifiedConflict,
-  SandboxDeletedSourceModifiedConflict,
-} from './components/ConflictButtons';
-import { OutOfSync, OutOfSyncPR } from './components/ConflictText';
-import {
-  CommitToPr,
-  CommitToMaster,
-  NoPermissions,
-} from './components/CommitText';
+import { getConflictType } from './utils/getConflictType';
 
 export const GitHub = () => {
   const {
     state: {
-      git: { gitChanges, gitState, conflicts, permission, isFetching },
+      git: {
+        gitChanges,
+        gitState,
+        conflicts,
+        permission,
+        isFetching,
+        isExported,
+      },
       editor: {
         currentSandbox: {
           originalGit,
@@ -70,7 +77,7 @@ export const GitHub = () => {
   if (!isLoggedIn) return <NotLoggedIn />;
   if (!owned) return <NotOwner />;
   if (!user.integrations.github) return <GithubLogin />;
-  if (isFetching) return <Loading />;
+  if (isFetching || isExported) return <Loading />;
 
   function getConflictButtons(conflict: GitFileCompare) {
     const conflictType = getConflictType(conflict, modulesByPath);
@@ -206,7 +213,9 @@ export const GitHub = () => {
           </Collapsible>
           {getContent()}
         </>
-      ) : null}
+      ) : (
+        <CreateRepo />
+      )}
     </>
   );
 };

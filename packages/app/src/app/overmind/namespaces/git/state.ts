@@ -46,7 +46,7 @@ export const state: State = {
   error: null,
   isExported: false,
   showExportedModal: false,
-  isFetching: true,
+  isFetching: false,
   title: '',
   description: '',
   pr: null,
