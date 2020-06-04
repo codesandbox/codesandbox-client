@@ -7,7 +7,7 @@ import {
 } from 'app/graphql/types';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { Stack, Element, Menu } from '@codesandbox/components';
+import { Stack, Element, Menu, Icon, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const ContextMenu = ({
@@ -220,6 +220,18 @@ const SandboxMenu = ({
 
 const FolderMenu = ({ folder, setRenaming }) => {
   const { actions } = useOvermind();
+
+  const isDrafts = folder.path === '/drafts';
+
+  if (isDrafts)
+    return (
+      <MenuItem>
+        <Stack gap={1}>
+          <Icon name="lock" size={14} />
+          <Text>Protected</Text>
+        </Stack>
+      </MenuItem>
+    );
 
   return (
     <>

@@ -319,7 +319,13 @@ const linkStyles = {
 };
 
 const canNotAcceptSandboxes = ['start', 'recent', 'all'];
-const canNotAcceptFolders = ['start', 'recent', 'drafts', 'templates'];
+const canNotAcceptFolders = [
+  'start',
+  'recent',
+  'drafts',
+  '/drafts',
+  'templates',
+];
 
 const isSamePath = (draggedItem, dropPath) => {
   if (!draggedItem) return false;

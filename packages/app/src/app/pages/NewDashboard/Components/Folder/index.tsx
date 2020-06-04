@@ -23,6 +23,7 @@ export const Folder = ({
   } = useOvermind();
 
   const isNewFolder = !path;
+  const isDrafts = path === '/drafts';
 
   const location = useLocation();
 
@@ -91,8 +92,11 @@ export const Folder = ({
 
   /* Drop target logic */
 
+  const accepts = ['sandbox'];
+  if (!isDrafts) accepts.push('folder');
+
   const [{ isOver, canDrop }, dropRef] = useDrop({
-    accept: ['sandbox', 'folder'],
+    accept: accepts,
     drop: () => ({ path }),
     collect: monitor => ({
       isOver: monitor.isOver(),
@@ -125,9 +129,12 @@ export const Folder = ({
     },
   });
 
-  const dragProps = {
-    ref: dragRef,
-  };
+  const dragProps = isDrafts
+    ? {}
+    : {
+        ref: dragRef,
+        onDragStart: event => onDragStart(event, path),
+      };
 
   React.useEffect(() => {
     preview(getEmptyImage(), { captureDraggingState: true });
@@ -190,6 +197,7 @@ export const Folder = ({
   const folderProps = {
     name,
     path,
+    isDrafts,
     numberOfSandboxes: sandboxes,
     onClick,
     onDoubleClick,
@@ -208,7 +216,7 @@ export const Folder = ({
 
   return (
     <>
-      <div {...dragProps} onDragStart={event => onDragStart(event, path)}>
+      <div {...dragProps}>
         <motion.div
           initial={{ scale: 1 }}
           animate={{ scale: isOver && canDrop ? 1.02 : 1 }}
