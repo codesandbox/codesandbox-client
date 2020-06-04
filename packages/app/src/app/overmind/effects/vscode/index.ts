@@ -12,7 +12,6 @@ import {
   Settings,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
   NotificationMessage,
@@ -30,6 +29,7 @@ import * as childProcess from 'node-services/lib/child_process';
 import { TextOperation } from 'ot';
 import { json } from 'overmind';
 import io from 'socket.io-client';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
@@ -147,20 +147,18 @@ export class VSCodeEffect {
 
     this.prepareElements();
 
-    if (COMMENTS) {
-      this.options.reaction(
-        state => ({
-          fileComments: json(state.comments.fileComments),
-          currentCommentId: state.comments.currentCommentId,
-        }),
-        ({ fileComments, currentCommentId }) => {
-          if (this.modelsHandler) {
-            this.modelsHandler.applyComments(fileComments, currentCommentId);
-          }
+    this.options.reaction(
+      state => ({
+        fileComments: json(state.comments.fileComments),
+        currentCommentId: state.comments.currentCommentId,
+      }),
+      ({ fileComments, currentCommentId }) => {
+        if (this.modelsHandler) {
+          this.modelsHandler.applyComments(fileComments, currentCommentId);
         }
-      );
-      this.listenToCommentClick();
-    }
+      }
+    );
+    this.listenToCommentClick();
 
     // We instantly create a sandbox sync, as we want our
     // extension host to get its messages handled to initialize
@@ -1010,7 +1008,7 @@ export class VSCodeEffect {
         editorService.onDidActiveEditorChange(this.onActiveEditorChange);
         this.initializeCodeSandboxAPIListener();
 
-        if (this.settings.lintEnabled) {
+        if (!this.linter && this.settings.lintEnabled) {
           this.createLinter();
         }
 
@@ -1205,7 +1203,11 @@ export class VSCodeEffect {
 
       this.modelCursorPositionListener = activeEditor.onDidChangeCursorPosition(
         cursor => {
-          if (COMMENTS) {
+          if (
+            sandbox &&
+            sandbox.featureFlags.comments &&
+            hasPermission(sandbox.authorization, 'comment')
+          ) {
             const model = activeEditor.getModel();
 
             this.modelsHandler.updateLineCommentIndication(

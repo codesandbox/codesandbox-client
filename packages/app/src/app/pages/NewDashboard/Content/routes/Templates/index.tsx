@@ -1,12 +1,11 @@
 import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
-import css from '@styled-system/css';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Element, Column } from '@codesandbox/components';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
-import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
-import { SkeletonCard } from 'app/pages/NewDashboard/Components/Sandbox/SandboxCard';
+import {
+  VariableGrid,
+  SkeletonGrid,
+} from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 
 export const Templates = () => {
@@ -35,24 +34,25 @@ export const Templates = () => {
         })
       }
     >
-      <Element css={css({ position: 'relative' })}>
-        <Header title="Templates" templates={[]} />
-        {sandboxes.TEMPLATES ? (
-          <SandboxGrid>
-            {sandboxes.TEMPLATES.map(({ sandbox }) => (
-              <Sandbox isTemplate sandbox={sandbox} key={sandbox.id} />
-            ))}
-          </SandboxGrid>
-        ) : (
-          <SandboxGrid>
-            {Array.from(Array(8).keys()).map(n => (
-              <Column key={n}>
-                <SkeletonCard />
-              </Column>
-            ))}
-          </SandboxGrid>
-        )}
-      </Element>
+      <Header title="Templates" templates={[]} />
+      {sandboxes.TEMPLATES ? (
+        <VariableGrid
+          items={
+            sandboxes.TEMPLATES &&
+            sandboxes.TEMPLATES.map(template => {
+              const { sandbox, ...templateValues } = template;
+              return {
+                ...sandbox,
+                type: 'sandbox',
+                isTemplate: true,
+                template: templateValues,
+              };
+            })
+          }
+        />
+      ) : (
+        <SkeletonGrid count={8} />
+      )}
     </SelectionProvider>
   );
 };

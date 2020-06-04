@@ -52,11 +52,6 @@ export const onJoin: Operator<LiveMessage<{
 }>> = mutate(({ effects, actions, state }, { data }) => {
   state.live.liveUserId = data.live_user_id;
 
-  // Show message to confirm that you've joined a live session if you're not the owner
-  if (!state.live.isCurrentEditor) {
-    effects.notificationToast.success('Connected to Live!');
-  }
-
   if (state.live.reconnecting) {
     // We reconnected!
     effects.live.getAllClients().forEach(client => {

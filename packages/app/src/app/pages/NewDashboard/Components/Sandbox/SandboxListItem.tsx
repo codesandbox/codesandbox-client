@@ -8,31 +8,29 @@ import {
   Text,
   Input,
   ListAction,
+  IconButton,
   SkeletonText,
   Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { MenuOptions } from './Menu';
 
 export const SandboxListItem = ({
   sandbox,
   sandboxTitle,
-  isTemplate = false,
   // interactions
   selected,
   onClick,
   onDoubleClick,
   onBlur,
   onKeyDown,
+  onContextMenu,
   // edit mode
+  editing,
   newTitle,
-  edit,
-  inputRef,
   onChange,
   onInputKeyDown,
   onSubmit,
   onInputBlur,
-  enterEditing,
   // drag preview
   thumbnailRef,
   opacity,
@@ -44,6 +42,7 @@ export const SandboxListItem = ({
     onDoubleClick={onDoubleClick}
     onBlur={onBlur}
     onKeyDown={onKeyDown}
+    onContextMenu={onContextMenu}
     {...props}
     css={css({
       paddingX: 0,
@@ -59,9 +58,9 @@ export const SandboxListItem = ({
       },
     })}
   >
-    <Grid css={{ width: '100%' }}>
+    <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
       <Column span={[12, 5, 5]}>
-        <Stack gap={4} align="center">
+        <Stack gap={4} align="center" marginLeft={2}>
           <Element
             as="div"
             ref={thumbnailRef}
@@ -69,7 +68,6 @@ export const SandboxListItem = ({
               borderRadius: 'small',
               height: 32,
               width: 32,
-              marginLeft: 2,
               backgroundImage: `url(${sandbox.screenshotUrl})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
@@ -80,11 +78,11 @@ export const SandboxListItem = ({
             })}
           />
           <Element style={{ width: 150 }}>
-            {edit ? (
+            {editing ? (
               <form onSubmit={onSubmit}>
                 <Input
+                  autoFocus
                   value={newTitle}
-                  ref={inputRef}
                   onChange={onChange}
                   onKeyDown={onInputKeyDown}
                   onBlur={onInputBlur}
@@ -123,10 +121,11 @@ export const SandboxListItem = ({
         </Text>
       </Column>
     </Grid>
-    <MenuOptions
-      sandbox={sandbox}
-      isTemplate={isTemplate}
-      onRename={enterEditing}
+    <IconButton
+      name="more"
+      size={9}
+      title="Sandbox actions"
+      onClick={onContextMenu}
     />
   </ListAction>
 );

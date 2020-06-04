@@ -469,25 +469,17 @@ export function generateInteropRequireExpression(
       {
         type: n.VariableDeclarator,
         init: {
-          type: n.MemberExpression,
-          object: {
-            type: n.CallExpression,
-            callee: {
-              type: n.Identifier,
-              name: '$_csb__interopRequireDefault',
-            },
-            arguments: [
-              {
-                type: n.Identifier,
-                name: varName,
-              },
-            ],
-          },
-          computed: false,
-          property: {
+          type: n.CallExpression,
+          callee: {
             type: n.Identifier,
-            name: 'default',
+            name: '$_csb__interopRequireDefault',
           },
+          arguments: [
+            {
+              type: n.Identifier,
+              name: varName,
+            },
+          ],
         },
         id: {
           type: n.Identifier,
