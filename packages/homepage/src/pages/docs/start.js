@@ -77,7 +77,7 @@ const GridItem = styled(Element)`
   transition: all 200ms ease;
 
   &:hover {
-    transform: scale(1.05);
+    transform: scale(0.98);
   }
 `;
 
@@ -111,8 +111,8 @@ const Docs = ({ data }) => {
       />
       <Element
         css={`
-          padding-top: 180px;
-          width: 1002px;
+          padding-top: 10rem;
+          width: 1095px;
           max-width: 80%;
           margin: auto;
 
@@ -138,6 +138,16 @@ const Docs = ({ data }) => {
               <Input
                 placeholder="Search documentation"
                 id="algolia-doc-search"
+                css={`
+                  border-radius: 50px;
+                  font-size: 23px;
+                  lin-height: 56px;
+                  outline: none; /* removes the default square outline */
+
+                  :focus {
+                    box-shadow: inset 0 0 3px 2px #0971f1;
+                  }
+                `}
               />
             </Wrapper>
           ) : null}
@@ -148,6 +158,7 @@ const Docs = ({ data }) => {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-gap: 40px;
+            font-size: 10px;
 
             @media screen and (max-width: 768px) {
               grid-template-columns: 1fr;
