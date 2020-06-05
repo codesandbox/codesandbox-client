@@ -1,3 +1,4 @@
+import { ESTree } from 'meriyah';
 import { Syntax as n } from './syntax';
 
 export function generateRequireStatement(varName: string, requirePath: string) {
@@ -489,7 +490,7 @@ export function generateInteropRequire() {
 }
 
 export function generateInteropRequireExpression(
-  varName: string,
+  argument: ESTree.Expression,
   localName: string
 ) {
   return {
@@ -504,12 +505,7 @@ export function generateInteropRequireExpression(
             type: n.Identifier,
             name: '$_csb__interopRequireDefault',
           },
-          arguments: [
-            {
-              type: n.Identifier,
-              name: varName,
-            },
-          ],
+          arguments: [argument],
         },
         id: {
           type: n.Identifier,

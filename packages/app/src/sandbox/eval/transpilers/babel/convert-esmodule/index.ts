@@ -132,7 +132,34 @@ export function convertEsModule(code: string) {
         }
         const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
 
-        program.body[i] = generateRequireStatement(varName, source.value);
+        if (
+          statement.specifiers.length === 1 &&
+          statement.specifiers[0].type === n.ExportSpecifier &&
+          statement.specifiers[0].local.name === 'default'
+        ) {
+          // In this case there's a default re-export. So we need to wrap it in a interopRequireDefault to make sure
+          // that default is exposed.
+          addDefaultInterop();
+          program.body[i] = generateInteropRequireExpression(
+            {
+              type: n.CallExpression,
+              callee: {
+                type: n.Identifier,
+                name: 'require',
+              },
+              arguments: [
+                {
+                  type: n.Literal,
+                  value: source.value,
+                },
+              ],
+            },
+            varName
+          );
+        } else {
+          program.body[i] = generateRequireStatement(varName, source.value);
+        }
+
         if (statement.specifiers.length) {
           i++;
 
@@ -323,7 +350,10 @@ export function convertEsModule(code: string) {
             // After the require statement
             importOffset,
             0,
-            generateInteropRequireExpression(varName, localName)
+            generateInteropRequireExpression(
+              { type: n.Identifier, name: varName },
+              localName
+            )
           );
 
           varsToRename[localName] = [localName, 'default'];

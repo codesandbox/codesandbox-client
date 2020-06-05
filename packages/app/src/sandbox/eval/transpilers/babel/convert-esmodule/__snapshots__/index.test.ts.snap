@@ -270,8 +270,13 @@ exports[`convert-esmodule handles default as exports 1`] = `
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-var $csb__Field = require(\\"./Field\\");
+var $csb__Field = $_csb__interopRequireDefault(require(\\"./Field\\"));
 exports.Field = $csb__Field.default;
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
 "
 `;
 
