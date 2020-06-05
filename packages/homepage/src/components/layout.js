@@ -62,6 +62,7 @@ const TemplateWrapper = ({ children, noWrapperStyling }) => (
           text-align: center;
           font-weight: bold;
           font-family: Inter, sans-serif;
+          font-size: 13px;
         `}
       >
         <div
