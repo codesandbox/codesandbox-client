@@ -35,7 +35,13 @@ export function generateRequireStatement(varName: string, requirePath: string) {
  * ```js
  * Object.keys($varName).forEach(function (key) {
  *   if (key === "default" || key === "__esModule") return;
- *   exports[key] = _store[key];
+ *   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
+ *   Object.defineProperty(exports, key, {
+ *     enumerable: true,
+ *     get: function get() {
+ *       return $varName[key];
+ *     }
+ *   });
  * });
  * ```
  */
@@ -125,36 +131,58 @@ export function generateAllExportsIterator(varName: string) {
                 alternate: null,
               },
               {
-                type: n.ExpressionStatement,
-                expression: {
-                  type: n.AssignmentExpression,
-                  operator: '=' as '=',
-                  left: {
+                type: n.IfStatement,
+                test: {
+                  type: n.CallExpression,
+                  callee: {
                     type: n.MemberExpression,
-                    computed: true,
                     object: {
+                      type: n.MemberExpression,
+                      object: {
+                        type: n.MemberExpression,
+                        object: {
+                          type: n.Identifier,
+                          name: 'Object',
+                        },
+                        computed: false,
+                        property: {
+                          type: n.Identifier,
+                          name: 'prototype',
+                        },
+                      },
+                      computed: false,
+                      property: {
+                        type: n.Identifier,
+                        name: 'hasOwnProperty',
+                      },
+                    },
+                    computed: false,
+                    property: {
+                      type: n.Identifier,
+                      name: 'call',
+                    },
+                  },
+                  arguments: [
+                    {
                       type: n.Identifier,
                       name: 'exports',
                     },
-                    property: {
+                    {
                       type: n.Identifier,
                       name: 'key',
                     },
-                  },
-                  right: {
-                    type: n.MemberExpression,
-                    computed: true,
-                    object: {
-                      type: n.Identifier,
-                      name: varName,
-                    },
-                    property: {
-                      type: n.Identifier,
-                      name: 'key',
-                    },
-                  },
+                  ],
                 },
+                consequent: {
+                  type: n.ReturnStatement,
+                  argument: null,
+                },
+                alternate: null,
               },
+              generateExportGetter(
+                { type: n.Identifier, name: 'key' },
+                `${varName}[key]`
+              ),
             ],
           },
           generator: false,
@@ -300,7 +328,12 @@ export function generateEsModuleSpecifier() {
  *   }
  * })
  */
-export function generateExportGetter(exportName: string, localName: string) {
+export function generateExportGetter(
+  exportObj:
+    | { type: 'Identifier'; name: string }
+    | { type: 'Literal'; value: string },
+  localName: string
+) {
   return {
     type: n.ExpressionStatement,
     expression: {
@@ -322,10 +355,7 @@ export function generateExportGetter(exportName: string, localName: string) {
           type: n.Identifier,
           name: 'exports',
         },
-        {
-          type: n.Literal,
-          value: exportName,
-        },
+        exportObj,
         {
           type: n.ObjectExpression,
           properties: [

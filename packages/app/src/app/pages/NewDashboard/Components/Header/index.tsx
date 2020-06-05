@@ -3,16 +3,29 @@ import { useLocation } from 'react-router-dom';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Breadcrumbs } from '../Breadcrumbs';
-import { Filters } from '../Filters';
+import { FilterOptions } from '../Filters/FilterOptions';
+import { ViewOptions } from '../Filters/ViewOptions';
+import { SortOptions } from '../Filters/SortOptions';
 
 type Props = {
   templates?: any[];
   path?: string;
   title?: string;
   createNewFolder?: () => void;
+  showFilters?: boolean;
+  showViewOptions?: boolean;
+  showSortOptions?: boolean;
 };
 
-export const Header = ({ createNewFolder, templates, path, title }: Props) => {
+export const Header = ({
+  createNewFolder,
+  templates,
+  path,
+  title,
+  showFilters = false,
+  showViewOptions = false,
+  showSortOptions = false,
+}: Props) => {
   const location = useLocation();
 
   return (
@@ -51,7 +64,12 @@ export const Header = ({ createNewFolder, templates, path, title }: Props) => {
               + New Folder
             </Button>
           )}
-        {templates && <Filters possibleTemplates={templates} />}
+
+        <Stack gap={4}>
+          {showFilters && <FilterOptions possibleTemplates={templates} />}
+          {showSortOptions && <SortOptions />}
+          {showViewOptions && <ViewOptions />}
+        </Stack>
       </Stack>
     </Stack>
   );
