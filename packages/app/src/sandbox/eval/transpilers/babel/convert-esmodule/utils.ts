@@ -182,7 +182,18 @@ export function generateAllExportsIterator(varName: string) {
               },
               generateExportGetter(
                 { type: n.Identifier, name: 'key' },
-                `${varName}[key]`
+                {
+                  type: n.MemberExpression,
+                  computed: true,
+                  object: {
+                    type: n.Identifier,
+                    name: varName,
+                  },
+                  property: {
+                    type: n.Identifier,
+                    name: 'key',
+                  },
+                }
               ),
             ],
           },
@@ -191,47 +202,6 @@ export function generateAllExportsIterator(varName: string) {
           async: false,
         },
       ],
-    },
-  };
-}
-
-/**
- * exports.$exportName = $varName.$localName;
- */
-export function generateExportMemberStatement(
-  varName: string,
-  exportName: string,
-  localName: string
-) {
-  return {
-    type: n.ExpressionStatement,
-    expression: {
-      type: n.AssignmentExpression,
-      operator: '=' as '=',
-      left: {
-        type: n.MemberExpression,
-        computed: false,
-        object: {
-          type: n.Identifier,
-          name: 'exports',
-        },
-        property: {
-          type: n.Identifier,
-          name: exportName,
-        },
-      },
-      right: {
-        type: n.MemberExpression,
-        computed: false,
-        object: {
-          type: n.Identifier,
-          name: varName,
-        },
-        property: {
-          type: n.Identifier,
-          name: localName,
-        },
-      },
     },
   };
 }
@@ -333,7 +303,7 @@ export function generateExportGetter(
   exportObj:
     | { type: 'Identifier'; name: string }
     | { type: 'Literal'; value: string },
-  localName: string
+  local: ESTree.Expression
 ) {
   return {
     type: n.ExpressionStatement,
@@ -397,10 +367,7 @@ export function generateExportGetter(
                   body: [
                     {
                       type: n.ReturnStatement,
-                      argument: {
-                        type: n.Identifier,
-                        name: localName,
-                      },
+                      argument: local,
                     },
                   ],
                 },

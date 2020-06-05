@@ -77,8 +77,18 @@ Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
 var $csb__store = require(\\"./test/store.js\\");
-exports.test = $csb__store.test;
-exports.test2 = $csb__store.test2;
+Object.defineProperty(exports, \\"test\\", {
+  enumerable: true,
+  get: function get() {
+    return $csb__store.test;
+  }
+});
+Object.defineProperty(exports, \\"test2\\", {
+  enumerable: true,
+  get: function get() {
+    return $csb__store.test2;
+  }
+});
 "
 `;
 
@@ -190,7 +200,12 @@ Object.defineProperty(exports, \\"__esModule\\", {
 });
 var $csb__column_sorting_draggable = require(\\"./column_sorting_draggable\\");
 var $csb__data_grid = require(\\"./data_grid\\");
-exports.EuiDataGrid = $csb__data_grid.EuiDataGrid;
+Object.defineProperty(exports, \\"EuiDataGrid\\", {
+  enumerable: true,
+  get: function get() {
+    return $csb__data_grid.EuiDataGrid;
+  }
+});
 var $csb__data_grid_types = require(\\"./data_grid_types\\");
 Object.keys($csb__data_grid_types).forEach(function (key) {
   if (key === \\"default\\" || key === \\"__esModule\\") return;
@@ -271,7 +286,12 @@ Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
 var $csb__Field = $_csb__interopRequireDefault(require(\\"./Field\\"));
-exports.Field = $csb__Field.default;
+Object.defineProperty(exports, \\"Field\\", {
+  enumerable: true,
+  get: function get() {
+    return $csb__Field.default;
+  }
+});
 function $_csb__interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     default: obj

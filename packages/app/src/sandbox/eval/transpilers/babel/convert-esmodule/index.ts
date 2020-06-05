@@ -10,7 +10,6 @@ import { Syntax as n } from './syntax';
 import {
   generateRequireStatement,
   generateAllExportsIterator,
-  generateExportMemberStatement,
   generateExportStatement,
   generateEsModuleSpecifier,
   generateInteropRequire,
@@ -169,10 +168,19 @@ export function convertEsModule(code: string) {
               program.body.splice(
                 i,
                 0,
-                generateExportMemberStatement(
-                  varName,
-                  specifier.exported.name,
-                  specifier.local.name
+                generateExportGetter(
+                  { type: n.Literal, value: specifier.exported.name },
+                  {
+                    type: n.MemberExpression,
+                    object: {
+                      type: n.Identifier,
+                      name: varName,
+                    },
+                    property: {
+                      type: n.Identifier,
+                      name: specifier.local.name,
+                    },
+                  }
                 )
               );
             });
@@ -222,7 +230,10 @@ export function convertEsModule(code: string) {
             program.body.unshift(
               generateExportGetter(
                 { type: n.Literal, value: specifier.exported.name },
-                specifier.local.name
+                {
+                  type: n.Identifier,
+                  name: specifier.local.name,
+                }
               )
             );
           }
