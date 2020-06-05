@@ -216,6 +216,17 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('handles concurrent import and exports', () => {
+    const code = `
+    import { a as _a, b, c } from 'test-lib-dom';
+    export * from 'test-lib-dom';
+
+    var a = () => _a;
+    export { a };
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('handles re-exports in named exports with a alias', () => {
     const code = `
     import { a } from './b';

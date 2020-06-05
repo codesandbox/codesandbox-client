@@ -90,7 +90,13 @@ Object.defineProperty(exports, \\"__esModule\\", {
 var $csb__store = require(\\"./test/store.js\\");
 Object.keys($csb__store).forEach(function (key) {
   if (key === \\"default\\" || key === \\"__esModule\\") return;
-  exports[key] = $csb__store[key];
+  if (Object.prototype.hasOwnProperty.call(exports, key)) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return $csb__store[key];
+    }
+  });
 });
 "
 `;
@@ -188,7 +194,13 @@ exports.EuiDataGrid = $csb__data_grid.EuiDataGrid;
 var $csb__data_grid_types = require(\\"./data_grid_types\\");
 Object.keys($csb__data_grid_types).forEach(function (key) {
   if (key === \\"default\\" || key === \\"__esModule\\") return;
-  exports[key] = $csb__data_grid_types[key];
+  if (Object.prototype.hasOwnProperty.call(exports, key)) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return $csb__data_grid_types[key];
+    }
+  });
 });
 "
 `;
@@ -223,6 +235,33 @@ function a() {
 exports[`convert-esmodule generates parseable var name with @ 1`] = `
 "\\"use strict\\";
 var $csb__akjaw = require(\\"./a-@kjaw\\");
+"
+`;
+
+exports[`convert-esmodule handles concurrent import and exports 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"a\\", {
+  enumerable: true,
+  get: function get() {
+    return a;
+  }
+});
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var $csb__testlibdom = require(\\"test-lib-dom\\");
+var $csb__testlibdom_ = require(\\"test-lib-dom\\");
+Object.keys($csb__testlibdom_).forEach(function (key) {
+  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (Object.prototype.hasOwnProperty.call(exports, key)) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return $csb__testlibdom_[key];
+    }
+  });
+});
+var a = () => $csb__testlibdom.a;
 "
 `;
 

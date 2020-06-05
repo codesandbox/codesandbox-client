@@ -194,7 +194,7 @@ export function convertEsModule(code: string) {
             i++;
             program.body.unshift(
               generateExportGetter(
-                specifier.exported.name,
+                { type: n.Literal, value: specifier.exported.name },
                 specifier.local.name
               )
             );
