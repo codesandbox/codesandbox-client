@@ -36,20 +36,21 @@ export const Header = ({ createNewFolder, templates, path, title }: Props) => {
         <Breadcrumbs param={path} />
       )}
       <Stack gap={4} align="center">
-        {location.pathname.includes('all') && (
-          <Button
-            onClick={createNewFolder}
-            variant="link"
-            css={css({
-              fontSize: 3,
-              color: 'mutedForeground',
-              padding: 0,
-              width: 'auto',
-            })}
-          >
-            + New Folder
-          </Button>
-        )}
+        {location.pathname.includes('all') &&
+          !location.pathname.includes('all/drafts') && (
+            <Button
+              onClick={createNewFolder}
+              variant="link"
+              css={css({
+                fontSize: 2,
+                color: 'mutedForeground',
+                padding: 0,
+                width: 'auto',
+              })}
+            >
+              + New Folder
+            </Button>
+          )}
         {templates && <Filters possibleTemplates={templates} />}
       </Stack>
     </Stack>
