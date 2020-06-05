@@ -33,6 +33,10 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = withTheme(
             width: '100vw',
             overflow: 'hidden',
             backgroundColor: 'sideBar.background',
+
+            a: {
+              textDecoration: 'none',
+            },
           })}
         >
           <Navigation title="CodeSadbox" />
@@ -43,33 +47,37 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = withTheme(
               <Subtitle>CodeSadbox</Subtitle>
               <Stack gap={2}>
                 {isLoggedIn ? (
-                  <Button autoWidth variant="secondary" href={dashboardUrl()}>
-                    <ButtonIcon>
-                      <Dashboard />
-                    </ButtonIcon>
-                    Go to Dashboard
-                  </Button>
+                  <a href={dashboardUrl()}>
+                    <Button autoWidth variant="secondary">
+                      <ButtonIcon>
+                        <Dashboard />
+                      </ButtonIcon>
+                      Go to Dashboard
+                    </Button>
+                  </a>
                 ) : (
-                  <Button autoWidth variant="secondary" href="/">
-                    <ButtonIcon>
-                      <GoHome />
-                    </ButtonIcon>
-                    Back to Home
-                  </Button>
+                  <a href="/">
+                    <Button autoWidth variant="secondary">
+                      <ButtonIcon>
+                        <GoHome />
+                      </ButtonIcon>
+                      Back to Home
+                    </Button>
+                  </a>
                 )}
-
-                <Button
-                  autoWidth
-                  target="_blank"
-                  // @ts-ignore
-                  rel="noopener"
-                  href={buildCrashReport({ error, trace })}
-                >
-                  <ButtonIcon>
-                    <GoIssueOpened />
-                  </ButtonIcon>
-                  Report Crash
-                </Button>
+                <a href={buildCrashReport({ error, trace })}>
+                  <Button
+                    autoWidth
+                    target="_blank"
+                    // @ts-ignore
+                    rel="noopener"
+                  >
+                    <ButtonIcon>
+                      <GoIssueOpened />
+                    </ButtonIcon>
+                    Report Crash
+                  </Button>
+                </a>
               </Stack>
             </Content>
           </Container>

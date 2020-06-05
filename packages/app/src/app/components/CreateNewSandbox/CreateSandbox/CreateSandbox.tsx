@@ -33,7 +33,6 @@ export const CreateSandbox: React.FC = props => {
     orientation: 'vertical',
     selectedId: isFirstVisit ? 'Welcome' : 'Create',
   });
-
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
