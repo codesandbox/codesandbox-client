@@ -50,6 +50,12 @@ export const useTheme = () => homepageTheme;
 const TemplateWrapper = ({ children, noWrapperStyling }) => (
   <ThemeProvider theme={homepageTheme}>
     <div>
+      <div style={{ position: 'absolute', left: 0, right: 0, zIndex: 10 }}>
+        <VisuallyHidden as="a" href="#main">
+          Skip to main content
+        </VisuallyHidden>
+      </div>
+      <Navigation />
       <div
         css={`
           padding: 16px;
@@ -72,27 +78,19 @@ const TemplateWrapper = ({ children, noWrapperStyling }) => (
           <span>Black Lives Matter.</span>
           <a
             css={`
-              margin-left: 8px;
-              padding-left: 8px;
-              padding-right: 8px;
-              padding-top: 0px;
-              padding-bottom: 0px;
-              background: #0971f1;
-              color: rgb(255, 255, 255);
+              font-weight: bold;
+              color: #0971f1;
               display: inline-flex;
               justify-content: center;
               align-items: center;
               cursor: pointer;
               height: 26px;
               width: 100%;
-              font-size: 13px;
-              font-weight: 500;
               line-height: 1;
               flex: 0 0 auto;
-              border-radius: 2px;
-              transition: all 100ms ease-in 0s;
               text-decoration: none;
               width: auto;
+              margin-left: 16px;
 
               @media screen and (max-width: 768px) {
                 margin: 0;
@@ -107,12 +105,6 @@ const TemplateWrapper = ({ children, noWrapperStyling }) => (
           </a>
         </div>
       </div>
-      <div style={{ position: 'absolute', left: 0, right: 0, zIndex: 10 }}>
-        <VisuallyHidden as="a" href="#main">
-          Skip to main content
-        </VisuallyHidden>
-      </div>
-      <Navigation />
 
       <main
         style={noWrapperStyling ? {} : WRAPPER_STYLING}
