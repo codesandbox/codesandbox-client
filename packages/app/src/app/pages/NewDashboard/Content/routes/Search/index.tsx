@@ -23,7 +23,12 @@ export const SearchComponent = ({ location }) => {
 
   return (
     <SelectionProvider sandoxes={sandboxes.SEARCH}>
-      <Header />
+      <Header
+        title="Search results"
+        showViewOptions
+        showFilters
+        showSortOptions
+      />
       <section style={{ position: 'relative' }}>
         {sandboxes.SEARCH ? (
           <VariableGrid

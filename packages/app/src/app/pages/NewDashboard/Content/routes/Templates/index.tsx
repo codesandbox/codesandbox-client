@@ -34,7 +34,13 @@ export const Templates = () => {
         })
       }
     >
-      <Header title="Templates" templates={[]} />
+      <Header
+        title="Templates"
+        templates={[]}
+        showViewOptions
+        showFilters
+        showSortOptions
+      />
       {sandboxes.TEMPLATES ? (
         <VariableGrid
           items={
