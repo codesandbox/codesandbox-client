@@ -502,6 +502,12 @@ export default async function fetchModule(
   let normalizeFunction: typeof normalize;
 
   try {
+    if (dependencyName === 'd3-interpolate') {
+      // A folder is missing on d3-interpolate on jsdelivr, this way we force unpkg.com.
+      // Keep track: https://github.com/jsdelivr/jsdelivr/issues/18223
+      throw new Error("Doesn't work on jsdelivr yet");
+    }
+
     normalizeFunction = getFetchProtocol(version).normalizeMeta;
     meta = await getMeta(dependencyName, packageJSONPath, version);
   } catch (e) {
