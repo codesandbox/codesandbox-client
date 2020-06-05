@@ -19,6 +19,7 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
+import { TeamAvatar } from './TeamAvatar';
 
 export const SIDEBAR_WIDTH = 240;
 
@@ -44,13 +45,11 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
 
   React.useEffect(() => {
     if (dashboard.activeTeam) {
-      const team = dashboard.activeTeamInfo;
-      if (team) {
-        setActiveAccount({
-          username: team.name,
-          avatarUrl: 'https://github.com/github.png',
-        });
-      }
+      const team = dashboard.teams.find(
+        ({ id }) => id === dashboard.activeTeam
+      );
+
+      if (team) setActiveAccount({ username: team.name, avatarUrl: null });
     } else if (user) {
       setActiveAccount({
         username: user.username,
@@ -116,7 +115,11 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                         align="center"
                         justify="center"
                       >
-                        <Avatar user={activeAccount} css={css({ size: 6 })} />
+                        {activeAccount.avatarUrl ? (
+                          <Avatar user={activeAccount} css={css({ size: 6 })} />
+                        ) : (
+                          <TeamAvatar name={activeAccount.username} />
+                        )}
                       </Stack>
                       <Text size={4} weight="normal" maxWidth={140}>
                         {activeAccount.username}
@@ -168,13 +171,7 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                             align="center"
                             justify="center"
                           >
-                            <Avatar
-                              user={{
-                                username: team.name,
-                                avatarUrl: 'https://github.com/github.png',
-                              }}
-                              css={css({ size: 5 })}
-                            />
+                            <TeamAvatar name={team.name} size="small" />
                           </Stack>
                           <Text
                             size={3}
