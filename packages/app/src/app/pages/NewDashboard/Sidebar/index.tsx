@@ -44,7 +44,10 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
 
   React.useEffect(() => {
     if (dashboard.activeTeam) {
-      const team = dashboard.activeTeamInfo;
+      const team = dashboard.teams.find(
+        ({ id }) => id === dashboard.activeTeam
+      );
+
       if (team) {
         setActiveAccount({
           username: team.name,
