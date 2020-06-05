@@ -28,6 +28,9 @@ export const Drafts = () => {
       <Header
         path="Drafts"
         templates={getPossibleTemplates(sandboxes.DRAFTS)}
+        showViewOptions
+        showFilters
+        showSortOptions
       />
       {sandboxes.DRAFTS ? (
         <VariableGrid

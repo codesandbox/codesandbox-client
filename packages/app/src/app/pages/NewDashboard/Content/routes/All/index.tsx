@@ -71,6 +71,9 @@ export const AllPage = ({ match: { params }, history }) => {
         path={param}
         templates={getPossibleTemplates(allCollections)}
         createNewFolder={() => setCreating(true)}
+        showViewOptions
+        showFilters={param}
+        showSortOptions={param}
       />
       {allCollections ? (
         <VariableGrid items={items} />
