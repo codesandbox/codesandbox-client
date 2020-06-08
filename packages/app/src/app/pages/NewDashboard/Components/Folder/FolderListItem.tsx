@@ -95,7 +95,7 @@ export const FolderListItem = ({
       </Column>
       <Column span={[0, 4, 4]} as={Stack} align="center">
         {!(isNewFolder || isDrafts) ? (
-          <Text size={3} block variant="muted">
+          <Text size={3} block variant={selected ? 'body' : 'muted'}>
             {numberOfSandboxes || 0}{' '}
             {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}
           </Text>

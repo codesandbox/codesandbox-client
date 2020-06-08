@@ -100,14 +100,14 @@ export const SandboxListItem = ({
       </Column>
       <Column span={[0, 4, 4]} as={Stack} align="center">
         {sandbox.removedAt ? (
-          <Text size={3} variant="muted" maxWidth="100%">
+          <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
               Deleted
             </Text>{' '}
             {formatDistanceToNow(new Date(sandbox.removedAt))} ago
           </Text>
         ) : (
-          <Text size={3} variant="muted" maxWidth="100%">
+          <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
               Updated
             </Text>{' '}
