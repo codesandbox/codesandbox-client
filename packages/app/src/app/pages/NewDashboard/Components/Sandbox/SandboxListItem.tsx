@@ -104,14 +104,17 @@ export const SandboxListItem = ({
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
               Deleted
             </Text>{' '}
-            {formatDistanceToNow(new Date(sandbox.removedAt))} ago
+            {formatDistanceToNow(
+              new Date(sandbox.removedAt.replace(/ /g, 'T'))
+            )}{' '}
+            ago
           </Text>
         ) : (
           <Text size={3} variant="muted" maxWidth="100%">
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
               Updated
             </Text>{' '}
-            {formatDistanceToNow(new Date(sandbox.updatedAt))} ago
+            {formatDistanceToNow(new Date(sandbox.updatedAt.trim()))} ago
           </Text>
         )}
       </Column>
