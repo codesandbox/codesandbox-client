@@ -1,6 +1,6 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Stack, Element, Menu, Icon, Text } from '@codesandbox/components';
@@ -112,6 +112,7 @@ const SandboxMenu = ({
     actions,
   } = useOvermind();
   const history = useHistory();
+  const location = useLocation();
 
   const url = sandboxUrl({
     id: sandbox.id,
@@ -131,6 +132,27 @@ const SandboxMenu = ({
   const isOwner =
     !sandbox.isTemplate ||
     (sandbox.author && sandbox.author.username === user.username);
+
+  if (location.pathname.includes('deleted')) {
+    return (
+      <>
+        <MenuItem
+          onClick={() => {
+            actions.dashboard.recoverSandboxes([sandbox.id]);
+          }}
+        >
+          Recover Sandbox
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            actions.dashboard.permanentlyDeleteSandboxes([sandbox.id]);
+          }}
+        >
+          Delete Permanently
+        </MenuItem>
+      </>
+    );
+  }
 
   return (
     <>
