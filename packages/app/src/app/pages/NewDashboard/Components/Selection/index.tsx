@@ -296,11 +296,11 @@ export const SelectionProvider = ({
       }
     }
 
-    const isDrafts = folder => folder.path === '/drafts';
+    const notDrafts = folder => folder.path !== '/drafts';
     if (folderPaths.length) {
       if (dropResult.path === 'deleted') {
         folderPaths
-          .filter(isDrafts)
+          .filter(notDrafts)
           .forEach(path => actions.dashboard.deleteFolder({ path }));
       } else if (dropResult.path === 'templates') {
         // folders can't be dropped into templates
@@ -309,7 +309,7 @@ export const SelectionProvider = ({
       } else {
         // moving folders into another folder
         // is the same as changing it's path
-        folderPaths.filter(isDrafts).forEach(path => {
+        folderPaths.filter(notDrafts).forEach(path => {
           const { name } = folders.find(folder => folder.path === path);
           actions.dashboard.moveFolder({
             path,
