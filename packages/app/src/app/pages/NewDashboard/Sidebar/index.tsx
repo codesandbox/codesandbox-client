@@ -360,6 +360,11 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
 
   const { onSidebarToggle } = React.useContext(SidebarContext);
 
+  let linkTo: string;
+  if (isNested) linkTo = '/new-dashboard/all' + path;
+  else if (path === '/drafts') linkTo = '/new-dashboard/drafts';
+  else linkTo = '/new-dashboard/' + path;
+
   return (
     <ListAction
       ref={dropRef}
@@ -386,11 +391,7 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
       style={{ height: isNested ? 32 : 40 }}
     >
       {props.children || (
-        <Link
-          as={RouterLink}
-          to={`/new-dashboard${isNested ? '/all' : '/'}${path}`}
-          style={linkStyles}
-        >
+        <Link as={RouterLink} to={linkTo} style={linkStyles}>
           <Stack
             as="span"
             css={css({ width: 10 })}
