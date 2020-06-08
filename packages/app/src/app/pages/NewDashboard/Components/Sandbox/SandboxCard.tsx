@@ -55,7 +55,6 @@ export const SandboxCard = ({
       transitionDuration: theme => theme.speeds[4],
       opacity,
       ':hover, :focus, :focus-within': {
-        cursor: editing ? 'normal' : 'pointer',
         boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
       },
     })}

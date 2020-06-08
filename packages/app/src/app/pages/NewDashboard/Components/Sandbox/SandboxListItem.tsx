@@ -54,6 +54,7 @@ export const SandboxListItem = ({
       backgroundColor: selected ? 'blues.600' : 'transparent',
       color: selected ? 'white' : 'inherit',
       ':hover, :focus, :focus-within': {
+        cursor: 'default',
         backgroundColor: selected ? 'blues.600' : 'list.hoverBackground',
       },
     })}
