@@ -273,6 +273,8 @@ export const SelectionProvider = ({
   };
 
   const onDrop = dropResult => {
+    if (dropResult.isSamePath) return;
+
     const sandboxIds = selectedIds.filter(isSandboxId);
     const folderPaths = selectedIds.filter(isFolderPath);
 
@@ -281,7 +283,7 @@ export const SelectionProvider = ({
         actions.dashboard.deleteSandbox(sandboxIds);
       } else if (dropResult.path === 'templates') {
         actions.dashboard.makeTemplate(sandboxIds);
-      } else if (dropResult.path === 'drafts') {
+      } else if (dropResult.path === '/drafts') {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: '/',
