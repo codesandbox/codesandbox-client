@@ -5,10 +5,10 @@ import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
+import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
 
 const GenericSandbox = ({ sandbox, ...props }) => {
@@ -19,15 +19,12 @@ const GenericSandbox = ({ sandbox, ...props }) => {
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
-  const { UserIcon } = getTemplateIcon(
-    sandbox.forkedTemplate?.iconUrl,
-    sandbox.source.template
-  );
-
   const url = sandboxUrl({
     id: sandbox.id,
     alias: sandbox.alias,
   });
+
+  const TemplateIcon = getTemplateIcon(sandbox);
 
   /* Drag logic */
 
@@ -148,7 +145,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     sandboxTitle,
     sandbox,
     isTemplate: sandbox.isTemplate,
-    TemplateIcon: UserIcon,
+    TemplateIcon,
     // edit mode
     editing: isRenaming && selected,
     newTitle,
