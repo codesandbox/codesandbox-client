@@ -276,7 +276,7 @@ export const SelectionProvider = ({
     if (dropResult.isSamePath) return;
 
     const sandboxIds = selectedIds.filter(isSandboxId);
-    const folderPaths = selectedIds.filter(isFolderPath);
+    const folderPaths = selectedIds.filter(isFolderPath).filter(notDrafts);
 
     if (sandboxIds.length) {
       if (dropResult.path === 'deleted') {
@@ -296,12 +296,9 @@ export const SelectionProvider = ({
       }
     }
 
-    const notDrafts = folder => folder.path !== '/drafts';
     if (folderPaths.length) {
       if (dropResult.path === 'deleted') {
-        folderPaths
-          .filter(notDrafts)
-          .forEach(path => actions.dashboard.deleteFolder({ path }));
+        folderPaths.forEach(path => actions.dashboard.deleteFolder({ path }));
       } else if (dropResult.path === 'templates') {
         // folders can't be dropped into templates
       } else if (dropResult.path === 'drafts') {
@@ -309,7 +306,7 @@ export const SelectionProvider = ({
       } else {
         // moving folders into another folder
         // is the same as changing it's path
-        folderPaths.filter(notDrafts).forEach(path => {
+        folderPaths.forEach(path => {
           const { name } = folders.find(folder => folder.path === path);
           actions.dashboard.moveFolder({
             path,
@@ -526,3 +523,4 @@ const scrollIntoViewport = (id: string) => {
 
 const isFolderPath = id => id.startsWith('/');
 const isSandboxId = id => !isFolderPath(id);
+const notDrafts = folder => folder.path !== '/drafts';
