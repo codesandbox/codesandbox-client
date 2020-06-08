@@ -558,6 +558,17 @@ export const getSandboxComments: AsyncAction<string> = async (
       `There was a problem getting the sandbox comments`
     );
   }
+
+  // When we load the comments there might be changes already, lets make sure we transpose
+  // any comments on these changes. This does not fix it if you already managed to save, but
+  // that is considered an extreme edge case
+  state.editor.changedModuleShortids.forEach(moduleShortid => {
+    const module = state.editor.currentSandbox.modules.find(
+      moduleItem => moduleItem.shortid === moduleShortid
+    );
+    const operation = getTextOperation(module.savedCode, module.code);
+    actions.comments.transposeComments({ module, operation });
+  });
 };
 
 export const onCommentAdded: Action<CommentAddedSubscription> = (
