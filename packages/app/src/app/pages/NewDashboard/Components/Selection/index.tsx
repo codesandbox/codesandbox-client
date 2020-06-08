@@ -343,7 +343,7 @@ export const SelectionProvider = ({
     setSelectedIds([]); // global blur
 
     // right click
-    if (event.metaKey) return;
+    if (event.button === 2) return;
 
     setDrawingRect(true);
     setSelectionRect({
