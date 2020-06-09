@@ -41,7 +41,7 @@ export const Deleted = () => {
 
   return (
     <SelectionProvider sandboxes={sandboxes.DELETED}>
-      <Header title="Recently Deleted" />
+      <Header title="Recently Deleted" showFilters showSortOptions />
       {sandboxes.DELETED ? (
         <VariableGrid items={items} />
       ) : (

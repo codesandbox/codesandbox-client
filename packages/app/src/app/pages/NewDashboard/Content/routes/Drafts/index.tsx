@@ -8,7 +8,6 @@ import {
 } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { getPossibleTemplates } from '../../utils';
-import { useBottomScroll } from './useBottomScroll';
 
 export const Drafts = () => {
   const {
@@ -17,21 +16,23 @@ export const Drafts = () => {
       dashboard: { sandboxes },
     },
   } = useOvermind();
-  const [visibleSandboxes] = useBottomScroll('DRAFTS');
 
   React.useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.DRAFTS);
   }, [actions.dashboard]);
 
   return (
-    <SelectionProvider sandboxes={visibleSandboxes}>
+    <SelectionProvider sandboxes={sandboxes.DRAFTS}>
       <Header
         path="Drafts"
         templates={getPossibleTemplates(sandboxes.DRAFTS)}
+        showViewOptions
+        showFilters
+        showSortOptions
       />
       {sandboxes.DRAFTS ? (
         <VariableGrid
-          items={visibleSandboxes.map(sandbox => ({
+          items={sandboxes.DRAFTS.map(sandbox => ({
             type: 'sandbox',
             ...sandbox,
           }))}

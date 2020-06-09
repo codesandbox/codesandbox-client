@@ -28,6 +28,14 @@ describe('simple-get-require-statements', () => {
     ]);
   });
 
+  it("doesn't ignore pure markers", () => {
+    const code = `  /*#__PURE__*/ require('@emotion/stylis')`;
+
+    expect(getRequireStatements(code)).toStrictEqual([
+      { type: 'direct', path: '@emotion/stylis' },
+    ]);
+  });
+
   it('allows comment after require statement', () => {
     const code = `require('test');
     require('test2') // yes very nice`;

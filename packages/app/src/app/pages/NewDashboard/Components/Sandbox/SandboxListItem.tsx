@@ -17,7 +17,6 @@ import css from '@styled-system/css';
 export const SandboxListItem = ({
   sandbox,
   sandboxTitle,
-  isTemplate = false,
   // interactions
   selected,
   onClick,
@@ -26,14 +25,12 @@ export const SandboxListItem = ({
   onKeyDown,
   onContextMenu,
   // edit mode
+  editing,
   newTitle,
-  edit,
-  inputRef,
   onChange,
   onInputKeyDown,
   onSubmit,
   onInputBlur,
-  enterEditing,
   // drag preview
   thumbnailRef,
   opacity,
@@ -57,6 +54,7 @@ export const SandboxListItem = ({
       backgroundColor: selected ? 'blues.600' : 'transparent',
       color: selected ? 'white' : 'inherit',
       ':hover, :focus, :focus-within': {
+        cursor: 'default',
         backgroundColor: selected ? 'blues.600' : 'list.hoverBackground',
       },
     })}
@@ -81,11 +79,11 @@ export const SandboxListItem = ({
             })}
           />
           <Element style={{ width: 150 }}>
-            {edit ? (
+            {editing ? (
               <form onSubmit={onSubmit}>
                 <Input
+                  autoFocus
                   value={newTitle}
-                  ref={inputRef}
                   onChange={onChange}
                   onKeyDown={onInputKeyDown}
                   onBlur={onInputBlur}
@@ -103,18 +101,21 @@ export const SandboxListItem = ({
       </Column>
       <Column span={[0, 4, 4]} as={Stack} align="center">
         {sandbox.removedAt ? (
-          <Text size={3} variant="muted" maxWidth="100%">
+          <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
               Deleted
             </Text>{' '}
-            {formatDistanceToNow(new Date(sandbox.removedAt))} ago
+            {formatDistanceToNow(
+              new Date(sandbox.removedAt.replace(/ /g, 'T'))
+            )}{' '}
+            ago
           </Text>
         ) : (
-          <Text size={3} variant="muted" maxWidth="100%">
+          <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
               Updated
             </Text>{' '}
-            {formatDistanceToNow(new Date(sandbox.updatedAt))} ago
+            {formatDistanceToNow(new Date(sandbox.updatedAt.trim()))} ago
           </Text>
         )}
       </Column>

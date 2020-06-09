@@ -1337,10 +1337,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@codesandbox/template-icons@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-1.0.0.tgz#7b0dc79603ec3d6c9f65e2386be106b9eceb7c24"
-  integrity sha512-4rQ82ZPASUiXow4oRByIDHz46KBL2r6fNLHp6IeffGcQhMT6OpyvBCtxdd6i4EsOhw8mMfsbrxoRRszBx0hDjw==
+"@codesandbox/template-icons@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-1.1.0.tgz#ef37b97dc6057b63a500c6710fbca5f9c7a9730d"
+  integrity sha512-p14rcYOSfI1A6UkFO/aS+H/cuJvlVT4bLpjCEt7kv+KCFaRjd70FDEzfyKLHH/s57k0W2MWrhB25fqPZm89OXg==
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
@@ -31290,6 +31290,11 @@ vscode-languageserver@^3.3.0:
   dependencies:
     vscode-languageserver-protocol "3.5.1"
     vscode-uri "^1.0.1"
+
+vscode-oniguruma@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/vscode-oniguruma/-/vscode-oniguruma-1.3.1.tgz#e2383879c3485b19f533ec34efea9d7a2b14be8f"
+  integrity sha512-gz6ZBofA7UXafVA+m2Yt2zHKgXC2qedArprIsHAPKByTkwq9l5y/izAGckqxYml7mSbYxTRTfdRwsFq3cwF4LQ==
 
 vscode-uri@^1.0.1:
   version "1.0.8"

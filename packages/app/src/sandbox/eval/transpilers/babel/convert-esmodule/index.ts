@@ -10,7 +10,6 @@ import { Syntax as n } from './syntax';
 import {
   generateRequireStatement,
   generateAllExportsIterator,
-  generateExportMemberStatement,
   generateExportStatement,
   generateEsModuleSpecifier,
   generateInteropRequire,
@@ -28,7 +27,7 @@ export function convertEsModule(code: string) {
   const trackedExports = {};
 
   const getVarName = (name: string) => {
-    let usedName = name.replace(/[.-]/g, '');
+    let usedName = name.replace(/(\.|-|@)/g, '');
     while (usedVarNames[usedName]) {
       usedName += '_';
     }
@@ -132,7 +131,34 @@ export function convertEsModule(code: string) {
         }
         const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
 
-        program.body[i] = generateRequireStatement(varName, source.value);
+        if (
+          statement.specifiers.length === 1 &&
+          statement.specifiers[0].type === n.ExportSpecifier &&
+          statement.specifiers[0].local.name === 'default'
+        ) {
+          // In this case there's a default re-export. So we need to wrap it in a interopRequireDefault to make sure
+          // that default is exposed.
+          addDefaultInterop();
+          program.body[i] = generateInteropRequireExpression(
+            {
+              type: n.CallExpression,
+              callee: {
+                type: n.Identifier,
+                name: 'require',
+              },
+              arguments: [
+                {
+                  type: n.Literal,
+                  value: source.value,
+                },
+              ],
+            },
+            varName
+          );
+        } else {
+          program.body[i] = generateRequireStatement(varName, source.value);
+        }
+
         if (statement.specifiers.length) {
           i++;
 
@@ -142,10 +168,19 @@ export function convertEsModule(code: string) {
               program.body.splice(
                 i,
                 0,
-                generateExportMemberStatement(
-                  varName,
-                  specifier.exported.name,
-                  specifier.local.name
+                generateExportGetter(
+                  { type: n.Literal, value: specifier.exported.name },
+                  {
+                    type: n.MemberExpression,
+                    object: {
+                      type: n.Identifier,
+                      name: varName,
+                    },
+                    property: {
+                      type: n.Identifier,
+                      name: specifier.local.name,
+                    },
+                  }
                 )
               );
             });
@@ -163,24 +198,29 @@ export function convertEsModule(code: string) {
           // export function test() {}
 
           varName = statement.declaration.id.name;
+          i++;
+          program.body.splice(i, 0, generateExportStatement(varName, varName));
         } else {
           // export const a = {}
 
           const declaration = statement.declaration as meriyah.ESTree.VariableDeclaration;
 
-          const foundDeclaration = declaration.declarations.find(
-            d => d.id.type === n.Identifier
-          ) as { id: meriyah.ESTree.Identifier };
+          declaration.declarations.forEach(decl => {
+            if (decl.id.type !== n.Identifier) {
+              return;
+            }
 
-          if (!foundDeclaration) {
-            continue;
-          }
+            trackedExports[decl.id.name] = decl.id.name;
+            varName = decl.id.name;
 
-          trackedExports[foundDeclaration.id.name] = foundDeclaration.id.name;
-          varName = foundDeclaration.id.name;
+            i++;
+            program.body.splice(
+              i,
+              0,
+              generateExportStatement(varName, varName)
+            );
+          });
         }
-        i++;
-        program.body.splice(i, 0, generateExportStatement(varName, varName));
       } else if (statement.specifiers) {
         program.body.splice(i, 1);
         i--;
@@ -189,8 +229,11 @@ export function convertEsModule(code: string) {
             i++;
             program.body.unshift(
               generateExportGetter(
-                specifier.exported.name,
-                specifier.local.name
+                { type: n.Literal, value: specifier.exported.name },
+                {
+                  type: n.Identifier,
+                  name: specifier.local.name,
+                }
               )
             );
           }
@@ -318,7 +361,10 @@ export function convertEsModule(code: string) {
             // After the require statement
             importOffset,
             0,
-            generateInteropRequireExpression(varName, localName)
+            generateInteropRequireExpression(
+              { type: n.Identifier, name: varName },
+              localName
+            )
           );
 
           varsToRename[localName] = [localName, 'default'];
@@ -430,7 +476,9 @@ export function convertEsModule(code: string) {
     scopeManager.detach();
   }
 
-  return astring.generate(program as any, {
+  const finalCode = astring.generate(program as any, {
     generator: customGenerator,
   });
+
+  return `"use strict";\n${finalCode}`;
 }

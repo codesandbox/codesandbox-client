@@ -78,6 +78,7 @@ export const Header = ({ onSidebarToggle }) => {
         <Button variant="secondary" css={css({ size: 26 })}>
           <Icon name="bell" size={11} title="Notifications" />
         </Button>
+
         <UserMenu>
           <Button variant="secondary" css={css({ size: 26 })}>
             <Icon name="more" size={12} title="User actions" />
