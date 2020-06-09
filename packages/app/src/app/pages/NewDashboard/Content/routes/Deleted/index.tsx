@@ -14,7 +14,7 @@ export const Deleted = () => {
   const {
     actions,
     state: {
-      dashboard: { deletedSandboxesByTime, sandboxes },
+      dashboard: { deletedSandboxesByTime, getFilteredSandboxes, sandboxes },
     },
   } = useOvermind();
 
@@ -35,8 +35,14 @@ export const Deleted = () => {
   };
 
   const items = [
-    ...getSection('Archived this week', deletedSandboxesByTime.week),
-    ...getSection('Archived earlier', deletedSandboxesByTime.older),
+    ...getSection(
+      'Archived this week',
+      getFilteredSandboxes(deletedSandboxesByTime.week)
+    ),
+    ...getSection(
+      'Archived earlier',
+      getFilteredSandboxes(deletedSandboxesByTime.older)
+    ),
   ];
 
   return (

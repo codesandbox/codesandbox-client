@@ -18,7 +18,12 @@ export const AllPage = ({ match: { params }, history }) => {
   const {
     actions,
     state: {
-      dashboard: { allCollections, sandboxes, activeTeam },
+      dashboard: {
+        allCollections,
+        getFilteredSandboxes,
+        sandboxes,
+        activeTeam,
+      },
     },
   } = useOvermind();
   const [localTeam, setLocalTeam] = React.useState(activeTeam);
@@ -62,9 +67,11 @@ export const AllPage = ({ match: { params }, history }) => {
   if (creating) items.push({ type: 'folder', setCreating });
 
   items = [
-    ...items,
+    ...getFilteredSandboxes(items),
     ...sortedFolders.map(folder => ({ type: 'folder', ...folder })),
-    ...sandboxesForPath.map(sandbox => ({ type: 'sandbox', ...sandbox })),
+    ...getFilteredSandboxes(
+      sandboxesForPath.map(sandbox => ({ type: 'sandbox', ...sandbox }))
+    ),
   ];
 
   return (

@@ -12,13 +12,28 @@ export const Templates = () => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes },
+      dashboard: { sandboxes, getFilteredSandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.TEMPLATES);
   }, [actions.dashboard]);
+
+  const items =
+    sandboxes.TEMPLATES &&
+    getFilteredSandboxes(
+      // @ts-ignore
+      sandboxes.TEMPLATES.map(template => {
+        const { sandbox, ...templateValues } = template;
+        return {
+          ...sandbox,
+          type: 'sandbox',
+          isTemplate: true,
+          template: templateValues,
+        };
+      })
+    );
 
   return (
     <SelectionProvider
@@ -42,20 +57,7 @@ export const Templates = () => {
         showSortOptions
       />
       {sandboxes.TEMPLATES ? (
-        <VariableGrid
-          items={
-            sandboxes.TEMPLATES &&
-            sandboxes.TEMPLATES.map(template => {
-              const { sandbox, ...templateValues } = template;
-              return {
-                ...sandbox,
-                type: 'sandbox',
-                isTemplate: true,
-                template: templateValues,
-              };
-            })
-          }
-        />
+        <VariableGrid items={items} />
       ) : (
         <SkeletonGrid count={8} />
       )}

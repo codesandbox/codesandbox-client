@@ -13,7 +13,7 @@ export const SearchComponent = ({ location }) => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes, orderBy, filters },
+      dashboard: { sandboxes, orderBy, filters, getFilteredSandboxes },
     },
   } = useOvermind();
 
@@ -34,10 +34,12 @@ export const SearchComponent = ({ location }) => {
           <VariableGrid
             items={
               sandboxes.SEARCH &&
-              sandboxes.SEARCH.map(sandbox => ({
-                type: 'sandbox',
-                ...sandbox,
-              }))
+              getFilteredSandboxes(
+                sandboxes.SEARCH.map(sandbox => ({
+                  type: 'sandbox',
+                  ...sandbox,
+                }))
+              )
             }
           />
         ) : (

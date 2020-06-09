@@ -13,7 +13,7 @@ export const Drafts = () => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes },
+      dashboard: { sandboxes, getFilteredSandboxes },
     },
   } = useOvermind();
 
@@ -32,10 +32,12 @@ export const Drafts = () => {
       />
       {sandboxes.DRAFTS ? (
         <VariableGrid
-          items={sandboxes.DRAFTS.map(sandbox => ({
-            type: 'sandbox',
-            ...sandbox,
-          }))}
+          items={getFilteredSandboxes(
+            sandboxes.DRAFTS.map(sandbox => ({
+              type: 'sandbox',
+              ...sandbox,
+            }))
+          )}
         />
       ) : (
         <SkeletonGrid count={8} />
