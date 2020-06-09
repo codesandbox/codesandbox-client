@@ -1,7 +1,7 @@
-import React from 'react';
-import { useOvermind } from 'app/overmind';
-import { Link, Button } from '@codesandbox/components';
+import { Button, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React from 'react';
 
 export const LinkElement = ({ href, children, ...props }) => {
   const { state, actions } = useOvermind();
@@ -28,13 +28,9 @@ export const LinkElement = ({ href, children, ...props }) => {
     );
   }
 
-  if (!href.includes('codesandbox')) {
-    return (
-      <Link target="_blank" rel="noopener noreferrer ugc" {...props}>
-        {children}
-      </Link>
-    );
-  }
-
-  return <Link {...props}>{children}</Link>;
+  return (
+    <Link href={href} {...props} target="_blank">
+      {children[0].props.children}
+    </Link>
+  );
 };
