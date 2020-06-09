@@ -58,7 +58,9 @@ export const blacklistedTemplateAdded: Action<string> = (
   { state },
   template
 ) => {
-  state.dashboard.filters.blacklistedTemplates.push(template);
+  state.dashboard.filters.blacklistedTemplates = state.dashboard.filters.blacklistedTemplates.concat(
+    template
+  );
 };
 
 export const blacklistedTemplateRemoved: Action<string> = (
