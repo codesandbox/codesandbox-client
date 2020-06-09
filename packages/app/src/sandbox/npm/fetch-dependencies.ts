@@ -14,7 +14,7 @@ type Dependencies = {
 const RETRY_COUNT = 60;
 const debug = _debug('cs:sandbox:packager');
 
-const VERSION = 1;
+const VERSION = 2;
 
 // eslint-disable-next-line
 const DEV_URLS = {

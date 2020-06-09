@@ -29,13 +29,13 @@ export default abstract class Transpiler {
   abstract doTranspilation(
     code: string,
     loaderContext: LoaderContext
-  ): Promise<TranspilerResult>;
+  ): Promise<TranspilerResult> | TranspilerResult;
   /* eslint-enable */
 
   transpile(
     code: string,
     loaderContext: LoaderContext
-  ): Promise<TranspilerResult> {
+  ): Promise<TranspilerResult> | TranspilerResult {
     return this.doTranspilation(code, loaderContext);
   }
 

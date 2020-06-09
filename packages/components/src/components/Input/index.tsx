@@ -1,5 +1,6 @@
-import styled from 'styled-components';
 import css from '@styled-system/css';
+import styled from 'styled-components';
+
 import { Element } from '../Element';
 
 const placeholderStyles = {
@@ -7,7 +8,10 @@ const placeholderStyles = {
   fontSize: 3,
 };
 
-interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  readOnly?: boolean;
+  step?: number | string;
+}
 
 export const Input = styled(Element).attrs(p => ({
   as: ((p as unknown) as { as: string }).as || 'input',

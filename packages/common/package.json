@@ -17,7 +17,7 @@
     "build:lib": "yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{css,svg,png,jpg,woff,woff2}\" lib",
     "build:es": "yarn tsc -p tsconfig.es.json && yarn babel src --out-dir es && yarn cpx \"src/**/*.{css,svg,png,jpg,woff,woff2}\" es",
     "build:storybook": "build-storybook -c .storybook -o public",
-    "clean": "rimraf lib,es && yarn rimraf node_modules/@types/react-native",
+    "clean": "rimraf lib,es",
     "lint": "eslint --ext .js,.ts,.tsx src",
     "prepublish": "yarn build",
     "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg,woff,woff2}\" lib --watch)",
@@ -47,7 +47,7 @@
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
     "@babel/polyfill": "^7.4.4",
-    "@codesandbox/components": "^0.0.1",
+    "@codesandbox/components": "^0.0.2",
     "@codesandbox/notifications": "^1.0.6",
     "@sentry/browser": "^5.11.2",
     "@styled-system/css": "^5.0.23",

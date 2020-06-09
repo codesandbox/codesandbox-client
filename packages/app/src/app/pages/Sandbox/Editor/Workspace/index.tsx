@@ -51,7 +51,7 @@ export const WorkspaceComponent = ({ theme }) => {
               fontFamily: 'Inter, Roboto, sans-serif',
             }}
           >
-            <Component />
+            {state.editor.currentSandbox && <Component />}
           </div>
 
           {isLive && roomInfo.chatEnabled && <Chat />}

@@ -80,17 +80,29 @@ export const Textarea: React.FC<ITextareaProps> = ({
   return (
     <>
       <Wrapper>
-        <Autosize value={innerValue} style={props.style}>
-          {(height: number) => (
-            <TextareaComponent
-              value={innerValue}
-              onChange={internalOnChange}
-              maxLength={maxLength}
-              {...props}
-              style={{ ...(props.style || {}), height }}
-            />
-          )}
-        </Autosize>
+        {autosize ? (
+          <Autosize value={innerValue} style={props.style}>
+            {(height: number) => (
+              <TextareaComponent
+                value={innerValue}
+                onChange={internalOnChange}
+                maxLength={maxLength}
+                {...props}
+                style={{
+                  ...(props.style || {}),
+                  height,
+                }}
+              />
+            )}
+          </Autosize>
+        ) : (
+          <TextareaComponent
+            value={innerValue}
+            onChange={internalOnChange}
+            maxLength={maxLength}
+            {...props}
+          />
+        )}
 
         {maxLength ? (
           <Count limit={maxLength <= innerValue.length}>

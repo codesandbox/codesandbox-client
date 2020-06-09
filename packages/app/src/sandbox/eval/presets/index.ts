@@ -6,6 +6,9 @@ import { Module } from '../types/module';
 import Manager from '../manager';
 import Transpiler from '../transpilers';
 import TranspiledModule from '../transpiled-module';
+import { WebpackTranspiler } from '../transpilers/webpack';
+import csbDynamicImportTranspiler from '../transpilers/csb-dynamic-import';
+import { IEvaluator } from '../evaluator';
 
 type TranspilerDefinition = {
   transpiler: Transpiler;
@@ -22,6 +25,11 @@ type LifeCycleFunction = (
   updatedModules: TranspiledModule[]
 ) => void | Promise<any>;
 
+type LoaderDefinition = {
+  test: (module: Module) => boolean;
+  transpilers: Array<TranspilerDefinition>;
+};
+
 /**
  * This is essentially where it all comes together. The manager is responsible for
  * doing evaluation and transpilation using the Transpiler and Loader classes.
@@ -34,10 +42,7 @@ type LifeCycleFunction = (
  * and loaders.
  */
 export default class Preset {
-  loaders: Array<{
-    test: (module: Module) => boolean;
-    transpilers: Array<TranspilerDefinition>;
-  }>;
+  loaders: Array<LoaderDefinition>;
 
   transpilers: Set<Transpiler>;
   name: string;
@@ -64,6 +69,14 @@ export default class Preset {
    * Code to run before evaluation
    */
   preEvaluate: LifeCycleFunction;
+
+  preTranspilers: TranspilerDefinition[] = [
+    { transpiler: csbDynamicImportTranspiler },
+  ];
+
+  postTranspilers: TranspilerDefinition[] = [
+    { transpiler: csbDynamicImportTranspiler },
+  ];
 
   constructor(
     name: string,
@@ -101,6 +114,10 @@ export default class Preset {
     this.teardown = teardown || noop;
     this.preEvaluate = preEvaluate || noop;
     this.htmlDisabled = htmlDisabled || false;
+
+    this.postTranspilers.forEach(transpiler => {
+      this.transpilers.add(transpiler.transpiler);
+    });
   }
 
   setAdditionalAliases = (aliases: { [path: string]: string }) => {
@@ -193,7 +210,11 @@ export default class Preset {
    * Get transpilers from the given query, the query is webpack like:
    * eg. !babel-loader!./test.js
    */
-  getLoaders(module: Module, query: string = ''): Array<TranspilerDefinition> {
+  getLoaders(
+    module: Module,
+    evaluator: IEvaluator,
+    query: string = ''
+  ): Array<TranspilerDefinition> {
     const loader = this.loaders.find(t => t.test(module));
 
     // Starting !, drop all transpilers
@@ -210,12 +231,15 @@ export default class Preset {
       .map(loaderName => {
         const [name, options] = loaderName.split('?');
 
-        const transpiler = Array.from(this.transpilers).find(
+        let transpiler = Array.from(this.transpilers).find(
           t => t.name === name
         );
 
         if (!transpiler) {
-          throw new Error(`Loader '${name}' could not be found.`);
+          const webpackLoader = new WebpackTranspiler(name, evaluator);
+          // If the loader is not installed, we try to run the webpack loader.
+          this.transpilers.add(webpackLoader);
+          transpiler = webpackLoader;
         }
 
         const parsedOptions = this.parseOptions(options);
@@ -224,7 +248,12 @@ export default class Preset {
       })
       .reverse(); // Reverse, because webpack is also in reverse order
 
-    const finalTranspilers = [...transpilers, ...extraTranspilers];
+    const finalTranspilers = [
+      ...this.preTranspilers,
+      ...transpilers,
+      ...extraTranspilers,
+      ...this.postTranspilers,
+    ];
 
     return finalTranspilers;
   }
@@ -244,8 +273,8 @@ export default class Preset {
   /**
    * Get the query syntax of the module
    */
-  getQuery(module: Module, query: string = '') {
-    const loaders = this.getLoaders(module, query);
+  getQuery(module: Module, evaluator: IEvaluator, query: string = '') {
+    const loaders = this.getLoaders(module, evaluator, query);
 
     return `!${loaders.map(t => t.transpiler.name).join('!')}`;
   }

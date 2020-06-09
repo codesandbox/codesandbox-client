@@ -18,8 +18,8 @@ export const comment: Query<
         ...CommentWithReplies
       }
     }
-    ${commentWithRepliesFragment}
   }
+  ${commentWithRepliesFragment}
 `;
 
 export const comments: Query<
@@ -32,6 +32,6 @@ export const comments: Query<
         ...Comment
       }
     }
-    ${commentFragment}
   }
+  ${commentFragment}
 `;

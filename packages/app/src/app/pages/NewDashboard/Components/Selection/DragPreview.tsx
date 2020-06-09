@@ -23,6 +23,9 @@ export const DragPreview = ({
   );
 
   setDragging(isDragging);
+  React.useEffect(() => {
+    // if (isDragging) debugger;
+  }, [isDragging]);
 
   // can be a sandbox or folder
   const selectedItems = selectionItems
@@ -54,8 +57,6 @@ export const DragPreview = ({
         zIndex: 100,
         left: 0,
         top: 0,
-        width: '100%',
-        height: '100%',
       }}
     >
       {isDragging && (
@@ -97,7 +98,7 @@ export const DragPreview = ({
                   width: viewMode === 'list' ? 32 : '100%',
                   height: viewMode === 'list' ? 32 : '100%',
                   backgroundColor: 'grays.600',
-                  backgroundImage: `url(${item.url})`,
+                  backgroundImage: item.url ? `url(${item.url})` : null,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center center',
                   backgroundRepeat: 'no-repeat',

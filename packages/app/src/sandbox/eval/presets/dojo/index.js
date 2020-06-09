@@ -40,7 +40,7 @@ export default function initialize() {
     { transpiler: typescriptTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
+  preset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {

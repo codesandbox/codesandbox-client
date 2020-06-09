@@ -22,7 +22,7 @@ const APP_HOT = Boolean(process.env.APP_HOT);
 const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
-const babelConfig = __DEV__ && !SANDBOX_ONLY ? babelDev : babelProd;
+const babelConfig = __DEV__ ? babelDev : babelProd;
 const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost.default() + '/';
 const isLint = 'LINT' in process.env;
 

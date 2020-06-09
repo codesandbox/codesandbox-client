@@ -49,6 +49,10 @@ export const persistCursorToUrl: Action<{
 }> = debounce(({ effects }, { module, selection }) => {
   let parameter = module.path;
 
+  if (!parameter) {
+    return;
+  }
+
   if (selection?.primary?.selection?.length) {
     const [head, anchor] = selection.primary.selection;
     const serializedSelection = head + '-' + anchor;
@@ -256,8 +260,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
       },
     });
   }
-
-  actions.internal.ensurePackageJSON();
 
   await actions.editor.internal.initializeSandbox(sandbox);
 

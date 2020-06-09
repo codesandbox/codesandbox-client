@@ -3,7 +3,7 @@ import isESModule from '../../utils/is-es-module';
 const JSXSyntax = /\n(.*?)<[A-z](.|\n)*?\/?>/;
 const regeneratorSyntax = /\n(.*?)(\s|^)regeneratorRuntime\./;
 
-function checkComment(match) {
+function checkComment(match: string[]) {
   const startOfLine = match[1];
 
   // If it's in a comment or string, we're extremely aggressive here because
@@ -21,11 +21,7 @@ function checkComment(match) {
   return true;
 }
 
-export function shouldTranspile(code: string, path: string) {
-  if (isESModule(code)) {
-    return true;
-  }
-
+export function hasNewSyntax(code: string, path: string) {
   if (path.endsWith('.min.js')) {
     // This needs no transpiling and often fools our JSX check with <a etc...
     return false;
@@ -42,4 +38,12 @@ export function shouldTranspile(code: string, path: string) {
   }
 
   return false;
+}
+
+export function shouldTranspile(code: string, path: string) {
+  if (isESModule(code)) {
+    return true;
+  }
+
+  return hasNewSyntax(code, path);
 }

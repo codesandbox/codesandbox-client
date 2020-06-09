@@ -12,6 +12,7 @@ import dependenciesToQuery from '../npm/dependencies-to-query';
 import { generateBenchmarkInterface } from '../utils/benchmark';
 import { endMeasure, measure } from '../utils/metrics';
 import { clearIndexedDBCache, deleteAPICache, ignoreNextCache } from './cache';
+import { IEvaluator } from './evaluator';
 import fetchModule, {
   combinedMetas,
   setCombinedMetas,
@@ -95,7 +96,7 @@ type TManagerOptions = {
   hasFileResolver: boolean;
 };
 
-export default class Manager {
+export default class Manager implements IEvaluator {
   id: string;
   transpiledModules: {
     [path: string]: {
@@ -188,6 +189,16 @@ export default class Manager {
     }
   }
 
+  async evaluate(path: string, baseTModule?: TranspiledModule): Promise<any> {
+    const tModule = await this.resolveTranspiledModuleAsync(
+      path,
+      baseTModule,
+      this.preset.ignoredExtensions
+    );
+    await tModule.transpile(this);
+    return tModule.evaluate(this);
+  }
+
   async initializeTestRunner() {
     if (this.testRunner) {
       return this.testRunner;
@@ -235,7 +246,7 @@ export default class Manager {
   }
 
   // Hoist these 2 functions to the top, since they get executed A LOT
-  isFile = (p: string, cb: Function | undefined, c: Function) => {
+  isFile = (p: string, cb?: Function | undefined, c?: Function) => {
     const callback = c || cb;
     const hasCallback = typeof callback === 'function';
 
@@ -528,7 +539,7 @@ export default class Manager {
    * @memberof Manager
    */
   getAliasedDependencyPath(path: string, currentPath: string) {
-    const isDependency = /^(\w|@\w)/.test(path);
+    const isDependency = /^(\w|@\w|@-)/.test(path);
 
     if (!isDependency) {
       return path;
@@ -631,8 +642,8 @@ export default class Manager {
           filename: currentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
-          readFileSync: this.readFileSync,
-          packageFilter,
+          readFile: this.readFileSync,
+          packageFilter: packageFilter(this.isFile),
           moduleDirectory: this.getModuleDirectories(),
         },
         (err, foundPath) => {
@@ -647,7 +658,7 @@ export default class Manager {
 
             let connectedPath = shimmedPath;
             if (connectedPath.indexOf('/node_modules') !== 0) {
-              connectedPath = /^(\w|@\w)/.test(shimmedPath)
+              connectedPath = /^(\w|@\w|@-)/.test(shimmedPath)
                 ? pathUtils.join('/node_modules', shimmedPath)
                 : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
             }
@@ -666,7 +677,10 @@ export default class Manager {
 
             if (
               this.manifest.dependencies.find(d => d.name === dependencyName) ||
-              this.manifest.dependencyDependencies[dependencyName]
+              this.manifest.dependencyDependencies[dependencyName] ||
+              this.manifest.contents[
+                `/node_modules/${dependencyName}/package.json`
+              ]
             ) {
               promiseReject(
                 new ModuleNotFoundError(connectedPath, true, currentPath)
@@ -744,7 +758,7 @@ export default class Manager {
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
           readFileSync: this.readFileSync,
-          packageFilter,
+          packageFilter: packageFilter(this.isFile),
           moduleDirectory: this.getModuleDirectories(),
         });
         endMeasure(measureKey, { silent: true });
@@ -769,7 +783,7 @@ export default class Manager {
 
         let connectedPath = shimmedPath;
         if (connectedPath.indexOf('/node_modules') !== 0) {
-          connectedPath = /^(\w|@\w)/.test(shimmedPath)
+          connectedPath = /^(\w|@\w|@-)/.test(shimmedPath)
             ? pathUtils.join('/node_modules', shimmedPath)
             : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
         }
@@ -787,7 +801,8 @@ export default class Manager {
         // TODO: fix the stack hack
         if (
           this.manifest.dependencies.find(d => d.name === dependencyName) ||
-          this.manifest.dependencyDependencies[dependencyName]
+          this.manifest.dependencyDependencies[dependencyName] ||
+          this.manifest.contents[`/node_modules/${dependencyName}/package.json`]
         ) {
           throw new ModuleNotFoundError(connectedPath, true, currentPath);
         } else {
@@ -829,7 +844,7 @@ export default class Manager {
   resolveTranspiledModuleAsync = async (
     path: string,
     currentTModule?: TranspiledModule,
-    ignoredExtensions?: Array<string>
+    ignoredExtensions?: string[]
   ): Promise<TranspiledModule> => {
     const tModule =
       currentTModule || this.getTranspiledModule(this.modules['/package.json']); // Get arbitrary file from root
@@ -1079,8 +1094,6 @@ export default class Manager {
 
               if (
                 !this.manifest.contents[tModule.module.path] ||
-                (tModule.module.path.endsWith('.js') &&
-                  tModule.module.requires == null) ||
                 tModule.module.downloaded
               ) {
                 // Only save modules that are not precomputed

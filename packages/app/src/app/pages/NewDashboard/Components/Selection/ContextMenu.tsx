@@ -1,12 +1,9 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
-import { useHistory } from 'react-router-dom';
-import {
-  SandboxFragmentDashboardFragment as Sandbox,
-  TemplateFragmentDashboardFragment as Template,
-} from 'app/graphql/types';
+import { useHistory, useLocation } from 'react-router-dom';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { Stack, Element, Menu } from '@codesandbox/components';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import { Stack, Element, Menu, Icon, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const ContextMenu = ({
@@ -16,15 +13,36 @@ export const ContextMenu = ({
   selectedIds,
   sandboxes,
   folders,
+  setRenaming,
 }) => {
   React.useEffect(() => {
+    // close when user clicks outside or scrolls away
     const handler = () => {
       if (visible) setVisibility(false);
     };
 
     document.addEventListener('click', handler);
-    return () => document.removeEventListener('click', handler);
+    document.addEventListener('scroll', handler, true);
+    return () => {
+      document.removeEventListener('click', handler);
+      document.removeEventListener('scroll', handler, true);
+    };
   }, [visible, setVisibility]);
+
+  // handle key down events - close on escape + disable the rest
+  // TODO: handle arrow keys and space/enter.
+  React.useEffect(() => {
+    const handler = event => {
+      if (!visible) return;
+      if (event.keyCode === ESC) setVisibility(false);
+      event.preventDefault();
+    };
+
+    document.addEventListener('keydown', handler);
+    return () => {
+      document.removeEventListener('keydown', handler);
+    };
+  });
 
   if (!visible || selectedIds.length === 0) return null;
 
@@ -38,23 +56,37 @@ export const ContextMenu = ({
   });
 
   let menu;
+  let menuWidth;
   if (selectedItems.length > 1) {
     menu = <MultiMenu selectedItems={selectedItems} />;
+    menuWidth = 160;
   } else if (selectedItems[0].type === 'sandbox') {
-    menu = <SandboxMenu sandbox={selectedItems[0]} />;
+    menu = <SandboxMenu sandbox={selectedItems[0]} setRenaming={setRenaming} />;
+    menuWidth = 200;
   } else if (selectedItems[0].type === 'folder') {
-    menu = <FolderMenu folder={selectedItems[0]} />;
+    menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
+    menuWidth = 120;
   }
+
+  // tweak position to stay inside window
+  const BOUNDARY_BUFFER = 8;
+
+  const tweakedPosition = {
+    x: Math.min(position.x, window.innerWidth - menuWidth - BOUNDARY_BUFFER),
+    y: position.y,
+  };
 
   return (
     <>
       <Stack
+        direction="vertical"
         data-reach-menu-list
         data-component="MenuList"
         css={css({
           position: 'absolute',
-          top: position.y,
-          left: position.x,
+          width: menuWidth,
+          top: tweakedPosition.y,
+          left: tweakedPosition.x,
         })}
       >
         {menu}
@@ -67,14 +99,20 @@ const MenuItem = props => (
   <Element data-reach-menu-item="" data-component="MenuItem" {...props} />
 );
 
-type SandboxItemType = Sandbox & {
-  isTemplate?: boolean;
-  template?: Pick<Template, 'id' | 'color' | 'iconUrl' | 'published'>;
-};
-
-const SandboxMenu = ({ sandbox }: { sandbox: SandboxItemType }) => {
-  const { effects, actions } = useOvermind();
+const SandboxMenu = ({
+  sandbox,
+  setRenaming,
+}: {
+  sandbox;
+  setRenaming: (renaming: boolean) => void;
+}) => {
+  const {
+    state: { user },
+    effects,
+    actions,
+  } = useOvermind();
   const history = useHistory();
+  const location = useLocation();
 
   const url = sandboxUrl({
     id: sandbox.id,
@@ -90,97 +128,156 @@ const SandboxMenu = ({ sandbox }: { sandbox: SandboxItemType }) => {
     return '/new-dashboard/all' + path;
   };
 
+  const label = sandbox.isTemplate ? 'template' : 'sandbox';
+  const isOwner =
+    !sandbox.isTemplate ||
+    (sandbox.author && sandbox.author.username === user.username);
+
+  if (location.pathname.includes('deleted')) {
+    return (
+      <>
+        <MenuItem
+          onClick={() => {
+            actions.dashboard.recoverSandboxes([sandbox.id]);
+          }}
+        >
+          Recover Sandbox
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            actions.dashboard.permanentlyDeleteSandboxes([sandbox.id]);
+          }}
+        >
+          Delete Permanently
+        </MenuItem>
+      </>
+    );
+  }
+
   return (
     <>
-      <MenuItem onClick={() => history.push(url)}>Open sandbox</MenuItem>
+      {sandbox.isTemplate ? (
+        <MenuItem
+          onClick={() => {
+            actions.editor.forkExternalSandbox({
+              sandboxId: sandbox.id,
+              openInNewWindow: true,
+            });
+          }}
+        >
+          Fork Template
+        </MenuItem>
+      ) : null}
+      <MenuItem onClick={() => history.push(url)}>Open {label}</MenuItem>
       <MenuItem
         onClick={() => {
           window.open(`https://codesandbox.io${url}`, '_blank');
         }}
       >
-        Open sandbox in new tab
+        Open {label} in new tab
       </MenuItem>
-      <MenuItem
-        onClick={() => {
-          history.push(getFolderUrl());
-        }}
-      >
-        Show in Folder
-      </MenuItem>
+      {isOwner ? (
+        <MenuItem
+          onClick={() => {
+            history.push(getFolderUrl());
+          }}
+        >
+          Show in Folder
+        </MenuItem>
+      ) : null}
       <Menu.Divider />
       <MenuItem
         onClick={() => {
           effects.browser.copyToClipboard(`https://codesandbox.io${url}`);
         }}
       >
-        Copy sandbox link
+        Copy {label} link
       </MenuItem>
-      <MenuItem
-        onClick={() => {
-          actions.editor.forkExternalSandbox({
-            sandboxId: sandbox.id,
-            openInNewWindow: true,
-          });
-        }}
-      >
-        Fork sandbox
-      </MenuItem>
+      {!sandbox.isTemplate ? (
+        <MenuItem
+          onClick={() => {
+            actions.editor.forkExternalSandbox({
+              sandboxId: sandbox.id,
+              openInNewWindow: true,
+            });
+          }}
+        >
+          Fork sandbox
+        </MenuItem>
+      ) : null}
       <MenuItem
         onClick={() => {
           actions.dashboard.downloadSandboxes([sandbox.id]);
         }}
       >
-        Export {sandbox.isTemplate ? 'template' : 'sandbox'}
+        Export {label}
       </MenuItem>
-      <Menu.Divider />
-      <MenuItem onClick={() => {}}>Rename sandbox</MenuItem>
-      {sandbox.isTemplate ? (
-        <MenuItem
-          onClick={() => {
-            actions.dashboard.unmakeTemplate([sandbox.id]);
-          }}
-        >
-          Convert to Sandbox
-        </MenuItem>
-      ) : (
-        <MenuItem
-          onClick={() => {
-            actions.dashboard.makeTemplate([sandbox.id]);
-          }}
-        >
-          Make sandbox a template
-        </MenuItem>
-      )}
-      <Menu.Divider />
-      {sandbox.isTemplate ? (
-        <MenuItem
-          onClick={() =>
-            actions.dashboard.deleteTemplate({
-              sandboxId: sandbox.id,
-              templateId: sandbox.template.id,
-            })
-          }
-        >
-          Delete template
-        </MenuItem>
-      ) : (
-        <MenuItem
-          onClick={() => {
-            actions.dashboard.deleteSandbox([sandbox.id]);
-          }}
-        >
-          Delete sandbox
-        </MenuItem>
-      )}
+      {isOwner ? (
+        <>
+          <Menu.Divider />
+          <MenuItem onClick={() => setRenaming(true)}>Rename {label}</MenuItem>
+          {sandbox.isTemplate ? (
+            <MenuItem
+              onClick={() => {
+                actions.dashboard.unmakeTemplate([sandbox.id]);
+              }}
+            >
+              Convert to sandbox
+            </MenuItem>
+          ) : (
+            <MenuItem
+              onClick={() => {
+                actions.dashboard.makeTemplate([sandbox.id]);
+              }}
+            >
+              Make sandbox a template
+            </MenuItem>
+          )}
+          <Menu.Divider />
+          {sandbox.isTemplate ? (
+            <MenuItem
+              onClick={() =>
+                actions.dashboard.deleteTemplate({
+                  sandboxId: sandbox.id,
+                  templateId: sandbox.template.id,
+                })
+              }
+            >
+              Delete template
+            </MenuItem>
+          ) : (
+            <MenuItem
+              onClick={() => {
+                actions.dashboard.deleteSandbox([sandbox.id]);
+              }}
+            >
+              Delete sandbox
+            </MenuItem>
+          )}
+        </>
+      ) : null}
     </>
   );
 };
 
-const FolderMenu = ({ folder }) => {
+const FolderMenu = ({ folder, setRenaming }) => {
   const { actions } = useOvermind();
+
+  const isDrafts = folder.path === '/drafts';
+
+  if (isDrafts)
+    return (
+      <MenuItem>
+        <Stack gap={1}>
+          <Icon name="lock" size={14} />
+          <Text>Protected</Text>
+        </Stack>
+      </MenuItem>
+    );
+
   return (
     <>
-      <MenuItem onClick={() => {}}>Rename folder</MenuItem>
+      <MenuItem onClick={() => setRenaming(true)}>Rename folder</MenuItem>
       <MenuItem
         onClick={() => actions.dashboard.deleteFolder({ path: folder.path })}
       >

@@ -5,7 +5,7 @@ import React from 'react';
 
 function openStackbit(username: string, closeModal: () => void) {
   const stackbitWindow = window.open(
-    `https://app.stackbit.com/wizard?ref=codesandbox&githubUser=${username}&ssgExclusive=1&ssg=gatsby&cmsExclusive=netlifycms,forestry,nocms`,
+    `https://app.stackbit.com/wizard?ref=codesandbox&githubUser=${username}`,
     '_blank',
     'width=1210,height=800'
   );

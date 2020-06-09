@@ -20,7 +20,7 @@
     "build:lib": "yarn tsc",
     "build:es": "yarn tsc -p tsconfig.es.json",
     "build:storybook": "build-storybook -c .storybook -o public",
-    "clean": "rimraf lib,es && yarn rimraf node_modules/@types/react && yarn rimraf node_modules/@types/react-native",
+    "clean": "rimraf lib,es",
     "lint": "eslint --ext .js,.ts,.tsx src",
     "start": "yarn tsc --watch",
     "start:storybook": "start-storybook",

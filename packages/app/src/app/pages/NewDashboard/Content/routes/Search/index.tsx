@@ -1,9 +1,10 @@
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { Loading } from 'app/pages/NewDashboard/Components/Loading';
-import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
-import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
+import {
+  VariableGrid,
+  SkeletonGrid,
+} from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
@@ -22,16 +23,25 @@ export const SearchComponent = ({ location }) => {
 
   return (
     <SelectionProvider sandoxes={sandboxes.SEARCH}>
-      <Header />
+      <Header
+        title="Search results"
+        showViewOptions
+        showFilters
+        showSortOptions
+      />
       <section style={{ position: 'relative' }}>
         {sandboxes.SEARCH ? (
-          <SandboxGrid>
-            {sandboxes.SEARCH.map(sandbox => (
-              <Sandbox key={sandbox.id} template sandbox={sandbox} />
-            ))}
-          </SandboxGrid>
+          <VariableGrid
+            items={
+              sandboxes.SEARCH &&
+              sandboxes.SEARCH.map(sandbox => ({
+                type: 'sandbox',
+                ...sandbox,
+              }))
+            }
+          />
         ) : (
-          <Loading />
+          <SkeletonGrid count={4} />
         )}
       </section>
     </SelectionProvider>

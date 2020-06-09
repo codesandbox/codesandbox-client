@@ -1,22 +1,21 @@
 import React from 'react';
-import { Stack, Text, Input } from '@codesandbox/components';
+import { Stack, Text, Input, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { MenuOptions } from './Menu';
 
 export const FolderCard = ({
   name,
   path,
+  isDrafts,
   numberOfSandboxes,
   // interactions
   selected,
   onClick,
   onDoubleClick,
+  onContextMenu,
   // editing
   editing,
-  enterEditing,
   isNewFolder,
   newName,
-  inputRef,
   onChange,
   onInputKeyDown,
   onSubmit,
@@ -33,6 +32,7 @@ export const FolderCard = ({
     gap={2}
     onClick={onClick}
     onDoubleClick={onDoubleClick}
+    onContextMenu={onContextMenu}
     {...props}
     css={css({
       width: '100%',
@@ -82,8 +82,8 @@ export const FolderCard = ({
       {editing ? (
         <form onSubmit={onSubmit}>
           <Input
+            autoFocus
             value={newName}
-            ref={inputRef}
             onChange={onChange}
             onKeyDown={onInputKeyDown}
             onBlur={onInputBlur}
@@ -94,8 +94,13 @@ export const FolderCard = ({
           {name}
         </Text>
       )}
-      {!isNewFolder ? (
-        <MenuOptions path={path} onRename={enterEditing} />
+      {!(isNewFolder || isDrafts) ? (
+        <IconButton
+          name="more"
+          size={9}
+          title="Sandbox actions"
+          onClick={onContextMenu}
+        />
       ) : null}
     </Stack>
     {!isNewFolder ? (

@@ -19,18 +19,17 @@ export function getPossibleTemplates(sandboxes: any[]) {
   );
 }
 
-const colors = [
-  'rgb(0, 122, 255)',
-  'rgb(52, 199, 89)',
-  'rgb(255, 45, 85)',
-  'rgb(88, 86, 214)',
-  'rgb(255, 149, 0)',
-  'rgb(90, 200, 250)',
-  'rgb(175, 82, 22)',
-  'rgb(255, 200, 250)',
-  'rgb(69, 235, 195)',
-  'rgb(255, 59, 48)',
-  'rgb(212, 69, 235)',
-  'rgb(192, 235, 69)',
+export const colors = [
+  { background: 'rgb(0, 122, 255)', foreground: 'white' },
+  { background: 'rgb(52, 199, 89)', foreground: 'black' },
+  { background: 'rgb(255, 45, 85)', foreground: 'white' },
+  { background: 'rgb(88, 86, 214)', foreground: 'white' },
+  { background: 'rgb(255, 149, 0)', foreground: 'black' },
+  { background: 'rgb(90, 200, 250)', foreground: 'black' },
+  { background: 'rgb(175, 82, 22)', foreground: 'black' },
+  { background: 'rgb(255, 200, 250)', foreground: 'black' },
+  { background: 'rgb(69, 235, 195)', foreground: 'black' },
+  { background: 'rgb(255, 59, 48)', foreground: 'white' },
+  { background: 'rgb(212, 69, 235)', foreground: 'white' },
+  { background: 'rgb(192, 235, 69)', foreground: 'black' },
 ];
-export const randomColor = colors[Math.floor(Math.random() * colors.length)];
