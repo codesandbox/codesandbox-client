@@ -133,8 +133,6 @@ export const SkeletonCard = () => (
       borderColor: 'grays.600',
       borderRadius: 'medium',
       overflow: 'hidden',
-      transition: 'all ease-in-out',
-      transitionDuration: theme => theme.speeds[4],
     })}
   >
     <SkeletonText css={{ width: '100%', height: 160, borderRadius: 0 }} />

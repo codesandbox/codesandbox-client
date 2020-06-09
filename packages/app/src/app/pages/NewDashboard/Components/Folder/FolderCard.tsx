@@ -41,8 +41,6 @@ export const FolderCard = ({
       border: '1px solid',
       borderRadius: 'medium',
       overflow: 'hidden',
-      transition: 'all ease-in-out',
-      transitionDuration: theme => theme.speeds[4],
       // drop target
       borderColor: getBorderColor(selected, showDropStyles),
       boxShadow: theme =>
