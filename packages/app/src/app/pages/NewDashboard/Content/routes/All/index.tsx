@@ -1,4 +1,5 @@
 import React from 'react';
+import { orderBy } from 'lodash-es';
 import { withRouter } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
@@ -53,12 +54,16 @@ export const AllPage = ({ match: { params }, history }) => {
       )) ||
     [];
 
+  const sortedFolders = orderBy(folders, 'name').sort(
+    a => (a.path === '/drafts' ? -1 : 1) // pull drafts to the top
+  );
+
   let items = [];
   if (creating) items.push({ type: 'folder', setCreating });
 
   items = [
     ...items,
-    ...folders.map(folder => ({ type: 'folder', ...folder })),
+    ...sortedFolders.map(folder => ({ type: 'folder', ...folder })),
     ...sandboxesForPath.map(sandbox => ({ type: 'sandbox', ...sandbox })),
   ];
 

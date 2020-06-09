@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useDrop } from 'react-dnd';
+import { orderBy } from 'lodash-es';
 import { useOvermind } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -202,7 +203,7 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
           </ListItem>
           <RowItem name="Start" path="start" icon="box" />
           <RowItem name="Recent" path="recent" icon="clock" />
-          <RowItem name="Drafts" path="drafts" icon="file" />
+          <RowItem name="Drafts" path="/drafts" icon="file" />
 
           <RowItem
             name="All sandboxes"
@@ -237,7 +238,7 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
               to="/new-dashboard/all"
               style={{ ...linkStyles, paddingLeft: 0 }}
             >
-              <Stack align="center" gap={2}>
+              <Stack align="center" gap={3}>
                 <Stack
                   as="span"
                   css={css({ width: 4 })}
@@ -252,7 +253,11 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
           </RowItem>
 
           {foldersVisible &&
-            folders
+            orderBy(folders, 'name')
+              .sort(
+                // pull drafts to the top
+                a => (a.path === '/drafts' ? -1 : 1)
+              )
               .filter(isTopLevelFolder)
               .map(folder => (
                 <RowItem
@@ -316,13 +321,7 @@ const linkStyles = {
 };
 
 const canNotAcceptSandboxes = ['start', 'recent', 'all'];
-const canNotAcceptFolders = [
-  'start',
-  'recent',
-  'drafts',
-  '/drafts',
-  'templates',
-];
+const canNotAcceptFolders = ['start', 'recent', '/drafts', 'templates'];
 
 const isSamePath = (draggedItem, dropPath) => {
   if (!draggedItem) return false;
@@ -351,7 +350,7 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
 
   const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
     accept: accepts,
-    drop: () => ({ path }),
+    drop: (item, monitor) => ({ path, isSamePath: isSamePath(item, path) }),
     collect: monitor => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path),
@@ -360,6 +359,11 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
   });
 
   const { onSidebarToggle } = React.useContext(SidebarContext);
+
+  let linkTo: string;
+  if (isNested) linkTo = '/new-dashboard/all' + path;
+  else if (path === '/drafts') linkTo = '/new-dashboard/drafts';
+  else linkTo = '/new-dashboard/' + path;
 
   return (
     <ListAction
@@ -387,11 +391,7 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
       style={{ height: isNested ? 32 : 40 }}
     >
       {props.children || (
-        <Link
-          as={RouterLink}
-          to={`/new-dashboard${isNested ? '/all' : '/'}${path}`}
-          style={linkStyles}
-        >
+        <Link as={RouterLink} to={linkTo} style={linkStyles}>
           <Stack
             as="span"
             css={css({ width: 10 })}

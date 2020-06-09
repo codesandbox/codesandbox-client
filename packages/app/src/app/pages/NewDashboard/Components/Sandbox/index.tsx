@@ -21,15 +21,12 @@ const GenericSandbox = ({ sandbox, ...props }) => {
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
-  const { UserIcon } = getTemplateIcon(
-    sandbox.forkedTemplate?.iconUrl,
-    sandbox.source.template
-  );
-
   const url = sandboxUrl({
     id: sandbox.id,
     alias: sandbox.alias,
   });
+
+  const TemplateIcon = getTemplateIcon(sandbox);
 
   /* Drag logic */
 
@@ -150,7 +147,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     sandboxTitle,
     sandbox,
     isTemplate: sandbox.isTemplate,
-    TemplateIcon: UserIcon,
+    TemplateIcon,
     // edit mode
     editing: isRenaming && selected,
     newTitle,

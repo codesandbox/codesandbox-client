@@ -259,6 +259,7 @@ export const refetchSandboxInfo: AsyncAction = async ({
   sandbox.roomId = updatedSandbox.roomId;
   sandbox.authorization = updatedSandbox.authorization;
   sandbox.privacy = updatedSandbox.privacy;
+  sandbox.featureFlags = updatedSandbox.featureFlags;
 
   await actions.editor.internal.initializeSandbox(sandbox);
 };
