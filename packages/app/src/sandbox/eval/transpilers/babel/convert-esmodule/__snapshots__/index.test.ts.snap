@@ -291,6 +291,23 @@ var $csb__akjaw = require(\\"./a-@kjaw\\");
 "
 `;
 
+exports[`convert-esmodule handles assignments and exports at the same time 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+const {Ease: C, Linear: Linear, Power0: Power0, Power1: Power1, Power2: Power2, Power3: Power3, Power4: Power4, TweenPlugin: TweenPlugin} = _gsScope;
+exports.C = C;
+exports.Linear = Linear;
+exports.Power0 = Power0;
+exports.Power1 = Power1;
+exports.Power2 = Power2;
+exports.Power3 = Power3;
+exports.Power4 = Power4;
+exports.TweenPlugin = TweenPlugin;
+"
+`;
+
 exports[`convert-esmodule handles concurrent import and exports 1`] = `
 "\\"use strict\\";
 Object.defineProperty(exports, \\"a\\", {
@@ -349,6 +366,21 @@ console.log(React.Component);
 "
 `;
 
+exports[`convert-esmodule handles export alias 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"default\\", {
+  enumerable: true,
+  configurable: true,
+  get: function get() {
+    return Subscription;
+  }
+});
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+"
+`;
+
 exports[`convert-esmodule handles export mutations 1`] = `
 "\\"use strict\\";
 Object.defineProperty(exports, \\"__esModule\\", {
@@ -383,6 +415,46 @@ function assign() {
 function assign2(to) {
   to = \\"test\\";
 }
+"
+`;
+
+exports[`convert-esmodule handles export object 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"c\\", {
+  enumerable: true,
+  configurable: true,
+  get: function get() {
+    return c;
+  }
+});
+Object.defineProperty(exports, \\"b\\", {
+  enumerable: true,
+  configurable: true,
+  get: function get() {
+    return b;
+  }
+});
+Object.defineProperty(exports, \\"a\\", {
+  enumerable: true,
+  configurable: true,
+  get: function get() {
+    return a;
+  }
+});
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+"
+`;
+
+exports[`convert-esmodule handles import statement after default export 1`] = `
+"\\"use strict\\";
+var $csb__types = require(\\"./types\\");
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+function defaultOverscanIndicesGetter(_ref) {}
+exports.default = defaultOverscanIndicesGetter;
 "
 `;
 

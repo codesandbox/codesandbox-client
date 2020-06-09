@@ -471,10 +471,7 @@ export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
     const profileData = await effects.api.getProfile(user.username);
     effects.analytics.identify('sandboxCount', profileData.sandboxCount);
     effects.analytics.identify('pro', Boolean(profileData.subscriptionSince));
-    effects.analytics.identify(
-      'receivedViewCount',
-      Boolean(profileData.viewCount)
-    );
+    effects.analytics.identify('receivedViewCount', profileData.viewCount);
   }
 };
 
