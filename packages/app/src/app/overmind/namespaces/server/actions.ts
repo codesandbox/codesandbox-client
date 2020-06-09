@@ -115,14 +115,12 @@ export const onSSEMessage: Action<{
             message: `The server is listening on port ${port.port}, do you want to open it?`,
             status: NotificationStatus.NOTICE,
             actions: {
-              primary: [
-                {
-                  label: 'Open Browser Pane',
-                  run: () => {
-                    actions.server.onBrowserFromPortOpened({ port });
-                  },
+              primary: {
+                label: 'Open Browser Pane',
+                run: () => {
+                  actions.server.onBrowserFromPortOpened({ port });
                 },
-              ],
+              },
             },
           });
         }

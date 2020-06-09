@@ -22,6 +22,10 @@ export const Dashboard: FunctionComponent = () => {
     state: { hasLogIn },
   } = useOvermind();
 
+  // only used for mobile
+  const [sidebarVisible, setSidebarVisibility] = React.useState(false);
+  const onSidebarToggle = () => setSidebarVisibility(!sidebarVisible);
+
   if (!hasLogIn) {
     return <Redirect to={signInPageUrl()} />;
   }
@@ -40,29 +44,47 @@ export const Dashboard: FunctionComponent = () => {
             minHeight: '100vh',
           })}
         >
-          <Header />
+          <Header onSidebarToggle={onSidebarToggle} />
+
           <Stack css={{ flexGrow: 1 }}>
             <Sidebar
-              css={css({
+              id="mobile-sidebar"
+              css={css({ display: ['block', 'block', 'none'] })}
+              visible={sidebarVisible}
+              onSidebarToggle={onSidebarToggle}
+              style={{
                 // We set sidebar as absolute so that content can
                 // take 100% width, this helps us enable dragging
                 // sandboxes onto the sidebar more freely.
                 position: 'absolute',
-                borderRight: '1px solid',
-                borderColor: 'sideBar.border',
-                width: [0, 0, SIDEBAR_WIDTH],
-                height: '100%',
-                flexShrink: 0,
-                display: ['none', 'none', 'block'],
-              })}
+                height: 'calc(100% - 48px)',
+              }}
             />
+            <Element
+              as="aside"
+              id="desktop-sidebar"
+              css={css({ display: ['none', 'none', 'block'] })}
+            >
+              <Sidebar
+                visible
+                onSidebarToggle={() => {
+                  /* do nothing */
+                }}
+                style={{
+                  // We set sidebar as absolute so that content can
+                  // take 100% width, this helps us enable dragging
+                  // sandboxes onto the sidebar more freely.
+                  position: 'absolute',
+                  height: 'calc(100% - 48px)',
+                }}
+              />
+            </Element>
 
             <Element
               as="main"
               css={css({
                 width: '100%',
                 height: 'calc(100vh - 48px)',
-                overflowY: 'scroll',
                 paddingLeft: [0, 0, SIDEBAR_WIDTH],
               })}
             >

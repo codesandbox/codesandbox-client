@@ -1,19 +1,20 @@
 import { useOvermind } from 'app/overmind';
+import { Helmet } from 'react-helmet';
 import React, { useEffect } from 'react';
-import css from '@styled-system/css';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Element, Column } from '@codesandbox/components';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
-import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
-import { SkeletonCard } from 'app/pages/NewDashboard/Components/Sandbox/SandboxCard';
+import {
+  VariableGrid,
+  SkeletonGrid,
+} from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import { getPossibleTemplates } from '../../utils';
 
 export const Templates = () => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes },
+      dashboard: { sandboxes, getFilteredSandboxes, activeTeam },
     },
   } = useOvermind();
 
@@ -21,26 +22,54 @@ export const Templates = () => {
     actions.dashboard.getPage(sandboxesTypes.TEMPLATES);
   }, [actions.dashboard]);
 
+  const possibleTemplates = sandboxes.TEMPLATES
+    ? getPossibleTemplates(sandboxes.TEMPLATES.map(t => t.sandbox))
+    : [];
+
+  const items =
+    sandboxes.TEMPLATES &&
+    getFilteredSandboxes(
+      // @ts-ignore
+      sandboxes.TEMPLATES.map(template => {
+        const { sandbox, ...templateValues } = template;
+        return {
+          ...sandbox,
+          type: 'sandbox',
+          isTemplate: true,
+          template: templateValues,
+        };
+      })
+    );
+
   return (
-    <SelectionProvider sandboxes={sandboxes.TEMPLATES}>
-      <Element css={css({ position: 'relative' })}>
-        <Header title="Templates" templates={[]} />
-        {sandboxes.TEMPLATES ? (
-          <SandboxGrid>
-            {sandboxes.TEMPLATES.map(({ sandbox }) => (
-              <Sandbox template sandbox={sandbox} key={sandbox.id} />
-            ))}
-          </SandboxGrid>
-        ) : (
-          <SandboxGrid>
-            {Array.from(Array(8).keys()).map(n => (
-              <Column key={n}>
-                <SkeletonCard />
-              </Column>
-            ))}
-          </SandboxGrid>
-        )}
-      </Element>
+    <SelectionProvider
+      sandboxes={
+        sandboxes.TEMPLATES &&
+        sandboxes.TEMPLATES.map(template => {
+          const { sandbox, ...templateValues } = template;
+          return {
+            ...sandbox,
+            isTemplate: true,
+            template: templateValues,
+          };
+        })
+      }
+    >
+      <Helmet>
+        <title>{activeTeam ? 'Team' : 'My'} Templates - CodeSandbox</title>
+      </Helmet>
+      <Header
+        title="Templates"
+        templates={possibleTemplates}
+        showViewOptions
+        showFilters
+        showSortOptions
+      />
+      {sandboxes.TEMPLATES ? (
+        <VariableGrid items={items} />
+      ) : (
+        <SkeletonGrid count={8} />
+      )}
     </SelectionProvider>
   );
 };

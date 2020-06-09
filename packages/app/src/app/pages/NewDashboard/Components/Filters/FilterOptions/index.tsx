@@ -61,7 +61,7 @@ export const FilterOptions: FunctionComponent<Props> = ({
                 return (
                   <Menu.Item
                     field="title"
-                    key={id}
+                    key={id || name}
                     onSelect={() => toggleTemplate(id, !selected)}
                     css={css({
                       label: {

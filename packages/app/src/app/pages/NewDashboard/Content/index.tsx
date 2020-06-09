@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
@@ -12,7 +12,7 @@ import { All } from './routes/All';
 import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
 
-export const Content = () => {
+export const Content = withRouter(({ history }) => {
   const {
     state: { dashboard },
     actions,
@@ -22,12 +22,17 @@ export const Content = () => {
     actions.dashboard.dashboardMounted();
   }, [actions.dashboard]);
 
+  history.listen(() => {
+    actions.dashboard.blacklistedTemplatesCleared();
+    actions.dashboard.orderByChanged({
+      order: 'desc',
+      field: 'updatedAt',
+    });
+  });
+
   return (
     <Element
       css={css({
-        maxWidth: 992,
-        paddingX: 4,
-        paddingY: 10,
         width: '100%',
         margin: '0 auto',
       })}
@@ -74,4 +79,4 @@ export const Content = () => {
       </Switch>
     </Element>
   );
-};
+});

@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Element, Column } from '@codesandbox/components';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
-import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
-import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
-import { Folder } from 'app/pages/NewDashboard/Components/Folder';
-import { SkeletonCard } from 'app/pages/NewDashboard/Components/Sandbox/SandboxCard';
+import {
+  VariableGrid,
+  SkeletonGrid,
+} from 'app/pages/NewDashboard/Components/VariableGrid';
 import { getPossibleTemplates } from '../../utils';
+import { useFilteredItems } from './useFilteredItems';
 
 export const AllPage = ({ match: { params }, history }) => {
-  const [level, setLevel] = useState(0);
-  const [creating, setCreating] = useState(false);
+  const [level, setLevel] = React.useState(0);
+  const [creating, setCreating] = React.useState(false);
+  const [items, folders] = useFilteredItems(params, level);
   const param = params.path || '';
   const cleanParam = param.split(' ').join('');
   const {
@@ -21,13 +23,13 @@ export const AllPage = ({ match: { params }, history }) => {
       dashboard: { allCollections, sandboxes, activeTeam },
     },
   } = useOvermind();
-  const [localTeam, setLocalTeam] = useState(activeTeam);
+  const [localTeam, setLocalTeam] = React.useState(activeTeam);
 
-  useEffect(() => {
+  React.useEffect(() => {
     actions.dashboard.getAllFolders();
   }, [actions.dashboard, activeTeam]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (localTeam !== activeTeam) {
       setLocalTeam(activeTeam);
 
@@ -38,49 +40,38 @@ export const AllPage = ({ match: { params }, history }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTeam]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (param) {
       setLevel(param ? param.split('/').length : 0);
       actions.dashboard.getSandboxesByPath(param);
     }
   }, [param, actions.dashboard, activeTeam]);
 
-  const getFoldersByPath =
-    allCollections &&
-    allCollections.filter(
-      collection => collection.level === level && collection.parent === param
-    );
+  const activeSandboxes = (sandboxes.ALL && sandboxes.ALL[cleanParam]) || [];
 
   return (
-    <SelectionProvider sandboxes={sandboxes.ALL && sandboxes.ALL[cleanParam]}>
-      <Element style={{ height: '100%', position: 'relative' }}>
-        <Header
-          path={param}
-          templates={getPossibleTemplates(allCollections)}
-          createNewFolder={() => setCreating(true)}
+    <SelectionProvider sandboxes={activeSandboxes} folders={folders || []}>
+      <Helmet>
+        <title>{param || 'Dashboard'} - CodeSandbox</title>
+      </Helmet>
+      <Header
+        path={param}
+        templates={getPossibleTemplates(activeSandboxes)}
+        createNewFolder={() => setCreating(true)}
+        showViewOptions
+        showFilters={param}
+        showSortOptions={param}
+      />
+      {allCollections ? (
+        <VariableGrid
+          items={[
+            creating ? { type: 'folder', setCreating } : undefined,
+            ...items,
+          ].filter(exists => exists)}
         />
-        {allCollections ? (
-          <SandboxGrid>
-            {creating && <Folder key="new" setCreating={setCreating} />}
-            {getFoldersByPath.map(folder => (
-              <Folder key={folder.id} {...folder} setCreating={setCreating} />
-            ))}
-            {sandboxes.ALL &&
-              sandboxes.ALL[cleanParam] &&
-              sandboxes.ALL[cleanParam].map(sandbox => (
-                <Sandbox key={sandbox.id} sandbox={sandbox} />
-              ))}
-          </SandboxGrid>
-        ) : (
-          <SandboxGrid>
-            {Array.from(Array(8).keys()).map(n => (
-              <Column key={n}>
-                <SkeletonCard />
-              </Column>
-            ))}
-          </SandboxGrid>
-        )}
-      </Element>
+      ) : (
+        <SkeletonGrid count={8} />
+      )}
     </SelectionProvider>
   );
 };

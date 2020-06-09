@@ -1,112 +1,136 @@
 import React from 'react';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import {
+  Grid,
+  Column,
   Stack,
   Element,
   Text,
   Input,
   ListAction,
+  IconButton,
   SkeletonText,
+  Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { MenuOptions } from './Menu';
 
 export const SandboxListItem = ({
   sandbox,
-  isTemplate = false,
   sandboxTitle,
-  newTitle,
   // interactions
   selected,
   onClick,
   onDoubleClick,
   onBlur,
   onKeyDown,
+  onContextMenu,
   // edit mode
-  edit,
-  inputRef,
+  editing,
+  newTitle,
   onChange,
   onInputKeyDown,
   onSubmit,
   onInputBlur,
-  enterEditing,
   // drag preview
   thumbnailRef,
   opacity,
   ...props
 }) => (
   <ListAction
-    css={css({ paddingX: 0, opacity })}
+    align="center"
     onClick={onClick}
     onDoubleClick={onDoubleClick}
     onBlur={onBlur}
     onKeyDown={onKeyDown}
+    onContextMenu={onContextMenu}
     {...props}
+    css={css({
+      paddingX: 0,
+      opacity,
+      height: 64,
+      borderBottom: '1px solid',
+      borderBottomColor: 'grays.600',
+      overflow: 'hidden',
+      backgroundColor: selected ? 'blues.600' : 'transparent',
+      color: selected ? 'white' : 'inherit',
+      ':hover, :focus, :focus-within': {
+        cursor: 'default',
+        backgroundColor: selected ? 'blues.600' : 'list.hoverBackground',
+      },
+    })}
   >
-    <Stack
-      gap={2}
-      justify="space-between"
-      align="center"
-      paddingX={2}
-      css={css({
-        height: 64,
-        width: '100%',
-        borderBottom: '1px solid',
-        borderBottomColor: 'grays.600',
-        overflow: 'hidden',
-        boxShadow: theme =>
-          selected ? `0px 0px 1px 1px ${theme.colors.blues[600]}` : null,
-      })}
-    >
-      <Stack gap={4} align="center">
-        <Element
-          as="div"
-          ref={thumbnailRef}
-          css={css({
-            borderRadius: 'small',
-            height: 32,
-            width: 32,
-            backgroundImage: `url(${sandbox.screenshotUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundRepeat: 'no-repeat',
-            border: '1px solid',
-            borderColor: 'grays.600',
-          })}
-        />
-        <Element style={{ width: 150 }}>
-          {edit ? (
-            <form onSubmit={onSubmit}>
-              <Input
-                value={newTitle}
-                ref={inputRef}
-                onChange={onChange}
-                onKeyDown={onInputKeyDown}
-                onBlur={onInputBlur}
-              />
-            </form>
-          ) : (
-            <Text size={3} weight="medium">
-              {sandboxTitle}
-            </Text>
-          )}
-        </Element>
-      </Stack>
-      {sandbox.removedAt ? (
-        <Text size={3} variant="muted" block style={{ width: 180 }}>
-          Deleted {formatDistanceToNow(new Date(sandbox.removedAt))} ago
+    <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
+      <Column span={[12, 5, 5]}>
+        <Stack gap={4} align="center" marginLeft={2}>
+          <Element
+            as="div"
+            ref={thumbnailRef}
+            css={css({
+              borderRadius: 'small',
+              height: 32,
+              width: 32,
+              backgroundImage: `url(${sandbox.screenshotUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
+              border: '1px solid',
+              borderColor: 'grays.600',
+              flexShrink: 0,
+            })}
+          />
+          <Element style={{ width: 150 }}>
+            {editing ? (
+              <form onSubmit={onSubmit}>
+                <Input
+                  autoFocus
+                  value={newTitle}
+                  onChange={onChange}
+                  onKeyDown={onInputKeyDown}
+                  onBlur={onInputBlur}
+                />
+              </form>
+            ) : (
+              <Tooltip label={sandboxTitle}>
+                <Text size={3} weight="medium" maxWidth="100%">
+                  {sandboxTitle}
+                </Text>
+              </Tooltip>
+            )}
+          </Element>
+        </Stack>
+      </Column>
+      <Column span={[0, 4, 4]} as={Stack} align="center">
+        {sandbox.removedAt ? (
+          <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
+            <Text css={css({ display: ['none', 'none', 'inline'] })}>
+              Deleted
+            </Text>{' '}
+            {formatDistanceToNow(
+              new Date(sandbox.removedAt.replace(/ /g, 'T'))
+            )}{' '}
+            ago
+          </Text>
+        ) : (
+          <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
+            <Text css={css({ display: ['none', 'none', 'inline'] })}>
+              Updated
+            </Text>{' '}
+            {formatDistanceToNow(new Date(sandbox.updatedAt.trim()))} ago
+          </Text>
+        )}
+      </Column>
+      <Column span={[0, 3, 3]} as={Stack} align="center">
+        <Text size={3} variant="muted" maxWidth="100%">
+          {sandbox.source.template}
         </Text>
-      ) : (
-        <Text size={3} variant="muted" block style={{ width: 180 }}>
-          Updated {formatDistanceToNow(new Date(sandbox.updatedAt))} ago
-        </Text>
-      )}
-      <MenuOptions
-        sandbox={sandbox}
-        isTemplate={isTemplate}
-        onRename={enterEditing}
-      />
-    </Stack>
+      </Column>
+    </Grid>
+    <IconButton
+      name="more"
+      size={9}
+      title="Sandbox actions"
+      onClick={onContextMenu}
+    />
   </ListAction>
 );
 

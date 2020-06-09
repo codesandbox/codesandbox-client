@@ -37,9 +37,10 @@ import {
   MakeSandboxesTemplateMutationVariables,
   CreateFolderMutation,
   CreateFolderMutationVariables,
+  SetTeamNameMutation,
+  SetTeamNameMutationVariables,
 } from 'app/graphql/types';
-import gql from 'graphql-tag';
-import { Query } from 'overmind-graphql';
+import { gql, Query } from 'overmind-graphql';
 
 import {
   teamFragmentDashboard,
@@ -271,4 +272,16 @@ export const makeSandboxesTemplate: Query<
       id
     }
   }
+`;
+
+export const setTeamName: Query<
+  SetTeamNameMutation,
+  SetTeamNameMutationVariables
+> = gql`
+  mutation SetTeamName($teamId: ID!, $name: String!) {
+    setTeamName(teamId: $teamId, name: $name) {
+      ...teamFragmentDashboard
+    }
+  }
+  ${teamFragmentDashboard}
 `;

@@ -1,19 +1,21 @@
-import React, { useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Loading } from 'app/pages/NewDashboard/Components/Loading';
+import { Helmet } from 'react-helmet';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
-import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
+import {
+  VariableGrid,
+  SkeletonGrid,
+} from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import React, { useEffect } from 'react';
+import { withRouter } from 'react-router-dom';
 import { getPossibleTemplates } from '../../utils';
 
 export const SearchComponent = ({ location }) => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes, orderBy, filters },
+      dashboard: { sandboxes, orderBy, filters, getFilteredSandboxes },
     },
   } = useOvermind();
 
@@ -21,27 +23,38 @@ export const SearchComponent = ({ location }) => {
     actions.dashboard.getPage(sandboxesTypes.SEARCH);
   }, [actions.dashboard, location.search, filters, orderBy]);
 
-  const query = location.search.split('query=')[1];
-  const length = (sandboxes.SEARCH || []).length;
-  const title = `${length} ${
-    length === 1 ? 'result' : 'results'
-  } for "${query}"`;
-
   return (
     <SelectionProvider sandoxes={sandboxes.SEARCH}>
+      <Helmet>
+        <title>
+          {location.search
+            ? `Search: '${location.search.split('?query=')[1]}' - CodeSandbox`
+            : 'Search - CodeSandbox'}
+        </title>
+      </Helmet>
       <Header
-        title={title}
+        title="Search results"
+        showViewOptions
+        showFilters
+        showSortOptions
         templates={getPossibleTemplates(sandboxes.SEARCH)}
       />
+
       <section style={{ position: 'relative' }}>
         {sandboxes.SEARCH ? (
-          <SandboxGrid>
-            {sandboxes.SEARCH.map(sandbox => (
-              <Sandbox key={sandbox.id} template sandbox={sandbox} />
-            ))}
-          </SandboxGrid>
+          <VariableGrid
+            items={
+              sandboxes.SEARCH &&
+              getFilteredSandboxes(
+                sandboxes.SEARCH.map(sandbox => ({
+                  type: 'sandbox',
+                  ...sandbox,
+                }))
+              )
+            }
+          />
         ) : (
-          <Loading />
+          <SkeletonGrid count={4} />
         )}
       </section>
     </SelectionProvider>

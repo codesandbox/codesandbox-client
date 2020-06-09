@@ -5,30 +5,29 @@ import {
   Text,
   Stats,
   Input,
+  IconButton,
   SkeletonText,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { MenuOptions } from './Menu';
 
 export const SandboxCard = ({
   sandbox,
-  isTemplate = false,
   sandboxTitle,
   newTitle,
+  TemplateIcon,
   // interactions
   selected,
   onClick,
   onDoubleClick,
   onBlur,
   onKeyDown,
+  onContextMenu,
   // editing
-  edit,
-  inputRef,
+  editing,
   onChange,
   onInputKeyDown,
   onSubmit,
   onInputBlur,
-  enterEditing,
   // drag preview
   thumbnailRef,
   opacity,
@@ -41,8 +40,10 @@ export const SandboxCard = ({
     onDoubleClick={onDoubleClick}
     onBlur={onBlur}
     onKeyDown={onKeyDown}
+    onContextMenu={onContextMenu}
     {...props}
     css={css({
+      position: 'relative',
       width: '100%',
       height: 240,
       backgroundColor: 'grays.700',
@@ -54,7 +55,6 @@ export const SandboxCard = ({
       transitionDuration: theme => theme.speeds[4],
       opacity,
       ':hover, :focus, :focus-within': {
-        cursor: edit ? 'normal' : 'pointer',
         boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
       },
     })}
@@ -71,12 +71,26 @@ export const SandboxCard = ({
         backgroundRepeat: 'no-repeat',
       })}
     />
+    <Element
+      css={css({
+        position: 'absolute',
+        top: 1,
+        right: 1,
+        size: 6,
+        background: 'white',
+        border: '4px solid',
+        borderColor: 'grays.500',
+        borderRadius: 'medium',
+      })}
+    >
+      <TemplateIcon width="16" height="16" />
+    </Element>
     <Stack justify="space-between" align="center" marginLeft={4}>
-      {edit ? (
+      {editing ? (
         <form onSubmit={onSubmit}>
           <Input
+            autoFocus
             value={newTitle}
-            ref={inputRef}
             onChange={onChange}
             onKeyDown={onInputKeyDown}
             onBlur={onInputBlur}
@@ -87,10 +101,12 @@ export const SandboxCard = ({
           {sandboxTitle}
         </Text>
       )}
-      <MenuOptions
-        sandbox={sandbox}
-        isTemplate={isTemplate}
-        onRename={enterEditing}
+
+      <IconButton
+        name="more"
+        size={9}
+        title="Sandbox actions"
+        onClick={onContextMenu}
       />
     </Stack>
     <Stack marginX={4}>

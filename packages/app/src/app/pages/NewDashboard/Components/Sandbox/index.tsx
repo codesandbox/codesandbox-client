@@ -6,110 +6,50 @@ import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { isMenuClicked } from '@codesandbox/components';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
-import { DragPreview } from './DragPreview';
+import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
 
-export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
+const GenericSandbox = ({ sandbox, ...props }) => {
   const {
     state: { dashboard },
     actions,
   } = useOvermind();
 
-  // const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
-  const sandboxTitle = sandbox.id;
-
-  const [edit, setEdit] = React.useState(false);
-  const [newTitle, setNewTitle] = React.useState(sandboxTitle);
+  const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
   const url = sandboxUrl({
     id: sandbox.id,
     alias: sandbox.alias,
   });
 
-  /* Edit logic */
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTitle(event.target.value);
-  };
-  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.keyCode === ESC) {
-      // Reset value and exit without saving
-      setNewTitle(sandboxTitle);
-      setEdit(false);
-    }
-  };
-
-  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
-    if (event) event.preventDefault();
-    await actions.dashboard.renameSandbox({
-      id: sandbox.id,
-      title: newTitle,
-      oldTitle: sandboxTitle,
-    });
-    setEdit(false);
-  };
-
-  const onInputBlur = () => {
-    // save value when you click outside or tab away
-    onSubmit();
-  };
-
-  const inputRef = React.useRef(null);
-  const enterEditing = () => {
-    setEdit(true);
-    // Menu defaults to sending focus back to Menu Button
-    // Send focus to input in the next tick
-    // after menu is done closing.
-    setTimeout(() => inputRef.current.focus());
-  };
+  const TemplateIcon = getTemplateIcon(sandbox);
 
   /* Drag logic */
-  type ItemTypes = { id: string; type: string };
 
-  const [{ isDragging }, dragRef, preview] = useDrag({
-    item: { id: sandbox.id, type: 'sandbox' },
+  const location = useLocation();
+  const currentCollectionPath = location.pathname
+    .replace('/new-dashboard', '')
+    .replace('/all', '');
+
+  const [, dragRef, preview] = useDrag({
+    item: {
+      type: 'sandbox',
+      id: sandbox.id,
+      collectionPath: currentCollectionPath,
+    },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
 
       if (!dropResult || !dropResult.path) return;
 
-      const currentCollectionPath = location.pathname.replace(
-        '/new-dashboard',
-        ''
-      );
-
-      if (dropResult.path === 'deleted') {
-        actions.dashboard.deleteSandbox([sandbox.id]);
-      } else if (dropResult.path === 'templates') {
-        actions.dashboard.makeTemplate([sandbox.id]);
-      } else if (dropResult.path === 'drafts') {
-        actions.dashboard.addSandboxesToFolder({
-          sandboxIds: [sandbox.id],
-          collectionPath: '/',
-          moveFromCollectionPath: currentCollectionPath,
-        });
-      } else {
-        actions.dashboard.addSandboxesToFolder({
-          sandboxIds: [sandbox.id],
-          collectionPath: dropResult.path,
-          moveFromCollectionPath: currentCollectionPath,
-        });
-      }
+      onDrop(dropResult);
     },
-    collect: monitor => ({
-      isDragging: monitor.isDragging(),
-    }),
   });
-
-  // attach to thumbnail, we use this to calculate size
-  const thumbnailRef = React.useRef();
 
   /* View logic */
   let viewMode: string;
-  const location = useLocation();
 
   if (location.pathname.includes('deleted')) viewMode = 'list';
   else if (location.pathname.includes('start')) viewMode = 'grid';
@@ -121,83 +61,139 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   const {
     selectedIds,
     onClick: onSelectionClick,
+    onMouseDown,
+    onRightClick,
+    onMenuEvent,
     onBlur,
     onKeyDown,
+    onDragStart,
+    onDrop,
+    thumbnailRef,
+    isDragging: isAnythingDragging,
+    isRenaming,
+    setRenaming,
   } = useSelection();
 
   const selected = selectedIds.includes(sandbox.id);
+  const isDragging = isAnythingDragging && selected;
 
   const onClick = event => {
-    if (edit || isDragging || isMenuClicked(event)) return;
     onSelectionClick(event, sandbox.id);
+  };
+
+  const onContextMenu = event => {
+    event.preventDefault();
+    if (event.type === 'contextmenu') onRightClick(event, sandbox.id);
+    else onMenuEvent(event, sandbox.id);
   };
 
   const history = useHistory();
   const onDoubleClick = event => {
-    if (edit || isDragging || isMenuClicked(event)) return;
-
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
     } else {
       history.push(url);
     }
   };
+
+  /* Edit logic */
+
+  const [newTitle, setNewTitle] = React.useState(sandboxTitle);
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTitle(event.target.value);
+  };
+  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === ESC) {
+      // Reset value and exit without saving
+      setNewTitle(sandboxTitle);
+      setRenaming(false);
+    }
+  };
+
+  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
+    if (event) event.preventDefault();
+    await actions.dashboard.renameSandbox({
+      id: sandbox.id,
+      title: newTitle,
+      oldTitle: sandboxTitle,
+    });
+    setRenaming(false);
+  };
+
+  const onInputBlur = () => {
+    // save value when you click outside or tab away
+    onSubmit();
+  };
+
   const interactionProps = {
     tabIndex: 0, // make div focusable
-    style: { outline: 'none' }, // we handle outline with border
+    style: {
+      outline: 'none',
+    }, // we handle outline with border
     selected,
     onClick,
+    onMouseDown,
     onDoubleClick,
+    onContextMenu,
     onBlur,
     onKeyDown,
-    'data-sandbox': sandbox.id,
+    'data-selection-id': sandbox.id,
   };
 
   const sandboxProps = {
     sandboxTitle,
     sandbox,
-    isTemplate,
+    isTemplate: sandbox.isTemplate,
+    TemplateIcon,
     // edit mode
-    edit,
+    editing: isRenaming && selected,
     newTitle,
-    inputRef,
     onChange,
     onInputKeyDown,
     onSubmit,
     onInputBlur,
-    enterEditing,
     // drag preview
     thumbnailRef,
     opacity: isDragging ? 0.25 : 1,
   };
 
-  const dragProps = {
-    ref: dragRef,
-  };
+  const dragProps = sandbox.isStartTemplate
+    ? {}
+    : {
+        ref: dragRef,
+        onDragStart: event => onDragStart(event, sandbox.id),
+      };
 
   React.useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true });
+    preview(getEmptyImage(), {
+      captureDraggingState: true,
+    });
   }, [preview]);
+
+  const resizing = useResizing();
+  const motionProps = resizing
+    ? {}
+    : {
+        layoutTransition: {
+          type: 'spring',
+          damping: 300,
+          stiffness: 300,
+        },
+      };
 
   return (
     <>
       <div {...dragProps}>
-        <motion.div
-          layoutTransition={{
-            type: 'spring',
-            damping: 300,
-            stiffness: 300,
-          }}
-        >
+        <motion.div {...motionProps}>
           <Component {...sandboxProps} {...interactionProps} {...props} />
         </motion.div>
       </div>
-      {isDragging ? (
-        <DragPreview viewMode={viewMode} {...sandboxProps} />
-      ) : null}
     </>
   );
 };
+
+export const Sandbox = React.memo(GenericSandbox);
 
 export const SkeletonSandbox = props => {
   const {
@@ -215,4 +211,23 @@ export const SkeletonSandbox = props => {
     return <SkeletonListItem {...props} />;
   }
   return <SkeletonCard {...props} />;
+};
+
+const useResizing = () => {
+  const TIMEOUT = 250;
+  const [resizing, setResizing] = React.useState(false);
+
+  React.useEffect(() => {
+    let timeoutId = null;
+
+    const handler = () => {
+      setResizing(true);
+      window.clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(() => setResizing(false), TIMEOUT);
+    };
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+
+  return resizing;
 };

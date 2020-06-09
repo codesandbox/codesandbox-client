@@ -90,6 +90,7 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
 
     state.live.isLive = true;
     state.live.error = null;
+    effects.live.markLiveReady();
 
     return sandbox;
   } catch (error) {
@@ -104,7 +105,7 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
 export const initializeModuleFromState: Action<{
   moduleShortid: string;
   moduleInfo: IModuleStateModule;
-}> = ({ state, effects }, { moduleShortid, moduleInfo }) => {
+}> = ({ state, effects, actions }, { moduleShortid, moduleInfo }) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
     return;

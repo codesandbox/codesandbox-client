@@ -1,7 +1,6 @@
 /* eslint-disable global-require, no-console, no-use-before-define */
 import { flatten } from 'lodash-es';
 import codeFrame from 'babel-code-frame';
-import macrosPlugin from 'babel-plugin-macros';
 import refreshBabelPlugin from 'react-refresh/babel';
 import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
 import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
@@ -11,7 +10,7 @@ import delay from '@codesandbox/common/lib/utils/delay';
 
 import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
 import { join } from '@codesandbox/common/lib/utils/path';
-import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
+import patchedMacrosPlugin from './utils/macrosPatch';
 import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
 import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
@@ -25,6 +24,7 @@ import {
   getPrefixedPluginName,
   getPrefixedPresetName,
 } from './get-prefixed-name';
+import { patchedResolve } from './utils/resolvePatch';
 
 let fsInitialized = false;
 let fsLoading = false;
@@ -44,6 +44,10 @@ self.process = {
 };
 // This one is called from the babel transpiler and babel-plugin-macros
 self.require = path => {
+  if (path === 'resolve') {
+    return patchedResolve();
+  }
+
   if (path === 'assert') {
     return require('assert');
   }
@@ -464,7 +468,6 @@ let loadedTranspilerURL = null;
 let loadedEnvURL = null;
 
 function registerCodeSandboxPlugins() {
-  Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
   Babel.registerPlugin('babel-plugin-detective', detective);
   Babel.registerPlugin('dynamic-css-modules', dynamicCSSModules);
   Babel.registerPlugin(
@@ -520,7 +523,7 @@ self.addEventListener('message', async event => {
     hasMacros,
   } = event.data;
 
-  if (type !== 'compile') {
+  if (type !== 'compile' && type !== 'warmup') {
     return;
   }
   try {
@@ -549,8 +552,6 @@ self.addEventListener('message', async event => {
     const codeSandboxPlugins = [];
 
     if (!disableCodeSandboxPlugins) {
-      codeSandboxPlugins.push('dynamic-import-node');
-
       if (loaderOptions.dynamicCSSModules) {
         codeSandboxPlugins.push('dynamic-css-modules');
       }
@@ -624,7 +625,7 @@ self.addEventListener('message', async event => {
           await waitForFs();
         }
 
-        Babel.registerPlugin('babel-plugin-macros', macrosPlugin);
+        Babel.registerPlugin('babel-plugin-macros', patchedMacrosPlugin);
       }
 
       if (
@@ -732,6 +733,11 @@ self.addEventListener('message', async event => {
         })
     );
 
+    if (type === 'warmup') {
+      Babel.transform(code, normalizeV7Config(customConfig));
+      return;
+    }
+
     await compile(
       code,
       version === 7 ? normalizeV7Config(customConfig) : customConfig,
@@ -739,6 +745,10 @@ self.addEventListener('message', async event => {
       version === 7
     );
   } catch (e) {
+    if (type === 'warmup') {
+      return;
+    }
+
     console.error(e);
     self.postMessage({
       type: 'error',

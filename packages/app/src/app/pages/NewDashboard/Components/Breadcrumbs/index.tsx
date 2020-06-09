@@ -18,7 +18,7 @@ export const Breadcrumbs = ({ param }) => {
       <Link
         to="/new-dashboard/all/"
         as={LinkBase}
-        variant={param.split('/').length ? 'muted' : 'body'}
+        variant={param && param.split('/').length ? 'muted' : 'body'}
       >
         All Sandboxes {param && ' / '}
       </Link>

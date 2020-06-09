@@ -43,7 +43,7 @@ const getSVG = (variant, color) => {
   return header + encoded;
 };
 
-const SelectComponent = styled(Input).attrs({ as: 'select' })<{
+const SelectComponent = styled(Input).attrs(() => ({ as: 'select' }))<{
   variant?: string;
 }>(({ variant = 'default' }) =>
   css(

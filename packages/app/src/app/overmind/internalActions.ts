@@ -1,7 +1,4 @@
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import {
-  Module,
   ModuleTab,
   NotificationButton,
   Sandbox,
@@ -10,11 +7,11 @@ import {
   TabType,
 } from '@codesandbox/common/lib/types';
 import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { NotificationStatus } from '@codesandbox/notifications';
 import values from 'lodash-es/values';
 
 import { ApiError } from './effects/api/apiFactory';
-import { createOptimisticModule } from './utils/common';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
 import { Action, AsyncAction } from '.';
@@ -88,16 +85,14 @@ export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
       status: NotificationStatus.NOTICE,
       sticky: true,
       actions: {
-        primary: [
-          {
-            label: 'Open Survey',
-            run: () => {
-              actions.modalOpened({
-                modal: 'userSurvey',
-              });
-            },
+        primary: {
+          label: 'Open Survey',
+          run: () => {
+            actions.modalOpened({
+              modal: 'userSurvey',
+            });
           },
-        ],
+        },
       },
     });
   }
@@ -272,57 +267,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   actions.server.startContainer(sandbox);
 };
 
-export const ensurePackageJSON: AsyncAction = async ({
-  state,
-  actions,
-  effects,
-}) => {
-  const sandbox = state.editor.currentSandbox;
-  if (!sandbox) {
-    return;
-  }
-
-  const existingPackageJson = sandbox.modules.find(
-    module => module.directoryShortid == null && module.title === 'package.json'
-  );
-
-  if (sandbox.owned && !existingPackageJson) {
-    const optimisticId = effects.utils.createOptimisticId();
-    const optimisticModule = createOptimisticModule({
-      id: optimisticId,
-      title: 'package.json',
-      code: generatePackageJsonFromSandbox(sandbox),
-      path: '/package.json',
-    });
-
-    sandbox.modules.push(optimisticModule as Module);
-    optimisticModule.path = getModulePath(
-      sandbox.modules,
-      sandbox.directories,
-      optimisticId
-    );
-
-    // We grab the module from the state to continue working with it (proxy)
-    const module = sandbox.modules[sandbox.modules.length - 1];
-
-    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
-
-    try {
-      const updatedModule = await effects.api.createModule(sandbox.id, module);
-
-      module.id = updatedModule.id;
-      module.shortid = updatedModule.shortid;
-    } catch (error) {
-      sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
-      state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      actions.internal.handleError({
-        message: 'Could not add package.json file',
-        error,
-      });
-    }
-  }
-};
-
 export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
   const { currentModule } = state.editor;
   const tabs = state.editor.tabs as ModuleTab[];
@@ -435,12 +379,10 @@ export const handleError: Action<{
       message: 'Your session seems to be expired, please log in again...',
       status: NotificationStatus.ERROR,
       actions: {
-        primary: [
-          {
-            label: 'Sign in',
-            run: () => actions.signInClicked(),
-          },
-        ],
+        primary: {
+          label: 'Sign in',
+          run: () => actions.signInClicked(),
+        },
       },
     });
 
@@ -449,9 +391,7 @@ export const handleError: Action<{
 
   error.message = actions.internal.getErrorMessage({ error });
 
-  const notificationActions = {
-    primary: [] as Array<{ label: string; run: () => void }>,
-  };
+  const notificationActions: NotificationMessage['actions'] = {};
 
   if (error.message.startsWith('You need to sign in to create more than')) {
     // Error for "You need to sign in to create more than 10 sandboxes"
@@ -459,23 +399,23 @@ export const handleError: Action<{
       errorMessage: error.message,
     });
 
-    notificationActions.primary.push({
+    notificationActions.primary = {
       label: 'Sign in',
       run: () => {
         actions.internal.signIn({});
       },
-    });
+    };
   } else if (error.message.startsWith('You reached the maximum of')) {
     effects.analytics.track('Non-Patron Sandbox Limit Reached', {
       errorMessage: error.message,
     });
 
-    notificationActions.primary.push({
+    notificationActions.primary = {
       label: 'Open Patron Page',
       run: () => {
         window.open(patronUrl(), '_blank');
       },
-    });
+    };
   } else if (
     error.message.startsWith(
       'You reached the limit of server sandboxes, you can create more server sandboxes as a patron.'
@@ -485,12 +425,12 @@ export const handleError: Action<{
       errorMessage: error.message,
     });
 
-    notificationActions.primary.push({
+    notificationActions.primary = {
       label: 'Open Patron Page',
       run: () => {
         window.open(patronUrl(), '_blank');
       },
-    });
+    };
   } else if (
     error.message.startsWith(
       'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
@@ -505,9 +445,7 @@ export const handleError: Action<{
     title: message,
     message: error.message,
     status: NotificationStatus.ERROR,
-    ...(notificationActions.primary.length
-      ? { actions: notificationActions }
-      : {}),
+    ...(notificationActions.primary ? { actions: notificationActions } : {}),
   });
 };
 
@@ -521,6 +459,21 @@ export const trackCurrentTeams: AsyncAction = async ({ effects }) => {
     effects.analytics.setGroup(
       'teamId',
       me.teams.map(m => m.id)
+    );
+  }
+};
+
+export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
+  const user = state.user;
+  if (user) {
+    effects.analytics.identify('pilot', user.experiments.inPilot);
+
+    const profileData = await effects.api.getProfile(user.username);
+    effects.analytics.identify('sandboxCount', profileData.sandboxCount);
+    effects.analytics.identify('pro', Boolean(profileData.subscriptionSince));
+    effects.analytics.identify(
+      'receivedViewCount',
+      Boolean(profileData.viewCount)
     );
   }
 };
@@ -540,14 +493,12 @@ export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
       status: NotificationStatus.NOTICE,
       sticky: true,
       actions: {
-        primary: [
-          {
-            label: 'Open Privacy Policy',
-            run: () => {
-              window.open('https://codesandbox.io/legal/privacy', '_blank');
-            },
+        primary: {
+          label: 'Open Privacy Policy',
+          run: () => {
+            window.open('https://codesandbox.io/legal/privacy', '_blank');
           },
-        ],
+        },
       },
     });
   }
