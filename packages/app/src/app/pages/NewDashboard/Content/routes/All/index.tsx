@@ -14,7 +14,7 @@ import { useFilteredItems } from './useFilteredItems';
 export const AllPage = ({ match: { params }, history }) => {
   const [level, setLevel] = React.useState(0);
   const [creating, setCreating] = React.useState(false);
-  const items = useFilteredItems(params, level);
+  const [items, folders] = useFilteredItems(params, level);
   const param = params.path || '';
   const cleanParam = param.split(' ').join('');
   const {
@@ -46,13 +46,6 @@ export const AllPage = ({ match: { params }, history }) => {
       actions.dashboard.getSandboxesByPath(param);
     }
   }, [param, actions.dashboard, activeTeam]);
-
-  const folders =
-    (allCollections &&
-      allCollections.filter(
-        collection => collection.level === level && collection.parent === param
-      )) ||
-    [];
 
   const activeSandboxes = (sandboxes.ALL && sandboxes.ALL[cleanParam]) || [];
 

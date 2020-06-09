@@ -49,5 +49,12 @@ export const useFilteredItems = (params, level) => {
     getFilteredSandboxes,
   ]);
 
-  return items;
+  return [
+    items,
+    (allCollections &&
+      allCollections.filter(
+        collection => collection.level === level && collection.parent === param
+      )) ||
+      [],
+  ];
 };
