@@ -77,8 +77,10 @@ export const SandboxCard = ({
         top: 1,
         right: 1,
         size: 6,
-        background: 'white',
-        border: '4px solid',
+        width: '22px',
+        height: '22px',
+        backgroundColor: 'grays.500',
+        border: '3px solid',
         borderColor: 'grays.500',
         borderRadius: 'medium',
       })}
