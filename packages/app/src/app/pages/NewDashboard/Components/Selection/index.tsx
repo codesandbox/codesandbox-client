@@ -273,15 +273,17 @@ export const SelectionProvider = ({
   };
 
   const onDrop = dropResult => {
+    if (dropResult.isSamePath) return;
+
     const sandboxIds = selectedIds.filter(isSandboxId);
-    const folderPaths = selectedIds.filter(isFolderPath);
+    const folderPaths = selectedIds.filter(isFolderPath).filter(notDrafts);
 
     if (sandboxIds.length) {
       if (dropResult.path === 'deleted') {
         actions.dashboard.deleteSandbox(sandboxIds);
       } else if (dropResult.path === 'templates') {
         actions.dashboard.makeTemplate(sandboxIds);
-      } else if (dropResult.path === 'drafts') {
+      } else if (dropResult.path === '/drafts') {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: '/',
@@ -294,12 +296,9 @@ export const SelectionProvider = ({
       }
     }
 
-    const isDrafts = folder => folder.path === '/drafts';
     if (folderPaths.length) {
       if (dropResult.path === 'deleted') {
-        folderPaths
-          .filter(isDrafts)
-          .forEach(path => actions.dashboard.deleteFolder({ path }));
+        folderPaths.forEach(path => actions.dashboard.deleteFolder({ path }));
       } else if (dropResult.path === 'templates') {
         // folders can't be dropped into templates
       } else if (dropResult.path === 'drafts') {
@@ -307,7 +306,7 @@ export const SelectionProvider = ({
       } else {
         // moving folders into another folder
         // is the same as changing it's path
-        folderPaths.filter(isDrafts).forEach(path => {
+        folderPaths.forEach(path => {
           const { name } = folders.find(folder => folder.path === path);
           actions.dashboard.moveFolder({
             path,
@@ -341,10 +340,9 @@ export const SelectionProvider = ({
     setSelectedIds([]); // global blur
 
     // right click
-    if (!event.metaKey) return;
+    if (event.button === 2) return;
 
     setDrawingRect(true);
-
     setSelectionRect({
       start: {
         x: event.clientX,
@@ -525,3 +523,4 @@ const scrollIntoViewport = (id: string) => {
 
 const isFolderPath = id => id.startsWith('/');
 const isSandboxId = id => !isFolderPath(id);
+const notDrafts = folder => folder.path !== '/drafts';

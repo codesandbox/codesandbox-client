@@ -54,6 +54,7 @@ export const SandboxListItem = ({
       backgroundColor: selected ? 'blues.600' : 'transparent',
       color: selected ? 'white' : 'inherit',
       ':hover, :focus, :focus-within': {
+        cursor: 'default',
         backgroundColor: selected ? 'blues.600' : 'list.hoverBackground',
       },
     })}
@@ -100,7 +101,7 @@ export const SandboxListItem = ({
       </Column>
       <Column span={[0, 4, 4]} as={Stack} align="center">
         {sandbox.removedAt ? (
-          <Text size={3} variant="muted" maxWidth="100%">
+          <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
               Deleted
             </Text>{' '}
@@ -110,7 +111,7 @@ export const SandboxListItem = ({
             ago
           </Text>
         ) : (
-          <Text size={3} variant="muted" maxWidth="100%">
+          <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
               Updated
             </Text>{' '}
