@@ -7,6 +7,7 @@ import {
   SkeletonGrid,
 } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import { getPossibleTemplates } from '../../utils';
 
 export const Templates = () => {
   const {
@@ -19,6 +20,10 @@ export const Templates = () => {
   useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.TEMPLATES);
   }, [actions.dashboard]);
+
+  const possibleTemplates = sandboxes.TEMPLATES
+    ? getPossibleTemplates(sandboxes.TEMPLATES.map(t => t.sandbox))
+    : [];
 
   const items =
     sandboxes.TEMPLATES &&
@@ -51,7 +56,7 @@ export const Templates = () => {
     >
       <Header
         title="Templates"
-        templates={[]}
+        templates={possibleTemplates}
         showViewOptions
         showFilters
         showSortOptions

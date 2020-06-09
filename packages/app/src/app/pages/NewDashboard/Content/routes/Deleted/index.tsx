@@ -9,6 +9,7 @@ import {
   SkeletonGrid,
 } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import { getPossibleTemplates } from '../../utils';
 
 export const Deleted = () => {
   const {
@@ -47,7 +48,12 @@ export const Deleted = () => {
 
   return (
     <SelectionProvider sandboxes={sandboxes.DELETED}>
-      <Header title="Recently Deleted" showFilters showSortOptions />
+      <Header
+        title="Recently Deleted"
+        showFilters
+        showSortOptions
+        templates={getPossibleTemplates(sandboxes.DELETED)}
+      />
       {sandboxes.DELETED ? (
         <VariableGrid items={items} />
       ) : (

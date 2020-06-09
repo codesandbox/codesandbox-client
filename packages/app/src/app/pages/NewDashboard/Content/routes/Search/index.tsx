@@ -8,6 +8,7 @@ import {
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
+import { getPossibleTemplates } from '../../utils';
 
 export const SearchComponent = ({ location }) => {
   const {
@@ -28,6 +29,7 @@ export const SearchComponent = ({ location }) => {
         showViewOptions
         showFilters
         showSortOptions
+        templates={getPossibleTemplates(sandboxes.SEARCH)}
       />
       <section style={{ position: 'relative' }}>
         {sandboxes.SEARCH ? (

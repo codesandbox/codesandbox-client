@@ -44,7 +44,7 @@ export const SortOptions: FunctionComponent = () => {
               padding: 0,
               border: 'none',
               background: 'transparent',
-              marginTop: -3,
+              marginTop: 6,
               transform: `rotate(${order === 'desc' ? 0 : 180}deg)`,
             }}
           >
