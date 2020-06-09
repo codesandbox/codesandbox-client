@@ -369,4 +369,12 @@ describe('convert-esmodule', () => {
 
     convertEsModule(code);
   });
+
+  it('can convert normal exports', () => {
+    const code = `
+      export * from './some.js';
+      export { default as some } from './some.js';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
 });

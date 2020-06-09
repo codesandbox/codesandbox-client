@@ -199,7 +199,8 @@ export const state: State = {
       }
 
       if (orderField === 'title') {
-        return s.title || s.id;
+        const field = s.title || s.alias || s.id;
+        return field.toLowerCase();
       }
 
       return s[orderField];

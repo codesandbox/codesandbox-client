@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 
 import {
@@ -35,6 +36,9 @@ export const UserSettings = () => {
 
   return (
     <>
+      <Helmet>
+        <title>User Settings - CodeSandbox</title>
+      </Helmet>
       <Header title="User Settings" />
       <Element
         css={css({

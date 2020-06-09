@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
@@ -13,7 +14,7 @@ export const Drafts = () => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes },
+      dashboard: { sandboxes, getFilteredSandboxes },
     },
   } = useOvermind();
 
@@ -23,6 +24,9 @@ export const Drafts = () => {
 
   return (
     <SelectionProvider sandboxes={sandboxes.DRAFTS}>
+      <Helmet>
+        <title>Draft Sandboxes - CodeSandbox</title>
+      </Helmet>
       <Header
         path="Drafts"
         templates={getPossibleTemplates(sandboxes.DRAFTS)}
@@ -32,10 +36,12 @@ export const Drafts = () => {
       />
       {sandboxes.DRAFTS ? (
         <VariableGrid
-          items={sandboxes.DRAFTS.map(sandbox => ({
-            type: 'sandbox',
-            ...sandbox,
-          }))}
+          items={getFilteredSandboxes(
+            sandboxes.DRAFTS.map(sandbox => ({
+              type: 'sandbox',
+              ...sandbox,
+            }))
+          )}
         />
       ) : (
         <SkeletonGrid count={8} marginTop={8} />

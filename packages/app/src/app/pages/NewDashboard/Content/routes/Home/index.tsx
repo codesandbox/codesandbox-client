@@ -9,6 +9,7 @@ import {
   SkeletonGrid,
 } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import { Helmet } from 'react-helmet';
 
 export const Home = () => {
   const {
@@ -48,6 +49,9 @@ export const Home = () => {
     <SelectionProvider
       sandboxes={[...templates, ...(sandboxes.RECENT_HOME || [])]}
     >
+      <Helmet>
+        <title>Dashboard - CodeSandbox</title>
+      </Helmet>
       <Header title="Home" />
 
       {sandboxes.RECENT_HOME ? (
