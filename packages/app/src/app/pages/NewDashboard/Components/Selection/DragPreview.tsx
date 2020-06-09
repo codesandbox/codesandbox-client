@@ -98,7 +98,7 @@ export const DragPreview = ({
                   width: viewMode === 'list' ? 32 : '100%',
                   height: viewMode === 'list' ? 32 : '100%',
                   backgroundColor: 'grays.600',
-                  backgroundImage: `url(${item.url})`,
+                  backgroundImage: item.url ? `url(${item.url})` : null,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center center',
                   backgroundRepeat: 'no-repeat',

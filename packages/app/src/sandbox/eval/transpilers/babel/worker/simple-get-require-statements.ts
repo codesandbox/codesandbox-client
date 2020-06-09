@@ -9,7 +9,9 @@ const commentRegex = /^(\s*\/?\*)|(\/\/)/;
 export default function getRequireStatements(code: string) {
   const results = [];
   code.split('\n').forEach(line => {
-    const commentMatch = commentRegex.exec(line);
+    const commentMatch =
+      line.indexOf('/*#__PURE__*/') === -1 && commentRegex.exec(line);
+
     if (commentMatch && commentMatch.index === 0) {
       return;
     }

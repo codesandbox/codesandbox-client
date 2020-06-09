@@ -9,6 +9,7 @@ import {
   SkeletonGrid,
 } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import { Helmet } from 'react-helmet';
 
 export const StartSandboxes = () => {
   const {
@@ -22,17 +23,20 @@ export const StartSandboxes = () => {
     actions.dashboard.getPage(sandboxesTypes.START_PAGE);
   }, [actions.dashboard]);
 
+  const templates = (sandboxes.TEMPLATE_START_PAGE || []).map(template => {
+    const { sandbox, ...templateValues } = template;
+    return {
+      type: 'sandbox',
+      ...sandbox,
+      isTemplate: true,
+      template: templateValues,
+      isStartTemplate: true,
+    };
+  });
+
   const items = [
     { type: 'header', title: 'Recently Used Templates' },
-    ...(sandboxes.TEMPLATE_START_PAGE || []).map(template => {
-      const { sandbox, ...templateValues } = template;
-      return {
-        type: 'sandbox',
-        ...sandbox,
-        isTemplate: true,
-        template: templateValues,
-      };
-    }),
+    ...templates,
     { type: 'header', title: 'Your Recent Sandboxes' },
     { type: 'new-sandbox' },
     ...(sandboxes.RECENT_START_PAGE || []).map(sandbox => ({
@@ -43,11 +47,11 @@ export const StartSandboxes = () => {
 
   return (
     <SelectionProvider
-      sandboxes={[
-        ...(sandboxes.TEMPLATE_START_PAGE || []),
-        ...(sandboxes.RECENT_START_PAGE || []),
-      ]}
+      sandboxes={[...templates, ...(sandboxes.RECENT_START_PAGE || [])]}
     >
+      <Helmet>
+        <title>Dashboard - CodeSandbox</title>
+      </Helmet>
       <Header title="Start" />
 
       {sandboxes.RECENT_START_PAGE ? (

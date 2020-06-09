@@ -1,11 +1,11 @@
 import { Contributor, PermissionType } from '@codesandbox/common/lib/types';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { identify } from '@codesandbox/common/lib/utils/analytics';
-import { IState } from 'overmind';
+import { IState, derived } from 'overmind';
 
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
-import { AsyncAction } from '.';
+import { AsyncAction, RootState } from '.';
 
 export const TEAM_ID_LOCAL_STORAGE = 'codesandbox-selected-team-id';
 
@@ -206,9 +206,9 @@ export const createModals = <
     return {
       state: {
         ...modal.state,
-        isCurrent(_, root) {
-          return root.modals.current === name;
-        },
+        isCurrent: derived(
+          (_, root: RootState) => root.modals.current === name
+        ),
       },
       actions: {
         open,
