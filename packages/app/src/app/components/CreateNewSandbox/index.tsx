@@ -41,7 +41,7 @@ export const CreateNewSandboxButton: FunctionComponent<Props> = ({
   };
 
   const handleClick = () => {
-    modalOpened({ modal: 'newSandbox' });
+    modalOpened({ modal: 'newSandbox', props: { collectionId } });
   };
 
   return (
