@@ -23,13 +23,26 @@ export const LinkElement = ({ href, children, ...props }) => {
         })}
         onClick={() => actions.comments.selectComment({ commentId })}
       >
-        {children}
+        {children[0].props.children}
       </Button>
     );
   }
 
+  if (!href.includes('codesandbox')) {
+    return (
+      <Link
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer ugc"
+        {...props}
+      >
+        {children[0].props.children}
+      </Link>
+    );
+  }
+
   return (
-    <Link href={href} {...props} target="_blank">
+    <Link href={href} {...props}>
       {children[0].props.children}
     </Link>
   );
