@@ -1,37 +1,36 @@
-import React, { useEffect } from 'react';
-import { useOvermind } from 'app/overmind';
-
-import {
-  Element,
-  Collapsible,
-  Text,
-  Button,
-  Link,
-  Label,
-  Avatar,
-  Stack,
-  List,
-  ListItem,
-  ListAction,
-  Switch,
-  Stats,
-  Tags,
-} from '@codesandbox/components';
-
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import {
-  sandboxUrl,
-  profileUrl,
-  githubRepoUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
-
+import {
+  githubRepoUrl,
+  profileUrl,
+  sandboxUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
+import {
+  Avatar,
+  Button,
+  Collapsible,
+  Element,
+  Label,
+  Link,
+  List,
+  ListAction,
+  ListItem,
+  Stack,
+  Stats,
+  Switch,
+  Tags,
+  Text,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
-import { TemplateConfig } from './TemplateConfig';
-import { PenIcon } from './icons';
-import { EditSummary } from './EditSummary';
+import { Markdown } from 'app/components/Markdown';
+import { useOvermind } from 'app/overmind';
+import React, { useEffect } from 'react';
+
 import { GitHubIcon } from '../GitHub/Icons';
+import { EditSummary } from './EditSummary';
+import { PenIcon } from './icons';
+import { TemplateConfig } from './TemplateConfig';
 
 export const Summary = () => {
   const {
@@ -109,9 +108,13 @@ export const Summary = () => {
                 </Button>
               </Stack>
 
-              <Text variant="muted" onClick={() => setEditing(true)}>
-                {description || 'Add a short description for this sandbox'}
-              </Text>
+              <Element itemProp="text">
+                <Markdown
+                  source={
+                    description || 'Add a short description for this sandbox'
+                  }
+                />
+              </Element>
 
               {tags.length ? (
                 <Element marginTop={4}>
