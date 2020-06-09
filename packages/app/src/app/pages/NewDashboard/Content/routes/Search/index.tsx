@@ -41,7 +41,7 @@ export const SearchComponent = ({ location }) => {
             }
           />
         ) : (
-          <SkeletonGrid count={4} />
+          <SkeletonGrid count={4} marginTop={8} />
         )}
       </section>
     </SelectionProvider>

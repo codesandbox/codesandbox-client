@@ -38,7 +38,7 @@ export const Drafts = () => {
           }))}
         />
       ) : (
-        <SkeletonGrid count={8} />
+        <SkeletonGrid count={8} marginTop={8} />
       )}
     </SelectionProvider>
   );

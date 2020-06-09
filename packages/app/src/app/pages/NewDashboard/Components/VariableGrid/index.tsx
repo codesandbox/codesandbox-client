@@ -7,6 +7,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { Folder } from '../Folder';
+import { EmptyScreen } from '../EmptyScreen';
 
 const MIN_WIDTH = 220;
 const ITEM_HEIGHT_GRID = 240;
@@ -146,6 +147,8 @@ export const VariableGrid = ({ items }) => {
     };
   });
 
+  if (items.length === 0) return <EmptyScreen />;
+
   return (
     <Element
       css={{
@@ -213,7 +216,7 @@ export const VariableGrid = ({ items }) => {
   );
 };
 
-export const SkeletonGrid = ({ count }) => {
+export const SkeletonGrid = ({ count, ...props }) => {
   const {
     state: { dashboard },
   } = useOvermind();
@@ -232,6 +235,7 @@ export const SkeletonGrid = ({ count }) => {
         marginBottom={8}
         marginTop={ITEM_VERTICAL_OFFSET}
         marginX={4}
+        {...props}
       >
         {Array.from(Array(count).keys()).map(n => (
           <Column key={n}>
@@ -250,16 +254,18 @@ export const SkeletonGrid = ({ count }) => {
       css={{
         gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
       }}
+      {...props}
     >
       {Array.from(Array(count).keys()).map(n => (
         <Column key={n}>
           <SkeletonSandbox />
         </Column>
       ))}
-      {/* fill empty column in grid */}
-      {Array.from(Array(4 - count).keys()).map(n => (
-        <Column key={count + n} />
-      ))}
+      {/* fill empty columns in grid */}
+      {count < 4 &&
+        Array.from(Array(4 - count).keys()).map(n => (
+          <Column key={count + n} />
+        ))}
     </Grid>
   );
 };

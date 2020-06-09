@@ -57,7 +57,7 @@ export const Templates = () => {
           }
         />
       ) : (
-        <SkeletonGrid count={8} />
+        <SkeletonGrid count={8} marginTop={8} />
       )}
     </SelectionProvider>
   );
