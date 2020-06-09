@@ -21,6 +21,23 @@ export const repoTitleChanged: Action<{
   state.git.error = null;
 };
 
+/**
+ * There are two states the Sandbox can be in:
+ * 1. It has been forked and the SOURCE is the GIT details of the Sandbox it forked from
+ * 2. It has been forked and the SOURCE is the PR created
+ *
+ * To give indication of what file changes has been made, we do the following:
+ * 1. First we load the SOURCE sandbox. We need this to indicate what you have changed in your sandbox
+ * 2. Every time you make a change to the files we go through modules/directories of the source sandbox and your sandbox to produce a diff
+ *
+ * The steps that is taken to find "out of sync" and "conflict", is the following:
+ * 1. We first want to compare your sandbox with the SOURCE (This being the GIT info on the sandbox you forked from or the PR)
+ * 2. We pass the "originalGitCommitSha" and the branch of the SOURCE
+ * 3. Now we evaluate the comparison against your files to see if anything is "out of sync" or in "conflict" and if so we break out and tell user
+ * 4. If you sandbox has a PR we want to compare your sandbox with the BASE (This being the GIT info your sanbox forked from)
+ * 5. We pass the "originalGitCommitSha" and the branch of the BASE
+ * 6. Now we evaluate the comparison against your files to see if anything is "out of sync" or in "conflict" and if so we break out and tell user
+ */
 export const loadGitSource: AsyncAction = async ({
   state,
   actions,
@@ -560,9 +577,9 @@ export const _compareWithSource: AsyncAction = async ({
 
   if (updates.changesCount || updates.conflicts.length) {
     effects.notificationToast.add({
-      message: `The sandbox is out of sync with "${sandbox.baseGit!.branch}" ${
-        updates.conflicts.length ? 'and there are conflicts' : ''
-      }`,
+      message: `The sandbox is out of sync with "${
+        sandbox.originalGit!.branch
+      }" ${updates.conflicts.length ? 'and there are conflicts' : ''}`,
       title: 'Out of sync',
       status: convertTypeToStatus('notice'),
       sticky: false,
