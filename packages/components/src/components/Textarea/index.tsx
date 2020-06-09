@@ -55,9 +55,9 @@ export const Textarea: React.FC<ITextareaProps> = ({
    */
   React.useEffect(
     function syncValue() {
-      setInnerValue(value);
+      setInnerValue(value || defaultValue);
     },
-    [value]
+    [value, defaultValue]
   );
 
   const internalOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
