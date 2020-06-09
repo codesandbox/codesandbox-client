@@ -38,7 +38,7 @@ export const VariableGrid = ({ items }) => {
 
   let viewMode;
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
@@ -225,7 +225,7 @@ export const SkeletonGrid = ({ count, ...props }) => {
 
   let viewMode;
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   if (viewMode === 'list') {

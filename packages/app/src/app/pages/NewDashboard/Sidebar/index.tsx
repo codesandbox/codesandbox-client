@@ -201,7 +201,7 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
               </Stack>
             )}
           </ListItem>
-          <RowItem name="Start" path="start" icon="box" />
+          <RowItem name="Home" path="home" icon="box" />
           <RowItem name="Recent" path="recent" icon="clock" />
           <RowItem name="Drafts" path="/drafts" icon="file" />
 
@@ -320,8 +320,8 @@ const linkStyles = {
   paddingRight: 8,
 };
 
-const canNotAcceptSandboxes = ['start', 'recent', 'all'];
-const canNotAcceptFolders = ['start', 'recent', '/drafts', 'templates'];
+const canNotAcceptSandboxes = ['home', 'recent', 'all'];
+const canNotAcceptFolders = ['home', 'recent', '/drafts', 'templates'];
 
 const isSamePath = (draggedItem, dropPath) => {
   if (!draggedItem) return false;
