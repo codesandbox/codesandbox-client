@@ -133,8 +133,8 @@ export const Chat: React.FC = () => {
                       {metadata ? (
                         <Avatar
                           color={color}
-                          alt={metadata && metadata.username}
-                          src={metadata && metadata.avatarUrl}
+                          alt={metadata.username}
+                          src={metadata.avatarUrl}
                         />
                       ) : (
                         <Avatar noUser as="div" color={color} />
