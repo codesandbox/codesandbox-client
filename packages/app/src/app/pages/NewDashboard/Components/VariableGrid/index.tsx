@@ -57,7 +57,7 @@ export const VariableGrid = ({ items }) => {
     const isHeader = item.type === 'header';
 
     const margins = {
-      marginTop: isHeader ? ITEM_VERTICAL_OFFSET + 16 : ITEM_VERTICAL_OFFSET,
+      marginTop: isHeader ? ITEM_VERTICAL_OFFSET + 24 : ITEM_VERTICAL_OFFSET,
       marginBottom: viewMode === 'list' || isHeader ? 0 : ITEM_VERTICAL_OFFSET,
     };
 
@@ -246,8 +246,6 @@ export const SkeletonGrid = ({ count }) => {
     <Grid
       rowGap={6}
       columnGap={6}
-      marginBottom={8}
-      marginTop={ITEM_VERTICAL_OFFSET}
       marginX={4}
       css={{
         gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
@@ -257,6 +255,10 @@ export const SkeletonGrid = ({ count }) => {
         <Column key={n}>
           <SkeletonSandbox />
         </Column>
+      ))}
+      {/* fill empty column in grid */}
+      {Array.from(Array(4 - count).keys()).map(n => (
+        <Column key={count + n} />
       ))}
     </Grid>
   );

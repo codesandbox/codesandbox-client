@@ -137,7 +137,7 @@ export const SkeletonCard = () => (
       transitionDuration: theme => theme.speeds[4],
     })}
   >
-    <SkeletonText css={{ width: '100%', height: 160 }} />
+    <SkeletonText css={{ width: '100%', height: 160, borderRadius: 0 }} />
     <Stack direction="vertical" gap={2} marginX={4}>
       <SkeletonText css={{ width: 120 }} />
       <SkeletonText css={{ width: 180 }} />

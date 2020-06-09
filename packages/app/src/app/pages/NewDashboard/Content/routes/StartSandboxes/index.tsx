@@ -55,16 +55,16 @@ export const StartSandboxes = () => {
           <VariableGrid items={items} />
         </>
       ) : (
-        <Stack as="section" direction="vertical" gap={8}>
-          <Element css={css({ height: 4 })} />
-          <section>
+        <Stack as="section" direction="vertical" gap={10}>
+          <Element css={css({ height: 5 })} />
+          <Stack direction="vertical" gap={5}>
             <Text marginLeft={4}>Recently Used Templates</Text>
             <SkeletonGrid count={4} />
-          </section>
-          <section>
+          </Stack>
+          <Stack direction="vertical" gap={5}>
             <Text marginLeft={4}>Your Recent Sandboxes</Text>
             <SkeletonGrid count={4} />
-          </section>
+          </Stack>
         </Stack>
       )}
     </SelectionProvider>

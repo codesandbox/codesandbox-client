@@ -52,8 +52,8 @@ export const Recent = () => {
             <VariableGrid items={items} />
           </>
         ) : (
-          <Stack as="section" direction="vertical" gap={8}>
-            <Element css={css({ height: 4 })} />
+          <Stack as="section" direction="vertical" gap={10}>
+            <Element css={css({ height: 6 })} />
             <SkeletonGroup title="Today" time="day" count={2} />
             <SkeletonGroup title="Last 7 Days" time="week" />
             <SkeletonGroup title="Earlier this month" time="month" />
@@ -66,10 +66,10 @@ export const Recent = () => {
 };
 
 const SkeletonGroup = ({ title, time, count = 4 }) => (
-  <>
-    <Text marginLeft={4} marginBottom={6} block>
+  <Stack direction="vertical" gap={5}>
+    <Text marginLeft={4} block>
       {title}
     </Text>
     <SkeletonGrid count={count} />
-  </>
+  </Stack>
 );
