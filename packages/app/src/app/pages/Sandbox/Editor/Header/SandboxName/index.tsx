@@ -219,7 +219,6 @@ export const SandboxName: FunctionComponent = () => {
                   </Text>
                 ) : (
                   <Text variant="muted">
-                    aaaa
                     {currentSandbox.baseGit.username} /{' '}
                     {currentSandbox.baseGit.repo} /{' '}
                     <Text css={css({ color: 'sideBar.foreground' })}>

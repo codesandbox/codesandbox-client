@@ -48,9 +48,7 @@ export const GithubSummary = () => {
             loading={editor.isForkingSandbox}
             onClick={() => forkSandboxClicked()}
           >
-            {editor.isForkingSandbox
-              ? 'Forking Repository...'
-              : 'Fork Repository'}
+            {editor.isForkingSandbox ? 'Forking...' : 'Fork'}
           </Button>
         </Element>
       </Collapsible>
