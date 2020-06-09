@@ -9,6 +9,7 @@ import {
   SkeletonGrid,
 } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import { Helmet } from 'react-helmet';
 
 export const StartSandboxes = () => {
   const {
@@ -48,6 +49,9 @@ export const StartSandboxes = () => {
     <SelectionProvider
       sandboxes={[...templates, ...(sandboxes.RECENT_START_PAGE || [])]}
     >
+      <Helmet>
+        <title>Dashboard - CodeSandbox</title>
+      </Helmet>
       <Header title="Start" />
 
       {sandboxes.RECENT_START_PAGE ? (

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { useOvermind } from 'app/overmind';
 import { Stack, Text, Element } from '@codesandbox/components';
@@ -9,6 +10,7 @@ import {
   VariableGrid,
   SkeletonGrid,
 } from 'app/pages/NewDashboard/Components/VariableGrid';
+import { getPossibleTemplates } from '../../utils';
 
 export const Recent = () => {
   const {
@@ -45,7 +47,15 @@ export const Recent = () => {
 
   return (
     <SelectionProvider sandboxes={sandboxes.RECENT}>
-      <Header title="Recently Modified Sandboxes" showViewOptions showFilters />
+      <Helmet>
+        <title>Deleted Sandboxes - CodeSandbox</title>
+      </Helmet>
+      <Header
+        templates={getPossibleTemplates(sandboxes.RECENT)}
+        title="Recently Modified Sandboxes"
+        showViewOptions
+        showFilters
+      />
       <section style={{ position: 'relative' }}>
         {sandboxes.RECENT ? (
           <>
