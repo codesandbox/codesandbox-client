@@ -1,4 +1,5 @@
 import { useOvermind } from 'app/overmind';
+import { Helmet } from 'react-helmet';
 import React, { useEffect } from 'react';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
@@ -13,7 +14,7 @@ export const Templates = () => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes, getFilteredSandboxes },
+      dashboard: { sandboxes, getFilteredSandboxes, activeTeam },
     },
   } = useOvermind();
 
@@ -54,6 +55,9 @@ export const Templates = () => {
         })
       }
     >
+      <Helmet>
+        <title>{activeTeam ? 'Team' : 'My'} Templates - CodeSandbox</title>
+      </Helmet>
       <Header
         title="Templates"
         templates={possibleTemplates}

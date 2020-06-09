@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { useOvermind } from 'app/overmind';
 import { Stack, Text, Element } from '@codesandbox/components';
@@ -46,6 +47,9 @@ export const Recent = () => {
 
   return (
     <SelectionProvider sandboxes={sandboxes.RECENT}>
+      <Helmet>
+        <title>Deleted Sandboxes - CodeSandbox</title>
+      </Helmet>
       <Header
         templates={getPossibleTemplates(sandboxes.RECENT)}
         title="Recently Modified Sandboxes"

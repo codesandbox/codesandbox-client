@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Stack, Text, Element } from '@codesandbox/components';
@@ -48,6 +49,9 @@ export const Deleted = () => {
 
   return (
     <SelectionProvider sandboxes={sandboxes.DELETED}>
+      <Helmet>
+        <title>Deleted Sandboxes - CodeSandbox</title>
+      </Helmet>
       <Header
         title="Recently Deleted"
         showFilters

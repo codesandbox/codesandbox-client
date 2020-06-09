@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
@@ -23,6 +24,9 @@ export const Drafts = () => {
 
   return (
     <SelectionProvider sandboxes={sandboxes.DRAFTS}>
+      <Helmet>
+        <title>Draft Sandboxes - CodeSandbox</title>
+      </Helmet>
       <Header
         path="Drafts"
         templates={getPossibleTemplates(sandboxes.DRAFTS)}

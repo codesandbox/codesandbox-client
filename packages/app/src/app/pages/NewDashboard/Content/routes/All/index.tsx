@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { orderBy } from 'lodash-es';
 import { withRouter } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
@@ -79,6 +80,9 @@ export const AllPage = ({ match: { params }, history }) => {
       sandboxes={(sandboxes.ALL && sandboxes.ALL[cleanParam]) || []}
       folders={folders || []}
     >
+      <Helmet>
+        <title>{param || 'Dashboard'} - CodeSandbox</title>
+      </Helmet>
       <Header
         path={param}
         templates={getPossibleTemplates(allCollections)}
