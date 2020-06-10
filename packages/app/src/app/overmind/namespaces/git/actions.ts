@@ -2,6 +2,7 @@ import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import {
   GitChanges,
   GitFileCompare,
+  GitInfo,
   Module,
   SandboxGitState,
 } from '@codesandbox/common/lib/types';
@@ -221,8 +222,8 @@ export const createPrClicked: AsyncAction = async ({
 
   sandbox.baseGit = {
     ...sandbox.originalGit,
-  };
-  sandbox.baseGitCommitSha = sandbox.originalGit.commitSha;
+  } as GitInfo;
+  sandbox.baseGitCommitSha = sandbox.originalGit!.commitSha;
   sandbox.originalGit = {
     branch: pr.branch,
     commitSha: pr.commitSha,
