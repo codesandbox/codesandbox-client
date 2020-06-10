@@ -110,7 +110,10 @@ export const createRepoClicked: AsyncAction = async ({ state, effects }) => {
 };
 
 export const openSourceSandbox: Action = ({ state, effects }) => {
-  const git = state.editor.currentSandbox!.baseGit;
+  const git = state.editor.currentSandbox!.baseGit
+    ? state.editor.currentSandbox!.baseGit
+    : state.editor.currentSandbox!.originalGit;
+
   effects.router.updateSandboxUrl({ git });
 };
 

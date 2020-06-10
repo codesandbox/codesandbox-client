@@ -101,7 +101,7 @@ export const CommitForm = () => {
   const actions = {
     master: {
       action: createCommitClicked,
-      text: getButtonTitle(`Commit to ${currentSandbox.baseGit.branch}`),
+      text: getButtonTitle(`Commit to ${currentSandbox.originalGit.branch}`),
     },
     pr: {
       action: createPrClicked,
@@ -179,7 +179,7 @@ export const CommitForm = () => {
                   </Menu.Item>
                   <Menu.Item onSelect={() => setCurrentAction('master')}>
                     {getButtonTitle(
-                      `Commit to ${currentSandbox.baseGit.branch}`
+                      `Commit to ${currentSandbox.originalGit.branch}`
                     )}
                   </Menu.Item>
                 </Menu.List>
