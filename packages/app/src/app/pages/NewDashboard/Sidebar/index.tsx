@@ -377,6 +377,7 @@ const NestableRowItem = ({ name, path, folders }) => {
         }}
       >
         <Link
+          href="#"
           onClick={() => history.push('/new-dashboard/all' + path)}
           style={{
             ...linkStyles,
