@@ -407,7 +407,7 @@ const NestableRowItem = ({ name, path, folders }) => {
           ) : (
             <Element as="span" css={css({ width: 5 })} />
           )}
-          <Stack align="center" gap={3}>
+          <Stack align="center" gap={3} css={{ width: '100%' }}>
             <Stack
               as="span"
               css={css({ width: 4 })}
@@ -416,7 +416,7 @@ const NestableRowItem = ({ name, path, folders }) => {
             >
               <Icon name="folder" />
             </Stack>
-            <Text>{name}</Text>
+            <Text maxWidth="100%">{name}</Text>
           </Stack>
         </Link>
       </RowItem>
