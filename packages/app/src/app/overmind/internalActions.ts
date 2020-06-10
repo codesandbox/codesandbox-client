@@ -124,11 +124,9 @@ export const signInGithub: Action<
   { useExtraScopes?: boolean },
   Promise<void>
 > = ({ effects }, options) => {
+  const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
   const authPath = new URL(
-    location.origin +
-      (process.env.LOCAL_SERVER || process.env.STAGING
-        ? '/auth/dev'
-        : '/auth/github')
+    location.origin + (hasDevAuth ? '/auth/dev' : '/auth/github')
   );
 
   authPath.searchParams.set('version', '2');
@@ -139,7 +137,17 @@ export const signInGithub: Action<
   const popup = effects.browser.openPopup(authPath.toString(), 'sign in');
 
   return effects.browser.waitForMessage('signin').then((data: any) => {
-    effects.api.revokeToken(data.jwt);
+    if (hasDevAuth) {
+      localStorage.devJwt = data.jwt;
+
+      // Today + 30 days
+      const DAY = 1000 * 60 * 60 * 24;
+      const expiryDate = new Date(Date.now() + DAY * 30);
+
+      document.cookie = `signedIn=true; expires=${expiryDate.toUTCString()}`;
+    } else {
+      effects.api.revokeToken(data.jwt);
+    }
     popup.close();
   });
 };

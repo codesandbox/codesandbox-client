@@ -31,6 +31,13 @@ export const onInitialize: OnInitialize = async (
     getParsedConfigurations() {
       return state.editor.parsedConfigurations;
     },
+    provideJwtToken() {
+      if (process.env.LOCAL_SERVER || process.env.STAGING) {
+        return localStorage.getItem('devJwt');
+      }
+
+      return null;
+    },
   });
 
   effects.gql.initialize(
