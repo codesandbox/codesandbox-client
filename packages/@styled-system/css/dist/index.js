@@ -211,7 +211,6 @@ var responsive = function responsive(styles) {
 
 exports.responsive = responsive;
 
-window.a = 0;
 var css = function css(args) {
   return function(props) {
     if (props === void 0) {

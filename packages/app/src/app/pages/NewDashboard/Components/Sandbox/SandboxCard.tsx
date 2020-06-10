@@ -5,7 +5,6 @@ import {
   Text,
   Stats,
   Input,
-  IconButton,
   SkeletonText,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -103,13 +102,6 @@ export const SandboxCard = ({
           {sandboxTitle}
         </Text>
       )}
-
-      <IconButton
-        name="more"
-        size={9}
-        title="Sandbox actions"
-        onClick={onContextMenu}
-      />
     </Stack>
     <Stack marginX={4}>
       <Stats
