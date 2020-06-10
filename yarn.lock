@@ -1337,11 +1337,6 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@codesandbox/template-icons@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-1.1.0.tgz#ef37b97dc6057b63a500c6710fbca5f9c7a9730d"
-  integrity sha512-p14rcYOSfI1A6UkFO/aS+H/cuJvlVT4bLpjCEt7kv+KCFaRjd70FDEzfyKLHH/s57k0W2MWrhB25fqPZm89OXg==
-
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"

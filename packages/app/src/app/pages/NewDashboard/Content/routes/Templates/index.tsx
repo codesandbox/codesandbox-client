@@ -68,7 +68,7 @@ export const Templates = () => {
       {sandboxes.TEMPLATES ? (
         <VariableGrid items={items} />
       ) : (
-        <SkeletonGrid count={8} />
+        <SkeletonGrid count={8} marginTop={8} />
       )}
     </SelectionProvider>
   );

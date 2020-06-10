@@ -11,7 +11,7 @@ import {
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { Helmet } from 'react-helmet';
 
-export const StartSandboxes = () => {
+export const Home = () => {
   const {
     actions,
     state: {
@@ -20,17 +20,17 @@ export const StartSandboxes = () => {
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.getPage(sandboxesTypes.START_PAGE);
+    actions.dashboard.getPage(sandboxesTypes.HOME);
   }, [actions.dashboard]);
 
-  const templates = (sandboxes.TEMPLATE_START_PAGE || []).map(template => {
+  const templates = (sandboxes.TEMPLATE_HOME || []).map(template => {
     const { sandbox, ...templateValues } = template;
     return {
       type: 'sandbox',
       ...sandbox,
       isTemplate: true,
       template: templateValues,
-      isStartTemplate: true,
+      isHomeTemplate: true,
     };
   });
 
@@ -39,7 +39,7 @@ export const StartSandboxes = () => {
     ...templates,
     { type: 'header', title: 'Your Recent Sandboxes' },
     { type: 'new-sandbox' },
-    ...(sandboxes.RECENT_START_PAGE || []).map(sandbox => ({
+    ...(sandboxes.RECENT_HOME || []).map(sandbox => ({
       type: 'sandbox',
       ...sandbox,
     })),
@@ -47,28 +47,28 @@ export const StartSandboxes = () => {
 
   return (
     <SelectionProvider
-      sandboxes={[...templates, ...(sandboxes.RECENT_START_PAGE || [])]}
+      sandboxes={[...templates, ...(sandboxes.RECENT_HOME || [])]}
     >
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
-      <Header title="Start" />
+      <Header title="Home" />
 
-      {sandboxes.RECENT_START_PAGE ? (
+      {sandboxes.RECENT_HOME ? (
         <>
           <VariableGrid items={items} />
         </>
       ) : (
-        <Stack as="section" direction="vertical" gap={8}>
-          <Element css={css({ height: 4 })} />
-          <section>
+        <Stack as="section" direction="vertical" gap={10}>
+          <Element css={css({ height: 5 })} />
+          <Stack direction="vertical" gap={5}>
             <Text marginLeft={4}>Recently Used Templates</Text>
             <SkeletonGrid count={4} />
-          </section>
-          <section>
+          </Stack>
+          <Stack direction="vertical" gap={5}>
             <Text marginLeft={4}>Your Recent Sandboxes</Text>
             <SkeletonGrid count={4} />
-          </section>
+          </Stack>
         </Stack>
       )}
     </SelectionProvider>

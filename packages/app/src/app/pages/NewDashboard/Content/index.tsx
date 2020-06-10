@@ -3,7 +3,7 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { StartSandboxes } from './routes/StartSandboxes';
+import { Home } from './routes/Home';
 import { Templates } from './routes/Templates';
 import { Deleted } from './routes/Deleted';
 import { Drafts } from './routes/Drafts';
@@ -39,8 +39,8 @@ export const Content = withRouter(({ history }) => {
     >
       <Switch>
         <Route
-          path="/new-dashboard/start"
-          render={() => <StartSandboxes key={dashboard.activeTeam} />}
+          path="/new-dashboard/home"
+          render={() => <Home key={dashboard.activeTeam} />}
         />
         <Route
           path="/new-dashboard/templates"
@@ -75,7 +75,7 @@ export const Content = withRouter(({ history }) => {
           render={() => <Settings key={dashboard.activeTeam} />}
         />
 
-        <Redirect to="/new-dashboard/start" />
+        <Redirect to="/new-dashboard/home" />
       </Switch>
     </Element>
   );

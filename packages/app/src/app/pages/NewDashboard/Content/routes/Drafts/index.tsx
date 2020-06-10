@@ -25,7 +25,7 @@ export const Drafts = () => {
   return (
     <SelectionProvider sandboxes={sandboxes.DRAFTS}>
       <Helmet>
-        <title>Draft Sandboxes - CodeSandbox</title>
+        <title>Drafts - CodeSandbox</title>
       </Helmet>
       <Header
         path="Drafts"
@@ -44,7 +44,7 @@ export const Drafts = () => {
           )}
         />
       ) : (
-        <SkeletonGrid count={8} />
+        <SkeletonGrid count={8} marginTop={8} />
       )}
     </SelectionProvider>
   );

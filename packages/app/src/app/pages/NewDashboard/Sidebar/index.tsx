@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useDrop } from 'react-dnd';
 import { orderBy } from 'lodash-es';
 import { useOvermind } from 'app/overmind';
@@ -201,7 +201,7 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
               </Stack>
             )}
           </ListItem>
-          <RowItem name="Start" path="start" icon="box" />
+          <RowItem name="Home" path="home" icon="box" />
           <RowItem name="Recent" path="recent" icon="clock" />
           <RowItem name="Drafts" path="/drafts" icon="file" />
 
@@ -320,8 +320,8 @@ const linkStyles = {
   paddingRight: 8,
 };
 
-const canNotAcceptSandboxes = ['start', 'recent', 'all'];
-const canNotAcceptFolders = ['start', 'recent', '/drafts', 'templates'];
+const canNotAcceptSandboxes = ['home', 'recent', 'all'];
+const canNotAcceptFolders = ['home', 'recent', '/drafts', 'templates'];
 
 const isSamePath = (draggedItem, dropPath) => {
   if (!draggedItem) return false;
@@ -365,6 +365,9 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
   else if (path === '/drafts') linkTo = '/new-dashboard/drafts';
   else linkTo = '/new-dashboard/' + path;
 
+  const location = useLocation();
+  const isCurrentLink = linkTo === location.pathname;
+
   return (
     <ListAction
       ref={dropRef}
@@ -377,7 +380,7 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
             paddingLeft: isNested ? 4 : 0,
             opacity: isDragging && !canDrop ? 0.25 : 1,
             color:
-              isDragging && canDrop
+              isCurrentLink || (isDragging && canDrop)
                 ? 'list.hoverForeground'
                 : 'list.foreground',
             backgroundColor:

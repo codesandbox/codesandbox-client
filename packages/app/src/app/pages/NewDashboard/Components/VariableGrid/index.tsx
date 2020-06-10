@@ -7,6 +7,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { Folder } from '../Folder';
+import { EmptyScreen } from '../EmptyScreen';
 
 const MIN_WIDTH = 220;
 const ITEM_HEIGHT_GRID = 240;
@@ -37,7 +38,7 @@ export const VariableGrid = ({ items }) => {
 
   let viewMode;
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
@@ -57,7 +58,7 @@ export const VariableGrid = ({ items }) => {
     const isHeader = item.type === 'header';
 
     const margins = {
-      marginTop: isHeader ? ITEM_VERTICAL_OFFSET + 16 : ITEM_VERTICAL_OFFSET,
+      marginTop: isHeader ? ITEM_VERTICAL_OFFSET + 24 : ITEM_VERTICAL_OFFSET,
       marginBottom: viewMode === 'list' || isHeader ? 0 : ITEM_VERTICAL_OFFSET,
     };
 
@@ -146,6 +147,8 @@ export const VariableGrid = ({ items }) => {
     };
   });
 
+  if (items.length === 0) return <EmptyScreen />;
+
   return (
     <Element
       css={{
@@ -213,7 +216,7 @@ export const VariableGrid = ({ items }) => {
   );
 };
 
-export const SkeletonGrid = ({ count }) => {
+export const SkeletonGrid = ({ count, ...props }) => {
   const {
     state: { dashboard },
   } = useOvermind();
@@ -222,7 +225,7 @@ export const SkeletonGrid = ({ count }) => {
 
   let viewMode;
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   if (viewMode === 'list') {
@@ -232,6 +235,7 @@ export const SkeletonGrid = ({ count }) => {
         marginBottom={8}
         marginTop={ITEM_VERTICAL_OFFSET}
         marginX={4}
+        {...props}
       >
         {Array.from(Array(count).keys()).map(n => (
           <Column key={n}>
@@ -246,18 +250,22 @@ export const SkeletonGrid = ({ count }) => {
     <Grid
       rowGap={6}
       columnGap={6}
-      marginBottom={8}
-      marginTop={ITEM_VERTICAL_OFFSET}
       marginX={4}
       css={{
         gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
       }}
+      {...props}
     >
       {Array.from(Array(count).keys()).map(n => (
         <Column key={n}>
           <SkeletonSandbox />
         </Column>
       ))}
+      {/* fill empty columns in grid */}
+      {count < 4 &&
+        Array.from(Array(4 - count).keys()).map(n => (
+          <Column key={count + n} />
+        ))}
     </Grid>
   );
 };

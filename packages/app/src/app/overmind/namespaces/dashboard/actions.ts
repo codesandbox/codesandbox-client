@@ -109,7 +109,7 @@ export const deleteTemplate: AsyncAction<{
   templateId: string;
 }> = async ({ actions, effects, state }, { sandboxId, templateId }) => {
   const oldTemplates = {
-    TEMPLATE_START_PAGE: state.dashboard.sandboxes.TEMPLATE_START_PAGE,
+    TEMPLATE_HOME: state.dashboard.sandboxes.TEMPLATE_HOME,
     TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
   };
   actions.dashboard.deleteTemplateFromState([sandboxId]);
@@ -123,8 +123,8 @@ export const deleteTemplate: AsyncAction<{
     state.dashboard.sandboxes.TEMPLATES = oldTemplates.TEMPLATES
       ? [...oldTemplates.TEMPLATES]
       : null;
-    state.dashboard.sandboxes.TEMPLATE_START_PAGE = oldTemplates.TEMPLATE_START_PAGE
-      ? [...oldTemplates.TEMPLATE_START_PAGE]
+    state.dashboard.sandboxes.TEMPLATE_HOME = oldTemplates.TEMPLATE_HOME
+      ? [...oldTemplates.TEMPLATE_HOME]
       : null;
     effects.notificationToast.error('Could not delete custom template');
   }
@@ -470,7 +470,7 @@ export const getStartPageSandboxes: AsyncAction = withLoadApp(
         return;
       }
 
-      dashboard.sandboxes.TEMPLATE_START_PAGE = usedTemplates.me.recentlyUsedTemplates.slice(
+      dashboard.sandboxes.TEMPLATE_HOME = usedTemplates.me.recentlyUsedTemplates.slice(
         0,
         4
       );
@@ -484,7 +484,7 @@ export const getStartPageSandboxes: AsyncAction = withLoadApp(
       if (!recentSandboxes || !recentSandboxes.me) {
         return;
       }
-      dashboard.sandboxes.RECENT_START_PAGE = recentSandboxes.me.sandboxes;
+      dashboard.sandboxes.RECENT_HOME = recentSandboxes.me.sandboxes;
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your Sandboxes'
@@ -540,9 +540,9 @@ export const deleteTemplateFromState: Action<string[]> = (
 ) => {
   const { sandboxes } = dashboard;
   ids.map(id => {
-    if (sandboxes.TEMPLATE_START_PAGE) {
-      sandboxes.TEMPLATE_START_PAGE = sandboxes.TEMPLATE_START_PAGE
-        ? sandboxes.TEMPLATE_START_PAGE.filter(
+    if (sandboxes.TEMPLATE_HOME) {
+      sandboxes.TEMPLATE_HOME = sandboxes.TEMPLATE_HOME
+        ? sandboxes.TEMPLATE_HOME.filter(
             ({ sandbox }: TemplateFragmentDashboardFragment) =>
               sandbox && sandbox.id !== id
           )
@@ -588,7 +588,7 @@ export const unmakeTemplate: AsyncAction<string[]> = async (
   ids
 ) => {
   const oldTemplates = {
-    TEMPLATE_START_PAGE: state.dashboard.sandboxes.TEMPLATE_START_PAGE,
+    TEMPLATE_HOME: state.dashboard.sandboxes.TEMPLATE_HOME,
     TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
   };
   actions.dashboard.deleteTemplateFromState(ids);
@@ -598,8 +598,8 @@ export const unmakeTemplate: AsyncAction<string[]> = async (
     state.dashboard.sandboxes.TEMPLATES = oldTemplates.TEMPLATES
       ? [...oldTemplates.TEMPLATES]
       : null;
-    state.dashboard.sandboxes.TEMPLATE_START_PAGE = oldTemplates.TEMPLATE_START_PAGE
-      ? [...oldTemplates.TEMPLATE_START_PAGE]
+    state.dashboard.sandboxes.TEMPLATE_HOME = oldTemplates.TEMPLATE_HOME
+      ? [...oldTemplates.TEMPLATE_HOME]
       : null;
     effects.notificationToast.error(
       'There was a problem reverting your template'
@@ -894,7 +894,7 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
     case sandboxesTypes.RECENT:
       dashboard.getRecentSandboxes();
       break;
-    case sandboxesTypes.START_PAGE:
+    case sandboxesTypes.HOME:
       dashboard.getStartPageSandboxes();
       break;
     case sandboxesTypes.DELETED:

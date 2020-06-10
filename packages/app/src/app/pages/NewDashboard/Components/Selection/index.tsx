@@ -163,7 +163,7 @@ export const SelectionProvider = ({
   const location = useLocation();
 
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const history = useHistory();
@@ -172,10 +172,13 @@ export const SelectionProvider = ({
     // disable keyboard navigation if menu is open
     if (menuVisible) return;
 
+    // disable selection keydowns when renaming
+    if (isRenaming) return;
+
     if (event.keyCode === ALT) onMenuEvent(event);
 
     // if only one thing is selected, open it
-    if (event.keyCode === ENTER && selectedIds.length === 1 && !isRenaming) {
+    if (event.keyCode === ENTER && selectedIds.length === 1) {
       const selectedId = selectedIds[0];
 
       let url;

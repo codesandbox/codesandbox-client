@@ -64,11 +64,11 @@ export const Deleted = () => {
         <Stack as="section" direction="vertical" gap={8}>
           <Element css={css({ height: 4 })} />
           <section>
-            <Text marginLeft={4}>Recently Used Templates</Text>
+            <Text marginLeft={4}>Recently Archived</Text>
             <SkeletonGrid count={4} />
           </section>
           <section>
-            <Text marginLeft={4}>Your Recent Sandboxes</Text>
+            <Text marginLeft={4}>Archived Ealier</Text>
             <SkeletonGrid count={4} />
           </section>
         </Stack>
