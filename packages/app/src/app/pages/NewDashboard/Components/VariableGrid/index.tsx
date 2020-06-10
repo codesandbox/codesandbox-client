@@ -57,64 +57,71 @@ export const VariableGrid = ({ items }) => {
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
 
-  const Item = ({ data, rowIndex, columnIndex, style }) => {
-    const { columnCount, filledItems, containerWidth } = data;
+  const Item = React.useMemo(
+    () =>
+      React.memo(({ data, rowIndex, columnIndex, style }) => {
+        const { columnCount, filledItems, containerWidth } = data;
 
-    /**
-     * react-window does not support gutter or maxWidth
-     * we take over the width and offset calculations
-     * to add these features
-     *
-     * |     |----[       ]----[       ]----[       ]----|     |
-     *         G    item    G    item    G    item    G
-     */
+        /**
+         * react-window does not support gutter or maxWidth
+         * we take over the width and offset calculations
+         * to add these features
+         *
+         * |     |----[       ]----[       ]----[       ]----|     |
+         *         G    item    G    item    G    item    G
+         */
 
-    // adjusting total width based on allowed maxWidth
-    const totalWidth = Math.min(containerWidth, GRID_MAX_WIDTH);
-    const containerLeftOffset =
-      containerWidth > GRID_MAX_WIDTH
-        ? (containerWidth - GRID_MAX_WIDTH) / 2
-        : 0;
+        // adjusting total width based on allowed maxWidth
+        const totalWidth = Math.min(containerWidth, GRID_MAX_WIDTH);
+        const containerLeftOffset =
+          containerWidth > GRID_MAX_WIDTH
+            ? (containerWidth - GRID_MAX_WIDTH) / 2
+            : 0;
 
-    // we calculate width by making enough room for gutters between
-    // each item + on the 2 ends
-    const spaceReqiuredForGutters = GUTTER * (columnCount + 1);
-    const spaceLeftForItems = totalWidth - spaceReqiuredForGutters;
-    const numberOfItems = columnCount;
-    const eachItemWidth = spaceLeftForItems / numberOfItems;
+        // we calculate width by making enough room for gutters between
+        // each item + on the 2 ends
+        const spaceReqiuredForGutters = GUTTER * (columnCount + 1);
+        const spaceLeftForItems = totalWidth - spaceReqiuredForGutters;
+        const numberOfItems = columnCount;
+        const eachItemWidth = spaceLeftForItems / numberOfItems;
 
-    // to get the left offset, we need to add the space taken by
-    // previous elements + the gutter just before this item
-    const spaceTakenBeforeThisItem =
-      containerLeftOffset + columnIndex * (eachItemWidth + GUTTER);
-    const leftOffset = spaceTakenBeforeThisItem + GUTTER;
+        // to get the left offset, we need to add the space taken by
+        // previous elements + the gutter just before this item
+        const spaceTakenBeforeThisItem =
+          containerLeftOffset + columnIndex * (eachItemWidth + GUTTER);
+        const leftOffset = spaceTakenBeforeThisItem + GUTTER;
 
-    const index = rowIndex * data.columnCount + columnIndex;
-    const item = filledItems[index];
-    if (!item) return null;
+        const index = rowIndex * data.columnCount + columnIndex;
+        const item = filledItems[index];
+        if (!item) return null;
 
-    const Component = ComponentForTypes[item.type];
-    const isHeader = item.type === 'header' || item.type === 'headerLink';
+        const Component = ComponentForTypes[item.type];
+        const isHeader = item.type === 'header' || item.type === 'headerLink';
 
-    const margins = {
-      marginTop: isHeader ? ITEM_VERTICAL_OFFSET + 24 : ITEM_VERTICAL_OFFSET,
-      marginBottom: viewMode === 'list' || isHeader ? 0 : ITEM_VERTICAL_OFFSET,
-    };
+        const margins = {
+          marginTop: isHeader
+            ? ITEM_VERTICAL_OFFSET + 24
+            : ITEM_VERTICAL_OFFSET,
+          marginBottom:
+            viewMode === 'list' || isHeader ? 0 : ITEM_VERTICAL_OFFSET,
+        };
 
-    return (
-      <div
-        style={{
-          ...style,
-          width: eachItemWidth,
-          left: leftOffset,
-          height: style.height - GUTTER,
-          ...margins,
-        }}
-      >
-        <Component {...item} />
-      </div>
-    );
-  };
+        return (
+          <div
+            style={{
+              ...style,
+              width: eachItemWidth,
+              left: leftOffset,
+              height: style.height - GUTTER,
+              ...margins,
+            }}
+          >
+            <Component {...item} />
+          </div>
+        );
+      }),
+    [viewMode]
+  );
 
   const getRowHeight = (rowIndex, columnCount, filledItems) => {
     const item = filledItems[rowIndex * columnCount];
