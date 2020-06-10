@@ -89,8 +89,13 @@ const GenericSandbox = ({ sandbox, ...props }) => {
 
   const history = useHistory();
   const onDoubleClick = event => {
-    // Templates in Home should fork, everything else opens
+    // can't open deleted items, they don't exist anymore
+    if (location.pathname.includes('deleted')) {
+      onContextMenu(event);
+      return;
+    }
 
+    // Templates in Home should fork, everything else opens
     if (event.ctrlKey || event.metaKey) {
       if (sandbox.isHomeTemplate) {
         actions.editor.forkExternalSandbox({
