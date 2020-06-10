@@ -219,6 +219,10 @@ export const createPrClicked: AsyncAction = async ({
   });
   actions.git._setGitChanges();
 
+  sandbox.baseGit = {
+    ...sandbox.originalGit,
+  };
+  sandbox.baseGitCommitSha = sandbox.originalGit.commitSha;
   sandbox.originalGit = {
     branch: pr.branch,
     commitSha: pr.commitSha,
