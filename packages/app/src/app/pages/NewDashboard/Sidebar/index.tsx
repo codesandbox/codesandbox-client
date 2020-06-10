@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom';
 import { useDrop } from 'react-dnd';
 import { orderBy } from 'lodash-es';
 import { useOvermind } from 'app/overmind';
@@ -362,48 +362,50 @@ const NestableRowItem = ({ name, path, folders }) => {
   }
 
   const nestingLevel = path.split('/').length - 1;
+  const history = useHistory();
 
   return (
     <>
       <RowItem
         name={path}
-        path="all"
+        path={path}
         icon="folder"
         style={{
           height: nestingLevel ? 8 : 10,
-          paddingLeft: nestingLevel * 4,
           button: { opacity: 0 },
           ':hover, :focus-within': { button: { opacity: 1 } },
         }}
       >
-        {subFolders.length ? (
-          <IconButton
-            name="caret"
-            size={8}
-            title="Toggle folders"
-            onClick={event => {
-              setFoldersVisibility(!foldersVisible);
-              event.stopPropagation();
-            }}
-            css={css({
-              width: 5,
-              height: '100%',
-              borderRadius: 0,
-              svg: {
-                transform: foldersVisible ? 'rotate(0deg)' : 'rotate(-90deg)',
-                transition: 'transform ease-in-out',
-                transitionDuration: theme => theme.speeds[2],
-              },
-            })}
-          />
-        ) : (
-          <Element as="span" css={css({ width: 5 })} />
-        )}
         <Link
-          as={RouterLink}
-          to={'/new-dashboard/all' + path}
-          style={{ ...linkStyles, paddingLeft: 0 }}
+          onClick={() => history.push('/new-dashboard/all' + path)}
+          style={{
+            ...linkStyles,
+            paddingLeft: nestingLevel * 16,
+          }}
         >
+          {subFolders.length ? (
+            <IconButton
+              name="caret"
+              size={8}
+              title="Toggle folders"
+              onClick={event => {
+                setFoldersVisibility(!foldersVisible);
+                event.stopPropagation();
+              }}
+              css={css({
+                width: 5,
+                height: '100%',
+                borderRadius: 0,
+                svg: {
+                  transform: foldersVisible ? 'rotate(0deg)' : 'rotate(-90deg)',
+                  transition: 'transform ease-in-out',
+                  transitionDuration: theme => theme.speeds[2],
+                },
+              })}
+            />
+          ) : (
+            <Element as="span" css={css({ width: 5 })} />
+          )}
           <Stack align="center" gap={3}>
             <Stack
               as="span"
@@ -417,17 +419,29 @@ const NestableRowItem = ({ name, path, folders }) => {
           </Stack>
         </Link>
       </RowItem>
-      {foldersVisible &&
-        orderBy(subFolders, 'name')
-          .sort(a => (a.path === '/drafts' ? -1 : 1)) // pull drafts up top
-          .map(folder => (
-            <NestableRowItem
-              key={folder.path}
-              name={folder.name}
-              path={folder.path}
-              folders={folders}
-            />
-          ))}
+
+      <AnimatePresence>
+        {foldersVisible && (
+          <motion.ul
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            transition={{ duration: 0.2 }}
+            exit={{ height: 0, opacity: 0, transition: { duration: 0.15 } }}
+            style={{ paddingLeft: 0 }}
+          >
+            {orderBy(subFolders, 'name')
+              .sort(a => (a.path === '/drafts' ? -1 : 1))
+              .map(folder => (
+                <NestableRowItem
+                  key={folder.path}
+                  name={folder.name}
+                  path={folder.path}
+                  folders={folders}
+                />
+              ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
     </>
   );
 };
