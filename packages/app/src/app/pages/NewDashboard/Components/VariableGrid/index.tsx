@@ -46,9 +46,10 @@ export const VariableGrid = ({ items }) => {
   const Item = ({ data, rowIndex, columnIndex, style }) => {
     const { columnCount, filledItems } = data;
 
-    // we need to make space for (n=columns-1) gutters and
+    // we need to make space for n+1 gutters and
     // the right margin by reducing width of (n=columns) items
-    const widthReduction = GUTTER - 16 / columnCount;
+    const widthReduction = GUTTER + GUTTER / columnCount;
+    const itemWidth = style.width - widthReduction;
 
     const index = rowIndex * data.columnCount + columnIndex;
     const item = filledItems[index];
@@ -66,8 +67,9 @@ export const VariableGrid = ({ items }) => {
       <div
         style={{
           ...style,
-          width: style.width - widthReduction,
+          width: itemWidth,
           height: style.height - GUTTER,
+          left: columnIndex * itemWidth + (columnIndex + 1) * GUTTER,
           ...margins,
         }}
       >
@@ -153,7 +155,6 @@ export const VariableGrid = ({ items }) => {
     <Element
       css={{
         height: `calc(100vh - ${GRID_VERTICAL_OFFSET}px)`,
-        marginLeft: 16,
       }}
     >
       <AutoSizer onResize={onResize}>
