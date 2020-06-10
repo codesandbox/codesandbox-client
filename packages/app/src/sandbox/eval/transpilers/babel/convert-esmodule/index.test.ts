@@ -209,6 +209,24 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('generates parseable var name with @', () => {
+    const code = `
+    import { a } from './a-@kjaw';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles concurrent import and exports', () => {
+    const code = `
+    import { a as _a, b, c } from 'test-lib-dom';
+    export * from 'test-lib-dom';
+
+    var a = () => _a;
+    export { a };
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('handles re-exports in named exports with a alias', () => {
     const code = `
     import { a } from './b';
@@ -223,6 +241,13 @@ describe('convert-esmodule', () => {
     import * as React from 'react';
 
     console.log(React.Component);
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles multiple var exports', () => {
+    const code = `
+    export const a = 5, b = 6;
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });
@@ -259,6 +284,61 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('works with variables that are named exports', () => {
+    const code = `
+    var exports = [eventedState, eventedShowHideState];
+    exports.push('test');
+    export default exports;
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('exports that are not on the root scope are not renamed', () => {
+    const code = `
+    function a() {
+      var exports = 'blaat';
+    }
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('renames exports that are already defined, even in block scope', () => {
+    const code = `
+    var exports = 'testtest';
+    function a() {
+      exports = 'blaat';
+    }
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('does empty exports', () => {
+    const code = `
+    export {} from './column_sorting_draggable';
+    export { EuiDataGrid } from './data_grid';
+    export * from './data_grid_types';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('changes default imports inline', () => {
+    const code = `
+    import rgb from './rgb';
+
+    rgb.a;
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('keeps import order', () => {
+    const code = `
+    import '1';
+    import '2';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('parses and writes chars with linebreaks', () => {
     const code =
       "var WS_CHARS = 'u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff'";
@@ -287,6 +367,38 @@ describe('convert-esmodule', () => {
     import { bpfrpt_proptype_OverscanIndicesGetterParams } from './types';
     `;
 
-    convertEsModule(code);
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles assignments and exports at the same time', () => {
+    const code = `
+    export const {Ease: C, Linear, Power0, Power1, Power2, Power3, Power4, TweenPlugin} = _gsScope;
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles export object', () => {
+    const code = `
+    export {a, b, c};
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles export alias', () => {
+    const code = `
+    export {Subscription as default};
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('can convert normal exports', () => {
+    const code = `
+      export * from './some.js';
+      export { default as some } from './some.js';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
   });
 });

@@ -1558,6 +1558,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "layershifter",
+      "name": "Oleksandr Fediashov",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/14183168?v=4",
+      "profile": "https://twitter.com/layershifter",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

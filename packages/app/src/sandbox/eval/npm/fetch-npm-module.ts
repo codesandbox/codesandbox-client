@@ -276,10 +276,15 @@ function resolvePath(
 ): Promise<string> {
   const currentPath = currentTModule.module.path;
 
-  const isFile = (p, c, cb) => {
+  const isFile = (p: string, c?: any, cb?: any): any => {
     const callback = cb || c;
 
-    callback(null, Boolean(manager.transpiledModules[p]) || Boolean(meta[p]));
+    const result = Boolean(manager.transpiledModules[p]) || Boolean(meta[p]);
+    if (!callback) {
+      return result;
+    }
+
+    return callback(null, result);
   };
 
   return new Promise((res, reject) => {
@@ -288,7 +293,7 @@ function resolvePath(
       {
         filename: currentPath,
         extensions: defaultExtensions.map(ext => '.' + ext),
-        packageFilter,
+        packageFilter: packageFilter(isFile),
         moduleDirectory: [
           'node_modules',
           manager.envVariables.NODE_PATH,
@@ -497,6 +502,12 @@ export default async function fetchModule(
   let normalizeFunction: typeof normalize;
 
   try {
+    if (dependencyName === 'd3-interpolate') {
+      // A folder is missing on d3-interpolate on jsdelivr, this way we force unpkg.com.
+      // Keep track: https://github.com/jsdelivr/jsdelivr/issues/18223
+      throw new Error("Doesn't work on jsdelivr yet");
+    }
+
     normalizeFunction = getFetchProtocol(version).normalizeMeta;
     meta = await getMeta(dependencyName, packageJSONPath, version);
   } catch (e) {
@@ -527,7 +538,7 @@ export default async function fetchModule(
     // Mark the path of the module as the real module, because during evaluation
     // we don't have meta to find which modules are browser modules and we still
     // need to return an empty module for browser modules.
-    const isDependency = /^(\w|@\w)/.test(path);
+    const isDependency = /^(\w|@\w|@-)/.test(path);
 
     return {
       path: isDependency

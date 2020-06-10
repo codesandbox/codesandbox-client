@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { useOvermind } from 'app/overmind';
 import { Stack, Text, Element } from '@codesandbox/components';
@@ -9,6 +10,7 @@ import {
   VariableGrid,
   SkeletonGrid,
 } from 'app/pages/NewDashboard/Components/VariableGrid';
+import { getPossibleTemplates } from '../../utils';
 
 export const Recent = () => {
   const {
@@ -45,15 +47,23 @@ export const Recent = () => {
 
   return (
     <SelectionProvider sandboxes={sandboxes.RECENT}>
-      <Header title="Recently Modified Sandboxes" />
+      <Helmet>
+        <title>Recent Sandboxes - CodeSandbox</title>
+      </Helmet>
+      <Header
+        templates={getPossibleTemplates(sandboxes.RECENT)}
+        title="Recently Modified Sandboxes"
+        showViewOptions
+        showFilters
+      />
       <section style={{ position: 'relative' }}>
         {sandboxes.RECENT ? (
           <>
             <VariableGrid items={items} />
           </>
         ) : (
-          <Stack as="section" direction="vertical" gap={8}>
-            <Element css={css({ height: 4 })} />
+          <Stack as="section" direction="vertical" gap={10}>
+            <Element css={css({ height: 6 })} />
             <SkeletonGroup title="Today" time="day" count={2} />
             <SkeletonGroup title="Last 7 Days" time="week" />
             <SkeletonGroup title="Earlier this month" time="month" />
@@ -66,10 +76,10 @@ export const Recent = () => {
 };
 
 const SkeletonGroup = ({ title, time, count = 4 }) => (
-  <>
-    <Text marginLeft={4} marginBottom={6} block>
+  <Stack direction="vertical" gap={5}>
+    <Text marginLeft={4} block>
       {title}
     </Text>
     <SkeletonGrid count={count} />
-  </>
+  </Stack>
 );

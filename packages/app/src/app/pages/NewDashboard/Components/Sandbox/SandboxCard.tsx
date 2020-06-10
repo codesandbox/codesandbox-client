@@ -12,7 +12,6 @@ import css from '@styled-system/css';
 
 export const SandboxCard = ({
   sandbox,
-  isTemplate = false,
   sandboxTitle,
   newTitle,
   TemplateIcon,
@@ -24,13 +23,11 @@ export const SandboxCard = ({
   onKeyDown,
   onContextMenu,
   // editing
-  edit,
-  inputRef,
+  editing,
   onChange,
   onInputKeyDown,
   onSubmit,
   onInputBlur,
-  enterEditing,
   // drag preview
   thumbnailRef,
   opacity,
@@ -58,7 +55,6 @@ export const SandboxCard = ({
       transitionDuration: theme => theme.speeds[4],
       opacity,
       ':hover, :focus, :focus-within': {
-        cursor: edit ? 'normal' : 'pointer',
         boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
       },
     })}
@@ -81,8 +77,10 @@ export const SandboxCard = ({
         top: 1,
         right: 1,
         size: 6,
-        background: 'white',
-        border: '4px solid',
+        width: '22px',
+        height: '22px',
+        backgroundColor: 'grays.500',
+        border: '3px solid',
         borderColor: 'grays.500',
         borderRadius: 'medium',
       })}
@@ -90,11 +88,11 @@ export const SandboxCard = ({
       <TemplateIcon width="16" height="16" />
     </Element>
     <Stack justify="space-between" align="center" marginLeft={4}>
-      {edit ? (
+      {editing ? (
         <form onSubmit={onSubmit}>
           <Input
+            autoFocus
             value={newTitle}
-            ref={inputRef}
             onChange={onChange}
             onKeyDown={onInputKeyDown}
             onBlur={onInputBlur}
@@ -137,11 +135,9 @@ export const SkeletonCard = () => (
       borderColor: 'grays.600',
       borderRadius: 'medium',
       overflow: 'hidden',
-      transition: 'all ease-in-out',
-      transitionDuration: theme => theme.speeds[4],
     })}
   >
-    <SkeletonText css={{ width: '100%', height: 160 }} />
+    <SkeletonText css={{ width: '100%', height: 160, borderRadius: 0 }} />
     <Stack direction="vertical" gap={2} marginX={4}>
       <SkeletonText css={{ width: 120 }} />
       <SkeletonText css={{ width: 180 }} />

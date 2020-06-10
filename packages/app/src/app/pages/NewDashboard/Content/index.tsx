@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { StartSandboxes } from './routes/StartSandboxes';
+import { Home } from './routes/Home';
 import { Templates } from './routes/Templates';
 import { Deleted } from './routes/Deleted';
 import { Drafts } from './routes/Drafts';
@@ -12,7 +12,7 @@ import { All } from './routes/All';
 import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
 
-export const Content = () => {
+export const Content = withRouter(({ history }) => {
   const {
     state: { dashboard },
     actions,
@@ -21,6 +21,14 @@ export const Content = () => {
   useEffect(() => {
     actions.dashboard.dashboardMounted();
   }, [actions.dashboard]);
+
+  history.listen(() => {
+    actions.dashboard.blacklistedTemplatesCleared();
+    actions.dashboard.orderByChanged({
+      order: 'desc',
+      field: 'updatedAt',
+    });
+  });
 
   return (
     <Element
@@ -31,8 +39,8 @@ export const Content = () => {
     >
       <Switch>
         <Route
-          path="/new-dashboard/start"
-          render={() => <StartSandboxes key={dashboard.activeTeam} />}
+          path="/new-dashboard/home"
+          render={() => <Home key={dashboard.activeTeam} />}
         />
         <Route
           path="/new-dashboard/templates"
@@ -67,8 +75,8 @@ export const Content = () => {
           render={() => <Settings key={dashboard.activeTeam} />}
         />
 
-        <Redirect to="/new-dashboard/start" />
+        <Redirect to="/new-dashboard/home" />
       </Switch>
     </Element>
   );
-};
+});

@@ -25,7 +25,7 @@ export default function initialize() {
     { transpiler: stylesTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
+  preset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {

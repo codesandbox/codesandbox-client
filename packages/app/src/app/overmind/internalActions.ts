@@ -7,6 +7,7 @@ import {
   TabType,
 } from '@codesandbox/common/lib/types';
 import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { NotificationStatus } from '@codesandbox/notifications';
 import values from 'lodash-es/values';
 
@@ -390,9 +391,7 @@ export const handleError: Action<{
 
   error.message = actions.internal.getErrorMessage({ error });
 
-  const notificationActions = {
-    primary: {} as { label: string; run: () => void },
-  };
+  const notificationActions: NotificationMessage['actions'] = {};
 
   if (error.message.startsWith('You need to sign in to create more than')) {
     // Error for "You need to sign in to create more than 10 sandboxes"
@@ -472,10 +471,7 @@ export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
     const profileData = await effects.api.getProfile(user.username);
     effects.analytics.identify('sandboxCount', profileData.sandboxCount);
     effects.analytics.identify('pro', Boolean(profileData.subscriptionSince));
-    effects.analytics.identify(
-      'receivedViewCount',
-      Boolean(profileData.viewCount)
-    );
+    effects.analytics.identify('receivedViewCount', profileData.viewCount);
   }
 };
 

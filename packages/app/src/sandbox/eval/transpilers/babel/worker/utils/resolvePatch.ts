@@ -9,7 +9,8 @@ export function patchedResolve() {
   const handler = {
     get(target, prop) {
       if (prop === 'sync') {
-        return (p, options) => target.sync(p, { ...options, packageFilter });
+        return (p, options) =>
+          target.sync(p, { ...options, packageFilter: packageFilter() });
       }
 
       return target[prop];
