@@ -138,7 +138,8 @@ export const signInGithub: Action<
 
   const popup = effects.browser.openPopup(authPath.toString(), 'sign in');
 
-  return effects.browser.waitForMessage('signin').then(() => {
+  return effects.browser.waitForMessage('signin').then((data: any) => {
+    effects.api.revokeToken(data.jwt);
     popup.close();
   });
 };
