@@ -9,12 +9,12 @@ import { NewSandbox } from '../Sandbox/NewSandbox';
 import { Folder } from '../Folder';
 import { EmptyScreen } from '../EmptyScreen';
 
-const GRID_MAX_WIDTH = 992;
+export const GRID_MAX_WIDTH = 992;
+export const GUTTER = 24;
 const ITEM_MIN_WIDTH = 220;
 const ITEM_HEIGHT_GRID = 240;
 const ITEM_HEIGHT_LIST = 64;
 const HEADER_HEIGHT = 64;
-const GUTTER = 24;
 const GRID_VERTICAL_OFFSET = 120;
 const ITEM_VERTICAL_OFFSET = 32;
 
