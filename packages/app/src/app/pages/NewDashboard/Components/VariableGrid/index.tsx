@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Element, Grid, Column, Stack, Text } from '@codesandbox/components';
+import { Element, Text } from '@codesandbox/components';
 import { VariableSizeGrid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
@@ -9,11 +9,12 @@ import { NewSandbox } from '../Sandbox/NewSandbox';
 import { Folder } from '../Folder';
 import { EmptyScreen } from '../EmptyScreen';
 
-const MIN_WIDTH = 220;
+export const GRID_MAX_WIDTH = 992;
+export const GUTTER = 24;
+const ITEM_MIN_WIDTH = 220;
 const ITEM_HEIGHT_GRID = 240;
 const ITEM_HEIGHT_LIST = 64;
 const HEADER_HEIGHT = 64;
-const GUTTER = 24;
 const GRID_VERTICAL_OFFSET = 120;
 const ITEM_VERTICAL_OFFSET = 32;
 
@@ -27,6 +28,7 @@ const ComponentForTypes = {
     </Text>
   ),
   blank: () => <div />,
+  skeleton: SkeletonSandbox,
 };
 
 export const VariableGrid = ({ items }) => {
@@ -44,11 +46,36 @@ export const VariableGrid = ({ items }) => {
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
 
   const Item = ({ data, rowIndex, columnIndex, style }) => {
-    const { columnCount, filledItems } = data;
+    const { columnCount, filledItems, containerWidth } = data;
 
-    // we need to make space for (n=columns-1) gutters and
-    // the right margin by reducing width of (n=columns) items
-    const widthReduction = GUTTER - 16 / columnCount;
+    /**
+     * react-window does not support gutter or maxWidth
+     * we take over the width and offset calculations
+     * to add these features
+     *
+     * |     |----[       ]----[       ]----[       ]----|     |
+     *         G    item    G    item    G    item    G
+     */
+
+    // adjusting total width based on allowed maxWidth
+    const totalWidth = Math.min(containerWidth, GRID_MAX_WIDTH);
+    const containerLeftOffset =
+      containerWidth > GRID_MAX_WIDTH
+        ? (containerWidth - GRID_MAX_WIDTH) / 2
+        : 0;
+
+    // we calculate width by making enough room for gutters between
+    // each item + on the 2 ends
+    const spaceReqiuredForGutters = GUTTER * (columnCount + 1);
+    const spaceLeftForItems = totalWidth - spaceReqiuredForGutters;
+    const numberOfItems = columnCount;
+    const eachItemWidth = spaceLeftForItems / numberOfItems;
+
+    // to get the left offset, we need to add the space taken by
+    // previous elements + the gutter just before this item
+    const spaceTakenBeforeThisItem =
+      containerLeftOffset + columnIndex * (eachItemWidth + GUTTER);
+    const leftOffset = spaceTakenBeforeThisItem + GUTTER;
 
     const index = rowIndex * data.columnCount + columnIndex;
     const item = filledItems[index];
@@ -66,7 +93,8 @@ export const VariableGrid = ({ items }) => {
       <div
         style={{
           ...style,
-          width: style.width - widthReduction,
+          width: eachItemWidth,
+          left: leftOffset,
           height: style.height - GUTTER,
           ...margins,
         }}
@@ -84,11 +112,18 @@ export const VariableGrid = ({ items }) => {
     return ITEM_HEIGHT + (viewMode === 'list' ? 0 : GUTTER);
   };
 
-  const gridRef = React.useRef(null);
-
   const onResize = () => {
-    // force height re-calculation on resize
-    // only useful for views with group headers
+    // force height re-calculation on resizes
+    recalculatePositions();
+  };
+
+  // if view mode or items changes, recalculate everything
+  React.useEffect(() => {
+    recalculatePositions();
+  }, [viewMode, items]);
+
+  const gridRef = React.useRef(null);
+  const recalculatePositions = () => {
     if (gridRef.current) {
       gridRef.current.resetAfterIndices({
         columnIndex: 0,
@@ -97,20 +132,6 @@ export const VariableGrid = ({ items }) => {
       });
     }
   };
-
-  // if view mode changes, recalculate everything
-  React.useEffect(
-    function resetRowHeights() {
-      if (gridRef.current) {
-        gridRef.current.resetAfterIndices({
-          columnIndex: 0,
-          rowIndex: 0,
-          shouldForceUpdate: true,
-        });
-      }
-    },
-    [viewMode]
-  );
 
   /**
    * Imperatively find and focus the selected item
@@ -153,7 +174,6 @@ export const VariableGrid = ({ items }) => {
     <Element
       css={{
         height: `calc(100vh - ${GRID_VERTICAL_OFFSET}px)`,
-        marginLeft: 16,
       }}
     >
       <AutoSizer onResize={onResize}>
@@ -161,13 +181,18 @@ export const VariableGrid = ({ items }) => {
           const columnCount =
             viewMode === 'list'
               ? 1
-              : Math.max(1, Math.floor(width / (MIN_WIDTH + GUTTER)));
+              : Math.min(
+                  Math.floor((width - GUTTER) / (ITEM_MIN_WIDTH + GUTTER)),
+                  4
+                );
 
           const filledItems = [];
           const blankItem = { type: 'blank' };
+          const skeletonItem = { type: 'skeleton' };
 
           items.forEach((item, index) => {
-            filledItems.push(item);
+            if (item.type !== 'skeletonRow') filledItems.push(item);
+
             if (item.type === 'header') {
               const blanks = columnCount - 1;
               for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
@@ -178,6 +203,10 @@ export const VariableGrid = ({ items }) => {
                 const rowIndex = currentIndex % columnCount;
                 const blanks = columnCount - rowIndex - 1;
                 for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
+              }
+            } else if (item.type === 'skeletonRow') {
+              for (let i = 0; i < columnCount; i++) {
+                filledItems.push(skeletonItem);
               }
             }
           });
@@ -203,7 +232,7 @@ export const VariableGrid = ({ items }) => {
                 estimatedColumnWidth={width / columnCount}
                 estimatedRowHeight={ITEM_HEIGHT}
                 overscanRowCount={2}
-                itemData={{ columnCount, filledItems }}
+                itemData={{ columnCount, filledItems, containerWidth: width }}
                 style={{ overflowX: 'hidden' }}
               >
                 {Item}
@@ -213,59 +242,5 @@ export const VariableGrid = ({ items }) => {
         }}
       </AutoSizer>
     </Element>
-  );
-};
-
-export const SkeletonGrid = ({ count, ...props }) => {
-  const {
-    state: { dashboard },
-  } = useOvermind();
-
-  const location = useLocation();
-
-  let viewMode;
-  if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('home')) viewMode = 'grid';
-  else viewMode = dashboard.viewMode;
-
-  if (viewMode === 'list') {
-    return (
-      <Stack
-        direction="vertical"
-        marginBottom={8}
-        marginTop={ITEM_VERTICAL_OFFSET}
-        marginX={4}
-        {...props}
-      >
-        {Array.from(Array(count).keys()).map(n => (
-          <Column key={n}>
-            <SkeletonSandbox />
-          </Column>
-        ))}
-      </Stack>
-    );
-  }
-
-  return (
-    <Grid
-      rowGap={6}
-      columnGap={6}
-      marginX={4}
-      css={{
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-      }}
-      {...props}
-    >
-      {Array.from(Array(count).keys()).map(n => (
-        <Column key={n}>
-          <SkeletonSandbox />
-        </Column>
-      ))}
-      {/* fill empty columns in grid */}
-      {count < 4 &&
-        Array.from(Array(4 - count).keys()).map(n => (
-          <Column key={count + n} />
-        ))}
-    </Grid>
   );
 };

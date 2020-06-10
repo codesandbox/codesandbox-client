@@ -2,10 +2,7 @@ import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Helmet } from 'react-helmet';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import {
-  VariableGrid,
-  SkeletonGrid,
-} from 'app/pages/NewDashboard/Components/VariableGrid';
+import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
@@ -22,6 +19,15 @@ export const SearchComponent = ({ location }) => {
   useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.SEARCH);
   }, [actions.dashboard, location.search, filters, orderBy]);
+
+  const items = sandboxes.SEARCH
+    ? getFilteredSandboxes(
+        sandboxes.SEARCH.map(sandbox => ({
+          type: 'sandbox',
+          ...sandbox,
+        }))
+      )
+    : [{ type: 'skeletonRow' }];
 
   return (
     <SelectionProvider sandoxes={sandboxes.SEARCH}>
@@ -41,21 +47,7 @@ export const SearchComponent = ({ location }) => {
       />
 
       <section style={{ position: 'relative' }}>
-        {sandboxes.SEARCH ? (
-          <VariableGrid
-            items={
-              sandboxes.SEARCH &&
-              getFilteredSandboxes(
-                sandboxes.SEARCH.map(sandbox => ({
-                  type: 'sandbox',
-                  ...sandbox,
-                }))
-              )
-            }
-          />
-        ) : (
-          <SkeletonGrid count={4} marginTop={8} />
-        )}
+        <VariableGrid items={items} />
       </section>
     </SelectionProvider>
   );
