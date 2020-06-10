@@ -44,12 +44,28 @@ export const VariableGrid = ({ items }) => {
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
 
   const Item = ({ data, rowIndex, columnIndex, style }) => {
-    const { columnCount, filledItems } = data;
+    const { columnCount, filledItems, totalWidth } = data;
 
-    // we need to make space for n+1 gutters and
-    // the right margin by reducing width of (n=columns) items
-    const widthReduction = GUTTER + GUTTER / columnCount;
-    const itemWidth = style.width - widthReduction;
+    /**
+     * react-window does not support gutter or maxWidth
+     * we take over the width and offset calculations
+     * to add these features
+     *
+     * |----[       ]----[       ]----[       ]----|
+     *   G    item    G     item   G     item   G
+     */
+
+    // we calculate width by making enough room for gutters between
+    // each item + on the 2 ends
+    const spaceReqiuredForGutters = GUTTER * (columnCount + 1);
+    const spaceLeftForItems = totalWidth - spaceReqiuredForGutters;
+    const numberOfItems = columnCount;
+    const eachItemWidth = spaceLeftForItems / numberOfItems;
+
+    // to get the left offset, we need to add the space taken by
+    // previous elements + the gutter just before this item
+    const spaceTakenBeforeThisItem = columnIndex * (eachItemWidth + GUTTER);
+    const leftOffset = spaceTakenBeforeThisItem + GUTTER;
 
     const index = rowIndex * data.columnCount + columnIndex;
     const item = filledItems[index];
@@ -67,9 +83,9 @@ export const VariableGrid = ({ items }) => {
       <div
         style={{
           ...style,
-          width: itemWidth,
+          width: eachItemWidth,
+          left: leftOffset,
           height: style.height - GUTTER,
-          left: columnIndex * itemWidth + (columnIndex + 1) * GUTTER,
           ...margins,
         }}
       >
@@ -204,7 +220,7 @@ export const VariableGrid = ({ items }) => {
                 estimatedColumnWidth={width / columnCount}
                 estimatedRowHeight={ITEM_HEIGHT}
                 overscanRowCount={2}
-                itemData={{ columnCount, filledItems }}
+                itemData={{ columnCount, filledItems, totalWidth: width }}
                 style={{ overflowX: 'hidden' }}
               >
                 {Item}
