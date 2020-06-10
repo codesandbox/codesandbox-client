@@ -31,7 +31,9 @@ export const DevAuthPage = () => {
           window.opener.postMessage(
             {
               type: 'signin',
-              data: {},
+              data: {
+                jwt: res.data.token,
+              },
             },
             protocolAndHost()
           );

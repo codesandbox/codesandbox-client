@@ -138,7 +138,7 @@ export const signInGithub: Action<
 
   return effects.browser.waitForMessage('signin').then((data: any) => {
     if (hasDevAuth) {
-      localStorage.devJwt = data.jwt;
+      localStorage.setItem('devJwt', data.jwt);
 
       // Today + 30 days
       const DAY = 1000 * 60 * 60 * 24;
