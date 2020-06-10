@@ -3,10 +3,7 @@ import { Helmet } from 'react-helmet';
 import React, { useEffect } from 'react';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import {
-  VariableGrid,
-  SkeletonGrid,
-} from 'app/pages/NewDashboard/Components/VariableGrid';
+import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { getPossibleTemplates } from '../../utils';
 
@@ -26,20 +23,20 @@ export const Templates = () => {
     ? getPossibleTemplates(sandboxes.TEMPLATES.map(t => t.sandbox))
     : [];
 
-  const items =
-    sandboxes.TEMPLATES &&
-    getFilteredSandboxes(
-      // @ts-ignore
-      sandboxes.TEMPLATES.map(template => {
-        const { sandbox, ...templateValues } = template;
-        return {
-          ...sandbox,
-          type: 'sandbox',
-          isTemplate: true,
-          template: templateValues,
-        };
-      })
-    );
+  const items = sandboxes.TEMPLATES
+    ? getFilteredSandboxes(
+        // @ts-ignore
+        sandboxes.TEMPLATES.map(template => {
+          const { sandbox, ...templateValues } = template;
+          return {
+            ...sandbox,
+            type: 'sandbox',
+            isTemplate: true,
+            template: templateValues,
+          };
+        })
+      )
+    : [{ type: 'skeletonRow' }, { type: 'skeletonRow' }];
 
   return (
     <SelectionProvider
@@ -65,11 +62,7 @@ export const Templates = () => {
         showFilters
         showSortOptions
       />
-      {sandboxes.TEMPLATES ? (
-        <VariableGrid items={items} />
-      ) : (
-        <SkeletonGrid count={8} marginTop={8} />
-      )}
+      <VariableGrid items={items} />
     </SelectionProvider>
   );
 };

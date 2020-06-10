@@ -4,10 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
-import {
-  VariableGrid,
-  SkeletonGrid,
-} from 'app/pages/NewDashboard/Components/VariableGrid';
+import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
@@ -49,6 +46,12 @@ export const AllPage = ({ match: { params }, history }) => {
 
   const activeSandboxes = (sandboxes.ALL && sandboxes.ALL[cleanParam]) || [];
 
+  const itemsToShow = allCollections
+    ? [creating ? { type: 'folder', setCreating } : undefined, ...items].filter(
+        exists => exists
+      )
+    : [{ type: 'skeletonRow' }, { type: 'skeletonRow' }];
+
   return (
     <SelectionProvider sandboxes={activeSandboxes} folders={folders || []}>
       <Helmet>
@@ -62,16 +65,7 @@ export const AllPage = ({ match: { params }, history }) => {
         showFilters={param}
         showSortOptions={param}
       />
-      {allCollections ? (
-        <VariableGrid
-          items={[
-            creating ? { type: 'folder', setCreating } : undefined,
-            ...items,
-          ].filter(exists => exists)}
-        />
-      ) : (
-        <SkeletonGrid count={8} />
-      )}
+      <VariableGrid items={itemsToShow} />
     </SelectionProvider>
   );
 };

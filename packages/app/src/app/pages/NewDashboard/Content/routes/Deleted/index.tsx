@@ -2,13 +2,8 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Stack, Text, Element } from '@codesandbox/components';
-import css from '@styled-system/css';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import {
-  VariableGrid,
-  SkeletonGrid,
-} from 'app/pages/NewDashboard/Components/VariableGrid';
+import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { getPossibleTemplates } from '../../utils';
 
@@ -36,16 +31,23 @@ export const Deleted = () => {
     ];
   };
 
-  const items = [
-    ...getSection(
-      'Archived this week',
-      getFilteredSandboxes(deletedSandboxesByTime.week)
-    ),
-    ...getSection(
-      'Archived earlier',
-      getFilteredSandboxes(deletedSandboxesByTime.older)
-    ),
-  ];
+  const items = sandboxes.DELETED
+    ? [
+        ...getSection(
+          'Archived this week',
+          getFilteredSandboxes(deletedSandboxesByTime.week)
+        ),
+        ...getSection(
+          'Archived earlier',
+          getFilteredSandboxes(deletedSandboxesByTime.older)
+        ),
+      ]
+    : [
+        { type: 'header', title: 'Archived this week' },
+        { type: 'skeletonRow' },
+        { type: 'header', title: 'Archived earlier' },
+        { type: 'skeletonRow' },
+      ];
 
   return (
     <SelectionProvider sandboxes={sandboxes.DELETED}>
@@ -58,21 +60,7 @@ export const Deleted = () => {
         showSortOptions
         templates={getPossibleTemplates(sandboxes.DELETED)}
       />
-      {sandboxes.DELETED ? (
-        <VariableGrid items={items} />
-      ) : (
-        <Stack as="section" direction="vertical" gap={8}>
-          <Element css={css({ height: 4 })} />
-          <section>
-            <Text marginLeft={4}>Recently Archived</Text>
-            <SkeletonGrid count={4} />
-          </section>
-          <section>
-            <Text marginLeft={4}>Archived Ealier</Text>
-            <SkeletonGrid count={4} />
-          </section>
-        </Stack>
-      )}
+      <VariableGrid items={items} />
     </SelectionProvider>
   );
 };

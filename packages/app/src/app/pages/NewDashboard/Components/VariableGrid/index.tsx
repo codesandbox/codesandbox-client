@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Element, Grid, Column, Stack, Text } from '@codesandbox/components';
+import { Element, Text } from '@codesandbox/components';
 import { VariableSizeGrid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
@@ -28,6 +28,7 @@ const ComponentForTypes = {
     </Text>
   ),
   blank: () => <div />,
+  skeleton: SkeletonSandbox,
 };
 
 export const VariableGrid = ({ items }) => {
@@ -53,7 +54,7 @@ export const VariableGrid = ({ items }) => {
      * to add these features
      *
      * |     |----[       ]----[       ]----[       ]----|     |
-     *         G    item    G     item   G     item   G
+     *         G    item    G    item    G    item    G
      */
 
     // adjusting total width based on allowed maxWidth
@@ -111,11 +112,18 @@ export const VariableGrid = ({ items }) => {
     return ITEM_HEIGHT + (viewMode === 'list' ? 0 : GUTTER);
   };
 
-  const gridRef = React.useRef(null);
-
   const onResize = () => {
-    // force height re-calculation on resize
-    // only useful for views with group headers
+    // force height re-calculation on resizes
+    recalculatePositions();
+  };
+
+  // if view mode or items changes, recalculate everything
+  React.useEffect(() => {
+    recalculatePositions();
+  }, [viewMode, items]);
+
+  const gridRef = React.useRef(null);
+  const recalculatePositions = () => {
     if (gridRef.current) {
       gridRef.current.resetAfterIndices({
         columnIndex: 0,
@@ -124,20 +132,6 @@ export const VariableGrid = ({ items }) => {
       });
     }
   };
-
-  // if view mode changes, recalculate everything
-  React.useEffect(
-    function resetRowHeights() {
-      if (gridRef.current) {
-        gridRef.current.resetAfterIndices({
-          columnIndex: 0,
-          rowIndex: 0,
-          shouldForceUpdate: true,
-        });
-      }
-    },
-    [viewMode]
-  );
 
   /**
    * Imperatively find and focus the selected item
@@ -194,9 +188,11 @@ export const VariableGrid = ({ items }) => {
 
           const filledItems = [];
           const blankItem = { type: 'blank' };
+          const skeletonItem = { type: 'skeleton' };
 
           items.forEach((item, index) => {
-            filledItems.push(item);
+            if (item.type !== 'skeletonRow') filledItems.push(item);
+
             if (item.type === 'header') {
               const blanks = columnCount - 1;
               for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
@@ -207,6 +203,10 @@ export const VariableGrid = ({ items }) => {
                 const rowIndex = currentIndex % columnCount;
                 const blanks = columnCount - rowIndex - 1;
                 for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
+              }
+            } else if (item.type === 'skeletonRow') {
+              for (let i = 0; i < columnCount; i++) {
+                filledItems.push(skeletonItem);
               }
             }
           });
@@ -242,59 +242,5 @@ export const VariableGrid = ({ items }) => {
         }}
       </AutoSizer>
     </Element>
-  );
-};
-
-export const SkeletonGrid = ({ count, ...props }) => {
-  const {
-    state: { dashboard },
-  } = useOvermind();
-
-  const location = useLocation();
-
-  let viewMode;
-  if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('home')) viewMode = 'grid';
-  else viewMode = dashboard.viewMode;
-
-  if (viewMode === 'list') {
-    return (
-      <Stack
-        direction="vertical"
-        marginBottom={8}
-        marginTop={ITEM_VERTICAL_OFFSET}
-        marginX={4}
-        {...props}
-      >
-        {Array.from(Array(count).keys()).map(n => (
-          <Column key={n}>
-            <SkeletonSandbox />
-          </Column>
-        ))}
-      </Stack>
-    );
-  }
-
-  return (
-    <Grid
-      rowGap={6}
-      columnGap={6}
-      marginX={4}
-      css={{
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-      }}
-      {...props}
-    >
-      {Array.from(Array(count).keys()).map(n => (
-        <Column key={n}>
-          <SkeletonSandbox />
-        </Column>
-      ))}
-      {/* fill empty columns in grid */}
-      {count < 4 &&
-        Array.from(Array(4 - count).keys()).map(n => (
-          <Column key={count + n} />
-        ))}
-    </Grid>
   );
 };
