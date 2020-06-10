@@ -31,7 +31,7 @@ export type ApiConfig = {
 };
 
 export default (config: ApiConfig) => {
-  const createHeaders = (provideJwt: () => string) =>
+  const createHeaders = (provideJwt: () => string | null) =>
     provideJwt()
       ? {
           Authorization: `Bearer ${provideJwt()}`,
