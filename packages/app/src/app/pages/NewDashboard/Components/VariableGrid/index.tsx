@@ -1,7 +1,7 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Element, Text } from '@codesandbox/components';
+import { Element, Text, Link } from '@codesandbox/components';
 import { VariableSizeGrid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
@@ -26,6 +26,18 @@ const ComponentForTypes = {
     <Text block css={{ userSelect: 'none' }}>
       {props.title}
     </Text>
+  ),
+  headerLink: props => (
+    <Link
+      as={RouterLink}
+      to={props.link}
+      size={3}
+      variant="muted"
+      block
+      align="right"
+    >
+      Show more
+    </Link>
   ),
   blank: () => <div />,
   skeleton: SkeletonSandbox,
@@ -82,7 +94,7 @@ export const VariableGrid = ({ items }) => {
     if (!item) return null;
 
     const Component = ComponentForTypes[item.type];
-    const isHeader = item.type === 'header';
+    const isHeader = item.type === 'header' || item.type === 'headerLink';
 
     const margins = {
       marginTop: isHeader ? ITEM_VERTICAL_OFFSET + 24 : ITEM_VERTICAL_OFFSET,
@@ -194,8 +206,15 @@ export const VariableGrid = ({ items }) => {
             if (item.type !== 'skeletonRow') filledItems.push(item);
 
             if (item.type === 'header') {
-              const blanks = columnCount - 1;
+              let blanks = columnCount - 1;
+              if (item.showMoreLink) blanks--;
               for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
+              if (item.showMoreLink) {
+                filledItems.push({
+                  type: 'headerLink',
+                  link: item.showMoreLink,
+                });
+              }
             } else if (item.type === 'sandbox') {
               const nextItem = items[index + 1];
               if (nextItem && nextItem.type === 'header') {

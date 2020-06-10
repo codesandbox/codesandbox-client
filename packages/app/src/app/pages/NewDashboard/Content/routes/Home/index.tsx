@@ -31,9 +31,17 @@ export const Home = () => {
 
   const items = sandboxes.RECENT_HOME
     ? [
-        { type: 'header', title: 'Recently Used Templates' },
+        {
+          type: 'header',
+          title: 'Recently Used Templates',
+          showMoreLink: '/new-dashboard/templates',
+        },
         ...templates,
-        { type: 'header', title: 'Your Recent Sandboxes' },
+        {
+          type: 'header',
+          title: 'Your Recent Sandboxes',
+          showMoreLink: '/new-dashboard/recent',
+        },
         { type: 'new-sandbox' },
         ...(sandboxes.RECENT_HOME || []).map(sandbox => ({
           type: 'sandbox',
