@@ -26,7 +26,7 @@ export type Api = {
 };
 
 export type ApiConfig = {
-  provideJwtToken: () => string;
+  provideJwtToken: () => string | null;
   getParsedConfigurations: () => any;
 };
 
