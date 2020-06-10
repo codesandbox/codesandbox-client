@@ -60,7 +60,6 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
   }, [dashboard.activeTeam, dashboard.activeTeamInfo, dashboard.teams, user]);
 
   const folders = dashboard.allCollections || [];
-  const [foldersVisible, setFoldersVisibility] = React.useState(false);
 
   return (
     <SidebarContext.Provider value={{ onSidebarToggle }}>
@@ -80,11 +79,13 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
           width: SIDEBAR_WIDTH,
           flexShrink: 0,
           zIndex: 3,
+          overflowY: 'auto',
+          overflowX: 'hidden',
           ...props.css,
         })}
       >
-        <List css={css({ '> li': { height: 10 } })}>
-          <ListItem gap={2} css={css({ paddingX: 0 })}>
+        <List>
+          <ListItem gap={2} css={css({ paddingX: 0, height: 10 })}>
             {user && (
               <Stack
                 css={css({
@@ -205,69 +206,7 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
           <RowItem name="Recent" path="recent" icon="clock" />
           <RowItem name="Drafts" path="/drafts" icon="file" />
 
-          <RowItem
-            name="All sandboxes"
-            path="all"
-            icon="folder"
-            style={{
-              button: { opacity: 0 },
-              ':hover, :focus-within': { button: { opacity: 1 } },
-            }}
-          >
-            <IconButton
-              name="caret"
-              size={8}
-              title="Toggle folders"
-              onClick={event => {
-                setFoldersVisibility(!foldersVisible);
-                event.stopPropagation();
-              }}
-              css={css({
-                width: 5,
-                height: '100%',
-                borderRadius: 0,
-                svg: {
-                  transform: foldersVisible ? 'rotate(0deg)' : 'rotate(-90deg)',
-                  transition: 'transform ease-in-out',
-                  transitionDuration: theme => theme.speeds[2],
-                },
-              })}
-            />
-            <Link
-              as={RouterLink}
-              to="/new-dashboard/all"
-              style={{ ...linkStyles, paddingLeft: 0 }}
-            >
-              <Stack align="center" gap={3}>
-                <Stack
-                  as="span"
-                  css={css({ width: 4 })}
-                  align="center"
-                  justify="center"
-                >
-                  <Icon name="folder" />
-                </Stack>
-                <Text>All Sandboxes</Text>
-              </Stack>
-            </Link>
-          </RowItem>
-
-          {foldersVisible &&
-            orderBy(folders, 'name')
-              .sort(
-                // pull drafts to the top
-                a => (a.path === '/drafts' ? -1 : 1)
-              )
-              .filter(isTopLevelFolder)
-              .map(folder => (
-                <RowItem
-                  key={folder.path}
-                  name={folder.name}
-                  path={folder.path}
-                  icon="folder"
-                  isNested
-                />
-              ))}
+          <NestableRowItem name="All sandboxes" path="" folders={folders} />
 
           <RowItem name="Templates" path="templates" icon="star" />
           <RowItem name="Recently Deleted" path="deleted" icon="trash" />
@@ -306,8 +245,6 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
   );
 };
 
-const isTopLevelFolder = folder => !folder.parent;
-
 // I hate this! but we need this until I refactor how
 // components are structured — Sid
 // https://linear.app/issue/CSB-118
@@ -343,7 +280,7 @@ const isSamePath = (draggedItem, dropPath) => {
   return false;
 };
 
-const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
+const RowItem = ({ name, path, icon, ...props }) => {
   const accepts = [];
   if (!canNotAcceptSandboxes.includes(path)) accepts.push('sandbox');
   if (!canNotAcceptFolders.includes(path)) accepts.push('folder');
@@ -361,8 +298,7 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
   const { onSidebarToggle } = React.useContext(SidebarContext);
 
   let linkTo: string;
-  if (isNested) linkTo = '/new-dashboard/all' + path;
-  else if (path === '/drafts') linkTo = '/new-dashboard/drafts';
+  if (path === '/drafts') linkTo = '/new-dashboard/drafts';
   else linkTo = '/new-dashboard/' + path;
 
   const location = useLocation();
@@ -376,8 +312,8 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
       css={css(
         merge(
           {
+            height: 10,
             paddingX: 0,
-            paddingLeft: isNested ? 4 : 0,
             opacity: isDragging && !canDrop ? 0.25 : 1,
             color:
               isCurrentLink || (isDragging && canDrop)
@@ -391,7 +327,6 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
           props.style || {}
         )
       )}
-      style={{ height: isNested ? 32 : 40 }}
     >
       {props.children || (
         <Link as={RouterLink} to={linkTo} style={linkStyles}>
@@ -407,5 +342,92 @@ const RowItem = ({ name, path, icon, isNested = false, ...props }) => {
         </Link>
       )}
     </ListAction>
+  );
+};
+
+const NestableRowItem = ({ name, path, folders }) => {
+  const [foldersVisible, setFoldersVisibility] = React.useState(false);
+
+  let subFolders;
+  if (name === 'All sandboxes') {
+    subFolders = folders.filter(folder => !folder.parent);
+  } else {
+    subFolders = folders.filter(folder => {
+      const parentPath = folder.path
+        .split('/')
+        .slice(0, -1)
+        .join('/');
+      return parentPath === path;
+    });
+  }
+
+  const nestingLevel = path.split('/').length - 1;
+
+  return (
+    <>
+      <RowItem
+        name={path}
+        path="all"
+        icon="folder"
+        style={{
+          height: nestingLevel ? 8 : 10,
+          paddingLeft: nestingLevel * 4,
+          button: { opacity: 0 },
+          ':hover, :focus-within': { button: { opacity: 1 } },
+        }}
+      >
+        {subFolders.length ? (
+          <IconButton
+            name="caret"
+            size={8}
+            title="Toggle folders"
+            onClick={event => {
+              setFoldersVisibility(!foldersVisible);
+              event.stopPropagation();
+            }}
+            css={css({
+              width: 5,
+              height: '100%',
+              borderRadius: 0,
+              svg: {
+                transform: foldersVisible ? 'rotate(0deg)' : 'rotate(-90deg)',
+                transition: 'transform ease-in-out',
+                transitionDuration: theme => theme.speeds[2],
+              },
+            })}
+          />
+        ) : (
+          <Element as="span" css={css({ width: 5 })} />
+        )}
+        <Link
+          as={RouterLink}
+          to={'/new-dashboard/all' + path}
+          style={{ ...linkStyles, paddingLeft: 0 }}
+        >
+          <Stack align="center" gap={3}>
+            <Stack
+              as="span"
+              css={css({ width: 4 })}
+              align="center"
+              justify="center"
+            >
+              <Icon name="folder" />
+            </Stack>
+            <Text>{name}</Text>
+          </Stack>
+        </Link>
+      </RowItem>
+      {foldersVisible &&
+        orderBy(subFolders, 'name')
+          .sort(a => (a.path === '/drafts' ? -1 : 1)) // pull drafts up top
+          .map(folder => (
+            <NestableRowItem
+              key={folder.path}
+              name={folder.name}
+              path={folder.path}
+              folders={folders}
+            />
+          ))}
+    </>
   );
 };
