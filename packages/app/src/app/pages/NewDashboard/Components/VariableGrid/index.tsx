@@ -9,7 +9,8 @@ import { NewSandbox } from '../Sandbox/NewSandbox';
 import { Folder } from '../Folder';
 import { EmptyScreen } from '../EmptyScreen';
 
-const MIN_WIDTH = 220;
+const GRID_MAX_WIDTH = 992;
+const ITEM_MIN_WIDTH = 220;
 const ITEM_HEIGHT_GRID = 240;
 const ITEM_HEIGHT_LIST = 64;
 const HEADER_HEIGHT = 64;
@@ -44,16 +45,23 @@ export const VariableGrid = ({ items }) => {
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
 
   const Item = ({ data, rowIndex, columnIndex, style }) => {
-    const { columnCount, filledItems, totalWidth } = data;
+    const { columnCount, filledItems, containerWidth } = data;
 
     /**
      * react-window does not support gutter or maxWidth
      * we take over the width and offset calculations
      * to add these features
      *
-     * |----[       ]----[       ]----[       ]----|
-     *   G    item    G     item   G     item   G
+     * |     |----[       ]----[       ]----[       ]----|     |
+     *         G    item    G     item   G     item   G
      */
+
+    // adjusting total width based on allowed maxWidth
+    const totalWidth = Math.min(containerWidth, GRID_MAX_WIDTH);
+    const containerLeftOffset =
+      containerWidth > GRID_MAX_WIDTH
+        ? (containerWidth - GRID_MAX_WIDTH) / 2
+        : 0;
 
     // we calculate width by making enough room for gutters between
     // each item + on the 2 ends
@@ -64,7 +72,8 @@ export const VariableGrid = ({ items }) => {
 
     // to get the left offset, we need to add the space taken by
     // previous elements + the gutter just before this item
-    const spaceTakenBeforeThisItem = columnIndex * (eachItemWidth + GUTTER);
+    const spaceTakenBeforeThisItem =
+      containerLeftOffset + columnIndex * (eachItemWidth + GUTTER);
     const leftOffset = spaceTakenBeforeThisItem + GUTTER;
 
     const index = rowIndex * data.columnCount + columnIndex;
@@ -178,7 +187,10 @@ export const VariableGrid = ({ items }) => {
           const columnCount =
             viewMode === 'list'
               ? 1
-              : Math.max(1, Math.floor(width / (MIN_WIDTH + GUTTER)));
+              : Math.min(
+                  Math.floor((width - GUTTER) / (ITEM_MIN_WIDTH + GUTTER)),
+                  4
+                );
 
           const filledItems = [];
           const blankItem = { type: 'blank' };
@@ -220,7 +232,7 @@ export const VariableGrid = ({ items }) => {
                 estimatedColumnWidth={width / columnCount}
                 estimatedRowHeight={ITEM_HEIGHT}
                 overscanRowCount={2}
-                itemData={{ columnCount, filledItems, totalWidth: width }}
+                itemData={{ columnCount, filledItems, containerWidth: width }}
                 style={{ overflowX: 'hidden' }}
               >
                 {Item}

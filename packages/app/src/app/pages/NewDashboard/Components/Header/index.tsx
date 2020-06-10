@@ -6,6 +6,7 @@ import { Breadcrumbs } from '../Breadcrumbs';
 import { FilterOptions } from '../Filters/FilterOptions';
 import { ViewOptions } from '../Filters/ViewOptions';
 import { SortOptions } from '../Filters/SortOptions';
+import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid';
 
 type Props = {
   templates?: any[];
@@ -32,9 +33,11 @@ export const Header = ({
     <Stack
       align="center"
       justify="space-between"
-      marginX={4}
       paddingBottom={2}
       css={css({
+        width: `calc(100% - ${2 * GUTTER}px)`,
+        maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
+        marginX: 'auto',
         borderStyle: 'solid',
         borderWidth: 0,
         borderBottomWidth: 1,
