@@ -408,6 +408,7 @@ export type Sandbox = {
   baseGit: GitInfo | null;
   prNumber: number | null;
   originalGitCommitSha: string | null;
+  baseGitCommitSha: string | null;
   originalGitChanges: {
     added: string[];
     modified: string[];
