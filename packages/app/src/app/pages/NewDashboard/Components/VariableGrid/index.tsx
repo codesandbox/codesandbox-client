@@ -23,7 +23,7 @@ const ComponentForTypes = {
   folder: props => <Folder {...props} />,
   'new-sandbox': props => <NewSandbox {...props} />,
   header: props => (
-    <Text block css={{ userSelect: 'none' }}>
+    <Text block style={{ userSelect: 'none' }}>
       {props.title}
     </Text>
   ),
@@ -35,6 +35,7 @@ const ComponentForTypes = {
       variant="muted"
       block
       align="right"
+      style={{ userSelect: 'none' }}
     >
       Show more
     </Link>
@@ -95,9 +96,13 @@ export const VariableGrid = ({ items }) => {
 
     const Component = ComponentForTypes[item.type];
     const isHeader = item.type === 'header' || item.type === 'headerLink';
+    const marginTopMap = {
+      header: ITEM_VERTICAL_OFFSET + 24,
+      headerLink: ITEM_VERTICAL_OFFSET + 28,
+    };
 
     const margins = {
-      marginTop: isHeader ? ITEM_VERTICAL_OFFSET + 24 : ITEM_VERTICAL_OFFSET,
+      marginTop: marginTopMap[item.type] || ITEM_VERTICAL_OFFSET,
       marginBottom: viewMode === 'list' || isHeader ? 0 : ITEM_VERTICAL_OFFSET,
     };
 
