@@ -542,7 +542,7 @@ export const _loadSourceSandbox: AsyncAction = async ({ state, effects }) => {
   const sourceSandbox = await effects.api.getSandbox(
     `github/${sandbox.originalGit!.username}/${
       sandbox.originalGit!.repo
-    }/tree/${sandbox.originalGitCommitSha!}/${sandbox.originalGit.path}`
+    }/tree/${sandbox.originalGitCommitSha!}/${sandbox.originalGit!.path}`
   );
 
   state.editor.sandboxes[sourceSandbox.id] = sourceSandbox;
