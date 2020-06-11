@@ -472,7 +472,7 @@ export const getStartPageSandboxes: AsyncAction = withLoadApp(
 
       dashboard.sandboxes.TEMPLATE_HOME = usedTemplates.me.recentlyUsedTemplates.slice(
         0,
-        4
+        3
       );
 
       const recentSandboxes = await effects.gql.queries.recentSandboxes({

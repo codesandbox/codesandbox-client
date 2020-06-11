@@ -82,7 +82,7 @@ export const UserSettings = () => {
                       href={`https://github.com/${user.username}`}
                       target="_blank"
                     >
-                      Managed by Github
+                      Account managed by Github
                     </Link>
                   </Stack>
                 </Stack>

@@ -36,13 +36,13 @@ export const Home = () => {
           title: 'Recently Used Templates',
           showMoreLink: '/new-dashboard/templates',
         },
+        { type: 'new-sandbox' },
         ...templates,
         {
           type: 'header',
           title: 'Your Recent Sandboxes',
           showMoreLink: '/new-dashboard/recent',
         },
-        { type: 'new-sandbox' },
         ...(sandboxes.RECENT_HOME || []).map(sandbox => ({
           type: 'sandbox',
           ...sandbox,
