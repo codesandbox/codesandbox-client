@@ -40,23 +40,18 @@ export const onInitialize: OnInitialize = async (
     },
   });
 
-  effects.gql.initialize(
-    {
-      endpoint: `${location.origin}/api/graphql`,
-      headers: () => {
-        const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
-        if (!hasDevAuth) {
-          return {};
-        }
+  const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
+  const gqlOptions: Parameters<typeof effects.gql.initialize>[0] = {
+    endpoint: `${location.origin}/api/graphql`,
+  };
 
-        // Only give a jwt if we're on localhost or staging
-        return {
-          Authorization: `Bearer ${localStorage.getItem('devJwt')}`,
-        };
-      },
-    },
-    () => effects.live.socket
-  );
+  if (hasDevAuth) {
+    gqlOptions.headers = () => ({
+      Authorization: `Bearer ${localStorage.getItem('devJwt')}`,
+    });
+  }
+
+  effects.gql.initialize(gqlOptions, () => effects.live.socket);
 
   effects.notifications.initialize({
     provideSocket() {

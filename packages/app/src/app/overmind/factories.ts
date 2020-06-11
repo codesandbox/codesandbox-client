@@ -41,7 +41,7 @@ export const withLoadApp = <T>(
     state.hasLogIn = false;
 
     try {
-      const jwt = JSON.parse(localStorage.getItem('jwt'));
+      const jwt = JSON.parse(localStorage.jwt);
       effects.api.revokeToken(jwt);
     } catch (e) {
       // Ignore
