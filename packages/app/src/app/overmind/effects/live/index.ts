@@ -27,7 +27,7 @@ type Options = {
     moduleShortid: string;
     operation: TextOperation;
   }): void;
-  provideJwtToken(): string;
+  provideJwtToken(): Promise<string>;
   onOperationError(payload: {
     moduleShortid: string;
     moduleInfo: IModuleStateModule;
@@ -54,15 +54,16 @@ declare global {
 }
 
 class Live {
+  public socket: Socket;
+
   private identifier = uuid.v4();
   private pendingMessages = new Map();
   private debug = _debug('cs:socket');
   private channel: Channel | null;
   private messageIndex = 0;
   private clientsManager: CodesandboxOTClientsManager;
-  private socket: Socket;
   private presence: Presence;
-  private provideJwtToken: () => string;
+  private provideJwtToken: () => Promise<string>;
   private onApplyOperation: (moduleShortid: string, operation: any) => void;
   private onOperationError: (payload: {
     moduleShortid: string;
@@ -144,17 +145,32 @@ class Live {
   }
 
   getSocket() {
-    return this.socket || this.connect();
+    if (!this.connectionPromise) {
+      this.connectionPromise = this.connect();
+    }
+
+    return this.connectionPromise;
   }
 
-  connect(): Socket {
+  private connectionPromise: Promise<Socket>;
+  private async connect(): Promise<Socket> {
     if (!this.socket) {
       const protocol = process.env.LOCAL_SERVER ? 'ws' : 'wss';
+      let jwt = await this.provideJwtToken();
+      const params = () => ({
+        guardian_token: jwt,
+        client_version: VERSION,
+      });
+
       this.socket = new Socket(`${protocol}://${location.host}/socket`, {
-        params: {
-          guardian_token: this.provideJwtToken(),
-          client_version: VERSION,
-        },
+        params,
+      });
+
+      this.socket.onError(async () => {
+        // Regenerate a new JWT for the reconnect. This can be out of sync or happen more often than needed, but it's important
+        // to try multiple times in case there's a connection issue.
+        const newJwt = await this.provideJwtToken();
+        jwt = newJwt;
       });
 
       this.socket.connect();
@@ -191,12 +207,14 @@ class Live {
     });
   }
 
-  joinChannel(
+  async joinChannel(
     roomId: string,
     onError: (reason: string) => void
   ): Promise<JoinChannelResponse> {
+    const socket = await this.getSocket();
     return new Promise((resolve, reject) => {
-      this.channel = this.getSocket().channel(`live:${roomId}`, { version: 2 });
+      this.channel = socket.channel(`live:${roomId}`, { version: 2 });
+
       this.channel
         .join()
         .receive('ok', resp => {

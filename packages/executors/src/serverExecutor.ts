@@ -179,45 +179,41 @@ export class ServerExecutor implements IExecutor {
 
   private async retrieveSSEToken() {
     debug('Retrieving SSE token...');
-    const jwt = localStorage.getItem('jwt');
 
-    if (jwt) {
-      const parsedJWT = JSON.parse(jwt);
-      const existingKey = localStorage.getItem('sse');
-      const currentTime = new Date().getTime();
+    const existingKey = localStorage.getItem('sse');
+    const currentTime = new Date().getTime();
 
-      if (existingKey) {
-        const parsedKey = JSON.parse(existingKey);
-        if (parsedKey.key && currentTime - parsedKey.timestamp < MAX_SSE_AGE) {
-          debug('Retrieved SSE token from cache');
-          return parsedKey.key as string;
-        }
+    if (existingKey) {
+      const parsedKey = JSON.parse(existingKey);
+      if (parsedKey.key && currentTime - parsedKey.timestamp < MAX_SSE_AGE) {
+        debug('Retrieved SSE token from cache');
+        return parsedKey.key as string;
       }
-
-      return fetch('/api/v1/users/current_user/sse', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${parsedJWT}`,
-        },
-      })
-        .then(x => x.json())
-        .then(result => result.jwt)
-        .then((token: string) => {
-          debug('Retrieved SSE token from API');
-          localStorage.setItem(
-            'sse',
-            JSON.stringify({
-              key: token,
-              timestamp: currentTime,
-            })
-          );
-
-          return token;
-        });
     }
 
-    debug('Not signed in, returning undefined');
-    return undefined;
+    return fetch('/api/v1/users/current_user/sse', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(x => x.json())
+      .then(result => result.jwt)
+      .then((token: string) => {
+        debug('Retrieved SSE token from API');
+        localStorage.setItem(
+          'sse',
+          JSON.stringify({
+            key: token,
+            timestamp: currentTime,
+          })
+        );
+
+        return token;
+      })
+      .catch(() => {
+        debug('Not signed in, returning undefined');
+        return undefined;
+      });
   }
 }
