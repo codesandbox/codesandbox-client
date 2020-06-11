@@ -46,11 +46,7 @@ export const Files: React.FC<IFilesProps> = ({ setEditActions }) => {
               onCreateFile={onCreateModuleClick}
               onCreateDirectory={onCreateDirectoryClick}
               onDownload={editor.createZipClicked}
-              onUploadFile={
-                isLoggedIn && sandbox.privacy === 0
-                  ? onUploadFileClick
-                  : undefined
-              }
+              onUploadFile={isLoggedIn ? onUploadFileClick : undefined}
             />
           );
         }
