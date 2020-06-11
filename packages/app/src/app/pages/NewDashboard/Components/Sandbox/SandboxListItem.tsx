@@ -120,7 +120,7 @@ export const SandboxListItem = ({
         )}
       </Column>
       <Column span={[0, 3, 3]} as={Stack} align="center">
-        <Text size={3} variant="muted" maxWidth="100%">
+        <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
           {sandbox.source.template}
         </Text>
       </Column>
@@ -151,12 +151,6 @@ export const SkeletonListItem = () => (
       <SkeletonText css={{ width: 120 }} />
     </Stack>
     <SkeletonText css={{ width: 120 }} />
-    <SkeletonText
-      css={{
-        width: 26,
-        /* keep menu for justify, but hide it from user */
-        opacity: 0,
-      }}
-    />
+    <SkeletonText css={{ width: 120 }} />
   </Stack>
 );

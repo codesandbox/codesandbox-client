@@ -77,8 +77,10 @@ export const SandboxCard = ({
         top: 1,
         right: 1,
         size: 6,
-        background: 'white',
-        border: '4px solid',
+        width: '22px',
+        height: '22px',
+        backgroundColor: 'grays.500',
+        border: '3px solid',
         borderColor: 'grays.500',
         borderRadius: 'medium',
       })}
@@ -133,11 +135,9 @@ export const SkeletonCard = () => (
       borderColor: 'grays.600',
       borderRadius: 'medium',
       overflow: 'hidden',
-      transition: 'all ease-in-out',
-      transitionDuration: theme => theme.speeds[4],
     })}
   >
-    <SkeletonText css={{ width: '100%', height: 160 }} />
+    <SkeletonText css={{ width: '100%', height: 160, borderRadius: 0 }} />
     <Stack direction="vertical" gap={2} marginX={4}>
       <SkeletonText css={{ width: 120 }} />
       <SkeletonText css={{ width: 180 }} />

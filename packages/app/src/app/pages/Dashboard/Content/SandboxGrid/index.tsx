@@ -211,7 +211,6 @@ class SandboxGridComponent extends React.Component<
     return fetch(`${protocolAndHost()}/api/v1/sandboxes/${sandboxId}`, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${JSON.parse(localStorage.getItem('jwt'))}`,
       },
     })
       .then(x => x.json())
