@@ -454,7 +454,6 @@ export const SelectionProvider = ({
             background: '#6CC7F640', // blues.300 with 25% opacity
             border: '1px solid',
             borderColor: 'blues.600',
-
             pointerEvents: 'none', // disable selection
           })}
           style={{

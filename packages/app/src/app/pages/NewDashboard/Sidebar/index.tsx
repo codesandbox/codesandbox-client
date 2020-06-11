@@ -370,11 +370,7 @@ const NestableRowItem = ({ name, path, folders }) => {
         name={path}
         path={path}
         icon="folder"
-        style={{
-          height: nestingLevel ? 8 : 10,
-          button: { opacity: 0 },
-          ':hover, :focus-within': { button: { opacity: 1 } },
-        }}
+        style={{ height: nestingLevel ? 8 : 10 }}
       >
         <Link
           href="#"
