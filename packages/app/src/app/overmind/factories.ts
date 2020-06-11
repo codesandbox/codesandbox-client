@@ -39,7 +39,14 @@ export const withLoadApp = <T>(
     document.cookie =
       'signedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     state.hasLogIn = false;
-    effects.api.revokeToken(localStorage.jwt);
+
+    try {
+      const jwt = JSON.parse(localStorage.getItem('jwt'));
+      effects.api.revokeToken(jwt);
+    } catch (e) {
+      // Ignore
+    }
+
     delete localStorage.jwt;
     notificationState.addNotification({
       sticky: true,
