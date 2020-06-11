@@ -390,9 +390,11 @@ export const SelectionProvider = ({
         if (
           (viewMode === 'list' ||
             (rect.left > selectionLeft && rect.left < selectionRight) ||
-            (rect.right > selectionLeft && rect.right < selectionRight)) &&
+            (rect.right > selectionLeft && rect.right < selectionRight) ||
+            (rect.left < selectionLeft && rect.right > selectionRight)) &&
           ((rect.top > selectionTop && rect.top < selectionBottom) ||
-            (rect.bottom > selectionTop && rect.bottom < selectionBottom))
+            (rect.bottom > selectionTop && rect.bottom < selectionBottom) ||
+            (rect.top < selectionTop && rect.bottom > selectionBottom))
         ) {
           overlappingItems.push(item);
         }
