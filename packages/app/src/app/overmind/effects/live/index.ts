@@ -166,11 +166,21 @@ class Live {
         params,
       });
 
+      let tries = 0;
       this.socket.onError(async () => {
         // Regenerate a new JWT for the reconnect. This can be out of sync or happen more often than needed, but it's important
         // to try multiple times in case there's a connection issue.
-        const newJwt = await this.provideJwtToken();
-        jwt = newJwt;
+        try {
+          const newJwt = await this.provideJwtToken();
+          jwt = newJwt;
+          tries = 0;
+        } catch (e) {
+          if (tries++ > 4) {
+            // If we can't get a jwt, disconnect...
+            this.socket.disconnect();
+            tries = 0;
+          }
+        }
       });
 
       this.socket.connect();
