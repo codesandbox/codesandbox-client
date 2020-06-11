@@ -15,6 +15,9 @@ import designLanguage from '../../design-language/theme';
 import VSCodeThemes from '../../themes';
 import polyfillTheme from '../../utils/polyfill-theme';
 
+import { MenuGlobalStyles } from '../Menu';
+import { TooltipGlobalStyles } from '../Tooltip';
+
 export const getThemes = () => {
   const results = VSCodeThemes.map(theme => ({
     name: theme.name,
@@ -76,7 +79,11 @@ export const ThemeProvider = ({ theme, children }) => {
   return (
     <>
       <ExternalStyles />
-      <BaseThemeProvider theme={usableTheme}>{children}</BaseThemeProvider>
+      <BaseThemeProvider theme={usableTheme}>
+        <MenuGlobalStyles />
+        <TooltipGlobalStyles />
+        {children}
+      </BaseThemeProvider>
     </>
   );
 };

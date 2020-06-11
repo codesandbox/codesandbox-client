@@ -26,7 +26,8 @@ const transitions = {
 
 const MenuContext = React.createContext({ trigger: null });
 
-const PortalStyles = createGlobalStyle(
+// imported and inserted by theme provider
+export const MenuGlobalStyles = createGlobalStyle(
   css({
     '[data-reach-menu]': {
       zIndex: 11, // TODO: we need to sort out our z indexes!
@@ -83,7 +84,6 @@ const Menu = ({ ...props }) => {
 
   return (
     <Element as={ReachMenu.Menu} {...props}>
-      <PortalStyles />
       <MenuContext.Provider value={{ trigger }}>
         {props.children}
       </MenuContext.Provider>
