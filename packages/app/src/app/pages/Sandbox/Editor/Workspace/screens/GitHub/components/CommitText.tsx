@@ -1,6 +1,6 @@
-import React from 'react';
 import { Button, Stack, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import React from 'react';
 
 export const NoPermissions = () => {
   const {
@@ -53,7 +53,7 @@ export const CommitToPr = () => {
   return (
     <Stack direction="vertical">
       <Text size={3} paddingBottom={4}>
-        <Text variant="muted">This</Text> Pull PR{' '}
+        <Text variant="muted">This</Text> PR{' '}
         <Text variant="muted">is pointing to the branch </Text>
         {originalGit.branch}
         <Text variant="muted">, any updates will be committed there.</Text>

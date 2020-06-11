@@ -239,6 +239,8 @@ export const createPrClicked: AsyncAction = async ({
   git.description = '';
   state.git.conflicts = [];
   state.git.gitState = SandboxGitState.SYNCED;
+
+  effects.notificationToast.success('Successfully created your PR');
 };
 
 export const updateGitChanges: Operator = pipe(
@@ -540,7 +542,7 @@ export const _loadSourceSandbox: AsyncAction = async ({ state, effects }) => {
   const sourceSandbox = await effects.api.getSandbox(
     `github/${sandbox.originalGit!.username}/${
       sandbox.originalGit!.repo
-    }/tree/${sandbox.originalGitCommitSha!}`
+    }/tree/${sandbox.originalGitCommitSha!}/${sandbox.originalGit.path}`
   );
 
   state.editor.sandboxes[sourceSandbox.id] = sourceSandbox;
@@ -693,7 +695,7 @@ export const _getGitChanges: Action<void, GitChanges> = ({ state }) => {
       );
 
       return {
-        path: path.substr(1),
+        path,
         content: module!.code,
         encoding: 'utf-8',
       };
@@ -705,7 +707,7 @@ export const _getGitChanges: Action<void, GitChanges> = ({ state }) => {
       );
 
       return {
-        path: path.substr(1),
+        path,
         content: module!.code,
         encoding: 'utf-8',
       };

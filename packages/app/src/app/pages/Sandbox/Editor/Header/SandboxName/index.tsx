@@ -101,7 +101,8 @@ export const SandboxName: FunctionComponent = () => {
     owned: false,
   };
 
-  const isGit = !updatingName && (currentSandbox.git || currentSandbox.baseGit);
+  const isGit =
+    !updatingName && (currentSandbox.git || currentSandbox.originalGit);
 
   return (
     <Main style={fadeIn ? { opacity: 1 } : null}>
@@ -216,21 +217,27 @@ export const SandboxName: FunctionComponent = () => {
                     <Text css={css({ color: 'sideBar.foreground' })}>
                       {currentSandbox.git.branch}
                     </Text>
+                    {currentSandbox.git.path
+                      ? ' /' + currentSandbox.git.path
+                      : null}
                   </Text>
                 ) : (
                   <Text variant="muted">
-                    {currentSandbox.baseGit.username} /{' '}
-                    {currentSandbox.baseGit.repo} /{' '}
+                    {currentSandbox.originalGit.username} /{' '}
+                    {currentSandbox.originalGit.repo} /{' '}
                     <Text css={css({ color: 'sideBar.foreground' })}>
-                      {currentSandbox.baseGit.branch}
+                      {currentSandbox.originalGit.branch}
                     </Text>
+                    {currentSandbox.originalGit.path
+                      ? ' /' + currentSandbox.originalGit.path
+                      : null}
                   </Text>
                 )}
               </Text>
             </TemplateBadge>
           </Tooltip>
         ) : null}
-        {currentSandbox.baseGit ? (
+        {currentSandbox.originalGit ? (
           <Element marginLeft={2}>
             <PrivacyTooltip />
           </Element>
