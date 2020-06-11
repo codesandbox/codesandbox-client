@@ -1,6 +1,7 @@
 import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { BatchHttpLink } from 'apollo-link-batch-http';
+import { setContext } from 'apollo-link-context';
 import {
   InMemoryCache,
   IntrospectionFragmentMatcher,
@@ -16,6 +17,23 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
 
 const httpLink = new BatchHttpLink({
   uri: '/api/graphql',
+});
+
+const authLink = setContext((_, { headers }) => {
+  const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
+  if (!hasDevAuth) {
+    return {};
+  }
+
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem('devJwt');
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
 });
 
 const absintheAfterware = new ApolloLink((operation, forward) =>
@@ -46,7 +64,9 @@ const errorHandler = onError(({ graphQLErrors, networkError }) => {
 });
 
 export const client = new ApolloClient({
-  link: errorHandler.concat(absintheAfterware.concat(httpLink)),
+  link: authLink.concat(
+    errorHandler.concat(absintheAfterware.concat(httpLink))
+  ),
   cache: new InMemoryCache({
     dataIdFromObject: o => o.id,
     fragmentMatcher,
