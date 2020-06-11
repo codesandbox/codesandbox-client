@@ -10,6 +10,7 @@ import {
   ARROW_UP,
   ENTER,
   ALT,
+  TAB,
 } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
@@ -208,22 +209,25 @@ export const SelectionProvider = ({
         event.keyCode !== ARROW_RIGHT &&
         event.keyCode !== ARROW_LEFT &&
         event.keyCode !== ARROW_UP &&
-        event.keyCode !== ARROW_DOWN) ||
+        event.keyCode !== ARROW_DOWN &&
+        event.keyCode !== TAB) ||
       (viewMode === 'list' &&
         event.keyCode !== ARROW_DOWN &&
-        event.keyCode !== ARROW_UP)
+        event.keyCode !== ARROW_UP &&
+        event.keyCode !== TAB)
     ) {
       return;
     }
 
     // cancel scroll events
     event.preventDefault();
+    event.stopPropagation();
 
     const lastSelectedItemId = selectedIds[selectedIds.length - 1];
 
     const index = selectionItems.findIndex(id => id === lastSelectedItemId);
 
-    const direction = [ARROW_RIGHT, ARROW_DOWN].includes(event.keyCode)
+    const direction = [ARROW_RIGHT, TAB, ARROW_DOWN].includes(event.keyCode)
       ? 'forward'
       : 'backward';
 
