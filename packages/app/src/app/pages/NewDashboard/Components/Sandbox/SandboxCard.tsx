@@ -65,11 +65,13 @@ export const SandboxCard = ({
       css={css({
         height: 160,
         backgroundColor: 'grays.600',
-        backgroundImage: `url(${sandbox.screenshotUrl})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
       })}
+      style={{
+        backgroundImage: `url(${sandbox.screenshotUrl})`,
+      }}
     />
     <Element
       css={css({
