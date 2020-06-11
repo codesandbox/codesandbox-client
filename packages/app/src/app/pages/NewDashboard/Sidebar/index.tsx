@@ -373,8 +373,8 @@ const NestableRowItem = ({ name, path, folders }) => {
         style={{ height: nestingLevel ? 8 : 10 }}
       >
         <Link
-          href="#"
           onClick={() => history.push('/new-dashboard/all' + path)}
+          tabIndex={0}
           style={{
             ...linkStyles,
             paddingLeft: nestingLevel * 16,
