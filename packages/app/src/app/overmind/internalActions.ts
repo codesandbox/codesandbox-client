@@ -144,7 +144,7 @@ export const signInGithub: Action<
       const DAY = 1000 * 60 * 60 * 24;
       const expiryDate = new Date(Date.now() + DAY * 30);
 
-      document.cookie = `signedIn=true; expires=${expiryDate.toUTCString()}`;
+      document.cookie = `signedInDev=true; expires=${expiryDate.toUTCString()}; path=/`;
     } else {
       effects.api.revokeToken(data.jwt);
     }
