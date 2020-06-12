@@ -55,7 +55,7 @@ const modals = {
   },
   deployment: {
     Component: DeploymentModal,
-    width: 400,
+    width: 600,
   },
   recoveredFiles: {
     Component: RecoverFilesModal,
