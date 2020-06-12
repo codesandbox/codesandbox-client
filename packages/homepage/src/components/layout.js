@@ -56,6 +56,56 @@ const TemplateWrapper = ({ children, noWrapperStyling }) => (
         </VisuallyHidden>
       </div>
       <Navigation />
+      <div
+        css={`
+          padding: 16px;
+          text-align: center;
+          font-weight: bold;
+          font-family: Inter, sans-serif;
+          font-size: 13px;
+        `}
+      >
+        <div
+          css={`
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            @media screen and (max-width: 768px) {
+              flex-direction: column;
+            }
+          `}
+        >
+          <span>Black Lives Matter.</span>
+          <a
+            css={`
+              font-weight: bold;
+              color: #0971f1;
+              display: inline-flex;
+              justify-content: center;
+              align-items: center;
+              cursor: pointer;
+              height: 26px;
+              width: 100%;
+              line-height: 1;
+              flex: 0 0 auto;
+              text-decoration: none;
+              width: auto;
+              margin-left: 16px;
+
+              @media screen and (max-width: 768px) {
+                margin: 0;
+                margin-top: 16px;
+              }
+            `}
+            href="https://www.theokraproject.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Support the Okra Project
+          </a>
+        </div>
+      </div>
 
       <main
         style={noWrapperStyling ? {} : WRAPPER_STYLING}
