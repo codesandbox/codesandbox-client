@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
-import { Text, Menu, Stack } from '@codesandbox/components';
+import { Text, Menu, Stack, IconButton } from '@codesandbox/components';
 
 const FIELD_TO_NAME = {
   insertedAt: 'Last Created',
@@ -36,26 +36,13 @@ export const SortOptions: FunctionComponent = () => {
           <Menu.Button>
             <Text variant="muted">{FIELD_TO_NAME[field]}</Text>
           </Menu.Button>
-          <button
+          <IconButton
+            name="arrowDown"
+            size={11}
+            title="Reverse sort direction"
             onClick={toggleSort}
-            type="button"
-            style={{
-              cursor: 'pointer',
-              padding: 0,
-              border: 'none',
-              background: 'transparent',
-              marginTop: 6,
-              transform: `rotate(${order === 'desc' ? 0 : 180}deg)`,
-            }}
-          >
-            <svg width={11} height={13} fill="none" viewBox="0 0 11 13">
-              <path
-                stroke="#343434"
-                strokeWidth={2}
-                d="M5.301 0v11m0 0L1.262 7.071M5.301 11L9.34 7.071"
-              />
-            </svg>
-          </button>
+            css={{ transform: `rotate(${order === 'desc' ? 0 : 180}deg)` }}
+          />
         </Stack>
         <Menu.List>
           {Object.keys(FIELD_TO_NAME).map(key => (

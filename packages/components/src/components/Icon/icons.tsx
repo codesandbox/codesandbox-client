@@ -404,3 +404,19 @@ export const lock = props => (
     />
   </Element>
 );
+
+export const arrowDown = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M7.26893 13.2671V0H8.73107V13.2671L12.9661 9.13199L14 10.1415L8 16L2 10.1415L3.03389 9.13199L7.26893 13.2671Z"
+      fill="currentColor"
+    />
+  </Element>
+);
