@@ -98,11 +98,11 @@ const TemplateWrapper = ({ children, noWrapperStyling }) => (
                 margin-top: 16px;
               }
             `}
-            href="https://support.eji.org/give/153413/#!/donation/checkout"
+            href="https://www.theokraproject.com/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Support the Equal Justice Initiative
+            Support the Okra Project
           </a>
         </div>
       </div>
