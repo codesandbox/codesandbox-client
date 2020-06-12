@@ -10,6 +10,7 @@ import {
   ARROW_UP,
   ENTER,
   ALT,
+  TAB,
 } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
@@ -208,22 +209,25 @@ export const SelectionProvider = ({
         event.keyCode !== ARROW_RIGHT &&
         event.keyCode !== ARROW_LEFT &&
         event.keyCode !== ARROW_UP &&
-        event.keyCode !== ARROW_DOWN) ||
+        event.keyCode !== ARROW_DOWN &&
+        event.keyCode !== TAB) ||
       (viewMode === 'list' &&
         event.keyCode !== ARROW_DOWN &&
-        event.keyCode !== ARROW_UP)
+        event.keyCode !== ARROW_UP &&
+        event.keyCode !== TAB)
     ) {
       return;
     }
 
     // cancel scroll events
     event.preventDefault();
+    event.stopPropagation();
 
     const lastSelectedItemId = selectedIds[selectedIds.length - 1];
 
     const index = selectionItems.findIndex(id => id === lastSelectedItemId);
 
-    const direction = [ARROW_RIGHT, ARROW_DOWN].includes(event.keyCode)
+    const direction = [ARROW_RIGHT, TAB, ARROW_DOWN].includes(event.keyCode)
       ? 'forward'
       : 'backward';
 
@@ -390,9 +394,11 @@ export const SelectionProvider = ({
         if (
           (viewMode === 'list' ||
             (rect.left > selectionLeft && rect.left < selectionRight) ||
-            (rect.right > selectionLeft && rect.right < selectionRight)) &&
+            (rect.right > selectionLeft && rect.right < selectionRight) ||
+            (rect.left < selectionLeft && rect.right > selectionRight)) &&
           ((rect.top > selectionTop && rect.top < selectionBottom) ||
-            (rect.bottom > selectionTop && rect.bottom < selectionBottom))
+            (rect.bottom > selectionTop && rect.bottom < selectionBottom) ||
+            (rect.top < selectionTop && rect.bottom > selectionBottom))
         ) {
           overlappingItems.push(item);
         }
@@ -452,12 +458,14 @@ export const SelectionProvider = ({
             background: '#6CC7F640', // blues.300 with 25% opacity
             border: '1px solid',
             borderColor: 'blues.600',
+            pointerEvents: 'none', // disable selection
+          })}
+          style={{
             left: Math.min(selectionRect.start.x, selectionRect.end.x),
             top: Math.min(selectionRect.start.y, selectionRect.end.y),
             width: Math.abs(selectionRect.end.x - selectionRect.start.x),
             height: Math.abs(selectionRect.end.y - selectionRect.start.y),
-            pointerEvents: 'none', // disable selection
-          })}
+          }}
         />
       )}
       <DragPreview

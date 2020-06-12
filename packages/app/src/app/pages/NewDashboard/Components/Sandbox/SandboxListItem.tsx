@@ -69,7 +69,6 @@ export const SandboxListItem = ({
               borderRadius: 'small',
               height: 32,
               width: 32,
-              backgroundImage: `url(${sandbox.screenshotUrl})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',
@@ -77,6 +76,7 @@ export const SandboxListItem = ({
               borderColor: 'grays.600',
               flexShrink: 0,
             })}
+            style={{ backgroundImage: `url(${sandbox.screenshotUrl})` }}
           />
           <Element style={{ width: 150 }}>
             {editing ? (
