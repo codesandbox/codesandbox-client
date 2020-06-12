@@ -48,6 +48,8 @@ describe('convert-esmodule', () => {
   it('can convert default imports', () => {
     const code = `
       import a from './b';
+
+      a();
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });

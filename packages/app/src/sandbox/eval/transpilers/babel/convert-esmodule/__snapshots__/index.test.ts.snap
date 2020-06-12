@@ -24,6 +24,7 @@ exports[`convert-esmodule can convert default imports 1`] = `
 "\\"use strict\\";
 var $csb__b = require(\\"./b\\");
 var a = $_csb__interopRequireDefault($csb__b);
+(0, a.default)();
 function $_csb__interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     default: obj
@@ -49,18 +50,18 @@ exports.Test = Test;
 exports[`convert-esmodule can convert named imports 1`] = `
 "\\"use strict\\";
 var $csb__b = require(\\"./b\\");
-$csb__b.a();
-$csb__b.b();
-$csb__b.c();
+(0, $csb__b.a)();
+(0, $csb__b.b)();
+(0, $csb__b.c)();
 "
 `;
 
 exports[`convert-esmodule can convert named imports with different scopes 1`] = `
 "\\"use strict\\";
 var $csb__b = require(\\"./b\\");
-$csb__b.a();
+(0, $csb__b.a)();
 function test1() {
-  $csb__b.a();
+  (0, $csb__b.a)();
 }
 function test2(a) {
   a();
@@ -160,7 +161,7 @@ exports.default = $csb__default;
 exports[`convert-esmodule can handle as imports 1`] = `
 "\\"use strict\\";
 var $csb__b = require(\\"./b\\");
-const func = $csb__b.a();
+const func = (0, $csb__b.a)();
 "
 `;
 
@@ -202,8 +203,8 @@ function $_csb__interopRequireDefault(obj) {
 exports[`convert-esmodule can handle inline comments 1`] = `
 "\\"use strict\\";
 var $csb__b = require(\\"./b\\");
-$csb__b.a();
-$csb__b.c();
+(0, $csb__b.a)();
+(0, $csb__b.c)();
 "
 `;
 
@@ -211,7 +212,7 @@ exports[`convert-esmodule changes default imports inline 1`] = `
 "\\"use strict\\";
 var $csb__rgb = require(\\"./rgb\\");
 var rgb = $_csb__interopRequireDefault($csb__rgb);
-rgb.default.a;
+(0, rgb.default).a;
 function $_csb__interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     default: obj
@@ -224,7 +225,7 @@ exports[`convert-esmodule converts object shorthands 1`] = `
 "\\"use strict\\";
 var $csb__templatefactory = require(\\"./template-factory.js\\");
 const short = {
-  templateFactory: $csb__templatefactory.templateFactory
+  templateFactory: (0, $csb__templatefactory.templateFactory)
 };
 "
 `;
@@ -262,7 +263,7 @@ exports[`convert-esmodule doesn't remove object initializers 1`] = `
 "\\"use strict\\";
 var $csb__shared = require(\\"@react-spring/shared\\");
 const createHost = (components, {a = () => {}} = {}) => {
-  $csb__shared.is();
+  (0, $csb__shared.is)();
 };
 "
 `;
@@ -333,7 +334,7 @@ Object.keys($csb__testlibdom_).forEach(function (key) {
     }
   });
 });
-var a = () => $csb__testlibdom.a;
+var a = () => (0, $csb__testlibdom.a);
 "
 `;
 
@@ -544,7 +545,7 @@ Object.defineProperty(exports, \\"a\\", {
   enumerable: true,
   configurable: true,
   get: function get() {
-    return $csb__b.a;
+    return (0, $csb__b.a);
   }
 });
 Object.defineProperty(exports, \\"__esModule\\", {
@@ -567,7 +568,7 @@ Object.defineProperty(exports, \\"b\\", {
   enumerable: true,
   configurable: true,
   get: function get() {
-    return $csb__b.a;
+    return (0, $csb__b.a);
   }
 });
 Object.defineProperty(exports, \\"__esModule\\", {
@@ -582,7 +583,7 @@ exports[`convert-esmodule hoists imports at bottom 1`] = `
 "\\"use strict\\";
 var $csb__proptypes = require(\\"prop-types\\");
 var PropTypes = $_csb__interopRequireDefault($csb__proptypes);
-const a = PropTypes.default.a;
+const a = (0, PropTypes.default).a;
 function $_csb__interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     default: obj
