@@ -191,7 +191,9 @@ const Navigation = () => {
                   width: 100%;
                   background: #151515;
                   overflow: hidden;
-                  border-bottom: 1px solid ${props => props.theme.homepage.grey};
+                  /* border-bottom: 1px solid ${props =>
+                    props.theme.homepage.grey}; */
+                  
                   z-index: 99;
                   box-shadow: 0, 8px, 1rem rgba(0, 0, 0, 0.12), 0, 4px,
                     2px rgba(0, 0, 0, 0.24);

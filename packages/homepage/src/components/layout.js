@@ -1,5 +1,6 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
+import { motion } from 'framer-motion';
 
 import theme from '@codesandbox/common/lib/theme';
 import { VisuallyHidden } from './style';
@@ -56,61 +57,65 @@ const TemplateWrapper = ({ children, noWrapperStyling }) => (
         </VisuallyHidden>
       </div>
       <Navigation />
-      <div
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         css={`
-          padding: 16px;
-          text-align: center;
-          font-weight: bold;
-          font-family: Inter, sans-serif;
-          font-size: 13px;
+          border-bottom: 1px solid #242424;
         `}
+        transition={{
+          duration: 1,
+          ease: 'easeIn',
+        }}
       >
         <div
           css={`
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 0.5rem 0;
+            text-align: center;
+            font-weight: bold;
+            line-height: 3rem;
+            font-size: 13px;
+            /* border-bottom:1px solid #242424;   */
 
             @media screen and (max-width: 768px) {
-              flex-direction: column;
+              padding: 0.5rem 0;
             }
           `}
         >
-          <span>Black Lives Matter.</span>
-          <a
-            css={`
-              font-weight: bold;
-              color: #0971f1;
-              display: inline-flex;
-              justify-content: center;
-              align-items: center;
-              cursor: pointer;
-              height: 26px;
-              width: 100%;
-              line-height: 1;
-              flex: 0 0 auto;
-              text-decoration: none;
-              width: auto;
-              margin-left: 16px;
-
-              @media screen and (max-width: 768px) {
-                margin: 0;
-                margin-top: 16px;
-              }
-            `}
-            href="https://www.theokraproject.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Support the Okra Project
-          </a>
+          <div>
+            <span>Black Lives Matter.</span>
+            <a
+              css={`
+                font-weight: bold;
+                color: #0971f1;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                line-height: 24px;
+                width: 100%;
+                line-height: 1;
+                border-bottom: none;
+                text-decoration: none;
+                width: auto;
+                margin-left: 0.5rem;
+              `}
+              href="https://www.theokraproject.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Support the Okra Project
+            </a>
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       <main
         style={noWrapperStyling ? {} : WRAPPER_STYLING}
-        id="main"
         aria-label="main content"
+        css="margin-top:-1px;"
       >
         {children}
       </main>
