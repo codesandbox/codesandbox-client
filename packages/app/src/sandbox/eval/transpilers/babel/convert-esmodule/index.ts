@@ -477,7 +477,9 @@ export function convertEsModule(code: string) {
           ref.resolved === null &&
           !ref.writeExpr
         ) {
-          ref.identifier.name = varsToRename[ref.identifier.name].join('.');
+          ref.identifier.name = `(0, ${varsToRename[ref.identifier.name].join(
+            '.'
+          )})`;
         }
 
         if (
