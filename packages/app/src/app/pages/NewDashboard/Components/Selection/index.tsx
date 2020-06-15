@@ -109,7 +109,7 @@ export const SelectionProvider = ({
     event.stopPropagation();
   };
 
-  const [menuVisible, setMenuVisibility] = React.useState(true);
+  const [menuVisible, setMenuVisibility] = React.useState(false);
   const [menuPosition, setMenuPosition] = React.useState({ x: 0, y: 0 });
 
   const onRightClick = (
@@ -168,6 +168,15 @@ export const SelectionProvider = ({
   else viewMode = dashboard.viewMode;
 
   const history = useHistory();
+
+  React.useEffect(() => {
+    if (location.state && location.state.sandboxId) {
+      setSelectedIds([location.state.sandboxId]);
+      scrollIntoViewport(location.state.sandboxId);
+      history.replace(location.pathname, {});
+    }
+  }, [location, history]);
+
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!selectedIds.length) return;
     // disable keyboard navigation if menu is open
@@ -526,10 +535,25 @@ export const useSelection = () => {
   };
 };
 
+let scrollTimer;
+let retries = 0;
 const scrollIntoViewport = (id: string) => {
   const gridContainer = document.querySelector('#variable-grid');
   const event = new CustomEvent('scrollToItem', { detail: id });
-  gridContainer.dispatchEvent(event);
+
+  if (scrollTimer) window.clearTimeout(scrollTimer);
+  const WAIT_TIME = 100; // ms
+  const MAX_RETRIES = 3;
+
+  if (!gridContainer && retries < MAX_RETRIES) {
+    // we can call scroll when the grid is still loading,
+    // in that event, we schedule to scroll into viewport
+    retries++;
+    scrollTimer = window.setTimeout(() => scrollIntoViewport(id), WAIT_TIME);
+  } else {
+    retries = 0;
+    gridContainer.dispatchEvent(event);
+  }
 };
 
 const isFolderPath = id => id.startsWith('/');
