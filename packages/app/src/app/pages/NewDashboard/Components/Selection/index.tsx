@@ -537,19 +537,24 @@ export const useSelection = () => {
 
 let scrollTimer;
 let retries = 0;
+const MAX_RETRIES = 3;
+const startingWaitTime = 50; // ms
+const incrementalWaitTime = 100; // ms
+
 const scrollIntoViewport = (id: string) => {
   const gridContainer = document.querySelector('#variable-grid');
   const event = new CustomEvent('scrollToItem', { detail: id });
 
   if (scrollTimer) window.clearTimeout(scrollTimer);
-  const WAIT_TIME = 100; // ms
-  const MAX_RETRIES = 3;
 
   if (!gridContainer && retries < MAX_RETRIES) {
     // we can call scroll when the grid is still loading,
     // in that event, we schedule to scroll into viewport
+    // we incrementally increase wait time with each retry
+    // and give up after 3 retries
+    const waitTime = startingWaitTime + retries * incrementalWaitTime;
     retries++;
-    scrollTimer = window.setTimeout(() => scrollIntoViewport(id), WAIT_TIME);
+    scrollTimer = window.setTimeout(() => scrollIntoViewport(id), waitTime);
   } else {
     retries = 0;
     gridContainer.dispatchEvent(event);
