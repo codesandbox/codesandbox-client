@@ -14,6 +14,7 @@ export const SandboxCard = ({
   sandbox,
   sandboxTitle,
   TemplateIcon,
+  PrivacyIcon,
   // interactions
   selected,
   onClick,
@@ -109,9 +110,12 @@ export const SandboxCard = ({
           />
         </form>
       ) : (
-        <Text size={3} weight="medium">
-          {sandboxTitle}
-        </Text>
+        <Stack gap={1} align="center">
+          <PrivacyIcon />
+          <Text size={3} weight="medium">
+            {sandboxTitle}
+          </Text>
+        </Stack>
       )}
 
       <IconButton

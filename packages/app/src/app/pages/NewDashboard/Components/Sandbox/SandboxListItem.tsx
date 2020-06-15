@@ -18,6 +18,7 @@ export const SandboxListItem = ({
   sandbox,
   sandboxTitle,
   TemplateIcon,
+  PrivacyIcon,
   // interactions
   selected,
   onClick,
@@ -102,9 +103,12 @@ export const SandboxListItem = ({
               </form>
             ) : (
               <Tooltip label={sandboxTitle}>
-                <Text size={3} weight="medium" maxWidth="100%">
-                  {sandboxTitle}
-                </Text>
+                <Stack gap={1} align="center">
+                  <PrivacyIcon />
+                  <Text size={3} weight="medium" maxWidth="100%">
+                    {sandboxTitle}
+                  </Text>
+                </Stack>
               </Tooltip>
             )}
           </Element>

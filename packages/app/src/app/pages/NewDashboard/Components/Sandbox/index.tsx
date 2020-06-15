@@ -6,10 +6,17 @@ import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import { Icon } from '@codesandbox/components';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
+
+const PrivacyIcons = {
+  0: () => null,
+  1: () => <Icon name="link" size={12} />,
+  2: () => <Icon name="lock" size={12} />,
+};
 
 const GenericSandbox = ({ sandbox, ...props }) => {
   const {
@@ -25,6 +32,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
   });
 
   const TemplateIcon = getTemplateIcon(sandbox);
+  const PrivacyIcon = PrivacyIcons[sandbox.privacy];
 
   /* Drag logic */
 
@@ -164,6 +172,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     sandbox,
     isTemplate: sandbox.isTemplate,
     TemplateIcon,
+    PrivacyIcon,
     // edit mode
     editing: isRenaming && selected,
     newTitle,
