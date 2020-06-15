@@ -4,6 +4,7 @@ import { useOvermind } from 'app/overmind';
 import { useHistory } from 'react-router-dom';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
+
 import {
   Stack,
   Input,
@@ -14,10 +15,23 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 
+import { Overlay } from 'app/components/Overlay';
+import { Notifications } from './Notifications';
+
 export const Header = ({ onSidebarToggle }) => {
   const [value, setValue] = useState('');
+
   const {
-    actions: { modalOpened },
+    actions: {
+      modalOpened,
+      userNotifications: { notificationsClosed, notificationsOpened },
+    },
+    state: {
+      // isLoggedIn,
+      // isAuthenticating,
+      user,
+      userNotifications: { notificationsOpened: notificationsMenuOpened },
+    },
   } = useOvermind();
 
   const history = useHistory();
@@ -77,6 +91,26 @@ export const Header = ({ onSidebarToggle }) => {
         </Button>
         <Button variant="secondary" css={css({ size: 26 })}>
           <Icon name="bell" size={11} title="Notifications" />
+
+          {user && (
+            <Overlay
+              content={Notifications}
+              event="Notifications"
+              isOpen={notificationsMenuOpened}
+              noHeightAnimation
+              onClose={notificationsClosed}
+              onOpen={notificationsOpened}
+            >
+              {open => (
+                <Icon
+                  name="bell"
+                  size={11}
+                  title="Notifications"
+                  onClick={open}
+                />
+              )}
+            </Overlay>
+          )}
         </Button>
 
         <UserMenu>
