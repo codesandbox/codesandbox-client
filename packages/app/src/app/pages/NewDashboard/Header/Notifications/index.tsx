@@ -1,6 +1,5 @@
-import gql from 'graphql-tag';
-import React from 'react';
-import { useQuery } from '@apollo/react-hooks';
+import { useOvermind } from 'app/overmind';
+import React, { useEffect } from 'react';
 import {
   Element,
   Stack,
@@ -9,27 +8,11 @@ import {
   ListAction,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { File as NotificationSkeleton } from 'app/pages/Sandbox/Editor/Skeleton';
+import { Skeleton } from './Skeleton';
 
 import { SandboxInvitation } from './notifications/SandboxInvitation';
 import { TeamAccepted } from './notifications/TeamAccepted';
 import { TeamInvite } from './notifications/TeamInvite';
-
-export const VIEW_QUERY = gql`
-  query RecentNotifications {
-    me {
-      notifications(
-        limit: 20
-        orderBy: { field: "insertedAt", direction: ASC }
-      ) {
-        id
-        type
-        data
-        read
-      }
-    }
-  }
-`;
 
 const getNotificationComponent = (type, data, read) => {
   const parsedData = JSON.parse(data);
@@ -73,36 +56,26 @@ const getNotificationComponent = (type, data, read) => {
 };
 
 export const Notifications = props => {
-  const { loading, error, data } = useQuery(VIEW_QUERY);
+  const {
+    state: { userNotifications },
+    actions,
+  } = useOvermind();
+
+  useEffect(() => {
+    actions.userNotifications.getNotifications();
+  }, [actions.userNotifications]);
 
   const getContent = () => {
-    if (error) {
-      return (
-        <Text padding={4}>
-          Something went wrong while fetching notifications
-        </Text>
-      );
+    if (!userNotifications.notifications) {
+      return <Skeleton />;
     }
 
-    if (loading) {
-      return (
-        <>
-          <NotificationSkeleton />
-          <NotificationSkeleton />
-          <NotificationSkeleton />
-          <NotificationSkeleton />
-          <NotificationSkeleton />
-          <NotificationSkeleton />
-        </>
-      );
-    }
-
-    if (data.me.notifications.length === 0) {
+    if (userNotifications.notifications.length === 0) {
       return <Text padding={4}>You don{"'"}t have any notifications</Text>;
     }
 
-    return data.me.notifications.map(notification => (
-      <ListAction key={notification.id}>
+    return userNotifications.notifications.map(notification => (
+      <ListAction key={notification.id} css={css({ padding: 0 })}>
         {getNotificationComponent(
           notification.type,
           notification.data,
@@ -127,7 +100,7 @@ export const Notifications = props => {
       <Stack padding={4} align="center" justify="space-between">
         <Text>Notifications</Text>
       </Stack>
-      <List css={css({ maxHeight: 500, overflow: 'auto' })}>
+      <List css={css({ maxHeight: 400, overflow: 'auto' })}>
         {getContent()}
       </List>
     </Element>

@@ -33,7 +33,7 @@ export const Navigation: FunctionComponent<Props> = ({
 }) => {
   const {
     actions: {
-      userNotifications: { notificationsClosed, notificationsOpened },
+      userNotifications: { notificationsClosed, notificationsOpenedOld },
     },
     state: {
       isLoggedIn,
@@ -69,7 +69,7 @@ export const Navigation: FunctionComponent<Props> = ({
                 isOpen={notificationsMenuOpened}
                 noHeightAnimation
                 onClose={notificationsClosed}
-                onOpen={notificationsOpened}
+                onOpen={notificationsOpenedOld}
               >
                 {open => <ShowNotificationsAction openNotifications={open} />}
               </Overlay>
