@@ -170,7 +170,7 @@
     "overmind": "^24.0.0-1591450008009",
     "overmind-graphql": "^4.0.0-1591450008009",
     "overmind-react": "^25.0.0-1591450008009",
-    "phoenix": "^1.4.11",
+    "phoenix": "^1.5.3",
     "postcss": "^7.0.26",
     "postcss-selector-parser": "^2.2.3",
     "posthtml": "^0.11.3",
