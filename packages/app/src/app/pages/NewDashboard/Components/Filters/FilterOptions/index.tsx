@@ -62,7 +62,10 @@ export const FilterOptions: FunctionComponent<Props> = ({
                   <Menu.Item
                     field="title"
                     key={id || name}
-                    onSelect={() => toggleTemplate(id, !selected)}
+                    onSelect={() => {
+                      toggleTemplate(id, !selected);
+                      return { CLOSE_MENU: false };
+                    }}
                     css={css({
                       label: {
                         color: selected ? 'inherit' : 'mutedForeground',
@@ -82,12 +85,14 @@ export const FilterOptions: FunctionComponent<Props> = ({
               key="all"
               onSelect={() => {
                 if (allSelected) {
-                  return blacklistedTemplatesChanged(
+                  blacklistedTemplatesChanged(
                     possibleTemplates.map(({ id }) => id)
                   );
+                } else {
+                  blacklistedTemplatesCleared();
                 }
 
-                return blacklistedTemplatesCleared();
+                return { CLOSE_MENU: false };
               }}
               css={css({
                 color: allSelected ? 'body' : 'muted',
