@@ -48,6 +48,7 @@ import {
   usePrevious,
   wrapEvent,
 } from '@reach/utils';
+import { result } from 'lodash';
 
 const __DEV__ = false;
 ////////////////////////////////////////////////////////////////////////////////
@@ -395,8 +396,16 @@ const MenuItemImpl = forwardRefWithAs<MenuItemImplProps, 'div'>(
 
     function select() {
       focus(buttonRef.current);
-      onSelect && onSelect();
-      dispatch({ type: CLICK_MENU_ITEM });
+      if (onSelect) {
+        const result = onSelect();
+        if (result && result.CLOSE_MENU === false) {
+          // don't dispatch event
+        } else {
+          dispatch({ type: CLICK_MENU_ITEM });
+        }
+      } else {
+        dispatch({ type: CLICK_MENU_ITEM });
+      }
     }
 
     function handleClick(event: React.MouseEvent) {
@@ -515,7 +524,7 @@ export type MenuItemImplProps = {
    *
    * @see Docs https://reacttraining.com/reach-ui/menu-button#menuitem-onselect
    */
-  onSelect(): void;
+  onSelect(): void | { CLOSE_MENU: boolean };
   index?: number;
   isLink?: boolean;
   valueText?: string;
