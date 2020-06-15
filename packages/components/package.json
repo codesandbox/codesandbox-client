@@ -59,6 +59,7 @@
     "cpx": "^1.5.0",
     "if-env": "^1.0.4",
     "np": "^5.2.1",
+    "postinstall-postinstall": "^2.1.0",
     "rimraf": "^3.0.0",
     "storybook-addon-styled-component-theme": "^1.3.0",
     "typescript": "3.7.4"
