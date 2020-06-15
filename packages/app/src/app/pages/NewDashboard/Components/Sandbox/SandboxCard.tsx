@@ -13,7 +13,6 @@ import css from '@styled-system/css';
 export const SandboxCard = ({
   sandbox,
   sandboxTitle,
-  newTitle,
   TemplateIcon,
   // interactions
   selected,
@@ -24,6 +23,7 @@ export const SandboxCard = ({
   onContextMenu,
   // editing
   editing,
+  newTitle,
   onChange,
   onInputKeyDown,
   onSubmit,
@@ -59,20 +59,27 @@ export const SandboxCard = ({
       },
     })}
   >
-    <Element
-      as="div"
+    <Stack
       ref={thumbnailRef}
+      justify="center"
+      align="center"
       css={css({
         height: 160,
         backgroundColor: 'grays.600',
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
+        svg: {
+          filter: 'grayscale(1)',
+          opacity: 0.1,
+        },
       })}
       style={{
         backgroundImage: `url(${sandbox.screenshotUrl})`,
       }}
-    />
+    >
+      {sandbox.screenshotUrl ? null : <TemplateIcon width="60" height="60" />}
+    </Stack>
     <Element
       css={css({
         position: 'absolute',
@@ -89,6 +96,7 @@ export const SandboxCard = ({
     >
       <TemplateIcon width="16" height="16" />
     </Element>
+
     <Stack justify="space-between" align="center" marginLeft={4}>
       {editing ? (
         <form onSubmit={onSubmit}>
