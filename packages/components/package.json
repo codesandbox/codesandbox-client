@@ -28,10 +28,10 @@
     "prepublish": "yarn build"
   },
   "dependencies": {
-    "@reach/auto-id": "^0.7.1",
-    "@reach/menu-button": "^0.8.5",
-    "@reach/tooltip": "^0.8.6",
-    "@reach/visually-hidden": "^0.7.0",
+    "@reach/auto-id": "0.10.3",
+    "@reach/menu-button": "0.10.3",
+    "@reach/tooltip": "0.10.3",
+    "@reach/visually-hidden": "0.10.2",
     "@styled-system/css": "^5.1.4",
     "chromatic": "^4.0.2",
     "codesandbox-api": "0.0.24",

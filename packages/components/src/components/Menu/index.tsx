@@ -31,6 +31,9 @@ const PortalStyles = createGlobalStyle(
     '[data-reach-menu]': {
       zIndex: 11, // TODO: we need to sort out our z indexes!
     },
+    '[data-reach-menu][hidden],[data-reach-menu-popover][hidden]': {
+      display: 'none',
+    },
     '[data-reach-menu-list][data-component=MenuList]': {
       minWidth: 100,
       backgroundColor: 'menuList.background',
