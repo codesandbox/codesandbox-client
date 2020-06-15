@@ -53,6 +53,7 @@ export const markAllNotificationsAsRead: AsyncAction = async ({
   state,
   effects,
 }) => {
+  if (!state.userNotifications.notifications) return;
   const oldNotifications = state.userNotifications.notifications;
   const count = state.userNotifications.unreadCount;
   try {
