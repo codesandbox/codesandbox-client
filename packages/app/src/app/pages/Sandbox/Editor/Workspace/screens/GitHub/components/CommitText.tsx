@@ -59,7 +59,7 @@ export const CommitToPr = () => {
         <Text variant="muted">, any updates will be committed there.</Text>
       </Text>
       <Button
-        variant="link"
+        variant="secondary"
         onClick={() => {
           effects.browser.openWindow(
             `https://github.com/${baseGit.username}/${baseGit.repo}/pull/${prNumber}`

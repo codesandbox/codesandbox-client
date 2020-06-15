@@ -108,7 +108,7 @@ export const GitHub = () => {
 
   function getText() {
     if (gitState === SandboxGitState.OUT_OF_SYNC_SOURCE) {
-      return <OutOfSync changeCount={changeCount} />;
+      return <OutOfSync />;
     }
 
     if (gitState === SandboxGitState.OUT_OF_SYNC_PR_BASE) {
@@ -159,11 +159,7 @@ export const GitHub = () => {
                     css={{ display: 'block' }}
                   >
                     <Stack gap={3} align="center" marginBottom={4}>
-                      {getConflictIcon(
-                        originalGit.branch,
-                        conflict,
-                        modulesByPath
-                      )}
+                      {getConflictIcon(conflict, modulesByPath)}
                       <Text variant="muted">{conflict.filename}</Text>
                     </Stack>
                     <Text paddingBottom={4} size={3} block>

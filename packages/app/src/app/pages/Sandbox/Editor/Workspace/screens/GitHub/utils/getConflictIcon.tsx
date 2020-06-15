@@ -1,14 +1,11 @@
-import React from 'react-helmet';
 import { GitFileCompare } from '@codesandbox/common/lib/types';
-import { ConflictType } from '../types';
+import React from 'react';
+
 import { AddedIcon, ChangedIcon, DeletedIcon } from '../Icons';
+import { ConflictType } from '../types';
 import { getConflictType } from './getConflictType';
 
-export function getConflictIcon(
-  branch: string,
-  conflict: GitFileCompare,
-  modulesByPath: any
-) {
+export function getConflictIcon(conflict: GitFileCompare, modulesByPath: any) {
   const conflictType = getConflictType(conflict, modulesByPath);
 
   if (

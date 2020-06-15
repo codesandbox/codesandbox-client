@@ -13,6 +13,7 @@ import {
   UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import {
   NotificationMessage,
   NotificationStatus,
@@ -29,7 +30,6 @@ import * as childProcess from 'node-services/lib/child_process';
 import { TextOperation } from 'ot';
 import { json } from 'overmind';
 import io from 'socket.io-client';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
@@ -206,6 +206,8 @@ export class VSCodeEffect {
       // you should not be allowed to edit.
       options.reaction(
         state =>
+          (state.editor.currentSandbox &&
+            Boolean(state.editor.currentSandbox.git)) ||
           !state.live.isLive ||
           state.live.roomInfo?.mode === 'open' ||
           (state.live.roomInfo?.mode === 'classroom' &&
@@ -364,7 +366,6 @@ export class VSCodeEffect {
 
   public setReadOnly(enabled: boolean) {
     this.readOnly = enabled;
-
     this.updateOptions({ readOnly: enabled });
   }
 

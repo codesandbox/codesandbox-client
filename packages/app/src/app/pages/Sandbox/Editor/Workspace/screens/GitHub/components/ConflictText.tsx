@@ -2,17 +2,12 @@ import { Button, Stack, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
-export const OutOfSync = ({ changeCount }) => {
+export const OutOfSync: React.FC = () => {
   const {
     state: {
       git: { isResolving },
       editor: {
-        currentSandbox: {
-          originalGit,
-          baseGit,
-          originalGitCommitSha,
-          prNumber,
-        },
+        currentSandbox: { originalGit, originalGitCommitSha, prNumber },
       },
     },
     actions: {
@@ -25,19 +20,18 @@ export const OutOfSync = ({ changeCount }) => {
     <Stack direction="vertical">
       <Text size={3} paddingBottom={4} style={{ lineHeight: '19px' }}>
         <Text variant="muted">You are out of sync with changes in </Text>
-        {prNumber ? 'PR' : baseGit.branch}
+        {prNumber ? 'PR' : originalGit.branch}
         <Text variant="muted">
           , though you can safely just update the sandbox
         </Text>
       </Text>
       <Button
         loading={isResolving}
-        disabled={Boolean(changeCount)}
         onClick={() => {
           resolveOutOfSync();
         }}
       >
-        Update sandbox from {prNumber ? 'PR' : baseGit.branch}
+        Update sandbox from {prNumber ? 'PR' : originalGit.branch}
       </Button>
       <Button
         marginTop={4}
@@ -54,7 +48,7 @@ export const OutOfSync = ({ changeCount }) => {
   );
 };
 
-export const OutOfSyncPR = () => {
+export const OutOfSyncPR: React.FC = () => {
   const {
     state: {
       git: { isResolving },

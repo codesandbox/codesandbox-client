@@ -153,13 +153,13 @@ export const createCommitClicked: AsyncAction = async ({
       : [git.sourceCommitSha!]
   );
   changes.added.forEach(change => {
-    git.sourceModulesByPath['/' + change.path] = change.content;
+    git.sourceModulesByPath[change.path] = change.content;
   });
   changes.modified.forEach(change => {
-    git.sourceModulesByPath['/' + change.path] = change.content;
+    git.sourceModulesByPath[change.path] = change.content;
   });
   changes.deleted.forEach(path => {
-    delete git.sourceModulesByPath['/' + path];
+    delete git.sourceModulesByPath[path];
   });
   actions.git._setGitChanges();
   sandbox.originalGit!.commitSha = commit.sha;
@@ -210,13 +210,13 @@ export const createPrClicked: AsyncAction = async ({
   );
 
   changes.added.forEach(change => {
-    git.sourceModulesByPath['/' + change.path] = change.content;
+    git.sourceModulesByPath[change.path] = change.content;
   });
   changes.modified.forEach(change => {
-    git.sourceModulesByPath['/' + change.path] = change.content;
+    git.sourceModulesByPath[change.path] = change.content;
   });
   changes.deleted.forEach(path => {
-    delete git.sourceModulesByPath['/' + path];
+    delete git.sourceModulesByPath[path];
   });
   actions.git._setGitChanges();
 
@@ -462,13 +462,16 @@ export const _setGitChanges: Action = ({ state }) => {
   state.editor.currentSandbox!.modules.forEach(module => {
     if (!state.git.sourceModulesByPath[module.path]) {
       changes.added.push(module.path);
-    } else if (state.git.sourceModulesByPath[module.path] !== module.code) {
+    } else if (
+      !module.isBinary &&
+      state.git.sourceModulesByPath[module.path] !== module.code
+    ) {
       changes.modified.push(module.path);
     }
   });
-  state.editor.sandboxes[state.git.sourceSandboxId!].modules.forEach(module => {
-    if (!state.editor.modulesByPath[module.path]) {
-      changes.deleted.push(module.path);
+  Object.keys(state.git.sourceModulesByPath).forEach(path => {
+    if (!state.editor.modulesByPath[path]) {
+      changes.deleted.push(path);
     }
   });
   state.git.gitChanges = changes;

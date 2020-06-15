@@ -13,7 +13,7 @@ export const ConflictsSource = ({
     <Stack direction="vertical">
       <Text size={3} paddingBottom={4} style={{ lineHeight: '19px' }}>
         <Text variant="muted">You are in conflict with changes on </Text>
-        {prNumber ? 'PR' : baseGit.branch}
+        {prNumber ? 'PR' : originalGit.branch}
         <Text variant="muted">
           , please resolve the conflicts and commit your changes
         </Text>

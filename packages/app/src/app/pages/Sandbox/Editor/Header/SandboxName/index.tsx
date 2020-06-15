@@ -208,7 +208,7 @@ export const SandboxName: FunctionComponent = () => {
             interactive
             placement="bottom"
           >
-            <TemplateBadge style={{ margin: 0 }}>
+            <TemplateBadge style={{ margin: 0, cursor: 'default' }}>
               <GitHubIcon width={15} />
               <Text paddingLeft={2}>
                 {currentSandbox.git ? (

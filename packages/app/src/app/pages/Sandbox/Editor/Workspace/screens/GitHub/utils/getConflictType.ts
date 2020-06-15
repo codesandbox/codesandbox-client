@@ -1,4 +1,5 @@
 import { GitFileCompare } from '@codesandbox/common/lib/types';
+
 import { ConflictType } from '../types';
 
 export function getConflictType(

@@ -58,6 +58,7 @@ export const CommitForm = () => {
   const canUpdate =
     hasChanges && isAllModulesSynced && !isCommitting && !isCreatingPr;
   const showSelector = permission !== 'read' && !(isCommitting || isCreatingPr);
+  const evaluatedAction = permission === 'read' ? 'pr' : currentAction;
 
   if (currentSandbox.prNumber) {
     return (
@@ -69,7 +70,7 @@ export const CommitForm = () => {
       >
         <FormField direction="vertical" label="Title" hideLabel>
           <Input
-            placeholder="Title"
+            placeholder="Summary (required)"
             onChange={changeTitle}
             value={title}
             disabled={!hasChanges || isCommitting || isCreatingPr}
@@ -88,7 +89,7 @@ export const CommitForm = () => {
           <Button
             loading={isCommitting}
             variant="primary"
-            disabled={!canUpdate}
+            disabled={!title || !canUpdate}
             onClick={() => createCommitClicked()}
           >
             {getButtonTitle('Update PR')}
@@ -151,9 +152,9 @@ export const CommitForm = () => {
                   }
             }
             disabled={!title || !canUpdate}
-            onClick={() => actions[currentAction].action()}
+            onClick={() => actions[evaluatedAction].action()}
           >
-            {actions[currentAction].text}
+            {actions[evaluatedAction].text}
           </Button>
           {showSelector ? (
             <>
@@ -176,14 +177,14 @@ export const CommitForm = () => {
                     width: '252px',
                   }}
                 >
-                  <Menu.Item onSelect={() => setCurrentAction('pr')}>
-                    {getButtonTitle(
-                      `Create PR branch (csb-${currentSandbox.id})`
-                    )}
-                  </Menu.Item>
                   <Menu.Item onSelect={() => setCurrentAction('branch')}>
                     {getButtonTitle(
                       `Commit to branch (${currentSandbox.originalGit.branch})`
+                    )}
+                  </Menu.Item>
+                  <Menu.Item onSelect={() => setCurrentAction('pr')}>
+                    {getButtonTitle(
+                      `Create PR branch (csb-${currentSandbox.id})`
                     )}
                   </Menu.Item>
                 </Menu.List>
@@ -192,7 +193,8 @@ export const CommitForm = () => {
           ) : null}
         </Stack>
       </Stack>
-      {currentSandbox.originalGit.branch === 'master' ? (
+      {evaluatedAction === 'branch' &&
+      currentSandbox.originalGit.branch === 'master' ? (
         <Text paddingX={8} paddingTop={2} size={3}>
           <Text variant="muted">Caution, committing to </Text> master
         </Text>

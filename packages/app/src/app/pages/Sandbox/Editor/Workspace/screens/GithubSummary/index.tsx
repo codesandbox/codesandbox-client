@@ -40,7 +40,7 @@ export const GithubSummary = () => {
           <Text variant="muted" size={3}>
             This Sandbox is in sync with{' '}
             <Text weight="bold">{editor.currentSandbox.git.branch}</Text> on
-            GitHub. To make changes, fork the Sandbox
+            GitHub
           </Text>
           <Button
             marginTop={8}
@@ -48,7 +48,7 @@ export const GithubSummary = () => {
             loading={editor.isForkingSandbox}
             onClick={() => forkSandboxClicked()}
           >
-            {editor.isForkingSandbox ? 'Forking...' : 'Fork'}
+            {editor.isForkingSandbox ? 'Forking...' : 'Edit sandbox'}
           </Button>
         </Element>
       </Collapsible>
