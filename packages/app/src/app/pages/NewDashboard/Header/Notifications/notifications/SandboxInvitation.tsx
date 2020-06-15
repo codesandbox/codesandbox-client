@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import css from '@styled-system/css';
-import { Stack, Element, Text } from '@codesandbox/components';
+import { Stack, Element, Text, ListAction } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Authorization } from 'app/graphql/types';
 
@@ -57,34 +57,36 @@ export const SandboxInvitation = ({
   }
 
   return (
-    <Element
-      as={Link}
-      to={sandboxUrl({ id: sandboxId, alias: sandboxAlias })}
-      css={css({
-        opacity: read ? 0.4 : 1,
-        textDecoration: 'none',
-        color: 'inherit',
-      })}
-    >
-      <Stack align="center" gap={4} padding={4}>
-        <Element css={css({ position: 'relative' })}>
-          <Element
-            as="img"
-            src={inviterAvatar}
-            alt={inviterName}
-            css={css({ width: 32, height: 32, display: 'block' })}
-          />
-          <Icon
-            read={read}
-            css={css({ position: 'absolute', bottom: '-4px', right: '-4px' })}
-          />
-        </Element>
+    <ListAction key={sandboxId} css={css({ padding: 0 })}>
+      <Element
+        as={Link}
+        to={sandboxUrl({ id: sandboxId, alias: sandboxAlias })}
+        css={css({
+          opacity: read ? 0.4 : 1,
+          textDecoration: 'none',
+          color: 'inherit',
+        })}
+      >
+        <Stack align="center" gap={4} padding={4}>
+          <Element css={css({ position: 'relative' })}>
+            <Element
+              as="img"
+              src={inviterAvatar}
+              alt={inviterName}
+              css={css({ width: 32, height: 32, display: 'block' })}
+            />
+            <Icon
+              read={read}
+              css={css({ position: 'absolute', bottom: '-4px', right: '-4px' })}
+            />
+          </Element>
 
-        <Text size={3} variant="muted">
-          {inviterName} <Text css={css({ color: 'white' })}>invited</Text> you
-          to {nicePermissionName} {niceSandboxTitle}
-        </Text>
-      </Stack>
-    </Element>
+          <Text size={3} variant="muted">
+            {inviterName} <Text css={css({ color: 'white' })}>invited</Text> you
+            to {nicePermissionName} {niceSandboxTitle}
+          </Text>
+        </Stack>
+      </Element>
+    </ListAction>
   );
 };

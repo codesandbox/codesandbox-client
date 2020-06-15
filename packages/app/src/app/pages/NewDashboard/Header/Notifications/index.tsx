@@ -1,12 +1,6 @@
 import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
-import {
-  Element,
-  Stack,
-  Text,
-  List,
-  ListAction,
-} from '@codesandbox/components';
+import { Element, Stack, Text, List } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Skeleton } from './Skeleton';
 
@@ -74,15 +68,13 @@ export const Notifications = props => {
       return <Text padding={4}>You don{"'"}t have any notifications</Text>;
     }
 
-    return userNotifications.notifications.map(notification => (
-      <ListAction key={notification.id} css={css({ padding: 0 })}>
-        {getNotificationComponent(
-          notification.type,
-          notification.data,
-          notification.read
-        )}
-      </ListAction>
-    ));
+    return userNotifications.notifications.map(notification =>
+      getNotificationComponent(
+        notification.type,
+        notification.data,
+        notification.read
+      )
+    );
   };
 
   return (

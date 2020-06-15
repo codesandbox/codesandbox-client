@@ -1,15 +1,8 @@
-import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
-import {
-  REJECT_TEAM_INVITATION,
-  ACCEPT_TEAM_INVITATION,
-} from 'app/pages/Dashboard/queries';
-import history from 'app/utils/history';
 import css from '@styled-system/css';
-import { Stack, Element, Button, Text } from '@codesandbox/components';
-import { useMutation } from '@apollo/react-hooks';
+import { Stack, Element, Text, ListAction } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
 
 const Icon = ({ read, ...props }) => (
   <Stack
@@ -56,79 +49,47 @@ export const TeamInvite: FunctionComponent<Props> = ({
   inviterAvatar,
 }) => {
   const {
-    actions: { acceptTeamInvitation, rejectTeamInvitation },
+    actions: { userNotifications },
   } = useOvermind();
-  const [
-    acceptTeamInvitationMutation,
-    { loading: loadingAccept },
-  ] = useMutation(ACCEPT_TEAM_INVITATION, {
-    refetchQueries: ['RecentNotifications', 'TeamsSidebar'],
-    variables: {
-      teamId,
-    },
-    onCompleted: () => {
-      acceptTeamInvitation({ teamName, teamId });
-
-      history.push(teamOverviewUrl(teamId));
-    },
-  });
-  const [
-    rejectTeamInvitationMutation,
-    { loading: loadingReject },
-  ] = useMutation(REJECT_TEAM_INVITATION, {
-    refetchQueries: ['RecentNotifications'],
-    variables: {
-      teamId,
-    },
-    onCompleted: () => rejectTeamInvitation({ teamName }),
-  });
-
   return (
-    <Element
-      css={css({
-        opacity: read ? 0.4 : 1,
-      })}
+    <ListAction
+      onClick={() =>
+        read
+          ? () => {}
+          : userNotifications.openTeamAcceptModal({
+              teamName,
+              teamId,
+              userAvatar: inviterName,
+            })
+      }
+      key={teamId}
+      css={css({ padding: 0 })}
     >
-      <Stack align="center" gap={4} padding={4}>
-        <Element css={css({ position: 'relative' })}>
-          <Element
-            as="img"
-            src={inviterAvatar}
-            alt={inviterName}
-            css={css({ width: 32, height: 32, display: 'block' })}
-          />
-          <Icon
-            read={read}
-            css={css({ position: 'absolute', bottom: '-4px', right: '-4px' })}
-          />
-        </Element>
+      <Element
+        css={css({
+          opacity: read ? 0.4 : 1,
+        })}
+      >
+        <Stack align="center" gap={4} padding={4}>
+          <Element css={css({ position: 'relative' })}>
+            <Element
+              as="img"
+              src={inviterAvatar}
+              alt={inviterName}
+              css={css({ width: 32, height: 32, display: 'block' })}
+            />
+            <Icon
+              read={read}
+              css={css({ position: 'absolute', bottom: '-4px', right: '-4px' })}
+            />
+          </Element>
 
-        <Text size={3} variant="muted">
-          {inviterName} <Text css={css({ color: 'white' })}>invites</Text> you
-          to join team {teamName}
-        </Text>
-      </Stack>
-
-      {!read && (
-        <Stack css={css({ width: '100%', marginTop: 3 })}>
-          <Button
-            onClick={() => rejectTeamInvitationMutation()}
-            disabled={loadingReject}
-            variant="secondary"
-            css={{ width: '50%' }}
-          >
-            Decline
-          </Button>
-
-          <Button
-            onClick={() => acceptTeamInvitationMutation()}
-            disabled={loadingAccept}
-            css={{ width: '50%' }}
-          >
-            Accept
-          </Button>
+          <Text size={3} variant="muted">
+            {inviterName} <Text css={css({ color: 'white' })}>invites</Text> you
+            to join team {teamName}
+          </Text>
         </Stack>
-      )}
-    </Element>
+      </Element>
+    </ListAction>
   );
 };

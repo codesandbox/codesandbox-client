@@ -85,3 +85,12 @@ export const getNotifications: AsyncAction = async ({ state, effects }) => {
     );
   }
 };
+
+export const openTeamAcceptModal: Action<{
+  teamName: string;
+  teamId: string;
+  userAvatar: string;
+}> = ({ state }, activeInvitation) => {
+  state.userNotifications.activeInvitation = activeInvitation;
+  state.currentModal = 'teamInvite';
+};

@@ -5,6 +5,11 @@ type State = {
   connected: boolean;
   unreadCount: number;
   notificationsOpened: boolean;
+  activeInvitation: {
+    teamName: string;
+    teamId: string;
+    userAvatar: string;
+  } | null;
 };
 
 export const state: State = {
@@ -12,4 +17,5 @@ export const state: State = {
   connected: false,
   unreadCount: 0,
   notificationsOpened: false,
+  activeInvitation: null,
 };

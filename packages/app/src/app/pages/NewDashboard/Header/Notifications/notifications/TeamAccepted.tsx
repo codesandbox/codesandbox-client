@@ -1,7 +1,7 @@
 import React from 'react';
 
 import css from '@styled-system/css';
-import { Stack, Element, Text } from '@codesandbox/components';
+import { Stack, Element, Text, ListAction } from '@codesandbox/components';
 
 interface Props {
   read: boolean;
@@ -40,29 +40,31 @@ export const TeamAccepted = ({
   userName,
   userAvatar,
 }: Props) => (
-  <Element
-    css={css({
-      opacity: read ? 0.4 : 1,
-    })}
-  >
-    <Stack align="center" gap={4} padding={4}>
-      <Element css={css({ position: 'relative' })}>
-        <Element
-          as="img"
-          src={userAvatar}
-          alt={userName}
-          css={css({ width: 32, height: 32, display: 'block' })}
-        />
-        <Icon
-          read={read}
-          css={css({ position: 'absolute', bottom: '-4px', right: '-4px' })}
-        />
-      </Element>
+  <ListAction key={teamName} css={css({ padding: 0 })}>
+    <Element
+      css={css({
+        opacity: read ? 0.4 : 1,
+      })}
+    >
+      <Stack align="center" gap={4} padding={4}>
+        <Element css={css({ position: 'relative' })}>
+          <Element
+            as="img"
+            src={userAvatar}
+            alt={userName}
+            css={css({ width: 32, height: 32, display: 'block' })}
+          />
+          <Icon
+            read={read}
+            css={css({ position: 'absolute', bottom: '-4px', right: '-4px' })}
+          />
+        </Element>
 
-      <Text size={3} variant="muted">
-        {userName} <Text css={css({ color: 'white' })}>accepted</Text> your
-        invitation to join {teamName}!
-      </Text>
-    </Stack>
-  </Element>
+        <Text size={3} variant="muted">
+          {userName} <Text css={css({ color: 'white' })}>accepted</Text> your
+          invitation to join {teamName}!
+        </Text>
+      </Stack>
+    </Element>
+  </ListAction>
 );
