@@ -11,7 +11,7 @@ import React from 'react';
 export const MergedPr: React.FC = () => {
   const { actions } = useOvermind();
   return (
-    <Collapsible title="Github" defaultOpen>
+    <Collapsible title="GitHub" defaultOpen>
       <Element paddingX={2}>
         <Stack direction="vertical">
           <Text size={3} paddingBottom={4}>

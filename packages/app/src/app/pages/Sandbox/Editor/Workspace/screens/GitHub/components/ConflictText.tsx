@@ -1,6 +1,6 @@
-import React from 'react';
 import { Button, Stack, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import React from 'react';
 
 export const OutOfSync = ({ changeCount }) => {
   const {
@@ -48,7 +48,7 @@ export const OutOfSync = ({ changeCount }) => {
           );
         }}
       >
-        View Changes on Github
+        View Changes on GitHub
       </Button>
     </Stack>
   );
@@ -94,7 +94,7 @@ export const OutOfSyncPR = () => {
           );
         }}
       >
-        View Changes on Github
+        View Changes on GitHub
       </Button>
     </Stack>
   );

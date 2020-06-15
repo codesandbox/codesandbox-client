@@ -40,7 +40,7 @@ export const GithubSummary = () => {
           <Text variant="muted" size={3}>
             This Sandbox is in sync with{' '}
             <Text weight="bold">{editor.currentSandbox.git.branch}</Text> on
-            Github. To make changes, fork the Sandbox
+            GitHub. To make changes, fork the Sandbox
           </Text>
           <Button
             marginTop={8}

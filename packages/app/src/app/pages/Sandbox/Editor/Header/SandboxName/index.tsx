@@ -197,7 +197,7 @@ export const SandboxName: FunctionComponent = () => {
             content={
               <>
                 This sandbox is a Githbub sandbox, you can learn more about
-                Github sandboxes in the{' '}
+                GitHub sandboxes in the{' '}
                 <Link target="_blank" to="/docs/git">
                   docs
                 </Link>

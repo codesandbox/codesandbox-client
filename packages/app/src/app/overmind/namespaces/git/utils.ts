@@ -12,7 +12,7 @@ export function createDiff(textA, textB) {
       currentConflict!.a,
       '=======',
       currentConflict!.b,
-      '>>>>>>> Github',
+      '>>>>>>> GitHub',
       line
     );
     currentConflict = null;

@@ -1,6 +1,6 @@
-import React from 'react';
 import { Button, Stack, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import React from 'react';
 
 export const ConflictsPRBase = ({
   originalGit,
@@ -26,7 +26,7 @@ export const ConflictsPRBase = ({
           );
         }}
       >
-        View Changes on Github
+        View Changes on GitHub
       </Button>
     </Stack>
   );

@@ -33,7 +33,7 @@ export const PROJECT_SUMMARY: INavigationItem = {
 
 export const GITHUB_SUMMARY: INavigationItem = {
   id: 'github-summary',
-  name: 'Github Info',
+  name: 'GitHub Info',
   hasCustomHeader: true,
 };
 
