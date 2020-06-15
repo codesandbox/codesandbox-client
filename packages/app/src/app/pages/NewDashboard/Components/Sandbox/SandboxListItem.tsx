@@ -17,6 +17,9 @@ import css from '@styled-system/css';
 export const SandboxListItem = ({
   sandbox,
   sandboxTitle,
+  TemplateIcon,
+  PrivacyIcon,
+  screenshotUrl,
   // interactions
   selected,
   onClick,
@@ -62,9 +65,11 @@ export const SandboxListItem = ({
     <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
       <Column span={[12, 5, 5]}>
         <Stack gap={4} align="center" marginLeft={2}>
-          <Element
+          <Stack
             as="div"
             ref={thumbnailRef}
+            justify="center"
+            align="center"
             css={css({
               borderRadius: 'small',
               height: 32,
@@ -73,11 +78,17 @@ export const SandboxListItem = ({
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',
               border: '1px solid',
-              borderColor: 'grays.600',
+              borderColor: 'grays.500',
               flexShrink: 0,
+              svg: {
+                filter: 'grayscale(1)',
+                opacity: 0.1,
+              },
             })}
-            style={{ backgroundImage: `url(${sandbox.screenshotUrl})` }}
-          />
+            style={{ backgroundImage: `url(${screenshotUrl})` }}
+          >
+            {screenshotUrl ? null : <TemplateIcon width="16" height="16" />}
+          </Stack>
           <Element style={{ width: 150 }}>
             {editing ? (
               <form onSubmit={onSubmit}>
@@ -91,9 +102,12 @@ export const SandboxListItem = ({
               </form>
             ) : (
               <Tooltip label={sandboxTitle}>
-                <Text size={3} weight="medium" maxWidth="100%">
-                  {sandboxTitle}
-                </Text>
+                <Stack gap={1} align="center">
+                  <PrivacyIcon />
+                  <Text size={3} weight="medium" maxWidth="100%">
+                    {sandboxTitle}
+                  </Text>
+                </Stack>
               </Tooltip>
             )}
           </Element>
