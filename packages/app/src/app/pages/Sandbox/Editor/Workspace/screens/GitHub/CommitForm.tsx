@@ -12,7 +12,7 @@ import { useOvermind } from 'app/overmind';
 import React, { ChangeEvent, useState } from 'react';
 
 export const CommitForm = () => {
-  const [currentAction, setCurrentAction] = useState('pr');
+  const [currentAction, setCurrentAction] = useState('branch');
   const {
     actions: {
       git: {
@@ -99,13 +99,15 @@ export const CommitForm = () => {
   }
 
   const actions = {
-    master: {
+    branch: {
       action: createCommitClicked,
-      text: getButtonTitle(`Commit to ${currentSandbox.originalGit.branch}`),
+      text: getButtonTitle(
+        `Commit to branch (${currentSandbox.originalGit.branch})`
+      ),
     },
     pr: {
       action: createPrClicked,
-      text: getButtonTitle('Create PR'),
+      text: getButtonTitle(`Create PR branch (csb-${currentSandbox.id})`),
     },
   };
 
@@ -118,7 +120,7 @@ export const CommitForm = () => {
     >
       <FormField direction="vertical" label="Title" hideLabel>
         <Input
-          placeholder="Title"
+          placeholder="Summary (required)"
           onChange={changeTitle}
           value={title}
           disabled={!hasChanges || isCommitting || isCreatingPr}
@@ -175,11 +177,13 @@ export const CommitForm = () => {
                   }}
                 >
                   <Menu.Item onSelect={() => setCurrentAction('pr')}>
-                    {getButtonTitle('Create PR')}
-                  </Menu.Item>
-                  <Menu.Item onSelect={() => setCurrentAction('master')}>
                     {getButtonTitle(
-                      `Commit to ${currentSandbox.originalGit.branch}`
+                      `Create PR branch (csb-${currentSandbox.id})`
+                    )}
+                  </Menu.Item>
+                  <Menu.Item onSelect={() => setCurrentAction('branch')}>
+                    {getButtonTitle(
+                      `Commit to branch (${currentSandbox.originalGit.branch})`
                     )}
                   </Menu.Item>
                 </Menu.List>
@@ -188,7 +192,7 @@ export const CommitForm = () => {
           ) : null}
         </Stack>
       </Stack>
-      {currentAction === 'master' ? (
+      {currentSandbox.originalGit.branch === 'master' ? (
         <Text paddingX={8} paddingTop={2} size={3}>
           <Text variant="muted">Caution, committing to </Text> master
         </Text>

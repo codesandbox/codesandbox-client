@@ -214,7 +214,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
     actions.internal.setCurrentSandbox(sandbox);
     actions.workspace.openDefaultItem();
-    effects.vscode.setReadOnly(Boolean(sandbox.git));
   } catch (error) {
     const data = error.response?.data;
     const errors = data?.errors;

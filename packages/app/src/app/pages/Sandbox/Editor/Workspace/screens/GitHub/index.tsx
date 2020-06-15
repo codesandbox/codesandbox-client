@@ -14,6 +14,7 @@ import React from 'react';
 
 import { Changes } from './Changes';
 import { CommitForm } from './CommitForm';
+import { ClosedPr } from './components/ClosedPr';
 import {
   CommitToMaster,
   CommitToPr,
@@ -81,6 +82,7 @@ export const GitHub = () => {
   if (!user.integrations.github) return <GithubLogin />;
   if (isFetching || isExported) return <Loading />;
   if (pr && pr.merged) return <MergedPr />;
+  if (pr && pr.state === 'closed') return <ClosedPr />;
 
   function getConflictButtons(conflict: GitFileCompare) {
     const conflictType = getConflictType(conflict, modulesByPath);

@@ -282,6 +282,7 @@ export type GitPr = {
   username: string;
   branch: string;
   merged: boolean;
+  state: string;
   mergeable: boolean;
   mergeableState: string;
   commitSha: string;

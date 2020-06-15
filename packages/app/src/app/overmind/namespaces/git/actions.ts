@@ -240,7 +240,23 @@ export const createPrClicked: AsyncAction = async ({
   state.git.conflicts = [];
   state.git.gitState = SandboxGitState.SYNCED;
 
-  effects.notificationToast.success('Successfully created your PR');
+  effects.notificationToast.add({
+    title: 'Successfully created your PR',
+    message: '',
+    status: convertTypeToStatus('success'),
+    actions: {
+      primary: {
+        label: 'Open PR',
+        run: () => {
+          effects.browser.openWindow(
+            `https://github.com/${sandbox.baseGit!.username}/${
+              sandbox.baseGit!.repo
+            }/pull/${sandbox.prNumber!}`
+          );
+        },
+      },
+    },
+  });
 };
 
 export const updateGitChanges: Operator = pipe(

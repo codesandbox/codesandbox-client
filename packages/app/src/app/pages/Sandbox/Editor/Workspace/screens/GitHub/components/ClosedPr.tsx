@@ -8,7 +8,7 @@ import {
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
-export const MergedPr: React.FC = () => {
+export const ClosedPr: React.FC = () => {
   const { actions } = useOvermind();
   return (
     <Collapsible title="GitHub" defaultOpen>
@@ -18,8 +18,8 @@ export const MergedPr: React.FC = () => {
             <Text variant="muted">This </Text> PR
             <Text variant="muted">
               {' '}
-              has been succesfully merged. To create new changes, go back to the
-              GitHub sandbox and create a new fork.{' '}
+              has been closed. To create new changes, go back to the GitHub
+              sandbox and create a new fork.{' '}
             </Text>
           </Text>
           <Button onClick={() => actions.git.openSourceSandbox()}>
