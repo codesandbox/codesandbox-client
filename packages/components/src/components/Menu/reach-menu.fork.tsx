@@ -48,7 +48,6 @@ import {
   usePrevious,
   wrapEvent,
 } from '@reach/utils';
-import { result } from 'lodash';
 
 const __DEV__ = false;
 ////////////////////////////////////////////////////////////////////////////////
