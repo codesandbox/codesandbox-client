@@ -34,6 +34,14 @@ const GenericSandbox = ({ sandbox, ...props }) => {
   const TemplateIcon = getTemplateIcon(sandbox);
   const PrivacyIcon = PrivacyIcons[sandbox.privacy];
 
+  let screenshotUrl = sandbox.screenshotUrl;
+  // We set a fallback thumbnail in the API which is used for
+  // both old and new dashboard, we can move this logic to the
+  // backend when we deprecate the old dashboard
+  if (screenshotUrl === 'https://codesandbox.io/static/img/banner.png') {
+    screenshotUrl = '/static/img/default-sandbox-thumbnail.png';
+  }
+
   /* Drag logic */
 
   const location = useLocation();
@@ -173,6 +181,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     isTemplate: sandbox.isTemplate,
     TemplateIcon,
     PrivacyIcon,
+    screenshotUrl,
     // edit mode
     editing: isRenaming && selected,
     newTitle,

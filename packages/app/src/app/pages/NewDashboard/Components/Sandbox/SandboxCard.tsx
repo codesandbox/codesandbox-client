@@ -15,6 +15,7 @@ export const SandboxCard = ({
   sandboxTitle,
   TemplateIcon,
   PrivacyIcon,
+  screenshotUrl,
   // interactions
   selected,
   onClick,
@@ -76,10 +77,10 @@ export const SandboxCard = ({
         },
       })}
       style={{
-        backgroundImage: `url(${sandbox.screenshotUrl})`,
+        backgroundImage: `url(${screenshotUrl})`,
       }}
     >
-      {sandbox.screenshotUrl ? null : <TemplateIcon width="60" height="60" />}
+      {screenshotUrl ? null : <TemplateIcon width="60" height="60" />}
     </Stack>
     <Element
       css={css({

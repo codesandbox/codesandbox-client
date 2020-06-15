@@ -19,6 +19,7 @@ export const SandboxListItem = ({
   sandboxTitle,
   TemplateIcon,
   PrivacyIcon,
+  screenshotUrl,
   // interactions
   selected,
   onClick,
@@ -84,11 +85,9 @@ export const SandboxListItem = ({
                 opacity: 0.1,
               },
             })}
-            style={{ backgroundImage: `url(${sandbox.screenshotUrl})` }}
+            style={{ backgroundImage: `url(${screenshotUrl})` }}
           >
-            {sandbox.screenshotUrl ? null : (
-              <TemplateIcon width="16" height="16" />
-            )}
+            {screenshotUrl ? null : <TemplateIcon width="16" height="16" />}
           </Stack>
           <Element style={{ width: 150 }}>
             {editing ? (
