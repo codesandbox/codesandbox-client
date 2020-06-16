@@ -375,7 +375,7 @@ export function generateExportGetter(
                 type: n.FunctionExpression,
                 id: {
                   type: n.Identifier,
-                  name: 'get',
+                  name: '$csbGet',
                 },
                 generator: false,
                 async: false,
