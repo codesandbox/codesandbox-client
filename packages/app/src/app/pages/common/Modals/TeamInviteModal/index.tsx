@@ -9,6 +9,7 @@ import history from 'app/utils/history';
 import { Element, Button, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useMutation } from '@apollo/react-hooks';
+import { TeamAvatar } from 'app/pages/NewDashboard/Sidebar/TeamAvatar';
 
 export const TeamInviteModal = () => {
   const {
@@ -50,14 +51,48 @@ export const TeamInviteModal = () => {
 
   return (
     <Element
-      padding={4}
-      paddingTop={6}
+      padding={6}
+      paddingTop={8}
       css={css({
         maxHeight: '70vh',
         overflow: 'auto',
         textAlign: 'center',
       })}
     >
+      <button
+        type="button"
+        onClick={modalClosed}
+        css={css({
+          position: 'absolute',
+          background: 'transparent',
+          border: 'none',
+          right: 4,
+          top: 4,
+          cursor: 'pointer',
+        })}
+      >
+        <svg width={10} height={10} fill="none" viewBox="0 0 10 10">
+          <path
+            fill="#fff"
+            d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
+          />
+        </svg>
+      </button>
+      <TeamAvatar
+        name={teamName}
+        css={css({
+          width: 80,
+          height: 80,
+          margin: 'auto',
+          marginBottom: 6,
+          border: '2px solid #242424',
+          borderRadius: 'medium',
+
+          span: {
+            fontSize: 8,
+          },
+        })}
+      />
       <Text align="center" weight="bold" block size={4} paddingBottom={2}>
         {teamName}
       </Text>

@@ -3,7 +3,7 @@ import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { colors } from 'app/pages/NewDashboard/Content/utils';
 
-export const TeamAvatar = ({ name, size = 'big' }) => {
+export const TeamAvatar = ({ name, size = 'big', ...props }) => {
   if (!name) return null;
 
   // consistent color
@@ -23,6 +23,7 @@ export const TeamAvatar = ({ name, size = 'big' }) => {
         backgroundColor: background,
         color: foreground,
       })}
+      {...props}
     >
       <Text size={size === 'small' ? 2 : 3}>{name[0]}</Text>
     </Stack>
