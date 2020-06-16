@@ -234,14 +234,7 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
             path=""
             folders={[
               ...folders,
-              ...(newFolderPath
-                ? [
-                    {
-                      path: newFolderPath,
-                      name: '',
-                    },
-                  ]
-                : []),
+              ...(newFolderPath ? [{ path: newFolderPath, name: '' }] : []),
             ]}
           />
 
@@ -325,7 +318,7 @@ const isSamePath = (draggedItem, dropPath) => {
   return false;
 };
 
-const RowItem = ({ name, path, icon, ...props }) => {
+const RowItem = ({ name, path, icon, setFoldersVisibility, ...props }) => {
   const accepts = [];
   if (!canNotAcceptSandboxes.includes(path)) accepts.push('sandbox');
   if (!canNotAcceptFolders.includes(path)) accepts.push('folder');
@@ -348,6 +341,26 @@ const RowItem = ({ name, path, icon, ...props }) => {
 
   const location = useLocation();
   const isCurrentLink = linkTo === location.pathname;
+
+  /** Toggle nested folders when user
+   * is drags an item over a folder after a treshold
+   * We open All sandboxes instantly because that's the root
+   * and you can't drop anything in it
+   */
+  const HOVER_THRESHOLD = name === 'All sandboxes' ? 0 : 500; // ms
+  const isOverCache = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!isOver) isOverCache.current = false;
+    else isOverCache.current = true;
+
+    const handler = () => {
+      if (isOverCache.current) setFoldersVisibility(true);
+    };
+
+    const timer = window.setTimeout(handler, HOVER_THRESHOLD);
+    return () => window.clearTimeout(timer);
+  }, [isOver, setFoldersVisibility, HOVER_THRESHOLD]);
 
   return (
     <ListAction
@@ -504,10 +517,11 @@ const NestableRowItem = ({ name, path, folders }) => {
   return (
     <>
       <RowItem
-        name={path}
+        name={name}
         path={path}
         icon="folder"
         style={{ height: nestingLevel ? 8 : 10 }}
+        setFoldersVisibility={setFoldersVisibility}
       >
         <Link
           onClick={() => history.push('/new-dashboard/all' + path)}
