@@ -314,7 +314,12 @@ class Live {
           .push(event, payload, timeout)
           .receive('ok', resolve)
           .receive('error', reject)
-          .receive('timeout', reject);
+          .receive('timeout', () => {
+            const error = new Error();
+            error.name = 'live-timeout';
+            error.message = `Live timeout on '${event}'`;
+            reject(error);
+          });
       } else {
         // we might try to send messages even when not on live, just
         // ignore it
