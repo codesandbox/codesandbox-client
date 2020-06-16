@@ -34,7 +34,7 @@ export const notificationsOpenedOld: AsyncAction = async ({ state }) => {
 
 export const notificationsOpened: AsyncAction = async ({ state, effects }) => {
   state.userNotifications.notificationsOpened = true;
-  await effects.gql.mutations.clearNotificationCount();
+  await effects.gql.mutations.clearNotificationCount({});
   state.userNotifications.unreadCount = 0;
 };
 
@@ -87,8 +87,8 @@ export const markAllNotificationsAsRead: AsyncAction = async ({
       })
     );
     state.userNotifications.unreadCount = 0;
-    await effects.gql.mutations.markAllNotificationsAsRead();
-    await effects.gql.mutations.clearNotificationCount();
+    await effects.gql.mutations.markAllNotificationsAsRead({});
+    await effects.gql.mutations.clearNotificationCount({});
   } catch {
     state.userNotifications.notifications = oldNotifications;
     state.userNotifications.unreadCount = count;
@@ -124,7 +124,7 @@ export const archiveAllNotifications: AsyncAction = async ({
   if (!state.userNotifications.notifications) return;
   const oldNots = state.userNotifications.notifications;
   try {
-    await effects.gql.mutations.archiveAllNotifications();
+    await effects.gql.mutations.archiveAllNotifications({});
 
     state.userNotifications.notifications = [];
   } catch {

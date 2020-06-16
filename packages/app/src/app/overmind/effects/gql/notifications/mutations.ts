@@ -2,7 +2,7 @@ import { gql, Query } from 'overmind-graphql';
 
 export const markAllNotificationsAsRead: Query<
   { markAllNotificationsAsRead: { id: string } },
-  null
+  {}
 > = gql`
   mutation MarkNotificationsAsRead {
     markAllNotificationsAsRead {
@@ -13,7 +13,7 @@ export const markAllNotificationsAsRead: Query<
 
 export const archiveAllNotifications: Query<
   { archiveAllNotifications: { id: string } },
-  null
+  {}
 > = gql`
   mutation ArchiveAllNotifications {
     archiveAllNotifications {
@@ -46,7 +46,7 @@ export const archiveNotification: Query<
 
 export const clearNotificationCount: Query<
   { clearNotificationCount: { id: string } },
-  null
+  {}
 > = gql`
   mutation ClearNotificationCount {
     clearNotificationCount {
