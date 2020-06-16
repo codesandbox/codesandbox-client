@@ -2,8 +2,10 @@ import React from 'react';
 
 import css from '@styled-system/css';
 import { Stack, Element, Text, ListAction } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
 
 interface Props {
+  id: string;
   read: boolean;
   teamName: string;
   userName: string;
@@ -35,36 +37,48 @@ const Icon = ({ read, ...props }) => (
 );
 
 export const TeamAccepted = ({
+  id,
   read,
   teamName,
   userName,
   userAvatar,
-}: Props) => (
-  <ListAction key={teamName} css={css({ padding: 0 })}>
-    <Element
-      css={css({
-        opacity: read ? 0.4 : 1,
-      })}
+}: Props) => {
+  const {
+    actions: {
+      userNotifications: { markNotificationAsRead },
+    },
+  } = useOvermind();
+  return (
+    <ListAction
+      key={teamName}
+      onClick={() => markNotificationAsRead(id)}
+      css={css({ padding: 0 })}
     >
-      <Stack align="center" gap={4} padding={4}>
-        <Element css={css({ position: 'relative' })}>
-          <Element
-            as="img"
-            src={userAvatar}
-            alt={userName}
-            css={css({ width: 32, height: 32, display: 'block' })}
-          />
-          <Icon
-            read={read}
-            css={css({ position: 'absolute', bottom: '-4px', right: '-4px' })}
-          />
-        </Element>
+      <Element
+        css={css({
+          opacity: read ? 0.4 : 1,
+        })}
+      >
+        <Stack align="center" gap={4} padding={4}>
+          <Element css={css({ position: 'relative' })}>
+            <Element
+              as="img"
+              src={userAvatar}
+              alt={userName}
+              css={css({ width: 32, height: 32, display: 'block' })}
+            />
+            <Icon
+              read={read}
+              css={css({ position: 'absolute', bottom: '-4px', right: '-4px' })}
+            />
+          </Element>
 
-        <Text size={3} variant="muted">
-          {userName} <Text css={css({ color: 'white' })}>accepted</Text> your
-          invitation to join {teamName}!
-        </Text>
-      </Stack>
-    </Element>
-  </ListAction>
-);
+          <Text size={3} variant="muted">
+            {userName} <Text css={css({ color: 'white' })}>accepted</Text> your
+            invitation to join {teamName}!
+          </Text>
+        </Stack>
+      </Element>
+    </ListAction>
+  );
+};

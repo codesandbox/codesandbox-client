@@ -1,13 +1,14 @@
 import { gql, Query } from 'overmind-graphql';
 import { Notification } from 'app/graphql/types';
 
-type lol = { me: { notifications: Notification[] } };
+type response = { me: { notifications: Notification[] } };
 
-export const getRecentNotifications: Query<lol, {}> = gql`
-  query RecentNotifications {
+export const getRecentNotifications: Query<response, { type: string[] }> = gql`
+  query RecentNotifications($type: [String]) {
     me {
       notifications(
         limit: 20
+        type: $type
         orderBy: { field: "insertedAt", direction: ASC }
       ) {
         id

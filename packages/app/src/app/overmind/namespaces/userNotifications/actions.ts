@@ -38,6 +38,30 @@ export const notificationsOpened: AsyncAction = async ({ state, effects }) => {
   state.userNotifications.unreadCount = 0;
 };
 
+export const filterNotifications: AsyncAction<string> = async (
+  { state, effects },
+  filter
+) => {
+  const filters = state.userNotifications.activeFilters;
+  if (filters.includes(filter)) {
+    state.userNotifications.activeFilters = filters.filter(f => f !== filter);
+  } else {
+    state.userNotifications.activeFilters = filters.concat(filter);
+  }
+  try {
+    const { me } = await effects.gql.queries.getRecentNotifications({
+      type: state.userNotifications.activeFilters,
+    });
+
+    state.userNotifications.notifications = me.notifications;
+  } catch {
+    effects.notificationToast.error(
+      'There has been a problem removing them from your team'
+    );
+    state.userNotifications.activeFilters = filters;
+  }
+};
+
 export const messageReceived: Action<{ event: string }> = (
   { state },
   { event }
@@ -77,9 +101,39 @@ export const markAllNotificationsAsRead: AsyncAction = async ({
   }
 };
 
+export const markNotificationAsRead: AsyncAction<string> = async (
+  { state, effects },
+  id
+) => {
+  const oldNots = state.userNotifications.notifications;
+  if (oldNots.find(not => not.id === id).read) return;
+  try {
+    await effects.gql.mutations.markNotificationAsRead({
+      notificationId: id,
+    });
+
+    state.userNotifications.notifications = state.userNotifications.notifications.map(
+      not => {
+        if (not.id === id) {
+          return {
+            ...not,
+            read: true,
+          };
+        }
+
+        return not;
+      }
+    );
+  } catch {
+    state.userNotifications.notifications = oldNots;
+  }
+};
+
 export const getNotifications: AsyncAction = async ({ state, effects }) => {
   try {
-    const { me } = await effects.gql.queries.getRecentNotifications({});
+    const { me } = await effects.gql.queries.getRecentNotifications({
+      type: [],
+    });
 
     state.userNotifications.notifications = me.notifications;
   } catch {

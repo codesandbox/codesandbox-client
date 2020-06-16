@@ -4,8 +4,10 @@ import css from '@styled-system/css';
 import { Stack, Element, Text, ListAction } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Authorization } from 'app/graphql/types';
+import { useOvermind } from 'app/overmind';
 
 interface ISandboxInvitationProps {
+  id: string;
   read: boolean;
   inviterAvatar: string;
   inviterName: string;
@@ -40,6 +42,7 @@ const Icon = ({ read, ...props }) => (
 );
 
 export const SandboxInvitation = ({
+  id,
   read,
   inviterAvatar,
   inviterName,
@@ -48,6 +51,11 @@ export const SandboxInvitation = ({
   sandboxTitle,
   authorization,
 }: ISandboxInvitationProps) => {
+  const {
+    actions: {
+      userNotifications: { markNotificationAsRead },
+    },
+  } = useOvermind();
   const niceSandboxTitle = sandboxTitle || sandboxAlias || sandboxId;
   let nicePermissionName = 'view';
   if (authorization === Authorization.Comment) {
@@ -57,7 +65,11 @@ export const SandboxInvitation = ({
   }
 
   return (
-    <ListAction key={sandboxId} css={css({ padding: 0 })}>
+    <ListAction
+      onClick={() => markNotificationAsRead(id)}
+      key={sandboxId}
+      css={css({ padding: 0 })}
+    >
       <Element
         as={Link}
         to={sandboxUrl({ id: sandboxId, alias: sandboxAlias })}
