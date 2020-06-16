@@ -6,6 +6,7 @@ import React, { useEffect } from 'react';
 import GoHome from 'react-icons/lib/go/home';
 import { Element } from '@codesandbox/components';
 import GoIssueOpened from 'react-icons/lib/go/issue-opened';
+import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
 // @ts-ignore
 import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
@@ -29,10 +30,14 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = ({
     actions: { codesadboxMounted },
     state: { isLoggedIn },
   } = useOvermind();
+  const [errorCode, setErrorCode] = React.useState<string | null>(null);
 
   useEffect(() => {
     codesadboxMounted();
-  }, [codesadboxMounted]);
+
+    const sentryCode = captureException(error);
+    setErrorCode(sentryCode);
+  }, [codesadboxMounted, error]);
 
   return (
     <Element
@@ -65,7 +70,7 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = ({
               small
               target="_blank"
               rel="noopener"
-              href={buildCrashReport({ error, trace })}
+              href={buildCrashReport({ error, trace, errorCode })}
             >
               <ButtonIcon>
                 <GoIssueOpened />

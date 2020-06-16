@@ -139,10 +139,11 @@ export const logBreadcrumb = (breadcrumb: Breadcrumb) => {
   }
 };
 
-export const captureException = err => {
+export const captureException = (err: Error) => {
   if (_Sentry) {
-    _Sentry.captureException(err);
+    return _Sentry.captureException(err);
   }
+  return null;
 };
 
 export const configureScope = cb => {
