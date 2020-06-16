@@ -7,19 +7,19 @@ import {
   UserSelection,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
-import { blocker } from 'app/utils/blocker';
 import {
   captureException,
   logBreadcrumb,
 } from '@codesandbox/common/lib/utils/analytics/sentry';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import VERSION from '@codesandbox/common/lib/version';
+import { blocker } from 'app/utils/blocker';
+import { AxiosError } from 'axios';
 import { camelizeKeys } from 'humps';
 import { SerializedTextOperation, TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
 import uuid from 'uuid';
 
-import { AxiosError } from 'axios';
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
 import { CodesandboxOTClientsManager } from './clients';
 
@@ -33,6 +33,7 @@ type Options = {
     moduleShortid: string;
     moduleInfo: IModuleStateModule;
   }): void;
+  onConnectionTimeout: () => void;
 };
 
 type JoinChannelResponse = {
@@ -54,10 +55,13 @@ declare global {
   }
 }
 
+const HALF_HOUR = 1800000;
+
 class Live {
   public socket: Socket;
 
   private identifier = uuid.v4();
+  private lastReceivedMessageTime = 0;
   private pendingMessages = new Map();
   private debug = _debug('cs:socket');
   private channel: Channel | null;
@@ -66,6 +70,7 @@ class Live {
   private presence: Presence;
   private provideJwtToken: () => Promise<string>;
   private onApplyOperation: (moduleShortid: string, operation: any) => void;
+  private onConnectionTimeout: () => void;
   private onOperationError: (payload: {
     moduleShortid: string;
     moduleInfo: IModuleStateModule;
@@ -138,6 +143,7 @@ class Live {
   initialize(options: Options) {
     this.provideJwtToken = options.provideJwtToken;
     this.onOperationError = options.onOperationError;
+    this.onConnectionTimeout = options.onConnectionTimeout;
     this.onApplyOperation = (moduleShortid, operation) =>
       options.onApplyOperation({
         moduleShortid,
@@ -173,18 +179,29 @@ class Live {
 
       let tries = 0;
       this.socket.onError(async () => {
-        // Regenerate a new JWT for the reconnect. This can be out of sync or happen more often than needed, but it's important
-        // to try multiple times in case there's a connection issue.
-        try {
-          const newJwt = await this.provideJwtToken();
-          jwt = newJwt;
-          tries = 0;
-        } catch (e) {
-          const error = e as AxiosError;
-          if (error.response?.status === 401 && tries++ > 4) {
-            // If we can't get a jwt because we're unauthorized, disconnect...
-            this.socket.disconnect();
+        // If we have not received a message for half an hour it means
+        // the computer has been sleeping and the live session is most likely
+        // closed. To properly recover we need to reconnect to the live session
+        if (
+          this.lastReceivedMessageTime &&
+          this.lastReceivedMessageTime + HALF_HOUR < Date.now()
+        ) {
+          this.lastReceivedMessageTime = 0;
+          this.onConnectionTimeout();
+        } else {
+          // Regenerate a new JWT for the reconnect. This can be out of sync or happen more often than needed, but it's important
+          // to try multiple times in case there's a connection issue.
+          try {
+            const newJwt = await this.provideJwtToken();
+            jwt = newJwt;
             tries = 0;
+          } catch (e) {
+            const error = e as AxiosError;
+            if (error.response?.status === 401 && tries++ > 4) {
+              // If we can't get a jwt because we're unauthorized, disconnect...
+              this.socket.disconnect();
+              tries = 0;
+            }
           }
         }
       });
@@ -278,6 +295,8 @@ class Live {
     }
 
     this.channel.onMessage = (event: any, data: any) => {
+      this.lastReceivedMessageTime = Date.now();
+
       const disconnected =
         (data == null || Object.keys(data).length === 0) &&
         event === 'phx_error';

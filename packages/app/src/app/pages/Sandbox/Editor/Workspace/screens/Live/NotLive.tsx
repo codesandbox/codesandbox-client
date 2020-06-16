@@ -1,14 +1,13 @@
-import React from 'react';
-import css from '@styled-system/css';
-
 import {
-  Element,
+  Button,
   Collapsible,
+  Element,
   Stack,
   Text,
-  Button,
 } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import React from 'react';
 
 import { LiveIcon } from './icons';
 

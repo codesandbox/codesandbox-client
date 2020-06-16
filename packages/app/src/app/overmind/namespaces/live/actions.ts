@@ -91,6 +91,10 @@ export const roomJoined: AsyncAction<{
   state.editor.isLoading = false;
 });
 
+export const onConnectionTimeout: Action = ({ state, actions }) => {
+  actions.editor.internal.initializeLiveSandbox(state.editor.currentSandbox!);
+};
+
 export const createLiveClicked: AsyncAction<string> = async (
   { actions, effects, state },
   sandboxId

@@ -15,6 +15,7 @@ export const onInitialize: OnInitialize = async (
     provideJwtToken,
     onApplyOperation: actions.live.applyTransformation,
     onOperationError: actions.live.onOperationError,
+    onConnectionTimeout: actions.live.onConnectionTimeout,
   });
 
   effects.flows.initialize(overmindInstance.reaction);
