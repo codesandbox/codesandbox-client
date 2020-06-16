@@ -2,6 +2,7 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Stack, Element, Icon, Text } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import css from '@styled-system/css';
 
 export const ContextMenu = ({
@@ -69,7 +70,10 @@ export const ContextMenu = ({
         </MenuItem>
         <MenuItem onClick={() => setRenaming(true)}>Rename folder</MenuItem>
         <MenuItem
-          onClick={() => actions.dashboard.deleteFolder({ path: folder.path })}
+          onClick={() => {
+            actions.dashboard.deleteFolder({ path: folder.path });
+            track('Dashboard2 - Delete folder', { source: 'Sidebar' });
+          }}
         >
           Delete folder
         </MenuItem>

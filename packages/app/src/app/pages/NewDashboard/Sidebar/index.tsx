@@ -6,6 +6,7 @@ import { join, dirname } from 'path';
 import { useOvermind } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import track from '@codesandbox/common/lib/utils/analytics';
 import {
   Element,
   List,
@@ -155,9 +156,10 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                   <Menu.List style={{ width: SIDEBAR_WIDTH, borderRadius: 0 }}>
                     <Menu.Item
                       css={{ textAlign: 'left' }}
-                      onSelect={() =>
-                        actions.dashboard.setActiveTeam({ id: null })
-                      }
+                      onSelect={() => {
+                        actions.dashboard.setActiveTeam({ id: null });
+                        track('Dashboard2 - Change workspace');
+                      }}
                     >
                       <Stack align="center">
                         <Stack
@@ -482,12 +484,14 @@ const NestableRowItem = ({ name, path, folders }) => {
       if (newName) {
         const folderPath = path.replace('__NEW__', newName);
         await actions.dashboard.createFolder(folderPath);
+        track('Dashboard2 - Create Folder', { source: 'Sidebar' });
       }
     } else {
       await actions.dashboard.renameFolder({
         path,
         newPath: join(dirname(path), newName),
       });
+      track('Dashboard2 - Rename Folder', { source: 'Sidebar' });
     }
 
     setNewFolderPath(null);

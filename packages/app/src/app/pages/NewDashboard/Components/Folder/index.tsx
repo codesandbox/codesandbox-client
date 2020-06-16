@@ -4,6 +4,7 @@ import { useDrop, useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
 import { useLocation, useHistory } from 'react-router-dom';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { useOvermind } from 'app/overmind';
 import { FolderCard } from './FolderCard';
@@ -171,12 +172,14 @@ export const Folder = ({
         folderPath += '/' + newName;
 
         await actions.dashboard.createFolder(folderPath);
+        track('Dashboard2 - Create Folder', { source: 'Grid' });
       }
     } else {
       await actions.dashboard.renameFolder({
         path,
         newPath: join(dirname(path), newName),
       });
+      track('Dashboard2 - Rename Folder', { source: 'Grid' });
     }
 
     if (setCreating) setCreating(false);

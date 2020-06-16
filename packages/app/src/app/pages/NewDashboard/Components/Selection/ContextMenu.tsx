@@ -3,6 +3,7 @@ import { useOvermind } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Element, Menu, Icon, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -279,7 +280,10 @@ const FolderMenu = ({ folder, setRenaming }) => {
     <>
       <MenuItem onClick={() => setRenaming(true)}>Rename folder</MenuItem>
       <MenuItem
-        onClick={() => actions.dashboard.deleteFolder({ path: folder.path })}
+        onClick={() => {
+          actions.dashboard.deleteFolder({ path: folder.path });
+          track('Dashboard2 - Delete folder', { source: 'Grid' });
+        }}
       >
         Delete folder
       </MenuItem>
