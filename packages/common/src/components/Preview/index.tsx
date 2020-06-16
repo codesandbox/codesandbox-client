@@ -608,7 +608,7 @@ class BasePreview extends React.Component<Props, State> {
           {(style: { opacity: number }) => (
             <>
               <StyledFrame
-                allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+                allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking; bluetooth"
                 sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
                 src={this.state.url}
                 ref={this.setIframeElement}
