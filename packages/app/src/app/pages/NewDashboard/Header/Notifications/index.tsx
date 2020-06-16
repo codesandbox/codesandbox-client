@@ -15,12 +15,13 @@ import { SandboxInvitation } from './notifications/SandboxInvitation';
 import { TeamAccepted } from './notifications/TeamAccepted';
 import { TeamInvite } from './notifications/TeamInvite';
 
-const getNotificationComponent = (id, type, data, read) => {
+const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
   const parsedData = JSON.parse(data);
 
   if (type === 'team_invite') {
     return (
       <TeamInvite
+        insertedAt={insertedAt}
         id={id}
         read={read}
         teamId={parsedData.team_id}
@@ -33,6 +34,7 @@ const getNotificationComponent = (id, type, data, read) => {
   if (type === 'team_accepted') {
     return (
       <TeamAccepted
+        insertedAt={insertedAt}
         id={id}
         read={read}
         teamName={parsedData.team_name}
@@ -44,6 +46,7 @@ const getNotificationComponent = (id, type, data, read) => {
   if (type === 'sandbox_invitation') {
     return (
       <SandboxInvitation
+        insertedAt={insertedAt}
         id={id}
         read={read}
         inviterAvatar={parsedData.inviter_avatar}
@@ -81,12 +84,7 @@ export const Notifications = props => {
     }
 
     return userNotifications.notifications.map(notification =>
-      getNotificationComponent(
-        notification.id,
-        notification.type,
-        notification.data,
-        notification.read
-      )
+      getNotificationComponent(notification)
     );
   };
 

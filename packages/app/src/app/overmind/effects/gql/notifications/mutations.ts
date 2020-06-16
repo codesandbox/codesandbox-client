@@ -22,6 +22,17 @@ export const markNotificationAsRead: Query<
   }
 `;
 
+export const archiveNotification: Query<
+  { archiveNotification: { id: string } },
+  { notificationId: string }
+> = gql`
+  mutation ArchiveNotification($notificationId: String) {
+    archiveNotification(notificationId: $notificationId) {
+      id
+    }
+  }
+`;
+
 export const clearNotificationCount: Query<
   { clearNotificationCount: { id: string } },
   {}

@@ -98,6 +98,25 @@ export const markAllNotificationsAsRead: AsyncAction = async ({
   }
 };
 
+export const archiveNotification: AsyncAction<string> = async (
+  { state, effects },
+  id
+) => {
+  if (!state.userNotifications.notifications) return;
+  const oldNots = state.userNotifications.notifications;
+  try {
+    await effects.gql.mutations.archiveNotification({
+      notificationId: id,
+    });
+
+    state.userNotifications.notifications = state.userNotifications.notifications.filter(
+      not => not.id !== id
+    );
+  } catch {
+    state.userNotifications.notifications = oldNots;
+  }
+};
+
 export const markNotificationAsRead: AsyncAction<string> = async (
   { state, effects },
   id
