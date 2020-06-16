@@ -10,6 +10,7 @@ export const ContextMenu = ({
   setVisibility,
   folder,
   setRenaming,
+  setNewFolderPath,
 }) => {
   const { actions } = useOvermind();
 
@@ -55,11 +56,17 @@ export const ContextMenu = ({
       </MenuItem>
     );
   } else if (folder.name === 'All sandboxes') {
-    menuOptions = <MenuItem onClick={() => {}}>New folder</MenuItem>;
+    menuOptions = (
+      <MenuItem onClick={() => setNewFolderPath(folder.path + '/__NEW__')}>
+        New folder
+      </MenuItem>
+    );
   } else {
     menuOptions = (
       <>
-        <MenuItem onClick={() => {}}>New folder</MenuItem>
+        <MenuItem onClick={() => setNewFolderPath(folder.path + '/__NEW__')}>
+          New folder
+        </MenuItem>
         <MenuItem onClick={() => setRenaming(true)}>Rename folder</MenuItem>
         <MenuItem
           onClick={() => actions.dashboard.deleteFolder({ path: folder.path })}
