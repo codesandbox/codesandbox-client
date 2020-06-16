@@ -4,6 +4,7 @@ import { useOvermind } from 'app/overmind';
 import { useHistory } from 'react-router-dom';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
+
 import {
   Stack,
   Input,
@@ -11,13 +12,30 @@ import {
   Link,
   Icon,
   IconButton,
+  Element,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 
+import { Overlay } from 'app/components/Overlay';
+import { Notifications } from './Notifications';
+
 export const Header = ({ onSidebarToggle }) => {
   const [value, setValue] = useState('');
+
   const {
-    actions: { modalOpened },
+    actions: {
+      modalOpened,
+      userNotifications: { notificationsClosed, notificationsOpened },
+    },
+    state: {
+      // isLoggedIn,
+      // isAuthenticating,
+      user,
+      userNotifications: {
+        notificationsOpened: notificationsMenuOpened,
+        unreadCount,
+      },
+    },
   } = useOvermind();
 
   const history = useHistory();
@@ -75,9 +93,43 @@ export const Header = ({ onSidebarToggle }) => {
         >
           Create Sandbox
         </Button>
-        <Button variant="secondary" css={css({ size: 26 })}>
-          <Icon name="bell" size={11} title="Notifications" />
-        </Button>
+
+        {user && (
+          <Overlay
+            content={Notifications}
+            event="Notifications"
+            isOpen={notificationsMenuOpened}
+            noHeightAnimation
+            onClose={notificationsClosed}
+            onOpen={notificationsOpened}
+          >
+            {open => (
+              <Button
+                variant="secondary"
+                css={css({ size: 26 })}
+                onClick={open}
+              >
+                <Element css={{ position: 'relative' }}>
+                  <Icon name="bell" size={11} title="Notifications" />
+                  {unreadCount > 0 ? (
+                    <Element
+                      css={css({
+                        position: 'absolute',
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        backgroundColor: 'blues.600',
+                        border: '1px solid #242424',
+                        top: '-3px',
+                        left: '6px',
+                      })}
+                    />
+                  ) : null}
+                </Element>
+              </Button>
+            )}
+          </Overlay>
+        )}
 
         <UserMenu>
           <Button variant="secondary" css={css({ size: 26 })}>
