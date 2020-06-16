@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom';
 import { useDrop } from 'react-dnd';
 import { orderBy } from 'lodash-es';
+import { join, dirname } from 'path';
 import { useOvermind } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import {
   Element,
   List,
@@ -17,10 +19,12 @@ import {
   Icon,
   IconButton,
   Button,
+  Input,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { TeamAvatar } from './TeamAvatar';
+import { ContextMenu } from './ContextMenu';
 
 export const SIDEBAR_WIDTH = 240;
 
@@ -61,8 +65,24 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
 
   const folders = dashboard.allCollections || [];
 
+  // context menu for folders
+  const [menuVisible, setMenuVisibility] = React.useState(true);
+  const [menuPosition, setMenuPosition] = React.useState({ x: null, y: null });
+  const [menuFolder, setMenuFolder] = React.useState(null);
+  const [isRenamingFolder, setRenamingFolder] = React.useState(false);
+
+  const menuState = {
+    menuFolder,
+    setMenuFolder,
+    setMenuVisibility,
+    menuPosition,
+    setMenuPosition,
+    isRenamingFolder,
+    setRenamingFolder,
+  };
+
   return (
-    <SidebarContext.Provider value={{ onSidebarToggle }}>
+    <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
       <Stack
         as={motion.aside}
         direction="vertical"
@@ -241,6 +261,13 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
           />
         )}
       </AnimatePresence>
+      <ContextMenu
+        visible={menuVisible}
+        setVisibility={setMenuVisibility}
+        position={menuPosition}
+        folder={menuFolder}
+        setRenaming={setRenamingFolder}
+      />
     </SidebarContext.Provider>
   );
 };
@@ -323,6 +350,12 @@ const RowItem = ({ name, path, icon, ...props }) => {
               canDrop && isOver ? 'list.hoverBackground' : 'transparent',
             transition: 'all ease-in',
             transitionDuration: theme => theme.speeds[4],
+            a: {
+              ':focus': {
+                // focus state is handled by ListAction:focus-within
+                outline: 'none',
+              },
+            },
           },
           props.style || {}
         )
@@ -346,7 +379,27 @@ const RowItem = ({ name, path, icon, ...props }) => {
 };
 
 const NestableRowItem = ({ name, path, folders }) => {
+  const { actions } = useOvermind();
   const [foldersVisible, setFoldersVisibility] = React.useState(false);
+  const {
+    menuState: {
+      menuFolder,
+      setMenuFolder,
+      setMenuVisibility,
+      setMenuPosition,
+      isRenamingFolder,
+      setRenamingFolder,
+    },
+  } = React.useContext(SidebarContext);
+
+  const isRenaming = isRenamingFolder && menuFolder.path === path;
+
+  const onContextMenu = event => {
+    event.preventDefault();
+    setMenuVisibility(true);
+    setMenuFolder({ name, path });
+    setMenuPosition({ x: event.clientX, y: event.clientY });
+  };
 
   let subFolders;
   if (name === 'All sandboxes') {
@@ -364,6 +417,56 @@ const NestableRowItem = ({ name, path, folders }) => {
   const nestingLevel = path.split('/').length - 1;
   const history = useHistory();
 
+  /* Rename logic */
+  const [newName, setNewName] = React.useState(name);
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewName(event.target.value);
+  };
+  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === ESC) {
+      // Reset value and exit without saving
+      setNewName(name);
+      setRenamingFolder(false);
+    }
+  };
+
+  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
+    if (event) event.preventDefault();
+
+    const isNewFolder = false;
+
+    if (name === newName) {
+      // nothing to do here
+    } else if (isNewFolder) {
+      if (newName) {
+        const folderLocation = location.pathname.split(
+          '/new-dashboard/all/'
+        )[1];
+
+        let folderPath = '';
+        if (folderLocation) folderPath += '/' + folderLocation;
+        folderPath += '/' + newName;
+
+        await actions.dashboard.createFolder(folderPath);
+      }
+    } else {
+      await actions.dashboard.renameFolder({
+        path,
+        newPath: join(dirname(path), newName),
+      });
+    }
+
+    // if (setCreating) setCreating(false);
+    return setRenamingFolder(false);
+  };
+
+  const onInputBlur = () => {
+    // save value when you click outside or tab away
+    setRenamingFolder(false);
+    onSubmit();
+  };
+
   return (
     <>
       <RowItem
@@ -374,6 +477,7 @@ const NestableRowItem = ({ name, path, folders }) => {
       >
         <Link
           onClick={() => history.push('/new-dashboard/all' + path)}
+          onContextMenu={onContextMenu}
           tabIndex={0}
           style={{
             ...linkStyles,
@@ -403,6 +507,7 @@ const NestableRowItem = ({ name, path, folders }) => {
           ) : (
             <Element as="span" css={css({ width: 5 })} />
           )}
+
           <Stack align="center" gap={3} css={{ width: '100%' }}>
             <Stack
               as="span"
@@ -412,7 +517,20 @@ const NestableRowItem = ({ name, path, folders }) => {
             >
               <Icon name="folder" />
             </Stack>
-            <Text maxWidth="100%">{name}</Text>
+            {isRenaming ? (
+              <form onSubmit={onSubmit}>
+                <Input
+                  autoFocus
+                  value={newName}
+                  onChange={onChange}
+                  onKeyDown={onInputKeyDown}
+                  onBlur={onInputBlur}
+                  css={css({ fontSize: 4 })}
+                />
+              </form>
+            ) : (
+              <Text maxWidth="100%">{name}</Text>
+            )}
           </Stack>
         </Link>
       </RowItem>

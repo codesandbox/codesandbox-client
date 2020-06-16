@@ -176,10 +176,10 @@ const SandboxMenu = ({
       >
         Open {label} in new tab
       </MenuItem>
-      {isOwner && getFolderUrl() !== location.pathname ? (
+      {isOwner ? (
         <MenuItem
           onClick={() => {
-            history.push(getFolderUrl(), { sandboxId: sandbox.id });
+            history.push(getFolderUrl());
           }}
         >
           Show in Folder
