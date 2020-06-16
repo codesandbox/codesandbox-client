@@ -122,7 +122,10 @@ const GenericSandbox = ({ sandbox, ...props }) => {
       } else {
         window.open(url, '_blank');
       }
-      track('Dashboard2 - Recent template forked', { source: 'Home' });
+      track('Dashboard - Recent template forked', {
+        source: 'Home',
+        dashboardVersion: 2,
+      });
     } else if (sandbox.isHomeTemplate) {
       actions.editor.forkExternalSandbox({
         sandboxId: sandbox.id,
@@ -130,7 +133,10 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     } else {
       history.push(url);
     }
-    track('Dashboard2 - Recent sandbox opened', { source: 'Home' });
+    track('Dashboard - Recent sandbox opened', {
+      source: 'Home',
+      dashboardVersion: 2,
+    });
   };
 
   /* Edit logic */
@@ -156,7 +162,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
       oldTitle: sandboxTitle,
     });
     setRenaming(false);
-    track('Dashboard2 - Rename sandbox');
+    track('Dashboard - Rename sandbox', { dashboardVersion: 2 });
   };
 
   const onInputBlur = () => {

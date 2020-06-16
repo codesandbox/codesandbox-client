@@ -158,7 +158,9 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                       css={{ textAlign: 'left' }}
                       onSelect={() => {
                         actions.dashboard.setActiveTeam({ id: null });
-                        track('Dashboard2 - Change workspace');
+                        track('Dashboard - Change workspace', {
+                          dashboardVersion: 2,
+                        });
                       }}
                     >
                       <Stack align="center">
@@ -484,14 +486,21 @@ const NestableRowItem = ({ name, path, folders }) => {
       if (newName) {
         const folderPath = path.replace('__NEW__', newName);
         await actions.dashboard.createFolder(folderPath);
-        track('Dashboard2 - Create Folder', { source: 'Sidebar' });
+        track('Dashboard - Create Directory', {
+          source: 'Sidebar',
+          dashboardVersion: 2,
+          folderPath,
+        });
       }
     } else {
       await actions.dashboard.renameFolder({
         path,
         newPath: join(dirname(path), newName),
       });
-      track('Dashboard2 - Rename Folder', { source: 'Sidebar' });
+      track('Dashboard - Rename Folder', {
+        source: 'Sidebar',
+        dashboardVersion: 2,
+      });
     }
 
     setNewFolderPath(null);

@@ -172,14 +172,21 @@ export const Folder = ({
         folderPath += '/' + newName;
 
         await actions.dashboard.createFolder(folderPath);
-        track('Dashboard2 - Create Folder', { source: 'Grid' });
+        track('Dashboard - Create Directory', {
+          source: 'Grid',
+          dashboardVersion: 2,
+          folderPath,
+        });
       }
     } else {
       await actions.dashboard.renameFolder({
         path,
         newPath: join(dirname(path), newName),
       });
-      track('Dashboard2 - Rename Folder', { source: 'Grid' });
+      track('Dashboard - Rename Folder', {
+        source: 'Grid',
+        dashboardVersion: 2,
+      });
     }
 
     if (setCreating) setCreating(false);

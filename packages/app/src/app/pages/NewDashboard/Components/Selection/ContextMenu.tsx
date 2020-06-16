@@ -282,7 +282,10 @@ const FolderMenu = ({ folder, setRenaming }) => {
       <MenuItem
         onClick={() => {
           actions.dashboard.deleteFolder({ path: folder.path });
-          track('Dashboard2 - Delete folder', { source: 'Grid' });
+          track('Dashboard - Delete folder', {
+            source: 'Grid',
+            dashboardVersion: 2,
+          });
         }}
       >
         Delete folder

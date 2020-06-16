@@ -72,7 +72,10 @@ export const ContextMenu = ({
         <MenuItem
           onClick={() => {
             actions.dashboard.deleteFolder({ path: folder.path });
-            track('Dashboard2 - Delete folder', { source: 'Sidebar' });
+            track('Dashboard - Delete folder', {
+              source: 'Sidebar',
+              dashboardVersion: 2,
+            });
           }}
         >
           Delete folder
