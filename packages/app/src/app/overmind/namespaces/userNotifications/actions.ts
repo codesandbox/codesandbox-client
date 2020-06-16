@@ -102,8 +102,13 @@ export const markNotificationAsRead: AsyncAction<string> = async (
   { state, effects },
   id
 ) => {
+  if (
+    !state.userNotifications.notifications ||
+    (state.userNotifications.notifications.find(not => not.id === id) || {})
+      .read
+  )
+    return;
   const oldNots = state.userNotifications.notifications;
-  if (oldNots.find(not => not.id === id).read) return;
   try {
     await effects.gql.mutations.markNotificationAsRead({
       notificationId: id,
