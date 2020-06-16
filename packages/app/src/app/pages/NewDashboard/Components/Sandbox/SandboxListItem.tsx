@@ -85,7 +85,11 @@ export const SandboxListItem = ({
                 opacity: 0.1,
               },
             })}
-            style={{ backgroundImage: `url(${screenshotUrl})` }}
+            style={{
+              [screenshotUrl
+                ? 'backgroundImage'
+                : null]: `url(${screenshotUrl})`,
+            }}
           >
             {screenshotUrl ? null : <TemplateIcon width="16" height="16" />}
           </Stack>

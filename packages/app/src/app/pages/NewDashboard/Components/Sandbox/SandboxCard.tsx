@@ -77,7 +77,7 @@ export const SandboxCard = ({
         },
       })}
       style={{
-        backgroundImage: `url(${screenshotUrl})`,
+        [screenshotUrl ? 'backgroundImage' : null]: `url(${screenshotUrl})`,
       }}
     >
       {screenshotUrl ? null : <TemplateIcon width="60" height="60" />}
