@@ -318,7 +318,13 @@ const isSamePath = (draggedItem, dropPath) => {
   return false;
 };
 
-const RowItem = ({ name, path, icon, setFoldersVisibility, ...props }) => {
+const RowItem = ({
+  name,
+  path,
+  icon,
+  setFoldersVisibility = null,
+  ...props
+}) => {
   const accepts = [];
   if (!canNotAcceptSandboxes.includes(path)) accepts.push('sandbox');
   if (!canNotAcceptFolders.includes(path)) accepts.push('folder');
@@ -355,7 +361,9 @@ const RowItem = ({ name, path, icon, setFoldersVisibility, ...props }) => {
     else isOverCache.current = true;
 
     const handler = () => {
-      if (isOverCache.current) setFoldersVisibility(true);
+      if (isOverCache.current && setFoldersVisibility) {
+        setFoldersVisibility(true);
+      }
     };
 
     const timer = window.setTimeout(handler, HOVER_THRESHOLD);
