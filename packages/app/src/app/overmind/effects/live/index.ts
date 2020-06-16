@@ -19,6 +19,7 @@ import { SerializedTextOperation, TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
 import uuid from 'uuid';
 
+import { AxiosError } from 'axios';
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
 import { CodesandboxOTClientsManager } from './clients';
 
@@ -102,11 +103,15 @@ class Live {
       })}`,
     });
 
-    return this.send('operation', {
-      moduleShortid,
-      operation: this.operationToElixir(operation.toJSON()),
-      revision,
-    }).catch(error => {
+    return this.send(
+      'operation',
+      {
+        moduleShortid,
+        operation: this.operationToElixir(operation.toJSON()),
+        revision,
+      },
+      45000
+    ).catch(error => {
       logBreadcrumb({
         category: 'ot',
         message: `ERROR ${JSON.stringify({
@@ -175,8 +180,9 @@ class Live {
           jwt = newJwt;
           tries = 0;
         } catch (e) {
-          if (tries++ > 4) {
-            // If we can't get a jwt, disconnect...
+          const error = e as AxiosError;
+          if (error.response?.status === 401 && tries++ > 4) {
+            // If we can't get a jwt because we're unauthorized, disconnect...
             this.socket.disconnect();
             tries = 0;
           }
@@ -296,7 +302,7 @@ class Live {
     };
   }
 
-  private send<T>(event, payload: any = {}): Promise<T> {
+  private send<T>(event, payload: any = {}, timeout = 10000): Promise<T> {
     const _messageId = this.identifier + this.messageIndex++;
     // eslint-disable-next-line
     payload._messageId = _messageId;
@@ -305,9 +311,10 @@ class Live {
     return new Promise((resolve, reject) => {
       if (this.channel) {
         this.channel
-          .push(event, payload)
+          .push(event, payload, timeout)
           .receive('ok', resolve)
-          .receive('error', reject);
+          .receive('error', reject)
+          .receive('timeout', reject);
       } else {
         // we might try to send messages even when not on live, just
         // ignore it
