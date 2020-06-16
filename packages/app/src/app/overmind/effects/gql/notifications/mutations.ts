@@ -11,6 +11,17 @@ export const markAllNotificationsAsRead: Query<
   }
 `;
 
+export const markNotificationAsRead: Query<
+  { markAllNotificationsAsRead: { id: string } },
+  { notificationId: string }
+> = gql`
+  mutation MarkNotificationsAsRead($notificationId: String) {
+    markNotificationAsRead(notificationId: $notificationId) {
+      id
+    }
+  }
+`;
+
 export const clearNotificationCount: Query<
   { clearNotificationCount: { id: string } },
   {}

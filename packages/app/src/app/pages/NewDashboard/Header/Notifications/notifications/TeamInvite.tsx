@@ -35,6 +35,7 @@ const Icon = ({ read, ...props }) => (
 );
 
 type Props = {
+  id: string;
   read: boolean;
   teamId: string;
   teamName: string;
@@ -42,6 +43,7 @@ type Props = {
   inviterAvatar: string;
 };
 export const TeamInvite: FunctionComponent<Props> = ({
+  id,
   read,
   teamId,
   teamName,
@@ -51,20 +53,19 @@ export const TeamInvite: FunctionComponent<Props> = ({
   const {
     actions: { userNotifications },
   } = useOvermind();
+
+  const onClick = async () => {
+    if (read) return () => {};
+    await userNotifications.openTeamAcceptModal({
+      teamName,
+      teamId,
+      userAvatar: inviterName,
+    });
+
+    return userNotifications.markNotificationAsRead(id);
+  };
   return (
-    <ListAction
-      onClick={() =>
-        read
-          ? () => {}
-          : userNotifications.openTeamAcceptModal({
-              teamName,
-              teamId,
-              userAvatar: inviterName,
-            })
-      }
-      key={teamId}
-      css={css({ padding: 0 })}
-    >
+    <ListAction onClick={onClick} key={teamId} css={css({ padding: 0 })}>
       <Element
         css={css({
           opacity: read ? 0.4 : 1,

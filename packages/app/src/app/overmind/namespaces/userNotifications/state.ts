@@ -10,6 +10,7 @@ type State = {
     teamId: string;
     userAvatar: string;
   } | null;
+  activeFilters: string[];
 };
 
 export const state: State = {
@@ -18,4 +19,5 @@ export const state: State = {
   unreadCount: 0,
   notificationsOpened: false,
   activeInvitation: null,
+  activeFilters: [],
 };

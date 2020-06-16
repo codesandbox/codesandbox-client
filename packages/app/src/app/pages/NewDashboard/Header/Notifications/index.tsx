@@ -1,6 +1,13 @@
 import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
-import { Element, Stack, Text, List } from '@codesandbox/components';
+import {
+  Element,
+  Stack,
+  Text,
+  List,
+  Menu,
+  Checkbox,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Skeleton } from './Skeleton';
 
@@ -8,12 +15,13 @@ import { SandboxInvitation } from './notifications/SandboxInvitation';
 import { TeamAccepted } from './notifications/TeamAccepted';
 import { TeamInvite } from './notifications/TeamInvite';
 
-const getNotificationComponent = (type, data, read) => {
+const getNotificationComponent = (id, type, data, read) => {
   const parsedData = JSON.parse(data);
 
   if (type === 'team_invite') {
     return (
       <TeamInvite
+        id={id}
         read={read}
         teamId={parsedData.team_id}
         teamName={parsedData.team_name}
@@ -25,6 +33,7 @@ const getNotificationComponent = (type, data, read) => {
   if (type === 'team_accepted') {
     return (
       <TeamAccepted
+        id={id}
         read={read}
         teamName={parsedData.team_name}
         userAvatar={parsedData.user_avatar}
@@ -35,6 +44,7 @@ const getNotificationComponent = (type, data, read) => {
   if (type === 'sandbox_invitation') {
     return (
       <SandboxInvitation
+        id={id}
         read={read}
         inviterAvatar={parsedData.inviter_avatar}
         inviterName={parsedData.inviter_name}
@@ -52,12 +62,14 @@ const getNotificationComponent = (type, data, read) => {
 export const Notifications = props => {
   const {
     state: { userNotifications },
-    actions,
+    actions: {
+      userNotifications: { filterNotifications, getNotifications },
+    },
   } = useOvermind();
 
   useEffect(() => {
-    actions.userNotifications.getNotifications();
-  }, [actions.userNotifications]);
+    getNotifications();
+  }, [getNotifications]);
 
   const getContent = () => {
     if (!userNotifications.notifications) {
@@ -70,12 +82,23 @@ export const Notifications = props => {
 
     return userNotifications.notifications.map(notification =>
       getNotificationComponent(
+        notification.id,
         notification.type,
         notification.data,
         notification.read
       )
     );
   };
+
+  const options = {
+    team_invite: 'Team Invite',
+    team_accepted: 'Team Accepted',
+    sandbox_invitation: 'Sandbox Invites',
+  };
+  const iconColor =
+    userNotifications.activeFilters.length > 0
+      ? 'button.background'
+      : 'inherit';
 
   return (
     <Element
@@ -91,6 +114,34 @@ export const Notifications = props => {
     >
       <Stack padding={4} align="center" justify="space-between">
         <Text>Notifications</Text>
+        <Menu>
+          <Menu.IconButton
+            className="icon-button"
+            name="filter"
+            title="Filter comments"
+            size={12}
+            css={css({
+              color: iconColor,
+              ':hover:not(:disabled)': {
+                color: iconColor,
+              },
+              ':focus:not(:disabled)': {
+                color: iconColor,
+                backgroundColor: 'transparent',
+              },
+            })}
+          />
+          <Menu.List>
+            {Object.entries(options).map(([key, label]) => (
+              <Menu.Item key={key} onSelect={() => filterNotifications(key)}>
+                <Checkbox
+                  checked={userNotifications.activeFilters.includes(key)}
+                  label={label}
+                />
+              </Menu.Item>
+            ))}
+          </Menu.List>
+        </Menu>
       </Stack>
       <List css={css({ maxHeight: 400, overflow: 'auto' })}>
         {getContent()}
