@@ -32,7 +32,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
   });
 
   const TemplateIcon = getTemplateIcon(sandbox);
-  const PrivacyIcon = PrivacyIcons[sandbox.privacy];
+  const PrivacyIcon = PrivacyIcons[sandbox.privacy || 0];
 
   let screenshotUrl = sandbox.screenshotUrl;
   // We set a fallback thumbnail in the API which is used for
