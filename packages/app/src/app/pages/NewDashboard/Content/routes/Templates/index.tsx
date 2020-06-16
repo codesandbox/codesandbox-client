@@ -39,19 +39,7 @@ export const Templates = () => {
     : [{ type: 'skeletonRow' }, { type: 'skeletonRow' }];
 
   return (
-    <SelectionProvider
-      sandboxes={
-        sandboxes.TEMPLATES &&
-        sandboxes.TEMPLATES.map(template => {
-          const { sandbox, ...templateValues } = template;
-          return {
-            ...sandbox,
-            isTemplate: true,
-            template: templateValues,
-          };
-        })
-      }
-    >
+    <SelectionProvider items={items}>
       <Helmet>
         <title>{activeTeam ? 'Team' : 'My'} Templates - CodeSandbox</title>
       </Helmet>

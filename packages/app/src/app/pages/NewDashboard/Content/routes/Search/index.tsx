@@ -30,7 +30,7 @@ export const SearchComponent = ({ location }) => {
     : [{ type: 'skeletonRow' }];
 
   return (
-    <SelectionProvider sandoxes={sandboxes.SEARCH}>
+    <SelectionProvider items={items}>
       <Helmet>
         <title>
           {location.search
