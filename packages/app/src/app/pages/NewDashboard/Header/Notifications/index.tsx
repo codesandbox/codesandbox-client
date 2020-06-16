@@ -66,7 +66,12 @@ export const Notifications = props => {
   const {
     state: { userNotifications },
     actions: {
-      userNotifications: { filterNotifications, getNotifications },
+      userNotifications: {
+        filterNotifications,
+        getNotifications,
+        markAllNotificationsAsRead,
+        archiveAllNotifications,
+      },
     },
   } = useOvermind();
 
@@ -80,7 +85,11 @@ export const Notifications = props => {
     }
 
     if (userNotifications.notifications.length === 0) {
-      return <Text padding={4}>You don{"'"}t have any notifications</Text>;
+      return (
+        <Element padding={6}>
+          <Text align="center">You don{"'"}t have any notifications</Text>
+        </Element>
+      );
     }
 
     return userNotifications.notifications.map(notification =>
@@ -107,39 +116,76 @@ export const Notifications = props => {
         width: 321,
         right: 10,
         fontSize: 3,
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderColor: 'sideBar.border',
+        boxShadow: 1,
+        borderRadius: 'medium',
       })}
       {...props}
     >
-      <Stack padding={4} align="center" justify="space-between">
+      <Stack
+        padding={4}
+        align="center"
+        justify="space-between"
+        css={css({
+          borderWidth: 0,
+          borderBottomWidth: 1,
+          borderStyle: 'solid',
+          borderColor: 'sideBar.border',
+        })}
+      >
         <Text>Notifications</Text>
-        <Menu>
-          <Menu.IconButton
-            className="icon-button"
-            name="filter"
-            title="Filter comments"
-            size={12}
-            css={css({
-              color: iconColor,
-              ':hover:not(:disabled)': {
+        <Stack gap={2}>
+          <Menu>
+            <Menu.IconButton
+              className="icon-button"
+              name="filter"
+              title="Filter comments"
+              size={12}
+              css={css({
                 color: iconColor,
-              },
-              ':focus:not(:disabled)': {
-                color: iconColor,
-                backgroundColor: 'transparent',
-              },
-            })}
-          />
-          <Menu.List>
-            {Object.entries(options).map(([key, label]) => (
-              <Menu.Item key={key} onSelect={() => filterNotifications(key)}>
-                <Checkbox
-                  checked={userNotifications.activeFilters.includes(key)}
-                  label={label}
-                />
+                ':hover:not(:disabled)': {
+                  color: iconColor,
+                },
+                ':focus:not(:disabled)': {
+                  color: iconColor,
+                  backgroundColor: 'transparent',
+                },
+              })}
+            />
+            <Menu.List>
+              {Object.entries(options).map(([key, label]) => (
+                <Menu.Item key={key} onSelect={() => filterNotifications(key)}>
+                  <Checkbox
+                    checked={userNotifications.activeFilters.includes(key)}
+                    label={label}
+                  />
+                </Menu.Item>
+              ))}
+            </Menu.List>
+          </Menu>
+          <Menu>
+            <Menu.IconButton
+              className="icon-button"
+              name="more"
+              title="Notification actions"
+              size={12}
+            />
+            <Menu.List>
+              <Menu.Item onSelect={() => archiveAllNotifications()}>
+                Clear all notifications
               </Menu.Item>
-            ))}
-          </Menu.List>
-        </Menu>
+              <Menu.Item
+                onSelect={() => {
+                  markAllNotificationsAsRead();
+                }}
+              >
+                Mark all notifications as read
+              </Menu.Item>
+            </Menu.List>
+          </Menu>
+        </Stack>
       </Stack>
       <List css={css({ maxHeight: 400, overflow: 'auto' })}>
         {getContent()}
