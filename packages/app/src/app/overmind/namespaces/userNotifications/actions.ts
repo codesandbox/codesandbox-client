@@ -34,7 +34,7 @@ export const notificationsOpenedOld: AsyncAction = async ({ state }) => {
 
 export const notificationsOpened: AsyncAction = async ({ state, effects }) => {
   state.userNotifications.notificationsOpened = true;
-  await effects.gql.mutations.clearNotificationCount({});
+  await effects.gql.mutations.clearNotificationCount();
   state.userNotifications.unreadCount = 0;
 };
 
