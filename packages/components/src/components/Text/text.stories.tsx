@@ -67,3 +67,7 @@ export const Align = () => (
     sometimes, just sometimes you need to align right
   </Text>
 );
+
+export const MaxWidth = () => (
+  <Text maxWidth={200}>this text will get cropped after 200px</Text>
+);
