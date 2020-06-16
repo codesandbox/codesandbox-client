@@ -55,9 +55,6 @@ export const filterNotifications: AsyncAction<string> = async (
 
     state.userNotifications.notifications = me.notifications;
   } catch {
-    effects.notificationToast.error(
-      'There has been a problem removing them from your team'
-    );
     state.userNotifications.activeFilters = filters;
   }
 };
@@ -96,7 +93,7 @@ export const markAllNotificationsAsRead: AsyncAction = async ({
     state.userNotifications.notifications = oldNotifications;
     state.userNotifications.unreadCount = count;
     effects.notificationToast.error(
-      'There has been a problem removing them from your team'
+      'There has been a problem marking your notifications as read'
     );
   }
 };
@@ -138,7 +135,7 @@ export const getNotifications: AsyncAction = async ({ state, effects }) => {
     state.userNotifications.notifications = me.notifications;
   } catch {
     effects.notificationToast.error(
-      'There has been a problem removing them from your team'
+      'There has been a problem getting your notifications'
     );
   }
 };
