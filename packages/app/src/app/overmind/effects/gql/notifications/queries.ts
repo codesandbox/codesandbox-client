@@ -14,6 +14,7 @@ export const getRecentNotifications: Query<response, { type: string[] }> = gql`
         id
         type
         data
+        insertedAt
         read
       }
     }
