@@ -93,26 +93,24 @@ export const Header = ({ onSidebarToggle }) => {
         >
           Create Sandbox
         </Button>
-        <Button variant="secondary" css={css({ size: 26 })}>
-          <Icon name="bell" size={11} title="Notifications" />
 
-          {user && (
-            <Overlay
-              content={Notifications}
-              event="Notifications"
-              isOpen={notificationsMenuOpened}
-              noHeightAnimation
-              onClose={notificationsClosed}
-              onOpen={notificationsOpened}
-            >
-              {open => (
+        {user && (
+          <Overlay
+            content={Notifications}
+            event="Notifications"
+            isOpen={notificationsMenuOpened}
+            noHeightAnimation
+            onClose={notificationsClosed}
+            onOpen={notificationsOpened}
+          >
+            {open => (
+              <Button
+                variant="secondary"
+                css={css({ size: 26 })}
+                onClick={open}
+              >
                 <Element css={{ position: 'relative' }}>
-                  <Icon
-                    name="bell"
-                    size={11}
-                    title="Notifications"
-                    onClick={open}
-                  />
+                  <Icon name="bell" size={11} title="Notifications" />
                   {unreadCount > 0 ? (
                     <Element
                       css={css({
@@ -128,10 +126,10 @@ export const Header = ({ onSidebarToggle }) => {
                     />
                   ) : null}
                 </Element>
-              )}
-            </Overlay>
-          )}
-        </Button>
+              </Button>
+            )}
+          </Overlay>
+        )}
 
         <UserMenu>
           <Button variant="secondary" css={css({ size: 26 })}>
