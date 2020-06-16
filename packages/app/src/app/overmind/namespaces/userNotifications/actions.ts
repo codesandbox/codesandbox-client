@@ -32,8 +32,10 @@ export const notificationsOpenedOld: AsyncAction = async ({ state }) => {
   }, 500);
 };
 
-export const notificationsOpened: AsyncAction = async ({ state }) => {
+export const notificationsOpened: AsyncAction = async ({ state, effects }) => {
   state.userNotifications.notificationsOpened = true;
+  await effects.gql.mutations.clearNotificationCount({});
+  state.userNotifications.unreadCount = 0;
 };
 
 export const messageReceived: Action<{ event: string }> = (

@@ -12,6 +12,7 @@ import {
   Link,
   Icon,
   IconButton,
+  Element,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -30,7 +31,10 @@ export const Header = ({ onSidebarToggle }) => {
       // isLoggedIn,
       // isAuthenticating,
       user,
-      userNotifications: { notificationsOpened: notificationsMenuOpened },
+      userNotifications: {
+        notificationsOpened: notificationsMenuOpened,
+        unreadCount,
+      },
     },
   } = useOvermind();
 
@@ -102,12 +106,28 @@ export const Header = ({ onSidebarToggle }) => {
               onOpen={notificationsOpened}
             >
               {open => (
-                <Icon
-                  name="bell"
-                  size={11}
-                  title="Notifications"
-                  onClick={open}
-                />
+                <Element css={{ position: 'relative' }}>
+                  <Icon
+                    name="bell"
+                    size={11}
+                    title="Notifications"
+                    onClick={open}
+                  />
+                  {unreadCount > 0 ? (
+                    <Element
+                      css={css({
+                        position: 'absolute',
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        backgroundColor: 'blues.600',
+                        border: '1px solid #242424',
+                        top: '-3px',
+                        left: '6px',
+                      })}
+                    />
+                  ) : null}
+                </Element>
               )}
             </Overlay>
           )}
