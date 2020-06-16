@@ -38,15 +38,19 @@ const Context = React.createContext({
   setRenaming: (renaming: boolean) => {},
 });
 
-export const SelectionProvider = ({
-  sandboxes = [],
-  folders = [],
-  ...props
-}) => {
+export const SelectionProvider = ({ items = [], ...props }) => {
   const selectionItems = [
-    ...(folders || []).map(folder => folder.path),
-    ...(sandboxes || []).map(sandbox => sandbox.id),
+    ...(items || [])
+      .filter(item => item.type === 'sandbox' || item.type === 'folder')
+      .map(item => {
+        if (item.type === 'folder') return item.path;
+        return item.id;
+      }),
   ];
+
+  const folders = (items || []).filter(item => item.type === 'folder');
+  const sandboxes = (items || []).filter(item => item.type === 'sandbox');
+
   const [selectedIds, setSelectedIds] = React.useState([]);
 
   const {

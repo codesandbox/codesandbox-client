@@ -56,9 +56,7 @@ export const Home = () => {
       ];
 
   return (
-    <SelectionProvider
-      sandboxes={[...templates, ...(sandboxes.RECENT_HOME || [])]}
-    >
+    <SelectionProvider items={items}>
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>

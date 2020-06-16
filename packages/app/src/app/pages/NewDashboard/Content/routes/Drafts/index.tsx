@@ -29,7 +29,7 @@ export const Drafts = () => {
     : [{ type: 'skeletonRow' }, { type: 'skeletonRow' }];
 
   return (
-    <SelectionProvider sandboxes={sandboxes.DRAFTS}>
+    <SelectionProvider items={items}>
       <Helmet>
         <title>Drafts - CodeSandbox</title>
       </Helmet>
