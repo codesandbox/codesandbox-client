@@ -36,7 +36,7 @@ export const CommitToMaster = () => {
         You have access to commit changes directly to{' '}
       </Text>
       {originalGit.branch}
-      <Text variant="muted">, but we recommend creating a </Text>PR
+      <Text variant="muted">, but you can also choose to create a </Text>PR
     </Text>
   );
 };

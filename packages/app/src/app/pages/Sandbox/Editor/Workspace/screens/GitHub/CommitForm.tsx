@@ -1,9 +1,8 @@
 import {
   Button,
+  Checkbox,
   FormField,
-  Icon,
   Input,
-  Menu,
   Stack,
   Text,
   Textarea,
@@ -57,7 +56,7 @@ export const CommitForm = () => {
   );
   const canUpdate =
     hasChanges && isAllModulesSynced && !isCommitting && !isCreatingPr;
-  const showSelector = permission !== 'read' && !(isCommitting || isCreatingPr);
+
   const evaluatedAction = permission === 'read' ? 'pr' : currentAction;
 
   if (currentSandbox.prNumber) {
@@ -92,7 +91,7 @@ export const CommitForm = () => {
             disabled={!title || !canUpdate}
             onClick={() => createCommitClicked()}
           >
-            {getButtonTitle('Update PR')}
+            {getButtonTitle('Commit changes')}
           </Button>
         </Stack>
       </Stack>
@@ -102,13 +101,9 @@ export const CommitForm = () => {
   const actions = {
     branch: {
       action: createCommitClicked,
-      text: getButtonTitle(
-        `Commit to branch (${currentSandbox.originalGit.branch})`
-      ),
     },
     pr: {
       action: createPrClicked,
-      text: getButtonTitle(`Create PR branch (csb-${currentSandbox.id})`),
     },
   };
 
@@ -136,9 +131,58 @@ export const CommitForm = () => {
           disabled={!hasChanges || isCommitting || isCreatingPr}
         />
       </FormField>
-      <Stack marginX={2}>
+      <Stack direction="vertical" marginX={2} gap={4}>
+        <Stack
+          align="flex-start"
+          onClick={() =>
+            !isCommitting && !isCreatingPr && setCurrentAction('branch')
+          }
+          css={{ cursor: 'pointer' }}
+        >
+          <Checkbox
+            checked={currentAction === 'branch'}
+            disabled={permission === 'read' || isCommitting || isCreatingPr}
+          />{' '}
+          <Text>
+            <Text variant="muted">Commit directly to the</Text> master
+            <Text variant="muted"> branch</Text>
+          </Text>
+        </Stack>
+        <Stack
+          align="flex-start"
+          onClick={() =>
+            !isCommitting && !isCreatingPr && setCurrentAction('pr')
+          }
+          css={{ cursor: 'pointer' }}
+        >
+          <Checkbox
+            checked={currentAction === 'pr'}
+            disabled={isCommitting || isCreatingPr}
+          />{' '}
+          <Text>
+            <Text variant="muted">Create branch</Text> csb-{currentSandbox.id}
+            <Text variant="muted"> for the commit and start a</Text> PR
+          </Text>
+        </Stack>
         <Stack css={{ width: '100%' }}>
           <Button
+            loading={isCommitting || isCreatingPr}
+            css={{
+              width: '100%',
+            }}
+            disabled={!title || !canUpdate}
+            onClick={() => actions[evaluatedAction].action()}
+          >
+            {getButtonTitle('Commit changes')}
+          </Button>
+        </Stack>
+      </Stack>
+    </Stack>
+  );
+};
+
+/*
+ <Button
             loading={isCommitting || isCreatingPr}
             css={
               showSelector
@@ -191,14 +235,4 @@ export const CommitForm = () => {
               </Menu>
             </>
           ) : null}
-        </Stack>
-      </Stack>
-      {evaluatedAction === 'branch' &&
-      currentSandbox.originalGit.branch === 'master' ? (
-        <Text paddingX={8} paddingTop={2} size={3}>
-          <Text variant="muted">Caution, committing to </Text> master
-        </Text>
-      ) : null}
-    </Stack>
-  );
-};
+*/
