@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { Icon } from '@codesandbox/components';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
@@ -121,6 +122,10 @@ const GenericSandbox = ({ sandbox, ...props }) => {
       } else {
         window.open(url, '_blank');
       }
+      track('Dashboard - Recent template forked', {
+        source: 'Home',
+        dashboardVersion: 2,
+      });
     } else if (sandbox.isHomeTemplate) {
       actions.editor.forkExternalSandbox({
         sandboxId: sandbox.id,
@@ -128,6 +133,10 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     } else {
       history.push(url);
     }
+    track('Dashboard - Recent sandbox opened', {
+      source: 'Home',
+      dashboardVersion: 2,
+    });
   };
 
   /* Edit logic */
@@ -153,6 +162,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
       oldTitle: sandboxTitle,
     });
     setRenaming(false);
+    track('Dashboard - Rename sandbox', { dashboardVersion: 2 });
   };
 
   const onInputBlur = () => {
