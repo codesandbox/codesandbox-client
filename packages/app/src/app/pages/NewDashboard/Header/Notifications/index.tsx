@@ -114,7 +114,7 @@ export const Notifications = props => {
           borderColor: 'sideBar.border',
         })}
       >
-        <Text>Notifications</Text>
+        <Text weight="bold">Notifications</Text>
         {(userNotifications.notifications || []).length ? <Filters /> : null}
       </Stack>
       <List css={css({ maxHeight: 400, overflow: 'auto' })}>

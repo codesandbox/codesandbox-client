@@ -60,13 +60,18 @@ export const TeamInvite: FunctionComponent<Props> = ({
         })}
       >
         <Stack align="center" gap={2} padding={4}>
-          <Stack gap={4}>
+          <Stack gap={4} align="flex-start">
             <Element css={css({ position: 'relative' })}>
               <Element
                 as="img"
                 src={inviterAvatar}
                 alt={inviterName}
-                css={css({ width: 32, height: 32, display: 'block' })}
+                css={css({
+                  width: 32,
+                  height: 32,
+                  display: 'block',
+                  borderRadius: 'small',
+                })}
               />
               <TeamIcon
                 read={read}
@@ -79,19 +84,27 @@ export const TeamInvite: FunctionComponent<Props> = ({
             </Element>
 
             <Text size={3} variant="muted">
-              {inviterName} <Text css={css({ color: 'white' })}>invites</Text>{' '}
+              {inviterName}{' '}
+              <Text css={css({ color: 'sideBar.foreground' })}>invites</Text>{' '}
               you to join team {teamName}
             </Text>
           </Stack>
           {hover ? (
             <Menu read={read} id={id} />
           ) : (
-            <Text size={1} align="right" block css={css({ width: 70 })}>
-              {formatDistanceStrict(
-                zonedTimeToUtc(insertedAt, 'Etc/UTC'),
-                new Date()
-              )}
-            </Text>
+            <Element css={css({ width: 70, flexShrink: 0 })}>
+              <Text
+                size={2}
+                align="right"
+                block
+                css={css({ color: 'sideBar.foreground' })}
+              >
+                {formatDistanceStrict(
+                  zonedTimeToUtc(insertedAt, 'Etc/UTC'),
+                  new Date()
+                )}
+              </Text>
+            </Element>
           )}
         </Stack>
       </Element>
