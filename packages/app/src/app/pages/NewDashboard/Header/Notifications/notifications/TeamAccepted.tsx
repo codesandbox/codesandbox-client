@@ -9,6 +9,7 @@ import {
   ListAction,
   isMenuClicked,
 } from '@codesandbox/components';
+import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import { useOvermind } from 'app/overmind';
 import { AcceptedIcon } from './Icons';
 import { Menu } from './Menu';
@@ -92,9 +93,11 @@ export const TeamAccepted = ({
                 block
                 css={css({ color: 'sideBar.foreground' })}
               >
-                {formatDistanceStrict(
-                  zonedTimeToUtc(insertedAt, 'Etc/UTC'),
-                  new Date()
+                {shortDistance(
+                  formatDistanceStrict(
+                    zonedTimeToUtc(insertedAt, 'Etc/UTC'),
+                    new Date()
+                  )
                 )}
               </Text>
             </Element>

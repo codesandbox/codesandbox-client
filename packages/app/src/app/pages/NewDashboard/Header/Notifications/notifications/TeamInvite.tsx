@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { formatDistanceStrict } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import css from '@styled-system/css';
+import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import {
   Stack,
   Element,
@@ -99,9 +100,11 @@ export const TeamInvite: FunctionComponent<Props> = ({
                 block
                 css={css({ color: 'sideBar.foreground' })}
               >
-                {formatDistanceStrict(
-                  zonedTimeToUtc(insertedAt, 'Etc/UTC'),
-                  new Date()
+                {shortDistance(
+                  formatDistanceStrict(
+                    zonedTimeToUtc(insertedAt, 'Etc/UTC'),
+                    new Date()
+                  )
                 )}
               </Text>
             </Element>

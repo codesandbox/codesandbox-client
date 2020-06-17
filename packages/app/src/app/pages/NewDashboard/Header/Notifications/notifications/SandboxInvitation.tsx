@@ -7,6 +7,7 @@ import {
   ListAction,
   isMenuClicked,
 } from '@codesandbox/components';
+import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Authorization } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
@@ -115,9 +116,11 @@ export const SandboxInvitation = ({
                 block
                 css={css({ color: 'sideBar.foreground' })}
               >
-                {formatDistanceStrict(
-                  zonedTimeToUtc(insertedAt, 'Etc/UTC'),
-                  new Date()
+                {shortDistance(
+                  formatDistanceStrict(
+                    zonedTimeToUtc(insertedAt, 'Etc/UTC'),
+                    new Date()
+                  )
                 )}
               </Text>
             )}
