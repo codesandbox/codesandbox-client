@@ -30,6 +30,7 @@
   "dependencies": {
     "@reach/auto-id": "0.10.3",
     "@reach/menu-button": "0.10.3",
+    "@reach/skip-nav": "^0.10.4",
     "@reach/tooltip": "0.10.3",
     "@reach/visually-hidden": "0.10.2",
     "@styled-system/css": "^5.1.4",

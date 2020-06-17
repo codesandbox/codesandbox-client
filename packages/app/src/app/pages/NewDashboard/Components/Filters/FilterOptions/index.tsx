@@ -72,7 +72,10 @@ export const FilterOptions: FunctionComponent<Props> = ({
                       },
                     })}
                   >
-                    <Checkbox checked={selected} label={niceName || name} />
+                    <Checkbox
+                      defaultChecked={selected}
+                      label={niceName || name}
+                    />
                   </Menu.Item>
                 );
               }
@@ -98,7 +101,7 @@ export const FilterOptions: FunctionComponent<Props> = ({
                 color: allSelected ? 'body' : 'muted',
               })}
             >
-              <Checkbox checked={allSelected} label="Select All" />
+              <Checkbox defaultChecked={allSelected} label="Select All" />
             </Menu.Item>
           )}
         </Menu.List>

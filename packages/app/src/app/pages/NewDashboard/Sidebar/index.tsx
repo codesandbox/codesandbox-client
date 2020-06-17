@@ -5,7 +5,7 @@ import { orderBy } from 'lodash-es';
 import { join, dirname } from 'path';
 import { useOvermind } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
   Element,
@@ -547,6 +547,11 @@ const NestableRowItem = ({ name, path, folders }) => {
         <Link
           onClick={() => history.push('/new-dashboard/all' + path)}
           onContextMenu={onContextMenu}
+          onKeyDown={event => {
+            if (event.keyCode === ENTER) {
+              history.push('/new-dashboard/all' + path);
+            }
+          }}
           tabIndex={0}
           style={{
             ...linkStyles,
