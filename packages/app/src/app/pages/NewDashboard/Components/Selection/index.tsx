@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Element } from '@codesandbox/components';
+import { Element, SkipNav } from '@codesandbox/components';
 import css from '@styled-system/css';
 import {
   ARROW_LEFT,
@@ -240,9 +240,14 @@ export const SelectionProvider = ({ items = [], ...props }) => {
 
     const index = selectionItems.findIndex(id => id === lastSelectedItemId);
 
-    const direction = [ARROW_RIGHT, TAB, ARROW_DOWN].includes(event.keyCode)
+    let direction = [ARROW_RIGHT, ARROW_DOWN].includes(event.keyCode)
       ? 'forward'
       : 'backward';
+
+    if (event.keyCode === TAB) {
+      if (event.shiftKey) direction = 'backward';
+      else direction = 'forward';
+    }
 
     // column count is set by SandboxGrid
     // to keep the state easy to manage, we imperatively
@@ -266,7 +271,7 @@ export const SelectionProvider = ({ items = [], ...props }) => {
     scrollIntoViewport(nextItem);
 
     // just moving around
-    if (!event.shiftKey) {
+    if (!event.shiftKey || event.keyCode === TAB) {
       setSelectedIds([nextItem]);
       return;
     }
@@ -454,6 +459,11 @@ export const SelectionProvider = ({ items = [], ...props }) => {
         setRenaming,
       }}
     >
+      <SkipNav.Content
+        tabIndex={0}
+        onFocus={() => setSelectedIds([selectionItems[0]])}
+      />
+
       <Element
         id="selection-container"
         onMouseDown={onContainerMouseDown}

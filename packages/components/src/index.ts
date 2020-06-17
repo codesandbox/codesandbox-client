@@ -20,6 +20,7 @@ export * from './components/Text';
 export * from './components/Textarea';
 export * from './components/FormField';
 export * from './components/Checkbox';
+export * from './components/SkipNav';
 
 // molecules
 export * from './components/Collapsible';
