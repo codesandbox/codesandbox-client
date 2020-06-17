@@ -69,5 +69,5 @@ export const Align = () => (
 );
 
 export const MaxWidth = () => (
-  <Text maxWidth={200}>this text will get cropped after 200px</Text>
+  <Text maxWidth={200}>this text will get cropped beyond 200px</Text>
 );
