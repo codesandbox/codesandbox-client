@@ -56,7 +56,7 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
   return <div />;
 };
 
-export const Notifications = props => {
+export const NotificationsContent = props => {
   const {
     state: { userNotifications },
     actions: {
