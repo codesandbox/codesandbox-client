@@ -103,10 +103,12 @@ export const SandboxInvitation = ({
               you to {nicePermissionName} {niceSandboxTitle}
             </Text>
           </Stack>
-          {hover ? (
-            <Menu read={read} id={id} />
-          ) : (
-            <Element css={css({ width: 70, flexShrink: 0 })}>
+          <Stack
+            css={css({ width: 70, flexShrink: 0, justifyContent: 'flex-end' })}
+          >
+            {hover ? (
+              <Menu read={read} id={id} />
+            ) : (
               <Text
                 size={2}
                 align="right"
@@ -118,8 +120,8 @@ export const SandboxInvitation = ({
                   new Date()
                 )}
               </Text>
-            </Element>
-          )}
+            )}
+          </Stack>
         </Stack>
       </Element>
     </ListAction>

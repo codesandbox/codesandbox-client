@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu as BaseMenu } from '@codesandbox/components';
+import { Menu as BaseMenu, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 
@@ -11,18 +11,26 @@ export const Menu = ({ read, id }) => {
   } = useOvermind();
   return (
     <BaseMenu>
-      <BaseMenu.IconButton
-        className="icon-button"
-        name="more"
-        title="Notification actions"
-        size={12}
+      <Element
         css={css({
-          width: 70,
-          display: 'flex',
-          justifyContent: 'flex-end',
-          svg: { transform: 'rotate(90deg)' },
+          '.icon-button:hover': {
+            backgroundColor: 'grays.500',
+          },
         })}
-      />
+      >
+        <BaseMenu.IconButton
+          className="icon-button"
+          name="more"
+          title="Notification actions"
+          size={12}
+          css={css({
+            display: 'flex',
+            justifyContent: 'flex-end',
+            transition: 'all 100ms ease',
+            svg: { transform: 'rotate(90deg) translateY(50%)' },
+          })}
+        />
+      </Element>
       <BaseMenu.List>
         <BaseMenu.Item
           className="no-click"

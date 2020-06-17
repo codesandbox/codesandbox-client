@@ -37,7 +37,7 @@ export const TeamInvite: FunctionComponent<Props> = ({
   const [hover, setHover] = useState(false);
 
   const onClick = async () => {
-    if (isMenuClicked(event) || read) return;
+    if (isMenuClicked(event)) return;
     await userNotifications.openTeamAcceptModal({
       teamName,
       teamId,
