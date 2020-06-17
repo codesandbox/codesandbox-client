@@ -85,6 +85,8 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
     setNewFolderPath,
   };
 
+  const history = useHistory();
+
   return (
     <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
       <Stack
@@ -153,9 +155,24 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                     </Stack>
                     <Icon name="caret" size={8} />
                   </Stack>
-                  <Menu.List style={{ width: SIDEBAR_WIDTH, borderRadius: 0 }}>
+                  <Menu.List
+                    css={css({
+                      width: SIDEBAR_WIDTH,
+                      marginLeft: 4,
+                      marginTop: '-4px',
+                      backgroundColor: 'grays.600',
+                    })}
+                  >
                     <Menu.Item
-                      css={{ textAlign: 'left' }}
+                      css={css({
+                        height: 10,
+                        textAlign: 'left',
+                        backgroundColor:
+                          activeAccount.username === user.username
+                            ? 'grays.500'
+                            : 'transparent',
+                      })}
+                      style={{ paddingLeft: 8 }}
                       onSelect={() => {
                         actions.dashboard.setActiveTeam({ id: null });
                         track('Dashboard - Change workspace', {
@@ -163,58 +180,65 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                         });
                       }}
                     >
-                      <Stack align="center">
-                        <Stack
-                          as="span"
-                          css={css({ width: 8 })}
-                          align="center"
-                          justify="center"
-                        >
-                          <Avatar user={user} css={css({ size: 5 })} />
-                        </Stack>
-                        <Text
-                          size={3}
-                          weight={
-                            activeAccount.username === user.username
-                              ? 'semibold'
-                              : 'normal'
-                          }
-                        >
-                          {user.username} (Personal)
-                        </Text>
+                      <Stack align="center" gap={2}>
+                        <Avatar user={user} css={css({ size: 6 })} />
+                        <Text size={3}>{user.username} (Personal)</Text>
                       </Stack>
                     </Menu.Item>
                     {dashboard.teams.map(team => (
-                      <Menu.Item
-                        key={team.id}
+                      <Stack
                         as={Menu.Item}
-                        css={{ textAlign: 'left' }}
+                        key={team.id}
+                        align="center"
+                        gap={2}
+                        css={css({
+                          height: 10,
+                          textAlign: 'left',
+                          backgroundColor:
+                            activeAccount.username === team.name
+                              ? 'grays.500'
+                              : 'transparent',
+                        })}
+                        style={{ paddingLeft: 8 }}
                         onSelect={() =>
                           actions.dashboard.setActiveTeam({ id: team.id })
                         }
                       >
-                        <Stack align="center">
-                          <Stack
-                            as="span"
-                            css={css({ width: 8 })}
-                            align="center"
-                            justify="center"
-                          >
-                            <TeamAvatar name={team.name} size="small" />
-                          </Stack>
-                          <Text
-                            size={3}
-                            weight={
-                              activeAccount.username === team.name
-                                ? 'semibold'
-                                : 'normal'
-                            }
-                          >
-                            {team.name}
-                          </Text>
-                        </Stack>
-                      </Menu.Item>
+                        <TeamAvatar name={team.name} size="small" />
+                        <Text size={3}>{team.name}</Text>
+                      </Stack>
                     ))}
+                    <Stack
+                      as={Menu.Item}
+                      align="center"
+                      gap={2}
+                      css={css({
+                        height: 10,
+                        textAlign: 'left',
+                        borderTop: '1px solid',
+                        borderColor: 'menu.selectionBackground',
+                      })}
+                      style={{ paddingLeft: 8 }}
+                      onSelect={() =>
+                        history.push('/new-dashboard/settings/new')
+                      }
+                    >
+                      <Stack
+                        justify="center"
+                        align="center"
+                        css={css({
+                          size: 6,
+                          borderRadius: 'small',
+                          border: '1px solid',
+                          borderColor: 'avatar.border',
+                        })}
+                      >
+                        <Icon name="plus" size={10} />
+                      </Stack>
+                      <Text size={3} variant="muted">
+                        Create a new workspace
+                      </Text>
+                    </Stack>
                   </Menu.List>
                 </Menu>
 
