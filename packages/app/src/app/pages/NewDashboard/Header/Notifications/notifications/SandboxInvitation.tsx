@@ -7,6 +7,7 @@ import {
   ListAction,
   isMenuClicked,
 } from '@codesandbox/components';
+import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Authorization } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
@@ -69,19 +70,24 @@ export const SandboxInvitation = ({
     >
       <Element
         css={css({
-          opacity: read ? 0.4 : 1,
+          opacity: read ? 0.6 : 1,
           textDecoration: 'none',
           color: 'inherit',
         })}
       >
         <Stack align="center" gap={2} padding={4}>
-          <Stack gap={4}>
+          <Stack gap={4} align="flex-start">
             <Element css={css({ position: 'relative' })}>
               <Element
                 as="img"
                 src={inviterAvatar}
                 alt={inviterName}
-                css={css({ width: 32, height: 32, display: 'block' })}
+                css={css({
+                  width: 32,
+                  height: 32,
+                  display: 'block',
+                  borderRadius: 'small',
+                })}
               />
               <InvitationIcon
                 read={read}
@@ -93,20 +99,32 @@ export const SandboxInvitation = ({
               />
             </Element>
             <Text size={3} variant="muted">
-              {inviterName} <Text css={css({ color: 'white' })}>invited</Text>{' '}
+              {inviterName}{' '}
+              <Text css={css({ color: 'sideBar.foreground' })}>invited</Text>{' '}
               you to {nicePermissionName} {niceSandboxTitle}
             </Text>
           </Stack>
-          {hover ? (
-            <Menu read={read} id={id} />
-          ) : (
-            <Text size={1} align="right" block css={css({ width: 70 })}>
-              {formatDistanceStrict(
-                zonedTimeToUtc(insertedAt, 'Etc/UTC'),
-                new Date()
-              )}
-            </Text>
-          )}
+          <Stack
+            css={css({ width: 70, flexShrink: 0, justifyContent: 'flex-end' })}
+          >
+            {hover ? (
+              <Menu read={read} id={id} />
+            ) : (
+              <Text
+                size={2}
+                align="right"
+                block
+                css={css({ color: 'sideBar.foreground' })}
+              >
+                {shortDistance(
+                  formatDistanceStrict(
+                    zonedTimeToUtc(insertedAt, 'Etc/UTC'),
+                    new Date()
+                  )
+                )}
+              </Text>
+            )}
+          </Stack>
         </Stack>
       </Element>
     </ListAction>

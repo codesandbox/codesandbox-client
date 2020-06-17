@@ -76,7 +76,11 @@ export const Notifications = props => {
     if (userNotifications.notifications.length === 0) {
       return (
         <Element padding={6}>
-          <Text align="center">You don{"'"}t have any notifications</Text>
+          {userNotifications.activeFilters.length ? (
+            <Text align="center">No notifications match your search</Text>
+          ) : (
+            <Text align="center">You don{"'"}t have any notifications</Text>
+          )}
         </Element>
       );
     }
@@ -114,8 +118,8 @@ export const Notifications = props => {
           borderColor: 'sideBar.border',
         })}
       >
-        <Text>Notifications</Text>
-        {(userNotifications.notifications || []).length ? <Filters /> : null}
+        <Text weight="bold">Notifications</Text>
+        {userNotifications.notifications ? <Filters /> : null}
       </Stack>
       <List css={css({ maxHeight: 400, overflow: 'auto' })}>
         {getContent()}
