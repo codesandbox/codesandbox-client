@@ -154,7 +154,8 @@ export const isMenuClicked = event => {
   if (
     target.tagName === 'BUTTON' ||
     target.tagName === 'svg' ||
-    target.tagName === 'path'
+    target.tagName === 'path' ||
+    target.className.includes('no-click')
   ) {
     return true;
   }

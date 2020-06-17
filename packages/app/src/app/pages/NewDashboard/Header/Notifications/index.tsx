@@ -1,19 +1,13 @@
 import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
-import {
-  Element,
-  Stack,
-  Text,
-  List,
-  Menu,
-  Checkbox,
-} from '@codesandbox/components';
+import { Element, Stack, Text, List } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Skeleton } from './Skeleton';
 
 import { SandboxInvitation } from './notifications/SandboxInvitation';
 import { TeamAccepted } from './notifications/TeamAccepted';
 import { TeamInvite } from './notifications/TeamInvite';
+import { Filters } from './Filters';
 
 const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
   const parsedData = JSON.parse(data);
@@ -66,7 +60,7 @@ export const Notifications = props => {
   const {
     state: { userNotifications },
     actions: {
-      userNotifications: { filterNotifications, getNotifications },
+      userNotifications: { getNotifications },
     },
   } = useOvermind();
 
@@ -80,23 +74,17 @@ export const Notifications = props => {
     }
 
     if (userNotifications.notifications.length === 0) {
-      return <Text padding={4}>You don{"'"}t have any notifications</Text>;
+      return (
+        <Element padding={6}>
+          <Text align="center">You don{"'"}t have any notifications</Text>
+        </Element>
+      );
     }
 
     return userNotifications.notifications.map(notification =>
       getNotificationComponent(notification)
     );
   };
-
-  const options = {
-    team_invite: 'Team Invite',
-    team_accepted: 'Team Accepted',
-    sandbox_invitation: 'Sandbox Invites',
-  };
-  const iconColor =
-    userNotifications.activeFilters.length > 0
-      ? 'button.background'
-      : 'inherit';
 
   return (
     <Element
@@ -107,39 +95,27 @@ export const Notifications = props => {
         width: 321,
         right: 10,
         fontSize: 3,
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderColor: 'sideBar.border',
+        boxShadow: 1,
+        borderRadius: 'medium',
       })}
       {...props}
     >
-      <Stack padding={4} align="center" justify="space-between">
+      <Stack
+        padding={4}
+        align="center"
+        justify="space-between"
+        css={css({
+          borderWidth: 0,
+          borderBottomWidth: 1,
+          borderStyle: 'solid',
+          borderColor: 'sideBar.border',
+        })}
+      >
         <Text>Notifications</Text>
-        <Menu>
-          <Menu.IconButton
-            className="icon-button"
-            name="filter"
-            title="Filter comments"
-            size={12}
-            css={css({
-              color: iconColor,
-              ':hover:not(:disabled)': {
-                color: iconColor,
-              },
-              ':focus:not(:disabled)': {
-                color: iconColor,
-                backgroundColor: 'transparent',
-              },
-            })}
-          />
-          <Menu.List>
-            {Object.entries(options).map(([key, label]) => (
-              <Menu.Item key={key} onSelect={() => filterNotifications(key)}>
-                <Checkbox
-                  checked={userNotifications.activeFilters.includes(key)}
-                  label={label}
-                />
-              </Menu.Item>
-            ))}
-          </Menu.List>
-        </Menu>
+        {(userNotifications.notifications || []).length ? <Filters /> : null}
       </Stack>
       <List css={css({ maxHeight: 400, overflow: 'auto' })}>
         {getContent()}

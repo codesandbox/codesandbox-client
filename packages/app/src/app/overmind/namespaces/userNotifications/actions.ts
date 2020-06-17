@@ -105,13 +105,26 @@ export const archiveNotification: AsyncAction<string> = async (
   if (!state.userNotifications.notifications) return;
   const oldNots = state.userNotifications.notifications;
   try {
-    await effects.gql.mutations.archiveNotification({
-      notificationId: id,
-    });
-
     state.userNotifications.notifications = state.userNotifications.notifications.filter(
       not => not.id !== id
     );
+    await effects.gql.mutations.archiveNotification({
+      notificationId: id,
+    });
+  } catch {
+    state.userNotifications.notifications = oldNots;
+  }
+};
+
+export const archiveAllNotifications: AsyncAction = async ({
+  state,
+  effects,
+}) => {
+  if (!state.userNotifications.notifications) return;
+  const oldNots = state.userNotifications.notifications;
+  try {
+    state.userNotifications.notifications = [];
+    await effects.gql.mutations.archiveAllNotifications({});
   } catch {
     state.userNotifications.notifications = oldNots;
   }
@@ -129,10 +142,6 @@ export const markNotificationAsRead: AsyncAction<string> = async (
     return;
   const oldNots = state.userNotifications.notifications;
   try {
-    await effects.gql.mutations.markNotificationAsRead({
-      notificationId: id,
-    });
-
     state.userNotifications.notifications = state.userNotifications.notifications.map(
       not => {
         if (not.id === id) {
@@ -145,6 +154,9 @@ export const markNotificationAsRead: AsyncAction<string> = async (
         return not;
       }
     );
+    await effects.gql.mutations.markNotificationAsRead({
+      notificationId: id,
+    });
   } catch {
     state.userNotifications.notifications = oldNots;
   }

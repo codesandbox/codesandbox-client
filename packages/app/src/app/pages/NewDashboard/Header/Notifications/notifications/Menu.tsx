@@ -1,5 +1,6 @@
 import React from 'react';
 import { Menu as BaseMenu } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 
 export const Menu = ({ read, id }) => {
@@ -15,6 +16,12 @@ export const Menu = ({ read, id }) => {
         name="more"
         title="Notification actions"
         size={12}
+        css={css({
+          width: 70,
+          display: 'flex',
+          justifyContent: 'flex-end',
+          svg: { transform: 'rotate(90deg)' },
+        })}
       />
       <BaseMenu.List>
         <BaseMenu.Item
