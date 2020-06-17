@@ -62,6 +62,12 @@ export const ThemeProvider = ({ theme, children }) => {
   // to apply the right color to the resizer
   // we create a global style to be applied to it
   const ExternalStyles = createGlobalStyle`
+    :root {
+      --reach-menu-button: 1;
+      --reach-tooltip: 1;
+      --reach-skip-nav: 1;
+    }
+
     .Resizer {
       background-color: ${usableTheme.colors.sideBar.border} !important;
     }
