@@ -7,7 +7,7 @@ import { TextOperation, SerializedTextOperation } from 'ot';
 
 import { OTClient, synchronized_ } from './ot/client';
 
-type SendOperationResponse =
+export type SendOperationResponse =
   | {
       composed_operation: SerializedTextOperation;
       revision: number;
@@ -46,7 +46,7 @@ export class CodeSandboxOTClient extends OTClient {
     onSendOperation: (
       revision: number,
       operation: TextOperation
-    ) => Promise<unknown>,
+    ) => Promise<SendOperationResponse>,
     onApplyOperation: (operation: TextOperation) => void
   ) {
     super(revision);
