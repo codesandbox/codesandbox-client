@@ -99,9 +99,9 @@ export const Header = ({ onSidebarToggle }) => {
             content={Notifications}
             event="Notifications"
             isOpen={notificationsMenuOpened}
-            noHeightAnimation
             onClose={notificationsClosed}
             onOpen={notificationsOpened}
+            propagate
           >
             {open => (
               <Button
