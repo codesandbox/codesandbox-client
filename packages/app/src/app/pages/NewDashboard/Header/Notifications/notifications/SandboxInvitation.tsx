@@ -69,7 +69,7 @@ export const SandboxInvitation = ({
     >
       <Element
         css={css({
-          opacity: read ? 0.4 : 1,
+          opacity: read ? 0.6 : 1,
           textDecoration: 'none',
           color: 'inherit',
         })}

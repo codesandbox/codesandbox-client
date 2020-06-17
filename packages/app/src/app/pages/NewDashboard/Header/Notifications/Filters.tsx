@@ -68,13 +68,17 @@ export const Filters = () => {
           <Menu.Item onSelect={() => archiveAllNotifications()}>
             Clear all notifications
           </Menu.Item>
-          <Menu.Item
-            onSelect={() => {
-              markAllNotificationsAsRead();
-            }}
-          >
-            Mark all notifications as read
-          </Menu.Item>
+          {!userNotifications.notifications.every(
+            notification => notification.read
+          ) ? (
+            <Menu.Item
+              onSelect={() => {
+                markAllNotificationsAsRead();
+              }}
+            >
+              Mark all notifications as read
+            </Menu.Item>
+          ) : null}
         </Menu.List>
       </Menu>
     </Stack>
