@@ -134,13 +134,17 @@ export const SelectionProvider = ({ items = [], ...props }) => {
   ) => {
     if (itemId && !selectedIds.includes(itemId)) setSelectedIds([itemId]);
 
-    const target = event.target as HTMLButtonElement;
-
-    let menuElement = target;
-    if (target.dataset.selectionId) {
+    let menuElement;
+    if (event.type === 'click') {
+      const target = event.target as HTMLButtonElement;
+      menuElement = target;
+    } else {
       // if the event is fired on the sandbox/folder, we find
       // the menu button to correctly position the menu
-      menuElement = target.querySelector('button');
+      const selectedItem = selectedIds[selectedIds.length - 1];
+      menuElement = document.querySelector(
+        `[data-selection-id="${selectedItem}"] button`
+      );
     }
 
     const rect = menuElement.getBoundingClientRect();
