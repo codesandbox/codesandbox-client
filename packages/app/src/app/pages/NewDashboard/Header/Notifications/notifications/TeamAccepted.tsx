@@ -9,6 +9,7 @@ import {
   ListAction,
   isMenuClicked,
 } from '@codesandbox/components';
+import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import { useOvermind } from 'app/overmind';
 import { AcceptedIcon } from './Icons';
 import { Menu } from './Menu';
@@ -53,13 +54,18 @@ export const TeamAccepted = ({
         })}
       >
         <Stack align="center" gap={2} padding={4}>
-          <Stack gap={4}>
+          <Stack gap={4} align="flex-start">
             <Element css={css({ position: 'relative' })}>
               <Element
                 as="img"
                 src={userAvatar}
                 alt={userName}
-                css={css({ width: 32, height: 32, display: 'block' })}
+                css={css({
+                  width: 32,
+                  height: 32,
+                  display: 'block',
+                  borderRadius: 'small',
+                })}
               />
               <AcceptedIcon
                 read={read}
@@ -72,19 +78,29 @@ export const TeamAccepted = ({
             </Element>
 
             <Text size={3} variant="muted">
-              {userName} <Text css={css({ color: 'white' })}>accepted</Text>{' '}
+              {userName}{' '}
+              <Text css={css({ color: 'sideBar.foreground' })}>accepted</Text>{' '}
               your invitation to join {teamName}!
             </Text>
           </Stack>
           {hover ? (
             <Menu read={read} id={id} />
           ) : (
-            <Text size={1} align="right" block css={css({ width: 70 })}>
-              {formatDistanceStrict(
-                zonedTimeToUtc(insertedAt, 'Etc/UTC'),
-                new Date()
-              )}
-            </Text>
+            <Element css={css({ width: 70, flexShrink: 0 })}>
+              <Text
+                size={2}
+                align="right"
+                block
+                css={css({ color: 'sideBar.foreground' })}
+              >
+                {shortDistance(
+                  formatDistanceStrict(
+                    zonedTimeToUtc(insertedAt, 'Etc/UTC'),
+                    new Date()
+                  )
+                )}
+              </Text>
+            </Element>
           )}
         </Stack>
       </Element>

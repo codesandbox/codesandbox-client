@@ -67,7 +67,6 @@ export const Navigation: FunctionComponent<Props> = ({
                 content={Notifications}
                 event="Notifications"
                 isOpen={notificationsMenuOpened}
-                noHeightAnimation
                 onClose={notificationsClosed}
                 onOpen={notificationsOpenedOld}
               >

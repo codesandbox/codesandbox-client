@@ -32,7 +32,7 @@ export const Filters = () => {
         <Menu.IconButton
           className="icon-button"
           name="filter"
-          title="Filter comments"
+          title="Filter Notifications"
           size={12}
           css={css({
             color: iconColor,
@@ -56,6 +56,7 @@ export const Filters = () => {
           ))}
         </Menu.List>
       </Menu>
+
       <Menu>
         <Menu.IconButton
           className="icon-button"
@@ -67,13 +68,17 @@ export const Filters = () => {
           <Menu.Item onSelect={() => archiveAllNotifications()}>
             Clear all notifications
           </Menu.Item>
-          <Menu.Item
-            onSelect={() => {
-              markAllNotificationsAsRead();
-            }}
-          >
-            Mark all notifications as read
-          </Menu.Item>
+          {!userNotifications.notifications.every(
+            notification => notification.read
+          ) ? (
+            <Menu.Item
+              onSelect={() => {
+                markAllNotificationsAsRead();
+              }}
+            >
+              Mark all notifications as read
+            </Menu.Item>
+          ) : null}
         </Menu.List>
       </Menu>
     </Stack>
