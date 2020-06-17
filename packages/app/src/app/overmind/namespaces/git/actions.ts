@@ -460,7 +460,7 @@ export const _setGitChanges: Action = ({ state }) => {
   };
 
   state.editor.currentSandbox!.modules.forEach(module => {
-    if (!state.git.sourceModulesByPath[module.path]) {
+    if (!(module.path in state.git.sourceModulesByPath)) {
       changes.added.push(module.path);
     } else if (
       !module.isBinary &&
