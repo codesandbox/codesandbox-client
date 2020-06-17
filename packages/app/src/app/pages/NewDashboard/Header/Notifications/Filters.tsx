@@ -32,7 +32,7 @@ export const Filters = () => {
         <Menu.IconButton
           className="icon-button"
           name="filter"
-          title="Filter comments"
+          title="Filter Notifications"
           size={12}
           css={css({
             color: iconColor,
@@ -56,6 +56,7 @@ export const Filters = () => {
           ))}
         </Menu.List>
       </Menu>
+
       <Menu>
         <Menu.IconButton
           className="icon-button"
