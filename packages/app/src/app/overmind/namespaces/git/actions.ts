@@ -47,6 +47,7 @@ export const loadGitSource: AsyncAction = async ({
   const sandbox = state.editor.currentSandbox!;
   state.git.isFetching = true;
   state.git.isExported = false;
+  state.git.pr = null;
   // We go grab the current version of the source
   await actions.git._loadSourceSandbox();
 
