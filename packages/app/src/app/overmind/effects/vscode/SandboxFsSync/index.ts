@@ -411,7 +411,7 @@ class SandboxFsSync {
         );
         const hasTypes = Boolean(
           Object.keys(files).some(
-            key => key.startsWith(dep.name) && key.endsWith('.d.ts')
+            key => key.startsWith('/' + dep.name) && key.endsWith('.d.ts')
           )
         );
 
