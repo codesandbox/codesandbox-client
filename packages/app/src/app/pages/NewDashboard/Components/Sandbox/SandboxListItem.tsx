@@ -133,7 +133,10 @@ export const SandboxListItem = ({
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
               Updated
             </Text>{' '}
-            {formatDistanceToNow(new Date(sandbox.updatedAt.trim()))} ago
+            {formatDistanceToNow(
+              new Date(sandbox.updatedAt.replace(/ /g, 'T'))
+            )}{' '}
+            ago
           </Text>
         )}
       </Column>
