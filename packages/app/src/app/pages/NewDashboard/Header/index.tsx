@@ -106,24 +106,49 @@ export const Header = ({ onSidebarToggle }) => {
             {open => (
               <Button
                 variant="secondary"
-                css={css({ size: 26 })}
+                css={css({
+                  size: 26,
+                  ':hover .border-for-bell': {
+                    background: theme =>
+                      theme.colors.secondaryButton.hoverBackground,
+                  },
+                })}
                 onClick={open}
               >
-                <Element css={{ position: 'relative' }}>
+                <Element
+                  css={css({
+                    position: 'relative',
+                  })}
+                >
                   <Icon name="bell" size={11} title="Notifications" />
                   {unreadCount > 0 ? (
-                    <Element
-                      css={css({
-                        position: 'absolute',
-                        width: '6px',
-                        height: '6px',
-                        borderRadius: '50%',
-                        backgroundColor: 'blues.600',
-                        border: '1px solid #242424',
-                        top: '-3px',
-                        left: '6px',
-                      })}
-                    />
+                    <>
+                      <Element
+                        css={css({
+                          position: 'absolute',
+                          width: '5px',
+                          height: '5px',
+                          borderRadius: '50%',
+                          backgroundColor: 'blues.600',
+                          top: '-2px',
+                          left: '6px',
+                          zIndex: 10,
+                        })}
+                      />
+                      <Element
+                        className="border-for-bell"
+                        css={css({
+                          position: 'absolute',
+                          width: '7px',
+                          height: '7px',
+                          borderRadius: '50%',
+                          backgroundColor: 'sideBar.border',
+                          top: '-3px',
+                          left: '5px',
+                          zIndex: 9,
+                        })}
+                      />
+                    </>
                   ) : null}
                 </Element>
               </Button>
