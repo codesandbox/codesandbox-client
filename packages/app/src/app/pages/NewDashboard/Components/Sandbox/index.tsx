@@ -3,11 +3,13 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
+import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Icon } from '@codesandbox/components';
+import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
@@ -26,6 +28,30 @@ const GenericSandbox = ({ sandbox, ...props }) => {
   } = useOvermind();
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
+
+  let sandboxLocation = null;
+  if (sandbox.collection.path) {
+    sandboxLocation =
+      sandbox.collection.path === '/'
+        ? 'Drafts'
+        : sandbox.collection.path.split('/').pop();
+  } else if (sandbox.isTemplate) {
+    sandboxLocation =
+      (sandbox.collection.team && 'by ' + sandbox.collection.team.name) ||
+      (sandbox.author && sandbox.author.username) ||
+      (sandbox.git && 'from GitHub') ||
+      'Template';
+  }
+
+  const lastUpdated = formatDistanceStrict(
+    new Date(sandbox.updatedAt.replace(/ /g, 'T')),
+    new Date(),
+    {
+      addSuffix: true,
+    }
+  );
+
+  const viewCount = formatNumber(sandbox.viewCount);
 
   const url = sandboxUrl({
     id: sandbox.id,
@@ -187,6 +213,9 @@ const GenericSandbox = ({ sandbox, ...props }) => {
 
   const sandboxProps = {
     sandboxTitle,
+    sandboxLocation,
+    lastUpdated,
+    viewCount,
     sandbox,
     isTemplate: sandbox.isTemplate,
     TemplateIcon,
