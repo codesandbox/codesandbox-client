@@ -59,7 +59,7 @@ export class CodeSandboxOTClient extends OTClient {
     }
 
     return this.onSendOperation(revision, operation)
-      .then(() => {
+      .then((result: any) => {
         logBreadcrumb({
           category: 'ot',
           message: `Acknowledging ${JSON.stringify({
@@ -68,6 +68,13 @@ export class CodeSandboxOTClient extends OTClient {
             operation,
           })}`,
         });
+
+        if (result && this.revision !== result.revision) {
+          this.resync(
+            TextOperation.fromJSON(result.operation),
+            result.revision
+          );
+        }
 
         try {
           this.safeServerAck(revision);
@@ -149,6 +156,11 @@ export class CodeSandboxOTClient extends OTClient {
 
   serverReconnect() {
     super.serverReconnect();
+  }
+
+  resync(operation: TextOperation, newRevision: number) {
+    this.applyClient(operation);
+    this.revision = newRevision;
   }
 }
 
