@@ -22,12 +22,15 @@ export const archiveAllNotifications: Query<
   }
 `;
 
-export const markNotificationAsRead: Query<
+export const updateNotificationReadStatus: Query<
   { markAllNotificationsAsRead: { id: string } },
-  { notificationId: string }
+  { notificationId: string; read: boolean }
 > = gql`
-  mutation MarkNotificationsAsRead($notificationId: String) {
-    markNotificationAsRead(notificationId: $notificationId) {
+  mutation UpdateNotificationReadStatus(
+    $notificationId: String
+    $read: Boolean
+  ) {
+    updateNotificationReadStatus(notificationId: $notificationId, read: $read) {
       id
     }
   }

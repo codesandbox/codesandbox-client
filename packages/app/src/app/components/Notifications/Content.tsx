@@ -1,6 +1,6 @@
 import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
-import { Element, Stack, Text, List } from '@codesandbox/components';
+import { Element, Text, List } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Skeleton } from './Skeleton';
 
@@ -107,11 +107,11 @@ export const NotificationsContent = props => {
       })}
       {...props}
     >
-      <Stack
+      <Element
         padding={4}
-        align="center"
-        justify="space-between"
         css={css({
+          display: 'grid',
+          gridTemplateColumns: '1fr 70px',
           borderWidth: 0,
           borderBottomWidth: 1,
           borderStyle: 'solid',
@@ -119,8 +119,10 @@ export const NotificationsContent = props => {
         })}
       >
         <Text weight="bold">Notifications</Text>
-        {userNotifications.notifications ? <Filters /> : null}
-      </Stack>
+        <Element>
+          {userNotifications.notifications ? <Filters /> : null}
+        </Element>
+      </Element>
       <List css={css({ maxHeight: 400, overflow: 'auto' })}>
         {getContent()}
       </List>
