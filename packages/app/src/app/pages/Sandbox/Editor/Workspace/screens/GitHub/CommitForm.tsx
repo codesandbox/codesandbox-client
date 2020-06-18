@@ -107,6 +107,10 @@ export const CommitForm = () => {
     },
   };
 
+  const canCommit = !isCommitting && !isCreatingPr;
+  const canCommitDirectly =
+    permission === 'write' || (permission === 'admin' && canCommit);
+
   return (
     <Stack
       as="form"
@@ -119,7 +123,7 @@ export const CommitForm = () => {
           placeholder="Summary (required)"
           onChange={changeTitle}
           value={title}
-          disabled={!hasChanges || isCommitting || isCreatingPr}
+          disabled={!hasChanges || !canCommit}
         />
       </FormField>
       <FormField direction="vertical" label="Description" hideLabel>
@@ -128,20 +132,27 @@ export const CommitForm = () => {
           placeholder="Optional description..."
           onChange={changeDescription}
           value={description}
-          disabled={!hasChanges || isCommitting || isCreatingPr}
+          disabled={!hasChanges || !canCommit}
         />
       </FormField>
       <Stack direction="vertical" marginX={2} gap={4}>
         <Stack
           align="flex-start"
-          onClick={() =>
-            !isCommitting && !isCreatingPr && setCurrentAction('branch')
+          onClick={() => canCommit && setCurrentAction('branch')}
+          css={
+            canCommitDirectly
+              ? {
+                  cursor: 'pointer',
+                  opacity: 1,
+                }
+              : {
+                  opacity: 0.5,
+                }
           }
-          css={{ cursor: 'pointer' }}
         >
           <Checkbox
             checked={evaluatedAction === 'branch'}
-            disabled={permission === 'read' || isCommitting || isCreatingPr}
+            disabled={!canCommitDirectly}
           />{' '}
           <Text>
             <Text variant="muted">Commit directly to the</Text> master
@@ -150,15 +161,19 @@ export const CommitForm = () => {
         </Stack>
         <Stack
           align="flex-start"
-          onClick={() =>
-            !isCommitting && !isCreatingPr && setCurrentAction('pr')
+          onClick={() => canCommit && setCurrentAction('pr')}
+          css={
+            canCommit
+              ? {
+                  cursor: 'pointer',
+                  opacity: 1,
+                }
+              : {
+                  opacity: 0.5,
+                }
           }
-          css={{ cursor: 'pointer' }}
         >
-          <Checkbox
-            checked={evaluatedAction === 'pr'}
-            disabled={isCommitting || isCreatingPr}
-          />{' '}
+          <Checkbox checked={evaluatedAction === 'pr'} disabled={!canCommit} />{' '}
           <Text>
             <Text variant="muted">Create branch</Text> csb-{currentSandbox.id}
             <Text variant="muted"> for the commit and start a</Text> PR

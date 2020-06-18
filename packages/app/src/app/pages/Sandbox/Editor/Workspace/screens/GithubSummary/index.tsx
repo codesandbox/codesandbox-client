@@ -22,7 +22,7 @@ export const GithubSummary = () => {
   } = useOvermind();
   return (
     <>
-      <Collapsible title="Github Repository" defaultOpen>
+      <Collapsible title="GitHub Repository" defaultOpen>
         <Element paddingX={2}>
           <Link
             target="_blank"

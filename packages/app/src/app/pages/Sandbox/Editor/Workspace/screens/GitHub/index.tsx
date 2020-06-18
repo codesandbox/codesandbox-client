@@ -195,7 +195,7 @@ export const GitHub = () => {
     <>
       {originalGit ? (
         <>
-          <Collapsible title="Git Repository" defaultOpen>
+          <Collapsible title="GitHub Repository" defaultOpen>
             <Element paddingX={2}>
               <Link
                 target="_blank"
