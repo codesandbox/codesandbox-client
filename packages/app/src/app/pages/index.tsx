@@ -148,6 +148,7 @@ const RoutesComponent: React.FC = () => {
           </Switch>
         </Content>
         <Modals />
+        {signInModalOpen && !user ? <SignInModal /> : null}
       </Boundary>
     </Container>
   );
