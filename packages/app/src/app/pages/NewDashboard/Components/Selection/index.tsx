@@ -38,7 +38,11 @@ const Context = React.createContext({
   setRenaming: (renaming: boolean) => {},
 });
 
-export const SelectionProvider = ({ items = [], ...props }) => {
+export const SelectionProvider = ({
+  items = [],
+  createNewFolder = null,
+  ...props
+}) => {
   const selectionItems = [
     ...(items || [])
       .filter(item => item.type === 'sandbox' || item.type === 'folder')
@@ -381,6 +385,15 @@ export const SelectionProvider = ({ items = [], ...props }) => {
     });
   };
 
+  const onContainerContextMenu = event => {
+    // global context menu is only relevent inside All sandboxes/*
+    if (typeof createNewFolder !== 'function') return;
+
+    event.preventDefault();
+    setMenuVisibility(true);
+    setMenuPosition({ x: event.clientX, y: event.clientY });
+  };
+
   const callbackCalledAt = React.useRef(null);
 
   const onContainerMouseMove = event => {
@@ -473,6 +486,7 @@ export const SelectionProvider = ({ items = [], ...props }) => {
         onMouseDown={onContainerMouseDown}
         onMouseMove={onContainerMouseMove}
         onMouseUp={onContainerMouseUp}
+        onContextMenu={onContainerContextMenu}
         css={css({ paddingTop: 10 })}
       >
         {props.children}
@@ -512,6 +526,7 @@ export const SelectionProvider = ({ items = [], ...props }) => {
         sandboxes={sandboxes || []}
         folders={folders || []}
         setRenaming={setRenaming}
+        createNewFolder={createNewFolder}
       />
     </Context.Provider>
   );

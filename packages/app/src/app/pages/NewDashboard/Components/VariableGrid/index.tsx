@@ -257,7 +257,7 @@ export const VariableGrid = ({ items }) => {
                 estimatedRowHeight={ITEM_HEIGHT}
                 overscanRowCount={2}
                 itemData={{ columnCount, filledItems, containerWidth: width }}
-                style={{ overflowX: 'hidden' }}
+                style={{ overflowX: 'hidden', userSelect: 'none' }}
               >
                 {Item}
               </VariableSizeGrid>

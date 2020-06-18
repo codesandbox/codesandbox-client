@@ -15,6 +15,7 @@ export const ContextMenu = ({
   sandboxes,
   folders,
   setRenaming,
+  createNewFolder,
 }) => {
   React.useEffect(() => {
     // close when user clicks outside or scrolls away
@@ -45,7 +46,7 @@ export const ContextMenu = ({
     };
   });
 
-  if (!visible || selectedIds.length === 0) return null;
+  if (!visible) return null;
 
   const selectedItems = selectedIds.map(id => {
     if (id.startsWith('/')) {
@@ -58,7 +59,11 @@ export const ContextMenu = ({
 
   let menu;
   let menuWidth;
-  if (selectedItems.length > 1) {
+
+  if (selectedItems.length === 0) {
+    menu = <ContainerMenu createNewFolder={createNewFolder} />;
+    menuWidth = 160;
+  } else if (selectedItems.length > 1) {
     menu = <MultiMenu selectedItems={selectedItems} />;
     menuWidth = 160;
   } else if (selectedItems[0].type === 'sandbox') {
@@ -98,6 +103,12 @@ export const ContextMenu = ({
 
 const MenuItem = props => (
   <Element data-reach-menu-item="" data-component="MenuItem" {...props} />
+);
+
+const ContainerMenu = ({ createNewFolder }) => (
+  <>
+    <MenuItem onClick={createNewFolder}>Create new folder</MenuItem>
+  </>
 );
 
 const SandboxMenu = ({

@@ -37,10 +37,10 @@ const GenericSandbox = ({ sandbox, ...props }) => {
         : sandbox.collection.path.split('/').pop();
   } else if (sandbox.isTemplate) {
     sandboxLocation =
-      (sandbox.collection.team && 'by ' + sandbox.collection.team.name) ||
+      (sandbox.collection.team && sandbox.collection.team.name) ||
       (sandbox.author && sandbox.author.username) ||
       (sandbox.git && 'from GitHub') ||
-      'Template';
+      'Templates';
   }
 
   const lastUpdated = formatDistanceStrict(
