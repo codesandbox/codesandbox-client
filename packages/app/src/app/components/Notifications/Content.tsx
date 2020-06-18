@@ -102,7 +102,7 @@ export const NotificationsContent = props => {
         borderWidth: 1,
         borderStyle: 'solid',
         borderColor: 'sideBar.border',
-        boxShadow: 1,
+        boxShadow: 2,
         borderRadius: 'medium',
       })}
       {...props}
