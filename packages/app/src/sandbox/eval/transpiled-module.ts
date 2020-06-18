@@ -1119,11 +1119,11 @@ export default class TranspiledModule {
       hasMissingDependencies: this.hasMissingDependencies,
     };
 
-    const isNpmDependnecy = this.module.path.startsWith('/node_modules/');
+    const isNpmDependency = this.module.path.startsWith('/node_modules/');
     const canOptimizeSize = sourceEqualsCompiled && optimizeForSize;
     // Don't cache source if it didn't change, also don't cache changed source from npm
     // dependencies as we can compile those really quickly.
-    const shouldCacheTranspiledSource = !canOptimizeSize && !isNpmDependnecy;
+    const shouldCacheTranspiledSource = !canOptimizeSize && !isNpmDependency;
 
     if (shouldCacheTranspiledSource) {
       serializableObject.source = this.source;
