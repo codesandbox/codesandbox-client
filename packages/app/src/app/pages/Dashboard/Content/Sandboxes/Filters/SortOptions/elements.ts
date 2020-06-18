@@ -12,6 +12,7 @@ export const Container = styled.div<{
     font-size: 0.875rem;
     width: 175px;
     text-align: right;
+    display: flex;
 
     ${hideOrder &&
       css`
@@ -25,6 +26,7 @@ export const OrderName = styled.span`
   transition: 0.3s ease color;
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
+  margin-left: 1em;
 
   &:hover {
     color: white;

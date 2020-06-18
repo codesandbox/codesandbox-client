@@ -1,12 +1,12 @@
 import React from 'react';
 import deepmerge from 'deepmerge';
 import css from '@styled-system/css';
-import * as ReachMenu from '@reach/menu-button';
 import {
   createGlobalStyle,
   css as styledcss,
   keyframes,
 } from 'styled-components';
+import * as ReachMenu from './reach-menu.fork';
 import { Element, Button, IconButton, List } from '../..';
 
 const transitions = {
@@ -30,6 +30,9 @@ const PortalStyles = createGlobalStyle(
   css({
     '[data-reach-menu]': {
       zIndex: 11, // TODO: we need to sort out our z indexes!
+    },
+    '[data-reach-menu][hidden],[data-reach-menu-popover][hidden]': {
+      display: 'none',
     },
     '[data-reach-menu-list][data-component=MenuList]': {
       minWidth: 100,
@@ -151,7 +154,8 @@ export const isMenuClicked = event => {
   if (
     target.tagName === 'BUTTON' ||
     target.tagName === 'svg' ||
-    target.tagName === 'path'
+    target.tagName === 'path' ||
+    target.className.includes('no-click')
   ) {
     return true;
   }

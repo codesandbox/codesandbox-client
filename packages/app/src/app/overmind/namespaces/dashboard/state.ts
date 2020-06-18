@@ -27,9 +27,9 @@ export enum sandboxesTypes {
   TEMPLATES = 'TEMPLATES',
   DELETED = 'DELETED',
   RECENT = 'RECENT',
-  START_PAGE = 'START_PAGE',
-  TEMPLATE_START_PAGE = 'TEMPLATE_START_PAGE',
-  RECENT_START_PAGE = 'RECENT_START_PAGE',
+  HOME = 'HOME',
+  TEMPLATE_HOME = 'TEMPLATE_HOME',
+  RECENT_HOME = 'RECENT_HOME',
   ALL = 'ALL',
   SEARCH = 'SEARCH',
 }
@@ -41,8 +41,8 @@ type State = {
     DELETED: Sandbox[] | null;
     RECENT: Sandbox[] | null;
     SEARCH: Sandbox[] | null;
-    TEMPLATE_START_PAGE: Template[] | null;
-    RECENT_START_PAGE: Sandbox[] | null;
+    TEMPLATE_HOME: Template[] | null;
+    RECENT_HOME: Sandbox[] | null;
     ALL: {
       [path: string]: Sandbox[];
     } | null;
@@ -80,8 +80,8 @@ export const state: State = {
     TEMPLATES: null,
     DELETED: null,
     RECENT: null,
-    TEMPLATE_START_PAGE: null,
-    RECENT_START_PAGE: null,
+    TEMPLATE_HOME: null,
+    RECENT_HOME: null,
     ALL: null,
     SEARCH: null,
   },
@@ -199,7 +199,8 @@ export const state: State = {
       }
 
       if (orderField === 'title') {
-        return s.title || s.id;
+        const field = s.title || s.alias || s.id;
+        return field.toLowerCase();
       }
 
       return s[orderField];

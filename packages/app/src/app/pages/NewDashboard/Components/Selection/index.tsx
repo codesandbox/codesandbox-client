@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Element } from '@codesandbox/components';
+import { Element, SkipNav } from '@codesandbox/components';
 import css from '@styled-system/css';
 import {
   ARROW_LEFT,
@@ -10,6 +10,7 @@ import {
   ARROW_UP,
   ENTER,
   ALT,
+  TAB,
 } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
@@ -38,14 +39,22 @@ const Context = React.createContext({
 });
 
 export const SelectionProvider = ({
-  sandboxes = [],
-  folders = [],
+  items = [],
+  createNewFolder = null,
   ...props
 }) => {
   const selectionItems = [
-    ...(folders || []).map(folder => folder.path),
-    ...(sandboxes || []).map(sandbox => sandbox.id),
+    ...(items || [])
+      .filter(item => item.type === 'sandbox' || item.type === 'folder')
+      .map(item => {
+        if (item.type === 'folder') return item.path;
+        return item.id;
+      }),
   ];
+
+  const folders = (items || []).filter(item => item.type === 'folder');
+  const sandboxes = (items || []).filter(item => item.type === 'sandbox');
+
   const [selectedIds, setSelectedIds] = React.useState([]);
 
   const {
@@ -108,7 +117,7 @@ export const SelectionProvider = ({
     event.stopPropagation();
   };
 
-  const [menuVisible, setMenuVisibility] = React.useState(true);
+  const [menuVisible, setMenuVisibility] = React.useState(false);
   const [menuPosition, setMenuPosition] = React.useState({ x: 0, y: 0 });
 
   const onRightClick = (
@@ -129,13 +138,17 @@ export const SelectionProvider = ({
   ) => {
     if (itemId && !selectedIds.includes(itemId)) setSelectedIds([itemId]);
 
-    const target = event.target as HTMLButtonElement;
-
-    let menuElement = target;
-    if (target.dataset.selectionId) {
+    let menuElement;
+    if (event.type === 'click') {
+      const target = event.target as HTMLButtonElement;
+      menuElement = target;
+    } else {
       // if the event is fired on the sandbox/folder, we find
       // the menu button to correctly position the menu
-      menuElement = target.querySelector('button');
+      const selectedItem = selectedIds[selectedIds.length - 1];
+      menuElement = document.querySelector(
+        `[data-selection-id="${selectedItem}"] button`
+      );
     }
 
     const rect = menuElement.getBoundingClientRect();
@@ -163,19 +176,31 @@ export const SelectionProvider = ({
   const location = useLocation();
 
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const history = useHistory();
+
+  React.useEffect(() => {
+    if (location.state && location.state.sandboxId) {
+      setSelectedIds([location.state.sandboxId]);
+      scrollIntoViewport(location.state.sandboxId);
+      history.replace(location.pathname, {});
+    }
+  }, [location, history]);
+
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!selectedIds.length) return;
     // disable keyboard navigation if menu is open
     if (menuVisible) return;
 
+    // disable selection keydowns when renaming
+    if (isRenaming) return;
+
     if (event.keyCode === ALT) onMenuEvent(event);
 
     // if only one thing is selected, open it
-    if (event.keyCode === ENTER && selectedIds.length === 1 && !isRenaming) {
+    if (event.keyCode === ENTER && selectedIds.length === 1) {
       const selectedId = selectedIds[0];
 
       let url;
@@ -205,24 +230,32 @@ export const SelectionProvider = ({
         event.keyCode !== ARROW_RIGHT &&
         event.keyCode !== ARROW_LEFT &&
         event.keyCode !== ARROW_UP &&
-        event.keyCode !== ARROW_DOWN) ||
+        event.keyCode !== ARROW_DOWN &&
+        event.keyCode !== TAB) ||
       (viewMode === 'list' &&
         event.keyCode !== ARROW_DOWN &&
-        event.keyCode !== ARROW_UP)
+        event.keyCode !== ARROW_UP &&
+        event.keyCode !== TAB)
     ) {
       return;
     }
 
     // cancel scroll events
     event.preventDefault();
+    event.stopPropagation();
 
     const lastSelectedItemId = selectedIds[selectedIds.length - 1];
 
     const index = selectionItems.findIndex(id => id === lastSelectedItemId);
 
-    const direction = [ARROW_RIGHT, ARROW_DOWN].includes(event.keyCode)
+    let direction = [ARROW_RIGHT, ARROW_DOWN].includes(event.keyCode)
       ? 'forward'
       : 'backward';
+
+    if (event.keyCode === TAB) {
+      if (event.shiftKey) direction = 'backward';
+      else direction = 'forward';
+    }
 
     // column count is set by SandboxGrid
     // to keep the state easy to manage, we imperatively
@@ -246,7 +279,7 @@ export const SelectionProvider = ({
     scrollIntoViewport(nextItem);
 
     // just moving around
-    if (!event.shiftKey) {
+    if (!event.shiftKey || event.keyCode === TAB) {
       setSelectedIds([nextItem]);
       return;
     }
@@ -273,15 +306,17 @@ export const SelectionProvider = ({
   };
 
   const onDrop = dropResult => {
+    if (dropResult.isSamePath) return;
+
     const sandboxIds = selectedIds.filter(isSandboxId);
-    const folderPaths = selectedIds.filter(isFolderPath);
+    const folderPaths = selectedIds.filter(isFolderPath).filter(notDrafts);
 
     if (sandboxIds.length) {
       if (dropResult.path === 'deleted') {
         actions.dashboard.deleteSandbox(sandboxIds);
       } else if (dropResult.path === 'templates') {
         actions.dashboard.makeTemplate(sandboxIds);
-      } else if (dropResult.path === 'drafts') {
+      } else if (dropResult.path === '/drafts') {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: '/',
@@ -294,12 +329,9 @@ export const SelectionProvider = ({
       }
     }
 
-    const isDrafts = folder => folder.path === '/drafts';
     if (folderPaths.length) {
       if (dropResult.path === 'deleted') {
-        folderPaths
-          .filter(isDrafts)
-          .forEach(path => actions.dashboard.deleteFolder({ path }));
+        folderPaths.forEach(path => actions.dashboard.deleteFolder({ path }));
       } else if (dropResult.path === 'templates') {
         // folders can't be dropped into templates
       } else if (dropResult.path === 'drafts') {
@@ -307,7 +339,7 @@ export const SelectionProvider = ({
       } else {
         // moving folders into another folder
         // is the same as changing it's path
-        folderPaths.filter(isDrafts).forEach(path => {
+        folderPaths.forEach(path => {
           const { name } = folders.find(folder => folder.path === path);
           actions.dashboard.moveFolder({
             path,
@@ -341,10 +373,9 @@ export const SelectionProvider = ({
     setSelectedIds([]); // global blur
 
     // right click
-    if (!event.metaKey) return;
+    if (event.button === 2) return;
 
     setDrawingRect(true);
-
     setSelectionRect({
       start: {
         x: event.clientX,
@@ -352,6 +383,15 @@ export const SelectionProvider = ({
       },
       end: { x: null, y: null },
     });
+  };
+
+  const onContainerContextMenu = event => {
+    // global context menu is only relevent inside All sandboxes/*
+    if (typeof createNewFolder !== 'function') return;
+
+    event.preventDefault();
+    setMenuVisibility(true);
+    setMenuPosition({ x: event.clientX, y: event.clientY });
   };
 
   const callbackCalledAt = React.useRef(null);
@@ -389,9 +429,11 @@ export const SelectionProvider = ({
         if (
           (viewMode === 'list' ||
             (rect.left > selectionLeft && rect.left < selectionRight) ||
-            (rect.right > selectionLeft && rect.right < selectionRight)) &&
+            (rect.right > selectionLeft && rect.right < selectionRight) ||
+            (rect.left < selectionLeft && rect.right > selectionRight)) &&
           ((rect.top > selectionTop && rect.top < selectionBottom) ||
-            (rect.bottom > selectionTop && rect.bottom < selectionBottom))
+            (rect.bottom > selectionTop && rect.bottom < selectionBottom) ||
+            (rect.top < selectionTop && rect.bottom > selectionBottom))
         ) {
           overlappingItems.push(item);
         }
@@ -434,11 +476,17 @@ export const SelectionProvider = ({
         setRenaming,
       }}
     >
+      <SkipNav.Content
+        tabIndex={0}
+        onFocus={() => setSelectedIds([selectionItems[0]])}
+      />
+
       <Element
         id="selection-container"
         onMouseDown={onContainerMouseDown}
         onMouseMove={onContainerMouseMove}
         onMouseUp={onContainerMouseUp}
+        onContextMenu={onContainerContextMenu}
         css={css({ paddingTop: 10 })}
       >
         {props.children}
@@ -451,12 +499,14 @@ export const SelectionProvider = ({
             background: '#6CC7F640', // blues.300 with 25% opacity
             border: '1px solid',
             borderColor: 'blues.600',
+            pointerEvents: 'none', // disable selection
+          })}
+          style={{
             left: Math.min(selectionRect.start.x, selectionRect.end.x),
             top: Math.min(selectionRect.start.y, selectionRect.end.y),
             width: Math.abs(selectionRect.end.x - selectionRect.start.x),
             height: Math.abs(selectionRect.end.y - selectionRect.start.y),
-            pointerEvents: 'none', // disable selection
-          })}
+          }}
         />
       )}
       <DragPreview
@@ -476,6 +526,7 @@ export const SelectionProvider = ({
         sandboxes={sandboxes || []}
         folders={folders || []}
         setRenaming={setRenaming}
+        createNewFolder={createNewFolder}
       />
     </Context.Provider>
   );
@@ -517,11 +568,32 @@ export const useSelection = () => {
   };
 };
 
+let scrollTimer;
+let retries = 0;
+const MAX_RETRIES = 3;
+const startingWaitTime = 50; // ms
+const incrementalWaitTime = 100; // ms
+
 const scrollIntoViewport = (id: string) => {
   const gridContainer = document.querySelector('#variable-grid');
   const event = new CustomEvent('scrollToItem', { detail: id });
-  gridContainer.dispatchEvent(event);
+
+  if (scrollTimer) window.clearTimeout(scrollTimer);
+
+  if (!gridContainer && retries < MAX_RETRIES) {
+    // we can call scroll when the grid is still loading,
+    // in that event, we schedule to scroll into viewport
+    // we incrementally increase wait time with each retry
+    // and give up after 3 retries
+    const waitTime = startingWaitTime + retries * incrementalWaitTime;
+    retries++;
+    scrollTimer = window.setTimeout(() => scrollIntoViewport(id), waitTime);
+  } else {
+    retries = 0;
+    gridContainer.dispatchEvent(event);
+  }
 };
 
 const isFolderPath = id => id.startsWith('/');
 const isSandboxId = id => !isFolderPath(id);
+const notDrafts = folder => folder.path !== '/drafts';

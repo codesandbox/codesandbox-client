@@ -58,7 +58,9 @@ export const blacklistedTemplateAdded: Action<string> = (
   { state },
   template
 ) => {
-  state.dashboard.filters.blacklistedTemplates.push(template);
+  state.dashboard.filters.blacklistedTemplates = state.dashboard.filters.blacklistedTemplates.concat(
+    template
+  );
 };
 
 export const blacklistedTemplateRemoved: Action<string> = (
@@ -107,7 +109,7 @@ export const deleteTemplate: AsyncAction<{
   templateId: string;
 }> = async ({ actions, effects, state }, { sandboxId, templateId }) => {
   const oldTemplates = {
-    TEMPLATE_START_PAGE: state.dashboard.sandboxes.TEMPLATE_START_PAGE,
+    TEMPLATE_HOME: state.dashboard.sandboxes.TEMPLATE_HOME,
     TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
   };
   actions.dashboard.deleteTemplateFromState([sandboxId]);
@@ -121,8 +123,8 @@ export const deleteTemplate: AsyncAction<{
     state.dashboard.sandboxes.TEMPLATES = oldTemplates.TEMPLATES
       ? [...oldTemplates.TEMPLATES]
       : null;
-    state.dashboard.sandboxes.TEMPLATE_START_PAGE = oldTemplates.TEMPLATE_START_PAGE
-      ? [...oldTemplates.TEMPLATE_START_PAGE]
+    state.dashboard.sandboxes.TEMPLATE_HOME = oldTemplates.TEMPLATE_HOME
+      ? [...oldTemplates.TEMPLATE_HOME]
       : null;
     effects.notificationToast.error('Could not delete custom template');
   }
@@ -468,9 +470,9 @@ export const getStartPageSandboxes: AsyncAction = withLoadApp(
         return;
       }
 
-      dashboard.sandboxes.TEMPLATE_START_PAGE = usedTemplates.me.recentlyUsedTemplates.slice(
+      dashboard.sandboxes.TEMPLATE_HOME = usedTemplates.me.recentlyUsedTemplates.slice(
         0,
-        4
+        3
       );
 
       const recentSandboxes = await effects.gql.queries.recentSandboxes({
@@ -482,7 +484,7 @@ export const getStartPageSandboxes: AsyncAction = withLoadApp(
       if (!recentSandboxes || !recentSandboxes.me) {
         return;
       }
-      dashboard.sandboxes.RECENT_START_PAGE = recentSandboxes.me.sandboxes;
+      dashboard.sandboxes.RECENT_HOME = recentSandboxes.me.sandboxes;
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your Sandboxes'
@@ -538,9 +540,9 @@ export const deleteTemplateFromState: Action<string[]> = (
 ) => {
   const { sandboxes } = dashboard;
   ids.map(id => {
-    if (sandboxes.TEMPLATE_START_PAGE) {
-      sandboxes.TEMPLATE_START_PAGE = sandboxes.TEMPLATE_START_PAGE
-        ? sandboxes.TEMPLATE_START_PAGE.filter(
+    if (sandboxes.TEMPLATE_HOME) {
+      sandboxes.TEMPLATE_HOME = sandboxes.TEMPLATE_HOME
+        ? sandboxes.TEMPLATE_HOME.filter(
             ({ sandbox }: TemplateFragmentDashboardFragment) =>
               sandbox && sandbox.id !== id
           )
@@ -586,7 +588,7 @@ export const unmakeTemplate: AsyncAction<string[]> = async (
   ids
 ) => {
   const oldTemplates = {
-    TEMPLATE_START_PAGE: state.dashboard.sandboxes.TEMPLATE_START_PAGE,
+    TEMPLATE_HOME: state.dashboard.sandboxes.TEMPLATE_HOME,
     TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
   };
   actions.dashboard.deleteTemplateFromState(ids);
@@ -596,8 +598,8 @@ export const unmakeTemplate: AsyncAction<string[]> = async (
     state.dashboard.sandboxes.TEMPLATES = oldTemplates.TEMPLATES
       ? [...oldTemplates.TEMPLATES]
       : null;
-    state.dashboard.sandboxes.TEMPLATE_START_PAGE = oldTemplates.TEMPLATE_START_PAGE
-      ? [...oldTemplates.TEMPLATE_START_PAGE]
+    state.dashboard.sandboxes.TEMPLATE_HOME = oldTemplates.TEMPLATE_HOME
+      ? [...oldTemplates.TEMPLATE_HOME]
       : null;
     effects.notificationToast.error(
       'There was a problem reverting your template'
@@ -892,7 +894,7 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
     case sandboxesTypes.RECENT:
       dashboard.getRecentSandboxes();
       break;
-    case sandboxesTypes.START_PAGE:
+    case sandboxesTypes.HOME:
       dashboard.getStartPageSandboxes();
       break;
     case sandboxesTypes.DELETED:
@@ -996,4 +998,82 @@ export const setTeamInfo: AsyncAction<{
     }
     effects.notificationToast.error('There was a problem renaming your team');
   }
+};
+
+export const changeSandboxPrivacy: AsyncAction<{
+  id: string;
+  privacy: 0 | 1 | 2;
+  oldPrivacy: 0 | 1 | 2;
+}> = async ({ actions, effects, state }, { id, privacy, oldPrivacy }) => {
+  // optimistic update
+  actions.dashboard.changeSandboxPrivacyInState({ id, privacy });
+
+  try {
+    await effects.api.updatePrivacy(id, privacy);
+  } catch (error) {
+    // rollback optimistic
+    actions.dashboard.changeSandboxPrivacyInState({ id, privacy: oldPrivacy });
+
+    actions.internal.handleError({
+      message: "We weren't able to update the sandbox privacy",
+      error,
+    });
+  }
+};
+
+export const changeSandboxPrivacyInState: Action<{
+  id: string;
+  privacy: 0 | 1 | 2;
+}> = ({ state: { dashboard } }, { id, privacy }) => {
+  const values = Object.keys(dashboard.sandboxes).map(type => {
+    if (dashboard.sandboxes[type]) {
+      if (Array.isArray(dashboard.sandboxes[type])) {
+        return dashboard.sandboxes[type].map(sandbox => {
+          if (sandbox.id === id) {
+            return {
+              ...sandbox,
+              privacy,
+            };
+          }
+
+          return sandbox;
+        });
+      }
+
+      const folderNames = dashboard.sandboxes[type];
+      const sandboxes = Object.keys(folderNames).map(folderName => ({
+        [folderName]: folderNames[folderName].map(sandbox => {
+          if (sandbox.id === id) {
+            return {
+              ...sandbox,
+              privacy,
+            };
+          }
+
+          return sandbox;
+        }),
+      }));
+
+      return {
+        ...dashboard.sandboxes[type],
+        ...sandboxes.reduce(
+          (obj, item) =>
+            Object.assign(obj, {
+              [Object.keys(item)[0]]: item[Object.keys(item)[0]],
+            }),
+          {}
+        ),
+      };
+    }
+
+    return null;
+  });
+
+  dashboard.sandboxes = values.reduce(
+    (initial, current, i) =>
+      Object.assign(initial, {
+        [Object.keys(dashboard.sandboxes)[i]]: current,
+      }),
+    {}
+  );
 };

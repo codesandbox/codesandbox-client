@@ -1,11 +1,12 @@
+import { Element, Link, Text } from '@codesandbox/components';
+import css from '@styled-system/css';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Text, Element, Link } from '@codesandbox/components';
-import css from '@styled-system/css';
+
 import { Code } from './Code';
-import { LinkElement } from './Link';
 import { Image } from './Image';
 import { InlineCode } from './InlineCode';
+import { LinkElement } from './Link';
 
 export const Markdown = ({ source }) => (
   <Element
@@ -35,7 +36,7 @@ export const Markdown = ({ source }) => (
     })}
   >
     <ReactMarkdown
-      source={source}
+      source={source.replace(/\n/gi, '&nbsp;\n\n')}
       renderers={{
         text: ({ children }) => (
           <Text

@@ -49,6 +49,8 @@ export const DragPreview = ({
       };
     });
 
+  const mousePosition = useMousePosition();
+
   return (
     <Stack
       css={{
@@ -65,6 +67,7 @@ export const DragPreview = ({
           direction={viewMode === 'list' ? 'vertical' : 'horizontal'}
           as={motion.div}
           css={css({
+            position: 'absolute',
             border: viewMode === 'list' ? '1px solid' : 'none',
             borderColor: 'grays.700',
             padding: viewMode === 'list' ? 2 : 0,
@@ -77,6 +80,7 @@ export const DragPreview = ({
             viewMode,
             thumbnailRef,
             count: selectedItems.length,
+            mousePosition,
           })}
           animate={getItemStyles({
             initialOffset,
@@ -84,6 +88,7 @@ export const DragPreview = ({
             viewMode,
             thumbnailRef,
             count: selectedItems.length,
+            mousePosition,
           })}
         >
           {selectedItems.map((item, index) => (
@@ -141,12 +146,13 @@ function getItemStyles({
   viewMode,
   thumbnailRef,
   count = 1,
+  mousePosition,
 }) {
   if (!initialOffset || !currentOffset) {
     return { display: 'none' };
   }
 
-  const { x, y } = currentOffset;
+  let { x, y } = currentOffset;
 
   let size: {
     width: number | string;
@@ -165,6 +171,8 @@ function getItemStyles({
     } else {
       size = { width: 100, height: 50 };
     }
+    x = mousePosition.x;
+    y = mousePosition.y;
   } else if (viewMode === 'list') {
     size = { width: 'auto', minWidth: 160, height: 'fit-content' };
   } else if (thumbnailElement) {
@@ -174,3 +182,20 @@ function getItemStyles({
 
   return { x, y, backgroundColor, ...size };
 }
+
+const useMousePosition = () => {
+  const [position, setPosition] = React.useState({ x: null, y: null });
+
+  React.useEffect(() => {
+    const handler = event =>
+      setPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+    document.addEventListener('dragover', handler);
+    return () => document.removeEventListener('dragover', handler);
+  }, []);
+
+  return position;
+};

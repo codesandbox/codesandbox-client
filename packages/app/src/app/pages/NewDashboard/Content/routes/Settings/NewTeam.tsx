@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import { Element, Stack, Text, Input, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -28,6 +29,9 @@ export const NewTeam = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Create Team - CodeSandbox</title>
+      </Helmet>
       <Element
         css={css({
           height: 'calc(100vh - 140px)',

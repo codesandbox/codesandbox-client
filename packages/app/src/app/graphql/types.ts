@@ -172,6 +172,7 @@ export type Notification = {
   id: Maybe<Scalars['ID']>;
   read: Maybe<Scalars['Boolean']>;
   type: Maybe<Scalars['String']>;
+  insertedAt: Maybe<Scalars['String']>;
 };
 
 export type OrderBy = {
