@@ -265,9 +265,6 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
 
           {inTeamContext ? <Menu.Divider /> : null}
 
-          {inTeamContext ? (
-            <RowItem name="Recently Modified" path="recent" icon="clock" />
-          ) : null}
           <NestableRowItem
             name="All sandboxes"
             path=""
@@ -277,6 +274,9 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
             ]}
           />
 
+          {inTeamContext ? (
+            <RowItem name="Recently Modified" path="recent" icon="clock" />
+          ) : null}
           <RowItem name="Templates" path="templates" icon="star" />
           <RowItem name="Recently Deleted" path="deleted" icon="trash" />
         </List>
