@@ -212,7 +212,7 @@ export const VariableGrid = ({ items }) => {
           const skeletonItem = { type: 'skeleton' };
 
           items.forEach((item, index) => {
-            if (!['header', 'skeletonRow'].includes(item.type)) {
+            if (!['header', 'skeletonRow', 'new-sandbox'].includes(item.type)) {
               filledItems.push({ ...item, viewMode });
             }
 
@@ -228,6 +228,8 @@ export const VariableGrid = ({ items }) => {
                   filledItems.push({ type: 'headerLink', link: showMoreLink });
                 }
               }
+            } else if (item.type === 'new-sandbox' && viewMode === 'grid') {
+              filledItems.push(item);
             } else if (item.type === 'sandbox') {
               const nextItem = items[index + 1];
               if (nextItem && nextItem.type === 'header') {
