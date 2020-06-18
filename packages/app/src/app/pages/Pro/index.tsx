@@ -22,13 +22,11 @@ import {
   Heading,
   HelpText,
   LinkButton,
-  ModalBackdrop,
-  SignInModal,
-  SignInButton,
   SubHeading,
   DurationChoice,
   BillText,
 } from './elements';
+import { SignInModalElement } from '../SignIn/Modal';
 
 const ProPage: React.FC = () => {
   const {
@@ -62,7 +60,7 @@ const ProPage: React.FC = () => {
      */
     if (!hasLoadedApp) return null;
 
-    if (!isLoggedIn) return <LoggedOut />;
+    if (!isLoggedIn) return <SignInModalElement />;
 
     if (!user.subscription) {
       return (
@@ -105,13 +103,13 @@ const ProPage: React.FC = () => {
   return (
     <ThemeProvider theme={codeSandboxBlackTheme}>
       <Page>
+        <Navigation title="CodeSandbox Pro" />
+
         <Helmet>
           <title>Pro - CodeSandbox</title>
         </Helmet>
 
         <Margin vertical={1.5} horizontal={1.5}>
-          <Navigation title="CodeSandbox Pro" />
-
           <MaxWidth width={1024}>
             <Content>{getContent()}</Content>
           </MaxWidth>
@@ -120,16 +118,6 @@ const ProPage: React.FC = () => {
     </ThemeProvider>
   );
 };
-
-const LoggedOut = () => (
-  <>
-    <ModalBackdrop />
-    <SignInModal>
-      <p>Sign in to continue</p>
-      <SignInButton />
-    </SignInModal>
-  </>
-);
 
 const Pro = ({ user, modalOpened, cancelSubscriptionClicked }) => {
   const subscriptionDate = new Date(user.subscription.since);

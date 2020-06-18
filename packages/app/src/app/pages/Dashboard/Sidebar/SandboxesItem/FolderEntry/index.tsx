@@ -203,6 +203,14 @@ class FolderEntry extends React.Component<Props, State> {
               });
             },
           });
+
+          const subPath = path
+            .split('/')
+            .slice(0, -1)
+            .join('/');
+
+          history.replace(`${basePath}${subPath}`);
+
           return true;
         },
       },

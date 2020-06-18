@@ -1,4 +1,4 @@
-import { global } from './utils';
+import { debug, global, ANONYMOUS_UID_KEY } from './utils';
 
 let _script;
 const _veroq: any[] = [
@@ -46,19 +46,16 @@ function loadScript() {
     });
 }
 
-let _hasSetAnonymousUserId = false;
-
 export const setAnonymousUserId = (userId: string) => {
   if (!_script) {
     _script = loadScript();
   }
 
-  _hasSetAnonymousUserId = true;
-
   _veroq.push([
     'user',
     {
       id: userId,
+      email: 'anon@codesandbox.io',
     },
   ]);
   processArray();
@@ -69,17 +66,26 @@ export const setUserId = (userId: string, email: string) => {
     _script = loadScript();
   }
 
-  if (_hasSetAnonymousUserId) {
-    _veroq.push([
-      'user',
-      {
-        id: userId,
-        email,
-      },
-    ]);
-  } else {
-    _veroq.push(['reidentify', userId]);
+  debug(`[Vero] Identifying user`);
+
+  _veroq.push([
+    'user',
+    {
+      id: userId,
+      email,
+    },
+  ]);
+
+  try {
+    const anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);
+    if (anonymousUid) {
+      debug(`[Vero] Reidentifying from ${anonymousUid} to ${userId}`);
+      _veroq.push(['reidentify', userId, anonymousUid]);
+    }
+  } catch (e) {
+    /* Ignore */
   }
+
   processArray();
 };
 

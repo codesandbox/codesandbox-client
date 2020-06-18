@@ -9,10 +9,18 @@ import { Thenable } from './main';
 let onigasmLib: Thenable<IOnigLib> = null;
 let onigurumaLib: Thenable<IOnigLib> = null;
 
-export function getOnigasm(): Thenable<IOnigLib> {
+async function getWasm() {
+	const wasmPath = '/public/vscode-oniguruma/1.3.1/onig.wasm';
+
+	const response = await fetch(wasmPath);
+
+	return response.arrayBuffer();
+}
+
+export async function getOnigasm(): Promise<IOnigLib> {
 	if (!onigasmLib) {
-		let onigasmModule = require('onigasm');
-		const wasmBin = '/public/onigasm/2.2.1/onigasm.wasm';
+		const onigasmModule = require('vscode-oniguruma');
+		const wasmBin = await getWasm()
 		onigasmLib = onigasmModule.loadWASM(wasmBin).then((_: any) => {
 			return {
 				createOnigScanner(patterns: string[]) { return new onigasmModule.OnigScanner(patterns); },

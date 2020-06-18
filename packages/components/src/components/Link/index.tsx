@@ -5,9 +5,14 @@ import { Text, ITextProps } from '../Text';
 
 type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
   React.AnchorHTMLAttributes<HTMLSpanElement> &
-  ITextProps;
+  ITextProps & {
+    as?: any;
+    to?: string;
+  };
 
-const LinkElement = styled(Text).attrs({ as: 'a' })<LinkProps>(
+const LinkElement = styled(Text).attrs(p => ({
+  as: ((p as unknown) as { as: string }).as || 'a',
+}))<LinkProps>(
   css({
     cursor: 'pointer',
     textDecoration: 'none',
@@ -22,6 +27,7 @@ const LinkElement = styled(Text).attrs({ as: 'a' })<LinkProps>(
 export const Link: React.FC<LinkProps> = props => (
   <LinkElement
     rel={props.target === '_blank' ? 'noopener noreferrer' : null}
+    as="a"
     {...props}
   />
 );

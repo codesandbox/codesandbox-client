@@ -15,9 +15,9 @@ declare module 'ot' {
     compose(operation: TextOperation): TextOperation;
 
     static transform(left: TextOperation, right: TextOperation): TextOperation;
-    static isRetain(operation: TextOperation): boolean;
-    static isInsert(operation: TextOperation): boolean;
-    static isDelete(operation: TextOperation): boolean;
+    static isRetain(operation: string | number): boolean;
+    static isInsert(operation: string | number): boolean;
+    static isDelete(operation: string | number): boolean;
 
     static fromJSON(operation: SerializedTextOperation): TextOperation;
     toJSON(): SerializedTextOperation;

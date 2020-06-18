@@ -6,6 +6,7 @@ const variants = {
   body: 'inherit',
   muted: 'mutedForeground',
   danger: 'errorForeground',
+  active: 'button.background',
 };
 
 const overflowStyles = {
@@ -21,11 +22,13 @@ export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   fontStyle?: string;
   block?: boolean;
   maxWidth?: number | string;
-  variant?: 'body' | 'muted' | 'danger';
+  variant?: 'body' | 'muted' | 'danger' | 'active';
   dateTime?: string;
 }
 
-export const Text = styled(Element).attrs({ as: 'span' })<ITextProps>(
+export const Text = styled(Element).attrs(p => ({
+  as: ((p as unknown) as { as: string }).as || 'span',
+}))<ITextProps>(
   ({
     size,
     fontStyle,
@@ -40,6 +43,7 @@ export const Text = styled(Element).attrs({ as: 'span' })<ITextProps>(
       fontSize: size || 'inherit', // from theme.fontSizes
       textAlign: align || 'left',
       fontWeight: weight || null, // from theme.fontWeights
+      lineHeight: 'normal',
       fontStyle: fontStyle || null, // from theme.fontWeights
       display: block || maxWidth ? 'block' : 'inline',
       color: variants[variant],

@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`get-direct-children works with deeper paths 1`] = `
+Set {
+  "test2",
+  "test3",
+}
+`;
+
+exports[`get-direct-children works with root path 1`] = `
+Set {
+  "test",
+  "test2",
+}
+`;
+
+exports[`get-direct-children works with sub paths 1`] = `
+Set {
+  "test2",
+}
+`;

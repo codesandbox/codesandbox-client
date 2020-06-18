@@ -8,23 +8,49 @@ import {
   UserSelection,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Operator } from 'app/overmind';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
-import { logError } from '@codesandbox/common/lib/utils/analytics';
-import { getSavedCode } from 'app/overmind/utils/sandbox';
+
+export const onSave: Operator<LiveMessage<{
+  saved_code: string;
+  updated_at: string;
+  inserted_at: string;
+  version: number;
+  path: string;
+}>> = mutate(({ state, effects }, { data }) => {
+  const sandbox = state.editor.currentSandbox;
+
+  if (!sandbox) {
+    return;
+  }
+  const module = sandbox.modules.find(
+    moduleItem => moduleItem.path === data.path
+  );
+
+  if (!module) {
+    return;
+  }
+
+  module.savedCode = module.code === data.saved_code ? null : data.saved_code;
+  module.updatedAt = data.updated_at;
+  module.insertedAt = data.inserted_at;
+  sandbox.version = data.version;
+  effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
+
+  if (module.savedCode === null) {
+    effects.vscode.syncModule(module);
+  }
+});
 
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
   live_user_id: string;
 }>> = mutate(({ effects, actions, state }, { data }) => {
   state.live.liveUserId = data.live_user_id;
-
-  // Show message to confirm that you've joined a live session if you're not the owner
-  if (!state.live.isCurrentEditor) {
-    effects.notificationToast.success('Connected to Live!');
-  }
 
   if (state.live.reconnecting) {
     // We reconnected!
@@ -582,7 +608,12 @@ export const onOperation: Operator<LiveMessage<{
       // Something went wrong, probably a sync mismatch. Request new version
       console.error('Something went wrong with applying OT operation');
 
-      logError(e);
+      logBreadcrumb({
+        category: 'ot',
+        message: `Apply operation from server to OT client failed ${JSON.stringify(
+          data
+        )}`,
+      });
 
       effects.live.sendModuleStateSyncRequest();
     }

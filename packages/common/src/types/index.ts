@@ -116,7 +116,6 @@ export type CurrentUser = {
   name: string | null;
   username: string;
   avatarUrl: string;
-  jwt: string | null;
   subscription: {
     since: string;
     amount: number;
@@ -360,6 +359,7 @@ export type Sandbox = {
   git: GitInfo | null;
   tags: string[];
   isFrozen: boolean;
+  isSse?: boolean;
   environmentVariables: {
     [key: string]: string;
   } | null;
@@ -546,7 +546,7 @@ export type ServerPort = {
   name?: string;
 };
 
-export type ZeitUser = {
+export type VercelUser = {
   uid: string;
   email: string;
   name: string;
@@ -568,23 +568,23 @@ export type ZeitUser = {
   }>;
 };
 
-export type ZeitCreator = {
+export type VercelCreator = {
   uid: string;
 };
 
-export type ZeitScale = {
+export type VercelScale = {
   current: number;
   min: number;
   max: number;
 };
 
-export type ZeitAlias = {
+export type VercelAlias = {
   alias: string;
   created: string;
   uid: string;
 };
 
-export enum ZeitDeploymentState {
+export enum VercelDeploymentState {
   DEPLOYING = 'DEPLOYING',
   INITIALIZING = 'INITIALIZING',
   DEPLOYMENT_ERROR = 'DEPLOYMENT_ERROR',
@@ -596,27 +596,27 @@ export enum ZeitDeploymentState {
   ERROR = 'ERROR',
 }
 
-export enum ZeitDeploymentType {
+export enum VercelDeploymentType {
   'NPM',
   'DOCKER',
   'STATIC',
   'LAMBDAS',
 }
 
-export type ZeitDeployment = {
+export type VercelDeployment = {
   uid: string;
   name: string;
   url: string;
   created: number;
-  state: ZeitDeploymentState;
+  state: VercelDeploymentState;
   instanceCount: number;
-  alias: ZeitAlias[];
-  scale: ZeitScale;
-  createor: ZeitCreator;
-  type: ZeitDeploymentType;
+  alias: VercelAlias[];
+  scale: VercelScale;
+  createor: VercelCreator;
+  type: VercelDeploymentType;
 };
 
-export type ZeitConfig = {
+export type VercelConfig = {
   name?: string;
   alias?: string;
 };
@@ -695,6 +695,7 @@ export type LiveMessage<data = unknown> = {
 };
 
 export enum LiveMessageEvent {
+  SAVE = 'save',
   JOIN = 'join',
   MODULE_STATE = 'module_state',
   USER_ENTERED = 'user:entered',
@@ -742,3 +743,14 @@ export type PatronTier = 1 | 2 | 3 | 4;
 export type SandboxFs = {
   [path: string]: Module | Directory;
 };
+
+export interface IModuleStateModule {
+  synced?: boolean;
+  revision?: number;
+  code?: string;
+  saved_code?: string | null;
+}
+
+export interface IModuleState {
+  [moduleId: string]: IModuleStateModule;
+}

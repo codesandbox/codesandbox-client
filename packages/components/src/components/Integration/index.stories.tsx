@@ -29,21 +29,21 @@ const NetlifyIcon = props => (
   </svg>
 );
 
-const ZeitIcon = props => (
+const VercelIcon = props => (
   <svg width={12} height={10} fill="none" viewBox="0 0 12 10" {...props}>
     <path fill="#fff" d="M6 0l6 10H0L6 0z" />
   </svg>
 );
 
-export const IntegrationZeit = () => (
+export const IntegrationVercel = () => (
   <div style={{ width: 184 }}>
-    <Integration icon={ZeitIcon} title="ZEIT">
+    <Integration icon={VercelIcon} title="Vercel">
       <Element marginX={2}>
         <Stack direction="vertical">
           <Text variant="muted">Enables</Text>
           <Text>Deployments</Text>
         </Stack>
-        <Button onClick={action('zeit Integration')}>Sign In</Button>
+        <Button onClick={action('Vercel Integration')}>Sign In</Button>
       </Element>
     </Integration>
   </div>

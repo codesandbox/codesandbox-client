@@ -50,7 +50,7 @@ const resolveAsyncModule = (
     self.addEventListener('message', resolveFunc);
   });
 
-const SUPPORTED_EXTS = ['css', 'sass', 'scss'];
+const SUPPORTED_EXTS = ['scss', 'sass', 'css'];
 
 const existsPromise = (fs, file) =>
   new Promise(r => {
@@ -118,7 +118,7 @@ const resolveSass = (fs, p, path) => {
         filename: path,
         extensions: ['.scss', '.css', '.sass'],
         moduleDirectory: ['node_modules'],
-        packageFilter,
+        packageFilter: packageFilter(),
         isFile: async (pp, c, cb) => {
           const exists = !!(await getExistingPath(fs, pp));
           const callback = c || cb;

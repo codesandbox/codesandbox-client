@@ -5,9 +5,15 @@ import {
   ALGOLIA_DEFAULT_INDEX, // eslint-disable-line
 } from '@codesandbox/common/lib/utils/config';
 import { InstantSearch, Configure, Stats } from 'react-instantsearch/dom';
+import { connectStateResults } from 'react-instantsearch-dom';
 import { SubHeader } from '../../elements';
 import { GlobalSearchStyles } from './elements';
 import { ExploreResultList } from './ExploreResultList';
+import { Loader } from '../../Loader';
+
+const LoadingIndicator = connectStateResults(({ isSearchStalled }) =>
+  isSearchStalled ? <Loader /> : null
+);
 
 export const SearchResults = ({ search }: { search: string }) => (
   <>
@@ -35,7 +41,7 @@ export const SearchResults = ({ search }: { search: string }) => (
           }}
         />
       </SubHeader>
-
+      <LoadingIndicator />
       <ExploreResultList />
     </InstantSearch>
   </>

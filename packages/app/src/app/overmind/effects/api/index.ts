@@ -45,6 +45,11 @@ export default {
 
     return response.token;
   },
+  async getJWTToken(): Promise<string> {
+    const response = await api.get<{ jwt: string }>('/auth/jwt');
+
+    return response.jwt;
+  },
   createPatronSubscription(
     token: string,
     amount: number,
@@ -76,6 +81,9 @@ export default {
   },
   markSurveySeen(): Promise<void> {
     return api.post('/users/survey-seen', {});
+  },
+  revokeToken(token: string): Promise<void> {
+    return api.delete(`/auth/revoke/${token}`);
   },
   getDependency(name: string): Promise<Dependency> {
     return api.get(`/dependencies/${name}@latest`);
@@ -436,7 +444,7 @@ export default {
       },
     });
   },
-  createZeitIntegration(code: string): Promise<CurrentUser> {
+  createVercelIntegration(code: string): Promise<CurrentUser> {
     return api.post(`/users/current_user/integrations/zeit`, {
       code,
     });
@@ -447,7 +455,7 @@ export default {
   signoutGithubIntegration(): Promise<void> {
     return api.delete(`/users/current_user/integrations/github`);
   },
-  signoutZeit(): Promise<void> {
+  signoutVercel(): Promise<void> {
     return api.delete(`/users/current_user/integrations/zeit`);
   },
   preloadTemplates() {

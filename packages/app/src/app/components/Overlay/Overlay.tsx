@@ -17,8 +17,8 @@ interface IOverlayProps {
   onClose?: () => void;
   children: (handleOpen: () => void) => React.ReactNode;
   content: React.ComponentType;
-  noHeightAnimation?: boolean;
   width?: number;
+  propagate?: boolean;
 }
 
 const POPOVER_WIDTH = 390;
@@ -31,8 +31,8 @@ export const Overlay: React.FC<IOverlayProps> = ({
   onClose = noop,
   children,
   content: Content,
-  noHeightAnimation = true,
   width = POPOVER_WIDTH,
+  propagate = false,
 }) => {
   const [open, setOpen] = useState(isOpen === undefined ? false : isOpen);
   const isControlled = isOpen !== undefined;
@@ -116,7 +116,10 @@ export const Overlay: React.FC<IOverlayProps> = ({
   };
 
   return (
-    <Container onMouseDown={e => e.stopPropagation()} ref={element}>
+    <Container
+      onMouseDown={e => (propagate ? noop : e.stopPropagation())}
+      ref={element}
+    >
       {children(handleOpen)}
 
       {openState && (

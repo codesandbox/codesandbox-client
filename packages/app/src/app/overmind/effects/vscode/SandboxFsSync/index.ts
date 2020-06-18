@@ -11,8 +11,8 @@ import {
   Sandbox,
   SandboxFs,
 } from '@codesandbox/common/lib/types';
-import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import delay from '@codesandbox/common/lib/utils/delay';
+import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { json } from 'overmind';
@@ -404,30 +404,36 @@ class SandboxFsSync {
     autoInstallTypes: boolean
   ) {
     try {
-      if (
-        autoInstallTypes &&
-        this.typesInfo[dep.name] &&
-        !dep.name.startsWith('@types/')
-      ) {
-        const name = `@types/${dep.name}`;
-        this.fetchDependencyTypingFiles(name, this.typesInfo[dep.name].latest)
-          .then(files => {
-            this.setAndSendPackageTypes(dep.name, files);
-          })
-          .catch(e => {
-            if (process.env.NODE_ENV === 'development') {
-              console.warn('Trouble fetching types for ' + name);
-            }
-          });
-      }
-
       try {
         const files = await this.fetchDependencyTypingFiles(
           dep.name,
           dep.version
         );
+        const hasTypes = Boolean(
+          Object.keys(files).some(
+            key => key.startsWith('/' + dep.name) && key.endsWith('.d.ts')
+          )
+        );
 
-        this.setAndSendPackageTypes(dep.name, files);
+        if (
+          !hasTypes &&
+          autoInstallTypes &&
+          this.typesInfo[dep.name] &&
+          !dep.name.startsWith('@types/')
+        ) {
+          const name = `@types/${dep.name}`;
+          this.fetchDependencyTypingFiles(name, this.typesInfo[dep.name].latest)
+            .then(typesFiles => {
+              this.setAndSendPackageTypes(dep.name, typesFiles);
+            })
+            .catch(e => {
+              if (process.env.NODE_ENV === 'development') {
+                console.warn('Trouble fetching types for ' + name);
+              }
+            });
+        } else {
+          this.setAndSendPackageTypes(dep.name, files);
+        }
       } catch (e) {
         if (process.env.NODE_ENV === 'development') {
           console.warn('Trouble fetching types for ' + dep.name);

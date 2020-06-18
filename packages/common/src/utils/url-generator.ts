@@ -142,7 +142,7 @@ export const signInPageUrl = (redirectTo?: string) => {
 
 export const signInUrl = (extraScopes: boolean = false) =>
   '/auth/github' + (extraScopes ? '?scope=user:email,public_repo' : '');
-export const signInZeitUrl = () => '/auth/zeit';
+export const signInVercelUrl = () => '/auth/vercel';
 
 export const profileUrl = (username: string) => `/u/${username}`;
 export const dashboardUrl = () => `/dashboard`;
@@ -219,3 +219,5 @@ export function getSandboxId() {
 
   return result;
 }
+export const teamInviteLink = (inviteToken: string) =>
+  `${protocolAndHost()}/invite/${inviteToken}`;

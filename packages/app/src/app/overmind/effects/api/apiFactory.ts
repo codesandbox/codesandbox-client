@@ -26,15 +26,15 @@ export type Api = {
 };
 
 export type ApiConfig = {
-  provideJwtToken: () => string;
+  provideJwtToken: () => string | null;
   getParsedConfigurations: () => any;
 };
 
 export default (config: ApiConfig) => {
-  const createHeaders = (jwt: string) =>
-    jwt
+  const createHeaders = (provideJwt: () => string | null) =>
+    provideJwt()
       ? {
-          Authorization: `Bearer ${jwt}`,
+          Authorization: `Bearer ${provideJwt()}`,
         }
       : {};
 
@@ -43,28 +43,28 @@ export default (config: ApiConfig) => {
       return axios
         .get(API_ROOT + path, {
           params,
-          headers: createHeaders(config.provideJwtToken()),
+          headers: createHeaders(config.provideJwtToken),
         })
         .then(response => handleResponse(response, options));
     },
     post(path, body, options) {
       return axios
         .post(API_ROOT + path, decamelizeKeys(body), {
-          headers: createHeaders(config.provideJwtToken()),
+          headers: createHeaders(config.provideJwtToken),
         })
         .then(response => handleResponse(response, options));
     },
     patch(path, body, options) {
       return axios
         .patch(API_ROOT + path, decamelizeKeys(body), {
-          headers: createHeaders(config.provideJwtToken()),
+          headers: createHeaders(config.provideJwtToken),
         })
         .then(response => handleResponse(response, options));
     },
     put(path, body, options) {
       return axios
         .put(API_ROOT + path, decamelizeKeys(body), {
-          headers: createHeaders(config.provideJwtToken()),
+          headers: createHeaders(config.provideJwtToken),
         })
         .then(response => handleResponse(response, options));
     },
@@ -72,7 +72,7 @@ export default (config: ApiConfig) => {
       return axios
         .delete(API_ROOT + path, {
           params,
-          headers: createHeaders(config.provideJwtToken()),
+          headers: createHeaders(config.provideJwtToken),
         })
         .then(response => handleResponse(response, options));
     },
@@ -82,7 +82,7 @@ export default (config: ApiConfig) => {
           Object.assign(requestConfig, {
             url: API_ROOT + requestConfig.url,
             data: requestConfig.data ? camelizeKeys(requestConfig.data) : null,
-            headers: createHeaders(config.provideJwtToken()),
+            headers: createHeaders(config.provideJwtToken),
           })
         )
         .then(response => handleResponse(response, options));

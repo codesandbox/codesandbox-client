@@ -42,6 +42,7 @@ export const SearchBox = ({
     >
       <InputWrapper>
         <SearchElement
+          id="filter-templates"
           placeholder={placeholder}
           ref={inputEl}
           value={value}
