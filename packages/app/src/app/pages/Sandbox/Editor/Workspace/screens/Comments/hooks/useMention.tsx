@@ -156,19 +156,17 @@ export const useMention = ({ ref, value, setValue }) => {
         setMention(mentionNew);
       }
     }
-  }, [mention, value, userResourses]);
+  }, [value, mention, ref, userResourses]);
 
   const filteredUsers = query
     ? users.filter(user => user.toLowerCase().startsWith(query.toLowerCase()))
     : [];
 
   // Replaces the comment content with links to mentions
-  const output = Object.keys(userResourses).reduce((aggr, userMention) => {
-    return aggr.replace(
+  const output = Object.keys(userResourses).reduce((aggr, userMention) => aggr.replace(
       userMention,
       `[${userMention}](user://${userResourses[userMention]})`
-    );
-  }, value);
+    ), value);
 
   value
     .split(' ')
