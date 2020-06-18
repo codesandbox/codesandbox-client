@@ -208,6 +208,7 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                         <Text size={3}>{team.name}</Text>
                       </Stack>
                     ))}
+                    <Menu.Divider />
                     <Stack
                       as={Menu.Item}
                       align="center"
@@ -215,8 +216,6 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                       css={css({
                         height: 10,
                         textAlign: 'left',
-                        borderTop: '1px solid',
-                        borderColor: 'menu.selectionBackground',
                       })}
                       style={{ paddingLeft: 8 }}
                       onSelect={() =>
