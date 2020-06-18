@@ -408,16 +408,19 @@ export const SelectionProvider = ({
     const callback = () => {
       const selectionLeft = Math.min(
         selectionRect.start.x,
-        selectionRect.end.x
+        selectionRect.end.x || Infinity
       );
       const selectionRight = Math.max(
         selectionRect.start.x,
-        selectionRect.end.x
+        selectionRect.end.x || 0
       );
-      const selectionTop = Math.min(selectionRect.start.y, selectionRect.end.y);
+      const selectionTop = Math.min(
+        selectionRect.start.y,
+        selectionRect.end.y || Infinity
+      );
       const selectionBottom = Math.max(
         selectionRect.start.y,
-        selectionRect.end.y
+        selectionRect.end.y || 0
       );
 
       const visibleItems = document.querySelectorAll('[data-selection-id]');
