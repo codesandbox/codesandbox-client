@@ -999,3 +999,81 @@ export const setTeamInfo: AsyncAction<{
     effects.notificationToast.error('There was a problem renaming your team');
   }
 };
+
+export const changeSandboxPrivacy: AsyncAction<{
+  id: string;
+  privacy: 0 | 1 | 2;
+  oldPrivacy: 0 | 1 | 2;
+}> = async ({ actions, effects, state }, { id, privacy, oldPrivacy }) => {
+  // optimistic update
+  actions.dashboard.changeSandboxPrivacyInState({ id, privacy });
+
+  try {
+    await effects.api.updatePrivacy(id, privacy);
+  } catch (error) {
+    // rollback optimistic
+    actions.dashboard.changeSandboxPrivacyInState({ id, privacy: oldPrivacy });
+
+    actions.internal.handleError({
+      message: "We weren't able to update the sandbox privacy",
+      error,
+    });
+  }
+};
+
+export const changeSandboxPrivacyInState: Action<{
+  id: string;
+  privacy: 0 | 1 | 2;
+}> = ({ state: { dashboard } }, { id, privacy }) => {
+  const values = Object.keys(dashboard.sandboxes).map(type => {
+    if (dashboard.sandboxes[type]) {
+      if (Array.isArray(dashboard.sandboxes[type])) {
+        return dashboard.sandboxes[type].map(sandbox => {
+          if (sandbox.id === id) {
+            return {
+              ...sandbox,
+              privacy,
+            };
+          }
+
+          return sandbox;
+        });
+      }
+
+      const folderNames = dashboard.sandboxes[type];
+      const sandboxes = Object.keys(folderNames).map(folderName => ({
+        [folderName]: folderNames[folderName].map(sandbox => {
+          if (sandbox.id === id) {
+            return {
+              ...sandbox,
+              privacy,
+            };
+          }
+
+          return sandbox;
+        }),
+      }));
+
+      return {
+        ...dashboard.sandboxes[type],
+        ...sandboxes.reduce(
+          (obj, item) =>
+            Object.assign(obj, {
+              [Object.keys(item)[0]]: item[Object.keys(item)[0]],
+            }),
+          {}
+        ),
+      };
+    }
+
+    return null;
+  });
+
+  dashboard.sandboxes = values.reduce(
+    (initial, current, i) =>
+      Object.assign(initial, {
+        [Object.keys(dashboard.sandboxes)[i]]: current,
+      }),
+    {}
+  );
+};

@@ -227,6 +227,46 @@ const SandboxMenu = ({
       {isOwner ? (
         <>
           <Menu.Divider />
+          {sandbox.privacy !== 0 && (
+            <MenuItem
+              onClick={() =>
+                actions.dashboard.changeSandboxPrivacy({
+                  id: sandbox.id,
+                  privacy: 0,
+                  oldPrivacy: sandbox.privacy,
+                })
+              }
+            >
+              Make {label} public
+            </MenuItem>
+          )}
+          {sandbox.privacy !== 1 && (
+            <MenuItem
+              onClick={() =>
+                actions.dashboard.changeSandboxPrivacy({
+                  id: sandbox.id,
+                  privacy: 1,
+                  oldPrivacy: sandbox.privacy,
+                })
+              }
+            >
+              Make {label} unlisted
+            </MenuItem>
+          )}
+          {sandbox.privacy !== 2 && (
+            <MenuItem
+              onClick={() =>
+                actions.dashboard.changeSandboxPrivacy({
+                  id: sandbox.id,
+                  privacy: 2,
+                  oldPrivacy: sandbox.privacy,
+                })
+              }
+            >
+              Make {label} private
+            </MenuItem>
+          )}
+          <Menu.Divider />
           <MenuItem onClick={() => setRenaming(true)}>Rename {label}</MenuItem>
           {sandbox.isTemplate ? (
             <MenuItem
