@@ -60,7 +60,7 @@ export const Home = () => {
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
-      <Header title="Home" />
+      <Header title="Home" showViewOptions />
       <VariableGrid items={items} />
     </SelectionProvider>
   );

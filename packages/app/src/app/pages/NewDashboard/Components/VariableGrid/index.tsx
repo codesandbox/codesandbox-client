@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Element, Text, Link } from '@codesandbox/components';
+import { Element, Stack, Text, Link } from '@codesandbox/components';
 import { VariableSizeGrid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
@@ -23,9 +23,14 @@ const ComponentForTypes = {
   folder: props => <Folder {...props} />,
   'new-sandbox': props => <NewSandbox {...props} />,
   header: props => (
-    <Text block style={{ userSelect: 'none' }}>
-      {props.title}
-    </Text>
+    <Stack justify="space-between" align="center">
+      <Text block style={{ userSelect: 'none' }}>
+        {props.title}
+      </Text>
+      {props.showMoreLink
+        ? ComponentForTypes.headerLink({ link: props.showMoreLink })
+        : null}
+    </Stack>
   ),
   headerLink: props => (
     <Link
@@ -53,7 +58,6 @@ export const VariableGrid = ({ items }) => {
 
   let viewMode;
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
@@ -208,17 +212,21 @@ export const VariableGrid = ({ items }) => {
           const skeletonItem = { type: 'skeleton' };
 
           items.forEach((item, index) => {
-            if (item.type !== 'skeletonRow') filledItems.push(item);
+            if (!['header', 'skeletonRow'].includes(item.type)) {
+              filledItems.push({ ...item, viewMode });
+            }
 
             if (item.type === 'header') {
-              let blanks = columnCount - 1;
-              if (item.showMoreLink) blanks--;
-              for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
-              if (item.showMoreLink) {
-                filledItems.push({
-                  type: 'headerLink',
-                  link: item.showMoreLink,
-                });
+              if (columnCount === 1) filledItems.push(item);
+              else {
+                const { showMoreLink, ...fields } = item;
+                filledItems.push(fields);
+                let blanks = columnCount - 1;
+                if (showMoreLink) blanks--;
+                for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
+                if (showMoreLink) {
+                  filledItems.push({ type: 'headerLink', link: showMoreLink });
+                }
               }
             } else if (item.type === 'sandbox') {
               const nextItem = items[index + 1];
