@@ -6,6 +6,7 @@ import React, { useEffect } from 'react';
 import GoHome from 'react-icons/lib/go/home';
 import { Element, Button, ThemeProvider, Stack } from '@codesandbox/components';
 import GoIssueOpened from 'react-icons/lib/go/issue-opened';
+import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
 // @ts-ignore
 import { withTheme } from 'styled-components';
 import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
@@ -21,10 +22,15 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = withTheme(
       actions: { codesadboxMounted },
       state: { isLoggedIn },
     } = useOvermind();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, setErrorCode] = React.useState<string | null>(null);
 
     useEffect(() => {
       codesadboxMounted();
-    }, [codesadboxMounted]);
+
+      const sentryCode = captureException(error);
+      setErrorCode(sentryCode);
+    }, [codesadboxMounted, error]);
 
     return (
       <ThemeProvider theme={theme.vsCode}>

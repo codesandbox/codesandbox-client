@@ -43,6 +43,7 @@ export const Text = styled(Element).attrs(p => ({
       fontSize: size || 'inherit', // from theme.fontSizes
       textAlign: align || 'left',
       fontWeight: weight || null, // from theme.fontWeights
+      lineHeight: 'normal',
       fontStyle: fontStyle || null, // from theme.fontWeights
       display: block || maxWidth ? 'block' : 'inline',
       color: variants[variant],

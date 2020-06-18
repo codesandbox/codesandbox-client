@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import { Link as RouterLink } from 'react-router-dom';
 import {
@@ -47,6 +48,9 @@ export const Invite = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Invite Users - CodeSandbox</title>
+      </Helmet>
       <Element
         css={css({
           height: 'calc(100vh - 140px)',

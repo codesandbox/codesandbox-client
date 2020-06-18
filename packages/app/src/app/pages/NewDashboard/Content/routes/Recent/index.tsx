@@ -1,14 +1,11 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { useOvermind } from 'app/overmind';
-import { Stack, Text, Element } from '@codesandbox/components';
-import css from '@styled-system/css';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import {
-  VariableGrid,
-  SkeletonGrid,
-} from 'app/pages/NewDashboard/Components/VariableGrid';
+import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
+import { getPossibleTemplates } from '../../utils';
 
 export const Recent = () => {
   const {
@@ -36,40 +33,33 @@ export const Recent = () => {
     ];
   };
 
-  const items = [
-    ...getSection('Today', 'day'),
-    ...getSection('Last 7 days', 'week'),
-    ...getSection('Earlier this month', 'month'),
-    ...getSection('Older', 'older'),
-  ];
+  const items = sandboxes.RECENT
+    ? [
+        ...getSection('Today', 'day'),
+        ...getSection('Last 7 days', 'week'),
+        ...getSection('Earlier this month', 'month'),
+        ...getSection('Older', 'older'),
+      ]
+    : [
+        { type: 'header', title: 'Today' },
+        { type: 'skeletonRow' },
+        { type: 'header', title: 'Last 7 days' },
+        { type: 'skeletonRow' },
+      ];
 
   return (
-    <SelectionProvider sandboxes={sandboxes.RECENT}>
-      <Header title="Recently Modified Sandboxes" showViewOptions showFilters />
-      <section style={{ position: 'relative' }}>
-        {sandboxes.RECENT ? (
-          <>
-            <VariableGrid items={items} />
-          </>
-        ) : (
-          <Stack as="section" direction="vertical" gap={8}>
-            <Element css={css({ height: 4 })} />
-            <SkeletonGroup title="Today" time="day" count={2} />
-            <SkeletonGroup title="Last 7 Days" time="week" />
-            <SkeletonGroup title="Earlier this month" time="month" />
-            <SkeletonGroup title="Older" time="older" />
-          </Stack>
-        )}
-      </section>
+    <SelectionProvider items={items}>
+      <Helmet>
+        <title>Recent Sandboxes - CodeSandbox</title>
+      </Helmet>
+      <Header
+        templates={getPossibleTemplates(sandboxes.RECENT)}
+        title="Recently Modified Sandboxes"
+        showViewOptions
+        showFilters
+      />
+
+      <VariableGrid items={items} />
     </SelectionProvider>
   );
 };
-
-const SkeletonGroup = ({ title, time, count = 4 }) => (
-  <>
-    <Text marginLeft={4} marginBottom={6} block>
-      {title}
-    </Text>
-    <SkeletonGrid count={count} />
-  </>
-);

@@ -1,17 +1,17 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
-import {
-  VariableGrid,
-  SkeletonGrid,
-} from 'app/pages/NewDashboard/Components/VariableGrid';
+import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { getPossibleTemplates } from '../../utils';
+import { useFilteredItems } from './useFilteredItems';
 
 export const AllPage = ({ match: { params }, history }) => {
   const [level, setLevel] = React.useState(0);
   const [creating, setCreating] = React.useState(false);
+  const [items] = useFilteredItems(params, level);
   const param = params.path || '';
   const cleanParam = param.split(' ').join('');
   const {
@@ -44,42 +44,31 @@ export const AllPage = ({ match: { params }, history }) => {
     }
   }, [param, actions.dashboard, activeTeam]);
 
-  const sandboxesForPath = (sandboxes.ALL && sandboxes.ALL[cleanParam]) || [];
+  const activeSandboxes = (sandboxes.ALL && sandboxes.ALL[cleanParam]) || [];
 
-  const folders =
-    (allCollections &&
-      allCollections.filter(
-        collection => collection.level === level && collection.parent === param
-      )) ||
-    [];
-
-  let items = [];
-  if (creating) items.push({ type: 'folder', setCreating });
-
-  items = [
-    ...items,
-    ...folders.map(folder => ({ type: 'folder', ...folder })),
-    ...sandboxesForPath.map(sandbox => ({ type: 'sandbox', ...sandbox })),
-  ];
+  const itemsToShow = allCollections
+    ? [creating ? { type: 'folder', setCreating } : undefined, ...items].filter(
+        exists => exists
+      )
+    : [{ type: 'skeletonRow' }, { type: 'skeletonRow' }];
 
   return (
     <SelectionProvider
-      sandboxes={(sandboxes.ALL && sandboxes.ALL[cleanParam]) || []}
-      folders={folders || []}
+      items={itemsToShow}
+      createNewFolder={() => setCreating(true)}
     >
+      <Helmet>
+        <title>{param || 'Dashboard'} - CodeSandbox</title>
+      </Helmet>
       <Header
         path={param}
-        templates={getPossibleTemplates(allCollections)}
+        templates={getPossibleTemplates(activeSandboxes)}
         createNewFolder={() => setCreating(true)}
         showViewOptions
         showFilters={param}
         showSortOptions={param}
       />
-      {allCollections ? (
-        <VariableGrid items={items} />
-      ) : (
-        <SkeletonGrid count={8} />
-      )}
+      <VariableGrid items={itemsToShow} />
     </SelectionProvider>
   );
 };

@@ -62,14 +62,20 @@ export const FilterOptions: FunctionComponent<Props> = ({
                   <Menu.Item
                     field="title"
                     key={id || name}
-                    onSelect={() => toggleTemplate(id, !selected)}
+                    onSelect={() => {
+                      toggleTemplate(id, !selected);
+                      return { CLOSE_MENU: false };
+                    }}
                     css={css({
                       label: {
                         color: selected ? 'inherit' : 'mutedForeground',
                       },
                     })}
                   >
-                    <Checkbox checked={selected} label={niceName || name} />
+                    <Checkbox
+                      defaultChecked={selected}
+                      label={niceName || name}
+                    />
                   </Menu.Item>
                 );
               }
@@ -82,18 +88,20 @@ export const FilterOptions: FunctionComponent<Props> = ({
               key="all"
               onSelect={() => {
                 if (allSelected) {
-                  return blacklistedTemplatesChanged(
+                  blacklistedTemplatesChanged(
                     possibleTemplates.map(({ id }) => id)
                   );
+                } else {
+                  blacklistedTemplatesCleared();
                 }
 
-                return blacklistedTemplatesCleared();
+                return { CLOSE_MENU: false };
               }}
               css={css({
                 color: allSelected ? 'body' : 'muted',
               })}
             >
-              <Checkbox checked={allSelected} label="Select All" />
+              <Checkbox defaultChecked={allSelected} label="Select All" />
             </Menu.Item>
           )}
         </Menu.List>

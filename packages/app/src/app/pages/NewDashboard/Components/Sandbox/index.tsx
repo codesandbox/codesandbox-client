@@ -3,13 +3,23 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
+import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { Icon } from '@codesandbox/components';
+import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
+import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
+
+const PrivacyIcons = {
+  0: () => null,
+  1: () => <Icon name="link" size={12} />,
+  2: () => <Icon name="lock" size={12} />,
+};
 
 const GenericSandbox = ({ sandbox, ...props }) => {
   const {
@@ -19,15 +29,45 @@ const GenericSandbox = ({ sandbox, ...props }) => {
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
-  const { UserIcon } = getTemplateIcon(
-    sandbox.forkedTemplate?.iconUrl,
-    sandbox.source.template
+  let sandboxLocation = null;
+  if (sandbox.collection.path) {
+    sandboxLocation =
+      sandbox.collection.path === '/'
+        ? 'Drafts'
+        : sandbox.collection.path.split('/').pop();
+  } else if (sandbox.isTemplate) {
+    sandboxLocation =
+      (sandbox.collection.team && sandbox.collection.team.name) ||
+      (sandbox.author && sandbox.author.username) ||
+      (sandbox.git && 'from GitHub') ||
+      'Templates';
+  }
+
+  const lastUpdated = formatDistanceStrict(
+    new Date(sandbox.updatedAt.replace(/ /g, 'T')),
+    new Date(),
+    {
+      addSuffix: true,
+    }
   );
+
+  const viewCount = formatNumber(sandbox.viewCount);
 
   const url = sandboxUrl({
     id: sandbox.id,
     alias: sandbox.alias,
   });
+
+  const TemplateIcon = getTemplateIcon(sandbox);
+  const PrivacyIcon = PrivacyIcons[sandbox.privacy || 0];
+
+  let screenshotUrl = sandbox.screenshotUrl;
+  // We set a fallback thumbnail in the API which is used for
+  // both old and new dashboard, we can move this logic to the
+  // backend when we deprecate the old dashboard
+  if (screenshotUrl === 'https://codesandbox.io/static/img/banner.png') {
+    screenshotUrl = '/static/img/default-sandbox-thumbnail.png';
+  }
 
   /* Drag logic */
 
@@ -55,7 +95,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
   let viewMode: string;
 
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
@@ -92,11 +132,37 @@ const GenericSandbox = ({ sandbox, ...props }) => {
 
   const history = useHistory();
   const onDoubleClick = event => {
+    // can't open deleted items, they don't exist anymore
+    if (location.pathname.includes('deleted')) {
+      onContextMenu(event);
+      return;
+    }
+
+    // Templates in Home should fork, everything else opens
     if (event.ctrlKey || event.metaKey) {
-      window.open(url, '_blank');
+      if (sandbox.isHomeTemplate) {
+        actions.editor.forkExternalSandbox({
+          sandboxId: sandbox.id,
+          openInNewWindow: true,
+        });
+      } else {
+        window.open(url, '_blank');
+      }
+      track('Dashboard - Recent template forked', {
+        source: 'Home',
+        dashboardVersion: 2,
+      });
+    } else if (sandbox.isHomeTemplate) {
+      actions.editor.forkExternalSandbox({
+        sandboxId: sandbox.id,
+      });
     } else {
       history.push(url);
     }
+    track('Dashboard - Recent sandbox opened', {
+      source: 'Home',
+      dashboardVersion: 2,
+    });
   };
 
   /* Edit logic */
@@ -122,6 +188,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
       oldTitle: sandboxTitle,
     });
     setRenaming(false);
+    track('Dashboard - Rename sandbox', { dashboardVersion: 2 });
   };
 
   const onInputBlur = () => {
@@ -146,9 +213,14 @@ const GenericSandbox = ({ sandbox, ...props }) => {
 
   const sandboxProps = {
     sandboxTitle,
+    sandboxLocation,
+    lastUpdated,
+    viewCount,
     sandbox,
     isTemplate: sandbox.isTemplate,
-    TemplateIcon: UserIcon,
+    TemplateIcon,
+    PrivacyIcon,
+    screenshotUrl,
     // edit mode
     editing: isRenaming && selected,
     newTitle,
@@ -161,7 +233,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     opacity: isDragging ? 0.25 : 1,
   };
 
-  const dragProps = sandbox.isStartTemplate
+  const dragProps = sandbox.isHomeTemplate
     ? {}
     : {
         ref: dragRef,
@@ -207,7 +279,7 @@ export const SkeletonSandbox = props => {
 
   let viewMode;
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
+  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   if (viewMode === 'list') {

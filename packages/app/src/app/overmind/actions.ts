@@ -2,6 +2,7 @@ import {
   NotificationType,
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
+import { identify } from '@codesandbox/common/lib/utils/analytics';
 
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
@@ -209,7 +210,11 @@ export const signOutClicked: AsyncAction = async ({
     actions.live.internal.disconnect();
   }
   await effects.api.signout();
-  effects.jwt.reset();
+  identify('signed_in', false);
+  document.cookie = 'signedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  document.cookie =
+    'signedInDev=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  state.hasLogIn = false;
   state.user = null;
   effects.browser.reload();
 };
@@ -259,6 +264,7 @@ export const refetchSandboxInfo: AsyncAction = async ({
   sandbox.roomId = updatedSandbox.roomId;
   sandbox.authorization = updatedSandbox.authorization;
   sandbox.privacy = updatedSandbox.privacy;
+  sandbox.featureFlags = updatedSandbox.featureFlags;
 
   await actions.editor.internal.initializeSandbox(sandbox);
 };

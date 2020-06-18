@@ -120,10 +120,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) {
     const styles = merge(variantStyles[variant], commonStyles, css);
+    // default type is button unless props.as was changed
+    const type = !props.as && 'button';
 
     return (
       <Element
         as="button"
+        type={type}
         css={styles}
         ref={ref}
         disabled={props.disabled || loading}
@@ -136,10 +139,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
-
-Button.defaultProps = {
-  type: 'button',
-};
 
 /** Animation dots, we use the styled.span syntax
  *  because keyframes aren't supported in the object syntax

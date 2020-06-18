@@ -76,7 +76,7 @@ export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
       marginBottom={2}
     >
       <ColorLine bg={getColor(colors, status)} />
-      <InnerWrapper paddingX={3} paddingY={4}>
+      <InnerWrapper padding={4}>
         <Element style={fullWidth}>
           <Stack style={fullWidth}>
             <Element style={fullWidth}>

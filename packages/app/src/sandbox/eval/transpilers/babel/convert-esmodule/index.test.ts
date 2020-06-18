@@ -48,6 +48,8 @@ describe('convert-esmodule', () => {
   it('can convert default imports', () => {
     const code = `
       import a from './b';
+
+      a();
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });
@@ -367,6 +369,38 @@ describe('convert-esmodule', () => {
     import { bpfrpt_proptype_OverscanIndicesGetterParams } from './types';
     `;
 
-    convertEsModule(code);
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles assignments and exports at the same time', () => {
+    const code = `
+    export const {Ease: C, Linear, Power0, Power1, Power2, Power3, Power4, TweenPlugin} = _gsScope;
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles export object', () => {
+    const code = `
+    export {a, b, c};
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('handles export alias', () => {
+    const code = `
+    export {Subscription as default};
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('can convert normal exports', () => {
+    const code = `
+      export * from './some.js';
+      export { default as some } from './some.js';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
   });
 });

@@ -47,10 +47,7 @@ export const DevAuthPage = withTheme(({ theme }) => {
       });
   };
 
-  const baseSignInDomain = process.env.STAGING_API
-    ? 'https://codesandbox.stream'
-    : 'https://codesandbox.io';
-
+  const baseSignInDomain = process.env.ENDPOINT || 'https://codesandbox.io';
   const cliLoginUrl = `${baseSignInDomain}/cli/login`;
   return (
     <ThemeProvider theme={theme.vsCode}>
