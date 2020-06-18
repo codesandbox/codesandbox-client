@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 import { useOvermind } from 'app/overmind';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import {
   ThemeProvider,
   Stack,
@@ -36,7 +35,7 @@ export const Dashboard: FunctionComponent = () => {
   }
 
   return (
-    <ThemeProvider theme={codesandboxBlack}>
+    <ThemeProvider>
       <GlobalStyles />
       <DndProvider backend={Backend}>
         <Stack

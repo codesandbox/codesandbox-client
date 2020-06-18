@@ -8,7 +8,6 @@ import {
   Element,
   Button,
 } from '@codesandbox/components';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { useOvermind } from 'app/overmind';
@@ -180,7 +179,7 @@ export const TeamInvitation: React.FC<{
   })();
 
   return (
-    <ThemeProvider theme={codesandboxBlack}>
+    <ThemeProvider>
       <PageContainer>
         <ContentContainer>{content}</ContentContainer>
       </PageContainer>
