@@ -28,7 +28,10 @@ const ComponentForTypes = {
         {props.title}
       </Text>
       {props.showMoreLink
-        ? ComponentForTypes.headerLink({ link: props.showMoreLink })
+        ? ComponentForTypes.headerLink({
+            link: props.showMoreLink,
+            label: props.showMoreLabel,
+          })
         : null}
     </Stack>
   ),
@@ -42,7 +45,7 @@ const ComponentForTypes = {
       align="right"
       style={{ userSelect: 'none' }}
     >
-      Show more
+      {props.label}
     </Link>
   ),
   blank: () => <div />,
@@ -219,13 +222,17 @@ export const VariableGrid = ({ items }) => {
             if (item.type === 'header') {
               if (columnCount === 1) filledItems.push(item);
               else {
-                const { showMoreLink, ...fields } = item;
+                const { showMoreLink, showMoreLabel, ...fields } = item;
                 filledItems.push(fields);
                 let blanks = columnCount - 1;
                 if (showMoreLink) blanks--;
                 for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
                 if (showMoreLink) {
-                  filledItems.push({ type: 'headerLink', link: showMoreLink });
+                  filledItems.push({
+                    type: 'headerLink',
+                    link: showMoreLink,
+                    label: showMoreLabel,
+                  });
                 }
               }
             } else if (item.type === 'new-sandbox' && viewMode === 'grid') {
