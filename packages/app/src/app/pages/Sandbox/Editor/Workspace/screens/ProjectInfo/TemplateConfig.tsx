@@ -4,7 +4,7 @@ import { useOvermind } from 'app/overmind';
 import { ListAction, Text, Element } from '@codesandbox/components';
 import styled, { css } from 'styled-components';
 import getIcon from '@codesandbox/common/lib/templates/icons';
-import { ColorIcons as Icons } from '@codesandbox/template-icons';
+import { ColorIcons as Icons } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { Popover, usePopoverState, PopoverDisclosure } from 'reakit/Popover';
 
 const buttonStyles = css`

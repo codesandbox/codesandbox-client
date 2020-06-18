@@ -7,7 +7,8 @@ import { useOvermind } from 'app/overmind';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
 import { Navigation } from 'app/pages/common/Navigation';
-import { ThemeProvider } from '@codesandbox/components';
+import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
+import { ThemeProvider, Element } from '@codesandbox/components';
 import { PricingModal } from './PricingModal';
 import { Content } from './elements';
 
@@ -55,15 +56,16 @@ const Patron: React.FC = () => {
                     The money goes to all expenses of CodeSandbox.
                   </SubTitle>
 
-                  <Centered horizontal>
-                    <PricingModal />
-                  </Centered>
-                </>
-              </MaxWidth>
-            </Content>
-          </Margin>
-        </>
-      </MaxWidth>
+                    <Centered horizontal>
+                      <PricingModal />
+                    </Centered>
+                  </>
+                </MaxWidth>
+              </Content>
+            </Margin>
+          </>
+        </MaxWidth>
+      </Element>
     </ThemeProvider>
   );
 };

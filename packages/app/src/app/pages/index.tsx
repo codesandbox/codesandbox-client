@@ -1,12 +1,11 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import theme from '@codesandbox/common/lib/theme';
 import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus, Toasts } from '@codesandbox/notifications';
+import { Toasts } from '@codesandbox/notifications';
 import { useOvermind } from 'app/overmind';
 import Loadable from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
+import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 
 import { ErrorBoundary } from './common/ErrorBoundary';
@@ -14,6 +13,7 @@ import { Modals } from './common/Modals';
 import { Dashboard } from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
+import { Dashboard as NewDashboard } from './NewDashboard';
 import { NewSandbox } from './NewSandbox';
 import { Sandbox } from './Sandbox';
 
@@ -30,14 +30,18 @@ const Live = Loadable(() =>
     default: module.LivePage,
   }))
 );
-const ZeitSignIn = Loadable(() =>
-  import(/* webpackChunkName: 'page-zeit' */ './ZeitAuth')
+const VercelSignIn = Loadable(() =>
+  import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
 );
 const PreviewAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-zeit' */ './PreviewAuth')
+  import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
 );
 const NotFound = Loadable(() =>
-  import(/* webpackChunkName: 'page-not-found' */ './common/NotFound')
+  import(/* webpackChunkName: 'page-not-found' */ './common/NotFound').then(
+    module => ({
+      default: module.NotFound,
+    })
+  )
 );
 const Profile = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile').then(module => ({
@@ -52,6 +56,14 @@ const Search = Loadable(() =>
 const CLI = Loadable(() =>
   import(/* webpackChunkName: 'page-cli' */ './CLI').then(module => ({
     default: module.CLI,
+  }))
+);
+
+const TeamInvitation = Loadable(() =>
+  import(
+    /* webpackChunkName: 'page-team-invitation' */ './TeamInvitation'
+  ).then(module => ({
+    default: module.TeamInvitation,
   }))
 );
 
@@ -81,6 +93,7 @@ const Boundary = withRouter(ErrorBoundary);
 const RoutesComponent: React.FC = () => {
   const {
     actions: { appUnmounted },
+    state: { signInModalOpen, user },
   } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
@@ -103,16 +116,7 @@ const RoutesComponent: React.FC = () => {
           return null;
         }}
       />
-      <Toasts
-        colors={{
-          [NotificationStatus.ERROR]: theme.dangerBackground(),
-          [NotificationStatus.SUCCESS]: theme.green(),
-          [NotificationStatus.NOTICE]: theme.secondary(),
-          [NotificationStatus.WARNING]: theme.primary(),
-        }}
-        state={notificationState}
-        Button={Button}
-      />
+      <Toasts state={notificationState} />
       <Boundary>
         <Content>
           <Switch>
@@ -121,7 +125,9 @@ const RoutesComponent: React.FC = () => {
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />
             <Route exact path="/s2" component={NewSandbox} />
+            <Route path="/invite/:token" component={TeamInvitation} />
             <Route path="/dashboard" component={Dashboard} />
+            <Route path="/new-dashboard" component={NewDashboard} />
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
@@ -132,19 +138,18 @@ const RoutesComponent: React.FC = () => {
             <Route path="/patron" component={Patron} />
             <Route path="/pro" component={Pro} />
             <Route path="/cli/login" component={CLI} />
-            <Route path="/auth/zeit" component={ZeitSignIn} />
+            <Route path="/auth/zeit" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (
               <Route path="/auth/dev" component={DevAuthPage} />
             )}
-            {process.env.NODE_ENV === `development` && (
-              <Route path="/codesadbox" component={CodeSadbox} />
-            )}
+            <Route path="/codesadbox" component={CodeSadbox} />
             <Route component={NotFound} />
           </Switch>
         </Content>
       </Boundary>
       <Modals />
+      {signInModalOpen && !user ? <SignInModal /> : null}
     </Container>
   );
 };

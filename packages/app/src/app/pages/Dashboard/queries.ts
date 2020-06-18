@@ -58,6 +58,7 @@ const TEAM_FRAGMENT = gql`
   fragment Team on Team {
     id
     name
+    inviteToken
     description
     creatorId
 
@@ -459,6 +460,12 @@ export const INVITE_TO_TEAM = gql`
   ${TEAM_FRAGMENT}
 `;
 
+export const INVITE_TO_TEAM_VIA_EMAIL = gql`
+  mutation InviteToTeamViaEmail($teamId: ID!, $email: String!) {
+    inviteToTeamViaEmail(teamId: $teamId, email: $email)
+  }
+`;
+
 export const REVOKE_TEAM_INVITATION = gql`
   mutation RevokeTeamInvitation($teamId: ID!, $userId: ID!) {
     revokeTeamInvitation(teamId: $teamId, userId: $userId) {
@@ -486,6 +493,15 @@ export const REJECT_TEAM_INVITATION = gql`
 export const SET_TEAM_DESCRIPTION = gql`
   mutation SetTeamDescription($teamId: ID!, $description: String!) {
     setTeamDescription(teamId: $teamId, description: $description) {
+      ...Team
+    }
+  }
+  ${TEAM_FRAGMENT}
+`;
+
+export const SET_TEAM_NAME = gql`
+  mutation SetTeamName($teamId: ID!, $name: String!) {
+    setTeamName(teamId: $teamId, name: $name) {
       ...Team
     }
   }

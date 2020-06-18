@@ -141,10 +141,9 @@ export default () => (
           <IconWrapper>
             <Deploy />
           </IconWrapper>
-          <BigTitles>Deploy to ZEIT or Netlify</BigTitles>
+          <BigTitles>Deploy to Vercel or Netlify</BigTitles>
           <P muted center>
-            Deploy a production version of your sandbox with ZEIT Now or
-            Netlify.
+            Deploy a production version of your sandbox with Vercel or Netlify.
           </P>
         </div>
         <div>
@@ -194,10 +193,10 @@ export default () => (
             <Quote> "{tweet.quote}"</Quote>
             <div>
               <img
-                src={`https://avatars.io/twitter/${tweet.username}`}
+                src={`https://twitter-avatar.now.sh/${tweet.username}`}
                 alt={tweet.quote}
                 onError={e => {
-                  e.target.src = `https://avatars.io/static/default_128.jpg`;
+                  e.target.src = `https://twitter-avatar.now.sh/codesandbox`;
                 }}
               />
               <TweetAuthor>{tweet.name}</TweetAuthor>
@@ -351,7 +350,7 @@ export default () => (
       <Grid>
         <div>
           <H6>Configuration UI</H6>
-          Edit config files for npm, Prettier, Netlify, Now, TypeScript,
+          Edit config files for npm, Prettier, Netlify, Vercel, TypeScript,
           JavaScript, and your sandbox easily.
         </div>
         <div>

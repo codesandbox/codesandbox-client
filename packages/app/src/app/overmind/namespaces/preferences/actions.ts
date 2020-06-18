@@ -24,7 +24,7 @@ export const itemIdChanged: AsyncAction<{
   state.preferences.itemId = itemId;
 
   if (itemId === 'integrations') {
-    await actions.deployment.internal.getZeitUserDetails();
+    await actions.deployment.internal.getVercelUserDetails();
   }
 };
 

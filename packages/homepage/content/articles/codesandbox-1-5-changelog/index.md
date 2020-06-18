@@ -91,9 +91,9 @@ https://codesandbox.io/s/241mz6qwmr?fontsize=14&view=split
 It's now possible to open sandboxes in an external url. You can use this to see
 the preview in a separate window during development, or to share a fullscreen
 version of your sandbox with friends. Note that this external frame is nowhere
-near a production version, I'm working together with [ZEIT](https://zeit.co) to
-integrate 'Deploy to [Now](https://zeit.co/now)' so you can deploy a production
-version automagically ✨.
+near a production version, I'm working together with
+[Vercel](https://vercel.com) to integrate 'Deploy to Vercel' so you can deploy a
+production version automagically ✨.
 
 ![External frames!](./images/4.gif)
 

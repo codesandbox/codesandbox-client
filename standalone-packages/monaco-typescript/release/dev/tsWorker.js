@@ -29,6 +29,7 @@ var __values = (this && this.__values) || function (o) {
     };
 };
 define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchDependencyTypings", "./lib/emmet/expand/languageserver-types", "./lib/emmet/emmetHelper"], function (require, exports, ts, lib_1, fetchTypings, ls, emmet) {
+    /* eslint-disable */
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -53,7 +54,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
     // @ts-ignore
     var oldamd = self.define.amd;
     self.define.amd = null;
-    self.importScripts("/static/browserfs3/browserfs.min.js");
+    self.importScripts("/static/browserfs9/browserfs.min.js");
     self.define.amd = oldamd;
     self.BrowserFS = BrowserFS;
     self.process = BrowserFS.BFSRequire("process");
@@ -115,7 +116,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             var ensureDirectoryExistence = function (filePath, cb) {
                 var dirname = BrowserFS.BFSRequire("path").dirname(filePath);
                 _this.fs.stat(dirname, function (err, exists) {
-                    if (!!exists) {
+                    if (Boolean(exists)) {
                         cb(true);
                         return;
                     }

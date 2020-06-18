@@ -20,9 +20,7 @@ const { staticAssets } = require('../config/build');
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
-const PROXY_DOMAIN = process.env.STAGING_API
-  ? 'https://codesandbox.stream'
-  : 'https://codesandbox.io';
+const PROXY_DOMAIN = process.env.ENDPOINT || 'https://codesandbox.io';
 var compiler;
 var handleCompile;
 var compileStart;
@@ -281,12 +279,14 @@ function runDevServer(port, protocol, index) {
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
     // contentBase: paths.staticPath,
+    public: 'localhost:3000',
     host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.test',
     disableHostCheck: !process.env.LOCAL_SERVER,
     contentBase: false,
     clientLogLevel: 'warning',
     overlay: true,
-    inline: false,
+    inline: true,
+    hot: true,
     liveReload: process.env['DISABLE_REFRESH'] ? false : true,
   });
 

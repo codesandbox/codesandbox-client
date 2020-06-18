@@ -39,10 +39,7 @@ module.exports = function(listener, name, options) {
 
     var callee = path.get('callee');
 
-    if (
-      (callee.isIdentifier() && callee.node.name === word(opts)) ||
-      callee.type === 'Import'
-    ) {
+    if (callee.isIdentifier() && callee.node.name === word(opts)) {
       var arg = path.get('arguments.0');
 
       if (arg && (!arg.isGenerated() || includeGenerated(opts))) {

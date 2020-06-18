@@ -1,6 +1,5 @@
 import { ENTER, ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-
 import {
   Avatar,
   Element,
@@ -11,6 +10,7 @@ import {
   Textarea,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { Markdown } from 'app/components/Markdown';
 import {
   DIALOG_TRANSITION_DURATION,
   DIALOG_WIDTH,
@@ -26,7 +26,6 @@ import { createGlobalStyle } from 'styled-components';
 
 import { AvatarBlock } from '../components/AvatarBlock';
 import { EditComment } from '../components/EditComment';
-import { Markdown } from './Markdown';
 import { Reply, SkeletonReply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
 

@@ -8,13 +8,12 @@ import { useOvermind } from 'app/overmind';
 import { NavButton, Navigation, Notice } from './elements';
 import { NoSandboxes } from './NoSandboxes';
 
-const noop = null;
 const PER_PAGE_COUNT = 15;
 
 type Props = {
   baseUrl: string;
   page?: number;
-} & Pick<ComponentProps<typeof NoSandboxes>, 'source'>;
+} & Pick<ComponentProps<typeof SandboxList>, 'source'>;
 export const Sandboxes: FunctionComponent<Props> = ({
   page = 1,
   source,
@@ -22,11 +21,7 @@ export const Sandboxes: FunctionComponent<Props> = ({
 }) => {
   const {
     actions: {
-      profile: {
-        deleteSandboxClicked,
-        likedSandboxesPageChanged,
-        sandboxesPageChanged,
-      },
+      profile: { likedSandboxesPageChanged, sandboxesPageChanged },
     },
     state: {
       profile: {
@@ -77,16 +72,15 @@ export const Sandboxes: FunctionComponent<Props> = ({
     <div>
       {isProfileCurrentUser && (
         <Notice>
-          {`You're viewing your own profile, so you can see your private and unlisted sandboxes. Others can't. To manage your sandboxes you can go to your dashboard`}{' '}
+          {`You're viewing your own profile, so you can see your private and unlisted sandboxes. Others can't. To manage your sandboxes you can go to your dashboard `}
           <Link to={dashboardUrl()}>here</Link>.
         </Notice>
       )}
 
       <SandboxList
-        isCurrentUser={isProfileCurrentUser}
-        onDelete={source === 'currentSandboxes' ? deleteSandboxClicked : noop}
         // @ts-ignore
         sandboxes={sandboxes[page]}
+        source={source}
       />
 
       <Navigation>

@@ -3,21 +3,8 @@
 exports[`get-require-statements can find dynamic imports 1`] = `
 Array [
   Object {
-    "path": "./",
-    "type": "glob",
-  },
-  Object {
     "path": "./page/",
     "type": "glob",
-  },
-]
-`;
-
-exports[`get-require-statements can find import promises 1`] = `
-Array [
-  Object {
-    "path": "react-dom",
-    "type": "direct",
   },
 ]
 `;
@@ -83,9 +70,7 @@ Array [
     "path": "../css/Switcher.css",
     "type": "direct",
   },
-  Object {
-    "path": "./",
-    "type": "glob",
-  },
 ]
 `;
+
+exports[`get-require-statements does not find import promises 1`] = `Array []`;

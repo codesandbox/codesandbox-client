@@ -87,11 +87,9 @@ export const Search: FunctionComponent<Props> = ({ history, location }) => {
       </Helmet>
 
       <Styles />
-
+      <Navigation title="Search" />
       <MaxWidth>
         <Margin vertical={1.5}>
-          <Navigation title="Search" searchNoInput />
-
           <Content>
             <InstantSearch
               apiKey={ALGOLIA_API_KEY}

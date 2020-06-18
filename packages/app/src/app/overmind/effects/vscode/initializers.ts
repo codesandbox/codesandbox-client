@@ -40,6 +40,7 @@ export function initializeSettings() {
           'editor.minimap.enabled': false,
           'workbench.editor.openSideBySideDirection': 'down',
           'svelte.plugin.typescript.diagnostics.enable': false,
+          'typescript.locale': 'en',
         },
         null,
         2
@@ -71,6 +72,7 @@ export function initializeSettings() {
     settingsChanged = changeIfNeeded('javascript.autoClosingTags', false);
     settingsChanged = changeIfNeeded('typescript.autoClosingTags', false);
     settingsChanged = changeIfNeeded('html.autoClosingTags', false);
+    settingsChanged = changeIfNeeded('typescript.locale', 'en');
     settingsChanged = changeIfNeeded(
       'typescript.tsserver.useSeparateSyntaxServer',
       false
@@ -184,14 +186,12 @@ export function initializeCustomTheme() {
         message: e.message,
         status: NotificationStatus.ERROR,
         actions: {
-          primary: [
-            {
-              label: 'Clear Custom Theme',
-              run: () => {
-                localStorage.removeItem('settings.manualCustomVSCodeTheme');
-              },
+          primary: {
+            label: 'Clear Custom Theme',
+            run: () => {
+              localStorage.removeItem('settings.manualCustomVSCodeTheme');
             },
-          ],
+          },
         },
       });
     }

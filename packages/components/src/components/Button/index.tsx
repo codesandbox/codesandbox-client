@@ -75,6 +75,7 @@ const commonStyles = {
   border: 'none',
   borderRadius: 'small',
   transition: 'all ease-in',
+  textDecoration: 'none',
   transitionDuration: theme => theme.speeds[2],
 
   ':focus': {
@@ -87,7 +88,7 @@ const commonStyles = {
     opacity: '0.4',
     cursor: 'not-allowed',
   },
-  '&[data-loading]': {
+  '&[data-loading="true"]': {
     opacity: 1,
     cursor: 'default',
   },
@@ -103,15 +104,22 @@ export interface ButtonProps
     IElementProps {
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
   loading?: boolean;
+  href?: string;
+  to?: string;
+  as?: any;
+  target?: any;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   function Button({ variant = 'primary', loading, css = {}, ...props }, ref) {
     const styles = merge(variantStyles[variant], commonStyles, css);
+    // default type is button unless props.as was changed
+    const type = !props.as && 'button';
 
     return (
       <Element
         as="button"
+        type={type}
         css={styles}
         ref={ref}
         disabled={props.disabled || loading}
@@ -123,10 +131,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
-
-Button.defaultProps = {
-  type: 'button',
-};
 
 /** Animation dots, we use the styled.span syntax
  *  because keyframes aren't supported in the object syntax

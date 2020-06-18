@@ -19,26 +19,26 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
 var listToStyles = require('./listToStyles');
 
 /*
-type StyleObject = {
-  id: number;
-  parts: Array<StyleObjectPart>
-}
-
-type StyleObjectPart = {
-  css: string;
-  media: string;
-  sourceMap: ?string
+* type StyleObject = {
+*   id: number;
+*   parts: Array<StyleObjectPart>
+* }
+*
+* type StyleObjectPart = {
+*   css: string;
+*   media: string;
+*   sourceMap: ?string
 }
 */
 
 var stylesInDom = {
   /*
-  [id: number]: {
-    id: number,
-    refs: number,
-    parts: Array<(obj?: StyleObjectPart) => void>
-  }
-*/
+   *   [id: number]: {
+   *     id: number,
+   *     refs: number,
+   *     parts: Array<(obj?: StyleObjectPart) => void>
+   *   }
+   */
 };
 
 var head =

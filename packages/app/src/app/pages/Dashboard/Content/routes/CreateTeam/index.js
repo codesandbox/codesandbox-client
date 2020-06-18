@@ -89,7 +89,7 @@ export default class CreateTeam extends React.PureComponent {
                 },
               }).then(({ data }) => {
                 notificationState.addNotification({
-                  message: `Succesfully created team '${data.createTeam.name}'`,
+                  message: `Successfully created team '${data.createTeam.name}'`,
                   status: NotificationStatus.SUCCESS,
                 });
 
