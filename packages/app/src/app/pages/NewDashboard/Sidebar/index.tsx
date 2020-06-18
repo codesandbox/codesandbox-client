@@ -320,6 +320,7 @@ const linkStyles = {
   alignItems: 'center',
   paddingLeft: 8,
   paddingRight: 8,
+  flexShrink: 0,
 };
 
 const canNotAcceptSandboxes = ['home', 'recent', 'all'];
@@ -602,10 +603,10 @@ const NestableRowItem = ({ name, path, folders }) => {
               })}
             />
           ) : (
-            <Element as="span" css={css({ width: 5 })} />
+            <Element as="span" css={css({ width: 5, flexShrink: 0 })} />
           )}
 
-          <Stack align="center" gap={3} css={{ width: '100%' }}>
+          <Stack align="center" gap={3} css={{ width: 'calc(100% - 28px)' }}>
             <Stack
               as="span"
               css={css({ width: 4 })}
