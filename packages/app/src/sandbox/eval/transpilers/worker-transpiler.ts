@@ -155,6 +155,17 @@ export default abstract class WorkerTranspiler extends Transpiler {
           dispatch(actions.correction.clear(data.path, data.source));
         }
 
+        if (data.type === 'resolve-fs') {
+          const { id } = data;
+
+          const modules = loaderContext.getModules();
+          worker.postMessage({
+            type: 'resolve-fs-response',
+            id,
+            modules,
+          });
+        }
+
         if (data.type === 'resolve-async-transpiled-module') {
           // This one is to add an asynchronous transpiled module
 
