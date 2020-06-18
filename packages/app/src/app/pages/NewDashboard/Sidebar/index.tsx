@@ -64,6 +64,8 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
     }
   }, [dashboard.activeTeam, dashboard.activeTeamInfo, dashboard.teams, user]);
 
+  const inTeamContext = activeAccount.username !== user.username;
+
   const folders = dashboard.allCollections || [];
 
   // context menu for folders
@@ -167,10 +169,9 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                       css={css({
                         height: 10,
                         textAlign: 'left',
-                        backgroundColor:
-                          activeAccount.username === user.username
-                            ? 'grays.500'
-                            : 'transparent',
+                        backgroundColor: !inTeamContext
+                          ? 'grays.500'
+                          : 'transparent',
                       })}
                       style={{ paddingLeft: 8 }}
                       onSelect={() => {
@@ -253,9 +254,20 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
             )}
           </ListItem>
           <RowItem name="Home" path="home" icon="box" />
-          <RowItem name="Recent" path="recent" icon="clock" />
-          <RowItem name="Drafts" path="/drafts" icon="file" />
+          {inTeamContext ? null : (
+            <RowItem name="Recent" path="recent" icon="clock" />
+          )}
+          <RowItem
+            name={!inTeamContext ? 'Drafts' : 'My Drafts'}
+            path="/drafts"
+            icon="file"
+          />
 
+          {inTeamContext ? <Menu.Divider /> : null}
+
+          {inTeamContext ? (
+            <RowItem name="Recently Modified" path="recent" icon="clock" />
+          ) : null}
           <NestableRowItem
             name="All sandboxes"
             path=""
