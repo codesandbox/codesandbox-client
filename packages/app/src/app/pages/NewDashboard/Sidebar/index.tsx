@@ -572,7 +572,7 @@ const NestableRowItem = ({ name, path, folders }) => {
           onClick={() => history.push('/new-dashboard/all' + path)}
           onContextMenu={onContextMenu}
           onKeyDown={event => {
-            if (event.keyCode === ENTER) {
+            if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
               history.push('/new-dashboard/all' + path);
             }
           }}
