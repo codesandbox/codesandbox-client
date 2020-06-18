@@ -325,6 +325,7 @@ export const SelectionProvider = ({
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: dropResult.path,
+          deleteFromCurrentPath: location.pathname !== '/new-dashboard/recent',
         });
       }
     }

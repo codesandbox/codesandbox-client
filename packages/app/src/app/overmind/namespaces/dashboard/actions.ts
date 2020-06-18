@@ -920,9 +920,15 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
 export const addSandboxesToFolder: AsyncAction<{
   sandboxIds: string[];
   collectionPath: string;
-}> = async ({ state, effects, actions }, { sandboxIds, collectionPath }) => {
+  deleteFromCurrentPath?: boolean;
+}> = async (
+  { state, effects, actions },
+  { sandboxIds, collectionPath, deleteFromCurrentPath = true }
+) => {
   const oldSandboxes = state.dashboard.sandboxes;
-  actions.dashboard.deleteSandboxFromState(sandboxIds);
+  if (deleteFromCurrentPath) {
+    actions.dashboard.deleteSandboxFromState(sandboxIds);
+  }
 
   try {
     await effects.gql.mutations.addSandboxToFolder({
