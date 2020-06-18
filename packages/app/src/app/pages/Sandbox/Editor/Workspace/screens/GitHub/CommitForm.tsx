@@ -140,7 +140,7 @@ export const CommitForm = () => {
           css={{ cursor: 'pointer' }}
         >
           <Checkbox
-            checked={currentAction === 'branch'}
+            checked={evaluatedAction === 'branch'}
             disabled={permission === 'read' || isCommitting || isCreatingPr}
           />{' '}
           <Text>
@@ -156,7 +156,7 @@ export const CommitForm = () => {
           css={{ cursor: 'pointer' }}
         >
           <Checkbox
-            checked={currentAction === 'pr'}
+            checked={evaluatedAction === 'pr'}
             disabled={isCommitting || isCreatingPr}
           />{' '}
           <Text>
