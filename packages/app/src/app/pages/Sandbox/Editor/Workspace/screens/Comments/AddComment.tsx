@@ -6,7 +6,6 @@ import {
   List,
   ListAction,
 } from '@codesandbox/components';
-import Downshift, { DownshiftProps } from 'downshift';
 import { css } from '@styled-system/css';
 import React, { useState, useRef } from 'react';
 import { useMention } from './hooks/useMention';
