@@ -147,7 +147,10 @@ export const DragPreview = ({
                   <Stack
                     css={{ svg: { filter: 'grayscale(1)', opacity: 0.1 } }}
                   >
-                    <item.Icon width="60" height="60" />
+                    <item.Icon
+                      width={viewMode === 'list' ? 16 : 60}
+                      height={viewMode === 'list' ? 16 : 60}
+                    />
                   </Stack>
                 ) : null}
               </Stack>
