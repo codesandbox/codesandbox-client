@@ -80,7 +80,7 @@ export const Invite = () => {
                 Invite members
               </Text>
               <Text size={3} variant="muted" align="center">
-                Add the first members to the {team.name} team
+                Add the first members to the {team.name} workspace
               </Text>
             </Stack>
 
