@@ -7,7 +7,6 @@ import { useOvermind } from 'app/overmind';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
 import { Navigation } from 'app/pages/common/Navigation';
-import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
 import { ThemeProvider, Element } from '@codesandbox/components';
 import { PricingModal } from './PricingModal';
 import { Content } from './elements';
@@ -38,23 +37,24 @@ const Patron: React.FC = () => {
 
   return (
     <ThemeProvider>
-      <MaxWidth>
-        <>
-          <Helmet>
-            <title>Patron - CodeSandbox</title>
-          </Helmet>
-          <Margin vertical={1.5} horizontal={1.5}>
-            <Navigation title="Become a Patron" />
-            <Content>
-              <MaxWidth width={1024}>
-                <>
-                  <Title>Become a CodeSandbox Patron!</Title>
-                  <SubTitle>
-                    You can support us by paying a monthly amount of your
-                    choice.
-                    <br />
-                    The money goes to all expenses of CodeSandbox.
-                  </SubTitle>
+      <Element style={{ width: '100vw', height: '100vh' }}>
+        <Navigation title="Become a Patron" />
+        <MaxWidth>
+          <>
+            <Helmet>
+              <title>Patron - CodeSandbox</title>
+            </Helmet>
+            <Margin vertical={1.5} horizontal={1.5}>
+              <Content>
+                <MaxWidth width={1024}>
+                  <>
+                    <Title>Become a CodeSandbox Patron!</Title>
+                    <SubTitle>
+                      You can support us by paying a monthly amount of your
+                      choice.
+                      <br />
+                      The money goes to all expenses of CodeSandbox.
+                    </SubTitle>
 
                     <Centered horizontal>
                       <PricingModal />
