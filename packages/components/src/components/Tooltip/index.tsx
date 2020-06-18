@@ -70,7 +70,7 @@ const TooltipStyles = createGlobalStyle(
       paddingY: 1,
       fontSize: 3,
       lineHeight: 1,
-      zIndex: 20,
+      zIndex: 20, // TODO: we need to sort out our z indexes!
 
       // multiline
       maxWidth: 160,
