@@ -6,6 +6,7 @@ import {
   List,
   ListAction,
 } from '@codesandbox/components';
+import Downshift, { DownshiftProps } from 'downshift';
 import { css } from '@styled-system/css';
 import React, { useState, useRef } from 'react';
 import { useMention } from './hooks/useMention';
@@ -16,14 +17,12 @@ type Props = {
 
 export const AddComment: React.FC<Props> = ({ onSubmit }) => {
   const [value, setValue] = useState('');
-  const textArea = useRef(null);
-  const [filteredUsers, onKeyDown, onKeyUp, loadingUsers, mention] = useMention(
-    {
-      ref: textArea,
-      value,
-      setValue,
-    }
-  );
+  const ref = useRef(null);
+  const [users, onKeyDown, onKeyUp, loadingUsers, mention, query] = useMention({
+    ref,
+    value,
+    setValue,
+  });
 
   const submit = event => {
     event.preventDefault();
@@ -33,17 +32,13 @@ export const AddComment: React.FC<Props> = ({ onSubmit }) => {
     }
   };
 
-  console.log({
-    filteredUsers,
-  });
-
   // Form elements submit on Enter, except Textarea :)
   const submitOnEnter = event => {
     onKeyDown(event);
-    if (event.keyCode === ENTER && !event.shiftKey) {
-      event.preventDefault();
-      submit(event);
-    }
+    // if (event.keyCode === ENTER && !event.shiftKey) {
+    //   event.preventDefault();
+    //   submit(event);
+    // }
   };
 
   return (
@@ -57,10 +52,10 @@ export const AddComment: React.FC<Props> = ({ onSubmit }) => {
         boxShadow: theme => `0px -32px 32px ${theme.colors.dialog.background}`,
       })}
     >
-      <form onSubmit={submit}>
+      <form onSubmit={submit} css={css({ position: 'relative' })}>
         <FormField label="Add a comment" hideLabel>
           <Textarea
-            ref={textArea}
+            ref={ref}
             autosize
             value={value}
             onChange={e => setValue(e.target.value)}
@@ -82,26 +77,42 @@ export const AddComment: React.FC<Props> = ({ onSubmit }) => {
               backgroundColor: 'dialog.background',
               border: '1px solid',
               borderColor: 'dialog.border',
+              top: 0,
+              transform: 'translateY(-102%)',
             })}
           >
-            {filteredUsers.map((item, index) => (
-              <ListAction
-                key={item.id}
-                // isActive={highlightedIndex === index}
-              >
-                <img
-                  alt={item.username}
-                  css={css({
-                    borderRadius: 2,
-                    marginRight: 2,
-                  })}
-                  width={24}
-                  height={24}
-                  src={item.avatar_url}
-                />{' '}
-                {item.username}
-              </ListAction>
-            ))}
+            {query.length < 3 ? (
+              <ListAction>Please type more than 3 characters</ListAction>
+            ) : null}
+            {loadingUsers ? <ListAction>Loading Users...</ListAction> : null}
+            {!loadingUsers &&
+              users.map(item => (
+                <button
+                  key={item.id}
+                  type="button"
+                  css={`
+                    display: block;
+                    width: 100%;
+                    background: transparent;
+                    border: none;
+                    padding: 0;
+                  `}
+                >
+                  <ListAction>
+                    <img
+                      alt={item.username}
+                      css={css({
+                        borderRadius: 2,
+                        marginRight: 2,
+                      })}
+                      width={24}
+                      height={24}
+                      src={item.avatar_url}
+                    />{' '}
+                    {item.username}
+                  </ListAction>
+                </button>
+              ))}
           </List>
         ) : null}
       </form>

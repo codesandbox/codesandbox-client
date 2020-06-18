@@ -6,7 +6,7 @@ export const useMention = ({ ref, value, setValue }) => {
   const [loadingUsers, setLoadingUsers] = React.useState(false);
   const [users, setUsers] = React.useState([]);
   const [menuIndex, setMenuIndex] = React.useState(0);
-  const [userResourses, updateUserResources] = React.useState({});
+  const [userResources, updateUserResources] = React.useState({});
   const query =
     mention &&
     ref.current.value.substr(
@@ -15,8 +15,9 @@ export const useMention = ({ ref, value, setValue }) => {
     );
 
   React.useEffect(() => {
+    console.log('AN EFFECT', query);
     let timeoutId;
-    if (mention && query.length > 2) {
+    if (query && query.length > 2) {
       setLoadingUsers(true);
       // Small debounce
       timeoutId = window.setTimeout(() => {
@@ -52,13 +53,13 @@ export const useMention = ({ ref, value, setValue }) => {
       // Hitting enter adds the mention
       if (event.keyCode === 13) {
         updateUserResources({
-          ...userResourses,
-          ['@' + filteredUsers[menuIndex]]: '/whatever',
+          ...userResources,
+          ['@' + users[menuIndex]]: '/whatever',
         });
         setValue(
           value.substr(0, mention.startIndex) +
             '@' +
-            filteredUsers[menuIndex] +
+            users[menuIndex].username +
             value.substr(mention.endIndex + 1)
         );
         setMenuIndex(0);
@@ -69,8 +70,8 @@ export const useMention = ({ ref, value, setValue }) => {
 
         if (change < 0) {
           setMenuIndex(0);
-        } else if (change > filteredUsers.length - 1) {
-          setMenuIndex(filteredUsers.length - 1);
+        } else if (change > users.length - 1) {
+          setMenuIndex(users.length - 1);
         } else {
           setMenuIndex(change);
         }
@@ -127,7 +128,7 @@ export const useMention = ({ ref, value, setValue }) => {
           const currentIndex = aggr.index;
           if (
             word.startsWith('@') &&
-            !userResourses[word] &&
+            !userResources[word] &&
             ref.current.selectionStart >= currentIndex &&
             ref.current.selectionStart <= currentIndex + word.length
           ) {
@@ -156,23 +157,23 @@ export const useMention = ({ ref, value, setValue }) => {
         setMention(mentionNew);
       }
     }
-  }, [value, mention, ref, userResourses]);
-
-  const filteredUsers = query
-    ? users.filter(user => user.toLowerCase().startsWith(query.toLowerCase()))
-    : [];
+  }, [value, mention, ref, userResources]);
 
   // Replaces the comment content with links to mentions
-  const output = Object.keys(userResourses).reduce((aggr, userMention) => aggr.replace(
-      userMention,
-      `[${userMention}](user://${userResourses[userMention]})`
-    ), value);
+  const output = Object.keys(userResources).reduce(
+    (aggr, userMention) =>
+      aggr.replace(
+        userMention,
+        `[${userMention}](user://${userResources[userMention]})`
+      ),
+    value
+  );
 
   value
     .split(' ')
     .map(word => {
-      if (userResourses[word]) {
-        return `[${word}](user://${userResourses[word]})`;
+      if (userResources[word]) {
+        return `[${word}](user://${userResources[word]})`;
       }
 
       return word;
@@ -191,5 +192,5 @@ export const useMention = ({ ref, value, setValue }) => {
     });
   }
 
-  return [filteredUsers, onKeyDown, onKeyUp, loadingUsers, mention];
+  return [users, onKeyDown, onKeyUp, loadingUsers, mention, query];
 };
