@@ -90,6 +90,11 @@ export const DragPreview = ({
             count: selectedItems.length,
             mousePosition,
           })}
+          transition={{
+            type: 'spring',
+            damping: 100,
+            stiffness: 1000,
+          }}
         >
           {selectedItems.map((item, index) => (
             <Stack gap={2} align="center" key={item.id || item.path}>
