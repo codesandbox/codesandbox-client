@@ -33,7 +33,7 @@ export const TeamAccepted = ({
 }: Props) => {
   const {
     actions: {
-      userNotifications: { markNotificationAsRead },
+      userNotifications: { updateReadStatus },
     },
   } = useOvermind();
   const [hover, setHover] = useState(false);
@@ -44,7 +44,7 @@ export const TeamAccepted = ({
       onMouseLeave={() => setHover(false)}
       onClick={() => {
         if (isMenuClicked(event)) return;
-        markNotificationAsRead(id);
+        updateReadStatus(id);
       }}
       css={css({ padding: 0 })}
     >

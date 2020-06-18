@@ -45,7 +45,7 @@ export const TeamInvite: FunctionComponent<Props> = ({
       userAvatar: inviterName,
     });
 
-    userNotifications.markNotificationAsRead(id);
+    userNotifications.updateReadStatus(id);
   };
   return (
     <ListAction
