@@ -56,7 +56,13 @@ export const makeTheme = (vsCodeTheme = {}, name?: string) => {
   return theme;
 };
 
-export const ThemeProvider = ({ theme = codesandboxBlack, children }) => {
+export const ThemeProvider = ({
+  theme = codesandboxBlack,
+  children,
+}: {
+  theme?: any;
+  children: any;
+}) => {
   const usableTheme = makeTheme(theme);
 
   // the resizer lives outside the sidebar
