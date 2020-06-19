@@ -18,7 +18,6 @@ interface IOverlayProps {
   children: (handleOpen: () => void) => React.ReactNode;
   content: React.ComponentType;
   width?: number;
-  propagate?: boolean;
 }
 
 const POPOVER_WIDTH = 390;
@@ -116,10 +115,7 @@ export const Overlay: React.FC<IOverlayProps> = ({
   };
 
   return (
-    <Container
-      onMouseDown={e => (propagate ? noop : e.stopPropagation())}
-      ref={element}
-    >
+    <Container ref={element}>
       {children(handleOpen)}
 
       {openState && (

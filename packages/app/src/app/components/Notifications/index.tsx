@@ -26,7 +26,6 @@ export const Notifications = () => {
       isOpen={notificationsMenuOpened}
       onClose={notificationsClosed}
       onOpen={notificationsOpened}
-      propagate
     >
       {open => (
         <Button
@@ -50,8 +49,8 @@ export const Notifications = () => {
                 <Element
                   css={css({
                     position: 'absolute',
-                    width: '5px',
-                    height: '5px',
+                    width: '6px',
+                    height: '6px',
                     borderRadius: '50%',
                     backgroundColor: 'blues.600',
                     top: '-2px',
@@ -63,8 +62,8 @@ export const Notifications = () => {
                   className="border-for-bell"
                   css={css({
                     position: 'absolute',
-                    width: '7px',
-                    height: '7px',
+                    width: '8px',
+                    height: '8px',
                     borderRadius: '50%',
                     backgroundColor: 'sideBar.border',
                     top: '-3px',
