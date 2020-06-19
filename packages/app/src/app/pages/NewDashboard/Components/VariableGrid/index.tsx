@@ -19,7 +19,7 @@ const GRID_VERTICAL_OFFSET = 120;
 const ITEM_VERTICAL_OFFSET = 32;
 
 const ComponentForTypes = {
-  sandbox: props => <Sandbox sandbox={props} />,
+  sandbox: React.memo(props => <Sandbox sandbox={props} />),
   folder: props => <Folder {...props} />,
   'new-sandbox': props => <NewSandbox {...props} />,
   header: props => (
