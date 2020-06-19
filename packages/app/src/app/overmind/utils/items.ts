@@ -122,8 +122,22 @@ export default function getItems(
 
   const { currentSandbox } = store.editor;
 
+  const isServer =
+    store.isLoggedIn &&
+    currentSandbox &&
+    getTemplate(currentSandbox.template).isServer;
+
   if (currentSandbox.git) {
-    return [GITHUB_SUMMARY];
+    const gitItems = [GITHUB_SUMMARY];
+
+    if (
+      isServer &&
+      hasPermission(currentSandbox.authorization, 'write_project')
+    ) {
+      gitItems.push(SERVER);
+    }
+
+    return gitItems;
   }
 
   if (!currentSandbox || !currentSandbox.owned) {
@@ -137,11 +151,8 @@ export default function getItems(
     CONFIGURATION,
   ];
 
-  if (store.isLoggedIn && currentSandbox) {
-    const templateDef = getTemplate(currentSandbox.template);
-    if (templateDef.isServer) {
-      items.push(SERVER);
-    }
+  if (isServer) {
+    items.push(SERVER);
   }
 
   if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {

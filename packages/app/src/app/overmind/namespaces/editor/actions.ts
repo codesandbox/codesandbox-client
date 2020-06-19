@@ -213,7 +213,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     const sandbox = await effects.api.getSandbox(newId);
 
     actions.internal.setCurrentSandbox(sandbox);
-    actions.workspace.openDefaultItem();
   } catch (error) {
     const data = error.response?.data;
     const errors = data?.errors;
