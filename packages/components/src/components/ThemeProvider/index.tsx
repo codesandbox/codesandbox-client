@@ -14,6 +14,7 @@ import {
 import designLanguage from '../../design-language/theme';
 import VSCodeThemes from '../../themes';
 import polyfillTheme from '../../utils/polyfill-theme';
+import codesandboxBlack from '../../themes/codesandbox-black';
 
 export const getThemes = () => {
   const results = VSCodeThemes.map(theme => ({
@@ -55,13 +56,25 @@ export const makeTheme = (vsCodeTheme = {}, name?: string) => {
   return theme;
 };
 
-export const ThemeProvider = ({ theme, children }) => {
+export const ThemeProvider = ({
+  theme = codesandboxBlack,
+  children,
+}: {
+  theme?: any;
+  children: any;
+}) => {
   const usableTheme = makeTheme(theme);
 
   // the resizer lives outside the sidebar
   // to apply the right color to the resizer
   // we create a global style to be applied to it
   const ExternalStyles = createGlobalStyle`
+    :root {
+      --reach-menu-button: 1;
+      --reach-tooltip: 1;
+      --reach-skip-nav: 1;
+    }
+
     .Resizer {
       background-color: ${usableTheme.colors.sideBar.border} !important;
     }

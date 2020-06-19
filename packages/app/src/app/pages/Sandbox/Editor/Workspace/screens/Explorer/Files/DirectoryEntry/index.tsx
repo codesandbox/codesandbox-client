@@ -63,7 +63,7 @@ interface Props {
   isOver?: boolean;
   canDrop?: boolean;
   signals?: any;
-  title?: string;
+  title: string;
   sandboxId?: string;
   sandboxTemplate?: any;
   mainModuleId?: string;
@@ -91,6 +91,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
   depth = 0,
   getModulePath,
   canDrop,
+  title: directoryTitle,
 }) => {
   const {
     state: {
@@ -338,8 +339,6 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     moduleDoubleClicked();
   }, [moduleDoubleClicked]);
 
-  const title = root ? 'Project' : directories.find(m => m.id === id).title;
-
   return connectDropTarget(
     <div style={{ position: 'relative' }}>
       <Overlay isOver={isOver && canDrop} />
@@ -349,7 +348,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
             id={id}
             shortid={shortid}
             readonly={readonly}
-            title={title}
+            title={directoryTitle}
             depth={depth}
             type={open ? 'directory-open' : 'directory'}
             root={root}

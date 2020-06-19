@@ -143,15 +143,13 @@ const RoutesComponent: React.FC = () => {
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (
               <Route path="/auth/dev" component={DevAuthPage} />
             )}
-            {process.env.NODE_ENV === `development` && (
-              <Route path="/codesadbox" component={CodeSadbox} />
-            )}
+            <Route path="/codesadbox" component={CodeSadbox} />
             <Route component={NotFound} />
           </Switch>
         </Content>
+        <Modals />
+        {signInModalOpen && !user ? <SignInModal /> : null}
       </Boundary>
-      <Modals />
-      {signInModalOpen && !user ? <SignInModal /> : null}
     </Container>
   );
 };

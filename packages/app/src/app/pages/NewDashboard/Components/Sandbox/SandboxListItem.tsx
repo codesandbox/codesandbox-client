@@ -17,12 +17,17 @@ import css from '@styled-system/css';
 export const SandboxListItem = ({
   sandbox,
   sandboxTitle,
+  sandboxLocation,
+  lastUpdated,
+  viewCount,
+  TemplateIcon,
+  PrivacyIcon,
+  screenshotUrl,
   // interactions
   selected,
   onClick,
   onDoubleClick,
   onBlur,
-  onKeyDown,
   onContextMenu,
   // edit mode
   editing,
@@ -41,7 +46,6 @@ export const SandboxListItem = ({
     onClick={onClick}
     onDoubleClick={onDoubleClick}
     onBlur={onBlur}
-    onKeyDown={onKeyDown}
     onContextMenu={onContextMenu}
     {...props}
     css={css({
@@ -62,22 +66,34 @@ export const SandboxListItem = ({
     <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
       <Column span={[12, 5, 5]}>
         <Stack gap={4} align="center" marginLeft={2}>
-          <Element
+          <Stack
             as="div"
             ref={thumbnailRef}
+            justify="center"
+            align="center"
             css={css({
               borderRadius: 'small',
               height: 32,
               width: 32,
-              backgroundImage: `url(${sandbox.screenshotUrl})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',
               border: '1px solid',
-              borderColor: 'grays.600',
+              borderColor: 'grays.500',
               flexShrink: 0,
+              svg: {
+                filter: 'grayscale(1)',
+                opacity: 0.1,
+              },
             })}
-          />
+            style={{
+              [screenshotUrl
+                ? 'backgroundImage'
+                : null]: `url(${screenshotUrl})`,
+            }}
+          >
+            {screenshotUrl ? null : <TemplateIcon width="16" height="16" />}
+          </Stack>
           <Element style={{ width: 150 }}>
             {editing ? (
               <form onSubmit={onSubmit}>
@@ -91,9 +107,12 @@ export const SandboxListItem = ({
               </form>
             ) : (
               <Tooltip label={sandboxTitle}>
-                <Text size={3} weight="medium" maxWidth="100%">
-                  {sandboxTitle}
-                </Text>
+                <Stack gap={1} align="center">
+                  <PrivacyIcon />
+                  <Text size={3} weight="medium" maxWidth="100%">
+                    {sandboxTitle}
+                  </Text>
+                </Stack>
               </Tooltip>
             )}
           </Element>
@@ -115,13 +134,13 @@ export const SandboxListItem = ({
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
               Updated
             </Text>{' '}
-            {formatDistanceToNow(new Date(sandbox.updatedAt.trim()))} ago
+            {lastUpdated}
           </Text>
         )}
       </Column>
       <Column span={[0, 3, 3]} as={Stack} align="center">
         <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
-          {sandbox.source.template}
+          {sandboxLocation}
         </Text>
       </Column>
     </Grid>

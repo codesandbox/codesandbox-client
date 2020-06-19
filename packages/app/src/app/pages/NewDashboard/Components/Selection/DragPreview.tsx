@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SIDEBAR_WIDTH } from '../../Sidebar';
+import { getTemplateIcon } from '../Sandbox/TemplateIcon';
 
 export const DragPreview = ({
   sandboxes,
@@ -41,13 +42,27 @@ export const DragPreview = ({
       }
 
       const sandbox = sandboxes.find(s => s.id === id);
+
+      let screenshotUrl = sandbox.screenshotUrl;
+      // We set a fallback thumbnail in the API which is used for
+      // both old and new dashboard, we can move this logic to the
+      // backend when we deprecate the old dashboard
+      if (screenshotUrl === 'https://codesandbox.io/static/img/banner.png') {
+        screenshotUrl = '/static/img/default-sandbox-thumbnail.png';
+      }
+
+      const TemplateIcon = getTemplateIcon(sandbox);
+
       return {
         type: 'sandbox',
         id: sandbox.id,
         title: sandbox.title || sandbox.path || sandbox.alias,
-        url: sandbox.screenshotUrl,
+        url: screenshotUrl,
+        Icon: TemplateIcon,
       };
     });
+
+  const mousePosition = useMousePosition();
 
   return (
     <Stack
@@ -65,6 +80,7 @@ export const DragPreview = ({
           direction={viewMode === 'list' ? 'vertical' : 'horizontal'}
           as={motion.div}
           css={css({
+            position: 'absolute',
             border: viewMode === 'list' ? '1px solid' : 'none',
             borderColor: 'grays.700',
             padding: viewMode === 'list' ? 2 : 0,
@@ -77,6 +93,7 @@ export const DragPreview = ({
             viewMode,
             thumbnailRef,
             count: selectedItems.length,
+            mousePosition,
           })}
           animate={getItemStyles({
             initialOffset,
@@ -84,9 +101,15 @@ export const DragPreview = ({
             viewMode,
             thumbnailRef,
             count: selectedItems.length,
+            mousePosition,
           })}
+          transition={{
+            type: 'spring',
+            damping: 100,
+            stiffness: 1000,
+          }}
         >
-          {selectedItems.map((item, index) => (
+          {selectedItems.slice(0, 4).map((item, index) => (
             <Stack gap={2} align="center" key={item.id || item.path}>
               <Stack
                 justify="center"
@@ -120,6 +143,16 @@ export const DragPreview = ({
                     />
                   </svg>
                 ) : null}
+                {item.type === 'sandbox' && !item.url ? (
+                  <Stack
+                    css={{ svg: { filter: 'grayscale(1)', opacity: 0.1 } }}
+                  >
+                    <item.Icon
+                      width={viewMode === 'list' ? 16 : 60}
+                      height={viewMode === 'list' ? 16 : 60}
+                    />
+                  </Stack>
+                ) : null}
               </Stack>
 
               {viewMode === 'list' ? (
@@ -141,12 +174,13 @@ function getItemStyles({
   viewMode,
   thumbnailRef,
   count = 1,
+  mousePosition,
 }) {
   if (!initialOffset || !currentOffset) {
     return { display: 'none' };
   }
 
-  const { x, y } = currentOffset;
+  let { x, y } = currentOffset;
 
   let size: {
     width: number | string;
@@ -165,6 +199,8 @@ function getItemStyles({
     } else {
       size = { width: 100, height: 50 };
     }
+    x = mousePosition.x;
+    y = mousePosition.y;
   } else if (viewMode === 'list') {
     size = { width: 'auto', minWidth: 160, height: 'fit-content' };
   } else if (thumbnailElement) {
@@ -174,3 +210,20 @@ function getItemStyles({
 
   return { x, y, backgroundColor, ...size };
 }
+
+const useMousePosition = () => {
+  const [position, setPosition] = React.useState({ x: null, y: null });
+
+  React.useEffect(() => {
+    const handler = event =>
+      setPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+    document.addEventListener('dragover', handler);
+    return () => document.removeEventListener('dragover', handler);
+  }, []);
+
+  return position;
+};

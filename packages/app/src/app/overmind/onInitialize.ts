@@ -5,7 +5,6 @@ export const onInitialize: OnInitialize = async (
   overmindInstance
 ) => {
   const provideJwtToken = () => effects.api.getJWTToken();
-
   state.isFirstVisit = Boolean(
     !state.hasLogIn && !effects.browser.storage.get('hasVisited')
   );

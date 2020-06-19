@@ -11,7 +11,7 @@ import { useFilteredItems } from './useFilteredItems';
 export const AllPage = ({ match: { params }, history }) => {
   const [level, setLevel] = React.useState(0);
   const [creating, setCreating] = React.useState(false);
-  const [items, folders] = useFilteredItems(params, level);
+  const [items] = useFilteredItems(params, level);
   const param = params.path || '';
   const cleanParam = param.split(' ').join('');
   const {
@@ -53,7 +53,10 @@ export const AllPage = ({ match: { params }, history }) => {
     : [{ type: 'skeletonRow' }, { type: 'skeletonRow' }];
 
   return (
-    <SelectionProvider sandboxes={activeSandboxes} folders={folders || []}>
+    <SelectionProvider
+      items={itemsToShow}
+      createNewFolder={() => setCreating(true)}
+    >
       <Helmet>
         <title>{param || 'Dashboard'} - CodeSandbox</title>
       </Helmet>

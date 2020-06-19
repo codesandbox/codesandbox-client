@@ -4,8 +4,12 @@ import { Redirect } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 import { useOvermind } from 'app/overmind';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
-import { ThemeProvider, Stack, Element } from '@codesandbox/components';
+import {
+  ThemeProvider,
+  Stack,
+  Element,
+  SkipNav,
+} from '@codesandbox/components';
 import { createGlobalStyle } from 'styled-components';
 import css from '@styled-system/css';
 
@@ -31,7 +35,7 @@ export const Dashboard: FunctionComponent = () => {
   }
 
   return (
-    <ThemeProvider theme={codesandboxBlack}>
+    <ThemeProvider>
       <GlobalStyles />
       <DndProvider backend={Backend}>
         <Stack
@@ -44,6 +48,7 @@ export const Dashboard: FunctionComponent = () => {
             minHeight: '100vh',
           })}
         >
+          <SkipNav.Link />
           <Header onSidebarToggle={onSidebarToggle} />
 
           <Stack css={{ flexGrow: 1 }}>

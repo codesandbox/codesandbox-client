@@ -19,8 +19,9 @@ import { SerializedTextOperation, TextOperation } from 'ot';
 import { Channel, Presence, Socket } from 'phoenix';
 import uuid from 'uuid';
 
+import { AxiosError } from 'axios';
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
-import { CodesandboxOTClientsManager } from './clients';
+import { CodesandboxOTClientsManager, SendOperationResponse } from './clients';
 
 type Options = {
   onApplyOperation(args: {
@@ -72,20 +73,6 @@ class Live {
 
   private liveInitialized = blocker();
 
-  private operationToElixir(ot: (number | string)[]) {
-    return ot.map((op: number | string) => {
-      if (typeof op === 'number') {
-        if (op < 0) {
-          return { d: -op };
-        }
-
-        return op;
-      }
-
-      return { i: op };
-    });
-  }
-
   private connectionsCount = 0;
 
   private onSendOperation = async (
@@ -102,11 +89,15 @@ class Live {
       })}`,
     });
 
-    return this.send('operation', {
-      moduleShortid,
-      operation: this.operationToElixir(operation.toJSON()),
-      revision,
-    }).catch(error => {
+    return this.send<SendOperationResponse>(
+      'operation',
+      {
+        moduleShortid,
+        operation: operation.toJSON(),
+        revision,
+      },
+      45000
+    ).catch(error => {
       logBreadcrumb({
         category: 'ot',
         message: `ERROR ${JSON.stringify({
@@ -166,11 +157,22 @@ class Live {
         params,
       });
 
+      let tries = 0;
       this.socket.onError(async () => {
         // Regenerate a new JWT for the reconnect. This can be out of sync or happen more often than needed, but it's important
         // to try multiple times in case there's a connection issue.
-        const newJwt = await this.provideJwtToken();
-        jwt = newJwt;
+        try {
+          const newJwt = await this.provideJwtToken();
+          jwt = newJwt;
+          tries = 0;
+        } catch (e) {
+          const error = e as AxiosError;
+          if (error.response?.status === 401 && tries++ > 4) {
+            // If we can't get a jwt because we're unauthorized, disconnect...
+            this.socket.disconnect();
+            tries = 0;
+          }
+        }
       });
 
       this.socket.connect();
@@ -286,7 +288,7 @@ class Live {
     };
   }
 
-  private send<T>(event, payload: any = {}): Promise<T> {
+  private send<T>(event, payload: any = {}, timeout = 10000): Promise<T> {
     const _messageId = this.identifier + this.messageIndex++;
     // eslint-disable-next-line
     payload._messageId = _messageId;
@@ -295,9 +297,15 @@ class Live {
     return new Promise((resolve, reject) => {
       if (this.channel) {
         this.channel
-          .push(event, payload)
+          .push(event, payload, timeout)
           .receive('ok', resolve)
-          .receive('error', reject);
+          .receive('error', reject)
+          .receive('timeout', () => {
+            const error = new Error();
+            error.name = 'live-timeout';
+            error.message = `Live timeout on '${event}'`;
+            reject(error);
+          });
       } else {
         // we might try to send messages even when not on live, just
         // ignore it

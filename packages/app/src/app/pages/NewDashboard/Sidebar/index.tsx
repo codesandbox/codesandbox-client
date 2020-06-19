@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom';
 import { useDrop } from 'react-dnd';
 import { orderBy } from 'lodash-es';
+import { join, dirname } from 'path';
 import { useOvermind } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import track from '@codesandbox/common/lib/utils/analytics';
 import {
   Element,
   List,
@@ -17,10 +20,12 @@ import {
   Icon,
   IconButton,
   Button,
+  Input,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { TeamAvatar } from './TeamAvatar';
+import { ContextMenu } from './ContextMenu';
 
 export const SIDEBAR_WIDTH = 240;
 
@@ -59,10 +64,34 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
     }
   }, [dashboard.activeTeam, dashboard.activeTeamInfo, dashboard.teams, user]);
 
+  const inTeamContext =
+    activeAccount && user && activeAccount.username !== user.username;
+
   const folders = dashboard.allCollections || [];
 
+  // context menu for folders
+  const [menuVisible, setMenuVisibility] = React.useState(true);
+  const [menuPosition, setMenuPosition] = React.useState({ x: null, y: null });
+  const [menuFolder, setMenuFolder] = React.useState(null);
+  const [isRenamingFolder, setRenamingFolder] = React.useState(false);
+  const [newFolderPath, setNewFolderPath] = React.useState(null);
+
+  const menuState = {
+    menuFolder,
+    setMenuFolder,
+    setMenuVisibility,
+    menuPosition,
+    setMenuPosition,
+    isRenamingFolder,
+    setRenamingFolder,
+    newFolderPath,
+    setNewFolderPath,
+  };
+
+  const history = useHistory();
+
   return (
-    <SidebarContext.Provider value={{ onSidebarToggle }}>
+    <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
       <Stack
         as={motion.aside}
         direction="vertical"
@@ -129,65 +158,88 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                     </Stack>
                     <Icon name="caret" size={8} />
                   </Stack>
-                  <Menu.List style={{ width: SIDEBAR_WIDTH, borderRadius: 0 }}>
+                  <Menu.List
+                    css={css({
+                      width: SIDEBAR_WIDTH,
+                      marginLeft: 4,
+                      marginTop: '-4px',
+                      backgroundColor: 'grays.600',
+                    })}
+                  >
                     <Menu.Item
-                      css={{ textAlign: 'left' }}
-                      onSelect={() =>
-                        actions.dashboard.setActiveTeam({ id: null })
-                      }
+                      css={css({
+                        height: 10,
+                        textAlign: 'left',
+                        backgroundColor: !inTeamContext
+                          ? 'grays.500'
+                          : 'transparent',
+                      })}
+                      style={{ paddingLeft: 8 }}
+                      onSelect={() => {
+                        actions.dashboard.setActiveTeam({ id: null });
+                        track('Dashboard - Change workspace', {
+                          dashboardVersion: 2,
+                        });
+                      }}
                     >
-                      <Stack align="center">
-                        <Stack
-                          as="span"
-                          css={css({ width: 8 })}
-                          align="center"
-                          justify="center"
-                        >
-                          <Avatar user={user} css={css({ size: 5 })} />
-                        </Stack>
-                        <Text
-                          size={3}
-                          weight={
-                            activeAccount.username === user.username
-                              ? 'semibold'
-                              : 'normal'
-                          }
-                        >
-                          {user.username} (Personal)
-                        </Text>
+                      <Stack align="center" gap={2}>
+                        <Avatar user={user} css={css({ size: 6 })} />
+                        <Text size={3}>{user.username} (Personal)</Text>
                       </Stack>
                     </Menu.Item>
                     {dashboard.teams.map(team => (
-                      <Menu.Item
-                        key={team.id}
+                      <Stack
                         as={Menu.Item}
-                        css={{ textAlign: 'left' }}
+                        key={team.id}
+                        align="center"
+                        gap={2}
+                        css={css({
+                          height: 10,
+                          textAlign: 'left',
+                          backgroundColor:
+                            activeAccount.username === team.name
+                              ? 'grays.500'
+                              : 'transparent',
+                        })}
+                        style={{ paddingLeft: 8 }}
                         onSelect={() =>
                           actions.dashboard.setActiveTeam({ id: team.id })
                         }
                       >
-                        <Stack align="center">
-                          <Stack
-                            as="span"
-                            css={css({ width: 8 })}
-                            align="center"
-                            justify="center"
-                          >
-                            <TeamAvatar name={team.name} size="small" />
-                          </Stack>
-                          <Text
-                            size={3}
-                            weight={
-                              activeAccount.username === team.name
-                                ? 'semibold'
-                                : 'normal'
-                            }
-                          >
-                            {team.name}
-                          </Text>
-                        </Stack>
-                      </Menu.Item>
+                        <TeamAvatar name={team.name} size="small" />
+                        <Text size={3}>{team.name}</Text>
+                      </Stack>
                     ))}
+                    <Menu.Divider />
+                    <Stack
+                      as={Menu.Item}
+                      align="center"
+                      gap={2}
+                      css={css({
+                        height: 10,
+                        textAlign: 'left',
+                      })}
+                      style={{ paddingLeft: 8 }}
+                      onSelect={() =>
+                        history.push('/new-dashboard/settings/new')
+                      }
+                    >
+                      <Stack
+                        justify="center"
+                        align="center"
+                        css={css({
+                          size: 6,
+                          borderRadius: 'small',
+                          border: '1px solid',
+                          borderColor: 'avatar.border',
+                        })}
+                      >
+                        <Icon name="plus" size={10} />
+                      </Stack>
+                      <Text size={3} variant="muted">
+                        Create a new workspace
+                      </Text>
+                    </Stack>
                   </Menu.List>
                 </Menu>
 
@@ -203,11 +255,29 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
             )}
           </ListItem>
           <RowItem name="Home" path="home" icon="box" />
-          <RowItem name="Recent" path="recent" icon="clock" />
-          <RowItem name="Drafts" path="/drafts" icon="file" />
+          {inTeamContext ? null : (
+            <RowItem name="Recent" path="recent" icon="clock" />
+          )}
+          <RowItem
+            name={!inTeamContext ? 'Drafts' : 'My Drafts'}
+            path="/drafts"
+            icon="file"
+          />
 
-          <NestableRowItem name="All sandboxes" path="" folders={folders} />
+          {inTeamContext ? <Menu.Divider /> : null}
 
+          <NestableRowItem
+            name="All sandboxes"
+            path=""
+            folders={[
+              ...folders,
+              ...(newFolderPath ? [{ path: newFolderPath, name: '' }] : []),
+            ]}
+          />
+
+          {inTeamContext ? (
+            <RowItem name="Recently Modified" path="recent" icon="clock" />
+          ) : null}
           <RowItem name="Templates" path="templates" icon="star" />
           <RowItem name="Recently Deleted" path="deleted" icon="trash" />
         </List>
@@ -241,6 +311,14 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
           />
         )}
       </AnimatePresence>
+      <ContextMenu
+        visible={menuVisible}
+        setVisibility={setMenuVisibility}
+        position={menuPosition}
+        folder={menuFolder}
+        setRenaming={setRenamingFolder}
+        setNewFolderPath={setNewFolderPath}
+      />
     </SidebarContext.Provider>
   );
 };
@@ -255,6 +333,7 @@ const linkStyles = {
   alignItems: 'center',
   paddingLeft: 8,
   paddingRight: 8,
+  flexShrink: 0,
 };
 
 const canNotAcceptSandboxes = ['home', 'recent', 'all'];
@@ -280,7 +359,13 @@ const isSamePath = (draggedItem, dropPath) => {
   return false;
 };
 
-const RowItem = ({ name, path, icon, ...props }) => {
+const RowItem = ({
+  name,
+  path,
+  icon,
+  setFoldersVisibility = null,
+  ...props
+}) => {
   const accepts = [];
   if (!canNotAcceptSandboxes.includes(path)) accepts.push('sandbox');
   if (!canNotAcceptFolders.includes(path)) accepts.push('folder');
@@ -303,6 +388,29 @@ const RowItem = ({ name, path, icon, ...props }) => {
 
   const location = useLocation();
   const isCurrentLink = linkTo === location.pathname;
+  const history = useHistory();
+
+  /** Toggle nested folders when user
+   * is drags an item over a folder after a treshold
+   * We open All sandboxes instantly because that's the root
+   * and you can't drop anything in it
+   */
+  const HOVER_THRESHOLD = name === 'All sandboxes' ? 0 : 500; // ms
+  const isOverCache = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!isOver) isOverCache.current = false;
+    else isOverCache.current = true;
+
+    const handler = () => {
+      if (isOverCache.current && setFoldersVisibility) {
+        setFoldersVisibility(true);
+      }
+    };
+
+    const timer = window.setTimeout(handler, HOVER_THRESHOLD);
+    return () => window.clearTimeout(timer);
+  }, [isOver, setFoldersVisibility, HOVER_THRESHOLD]);
 
   return (
     <ListAction
@@ -323,13 +431,28 @@ const RowItem = ({ name, path, icon, ...props }) => {
               canDrop && isOver ? 'list.hoverBackground' : 'transparent',
             transition: 'all ease-in',
             transitionDuration: theme => theme.speeds[4],
+            a: {
+              ':focus': {
+                // focus state is handled by ListAction:focus-within
+                outline: 'none',
+              },
+            },
           },
           props.style || {}
         )
       )}
     >
       {props.children || (
-        <Link as={RouterLink} to={linkTo} style={linkStyles}>
+        <Link
+          as={RouterLink}
+          to={linkTo}
+          style={linkStyles}
+          onKeyDown={event => {
+            if (event.keyCode === ENTER) {
+              history.push(linkTo, { focus: 'FIRST_ITEM' });
+            }
+          }}
+        >
           <Stack
             as="span"
             css={css({ width: 10 })}
@@ -346,11 +469,52 @@ const RowItem = ({ name, path, icon, ...props }) => {
 };
 
 const NestableRowItem = ({ name, path, folders }) => {
+  const { actions } = useOvermind();
+
+  const {
+    menuState: {
+      menuFolder,
+      setMenuFolder,
+      setMenuVisibility,
+      setMenuPosition,
+      isRenamingFolder,
+      setRenamingFolder,
+      newFolderPath,
+      setNewFolderPath,
+    },
+  } = React.useContext(SidebarContext);
+
   const [foldersVisible, setFoldersVisibility] = React.useState(false);
+
+  let hasNewNestedFolder = false;
+  if (newFolderPath !== null) {
+    const newFolderParent = newFolderPath.replace('/__NEW__', '');
+    if (name === 'All sandboxes') {
+      hasNewNestedFolder = true;
+    } else if (newFolderParent.length && path.includes(newFolderParent)) {
+      hasNewNestedFolder = true;
+    }
+  }
+
+  React.useEffect(() => {
+    if (hasNewNestedFolder) setFoldersVisibility(true);
+  }, [hasNewNestedFolder]);
+
+  const onContextMenu = event => {
+    event.preventDefault();
+    setMenuVisibility(true);
+    setMenuFolder({ name, path });
+    setMenuPosition({ x: event.clientX, y: event.clientY });
+  };
 
   let subFolders;
   if (name === 'All sandboxes') {
-    subFolders = folders.filter(folder => !folder.parent);
+    subFolders = folders.filter(folder => {
+      if (folder.path === newFolderPath) {
+        return newFolderPath.replace('/__NEW__', '') === '';
+      }
+      return !folder.parent;
+    });
   } else {
     subFolders = folders.filter(folder => {
       const parentPath = folder.path
@@ -364,21 +528,80 @@ const NestableRowItem = ({ name, path, folders }) => {
   const nestingLevel = path.split('/').length - 1;
   const history = useHistory();
 
+  /* Rename logic */
+  const isRenaming = isRenamingFolder && menuFolder.path === path;
+  const isNewFolder = newFolderPath === path;
+  const [newName, setNewName] = React.useState(name);
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewName(event.target.value);
+  };
+  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === ESC) {
+      // Reset value and exit without saving
+      setNewName(name);
+      setRenamingFolder(false);
+      setNewFolderPath(null);
+    }
+  };
+
+  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
+    if (event) event.preventDefault();
+
+    if (name === newName) {
+      // nothing to do here
+    } else if (isNewFolder) {
+      if (newName) {
+        const folderPath = path.replace('__NEW__', newName);
+        await actions.dashboard.createFolder(folderPath);
+        track('Dashboard - Create Directory', {
+          source: 'Sidebar',
+          dashboardVersion: 2,
+          folderPath,
+        });
+      }
+    } else {
+      await actions.dashboard.renameFolder({
+        path,
+        newPath: join(dirname(path), newName),
+      });
+      track('Dashboard - Rename Folder', {
+        source: 'Sidebar',
+        dashboardVersion: 2,
+      });
+    }
+
+    setNewFolderPath(null);
+    return setRenamingFolder(false);
+  };
+
+  const onInputBlur = () => {
+    // save value when you click outside or tab away
+    setRenamingFolder(false);
+    setNewFolderPath(null);
+    onSubmit();
+  };
+
   return (
     <>
       <RowItem
-        name={path}
+        name={name}
         path={path}
         icon="folder"
-        style={{
-          height: nestingLevel ? 8 : 10,
-          button: { opacity: 0 },
-          ':hover, :focus-within': { button: { opacity: 1 } },
-        }}
+        style={{ height: nestingLevel ? 8 : 10 }}
+        setFoldersVisibility={setFoldersVisibility}
       >
         <Link
-          href="#"
           onClick={() => history.push('/new-dashboard/all' + path)}
+          onContextMenu={onContextMenu}
+          onKeyDown={event => {
+            if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
+              history.push('/new-dashboard/all' + path, {
+                focus: 'FIRST_ITEM',
+              });
+            }
+          }}
+          tabIndex={0}
           style={{
             ...linkStyles,
             paddingLeft: nestingLevel * 16,
@@ -405,9 +628,10 @@ const NestableRowItem = ({ name, path, folders }) => {
               })}
             />
           ) : (
-            <Element as="span" css={css({ width: 5 })} />
+            <Element as="span" css={css({ width: 5, flexShrink: 0 })} />
           )}
-          <Stack align="center" gap={3} css={{ width: '100%' }}>
+
+          <Stack align="center" gap={3} css={{ width: 'calc(100% - 28px)' }}>
             <Stack
               as="span"
               css={css({ width: 4 })}
@@ -416,7 +640,22 @@ const NestableRowItem = ({ name, path, folders }) => {
             >
               <Icon name="folder" />
             </Stack>
-            <Text maxWidth="100%">{name}</Text>
+            {isRenaming || isNewFolder ? (
+              <form onSubmit={onSubmit}>
+                <Input
+                  autoFocus
+                  value={newName}
+                  onChange={onChange}
+                  onKeyDown={onInputKeyDown}
+                  onBlur={onInputBlur}
+                  css={css({ fontSize: 4 })}
+                />
+              </form>
+            ) : (
+              <Text maxWidth="100%" css={{ userSelect: 'none' }}>
+                {name}
+              </Text>
+            )}
           </Stack>
         </Link>
       </RowItem>

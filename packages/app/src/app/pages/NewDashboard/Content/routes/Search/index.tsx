@@ -12,13 +12,13 @@ export const SearchComponent = ({ location }) => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes, orderBy, filters, getFilteredSandboxes },
+      dashboard: { sandboxes, getFilteredSandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.SEARCH);
-  }, [actions.dashboard, location.search, filters, orderBy]);
+  }, [actions.dashboard, location.search]);
 
   const items = sandboxes.SEARCH
     ? getFilteredSandboxes(

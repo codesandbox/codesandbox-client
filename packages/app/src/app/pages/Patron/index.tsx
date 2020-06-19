@@ -7,7 +7,6 @@ import { useOvermind } from 'app/overmind';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
 import { Navigation } from 'app/pages/common/Navigation';
-import codeSandboxBlackTheme from '@codesandbox/common/lib/themes/codesandbox-black';
 import { ThemeProvider, Element } from '@codesandbox/components';
 import { PricingModal } from './PricingModal';
 import { Content } from './elements';
@@ -37,7 +36,7 @@ const Patron: React.FC = () => {
   }, [actions]);
 
   return (
-    <ThemeProvider theme={codeSandboxBlackTheme}>
+    <ThemeProvider>
       <Element style={{ width: '100vw', height: '100vh' }}>
         <Navigation title="Become a Patron" />
         <MaxWidth>

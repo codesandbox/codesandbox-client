@@ -10,7 +10,7 @@ export const Home = () => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes },
+      dashboard: { viewMode, sandboxes },
     },
   } = useOvermind();
 
@@ -34,7 +34,12 @@ export const Home = () => {
         {
           type: 'header',
           title: 'Recently Used Templates',
-          showMoreLink: '/new-dashboard/templates',
+          ...(viewMode === 'list'
+            ? {
+                showMoreLink: '/s',
+                showMoreLabel: '+ New Sandbox',
+              }
+            : {}),
         },
         { type: 'new-sandbox' },
         ...templates,
@@ -42,6 +47,7 @@ export const Home = () => {
           type: 'header',
           title: 'Your Recent Sandboxes',
           showMoreLink: '/new-dashboard/recent',
+          showMoreLabel: 'Show more',
         },
         ...(sandboxes.RECENT_HOME || []).map(sandbox => ({
           type: 'sandbox',
@@ -56,13 +62,11 @@ export const Home = () => {
       ];
 
   return (
-    <SelectionProvider
-      sandboxes={[...templates, ...(sandboxes.RECENT_HOME || [])]}
-    >
+    <SelectionProvider items={items}>
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
-      <Header title="Home" />
+      <Header title="Home" showViewOptions />
       <VariableGrid items={items} />
     </SelectionProvider>
   );

@@ -414,6 +414,14 @@ export class VSCodeEffect {
     } catch {
       //
     }
+    try {
+      // After navigation, this mount is already mounted and throws error,
+      // which cause that Phonenix is not reconnected, so the file's content cannot be seen
+      // https://github.com/codesandbox/codesandbox-client/issues/4143
+      this.mountableFilesystem.umount('/home/sandbox/.cache');
+    } catch {
+      //
+    }
 
     if (isServer && this.options.getCurrentUser()?.experiments.containerLsp) {
       childProcess.addDefaultForkHandler(this.createContainerForkHandler());
@@ -748,9 +756,7 @@ export class VSCodeEffect {
   private getLspEndpoint() {
     // return 'ws://localhost:1023';
     // TODO: merge host logic with executor-manager
-    const sseHost = process.env.STAGING_API
-      ? 'https://codesandbox.stream'
-      : 'https://codesandbox.io';
+    const sseHost = process.env.ENDPOINT || 'https://codesandbox.io';
     return sseHost.replace(
       'https://',
       `wss://${this.options.getCurrentSandbox()?.id}-lsp.sse.`

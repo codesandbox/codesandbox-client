@@ -1,28 +1,37 @@
 import React from 'react';
 import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { colors } from 'app/pages/NewDashboard/Content/utils';
 
-export const TeamAvatar = ({ name, size = 'big' }) => {
+export const backgrounds = [
+  'reds.200',
+  'green',
+  'purple',
+  'yellow',
+  'orange',
+  'blues.300',
+  'blues.600',
+  'blues.700',
+];
+
+export const TeamAvatar = ({ name, size = 'big', ...props }) => {
   if (!name) return null;
 
   // consistent color
-  const index = name.length % (colors.length - 1);
-  const { background, foreground } = colors[index];
+  const index = name.length % (backgrounds.length - 1);
+  const backgroundColor = backgrounds[index];
 
   return (
     <Stack
       justify="center"
       align="center"
       css={css({
-        size: size === 'small' ? 5 : 6,
+        size: 6,
         borderRadius: 'small',
-        border: '1px solid',
-        borderColor: 'avatar.border',
         textTransform: 'uppercase',
-        backgroundColor: background,
-        color: foreground,
+        backgroundColor,
+        color: 'white',
       })}
+      {...props}
     >
       <Text size={size === 'small' ? 2 : 3}>{name[0]}</Text>
     </Stack>
