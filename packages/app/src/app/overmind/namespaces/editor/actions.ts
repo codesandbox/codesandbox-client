@@ -10,6 +10,7 @@ import {
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
@@ -113,8 +114,8 @@ export const addNpmDependency: AsyncAction<{
     effects.analytics.track('Add NPM Dependency');
     state.currentModal = null;
     let newVersion = version || 'latest';
-    const isTag = !newVersion.includes('.');
-    if (isTag) {
+
+    if (!isAbsoluteVersion(newVersion)) {
       const dependency = await effects.api.getDependency(name, newVersion);
       newVersion = dependency.version;
     }
