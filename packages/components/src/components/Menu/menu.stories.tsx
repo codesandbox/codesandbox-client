@@ -96,6 +96,9 @@ export const ContextMenu = () => {
         onContextMenu={onContextMenu}
         onKeyDown={onKeyDown}
         css={{
+          position: 'absolute',
+          bottom: 0,
+          right: 0,
           margin: 20,
           padding: 40,
           backgroundColor: '#242424',
@@ -111,6 +114,7 @@ export const ContextMenu = () => {
         <Menu.Item onSelect={() => {}}>A</Menu.Item>
         <Menu.Item onSelect={() => {}}>B</Menu.Item>
         <Menu.Item onSelect={() => {}}>C</Menu.Item>
+        <Menu.Item onSelect={() => {}}>D</Menu.Item>
       </Menu.ContextMenu>
     </Stack>
   );

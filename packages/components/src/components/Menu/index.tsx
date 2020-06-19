@@ -136,6 +136,11 @@ const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
 
   if (!visible) return null;
 
+  const numberOfItems = React.Children.count(props.children);
+  const SUGGESTED_ITEM_HEIGHT = 36;
+  const suggestedHeight = numberOfItems * SUGGESTED_ITEM_HEIGHT;
+  const suggestedWidth = 180;
+
   return (
     <>
       <PortalStyles />
@@ -149,12 +154,21 @@ const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
           return (
             <MenuContext.Provider value={{ trigger: null, portal: false }}>
               <ReachMenu.MenuPopover
-                portal={false}
-                style={{
+                position={(targetRect, popoverRect) => ({
                   position: 'absolute',
-                  top: position.y,
-                  left: position.x,
-                }}
+                  left: Math.min(
+                    position.x,
+                    window.innerWidth -
+                      (popoverRect.width || suggestedWidth) -
+                      16
+                  ),
+                  top: Math.min(
+                    position.y,
+                    window.innerHeight -
+                      (popoverRect.height || suggestedHeight) -
+                      16
+                  ),
+                })}
               >
                 <Menu.List>{props.children}</Menu.List>
               </ReachMenu.MenuPopover>

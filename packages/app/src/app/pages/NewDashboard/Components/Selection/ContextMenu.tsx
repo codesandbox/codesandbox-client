@@ -5,7 +5,11 @@ import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Menu, Icon, Text } from '@codesandbox/components';
 
-const Context = React.createContext({ setVisibility: null });
+const Context = React.createContext({
+  visible: false,
+  setVisibility: null,
+  position: { x: null, y: null },
+});
 
 export const ContextMenu = ({
   visible,
@@ -29,53 +33,20 @@ export const ContextMenu = ({
   });
 
   let menu;
-  let menuWidth;
 
   if (selectedItems.length === 0) {
     menu = <ContainerMenu createNewFolder={createNewFolder} />;
-    menuWidth = 160;
   } else if (selectedItems.length > 1) {
-    menu = (
-      <MultiMenu selectedItems={selectedItems} setVisibility={setVisibility} />
-    );
-    menuWidth = 160;
+    menu = <MultiMenu selectedItems={selectedItems} />;
   } else if (selectedItems[0].type === 'sandbox') {
-    menu = (
-      <SandboxMenu
-        sandbox={selectedItems[0]}
-        setRenaming={setRenaming}
-        setVisibility={setVisibility}
-      />
-    );
-    menuWidth = 200;
+    menu = <SandboxMenu sandbox={selectedItems[0]} setRenaming={setRenaming} />;
   } else if (selectedItems[0].type === 'folder') {
-    menu = (
-      <FolderMenu
-        folder={selectedItems[0]}
-        setRenaming={setRenaming}
-        setVisibility={setVisibility}
-      />
-    );
-    menuWidth = 120;
+    menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
   }
 
-  // tweak position to stay inside window
-  const BOUNDARY_BUFFER = 8;
-
-  const tweakedPosition = {
-    x: Math.min(position.x, window.innerWidth - menuWidth - BOUNDARY_BUFFER),
-    y: position.y,
-  };
-
   return (
-    <Context.Provider value={{ setVisibility }}>
-      <Menu.ContextMenu
-        visible={visible}
-        setVisibility={setVisibility}
-        position={tweakedPosition}
-      >
-        {menu}
-      </Menu.ContextMenu>
+    <Context.Provider value={{ visible, setVisibility, position }}>
+      {menu}
     </Context.Provider>
   );
 };
@@ -93,26 +64,30 @@ const MenuItem = ({ onSelect, ...props }) => {
   );
 };
 
-const ContainerMenu = ({ createNewFolder }) => (
-  <>
-    <MenuItem onSelect={() => createNewFolder()}>Create new folder</MenuItem>
-  </>
-);
+const ContainerMenu = ({ createNewFolder }) => {
+  const { visible, setVisibility, position } = React.useContext(Context);
 
-const SandboxMenu = ({
-  sandbox,
-  setRenaming,
-  setVisibility,
-}: {
-  sandbox;
-  setRenaming: (renaming: boolean) => void;
-  setVisibility: (visible: boolean) => void;
-}) => {
+  return (
+    <Menu.ContextMenu
+      visible={visible}
+      setVisibility={setVisibility}
+      position={position}
+      style={{ width: 160 }}
+    >
+      <MenuItem onSelect={() => createNewFolder()}>Create new folder</MenuItem>
+    </Menu.ContextMenu>
+  );
+};
+
+const SandboxMenu = ({ sandbox, setRenaming }) => {
   const {
     state: { user },
     effects,
     actions,
   } = useOvermind();
+
+  const { visible, setVisibility, position } = React.useContext(Context);
+
   const history = useHistory();
   const location = useLocation();
 
@@ -130,7 +105,12 @@ const SandboxMenu = ({
 
   if (location.pathname.includes('deleted')) {
     return (
-      <>
+      <Menu.ContextMenu
+        visible={visible}
+        setVisibility={setVisibility}
+        position={position}
+        style={{ width: 200 }}
+      >
         <MenuItem
           onSelect={() => {
             actions.dashboard.recoverSandboxes([sandbox.id]);
@@ -146,12 +126,17 @@ const SandboxMenu = ({
         >
           Delete Permanently
         </MenuItem>
-      </>
+      </Menu.ContextMenu>
     );
   }
 
   return (
-    <>
+    <Menu.ContextMenu
+      visible={visible}
+      setVisibility={setVisibility}
+      position={position}
+      style={{ width: 200 }}
+    >
       {sandbox.isTemplate ? (
         <MenuItem
           onSelect={() => {
@@ -294,18 +279,19 @@ const SandboxMenu = ({
           )}
         </>
       ) : null}
-    </>
+    </Menu.ContextMenu>
   );
 };
 
-const FolderMenu = ({ folder, setRenaming, setVisibility }) => {
+const FolderMenu = ({ folder, setRenaming }) => {
   const { actions } = useOvermind();
+  const { visible, setVisibility, position } = React.useContext(Context);
 
   const isDrafts = folder.path === '/drafts';
 
   if (isDrafts)
     return (
-      <MenuItem>
+      <MenuItem onSelect={() => {}}>
         <Stack gap={1}>
           <Icon name="lock" size={14} />
           <Text>Protected</Text>
@@ -314,7 +300,12 @@ const FolderMenu = ({ folder, setRenaming, setVisibility }) => {
     );
 
   return (
-    <>
+    <Menu.ContextMenu
+      visible={visible}
+      setVisibility={setVisibility}
+      position={position}
+      style={{ width: 120 }}
+    >
       <MenuItem onSelect={() => setRenaming(true)}>Rename folder</MenuItem>
       <MenuItem
         onSelect={() => {
@@ -328,12 +319,14 @@ const FolderMenu = ({ folder, setRenaming, setVisibility }) => {
       >
         Delete folder
       </MenuItem>
-    </>
+    </Menu.ContextMenu>
   );
 };
 
-const MultiMenu = ({ selectedItems, setVisibility }) => {
+const MultiMenu = ({ selectedItems }) => {
   const { actions } = useOvermind();
+  const { visible, setVisibility, position } = React.useContext(Context);
+
   /*
     sandbox options - export, make template, delete
     template options - export, unmake template, delete
@@ -408,13 +401,18 @@ const MultiMenu = ({ selectedItems, setVisibility }) => {
   }
 
   return (
-    <>
+    <Menu.ContextMenu
+      visible={visible}
+      setVisibility={setVisibility}
+      position={position}
+      style={{ width: 160 }}
+    >
       {options.map(option => (
         <MenuItem key={option.label} onSelect={option.fn}>
           {option.label}
         </MenuItem>
       ))}
-    </>
+    </Menu.ContextMenu>
   );
 };
 
