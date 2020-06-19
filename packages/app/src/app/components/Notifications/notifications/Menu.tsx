@@ -6,7 +6,7 @@ import { useOvermind } from 'app/overmind';
 export const Menu = ({ read, id }) => {
   const {
     actions: {
-      userNotifications: { markNotificationAsRead, archiveNotification },
+      userNotifications: { updateReadStatus, archiveNotification },
     },
   } = useOvermind();
   return (
@@ -27,7 +27,7 @@ export const Menu = ({ read, id }) => {
             display: 'flex',
             justifyContent: 'flex-end',
             transition: 'all 100ms ease',
-            svg: { transform: 'rotate(90deg) translateY(50%)' },
+            svg: { transform: 'rotate(90deg) translateY(7px);' },
           })}
         />
       </Element>
@@ -38,14 +38,12 @@ export const Menu = ({ read, id }) => {
         >
           Clear notification
         </BaseMenu.Item>
-        {!read && (
-          <BaseMenu.Item
-            className="no-click"
-            onSelect={() => markNotificationAsRead(id)}
-          >
-            Mark as Read
-          </BaseMenu.Item>
-        )}
+        <BaseMenu.Item
+          className="no-click"
+          onSelect={() => updateReadStatus(id)}
+        >
+          Mark as {read ? 'Unread' : 'Read'}
+        </BaseMenu.Item>
       </BaseMenu.List>
     </BaseMenu>
   );

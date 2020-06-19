@@ -1,6 +1,6 @@
 import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
-import { Element, Stack, Text, List } from '@codesandbox/components';
+import { Element, Text, List } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Skeleton } from './Skeleton';
 
@@ -56,7 +56,7 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
   return <div />;
 };
 
-export const Notifications = props => {
+export const NotificationsContent = props => {
   const {
     state: { userNotifications },
     actions: {
@@ -95,23 +95,18 @@ export const Notifications = props => {
       css={css({
         backgroundColor: 'sideBar.background',
         fontFamily: 'Inter',
-        zIndex: 10,
         width: 321,
-        right: 10,
-        fontSize: 3,
         borderWidth: 1,
         borderStyle: 'solid',
         borderColor: 'sideBar.border',
-        boxShadow: 1,
-        borderRadius: 'medium',
       })}
       {...props}
     >
-      <Stack
+      <Element
         padding={4}
-        align="center"
-        justify="space-between"
         css={css({
+          display: 'grid',
+          gridTemplateColumns: '1fr 60px',
           borderWidth: 0,
           borderBottomWidth: 1,
           borderStyle: 'solid',
@@ -119,8 +114,10 @@ export const Notifications = props => {
         })}
       >
         <Text weight="bold">Notifications</Text>
-        {userNotifications.notifications ? <Filters /> : null}
-      </Stack>
+        <Element>
+          {userNotifications.notifications ? <Filters /> : null}
+        </Element>
+      </Element>
       <List css={css({ maxHeight: 400, overflow: 'auto' })}>
         {getContent()}
       </List>

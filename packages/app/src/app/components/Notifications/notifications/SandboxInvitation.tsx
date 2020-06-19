@@ -41,7 +41,7 @@ export const SandboxInvitation = ({
 }: ISandboxInvitationProps) => {
   const {
     actions: {
-      userNotifications: { markNotificationAsRead },
+      userNotifications: { updateReadStatus },
     },
   } = useOvermind();
   const [hover, setHover] = useState(false);
@@ -59,7 +59,7 @@ export const SandboxInvitation = ({
       onMouseLeave={() => setHover(false)}
       onClick={event => {
         if (isMenuClicked(event)) return;
-        markNotificationAsRead(id);
+        updateReadStatus(id);
         window.location.href = sandboxUrl({
           id: sandboxId,
           alias: sandboxAlias,

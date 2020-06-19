@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import formatDistanceStrict from 'date-fns/formatDistanceStrict';
+import React, { FunctionComponent, useState } from 'react';
+import { formatDistanceStrict } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import css from '@styled-system/css';
+import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import {
   Stack,
   Element,
@@ -9,44 +10,50 @@ import {
   ListAction,
   isMenuClicked,
 } from '@codesandbox/components';
-import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import { useOvermind } from 'app/overmind';
-import { AcceptedIcon } from './Icons';
+import { TeamIcon } from './Icons';
 import { Menu } from './Menu';
 
-interface Props {
-  insertedAt: string;
+type Props = {
   id: string;
   read: boolean;
+  teamId: string;
   teamName: string;
-  userName: string;
-  userAvatar: string;
-}
-
-export const TeamAccepted = ({
-  insertedAt,
+  inviterName: string;
+  inviterAvatar: string;
+  insertedAt: string;
+};
+export const TeamInvite: FunctionComponent<Props> = ({
   id,
   read,
+  teamId,
   teamName,
-  userName,
-  userAvatar,
-}: Props) => {
+  inviterName,
+  inviterAvatar,
+  insertedAt,
+}) => {
   const {
-    actions: {
-      userNotifications: { markNotificationAsRead },
-    },
+    actions: { userNotifications },
   } = useOvermind();
   const [hover, setHover] = useState(false);
+
+  const onClick = async () => {
+    if (isMenuClicked(event)) return;
+    await userNotifications.openTeamAcceptModal({
+      teamName,
+      teamId,
+      userAvatar: inviterName,
+    });
+
+    userNotifications.updateReadStatus(id);
+  };
   return (
     <ListAction
-      key={teamName}
+      onClick={onClick}
+      key={teamId}
+      css={css({ padding: 0 })}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      onClick={() => {
-        if (isMenuClicked(event)) return;
-        markNotificationAsRead(id);
-      }}
-      css={css({ padding: 0 })}
     >
       <Element
         css={css({
@@ -58,8 +65,8 @@ export const TeamAccepted = ({
             <Element css={css({ position: 'relative' })}>
               <Element
                 as="img"
-                src={userAvatar}
-                alt={userName}
+                src={inviterAvatar}
+                alt={inviterName}
                 css={css({
                   width: 32,
                   height: 32,
@@ -67,7 +74,7 @@ export const TeamAccepted = ({
                   borderRadius: 'small',
                 })}
               />
-              <AcceptedIcon
+              <TeamIcon
                 read={read}
                 css={css({
                   position: 'absolute',
@@ -78,9 +85,9 @@ export const TeamAccepted = ({
             </Element>
 
             <Text size={3} variant="muted">
-              {userName}{' '}
-              <Text css={css({ color: 'sideBar.foreground' })}>accepted</Text>{' '}
-              your invitation to join {teamName}!
+              {inviterName}{' '}
+              <Text css={css({ color: 'sideBar.foreground' })}>invites</Text>{' '}
+              you to join team {teamName}
             </Text>
           </Stack>
           {hover ? (
