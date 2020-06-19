@@ -107,7 +107,6 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     onRightClick,
     onMenuEvent,
     onBlur,
-    onKeyDown,
     onDragStart,
     onDrop,
     thumbnailRef,
@@ -206,7 +205,6 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     onDoubleClick,
     onContextMenu,
     onBlur,
-    onKeyDown,
     'data-selection-id': sandbox.id,
   };
 

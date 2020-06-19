@@ -2,7 +2,7 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import { ESC, ALT } from '@codesandbox/common/lib/utils/keycodes';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Element, Menu, Icon, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -36,7 +36,7 @@ export const ContextMenu = ({
   React.useEffect(() => {
     const handler = event => {
       if (!visible) return;
-      if (event.keyCode === ESC) setVisibility(false);
+      if (event.keyCode === ESC || event.keyCode === ALT) setVisibility(false);
       event.preventDefault();
     };
 

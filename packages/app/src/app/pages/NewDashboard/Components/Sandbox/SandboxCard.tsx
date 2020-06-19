@@ -24,7 +24,6 @@ export const SandboxCard = ({
   onClick,
   onDoubleClick,
   onBlur,
-  onKeyDown,
   onContextMenu,
   // editing
   editing,
@@ -44,7 +43,6 @@ export const SandboxCard = ({
     onClick={onClick}
     onDoubleClick={onDoubleClick}
     onBlur={onBlur}
-    onKeyDown={onKeyDown}
     onContextMenu={onContextMenu}
     {...props}
     css={css({

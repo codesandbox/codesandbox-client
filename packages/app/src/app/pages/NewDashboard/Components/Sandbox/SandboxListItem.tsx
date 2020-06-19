@@ -28,7 +28,6 @@ export const SandboxListItem = ({
   onClick,
   onDoubleClick,
   onBlur,
-  onKeyDown,
   onContextMenu,
   // edit mode
   editing,
@@ -47,7 +46,6 @@ export const SandboxListItem = ({
     onClick={onClick}
     onDoubleClick={onDoubleClick}
     onBlur={onBlur}
-    onKeyDown={onKeyDown}
     onContextMenu={onContextMenu}
     {...props}
     css={css({
