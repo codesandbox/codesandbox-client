@@ -85,8 +85,8 @@ export default {
   revokeToken(token: string): Promise<void> {
     return api.delete(`/auth/revoke/${token}`);
   },
-  getDependency(name: string): Promise<Dependency> {
-    return api.get(`/dependencies/${name}@latest`);
+  getDependency(name: string, tag: string): Promise<Dependency> {
+    return api.get(`/dependencies/${name}@${tag}`);
   },
   async getSandbox(id: string): Promise<Sandbox> {
     const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
