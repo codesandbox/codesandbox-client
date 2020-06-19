@@ -6,7 +6,7 @@ describe('OTClient', () => {
     const client = new CodeSandboxOTClient(
       0,
       'test',
-      (revision, operation) => Promise.resolve(),
+      (revision, operation) => Promise.resolve({}),
       operation => {}
     );
 

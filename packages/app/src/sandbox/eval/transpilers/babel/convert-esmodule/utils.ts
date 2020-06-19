@@ -1,3 +1,4 @@
+import { ESTree } from 'meriyah';
 import { Syntax as n } from './syntax';
 
 export function generateRequireStatement(varName: string, requirePath: string) {
@@ -35,7 +36,14 @@ export function generateRequireStatement(varName: string, requirePath: string) {
  * ```js
  * Object.keys($varName).forEach(function (key) {
  *   if (key === "default" || key === "__esModule") return;
- *   exports[key] = _store[key];
+ *   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
+ *   Object.defineProperty(exports, key, {
+ *     enumerable: true,
+ *     configurable: true,
+ *     get: function get() {
+ *       return $varName[key];
+ *     }
+ *   });
  * });
  * ```
  */
@@ -125,36 +133,69 @@ export function generateAllExportsIterator(varName: string) {
                 alternate: null,
               },
               {
-                type: n.ExpressionStatement,
-                expression: {
-                  type: n.AssignmentExpression,
-                  operator: '=' as '=',
-                  left: {
+                type: n.IfStatement,
+                test: {
+                  type: n.CallExpression,
+                  callee: {
                     type: n.MemberExpression,
-                    computed: true,
                     object: {
+                      type: n.MemberExpression,
+                      object: {
+                        type: n.MemberExpression,
+                        object: {
+                          type: n.Identifier,
+                          name: 'Object',
+                        },
+                        computed: false,
+                        property: {
+                          type: n.Identifier,
+                          name: 'prototype',
+                        },
+                      },
+                      computed: false,
+                      property: {
+                        type: n.Identifier,
+                        name: 'hasOwnProperty',
+                      },
+                    },
+                    computed: false,
+                    property: {
+                      type: n.Identifier,
+                      name: 'call',
+                    },
+                  },
+                  arguments: [
+                    {
                       type: n.Identifier,
                       name: 'exports',
                     },
-                    property: {
+                    {
                       type: n.Identifier,
                       name: 'key',
                     },
-                  },
-                  right: {
-                    type: n.MemberExpression,
-                    computed: true,
-                    object: {
-                      type: n.Identifier,
-                      name: varName,
-                    },
-                    property: {
-                      type: n.Identifier,
-                      name: 'key',
-                    },
-                  },
+                  ],
                 },
+                consequent: {
+                  type: n.ReturnStatement,
+                  argument: null,
+                },
+                alternate: null,
               },
+              generateExportGetter(
+                { type: n.Identifier, name: 'key' },
+                {
+                  type: n.MemberExpression,
+                  computed: true,
+                  object: {
+                    type: n.Identifier,
+                    name: varName,
+                  },
+                  property: {
+                    type: n.Identifier,
+                    name: 'key',
+                  },
+                }
+              ),
             ],
           },
           generator: false,
@@ -162,47 +203,6 @@ export function generateAllExportsIterator(varName: string) {
           async: false,
         },
       ],
-    },
-  };
-}
-
-/**
- * exports.$exportName = $varName.$localName;
- */
-export function generateExportMemberStatement(
-  varName: string,
-  exportName: string,
-  localName: string
-) {
-  return {
-    type: n.ExpressionStatement,
-    expression: {
-      type: n.AssignmentExpression,
-      operator: '=' as '=',
-      left: {
-        type: n.MemberExpression,
-        computed: false,
-        object: {
-          type: n.Identifier,
-          name: 'exports',
-        },
-        property: {
-          type: n.Identifier,
-          name: exportName,
-        },
-      },
-      right: {
-        type: n.MemberExpression,
-        computed: false,
-        object: {
-          type: n.Identifier,
-          name: varName,
-        },
-        property: {
-          type: n.Identifier,
-          name: localName,
-        },
-      },
     },
   };
 }
@@ -295,12 +295,18 @@ export function generateEsModuleSpecifier() {
 /**
  * Object.defineProperty(exports, $exportName, {
  *   enumerable: true,
+ *   configurable: true,
  *   get: function get() {
  *     return $localName;
  *   }
  * })
  */
-export function generateExportGetter(exportName: string, localName: string) {
+export function generateExportGetter(
+  exportObj:
+    | { type: 'Identifier'; name: string }
+    | { type: 'Literal'; value: string },
+  local: ESTree.Expression
+) {
   return {
     type: n.ExpressionStatement,
     expression: {
@@ -322,10 +328,7 @@ export function generateExportGetter(exportName: string, localName: string) {
           type: n.Identifier,
           name: 'exports',
         },
-        {
-          type: n.Literal,
-          value: exportName,
-        },
+        exportObj,
         {
           type: n.ObjectExpression,
           properties: [
@@ -349,6 +352,22 @@ export function generateExportGetter(exportName: string, localName: string) {
               type: n.Property,
               key: {
                 type: n.Identifier,
+                name: 'configurable',
+              },
+              computed: false,
+              value: {
+                type: n.Literal,
+                value: true,
+                raw: 'true',
+              },
+              kind: 'init' as 'init',
+              method: false,
+              shorthand: false,
+            },
+            {
+              type: n.Property,
+              key: {
+                type: n.Identifier,
                 name: 'get',
               },
               computed: false,
@@ -356,7 +375,7 @@ export function generateExportGetter(exportName: string, localName: string) {
                 type: n.FunctionExpression,
                 id: {
                   type: n.Identifier,
-                  name: 'get',
+                  name: '$csbGet',
                 },
                 generator: false,
                 async: false,
@@ -366,10 +385,7 @@ export function generateExportGetter(exportName: string, localName: string) {
                   body: [
                     {
                       type: n.ReturnStatement,
-                      argument: {
-                        type: n.Identifier,
-                        name: localName,
-                      },
+                      argument: local,
                     },
                   ],
                 },
@@ -459,7 +475,7 @@ export function generateInteropRequire() {
 }
 
 export function generateInteropRequireExpression(
-  varName: string,
+  argument: ESTree.Expression,
   localName: string
 ) {
   return {
@@ -474,12 +490,7 @@ export function generateInteropRequireExpression(
             type: n.Identifier,
             name: '$_csb__interopRequireDefault',
           },
-          arguments: [
-            {
-              type: n.Identifier,
-              name: varName,
-            },
-          ],
+          arguments: [argument],
         },
         id: {
           type: n.Identifier,

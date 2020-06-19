@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 
 import {
@@ -35,6 +36,9 @@ export const UserSettings = () => {
 
   return (
     <>
+      <Helmet>
+        <title>User Settings - CodeSandbox</title>
+      </Helmet>
       <Header title="User Settings" />
       <Element
         css={css({
@@ -78,7 +82,7 @@ export const UserSettings = () => {
                       href={`https://github.com/${user.username}`}
                       target="_blank"
                     >
-                      Managed by Github
+                      Account managed by Github
                     </Link>
                   </Stack>
                 </Stack>

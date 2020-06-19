@@ -5,7 +5,7 @@ import { VercelLogo } from 'app/components/VercelLogo';
 import { useOvermind } from 'app/overmind';
 
 type Props = {
-  small: boolean;
+  small?: boolean;
 };
 export const VercelIntegration: FunctionComponent<Props> = ({ small }) => {
   const {

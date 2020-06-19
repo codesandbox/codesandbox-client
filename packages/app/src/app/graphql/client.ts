@@ -20,13 +20,18 @@ const httpLink = new BatchHttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
+  const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
+  if (!hasDevAuth) {
+    return {};
+  }
+
   // get the authentication token from local storage if it exists
-  const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem('devJwt');
   // return the headers to the context so httpLink can read them
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${JSON.parse(token)}` : '',
+      authorization: token ? `Bearer ${token}` : '',
     },
   };
 });

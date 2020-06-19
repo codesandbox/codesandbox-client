@@ -14,6 +14,7 @@ import patchedMacrosPlugin from './utils/macrosPatch';
 import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
 import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
+import renameImport from './plugins/babel-plugin-rename-imports';
 
 import { buildWorkerError } from '../../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
@@ -470,6 +471,7 @@ let loadedEnvURL = null;
 function registerCodeSandboxPlugins() {
   Babel.registerPlugin('babel-plugin-detective', detective);
   Babel.registerPlugin('dynamic-css-modules', dynamicCSSModules);
+  Babel.registerPlugin('babel-plugin-csb-rename-import', renameImport);
   Babel.registerPlugin(
     'babel-plugin-transform-prevent-infinite-loops',
     infiniteLoops
@@ -561,6 +563,8 @@ self.addEventListener('message', async event => {
           'babel-plugin-transform-prevent-infinite-loops'
         );
       }
+
+      codeSandboxPlugins.push('babel-plugin-csb-rename-import');
     }
 
     codeSandboxPlugins.push([

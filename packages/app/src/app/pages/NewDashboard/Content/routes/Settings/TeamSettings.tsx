@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import {
   Button,
@@ -70,6 +71,9 @@ export const TeamSettings = () => {
   const created = team.users.find(user => user.id === team.creatorId);
   return (
     <>
+      <Helmet>
+        <title>Team Settings - CodeSandbox</title>
+      </Helmet>
       <Header title="Team settings" />
       <Element
         css={css({

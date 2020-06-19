@@ -795,7 +795,10 @@ export class ModelsHandler {
     currentCommentThreadId: string | null,
     currentLineNumber: number
   ) {
-    if (!hasPermission(this.sandbox.authorization, 'comment')) {
+    if (
+      !hasPermission(this.sandbox.authorization, 'comment') ||
+      !this.sandbox.featureFlags.comments
+    ) {
       return [];
     }
     const commentDecorationsByLineNumber = commentThreadDecorations.reduce<{

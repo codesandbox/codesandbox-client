@@ -3,8 +3,8 @@ import { Element, Button, Text, Stack, Link } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { VercelIntegration } from 'app/pages/common/VercelIntegration';
 import { Alert } from '../Common/Alert';
-import { VercelIcon } from './VercelLogo';
 
 export const DeploymentModal: FunctionComponent = () => {
   const {
@@ -14,7 +14,6 @@ export const DeploymentModal: FunctionComponent = () => {
     },
     actions: {
       deployment: { deployClicked },
-      signInVercelClicked,
     },
   } = useOvermind();
 
@@ -63,24 +62,7 @@ export const DeploymentModal: FunctionComponent = () => {
             borderRadius: 'medium',
           })}
         >
-          <VercelIcon />
-          <Element paddingLeft={4}>
-            {vercelSignedIn ? (
-              <>
-                <Text size={3} block paddingBottom={1} variant="muted">
-                  Signed in with
-                </Text>
-                <Text size={3}>{vercel.email || 'Loading...'}</Text>
-              </>
-            ) : (
-              <>
-                <Text size={3} block paddingBottom={1}>
-                  Please sign in
-                </Text>
-                <Button onClick={signInVercelClicked}>Sign In</Button>
-              </>
-            )}
-          </Element>
+          <VercelIntegration />
         </Stack>
       )}
       <Stack justify="flex-end">
