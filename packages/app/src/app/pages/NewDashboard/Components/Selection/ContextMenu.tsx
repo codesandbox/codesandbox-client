@@ -291,12 +291,19 @@ const FolderMenu = ({ folder, setRenaming }) => {
 
   if (isDrafts)
     return (
-      <MenuItem onSelect={() => {}}>
-        <Stack gap={1}>
-          <Icon name="lock" size={14} />
-          <Text>Protected</Text>
-        </Stack>
-      </MenuItem>
+      <Menu.ContextMenu
+        visible={visible}
+        setVisibility={setVisibility}
+        position={position}
+        style={{ width: 120 }}
+      >
+        <MenuItem onSelect={() => {}}>
+          <Stack gap={1}>
+            <Icon name="lock" size={14} />
+            <Text>Protected</Text>
+          </Stack>
+        </MenuItem>
+      </Menu.ContextMenu>
     );
 
   return (
