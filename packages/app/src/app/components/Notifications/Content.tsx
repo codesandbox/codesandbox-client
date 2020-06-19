@@ -95,15 +95,10 @@ export const NotificationsContent = props => {
       css={css({
         backgroundColor: 'sideBar.background',
         fontFamily: 'Inter',
-        zIndex: 10,
         width: 321,
-        right: 10,
-        fontSize: 3,
         borderWidth: 1,
         borderStyle: 'solid',
         borderColor: 'sideBar.border',
-        boxShadow: 2,
-        borderRadius: 'medium',
       })}
       {...props}
     >
@@ -111,7 +106,7 @@ export const NotificationsContent = props => {
         padding={4}
         css={css({
           display: 'grid',
-          gridTemplateColumns: '1fr 70px',
+          gridTemplateColumns: '1fr 60px',
           borderWidth: 0,
           borderBottomWidth: 1,
           borderStyle: 'solid',

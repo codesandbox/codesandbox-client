@@ -31,7 +31,6 @@ export const Overlay: React.FC<IOverlayProps> = ({
   children,
   content: Content,
   width = POPOVER_WIDTH,
-  propagate = false,
 }) => {
   const [open, setOpen] = useState(isOpen === undefined ? false : isOpen);
   const isControlled = isOpen !== undefined;
@@ -114,6 +113,8 @@ export const Overlay: React.FC<IOverlayProps> = ({
     }
   };
 
+  const multiplier = width < POPOVER_WIDTH ? 0.9 : 0.75;
+
   return (
     <Container ref={element}>
       {children(handleOpen)}
@@ -128,11 +129,15 @@ export const Overlay: React.FC<IOverlayProps> = ({
                 position: 'absolute',
                 zIndex: 10,
                 overflow: 'hidden',
-                boxShadow: '0 3px 3px rgba(0, 0, 0, 0.3)',
+                boxShadow:
+                  '0px 4px 4px rgba(0,0,0,0.12), 0px 16px 32px rgba(0,0,0,0.24)',
                 height: 'auto',
                 borderRadius: 4,
                 top: bounds.current.top + bounds.current.height + 8,
-                left: bounds.current.left + bounds.current.width - width * 0.75,
+                left:
+                  bounds.current.left +
+                  bounds.current.width -
+                  width * multiplier,
                 width,
               }}
               transition={{

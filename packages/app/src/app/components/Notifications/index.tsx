@@ -26,6 +26,7 @@ export const Notifications = () => {
       isOpen={notificationsMenuOpened}
       onClose={notificationsClosed}
       onOpen={notificationsOpened}
+      width={321}
     >
       {open => (
         <Button
