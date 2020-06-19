@@ -101,13 +101,13 @@ export const SandboxName: FunctionComponent = () => {
     owned: false,
   };
 
-  const isGit =
+  const git =
     !updatingName && (currentSandbox.git || currentSandbox.originalGit);
 
   return (
     <Main style={fadeIn ? { opacity: 1 } : null}>
       <Stack align="center">
-        {!customTemplate && owned && !isGit && (
+        {!customTemplate && owned && !git && (
           <Folder>
             {isLoggedIn ? (
               <Button
@@ -127,7 +127,7 @@ export const SandboxName: FunctionComponent = () => {
           </Folder>
         )}
 
-        {updatingName && !isGit ? (
+        {updatingName && !git ? (
           <>
             <Form onSubmit={submitNameChange}>
               <NameInput
@@ -148,7 +148,7 @@ export const SandboxName: FunctionComponent = () => {
           </>
         ) : (
           <>
-            {!isGit ? (
+            {!git ? (
               owned ? (
                 <Button
                   variant="link"
@@ -165,7 +165,7 @@ export const SandboxName: FunctionComponent = () => {
           </>
         )}
 
-        {!updatingName && !isGit ? (
+        {!updatingName && !git ? (
           <Element as="span" marginLeft={owned ? 0 : 2}>
             <PrivacyTooltip />
           </Element>
@@ -192,11 +192,11 @@ export const SandboxName: FunctionComponent = () => {
             <TemplateBadge color={customTemplate.color}>Template</TemplateBadge>
           </Tooltip>
         ) : null}
-        {isGit ? (
+        {git ? (
           <Tooltip
             content={
               <>
-                This sandbox is a Githbub sandbox, you can learn more about
+                This sandbox is a GitHub sandbox, you can learn more about
                 GitHub sandboxes in the{' '}
                 <Link target="_blank" to="/docs/git">
                   docs
@@ -211,28 +211,13 @@ export const SandboxName: FunctionComponent = () => {
             <TemplateBadge style={{ margin: 0, cursor: 'default' }}>
               <GitHubIcon width={15} />
               <Text paddingLeft={2}>
-                {currentSandbox.git ? (
-                  <Text variant="muted">
-                    {currentSandbox.git.username} / {currentSandbox.git.repo} /{' '}
-                    <Text css={css({ color: 'sideBar.foreground' })}>
-                      {currentSandbox.git.branch}
-                    </Text>
-                    {currentSandbox.git.path
-                      ? ' /' + currentSandbox.git.path
-                      : null}
-                  </Text>
-                ) : (
-                  <Text variant="muted">
-                    {currentSandbox.originalGit.username} /{' '}
-                    {currentSandbox.originalGit.repo} /{' '}
-                    <Text css={css({ color: 'sideBar.foreground' })}>
-                      {currentSandbox.originalGit.branch}
-                    </Text>
-                    {currentSandbox.originalGit.path
-                      ? ' /' + currentSandbox.originalGit.path
-                      : null}
-                  </Text>
-                )}
+                <Text css={css({ opacity: 0.8 })}>
+                  {git.username} / {git.repo} /{' '}
+                </Text>
+                <Text>{git.branch}</Text>
+                <Text css={css({ opacity: 0.8 })}>
+                  {git.path ? ' /' + git.path : null}
+                </Text>
               </Text>
             </TemplateBadge>
           </Tooltip>
