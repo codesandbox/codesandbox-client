@@ -44,7 +44,6 @@ export const Folder = ({
     onRightClick,
     onMenuEvent,
     onBlur,
-    onKeyDown,
     onDragStart,
     onDrop,
     thumbnailRef,
@@ -86,7 +85,6 @@ export const Folder = ({
     onDoubleClick,
     onContextMenu,
     onBlur,
-    onKeyDown,
     'data-selection-id': path,
   };
 

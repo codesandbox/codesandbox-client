@@ -568,7 +568,6 @@ export const useSelection = () => {
     onBlur,
     onRightClick,
     onMenuEvent,
-
     onDragStart,
     onDrop,
     thumbnailRef,
