@@ -112,10 +112,10 @@ export const addNpmDependency: AsyncAction<{
   async ({ actions, effects, state }, { name, version, isDev }) => {
     effects.analytics.track('Add NPM Dependency');
     state.currentModal = null;
-    let newVersion = version;
-
-    if (!newVersion) {
-      const dependency = await effects.api.getDependency(name);
+    let newVersion = version || 'latest';
+    const isTag = !newVersion.includes('.');
+    if (isTag) {
+      const dependency = await effects.api.getDependency(name, newVersion);
       newVersion = dependency.version;
     }
 
