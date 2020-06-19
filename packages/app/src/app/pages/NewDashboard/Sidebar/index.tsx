@@ -388,6 +388,7 @@ const RowItem = ({
 
   const location = useLocation();
   const isCurrentLink = linkTo === location.pathname;
+  const history = useHistory();
 
   /** Toggle nested folders when user
    * is drags an item over a folder after a treshold
@@ -442,7 +443,16 @@ const RowItem = ({
       )}
     >
       {props.children || (
-        <Link as={RouterLink} to={linkTo} style={linkStyles}>
+        <Link
+          as={RouterLink}
+          to={linkTo}
+          style={linkStyles}
+          onKeyDown={event => {
+            if (event.keyCode === ENTER) {
+              history.push(linkTo, { focus: 'FIRST_ITEM' });
+            }
+          }}
+        >
           <Stack
             as="span"
             css={css({ width: 10 })}

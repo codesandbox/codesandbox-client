@@ -191,6 +191,12 @@ export const SelectionProvider = ({
       history.replace(location.pathname, {});
     } else if (location.state.focus === 'FIRST_ITEM') {
       setSelectedIds([selectionItems[0]]);
+      // imperatively move focus to content-block
+      const skipToContent = document.querySelector(
+        '#reach-skip-nav'
+      ) as HTMLDivElement;
+      skipToContent.focus();
+
       // clear push state
       history.replace(location.pathname, {});
     }
@@ -486,11 +492,6 @@ export const SelectionProvider = ({
         setRenaming,
       }}
     >
-      <SkipNav.Content
-        tabIndex={0}
-        onFocus={() => setSelectedIds([selectionItems[0]])}
-      />
-
       <Element
         id="selection-container"
         onKeyDown={onContainerKeyDown}
@@ -500,6 +501,10 @@ export const SelectionProvider = ({
         onContextMenu={onContainerContextMenu}
         css={css({ paddingTop: 10 })}
       >
+        <SkipNav.Content
+          tabIndex={0}
+          onFocus={() => setSelectedIds([selectionItems[0]])}
+        />
         {props.children}
       </Element>
       {drawingRect && selectionRect.end.x && (
