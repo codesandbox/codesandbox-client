@@ -64,7 +64,8 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
     }
   }, [dashboard.activeTeam, dashboard.activeTeamInfo, dashboard.teams, user]);
 
-  const inTeamContext = activeAccount.username !== user.username;
+  const inTeamContext =
+    activeAccount && user && activeAccount.username !== user.username;
 
   const folders = dashboard.allCollections || [];
 
