@@ -44,8 +44,9 @@ export const TeamInvite: FunctionComponent<Props> = ({
       teamId,
       userAvatar: inviterName,
     });
-
-    userNotifications.updateReadStatus(id);
+    if (!read) {
+      await userNotifications.updateReadStatus(id);
+    }
   };
   return (
     <ListAction
@@ -90,10 +91,16 @@ export const TeamInvite: FunctionComponent<Props> = ({
               you to join team {teamName}
             </Text>
           </Stack>
-          {hover ? (
-            <Menu read={read} id={id} />
-          ) : (
-            <Element css={css({ width: 70, flexShrink: 0 })}>
+          <Stack
+            css={css({
+              width: 70,
+              flexShrink: 0,
+              justifyContent: 'flex-end',
+            })}
+          >
+            {hover ? (
+              <Menu read={read} id={id} />
+            ) : (
               <Text
                 size={2}
                 align="right"
@@ -107,8 +114,8 @@ export const TeamInvite: FunctionComponent<Props> = ({
                   )
                 )}
               </Text>
-            </Element>
-          )}
+            )}
+          </Stack>
         </Stack>
       </Element>
     </ListAction>

@@ -57,13 +57,15 @@ export const SandboxInvitation = ({
     <ListAction
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      onClick={event => {
+      onClick={async event => {
         if (isMenuClicked(event)) return;
-        updateReadStatus(id);
-        window.location.href = sandboxUrl({
-          id: sandboxId,
-          alias: sandboxAlias,
-        });
+        if (!read) {
+          await updateReadStatus(id);
+          window.location.href = sandboxUrl({
+            id: sandboxId,
+            alias: sandboxAlias,
+          });
+        }
       }}
       key={sandboxId}
       css={css({ padding: 0 })}

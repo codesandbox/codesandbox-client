@@ -44,7 +44,9 @@ export const TeamAccepted = ({
       onMouseLeave={() => setHover(false)}
       onClick={() => {
         if (isMenuClicked(event)) return;
-        updateReadStatus(id);
+        if (!read) {
+          updateReadStatus(id);
+        }
       }}
       css={css({ padding: 0 })}
     >
@@ -83,10 +85,16 @@ export const TeamAccepted = ({
               your invitation to join {teamName}!
             </Text>
           </Stack>
-          {hover ? (
-            <Menu read={read} id={id} />
-          ) : (
-            <Element css={css({ width: 70, flexShrink: 0 })}>
+          <Stack
+            css={css({
+              width: 70,
+              flexShrink: 0,
+              justifyContent: 'flex-end',
+            })}
+          >
+            {hover ? (
+              <Menu read={read} id={id} />
+            ) : (
               <Text
                 size={2}
                 align="right"
@@ -100,8 +108,8 @@ export const TeamAccepted = ({
                   )
                 )}
               </Text>
-            </Element>
-          )}
+            )}
+          </Stack>
         </Stack>
       </Element>
     </ListAction>
