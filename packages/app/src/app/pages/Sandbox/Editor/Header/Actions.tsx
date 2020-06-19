@@ -99,7 +99,7 @@ export const Actions = () => {
         </TooltipButton>
       )}
 
-      {user?.experiments.collaborator && isLive ? (
+      {user?.experiments?.collaborator && isLive ? (
         <CollaboratorHeads />
       ) : (
         <>
