@@ -33,14 +33,13 @@ export const FilterOptions: FunctionComponent<Props> = ({
       },
     },
   } = useOvermind();
-
-  const toggleTemplate = (name: string, select: boolean) =>
-    select ? blacklistedTemplateRemoved(name) : blacklistedTemplateAdded(name);
+  const templates = possibleTemplates && possibleTemplates.length > 0;
   const allSelected = possibleTemplates.every(({ id }) =>
     isTemplateSelected(id)
   );
 
-  const templates = possibleTemplates && possibleTemplates.length > 0;
+  const toggleTemplate = (name: string, select: boolean) =>
+    select ? blacklistedTemplateRemoved(name) : blacklistedTemplateAdded(name);
 
   return (
     <>
@@ -72,10 +71,7 @@ export const FilterOptions: FunctionComponent<Props> = ({
                       },
                     })}
                   >
-                    <Checkbox
-                      defaultChecked={selected}
-                      label={niceName || name}
-                    />
+                    <Checkbox checked={selected} label={niceName || name} />
                   </Menu.Item>
                 );
               }
@@ -101,7 +97,7 @@ export const FilterOptions: FunctionComponent<Props> = ({
                 color: allSelected ? 'body' : 'muted',
               })}
             >
-              <Checkbox defaultChecked={allSelected} label="Select All" />
+              <Checkbox checked={allSelected} label="Select All" />
             </Menu.Item>
           )}
         </Menu.List>
