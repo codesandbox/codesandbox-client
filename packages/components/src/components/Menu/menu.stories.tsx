@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Menu } from '.';
 import { Element } from '../Element';
 import { Stack } from '../Stack';
@@ -68,6 +67,55 @@ export const IconButton = () => {
           ))}
         </Menu.List>
       </Menu>
+    </Stack>
+  );
+};
+
+export const ContextMenu = () => {
+  const [visible, setVisibility] = React.useState(false);
+  const [position, setPosition] = React.useState({ x: null, y: null });
+
+  const onContextMenu = event => {
+    event.preventDefault();
+    setVisibility(true);
+    setPosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const onKeyDown = event => {
+    if (event.keyCode !== 18) return; // ALT
+
+    setVisibility(true);
+    const rect = event.target.getBoundingClientRect();
+    setPosition({ x: rect.right, y: rect.bottom });
+  };
+
+  return (
+    <Stack>
+      <Element
+        tabIndex={0}
+        onContextMenu={onContextMenu}
+        onKeyDown={onKeyDown}
+        css={{
+          position: 'absolute',
+          bottom: 0,
+          right: 0,
+          margin: 20,
+          padding: 40,
+          backgroundColor: '#242424',
+        }}
+      >
+        right click on me
+      </Element>
+      <Menu.ContextMenu
+        visible={visible}
+        setVisibility={setVisibility}
+        position={position}
+      >
+        <Menu.Item onSelect={() => {}}>A</Menu.Item>
+        <Menu.Item onSelect={() => {}}>B</Menu.Item>
+        <Menu.Item onSelect={() => {}}>C</Menu.Item>
+        <Menu.Item onSelect={() => {}}>D</Menu.Item>
+      </Menu.ContextMenu>
     </Stack>
   );
 };
