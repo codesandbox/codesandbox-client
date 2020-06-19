@@ -11,6 +11,8 @@ export const onInitialize: OnInitialize = async (
 
   effects.browser.storage.set('hasVisited', true);
 
+  effects.browser.onResize(actions.editor.setPreviewPosition);
+
   effects.live.initialize({
     provideJwtToken,
     onApplyOperation: actions.live.applyTransformation,

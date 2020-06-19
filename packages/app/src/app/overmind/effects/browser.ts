@@ -1,3 +1,5 @@
+import { debounce } from 'lodash-es';
+
 function getPopupOffset({ width, height }) {
   const wLeft = window.screenLeft ? window.screenLeft : window.screenX;
   const wTop = window.screenTop ? window.screenTop : window.screenY;
@@ -50,6 +52,19 @@ export default {
     return {
       close: () => popup?.close(),
     };
+  },
+  onResize(action: (size: { width: number; height: number }) => void) {
+    window.addEventListener(
+      'resize',
+      debounce(() => {
+        requestAnimationFrame(() => {
+          action({
+            width: window.innerWidth,
+            height: window.innerHeight,
+          });
+        });
+      }, 200)
+    );
   },
   copyToClipboard: (str: string) => {
     const el = document.createElement('textarea');

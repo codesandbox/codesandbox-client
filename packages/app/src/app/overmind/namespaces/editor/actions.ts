@@ -129,6 +129,25 @@ export const addNpmDependency: AsyncAction<{
   }
 );
 
+export const setPreviewPosition: Action<{ width: number; height: number }> = (
+  { state, effects },
+  size
+) => {
+  if (
+    state.editor.previewWindowOrientation === WindowOrientation.VERTICAL &&
+    size.width < 1200
+  ) {
+    state.editor.previewWindowOrientation = WindowOrientation.HORIZONTAL;
+  } else if (
+    state.editor.previewWindowOrientation === WindowOrientation.HORIZONTAL &&
+    size.width >= 1200
+  ) {
+    state.editor.previewWindowOrientation = WindowOrientation.VERTICAL;
+  }
+
+  effects.vscode.resetLayout();
+};
+
 export const npmDependencyRemoved: AsyncAction<string> = withOwnedSandbox(
   async ({ actions, effects }, name) => {
     effects.analytics.track('Remove NPM Dependency');
