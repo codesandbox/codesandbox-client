@@ -27,7 +27,7 @@ export const Menu = ({ read, id }) => {
             display: 'flex',
             justifyContent: 'flex-end',
             transition: 'all 100ms ease',
-            svg: { transform: 'rotate(90deg) translateY(50%)' },
+            svg: { transform: 'rotate(90deg) translateY(7px);' },
           })}
         />
       </Element>
