@@ -2,9 +2,8 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useHistory } from 'react-router-dom';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { Stack, Element, Icon, Text } from '@codesandbox/components';
+import { Stack, Menu, Icon, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import css from '@styled-system/css';
 
 export const ContextMenu = ({
   visible,
@@ -52,28 +51,28 @@ export const ContextMenu = ({
 
   if (folder.name === 'Drafts') {
     menuOptions = (
-      <MenuItem>
+      <Menu.Item onSelect={() => {}}>
         <Stack gap={1}>
           <Icon name="lock" size={14} />
           <Text>Protected</Text>
         </Stack>
-      </MenuItem>
+      </Menu.Item>
     );
   } else if (folder.name === 'All sandboxes') {
     menuOptions = (
-      <MenuItem onClick={() => setNewFolderPath(folder.path + '/__NEW__')}>
+      <Menu.Item onSelect={() => setNewFolderPath(folder.path + '/__NEW__')}>
         New folder
-      </MenuItem>
+      </Menu.Item>
     );
   } else {
     menuOptions = (
       <>
-        <MenuItem onClick={() => setNewFolderPath(folder.path + '/__NEW__')}>
+        <Menu.Item onSelect={() => setNewFolderPath(folder.path + '/__NEW__')}>
           New folder
-        </MenuItem>
-        <MenuItem onClick={() => setRenaming(true)}>Rename folder</MenuItem>
-        <MenuItem
-          onClick={() => {
+        </Menu.Item>
+        <Menu.Item onSelect={() => setRenaming(true)}>Rename folder</Menu.Item>
+        <Menu.Item
+          onSelect={() => {
             actions.dashboard.deleteFolder({ path: folder.path });
 
             // navigate out of folder when it's deleted
@@ -90,31 +89,21 @@ export const ContextMenu = ({
           }}
         >
           Delete folder
-        </MenuItem>
+        </Menu.Item>
       </>
     );
   }
 
   return (
     <>
-      <Stack
-        direction="vertical"
-        data-reach-menu-list
-        data-component="MenuList"
-        css={css({
-          position: 'absolute',
-          width: 120,
-          top: position.y,
-          left: position.x,
-          zIndex: 3,
-        })}
+      <Menu.ContextMenu
+        visible={visible}
+        setVisibility={setVisibility}
+        position={position}
+        style={{ width: 120 }}
       >
         {menuOptions}
-      </Stack>
+      </Menu.ContextMenu>
     </>
   );
 };
-
-const MenuItem = props => (
-  <Element data-reach-menu-item="" data-component="MenuItem" {...props} />
-);
