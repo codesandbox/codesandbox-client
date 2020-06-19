@@ -2,7 +2,7 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import { ESC, ALT } from '@codesandbox/common/lib/utils/keycodes';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Element, Menu, Icon, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -15,6 +15,7 @@ export const ContextMenu = ({
   sandboxes,
   folders,
   setRenaming,
+  createNewFolder,
 }) => {
   React.useEffect(() => {
     // close when user clicks outside or scrolls away
@@ -35,7 +36,7 @@ export const ContextMenu = ({
   React.useEffect(() => {
     const handler = event => {
       if (!visible) return;
-      if (event.keyCode === ESC) setVisibility(false);
+      if (event.keyCode === ESC || event.keyCode === ALT) setVisibility(false);
       event.preventDefault();
     };
 
@@ -45,7 +46,7 @@ export const ContextMenu = ({
     };
   });
 
-  if (!visible || selectedIds.length === 0) return null;
+  if (!visible) return null;
 
   const selectedItems = selectedIds.map(id => {
     if (id.startsWith('/')) {
@@ -58,7 +59,11 @@ export const ContextMenu = ({
 
   let menu;
   let menuWidth;
-  if (selectedItems.length > 1) {
+
+  if (selectedItems.length === 0) {
+    menu = <ContainerMenu createNewFolder={createNewFolder} />;
+    menuWidth = 160;
+  } else if (selectedItems.length > 1) {
     menu = <MultiMenu selectedItems={selectedItems} />;
     menuWidth = 160;
   } else if (selectedItems[0].type === 'sandbox') {
@@ -98,6 +103,12 @@ export const ContextMenu = ({
 
 const MenuItem = props => (
   <Element data-reach-menu-item="" data-component="MenuItem" {...props} />
+);
+
+const ContainerMenu = ({ createNewFolder }) => (
+  <>
+    <MenuItem onClick={createNewFolder}>Create new folder</MenuItem>
+  </>
 );
 
 const SandboxMenu = ({
@@ -215,6 +226,46 @@ const SandboxMenu = ({
       </MenuItem>
       {isOwner ? (
         <>
+          <Menu.Divider />
+          {sandbox.privacy !== 0 && (
+            <MenuItem
+              onClick={() =>
+                actions.dashboard.changeSandboxPrivacy({
+                  id: sandbox.id,
+                  privacy: 0,
+                  oldPrivacy: sandbox.privacy,
+                })
+              }
+            >
+              Make {label} public
+            </MenuItem>
+          )}
+          {sandbox.privacy !== 1 && (
+            <MenuItem
+              onClick={() =>
+                actions.dashboard.changeSandboxPrivacy({
+                  id: sandbox.id,
+                  privacy: 1,
+                  oldPrivacy: sandbox.privacy,
+                })
+              }
+            >
+              Make {label} unlisted
+            </MenuItem>
+          )}
+          {sandbox.privacy !== 2 && (
+            <MenuItem
+              onClick={() =>
+                actions.dashboard.changeSandboxPrivacy({
+                  id: sandbox.id,
+                  privacy: 2,
+                  oldPrivacy: sandbox.privacy,
+                })
+              }
+            >
+              Make {label} private
+            </MenuItem>
+          )}
           <Menu.Divider />
           <MenuItem onClick={() => setRenaming(true)}>Rename {label}</MenuItem>
           {sandbox.isTemplate ? (

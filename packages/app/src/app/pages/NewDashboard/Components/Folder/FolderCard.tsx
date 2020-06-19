@@ -41,7 +41,7 @@ export const FolderCard = ({
       border: '1px solid',
       borderRadius: 'medium',
       overflow: 'hidden',
-      // drop target
+      // drop ssarget
       borderColor: getBorderColor(selected, showDropStyles),
       boxShadow: theme =>
         showDropStyles ? '0 4px 16px 0 ' + theme.colors.grays[900] : null,
@@ -75,7 +75,12 @@ export const FolderCard = ({
         />
       </svg>
     </Stack>
-    <Stack justify="space-between" align="center" marginLeft={4}>
+    <Stack
+      justify="space-between"
+      align="center"
+      marginLeft={4}
+      css={{ minHeight: 26 }}
+    >
       {editing ? (
         <form onSubmit={onSubmit}>
           <Input

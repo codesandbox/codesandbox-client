@@ -147,9 +147,9 @@ const RoutesComponent: React.FC = () => {
             <Route component={NotFound} />
           </Switch>
         </Content>
+        <Modals />
+        {signInModalOpen && !user ? <SignInModal /> : null}
       </Boundary>
-      <Modals />
-      {signInModalOpen && !user ? <SignInModal /> : null}
     </Container>
   );
 };

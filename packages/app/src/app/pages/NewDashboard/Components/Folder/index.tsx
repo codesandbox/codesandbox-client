@@ -32,7 +32,6 @@ export const Folder = ({
 
   let viewMode: string;
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const Component = viewMode === 'list' ? FolderListItem : FolderCard;
@@ -45,7 +44,6 @@ export const Folder = ({
     onRightClick,
     onMenuEvent,
     onBlur,
-    onKeyDown,
     onDragStart,
     onDrop,
     thumbnailRef,
@@ -87,7 +85,6 @@ export const Folder = ({
     onDoubleClick,
     onContextMenu,
     onBlur,
-    onKeyDown,
     'data-selection-id': path,
   };
 

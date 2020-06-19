@@ -17,6 +17,9 @@ import css from '@styled-system/css';
 export const SandboxListItem = ({
   sandbox,
   sandboxTitle,
+  sandboxLocation,
+  lastUpdated,
+  viewCount,
   TemplateIcon,
   PrivacyIcon,
   screenshotUrl,
@@ -25,7 +28,6 @@ export const SandboxListItem = ({
   onClick,
   onDoubleClick,
   onBlur,
-  onKeyDown,
   onContextMenu,
   // edit mode
   editing,
@@ -44,7 +46,6 @@ export const SandboxListItem = ({
     onClick={onClick}
     onDoubleClick={onDoubleClick}
     onBlur={onBlur}
-    onKeyDown={onKeyDown}
     onContextMenu={onContextMenu}
     {...props}
     css={css({
@@ -133,16 +134,13 @@ export const SandboxListItem = ({
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
               Updated
             </Text>{' '}
-            {formatDistanceToNow(
-              new Date(sandbox.updatedAt.replace(/ /g, 'T'))
-            )}{' '}
-            ago
+            {lastUpdated}
           </Text>
         )}
       </Column>
       <Column span={[0, 3, 3]} as={Stack} align="center">
         <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
-          {sandbox.source.template}
+          {sandboxLocation}
         </Text>
       </Column>
     </Grid>

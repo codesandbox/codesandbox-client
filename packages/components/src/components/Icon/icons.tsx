@@ -434,3 +434,21 @@ export const link = props => (
     />
   </Element>
 );
+
+export const eye = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <g fill="currentColor">
+      <path
+        fillRule="evenodd"
+        d="M8 12.1c2.513 0 6.5-3.25 6.5-4.55S10.513 3 8 3 1.5 6.25 1.5 7.55c0 .975 3.987 4.55 6.5 4.55zm0-1.95a2.6 2.6 0 100-5.2 2.6 2.6 0 000 5.2z"
+        clipRule="evenodd"
+      />
+      <circle cx={8} cy={7.5} r={1.5} />
+    </g>
+  </Element>
+);

@@ -5,7 +5,6 @@ import css from '@styled-system/css';
 
 import latestChangelog from 'homepage/content/changelog';
 import { ThemeProvider, Element } from '@codesandbox/components';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { getInfoFromMarkdown } from './utils/getInfoFromMarkdown';
 import { Create } from './Create';
 import { Container, Tab, TabContent, Tabs } from './elements';
@@ -47,7 +46,7 @@ export const CreateSandbox: React.FC = props => {
   }, [browser.storage]);
 
   return (
-    <ThemeProvider theme={codesandboxBlack}>
+    <ThemeProvider>
       <Container {...props}>
         <Tabs {...tab} aria-label="My tabs">
           <Tab {...tab} stopId="New">

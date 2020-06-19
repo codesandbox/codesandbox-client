@@ -1551,6 +1551,15 @@
       ]
     },
     {
+      "login": "akash-joshi",
+      "name": "Akash Joshi",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22196279?v=4",
+      "profile": "http://akashj.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "layershifter",
       "name": "Oleksandr Fediashov",
       "avatar_url": "https://avatars0.githubusercontent.com/u/14183168?v=4",
@@ -1567,6 +1576,15 @@
       "profile": "https://github.com/tehnuge",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "NinoMaj",
+      "name": "Nino",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/20380632?v=4",
+      "profile": "https://github.com/NinoMaj",
+      "contributions": [
+        "doc"
       ]
     }
   ],

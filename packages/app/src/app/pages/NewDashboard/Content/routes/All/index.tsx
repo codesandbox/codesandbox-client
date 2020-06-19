@@ -53,7 +53,10 @@ export const AllPage = ({ match: { params }, history }) => {
     : [{ type: 'skeletonRow' }, { type: 'skeletonRow' }];
 
   return (
-    <SelectionProvider items={itemsToShow}>
+    <SelectionProvider
+      items={itemsToShow}
+      createNewFolder={() => setCreating(true)}
+    >
       <Helmet>
         <title>{param || 'Dashboard'} - CodeSandbox</title>
       </Helmet>

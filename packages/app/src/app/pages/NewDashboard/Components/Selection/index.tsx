@@ -29,7 +29,6 @@ const Context = React.createContext({
     itemId?: string
   ) => {},
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
-  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {},
   onDragStart: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
   onDrop: (droppedResult: any) => {},
   thumbnailRef: null,
@@ -38,7 +37,11 @@ const Context = React.createContext({
   setRenaming: (renaming: boolean) => {},
 });
 
-export const SelectionProvider = ({ items = [], ...props }) => {
+export const SelectionProvider = ({
+  items = [],
+  createNewFolder = null,
+  ...props
+}) => {
   const selectionItems = [
     ...(items || [])
       .filter(item => item.type === 'sandbox' || item.type === 'folder')
@@ -172,20 +175,34 @@ export const SelectionProvider = ({ items = [], ...props }) => {
   const location = useLocation();
 
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const history = useHistory();
 
   React.useEffect(() => {
-    if (location.state && location.state.sandboxId) {
-      setSelectedIds([location.state.sandboxId]);
-      scrollIntoViewport(location.state.sandboxId);
+    if (!location.state || !selectionItems.length) return;
+
+    if (location.state.sandboxId) {
+      const sandboxId = location.state.sandboxId;
+
+      setSelectedIds([sandboxId]);
+      scrollIntoViewport(sandboxId);
+      // clear push state
+      history.replace(location.pathname, {});
+    } else if (location.state.focus === 'FIRST_ITEM') {
+      setSelectedIds([selectionItems[0]]);
+      // imperatively move focus to content-block
+      const skipToContent = document.querySelector(
+        '#reach-skip-nav'
+      ) as HTMLDivElement;
+      skipToContent.focus();
+
+      // clear push state
       history.replace(location.pathname, {});
     }
-  }, [location, history]);
+  }, [location, history, selectionItems]);
 
-  const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onContainerKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!selectedIds.length) return;
     // disable keyboard navigation if menu is open
     if (menuVisible) return;
@@ -216,7 +233,7 @@ export const SelectionProvider = ({ items = [], ...props }) => {
       if (event.ctrlKey || event.metaKey) {
         window.open(url, '_blank');
       } else {
-        history.push(url);
+        history.push(url, { focus: 'FIRST_ITEM' });
       }
     }
 
@@ -321,6 +338,7 @@ export const SelectionProvider = ({ items = [], ...props }) => {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: dropResult.path,
+          deleteFromCurrentPath: location.pathname !== '/new-dashboard/recent',
         });
       }
     }
@@ -381,6 +399,15 @@ export const SelectionProvider = ({ items = [], ...props }) => {
     });
   };
 
+  const onContainerContextMenu = event => {
+    // global context menu is only relevent inside All sandboxes/*
+    if (typeof createNewFolder !== 'function') return;
+
+    event.preventDefault();
+    setMenuVisibility(true);
+    setMenuPosition({ x: event.clientX, y: event.clientY });
+  };
+
   const callbackCalledAt = React.useRef(null);
 
   const onContainerMouseMove = event => {
@@ -394,16 +421,19 @@ export const SelectionProvider = ({ items = [], ...props }) => {
     const callback = () => {
       const selectionLeft = Math.min(
         selectionRect.start.x,
-        selectionRect.end.x
+        selectionRect.end.x || Infinity
       );
       const selectionRight = Math.max(
         selectionRect.start.x,
-        selectionRect.end.x
+        selectionRect.end.x || 0
       );
-      const selectionTop = Math.min(selectionRect.start.y, selectionRect.end.y);
+      const selectionTop = Math.min(
+        selectionRect.start.y,
+        selectionRect.end.y || Infinity
+      );
       const selectionBottom = Math.max(
         selectionRect.start.y,
-        selectionRect.end.y
+        selectionRect.end.y || 0
       );
 
       const visibleItems = document.querySelectorAll('[data-selection-id]');
@@ -454,7 +484,6 @@ export const SelectionProvider = ({ items = [], ...props }) => {
         onBlur,
         onRightClick,
         onMenuEvent,
-        onKeyDown,
         onDragStart,
         onDrop,
         thumbnailRef,
@@ -463,18 +492,19 @@ export const SelectionProvider = ({ items = [], ...props }) => {
         setRenaming,
       }}
     >
-      <SkipNav.Content
-        tabIndex={0}
-        onFocus={() => setSelectedIds([selectionItems[0]])}
-      />
-
       <Element
         id="selection-container"
+        onKeyDown={onContainerKeyDown}
         onMouseDown={onContainerMouseDown}
         onMouseMove={onContainerMouseMove}
         onMouseUp={onContainerMouseUp}
+        onContextMenu={onContainerContextMenu}
         css={css({ paddingTop: 10 })}
       >
+        <SkipNav.Content
+          tabIndex={0}
+          onFocus={() => setSelectedIds([selectionItems[0]])}
+        />
         {props.children}
       </Element>
       {drawingRect && selectionRect.end.x && (
@@ -512,6 +542,7 @@ export const SelectionProvider = ({ items = [], ...props }) => {
         sandboxes={sandboxes || []}
         folders={folders || []}
         setRenaming={setRenaming}
+        createNewFolder={createNewFolder}
       />
     </Context.Provider>
   );
@@ -526,7 +557,6 @@ export const useSelection = () => {
     onBlur,
     onRightClick,
     onMenuEvent,
-    onKeyDown,
     onDragStart,
     onDrop,
     thumbnailRef,
@@ -543,7 +573,6 @@ export const useSelection = () => {
     onBlur,
     onRightClick,
     onMenuEvent,
-    onKeyDown,
     onDragStart,
     onDrop,
     thumbnailRef,

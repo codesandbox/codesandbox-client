@@ -21,7 +21,7 @@ import uuid from 'uuid';
 
 import { AxiosError } from 'axios';
 import { OPTIMISTIC_ID_PREFIX } from '../utils';
-import { CodesandboxOTClientsManager } from './clients';
+import { CodesandboxOTClientsManager, SendOperationResponse } from './clients';
 
 type Options = {
   onApplyOperation(args: {
@@ -73,20 +73,6 @@ class Live {
 
   private liveInitialized = blocker();
 
-  private operationToElixir(ot: (number | string)[]) {
-    return ot.map((op: number | string) => {
-      if (typeof op === 'number') {
-        if (op < 0) {
-          return { d: -op };
-        }
-
-        return op;
-      }
-
-      return { i: op };
-    });
-  }
-
   private connectionsCount = 0;
 
   private onSendOperation = async (
@@ -103,11 +89,11 @@ class Live {
       })}`,
     });
 
-    return this.send(
+    return this.send<SendOperationResponse>(
       'operation',
       {
         moduleShortid,
-        operation: this.operationToElixir(operation.toJSON()),
+        operation: operation.toJSON(),
         revision,
       },
       45000
