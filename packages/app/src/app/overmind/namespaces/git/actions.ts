@@ -48,17 +48,46 @@ export const loadGitSource: AsyncAction = async ({
   state.git.isFetching = true;
   state.git.isExported = false;
   state.git.pr = null;
-  // We go grab the current version of the source
-  await actions.git._loadSourceSandbox();
 
-  state.git.permission = await effects.api.getGitRights(sandbox.id);
+  // We go grab the current version of the source
+  try {
+    await actions.git._loadSourceSandbox();
+  } catch (error) {
+    effects.notificationToast.error(
+      `Could not load the source Sandbox for this GitHub sandbox, please refresh or report the issue. "${error.toString()}"`
+    );
+    return;
+  }
+
+  try {
+    state.git.permission = await effects.api.getGitRights(sandbox.id);
+  } catch (error) {
+    effects.notificationToast.error(
+      `Could not get information about your permissions, please refresh or report the issue. "${error.toString()}"`
+    );
+    return;
+  }
 
   // Now let us compare whatever has changed between our current
   // state and the source
-  await actions.git._compareWithSource();
+  try {
+    await actions.git._compareWithSource();
+  } catch (error) {
+    effects.notificationToast.error(
+      `We were not able to compare the content with the source, please refresh or report the issue. "${error.toString()}"`
+    );
+    return;
+  }
 
   if (state.git.gitState === SandboxGitState.SYNCED && sandbox.prNumber) {
-    await actions.git._compareWithBase();
+    try {
+      await actions.git._compareWithBase();
+    } catch (error) {
+      effects.notificationToast.error(
+        `We were not able to compare the content with the PR, please refresh or report the issue. "${error.toString()}"`
+      );
+      return;
+    }
   }
 
   actions.git._setGitChanges();
@@ -92,23 +121,29 @@ export const createRepoClicked: AsyncAction = async ({ state, effects }) => {
     return;
   }
 
-  const githubData = await effects.git.export(sandbox);
-  if (!githubData) {
-    return;
-  }
-  const git = await effects.api.createGit(sandbox.id, repoTitle, githubData);
+  try {
+    const githubData = await effects.git.export(sandbox);
+    if (!githubData) {
+      return;
+    }
+    const git = await effects.api.createGit(sandbox.id, repoTitle, githubData);
 
-  if (!git) {
+    if (!git) {
+      effects.notificationToast.error(
+        'Unable to create git repo, please try again'
+      );
+      return;
+    }
+
+    git.commitSha = null;
+    state.git.isExported = true;
+    state.currentModal = null;
+    effects.router.updateSandboxUrl({ git });
+  } catch (error) {
     effects.notificationToast.error(
-      'Unable to create git repo, please try again'
+      `Unable to create the repo. Please refresh and try again or report issue. "${error.toString()}"`
     );
-    return;
   }
-
-  git.commitSha = null;
-  state.git.isExported = true;
-  state.currentModal = null;
-  effects.router.updateSandboxUrl({ git });
 };
 
 export const openSourceSandbox: Action = ({ state, effects }) => {
@@ -129,49 +164,56 @@ export const createCommitClicked: AsyncAction = async ({
 
   git.isCommitting = true;
 
-  if (git.gitState === SandboxGitState.SYNCED) {
-    await actions.git._compareWithSource();
+  try {
+    if (git.gitState === SandboxGitState.SYNCED) {
+      await actions.git._compareWithSource();
 
-    if (sandbox.prNumber && git.gitState === SandboxGitState.SYNCED) {
-      await actions.git._compareWithBase();
+      if (sandbox.prNumber && git.gitState === SandboxGitState.SYNCED) {
+        await actions.git._compareWithBase();
+      }
+
+      if (state.git.gitState !== SandboxGitState.SYNCED) {
+        git.isCommitting = false;
+        return;
+      }
     }
 
-    if (state.git.gitState !== SandboxGitState.SYNCED) {
-      git.isCommitting = false;
-      return;
-    }
+    const changes = actions.git._getGitChanges();
+    const commit = await effects.api.createGitCommit(
+      sandbox.id,
+      `${git.title}\n${git.description}`,
+      changes,
+      // If we have resolved a conflict and it is a PR source conflict, we need to commit
+      // it with a reference to the conflicting sha as well
+      git.gitState === SandboxGitState.RESOLVED_PR_BASE && git.baseCommitSha
+        ? [git.sourceCommitSha!, git.baseCommitSha]
+        : [git.sourceCommitSha!]
+    );
+    changes.added.forEach(change => {
+      git.sourceModulesByPath[change.path] = change.content;
+    });
+    changes.modified.forEach(change => {
+      git.sourceModulesByPath[change.path] = change.content;
+    });
+    changes.deleted.forEach(path => {
+      delete git.sourceModulesByPath[path];
+    });
+    actions.git._setGitChanges();
+    sandbox.originalGit!.commitSha = commit.sha;
+    sandbox.originalGitCommitSha = commit.sha;
+    state.git.isCommitting = false;
+    state.git.title = '';
+    state.git.description = '';
+    state.git.conflicts = [];
+    state.git.gitState = SandboxGitState.SYNCED;
+
+    effects.notificationToast.success('Successfully created your commit');
+  } catch (error) {
+    state.git.isCommitting = false;
+    effects.notificationToast.error(
+      `We were unable to create your commit. Please try again or report the issue. "${error.toString()}"`
+    );
   }
-
-  const changes = actions.git._getGitChanges();
-  const commit = await effects.api.createGitCommit(
-    sandbox.id,
-    `${git.title}\n${git.description}`,
-    changes,
-    // If we have resolved a conflict and it is a PR source conflict, we need to commit
-    // it with a reference to the conflicting sha as well
-    git.gitState === SandboxGitState.RESOLVED_PR_BASE && git.baseCommitSha
-      ? [git.sourceCommitSha!, git.baseCommitSha]
-      : [git.sourceCommitSha!]
-  );
-  changes.added.forEach(change => {
-    git.sourceModulesByPath[change.path] = change.content;
-  });
-  changes.modified.forEach(change => {
-    git.sourceModulesByPath[change.path] = change.content;
-  });
-  changes.deleted.forEach(path => {
-    delete git.sourceModulesByPath[path];
-  });
-  actions.git._setGitChanges();
-  sandbox.originalGit!.commitSha = commit.sha;
-  sandbox.originalGitCommitSha = commit.sha;
-  state.git.isCommitting = false;
-  state.git.title = '';
-  state.git.description = '';
-  state.git.conflicts = [];
-  state.git.gitState = SandboxGitState.SYNCED;
-
-  effects.notificationToast.success('Successfully created your commit');
 };
 
 export const titleChanged: Action<string> = ({ state }, title) => {
@@ -193,71 +235,78 @@ export const createPrClicked: AsyncAction = async ({
   const sandbox = state.editor.currentSandbox!;
   const { id } = sandbox;
 
-  if (git.gitState === SandboxGitState.SYNCED) {
-    await actions.git._compareWithSource();
+  try {
+    if (git.gitState === SandboxGitState.SYNCED) {
+      await actions.git._compareWithSource();
 
-    if (state.git.gitState !== SandboxGitState.SYNCED) {
-      git.isCreatingPr = false;
-      return;
+      if (state.git.gitState !== SandboxGitState.SYNCED) {
+        git.isCreatingPr = false;
+        return;
+      }
     }
-  }
 
-  const changes = actions.git._getGitChanges();
-  const pr = await effects.api.createGitPr(
-    id,
-    state.git.title,
-    state.git.description,
-    changes
-  );
+    const changes = actions.git._getGitChanges();
+    const pr = await effects.api.createGitPr(
+      id,
+      state.git.title,
+      state.git.description,
+      changes
+    );
 
-  changes.added.forEach(change => {
-    git.sourceModulesByPath[change.path] = change.content;
-  });
-  changes.modified.forEach(change => {
-    git.sourceModulesByPath[change.path] = change.content;
-  });
-  changes.deleted.forEach(path => {
-    delete git.sourceModulesByPath[path];
-  });
-  actions.git._setGitChanges();
+    changes.added.forEach(change => {
+      git.sourceModulesByPath[change.path] = change.content;
+    });
+    changes.modified.forEach(change => {
+      git.sourceModulesByPath[change.path] = change.content;
+    });
+    changes.deleted.forEach(path => {
+      delete git.sourceModulesByPath[path];
+    });
+    actions.git._setGitChanges();
 
-  sandbox.baseGit = {
-    ...sandbox.originalGit,
-  } as GitInfo;
-  sandbox.baseGitCommitSha = sandbox.originalGit!.commitSha;
-  sandbox.originalGit = {
-    branch: pr.branch,
-    commitSha: pr.commitSha,
-    repo: pr.repo,
-    username: pr.username,
-    path: '',
-  };
-  sandbox.originalGitCommitSha = pr.commitSha;
-  sandbox.prNumber = pr.number;
-  git.pr = pr;
-  git.isCreatingPr = false;
-  git.title = '';
-  git.description = '';
-  state.git.conflicts = [];
-  state.git.gitState = SandboxGitState.SYNCED;
+    sandbox.baseGit = {
+      ...sandbox.originalGit,
+    } as GitInfo;
+    sandbox.baseGitCommitSha = sandbox.originalGit!.commitSha;
+    sandbox.originalGit = {
+      branch: pr.branch,
+      commitSha: pr.commitSha,
+      repo: pr.repo,
+      username: pr.username,
+      path: '',
+    };
+    sandbox.originalGitCommitSha = pr.commitSha;
+    sandbox.prNumber = pr.number;
+    git.pr = pr;
+    git.isCreatingPr = false;
+    git.title = '';
+    git.description = '';
+    state.git.conflicts = [];
+    state.git.gitState = SandboxGitState.SYNCED;
 
-  effects.notificationToast.add({
-    title: 'Successfully created your PR',
-    message: '',
-    status: convertTypeToStatus('success'),
-    actions: {
-      primary: {
-        label: 'Open PR',
-        run: () => {
-          effects.browser.openWindow(
-            `https://github.com/${sandbox.baseGit!.username}/${
-              sandbox.baseGit!.repo
-            }/pull/${sandbox.prNumber!}`
-          );
+    effects.notificationToast.add({
+      title: 'Successfully created your PR',
+      message: '',
+      status: convertTypeToStatus('success'),
+      actions: {
+        primary: {
+          label: 'Open PR',
+          run: () => {
+            effects.browser.openWindow(
+              `https://github.com/${sandbox.baseGit!.username}/${
+                sandbox.baseGit!.repo
+              }/pull/${sandbox.prNumber!}`
+            );
+          },
         },
       },
-    },
-  });
+    });
+  } catch (error) {
+    git.isCreatingPr = false;
+    effects.notificationToast.error(
+      `We were unable to create your PR. Please try again or report the issue. "${error.toString()}"`
+    );
+  }
 };
 
 export const updateGitChanges: Operator = pipe(
