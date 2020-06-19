@@ -1,9 +1,12 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useHistory } from 'react-router-dom';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Stack, Menu, Icon, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
+
+const Context = React.createContext({
+  setVisibility: null,
+});
 
 export const ContextMenu = ({
   visible,
@@ -14,35 +17,6 @@ export const ContextMenu = ({
   setNewFolderPath,
 }) => {
   const { actions } = useOvermind();
-
-  React.useEffect(() => {
-    // close when user clicks outside or scrolls away
-    const handler = () => {
-      if (visible) setVisibility(false);
-    };
-
-    document.addEventListener('click', handler);
-
-    return () => {
-      document.removeEventListener('click', handler);
-    };
-  }, [visible, setVisibility]);
-
-  // handle key down events - close on escape + disable the rest
-  // TODO: handle arrow keys and space/enter.
-  React.useEffect(() => {
-    const handler = event => {
-      if (!visible) return;
-      if (event.keyCode === ESC) setVisibility(false);
-      event.preventDefault();
-    };
-
-    document.addEventListener('keydown', handler);
-    return () => {
-      document.removeEventListener('keydown', handler);
-    };
-  });
-
   const history = useHistory();
 
   if (!visible || !folder) return null;
@@ -51,27 +25,27 @@ export const ContextMenu = ({
 
   if (folder.name === 'Drafts') {
     menuOptions = (
-      <Menu.Item onSelect={() => {}}>
+      <MenuItem onSelect={() => {}}>
         <Stack gap={1}>
           <Icon name="lock" size={14} />
           <Text>Protected</Text>
         </Stack>
-      </Menu.Item>
+      </MenuItem>
     );
   } else if (folder.name === 'All sandboxes') {
     menuOptions = (
-      <Menu.Item onSelect={() => setNewFolderPath(folder.path + '/__NEW__')}>
+      <MenuItem onSelect={() => setNewFolderPath(folder.path + '/__NEW__')}>
         New folder
-      </Menu.Item>
+      </MenuItem>
     );
   } else {
     menuOptions = (
       <>
-        <Menu.Item onSelect={() => setNewFolderPath(folder.path + '/__NEW__')}>
+        <MenuItem onSelect={() => setNewFolderPath(folder.path + '/__NEW__')}>
           New folder
-        </Menu.Item>
-        <Menu.Item onSelect={() => setRenaming(true)}>Rename folder</Menu.Item>
-        <Menu.Item
+        </MenuItem>
+        <MenuItem onSelect={() => setRenaming(true)}>Rename folder</MenuItem>
+        <MenuItem
           onSelect={() => {
             actions.dashboard.deleteFolder({ path: folder.path });
 
@@ -89,7 +63,7 @@ export const ContextMenu = ({
           }}
         >
           Delete folder
-        </Menu.Item>
+        </MenuItem>
       </>
     );
   }
@@ -102,8 +76,23 @@ export const ContextMenu = ({
         position={position}
         style={{ width: 120 }}
       >
-        {menuOptions}
+        <Context.Provider value={{ setVisibility }}>
+          {menuOptions}
+        </Context.Provider>
       </Menu.ContextMenu>
     </>
+  );
+};
+
+const MenuItem = ({ onSelect, ...props }) => {
+  const { setVisibility } = React.useContext(Context);
+  return (
+    <Menu.Item
+      onSelect={() => {
+        onSelect();
+        setVisibility(false);
+      }}
+      {...props}
+    />
   );
 };
