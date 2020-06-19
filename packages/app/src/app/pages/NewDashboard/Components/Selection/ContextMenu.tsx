@@ -64,13 +64,27 @@ export const ContextMenu = ({
     menu = <ContainerMenu createNewFolder={createNewFolder} />;
     menuWidth = 160;
   } else if (selectedItems.length > 1) {
-    menu = <MultiMenu selectedItems={selectedItems} />;
+    menu = (
+      <MultiMenu selectedItems={selectedItems} setVisibility={setVisibility} />
+    );
     menuWidth = 160;
   } else if (selectedItems[0].type === 'sandbox') {
-    menu = <SandboxMenu sandbox={selectedItems[0]} setRenaming={setRenaming} />;
+    menu = (
+      <SandboxMenu
+        sandbox={selectedItems[0]}
+        setRenaming={setRenaming}
+        setVisibility={setVisibility}
+      />
+    );
     menuWidth = 200;
   } else if (selectedItems[0].type === 'folder') {
-    menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
+    menu = (
+      <FolderMenu
+        folder={selectedItems[0]}
+        setRenaming={setRenaming}
+        setVisibility={setVisibility}
+      />
+    );
     menuWidth = 120;
   }
 
@@ -114,9 +128,11 @@ const ContainerMenu = ({ createNewFolder }) => (
 const SandboxMenu = ({
   sandbox,
   setRenaming,
+  setVisibility,
 }: {
   sandbox;
   setRenaming: (renaming: boolean) => void;
+  setVisibility: (visible: boolean) => void;
 }) => {
   const {
     state: { user },
@@ -131,14 +147,7 @@ const SandboxMenu = ({
     alias: sandbox.alias,
   });
 
-  const getFolderUrl = () => {
-    if (sandbox.isTemplate) return '/new-dashboard/templates';
-
-    const path = sandbox.collection.path;
-    if (path === '/' || !path) return '/new-dashboard/all/drafts';
-
-    return '/new-dashboard/all' + path;
-  };
+  const folderUrl = getFolderUrl(sandbox);
 
   const label = sandbox.isTemplate ? 'template' : 'sandbox';
   const isOwner =
@@ -158,6 +167,7 @@ const SandboxMenu = ({
         <MenuItem
           onClick={() => {
             actions.dashboard.permanentlyDeleteSandboxes([sandbox.id]);
+            setVisibility(false);
           }}
         >
           Delete Permanently
@@ -188,10 +198,10 @@ const SandboxMenu = ({
       >
         Open {label} in new tab
       </MenuItem>
-      {isOwner && getFolderUrl() !== location.pathname ? (
+      {isOwner && folderUrl !== location.pathname ? (
         <MenuItem
           onClick={() => {
-            history.push(getFolderUrl(), { sandboxId: sandbox.id });
+            history.push(folderUrl, { sandboxId: sandbox.id });
           }}
         >
           Show in Folder
@@ -288,12 +298,13 @@ const SandboxMenu = ({
           <Menu.Divider />
           {sandbox.isTemplate ? (
             <MenuItem
-              onClick={() =>
+              onClick={() => {
                 actions.dashboard.deleteTemplate({
                   sandboxId: sandbox.id,
                   templateId: sandbox.template.id,
-                })
-              }
+                });
+                setVisibility(false);
+              }}
             >
               Delete template
             </MenuItem>
@@ -301,6 +312,7 @@ const SandboxMenu = ({
             <MenuItem
               onClick={() => {
                 actions.dashboard.deleteSandbox([sandbox.id]);
+                setVisibility(false);
               }}
             >
               Delete sandbox
@@ -312,7 +324,7 @@ const SandboxMenu = ({
   );
 };
 
-const FolderMenu = ({ folder, setRenaming }) => {
+const FolderMenu = ({ folder, setRenaming, setVisibility }) => {
   const { actions } = useOvermind();
 
   const isDrafts = folder.path === '/drafts';
@@ -333,6 +345,7 @@ const FolderMenu = ({ folder, setRenaming }) => {
       <MenuItem
         onClick={() => {
           actions.dashboard.deleteFolder({ path: folder.path });
+          setVisibility(false);
           track('Dashboard - Delete folder', {
             source: 'Grid',
             dashboardVersion: 2,
@@ -345,7 +358,7 @@ const FolderMenu = ({ folder, setRenaming }) => {
   );
 };
 
-const MultiMenu = ({ selectedItems }) => {
+const MultiMenu = ({ selectedItems, setVisibility }) => {
   const { actions } = useOvermind();
   /*
     sandbox options - export, make template, delete
@@ -393,6 +406,8 @@ const MultiMenu = ({ selectedItems }) => {
     if (sandboxes.length) {
       actions.dashboard.deleteSandbox(sandboxes.map(sandbox => sandbox.id));
     }
+
+    setVisibility(false);
   };
 
   const EXPORT = { label: 'Export items', fn: exportItems };
@@ -427,4 +442,13 @@ const MultiMenu = ({ selectedItems }) => {
       ))}
     </>
   );
+};
+
+const getFolderUrl = sandbox => {
+  if (sandbox.isTemplate) return '/new-dashboard/templates';
+
+  const path = sandbox.collection.path;
+  if (path === '/' || !path) return '/new-dashboard/all/drafts';
+
+  return '/new-dashboard/all' + path;
 };
