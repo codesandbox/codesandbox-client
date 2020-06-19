@@ -586,7 +586,9 @@ const NestableRowItem = ({ name, path, folders }) => {
           onContextMenu={onContextMenu}
           onKeyDown={event => {
             if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
-              history.push('/new-dashboard/all' + path);
+              history.push('/new-dashboard/all' + path, {
+                focus: 'FIRST_ITEM',
+              });
             }
           }}
           tabIndex={0}

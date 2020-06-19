@@ -29,7 +29,6 @@ const Context = React.createContext({
     itemId?: string
   ) => {},
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
-  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {},
   onDragStart: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
   onDrop: (droppedResult: any) => {},
   thumbnailRef: null,
@@ -181,14 +180,23 @@ export const SelectionProvider = ({
   const history = useHistory();
 
   React.useEffect(() => {
-    if (location.state && location.state.sandboxId) {
-      setSelectedIds([location.state.sandboxId]);
-      scrollIntoViewport(location.state.sandboxId);
+    if (!location.state || !selectionItems.length) return;
+
+    if (location.state.sandboxId) {
+      const sandboxId = location.state.sandboxId;
+
+      setSelectedIds([sandboxId]);
+      scrollIntoViewport(sandboxId);
+      // clear push state
+      history.replace(location.pathname, {});
+    } else if (location.state.focus === 'FIRST_ITEM') {
+      setSelectedIds([selectionItems[0]]);
+      // clear push state
       history.replace(location.pathname, {});
     }
-  }, [location, history]);
+  }, [location, history, selectionItems]);
 
-  const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onContainerKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!selectedIds.length) return;
     // disable keyboard navigation if menu is open
     if (menuVisible) return;
@@ -219,7 +227,7 @@ export const SelectionProvider = ({
       if (event.ctrlKey || event.metaKey) {
         window.open(url, '_blank');
       } else {
-        history.push(url);
+        history.push(url, { focus: 'FIRST_ITEM' });
       }
     }
 
@@ -470,7 +478,6 @@ export const SelectionProvider = ({
         onBlur,
         onRightClick,
         onMenuEvent,
-        onKeyDown,
         onDragStart,
         onDrop,
         thumbnailRef,
@@ -486,6 +493,7 @@ export const SelectionProvider = ({
 
       <Element
         id="selection-container"
+        onKeyDown={onContainerKeyDown}
         onMouseDown={onContainerMouseDown}
         onMouseMove={onContainerMouseMove}
         onMouseUp={onContainerMouseUp}
@@ -544,7 +552,6 @@ export const useSelection = () => {
     onBlur,
     onRightClick,
     onMenuEvent,
-    onKeyDown,
     onDragStart,
     onDrop,
     thumbnailRef,
@@ -561,7 +568,7 @@ export const useSelection = () => {
     onBlur,
     onRightClick,
     onMenuEvent,
-    onKeyDown,
+
     onDragStart,
     onDrop,
     thumbnailRef,
