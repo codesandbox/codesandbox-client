@@ -129,29 +129,29 @@ export const SandboxCard = ({
         onClick={onContextMenu}
       />
     </Stack>
-    <Stack marginX={4} gap={2} align="center">
+    <Stack marginX={4} gap={1} align="center">
       <Stack gap={1} align="center">
         <Icon name="eye" size={14} css={css({ color: 'mutedForeground' })} />
-        <Text size={2} variant="muted">
+        <Text size={3} variant="muted">
           {viewCount}
         </Text>
       </Stack>
       {sandbox.isHomeTemplate ? null : (
         <>
-          <Text size={2} variant="muted">
+          <Text size={3} variant="muted">
             •
           </Text>
-          <Text size={2} variant="muted" css={{ flexShrink: 0 }}>
+          <Text size={3} variant="muted" css={{ flexShrink: 0 }}>
             {shortDistance(lastUpdated)}
           </Text>
         </>
       )}
       {sandboxLocation ? (
         <>
-          <Text size={2} variant="muted">
+          <Text size={3} variant="muted">
             •
           </Text>
-          <Text size={2} variant="muted" maxWidth="100%">
+          <Text size={3} variant="muted" maxWidth="100%">
             {sandboxLocation}
           </Text>
         </>

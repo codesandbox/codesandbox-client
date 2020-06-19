@@ -1,5 +1,6 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
+import { useHistory } from 'react-router-dom';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Stack, Element, Icon, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -43,6 +44,8 @@ export const ContextMenu = ({
     };
   });
 
+  const history = useHistory();
+
   if (!visible || !folder) return null;
 
   let menuOptions;
@@ -72,6 +75,14 @@ export const ContextMenu = ({
         <MenuItem
           onClick={() => {
             actions.dashboard.deleteFolder({ path: folder.path });
+
+            // navigate out of folder when it's deleted
+            const parentFolder = folder.path
+              .split('/')
+              .slice(0, -1)
+              .join('/');
+            history.push('/new-dashboard/all' + parentFolder);
+
             track('Dashboard - Delete folder', {
               source: 'Sidebar',
               dashboardVersion: 2,

@@ -176,7 +176,6 @@ export const SelectionProvider = ({
   const location = useLocation();
 
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const history = useHistory();
@@ -325,6 +324,7 @@ export const SelectionProvider = ({
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: dropResult.path,
+          deleteFromCurrentPath: location.pathname !== '/new-dashboard/recent',
         });
       }
     }
@@ -407,16 +407,19 @@ export const SelectionProvider = ({
     const callback = () => {
       const selectionLeft = Math.min(
         selectionRect.start.x,
-        selectionRect.end.x
+        selectionRect.end.x || Infinity
       );
       const selectionRight = Math.max(
         selectionRect.start.x,
-        selectionRect.end.x
+        selectionRect.end.x || 0
       );
-      const selectionTop = Math.min(selectionRect.start.y, selectionRect.end.y);
+      const selectionTop = Math.min(
+        selectionRect.start.y,
+        selectionRect.end.y || Infinity
+      );
       const selectionBottom = Math.max(
         selectionRect.start.y,
-        selectionRect.end.y
+        selectionRect.end.y || 0
       );
 
       const visibleItems = document.querySelectorAll('[data-selection-id]');
