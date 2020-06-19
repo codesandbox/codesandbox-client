@@ -172,6 +172,7 @@ export const Menu: React.FC<MenuProps> = ({ id, children }) => {
               isExpanded: state.isExpanded,
               // TODO: Remove in 1.0
               isOpen: state.isExpanded,
+              dispatch,
             })
           : children}
       </MenuContext.Provider>
@@ -194,6 +195,7 @@ export interface MenuProps {
         props: MenuContextValue & {
           // TODO: Remove in 1.0
           isOpen: boolean;
+          dispatch: any;
         }
       ) => React.ReactNode);
   id?: string;
@@ -882,7 +884,6 @@ export const MenuPopover = forwardRef<any, MenuPopoverProps>(
       popoverRef,
       state: { isExpanded },
     } = useContext(MenuContext);
-
     const ref = useForkedRef(popoverRef, forwardedRef);
 
     useEffect(() => {
@@ -934,7 +935,9 @@ export const MenuPopover = forwardRef<any, MenuPopoverProps>(
         position={position}
       />
     ) : (
-      <div {...commonProps} />
+      <>
+        <div {...commonProps} />
+      </>
     );
   }
 );

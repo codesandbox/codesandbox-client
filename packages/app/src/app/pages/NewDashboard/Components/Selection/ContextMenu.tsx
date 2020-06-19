@@ -2,10 +2,10 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { ESC, ALT } from '@codesandbox/common/lib/utils/keycodes';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { Stack, Element, Menu, Icon, Text } from '@codesandbox/components';
-import css from '@styled-system/css';
+import { Stack, Menu, Icon, Text } from '@codesandbox/components';
+
+const Context = React.createContext({ setVisibility: null });
 
 export const ContextMenu = ({
   visible,
@@ -17,35 +17,6 @@ export const ContextMenu = ({
   setRenaming,
   createNewFolder,
 }) => {
-  React.useEffect(() => {
-    // close when user clicks outside or scrolls away
-    const handler = () => {
-      if (visible) setVisibility(false);
-    };
-
-    document.addEventListener('click', handler);
-    document.addEventListener('scroll', handler, true);
-    return () => {
-      document.removeEventListener('click', handler);
-      document.removeEventListener('scroll', handler, true);
-    };
-  }, [visible, setVisibility]);
-
-  // handle key down events - close on escape + disable the rest
-  // TODO: handle arrow keys and space/enter.
-  React.useEffect(() => {
-    const handler = event => {
-      if (!visible) return;
-      if (event.keyCode === ESC || event.keyCode === ALT) setVisibility(false);
-      event.preventDefault();
-    };
-
-    document.addEventListener('keydown', handler);
-    return () => {
-      document.removeEventListener('keydown', handler);
-    };
-  });
-
   if (!visible) return null;
 
   const selectedItems = selectedIds.map(id => {
@@ -97,31 +68,34 @@ export const ContextMenu = ({
   };
 
   return (
-    <>
-      <Stack
-        direction="vertical"
-        data-reach-menu-list
-        data-component="MenuList"
-        css={css({
-          position: 'absolute',
-          width: menuWidth,
-          top: tweakedPosition.y,
-          left: tweakedPosition.x,
-        })}
+    <Context.Provider value={{ setVisibility }}>
+      <Menu.ContextMenu
+        visible={visible}
+        setVisibility={setVisibility}
+        position={tweakedPosition}
       >
         {menu}
-      </Stack>
-    </>
+      </Menu.ContextMenu>
+    </Context.Provider>
   );
 };
 
-const MenuItem = props => (
-  <Element data-reach-menu-item="" data-component="MenuItem" {...props} />
-);
+const MenuItem = ({ onSelect, ...props }) => {
+  const { setVisibility } = React.useContext(Context);
+  return (
+    <Menu.Item
+      onSelect={() => {
+        onSelect();
+        setVisibility(false);
+      }}
+      {...props}
+    />
+  );
+};
 
 const ContainerMenu = ({ createNewFolder }) => (
   <>
-    <MenuItem onClick={createNewFolder}>Create new folder</MenuItem>
+    <MenuItem onSelect={() => createNewFolder()}>Create new folder</MenuItem>
   </>
 );
 
@@ -158,14 +132,14 @@ const SandboxMenu = ({
     return (
       <>
         <MenuItem
-          onClick={() => {
+          onSelect={() => {
             actions.dashboard.recoverSandboxes([sandbox.id]);
           }}
         >
           Recover Sandbox
         </MenuItem>
         <MenuItem
-          onClick={() => {
+          onSelect={() => {
             actions.dashboard.permanentlyDeleteSandboxes([sandbox.id]);
             setVisibility(false);
           }}
@@ -180,7 +154,7 @@ const SandboxMenu = ({
     <>
       {sandbox.isTemplate ? (
         <MenuItem
-          onClick={() => {
+          onSelect={() => {
             actions.editor.forkExternalSandbox({
               sandboxId: sandbox.id,
               openInNewWindow: true,
@@ -190,9 +164,9 @@ const SandboxMenu = ({
           Fork Template
         </MenuItem>
       ) : null}
-      <MenuItem onClick={() => history.push(url)}>Open {label}</MenuItem>
+      <MenuItem onSelect={() => history.push(url)}>Open {label}</MenuItem>
       <MenuItem
-        onClick={() => {
+        onSelect={() => {
           window.open(`https://codesandbox.io${url}`, '_blank');
         }}
       >
@@ -200,7 +174,7 @@ const SandboxMenu = ({
       </MenuItem>
       {isOwner && folderUrl !== location.pathname ? (
         <MenuItem
-          onClick={() => {
+          onSelect={() => {
             history.push(folderUrl, { sandboxId: sandbox.id });
           }}
         >
@@ -209,7 +183,7 @@ const SandboxMenu = ({
       ) : null}
       <Menu.Divider />
       <MenuItem
-        onClick={() => {
+        onSelect={() => {
           effects.browser.copyToClipboard(`https://codesandbox.io${url}`);
         }}
       >
@@ -217,7 +191,7 @@ const SandboxMenu = ({
       </MenuItem>
       {!sandbox.isTemplate ? (
         <MenuItem
-          onClick={() => {
+          onSelect={() => {
             actions.editor.forkExternalSandbox({
               sandboxId: sandbox.id,
               openInNewWindow: true,
@@ -228,7 +202,7 @@ const SandboxMenu = ({
         </MenuItem>
       ) : null}
       <MenuItem
-        onClick={() => {
+        onSelect={() => {
           actions.dashboard.downloadSandboxes([sandbox.id]);
         }}
       >
@@ -239,7 +213,7 @@ const SandboxMenu = ({
           <Menu.Divider />
           {sandbox.privacy !== 0 && (
             <MenuItem
-              onClick={() =>
+              onSelect={() =>
                 actions.dashboard.changeSandboxPrivacy({
                   id: sandbox.id,
                   privacy: 0,
@@ -252,7 +226,7 @@ const SandboxMenu = ({
           )}
           {sandbox.privacy !== 1 && (
             <MenuItem
-              onClick={() =>
+              onSelect={() =>
                 actions.dashboard.changeSandboxPrivacy({
                   id: sandbox.id,
                   privacy: 1,
@@ -265,7 +239,7 @@ const SandboxMenu = ({
           )}
           {sandbox.privacy !== 2 && (
             <MenuItem
-              onClick={() =>
+              onSelect={() =>
                 actions.dashboard.changeSandboxPrivacy({
                   id: sandbox.id,
                   privacy: 2,
@@ -277,10 +251,10 @@ const SandboxMenu = ({
             </MenuItem>
           )}
           <Menu.Divider />
-          <MenuItem onClick={() => setRenaming(true)}>Rename {label}</MenuItem>
+          <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
           {sandbox.isTemplate ? (
             <MenuItem
-              onClick={() => {
+              onSelect={() => {
                 actions.dashboard.unmakeTemplate([sandbox.id]);
               }}
             >
@@ -288,7 +262,7 @@ const SandboxMenu = ({
             </MenuItem>
           ) : (
             <MenuItem
-              onClick={() => {
+              onSelect={() => {
                 actions.dashboard.makeTemplate([sandbox.id]);
               }}
             >
@@ -298,7 +272,7 @@ const SandboxMenu = ({
           <Menu.Divider />
           {sandbox.isTemplate ? (
             <MenuItem
-              onClick={() => {
+              onSelect={() => {
                 actions.dashboard.deleteTemplate({
                   sandboxId: sandbox.id,
                   templateId: sandbox.template.id,
@@ -310,7 +284,7 @@ const SandboxMenu = ({
             </MenuItem>
           ) : (
             <MenuItem
-              onClick={() => {
+              onSelect={() => {
                 actions.dashboard.deleteSandbox([sandbox.id]);
                 setVisibility(false);
               }}
@@ -341,9 +315,9 @@ const FolderMenu = ({ folder, setRenaming, setVisibility }) => {
 
   return (
     <>
-      <MenuItem onClick={() => setRenaming(true)}>Rename folder</MenuItem>
+      <MenuItem onSelect={() => setRenaming(true)}>Rename folder</MenuItem>
       <MenuItem
-        onClick={() => {
+        onSelect={() => {
           actions.dashboard.deleteFolder({ path: folder.path });
           setVisibility(false);
           track('Dashboard - Delete folder', {
@@ -436,7 +410,7 @@ const MultiMenu = ({ selectedItems, setVisibility }) => {
   return (
     <>
       {options.map(option => (
-        <MenuItem key={option.label} onClick={option.fn}>
+        <MenuItem key={option.label} onSelect={option.fn}>
           {option.label}
         </MenuItem>
       ))}
