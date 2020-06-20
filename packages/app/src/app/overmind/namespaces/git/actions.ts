@@ -53,18 +53,22 @@ export const loadGitSource: AsyncAction = async ({
   try {
     await actions.git._loadSourceSandbox();
   } catch (error) {
-    effects.notificationToast.error(
-      `Could not load the source Sandbox for this GitHub sandbox, please refresh or report the issue. "${error.toString()}"`
-    );
+    actions.internal.handleError({
+      error,
+      message:
+        'Could not load the source Sandbox for this GitHub sandbox, please refresh or report the issue.',
+    });
     return;
   }
 
   try {
     state.git.permission = await effects.api.getGitRights(sandbox.id);
   } catch (error) {
-    effects.notificationToast.error(
-      `Could not get information about your permissions, please refresh or report the issue. "${error.toString()}"`
-    );
+    actions.internal.handleError({
+      error,
+      message:
+        'Could not get information about your permissions, please refresh or report the issue.',
+    });
     return;
   }
 
@@ -73,9 +77,11 @@ export const loadGitSource: AsyncAction = async ({
   try {
     await actions.git._compareWithSource();
   } catch (error) {
-    effects.notificationToast.error(
-      `We were not able to compare the content with the source, please refresh or report the issue. "${error.toString()}"`
-    );
+    actions.internal.handleError({
+      error,
+      message:
+        'We were not able to compare the content with the source, please refresh or report the issue.',
+    });
     return;
   }
 
@@ -83,9 +89,11 @@ export const loadGitSource: AsyncAction = async ({
     try {
       await actions.git._compareWithBase();
     } catch (error) {
-      effects.notificationToast.error(
-        `We were not able to compare the content with the PR, please refresh or report the issue. "${error.toString()}"`
-      );
+      actions.internal.handleError({
+        error,
+        message:
+          'We were not able to compare the content with the PR, please refresh or report the issue.',
+      });
       return;
     }
   }
@@ -94,7 +102,11 @@ export const loadGitSource: AsyncAction = async ({
   state.git.isFetching = false;
 };
 
-export const createRepoClicked: AsyncAction = async ({ state, effects }) => {
+export const createRepoClicked: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
   const { repoTitle } = state.git;
   const modulesNotSaved = !state.editor.isAllModulesSynced;
 
@@ -140,9 +152,11 @@ export const createRepoClicked: AsyncAction = async ({ state, effects }) => {
     state.currentModal = null;
     effects.router.updateSandboxUrl({ git });
   } catch (error) {
-    effects.notificationToast.error(
-      `Unable to create the repo. Please refresh and try again or report issue. "${error.toString()}"`
-    );
+    actions.internal.handleError({
+      error,
+      message:
+        'Unable to create the repo. Please refresh and try again or report issue.',
+    });
   }
 };
 
@@ -210,9 +224,11 @@ export const createCommitClicked: AsyncAction = async ({
     effects.notificationToast.success('Successfully created your commit');
   } catch (error) {
     state.git.isCommitting = false;
-    effects.notificationToast.error(
-      `We were unable to create your commit. Please try again or report the issue. "${error.toString()}"`
-    );
+    actions.internal.handleError({
+      error,
+      message:
+        'We were unable to create your commit. Please try again or report the issue.',
+    });
   }
 };
 
@@ -303,9 +319,11 @@ export const createPrClicked: AsyncAction = async ({
     });
   } catch (error) {
     git.isCreatingPr = false;
-    effects.notificationToast.error(
-      `We were unable to create your PR. Please try again or report the issue. "${error.toString()}"`
-    );
+    actions.internal.handleError({
+      error,
+      message:
+        'We were unable to create your PR. Please try again or report the issue.',
+    });
   }
 };
 
