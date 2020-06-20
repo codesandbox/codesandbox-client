@@ -1,13 +1,12 @@
-import React from 'react';
-
 import {
-  Element,
+  Button,
   Collapsible,
+  Element,
   Stack,
   Text,
-  Button,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import React from 'react';
 
 export const NotOwner = () => {
   const {
@@ -20,7 +19,7 @@ export const NotOwner = () => {
   } = useOvermind();
 
   return (
-    <Collapsible title="Github" defaultOpen>
+    <Collapsible title="GitHub" defaultOpen>
       <Element paddingX={2}>
         <Stack direction="vertical" gap={2} marginBottom={6}>
           <Text size={2} variant="muted" block>

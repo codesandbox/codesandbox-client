@@ -158,6 +158,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   await effects.vscode.closeAllTabs();
 
   state.editor.error = null;
+  state.git.sourceSandboxId = null;
 
   let newId = id;
 
@@ -213,7 +214,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     const sandbox = await effects.api.getSandbox(newId);
 
     actions.internal.setCurrentSandbox(sandbox);
-    actions.workspace.openDefaultItem();
   } catch (error) {
     const data = error.response?.data;
     const errors = data?.errors;
@@ -288,6 +288,10 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     hasPermission(sandbox.authorization, 'comment')
   ) {
     actions.comments.getSandboxComments(sandbox.id);
+  }
+
+  if (sandbox.originalGit) {
+    actions.git.loadGitSource();
   }
 
   state.editor.isLoading = false;
@@ -365,6 +369,10 @@ export const onOperationApplied: Action<{
   // If we are in a state of sync, we set "revertModule" to set it as saved
   if (module.savedCode !== null && module.code === module.savedCode) {
     effects.vscode.syncModule(module);
+  }
+
+  if (state.editor.currentSandbox.originalGit) {
+    actions.git.updateGitChanges();
   }
 };
 
@@ -479,6 +487,11 @@ export const codeChanged: Action<{
   if (!isServer && state.preferences.settings.livePreviewEnabled) {
     actions.editor.internal.updatePreviewCode();
   }
+
+  if (state.editor.currentSandbox.originalGit) {
+    actions.git.updateGitChanges();
+    actions.git.resolveConflicts(module);
+  }
 };
 
 export const saveClicked: AsyncAction = withOwnedSandbox(
@@ -541,13 +554,6 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
             sandbox.modules.push(updatedModule);
           }
         });
-      }
-
-      if (
-        sandbox.originalGit &&
-        state.workspace.openedWorkspaceItem === 'github'
-      ) {
-        actions.git.internal.fetchGitChanges();
       }
 
       effects.preview.executeCodeImmediately();

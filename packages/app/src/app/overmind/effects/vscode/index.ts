@@ -206,6 +206,8 @@ export class VSCodeEffect {
       // you should not be allowed to edit.
       options.reaction(
         state =>
+          (state.editor.currentSandbox &&
+            Boolean(state.editor.currentSandbox.git)) ||
           !state.live.isLive ||
           state.live.roomInfo?.mode === 'open' ||
           (state.live.roomInfo?.mode === 'classroom' &&
@@ -364,7 +366,6 @@ export class VSCodeEffect {
 
   public setReadOnly(enabled: boolean) {
     this.readOnly = enabled;
-
     this.updateOptions({ readOnly: enabled });
   }
 

@@ -1,17 +1,16 @@
-import React, { useEffect } from 'react';
-import { Helmet } from 'react-helmet';
-import { useOvermind } from 'app/overmind';
-
 import {
   Avatar,
   Button,
   Element,
   Grid,
+  Link,
   Stack,
   Text,
-  Link,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 
 import { Header } from '../../../Components/Header';
 import { Card } from './components';
@@ -82,7 +81,7 @@ export const UserSettings = () => {
                       href={`https://github.com/${user.username}`}
                       target="_blank"
                     >
-                      Account managed by Github
+                      Account managed by GitHub
                     </Link>
                   </Stack>
                 </Stack>
