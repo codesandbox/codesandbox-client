@@ -7,16 +7,30 @@ import { Stack, Menu, Icon, Text } from '@codesandbox/components';
 import {
   DashboardSandbox,
   DashboardTemplate,
-  DashboardGridItem,
+  DashboardFolder,
 } from '../../types';
 
-const Context = React.createContext({
+interface IMenuProps {
+  visible: boolean;
+  position: { x: null | number; y: null | number };
+  setVisibility: null | ((value: boolean) => void);
+}
+
+const Context = React.createContext<IMenuProps>({
   visible: false,
   setVisibility: null,
   position: { x: null, y: null },
 });
 
-export const ContextMenu = ({
+interface IContextMenuProps extends IMenuProps {
+  selectedIds: string[];
+  sandboxes: Array<DashboardSandbox | DashboardTemplate>;
+  folders: Array<DashboardFolder>;
+  setRenaming: null | ((value: boolean) => void);
+  createNewFolder: () => void;
+}
+
+export const ContextMenu: React.FC<IContextMenuProps> = ({
   visible,
   position,
   setVisibility,
@@ -28,7 +42,9 @@ export const ContextMenu = ({
 }) => {
   if (!visible) return null;
 
-  const selectedItems: DashboardGridItem[] = selectedIds.map(id => {
+  const selectedItems: Array<
+    DashboardFolder | DashboardSandbox | DashboardTemplate
+  > = selectedIds.map(id => {
     if (id.startsWith('/')) {
       const folder = folders.find(f => f.path === id);
       return { type: 'folder', ...folder };
@@ -113,9 +129,14 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
   const folderUrl = getFolderUrl(item);
 
   const label = isTemplate ? 'template' : 'sandbox';
-  const isOwner =
-    !isTemplate ||
-    (sandbox.author && sandbox.author.username === user.username);
+  const isOwner = React.useMemo(() => {
+    if (item.type !== 'template') {
+      return true;
+    }
+    return (
+      item.sandbox.author && item.sandbox.author.username === user.username
+    );
+  }, [item, user]);
 
   if (location.pathname.includes('deleted')) {
     return (
@@ -345,7 +366,11 @@ const FolderMenu = ({ folder, setRenaming }) => {
   );
 };
 
-const MultiMenu = ({ selectedItems }) => {
+interface IMultiMenuProps {
+  selectedItems: Array<DashboardSandbox | DashboardTemplate | DashboardFolder>;
+}
+
+const MultiMenu = ({ selectedItems }: IMultiMenuProps) => {
   const { actions } = useOvermind();
   const { visible, setVisibility, position } = React.useContext(Context);
 
@@ -358,26 +383,34 @@ const MultiMenu = ({ selectedItems }) => {
     sandboxes + folders - delete
   */
 
-  const folders = selectedItems.filter(item => item.type === 'folder');
-  const templates = selectedItems.filter(item => item.isTemplate);
+  const folders = selectedItems.filter(
+    item => item.type === 'folder'
+  ) as DashboardFolder[];
+  const templates = selectedItems.filter(
+    item => item.type === 'template'
+  ) as DashboardTemplate[];
   const sandboxes = selectedItems.filter(
-    item => item.type === 'sandbox' && !item.isTemplate
-  );
+    item => item.type === 'sandbox'
+  ) as DashboardSandbox[];
 
   const exportItems = () => {
     const ids = [
-      ...sandboxes.map(sandbox => sandbox.id),
-      ...templates.map(template => template.id),
+      ...sandboxes.map(sandbox => sandbox.sandbox.id),
+      ...templates.map(template => template.sandbox.id),
     ];
     actions.dashboard.downloadSandboxes(ids);
   };
 
   const convertToTemplates = () => {
-    actions.dashboard.makeTemplate(sandboxes.map(sandbox => sandbox.id));
+    actions.dashboard.makeTemplate(
+      sandboxes.map(sandbox => sandbox.sandbox.id)
+    );
   };
 
   const convertToSandboxes = () => {
-    actions.dashboard.unmakeTemplate(templates.map(template => template.id));
+    actions.dashboard.unmakeTemplate(
+      templates.map(template => template.sandbox.id)
+    );
   };
 
   const deleteItems = () => {
@@ -387,13 +420,15 @@ const MultiMenu = ({ selectedItems }) => {
 
     templates.forEach(sandbox =>
       actions.dashboard.deleteTemplate({
-        sandboxId: sandbox.id,
+        sandboxId: sandbox.sandbox.id,
         templateId: sandbox.template.id,
       })
     );
 
     if (sandboxes.length) {
-      actions.dashboard.deleteSandbox(sandboxes.map(sandbox => sandbox.id));
+      actions.dashboard.deleteSandbox(
+        sandboxes.map(sandbox => sandbox.sandbox.id)
+      );
     }
 
     setVisibility(false);

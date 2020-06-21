@@ -43,7 +43,7 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
 
   React.useEffect(() => {
     actions.dashboard.getTeams();
-  }, [actions.dashboard, user]);
+  }, [actions.dashboard, user?.id]);
 
   React.useEffect(() => {
     actions.dashboard.getAllFolders();

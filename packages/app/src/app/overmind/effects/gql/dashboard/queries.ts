@@ -155,17 +155,6 @@ export const listPersonalTemplates: Query<
 
       recentlyUsedTemplates {
         ...templateFragmentDashboard
-
-        sandbox {
-          git {
-            id
-            username
-            commitSha
-            path
-            repo
-            branch
-          }
-        }
       }
 
       bookmarkedTemplates {

@@ -199,16 +199,17 @@ export const state: State = {
         orderField === 'insertedAt' || orderField === 'updatedAt';
 
       let orderedSandboxes = (sortBy(sandboxes, s => {
+        const sandbox = s!;
         if (isDateField) {
-          return +new Date(s[orderField]);
+          return +new Date(sandbox[orderField]);
         }
 
         if (orderField === 'title') {
-          const field = s.title || s.alias || s.id;
+          const field = sandbox.title || sandbox.alias || sandbox.id;
           return field.toLowerCase();
         }
 
-        return s[orderField];
+        return sandbox[orderField];
       }) as Sandbox[]).filter(
         x =>
           x.source &&

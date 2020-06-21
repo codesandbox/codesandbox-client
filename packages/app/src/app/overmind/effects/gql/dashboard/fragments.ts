@@ -65,6 +65,15 @@ export const templateFragmentDashboard = gql`
       screenshotOutdated
       privacy
 
+      git {
+        id
+        username
+        commitSha
+        path
+        repo
+        branch
+      }
+
       collection {
         team {
           name

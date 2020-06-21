@@ -15,9 +15,10 @@ import {
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
+import { DashboardTemplate, DashboardSandbox } from '../../types';
 
 interface SelectionContext {
-  sandboxes: any[];
+  sandboxes: Array<DashboardSandbox | DashboardTemplate>;
   selectedIds: string[];
   onClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => void;
   onMouseDown: (event: React.MouseEvent<HTMLDivElement>) => void;
