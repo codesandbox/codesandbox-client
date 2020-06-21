@@ -13,10 +13,7 @@ import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
 
 export const Content = withRouter(({ history }) => {
-  const {
-    state: { dashboard },
-    actions,
-  } = useOvermind();
+  const { actions } = useOvermind();
 
   useEffect(() => {
     actions.dashboard.dashboardMounted();
@@ -44,42 +41,15 @@ export const Content = withRouter(({ history }) => {
       })}
     >
       <Switch>
-        <Route
-          path="/new-dashboard/home"
-          render={() => <Home key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/templates"
-          render={() => <Templates key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/deleted"
-          render={() => <Deleted key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/drafts"
-          render={() => <Drafts key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/recent"
-          render={() => <Recent key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/all/drafts"
-          render={() => <Drafts key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/search"
-          render={() => <Search key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/all/:path*"
-          render={() => <All key={window.location.pathname} />}
-        />
-        <Route
-          path="/new-dashboard/settings"
-          render={() => <Settings key={dashboard.activeTeam} />}
-        />
+        <Route path="/new-dashboard/home" render={() => <Home />} />
+        <Route path="/new-dashboard/templates" render={() => <Templates />} />
+        <Route path="/new-dashboard/deleted" render={() => <Deleted />} />
+        <Route path="/new-dashboard/drafts" render={() => <Drafts />} />
+        <Route path="/new-dashboard/recent" render={() => <Recent />} />
+        <Route path="/new-dashboard/all/drafts" render={() => <Drafts />} />
+        <Route path="/new-dashboard/search" render={() => <Search />} />
+        <Route path="/new-dashboard/all/:path*" render={() => <All />} />
+        <Route path="/new-dashboard/settings" render={() => <Settings />} />
 
         <Redirect to="/new-dashboard/home" />
       </Switch>
