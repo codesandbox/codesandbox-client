@@ -22,7 +22,7 @@ export const Templates = () => {
   }, [actions.dashboard]);
 
   const possibleTemplates = sandboxes.TEMPLATES
-    ? getPossibleTemplates(sandboxes.TEMPLATES.map(t => t.sandbox))
+    ? getPossibleTemplates(sandboxes.TEMPLATES)
     : [];
 
   const sandboxIdsToTemplate = new Map<

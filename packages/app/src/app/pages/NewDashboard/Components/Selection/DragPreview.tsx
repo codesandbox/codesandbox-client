@@ -2,11 +2,27 @@ import React from 'react';
 import { useDragLayer } from 'react-dnd';
 import { motion } from 'framer-motion';
 import { Stack, Text } from '@codesandbox/components';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import css from '@styled-system/css';
 import { SIDEBAR_WIDTH } from '../../Sidebar';
 import { getTemplateIcon } from '../Sandbox/TemplateIcon';
+import {
+  DashboardSandbox,
+  DashboardTemplate,
+  DashboardFolder,
+} from '../../types';
 
-export const DragPreview = ({
+interface DragPreviewProps {
+  sandboxes: Array<DashboardSandbox | DashboardTemplate>;
+  folders: Array<DashboardFolder>;
+  selectionItems: string[];
+  selectedIds: string[];
+  viewMode: 'list' | 'grid';
+  thumbnailRef: React.Ref<HTMLDivElement>;
+  setDragging: (value: boolean) => void;
+}
+
+export const DragPreview: React.FC<DragPreviewProps> = ({
   sandboxes,
   folders,
   selectionItems,
@@ -41,7 +57,7 @@ export const DragPreview = ({
         };
       }
 
-      const sandbox = sandboxes.find(s => s.id === id);
+      const sandbox = sandboxes.find(s => s.sandbox.id === id)!.sandbox;
 
       let screenshotUrl = sandbox.screenshotUrl;
       // We set a fallback thumbnail in the API which is used for
@@ -56,7 +72,7 @@ export const DragPreview = ({
       return {
         type: 'sandbox',
         id: sandbox.id,
-        title: sandbox.title || sandbox.path || sandbox.alias,
+        title: getSandboxName(sandbox),
         url: screenshotUrl,
         Icon: TemplateIcon,
       };
@@ -148,6 +164,7 @@ export const DragPreview = ({
                     css={{ svg: { filter: 'grayscale(1)', opacity: 0.1 } }}
                   >
                     <item.Icon
+                      // @ts-ignore
                       width={viewMode === 'list' ? 16 : 60}
                       height={viewMode === 'list' ? 16 : 60}
                     />

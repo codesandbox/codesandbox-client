@@ -4,9 +4,14 @@ import { orderBy } from 'lodash-es';
 import {
   DashboardSandbox,
   DashboardFolder,
+  DashboardTemplate,
 } from 'app/pages/NewDashboard/types';
 
-export const useFilteredItems = (params, level) => {
+type Params = {
+  path?: string;
+};
+
+export const useFilteredItems = (params: Params, level: number) => {
   const param = params.path || '';
   const cleanParam = param.split(' ').join('');
   const {
@@ -20,9 +25,9 @@ export const useFilteredItems = (params, level) => {
       },
     },
   } = useOvermind();
-  const [items, setItems] = useState<Array<DashboardSandbox | DashboardFolder>>(
-    []
-  );
+  const [items, setItems] = useState<
+    Array<DashboardSandbox | DashboardTemplate | DashboardFolder>
+  >([]);
 
   useEffect(() => {
     const sandboxesForPath =
@@ -61,12 +66,5 @@ export const useFilteredItems = (params, level) => {
     getFilteredSandboxes,
   ]);
 
-  return [
-    items,
-    (allCollections &&
-      allCollections.filter(
-        collection => collection.level === level && collection.parent === param
-      )) ||
-      [],
-  ];
+  return items;
 };

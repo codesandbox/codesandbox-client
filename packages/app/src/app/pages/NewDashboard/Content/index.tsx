@@ -22,13 +22,19 @@ export const Content = withRouter(({ history }) => {
     actions.dashboard.dashboardMounted();
   }, [actions.dashboard]);
 
-  history.listen(() => {
-    actions.dashboard.blacklistedTemplatesCleared();
-    actions.dashboard.orderByChanged({
-      order: 'desc',
-      field: 'updatedAt',
+  useEffect(() => {
+    const removeListener = history.listen(() => {
+      actions.dashboard.blacklistedTemplatesCleared();
+      actions.dashboard.orderByChanged({
+        order: 'desc',
+        field: 'updatedAt',
+      });
     });
-  });
+
+    return () => {
+      removeListener();
+    };
+  }, [history, history.listen, actions.dashboard]);
 
   return (
     <Element

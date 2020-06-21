@@ -12,7 +12,7 @@ import { useFilteredItems } from './useFilteredItems';
 export const AllPage = ({ match: { params }, history }) => {
   const [level, setLevel] = React.useState(0);
   const [creating, setCreating] = React.useState(false);
-  const [items] = useFilteredItems(params, level);
+  const items = useFilteredItems(params, level);
   const param = params.path || '';
   const cleanParam = param.split(' ').join('');
   const {
@@ -48,9 +48,10 @@ export const AllPage = ({ match: { params }, history }) => {
   const activeSandboxes = (sandboxes.ALL && sandboxes.ALL[cleanParam]) || [];
 
   const itemsToShow: DashboardGridItem[] = allCollections
-    ? [creating ? { type: 'folder', setCreating } : undefined, ...items].filter(
-        exists => exists
-      )
+    ? [
+        creating ? { type: 'folder' as 'folder', setCreating } : undefined,
+        ...items,
+      ].filter(exists => exists)
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   return (

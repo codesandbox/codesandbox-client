@@ -163,7 +163,7 @@ export const VariableGrid = ({ items }: VariableGridProps) => {
           ...style,
           width: eachItemWidth,
           left: leftOffset,
-          height: style.height - GUTTER,
+          height: (style.height as number) - GUTTER,
           ...margins,
         }}
       >

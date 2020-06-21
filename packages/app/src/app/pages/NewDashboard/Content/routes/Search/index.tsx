@@ -29,7 +29,7 @@ export const SearchComponent = ({ location }) => {
     : [{ type: 'skeleton-row' }];
 
   return (
-    <SelectionProvider sandboxes={items}>
+    <SelectionProvider items={items}>
       <Helmet>
         <title>
           {location.search
