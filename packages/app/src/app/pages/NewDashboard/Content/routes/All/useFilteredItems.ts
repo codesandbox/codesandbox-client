@@ -32,11 +32,7 @@ export const useFilteredItems = (params: Params, level: number) => {
   const folderSandboxes = (sandboxes.ALL || {})[cleanParam];
 
   useEffect(() => {
-    const sandboxesForPath =
-      sandboxes.ALL && sandboxes.ALL[cleanParam]
-        ? getFilteredSandboxes(sandboxes.ALL[cleanParam])
-        : [];
-
+    const sandboxesForPath = getFilteredSandboxes(folderSandboxes || []);
     const parent = param.split('/').pop();
     const folderFolders =
       allCollections?.filter(
@@ -60,6 +56,7 @@ export const useFilteredItems = (params: Params, level: number) => {
   }, [
     allCollections,
     cleanParam,
+    param,
     level,
     filters.blacklistedTemplates,
     getFilteredSandboxes,
