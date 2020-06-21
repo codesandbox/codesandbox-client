@@ -41,10 +41,12 @@ export const AllPage = () => {
   }, [activeTeam]);
 
   React.useEffect(() => {
-    if (param) {
-      setLevel(param ? param.split('/').length : 0);
-      actions.dashboard.getSandboxesByPath(param);
+    if (!param || param === '/') {
+      setLevel(0);
+    } else {
+      setLevel(param.split('/').length);
     }
+    actions.dashboard.getSandboxesByPath(param);
   }, [param, actions.dashboard, activeTeam]);
 
   const activeSandboxes = (sandboxes.ALL && sandboxes.ALL[cleanParam]) || [];
