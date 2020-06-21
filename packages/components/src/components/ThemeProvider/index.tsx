@@ -63,7 +63,7 @@ export const ThemeProvider = ({
   theme?: any;
   children: any;
 }) => {
-  const usableTheme = makeTheme(theme);
+  const usableTheme = React.useMemo(() => makeTheme(theme), [theme]);
 
   // the resizer lives outside the sidebar
   // to apply the right color to the resizer
