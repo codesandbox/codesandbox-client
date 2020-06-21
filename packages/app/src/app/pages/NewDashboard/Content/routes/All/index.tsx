@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
@@ -9,9 +9,11 @@ import { DashboardGridItem } from 'app/pages/NewDashboard/types';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
-export const AllPage = ({ match: { params }, history }) => {
+export const AllPage = () => {
   const [level, setLevel] = React.useState(0);
   const [creating, setCreating] = React.useState(false);
+  const params = useParams<{ path: string }>();
+  const history = useHistory();
   const items = useFilteredItems(params, level);
   const param = params.path || '';
   const cleanParam = param.split(' ').join('{}');
@@ -69,12 +71,12 @@ export const AllPage = ({ match: { params }, history }) => {
         templates={getPossibleTemplates(activeSandboxes)}
         createNewFolder={() => setCreating(true)}
         showViewOptions
-        showFilters={param}
-        showSortOptions={param}
+        showFilters={Boolean(param)}
+        showSortOptions={Boolean(param)}
       />
       <VariableGrid items={itemsToShow} />
     </SelectionProvider>
   );
 };
 
-export const All = withRouter(AllPage);
+export const All = React.memo(AllPage);
