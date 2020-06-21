@@ -276,10 +276,11 @@ export const getAllFolders: AsyncAction = async ({ state, effects }) => {
     // this is here because it will be done in the backend in the *FUTURE*
     const collectionsByLevel = data.me.collections.map(collection => {
       const split = collection.path.split('/');
+      const parent = split[split.length - 2] || '';
       return {
         ...collection,
         sandboxes: collection.sandboxes.length,
-        parent: split.slice(0, split.length - 1).find(a => a) || '',
+        parent,
         level: split.length - 2,
         name: split[split.length - 1],
       };

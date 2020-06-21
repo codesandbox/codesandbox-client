@@ -29,22 +29,24 @@ export const useFilteredItems = (params: Params, level: number) => {
     Array<DashboardSandbox | DashboardTemplate | DashboardFolder>
   >([]);
 
+  const folderSandboxes = (sandboxes.ALL || {})[cleanParam];
+
   useEffect(() => {
     const sandboxesForPath =
       sandboxes.ALL && sandboxes.ALL[cleanParam]
         ? getFilteredSandboxes(sandboxes.ALL[cleanParam])
         : [];
 
-    const unsortedFolders =
-      (allCollections &&
-        allCollections.filter(
-          collection =>
-            collection.level === level && collection.parent === param
-        )) ||
-      [];
-    const sortedFolders = orderBy(unsortedFolders, 'name').sort(
+    const parent = param.split('/').pop();
+    const folderFolders =
+      allCollections?.filter(
+        collection => collection.level === level && collection.parent === parent
+      ) || [];
+
+    const sortedFolders = orderBy(folderFolders, 'name').sort(
       a => (a.path === '/drafts' ? -1 : 1) // pull drafts to the top
     );
+
     setItems([
       ...sortedFolders.map(folder => ({
         type: 'folder' as 'folder',
@@ -57,13 +59,12 @@ export const useFilteredItems = (params: Params, level: number) => {
     ]);
   }, [
     allCollections,
-    level,
-    param,
-    filters.blacklistedTemplates,
-    sandboxesOrder,
-    sandboxes.ALL,
     cleanParam,
+    level,
+    filters.blacklistedTemplates,
     getFilteredSandboxes,
+    sandboxesOrder,
+    folderSandboxes,
   ]);
 
   return items;
