@@ -8,6 +8,17 @@ import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { Folder } from '../Folder';
 import { EmptyScreen } from '../EmptyScreen';
+import {
+  DashboardGridItem,
+  DashboardSandbox,
+  DashboardTemplate,
+  DashboardFolder,
+  DashboardNewSandbox,
+  DashboardHeader,
+  DashboardHeaderLink,
+  DashboardBlank,
+  DashboardSkeleton,
+} from '../../types';
 
 export const GRID_MAX_WIDTH = 992;
 export const GUTTER = 24;
@@ -18,24 +29,38 @@ const HEADER_HEIGHT = 64;
 const GRID_VERTICAL_OFFSET = 120;
 const ITEM_VERTICAL_OFFSET = 32;
 
-const ComponentForTypes = {
-  sandbox: React.memo(props => <Sandbox sandbox={props} />),
+// TODO: make this a generic type. How can we convert DashboardGridItem to this?
+interface ComponentForTypes {
+  sandbox: React.FC<DashboardSandbox>;
+  template: React.FC<DashboardTemplate>;
+  folder: React.FC<DashboardFolder>;
+  'new-sandbox': React.FC<DashboardNewSandbox>;
+  header: React.FC<DashboardHeader>;
+  'header-link': React.FC<DashboardHeaderLink>;
+  blank: React.FC<DashboardBlank>;
+  skeleton: React.FC<DashboardSkeleton>;
+}
+
+const ComponentForTypes: ComponentForTypes = {
+  sandbox: React.memo(props => <Sandbox {...props} />),
+  template: React.memo(props => <Sandbox {...props} />),
   folder: props => <Folder {...props} />,
-  'new-sandbox': props => <NewSandbox {...props} />,
+  'new-sandbox': () => <NewSandbox />,
   header: props => (
     <Stack justify="space-between" align="center">
       <Text block style={{ userSelect: 'none' }}>
         {props.title}
       </Text>
       {props.showMoreLink
-        ? ComponentForTypes.headerLink({
+        ? ComponentForTypes['header-link']({
+            type: 'header-link',
             link: props.showMoreLink,
             label: props.showMoreLabel,
           })
         : null}
     </Stack>
   ),
-  headerLink: props => (
+  'header-link': props => (
     <Link
       as={RouterLink}
       to={props.link}
@@ -49,17 +74,21 @@ const ComponentForTypes = {
     </Link>
   ),
   blank: () => <div />,
-  skeleton: SkeletonSandbox,
+  skeleton: () => <SkeletonSandbox />,
 };
 
-export const VariableGrid = ({ items }) => {
+interface VariableGridProps {
+  items: DashboardGridItem[];
+}
+
+export const VariableGrid = ({ items }: VariableGridProps) => {
   const {
     state: { dashboard },
   } = useOvermind();
 
   const location = useLocation();
 
-  let viewMode;
+  let viewMode: 'grid' | 'list';
   if (location.pathname.includes('deleted')) viewMode = 'list';
   else viewMode = dashboard.viewMode;
 
@@ -102,6 +131,7 @@ export const VariableGrid = ({ items }) => {
     if (!item) return null;
 
     const Component = ComponentForTypes[item.type];
+
     const isHeader = item.type === 'header' || item.type === 'headerLink';
     const marginTopMap = {
       header: ITEM_VERTICAL_OFFSET + 24,
@@ -210,12 +240,16 @@ export const VariableGrid = ({ items }) => {
                   4
                 );
 
-          const filledItems = [];
-          const blankItem = { type: 'blank' };
-          const skeletonItem = { type: 'skeleton' };
+          const filledItems: Array<DashboardGridItem & {
+            viewMode?: 'list' | 'grid';
+          }> = [];
+          const blankItem = { type: 'blank' as 'blank' };
+          const skeletonItem = { type: 'skeleton' as 'skeleton' };
 
           items.forEach((item, index) => {
-            if (!['header', 'skeletonRow', 'new-sandbox'].includes(item.type)) {
+            if (
+              !['header', 'skeleton-row', 'new-sandbox'].includes(item.type)
+            ) {
               filledItems.push({ ...item, viewMode });
             }
 
@@ -229,7 +263,7 @@ export const VariableGrid = ({ items }) => {
                 for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
                 if (showMoreLink) {
                   filledItems.push({
-                    type: 'headerLink',
+                    type: 'header-link',
                     link: showMoreLink,
                     label: showMoreLabel,
                   });
@@ -245,7 +279,7 @@ export const VariableGrid = ({ items }) => {
                 const blanks = columnCount - rowIndex - 1;
                 for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
               }
-            } else if (item.type === 'skeletonRow') {
+            } else if (item.type === 'skeleton-row') {
               for (let i = 0; i < columnCount; i++) {
                 filledItems.push(skeletonItem);
               }

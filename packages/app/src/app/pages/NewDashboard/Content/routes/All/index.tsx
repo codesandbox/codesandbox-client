@@ -5,6 +5,7 @@ import { useOvermind } from 'app/overmind';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
+import { DashboardGridItem } from 'app/pages/NewDashboard/types';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
@@ -46,11 +47,11 @@ export const AllPage = ({ match: { params }, history }) => {
 
   const activeSandboxes = (sandboxes.ALL && sandboxes.ALL[cleanParam]) || [];
 
-  const itemsToShow = allCollections
+  const itemsToShow: DashboardGridItem[] = allCollections
     ? [creating ? { type: 'folder', setCreating } : undefined, ...items].filter(
         exists => exists
       )
-    : [{ type: 'skeletonRow' }, { type: 'skeletonRow' }];
+    : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   return (
     <SelectionProvider

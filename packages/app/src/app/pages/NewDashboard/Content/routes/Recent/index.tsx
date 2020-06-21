@@ -5,6 +5,11 @@ import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
+import {
+  DashboardGridItem,
+  DashboardHeader,
+  DashboardSandbox,
+} from 'app/pages/NewDashboard/types';
 import { getPossibleTemplates } from '../../utils';
 
 export const Recent = () => {
@@ -19,7 +24,10 @@ export const Recent = () => {
     actions.dashboard.getPage(sandboxesTypes.RECENT);
   }, [actions.dashboard]);
 
-  const getSection = (title, time) => {
+  const getSection = (
+    title: string,
+    time: keyof typeof recentSandboxesByTime
+  ): [DashboardHeader, ...DashboardSandbox[]] | [] => {
     const recentSandboxes = getFilteredSandboxes(recentSandboxesByTime[time]);
 
     if (!recentSandboxes.length) return [];
@@ -27,13 +35,13 @@ export const Recent = () => {
     return [
       { type: 'header', title },
       ...recentSandboxes.map(sandbox => ({
-        type: 'sandbox',
-        ...sandbox,
+        type: 'sandbox' as 'sandbox',
+        sandbox,
       })),
     ];
   };
 
-  const items = sandboxes.RECENT
+  const items: DashboardGridItem[] = sandboxes.RECENT
     ? [
         ...getSection('Today', 'day'),
         ...getSection('Last 7 days', 'week'),
@@ -42,9 +50,9 @@ export const Recent = () => {
       ]
     : [
         { type: 'header', title: 'Today' },
-        { type: 'skeletonRow' },
+        { type: 'skeleton-row' },
         { type: 'header', title: 'Last 7 days' },
-        { type: 'skeletonRow' },
+        { type: 'skeleton-row' },
       ];
 
   return (

@@ -16,25 +16,47 @@ import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
 
-const Context = React.createContext({
-  sandboxes: [],
-  selectedIds: [],
-  onClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
-  onMouseDown: (event: React.MouseEvent<HTMLDivElement>) => {},
-  onRightClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
+interface SelectionContext {
+  sandboxes: any[];
+  selectedIds: string[];
+  onClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => void;
+  onMouseDown: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onRightClick: (
+    event: React.MouseEvent<HTMLDivElement>,
+    itemId: string
+  ) => void;
   onMenuEvent: (
     event:
       | React.MouseEvent<HTMLDivElement>
       | React.KeyboardEvent<HTMLDivElement>,
     itemId?: string
-  ) => {},
-  onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
-  onDragStart: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
-  onDrop: (droppedResult: any) => {},
+  ) => void;
+  onBlur: (event: React.FocusEvent<HTMLDivElement>) => void;
+  onDragStart: (
+    event: React.MouseEvent<HTMLDivElement>,
+    itemId: string
+  ) => void;
+  onDrop: (droppedResult: any) => void;
+  thumbnailRef: React.Ref<HTMLDivElement> | null;
+  isDragging: boolean;
+  isRenaming: boolean;
+  setRenaming: (renaming: boolean) => void;
+}
+
+const Context = React.createContext<SelectionContext>({
+  sandboxes: [],
+  selectedIds: [],
+  onClick: () => {},
+  onMouseDown: () => {},
+  onRightClick: () => {},
+  onMenuEvent: () => {},
+  onBlur: () => {},
+  onDragStart: () => {},
+  onDrop: () => {},
   thumbnailRef: null,
   isDragging: false,
   isRenaming: false,
-  setRenaming: (renaming: boolean) => {},
+  setRenaming: renaming => {},
 });
 
 export const SelectionProvider = ({
@@ -52,7 +74,9 @@ export const SelectionProvider = ({
   ];
 
   const folders = (items || []).filter(item => item.type === 'folder');
-  const sandboxes = (items || []).filter(item => item.type === 'sandbox');
+  const sandboxes = (items || []).filter(
+    item => item.type === 'sandbox' || item.type === 'template'
+  );
 
   const [selectedIds, setSelectedIds] = React.useState([]);
 
@@ -137,7 +161,7 @@ export const SelectionProvider = ({
   ) => {
     if (itemId && !selectedIds.includes(itemId)) setSelectedIds([itemId]);
 
-    let menuElement;
+    let menuElement: HTMLElement;
     if (event.type === 'click') {
       const target = event.target as HTMLButtonElement;
       menuElement = target;
@@ -582,7 +606,7 @@ export const useSelection = () => {
   };
 };
 
-let scrollTimer;
+let scrollTimer: number;
 let retries = 0;
 const MAX_RETRIES = 3;
 const startingWaitTime = 50; // ms
@@ -608,6 +632,6 @@ const scrollIntoViewport = (id: string) => {
   }
 };
 
-const isFolderPath = id => id.startsWith('/');
-const isSandboxId = id => !isFolderPath(id);
+const isFolderPath = (id: string) => id.startsWith('/');
+const isSandboxId = (id: string) => !isFolderPath(id);
 const notDrafts = folder => folder.path !== '/drafts';

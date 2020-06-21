@@ -10,6 +10,7 @@ import { useOvermind } from 'app/overmind';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
 import { useSelection } from '../Selection';
+import { DashboardFolder } from '../../types';
 
 export const Folder = ({
   name = '',
@@ -17,7 +18,7 @@ export const Folder = ({
   sandboxes = 0,
   setCreating,
   ...props
-}) => {
+}: DashboardFolder) => {
   const {
     state: { dashboard },
     actions,

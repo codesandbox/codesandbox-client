@@ -5,6 +5,8 @@ import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import { DashboardGridItem } from 'app/pages/NewDashboard/types';
+import { TemplateFragmentDashboardFragment } from 'app/graphql/types';
 import { getPossibleTemplates } from '../../utils';
 
 export const Templates = () => {
@@ -23,20 +25,29 @@ export const Templates = () => {
     ? getPossibleTemplates(sandboxes.TEMPLATES.map(t => t.sandbox))
     : [];
 
-  const items = sandboxes.TEMPLATES
-    ? getFilteredSandboxes(
-        // @ts-ignore
-        sandboxes.TEMPLATES.map(template => {
-          const { sandbox, ...templateValues } = template;
-          return {
-            ...sandbox,
-            type: 'sandbox',
-            isTemplate: true,
-            template: templateValues,
-          };
-        })
-      )
-    : [{ type: 'skeletonRow' }, { type: 'skeletonRow' }];
+  const sandboxIdsToTemplate = new Map<
+    string,
+    TemplateFragmentDashboardFragment
+  >();
+
+  const templates = sandboxes.TEMPLATES || [];
+  templates.forEach(template => {
+    sandboxIdsToTemplate.set(template.sandbox.id, template);
+  });
+  const filteredTemplates = getFilteredSandboxes(
+    templates.map(({ sandbox }) => sandbox)
+  ).map(sandbox => sandboxIdsToTemplate.get(sandbox.id));
+
+  const items: DashboardGridItem[] = sandboxes.TEMPLATES
+    ? filteredTemplates.map(template => {
+        const { sandbox, ...templateValues } = template;
+        return {
+          type: 'template' as 'template',
+          sandbox,
+          template: templateValues,
+        };
+      })
+    : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   return (
     <SelectionProvider items={items}>

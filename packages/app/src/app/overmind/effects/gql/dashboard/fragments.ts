@@ -57,11 +57,13 @@ export const templateFragmentDashboard = gql`
       description
       insertedAt
       updatedAt
+      removedAt
       likeCount
       forkCount
       viewCount
       screenshotUrl
       screenshotOutdated
+      privacy
 
       collection {
         team {

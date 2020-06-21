@@ -1093,11 +1093,13 @@ export type TemplateFragmentDashboardFragment = {
         | 'description'
         | 'insertedAt'
         | 'updatedAt'
+        | 'removedAt'
         | 'likeCount'
         | 'forkCount'
         | 'viewCount'
         | 'screenshotUrl'
         | 'screenshotOutdated'
+        | 'privacy'
       > & {
           collection: Maybe<
             { __typename?: 'Collection' } & {

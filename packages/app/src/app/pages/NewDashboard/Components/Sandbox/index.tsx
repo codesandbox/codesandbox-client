@@ -14,6 +14,7 @@ import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
+import { DashboardSandbox, DashboardTemplate } from '../../types';
 
 const PrivacyIcons = {
   0: () => null,
@@ -21,7 +22,11 @@ const PrivacyIcons = {
   2: () => <Icon name="lock" size={12} />,
 };
 
-const GenericSandbox = ({ sandbox, ...props }) => {
+const GenericSandbox = ({
+  sandbox,
+  type,
+  isHomeTemplate,
+}: DashboardSandbox | DashboardTemplate) => {
   const {
     state: { dashboard },
     actions,
@@ -30,16 +35,16 @@ const GenericSandbox = ({ sandbox, ...props }) => {
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
   let sandboxLocation = null;
-  if (sandbox.collection.path) {
+  if ('path' in sandbox.collection) {
     sandboxLocation =
       sandbox.collection.path === '/'
         ? 'Drafts'
         : sandbox.collection.path.split('/').pop();
-  } else if (sandbox.isTemplate) {
+  } else if (type === 'template') {
     sandboxLocation =
       (sandbox.collection.team && sandbox.collection.team.name) ||
-      (sandbox.author && sandbox.author.username) ||
-      (sandbox.git && 'from GitHub') ||
+      ('author' in sandbox && sandbox.author && sandbox.author.username) ||
+      ('git' in sandbox && sandbox.git && 'from GitHub') ||
       'Templates';
   }
 
@@ -138,7 +143,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
 
     // Templates in Home should fork, everything else opens
     if (event.ctrlKey || event.metaKey) {
-      if (sandbox.isHomeTemplate) {
+      if (isHomeTemplate) {
         actions.editor.forkExternalSandbox({
           sandboxId: sandbox.id,
           openInNewWindow: true,
@@ -150,7 +155,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
         source: 'Home',
         dashboardVersion: 2,
       });
-    } else if (sandbox.isHomeTemplate) {
+    } else if (isHomeTemplate) {
       actions.editor.forkExternalSandbox({
         sandboxId: sandbox.id,
       });
@@ -214,7 +219,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     lastUpdated,
     viewCount,
     sandbox,
-    isTemplate: sandbox.isTemplate,
+    isTemplate: type === 'template',
     TemplateIcon,
     PrivacyIcon,
     screenshotUrl,
@@ -230,7 +235,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     opacity: isDragging ? 0.25 : 1,
   };
 
-  const dragProps = sandbox.isHomeTemplate
+  const dragProps = isHomeTemplate
     ? {}
     : {
         ref: dragRef,
@@ -258,16 +263,18 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     <>
       <div {...dragProps}>
         <motion.div {...motionProps}>
-          <Component {...sandboxProps} {...interactionProps} {...props} />
+          <Component {...sandboxProps} {...interactionProps} />
         </motion.div>
       </div>
     </>
   );
 };
 
-export const Sandbox = React.memo(GenericSandbox);
+export const Sandbox = React.memo<DashboardSandbox | DashboardTemplate>(
+  GenericSandbox
+);
 
-export const SkeletonSandbox = props => {
+export const SkeletonSandbox = () => {
   const {
     state: { dashboard },
   } = useOvermind();
@@ -279,9 +286,9 @@ export const SkeletonSandbox = props => {
   else viewMode = dashboard.viewMode;
 
   if (viewMode === 'list') {
-    return <SkeletonListItem {...props} />;
+    return <SkeletonListItem />;
   }
-  return <SkeletonCard {...props} />;
+  return <SkeletonCard />;
 };
 
 const useResizing = () => {
