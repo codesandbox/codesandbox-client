@@ -94,7 +94,21 @@ export const VariableGrid = ({ items }: VariableGridProps) => {
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
 
-  const Item = ({ data, rowIndex, columnIndex, style }) => {
+  const Item = ({
+    data,
+    rowIndex,
+    columnIndex,
+    style,
+  }: {
+    data: {
+      columnCount: number;
+      filledItems: DashboardGridItem[];
+      containerWidth: number;
+    };
+    style: React.CSSProperties;
+    columnIndex: number;
+    rowIndex: number;
+  }) => {
     const { columnCount, filledItems, containerWidth } = data;
 
     /**
@@ -132,7 +146,7 @@ export const VariableGrid = ({ items }: VariableGridProps) => {
 
     const Component = ComponentForTypes[item.type];
 
-    const isHeader = item.type === 'header' || item.type === 'headerLink';
+    const isHeader = item.type === 'header' || item.type === 'header-link';
     const marginTopMap = {
       header: ITEM_VERTICAL_OFFSET + 24,
       headerLink: ITEM_VERTICAL_OFFSET + 28,
