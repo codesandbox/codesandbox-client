@@ -303,7 +303,7 @@ export const getAllFolders: AsyncAction = async ({ state, effects }) => {
     ];
   } catch {
     effects.notificationToast.error(
-      'There was a problem getting your Sandboxes'
+      'There was a problem getting your sandboxes'
     );
   }
 };
@@ -369,7 +369,7 @@ export const getDrafts: AsyncAction = async ({ state, effects }) => {
     ] = data.me.collection.sandboxes.filter(s => !s.customTemplate);
   } catch (error) {
     effects.notificationToast.error(
-      'There was a problem getting your Sandboxes'
+      'There was a problem getting your sandboxes'
     );
   }
 };
@@ -398,7 +398,7 @@ export const getSandboxesByPath: AsyncAction<string> = async (
     );
   } catch (error) {
     effects.notificationToast.error(
-      'There was a problem getting your Sandboxes'
+      'There was a problem getting your sandboxes'
     );
   }
 };
@@ -479,7 +479,7 @@ export const getStartPageSandboxes: AsyncAction = async ({
     dashboard.sandboxes.RECENT_HOME = recentSandboxes.me.sandboxes;
   } catch (error) {
     effects.notificationToast.error(
-      'There was a problem getting your Sandboxes'
+      'There was a problem getting your sandboxes'
     );
   }
 };
@@ -873,7 +873,7 @@ export const getSearchSandboxes: AsyncAction<string | null> = async (
     dashboard.sandboxes[sandboxesTypes.SEARCH] = sandboxesToShow;
   } catch (error) {
     effects.notificationToast.error(
-      'There was a problem getting your Sandboxes'
+      'There was a problem getting your sandboxes'
     );
   }
 };
