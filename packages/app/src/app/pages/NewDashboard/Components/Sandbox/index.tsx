@@ -22,15 +22,18 @@ const PrivacyIcons = {
   2: () => <Icon name="lock" size={12} />,
 };
 
-const GenericSandbox = ({
-  sandbox,
-  type,
-  isHomeTemplate,
-}: DashboardSandbox | DashboardTemplate) => {
+interface GenericSandboxProps {
+  isScrolling: boolean;
+  item: DashboardSandbox | DashboardTemplate;
+}
+
+const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   const {
     state: { dashboard },
     actions,
   } = useOvermind();
+
+  const { sandbox, type, isHomeTemplate } = item;
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
@@ -87,7 +90,7 @@ const GenericSandbox = ({
       id: sandbox.id,
       collectionPath: currentCollectionPath,
     },
-    end: (item, monitor) => {
+    end: (_item, monitor) => {
       const dropResult = monitor.getDropResult();
 
       if (!dropResult || !dropResult.path) return;
@@ -263,16 +266,18 @@ const GenericSandbox = ({
     <>
       <div {...dragProps}>
         <motion.div {...motionProps}>
-          <Component {...sandboxProps} {...interactionProps} />
+          <Component
+            {...sandboxProps}
+            {...interactionProps}
+            isScrolling={isScrolling}
+          />
         </motion.div>
       </div>
     </>
   );
 };
 
-export const Sandbox = React.memo<DashboardSandbox | DashboardTemplate>(
-  GenericSandbox
-);
+export const Sandbox = GenericSandbox;
 
 export const SkeletonSandbox = () => {
   const {
