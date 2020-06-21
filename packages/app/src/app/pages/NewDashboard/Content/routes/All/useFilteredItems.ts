@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
 import { orderBy } from 'lodash-es';
+import {
+  DashboardSandbox,
+  DashboardFolder,
+} from 'app/pages/NewDashboard/types';
 
 export const useFilteredItems = (params, level) => {
   const param = params.path || '';
@@ -16,7 +20,9 @@ export const useFilteredItems = (params, level) => {
       },
     },
   } = useOvermind();
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<Array<DashboardSandbox | DashboardFolder>>(
+    []
+  );
 
   useEffect(() => {
     const sandboxesForPath =
@@ -35,8 +41,14 @@ export const useFilteredItems = (params, level) => {
       a => (a.path === '/drafts' ? -1 : 1) // pull drafts to the top
     );
     setItems([
-      ...sortedFolders.map(folder => ({ type: 'folder', ...folder })),
-      ...sandboxesForPath.map(sandbox => ({ type: 'sandbox', ...sandbox })),
+      ...sortedFolders.map(folder => ({
+        type: 'folder' as 'folder',
+        ...folder,
+      })),
+      ...sandboxesForPath.map(sandbox => ({
+        type: 'sandbox' as 'sandbox',
+        sandbox,
+      })),
     ]);
   }, [
     allCollections,
