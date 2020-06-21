@@ -49,6 +49,10 @@ export const loadGitSource: AsyncAction = async ({
   state.git.isExported = false;
   state.git.pr = null;
 
+  if (!state.user || !state.user.integrations.github) {
+    return;
+  }
+
   // We go grab the current version of the source
   try {
     await actions.git._loadSourceSandbox();
