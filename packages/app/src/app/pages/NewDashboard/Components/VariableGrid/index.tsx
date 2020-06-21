@@ -18,6 +18,7 @@ import {
   DashboardHeaderLink,
   DashboardBlank,
   DashboardSkeleton,
+  DashboardNewFolder,
 } from '../../types';
 
 export const GRID_MAX_WIDTH = 992;
@@ -34,6 +35,7 @@ interface ComponentForTypes {
   sandbox: React.FC<DashboardSandbox>;
   template: React.FC<DashboardTemplate>;
   folder: React.FC<DashboardFolder>;
+  'new-folder': React.FC<DashboardNewFolder>;
   'new-sandbox': React.FC<DashboardNewSandbox>;
   header: React.FC<DashboardHeader>;
   'header-link': React.FC<DashboardHeaderLink>;
@@ -45,6 +47,8 @@ const ComponentForTypes: ComponentForTypes = {
   sandbox: React.memo(props => <Sandbox {...props} />),
   template: React.memo(props => <Sandbox {...props} />),
   folder: props => <Folder {...props} />,
+  // @ts-ignore TODO: find a better way to type this
+  'new-folder': props => <Folder {...props} />,
   'new-sandbox': () => <NewSandbox />,
   header: props => (
     <Stack justify="space-between" align="center">

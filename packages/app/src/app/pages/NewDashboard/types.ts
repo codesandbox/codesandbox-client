@@ -25,6 +25,11 @@ export type DashboardFolder = DELETE_ME_COLLECTION & {
   setCreating?: (value: boolean) => void;
 };
 
+export type DashboardNewFolder = {
+  type: 'new-folder';
+  setCreating?: (value: boolean) => void;
+};
+
 export type DashboardHeader = {
   type: 'header';
   title: string;
@@ -60,6 +65,7 @@ export type DashboardGridItem =
   | DashboardFolder
   | DashboardHeader
   | DashboardHeaderLink
+  | DashboardNewFolder
   | DashboardNewSandbox
   | DashboardSkeletonRow
   | DashboardBlank

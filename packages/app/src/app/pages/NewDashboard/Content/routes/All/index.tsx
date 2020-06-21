@@ -49,7 +49,9 @@ export const AllPage = ({ match: { params }, history }) => {
 
   const itemsToShow: DashboardGridItem[] = allCollections
     ? [
-        creating ? { type: 'folder' as 'folder', setCreating } : undefined,
+        creating
+          ? { type: 'new-folder' as 'new-folder', setCreating }
+          : undefined,
         ...items,
       ].filter(exists => exists)
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
