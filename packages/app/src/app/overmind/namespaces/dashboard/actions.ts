@@ -379,7 +379,7 @@ export const getSandboxesByPath: AsyncAction<string> = async (
   path
 ) => {
   const { dashboard } = state;
-  const cleanPath = path.split(' ').join('');
+  const cleanPath = path.split(' ').join('{}');
   try {
     const data = await effects.gql.queries.sandboxesByPath({
       path: '/' + path,

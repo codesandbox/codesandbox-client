@@ -13,7 +13,7 @@ type Params = {
 
 export const useFilteredItems = (params: Params, level: number) => {
   const param = params.path || '';
-  const cleanParam = param.split(' ').join('');
+  const cleanParam = param.split(' ').join('{}');
   const {
     state: {
       dashboard: {

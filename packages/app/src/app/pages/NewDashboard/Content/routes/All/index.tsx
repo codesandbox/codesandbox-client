@@ -14,7 +14,7 @@ export const AllPage = ({ match: { params }, history }) => {
   const [creating, setCreating] = React.useState(false);
   const items = useFilteredItems(params, level);
   const param = params.path || '';
-  const cleanParam = param.split(' ').join('');
+  const cleanParam = param.split(' ').join('{}');
   const {
     actions,
     state: {
