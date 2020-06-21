@@ -41,15 +41,15 @@ export const Content = withRouter(({ history }) => {
       })}
     >
       <Switch>
-        <Route path="/new-dashboard/home" component={<Home />} />
-        <Route path="/new-dashboard/templates" component={<Templates />} />
-        <Route path="/new-dashboard/deleted" component={<Deleted />} />
-        <Route path="/new-dashboard/drafts" component={<Drafts />} />
-        <Route path="/new-dashboard/recent" component={<Recent />} />
-        <Route path="/new-dashboard/all/drafts" component={<Drafts />} />
-        <Route path="/new-dashboard/search" component={<Search />} />
-        <Route path="/new-dashboard/all/:path*" component={<All />} />
-        <Route path="/new-dashboard/settings" component={<Settings />} />
+        <Route path="/new-dashboard/home" component={Home} />
+        <Route path="/new-dashboard/templates" component={Templates} />
+        <Route path="/new-dashboard/deleted" component={Deleted} />
+        <Route path="/new-dashboard/drafts" component={Drafts} />
+        <Route path="/new-dashboard/recent" component={Recent} />
+        <Route path="/new-dashboard/all/drafts" component={Drafts} />
+        <Route path="/new-dashboard/search" component={Search} />
+        <Route path="/new-dashboard/all/:path*" component={All} />
+        <Route path="/new-dashboard/settings" component={Settings} />
 
         <Redirect to="/new-dashboard/home" />
       </Switch>
