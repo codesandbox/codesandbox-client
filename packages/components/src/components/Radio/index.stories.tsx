@@ -10,8 +10,10 @@ export const Basic = () => (
   <>
     {/* eslint-disable-next-line no-console */}
     <Radio label="A Radio" onChange={e => console.log(e.target.checked)} />
-    {/* eslint-disable-next-line no-console */}
-    <Radio label="A Radio" onChange={e => console.log(e.target.checked)} />
+    <div style={{ marginTop: 20 }}>
+      {/* eslint-disable-next-line no-console */}
+      <Radio label="A Radio" onChange={e => console.log(e.target.checked)} />
+    </div>
   </>
 );
 export const Checked = () => {

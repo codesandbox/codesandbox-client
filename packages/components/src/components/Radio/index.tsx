@@ -25,6 +25,7 @@ export const RadioElement = styled.input(
     },
 
     '&:checked + label::before': {
+      borderColor: 'button.background',
       backgroundColor: 'button.background',
     },
   })
@@ -43,7 +44,7 @@ const Label = styled(Text)(
       top: 0,
       width: 4,
       backgroundColor: 'input.background',
-      borderColor: 'input.border',
+      borderColor: 'mutedForeground',
       borderStyle: 'solid',
       borderWidth: '1px',
       transition: 'all ease-in',
@@ -59,7 +60,7 @@ const Label = styled(Text)(
       position: 'absolute',
       top: '6px',
       left: '6px',
-      backgroundColor: 'white',
+      backgroundColor: 'input.foreground',
       width: '6px',
       transition: 'all ease-in',
       transitionDuration: theme => theme.speeds[2],
