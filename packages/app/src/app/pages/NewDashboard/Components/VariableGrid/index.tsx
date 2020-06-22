@@ -8,6 +8,18 @@ import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { Folder } from '../Folder';
 import { EmptyScreen } from '../EmptyScreen';
+import {
+  DashboardGridItem,
+  DashboardSandbox,
+  DashboardTemplate,
+  DashboardFolder,
+  DashboardNewSandbox,
+  DashboardHeader,
+  DashboardHeaderLink,
+  DashboardBlank,
+  DashboardSkeleton,
+  DashboardNewFolder,
+} from '../../types';
 
 export const GRID_MAX_WIDTH = 992;
 export const GUTTER = 24;
@@ -18,115 +30,164 @@ const HEADER_HEIGHT = 64;
 const GRID_VERTICAL_OFFSET = 120;
 const ITEM_VERTICAL_OFFSET = 32;
 
-const ComponentForTypes = {
-  sandbox: props => <Sandbox sandbox={props} />,
-  folder: props => <Folder {...props} />,
-  'new-sandbox': props => <NewSandbox {...props} />,
-  header: props => (
+type WindowItemProps = {
+  data: {
+    columnCount: number;
+    filledItems: DashboardGridItem[];
+    containerWidth: number;
+    viewMode: 'grid' | 'list';
+  };
+  style: React.CSSProperties;
+  columnIndex: number;
+  rowIndex: number;
+  isScrolling: boolean;
+};
+
+type DecoratedItemProps<T> = {
+  item: T;
+  isScrolling?: boolean;
+};
+// TODO: make this a generic type. How can we convert DashboardGridItem to this?
+interface ComponentForTypes {
+  sandbox: React.FC<DecoratedItemProps<DashboardSandbox>>;
+  template: React.FC<DecoratedItemProps<DashboardTemplate>>;
+  folder: React.FC<DecoratedItemProps<DashboardFolder>>;
+  'new-folder': React.FC<DecoratedItemProps<DashboardNewFolder>>;
+  'new-sandbox': React.FC<DecoratedItemProps<DashboardNewSandbox>>;
+  header: React.FC<DecoratedItemProps<DashboardHeader>>;
+  'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
+  blank: React.FC<DecoratedItemProps<DashboardBlank>>;
+  skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
+}
+
+const ComponentForTypes: ComponentForTypes = {
+  sandbox: React.memo(props => (
+    <Sandbox item={props.item} isScrolling={props.isScrolling} />
+  )),
+  template: React.memo(props => (
+    <Sandbox item={props.item} isScrolling={props.isScrolling} />
+  )),
+  folder: props => <Folder {...props.item} />,
+  // @ts-ignore TODO: find a better way to type this
+  'new-folder': props => <Folder {...props} />,
+  'new-sandbox': () => <NewSandbox />,
+  header: ({ item }) => (
     <Stack justify="space-between" align="center">
       <Text block style={{ userSelect: 'none' }}>
-        {props.title}
+        {item.title}
       </Text>
-      {props.showMoreLink
-        ? ComponentForTypes.headerLink({
-            link: props.showMoreLink,
-            label: props.showMoreLabel,
+      {item.showMoreLink
+        ? ComponentForTypes['header-link']({
+            item: {
+              type: 'header-link' as 'header-link',
+              link: item.showMoreLink,
+              label: item.showMoreLabel,
+            },
           })
         : null}
     </Stack>
   ),
-  headerLink: props => (
+  'header-link': ({ item }) => (
     <Link
       as={RouterLink}
-      to={props.link}
+      to={item.link}
       size={3}
       variant="muted"
       block
       align="right"
       style={{ userSelect: 'none' }}
     >
-      {props.label}
+      {item.label}
     </Link>
   ),
   blank: () => <div />,
-  skeleton: SkeletonSandbox,
+  skeleton: () => <SkeletonSandbox />,
 };
 
-export const VariableGrid = ({ items }) => {
+const Item = ({
+  data,
+  rowIndex,
+  columnIndex,
+  style,
+  isScrolling,
+}: WindowItemProps) => {
+  const { columnCount, filledItems, containerWidth, viewMode } = data;
+
+  /**
+   * react-window does not support gutter or maxWidth
+   * we take over the width and offset calculations
+   * to add these features
+   *
+   * |     |----[       ]----[       ]----[       ]----|     |
+   *         G    item    G    item    G    item    G
+   */
+
+  // adjusting total width based on allowed maxWidth
+  const totalWidth = Math.min(containerWidth, GRID_MAX_WIDTH);
+  const containerLeftOffset =
+    containerWidth > GRID_MAX_WIDTH ? (containerWidth - GRID_MAX_WIDTH) / 2 : 0;
+
+  // we calculate width by making enough room for gutters between
+  // each item + on the 2 ends
+  const spaceReqiuredForGutters = GUTTER * (columnCount + 1);
+  const spaceLeftForItems = totalWidth - spaceReqiuredForGutters;
+  const numberOfItems = columnCount;
+  const eachItemWidth = spaceLeftForItems / numberOfItems;
+
+  // to get the left offset, we need to add the space taken by
+  // previous elements + the gutter just before this item
+  const spaceTakenBeforeThisItem =
+    containerLeftOffset + columnIndex * (eachItemWidth + GUTTER);
+  const leftOffset = spaceTakenBeforeThisItem + GUTTER;
+
+  const index = rowIndex * data.columnCount + columnIndex;
+  const item = filledItems[index];
+  if (!item) return null;
+
+  const Component = ComponentForTypes[item.type];
+
+  const isHeader = item.type === 'header' || item.type === 'header-link';
+  const marginTopMap = {
+    header: ITEM_VERTICAL_OFFSET + 24,
+    headerLink: ITEM_VERTICAL_OFFSET + 28,
+  };
+
+  const margins = {
+    marginTop: marginTopMap[item.type] || ITEM_VERTICAL_OFFSET,
+    marginBottom: viewMode === 'list' || isHeader ? 0 : ITEM_VERTICAL_OFFSET,
+  };
+
+  return (
+    <div
+      style={{
+        ...style,
+        width: eachItemWidth,
+        left: leftOffset,
+        height: (style.height as number) - GUTTER,
+        ...margins,
+      }}
+    >
+      <Component item={item} isScrolling={isScrolling} />
+    </div>
+  );
+};
+
+interface VariableGridProps {
+  items: DashboardGridItem[];
+}
+
+export const VariableGrid = ({ items }: VariableGridProps) => {
   const {
     state: { dashboard },
   } = useOvermind();
 
   const location = useLocation();
 
-  let viewMode;
+  let viewMode: 'grid' | 'list';
   if (location.pathname.includes('deleted')) viewMode = 'list';
   else viewMode = dashboard.viewMode;
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
-
-  const Item = ({ data, rowIndex, columnIndex, style }) => {
-    const { columnCount, filledItems, containerWidth } = data;
-
-    /**
-     * react-window does not support gutter or maxWidth
-     * we take over the width and offset calculations
-     * to add these features
-     *
-     * |     |----[       ]----[       ]----[       ]----|     |
-     *         G    item    G    item    G    item    G
-     */
-
-    // adjusting total width based on allowed maxWidth
-    const totalWidth = Math.min(containerWidth, GRID_MAX_WIDTH);
-    const containerLeftOffset =
-      containerWidth > GRID_MAX_WIDTH
-        ? (containerWidth - GRID_MAX_WIDTH) / 2
-        : 0;
-
-    // we calculate width by making enough room for gutters between
-    // each item + on the 2 ends
-    const spaceReqiuredForGutters = GUTTER * (columnCount + 1);
-    const spaceLeftForItems = totalWidth - spaceReqiuredForGutters;
-    const numberOfItems = columnCount;
-    const eachItemWidth = spaceLeftForItems / numberOfItems;
-
-    // to get the left offset, we need to add the space taken by
-    // previous elements + the gutter just before this item
-    const spaceTakenBeforeThisItem =
-      containerLeftOffset + columnIndex * (eachItemWidth + GUTTER);
-    const leftOffset = spaceTakenBeforeThisItem + GUTTER;
-
-    const index = rowIndex * data.columnCount + columnIndex;
-    const item = filledItems[index];
-    if (!item) return null;
-
-    const Component = ComponentForTypes[item.type];
-    const isHeader = item.type === 'header' || item.type === 'headerLink';
-    const marginTopMap = {
-      header: ITEM_VERTICAL_OFFSET + 24,
-      headerLink: ITEM_VERTICAL_OFFSET + 28,
-    };
-
-    const margins = {
-      marginTop: marginTopMap[item.type] || ITEM_VERTICAL_OFFSET,
-      marginBottom: viewMode === 'list' || isHeader ? 0 : ITEM_VERTICAL_OFFSET,
-    };
-
-    return (
-      <div
-        style={{
-          ...style,
-          width: eachItemWidth,
-          left: leftOffset,
-          height: style.height - GUTTER,
-          ...margins,
-        }}
-      >
-        <Component {...item} />
-      </div>
-    );
-  };
 
   const getRowHeight = (rowIndex, columnCount, filledItems) => {
     const item = filledItems[rowIndex * columnCount];
@@ -210,12 +271,16 @@ export const VariableGrid = ({ items }) => {
                   4
                 );
 
-          const filledItems = [];
-          const blankItem = { type: 'blank' };
-          const skeletonItem = { type: 'skeleton' };
+          const filledItems: Array<DashboardGridItem & {
+            viewMode?: 'list' | 'grid';
+          }> = [];
+          const blankItem = { type: 'blank' as 'blank' };
+          const skeletonItem = { type: 'skeleton' as 'skeleton' };
 
           items.forEach((item, index) => {
-            if (!['header', 'skeletonRow', 'new-sandbox'].includes(item.type)) {
+            if (
+              !['header', 'skeleton-row', 'new-sandbox'].includes(item.type)
+            ) {
               filledItems.push({ ...item, viewMode });
             }
 
@@ -229,7 +294,7 @@ export const VariableGrid = ({ items }) => {
                 for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
                 if (showMoreLink) {
                   filledItems.push({
-                    type: 'headerLink',
+                    type: 'header-link',
                     link: showMoreLink,
                     label: showMoreLabel,
                   });
@@ -245,7 +310,7 @@ export const VariableGrid = ({ items }) => {
                 const blanks = columnCount - rowIndex - 1;
                 for (let i = 0; i < blanks; i++) filledItems.push(blankItem);
               }
-            } else if (item.type === 'skeletonRow') {
+            } else if (item.type === 'skeleton-row') {
               for (let i = 0; i < columnCount; i++) {
                 filledItems.push(skeletonItem);
               }
@@ -261,6 +326,7 @@ export const VariableGrid = ({ items }) => {
               ref={containerRef}
             >
               <VariableSizeGrid
+                useIsScrolling
                 ref={gridRef}
                 columnCount={columnCount}
                 rowCount={Math.ceil(filledItems.length / columnCount)}
@@ -273,7 +339,12 @@ export const VariableGrid = ({ items }) => {
                 estimatedColumnWidth={width / columnCount}
                 estimatedRowHeight={ITEM_HEIGHT}
                 overscanRowCount={2}
-                itemData={{ columnCount, filledItems, containerWidth: width }}
+                itemData={{
+                  columnCount,
+                  filledItems,
+                  containerWidth: width,
+                  viewMode,
+                }}
                 style={{ overflowX: 'hidden', userSelect: 'none' }}
               >
                 {Item}

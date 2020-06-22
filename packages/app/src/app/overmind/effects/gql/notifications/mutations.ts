@@ -26,10 +26,7 @@ export const updateNotificationReadStatus: Query<
   { markAllNotificationsAsRead: { id: string } },
   { notificationId: string; read: boolean }
 > = gql`
-  mutation UpdateNotificationReadStatus(
-    $notificationId: String
-    $read: Boolean
-  ) {
+  mutation UpdateNotificationReadStatus($notificationId: ID!, $read: Boolean!) {
     updateNotificationReadStatus(notificationId: $notificationId, read: $read) {
       id
     }
@@ -40,7 +37,7 @@ export const archiveNotification: Query<
   { archiveNotification: { id: string } },
   { notificationId: string }
 > = gql`
-  mutation ArchiveNotification($notificationId: String) {
+  mutation ArchiveNotification($notificationId: ID!) {
     archiveNotification(notificationId: $notificationId) {
       id
     }

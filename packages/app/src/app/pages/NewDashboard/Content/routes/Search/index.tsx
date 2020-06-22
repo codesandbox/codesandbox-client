@@ -6,6 +6,7 @@ import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
+import { DashboardGridItem } from 'app/pages/NewDashboard/types';
 import { getPossibleTemplates } from '../../utils';
 
 export const SearchComponent = ({ location }) => {
@@ -20,17 +21,15 @@ export const SearchComponent = ({ location }) => {
     actions.dashboard.getPage(sandboxesTypes.SEARCH);
   }, [actions.dashboard, location.search]);
 
-  const items = sandboxes.SEARCH
-    ? getFilteredSandboxes(
-        sandboxes.SEARCH.map(sandbox => ({
-          type: 'sandbox',
-          ...sandbox,
-        }))
-      )
-    : [{ type: 'skeletonRow' }];
+  const items: DashboardGridItem[] = sandboxes.SEARCH
+    ? getFilteredSandboxes(sandboxes.SEARCH).map(sandbox => ({
+        type: 'sandbox',
+        sandbox,
+      }))
+    : [{ type: 'skeleton-row' }];
 
   return (
-    <SelectionProvider sandboxes={items}>
+    <SelectionProvider items={items}>
       <Helmet>
         <title>
           {location.search

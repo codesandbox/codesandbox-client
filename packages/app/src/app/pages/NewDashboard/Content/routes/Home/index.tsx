@@ -5,6 +5,10 @@ import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { Helmet } from 'react-helmet';
+import {
+  DashboardGridItem,
+  DashboardTemplate,
+} from 'app/pages/NewDashboard/types';
 
 export const Home = () => {
   const {
@@ -20,16 +24,18 @@ export const Home = () => {
 
   const templates = (sandboxes.TEMPLATE_HOME || []).map(template => {
     const { sandbox, ...templateValues } = template;
-    return {
-      type: 'sandbox',
-      ...sandbox,
-      isTemplate: true,
+
+    const dashboardTemplate: DashboardTemplate = {
+      type: 'template' as 'template',
+      sandbox,
       template: templateValues,
       isHomeTemplate: true,
     };
+
+    return dashboardTemplate;
   });
 
-  const items = sandboxes.RECENT_HOME
+  const items: DashboardGridItem[] = sandboxes.RECENT_HOME
     ? [
         {
           type: 'header',
@@ -50,15 +56,15 @@ export const Home = () => {
           showMoreLabel: 'Show more',
         },
         ...(sandboxes.RECENT_HOME || []).map(sandbox => ({
-          type: 'sandbox',
-          ...sandbox,
+          type: 'sandbox' as 'sandbox',
+          sandbox,
         })),
       ]
     : [
         { type: 'header', title: 'Recently Used Templates' },
-        { type: 'skeletonRow' },
+        { type: 'skeleton-row' },
         { type: 'header', title: 'Your Recent Sandboxes' },
-        { type: 'skeletonRow' },
+        { type: 'skeleton-row' },
       ];
 
   return (

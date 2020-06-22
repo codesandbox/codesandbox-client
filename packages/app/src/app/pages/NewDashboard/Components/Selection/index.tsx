@@ -15,46 +15,91 @@ import {
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
+import {
+  DashboardTemplate,
+  DashboardSandbox,
+  DashboardFolder,
+  DashboardGridItem,
+} from '../../types';
 
-const Context = React.createContext({
-  sandboxes: [],
-  selectedIds: [],
-  onClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
-  onMouseDown: (event: React.MouseEvent<HTMLDivElement>) => {},
-  onRightClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
+type Selection = {
+  x: null | number;
+  y: null | number;
+};
+
+interface SelectionContext {
+  sandboxes: Array<DashboardSandbox | DashboardTemplate>;
+  selectedIds: string[];
+  onClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => void;
+  onMouseDown: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onRightClick: (
+    event: React.MouseEvent<HTMLDivElement>,
+    itemId: string
+  ) => void;
   onMenuEvent: (
     event:
       | React.MouseEvent<HTMLDivElement>
       | React.KeyboardEvent<HTMLDivElement>,
     itemId?: string
-  ) => {},
-  onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
-  onDragStart: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
-  onDrop: (droppedResult: any) => {},
+  ) => void;
+  onBlur: (event: React.FocusEvent<HTMLDivElement>) => void;
+  onDragStart: (
+    event: React.MouseEvent<HTMLDivElement>,
+    itemId: string
+  ) => void;
+  onDrop: (droppedResult: any) => void;
+  thumbnailRef: React.Ref<HTMLDivElement> | null;
+  isDragging: boolean;
+  isRenaming: boolean;
+  setRenaming: (renaming: boolean) => void;
+}
+
+const Context = React.createContext<SelectionContext>({
+  sandboxes: [],
+  selectedIds: [],
+  onClick: () => {},
+  onMouseDown: () => {},
+  onRightClick: () => {},
+  onMenuEvent: () => {},
+  onBlur: () => {},
+  onDragStart: () => {},
+  onDrop: () => {},
   thumbnailRef: null,
   isDragging: false,
   isRenaming: false,
-  setRenaming: (renaming: boolean) => {},
+  setRenaming: renaming => {},
 });
 
-export const SelectionProvider = ({
+interface SelectionProviderProps {
+  items: Array<DashboardGridItem>;
+  createNewFolder?: (() => void) | null;
+}
+
+export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   items = [],
   createNewFolder = null,
-  ...props
+  children,
 }) => {
-  const selectionItems = [
-    ...(items || [])
-      .filter(item => item.type === 'sandbox' || item.type === 'folder')
-      .map(item => {
-        if (item.type === 'folder') return item.path;
-        return item.id;
-      }),
-  ];
+  const possibleItems = (items || []).filter(
+    item =>
+      item.type === 'sandbox' ||
+      item.type === 'template' ||
+      item.type === 'folder'
+  ) as Array<DashboardSandbox | DashboardTemplate | DashboardFolder>;
 
-  const folders = (items || []).filter(item => item.type === 'folder');
-  const sandboxes = (items || []).filter(item => item.type === 'sandbox');
+  const selectionItems = possibleItems.map(item => {
+    if (item.type === 'folder') return item.path;
+    return item.sandbox.id;
+  });
 
-  const [selectedIds, setSelectedIds] = React.useState([]);
+  const folders = (items || []).filter(
+    item => item.type === 'folder'
+  ) as DashboardFolder[];
+  const sandboxes = (items || []).filter(
+    item => item.type === 'sandbox' || item.type === 'template'
+  ) as Array<DashboardSandbox | DashboardTemplate>;
+
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
   const {
     state: { dashboard },
@@ -137,7 +182,7 @@ export const SelectionProvider = ({
   ) => {
     if (itemId && !selectedIds.includes(itemId)) setSelectedIds([itemId]);
 
-    let menuElement;
+    let menuElement: HTMLElement;
     if (event.type === 'click') {
       const target = event.target as HTMLButtonElement;
       menuElement = target;
@@ -171,7 +216,7 @@ export const SelectionProvider = ({
 
   const [isRenaming, setRenaming] = React.useState(false);
 
-  let viewMode: string;
+  let viewMode: 'grid' | 'list';
   const location = useLocation();
 
   if (location.pathname.includes('deleted')) viewMode = 'list';
@@ -216,17 +261,17 @@ export const SelectionProvider = ({
     if (event.keyCode === ENTER && selectedIds.length === 1) {
       const selectedId = selectedIds[0];
 
-      let url;
+      let url: string;
       if (selectedId.startsWith('/')) {
         // means its a folder
         url = '/new-dashboard/all' + selectedId;
       } else {
-        const seletedSandbox = sandboxes.find(
-          sandbox => sandbox.id === selectedId
+        const selectedItem = sandboxes.find(
+          item => item.sandbox.id === selectedId
         );
         url = sandboxUrl({
-          id: seletedSandbox.id,
-          alias: seletedSandbox.alias,
+          id: selectedItem.sandbox.id,
+          alias: selectedItem.sandbox.alias,
         });
       }
 
@@ -371,7 +416,10 @@ export const SelectionProvider = ({
   const [isDragging, setDragging] = React.useState(false);
 
   const [drawingRect, setDrawingRect] = React.useState(false);
-  const [selectionRect, setSelectionRect] = React.useState({
+  const [selectionRect, setSelectionRect] = React.useState<{
+    start: Selection;
+    end: Selection;
+  }>({
     start: { x: null, y: null },
     end: { x: null, y: null },
   });
@@ -505,7 +553,7 @@ export const SelectionProvider = ({
           tabIndex={0}
           onFocus={() => setSelectedIds([selectionItems[0]])}
         />
-        {props.children}
+        {children}
       </Element>
       {drawingRect && selectionRect.end.x && (
         <Element
@@ -582,7 +630,7 @@ export const useSelection = () => {
   };
 };
 
-let scrollTimer;
+let scrollTimer: number;
 let retries = 0;
 const MAX_RETRIES = 3;
 const startingWaitTime = 50; // ms
@@ -608,6 +656,6 @@ const scrollIntoViewport = (id: string) => {
   }
 };
 
-const isFolderPath = id => id.startsWith('/');
-const isSandboxId = id => !isFolderPath(id);
+const isFolderPath = (id: string) => id.startsWith('/');
+const isSandboxId = (id: string) => !isFolderPath(id);
 const notDrafts = folder => folder.path !== '/drafts';

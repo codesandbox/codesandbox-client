@@ -61,7 +61,9 @@ type State = {
     search: string;
   };
   isTemplateSelected: (templateName: string) => boolean;
-  getFilteredSandboxes: (sandboxes: Sandbox[]) => Sandbox[];
+  getFilteredSandboxes: (
+    sandboxes: Array<Sandbox | Template['sandbox']>
+  ) => Sandbox[];
   recentSandboxesByTime: {
     day: Sandbox[];
     week: Sandbox[];
@@ -182,39 +184,44 @@ export const state: State = {
     blacklistedTemplates: [],
     search: '',
   },
-  isTemplateSelected: derived(({ filters }: State) => templateName =>
+  isTemplateSelected: derived(({ filters }: State) => (templateName: string) =>
     !filters.blacklistedTemplates.includes(templateName)
   ),
-  getFilteredSandboxes: derived(({ orderBy, filters }: State) => sandboxes => {
-    const orderField = orderBy.field;
-    const orderOrder = orderBy.order;
-    const { blacklistedTemplates } = filters;
+  getFilteredSandboxes: derived(
+    ({ orderBy, filters }: State) => (
+      sandboxes: Array<Sandbox | Template['sandbox']>
+    ) => {
+      const orderField = orderBy.field;
+      const orderOrder = orderBy.order;
+      const { blacklistedTemplates } = filters;
 
-    const isDateField =
-      orderField === 'insertedAt' || orderField === 'updatedAt';
+      const isDateField =
+        orderField === 'insertedAt' || orderField === 'updatedAt';
 
-    let orderedSandboxes = (sortBy(sandboxes, s => {
-      if (isDateField) {
-        return +new Date(s[orderField]);
+      let orderedSandboxes = (sortBy(sandboxes, s => {
+        const sandbox = s!;
+        if (isDateField) {
+          return +new Date(sandbox[orderField]);
+        }
+
+        if (orderField === 'title') {
+          const field = sandbox.title || sandbox.alias || sandbox.id;
+          return field.toLowerCase();
+        }
+
+        return sandbox[orderField];
+      }) as Sandbox[]).filter(
+        x =>
+          x.source &&
+          x.source.template &&
+          blacklistedTemplates.indexOf(x.source.template) === -1
+      );
+
+      if (orderOrder === 'desc') {
+        orderedSandboxes = orderedSandboxes.reverse();
       }
 
-      if (orderField === 'title') {
-        const field = s.title || s.alias || s.id;
-        return field.toLowerCase();
-      }
-
-      return s[orderField];
-    }) as Sandbox[]).filter(
-      x =>
-        x.source &&
-        x.source.template &&
-        blacklistedTemplates.indexOf(x.source.template) === -1
-    );
-
-    if (orderOrder === 'desc') {
-      orderedSandboxes = orderedSandboxes.reverse();
+      return orderedSandboxes;
     }
-
-    return orderedSandboxes;
-  }),
+  ),
 };

@@ -4,14 +4,33 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Menu, Icon, Text } from '@codesandbox/components';
+import {
+  DashboardSandbox,
+  DashboardTemplate,
+  DashboardFolder,
+} from '../../types';
 
-const Context = React.createContext({
+interface IMenuProps {
+  visible: boolean;
+  position: { x: null | number; y: null | number };
+  setVisibility: null | ((value: boolean) => void);
+}
+
+const Context = React.createContext<IMenuProps>({
   visible: false,
   setVisibility: null,
   position: { x: null, y: null },
 });
 
-export const ContextMenu = ({
+interface IContextMenuProps extends IMenuProps {
+  selectedIds: string[];
+  sandboxes: Array<DashboardSandbox | DashboardTemplate>;
+  folders: Array<DashboardFolder>;
+  setRenaming: null | ((value: boolean) => void);
+  createNewFolder: () => void;
+}
+
+export const ContextMenu: React.FC<IContextMenuProps> = ({
   visible,
   position,
   setVisibility,
@@ -23,13 +42,15 @@ export const ContextMenu = ({
 }) => {
   if (!visible) return null;
 
-  const selectedItems = selectedIds.map(id => {
+  const selectedItems: Array<
+    DashboardFolder | DashboardSandbox | DashboardTemplate
+  > = selectedIds.map(id => {
     if (id.startsWith('/')) {
       const folder = folders.find(f => f.path === id);
       return { type: 'folder', ...folder };
     }
-    const sandbox = sandboxes.find(s => s.id === id);
-    return { type: 'sandbox', ...sandbox };
+    const sandbox = sandboxes.find(s => s.sandbox.id === id);
+    return sandbox;
   });
 
   let menu;
@@ -38,8 +59,11 @@ export const ContextMenu = ({
     menu = <ContainerMenu createNewFolder={createNewFolder} />;
   } else if (selectedItems.length > 1) {
     menu = <MultiMenu selectedItems={selectedItems} />;
-  } else if (selectedItems[0].type === 'sandbox') {
-    menu = <SandboxMenu sandbox={selectedItems[0]} setRenaming={setRenaming} />;
+  } else if (
+    selectedItems[0].type === 'sandbox' ||
+    selectedItems[0].type === 'template'
+  ) {
+    menu = <SandboxMenu item={selectedItems[0]} setRenaming={setRenaming} />;
   } else if (selectedItems[0].type === 'folder') {
     menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
   }
@@ -79,12 +103,18 @@ const ContainerMenu = ({ createNewFolder }) => {
   );
 };
 
-const SandboxMenu = ({ sandbox, setRenaming }) => {
+interface SandboxMenuProps {
+  item: DashboardSandbox | DashboardTemplate;
+  setRenaming: (value: boolean) => void;
+}
+const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
   const {
     state: { user },
     effects,
     actions,
   } = useOvermind();
+  const { sandbox, type } = item;
+  const isTemplate = type === 'template';
 
   const { visible, setVisibility, position } = React.useContext(Context);
 
@@ -96,12 +126,17 @@ const SandboxMenu = ({ sandbox, setRenaming }) => {
     alias: sandbox.alias,
   });
 
-  const folderUrl = getFolderUrl(sandbox);
+  const folderUrl = getFolderUrl(item);
 
-  const label = sandbox.isTemplate ? 'template' : 'sandbox';
-  const isOwner =
-    !sandbox.isTemplate ||
-    (sandbox.author && sandbox.author.username === user.username);
+  const label = isTemplate ? 'template' : 'sandbox';
+  const isOwner = React.useMemo(() => {
+    if (item.type !== 'template') {
+      return true;
+    }
+    return (
+      item.sandbox.author && item.sandbox.author.username === user.username
+    );
+  }, [item, user]);
 
   if (location.pathname.includes('deleted')) {
     return (
@@ -137,7 +172,7 @@ const SandboxMenu = ({ sandbox, setRenaming }) => {
       position={position}
       style={{ width: 200 }}
     >
-      {sandbox.isTemplate ? (
+      {isTemplate ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -174,7 +209,7 @@ const SandboxMenu = ({ sandbox, setRenaming }) => {
       >
         Copy {label} link
       </MenuItem>
-      {!sandbox.isTemplate ? (
+      {!isTemplate ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -202,7 +237,7 @@ const SandboxMenu = ({ sandbox, setRenaming }) => {
                 actions.dashboard.changeSandboxPrivacy({
                   id: sandbox.id,
                   privacy: 0,
-                  oldPrivacy: sandbox.privacy,
+                  oldPrivacy: sandbox.privacy as 0 | 1 | 2,
                 })
               }
             >
@@ -215,7 +250,7 @@ const SandboxMenu = ({ sandbox, setRenaming }) => {
                 actions.dashboard.changeSandboxPrivacy({
                   id: sandbox.id,
                   privacy: 1,
-                  oldPrivacy: sandbox.privacy,
+                  oldPrivacy: sandbox.privacy as 0 | 1 | 2,
                 })
               }
             >
@@ -228,7 +263,7 @@ const SandboxMenu = ({ sandbox, setRenaming }) => {
                 actions.dashboard.changeSandboxPrivacy({
                   id: sandbox.id,
                   privacy: 2,
-                  oldPrivacy: sandbox.privacy,
+                  oldPrivacy: sandbox.privacy as 0 | 1 | 2,
                 })
               }
             >
@@ -237,7 +272,7 @@ const SandboxMenu = ({ sandbox, setRenaming }) => {
           )}
           <Menu.Divider />
           <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
-          {sandbox.isTemplate ? (
+          {isTemplate ? (
             <MenuItem
               onSelect={() => {
                 actions.dashboard.unmakeTemplate([sandbox.id]);
@@ -255,12 +290,13 @@ const SandboxMenu = ({ sandbox, setRenaming }) => {
             </MenuItem>
           )}
           <Menu.Divider />
-          {sandbox.isTemplate ? (
+          {isTemplate ? (
             <MenuItem
               onSelect={() => {
+                const template = item as DashboardTemplate;
                 actions.dashboard.deleteTemplate({
-                  sandboxId: sandbox.id,
-                  templateId: sandbox.template.id,
+                  sandboxId: template.sandbox.id,
+                  templateId: template.template.id,
                 });
                 setVisibility(false);
               }}
@@ -330,7 +366,11 @@ const FolderMenu = ({ folder, setRenaming }) => {
   );
 };
 
-const MultiMenu = ({ selectedItems }) => {
+interface IMultiMenuProps {
+  selectedItems: Array<DashboardSandbox | DashboardTemplate | DashboardFolder>;
+}
+
+const MultiMenu = ({ selectedItems }: IMultiMenuProps) => {
   const { actions } = useOvermind();
   const { visible, setVisibility, position } = React.useContext(Context);
 
@@ -343,26 +383,34 @@ const MultiMenu = ({ selectedItems }) => {
     sandboxes + folders - delete
   */
 
-  const folders = selectedItems.filter(item => item.type === 'folder');
-  const templates = selectedItems.filter(item => item.isTemplate);
+  const folders = selectedItems.filter(
+    item => item.type === 'folder'
+  ) as DashboardFolder[];
+  const templates = selectedItems.filter(
+    item => item.type === 'template'
+  ) as DashboardTemplate[];
   const sandboxes = selectedItems.filter(
-    item => item.type === 'sandbox' && !item.isTemplate
-  );
+    item => item.type === 'sandbox'
+  ) as DashboardSandbox[];
 
   const exportItems = () => {
     const ids = [
-      ...sandboxes.map(sandbox => sandbox.id),
-      ...templates.map(template => template.id),
+      ...sandboxes.map(sandbox => sandbox.sandbox.id),
+      ...templates.map(template => template.sandbox.id),
     ];
     actions.dashboard.downloadSandboxes(ids);
   };
 
   const convertToTemplates = () => {
-    actions.dashboard.makeTemplate(sandboxes.map(sandbox => sandbox.id));
+    actions.dashboard.makeTemplate(
+      sandboxes.map(sandbox => sandbox.sandbox.id)
+    );
   };
 
   const convertToSandboxes = () => {
-    actions.dashboard.unmakeTemplate(templates.map(template => template.id));
+    actions.dashboard.unmakeTemplate(
+      templates.map(template => template.sandbox.id)
+    );
   };
 
   const deleteItems = () => {
@@ -372,13 +420,15 @@ const MultiMenu = ({ selectedItems }) => {
 
     templates.forEach(sandbox =>
       actions.dashboard.deleteTemplate({
-        sandboxId: sandbox.id,
+        sandboxId: sandbox.sandbox.id,
         templateId: sandbox.template.id,
       })
     );
 
     if (sandboxes.length) {
-      actions.dashboard.deleteSandbox(sandboxes.map(sandbox => sandbox.id));
+      actions.dashboard.deleteSandbox(
+        sandboxes.map(sandbox => sandbox.sandbox.id)
+      );
     }
 
     setVisibility(false);
@@ -423,10 +473,10 @@ const MultiMenu = ({ selectedItems }) => {
   );
 };
 
-const getFolderUrl = sandbox => {
-  if (sandbox.isTemplate) return '/new-dashboard/templates';
+const getFolderUrl = (item: DashboardSandbox | DashboardTemplate) => {
+  if (item.type === 'template') return '/new-dashboard/templates';
 
-  const path = sandbox.collection.path;
+  const path = item.sandbox.collection.path;
   if (path === '/' || !path) return '/new-dashboard/all/drafts';
 
   return '/new-dashboard/all' + path;
