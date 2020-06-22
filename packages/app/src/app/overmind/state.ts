@@ -4,6 +4,7 @@ import {
   Sandbox,
   UploadFile,
 } from '@codesandbox/common/lib/types';
+import { CurrentTeamInfoFragmentFragment as CurrentTeam } from 'app/graphql/types';
 import { derived } from 'overmind';
 import { hasLogIn } from './utils/user';
 
@@ -19,6 +20,8 @@ type State = {
   error: string | null;
   contributors: string[];
   user: CurrentUser | null;
+  activeTeam: string | null;
+  activeTeamInfo: CurrentTeam | null;
   connected: boolean;
   notifications: Notification[];
   isLoadingCLI: boolean;
@@ -62,6 +65,8 @@ export const state: State = {
   authToken: null,
   error: null,
   user: null,
+  activeTeam: null,
+  activeTeamInfo: null,
   connected: true,
   notifications: [],
   contributors: [],

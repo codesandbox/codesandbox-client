@@ -3,7 +3,6 @@ import {
   SandboxFragmentDashboardFragment as Sandbox,
   Team,
   TemplateFragmentDashboardFragment as Template,
-  CurrentTeamInfoFragmentFragment as CurrentTeam,
 } from 'app/graphql/types';
 import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
@@ -50,8 +49,6 @@ type State = {
   };
   teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
   allCollections: DELETE_ME_COLLECTION[] | null;
-  activeTeam: string | null;
-  activeTeamInfo: CurrentTeam | null;
   selectedSandboxes: string[];
   trashSandboxIds: string[];
   isDragging: boolean;
@@ -90,8 +87,6 @@ export const state: State = {
   },
   viewMode: 'grid',
   allCollections: null,
-  activeTeam: null,
-  activeTeamInfo: null,
   teams: [],
   recentSandboxesByTime: derived(({ sandboxes }: State) => {
     const recentSandboxes = sandboxes.RECENT;

@@ -20,9 +20,7 @@ import { Card } from './components';
 
 export const Invite = () => {
   const {
-    state: {
-      dashboard: { activeTeamInfo: team },
-    },
+    state: { activeTeam, activeTeamInfo: team },
     actions,
     effects,
   } = useOvermind();
@@ -30,8 +28,8 @@ export const Invite = () => {
   const inviteLink = team && teamInviteLink(team.inviteToken);
 
   React.useEffect(() => {
-    actions.dashboard.getTeam();
-  }, [actions.dashboard]);
+    actions.getActiveTeam();
+  }, [actions, activeTeam]);
 
   const [inviteValue, setInviteValue] = React.useState('');
   const [loading, setLoading] = React.useState(false);

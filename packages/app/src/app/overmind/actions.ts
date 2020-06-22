@@ -290,3 +290,17 @@ export const rejectTeamInvitation: Action<{ teamName: string }> = (
 
   effects.notificationToast.success(`Rejected invitation to ${teamName}`);
 };
+
+export const getActiveTeam: AsyncAction = async ({ state, effects }) => {
+  if (!state.activeTeam) return;
+
+  const team = await effects.gql.queries.getTeam({
+    teamId: state.activeTeam,
+  });
+
+  if (!team || !team.me) {
+    return;
+  }
+
+  state.activeTeamInfo = team.me.team;
+};
