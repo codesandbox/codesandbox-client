@@ -155,7 +155,8 @@ export const CommitForm = () => {
             disabled={!canCommitDirectly}
           />{' '}
           <Text>
-            <Text variant="muted">Commit directly to the</Text> master
+            <Text variant="muted">Commit directly to the</Text>{' '}
+            {currentSandbox.originalGit.branch}
             <Text variant="muted"> branch</Text>
           </Text>
         </Stack>
@@ -195,59 +196,3 @@ export const CommitForm = () => {
     </Stack>
   );
 };
-
-/*
- <Button
-            loading={isCommitting || isCreatingPr}
-            css={
-              showSelector
-                ? {
-                    width: 'calc(100% - 26px)',
-                    borderTopRightRadius: 0,
-                    borderBottomRightRadius: 0,
-                  }
-                : {
-                    width: '100%',
-                  }
-            }
-            disabled={!title || !canUpdate}
-            onClick={() => actions[evaluatedAction].action()}
-          >
-            {actions[evaluatedAction].text}
-          </Button>
-          {showSelector ? (
-            <>
-              <Menu>
-                <Menu.Button
-                  disabled={!title || !canUpdate}
-                  variant="primary"
-                  css={{
-                    width: '26px',
-                    borderTopLeftRadius: 0,
-                    borderBottomLeftRadius: 0,
-                  }}
-                >
-                  <Icon size={8} name="caret" />
-                </Menu.Button>
-                <Menu.List
-                  css={{
-                    marginLeft: '-228px',
-                    marginTop: '-2px',
-                    width: '252px',
-                  }}
-                >
-                  <Menu.Item onSelect={() => setCurrentAction('branch')}>
-                    {getButtonTitle(
-                      `Commit to branch (${currentSandbox.originalGit.branch})`
-                    )}
-                  </Menu.Item>
-                  <Menu.Item onSelect={() => setCurrentAction('pr')}>
-                    {getButtonTitle(
-                      `Create PR branch (csb-${currentSandbox.id})`
-                    )}
-                  </Menu.Item>
-                </Menu.List>
-              </Menu>
-            </>
-          ) : null}
-*/
