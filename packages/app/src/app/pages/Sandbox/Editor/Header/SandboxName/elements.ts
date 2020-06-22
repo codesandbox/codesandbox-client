@@ -10,9 +10,8 @@ export const Folder = styled.div`
 `;
 
 export const Form = styled.form`
-  position: absolute;
-  left: 0;
-  right: 0;
+  padding-left: 8px;
+  padding-right: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
