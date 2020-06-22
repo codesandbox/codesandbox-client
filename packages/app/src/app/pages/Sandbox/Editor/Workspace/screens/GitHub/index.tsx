@@ -213,6 +213,7 @@ export const GitHub = () => {
             </Element>
           </Collapsible>
           {getContent()}
+          <CreateRepo />
         </>
       ) : (
         <CreateRepo />
