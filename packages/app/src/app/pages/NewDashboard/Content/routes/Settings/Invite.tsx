@@ -32,6 +32,9 @@ export const Invite = () => {
   }, [actions, activeTeam]);
 
   const [inviteValue, setInviteValue] = React.useState('');
+  const [linkCopied, setLinkCopied] = React.useState(false);
+  const copyLinkTimeoutRef = React.useRef<number>();
+
   const [loading, setLoading] = React.useState(false);
 
   const onSubmit = async event => {
@@ -43,6 +46,18 @@ export const Invite = () => {
   };
 
   if (!team) return null;
+
+  const copyLink = () => {
+    effects.browser.copyToClipboard(inviteLink);
+    setLinkCopied(true);
+
+    if (copyLinkTimeoutRef.current) {
+      window.clearTimeout(copyLinkTimeoutRef.current);
+    }
+    copyLinkTimeoutRef.current = window.setTimeout(() => {
+      setLinkCopied(false);
+    }, 1500);
+  };
 
   return (
     <>
@@ -93,13 +108,21 @@ export const Invite = () => {
               })}
             >
               <Stack gap={2}>
-                <Input type="text" value={inviteLink} />{' '}
+                <Input
+                  onFocus={(evt: React.FocusEvent<HTMLInputElement>) => {
+                    if (evt.target) {
+                      evt.target.select();
+                    }
+                  }}
+                  type="text"
+                  value={inviteLink}
+                />
                 <Button
                   variant="secondary"
                   css={{ width: 88 }}
-                  onClick={() => effects.browser.copyToClipboard(inviteLink)}
+                  onClick={copyLink}
                 >
-                  Copy Link
+                  {linkCopied ? 'Link Copied!' : 'Copy Link'}
                 </Button>
               </Stack>
               <Stack as="form" onSubmit={onSubmit} gap={2}>
