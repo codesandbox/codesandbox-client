@@ -40,13 +40,27 @@ export const SandboxCard = ({
 }) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
 
+  const [guaranteedScreenshotUrl, setGuaranteedScreenshotUrl] = React.useState<
+    string
+  >(screenshotUrl);
+
   React.useEffect(() => {
     // We only want to render the screenshot once the user has stopped scrolling
     if (!isScrolling && !stoppedScrolling) {
       setStoppedScrolling(true);
     }
   }, [isScrolling, stoppedScrolling]);
-  const showScreenshot = stoppedScrolling && screenshotUrl;
+
+  React.useEffect(() => {
+    // We always try to show the cached screenshot first, if someone looks at a sandbox we will try to
+    // generate a new one based on the latest contents.
+    const generateScreenshotUrl = `/api/v1/sandboxes/${sandbox.id}/screenshot.png`;
+    if (stoppedScrolling && !guaranteedScreenshotUrl) {
+      setGuaranteedScreenshotUrl(generateScreenshotUrl);
+    }
+  }, [stoppedScrolling, guaranteedScreenshotUrl, sandbox.id]);
+
+  const showScreenshot = stoppedScrolling || screenshotUrl;
 
   return (
     <Stack
@@ -90,7 +104,9 @@ export const SandboxCard = ({
           },
         })}
         style={{
-          [showScreenshot ? 'backgroundImage' : null]: `url(${screenshotUrl})`,
+          [showScreenshot
+            ? 'backgroundImage'
+            : null]: `url(${guaranteedScreenshotUrl})`,
         }}
       >
         {showScreenshot ? null : <TemplateIcon width="60" height="60" />}
