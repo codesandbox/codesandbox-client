@@ -9,7 +9,6 @@ import {
   Element,
   Stack,
 } from '@codesandbox/components';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
@@ -121,7 +120,7 @@ export const Sandbox = React.memo<Props>(
 
     if (content) {
       return (
-        <ThemeProvider theme={codesandboxBlack}>
+        <ThemeProvider>
           <Element
             css={css({
               display: 'flex',

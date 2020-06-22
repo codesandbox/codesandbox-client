@@ -130,32 +130,31 @@ export const archiveAllNotifications: AsyncAction = async ({
   }
 };
 
-export const markNotificationAsRead: AsyncAction<string> = async (
+export const updateReadStatus: AsyncAction<string> = async (
   { state, effects },
   id
 ) => {
-  if (
-    !state.userNotifications.notifications ||
-    (state.userNotifications.notifications.find(not => not.id === id) || {})
-      .read
-  )
-    return;
+  if (!state.userNotifications.notifications) return;
   const oldNots = state.userNotifications.notifications;
+  const currentValue = (
+    state.userNotifications.notifications.find(not => not.id === id) || {}
+  ).read;
   try {
     state.userNotifications.notifications = state.userNotifications.notifications.map(
       not => {
         if (not.id === id) {
           return {
             ...not,
-            read: true,
+            read: !currentValue,
           };
         }
 
         return not;
       }
     );
-    await effects.gql.mutations.markNotificationAsRead({
+    await effects.gql.mutations.updateNotificationReadStatus({
       notificationId: id,
+      read: !currentValue,
     });
   } catch {
     state.userNotifications.notifications = oldNots;

@@ -1,8 +1,7 @@
-import React, { FunctionComponent, useState } from 'react';
-import { formatDistanceStrict } from 'date-fns';
+import React, { useState } from 'react';
+import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import css from '@styled-system/css';
-import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import {
   Stack,
   Element,
@@ -10,50 +9,46 @@ import {
   ListAction,
   isMenuClicked,
 } from '@codesandbox/components';
+import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import { useOvermind } from 'app/overmind';
-import { TeamIcon } from './Icons';
+import { AcceptedIcon } from './Icons';
 import { Menu } from './Menu';
 
-type Props = {
+interface Props {
+  insertedAt: string;
   id: string;
   read: boolean;
-  teamId: string;
   teamName: string;
-  inviterName: string;
-  inviterAvatar: string;
-  insertedAt: string;
-};
-export const TeamInvite: FunctionComponent<Props> = ({
+  userName: string;
+  userAvatar: string;
+}
+
+export const TeamAccepted = ({
+  insertedAt,
   id,
   read,
-  teamId,
   teamName,
-  inviterName,
-  inviterAvatar,
-  insertedAt,
-}) => {
+  userName,
+  userAvatar,
+}: Props) => {
   const {
-    actions: { userNotifications },
+    actions: {
+      userNotifications: { updateReadStatus },
+    },
   } = useOvermind();
   const [hover, setHover] = useState(false);
-
-  const onClick = async () => {
-    if (isMenuClicked(event)) return;
-    await userNotifications.openTeamAcceptModal({
-      teamName,
-      teamId,
-      userAvatar: inviterName,
-    });
-
-    userNotifications.markNotificationAsRead(id);
-  };
   return (
     <ListAction
-      onClick={onClick}
-      key={teamId}
-      css={css({ padding: 0 })}
+      key={teamName}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      onClick={() => {
+        if (isMenuClicked(event)) return;
+        if (!read) {
+          updateReadStatus(id);
+        }
+      }}
+      css={css({ padding: 0 })}
     >
       <Element
         css={css({
@@ -65,8 +60,8 @@ export const TeamInvite: FunctionComponent<Props> = ({
             <Element css={css({ position: 'relative' })}>
               <Element
                 as="img"
-                src={inviterAvatar}
-                alt={inviterName}
+                src={userAvatar}
+                alt={userName}
                 css={css({
                   width: 32,
                   height: 32,
@@ -74,7 +69,7 @@ export const TeamInvite: FunctionComponent<Props> = ({
                   borderRadius: 'small',
                 })}
               />
-              <TeamIcon
+              <AcceptedIcon
                 read={read}
                 css={css({
                   position: 'absolute',
@@ -85,15 +80,21 @@ export const TeamInvite: FunctionComponent<Props> = ({
             </Element>
 
             <Text size={3} variant="muted">
-              {inviterName}{' '}
-              <Text css={css({ color: 'sideBar.foreground' })}>invites</Text>{' '}
-              you to join team {teamName}
+              {userName}{' '}
+              <Text css={css({ color: 'sideBar.foreground' })}>accepted</Text>{' '}
+              your invitation to join {teamName}!
             </Text>
           </Stack>
-          {hover ? (
-            <Menu read={read} id={id} />
-          ) : (
-            <Element css={css({ width: 70, flexShrink: 0 })}>
+          <Stack
+            css={css({
+              width: 70,
+              flexShrink: 0,
+              justifyContent: 'flex-end',
+            })}
+          >
+            {hover ? (
+              <Menu read={read} id={id} />
+            ) : (
               <Text
                 size={2}
                 align="right"
@@ -107,8 +108,8 @@ export const TeamInvite: FunctionComponent<Props> = ({
                   )
                 )}
               </Text>
-            </Element>
-          )}
+            )}
+          </Stack>
         </Stack>
       </Element>
     </ListAction>

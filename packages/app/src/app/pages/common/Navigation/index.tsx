@@ -13,7 +13,6 @@ import {
   withRouter,
   RouteComponentProps,
 } from 'react-router-dom';
-import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import css from '@styled-system/css';
 
 import { UserMenu } from '../UserMenu';
@@ -31,7 +30,7 @@ export const NavigationComponent = ({ title, match }: Props) => {
   const link = isLoggedIn ? '/dashboard' : '/';
 
   return (
-    <ThemeProvider theme={codeSandboxBlack}>
+    <ThemeProvider>
       <Stack
         as="header"
         paddingX={4}

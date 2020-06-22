@@ -1,7 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { ThemeProvider, Stack } from '@codesandbox/components';
-import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { SignInModalElement } from 'app/pages/SignIn/Modal';
 import { useOvermind } from 'app/overmind';
@@ -28,7 +27,7 @@ export const SignInModal = () => {
   }, [closeModal]);
 
   return (
-    <ThemeProvider theme={codeSandboxBlack}>
+    <ThemeProvider>
       <AnimatePresence>
         <motion.div
           initial={{ opacity: 0, zIndex: 9999 }}

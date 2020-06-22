@@ -5,6 +5,7 @@ import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import { DashboardGridItem } from 'app/pages/NewDashboard/types';
 import { getPossibleTemplates } from '../../utils';
 
 export const Deleted = () => {
@@ -31,7 +32,7 @@ export const Deleted = () => {
     ];
   };
 
-  const items = sandboxes.DELETED
+  const items: DashboardGridItem[] = sandboxes.DELETED
     ? [
         ...getSection(
           'Archived this week',
@@ -44,9 +45,9 @@ export const Deleted = () => {
       ]
     : [
         { type: 'header', title: 'Archived this week' },
-        { type: 'skeletonRow' },
+        { type: 'skeleton-row' },
         { type: 'header', title: 'Archived earlier' },
-        { type: 'skeletonRow' },
+        { type: 'skeleton-row' },
       ];
 
   return (

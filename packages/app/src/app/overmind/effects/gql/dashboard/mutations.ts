@@ -278,7 +278,7 @@ export const setTeamName: Query<
   SetTeamNameMutation,
   SetTeamNameMutationVariables
 > = gql`
-  mutation SetTeamName($teamId: ID!, $name: String!) {
+  mutation _SetTeamName($teamId: ID!, $name: String!) {
     setTeamName(teamId: $teamId, name: $name) {
       ...teamFragmentDashboard
     }

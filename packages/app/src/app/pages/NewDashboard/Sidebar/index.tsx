@@ -43,7 +43,7 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
 
   React.useEffect(() => {
     actions.dashboard.getTeams();
-  }, [actions.dashboard, user]);
+  }, [actions.dashboard, user?.id]);
 
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
@@ -63,6 +63,9 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
       });
     }
   }, [dashboard.activeTeam, dashboard.activeTeamInfo, dashboard.teams, user]);
+
+  const inTeamContext =
+    activeAccount && user && activeAccount.username !== user.username;
 
   const folders = dashboard.allCollections || [];
 
@@ -167,10 +170,9 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                       css={css({
                         height: 10,
                         textAlign: 'left',
-                        backgroundColor:
-                          activeAccount.username === user.username
-                            ? 'grays.500'
-                            : 'transparent',
+                        backgroundColor: !inTeamContext
+                          ? 'grays.500'
+                          : 'transparent',
                       })}
                       style={{ paddingLeft: 8 }}
                       onSelect={() => {
@@ -253,8 +255,16 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
             )}
           </ListItem>
           <RowItem name="Home" path="home" icon="box" />
-          <RowItem name="Recent" path="recent" icon="clock" />
-          <RowItem name="Drafts" path="/drafts" icon="file" />
+          {inTeamContext ? null : (
+            <RowItem name="Recent" path="recent" icon="clock" />
+          )}
+          <RowItem
+            name={!inTeamContext ? 'Drafts' : 'My Drafts'}
+            path="/drafts"
+            icon="file"
+          />
+
+          {inTeamContext ? <Menu.Divider /> : null}
 
           <NestableRowItem
             name="All sandboxes"
@@ -265,6 +275,9 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
             ]}
           />
 
+          {inTeamContext ? (
+            <RowItem name="Recently Modified" path="recent" icon="clock" />
+          ) : null}
           <RowItem name="Templates" path="templates" icon="star" />
           <RowItem name="Recently Deleted" path="deleted" icon="trash" />
         </List>
@@ -320,6 +333,7 @@ const linkStyles = {
   alignItems: 'center',
   paddingLeft: 8,
   paddingRight: 8,
+  flexShrink: 0,
 };
 
 const canNotAcceptSandboxes = ['home', 'recent', 'all'];
@@ -374,6 +388,7 @@ const RowItem = ({
 
   const location = useLocation();
   const isCurrentLink = linkTo === location.pathname;
+  const history = useHistory();
 
   /** Toggle nested folders when user
    * is drags an item over a folder after a treshold
@@ -428,7 +443,16 @@ const RowItem = ({
       )}
     >
       {props.children || (
-        <Link as={RouterLink} to={linkTo} style={linkStyles}>
+        <Link
+          as={RouterLink}
+          to={linkTo}
+          style={linkStyles}
+          onKeyDown={event => {
+            if (event.keyCode === ENTER) {
+              history.push(linkTo, { focus: 'FIRST_ITEM' });
+            }
+          }}
+        >
           <Stack
             as="span"
             css={css({ width: 10 })}
@@ -571,8 +595,10 @@ const NestableRowItem = ({ name, path, folders }) => {
           onClick={() => history.push('/new-dashboard/all' + path)}
           onContextMenu={onContextMenu}
           onKeyDown={event => {
-            if (event.keyCode === ENTER) {
-              history.push('/new-dashboard/all' + path);
+            if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
+              history.push('/new-dashboard/all' + path, {
+                focus: 'FIRST_ITEM',
+              });
             }
           }}
           tabIndex={0}
@@ -602,10 +628,10 @@ const NestableRowItem = ({ name, path, folders }) => {
               })}
             />
           ) : (
-            <Element as="span" css={css({ width: 5 })} />
+            <Element as="span" css={css({ width: 5, flexShrink: 0 })} />
           )}
 
-          <Stack align="center" gap={3} css={{ width: '100%' }}>
+          <Stack align="center" gap={3} css={{ width: 'calc(100% - 28px)' }}>
             <Stack
               as="span"
               css={css({ width: 4 })}
