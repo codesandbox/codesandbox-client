@@ -23,7 +23,7 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = withTheme(
       state: { isLoggedIn },
     } = useOvermind();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_, setErrorCode] = React.useState<string | null>(null);
+    const [errorCode, setErrorCode] = React.useState<string | null>(null);
 
     useEffect(() => {
       codesadboxMounted();
@@ -71,7 +71,7 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = withTheme(
                     </Button>
                   </a>
                 )}
-                <a href={buildCrashReport({ error, trace })}>
+                <a href={buildCrashReport({ error, trace, errorCode })}>
                   <Button
                     autoWidth
                     target="_blank"

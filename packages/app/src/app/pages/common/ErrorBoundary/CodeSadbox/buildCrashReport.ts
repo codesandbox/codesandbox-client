@@ -4,7 +4,7 @@ import VERSION from '@codesandbox/common/lib/version';
 interface IbuildCrashReport {
   error?: Error;
   trace?: string;
-  errorCode?: string | null;
+  errorCode: string | null;
 }
 
 export const buildCrashReport = ({
