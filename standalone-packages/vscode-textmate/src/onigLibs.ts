@@ -1,8 +1,7 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-/* eslint-disable */
-
+'use strict';
 
 import { IOnigLib } from './types';
 import { Thenable } from './main';
@@ -22,7 +21,8 @@ export async function getOnigasm(): Promise<IOnigLib> {
 	if (!onigasmLib) {
 		const onigasmModule = require('vscode-oniguruma');
 		const wasmBin = await getWasm()
-		onigasmLib = onigasmModule.loadWASM(wasmBin).then((_: any) => ({
+		onigasmLib = onigasmModule.loadWASM(wasmBin).then((_: any) => {
+			return {
 				createOnigScanner(patterns: string[]) { return new onigasmModule.OnigScanner(patterns); },
 				createOnigString(s: string) {
 					const r = new onigasmModule.OnigString(s);
@@ -30,15 +30,16 @@ export async function getOnigasm(): Promise<IOnigLib> {
 					(<any>r).$str = s;
 					return r;
 				 }
-			}));
+			};
+		});
 	}
 	return onigasmLib;
 }
 
 export function getOniguruma(): Thenable<IOnigLib> {
 	if (!onigurumaLib) {
-		const getOnigModule : any = (function () {
-			let onigurumaModule: any = null;
+		let getOnigModule : any = (function () {
+			var onigurumaModule: any = null;
 			return function () {
 				if (!onigurumaModule) {
 					// CODESANDBOX EDIT
@@ -50,12 +51,12 @@ export function getOniguruma(): Thenable<IOnigLib> {
 		})();
 		onigurumaLib = Promise.resolve({
 			createOnigScanner(patterns: string[]) {
-				const onigurumaModule = getOnigModule();
+				let onigurumaModule = getOnigModule();
 				return new onigurumaModule.OnigScanner(patterns);
 			},
 			createOnigString(s: string) {
-				const onigurumaModule = getOnigModule();
-				const string = new onigurumaModule.OnigString(s);
+				let onigurumaModule = getOnigModule();
+				let string = new onigurumaModule.OnigString(s);
 				string.content = s;
 				return string;
 			}
