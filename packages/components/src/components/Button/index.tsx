@@ -66,9 +66,9 @@ const commonStyles = {
   cursor: 'pointer',
   fontFamily: 'Inter, sans-serif',
   paddingY: 0,
+  width: '100%',
   paddingX: 2,
   height: '26px', // match with inputs
-  width: '100%',
   fontSize: 2,
   fontWeight: 'medium',
   lineHeight: 1, // trust the height
@@ -92,6 +92,9 @@ const commonStyles = {
     opacity: 1,
     cursor: 'default',
   },
+  '&[data-auto-width="true"]': {
+    width: 'fit-content',
+  },
 };
 
 const merge = (...objs) =>
@@ -108,10 +111,14 @@ export interface ButtonProps
   to?: string;
   as?: any;
   target?: any;
+  autoWidth?: boolean;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button({ variant = 'primary', loading, css = {}, ...props }, ref) {
+  function Button(
+    { variant = 'primary', loading, css = {}, autoWidth, ...props },
+    ref
+  ) {
     const styles = merge(variantStyles[variant], commonStyles, css);
     // default type is button unless props.as was changed
     const type = !props.as && 'button';
@@ -124,6 +131,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={props.disabled || loading}
         data-loading={loading}
+        data-auto-width={autoWidth}
         {...props}
       >
         {loading ? <AnimatingDots /> : props.children}

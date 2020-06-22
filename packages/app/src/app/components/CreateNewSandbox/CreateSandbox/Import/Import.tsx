@@ -4,7 +4,7 @@ import {
   protocolAndHost,
   gitHubRepoPattern,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { Button } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { SignInButton } from 'app/pages/common/SignInButton';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -103,7 +103,7 @@ export const Import = () => {
 
             <ButtonContainer>
               <Button
-                small
+                autoWidth
                 style={{ fontSize: 11 }}
                 onClick={() => effects.browser.copyToClipboard(transformedUrl)}
                 disabled={!transformedUrl}
@@ -111,7 +111,7 @@ export const Import = () => {
                 Copy Link
               </Button>
               <Button
-                small
+                autoWidth
                 style={{ fontSize: 11 }}
                 disabled={!transformedUrl}
                 to={gitHubToSandboxUrl(url)}

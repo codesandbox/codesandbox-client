@@ -8,6 +8,7 @@ export type ErrorInfo = {
 export interface IFallbackComponentProps {
   error?: Error;
   trace?: string;
+  theme?: any;
 }
 
 export interface IErrorBoundaryProps {
