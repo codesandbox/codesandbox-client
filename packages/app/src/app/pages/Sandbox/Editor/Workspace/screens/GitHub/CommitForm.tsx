@@ -155,7 +155,8 @@ export const CommitForm = () => {
             disabled={!canCommitDirectly}
           />{' '}
           <Text>
-            <Text variant="muted">Commit directly to the</Text> master
+            <Text variant="muted">Commit directly to the</Text>
+            {` ${currentSandbox.originalGit.branch}`}
             <Text variant="muted"> branch</Text>
           </Text>
         </Stack>
