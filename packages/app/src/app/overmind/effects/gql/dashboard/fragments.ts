@@ -113,3 +113,20 @@ export const teamFragmentDashboard = gql`
     }
   }
 `;
+
+export const currentTeamInfoFragment = gql`
+  fragment currentTeamInfoFragment on Team {
+    id
+    creatorId
+    description
+    inviteToken
+    name
+    users {
+      avatarUrl
+      name
+      lastName
+      username
+      id
+    }
+  }
+`;

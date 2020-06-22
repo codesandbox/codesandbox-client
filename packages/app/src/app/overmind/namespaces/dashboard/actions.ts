@@ -984,13 +984,17 @@ export const setTeamInfo: AsyncAction<{
       return team;
     });
 
-    state.dashboard.activeTeamInfo = {
-      ...oldActiveTeamInfo,
-      name,
-      description,
-    };
+    if (oldActiveTeamInfo) {
+      state.dashboard.activeTeamInfo = {
+        ...oldActiveTeamInfo,
+        name,
+        description,
+      };
+    }
   } catch (e) {
-    state.dashboard.activeTeamInfo = { ...oldActiveTeamInfo };
+    if (oldActiveTeamInfo) {
+      state.dashboard.activeTeamInfo = { ...oldActiveTeamInfo };
+    }
     if (state.dashboard.teams && oldTeamInfo) {
       state.dashboard.teams = [...state.dashboard.teams, oldTeamInfo];
     }
