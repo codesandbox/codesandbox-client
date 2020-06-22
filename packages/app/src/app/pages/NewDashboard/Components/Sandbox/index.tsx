@@ -15,6 +15,7 @@ import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
 import { DashboardSandbox, DashboardTemplate } from '../../types';
+import { SandboxItemComponentProps } from './types';
 
 const PrivacyIcons = {
   0: () => null,
@@ -105,7 +106,8 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   if (location.pathname.includes('deleted')) viewMode = 'list';
   else viewMode = dashboard.viewMode;
 
-  const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
+  const Component: React.FC<SandboxItemComponentProps> =
+    viewMode === 'list' ? SandboxListItem : SandboxCard;
 
   // interactions
   const {
@@ -217,6 +219,7 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   };
 
   const sandboxProps = {
+    isHomeTemplate: item.isHomeTemplate,
     sandboxTitle,
     sandboxLocation,
     lastUpdated,

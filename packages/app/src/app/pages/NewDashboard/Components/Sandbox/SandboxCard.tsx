@@ -9,7 +9,7 @@ import {
   SkeletonText,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { DashboardSandbox, DashboardTemplate } from '../../types';
+import { SandboxItemComponentProps } from './types';
 
 const useImageLoaded = (url: string) => {
   const [loaded, setLoaded] = React.useState(false);
@@ -29,18 +29,18 @@ const useImageLoaded = (url: string) => {
   return loaded;
 };
 
-interface SandboxTitleProps {
-  editing: boolean;
-  stoppedScrolling: boolean;
-  onContextMenu: () => void;
-  onSubmit: (evt: React.FormEvent<HTMLFormElement>) => void;
-  onChange: (evt: React.ChangeEvent<HTMLInputElement>) => void;
-  onInputKeyDown: (evt: React.KeyboardEvent<HTMLInputElement>) => void;
-  onInputBlur: (evt: React.FocusEvent<HTMLInputElement>) => void;
-  PrivacyIcon: React.FC;
-  newTitle: string;
-  sandboxTitle: string;
-}
+type SandboxTitleProps = { stoppedScrolling: boolean } & Pick<
+  SandboxItemComponentProps,
+  | 'editing'
+  | 'onContextMenu'
+  | 'onSubmit'
+  | 'onChange'
+  | 'onInputKeyDown'
+  | 'onInputBlur'
+  | 'PrivacyIcon'
+  | 'newTitle'
+  | 'sandboxTitle'
+>;
 
 const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
   ({
@@ -104,14 +104,12 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
   )
 );
 
-interface SandboxStatsProps {
-  sandbox: DashboardSandbox | DashboardTemplate;
-  viewCount: number;
-  sandboxLocation: string;
-  lastUpdated: string;
-}
+type SandboxStatsProps = Pick<
+  SandboxItemComponentProps,
+  'isHomeTemplate' | 'sandbox' | 'viewCount' | 'sandboxLocation' | 'lastUpdated'
+>;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
-  ({ sandbox, viewCount, sandboxLocation, lastUpdated }) => (
+  ({ isHomeTemplate, sandbox, viewCount, sandboxLocation, lastUpdated }) => (
     <Stack marginX={4} gap={1} align="center">
       <Stack gap={1} align="center">
         <Icon name="eye" size={14} css={css({ color: 'mutedForeground' })} />
@@ -119,7 +117,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
           {viewCount}
         </Text>
       </Stack>
-      {sandbox.isHomeTemplate ? null : (
+      {isHomeTemplate ? null : (
         <>
           <Text size={3} variant="muted">
             •
@@ -147,6 +145,7 @@ export const SandboxCard = ({
   sandbox,
   sandboxTitle,
   sandboxLocation,
+  isHomeTemplate,
   lastUpdated,
   viewCount,
   TemplateIcon,
@@ -170,7 +169,7 @@ export const SandboxCard = ({
   thumbnailRef,
   opacity,
   ...props
-}) => {
+}: SandboxItemComponentProps) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
 
   const [guaranteedScreenshotUrl, setGuaranteedScreenshotUrl] = React.useState<
@@ -275,6 +274,7 @@ export const SandboxCard = ({
       />
 
       <SandboxStats
+        isHomeTemplate={isHomeTemplate}
         lastUpdated={lastUpdated}
         sandbox={sandbox}
         viewCount={viewCount}
