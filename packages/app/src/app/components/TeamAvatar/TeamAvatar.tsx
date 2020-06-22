@@ -13,7 +13,17 @@ export const backgrounds = [
   'blues.700',
 ];
 
-export const TeamAvatar = ({ name, size = 'big', ...props }) => {
+interface TeamAvatarProps {
+  name: string;
+  size?: 'small' | 'big';
+  className?: string;
+}
+
+export const TeamAvatar = ({
+  name,
+  size = 'big',
+  className,
+}: TeamAvatarProps) => {
   if (!name) return null;
 
   // consistent color
@@ -30,8 +40,10 @@ export const TeamAvatar = ({ name, size = 'big', ...props }) => {
         textTransform: 'uppercase',
         backgroundColor,
         color: 'white',
+        fontWeight: 600,
+        fontFamily: 'Inter',
       })}
-      {...props}
+      className={className}
     >
       <Text size={size === 'small' ? 2 : 3}>{name[0]}</Text>
     </Stack>

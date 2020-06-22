@@ -24,7 +24,7 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
-import { TeamAvatar } from './TeamAvatar';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 import { ContextMenu } from './ContextMenu';
 
 export const SIDEBAR_WIDTH = 240;
