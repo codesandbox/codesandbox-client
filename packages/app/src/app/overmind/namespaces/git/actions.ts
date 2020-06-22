@@ -111,6 +111,7 @@ export const createRepoClicked: AsyncAction = async ({
   effects,
   actions,
 }) => {
+  effects.analytics.track('Create repo');
   const { repoTitle } = state.git;
   const modulesNotSaved = !state.editor.isAllModulesSynced;
 
@@ -165,6 +166,7 @@ export const createRepoClicked: AsyncAction = async ({
 };
 
 export const openSourceSandbox: Action = ({ state, effects }) => {
+  effects.analytics.track('Open source sandbox');
   const git = state.editor.currentSandbox!.baseGit
     ? state.editor.currentSandbox!.baseGit
     : state.editor.currentSandbox!.originalGit;
@@ -177,6 +179,7 @@ export const createCommitClicked: AsyncAction = async ({
   effects,
   actions,
 }) => {
+  effects.analytics.track('Create commit');
   const sandbox = state.editor.currentSandbox!;
   const git = state.git;
 
@@ -249,6 +252,7 @@ export const createPrClicked: AsyncAction = async ({
   effects,
   actions,
 }) => {
+  effects.analytics.track('Open PR');
   const git = state.git;
   git.isCreatingPr = true;
   git.pr = null;
@@ -337,9 +341,10 @@ export const updateGitChanges: Operator = pipe(
 );
 
 export const resolveConflicts: AsyncAction<Module> = async (
-  { state, actions },
+  { state, actions, effects },
   module
 ) => {
+  effects.analytics.track('Resolve conflicts');
   const conflict = state.git.conflicts.find(
     conflictItem => module.path === '/' + conflictItem.filename
   );
@@ -423,6 +428,7 @@ export const resolveOutOfSync: AsyncAction = async ({
   actions,
   effects,
 }) => {
+  effects.analytics.track('Resolve out of sync');
   const git = state.git;
   const { added, deleted, modified } = git.outOfSyncUpdates;
   git.isResolving = true;
