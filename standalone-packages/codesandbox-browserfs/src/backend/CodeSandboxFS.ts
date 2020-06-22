@@ -172,9 +172,9 @@ export default class CodeSandboxFS extends SynchronousFileSystem
 
       if (modulesStartingWithPath.length > 0) {
         return new Stats(FileType.DIRECTORY, 0);
-      } 
+      } else {
         throw ApiError.FileError(ErrorCode.ENOENT, p);
-      
+      }
     }
 
     const stats = new Stats(
