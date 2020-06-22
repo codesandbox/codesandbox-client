@@ -69,7 +69,7 @@ export const NavigationComponent = ({ title, match }: Props) => {
             <Stack align="center" gap={6}>
               {!isLoggedIn && match.path !== '/signin' ? (
                 <Button
-                  css={{ width: 'auto' }}
+                  autoWidth
                   variant="link"
                   onClick={() => signInClicked()}
                 >
