@@ -1,6 +1,6 @@
 import {
   Button,
-  Checkbox,
+  Radio,
   FormField,
   Input,
   Stack,
@@ -150,9 +150,10 @@ export const CommitForm = () => {
                 }
           }
         >
-          <Checkbox
+          <Radio
             checked={evaluatedAction === 'branch'}
             disabled={!canCommitDirectly}
+            aria-label="Commit directly to the master branch"
           />{' '}
           <Text>
             <Text variant="muted">Commit directly to the</Text> master
@@ -173,7 +174,11 @@ export const CommitForm = () => {
                 }
           }
         >
-          <Checkbox checked={evaluatedAction === 'pr'} disabled={!canCommit} />{' '}
+          <Radio
+            checked={evaluatedAction === 'pr'}
+            disabled={!canCommit}
+            aria-label={`Create branch csb-${currentSandbox.id} for the commit and start a PR`}
+          />{' '}
           <Text>
             <Text variant="muted">Create branch</Text> csb-{currentSandbox.id}
             <Text variant="muted"> for the commit and start a</Text> PR
