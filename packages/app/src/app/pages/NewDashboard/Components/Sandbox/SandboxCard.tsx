@@ -66,7 +66,7 @@ export const SandboxCard = ({
         borderColor: selected ? 'blues.600' : 'grays.600',
         borderRadius: 'medium',
         overflow: 'hidden',
-        transition: 'all ease-in-out',
+        transition: 'box-shadow ease-in-out',
         transitionDuration: theme => theme.speeds[4],
         opacity,
         ':hover, :focus, :focus-within': {
