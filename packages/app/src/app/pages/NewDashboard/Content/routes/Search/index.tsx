@@ -6,7 +6,7 @@ import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import React, { useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { DashboardGridItem } from 'app/pages/NewDashboard/types';
 import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
 import { getPossibleTemplates } from '../../utils';
@@ -52,13 +52,14 @@ const useSearchedSandboxes = (query: string) => {
   return foundSandboxes;
 };
 
-export const SearchComponent = ({ location }) => {
+export const SearchComponent = () => {
   const {
     state: {
       dashboard: { getFilteredSandboxes },
     },
   } = useOvermind();
-  const query = new URL(location).searchParams.get('search');
+  const location = useLocation();
+  const query = new URLSearchParams(location.search).get('query');
   const foundSandboxes = useSearchedSandboxes(query);
 
   const items: DashboardGridItem[] =
@@ -93,4 +94,4 @@ export const SearchComponent = ({ location }) => {
   );
 };
 
-export const Search = withRouter(SearchComponent);
+export const Search = SearchComponent;
