@@ -25,6 +25,7 @@ const Wrapper = styled.div`
     content: '';
     z-index: 2;
     top: 15px;
+    background-size: cover;
     background-image: url('data:image/svg+xml,%3Csvg width="23" height="24" viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath fill-rule="evenodd" clip-rule="evenodd" d="M13.3521 15.2035C11.9439 16.3936 10.1502 17.1065 8.19687 17.1065C3.66986 17.1065 0 13.2771 0 8.55326C0 3.82942 3.66986 0 8.19687 0C12.7239 0 16.3937 3.82942 16.3937 8.55326C16.3937 10.5915 15.7105 12.4632 14.57 13.9326L23 22.7291L21.7821 24L13.3521 15.2035ZM14.6714 8.55326C14.6714 12.2845 11.7726 15.3092 8.19687 15.3092C4.62111 15.3092 1.72239 12.2845 1.72239 8.55326C1.72239 4.82203 4.62111 1.79727 8.19687 1.79727C11.7726 1.79727 14.6714 4.82203 14.6714 8.55326Z" fill="%23757575"/%3E%3C/svg%3E%0A');
   }
 `;
@@ -64,6 +65,7 @@ const Input = styled.input`
 
 const IconWrapper = styled(Element)`
   background: ${props => props.bg};
+
   height: 231px;
   display: flex;
   align-items: center;
@@ -111,10 +113,11 @@ const Docs = ({ data }) => {
       />
       <Element
         css={`
-          padding-top: 10rem;
+          padding-top: 6rem;
           width: 1095px;
           max-width: 80%;
           margin: auto;
+          background-size: cover;
 
           @media screen and (max-width: 768px) {
             padding-top: 60px;
@@ -130,6 +133,7 @@ const Docs = ({ data }) => {
           justify="center"
           css={`
             background: url(${bg});
+            background-size: cover;
             height: 316px;
           `}
         >
