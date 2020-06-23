@@ -24,7 +24,7 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
-import { TeamAvatar } from './TeamAvatar';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 import { ContextMenu } from './ContextMenu';
 
 export const SIDEBAR_WIDTH = 240;
@@ -32,14 +32,12 @@ export const SIDEBAR_WIDTH = 240;
 const SidebarContext = React.createContext(null);
 
 export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
-  const {
-    state: { dashboard, user },
-    actions,
-  } = useOvermind();
+  const { state, actions } = useOvermind();
   const [activeAccount, setActiveAccount] = useState({
     username: null,
     avatarUrl: null,
   });
+  const { dashboard, user } = state;
 
   React.useEffect(() => {
     actions.dashboard.getTeams();
@@ -47,13 +45,11 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
 
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
-  }, [actions.dashboard, dashboard.activeTeam]);
+  }, [actions.dashboard, state.activeTeam]);
 
   React.useEffect(() => {
-    if (dashboard.activeTeam) {
-      const team = dashboard.teams.find(
-        ({ id }) => id === dashboard.activeTeam
-      );
+    if (state.activeTeam) {
+      const team = dashboard.teams.find(({ id }) => id === state.activeTeam);
 
       if (team) setActiveAccount({ username: team.name, avatarUrl: null });
     } else if (user) {
@@ -62,7 +58,7 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
         avatarUrl: user.avatarUrl,
       });
     }
-  }, [dashboard.activeTeam, dashboard.activeTeamInfo, dashboard.teams, user]);
+  }, [state.activeTeam, state.activeTeamInfo, dashboard.teams, user]);
 
   const inTeamContext =
     activeAccount && user && activeAccount.username !== user.username;

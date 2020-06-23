@@ -29,6 +29,7 @@ import {
   sidebarCollectionDashboard,
   templateFragmentDashboard,
   repoFragmentDashboard,
+  currentTeamInfoFragment,
 } from './fragments';
 
 export const deletedSandboxes: Query<
@@ -216,19 +217,9 @@ export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
   query getTeam($teamId: ID!) {
     me {
       team(id: $teamId) {
-        id
-        creatorId
-        description
-        inviteToken
-        name
-        users {
-          avatarUrl
-          name
-          lastName
-          username
-          id
-        }
+        ...currentTeamInfoFragment
       }
     }
   }
+  ${currentTeamInfoFragment}
 `;

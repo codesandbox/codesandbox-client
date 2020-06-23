@@ -1,6 +1,7 @@
 import React from 'react';
 import deepmerge from 'deepmerge';
 import styled, { keyframes } from 'styled-components';
+import { Link } from 'react-router-dom';
 import VisuallyHidden from '@reach/visually-hidden';
 import { Element, IElementProps } from '../Element';
 
@@ -97,11 +98,6 @@ const commonStyles = {
   },
 };
 
-const merge = (...objs) =>
-  objs.reduce(function mergeAll(merged, currentValue = {}) {
-    return deepmerge(merged, currentValue);
-  }, {});
-
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     IElementProps {
@@ -116,16 +112,17 @@ export interface ButtonProps
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   function Button(
-    { variant = 'primary', loading, css = {}, autoWidth, ...props },
+    { variant = 'primary', loading, css = {}, autoWidth, as: pAs, ...props },
     ref
   ) {
-    const styles = merge(variantStyles[variant], commonStyles, css);
+    const styles = deepmerge.all([variantStyles[variant], commonStyles, css]);
+    const usedAs = pAs || (props.to ? Link : 'button');
     // default type is button unless props.as was changed
-    const type = !props.as && 'button';
+    const type = usedAs === 'button' && 'button';
 
     return (
       <Element
-        as="button"
+        as={usedAs}
         type={type}
         css={styles}
         ref={ref}

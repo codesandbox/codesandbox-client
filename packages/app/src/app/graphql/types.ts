@@ -1199,6 +1199,18 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
     >;
   };
 
+export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
+  Team,
+  'id' | 'creatorId' | 'description' | 'inviteToken' | 'name'
+> & {
+    users: Array<
+      { __typename?: 'User' } & Pick<
+        User,
+        'avatarUrl' | 'name' | 'lastName' | 'username' | 'id'
+      >
+    >;
+  };
+
 export type _CreateTeamMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
@@ -1574,19 +1586,7 @@ export type GetTeamQueryVariables = Exact<{
 export type GetTeamQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
-      team: Maybe<
-        { __typename?: 'Team' } & Pick<
-          Team,
-          'id' | 'creatorId' | 'description' | 'inviteToken' | 'name'
-        > & {
-            users: Array<
-              { __typename?: 'User' } & Pick<
-                User,
-                'avatarUrl' | 'name' | 'lastName' | 'username' | 'id'
-              >
-            >;
-          }
-      >;
+      team: Maybe<{ __typename?: 'Team' } & CurrentTeamInfoFragmentFragment>;
     }
   >;
 };

@@ -15,6 +15,7 @@ import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
 import { DashboardSandbox, DashboardTemplate } from '../../types';
+import { SandboxItemComponentProps } from './types';
 
 const PrivacyIcons = {
   0: () => null,
@@ -107,7 +108,8 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   if (location.pathname.includes('deleted')) viewMode = 'list';
   else viewMode = dashboard.viewMode;
 
-  const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
+  const Component: React.FC<SandboxItemComponentProps> =
+    viewMode === 'list' ? SandboxListItem : SandboxCard;
 
   // interactions
   const {
@@ -132,11 +134,14 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
     onSelectionClick(event, sandbox.id);
   };
 
-  const onContextMenu = event => {
-    event.preventDefault();
-    if (event.type === 'contextmenu') onRightClick(event, sandbox.id);
-    else onMenuEvent(event, sandbox.id);
-  };
+  const onContextMenu = React.useCallback(
+    event => {
+      event.preventDefault();
+      if (event.type === 'contextmenu') onRightClick(event, sandbox.id);
+      else onMenuEvent(event, sandbox.id);
+    },
+    [onRightClick, onMenuEvent, sandbox.id]
+  );
 
   const history = useHistory();
   const onDoubleClick = event => {
@@ -177,32 +182,41 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
 
   const [newTitle, setNewTitle] = React.useState(sandboxTitle);
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTitle(event.target.value);
-  };
-  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.keyCode === ESC) {
-      // Reset value and exit without saving
-      setNewTitle(sandboxTitle);
+  const onChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setNewTitle(event.target.value);
+    },
+    [setNewTitle]
+  );
+  const onInputKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.keyCode === ESC) {
+        // Reset value and exit without saving
+        setNewTitle(sandboxTitle);
+        setRenaming(false);
+      }
+    },
+    [setNewTitle, setRenaming, sandboxTitle]
+  );
+
+  const onSubmit = React.useCallback(
+    async (event?: React.FormEvent<HTMLFormElement>) => {
+      if (event) event.preventDefault();
+      await actions.dashboard.renameSandbox({
+        id: sandbox.id,
+        title: newTitle,
+        oldTitle: sandboxTitle,
+      });
       setRenaming(false);
-    }
-  };
+      track('Dashboard - Rename sandbox', { dashboardVersion: 2 });
+    },
+    [actions.dashboard, setRenaming, sandbox.id, newTitle, sandboxTitle]
+  );
 
-  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
-    if (event) event.preventDefault();
-    await actions.dashboard.renameSandbox({
-      id: sandbox.id,
-      title: newTitle,
-      oldTitle: sandboxTitle,
-    });
-    setRenaming(false);
-    track('Dashboard - Rename sandbox', { dashboardVersion: 2 });
-  };
-
-  const onInputBlur = () => {
+  const onInputBlur = React.useCallback(() => {
     // save value when you click outside or tab away
     onSubmit();
-  };
+  }, [onSubmit]);
 
   const interactionProps = {
     tabIndex: 0, // make div focusable
@@ -219,6 +233,7 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   };
 
   const sandboxProps = {
+    isHomeTemplate: item.isHomeTemplate,
     sandboxTitle,
     sandboxLocation,
     lastUpdated,
