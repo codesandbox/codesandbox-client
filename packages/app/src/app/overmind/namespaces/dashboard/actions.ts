@@ -631,12 +631,10 @@ export const renameFolderInState: Action<{ path: string; newPath: string }> = (
   if (!dashboard.allCollections) return;
   const newFolders = dashboard.allCollections.map(folder => {
     if (folder.path === path) {
-      const split = newPath.split('/');
-      return {
-        ...folder,
-        path: newPath,
-        name: split[split.length - 1],
-      };
+      return getDecoratedCollection(
+        { ...folder, path: newPath },
+        folder.sandboxes
+      );
     }
 
     return folder;
@@ -672,9 +670,6 @@ export const moveFolder: AsyncAction<{
   newPath: string;
 }> = async ({ state: { dashboard }, actions }, { path, newPath }) => {
   if (!dashboard.allCollections) return;
-  dashboard.allCollections = dashboard.allCollections.filter(
-    folder => folder.path !== path
-  );
   actions.dashboard.renameFolder({ path, newPath });
 };
 
