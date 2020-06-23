@@ -49,7 +49,7 @@ export const Header = ({
           {title}
         </Text>
       ) : (
-        <Breadcrumbs param={path} />
+        <Breadcrumbs path={path} />
       )}
       <Stack gap={4} align="center">
         {location.pathname.includes('all') &&
