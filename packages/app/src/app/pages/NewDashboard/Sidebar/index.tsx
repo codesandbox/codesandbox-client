@@ -274,9 +274,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </Stack>
             )}
           </ListItem>
-          <RowItem name="Home" path="home" icon="box" />
+          <RowItem name="Home" path="/home" icon="box" />
           {inTeamContext ? null : (
-            <RowItem name="Recent" path="recent" icon="clock" />
+            <RowItem name="Recent" path="/recent" icon="clock" />
           )}
           <RowItem
             name={!inTeamContext ? 'Drafts' : 'My Drafts'}
@@ -288,7 +288,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           <NestableRowItem
             name="All sandboxes"
-            path=""
+            path="/all"
             folders={[
               ...folders,
               ...(newFolderPath
@@ -298,10 +298,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           />
 
           {inTeamContext ? (
-            <RowItem name="Recently Modified" path="recent" icon="clock" />
+            <RowItem name="Recently Modified" path="/recent" icon="clock" />
           ) : null}
-          <RowItem name="Templates" path="templates" icon="star" />
-          <RowItem name="Recently Deleted" path="deleted" icon="trash" />
+          <RowItem name="Templates" path="/templates" icon="star" />
+          <RowItem name="Recently Deleted" path="/deleted" icon="trash" />
         </List>
         <Element margin={4}>
           <Button
@@ -414,7 +414,7 @@ const RowItem: React.FC<RowItemProps> = ({
 
   let linkTo: string;
   if (path === '/drafts') linkTo = '/new-dashboard/drafts';
-  else linkTo = '/new-dashboard/' + path;
+  else linkTo = '/new-dashboard' + path;
 
   const location = useLocation();
   const isCurrentLink = linkTo === location.pathname;
@@ -536,6 +536,13 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     }
   }
 
+  // React.useEffect(() => {
+
+  //   if (path.startsWith(params.path + '/') && !foldersVisible) {
+  //     setFoldersVisibility(true);
+  //   }
+  // }, [params.path, path, foldersVisible, setFoldersVisibility]);
+
   React.useEffect(() => {
     if (hasNewNestedFolder) setFoldersVisibility(true);
   }, [hasNewNestedFolder]);
@@ -565,7 +572,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     });
   }
 
-  const nestingLevel = path.split('/').length - 1;
+  const nestingLevel = path.split('/').length - 2;
   const history = useHistory();
 
   /* Rename logic */
@@ -632,11 +639,11 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
         setFoldersVisibility={setFoldersVisibility}
       >
         <Link
-          onClick={() => history.push('/new-dashboard/all' + path)}
+          onClick={() => history.push('/new-dashboard' + path)}
           onContextMenu={onContextMenu}
           onKeyDown={event => {
             if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
-              history.push('/new-dashboard/all' + path, {
+              history.push('/new-dashboard' + path, {
                 focus: 'FIRST_ITEM',
               });
             }
@@ -715,7 +722,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 <NestableRowItem
                   key={folder.path}
                   name={folder.name}
-                  path={folder.path}
+                  path={path + folder.path}
                   folders={folders}
                 />
               ))}
