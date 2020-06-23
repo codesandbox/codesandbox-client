@@ -1426,6 +1426,52 @@ export type AllCollectionsQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
+export type GetReposQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetReposQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      sandboxes: Array<
+        { __typename?: 'Sandbox' } & Pick<
+          Sandbox,
+          | 'id'
+          | 'alias'
+          | 'title'
+          | 'insertedAt'
+          | 'updatedAt'
+          | 'removedAt'
+          | 'privacy'
+          | 'screenshotUrl'
+          | 'screenshotOutdated'
+          | 'likeCount'
+          | 'forkCount'
+          | 'viewCount'
+          | 'prNumber'
+        > & {
+            baseGit: Maybe<
+              { __typename?: 'Git' } & Pick<
+                Git,
+                'branch' | 'id' | 'repo' | 'username' | 'path'
+              >
+            >;
+            git: Maybe<
+              { __typename?: 'Git' } & Pick<
+                Git,
+                'branch' | 'id' | 'repo' | 'username' | 'path'
+              >
+            >;
+            originalGit: Maybe<
+              { __typename?: 'Git' } & Pick<
+                Git,
+                'branch' | 'id' | 'repo' | 'username' | 'path'
+              >
+            >;
+          }
+      >;
+    }
+  >;
+};
+
 export type TeamTemplatesQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;

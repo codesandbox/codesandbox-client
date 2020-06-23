@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
+import { json } from 'overmind';
 import { orderBy } from 'lodash-es';
 import {
   DashboardSandbox,

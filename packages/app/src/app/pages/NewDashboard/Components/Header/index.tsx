@@ -16,11 +16,13 @@ type Props = {
   showFilters?: boolean;
   showViewOptions?: boolean;
   showSortOptions?: boolean;
+  repos?: boolean;
 };
 
 export const Header = ({
   createNewFolder,
   templates,
+  repos,
   path,
   title,
   showFilters = false,
@@ -49,7 +51,7 @@ export const Header = ({
           {title}
         </Text>
       ) : (
-        <Breadcrumbs param={path} />
+        <Breadcrumbs repos={repos} param={path} />
       )}
       <Stack gap={4} align="center">
         {location.pathname.includes('all') &&

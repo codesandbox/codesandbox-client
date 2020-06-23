@@ -84,6 +84,45 @@ export const getCollections: Query<
   ${sidebarCollectionDashboard}
 `;
 
+export const getRepos: Query<{}, {}> = gql`
+  query getRepos {
+    me {
+      sandboxes {
+        id
+        alias
+        title
+        insertedAt
+        updatedAt
+        removedAt
+        privacy
+        screenshotUrl
+        screenshotOutdated
+        likeCount
+        forkCount
+        viewCount
+        source {
+          template
+        }
+        baseGit {
+          branch
+          id
+          repo
+          username
+          path
+        }
+        originalGit {
+          branch
+          id
+          repo
+          username
+          path
+        }
+        prNumber
+      }
+    }
+  }
+`;
+
 export const teamTemplates: Query<
   TeamTemplatesQuery,
   TeamTemplatesQueryVariables

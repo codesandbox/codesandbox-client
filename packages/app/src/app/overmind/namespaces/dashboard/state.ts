@@ -32,6 +32,7 @@ export enum sandboxesTypes {
   RECENT_HOME = 'RECENT_HOME',
   ALL = 'ALL',
   SEARCH = 'SEARCH',
+  REPOS = 'REPOS',
 }
 
 type State = {
@@ -44,6 +45,9 @@ type State = {
     TEMPLATE_HOME: Template[] | null;
     RECENT_HOME: Sandbox[] | null;
     ALL: {
+      [path: string]: Sandbox[];
+    } | null;
+    REPOS: {
       [path: string]: Sandbox[];
     } | null;
   };
@@ -85,6 +89,7 @@ export const state: State = {
     TEMPLATE_HOME: null,
     RECENT_HOME: null,
     ALL: null,
+    REPOS: null,
     SEARCH: null,
   },
   viewMode: 'grid',

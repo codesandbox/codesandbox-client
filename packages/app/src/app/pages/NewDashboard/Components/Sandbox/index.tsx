@@ -38,12 +38,14 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
   let sandboxLocation = null;
-  if ('path' in sandbox.collection) {
+  if (sandbox.collection && 'path' in sandbox.collection) {
     sandboxLocation =
       sandbox.collection.path === '/'
         ? 'Drafts'
         : sandbox.collection.path.split('/').pop();
-  } else if (type === 'template') {
+  }
+
+  if (type === 'template' && sandbox.collection && sandbox.collection.team) {
     sandboxLocation =
       (sandbox.collection.team && sandbox.collection.team.name) ||
       ('author' in sandbox && sandbox.author && sandbox.author.username) ||

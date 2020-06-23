@@ -7,6 +7,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { Folder } from '../Folder';
+import { Repo } from '../Repo';
 import { EmptyScreen } from '../EmptyScreen';
 import {
   DashboardGridItem,
@@ -19,6 +20,7 @@ import {
   DashboardBlank,
   DashboardSkeleton,
   DashboardNewFolder,
+  DashboardRepo,
 } from '../../types';
 
 export const GRID_MAX_WIDTH = 992;
@@ -52,6 +54,7 @@ interface ComponentForTypes {
   sandbox: React.FC<DecoratedItemProps<DashboardSandbox>>;
   template: React.FC<DecoratedItemProps<DashboardTemplate>>;
   folder: React.FC<DecoratedItemProps<DashboardFolder>>;
+  repo: React.FC<DecoratedItemProps<DashboardRepo>>;
   'new-folder': React.FC<DecoratedItemProps<DashboardNewFolder>>;
   'new-sandbox': React.FC<DecoratedItemProps<DashboardNewSandbox>>;
   header: React.FC<DecoratedItemProps<DashboardHeader>>;
@@ -68,6 +71,7 @@ const ComponentForTypes: ComponentForTypes = {
     <Sandbox item={props.item} isScrolling={props.isScrolling} />
   )),
   folder: props => <Folder {...props.item} />,
+  repo: props => <Repo {...props.item} />,
   // @ts-ignore TODO: find a better way to type this
   'new-folder': props => <Folder {...props} />,
   'new-sandbox': () => <NewSandbox />,

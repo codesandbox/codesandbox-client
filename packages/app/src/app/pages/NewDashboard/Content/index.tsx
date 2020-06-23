@@ -9,6 +9,7 @@ import { Deleted } from './routes/Deleted';
 import { Drafts } from './routes/Drafts';
 import { Recent } from './routes/Recent';
 import { All } from './routes/All';
+import { Repositories } from './routes/Repositories';
 import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
 
@@ -47,6 +48,10 @@ export const Content = withRouter(({ history }) => {
         <Route path="/new-dashboard/drafts" component={Drafts} />
         <Route path="/new-dashboard/recent" component={Recent} />
         <Route path="/new-dashboard/all/drafts" component={Drafts} />
+        <Route
+          path="/new-dashboard/repositories/:path*"
+          component={Repositories}
+        />
         <Route path="/new-dashboard/search" component={Search} />
         <Route path="/new-dashboard/all/:path*" component={All} />
         <Route path="/new-dashboard/settings" component={Settings} />

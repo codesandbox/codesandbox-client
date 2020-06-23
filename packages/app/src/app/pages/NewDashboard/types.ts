@@ -25,6 +25,15 @@ export type DashboardFolder = DELETE_ME_COLLECTION & {
   setCreating?: (value: boolean) => void;
 };
 
+export type DashboardRepo = DELETE_ME_COLLECTION & {
+  branch: string;
+  name: string;
+  owner: string;
+  level: number;
+  sandboxes: number;
+  type: 'repo';
+};
+
 export type DashboardNewFolder = {
   type: 'new-folder';
   setCreating?: (value: boolean) => void;
@@ -69,4 +78,5 @@ export type DashboardGridItem =
   | DashboardNewSandbox
   | DashboardSkeletonRow
   | DashboardBlank
+  | DashboardRepo
   | DashboardSkeleton;

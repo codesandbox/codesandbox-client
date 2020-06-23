@@ -403,6 +403,52 @@ export const getSandboxesByPath: AsyncAction<string> = async (
   }
 };
 
+export const getReposByPath: AsyncAction | Action<string> = async (
+  { state, effects },
+  path
+) => {
+  const { dashboard } = state;
+  try {
+    const data = await effects.gql.queries.getRepos();
+    if (!data || !data.me) {
+      return;
+    }
+
+    if (path && dashboard.sandboxes.REPOS) {
+      return dashboard.sandboxes.REPOS[path];
+    }
+
+    if (!dashboard.sandboxes.REPOS) {
+      dashboard.sandboxes.REPOS = {};
+    }
+
+    const repos = data.me.sandboxes
+      .filter(s => s.originalGit && s.originalGit.repo !== 'static-template')
+      .reduce((acc, curr) => {
+        if (acc[curr.originalGit.repo]) {
+          acc[curr.originalGit.repo].sandboxes.push(curr);
+          return acc;
+        }
+
+        acc[curr.originalGit.repo] = {
+          id: curr.originalGit.id,
+          level: 0,
+          name: curr.originalGit.repo,
+          branch: curr.originalGit.branch,
+          owner: curr.originalGit.username,
+          path: '/' + curr.originalGit.repo,
+          sandboxes: [curr],
+        };
+
+        return acc;
+      }, {});
+
+    dashboard.sandboxes.REPOS = repos;
+  } catch (error) {
+    effects.notificationToast.error('There was a problem getting your repos');
+  }
+};
+
 export const getDeletedSandboxes: AsyncAction = async ({ state, effects }) => {
   const { dashboard } = state;
   try {
