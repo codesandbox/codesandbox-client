@@ -10,11 +10,13 @@ import {
   DashboardSandbox,
   DashboardTemplate,
   DashboardFolder,
+  DashboardRepo,
 } from '../../types';
 
 interface DragPreviewProps {
   sandboxes: Array<DashboardSandbox | DashboardTemplate>;
   folders: Array<DashboardFolder>;
+  repos: Array<DashboardRepo>;
   selectionItems: string[];
   selectedIds: string[];
   viewMode: 'list' | 'grid';

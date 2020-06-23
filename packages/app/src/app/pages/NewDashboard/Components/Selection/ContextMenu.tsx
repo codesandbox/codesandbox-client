@@ -27,6 +27,7 @@ interface IContextMenuProps extends IMenuProps {
   selectedIds: string[];
   sandboxes: Array<DashboardSandbox | DashboardTemplate>;
   folders: Array<DashboardFolder>;
+  repos: Array<DashboardRepo>;
   setRenaming: null | ((value: boolean) => void);
   createNewFolder: () => void;
 }
@@ -38,15 +39,21 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   selectedIds,
   sandboxes,
   folders,
+  repos,
   setRenaming,
   createNewFolder,
 }) => {
   if (!visible) return null;
 
   const selectedItems: Array<
-    DashboardFolder | DashboardSandbox | DashboardTemplate
+    DashboardFolder | DashboardSandbox | DashboardTemplate | DashboardRepo
   > = selectedIds.map(id => {
     if (id.startsWith('/')) {
+      if (repos.length) {
+        const repo = repos.find(f => '/' + f.name === id);
+        return { type: 'repo', ...repo };
+      }
+
       const folder = folders.find(f => f.path === id);
       return { type: 'folder', ...folder };
     }
@@ -55,7 +62,6 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   });
 
   let menu;
-
   if (selectedItems.length === 0) {
     menu = <ContainerMenu createNewFolder={createNewFolder} />;
   } else if (selectedItems.length > 1) {
@@ -67,6 +73,8 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     menu = <SandboxMenu item={selectedItems[0]} setRenaming={setRenaming} />;
   } else if (selectedItems[0].type === 'folder') {
     menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
+  } else if (selectedItems[0].type === 'repo') {
+    menu = <RepoMenu repo={selectedItems[0]} />;
   }
 
   return (
@@ -193,7 +201,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
       >
         Open {label} in new tab
       </MenuItem>
-      {isOwner && folderUrl !== location.pathname ? (
+      {isOwner && item.sandbox.collection && folderUrl !== location.pathname ? (
         <MenuItem
           onSelect={() => {
             history.push(folderUrl, { sandboxId: sandbox.id });
@@ -320,6 +328,31 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
   );
 };
 
+const RepoMenu = ({ repo }) => {
+  const { effects } = useOvermind();
+  const { visible, setVisibility, position } = React.useContext(Context);
+  const link = `https://github.com/${repo.owner}/${repo.name}/tree/${repo.branch}`;
+  return (
+    <Menu.ContextMenu
+      visible={visible}
+      setVisibility={setVisibility}
+      position={position}
+      style={{ width: 120 }}
+    >
+      <MenuItem
+        onSelect={() => {
+          effects.browser.copyToClipboard(link);
+        }}
+      >
+        Copy GitHub url
+      </MenuItem>
+      <MenuItem onSelect={() => window.open(link, '_blank')}>
+        Open on GitHub
+      </MenuItem>
+    </Menu.ContextMenu>
+  );
+};
+
 const FolderMenu = ({ folder, setRenaming }) => {
   const { actions } = useOvermind();
   const { visible, setVisibility, position } = React.useContext(Context);
@@ -368,7 +401,9 @@ const FolderMenu = ({ folder, setRenaming }) => {
 };
 
 interface IMultiMenuProps {
-  selectedItems: Array<DashboardSandbox | DashboardTemplate | DashboardFolder>;
+  selectedItems: Array<
+    DashboardSandbox | DashboardTemplate | DashboardFolder | DashboardRepo
+  >;
 }
 
 const MultiMenu = ({ selectedItems }: IMultiMenuProps) => {

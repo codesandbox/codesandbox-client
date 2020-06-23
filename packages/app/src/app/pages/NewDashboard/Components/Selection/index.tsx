@@ -21,6 +21,7 @@ import {
   DashboardSandbox,
   DashboardFolder,
   DashboardGridItem,
+  DashboardRepo,
 } from '../../types';
 
 type Selection = {
@@ -85,17 +86,24 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     item =>
       item.type === 'sandbox' ||
       item.type === 'template' ||
-      item.type === 'folder'
-  ) as Array<DashboardSandbox | DashboardTemplate | DashboardFolder>;
+      item.type === 'folder' ||
+      item.type === 'repo'
+  ) as Array<
+    DashboardSandbox | DashboardTemplate | DashboardFolder | DashboardRepo
+  >;
 
   const selectionItems = possibleItems.map(item => {
     if (item.type === 'folder') return item.path;
+    if (item.type === 'repo') return item.name;
     return item.sandbox.id;
   });
 
   const folders = (items || []).filter(
     item => item.type === 'folder'
   ) as DashboardFolder[];
+  const repos = (items || []).filter(
+    item => item.type === 'repo'
+  ) as DashboardRepo[];
   const sandboxes = (items || []).filter(
     item => item.type === 'sandbox' || item.type === 'template'
   ) as Array<DashboardSandbox | DashboardTemplate>;
@@ -597,6 +605,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       <DragPreview
         sandboxes={sandboxes || []}
         folders={folders || []}
+        repos={repos || []}
         selectionItems={selectionItems}
         selectedIds={selectedIds}
         thumbnailRef={thumbnailRef}
@@ -610,6 +619,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         selectedIds={selectedIds}
         sandboxes={sandboxes || []}
         folders={folders || []}
+        repos={repos || []}
         setRenaming={setRenaming}
         createNewFolder={createNewFolder}
       />
