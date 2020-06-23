@@ -3,12 +3,23 @@ import { useOvermind } from 'app/overmind';
 import { useHistory } from 'react-router-dom';
 import { Stack, Menu, Icon, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { Position } from '../Components/Selection';
+import { DashboardBaseFolder } from '../types';
 
 const Context = React.createContext({
   setVisibility: null,
 });
 
-export const ContextMenu = ({
+interface ContextMenuProps {
+  visible: boolean;
+  setVisibility: (val: boolean) => void;
+  position: Position;
+  folder: DashboardBaseFolder;
+  setRenaming: (val: boolean) => void;
+  setNewFolderPath: (val: string) => void;
+}
+
+export const ContextMenu: React.FC<ContextMenuProps> = ({
   visible,
   position,
   setVisibility,
