@@ -1,5 +1,6 @@
 import css from '@styled-system/css';
 import { withTheme } from 'styled-components';
+import { Link } from 'react-router-dom';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import { Element, ThemeProvider, Button } from '@codesandbox/components';
 import {
@@ -116,6 +117,7 @@ export const GitHub: FunctionComponent = withTheme(({ theme }) => {
                   />
 
                   <Button
+                    as={Link}
                     disabled={!transformedUrl}
                     to={gitHubToSandboxUrl(url)}
                   >
