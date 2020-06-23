@@ -40,7 +40,7 @@ export const RepositoriesPage = () => {
             })),
           ]
         : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
-    } else {
+    } 
       return sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes
         ? [
             ...sandboxes.REPOS[param].sandboxes.map(sandbox => ({
@@ -49,7 +49,7 @@ export const RepositoriesPage = () => {
             })),
           ]
         : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
-    }
+    
   };
 
   return (
