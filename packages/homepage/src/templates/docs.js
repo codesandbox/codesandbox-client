@@ -61,7 +61,7 @@ const Docs = ({
           >
             <Text weight="bold">Documentation</Text>
 
-            <svg width={18} height={8} fill="none">
+            <svg width={24} height={18} fill="none">
               <g filter="url(#prefix__filter0_d)">
                 <path
                   d="M24 1.053L22.788 0l-9.091 7.895L5.212.526 4 1.58 13.697 10 24 1.053z"
@@ -73,8 +73,8 @@ const Docs = ({
                   id="prefix__filter0_d"
                   x={0}
                   y={0}
-                  width={18}
-                  height={8}
+                  width={24}
+                  height={18}
                   filterUnits="userSpaceOnUse"
                   colorInterpolationFilters="sRGB"
                 >
@@ -103,7 +103,9 @@ const Docs = ({
           <Element
             showMobileMenu={showMobileMenu}
             css={`
-              width: 320px;
+              background: ${props =>
+                props.showMobileMenu ? '#151515 ' : 'transparant'};
+              width: 100%;
               position: sticky;
               top: 32px;
               transition: all 200ms ease;
@@ -117,7 +119,7 @@ const Docs = ({
             <header
               css={`
                 padding: 0 1.5rem 1rem 0;
-                margin: 1.5rem;
+                margin: 1rem;
                 color: #999;
               `}
             >

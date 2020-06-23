@@ -108,7 +108,9 @@ const FAQS = ({ data, location }) => {
           <Element
             showMobileMenu={showMobileMenu}
             css={`
-              width: 320px;
+              background: ${props =>
+                props.showMobileMenu ? '#151515 ' : 'transparant'};
+              width: 100%;
               position: sticky;
               top: 32px;
               transition: all 200ms ease;
@@ -122,7 +124,7 @@ const FAQS = ({ data, location }) => {
             <header
               css={`
                 padding: 0 1.5rem 1rem 0;
-                margin: 1.5rem;
+                margin: 1rem;
                 color: #999;
               `}
             >
