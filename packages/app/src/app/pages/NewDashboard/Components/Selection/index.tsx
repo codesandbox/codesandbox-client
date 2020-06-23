@@ -23,7 +23,7 @@ import {
   DashboardGridItem,
 } from '../../types';
 
-type Selection = {
+export type Position = {
   x: null | number;
   y: null | number;
 };
@@ -436,8 +436,8 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
 
   const [drawingRect, setDrawingRect] = React.useState(false);
   const [selectionRect, setSelectionRect] = React.useState<{
-    start: Selection;
-    end: Selection;
+    start: Position;
+    end: Position;
   }>({
     start: { x: null, y: null },
     end: { x: null, y: null },
