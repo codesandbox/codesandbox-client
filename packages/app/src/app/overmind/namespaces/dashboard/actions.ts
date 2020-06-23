@@ -1,5 +1,5 @@
 import { Action, AsyncAction } from 'app/overmind';
-import { withLoadApp, TEAM_ID_LOCAL_STORAGE } from 'app/overmind/factories';
+import { withLoadApp } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { uniq } from 'lodash-es';
 import {
@@ -7,6 +7,7 @@ import {
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
 } from 'app/graphql/types';
+import { TEAM_ID_LOCAL_STORAGE } from 'app/overmind/utils/team';
 import { OrderBy, sandboxesTypes } from './state';
 import { getDecoratedCollection } from './utilts';
 

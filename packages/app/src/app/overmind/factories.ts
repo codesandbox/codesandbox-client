@@ -7,8 +7,6 @@ import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { AsyncAction, RootState } from '.';
 
-export const TEAM_ID_LOCAL_STORAGE = 'codesandbox-selected-team-id';
-
 /*
   Ensures that we have loaded the app with the initial user
   and settings
@@ -66,12 +64,6 @@ export const withLoadApp = <T>(
 
   if (state.hasLogIn) {
     try {
-      const localStorageTeam = effects.browser.storage.get(
-        TEAM_ID_LOCAL_STORAGE
-      );
-      if (localStorageTeam) {
-        state.activeTeam = localStorageTeam;
-      }
       const [user] = await Promise.all([
         effects.api.getCurrentUser(),
         actions.getActiveTeam(),
