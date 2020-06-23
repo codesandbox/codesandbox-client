@@ -388,12 +388,14 @@ interface RowItemProps {
   path: string;
   icon: IconNames;
   setFoldersVisibility?: (val: boolean) => void;
+  folderPath?: string;
   style?: React.CSSProperties;
 }
 
 const RowItem: React.FC<RowItemProps> = ({
   name,
   path,
+  folderPath = path,
   icon,
   setFoldersVisibility = null,
   ...props
@@ -402,12 +404,16 @@ const RowItem: React.FC<RowItemProps> = ({
   if (!canNotAcceptSandboxes.includes(path)) accepts.push('sandbox');
   if (!canNotAcceptFolders.includes(path)) accepts.push('folder');
 
+  const usedPath = folderPath || path;
   const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
     accept: accepts,
-    drop: (item, monitor) => ({ path, isSamePath: isSamePath(item, path) }),
+    drop: (item, monitor) => ({
+      path: usedPath,
+      isSamePath: isSamePath(item, usedPath),
+    }),
     collect: monitor => ({
       isOver: monitor.isOver(),
-      canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path),
+      canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), usedPath),
       isDragging: !!monitor.getItem(),
     }),
   });
@@ -660,6 +666,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
       <RowItem
         name={name}
         path={path}
+        folderPath={folderPath}
         icon="folder"
         style={{ height: nestingLevel ? 8 : 10 }}
         setFoldersVisibility={setFoldersVisibility}
