@@ -43,6 +43,8 @@ export const FolderCard = ({
       overflow: 'hidden',
       // drop ssarget
       borderColor: getBorderColor(selected, showDropStyles),
+      transition: 'box-shadow ease-in-out',
+      transitionDuration: theme => theme.speeds[4],
       boxShadow: theme =>
         showDropStyles ? '0 4px 16px 0 ' + theme.colors.grays[900] : null,
 
