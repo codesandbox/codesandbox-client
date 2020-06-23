@@ -118,8 +118,8 @@ const Docs = ({
           >
             <header
               css={`
-                padding: 0 1.5rem 1rem 0;
-                margin: 1rem;
+                padding: 0 1.5rem 1rem 1.5rem;
+                margin: 2rem 0;
                 color: #999;
               `}
             >

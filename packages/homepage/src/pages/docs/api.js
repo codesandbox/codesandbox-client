@@ -123,8 +123,8 @@ const FAQS = ({ data, location }) => {
           >
             <header
               css={`
-                padding: 0 1.5rem 1rem 0;
-                margin: 1rem;
+                padding: 0 1.5rem 1rem 1.5rem;
+                margin: 2rem 0;
                 color: #999;
               `}
             >
@@ -135,7 +135,7 @@ const FAQS = ({ data, location }) => {
                   color: #fff;
                 `}
               >
-                API Reference
+                API reference
               </h4>
               <span>Descriptive reference</span>
             </header>
