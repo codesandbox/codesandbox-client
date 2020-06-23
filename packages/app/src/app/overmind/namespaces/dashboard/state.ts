@@ -1,6 +1,7 @@
 import {
   SidebarCollectionDashboardFragment as Collection,
   SandboxFragmentDashboardFragment as Sandbox,
+  RepoFragmentDashboardFragment as Repo,
   Team,
   TemplateFragmentDashboardFragment as Template,
 } from 'app/graphql/types';
@@ -48,7 +49,7 @@ type State = {
       [path: string]: Sandbox[];
     } | null;
     REPOS: {
-      [path: string]: Sandbox[];
+      [path: string]: Repo[];
     } | null;
   };
   teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;

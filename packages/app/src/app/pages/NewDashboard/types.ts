@@ -25,12 +25,12 @@ export type DashboardFolder = DELETE_ME_COLLECTION & {
   setCreating?: (value: boolean) => void;
 };
 
-export type DashboardRepo = DELETE_ME_COLLECTION & {
+export type DashboardRepo = {
   branch: string;
   name: string;
   owner: string;
   level: number;
-  sandboxes: number;
+  sandboxes: any;
   type: 'repo';
 };
 

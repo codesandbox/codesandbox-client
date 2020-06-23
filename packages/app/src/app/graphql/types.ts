@@ -1081,6 +1081,37 @@ export type CommentRemovedSubscription = {
   } & CommentFragment;
 };
 
+export type RepoFragmentDashboardFragment = { __typename?: 'Sandbox' } & Pick<
+  Sandbox,
+  | 'id'
+  | 'alias'
+  | 'title'
+  | 'insertedAt'
+  | 'updatedAt'
+  | 'removedAt'
+  | 'privacy'
+  | 'screenshotUrl'
+  | 'screenshotOutdated'
+  | 'likeCount'
+  | 'forkCount'
+  | 'viewCount'
+  | 'prNumber'
+> & {
+    source: { __typename?: 'Source' } & Pick<Source, 'template'>;
+    baseGit: Maybe<
+      { __typename?: 'Git' } & Pick<
+        Git,
+        'branch' | 'id' | 'repo' | 'username' | 'path'
+      >
+    >;
+    originalGit: Maybe<
+      { __typename?: 'Git' } & Pick<
+        Git,
+        'branch' | 'id' | 'repo' | 'username' | 'path'
+      >
+    >;
+  };
+
 export type SandboxFragmentDashboardFragment = {
   __typename?: 'Sandbox';
 } & Pick<
@@ -1432,41 +1463,7 @@ export type GetReposQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
       sandboxes: Array<
-        { __typename?: 'Sandbox' } & Pick<
-          Sandbox,
-          | 'id'
-          | 'alias'
-          | 'title'
-          | 'insertedAt'
-          | 'updatedAt'
-          | 'removedAt'
-          | 'privacy'
-          | 'screenshotUrl'
-          | 'screenshotOutdated'
-          | 'likeCount'
-          | 'forkCount'
-          | 'viewCount'
-          | 'prNumber'
-        > & {
-            baseGit: Maybe<
-              { __typename?: 'Git' } & Pick<
-                Git,
-                'branch' | 'id' | 'repo' | 'username' | 'path'
-              >
-            >;
-            git: Maybe<
-              { __typename?: 'Git' } & Pick<
-                Git,
-                'branch' | 'id' | 'repo' | 'username' | 'path'
-              >
-            >;
-            originalGit: Maybe<
-              { __typename?: 'Git' } & Pick<
-                Git,
-                'branch' | 'id' | 'repo' | 'username' | 'path'
-              >
-            >;
-          }
+        { __typename?: 'Sandbox' } & RepoFragmentDashboardFragment
       >;
     }
   >;

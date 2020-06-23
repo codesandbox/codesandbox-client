@@ -1,5 +1,40 @@
 import { gql } from 'overmind-graphql';
 
+export const repoFragmentDashboard = gql`
+  fragment repoFragmentDashboard on Sandbox {
+    id
+    alias
+    title
+    insertedAt
+    updatedAt
+    removedAt
+    privacy
+    screenshotUrl
+    screenshotOutdated
+    likeCount
+    forkCount
+    viewCount
+    source {
+      template
+    }
+    baseGit {
+      branch
+      id
+      repo
+      username
+      path
+    }
+    originalGit {
+      branch
+      id
+      repo
+      username
+      path
+    }
+    prNumber
+  }
+`;
+
 export const sandboxFragmentDashboard = gql`
   fragment sandboxFragmentDashboard on Sandbox {
     id

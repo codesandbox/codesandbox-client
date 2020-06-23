@@ -19,6 +19,8 @@ import {
   _SearchSandboxesQueryVariables,
   GetTeamQuery,
   GetTeamQueryVariables,
+  GetReposQueryVariables,
+  GetReposQuery,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -26,6 +28,7 @@ import {
   sandboxFragmentDashboard,
   sidebarCollectionDashboard,
   templateFragmentDashboard,
+  repoFragmentDashboard,
 } from './fragments';
 
 export const deletedSandboxes: Query<
@@ -84,43 +87,15 @@ export const getCollections: Query<
   ${sidebarCollectionDashboard}
 `;
 
-export const getRepos: Query<{}, {}> = gql`
+export const getRepos: Query<GetReposQuery, { GetReposQueryVariables }> = gql`
   query getRepos {
     me {
       sandboxes {
-        id
-        alias
-        title
-        insertedAt
-        updatedAt
-        removedAt
-        privacy
-        screenshotUrl
-        screenshotOutdated
-        likeCount
-        forkCount
-        viewCount
-        source {
-          template
-        }
-        baseGit {
-          branch
-          id
-          repo
-          username
-          path
-        }
-        originalGit {
-          branch
-          id
-          repo
-          username
-          path
-        }
-        prNumber
+        ...repoFragmentDashboard
       }
     }
   }
+  ${repoFragmentDashboard}
 `;
 
 export const teamTemplates: Query<

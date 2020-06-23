@@ -5,7 +5,7 @@ import { useOvermind } from 'app/overmind';
 import { Element } from '@codesandbox/components';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
-import { DashboardGridItem } from 'app/pages/NewDashboard/types';
+import { DashboardGridItem, DashboardRepo } from 'app/pages/NewDashboard/types';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
@@ -51,6 +51,7 @@ export const RepositoriesPage = () => {
         : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
   };
+
   return (
     <Element
       css={`
