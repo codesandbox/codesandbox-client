@@ -15,8 +15,8 @@ export const AllPage = () => {
   const params = useParams<{ path: string }>();
   const history = useHistory();
   const items = useFilteredItems(params, level);
-  const param = params.path || '';
-  const cleanParam = param.split(' ').join('{}');
+  const currentPath = params.path || '';
+  const cleanParam = currentPath.split(' ').join('{}');
   const {
     actions,
     state: {
@@ -42,23 +42,21 @@ export const AllPage = () => {
   }, [activeTeam]);
 
   React.useEffect(() => {
-    if (!param || param === '/') {
+    if (!currentPath || currentPath === '/') {
       setLevel(0);
     } else {
-      setLevel(param.split('/').length);
+      setLevel(currentPath.split('/').length);
     }
-    actions.dashboard.getSandboxesByPath(param);
-  }, [param, actions.dashboard, activeTeam]);
+    actions.dashboard.getSandboxesByPath(currentPath);
+  }, [currentPath, actions.dashboard, activeTeam]);
 
   const activeSandboxes = (sandboxes.ALL && sandboxes.ALL[cleanParam]) || [];
 
   const itemsToShow: DashboardGridItem[] = allCollections
     ? [
-        creating
-          ? { type: 'new-folder' as 'new-folder', setCreating }
-          : undefined,
+        creating && { type: 'new-folder' as 'new-folder', setCreating },
         ...items,
-      ].filter(exists => exists)
+      ].filter(Boolean)
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   return (
@@ -67,15 +65,17 @@ export const AllPage = () => {
       createNewFolder={() => setCreating(true)}
     >
       <Helmet>
-        <title>{param || 'Dashboard'} - CodeSandbox</title>
+        <title>
+          {currentPath.split('/').pop() || 'Dashboard'} - CodeSandbox
+        </title>
       </Helmet>
       <Header
-        path={param}
+        path={currentPath}
         templates={getPossibleTemplates(activeSandboxes)}
         createNewFolder={() => setCreating(true)}
         showViewOptions
-        showFilters={Boolean(param)}
-        showSortOptions={Boolean(param)}
+        showFilters={Boolean(currentPath)}
+        showSortOptions={Boolean(currentPath)}
       />
       <VariableGrid items={itemsToShow} />
     </SelectionProvider>
