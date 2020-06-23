@@ -9,11 +9,143 @@ import {
   SkeletonText,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { SandboxItemComponentProps } from './types';
+
+const useImageLoaded = (url: string) => {
+  const [loaded, setLoaded] = React.useState(false);
+  React.useEffect(() => {
+    const img = new Image();
+    img.onload = () => {
+      setLoaded(true);
+    };
+
+    img.src = url;
+
+    if (img.complete) {
+      setLoaded(true);
+    }
+  }, [url]);
+
+  return loaded;
+};
+
+type SandboxTitleProps = { stoppedScrolling: boolean } & Pick<
+  SandboxItemComponentProps,
+  | 'editing'
+  | 'onContextMenu'
+  | 'onSubmit'
+  | 'onChange'
+  | 'onInputKeyDown'
+  | 'onInputBlur'
+  | 'PrivacyIcon'
+  | 'newTitle'
+  | 'sandboxTitle'
+>;
+
+const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
+  ({
+    editing,
+    stoppedScrolling,
+    onContextMenu,
+    onSubmit,
+    onChange,
+    onInputKeyDown,
+    onInputBlur,
+    PrivacyIcon,
+    newTitle,
+    sandboxTitle,
+  }) => (
+    <Stack justify="space-between" align="center" marginLeft={4}>
+      {editing ? (
+        <form onSubmit={onSubmit}>
+          <Input
+            autoFocus
+            value={newTitle}
+            onChange={onChange}
+            onKeyDown={onInputKeyDown}
+            onBlur={onInputBlur}
+          />
+        </form>
+      ) : (
+        <Stack gap={1} align="center">
+          <PrivacyIcon />
+          <Text size={3} weight="medium">
+            {sandboxTitle}
+          </Text>
+        </Stack>
+      )}
+
+      {!stoppedScrolling ? (
+        // During scrolling we don't show the button, because it takes 1ms to render a button,
+        // while this doesn't sound like a lot, we need to render 4 new grid items when you scroll down,
+        // and this can't take more than 12ms. Showing another thing than the button shaves off a 4ms of
+        // render time and allows you to scroll with a minimum of 30fps.
+        <div
+          style={{
+            width: 26,
+            height: 26,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          css={css({ color: 'mutedForeground' })}
+        >
+          <Icon size={9} name="more" />
+        </div>
+      ) : (
+        <IconButton
+          name="more"
+          size={9}
+          title="Sandbox actions"
+          onClick={onContextMenu}
+        />
+      )}
+    </Stack>
+  )
+);
+
+type SandboxStatsProps = Pick<
+  SandboxItemComponentProps,
+  'isHomeTemplate' | 'sandbox' | 'viewCount' | 'sandboxLocation' | 'lastUpdated'
+>;
+const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
+  ({ isHomeTemplate, sandbox, viewCount, sandboxLocation, lastUpdated }) => (
+    <Stack marginX={4} gap={1} align="center">
+      <Stack gap={1} align="center">
+        <Icon name="eye" size={14} css={css({ color: 'mutedForeground' })} />
+        <Text size={3} variant="muted">
+          {viewCount}
+        </Text>
+      </Stack>
+      {isHomeTemplate ? null : (
+        <>
+          <Text size={3} variant="muted">
+            •
+          </Text>
+          <Text size={3} variant="muted" css={{ flexShrink: 0 }}>
+            {shortDistance(lastUpdated)}
+          </Text>
+        </>
+      )}
+      {sandboxLocation ? (
+        <>
+          <Text size={3} variant="muted">
+            •
+          </Text>
+          <Text size={3} variant="muted" maxWidth="100%">
+            {sandboxLocation}
+          </Text>
+        </>
+      ) : null}
+    </Stack>
+  )
+);
 
 export const SandboxCard = ({
   sandbox,
   sandboxTitle,
   sandboxLocation,
+  isHomeTemplate,
   lastUpdated,
   viewCount,
   TemplateIcon,
@@ -37,8 +169,14 @@ export const SandboxCard = ({
   thumbnailRef,
   opacity,
   ...props
-}) => {
+}: SandboxItemComponentProps) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
+
+  const [guaranteedScreenshotUrl, setGuaranteedScreenshotUrl] = React.useState<
+    string
+  >(screenshotUrl);
+
+  const imageLoaded = useImageLoaded(guaranteedScreenshotUrl);
 
   React.useEffect(() => {
     // We only want to render the screenshot once the user has stopped scrolling
@@ -46,7 +184,15 @@ export const SandboxCard = ({
       setStoppedScrolling(true);
     }
   }, [isScrolling, stoppedScrolling]);
-  const showScreenshot = stoppedScrolling && screenshotUrl;
+
+  React.useEffect(() => {
+    // We always try to show the cached screenshot first, if someone looks at a sandbox we will try to
+    // generate a new one based on the latest contents.
+    const generateScreenshotUrl = `/api/v1/sandboxes/${sandbox.id}/screenshot.png`;
+    if (stoppedScrolling && !guaranteedScreenshotUrl) {
+      setGuaranteedScreenshotUrl(generateScreenshotUrl);
+    }
+  }, [stoppedScrolling, guaranteedScreenshotUrl, sandbox.id]);
 
   return (
     <Stack
@@ -66,7 +212,7 @@ export const SandboxCard = ({
         borderColor: selected ? 'blues.600' : 'grays.600',
         borderRadius: 'medium',
         overflow: 'hidden',
-        transition: 'all ease-in-out',
+        transition: 'box-shadow ease-in-out',
         transitionDuration: theme => theme.speeds[4],
         opacity,
         ':hover, :focus, :focus-within': {
@@ -90,10 +236,12 @@ export const SandboxCard = ({
           },
         })}
         style={{
-          [showScreenshot ? 'backgroundImage' : null]: `url(${screenshotUrl})`,
+          [imageLoaded
+            ? 'backgroundImage'
+            : null]: `url(${guaranteedScreenshotUrl})`,
         }}
       >
-        {showScreenshot ? null : <TemplateIcon width="60" height="60" />}
+        {imageLoaded ? null : <TemplateIcon width="60" height="60" />}
       </Stack>
       <Element
         css={css({
@@ -112,61 +260,26 @@ export const SandboxCard = ({
         <TemplateIcon width="16" height="16" />
       </Element>
 
-      <Stack justify="space-between" align="center" marginLeft={4}>
-        {editing ? (
-          <form onSubmit={onSubmit}>
-            <Input
-              autoFocus
-              value={newTitle}
-              onChange={onChange}
-              onKeyDown={onInputKeyDown}
-              onBlur={onInputBlur}
-            />
-          </form>
-        ) : (
-          <Stack gap={1} align="center">
-            <PrivacyIcon />
-            <Text size={3} weight="medium">
-              {sandboxTitle}
-            </Text>
-          </Stack>
-        )}
+      <SandboxTitle
+        editing={editing}
+        stoppedScrolling={stoppedScrolling}
+        onContextMenu={onContextMenu}
+        onSubmit={onSubmit}
+        onChange={onChange}
+        onInputKeyDown={onInputKeyDown}
+        onInputBlur={onInputBlur}
+        PrivacyIcon={PrivacyIcon}
+        newTitle={newTitle}
+        sandboxTitle={sandboxTitle}
+      />
 
-        <IconButton
-          name="more"
-          size={9}
-          title="Sandbox actions"
-          onClick={onContextMenu}
-        />
-      </Stack>
-      <Stack marginX={4} gap={1} align="center">
-        <Stack gap={1} align="center">
-          <Icon name="eye" size={14} css={css({ color: 'mutedForeground' })} />
-          <Text size={3} variant="muted">
-            {viewCount}
-          </Text>
-        </Stack>
-        {sandbox.isHomeTemplate ? null : (
-          <>
-            <Text size={3} variant="muted">
-              •
-            </Text>
-            <Text size={3} variant="muted" css={{ flexShrink: 0 }}>
-              {shortDistance(lastUpdated)}
-            </Text>
-          </>
-        )}
-        {sandboxLocation ? (
-          <>
-            <Text size={3} variant="muted">
-              •
-            </Text>
-            <Text size={3} variant="muted" maxWidth="100%">
-              {sandboxLocation}
-            </Text>
-          </>
-        ) : null}
-      </Stack>
+      <SandboxStats
+        isHomeTemplate={isHomeTemplate}
+        lastUpdated={lastUpdated}
+        sandbox={sandbox}
+        viewCount={viewCount}
+        sandboxLocation={sandboxLocation}
+      />
     </Stack>
   );
 };

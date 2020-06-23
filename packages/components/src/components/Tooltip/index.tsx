@@ -58,7 +58,7 @@ const animation = styledcss`
  * so we apply global styles with their [data-reach-name]
  */
 
-const TooltipStyles = createGlobalStyle(
+export const TooltipStyles = createGlobalStyle(
   css({
     '[data-reach-tooltip][data-component=Tooltip]': {
       backgroundColor: 'grays.900',
@@ -93,7 +93,6 @@ const Tooltip = props => {
 
   return (
     <>
-      <TooltipStyles />
       {React.cloneElement(props.children, trigger)}
       <TooltipPopup
         {...tooltip}

@@ -98,11 +98,6 @@ const commonStyles = {
   },
 };
 
-const merge = (...objs) =>
-  objs.reduce(function mergeAll(merged, currentValue = {}) {
-    return deepmerge(merged, currentValue);
-  }, {});
-
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     IElementProps {
@@ -120,8 +115,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     { variant = 'primary', loading, css = {}, autoWidth, as: pAs, ...props },
     ref
   ) {
-    const styles = merge(variantStyles[variant], commonStyles, css);
-
+    const styles = deepmerge.all([variantStyles[variant], commonStyles, css]);
     const usedAs = pAs || (props.to ? Link : 'button');
     // default type is button unless props.as was changed
     const type = usedAs === 'button' && 'button';

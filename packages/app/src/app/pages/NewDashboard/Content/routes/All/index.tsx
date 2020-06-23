@@ -20,7 +20,8 @@ export const AllPage = () => {
   const {
     actions,
     state: {
-      dashboard: { allCollections, sandboxes, activeTeam },
+      dashboard: { allCollections, sandboxes },
+      activeTeam,
     },
   } = useOvermind();
   const [localTeam, setLocalTeam] = React.useState(activeTeam);
