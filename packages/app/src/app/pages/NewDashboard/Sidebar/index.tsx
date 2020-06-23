@@ -89,10 +89,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     x: null,
     y: null,
   });
-  const [menuFolder, setMenuFolder] = React.useState<{
-    name: string;
-    path: string;
-  } | null>(null);
+  const [
+    menuFolder,
+    setMenuFolder,
+  ] = React.useState<DashboardBaseFolder | null>(null);
   const [isRenamingFolder, setRenamingFolder] = React.useState(false);
   const [newFolderPath, setNewFolderPath] = React.useState<string | null>(null);
 
@@ -289,6 +289,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <NestableRowItem
             name="All sandboxes"
             path="/all"
+            folderPath=""
+            rootPath="/all"
             folders={[
               ...folders,
               ...(newFolderPath
@@ -500,14 +502,18 @@ const RowItem: React.FC<RowItemProps> = ({
 
 interface NestableRowItemProps {
   name: string;
+  folderPath: string;
   path: string;
+  rootPath: string;
   folders: DashboardBaseFolder[];
 }
 
 const NestableRowItem: React.FC<NestableRowItemProps> = ({
   name,
   path,
+  folderPath,
   folders,
+  rootPath,
 }) => {
   const { actions } = useOvermind();
 
@@ -531,17 +537,29 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     const newFolderParent = newFolderPath.replace('/__NEW__', '');
     if (name === 'All sandboxes') {
       hasNewNestedFolder = true;
-    } else if (newFolderParent.length && path.includes(newFolderParent)) {
+    } else if (newFolderParent.length && folderPath.includes(newFolderParent)) {
       hasNewNestedFolder = true;
     }
   }
 
-  // React.useEffect(() => {
+  const location = useLocation();
+  const currentFolderLocationPath = '/new-dashboard' + rootPath + folderPath;
+  React.useEffect(() => {
+    // Auto open folder in the sidebar if it's opened
+    const pathName = location.pathname;
 
-  //   if (path.startsWith(params.path + '/') && !foldersVisible) {
-  //     setFoldersVisibility(true);
-  //   }
-  // }, [params.path, path, foldersVisible, setFoldersVisibility]);
+    if (
+      pathName.startsWith(currentFolderLocationPath + '/') &&
+      !foldersVisible
+    ) {
+      setFoldersVisibility(true);
+    }
+  }, [
+    location.pathname,
+    currentFolderLocationPath,
+    foldersVisible,
+    setFoldersVisibility,
+  ]);
 
   React.useEffect(() => {
     if (hasNewNestedFolder) setFoldersVisibility(true);
@@ -550,11 +568,11 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   const onContextMenu = event => {
     event.preventDefault();
     setMenuVisibility(true);
-    setMenuFolder({ name, path });
+    setMenuFolder({ name, path: folderPath });
     setMenuPosition({ x: event.clientX, y: event.clientY });
   };
 
-  let subFolders;
+  let subFolders: DashboardBaseFolder[];
   if (name === 'All sandboxes') {
     subFolders = folders.filter(folder => {
       if (folder.path === newFolderPath) {
@@ -568,16 +586,17 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
         .split('/')
         .slice(0, -1)
         .join('/');
-      return parentPath === path;
+
+      return parentPath === folderPath;
     });
   }
 
-  const nestingLevel = path.split('/').length - 2;
+  const nestingLevel = folderPath.split('/').length - 1;
   const history = useHistory();
 
   /* Rename logic */
-  const isRenaming = isRenamingFolder && menuFolder.path === path;
-  const isNewFolder = newFolderPath === path;
+  const isRenaming = isRenamingFolder && menuFolder.path === folderPath;
+  const isNewFolder = newFolderPath === folderPath;
   const [newName, setNewName] = React.useState(name);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -599,23 +618,30 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
       // nothing to do here
     } else if (isNewFolder) {
       if (newName) {
-        const folderPath = path.replace('__NEW__', newName);
-        await actions.dashboard.createFolder(folderPath);
+        const sanitizedPath = folderPath.replace('__NEW__', newName);
+        await actions.dashboard.createFolder(sanitizedPath);
         track('Dashboard - Create Directory', {
           source: 'Sidebar',
           dashboardVersion: 2,
-          folderPath,
+          folderPath: sanitizedPath,
         });
       }
     } else {
+      const newPath = join(dirname(folderPath), newName);
       await actions.dashboard.renameFolder({
-        path,
-        newPath: join(dirname(path), newName),
+        path: folderPath,
+        newPath,
       });
+
       track('Dashboard - Rename Folder', {
         source: 'Sidebar',
         dashboardVersion: 2,
       });
+
+      if (currentFolderLocationPath === location.pathname) {
+        // if this directory is opened
+        history.push('/new-dashboard' + rootPath + newPath);
+      }
     }
 
     setNewFolderPath(null);
@@ -722,7 +748,9 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 <NestableRowItem
                   key={folder.path}
                   name={folder.name}
-                  path={path + folder.path}
+                  path={rootPath + folder.path}
+                  rootPath={rootPath}
+                  folderPath={folder.path}
                   folders={folders}
                 />
               ))}
