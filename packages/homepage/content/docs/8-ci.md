@@ -1,5 +1,5 @@
 ---
-title: CI
+title: CodeSandbox CI
 authors: ['Ives van Hoorne']
 description:
   Here's what CodeSandbox CI is, how it will benefit you as a library
