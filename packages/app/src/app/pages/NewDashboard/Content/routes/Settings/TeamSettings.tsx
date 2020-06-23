@@ -23,16 +23,13 @@ import { Card } from './components';
 
 export const TeamSettings = () => {
   const {
-    state: {
-      user: stateUser,
-      dashboard: { activeTeamInfo: team },
-    },
+    state: { user: stateUser, activeTeam, activeTeamInfo: team },
     actions,
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.getTeam();
-  }, [actions.dashboard]);
+    actions.getActiveTeam();
+  }, [activeTeam, actions]);
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -66,15 +63,15 @@ export const TeamSettings = () => {
   };
 
   if (!team) {
-    return <Header title="Team settings" />;
+    return <Header title="Workspace settings" />;
   }
   const created = team.users.find(user => user.id === team.creatorId);
   return (
     <>
       <Helmet>
-        <title>Team Settings - CodeSandbox</title>
+        <title>Workspace Settings - CodeSandbox</title>
       </Helmet>
-      <Header title="Team settings" />
+      <Header title="Workspace settings" />
       <Element
         css={css({
           height: 'calc(100vh - 140px)',
@@ -157,7 +154,7 @@ export const TeamSettings = () => {
             <Card>
               <Stack direction="vertical" gap={4}>
                 <Text size={6} weight="bold">
-                  {team.users.length} team{' '}
+                  {team.users.length}{' '}
                   {team.users.length === 1 ? 'member' : 'members'}
                 </Text>
                 <Text size={3} variant="muted">

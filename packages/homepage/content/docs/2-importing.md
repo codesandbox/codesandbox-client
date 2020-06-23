@@ -46,7 +46,7 @@ CodeSandbox.
 
 ### Using a Browser Extension
 
-We have browswer extensions for
+We have browser extensions for
 [Chrome](https://chrome.google.com/webstore/detail/open-in-codesandbox/hdidglkcgdolpoijdckmafdnddjoglia)
 and [Firefox](https://addons.mozilla.org/en-GB/firefox/addon/codesandbox/),
 which add an 'Open in CodeSandbox' button to GitHub repo pages. This makes it

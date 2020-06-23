@@ -31,7 +31,7 @@ export const DetailInfo: React.FC<IDetailInfoProps> = ({
         </Action>
       </Tooltip>
     ) : (
-      <Button style={{ width: 'auto' }} onClick={onSignIn}>
+      <Button autoWidth onClick={onSignIn}>
         Sign in
       </Button>
     )}

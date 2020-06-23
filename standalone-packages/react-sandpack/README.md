@@ -16,7 +16,7 @@ import {
   CodeMirror,
   BrowserPreview,
   SandpackProvider,
-} from 'react-sandpack/es/components';
+} from 'react-smooshpack';
 import 'react-smooshpack/dist/styles.css';
 
 const files = {

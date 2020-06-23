@@ -5,12 +5,16 @@ import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { Helmet } from 'react-helmet';
+import {
+  DashboardGridItem,
+  DashboardTemplate,
+} from 'app/pages/NewDashboard/types';
 
 export const Home = () => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes },
+      dashboard: { viewMode, sandboxes },
     },
   } = useOvermind();
 
@@ -20,21 +24,28 @@ export const Home = () => {
 
   const templates = (sandboxes.TEMPLATE_HOME || []).map(template => {
     const { sandbox, ...templateValues } = template;
-    return {
-      type: 'sandbox',
-      ...sandbox,
-      isTemplate: true,
+
+    const dashboardTemplate: DashboardTemplate = {
+      type: 'template' as 'template',
+      sandbox,
       template: templateValues,
       isHomeTemplate: true,
     };
+
+    return dashboardTemplate;
   });
 
-  const items = sandboxes.RECENT_HOME
+  const items: DashboardGridItem[] = sandboxes.RECENT_HOME
     ? [
         {
           type: 'header',
           title: 'Recently Used Templates',
-          showMoreLink: '/new-dashboard/templates',
+          ...(viewMode === 'list'
+            ? {
+                showMoreLink: '/s',
+                showMoreLabel: '+ New Sandbox',
+              }
+            : {}),
         },
         { type: 'new-sandbox' },
         ...templates,
@@ -42,17 +53,18 @@ export const Home = () => {
           type: 'header',
           title: 'Your Recent Sandboxes',
           showMoreLink: '/new-dashboard/recent',
+          showMoreLabel: 'Show more',
         },
         ...(sandboxes.RECENT_HOME || []).map(sandbox => ({
-          type: 'sandbox',
-          ...sandbox,
+          type: 'sandbox' as 'sandbox',
+          sandbox,
         })),
       ]
     : [
         { type: 'header', title: 'Recently Used Templates' },
-        { type: 'skeletonRow' },
+        { type: 'skeleton-row' },
         { type: 'header', title: 'Your Recent Sandboxes' },
-        { type: 'skeletonRow' },
+        { type: 'skeleton-row' },
       ];
 
   return (
@@ -60,7 +72,7 @@ export const Home = () => {
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
-      <Header title="Home" />
+      <Header title="Home" showViewOptions />
       <VariableGrid items={items} />
     </SelectionProvider>
   );

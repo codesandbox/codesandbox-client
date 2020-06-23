@@ -66,16 +66,21 @@ export const withLoadApp = <T>(
 
   if (state.hasLogIn) {
     try {
-      state.user = await effects.api.getCurrentUser();
-      actions.internal.setPatronPrice();
-      effects.analytics.identify('signed_in', true);
-      effects.analytics.setUserId(state.user.id, state.user.email);
       const localStorageTeam = effects.browser.storage.get(
         TEAM_ID_LOCAL_STORAGE
       );
       if (localStorageTeam) {
-        state.dashboard.activeTeam = localStorageTeam;
+        state.activeTeam = localStorageTeam;
       }
+      const [user] = await Promise.all([
+        effects.api.getCurrentUser(),
+        actions.getActiveTeam(),
+      ]);
+      state.user = user;
+      actions.internal.setPatronPrice();
+      effects.analytics.identify('signed_in', true);
+      effects.analytics.setUserId(state.user.id, state.user.email);
+
       try {
         actions.internal.trackCurrentTeams().catch(e => {});
         actions.internal.identifyCurrentUser().catch(e => {});

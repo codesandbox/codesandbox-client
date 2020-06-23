@@ -8,6 +8,7 @@ import Entry from '../Entry';
 
 interface IModuleEntryProps {
   module: Module;
+  readonly?: boolean;
   setCurrentModule?: (id: string) => void;
   store?: any;
   signals?: any;
@@ -31,6 +32,7 @@ const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
     setCurrentModule,
     markTabsNotDirty,
     depth,
+    readonly,
     renameModule,
     deleteEntry,
     discardModuleChanges,
@@ -55,6 +57,7 @@ const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
       // @ts-ignore
       <Entry
         id={module.id}
+        readonly={readonly}
         shortid={module.shortid}
         title={module.title}
         rightColors={liveUsers.map(([a, b, c]) => `rgb(${a}, ${b}, ${c})`)}

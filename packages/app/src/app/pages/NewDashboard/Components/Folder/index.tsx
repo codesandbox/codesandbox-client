@@ -10,6 +10,7 @@ import { useOvermind } from 'app/overmind';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
 import { useSelection } from '../Selection';
+import { DashboardFolder } from '../../types';
 
 export const Folder = ({
   name = '',
@@ -17,7 +18,7 @@ export const Folder = ({
   sandboxes = 0,
   setCreating,
   ...props
-}) => {
+}: DashboardFolder) => {
   const {
     state: { dashboard },
     actions,
@@ -32,7 +33,6 @@ export const Folder = ({
 
   let viewMode: string;
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const Component = viewMode === 'list' ? FolderListItem : FolderCard;
@@ -45,7 +45,6 @@ export const Folder = ({
     onRightClick,
     onMenuEvent,
     onBlur,
-    onKeyDown,
     onDragStart,
     onDrop,
     thumbnailRef,
@@ -87,7 +86,6 @@ export const Folder = ({
     onDoubleClick,
     onContextMenu,
     onBlur,
-    onKeyDown,
     'data-selection-id': path,
   };
 
