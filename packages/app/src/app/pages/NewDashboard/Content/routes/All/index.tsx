@@ -50,8 +50,7 @@ export const AllPage = () => {
     actions.dashboard.getSandboxesByPath(currentPath);
   }, [currentPath, actions.dashboard, activeTeam]);
 
-  const activeSandboxes = (sandboxes.ALL && sandboxes.ALL[cleanParam]) || [];
-
+  const activeSandboxes = sandboxes.ALL && sandboxes.ALL[cleanParam];
   const itemsToShow: DashboardGridItem[] = allCollections
     ? [
         creating && { type: 'new-folder' as 'new-folder', setCreating },
@@ -71,7 +70,7 @@ export const AllPage = () => {
       </Helmet>
       <Header
         path={currentPath}
-        templates={getPossibleTemplates(activeSandboxes)}
+        templates={getPossibleTemplates(activeSandboxes || [])}
         createNewFolder={() => setCreating(true)}
         showViewOptions
         showFilters={Boolean(currentPath)}
