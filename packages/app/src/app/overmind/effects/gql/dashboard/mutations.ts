@@ -101,18 +101,16 @@ export const addSandboxToFolder: Query<
   AddToFolderMutationVariables
 > = gql`
   mutation AddToFolder(
-    $collectionPath: String!
+    $collectionPath: String
     $sandboxIds: [ID!]!
     $teamId: ID
   ) {
-    addToCollection(
+    addToCollectionOrTeam(
       collectionPath: $collectionPath
       sandboxIds: $sandboxIds
       teamId: $teamId
     ) {
-      sandboxes {
-        ...sandboxFragmentDashboard
-      }
+      ...sandboxFragmentDashboard
     }
   }
   ${sandboxFragmentDashboard}

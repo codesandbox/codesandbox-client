@@ -259,7 +259,7 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
 `;
 
 export function addSandboxesToFolder(
-  selectedSandboxes,
+  selectedSandboxes: string[],
   path: string,
   teamId: string | null
 ) {

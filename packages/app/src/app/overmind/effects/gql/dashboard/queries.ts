@@ -21,6 +21,8 @@ import {
   _SearchTeamSandboxesQueryVariables,
   GetTeamQuery,
   GetTeamQueryVariables,
+  TeamDraftsQuery,
+  TeamDraftsQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -68,6 +70,22 @@ export const sandboxesByPath: Query<
   }
   ${sandboxFragmentDashboard}
   ${sidebarCollectionDashboard}
+`;
+
+export const getTeamDrafts: Query<
+  TeamDraftsQuery,
+  TeamDraftsQueryVariables
+> = gql`
+  query TeamDrafts($teamId: ID!) {
+    me {
+      team(id: $teamId) {
+        drafts {
+          ...sandboxFragmentDashboard
+        }
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
 `;
 
 export const getCollections: Query<

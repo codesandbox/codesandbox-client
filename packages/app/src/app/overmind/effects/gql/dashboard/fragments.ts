@@ -32,8 +32,9 @@ export const sandboxFragmentDashboard = gql`
 
     collection {
       path
-      teamId
     }
+
+    teamId
   }
 `;
 
@@ -74,10 +75,8 @@ export const templateFragmentDashboard = gql`
         branch
       }
 
-      collection {
-        team {
-          name
-        }
+      team {
+        name
       }
 
       author {

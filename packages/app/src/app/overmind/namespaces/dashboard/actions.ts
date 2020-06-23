@@ -236,11 +236,9 @@ export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
       return;
     }
 
+    // TODO: look into recents. Do we still want to have it this way?
     dashboard.sandboxes[sandboxesTypes.RECENT] = data.me.sandboxes
-      .filter(
-        sandbox =>
-          (sandbox.collection || { collection: {} }).teamId === state.activeTeam
-      )
+      .filter(sandbox => sandbox.teamId === state.activeTeam)
       .slice(0, 50);
   } catch (error) {
     effects.notificationToast.error(
@@ -299,7 +297,7 @@ export const createFolder: AsyncAction<string> = async (
     const { createCollection } = await effects.gql.mutations.createFolder({
       // only way to pass, null is a value in the BE
       // @ts-ignore
-      teamId: state.dashboard.activeTeam || undefined,
+      teamId: state.activeTeam || undefined,
       path,
     });
 
@@ -325,17 +323,30 @@ export const createFolder: AsyncAction<string> = async (
 export const getDrafts: AsyncAction = async ({ state, effects }) => {
   const { dashboard } = state;
   try {
-    const data = await effects.gql.queries.sandboxesByPath({
-      path: '/',
-      teamId: state.activeTeam,
-    });
-    if (typeof data?.me?.collection?.sandboxes === 'undefined') {
-      return;
+    let sandboxes: SandboxFragmentDashboardFragment[];
+
+    if (state.activeTeam) {
+      const data = await effects.gql.queries.getTeamDrafts({
+        teamId: state.activeTeam,
+      });
+      if (typeof data?.me?.team?.drafts === 'undefined') {
+        return;
+      }
+      sandboxes = data.me.team.drafts;
+    } else {
+      const data = await effects.gql.queries.sandboxesByPath({
+        path: '/',
+        teamId: state.activeTeam,
+      });
+      if (typeof data?.me?.collection?.sandboxes === 'undefined') {
+        return;
+      }
+      sandboxes = data.me.collection.sandboxes;
     }
 
-    dashboard.sandboxes[
-      sandboxesTypes.DRAFTS
-    ] = data.me.collection.sandboxes.filter(s => !s.customTemplate);
+    dashboard.sandboxes[sandboxesTypes.DRAFTS] = sandboxes.filter(
+      s => !s.customTemplate
+    );
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
@@ -699,7 +710,7 @@ export const renameFolder: AsyncAction<{
 
 export const deleteFolder: AsyncAction<{
   path: string;
-}> = async ({ state: { dashboard }, effects }, { path }) => {
+}> = async ({ state: { dashboard, activeTeam }, effects }, { path }) => {
   if (!dashboard.allCollections) return;
   const oldCollections = dashboard.allCollections;
   dashboard.allCollections = dashboard.allCollections.filter(
@@ -710,7 +721,7 @@ export const deleteFolder: AsyncAction<{
       path,
       // only way to pass, null is a value in the BE
       // @ts-ignore
-      teamId: dashboard.activeTeam || undefined,
+      teamId: activeTeam || undefined,
     });
   } catch {
     dashboard.allCollections = oldCollections;
@@ -768,7 +779,7 @@ export const recoverSandboxes: AsyncAction<string[]> = async (
       collectionPath: '/',
       // only way to pass, null is a value in the BE
       // @ts-ignore
-      teamId: state.dashboard.activeTeam || undefined,
+      teamId: state.activeTeam || undefined,
     });
   } catch (error) {
     state.dashboard.sandboxes.DELETED = [...oldDeleted];
@@ -822,11 +833,7 @@ export const getSearchSandboxes: AsyncAction = async ({ state, effects }) => {
 
     const sandboxesToShow = state.dashboard
       .getFilteredSandboxes(sandboxes)
-      .filter(x => !x.customTemplate)
-      .filter(
-        sandbox =>
-          (sandbox.collection || { collection: {} }).teamId === state.activeTeam
-      );
+      .filter(x => !x.customTemplate);
 
     dashboard.sandboxes[sandboxesTypes.SEARCH] = sandboxesToShow;
   } catch (error) {
@@ -884,7 +891,7 @@ export const addSandboxesToFolder: AsyncAction<{
       collectionPath,
       // only way to pass, null is a value in the BE
       // @ts-ignore
-      teamId: state.dashboard.activeTeam || undefined,
+      teamId: state.activeTeam || undefined,
     });
   } catch {
     state.dashboard.sandboxes = { ...oldSandboxes };
@@ -917,7 +924,7 @@ export const setTeamInfo: AsyncAction<{
       name,
       // only way to pass, null is a value in the BE
       // @ts-ignore
-      teamId: state.dashboard.activeTeam || undefined,
+      teamId: state.activeTeam || undefined,
     });
 
     if (description) {
@@ -925,7 +932,7 @@ export const setTeamInfo: AsyncAction<{
         description,
         // only way to pass, null is a value in the BE
         // @ts-ignore
-        teamId: state.dashboard.activeTeam || undefined,
+        teamId: state.activeTeam || undefined,
       });
     }
     state.dashboard.teams = state.dashboard.teams.map(team => {

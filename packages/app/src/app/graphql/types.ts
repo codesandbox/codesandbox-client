@@ -566,6 +566,7 @@ export type Sandbox = {
   screenshotUrl: Maybe<Scalars['String']>;
   source: Source;
   team: Maybe<Team>;
+  teamId: Maybe<Scalars['ID']>;
   title: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   viewCount: Scalars['Int'];
@@ -588,6 +589,8 @@ export type Team = {
   collections: Array<Collection>;
   creatorId: Maybe<Scalars['ID']>;
   description: Maybe<Scalars['String']>;
+  /** Draft sandboxes by everyone on the team */
+  drafts: Array<Sandbox>;
   id: Scalars['ID'];
   inviteToken: Scalars['String'];
   invitees: Array<User>;
@@ -1108,15 +1111,14 @@ export type SandboxFragmentDashboardFragment = {
   | 'likeCount'
   | 'forkCount'
   | 'viewCount'
+  | 'teamId'
 > & {
     source: { __typename?: 'Source' } & Pick<Source, 'template'>;
     customTemplate: Maybe<{ __typename?: 'Template' } & Pick<Template, 'id'>>;
     forkedTemplate: Maybe<
       { __typename?: 'Template' } & Pick<Template, 'id' | 'color' | 'iconUrl'>
     >;
-    collection: Maybe<
-      { __typename?: 'Collection' } & Pick<Collection, 'path' | 'teamId'>
-    >;
+    collection: Maybe<{ __typename?: 'Collection' } & Pick<Collection, 'path'>>;
   };
 
 export type SidebarCollectionDashboardFragment = {
@@ -1149,11 +1151,7 @@ export type TemplateFragmentDashboardFragment = {
               'id' | 'username' | 'commitSha' | 'path' | 'repo' | 'branch'
             >
           >;
-          collection: Maybe<
-            { __typename?: 'Collection' } & {
-              team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'name'>>;
-            }
-          >;
+          team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'name'>>;
           author: Maybe<{ __typename?: 'User' } & Pick<User, 'username'>>;
           source: { __typename?: 'Source' } & Pick<Source, 'template'>;
         }
@@ -1232,17 +1230,15 @@ export type RenameFolderMutation = { __typename?: 'RootMutationType' } & {
 };
 
 export type AddToFolderMutationVariables = Exact<{
-  collectionPath: Scalars['String'];
+  collectionPath: Maybe<Scalars['String']>;
   sandboxIds: Array<Scalars['ID']>;
   teamId: Maybe<Scalars['ID']>;
 }>;
 
 export type AddToFolderMutation = { __typename?: 'RootMutationType' } & {
-  addToCollection: { __typename?: 'Collection' } & {
-    sandboxes: Array<
-      { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-    >;
-  };
+  addToCollectionOrTeam: Array<
+    Maybe<{ __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment>
+  >;
 };
 
 export type MoveToTrashMutationVariables = Exact<{
@@ -1427,6 +1423,24 @@ export type SandboxesByPathQuery = { __typename?: 'RootQueryType' } & {
               { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
             >;
           }
+      >;
+    }
+  >;
+};
+
+export type TeamDraftsQueryVariables = Exact<{
+  teamId: Scalars['ID'];
+}>;
+
+export type TeamDraftsQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      team: Maybe<
+        { __typename?: 'Team' } & {
+          drafts: Array<
+            { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
+          >;
+        }
       >;
     }
   >;

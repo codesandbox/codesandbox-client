@@ -28,6 +28,33 @@ interface GenericSandboxProps {
   item: DashboardSandbox | DashboardTemplate;
 }
 
+function getFolderName(item: GenericSandboxProps['item']): string {
+  if (item.type === 'template') {
+    const { sandbox } = item;
+    if (sandbox.team) {
+      return sandbox.team.name;
+    }
+    if (sandbox.author) {
+      return sandbox.author.username;
+    }
+    if (sandbox.git) {
+      return 'from GitHub';
+    }
+    return 'Templates';
+  }
+  const { sandbox } = item;
+
+  if (sandbox.collection) {
+    if (sandbox.collection.path === '/' && !sandbox.teamId) {
+      return 'Drafts';
+    }
+
+    return sandbox.collection.path.split('/').pop();
+  }
+
+  return 'Drafts';
+}
+
 const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   const {
     state: { dashboard },
@@ -38,19 +65,7 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
-  let sandboxLocation = null;
-  if ('path' in sandbox.collection) {
-    sandboxLocation =
-      sandbox.collection.path === '/'
-        ? 'Drafts'
-        : sandbox.collection.path.split('/').pop();
-  } else if (type === 'template') {
-    sandboxLocation =
-      (sandbox.collection.team && sandbox.collection.team.name) ||
-      ('author' in sandbox && sandbox.author && sandbox.author.username) ||
-      ('git' in sandbox && sandbox.git && 'from GitHub') ||
-      'Templates';
-  }
+  const sandboxLocation = getFolderName(item);
 
   const lastUpdated = formatDistanceStrict(
     new Date(sandbox.updatedAt.replace(/ /g, 'T')),

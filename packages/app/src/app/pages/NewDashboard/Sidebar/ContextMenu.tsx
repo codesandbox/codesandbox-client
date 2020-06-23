@@ -44,7 +44,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
         </Stack>
       </MenuItem>
     );
-  } else if (folder.name === 'All sandboxes') {
+  } else if (folder.name === 'All Sandboxes') {
     menuOptions = (
       <MenuItem onSelect={() => setNewFolderPath(folder.path + '/__NEW__')}>
         New folder

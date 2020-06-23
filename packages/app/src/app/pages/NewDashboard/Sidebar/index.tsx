@@ -287,7 +287,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {inTeamContext ? <Menu.Divider /> : null}
 
           <NestableRowItem
-            name="All sandboxes"
+            name="All Sandboxes"
             path="/all"
             folderPath=""
             rootPath="/all"
@@ -430,10 +430,10 @@ const RowItem: React.FC<RowItemProps> = ({
 
   /** Toggle nested folders when user
    * is drags an item over a folder after a treshold
-   * We open All sandboxes instantly because that's the root
+   * We open All Sandboxes instantly because that's the root
    * and you can't drop anything in it
    */
-  const HOVER_THRESHOLD = name === 'All sandboxes' ? 0 : 500; // ms
+  const HOVER_THRESHOLD = name === 'All Sandboxes' ? 0 : 500; // ms
   const isOverCache = React.useRef(false);
 
   React.useEffect(() => {
@@ -541,7 +541,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   let hasNewNestedFolder = false;
   if (newFolderPath !== null) {
     const newFolderParent = newFolderPath.replace('/__NEW__', '');
-    if (name === 'All sandboxes') {
+    if (name === 'All Sandboxes') {
       hasNewNestedFolder = true;
     } else if (newFolderParent.length && folderPath.includes(newFolderParent)) {
       hasNewNestedFolder = true;
@@ -579,7 +579,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   };
 
   let subFolders: DashboardBaseFolder[];
-  if (name === 'All sandboxes') {
+  if (name === 'All Sandboxes') {
     subFolders = folders.filter(folder => {
       if (folder.path === newFolderPath) {
         return newFolderPath.replace('/__NEW__', '') === '';

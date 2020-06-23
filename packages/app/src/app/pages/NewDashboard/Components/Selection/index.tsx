@@ -103,7 +103,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
   const {
-    state: { dashboard },
+    state: { dashboard, activeTeam },
     actions,
   } = useOvermind();
 
@@ -394,6 +394,11 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       } else if (dropResult.path === '/templates') {
         actions.dashboard.makeTemplate(sandboxIds);
       } else if (dropResult.path === '/drafts') {
+        actions.dashboard.addSandboxesToFolder({
+          sandboxIds,
+          collectionPath: activeTeam ? null : '/',
+        });
+      } else if (dropResult.path === '/all') {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: '/',
