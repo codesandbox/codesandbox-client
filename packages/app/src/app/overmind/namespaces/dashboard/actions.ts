@@ -8,6 +8,7 @@ import {
 } from 'app/graphql/types';
 import Fuse from 'fuse.js';
 import { OrderBy, sandboxesTypes } from './state';
+import { getDecoratedCollection } from './utilts';
 
 export const dashboardMounted: AsyncAction = withLoadApp();
 
@@ -258,17 +259,9 @@ export const getAllFolders: AsyncAction = async ({ state, effects }) => {
     }
 
     // this is here because it will be done in the backend in the *FUTURE*
-    const collectionsByLevel = data.me.collections.map(collection => {
-      const split = collection.path.split('/');
-      const parent = split[split.length - 2] || '';
-      return {
-        ...collection,
-        sandboxes: collection.sandboxes.length,
-        parent,
-        level: split.length - 2,
-        name: split[split.length - 1],
-      };
-    });
+    const collectionsByLevel = data.me.collections.map(collection =>
+      getDecoratedCollection(collection, collection.sandboxes.length)
+    );
 
     state.dashboard.allCollections = [
       {
@@ -297,17 +290,9 @@ export const createFolder: AsyncAction<string> = async (
   path
 ) => {
   if (!state.dashboard.allCollections) return;
-  const split = path.split('/');
   const oldFolders = state.dashboard.allCollections;
   state.dashboard.allCollections = [
-    {
-      path,
-      id: 'FAKE_ID',
-      sandboxes: 0,
-      parent: split[split.length - 2] || '',
-      level: split.length - 2,
-      name: split[split.length - 1],
-    },
+    getDecoratedCollection({ id: 'FAKE_ID', path }),
     ...state.dashboard.allCollections,
   ];
   try {
@@ -344,7 +329,7 @@ export const getDrafts: AsyncAction = async ({ state, effects }) => {
       path: '/',
       teamId: state.activeTeam,
     });
-    if (!data || !data.me || !data.me.collection) {
+    if (typeof data?.me?.collection?.sandboxes === 'undefined') {
       return;
     }
 
@@ -369,7 +354,7 @@ export const getSandboxesByPath: AsyncAction<string> = async (
       path: '/' + path,
       teamId: state.activeTeam,
     });
-    if (!data || !data.me || !data.me.collection) {
+    if (typeof data?.me?.collection?.sandboxes === 'undefined') {
       return;
     }
 
