@@ -261,6 +261,10 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   state.workspace.project.description = sandbox.description || '';
   state.workspace.project.alias = sandbox.alias || '';
 
+  // Do this before startContainer, because startContainer flushes in overmind and causes
+  // the components to rerender. Because of this sometimes the GitHub component will get a
+  // sandbox without a git
+  actions.workspace.openDefaultItem();
   actions.server.startContainer(sandbox);
 };
 

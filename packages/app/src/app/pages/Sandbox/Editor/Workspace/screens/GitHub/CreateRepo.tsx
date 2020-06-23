@@ -1,15 +1,15 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import React, { ChangeEvent } from 'react';
 import {
-  Collapsible,
-  Input,
-  Element,
-  Stack,
   Button,
-  Text,
+  Collapsible,
+  Element,
   FormField,
+  Input,
+  Stack,
+  Text,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import React, { ChangeEvent } from 'react';
 
 export const CreateRepo = () => {
   const {
@@ -39,7 +39,7 @@ export const CreateRepo = () => {
 
   return (
     <Collapsible
-      title={originalGit ? 'Export to GitHub' : 'GitHub'}
+      title={originalGit ? 'Create GitHub Repository' : 'GitHub'}
       defaultOpen={!originalGit}
     >
       <Element paddingX={2}>

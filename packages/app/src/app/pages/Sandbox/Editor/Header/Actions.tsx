@@ -4,6 +4,7 @@ import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
+import { Notifications } from 'app/components/Notifications';
 
 import {
   EmbedIcon,
@@ -98,7 +99,7 @@ export const Actions = () => {
         </TooltipButton>
       )}
 
-      {user?.experiments.collaborator && isLive ? (
+      {user?.experiments?.collaborator && isLive ? (
         <CollaboratorHeads />
       ) : (
         <>
@@ -182,6 +183,7 @@ export const Actions = () => {
       >
         Create Sandbox
       </Button>
+      {hasLogIn && <Notifications />}
       {hasLogIn ? (
         <UserMenu>
           {user?.experiments.collaborator ? (

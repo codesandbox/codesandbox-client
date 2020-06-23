@@ -1,23 +1,27 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
+import { DashboardGridItem } from 'app/pages/NewDashboard/types';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
-export const AllPage = ({ match: { params }, history }) => {
+export const AllPage = () => {
   const [level, setLevel] = React.useState(0);
   const [creating, setCreating] = React.useState(false);
-  const [items] = useFilteredItems(params, level);
+  const params = useParams<{ path: string }>();
+  const history = useHistory();
+  const items = useFilteredItems(params, level);
   const param = params.path || '';
-  const cleanParam = param.split(' ').join('');
+  const cleanParam = param.split(' ').join('{}');
   const {
     actions,
     state: {
-      dashboard: { allCollections, sandboxes, activeTeam },
+      dashboard: { allCollections, sandboxes },
+      activeTeam,
     },
   } = useOvermind();
   const [localTeam, setLocalTeam] = React.useState(activeTeam);
@@ -38,19 +42,24 @@ export const AllPage = ({ match: { params }, history }) => {
   }, [activeTeam]);
 
   React.useEffect(() => {
-    if (param) {
-      setLevel(param ? param.split('/').length : 0);
-      actions.dashboard.getSandboxesByPath(param);
+    if (!param || param === '/') {
+      setLevel(0);
+    } else {
+      setLevel(param.split('/').length);
     }
+    actions.dashboard.getSandboxesByPath(param);
   }, [param, actions.dashboard, activeTeam]);
 
   const activeSandboxes = (sandboxes.ALL && sandboxes.ALL[cleanParam]) || [];
 
-  const itemsToShow = allCollections
-    ? [creating ? { type: 'folder', setCreating } : undefined, ...items].filter(
-        exists => exists
-      )
-    : [{ type: 'skeletonRow' }, { type: 'skeletonRow' }];
+  const itemsToShow: DashboardGridItem[] = allCollections
+    ? [
+        creating
+          ? { type: 'new-folder' as 'new-folder', setCreating }
+          : undefined,
+        ...items,
+      ].filter(exists => exists)
+    : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   return (
     <SelectionProvider
@@ -65,12 +74,12 @@ export const AllPage = ({ match: { params }, history }) => {
         templates={getPossibleTemplates(activeSandboxes)}
         createNewFolder={() => setCreating(true)}
         showViewOptions
-        showFilters={param}
-        showSortOptions={param}
+        showFilters={Boolean(param)}
+        showSortOptions={Boolean(param)}
       />
       <VariableGrid items={itemsToShow} />
     </SelectionProvider>
   );
 };
 
-export const All = withRouter(AllPage);
+export const All = React.memo(AllPage);

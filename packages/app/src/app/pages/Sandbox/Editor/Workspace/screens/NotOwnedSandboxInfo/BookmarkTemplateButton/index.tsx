@@ -51,7 +51,7 @@ export const BookmarkTemplateButton = () => {
   > => {
     const bookmarkInfo = bookmarkInfos[entityIndex];
 
-    if (!bookmarkInfo) {
+    if (!bookmarkInfo || !customTemplate) {
       return {};
     }
 

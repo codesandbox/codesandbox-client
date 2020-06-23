@@ -197,6 +197,7 @@ export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
   state.isLoadingGithub = true;
   await actions.internal.signIn({ useExtraScopes: true });
   state.isLoadingGithub = false;
+  actions.git.loadGitSource();
 };
 
 export const signOutClicked: AsyncAction = async ({
@@ -288,4 +289,18 @@ export const rejectTeamInvitation: Action<{ teamName: string }> = (
   effects.analytics.track('Team - Invitation Rejected', {});
 
   effects.notificationToast.success(`Rejected invitation to ${teamName}`);
+};
+
+export const getActiveTeam: AsyncAction = async ({ state, effects }) => {
+  if (!state.activeTeam) return;
+
+  const team = await effects.gql.queries.getTeam({
+    teamId: state.activeTeam,
+  });
+
+  if (!team || !team.me) {
+    return;
+  }
+
+  state.activeTeamInfo = team.me.team;
 };
