@@ -389,9 +389,9 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     const folderPaths = selectedIds.filter(isFolderPath).filter(notDrafts);
 
     if (sandboxIds.length) {
-      if (dropResult.path === 'deleted') {
+      if (dropResult.path === '/deleted') {
         actions.dashboard.deleteSandbox(sandboxIds);
-      } else if (dropResult.path === 'templates') {
+      } else if (dropResult.path === '/templates') {
         actions.dashboard.makeTemplate(sandboxIds);
       } else if (dropResult.path === '/drafts') {
         actions.dashboard.addSandboxesToFolder({
