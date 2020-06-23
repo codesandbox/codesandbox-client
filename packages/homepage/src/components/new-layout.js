@@ -53,7 +53,7 @@ export const useTheme = () => homepageTheme;
 
 const TemplateWrapper = ({ children, noWrapperStyling, docs }) => (
   <ThemeProvider theme={homepageTheme}>
-    <div style={{ fontFamily: 'Inter, sans-serif' }}>
+    <div style={{ fontSize: '13px' }}>
       <div
         style={{
           position: 'absolute',
@@ -77,7 +77,8 @@ const TemplateWrapper = ({ children, noWrapperStyling, docs }) => (
           {children}
         </main>
       </NewThemeProvider>
-      <Footer />
+
+      {docs ? '' : <Footer />}
     </div>
     <Privacy />
   </ThemeProvider>

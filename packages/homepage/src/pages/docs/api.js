@@ -41,7 +41,6 @@ const FAQS = ({ data, location }) => {
         <Stack
           direction="vertical"
           paddingTop={8}
-          marginBottom={8}
           css={`
             border-right: 1px solid #343434;
             min-width: 320px;

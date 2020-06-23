@@ -29,12 +29,17 @@ export const DocumentationContent = styled.div`
       display: block;
     }
 
+    p {
+      color: #999;
+    }
+
     section {
       overflow-x: auto;
     }
 
     a {
-      color: white;
+      color: #0971f;
+      text-decoration: none;
     }
 
     .gatsby-resp-image-link {
@@ -44,15 +49,40 @@ export const DocumentationContent = styled.div`
     table {
       max-width: 100%;
       overflow: scroll;
-      display: block;
+      border: 1px solid #242424;
+      border-radius:.5rem   :
+      padding: 0.5rem;
+      margin:2rem 0;
     }
+
+    th, td,
+    td {
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      border-right: 1px solid #242424;
+      border-bottom: 1px solid #242424;
+      overflow: hidden;
+    }
+    th:last-child,
+    td::last-child {
+      border: 0;
+    }
+
+    table tr:last-child td:first-child {
+    border-bottom-left-radius:  0.5rem;
+}
+
+  table tr:last-child td:last-child {
+      border-bottom-right-radius:  0.5rem;
+  }
+
 
     code {
       background: #151515;
-      padding: 0.2em 0.4em;
+      padding: 0.25rem 0.5rem;
       font-size: 85%;
       margin: 0;
-      border-radius: 3px;
+      border-radius: 0.25rem;
     }
 
     span.gatsby-resp-image-background-image {
@@ -84,7 +114,7 @@ export const DocumentationContent = styled.div`
       margin-bottom: 1rem;
 
       pre {
-        margin-bottom: 0;
+        margin: 4rem 0;
       }
 
       code {

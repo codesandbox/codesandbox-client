@@ -49,7 +49,7 @@ export const LogoWrapper = styled(Link)`
 `;
 
 export const LogoImage = styled.img`
-  margin-right: 1rem;
+  margin-right: 0.25rem;
 `;
 
 export const List = styled.ul`
@@ -153,7 +153,7 @@ export const Search = styled.input`
   display: flex;
   align-items: center;
 
-  color: #757575;
+  color: #fff;
   border: 1px solid #343434;
   border-radius: 2px;
 

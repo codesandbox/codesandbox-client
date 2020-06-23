@@ -91,7 +91,8 @@ export const APIStyle = css`
   }
 
   a {
-    color: inherit;
+    color: red;
+    text-decoration: none;
   }
 
   .gatsby-highlight {

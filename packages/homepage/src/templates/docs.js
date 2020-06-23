@@ -41,7 +41,6 @@ const Docs = ({
         <Stack
           direction="vertical"
           paddingTop={8}
-          marginBottom={8}
           css={`
             border-right: 1px solid #343434;
             min-width: 320px;
@@ -124,23 +123,28 @@ const Docs = ({
                 key={node.fields.title}
                 css={`
                   text-decoration: none;
+                  margin: 0;
+                  padding: 0;
                 `}
                 to={`docs${node.fields.slug}`}
               >
                 <ListItem
                   css={`
-                    padding: 0 16px;
+                    padding: 0 1.5rem;
+                    marign: 0;
+
                     :hover {
                       color: white;
                       background: #242424;
 
-                      span: {
+                      span {
                         color: white;
                       }
                     }
                   `}
                 >
                   <Text
+                    css="   padding:0;  margin:0;  "
                     variant="muted"
                     style={{
                       color:
@@ -148,7 +152,7 @@ const Docs = ({
                           node.fields.slug && 'white',
                       fontWeight:
                         location.pathname.split('/docs')[1] ===
-                          node.fields.slug && 'bold',
+                          node.fields.slug && '500',
                     }}
                   >
                     {node.fields.title}
@@ -164,7 +168,7 @@ const Docs = ({
             max-width: 720px;
             @media screen and (max-width: 1100px) {
               width: auto;
-              padding: 0 40px;
+              padding: 0 2.5rem;
             }
 
             @media screen and (max-width: 768px) {
@@ -211,6 +215,7 @@ const Docs = ({
             css={`
               border-top: 1px solid #242424;
               border-bottom: 1px solid #242424;
+              margin: 4rem 0;
             `}
           >
             {prev.fields ? (
@@ -219,6 +224,7 @@ const Docs = ({
                   to={`docs${prev.fields.slug}`}
                   css={`
                     text-decoration: none;
+                    line-height: 2rem;
                   `}
                 >
                   <Text
@@ -242,6 +248,7 @@ const Docs = ({
               <Element
                 css={`
                   text-align: right;
+                  line-height: 2rem;
                 `}
               >
                 <Link
