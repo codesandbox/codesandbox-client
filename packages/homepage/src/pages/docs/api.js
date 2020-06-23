@@ -135,7 +135,7 @@ const FAQS = ({ data, location }) => {
                   color: #fff;
                 `}
               >
-                API
+                API Reference
               </h4>
               <span>Descriptive reference</span>
             </header>
