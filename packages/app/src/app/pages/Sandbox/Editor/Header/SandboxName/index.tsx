@@ -107,7 +107,7 @@ export const SandboxName: FunctionComponent = () => {
   return (
     <Main style={fadeIn ? { opacity: 1 } : null}>
       <Stack align="center">
-        {!customTemplate && owned && !git && (
+        {!customTemplate && owned && !git && !updatingName && (
           <Folder>
             {isLoggedIn ? (
               <Button
