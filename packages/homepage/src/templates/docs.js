@@ -106,7 +106,6 @@ const Docs = ({
               width: 320px;
               position: sticky;
               top: 32px;
-              background: red;
               transition: all 200ms ease;
 
               @media screen and (max-width: 900px) {
