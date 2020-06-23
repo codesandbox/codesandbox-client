@@ -21,19 +21,37 @@ import {
   IconButton,
   Button,
   Input,
+  IconNames,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { ContextMenu } from './ContextMenu';
+import { DashboardBaseFolder } from '../types';
+import { Position } from '../Components/Selection';
 
 export const SIDEBAR_WIDTH = 240;
 
 const SidebarContext = React.createContext(null);
 
-export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
+interface SidebarProps {
+  visible: boolean;
+  onSidebarToggle: () => void;
+  css?: any;
+  style?: React.CSSProperties;
+  id?: string;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({
+  visible,
+  onSidebarToggle,
+  ...props
+}) => {
   const { state, actions } = useOvermind();
-  const [activeAccount, setActiveAccount] = useState({
+  const [activeAccount, setActiveAccount] = useState<{
+    username: string | null;
+    avatarUrl: string | null;
+  }>({
     username: null,
     avatarUrl: null,
   });
@@ -67,10 +85,16 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
 
   // context menu for folders
   const [menuVisible, setMenuVisibility] = React.useState(true);
-  const [menuPosition, setMenuPosition] = React.useState({ x: null, y: null });
-  const [menuFolder, setMenuFolder] = React.useState(null);
+  const [menuPosition, setMenuPosition] = React.useState<Position>({
+    x: null,
+    y: null,
+  });
+  const [menuFolder, setMenuFolder] = React.useState<{
+    name: string;
+    path: string;
+  } | null>(null);
   const [isRenamingFolder, setRenamingFolder] = React.useState(false);
-  const [newFolderPath, setNewFolderPath] = React.useState(null);
+  const [newFolderPath, setNewFolderPath] = React.useState<string | null>(null);
 
   const menuState = {
     menuFolder,
@@ -267,7 +291,9 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
             path=""
             folders={[
               ...folders,
-              ...(newFolderPath ? [{ path: newFolderPath, name: '' }] : []),
+              ...(newFolderPath
+                ? [{ path: newFolderPath, name: '', parent: null }]
+                : []),
             ]}
           />
 
@@ -355,7 +381,15 @@ const isSamePath = (draggedItem, dropPath) => {
   return false;
 };
 
-const RowItem = ({
+interface RowItemProps {
+  name: string;
+  path: string;
+  icon: IconNames;
+  setFoldersVisibility?: (val: boolean) => void;
+  style?: React.CSSProperties;
+}
+
+const RowItem: React.FC<RowItemProps> = ({
   name,
   path,
   icon,
@@ -464,7 +498,17 @@ const RowItem = ({
   );
 };
 
-const NestableRowItem = ({ name, path, folders }) => {
+interface NestableRowItemProps {
+  name: string;
+  path: string;
+  folders: DashboardBaseFolder[];
+}
+
+const NestableRowItem: React.FC<NestableRowItemProps> = ({
+  name,
+  path,
+  folders,
+}) => {
   const { actions } = useOvermind();
 
   const {
