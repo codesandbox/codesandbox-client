@@ -304,7 +304,7 @@ export const createFolder: AsyncAction<string> = async (
       path,
       id: 'FAKE_ID',
       sandboxes: 0,
-      parent: split.slice(0, split.length - 1).find(a => a) || '',
+      parent: split[split.length - 2] || '',
       level: split.length - 2,
       name: split[split.length - 1],
     },
