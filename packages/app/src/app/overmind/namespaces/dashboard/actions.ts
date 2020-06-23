@@ -6,7 +6,6 @@ import {
   Direction,
   TemplateFragmentDashboardFragment,
 } from 'app/graphql/types';
-import Fuse from 'fuse.js';
 import { OrderBy, sandboxesTypes } from './state';
 import { getDecoratedCollection } from './utilts';
 
@@ -795,38 +794,17 @@ export const downloadSandboxes: AsyncAction<string[]> = async (
   }
 };
 
-export const getSearchSandboxes: AsyncAction<string | null> = async (
-  { state, effects },
-  search
-) => {
+export const getSearchSandboxes: AsyncAction = async ({ state, effects }) => {
   const { dashboard } = state;
   try {
     const data = await effects.gql.queries.searchSandboxes({});
-    if (!data || !data.me || !data.me.sandboxes) {
+    if (data?.me?.sandboxes == null) {
       return;
     }
-    let lastSandboxes: any = null;
-    let searchIndex: any = null;
     const sandboxes = data.me.sandboxes;
 
-    if (lastSandboxes === null || lastSandboxes !== sandboxes) {
-      searchIndex = new Fuse(sandboxes, {
-        threshold: 0.1,
-        distance: 1000,
-        keys: [
-          { name: 'title', weight: 0.4 },
-          { name: 'description', weight: 0.2 },
-          { name: 'alias', weight: 0.2 },
-          { name: 'source.template', weight: 0.1 },
-          { name: 'id', weight: 0.1 },
-        ],
-      });
-
-      lastSandboxes = sandboxes;
-    }
-
     const sandboxesToShow = state.dashboard
-      .getFilteredSandboxes(searchIndex.search(search))
+      .getFilteredSandboxes(sandboxes)
       .filter(x => !x.customTemplate)
       .filter(
         sandbox =>
@@ -862,9 +840,7 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
       dashboard.getTemplateSandboxes();
       break;
     case sandboxesTypes.SEARCH:
-      dashboard.getSearchSandboxes(
-        new URLSearchParams(window.location.search).get('query')
-      );
+      dashboard.getSearchSandboxes();
       break;
 
     default:
