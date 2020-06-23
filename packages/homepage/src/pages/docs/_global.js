@@ -73,15 +73,39 @@ export const APIStyle = css`
   }
   iframe {
     display: block;
-    margin: 40px auto;
+    margin: 4rem auto;
     border: 0;
     outline: 0;
   }
 
   table {
+    width: 100%;
     max-width: 100%;
     overflow: scroll;
-    display: block;
+    border: 1px solid #242424;
+    border-radius: 0.5rem;
+    margin: 2rem 0 4rem 0;
+  }
+
+  th,
+  td,
+  td {
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    border-right: 1px solid #242424;
+    border-bottom: 1px solid #242424;
+    overflow: hidden;
+  }
+  td {
+    color: #999;
+  }
+
+  table tr:last-child td:first-child {
+    border-bottom-left-radius: 0.5rem;
+  }
+
+  table tr:last-child td:last-child {
+    border-bottom-right-radius: 0.5rem;
   }
 
   h3 {
@@ -91,15 +115,16 @@ export const APIStyle = css`
   }
 
   a {
-    color: red;
+    color: #0971f;
     text-decoration: none;
   }
 
   .gatsby-highlight {
     background: #151515;
-    padding: 0.5rem;
-    border-radius: 4px;
-    margin-bottom: 1rem;
+    border: 1px solid #242424;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin: 2rem 0 4rem 0;
 
     pre {
       margin-bottom: 0;
@@ -234,7 +259,8 @@ export const FAQStyle = css`
   }
 
   a {
-    color: white;
+    color: #0971f;
+    text-decoration: none;
   }
 
   ul {

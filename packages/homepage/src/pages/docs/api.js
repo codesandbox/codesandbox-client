@@ -104,6 +104,7 @@ const FAQS = ({ data, location }) => {
               </defs>
             </svg>
           </Stack>
+
           <Element
             showMobileMenu={showMobileMenu}
             css={`
@@ -118,6 +119,25 @@ const FAQS = ({ data, location }) => {
               }
             `}
           >
+            <header
+              css={`
+                padding: 0 1.5rem 1rem 0;
+                margin: 1.5rem;
+                color: #999;
+              `}
+            >
+              <h4
+                css={`
+                  line-height: 1rem;
+                  margin-bottom: 0.5rem;
+                  color: #fff;
+                `}
+              >
+                API
+              </h4>
+              <span>Descriptive reference</span>
+            </header>
+
             {links.map(({ to, text }) => (
               <Link
                 key={to}
@@ -128,7 +148,9 @@ const FAQS = ({ data, location }) => {
               >
                 <ListItem
                   css={`
-                    padding: 0 16px;
+                    padding: 0 1.5rem;
+                    margin: 0;
+
                     :hover {
                       color: white;
                       background: #242424;
@@ -143,7 +165,7 @@ const FAQS = ({ data, location }) => {
                     variant="muted"
                     style={{
                       color: hash === to && 'white',
-                      fontWeight: hash === to && 'bold',
+                      fontWeight: hash === to && '400',
                     }}
                   >
                     {text}
@@ -156,7 +178,7 @@ const FAQS = ({ data, location }) => {
         <Element
           css={`
             position: relative;
-            max-width: 720px;
+            max-width: 768px;
             @media screen and (max-width: 1100px) {
               width: auto;
               padding: 0 40px;
@@ -172,9 +194,9 @@ const FAQS = ({ data, location }) => {
           <Text weight="bold" size={9} block paddingBottom={2}>
             API
           </Text>
-          <Text block paddingBottom={8}>
+          <p css=" font-size:1rem; margin-bottom:4rem;">
             Here you can learn how to use CodeSandbox programmatically
-          </Text>
+          </p>
           <Element
             className="html-faq"
             dangerouslySetInnerHTML={{ __html: data.api.html }}

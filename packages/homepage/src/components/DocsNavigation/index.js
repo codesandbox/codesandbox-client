@@ -78,7 +78,7 @@ const DocsNavigation = () => {
                 <List className="hide-m">
                   <li>
                     <Link
-                      className={pathname === '/docs/' && 'active'}
+                      className={pathname === '/docs' && 'active'}
                       to="/docs"
                     >
                       Documentation

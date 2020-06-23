@@ -1,12 +1,6 @@
 import { graphql, Link } from 'gatsby';
 import React, { useState } from 'react';
-import {
-  Stack,
-  ListItem,
-  Text,
-  Element,
-  Button,
-} from '@codesandbox/components';
+import { Stack, ListItem, Text, Element } from '@codesandbox/components';
 import Layout from '../components/new-layout';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
@@ -66,7 +60,8 @@ const Docs = ({
             onClick={() => setShowMobileMenu(s => !s)}
           >
             <Text weight="bold">Documentation</Text>
-            <svg width={28} height={18} fill="none">
+
+            <svg width={18} height={8} fill="none">
               <g filter="url(#prefix__filter0_d)">
                 <path
                   d="M24 1.053L22.788 0l-9.091 7.895L5.212.526 4 1.58 13.697 10 24 1.053z"
@@ -78,8 +73,8 @@ const Docs = ({
                   id="prefix__filter0_d"
                   x={0}
                   y={0}
-                  width={28}
-                  height={18}
+                  width={18}
+                  height={8}
                   filterUnits="userSpaceOnUse"
                   colorInterpolationFilters="sRGB"
                 >
@@ -104,12 +99,14 @@ const Docs = ({
               </defs>
             </svg>
           </Stack>
+
           <Element
             showMobileMenu={showMobileMenu}
             css={`
               width: 320px;
               position: sticky;
               top: 32px;
+              background: red;
               transition: all 200ms ease;
 
               @media screen and (max-width: 900px) {
@@ -118,6 +115,25 @@ const Docs = ({
               }
             `}
           >
+            <header
+              css={`
+                padding: 0 1.5rem 1rem 0;
+                margin: 1.5rem;
+                color: #999;
+              `}
+            >
+              <h4
+                css={`
+                  line-height: 1rem;
+                  margin-bottom: 0.5rem;
+                  color: #fff;
+                `}
+              >
+                Documentation
+              </h4>
+              <span>Descriptive reference</span>
+            </header>
+
             {docs.map(({ node }) => (
               <Link
                 key={node.fields.title}
@@ -131,7 +147,7 @@ const Docs = ({
                 <ListItem
                   css={`
                     padding: 0 1.5rem;
-                    marign: 0;
+                    margin: 0;
 
                     :hover {
                       color: white;
@@ -152,7 +168,7 @@ const Docs = ({
                           node.fields.slug && 'white',
                       fontWeight:
                         location.pathname.split('/docs')[1] ===
-                          node.fields.slug && '500',
+                          node.fields.slug && '400',
                     }}
                   >
                     {node.fields.title}
@@ -162,10 +178,11 @@ const Docs = ({
             ))}
           </Element>
         </Stack>
+
         <Element
           css={`
             position: relative;
-            max-width: 720px;
+            max-width: 768px;
             @media screen and (max-width: 1100px) {
               width: auto;
               padding: 0 2.5rem;
@@ -178,13 +195,11 @@ const Docs = ({
           marginX="auto"
           marginTop={15}
         >
-          <Button
+          <a
             css={`
-              position: sticky;
-              width: auto;
-              top: 20px;
               float: right;
-              transform: translateX(calc(100% + 66px));
+              text-decoration: none;
+              color: #999;
 
               @media screen and (max-width: 1100px) {
                 position: relative;
@@ -199,13 +214,16 @@ const Docs = ({
             target="_blank"
           >
             Edit this page
-          </Button>
+          </a>
+
           <Text weight="bold" size={9} block paddingBottom={2}>
             {title}
           </Text>
-          <Text block paddingBottom={8}>
+
+          <p css=" font-size:1rem; line-height:1.5; margin-bottom:4rem;">
             {description}
-          </Text>
+          </p>
+
           <DocumentationContent dangerouslySetInnerHTML={{ __html: html }} />
           <Stack
             justify="space-between"

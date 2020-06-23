@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const DocumentationContent = styled.div`
   ${({ theme }) => css`
-    line-height: 1.4;
+    line-height: 1.5;
     font-feature-settings: normal;
     font-size: 16px;
 
@@ -11,8 +11,9 @@ export const DocumentationContent = styled.div`
     }
 
     iframe {
+      background: #151515;
       display: block;
-      margin: 40px auto;
+      margin: 4rem auto;
       border: 0;
       outline: 0;
     }
@@ -36,6 +37,9 @@ export const DocumentationContent = styled.div`
     section {
       overflow-x: auto;
     }
+    li {
+      color: #999;
+    }
 
     a {
       color: #0971f;
@@ -47,15 +51,16 @@ export const DocumentationContent = styled.div`
     }
 
     table {
+      width: 100%;
       max-width: 100%;
       overflow: scroll;
       border: 1px solid #242424;
-      border-radius:.5rem   :
-      padding: 0.5rem;
-      margin:2rem 0;
+      border-radius: 0.5rem;
+      margin: 2rem 0 4rem 0;
     }
 
-    th, td,
+    th,
+    td,
     td {
       border-radius: 0.5rem;
       padding: 0.5rem;
@@ -63,19 +68,18 @@ export const DocumentationContent = styled.div`
       border-bottom: 1px solid #242424;
       overflow: hidden;
     }
-    th:last-child,
-    td::last-child {
-      border: 0;
+
+    td {
+      color: #999;
     }
 
     table tr:last-child td:first-child {
-    border-bottom-left-radius:  0.5rem;
-}
+      border-bottom-left-radius: 0.5rem;
+    }
 
-  table tr:last-child td:last-child {
-      border-bottom-right-radius:  0.5rem;
-  }
-
+    table tr:last-child td:last-child {
+      border-bottom-right-radius: 0.5rem;
+    }
 
     code {
       background: #151515;
@@ -90,6 +94,7 @@ export const DocumentationContent = styled.div`
     }
 
     img.gatsby-resp-image-image {
+      background: #242424;
       border: 1px solid #242424;
       border-radius: 4px;
       margin: 40px 0 !important;
@@ -109,13 +114,10 @@ export const DocumentationContent = styled.div`
 
     .gatsby-highlight {
       background: #151515;
-      padding: 0.5rem;
-      border-radius: 4px;
-      margin-bottom: 1rem;
-
-      pre {
-        margin: 4rem 0;
-      }
+      border: 1px solid #242424;
+      padding: 1rem;
+      border-radius: 0.25rem;
+      margin: 2rem 0 4rem 0;
 
       code {
         background-color: transparent;
