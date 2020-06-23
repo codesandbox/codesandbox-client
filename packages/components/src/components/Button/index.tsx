@@ -116,6 +116,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) {
     const styles = deepmerge.all([variantStyles[variant], commonStyles, css]);
+    const usedAs = pAs || (props.to ? Link : 'button');
     // default type is button unless props.as was changed
     const type = usedAs === 'button' && 'button';
 
