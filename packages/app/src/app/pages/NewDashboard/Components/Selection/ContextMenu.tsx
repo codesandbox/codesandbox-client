@@ -8,6 +8,7 @@ import {
   DashboardSandbox,
   DashboardTemplate,
   DashboardFolder,
+  DashboardRepo,
 } from '../../types';
 
 interface IMenuProps {
@@ -126,7 +127,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
     alias: sandbox.alias,
   });
 
-  const folderUrl = getFolderUrl(item);
+  const folderUrl = item.sandbox.collection && getFolderUrl(item);
 
   const label = isTemplate ? 'template' : 'sandbox';
   const isOwner = React.useMemo(() => {

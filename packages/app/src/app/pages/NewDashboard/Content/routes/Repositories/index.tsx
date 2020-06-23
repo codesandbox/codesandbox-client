@@ -8,6 +8,7 @@ import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { DashboardGridItem, DashboardRepo } from 'app/pages/NewDashboard/types';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
@@ -40,25 +41,19 @@ export const RepositoriesPage = () => {
             })),
           ]
         : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
-    } 
-      return sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes
-        ? [
-            ...sandboxes.REPOS[param].sandboxes.map(sandbox => ({
-              type: 'sandbox' as 'sandbox',
-              sandbox,
-            })),
-          ]
-        : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
-    
+    }
+    return sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes
+      ? [
+          ...sandboxes.REPOS[param].sandboxes.map(sandbox => ({
+            type: 'sandbox' as 'sandbox',
+            sandbox,
+          })),
+        ]
+      : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
   };
 
   return (
-    <Element
-      css={`
-        box-sizing: border-box;
-        padding-top: 40px;
-      `}
-    >
+    <SelectionProvider items={itemsToShow()}>
       <Helmet>
         <title>{param || 'Dashboard'} - CodeSandbox</title>
       </Helmet>
@@ -71,7 +66,7 @@ export const RepositoriesPage = () => {
         showSortOptions={Boolean(param)}
       />
       <VariableGrid items={itemsToShow()} />
-    </Element>
+    </SelectionProvider>
   );
 };
 

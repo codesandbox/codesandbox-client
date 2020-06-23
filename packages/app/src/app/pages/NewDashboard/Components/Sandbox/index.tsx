@@ -48,6 +48,7 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
 
   if (type === 'template' && sandbox.collection && sandbox.collection.team) {
     sandboxLocation =
+      // @ts-ignore
       (sandbox.collection.team && sandbox.collection.team.name) ||
       ('author' in sandbox && sandbox.author && sandbox.author.username) ||
       ('git' in sandbox && sandbox.git && 'from GitHub') ||
