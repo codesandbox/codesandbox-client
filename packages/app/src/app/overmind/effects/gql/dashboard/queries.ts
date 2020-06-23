@@ -15,8 +15,10 @@ import {
   LatestSandboxesQueryVariables,
   AllCollectionsQuery,
   AllCollectionsQueryVariables,
-  _SearchSandboxesQuery,
-  _SearchSandboxesQueryVariables,
+  _SearchPersonalSandboxesQuery,
+  _SearchPersonalSandboxesQueryVariables,
+  _SearchTeamSandboxesQuery,
+  _SearchTeamSandboxesQueryVariables,
   GetTeamQuery,
   GetTeamQueryVariables,
 } from 'app/graphql/types';
@@ -130,14 +132,30 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
   }
 `;
 
-export const searchSandboxes: Query<
-  _SearchSandboxesQuery,
-  _SearchSandboxesQueryVariables
+export const searchPersonalSandboxes: Query<
+  _SearchPersonalSandboxesQuery,
+  _SearchPersonalSandboxesQueryVariables
 > = gql`
-  query _SearchSandboxes {
+  query _SearchPersonalSandboxes {
     me {
       sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
         ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const searchTeamSandboxes: Query<
+  _SearchTeamSandboxesQuery,
+  _SearchTeamSandboxesQueryVariables
+> = gql`
+  query _SearchTeamSandboxes($teamId: ID!) {
+    me {
+      team(id: $teamId) {
+        sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
+          ...sandboxFragmentDashboard
+        }
       }
     }
   }

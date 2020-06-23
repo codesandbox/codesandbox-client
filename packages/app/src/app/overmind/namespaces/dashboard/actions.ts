@@ -5,6 +5,7 @@ import { uniq } from 'lodash-es';
 import {
   Direction,
   TemplateFragmentDashboardFragment,
+  SandboxFragmentDashboardFragment,
 } from 'app/graphql/types';
 import { OrderBy, sandboxesTypes } from './state';
 import { getDecoratedCollection } from './utilts';
@@ -797,11 +798,27 @@ export const downloadSandboxes: AsyncAction<string[]> = async (
 export const getSearchSandboxes: AsyncAction = async ({ state, effects }) => {
   const { dashboard } = state;
   try {
-    const data = await effects.gql.queries.searchSandboxes({});
-    if (data?.me?.sandboxes == null) {
-      return;
+    const activeTeam = state.activeTeam;
+
+    let sandboxes: SandboxFragmentDashboardFragment[];
+    if (activeTeam) {
+      const data = await effects.gql.queries.searchTeamSandboxes({
+        teamId: activeTeam,
+      });
+      if (data?.me?.team.sandboxes == null) {
+        return;
+      }
+
+      sandboxes = data.me.team.sandboxes;
+    } else {
+      // This will be gone once we move everyone (even personal spaces) to workspaces
+      const data = await effects.gql.queries.searchPersonalSandboxes({});
+      if (data?.me?.sandboxes == null) {
+        return;
+      }
+
+      sandboxes = data.me.sandboxes;
     }
-    const sandboxes = data.me.sandboxes;
 
     const sandboxesToShow = state.dashboard
       .getFilteredSandboxes(sandboxes)
