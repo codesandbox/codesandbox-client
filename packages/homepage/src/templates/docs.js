@@ -135,48 +135,73 @@ const Docs = ({
               <span>Descriptive reference</span>
             </header>
 
-            {docs.map(({ node }) => (
-              <Link
-                key={node.fields.title}
-                css={`
-                  text-decoration: none;
-                  margin: 0;
-                  padding: 0;
-                `}
-                to={`docs${node.fields.slug}`}
-              >
-                <ListItem
-                  css={`
-                    padding: 0 1.5rem;
-                    margin: 0;
-
-                    :hover {
-                      color: white;
-                      background: #242424;
-
-                      span {
-                        color: white;
-                      }
-                    }
-                  `}
-                >
-                  <Text
-                    css="   padding:0;  margin:0;  "
-                    variant="muted"
-                    style={{
-                      color:
-                        location.pathname.split('/docs')[1] ===
-                          node.fields.slug && 'white',
-                      fontWeight:
-                        location.pathname.split('/docs')[1] ===
-                          node.fields.slug && '400',
-                    }}
+            <ul
+              css={`
+                padding: 0;
+                margin: 0;
+              `}
+            >
+              {docs.map(({ node }) => (
+                <>
+                  <Link
+                    key={node.fields.title}
+                    css={`
+                      text-decoration: none;
+                      margin: 0;
+                      padding: 0;
+                    `}
+                    to={`docs${node.fields.slug}`}
                   >
-                    {node.fields.title}
-                  </Text>
-                </ListItem>
-              </Link>
-            ))}
+                    <ListItem
+                      css={`
+                        padding: 0 1.5rem;
+                        margin: 0;
+
+                        :hover {
+                          color: white;
+                          background: #242424;
+
+                          span {
+                            color: white;
+                          }
+                        }
+                      `}
+                    >
+                      <Text
+                        css={`
+                          padding: 0;
+                          margin: 0;
+                        `}
+                        variant="muted"
+                        style={{
+                          color:
+                            location.pathname.split('/docs')[1] ===
+                              node.fields.slug && 'white',
+                          fontWeight:
+                            location.pathname.split('/docs')[1] ===
+                              node.fields.slug && '400',
+                        }}
+                      >
+                        {node.fields.title}
+                      </Text>
+                    </ListItem>
+                  </Link>
+                  {location.pathname.split('/docs')[1] === node.fields.slug &&
+                    node.headings.map(heading => (
+                      <li>
+                        <Link
+                          to={`/docs/${node.fields.slug}#${heading.value
+                            .split(' ')
+                            .join('-')
+                            .toLowerCase()}`}
+                        >
+                          {heading.value}
+                        </Link>
+                      </li>
+                    ))}
+                </>
+              ))}
+            </ul>
           </Element>
         </Stack>
 

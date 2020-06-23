@@ -37,6 +37,7 @@ export const DocumentationContent = styled.div`
     section {
       overflow-x: auto;
     }
+
     li {
       color: #999;
     }

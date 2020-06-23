@@ -78,7 +78,12 @@ const DocsNavigation = () => {
                 <List className="hide-m">
                   <li>
                     <Link
-                      className={pathname === '/docs' && 'active'}
+                      className={
+                        pathname.includes('/docs') &&
+                        !pathname.includes('/docs/api') &&
+                        !pathname.includes('/docs/faq') &&
+                        'active'
+                      }
                       to="/docs"
                     >
                       Documentation
@@ -86,7 +91,7 @@ const DocsNavigation = () => {
                   </li>
                   <li>
                     <Link
-                      className={pathname === '/docs/api' && 'active'}
+                      className={pathname.includes('/docs/api') && 'active'}
                       to="/docs/api"
                     >
                       API Reference
@@ -95,7 +100,7 @@ const DocsNavigation = () => {
                   <li>
                     <Link
                       to="/docs/faq"
-                      className={pathname === '/docs/faq' && 'active'}
+                      className={pathname.includes('/docs/faq') && 'active'}
                     >
                       FAQ
                     </Link>
