@@ -229,13 +229,14 @@ function getItemStyles({
   if (isOver) {
     if (viewMode === 'list') {
       backgroundColor = 'rgba(36,36,36,0.8)'; // grays.600 with 50% opacity
+      size = { width: 'auto', minWidth: 320, height: 'fit-content' };
     } else {
       size = { width: 100, height: 50 };
     }
     x = mousePosition.x;
     y = mousePosition.y;
   } else if (viewMode === 'list') {
-    size = { width: 'auto', minWidth: 160, height: 'fit-content' };
+    size = { width: 'auto', minWidth: 320, height: 'fit-content' };
   } else {
     size = thumbnailSize;
   }
