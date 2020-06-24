@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Text, Input, IconButton } from '@codesandbox/components';
+import { Stack, Text, Element, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const RepoCard = ({
@@ -33,7 +33,7 @@ export const RepoCard = ({
       borderRadius: 'medium',
       overflow: 'hidden',
       // drop ssarget
-      borderColor: getBorderColor(selected, showDropStyles),
+      borderColor: 'grays.500',
       boxShadow: theme =>
         showDropStyles ? '0 4px 16px 0 ' + theme.colors.grays[900] : null,
 
@@ -70,26 +70,22 @@ export const RepoCard = ({
         />
       </svg>
     </Stack>
-    <Stack direction="vertical" marginLeft={4} gap={2} css={{ minHeight: 26 }}>
-      <Text size={3} weight="medium">
-        {name}
-        {props.branch !== 'master' ? `:${props.branch}` : ''}
-      </Text>
-      <Text size={3} variant="muted" weight="medium">
-        {props.owner}
-      </Text>
+    <Stack justify="space-between" align="flex-start" marginLeft={4}>
+      <Stack direction="vertical" gap={2}>
+        <Text size={3} weight="medium">
+          {name}
+          {props.branch !== 'master' ? `:${props.branch}` : ''}
+        </Text>
+        <Text size={3} variant="muted" weight="medium">
+          {props.owner}
+        </Text>
+      </Stack>
       <IconButton
         name="more"
         size={9}
-        title="Sandbox actions"
+        title="Repo actions"
         onClick={onContextMenu}
       />
     </Stack>
   </Stack>
 );
-
-const getBorderColor = (selected, showDropStyles) => {
-  if (selected) return 'blues.600';
-  if (showDropStyles) return 'grays.400';
-  return 'grays.500';
-};

@@ -102,7 +102,7 @@ export const FolderCard = ({
         <IconButton
           name="more"
           size={9}
-          title="Sandbox actions"
+          title="Folder actions"
           onClick={onContextMenu}
         />
       ) : null}

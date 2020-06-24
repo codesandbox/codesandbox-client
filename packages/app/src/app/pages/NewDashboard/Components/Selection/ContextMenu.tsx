@@ -30,6 +30,7 @@ interface IContextMenuProps extends IMenuProps {
   repos: Array<DashboardRepo>;
   setRenaming: null | ((value: boolean) => void);
   createNewFolder: () => void;
+  isRepo?: boolean;
 }
 
 export const ContextMenu: React.FC<IContextMenuProps> = ({
@@ -42,6 +43,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   repos,
   setRenaming,
   createNewFolder,
+  isRepo = false,
 }) => {
   if (!visible) return null;
 
@@ -70,7 +72,13 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     selectedItems[0].type === 'sandbox' ||
     selectedItems[0].type === 'template'
   ) {
-    menu = <SandboxMenu item={selectedItems[0]} setRenaming={setRenaming} />;
+    menu = (
+      <SandboxMenu
+        isRepo={isRepo}
+        item={selectedItems[0]}
+        setRenaming={setRenaming}
+      />
+    );
   } else if (selectedItems[0].type === 'folder') {
     menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
   } else if (selectedItems[0].type === 'repo') {
@@ -115,8 +123,13 @@ const ContainerMenu = ({ createNewFolder }) => {
 interface SandboxMenuProps {
   item: DashboardSandbox | DashboardTemplate;
   setRenaming: (value: boolean) => void;
+  isRepo: boolean;
 }
-const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
+const SandboxMenu: React.FC<SandboxMenuProps> = ({
+  item,
+  setRenaming,
+  isRepo,
+}) => {
   const {
     state: { user },
     effects,
@@ -247,6 +260,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
                   id: sandbox.id,
                   privacy: 0,
                   oldPrivacy: sandbox.privacy as 0 | 1 | 2,
+                  repo: isRepo,
                 })
               }
             >
@@ -260,6 +274,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
                   id: sandbox.id,
                   privacy: 1,
                   oldPrivacy: sandbox.privacy as 0 | 1 | 2,
+                  repo: isRepo,
                 })
               }
             >
@@ -273,6 +288,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
                   id: sandbox.id,
                   privacy: 2,
                   oldPrivacy: sandbox.privacy as 0 | 1 | 2,
+                  repo: isRepo,
                 })
               }
             >

@@ -27,7 +27,6 @@ export const useFilteredItems = (params: Params) => {
       ? getFilteredSandboxes(sandboxes.REPOS[param].sandboxes || [])
       : [];
   const repos = (sandboxes.REPOS && Object.values(sandboxes.REPOS)) || [];
-
   useEffect(() => {
     if (param) {
       setItems([
@@ -44,7 +43,16 @@ export const useFilteredItems = (params: Params) => {
         })),
       ]);
     }
-  }, [sandboxes.REPOS, param, params, filters.blacklistedTemplates, getFilteredSandboxes, sandboxesOrder, sandboxesForPath, repos]);
+  }, [
+    sandboxes.REPOS,
+    param,
+    params,
+    filters.blacklistedTemplates,
+    getFilteredSandboxes,
+    sandboxesOrder,
+    sandboxesForPath,
+    repos,
+  ]);
 
   return items;
 };

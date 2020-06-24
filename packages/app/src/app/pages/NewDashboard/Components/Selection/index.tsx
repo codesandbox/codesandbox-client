@@ -584,6 +584,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           setVisibility={setMenuVisibility}
           selectedIds={selectedIds}
           sandboxes={sandboxes || []}
+          isRepo={Boolean(repos.length || [])}
           folders={folders || []}
           repos={repos || []}
           setRenaming={setRenaming}

@@ -65,8 +65,12 @@ interface ComponentForTypes {
 
 const ComponentForTypes: ComponentForTypes = {
   sandbox: React.memo(props => (
-    <Sandbox item={props.item} isScrolling={props.isScrolling} />
-  )),
+      <Sandbox
+        item={props.item}
+        isRepo={Boolean(props.item.sandbox.originalGit)}
+        isScrolling={props.isScrolling}
+      />
+    )),
   template: React.memo(props => (
     <Sandbox item={props.item} isScrolling={props.isScrolling} />
   )),

@@ -691,21 +691,65 @@ export const renameSandbox: AsyncAction<{
   id: string;
   title: string;
   oldTitle: string;
-}> = async ({ effects, actions }, { id, title, oldTitle }) => {
-  actions.dashboard.renameSandboxInState({
-    id,
-    title,
-  });
+  isRepo?: boolean;
+}> = async ({ effects, actions, state }, { id, title, oldTitle, isRepo }) => {
+  if (isRepo) {
+    const param = location.pathname.split('/new-dashboard/repositories/')[1];
+    const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
+    state.dashboard.sandboxes.REPOS = {
+      ...state.dashboard.sandboxes.REPOS,
+      [param]: {
+        ...repoSandboxes,
+        sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
+          if (sandbox.id === id) {
+            return {
+              ...sandbox,
+              title,
+            };
+          }
+
+          return sandbox;
+        }),
+      },
+    };
+  } else {
+    actions.dashboard.renameSandboxInState({
+      id,
+      title,
+    });
+  }
+
   try {
     await effects.gql.mutations.renameSandbox({
       id,
       title,
     });
   } catch {
-    actions.dashboard.renameSandboxInState({
-      id,
-      title: oldTitle,
-    });
+    if (isRepo) {
+      const param = location.pathname.split('/new-dashboard/repositories/')[1];
+      const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
+      state.dashboard.sandboxes.REPOS = {
+        ...state.dashboard.sandboxes.REPOS,
+        [param]: {
+          ...repoSandboxes,
+          sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
+            if (sandbox.id === id) {
+              return {
+                ...sandbox,
+                title: oldTitle,
+              };
+            }
+
+            return sandbox;
+          }),
+        },
+      };
+    } else {
+      actions.dashboard.renameSandboxInState({
+        id,
+        title: oldTitle,
+      });
+    }
     effects.notificationToast.error('There was a problem renaming you sandbox');
   }
 };
@@ -991,15 +1035,61 @@ export const changeSandboxPrivacy: AsyncAction<{
   id: string;
   privacy: 0 | 1 | 2;
   oldPrivacy: 0 | 1 | 2;
-}> = async ({ actions, effects, state }, { id, privacy, oldPrivacy }) => {
+  repo?: boolean;
+}> = async ({ actions, effects, state }, { id, privacy, oldPrivacy, repo }) => {
   // optimistic update
-  actions.dashboard.changeSandboxPrivacyInState({ id, privacy });
+  if (repo) {
+    const param = location.pathname.split('/new-dashboard/repositories/')[1];
+    const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
+    state.dashboard.sandboxes.REPOS = {
+      ...state.dashboard.sandboxes.REPOS,
+      [param]: {
+        ...repoSandboxes,
+        sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
+          if (sandbox.id === id) {
+            return {
+              ...sandbox,
+              privacy,
+            };
+          }
+
+          return sandbox;
+        }),
+      },
+    };
+  } else {
+    actions.dashboard.changeSandboxPrivacyInState({ id, privacy });
+  }
 
   try {
     await effects.api.updatePrivacy(id, privacy);
   } catch (error) {
     // rollback optimistic
-    actions.dashboard.changeSandboxPrivacyInState({ id, privacy: oldPrivacy });
+    if (repo) {
+      const param = location.pathname.split('/new-dashboard/repositories/')[1];
+      const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
+      state.dashboard.sandboxes.REPOS = {
+        ...state.dashboard.sandboxes.REPOS,
+        [param]: {
+          ...repoSandboxes,
+          sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
+            if (sandbox.id === id) {
+              return {
+                ...sandbox,
+                privacy: oldPrivacy,
+              };
+            }
+
+            return sandbox;
+          }),
+        },
+      };
+    } else {
+      actions.dashboard.changeSandboxPrivacyInState({
+        id,
+        privacy: oldPrivacy,
+      });
+    }
 
     actions.internal.handleError({
       message: "We weren't able to update the sandbox privacy",
