@@ -235,7 +235,7 @@ function getItemStyles({
     y = mousePosition.y;
   } else if (viewMode === 'list') {
     size = { width: 'auto', minWidth: 160, height: 'fit-content' };
-  } else if (thumbnailSize.width) {
+  } else {
     size = thumbnailSize;
   }
 
