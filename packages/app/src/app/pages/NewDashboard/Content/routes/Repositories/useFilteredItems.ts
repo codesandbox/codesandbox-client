@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
-import { DashboardSandbox, DashboardRepo } from 'app/pages/NewDashboard/types';
+import { DashboardGridItem } from 'app/pages/NewDashboard/types';
 
 type Params = {
   path?: string;
@@ -18,9 +18,7 @@ export const useFilteredItems = (params: Params) => {
       },
     },
   } = useOvermind();
-  const [items, setItems] = useState<Array<DashboardSandbox | DashboardRepo>>(
-    []
-  );
+  const [items, setItems] = useState<Array<DashboardGridItem>>([]);
 
   const sandboxesForPath =
     sandboxes.REPOS && param
@@ -50,8 +48,6 @@ export const useFilteredItems = (params: Params) => {
     filters.blacklistedTemplates,
     getFilteredSandboxes,
     sandboxesOrder,
-    sandboxesForPath,
-    repos,
   ]);
 
   return items;

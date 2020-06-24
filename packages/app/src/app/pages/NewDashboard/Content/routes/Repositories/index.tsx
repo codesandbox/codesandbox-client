@@ -14,7 +14,6 @@ import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
 export const RepositoriesPage = () => {
-  const [allItems, setAllItems] = useState<DashboardGridItem[]>([]);
   const params = useParams<{ path: string }>();
   const items = useFilteredItems(params);
   const param = params.path || '';
@@ -30,7 +29,7 @@ export const RepositoriesPage = () => {
   React.useEffect(() => {
     const p = home ? null : param;
     actions.dashboard.getReposByPath(p);
-  }, [param, actions.dashboard, activeTeam, sandboxes.REPOS, home]);
+  }, [param, actions.dashboard, activeTeam]);
 
   const activeSandboxes =
     (sandboxes.REPOS && Object.values(sandboxes.REPOS)) || [];
@@ -48,10 +47,6 @@ export const RepositoriesPage = () => {
       : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
   };
 
-  useEffect(() => {
-    setAllItems(itemsToShow());
-  }, [items, itemsToShow]);
-
   const templates =
     activeSandboxes.length && param && items[0] && items[0].type === 'sandbox'
       ? getPossibleTemplates(
@@ -62,7 +57,7 @@ export const RepositoriesPage = () => {
       : [];
 
   return (
-    <SelectionProvider items={allItems} noDrag>
+    <SelectionProvider items={itemsToShow()} noDrag>
       <Helmet>
         <title>{param || 'Dashboard'} - CodeSandbox</title>
       </Helmet>
@@ -74,7 +69,7 @@ export const RepositoriesPage = () => {
         showFilters={Boolean(param)}
         showSortOptions={Boolean(param)}
       />
-      <VariableGrid items={allItems} />
+      <VariableGrid items={itemsToShow()} />
     </SelectionProvider>
   );
 };
