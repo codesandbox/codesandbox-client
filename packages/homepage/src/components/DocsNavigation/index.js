@@ -4,6 +4,7 @@ import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import Button from '../Button';
 import Logo from '../../assets/images/logo.svg';
 import { Global } from '../../pages/docs/_global';
+import { useLogin } from '../../hooks/useLogin';
 import {
   Header,
   Nav,
@@ -19,28 +20,9 @@ import {
 } from './elements';
 
 const DocsNavigation = () => {
-  const [user, setUser] = useState(null);
   const [enabled, setEnabled] = useState(true);
   const [search, setSearch] = useState(false);
-
-  const fetchCurrentUser = async () => {
-    const jwt = JSON.parse(localStorage.getItem('jwt'));
-
-    const BASE =
-      process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
-
-    const { data } = await fetch(BASE + '/api/v1/users/current', {
-      headers: { Authorization: `Bearer ${jwt}` },
-    }).then(x => x.json());
-
-    setUser(data);
-  };
-
-  useEffect(() => {
-    if (localStorage.getItem('jwt')) {
-      fetchCurrentUser();
-    }
-  }, []);
+  const user = useLogin();
 
   useEffect(() => {
     // Initialize Algolia search.
