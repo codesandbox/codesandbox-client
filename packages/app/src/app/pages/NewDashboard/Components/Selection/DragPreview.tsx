@@ -2,10 +2,27 @@ import React from 'react';
 import { useDragLayer } from 'react-dnd';
 import { motion } from 'framer-motion';
 import { Stack, Text } from '@codesandbox/components';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import css from '@styled-system/css';
 import { SIDEBAR_WIDTH } from '../../Sidebar';
+import { getTemplateIcon } from '../Sandbox/TemplateIcon';
+import {
+  DashboardSandbox,
+  DashboardTemplate,
+  DashboardFolder,
+} from '../../types';
 
-export const DragPreview = ({
+interface DragPreviewProps {
+  sandboxes: Array<DashboardSandbox | DashboardTemplate>;
+  folders: Array<DashboardFolder>;
+  selectionItems: string[];
+  selectedIds: string[];
+  viewMode: 'list' | 'grid';
+  thumbnailRef: React.Ref<HTMLDivElement>;
+  setDragging: (value: boolean) => void;
+}
+
+export const DragPreview: React.FC<DragPreviewProps> = ({
   sandboxes,
   folders,
   selectionItems,
@@ -23,6 +40,9 @@ export const DragPreview = ({
   );
 
   setDragging(isDragging);
+  React.useEffect(() => {
+    // if (isDragging) debugger;
+  }, [isDragging]);
 
   // can be a sandbox or folder
   const selectedItems = selectionItems
@@ -37,14 +57,28 @@ export const DragPreview = ({
         };
       }
 
-      const sandbox = sandboxes.find(s => s.id === id);
+      const sandbox = sandboxes.find(s => s.sandbox.id === id)!.sandbox;
+
+      let screenshotUrl = sandbox.screenshotUrl;
+      // We set a fallback thumbnail in the API which is used for
+      // both old and new dashboard, we can move this logic to the
+      // backend when we deprecate the old dashboard
+      if (screenshotUrl === 'https://codesandbox.io/static/img/banner.png') {
+        screenshotUrl = '/static/img/default-sandbox-thumbnail.png';
+      }
+
+      const TemplateIcon = getTemplateIcon(sandbox);
+
       return {
         type: 'sandbox',
         id: sandbox.id,
-        title: sandbox.title || sandbox.path || sandbox.alias,
-        url: sandbox.screenshotUrl,
+        title: getSandboxName(sandbox),
+        url: screenshotUrl,
+        Icon: TemplateIcon,
       };
     });
+
+  const mousePosition = useMousePosition();
 
   return (
     <Stack
@@ -54,8 +88,6 @@ export const DragPreview = ({
         zIndex: 100,
         left: 0,
         top: 0,
-        width: '100%',
-        height: '100%',
       }}
     >
       {isDragging && (
@@ -64,6 +96,7 @@ export const DragPreview = ({
           direction={viewMode === 'list' ? 'vertical' : 'horizontal'}
           as={motion.div}
           css={css({
+            position: 'absolute',
             border: viewMode === 'list' ? '1px solid' : 'none',
             borderColor: 'grays.700',
             padding: viewMode === 'list' ? 2 : 0,
@@ -76,6 +109,7 @@ export const DragPreview = ({
             viewMode,
             thumbnailRef,
             count: selectedItems.length,
+            mousePosition,
           })}
           animate={getItemStyles({
             initialOffset,
@@ -83,9 +117,15 @@ export const DragPreview = ({
             viewMode,
             thumbnailRef,
             count: selectedItems.length,
+            mousePosition,
           })}
+          transition={{
+            type: 'spring',
+            damping: 100,
+            stiffness: 1000,
+          }}
         >
-          {selectedItems.map((item, index) => (
+          {selectedItems.slice(0, 4).map((item, index) => (
             <Stack gap={2} align="center" key={item.id || item.path}>
               <Stack
                 justify="center"
@@ -97,7 +137,7 @@ export const DragPreview = ({
                   width: viewMode === 'list' ? 32 : '100%',
                   height: viewMode === 'list' ? 32 : '100%',
                   backgroundColor: 'grays.600',
-                  backgroundImage: `url(${item.url})`,
+                  backgroundImage: item.url ? `url(${item.url})` : null,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center center',
                   backgroundRepeat: 'no-repeat',
@@ -118,6 +158,17 @@ export const DragPreview = ({
                       d="M20.721 0H1.591A1.59 1.59 0 000 1.59v45.82C0 48.287.712 49 1.59 49h52.82A1.59 1.59 0 0056 47.41V7.607a1.59 1.59 0 00-1.59-1.59H28L21.788.41A1.59 1.59 0 0020.72 0z"
                     />
                   </svg>
+                ) : null}
+                {item.type === 'sandbox' && !item.url ? (
+                  <Stack
+                    css={{ svg: { filter: 'grayscale(1)', opacity: 0.1 } }}
+                  >
+                    <item.Icon
+                      // @ts-ignore
+                      width={viewMode === 'list' ? 16 : 60}
+                      height={viewMode === 'list' ? 16 : 60}
+                    />
+                  </Stack>
                 ) : null}
               </Stack>
 
@@ -140,12 +191,13 @@ function getItemStyles({
   viewMode,
   thumbnailRef,
   count = 1,
+  mousePosition,
 }) {
   if (!initialOffset || !currentOffset) {
     return { display: 'none' };
   }
 
-  const { x, y } = currentOffset;
+  let { x, y } = currentOffset;
 
   let size: {
     width: number | string;
@@ -164,6 +216,8 @@ function getItemStyles({
     } else {
       size = { width: 100, height: 50 };
     }
+    x = mousePosition.x;
+    y = mousePosition.y;
   } else if (viewMode === 'list') {
     size = { width: 'auto', minWidth: 160, height: 'fit-content' };
   } else if (thumbnailElement) {
@@ -173,3 +227,20 @@ function getItemStyles({
 
   return { x, y, backgroundColor, ...size };
 }
+
+const useMousePosition = () => {
+  const [position, setPosition] = React.useState({ x: null, y: null });
+
+  React.useEffect(() => {
+    const handler = event =>
+      setPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+    document.addEventListener('dragover', handler);
+    return () => document.removeEventListener('dragover', handler);
+  }, []);
+
+  return position;
+};

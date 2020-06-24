@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { StartSandboxes } from './routes/StartSandboxes';
+import { Home } from './routes/Home';
 import { Templates } from './routes/Templates';
 import { Deleted } from './routes/Deleted';
 import { Drafts } from './routes/Drafts';
@@ -12,64 +12,47 @@ import { All } from './routes/All';
 import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
 
-export const Content = () => {
-  const {
-    state: { dashboard },
-    actions,
-  } = useOvermind();
+export const Content = withRouter(({ history }) => {
+  const { actions } = useOvermind();
 
   useEffect(() => {
     actions.dashboard.dashboardMounted();
   }, [actions.dashboard]);
 
+  useEffect(() => {
+    const removeListener = history.listen(() => {
+      actions.dashboard.blacklistedTemplatesCleared();
+      actions.dashboard.orderByChanged({
+        order: 'desc',
+        field: 'updatedAt',
+      });
+    });
+
+    return () => {
+      removeListener();
+    };
+  }, [history, history.listen, actions.dashboard]);
+
   return (
     <Element
       css={css({
-        maxWidth: 992,
         width: '100%',
         margin: '0 auto',
       })}
     >
       <Switch>
-        <Route
-          path="/new-dashboard/start"
-          render={() => <StartSandboxes key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/templates"
-          render={() => <Templates key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/deleted"
-          render={() => <Deleted key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/drafts"
-          render={() => <Drafts key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/recent"
-          render={() => <Recent key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/all/drafts"
-          render={() => <Drafts key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/search"
-          render={() => <Search key={dashboard.activeTeam} />}
-        />
-        <Route
-          path="/new-dashboard/all/:path*"
-          render={() => <All key={window.location.pathname} />}
-        />
-        <Route
-          path="/new-dashboard/settings"
-          render={() => <Settings key={dashboard.activeTeam} />}
-        />
+        <Route path="/new-dashboard/home" component={Home} />
+        <Route path="/new-dashboard/templates" component={Templates} />
+        <Route path="/new-dashboard/deleted" component={Deleted} />
+        <Route path="/new-dashboard/drafts" component={Drafts} />
+        <Route path="/new-dashboard/recent" component={Recent} />
+        <Route path="/new-dashboard/all/drafts" component={Drafts} />
+        <Route path="/new-dashboard/search" component={Search} />
+        <Route path="/new-dashboard/all/:path*" component={All} />
+        <Route path="/new-dashboard/settings" component={Settings} />
 
-        <Redirect to="/new-dashboard/start" />
+        <Redirect to="/new-dashboard/home" />
       </Switch>
     </Element>
   );
-};
+});

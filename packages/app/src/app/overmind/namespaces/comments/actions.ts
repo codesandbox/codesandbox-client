@@ -49,6 +49,8 @@ export const updateComment: AsyncAction<{
   const sandboxId = state.editor.currentSandbox.id;
   const comment = state.comments.comments[sandboxId][id];
 
+  effects.analytics.track('Comments - Update Comment');
+
   comment.content = content;
 
   try {
@@ -105,7 +107,7 @@ export const onCommentClick: Action<{
     right: number;
     bottom: number;
   };
-}> = ({ state, actions }, { commentIds, bounds }) => {
+}> = ({ state, effects, actions }, { commentIds, bounds }) => {
   if (
     state.comments.currentCommentId &&
     commentIds.includes(state.comments.currentCommentId)
@@ -119,6 +121,7 @@ export const onCommentClick: Action<{
       isLineComment: true,
     });
   } else if (commentIds.length === 1) {
+    effects.analytics.track('Comments - Open Comment');
     actions.comments.selectComment({
       commentId: commentIds[0],
       bounds,
@@ -132,7 +135,7 @@ export const onCommentClick: Action<{
   }
 };
 
-export const closeComment: Action = ({ state }) => {
+export const closeComment: Action = ({ state, effects }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -142,6 +145,8 @@ export const closeComment: Action = ({ state }) => {
       OPTIMISTIC_COMMENT_ID
     ];
   }
+
+  effects.analytics.track('Comments - Close Comments');
 
   state.comments.currentCommentId = null;
   state.comments.currentCommentPositions = null;
@@ -257,6 +262,10 @@ export const createComment: AsyncAction<{
       lastUpdatedAt: state.editor.currentModule.updatedAt,
     };
   }
+
+  effects.analytics.track('Comments - Compose Comment', {
+    type: codeReference ? 'code' : 'global',
+  });
 
   const optimisticComment: CommentFragment = {
     parentComment: null,
@@ -374,6 +383,10 @@ export const addComment: AsyncAction<{
     comments[sandbox.id][parentCommentId].replyCount++;
   }
 
+  effects.analytics.track('Comments - Create Comment', {
+    type: optimisticComment.references.length ? 'code' : 'global',
+  });
+
   // The server might be ahead on sandbox version, so we need to try to save
   // several times
   let tryCount = 0;
@@ -424,6 +437,8 @@ export const deleteComment: AsyncAction<{
   const deletedComment = comments[sandboxId][commentId];
   delete comments[sandboxId][commentId];
 
+  effects.analytics.track('Comments - Delete Comment');
+
   try {
     await effects.gql.mutations.deleteComment({
       commentId,
@@ -451,6 +466,8 @@ export const resolveComment: AsyncAction<{
 
   comments[sandboxId][commentId].isResolved = isResolved;
 
+  effects.analytics.track('Comments - Resolve Comment');
+
   try {
     await (isResolved
       ? effects.gql.mutations.resolveComment({
@@ -473,6 +490,7 @@ export const copyPermalinkToClipboard: Action<string> = (
   { effects },
   commentId
 ) => {
+  effects.analytics.track('Comments - Copy Permalink');
   effects.browser.copyToClipboard(effects.router.createCommentUrl(commentId));
   effects.notificationToast.success('Comment permalink copied to clipboard');
 };
@@ -540,6 +558,22 @@ export const getSandboxComments: AsyncAction<string> = async (
       `There was a problem getting the sandbox comments`
     );
   }
+
+  // When we load the comments there might be changes already, lets make sure we transpose
+  // any comments on these changes. This does not fix it if you already managed to save, but
+  // that is considered an extreme edge case
+  state.editor.changedModuleShortids.forEach(moduleShortid => {
+    const module = state.editor.currentSandbox!.modules.find(
+      moduleItem => moduleItem.shortid === moduleShortid
+    );
+
+    if (!module) {
+      return;
+    }
+
+    const operation = getTextOperation(module.savedCode || '', module.code);
+    actions.comments.transposeComments({ module, operation });
+  });
 };
 
 export const onCommentAdded: Action<CommentAddedSubscription> = (

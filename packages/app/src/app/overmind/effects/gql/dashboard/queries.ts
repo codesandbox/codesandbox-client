@@ -26,6 +26,7 @@ import {
   sandboxFragmentDashboard,
   sidebarCollectionDashboard,
   templateFragmentDashboard,
+  currentTeamInfoFragment,
 } from './fragments';
 
 export const deletedSandboxes: Query<
@@ -155,17 +156,6 @@ export const listPersonalTemplates: Query<
 
       recentlyUsedTemplates {
         ...templateFragmentDashboard
-
-        sandbox {
-          git {
-            id
-            username
-            commitSha
-            path
-            repo
-            branch
-          }
-        }
       }
 
       bookmarkedTemplates {
@@ -213,18 +203,9 @@ export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
   query getTeam($teamId: ID!) {
     me {
       team(id: $teamId) {
-        id
-        creatorId
-        description
-        name
-        users {
-          avatarUrl
-          name
-          lastName
-          username
-          id
-        }
+        ...currentTeamInfoFragment
       }
     }
   }
+  ${currentTeamInfoFragment}
 `;

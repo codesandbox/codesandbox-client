@@ -10,6 +10,10 @@ const staticAssets = [
     to: 'public/vscode-extensions/v13',
   },
   !SANDBOX_ONLY && {
+    from: 'node_modules/vscode-oniguruma/release/onig.wasm',
+    to: 'public/vscode-oniguruma/1.3.1/onig.wasm',
+  },
+  !SANDBOX_ONLY && {
     from: 'node_modules/onigasm/lib/onigasm.wasm',
     to: 'public/onigasm/2.2.1/onigasm.wasm',
   },
@@ -34,8 +38,16 @@ const staticAssets = [
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
+    to: 'static/browserfs11',
+  },
+  // For caching purposes
+  {
+    from: isDev
+      ? 'standalone-packages/codesandbox-browserfs/build'
+      : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs10',
   },
+  // For caching purposes
   {
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'
@@ -54,13 +66,6 @@ const staticAssets = [
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs7',
-  },
-  // For caching purposes
-  {
-    from: isDev
-      ? 'standalone-packages/codesandbox-browserfs/build'
-      : 'standalone-packages/codesandbox-browserfs/dist',
-    to: 'static/browserfs6',
   },
   // For Monaco
   {

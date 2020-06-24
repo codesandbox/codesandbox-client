@@ -100,7 +100,7 @@ export const setModuleSavedCode: Action<{
   );
 
   if (moduleIndex > -1) {
-    const module = state.editor.sandboxes[sandbox.id].modules[moduleIndex];
+    const module = sandbox.modules[moduleIndex];
 
     module.savedCode = module.code === savedCode ? null : savedCode;
   }
@@ -189,17 +189,6 @@ export const saveCode: AsyncAction<{
 
     if (cbID) {
       effects.vscode.callCallback(cbID);
-    }
-
-    if (
-      sandbox.originalGit &&
-      state.workspace.openedWorkspaceItem === 'github'
-    ) {
-      state.git.isFetching = true;
-      state.git.originalGitChanges = await effects.api.getGitChanges(
-        sandbox.id
-      );
-      state.git.isFetching = false;
     }
 
     // If the executor is a server we only should send updates if the sandbox has been
@@ -454,7 +443,10 @@ export const forkSandbox: AsyncAction<{
       actions.server.startContainer(forkedSandbox);
     }
 
-    if (state.workspace.openedWorkspaceItem === 'project-summary') {
+    if (
+      state.workspace.openedWorkspaceItem === 'project-summary' ||
+      state.workspace.openedWorkspaceItem === 'github-summary'
+    ) {
       actions.workspace.openDefaultItem();
     }
 
@@ -465,6 +457,10 @@ export const forkSandbox: AsyncAction<{
     }
 
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
+
+    if (sandbox.originalGit) {
+      actions.git.loadGitSource();
+    }
   } catch (error) {
     console.error(error);
     actions.internal.handleError({

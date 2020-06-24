@@ -116,6 +116,12 @@ class TeamView extends React.PureComponent {
                                     <Input
                                       ref={node => {
                                         input = node;
+                                        if (node) {
+                                          node.focus();
+                                        }
+                                      }}
+                                      onBlur={() => {
+                                        stopEditing();
                                       }}
                                       style={{
                                         padding: '.5em',

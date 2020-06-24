@@ -27,9 +27,9 @@ export enum sandboxesTypes {
   TEMPLATES = 'TEMPLATES',
   DELETED = 'DELETED',
   RECENT = 'RECENT',
-  START_PAGE = 'START_PAGE',
-  TEMPLATE_START_PAGE = 'TEMPLATE_START_PAGE',
-  RECENT_START_PAGE = 'RECENT_START_PAGE',
+  HOME = 'HOME',
+  TEMPLATE_HOME = 'TEMPLATE_HOME',
+  RECENT_HOME = 'RECENT_HOME',
   ALL = 'ALL',
   SEARCH = 'SEARCH',
 }
@@ -41,16 +41,14 @@ type State = {
     DELETED: Sandbox[] | null;
     RECENT: Sandbox[] | null;
     SEARCH: Sandbox[] | null;
-    TEMPLATE_START_PAGE: Template[] | null;
-    RECENT_START_PAGE: Sandbox[] | null;
+    TEMPLATE_HOME: Template[] | null;
+    RECENT_HOME: Sandbox[] | null;
     ALL: {
       [path: string]: Sandbox[];
     } | null;
   };
   teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
   allCollections: DELETE_ME_COLLECTION[] | null;
-  activeTeam: string | null;
-  activeTeamInfo: any | null;
   selectedSandboxes: string[];
   trashSandboxIds: string[];
   isDragging: boolean;
@@ -61,7 +59,9 @@ type State = {
     search: string;
   };
   isTemplateSelected: (templateName: string) => boolean;
-  getFilteredSandboxes: (sandboxes: Sandbox[]) => Sandbox[];
+  getFilteredSandboxes: (
+    sandboxes: Array<Sandbox | Template['sandbox']>
+  ) => Sandbox[];
   recentSandboxesByTime: {
     day: Sandbox[];
     week: Sandbox[];
@@ -80,15 +80,13 @@ export const state: State = {
     TEMPLATES: null,
     DELETED: null,
     RECENT: null,
-    TEMPLATE_START_PAGE: null,
-    RECENT_START_PAGE: null,
+    TEMPLATE_HOME: null,
+    RECENT_HOME: null,
     ALL: null,
     SEARCH: null,
   },
   viewMode: 'grid',
   allCollections: null,
-  activeTeam: null,
-  activeTeamInfo: null,
   teams: [],
   recentSandboxesByTime: derived(({ sandboxes }: State) => {
     const recentSandboxes = sandboxes.RECENT;
@@ -182,38 +180,44 @@ export const state: State = {
     blacklistedTemplates: [],
     search: '',
   },
-  isTemplateSelected: derived(({ filters }: State) => templateName =>
+  isTemplateSelected: derived(({ filters }: State) => (templateName: string) =>
     !filters.blacklistedTemplates.includes(templateName)
   ),
-  getFilteredSandboxes: derived(({ orderBy, filters }: State) => sandboxes => {
-    const orderField = orderBy.field;
-    const orderOrder = orderBy.order;
-    const { blacklistedTemplates } = filters;
+  getFilteredSandboxes: derived(
+    ({ orderBy, filters }: State) => (
+      sandboxes: Array<Sandbox | Template['sandbox']>
+    ) => {
+      const orderField = orderBy.field;
+      const orderOrder = orderBy.order;
+      const { blacklistedTemplates } = filters;
 
-    const isDateField =
-      orderField === 'insertedAt' || orderField === 'updatedAt';
+      const isDateField =
+        orderField === 'insertedAt' || orderField === 'updatedAt';
 
-    let orderedSandboxes = (sortBy(sandboxes, s => {
-      if (isDateField) {
-        return +new Date(s[orderField]);
+      let orderedSandboxes = (sortBy(sandboxes, s => {
+        const sandbox = s!;
+        if (isDateField) {
+          return +new Date(sandbox[orderField]);
+        }
+
+        if (orderField === 'title') {
+          const field = sandbox.title || sandbox.alias || sandbox.id;
+          return field.toLowerCase();
+        }
+
+        return sandbox[orderField];
+      }) as Sandbox[]).filter(
+        x =>
+          x.source &&
+          x.source.template &&
+          blacklistedTemplates.indexOf(x.source.template) === -1
+      );
+
+      if (orderOrder === 'desc') {
+        orderedSandboxes = orderedSandboxes.reverse();
       }
 
-      if (orderField === 'title') {
-        return s.title || s.id;
-      }
-
-      return s[orderField];
-    }) as Sandbox[]).filter(
-      x =>
-        x.source &&
-        x.source.template &&
-        blacklistedTemplates.indexOf(x.source.template) === -1
-    );
-
-    if (orderOrder === 'desc') {
-      orderedSandboxes = orderedSandboxes.reverse();
+      return orderedSandboxes;
     }
-
-    return orderedSandboxes;
-  }),
+  ),
 };

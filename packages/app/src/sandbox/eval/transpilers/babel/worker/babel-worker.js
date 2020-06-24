@@ -1,7 +1,6 @@
 /* eslint-disable global-require, no-console, no-use-before-define */
 import { flatten } from 'lodash-es';
 import codeFrame from 'babel-code-frame';
-import macrosPlugin from 'babel-plugin-macros';
 import refreshBabelPlugin from 'react-refresh/babel';
 import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
 import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
@@ -11,20 +10,24 @@ import delay from '@codesandbox/common/lib/utils/delay';
 
 import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
 import { join } from '@codesandbox/common/lib/utils/path';
-import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
+import patchedMacrosPlugin from './utils/macrosPatch';
 import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
 import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
+import renameImport from './plugins/babel-plugin-rename-imports';
 
 import { buildWorkerError } from '../../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
 import { downloadFromError, downloadPath } from './dynamic-download';
+import { getModulesFromMainThread } from '../../utils/fs';
 
 import { evaluateFromPath, resetCache } from './evaluate';
 import {
   getPrefixedPluginName,
   getPrefixedPresetName,
 } from './get-prefixed-name';
+import { patchedResolve } from './utils/resolvePatch';
+import { loadBabelTypes } from './utils/babelTypes';
 
 let fsInitialized = false;
 let fsLoading = false;
@@ -44,6 +47,10 @@ self.process = {
 };
 // This one is called from the babel transpiler and babel-plugin-macros
 self.require = path => {
+  if (path === 'resolve') {
+    return patchedResolve();
+  }
+
   if (path === 'assert') {
     return require('assert');
   }
@@ -88,6 +95,21 @@ self.require = path => {
 
 async function initializeBrowserFS() {
   fsLoading = true;
+
+  const modules = await getModulesFromMainThread();
+  const tModules = {};
+  modules.forEach(module => {
+    tModules[module.path] = { module };
+  });
+
+  const bfsWrapper = {
+    getTranspiledModules: () => tModules,
+    addModule: () => {},
+    removeModule: () => {},
+    moveModule: () => {},
+    updateModule: () => {},
+  };
+
   return new Promise(resolve => {
     BrowserFS.configure(
       {
@@ -95,10 +117,9 @@ async function initializeBrowserFS() {
         options: {
           writable: { fs: 'InMemory' },
           readable: {
-            fs: 'AsyncMirror',
+            fs: 'CodeSandboxFS',
             options: {
-              sync: { fs: 'InMemory' },
-              async: { fs: 'WorkerFS', options: { worker: self } },
+              manager: bfsWrapper,
             },
           },
         },
@@ -123,7 +144,7 @@ async function waitForFs() {
       // We only load the fs when it's needed. The FS is expensive, as we sync all
       // files of the main thread to the worker. We only want to do this if it's really
       // needed.
-      await initializeBrowserFS();
+      await Promise.all([initializeBrowserFS(), loadBabelTypes()]);
     }
     while (!fsInitialized) {
       await delay(50); // eslint-disable-line
@@ -464,9 +485,9 @@ let loadedTranspilerURL = null;
 let loadedEnvURL = null;
 
 function registerCodeSandboxPlugins() {
-  Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
   Babel.registerPlugin('babel-plugin-detective', detective);
   Babel.registerPlugin('dynamic-css-modules', dynamicCSSModules);
+  Babel.registerPlugin('babel-plugin-csb-rename-import', renameImport);
   Babel.registerPlugin(
     'babel-plugin-transform-prevent-infinite-loops',
     infiniteLoops
@@ -520,7 +541,7 @@ self.addEventListener('message', async event => {
     hasMacros,
   } = event.data;
 
-  if (type !== 'compile') {
+  if (type !== 'compile' && type !== 'warmup') {
     return;
   }
   try {
@@ -549,8 +570,6 @@ self.addEventListener('message', async event => {
     const codeSandboxPlugins = [];
 
     if (!disableCodeSandboxPlugins) {
-      codeSandboxPlugins.push('dynamic-import-node');
-
       if (loaderOptions.dynamicCSSModules) {
         codeSandboxPlugins.push('dynamic-css-modules');
       }
@@ -560,6 +579,8 @@ self.addEventListener('message', async event => {
           'babel-plugin-transform-prevent-infinite-loops'
         );
       }
+
+      codeSandboxPlugins.push('babel-plugin-csb-rename-import');
     }
 
     codeSandboxPlugins.push([
@@ -624,7 +645,7 @@ self.addEventListener('message', async event => {
           await waitForFs();
         }
 
-        Babel.registerPlugin('babel-plugin-macros', macrosPlugin);
+        Babel.registerPlugin('babel-plugin-macros', patchedMacrosPlugin);
       }
 
       if (
@@ -732,6 +753,11 @@ self.addEventListener('message', async event => {
         })
     );
 
+    if (type === 'warmup') {
+      Babel.transform(code, normalizeV7Config(customConfig));
+      return;
+    }
+
     await compile(
       code,
       version === 7 ? normalizeV7Config(customConfig) : customConfig,
@@ -739,6 +765,10 @@ self.addEventListener('message', async event => {
       version === 7
     );
   } catch (e) {
+    if (type === 'warmup') {
+      return;
+    }
+
     console.error(e);
     self.postMessage({
       type: 'error',

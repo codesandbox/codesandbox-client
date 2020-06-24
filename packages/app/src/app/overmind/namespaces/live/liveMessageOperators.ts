@@ -52,11 +52,6 @@ export const onJoin: Operator<LiveMessage<{
 }>> = mutate(({ effects, actions, state }, { data }) => {
   state.live.liveUserId = data.live_user_id;
 
-  // Show message to confirm that you've joined a live session if you're not the owner
-  if (!state.live.isCurrentEditor) {
-    effects.notificationToast.success('Connected to Live!');
-  }
-
   if (state.live.reconnecting) {
     // We reconnected!
     effects.live.getAllClients().forEach(client => {
@@ -222,7 +217,7 @@ export const onModuleSaved: Operator<LiveMessage<{
 
 export const onModuleCreated: Operator<LiveMessage<{
   module: Module;
-}>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
+}>> = mutate(({ state, actions, effects }, { _isOwnMessage, data }) => {
   if (_isOwnMessage || !state.editor.currentSandbox) {
     return;
   }
@@ -231,6 +226,9 @@ export const onModuleCreated: Operator<LiveMessage<{
     state.editor.modulesByPath,
     data.module
   );
+  if (state.editor.currentSandbox.originalGit) {
+    actions.git.updateGitChanges();
+  }
 });
 
 export const onModuleMassCreated: Operator<LiveMessage<{
@@ -252,6 +250,9 @@ export const onModuleMassCreated: Operator<LiveMessage<{
   );
 
   actions.editor.internal.updatePreviewCode();
+  if (state.editor.currentSandbox.originalGit) {
+    actions.git.updateGitChanges();
+  }
 });
 
 export const onModuleUpdated: Operator<LiveMessage<{
@@ -290,6 +291,9 @@ export const onModuleUpdated: Operator<LiveMessage<{
   }
 
   actions.editor.internal.updatePreviewCode();
+  if (state.editor.currentSandbox!.originalGit) {
+    actions.git.updateGitChanges();
+  }
 });
 
 export const onModuleDeleted: Operator<LiveMessage<{
@@ -321,6 +325,9 @@ export const onModuleDeleted: Operator<LiveMessage<{
   }
 
   actions.editor.internal.updatePreviewCode();
+  if (state.editor.currentSandbox.originalGit) {
+    actions.git.updateGitChanges();
+  }
 });
 
 export const onDirectoryCreated: Operator<LiveMessage<{
@@ -414,6 +421,10 @@ export const onDirectoryDeleted: Operator<LiveMessage<{
   if (state.editor.mainModule)
     effects.vscode.openModule(state.editor.mainModule);
   actions.editor.internal.updatePreviewCode();
+
+  if (state.editor.currentSandbox!.originalGit) {
+    actions.git.updateGitChanges();
+  }
 });
 
 export const onUserSelection: Operator<LiveMessage<{
@@ -600,7 +611,7 @@ export const onLiveRemoveEditor: Operator<LiveMessage<{
 export const onOperation: Operator<LiveMessage<{
   module_shortid: string;
   operation: any;
-}>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
+}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
   if (state.live.isLoading) {
     return;
   }

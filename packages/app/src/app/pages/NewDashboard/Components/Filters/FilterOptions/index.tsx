@@ -1,5 +1,9 @@
-import { orderBy } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
+
+// Used because react complains when we have a checked with no onChange
+// We want that since we trigger the onChange on the menuItem so you as a user
+// can click anywhere
+import { orderBy, noop } from 'lodash-es';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { Text, Menu, Checkbox } from '@codesandbox/components';
@@ -33,14 +37,13 @@ export const FilterOptions: FunctionComponent<Props> = ({
       },
     },
   } = useOvermind();
-
-  const toggleTemplate = (name: string, select: boolean) =>
-    select ? blacklistedTemplateRemoved(name) : blacklistedTemplateAdded(name);
+  const templates = possibleTemplates && possibleTemplates.length > 0;
   const allSelected = possibleTemplates.every(({ id }) =>
     isTemplateSelected(id)
   );
 
-  const templates = possibleTemplates && possibleTemplates.length > 0;
+  const toggleTemplate = (name: string, select: boolean) =>
+    select ? blacklistedTemplateRemoved(name) : blacklistedTemplateAdded(name);
 
   return (
     <>
@@ -61,15 +64,22 @@ export const FilterOptions: FunctionComponent<Props> = ({
                 return (
                   <Menu.Item
                     field="title"
-                    key={id}
-                    onSelect={() => toggleTemplate(id, !selected)}
+                    key={id || name}
+                    onSelect={() => {
+                      toggleTemplate(id, !selected);
+                      return { CLOSE_MENU: false };
+                    }}
                     css={css({
                       label: {
                         color: selected ? 'inherit' : 'mutedForeground',
                       },
                     })}
                   >
-                    <Checkbox checked={selected} label={niceName || name} />
+                    <Checkbox
+                      onChange={noop}
+                      checked={selected}
+                      label={niceName || name}
+                    />
                   </Menu.Item>
                 );
               }
@@ -82,18 +92,24 @@ export const FilterOptions: FunctionComponent<Props> = ({
               key="all"
               onSelect={() => {
                 if (allSelected) {
-                  return blacklistedTemplatesChanged(
+                  blacklistedTemplatesChanged(
                     possibleTemplates.map(({ id }) => id)
                   );
+                } else {
+                  blacklistedTemplatesCleared();
                 }
 
-                return blacklistedTemplatesCleared();
+                return { CLOSE_MENU: false };
               }}
               css={css({
                 color: allSelected ? 'body' : 'muted',
               })}
             >
-              <Checkbox checked={allSelected} label="Select All" />
+              <Checkbox
+                onChange={noop}
+                checked={allSelected}
+                label="Select All"
+              />
             </Menu.Item>
           )}
         </Menu.List>

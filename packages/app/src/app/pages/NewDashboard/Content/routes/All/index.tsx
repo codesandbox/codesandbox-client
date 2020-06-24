@@ -1,32 +1,36 @@
-import { Column, Element } from '@codesandbox/components';
+import React from 'react';
+import { Helmet } from 'react-helmet';
+import { useParams, useHistory } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Folder } from 'app/pages/NewDashboard/Components/Folder';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
-import { SkeletonCard } from 'app/pages/NewDashboard/Components/Sandbox/SandboxCard';
-import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
-import React, { useEffect, useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
+import { DashboardGridItem } from 'app/pages/NewDashboard/types';
+import { getPossibleTemplates } from '../../utils';
+import { useFilteredItems } from './useFilteredItems';
 
-export const AllPage = ({ match: { params }, history }) => {
-  const [level, setLevel] = useState(0);
-  const [creating, setCreating] = useState(false);
-  const param = params.path || '';
-  const cleanParam = param.split(' ').join('');
+export const AllPage = () => {
+  const [level, setLevel] = React.useState(0);
+  const [creating, setCreating] = React.useState(false);
+  const params = useParams<{ path: string }>();
+  const history = useHistory();
+  const items = useFilteredItems(params, level);
+  const currentPath = params.path || '';
+  const cleanParam = currentPath.split(' ').join('{}');
   const {
     actions,
     state: {
-      dashboard: { allCollections, sandboxes, activeTeam },
+      dashboard: { allCollections, sandboxes },
+      activeTeam,
     },
   } = useOvermind();
-  const [localTeam, setLocalTeam] = useState(activeTeam);
+  const [localTeam, setLocalTeam] = React.useState(activeTeam);
 
-  useEffect(() => {
+  React.useEffect(() => {
     actions.dashboard.getAllFolders();
   }, [actions.dashboard, activeTeam]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (localTeam !== activeTeam) {
       setLocalTeam(activeTeam);
 
@@ -37,50 +41,44 @@ export const AllPage = ({ match: { params }, history }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTeam]);
 
-  useEffect(() => {
-    if (param) {
-      setLevel(param ? param.split('/').length : 0);
-      actions.dashboard.getSandboxesByPath(param);
+  React.useEffect(() => {
+    if (!currentPath || currentPath === '/') {
+      setLevel(0);
+    } else {
+      setLevel(currentPath.split('/').length);
     }
-  }, [param, actions.dashboard, activeTeam]);
+    actions.dashboard.getSandboxesByPath(currentPath);
+  }, [currentPath, actions.dashboard, activeTeam]);
 
-  const folders =
-    allCollections &&
-    allCollections.filter(
-      collection => collection.level === level && collection.parent === param
-    );
+  const activeSandboxes = sandboxes.ALL && sandboxes.ALL[cleanParam];
+  const itemsToShow: DashboardGridItem[] = allCollections
+    ? [
+        creating && { type: 'new-folder' as 'new-folder', setCreating },
+        ...items,
+      ].filter(Boolean)
+    : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   return (
     <SelectionProvider
-      sandboxes={(sandboxes.ALL && sandboxes.ALL[cleanParam]) || []}
-      folders={folders || []}
+      items={itemsToShow}
+      createNewFolder={() => setCreating(true)}
     >
-      <Element style={{ height: '100%', position: 'relative' }}>
-        <Header />
-        {allCollections ? (
-          <SandboxGrid>
-            {creating && <Folder key="new" setCreating={setCreating} />}
-            {folders.map(folder => (
-              <Folder key={folder.id} {...folder} setCreating={setCreating} />
-            ))}
-            {sandboxes.ALL &&
-              sandboxes.ALL[cleanParam] &&
-              sandboxes.ALL[cleanParam].map(sandbox => (
-                <Sandbox key={sandbox.id} sandbox={sandbox} />
-              ))}
-          </SandboxGrid>
-        ) : (
-          <SandboxGrid>
-            {Array.from(Array(8).keys()).map(n => (
-              <Column key={n}>
-                <SkeletonCard />
-              </Column>
-            ))}
-          </SandboxGrid>
-        )}
-      </Element>
+      <Helmet>
+        <title>
+          {currentPath.split('/').pop() || 'Dashboard'} - CodeSandbox
+        </title>
+      </Helmet>
+      <Header
+        path={currentPath}
+        templates={getPossibleTemplates(activeSandboxes || [])}
+        createNewFolder={() => setCreating(true)}
+        showViewOptions
+        showFilters={Boolean(currentPath)}
+        showSortOptions={Boolean(currentPath)}
+      />
+      <VariableGrid items={itemsToShow} />
     </SelectionProvider>
   );
 };
 
-export const All = withRouter(AllPage);
+export const All = React.memo(AllPage);

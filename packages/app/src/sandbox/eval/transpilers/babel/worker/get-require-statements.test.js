@@ -2,7 +2,6 @@ import { transform } from 'babel-standalone';
 import dynamicImportSyntax from 'babel-plugin-syntax-dynamic-import';
 
 import detective from './plugins/babel-plugin-detective';
-import importNode from './plugins/babel-plugin-dynamic-import-node';
 import getRequireStatements from './get-require-statements';
 
 describe('get-require-statements', () => {
@@ -15,7 +14,6 @@ describe('get-require-statements', () => {
         'transform-class-properties',
         'transform-decorators-legacy',
         dynamicImportSyntax,
-        importNode,
         [detective, { source: true, nodes: true }],
       ],
     });
@@ -41,7 +39,7 @@ describe('get-require-statements', () => {
     testAst(code);
   });
 
-  it('can find import promises', () => {
+  it('does not find import promises', () => {
     const code = `
       const reactDom = import('react-dom').then(dom => dom.render('a'));
     `;

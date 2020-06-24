@@ -4,11 +4,13 @@ import VERSION from '@codesandbox/common/lib/version';
 interface IbuildCrashReport {
   error?: Error;
   trace?: string;
+  errorCode: string | null;
 }
 
 export const buildCrashReport = ({
   error,
   trace,
+  errorCode,
 }: IbuildCrashReport): string => {
   const url = new URL(
     `https://github.com/codesandbox/codesandbox-client/issues/new`
@@ -17,6 +19,11 @@ export const buildCrashReport = ({
 
   // Only put commit sha inside the body, GitHub can parse this back to a link to commit.
   const commitSha = VERSION.split('-')[2];
+
+  const errorCodeMessage = errorCode
+    ? `**Error Code:**
+${errorCode}`
+    : ``;
 
   url.searchParams.set(
     `body`,
@@ -39,6 +46,8 @@ export const buildCrashReport = ({
 
   **Route:**
   ${window.location.href}
+
+  ${errorCodeMessage}
 
   </details>
 

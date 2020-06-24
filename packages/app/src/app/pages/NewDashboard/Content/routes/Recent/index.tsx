@@ -1,17 +1,22 @@
-import { Stack } from '@codesandbox/components';
+import React from 'react';
+import { Helmet } from 'react-helmet';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
-import React from 'react';
-
-import { SandboxesGroup, SkeletonGroup } from './SandboxesGroup';
+import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
+import {
+  DashboardGridItem,
+  DashboardHeader,
+  DashboardSandbox,
+} from 'app/pages/NewDashboard/types';
+import { getPossibleTemplates } from '../../utils';
 
 export const Recent = () => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes },
+      dashboard: { sandboxes, recentSandboxesByTime, getFilteredSandboxes },
     },
   } = useOvermind();
 
@@ -19,26 +24,50 @@ export const Recent = () => {
     actions.dashboard.getPage(sandboxesTypes.RECENT);
   }, [actions.dashboard]);
 
+  const getSection = (
+    title: string,
+    time: keyof typeof recentSandboxesByTime
+  ): [DashboardHeader, ...DashboardSandbox[]] | [] => {
+    const recentSandboxes = getFilteredSandboxes(recentSandboxesByTime[time]);
+
+    if (!recentSandboxes.length) return [];
+
+    return [
+      { type: 'header', title },
+      ...recentSandboxes.map(sandbox => ({
+        type: 'sandbox' as 'sandbox',
+        sandbox,
+      })),
+    ];
+  };
+
+  const items: DashboardGridItem[] = sandboxes.RECENT
+    ? [
+        ...getSection('Today', 'day'),
+        ...getSection('Last 7 days', 'week'),
+        ...getSection('Earlier this month', 'month'),
+        ...getSection('Older', 'older'),
+      ]
+    : [
+        { type: 'header', title: 'Today' },
+        { type: 'skeleton-row' },
+        { type: 'header', title: 'Last 7 days' },
+        { type: 'skeleton-row' },
+      ];
+
   return (
-    <SelectionProvider sandboxes={sandboxes.RECENT}>
-      <Header />
-      <section style={{ position: 'relative' }}>
-        {sandboxes.RECENT ? (
-          <Stack as="section" direction="vertical" gap={8}>
-            <SandboxesGroup title="Today" time="day" />
-            <SandboxesGroup title="Last 7 Days" time="week" />
-            <SandboxesGroup title="Earlier this month" time="month" />
-            <SandboxesGroup title="Older" time="older" />
-          </Stack>
-        ) : (
-          <Stack as="section" direction="vertical" gap={8}>
-            <SkeletonGroup title="Today" time="day" />
-            <SkeletonGroup title="Last 7 Days" time="week" />
-            <SkeletonGroup title="Earlier this month" time="month" />
-            <SkeletonGroup title="Older" time="older" />
-          </Stack>
-        )}
-      </section>
+    <SelectionProvider items={items}>
+      <Helmet>
+        <title>Recent Sandboxes - CodeSandbox</title>
+      </Helmet>
+      <Header
+        templates={getPossibleTemplates(sandboxes.RECENT)}
+        title="Recently Modified Sandboxes"
+        showViewOptions
+        showFilters
+      />
+
+      <VariableGrid items={items} />
     </SelectionProvider>
   );
 };

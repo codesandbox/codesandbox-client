@@ -62,8 +62,9 @@ function App() {
         padding={10}
       >
         <Button
+          autoWidth
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
@@ -74,8 +75,9 @@ function App() {
           Add Success Notification
         </Button>
         <Button
+          autoWidth
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
@@ -86,8 +88,9 @@ function App() {
           Add Error Notification
         </Button>
         <Button
+          autoWidth
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
@@ -98,8 +101,9 @@ function App() {
           Add Notice Notification
         </Button>
         <Button
+          autoWidth
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
@@ -111,7 +115,8 @@ function App() {
         </Button>
         <Button
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          autoWidth
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               title: 'Changes synced from Master',
@@ -125,7 +130,8 @@ function App() {
         </Button>
         <Button
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          autoWidth
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
@@ -142,8 +148,9 @@ function App() {
           Add Notification with one button
         </Button>
         <Button
+          autoWidth
           type="button"
-          style={{ width: 'auto', marginBottom: 16 }}
+          style={{ marginBottom: 16 }}
           onClick={() => {
             state.addNotification({
               message: 'New notification!',

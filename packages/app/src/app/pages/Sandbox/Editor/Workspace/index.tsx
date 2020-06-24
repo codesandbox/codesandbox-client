@@ -1,25 +1,25 @@
+import { ThemeProvider } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
 import React from 'react';
 import { withTheme } from 'styled-components';
 
-import { useOvermind } from 'app/overmind';
-import { ThemeProvider } from '@codesandbox/components';
-
-import { ProjectInfo } from './screens/ProjectInfo';
-import { NotOwnedSandboxInfo } from './screens/NotOwnedSandboxInfo';
-import { GitHub } from './screens/GitHub';
-import { Explorer } from './screens/Explorer';
-import { Deployment } from './screens/Deployment/index';
-import { ConfigurationFiles } from './screens/ConfigurationFiles';
-import { Live } from './screens/Live';
-import { Server } from './screens/Server';
-import { Comments } from './screens/Comments';
-
 import { Chat } from './Chat';
 import { Container } from './elements';
+import { Comments } from './screens/Comments';
+import { ConfigurationFiles } from './screens/ConfigurationFiles';
+import { Deployment } from './screens/Deployment/index';
+import { Explorer } from './screens/Explorer';
+import { GitHub } from './screens/GitHub';
+import { GithubSummary } from './screens/GithubSummary';
+import { Live } from './screens/Live';
+import { NotOwnedSandboxInfo } from './screens/NotOwnedSandboxInfo';
+import { ProjectInfo } from './screens/ProjectInfo';
+import { Server } from './screens/Server';
 
 const workspaceTabs = {
   project: ProjectInfo,
   'project-summary': NotOwnedSandboxInfo,
+  'github-summary': GithubSummary,
   github: GitHub,
   files: Explorer,
   deploy: Deployment,
@@ -53,7 +53,7 @@ export const WorkspaceComponent = ({ theme }) => {
               fontFamily: 'Inter, Roboto, sans-serif',
             }}
           >
-            <Component />
+            {state.editor.currentSandbox && <Component />}
           </div>
 
           {isLive && roomInfo.chatEnabled && <Chat />}

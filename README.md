@@ -252,6 +252,12 @@ Thanks goes to these wonderful people
     <td align="center"><a href="http://anuraghazra.github.io"><img src="https://avatars3.githubusercontent.com/u/35374649?v=4" width="100px;" alt=""/><br /><sub><b>Anurag Hazra</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=anuraghazra" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/johansenja"><img src="https://avatars1.githubusercontent.com/u/43235608?v=4" width="100px;" alt=""/><br /><sub><b>johansenja</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=johansenja" title="Documentation">📖</a></td>
     <td align="center"><a href="https://shodipoayomide.com"><img src="https://avatars2.githubusercontent.com/u/20538832?v=4" width="100px;" alt=""/><br /><sub><b>Shodipo Ayomide</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=Developerayo" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://akashj.com"><img src="https://avatars0.githubusercontent.com/u/22196279?v=4" width="100px;" alt=""/><br /><sub><b>Akash Joshi</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=akash-joshi" title="Code">💻</a></td>
+    <td align="center"><a href="https://twitter.com/layershifter"><img src="https://avatars0.githubusercontent.com/u/14183168?v=4" width="100px;" alt=""/><br /><sub><b>Oleksandr Fediashov</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3Alayershifter" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=layershifter" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/tehnuge"><img src="https://avatars1.githubusercontent.com/u/1928236?v=4" width="100px;" alt=""/><br /><sub><b>John D.</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=tehnuge" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/NinoMaj"><img src="https://avatars0.githubusercontent.com/u/20380632?v=4" width="100px;" alt=""/><br /><sub><b>Nino</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=NinoMaj" title="Documentation">📖</a></td>
   </tr>
 </table>
 

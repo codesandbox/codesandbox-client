@@ -48,17 +48,37 @@ export default () => {
         </SubTitle>
 
         <SandboxButtons>
-          <Sandbox href="/s/new" style={{ backgroundImage: `url(${react})` }} />
+          <Sandbox
+            href="/s/new"
+            title="React"
+            style={{ backgroundImage: `url(${react})`, animationDelay: '0.5s' }}
+          />
           <Sandbox
             href="/s/vanilla"
-            style={{ backgroundImage: `url(${vanilla})` }}
+            title="Vanilla"
+            style={{
+              backgroundImage: `url(${vanilla})`,
+              animationDelay: '0.6s',
+            }}
           />
-          <Sandbox href="/s/vue" style={{ backgroundImage: `url(${vue})` }} />
+          <Sandbox
+            href="/s/vue"
+            title="Vue"
+            style={{ backgroundImage: `url(${vue})`, animationDelay: '0.7s' }}
+          />
           <Sandbox
             href="/s/angular"
-            style={{ backgroundImage: `url(${angular})` }}
+            title="Angular"
+            style={{
+              backgroundImage: `url(${angular})`,
+              animationDelay: '0.8s',
+            }}
           />
-          <Sandbox href="/s" style={{ backgroundImage: `url(${more})` }} />
+          <Sandbox
+            href="/s"
+            title="More"
+            style={{ backgroundImage: `url(${more})`, animationDelay: '0.9s' }}
+          />
         </SandboxButtons>
 
         <motion.div

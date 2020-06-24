@@ -105,7 +105,7 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
 export const initializeModuleFromState: Action<{
   moduleShortid: string;
   moduleInfo: IModuleStateModule;
-}> = ({ state, effects }, { moduleShortid, moduleInfo }) => {
+}> = ({ state, effects, actions }, { moduleShortid, moduleInfo }) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
     return;

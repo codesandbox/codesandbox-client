@@ -56,20 +56,18 @@ const Navigation = () => {
   );
 
   const fetchCurrentUser = async () => {
-    const jwt = JSON.parse(localStorage.getItem('jwt'));
-
     const BASE =
       process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
 
-    const { data } = await fetch(BASE + '/api/v1/users/current', {
-      headers: { Authorization: `Bearer ${jwt}` },
-    }).then(x => x.json());
+    const { data } = await fetch(BASE + '/api/v1/users/current').then(x =>
+      x.json()
+    );
 
     setUser(data);
   };
 
   useEffect(() => {
-    if (localStorage.getItem('jwt')) {
+    if (document.cookie.indexOf('signedIn') > -1) {
       fetchCurrentUser();
     }
   }, []);
@@ -193,7 +191,6 @@ const Navigation = () => {
                   width: 100%;
                   background: #151515;
                   overflow: hidden;
-                  border-bottom: 1px solid ${props => props.theme.homepage.grey};
                   z-index: 99;
                   box-shadow: 0, 8px, 1rem rgba(0, 0, 0, 0.12), 0, 4px,
                     2px rgba(0, 0, 0, 0.24);
