@@ -8,8 +8,7 @@ import { FAQStyle } from './_global';
 
 const FAQS = ({ data }) => {
   const faq = data.faq.html;
-  const hash = location.hash ? location.hash.split('#')[1] : '';
-  useAccordion(hash);
+  useAccordion();
 
   return (
     <Layout noWrapperStyling docs>

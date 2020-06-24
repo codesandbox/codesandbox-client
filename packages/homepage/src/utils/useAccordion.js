@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export const useAccordion = hash => {
+export const useAccordion = () => {
   const toggleChildrenClass = parent => {
     Array.from(parent.getElementsByTagName('p')).map(p =>
       p.classList.toggle('show')
@@ -11,6 +11,7 @@ export const useAccordion = hash => {
     );
   };
   useEffect(() => {
+    const hash = location.hash ? location.hash.split('#')[1] : '';
     if (hash) {
       const parent = document.getElementById(hash).parentNode;
 
@@ -19,7 +20,7 @@ export const useAccordion = hash => {
     }
     const toggleClasses = e => {
       if (e.target.localName !== 'h2') return;
-      history.pushState({}, '', e.target.id);
+      history.pushState({}, '', 'faq/#' + e.target.id);
       history.scrollRestoration = 'manual';
       const parent = e.target.parentNode;
 
@@ -30,5 +31,5 @@ export const useAccordion = hash => {
     document.addEventListener('click', toggleClasses);
 
     return () => document.removeEventListener('click', toggleClasses);
-  }, [hash]);
+  }, []);
 };
