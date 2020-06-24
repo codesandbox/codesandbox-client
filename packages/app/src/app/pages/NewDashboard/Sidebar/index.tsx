@@ -422,12 +422,10 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     ) {
       setFoldersVisibility(true);
     }
-  }, [
-    location.pathname,
-    currentFolderLocationPath,
-    foldersVisible,
-    setFoldersVisibility,
-  ]);
+
+    // We don't want to recalculate after mount
+    // eslint-disable-next-line
+  }, [location.pathname, currentFolderLocationPath, setFoldersVisibility]);
 
   React.useEffect(() => {
     if (hasNewNestedFolder) setFoldersVisibility(true);
