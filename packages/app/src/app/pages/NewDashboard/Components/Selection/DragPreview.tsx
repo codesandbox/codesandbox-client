@@ -93,6 +93,7 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
       if (!thumbnailRef.current) {
         return { width: 0, height: 0 };
       }
+
       const thumbnailRect = thumbnailRef.current.getBoundingClientRect();
       return { width: thumbnailRect.width, height: thumbnailRect.height };
     }, [thumbnailRef]);
