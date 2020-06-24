@@ -6,6 +6,12 @@ import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import { DocumentationContent } from './_docs.elements';
 
+const normalize = value =>
+  value
+    .split(' ')
+    .join('-')
+    .toLowerCase();
+
 const Docs = ({
   location,
   pageContext: { prev, next },
@@ -18,6 +24,7 @@ const Docs = ({
   },
 }) => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const hash = location.hash ? location.hash.split('#')[1] : '';
 
   return (
     <Layout noWrapperStyling docs>
@@ -226,13 +233,14 @@ const Docs = ({
                           `}
                         >
                           <Link
-                            to={`/docs/${node.fields.slug}#${heading.value
-                              .split(' ')
-                              .join('-')
-                              .toLowerCase()}`}
+                            to={`/docs/${node.fields.slug}#${normalize(
+                              heading.value
+                            )}`}
                             css={`
                               text-decoration: none;
-                              color: #999;
+                              color: ${hash === normalize(heading.value)
+                                ? '#40A9F3'
+                                : '#999'};
                               font-weight: 400;
                             `}
                           >
@@ -363,8 +371,6 @@ const Docs = ({
             )}
           </Stack>
         </Element>
-
-        {/* <DocSearch /> */}
       </Stack>
     </Layout>
   );
