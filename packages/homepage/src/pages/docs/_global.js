@@ -23,6 +23,8 @@ export const Global = createGlobalStyle`
         max-width: calc(100vw - 32px);
       }
 
+
+
       @media screen and (max-width: 768px) {
         .algolia-docsearch-suggestion--content {
           display: none;

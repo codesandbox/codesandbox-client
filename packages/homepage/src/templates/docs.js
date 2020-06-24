@@ -36,11 +36,12 @@ const Docs = ({
           direction="vertical"
           paddingTop={8}
           css={`
-            border-right: 1px solid #343434;
+            border-right: 1px solid #242424;
             min-width: 320px;
 
-            @media screen and (max-width: 900px) {
+            @media screen and (max-width: 768px) {
               padding-top: 0;
+              border-right: 1px solid #242424;
             }
           `}
         >
@@ -50,7 +51,6 @@ const Docs = ({
             padding={4}
             css={`
               background: #151515;
-              box-shadow: 0px 1px 0px #242424;
               cursor: pointer;
 
               @media screen and (min-width: 900px) {
@@ -103,10 +103,10 @@ const Docs = ({
           <Element
             showMobileMenu={showMobileMenu}
             css={`
-              background: ${props =>
-                props.showMobileMenu ? '#151515 ' : 'transparant'};
+              background: transparant;
               width: 100%;
               position: sticky;
+
               top: 32px;
               transition: all 200ms ease;
 
@@ -114,13 +114,22 @@ const Docs = ({
                 height: ${props => (props.showMobileMenu ? '100%' : '0')};
                 overflow: hidden;
               }
+
+              @media screen and (max-width: 768px) {
+                background: #151515;
+              }
             `}
           >
             <header
               css={`
                 padding: 0 1.5rem 1rem 1.5rem;
                 margin: 2rem 0;
+                font-weight: 500;
                 color: #999;
+
+                @media screen and (max-width: 768px) {
+                  display: none;
+                }
               `}
             >
               <h4
@@ -147,7 +156,7 @@ const Docs = ({
                     key={node.fields.title}
                     css={`
                       text-decoration: none;
-                      margin: 0;
+                      margin: 0 0 0.5rem 0;
                       padding: 0;
                     `}
                     to={`docs${node.fields.slug}`}
@@ -156,6 +165,7 @@ const Docs = ({
                       css={`
                         padding: 0 1.5rem;
                         margin: 0;
+                        font-weight: 500;
 
                         :hover {
                           color: white;
@@ -179,26 +189,58 @@ const Docs = ({
                               node.fields.slug && 'white',
                           fontWeight:
                             location.pathname.split('/docs')[1] ===
-                              node.fields.slug && '400',
+                              node.fields.slug && '500',
                         }}
                       >
                         {node.fields.title}
                       </Text>
                     </ListItem>
                   </Link>
-                  {location.pathname.split('/docs')[1] === node.fields.slug &&
-                    node.headings.map(heading => (
-                      <li>
-                        <Link
-                          to={`/docs/${node.fields.slug}#${heading.value
-                            .split(' ')
-                            .join('-')
-                            .toLowerCase()}`}
+
+                  <ul
+                    css={`
+                      margin: 0;
+                      padding: 0;
+                    `}
+                  >
+                    {location.pathname.split('/docs')[1] === node.fields.slug &&
+                      node.headings.map(heading => (
+                        <li
+                          css={`
+                            padding: 0 2rem;
+                            margin: 0;
+                            line-height: 2rem;
+
+                            :hover {
+                              color: white;
+                              background: #242424;
+
+                              a {
+                                color: white;
+                              }
+                            }
+
+                            :last-child {
+                              margin-bottom: 1.5rem;
+                            }
+                          `}
                         >
-                          {heading.value}
-                        </Link>
-                      </li>
-                    ))}
+                          <Link
+                            to={`/docs/${node.fields.slug}#${heading.value
+                              .split(' ')
+                              .join('-')
+                              .toLowerCase()}`}
+                            css={`
+                              text-decoration: none;
+                              color: #999;
+                              font-weight: 400;
+                            `}
+                          >
+                            {heading.value}
+                          </Link>
+                        </li>
+                      ))}
+                  </ul>
                 </>
               ))}
             </ul>
