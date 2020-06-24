@@ -3,17 +3,16 @@ import { Text, Link } from '@codesandbox/components';
 import { Link as LinkBase } from 'react-router-dom';
 
 export const Breadcrumbs = ({ param, repos }) => {
+  const makeLink = (p: string, link = 'all') =>
+    param && param.split('/').length > 2
+      ? `/new-dashboard/${link}/${param
+          .split('/')
+          .slice(0, -1)
+          .map(a => a)}` +
+        '/' +
+        p
+      : `/new-dashboard/${link}/${p}`;
   if (!repos) {
-    const makeLink = p =>
-      param && param.split('/').length > 2
-        ? `/new-dashboard/all/${param
-            .split('/')
-            .slice(0, -1)
-            .map(a => a)}` +
-          '/' +
-          p
-        : `/new-dashboard/all/${p}`;
-
     return (
       <Text marginBottom={1} block weight="bold" size={5}>
         <Link
@@ -28,7 +27,7 @@ export const Breadcrumbs = ({ param, repos }) => {
               <Link
                 key={p}
                 as={LinkBase}
-                to={makeLink(p)}
+                to={makeLink(p, 'repositories')}
                 variant={i < param.split('/').length - 1 ? 'muted' : 'body'}
               >
                 {p} {i < param.split('/').length - 1 && '/ '}
@@ -38,15 +37,6 @@ export const Breadcrumbs = ({ param, repos }) => {
       </Text>
     );
   }
-  const makeLink = p =>
-    param && param.split('/').length > 2
-      ? `/new-dashboard/repositories/${param
-          .split('/')
-          .slice(0, -1)
-          .map(a => a)}` +
-        '/' +
-        p
-      : `/new-dashboard/repositories/${p}`;
 
   return (
     <Text marginBottom={1} block weight="bold" size={5}>

@@ -73,7 +73,7 @@ const ComponentForTypes: ComponentForTypes = {
   folder: props => <Folder {...props.item} />,
   repo: props => <Repo {...props.item} />,
   // @ts-ignore TODO: find a better way to type this
-  'new-folder': props => <Folder {...props} />,
+  'new-folder': props => <Folder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
   header: ({ item }) => (
     <Stack justify="space-between" align="center">

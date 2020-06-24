@@ -24,7 +24,7 @@ import {
   DashboardRepo,
 } from '../../types';
 
-type Selection = {
+export type Position = {
   x: null | number;
   y: null | number;
 };
@@ -399,9 +399,9 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     const folderPaths = selectedIds.filter(isFolderPath).filter(notDrafts);
 
     if (sandboxIds.length) {
-      if (dropResult.path === 'deleted') {
+      if (dropResult.path === '/deleted') {
         actions.dashboard.deleteSandbox(sandboxIds);
-      } else if (dropResult.path === 'templates') {
+      } else if (dropResult.path === '/templates') {
         actions.dashboard.makeTemplate(sandboxIds);
       } else if (dropResult.path === '/drafts') {
         actions.dashboard.addSandboxesToFolder({
@@ -446,8 +446,8 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
 
   const [drawingRect, setDrawingRect] = React.useState(false);
   const [selectionRect, setSelectionRect] = React.useState<{
-    start: Selection;
-    end: Selection;
+    start: Position;
+    end: Position;
   }>({
     start: { x: null, y: null },
     end: { x: null, y: null },

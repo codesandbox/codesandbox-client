@@ -6,10 +6,15 @@ import {
   DashboardSandbox,
   DashboardFolder,
   DashboardTemplate,
+  DashboardSkeletonRow,
 } from 'app/pages/NewDashboard/types';
 
 type Params = {
   path?: string;
+};
+
+const skeletonRow = {
+  type: 'skeleton-row' as 'skeleton-row',
 };
 
 export const useFilteredItems = (params: Params, level: number) => {
@@ -27,7 +32,12 @@ export const useFilteredItems = (params: Params, level: number) => {
     },
   } = useOvermind();
   const [items, setItems] = useState<
-    Array<DashboardSandbox | DashboardTemplate | DashboardFolder>
+    Array<
+      | DashboardSandbox
+      | DashboardTemplate
+      | DashboardFolder
+      | DashboardSkeletonRow
+    >
   >([]);
 
   const folderSandboxes = (sandboxes.ALL || {})[cleanParam];
@@ -44,16 +54,20 @@ export const useFilteredItems = (params: Params, level: number) => {
       a => (a.path === '/drafts' ? -1 : 1) // pull drafts to the top
     );
 
-    setItems([
-      ...sortedFolders.map(folder => ({
-        type: 'folder' as 'folder',
-        ...folder,
-      })),
-      ...sandboxesForPath.map(sandbox => ({
-        type: 'sandbox' as 'sandbox',
-        sandbox,
-      })),
-    ]);
+    const decoratedFolders = sortedFolders.map(folder => ({
+      type: 'folder' as 'folder',
+      ...folder,
+    }));
+
+    const decoratedSandboxes =
+      typeof folderSandboxes === 'undefined'
+        ? [skeletonRow]
+        : sandboxesForPath.map(sandbox => ({
+            type: 'sandbox' as 'sandbox',
+            sandbox,
+          }));
+
+    setItems([...decoratedFolders, ...decoratedSandboxes]);
   }, [
     allCollections,
     cleanParam,

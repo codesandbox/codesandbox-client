@@ -5,6 +5,12 @@ import {
 } from 'app/graphql/types';
 import { DELETE_ME_COLLECTION } from 'app/overmind/namespaces/dashboard/state';
 
+export type DashboardBaseFolder = {
+  name: string;
+  path: string;
+  parent: string | null;
+};
+
 export type DashboardSandbox = {
   type: 'sandbox';
   sandbox: SandboxFragmentDashboardFragment;
@@ -18,13 +24,12 @@ export type DashboardTemplate = {
   isHomeTemplate?: boolean;
 };
 
-export type DashboardFolder = DELETE_ME_COLLECTION & {
-  type: 'folder';
-  parent: string | null;
-  name: string;
-  sandboxes?: number;
-  setCreating?: (value: boolean) => void;
-};
+export type DashboardFolder = DELETE_ME_COLLECTION &
+  DashboardBaseFolder & {
+    type: 'folder';
+    sandboxes?: number;
+    setCreating?: (value: boolean) => void;
+  };
 
 export type DashboardRepo = {
   branch: string;

@@ -30,7 +30,7 @@ export const Header = ({ onSidebarToggle }) => {
   const searchQuery = new URLSearchParams(window.location.search).get('query');
 
   const search = query => history.push(`/new-dashboard/search?query=${query}`);
-  const [debouncedSearch] = useDebouncedCallback(search, 250);
+  const [debouncedSearch] = useDebouncedCallback(search, 100);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
