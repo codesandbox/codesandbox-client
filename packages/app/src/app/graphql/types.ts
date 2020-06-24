@@ -605,6 +605,7 @@ export type Team = {
 };
 
 export type TeamSandboxesArgs = {
+  authorId: Maybe<Scalars['ID']>;
   limit: Maybe<Scalars['Int']>;
   orderBy: Maybe<OrderBy>;
   showDeleted: Maybe<Scalars['Boolean']>;
@@ -1546,27 +1547,27 @@ export type ListUserTemplatesQueryVariables = Exact<{
 
 export type ListUserTemplatesQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      templates: Array<
-        { __typename?: 'Template' } & TemplateFragmentDashboardFragment
-      >;
-      recentlyUsedTemplates: Array<
-        { __typename?: 'Template' } & TemplateFragmentDashboardFragment
-      >;
-      bookmarkedTemplates: Array<
-        { __typename?: 'Template' } & TemplateFragmentDashboardFragment
-      >;
-      teams: Array<
-        { __typename?: 'Team' } & Pick<Team, 'id' | 'name'> & {
-            bookmarkedTemplates: Array<
-              { __typename?: 'Template' } & TemplateFragmentDashboardFragment
-            >;
-            templates: Array<
-              { __typename?: 'Template' } & TemplateFragmentDashboardFragment
-            >;
-          }
-      >;
-    }
+    { __typename?: 'CurrentUser' } & Pick<CurrentUser, 'id'> & {
+        templates: Array<
+          { __typename?: 'Template' } & TemplateFragmentDashboardFragment
+        >;
+        recentlyUsedTemplates: Array<
+          { __typename?: 'Template' } & TemplateFragmentDashboardFragment
+        >;
+        bookmarkedTemplates: Array<
+          { __typename?: 'Template' } & TemplateFragmentDashboardFragment
+        >;
+        teams: Array<
+          { __typename?: 'Team' } & Pick<Team, 'id' | 'name'> & {
+              bookmarkedTemplates: Array<
+                { __typename?: 'Template' } & TemplateFragmentDashboardFragment
+              >;
+              templates: Array<
+                { __typename?: 'Template' } & TemplateFragmentDashboardFragment
+              >;
+            }
+        >;
+      }
   >;
 };
 
@@ -1581,6 +1582,28 @@ export type LatestSandboxesQuery = { __typename?: 'RootQueryType' } & {
     { __typename?: 'CurrentUser' } & {
       sandboxes: Array<
         { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
+      >;
+    }
+  >;
+};
+
+export type LatestTeamSandboxesQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  orderField: Scalars['String'];
+  orderDirection: Direction;
+  teamId: Scalars['ID'];
+  authorId: Scalars['ID'];
+}>;
+
+export type LatestTeamSandboxesQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      team: Maybe<
+        { __typename?: 'Team' } & {
+          sandboxes: Array<
+            { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
+          >;
+        }
       >;
     }
   >;

@@ -16,13 +16,14 @@ export const Recent = () => {
   const {
     actions,
     state: {
+      activeTeam,
       dashboard: { sandboxes, recentSandboxesByTime, getFilteredSandboxes },
     },
   } = useOvermind();
 
   React.useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.RECENT);
-  }, [actions.dashboard]);
+  }, [actions.dashboard, activeTeam]);
 
   const getSection = (
     title: string,

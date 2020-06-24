@@ -12,13 +12,14 @@ export const Drafts = () => {
   const {
     actions,
     state: {
+      activeTeam,
       dashboard: { sandboxes, getFilteredSandboxes },
     },
   } = useOvermind();
 
   React.useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.DRAFTS);
-  }, [actions.dashboard]);
+  }, [actions.dashboard, activeTeam]);
 
   const items: DashboardGridItem[] = sandboxes.DRAFTS
     ? getFilteredSandboxes(sandboxes.DRAFTS).map(sandbox => ({

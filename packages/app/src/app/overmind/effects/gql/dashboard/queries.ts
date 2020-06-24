@@ -13,6 +13,8 @@ import {
   ListUserTemplatesQueryVariables,
   LatestSandboxesQuery,
   LatestSandboxesQueryVariables,
+  LatestTeamSandboxesQuery,
+  LatestTeamSandboxesQueryVariables,
   AllCollectionsQuery,
   AllCollectionsQueryVariables,
   _SearchPersonalSandboxesQuery,
@@ -186,6 +188,7 @@ export const listPersonalTemplates: Query<
 > = gql`
   query ListUserTemplates($teamId: ID) {
     me {
+      id
       templates {
         ...templateFragmentDashboard
       }
@@ -229,6 +232,32 @@ export const recentSandboxes: Query<
         orderBy: { field: $orderField, direction: $orderDirection }
       ) {
         ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const recentTeamSandboxes: Query<
+  LatestTeamSandboxesQuery,
+  LatestTeamSandboxesQueryVariables
+> = gql`
+  query LatestTeamSandboxes(
+    $limit: Int!
+    $orderField: String!
+    $orderDirection: Direction!
+    $teamId: ID!
+    $authorId: ID!
+  ) {
+    me {
+      team(id: $teamId) {
+        sandboxes(
+          limit: $limit
+          authorId: $authorId
+          orderBy: { field: $orderField, direction: $orderDirection }
+        ) {
+          ...sandboxFragmentDashboard
+        }
       }
     }
   }

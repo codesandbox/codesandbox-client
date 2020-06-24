@@ -13,13 +13,14 @@ export const Deleted = () => {
   const {
     actions,
     state: {
+      activeTeam,
       dashboard: { deletedSandboxesByTime, getFilteredSandboxes, sandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.DELETED);
-  }, [actions.dashboard]);
+  }, [actions.dashboard, activeTeam]);
 
   const getSection = (
     title: string,

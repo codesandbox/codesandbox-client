@@ -20,7 +20,7 @@ export const Templates = () => {
 
   useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.TEMPLATES);
-  }, [actions.dashboard]);
+  }, [actions.dashboard, activeTeam]);
 
   const possibleTemplates = sandboxes.TEMPLATES
     ? getPossibleTemplates(sandboxes.TEMPLATES)

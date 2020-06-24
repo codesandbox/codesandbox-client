@@ -464,16 +464,36 @@ export const getStartPageSandboxes: AsyncAction = async ({
       3
     );
 
-    const recentSandboxes = await effects.gql.queries.recentSandboxes({
-      limit: 7,
-      orderField: dashboard.orderBy.field,
-      orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
-    });
+    let sandboxes;
 
-    if (!recentSandboxes || !recentSandboxes.me) {
-      return;
+    if (state.activeTeam) {
+      const result = await effects.gql.queries.recentTeamSandboxes({
+        limit: 7,
+        orderField: dashboard.orderBy.field,
+        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
+        teamId: state.activeTeam,
+        authorId: usedTemplates.me.id,
+      });
+
+      if (result?.me?.team?.sandboxes == null) {
+        return;
+      }
+
+      sandboxes = result.me.team.sandboxes;
+    } else {
+      const result = await effects.gql.queries.recentSandboxes({
+        limit: 7,
+        orderField: dashboard.orderBy.field,
+        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
+      });
+      if (!result || !result.me) {
+        return;
+      }
+
+      sandboxes = result.me.sandboxes;
     }
-    dashboard.sandboxes.RECENT_HOME = recentSandboxes.me.sandboxes;
+
+    dashboard.sandboxes.RECENT_HOME = sandboxes;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'

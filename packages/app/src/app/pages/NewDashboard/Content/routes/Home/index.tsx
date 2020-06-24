@@ -14,13 +14,14 @@ export const Home = () => {
   const {
     actions,
     state: {
+      activeTeam,
       dashboard: { viewMode, sandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.HOME);
-  }, [actions.dashboard]);
+  }, [actions.dashboard, activeTeam]);
 
   const templates: DashboardGridItem[] = (sandboxes.TEMPLATE_HOME || []).map(
     template => {
