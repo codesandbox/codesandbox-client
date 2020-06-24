@@ -1,4 +1,8 @@
-import { CommentsFilterOption, Module } from '@codesandbox/common/lib/types';
+import {
+  CommentsFilterOption,
+  Module,
+  UserQuery,
+} from '@codesandbox/common/lib/types';
 import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import {
@@ -12,13 +16,14 @@ import {
   CommentFragment,
   CommentRemovedSubscription,
 } from 'app/graphql/types';
-import { Action, AsyncAction } from 'app/overmind';
+import { Action, AsyncAction, Operator } from 'app/overmind';
 import {
   indexToLineAndColumn,
   lineAndColumnToIndex,
 } from 'app/overmind/utils/common';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Selection, TextOperation } from 'ot';
+import { debounce, filter, map, mutate, pipe } from 'overmind';
 import * as uuid from 'uuid';
 
 import { OPTIMISTIC_COMMENT_ID } from './state';
@@ -32,8 +37,9 @@ export const selectCommentsFilter: Action<CommentsFilterOption> = (
 
 export const updateComment: AsyncAction<{
   commentId: string;
+  mentions: { [username: string]: UserQuery };
   content: string;
-}> = async ({ actions, effects, state }, { commentId, content }) => {
+}> = async ({ actions, effects, state }, { commentId, content, mentions }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -41,6 +47,7 @@ export const updateComment: AsyncAction<{
   if (commentId === OPTIMISTIC_COMMENT_ID) {
     await actions.comments.addComment({
       content,
+      mentions,
       isOptimistic: true,
     });
     return;
@@ -65,6 +72,15 @@ export const updateComment: AsyncAction<{
     );
   }
 };
+
+export const queryUsers: Operator<string | null> = pipe(
+  debounce(200),
+  filter((_, query) => query && query.length >= 3),
+  map(({ effects }, query) => effects.api.queryUsers(query)),
+  mutate(({ state }, result) => {
+    state.comments.usersQueryResult = result;
+  })
+);
 
 export const getCommentReplies: AsyncAction<string> = async (
   { state, effects },
@@ -328,9 +344,13 @@ export const createComment: AsyncAction<{
 
 export const addComment: AsyncAction<{
   content: string;
+  mentions: { [username: string]: UserQuery };
   parentCommentId?: string;
   isOptimistic?: boolean;
-}> = async ({ state, effects }, { content, parentCommentId, isOptimistic }) => {
+}> = async (
+  { state, effects },
+  { content, mentions, parentCommentId, isOptimistic }
+) => {
   if (!state.user || !state.editor.currentSandbox) {
     return;
   }

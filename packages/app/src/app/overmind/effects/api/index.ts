@@ -17,6 +17,7 @@ import {
   Sandbox,
   SandboxPick,
   UploadedFilesInfo,
+  UserQuery,
   UserSandbox,
 } from '@codesandbox/common/lib/types';
 import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
@@ -494,5 +495,8 @@ export default {
     return api.post(`/users/experiments`, {
       experiments,
     });
+  },
+  queryUsers(query: string): Promise<UserQuery[]> {
+    return api.get(`/users/search?username=${query}`);
   },
 };

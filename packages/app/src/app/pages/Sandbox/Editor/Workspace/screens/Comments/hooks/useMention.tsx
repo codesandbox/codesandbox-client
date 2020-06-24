@@ -1,196 +1,150 @@
 import React from 'react';
 import getCaretCoordinates from 'textarea-caret';
 
-export const useMention = ({ ref, value, setValue }) => {
-  const [mention, setMention] = React.useState(null);
-  const [loadingUsers, setLoadingUsers] = React.useState(false);
-  const [users, setUsers] = React.useState([]);
-  const [menuIndex, setMenuIndex] = React.useState(0);
-  const [userResources, updateUserResources] = React.useState({});
+function getMentionAtIndex(value, index) {
+  const words = value.split(' ');
+  // Based on current caret position, figure out if we have entered
+  // a mention
+  const { mention } = words.reduce(
+    (aggr, word) => {
+      if (aggr.mention) {
+        return aggr;
+      }
+
+      const currentIndex = aggr.index;
+      if (
+        word.startsWith('@') &&
+        index >= currentIndex &&
+        index <= currentIndex + word.length
+      ) {
+        return {
+          mention: {
+            value: word,
+            startIndex: currentIndex,
+            endIndex: currentIndex + word.length - 1,
+          },
+        };
+      }
+
+      return {
+        index: currentIndex + word.length + 1, // 1 is for the spacing
+      };
+    },
+    {
+      index: 0,
+      mention: null,
+    }
+  );
+
+  return mention;
+}
+
+export const useMention = (
+  { current },
+  initialValue = ''
+): [
+  string,
+  (value: string) => void,
+  {
+    query: null | string;
+    top: number;
+    left: number;
+    add: (mentionName: string, meta: any) => void;
+  },
+  {
+    [mentionName: string]: any;
+  }
+] => {
+  const [value, setValue] = React.useState(initialValue);
+  const [, forceRerender] = React.useState(0);
+  const [mentions, setMentions] = React.useState<{
+    [mentionName: string]: any;
+  }>({});
+
+  React.useEffect(() => {
+    if (current) {
+      const onKeyUp = () => {
+        forceRerender(i => i + 1);
+      };
+      current.addEventListener('keyup', onKeyUp);
+
+      return () => {
+        current.removeEventListener('keyup', onKeyUp);
+      };
+    }
+    return () => {};
+  }, [current]);
+
+  if (!current) {
+    return [
+      value,
+      setValue,
+      {
+        query: null,
+        top: 0,
+        left: 0,
+        add: () => {
+          throw new Error('You are trying to add a mention without a query');
+        },
+      },
+      mentions,
+    ];
+  }
+
+  const mention = getMentionAtIndex(value, current.selectionStart);
+
   const query =
     mention &&
-    ref.current.value.substr(
+    current.value.substr(
       mention.startIndex + 1,
       mention.endIndex - mention.startIndex
     );
 
-  React.useEffect(() => {
-    console.log('AN EFFECT', query);
-    let timeoutId;
-    if (query && query.length > 2) {
-      setLoadingUsers(true);
-      // Small debounce
-      timeoutId = window.setTimeout(() => {
-        fetch(`/api/v1/users/search?username=${query}`)
-          .then(x => x.json())
-          .then(x => {
-            console.log(x);
-            setLoadingUsers(false);
-            setUsers(x);
-          })
-          .catch(e => {
-            console.log(e);
-            setLoadingUsers(false);
-          });
-      }, 300);
-    }
-
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [query, mention]);
-
-  const onKeyDown = event => {
-    // If we have a mention and using the arrow keys or hitting enter
-    if (
-      mention &&
-      (event.keyCode === 38 || event.keyCode === 40 || event.keyCode === 13)
-    ) {
-      event.preventDefault();
-
-      // Hitting enter adds the mention
-      if (event.keyCode === 13) {
-        updateUserResources({
-          ...userResources,
-          ['@' + users[menuIndex]]: '/whatever',
-        });
-        setValue(
-          value.substr(0, mention.startIndex) +
-            '@' +
-            users[menuIndex].username +
-            value.substr(mention.endIndex + 1)
-        );
-        setMenuIndex(0);
-      } else {
-        // Change selection in the mentions list
-        const add = event.keyCode === 38 ? -1 : 1;
-        const change = menuIndex + add;
-
-        if (change < 0) {
-          setMenuIndex(0);
-        } else if (change > users.length - 1) {
-          setMenuIndex(users.length - 1);
-        } else {
-          setMenuIndex(change);
-        }
-      }
-    }
-    // When hitting "@" at the very start or after a space, open
-    // the users list
-    if (
-      event.key === '@' &&
-      (!event.target.value[event.target.selectionStart - 1] ||
-        event.target.value[event.target.selectionStart - 1] === ' ')
-    ) {
-      openUsersList();
-    } else if (mention) {
-      // If we have a mention and hit space we want to hide it
-      if (event.keyCode === 32) {
-        setMention(null);
-      } else {
-        // Or we want to update the mention range
-        const newLength = event.target.value.length;
-        const endIndex = mention.endIndex + (newLength - mention.length);
-        setMention({
-          ...mention,
-          endIndex,
-          length: newLength,
-        });
-      }
-    }
-  };
-
-  const onKeyUp = React.useCallback(() => {
-    // When we clear out all text we want to close mention
-    if (!value.length) {
-      setMention(null);
-    }
-    // If we have moved the selection out of range of existing mention,
-    // close it
-    if (
-      mention &&
-      (ref.current.selectionStart < mention.startIndex ||
-        ref.current.selectionStart > mention.endIndex + 1)
-    ) {
-      setMention(null);
-    } else {
-      const words = value.split(' ');
-      // Based on current caret position, figure out if we have entered
-      // a mention
-      const { mention: mentionNew } = words.reduce(
-        (aggr, word) => {
-          if (aggr.mention) {
-            return aggr;
-          }
-
-          const currentIndex = aggr.index;
-          if (
-            word.startsWith('@') &&
-            !userResources[word] &&
-            ref.current.selectionStart >= currentIndex &&
-            ref.current.selectionStart <= currentIndex + word.length
-          ) {
-            const caret = getCaretCoordinates(ref.current, currentIndex + 1);
-            return {
-              mention: {
-                startIndex: currentIndex,
-                endIndex: currentIndex + word.length - 1,
-                length: ref.current.value.length,
-                top: caret.top,
-                left: caret.left,
-              },
-            };
-          }
-
-          return {
-            index: currentIndex + word.length + 1, // 1 is for the spacing
-          };
+  if (
+    !mention ||
+    (query.length >= 3 && !/^[a-z0-9_]+[a-z0-9_.]+[a-z0-9_]+$/i.test(query))
+  ) {
+    return [
+      value,
+      // TODO: Check on changes if mentions are still there
+      setValue,
+      {
+        query: null,
+        top: 0,
+        left: 0,
+        add: () => {
+          throw new Error('You are trying to add a mention without a query');
         },
-        {
-          index: 0,
-          mention: null,
-        }
-      );
-      if (mentionNew) {
-        setMention(mentionNew);
-      }
-    }
-  }, [value, mention, ref, userResources]);
-
-  // Replaces the comment content with links to mentions
-  const output = Object.keys(userResources).reduce(
-    (aggr, userMention) =>
-      aggr.replace(
-        userMention,
-        `[${userMention}](user://${userResources[userMention]})`
-      ),
-    value
-  );
-
-  value
-    .split(' ')
-    .map(word => {
-      if (userResources[word]) {
-        return `[${word}](user://${userResources[word]})`;
-      }
-
-      return word;
-    })
-    .join(' ');
-
-  // Opens the mentions list by looking at the current selection
-  function openUsersList() {
-    const caret = getCaretCoordinates(ref.current, ref.current.selectionEnd);
-    setMention({
-      startIndex: ref.current.selectionStart,
-      endIndex: ref.current.selectionStart,
-      length: ref.current.value.length,
-      top: caret.top,
-      left: caret.left,
-    });
+      },
+      mentions,
+    ];
   }
 
-  return [users, onKeyDown, onKeyUp, loadingUsers, mention, query];
+  const caret = getCaretCoordinates(current, mention.startIndex);
+
+  return [
+    value,
+    setValue,
+    {
+      query,
+      top: caret.top,
+      left: caret.left,
+      add: (mentionName, meta) => {
+        setMentions(currentMentions => ({
+          ...currentMentions,
+          [mentionName]: meta,
+        }));
+        setValue(
+          value.substr(0, mention.startIndex + 1) +
+            mentionName +
+            value.substr(mention.endIndex + 1)
+        );
+        const selectionEnd = mention.startIndex + mentionName.length + 1;
+        setTimeout(() => {
+          current.selectionEnd = selectionEnd;
+        });
+      },
+    },
+    mentions,
+  ];
 };

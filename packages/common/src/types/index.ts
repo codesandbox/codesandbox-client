@@ -284,6 +284,12 @@ export type GitPr = {
   prURL: string;
 };
 
+export type UserQuery = {
+  id: string;
+  avatarUrl: string;
+  username: string;
+};
+
 export type PopularSandboxes = {
   startDate: string;
   sandboxes: MiniSandbox[];

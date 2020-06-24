@@ -1,4 +1,4 @@
-import { CommentsFilterOption } from '@codesandbox/common/lib/types';
+import { CommentsFilterOption, UserQuery } from '@codesandbox/common/lib/types';
 import { CommentFragment, CommentWithRepliesFragment } from 'app/graphql/types';
 import { RootState } from 'app/overmind';
 import isToday from 'date-fns/isToday';
@@ -28,6 +28,7 @@ type State = {
   } | null;
   currentComment: CommentWithRepliesFragment | null;
   fileComments: FileComments;
+  usersQueryResult: UserQuery[];
   currentCommentsByDate: {
     today: CommentFragment[];
     prev: CommentFragment[];
@@ -42,6 +43,7 @@ type State = {
 export const state: State = {
   multiCommentsSelector: null,
   currentCommentPositions: null,
+  usersQueryResult: [],
   comments: {},
   currentCommentId: null,
   fileComments: derived(
