@@ -141,7 +141,7 @@ const Docs = ({
               >
                 Documentation
               </h4>
-              <span>Descriptive reference</span>
+              <span>Learn how to use CodeSandbox</span>
             </header>
 
             <ul

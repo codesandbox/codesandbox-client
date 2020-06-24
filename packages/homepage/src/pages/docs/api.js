@@ -137,7 +137,7 @@ const FAQS = ({ data, location }) => {
               >
                 API reference
               </h4>
-              <span>Descriptive reference</span>
+              <span>Create sandboxes with code</span>
             </header>
 
             {links.map(({ to, text }) => (
