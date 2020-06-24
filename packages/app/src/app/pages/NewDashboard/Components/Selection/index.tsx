@@ -372,15 +372,13 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     setSelectedIds([...selectedIds, nextItem]);
   };
 
-  const onDragStart = (
-    event: React.MouseEvent<HTMLDivElement>,
-    itemId: string
-  ) => {
-    // if the dragged sandbox isn't selected. select it alone
-    if (!selectedIds.includes(itemId)) {
-      setSelectedIds([itemId]);
-    }
-  };
+  const onDragStart = React.useCallback(
+    (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
+      // if the dragged sandbox isn't selected. select it alone
+      setSelectedIds(s => (s.includes(itemId) ? s : [itemId]));
+    },
+    [setSelectedIds]
+  );
 
   const onDrop = dropResult => {
     if (dropResult.isSamePath) return;
