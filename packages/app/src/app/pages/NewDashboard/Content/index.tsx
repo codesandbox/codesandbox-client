@@ -22,10 +22,7 @@ export const Content = withRouter(({ history }) => {
   useEffect(() => {
     const removeListener = history.listen(() => {
       actions.dashboard.blacklistedTemplatesCleared();
-      actions.dashboard.orderByChanged({
-        order: 'desc',
-        field: 'updatedAt',
-      });
+      actions.dashboard.orderByReset();
     });
 
     return () => {

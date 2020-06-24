@@ -15,7 +15,8 @@ import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
 
 import { Header } from './Header';
-import { Sidebar, SIDEBAR_WIDTH } from './Sidebar';
+import { Sidebar } from './Sidebar';
+import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
 
 const GlobalStyles = createGlobalStyle({

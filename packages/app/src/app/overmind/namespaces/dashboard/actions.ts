@@ -50,6 +50,18 @@ export const dragChanged: Action<{ isDragging: boolean }> = (
   state.dashboard.isDragging = isDragging;
 };
 
+export const orderByReset: Action = ({ state }, orderBy) => {
+  if (
+    state.dashboard.orderBy.field !== 'updatedAt' ||
+    state.dashboard.orderBy.order !== 'desc'
+  ) {
+    state.dashboard.orderBy = {
+      order: 'desc',
+      field: 'updatedAt',
+    };
+  }
+};
+
 export const orderByChanged: Action<OrderBy> = ({ state }, orderBy) => {
   state.dashboard.orderBy = orderBy;
 };
@@ -73,7 +85,9 @@ export const blacklistedTemplateRemoved: Action<string> = (
 };
 
 export const blacklistedTemplatesCleared: Action = ({ state }) => {
-  state.dashboard.filters.blacklistedTemplates = [];
+  if (state.dashboard.filters.blacklistedTemplates.length) {
+    state.dashboard.filters.blacklistedTemplates = [];
+  }
 };
 
 export const blacklistedTemplatesChanged: Action<string[]> = (

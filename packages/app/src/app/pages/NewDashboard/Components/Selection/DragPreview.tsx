@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Stack, Text } from '@codesandbox/components';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import css from '@styled-system/css';
-import { SIDEBAR_WIDTH } from '../../Sidebar';
+import { SIDEBAR_WIDTH } from '../../Sidebar/constants';
 import { getTemplateIcon } from '../Sandbox/TemplateIcon';
 import {
   DashboardSandbox,
