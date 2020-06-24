@@ -476,8 +476,10 @@ const MultiMenu = ({ selectedItems }: IMultiMenuProps) => {
 const getFolderUrl = (item: DashboardSandbox | DashboardTemplate) => {
   if (item.type === 'template') return '/new-dashboard/templates';
 
-  const path = item.sandbox.collection.path;
-  if (path === '/' || !path) return '/new-dashboard/all/drafts';
+  const path = item.sandbox.collection?.path;
+  if (path == null || (!item.sandbox.teamId && path === '/')) {
+    return '/new-dashboard/all/drafts';
+  }
 
   return '/new-dashboard/all' + path;
 };

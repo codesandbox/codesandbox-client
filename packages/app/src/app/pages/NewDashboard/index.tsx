@@ -29,7 +29,10 @@ export const Dashboard: FunctionComponent = () => {
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
-  const onSidebarToggle = () => setSidebarVisibility(!sidebarVisible);
+  const onSidebarToggle = React.useCallback(
+    () => setSidebarVisibility(s => !s),
+    [setSidebarVisibility]
+  );
   const theme = useTheme() as any;
 
   if (!hasLogIn) {

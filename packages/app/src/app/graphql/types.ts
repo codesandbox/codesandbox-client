@@ -207,8 +207,8 @@ export type RootMutationType = {
   leaveTeam: Scalars['String'];
   resolveComment: Comment;
   setSandboxesPrivacy: Array<Sandbox>;
-  /** Set the name of the team */
-  setTeamName: Team;
+  /** Clear notification unread count */
+  clearNotificationCount: User;
   /** Revoke an invitation to a team */
   revokeTeamInvitation: Team;
   /** Create a collection */
@@ -245,8 +245,8 @@ export type RootMutationType = {
   makeSandboxesTemplates: Array<Template>;
   /** bookmark a template */
   bookmarkTemplate: Maybe<Template>;
-  /** Clear notification unread count */
-  clearNotificationCount: User;
+  /** Set the description of the team */
+  setTeamDescription: Team;
   /** Redeem an invite token from a team */
   redeemTeamInviteToken: Team;
   createComment: Comment;
@@ -267,8 +267,8 @@ export type RootMutationType = {
   createTeam: Team;
   /** Soft delete a comment. Note: all child comments will also be deleted. */
   deleteComment: Comment;
-  /** Set the description of the team */
-  setTeamDescription: Team;
+  /** Set the name of the team */
+  setTeamName: Team;
 };
 
 export type RootMutationTypeRejectTeamInvitationArgs = {
@@ -301,11 +301,6 @@ export type RootMutationTypeResolveCommentArgs = {
 export type RootMutationTypeSetSandboxesPrivacyArgs = {
   privacy: Maybe<Scalars['Int']>;
   sandboxIds: Array<Scalars['ID']>;
-};
-
-export type RootMutationTypeSetTeamNameArgs = {
-  name: Scalars['String'];
-  teamId: Scalars['ID'];
 };
 
 export type RootMutationTypeRevokeTeamInvitationArgs = {
@@ -400,6 +395,11 @@ export type RootMutationTypeBookmarkTemplateArgs = {
   templateId: Scalars['ID'];
 };
 
+export type RootMutationTypeSetTeamDescriptionArgs = {
+  description: Scalars['String'];
+  teamId: Scalars['ID'];
+};
+
 export type RootMutationTypeRedeemTeamInviteTokenArgs = {
   inviteToken: Scalars['String'];
 };
@@ -462,8 +462,8 @@ export type RootMutationTypeDeleteCommentArgs = {
   sandboxId: Scalars['ID'];
 };
 
-export type RootMutationTypeSetTeamDescriptionArgs = {
-  description: Scalars['String'];
+export type RootMutationTypeSetTeamNameArgs = {
+  name: Scalars['String'];
   teamId: Scalars['ID'];
 };
 
@@ -1722,15 +1722,14 @@ export type SandboxFragment = { __typename?: 'Sandbox' } & Pick<
   | 'privacy'
   | 'screenshotUrl'
   | 'screenshotOutdated'
+  | 'teamId'
 > & {
     source: { __typename?: 'Source' } & Pick<Source, 'template'>;
     customTemplate: Maybe<{ __typename?: 'Template' } & Pick<Template, 'id'>>;
     forkedTemplate: Maybe<
       { __typename?: 'Template' } & Pick<Template, 'id' | 'color'>
     >;
-    collection: Maybe<
-      { __typename?: 'Collection' } & Pick<Collection, 'path' | 'teamId'>
-    >;
+    collection: Maybe<{ __typename?: 'Collection' } & Pick<Collection, 'path'>>;
   };
 
 export type TeamFragment = { __typename?: 'Team' } & Pick<

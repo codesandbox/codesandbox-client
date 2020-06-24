@@ -47,9 +47,10 @@ export const SANDBOX_FRAGMENT = gql`
       color
     }
 
+    teamId
+
     collection {
       path
-      teamId
     }
   }
 `;
