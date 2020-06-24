@@ -60,6 +60,13 @@ export type DashboardBlank = {
   type: 'blank';
 };
 
+/**
+ * Try to fill the row with blanks until it's filled
+ */
+export type DashboardBlankRowFill = {
+  type: 'blank-row-fill';
+};
+
 export type DashboardSkeleton = {
   type: 'skeleton';
 };
@@ -74,4 +81,5 @@ export type DashboardGridItem =
   | DashboardNewSandbox
   | DashboardSkeletonRow
   | DashboardBlank
+  | DashboardBlankRowFill
   | DashboardSkeleton;

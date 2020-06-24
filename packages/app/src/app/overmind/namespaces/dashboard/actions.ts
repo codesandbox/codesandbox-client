@@ -451,7 +451,9 @@ export const getStartPageSandboxes: AsyncAction = async ({
 }) => {
   const { dashboard } = state;
   try {
-    const usedTemplates = await effects.gql.queries.listPersonalTemplates({});
+    const usedTemplates = await effects.gql.queries.listPersonalTemplates({
+      teamId: state.activeTeam,
+    });
 
     if (!usedTemplates || !usedTemplates.me) {
       return;

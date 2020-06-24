@@ -279,7 +279,12 @@ export const VariableGrid = ({ items }: VariableGridProps) => {
 
           items.forEach((item, index) => {
             if (
-              !['header', 'skeleton-row', 'new-sandbox'].includes(item.type)
+              ![
+                'header',
+                'skeleton-row',
+                'blank-row-fill',
+                'new-sandbox',
+              ].includes(item.type)
             ) {
               filledItems.push({ ...item, viewMode });
             }
@@ -313,6 +318,12 @@ export const VariableGrid = ({ items }: VariableGridProps) => {
             } else if (item.type === 'skeleton-row') {
               for (let i = 0; i < columnCount; i++) {
                 filledItems.push(skeletonItem);
+              }
+            } else if (item.type === 'blank-row-fill') {
+              const remainingColumns = filledItems.length % columnCount;
+
+              for (let i = 0; i < remainingColumns; i++) {
+                filledItems.push(blankItem);
               }
             }
           });

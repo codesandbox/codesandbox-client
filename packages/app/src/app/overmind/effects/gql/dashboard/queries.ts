@@ -184,13 +184,13 @@ export const listPersonalTemplates: Query<
   ListUserTemplatesQuery,
   ListUserTemplatesQueryVariables
 > = gql`
-  query ListUserTemplates {
+  query ListUserTemplates($teamId: ID) {
     me {
       templates {
         ...templateFragmentDashboard
       }
 
-      recentlyUsedTemplates {
+      recentlyUsedTemplates(teamId: $teamId) {
         ...templateFragmentDashboard
       }
 

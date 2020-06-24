@@ -128,6 +128,10 @@ export type CurrentUserNotificationsArgs = {
   type: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
+export type CurrentUserRecentlyUsedTemplatesArgs = {
+  teamId: Maybe<Scalars['ID']>;
+};
+
 export type CurrentUserSandboxesArgs = {
   limit: Maybe<Scalars['Int']>;
   orderBy: Maybe<OrderBy>;
@@ -1536,7 +1540,9 @@ export type _SearchTeamSandboxesQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
-export type ListUserTemplatesQueryVariables = Exact<{ [key: string]: never }>;
+export type ListUserTemplatesQueryVariables = Exact<{
+  teamId: Maybe<Scalars['ID']>;
+}>;
 
 export type ListUserTemplatesQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<

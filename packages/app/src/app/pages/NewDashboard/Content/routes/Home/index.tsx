@@ -22,18 +22,24 @@ export const Home = () => {
     actions.dashboard.getPage(sandboxesTypes.HOME);
   }, [actions.dashboard]);
 
-  const templates = (sandboxes.TEMPLATE_HOME || []).map(template => {
-    const { sandbox, ...templateValues } = template;
+  const templates: DashboardGridItem[] = (sandboxes.TEMPLATE_HOME || []).map(
+    template => {
+      const { sandbox, ...templateValues } = template;
 
-    const dashboardTemplate: DashboardTemplate = {
-      type: 'template' as 'template',
-      sandbox,
-      template: templateValues,
-      isHomeTemplate: true,
-    };
+      const dashboardTemplate: DashboardTemplate = {
+        type: 'template' as 'template',
+        sandbox,
+        template: templateValues,
+        isHomeTemplate: true,
+      };
 
-    return dashboardTemplate;
-  });
+      return dashboardTemplate;
+    }
+  );
+
+  if (templates.length < 3) {
+    templates.push({ type: 'blank-row-fill' });
+  }
 
   const items: DashboardGridItem[] = sandboxes.RECENT_HOME
     ? [
