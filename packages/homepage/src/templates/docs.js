@@ -219,11 +219,11 @@ const Docs = ({
                             line-height: 2rem;
 
                             :hover {
-                              color: white;
+                              color: #fff;
                               background: #242424;
 
                               a {
-                                color: white;
+                                color: #40a9f3;
                               }
                             }
 
