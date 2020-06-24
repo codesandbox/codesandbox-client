@@ -812,13 +812,18 @@ export const makeTemplate: AsyncAction<string[]> = async (
   ids
 ) => {
   const oldSandboxes = state.dashboard.sandboxes;
-  actions.dashboard.deleteSandboxFromState(ids);
+  if (!location.pathname.includes('/repositories')) {
+    actions.dashboard.deleteSandboxFromState(ids);
+  }
+
   try {
     await effects.gql.mutations.makeSandboxesTemplate({
       sandboxIds: ids,
     });
   } catch (error) {
-    state.dashboard.sandboxes = { ...oldSandboxes };
+    if (!location.pathname.includes('/repositories')) {
+      state.dashboard.sandboxes = { ...oldSandboxes };
+    }
     effects.notificationToast.error('There was a problem making your template');
   }
 };
