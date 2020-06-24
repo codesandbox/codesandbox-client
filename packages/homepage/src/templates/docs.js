@@ -48,7 +48,7 @@ const Docs = ({
           <Stack
             justify="space-between"
             align="center"
-            padding={4}
+            padding={6}
             css={`
               background: #151515;
               cursor: pointer;
@@ -61,7 +61,7 @@ const Docs = ({
           >
             <Text weight="bold">Documentation</Text>
 
-            <svg width={24} height={18} fill="none">
+            <svg width={24} height={16} fill="none">
               <g filter="url(#prefix__filter0_d)">
                 <path
                   d="M24 1.053L22.788 0l-9.091 7.895L5.212.526 4 1.58 13.697 10 24 1.053z"

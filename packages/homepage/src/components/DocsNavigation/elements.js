@@ -63,7 +63,7 @@ export const List = styled.ul`
     margin: 0;
 
     &:not(:last-child) {
-      margin-right: 1.5rem;
+      margin-right: 1rem;
     }
   }
 
