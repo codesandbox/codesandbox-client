@@ -44,14 +44,7 @@ export const useFilteredItems = (params: Params) => {
         })),
       ]);
     }
-  }, [
-    sandboxes.REPOS,
-    param,
-    params,
-    filters.blacklistedTemplates,
-    getFilteredSandboxes,
-    sandboxesOrder,
-  ]);
+  }, [sandboxes.REPOS, param, params, filters.blacklistedTemplates, getFilteredSandboxes, sandboxesOrder, sandboxesForPath, repos]);
 
   return items;
 };

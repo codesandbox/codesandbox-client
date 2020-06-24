@@ -5,9 +5,9 @@ import { useOvermind } from 'app/overmind';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { DashboardRepo } from 'app/pages/NewDashboard/types';
+import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
-import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
@@ -25,7 +25,7 @@ export const RepositoriesPage = () => {
   React.useEffect(() => {
     const p = notHome ? null : param;
     actions.dashboard.getReposByPath(p);
-  }, [param, actions.dashboard, activeTeam]);
+  }, [param, actions.dashboard, activeTeam, notHome]);
 
   const activeSandboxes =
     (sandboxes.REPOS && Object.values(sandboxes.REPOS)) || [];
