@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Text, Element, IconButton } from '@codesandbox/components';
+import { Stack, Text, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const RepoCard = ({

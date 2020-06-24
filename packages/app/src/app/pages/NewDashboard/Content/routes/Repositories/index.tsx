@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import {
-  DashboardRepo,
   DashboardGridItem,
   DashboardSandbox,
 } from 'app/pages/NewDashboard/types';
@@ -29,7 +28,7 @@ export const RepositoriesPage = () => {
   React.useEffect(() => {
     const p = home ? null : param;
     actions.dashboard.getReposByPath(p);
-  }, [param, actions.dashboard, activeTeam]);
+  }, [param, actions.dashboard, activeTeam, home]);
 
   const activeSandboxes =
     (sandboxes.REPOS && Object.values(sandboxes.REPOS)) || [];
