@@ -49,7 +49,12 @@ type State = {
       [path: string]: Sandbox[];
     } | null;
     REPOS: {
-      [path: string]: Repo[];
+      [path: string]: {
+        branch: string;
+        name: string;
+        owner: string;
+        sandboxes: Repo[];
+      }[];
     } | null;
   };
   teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
@@ -65,7 +70,7 @@ type State = {
   };
   isTemplateSelected: (templateName: string) => boolean;
   getFilteredSandboxes: (
-    sandboxes: Array<Sandbox | Template['sandbox']>
+    sandboxes: Array<Sandbox | Repo | Template['sandbox']>
   ) => Sandbox[];
   recentSandboxesByTime: {
     day: Sandbox[];

@@ -417,7 +417,6 @@ export const getReposByPath: AsyncAction | Action<string> = async (
 
         acc[curr.originalGit.repo] = {
           id: curr.originalGit.id,
-          level: 0,
           name: curr.originalGit.repo,
           branch: curr.originalGit.branch,
           owner: curr.originalGit.username,

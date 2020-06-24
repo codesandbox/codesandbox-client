@@ -78,6 +78,12 @@ export const RepoCard = ({
       <Text size={3} variant="muted" weight="medium">
         {props.owner}
       </Text>
+      <IconButton
+        name="more"
+        size={9}
+        title="Sandbox actions"
+        onClick={onContextMenu}
+      />
     </Stack>
   </Stack>
 );

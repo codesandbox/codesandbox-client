@@ -1,6 +1,7 @@
 import {
   SandboxFragmentDashboardFragment,
   TemplateFragmentDashboardFragment,
+  RepoFragmentDashboardFragment,
 } from 'app/graphql/types';
 import { DELETE_ME_COLLECTION } from 'app/overmind/namespaces/dashboard/state';
 
@@ -29,8 +30,7 @@ export type DashboardRepo = {
   branch: string;
   name: string;
   owner: string;
-  level: number;
-  sandboxes: any;
+  sandboxes: RepoFragmentDashboardFragment[];
   type: 'repo';
 };
 

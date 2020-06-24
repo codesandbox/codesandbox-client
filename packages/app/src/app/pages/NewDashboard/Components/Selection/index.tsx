@@ -75,12 +75,14 @@ const Context = React.createContext<SelectionContext>({
 interface SelectionProviderProps {
   items: Array<DashboardGridItem>;
   createNewFolder?: (() => void) | null;
+  noDrag?: boolean;
 }
 
 export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   items = [],
   createNewFolder = null,
   children,
+  noDrag,
 }) => {
   const possibleItems = (items || []).filter(
     item =>
@@ -550,6 +552,46 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const onContainerMouseUp = event => {
     if (drawingRect) resetSelectionRect();
   };
+
+  if (noDrag) {
+    return (
+      <Context.Provider
+        value={{
+          sandboxes,
+          selectedIds,
+          onClick,
+          onMouseDown,
+          onBlur,
+          onRightClick,
+          onMenuEvent,
+          onDragStart,
+          onDrop,
+          thumbnailRef,
+          isDragging,
+          isRenaming,
+          setRenaming,
+        }}
+      >
+        <Element
+          onContextMenu={onContainerContextMenu}
+          css={css({ paddingTop: 10 })}
+        >
+          {children}
+        </Element>
+        <ContextMenu
+          visible={menuVisible}
+          position={menuPosition}
+          setVisibility={setMenuVisibility}
+          selectedIds={selectedIds}
+          sandboxes={sandboxes || []}
+          folders={folders || []}
+          repos={repos || []}
+          setRenaming={setRenaming}
+          createNewFolder={createNewFolder}
+        />
+      </Context.Provider>
+    );
+  }
 
   return (
     <Context.Provider

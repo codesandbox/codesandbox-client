@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
-import { orderBy } from 'lodash-es';
-import {
-  DashboardSandbox,
-  DashboardRepo,
-  DashboardTemplate,
-} from 'app/pages/NewDashboard/types';
+import { DashboardSandbox, DashboardRepo } from 'app/pages/NewDashboard/types';
 
 type Params = {
   path?: string;
@@ -16,7 +11,6 @@ export const useFilteredItems = (params: Params) => {
   const {
     state: {
       dashboard: {
-        allCollections,
         getFilteredSandboxes,
         sandboxes,
         filters,
@@ -28,26 +22,35 @@ export const useFilteredItems = (params: Params) => {
     []
   );
 
-  const folderSandboxes = sandboxes.REPOS || [];
+  const sandboxesForPath =
+    sandboxes.REPOS && param
+      ? getFilteredSandboxes(sandboxes.REPOS[param].sandboxes || [])
+      : [];
+  const repos = (sandboxes.REPOS && Object.values(sandboxes.REPOS)) || [];
 
   useEffect(() => {
-    setItems([
-      ...folderSandboxes.map(folder => ({
-        type: 'repo' as 'repo',
-        ...folder,
-      })),
-      // ...sandboxesForPath.map(sandbox => ({
-      //   type: 'sandbox' as 'sandbox',
-      //   sandbox,
-      // })),
-    ]);
+    if (param) {
+      setItems([
+        ...sandboxesForPath.map(sandbox => ({
+          type: 'sandbox' as 'sandbox',
+          sandbox,
+        })),
+      ]);
+    } else {
+      setItems([
+        ...repos.map(repo => ({
+          type: 'repo' as 'repo',
+          ...repo,
+        })),
+      ]);
+    }
   }, [
-    allCollections,
+    sandboxes.REPOS,
     param,
+    params,
     filters.blacklistedTemplates,
     getFilteredSandboxes,
     sandboxesOrder,
-    folderSandboxes,
   ]);
 
   return items;
