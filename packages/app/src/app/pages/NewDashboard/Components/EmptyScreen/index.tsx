@@ -31,7 +31,7 @@ export const EmptyScreen = () => {
         </Stack>
 
         <Stack direction="vertical" align="center">
-          <Text variant="muted">You haven’t created any Sandboxes yet.</Text>
+          <Text variant="muted">You haven’t created any sandboxes yet.</Text>
           <Stack align="center" gap={1}>
             <Text variant="muted">Start with a</Text>
             <Button

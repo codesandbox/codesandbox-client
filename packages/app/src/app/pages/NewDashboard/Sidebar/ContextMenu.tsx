@@ -1,14 +1,25 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Stack, Menu, Icon, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { Position } from '../Components/Selection';
+import { DashboardBaseFolder } from '../types';
 
 const Context = React.createContext({
   setVisibility: null,
 });
 
-export const ContextMenu = ({
+interface ContextMenuProps {
+  visible: boolean;
+  setVisibility: (val: boolean) => void;
+  position: Position;
+  folder: DashboardBaseFolder;
+  setRenaming: (val: boolean) => void;
+  setNewFolderPath: (val: string) => void;
+}
+
+export const ContextMenu: React.FC<ContextMenuProps> = ({
   visible,
   position,
   setVisibility,
@@ -18,6 +29,7 @@ export const ContextMenu = ({
 }) => {
   const { actions } = useOvermind();
   const history = useHistory();
+  const location = useLocation();
 
   if (!visible || !folder) return null;
 
@@ -49,12 +61,17 @@ export const ContextMenu = ({
           onSelect={() => {
             actions.dashboard.deleteFolder({ path: folder.path });
 
-            // navigate out of folder when it's deleted
-            const parentFolder = folder.path
-              .split('/')
-              .slice(0, -1)
-              .join('/');
-            history.push('/new-dashboard/all' + parentFolder);
+            const isCurrentlyOpened =
+              '/new-dashboard/all' + folder.path === location.pathname;
+
+            if (isCurrentlyOpened) {
+              // navigate out of folder when it's deleted
+              const parentFolder = folder.path
+                .split('/')
+                .slice(0, -1)
+                .join('/');
+              history.push('/new-dashboard/all' + parentFolder);
+            }
 
             track('Dashboard - Delete folder', {
               source: 'Sidebar',
