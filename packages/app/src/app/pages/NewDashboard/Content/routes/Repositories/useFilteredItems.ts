@@ -25,6 +25,7 @@ export const useFilteredItems = (params: Params) => {
       ? getFilteredSandboxes(sandboxes.REPOS[param].sandboxes || [])
       : [];
   const repos = (sandboxes.REPOS && Object.values(sandboxes.REPOS)) || [];
+
   useEffect(() => {
     if (param) {
       setItems([
@@ -41,6 +42,7 @@ export const useFilteredItems = (params: Params) => {
         })),
       ]);
     }
+    // eslint-disable-next-line
   }, [
     sandboxes.REPOS,
     param,

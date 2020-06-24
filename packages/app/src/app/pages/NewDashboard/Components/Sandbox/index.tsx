@@ -24,12 +24,11 @@ const PrivacyIcons = {
 };
 
 interface GenericSandboxProps {
-  isRepo?: boolean;
   isScrolling: boolean;
   item: DashboardSandbox | DashboardTemplate;
 }
 
-const GenericSandbox = ({ isScrolling, item, isRepo }: GenericSandboxProps) => {
+const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   const {
     state: { dashboard },
     actions,
@@ -208,12 +207,11 @@ const GenericSandbox = ({ isScrolling, item, isRepo }: GenericSandboxProps) => {
         id: sandbox.id,
         title: newTitle,
         oldTitle: sandboxTitle,
-        isRepo,
       });
       setRenaming(false);
       track('Dashboard - Rename sandbox', { dashboardVersion: 2 });
     },
-    [actions.dashboard, sandbox.id, newTitle, sandboxTitle, isRepo, setRenaming]
+    [actions.dashboard, sandbox.id, newTitle, sandboxTitle, setRenaming]
   );
 
   const onInputBlur = React.useCallback(() => {

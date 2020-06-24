@@ -574,14 +574,33 @@ export const deleteSandbox: AsyncAction<string[]> = async (
   const { user } = state;
   if (!user) return;
   const oldSandboxes = state.dashboard.sandboxes;
-  actions.dashboard.deleteSandboxFromState(ids);
+  const oldRepos = state.dashboard.sandboxes.REPOS;
+  if (!location.pathname.includes('/repositories')) {
+    actions.dashboard.deleteSandboxFromState(ids);
+  } else {
+    const param = location.pathname.split('/new-dashboard/repositories/')[1];
+    state.dashboard.sandboxes.REPOS = {
+      ...state.dashboard.sandboxes.REPOS,
+      [param]: {
+        ...state.dashboard.sandboxes.REPOS[param],
+        sandboxes: state.dashboard.sandboxes.REPOS[param].sandboxes.filter(
+          s => s.id !== ids[0]
+        ),
+      },
+    };
+  }
 
   try {
     await effects.gql.mutations.deleteSandboxes({
       sandboxIds: ids,
     });
   } catch (error) {
-    state.dashboard.sandboxes = { ...oldSandboxes };
+    if (!location.pathname.includes('/repositories')) {
+      state.dashboard.sandboxes = { ...oldSandboxes };
+    } else {
+      state.dashboard.sandboxes.REPOS = { ...oldRepos };
+    }
+
     effects.notificationToast.error(
       'There was a problem deleting your Sandbox'
     );
@@ -691,9 +710,8 @@ export const renameSandbox: AsyncAction<{
   id: string;
   title: string;
   oldTitle: string;
-  isRepo?: boolean;
-}> = async ({ effects, actions, state }, { id, title, oldTitle, isRepo }) => {
-  if (isRepo) {
+}> = async ({ effects, actions, state }, { id, title, oldTitle }) => {
+  if (location.pathname.includes('/repositories')) {
     const param = location.pathname.split('/new-dashboard/repositories/')[1];
     const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
     state.dashboard.sandboxes.REPOS = {
@@ -725,7 +743,7 @@ export const renameSandbox: AsyncAction<{
       title,
     });
   } catch {
-    if (isRepo) {
+    if (location.pathname.includes('/repositories')) {
       const param = location.pathname.split('/new-dashboard/repositories/')[1];
       const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
       state.dashboard.sandboxes.REPOS = {
