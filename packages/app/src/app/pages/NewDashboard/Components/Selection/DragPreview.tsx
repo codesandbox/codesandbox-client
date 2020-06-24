@@ -89,14 +89,15 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
 
     const mousePosition = useMousePosition();
 
+    const thumbnailElement = thumbnailRef.current;
     const thumbnailSize = React.useMemo(() => {
-      if (!thumbnailRef.current) {
+      if (!thumbnailElement) {
         return { width: 0, height: 0 };
       }
 
-      const thumbnailRect = thumbnailRef.current.getBoundingClientRect();
+      const thumbnailRect = thumbnailElement.getBoundingClientRect();
       return { width: thumbnailRect.width, height: thumbnailRect.height };
-    }, [thumbnailRef]);
+    }, [thumbnailElement]);
 
     const animatedStyles = React.useMemo(
       () =>
