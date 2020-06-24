@@ -212,6 +212,7 @@ exports.createPages = async ({ graphql, actions }) => {
           fileAbsolutePath: { regex: "/docs/" }
           fields: { slug: { nin: ["/api", "/faqs"] } }
         }
+        sort: { fields: [fileAbsolutePath], order: [ASC] }
       ) {
         edges {
           node {
