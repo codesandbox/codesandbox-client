@@ -140,11 +140,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {inTeamContext ? null : (
             <RowItem name="Recent" path="/recent" icon="clock" />
           )}
-          <RowItem
-            name={!inTeamContext ? 'Drafts' : 'My Drafts'}
-            path="/drafts"
-            icon="file"
-          />
+          <RowItem name="My Drafts" path="/drafts" icon="file" />
 
           {inTeamContext ? <Menu.Divider /> : null}
 
