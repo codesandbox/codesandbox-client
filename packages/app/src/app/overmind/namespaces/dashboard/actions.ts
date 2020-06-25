@@ -913,6 +913,9 @@ export const addSandboxesToFolder: AsyncAction<{
       // @ts-ignore
       teamId: state.activeTeam || undefined,
     });
+
+    // Prefetch that folder
+    actions.dashboard.getSandboxesByPath(collectionPath.replace(/^\//, ''));
   } catch {
     state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error('There was a problem moving your sandbox');
