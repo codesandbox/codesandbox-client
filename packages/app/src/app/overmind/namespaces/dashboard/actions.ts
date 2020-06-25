@@ -1048,8 +1048,7 @@ export const changeSandboxPrivacy: AsyncAction<{
   id: string;
   privacy: 0 | 1 | 2;
   oldPrivacy: 0 | 1 | 2;
-  repo?: boolean;
-}> = async ({ actions, effects, state }, { id, privacy, oldPrivacy, repo }) => {
+}> = async ({ actions, effects, state }, { id, privacy, oldPrivacy }) => {
   const repoChangePrivacy = (p: 0 | 1 | 2) => {
     const param = location.pathname.split('/new-dashboard/repositories/')[1];
     const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
@@ -1071,7 +1070,7 @@ export const changeSandboxPrivacy: AsyncAction<{
     };
   };
   // optimistic update
-  if (repo) {
+  if (isRepoPage) {
     repoChangePrivacy(privacy);
   } else {
     actions.dashboard.changeSandboxPrivacyInState({ id, privacy });
@@ -1081,7 +1080,7 @@ export const changeSandboxPrivacy: AsyncAction<{
     await effects.api.updatePrivacy(id, privacy);
   } catch (error) {
     // rollback optimistic
-    if (repo) {
+    if (isRepoPage) {
       repoChangePrivacy(oldPrivacy);
     } else {
       actions.dashboard.changeSandboxPrivacyInState({

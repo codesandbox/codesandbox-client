@@ -46,7 +46,7 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
         : sandbox.collection.path.split('/').pop();
   }
 
-  if (type === 'template' && sandbox.collection && sandbox.collection.team) {
+  if (type === 'template' && sandbox.collection) {
     sandboxLocation =
       // @ts-ignore
       (sandbox.collection.team && sandbox.collection.team.name) ||

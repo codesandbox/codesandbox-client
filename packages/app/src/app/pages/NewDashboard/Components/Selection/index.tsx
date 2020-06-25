@@ -584,7 +584,6 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           setVisibility={setMenuVisibility}
           selectedIds={selectedIds}
           sandboxes={sandboxes || []}
-          isRepo={Boolean(repos.length || [])}
           folders={folders || []}
           repos={repos || []}
           setRenaming={setRenaming}
@@ -648,7 +647,6 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       <DragPreview
         sandboxes={sandboxes || []}
         folders={folders || []}
-        repos={repos || []}
         selectionItems={selectionItems}
         selectedIds={selectedIds}
         thumbnailRef={thumbnailRef}
@@ -662,7 +660,6 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         selectedIds={selectedIds}
         sandboxes={sandboxes || []}
         folders={folders || []}
-        repos={repos || []}
         setRenaming={setRenaming}
         createNewFolder={createNewFolder}
       />
