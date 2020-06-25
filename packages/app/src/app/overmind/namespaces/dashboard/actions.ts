@@ -6,8 +6,8 @@ import {
   Direction,
   TemplateFragmentDashboardFragment,
 } from 'app/graphql/types';
-import Fuse from 'fuse.js';
 import { OrderBy, sandboxesTypes } from './state';
+import { getDecoratedCollection } from './utilts';
 
 export const dashboardMounted: AsyncAction = withLoadApp();
 
@@ -27,9 +27,9 @@ export const setActiveTeam: Action<{
   id: string | null;
 }> = ({ state, effects }, { id }) => {
   // ignore if its already selected
-  if (id === state.dashboard.activeTeam) return;
+  if (id === state.activeTeam) return;
 
-  state.dashboard.activeTeam = id;
+  state.activeTeam = id;
   effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
   state.dashboard.sandboxes = {
     ...state.dashboard.sandboxes,
@@ -139,35 +139,20 @@ export const getTeams: AsyncAction = async ({ state, effects }) => {
   state.dashboard.teams = teams.me.teams;
 };
 
-export const getTeam: AsyncAction = async ({ state, effects }) => {
-  if (!state.dashboard.activeTeam) return;
-  const team = await effects.gql.queries.getTeam({
-    teamId: state.dashboard.activeTeam,
-  });
-
-  if (!team || !team.me) {
-    return;
-  }
-
-  state.dashboard.activeTeamInfo = team.me.team;
-};
-
 export const removeFromTeam: AsyncAction<string> = async (
   { state, effects },
   id
 ) => {
-  if (!state.dashboard.activeTeam || !state.dashboard.activeTeamInfo) return;
+  if (!state.activeTeam || !state.activeTeamInfo) return;
   try {
     await effects.gql.mutations.removeFromTeam({
-      teamId: state.dashboard.activeTeam,
+      teamId: state.activeTeam,
       userId: id,
     });
 
-    state.dashboard.activeTeamInfo = {
-      ...state.dashboard.activeTeamInfo,
-      users: (state.dashboard.activeTeamInfo.users || []).filter(
-        user => user.id !== id
-      ),
+    state.activeTeamInfo = {
+      ...state.activeTeamInfo,
+      users: (state.activeTeamInfo.users || []).filter(user => user.id !== id),
     };
   } catch {
     effects.notificationToast.error(
@@ -177,17 +162,17 @@ export const removeFromTeam: AsyncAction<string> = async (
 };
 
 export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
-  if (!state.dashboard.activeTeam || !state.dashboard.activeTeamInfo) return;
+  if (!state.activeTeam || !state.activeTeamInfo) return;
   try {
     await effects.gql.mutations.leaveTeam({
-      teamId: state.dashboard.activeTeam,
+      teamId: state.activeTeam,
     });
 
     actions.dashboard.setActiveTeam({ id: null });
     actions.dashboard.getTeams();
 
     effects.notificationToast.success(
-      `You successfully left the ${state.dashboard.activeTeamInfo.name} team`
+      `You successfully left the ${state.activeTeamInfo.name} team`
     );
   } catch (e) {
     effects.notificationToast.error(
@@ -200,20 +185,20 @@ export const inviteToTeam: AsyncAction<string> = async (
   { state, effects },
   value
 ) => {
-  if (!state.dashboard.activeTeam) return;
+  if (!state.activeTeam) return;
   const isEmail = value.includes('@');
   try {
     let data: any = null;
     if (isEmail) {
       const emailInvited = await effects.gql.mutations.inviteToTeamVieEmail({
-        teamId: state.dashboard.activeTeam,
+        teamId: state.activeTeam,
         email: value,
       });
 
       data = emailInvited.inviteToTeamViaEmail;
     } else {
       const usernameInvited = await effects.gql.mutations.inviteToTeam({
-        teamId: state.dashboard.activeTeam,
+        teamId: state.activeTeam,
         username: value,
       });
 
@@ -253,8 +238,7 @@ export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
     dashboard.sandboxes[sandboxesTypes.RECENT] = data.me.sandboxes
       .filter(
         sandbox =>
-          (sandbox.collection || { collection: {} }).teamId ===
-          state.dashboard.activeTeam
+          (sandbox.collection || { collection: {} }).teamId === state.activeTeam
       )
       .slice(0, 50);
   } catch (error) {
@@ -267,24 +251,16 @@ export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
 export const getAllFolders: AsyncAction = async ({ state, effects }) => {
   try {
     const data = await effects.gql.queries.getCollections({
-      teamId: state.dashboard.activeTeam,
+      teamId: state.activeTeam,
     });
     if (!data || !data.me || !data.me.collections) {
       return;
     }
 
     // this is here because it will be done in the backend in the *FUTURE*
-    const collectionsByLevel = data.me.collections.map(collection => {
-      const split = collection.path.split('/');
-      const parent = split[split.length - 2] || '';
-      return {
-        ...collection,
-        sandboxes: collection.sandboxes.length,
-        parent,
-        level: split.length - 2,
-        name: split[split.length - 1],
-      };
-    });
+    const collectionsByLevel = data.me.collections.map(collection =>
+      getDecoratedCollection(collection, collection.sandboxes.length)
+    );
 
     state.dashboard.allCollections = [
       {
@@ -313,17 +289,9 @@ export const createFolder: AsyncAction<string> = async (
   path
 ) => {
   if (!state.dashboard.allCollections) return;
-  const split = path.split('/');
   const oldFolders = state.dashboard.allCollections;
   state.dashboard.allCollections = [
-    {
-      path,
-      id: 'FAKE_ID',
-      sandboxes: 0,
-      parent: split.slice(0, split.length - 1).find(a => a) || '',
-      level: split.length - 2,
-      name: split[split.length - 1],
-    },
+    getDecoratedCollection({ id: 'FAKE_ID', path }),
     ...state.dashboard.allCollections,
   ];
   try {
@@ -358,9 +326,9 @@ export const getDrafts: AsyncAction = async ({ state, effects }) => {
   try {
     const data = await effects.gql.queries.sandboxesByPath({
       path: '/',
-      teamId: state.dashboard.activeTeam,
+      teamId: state.activeTeam,
     });
-    if (!data || !data.me || !data.me.collection) {
+    if (typeof data?.me?.collection?.sandboxes === 'undefined') {
       return;
     }
 
@@ -383,9 +351,9 @@ export const getSandboxesByPath: AsyncAction<string> = async (
   try {
     const data = await effects.gql.queries.sandboxesByPath({
       path: '/' + path,
-      teamId: state.dashboard.activeTeam,
+      teamId: state.activeTeam,
     });
-    if (!data || !data.me || !data.me.collection) {
+    if (typeof data?.me?.collection?.sandboxes === 'undefined') {
       return;
     }
 
@@ -421,10 +389,10 @@ export const getDeletedSandboxes: AsyncAction = async ({ state, effects }) => {
 export const getTemplateSandboxes: AsyncAction = async ({ state, effects }) => {
   const { dashboard } = state;
   try {
-    if (dashboard.activeTeam) {
+    if (state.activeTeam) {
       dashboard.sandboxes[sandboxesTypes.TEMPLATES] = null;
       const data = await effects.gql.queries.teamTemplates({
-        id: dashboard.activeTeam,
+        id: state.activeTeam,
       });
 
       if (!data || !data.me || !data.me.team) {
@@ -662,12 +630,10 @@ export const renameFolderInState: Action<{ path: string; newPath: string }> = (
   if (!dashboard.allCollections) return;
   const newFolders = dashboard.allCollections.map(folder => {
     if (folder.path === path) {
-      const split = newPath.split('/');
-      return {
-        ...folder,
-        path: newPath,
-        name: split[split.length - 1],
-      };
+      return getDecoratedCollection(
+        { ...folder, path: newPath },
+        folder.sandboxes
+      );
     }
 
     return folder;
@@ -703,9 +669,6 @@ export const moveFolder: AsyncAction<{
   newPath: string;
 }> = async ({ state: { dashboard }, actions }, { path, newPath }) => {
   if (!dashboard.allCollections) return;
-  dashboard.allCollections = dashboard.allCollections.filter(
-    folder => folder.path !== path
-  );
   actions.dashboard.renameFolder({ path, newPath });
 };
 
@@ -831,43 +794,21 @@ export const downloadSandboxes: AsyncAction<string[]> = async (
   }
 };
 
-export const getSearchSandboxes: AsyncAction<string | null> = async (
-  { state, effects },
-  search
-) => {
+export const getSearchSandboxes: AsyncAction = async ({ state, effects }) => {
   const { dashboard } = state;
   try {
     const data = await effects.gql.queries.searchSandboxes({});
-    if (!data || !data.me || !data.me.sandboxes) {
+    if (data?.me?.sandboxes == null) {
       return;
     }
-    let lastSandboxes: any = null;
-    let searchIndex: any = null;
     const sandboxes = data.me.sandboxes;
 
-    if (lastSandboxes === null || lastSandboxes !== sandboxes) {
-      searchIndex = new Fuse(sandboxes, {
-        threshold: 0.1,
-        distance: 1000,
-        keys: [
-          { name: 'title', weight: 0.4 },
-          { name: 'description', weight: 0.2 },
-          { name: 'alias', weight: 0.2 },
-          { name: 'source.template', weight: 0.1 },
-          { name: 'id', weight: 0.1 },
-        ],
-      });
-
-      lastSandboxes = sandboxes;
-    }
-
     const sandboxesToShow = state.dashboard
-      .getFilteredSandboxes(searchIndex.search(search))
+      .getFilteredSandboxes(sandboxes)
       .filter(x => !x.customTemplate)
       .filter(
         sandbox =>
-          (sandbox.collection || { collection: {} }).teamId ===
-          state.dashboard.activeTeam
+          (sandbox.collection || { collection: {} }).teamId === state.activeTeam
       );
 
     dashboard.sandboxes[sandboxesTypes.SEARCH] = sandboxesToShow;
@@ -899,9 +840,7 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
       dashboard.getTemplateSandboxes();
       break;
     case sandboxesTypes.SEARCH:
-      dashboard.getSearchSandboxes(
-        new URLSearchParams(window.location.search).get('query')
-      );
+      dashboard.getSearchSandboxes();
       break;
 
     default:
@@ -955,7 +894,7 @@ export const setTeamInfo: AsyncAction<{
   description: string | null;
 }> = async ({ effects, state }, { name, description }) => {
   const oldTeamInfo = state.dashboard.teams.find(team => team.name === name);
-  const oldActiveTeamInfo = state.dashboard.activeTeamInfo;
+  const oldActiveTeamInfo = state.activeTeamInfo;
   try {
     await effects.gql.mutations.setTeamName({
       name,
@@ -984,13 +923,17 @@ export const setTeamInfo: AsyncAction<{
       return team;
     });
 
-    state.dashboard.activeTeamInfo = {
-      ...oldActiveTeamInfo,
-      name,
-      description,
-    };
+    if (oldActiveTeamInfo) {
+      state.activeTeamInfo = {
+        ...oldActiveTeamInfo,
+        name,
+        description,
+      };
+    }
   } catch (e) {
-    state.dashboard.activeTeamInfo = { ...oldActiveTeamInfo };
+    if (oldActiveTeamInfo) {
+      state.activeTeamInfo = { ...oldActiveTeamInfo };
+    }
     if (state.dashboard.teams && oldTeamInfo) {
       state.dashboard.teams = [...state.dashboard.teams, oldTeamInfo];
     }

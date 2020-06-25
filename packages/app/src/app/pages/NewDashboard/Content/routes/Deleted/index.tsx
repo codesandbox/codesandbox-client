@@ -6,6 +6,7 @@ import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { DashboardGridItem } from 'app/pages/NewDashboard/types';
+import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
 import { getPossibleTemplates } from '../../utils';
 
 export const Deleted = () => {
@@ -20,14 +21,17 @@ export const Deleted = () => {
     actions.dashboard.getPage(sandboxesTypes.DELETED);
   }, [actions.dashboard]);
 
-  const getSection = (title, deletedSandboxes) => {
+  const getSection = (
+    title: string,
+    deletedSandboxes: SandboxFragmentDashboardFragment[]
+  ): DashboardGridItem[] => {
     if (!deletedSandboxes.length) return [];
 
     return [
       { type: 'header', title },
       ...deletedSandboxes.map(sandbox => ({
-        type: 'sandbox',
-        ...sandbox,
+        type: 'sandbox' as 'sandbox',
+        sandbox,
       })),
     ];
   };

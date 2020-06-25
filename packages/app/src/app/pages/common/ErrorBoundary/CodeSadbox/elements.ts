@@ -6,7 +6,6 @@ export const Container = styled.div`
     grid-template-rows: min-content auto;
     width: 100%;
     height: 100vh;
-    background-color: rgb(17, 21, 24);
     color: ${theme.white};
   `}
 `;

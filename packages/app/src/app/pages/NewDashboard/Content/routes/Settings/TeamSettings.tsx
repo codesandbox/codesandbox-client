@@ -23,16 +23,13 @@ import { Card } from './components';
 
 export const TeamSettings = () => {
   const {
-    state: {
-      user: stateUser,
-      dashboard: { activeTeamInfo: team },
-    },
+    state: { user: stateUser, activeTeam, activeTeamInfo: team },
     actions,
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.getTeam();
-  }, [actions.dashboard]);
+    actions.getActiveTeam();
+  }, [activeTeam, actions]);
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);

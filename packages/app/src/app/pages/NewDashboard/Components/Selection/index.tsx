@@ -12,6 +12,7 @@ import {
   ALT,
   TAB,
 } from '@codesandbox/common/lib/utils/keycodes';
+import { isEqual } from 'lodash-es';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
@@ -22,7 +23,7 @@ import {
   DashboardGridItem,
 } from '../../types';
 
-type Selection = {
+export type Position = {
   x: null | number;
   y: null | number;
 };
@@ -164,46 +165,63 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const [menuVisible, setMenuVisibility] = React.useState(false);
   const [menuPosition, setMenuPosition] = React.useState({ x: 0, y: 0 });
 
-  const onRightClick = (
-    event: React.MouseEvent<HTMLDivElement> &
-      React.KeyboardEvent<HTMLDivElement>,
-    itemId: string
-  ) => {
-    if (!selectedIds.includes(itemId)) setSelectedIds([itemId]);
-    setMenuVisibility(true);
-    setMenuPosition({ x: event.clientX, y: event.clientY });
-  };
+  const onRightClick = React.useCallback(
+    (
+      event: React.MouseEvent<HTMLDivElement> &
+        React.KeyboardEvent<HTMLDivElement>,
+      itemId: string
+    ) => {
+      setSelectedIds(s => {
+        if (!s.includes(itemId)) {
+          return [itemId];
+        }
+        return s;
+      });
 
-  const onMenuEvent = (
-    event:
-      | React.MouseEvent<HTMLDivElement>
-      | React.KeyboardEvent<HTMLDivElement>,
-    itemId?: string
-  ) => {
-    if (itemId && !selectedIds.includes(itemId)) setSelectedIds([itemId]);
+      setMenuVisibility(true);
+      setMenuPosition({ x: event.clientX, y: event.clientY });
+    },
+    [setMenuVisibility, setMenuPosition]
+  );
 
-    let menuElement: HTMLElement;
-    if (event.type === 'click') {
-      const target = event.target as HTMLButtonElement;
-      menuElement = target;
-    } else {
-      // if the event is fired on the sandbox/folder, we find
-      // the menu button to correctly position the menu
-      const selectedItem = selectedIds[selectedIds.length - 1];
-      menuElement = document.querySelector(
-        `[data-selection-id="${selectedItem}"] button`
-      );
-    }
+  const onMenuEvent = React.useCallback(
+    (
+      event:
+        | React.MouseEvent<HTMLDivElement>
+        | React.KeyboardEvent<HTMLDivElement>,
+      itemId: string
+    ) => {
+      setSelectedIds(s => {
+        if (itemId && !s.includes(itemId)) {
+          return [itemId];
+        }
 
-    const rect = menuElement.getBoundingClientRect();
-    const position = {
-      x: rect.x + rect.width / 2,
-      y: rect.y + rect.height / 2,
-    };
+        return s;
+      });
 
-    setMenuVisibility(true);
-    setMenuPosition(position);
-  };
+      let menuElement: HTMLElement;
+      if (event.type === 'click') {
+        const target = event.target as HTMLButtonElement;
+        menuElement = target;
+      } else {
+        // if the event is fired on the sandbox/folder, we find
+        // the menu button to correctly position the menu
+        menuElement = document.querySelector(
+          `[data-selection-id="${itemId}"] button`
+        );
+      }
+
+      const rect = menuElement.getBoundingClientRect();
+      const position = {
+        x: rect.x + rect.width / 2,
+        y: rect.y + rect.height / 2,
+      };
+
+      setMenuVisibility(true);
+      setMenuPosition(position);
+    },
+    [setSelectedIds, setMenuVisibility, setMenuPosition]
+  );
 
   const onBlur = (event: React.FocusEvent<HTMLDivElement>) => {
     if (!event.bubbles) {
@@ -255,7 +273,8 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     // disable selection keydowns when renaming
     if (isRenaming) return;
 
-    if (event.keyCode === ALT) onMenuEvent(event);
+    if (event.keyCode === ALT)
+      onMenuEvent(event, selectedIds[selectedIds.length - 1]);
 
     // if only one thing is selected, open it
     if (event.keyCode === ENTER && selectedIds.length === 1) {
@@ -370,9 +389,9 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     const folderPaths = selectedIds.filter(isFolderPath).filter(notDrafts);
 
     if (sandboxIds.length) {
-      if (dropResult.path === 'deleted') {
+      if (dropResult.path === '/deleted') {
         actions.dashboard.deleteSandbox(sandboxIds);
-      } else if (dropResult.path === 'templates') {
+      } else if (dropResult.path === '/templates') {
         actions.dashboard.makeTemplate(sandboxIds);
       } else if (dropResult.path === '/drafts') {
         actions.dashboard.addSandboxesToFolder({
@@ -417,8 +436,8 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
 
   const [drawingRect, setDrawingRect] = React.useState(false);
   const [selectionRect, setSelectionRect] = React.useState<{
-    start: Selection;
-    end: Selection;
+    start: Position;
+    end: Position;
   }>({
     start: { x: null, y: null },
     end: { x: null, y: null },
@@ -509,8 +528,10 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         overlappingIds.push(item.dataset.selectionId);
       });
 
-      setSelectedIds(overlappingIds);
-      callbackCalledAt.current = new Date().getTime();
+      if (!isEqual(selectedIds, overlappingIds)) {
+        setSelectedIds(overlappingIds);
+        callbackCalledAt.current = new Date().getTime();
+      }
     };
 
     // performance hack: don't fire the callback again if it was fired 60ms ago

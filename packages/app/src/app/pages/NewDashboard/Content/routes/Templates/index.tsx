@@ -13,7 +13,8 @@ export const Templates = () => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes, getFilteredSandboxes, activeTeam },
+      dashboard: { sandboxes, getFilteredSandboxes },
+      activeTeam,
     },
   } = useOvermind();
 

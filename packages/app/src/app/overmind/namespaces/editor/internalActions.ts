@@ -125,6 +125,8 @@ export const saveCode: AsyncAction<{
     return;
   }
 
+  effects.preview.executeCodeImmediately();
+
   try {
     let updatedModule: {
       updatedAt: string;
@@ -198,6 +200,10 @@ export const saveCode: AsyncAction<{
       state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
     ) {
       effects.executor.updateFiles(sandbox);
+    }
+
+    if (sandbox.template === 'static') {
+      effects.preview.refresh();
     }
 
     await actions.editor.internal.updateCurrentTemplate();

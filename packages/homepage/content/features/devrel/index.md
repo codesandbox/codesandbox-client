@@ -12,6 +12,7 @@ tweetJob: Developer Experience, Apollo
 tweetName: Peggy Rayzis
 tweetHandle: peggyrayzis
 bgColor: 0971F1
+bgImage: ./blue.jpg
 coverImage: ./hiring.svg
 coverReversed: true
 coverSmaller: true

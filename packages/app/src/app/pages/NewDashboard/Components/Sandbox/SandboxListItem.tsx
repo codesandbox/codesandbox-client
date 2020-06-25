@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { SandboxItemComponentProps } from './types';
 
 export const SandboxListItem = ({
   sandbox,
@@ -40,7 +41,7 @@ export const SandboxListItem = ({
   thumbnailRef,
   opacity,
   ...props
-}) => (
+}: SandboxItemComponentProps) => (
   <ListAction
     align="center"
     onClick={onClick}

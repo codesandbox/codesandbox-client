@@ -290,7 +290,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     actions.comments.getSandboxComments(sandbox.id);
   }
 
-  if (sandbox.originalGit) {
+  if (sandbox.originalGit && hasPermission(sandbox.authorization, 'owner')) {
     actions.git.loadGitSource();
   }
 

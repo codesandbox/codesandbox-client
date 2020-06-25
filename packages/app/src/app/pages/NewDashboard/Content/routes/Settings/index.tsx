@@ -15,7 +15,7 @@ export const Settings = () => {
 
   if (location.pathname.includes('settings/new')) Component = NewTeam;
   else if (location.pathname.includes('invite')) Component = Invite;
-  else if (state.dashboard.activeTeam) Component = TeamSettings;
+  else if (state.activeTeam) Component = TeamSettings;
   else Component = UserSettings;
 
   return (
