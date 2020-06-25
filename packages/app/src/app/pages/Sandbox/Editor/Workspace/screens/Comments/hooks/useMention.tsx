@@ -64,9 +64,12 @@ export const useMention = (
 
   React.useEffect(() => {
     if (current) {
+      // This handles rerendering on moving the selection
+      // as well
       const onKeyUp = () => {
         forceRerender(i => i + 1);
       };
+
       current.addEventListener('keyup', onKeyUp);
 
       return () => {
@@ -103,7 +106,7 @@ export const useMention = (
 
   if (
     !mention ||
-    (query.length >= 3 && !/^[a-z0-9_]+[a-z0-9_.]+[a-z0-9_]+$/i.test(query))
+    (query.length >= 3 && !/^[a-z0-9_-]+[a-z0-9_.-]+[a-z0-9_-]+$/i.test(query))
   ) {
     return [
       value,

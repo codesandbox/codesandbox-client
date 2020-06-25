@@ -1,11 +1,10 @@
 import { UserQuery } from '@codesandbox/common/lib/types';
-import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { ENTER, ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { FormField, List, ListAction, Textarea } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { convertMentionLinksToMentions } from 'app/overmind/utils/comments';
 import React from 'react';
-import { createPortal } from 'react-dom';
 
 import { useMention } from './useMention';
 
@@ -13,6 +12,7 @@ export const useCodesandboxMention = ({
   initialValue,
   initialMentions,
   onSubmit,
+  fixed,
 }: {
   initialValue: string;
   initialMentions: {
@@ -22,6 +22,7 @@ export const useCodesandboxMention = ({
     value: string,
     mentions: { [username: string]: UserQuery }
   ) => void;
+  fixed: boolean;
 }): [React.ReactElement, string, { [username: string]: UserQuery }] => {
   const ref = React.useRef(null);
   const { state, actions } = useOvermind();
@@ -48,6 +49,26 @@ export const useCodesandboxMention = ({
     }
   }, [menuIndex, users.length]);
 
+  // We have to use an effect to properly stop
+  // propagation
+  React.useEffect(() => {
+    if (ref.current) {
+      const onKeyDown = event => {
+        if (event.keyCode === ESC) {
+          event.stopPropagation();
+        }
+      };
+      ref.current.addEventListener('keydown', onKeyDown);
+
+      return () => {
+        ref.current.removeEventListener('keydown', onKeyDown);
+      };
+    }
+
+    return () => {};
+    // eslint-disable-next-line
+  }, [ref.current]);
+
   const onKeyDown = event => {
     if (mention.query !== null) {
       if (event.keyCode === ENTER) {
@@ -55,12 +76,10 @@ export const useCodesandboxMention = ({
         if (users.length) {
           mention.add(users[menuIndex].username, users[menuIndex]);
         }
-      }
-      if (event.keyCode === 38) {
+      } else if (event.keyCode === 38) {
         event.preventDefault();
         setMenuIndex(i => (i === 0 ? users.length - 1 : i - 1));
-      }
-      if (event.keyCode === 40) {
+      } else if (event.keyCode === 40) {
         event.preventDefault();
         setMenuIndex(i => (i === users.length - 1 ? 0 : i + 1));
       }
@@ -84,69 +103,73 @@ export const useCodesandboxMention = ({
           onKeyDown={onKeyDown}
         />
       </FormField>
-      {typeof mention.query === 'string' && !mentions[mention.query]
-        ? createPortal(
-            <List
-              css={css({
-                position: 'fixed',
-                width: '250px',
-                borderBottomLeftRadius: 'small',
-                borderBottomRightRadius: 'small',
-                boxShadow: 1,
-                fontSize: 3,
-                zIndex: 3,
-                bottom:
-                  window.innerHeight - textareaBoundingRect.top + mention.top,
-                left: textareaBoundingRect.left + mention.left,
-                backgroundColor: 'dialog.background',
-                border: '1px solid',
-                borderColor: 'dialog.border',
-              })}
-            >
-              {mention.query.length < 3 ? (
-                <ListAction>Please type more than 3 characters</ListAction>
-              ) : (
-                users.map((item, index) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    css={`
-                      display: block;
-                      width: 100%;
-                      background: transparent;
-                      border: none;
-                      padding: 0;
-                    `}
-                  >
-                    <ListAction
-                      css={
-                        menuIndex === index
-                          ? css({
-                              color: 'list.hoverForeground',
-                              backgroundColor: 'list.hoverBackground',
-                            })
-                          : null
-                      }
-                    >
-                      <img
-                        alt={item.username}
-                        css={css({
-                          borderRadius: 2,
-                          marginRight: 2,
-                        })}
-                        width={24}
-                        height={24}
-                        src={item.avatarUrl}
-                      />{' '}
-                      {item.username}
-                    </ListAction>
-                  </button>
-                ))
-              )}
-            </List>,
-            document.querySelector('#root')
-          )
-        : null}
+      {typeof mention.query === 'string' && !mentions[mention.query] ? (
+        <List
+          css={css({
+            position: fixed ? 'fixed' : 'absolute',
+            width: '250px',
+            borderBottomLeftRadius: 'small',
+            borderBottomRightRadius: 'small',
+            boxShadow: 1,
+            fontSize: 3,
+            zIndex: 3,
+            bottom: fixed
+              ? window.innerHeight - textareaBoundingRect.top + mention.top
+              : textareaBoundingRect.height - mention.top + 40,
+            left: fixed
+              ? textareaBoundingRect.left + mention.left
+              : mention.left,
+            backgroundColor: 'dialog.background',
+            border: '1px solid',
+            borderColor: 'dialog.border',
+          })}
+        >
+          {mention.query.length < 3 || !users.length ? (
+            <ListAction>
+              {mention.query.length < 3
+                ? 'Please type more than 3 characters'
+                : null}
+            </ListAction>
+          ) : (
+            users.map((item, index) => (
+              <button
+                key={item.id}
+                type="button"
+                css={`
+                  display: block;
+                  width: 100%;
+                  background: transparent;
+                  border: none;
+                  padding: 0;
+                `}
+              >
+                <ListAction
+                  css={
+                    menuIndex === index
+                      ? css({
+                          color: 'list.hoverForeground',
+                          backgroundColor: 'list.hoverBackground',
+                        })
+                      : null
+                  }
+                >
+                  <img
+                    alt={item.username}
+                    css={css({
+                      borderRadius: 2,
+                      marginRight: 2,
+                    })}
+                    width={24}
+                    height={24}
+                    src={item.avatarUrl}
+                  />{' '}
+                  {item.username}
+                </ListAction>
+              </button>
+            ))
+          )}
+        </List>
+      ) : null}
     </>,
     value,
     mentions,

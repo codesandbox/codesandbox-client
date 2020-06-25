@@ -208,6 +208,7 @@ const DialogAddComment: React.FC<{
     initialValue: '',
     initialMentions: {},
     onSubmit: onSave,
+    fixed: false,
   });
 
   const closeDialog = () => actions.comments.closeComment();
@@ -619,6 +620,7 @@ const AddReply: React.FC<any> = ({ comment, ...props }) => {
       });
       if (props.onSubmit) props.onSubmit();
     },
+    fixed: false,
   });
 
   return elements;
