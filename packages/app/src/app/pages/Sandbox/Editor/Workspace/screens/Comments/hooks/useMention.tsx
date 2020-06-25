@@ -41,7 +41,10 @@ function getMentionAtIndex(value, index) {
 
 export const useMention = (
   { current },
-  initialValue = ''
+  initialValue: string | (() => string) = '',
+  initialMentions: {
+    [mentionName: string]: any;
+  } = {}
 ): [
   string,
   (value: string) => void,
@@ -57,9 +60,7 @@ export const useMention = (
 ] => {
   const [value, setValue] = React.useState(initialValue);
   const [, forceRerender] = React.useState(0);
-  const [mentions, setMentions] = React.useState<{
-    [mentionName: string]: any;
-  }>({});
+  const [mentions, setMentions] = React.useState(initialMentions);
 
   React.useEffect(() => {
     if (current) {

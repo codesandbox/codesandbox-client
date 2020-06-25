@@ -17,6 +17,7 @@ import {
   CommentRemovedSubscription,
 } from 'app/graphql/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
+import { convertMentionsToMentionLinks } from 'app/overmind/utils/comments';
 import {
   indexToLineAndColumn,
   lineAndColumnToIndex,
@@ -349,7 +350,7 @@ export const addComment: AsyncAction<{
   isOptimistic?: boolean;
 }> = async (
   { state, effects },
-  { content, mentions, parentCommentId, isOptimistic }
+  { content: rawContent, mentions, parentCommentId, isOptimistic }
 ) => {
   if (!state.user || !state.editor.currentSandbox) {
     return;
@@ -365,6 +366,7 @@ export const addComment: AsyncAction<{
   }
 
   const id = uuid.v4();
+  const content = convertMentionsToMentionLinks(rawContent, mentions);
   let optimisticComment: CommentFragment;
   if (isOptimistic) {
     optimisticComment = {

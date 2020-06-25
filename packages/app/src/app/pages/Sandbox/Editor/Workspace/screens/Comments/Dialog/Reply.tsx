@@ -80,10 +80,13 @@ export const Reply = ({ reply }: ReplyProps) => {
         ) : (
           <EditComment
             initialValue={reply.content}
-            onSave={async newValue => {
+            // Convert from references
+            initialMentions={{}}
+            onSave={async (newValue, mentions) => {
               await actions.comments.updateComment({
                 commentId: reply.id,
                 content: newValue,
+                mentions,
               });
               setEditing(false);
             }}

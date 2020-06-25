@@ -1,4 +1,4 @@
-import { ENTER, ESC } from '@codesandbox/common/lib/utils/keycodes';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import {
   Avatar,
@@ -7,7 +7,6 @@ import {
   Menu,
   Stack,
   Text,
-  Textarea,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Markdown } from 'app/components/Markdown';
@@ -26,6 +25,7 @@ import { createGlobalStyle } from 'styled-components';
 
 import { AvatarBlock } from '../components/AvatarBlock';
 import { EditComment } from '../components/EditComment';
+import { useCodesandboxMention } from '../hooks/useCodesandboxMention';
 import { Reply, SkeletonReply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
 
@@ -136,7 +136,7 @@ export const Dialog: React.FC = () => {
             height: 'auto',
             maxHeight: '80vh',
             fontFamily: 'Inter, sans-serif',
-            overflow: 'hidden',
+            // overflow: 'hidden',
             boxShadow: 2,
           })}
         >
@@ -155,7 +155,15 @@ export const Dialog: React.FC = () => {
               >
                 <DialogHeader comment={comment} hasShadow={scrollTop > 0} />
               </DragHandle>
-              <Element as="div" css={{ overflow: 'auto' }} ref={listRef}>
+              <Element
+                as="div"
+                css={
+                  {
+                    /* overflow: 'auto' */
+                  }
+                }
+                ref={listRef}
+              >
                 <CommentBody
                   comment={comment}
                   editing={editing}
@@ -196,16 +204,11 @@ const DialogAddComment: React.FC<{
   onDragHandlerPanEnd: () => void;
 }> = ({ comment, onSave, onDragHandlerPan, onDragHandlerPanEnd }) => {
   const { actions } = useOvermind();
-  const [value, setValue] = useState('');
-
-  const saveComment = async () => {
-    await actions.comments.updateComment({
-      commentId: comment.id,
-      content: value,
-    });
-    setValue('');
-    onSave();
-  };
+  const [elements] = useCodesandboxMention({
+    initialValue: '',
+    initialMentions: {},
+    onSubmit: onSave,
+  });
 
   const closeDialog = () => actions.comments.closeComment();
 
@@ -238,25 +241,7 @@ const DialogAddComment: React.FC<{
           />
         </Stack>
       </DragHandle>
-      <Textarea
-        autosize
-        autoFocus
-        css={css({
-          backgroundColor: 'transparent',
-          border: 'none',
-          paddingLeft: 4,
-        })}
-        style={{ lineHeight: 1.2, minHeight: 32 }}
-        value={value}
-        onChange={e => setValue(e.target.value)}
-        placeholder="Add comment..."
-        onKeyDown={async event => {
-          if (event.keyCode === ENTER && !event.shiftKey) {
-            saveComment();
-            event.preventDefault();
-          }
-        }}
-      />
+      {elements}
     </Stack>
   );
 };
@@ -412,10 +397,13 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
         ) : (
           <EditComment
             initialValue={comment.content}
-            onSave={async newValue => {
+            // Convert from references
+            initialMentions={{}}
+            onSave={async (newValue, mentions) => {
               await comments.updateComment({
                 commentId: comment.id,
                 content: newValue,
+                mentions,
               });
               setEditing(false);
             }}
@@ -618,42 +606,22 @@ const Replies = ({ replies, replyCount, listRef, repliesRenderedCallback }) => {
   );
 };
 
-const AddReply = ({ comment, ...props }) => {
+const AddReply: React.FC<any> = ({ comment, ...props }) => {
   const { actions } = useOvermind();
-  const [value, setValue] = useState('');
+  const [elements] = useCodesandboxMention({
+    initialValue: '',
+    initialMentions: {},
+    onSubmit: (value, mentions) => {
+      actions.comments.addComment({
+        content: value,
+        mentions,
+        parentCommentId: comment.id,
+      });
+      if (props.onSubmit) props.onSubmit();
+    },
+  });
 
-  const onSubmit = e => {
-    e.preventDefault();
-    actions.comments.addComment({
-      content: value,
-      parentCommentId: comment.id,
-    });
-    setValue('');
-    if (props.onSubmit) props.onSubmit();
-  };
-
-  return (
-    <Textarea
-      autosize
-      css={css({
-        backgroundColor: 'transparent',
-        border: 'none',
-        borderTop: '1px solid',
-        borderColor: 'sideBar.border',
-        borderRadius: 0,
-        padding: 4,
-      })}
-      style={{ lineHeight: 1.2, minHeight: 54 }}
-      value={value}
-      onChange={e => setValue(e.target.value)}
-      placeholder="Reply..."
-      onKeyDown={e => {
-        if (e.keyCode === ENTER && !e.shiftKey) {
-          onSubmit(e);
-        }
-      }}
-    />
-  );
+  return elements;
 };
 
 /** We use an transparent overlay when dragging
