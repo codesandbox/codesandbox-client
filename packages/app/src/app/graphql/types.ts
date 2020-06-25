@@ -1780,7 +1780,9 @@ export type SandboxFragment = { __typename?: 'Sandbox' } & Pick<
     forkedTemplate: Maybe<
       { __typename?: 'Template' } & Pick<Template, 'id' | 'color'>
     >;
-    collection: Maybe<{ __typename?: 'Collection' } & Pick<Collection, 'path'>>;
+    collection: Maybe<
+      { __typename?: 'Collection' } & Pick<Collection, 'path' | 'teamId'>
+    >;
   };
 
 export type TeamFragment = { __typename?: 'Team' } & Pick<
