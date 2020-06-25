@@ -128,7 +128,19 @@ export const useMention = (
 
   return [
     value,
-    setValue,
+    (newValue: string) => {
+      const currentMentions = Object.keys(mentions).reduce((aggr, name) => {
+        if (!newValue.includes(`@${name}`)) {
+          return aggr;
+        }
+
+        aggr[name] = mentions[name];
+
+        return aggr;
+      }, {});
+      setMentions(currentMentions);
+      setValue(newValue);
+    },
     {
       query,
       top: caret.top,

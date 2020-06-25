@@ -172,7 +172,7 @@ export const useCodesandboxMention = ({
           })}
           style={{
             bottom: fixed
-              ? window.innerHeight - textareaBoundingRect.top + mention.top - 8 // 8 = padding
+              ? window.innerHeight - textareaBoundingRect.top - mention.top
               : textareaBoundingRect.height - mention.top + 5,
             left: fixed
               ? textareaBoundingRect.left + mention.left - 8 // 8 = padding
