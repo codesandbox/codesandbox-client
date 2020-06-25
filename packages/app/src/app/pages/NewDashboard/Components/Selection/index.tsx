@@ -549,51 +549,11 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     else if (new Date().getTime() - callbackCalledAt.current > 60) callback();
   };
 
-  const onContainerMouseUp = event => {
+  const onContainerMouseUp = () => {
     if (drawingRect) resetSelectionRect();
   };
 
-  if (noDrag) {
-    return (
-      <Context.Provider
-        value={{
-          sandboxes,
-          selectedIds,
-          onClick,
-          onMouseDown,
-          onBlur,
-          onRightClick,
-          onMenuEvent,
-          onDragStart,
-          onDrop,
-          thumbnailRef,
-          isDragging,
-          isRenaming,
-          setRenaming,
-        }}
-      >
-        <Element
-          onContextMenu={onContainerContextMenu}
-          css={css({ paddingTop: 10 })}
-        >
-          {children}
-        </Element>
-        <ContextMenu
-          visible={menuVisible}
-          position={menuPosition}
-          setVisibility={setMenuVisibility}
-          selectedIds={selectedIds}
-          sandboxes={sandboxes || []}
-          folders={folders || []}
-          repos={repos || []}
-          setRenaming={setRenaming}
-          createNewFolder={createNewFolder}
-        />
-      </Context.Provider>
-    );
-  }
-
-  return (
+  const Provider = ({ children: providerChildren }) => (
     <Context.Provider
       value={{
         sandboxes,
@@ -611,6 +571,37 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         setRenaming,
       }}
     >
+      {' '}
+      {providerChildren}
+    </Context.Provider>
+  );
+
+  if (noDrag) {
+    return (
+      <Provider>
+        <Element
+          onContextMenu={onContainerContextMenu}
+          css={css({ paddingTop: 10 })}
+        >
+          {children}
+        </Element>
+        <ContextMenu
+          visible={menuVisible}
+          position={menuPosition}
+          setVisibility={setMenuVisibility}
+          selectedIds={selectedIds}
+          sandboxes={sandboxes || []}
+          folders={folders || []}
+          repos={repos || []}
+          setRenaming={setRenaming}
+          createNewFolder={createNewFolder}
+        />
+      </Provider>
+    );
+  }
+
+  return (
+    <Provider>
       <Element
         id="selection-container"
         onKeyDown={onContainerKeyDown}
@@ -663,7 +654,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         setRenaming={setRenaming}
         createNewFolder={createNewFolder}
       />
-    </Context.Provider>
+    </Provider>
   );
 };
 

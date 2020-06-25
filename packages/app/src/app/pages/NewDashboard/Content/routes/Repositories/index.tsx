@@ -4,10 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
-import {
-  DashboardGridItem,
-  DashboardSandbox,
-} from 'app/pages/NewDashboard/types';
+import { DashboardGridItem } from 'app/pages/NewDashboard/types';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
@@ -33,14 +30,13 @@ export const RepositoriesPage = () => {
   const activeSandboxes =
     (sandboxes.REPOS && Object.values(sandboxes.REPOS)) || [];
 
-  const itemsToShow = ():
-    | DashboardGridItem[]
-    | { sandbox: DashboardSandbox; type: string }[] => {
+  const itemsToShow = (): DashboardGridItem[] => {
     if (!sandboxes.REPOS) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
-    if (home)
+    if (home) {
       return viewMode === 'grid' ? [{ type: 'new-repo' }, ...items] : items;
+    }
 
     if (sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes) {
       return viewMode === 'grid'
@@ -61,13 +57,13 @@ export const RepositoriesPage = () => {
     return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
   };
 
+  const possibleTemplates = itemsToShow()
+    .filter(s => s.sandbox)
+    .map(s => s.sandbox);
+
   const templates =
     activeSandboxes.length && param && items[0] && items[0].type === 'sandbox'
-      ? getPossibleTemplates(
-          itemsToShow()
-            .filter(s => s.sandbox)
-            .map((s: { sandbox: DashboardSandbox; type: string }) => s.sandbox)
-        )
+      ? getPossibleTemplates(possibleTemplates)
       : [];
 
   return (
