@@ -75,11 +75,19 @@ export const updateComment: AsyncAction<{
 };
 
 export const queryUsers: Operator<string | null> = pipe(
+  mutate(({ state }, query) => {
+    state.comments.isQueryingUsers = true;
+    // We reset the users when we detect a new query being written
+    if (query && query.length === 3) {
+      state.comments.usersQueryResult = [];
+    }
+  }),
   debounce(200),
   filter((_, query) => query && query.length >= 3),
   map(({ effects }, query) => effects.api.queryUsers(query)),
   mutate(({ state }, result) => {
     state.comments.usersQueryResult = result;
+    state.comments.isQueryingUsers = false;
   })
 );
 

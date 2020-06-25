@@ -4,7 +4,7 @@ import { FormField, List, ListAction, Textarea } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { convertMentionLinksToMentions } from 'app/overmind/utils/comments';
-import React from 'react';
+import React, { Attributes } from 'react';
 
 import { useMention } from './useMention';
 
@@ -13,6 +13,7 @@ export const useCodesandboxMention = ({
   initialMentions,
   onSubmit,
   fixed,
+  props = {},
 }: {
   initialValue: string;
   initialMentions: {
@@ -23,6 +24,9 @@ export const useCodesandboxMention = ({
     mentions: { [username: string]: UserQuery }
   ) => void;
   fixed: boolean;
+  props: typeof Textarea extends React.FC<infer P>
+    ? P & { css?: Attributes['css'] }
+    : never;
 }): [React.ReactElement, string, { [username: string]: UserQuery }] => {
   const ref = React.useRef(null);
   const { state, actions } = useOvermind();
@@ -89,16 +93,65 @@ export const useCodesandboxMention = ({
     }
   };
 
+  function renderResult() {
+    if (mention.query.length < 3) {
+      return <ListAction>Please type more than 3 characters</ListAction>;
+    }
+
+    if (state.comments.isQueryingUsers && !users.length) {
+      return <ListAction>Searching...</ListAction>;
+    }
+
+    if (!state.comments.isQueryingUsers && !users.length) {
+      return <ListAction>No results</ListAction>;
+    }
+
+    return users.map((item, index) => (
+      <button
+        key={item.id}
+        type="button"
+        css={`
+          display: block;
+          width: 100%;
+          background: transparent;
+          border: none;
+          padding: 0;
+        `}
+      >
+        <ListAction
+          css={
+            menuIndex === index
+              ? css({
+                  color: 'list.hoverForeground',
+                  backgroundColor: 'list.hoverBackground',
+                })
+              : null
+          }
+        >
+          <img
+            alt={item.username}
+            css={css({
+              borderRadius: 2,
+              marginRight: 2,
+            })}
+            width={24}
+            height={24}
+            src={item.avatarUrl}
+          />{' '}
+          {item.username}
+        </ListAction>
+      </button>
+    ));
+  }
+
   return [
-    <>
+    <div style={{ position: 'relative' }}>
       <FormField label="Add a comment" hideLabel>
         <Textarea
+          {...props}
           ref={ref}
-          autosize
-          autoFocus
           value={value}
-          placeholder="Write a comment"
-          style={{ lineHeight: 1.2, minHeight: 32 }}
+          placeholder="Add a comment..."
           onChange={event => setValue(event.target.value)}
           onKeyDown={onKeyDown}
         />
@@ -113,64 +166,23 @@ export const useCodesandboxMention = ({
             boxShadow: 1,
             fontSize: 3,
             zIndex: 3,
-            bottom: fixed
-              ? window.innerHeight - textareaBoundingRect.top + mention.top
-              : textareaBoundingRect.height - mention.top + 40,
-            left: fixed
-              ? textareaBoundingRect.left + mention.left
-              : mention.left,
             backgroundColor: 'dialog.background',
             border: '1px solid',
             borderColor: 'dialog.border',
           })}
+          style={{
+            bottom: fixed
+              ? window.innerHeight - textareaBoundingRect.top + mention.top - 8 // 8 = padding
+              : textareaBoundingRect.height - mention.top + 5,
+            left: fixed
+              ? textareaBoundingRect.left + mention.left - 8 // 8 = padding
+              : mention.left,
+          }}
         >
-          {mention.query.length < 3 || !users.length ? (
-            <ListAction>
-              {mention.query.length < 3
-                ? 'Please type more than 3 characters'
-                : null}
-            </ListAction>
-          ) : (
-            users.map((item, index) => (
-              <button
-                key={item.id}
-                type="button"
-                css={`
-                  display: block;
-                  width: 100%;
-                  background: transparent;
-                  border: none;
-                  padding: 0;
-                `}
-              >
-                <ListAction
-                  css={
-                    menuIndex === index
-                      ? css({
-                          color: 'list.hoverForeground',
-                          backgroundColor: 'list.hoverBackground',
-                        })
-                      : null
-                  }
-                >
-                  <img
-                    alt={item.username}
-                    css={css({
-                      borderRadius: 2,
-                      marginRight: 2,
-                    })}
-                    width={24}
-                    height={24}
-                    src={item.avatarUrl}
-                  />{' '}
-                  {item.username}
-                </ListAction>
-              </button>
-            ))
-          )}
+          {renderResult()}
         </List>
       ) : null}
-    </>,
+    </div>,
     value,
     mentions,
   ];

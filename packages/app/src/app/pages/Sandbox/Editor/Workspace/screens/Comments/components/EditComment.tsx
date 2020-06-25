@@ -18,6 +18,11 @@ export const EditComment: React.FC<{
     initialMentions,
     onSubmit: onSave,
     fixed: false,
+    props: {
+      autosize: true,
+      autoFocus: true,
+      style: { lineHeight: 1.2 },
+    },
   });
 
   return (

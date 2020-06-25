@@ -209,6 +209,16 @@ const DialogAddComment: React.FC<{
     initialMentions: {},
     onSubmit: onSave,
     fixed: false,
+    props: {
+      autosize: true,
+      autoFocus: true,
+      css: css({
+        backgroundColor: 'transparent',
+        border: 'none',
+        paddingLeft: 4,
+      }),
+      style: { lineHeight: 1.2, minHeight: 32 },
+    },
   });
 
   const closeDialog = () => actions.comments.closeComment();
@@ -621,6 +631,18 @@ const AddReply: React.FC<any> = ({ comment, ...props }) => {
       if (props.onSubmit) props.onSubmit();
     },
     fixed: false,
+    props: {
+      autosize: true,
+      css: css({
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderTop: '1px solid',
+        borderColor: 'sideBar.border',
+        borderRadius: 0,
+        padding: 4,
+      }),
+      style: { lineHeight: 1.2, minHeight: 54 },
+    },
   });
 
   return elements;

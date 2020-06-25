@@ -71,6 +71,7 @@ export const Reply = ({ reply }: ReplyProps) => {
         css={css({
           borderBottom: '1px solid',
           borderColor: 'sideBar.border',
+          position: 'relative',
         })}
       >
         {!editing ? (

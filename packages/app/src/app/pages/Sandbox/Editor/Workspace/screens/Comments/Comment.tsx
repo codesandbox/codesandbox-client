@@ -10,6 +10,7 @@ import {
 } from '@codesandbox/components';
 import VisuallyHidden from '@reach/visually-hidden';
 import { css } from '@styled-system/css';
+import { Markdown } from 'app/components/Markdown';
 import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
@@ -146,7 +147,7 @@ export const Comment = React.memo<{
           })}
         >
           <Text itemProp="text" block css={truncateText} marginBottom={2}>
-            {comment.content}
+            <Markdown source={comment.content} />
           </Text>
           <Text variant="muted" size={2}>
             {getRepliesString(comment.replyCount)}

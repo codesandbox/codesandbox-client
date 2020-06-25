@@ -20,6 +20,7 @@ type State = {
     };
   };
   currentComments: CommentFragment[];
+  isQueryingUsers: boolean;
   selectedCommentsFilter: CommentsFilterOption;
   currentCommentId: string | null;
   currentCommentPositions: {
@@ -42,6 +43,7 @@ type State = {
 
 export const state: State = {
   multiCommentsSelector: null,
+  isQueryingUsers: false,
   currentCommentPositions: null,
   usersQueryResult: [],
   comments: {},

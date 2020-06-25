@@ -18,6 +18,10 @@ export const AddComment: React.FC<Props> = ({ onSubmit }) => {
     initialMentions: {},
     onSubmit,
     fixed: true,
+    props: {
+      autosize: true,
+      style: { lineHeight: 1.2, minHeight: 32 },
+    },
   });
   return (
     <Element
