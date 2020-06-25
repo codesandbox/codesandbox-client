@@ -65,11 +65,5 @@ export const Repo = ({ name = '', path = null, ...props }: DashboardRepo) => {
     onDoubleClick,
   };
 
-  return (
-    <>
-      <div>
-        <Component {...folderProps} {...interactionProps} {...props} />
-      </div>
-    </>
-  );
+  return <Component {...folderProps} {...interactionProps} {...props} />;
 };

@@ -18,7 +18,6 @@ export const RepoListItem = ({
   onClick,
   onDoubleClick,
   onContextMenu,
-  isNewFolder,
   ...props
 }) => (
   <ListAction
