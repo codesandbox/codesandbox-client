@@ -14,9 +14,9 @@ export const AllPage = () => {
   const [creating, setCreating] = React.useState(false);
   const params = useParams<{ path: string }>();
   const history = useHistory();
-  const items = useFilteredItems(params, level);
-  const currentPath = params.path || '';
+  const currentPath = decodeURIComponent(params.path || '');
   const cleanParam = currentPath.split(' ').join('{}');
+  const items = useFilteredItems(currentPath, cleanParam, level);
   const {
     actions,
     state: {

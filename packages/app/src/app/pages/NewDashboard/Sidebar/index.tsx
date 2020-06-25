@@ -517,6 +517,11 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     onSubmit();
   };
 
+  const encodedPath = path
+    .split('/')
+    .map(encodeURIComponent)
+    .join('/');
+
   return (
     <>
       <RowItem
@@ -528,11 +533,12 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
         setFoldersVisibility={setFoldersVisibility}
       >
         <Link
-          onClick={() => history.push('/new-dashboard' + path)}
+          to={'/new-dashboard' + encodedPath}
+          onClick={() => history.push('/new-dashboard' + encodedPath)}
           onContextMenu={onContextMenu}
           onKeyDown={event => {
             if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
-              history.push('/new-dashboard' + path, {
+              history.push('/new-dashboard' + encodedPath, {
                 focus: 'FIRST_ITEM',
               });
             }

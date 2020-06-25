@@ -16,9 +16,11 @@ const skeletonRow = {
   type: 'skeleton-row' as 'skeleton-row',
 };
 
-export const useFilteredItems = (params: Params, level: number) => {
-  const path = params.path || '';
-  const cleanPath = path.split(' ').join('{}');
+export const useFilteredItems = (
+  path: string,
+  cleanPath: string,
+  level: number
+) => {
   const {
     state: {
       dashboard: {
