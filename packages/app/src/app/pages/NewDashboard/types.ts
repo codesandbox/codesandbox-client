@@ -37,6 +37,7 @@ export type DashboardRepo = {
   owner: string;
   sandboxes: RepoFragmentDashboardFragment[];
   type: 'repo';
+  path?: string;
 };
 
 export type DashboardNewFolder = {
