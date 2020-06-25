@@ -10,6 +10,7 @@ import detectOldBrowser from '@codesandbox/common/lib/detect-old-browser';
 import { packageFilter } from '../../../utils/resolve-utils';
 import evaluateCode from '../../../loaders/eval';
 import { patchedResolve } from './utils/resolvePatch';
+import { getBabelTypes } from './utils/babelTypes';
 
 let cache = {};
 let cachedPaths = {};
@@ -84,6 +85,10 @@ export default function evaluate(
           availablePlugins,
           availablePresets
         );
+    }
+
+    if (requirePath === '@babel/types') {
+      return getBabelTypes();
     }
 
     const requiredNativeModule = BFSRequire(requirePath);

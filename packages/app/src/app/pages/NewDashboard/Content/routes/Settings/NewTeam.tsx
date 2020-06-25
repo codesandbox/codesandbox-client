@@ -30,7 +30,7 @@ export const NewTeam = () => {
   return (
     <>
       <Helmet>
-        <title>Create Team - CodeSandbox</title>
+        <title>Create Workspace - CodeSandbox</title>
       </Helmet>
       <Element
         css={css({
@@ -55,7 +55,7 @@ export const NewTeam = () => {
                 </Text>
                 <Text size={3} variant="muted" align="center">
                   You are one step away from seamlessly collaborating, managing
-                  team projects and much more...
+                  projects and much more...
                 </Text>
               </Stack>
 
@@ -63,7 +63,7 @@ export const NewTeam = () => {
                 <Input
                   name="name"
                   type="text"
-                  placeholder="Team name"
+                  placeholder="Workspace name"
                   autoFocus
                   css={css({ height: 8 })}
                 />
@@ -73,7 +73,7 @@ export const NewTeam = () => {
                   type="submit"
                   css={css({ height: 8, fontSize: 3 })}
                 >
-                  Create team
+                  Create workspace
                 </Button>
               </Stack>
             </Stack>

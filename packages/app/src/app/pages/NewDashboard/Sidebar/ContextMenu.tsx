@@ -1,11 +1,25 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { Stack, Element, Icon, Text } from '@codesandbox/components';
+import { useHistory, useLocation } from 'react-router-dom';
+import { Stack, Menu, Icon, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import css from '@styled-system/css';
+import { Position } from '../Components/Selection';
+import { DashboardBaseFolder } from '../types';
 
-export const ContextMenu = ({
+const Context = React.createContext({
+  setVisibility: null,
+});
+
+interface ContextMenuProps {
+  visible: boolean;
+  setVisibility: (val: boolean) => void;
+  position: Position;
+  folder: DashboardBaseFolder;
+  setRenaming: (val: boolean) => void;
+  setNewFolderPath: (val: string) => void;
+}
+
+export const ContextMenu: React.FC<ContextMenuProps> = ({
   visible,
   position,
   setVisibility,
@@ -14,34 +28,8 @@ export const ContextMenu = ({
   setNewFolderPath,
 }) => {
   const { actions } = useOvermind();
-
-  React.useEffect(() => {
-    // close when user clicks outside or scrolls away
-    const handler = () => {
-      if (visible) setVisibility(false);
-    };
-
-    document.addEventListener('click', handler);
-
-    return () => {
-      document.removeEventListener('click', handler);
-    };
-  }, [visible, setVisibility]);
-
-  // handle key down events - close on escape + disable the rest
-  // TODO: handle arrow keys and space/enter.
-  React.useEffect(() => {
-    const handler = event => {
-      if (!visible) return;
-      if (event.keyCode === ESC) setVisibility(false);
-      event.preventDefault();
-    };
-
-    document.addEventListener('keydown', handler);
-    return () => {
-      document.removeEventListener('keydown', handler);
-    };
-  });
+  const history = useHistory();
+  const location = useLocation();
 
   if (!visible || !folder) return null;
 
@@ -49,7 +37,7 @@ export const ContextMenu = ({
 
   if (folder.name === 'Drafts') {
     menuOptions = (
-      <MenuItem>
+      <MenuItem onSelect={() => {}}>
         <Stack gap={1}>
           <Icon name="lock" size={14} />
           <Text>Protected</Text>
@@ -58,20 +46,33 @@ export const ContextMenu = ({
     );
   } else if (folder.name === 'All sandboxes') {
     menuOptions = (
-      <MenuItem onClick={() => setNewFolderPath(folder.path + '/__NEW__')}>
+      <MenuItem onSelect={() => setNewFolderPath(folder.path + '/__NEW__')}>
         New folder
       </MenuItem>
     );
   } else {
     menuOptions = (
       <>
-        <MenuItem onClick={() => setNewFolderPath(folder.path + '/__NEW__')}>
+        <MenuItem onSelect={() => setNewFolderPath(folder.path + '/__NEW__')}>
           New folder
         </MenuItem>
-        <MenuItem onClick={() => setRenaming(true)}>Rename folder</MenuItem>
+        <MenuItem onSelect={() => setRenaming(true)}>Rename folder</MenuItem>
         <MenuItem
-          onClick={() => {
+          onSelect={() => {
             actions.dashboard.deleteFolder({ path: folder.path });
+
+            const isCurrentlyOpened =
+              '/new-dashboard/all' + folder.path === location.pathname;
+
+            if (isCurrentlyOpened) {
+              // navigate out of folder when it's deleted
+              const parentFolder = folder.path
+                .split('/')
+                .slice(0, -1)
+                .join('/');
+              history.push('/new-dashboard/all' + parentFolder);
+            }
+
             track('Dashboard - Delete folder', {
               source: 'Sidebar',
               dashboardVersion: 2,
@@ -86,24 +87,29 @@ export const ContextMenu = ({
 
   return (
     <>
-      <Stack
-        direction="vertical"
-        data-reach-menu-list
-        data-component="MenuList"
-        css={css({
-          position: 'absolute',
-          width: 120,
-          top: position.y,
-          left: position.x,
-          zIndex: 3,
-        })}
+      <Menu.ContextMenu
+        visible={visible}
+        setVisibility={setVisibility}
+        position={position}
+        style={{ width: 120 }}
       >
-        {menuOptions}
-      </Stack>
+        <Context.Provider value={{ setVisibility }}>
+          {menuOptions}
+        </Context.Provider>
+      </Menu.ContextMenu>
     </>
   );
 };
 
-const MenuItem = props => (
-  <Element data-reach-menu-item="" data-component="MenuItem" {...props} />
-);
+const MenuItem = ({ onSelect, ...props }) => {
+  const { setVisibility } = React.useContext(Context);
+  return (
+    <Menu.Item
+      onSelect={() => {
+        onSelect();
+        setVisibility(false);
+      }}
+      {...props}
+    />
+  );
+};

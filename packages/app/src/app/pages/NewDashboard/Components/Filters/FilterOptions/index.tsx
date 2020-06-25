@@ -1,5 +1,9 @@
-import { orderBy } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
+
+// Used because react complains when we have a checked with no onChange
+// We want that since we trigger the onChange on the menuItem so you as a user
+// can click anywhere
+import { orderBy, noop } from 'lodash-es';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { Text, Menu, Checkbox } from '@codesandbox/components';
@@ -33,14 +37,13 @@ export const FilterOptions: FunctionComponent<Props> = ({
       },
     },
   } = useOvermind();
-
-  const toggleTemplate = (name: string, select: boolean) =>
-    select ? blacklistedTemplateRemoved(name) : blacklistedTemplateAdded(name);
+  const templates = possibleTemplates && possibleTemplates.length > 0;
   const allSelected = possibleTemplates.every(({ id }) =>
     isTemplateSelected(id)
   );
 
-  const templates = possibleTemplates && possibleTemplates.length > 0;
+  const toggleTemplate = (name: string, select: boolean) =>
+    select ? blacklistedTemplateRemoved(name) : blacklistedTemplateAdded(name);
 
   return (
     <>
@@ -73,7 +76,8 @@ export const FilterOptions: FunctionComponent<Props> = ({
                     })}
                   >
                     <Checkbox
-                      defaultChecked={selected}
+                      onChange={noop}
+                      checked={selected}
                       label={niceName || name}
                     />
                   </Menu.Item>
@@ -101,7 +105,11 @@ export const FilterOptions: FunctionComponent<Props> = ({
                 color: allSelected ? 'body' : 'muted',
               })}
             >
-              <Checkbox defaultChecked={allSelected} label="Select All" />
+              <Checkbox
+                onChange={noop}
+                checked={allSelected}
+                label="Select All"
+              />
             </Menu.Item>
           )}
         </Menu.List>

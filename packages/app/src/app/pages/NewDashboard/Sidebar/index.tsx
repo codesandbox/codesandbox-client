@@ -21,39 +21,53 @@ import {
   IconButton,
   Button,
   Input,
+  IconNames,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
-import { TeamAvatar } from './TeamAvatar';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 import { ContextMenu } from './ContextMenu';
+import { DashboardBaseFolder } from '../types';
+import { Position } from '../Components/Selection';
 
 export const SIDEBAR_WIDTH = 240;
 
 const SidebarContext = React.createContext(null);
 
-export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
-  const {
-    state: { dashboard, user },
-    actions,
-  } = useOvermind();
-  const [activeAccount, setActiveAccount] = useState({
+interface SidebarProps {
+  visible: boolean;
+  onSidebarToggle: () => void;
+  css?: any;
+  style?: React.CSSProperties;
+  id?: string;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({
+  visible,
+  onSidebarToggle,
+  ...props
+}) => {
+  const { state, actions } = useOvermind();
+  const [activeAccount, setActiveAccount] = useState<{
+    username: string | null;
+    avatarUrl: string | null;
+  }>({
     username: null,
     avatarUrl: null,
   });
+  const { dashboard, user } = state;
 
   React.useEffect(() => {
     actions.dashboard.getTeams();
-  }, [actions.dashboard, user]);
+  }, [actions.dashboard, user?.id]);
 
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
-  }, [actions.dashboard, dashboard.activeTeam]);
+  }, [actions.dashboard, state.activeTeam]);
 
   React.useEffect(() => {
-    if (dashboard.activeTeam) {
-      const team = dashboard.teams.find(
-        ({ id }) => id === dashboard.activeTeam
-      );
+    if (state.activeTeam) {
+      const team = dashboard.teams.find(({ id }) => id === state.activeTeam);
 
       if (team) setActiveAccount({ username: team.name, avatarUrl: null });
     } else if (user) {
@@ -62,16 +76,25 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
         avatarUrl: user.avatarUrl,
       });
     }
-  }, [dashboard.activeTeam, dashboard.activeTeamInfo, dashboard.teams, user]);
+  }, [state.activeTeam, state.activeTeamInfo, dashboard.teams, user]);
+
+  const inTeamContext =
+    activeAccount && user && activeAccount.username !== user.username;
 
   const folders = dashboard.allCollections || [];
 
   // context menu for folders
   const [menuVisible, setMenuVisibility] = React.useState(true);
-  const [menuPosition, setMenuPosition] = React.useState({ x: null, y: null });
-  const [menuFolder, setMenuFolder] = React.useState(null);
+  const [menuPosition, setMenuPosition] = React.useState<Position>({
+    x: null,
+    y: null,
+  });
+  const [
+    menuFolder,
+    setMenuFolder,
+  ] = React.useState<DashboardBaseFolder | null>(null);
   const [isRenamingFolder, setRenamingFolder] = React.useState(false);
-  const [newFolderPath, setNewFolderPath] = React.useState(null);
+  const [newFolderPath, setNewFolderPath] = React.useState<string | null>(null);
 
   const menuState = {
     menuFolder,
@@ -167,10 +190,9 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
                       css={css({
                         height: 10,
                         textAlign: 'left',
-                        backgroundColor:
-                          activeAccount.username === user.username
-                            ? 'grays.500'
-                            : 'transparent',
+                        backgroundColor: !inTeamContext
+                          ? 'grays.500'
+                          : 'transparent',
                       })}
                       style={{ paddingLeft: 8 }}
                       onSelect={() => {
@@ -252,21 +274,36 @@ export const Sidebar = ({ visible, onSidebarToggle, ...props }) => {
               </Stack>
             )}
           </ListItem>
-          <RowItem name="Home" path="home" icon="box" />
-          <RowItem name="Recent" path="recent" icon="clock" />
-          <RowItem name="Drafts" path="/drafts" icon="file" />
+          <RowItem name="Home" path="/home" icon="box" />
+          {inTeamContext ? null : (
+            <RowItem name="Recent" path="/recent" icon="clock" />
+          )}
+          <RowItem
+            name={!inTeamContext ? 'Drafts' : 'My Drafts'}
+            path="/drafts"
+            icon="file"
+          />
+
+          {inTeamContext ? <Menu.Divider /> : null}
 
           <NestableRowItem
             name="All sandboxes"
-            path=""
+            path="/all"
+            folderPath=""
+            rootPath="/all"
             folders={[
               ...folders,
-              ...(newFolderPath ? [{ path: newFolderPath, name: '' }] : []),
+              ...(newFolderPath
+                ? [{ path: newFolderPath, name: '', parent: null }]
+                : []),
             ]}
           />
 
-          <RowItem name="Templates" path="templates" icon="star" />
-          <RowItem name="Recently Deleted" path="deleted" icon="trash" />
+          {inTeamContext ? (
+            <RowItem name="Recently Modified" path="/recent" icon="clock" />
+          ) : null}
+          <RowItem name="Templates" path="/templates" icon="star" />
+          <RowItem name="Recently Deleted" path="/deleted" icon="trash" />
         </List>
         <Element margin={4}>
           <Button
@@ -320,6 +357,7 @@ const linkStyles = {
   alignItems: 'center',
   paddingLeft: 8,
   paddingRight: 8,
+  flexShrink: 0,
 };
 
 const canNotAcceptSandboxes = ['home', 'recent', 'all'];
@@ -345,9 +383,19 @@ const isSamePath = (draggedItem, dropPath) => {
   return false;
 };
 
-const RowItem = ({
+interface RowItemProps {
+  name: string;
+  path: string;
+  icon: IconNames;
+  setFoldersVisibility?: (val: boolean) => void;
+  folderPath?: string;
+  style?: React.CSSProperties;
+}
+
+const RowItem: React.FC<RowItemProps> = ({
   name,
   path,
+  folderPath = path,
   icon,
   setFoldersVisibility = null,
   ...props
@@ -356,12 +404,16 @@ const RowItem = ({
   if (!canNotAcceptSandboxes.includes(path)) accepts.push('sandbox');
   if (!canNotAcceptFolders.includes(path)) accepts.push('folder');
 
+  const usedPath = folderPath || path;
   const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
     accept: accepts,
-    drop: (item, monitor) => ({ path, isSamePath: isSamePath(item, path) }),
+    drop: (item, monitor) => ({
+      path: usedPath,
+      isSamePath: isSamePath(item, usedPath),
+    }),
     collect: monitor => ({
       isOver: monitor.isOver(),
-      canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path),
+      canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), usedPath),
       isDragging: !!monitor.getItem(),
     }),
   });
@@ -370,10 +422,11 @@ const RowItem = ({
 
   let linkTo: string;
   if (path === '/drafts') linkTo = '/new-dashboard/drafts';
-  else linkTo = '/new-dashboard/' + path;
+  else linkTo = '/new-dashboard' + path;
 
   const location = useLocation();
   const isCurrentLink = linkTo === location.pathname;
+  const history = useHistory();
 
   /** Toggle nested folders when user
    * is drags an item over a folder after a treshold
@@ -428,7 +481,16 @@ const RowItem = ({
       )}
     >
       {props.children || (
-        <Link as={RouterLink} to={linkTo} style={linkStyles}>
+        <Link
+          as={RouterLink}
+          to={linkTo}
+          style={linkStyles}
+          onKeyDown={event => {
+            if (event.keyCode === ENTER) {
+              history.push(linkTo, { focus: 'FIRST_ITEM' });
+            }
+          }}
+        >
           <Stack
             as="span"
             css={css({ width: 10 })}
@@ -444,7 +506,21 @@ const RowItem = ({
   );
 };
 
-const NestableRowItem = ({ name, path, folders }) => {
+interface NestableRowItemProps {
+  name: string;
+  folderPath: string;
+  path: string;
+  rootPath: string;
+  folders: DashboardBaseFolder[];
+}
+
+const NestableRowItem: React.FC<NestableRowItemProps> = ({
+  name,
+  path,
+  folderPath,
+  folders,
+  rootPath,
+}) => {
   const { actions } = useOvermind();
 
   const {
@@ -467,10 +543,29 @@ const NestableRowItem = ({ name, path, folders }) => {
     const newFolderParent = newFolderPath.replace('/__NEW__', '');
     if (name === 'All sandboxes') {
       hasNewNestedFolder = true;
-    } else if (newFolderParent.length && path.includes(newFolderParent)) {
+    } else if (newFolderParent.length && folderPath.includes(newFolderParent)) {
       hasNewNestedFolder = true;
     }
   }
+
+  const location = useLocation();
+  const currentFolderLocationPath = '/new-dashboard' + rootPath + folderPath;
+  React.useEffect(() => {
+    // Auto open folder in the sidebar if it's opened
+    const pathName = location.pathname;
+
+    if (
+      pathName.startsWith(currentFolderLocationPath + '/') &&
+      !foldersVisible
+    ) {
+      setFoldersVisibility(true);
+    }
+  }, [
+    location.pathname,
+    currentFolderLocationPath,
+    foldersVisible,
+    setFoldersVisibility,
+  ]);
 
   React.useEffect(() => {
     if (hasNewNestedFolder) setFoldersVisibility(true);
@@ -479,11 +574,11 @@ const NestableRowItem = ({ name, path, folders }) => {
   const onContextMenu = event => {
     event.preventDefault();
     setMenuVisibility(true);
-    setMenuFolder({ name, path });
+    setMenuFolder({ name, path: folderPath });
     setMenuPosition({ x: event.clientX, y: event.clientY });
   };
 
-  let subFolders;
+  let subFolders: DashboardBaseFolder[];
   if (name === 'All sandboxes') {
     subFolders = folders.filter(folder => {
       if (folder.path === newFolderPath) {
@@ -497,16 +592,17 @@ const NestableRowItem = ({ name, path, folders }) => {
         .split('/')
         .slice(0, -1)
         .join('/');
-      return parentPath === path;
+
+      return parentPath === folderPath;
     });
   }
 
-  const nestingLevel = path.split('/').length - 1;
+  const nestingLevel = folderPath.split('/').length - 1;
   const history = useHistory();
 
   /* Rename logic */
-  const isRenaming = isRenamingFolder && menuFolder.path === path;
-  const isNewFolder = newFolderPath === path;
+  const isRenaming = isRenamingFolder && menuFolder.path === folderPath;
+  const isNewFolder = newFolderPath === folderPath;
   const [newName, setNewName] = React.useState(name);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -528,23 +624,30 @@ const NestableRowItem = ({ name, path, folders }) => {
       // nothing to do here
     } else if (isNewFolder) {
       if (newName) {
-        const folderPath = path.replace('__NEW__', newName);
-        await actions.dashboard.createFolder(folderPath);
+        const sanitizedPath = folderPath.replace('__NEW__', newName);
+        await actions.dashboard.createFolder(sanitizedPath);
         track('Dashboard - Create Directory', {
           source: 'Sidebar',
           dashboardVersion: 2,
-          folderPath,
+          folderPath: sanitizedPath,
         });
       }
     } else {
+      const newPath = join(dirname(folderPath), newName);
       await actions.dashboard.renameFolder({
-        path,
-        newPath: join(dirname(path), newName),
+        path: folderPath,
+        newPath,
       });
+
       track('Dashboard - Rename Folder', {
         source: 'Sidebar',
         dashboardVersion: 2,
       });
+
+      if (currentFolderLocationPath === location.pathname) {
+        // if this directory is opened
+        history.push('/new-dashboard' + rootPath + newPath);
+      }
     }
 
     setNewFolderPath(null);
@@ -563,16 +666,19 @@ const NestableRowItem = ({ name, path, folders }) => {
       <RowItem
         name={name}
         path={path}
+        folderPath={folderPath}
         icon="folder"
         style={{ height: nestingLevel ? 8 : 10 }}
         setFoldersVisibility={setFoldersVisibility}
       >
         <Link
-          onClick={() => history.push('/new-dashboard/all' + path)}
+          onClick={() => history.push('/new-dashboard' + path)}
           onContextMenu={onContextMenu}
           onKeyDown={event => {
-            if (event.keyCode === ENTER) {
-              history.push('/new-dashboard/all' + path);
+            if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
+              history.push('/new-dashboard' + path, {
+                focus: 'FIRST_ITEM',
+              });
             }
           }}
           tabIndex={0}
@@ -602,10 +708,10 @@ const NestableRowItem = ({ name, path, folders }) => {
               })}
             />
           ) : (
-            <Element as="span" css={css({ width: 5 })} />
+            <Element as="span" css={css({ width: 5, flexShrink: 0 })} />
           )}
 
-          <Stack align="center" gap={3} css={{ width: '100%' }}>
+          <Stack align="center" gap={3} css={{ width: 'calc(100% - 28px)' }}>
             <Stack
               as="span"
               css={css({ width: 4 })}
@@ -649,7 +755,9 @@ const NestableRowItem = ({ name, path, folders }) => {
                 <NestableRowItem
                   key={folder.path}
                   name={folder.name}
-                  path={folder.path}
+                  path={rootPath + folder.path}
+                  rootPath={rootPath}
+                  folderPath={folder.path}
                   folders={folders}
                 />
               ))}

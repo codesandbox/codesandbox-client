@@ -7,7 +7,9 @@ import {
   EnvironmentVariable,
   GitChanges,
   GitCommit,
+  GitFileCompare,
   GitInfo,
+  GitPathChanges,
   GitPr,
   Module,
   PaymentDetails,
@@ -86,8 +88,8 @@ export default {
   revokeToken(token: string): Promise<void> {
     return api.delete(`/auth/revoke/${token}`);
   },
-  getDependency(name: string): Promise<Dependency> {
-    return api.get(`/dependencies/${name}@latest`);
+  getDependency(name: string, tag: string): Promise<Dependency> {
+    return api.get(`/dependencies/${name}@${tag}`);
   },
   async getSandbox(id: string): Promise<Sandbox> {
     const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
@@ -142,8 +144,16 @@ export default {
       })
       .then(modulesResult => modulesResult.map(transformModule));
   },
-  getGitChanges(sandboxId: string): Promise<GitChanges> {
+  getGitChanges(sandboxId: string): Promise<GitPathChanges> {
     return api.get(`/sandboxes/${sandboxId}/git/diff`);
+  },
+  saveGitOriginalCommitSha(
+    sandboxId: string,
+    commitSha: string
+  ): Promise<void> {
+    return api.patch(`/sandboxes/${sandboxId}/original_git_commit_sha`, {
+      original_git_commit_sha: commitSha,
+    });
   },
   saveTemplate(sandboxId: string, template: TemplateType): Promise<void> {
     return api.put(`/sandboxes/${sandboxId}/`, {
@@ -332,16 +342,61 @@ export default {
   ): Promise<GitInfo> {
     return api.post(`/sandboxes/${sandboxId}/git/repo/${repoTitle}`, data);
   },
-  createGitCommit(sandboxId: string, message: string): Promise<GitCommit> {
+  createGitCommit(
+    sandboxId: string,
+    message: string,
+    changes: GitChanges,
+    parentCommitShas: string[]
+  ): Promise<GitCommit> {
     return api.post(`/sandboxes/${sandboxId}/git/commit`, {
       id: sandboxId,
       message,
+      changes,
+      parentCommitShas,
     });
   },
-  createGitPr(sandboxId: string, message: string): Promise<GitPr> {
+  async compareGit(
+    sandboxId: string,
+    baseRef: string,
+    headRef: string,
+    includeContents = false
+  ): Promise<{
+    baseCommitSha: string;
+    headCommitSha: string;
+    files: GitFileCompare[];
+  }> {
+    const response: any = await api.post(
+      `/sandboxes/${sandboxId}/git/compare`,
+      {
+        baseRef,
+        headRef,
+        includeContents,
+      }
+    );
+
+    return response;
+  },
+  getGitPr(sandboxId: string, prNumber: number): Promise<GitPr> {
+    return api.get(`/sandboxes/${sandboxId}/git/prs/${prNumber}`);
+  },
+  async getGitRights(sandboxId: string) {
+    const response = await api.get<{ permission: 'admin' | 'write' | 'read' }>(
+      `/sandboxes/${sandboxId}/git/rights`
+    );
+
+    return response.permission;
+  },
+  createGitPr(
+    sandboxId: string,
+    title: string,
+    description: string,
+    changes: GitChanges
+  ): Promise<GitPr> {
     return api.post(`/sandboxes/${sandboxId}/git/pr`, {
-      id: sandboxId,
-      message,
+      sandboxId,
+      title,
+      description,
+      changes,
     });
   },
   async createLiveRoom(sandboxId: string): Promise<string> {

@@ -1,11 +1,13 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-import Row from '@codesandbox/common/lib/components/flex/Row';
-import Padding from '@codesandbox/common/lib/components/spacing/Padding';
+import css from '@styled-system/css';
+import {
+  ThemeProvider,
+  Button,
+  Text,
+  Element,
+  Stack,
+} from '@codesandbox/components';
+import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { SubTitle } from 'app/components/SubTitle';
-import { Title } from 'app/components/Title';
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
@@ -41,33 +43,24 @@ export const LivePage: React.FC<Props> = ({ match }) => {
     if (!state.isAuthenticating && !state.user) {
       return (
         <>
-          <div
-            style={{
-              fontWeight: 300,
-              color: 'rgba(255, 255, 255, 0.5)',
-              marginBottom: '1rem',
-              fontSize: '1.5rem',
-            }}
-          >
+          <Text weight="bold" size={6}>
             Sign in required
-          </div>
-          <Title style={{ fontSize: '1.25rem' }}>
+          </Text>
+          <Text block marginTop={4} size={4}>
             You need to sign in to join this session
-          </Title>
-          <br />
-          <div>
+          </Text>
+          <Element marginTop={4}>
             <Button
               onClick={() =>
                 actions.live.signInToRoom({ roomId: match.params.id })
               }
-              small
+              autoWidth
             >
-              <Row>
-                <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with
-                GitHub
-              </Row>
+              <Stack gap={2}>
+                <GithubIcon /> <Text>Sign in with GitHub</Text>
+              </Stack>
             </Button>
-          </div>
+          </Element>
         </>
       );
     }
@@ -76,33 +69,31 @@ export const LivePage: React.FC<Props> = ({ match }) => {
       if (state.live.error === 'room not found') {
         return (
           <>
-            <div
-              style={{
-                fontWeight: 300,
-                color: 'rgba(255, 255, 255, 0.5)',
-                marginBottom: '1rem',
-                fontSize: '1.5rem',
-              }}
-            >
+            <Text weight="bold" size={6}>
               Something went wrong
-            </div>
-            <Title style={{ fontSize: '1.25rem' }}>
+            </Text>
+            <Text block marginTop={4} size={4}>
               It seems like this session doesn
               {"'"}t exist or has been closed
-            </Title>
-            <br />
-            <Link to="/s">Create Sandbox</Link>
+            </Text>
+            <Link to="/s" css={css({ textDecoration: 'none' })}>
+              <Button marginTop={5}>Create Sandbox</Button>
+            </Link>
           </>
         );
       }
 
       return (
         <>
-          <Title>An error occured while connecting to the live session:</Title>
-          <SubTitle>{state.live.error}</SubTitle>
-          <br />
-          <br />
-          <Link to="/s">Create Sandbox</Link>
+          <Text weight="bold" size={6}>
+            An error occurred while connecting to the live session:
+          </Text>
+          <Text block marginTop={4} size={4}>
+            {state.live.error}
+          </Text>
+          <Link to="/s" css={css({ textDecoration: 'none' })}>
+            <Button marginTop={5}>Create Sandbox</Button>
+          </Link>
         </>
       );
     }
@@ -114,25 +105,32 @@ export const LivePage: React.FC<Props> = ({ match }) => {
 
   if (content) {
     return (
-      <Fullscreen>
-        <Padding
-          style={{
+      <ThemeProvider theme={codesandboxBlack}>
+        <Element
+          css={css({
             display: 'flex',
-            flexDirection: 'column',
-            width: '100vw',
-            height: '100vh',
-          }}
+            flex: 'auto',
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'sideBar.background',
+            fontFamily: 'Inter',
+          })}
         >
-          <Navigation title="Live Session" />
-          <Centered
-            style={{ flex: 1, width: '100%', height: '100%' }}
-            horizontal
-            vertical
+          <Element
+            css={css({ width: '100%', height: '100vh', overflow: 'hidden' })}
           >
-            {content}
-          </Centered>
-        </Padding>
-      </Fullscreen>
+            <Navigation title="Live Session" />
+            <Stack
+              direction="vertical"
+              align="center"
+              justify="center"
+              css={css({ width: '100%', height: '100%' })}
+            >
+              {content}
+            </Stack>
+          </Element>
+        </Element>
+      </ThemeProvider>
     );
   }
 

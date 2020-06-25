@@ -12,30 +12,17 @@ import {
   Link,
   Icon,
   IconButton,
-  Element,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-import { Overlay } from 'app/components/Overlay';
-import { Notifications } from './Notifications';
+import { Notifications } from 'app/components/Notifications';
 
 export const Header = ({ onSidebarToggle }) => {
   const [value, setValue] = useState('');
 
   const {
-    actions: {
-      modalOpened,
-      userNotifications: { notificationsClosed, notificationsOpened },
-    },
-    state: {
-      // isLoggedIn,
-      // isAuthenticating,
-      user,
-      userNotifications: {
-        notificationsOpened: notificationsMenuOpened,
-        unreadCount,
-      },
-    },
+    actions: { modalOpened },
+    state: { user },
   } = useOvermind();
 
   const history = useHistory();
@@ -43,7 +30,7 @@ export const Header = ({ onSidebarToggle }) => {
   const searchQuery = new URLSearchParams(window.location.search).get('query');
 
   const search = query => history.push(`/new-dashboard/search?query=${query}`);
-  const [debouncedSearch] = useDebouncedCallback(search, 250);
+  const [debouncedSearch] = useDebouncedCallback(search, 100);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -94,67 +81,7 @@ export const Header = ({ onSidebarToggle }) => {
           Create Sandbox
         </Button>
 
-        {user && (
-          <Overlay
-            content={Notifications}
-            event="Notifications"
-            isOpen={notificationsMenuOpened}
-            onClose={notificationsClosed}
-            onOpen={notificationsOpened}
-            propagate
-          >
-            {open => (
-              <Button
-                variant="secondary"
-                css={css({
-                  size: 26,
-                  ':hover .border-for-bell': {
-                    background: theme =>
-                      theme.colors.secondaryButton.hoverBackground,
-                  },
-                })}
-                onClick={open}
-              >
-                <Element
-                  css={css({
-                    position: 'relative',
-                  })}
-                >
-                  <Icon name="bell" size={11} title="Notifications" />
-                  {unreadCount > 0 ? (
-                    <>
-                      <Element
-                        css={css({
-                          position: 'absolute',
-                          width: '5px',
-                          height: '5px',
-                          borderRadius: '50%',
-                          backgroundColor: 'blues.600',
-                          top: '-2px',
-                          left: '6px',
-                          zIndex: 10,
-                        })}
-                      />
-                      <Element
-                        className="border-for-bell"
-                        css={css({
-                          position: 'absolute',
-                          width: '7px',
-                          height: '7px',
-                          borderRadius: '50%',
-                          backgroundColor: 'sideBar.border',
-                          top: '-3px',
-                          left: '5px',
-                          zIndex: 9,
-                        })}
-                      />
-                    </>
-                  ) : null}
-                </Element>
-              </Button>
-            )}
-          </Overlay>
-        )}
+        {user && <Notifications />}
 
         <UserMenu>
           <Button variant="secondary" css={css({ size: 26 })}>

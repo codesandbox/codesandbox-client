@@ -1,10 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
 import { orderBy } from 'lodash-es';
+import {
+  DashboardSandbox,
+  DashboardFolder,
+  DashboardTemplate,
+  DashboardSkeletonRow,
+} from 'app/pages/NewDashboard/types';
 
-export const useFilteredItems = (params, level) => {
+type Params = {
+  path?: string;
+};
+
+const skeletonRow = {
+  type: 'skeleton-row' as 'skeleton-row',
+};
+
+export const useFilteredItems = (params: Params, level: number) => {
   const param = params.path || '';
-  const cleanParam = param.split(' ').join('');
+  const cleanParam = param.split(' ').join('{}');
   const {
     state: {
       dashboard: {
@@ -16,45 +30,53 @@ export const useFilteredItems = (params, level) => {
       },
     },
   } = useOvermind();
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<
+    Array<
+      | DashboardSandbox
+      | DashboardTemplate
+      | DashboardFolder
+      | DashboardSkeletonRow
+    >
+  >([]);
+
+  const folderSandboxes = (sandboxes.ALL || {})[cleanParam];
 
   useEffect(() => {
-    const sandboxesForPath =
-      sandboxes.ALL && sandboxes.ALL[cleanParam]
-        ? getFilteredSandboxes(sandboxes.ALL[cleanParam])
-        : [];
+    const sandboxesForPath = getFilteredSandboxes(folderSandboxes || []);
+    const parent = param.split('/').pop();
+    const folderFolders =
+      allCollections?.filter(
+        collection => collection.level === level && collection.parent === parent
+      ) || [];
 
-    const unsortedFolders =
-      (allCollections &&
-        allCollections.filter(
-          collection =>
-            collection.level === level && collection.parent === param
-        )) ||
-      [];
-    const sortedFolders = orderBy(unsortedFolders, 'name').sort(
+    const sortedFolders = orderBy(folderFolders, 'name').sort(
       a => (a.path === '/drafts' ? -1 : 1) // pull drafts to the top
     );
-    setItems([
-      ...sortedFolders.map(folder => ({ type: 'folder', ...folder })),
-      ...sandboxesForPath.map(sandbox => ({ type: 'sandbox', ...sandbox })),
-    ]);
+
+    const decoratedFolders = sortedFolders.map(folder => ({
+      type: 'folder' as 'folder',
+      ...folder,
+    }));
+
+    const decoratedSandboxes =
+      typeof folderSandboxes === 'undefined'
+        ? [skeletonRow]
+        : sandboxesForPath.map(sandbox => ({
+            type: 'sandbox' as 'sandbox',
+            sandbox,
+          }));
+
+    setItems([...decoratedFolders, ...decoratedSandboxes]);
   }, [
     allCollections,
-    level,
-    param,
-    filters.blacklistedTemplates,
-    sandboxesOrder,
-    sandboxes.ALL,
     cleanParam,
+    param,
+    level,
+    filters.blacklistedTemplates,
     getFilteredSandboxes,
+    sandboxesOrder,
+    folderSandboxes,
   ]);
 
-  return [
-    items,
-    (allCollections &&
-      allCollections.filter(
-        collection => collection.level === level && collection.parent === param
-      )) ||
-      [],
-  ];
+  return items;
 };

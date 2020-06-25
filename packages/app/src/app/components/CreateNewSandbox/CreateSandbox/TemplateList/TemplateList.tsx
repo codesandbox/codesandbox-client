@@ -358,9 +358,10 @@ export const TemplateList = ({
                 {templates.map((template: TemplateFragment, i) => {
                   const index = offset + i;
                   const focused = focusedTemplateIndex === offset + i;
-                  const owner =
-                    template.sandbox.collection?.team?.name ||
-                    template.sandbox.author?.username;
+                  const owner = template.sandbox
+                    ? template.sandbox.collection?.team?.name ||
+                      template.sandbox.author?.username
+                    : '';
 
                   const shortKey = showSecondaryShortcuts
                     ? index < 9

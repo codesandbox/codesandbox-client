@@ -262,6 +262,10 @@ export const moduleMovedToDirectory: AsyncAction<{
         error,
       });
     }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
@@ -313,6 +317,10 @@ export const directoryMovedToDirectory: AsyncAction<{
         message: 'Could not save new directory location',
         error,
       });
+    }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
     }
   },
   async () => {},
@@ -387,6 +395,10 @@ export const directoryDeleted: AsyncAction<{
         message: 'Could not delete directory',
         error,
       });
+    }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
     }
   },
   async () => {},
@@ -487,6 +499,10 @@ export const addedFileToSandbox: AsyncAction<Pick<
     });
 
     effects.executor.updateFiles(state.editor.currentSandbox);
+
+    if (state.editor.currentSandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
@@ -724,6 +740,10 @@ export const moduleCreated: AsyncAction<{
         error,
       });
     }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
@@ -766,6 +786,10 @@ export const moduleDeleted: AsyncAction<{
       sandbox.modules.push(removedModule);
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
       actions.internal.handleError({ message: 'Could not delete file', error });
+    }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
     }
   },
   async () => {},

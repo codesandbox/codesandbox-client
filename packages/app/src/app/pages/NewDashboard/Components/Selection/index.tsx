@@ -12,50 +12,95 @@ import {
   ALT,
   TAB,
 } from '@codesandbox/common/lib/utils/keycodes';
+import { isEqual } from 'lodash-es';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
+import {
+  DashboardTemplate,
+  DashboardSandbox,
+  DashboardFolder,
+  DashboardGridItem,
+} from '../../types';
 
-const Context = React.createContext({
-  sandboxes: [],
-  selectedIds: [],
-  onClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
-  onMouseDown: (event: React.MouseEvent<HTMLDivElement>) => {},
-  onRightClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
+export type Position = {
+  x: null | number;
+  y: null | number;
+};
+
+interface SelectionContext {
+  sandboxes: Array<DashboardSandbox | DashboardTemplate>;
+  selectedIds: string[];
+  onClick: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => void;
+  onMouseDown: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onRightClick: (
+    event: React.MouseEvent<HTMLDivElement>,
+    itemId: string
+  ) => void;
   onMenuEvent: (
     event:
       | React.MouseEvent<HTMLDivElement>
       | React.KeyboardEvent<HTMLDivElement>,
     itemId?: string
-  ) => {},
-  onBlur: (event: React.FocusEvent<HTMLDivElement>) => {},
-  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {},
-  onDragStart: (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {},
-  onDrop: (droppedResult: any) => {},
+  ) => void;
+  onBlur: (event: React.FocusEvent<HTMLDivElement>) => void;
+  onDragStart: (
+    event: React.MouseEvent<HTMLDivElement>,
+    itemId: string
+  ) => void;
+  onDrop: (droppedResult: any) => void;
+  thumbnailRef: React.Ref<HTMLDivElement> | null;
+  isDragging: boolean;
+  isRenaming: boolean;
+  setRenaming: (renaming: boolean) => void;
+}
+
+const Context = React.createContext<SelectionContext>({
+  sandboxes: [],
+  selectedIds: [],
+  onClick: () => {},
+  onMouseDown: () => {},
+  onRightClick: () => {},
+  onMenuEvent: () => {},
+  onBlur: () => {},
+  onDragStart: () => {},
+  onDrop: () => {},
   thumbnailRef: null,
   isDragging: false,
   isRenaming: false,
-  setRenaming: (renaming: boolean) => {},
+  setRenaming: renaming => {},
 });
 
-export const SelectionProvider = ({
+interface SelectionProviderProps {
+  items: Array<DashboardGridItem>;
+  createNewFolder?: (() => void) | null;
+}
+
+export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   items = [],
   createNewFolder = null,
-  ...props
+  children,
 }) => {
-  const selectionItems = [
-    ...(items || [])
-      .filter(item => item.type === 'sandbox' || item.type === 'folder')
-      .map(item => {
-        if (item.type === 'folder') return item.path;
-        return item.id;
-      }),
-  ];
+  const possibleItems = (items || []).filter(
+    item =>
+      item.type === 'sandbox' ||
+      item.type === 'template' ||
+      item.type === 'folder'
+  ) as Array<DashboardSandbox | DashboardTemplate | DashboardFolder>;
 
-  const folders = (items || []).filter(item => item.type === 'folder');
-  const sandboxes = (items || []).filter(item => item.type === 'sandbox');
+  const selectionItems = possibleItems.map(item => {
+    if (item.type === 'folder') return item.path;
+    return item.sandbox.id;
+  });
 
-  const [selectedIds, setSelectedIds] = React.useState([]);
+  const folders = (items || []).filter(
+    item => item.type === 'folder'
+  ) as DashboardFolder[];
+  const sandboxes = (items || []).filter(
+    item => item.type === 'sandbox' || item.type === 'template'
+  ) as Array<DashboardSandbox | DashboardTemplate>;
+
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
   const {
     state: { dashboard },
@@ -120,46 +165,63 @@ export const SelectionProvider = ({
   const [menuVisible, setMenuVisibility] = React.useState(false);
   const [menuPosition, setMenuPosition] = React.useState({ x: 0, y: 0 });
 
-  const onRightClick = (
-    event: React.MouseEvent<HTMLDivElement> &
-      React.KeyboardEvent<HTMLDivElement>,
-    itemId: string
-  ) => {
-    if (!selectedIds.includes(itemId)) setSelectedIds([itemId]);
-    setMenuVisibility(true);
-    setMenuPosition({ x: event.clientX, y: event.clientY });
-  };
+  const onRightClick = React.useCallback(
+    (
+      event: React.MouseEvent<HTMLDivElement> &
+        React.KeyboardEvent<HTMLDivElement>,
+      itemId: string
+    ) => {
+      setSelectedIds(s => {
+        if (!s.includes(itemId)) {
+          return [itemId];
+        }
+        return s;
+      });
 
-  const onMenuEvent = (
-    event:
-      | React.MouseEvent<HTMLDivElement>
-      | React.KeyboardEvent<HTMLDivElement>,
-    itemId?: string
-  ) => {
-    if (itemId && !selectedIds.includes(itemId)) setSelectedIds([itemId]);
+      setMenuVisibility(true);
+      setMenuPosition({ x: event.clientX, y: event.clientY });
+    },
+    [setMenuVisibility, setMenuPosition]
+  );
 
-    let menuElement;
-    if (event.type === 'click') {
-      const target = event.target as HTMLButtonElement;
-      menuElement = target;
-    } else {
-      // if the event is fired on the sandbox/folder, we find
-      // the menu button to correctly position the menu
-      const selectedItem = selectedIds[selectedIds.length - 1];
-      menuElement = document.querySelector(
-        `[data-selection-id="${selectedItem}"] button`
-      );
-    }
+  const onMenuEvent = React.useCallback(
+    (
+      event:
+        | React.MouseEvent<HTMLDivElement>
+        | React.KeyboardEvent<HTMLDivElement>,
+      itemId: string
+    ) => {
+      setSelectedIds(s => {
+        if (itemId && !s.includes(itemId)) {
+          return [itemId];
+        }
 
-    const rect = menuElement.getBoundingClientRect();
-    const position = {
-      x: rect.x + rect.width / 2,
-      y: rect.y + rect.height / 2,
-    };
+        return s;
+      });
 
-    setMenuVisibility(true);
-    setMenuPosition(position);
-  };
+      let menuElement: HTMLElement;
+      if (event.type === 'click') {
+        const target = event.target as HTMLButtonElement;
+        menuElement = target;
+      } else {
+        // if the event is fired on the sandbox/folder, we find
+        // the menu button to correctly position the menu
+        menuElement = document.querySelector(
+          `[data-selection-id="${itemId}"] button`
+        );
+      }
+
+      const rect = menuElement.getBoundingClientRect();
+      const position = {
+        x: rect.x + rect.width / 2,
+        y: rect.y + rect.height / 2,
+      };
+
+      setMenuVisibility(true);
+      setMenuPosition(position);
+    },
+    [setSelectedIds, setMenuVisibility, setMenuPosition]
+  );
 
   const onBlur = (event: React.FocusEvent<HTMLDivElement>) => {
     if (!event.bubbles) {
@@ -172,24 +234,38 @@ export const SelectionProvider = ({
 
   const [isRenaming, setRenaming] = React.useState(false);
 
-  let viewMode: string;
+  let viewMode: 'grid' | 'list';
   const location = useLocation();
 
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('home')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const history = useHistory();
 
   React.useEffect(() => {
-    if (location.state && location.state.sandboxId) {
-      setSelectedIds([location.state.sandboxId]);
-      scrollIntoViewport(location.state.sandboxId);
+    if (!location.state || !selectionItems.length) return;
+
+    if (location.state.sandboxId) {
+      const sandboxId = location.state.sandboxId;
+
+      setSelectedIds([sandboxId]);
+      scrollIntoViewport(sandboxId);
+      // clear push state
+      history.replace(location.pathname, {});
+    } else if (location.state.focus === 'FIRST_ITEM') {
+      setSelectedIds([selectionItems[0]]);
+      // imperatively move focus to content-block
+      const skipToContent = document.querySelector(
+        '#reach-skip-nav'
+      ) as HTMLDivElement;
+      skipToContent.focus();
+
+      // clear push state
       history.replace(location.pathname, {});
     }
-  }, [location, history]);
+  }, [location, history, selectionItems]);
 
-  const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onContainerKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!selectedIds.length) return;
     // disable keyboard navigation if menu is open
     if (menuVisible) return;
@@ -197,30 +273,31 @@ export const SelectionProvider = ({
     // disable selection keydowns when renaming
     if (isRenaming) return;
 
-    if (event.keyCode === ALT) onMenuEvent(event);
+    if (event.keyCode === ALT)
+      onMenuEvent(event, selectedIds[selectedIds.length - 1]);
 
     // if only one thing is selected, open it
     if (event.keyCode === ENTER && selectedIds.length === 1) {
       const selectedId = selectedIds[0];
 
-      let url;
+      let url: string;
       if (selectedId.startsWith('/')) {
         // means its a folder
         url = '/new-dashboard/all' + selectedId;
       } else {
-        const seletedSandbox = sandboxes.find(
-          sandbox => sandbox.id === selectedId
+        const selectedItem = sandboxes.find(
+          item => item.sandbox.id === selectedId
         );
         url = sandboxUrl({
-          id: seletedSandbox.id,
-          alias: seletedSandbox.alias,
+          id: selectedItem.sandbox.id,
+          alias: selectedItem.sandbox.alias,
         });
       }
 
       if (event.ctrlKey || event.metaKey) {
         window.open(url, '_blank');
       } else {
-        history.push(url);
+        history.push(url, { focus: 'FIRST_ITEM' });
       }
     }
 
@@ -312,9 +389,9 @@ export const SelectionProvider = ({
     const folderPaths = selectedIds.filter(isFolderPath).filter(notDrafts);
 
     if (sandboxIds.length) {
-      if (dropResult.path === 'deleted') {
+      if (dropResult.path === '/deleted') {
         actions.dashboard.deleteSandbox(sandboxIds);
-      } else if (dropResult.path === 'templates') {
+      } else if (dropResult.path === '/templates') {
         actions.dashboard.makeTemplate(sandboxIds);
       } else if (dropResult.path === '/drafts') {
         actions.dashboard.addSandboxesToFolder({
@@ -325,6 +402,7 @@ export const SelectionProvider = ({
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: dropResult.path,
+          deleteFromCurrentPath: location.pathname !== '/new-dashboard/recent',
         });
       }
     }
@@ -357,7 +435,10 @@ export const SelectionProvider = ({
   const [isDragging, setDragging] = React.useState(false);
 
   const [drawingRect, setDrawingRect] = React.useState(false);
-  const [selectionRect, setSelectionRect] = React.useState({
+  const [selectionRect, setSelectionRect] = React.useState<{
+    start: Position;
+    end: Position;
+  }>({
     start: { x: null, y: null },
     end: { x: null, y: null },
   });
@@ -407,16 +488,19 @@ export const SelectionProvider = ({
     const callback = () => {
       const selectionLeft = Math.min(
         selectionRect.start.x,
-        selectionRect.end.x
+        selectionRect.end.x || Infinity
       );
       const selectionRight = Math.max(
         selectionRect.start.x,
-        selectionRect.end.x
+        selectionRect.end.x || 0
       );
-      const selectionTop = Math.min(selectionRect.start.y, selectionRect.end.y);
+      const selectionTop = Math.min(
+        selectionRect.start.y,
+        selectionRect.end.y || Infinity
+      );
       const selectionBottom = Math.max(
         selectionRect.start.y,
-        selectionRect.end.y
+        selectionRect.end.y || 0
       );
 
       const visibleItems = document.querySelectorAll('[data-selection-id]');
@@ -444,8 +528,10 @@ export const SelectionProvider = ({
         overlappingIds.push(item.dataset.selectionId);
       });
 
-      setSelectedIds(overlappingIds);
-      callbackCalledAt.current = new Date().getTime();
+      if (!isEqual(selectedIds, overlappingIds)) {
+        setSelectedIds(overlappingIds);
+        callbackCalledAt.current = new Date().getTime();
+      }
     };
 
     // performance hack: don't fire the callback again if it was fired 60ms ago
@@ -467,7 +553,6 @@ export const SelectionProvider = ({
         onBlur,
         onRightClick,
         onMenuEvent,
-        onKeyDown,
         onDragStart,
         onDrop,
         thumbnailRef,
@@ -476,20 +561,20 @@ export const SelectionProvider = ({
         setRenaming,
       }}
     >
-      <SkipNav.Content
-        tabIndex={0}
-        onFocus={() => setSelectedIds([selectionItems[0]])}
-      />
-
       <Element
         id="selection-container"
+        onKeyDown={onContainerKeyDown}
         onMouseDown={onContainerMouseDown}
         onMouseMove={onContainerMouseMove}
         onMouseUp={onContainerMouseUp}
         onContextMenu={onContainerContextMenu}
         css={css({ paddingTop: 10 })}
       >
-        {props.children}
+        <SkipNav.Content
+          tabIndex={0}
+          onFocus={() => setSelectedIds([selectionItems[0]])}
+        />
+        {children}
       </Element>
       {drawingRect && selectionRect.end.x && (
         <Element
@@ -541,7 +626,6 @@ export const useSelection = () => {
     onBlur,
     onRightClick,
     onMenuEvent,
-    onKeyDown,
     onDragStart,
     onDrop,
     thumbnailRef,
@@ -558,7 +642,6 @@ export const useSelection = () => {
     onBlur,
     onRightClick,
     onMenuEvent,
-    onKeyDown,
     onDragStart,
     onDrop,
     thumbnailRef,
@@ -568,7 +651,7 @@ export const useSelection = () => {
   };
 };
 
-let scrollTimer;
+let scrollTimer: number;
 let retries = 0;
 const MAX_RETRIES = 3;
 const startingWaitTime = 50; // ms
@@ -594,6 +677,6 @@ const scrollIntoViewport = (id: string) => {
   }
 };
 
-const isFolderPath = id => id.startsWith('/');
-const isSandboxId = id => !isFolderPath(id);
+const isFolderPath = (id: string) => id.startsWith('/');
+const isSandboxId = (id: string) => !isFolderPath(id);
 const notDrafts = folder => folder.path !== '/drafts';

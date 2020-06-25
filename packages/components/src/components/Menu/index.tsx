@@ -24,7 +24,7 @@ const transitions = {
   }),
 };
 
-const MenuContext = React.createContext({ trigger: null });
+const MenuContext = React.createContext({ trigger: null, portal: true });
 
 const PortalStyles = createGlobalStyle(
   css({
@@ -87,10 +87,96 @@ const Menu = ({ ...props }) => {
   return (
     <Element as={ReachMenu.Menu} {...props}>
       <PortalStyles />
-      <MenuContext.Provider value={{ trigger }}>
+      <MenuContext.Provider value={{ trigger, portal: true }}>
         {props.children}
       </MenuContext.Provider>
     </Element>
+  );
+};
+
+const ESC = 27;
+const ALT = 18;
+const ENTER = 13;
+const SPACE = 32;
+
+const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
+  React.useEffect(() => {
+    // close when user clicks outside or scrolls away
+    const handler = () => {
+      if (visible) setVisibility(false);
+    };
+
+    document.addEventListener('click', handler);
+
+    return () => {
+      document.removeEventListener('click', handler);
+    };
+  }, [visible, setVisibility]);
+
+  // handle key down events - close on escape + disable the rest
+  // TODO: handle arrow keys and space/enter.
+  React.useEffect(() => {
+    const handler = event => {
+      if (!visible) return;
+      if (
+        event.keyCode === ESC ||
+        event.keyCode === ALT ||
+        event.keyCode === SPACE ||
+        event.keyCode === ENTER
+      )
+        setVisibility(false);
+      event.preventDefault();
+    };
+
+    document.addEventListener('keydown', handler);
+    return () => {
+      document.removeEventListener('keydown', handler);
+    };
+  });
+
+  if (!visible) return null;
+
+  const numberOfItems = React.Children.count(props.children);
+  const SUGGESTED_ITEM_HEIGHT = 36;
+  const suggestedHeight = numberOfItems * SUGGESTED_ITEM_HEIGHT;
+  const suggestedWidth = 180;
+
+  return (
+    <>
+      <PortalStyles />
+      <Element as={ReachMenu.Menu} {...props}>
+        {({ isExpanded, dispatch }) => {
+          if (visible && !isExpanded) {
+            // keep it open if prop is set to visible
+            dispatch({ type: 'OPEN_MENU_AT_FIRST_ITEM' });
+          }
+
+          return (
+            <MenuContext.Provider value={{ trigger: null, portal: false }}>
+              <ReachMenu.MenuPopover
+                position={(targetRect, popoverRect) => ({
+                  position: 'absolute',
+                  left: Math.min(
+                    position.x,
+                    window.innerWidth -
+                      (popoverRect.width || suggestedWidth) -
+                      16
+                  ),
+                  top: Math.min(
+                    position.y,
+                    window.innerHeight -
+                      (popoverRect.height || suggestedHeight) -
+                      16
+                  ),
+                })}
+              >
+                <Menu.List>{props.children}</Menu.List>
+              </ReachMenu.MenuPopover>
+            </MenuContext.Provider>
+          );
+        }}
+      </Element>
+    </>
   );
 };
 
@@ -118,12 +204,13 @@ const MenuIconButton = props => (
 );
 
 const MenuList = props => {
-  const { trigger } = React.useContext(MenuContext);
+  const { trigger, portal } = React.useContext(MenuContext);
   return (
     <List
       as={ReachMenu.MenuList}
       data-component="MenuList"
       data-trigger={trigger}
+      portal={portal}
       {...props}
     >
       {props.children}
@@ -144,6 +231,7 @@ Menu.IconButton = MenuIconButton;
 Menu.List = MenuList;
 Menu.Item = MenuItem;
 Menu.Divider = MenuDivider;
+Menu.ContextMenu = ContextMenu;
 
 export const isMenuClicked = event => {
   // don't trigger comment if you click on the menu

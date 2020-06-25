@@ -7,7 +7,7 @@ import React from 'react';
 import EditIcons from './DirectoryEntry/Entry/EditIcons';
 import DirectoryEntry from './DirectoryEntry/index';
 
-export const Files = () => {
+export const Files: React.FC<{ readonly?: boolean }> = ({ readonly }) => {
   const {
     state: { editor: editorState, isLoggedIn },
     actions: { editor, files },
@@ -49,6 +49,7 @@ export const Files = () => {
         </SidebarRow>
         <DirectoryEntry
           root
+          readonly={readonly}
           getModulePath={_getModulePath}
           title={sandbox.title || 'Project'}
           signals={{ files, editor }}

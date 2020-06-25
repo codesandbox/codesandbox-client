@@ -188,7 +188,7 @@ export async function consumeCache(manager: Manager) {
         }
 
         debug(
-          `Loading cache from ${cache === localData ? 'localStorage' : 'API'}`,
+          `Loading cache from ${cache === localData ? 'IndexedDB' : 'API'}`,
           cache
         );
 
