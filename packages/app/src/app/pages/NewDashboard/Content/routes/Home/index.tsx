@@ -38,9 +38,8 @@ export const Home = () => {
     }
   );
 
-  if (templates.length < 3) {
-    templates.push({ type: 'blank-row-fill' });
-  }
+  // Make sure that a new row starts for the next item
+  templates.push({ type: 'blank-row-fill' });
 
   const items: DashboardGridItem[] = sandboxes.RECENT_HOME
     ? [
@@ -58,7 +57,7 @@ export const Home = () => {
         ...templates,
         {
           type: 'header',
-          title: 'Your Recent Sandboxes',
+          title: 'Recently Accessed Sandboxes',
           showMoreLink: '/new-dashboard/recent',
           showMoreLabel: 'Show more',
         },
@@ -70,7 +69,7 @@ export const Home = () => {
     : [
         { type: 'header', title: 'Recently Used Templates' },
         { type: 'skeleton-row' },
-        { type: 'header', title: 'Your Recent Sandboxes' },
+        { type: 'header', title: 'Recently Accessed Sandboxes' },
         { type: 'skeleton-row' },
       ];
 

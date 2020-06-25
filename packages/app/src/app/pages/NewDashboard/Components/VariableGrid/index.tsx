@@ -322,7 +322,8 @@ export const VariableGrid = ({ items }: VariableGridProps) => {
                 filledItems.push(skeletonItem);
               }
             } else if (item.type === 'blank-row-fill') {
-              const remainingColumns = filledItems.length % columnCount;
+              const remainingColumns =
+                columnCount - (filledItems.length % columnCount);
 
               for (let i = 0; i < remainingColumns; i++) {
                 filledItems.push(blankItem);

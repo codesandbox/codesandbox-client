@@ -15,7 +15,7 @@ import { DashboardFolder } from '../../types';
 export const Folder = ({
   name = '',
   path = null,
-  sandboxes = 0,
+  sandboxCount = 0,
   setCreating,
   ...props
 }: DashboardFolder) => {
@@ -206,7 +206,7 @@ export const Folder = ({
     name,
     path,
     isDrafts,
-    numberOfSandboxes: sandboxes,
+    numberOfSandboxes: sandboxCount,
     onClick,
     onDoubleClick,
     // edit mode

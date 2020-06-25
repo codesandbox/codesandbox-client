@@ -26,7 +26,6 @@ export type DashboardTemplate = {
 export type DashboardFolder = DELETE_ME_COLLECTION &
   DashboardBaseFolder & {
     type: 'folder';
-    sandboxes?: number;
     setCreating?: (value: boolean) => void;
   };
 

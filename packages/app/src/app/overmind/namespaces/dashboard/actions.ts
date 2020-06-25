@@ -273,24 +273,12 @@ export const getAllFolders: AsyncAction = async ({ state, effects }) => {
 
     // this is here because it will be done in the backend in the *FUTURE*
     const collectionsByLevel = data.me.collections.map(collection =>
-      getDecoratedCollection(collection, collection.sandboxes.length)
+      getDecoratedCollection(collection)
     );
 
-    state.dashboard.allCollections = [
-      {
-        id: 'drafts-fake-id',
-        sandboxes: (
-          data.me.collections.find(folder => folder.path === '/') || {
-            sandboxes: [],
-          }
-        ).sandboxes.length,
-        parent: '',
-        name: 'Drafts',
-        level: 0,
-        path: '/drafts',
-      },
-      ...collectionsByLevel.filter(c => c.id && c.name),
-    ];
+    state.dashboard.allCollections = collectionsByLevel.filter(
+      c => c.id && c.name
+    );
   } catch {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
@@ -305,7 +293,7 @@ export const createFolder: AsyncAction<string> = async (
   if (!state.dashboard.allCollections) return;
   const oldFolders = state.dashboard.allCollections;
   state.dashboard.allCollections = [
-    getDecoratedCollection({ id: 'FAKE_ID', path }),
+    getDecoratedCollection({ id: 'FAKE_ID', path, sandboxCount: 0 }),
     ...state.dashboard.allCollections,
   ];
   try {
@@ -374,6 +362,17 @@ export const getSandboxesByPath: AsyncAction<string> = async (
   path
 ) => {
   const { dashboard } = state;
+
+  if (!state.activeTeam && (!path || path === '/')) {
+    // For personal users we actually see the sandboxes in / as drafts. So we shouldn't
+    // also show these sandboxes here.
+    if (!dashboard.sandboxes.ALL) {
+      dashboard.sandboxes.ALL = {};
+    }
+    dashboard.sandboxes.ALL[path] = [];
+    return;
+  }
+
   const cleanPath = path.split(' ').join('{}');
   try {
     const data = await effects.gql.queries.sandboxesByPath({
@@ -464,36 +463,16 @@ export const getStartPageSandboxes: AsyncAction = async ({
       3
     );
 
-    let sandboxes;
+    const result = await effects.gql.queries.recentlyAccessedSandboxes({
+      limit: 7,
+      teamId: state.activeTeam,
+    });
 
-    if (state.activeTeam) {
-      const result = await effects.gql.queries.recentTeamSandboxes({
-        limit: 7,
-        orderField: dashboard.orderBy.field,
-        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
-        teamId: state.activeTeam,
-        authorId: usedTemplates.me.id,
-      });
-
-      if (result?.me?.team?.sandboxes == null) {
-        return;
-      }
-
-      sandboxes = result.me.team.sandboxes;
-    } else {
-      const result = await effects.gql.queries.recentSandboxes({
-        limit: 7,
-        orderField: dashboard.orderBy.field,
-        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
-      });
-      if (!result || !result.me) {
-        return;
-      }
-
-      sandboxes = result.me.sandboxes;
+    if (result?.me?.recentlyAccessedSandboxes == null) {
+      return;
     }
 
-    dashboard.sandboxes.RECENT_HOME = sandboxes;
+    dashboard.sandboxes.RECENT_HOME = result.me.recentlyAccessedSandboxes;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
@@ -679,10 +658,7 @@ export const renameFolderInState: Action<{ path: string; newPath: string }> = (
   if (!dashboard.allCollections) return;
   const newFolders = dashboard.allCollections.map(folder => {
     if (folder.path === path) {
-      return getDecoratedCollection(
-        { ...folder, path: newPath },
-        folder.sandboxes
-      );
+      return getDecoratedCollection({ ...folder, path: newPath });
     }
 
     return folder;
@@ -920,6 +896,13 @@ export const addSandboxesToFolder: AsyncAction<{
   const oldSandboxes = state.dashboard.sandboxes;
   if (deleteFromCurrentPath) {
     actions.dashboard.deleteSandboxFromState(sandboxIds);
+  }
+
+  const existingCollection = state.dashboard.allCollections.find(
+    f => f.path === collectionPath
+  );
+  if (existingCollection) {
+    existingCollection.sandboxCount += sandboxIds.length;
   }
 
   try {

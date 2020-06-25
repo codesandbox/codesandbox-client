@@ -222,8 +222,8 @@ const linkStyles = {
   flexShrink: 0,
 };
 
-const canNotAcceptSandboxes = ['home', 'recent', 'all'];
-const canNotAcceptFolders = ['home', 'recent', '/drafts', 'templates'];
+const canNotAcceptSandboxes = ['/home', '/recent'];
+const canNotAcceptFolders = ['/home', '/recent', '/drafts', '/templates'];
 
 const isSamePath = (draggedItem, dropPath) => {
   if (!draggedItem) return false;
@@ -610,7 +610,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
             style={{ paddingLeft: 0 }}
           >
             {orderBy(subFolders, 'name')
-              .sort(a => (a.path === '/drafts' ? -1 : 1))
+              .sort(a => 1)
               .map(folder => (
                 <NestableRowItem
                   key={folder.path}

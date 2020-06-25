@@ -34,7 +34,7 @@ export const Drafts = () => {
         <title>Drafts - CodeSandbox</title>
       </Helmet>
       <Header
-        path="Drafts"
+        title="Drafts"
         templates={getPossibleTemplates(sandboxes.DRAFTS)}
         showViewOptions
         showFilters

@@ -13,6 +13,8 @@ import {
   ListUserTemplatesQueryVariables,
   LatestSandboxesQuery,
   LatestSandboxesQueryVariables,
+  RecentlyAccessedSandboxesQuery,
+  RecentlyAccessedSandboxesQueryVariables,
   LatestTeamSandboxesQuery,
   LatestTeamSandboxesQueryVariables,
   AllCollectionsQuery,
@@ -98,9 +100,6 @@ export const getCollections: Query<
     me {
       collections(teamId: $teamId) {
         ...sidebarCollectionDashboard
-        sandboxes {
-          id
-        }
       }
     }
   }
@@ -231,6 +230,20 @@ export const recentSandboxes: Query<
         limit: $limit
         orderBy: { field: $orderField, direction: $orderDirection }
       ) {
+        ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const recentlyAccessedSandboxes: Query<
+  RecentlyAccessedSandboxesQuery,
+  RecentlyAccessedSandboxesQueryVariables
+> = gql`
+  query RecentlyAccessedSandboxes($limit: Int!, $teamId: ID) {
+    me {
+      recentlyAccessedSandboxes(limit: $limit, teamId: $teamId) {
         ...sandboxFragmentDashboard
       }
     }
