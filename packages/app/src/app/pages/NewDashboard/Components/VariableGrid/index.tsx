@@ -6,6 +6,7 @@ import { VariableSizeGrid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
+import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { ImportRepo } from '../Repo/ImportRepo';
 import { Folder } from '../Folder';
 import { Repo } from '../Repo';
@@ -60,6 +61,7 @@ interface ComponentForTypes {
   'new-folder': React.FC<DecoratedItemProps<DashboardNewFolder>>;
   'new-sandbox': React.FC<DecoratedItemProps<DashboardNewSandbox>>;
   'new-repo': React.FC<DecoratedItemProps<DashboardNewRepo>>;
+  'new-master-branch': React.FC<DecoratedItemProps<DashboardNewMasterBranch>>;
   header: React.FC<DecoratedItemProps<DashboardHeader>>;
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
@@ -79,6 +81,7 @@ const ComponentForTypes: ComponentForTypes = {
   'new-folder': props => <Folder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
   'new-repo': () => <ImportRepo />,
+  'new-master-branch': props => <NewMasterSandbox {...props.item} />,
   header: ({ item }) => (
     <Stack justify="space-between" align="center">
       <Text block style={{ userSelect: 'none' }}>

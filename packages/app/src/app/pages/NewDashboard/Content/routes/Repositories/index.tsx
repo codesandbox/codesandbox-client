@@ -42,16 +42,26 @@ export const RepositoriesPage = () => {
     if (home) return [{ type: 'new-repo' }, ...items];
 
     return sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes
-      ? [...items]
+      ? [
+          {
+            type: 'new-master-branch',
+            repo: {
+              owner: sandboxes.REPOS[param].owner,
+              name: sandboxes.REPOS[param].name,
+              branch: sandboxes.REPOS[param].branch,
+            },
+          },
+          ...items,
+        ]
       : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
   };
 
   const templates =
     activeSandboxes.length && param && items[0] && items[0].type === 'sandbox'
       ? getPossibleTemplates(
-          itemsToShow().map(
-            (s: { sandbox: DashboardSandbox; type: string }) => s.sandbox
-          )
+          itemsToShow()
+            .filter(s => s.sandbox)
+            .map((s: { sandbox: DashboardSandbox; type: string }) => s.sandbox)
         )
       : [];
 

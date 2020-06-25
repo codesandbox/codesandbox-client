@@ -54,7 +54,7 @@ type State = {
         name: string;
         owner: string;
         sandboxes: Repo[];
-      }[];
+      };
     } | null;
   };
   teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;

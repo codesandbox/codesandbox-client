@@ -77,6 +77,15 @@ export type DashboardSkeleton = {
   type: 'skeleton';
 };
 
+export type DashboardNewMasterBranch = {
+  type: 'new-master-branch';
+  repo: {
+    owner: string;
+    name: string;
+    branch: string;
+  };
+};
+
 export type DashboardGridItem =
   | DashboardSandbox
   | DashboardTemplate
@@ -87,6 +96,7 @@ export type DashboardGridItem =
   | DashboardNewSandbox
   | DashboardNewRepo
   | DashboardSkeletonRow
+  | DashboardNewMasterBranch
   | DashboardBlank
   | DashboardRepo
   | DashboardSkeleton;
