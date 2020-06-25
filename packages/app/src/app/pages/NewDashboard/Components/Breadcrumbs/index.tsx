@@ -3,59 +3,40 @@ import { Text, Link } from '@codesandbox/components';
 import { Link as LinkBase } from 'react-router-dom';
 
 export const Breadcrumbs = ({ param, repos }) => {
-  const makeLink = (p: string, link = 'all') =>
-    param && param.split('/').length > 2
-      ? `/new-dashboard/${link}/${param
+  const params = param.split('/').length - 1;
+
+  const makeLink = (p: string, link: string) => {
+    if (param && param.split('/').length > 2) {
+      return (
+        `/new-dashboard/${link}/${param
           .split('/')
           .slice(0, -1)
           .map(a => a)}` +
         '/' +
         p
-      : `/new-dashboard/${link}/${p}`;
-  if (!repos) {
-    return (
-      <Text marginBottom={1} block weight="bold" size={5}>
-        <Link
-          to="/new-dashboard/all/"
-          as={LinkBase}
-          variant={param && param.split('/').length ? 'muted' : 'body'}
-        >
-          All Sandboxes {param && ' / '}
-        </Link>
-        {param
-          ? param.split('/').map((p, i) => (
-              <Link
-                key={p}
-                as={LinkBase}
-                to={makeLink(p, 'repositories')}
-                variant={i < param.split('/').length - 1 ? 'muted' : 'body'}
-              >
-                {p} {i < param.split('/').length - 1 && '/ '}
-              </Link>
-            ))
-          : null}
-      </Text>
-    );
-  }
+      );
+    }
+    return `/new-dashboard/${link}/${p}`;
+  };
 
   return (
     <Text marginBottom={1} block weight="bold" size={5}>
       <Link
-        to="/new-dashboard/repositories/"
+        to={`/new-dashboard/${repos ? 'repositories' : 'all'}/`}
         as={LinkBase}
         variant={param && param.split('/').length ? 'muted' : 'body'}
       >
-        Repositories {param && ' / '}
+        {repos ? 'Repositories' : 'All Sandboxes'} {param && ' / '}
       </Link>
       {param
         ? param.split('/').map((p, i) => (
             <Link
               key={p}
               as={LinkBase}
-              to={makeLink(p, 'repositories')}
-              variant={i < param.split('/').length - 1 ? 'muted' : 'body'}
+              to={makeLink(p, repos ? 'repositories' : 'all')}
+              variant={i < params ? 'muted' : 'body'}
             >
-              {p} {i < param.split('/').length - 1 && '/ '}
+              {p} {i < params && '/ '}
             </Link>
           ))
         : null}

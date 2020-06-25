@@ -1050,8 +1050,7 @@ export const changeSandboxPrivacy: AsyncAction<{
   oldPrivacy: 0 | 1 | 2;
   repo?: boolean;
 }> = async ({ actions, effects, state }, { id, privacy, oldPrivacy, repo }) => {
-  // optimistic update
-  if (repo) {
+  const repoChangePrivacy = (p: 0 | 1 | 2) => {
     const param = location.pathname.split('/new-dashboard/repositories/')[1];
     const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
     state.dashboard.sandboxes.REPOS = {
@@ -1062,7 +1061,7 @@ export const changeSandboxPrivacy: AsyncAction<{
           if (sandbox.id === id) {
             return {
               ...sandbox,
-              privacy,
+              privacy: p,
             };
           }
 
@@ -1070,6 +1069,10 @@ export const changeSandboxPrivacy: AsyncAction<{
         }),
       },
     };
+  };
+  // optimistic update
+  if (repo) {
+    repoChangePrivacy(privacy);
   } else {
     actions.dashboard.changeSandboxPrivacyInState({ id, privacy });
   }
@@ -1079,24 +1082,7 @@ export const changeSandboxPrivacy: AsyncAction<{
   } catch (error) {
     // rollback optimistic
     if (repo) {
-      const param = location.pathname.split('/new-dashboard/repositories/')[1];
-      const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
-      state.dashboard.sandboxes.REPOS = {
-        ...state.dashboard.sandboxes.REPOS,
-        [param]: {
-          ...repoSandboxes,
-          sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
-            if (sandbox.id === id) {
-              return {
-                ...sandbox,
-                privacy: oldPrivacy,
-              };
-            }
-
-            return sandbox;
-          }),
-        },
-      };
+      repoChangePrivacy(oldPrivacy);
     } else {
       actions.dashboard.changeSandboxPrivacyInState({
         id,
