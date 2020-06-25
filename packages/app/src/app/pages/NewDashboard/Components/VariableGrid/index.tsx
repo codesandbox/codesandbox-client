@@ -21,8 +21,9 @@ import {
   DashboardNewFolder,
 } from '../../types';
 
-export const GRID_MAX_WIDTH = 992;
-export const GUTTER = 24;
+export const GRID_MAX_WIDTH = 1900;
+export const MAX_COLUMN_COUNT = 6;
+export const GUTTER = 36;
 const ITEM_MIN_WIDTH = 220;
 const ITEM_HEIGHT_GRID = 240;
 const ITEM_HEIGHT_LIST = 64;
@@ -263,12 +264,13 @@ export const VariableGrid = ({ items }: VariableGridProps) => {
     >
       <AutoSizer onResize={onResize}>
         {({ width, height }) => {
+          const cappedWith = Math.min(width, GRID_MAX_WIDTH);
           const columnCount =
             viewMode === 'list'
               ? 1
               : Math.min(
-                  Math.floor((width - GUTTER) / (ITEM_MIN_WIDTH + GUTTER)),
-                  4
+                  Math.floor((cappedWith - GUTTER) / (ITEM_MIN_WIDTH + GUTTER)),
+                  MAX_COLUMN_COUNT
                 );
 
           const filledItems: Array<DashboardGridItem & {
