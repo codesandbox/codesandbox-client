@@ -334,6 +334,7 @@ function getCustomConfig(
         },
         presets: ['env', 'react'],
         plugins: [
+          'babel-plugin-csb-rename-import',
           'transform-modules-commonjs',
           'proposal-class-properties',
           '@babel/plugin-transform-runtime',
@@ -345,6 +346,7 @@ function getCustomConfig(
     return {
       presets: ['es2015', 'react', 'stage-0'],
       plugins: [
+        'babel-plugin-csb-rename-import',
         'transform-es2015-modules-commonjs',
         'transform-class-properties',
         [
@@ -370,7 +372,11 @@ function getCustomConfig(
   return {
     ...config,
     plugins: config.plugins
-      ? [...config.plugins, ...codeSandboxPlugins]
+      ? [
+          'babel-plugin-csb-rename-import',
+          ...config.plugins,
+          ...codeSandboxPlugins,
+        ]
       : codeSandboxPlugins,
   };
 }
@@ -579,8 +585,6 @@ self.addEventListener('message', async event => {
           'babel-plugin-transform-prevent-infinite-loops'
         );
       }
-
-      codeSandboxPlugins.push('babel-plugin-csb-rename-import');
     }
 
     codeSandboxPlugins.push([
