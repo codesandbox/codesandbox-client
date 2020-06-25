@@ -33,6 +33,11 @@ import {
   Border,
   ImageWrapper,
 } from './_elements';
+
+import red from '../../assets/images/bg/red.jpg';
+import purple from '../../assets/images/bg/purple.jpg';
+import blue from '../../assets/images/bg/blue.jpg';
+
 import TemplateUniverse from '../../assets/images/TemplateUniverse.png';
 import containers from '../../assets/images/containers.png';
 import prototype from '../../assets/images/prototype-rapid.png';
@@ -99,7 +104,7 @@ export default () => (
         Use templates to kickstart new projects with no setup.
       </Description>
     </PageContainer>
-    <ArtWorkWrapper bg="#535bcf">
+    <ArtWorkWrapper bg={purple}>
       <img src={TemplateUniverse} alt="Template Universe" />
     </ArtWorkWrapper>
     <Grid>
@@ -161,7 +166,7 @@ export default () => (
     <Border />
     <Wrapper>
       <Titles>Prototype Rapidly</Titles>
-      <ArtWorkWrapper bg="#535bcf">
+      <ArtWorkWrapper bg={blue}>
         <img src={prototype} alt="Prototype Rapidly" />
       </ArtWorkWrapper>
       <Grid>
@@ -218,7 +223,7 @@ export default () => (
       <CollaborateIcon />
       <Titles>Collaborate on Code</Titles>
       <ArtWorkWrapper
-        bg="#EB455A"
+        bg={red}
         css={`
           justify-content: flex-end;
         `}
@@ -246,7 +251,7 @@ export default () => (
       <TerminalIcon />
       <Titles>Work with Containers</Titles>
       <ArtWorkWrapper
-        bg="#535BCF"
+        bg={purple}
         css={`
           justify-content: flex-start;
         `}
@@ -275,7 +280,7 @@ export default () => (
       <DebugIcon />
       <Titles>Debug Like a Pro</Titles>
       <ArtWorkWrapper
-        bg="#EB455A"
+        bg={blue}
         css={`
           justify-content: flex-start;
         `}

@@ -79,7 +79,8 @@ export const ArtWorkWrapper = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  background: ${props => props.bg};
+  background: url(${props => props.bg}) center;
+  background-size: cover;
   border: 1px solid ${props => props.theme.homepage.grey};
   box-sizing: border-box;
   border-radius: 4px;
@@ -156,6 +157,11 @@ export const TweetsWrapper = styled.div`
     position: absolute;
     margin-top: 2rem;
     z-index: 10;
+
+    ::-webkit-scrollbar {
+      display: none;
+      overflow-style: none;
+    }
 
     ${props => props.theme.breakpoints.sm} {
       display: none;
