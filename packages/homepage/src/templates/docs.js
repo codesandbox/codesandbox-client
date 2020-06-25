@@ -68,42 +68,25 @@ const Docs = ({
           >
             <Text weight="bold">Documentation</Text>
 
-            <svg width={24} height={16} fill="none">
-              <g filter="url(#prefix__filter0_d)">
-                <path
-                  d="M24 1.053L22.788 0l-9.091 7.895L5.212.526 4 1.58 13.697 10 24 1.053z"
-                  fill="#E6E6E6"
-                />
-              </g>
-              <defs>
-                <filter
-                  id="prefix__filter0_d"
-                  x={0}
-                  y={0}
-                  width={24}
-                  height={18}
-                  filterUnits="userSpaceOnUse"
-                  colorInterpolationFilters="sRGB"
-                >
-                  <feFlood floodOpacity={0} result="BackgroundImageFix" />
-                  <feColorMatrix
-                    in="SourceAlpha"
-                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                  />
-                  <feOffset dy={4} />
-                  <feGaussianBlur stdDeviation={2} />
-                  <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
-                  <feBlend
-                    in2="BackgroundImageFix"
-                    result="effect1_dropShadow"
-                  />
-                  <feBlend
-                    in="SourceGraphic"
-                    in2="effect1_dropShadow"
-                    result="shape"
-                  />
-                </filter>
-              </defs>
+            <svg
+              showMobileMenu={showMobileMenu}
+              css={`
+                transition: 250ms cubic-bezier(0.68, -0.6, 0.32, 1.6);
+                transform: rotate(
+                  ${props => (props.showMobileMenu ? '0' : '180')}deg
+                );
+                transform-origin: center center;
+              `}
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 8.05263L20.7879 7L11.697 14.8947L3.21212 7.52632L2 8.57895L11.697 17L22 8.05263Z"
+                fill="#E6E6E6"
+              />
             </svg>
           </Stack>
 
@@ -115,7 +98,7 @@ const Docs = ({
               position: sticky;
 
               top: 32px;
-              transition: all 200ms ease;
+              transition: 300ms ease-out;
 
               @media screen and (max-width: 900px) {
                 height: ${props => (props.showMobileMenu ? '100%' : '0')};
