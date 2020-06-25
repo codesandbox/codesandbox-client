@@ -35,6 +35,12 @@ export const CreateSandbox: React.FC = props => {
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
+    if (location.pathname.includes('/repositories')) {
+      tab.select('Import');
+    }
+  }, [tab]);
+
+  useEffect(() => {
     const infoData = getInfoFromMarkdown(latestChangelog);
     setInfo(infoData);
     const key = 'last_changelog_viewed_create_sandbox_modal';

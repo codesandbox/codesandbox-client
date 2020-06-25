@@ -39,7 +39,7 @@ export const RepositoriesPage = () => {
     if (!sandboxes.REPOS) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
-    if (home) return items;
+    if (home) return [{ type: 'new-repo' }, ...items];
 
     return sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes
       ? [...items]

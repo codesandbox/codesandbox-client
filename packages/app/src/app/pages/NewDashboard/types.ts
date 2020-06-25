@@ -55,6 +55,10 @@ export type DashboardNewSandbox = {
   type: 'new-sandbox';
 };
 
+export type DashboardNewRepo = {
+  type: 'new-repo';
+};
+
 export type DashboardSkeletonRow = {
   type: 'skeleton-row';
 };
@@ -81,6 +85,7 @@ export type DashboardGridItem =
   | DashboardHeaderLink
   | DashboardNewFolder
   | DashboardNewSandbox
+  | DashboardNewRepo
   | DashboardSkeletonRow
   | DashboardBlank
   | DashboardRepo

@@ -88,7 +88,7 @@ export const getCollections: Query<
   ${sidebarCollectionDashboard}
 `;
 
-export const getRepos: Query<GetReposQuery, { GetReposQueryVariables }> = gql`
+export const getRepos: Query<GetReposQuery, GetReposQueryVariables> = gql`
   query getRepos {
     me {
       sandboxes {

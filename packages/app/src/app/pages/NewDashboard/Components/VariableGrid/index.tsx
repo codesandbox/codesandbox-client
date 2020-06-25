@@ -6,6 +6,7 @@ import { VariableSizeGrid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
+import { ImportRepo } from '../Repo/ImportRepo';
 import { Folder } from '../Folder';
 import { Repo } from '../Repo';
 import { EmptyScreen } from '../EmptyScreen';
@@ -21,6 +22,7 @@ import {
   DashboardSkeleton,
   DashboardNewFolder,
   DashboardRepo,
+  DashboardNewRepo,
 } from '../../types';
 
 export const GRID_MAX_WIDTH = 992;
@@ -57,6 +59,7 @@ interface ComponentForTypes {
   repo: React.FC<DecoratedItemProps<DashboardRepo>>;
   'new-folder': React.FC<DecoratedItemProps<DashboardNewFolder>>;
   'new-sandbox': React.FC<DecoratedItemProps<DashboardNewSandbox>>;
+  'new-repo': React.FC<DecoratedItemProps<DashboardNewRepo>>;
   header: React.FC<DecoratedItemProps<DashboardHeader>>;
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
@@ -75,6 +78,7 @@ const ComponentForTypes: ComponentForTypes = {
   // @ts-ignore TODO: find a better way to type this
   'new-folder': props => <Folder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
+  'new-repo': () => <ImportRepo />,
   header: ({ item }) => (
     <Stack justify="space-between" align="center">
       <Text block style={{ userSelect: 'none' }}>
