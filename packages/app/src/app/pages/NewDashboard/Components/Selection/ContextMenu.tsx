@@ -348,6 +348,7 @@ const RepoMenu = ({ repo }) => {
   const { effects } = useOvermind();
   const { visible, setVisibility, position } = React.useContext(Context);
   const link = `https://github.com/${repo.owner}/${repo.name}/tree/${repo.branch}`;
+  const csbLink = `https://codesandbox.io/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`;
   return (
     <Menu.ContextMenu
       visible={visible}
@@ -355,12 +356,15 @@ const RepoMenu = ({ repo }) => {
       position={position}
       style={{ width: 120 }}
     >
+      <MenuItem onSelect={() => window.open(csbLink, '_blank')}>
+        Open on CodeSandbox
+      </MenuItem>
       <MenuItem
         onSelect={() => {
           effects.browser.copyToClipboard(link);
         }}
       >
-        Copy GitHub url
+        Copy GitHub URL
       </MenuItem>
       <MenuItem onSelect={() => window.open(link, '_blank')}>
         Open on GitHub

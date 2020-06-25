@@ -33,7 +33,7 @@ export const RepoCard = ({
       borderRadius: 'medium',
       overflow: 'hidden',
       // drop ssarget
-      borderColor: 'grays.500',
+      borderColor: getBorderColor(selected, showDropStyles),
       boxShadow: theme =>
         showDropStyles ? '0 4px 16px 0 ' + theme.colors.grays[900] : null,
 
@@ -71,13 +71,30 @@ export const RepoCard = ({
       </svg>
     </Stack>
     <Stack justify="space-between" align="flex-start" marginLeft={4}>
-      <Stack direction="vertical" gap={2}>
-        <Text size={3} weight="medium">
-          {name}
-          {props.branch !== 'master' ? `:${props.branch}` : ''}
+      <Stack
+        direction="vertical"
+        gap={2}
+        css={css({
+          wordBreak: 'break-all',
+        })}
+      >
+        <Text
+          title={`${props.owner}/${name}/tree/${props.branch}`}
+          size={3}
+          weight="medium"
+          css={css({
+            height: 32,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            '-webkit-line-clamp': '2',
+            '-webkit-box-orient': 'vertical',
+          })}
+        >
+          {props.owner}/{name}
         </Text>
         <Text size={3} variant="muted" weight="medium">
-          {props.owner}
+          {props.branch}
         </Text>
       </Stack>
       <IconButton
@@ -89,3 +106,9 @@ export const RepoCard = ({
     </Stack>
   </Stack>
 );
+
+const getBorderColor = (selected, showDropStyles) => {
+  if (selected) return 'blues.600';
+  if (showDropStyles) return 'grays.400';
+  return 'grays.500';
+};

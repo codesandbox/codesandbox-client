@@ -52,7 +52,7 @@ export const Breadcrumbs = ({ param, repos }) => {
             <Link
               key={p}
               as={LinkBase}
-              to={makeLink(p)}
+              to={makeLink(p, 'repositories')}
               variant={i < param.split('/').length - 1 ? 'muted' : 'body'}
             >
               {p} {i < param.split('/').length - 1 && '/ '}
