@@ -7,7 +7,7 @@ import {
   TemplateFragmentDashboardFragment,
 } from 'app/graphql/types';
 import { OrderBy, sandboxesTypes } from './state';
-import { getDecoratedCollection } from './utilts';
+import { getDecoratedCollection, isRepoPage } from './utilts';
 
 export const dashboardMounted: AsyncAction = withLoadApp();
 
@@ -374,17 +374,16 @@ export const getSandboxesByPath: AsyncAction<string> = async (
 export const getReposByPath: AsyncAction | Action<string> = async (
   { state, effects },
   path
+  // eslint-disable-next-line consistent-return
 ) => {
   const { dashboard } = state;
   try {
+    if (path && dashboard.sandboxes.REPOS) {
+      return dashboard.sandboxes.REPOS[path];
+    }
     const data = await effects.gql.queries.getRepos();
     if (!data || !data.me) {
-      return;
-    }
-
-    if (path && dashboard.sandboxes.REPOS) {
-      // eslint-disable-next-line consistent-return
-      return dashboard.sandboxes.REPOS[path];
+      return null;
     }
 
     if (!dashboard.sandboxes.REPOS) {
@@ -574,8 +573,7 @@ export const deleteSandbox: AsyncAction<string[]> = async (
   const { user } = state;
   if (!user) return;
   const oldSandboxes = state.dashboard.sandboxes;
-  const oldRepos = state.dashboard.sandboxes.REPOS;
-  if (!location.pathname.includes('/repositories')) {
+  if (!isRepoPage) {
     actions.dashboard.deleteSandboxFromState(ids);
   } else {
     const param = location.pathname.split('/new-dashboard/repositories/')[1];
@@ -595,11 +593,7 @@ export const deleteSandbox: AsyncAction<string[]> = async (
       sandboxIds: ids,
     });
   } catch (error) {
-    if (!location.pathname.includes('/repositories')) {
-      state.dashboard.sandboxes = { ...oldSandboxes };
-    } else {
-      state.dashboard.sandboxes.REPOS = { ...oldRepos };
-    }
+    state.dashboard.sandboxes = oldSandboxes;
 
     effects.notificationToast.error(
       'There was a problem deleting your Sandbox'
@@ -706,30 +700,40 @@ export const renameFolderInState: Action<{ path: string; newPath: string }> = (
   dashboard.allCollections = newFolders;
 };
 
+export const renameRepoSandboxInState: Action<{
+  id: string;
+  title: string;
+}> = ({ state }, { id, title }) => {
+  const param = location.pathname.split('/new-dashboard/repositories/')[1];
+  const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
+  state.dashboard.sandboxes.REPOS = {
+    ...state.dashboard.sandboxes.REPOS,
+    [param]: {
+      ...repoSandboxes,
+      sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
+        if (sandbox.id === id) {
+          return {
+            ...sandbox,
+            title,
+          };
+        }
+
+        return sandbox;
+      }),
+    },
+  };
+};
+
 export const renameSandbox: AsyncAction<{
   id: string;
   title: string;
   oldTitle: string;
 }> = async ({ effects, actions, state }, { id, title, oldTitle }) => {
-  if (location.pathname.includes('/repositories')) {
-    const param = location.pathname.split('/new-dashboard/repositories/')[1];
-    const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
-    state.dashboard.sandboxes.REPOS = {
-      ...state.dashboard.sandboxes.REPOS,
-      [param]: {
-        ...repoSandboxes,
-        sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
-          if (sandbox.id === id) {
-            return {
-              ...sandbox,
-              title,
-            };
-          }
-
-          return sandbox;
-        }),
-      },
-    };
+  if (isRepoPage) {
+    actions.dashboard.renameRepoSandboxInState({
+      id,
+      title,
+    });
   } else {
     actions.dashboard.renameSandboxInState({
       id,
@@ -743,25 +747,11 @@ export const renameSandbox: AsyncAction<{
       title,
     });
   } catch {
-    if (location.pathname.includes('/repositories')) {
-      const param = location.pathname.split('/new-dashboard/repositories/')[1];
-      const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
-      state.dashboard.sandboxes.REPOS = {
-        ...state.dashboard.sandboxes.REPOS,
-        [param]: {
-          ...repoSandboxes,
-          sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
-            if (sandbox.id === id) {
-              return {
-                ...sandbox,
-                title: oldTitle,
-              };
-            }
-
-            return sandbox;
-          }),
-        },
-      };
+    if (isRepoPage) {
+      actions.dashboard.renameRepoSandboxInState({
+        id,
+        title: oldTitle,
+      });
     } else {
       actions.dashboard.renameSandboxInState({
         id,
@@ -830,7 +820,7 @@ export const makeTemplate: AsyncAction<string[]> = async (
   ids
 ) => {
   const oldSandboxes = state.dashboard.sandboxes;
-  if (!location.pathname.includes('/repositories')) {
+  if (!isRepoPage) {
     actions.dashboard.deleteSandboxFromState(ids);
   }
 
@@ -839,7 +829,7 @@ export const makeTemplate: AsyncAction<string[]> = async (
       sandboxIds: ids,
     });
   } catch (error) {
-    if (!location.pathname.includes('/repositories')) {
+    if (!isRepoPage) {
       state.dashboard.sandboxes = { ...oldSandboxes };
     }
     effects.notificationToast.error('There was a problem making your template');

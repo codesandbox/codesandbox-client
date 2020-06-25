@@ -1,6 +1,8 @@
 import { SidebarCollectionDashboardFragment as Collection } from 'app/graphql/types';
 import { DELETE_ME_COLLECTION } from './state';
 
+export const isRepoPage = location.pathname.includes('/repositories');
+
 export function getDecoratedCollection(
   collection: Collection,
   sandboxCount = 0
