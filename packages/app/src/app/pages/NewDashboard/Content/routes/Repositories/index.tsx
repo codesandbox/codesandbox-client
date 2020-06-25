@@ -21,7 +21,7 @@ export const RepositoriesPage = () => {
     actions,
     state: {
       activeTeam,
-      dashboard: { sandboxes },
+      dashboard: { sandboxes, viewMode },
     },
   } = useOvermind();
 
@@ -39,21 +39,26 @@ export const RepositoriesPage = () => {
     if (!sandboxes.REPOS) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
-    if (home) return [{ type: 'new-repo' }, ...items];
+    if (home)
+      return viewMode === 'grid' ? [{ type: 'new-repo' }, ...items] : items;
 
-    return sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes
-      ? [
-          {
-            type: 'new-master-branch',
-            repo: {
-              owner: sandboxes.REPOS[param].owner,
-              name: sandboxes.REPOS[param].name,
-              branch: sandboxes.REPOS[param].branch,
+    if (sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes) {
+      return viewMode === 'grid'
+        ? [
+            {
+              type: 'new-master-branch',
+              repo: {
+                owner: sandboxes.REPOS[param].owner,
+                name: sandboxes.REPOS[param].name,
+                branch: sandboxes.REPOS[param].branch,
+              },
             },
-          },
-          ...items,
-        ]
-      : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
+            ...items,
+          ]
+        : items;
+    }
+
+    return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
   };
 
   const templates =

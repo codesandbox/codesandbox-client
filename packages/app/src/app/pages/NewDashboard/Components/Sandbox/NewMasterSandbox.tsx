@@ -3,10 +3,6 @@ import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export interface NewMasterSandboxProps {
-  selected: boolean;
-  onBlur: (evt: React.FocusEvent) => void;
-  onContextMenu: (evt: React.MouseEvent) => void;
-  opacity: number;
   repo: {
     owner: string;
     name: string;
@@ -14,13 +10,7 @@ export interface NewMasterSandboxProps {
   };
 }
 
-export const NewMasterSandbox = ({
-  repo,
-  // interactions
-  selected,
-  onBlur,
-  onContextMenu,
-}: NewMasterSandboxProps) => (
+export const NewMasterSandbox = ({ repo }: NewMasterSandboxProps) => (
   <a
     href={`https://codesandbox.io/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`}
     css={css({ color: 'inherit', textDecoration: 'none' })}
@@ -28,15 +18,13 @@ export const NewMasterSandbox = ({
     <Stack
       direction="vertical"
       gap={2}
-      onBlur={onBlur}
-      onContextMenu={onContextMenu}
       css={css({
         position: 'relative',
         width: '100%',
         height: 240,
         backgroundColor: 'grays.700',
         border: '1px solid',
-        borderColor: selected ? 'blues.600' : 'grays.600',
+        borderColor: 'grays.600',
         borderRadius: 'medium',
         overflow: 'hidden',
         transition: 'box-shadow ease-in-out',

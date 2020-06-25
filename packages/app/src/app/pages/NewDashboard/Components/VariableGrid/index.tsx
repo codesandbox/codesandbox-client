@@ -24,6 +24,7 @@ import {
   DashboardNewFolder,
   DashboardRepo,
   DashboardNewRepo,
+  DashboardNewMasterBranch,
 } from '../../types';
 
 export const GRID_MAX_WIDTH = 992;
