@@ -94,7 +94,7 @@ export class Workbench {
       label: 'New Sandbox...',
       category: 'Sandbox',
       run: () => {
-        this.controller.getSignal('modalOpened')({ modal: 'newSandbox' });
+        this.controller.getSignal('openCreateSandboxModal')({});
       },
     });
 

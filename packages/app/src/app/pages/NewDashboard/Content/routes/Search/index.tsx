@@ -71,7 +71,7 @@ export const SearchComponent = () => {
       : [{ type: 'skeleton-row' }];
 
   return (
-    <SelectionProvider items={items}>
+    <SelectionProvider page="search" items={items}>
       <Helmet>
         <title>
           {location.search

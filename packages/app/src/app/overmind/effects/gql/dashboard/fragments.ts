@@ -34,6 +34,7 @@ export const sandboxFragmentDashboard = gql`
       path
     }
 
+    authorId
     teamId
   }
 `;

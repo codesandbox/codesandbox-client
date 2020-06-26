@@ -80,10 +80,10 @@ export const getTeamDrafts: Query<
   TeamDraftsQuery,
   TeamDraftsQueryVariables
 > = gql`
-  query TeamDrafts($teamId: ID!) {
+  query TeamDrafts($teamId: ID!, $authorId: ID) {
     me {
       team(id: $teamId) {
-        drafts {
+        drafts(authorId: $authorId) {
           ...sandboxFragmentDashboard
         }
       }

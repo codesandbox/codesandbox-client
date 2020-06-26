@@ -58,10 +58,24 @@ export const AllPage = () => {
       ].filter(Boolean)
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
+  const currentCollection = allCollections?.find(
+    c => c.path === '/' + currentPath
+  );
+
   return (
     <SelectionProvider
       items={itemsToShow}
+      page="sandboxes"
       createNewFolder={() => setCreating(true)}
+      createNewSandbox={
+        currentCollection
+          ? () => {
+              actions.modals.newSandboxModal.open({
+                collectionId: currentCollection.id,
+              });
+            }
+          : null
+      }
     >
       <Helmet>
         <title>
@@ -76,7 +90,7 @@ export const AllPage = () => {
         showFilters={Boolean(currentPath)}
         showSortOptions={Boolean(currentPath)}
       />
-      <VariableGrid items={itemsToShow} />
+      <VariableGrid collectionId={currentCollection?.id} items={itemsToShow} />
     </SelectionProvider>
   );
 };

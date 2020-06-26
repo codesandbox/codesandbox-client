@@ -331,6 +331,7 @@ export const getDrafts: AsyncAction = async ({ state, effects }) => {
     if (state.activeTeam) {
       const data = await effects.gql.queries.getTeamDrafts({
         teamId: state.activeTeam,
+        authorId: null,
       });
       if (typeof data?.me?.team?.drafts === 'undefined') {
         return;

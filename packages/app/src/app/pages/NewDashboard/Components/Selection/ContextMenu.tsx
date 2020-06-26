@@ -28,6 +28,7 @@ interface IContextMenuProps extends IMenuProps {
   folders: Array<DashboardFolder>;
   setRenaming: null | ((value: boolean) => void);
   createNewFolder: () => void;
+  createNewSandbox: () => void;
 }
 
 export const ContextMenu: React.FC<IContextMenuProps> = ({
@@ -39,6 +40,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   folders,
   setRenaming,
   createNewFolder,
+  createNewSandbox,
 }) => {
   if (!visible) return null;
 
@@ -53,10 +55,15 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     return sandbox;
   });
 
-  let menu;
+  let menu: React.ReactNode;
 
   if (selectedItems.length === 0) {
-    menu = <ContainerMenu createNewFolder={createNewFolder} />;
+    menu = (
+      <ContainerMenu
+        createNewSandbox={createNewSandbox}
+        createNewFolder={createNewFolder}
+      />
+    );
   } else if (selectedItems.length > 1) {
     menu = <MultiMenu selectedItems={selectedItems} />;
   } else if (
@@ -88,7 +95,15 @@ const MenuItem = ({ onSelect, ...props }) => {
   );
 };
 
-const ContainerMenu = ({ createNewFolder }) => {
+interface ContainerMenuProps {
+  createNewFolder: () => void;
+  createNewSandbox: () => void;
+}
+
+const ContainerMenu: React.FC<ContainerMenuProps> = ({
+  createNewFolder,
+  createNewSandbox,
+}) => {
   const { visible, setVisibility, position } = React.useContext(Context);
 
   return (
@@ -98,6 +113,9 @@ const ContainerMenu = ({ createNewFolder }) => {
       position={position}
       style={{ width: 160 }}
     >
+      <MenuItem onSelect={() => createNewSandbox()}>
+        Create new sandbox
+      </MenuItem>
       <MenuItem onSelect={() => createNewFolder()}>Create new folder</MenuItem>
     </Menu.ContextMenu>
   );
@@ -478,7 +496,7 @@ const getFolderUrl = (item: DashboardSandbox | DashboardTemplate) => {
 
   const path = item.sandbox.collection?.path;
   if (path == null || (!item.sandbox.teamId && path === '/')) {
-    return '/new-dashboard/all/drafts';
+    return '/new-dashboard/drafts';
   }
 
   return '/new-dashboard/all' + path;

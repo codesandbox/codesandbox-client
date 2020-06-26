@@ -13,6 +13,7 @@ export const Drafts = () => {
     actions,
     state: {
       activeTeam,
+      user,
       dashboard: { sandboxes, getFilteredSandboxes },
     },
   } = useOvermind();
@@ -22,14 +23,16 @@ export const Drafts = () => {
   }, [actions.dashboard, activeTeam]);
 
   const items: DashboardGridItem[] = sandboxes.DRAFTS
-    ? getFilteredSandboxes(sandboxes.DRAFTS).map(sandbox => ({
-        type: 'sandbox',
-        sandbox,
-      }))
+    ? getFilteredSandboxes(sandboxes.DRAFTS)
+        .filter(s => s.authorId === user?.id)
+        .map(sandbox => ({
+          type: 'sandbox',
+          sandbox,
+        }))
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   return (
-    <SelectionProvider items={items}>
+    <SelectionProvider page="drafts" items={items}>
       <Helmet>
         <title>Drafts - CodeSandbox</title>
       </Helmet>

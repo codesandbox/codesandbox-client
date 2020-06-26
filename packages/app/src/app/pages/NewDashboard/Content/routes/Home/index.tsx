@@ -74,7 +74,7 @@ export const Home = () => {
       ];
 
   return (
-    <SelectionProvider items={items}>
+    <SelectionProvider page="home" items={items}>
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>

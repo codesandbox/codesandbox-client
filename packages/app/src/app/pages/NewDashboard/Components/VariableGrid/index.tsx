@@ -175,9 +175,10 @@ const Item = ({
 
 interface VariableGridProps {
   items: DashboardGridItem[];
+  collectionId?: string;
 }
 
-export const VariableGrid = ({ items }: VariableGridProps) => {
+export const VariableGrid = ({ items, collectionId }: VariableGridProps) => {
   const {
     state: { dashboard },
   } = useOvermind();
@@ -254,7 +255,7 @@ export const VariableGrid = ({ items }: VariableGridProps) => {
     };
   });
 
-  if (items.length === 0) return <EmptyScreen />;
+  if (items.length === 0) return <EmptyScreen collectionId={collectionId} />;
 
   return (
     <Element

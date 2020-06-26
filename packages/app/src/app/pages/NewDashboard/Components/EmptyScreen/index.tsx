@@ -5,13 +5,17 @@ import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 
-export const EmptyScreen = () => {
+interface EmptyScreenProps {
+  collectionId?: string;
+}
+
+export const EmptyScreen: React.FC<EmptyScreenProps> = ({ collectionId }) => {
   const { actions } = useOvermind();
 
   const location = useLocation();
   const isSearch = location.pathname.includes('/search');
 
-  const onClick = () => actions.modalOpened({ modal: 'newSandbox' });
+  const onClick = () => actions.openCreateSandboxModal({ collectionId });
 
   if (isSearch) {
     return (
@@ -27,7 +31,7 @@ export const EmptyScreen = () => {
     <Stack justify="center" align="center" marginTop={120}>
       <Stack direction="vertical" align="center" gap={8} css={{ width: 400 }}>
         <Stack align="center" css={{ width: 220 }}>
-          <NewSandbox />
+          <NewSandbox collectionId={collectionId} />
         </Stack>
 
         <Stack direction="vertical" align="center">

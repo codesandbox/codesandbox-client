@@ -74,11 +74,22 @@ const Context = React.createContext<SelectionContext>({
 interface SelectionProviderProps {
   items: Array<DashboardGridItem>;
   createNewFolder?: (() => void) | null;
+  createNewSandbox?: (() => void) | null;
+  page:
+    | 'search'
+    | 'home'
+    | 'recents'
+    | 'deleted'
+    | 'templates'
+    | 'drafts'
+    | 'sandboxes';
 }
 
 export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   items = [],
   createNewFolder = null,
+  createNewSandbox = null,
+  page,
   children,
 }) => {
   const possibleItems = (items || []).filter(
@@ -405,7 +416,11 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: dropResult.path,
-          deleteFromCurrentPath: location.pathname !== '/new-dashboard/recent',
+          deleteFromCurrentPath:
+            page === 'sandboxes' ||
+            page === 'deleted' ||
+            page === 'templates' ||
+            page === 'drafts',
         });
       }
     }
@@ -615,6 +630,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         folders={folders || []}
         setRenaming={setRenaming}
         createNewFolder={createNewFolder}
+        createNewSandbox={createNewSandbox}
       />
     </Context.Provider>
   );

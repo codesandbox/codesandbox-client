@@ -26,7 +26,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
     const [value, setValue] = useState('');
 
     const {
-      actions: { modalOpened },
+      actions: { openCreateSandboxModal },
       state: { user },
     } = useOvermind();
 
@@ -84,7 +84,9 @@ export const Header: React.FC<HeaderProps> = React.memo(
           <Button
             variant="primary"
             css={css({ width: 'auto', paddingX: 3 })}
-            onClick={() => modalOpened({ modal: 'newSandbox' })}
+            onClick={() => {
+              openCreateSandboxModal({});
+            }}
           >
             Create Sandbox
           </Button>

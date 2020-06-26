@@ -57,7 +57,7 @@ export const Recent = () => {
       ];
 
   return (
-    <SelectionProvider items={items}>
+    <SelectionProvider page="recents" items={items}>
       <Helmet>
         <title>Recent Sandboxes - CodeSandbox</title>
       </Helmet>

@@ -555,6 +555,7 @@ export type Sandbox = {
   __typename?: 'Sandbox';
   alias: Maybe<Scalars['String']>;
   author: Maybe<User>;
+  authorId: Maybe<Scalars['ID']>;
   authorization: Authorization;
   collaborators: Array<Collaborator>;
   collection: Maybe<Collection>;
@@ -609,6 +610,12 @@ export type Team = {
   sandboxes: Array<Sandbox>;
   templates: Array<Template>;
   users: Array<User>;
+};
+
+export type TeamDraftsArgs = {
+  authorId: Maybe<Scalars['ID']>;
+  limit: Maybe<Scalars['Int']>;
+  orderBy: Maybe<OrderBy>;
 };
 
 export type TeamSandboxesArgs = {
@@ -1123,6 +1130,7 @@ export type SandboxFragmentDashboardFragment = {
   | 'likeCount'
   | 'forkCount'
   | 'viewCount'
+  | 'authorId'
   | 'teamId'
 > & {
     source: { __typename?: 'Source' } & Pick<Source, 'template'>;
@@ -1442,6 +1450,7 @@ export type SandboxesByPathQuery = { __typename?: 'RootQueryType' } & {
 
 export type TeamDraftsQueryVariables = Exact<{
   teamId: Scalars['ID'];
+  authorId: Maybe<Scalars['ID']>;
 }>;
 
 export type TeamDraftsQuery = { __typename?: 'RootQueryType' } & {

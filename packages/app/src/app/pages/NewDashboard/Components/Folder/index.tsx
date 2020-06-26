@@ -62,7 +62,12 @@ export const Folder = ({
 
   const history = useHistory();
   const onDoubleClick = event => {
-    const url = '/new-dashboard/all' + path;
+    const safePath = path
+      .split('/')
+      .map(encodeURIComponent)
+      .join('/');
+    const url = '/new-dashboard/all' + safePath;
+
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
     } else {
