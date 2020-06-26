@@ -63,7 +63,7 @@ export default ({
         "{tweetText}"
         <User>
           <Avatar
-            src={`https://twitter-avatar.now.sh/${tweetHandle}`}
+            src={`https://twitter-avatar-csb.vercel.app/${tweetHandle}`}
             alt={tweetName}
           />
           <div>

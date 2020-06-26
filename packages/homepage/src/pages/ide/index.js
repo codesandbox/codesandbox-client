@@ -193,10 +193,10 @@ export default () => (
             <Quote> "{tweet.quote}"</Quote>
             <div>
               <img
-                src={`https://twitter-avatar.now.sh/${tweet.username}`}
+                src={`https://twitter-avatar-csb.vercel.app/${tweet.username}`}
                 alt={tweet.quote}
                 onError={e => {
-                  e.target.src = `https://twitter-avatar.now.sh/codesandbox`;
+                  e.target.src = `https://twitter-avatar-csb.vercel.app/codesandbox`;
                 }}
               />
               <TweetAuthor>{tweet.name}</TweetAuthor>
