@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { compareDesc } from 'date-fns';
 import { useOvermind } from 'app/overmind';
 import { DashboardGridItem } from 'app/pages/NewDashboard/types';
 
@@ -19,11 +20,11 @@ export const useFilteredItems = (params: Params) => {
     },
   } = useOvermind();
   const [items, setItems] = useState<Array<DashboardGridItem>>([]);
-
   const sandboxesForPath =
     sandboxes.REPOS && param
       ? getFilteredSandboxes(sandboxes.REPOS[param].sandboxes || [])
       : [];
+
   const repos = (sandboxes.REPOS && Object.values(sandboxes.REPOS)) || [];
 
   useEffect(() => {
@@ -36,12 +37,17 @@ export const useFilteredItems = (params: Params) => {
       ]);
     } else {
       setItems([
-        ...repos.map(repo => ({
-          type: 'repo' as 'repo',
-          ...repo,
-        })),
+        ...repos
+          .sort((a, b) =>
+            compareDesc(new Date(a.lastEdited), new Date(b.lastEdited))
+          )
+          .map(repo => ({
+            type: 'repo' as 'repo',
+            ...repo,
+          })),
       ]);
     }
+
     // eslint-disable-next-line
   }, [
     sandboxes.REPOS,

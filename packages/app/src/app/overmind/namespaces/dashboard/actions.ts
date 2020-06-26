@@ -1,3 +1,4 @@
+import { compareDesc } from 'date-fns';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp, TEAM_ID_LOCAL_STORAGE } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
@@ -394,7 +395,17 @@ export const getReposByPath: AsyncAction | Action<string> = async (
       .filter(s => s.originalGit && s.originalGit.repo !== 'static-template')
       .reduce((acc, curr) => {
         if (acc[curr.originalGit.repo]) {
-          acc[curr.originalGit.repo].sandboxes.push(curr);
+          const newSandboxes = acc[curr.originalGit.repo].sandboxes.concat(
+            curr
+          );
+          acc[curr.originalGit.repo] = {
+            ...acc[curr.originalGit.repo],
+            sandboxes: newSandboxes,
+            lastEdited: newSandboxes
+              .map(s => new Date(s.updatedAt))
+              .sort(compareDesc)[0],
+          };
+
           return acc;
         }
 
@@ -409,7 +420,6 @@ export const getReposByPath: AsyncAction | Action<string> = async (
 
         return acc;
       }, {});
-
     dashboard.sandboxes.REPOS = repos;
   } catch (error) {
     effects.notificationToast.error('There was a problem getting your repos');

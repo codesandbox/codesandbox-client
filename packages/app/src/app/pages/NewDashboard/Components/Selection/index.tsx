@@ -552,33 +552,25 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const onContainerMouseUp = () => {
     if (drawingRect) resetSelectionRect();
   };
-
-  const Provider = ({ children: providerChildren }) => (
-    <Context.Provider
-      value={{
-        sandboxes,
-        selectedIds,
-        onClick,
-        onMouseDown,
-        onBlur,
-        onRightClick,
-        onMenuEvent,
-        onDragStart,
-        onDrop,
-        thumbnailRef,
-        isDragging,
-        isRenaming,
-        setRenaming,
-      }}
-    >
-      {' '}
-      {providerChildren}
-    </Context.Provider>
-  );
-
   if (noDrag) {
     return (
-      <Provider>
+      <Context.Provider
+        value={{
+          sandboxes,
+          selectedIds,
+          onClick,
+          onMouseDown,
+          onBlur,
+          onRightClick,
+          onMenuEvent,
+          onDragStart,
+          onDrop,
+          thumbnailRef,
+          isDragging,
+          isRenaming,
+          setRenaming,
+        }}
+      >
         <Element
           onContextMenu={onContainerContextMenu}
           css={css({ paddingTop: 10 })}
@@ -596,12 +588,28 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           setRenaming={setRenaming}
           createNewFolder={createNewFolder}
         />
-      </Provider>
+      </Context.Provider>
     );
   }
 
   return (
-    <Provider>
+    <Context.Provider
+      value={{
+        sandboxes,
+        selectedIds,
+        onClick,
+        onMouseDown,
+        onBlur,
+        onRightClick,
+        onMenuEvent,
+        onDragStart,
+        onDrop,
+        thumbnailRef,
+        isDragging,
+        isRenaming,
+        setRenaming,
+      }}
+    >
       <Element
         id="selection-container"
         onKeyDown={onContainerKeyDown}
@@ -654,7 +662,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         setRenaming={setRenaming}
         createNewFolder={createNewFolder}
       />
-    </Provider>
+    </Context.Provider>
   );
 };
 

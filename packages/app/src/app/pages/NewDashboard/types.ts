@@ -32,12 +32,13 @@ export type DashboardFolder = DELETE_ME_COLLECTION &
   };
 
 export type DashboardRepo = {
+  type: 'repo';
+  path?: string;
+  lastEdited?: string;
   branch: string;
   name: string;
   owner: string;
   sandboxes: RepoFragmentDashboardFragment[];
-  type: 'repo';
-  path?: string;
 };
 
 export type DashboardRepoSandbox = {

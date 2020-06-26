@@ -49,7 +49,9 @@ export const useFilteredItems = (params: Params, level: number) => {
         collection => collection.level === level && collection.parent === parent
       ) || [];
 
-    const sortedFolders = orderBy(folderFolders, 'name').sort(
+    const sortedFolders = orderBy(folderFolders, [
+      folder => folder.name.toLowerCase(),
+    ]).sort(
       a => (a.path === '/drafts' ? -1 : 1) // pull drafts to the top
     );
 
