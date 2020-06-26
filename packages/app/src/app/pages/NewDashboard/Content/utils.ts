@@ -4,10 +4,13 @@ import {
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
 } from 'app/graphql/types';
+import { DashboardRepoSandbox } from '../types';
 
 export function getPossibleTemplates(
   sandboxes: Array<
-    SandboxFragmentDashboardFragment | TemplateFragmentDashboardFragment
+    | SandboxFragmentDashboardFragment
+    | TemplateFragmentDashboardFragment
+    | DashboardRepoSandbox
   >
 ) {
   if (!sandboxes) return [];

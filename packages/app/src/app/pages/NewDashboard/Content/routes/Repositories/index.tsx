@@ -58,7 +58,9 @@ export const RepositoriesPage = () => {
   };
 
   const possibleTemplates = itemsToShow()
+    // @ts-ignore
     .filter(s => s.sandbox)
+    // @ts-ignore
     .map(s => s.sandbox);
 
   const templates =

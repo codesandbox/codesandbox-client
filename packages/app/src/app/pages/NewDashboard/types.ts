@@ -40,6 +40,11 @@ export type DashboardRepo = {
   path?: string;
 };
 
+export type DashboardRepoSandbox = {
+  type: 'sandbox';
+  sandbox: RepoFragmentDashboardFragment;
+};
+
 export type DashboardNewFolder = {
   type: 'new-folder';
   setCreating?: (value: boolean) => void;

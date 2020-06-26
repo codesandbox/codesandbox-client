@@ -7,7 +7,7 @@ import {
   TemplateFragmentDashboardFragment,
 } from 'app/graphql/types';
 import { OrderBy, sandboxesTypes } from './state';
-import { getDecoratedCollection, isRepoPage } from './utilts';
+import { getDecoratedCollection, isRepoPage, repoName } from './utils';
 
 export const dashboardMounted: AsyncAction = withLoadApp();
 
@@ -576,12 +576,18 @@ export const deleteSandbox: AsyncAction<string[]> = async (
   if (!isRepoPage) {
     actions.dashboard.deleteSandboxFromState(ids);
   } else {
-    const param = location.pathname.split('/new-dashboard/repositories/')[1];
+    if (
+      !state.dashboard.sandboxes.REPOS ||
+      !state.dashboard.sandboxes.REPOS[repoName]
+    ) {
+      return;
+    }
+
     state.dashboard.sandboxes.REPOS = {
       ...state.dashboard.sandboxes.REPOS,
-      [param]: {
-        ...state.dashboard.sandboxes.REPOS[param],
-        sandboxes: state.dashboard.sandboxes.REPOS[param].sandboxes.filter(
+      [repoName]: {
+        ...state.dashboard.sandboxes.REPOS[repoName],
+        sandboxes: state.dashboard.sandboxes.REPOS[repoName].sandboxes.filter(
           s => s.id !== ids[0]
         ),
       },
@@ -704,11 +710,17 @@ export const renameRepoSandboxInState: Action<{
   id: string;
   title: string;
 }> = ({ state }, { id, title }) => {
-  const param = location.pathname.split('/new-dashboard/repositories/')[1];
-  const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
+  if (
+    !state.dashboard.sandboxes.REPOS ||
+    !state.dashboard.sandboxes.REPOS[repoName]
+  ) {
+    return;
+  }
+
+  const repoSandboxes = state.dashboard.sandboxes.REPOS[repoName];
   state.dashboard.sandboxes.REPOS = {
     ...state.dashboard.sandboxes.REPOS,
-    [param]: {
+    [repoName]: {
       ...repoSandboxes,
       sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
         if (sandbox.id === id) {
@@ -1050,11 +1062,17 @@ export const changeSandboxPrivacy: AsyncAction<{
   oldPrivacy: 0 | 1 | 2;
 }> = async ({ actions, effects, state }, { id, privacy, oldPrivacy }) => {
   const repoChangePrivacy = (p: 0 | 1 | 2) => {
-    const param = location.pathname.split('/new-dashboard/repositories/')[1];
-    const repoSandboxes = state.dashboard.sandboxes.REPOS[param];
+    if (
+      !state.dashboard.sandboxes.REPOS ||
+      !state.dashboard.sandboxes.REPOS[repoName]
+    ) {
+      return;
+    }
+
+    const repoSandboxes = state.dashboard.sandboxes.REPOS[repoName];
     state.dashboard.sandboxes.REPOS = {
       ...state.dashboard.sandboxes.REPOS,
-      [param]: {
+      [repoName]: {
         ...repoSandboxes,
         sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
           if (sandbox.id === id) {
