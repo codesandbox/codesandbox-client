@@ -39,7 +39,7 @@ export const useCodesandboxMention = ({
   const textareaBoundingRect = React.useMemo(
     () => ref.current && ref.current.getBoundingClientRect(),
     // eslint-disable-next-line
-    [ref.current]
+    [mention.query]
   );
   const users = state.comments.usersQueryResult;
 
@@ -172,7 +172,7 @@ export const useCodesandboxMention = ({
           })}
           style={{
             bottom: fixed
-              ? window.innerHeight - textareaBoundingRect.top - mention.top
+              ? window.innerHeight - textareaBoundingRect.top - mention.top + 5
               : textareaBoundingRect.height - mention.top + 5,
             left: fixed
               ? textareaBoundingRect.left + mention.left - 8 // 8 = padding

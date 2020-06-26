@@ -1,7 +1,7 @@
 import React from 'react';
 import getCaretCoordinates from 'textarea-caret';
 
-function getMentionAtIndex(value, index) {
+function getMentionAtIndex(value, index, mentions) {
   const words = value.split(' ');
   // Based on current caret position, figure out if we have entered
   // a mention
@@ -13,14 +13,18 @@ function getMentionAtIndex(value, index) {
 
       const currentIndex = aggr.index;
       if (
-        word.startsWith('@') &&
+        // The mention can lead with linebreaks
+        word.match(/^\n+@|@/) &&
         index >= currentIndex &&
-        index <= currentIndex + word.length
+        index <= currentIndex + word.length &&
+        !(word.substr(word.indexOf('@') + 1) in mentions)
       ) {
+        const atIndex = word.indexOf('@');
+
         return {
           mention: {
             value: word,
-            startIndex: currentIndex,
+            startIndex: currentIndex + atIndex,
             endIndex: currentIndex + word.length - 1,
           },
         };
@@ -95,7 +99,7 @@ export const useMention = (
     ];
   }
 
-  const mention = getMentionAtIndex(value, current.selectionStart);
+  const mention = getMentionAtIndex(value, current.selectionStart, mentions);
 
   const query =
     mention &&

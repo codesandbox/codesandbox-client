@@ -1,8 +1,20 @@
-import { gql, Query } from 'overmind-graphql';
+import {
+  ArchiveAllNotificationsMutation,
+  ArchiveAllNotificationsMutationVariables,
+  ArchiveNotificationMutation,
+  ArchiveNotificationMutationVariables,
+  ClearNotificationCountMutation,
+  ClearNotificationCountMutationVariables,
+  MarkNotificationsAsReadMutation,
+  MarkNotificationsAsReadMutationVariables,
+  UpdateNotificationReadStatusMutation,
+  UpdateNotificationReadStatusMutationVariables,
+} from 'app/graphql/types';
+import { Query, gql } from 'overmind-graphql';
 
 export const markAllNotificationsAsRead: Query<
-  { markAllNotificationsAsRead: { id: string } },
-  {}
+  MarkNotificationsAsReadMutation,
+  MarkNotificationsAsReadMutationVariables
 > = gql`
   mutation MarkNotificationsAsRead {
     markAllNotificationsAsRead {
@@ -12,8 +24,8 @@ export const markAllNotificationsAsRead: Query<
 `;
 
 export const archiveAllNotifications: Query<
-  { archiveAllNotifications: { id: string } },
-  {}
+  ArchiveAllNotificationsMutation,
+  ArchiveAllNotificationsMutationVariables
 > = gql`
   mutation ArchiveAllNotifications {
     archiveAllNotifications {
@@ -23,8 +35,8 @@ export const archiveAllNotifications: Query<
 `;
 
 export const updateNotificationReadStatus: Query<
-  { markAllNotificationsAsRead: { id: string } },
-  { notificationId: string; read: boolean }
+  UpdateNotificationReadStatusMutation,
+  UpdateNotificationReadStatusMutationVariables
 > = gql`
   mutation UpdateNotificationReadStatus($notificationId: ID!, $read: Boolean!) {
     updateNotificationReadStatus(notificationId: $notificationId, read: $read) {
@@ -34,8 +46,8 @@ export const updateNotificationReadStatus: Query<
 `;
 
 export const archiveNotification: Query<
-  { archiveNotification: { id: string } },
-  { notificationId: string }
+  ArchiveNotificationMutation,
+  ArchiveNotificationMutationVariables
 > = gql`
   mutation ArchiveNotification($notificationId: ID!) {
     archiveNotification(notificationId: $notificationId) {
@@ -45,8 +57,8 @@ export const archiveNotification: Query<
 `;
 
 export const clearNotificationCount: Query<
-  { clearNotificationCount: { id: string } },
-  {}
+  ClearNotificationCountMutation,
+  ClearNotificationCountMutationVariables
 > = gql`
   mutation ClearNotificationCount {
     clearNotificationCount {

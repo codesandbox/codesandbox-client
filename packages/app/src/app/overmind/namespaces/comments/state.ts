@@ -1,5 +1,9 @@
 import { CommentsFilterOption, UserQuery } from '@codesandbox/common/lib/types';
-import { CommentFragment, CommentWithRepliesFragment } from 'app/graphql/types';
+import {
+  CodeReferenceMetadata,
+  CommentFragment,
+  CommentWithRepliesFragment,
+} from 'app/graphql/types';
 import { RootState } from 'app/overmind';
 import isToday from 'date-fns/isToday';
 import { derived } from 'overmind';
@@ -63,17 +67,20 @@ export const state: State = {
           range: [number, number];
         }>;
       }>((aggr, comment) => {
-        comment.references.forEach(reference => {
-          if (reference.type === 'code') {
-            if (!aggr[reference.metadata.path]) {
-              aggr[reference.metadata.path] = [];
-            }
-            aggr[reference.metadata.path].push({
-              commentId: comment.id,
-              range: [reference.metadata.anchor, reference.metadata.head],
-            });
+        if (
+          comment.anchorReference &&
+          comment.anchorReference.type === 'code'
+        ) {
+          const metadata = comment.anchorReference
+            .metadata as CodeReferenceMetadata;
+          if (!aggr[metadata.path]) {
+            aggr[metadata.path] = [];
           }
-        });
+          aggr[metadata.path].push({
+            commentId: comment.id,
+            range: [metadata.anchor, metadata.head],
+          });
+        }
 
         return aggr;
       }, {});

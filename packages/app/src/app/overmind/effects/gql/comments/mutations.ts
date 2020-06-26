@@ -1,4 +1,6 @@
 import {
+  CreateCodeCommentMutation,
+  CreateCodeCommentMutationVariables,
   CreateCommentMutation,
   CreateCommentMutationVariables,
   DeleteCommentMutation,
@@ -10,7 +12,7 @@ import {
   UpdateCommentMutation,
   UpdateCommentMutationVariables,
 } from 'app/graphql/types';
-import { gql, Query } from 'overmind-graphql';
+import { Query, gql } from 'overmind-graphql';
 
 import { commentFragment } from './fragments';
 
@@ -23,14 +25,36 @@ export const createComment: Query<
     $content: String!
     $sandboxId: ID!
     $parentCommentId: ID
-    $codeReference: CodeReference
   ) {
     createComment(
       id: $id
       content: $content
       sandboxId: $sandboxId
       parentCommentId: $parentCommentId
-      codeReference: $codeReference
+    ) {
+      ...Comment
+    }
+  }
+  ${commentFragment}
+`;
+
+export const createCodeComment: Query<
+  CreateCodeCommentMutation,
+  CreateCodeCommentMutationVariables
+> = gql`
+  mutation CreateCodeComment(
+    $id: ID
+    $content: String!
+    $sandboxId: ID!
+    $parentCommentId: ID
+    $anchorReference: CodeReference!
+  ) {
+    createCodeComment(
+      id: $id
+      content: $content
+      sandboxId: $sandboxId
+      parentCommentId: $parentCommentId
+      anchorReference: $anchorReference
     ) {
       ...Comment
     }

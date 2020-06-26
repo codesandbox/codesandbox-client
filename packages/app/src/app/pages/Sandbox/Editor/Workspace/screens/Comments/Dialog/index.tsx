@@ -15,7 +15,7 @@ import {
   DIALOG_WIDTH,
   REPLY_TRANSITION_DELAY,
 } from 'app/constants';
-import { CommentFragment } from 'app/graphql/types';
+import { CommentWithRepliesFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
 import { motion, useAnimation } from 'framer-motion';
@@ -198,7 +198,7 @@ export const Dialog: React.FC = () => {
 };
 
 const DialogAddComment: React.FC<{
-  comment: CommentFragment;
+  comment: CommentWithRepliesFragment;
   onSave: () => void;
   onDragHandlerPan: (deltaX: number, deltaY: number) => void;
   onDragHandlerPanEnd: () => void;

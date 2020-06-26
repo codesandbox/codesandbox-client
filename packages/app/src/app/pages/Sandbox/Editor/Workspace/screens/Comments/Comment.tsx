@@ -11,7 +11,7 @@ import {
 import VisuallyHidden from '@reach/visually-hidden';
 import { css } from '@styled-system/css';
 import { Markdown } from 'app/components/Markdown';
-import { CommentFragment } from 'app/graphql/types';
+import { CodeReferenceMetadata, CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
@@ -114,7 +114,7 @@ export const Comment = React.memo<{
             </Menu>
           </Stack>
         </Stack>
-        {comment.references[0] && (
+        {comment.anchorReference && comment.anchorReference.type === 'code' && (
           <Link
             variant="muted"
             css={css({
@@ -131,7 +131,7 @@ export const Comment = React.memo<{
               },
             })}
           >
-            {comment.references[0].metadata.path}
+            {(comment.anchorReference.metadata as CodeReferenceMetadata).path}
           </Link>
         )}
         <Element
