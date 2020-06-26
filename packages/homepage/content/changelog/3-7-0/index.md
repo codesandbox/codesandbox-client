@@ -9,7 +9,7 @@ description: A Better GitHub Workflow.
 ### A Better GitHub Workflow
 
 You've been able to import and export projects to and from GitHub on CodeSandbox
-for a while but the workflow was confusing. This update makes working with
+for a while, but the workflow was confusing. This update makes working with
 GitHub repos more user-friendly.
 
 #### Features
