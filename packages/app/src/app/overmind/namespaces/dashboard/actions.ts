@@ -720,8 +720,8 @@ export const renameFolder: AsyncAction<{
 
   try {
     await effects.gql.mutations.renameFolder({
-      newPath,
       path,
+      newPath,
       teamId,
       newTeamId,
     });
