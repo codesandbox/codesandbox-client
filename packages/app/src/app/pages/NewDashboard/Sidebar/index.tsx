@@ -332,7 +332,7 @@ const RowItem: React.FC<RowItemProps> = ({
   const linkTo: string = path;
 
   const location = useLocation();
-  const isCurrentLink = linkTo === location.pathname;
+  const isCurrentLink = linkTo.replace(/\?.*/, '') === location.pathname;
   const history = useHistory();
 
   /** Toggle nested folders when user
