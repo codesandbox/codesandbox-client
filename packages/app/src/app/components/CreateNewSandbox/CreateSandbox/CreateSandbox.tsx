@@ -22,7 +22,11 @@ import { New } from './New';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
-export const CreateSandbox: React.FC = props => {
+interface CreateSandboxProps {
+  collectionId?: string;
+}
+
+export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
   const {
     state: { isFirstVisit },
     effects: { browser },
@@ -100,7 +104,7 @@ export const CreateSandbox: React.FC = props => {
           {rProps =>
             !rProps.hidden && (
               <div {...rProps}>
-                <Create />
+                <Create collectionId={props.collectionId} />
               </div>
             )
           }
@@ -123,7 +127,7 @@ export const CreateSandbox: React.FC = props => {
           {rProps =>
             !rProps.hidden && (
               <div {...rProps}>
-                <Explore />
+                <Explore collectionId={props.collectionId} />
               </div>
             )
           }

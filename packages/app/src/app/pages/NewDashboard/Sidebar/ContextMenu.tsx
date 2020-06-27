@@ -3,6 +3,7 @@ import { useOvermind } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Stack, Menu, Icon, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { Position } from '../Components/Selection';
 import { DashboardBaseFolder } from '../types';
 
@@ -11,6 +12,7 @@ const Context = React.createContext({
 });
 
 interface ContextMenuProps {
+  activeTeam: string | null;
   visible: boolean;
   setVisibility: (val: boolean) => void;
   position: Position;
@@ -20,6 +22,7 @@ interface ContextMenuProps {
 }
 
 export const ContextMenu: React.FC<ContextMenuProps> = ({
+  activeTeam,
   visible,
   position,
   setVisibility,
@@ -44,7 +47,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
         </Stack>
       </MenuItem>
     );
-  } else if (folder.name === 'All sandboxes') {
+  } else if (folder.name === 'All Sandboxes') {
     menuOptions = (
       <MenuItem onSelect={() => setNewFolderPath(folder.path + '/__NEW__')}>
         New folder
@@ -62,7 +65,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
             actions.dashboard.deleteFolder({ path: folder.path });
 
             const isCurrentlyOpened =
-              '/new-dashboard/all' + folder.path === location.pathname;
+              dashboardUrls.allSandboxes(folder.path) === location.pathname;
 
             if (isCurrentlyOpened) {
               // navigate out of folder when it's deleted
@@ -70,7 +73,9 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
                 .split('/')
                 .slice(0, -1)
                 .join('/');
-              history.push('/new-dashboard/all' + parentFolder);
+              history.push(
+                dashboardUrls.allSandboxes(parentFolder, activeTeam)
+              );
             }
 
             track('Dashboard - Delete folder', {

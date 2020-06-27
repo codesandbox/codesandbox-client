@@ -16,9 +16,11 @@ const skeletonRow = {
   type: 'skeleton-row' as 'skeleton-row',
 };
 
-export const useFilteredItems = (params: Params, level: number) => {
-  const param = params.path || '';
-  const cleanParam = param.split(' ').join('{}');
+export const useFilteredItems = (
+  path: string,
+  cleanPath: string,
+  level: number
+) => {
   const {
     state: {
       dashboard: {
@@ -39,19 +41,17 @@ export const useFilteredItems = (params: Params, level: number) => {
     >
   >([]);
 
-  const folderSandboxes = (sandboxes.ALL || {})[cleanParam];
+  const folderSandboxes = (sandboxes.ALL || {})[cleanPath];
 
   useEffect(() => {
     const sandboxesForPath = getFilteredSandboxes(folderSandboxes || []);
-    const parent = param.split('/').pop();
+    const parent = path.split('/').pop();
     const folderFolders =
       allCollections?.filter(
         collection => collection.level === level && collection.parent === parent
       ) || [];
 
-    const sortedFolders = orderBy(folderFolders, 'name').sort(
-      a => (a.path === '/drafts' ? -1 : 1) // pull drafts to the top
-    );
+    const sortedFolders = orderBy(folderFolders, 'name').sort(a => 1);
 
     const decoratedFolders = sortedFolders.map(folder => ({
       type: 'folder' as 'folder',
@@ -69,8 +69,8 @@ export const useFilteredItems = (params: Params, level: number) => {
     setItems([...decoratedFolders, ...decoratedSandboxes]);
   }, [
     allCollections,
-    cleanParam,
-    param,
+    cleanPath,
+    path,
     level,
     filters.blacklistedTemplates,
     getFilteredSandboxes,

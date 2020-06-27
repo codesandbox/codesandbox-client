@@ -7,113 +7,110 @@ import { orderBy, noop } from 'lodash-es';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { Text, Menu, Checkbox } from '@codesandbox/components';
+import { TemplateFilter } from 'app/pages/NewDashboard/Content/utils';
 
-type Template = {
-  id: string;
-  name: string;
-  color: string;
-  niceName: string;
-};
 type Props = {
-  possibleTemplates?: Template[];
+  possibleTemplates?: TemplateFilter[];
 };
 
-export const FilterOptions: FunctionComponent<Props> = ({
-  possibleTemplates = [],
-}) => {
-  const {
-    actions: {
-      dashboard: {
-        blacklistedTemplateAdded,
-        blacklistedTemplateRemoved,
-        blacklistedTemplatesChanged,
-        blacklistedTemplatesCleared,
+export const FilterOptions: FunctionComponent<Props> = React.memo(
+  ({ possibleTemplates = [] }) => {
+    const {
+      actions: {
+        dashboard: {
+          blacklistedTemplateAdded,
+          blacklistedTemplateRemoved,
+          blacklistedTemplatesChanged,
+          blacklistedTemplatesCleared,
+        },
       },
-    },
-    state: {
-      dashboard: {
-        filters: { blacklistedTemplates },
-        isTemplateSelected,
+      state: {
+        dashboard: {
+          filters: { blacklistedTemplates },
+          isTemplateSelected,
+        },
       },
-    },
-  } = useOvermind();
-  const templates = possibleTemplates && possibleTemplates.length > 0;
-  const allSelected = possibleTemplates.every(({ id }) =>
-    isTemplateSelected(id)
-  );
+    } = useOvermind();
+    const templates = possibleTemplates && possibleTemplates.length > 0;
+    const allSelected = possibleTemplates.every(({ id }) =>
+      isTemplateSelected(id)
+    );
 
-  const toggleTemplate = (name: string, select: boolean) =>
-    select ? blacklistedTemplateRemoved(name) : blacklistedTemplateAdded(name);
+    const toggleTemplate = (name: string, select: boolean) =>
+      select
+        ? blacklistedTemplateRemoved(name)
+        : blacklistedTemplateAdded(name);
 
-  return (
-    <>
-      <Menu>
-        <Menu.Button>
-          <Text
-            variant={blacklistedTemplates.length ? 'active' : 'muted'}
-            paddingRight={2}
-          >
-            Filters
-          </Text>
-        </Menu.Button>
-        <Menu.List>
-          {templates ? (
-            orderBy(possibleTemplates, 'niceName').map(
-              ({ id, name, niceName }) => {
-                const selected = isTemplateSelected(id);
-                return (
-                  <Menu.Item
-                    field="title"
-                    key={id || name}
-                    onSelect={() => {
-                      toggleTemplate(id, !selected);
-                      return { CLOSE_MENU: false };
-                    }}
-                    css={css({
-                      label: {
-                        color: selected ? 'inherit' : 'mutedForeground',
-                      },
-                    })}
-                  >
-                    <Checkbox
-                      onChange={noop}
-                      checked={selected}
-                      label={niceName || name}
-                    />
-                  </Menu.Item>
-                );
-              }
-            )
-          ) : (
-            <Menu.Item>No environments found</Menu.Item>
-          )}
-          {templates && (
-            <Menu.Item
-              key="all"
-              onSelect={() => {
-                if (allSelected) {
-                  blacklistedTemplatesChanged(
-                    possibleTemplates.map(({ id }) => id)
-                  );
-                } else {
-                  blacklistedTemplatesCleared();
-                }
-
-                return { CLOSE_MENU: false };
-              }}
-              css={css({
-                color: allSelected ? 'body' : 'muted',
-              })}
+    return (
+      <>
+        <Menu>
+          <Menu.Button>
+            <Text
+              variant={blacklistedTemplates.length ? 'active' : 'muted'}
+              paddingRight={2}
             >
-              <Checkbox
-                onChange={noop}
-                checked={allSelected}
-                label="Select All"
-              />
-            </Menu.Item>
-          )}
-        </Menu.List>
-      </Menu>
-    </>
-  );
-};
+              Filters
+            </Text>
+          </Menu.Button>
+          <Menu.List>
+            {templates ? (
+              orderBy(possibleTemplates, 'niceName').map(
+                ({ id, name, niceName }) => {
+                  const selected = isTemplateSelected(id);
+                  return (
+                    <Menu.Item
+                      field="title"
+                      key={id || name}
+                      onSelect={() => {
+                        toggleTemplate(id, !selected);
+                        return { CLOSE_MENU: false };
+                      }}
+                      css={css({
+                        label: {
+                          color: selected ? 'inherit' : 'mutedForeground',
+                        },
+                      })}
+                    >
+                      <Checkbox
+                        onChange={noop}
+                        checked={selected}
+                        label={niceName || name}
+                      />
+                    </Menu.Item>
+                  );
+                }
+              )
+            ) : (
+              <Menu.Item>No environments found</Menu.Item>
+            )}
+            {templates && (
+              <Menu.Item
+                key="all"
+                onSelect={() => {
+                  if (allSelected) {
+                    blacklistedTemplatesChanged(
+                      possibleTemplates.map(({ id }) => id)
+                    );
+                  } else {
+                    blacklistedTemplatesCleared();
+                  }
+
+                  return { CLOSE_MENU: false };
+                }}
+                css={css({
+                  color: allSelected ? 'body' : 'muted',
+                })}
+              >
+                <Checkbox
+                  onChange={noop}
+                  checked={allSelected}
+                  label="Select All"
+                />
+              </Menu.Item>
+            )}
+          </Menu.List>
+        </Menu>
+      </>
+    );
+  }
+);

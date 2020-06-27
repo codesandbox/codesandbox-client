@@ -47,6 +47,8 @@ export const SANDBOX_FRAGMENT = gql`
       color
     }
 
+    teamId
+
     collection {
       path
       teamId
@@ -259,7 +261,7 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
 `;
 
 export function addSandboxesToFolder(
-  selectedSandboxes,
+  selectedSandboxes: string[],
   path: string,
   teamId: string | null
 ) {

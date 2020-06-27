@@ -32,8 +32,10 @@ export const sandboxFragmentDashboard = gql`
 
     collection {
       path
-      teamId
     }
+
+    authorId
+    teamId
   }
 `;
 
@@ -41,6 +43,7 @@ export const sidebarCollectionDashboard = gql`
   fragment sidebarCollectionDashboard on Collection {
     id
     path
+    sandboxCount
   }
 `;
 
@@ -74,10 +77,8 @@ export const templateFragmentDashboard = gql`
         branch
       }
 
-      collection {
-        team {
-          name
-        }
+      team {
+        name
       }
 
       author {

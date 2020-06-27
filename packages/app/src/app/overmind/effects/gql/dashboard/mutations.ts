@@ -88,8 +88,18 @@ export const renameFolder: Query<
   RenameFolderMutation,
   RenameFolderMutationVariables
 > = gql`
-  mutation renameFolder($path: String!, $newPath: String!) {
-    renameCollection(path: $path, newPath: $newPath) {
+  mutation renameFolder(
+    $path: String!
+    $newPath: String!
+    $teamId: ID
+    $newTeamId: ID
+  ) {
+    renameCollection(
+      path: $path
+      newPath: $newPath
+      teamId: $teamId
+      newTeamId: $newTeamId
+    ) {
       ...sidebarCollectionDashboard
     }
   }
@@ -101,18 +111,16 @@ export const addSandboxToFolder: Query<
   AddToFolderMutationVariables
 > = gql`
   mutation AddToFolder(
-    $collectionPath: String!
+    $collectionPath: String
     $sandboxIds: [ID!]!
     $teamId: ID
   ) {
-    addToCollection(
+    addToCollectionOrTeam(
       collectionPath: $collectionPath
       sandboxIds: $sandboxIds
       teamId: $teamId
     ) {
-      sandboxes {
-        ...sandboxFragmentDashboard
-      }
+      ...sandboxFragmentDashboard
     }
   }
   ${sandboxFragmentDashboard}

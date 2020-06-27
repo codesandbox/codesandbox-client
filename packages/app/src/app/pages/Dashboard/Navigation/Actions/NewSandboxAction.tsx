@@ -8,14 +8,14 @@ import { Action } from '../elements';
 
 export const NewSandboxAction: FunctionComponent = () => {
   const {
-    actions: { modalOpened },
+    actions: { openCreateSandboxModal },
   } = useOvermind();
 
   return (
     <Action
       aria-label="New Sandbox"
       as="button"
-      onClick={() => modalOpened({ modal: 'newSandbox' })}
+      onClick={() => openCreateSandboxModal({})}
       style={{ fontSize: '1.125rem' }}
     >
       <Tooltip content="New Sandbox" placement="bottom">

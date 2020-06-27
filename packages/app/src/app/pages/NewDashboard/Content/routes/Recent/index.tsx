@@ -9,6 +9,7 @@ import {
   DashboardGridItem,
   DashboardHeader,
   DashboardSandbox,
+  PageTypes,
 } from 'app/pages/NewDashboard/types';
 import { getPossibleTemplates } from '../../utils';
 
@@ -16,13 +17,14 @@ export const Recent = () => {
   const {
     actions,
     state: {
+      activeTeam,
       dashboard: { sandboxes, recentSandboxesByTime, getFilteredSandboxes },
     },
   } = useOvermind();
 
   React.useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.RECENT);
-  }, [actions.dashboard]);
+  }, [actions.dashboard, activeTeam]);
 
   const getSection = (
     title: string,
@@ -55,19 +57,21 @@ export const Recent = () => {
         { type: 'skeleton-row' },
       ];
 
+  const pageType: PageTypes = 'recents';
   return (
-    <SelectionProvider items={items}>
+    <SelectionProvider page={pageType} activeTeamId={activeTeam} items={items}>
       <Helmet>
         <title>Recent Sandboxes - CodeSandbox</title>
       </Helmet>
       <Header
-        templates={getPossibleTemplates(sandboxes.RECENT)}
         title="Recently Modified Sandboxes"
+        activeTeam={activeTeam}
+        templates={getPossibleTemplates(sandboxes.RECENT)}
         showViewOptions
         showFilters
       />
 
-      <VariableGrid items={items} />
+      <VariableGrid items={items} page={pageType} />
     </SelectionProvider>
   );
 };
