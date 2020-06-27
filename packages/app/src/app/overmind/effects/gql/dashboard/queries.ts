@@ -1,8 +1,10 @@
 import {
   TeamTemplatesQuery,
   TeamTemplatesQueryVariables,
-  RecentlyDeletedSandboxesQuery,
-  RecentlyDeletedSandboxesQueryVariables,
+  RecentlyDeletedPersonalSandboxesQuery,
+  RecentlyDeletedPersonalSandboxesQueryVariables,
+  RecentlyDeletedTeamSandboxesQuery,
+  RecentlyDeletedTeamSandboxesQueryVariables,
   SandboxesByPathQuery,
   SandboxesByPathQueryVariables,
   OwnedTemplatesQuery,
@@ -37,17 +39,36 @@ import {
   currentTeamInfoFragment,
 } from './fragments';
 
-export const deletedSandboxes: Query<
-  RecentlyDeletedSandboxesQuery,
-  RecentlyDeletedSandboxesQueryVariables
+export const deletedPersonalSandboxes: Query<
+  RecentlyDeletedPersonalSandboxesQuery,
+  RecentlyDeletedPersonalSandboxesQueryVariables
 > = gql`
-  query recentlyDeletedSandboxes {
+  query recentlyDeletedPersonalSandboxes {
     me {
       sandboxes(
         showDeleted: true
         orderBy: { field: "updated_at", direction: DESC }
       ) {
         ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const deletedTeamSandboxes: Query<
+  RecentlyDeletedTeamSandboxesQuery,
+  RecentlyDeletedTeamSandboxesQueryVariables
+> = gql`
+  query recentlyDeletedTeamSandboxes($teamId: ID!) {
+    me {
+      team(id: $teamId) {
+        sandboxes(
+          showDeleted: true
+          orderBy: { field: "updated_at", direction: DESC }
+        ) {
+          ...sandboxFragmentDashboard
+        }
       }
     }
   }

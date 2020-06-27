@@ -401,11 +401,25 @@ export const getSandboxesByPath: AsyncAction<string> = async (
 export const getDeletedSandboxes: AsyncAction = async ({ state, effects }) => {
   const { dashboard } = state;
   try {
-    const data = await effects.gql.queries.deletedSandboxes({});
-    if (!data || !data.me) {
+    let sandboxes;
+
+    if (state.activeTeam) {
+      const data = await effects.gql.queries.deletedTeamSandboxes({
+        teamId: state.activeTeam,
+      });
+
+      sandboxes = data?.me?.team?.sandboxes;
+    } else {
+      const data = await effects.gql.queries.deletedPersonalSandboxes({});
+
+      sandboxes = data?.me?.sandboxes;
+    }
+
+    if (!sandboxes) {
       return;
     }
-    dashboard.sandboxes[sandboxesTypes.DELETED] = data.me.sandboxes;
+
+    dashboard.sandboxes[sandboxesTypes.DELETED] = sandboxes;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your deleted Sandboxes'
