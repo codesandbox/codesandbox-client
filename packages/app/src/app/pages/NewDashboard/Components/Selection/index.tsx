@@ -24,6 +24,8 @@ import {
   DashboardSandbox,
   DashboardFolder,
   DashboardGridItem,
+  PageTypes,
+  DndDropType,
 } from '../../types';
 
 export type Position = {
@@ -81,14 +83,7 @@ interface SelectionProviderProps {
   createNewFolder?: (() => void) | null;
   createNewSandbox?: (() => void) | null;
   activeTeamId: string | null;
-  page:
-    | 'search'
-    | 'home'
-    | 'recents'
-    | 'deleted'
-    | 'templates'
-    | 'drafts'
-    | 'sandboxes';
+  page: PageTypes;
 }
 
 export const SelectionProvider: React.FC<SelectionProviderProps> = ({
@@ -398,28 +393,24 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     [setSelectedIds]
   );
 
-  const onDrop = dropResult => {
+  const onDrop = (dropResult: DndDropType) => {
     if (dropResult.isSamePath) return;
 
     const sandboxIds = selectedIds.filter(isSandboxId);
     const folderPaths = selectedIds.filter(isFolderPath).filter(notDrafts);
+    const dropPage = dropResult.page;
 
     if (sandboxIds.length) {
-      if (dropResult.path === '/deleted') {
+      if (dropPage === 'deleted') {
         actions.dashboard.deleteSandbox(sandboxIds);
-      } else if (dropResult.path === '/templates') {
+      } else if (dropPage === 'templates') {
         actions.dashboard.makeTemplate(sandboxIds);
-      } else if (dropResult.path === '/drafts') {
+      } else if (dropPage === 'drafts') {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: activeTeam ? null : '/',
         });
-      } else if (dropResult.path === '/all') {
-        actions.dashboard.addSandboxesToFolder({
-          sandboxIds,
-          collectionPath: '/',
-        });
-      } else {
+      } else if (dropPage === 'sandboxes') {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: dropResult.path,
@@ -447,6 +438,8 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           actions.dashboard.moveFolder({
             path,
             newPath: dropResult.path.replace('all', '') + '/' + name,
+            teamId: activeTeam,
+            newTeamId: activeTeam,
           });
         });
       }

@@ -900,7 +900,7 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
 
 export const addSandboxesToFolder: AsyncAction<{
   sandboxIds: string[];
-  collectionPath: string;
+  collectionPath: string | null;
   deleteFromCurrentPath?: boolean;
 }> = async (
   { state, effects, actions },
@@ -927,9 +927,13 @@ export const addSandboxesToFolder: AsyncAction<{
       teamId: state.activeTeam || undefined,
     });
 
-    // Prefetch that folder
-    actions.dashboard.getSandboxesByPath(collectionPath.replace(/^\//, ''));
-  } catch {
+    if (collectionPath) {
+      // Prefetch that folder
+      actions.dashboard.getSandboxesByPath(collectionPath.replace(/^\//, ''));
+    } else {
+      actions.dashboard.getPage(sandboxesTypes.DRAFTS);
+    }
+  } catch (e) {
     state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error('There was a problem moving your sandbox');
   }

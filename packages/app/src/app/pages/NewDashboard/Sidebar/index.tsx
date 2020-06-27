@@ -26,7 +26,13 @@ import {
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { ContextMenu } from './ContextMenu';
-import { DashboardBaseFolder } from '../types';
+import {
+  DashboardBaseFolder,
+  PageTypes,
+  DashboardSandbox,
+  DashboardFolder,
+  DndDropType,
+} from '../types';
 import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH } from './constants';
 import { WorkspaceSwitcher } from './WorkspaceSwitcher';
@@ -139,18 +145,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </ListItem>
           <RowItem
             name="Home"
+            page="home"
             path={dashboardUrls.home(activeTeam)}
             icon="box"
           />
           {inTeamContext ? null : (
             <RowItem
               name="Recent"
+              page="recents"
               path={dashboardUrls.recents(activeTeam)}
               icon="clock"
             />
           )}
           <RowItem
             name="My Drafts"
+            page="drafts"
             path={dashboardUrls.drafts(activeTeam)}
             icon="file"
           />
@@ -172,17 +181,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {inTeamContext ? (
             <RowItem
               name="Recently Modified"
+              page="recents"
               path={dashboardUrls.recents(activeTeam)}
               icon="clock"
             />
           ) : null}
           <RowItem
             name="Templates"
+            page="templates"
             path={dashboardUrls.templates(activeTeam)}
             icon="star"
           />
           <RowItem
             name="Recently Deleted"
+            page="deleted"
             path={dashboardUrls.deleted(activeTeam)}
             icon="trash"
           />
@@ -243,8 +255,13 @@ const linkStyles = {
   flexShrink: 0,
 };
 
-const canNotAcceptSandboxes = ['/home', '/recent'];
-const canNotAcceptFolders = ['/home', '/recent', '/drafts', '/templates'];
+const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents'];
+const canNotAcceptFolders: PageTypes[] = [
+  'home',
+  'recents',
+  'drafts',
+  'templates',
+];
 
 const isSamePath = (draggedItem, dropPath) => {
   if (!draggedItem) return false;
@@ -270,6 +287,7 @@ interface RowItemProps {
   name: string;
   path: string;
   icon: IconNames;
+  page: PageTypes;
   setFoldersVisibility?: (val: boolean) => void;
   folderPath?: string;
   style?: React.CSSProperties;
@@ -279,18 +297,24 @@ const RowItem: React.FC<RowItemProps> = ({
   name,
   path,
   folderPath = path,
+  page,
   icon,
   setFoldersVisibility = null,
   ...props
 }) => {
   const accepts = [];
-  if (!canNotAcceptSandboxes.includes(path)) accepts.push('sandbox');
-  if (!canNotAcceptFolders.includes(path)) accepts.push('folder');
+  if (!canNotAcceptSandboxes.includes(page)) accepts.push('sandbox');
+  if (!canNotAcceptFolders.includes(page)) accepts.push('folder');
 
   const usedPath = folderPath || path;
-  const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
+  const [{ canDrop, isOver, isDragging }, dropRef] = useDrop<
+    DashboardSandbox | DashboardFolder,
+    DndDropType,
+    { canDrop: boolean; isOver: boolean; isDragging: boolean }
+  >({
     accept: accepts,
-    drop: (item, monitor) => ({
+    drop: item => ({
+      page,
       path: usedPath,
       isSamePath: isSamePath(item, usedPath),
     }),
@@ -552,6 +576,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
         name={name}
         path={path}
         folderPath={folderPath}
+        page="sandboxes"
         icon="folder"
         style={{ height: nestingLevel ? 8 : 10 }}
         setFoldersVisibility={setFoldersVisibility}

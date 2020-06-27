@@ -3,7 +3,7 @@ export const ALL_SANDBOXES_URL_PREFIX = `${DASHBOARD_URL_PREFIX}/all`;
 
 function appendTeamIdQueryParam(url: string, teamId?: string) {
   if (teamId) {
-    return `${url}?teamId=${teamId}`;
+    return `${url}?workspace=${teamId}`;
   }
 
   return url;

@@ -70,6 +70,21 @@ export type DashboardSkeleton = {
   type: 'skeleton';
 };
 
+export type PageTypes =
+  | 'search'
+  | 'home'
+  | 'recents'
+  | 'deleted'
+  | 'templates'
+  | 'drafts'
+  | 'sandboxes';
+
+export type DndDropType = {
+  page: PageTypes;
+  path: string;
+  isSamePath: boolean;
+};
+
 export type DashboardGridItem =
   | DashboardSandbox
   | DashboardTemplate
