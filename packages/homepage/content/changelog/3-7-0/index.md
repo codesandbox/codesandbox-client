@@ -23,7 +23,7 @@ GitHub repos more user-friendly.
 
 #### Fixes
 
-- Improved execution time of custom babel presets and plugins, reducing
+- Improved execution time of custom Babel presets and plugins, reducing
   transpilation time of Vue from 18 to 2 seconds
 - Added caching to Vue project transpilation
 - Fixed an issue that meant we'd refresh the preview instead of hot reload in
