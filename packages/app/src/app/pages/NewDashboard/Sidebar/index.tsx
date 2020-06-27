@@ -454,18 +454,16 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   }
 
   const location = useLocation();
-  const currentFolderLocationPath = dashboardUrls.allSandboxes(
-    folderPath,
-    state.activeTeam
-  );
+  const currentFolderLocationPath = dashboardUrls.allSandboxes(folderPath);
   React.useEffect(() => {
     // Auto open folder in the sidebar if it's opened
     const pathName = location.pathname;
+    const prefixCheck =
+      folderPath === '/'
+        ? currentFolderLocationPath
+        : currentFolderLocationPath + '/';
 
-    if (
-      pathName.startsWith(currentFolderLocationPath + '/') &&
-      !foldersVisible
-    ) {
+    if (pathName.startsWith(prefixCheck) && !foldersVisible) {
       setFoldersVisibility(true);
     }
 
