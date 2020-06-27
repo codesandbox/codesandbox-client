@@ -52,11 +52,18 @@ export const createWorkspace = (teamId?: string) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings/new`, teamId);
 
 export const search = (query: string, teamId?: string) => {
-  const baseUrl = new URL(
-    appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/search`, teamId)
+  let searchUrl = appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/search`,
+    teamId
   );
 
-  baseUrl.searchParams.set('query', query);
+  if (searchUrl.includes('?')) {
+    searchUrl += '&';
+  } else {
+    searchUrl += '?';
+  }
 
-  return baseUrl.toString();
+  searchUrl += `query=${query}`;
+
+  return searchUrl;
 };
