@@ -17,7 +17,7 @@ import { Card } from './components';
 
 export const UserSettings = () => {
   const {
-    state: { user },
+    state: { user, activeTeam },
     actions,
   } = useOvermind();
 
@@ -26,7 +26,7 @@ export const UserSettings = () => {
   }, [actions.dashboard]);
 
   if (!user) {
-    return <Header title="Settings" />;
+    return <Header title="Settings" activeTeam={activeTeam} />;
   }
 
   // @ts-ignore
@@ -38,7 +38,7 @@ export const UserSettings = () => {
       <Helmet>
         <title>User Settings - CodeSandbox</title>
       </Helmet>
-      <Header title="User Settings" />
+      <Header title="User Settings" activeTeam={activeTeam} />
       <Element
         css={css({
           height: 'calc(100vh - 140px)',
