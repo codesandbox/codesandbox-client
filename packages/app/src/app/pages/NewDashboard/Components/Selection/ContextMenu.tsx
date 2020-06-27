@@ -1,7 +1,10 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  sandboxUrl,
+  dashboard,
+} from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Menu, Icon, Text } from '@codesandbox/components';
 import {
@@ -127,7 +130,7 @@ interface SandboxMenuProps {
 }
 const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
   const {
-    state: { user },
+    state: { user, activeTeam },
     effects,
     actions,
   } = useOvermind();
@@ -144,7 +147,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
     alias: sandbox.alias,
   });
 
-  const folderUrl = getFolderUrl(item);
+  const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'template' : 'sandbox';
   const isOwner = React.useMemo(() => {
@@ -491,13 +494,16 @@ const MultiMenu = ({ selectedItems }: IMultiMenuProps) => {
   );
 };
 
-const getFolderUrl = (item: DashboardSandbox | DashboardTemplate) => {
-  if (item.type === 'template') return '/new-dashboard/templates';
+const getFolderUrl = (
+  item: DashboardSandbox | DashboardTemplate,
+  activeTeamId: string | null
+) => {
+  if (item.type === 'template') return dashboard.templates(activeTeamId);
 
   const path = item.sandbox.collection?.path;
   if (path == null || (!item.sandbox.teamId && path === '/')) {
-    return '/new-dashboard/drafts';
+    return dashboard.drafts(activeTeamId);
   }
 
-  return '/new-dashboard/all' + path;
+  return dashboard.allSandboxes(path || '/', activeTeamId);
 };

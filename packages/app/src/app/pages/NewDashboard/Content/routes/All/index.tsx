@@ -6,6 +6,7 @@ import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { DashboardGridItem } from 'app/pages/NewDashboard/types';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
@@ -35,7 +36,7 @@ export const AllPage = () => {
       setLocalTeam(activeTeam);
 
       if (params) {
-        history.push('/new-dashboard/all/');
+        history.push(dashboard.allSandboxes('/', activeTeam));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,7 +54,11 @@ export const AllPage = () => {
   const activeSandboxes = sandboxes.ALL && sandboxes.ALL[cleanParam];
   const itemsToShow: DashboardGridItem[] = allCollections
     ? [
-        creating && { type: 'new-folder' as 'new-folder', setCreating },
+        creating && {
+          type: 'new-folder' as 'new-folder',
+          basePath: currentPath,
+          setCreating,
+        },
         ...items,
       ].filter(Boolean)
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
@@ -66,6 +71,7 @@ export const AllPage = () => {
     <SelectionProvider
       items={itemsToShow}
       page="sandboxes"
+      activeTeamId={activeTeam}
       createNewFolder={() => setCreating(true)}
       createNewSandbox={
         currentCollection
@@ -83,6 +89,7 @@ export const AllPage = () => {
         </title>
       </Helmet>
       <Header
+        activeTeam={activeTeam}
         path={currentPath}
         templates={getPossibleTemplates(activeSandboxes || [])}
         createNewFolder={() => setCreating(true)}

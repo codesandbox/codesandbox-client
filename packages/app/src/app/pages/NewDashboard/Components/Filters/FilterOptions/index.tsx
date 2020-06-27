@@ -7,15 +7,10 @@ import { orderBy, noop } from 'lodash-es';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { Text, Menu, Checkbox } from '@codesandbox/components';
+import { TemplateFilter } from 'app/pages/NewDashboard/Content/utils';
 
-type Template = {
-  id: string;
-  name: string;
-  color: string;
-  niceName: string;
-};
 type Props = {
-  possibleTemplates?: Template[];
+  possibleTemplates?: TemplateFilter[];
 };
 
 export const FilterOptions: FunctionComponent<Props> = React.memo(

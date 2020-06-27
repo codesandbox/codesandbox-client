@@ -55,6 +55,7 @@ const useSearchedSandboxes = (query: string) => {
 export const SearchComponent = () => {
   const {
     state: {
+      activeTeam,
       dashboard: { getFilteredSandboxes },
     },
   } = useOvermind();
@@ -71,7 +72,7 @@ export const SearchComponent = () => {
       : [{ type: 'skeleton-row' }];
 
   return (
-    <SelectionProvider page="search" items={items}>
+    <SelectionProvider activeTeamId={activeTeam} page="search" items={items}>
       <Helmet>
         <title>
           {location.search
@@ -81,6 +82,7 @@ export const SearchComponent = () => {
       </Helmet>
       <Header
         title={`Search results for '${query}'`}
+        activeTeam={activeTeam}
         showViewOptions
         showFilters
         showSortOptions

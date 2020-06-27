@@ -2,6 +2,7 @@ import React from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import {
   Link,
   Avatar,
@@ -139,7 +140,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
                 textAlign: 'left',
               })}
               style={{ paddingLeft: 8 }}
-              onSelect={() => history.push('/new-dashboard/settings/new')}
+              onSelect={() => history.push(dashboardUrls.createWorkspace())}
             >
               <Stack
                 justify="center"
@@ -160,7 +161,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
           </Menu.List>
         </Menu>
 
-        <Link as={RouterLink} to="/new-dashboard/settings">
+        <Link as={RouterLink} to={dashboardUrls.settings(state.activeTeam)}>
           <IconButton
             name="gear"
             size={8}

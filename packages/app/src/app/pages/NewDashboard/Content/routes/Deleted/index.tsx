@@ -56,12 +56,13 @@ export const Deleted = () => {
       ];
 
   return (
-    <SelectionProvider page="deleted" items={items}>
+    <SelectionProvider activeTeamId={activeTeam} page="deleted" items={items}>
       <Helmet>
         <title>Deleted Sandboxes - CodeSandbox</title>
       </Helmet>
       <Header
         title="Recently Deleted"
+        activeTeam={activeTeam}
         showFilters
         showSortOptions
         templates={getPossibleTemplates(sandboxes.DELETED)}

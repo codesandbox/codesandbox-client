@@ -5,6 +5,7 @@ import { orderBy } from 'lodash-es';
 import { join, dirname } from 'path';
 import { useOvermind } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
@@ -53,7 +54,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     username: null,
     avatarUrl: null,
   });
-  const { dashboard, user } = state;
+  const { dashboard, user, activeTeam } = state;
 
   React.useEffect(() => {
     actions.dashboard.getTeams();
@@ -136,19 +137,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
               inTeamContext={inTeamContext}
             />
           </ListItem>
-          <RowItem name="Home" path="/home" icon="box" />
+          <RowItem
+            name="Home"
+            path={dashboardUrls.home(activeTeam)}
+            icon="box"
+          />
           {inTeamContext ? null : (
-            <RowItem name="Recent" path="/recent" icon="clock" />
+            <RowItem
+              name="Recent"
+              path={dashboardUrls.recents(activeTeam)}
+              icon="clock"
+            />
           )}
-          <RowItem name="My Drafts" path="/drafts" icon="file" />
+          <RowItem
+            name="My Drafts"
+            path={dashboardUrls.drafts(activeTeam)}
+            icon="file"
+          />
 
           {inTeamContext ? <Menu.Divider /> : null}
 
           <NestableRowItem
             name="All Sandboxes"
-            path="/all"
-            folderPath=""
-            rootPath="/all"
+            path={dashboardUrls.allSandboxes('/', activeTeam)}
+            folderPath="/"
             folders={[
               ...folders,
               ...(newFolderPath
@@ -158,15 +170,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
           />
 
           {inTeamContext ? (
-            <RowItem name="Recently Modified" path="/recent" icon="clock" />
+            <RowItem
+              name="Recently Modified"
+              path={dashboardUrls.recents(activeTeam)}
+              icon="clock"
+            />
           ) : null}
-          <RowItem name="Templates" path="/templates" icon="star" />
-          <RowItem name="Recently Deleted" path="/deleted" icon="trash" />
+          <RowItem
+            name="Templates"
+            path={dashboardUrls.templates(activeTeam)}
+            icon="star"
+          />
+          <RowItem
+            name="Recently Deleted"
+            path={dashboardUrls.deleted(activeTeam)}
+            icon="trash"
+          />
         </List>
         <Element margin={4}>
           <Button
             as={RouterLink}
-            to="/new-dashboard/settings/new"
+            to={dashboardUrls.createWorkspace()}
             variant="secondary"
           >
             <Icon name="plus" size={10} marginRight={1} />
@@ -194,6 +218,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         )}
       </AnimatePresence>
       <ContextMenu
+        activeTeam={activeTeam}
         visible={menuVisible}
         setVisibility={setMenuVisibility}
         position={menuPosition}
@@ -278,9 +303,7 @@ const RowItem: React.FC<RowItemProps> = ({
 
   const { onSidebarToggle } = React.useContext(SidebarContext);
 
-  let linkTo: string;
-  if (path === '/drafts') linkTo = '/new-dashboard/drafts';
-  else linkTo = '/new-dashboard' + path;
+  const linkTo: string = path;
 
   const location = useLocation();
   const isCurrentLink = linkTo === location.pathname;
@@ -368,7 +391,6 @@ interface NestableRowItemProps {
   name: string;
   folderPath: string;
   path: string;
-  rootPath: string;
   folders: DashboardBaseFolder[];
 }
 
@@ -377,9 +399,8 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   path,
   folderPath,
   folders,
-  rootPath,
 }) => {
-  const { actions } = useOvermind();
+  const { actions, state } = useOvermind();
 
   const {
     menuState: {
@@ -407,7 +428,10 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   }
 
   const location = useLocation();
-  const currentFolderLocationPath = '/new-dashboard' + rootPath + folderPath;
+  const currentFolderLocationPath = dashboardUrls.allSandboxes(
+    folderPath,
+    state.activeTeam
+  );
   React.useEffect(() => {
     // Auto open folder in the sidebar if it's opened
     const pathName = location.pathname;
@@ -453,7 +477,8 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     });
   }
 
-  const nestingLevel = folderPath.split('/').length - 1;
+  const nestingLevel =
+    folderPath === '/' ? 0 : folderPath.split('/').length - 1;
   const history = useHistory();
 
   /* Rename logic */
@@ -502,7 +527,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
 
       if (currentFolderLocationPath === location.pathname) {
         // if this directory is opened
-        history.push('/new-dashboard' + rootPath + newPath);
+        history.push(dashboardUrls.allSandboxes(newPath, state.activeTeam));
       }
     }
 
@@ -517,10 +542,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     onSubmit();
   };
 
-  const encodedPath = path
-    .split('/')
-    .map(encodeURIComponent)
-    .join('/');
+  const folderUrl = dashboardUrls.allSandboxes(folderPath, state.activeTeam);
 
   return (
     <>
@@ -533,12 +555,12 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
         setFoldersVisibility={setFoldersVisibility}
       >
         <Link
-          to={'/new-dashboard' + encodedPath}
-          onClick={() => history.push('/new-dashboard' + encodedPath)}
+          to={folderUrl}
+          onClick={() => history.push(folderUrl)}
           onContextMenu={onContextMenu}
           onKeyDown={event => {
             if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
-              history.push('/new-dashboard' + encodedPath, {
+              history.push(folderUrl, {
                 focus: 'FIRST_ITEM',
               });
             }
@@ -617,8 +639,10 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 <NestableRowItem
                   key={folder.path}
                   name={folder.name}
-                  path={rootPath + folder.path}
-                  rootPath={rootPath}
+                  path={dashboardUrls.allSandboxes(
+                    folder.path,
+                    state.activeTeam
+                  )}
                   folderPath={folder.path}
                   folders={folders}
                 />

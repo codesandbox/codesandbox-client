@@ -13,7 +13,10 @@ import {
   TAB,
 } from '@codesandbox/common/lib/utils/keycodes';
 import { isEqual } from 'lodash-es';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  sandboxUrl,
+  dashboard as dashboardUrls,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
 import {
@@ -53,6 +56,7 @@ interface SelectionContext {
   isDragging: boolean;
   isRenaming: boolean;
   setRenaming: (renaming: boolean) => void;
+  activeTeamId: string | null;
 }
 
 const Context = React.createContext<SelectionContext>({
@@ -69,12 +73,14 @@ const Context = React.createContext<SelectionContext>({
   isDragging: false,
   isRenaming: false,
   setRenaming: renaming => {},
+  activeTeamId: null,
 });
 
 interface SelectionProviderProps {
   items: Array<DashboardGridItem>;
   createNewFolder?: (() => void) | null;
   createNewSandbox?: (() => void) | null;
+  activeTeamId: string | null;
   page:
     | 'search'
     | 'home'
@@ -89,6 +95,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   items = [],
   createNewFolder = null,
   createNewSandbox = null,
+  activeTeamId,
   page,
   children,
 }) => {
@@ -294,7 +301,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       let url: string;
       if (selectedId.startsWith('/')) {
         // means its a folder
-        url = '/new-dashboard/all' + selectedId;
+        url = dashboardUrls.allSandboxes(selectedId, activeTeamId);
       } else {
         const selectedItem = sandboxes.find(
           item => item.sandbox.id === selectedId
@@ -577,6 +584,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         isDragging,
         isRenaming,
         setRenaming,
+        activeTeamId,
       }}
     >
       <Element
@@ -651,6 +659,7 @@ export const useSelection = () => {
     isDragging,
     isRenaming,
     setRenaming,
+    activeTeamId,
   } = React.useContext(Context);
 
   return {
@@ -667,6 +676,7 @@ export const useSelection = () => {
     isDragging,
     isRenaming,
     setRenaming,
+    activeTeamId,
   };
 };
 

@@ -57,13 +57,14 @@ export const Recent = () => {
       ];
 
   return (
-    <SelectionProvider page="recents" items={items}>
+    <SelectionProvider page="recents" activeTeamId={activeTeam} items={items}>
       <Helmet>
         <title>Recent Sandboxes - CodeSandbox</title>
       </Helmet>
       <Header
-        templates={getPossibleTemplates(sandboxes.RECENT)}
         title="Recently Modified Sandboxes"
+        activeTeam={activeTeam}
+        templates={getPossibleTemplates(sandboxes.RECENT)}
         showViewOptions
         showFilters
       />

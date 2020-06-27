@@ -4,6 +4,7 @@ import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { Helmet } from 'react-helmet';
 import {
   DashboardGridItem,
@@ -58,7 +59,7 @@ export const Home = () => {
         {
           type: 'header',
           title: 'Recently Accessed Sandboxes',
-          showMoreLink: '/new-dashboard/recent',
+          showMoreLink: dashboardUrls.recents(activeTeam),
           showMoreLabel: 'Show more',
         },
         ...(sandboxes.RECENT_HOME || []).map(sandbox => ({
@@ -74,11 +75,11 @@ export const Home = () => {
       ];
 
   return (
-    <SelectionProvider page="home" items={items}>
+    <SelectionProvider activeTeamId={activeTeam} page="home" items={items}>
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
-      <Header title="Home" showViewOptions />
+      <Header title="Home" activeTeam={activeTeam} showViewOptions />
       <VariableGrid items={items} />
     </SelectionProvider>
   );

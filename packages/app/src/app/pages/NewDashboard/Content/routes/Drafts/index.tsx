@@ -32,12 +32,13 @@ export const Drafts = () => {
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   return (
-    <SelectionProvider page="drafts" items={items}>
+    <SelectionProvider activeTeamId={activeTeam} page="drafts" items={items}>
       <Helmet>
         <title>Drafts - CodeSandbox</title>
       </Helmet>
       <Header
         title="Drafts"
+        activeTeam={activeTeam}
         templates={getPossibleTemplates(sandboxes.DRAFTS)}
         showViewOptions
         showFilters

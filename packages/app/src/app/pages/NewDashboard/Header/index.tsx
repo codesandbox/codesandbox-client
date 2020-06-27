@@ -16,6 +16,7 @@ import {
 import css from '@styled-system/css';
 
 import { Notifications } from 'app/components/Notifications';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -27,7 +28,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
 
     const {
       actions: { openCreateSandboxModal },
-      state: { user },
+      state: { user, activeTeam },
     } = useOvermind();
 
     const history = useHistory();
@@ -36,14 +37,16 @@ export const Header: React.FC<HeaderProps> = React.memo(
       'query'
     );
 
-    const search = query =>
-      history.push(`/new-dashboard/search?query=${query}`);
+    const search = (query: string) =>
+      history.push(dashboardUrls.search(query, activeTeam));
+
     const [debouncedSearch] = useDebouncedCallback(search, 100);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setValue(e.target.value);
 
-      if (!e.target.value) history.push(`/new-dashboard/all`);
+      if (!e.target.value)
+        history.push(dashboardUrls.allSandboxes('/', activeTeam));
       if (e.target.value.length >= 2) debouncedSearch(e.target.value);
     };
 
