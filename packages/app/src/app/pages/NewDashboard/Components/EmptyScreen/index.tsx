@@ -41,7 +41,12 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
 
   return (
     <Stack justify="center" align="center" marginTop={120}>
-      <Stack direction="vertical" align="center" gap={8} css={{ width: 500 }}>
+      <Stack
+        direction="vertical"
+        align="center"
+        gap={8}
+        css={{ width: 500, height: '100vh', userSelect: 'none' }}
+      >
         <Stack align="center" css={{ width: 220 }}>
           <NewSandbox collectionId={collectionId} />
         </Stack>
