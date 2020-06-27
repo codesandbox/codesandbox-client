@@ -3,7 +3,7 @@ export const forkFrozenModal = {
 };
 
 export const newSandboxModal: {
-  state: { collectionId: null | string };
+  state: { collectionId?: null | string };
   result: undefined;
 } = {
   state: { collectionId: null },

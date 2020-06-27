@@ -844,7 +844,7 @@ export const getSearchSandboxes: AsyncAction = async ({ state, effects }) => {
       const data = await effects.gql.queries.searchTeamSandboxes({
         teamId: activeTeam,
       });
-      if (data?.me?.team.sandboxes == null) {
+      if (data?.me?.team?.sandboxes == null) {
         return;
       }
 
@@ -913,7 +913,7 @@ export const addSandboxesToFolder: AsyncAction<{
     actions.dashboard.deleteSandboxFromState(sandboxIds);
   }
 
-  const existingCollection = state.dashboard.allCollections.find(
+  const existingCollection = state.dashboard?.allCollections?.find(
     f => f.path === collectionPath
   );
   if (existingCollection) {
