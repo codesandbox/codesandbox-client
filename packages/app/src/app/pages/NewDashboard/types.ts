@@ -79,12 +79,6 @@ export type PageTypes =
   | 'drafts'
   | 'sandboxes';
 
-export type DndDropType = {
-  page: PageTypes;
-  path: string;
-  isSamePath: boolean;
-};
-
 export type DashboardGridItem =
   | DashboardSandbox
   | DashboardTemplate

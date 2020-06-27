@@ -1,6 +1,5 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
@@ -16,6 +15,7 @@ import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
 import { DashboardSandbox, DashboardTemplate } from '../../types';
 import { SandboxItemComponentProps } from './types';
+import { useDrag } from '../../utils/dnd';
 
 const PrivacyIcons = {
   0: () => null,
@@ -96,16 +96,9 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   /* Drag logic */
 
   const location = useLocation();
-  const currentCollectionPath = location.pathname
-    .replace('/new-dashboard', '')
-    .replace('/all', '');
 
   const [, dragRef, preview] = useDrag({
-    item: {
-      type: 'sandbox',
-      id: sandbox.id,
-      collectionPath: currentCollectionPath,
-    },
+    item,
     end: (_item, monitor) => {
       const dropResult = monitor.getDropResult();
 

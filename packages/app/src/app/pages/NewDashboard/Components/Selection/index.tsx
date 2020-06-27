@@ -25,8 +25,8 @@ import {
   DashboardFolder,
   DashboardGridItem,
   PageTypes,
-  DndDropType,
 } from '../../types';
+import { DndDropType } from '../../utils/dnd';
 
 export type Position = {
   x: null | number;
@@ -393,18 +393,23 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     [setSelectedIds]
   );
 
-  const onDrop = (dropResult: DndDropType) => {
+  const onDrop = async (dropResult: DndDropType) => {
     if (dropResult.isSamePath) return;
 
     const sandboxIds = selectedIds.filter(isSandboxId);
     const folderPaths = selectedIds.filter(isFolderPath).filter(notDrafts);
     const dropPage = dropResult.page;
 
+    if (page === 'templates') {
+      // First unmake them from templates
+      await actions.dashboard.unmakeTemplates({ templateIds: sandboxIds });
+    }
+
     if (sandboxIds.length) {
       if (dropPage === 'deleted') {
         actions.dashboard.deleteSandbox(sandboxIds);
       } else if (dropPage === 'templates') {
-        actions.dashboard.makeTemplate(sandboxIds);
+        actions.dashboard.makeTemplates({ sandboxIds });
       } else if (dropPage === 'drafts') {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,

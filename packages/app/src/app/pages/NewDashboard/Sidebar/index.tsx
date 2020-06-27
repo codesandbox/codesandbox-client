@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom';
-import { useDrop } from 'react-dnd';
 import { orderBy } from 'lodash-es';
 import { join, dirname } from 'path';
 import { useOvermind } from 'app/overmind';
@@ -26,16 +25,11 @@ import {
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { ContextMenu } from './ContextMenu';
-import {
-  DashboardBaseFolder,
-  PageTypes,
-  DashboardSandbox,
-  DashboardFolder,
-  DndDropType,
-} from '../types';
+import { DashboardBaseFolder, PageTypes } from '../types';
 import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH } from './constants';
 import { WorkspaceSwitcher } from './WorkspaceSwitcher';
+import { DragItemType, useDrop } from '../utils/dnd';
 
 const SidebarContext = React.createContext(null);
 
@@ -263,13 +257,21 @@ const canNotAcceptFolders: PageTypes[] = [
   'templates',
 ];
 
-const isSamePath = (draggedItem, dropPath) => {
+const isSamePath = (
+  draggedItem: DragItemType,
+  currentPage: PageTypes,
+  dropPath: string
+) => {
   if (!draggedItem) return false;
 
   if (
     draggedItem.type === 'sandbox' &&
-    draggedItem.collectionPath === dropPath
+    draggedItem.sandbox.collection?.path === dropPath
   ) {
+    return true;
+  }
+
+  if (draggedItem.type === 'template' && currentPage === 'templates') {
     return true;
   }
 
@@ -302,25 +304,25 @@ const RowItem: React.FC<RowItemProps> = ({
   setFoldersVisibility = null,
   ...props
 }) => {
-  const accepts = [];
-  if (!canNotAcceptSandboxes.includes(page)) accepts.push('sandbox');
+  const accepts: Array<'sandbox' | 'folder' | 'template'> = [];
+  if (!canNotAcceptSandboxes.includes(page)) {
+    accepts.push('template');
+    accepts.push('sandbox');
+  }
   if (!canNotAcceptFolders.includes(page)) accepts.push('folder');
 
   const usedPath = folderPath || path;
-  const [{ canDrop, isOver, isDragging }, dropRef] = useDrop<
-    DashboardSandbox | DashboardFolder,
-    DndDropType,
-    { canDrop: boolean; isOver: boolean; isDragging: boolean }
-  >({
+  const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
     accept: accepts,
     drop: item => ({
       page,
       path: usedPath,
-      isSamePath: isSamePath(item, usedPath),
+      isSamePath: isSamePath(item, page, usedPath),
     }),
     collect: monitor => ({
       isOver: monitor.isOver(),
-      canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), usedPath),
+      canDrop:
+        monitor.canDrop() && !isSamePath(monitor.getItem(), page, usedPath),
       isDragging: !!monitor.getItem(),
     }),
   });

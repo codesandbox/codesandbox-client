@@ -1,6 +1,5 @@
 import React from 'react';
 import { join, dirname } from 'path';
-import { useDrop, useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
 import { useLocation, useHistory } from 'react-router-dom';
@@ -12,18 +11,21 @@ import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
 import { useSelection } from '../Selection';
 import { DashboardFolder } from '../../types';
+import { useDrop, useDrag, DragItemType } from '../../utils/dnd';
 
-export const Folder = ({
-  name = '',
-  path = null,
-  sandboxCount = 0,
-  type,
-  ...props
-}: DashboardFolder) => {
+export const Folder = (folderItem: DashboardFolder) => {
   const {
     state: { dashboard },
     actions,
   } = useOvermind();
+
+  const {
+    name = '',
+    path = null,
+    sandboxCount = 0,
+    type,
+    ...props
+  } = folderItem;
 
   const location = useLocation();
 
@@ -95,7 +97,7 @@ export const Folder = ({
 
   const [{ isOver, canDrop }, dropRef] = useDrop({
     accept: accepts,
-    drop: () => ({ path }),
+    drop: () => ({ path, page: 'sandboxes', isSamePath: false }),
     collect: monitor => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path),
@@ -108,13 +110,8 @@ export const Folder = ({
 
   /* Drag logic */
 
-  const parent = path
-    .split('/')
-    .slice(0, -1)
-    .join('/');
-
   const [, dragRef, preview] = useDrag({
-    item: { type: 'folder', path, parent, name },
+    item: folderItem,
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
 
@@ -214,7 +211,20 @@ export const Folder = ({
   );
 };
 
-const isSamePath = (draggedItem, selfPath) => {
-  if (draggedItem && draggedItem.path === selfPath) return true;
+const isSamePath = (draggedItem: DragItemType, selfPath: string) => {
+  if (!draggedItem) {
+    return false;
+  }
+
+  if (draggedItem.type === 'folder' && draggedItem.path === selfPath) {
+    return true;
+  }
+  if (
+    draggedItem.type === 'sandbox' &&
+    draggedItem.sandbox.collection?.path === selfPath
+  ) {
+    return true;
+  }
+
   return false;
 };

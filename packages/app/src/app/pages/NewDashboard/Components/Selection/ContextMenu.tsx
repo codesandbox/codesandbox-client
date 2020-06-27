@@ -296,7 +296,9 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
           {isTemplate ? (
             <MenuItem
               onSelect={() => {
-                actions.dashboard.unmakeTemplate([sandbox.id]);
+                actions.dashboard.unmakeTemplates({
+                  templateIds: [sandbox.id],
+                });
               }}
             >
               Convert to sandbox
@@ -304,7 +306,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
           ) : (
             <MenuItem
               onSelect={() => {
-                actions.dashboard.makeTemplate([sandbox.id]);
+                actions.dashboard.makeTemplates({ sandboxIds: [sandbox.id] });
               }}
             >
               Make sandbox a template
@@ -423,15 +425,15 @@ const MultiMenu = ({ selectedItems }: IMultiMenuProps) => {
   };
 
   const convertToTemplates = () => {
-    actions.dashboard.makeTemplate(
-      sandboxes.map(sandbox => sandbox.sandbox.id)
-    );
+    actions.dashboard.makeTemplates({
+      sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+    });
   };
 
   const convertToSandboxes = () => {
-    actions.dashboard.unmakeTemplate(
-      templates.map(template => template.sandbox.id)
-    );
+    actions.dashboard.unmakeTemplates({
+      templateIds: templates.map(template => template.sandbox.id),
+    });
   };
 
   const deleteItems = () => {

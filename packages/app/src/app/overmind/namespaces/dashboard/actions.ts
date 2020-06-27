@@ -571,17 +571,19 @@ export const deleteSandbox: AsyncAction<string[]> = async (
   }
 };
 
-export const unmakeTemplate: AsyncAction<string[]> = async (
+export const unmakeTemplates: AsyncAction<{ templateIds: string[] }> = async (
   { effects, actions, state },
-  ids
+  { templateIds }
 ) => {
   const oldTemplates = {
     TEMPLATE_HOME: state.dashboard.sandboxes.TEMPLATE_HOME,
     TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
   };
-  actions.dashboard.deleteTemplateFromState(ids);
+  actions.dashboard.deleteTemplateFromState(templateIds);
   try {
-    await effects.gql.mutations.unmakeSandboxesTemplate({ sandboxIds: ids });
+    await effects.gql.mutations.unmakeSandboxesTemplate({
+      sandboxIds: templateIds,
+    });
   } catch (error) {
     state.dashboard.sandboxes.TEMPLATES = oldTemplates.TEMPLATES
       ? [...oldTemplates.TEMPLATES]
@@ -755,9 +757,9 @@ export const deleteFolder: AsyncAction<{
   }
 };
 
-export const makeTemplate: AsyncAction<string[]> = async (
+export const makeTemplates: AsyncAction<{ sandboxIds: string[] }> = async (
   { effects, state, actions },
-  ids
+  { sandboxIds: ids }
 ) => {
   const oldSandboxes = state.dashboard.sandboxes;
   actions.dashboard.deleteSandboxFromState(ids);
