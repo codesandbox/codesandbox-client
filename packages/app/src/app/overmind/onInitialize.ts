@@ -111,7 +111,7 @@ export const onInitialize: OnInitialize = async (
       path.split('.').reduce((aggr, key) => aggr[key], actions),
   });
 
-  effects.preview.initialize(overmindInstance.reaction);
+  effects.preview.initialize();
 
   actions.internal.showPrivacyPolicyNotification();
   actions.internal.setViewModeForDashboard();
