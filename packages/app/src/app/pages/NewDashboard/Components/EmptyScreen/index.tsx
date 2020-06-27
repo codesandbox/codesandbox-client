@@ -41,13 +41,15 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
 
   return (
     <Stack justify="center" align="center" marginTop={120}>
-      <Stack direction="vertical" align="center" gap={8} css={{ width: 400 }}>
+      <Stack direction="vertical" align="center" gap={8} css={{ width: 500 }}>
         <Stack align="center" css={{ width: 220 }}>
           <NewSandbox collectionId={collectionId} />
         </Stack>
 
         <Stack direction="vertical" align="center" gap={1}>
-          <Text variant="muted">You haven’t created any sandboxes yet.</Text>
+          <Text variant="muted" align="center">
+            Uh oh, you haven’t created any sandboxes in this folder yet!
+          </Text>
           <Stack align="center" gap={1}>
             <Text variant="muted">Start with a</Text>
             <Button
