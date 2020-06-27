@@ -11,7 +11,8 @@ tweetText: All our web workshops are built with it!
 tweetJob: Founder of Vue Vixens
 tweetName: Jen Looper
 tweetHandle: jenlooper
-bgColor: BF5AF2
+bgColor: FBCC43
+bgImage: ./yellow.jpg
 coverImage: ./onboarding.svg
 coverReversed: true
 coverSmaller: true

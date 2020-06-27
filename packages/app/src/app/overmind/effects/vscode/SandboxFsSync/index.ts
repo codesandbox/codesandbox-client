@@ -377,7 +377,12 @@ class SandboxFsSync {
       return this.typesInfo;
     }
 
-    this.typesInfo = fetch('https://unpkg.com/types-registry@latest/index.json')
+    this.typesInfo = fetch(
+      'https://unpkg.com/types-registry@latest/index.json',
+      // This falls back to etag caching, ensuring we always have latest version
+      // https://hacks.mozilla.org/2016/03/referrer-and-cache-control-apis-for-fetch/
+      { cache: 'no-cache' }
+    )
       .then(x => x.json())
       .then(x => x.entries);
 

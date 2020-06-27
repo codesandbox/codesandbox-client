@@ -8,6 +8,7 @@ tweetJob: UX Engineer, LogMeIn
 tweetName: Emma Bostian
 tweetHandle: EmmaBostian
 bgColor: EB455A
+bgImage: ./red.jpg
 coverImage: ./team.svg
 coverReversed: true
 columns: 3
