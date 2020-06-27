@@ -57,7 +57,11 @@ export const Dashboard: FunctionComponent = () => {
           <SkipNav.Link />
           <Header onSidebarToggle={onSidebarToggle} />
           <Stack css={{ flexGrow: 1 }}>
-            <Media query={theme.media.greaterThan(theme.sizes.large)}>
+            <Media
+              query={theme.media
+                .lessThan(theme.sizes.medium)
+                .replace('@media ', '')}
+            >
               {match =>
                 match ? (
                   <Sidebar
