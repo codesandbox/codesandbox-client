@@ -398,8 +398,9 @@ class SandboxGridComponent extends React.Component<
         setSandboxesSelected={this.setSandboxesSelected}
         setDragging={this.props.dragChanged}
         isDraggingItem={this.isDragging && itemInSelection}
-        collectionPath={item.collection?.path || '/'}
-        collectionTeamId={item.teamId}
+        collectionPath={item.collection?.path}
+        // @ts-ignore Will come in new API. Remove after June 29th
+        collectionTeamId={item.collection?.teamId || item.teamId}
         forkSandbox={this.forkSandbox}
         deleteSandboxes={this.deleteSandboxes}
         undeleteSandboxes={this.undeleteSandboxes}

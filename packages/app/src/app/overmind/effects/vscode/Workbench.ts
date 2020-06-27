@@ -126,6 +126,18 @@ export class Workbench {
     });
 
     this.addWorkbenchAction({
+      id: 'codesandbox.preview.refresh',
+      label: 'Refresh Preview',
+      category: 'View',
+      run: () => {
+        this.controller.getSignal('editor.refreshPreview')();
+      },
+      keybindings: {
+        primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_R,
+      },
+    });
+
+    this.addWorkbenchAction({
       id: 'view.fullscreen',
       label: 'Toggle Fullscreen',
       category: 'View',

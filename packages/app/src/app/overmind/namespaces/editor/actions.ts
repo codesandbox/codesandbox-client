@@ -105,6 +105,10 @@ export const loadCursorFromUrl: AsyncAction = async ({
   }
 };
 
+export const refreshPreview: Action = ({ effects }) => {
+  effects.preview.refresh();
+};
+
 export const addNpmDependency: AsyncAction<{
   name: string;
   version?: string;
