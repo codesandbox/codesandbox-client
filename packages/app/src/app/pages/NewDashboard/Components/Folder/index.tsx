@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { useLocation, useHistory } from 'react-router-dom';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
@@ -16,16 +17,13 @@ export const Folder = ({
   name = '',
   path = null,
   sandboxCount = 0,
-  setCreating,
+  type,
   ...props
 }: DashboardFolder) => {
   const {
     state: { dashboard },
     actions,
   } = useOvermind();
-
-  const isNewFolder = !path;
-  const isDrafts = path === '/drafts';
 
   const location = useLocation();
 
@@ -51,9 +49,10 @@ export const Folder = ({
     isDragging: isAnythingDragging,
     isRenaming,
     setRenaming,
+    activeTeamId,
   } = useSelection();
 
-  const selected = selectedIds.includes(path) || isNewFolder;
+  const selected = selectedIds.includes(path);
   const isDragging = isAnythingDragging && selected;
 
   const onClick = event => {
@@ -62,11 +61,7 @@ export const Folder = ({
 
   const history = useHistory();
   const onDoubleClick = event => {
-    const safePath = path
-      .split('/')
-      .map(encodeURIComponent)
-      .join('/');
-    const url = '/new-dashboard/all' + safePath;
+    const url = dashboardUrls.allSandboxes(path, activeTeamId);
 
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
@@ -97,7 +92,6 @@ export const Folder = ({
   /* Drop target logic */
 
   const accepts = ['sandbox'];
-  if (!isDrafts) accepts.push('folder');
 
   const [{ isOver, canDrop }, dropRef] = useDrop({
     accept: accepts,
@@ -114,12 +108,10 @@ export const Folder = ({
 
   /* Drag logic */
 
-  const parent =
-    !isNewFolder &&
-    path
-      .split('/')
-      .slice(0, -1)
-      .join('/');
+  const parent = path
+    .split('/')
+    .slice(0, -1)
+    .join('/');
 
   const [, dragRef, preview] = useDrag({
     item: { type: 'folder', path, parent, name },
@@ -133,12 +125,10 @@ export const Folder = ({
     },
   });
 
-  const dragProps = isDrafts
-    ? {}
-    : {
-        ref: dragRef,
-        onDragStart: event => onDragStart(event, path),
-      };
+  const dragProps = {
+    ref: dragRef,
+    onDragStart: event => onDragStart(event, path),
+  };
 
   React.useEffect(() => {
     preview(getEmptyImage(), { captureDraggingState: true });
@@ -155,7 +145,6 @@ export const Folder = ({
       // Reset value and exit without saving
       setNewName(name);
       setRenaming(false);
-      if (setCreating) setCreating(false);
     }
   };
 
@@ -164,27 +153,12 @@ export const Folder = ({
 
     if (name === newName) {
       // nothing to do here
-    } else if (isNewFolder) {
-      if (newName) {
-        const folderLocation = location.pathname.split(
-          '/new-dashboard/all/'
-        )[1];
-
-        let folderPath = '';
-        if (folderLocation) folderPath += '/' + folderLocation;
-        folderPath += '/' + newName;
-
-        await actions.dashboard.createFolder(folderPath);
-        track('Dashboard - Create Directory', {
-          source: 'Grid',
-          dashboardVersion: 2,
-          folderPath,
-        });
-      }
     } else {
       await actions.dashboard.renameFolder({
         path,
         newPath: join(dirname(path), newName),
+        teamId: activeTeamId,
+        newTeamId: activeTeamId,
       });
       track('Dashboard - Rename Folder', {
         source: 'Grid',
@@ -192,7 +166,6 @@ export const Folder = ({
       });
     }
 
-    if (setCreating) setCreating(false);
     return setRenaming(false);
   };
 
@@ -202,21 +175,15 @@ export const Folder = ({
     onSubmit();
   };
 
-  // If it's a new folder, enter editing and focus on render
-  React.useEffect(() => {
-    if (isNewFolder) setRenaming(true);
-  }, [isNewFolder, setRenaming]);
-
   const folderProps = {
     name,
     path,
-    isDrafts,
     numberOfSandboxes: sandboxCount,
     onClick,
     onDoubleClick,
     // edit mode
     editing: isRenaming && selected,
-    isNewFolder,
+    isNewFolder: false,
     newName,
     onChange,
     onInputKeyDown,

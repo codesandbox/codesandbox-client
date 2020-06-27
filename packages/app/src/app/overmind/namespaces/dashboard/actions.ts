@@ -693,15 +693,25 @@ export const renameSandbox: AsyncAction<{
 export const moveFolder: AsyncAction<{
   path: string;
   newPath: string;
-}> = async ({ state: { dashboard }, actions }, { path, newPath }) => {
+  newTeamId: string | null;
+  teamId: string | null;
+}> = async (
+  { state: { dashboard }, actions },
+  { path, newPath, teamId, newTeamId }
+) => {
   if (!dashboard.allCollections) return;
-  actions.dashboard.renameFolder({ path, newPath });
+  actions.dashboard.renameFolder({ path, newPath, teamId, newTeamId });
 };
 
 export const renameFolder: AsyncAction<{
   path: string;
   newPath: string;
-}> = async ({ state: { dashboard }, effects, actions }, { path, newPath }) => {
+  newTeamId: string | null;
+  teamId: string | null;
+}> = async (
+  { state: { dashboard }, effects, actions },
+  { path, newPath, teamId, newTeamId }
+) => {
   if (!dashboard.allCollections) return;
   actions.dashboard.renameFolderInState({
     path,
@@ -712,6 +722,8 @@ export const renameFolder: AsyncAction<{
     await effects.gql.mutations.renameFolder({
       newPath,
       path,
+      teamId,
+      newTeamId,
     });
   } catch {
     actions.dashboard.renameFolderInState({

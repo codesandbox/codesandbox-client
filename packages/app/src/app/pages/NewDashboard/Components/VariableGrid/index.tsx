@@ -20,6 +20,7 @@ import {
   DashboardSkeleton,
   DashboardNewFolder,
 } from '../../types';
+import { CreateFolder } from '../Folder/CreateFolder';
 
 export const GRID_MAX_WIDTH = 1900;
 export const MAX_COLUMN_COUNT = 6;
@@ -69,8 +70,7 @@ const ComponentForTypes: ComponentForTypes = {
     <Sandbox item={props.item} isScrolling={props.isScrolling} />
   )),
   folder: props => <Folder {...props.item} />,
-  // @ts-ignore TODO: find a better way to type this
-  'new-folder': props => <Folder {...props.item} />,
+  'new-folder': props => <CreateFolder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
   header: ({ item }) => (
     <Stack justify="space-between" align="center">

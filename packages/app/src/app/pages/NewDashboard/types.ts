@@ -26,12 +26,12 @@ export type DashboardTemplate = {
 export type DashboardFolder = DELETE_ME_COLLECTION &
   DashboardBaseFolder & {
     type: 'folder';
-    setCreating?: (value: boolean) => void;
   };
 
 export type DashboardNewFolder = {
   type: 'new-folder';
-  setCreating?: (value: boolean) => void;
+  basePath: string;
+  setCreating: (value: boolean) => void;
 };
 
 export type DashboardHeader = {

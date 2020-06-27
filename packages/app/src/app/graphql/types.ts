@@ -1247,6 +1247,8 @@ export type DeleteFolderMutation = { __typename?: 'RootMutationType' } & {
 export type RenameFolderMutationVariables = Exact<{
   path: Scalars['String'];
   newPath: Scalars['String'];
+  teamId: Maybe<Scalars['ID']>;
+  newTeamId: Maybe<Scalars['ID']>;
 }>;
 
 export type RenameFolderMutation = { __typename?: 'RootMutationType' } & {

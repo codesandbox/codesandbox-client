@@ -518,6 +518,8 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
       await actions.dashboard.renameFolder({
         path: folderPath,
         newPath,
+        teamId: state.activeTeam,
+        newTeamId: state.activeTeam,
       });
 
       track('Dashboard - Rename Folder', {
