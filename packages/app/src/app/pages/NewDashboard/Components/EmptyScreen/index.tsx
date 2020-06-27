@@ -1,27 +1,39 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { NewSandbox } from '../Sandbox/NewSandbox';
+import { PageTypes } from '../../types';
 
 interface EmptyScreenProps {
   collectionId?: string;
+  page: PageTypes;
 }
 
-export const EmptyScreen: React.FC<EmptyScreenProps> = ({ collectionId }) => {
+export const EmptyScreen: React.FC<EmptyScreenProps> = ({
+  collectionId,
+  page,
+}) => {
   const { actions } = useOvermind();
-
-  const location = useLocation();
-  const isSearch = location.pathname.includes('/search');
 
   const onClick = () => actions.openCreateSandboxModal({ collectionId });
 
-  if (isSearch) {
+  if (page === 'search') {
     return (
       <Stack justify="center" align="center" marginTop={120}>
         <Text variant="muted">
           There are no sandboxes that match your query
+        </Text>
+      </Stack>
+    );
+  }
+
+  if (page === 'deleted') {
+    return (
+      <Stack justify="center" align="center" marginTop={120}>
+        <Text variant="muted">
+          There are no deleted sandboxes yet! Drag sandboxes or templates to
+          this page to delete them.
         </Text>
       </Stack>
     );
@@ -34,7 +46,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({ collectionId }) => {
           <NewSandbox collectionId={collectionId} />
         </Stack>
 
-        <Stack direction="vertical" align="center">
+        <Stack direction="vertical" align="center" gap={1}>
           <Text variant="muted">You haven’t created any sandboxes yet.</Text>
           <Stack align="center" gap={1}>
             <Text variant="muted">Start with a</Text>
@@ -49,7 +61,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({ collectionId }) => {
                 padding: 0,
               })}
             >
-              Template
+              template
             </Button>
           </Stack>
         </Stack>

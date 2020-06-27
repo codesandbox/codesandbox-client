@@ -19,6 +19,7 @@ import {
   DashboardBlank,
   DashboardSkeleton,
   DashboardNewFolder,
+  PageTypes,
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
 
@@ -176,9 +177,14 @@ const Item = ({
 interface VariableGridProps {
   items: DashboardGridItem[];
   collectionId?: string;
+  page: PageTypes;
 }
 
-export const VariableGrid = ({ items, collectionId }: VariableGridProps) => {
+export const VariableGrid = ({
+  items,
+  collectionId,
+  page,
+}: VariableGridProps) => {
   const {
     state: { dashboard },
   } = useOvermind();
@@ -255,7 +261,8 @@ export const VariableGrid = ({ items, collectionId }: VariableGridProps) => {
     };
   });
 
-  if (items.length === 0) return <EmptyScreen collectionId={collectionId} />;
+  if (items.length === 0)
+    return <EmptyScreen page={page} collectionId={collectionId} />;
 
   return (
     <Element

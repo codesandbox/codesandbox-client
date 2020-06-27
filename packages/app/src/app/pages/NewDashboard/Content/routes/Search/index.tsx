@@ -7,7 +7,7 @@ import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { DashboardGridItem } from 'app/pages/NewDashboard/types';
+import { DashboardGridItem, PageTypes } from 'app/pages/NewDashboard/types';
 import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
 import { getPossibleTemplates } from '../../utils';
 
@@ -71,8 +71,10 @@ export const SearchComponent = () => {
         }))
       : [{ type: 'skeleton-row' }];
 
+  const pageType: PageTypes = 'search';
+
   return (
-    <SelectionProvider activeTeamId={activeTeam} page="search" items={items}>
+    <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
         <title>
           {location.search
@@ -90,7 +92,7 @@ export const SearchComponent = () => {
       />
 
       <section style={{ position: 'relative' }}>
-        <VariableGrid items={items} />
+        <VariableGrid items={items} page={pageType} />
       </section>
     </SelectionProvider>
   );

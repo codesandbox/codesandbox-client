@@ -9,6 +9,7 @@ import { Helmet } from 'react-helmet';
 import {
   DashboardGridItem,
   DashboardTemplate,
+  PageTypes,
 } from 'app/pages/NewDashboard/types';
 
 export const Home = () => {
@@ -74,13 +75,14 @@ export const Home = () => {
         { type: 'skeleton-row' },
       ];
 
+  const pageType: PageTypes = 'home';
   return (
-    <SelectionProvider activeTeamId={activeTeam} page="home" items={items}>
+    <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
       <Header title="Home" activeTeam={activeTeam} showViewOptions />
-      <VariableGrid items={items} />
+      <VariableGrid page={pageType} items={items} />
     </SelectionProvider>
   );
 };

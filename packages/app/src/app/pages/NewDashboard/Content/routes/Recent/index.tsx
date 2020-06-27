@@ -9,6 +9,7 @@ import {
   DashboardGridItem,
   DashboardHeader,
   DashboardSandbox,
+  PageTypes,
 } from 'app/pages/NewDashboard/types';
 import { getPossibleTemplates } from '../../utils';
 
@@ -56,8 +57,9 @@ export const Recent = () => {
         { type: 'skeleton-row' },
       ];
 
+  const pageType: PageTypes = 'recents';
   return (
-    <SelectionProvider page="recents" activeTeamId={activeTeam} items={items}>
+    <SelectionProvider page={pageType} activeTeamId={activeTeam} items={items}>
       <Helmet>
         <title>Recent Sandboxes - CodeSandbox</title>
       </Helmet>
@@ -69,7 +71,7 @@ export const Recent = () => {
         showFilters
       />
 
-      <VariableGrid items={items} />
+      <VariableGrid items={items} page={pageType} />
     </SelectionProvider>
   );
 };

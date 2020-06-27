@@ -5,7 +5,7 @@ import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
-import { DashboardGridItem } from 'app/pages/NewDashboard/types';
+import { DashboardGridItem, PageTypes } from 'app/pages/NewDashboard/types';
 import { TemplateFragmentDashboardFragment } from 'app/graphql/types';
 import { getPossibleTemplates } from '../../utils';
 
@@ -50,8 +50,9 @@ export const Templates = () => {
       })
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
+  const pageType: PageTypes = 'templates';
   return (
-    <SelectionProvider activeTeamId={activeTeam} page="templates" items={items}>
+    <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
         <title>{activeTeam ? 'Team' : 'My'} Templates - CodeSandbox</title>
       </Helmet>
@@ -63,7 +64,7 @@ export const Templates = () => {
         showFilters
         showSortOptions
       />
-      <VariableGrid items={items} />
+      <VariableGrid items={items} page={pageType} />
     </SelectionProvider>
   );
 };
