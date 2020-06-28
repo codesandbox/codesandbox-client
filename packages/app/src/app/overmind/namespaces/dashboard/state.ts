@@ -8,6 +8,7 @@ import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
+import { parseISO } from 'date-fns';
 import { derived } from 'overmind';
 
 export type OrderBy = {
@@ -196,7 +197,7 @@ export const state: State = {
       let orderedSandboxes = (sortBy(sandboxes, s => {
         const sandbox = s!;
         if (isDateField) {
-          return +new Date(sandbox[orderField]);
+          return +parseISO(sandbox[orderField]);
         }
 
         if (orderField === 'title') {
