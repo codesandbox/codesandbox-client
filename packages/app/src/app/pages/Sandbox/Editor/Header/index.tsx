@@ -1,5 +1,6 @@
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { Link as RouterLink } from 'react-router-dom';
 import { Link, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
@@ -34,9 +35,18 @@ export const Header = () => {
       <Stack align="center">
         {hasLogIn ? (
           <Link
+            as={RouterLink}
             variant="muted"
-            href={dashboardUrl()}
-            css={{ lineHeight: 0 /* micro adjustment */ }}
+            to={dashboardUrl()}
+            style={{ color: 'inherit' }}
+            css={{
+              transition: '0.3s ease opacity',
+              opacity: 0.6,
+              lineHeight: 0 /* micro adjustment */,
+              ':hover': {
+                opacity: 1,
+              },
+            }}
           >
             <DashboardIcon />
           </Link>
