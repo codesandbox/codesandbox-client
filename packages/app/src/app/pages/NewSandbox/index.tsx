@@ -8,9 +8,9 @@ import {
 } from 'app/components/CreateNewSandbox/CreateSandbox';
 import { useOvermind } from 'app/overmind';
 
-import { Navigation } from 'app/pages/common/Navigation';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import { ContentSkeleton } from '../Sandbox/Editor/Skeleton';
+import { Header } from '../Sandbox/Editor/Header';
 import { Navigation as SideNav } from '../Sandbox/Editor/Navigation';
 
 export const NewSandbox: FunctionComponent = () => {
@@ -28,19 +28,21 @@ export const NewSandbox: FunctionComponent = () => {
         css={css({
           width: '100vw',
           height: '100vh',
+          overflow: 'hidden',
+          position: 'relative',
         })}
       >
         <Element
           css={css({
-            'header > div': {
-              maxWidth: '100%',
-              width: '100%',
-            },
+            background: 'rgba(0,0,0,0.4)',
+            width: '100vw',
+            height: '100vh',
+            position: 'fixed',
+            zIndex: 1,
           })}
-        >
-          <Navigation title="New Sandbox" />
-        </Element>
+        />
         <Element css={css({ pointerEvents: 'none', opacity: 0.8 })}>
+          <Header />
           <Stack>
             <SideNav topOffset={48} bottomOffset={0} />
             <ContentSkeleton
@@ -50,8 +52,6 @@ export const NewSandbox: FunctionComponent = () => {
                 top: 48,
                 left: 57,
                 width: 'calc(100vw - 57px)',
-                height: 'calc(100vh - 48px)',
-                overflow: 'hidden',
               }}
             />
           </Stack>
@@ -68,6 +68,7 @@ export const NewSandbox: FunctionComponent = () => {
                         maxWidth: '100%',
                         width: matches ? 1200 : 900,
                         position: 'relative',
+                        zIndex: 2,
                       })}
                       marginTop={8}
                     >
