@@ -435,6 +435,7 @@ export const getReposByPath: AsyncAction | Action<string> = async (
     const repos = sandboxes
       .filter(s => s.originalGit && s.originalGit.repo !== 'static-template')
       .reduce((acc, curr) => {
+        if (!curr.originalGit || !curr.originalGit.repo) return acc;
         if (acc[curr.originalGit.repo]) {
           const newSandboxes = acc[curr.originalGit.repo].sandboxes.concat(
             curr
