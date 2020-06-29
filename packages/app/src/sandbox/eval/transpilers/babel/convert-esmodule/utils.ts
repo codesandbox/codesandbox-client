@@ -39,6 +39,7 @@ export function generateRequireStatement(varName: string, requirePath: string) {
  *   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
  *   Object.defineProperty(exports, key, {
  *     enumerable: true,
+ *     configurable: true,
  *     get: function get() {
  *       return $varName[key];
  *     }
@@ -294,6 +295,7 @@ export function generateEsModuleSpecifier() {
 /**
  * Object.defineProperty(exports, $exportName, {
  *   enumerable: true,
+ *   configurable: true,
  *   get: function get() {
  *     return $localName;
  *   }
@@ -350,6 +352,22 @@ export function generateExportGetter(
               type: n.Property,
               key: {
                 type: n.Identifier,
+                name: 'configurable',
+              },
+              computed: false,
+              value: {
+                type: n.Literal,
+                value: true,
+                raw: 'true',
+              },
+              kind: 'init' as 'init',
+              method: false,
+              shorthand: false,
+            },
+            {
+              type: n.Property,
+              key: {
+                type: n.Identifier,
                 name: 'get',
               },
               computed: false,
@@ -357,7 +375,7 @@ export function generateExportGetter(
                 type: n.FunctionExpression,
                 id: {
                   type: n.Identifier,
-                  name: 'get',
+                  name: '$csbGet',
                 },
                 generator: false,
                 async: false,

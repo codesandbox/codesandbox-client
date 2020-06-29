@@ -1,11 +1,27 @@
 import { uniqBy } from 'lodash-es';
-import getDefinition from '@codesandbox/common/lib/templates';
+import getDefinition, { TemplateType } from '@codesandbox/common/lib/templates';
+import {
+  TemplateFragmentDashboardFragment,
+  SandboxFragmentDashboardFragment,
+} from 'app/graphql/types';
 
-export function getPossibleTemplates(sandboxes: any[]) {
+export type TemplateFilter = {
+  id: string;
+  color: () => string;
+  name: string;
+  niceName: string;
+};
+
+export function getPossibleTemplates(
+  sandboxes: Array<
+    SandboxFragmentDashboardFragment | TemplateFragmentDashboardFragment
+  >
+): TemplateFilter[] {
   if (!sandboxes) return [];
   return uniqBy(
     sandboxes.map(x => {
-      const templateId = x.source?.template;
+      // @ts-ignore TODO: check if we need to set this for template as well
+      const templateId = x.source?.template as TemplateType;
       const template = getDefinition(templateId);
 
       return {
@@ -18,18 +34,3 @@ export function getPossibleTemplates(sandboxes: any[]) {
     template => template.id
   );
 }
-
-export const colors = [
-  { background: 'rgb(0, 122, 255)', foreground: 'white' },
-  { background: 'rgb(52, 199, 89)', foreground: 'black' },
-  { background: 'rgb(255, 45, 85)', foreground: 'white' },
-  { background: 'rgb(88, 86, 214)', foreground: 'white' },
-  { background: 'rgb(255, 149, 0)', foreground: 'black' },
-  { background: 'rgb(90, 200, 250)', foreground: 'black' },
-  { background: 'rgb(175, 82, 22)', foreground: 'black' },
-  { background: 'rgb(255, 200, 250)', foreground: 'black' },
-  { background: 'rgb(69, 235, 195)', foreground: 'black' },
-  { background: 'rgb(255, 59, 48)', foreground: 'white' },
-  { background: 'rgb(212, 69, 235)', foreground: 'white' },
-  { background: 'rgb(192, 235, 69)', foreground: 'black' },
-];

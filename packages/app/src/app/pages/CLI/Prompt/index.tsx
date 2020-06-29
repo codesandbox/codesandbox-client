@@ -1,4 +1,4 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { Button } from '@codesandbox/components';
 import React, { FunctionComponent, useRef } from 'react';
 
 import { SubTitle } from 'app/components/SubTitle';
@@ -22,7 +22,9 @@ export const Prompt: FunctionComponent = () => {
         <SubTitle>{error}</SubTitle>
 
         <Buttons>
-          <Button href="/?from-app=1">Go to homepage</Button>
+          <Button autoWidth href="/?from-app=1">
+            Go to homepage
+          </Button>
         </Buttons>
       </Container>
     );
@@ -38,7 +40,7 @@ export const Prompt: FunctionComponent = () => {
         </SubTitle>
 
         <Buttons>
-          <Button onClick={() => signInCliClicked()}>
+          <Button autoWidth onClick={() => signInCliClicked()}>
             Sign in with GitHub
           </Button>
         </Buttons>

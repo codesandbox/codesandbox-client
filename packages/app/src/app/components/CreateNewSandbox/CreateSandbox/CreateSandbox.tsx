@@ -5,7 +5,6 @@ import css from '@styled-system/css';
 
 import latestChangelog from 'homepage/content/changelog';
 import { ThemeProvider, Element } from '@codesandbox/components';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { getInfoFromMarkdown } from './utils/getInfoFromMarkdown';
 import { Create } from './Create';
 import { Container, Tab, TabContent, Tabs } from './elements';
@@ -23,7 +22,11 @@ import { New } from './New';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
-export const CreateSandbox: React.FC = props => {
+interface CreateSandboxProps {
+  collectionId?: string;
+}
+
+export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
   const {
     state: { isFirstVisit },
     effects: { browser },
@@ -33,7 +36,6 @@ export const CreateSandbox: React.FC = props => {
     orientation: 'vertical',
     selectedId: isFirstVisit ? 'Welcome' : 'Create',
   });
-
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
@@ -47,7 +49,7 @@ export const CreateSandbox: React.FC = props => {
   }, [browser.storage]);
 
   return (
-    <ThemeProvider theme={codesandboxBlack}>
+    <ThemeProvider>
       <Container {...props}>
         <Tabs {...tab} aria-label="My tabs">
           <Tab {...tab} stopId="New">
@@ -102,7 +104,7 @@ export const CreateSandbox: React.FC = props => {
           {rProps =>
             !rProps.hidden && (
               <div {...rProps}>
-                <Create />
+                <Create collectionId={props.collectionId} />
               </div>
             )
           }
@@ -125,7 +127,7 @@ export const CreateSandbox: React.FC = props => {
           {rProps =>
             !rProps.hidden && (
               <div {...rProps}>
-                <Explore />
+                <Explore collectionId={props.collectionId} />
               </div>
             )
           }

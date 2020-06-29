@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import { Element, Stack, Text, Input, Button } from '@codesandbox/components';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import history from 'app/utils/history';
 import { Card } from './components';
 
 export const NewTeam = () => {
   const {
-    state: { user },
+    state: { user, activeTeam },
     actions: { dashboard },
   } = useOvermind();
   const [loading, setLoading] = useState(false);
@@ -20,7 +22,7 @@ export const NewTeam = () => {
     try {
       await dashboard.createTeam({ teamName });
       setLoading(false);
-      history.push('/new-dashboard/settings/invite');
+      history.push(dashboardUrls.teamInvite(activeTeam));
     } catch {
       setLoading(false);
     }
@@ -28,6 +30,9 @@ export const NewTeam = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Create Workspace - CodeSandbox</title>
+      </Helmet>
       <Element
         css={css({
           height: 'calc(100vh - 140px)',
@@ -51,7 +56,7 @@ export const NewTeam = () => {
                 </Text>
                 <Text size={3} variant="muted" align="center">
                   You are one step away from seamlessly collaborating, managing
-                  team projects and much more...
+                  projects and much more...
                 </Text>
               </Stack>
 
@@ -59,7 +64,7 @@ export const NewTeam = () => {
                 <Input
                   name="name"
                   type="text"
-                  placeholder="Team name"
+                  placeholder="Workspace name"
                   autoFocus
                   css={css({ height: 8 })}
                 />
@@ -69,7 +74,7 @@ export const NewTeam = () => {
                   type="submit"
                   css={css({ height: 8, fontSize: 3 })}
                 >
-                  Create team
+                  Create workspace
                 </Button>
               </Stack>
             </Stack>

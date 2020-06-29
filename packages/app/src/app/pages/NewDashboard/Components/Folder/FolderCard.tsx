@@ -1,11 +1,11 @@
 import React from 'react';
 import { Stack, Text, Input, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { FolderItemComponentProps } from './types';
 
-export const FolderCard = ({
+export const FolderCard: React.FC<FolderItemComponentProps> = ({
   name,
   path,
-  isDrafts,
   numberOfSandboxes,
   // interactions
   selected,
@@ -41,10 +41,10 @@ export const FolderCard = ({
       border: '1px solid',
       borderRadius: 'medium',
       overflow: 'hidden',
-      transition: 'all ease-in-out',
-      transitionDuration: theme => theme.speeds[4],
-      // drop target
+      // drop ssarget
       borderColor: getBorderColor(selected, showDropStyles),
+      transition: 'box-shadow ease-in-out',
+      transitionDuration: theme => theme.speeds[4],
       boxShadow: theme =>
         showDropStyles ? '0 4px 16px 0 ' + theme.colors.grays[900] : null,
 
@@ -52,7 +52,6 @@ export const FolderCard = ({
       opacity,
 
       ':hover, :focus, :focus-within': {
-        cursor: editing ? 'normal' : 'pointer',
         boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
       },
     })}
@@ -78,7 +77,12 @@ export const FolderCard = ({
         />
       </svg>
     </Stack>
-    <Stack justify="space-between" align="center" marginLeft={4}>
+    <Stack
+      justify="space-between"
+      align="center"
+      marginLeft={4}
+      css={{ minHeight: 26 }}
+    >
       {editing ? (
         <form onSubmit={onSubmit}>
           <Input
@@ -94,7 +98,7 @@ export const FolderCard = ({
           {name}
         </Text>
       )}
-      {!(isNewFolder || isDrafts) ? (
+      {!isNewFolder ? (
         <IconButton
           name="more"
           size={9}
@@ -114,7 +118,7 @@ export const FolderCard = ({
   </Stack>
 );
 
-const getBorderColor = (selected, showDropStyles) => {
+const getBorderColor = (selected: boolean, showDropStyles: boolean) => {
   if (selected) return 'blues.600';
   if (showDropStyles) return 'grays.400';
   return 'grays.500';

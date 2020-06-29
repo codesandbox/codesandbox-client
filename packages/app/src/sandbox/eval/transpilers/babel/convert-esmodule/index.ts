@@ -5,6 +5,7 @@ import * as astring from 'astring';
 import * as escope from 'escope';
 import { basename } from 'path';
 import { walk } from 'estree-walker';
+import { flatten } from 'lodash-es';
 import { Property } from 'meriyah/dist/estree';
 import { Syntax as n } from './syntax';
 import {
@@ -189,15 +190,13 @@ export function convertEsModule(code: string) {
         // First remove the export statement
         program.body[i] = statement.declaration;
 
-        let varName: string;
-
         if (
           statement.declaration.type === n.FunctionDeclaration ||
           statement.declaration.type === n.ClassDeclaration
         ) {
           // export function test() {}
 
-          varName = statement.declaration.id.name;
+          const varName = statement.declaration.id.name;
           i++;
           program.body.splice(i, 0, generateExportStatement(varName, varName));
         } else {
@@ -205,21 +204,42 @@ export function convertEsModule(code: string) {
 
           const declaration = statement.declaration as meriyah.ESTree.VariableDeclaration;
 
-          declaration.declarations.forEach(decl => {
-            if (decl.id.type !== n.Identifier) {
-              return;
-            }
+          program.body.splice(
+            i,
+            1,
+            declaration,
+            // @ts-ignore
+            ...flatten(
+              declaration.declarations.map(node => {
+                if (node.id.type === n.ObjectPattern) {
+                  // export const { a } = c;
+                  return flatten(
+                    node.id.properties.map(property => {
+                      if (
+                        property.type !== n.Property ||
+                        property.value.type !== n.Identifier
+                      ) {
+                        return false;
+                      }
 
-            trackedExports[decl.id.name] = decl.id.name;
-            varName = decl.id.name;
+                      trackedExports[property.value.name] = property.value.name;
+                      return generateExportStatement(
+                        property.value.name,
+                        property.value.name
+                      );
+                    })
+                  ).filter(Boolean);
+                }
+                if (node.id.type === n.Identifier) {
+                  trackedExports[node.id.name] = node.id.name;
 
-            i++;
-            program.body.splice(
-              i,
-              0,
-              generateExportStatement(varName, varName)
-            );
-          });
+                  return generateExportStatement(node.id.name, node.id.name);
+                }
+
+                return null;
+              })
+            ).filter(Boolean)
+          );
         }
       } else if (statement.specifiers) {
         program.body.splice(i, 1);
@@ -227,6 +247,7 @@ export function convertEsModule(code: string) {
         statement.specifiers.forEach(specifier => {
           if (specifier.type === n.ExportSpecifier) {
             i++;
+
             program.body.unshift(
               generateExportGetter(
                 { type: n.Literal, value: specifier.exported.name },
@@ -456,7 +477,9 @@ export function convertEsModule(code: string) {
           ref.resolved === null &&
           !ref.writeExpr
         ) {
-          ref.identifier.name = varsToRename[ref.identifier.name].join('.');
+          ref.identifier.name = `(0, ${varsToRename[ref.identifier.name].join(
+            '.'
+          )})`;
         }
 
         if (

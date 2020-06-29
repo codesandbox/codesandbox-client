@@ -70,9 +70,7 @@ export default class Preset {
    */
   preEvaluate: LifeCycleFunction;
 
-  preTranspilers: TranspilerDefinition[] = [
-    { transpiler: csbDynamicImportTranspiler },
-  ];
+  preTranspilers: TranspilerDefinition[] = [];
 
   postTranspilers: TranspilerDefinition[] = [
     { transpiler: csbDynamicImportTranspiler },

@@ -1,48 +1,105 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
+import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { Icon } from '@codesandbox/components';
+import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
+import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
+import { DashboardSandbox, DashboardTemplate } from '../../types';
+import { SandboxItemComponentProps } from './types';
+import { useDrag } from '../../utils/dnd';
 
-const GenericSandbox = ({ sandbox, ...props }) => {
+const PrivacyIcons = {
+  0: () => null,
+  1: () => <Icon name="link" size={12} />,
+  2: () => <Icon name="lock" size={12} />,
+};
+
+interface GenericSandboxProps {
+  isScrolling: boolean;
+  item: DashboardSandbox | DashboardTemplate;
+}
+
+function getFolderName(item: GenericSandboxProps['item']): string {
+  if (item.type === 'template') {
+    const { sandbox } = item;
+    if (sandbox.team) {
+      return sandbox.team.name;
+    }
+    if (sandbox.author) {
+      return sandbox.author.username;
+    }
+    if (sandbox.git) {
+      return 'from GitHub';
+    }
+    return 'Templates';
+  }
+  const { sandbox } = item;
+
+  if (sandbox.collection) {
+    if (sandbox.collection.path === '/' && !sandbox.teamId) {
+      return 'Drafts';
+    }
+
+    return sandbox.collection.path.split('/').pop();
+  }
+
+  return 'Drafts';
+}
+
+const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   const {
     state: { dashboard },
     actions,
   } = useOvermind();
 
+  const { sandbox, type, isHomeTemplate } = item;
+
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
-  const { UserIcon } = getTemplateIcon(
-    sandbox.forkedTemplate?.iconUrl,
-    sandbox.source.template
+  const sandboxLocation = getFolderName(item);
+
+  const lastUpdated = formatDistanceStrict(
+    new Date(sandbox.updatedAt.replace(/ /g, 'T')),
+    new Date(),
+    {
+      addSuffix: true,
+    }
   );
+
+  const viewCount = formatNumber(sandbox.viewCount);
 
   const url = sandboxUrl({
     id: sandbox.id,
     alias: sandbox.alias,
   });
 
+  const TemplateIcon = getTemplateIcon(sandbox);
+  const PrivacyIcon = PrivacyIcons[sandbox.privacy || 0];
+
+  let screenshotUrl = sandbox.screenshotUrl;
+  // We set a fallback thumbnail in the API which is used for
+  // both old and new dashboard, we can move this logic to the
+  // backend when we deprecate the old dashboard
+  if (screenshotUrl === 'https://codesandbox.io/static/img/banner.png') {
+    screenshotUrl = '/static/img/default-sandbox-thumbnail.png';
+  }
+
   /* Drag logic */
 
   const location = useLocation();
-  const currentCollectionPath = location.pathname
-    .replace('/new-dashboard', '')
-    .replace('/all', '');
 
   const [, dragRef, preview] = useDrag({
-    item: {
-      type: 'sandbox',
-      id: sandbox.id,
-      collectionPath: currentCollectionPath,
-    },
-    end: (item, monitor) => {
+    item,
+    end: (_item, monitor) => {
       const dropResult = monitor.getDropResult();
 
       if (!dropResult || !dropResult.path) return;
@@ -55,10 +112,10 @@ const GenericSandbox = ({ sandbox, ...props }) => {
   let viewMode: string;
 
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
-  const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
+  const Component: React.FC<SandboxItemComponentProps> =
+    viewMode === 'list' ? SandboxListItem : SandboxCard;
 
   // interactions
   const {
@@ -68,7 +125,6 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     onRightClick,
     onMenuEvent,
     onBlur,
-    onKeyDown,
     onDragStart,
     onDrop,
     thumbnailRef,
@@ -84,50 +140,89 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     onSelectionClick(event, sandbox.id);
   };
 
-  const onContextMenu = event => {
-    event.preventDefault();
-    if (event.type === 'contextmenu') onRightClick(event, sandbox.id);
-    else onMenuEvent(event, sandbox.id);
-  };
+  const onContextMenu = React.useCallback(
+    event => {
+      event.preventDefault();
+      if (event.type === 'contextmenu') onRightClick(event, sandbox.id);
+      else onMenuEvent(event, sandbox.id);
+    },
+    [onRightClick, onMenuEvent, sandbox.id]
+  );
 
   const history = useHistory();
   const onDoubleClick = event => {
+    // can't open deleted items, they don't exist anymore
+    if (location.pathname.includes('deleted')) {
+      onContextMenu(event);
+      return;
+    }
+
+    // Templates in Home should fork, everything else opens
     if (event.ctrlKey || event.metaKey) {
-      window.open(url, '_blank');
+      if (isHomeTemplate) {
+        actions.editor.forkExternalSandbox({
+          sandboxId: sandbox.id,
+          openInNewWindow: true,
+        });
+      } else {
+        window.open(url, '_blank');
+      }
+      track('Dashboard - Recent template forked', {
+        source: 'Home',
+        dashboardVersion: 2,
+      });
+    } else if (isHomeTemplate) {
+      actions.editor.forkExternalSandbox({
+        sandboxId: sandbox.id,
+      });
     } else {
       history.push(url);
     }
+    track('Dashboard - Recent sandbox opened', {
+      source: 'Home',
+      dashboardVersion: 2,
+    });
   };
 
   /* Edit logic */
 
   const [newTitle, setNewTitle] = React.useState(sandboxTitle);
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTitle(event.target.value);
-  };
-  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.keyCode === ESC) {
-      // Reset value and exit without saving
-      setNewTitle(sandboxTitle);
+  const onChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setNewTitle(event.target.value);
+    },
+    [setNewTitle]
+  );
+  const onInputKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.keyCode === ESC) {
+        // Reset value and exit without saving
+        setNewTitle(sandboxTitle);
+        setRenaming(false);
+      }
+    },
+    [setNewTitle, setRenaming, sandboxTitle]
+  );
+
+  const onSubmit = React.useCallback(
+    async (event?: React.FormEvent<HTMLFormElement>) => {
+      if (event) event.preventDefault();
+      await actions.dashboard.renameSandbox({
+        id: sandbox.id,
+        title: newTitle,
+        oldTitle: sandboxTitle,
+      });
       setRenaming(false);
-    }
-  };
+      track('Dashboard - Rename sandbox', { dashboardVersion: 2 });
+    },
+    [actions.dashboard, setRenaming, sandbox.id, newTitle, sandboxTitle]
+  );
 
-  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
-    if (event) event.preventDefault();
-    await actions.dashboard.renameSandbox({
-      id: sandbox.id,
-      title: newTitle,
-      oldTitle: sandboxTitle,
-    });
-    setRenaming(false);
-  };
-
-  const onInputBlur = () => {
+  const onInputBlur = React.useCallback(() => {
     // save value when you click outside or tab away
     onSubmit();
-  };
+  }, [onSubmit]);
 
   const interactionProps = {
     tabIndex: 0, // make div focusable
@@ -140,15 +235,20 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     onDoubleClick,
     onContextMenu,
     onBlur,
-    onKeyDown,
     'data-selection-id': sandbox.id,
   };
 
   const sandboxProps = {
+    isHomeTemplate: item.isHomeTemplate,
     sandboxTitle,
+    sandboxLocation,
+    lastUpdated,
+    viewCount,
     sandbox,
-    isTemplate: sandbox.isTemplate,
-    TemplateIcon: UserIcon,
+    isTemplate: type === 'template',
+    TemplateIcon,
+    PrivacyIcon,
+    screenshotUrl,
     // edit mode
     editing: isRenaming && selected,
     newTitle,
@@ -161,7 +261,7 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     opacity: isDragging ? 0.25 : 1,
   };
 
-  const dragProps = sandbox.isStartTemplate
+  const dragProps = isHomeTemplate
     ? {}
     : {
         ref: dragRef,
@@ -189,16 +289,20 @@ const GenericSandbox = ({ sandbox, ...props }) => {
     <>
       <div {...dragProps}>
         <motion.div {...motionProps}>
-          <Component {...sandboxProps} {...interactionProps} {...props} />
+          <Component
+            {...sandboxProps}
+            {...interactionProps}
+            isScrolling={isScrolling}
+          />
         </motion.div>
       </div>
     </>
   );
 };
 
-export const Sandbox = React.memo(GenericSandbox);
+export const Sandbox = GenericSandbox;
 
-export const SkeletonSandbox = props => {
+export const SkeletonSandbox = () => {
   const {
     state: { dashboard },
   } = useOvermind();
@@ -207,13 +311,12 @@ export const SkeletonSandbox = props => {
 
   let viewMode;
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   if (viewMode === 'list') {
-    return <SkeletonListItem {...props} />;
+    return <SkeletonListItem />;
   }
-  return <SkeletonCard {...props} />;
+  return <SkeletonCard />;
 };
 
 const useResizing = () => {

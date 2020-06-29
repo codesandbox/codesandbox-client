@@ -1,23 +1,23 @@
-import React, { useEffect } from 'react';
-import { useOvermind } from 'app/overmind';
-
 import {
   Avatar,
   Button,
   Element,
   Grid,
+  Link,
   Stack,
   Text,
-  Link,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 
 import { Header } from '../../../Components/Header';
 import { Card } from './components';
 
 export const UserSettings = () => {
   const {
-    state: { user },
+    state: { user, activeTeam },
     actions,
   } = useOvermind();
 
@@ -26,7 +26,7 @@ export const UserSettings = () => {
   }, [actions.dashboard]);
 
   if (!user) {
-    return <Header title="Settings" />;
+    return <Header title="Settings" activeTeam={activeTeam} />;
   }
 
   // @ts-ignore
@@ -35,7 +35,10 @@ export const UserSettings = () => {
 
   return (
     <>
-      <Header title="User Settings" />
+      <Helmet>
+        <title>User Settings - CodeSandbox</title>
+      </Helmet>
+      <Header title="User Settings" activeTeam={activeTeam} />
       <Element
         css={css({
           height: 'calc(100vh - 140px)',
@@ -78,7 +81,7 @@ export const UserSettings = () => {
                       href={`https://github.com/${user.username}`}
                       target="_blank"
                     >
-                      Managed by Github
+                      Account managed by GitHub
                     </Link>
                   </Stack>
                 </Stack>

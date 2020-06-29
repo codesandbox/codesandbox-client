@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import {
   Button,
@@ -22,16 +23,13 @@ import { Card } from './components';
 
 export const TeamSettings = () => {
   const {
-    state: {
-      user: stateUser,
-      dashboard: { activeTeamInfo: team },
-    },
+    state: { user: stateUser, activeTeam, activeTeamInfo: team },
     actions,
   } = useOvermind();
 
   useEffect(() => {
-    actions.dashboard.getTeam();
-  }, [actions.dashboard]);
+    actions.getActiveTeam();
+  }, [activeTeam, actions]);
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -65,12 +63,15 @@ export const TeamSettings = () => {
   };
 
   if (!team) {
-    return <Header title="Team settings" />;
+    return <Header title="Workspace settings" activeTeam={null} />;
   }
   const created = team.users.find(user => user.id === team.creatorId);
   return (
     <>
-      <Header title="Team settings" />
+      <Helmet>
+        <title>Workspace Settings - CodeSandbox</title>
+      </Helmet>
+      <Header title="Workspace settings" activeTeam={activeTeam} />
       <Element
         css={css({
           height: 'calc(100vh - 140px)',
@@ -153,7 +154,7 @@ export const TeamSettings = () => {
             <Card>
               <Stack direction="vertical" gap={4}>
                 <Text size={6} weight="bold">
-                  {team.users.length} team{' '}
+                  {team.users.length}{' '}
                   {team.users.length === 1 ? 'member' : 'members'}
                 </Text>
                 <Text size={3} variant="muted">

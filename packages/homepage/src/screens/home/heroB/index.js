@@ -48,7 +48,6 @@ export default () => {
         </SubTitle>
 
         <SandboxButtons>
-
           <Sandbox
             href="/s/new"
             title="React"
@@ -80,7 +79,6 @@ export default () => {
             title="More"
             style={{ backgroundImage: `url(${more})`, animationDelay: '0.9s' }}
           />
-
         </SandboxButtons>
 
         <motion.div

@@ -4,8 +4,9 @@ import {
   Sandbox,
   UploadFile,
 } from '@codesandbox/common/lib/types';
+import { CurrentTeamInfoFragmentFragment as CurrentTeam } from 'app/graphql/types';
 import { derived } from 'overmind';
-import store from 'store/dist/store.modern';
+import { hasLogIn } from './utils/user';
 
 type State = {
   isPatron: boolean;
@@ -14,12 +15,13 @@ type State = {
   hasLogIn: boolean;
   popularSandboxes: Sandbox[] | null;
   hasLoadedApp: boolean;
-  jwt: string | null;
   isAuthenticating: boolean;
   authToken: string | null;
   error: string | null;
   contributors: string[];
   user: CurrentUser | null;
+  activeTeam: string | null;
+  activeTeamInfo: CurrentTeam | null;
   connected: boolean;
   notifications: Notification[];
   isLoadingCLI: boolean;
@@ -47,10 +49,10 @@ export const state: State = {
   isPatron: derived(({ user }: State) =>
     Boolean(user && user.subscription && user.subscription.since)
   ),
-  isLoggedIn: derived(({ jwt, user }: State) => Boolean(jwt) && Boolean(user)),
+  isLoggedIn: derived(({ hasLogIn: has, user }: State) => has && Boolean(user)),
   // TODO: Should not reference store directly here, rather initialize
   // the state with "onInitialize" setting the jwt
-  hasLogIn: derived(({ jwt }: State) => !!jwt || !!store.get('jwt')),
+  hasLogIn: hasLogIn(),
   isContributor: derived(({ contributors }: State) => username =>
     contributors.findIndex(
       contributor =>
@@ -59,11 +61,12 @@ export const state: State = {
   ),
   popularSandboxes: null,
   hasLoadedApp: false,
-  jwt: null,
   isAuthenticating: true,
   authToken: null,
   error: null,
   user: null,
+  activeTeam: null,
+  activeTeamInfo: null,
   connected: true,
   notifications: [],
   contributors: [],

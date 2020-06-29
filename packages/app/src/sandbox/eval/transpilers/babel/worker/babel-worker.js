@@ -14,10 +14,12 @@ import patchedMacrosPlugin from './utils/macrosPatch';
 import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
 import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
+import renameImport from './plugins/babel-plugin-rename-imports';
 
 import { buildWorkerError } from '../../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
 import { downloadFromError, downloadPath } from './dynamic-download';
+import { getModulesFromMainThread } from '../../utils/fs';
 
 import { evaluateFromPath, resetCache } from './evaluate';
 import {
@@ -25,6 +27,7 @@ import {
   getPrefixedPresetName,
 } from './get-prefixed-name';
 import { patchedResolve } from './utils/resolvePatch';
+import { loadBabelTypes } from './utils/babelTypes';
 
 let fsInitialized = false;
 let fsLoading = false;
@@ -92,6 +95,21 @@ self.require = path => {
 
 async function initializeBrowserFS() {
   fsLoading = true;
+
+  const modules = await getModulesFromMainThread();
+  const tModules = {};
+  modules.forEach(module => {
+    tModules[module.path] = { module };
+  });
+
+  const bfsWrapper = {
+    getTranspiledModules: () => tModules,
+    addModule: () => {},
+    removeModule: () => {},
+    moveModule: () => {},
+    updateModule: () => {},
+  };
+
   return new Promise(resolve => {
     BrowserFS.configure(
       {
@@ -99,10 +117,9 @@ async function initializeBrowserFS() {
         options: {
           writable: { fs: 'InMemory' },
           readable: {
-            fs: 'AsyncMirror',
+            fs: 'CodeSandboxFS',
             options: {
-              sync: { fs: 'InMemory' },
-              async: { fs: 'WorkerFS', options: { worker: self } },
+              manager: bfsWrapper,
             },
           },
         },
@@ -127,7 +144,7 @@ async function waitForFs() {
       // We only load the fs when it's needed. The FS is expensive, as we sync all
       // files of the main thread to the worker. We only want to do this if it's really
       // needed.
-      await initializeBrowserFS();
+      await Promise.all([initializeBrowserFS(), loadBabelTypes()]);
     }
     while (!fsInitialized) {
       await delay(50); // eslint-disable-line
@@ -317,6 +334,7 @@ function getCustomConfig(
         },
         presets: ['env', 'react'],
         plugins: [
+          'babel-plugin-csb-rename-import',
           'transform-modules-commonjs',
           'proposal-class-properties',
           '@babel/plugin-transform-runtime',
@@ -328,6 +346,7 @@ function getCustomConfig(
     return {
       presets: ['es2015', 'react', 'stage-0'],
       plugins: [
+        'babel-plugin-csb-rename-import',
         'transform-es2015-modules-commonjs',
         'transform-class-properties',
         [
@@ -353,7 +372,11 @@ function getCustomConfig(
   return {
     ...config,
     plugins: config.plugins
-      ? [...config.plugins, ...codeSandboxPlugins]
+      ? [
+          'babel-plugin-csb-rename-import',
+          ...config.plugins,
+          ...codeSandboxPlugins,
+        ]
       : codeSandboxPlugins,
   };
 }
@@ -470,6 +493,7 @@ let loadedEnvURL = null;
 function registerCodeSandboxPlugins() {
   Babel.registerPlugin('babel-plugin-detective', detective);
   Babel.registerPlugin('dynamic-css-modules', dynamicCSSModules);
+  Babel.registerPlugin('babel-plugin-csb-rename-import', renameImport);
   Babel.registerPlugin(
     'babel-plugin-transform-prevent-infinite-loops',
     infiniteLoops

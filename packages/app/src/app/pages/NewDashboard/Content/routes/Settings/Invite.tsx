@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import { Link as RouterLink } from 'react-router-dom';
 import {
@@ -12,16 +13,17 @@ import {
   ListItem,
   Avatar,
 } from '@codesandbox/components';
-import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  teamInviteLink,
+  dashboard as dashboardUrls,
+} from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 import { Card } from './components';
 
 export const Invite = () => {
   const {
-    state: {
-      dashboard: { activeTeamInfo: team },
-    },
+    state: { activeTeam, activeTeamInfo: team },
     actions,
     effects,
   } = useOvermind();
@@ -29,10 +31,13 @@ export const Invite = () => {
   const inviteLink = team && teamInviteLink(team.inviteToken);
 
   React.useEffect(() => {
-    actions.dashboard.getTeam();
-  }, [actions.dashboard]);
+    actions.getActiveTeam();
+  }, [actions, activeTeam]);
 
   const [inviteValue, setInviteValue] = React.useState('');
+  const [linkCopied, setLinkCopied] = React.useState(false);
+  const copyLinkTimeoutRef = React.useRef<number>();
+
   const [loading, setLoading] = React.useState(false);
 
   const onSubmit = async event => {
@@ -45,8 +50,23 @@ export const Invite = () => {
 
   if (!team) return null;
 
+  const copyLink = () => {
+    effects.browser.copyToClipboard(inviteLink);
+    setLinkCopied(true);
+
+    if (copyLinkTimeoutRef.current) {
+      window.clearTimeout(copyLinkTimeoutRef.current);
+    }
+    copyLinkTimeoutRef.current = window.setTimeout(() => {
+      setLinkCopied(false);
+    }, 1500);
+  };
+
   return (
     <>
+      <Helmet>
+        <title>Invite Users - CodeSandbox</title>
+      </Helmet>
       <Element
         css={css({
           height: 'calc(100vh - 140px)',
@@ -76,7 +96,7 @@ export const Invite = () => {
                 Invite members
               </Text>
               <Text size={3} variant="muted" align="center">
-                Add the first members to the {team.name} team
+                Add the first members to the {team.name} workspace
               </Text>
             </Stack>
 
@@ -91,13 +111,21 @@ export const Invite = () => {
               })}
             >
               <Stack gap={2}>
-                <Input type="text" value={inviteLink} />{' '}
+                <Input
+                  onFocus={(evt: React.FocusEvent<HTMLInputElement>) => {
+                    if (evt.target) {
+                      evt.target.select();
+                    }
+                  }}
+                  type="text"
+                  value={inviteLink}
+                />
                 <Button
                   variant="secondary"
                   css={{ width: 88 }}
-                  onClick={() => effects.browser.copyToClipboard(inviteLink)}
+                  onClick={copyLink}
                 >
-                  Copy Link
+                  {linkCopied ? 'Link Copied!' : 'Copy Link'}
                 </Button>
               </Stack>
               <Stack as="form" onSubmit={onSubmit} gap={2}>
@@ -140,7 +168,7 @@ export const Invite = () => {
           </Card>
           <Link
             as={RouterLink}
-            to="/new-dashboard/settings"
+            to={dashboardUrls.settings(activeTeam)}
             variant="muted"
             size={3}
             align="center"

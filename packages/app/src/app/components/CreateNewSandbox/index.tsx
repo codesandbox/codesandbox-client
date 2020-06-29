@@ -26,7 +26,7 @@ export const CreateNewSandboxButton: FunctionComponent<Props> = ({
   const {
     actions: {
       dashboard: { createSandboxClicked },
-      modalOpened,
+      openCreateSandboxModal,
     },
   } = useOvermind();
 
@@ -41,7 +41,7 @@ export const CreateNewSandboxButton: FunctionComponent<Props> = ({
   };
 
   const handleClick = () => {
-    modalOpened({ modal: 'newSandbox' });
+    openCreateSandboxModal({ collectionId });
   };
 
   return (

@@ -58,6 +58,7 @@ export const TabContent = styled(TabPanel)`
   max-height: 496px;
   width: 100%;
   border-left: 1px solid #040404;
+  height: 100%;
 
   outline: none;
 `;

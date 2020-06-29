@@ -1,6 +1,5 @@
 import css from '@styled-system/css';
 import { ThemeProvider, Element, Stack } from '@codesandbox/components';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import React, { FunctionComponent, useEffect } from 'react';
 import Media from 'react-media';
 import {
@@ -24,7 +23,7 @@ export const NewSandbox: FunctionComponent = () => {
   }, [sandboxPageMounted]);
 
   return (
-    <ThemeProvider theme={codesandboxBlack}>
+    <ThemeProvider>
       <Element
         css={css({
           width: '100vw',

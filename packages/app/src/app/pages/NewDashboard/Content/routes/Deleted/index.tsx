@@ -1,67 +1,75 @@
 import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Stack, Text, Element } from '@codesandbox/components';
-import css from '@styled-system/css';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import {
-  VariableGrid,
-  SkeletonGrid,
-} from 'app/pages/NewDashboard/Components/VariableGrid';
+import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import { DashboardGridItem, PageTypes } from 'app/pages/NewDashboard/types';
+import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
+import { getPossibleTemplates } from '../../utils';
 
 export const Deleted = () => {
   const {
     actions,
     state: {
-      dashboard: { deletedSandboxesByTime, sandboxes },
+      activeTeam,
+      dashboard: { deletedSandboxesByTime, getFilteredSandboxes, sandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.DELETED);
-  }, [actions.dashboard]);
+  }, [actions.dashboard, activeTeam]);
 
-  const getSection = (title, deletedSandboxes) => {
+  const getSection = (
+    title: string,
+    deletedSandboxes: SandboxFragmentDashboardFragment[]
+  ): DashboardGridItem[] => {
     if (!deletedSandboxes.length) return [];
 
     return [
       { type: 'header', title },
       ...deletedSandboxes.map(sandbox => ({
-        type: 'sandbox',
-        ...sandbox,
+        type: 'sandbox' as 'sandbox',
+        sandbox,
       })),
     ];
   };
 
-  const items = [
-    ...getSection('Archived this week', deletedSandboxesByTime.week),
-    ...getSection('Archived earlier', deletedSandboxesByTime.older),
-  ];
+  const items: DashboardGridItem[] = sandboxes.DELETED
+    ? [
+        ...getSection(
+          'Archived this week',
+          getFilteredSandboxes(deletedSandboxesByTime.week)
+        ),
+        ...getSection(
+          'Archived earlier',
+          getFilteredSandboxes(deletedSandboxesByTime.older)
+        ),
+      ]
+    : [
+        { type: 'header', title: 'Archived this week' },
+        { type: 'skeleton-row' },
+        { type: 'header', title: 'Archived earlier' },
+        { type: 'skeleton-row' },
+      ];
+
+  const pageType: PageTypes = 'deleted';
 
   return (
-    <SelectionProvider sandboxes={sandboxes.DELETED}>
+    <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
+      <Helmet>
+        <title>Deleted Sandboxes - CodeSandbox</title>
+      </Helmet>
       <Header
         title="Recently Deleted"
-        showViewOptions
+        activeTeam={activeTeam}
         showFilters
         showSortOptions
+        templates={getPossibleTemplates(sandboxes.DELETED)}
       />
-      {sandboxes.DELETED ? (
-        <VariableGrid items={items} />
-      ) : (
-        <Stack as="section" direction="vertical" gap={8}>
-          <Element css={css({ height: 4 })} />
-          <section>
-            <Text marginLeft={4}>Recently Used Templates</Text>
-            <SkeletonGrid count={4} />
-          </section>
-          <section>
-            <Text marginLeft={4}>Your Recent Sandboxes</Text>
-            <SkeletonGrid count={4} />
-          </section>
-        </Stack>
-      )}
+      <VariableGrid page={pageType} items={items} />
     </SelectionProvider>
   );
 };

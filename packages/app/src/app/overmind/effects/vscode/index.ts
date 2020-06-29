@@ -13,6 +13,7 @@ import {
   UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import {
   NotificationMessage,
   NotificationStatus,
@@ -29,7 +30,6 @@ import * as childProcess from 'node-services/lib/child_process';
 import { TextOperation } from 'ot';
 import { json } from 'overmind';
 import io from 'socket.io-client';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
 import {
@@ -206,6 +206,8 @@ export class VSCodeEffect {
       // you should not be allowed to edit.
       options.reaction(
         state =>
+          (state.editor.currentSandbox &&
+            Boolean(state.editor.currentSandbox.git)) ||
           !state.live.isLive ||
           state.live.roomInfo?.mode === 'open' ||
           (state.live.roomInfo?.mode === 'classroom' &&
@@ -364,7 +366,6 @@ export class VSCodeEffect {
 
   public setReadOnly(enabled: boolean) {
     this.readOnly = enabled;
-
     this.updateOptions({ readOnly: enabled });
   }
 
@@ -410,6 +411,14 @@ export class VSCodeEffect {
     }
     try {
       this.mountableFilesystem.umount('/sandbox/node_modules');
+    } catch {
+      //
+    }
+    try {
+      // After navigation, this mount is already mounted and throws error,
+      // which cause that Phonenix is not reconnected, so the file's content cannot be seen
+      // https://github.com/codesandbox/codesandbox-client/issues/4143
+      this.mountableFilesystem.umount('/home/sandbox/.cache');
     } catch {
       //
     }
@@ -747,9 +756,7 @@ export class VSCodeEffect {
   private getLspEndpoint() {
     // return 'ws://localhost:1023';
     // TODO: merge host logic with executor-manager
-    const sseHost = process.env.STAGING_API
-      ? 'https://codesandbox.stream'
-      : 'https://codesandbox.io';
+    const sseHost = process.env.ENDPOINT || 'https://codesandbox.io';
     return sseHost.replace(
       'https://',
       `wss://${this.options.getCurrentSandbox()?.id}-lsp.sse.`
