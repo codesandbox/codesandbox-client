@@ -155,11 +155,10 @@ export const createRepoClicked: AsyncAction = async ({
     state.git.isExported = true;
     state.currentModal = null;
 
-    const sandboxToFork = await effects.api.getSandbox(
-      `github/${git.username}/${git.repo}/tree/${git.branch}/${git.path || ''}`
-    );
     actions.editor.internal.forkSandbox({
-      sandboxId: sandboxToFork.id,
+      sandboxId: `github/${git.username}/${git.repo}/tree/${
+        git.branch
+      }/${git.path || ''}`,
     });
   } catch (error) {
     actions.internal.handleError({
