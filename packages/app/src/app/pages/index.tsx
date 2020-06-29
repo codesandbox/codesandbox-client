@@ -124,7 +124,11 @@ const RoutesComponent: React.FC = () => {
             <Route exact path="/" render={() => <Redirect to="/s" />} />
             <Route exact path="/s/github" component={GitHub} />
             <Route exact path="/s/cli" component={CliInstructions} />
-            <Route exact path="/s" component={NewSandbox} />
+            <Route
+              exact
+              path="/s"
+              component={() => <Sandbox showNewSandboxModal />}
+            />
             <Route exact path="/s2" component={NewSandbox} />
             <Route path="/invite/:token" component={TeamInvitation} />
             <Route path="/dashboard" component={Dashboard} />

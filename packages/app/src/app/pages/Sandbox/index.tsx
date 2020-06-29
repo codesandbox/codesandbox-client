@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom';
 import Editor from './Editor';
 
 interface Props {
+  showNewSandboxModal?: boolean;
   match: {
     params: {
       id: string;
@@ -26,7 +27,7 @@ interface Props {
 }
 
 export const Sandbox = React.memo<Props>(
-  ({ match }) => {
+  ({ match, showNewSandboxModal }) => {
     const { state, actions } = useOvermind();
 
     useEffect(() => {
@@ -43,9 +44,10 @@ export const Sandbox = React.memo<Props>(
       }
 
       actions.live.onNavigateAway();
-
-      actions.editor.sandboxChanged({ id: match.params.id });
-    }, [actions.live, actions.editor, actions.preferences, match.params.id]);
+      if (match?.params) {
+        actions.editor.sandboxChanged({ id: match.params.id });
+      }
+    }, [actions.live, actions.editor, actions.preferences, match?.params]);
 
     useEffect(
       () => () => {
@@ -62,7 +64,7 @@ export const Sandbox = React.memo<Props>(
       } = state;
 
       if (error) {
-        const isGithub = match.params.id.includes('github');
+        const isGithub = match?.params?.id.includes('github');
 
         return (
           <>
@@ -166,7 +168,7 @@ export const Sandbox = React.memo<Props>(
             {sandbox ? getSandboxName(sandbox) : 'Loading...'} - CodeSandbox
           </title>
         </Helmet>
-        <Editor />
+        <Editor showNewSandboxModal={showNewSandboxModal} />
       </>
     );
   },
