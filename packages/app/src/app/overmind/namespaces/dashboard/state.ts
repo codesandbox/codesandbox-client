@@ -90,50 +90,48 @@ export const state: State = {
   teams: [],
   recentSandboxesByTime: derived(({ sandboxes }: State) => {
     const recentSandboxes = sandboxes.RECENT;
+
+    const base: {
+      day: Sandbox[];
+      week: Sandbox[];
+      month: Sandbox[];
+      older: Sandbox[];
+    } = {
+      day: [],
+      week: [],
+      month: [],
+      older: [],
+    };
     if (!recentSandboxes) {
-      return {
-        day: [],
-        week: [],
-        month: [],
-        older: [],
-      };
+      return base;
     }
 
     const noTemplateSandboxes = recentSandboxes.filter(s => !s.customTemplate);
     const timeSandboxes = noTemplateSandboxes.reduce(
-      (accumulator, currentValue: any) => {
+      (accumulator, currentValue) => {
         if (!currentValue.updatedAt) return accumulator;
-        if (isSameDay(new Date(currentValue.updatedAt), new Date())) {
-          // these errors make no sense
-          // @ts-ignore
+        const date = parseISO(currentValue.updatedAt);
+        if (isSameDay(date, new Date())) {
           accumulator.day.push(currentValue);
 
           return accumulator;
         }
-        if (isSameWeek(new Date(currentValue.updatedAt), new Date())) {
-          // @ts-ignore
+        if (isSameWeek(date, new Date())) {
           accumulator.week.push(currentValue);
 
           return accumulator;
         }
-        if (isSameMonth(new Date(currentValue.updatedAt), new Date())) {
-          // @ts-ignore
+        if (isSameMonth(date, new Date())) {
           accumulator.month.push(currentValue);
 
           return accumulator;
         }
 
-        // @ts-ignore
         accumulator.older.push(currentValue);
 
         return accumulator;
       },
-      {
-        day: [],
-        week: [],
-        month: [],
-        older: [],
-      }
+      base
     );
 
     return timeSandboxes;
