@@ -174,12 +174,9 @@ export const importFromGithub: AsyncAction<string> = async (
   sandboxUrl
 ) => {
   actions.modalClosed();
-  const sandboxToFork = await effects.api.getSandbox(
-    sandboxUrl.replace('/s/', '')
-  );
   state.currentModal = 'exportGithub';
   await actions.editor.internal.forkSandbox({
-    sandboxId: sandboxToFork.id,
+    sandboxId: sandboxUrl.replace('/s/', ''),
   });
   state.currentModal = null;
 };
