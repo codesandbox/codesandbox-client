@@ -26,7 +26,7 @@ const transitions = {
 
 const MenuContext = React.createContext({ trigger: null, portal: true });
 
-const PortalStyles = createGlobalStyle(
+export const MenuStyles = createGlobalStyle(
   css({
     '[data-reach-menu]': {
       zIndex: 11, // TODO: we need to sort out our z indexes!
@@ -86,7 +86,6 @@ const Menu = ({ ...props }) => {
 
   return (
     <Element as={ReachMenu.Menu} {...props}>
-      <PortalStyles />
       <MenuContext.Provider value={{ trigger, portal: true }}>
         {props.children}
       </MenuContext.Provider>
@@ -143,7 +142,6 @@ const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
 
   return (
     <>
-      <PortalStyles />
       <Element as={ReachMenu.Menu} {...props}>
         {({ isExpanded, dispatch }) => {
           if (visible && !isExpanded) {

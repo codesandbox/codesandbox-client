@@ -22,7 +22,6 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = withTheme(
       actions: { codesadboxMounted },
       state: { isLoggedIn },
     } = useOvermind();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [errorCode, setErrorCode] = React.useState<string | null>(null);
 
     useEffect(() => {

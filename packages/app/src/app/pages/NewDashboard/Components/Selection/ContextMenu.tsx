@@ -1,7 +1,10 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  sandboxUrl,
+  dashboard,
+} from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Menu, Icon, Text } from '@codesandbox/components';
 import {
@@ -28,6 +31,7 @@ interface IContextMenuProps extends IMenuProps {
   folders: Array<DashboardFolder>;
   setRenaming: null | ((value: boolean) => void);
   createNewFolder: () => void;
+  createNewSandbox: () => void;
 }
 
 export const ContextMenu: React.FC<IContextMenuProps> = ({
@@ -39,6 +43,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   folders,
   setRenaming,
   createNewFolder,
+  createNewSandbox,
 }) => {
   if (!visible) return null;
 
@@ -53,10 +58,15 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     return sandbox;
   });
 
-  let menu;
+  let menu: React.ReactNode;
 
   if (selectedItems.length === 0) {
-    menu = <ContainerMenu createNewFolder={createNewFolder} />;
+    menu = (
+      <ContainerMenu
+        createNewSandbox={createNewSandbox}
+        createNewFolder={createNewFolder}
+      />
+    );
   } else if (selectedItems.length > 1) {
     menu = <MultiMenu selectedItems={selectedItems} />;
   } else if (
@@ -88,7 +98,15 @@ const MenuItem = ({ onSelect, ...props }) => {
   );
 };
 
-const ContainerMenu = ({ createNewFolder }) => {
+interface ContainerMenuProps {
+  createNewFolder: () => void;
+  createNewSandbox: () => void;
+}
+
+const ContainerMenu: React.FC<ContainerMenuProps> = ({
+  createNewFolder,
+  createNewSandbox,
+}) => {
   const { visible, setVisibility, position } = React.useContext(Context);
 
   return (
@@ -98,6 +116,9 @@ const ContainerMenu = ({ createNewFolder }) => {
       position={position}
       style={{ width: 160 }}
     >
+      <MenuItem onSelect={() => createNewSandbox()}>
+        Create new sandbox
+      </MenuItem>
       <MenuItem onSelect={() => createNewFolder()}>Create new folder</MenuItem>
     </Menu.ContextMenu>
   );
@@ -109,7 +130,7 @@ interface SandboxMenuProps {
 }
 const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
   const {
-    state: { user },
+    state: { user, activeTeam },
     effects,
     actions,
   } = useOvermind();
@@ -126,7 +147,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
     alias: sandbox.alias,
   });
 
-  const folderUrl = getFolderUrl(item);
+  const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'template' : 'sandbox';
   const isOwner = React.useMemo(() => {
@@ -275,7 +296,9 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
           {isTemplate ? (
             <MenuItem
               onSelect={() => {
-                actions.dashboard.unmakeTemplate([sandbox.id]);
+                actions.dashboard.unmakeTemplates({
+                  templateIds: [sandbox.id],
+                });
               }}
             >
               Convert to sandbox
@@ -283,7 +306,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
           ) : (
             <MenuItem
               onSelect={() => {
-                actions.dashboard.makeTemplate([sandbox.id]);
+                actions.dashboard.makeTemplates({ sandboxIds: [sandbox.id] });
               }}
             >
               Make sandbox a template
@@ -402,15 +425,15 @@ const MultiMenu = ({ selectedItems }: IMultiMenuProps) => {
   };
 
   const convertToTemplates = () => {
-    actions.dashboard.makeTemplate(
-      sandboxes.map(sandbox => sandbox.sandbox.id)
-    );
+    actions.dashboard.makeTemplates({
+      sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+    });
   };
 
   const convertToSandboxes = () => {
-    actions.dashboard.unmakeTemplate(
-      templates.map(template => template.sandbox.id)
-    );
+    actions.dashboard.unmakeTemplates({
+      templateIds: templates.map(template => template.sandbox.id),
+    });
   };
 
   const deleteItems = () => {
@@ -473,11 +496,16 @@ const MultiMenu = ({ selectedItems }: IMultiMenuProps) => {
   );
 };
 
-const getFolderUrl = (item: DashboardSandbox | DashboardTemplate) => {
-  if (item.type === 'template') return '/new-dashboard/templates';
+const getFolderUrl = (
+  item: DashboardSandbox | DashboardTemplate,
+  activeTeamId: string | null
+) => {
+  if (item.type === 'template') return dashboard.templates(activeTeamId);
 
-  const path = item.sandbox.collection.path;
-  if (path === '/' || !path) return '/new-dashboard/all/drafts';
+  const path = item.sandbox.collection?.path;
+  if (path == null || (!item.sandbox.teamId && path === '/')) {
+    return dashboard.drafts(activeTeamId);
+  }
 
-  return '/new-dashboard/all' + path;
+  return dashboard.allSandboxes(path || '/', activeTeamId);
 };

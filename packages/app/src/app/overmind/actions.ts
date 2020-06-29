@@ -69,7 +69,6 @@ type ModalName =
   | 'liveSessionEnded'
   | 'moveSandbox'
   | 'netlifyLogs'
-  | 'newSandbox'
   | 'preferences'
   | 'searchDependencies'
   | 'share'
@@ -303,4 +302,11 @@ export const getActiveTeam: AsyncAction = async ({ state, effects }) => {
   }
 
   state.activeTeamInfo = team.me.team;
+};
+
+export const openCreateSandboxModal: Action<{ collectionId?: string }> = (
+  { actions },
+  { collectionId }
+) => {
+  actions.modals.newSandboxModal.open({ collectionId });
 };

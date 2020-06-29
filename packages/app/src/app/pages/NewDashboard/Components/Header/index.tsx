@@ -7,15 +7,17 @@ import { FilterOptions } from '../Filters/FilterOptions';
 import { ViewOptions } from '../Filters/ViewOptions';
 import { SortOptions } from '../Filters/SortOptions';
 import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid';
+import { TemplateFilter } from '../../Content/utils';
 
 type Props = {
-  templates?: any[];
+  templates?: TemplateFilter[];
   path?: string;
   title?: string;
   createNewFolder?: () => void;
   showFilters?: boolean;
   showViewOptions?: boolean;
   showSortOptions?: boolean;
+  activeTeam: string;
 };
 
 export const Header = ({
@@ -23,6 +25,7 @@ export const Header = ({
   templates,
   path,
   title,
+  activeTeam,
   showFilters = false,
   showViewOptions = false,
   showSortOptions = false,
@@ -49,24 +52,23 @@ export const Header = ({
           {title}
         </Text>
       ) : (
-        <Breadcrumbs path={path} />
+        <Breadcrumbs activeTeam={activeTeam} path={path} />
       )}
       <Stack gap={4} align="center">
-        {location.pathname.includes('all') &&
-          !location.pathname.includes('all/drafts') && (
-            <Button
-              onClick={createNewFolder}
-              variant="link"
-              css={css({
-                fontSize: 2,
-                color: 'mutedForeground',
-                padding: 0,
-                width: 'auto',
-              })}
-            >
-              + New Folder
-            </Button>
-          )}
+        {location.pathname.includes('/all') && (
+          <Button
+            onClick={createNewFolder}
+            variant="link"
+            css={css({
+              fontSize: 2,
+              color: 'mutedForeground',
+              padding: 0,
+              width: 'auto',
+            })}
+          >
+            + New Folder
+          </Button>
+        )}
 
         <Stack gap={4}>
           {showFilters && <FilterOptions possibleTemplates={templates} />}

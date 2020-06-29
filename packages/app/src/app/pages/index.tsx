@@ -7,6 +7,7 @@ import Loadable from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
+import { CreateSandboxModal } from 'app/components/CreateNewSandbox/CreateSandbox/CreateSandboxModal';
 
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
@@ -149,6 +150,7 @@ const RoutesComponent: React.FC = () => {
         </Content>
         <Modals />
         {signInModalOpen && !user ? <SignInModal /> : null}
+        <CreateSandboxModal />
       </Boundary>
     </Container>
   );

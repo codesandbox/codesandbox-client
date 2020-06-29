@@ -8,7 +8,7 @@ const FIELD_TO_NAME = {
   title: 'Name',
 };
 
-export const SortOptions: FunctionComponent = () => {
+export const SortOptions: FunctionComponent = React.memo(() => {
   const {
     actions: {
       dashboard: { orderByChanged },
@@ -56,4 +56,4 @@ export const SortOptions: FunctionComponent = () => {
       </Menu>
     </>
   );
-};
+});

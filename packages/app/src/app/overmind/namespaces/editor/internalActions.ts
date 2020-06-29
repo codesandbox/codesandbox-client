@@ -411,7 +411,16 @@ export const forkSandbox: AsyncAction<{
   try {
     state.editor.isForkingSandbox = true;
 
-    const forkedSandbox = await effects.api.forkSandbox(id, body);
+    const usedBody: {
+      collectionId?: string;
+      teamId?: string;
+    } = body || {};
+
+    if (state.activeTeam) {
+      usedBody.teamId = state.activeTeam;
+    }
+
+    const forkedSandbox = await effects.api.forkSandbox(id, usedBody);
 
     // Copy over any unsaved code
     Object.assign(forkedSandbox, {
