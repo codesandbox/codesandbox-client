@@ -668,7 +668,7 @@ export const deleteSandbox: AsyncAction<string[]> = async (
       sandboxIds: ids,
     });
   } catch (error) {
-    state.dashboard.sandboxes = oldSandboxes;
+    state.dashboard.sandboxes = { ...oldSandboxes };
 
     effects.notificationToast.error(
       'There was a problem deleting your Sandbox'
