@@ -3,6 +3,7 @@ import { flattenDeep } from 'lodash-es';
 
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from '@codesandbox/common/lib/utils/debug';
+import interopRequireWildcard from '@babel/runtime/helpers/interopRequireWildcard';
 
 import hashsum from 'hash-sum';
 
@@ -1027,7 +1028,7 @@ export default class TranspiledModule {
       usedGlobals.$csbImport = (path: string) =>
         manager
           .evaluate(path, this)
-          .then(result => (result.__esModule ? result : { default: result }));
+          .then(result => interopRequireWildcard(result));
 
       const exports = evaluate(
         this.source.compiledCode,
