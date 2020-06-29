@@ -13,7 +13,10 @@ import {
   TAB,
 } from '@codesandbox/common/lib/utils/keycodes';
 import { isEqual } from 'lodash-es';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  sandboxUrl,
+  dashboard as dashboardUrls,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
 import {
@@ -22,7 +25,9 @@ import {
   DashboardFolder,
   DashboardGridItem,
   DashboardRepo,
+  PageTypes,
 } from '../../types';
+import { DndDropType } from '../../utils/dnd';
 
 export type Position = {
   x: null | number;
@@ -54,6 +59,7 @@ interface SelectionContext {
   isDragging: boolean;
   isRenaming: boolean;
   setRenaming: (renaming: boolean) => void;
+  activeTeamId: string | null;
 }
 
 const Context = React.createContext<SelectionContext>({
@@ -70,17 +76,24 @@ const Context = React.createContext<SelectionContext>({
   isDragging: false,
   isRenaming: false,
   setRenaming: renaming => {},
+  activeTeamId: null,
 });
 
 interface SelectionProviderProps {
   items: Array<DashboardGridItem>;
   createNewFolder?: (() => void) | null;
   noDrag?: boolean;
+  createNewSandbox?: (() => void) | null;
+  activeTeamId: string | null;
+  page: PageTypes;
 }
 
 export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   items = [],
   createNewFolder = null,
+  createNewSandbox = null,
+  activeTeamId,
+  page,
   children,
   noDrag,
 }) => {
@@ -113,7 +126,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
   const {
-    state: { dashboard },
+    state: { dashboard, activeTeam },
     actions,
   } = useOvermind();
 
@@ -293,7 +306,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       let url: string;
       if (selectedId.startsWith('/')) {
         // means its a folder
-        url = '/new-dashboard/all' + selectedId;
+        url = dashboardUrls.allSandboxes(selectedId, activeTeamId);
       } else {
         const selectedItem = sandboxes.find(
           item => item.sandbox.id === selectedId
@@ -382,37 +395,45 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     setSelectedIds([...selectedIds, nextItem]);
   };
 
-  const onDragStart = (
-    event: React.MouseEvent<HTMLDivElement>,
-    itemId: string
-  ) => {
-    // if the dragged sandbox isn't selected. select it alone
-    if (!selectedIds.includes(itemId)) {
-      setSelectedIds([itemId]);
-    }
-  };
+  const onDragStart = React.useCallback(
+    (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
+      // if the dragged sandbox isn't selected. select it alone
+      setSelectedIds(s => (s.includes(itemId) ? s : [itemId]));
+    },
+    [setSelectedIds]
+  );
 
-  const onDrop = dropResult => {
+  const onDrop = async (dropResult: DndDropType) => {
     if (dropResult.isSamePath) return;
 
     const sandboxIds = selectedIds.filter(isSandboxId);
     const folderPaths = selectedIds.filter(isFolderPath).filter(notDrafts);
+    const dropPage = dropResult.page;
+
+    if (page === 'templates') {
+      // First unmake them from templates
+      await actions.dashboard.unmakeTemplates({ templateIds: sandboxIds });
+    }
 
     if (sandboxIds.length) {
-      if (dropResult.path === '/deleted') {
+      if (dropPage === 'deleted') {
         actions.dashboard.deleteSandbox(sandboxIds);
-      } else if (dropResult.path === '/templates') {
-        actions.dashboard.makeTemplate(sandboxIds);
-      } else if (dropResult.path === '/drafts') {
+      } else if (dropPage === 'templates') {
+        actions.dashboard.makeTemplates({ sandboxIds });
+      } else if (dropPage === 'drafts') {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
-          collectionPath: '/',
+          collectionPath: activeTeam ? null : '/',
         });
-      } else {
+      } else if (dropPage === 'sandboxes') {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: dropResult.path,
-          deleteFromCurrentPath: location.pathname !== '/new-dashboard/recent',
+          deleteFromCurrentPath:
+            page === 'sandboxes' ||
+            page === 'deleted' ||
+            page === 'templates' ||
+            page === 'drafts',
         });
       }
     }
@@ -432,6 +453,8 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           actions.dashboard.moveFolder({
             path,
             newPath: dropResult.path.replace('all', '') + '/' + name,
+            teamId: activeTeam,
+            newTeamId: activeTeam,
           });
         });
       }
@@ -608,6 +631,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         isDragging,
         isRenaming,
         setRenaming,
+        activeTeamId,
       }}
     >
       <Element
@@ -661,6 +685,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         folders={folders || []}
         setRenaming={setRenaming}
         createNewFolder={createNewFolder}
+        createNewSandbox={createNewSandbox}
       />
     </Context.Provider>
   );
@@ -681,6 +706,7 @@ export const useSelection = () => {
     isDragging,
     isRenaming,
     setRenaming,
+    activeTeamId,
   } = React.useContext(Context);
 
   return {
@@ -697,6 +723,7 @@ export const useSelection = () => {
     isDragging,
     isRenaming,
     setRenaming,
+    activeTeamId,
   };
 };
 

@@ -105,6 +105,10 @@ export const loadCursorFromUrl: AsyncAction = async ({
   }
 };
 
+export const refreshPreview: Action = ({ effects }) => {
+  effects.preview.refresh();
+};
+
 export const addNpmDependency: AsyncAction<{
   name: string;
   version?: string;
@@ -583,8 +587,13 @@ export const forkExternalSandbox: AsyncAction<{
 ) => {
   effects.analytics.track('Fork Sandbox', { type: 'external' });
 
+  const usedBody: { collectionId?: string; teamId?: string } = body || {};
+  if (state.activeTeam) {
+    usedBody.teamId = state.activeTeam;
+  }
+
   try {
-    const forkedSandbox = await effects.api.forkSandbox(sandboxId, body);
+    const forkedSandbox = await effects.api.forkSandbox(sandboxId, usedBody);
 
     state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });

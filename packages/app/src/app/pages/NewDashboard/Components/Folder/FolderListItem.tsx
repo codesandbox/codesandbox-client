@@ -9,11 +9,11 @@ import {
   Column,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { FolderItemComponentProps } from './types';
 
 export const FolderListItem = ({
   name,
   path,
-  isDrafts,
   numberOfSandboxes,
   // interactions
   selected,
@@ -33,7 +33,7 @@ export const FolderListItem = ({
   // drag preview
   // opacity,
   ...props
-}) => (
+}: FolderItemComponentProps) => (
   <ListAction
     onClick={onClick}
     onDoubleClick={onDoubleClick}
@@ -95,7 +95,7 @@ export const FolderListItem = ({
         </Stack>
       </Column>
       <Column span={[0, 4, 4]} as={Stack} align="center">
-        {!(isNewFolder || isDrafts) ? (
+        {!isNewFolder ? (
           <Text size={3} block variant={selected ? 'body' : 'muted'}>
             {numberOfSandboxes || 0}{' '}
             {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Stack, Text, Input, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { FolderItemComponentProps } from './types';
 
-export const FolderCard = ({
+export const FolderCard: React.FC<FolderItemComponentProps> = ({
   name,
   path,
-  isDrafts,
   numberOfSandboxes,
   // interactions
   selected,
@@ -98,7 +98,7 @@ export const FolderCard = ({
           {name}
         </Text>
       )}
-      {!(isNewFolder || isDrafts) ? (
+      {!isNewFolder ? (
         <IconButton
           name="more"
           size={9}
@@ -118,7 +118,7 @@ export const FolderCard = ({
   </Stack>
 );
 
-const getBorderColor = (selected, showDropStyles) => {
+const getBorderColor = (selected: boolean, showDropStyles: boolean) => {
   if (selected) return 'blues.600';
   if (showDropStyles) return 'grays.400';
   return 'grays.500';

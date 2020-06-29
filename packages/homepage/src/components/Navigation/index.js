@@ -17,6 +17,7 @@ import TeamsIcon from '../../assets/icons/Teams';
 import SearchIcon from '../../assets/icons/Search';
 import HighlightedICon from '../../assets/icons/Highlighted';
 import NewIcon from '../../assets/icons/New';
+import { useLogin } from '../../hooks/useLogin';
 import {
   Header,
   Nav,
@@ -31,7 +32,7 @@ import SubNav from './SubNav';
 import MobileNav from './MobileNav';
 
 const Navigation = () => {
-  const [user, setUser] = useState(null);
+  const user = useLogin();
   const [openedNav, setOpenedNav] = useState();
   const [hasOpened, setHasOpened] = useState(false);
   const muted = useTheme().homepage.muted;
@@ -54,23 +55,6 @@ const Navigation = () => {
       />
     </svg>
   );
-
-  const fetchCurrentUser = async () => {
-    const BASE =
-      process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
-
-    const { data } = await fetch(BASE + '/api/v1/users/current').then(x =>
-      x.json()
-    );
-
-    setUser(data);
-  };
-
-  useEffect(() => {
-    if (document.cookie.indexOf('signedIn') > -1) {
-      fetchCurrentUser();
-    }
-  }, []);
 
   useEffect(() => {
     if (openedNav) {
@@ -209,7 +193,7 @@ const Navigation = () => {
                   components={[
                     {
                       Icon: () => (
-                        <Link to="/docs" title="Documentation">
+                        <Link to="/docs/start" title="Documentation">
                           <DocsIcon />
                         </Link>
                       ),

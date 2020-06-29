@@ -8,14 +8,13 @@ export const repoName = location.pathname.split(
 )[1];
 
 export function getDecoratedCollection(
-  collection: Collection,
-  sandboxCount = 0
+  collection: Collection
 ): DELETE_ME_COLLECTION {
   const split = collection.path.split('/');
   return {
     path: collection.path,
     id: collection.id,
-    sandboxes: sandboxCount,
+    sandboxCount: collection.sandboxCount,
     parent: split[split.length - 2] || '',
     level: split.length - 2,
     name: split[split.length - 1],

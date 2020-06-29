@@ -143,25 +143,21 @@ export const InspiredText = styled.span`
 export const HeroImage = styled.img`
   max-width: 576px;
   min-width: 100%;
-  padding: 0 1rem;
+  box-shadow: 0.25rem 0 2rem #000;
 
   overflow: hidden;
   border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.3) 20px 14px 47px 0px;
 
   @media screen and (min-width: 576px) {
     max-width: 576px;
-    padding: 0 1rem;
   }
 
   @media screen and (min-width: 768px) {
     max-width: 768px;
-    padding: 0 1rem;
   }
 
   @media screen and (min-width: 960px) {
     max-width: 960px;
-    padding: 0 1rem;
   }
 `;
 

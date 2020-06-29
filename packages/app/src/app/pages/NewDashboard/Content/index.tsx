@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { Element } from '@codesandbox/components';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { Home } from './routes/Home';
@@ -14,7 +15,7 @@ import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
 
 export const Content = withRouter(({ history }) => {
-  const { actions } = useOvermind();
+  const { actions, state } = useOvermind();
 
   useEffect(() => {
     actions.dashboard.dashboardMounted();
@@ -23,10 +24,7 @@ export const Content = withRouter(({ history }) => {
   useEffect(() => {
     const removeListener = history.listen(() => {
       actions.dashboard.blacklistedTemplatesCleared();
-      actions.dashboard.orderByChanged({
-        order: 'desc',
-        field: 'updatedAt',
-      });
+      actions.dashboard.orderByReset();
     });
 
     return () => {
@@ -47,16 +45,15 @@ export const Content = withRouter(({ history }) => {
         <Route path="/new-dashboard/deleted" component={Deleted} />
         <Route path="/new-dashboard/drafts" component={Drafts} />
         <Route path="/new-dashboard/recent" component={Recent} />
-        <Route path="/new-dashboard/all/drafts" component={Drafts} />
+        <Route path="/new-dashboard/search" component={Search} />
         <Route
           path="/new-dashboard/repositories/:path*"
           component={Repositories}
         />
-        <Route path="/new-dashboard/search" component={Search} />
         <Route path="/new-dashboard/all/:path*" component={All} />
         <Route path="/new-dashboard/settings" component={Settings} />
 
-        <Redirect to="/new-dashboard/home" />
+        <Redirect to={dashboardUrls.home(state.activeTeam)} />
       </Switch>
     </Element>
   );

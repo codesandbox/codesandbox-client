@@ -7,6 +7,7 @@ import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Button, Element, Stack, Text } from '@codesandbox/components';
 import { github as GitHubIcon } from '@codesandbox/components/lib/components/Icon/icons';
 import css from '@styled-system/css';
+import { Sandbox } from '@codesandbox/common/lib/types';
 import { useOvermind } from 'app/overmind';
 import React, {
   ChangeEvent,
@@ -19,6 +20,25 @@ import { Link } from 'react-router-dom';
 
 import { PrivacyTooltip } from '../PrivacyTooltip';
 import { Folder, Form, Main, NameInput, TemplateBadge } from './elements';
+
+const getFolderName = (sandbox: Sandbox) => {
+  if (!sandbox) {
+    return 'My Sandboxes';
+  }
+
+  if (sandbox.collection) {
+    const base = basename(sandbox.collection.path);
+    if (base) {
+      return base;
+    }
+  }
+
+  if (sandbox.team) {
+    return sandbox.team.name;
+  }
+
+  return 'My Sandboxes';
+};
 
 export const SandboxName: FunctionComponent = () => {
   const {
@@ -90,11 +110,7 @@ export const SandboxName: FunctionComponent = () => {
 
   const value = name !== 'Untitled' && updatingName ? name : '';
 
-  const folderName =
-    currentSandbox && currentSandbox.collection
-      ? basename(currentSandbox.collection.path) ||
-        (currentSandbox.team ? currentSandbox.team.name : 'My Sandboxes')
-      : 'My Sandboxes';
+  const folderName = getFolderName(currentSandbox);
 
   const { customTemplate, owned } = currentSandbox || {
     customTemplate: null,

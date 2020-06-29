@@ -1,19 +1,24 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { NewSandbox } from '../Sandbox/NewSandbox';
+import { PageTypes } from '../../types';
 
-export const EmptyScreen = () => {
+interface EmptyScreenProps {
+  collectionId?: string;
+  page: PageTypes;
+}
+
+export const EmptyScreen: React.FC<EmptyScreenProps> = ({
+  collectionId,
+  page,
+}) => {
   const { actions } = useOvermind();
 
-  const location = useLocation();
-  const isSearch = location.pathname.includes('/search');
+  const onClick = () => actions.openCreateSandboxModal({ collectionId });
 
-  const onClick = () => actions.modalOpened({ modal: 'newSandbox' });
-
-  if (isSearch) {
+  if (page === 'search') {
     return (
       <Stack justify="center" align="center" marginTop={120}>
         <Text variant="muted">
@@ -23,15 +28,33 @@ export const EmptyScreen = () => {
     );
   }
 
+  if (page === 'deleted') {
+    return (
+      <Stack justify="center" align="center" marginTop={120}>
+        <Text variant="muted">
+          There are no deleted sandboxes yet! Drag sandboxes or templates to
+          this page to delete them.
+        </Text>
+      </Stack>
+    );
+  }
+
   return (
     <Stack justify="center" align="center" marginTop={120}>
-      <Stack direction="vertical" align="center" gap={8} css={{ width: 400 }}>
+      <Stack
+        direction="vertical"
+        align="center"
+        gap={8}
+        css={{ width: 500, height: '100vh', userSelect: 'none' }}
+      >
         <Stack align="center" css={{ width: 220 }}>
-          <NewSandbox />
+          <NewSandbox collectionId={collectionId} />
         </Stack>
 
-        <Stack direction="vertical" align="center">
-          <Text variant="muted">You haven’t created any sandboxes yet.</Text>
+        <Stack direction="vertical" align="center" gap={1}>
+          <Text variant="muted" align="center">
+            Uh oh, you haven’t created any sandboxes in this folder yet!
+          </Text>
           <Stack align="center" gap={1}>
             <Text variant="muted">Start with a</Text>
             <Button
@@ -45,7 +68,7 @@ export const EmptyScreen = () => {
                 padding: 0,
               })}
             >
-              Template
+              template
             </Button>
           </Stack>
         </Stack>

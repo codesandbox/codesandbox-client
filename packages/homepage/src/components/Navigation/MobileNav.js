@@ -148,7 +148,7 @@ export default () => {
               <Headers>Resources</Headers>
               <Items>
                 <li>
-                  <Link to="/docs">
+                  <Link to="/docs/start">
                     <section>
                       <DocsIcon />
                     </section>

@@ -6,13 +6,20 @@ import {
 } from 'app/graphql/types';
 import { DashboardRepoSandbox } from '../types';
 
+export type TemplateFilter = {
+  id: string;
+  color: () => string;
+  name: string;
+  niceName: string;
+};
+
 export function getPossibleTemplates(
   sandboxes: Array<
     | SandboxFragmentDashboardFragment
     | TemplateFragmentDashboardFragment
     | DashboardRepoSandbox
   >
-) {
+): TemplateFilter[] {
   if (!sandboxes) return [];
   return uniqBy(
     sandboxes.map(x => {

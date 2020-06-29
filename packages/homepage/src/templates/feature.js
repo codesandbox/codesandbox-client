@@ -24,6 +24,7 @@ export default ({
       frontmatter: {
         columns,
         bgColor,
+        bgImage,
         SEOText,
         description,
         coverImage,
@@ -63,7 +64,7 @@ export default ({
         "{tweetText}"
         <User>
           <Avatar
-            src={`https://twitter-avatar.now.sh/${tweetHandle}`}
+            src={`https://twitter-avatar-csb.vercel.app/${tweetHandle}`}
             alt={tweetName}
           />
           <div>
@@ -105,6 +106,7 @@ export default ({
         <Banner
           coverSmaller={coverSmaller}
           color={bgColor}
+          bgImage={bgImage.publicURL}
           reverse={coverReversed}
         >
           {coverReversed ? (
@@ -135,6 +137,9 @@ export const pageQuery = graphql`
       frontmatter {
         columns
         bgColor
+        bgImage {
+          publicURL
+        }
         SEOText
         description
         tweetText
