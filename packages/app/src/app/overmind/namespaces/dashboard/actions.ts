@@ -7,6 +7,7 @@ import {
   Direction,
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
+  RepoFragmentDashboardFragment,
 } from 'app/graphql/types';
 import { TEAM_ID_LOCAL_STORAGE } from 'app/overmind/utils/team';
 import { OrderBy, sandboxesTypes } from './state';
@@ -409,7 +410,7 @@ export const getReposByPath: AsyncAction | Action<string> = async (
     if (path && dashboard.sandboxes.REPOS) {
       return dashboard.sandboxes.REPOS[path];
     }
-    let sandboxes;
+    let sandboxes: RepoFragmentDashboardFragment[];
     if (state.activeTeam) {
       dashboard.sandboxes.REPOS = null;
       const teamData = await effects.gql.queries.getTeamRepos({
@@ -806,7 +807,7 @@ export const renameSandbox: AsyncAction<{
   id: string;
   title: string;
   oldTitle: string;
-}> = async ({ effects, actions, state }, { id, title, oldTitle }) => {
+}> = async ({ effects, actions }, { id, title, oldTitle }) => {
   if (isRepoPage) {
     actions.dashboard.renameRepoSandboxInState({
       id,

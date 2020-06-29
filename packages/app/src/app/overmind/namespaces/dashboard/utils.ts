@@ -3,9 +3,7 @@ import { DELETE_ME_COLLECTION } from './state';
 
 export const isRepoPage = location.pathname.includes('/repositories');
 
-export const repoName = location.pathname.split(
-  '/new-dashboard/repositories/'
-)[1];
+export const repoName = location.pathname.split('/repositories/')[1];
 
 export function getDecoratedCollection(
   collection: Collection

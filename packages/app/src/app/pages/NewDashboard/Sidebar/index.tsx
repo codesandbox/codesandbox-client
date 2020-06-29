@@ -172,6 +172,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             ]}
           />
 
+          <RowItem
+            name="Repositories"
+            page="repos"
+            path={dashboardUrls.repos(activeTeam)}
+            icon="fork"
+          />
+
           {inTeamContext ? (
             <RowItem
               name="Recently Modified"
