@@ -409,8 +409,21 @@ export const getReposByPath: AsyncAction | Action<string> = async (
     if (path && dashboard.sandboxes.REPOS) {
       return dashboard.sandboxes.REPOS[path];
     }
-    const data = await effects.gql.queries.getRepos();
-    if (!data || !data.me) {
+    let sandboxes;
+    if (state.activeTeam) {
+      dashboard.sandboxes.REPOS = null;
+      const teamData = await effects.gql.queries.getTeamRepos({
+        id: state.activeTeam,
+      });
+      sandboxes = teamData.me.team.sandboxes;
+    } else {
+      dashboard.sandboxes.REPOS = null;
+      const myData = await effects.gql.queries.getRepos();
+
+      sandboxes = myData.me.sandboxes;
+    }
+
+    if (!sandboxes) {
       return null;
     }
 
@@ -418,7 +431,7 @@ export const getReposByPath: AsyncAction | Action<string> = async (
       dashboard.sandboxes.REPOS = {};
     }
 
-    const repos = data.me.sandboxes
+    const repos = sandboxes
       .filter(s => s.originalGit && s.originalGit.repo !== 'static-template')
       .reduce((acc, curr) => {
         if (acc[curr.originalGit.repo]) {

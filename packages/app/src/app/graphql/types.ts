@@ -1554,6 +1554,24 @@ export type GetReposQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
+export type GetTeamReposQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type GetTeamReposQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      team: Maybe<
+        { __typename?: 'Team' } & {
+          sandboxes: Array<
+            { __typename?: 'Sandbox' } & RepoFragmentDashboardFragment
+          >;
+        }
+      >;
+    }
+  >;
+};
+
 export type TeamTemplatesQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;

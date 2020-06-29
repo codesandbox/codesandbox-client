@@ -35,7 +35,9 @@ export const RepositoriesPage = () => {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
     if (home) {
-      return viewMode === 'grid' ? [{ type: 'new-repo' }, ...items] : items;
+      return viewMode === 'grid' && items.length
+        ? [{ type: 'new-repo' }, ...items]
+        : items;
     }
 
     if (sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes) {

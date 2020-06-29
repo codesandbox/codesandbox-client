@@ -31,6 +31,7 @@ import {
   GetReposQuery,
   TeamDraftsQuery,
   TeamDraftsQueryVariables,
+  GetTeamReposQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -135,6 +136,22 @@ export const getRepos: Query<GetReposQuery, GetReposQueryVariables> = gql`
     me {
       sandboxes {
         ...repoFragmentDashboard
+      }
+    }
+  }
+  ${repoFragmentDashboard}
+`;
+
+export const getTeamRepos: Query<
+  GetTeamQuery,
+  GetTeamReposQueryVariables
+> = gql`
+  query getTeamRepos($id: ID!) {
+    me {
+      team(id: $id) {
+        sandboxes {
+          ...repoFragmentDashboard
+        }
       }
     }
   }
