@@ -54,7 +54,7 @@ export const Header = ({
           {title}
         </Text>
       ) : (
-        <Breadcrumbs activeTeam={activeTeam} repos={repos} param={path} />
+        <Breadcrumbs repos={repos} param={path} />
       )}
       <Stack gap={4} align="center">
         {location.pathname.includes('/all') && (

@@ -157,7 +157,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
     alias: sandbox.alias,
   });
 
-  const folderUrl = item.sandbox.collection && getFolderUrl(item, activeTeam);
+  const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'template' : 'sandbox';
   const isOwner = React.useMemo(() => {
@@ -223,7 +223,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
       >
         Open {label} in new tab
       </MenuItem>
-      {isOwner && item.sandbox.collection && folderUrl !== location.pathname ? (
+      {isOwner && folderUrl !== location.pathname ? (
         <MenuItem
           onSelect={() => {
             history.push(folderUrl, { sandboxId: sandbox.id });
