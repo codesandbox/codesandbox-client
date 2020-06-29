@@ -19,7 +19,7 @@ import Editor from './Editor';
 
 interface Props {
   showNewSandboxModal?: boolean;
-  match: {
+  match?: {
     params: {
       id: string;
     };
