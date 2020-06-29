@@ -453,6 +453,17 @@ export const eye = props => (
   </Element>
 );
 
+export const pr = props => (
+  <svg width="1em" height="1em" viewBox="0 0 14 16" fill="none" {...props}>
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M6.177 3.073L8.573.677A.25.25 0 019 .854v4.792a.25.25 0 01-.427.177L6.177 3.427a.25.25 0 010-.354zM2.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zM.5 3.25a2.25 2.25 0 113 2.122v5.256a2.25 2.25 0 11-1.5 0V5.372A2.25 2.25 0 01.5 3.25zM10 2.5H9V4h1a1 1 0 011 1v5.628a2.25 2.25 0 101.5 0V5A2.5 2.5 0 0010 2.5zm1 10.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0zM2.75 12a.75.75 0 100 1.5.75.75 0 000-1.5z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
 export const fork = props => (
   <svg width="1em" height="1em" viewBox="0 0 11 15" fill="none" {...props}>
     <path

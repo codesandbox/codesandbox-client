@@ -1,4 +1,5 @@
 import React from 'react';
+import { RepoFragmentDashboardFragment } from 'app/graphql/types';
 import {
   Stack,
   Element,
@@ -7,6 +8,7 @@ import {
   Icon,
   IconButton,
   SkeletonText,
+  Link,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SandboxItemComponentProps } from './types';
@@ -29,7 +31,11 @@ const useImageLoaded = (url: string) => {
   return loaded;
 };
 
-type SandboxTitleProps = { stoppedScrolling: boolean } & Pick<
+type SandboxTitleProps = {
+  stoppedScrolling: boolean;
+  prNumber?: number;
+  originalGit?: RepoFragmentDashboardFragment['originalGit'];
+} & Pick<
   SandboxItemComponentProps,
   | 'editing'
   | 'onContextMenu'
@@ -44,6 +50,8 @@ type SandboxTitleProps = { stoppedScrolling: boolean } & Pick<
 
 const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
   ({
+    originalGit,
+    prNumber,
     editing,
     stoppedScrolling,
     onContextMenu,
@@ -68,6 +76,16 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
         </form>
       ) : (
         <Stack gap={1} align="center">
+          {prNumber ? (
+            <Link
+              title="Open pull request on GitHub"
+              css={css({ display: 'flex' })}
+              href={`https://github.com/${originalGit.username}/${originalGit.repo}/pull/${prNumber}`}
+              target="_blank"
+            >
+              <Icon name="pr" color="#5BC266" />
+            </Link>
+          ) : null}
           <PrivacyIcon />
           <Text size={3} weight="medium">
             {sandboxTitle}
@@ -143,6 +161,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
 
 export const SandboxCard = ({
   sandbox,
+  originalGit,
   sandboxTitle,
   sandboxLocation,
   isHomeTemplate,
@@ -151,6 +170,7 @@ export const SandboxCard = ({
   TemplateIcon,
   PrivacyIcon,
   screenshotUrl,
+  prNumber,
   // interactions
   isScrolling,
   selected,
@@ -171,7 +191,6 @@ export const SandboxCard = ({
   ...props
 }: SandboxItemComponentProps) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
-
   const [guaranteedScreenshotUrl, setGuaranteedScreenshotUrl] = React.useState<
     string
   >(screenshotUrl);
@@ -261,6 +280,8 @@ export const SandboxCard = ({
       </Element>
 
       <SandboxTitle
+        originalGit={originalGit}
+        prNumber={prNumber}
         editing={editing}
         stoppedScrolling={stoppedScrolling}
         onContextMenu={onContextMenu}

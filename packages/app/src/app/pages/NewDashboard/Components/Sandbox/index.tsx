@@ -239,6 +239,8 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   };
 
   const sandboxProps = {
+    prNumber: item.sandbox.prNumber,
+    originalGit: item.sandbox.originalGit,
     isHomeTemplate: item.isHomeTemplate,
     sandboxTitle,
     sandboxLocation,

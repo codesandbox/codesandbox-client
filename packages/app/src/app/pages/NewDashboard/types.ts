@@ -13,14 +13,20 @@ export type DashboardBaseFolder = {
 
 export type DashboardSandbox = {
   type: 'sandbox';
-  sandbox: SandboxFragmentDashboardFragment;
+  sandbox: SandboxFragmentDashboardFragment & {
+    prNumber?: number;
+    originalGit?: RepoFragmentDashboardFragment['originalGit'];
+  };
   isHomeTemplate?: false;
 };
 
 export type DashboardTemplate = {
   type: 'template';
   template: Omit<TemplateFragmentDashboardFragment, 'sandbox'>;
-  sandbox: TemplateFragmentDashboardFragment['sandbox'];
+  sandbox: TemplateFragmentDashboardFragment['sandbox'] & {
+    prNumber?: number;
+    originalGit?: RepoFragmentDashboardFragment['originalGit'];
+  };
   isHomeTemplate?: boolean;
 };
 
