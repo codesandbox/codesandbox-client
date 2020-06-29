@@ -53,7 +53,7 @@ type State = {
         branch: string;
         name: string;
         owner: string;
-        lastEdited: string;
+        lastEdited: Date;
         sandboxes: Repo[];
       };
     } | null;

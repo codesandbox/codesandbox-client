@@ -32,7 +32,7 @@ export type DashboardFolder = DELETE_ME_COLLECTION &
 export type DashboardRepo = {
   type: 'repo';
   path?: string;
-  lastEdited?: string;
+  lastEdited?: Date;
   branch: string;
   name: string;
   owner: string;
@@ -106,7 +106,8 @@ export type PageTypes =
   | 'deleted'
   | 'templates'
   | 'drafts'
-  | 'sandboxes';
+  | 'sandboxes'
+  | 'repos';
 
 export type DashboardGridItem =
   | DashboardSandbox

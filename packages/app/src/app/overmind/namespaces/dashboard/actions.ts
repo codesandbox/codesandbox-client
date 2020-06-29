@@ -1,4 +1,4 @@
-import { compareDesc } from 'date-fns';
+import { compareDesc, parseISO } from 'date-fns';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
@@ -429,7 +429,7 @@ export const getReposByPath: AsyncAction | Action<string> = async (
             ...acc[curr.originalGit.repo],
             sandboxes: newSandboxes,
             lastEdited: newSandboxes
-              .map(s => new Date(s.updatedAt))
+              .map(s => parseISO(s.updatedAt))
               .sort(compareDesc)[0],
           };
 
@@ -442,6 +442,7 @@ export const getReposByPath: AsyncAction | Action<string> = async (
           branch: curr.originalGit.branch,
           owner: curr.originalGit.username,
           path: '/' + curr.originalGit.repo,
+          lastEdited: parseISO(curr.updatedAt),
           sandboxes: [curr],
         };
 

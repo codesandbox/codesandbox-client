@@ -82,7 +82,6 @@ const Context = React.createContext<SelectionContext>({
 interface SelectionProviderProps {
   items: Array<DashboardGridItem>;
   createNewFolder?: (() => void) | null;
-  noDrag?: boolean;
   createNewSandbox?: (() => void) | null;
   activeTeamId: string | null;
   page: PageTypes;
@@ -95,7 +94,6 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   activeTeamId,
   page,
   children,
-  noDrag,
 }) => {
   const possibleItems = (items || []).filter(
     item =>
@@ -575,7 +573,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const onContainerMouseUp = () => {
     if (drawingRect) resetSelectionRect();
   };
-  if (noDrag) {
+  if (page === 'repos') {
     return (
       <Context.Provider
         value={{
@@ -592,6 +590,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           isDragging,
           isRenaming,
           setRenaming,
+          activeTeamId,
         }}
       >
         <Element
@@ -610,6 +609,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           repos={repos || []}
           setRenaming={setRenaming}
           createNewFolder={createNewFolder}
+          createNewSandbox={createNewSandbox}
         />
       </Context.Provider>
     );

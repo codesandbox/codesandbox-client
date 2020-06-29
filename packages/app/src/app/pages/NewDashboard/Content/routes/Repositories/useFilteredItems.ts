@@ -38,9 +38,7 @@ export const useFilteredItems = (params: Params) => {
     } else {
       setItems([
         ...repos
-          .sort((a, b) =>
-            compareDesc(new Date(a.lastEdited), new Date(b.lastEdited))
-          )
+          .sort((a, b) => compareDesc(a.lastEdited, b.lastEdited))
           .map(repo => ({
             type: 'repo' as 'repo',
             ...repo,

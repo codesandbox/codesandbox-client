@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
-import { DashboardGridItem } from 'app/pages/NewDashboard/types';
+import { DashboardGridItem, PageTypes } from 'app/pages/NewDashboard/types';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
@@ -68,12 +68,19 @@ export const RepositoriesPage = () => {
       ? getPossibleTemplates(possibleTemplates)
       : [];
 
+  const pageType: PageTypes = 'repos';
+
   return (
-    <SelectionProvider items={itemsToShow()} noDrag>
+    <SelectionProvider
+      page={pageType}
+      activeTeamId={activeTeam}
+      items={itemsToShow()}
+    >
       <Helmet>
         <title>{param || 'Dashboard'} - CodeSandbox</title>
       </Helmet>
       <Header
+        activeTeam={activeTeam}
         repos
         path={param}
         templates={templates}
@@ -81,7 +88,7 @@ export const RepositoriesPage = () => {
         showFilters={Boolean(param)}
         showSortOptions={Boolean(param)}
       />
-      <VariableGrid items={itemsToShow()} />
+      <VariableGrid page={pageType} items={itemsToShow()} />
     </SelectionProvider>
   );
 };
