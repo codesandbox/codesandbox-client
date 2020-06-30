@@ -90,7 +90,7 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
 
     state.editor.changedModuleShortids.forEach(moduleShortId => {
       effects.vscode.openModule(
-        sandbox.modules.find(
+        sandbox!.modules.find(
           moduleItem => moduleItem.shortid === moduleShortId
         )!
       );
