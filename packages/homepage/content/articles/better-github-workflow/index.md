@@ -10,11 +10,11 @@ date: 2020-07-08
 ---
 
 We've made it even easier for you to work with GitHub projects on CodeSandbox.
-While you've been able to import and export projects to and from GitHub on
-CodeSandbox, the workflow was confusing. This update focuses on making that
+While you've been able to import and export projects to and from GitHub for a while, 
+the workflow was confusing. This update focuses on making that
 workflow more user-friendly. We've tackled five areas: refining the core flow,
-improving the UI, adding new functionality to help keep sandboxes in sync, as
-well as adding new, quicker ways to import projects and a better way to work
+improving the UI, adding new functionality to keep sandboxes in sync, as
+well as adding new, quicker ways to import projects, and a better way to work
 with repos in the long-term. Let's dig into the changes.
 
 ### Core flow changes
@@ -59,8 +59,8 @@ which add an import button within the UI on GitHub repo pages.
 
 ### Accessing imported repos from the dashboard
 
-Lastly, you can now access imported repos from the dashboard. 'Repositories' is
-a new tab on the panel, where all the repos you've imported are collected
+Lastly, you can now access imported repos from the dashboard. 'Repositories' is 
+where all the repos you've imported are collected
 together in one place. So you can open or fork them with a click, making
 imported GitHub repos just as easy to work with as templates created on
 CodeSandbox. This new section on the dashboard is one part of
