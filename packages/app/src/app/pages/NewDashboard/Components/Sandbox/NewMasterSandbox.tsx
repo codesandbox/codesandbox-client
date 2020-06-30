@@ -43,6 +43,8 @@ export const NewMasterSandbox = ({ repo }: NewMasterSandboxProps) => (
           borderBottom: '1px solid',
           borderColor: 'grays.600',
           borderRadius: 'medium',
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
         })}
       >
         <svg width={64} height={64} fill="none">

@@ -249,6 +249,8 @@ export const SandboxCard = ({
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
+          borderBottom: '1px solid',
+          borderColor: 'grays.600',
           svg: {
             filter: 'grayscale(1)',
             opacity: 0.1,
