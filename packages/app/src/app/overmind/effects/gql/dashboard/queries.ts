@@ -27,8 +27,8 @@ import {
   _SearchTeamSandboxesQueryVariables,
   GetTeamQuery,
   GetTeamQueryVariables,
-  GetReposQueryVariables,
-  GetReposQuery,
+  GetPersonalReposQueryVariables,
+  GetPersonalReposQuery,
   TeamDraftsQuery,
   TeamDraftsQueryVariables,
   GetTeamReposQueryVariables,
@@ -132,8 +132,8 @@ export const getCollections: Query<
 `;
 
 export const getPersonalRepos: Query<
-  GetReposQuery,
-  GetReposQueryVariables
+  GetPersonalReposQuery,
+  GetPersonalReposQueryVariables
 > = gql`
   query getPersonalRepos {
     me {
