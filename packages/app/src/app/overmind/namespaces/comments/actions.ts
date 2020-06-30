@@ -491,7 +491,7 @@ export const saveComment: AsyncAction<CommentFragment> = async (
       id: comment.id,
       parentCommentId: comment.parentComment ? comment.parentComment.id : null,
       sandboxId: sandbox.id,
-      content: comment.content,
+      content: comment.content || '',
       userReferences,
       codeReferences,
     };

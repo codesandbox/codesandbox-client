@@ -39,7 +39,7 @@ export function convertMentionsToUserReferences(mentions: {
   >((aggr, key) => {
     const userQuery = mentions[key];
     return aggr.concat({
-      id: null,
+      id: '',
       type: 'user',
       resource: `user://${userQuery.id}`,
       metadata: {
