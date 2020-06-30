@@ -161,6 +161,7 @@ export const useMention = (
         );
         const selectionEnd = mention.startIndex + mentionName.length + 1;
         setTimeout(() => {
+          current.focus();
           current.selectionEnd = selectionEnd;
         });
       },

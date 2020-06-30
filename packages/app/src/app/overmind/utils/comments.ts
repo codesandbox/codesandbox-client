@@ -5,17 +5,14 @@ export function convertMentionsToMentionLinks(
   value: string,
   mentions: { [mentionName: string]: UserQuery }
 ) {
-  const words = value.split(' ');
-
-  return words
-    .reduce<string[]>((aggr, word) => {
-      if (word[0] === '@' && word.substr(1) in mentions) {
-        return aggr.concat(`[${word}](user://${mentions[word.substr(1)].id})`);
-      }
-
-      return aggr.concat(word);
-    }, [])
-    .join(' ');
+  return Object.keys(mentions).reduce(
+    (aggr, username) =>
+      aggr.replace(
+        new RegExp('@' + username, 'ig'),
+        `[@${username}](user://${mentions[username].id})`
+      ),
+    value
+  );
 }
 
 export function convertMentionLinksToMentions(value = '') {

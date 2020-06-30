@@ -169,9 +169,7 @@ export class Workbench {
         label: 'Comment on code',
         category: 'Comments',
         run: () => {
-          this.controller.getSignal('comments.createComment')({
-            isLineComment: false,
-          });
+          this.controller.getSignal('comments.createCodeComment')();
         },
       });
     }

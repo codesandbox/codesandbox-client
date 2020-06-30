@@ -119,6 +119,7 @@ export const useCodesandboxMention = ({
         `}
       >
         <ListAction
+          onClick={() => mention.add(users[index].username, users[index])}
           css={
             menuIndex === index
               ? css({

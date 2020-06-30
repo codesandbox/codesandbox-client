@@ -630,7 +630,7 @@ const AddReply: React.FC<any> = ({ comment, ...props }) => {
     initialValue: '',
     initialMentions: {},
     onSubmit: (value, mentions) => {
-      actions.comments.addComment({
+      actions.comments.saveNewComment({
         content: value,
         mentions,
         parentCommentId: comment.id,
