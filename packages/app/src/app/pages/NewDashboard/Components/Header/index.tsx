@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { useOvermind } from 'app/overmind';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Breadcrumbs } from '../Breadcrumbs';
@@ -33,6 +34,10 @@ export const Header = ({
   showSortOptions = false,
 }: Props) => {
   const location = useLocation();
+  const {
+    actions,
+    state: { dashboard },
+  } = useOvermind();
 
   return (
     <Stack
@@ -71,6 +76,21 @@ export const Header = ({
             + New Folder
           </Button>
         )}
+        {location.pathname.includes('/repositories') &&
+          dashboard.viewMode === 'list' && (
+            <Button
+              onClick={() => actions.modalOpened({ modal: 'newSandbox' })}
+              variant="link"
+              css={css({
+                fontSize: 2,
+                color: 'mutedForeground',
+                padding: 0,
+                width: 'auto',
+              })}
+            >
+              + Import Repo
+            </Button>
+          )}
 
         <Stack gap={4}>
           {showFilters && <FilterOptions possibleTemplates={templates} />}

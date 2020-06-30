@@ -41,19 +41,17 @@ export const RepositoriesPage = () => {
     }
 
     if (sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes) {
-      return viewMode === 'grid'
-        ? [
-            {
-              type: 'new-master-branch',
-              repo: {
-                owner: sandboxes.REPOS[param].owner,
-                name: sandboxes.REPOS[param].name,
-                branch: sandboxes.REPOS[param].branch,
-              },
-            },
-            ...items,
-          ]
-        : items;
+      return [
+        {
+          type: 'new-master-branch',
+          repo: {
+            owner: sandboxes.REPOS[param].owner,
+            name: sandboxes.REPOS[param].name,
+            branch: sandboxes.REPOS[param].branch,
+          },
+        },
+        ...items,
+      ];
     }
 
     return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
