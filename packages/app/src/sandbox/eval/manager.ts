@@ -587,30 +587,21 @@ export default class Manager implements IEvaluator {
       .replace(/.*\{\{sandboxRoot\}\}/, '');
   }
 
-  moduleDirectoriesCache: string[] | undefined;
   getModuleDirectories() {
-    if (this.moduleDirectoriesCache) {
-      return this.moduleDirectoriesCache;
-    }
-
     const baseTSCompilerConfig = [
       this.configurations.typescript,
       this.configurations.jsconfig,
     ].find(config => config && config.generated !== true);
 
-    let baseUrl = baseTSCompilerConfig?.parsed?.compilerOptions?.baseUrl;
+    const baseUrl =
+      baseTSCompilerConfig &&
+      baseTSCompilerConfig.parsed &&
+      baseTSCompilerConfig.parsed.compilerOptions &&
+      baseTSCompilerConfig.parsed.compilerOptions.baseUrl;
 
-    if (baseUrl) {
-      baseUrl = pathUtils.join(baseTSCompilerConfig!.path, baseUrl);
-    }
-
-    this.moduleDirectoriesCache = [
-      'node_modules',
-      baseUrl,
-      this.envVariables.NODE_PATH,
-    ].filter(Boolean);
-
-    return this.moduleDirectoriesCache;
+    return ['node_modules', baseUrl, this.envVariables.NODE_PATH].filter(
+      Boolean
+    );
   }
 
   // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
@@ -1241,7 +1232,6 @@ export default class Manager implements IEvaluator {
 
   async clearCache() {
     try {
-      this.moduleDirectoriesCache = undefined;
       await clearIndexedDBCache();
     } catch (ex) {
       if (process.env.NODE_ENV === 'development') {
