@@ -13,6 +13,7 @@ import {
   DashboardFolder,
   DashboardRepo,
   DashboardNewMasterBranch,
+  PageTypes,
 } from '../../types';
 
 interface IMenuProps {
@@ -35,6 +36,7 @@ interface IContextMenuProps extends IMenuProps {
   setRenaming: null | ((value: boolean) => void);
   createNewFolder: () => void;
   createNewSandbox: () => void;
+  page: PageTypes;
 }
 
 export const ContextMenu: React.FC<IContextMenuProps> = ({
@@ -48,6 +50,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   setRenaming,
   createNewFolder,
   createNewSandbox,
+  page,
 }) => {
   if (!visible) return null;
 
@@ -92,12 +95,18 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
       />
     );
   } else if (selectedItems.length > 1) {
-    menu = <MultiMenu selectedItems={selectedItems} />;
+    menu = <MultiMenu selectedItems={selectedItems} page={page} />;
   } else if (
     selectedItems[0].type === 'sandbox' ||
     selectedItems[0].type === 'template'
   ) {
-    menu = <SandboxMenu item={selectedItems[0]} setRenaming={setRenaming} />;
+    menu = (
+      <SandboxMenu
+        item={selectedItems[0]}
+        setRenaming={setRenaming}
+        page={page}
+      />
+    );
   } else if (selectedItems[0].type === 'folder') {
     menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
   } else if (selectedItems[0].type === 'repo') {
@@ -155,8 +164,13 @@ const ContainerMenu: React.FC<ContainerMenuProps> = ({
 interface SandboxMenuProps {
   item: DashboardSandbox | DashboardTemplate;
   setRenaming: (value: boolean) => void;
+  page: PageTypes;
 }
-const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
+const SandboxMenu: React.FC<SandboxMenuProps> = ({
+  item,
+  setRenaming,
+  page,
+}) => {
   const {
     state: { user, activeTeam },
     effects,
@@ -287,6 +301,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
                   id: sandbox.id,
                   privacy: 0,
                   oldPrivacy: sandbox.privacy as 0 | 1 | 2,
+                  page,
                 })
               }
             >
@@ -300,6 +315,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
                   id: sandbox.id,
                   privacy: 1,
                   oldPrivacy: sandbox.privacy as 0 | 1 | 2,
+                  page,
                 })
               }
             >
@@ -313,6 +329,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
                   id: sandbox.id,
                   privacy: 2,
                   oldPrivacy: sandbox.privacy as 0 | 1 | 2,
+                  page,
                 })
               }
             >
@@ -334,7 +351,10 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
           ) : (
             <MenuItem
               onSelect={() => {
-                actions.dashboard.makeTemplates({ sandboxIds: [sandbox.id] });
+                actions.dashboard.makeTemplates({
+                  sandboxIds: [sandbox.id],
+                  page,
+                });
               }}
             >
               Make sandbox a template
@@ -357,7 +377,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({ item, setRenaming }) => {
           ) : (
             <MenuItem
               onSelect={() => {
-                actions.dashboard.deleteSandbox([sandbox.id]);
+                actions.dashboard.deleteSandbox({ ids: [sandbox.id], page });
                 setVisibility(false);
               }}
             >
@@ -454,9 +474,10 @@ interface IMultiMenuProps {
     | DashboardRepo
     | DashboardNewMasterBranch
   >;
+  page: PageTypes;
 }
 
-const MultiMenu = ({ selectedItems }: IMultiMenuProps) => {
+const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const { actions } = useOvermind();
   const { visible, setVisibility, position } = React.useContext(Context);
 
@@ -490,6 +511,7 @@ const MultiMenu = ({ selectedItems }: IMultiMenuProps) => {
   const convertToTemplates = () => {
     actions.dashboard.makeTemplates({
       sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+      page,
     });
   };
 
@@ -512,9 +534,10 @@ const MultiMenu = ({ selectedItems }: IMultiMenuProps) => {
     );
 
     if (sandboxes.length) {
-      actions.dashboard.deleteSandbox(
-        sandboxes.map(sandbox => sandbox.sandbox.id)
-      );
+      actions.dashboard.deleteSandbox({
+        ids: sandboxes.map(sandbox => sandbox.sandbox.id),
+        page,
+      });
     }
 
     setVisibility(false);

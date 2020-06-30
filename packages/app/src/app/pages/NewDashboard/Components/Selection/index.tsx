@@ -607,6 +607,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           sandboxes={sandboxes || []}
           folders={folders || []}
           repos={repos || []}
+          page={page}
           setRenaming={setRenaming}
           createNewFolder={createNewFolder}
           createNewSandbox={createNewSandbox}
@@ -684,6 +685,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         sandboxes={sandboxes || []}
         folders={folders || []}
         setRenaming={setRenaming}
+        page={page}
         createNewFolder={createNewFolder}
         createNewSandbox={createNewSandbox}
       />

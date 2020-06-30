@@ -45,6 +45,7 @@ type WindowItemProps = {
     filledItems: DashboardGridItem[];
     containerWidth: number;
     viewMode: 'grid' | 'list';
+    page: PageTypes;
   };
   style: React.CSSProperties;
   columnIndex: number;
@@ -55,6 +56,7 @@ type WindowItemProps = {
 type DecoratedItemProps<T> = {
   item: T;
   isScrolling?: boolean;
+  page?: PageTypes;
 };
 // TODO: make this a generic type. How can we convert DashboardGridItem to this?
 interface ComponentForTypes {
@@ -74,10 +76,18 @@ interface ComponentForTypes {
 
 const ComponentForTypes: ComponentForTypes = {
   sandbox: React.memo(props => (
-    <Sandbox item={props.item} isScrolling={props.isScrolling} />
+    <Sandbox
+      page={props.page}
+      item={props.item}
+      isScrolling={props.isScrolling}
+    />
   )),
   template: React.memo(props => (
-    <Sandbox item={props.item} isScrolling={props.isScrolling} />
+    <Sandbox
+      page={props.page}
+      item={props.item}
+      isScrolling={props.isScrolling}
+    />
   )),
   folder: props => <Folder {...props.item} />,
   repo: props => <Repo {...props.item} />,
@@ -126,7 +136,7 @@ const Item = ({
   style,
   isScrolling,
 }: WindowItemProps) => {
-  const { columnCount, filledItems, containerWidth, viewMode } = data;
+  const { columnCount, filledItems, containerWidth, viewMode, page } = data;
 
   /**
    * react-window does not support gutter or maxWidth
@@ -182,7 +192,7 @@ const Item = ({
         ...margins,
       }}
     >
-      <Component item={item} isScrolling={isScrolling} />
+      <Component item={item} page={page} isScrolling={isScrolling} />
     </div>
   );
 };
@@ -379,6 +389,7 @@ export const VariableGrid = ({
                   filledItems,
                   containerWidth: width,
                   viewMode,
+                  page,
                 }}
                 style={{ overflowX: 'hidden', userSelect: 'none' }}
               >

@@ -1,12 +1,12 @@
 html,
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: auto;
   -moz-font-smoothing: auto;
   -moz-osx-font-smoothing: grayscale;
   font-smoothing: auto;
   text-rendering: optimizeLegibility;
-  font-smooth: always;
+  font-smooth: alays;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   min-height: 100%;

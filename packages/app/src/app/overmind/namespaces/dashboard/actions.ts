@@ -11,7 +11,17 @@ import {
 } from 'app/graphql/types';
 import { TEAM_ID_LOCAL_STORAGE } from 'app/overmind/utils/team';
 import { OrderBy, sandboxesTypes } from './state';
-import { getDecoratedCollection, isRepoPage, repoName } from './utils';
+import { getDecoratedCollection, repoName } from './utils';
+
+type PageTypes =
+  | 'search'
+  | 'home'
+  | 'recents'
+  | 'deleted'
+  | 'templates'
+  | 'drafts'
+  | 'sandboxes'
+  | 'repos';
 
 export const dashboardMounted: AsyncAction = withLoadApp();
 
@@ -635,14 +645,22 @@ export const deleteTemplateFromState: Action<string[]> = (
   });
 };
 
-export const deleteSandbox: AsyncAction<string[]> = async (
-  { state, effects, actions },
-  ids
-) => {
+export const deleteSandbox: AsyncAction<{
+  ids: string[];
+  page:
+    | 'search'
+    | 'home'
+    | 'recents'
+    | 'deleted'
+    | 'templates'
+    | 'drafts'
+    | 'sandboxes'
+    | 'repos';
+}> = async ({ state, effects, actions }, { ids, page }) => {
   const { user } = state;
   if (!user) return;
   const oldSandboxes = state.dashboard.sandboxes;
-  if (!isRepoPage) {
+  if (page !== 'repos') {
     actions.dashboard.deleteSandboxFromState(ids);
   } else {
     if (
@@ -808,8 +826,9 @@ export const renameSandbox: AsyncAction<{
   id: string;
   title: string;
   oldTitle: string;
-}> = async ({ effects, actions }, { id, title, oldTitle }) => {
-  if (isRepoPage) {
+  page: PageTypes;
+}> = async ({ effects, actions }, { id, title, oldTitle, page }) => {
+  if (page === 'repos') {
     actions.dashboard.renameRepoSandboxInState({
       id,
       title,
@@ -827,7 +846,7 @@ export const renameSandbox: AsyncAction<{
       title,
     });
   } catch {
-    if (isRepoPage) {
+    if (page === 'repos') {
       actions.dashboard.renameRepoSandboxInState({
         id,
         title: oldTitle,
@@ -907,12 +926,12 @@ export const deleteFolder: AsyncAction<{
   }
 };
 
-export const makeTemplates: AsyncAction<{ sandboxIds: string[] }> = async (
-  { effects, state, actions },
-  { sandboxIds: ids }
-) => {
+export const makeTemplates: AsyncAction<{
+  sandboxIds: string[];
+  page: PageTypes;
+}> = async ({ effects, state, actions }, { sandboxIds: ids, page }) => {
   const oldSandboxes = state.dashboard.sandboxes;
-  if (!isRepoPage) {
+  if (page !== 'repos') {
     actions.dashboard.deleteSandboxFromState(ids);
   }
 
@@ -921,7 +940,7 @@ export const makeTemplates: AsyncAction<{ sandboxIds: string[] }> = async (
       sandboxIds: ids,
     });
   } catch (error) {
-    if (!isRepoPage) {
+    if (page !== 'repos') {
       state.dashboard.sandboxes = { ...oldSandboxes };
     }
     effects.notificationToast.error('There was a problem making your template');
@@ -1166,7 +1185,8 @@ export const changeSandboxPrivacy: AsyncAction<{
   id: string;
   privacy: 0 | 1 | 2;
   oldPrivacy: 0 | 1 | 2;
-}> = async ({ actions, effects, state }, { id, privacy, oldPrivacy }) => {
+  page: PageTypes;
+}> = async ({ actions, effects, state }, { id, privacy, oldPrivacy, page }) => {
   const repoChangePrivacy = (p: 0 | 1 | 2) => {
     if (
       !state.dashboard.sandboxes.REPOS ||
@@ -1194,7 +1214,7 @@ export const changeSandboxPrivacy: AsyncAction<{
     };
   };
   // optimistic update
-  if (isRepoPage) {
+  if (page === 'repos') {
     repoChangePrivacy(privacy);
   } else {
     actions.dashboard.changeSandboxPrivacyInState({ id, privacy });
@@ -1204,7 +1224,7 @@ export const changeSandboxPrivacy: AsyncAction<{
     await effects.api.updatePrivacy(id, privacy);
   } catch (error) {
     // rollback optimistic
-    if (isRepoPage) {
+    if (page === 'repos') {
       repoChangePrivacy(oldPrivacy);
     } else {
       actions.dashboard.changeSandboxPrivacyInState({
