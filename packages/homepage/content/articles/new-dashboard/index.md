@@ -9,21 +9,21 @@ description:
 date: 2020-07-08
 ---
 
-## A New-look Dashboard
+## Dashboard Update
 
 The dashboard is a core part of working on CodeSandbox, and it's of increasing
 importance to power users and teams. While staying close to what people are
 familiar with, we've refreshed the design of the dashboard. This update evolves
 the design to bring through the
 [updates made in the editor](https://codesandbox.io/post/new-look-editor) and
-makes working with more people and more sandboxes a better experience. But these
+makes working with teams and more sandboxes a better experience. But these
 changes aren't just cosmetic; they add new functionality that gives you greater
 control and organizational capabilities to boost collaboration.
 
 ### A new start screen
 
 You now start from the home screen. This lists only the last few templates and
-sandboxes you've used—the stuff you're most likely to want to dive in to. We've
+sandboxes you've used—the stuff you're most likely to want to dive back in to. We've
 also added a 'recent' section, which shows the sandboxes modified today, in the
 last seven days, as well as within the last month. So you no longer need to
 trawl through a big list of sandboxes to pick out a new sandbox you want to
@@ -33,7 +33,7 @@ carry on with.
 
 With that said, you don't need to go back to most of the sandboxes you create.
 That's part of the value of CodeSandbox, but this wasn't catered to by the old
-dashboard design. So we've added a new section called 'Drafts' that collects
+dashboard design. So we've added a new section called 'My Drafts' that collects
 together all the sandboxes you don't categorize yourself. Such projects would
 clutter the old dashboard and make the projects you did want to go back to
 harder to find. By default, new projects now go into drafts.
