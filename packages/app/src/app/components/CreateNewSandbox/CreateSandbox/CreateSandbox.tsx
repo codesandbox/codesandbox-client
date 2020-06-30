@@ -42,7 +42,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
     if (location.pathname.includes('/repositories')) {
       tab.select('Import');
     }
-  }, [tab]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const infoData = getInfoFromMarkdown(latestChangelog);
