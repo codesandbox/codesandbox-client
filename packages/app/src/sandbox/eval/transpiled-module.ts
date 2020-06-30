@@ -159,8 +159,8 @@ export type Compilation = {
 export default class TranspiledModule {
   module: Module;
   query: string;
-  previousSource: ModuleSource | undefined;
-  source: ModuleSource | undefined;
+  previousSource: ModuleSource | null;
+  source: ModuleSource | null;
   assets: {
     [name: string]: ModuleSource;
   };
@@ -173,7 +173,7 @@ export default class TranspiledModule {
    * All extra modules emitted by the loader
    */
   emittedAssets: Array<ModuleSource>;
-  compilation: Compilation | undefined;
+  compilation: Compilation | null;
   initiators: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
   dependencies: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
   asyncDependencies: Array<Promise<TranspiledModule>>; // eslint-disable-line no-use-before-define
@@ -189,7 +189,7 @@ export default class TranspiledModule {
    * Set how this module handles HMR. The default is undefined, which means
    * that we handle the HMR like CodeSandbox does.
    */
-  hmrConfig: HMR | undefined;
+  hmrConfig: HMR | null;
 
   hasMissingDependencies: boolean = false;
 

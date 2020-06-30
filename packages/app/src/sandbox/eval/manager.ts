@@ -249,7 +249,7 @@ export default class Manager implements IEvaluator {
 
   // Hoist these 2 functions to the top, since they get executed A LOT
   isFile = (p: string, cb?: Function | undefined, c?: Function) => {
-    const callback = c || cb;
+    const callback = (c || cb)!;
     const hasCallback = typeof callback === 'function';
 
     let returnValue;
@@ -273,7 +273,7 @@ export default class Manager implements IEvaluator {
   };
 
   readFileSync = (p: string, cb: Function | undefined, c?: Function) => {
-    const callback = c || cb;
+    const callback = (c || cb)!;
     const hasCallback = typeof callback === 'function';
 
     if (this.transpiledModules[p]) {
@@ -558,6 +558,8 @@ export default class Manager implements IEvaluator {
     );
 
     if (
+      previousDependencyName &&
+      dependencyName &&
       this.manifest.dependencyAliases[previousDependencyName] &&
       this.manifest.dependencyAliases[previousDependencyName][dependencyName]
     ) {
@@ -598,17 +600,20 @@ export default class Manager implements IEvaluator {
       this.configurations.jsconfig,
     ].find(config => config && config.generated !== true);
 
-    let baseUrl = baseTSCompilerConfig?.parsed?.compilerOptions?.baseUrl;
+    let baseUrl: string | undefined =
+      baseTSCompilerConfig?.parsed?.compilerOptions?.baseUrl;
 
-    if (baseUrl) {
-      baseUrl = pathUtils.join(baseTSCompilerConfig!.path, baseUrl);
+    // TODO: we need to extract our resolver to a plugin system and use the TypeScript resolver
+    // if we see a tsconfig. A `.` doesn't work and messes up resolving.
+    if (baseUrl === '.') {
+      baseUrl = undefined;
     }
 
     this.moduleDirectoriesCache = [
       'node_modules',
       baseUrl,
       this.envVariables.NODE_PATH,
-    ].filter(Boolean);
+    ].filter(Boolean) as string[];
 
     return this.moduleDirectoriesCache;
   }
@@ -687,11 +692,14 @@ export default class Manager implements IEvaluator {
             const dependencyName = getDependencyName(connectedPath);
 
             if (
-              this.manifest.dependencies.find(d => d.name === dependencyName) ||
-              this.manifest.dependencyDependencies[dependencyName] ||
-              this.manifest.contents[
-                `/node_modules/${dependencyName}/package.json`
-              ]
+              dependencyName &&
+              (this.manifest.dependencies.find(
+                d => d.name === dependencyName
+              ) ||
+                this.manifest.dependencyDependencies[dependencyName] ||
+                this.manifest.contents[
+                  `/node_modules/${dependencyName}/package.json`
+                ])
             ) {
               promiseReject(
                 new ModuleNotFoundError(connectedPath, true, currentPath)
@@ -811,9 +819,12 @@ export default class Manager implements IEvaluator {
 
         // TODO: fix the stack hack
         if (
-          this.manifest.dependencies.find(d => d.name === dependencyName) ||
-          this.manifest.dependencyDependencies[dependencyName] ||
-          this.manifest.contents[`/node_modules/${dependencyName}/package.json`]
+          dependencyName &&
+          (this.manifest.dependencies.find(d => d.name === dependencyName) ||
+            this.manifest.dependencyDependencies[dependencyName] ||
+            this.manifest.contents[
+              `/node_modules/${dependencyName}/package.json`
+            ])
         ) {
           throw new ModuleNotFoundError(connectedPath, true, currentPath);
         } else {
