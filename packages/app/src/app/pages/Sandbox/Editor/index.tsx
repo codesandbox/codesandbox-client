@@ -7,6 +7,7 @@ import {
   Element,
   Stack,
 } from '@codesandbox/components';
+import { CreateSandbox } from 'app/components/CreateNewSandbox/CreateSandbox';
 import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
@@ -25,6 +26,8 @@ import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
 import { CommentsAPI } from './Workspace/screens/Comments/API';
 
+type EditorTypes = { showNewSandboxModal?: boolean };
+
 const STATUS_BAR_SIZE = 22;
 
 const StatusBar = styled.div`
@@ -33,7 +36,7 @@ const StatusBar = styled.div`
   }
 `;
 
-const Editor = () => {
+const Editor = ({ showNewSandboxModal }: EditorTypes) => {
   const { state, actions, effects, reaction } = useOvermind();
   const statusbarEl = useRef(null);
   const [showSkeleton, setShowSkeleton] = useState(
@@ -164,11 +167,11 @@ const Editor = () => {
               {state.workspace.workspaceHidden ? <div /> : <Workspace />}
               {<Content theme={localState.theme} />}
             </SplitPane>
-            {showSkeleton ? (
+            {showSkeleton || showNewSandboxModal ? (
               <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
                 <ContentSkeleton
                   style={
-                    state.editor.hasLoadedInitialModule
+                    state.editor.hasLoadedInitialModule && !showNewSandboxModal
                       ? {
                           opacity: 0,
                         }
@@ -177,6 +180,46 @@ const Editor = () => {
                         }
                   }
                 />
+                {showNewSandboxModal ? (
+                  <Element
+                    css={css({
+                      width: '100vw',
+                      height: '100vh',
+                      overflow: 'hidden',
+                      position: 'fixed',
+                      zIndex: 10,
+                      top: 0,
+                      left: 0,
+                    })}
+                  >
+                    <Element
+                      css={css({
+                        background: 'rgba(0,0,0,0.4)',
+                        width: '100vw',
+                        height: '100vh',
+                        position: 'fixed',
+                      })}
+                    />
+                    <Element margin={6}>
+                      <Element marginTop={80}>
+                        <Stack align="center" justify="center">
+                          <Element
+                            css={css({
+                              backgroundColor: 'sideBar.background',
+                              maxWidth: '100%',
+                              width: 1200,
+                              position: 'relative',
+                              zIndex: 100,
+                            })}
+                            marginTop={8}
+                          >
+                            <CreateSandbox />
+                          </Element>
+                        </Stack>
+                      </Element>
+                    </Element>
+                  </Element>
+                ) : null}
               </ComponentsThemeProvider>
             ) : null}
           </div>
