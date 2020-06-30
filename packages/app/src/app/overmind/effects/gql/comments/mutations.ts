@@ -85,11 +85,19 @@ export const updateComment: Query<
   UpdateCommentMutation,
   UpdateCommentMutationVariables
 > = gql`
-  mutation UpdateComment($commentId: ID!, $sandboxId: ID!, $content: String) {
+  mutation UpdateComment(
+    $commentId: ID!
+    $sandboxId: ID!
+    $content: String
+    $userReferences: [UserReference!]
+    $codeReferences: [CodeReference!]
+  ) {
     updateComment(
       commentId: $commentId
       sandboxId: $sandboxId
       content: $content
+      userReferences: $userReferences
+      codeReferences: $codeReferences
     ) {
       id
     }

@@ -65,13 +65,18 @@ export const updateComment: AsyncAction<{
 
   effects.analytics.track('Comments - Update Comment');
 
-  comment.content = content;
+  comment.content = convertMentionsToMentionLinks(content, mentions);
 
   try {
     await effects.gql.mutations.updateComment({
       commentId,
-      content,
+      content: comment.content,
       sandboxId,
+      codeReferences: [],
+      userReferences: Object.keys(mentions).map(username => ({
+        username,
+        userId: mentions[username].id,
+      })),
     });
   } catch (error) {
     effects.notificationToast.error(

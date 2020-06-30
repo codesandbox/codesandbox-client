@@ -16,9 +16,9 @@ type ReplyProps = {
 const animationDelay = DIALOG_TRANSITION_DURATION + 's';
 
 export const Reply = ({ reply }: ReplyProps) => {
-  const { user, id, content } = reply;
   const { state, actions } = useOvermind();
   const [editing, setEditing] = useState(false);
+  const { user, id, content } = reply;
 
   return (
     <Element
