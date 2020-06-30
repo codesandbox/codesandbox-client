@@ -25,12 +25,16 @@ export const createComment: Query<
     $content: String!
     $sandboxId: ID!
     $parentCommentId: ID
+    $userReferences: [UserReference!]
+    $codeReferences: [CodeReference!]
   ) {
     createComment(
       id: $id
       content: $content
       sandboxId: $sandboxId
       parentCommentId: $parentCommentId
+      userReferences: $userReferences
+      codeReferences: $codeReferences
     ) {
       ...Comment
     }
@@ -48,6 +52,8 @@ export const createCodeComment: Query<
     $sandboxId: ID!
     $parentCommentId: ID
     $anchorReference: CodeReference!
+    $userReferences: [UserReference!]
+    $codeReferences: [CodeReference!]
   ) {
     createCodeComment(
       id: $id
@@ -55,6 +61,8 @@ export const createCodeComment: Query<
       sandboxId: $sandboxId
       parentCommentId: $parentCommentId
       anchorReference: $anchorReference
+      userReferences: $userReferences
+      codeReferences: $codeReferences
     ) {
       ...Comment
     }

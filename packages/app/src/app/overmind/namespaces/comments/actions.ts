@@ -10,15 +10,21 @@ import {
   REPLY_TRANSITION_DELAY,
 } from 'app/constants';
 import {
+  CodeReference,
   CodeReferenceMetadata,
   CodeReferenceMetadataFragment,
   CommentAddedSubscription,
   CommentChangedSubscription,
   CommentFragment,
   CommentRemovedSubscription,
+  UserReference,
+  UserReferenceMetadata,
 } from 'app/graphql/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
-import { convertMentionsToMentionLinks } from 'app/overmind/utils/comments';
+import {
+  convertMentionsToMentionLinks,
+  convertMentionsToUserReferences,
+} from 'app/overmind/utils/comments';
 import {
   indexToLineAndColumn,
   lineAndColumnToIndex,
@@ -414,7 +420,7 @@ export const saveNewComment: AsyncAction<{
       username: user.username,
       avatarUrl: user.avatarUrl,
     },
-    references: [],
+    references: convertMentionsToUserReferences(mentions),
     replyCount: 0,
   };
 
@@ -446,17 +452,50 @@ export const saveComment: AsyncAction<CommentFragment> = async (
   async function trySaveComment() {
     tryCount++;
 
+    const { userReferences, codeReferences } = comment.references.reduce<{
+      userReferences: UserReference[];
+      codeReferences: CodeReference[];
+    }>(
+      (aggr, reference) => {
+        if (reference.type === 'user') {
+          aggr.userReferences.push({
+            userId: (reference.metadata as UserReferenceMetadata).userId,
+            username: (reference.metadata as UserReferenceMetadata).username,
+          });
+        } else if (reference.type === 'code') {
+          aggr.codeReferences.push({
+            anchor: (reference.metadata as CodeReferenceMetadata).anchor,
+            code: (reference.metadata as CodeReferenceMetadata).code,
+            head: (reference.metadata as CodeReferenceMetadata).head,
+            path: (reference.metadata as CodeReferenceMetadata).path,
+            lastUpdatedAt: state.editor.currentSandbox!.modules.find(
+              module =>
+                module.path ===
+                (reference.metadata as CodeReferenceMetadata).path
+            )!.updatedAt,
+          });
+        }
+        return aggr;
+      },
+      {
+        userReferences: [],
+        codeReferences: [],
+      }
+    );
     const baseCommentPayload = {
       id: comment.id,
       parentCommentId: comment.parentComment ? comment.parentComment.id : null,
       sandboxId: sandbox.id,
       content: comment.content,
+      userReferences,
+      codeReferences,
     };
 
     if (comment.anchorReference) {
-      const metadata = comment.anchorReference.metadata;
+      const reference = comment.anchorReference;
 
-      if (metadata.__typename === 'CodeReferenceMetadata') {
+      if (reference.type === 'code') {
+        const metadata = reference.metadata as CodeReferenceMetadata;
         await effects.gql.mutations.createCodeComment({
           ...baseCommentPayload,
           anchorReference: {

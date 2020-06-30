@@ -56,7 +56,7 @@ export const Comments: React.FC = () => {
     value: string,
     mentions: { [username: string]: UserQuery }
   ) => {
-    commentsActions.addComment({
+    commentsActions.saveNewComment({
       content: value,
       mentions,
     });

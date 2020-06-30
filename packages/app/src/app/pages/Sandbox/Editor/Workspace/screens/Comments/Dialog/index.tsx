@@ -1,3 +1,4 @@
+import { UserQuery } from '@codesandbox/common/lib/types';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import {
@@ -143,7 +144,13 @@ export const Dialog: React.FC = () => {
           {isNewComment && editing ? (
             <DialogAddComment
               comment={comment}
-              onSave={() => setEditing(false)}
+              onSave={(content, mentions) => {
+                actions.comments.saveOptimisticComment({
+                  content,
+                  mentions,
+                });
+                setEditing(false);
+              }}
               onDragHandlerPan={onDragHandlerPan}
               onDragHandlerPanEnd={onDragHandlerPanEnd}
             />
@@ -199,7 +206,7 @@ export const Dialog: React.FC = () => {
 
 const DialogAddComment: React.FC<{
   comment: CommentWithRepliesFragment;
-  onSave: () => void;
+  onSave: (value: string, mentions: { [username: string]: UserQuery }) => void;
   onDragHandlerPan: (deltaX: number, deltaY: number) => void;
   onDragHandlerPanEnd: () => void;
 }> = ({ comment, onSave, onDragHandlerPan, onDragHandlerPanEnd }) => {
