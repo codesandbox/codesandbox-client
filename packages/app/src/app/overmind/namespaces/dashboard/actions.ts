@@ -429,7 +429,7 @@ export const getReposByPath: AsyncAction | Action<string> = async (
       sandboxes = teamData.me.team.sandboxes;
     } else {
       dashboard.sandboxes.REPOS = null;
-      const myData = await effects.gql.queries.getRepos();
+      const myData = await effects.gql.queries.getPersonalRepos();
 
       sandboxes = myData.me.sandboxes;
     }

@@ -1542,9 +1542,9 @@ export type AllCollectionsQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
-export type GetReposQueryVariables = Exact<{ [key: string]: never }>;
+export type GetPersonalReposQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetReposQuery = { __typename?: 'RootQueryType' } & {
+export type GetPersonalReposQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
       sandboxes: Array<
