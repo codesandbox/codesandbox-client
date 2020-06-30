@@ -26,6 +26,8 @@ import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
 import { CommentsAPI } from './Workspace/screens/Comments/API';
 
+type EditorTypes = { showNewSandboxModal?: boolean };
+
 const STATUS_BAR_SIZE = 22;
 
 const StatusBar = styled.div`
@@ -34,7 +36,7 @@ const StatusBar = styled.div`
   }
 `;
 
-const Editor = ({ showNewSandboxModal }: { showNewSandboxModal?: boolean }) => {
+const Editor = ({ showNewSandboxModal }: EditorTypes) => {
   const { state, actions, effects, reaction } = useOvermind();
   const statusbarEl = useRef(null);
   const [showSkeleton, setShowSkeleton] = useState(

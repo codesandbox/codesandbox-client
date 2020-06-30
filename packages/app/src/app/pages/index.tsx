@@ -15,7 +15,6 @@ import { Dashboard } from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 import { Dashboard as NewDashboard } from './NewDashboard';
-import { NewSandbox } from './NewSandbox';
 import { Sandbox } from './Sandbox';
 
 const routeDebugger = _debug('cs:app:router');
@@ -129,7 +128,11 @@ const RoutesComponent: React.FC = () => {
               path="/s"
               component={() => <Sandbox showNewSandboxModal />}
             />
-            <Route exact path="/s2" component={NewSandbox} />
+            <Route
+              exact
+              path="/s2"
+              component={() => <Sandbox showNewSandboxModal />}
+            />
             <Route path="/invite/:token" component={TeamInvitation} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/new-dashboard" component={NewDashboard} />
