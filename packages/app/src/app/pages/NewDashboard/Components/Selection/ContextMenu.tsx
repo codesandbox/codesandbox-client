@@ -12,6 +12,7 @@ import {
   DashboardTemplate,
   DashboardFolder,
   DashboardRepo,
+  DashboardNewMasterBranch,
 } from '../../types';
 
 interface IMenuProps {
@@ -51,12 +52,28 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   if (!visible) return null;
 
   const selectedItems: Array<
-    DashboardFolder | DashboardSandbox | DashboardTemplate | DashboardRepo
+    | DashboardFolder
+    | DashboardSandbox
+    | DashboardTemplate
+    | DashboardRepo
+    | DashboardNewMasterBranch
   > = selectedIds.map(id => {
     if (id.startsWith('/')) {
       if (repos.length) {
         const repo = repos.find(f => '/' + f.name === id);
         return { type: 'repo', ...repo };
+      }
+
+      if (id.includes('/github')) {
+        const all = id.split(`/`);
+        return {
+          type: 'new-master-branch',
+          repo: {
+            owner: all[all.length - 2],
+            name: all[all.length - 1],
+            branch: 'master',
+          },
+        };
       }
 
       const folder = folders.find(f => f.path === id);
@@ -67,7 +84,6 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   });
 
   let menu: React.ReactNode;
-
   if (selectedItems.length === 0) {
     menu = (
       <ContainerMenu
@@ -86,6 +102,8 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
   } else if (selectedItems[0].type === 'repo') {
     menu = <RepoMenu repo={selectedItems[0]} />;
+  } else if (selectedItems[0].type === 'new-master-branch') {
+    menu = <MasterMenu repo={selectedItems[0].repo} />;
   }
 
   return (
@@ -430,7 +448,11 @@ const FolderMenu = ({ folder, setRenaming }) => {
 
 interface IMultiMenuProps {
   selectedItems: Array<
-    DashboardSandbox | DashboardTemplate | DashboardFolder | DashboardRepo
+    | DashboardSandbox
+    | DashboardTemplate
+    | DashboardFolder
+    | DashboardRepo
+    | DashboardNewMasterBranch
   >;
 }
 
@@ -533,6 +555,48 @@ const MultiMenu = ({ selectedItems }: IMultiMenuProps) => {
           {option.label}
         </MenuItem>
       ))}
+    </Menu.ContextMenu>
+  );
+};
+
+const MasterMenu = ({
+  repo,
+}: {
+  repo: {
+    owner: string;
+    name: string;
+    branch: string;
+  };
+}) => {
+  const { actions } = useOvermind();
+  const { visible, setVisibility, position } = React.useContext(Context);
+
+  return (
+    <Menu.ContextMenu
+      visible={visible}
+      setVisibility={setVisibility}
+      position={position}
+      style={{ width: 120 }}
+    >
+      <MenuItem
+        onSelect={() =>
+          window.open(
+            `https://codesandbox.io/s/github/${repo.owner}/${repo.name}`
+          )
+        }
+      >
+        View Master
+      </MenuItem>
+      <MenuItem
+        onSelect={() => {
+          actions.editor.forkExternalSandbox({
+            sandboxId: `github/${repo.owner}/${repo.name}`,
+            openInNewWindow: true,
+          });
+        }}
+      >
+        Fork master
+      </MenuItem>
     </Menu.ContextMenu>
   );
 };

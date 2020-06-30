@@ -1,6 +1,7 @@
 import React from 'react';
-import { Stack, Text } from '@codesandbox/components';
+import { Stack, Text, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useSelection } from '../Selection';
 
 export interface NewMasterSandboxProps {
   repo: {
@@ -10,12 +11,14 @@ export interface NewMasterSandboxProps {
   };
 }
 
-export const NewMasterSandbox = ({ repo }: NewMasterSandboxProps) => (
-  <a
-    href={`https://codesandbox.io/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`}
-    css={css({ color: 'inherit', textDecoration: 'none' })}
-  >
+export const NewMasterSandbox = ({ repo }: NewMasterSandboxProps) => {
+  const { onRightClick } = useSelection();
+  return (
     <Stack
+      onDoubleClick={() => {
+        window.location.href = `https://codesandbox.io/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`;
+      }}
+      onContextMenu={e => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
       direction="vertical"
       gap={2}
       css={css({
@@ -54,22 +57,35 @@ export const NewMasterSandbox = ({ repo }: NewMasterSandboxProps) => (
           />
         </svg>
       </Stack>
-      <Stack justify="space-between" align="center" marginLeft={4}>
+      <Stack
+        justify="space-between"
+        align="center"
+        marginLeft={4}
+        css={css({
+          minHeight: 26,
+        })}
+      >
         <Stack gap={1} align="center">
           <Text size={3} weight="medium">
             master
           </Text>
         </Stack>
+        <IconButton
+          name="more"
+          size={9}
+          title="Sandbox actions"
+          // @ts-ignore
+          onClick={e => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
+        />
       </Stack>
 
-      {/* <Stack marginX={4} gap={1} align="center">
-      <Stack gap={1} align="center">
-        <Icon name="eye" size={14} css={css({ color: 'mutedForeground' })} />
-        <Text size={3} variant="muted">
-          lol
-        </Text>
+      <Stack marginX={4} gap={1} align="center">
+        <Stack gap={1} align="center">
+          <Text size={3} variant="muted">
+            {repo.owner}
+          </Text>
+        </Stack>
       </Stack>
-    </Stack> */}
     </Stack>
-  </a>
-);
+  );
+};
