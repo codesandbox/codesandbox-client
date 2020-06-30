@@ -31,7 +31,7 @@ export const RepositoriesPage = () => {
     (sandboxes.REPOS && Object.values(sandboxes.REPOS)) || [];
 
   const itemsToShow = (): DashboardGridItem[] => {
-    if (!sandboxes.REPOS) {
+    if (sandboxes.REPOS === null) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
     if (home) {

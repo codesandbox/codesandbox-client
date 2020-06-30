@@ -58,7 +58,6 @@ type DecoratedItemProps<T> = {
   isScrolling?: boolean;
   page?: PageTypes;
 };
-// TODO: make this a generic type. How can we convert DashboardGridItem to this?
 interface ComponentForTypes {
   sandbox: React.FC<DecoratedItemProps<DashboardSandbox>>;
   template: React.FC<DecoratedItemProps<DashboardTemplate>>;

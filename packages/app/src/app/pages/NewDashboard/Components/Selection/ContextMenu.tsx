@@ -4,6 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import {
   sandboxUrl,
   dashboard,
+  githubRepoUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Stack, Menu, Icon, Text } from '@codesandbox/components';
@@ -67,7 +68,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
         return { type: 'repo', ...repo };
       }
 
-      if (id.includes('/github')) {
+      if (id.startsWith('/github')) {
         const all = id.split(`/`);
         return {
           type: 'new-master-branch',
@@ -393,8 +394,6 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({
 const RepoMenu = ({ repo }) => {
   const { effects } = useOvermind();
   const { visible, setVisibility, position } = React.useContext(Context);
-  const link = `https://github.com/${repo.owner}/${repo.name}/tree/${repo.branch}`;
-  const csbLink = `https://codesandbox.io/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`;
   return (
     <Menu.ContextMenu
       visible={visible}
@@ -402,17 +401,51 @@ const RepoMenu = ({ repo }) => {
       position={position}
       style={{ width: 120 }}
     >
-      <MenuItem onSelect={() => window.open(csbLink, '_blank')}>
+      <MenuItem
+        onSelect={() =>
+          window.open(
+            sandboxUrl({
+              git: {
+                commitSha: '',
+                branch: repo.branch,
+                repo: repo.name,
+                username: repo.owner,
+                path: '',
+              },
+            }),
+            '_blank'
+          )
+        }
+      >
         Open on CodeSandbox
       </MenuItem>
       <MenuItem
         onSelect={() => {
-          effects.browser.copyToClipboard(link);
+          effects.browser.copyToClipboard(
+            githubRepoUrl({
+              branch: repo.branch,
+              repo: repo.name,
+              username: repo.owner,
+              path: '',
+            })
+          );
         }}
       >
         Copy GitHub URL
       </MenuItem>
-      <MenuItem onSelect={() => window.open(link, '_blank')}>
+      <MenuItem
+        onSelect={() =>
+          window.open(
+            githubRepoUrl({
+              branch: repo.branch,
+              repo: repo.name,
+              username: repo.owner,
+              path: '',
+            }),
+            '_blank'
+          )
+        }
+      >
         Open on GitHub
       </MenuItem>
     </Menu.ContextMenu>
@@ -604,7 +637,15 @@ const MasterMenu = ({
       <MenuItem
         onSelect={() =>
           window.open(
-            `https://codesandbox.io/s/github/${repo.owner}/${repo.name}`
+            sandboxUrl({
+              git: {
+                commitSha: '',
+                branch: repo.branch,
+                repo: repo.name,
+                username: repo.owner,
+                path: '',
+              },
+            })
           )
         }
       >
