@@ -12,7 +12,7 @@ type User = {
 
 interface IUserAutoComplete {
   inputValue: string;
-  allowSelf: boolean;
+  allowSelf?: boolean;
   children: (answer: {
     users: User[];
     loading: boolean;
@@ -23,15 +23,13 @@ interface IUserAutoComplete {
 const UserAutoComplete = ({
   inputValue,
   children,
-  allowSelf,
+  allowSelf = false,
 }: IUserAutoComplete) => {
   const [users, setUsers] = React.useState<User[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<Error | null>(null);
   const {
-    state: {
-      user: { username },
-    },
+    state: { user },
   } = useOvermind();
   useEffect(() => {
     setLoading(true);
@@ -47,7 +45,7 @@ const UserAutoComplete = ({
           .then(x => {
             const fetchedUsers = allowSelf
               ? x
-              : x.filter(user => user.username !== username);
+              : x.filter(member => member.username !== user?.username);
             setUsers(fetchedUsers);
             setLoading(false);
           })
@@ -64,7 +62,7 @@ const UserAutoComplete = ({
         clearTimeout(timeoutId);
       }
     };
-  }, [allowSelf, inputValue, username]);
+  }, [allowSelf, inputValue, user]);
 
   return children({ users, loading, error });
 };
@@ -72,7 +70,7 @@ const UserAutoComplete = ({
 interface IUserSearchInputProps {
   onInputValueChange: DownshiftProps<string>['onInputValueChange'];
   inputValue: string;
-  allowSelf: boolean;
+  allowSelf?: boolean;
   [key: string]: any;
 }
 
@@ -82,7 +80,7 @@ const InputWithoutTypes = Input as any;
 export const UserSearchInput = ({
   onInputValueChange,
   inputValue,
-  allowSelf = true,
+  allowSelf = false,
   ...props
 }: IUserSearchInputProps) => (
   <Downshift
