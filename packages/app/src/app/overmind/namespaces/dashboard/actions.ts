@@ -479,7 +479,7 @@ export const getStartPageSandboxes: AsyncAction = async ({
     );
 
     const result = await effects.gql.queries.recentlyAccessedSandboxes({
-      limit: 7,
+      limit: 12,
       teamId: state.activeTeam,
     });
 
