@@ -15,21 +15,18 @@ interface Props {
   read: boolean;
   userId: string;
   sandboxId: string;
-  mentionerUsername: string;
-  mentionerAvatarUrl: string;
-  commentPreview: string;
-  commentId: string;
+  commenterUsername: string;
+  commenterAvatarUrl: string;
 }
 
-export const Mention = ({
-  commentId,
-  commentPreview,
+export const Comment = ({
   id,
   insertedAt,
-  mentionerAvatarUrl,
-  mentionerUsername,
+  commenterAvatarUrl,
+  commenterUsername,
   read,
   sandboxId,
+  userId,
 }: Props) => {
   const {
     actions: {
@@ -45,8 +42,7 @@ export const Mention = ({
       onMouseLeave={() => setHover(false)}
       onClick={async () => {
         await updateReadStatus(id);
-        window.location.href =
-          sandboxUrl({ id: sandboxId }) + `?comment=${commentId}`;
+        window.location.href = sandboxUrl({ id: sandboxId });
       }}
       css={css({ padding: 0 })}
     >
@@ -60,8 +56,8 @@ export const Mention = ({
             <Element css={css({ position: 'relative' })}>
               <Element
                 as="img"
-                src={mentionerAvatarUrl}
-                alt={mentionerUsername}
+                src={commenterAvatarUrl}
+                alt={commenterUsername}
                 css={css({
                   width: 32,
                   height: 32,
@@ -80,10 +76,9 @@ export const Mention = ({
             </Element>
 
             <Text size={3} variant="muted">
-              {mentionerUsername}{' '}
-              <Text css={css({ color: 'sideBar.foreground' })}>mentioned</Text>{' '}
-              you in a comment “{commentPreview}
-              {commentPreview.length > 60 ? '...' : ''}”
+              {commenterUsername}{' '}
+              <Text css={css({ color: 'sideBar.foreground' })}>commented</Text>{' '}
+              on your sandbox
             </Text>
           </Stack>
           <Stack

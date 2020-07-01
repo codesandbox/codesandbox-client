@@ -4,11 +4,19 @@ import { Element, Text, List } from '@codesandbox/components';
 import { mapKeys, camelCase } from 'lodash-es';
 import css from '@styled-system/css';
 import { Skeleton } from './Skeleton';
+import {
+  CommentData,
+  MentionData,
+  TeamInviteData,
+  TeamAcceptedData,
+  SandboxInvitationData,
+} from './types';
 
 import { SandboxInvitation } from './notifications/SandboxInvitation';
 import { TeamAccepted } from './notifications/TeamAccepted';
 import { TeamInvite } from './notifications/TeamInvite';
 import { Mention } from './notifications/Mention';
+import { Comment } from './notifications/Comment';
 import { Filters } from './Filters';
 
 const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
@@ -17,7 +25,23 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
 
   if (type === 'mention') {
     return (
-      <Mention insertedAt={insertedAt} id={id} read={read} {...camelCaseData} />
+      <Mention
+        insertedAt={insertedAt}
+        id={id}
+        read={read}
+        {...(camelCaseData as MentionData)}
+      />
+    );
+  }
+
+  if (type === 'comment') {
+    return (
+      <Comment
+        insertedAt={insertedAt}
+        id={id}
+        read={read}
+        {...(camelCaseData as CommentData)}
+      />
     );
   }
   if (type === 'team_invite') {
@@ -26,7 +50,7 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
         insertedAt={insertedAt}
         id={id}
         read={read}
-        {...camelCaseData}
+        {...(camelCaseData as TeamInviteData)}
       />
     );
   }
@@ -36,7 +60,7 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
         insertedAt={insertedAt}
         id={id}
         read={read}
-        {...camelCaseData}
+        {...(camelCaseData as TeamAcceptedData)}
       />
     );
   }
@@ -46,7 +70,7 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
         insertedAt={insertedAt}
         id={id}
         read={read}
-        {...camelCaseData}
+        {...(camelCaseData as SandboxInvitationData)}
         authorization={parsedData.authorization.toUpperCase()}
       />
     );
