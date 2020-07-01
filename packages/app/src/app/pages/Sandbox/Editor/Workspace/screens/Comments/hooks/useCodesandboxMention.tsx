@@ -159,30 +159,37 @@ export const useCodesandboxMention = ({
         />
       </FormField>
       {typeof mention.query === 'string' && !mentions[mention.query] ? (
-        <List
+        <div
           css={css({
             position: fixed ? 'fixed' : 'absolute',
             width: '250px',
-            borderBottomLeftRadius: 'small',
-            borderBottomRightRadius: 'small',
-            boxShadow: 1,
-            fontSize: 3,
-            zIndex: 3,
-            backgroundColor: 'dialog.background',
-            border: '1px solid',
-            borderColor: 'dialog.border',
           })}
           style={{
             bottom: fixed
-              ? window.innerHeight - textareaBoundingRect.top - mention.top + 5
-              : textareaBoundingRect.height - mention.top + 5,
+              ? window.innerHeight - textareaBoundingRect.top - mention.top + 40
+              : textareaBoundingRect.height - mention.top + 40,
             left: fixed
               ? textareaBoundingRect.left + mention.left - 8 // 8 = padding
               : mention.left,
           }}
         >
-          {renderResult()}
-        </List>
+          <List
+            css={css({
+              position: 'fixed',
+              width: '250px',
+              borderBottomLeftRadius: 'small',
+              borderBottomRightRadius: 'small',
+              boxShadow: 1,
+              fontSize: 3,
+              zIndex: 3,
+              backgroundColor: 'dialog.background',
+              border: '1px solid',
+              borderColor: 'dialog.border',
+            })}
+          >
+            {renderResult()}
+          </List>
+        </div>
       ) : null}
     </div>,
     value,

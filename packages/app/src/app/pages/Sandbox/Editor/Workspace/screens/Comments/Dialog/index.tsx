@@ -137,7 +137,6 @@ export const Dialog: React.FC = () => {
             height: 'auto',
             maxHeight: '80vh',
             fontFamily: 'Inter, sans-serif',
-            // overflow: 'hidden',
             boxShadow: 2,
           })}
         >
@@ -164,9 +163,13 @@ export const Dialog: React.FC = () => {
               </DragHandle>
               <Element
                 as="div"
-                css={{
-                  overflowY: 'auto',
-                }}
+                css={
+                  editing
+                    ? null
+                    : {
+                        overflow: 'auto',
+                      }
+                }
                 ref={listRef}
               >
                 <CommentBody
