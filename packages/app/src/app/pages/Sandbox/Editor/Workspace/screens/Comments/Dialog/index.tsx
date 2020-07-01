@@ -233,7 +233,8 @@ const DialogAddComment: React.FC<{
   const closeDialog = () => actions.comments.closeComment();
 
   return (
-    <Stack direction="vertical" css={css({ paddingBottom: 4 })}>
+    // Why is this padding not being applied?
+    <Stack direction="vertical" paddingBottom={4}>
       <DragHandle onPan={onDragHandlerPan} onPanEnd={onDragHandlerPanEnd}>
         <Stack
           justify="space-between"
