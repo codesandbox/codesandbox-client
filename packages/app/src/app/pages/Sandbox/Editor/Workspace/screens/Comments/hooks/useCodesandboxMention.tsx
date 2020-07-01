@@ -153,6 +153,7 @@ export const useCodesandboxMention = ({
           {...props}
           ref={ref}
           value={value}
+          autoComplete="off"
           placeholder="Add a comment..."
           onChange={event => setValue(event.target.value)}
           onKeyDown={onKeyDown}
