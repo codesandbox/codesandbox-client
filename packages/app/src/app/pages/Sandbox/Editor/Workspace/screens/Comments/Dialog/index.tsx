@@ -135,6 +135,7 @@ export const Dialog: React.FC = () => {
             borderColor: 'dialog.border',
             borderRadius: 4,
             width: DIALOG_WIDTH,
+            paddingBottom: 4,
             height: 'auto',
             maxHeight: '80vh',
             fontFamily: 'Inter, sans-serif',
@@ -233,8 +234,7 @@ const DialogAddComment: React.FC<{
   const closeDialog = () => actions.comments.closeComment();
 
   return (
-    // Why is this padding not being applied?
-    <Stack direction="vertical" paddingBottom={4}>
+    <Stack direction="vertical">
       <DragHandle onPan={onDragHandlerPan} onPanEnd={onDragHandlerPanEnd}>
         <Stack
           justify="space-between"
