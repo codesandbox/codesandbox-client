@@ -81,6 +81,7 @@ export const SandboxListItem = ({
               backgroundRepeat: 'no-repeat',
               border: '1px solid',
               borderColor: 'grays.500',
+              backgroundColor: 'grays.700',
               flexShrink: 0,
               svg: {
                 filter: 'grayscale(1)',

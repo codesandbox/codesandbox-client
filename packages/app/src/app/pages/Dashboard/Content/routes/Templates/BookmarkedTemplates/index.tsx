@@ -113,9 +113,7 @@ export const BookmarkedTemplates = (props: BookmarkedTemplatesProps) => {
               <Button
                 small
                 onClick={() => {
-                  actions.modalOpened({
-                    modal: 'newSandbox',
-                  });
+                  actions.openCreateSandboxModal({});
                 }}
               >
                 Explore

@@ -3,7 +3,7 @@ import { useDragLayer } from 'react-dnd';
 import { motion } from 'framer-motion';
 import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { SIDEBAR_WIDTH } from '../../Sidebar';
+import { SIDEBAR_WIDTH } from '../../Sidebar/constants';
 
 export const DragPreview = ({ name, viewMode, thumbnailRef }) => {
   const { isDragging, initialOffset, currentOffset } = useDragLayer(

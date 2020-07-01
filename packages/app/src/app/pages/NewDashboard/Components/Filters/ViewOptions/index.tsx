@@ -16,7 +16,7 @@ const STATES: { name: string; key: 'grid' | 'list'; icon: any }[] = [
   },
 ];
 
-export const ViewOptions: FunctionComponent = () => {
+export const ViewOptions: FunctionComponent = React.memo(() => {
   const {
     actions: {
       dashboard: { viewModeChanged },
@@ -54,4 +54,4 @@ export const ViewOptions: FunctionComponent = () => {
       </Menu>
     </>
   );
-};
+});

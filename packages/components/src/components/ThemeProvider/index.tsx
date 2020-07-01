@@ -16,6 +16,7 @@ import VSCodeThemes from '../../themes';
 import polyfillTheme from '../../utils/polyfill-theme';
 import codesandboxBlack from '../../themes/codesandbox-black';
 import { TooltipStyles } from '../Tooltip';
+import { MenuStyles } from '../Menu';
 
 export const getThemes = () => {
   const results = VSCodeThemes.map(theme => ({
@@ -92,6 +93,7 @@ export const ThemeProvider = ({
       <ExternalStyles />
       <BaseThemeProvider theme={usableTheme}>
         <TooltipStyles />
+        <MenuStyles />
         {children}
       </BaseThemeProvider>
     </>

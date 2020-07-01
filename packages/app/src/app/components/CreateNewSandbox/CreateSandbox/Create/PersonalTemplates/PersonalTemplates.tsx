@@ -15,12 +15,14 @@ interface IPersonalTemplatesProps {
   filter: string;
   officialTemplateInfos: ITemplateInfo[];
   hasLogIn: boolean;
+  collectionId?: string;
 }
 
 export const PersonalTemplates = ({
   filter,
   officialTemplateInfos,
   hasLogIn,
+  collectionId,
 }: IPersonalTemplatesProps) => {
   const { data, error } = useQuery<
     ListPersonalTemplatesQuery,
@@ -115,6 +117,7 @@ export const PersonalTemplates = ({
         showSecondaryShortcuts
         forkOnOpen
         templateInfos={allTemplateInfos}
+        collectionId={collectionId}
       />
     </>
   );

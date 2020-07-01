@@ -27,6 +27,7 @@ export const Actions = () => {
   const {
     actions: {
       modalOpened,
+      openCreateSandboxModal,
       editor: { likeSandboxToggled, forkSandboxClicked },
       explore: { pickSandboxModal },
     },
@@ -179,7 +180,7 @@ export const Actions = () => {
       <Button
         variant="secondary"
         css={css({ paddingX: 3 })}
-        onClick={() => modalOpened({ modal: 'newSandbox' })}
+        onClick={() => openCreateSandboxModal({})}
       >
         Create Sandbox
       </Button>

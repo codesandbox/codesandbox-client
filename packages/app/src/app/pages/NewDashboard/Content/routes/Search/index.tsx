@@ -7,7 +7,7 @@ import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { DashboardGridItem } from 'app/pages/NewDashboard/types';
+import { DashboardGridItem, PageTypes } from 'app/pages/NewDashboard/types';
 import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
 import { getPossibleTemplates } from '../../utils';
 
@@ -55,6 +55,7 @@ const useSearchedSandboxes = (query: string) => {
 export const SearchComponent = () => {
   const {
     state: {
+      activeTeam,
       dashboard: { getFilteredSandboxes },
     },
   } = useOvermind();
@@ -70,8 +71,10 @@ export const SearchComponent = () => {
         }))
       : [{ type: 'skeleton-row' }];
 
+  const pageType: PageTypes = 'search';
+
   return (
-    <SelectionProvider items={items}>
+    <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
         <title>
           {location.search
@@ -81,6 +84,7 @@ export const SearchComponent = () => {
       </Helmet>
       <Header
         title={`Search results for '${query}'`}
+        activeTeam={activeTeam}
         showViewOptions
         showFilters
         showSortOptions
@@ -88,7 +92,7 @@ export const SearchComponent = () => {
       />
 
       <section style={{ position: 'relative' }}>
-        <VariableGrid items={items} />
+        <VariableGrid items={items} page={pageType} />
       </section>
     </SelectionProvider>
   );

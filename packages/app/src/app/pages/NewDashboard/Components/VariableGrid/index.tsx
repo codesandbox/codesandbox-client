@@ -19,10 +19,13 @@ import {
   DashboardBlank,
   DashboardSkeleton,
   DashboardNewFolder,
+  PageTypes,
 } from '../../types';
+import { CreateFolder } from '../Folder/CreateFolder';
 
-export const GRID_MAX_WIDTH = 992;
-export const GUTTER = 24;
+export const GRID_MAX_WIDTH = 1900;
+export const MAX_COLUMN_COUNT = 6;
+export const GUTTER = 36;
 const ITEM_MIN_WIDTH = 220;
 const ITEM_HEIGHT_GRID = 240;
 const ITEM_HEIGHT_LIST = 64;
@@ -68,8 +71,7 @@ const ComponentForTypes: ComponentForTypes = {
     <Sandbox item={props.item} isScrolling={props.isScrolling} />
   )),
   folder: props => <Folder {...props.item} />,
-  // @ts-ignore TODO: find a better way to type this
-  'new-folder': props => <Folder {...props.item} />,
+  'new-folder': props => <CreateFolder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
   header: ({ item }) => (
     <Stack justify="space-between" align="center">
@@ -174,9 +176,15 @@ const Item = ({
 
 interface VariableGridProps {
   items: DashboardGridItem[];
+  collectionId?: string;
+  page: PageTypes;
 }
 
-export const VariableGrid = ({ items }: VariableGridProps) => {
+export const VariableGrid = ({
+  items,
+  collectionId,
+  page,
+}: VariableGridProps) => {
   const {
     state: { dashboard },
   } = useOvermind();
@@ -253,7 +261,8 @@ export const VariableGrid = ({ items }: VariableGridProps) => {
     };
   });
 
-  if (items.length === 0) return <EmptyScreen />;
+  if (items.length === 0)
+    return <EmptyScreen page={page} collectionId={collectionId} />;
 
   return (
     <Element
@@ -263,12 +272,13 @@ export const VariableGrid = ({ items }: VariableGridProps) => {
     >
       <AutoSizer onResize={onResize}>
         {({ width, height }) => {
+          const cappedWith = Math.min(width, GRID_MAX_WIDTH);
           const columnCount =
             viewMode === 'list'
               ? 1
               : Math.min(
-                  Math.floor((width - GUTTER) / (ITEM_MIN_WIDTH + GUTTER)),
-                  4
+                  Math.floor((cappedWith - GUTTER) / (ITEM_MIN_WIDTH + GUTTER)),
+                  MAX_COLUMN_COUNT
                 );
 
           const filledItems: Array<DashboardGridItem & {
@@ -279,7 +289,12 @@ export const VariableGrid = ({ items }: VariableGridProps) => {
 
           items.forEach((item, index) => {
             if (
-              !['header', 'skeleton-row', 'new-sandbox'].includes(item.type)
+              ![
+                'header',
+                'skeleton-row',
+                'blank-row-fill',
+                'new-sandbox',
+              ].includes(item.type)
             ) {
               filledItems.push({ ...item, viewMode });
             }
@@ -313,6 +328,13 @@ export const VariableGrid = ({ items }: VariableGridProps) => {
             } else if (item.type === 'skeleton-row') {
               for (let i = 0; i < columnCount; i++) {
                 filledItems.push(skeletonItem);
+              }
+            } else if (item.type === 'blank-row-fill') {
+              const remainingColumns =
+                columnCount - (filledItems.length % columnCount);
+
+              for (let i = 0; i < remainingColumns; i++) {
+                filledItems.push(blankItem);
               }
             }
           });

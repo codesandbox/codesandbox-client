@@ -16,6 +16,7 @@ import { ApiError } from './effects/api/apiFactory';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
 import { Action, AsyncAction } from '.';
+import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 
 export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
   { state, effects, actions },
@@ -509,5 +510,12 @@ export const setViewModeForDashboard: Action = ({ effects, state }) => {
   const localStorageViewMode = effects.browser.storage.get(VIEW_MODE_DASHBOARD);
   if (localStorageViewMode) {
     state.dashboard.viewMode = localStorageViewMode;
+  }
+};
+
+export const setActiveTeamFromLocalStorage: Action = ({ effects, state }) => {
+  const localStorageTeam = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
+  if (localStorageTeam) {
+    state.activeTeam = localStorageTeam;
   }
 };

@@ -15,7 +15,8 @@ import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
 
 import { Header } from './Header';
-import { Sidebar, SIDEBAR_WIDTH } from './Sidebar';
+import { Sidebar } from './Sidebar';
+import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
 
 const GlobalStyles = createGlobalStyle({
@@ -29,7 +30,10 @@ export const Dashboard: FunctionComponent = () => {
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
-  const onSidebarToggle = () => setSidebarVisibility(!sidebarVisible);
+  const onSidebarToggle = React.useCallback(
+    () => setSidebarVisibility(s => !s),
+    [setSidebarVisibility]
+  );
   const theme = useTheme() as any;
 
   if (!hasLogIn) {
@@ -53,7 +57,11 @@ export const Dashboard: FunctionComponent = () => {
           <SkipNav.Link />
           <Header onSidebarToggle={onSidebarToggle} />
           <Stack css={{ flexGrow: 1 }}>
-            <Media query={theme.media.greaterThan(theme.sizes.large)}>
+            <Media
+              query={theme.media
+                .lessThan(theme.sizes.medium)
+                .replace('@media ', '')}
+            >
               {match =>
                 match ? (
                   <Sidebar

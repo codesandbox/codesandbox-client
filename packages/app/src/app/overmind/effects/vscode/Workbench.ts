@@ -94,7 +94,7 @@ export class Workbench {
       label: 'New Sandbox...',
       category: 'Sandbox',
       run: () => {
-        this.controller.getSignal('modalOpened')({ modal: 'newSandbox' });
+        this.controller.getSignal('openCreateSandboxModal')({});
       },
     });
 
@@ -122,6 +122,18 @@ export class Workbench {
       category: 'Preferences',
       run: () => {
         this.controller.getSignal('modalOpened')({ modal: 'preferences' });
+      },
+    });
+
+    this.addWorkbenchAction({
+      id: 'codesandbox.preview.refresh',
+      label: 'Refresh Preview',
+      category: 'View',
+      run: () => {
+        this.controller.getSignal('editor.refreshPreview')();
+      },
+      keybindings: {
+        primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_R,
       },
     });
 

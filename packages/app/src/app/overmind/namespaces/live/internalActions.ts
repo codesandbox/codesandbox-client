@@ -88,6 +88,14 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
     effects.live.listen(actions.live.liveMessageReceived);
     actions.live.internal.sendUnsavedChanges({ sandbox, moduleState });
 
+    state.editor.changedModuleShortids.forEach(moduleShortId => {
+      effects.vscode.openModule(
+        sandbox!.modules.find(
+          moduleItem => moduleItem.shortid === moduleShortId
+        )!
+      );
+    });
+
     state.live.isLive = true;
     state.live.error = null;
     effects.live.markLiveReady();

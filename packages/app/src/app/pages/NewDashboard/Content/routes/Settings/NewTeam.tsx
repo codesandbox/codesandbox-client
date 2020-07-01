@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import { Element, Stack, Text, Input, Button } from '@codesandbox/components';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import history from 'app/utils/history';
 import { Card } from './components';
 
 export const NewTeam = () => {
   const {
-    state: { user },
+    state: { user, activeTeam },
     actions: { dashboard },
   } = useOvermind();
   const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ export const NewTeam = () => {
     try {
       await dashboard.createTeam({ teamName });
       setLoading(false);
-      history.push('/new-dashboard/settings/invite');
+      history.push(dashboardUrls.teamInvite(activeTeam));
     } catch {
       setLoading(false);
     }
