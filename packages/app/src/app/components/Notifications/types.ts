@@ -3,6 +3,7 @@ export type CommentData = {
   sandboxId: string;
   commenterUsername: string;
   commenterAvatarUrl: string;
+  sandboxName: string;
 };
 
 export type MentionData = {

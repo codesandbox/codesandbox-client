@@ -17,6 +17,7 @@ interface Props {
   sandboxId: string;
   commenterUsername: string;
   commenterAvatarUrl: string;
+  sandboxName: string;
 }
 
 export const Comment = ({
@@ -26,6 +27,7 @@ export const Comment = ({
   commenterUsername,
   read,
   sandboxId,
+  sandboxName,
   userId,
 }: Props) => {
   const {
@@ -78,7 +80,7 @@ export const Comment = ({
             <Text size={3} variant="muted">
               {commenterUsername}{' '}
               <Text css={css({ color: 'sideBar.foreground' })}>commented</Text>{' '}
-              on your sandbox
+              on {sandboxName}
             </Text>
           </Stack>
           <Stack
