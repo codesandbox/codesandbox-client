@@ -19,6 +19,7 @@ import {
 import { CommentWithRepliesFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
+import { convertUserReferencesToMentions } from 'app/overmind/utils/comments';
 import { motion, useAnimation } from 'framer-motion';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -416,8 +417,9 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
         ) : (
           <EditComment
             initialValue={comment.content}
-            // Convert from references
-            initialMentions={{}}
+            initialMentions={convertUserReferencesToMentions(
+              comment.references
+            )}
             onSave={async (newValue, mentions) => {
               await comments.updateComment({
                 commentId: comment.id,
