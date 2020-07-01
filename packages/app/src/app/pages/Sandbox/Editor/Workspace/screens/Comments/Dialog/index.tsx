@@ -165,7 +165,7 @@ export const Dialog: React.FC = () => {
               <Element
                 as="div"
                 css={{
-                  overflow: 'auto',
+                  overflowY: 'auto',
                 }}
                 ref={listRef}
               >

@@ -1,5 +1,9 @@
 import { UserQuery } from '@codesandbox/common/lib/types';
-import { Reference, UserReferenceMetadata } from 'app/graphql/types';
+import {
+  CommentFragment,
+  Reference,
+  UserReferenceMetadata,
+} from 'app/graphql/types';
 
 export function convertMentionsToMentionLinks(
   value: string,
@@ -48,4 +52,23 @@ export function convertMentionsToUserReferences(mentions: {
       },
     });
   }, []);
+}
+
+export function convertUserReferencesToMentions(
+  userReferences: CommentFragment['references']
+) {
+  return userReferences.reduce<{
+    [username: string]: UserQuery;
+  }>((aggr, reference) => {
+    if (reference.type === 'user') {
+      const metadata = reference.metadata as UserReferenceMetadata;
+      aggr[metadata.username] = {
+        id: metadata.userId,
+        username: metadata.username,
+        avatarUrl: '',
+      };
+    }
+
+    return aggr;
+  }, {});
 }

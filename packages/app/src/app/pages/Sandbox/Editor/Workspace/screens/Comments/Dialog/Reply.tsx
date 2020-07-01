@@ -4,6 +4,7 @@ import { Markdown } from 'app/components/Markdown';
 import { DIALOG_TRANSITION_DURATION } from 'app/constants';
 import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
+import { convertUserReferencesToMentions } from 'app/overmind/utils/comments';
 import React, { useState } from 'react';
 
 import { AvatarBlock } from '../components/AvatarBlock';
@@ -81,8 +82,7 @@ export const Reply = ({ reply }: ReplyProps) => {
         ) : (
           <EditComment
             initialValue={reply.content}
-            // Convert from references
-            initialMentions={{}}
+            initialMentions={convertUserReferencesToMentions(reply.references)}
             onSave={async (newValue, mentions) => {
               await actions.comments.updateComment({
                 commentId: reply.id,
