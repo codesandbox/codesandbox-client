@@ -66,7 +66,6 @@ type ModalName =
   | 'deleteSandbox'
   | 'feedback'
   | 'forkServerModal'
-  | 'newSandbox'
   | 'liveSessionEnded'
   | 'moveSandbox'
   | 'netlifyLogs'

@@ -43,6 +43,7 @@ export type DashboardRepo = {
   name: string;
   owner: string;
   sandboxes: RepoFragmentDashboardFragment[];
+  isScrolling: boolean;
 };
 
 export type DashboardRepoSandbox = {

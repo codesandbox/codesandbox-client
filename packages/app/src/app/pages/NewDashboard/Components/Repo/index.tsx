@@ -55,6 +55,7 @@ export const Repo = ({ name = '', path = null, ...props }: DashboardRepo) => {
     onDoubleClick,
     onContextMenu,
     onBlur,
+    isScrolling: props.isScrolling,
     'data-selection-id': path,
   };
 

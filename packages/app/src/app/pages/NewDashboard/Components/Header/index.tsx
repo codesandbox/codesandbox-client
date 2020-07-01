@@ -79,7 +79,7 @@ export const Header = ({
         {location.pathname.includes('/repositories') &&
           dashboard.viewMode === 'list' && (
             <Button
-              onClick={() => actions.modalOpened({ modal: 'newSandbox' })}
+              onClick={() => actions.modals.newSandboxModal.open({})}
               variant="link"
               css={css({
                 fontSize: 2,
