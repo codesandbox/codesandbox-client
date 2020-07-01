@@ -410,7 +410,7 @@ export const getSandboxesByPath: AsyncAction<string> = async (
   }
 };
 
-export const getReposByPath: AsyncAction | Action<string> = async (
+export const getReposByPath: AsyncAction<string> = async (
   { state, effects },
   path
   // eslint-disable-next-line consistent-return
@@ -418,7 +418,7 @@ export const getReposByPath: AsyncAction | Action<string> = async (
   const { dashboard } = state;
   try {
     if (path && dashboard.sandboxes.REPOS) {
-      return dashboard.sandboxes.REPOS[path];
+      return;
     }
     let sandboxes: RepoFragmentDashboardFragment[];
     if (state.activeTeam) {
@@ -426,16 +426,23 @@ export const getReposByPath: AsyncAction | Action<string> = async (
       const teamData = await effects.gql.queries.getTeamRepos({
         id: state.activeTeam,
       });
+      if (!teamData || !teamData.me || !teamData.me.team) {
+        return;
+      }
       sandboxes = teamData.me.team.sandboxes;
     } else {
       dashboard.sandboxes.REPOS = null;
-      const myData = await effects.gql.queries.getPersonalRepos();
+      const myData = await effects.gql.queries.getPersonalRepos({});
+
+      if (!myData || !myData.me) {
+        return;
+      }
 
       sandboxes = myData.me.sandboxes;
     }
 
     if (!sandboxes) {
-      return null;
+      return;
     }
 
     if (!dashboard.sandboxes.REPOS) {
@@ -580,7 +587,7 @@ export const deleteSandboxFromState: Action<{
   ids: string[];
   page?: string;
 }> = ({ state: { dashboard } }, { ids, page }) => {
-  if (page === 'repos') {
+  if (page === 'repos' || dashboard.sandboxes.REPOS !== null) {
     if (!dashboard.sandboxes.REPOS || !dashboard.sandboxes.REPOS[repoName]) {
       return;
     }
@@ -720,7 +727,33 @@ export const unmakeTemplates: AsyncAction<{ templateIds: string[] }> = async (
 export const renameSandboxInState: Action<{
   id: string;
   title: string;
-}> = ({ state: { dashboard } }, { id, title }) => {
+  page: PageTypes;
+}> = ({ state: { dashboard } }, { id, title, page }) => {
+  if (page === 'repos') {
+    if (!dashboard.sandboxes.REPOS || !dashboard.sandboxes.REPOS[repoName]) {
+      return;
+    }
+
+    const repoSandboxes = dashboard.sandboxes.REPOS[repoName];
+    dashboard.sandboxes.REPOS = {
+      ...dashboard.sandboxes.REPOS,
+      [repoName]: {
+        ...repoSandboxes,
+        sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
+          if (sandbox.id === id) {
+            return {
+              ...sandbox,
+              title,
+            };
+          }
+
+          return sandbox;
+        }),
+      },
+    };
+
+    return;
+  }
   const values = Object.keys(dashboard.sandboxes).map(type => {
     if (dashboard.sandboxes[type]) {
       if (Array.isArray(dashboard.sandboxes[type])) {
@@ -789,53 +822,17 @@ export const renameFolderInState: Action<{ path: string; newPath: string }> = (
   dashboard.allCollections = newFolders;
 };
 
-export const renameRepoSandboxInState: Action<{
-  id: string;
-  title: string;
-}> = ({ state }, { id, title }) => {
-  if (
-    !state.dashboard.sandboxes.REPOS ||
-    !state.dashboard.sandboxes.REPOS[repoName]
-  ) {
-    return;
-  }
-
-  const repoSandboxes = state.dashboard.sandboxes.REPOS[repoName];
-  state.dashboard.sandboxes.REPOS = {
-    ...state.dashboard.sandboxes.REPOS,
-    [repoName]: {
-      ...repoSandboxes,
-      sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
-        if (sandbox.id === id) {
-          return {
-            ...sandbox,
-            title,
-          };
-        }
-
-        return sandbox;
-      }),
-    },
-  };
-};
-
 export const renameSandbox: AsyncAction<{
   id: string;
   title: string;
   oldTitle: string;
   page: PageTypes;
 }> = async ({ effects, actions }, { id, title, oldTitle, page }) => {
-  if (page === 'repos') {
-    actions.dashboard.renameRepoSandboxInState({
-      id,
-      title,
-    });
-  } else {
-    actions.dashboard.renameSandboxInState({
-      id,
-      title,
-    });
-  }
+  actions.dashboard.renameSandboxInState({
+    id,
+    title,
+    page,
+  });
 
   try {
     await effects.gql.mutations.renameSandbox({
@@ -843,17 +840,12 @@ export const renameSandbox: AsyncAction<{
       title,
     });
   } catch {
-    if (page === 'repos') {
-      actions.dashboard.renameRepoSandboxInState({
-        id,
-        title: oldTitle,
-      });
-    } else {
-      actions.dashboard.renameSandboxInState({
-        id,
-        title: oldTitle,
-      });
-    }
+    actions.dashboard.renameSandboxInState({
+      id,
+      title: oldTitle,
+      page,
+    });
+
     effects.notificationToast.error('There was a problem renaming you sandbox');
   }
 };

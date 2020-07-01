@@ -4,7 +4,11 @@ import { useParams } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
-import { DashboardGridItem, PageTypes } from 'app/pages/NewDashboard/types';
+import {
+  DashboardGridItem,
+  DashboardRepoSandbox,
+  PageTypes,
+} from 'app/pages/NewDashboard/types';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
@@ -58,10 +62,8 @@ export const RepositoriesPage = () => {
   };
 
   const possibleTemplates = itemsToShow()
-    // @ts-ignore
-    .filter(s => s.sandbox)
-    // @ts-ignore
-    .map(s => s.sandbox);
+    .filter((s: DashboardRepoSandbox) => s.sandbox)
+    .map((s: DashboardRepoSandbox) => s.sandbox);
 
   const templates =
     activeSandboxes.length && param && items[0] && items[0].type === 'sandbox'

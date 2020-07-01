@@ -3,6 +3,7 @@ import getDefinition, { TemplateType } from '@codesandbox/common/lib/templates';
 import {
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
+  RepoFragmentDashboardFragment,
 } from 'app/graphql/types';
 import { DashboardRepoSandbox } from '../types';
 
@@ -16,6 +17,7 @@ export type TemplateFilter = {
 export function getPossibleTemplates(
   sandboxes: Array<
     | SandboxFragmentDashboardFragment
+    | RepoFragmentDashboardFragment
     | TemplateFragmentDashboardFragment
     | DashboardRepoSandbox
   >

@@ -6,7 +6,7 @@ import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 interface BreadcrumbProps {
   path: string;
   activeTeam: string;
-  repos?: any;
+  repos?: Boolean;
 }
 
 export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
