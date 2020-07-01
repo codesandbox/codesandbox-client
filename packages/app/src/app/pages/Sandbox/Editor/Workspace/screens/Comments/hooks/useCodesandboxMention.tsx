@@ -160,6 +160,8 @@ export const useCodesandboxMention = ({
       </FormField>
       {typeof mention.query === 'string' && !mentions[mention.query] ? (
         <div
+          // This is a trick to make absolute (dialog) be the relative position for
+          // the fixed list underneath
           css={css({
             position: fixed ? 'fixed' : 'absolute',
             width: '250px',
