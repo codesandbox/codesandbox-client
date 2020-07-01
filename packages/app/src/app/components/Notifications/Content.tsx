@@ -1,27 +1,32 @@
 import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
 import { Element, Text, List } from '@codesandbox/components';
+import { mapKeys, camelCase } from 'lodash-es';
 import css from '@styled-system/css';
 import { Skeleton } from './Skeleton';
 
 import { SandboxInvitation } from './notifications/SandboxInvitation';
 import { TeamAccepted } from './notifications/TeamAccepted';
 import { TeamInvite } from './notifications/TeamInvite';
+import { Mention } from './notifications/Mention';
 import { Filters } from './Filters';
 
 const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
   const parsedData = JSON.parse(data);
+  const camelCaseData = mapKeys(parsedData, (v, k) => camelCase(k));
 
+  if (type === 'mention') {
+    return (
+      <Mention insertedAt={insertedAt} id={id} read={read} {...camelCaseData} />
+    );
+  }
   if (type === 'team_invite') {
     return (
       <TeamInvite
         insertedAt={insertedAt}
         id={id}
         read={read}
-        teamId={parsedData.team_id}
-        teamName={parsedData.team_name}
-        inviterName={parsedData.inviter_name}
-        inviterAvatar={parsedData.inviter_avatar}
+        {...camelCaseData}
       />
     );
   }
@@ -31,9 +36,7 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
         insertedAt={insertedAt}
         id={id}
         read={read}
-        teamName={parsedData.team_name}
-        userAvatar={parsedData.user_avatar}
-        userName={parsedData.user_name}
+        {...camelCaseData}
       />
     );
   }
@@ -43,11 +46,7 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
         insertedAt={insertedAt}
         id={id}
         read={read}
-        inviterAvatar={parsedData.inviter_avatar}
-        inviterName={parsedData.inviter_name}
-        sandboxId={parsedData.sandbox_id}
-        sandboxAlias={parsedData.sandbox_alias}
-        sandboxTitle={parsedData.sandbox_title}
+        {...camelCaseData}
         authorization={parsedData.authorization.toUpperCase()}
       />
     );

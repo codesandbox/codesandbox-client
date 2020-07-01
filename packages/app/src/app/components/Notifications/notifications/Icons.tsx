@@ -79,3 +79,41 @@ export const TeamIcon = ({ read, ...props }) => (
     </svg>
   </Stack>
 );
+
+export const CommentIcon = ({ read, ...props }) => (
+  <Stack
+    align="center"
+    justify="center"
+    css={css({
+      borderRadius: '50%',
+      width: 18,
+      height: 18,
+      background:
+        'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%), #0971F1',
+    })}
+    {...props}
+  >
+    <svg
+      width="13"
+      height="8"
+      viewBox="0 0 13 8"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g opacity="0.4">
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M5.96046e-05 3.4046C2.00272e-05 3.39794 0 3.39128 0 3.38462C0 1.51535 1.56517 0 3.49591 0C5.42665 0 6.99182 1.51535 6.99182 3.38462C6.99182 5.25387 5.42668 6.76921 3.49597 6.76924H5.96046e-05V3.4046Z"
+          fill="white"
+        />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M6.14282 6.45618C7.0503 5.72243 7.62765 4.61879 7.62765 3.38458C7.62765 2.96807 7.5619 2.56643 7.4399 2.18886C7.87684 1.96986 8.37297 1.84616 8.89894 1.84616C10.6542 1.84616 12.077 3.22374 12.077 4.92308C12.077 4.93881 12.0769 4.95451 12.0767 4.97018V8.00004H8.89858V8.00001C7.7201 7.99988 6.69148 7.37874 6.14282 6.45618Z"
+          fill="white"
+        />
+      </g>
+    </svg>
+  </Stack>
+);
