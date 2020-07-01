@@ -164,11 +164,9 @@ export const Dialog: React.FC = () => {
               </DragHandle>
               <Element
                 as="div"
-                css={
-                  {
-                    /* overflow: 'auto' */
-                  }
-                }
+                css={{
+                  overflow: 'auto',
+                }}
                 ref={listRef}
               >
                 <CommentBody

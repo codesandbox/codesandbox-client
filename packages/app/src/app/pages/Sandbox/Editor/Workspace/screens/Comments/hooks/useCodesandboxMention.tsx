@@ -88,6 +88,7 @@ export const useCodesandboxMention = ({
         setMenuIndex(i => (i === users.length - 1 ? 0 : i + 1));
       }
     } else if (event.keyCode === ENTER && !event.shiftKey) {
+      event.preventDefault();
       onSubmit(value, mentions);
       setValue('');
     }
