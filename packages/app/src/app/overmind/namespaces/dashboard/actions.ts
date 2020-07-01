@@ -576,10 +576,26 @@ export const getStartPageSandboxes: AsyncAction = async ({
   }
 };
 
-export const deleteSandboxFromState: Action<string[]> = (
-  { state: { dashboard } },
-  ids
-) => {
+export const deleteSandboxFromState: Action<{
+  ids: string[];
+  page?: string;
+}> = ({ state: { dashboard } }, { ids, page }) => {
+  if (page === 'repos') {
+    if (!dashboard.sandboxes.REPOS || !dashboard.sandboxes.REPOS[repoName]) {
+      return;
+    }
+
+    dashboard.sandboxes.REPOS = {
+      ...dashboard.sandboxes.REPOS,
+      [repoName]: {
+        ...dashboard.sandboxes.REPOS[repoName],
+        sandboxes: dashboard.sandboxes.REPOS[repoName].sandboxes.filter(
+          s => s.id !== ids[0]
+        ),
+      },
+    };
+    return;
+  }
   ids.map(id => {
     const values = Object.keys(dashboard.sandboxes).map(type => {
       if (dashboard.sandboxes[type]) {
@@ -660,26 +676,7 @@ export const deleteSandbox: AsyncAction<{
   const { user } = state;
   if (!user) return;
   const oldSandboxes = state.dashboard.sandboxes;
-  if (page !== 'repos') {
-    actions.dashboard.deleteSandboxFromState(ids);
-  } else {
-    if (
-      !state.dashboard.sandboxes.REPOS ||
-      !state.dashboard.sandboxes.REPOS[repoName]
-    ) {
-      return;
-    }
-
-    state.dashboard.sandboxes.REPOS = {
-      ...state.dashboard.sandboxes.REPOS,
-      [repoName]: {
-        ...state.dashboard.sandboxes.REPOS[repoName],
-        sandboxes: state.dashboard.sandboxes.REPOS[repoName].sandboxes.filter(
-          s => s.id !== ids[0]
-        ),
-      },
-    };
-  }
+  actions.dashboard.deleteSandboxFromState({ ids, page });
 
   try {
     await effects.gql.mutations.deleteSandboxes({
@@ -931,18 +928,14 @@ export const makeTemplates: AsyncAction<{
   page: PageTypes;
 }> = async ({ effects, state, actions }, { sandboxIds: ids, page }) => {
   const oldSandboxes = state.dashboard.sandboxes;
-  if (page !== 'repos') {
-    actions.dashboard.deleteSandboxFromState(ids);
-  }
+  actions.dashboard.deleteSandboxFromState({ ids, page });
 
   try {
     await effects.gql.mutations.makeSandboxesTemplate({
       sandboxIds: ids,
     });
   } catch (error) {
-    if (page !== 'repos') {
-      state.dashboard.sandboxes = { ...oldSandboxes };
-    }
+    state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error('There was a problem making your template');
   }
 };
@@ -1084,7 +1077,7 @@ export const addSandboxesToFolder: AsyncAction<{
 ) => {
   const oldSandboxes = state.dashboard.sandboxes;
   if (deleteFromCurrentPath) {
-    actions.dashboard.deleteSandboxFromState(sandboxIds);
+    actions.dashboard.deleteSandboxFromState({ ids: sandboxIds });
   }
 
   const existingCollection = state.dashboard?.allCollections?.find(
@@ -1187,51 +1180,20 @@ export const changeSandboxPrivacy: AsyncAction<{
   oldPrivacy: 0 | 1 | 2;
   page: PageTypes;
 }> = async ({ actions, effects, state }, { id, privacy, oldPrivacy, page }) => {
-  const repoChangePrivacy = (p: 0 | 1 | 2) => {
-    if (
-      !state.dashboard.sandboxes.REPOS ||
-      !state.dashboard.sandboxes.REPOS[repoName]
-    ) {
-      return;
-    }
-
-    const repoSandboxes = state.dashboard.sandboxes.REPOS[repoName];
-    state.dashboard.sandboxes.REPOS = {
-      ...state.dashboard.sandboxes.REPOS,
-      [repoName]: {
-        ...repoSandboxes,
-        sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
-          if (sandbox.id === id) {
-            return {
-              ...sandbox,
-              privacy: p,
-            };
-          }
-
-          return sandbox;
-        }),
-      },
-    };
-  };
   // optimistic update
-  if (page === 'repos') {
-    repoChangePrivacy(privacy);
-  } else {
-    actions.dashboard.changeSandboxPrivacyInState({ id, privacy });
-  }
+
+  actions.dashboard.changeSandboxPrivacyInState({ id, privacy, page });
 
   try {
     await effects.api.updatePrivacy(id, privacy);
   } catch (error) {
     // rollback optimistic
-    if (page === 'repos') {
-      repoChangePrivacy(oldPrivacy);
-    } else {
-      actions.dashboard.changeSandboxPrivacyInState({
-        id,
-        privacy: oldPrivacy,
-      });
-    }
+
+    actions.dashboard.changeSandboxPrivacyInState({
+      id,
+      privacy: oldPrivacy,
+      page,
+    });
 
     actions.internal.handleError({
       message: "We weren't able to update the sandbox privacy",
@@ -1243,7 +1205,33 @@ export const changeSandboxPrivacy: AsyncAction<{
 export const changeSandboxPrivacyInState: Action<{
   id: string;
   privacy: 0 | 1 | 2;
-}> = ({ state: { dashboard } }, { id, privacy }) => {
+  page?: string;
+}> = ({ state: { dashboard } }, { id, privacy, page }) => {
+  if (page === 'repos') {
+    if (!dashboard.sandboxes.REPOS || !dashboard.sandboxes.REPOS[repoName]) {
+      return;
+    }
+
+    const repoSandboxes = dashboard.sandboxes.REPOS[repoName];
+    dashboard.sandboxes.REPOS = {
+      ...dashboard.sandboxes.REPOS,
+      [repoName]: {
+        ...repoSandboxes,
+        sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
+          if (sandbox.id === id) {
+            return {
+              ...sandbox,
+              privacy,
+            };
+          }
+
+          return sandbox;
+        }),
+      },
+    };
+    return;
+  }
+
   const values = Object.keys(dashboard.sandboxes).map(type => {
     if (dashboard.sandboxes[type]) {
       if (Array.isArray(dashboard.sandboxes[type])) {

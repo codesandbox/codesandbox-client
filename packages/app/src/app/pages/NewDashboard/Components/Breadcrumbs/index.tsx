@@ -1,45 +1,53 @@
 import React from 'react';
 import { Text, Link } from '@codesandbox/components';
 import { Link as LinkBase } from 'react-router-dom';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
-export const Breadcrumbs = ({ param, repos }) => {
-  const params = param.split('/').length - 1;
+interface BreadcrumbProps {
+  path: string;
+  activeTeam: string;
+  repos?: any;
+}
 
-  const makeLink = (p: string, link: string) => {
-    if (param && param.split('/').length > 2) {
-      return (
-        `/new-dashboard/${link}/${param
-          .split('/')
-          .slice(0, -1)
-          .map(a => a)}` +
-        '/' +
-        p
-      );
-    }
-    return `/new-dashboard/${link}/${p}`;
-  };
+export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
+  path,
+  activeTeam,
+  repos,
+}) => (
+  <Text marginBottom={1} block weight="bold" size={5}>
+    <Link
+      to={
+        repos
+          ? dashboard.repos(activeTeam)
+          : dashboard.allSandboxes('/', activeTeam)
+      }
+      as={LinkBase}
+      variant={path && path.split('/').length ? 'muted' : 'body'}
+    >
+      {repos ? 'Repositories' : 'All Sandboxes'} {path && ' / '}
+    </Link>
+    {path
+      ? path.split('/').map((p, i) => {
+          const partPath = path
+            .split('/')
+            .slice(0, i + 1)
+            .join('/');
 
-  return (
-    <Text marginBottom={1} block weight="bold" size={5}>
-      <Link
-        to={`/new-dashboard/${repos ? 'repositories' : 'all'}/`}
-        as={LinkBase}
-        variant={param && param.split('/').length ? 'muted' : 'body'}
-      >
-        {repos ? 'Repositories' : 'All Sandboxes'} {param && ' / '}
-      </Link>
-      {param
-        ? param.split('/').map((p, i) => (
+          return (
             <Link
               key={p}
               as={LinkBase}
-              to={makeLink(p, repos ? 'repositories' : 'all')}
-              variant={i < params ? 'muted' : 'body'}
+              to={
+                repos
+                  ? dashboard.repos(activeTeam)
+                  : dashboard.allSandboxes('/' + partPath, activeTeam)
+              }
+              variant={i < path.split('/').length - 1 ? 'muted' : 'body'}
             >
-              {p} {i < params && '/ '}
+              {p} {i < path.split('/').length - 1 && '/ '}
             </Link>
-          ))
-        : null}
-    </Text>
-  );
-};
+          );
+        })
+      : null}
+  </Text>
+);
