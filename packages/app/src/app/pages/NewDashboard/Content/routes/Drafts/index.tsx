@@ -1,53 +1,51 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
-import { Element, Column } from '@codesandbox/components';
-
 import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { SandboxGrid } from 'app/pages/NewDashboard/Components/SandboxGrid';
-import { Sandbox } from 'app/pages/NewDashboard/Components/Sandbox';
-import { SkeletonCard } from 'app/pages/NewDashboard/Components/Sandbox/SandboxCard';
+import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
-
+import { DashboardGridItem, PageTypes } from 'app/pages/NewDashboard/types';
 import { getPossibleTemplates } from '../../utils';
-import { useBottomScroll } from './useBottomScroll';
 
 export const Drafts = () => {
   const {
     actions,
     state: {
-      dashboard: { sandboxes },
+      activeTeam,
+      user,
+      dashboard: { sandboxes, getFilteredSandboxes },
     },
   } = useOvermind();
-  const [visibleSandboxes] = useBottomScroll('DRAFTS');
 
-  useEffect(() => {
+  React.useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.DRAFTS);
-  }, [actions.dashboard]);
+  }, [actions.dashboard, activeTeam]);
 
+  const items: DashboardGridItem[] = sandboxes.DRAFTS
+    ? getFilteredSandboxes(sandboxes.DRAFTS)
+        .filter(s => s.authorId === user?.id)
+        .map(sandbox => ({
+          type: 'sandbox',
+          sandbox,
+        }))
+    : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
+
+  const pageType: PageTypes = 'drafts';
   return (
-    <SelectionProvider sandboxes={visibleSandboxes}>
-      <Element style={{ height: '100%', position: 'relative' }}>
-        <Header
-          path="Drafts"
-          templates={getPossibleTemplates(sandboxes.DRAFTS)}
-        />
-        {sandboxes.DRAFTS ? (
-          <SandboxGrid>
-            {visibleSandboxes.map(sandbox => (
-              <Sandbox key={sandbox.id} sandbox={sandbox} />
-            ))}
-          </SandboxGrid>
-        ) : (
-          <SandboxGrid>
-            {Array.from(Array(8).keys()).map(n => (
-              <Column key={n}>
-                <SkeletonCard />
-              </Column>
-            ))}
-          </SandboxGrid>
-        )}
-      </Element>
+    <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
+      <Helmet>
+        <title>Drafts - CodeSandbox</title>
+      </Helmet>
+      <Header
+        title="Drafts"
+        activeTeam={activeTeam}
+        templates={getPossibleTemplates(sandboxes.DRAFTS)}
+        showViewOptions
+        showFilters
+        showSortOptions
+      />
+      <VariableGrid page={pageType} items={items} />
     </SelectionProvider>
   );
 };

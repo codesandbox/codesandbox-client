@@ -1,6 +1,6 @@
 {
   "name": "@codesandbox/components",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
@@ -28,10 +28,11 @@
     "prepublish": "yarn build"
   },
   "dependencies": {
-    "@reach/auto-id": "^0.7.1",
-    "@reach/menu-button": "^0.8.5",
-    "@reach/tooltip": "^0.8.6",
-    "@reach/visually-hidden": "^0.7.0",
+    "@reach/auto-id": "0.10.3",
+    "@reach/menu-button": "0.10.3",
+    "@reach/skip-nav": "^0.10.4",
+    "@reach/tooltip": "0.10.3",
+    "@reach/visually-hidden": "0.10.2",
     "@styled-system/css": "^5.1.4",
     "chromatic": "^4.0.2",
     "codesandbox-api": "0.0.24",
@@ -39,9 +40,9 @@
     "date-fns": "^2.8.1",
     "deepmerge": "^4.2.2",
     "dot-object": "^2.1.3",
-    "react-router-dom": "^5.1.2",
+    "react-router-dom": "^5.2.0",
     "react-tagsinput": "^3.19.0",
-    "styled-components": "^4.4.1",
+    "styled-components": "^5.1.0",
     "typeface-inter": "^3.11.2"
   },
   "devDependencies": {
@@ -54,11 +55,12 @@
     "@storybook/react": "^5.3.18",
     "@types/color": "3.0.1",
     "@types/lodash": "^4.14.149",
-    "@types/styled-components": "^4.4.1",
+    "@types/styled-components": "^5.1.0",
     "babel-preset-react-app": "^9.1.2",
     "cpx": "^1.5.0",
     "if-env": "^1.0.4",
     "np": "^5.2.1",
+    "postinstall-postinstall": "^2.1.0",
     "rimraf": "^3.0.0",
     "storybook-addon-styled-component-theme": "^1.3.0",
     "typescript": "3.7.4"

@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from 'overmind-graphql';
 
 export const sandboxFragmentDashboard = gql`
   fragment sandboxFragmentDashboard on Sandbox {
@@ -27,12 +27,15 @@ export const sandboxFragmentDashboard = gql`
     forkedTemplate {
       id
       color
+      iconUrl
     }
 
     collection {
       path
-      teamId
     }
+
+    authorId
+    teamId
   }
 `;
 
@@ -40,6 +43,7 @@ export const sidebarCollectionDashboard = gql`
   fragment sidebarCollectionDashboard on Collection {
     id
     path
+    sandboxCount
   }
 `;
 
@@ -56,16 +60,25 @@ export const templateFragmentDashboard = gql`
       description
       insertedAt
       updatedAt
+      removedAt
       likeCount
       forkCount
       viewCount
       screenshotUrl
       screenshotOutdated
+      privacy
 
-      collection {
-        team {
-          name
-        }
+      git {
+        id
+        username
+        commitSha
+        path
+        repo
+        branch
+      }
+
+      team {
+        name
       }
 
       author {
@@ -98,6 +111,23 @@ export const teamFragmentDashboard = gql`
       name
       username
       avatarUrl
+    }
+  }
+`;
+
+export const currentTeamInfoFragment = gql`
+  fragment currentTeamInfoFragment on Team {
+    id
+    creatorId
+    description
+    inviteToken
+    name
+    users {
+      avatarUrl
+      name
+      lastName
+      username
+      id
     }
   }
 `;

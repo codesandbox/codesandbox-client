@@ -47,7 +47,7 @@ export const Privacy: FunctionComponent = () => {
 
         {!isPaidUser ? (
           <Text variant="muted" size={2}>
-            You an change privacy of a sandbox as a Pro.{' '}
+            You can change privacy of a sandbox as a Pro.{' '}
             <Link href="/pro" css={{ textDecoration: 'underline !important' }}>
               Become a Pro
             </Link>

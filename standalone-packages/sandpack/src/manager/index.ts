@@ -117,7 +117,7 @@ export default class PreviewManager {
     }
     this.iframe.setAttribute(
       'sandbox',
-      'allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation'
+      'allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts'
     );
     this.iframe.src = this.bundlerURL;
 

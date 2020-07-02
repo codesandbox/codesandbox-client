@@ -30,6 +30,7 @@ import { ignoreNextCache, deleteAPICache, clearIndexedDBCache } from './cache';
 import { shouldTranspile } from './transpilers/babel/check';
 import { splitQueryFromPath } from './utils/query-path';
 import { measure, endMeasure } from '../utils/metrics';
+import { IEvaluator } from './evaluator';
 
 declare const BrowserFS: any;
 
@@ -97,7 +98,7 @@ type TManagerOptions = {
   hasFileResolver: boolean;
 };
 
-export default class Manager {
+export default class Manager implements IEvaluator {
   id: string;
   transpiledModules: {
     [path: string]: {
@@ -190,6 +191,16 @@ export default class Manager {
     }
   }
 
+  async evaluate(path: string, baseTModule?: TranspiledModule): Promise<any> {
+    const tModule = await this.resolveTranspiledModuleAsync(
+      path,
+      baseTModule,
+      this.preset.ignoredExtensions
+    );
+    await tModule.transpile(this);
+    return tModule.evaluate(this);
+  }
+
   async initializeTestRunner() {
     if (this.testRunner) {
       return this.testRunner;
@@ -237,8 +248,8 @@ export default class Manager {
   }
 
   // Hoist these 2 functions to the top, since they get executed A LOT
-  isFile = (p: string, cb: Function | undefined, c: Function) => {
-    const callback = c || cb;
+  isFile = (p: string, cb?: Function | undefined, c?: Function) => {
+    const callback = (c || cb)!;
     const hasCallback = typeof callback === 'function';
 
     let returnValue;
@@ -262,7 +273,7 @@ export default class Manager {
   };
 
   readFileSync = (p: string, cb: Function | undefined, c?: Function) => {
-    const callback = c || cb;
+    const callback = (c || cb)!;
     const hasCallback = typeof callback === 'function';
 
     if (this.transpiledModules[p]) {
@@ -530,7 +541,7 @@ export default class Manager {
    * @memberof Manager
    */
   getAliasedDependencyPath(path: string, currentPath: string) {
-    const isDependency = /^(\w|@\w)/.test(path);
+    const isDependency = /^(\w|@\w|@-)/.test(path);
 
     if (!isDependency) {
       return path;
@@ -547,6 +558,8 @@ export default class Manager {
     );
 
     if (
+      previousDependencyName &&
+      dependencyName &&
       this.manifest.dependencyAliases[previousDependencyName] &&
       this.manifest.dependencyAliases[previousDependencyName][dependencyName]
     ) {
@@ -576,28 +589,40 @@ export default class Manager {
       .replace(/.*\{\{sandboxRoot\}\}/, '');
   }
 
+  moduleDirectoriesCache: string[] | undefined;
   getModuleDirectories() {
+    if (this.moduleDirectoriesCache) {
+      return this.moduleDirectoriesCache;
+    }
+
     const baseTSCompilerConfig = [
       this.configurations.typescript,
       this.configurations.jsconfig,
     ].find(config => config && config.generated !== true);
 
-    const baseUrl =
-      baseTSCompilerConfig &&
-      baseTSCompilerConfig.parsed &&
-      baseTSCompilerConfig.parsed.compilerOptions &&
-      baseTSCompilerConfig.parsed.compilerOptions.baseUrl;
+    let baseUrl: string | undefined =
+      baseTSCompilerConfig?.parsed?.compilerOptions?.baseUrl;
 
-    return ['node_modules', baseUrl, this.envVariables.NODE_PATH].filter(
-      Boolean
-    );
+    // TODO: we need to extract our resolver to a plugin system and use the TypeScript resolver
+    // if we see a tsconfig. A `.` doesn't work and messes up resolving.
+    if (baseUrl === '.') {
+      baseUrl = undefined;
+    }
+
+    this.moduleDirectoriesCache = [
+      'node_modules',
+      baseUrl,
+      this.envVariables.NODE_PATH,
+    ].filter(Boolean) as string[];
+
+    return this.moduleDirectoriesCache;
   }
 
   // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
   async resolveModuleAsync(
     path: string,
     currentPath: string,
-    defaultExtensions = ['js', 'jsx', 'json']
+    defaultExtensions = ['js', 'jsx', 'json', 'mjs']
   ): Promise<Module> {
     const dirredPath = pathUtils.dirname(currentPath);
     if (this.cachedPaths[dirredPath] === undefined) {
@@ -633,8 +658,8 @@ export default class Manager {
           filename: currentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
-          readFileSync: this.readFileSync,
-          packageFilter,
+          readFile: this.readFileSync,
+          packageFilter: packageFilter(this.isFile),
           moduleDirectory: this.getModuleDirectories(),
         },
         (err, foundPath) => {
@@ -649,7 +674,7 @@ export default class Manager {
 
             let connectedPath = shimmedPath;
             if (connectedPath.indexOf('/node_modules') !== 0) {
-              connectedPath = /^(\w|@\w)/.test(shimmedPath)
+              connectedPath = /^(\w|@\w|@-)/.test(shimmedPath)
                 ? pathUtils.join('/node_modules', shimmedPath)
                 : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
             }
@@ -667,8 +692,14 @@ export default class Manager {
             const dependencyName = getDependencyName(connectedPath);
 
             if (
-              this.manifest.dependencies.find(d => d.name === dependencyName) ||
-              this.manifest.dependencyDependencies[dependencyName]
+              dependencyName &&
+              (this.manifest.dependencies.find(
+                d => d.name === dependencyName
+              ) ||
+                this.manifest.dependencyDependencies[dependencyName] ||
+                this.manifest.contents[
+                  `/node_modules/${dependencyName}/package.json`
+                ])
             ) {
               promiseReject(
                 new ModuleNotFoundError(connectedPath, true, currentPath)
@@ -711,7 +742,7 @@ export default class Manager {
   resolveModule(
     path: string,
     currentPath: string,
-    defaultExtensions: Array<string> = ['js', 'jsx', 'json']
+    defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs']
   ): Module {
     const dirredPath = pathUtils.dirname(currentPath);
     if (this.cachedPaths[dirredPath] === undefined) {
@@ -746,7 +777,7 @@ export default class Manager {
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
           readFileSync: this.readFileSync,
-          packageFilter,
+          packageFilter: packageFilter(this.isFile),
           moduleDirectory: this.getModuleDirectories(),
         });
         endMeasure(measureKey, { silent: true });
@@ -771,7 +802,7 @@ export default class Manager {
 
         let connectedPath = shimmedPath;
         if (connectedPath.indexOf('/node_modules') !== 0) {
-          connectedPath = /^(\w|@\w)/.test(shimmedPath)
+          connectedPath = /^(\w|@\w|@-)/.test(shimmedPath)
             ? pathUtils.join('/node_modules', shimmedPath)
             : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
         }
@@ -788,8 +819,12 @@ export default class Manager {
 
         // TODO: fix the stack hack
         if (
-          this.manifest.dependencies.find(d => d.name === dependencyName) ||
-          this.manifest.dependencyDependencies[dependencyName]
+          dependencyName &&
+          (this.manifest.dependencies.find(d => d.name === dependencyName) ||
+            this.manifest.dependencyDependencies[dependencyName] ||
+            this.manifest.contents[
+              `/node_modules/${dependencyName}/package.json`
+            ])
         ) {
           throw new ModuleNotFoundError(connectedPath, true, currentPath);
         } else {
@@ -831,7 +866,7 @@ export default class Manager {
   resolveTranspiledModuleAsync = async (
     path: string,
     currentTModule?: TranspiledModule,
-    ignoredExtensions?: Array<string>
+    ignoredExtensions?: string[]
   ): Promise<TranspiledModule> => {
     const tModule =
       currentTModule || this.getTranspiledModule(this.modules['/package.json']); // Get arbitrary file from root
@@ -1081,8 +1116,6 @@ export default class Manager {
 
               if (
                 !this.manifest.contents[tModule.module.path] ||
-                (tModule.module.path.endsWith('.js') &&
-                  tModule.module.requires == null) ||
                 tModule.module.downloaded
               ) {
                 // Only save modules that are not precomputed
@@ -1219,6 +1252,7 @@ export default class Manager {
 
   async clearCache() {
     try {
+      this.moduleDirectoriesCache = undefined;
       await clearIndexedDBCache();
     } catch (ex) {
       if (process.env.NODE_ENV === 'development') {

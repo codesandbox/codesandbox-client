@@ -1,4 +1,4 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { Button } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -108,7 +108,10 @@ export const ShareModal: React.FC<Props> = () => {
     event.target.select();
   }
 
-  const { mainModule, currentSandbox: sandbox } = editor;
+  const {
+    mainModule,
+    currentSandbox: sandbox,
+  }: { mainModule: any; currentSandbox: any } = editor;
   const {
     view,
     theme,
@@ -303,7 +306,7 @@ export const ShareModal: React.FC<Props> = () => {
                 }}
               >
                 <Button
-                  small
+                  autoWidth
                   target="_blank"
                   href={`https://dev.to/new?prefill=---%5Cn%20title:${encodeURIComponent(
                     sandbox.title || sandbox.id
@@ -315,7 +318,7 @@ export const ShareModal: React.FC<Props> = () => {
                 </Button>
                 <Button
                   style={{ marginLeft: '1em' }}
-                  small
+                  autoWidth
                   target="_blank"
                   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
                     `${sandbox.title || sandbox.id}. ${getEditorUrl(

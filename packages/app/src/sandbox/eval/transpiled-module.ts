@@ -3,6 +3,7 @@ import { flattenDeep } from 'lodash-es';
 
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from '@codesandbox/common/lib/utils/debug';
+import interopRequireWildcard from '@babel/runtime/helpers/interopRequireWildcard';
 
 import hashsum from 'hash-sum';
 
@@ -158,8 +159,8 @@ export type Compilation = {
 export default class TranspiledModule {
   module: Module;
   query: string;
-  previousSource: ModuleSource | undefined;
-  source: ModuleSource | undefined;
+  previousSource: ModuleSource | null;
+  source: ModuleSource | null;
   assets: {
     [name: string]: ModuleSource;
   };
@@ -172,7 +173,7 @@ export default class TranspiledModule {
    * All extra modules emitted by the loader
    */
   emittedAssets: Array<ModuleSource>;
-  compilation: Compilation | undefined;
+  compilation: Compilation | null;
   initiators: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
   dependencies: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
   asyncDependencies: Array<Promise<TranspiledModule>>; // eslint-disable-line no-use-before-define
@@ -188,7 +189,7 @@ export default class TranspiledModule {
    * Set how this module handles HMR. The default is undefined, which means
    * that we handle the HMR like CodeSandbox does.
    */
-  hmrConfig: HMR | undefined;
+  hmrConfig: HMR | null;
 
   hasMissingDependencies: boolean = false;
 
@@ -237,7 +238,7 @@ export default class TranspiledModule {
     // There are no other modules calling this module, so we run a function on
     // all transpilers that clears side effects if there are any. Example:
     // Remove CSS styles from the dom.
-    manager.preset.getLoaders(this.module, this.query).forEach(t => {
+    manager.preset.getLoaders(this.module, manager, this.query).forEach(t => {
       if (t.transpiler.cleanModule) {
         t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
       }
@@ -608,7 +609,11 @@ export default class TranspiledModule {
       // eslint-disable-next-line
       code = this.module.code;
     } else {
-      const transpilers = manager.preset.getLoaders(this.module, this.query);
+      const transpilers = manager.preset.getLoaders(
+        this.module,
+        manager,
+        this.query
+      );
 
       for (let i = 0; i < transpilers.length; i += 1) {
         const transpilerConfig = transpilers[i];
@@ -678,7 +683,7 @@ export default class TranspiledModule {
       this.previousSource.compiledCode !== this.source.compiledCode
     ) {
       const hasHMR = manager.preset
-        .getLoaders(this.module, this.query)
+        .getLoaders(this.module, manager, this.query)
         .some(t =>
           t.transpiler.HMREnabled == null ? true : t.transpiler.HMREnabled
         );
@@ -1020,6 +1025,10 @@ export default class TranspiledModule {
       const usedGlobals = globals || {};
       usedGlobals.__dirname = pathUtils.dirname(this.module.path);
       usedGlobals.__filename = this.module.path;
+      usedGlobals.$csbImport = (path: string) =>
+        manager
+          .evaluate(path, this)
+          .then(result => interopRequireWildcard(result));
 
       const exports = evaluate(
         this.source.compiledCode,
@@ -1071,7 +1080,7 @@ export default class TranspiledModule {
     // For non cacheable transpilers we remove the cached evaluation
     if (
       manager.preset
-        .getLoaders(this.module, this.query)
+        .getLoaders(this.module, manager, this.query)
         .some(t =>
           t.transpiler.cacheable == null ? false : !t.transpiler.cacheable
         )
@@ -1111,7 +1120,13 @@ export default class TranspiledModule {
       hasMissingDependencies: this.hasMissingDependencies,
     };
 
-    if (!sourceEqualsCompiled || !optimizeForSize) {
+    const isNpmDependency = this.module.path.startsWith('/node_modules/');
+    const canOptimizeSize = sourceEqualsCompiled && optimizeForSize;
+    // Don't cache source if it didn't change, also don't cache changed source from npm
+    // dependencies as we can compile those really quickly.
+    const shouldCacheTranspiledSource = !canOptimizeSize && !isNpmDependency;
+
+    if (shouldCacheTranspiledSource) {
       serializableObject.source = this.source;
     }
 

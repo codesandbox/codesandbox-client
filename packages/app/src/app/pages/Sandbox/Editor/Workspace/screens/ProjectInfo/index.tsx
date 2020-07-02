@@ -10,9 +10,7 @@ export const ProjectInfo: FunctionComponent = () => (
   <Stack css={{ height: '100%' }} direction="vertical" justify="space-between">
     <div>
       <Summary />
-
       <Privacy />
-
       <Config />
     </div>
 

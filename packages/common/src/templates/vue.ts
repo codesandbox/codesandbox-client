@@ -28,6 +28,7 @@ export default new VueTemplate(
     showOnHomePage: true,
     extraConfigurations: {
       '/.babelrc': configurations.babelrc,
+      '/tsconfig.json': configurations.tsconfig,
     },
     distDir: 'dist',
     main: true,

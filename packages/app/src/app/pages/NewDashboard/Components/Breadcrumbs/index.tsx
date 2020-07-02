@@ -1,39 +1,43 @@
 import React from 'react';
 import { Text, Link } from '@codesandbox/components';
 import { Link as LinkBase } from 'react-router-dom';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
-export const Breadcrumbs = ({ param }) => {
-  const makeLink = p =>
-    param && param.split('/').length > 2
-      ? `/new-dashboard/all/${param
-          .split('/')
-          .slice(0, -1)
-          .map(a => a)}` +
-        '/' +
-        p
-      : `/new-dashboard/all/${p}`;
+interface BreadcrumbProps {
+  path: string;
+  activeTeam: string;
+}
 
-  return (
-    <Text marginBottom={1} block weight="bold" size={5}>
-      <Link
-        to="/new-dashboard/all/"
-        as={LinkBase}
-        variant={param.split('/').length ? 'muted' : 'body'}
-      >
-        All Sandboxes {param && ' / '}
-      </Link>
-      {param
-        ? param.split('/').map((p, i) => (
+export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
+  path,
+  activeTeam,
+}) => (
+  <Text marginBottom={1} block weight="bold" size={5}>
+    <Link
+      to={dashboard.allSandboxes('/', activeTeam)}
+      as={LinkBase}
+      variant={path && path.split('/').length ? 'muted' : 'body'}
+    >
+      All Sandboxes {path && ' / '}
+    </Link>
+    {path
+      ? path.split('/').map((p, i) => {
+          const partPath = path
+            .split('/')
+            .slice(0, i + 1)
+            .join('/');
+
+          return (
             <Link
               key={p}
               as={LinkBase}
-              to={makeLink(p)}
-              variant={i < param.split('/').length - 1 ? 'muted' : 'body'}
+              to={dashboard.allSandboxes('/' + partPath, activeTeam)}
+              variant={i < path.split('/').length - 1 ? 'muted' : 'body'}
             >
-              {p} {i < param.split('/').length - 1 && '/ '}
+              {p} {i < path.split('/').length - 1 && '/ '}
             </Link>
-          ))
-        : null}
-    </Text>
-  );
-};
+          );
+        })
+      : null}
+  </Text>
+);

@@ -5,7 +5,9 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Button, Element, Stack, Text } from '@codesandbox/components';
+import { github as GitHubIcon } from '@codesandbox/components/lib/components/Icon/icons';
 import css from '@styled-system/css';
+import { Sandbox } from '@codesandbox/common/lib/types';
 import { useOvermind } from 'app/overmind';
 import React, {
   ChangeEvent,
@@ -18,6 +20,25 @@ import { Link } from 'react-router-dom';
 
 import { PrivacyTooltip } from '../PrivacyTooltip';
 import { Folder, Form, Main, NameInput, TemplateBadge } from './elements';
+
+const getFolderName = (sandbox: Sandbox) => {
+  if (!sandbox) {
+    return 'My Sandboxes';
+  }
+
+  if (sandbox.collection) {
+    const base = basename(sandbox.collection.path);
+    if (base) {
+      return base;
+    }
+  }
+
+  if (sandbox.team) {
+    return sandbox.team.name;
+  }
+
+  return 'My Sandboxes';
+};
 
 export const SandboxName: FunctionComponent = () => {
   const {
@@ -89,21 +110,20 @@ export const SandboxName: FunctionComponent = () => {
 
   const value = name !== 'Untitled' && updatingName ? name : '';
 
-  const folderName =
-    currentSandbox && currentSandbox.collection
-      ? basename(currentSandbox.collection.path) ||
-        (currentSandbox.team ? currentSandbox.team.name : 'My Sandboxes')
-      : 'My Sandboxes';
+  const folderName = getFolderName(currentSandbox);
 
   const { customTemplate, owned } = currentSandbox || {
     customTemplate: null,
     owned: false,
   };
 
+  const git =
+    !updatingName && (currentSandbox.git || currentSandbox.originalGit);
+
   return (
     <Main style={fadeIn ? { opacity: 1 } : null}>
       <Stack align="center">
-        {!customTemplate && owned && !updatingName && (
+        {!customTemplate && owned && !git && !updatingName && (
           <Folder>
             {isLoggedIn ? (
               <Button
@@ -123,12 +143,12 @@ export const SandboxName: FunctionComponent = () => {
           </Folder>
         )}
 
-        {updatingName ? (
+        {updatingName && !git ? (
           <>
             <Form onSubmit={submitNameChange}>
               <NameInput
                 autoFocus
-                innerRef={(el: HTMLInputElement) => {
+                ref={(el: HTMLInputElement) => {
                   if (el) {
                     el.focus();
                   }
@@ -144,28 +164,33 @@ export const SandboxName: FunctionComponent = () => {
           </>
         ) : (
           <>
-            {owned ? (
-              <Button
-                variant="link"
-                css={css({ fontSize: 3, width: 'auto', color: 'foreground' })}
-                arial-label="Change sandbox name"
-                onClick={handleNameClick}
-              >
-                {sandboxName}
-              </Button>
-            ) : (
-              <Text>{sandboxName}</Text>
-            )}
+            {!git ? (
+              owned ? (
+                <Button
+                  variant="link"
+                  css={css({ fontSize: 3, width: 'auto', color: 'foreground' })}
+                  arial-label="Change sandbox name"
+                  onClick={handleNameClick}
+                >
+                  {sandboxName}
+                </Button>
+              ) : (
+                <Text>{sandboxName}</Text>
+              )
+            ) : null}
           </>
         )}
 
-        {!updatingName ? (
+        {!updatingName && !git ? (
           <Element as="span" marginLeft={owned ? 0 : 2}>
             <PrivacyTooltip />
           </Element>
         ) : null}
 
-        {!updatingName && currentSandbox.customTemplate ? (
+        {!updatingName &&
+        currentSandbox.customTemplate &&
+        !currentSandbox.git &&
+        !currentSandbox.baseGit ? (
           <Tooltip
             content={
               <>
@@ -182,6 +207,41 @@ export const SandboxName: FunctionComponent = () => {
           >
             <TemplateBadge color={customTemplate.color}>Template</TemplateBadge>
           </Tooltip>
+        ) : null}
+        {git ? (
+          <Tooltip
+            content={
+              <>
+                This sandbox is a GitHub sandbox, you can learn more about
+                GitHub sandboxes in the{' '}
+                <Link target="_blank" to="/docs/git">
+                  docs
+                </Link>
+                .
+              </>
+            }
+            delay={0}
+            interactive
+            placement="bottom"
+          >
+            <TemplateBadge style={{ margin: 0, cursor: 'default' }}>
+              <GitHubIcon width={15} />
+              <Text paddingLeft={2}>
+                <Text css={css({ opacity: 0.8 })}>
+                  {git.username} / {git.repo} /{' '}
+                </Text>
+                <Text>{git.branch}</Text>
+                <Text css={css({ opacity: 0.8 })}>
+                  {git.path ? ' /' + git.path : null}
+                </Text>
+              </Text>
+            </TemplateBadge>
+          </Tooltip>
+        ) : null}
+        {currentSandbox.originalGit ? (
+          <Element marginLeft={2}>
+            <PrivacyTooltip />
+          </Element>
         ) : null}
       </Stack>
     </Main>

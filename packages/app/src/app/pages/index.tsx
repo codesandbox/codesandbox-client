@@ -1,14 +1,13 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import theme from '@codesandbox/common/lib/theme';
 import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus, Toasts } from '@codesandbox/notifications';
+import { Toasts } from '@codesandbox/notifications';
 import { useOvermind } from 'app/overmind';
 import Loadable from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
+import { CreateSandboxModal } from 'app/components/CreateNewSandbox/CreateSandbox/CreateSandboxModal';
 
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
@@ -16,7 +15,6 @@ import { Dashboard } from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 import { Dashboard as NewDashboard } from './NewDashboard';
-import { NewSandbox } from './NewSandbox';
 import { Sandbox } from './Sandbox';
 
 const routeDebugger = _debug('cs:app:router');
@@ -118,24 +116,23 @@ const RoutesComponent: React.FC = () => {
           return null;
         }}
       />
-      <Toasts
-        colors={{
-          [NotificationStatus.ERROR]: theme.dangerBackground(),
-          [NotificationStatus.SUCCESS]: theme.green(),
-          [NotificationStatus.NOTICE]: theme.secondary(),
-          [NotificationStatus.WARNING]: theme.primary(),
-        }}
-        state={notificationState}
-        Button={Button}
-      />
+      <Toasts state={notificationState} />
       <Boundary>
         <Content>
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/s" />} />
             <Route exact path="/s/github" component={GitHub} />
             <Route exact path="/s/cli" component={CliInstructions} />
-            <Route exact path="/s" component={NewSandbox} />
-            <Route exact path="/s2" component={NewSandbox} />
+            <Route
+              exact
+              path="/s"
+              component={() => <Sandbox showNewSandboxModal />}
+            />
+            <Route
+              exact
+              path="/s2"
+              component={() => <Sandbox showNewSandboxModal />}
+            />
             <Route path="/invite/:token" component={TeamInvitation} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/new-dashboard" component={NewDashboard} />
@@ -154,15 +151,14 @@ const RoutesComponent: React.FC = () => {
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (
               <Route path="/auth/dev" component={DevAuthPage} />
             )}
-            {process.env.NODE_ENV === `development` && (
-              <Route path="/codesadbox" component={CodeSadbox} />
-            )}
+            <Route path="/codesadbox" component={CodeSadbox} />
             <Route component={NotFound} />
           </Switch>
         </Content>
+        <Modals />
+        {signInModalOpen && !user ? <SignInModal /> : null}
+        <CreateSandboxModal />
       </Boundary>
-      <Modals />
-      {signInModalOpen && !user ? <SignInModal /> : null}
     </Container>
   );
 };

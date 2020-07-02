@@ -24,7 +24,7 @@ interface ApiData {
   files: File[];
   forceNew?: boolean;
   name: string;
-  public: boolean;
+  public?: boolean;
   regions: string[];
   routes: Object[];
   scope?: string;
@@ -71,6 +71,39 @@ export default (() => {
   return {
     initialize(options: Options) {
       _options = options;
+    },
+    async checkEnvironmentVariables(
+      sandbox: Sandbox,
+      envVars: {
+        [key: string]: string;
+      }
+    ) {
+      const nowData = this.getConfig(sandbox);
+      if (!nowData || !nowData.env) return null;
+      const all = Object.keys(nowData.env).map(async envVar => {
+        const name = nowData.env[envVar].split('@')[1];
+
+        if (envVars[envVar]) {
+          try {
+            await axios.post(
+              `https://api.vercel.com/v3/now/secrets/`,
+              {
+                name,
+                value: envVars[envVar],
+              },
+              { headers: getDefaultHeaders() }
+            );
+            // We don't do anything with the error for two main reasons
+            // 1 - Vercel already shows an error if a ENV variable is missing and you try to deploy
+            // 2 - This will also fail if the user already has the secret in their account
+            // eslint-disable-next-line no-empty
+          } catch {}
+        }
+      });
+
+      await Promise.all(all);
+
+      return null;
     },
     getConfig(sandbox: Sandbox): VercelConfig {
       const nowConfigs = sandbox.modules
@@ -189,9 +222,8 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     nowJSON = packageJSON.now;
   }
 
-  const nowDefaults: Pick<ApiData, 'name' | 'public'> = {
+  const nowDefaults: Pick<ApiData, 'name'> = {
     name: `csb-${sandbox.id}`,
-    public: true,
   };
 
   const filePaths = nowJSON.files || Object.keys(contents.files);
@@ -205,7 +237,9 @@ async function getApiData(contents: any, sandbox: Sandbox) {
 
   apiData.name = nowJSON.name || nowDefaults.name;
   apiData.deploymentType = nowJSON.type;
-  apiData.public = nowJSON.public || nowDefaults.public;
+  if (nowJSON.public) {
+    apiData.public = nowJSON.public;
+  }
 
   // if now v2 we need to tell now the version, builds and routes
   if (nowJSON.version === 1) {
