@@ -6,7 +6,7 @@ import css from '@styled-system/css';
 export const ImportRepo = () => {
   const { actions } = useOvermind();
 
-  const onClick = () => actions.modals.newSandboxModal.open({});
+  const onClick = () => actions.openCreateSandboxModal({});
 
   return (
     <Button
