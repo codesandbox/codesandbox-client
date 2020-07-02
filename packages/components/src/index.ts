@@ -9,6 +9,7 @@ export * from './components/Checkbox';
 export * from './components/Icon';
 export * from './components/IconButton';
 export * from './components/Input';
+export * from './components/Radio';
 export * from './components/Label';
 export * from './components/Link';
 export * from './components/SearchInput';
@@ -28,6 +29,8 @@ export * from './components/Menu';
 export * from './components/TagInput';
 export * from './components/Tags';
 export * from './components/Tags/Tag';
+export * from './components/Tooltip';
+export * from './components/SkipNav';
 
 // layout
 export * from './components/Grid';

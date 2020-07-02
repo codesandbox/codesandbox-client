@@ -1,4 +1,3 @@
-import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Action, AsyncAction } from 'app/overmind';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
 import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
@@ -30,33 +29,8 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
   }, [] as typeof recoverList);
 
   if (recoveredList.length > 0) {
-    effects.notificationToast.add({
-      sticky: true,
-      message: `We recovered ${recoveredList.length} unsaved ${
-        recoveredList.length > 1 ? 'files' : 'file'
-      } from a previous session, what do you want to do?`,
-      actions: {
-        primary: [
-          {
-            label: 'Apply changes',
-            run: () => actions.files.applyRecover(recoveredList),
-          },
-        ],
-        secondary: [
-          {
-            label: 'Compare',
-            hideOnClick: true,
-            run: () => actions.files.createRecoverDiffs(recoveredList),
-          },
-          {
-            label: 'Discard',
-            hideOnClick: true,
-            run: () => actions.files.discardRecover(),
-          },
-        ],
-      },
-      status: NotificationStatus.NOTICE,
-    });
+    state.editor.recoveredFiles = recoveredList;
+    state.currentModal = 'recoveredFiles';
   }
 };
 

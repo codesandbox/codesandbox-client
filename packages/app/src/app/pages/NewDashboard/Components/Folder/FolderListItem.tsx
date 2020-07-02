@@ -1,57 +1,65 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { Stack, ListAction, Link, Text, Input } from '@codesandbox/components';
+import {
+  Stack,
+  ListAction,
+  Text,
+  Input,
+  IconButton,
+  Grid,
+  Column,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
-import { MenuOptions } from './Menu';
+import { FolderItemComponentProps } from './types';
 
 export const FolderListItem = ({
   name,
   path,
   numberOfSandboxes,
+  // interactions
+  selected,
+  onClick,
+  onDoubleClick,
+  onContextMenu,
   // editing
   editing,
-  enterEditing,
   isNewFolder,
   newName,
-  inputRef,
   onChange,
-  onKeyDown,
+  onInputKeyDown,
   onSubmit,
-  onBlur,
+  onInputBlur,
   // drop target
   showDropStyles,
   // drag preview
   // opacity,
-  // menu conflict
-  onClick,
   ...props
-}) => (
+}: FolderItemComponentProps) => (
   <ListAction
+    onClick={onClick}
+    onDoubleClick={onDoubleClick}
+    onContextMenu={onContextMenu}
+    {...props}
     css={css({
       paddingX: 0,
-      backgroundColor: showDropStyles ? 'list.hoverBackground' : 'inherit',
+      backgroundColor: selected
+        ? 'blues.600'
+        : showDropStyles
+        ? 'list.hoverBackground'
+        : 'inherit',
+      color: selected ? 'white' : 'inherit',
+      ':hover, :focus, :focus-within': {
+        cursor: 'default',
+        backgroundColor: selected ? 'blues.600' : 'list.hoverBackground',
+      },
+      width: '100%',
+      height: 64,
+      borderBottom: '1px solid',
+      borderBottomColor: 'grays.600',
     })}
   >
-    <Link
-      as={RouterLink}
-      to={`/new-dashboard/all` + path}
-      onClick={onClick}
-      style={{ width: '100%' }}
-      {...props}
-    >
-      <Stack
-        gap={2}
-        justify="space-between"
-        align="center"
-        paddingX={2}
-        css={css({
-          height: 64,
-          borderBottom: '1px solid',
-          borderBottomColor: 'grays.600',
-          overflow: 'hidden',
-        })}
-      >
-        <Stack gap={4} align="center">
+    <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
+      <Column span={[12, 5, 5]}>
+        <Stack gap={4} align="center" marginLeft={2}>
           <Stack
             as="div"
             justify="center"
@@ -71,11 +79,11 @@ export const FolderListItem = ({
             {editing ? (
               <form onSubmit={onSubmit}>
                 <Input
+                  autoFocus
                   value={newName}
-                  ref={inputRef}
                   onChange={onChange}
-                  onKeyDown={onKeyDown}
-                  onBlur={onBlur}
+                  onKeyDown={onInputKeyDown}
+                  onBlur={onInputBlur}
                 />
               </form>
             ) : (
@@ -85,17 +93,26 @@ export const FolderListItem = ({
             )}
           </Stack>
         </Stack>
+      </Column>
+      <Column span={[0, 4, 4]} as={Stack} align="center">
         {!isNewFolder ? (
-          <Text size={3} block variant="muted">
+          <Text size={3} block variant={selected ? 'body' : 'muted'}>
             {numberOfSandboxes || 0}{' '}
             {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}
           </Text>
         ) : null}
-
-        {!isNewFolder ? (
-          <MenuOptions path={path} onRename={enterEditing} />
-        ) : null}
-      </Stack>
-    </Link>
+      </Column>
+      <Column span={[0, 3, 3]} as={Stack} align="center">
+        {/* empty column to align with sandbox list items */}
+      </Column>
+    </Grid>
+    {!isNewFolder ? (
+      <IconButton
+        name="more"
+        size={9}
+        title="Sandbox actions"
+        onClick={onContextMenu}
+      />
+    ) : null}
   </ListAction>
 );

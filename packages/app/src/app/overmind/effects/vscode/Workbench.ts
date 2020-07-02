@@ -1,4 +1,3 @@
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
   NotificationMessage,
@@ -95,7 +94,7 @@ export class Workbench {
       label: 'New Sandbox...',
       category: 'Sandbox',
       run: () => {
-        this.controller.getSignal('modalOpened')({ modal: 'newSandbox' });
+        this.controller.getSignal('openCreateSandboxModal')({});
       },
     });
 
@@ -123,6 +122,18 @@ export class Workbench {
       category: 'Preferences',
       run: () => {
         this.controller.getSignal('modalOpened')({ modal: 'preferences' });
+      },
+    });
+
+    this.addWorkbenchAction({
+      id: 'codesandbox.preview.refresh',
+      label: 'Refresh Preview',
+      category: 'View',
+      run: () => {
+        this.controller.getSignal('editor.refreshPreview')();
+      },
+      keybindings: {
+        primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_R,
       },
     });
 
@@ -162,7 +173,9 @@ export class Workbench {
       },
     });
 
-    if (COMMENTS) {
+    if (
+      this.controller.getState().editor.currentSandbox?.featureFlags.comments
+    ) {
       this.addWorkbenchAction({
         id: 'comments.add',
         label: 'Comment on code',
@@ -360,7 +373,9 @@ export class Workbench {
       },
     });
 
-    if (COMMENTS) {
+    if (
+      this.controller.getState().editor.currentSandbox?.featureFlags.comments
+    ) {
       this.appendMenuItem(MenuId.EditorContext, {
         group: '0_comments',
         order: 0,

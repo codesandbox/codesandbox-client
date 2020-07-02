@@ -19,7 +19,7 @@ const CollaboratorContent = () => {
   );
 
   return (
-    <Container direction="vertical">
+    <Container direction="vertical" style={{ borderRadius: 4 }}>
       <Element padding={4}>
         <LinkPermissions readOnly={!isOwner} />
         {isOwner && (
@@ -46,11 +46,7 @@ export const Collaborators: FunctionComponent<{
   renderButton: (any) => JSX.Element;
 }> = ({ renderButton }) => (
   <>
-    <Overlay
-      noHeightAnimation={false}
-      event="Collaborators"
-      content={CollaboratorContent}
-    >
+    <Overlay event="Collaborators" content={CollaboratorContent}>
       {open => renderButton({ onClick: () => open() })}
     </Overlay>
   </>

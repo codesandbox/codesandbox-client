@@ -13,7 +13,6 @@ import {
   withRouter,
   RouteComponentProps,
 } from 'react-router-dom';
-import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import css from '@styled-system/css';
 
 import { UserMenu } from '../UserMenu';
@@ -25,13 +24,13 @@ type Props = {
 
 export const NavigationComponent = ({ title, match }: Props) => {
   const {
-    actions: { modalOpened, signInClicked },
+    actions: { signInClicked, openCreateSandboxModal },
     state: { isLoggedIn, isAuthenticating, user },
   } = useOvermind();
   const link = isLoggedIn ? '/dashboard' : '/';
 
   return (
-    <ThemeProvider theme={codeSandboxBlack}>
+    <ThemeProvider>
       <Stack
         as="header"
         paddingX={4}
@@ -70,7 +69,7 @@ export const NavigationComponent = ({ title, match }: Props) => {
             <Stack align="center" gap={6}>
               {!isLoggedIn && match.path !== '/signin' ? (
                 <Button
-                  css={{ width: 'auto' }}
+                  autoWidth
                   variant="link"
                   onClick={() => signInClicked()}
                 >
@@ -80,7 +79,9 @@ export const NavigationComponent = ({ title, match }: Props) => {
               <Button
                 variant="primary"
                 css={css({ width: 'auto', paddingX: 3 })}
-                onClick={() => modalOpened({ modal: 'newSandbox' })}
+                onClick={() => {
+                  openCreateSandboxModal({});
+                }}
               >
                 Create Sandbox
               </Button>

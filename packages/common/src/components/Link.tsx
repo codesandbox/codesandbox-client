@@ -23,7 +23,7 @@ export const Link: React.FC<ILinkProps> = React.forwardRef<
       {children}
     </a>
   ) : (
-    <RouterLink innerRef={ref} to={to} {...props}>
+    <RouterLink ref={ref} to={to} {...props}>
       {children}
     </RouterLink>
   )

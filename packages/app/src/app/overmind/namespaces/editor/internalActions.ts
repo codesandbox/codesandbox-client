@@ -100,7 +100,7 @@ export const setModuleSavedCode: Action<{
   );
 
   if (moduleIndex > -1) {
-    const module = state.editor.sandboxes[sandbox.id].modules[moduleIndex];
+    const module = sandbox.modules[moduleIndex];
 
     module.savedCode = module.code === savedCode ? null : savedCode;
   }
@@ -125,6 +125,8 @@ export const saveCode: AsyncAction<{
     return;
   }
 
+  effects.preview.executeCodeImmediately();
+
   try {
     let updatedModule: {
       updatedAt: string;
@@ -132,7 +134,8 @@ export const saveCode: AsyncAction<{
       code: string;
       isBinary: boolean;
     };
-    if (state.user?.experiments.comments) {
+    if (sandbox.featureFlags.comments) {
+      await effects.live.waitForLiveReady();
       const {
         saved_code,
         updated_at,
@@ -174,7 +177,7 @@ export const saveCode: AsyncAction<{
     if (
       state.live.isLive &&
       state.live.isCurrentEditor &&
-      !state.user?.experiments.comments
+      !sandbox.featureFlags.comments
     ) {
       setTimeout(() => {
         // Send the save event 50ms later so the operation can be sent first (the operation that says the
@@ -190,17 +193,6 @@ export const saveCode: AsyncAction<{
       effects.vscode.callCallback(cbID);
     }
 
-    if (
-      sandbox.originalGit &&
-      state.workspace.openedWorkspaceItem === 'github'
-    ) {
-      state.git.isFetching = true;
-      state.git.originalGitChanges = await effects.api.getGitChanges(
-        sandbox.id
-      );
-      state.git.isFetching = false;
-    }
-
     // If the executor is a server we only should send updates if the sandbox has been
     // started already
     if (
@@ -208,6 +200,10 @@ export const saveCode: AsyncAction<{
       state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
     ) {
       effects.executor.updateFiles(sandbox);
+    }
+
+    if (sandbox.template === 'static') {
+      effects.preview.refresh();
     }
 
     await actions.editor.internal.updateCurrentTemplate();
@@ -415,7 +411,16 @@ export const forkSandbox: AsyncAction<{
   try {
     state.editor.isForkingSandbox = true;
 
-    const forkedSandbox = await effects.api.forkSandbox(id, body);
+    const usedBody: {
+      collectionId?: string;
+      teamId?: string;
+    } = body || {};
+
+    if (state.activeTeam) {
+      usedBody.teamId = state.activeTeam;
+    }
+
+    const forkedSandbox = await effects.api.forkSandbox(id, usedBody);
 
     // Copy over any unsaved code
     Object.assign(forkedSandbox, {
@@ -453,7 +458,10 @@ export const forkSandbox: AsyncAction<{
       actions.server.startContainer(forkedSandbox);
     }
 
-    if (state.workspace.openedWorkspaceItem === 'project-summary') {
+    if (
+      state.workspace.openedWorkspaceItem === 'project-summary' ||
+      state.workspace.openedWorkspaceItem === 'github-summary'
+    ) {
       actions.workspace.openDefaultItem();
     }
 
@@ -464,6 +472,10 @@ export const forkSandbox: AsyncAction<{
     }
 
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
+
+    if (sandbox.originalGit) {
+      actions.git.loadGitSource();
+    }
   } catch (error) {
     console.error(error);
     actions.internal.handleError({

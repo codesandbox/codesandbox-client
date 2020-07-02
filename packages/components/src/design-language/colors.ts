@@ -25,4 +25,5 @@ export const colors = {
   green: '#5BC266',
   purple: '#BF5AF2',
   yellow: '#FBCC43',
+  orange: '#f69935',
 };

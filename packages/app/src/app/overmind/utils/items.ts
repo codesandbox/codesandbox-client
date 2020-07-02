@@ -1,6 +1,7 @@
 import getTemplate from '@codesandbox/common/lib/templates';
-import { COMMENTS as COMMENTS_ON } from '@codesandbox/common/lib/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { config } from 'app/overmind';
+import { Overmind } from 'overmind';
 
 export interface INavigationItem {
   id: string;
@@ -27,6 +28,12 @@ export const PROJECT_TEMPLATE: INavigationItem = {
 export const PROJECT_SUMMARY: INavigationItem = {
   id: 'project-summary',
   name: 'Sandbox Info',
+  hasCustomHeader: true,
+};
+
+export const GITHUB_SUMMARY: INavigationItem = {
+  id: 'github-summary',
+  name: 'GitHub Info',
   hasCustomHeader: true,
 };
 
@@ -77,6 +84,10 @@ export function getDisabledItems(store: any): INavigationItem[] {
     return [PROJECT_SUMMARY, CONFIGURATION, GITHUB, DEPLOYMENT, SERVER, LIVE];
   }
 
+  if (currentSandbox.git) {
+    return [CONFIGURATION, DEPLOYMENT, LIVE];
+  }
+
   if (!currentSandbox.owned || !store.isLoggedIn) {
     const returnedItems = [GITHUB, DEPLOYMENT];
     if (!store.live.isLive) {
@@ -88,10 +99,13 @@ export function getDisabledItems(store: any): INavigationItem[] {
   return [];
 }
 
-export default function getItems(store: any): INavigationItem[] {
+export default function getItems(
+  store: Overmind<typeof config>['state']
+): INavigationItem[] {
   if (!store.editor.currentSandbox) {
     return [];
   }
+
   if (
     store.live.isLive &&
     !(
@@ -108,6 +122,24 @@ export default function getItems(store: any): INavigationItem[] {
 
   const { currentSandbox } = store.editor;
 
+  const isServer =
+    store.isLoggedIn &&
+    currentSandbox &&
+    getTemplate(currentSandbox.template).isServer;
+
+  if (currentSandbox.git) {
+    const gitItems = [GITHUB_SUMMARY];
+
+    if (
+      isServer &&
+      hasPermission(currentSandbox.authorization, 'write_project')
+    ) {
+      gitItems.push(SERVER);
+    }
+
+    return gitItems;
+  }
+
   if (!currentSandbox || !currentSandbox.owned) {
     return [PROJECT_SUMMARY, CONFIGURATION];
   }
@@ -119,15 +151,15 @@ export default function getItems(store: any): INavigationItem[] {
     CONFIGURATION,
   ];
 
-  if (store.isLoggedIn && currentSandbox) {
-    const templateDef = getTemplate(currentSandbox.template);
-    if (templateDef.isServer) {
-      items.push(SERVER);
-    }
+  if (isServer) {
+    items.push(SERVER);
   }
 
   if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
-    if (COMMENTS_ON && hasPermission(currentSandbox.authorization, 'comment')) {
+    if (
+      currentSandbox.featureFlags.comments &&
+      hasPermission(currentSandbox.authorization, 'comment')
+    ) {
       items.push(GITHUB, COMMENTS);
     } else {
       items.push(GITHUB);

@@ -1,63 +1,81 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
-import css from '@styled-system/css';
+import { useLocation } from 'react-router-dom';
 import { Stack, Text, Button } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { Breadcrumbs } from '../Breadcrumbs';
-import { Filters } from '../Filters';
+import { FilterOptions } from '../Filters/FilterOptions';
+import { ViewOptions } from '../Filters/ViewOptions';
+import { SortOptions } from '../Filters/SortOptions';
+import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid';
+import { TemplateFilter } from '../../Content/utils';
 
 type Props = {
-  templates?: any[];
+  templates?: TemplateFilter[];
   path?: string;
   title?: string;
-  match: any;
-  createNewFolder: () => void;
+  createNewFolder?: () => void;
+  showFilters?: boolean;
+  showViewOptions?: boolean;
+  showSortOptions?: boolean;
+  activeTeam: string;
 };
 
-export const HeaderComponent = ({
+export const Header = ({
   createNewFolder,
-  match,
   templates,
   path,
   title,
-}: Props) => (
-  <Stack
-    align="center"
-    justify="space-between"
-    paddingBottom={2}
-    marginBottom={7}
-    css={css({
-      borderStyle: 'solid',
-      borderWidth: 0,
-      borderBottomWidth: 1,
-      borderColor: 'grays.500',
-    })}
-  >
-    {title ? (
-      <Text marginBottom={1} block weight="bold" size={5}>
-        {title}
-      </Text>
-    ) : (
-      <Breadcrumbs param={path} />
-    )}
-    <Stack gap={4} align="center">
-      {match.path.includes('all') && (
-        <Button
-          onClick={createNewFolder}
-          variant="link"
-          css={css({
-            fontSize: 3,
-            color: 'mutedForeground',
-            padding: 0,
-            width: 'auto',
-          })}
-        >
-          + New Folder
-        </Button>
-      )}
-      {templates && <Filters possibleTemplates={templates} />}
-    </Stack>
-  </Stack>
-);
+  activeTeam,
+  showFilters = false,
+  showViewOptions = false,
+  showSortOptions = false,
+}: Props) => {
+  const location = useLocation();
 
-// @ts-ignore
-export const Header = withRouter(HeaderComponent);
+  return (
+    <Stack
+      align="center"
+      justify="space-between"
+      paddingBottom={2}
+      css={css({
+        width: `calc(100% - ${2 * GUTTER}px)`,
+        maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
+        marginX: 'auto',
+        borderStyle: 'solid',
+        borderWidth: 0,
+        borderBottomWidth: 1,
+        borderColor: 'grays.500',
+      })}
+    >
+      {title ? (
+        <Text marginBottom={1} block weight="bold" size={5}>
+          {title}
+        </Text>
+      ) : (
+        <Breadcrumbs activeTeam={activeTeam} path={path} />
+      )}
+      <Stack gap={4} align="center">
+        {location.pathname.includes('/all') && (
+          <Button
+            onClick={createNewFolder}
+            variant="link"
+            css={css({
+              fontSize: 2,
+              color: 'mutedForeground',
+              padding: 0,
+              width: 'auto',
+            })}
+          >
+            + New Folder
+          </Button>
+        )}
+
+        <Stack gap={4}>
+          {showFilters && <FilterOptions possibleTemplates={templates} />}
+          {showSortOptions && <SortOptions />}
+          {showViewOptions && <ViewOptions />}
+        </Stack>
+      </Stack>
+    </Stack>
+  );
+};

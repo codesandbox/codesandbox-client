@@ -1,5 +1,6 @@
 import { Element, Menu, SkeletonText, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { Markdown } from 'app/components/Markdown';
 import { DIALOG_TRANSITION_DURATION } from 'app/constants';
 import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
@@ -7,7 +8,6 @@ import React, { useState } from 'react';
 
 import { AvatarBlock } from '../components/AvatarBlock';
 import { EditComment } from '../components/EditComment';
-import { Markdown } from './Markdown';
 
 type ReplyProps = {
   reply: CommentFragment;

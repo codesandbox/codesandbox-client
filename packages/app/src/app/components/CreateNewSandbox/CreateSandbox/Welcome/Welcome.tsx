@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { Button } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { CodeAnywhere } from './CodeAnywhere';
 import { StartQuickly } from './StartQuickly';
@@ -44,7 +44,11 @@ export const Welcome = ({ goToTab }: { goToTab: (event: any) => void }) => {
         </li>
       </Features>
       <Actions>
-        <Button small style={{ fontSize: 12, width: 200 }} onClick={goToTab}>
+        <Button
+          autoWidth
+          style={{ fontSize: 12, width: 200 }}
+          onClick={goToTab}
+        >
           Create Sandbox
         </Button>
       </Actions>
