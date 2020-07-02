@@ -141,6 +141,20 @@ export const simpleCheck = props => (
   </Element>
 );
 
+export const backArrow = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M5.59482 8.00005L11 2.77139L10.2026 2L4 8L10.2026 14L11 13.1818L5.59482 8.00005Z"
+      fill="currentColor"
+    />
+  </Element>
+);
+
 export const check = props => (
   <Element
     as="svg"

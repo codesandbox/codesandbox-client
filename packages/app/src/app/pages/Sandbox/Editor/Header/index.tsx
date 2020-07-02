@@ -10,10 +10,11 @@ import { Actions } from './Actions';
 import { DashboardIcon } from './icons';
 import { MenuBar } from './MenuBar';
 import { SandboxName } from './SandboxName';
+import { WorkspaceDashboardIcon } from './WorkspaceDashboardIcon';
 
 export const Header = () => {
   const {
-    state: { hasLogIn, editor, isAuthenticating },
+    state: { hasLogIn, editor, isAuthenticating, user },
   } = useOvermind();
 
   return (
@@ -34,22 +35,26 @@ export const Header = () => {
     >
       <Stack align="center">
         {hasLogIn ? (
-          <Link
-            as={RouterLink}
-            variant="muted"
-            to={dashboardUrl()}
-            style={{ color: 'inherit' }}
-            css={{
-              transition: '0.3s ease opacity',
-              opacity: 0.6,
-              lineHeight: 0 /* micro adjustment */,
-              ':hover': {
-                opacity: 1,
-              },
-            }}
-          >
-            <DashboardIcon />
-          </Link>
+          user && user.experiments.inPilot ? (
+            <WorkspaceDashboardIcon />
+          ) : (
+            <Link
+              as={RouterLink}
+              variant="muted"
+              to={dashboardUrl()}
+              style={{ color: 'inherit' }}
+              css={{
+                transition: '0.3s ease opacity',
+                opacity: 0.6,
+                lineHeight: 0 /* micro adjustment */,
+                ':hover': {
+                  opacity: 1,
+                },
+              }}
+            >
+              <DashboardIcon />
+            </Link>
+          )
         ) : (
           <Link href="/" css={{ padding: '2px' /* micro adjustment */ }}>
             <LogoIcon height={24} />
