@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Button, ThemeProvider, Stack } from '@codesandbox/components';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { Toasts, NotificationState, NotificationStatus } from '../lib';
 
 const state = new NotificationState();
@@ -51,7 +50,7 @@ state.addNotification({
 
 function App() {
   return (
-    <ThemeProvider theme={codesandboxBlack}>
+    <ThemeProvider>
       <Stack
         gap={4}
         className="App"
