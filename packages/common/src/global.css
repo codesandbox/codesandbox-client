@@ -6,7 +6,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-smoothing: auto;
   text-rendering: optimizeLegibility;
-  font-smooth: alays;
+  font-smooth: always;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   min-height: 100%;
