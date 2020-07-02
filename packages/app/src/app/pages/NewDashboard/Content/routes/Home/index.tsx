@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
-import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';

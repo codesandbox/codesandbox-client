@@ -3,7 +3,10 @@ import {
   TemplateFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
 } from 'app/graphql/types';
-import { DELETE_ME_COLLECTION } from 'app/overmind/namespaces/dashboard/state';
+import {
+  PageTypes as PT,
+  DELETE_ME_COLLECTION,
+} from 'app/overmind/namespaces/dashboard/types';
 
 export type DashboardBaseFolder = {
   name: string;
@@ -106,15 +109,7 @@ export type DashboardNewMasterBranch = {
   };
 };
 
-export type PageTypes =
-  | 'search'
-  | 'home'
-  | 'recents'
-  | 'deleted'
-  | 'templates'
-  | 'drafts'
-  | 'sandboxes'
-  | 'repos';
+export type PageTypes = PT;
 
 export type DashboardGridItem =
   | DashboardSandbox

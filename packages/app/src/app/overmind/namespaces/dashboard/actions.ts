@@ -10,18 +10,8 @@ import {
   RepoFragmentDashboardFragment,
 } from 'app/graphql/types';
 import { TEAM_ID_LOCAL_STORAGE } from 'app/overmind/utils/team';
-import { OrderBy, sandboxesTypes } from './state';
 import { getDecoratedCollection, repoName } from './utils';
-
-type PageTypes =
-  | 'search'
-  | 'home'
-  | 'recents'
-  | 'deleted'
-  | 'templates'
-  | 'drafts'
-  | 'sandboxes'
-  | 'repos';
+import { PageTypes, OrderBy, sandboxesTypes } from './types';
 
 export const dashboardMounted: AsyncAction = withLoadApp();
 
@@ -670,15 +660,7 @@ export const deleteTemplateFromState: Action<string[]> = (
 
 export const deleteSandbox: AsyncAction<{
   ids: string[];
-  page:
-    | 'search'
-    | 'home'
-    | 'recents'
-    | 'deleted'
-    | 'templates'
-    | 'drafts'
-    | 'sandboxes'
-    | 'repos';
+  page: PageTypes;
 }> = async ({ state, effects, actions }, { ids, page }) => {
   const { user } = state;
   if (!user) return;

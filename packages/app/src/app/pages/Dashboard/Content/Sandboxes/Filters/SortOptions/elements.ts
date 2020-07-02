@@ -1,7 +1,7 @@
 import ArrowDown from 'react-icons/lib/md/arrow-downward';
 import styled, { css } from 'styled-components';
 
-import { OrderBy } from 'app/overmind/namespaces/dashboard/state';
+import { OrderBy } from 'app/overmind/namespaces/dashboard/types';
 
 export const Container = styled.div<{
   hideOrder: boolean;
