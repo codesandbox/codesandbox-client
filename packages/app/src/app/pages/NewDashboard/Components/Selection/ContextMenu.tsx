@@ -303,6 +303,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({
                   privacy: 0,
                   oldPrivacy: sandbox.privacy as 0 | 1 | 2,
                   page,
+                  repoName: sandbox.originalGit?.repo,
                 })
               }
             >
@@ -317,6 +318,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({
                   privacy: 1,
                   oldPrivacy: sandbox.privacy as 0 | 1 | 2,
                   page,
+                  repoName: sandbox.originalGit?.repo,
                 })
               }
             >
@@ -331,6 +333,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({
                   privacy: 2,
                   oldPrivacy: sandbox.privacy as 0 | 1 | 2,
                   page,
+                  repoName: sandbox.originalGit?.repo,
                 })
               }
             >
@@ -355,6 +358,7 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 actions.dashboard.makeTemplates({
                   sandboxIds: [sandbox.id],
                   page,
+                  repoName: sandbox.originalGit?.repo,
                 });
               }}
             >
@@ -378,7 +382,11 @@ const SandboxMenu: React.FC<SandboxMenuProps> = ({
           ) : (
             <MenuItem
               onSelect={() => {
-                actions.dashboard.deleteSandbox({ ids: [sandbox.id], page });
+                actions.dashboard.deleteSandbox({
+                  ids: [sandbox.id],
+                  page,
+                  repoName: sandbox.originalGit?.repo,
+                });
                 setVisibility(false);
               }}
             >

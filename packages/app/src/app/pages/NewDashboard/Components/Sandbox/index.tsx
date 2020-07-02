@@ -214,11 +214,20 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
         id: sandbox.id,
         title: newTitle,
         oldTitle: sandboxTitle,
+        repoName: sandbox.originalGit?.repo,
       });
       setRenaming(false);
       track('Dashboard - Rename sandbox', { dashboardVersion: 2 });
     },
-    [actions.dashboard, page, sandbox.id, newTitle, sandboxTitle, setRenaming]
+    [
+      actions.dashboard,
+      page,
+      sandbox.id,
+      sandbox.originalGit.repo,
+      newTitle,
+      sandboxTitle,
+      setRenaming,
+    ]
   );
 
   const onInputBlur = React.useCallback(() => {

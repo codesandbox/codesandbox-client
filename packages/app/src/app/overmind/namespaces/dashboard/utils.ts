@@ -1,8 +1,6 @@
 import { SidebarCollectionDashboardFragment as Collection } from 'app/graphql/types';
 import { DELETE_ME_COLLECTION } from './types';
 
-export const repoName = location.pathname.split('/repositories/')[1];
-
 export function getDecoratedCollection(
   collection: Collection
 ): DELETE_ME_COLLECTION {

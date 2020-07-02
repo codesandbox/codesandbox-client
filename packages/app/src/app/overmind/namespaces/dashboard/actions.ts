@@ -10,7 +10,7 @@ import {
   RepoFragmentDashboardFragment,
 } from 'app/graphql/types';
 import { TEAM_ID_LOCAL_STORAGE } from 'app/overmind/utils/team';
-import { getDecoratedCollection, repoName } from './utils';
+import { getDecoratedCollection } from './utils';
 import { PageTypes, OrderBy, sandboxesTypes } from './types';
 
 export const dashboardMounted: AsyncAction = withLoadApp();
@@ -576,9 +576,14 @@ export const getStartPageSandboxes: AsyncAction = async ({
 export const deleteSandboxFromState: Action<{
   ids: string[];
   page?: string;
-}> = ({ state: { dashboard } }, { ids, page }) => {
+  repoName?: string;
+}> = ({ state: { dashboard } }, { ids, page, repoName }) => {
   if (page === 'repos' || dashboard.sandboxes.REPOS !== null) {
-    if (!dashboard.sandboxes.REPOS || !dashboard.sandboxes.REPOS[repoName]) {
+    if (
+      !dashboard.sandboxes.REPOS ||
+      !repoName ||
+      !dashboard.sandboxes.REPOS[repoName || '']
+    ) {
       return;
     }
 
@@ -661,11 +666,12 @@ export const deleteTemplateFromState: Action<string[]> = (
 export const deleteSandbox: AsyncAction<{
   ids: string[];
   page: PageTypes;
-}> = async ({ state, effects, actions }, { ids, page }) => {
+  repoName?: string;
+}> = async ({ state, effects, actions }, { ids, page, repoName }) => {
   const { user } = state;
   if (!user) return;
   const oldSandboxes = state.dashboard.sandboxes;
-  actions.dashboard.deleteSandboxFromState({ ids, page });
+  actions.dashboard.deleteSandboxFromState({ ids, page, repoName });
 
   try {
     await effects.gql.mutations.deleteSandboxes({
@@ -710,8 +716,9 @@ export const renameSandboxInState: Action<{
   id: string;
   title: string;
   page: PageTypes;
-}> = ({ state: { dashboard } }, { id, title, page }) => {
-  if (page === 'repos') {
+  repoName: string | null;
+}> = ({ state: { dashboard } }, { id, title, page, repoName }) => {
+  if (page === 'repos' && repoName) {
     if (!dashboard.sandboxes.REPOS || !dashboard.sandboxes.REPOS[repoName]) {
       return;
     }
@@ -809,11 +816,13 @@ export const renameSandbox: AsyncAction<{
   title: string;
   oldTitle: string;
   page: PageTypes;
-}> = async ({ effects, actions }, { id, title, oldTitle, page }) => {
+  repoName: string | null;
+}> = async ({ effects, actions }, { id, title, oldTitle, page, repoName }) => {
   actions.dashboard.renameSandboxInState({
     id,
     title,
     page,
+    repoName,
   });
 
   try {
@@ -826,6 +835,7 @@ export const renameSandbox: AsyncAction<{
       id,
       title: oldTitle,
       page,
+      repoName,
     });
 
     effects.notificationToast.error('There was a problem renaming you sandbox');
@@ -900,9 +910,13 @@ export const deleteFolder: AsyncAction<{
 export const makeTemplates: AsyncAction<{
   sandboxIds: string[];
   page: PageTypes;
-}> = async ({ effects, state, actions }, { sandboxIds: ids, page }) => {
+  repoName?: string;
+}> = async (
+  { effects, state, actions },
+  { sandboxIds: ids, page, repoName }
+) => {
   const oldSandboxes = state.dashboard.sandboxes;
-  actions.dashboard.deleteSandboxFromState({ ids, page });
+  actions.dashboard.deleteSandboxFromState({ ids, page, repoName });
 
   try {
     await effects.gql.mutations.makeSandboxesTemplate({
@@ -1153,10 +1167,19 @@ export const changeSandboxPrivacy: AsyncAction<{
   privacy: 0 | 1 | 2;
   oldPrivacy: 0 | 1 | 2;
   page: PageTypes;
-}> = async ({ actions, effects, state }, { id, privacy, oldPrivacy, page }) => {
+  repoName: string | null;
+}> = async (
+  { actions, effects },
+  { id, privacy, oldPrivacy, page, repoName }
+) => {
   // optimistic update
 
-  actions.dashboard.changeSandboxPrivacyInState({ id, privacy, page });
+  actions.dashboard.changeSandboxPrivacyInState({
+    id,
+    privacy,
+    page,
+    repoName,
+  });
 
   try {
     await effects.api.updatePrivacy(id, privacy);
@@ -1167,6 +1190,7 @@ export const changeSandboxPrivacy: AsyncAction<{
       id,
       privacy: oldPrivacy,
       page,
+      repoName,
     });
 
     actions.internal.handleError({
@@ -1180,8 +1204,9 @@ export const changeSandboxPrivacyInState: Action<{
   id: string;
   privacy: 0 | 1 | 2;
   page?: string;
-}> = ({ state: { dashboard } }, { id, privacy, page }) => {
-  if (page === 'repos') {
+  repoName: string | null;
+}> = ({ state: { dashboard } }, { id, privacy, page, repoName }) => {
+  if (page === 'repos' && repoName) {
     if (!dashboard.sandboxes.REPOS || !dashboard.sandboxes.REPOS[repoName]) {
       return;
     }
