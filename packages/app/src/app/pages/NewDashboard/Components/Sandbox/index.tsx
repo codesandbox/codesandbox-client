@@ -1,6 +1,5 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
@@ -16,6 +15,7 @@ import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
 import { DashboardSandbox, DashboardTemplate } from '../../types';
 import { SandboxItemComponentProps } from './types';
+import { useDrag } from '../../utils/dnd';
 
 const PrivacyIcons = {
   0: () => null,
@@ -28,6 +28,33 @@ interface GenericSandboxProps {
   item: DashboardSandbox | DashboardTemplate;
 }
 
+function getFolderName(item: GenericSandboxProps['item']): string {
+  if (item.type === 'template') {
+    const { sandbox } = item;
+    if (sandbox.team) {
+      return sandbox.team.name;
+    }
+    if (sandbox.author) {
+      return sandbox.author.username;
+    }
+    if (sandbox.git) {
+      return 'from GitHub';
+    }
+    return 'Templates';
+  }
+  const { sandbox } = item;
+
+  if (sandbox.collection) {
+    if (sandbox.collection.path === '/' && !sandbox.teamId) {
+      return 'Drafts';
+    }
+
+    return sandbox.collection.path.split('/').pop();
+  }
+
+  return 'Drafts';
+}
+
 const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   const {
     state: { dashboard },
@@ -38,19 +65,7 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
-  let sandboxLocation = null;
-  if ('path' in sandbox.collection) {
-    sandboxLocation =
-      sandbox.collection.path === '/'
-        ? 'Drafts'
-        : sandbox.collection.path.split('/').pop();
-  } else if (type === 'template') {
-    sandboxLocation =
-      (sandbox.collection.team && sandbox.collection.team.name) ||
-      ('author' in sandbox && sandbox.author && sandbox.author.username) ||
-      ('git' in sandbox && sandbox.git && 'from GitHub') ||
-      'Templates';
-  }
+  const sandboxLocation = getFolderName(item);
 
   const lastUpdated = formatDistanceStrict(
     new Date(sandbox.updatedAt.replace(/ /g, 'T')),
@@ -81,16 +96,9 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   /* Drag logic */
 
   const location = useLocation();
-  const currentCollectionPath = location.pathname
-    .replace('/new-dashboard', '')
-    .replace('/all', '');
 
   const [, dragRef, preview] = useDrag({
-    item: {
-      type: 'sandbox',
-      id: sandbox.id,
-      collectionPath: currentCollectionPath,
-    },
+    item,
     end: (_item, monitor) => {
       const dropResult = monitor.getDropResult();
 

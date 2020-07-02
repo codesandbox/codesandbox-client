@@ -366,9 +366,11 @@ class SandboxGridComponent extends React.Component<
     let editedSince = getOrder();
 
     if (this.props.page === 'search' || this.props.page === 'recent') {
-      const dir =
-        basename(item.collection.path) ||
-        (item.collection.teamId ? 'Team Sandboxes' : 'My Sandboxes');
+      const dir = item.collection?.path
+        ? basename(item.collection.path)
+        : item.teamId
+        ? 'Team Sandboxes'
+        : 'My Sandboxes';
 
       if (dir) {
         editedSince += ` in ${dir}`;
@@ -396,8 +398,9 @@ class SandboxGridComponent extends React.Component<
         setSandboxesSelected={this.setSandboxesSelected}
         setDragging={this.props.dragChanged}
         isDraggingItem={this.isDragging && itemInSelection}
-        collectionPath={item.collection.path}
-        collectionTeamId={item.collection.teamId}
+        collectionPath={item.collection?.path}
+        // @ts-ignore Will come in new API. Remove after June 29th
+        collectionTeamId={item.collection?.teamId || item.teamId}
         forkSandbox={this.forkSandbox}
         deleteSandboxes={this.deleteSandboxes}
         undeleteSandboxes={this.undeleteSandboxes}

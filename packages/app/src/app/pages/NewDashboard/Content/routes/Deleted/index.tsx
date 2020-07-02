@@ -5,7 +5,7 @@ import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
-import { DashboardGridItem } from 'app/pages/NewDashboard/types';
+import { DashboardGridItem, PageTypes } from 'app/pages/NewDashboard/types';
 import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
 import { getPossibleTemplates } from '../../utils';
 
@@ -13,13 +13,14 @@ export const Deleted = () => {
   const {
     actions,
     state: {
+      activeTeam,
       dashboard: { deletedSandboxesByTime, getFilteredSandboxes, sandboxes },
     },
   } = useOvermind();
 
   useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.DELETED);
-  }, [actions.dashboard]);
+  }, [actions.dashboard, activeTeam]);
 
   const getSection = (
     title: string,
@@ -54,18 +55,21 @@ export const Deleted = () => {
         { type: 'skeleton-row' },
       ];
 
+  const pageType: PageTypes = 'deleted';
+
   return (
-    <SelectionProvider items={items}>
+    <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
         <title>Deleted Sandboxes - CodeSandbox</title>
       </Helmet>
       <Header
         title="Recently Deleted"
+        activeTeam={activeTeam}
         showFilters
         showSortOptions
         templates={getPossibleTemplates(sandboxes.DELETED)}
       />
-      <VariableGrid items={items} />
+      <VariableGrid page={pageType} items={items} />
     </SelectionProvider>
   );
 };

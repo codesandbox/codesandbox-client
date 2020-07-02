@@ -7,6 +7,7 @@ import Loadable from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
+import { CreateSandboxModal } from 'app/components/CreateNewSandbox/CreateSandbox/CreateSandboxModal';
 
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
@@ -14,7 +15,6 @@ import { Dashboard } from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 import { Dashboard as NewDashboard } from './NewDashboard';
-import { NewSandbox } from './NewSandbox';
 import { Sandbox } from './Sandbox';
 
 const routeDebugger = _debug('cs:app:router');
@@ -123,8 +123,16 @@ const RoutesComponent: React.FC = () => {
             <Route exact path="/" render={() => <Redirect to="/s" />} />
             <Route exact path="/s/github" component={GitHub} />
             <Route exact path="/s/cli" component={CliInstructions} />
-            <Route exact path="/s" component={NewSandbox} />
-            <Route exact path="/s2" component={NewSandbox} />
+            <Route
+              exact
+              path="/s"
+              component={() => <Sandbox showNewSandboxModal />}
+            />
+            <Route
+              exact
+              path="/s2"
+              component={() => <Sandbox showNewSandboxModal />}
+            />
             <Route path="/invite/:token" component={TeamInvitation} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/new-dashboard" component={NewDashboard} />
@@ -149,6 +157,7 @@ const RoutesComponent: React.FC = () => {
         </Content>
         <Modals />
         {signInModalOpen && !user ? <SignInModal /> : null}
+        <CreateSandboxModal />
       </Boundary>
     </Container>
   );

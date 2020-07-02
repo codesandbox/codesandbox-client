@@ -1,11 +1,13 @@
 import { Action, AsyncAction } from 'app/overmind';
-import { withLoadApp, TEAM_ID_LOCAL_STORAGE } from 'app/overmind/factories';
+import { withLoadApp } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { uniq } from 'lodash-es';
 import {
   Direction,
   TemplateFragmentDashboardFragment,
+  SandboxFragmentDashboardFragment,
 } from 'app/graphql/types';
+import { TEAM_ID_LOCAL_STORAGE } from 'app/overmind/utils/team';
 import { OrderBy, sandboxesTypes } from './state';
 import { getDecoratedCollection } from './utilts';
 
@@ -48,6 +50,18 @@ export const dragChanged: Action<{ isDragging: boolean }> = (
   state.dashboard.isDragging = isDragging;
 };
 
+export const orderByReset: Action = ({ state }, orderBy) => {
+  if (
+    state.dashboard.orderBy.field !== 'updatedAt' ||
+    state.dashboard.orderBy.order !== 'desc'
+  ) {
+    state.dashboard.orderBy = {
+      order: 'desc',
+      field: 'updatedAt',
+    };
+  }
+};
+
 export const orderByChanged: Action<OrderBy> = ({ state }, orderBy) => {
   state.dashboard.orderBy = orderBy;
 };
@@ -71,7 +85,9 @@ export const blacklistedTemplateRemoved: Action<string> = (
 };
 
 export const blacklistedTemplatesCleared: Action = ({ state }) => {
-  state.dashboard.filters.blacklistedTemplates = [];
+  if (state.dashboard.filters.blacklistedTemplates.length) {
+    state.dashboard.filters.blacklistedTemplates = [];
+  }
 };
 
 export const blacklistedTemplatesChanged: Action<string[]> = (
@@ -235,11 +251,9 @@ export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
       return;
     }
 
+    // TODO: look into recents. Do we still want to have it this way?
     dashboard.sandboxes[sandboxesTypes.RECENT] = data.me.sandboxes
-      .filter(
-        sandbox =>
-          (sandbox.collection || { collection: {} }).teamId === state.activeTeam
-      )
+      .filter(sandbox => sandbox.teamId === state.activeTeam)
       .slice(0, 50);
   } catch (error) {
     effects.notificationToast.error(
@@ -259,24 +273,12 @@ export const getAllFolders: AsyncAction = async ({ state, effects }) => {
 
     // this is here because it will be done in the backend in the *FUTURE*
     const collectionsByLevel = data.me.collections.map(collection =>
-      getDecoratedCollection(collection, collection.sandboxes.length)
+      getDecoratedCollection(collection)
     );
 
-    state.dashboard.allCollections = [
-      {
-        id: 'drafts-fake-id',
-        sandboxes: (
-          data.me.collections.find(folder => folder.path === '/') || {
-            sandboxes: [],
-          }
-        ).sandboxes.length,
-        parent: '',
-        name: 'Drafts',
-        level: 0,
-        path: '/drafts',
-      },
-      ...collectionsByLevel.filter(c => c.id && c.name),
-    ];
+    state.dashboard.allCollections = collectionsByLevel.filter(
+      c => c.id && c.name
+    );
   } catch {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
@@ -291,14 +293,14 @@ export const createFolder: AsyncAction<string> = async (
   if (!state.dashboard.allCollections) return;
   const oldFolders = state.dashboard.allCollections;
   state.dashboard.allCollections = [
-    getDecoratedCollection({ id: 'FAKE_ID', path }),
+    getDecoratedCollection({ id: 'FAKE_ID', path, sandboxCount: 0 }),
     ...state.dashboard.allCollections,
   ];
   try {
     const { createCollection } = await effects.gql.mutations.createFolder({
       // only way to pass, null is a value in the BE
       // @ts-ignore
-      teamId: state.dashboard.activeTeam || undefined,
+      teamId: state.activeTeam || undefined,
       path,
     });
 
@@ -324,17 +326,31 @@ export const createFolder: AsyncAction<string> = async (
 export const getDrafts: AsyncAction = async ({ state, effects }) => {
   const { dashboard } = state;
   try {
-    const data = await effects.gql.queries.sandboxesByPath({
-      path: '/',
-      teamId: state.activeTeam,
-    });
-    if (typeof data?.me?.collection?.sandboxes === 'undefined') {
-      return;
+    let sandboxes: SandboxFragmentDashboardFragment[];
+
+    if (state.activeTeam) {
+      const data = await effects.gql.queries.getTeamDrafts({
+        teamId: state.activeTeam,
+        authorId: null,
+      });
+      if (typeof data?.me?.team?.drafts === 'undefined') {
+        return;
+      }
+      sandboxes = data.me.team.drafts;
+    } else {
+      const data = await effects.gql.queries.sandboxesByPath({
+        path: '/',
+        teamId: state.activeTeam,
+      });
+      if (typeof data?.me?.collection?.sandboxes === 'undefined') {
+        return;
+      }
+      sandboxes = data.me.collection.sandboxes;
     }
 
-    dashboard.sandboxes[
-      sandboxesTypes.DRAFTS
-    ] = data.me.collection.sandboxes.filter(s => !s.customTemplate);
+    dashboard.sandboxes[sandboxesTypes.DRAFTS] = sandboxes.filter(
+      s => !s.customTemplate
+    );
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
@@ -347,6 +363,17 @@ export const getSandboxesByPath: AsyncAction<string> = async (
   path
 ) => {
   const { dashboard } = state;
+
+  if (!state.activeTeam && (!path || path === '/')) {
+    // For personal users we actually see the sandboxes in / as drafts. So we shouldn't
+    // also show these sandboxes here.
+    if (!dashboard.sandboxes.ALL) {
+      dashboard.sandboxes.ALL = {};
+    }
+    dashboard.sandboxes.ALL[path] = [];
+    return;
+  }
+
   const cleanPath = path.split(' ').join('{}');
   try {
     const data = await effects.gql.queries.sandboxesByPath({
@@ -374,11 +401,25 @@ export const getSandboxesByPath: AsyncAction<string> = async (
 export const getDeletedSandboxes: AsyncAction = async ({ state, effects }) => {
   const { dashboard } = state;
   try {
-    const data = await effects.gql.queries.deletedSandboxes({});
-    if (!data || !data.me) {
+    let sandboxes;
+
+    if (state.activeTeam) {
+      const data = await effects.gql.queries.deletedTeamSandboxes({
+        teamId: state.activeTeam,
+      });
+
+      sandboxes = data?.me?.team?.sandboxes;
+    } else {
+      const data = await effects.gql.queries.deletedPersonalSandboxes({});
+
+      sandboxes = data?.me?.sandboxes;
+    }
+
+    if (!sandboxes) {
       return;
     }
-    dashboard.sandboxes[sandboxesTypes.DELETED] = data.me.sandboxes;
+
+    dashboard.sandboxes[sandboxesTypes.DELETED] = sandboxes;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your deleted Sandboxes'
@@ -424,7 +465,9 @@ export const getStartPageSandboxes: AsyncAction = async ({
 }) => {
   const { dashboard } = state;
   try {
-    const usedTemplates = await effects.gql.queries.listPersonalTemplates({});
+    const usedTemplates = await effects.gql.queries.listPersonalTemplates({
+      teamId: state.activeTeam,
+    });
 
     if (!usedTemplates || !usedTemplates.me) {
       return;
@@ -435,16 +478,16 @@ export const getStartPageSandboxes: AsyncAction = async ({
       3
     );
 
-    const recentSandboxes = await effects.gql.queries.recentSandboxes({
+    const result = await effects.gql.queries.recentlyAccessedSandboxes({
       limit: 7,
-      orderField: dashboard.orderBy.field,
-      orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
+      teamId: state.activeTeam,
     });
 
-    if (!recentSandboxes || !recentSandboxes.me) {
+    if (result?.me?.recentlyAccessedSandboxes == null) {
       return;
     }
-    dashboard.sandboxes.RECENT_HOME = recentSandboxes.me.sandboxes;
+
+    dashboard.sandboxes.RECENT_HOME = result.me.recentlyAccessedSandboxes;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
@@ -542,17 +585,19 @@ export const deleteSandbox: AsyncAction<string[]> = async (
   }
 };
 
-export const unmakeTemplate: AsyncAction<string[]> = async (
+export const unmakeTemplates: AsyncAction<{ templateIds: string[] }> = async (
   { effects, actions, state },
-  ids
+  { templateIds }
 ) => {
   const oldTemplates = {
     TEMPLATE_HOME: state.dashboard.sandboxes.TEMPLATE_HOME,
     TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
   };
-  actions.dashboard.deleteTemplateFromState(ids);
+  actions.dashboard.deleteTemplateFromState(templateIds);
   try {
-    await effects.gql.mutations.unmakeSandboxesTemplate({ sandboxIds: ids });
+    await effects.gql.mutations.unmakeSandboxesTemplate({
+      sandboxIds: templateIds,
+    });
   } catch (error) {
     state.dashboard.sandboxes.TEMPLATES = oldTemplates.TEMPLATES
       ? [...oldTemplates.TEMPLATES]
@@ -630,10 +675,7 @@ export const renameFolderInState: Action<{ path: string; newPath: string }> = (
   if (!dashboard.allCollections) return;
   const newFolders = dashboard.allCollections.map(folder => {
     if (folder.path === path) {
-      return getDecoratedCollection(
-        { ...folder, path: newPath },
-        folder.sandboxes
-      );
+      return getDecoratedCollection({ ...folder, path: newPath });
     }
 
     return folder;
@@ -667,15 +709,25 @@ export const renameSandbox: AsyncAction<{
 export const moveFolder: AsyncAction<{
   path: string;
   newPath: string;
-}> = async ({ state: { dashboard }, actions }, { path, newPath }) => {
+  newTeamId: string | null;
+  teamId: string | null;
+}> = async (
+  { state: { dashboard }, actions },
+  { path, newPath, teamId, newTeamId }
+) => {
   if (!dashboard.allCollections) return;
-  actions.dashboard.renameFolder({ path, newPath });
+  actions.dashboard.renameFolder({ path, newPath, teamId, newTeamId });
 };
 
 export const renameFolder: AsyncAction<{
   path: string;
   newPath: string;
-}> = async ({ state: { dashboard }, effects, actions }, { path, newPath }) => {
+  newTeamId: string | null;
+  teamId: string | null;
+}> = async (
+  { state: { dashboard }, effects, actions },
+  { path, newPath, teamId, newTeamId }
+) => {
   if (!dashboard.allCollections) return;
   actions.dashboard.renameFolderInState({
     path,
@@ -684,8 +736,10 @@ export const renameFolder: AsyncAction<{
 
   try {
     await effects.gql.mutations.renameFolder({
-      newPath,
       path,
+      newPath,
+      teamId,
+      newTeamId,
     });
   } catch {
     actions.dashboard.renameFolderInState({
@@ -698,7 +752,7 @@ export const renameFolder: AsyncAction<{
 
 export const deleteFolder: AsyncAction<{
   path: string;
-}> = async ({ state: { dashboard }, effects }, { path }) => {
+}> = async ({ state: { dashboard, activeTeam }, effects }, { path }) => {
   if (!dashboard.allCollections) return;
   const oldCollections = dashboard.allCollections;
   dashboard.allCollections = dashboard.allCollections.filter(
@@ -709,7 +763,7 @@ export const deleteFolder: AsyncAction<{
       path,
       // only way to pass, null is a value in the BE
       // @ts-ignore
-      teamId: dashboard.activeTeam || undefined,
+      teamId: activeTeam || undefined,
     });
   } catch {
     dashboard.allCollections = oldCollections;
@@ -717,9 +771,9 @@ export const deleteFolder: AsyncAction<{
   }
 };
 
-export const makeTemplate: AsyncAction<string[]> = async (
+export const makeTemplates: AsyncAction<{ sandboxIds: string[] }> = async (
   { effects, state, actions },
-  ids
+  { sandboxIds: ids }
 ) => {
   const oldSandboxes = state.dashboard.sandboxes;
   actions.dashboard.deleteSandboxFromState(ids);
@@ -767,7 +821,7 @@ export const recoverSandboxes: AsyncAction<string[]> = async (
       collectionPath: '/',
       // only way to pass, null is a value in the BE
       // @ts-ignore
-      teamId: state.dashboard.activeTeam || undefined,
+      teamId: state.activeTeam || undefined,
     });
   } catch (error) {
     state.dashboard.sandboxes.DELETED = [...oldDeleted];
@@ -797,19 +851,31 @@ export const downloadSandboxes: AsyncAction<string[]> = async (
 export const getSearchSandboxes: AsyncAction = async ({ state, effects }) => {
   const { dashboard } = state;
   try {
-    const data = await effects.gql.queries.searchSandboxes({});
-    if (data?.me?.sandboxes == null) {
-      return;
+    const activeTeam = state.activeTeam;
+
+    let sandboxes: SandboxFragmentDashboardFragment[];
+    if (activeTeam) {
+      const data = await effects.gql.queries.searchTeamSandboxes({
+        teamId: activeTeam,
+      });
+      if (data?.me?.team?.sandboxes == null) {
+        return;
+      }
+
+      sandboxes = data.me.team.sandboxes;
+    } else {
+      // This will be gone once we move everyone (even personal spaces) to workspaces
+      const data = await effects.gql.queries.searchPersonalSandboxes({});
+      if (data?.me?.sandboxes == null) {
+        return;
+      }
+
+      sandboxes = data.me.sandboxes;
     }
-    const sandboxes = data.me.sandboxes;
 
     const sandboxesToShow = state.dashboard
       .getFilteredSandboxes(sandboxes)
-      .filter(x => !x.customTemplate)
-      .filter(
-        sandbox =>
-          (sandbox.collection || { collection: {} }).teamId === state.activeTeam
-      );
+      .filter(x => !x.customTemplate);
 
     dashboard.sandboxes[sandboxesTypes.SEARCH] = sandboxesToShow;
   } catch (error) {
@@ -850,7 +916,7 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
 
 export const addSandboxesToFolder: AsyncAction<{
   sandboxIds: string[];
-  collectionPath: string;
+  collectionPath: string | null;
   deleteFromCurrentPath?: boolean;
 }> = async (
   { state, effects, actions },
@@ -861,15 +927,29 @@ export const addSandboxesToFolder: AsyncAction<{
     actions.dashboard.deleteSandboxFromState(sandboxIds);
   }
 
+  const existingCollection = state.dashboard?.allCollections?.find(
+    f => f.path === collectionPath
+  );
+  if (existingCollection) {
+    existingCollection.sandboxCount += sandboxIds.length;
+  }
+
   try {
     await effects.gql.mutations.addSandboxToFolder({
       sandboxIds,
       collectionPath,
       // only way to pass, null is a value in the BE
       // @ts-ignore
-      teamId: state.dashboard.activeTeam || undefined,
+      teamId: state.activeTeam || undefined,
     });
-  } catch {
+
+    if (collectionPath) {
+      // Prefetch that folder
+      actions.dashboard.getSandboxesByPath(collectionPath.replace(/^\//, ''));
+    } else {
+      actions.dashboard.getPage(sandboxesTypes.DRAFTS);
+    }
+  } catch (e) {
     state.dashboard.sandboxes = { ...oldSandboxes };
     effects.notificationToast.error('There was a problem moving your sandbox');
   }
@@ -900,7 +980,7 @@ export const setTeamInfo: AsyncAction<{
       name,
       // only way to pass, null is a value in the BE
       // @ts-ignore
-      teamId: state.dashboard.activeTeam || undefined,
+      teamId: state.activeTeam || undefined,
     });
 
     if (description) {
@@ -908,7 +988,7 @@ export const setTeamInfo: AsyncAction<{
         description,
         // only way to pass, null is a value in the BE
         // @ts-ignore
-        teamId: state.dashboard.activeTeam || undefined,
+        teamId: state.activeTeam || undefined,
       });
     }
     state.dashboard.teams = state.dashboard.teams.map(team => {

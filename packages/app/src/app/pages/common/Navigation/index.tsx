@@ -24,7 +24,7 @@ type Props = {
 
 export const NavigationComponent = ({ title, match }: Props) => {
   const {
-    actions: { modalOpened, signInClicked },
+    actions: { signInClicked, openCreateSandboxModal },
     state: { isLoggedIn, isAuthenticating, user },
   } = useOvermind();
   const link = isLoggedIn ? '/dashboard' : '/';
@@ -79,7 +79,9 @@ export const NavigationComponent = ({ title, match }: Props) => {
               <Button
                 variant="primary"
                 css={css({ width: 'auto', paddingX: 3 })}
-                onClick={() => modalOpened({ modal: 'newSandbox' })}
+                onClick={() => {
+                  openCreateSandboxModal({});
+                }}
               >
                 Create Sandbox
               </Button>

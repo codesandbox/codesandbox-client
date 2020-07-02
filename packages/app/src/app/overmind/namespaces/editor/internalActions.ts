@@ -125,6 +125,8 @@ export const saveCode: AsyncAction<{
     return;
   }
 
+  effects.preview.executeCodeImmediately();
+
   try {
     let updatedModule: {
       updatedAt: string;
@@ -198,6 +200,10 @@ export const saveCode: AsyncAction<{
       state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
     ) {
       effects.executor.updateFiles(sandbox);
+    }
+
+    if (sandbox.template === 'static') {
+      effects.preview.refresh();
     }
 
     await actions.editor.internal.updateCurrentTemplate();
@@ -405,7 +411,16 @@ export const forkSandbox: AsyncAction<{
   try {
     state.editor.isForkingSandbox = true;
 
-    const forkedSandbox = await effects.api.forkSandbox(id, body);
+    const usedBody: {
+      collectionId?: string;
+      teamId?: string;
+    } = body || {};
+
+    if (state.activeTeam) {
+      usedBody.teamId = state.activeTeam;
+    }
+
+    const forkedSandbox = await effects.api.forkSandbox(id, usedBody);
 
     // Copy over any unsaved code
     Object.assign(forkedSandbox, {

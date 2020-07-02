@@ -26,13 +26,12 @@ export type DashboardTemplate = {
 export type DashboardFolder = DELETE_ME_COLLECTION &
   DashboardBaseFolder & {
     type: 'folder';
-    sandboxes?: number;
-    setCreating?: (value: boolean) => void;
   };
 
 export type DashboardNewFolder = {
   type: 'new-folder';
-  setCreating?: (value: boolean) => void;
+  basePath: string;
+  setCreating: (value: boolean) => void;
 };
 
 export type DashboardHeader = {
@@ -60,9 +59,25 @@ export type DashboardBlank = {
   type: 'blank';
 };
 
+/**
+ * Try to fill the row with blanks until it's filled
+ */
+export type DashboardBlankRowFill = {
+  type: 'blank-row-fill';
+};
+
 export type DashboardSkeleton = {
   type: 'skeleton';
 };
+
+export type PageTypes =
+  | 'search'
+  | 'home'
+  | 'recents'
+  | 'deleted'
+  | 'templates'
+  | 'drafts'
+  | 'sandboxes';
 
 export type DashboardGridItem =
   | DashboardSandbox
@@ -74,4 +89,5 @@ export type DashboardGridItem =
   | DashboardNewSandbox
   | DashboardSkeletonRow
   | DashboardBlank
+  | DashboardBlankRowFill
   | DashboardSkeleton;

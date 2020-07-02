@@ -68,7 +68,6 @@ const modals = {
     Component: ExportGitHubModal,
     width: 400,
   },
-
   signInForTemplates: {
     Component: SignInForTemplates,
     width: 400,

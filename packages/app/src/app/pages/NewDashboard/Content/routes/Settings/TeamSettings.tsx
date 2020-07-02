@@ -63,7 +63,7 @@ export const TeamSettings = () => {
   };
 
   if (!team) {
-    return <Header title="Workspace settings" />;
+    return <Header title="Workspace settings" activeTeam={null} />;
   }
   const created = team.users.find(user => user.id === team.creatorId);
   return (
@@ -71,7 +71,7 @@ export const TeamSettings = () => {
       <Helmet>
         <title>Workspace Settings - CodeSandbox</title>
       </Helmet>
-      <Header title="Workspace settings" />
+      <Header title="Workspace settings" activeTeam={activeTeam} />
       <Element
         css={css({
           height: 'calc(100vh - 140px)',
@@ -195,6 +195,7 @@ export const TeamSettings = () => {
             >
               <UserSearchInput
                 inputValue={inviteValue}
+                allowSelf={false}
                 onInputValueChange={val => {
                   setInviteValue(val);
                 }}
