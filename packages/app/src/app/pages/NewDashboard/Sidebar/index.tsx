@@ -368,6 +368,7 @@ const RowItem: React.FC<RowItemProps> = ({
             height: 10,
             paddingX: 0,
             opacity: isDragging && !canDrop ? 0.25 : 1,
+            marginTop: 1,
             color:
               isCurrentLink || (isDragging && canDrop)
                 ? 'list.hoverForeground'

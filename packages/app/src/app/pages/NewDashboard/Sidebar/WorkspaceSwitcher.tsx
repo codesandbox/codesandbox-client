@@ -112,7 +112,9 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
             >
               <Stack align="center" gap={2}>
                 <Avatar user={user} css={css({ size: 6 })} />
-                <Text size={3}>{user.username} (Personal)</Text>
+                <Text css={css({ width: '100%' })} size={3}>
+                  {user.username} (Personal)
+                </Text>
 
                 {!inTeamContext && <Icon name="simpleCheck" />}
               </Stack>
