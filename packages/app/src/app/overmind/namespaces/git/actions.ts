@@ -111,7 +111,7 @@ export const createRepoClicked: AsyncAction = async ({
   effects,
   actions,
 }) => {
-  effects.analytics.track('Create repo');
+  effects.analytics.track('GitHub - Create Repo');
   const { repoTitle } = state.git;
   const modulesNotSaved = !state.editor.isAllModulesSynced;
 
@@ -166,7 +166,7 @@ export const createRepoClicked: AsyncAction = async ({
 };
 
 export const openSourceSandbox: Action = ({ state, effects }) => {
-  effects.analytics.track('Open source sandbox');
+  effects.analytics.track('GitHub - Open Source Sandbox');
   const git = state.editor.currentSandbox!.baseGit
     ? state.editor.currentSandbox!.baseGit
     : state.editor.currentSandbox!.originalGit;
@@ -179,7 +179,7 @@ export const createCommitClicked: AsyncAction = async ({
   effects,
   actions,
 }) => {
-  effects.analytics.track('Create commit');
+  effects.analytics.track('GitHub - Create Commit');
   const sandbox = state.editor.currentSandbox!;
   const git = state.git;
 
@@ -252,7 +252,7 @@ export const createPrClicked: AsyncAction = async ({
   effects,
   actions,
 }) => {
-  effects.analytics.track('Open PR');
+  effects.analytics.track('GitHub - Open PR');
   const git = state.git;
   git.isCreatingPr = true;
   git.pr = null;
@@ -344,7 +344,7 @@ export const resolveConflicts: AsyncAction<Module> = async (
   { state, actions, effects },
   module
 ) => {
-  effects.analytics.track('Resolve conflicts');
+  effects.analytics.track('GitHub - Resolve Conflicts');
   const conflict = state.git.conflicts.find(
     conflictItem => module.path === '/' + conflictItem.filename
   );
@@ -428,7 +428,7 @@ export const resolveOutOfSync: AsyncAction = async ({
   actions,
   effects,
 }) => {
-  effects.analytics.track('Resolve out of sync');
+  effects.analytics.track('GitHub - Resolve out of sync');
   const git = state.git;
   const { added, deleted, modified } = git.outOfSyncUpdates;
   git.isResolving = true;
