@@ -43,7 +43,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
           width: '100%',
           height: '100%',
           borderBottom: '1px solid',
-          borderColor: 'sideBar.border',
+          borderColor: 'grays.500',
         })}
       >
         <Menu>
@@ -56,6 +56,10 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
               height: '100%',
               paddingLeft: 2,
               borderRadius: 0,
+
+              '&:hover': {
+                backgroundColor: 'grays.600',
+              },
             })}
           >
             <Stack as="span" align="center">
@@ -84,15 +88,17 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
               marginTop: '-4px',
               backgroundColor: 'grays.600',
             })}
-            style={{ backgroundColor: '#242424' }} // TODO: find a way to override reach styles without the selector mess
+            style={{ backgroundColor: '#242424', borderColor: '#343434' }} // TODO: find a way to override reach styles without the selector mess
           >
             <Menu.Item
               css={css({
                 height: 10,
                 textAlign: 'left',
                 backgroundColor: 'grays.600',
+                borderBottom: '1px solid',
+                borderColor: 'grays.500',
 
-                '&[data-reach-menu-item][data-component=MenuItem][data-selected]:hover': {
+                '&[data-reach-menu-item][data-component=MenuItem][data-selected]': {
                   backgroundColor: 'grays.500',
                 },
               })}
@@ -121,6 +127,8 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
                   height: 10,
                   textAlign: 'left',
                   backgroundColor: 'grays.600',
+                  borderBottom: '1px solid',
+                  borderColor: 'grays.500',
 
                   '&[data-reach-menu-item][data-component=MenuItem][data-selected]': {
                     backgroundColor: 'grays.500',
@@ -139,7 +147,6 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
                 )}
               </Stack>
             ))}
-            <Menu.Divider />
             <Stack
               as={Menu.Item}
               align="center"
@@ -158,7 +165,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
                   size: 6,
                   borderRadius: 'small',
                   border: '1px solid',
-                  borderColor: 'avatar.border',
+                  borderColor: 'grays.500',
                 })}
               >
                 <Icon name="plus" size={10} />
