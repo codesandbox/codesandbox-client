@@ -9,7 +9,7 @@ import { Card } from './components';
 
 export const NewTeam = () => {
   const {
-    state: { user, activeTeam },
+    state: { activeTeam },
     actions: { dashboard },
   } = useOvermind();
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,6 @@ export const NewTeam = () => {
   const onSubmit = async event => {
     event.preventDefault();
     const teamName = event.target.name.value;
-    console.warn(teamName, 'created by', user.username);
     setLoading(true);
     try {
       await dashboard.createTeam({ teamName });
