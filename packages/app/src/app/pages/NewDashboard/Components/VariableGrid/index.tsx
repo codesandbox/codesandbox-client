@@ -90,7 +90,6 @@ const ComponentForTypes: ComponentForTypes = {
   )),
   folder: props => <Folder {...props.item} />,
   repo: props => <Repo {...props.item} isScrolling={props.isScrolling} />,
-  // @ts-ignore TODO: find a better way to type this
   'new-folder': props => <CreateFolder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
   'new-repo': () => <ImportRepo />,
