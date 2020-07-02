@@ -610,13 +610,14 @@ export const forkExternalSandbox: AsyncAction<{
 
 export const forkSandboxClicked: AsyncAction<{
   teamId?: string | null;
-}> = async ({ state, effects, actions }) => {
+}> = async ({ state, actions }, { teamId }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
 
   await actions.editor.internal.forkSandbox({
     sandboxId: state.editor.currentSandbox.id,
+    teamId,
   });
 };
 
