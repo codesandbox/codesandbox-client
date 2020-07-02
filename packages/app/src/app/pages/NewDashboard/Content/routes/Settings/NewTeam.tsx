@@ -17,13 +17,25 @@ export const NewTeam = () => {
   const onSubmit = async event => {
     event.preventDefault();
     const teamName = event.target.name.value;
-    setLoading(true);
-    try {
-      await dashboard.createTeam({ teamName });
-      setLoading(false);
-      history.push(dashboardUrls.teamInvite(activeTeam));
-    } catch {
-      setLoading(false);
+    if (teamName && teamName.trim()) {
+      event.target.name.setCustomValidity('');
+      setLoading(true);
+      try {
+        await dashboard.createTeam({ teamName });
+        setLoading(false);
+        history.push(dashboardUrls.teamInvite(activeTeam));
+      } catch {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleInput = e => {
+    const { value } = e.target;
+    if (value && value.trim()) {
+      e.target.setCustomValidity('');
+    } else {
+      e.target.setCustomValidity('Workspace name is required.');
     }
   };
 
@@ -65,6 +77,8 @@ export const NewTeam = () => {
                   type="text"
                   placeholder="Workspace name"
                   autoFocus
+                  required
+                  onChange={handleInput}
                   css={css({ height: 8 })}
                 />
                 <Button

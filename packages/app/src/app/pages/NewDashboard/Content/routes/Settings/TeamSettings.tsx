@@ -191,6 +191,7 @@ export const TeamSettings = () => {
             >
               <UserSearchInput
                 inputValue={inviteValue}
+                allowSelf={false}
                 onInputValueChange={val => {
                   setInviteValue(val);
                 }}
