@@ -142,6 +142,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             page="home"
             path={dashboardUrls.home(activeTeam)}
             icon="box"
+            style={{ marginTop: 1 }}
           />
           {inTeamContext ? null : (
             <RowItem
@@ -368,7 +369,6 @@ const RowItem: React.FC<RowItemProps> = ({
             height: 10,
             paddingX: 0,
             opacity: isDragging && !canDrop ? 0.25 : 1,
-            marginTop: 1,
             color:
               isCurrentLink || (isDragging && canDrop)
                 ? 'list.hoverForeground'

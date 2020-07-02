@@ -7,6 +7,7 @@ import {
   ServerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
+import history from 'app/utils/history';
 import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { NotificationStatus } from '@codesandbox/notifications';
@@ -563,4 +564,28 @@ export const setActiveTeamFromUrl: Action<void, string | undefined> = ({
   }
 
   return undefined;
+};
+
+export const replaceWorkspaceParameterInUrl: Action = ({ state }) => {
+  const id = state.activeTeam;
+  const currentUrl =
+    typeof document === 'undefined' ? null : document.location.href;
+
+  if (!currentUrl) {
+    return;
+  }
+
+  const urlInfo = new URL(currentUrl);
+  const params = urlInfo.searchParams;
+  if (!params.get('workspace')) {
+    return;
+  }
+
+  if (id) {
+    urlInfo.searchParams.set('workspace', id);
+  } else {
+    urlInfo.searchParams.delete('workspace');
+  }
+
+  history.replace(urlInfo.toString().replace(urlInfo.origin, ''));
 };

@@ -309,6 +309,8 @@ export const setActiveTeam: AsyncAction<{
     ALL: null,
   };
 
+  actions.internal.replaceWorkspaceParameterInUrl();
+
   try {
     const teamInfo = await actions.getActiveTeamInfo();
     if (teamInfo) {
