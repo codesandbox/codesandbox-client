@@ -125,9 +125,12 @@ const TeamSignIn = ({ inviteToken }: { inviteToken: string }) => {
 };
 
 const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
-  const { effects, state } = useOvermind();
+  const { effects } = useOvermind();
   const [loading, setLoading] = React.useState(true);
-  const [teamId, setTeamId] = React.useState<string | null>(null);
+  const [team, setTeam] = React.useState<{
+    id: string;
+    joinedPilotAt: string | null;
+  } | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
 
   const [joinTeam] = useMutation(joinTeamMutation);
@@ -138,12 +141,12 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
         track('Team - Join Team', { source: 'url' });
 
         const result = await joinTeam({ variables: { inviteToken } });
-        const team = result.data.redeemTeamInviteToken;
+        const resultTeam = result.data.redeemTeamInviteToken;
         effects.notificationToast.success(
-          'Successfully joined ' + team.name + '!'
+          'Successfully joined ' + resultTeam.name + '!'
         );
 
-        setTeamId(team.id);
+        setTeam(resultTeam);
       } catch (e) {
         setError(e);
       } finally {
@@ -158,15 +161,15 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
     return <ErrorDialog error={error} />;
   }
 
-  if (loading || !teamId) {
+  if (loading || !team?.id) {
     return <Text size={6}>Joining Team...</Text>;
   }
 
-  if (state.user?.experiments?.inPilot) {
-    return <Redirect to={dashboard.home(teamId)} />;
+  if (team.joinedPilotAt) {
+    return <Redirect to={dashboard.home(team.id)} />;
   }
 
-  return <Redirect to={teamOverviewUrl(teamId)} />;
+  return <Redirect to={teamOverviewUrl(team.id)} />;
 };
 
 export const TeamInvitation: React.FC<{

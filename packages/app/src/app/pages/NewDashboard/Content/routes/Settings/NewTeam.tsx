@@ -9,7 +9,6 @@ import { Card } from './components';
 
 export const NewTeam = () => {
   const {
-    state: { activeTeam },
     actions: { dashboard },
   } = useOvermind();
   const [loading, setLoading] = useState(false);
@@ -23,7 +22,7 @@ export const NewTeam = () => {
       try {
         await dashboard.createTeam({ teamName });
         setLoading(false);
-        history.push(dashboardUrls.teamInvite(activeTeam));
+        history.push(dashboardUrls.teamInvite());
       } catch {
         setLoading(false);
       }
