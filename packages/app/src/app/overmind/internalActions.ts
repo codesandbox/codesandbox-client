@@ -524,10 +524,43 @@ export const setViewModeForDashboard: Action = ({ effects, state }) => {
   }
 };
 
-export const setActiveTeamFromLocalStorage: Action = ({ effects, actions }) => {
+export const setActiveTeamFromUrlOrStore: Action<void, string | null> = ({
+  actions,
+}) =>
+  actions.internal.setActiveTeamFromUrl() ||
+  actions.internal.setActiveTeamFromLocalStorage();
+
+export const setActiveTeamFromLocalStorage: Action<
+  void,
+  string | undefined
+> = ({ effects, actions }) => {
   const localStorageTeam = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
 
   if (typeof localStorageTeam === 'string') {
     actions.setActiveTeam({ id: localStorageTeam });
+    return localStorageTeam;
   }
+
+  return undefined;
+};
+
+export const setActiveTeamFromUrl: Action<void, string | undefined> = ({
+  effects,
+  actions,
+}) => {
+  const currentUrl =
+    typeof document === 'undefined' ? null : document.location.href;
+  if (!currentUrl) {
+    return undefined;
+  }
+
+  const searchParams = new URL(currentUrl).searchParams;
+
+  if (searchParams.get('workspace')) {
+    const teamId = searchParams.get('workspace');
+    actions.setActiveTeam({ id: teamId });
+    return teamId;
+  }
+
+  return undefined;
 };

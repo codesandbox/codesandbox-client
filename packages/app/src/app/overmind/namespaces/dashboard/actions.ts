@@ -456,7 +456,7 @@ export const getStartPageSandboxes: AsyncAction = async ({
 
     dashboard.sandboxes.TEMPLATE_HOME = usedTemplates.me.recentlyUsedTemplates.slice(
       0,
-      3
+      5
     );
 
     const result = await effects.gql.queries.recentlyAccessedSandboxes({

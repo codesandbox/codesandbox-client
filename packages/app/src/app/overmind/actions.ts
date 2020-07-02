@@ -309,12 +309,17 @@ export const setActiveTeam: AsyncAction<{
     ALL: null,
   };
 
-  const teamInfo = await actions.getActiveTeamInfo();
-  if (teamInfo) {
-    effects.analytics.track('Team - Change Active Team', {
-      newTeamId: id,
-      newTeamName: teamInfo.name,
-    });
+  try {
+    const teamInfo = await actions.getActiveTeamInfo();
+    if (teamInfo) {
+      effects.analytics.track('Team - Change Active Team', {
+        newTeamId: id,
+        newTeamName: teamInfo.name,
+      });
+    }
+  } catch (e) {
+    // Something went wrong while fetching the workspace
+    actions.setActiveTeam({ id: null });
   }
 };
 
