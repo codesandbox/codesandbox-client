@@ -22,7 +22,7 @@ export const ForkServerModal: FunctionComponent = () => {
   useEffect(() => {
     // Which means that the user signed in in the meantime with the intention to fork
     if (isLoggedIn) {
-      forkSandboxClicked();
+      forkSandboxClicked({});
 
       modalClosed();
     }

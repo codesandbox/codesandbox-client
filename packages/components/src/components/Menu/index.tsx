@@ -221,7 +221,12 @@ const MenuItem = props => (
 );
 
 const MenuDivider = props => (
-  <Element as="hr" data-component="MenuDivider" {...props} />
+  <Element
+    as="hr"
+    data-component="MenuDivider"
+    style={{ margin: '0.25rem 0' }}
+    {...props}
+  />
 );
 
 Menu.Button = MenuButton;

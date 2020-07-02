@@ -13,6 +13,7 @@ interface IAvatarProps {
     badges?: any[];
     subscriptionSince?: string | null;
   };
+  className?: string;
 }
 
 export const AvatarContainer = styled(Element).attrs({ as: 'span' })(

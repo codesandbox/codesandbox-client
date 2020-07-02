@@ -98,7 +98,7 @@ const NotOwner = () => {
       <Button
         variant="primary"
         disabled={isForkingSandbox}
-        onClick={() => forkSandboxClicked()}
+        onClick={() => forkSandboxClicked({})}
       >
         Fork Sandbox
       </Button>
