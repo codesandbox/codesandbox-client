@@ -125,6 +125,22 @@ export const comments = props => (
   </Element>
 );
 
+export const simpleCheck = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M6.49708 10.3223L13 4L14.3942 5.43399L6.49708 13.1117L1 7.76732L2.39416 6.33333L6.49708 10.3223Z"
+      fill="currentColor"
+    />
+  </Element>
+);
+
 export const check = props => (
   <Element
     as="svg"
