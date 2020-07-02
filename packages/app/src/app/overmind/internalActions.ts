@@ -10,6 +10,7 @@ import {
 import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { NotificationStatus } from '@codesandbox/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import values from 'lodash-es/values';
 
 import { ApiError } from './effects/api/apiFactory';
@@ -121,10 +122,10 @@ export const authorize: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const signInGithub: Action<
-  { useExtraScopes?: boolean },
-  Promise<void>
-> = ({ effects }, options) => {
+export const signInGithub: AsyncAction<{ useExtraScopes?: boolean }> = (
+  { effects },
+  options
+) => {
   const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
   const authPath = new URL(
     location.origin + (hasDevAuth ? '/auth/dev' : '/auth/github')
@@ -165,6 +166,16 @@ export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
   state.currentModal = null;
 };
 
+export const currentSandboxChanged: Action = ({ state, effects, actions }) => {
+  const sandbox = state.editor.currentSandbox!;
+  if (
+    hasPermission(sandbox.authorization, 'owner') &&
+    state.user?.experiments.inPilot
+  ) {
+    actions.setActiveTeam({ id: sandbox.team?.id || null });
+  }
+};
+
 export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   { state, effects, actions },
   sandbox
@@ -196,10 +207,7 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
       const resolvedModule = effects.utils.resolveModule(
         sandboxOptions.currentModule,
         sandbox.modules,
-        sandbox.directories,
-        // currentModule is a string... something wrong here?
-        // @ts-ignore
-        sandboxOptions.currentModule.directoryShortid
+        sandbox.directories
       );
       currentModuleShortid = resolvedModule
         ? resolvedModule.shortid
@@ -267,6 +275,8 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   // sandbox without a git
   actions.workspace.openDefaultItem();
   actions.server.startContainer(sandbox);
+
+  actions.internal.currentSandboxChanged();
 };
 
 export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {

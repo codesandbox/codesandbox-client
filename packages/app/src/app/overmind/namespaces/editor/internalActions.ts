@@ -479,6 +479,8 @@ export const forkSandbox: AsyncAction<{
     if (sandbox.originalGit) {
       actions.git.loadGitSource();
     }
+
+    actions.internal.currentSandboxChanged();
   } catch (error) {
     console.error(error);
     actions.internal.handleError({
