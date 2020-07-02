@@ -20,7 +20,7 @@ export const useAccordion = () => {
     }
     const toggleClasses = e => {
       if (e.target.localName !== 'h2') return;
-      history.pushState({}, '', 'faq/#' + e.target.id);
+      history.replaceState({}, '', '#' + e.target.id);
       history.scrollRestoration = 'manual';
       const parent = e.target.parentNode;
 
