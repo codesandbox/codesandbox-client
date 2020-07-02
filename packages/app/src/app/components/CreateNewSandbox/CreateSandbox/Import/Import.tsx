@@ -118,7 +118,7 @@ export const Import = () => {
                 as={Link}
                 to={gitHubToSandboxUrl(url)}
                 onClick={() => {
-                  actions.modalClosed();
+                  actions.modals.newSandboxModal.close();
                 }}
               >
                 Generate Sandbox
