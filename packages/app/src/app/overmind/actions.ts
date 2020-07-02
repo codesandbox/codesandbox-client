@@ -3,10 +3,12 @@ import {
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
 import { identify } from '@codesandbox/common/lib/utils/analytics';
+import { CurrentTeamInfoFragmentFragment } from 'app/graphql/types';
 
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
 import { Action, AsyncAction } from '.';
+import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 
 export const internal = internalActions;
 
@@ -290,18 +292,50 @@ export const rejectTeamInvitation: Action<{ teamName: string }> = (
   effects.notificationToast.success(`Rejected invitation to ${teamName}`);
 };
 
-export const getActiveTeam: AsyncAction = async ({ state, effects }) => {
-  if (!state.activeTeam) return;
+export const setActiveTeam: AsyncAction<{
+  id: string | null;
+}> = async ({ state, actions, effects }, { id }) => {
+  // ignore if its already selected
+  if (id === state.activeTeam) return;
+
+  state.activeTeam = id;
+  effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
+  state.dashboard.sandboxes = {
+    ...state.dashboard.sandboxes,
+    DRAFTS: null,
+    TEMPLATES: null,
+    RECENT: null,
+    SEARCH: null,
+    ALL: null,
+  };
+
+  const teamInfo = await actions.getActiveTeamInfo();
+  if (teamInfo) {
+    effects.analytics.track('Team - Change Active Team', {
+      newTeamId: id,
+      newTeamName: teamInfo.name,
+    });
+  }
+};
+
+export const getActiveTeamInfo: AsyncAction<
+  void,
+  CurrentTeamInfoFragmentFragment | null
+> = async ({ state, effects }) => {
+  if (!state.activeTeam) return null;
 
   const team = await effects.gql.queries.getTeam({
     teamId: state.activeTeam,
   });
 
-  if (!team || !team.me) {
-    return;
+  const currentTeam = team?.me?.team;
+  if (!currentTeam) {
+    return null;
   }
 
-  state.activeTeamInfo = team.me.team;
+  state.activeTeamInfo = currentTeam;
+
+  return currentTeam;
 };
 
 export const openCreateSandboxModal: Action<{ collectionId?: string }> = (

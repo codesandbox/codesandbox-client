@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import {
@@ -26,10 +26,6 @@ export const TeamSettings = () => {
     state: { user: stateUser, activeTeam, activeTeamInfo: team },
     actions,
   } = useOvermind();
-
-  useEffect(() => {
-    actions.getActiveTeam();
-  }, [activeTeam, actions]);
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);

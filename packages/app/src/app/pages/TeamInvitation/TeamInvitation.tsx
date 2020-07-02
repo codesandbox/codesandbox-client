@@ -15,6 +15,7 @@ import { Helmet } from 'react-helmet';
 import {
   teamOverviewUrl,
   dashboardUrl,
+  dashboard,
 } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { PageContainer, ContentContainer } from './elements';
@@ -124,7 +125,7 @@ const TeamSignIn = ({ inviteToken }: { inviteToken: string }) => {
 };
 
 const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
-  const { effects } = useOvermind();
+  const { effects, state } = useOvermind();
   const [loading, setLoading] = React.useState(true);
   const [teamId, setTeamId] = React.useState<string | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
@@ -159,6 +160,10 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
 
   if (loading || !teamId) {
     return <Text size={6}>Joining Team...</Text>;
+  }
+
+  if (state.user?.experiments?.inPilot) {
+    return <Redirect to={dashboard.home(teamId)} />;
   }
 
   return <Redirect to={teamOverviewUrl(teamId)} />;

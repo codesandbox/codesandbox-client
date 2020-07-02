@@ -30,10 +30,6 @@ export const Invite = () => {
 
   const inviteLink = team && teamInviteLink(team.inviteToken);
 
-  React.useEffect(() => {
-    actions.getActiveTeam();
-  }, [actions, activeTeam]);
-
   const [inviteValue, setInviteValue] = React.useState('');
   const [linkCopied, setLinkCopied] = React.useState(false);
   const copyLinkTimeoutRef = React.useRef<number>();

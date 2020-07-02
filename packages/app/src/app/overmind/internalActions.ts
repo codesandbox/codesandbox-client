@@ -509,14 +509,15 @@ export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
 const VIEW_MODE_DASHBOARD = 'VIEW_MODE_DASHBOARD';
 export const setViewModeForDashboard: Action = ({ effects, state }) => {
   const localStorageViewMode = effects.browser.storage.get(VIEW_MODE_DASHBOARD);
-  if (localStorageViewMode) {
+  if (localStorageViewMode === 'grid' || localStorageViewMode === 'list') {
     state.dashboard.viewMode = localStorageViewMode;
   }
 };
 
-export const setActiveTeamFromLocalStorage: Action = ({ effects, state }) => {
+export const setActiveTeamFromLocalStorage: Action = ({ effects, actions }) => {
   const localStorageTeam = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
-  if (localStorageTeam) {
-    state.activeTeam = localStorageTeam;
+
+  if (typeof localStorageTeam === 'string') {
+    actions.setActiveTeam({ id: localStorageTeam });
   }
 };

@@ -66,7 +66,7 @@ export const withLoadApp = <T>(
     try {
       const [user] = await Promise.all([
         effects.api.getCurrentUser(),
-        actions.getActiveTeam(),
+        actions.getActiveTeamInfo(),
       ]);
       state.user = user;
       actions.internal.setPatronPrice();

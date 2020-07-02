@@ -96,7 +96,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
               })}
               style={{ paddingLeft: 8 }}
               onSelect={() => {
-                actions.dashboard.setActiveTeam({ id: null });
+                actions.setActiveTeam({ id: null });
                 track('Dashboard - Change workspace', {
                   dashboardVersion: 2,
                 });
@@ -122,9 +122,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
                       : 'transparent',
                 })}
                 style={{ paddingLeft: 8 }}
-                onSelect={() =>
-                  actions.dashboard.setActiveTeam({ id: team.id })
-                }
+                onSelect={() => actions.setActiveTeam({ id: team.id })}
               >
                 <TeamAvatar name={team.name} size="small" />
                 <Text size={3}>{team.name}</Text>

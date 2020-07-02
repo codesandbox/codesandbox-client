@@ -7,7 +7,6 @@ import {
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
 } from 'app/graphql/types';
-import { TEAM_ID_LOCAL_STORAGE } from 'app/overmind/utils/team';
 import { OrderBy, sandboxesTypes } from './state';
 import { getDecoratedCollection } from './utilts';
 
@@ -23,24 +22,6 @@ export const setTrashSandboxes: Action<{
   sandboxIds: string[];
 }> = ({ state }, { sandboxIds }) => {
   state.dashboard.trashSandboxIds = sandboxIds;
-};
-
-export const setActiveTeam: Action<{
-  id: string | null;
-}> = ({ state, effects }, { id }) => {
-  // ignore if its already selected
-  if (id === state.activeTeam) return;
-
-  state.activeTeam = id;
-  effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
-  state.dashboard.sandboxes = {
-    ...state.dashboard.sandboxes,
-    DRAFTS: null,
-    TEMPLATES: null,
-    RECENT: null,
-    SEARCH: null,
-    ALL: null,
-  };
 };
 
 export const dragChanged: Action<{ isDragging: boolean }> = (
@@ -184,7 +165,7 @@ export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
       teamId: state.activeTeam,
     });
 
-    actions.dashboard.setActiveTeam({ id: null });
+    actions.setActiveTeam({ id: null });
     actions.dashboard.getTeams();
 
     effects.notificationToast.success(
@@ -963,7 +944,7 @@ export const createTeam: AsyncAction<{
       name: teamName,
     });
     state.dashboard.teams = [...state.dashboard.teams, newTeam];
-    actions.dashboard.setActiveTeam({ id: newTeam.id });
+    actions.setActiveTeam({ id: newTeam.id });
   } catch {
     effects.notificationToast.error('There was a problem creating your team');
   }
