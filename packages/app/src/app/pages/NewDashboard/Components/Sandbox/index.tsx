@@ -219,15 +219,8 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
       setRenaming(false);
       track('Dashboard - Rename sandbox', { dashboardVersion: 2 });
     },
-    [
-      actions.dashboard,
-      page,
-      sandbox.id,
-      sandbox.originalGit.repo,
-      newTitle,
-      sandboxTitle,
-      setRenaming,
-    ]
+    // eslint-disable-next-line
+    [actions.dashboard, page, sandbox.id, newTitle, sandboxTitle, setRenaming]
   );
 
   const onInputBlur = React.useCallback(() => {
@@ -250,8 +243,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   };
 
   const sandboxProps = {
-    prNumber: item.sandbox.prNumber,
-    originalGit: item.sandbox.originalGit,
     isHomeTemplate: item.isHomeTemplate,
     sandboxTitle,
     sandboxLocation,

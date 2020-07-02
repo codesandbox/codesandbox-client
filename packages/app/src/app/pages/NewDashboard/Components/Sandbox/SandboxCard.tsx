@@ -161,7 +161,6 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
 
 export const SandboxCard = ({
   sandbox,
-  originalGit,
   sandboxTitle,
   sandboxLocation,
   isHomeTemplate,
@@ -170,7 +169,6 @@ export const SandboxCard = ({
   TemplateIcon,
   PrivacyIcon,
   screenshotUrl,
-  prNumber,
   // interactions
   isScrolling,
   selected,
@@ -282,8 +280,8 @@ export const SandboxCard = ({
       </Element>
 
       <SandboxTitle
-        originalGit={originalGit}
-        prNumber={prNumber}
+        originalGit={sandbox.originalGit}
+        prNumber={sandbox.prNumber}
         editing={editing}
         stoppedScrolling={stoppedScrolling}
         onContextMenu={onContextMenu}

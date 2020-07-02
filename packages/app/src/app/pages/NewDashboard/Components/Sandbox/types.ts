@@ -1,4 +1,3 @@
-import { RepoFragmentDashboardFragment } from 'app/graphql/types';
 import { DashboardSandbox, DashboardTemplate } from '../../types';
 
 export interface SandboxItemComponentProps {
@@ -10,8 +9,6 @@ export interface SandboxItemComponentProps {
   viewCount: number | string;
   TemplateIcon: React.FC<{ width: string; height: string }>;
   PrivacyIcon: React.FC;
-  prNumber?: number;
-  originalGit?: RepoFragmentDashboardFragment['originalGit'];
   screenshotUrl: string | null;
 
   isScrolling: boolean;
