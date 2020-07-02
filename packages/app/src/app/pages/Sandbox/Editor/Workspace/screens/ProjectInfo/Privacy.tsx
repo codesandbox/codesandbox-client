@@ -1,16 +1,18 @@
-import React from 'react';
 import {
   Collapsible,
-  Text,
   Link,
-  Stack,
   Select,
+  Stack,
+  Text,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
+import React, { FunctionComponent } from 'react';
+
+import { useOvermind } from 'app/overmind';
+
 import { GlobeIcon } from './icons';
 
-export const Privacy = () => {
+export const Privacy: FunctionComponent = () => {
   const {
     actions: {
       workspace: { sandboxPrivacyChanged },
@@ -20,12 +22,11 @@ export const Privacy = () => {
       user,
     },
   } = useOvermind();
-
   const isPaidUser = user?.subscription;
 
   return (
-    <Collapsible title="Privacy" defaultOpen>
-      <Stack direction="vertical" gap={4} css={css({ paddingX: 3 })}>
+    <Collapsible defaultOpen title="Privacy">
+      <Stack css={css({ paddingX: 3 })} direction="vertical" gap={4}>
         <Select
           disabled={!isPaidUser}
           icon={GlobeIcon}
@@ -38,9 +39,12 @@ export const Privacy = () => {
           value={currentSandbox.privacy}
         >
           <option value={0}>Public</option>
+
           <option value={1}>Unlisted (only available by url)</option>
+
           <option value={2}>Private</option>
         </Select>
+
         {!isPaidUser ? (
           <Text variant="muted" size={2}>
             You can change privacy of a sandbox as a Pro.{' '}
