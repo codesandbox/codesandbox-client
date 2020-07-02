@@ -12,7 +12,10 @@ interface TeamItemProps {
 }
 
 const TeamItem = (props: TeamItemProps) => (
-  <Menu.Item onSelect={props.onSelect}>
+  <Menu.Item
+    style={{ paddingTop: 8, paddingBottom: 8, fontWeight: 500 }}
+    onSelect={props.onSelect}
+  >
     <Stack style={{ alignItems: 'center' }}>
       <TeamAvatar
         css={css({ marginRight: 2 })}
@@ -32,7 +35,10 @@ interface UserItemProps {
 }
 
 const UserItem = (props: UserItemProps) => (
-  <Menu.Item onSelect={props.onSelect}>
+  <Menu.Item
+    style={{ paddingTop: 8, paddingBottom: 8, fontWeight: 500 }}
+    onSelect={props.onSelect}
+  >
     <Stack style={{ alignItems: 'center' }}>
       <Avatar
         css={css({ marginRight: 2, size: 6 })}
@@ -156,7 +162,18 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
         >
           <Icon size={8} name="caret" />
         </Menu.Button>
-        <Menu.List>
+        <Menu.List
+          css={css({
+            fontSize: 2,
+            lineHeight: 1,
+          })}
+          style={{
+            paddingTop: 4,
+            paddingBottom: 4,
+            marginLeft: '-4rem',
+            marginTop: -4,
+          }}
+        >
           <TeamOrUserItem forkClicked={props.forkClicked} item={currentSpace} />
           <Menu.Divider />
           {otherWorkspaces.map((space, i) => (
