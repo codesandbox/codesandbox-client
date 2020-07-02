@@ -135,6 +135,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
     <Stack>
       <Button
         onClick={() => props.forkClicked()}
+        loading={state.editor.isForkingSandbox}
         variant={props.variant}
         css={{
           width: 'calc(100% - 26px)',

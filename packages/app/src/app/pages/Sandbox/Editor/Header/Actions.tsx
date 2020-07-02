@@ -38,6 +38,7 @@ export const Actions = () => {
       user,
       live: { isLive },
       editor: {
+        isForkingSandbox,
         currentSandbox: {
           id,
           author,
@@ -179,6 +180,7 @@ export const Actions = () => {
         />
       ) : (
         <Button
+          loading={isForkingSandbox}
           variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
           onClick={() => forkSandboxClicked({})}
         >
