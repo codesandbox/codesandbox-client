@@ -608,11 +608,7 @@ export const forkExternalSandbox: AsyncAction<{
   }
 };
 
-export const forkSandboxClicked: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const forkSandboxClicked: AsyncAction = async ({ actions, state }) => {
   if (!state.editor.currentSandbox) {
     return;
   }

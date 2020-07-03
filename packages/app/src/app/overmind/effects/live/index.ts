@@ -413,7 +413,7 @@ class Live {
     });
   }
 
-  sendLiveMode(mode: string) {
+  sendLiveMode(mode: RoomInfo['mode']) {
     return this.send('live:mode', {
       mode,
     });
