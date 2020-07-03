@@ -2,6 +2,7 @@ import {
   IModuleStateModule,
   LiveMessage,
   LiveMessageEvent,
+  RoomInfo,
   UserSelection,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
@@ -275,9 +276,9 @@ export const onSelectionChanged: Action<UserSelection> = (
   }
 };
 
-export const onModeChanged: Action<{ mode: string }> = (
-  { state, effects },
-  { mode }
+export const onModeChanged: Action<RoomInfo['mode']> = (
+  { effects, state },
+  mode
 ) => {
   if (state.live.isOwner && state.live.roomInfo) {
     state.live.roomInfo.mode = mode;
@@ -285,31 +286,30 @@ export const onModeChanged: Action<{ mode: string }> = (
   }
 };
 
-export const onAddEditorClicked: Action<{
-  liveUserId: string;
-}> = ({ state, effects }, { liveUserId }) => {
+export const onAddEditorClicked: Action<string> = (
+  { effects, state },
+  liveUserId
+) => {
   if (!state.live.roomInfo) {
     return;
   }
+
   state.live.roomInfo.editorIds.push(liveUserId);
 
   effects.live.sendEditorAdded(liveUserId);
 };
 
-export const onRemoveEditorClicked: Action<any> = (
-  { state, effects },
-  { liveUserId, data }
+export const onRemoveEditorClicked: Action<string> = (
+  { effects, state },
+  liveUserId
 ) => {
-  const userId = liveUserId || data.editor_user_id;
-
   if (!state.live.roomInfo) {
     return;
   }
 
-  const editors = state.live.roomInfo.editorIds;
-  const newEditors = editors.filter(id => id !== userId);
-
-  state.live.roomInfo.editorIds = newEditors;
+  state.live.roomInfo.editorIds = state.live.roomInfo.editorIds.filter(
+    id => id !== liveUserId
+  );
 
   effects.live.sendEditorRemoved(liveUserId);
 };
@@ -346,16 +346,17 @@ export const onChatEnabledToggle: Action = ({ effects, state }) => {
   }
 };
 
-export const onFollow: Action<{
-  liveUserId: string;
-}> = ({ state, effects, actions }, { liveUserId }) => {
+export const onFollow: Action<string> = (
+  { actions, effects, state },
+  liveUserId
+) => {
   if (!state.live.roomInfo) {
     return;
   }
 
   effects.analytics.track('Follow Along in Live');
   state.live.followingUserId = liveUserId;
-  actions.live.revealViewRange({ liveUserId });
+  actions.live.revealViewRange(liveUserId);
 
   if (state.editor.currentModule) {
     // In case the selections were hidden first
@@ -395,15 +396,15 @@ export const onStopFollow: Action = ({ state, effects, actions }) => {
   }
 };
 
-export const revealViewRange: Action<{ liveUserId: string }> = (
-  { state, effects, actions },
-  { liveUserId }
+export const revealViewRange: Action<string> = (
+  { actions, effects, state },
+  liveUserId
 ) => {
   if (!state.live.roomInfo) {
     return;
   }
 
-  const user = state.live.roomInfo.users.find(u => u.id === liveUserId);
+  const user = state.live.roomInfo.users.find(({ id }) => id === liveUserId);
 
   if (user && user.currentModuleShortid && state.editor.currentSandbox) {
     const { modules } = state.editor.currentSandbox;

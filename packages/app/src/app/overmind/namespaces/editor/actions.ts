@@ -608,11 +608,7 @@ export const forkExternalSandbox: AsyncAction<{
   }
 };
 
-export const forkSandboxClicked: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const forkSandboxClicked: AsyncAction = async ({ actions, state }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -780,9 +776,9 @@ export const projectViewToggled: Action = ({ state, actions }) => {
   actions.editor.internal.updatePreviewCode();
 };
 
-export const frozenUpdated: AsyncAction<{ frozen: boolean }> = async (
-  { state, effects },
-  { frozen }
+export const frozenUpdated: AsyncAction<boolean> = async (
+  { effects, state },
+  frozen
 ) => {
   if (!state.editor.currentSandbox) {
     return;
@@ -1249,10 +1245,7 @@ export const openDevtoolsTab: Action<{
   }
 };
 
-export const sessionFreezeOverride: Action<{ frozen: boolean }> = (
-  { state },
-  { frozen }
-) => {
+export const sessionFreezeOverride: Action<boolean> = ({ state }, frozen) => {
   state.editor.sessionFrozen = frozen;
 };
 
