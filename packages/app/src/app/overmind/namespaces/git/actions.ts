@@ -155,7 +155,12 @@ export const createRepoClicked: AsyncAction = async ({
     git.commitSha = null;
     state.git.isExported = true;
     state.currentModal = null;
-    effects.router.updateSandboxUrl({ git });
+
+    actions.editor.internal.forkSandbox({
+      sandboxId: `github/${git.username}/${git.repo}/tree/${
+        git.branch
+      }/${git.path || ''}`,
+    });
   } catch (error) {
     actions.internal.handleError({
       error,
@@ -163,6 +168,18 @@ export const createRepoClicked: AsyncAction = async ({
         'Unable to create the repo. Please refresh and try again or report issue.',
     });
   }
+};
+
+export const importFromGithub: AsyncAction<string> = async (
+  { state, effects, actions },
+  sandboxUrl
+) => {
+  actions.modalClosed();
+  state.currentModal = 'exportGithub';
+  await actions.editor.internal.forkSandbox({
+    sandboxId: sandboxUrl.replace('/s/', ''),
+  });
+  state.currentModal = null;
 };
 
 export const openSourceSandbox: Action = ({ state, effects }) => {
