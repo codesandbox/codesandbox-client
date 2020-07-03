@@ -31,4 +31,7 @@ experience.
 
 #### Fixes
 
--
+- Made bracket matches more apparent in the CSB Black theme
+- We now close the modal after importing a GitHub repo on the Create Sandbox screen
+- Fixed an issue with being unable to save all after reloading a sandbox with unsaved changes 
+- [@jyash97](https://github.com/codesandbox/codesandbox-client/pull/4487) made sure you can't invite yourself to a workspace
