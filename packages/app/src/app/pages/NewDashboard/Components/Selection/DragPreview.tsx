@@ -23,6 +23,14 @@ interface DragPreviewProps {
   setDragging: (value: boolean) => void;
 }
 
+const ROTATION_DEGREE = 5;
+/**
+ * Find an even rotation that distributes the cards nicely
+ */
+function getRotation(i: number, length: number) {
+  return (i - Math.floor(length / 2)) * ROTATION_DEGREE;
+}
+
 export const DragPreview: React.FC<DragPreviewProps> = React.memo(
   ({
     sandboxes,
@@ -169,9 +177,10 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
                     transform:
                       viewMode === 'list'
                         ? null
-                        : `rotate(${(index -
-                            Math.floor(selectedItems.length / 2)) *
-                            5}deg)`,
+                        : `rotate(${getRotation(
+                            index,
+                            selectedItems.length
+                          )}deg)`,
                     backgroundImage: item.url ? `url(${item.url})` : null,
                   }}
                   css={css({
