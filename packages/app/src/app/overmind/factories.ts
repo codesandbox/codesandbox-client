@@ -73,7 +73,7 @@ export const withLoadApp = <T>(
 
       actions.internal.setPatronPrice();
       effects.analytics.identify('signed_in', true);
-      effects.analytics.setUserId(state.user.id, state.user.email);
+      effects.analytics.setUserId(state.user!.id, state.user!.email);
 
       try {
         actions.internal.trackCurrentTeams().catch(e => {});

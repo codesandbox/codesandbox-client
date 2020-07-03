@@ -468,7 +468,7 @@ export const trackCurrentTeams: AsyncAction = async ({ effects, state }) => {
     return;
   }
 
-  if (user.experiments.inPilot) {
+  if (user.experiments.inPilot && state.activeTeamInfo) {
     effects.analytics.setGroup('teamName', state.activeTeamInfo.name);
     effects.analytics.setGroup('teamId', state.activeTeamInfo.id);
   } else {
@@ -541,10 +541,10 @@ export const setActiveTeamFromUrlOrStore: Action<void, string | null> = ({
   actions.internal.setActiveTeamFromUrl() ||
   actions.internal.setActiveTeamFromLocalStorage();
 
-export const setActiveTeamFromLocalStorage: Action<
-  void,
-  string | undefined
-> = ({ effects, actions }) => {
+export const setActiveTeamFromLocalStorage: Action<void, string | null> = ({
+  effects,
+  actions,
+}) => {
   const localStorageTeam = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
 
   if (typeof localStorageTeam === 'string') {
@@ -552,17 +552,17 @@ export const setActiveTeamFromLocalStorage: Action<
     return localStorageTeam;
   }
 
-  return undefined;
+  return null;
 };
 
-export const setActiveTeamFromUrl: Action<void, string | undefined> = ({
+export const setActiveTeamFromUrl: Action<void, string | null> = ({
   effects,
   actions,
 }) => {
   const currentUrl =
     typeof document === 'undefined' ? null : document.location.href;
   if (!currentUrl) {
-    return undefined;
+    return null;
   }
 
   const searchParams = new URL(currentUrl).searchParams;
@@ -573,7 +573,7 @@ export const setActiveTeamFromUrl: Action<void, string | undefined> = ({
     return teamId;
   }
 
-  return undefined;
+  return null;
 };
 
 export const replaceWorkspaceParameterInUrl: Action = ({ state }) => {
