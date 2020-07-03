@@ -20,7 +20,10 @@ export const NewTeam = () => {
       event.target.name.setCustomValidity('');
       setLoading(true);
       try {
-        await dashboard.createTeam({ teamName });
+        await dashboard.createTeam({
+          teamName,
+          pilot: location.search.includes('pilot'),
+        });
         setLoading(false);
         history.push(dashboardUrls.teamInvite());
       } catch {
