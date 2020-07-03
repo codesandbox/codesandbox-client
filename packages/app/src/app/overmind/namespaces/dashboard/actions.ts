@@ -943,7 +943,7 @@ export const createTeam: AsyncAction<{
   try {
     const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
       name: teamName,
-      pilot: !!pilot,
+      pilot,
     });
     state.dashboard.teams = [...state.dashboard.teams, newTeam];
     actions.setActiveTeam({ id: newTeam.id });
