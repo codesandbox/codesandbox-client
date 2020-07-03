@@ -1206,7 +1206,7 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
 
 export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
   Team,
-  'id' | 'creatorId' | 'description' | 'inviteToken' | 'name'
+  'id' | 'creatorId' | 'description' | 'inviteToken' | 'joinedPilotAt' | 'name'
 > & {
     users: Array<
       { __typename?: 'User' } & Pick<User, 'id' | 'avatarUrl' | 'username'>

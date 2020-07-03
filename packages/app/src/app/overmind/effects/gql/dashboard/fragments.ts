@@ -121,6 +121,7 @@ export const currentTeamInfoFragment = gql`
     creatorId
     description
     inviteToken
+    joinedPilotAt
     name
 
     users {

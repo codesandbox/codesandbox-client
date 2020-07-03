@@ -135,7 +135,11 @@ export const TeamSettings = () => {
                       onClick={() => setEditing(true)}
                     />
                   </Stack>
-                  <Text size={3}>Community Plan (Free)</Text>
+                  <Text size={3}>
+                    {team.joinedPilotAt
+                      ? 'Team Pro Pilot'
+                      : 'Community Plan (Free)'}
+                  </Text>
                   <Text size={3} variant="muted">
                     {team.description}
                   </Text>
