@@ -46,6 +46,7 @@ import {
   teamFragmentDashboard,
   sidebarCollectionDashboard,
   sandboxFragmentDashboard,
+  currentTeamInfoFragment,
 } from './fragments';
 
 export const createTeam: Query<
@@ -200,10 +201,10 @@ export const inviteToTeam: Query<
 > = gql`
   mutation _InviteToTeam($teamId: ID!, $username: String!) {
     inviteToTeam(teamId: $teamId, username: $username) {
-      ...teamFragmentDashboard
+      ...currentTeamInfoFragment
     }
   }
-  ${teamFragmentDashboard}
+  ${currentTeamInfoFragment}
 `;
 
 export const inviteToTeamVieEmail: Query<

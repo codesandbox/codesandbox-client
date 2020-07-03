@@ -17,6 +17,7 @@ import {
   teamInviteLink,
   dashboard as dashboardUrls,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { sortBy } from 'lodash-es';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 import { Card } from './components';
@@ -143,7 +144,7 @@ export const Invite = () => {
             </Stack>
 
             <List>
-              {team.users.map(user => (
+              {sortBy(team.users, u => u.username.toLowerCase()).map(user => (
                 <ListItem
                   key={user.username}
                   align="center"
@@ -160,6 +161,26 @@ export const Invite = () => {
                   </Text>
                 </ListItem>
               ))}
+
+              {sortBy(team.invitees, u => u.username.toLowerCase()).map(
+                user => (
+                  <ListItem
+                    key={user.username}
+                    align="center"
+                    justify="space-between"
+                    css={css({ height: 12, paddingX: 0 })}
+                  >
+                    <Stack gap={2} align="center">
+                      <Avatar user={user} />
+                      <Text size={3}>{user.username}</Text>
+                    </Stack>
+
+                    <Text variant="muted" size={3}>
+                      Invited
+                    </Text>
+                  </ListItem>
+                )
+              )}
             </List>
           </Card>
           <Link

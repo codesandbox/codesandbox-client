@@ -185,7 +185,7 @@ export const inviteToTeam: AsyncAction<string> = async (
   if (!state.activeTeam) return;
   const isEmail = value.includes('@');
   try {
-    let data: any = null;
+    let data: any | null = null;
     if (isEmail) {
       const emailInvited = await effects.gql.mutations.inviteToTeamVieEmail({
         teamId: state.activeTeam,
@@ -194,12 +194,13 @@ export const inviteToTeam: AsyncAction<string> = async (
 
       data = emailInvited.inviteToTeamViaEmail;
     } else {
-      const usernameInvited = await effects.gql.mutations.inviteToTeam({
+      const result = await effects.gql.mutations.inviteToTeam({
         teamId: state.activeTeam,
         username: value,
       });
 
-      data = usernameInvited.inviteToTeam;
+      state.activeTeamInfo = result.inviteToTeam;
+      data = result.inviteToTeam;
     }
 
     if (!data) {

@@ -12,6 +12,7 @@ import {
   Icon,
   IconButton,
 } from '@codesandbox/components';
+import { sortBy } from 'lodash-es';
 import css from '@styled-system/css';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { SIDEBAR_WIDTH } from './constants';
@@ -119,7 +120,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
                 {!inTeamContext && <Icon name="simpleCheck" />}
               </Stack>
             </Menu.Item>
-            {dashboard.teams.map(team => (
+            {sortBy(dashboard.teams, t => t.name.toLowerCase()).map(team => (
               <Stack
                 as={Menu.Item}
                 key={team.id}

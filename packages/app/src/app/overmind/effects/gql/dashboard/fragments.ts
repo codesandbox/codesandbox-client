@@ -122,12 +122,17 @@ export const currentTeamInfoFragment = gql`
     description
     inviteToken
     name
+
     users {
-      avatarUrl
-      name
-      lastName
-      username
       id
+      avatarUrl
+      username
+    }
+
+    invitees {
+      id
+      avatarUrl
+      username
     }
   }
 `;
