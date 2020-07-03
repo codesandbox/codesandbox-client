@@ -5,21 +5,17 @@ import {
   Button,
   Element,
   Grid,
-  Column,
-  List,
-  ListAction,
-  Menu,
   Stack,
   Text,
   Input,
   Textarea,
   IconButton,
-  Avatar,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { Card } from './components';
+import { MemberList } from './components/MemberList';
 
 export const TeamSettings = () => {
   const {
@@ -205,72 +201,57 @@ export const TeamSettings = () => {
               </Button>
             </Stack>
           </Stack>
-          <List>
-            {team.users.map(user => {
-              const teamOwner = stateUser.id === team.creatorId;
-              const you = stateUser.id === user.id;
+          <div>
+            <MemberList
+              getPermission={user =>
+                user.id === team.creatorId ? 'Admin' : 'Member'
+              }
+              getActions={user => {
+                const teamOwner = stateUser.id === team.creatorId;
+                const you = stateUser.id === user.id;
 
-              return (
-                <ListAction
-                  key={user.username}
-                  align="center"
-                  justify="space-between"
-                  css={css({
-                    height: 64,
-                    borderBottom: '1px solid',
-                    borderColor: 'grays.600',
-                  })}
-                >
-                  <Grid css={{ width: '100%' }}>
-                    <Column span={6}>
-                      <Stack gap={4} align="center" css={{ height: '100%' }}>
-                        <Avatar user={user} />
-                        <Text size={3}>{user.username}</Text>
-                      </Stack>
-                    </Column>
-                    <Column span={6}>
-                      <Stack
-                        justify="space-between"
-                        align="center"
-                        css={{ height: '100%' }}
-                      >
-                        <Text variant="muted" size={3}>
-                          {user.id === team.creatorId ? 'Admin' : 'Member'}
-                        </Text>
-                        {you || teamOwner ? (
-                          <Menu>
-                            <Menu.IconButton
-                              name="more"
-                              size={9}
-                              title="Member options"
-                            />
-                            <Menu.List>
-                              {you ? (
-                                <Menu.Item
-                                  onSelect={actions.dashboard.leaveTeam}
-                                >
-                                  Leave Team
-                                </Menu.Item>
-                              ) : null}
-                              {teamOwner && !you ? (
-                                <Menu.Item
-                                  onSelect={() =>
-                                    actions.dashboard.removeFromTeam(user.id)
-                                  }
-                                >
-                                  Remove Member
-                                </Menu.Item>
-                              ) : null}
-                            </Menu.List>
-                          </Menu>
-                        ) : null}
-                      </Stack>
-                    </Column>
-                  </Grid>
-                </ListAction>
-              );
-            })}
-          </List>
+                if (!you && !teamOwner) {
+                  return [];
+                }
+
+                return [
+                  you && {
+                    label: 'Leave Team',
+                    onSelect: () => actions.dashboard.leaveTeam(),
+                  },
+                  teamOwner &&
+                    !you && {
+                      label: 'Remove Member',
+                      onSelect: () => actions.dashboard.removeFromTeam(user.id),
+                    },
+                ].filter(Boolean);
+              }}
+              users={team.users}
+            />
+
+            <MemberList
+              getPermission={() => 'Pending...'}
+              getActions={user => {
+                const teamOwner = stateUser.id === team.creatorId;
+
+                if (!teamOwner) {
+                  return [];
+                }
+
+                return [
+                  {
+                    label: 'Revoke Invitation',
+                    onSelect: () =>
+                      actions.dashboard.revokeTeamInvitation({
+                        teamId: team.id,
+                        userId: user.id,
+                      }),
+                  },
+                ].filter(Boolean);
+              }}
+              users={team.invitees}
+            />
+          </div>
         </Stack>
       </Element>
     </>
