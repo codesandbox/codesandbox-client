@@ -143,7 +143,7 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
         const result = await joinTeam({ variables: { inviteToken } });
         const resultTeam = result.data.redeemTeamInviteToken;
         effects.notificationToast.success(
-          'Successfully joined ' + resultTeam.name + '!'
+          `Successfully joined ${resultTeam.name}!`
         );
 
         setTeam(resultTeam);
