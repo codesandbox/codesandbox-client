@@ -1,40 +1,42 @@
-import React from 'react';
+import { Preference } from '@codesandbox/common/lib/components/Preference';
+import { Text, Element } from '@codesandbox/components';
+import React, { FunctionComponent, useState } from 'react';
+
 import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
-import { Text, Element } from '@codesandbox/components';
-import { Preference } from '@codesandbox/common/lib/components/Preference';
 
-import { Alert } from '../../../Common/Alert';
-import { PreferenceContainer } from '../../elements';
-import { VSCodePlaceholder } from '../../VSCodePlaceholder';
+import { Alert } from '../../Common/Alert';
 
-const isSafari: boolean = /^((?!chrome|android).)*safari/i.test(
-  navigator.userAgent
-);
-const isFF: boolean = navigator.userAgent.toLowerCase().includes('firefox');
+import { VSCodePlaceholder } from '../VSCodePlaceholder';
 
-export const EditorSettings: React.FC = () => {
-  const [showModal, setShowModal] = React.useState(false);
+import { PreferenceContainer } from '../elements';
+
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const isFF = navigator.userAgent.toLowerCase().includes('firefox');
+
+export const EditorSettings: FunctionComponent = () => {
   const {
-    state: {
-      preferences: { settings },
-    },
     actions: {
       preferences: { settingChanged },
     },
+    state: {
+      preferences: { settings },
+    },
   } = useOvermind();
+  const [showModal, setShowModal] = useState(false);
 
   const bindValue = (name: string) => ({
-    value: settings[name],
     setValue: (value: any) => {
       settingChanged({ name, value });
+
       setShowModal(true);
     },
+    value: settings[name],
   });
 
   return (
     <>
-      <Text size={4} marginBottom={6} block variant="muted" weight="bold">
+      <Text block marginBottom={6} size={4} variant="muted" weight="bold">
         Appearance
       </Text>
 
@@ -49,35 +51,36 @@ export const EditorSettings: React.FC = () => {
               type="boolean"
               {...bindValue('vimMode')}
             />
+
             <Text
-              marginTop={2}
               block
+              marginTop={2}
               size={2}
-              variant="muted"
               style={{ maxWidth: '60%', lineHeight: 1.5 }}
+              variant="muted"
             >
               Toggling the VIM extension will require a refresh. When enabled,
               use the command palette to control VIM
             </Text>
           </PreferenceContainer>
         </Element>
+
         {isSafari || isFF ? (
-          <Text size={2} variant="muted" marginBottom={2} block marginTop={2}>
+          <Text block marginBottom={2} marginTop={2} size={2} variant="muted">
             The VIM extension currently only works on Chrome and Microsoft Edge.
           </Text>
         ) : null}
+
         <Modal
           isOpen={showModal}
           onClose={() => setShowModal(false)}
           width={400}
         >
           <Alert
-            title="Toggle VIM extension"
             description="You need to refresh the browser for this to take effect, do you want to do that now?"
             onCancel={() => setShowModal(false)}
-            onPrimaryAction={() => {
-              location.reload(true);
-            }}
+            onPrimaryAction={() => location.reload(true)}
+            title="Toggle VIM extension"
           />
         </Modal>
       </Element>
