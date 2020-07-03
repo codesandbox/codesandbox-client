@@ -319,6 +319,8 @@ export const setActiveTeam: AsyncAction<{
         newTeamName: teamInfo.name,
       });
     }
+
+    actions.internal.trackCurrentTeams();
   } catch (e) {
     // Something went wrong while fetching the workspace
     actions.setActiveTeam({ id: null });

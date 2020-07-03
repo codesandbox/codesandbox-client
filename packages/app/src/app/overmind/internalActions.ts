@@ -462,17 +462,27 @@ export const handleError: Action<{
   });
 };
 
-export const trackCurrentTeams: AsyncAction = async ({ effects }) => {
-  const { me } = await effects.gql.queries.teams({});
-  if (me) {
-    effects.analytics.setGroup(
-      'teamName',
-      me.teams.map(m => m.name)
-    );
-    effects.analytics.setGroup(
-      'teamId',
-      me.teams.map(m => m.id)
-    );
+export const trackCurrentTeams: AsyncAction = async ({ effects, state }) => {
+  const user = state.user;
+  if (!user) {
+    return;
+  }
+
+  if (user.experiments.inPilot) {
+    effects.analytics.setGroup('teamName', state.activeTeamInfo.name);
+    effects.analytics.setGroup('teamId', state.activeTeamInfo.id);
+  } else {
+    const { me } = await effects.gql.queries.teams({});
+    if (me) {
+      effects.analytics.setGroup(
+        'teamName',
+        me.teams.map(m => m.name)
+      );
+      effects.analytics.setGroup(
+        'teamId',
+        me.teams.map(m => m.id)
+      );
+    }
   }
 };
 
