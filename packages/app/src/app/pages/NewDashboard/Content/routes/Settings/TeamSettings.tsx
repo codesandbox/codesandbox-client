@@ -58,7 +58,7 @@ export const TeamSettings = () => {
     setInviteLoading(false);
   };
 
-  if (!team) {
+  if (!team || !stateUser) {
     return <Header title="Workspace settings" activeTeam={null} />;
   }
   const created = team.users.find(user => user.id === team.creatorId);
