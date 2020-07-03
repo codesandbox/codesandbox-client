@@ -204,7 +204,7 @@ export const TeamSettings = () => {
               <IconButton
                 css={css({ marginLeft: 2 })}
                 size={12}
-                title="Copy Invite Url"
+                title="Copy Invite URL"
                 name="link"
                 onClick={onCopyInviteUrl}
               />
