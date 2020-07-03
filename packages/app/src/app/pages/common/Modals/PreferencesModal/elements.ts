@@ -12,15 +12,16 @@ export const SubContainer = styled.div`
 `;
 
 export const PreferenceContainer = styled.div<{ disabled?: boolean }>`
-  padding-top: 0.5rem;
+  ${({ disabled }) => css`
+    padding-top: 0.5rem;
 
-  ${props =>
-    props.disabled &&
-    css`
-      opacity: 0.5;
-      pointer-events: none;
-      cursor: disabled;
-    `}
+    ${disabled &&
+      css`
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: disabled;
+      `}
+  `};
 `;
 
 // Preference is typed in a bad way, not possible to infer

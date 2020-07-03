@@ -149,7 +149,9 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 }>(async ({ state, actions, effects }, { id }) => {
   // This happens when we fork. This can be avoided with state first routing
   if (state.editor.isForkingSandbox && state.editor.currentSandbox) {
-    effects.vscode.openModule(state.editor.currentModule);
+    if (state.editor.currentModule.id) {
+      effects.vscode.openModule(state.editor.currentModule);
+    }
 
     await actions.editor.internal.initializeSandbox(
       state.editor.currentSandbox
@@ -779,9 +781,9 @@ export const projectViewToggled: Action = ({ state, actions }) => {
   actions.editor.internal.updatePreviewCode();
 };
 
-export const frozenUpdated: AsyncAction<{ frozen: boolean }> = async (
-  { state, effects },
-  { frozen }
+export const frozenUpdated: AsyncAction<boolean> = async (
+  { effects, state },
+  frozen
 ) => {
   if (!state.editor.currentSandbox) {
     return;
@@ -1248,10 +1250,7 @@ export const openDevtoolsTab: Action<{
   }
 };
 
-export const sessionFreezeOverride: Action<{ frozen: boolean }> = (
-  { state },
-  { frozen }
-) => {
+export const sessionFreezeOverride: Action<boolean> = ({ state }, frozen) => {
   state.editor.sessionFrozen = frozen;
 };
 

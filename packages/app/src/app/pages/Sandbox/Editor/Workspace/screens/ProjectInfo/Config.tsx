@@ -1,19 +1,20 @@
-import React, { MouseEvent } from 'react';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { useOvermind } from 'app/overmind';
 import { Button, Element } from '@codesandbox/components';
+import React, { FunctionComponent, MouseEvent } from 'react';
 
-export const Config = () => {
+import { useOvermind } from 'app/overmind';
+
+export const Config: FunctionComponent = () => {
   const {
     actions: {
       modalOpened,
       workspace: { addedTemplate },
     },
     state: {
-      user,
       editor: {
         currentSandbox: { customTemplate, template },
       },
+      user,
       workspace: {
         project: { description, title },
       },
@@ -36,19 +37,15 @@ export const Config = () => {
     });
   };
 
-  return (
-    <>
-      {!customTemplate && (
-        <Element marginX={2} marginY={4}>
-          <Button
-            // @ts-ignore
-            onClick={onCreateTemplate}
-            variant="secondary"
-          >
-            Save as template
-          </Button>
-        </Element>
-      )}
-    </>
-  );
+  return !customTemplate ? (
+    <Element marginX={2} marginY={4}>
+      <Button
+        // @ts-ignore
+        onClick={onCreateTemplate}
+        variant="secondary"
+      >
+        Save as template
+      </Button>
+    </Element>
+  ) : null;
 };

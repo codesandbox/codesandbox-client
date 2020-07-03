@@ -10,7 +10,6 @@
   "workspaces": {
     "packages": [
       "packages/@styled-system/css",
-      "packages/@types/ot",
       "packages/app",
       "packages/homepage",
       "packages/common",
