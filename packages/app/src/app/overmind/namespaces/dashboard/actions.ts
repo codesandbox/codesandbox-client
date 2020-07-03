@@ -939,7 +939,7 @@ export const addSandboxesToFolder: AsyncAction<{
 export const createTeam: AsyncAction<{
   teamName: string;
   pilot?: boolean;
-}> = async ({ effects, actions, state }, { teamName, pilot }) => {
+}> = async ({ effects, actions, state }, { teamName, pilot = false }) => {
   try {
     const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
       name: teamName,
