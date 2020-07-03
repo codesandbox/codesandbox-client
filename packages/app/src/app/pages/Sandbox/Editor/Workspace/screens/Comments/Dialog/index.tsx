@@ -78,7 +78,6 @@ export const Dialog: React.FC = () => {
     isCodeComment,
     isNewComment,
     repliesRendered,
-    comment.comments.length,
   ]);
 
   React.useEffect(() => {
