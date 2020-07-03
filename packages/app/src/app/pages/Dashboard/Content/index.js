@@ -19,7 +19,13 @@ const Content = () => {
 
   // Only use get it from localStorage here, since we need to be able to find this before we can fetch the user.
   // We shouldn't use it at other places
-  const isPilot = JSON.parse(localStorage.getItem('pilot') || 'undefined');
+  let isPilot;
+
+  try {
+    isPilot = JSON.parse(localStorage.getItem('pilot') || 'undefined');
+  } catch {
+    isPilot = false;
+  }
 
   return (
     <ThemeProvider theme={codesandbox}>
