@@ -88,8 +88,8 @@ export const Dialog: React.FC = () => {
 
   const onDragHandlerPan = (deltaX: number, deltaY: number) => {
     controller.set((_, target) => ({
-      x: Number(target.x) + deltaX,
-      y: Number(target.y) + deltaY,
+      x: Math.round(Number(target.x) + deltaX),
+      y: Math.round(Number(target.y) + deltaY),
     }));
     setDragging(true);
   };
