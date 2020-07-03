@@ -126,6 +126,7 @@ export const UserSearchInput = ({
                   backgroundColor: 'dialog.background',
                   border: '1px solid',
                   borderColor: 'dialog.border',
+                  zIndex: 20,
                 })}
                 {...getMenuProps({})}
               >
