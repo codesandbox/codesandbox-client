@@ -9,8 +9,7 @@ description: A New Dashboard to Get Started Faster and Stay Organized.
 ### A New Dashboard to Get Started Faster and Stay Organized
 
 We've refreshed the design of the dashboard to bring through the updates made in
-the editor and make working with teams and more sandboxes a better
-experience.
+the editor and make working with teams and more sandboxes a better experience.
 
 #### Features
 
@@ -32,6 +31,9 @@ experience.
 #### Fixes
 
 - Made bracket matches more apparent in the CSB Black theme
-- We now close the modal after importing a GitHub repo on the Create Sandbox screen
-- Fixed an issue with being unable to save all after reloading a sandbox with unsaved changes 
-- [@jyash97](https://github.com/codesandbox/codesandbox-client/pull/4487) made sure you can't invite yourself to a workspace
+- We now close the modal after importing a GitHub repo on the Create Sandbox
+  screen
+- Fixed an issue with being unable to save all after reloading a sandbox with
+  unsaved changes
+- [@jyash97](https://github.com/codesandbox/codesandbox-client/pull/4487) made
+  sure you can't invite yourself to a workspace
