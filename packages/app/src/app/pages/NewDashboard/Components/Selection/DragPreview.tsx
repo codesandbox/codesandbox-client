@@ -119,6 +119,7 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
           zIndex: 100,
           left: 0,
           top: 0,
+          fontFamily: 'Inter, sans-serif',
         }}
       >
         {isDragging && (
@@ -142,11 +143,37 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
               stiffness: 1000,
             }}
           >
+            <div
+              css={css({
+                position: 'fixed',
+                top: '-1rem',
+                right: '-1rem',
+                zIndex: 20,
+                borderRadius: '50%',
+                width: 32,
+                height: 32,
+                backgroundColor: 'blues.600',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              })}
+            >
+              {selectedIds.length}
+            </div>
             {selectedItems.map((item, index) => (
               <Stack gap={2} align="center" key={item.id || item.path}>
                 <Stack
                   justify="center"
                   align="center"
+                  style={{
+                    transform:
+                      viewMode === 'list'
+                        ? null
+                        : `rotate(${(index -
+                            Math.floor(selectedItems.length / 2)) *
+                            5}deg)`,
+                    backgroundImage: item.url ? `url(${item.url})` : null,
+                  }}
                   css={css({
                     position: viewMode === 'list' ? 'relative' : 'absolute',
                     top: 0,
@@ -154,13 +181,12 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
                     width: viewMode === 'list' ? 32 : '100%',
                     height: viewMode === 'list' ? 32 : '100%',
                     backgroundColor: 'grays.600',
-                    backgroundImage: item.url ? `url(${item.url})` : null,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center center',
                     backgroundRepeat: 'no-repeat',
                     borderRadius: viewMode === 'list' ? 'small' : 'medium',
-                    transform:
-                      viewMode === 'list' ? null : `rotate(${index * 2.5}deg)`,
+                    boxShadow: '0 3px 3px rgba(0, 0, 0, 0.3)',
+                    border: '1px solid rgba(255,255,255,0.1)',
                   })}
                 >
                   {item.type === 'folder' ? (
