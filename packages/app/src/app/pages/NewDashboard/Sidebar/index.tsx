@@ -144,14 +144,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="box"
             style={{ marginTop: 1 }}
           />
-          {inTeamContext ? null : (
-            <RowItem
-              name="Recent"
-              page="recents"
-              path={dashboardUrls.recents(activeTeam)}
-              icon="clock"
-            />
-          )}
           <RowItem
             name="My Drafts"
             page="drafts"
@@ -159,7 +151,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="file"
           />
 
-          {inTeamContext ? <Menu.Divider /> : null}
+          <Menu.Divider />
 
           <NestableRowItem
             name="All Sandboxes"
@@ -173,14 +165,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             ]}
           />
 
-          {inTeamContext ? (
-            <RowItem
-              name="Recently Modified"
-              page="recents"
-              path={dashboardUrls.recents(activeTeam)}
-              icon="clock"
-            />
-          ) : null}
+          <RowItem
+            name="Recently Modified"
+            page="recents"
+            path={dashboardUrls.recents(activeTeam)}
+            icon="clock"
+          />
+
           <RowItem
             name="Templates"
             page="templates"
