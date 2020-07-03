@@ -4,7 +4,7 @@ export default function getChildCollections(folders, path = '/') {
   const foldersByPath = {};
 
   folders.forEach(collection => {
-    foldersByPath[collection.path] = collection;
+    foldersByPath[collection?.path] = collection;
   });
 
   return {

@@ -5,41 +5,47 @@ import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/state';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
-import { DashboardGridItem } from 'app/pages/NewDashboard/types';
+import { DashboardGridItem, PageTypes } from 'app/pages/NewDashboard/types';
 import { getPossibleTemplates } from '../../utils';
 
 export const Drafts = () => {
   const {
     actions,
     state: {
+      activeTeam,
+      user,
       dashboard: { sandboxes, getFilteredSandboxes },
     },
   } = useOvermind();
 
   React.useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.DRAFTS);
-  }, [actions.dashboard]);
+  }, [actions.dashboard, activeTeam]);
 
   const items: DashboardGridItem[] = sandboxes.DRAFTS
-    ? getFilteredSandboxes(sandboxes.DRAFTS).map(sandbox => ({
-        type: 'sandbox',
-        sandbox,
-      }))
+    ? getFilteredSandboxes(sandboxes.DRAFTS)
+        .filter(s => s.authorId === user?.id)
+        .map(sandbox => ({
+          type: 'sandbox',
+          sandbox,
+        }))
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
+  const pageType: PageTypes = 'drafts';
   return (
-    <SelectionProvider items={items}>
+    <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
         <title>Drafts - CodeSandbox</title>
       </Helmet>
       <Header
-        path="Drafts"
+        title="Drafts"
+        activeTeam={activeTeam}
         templates={getPossibleTemplates(sandboxes.DRAFTS)}
         showViewOptions
         showFilters
         showSortOptions
       />
-      <VariableGrid items={items} />
+      <VariableGrid page={pageType} items={items} />
     </SelectionProvider>
   );
 };

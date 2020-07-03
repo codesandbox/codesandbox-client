@@ -13,7 +13,10 @@ import {
   ListItem,
   Avatar,
 } from '@codesandbox/components';
-import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  teamInviteLink,
+  dashboard as dashboardUrls,
+} from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 import { Card } from './components';
@@ -165,7 +168,7 @@ export const Invite = () => {
           </Card>
           <Link
             as={RouterLink}
-            to="/new-dashboard/settings"
+            to={dashboardUrls.settings(activeTeam)}
             variant="muted"
             size={3}
             align="center"

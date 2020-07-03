@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom';
-import { useDrop } from 'react-dnd';
 import { orderBy } from 'lodash-es';
 import { join, dirname } from 'path';
 import { useOvermind } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
@@ -13,7 +13,6 @@ import {
   ListAction,
   ListItem,
   Link,
-  Avatar,
   Text,
   Menu,
   Stack,
@@ -25,12 +24,12 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
-import { TeamAvatar } from 'app/components/TeamAvatar';
 import { ContextMenu } from './ContextMenu';
-import { DashboardBaseFolder } from '../types';
+import { DashboardBaseFolder, PageTypes } from '../types';
 import { Position } from '../Components/Selection';
-
-export const SIDEBAR_WIDTH = 240;
+import { SIDEBAR_WIDTH } from './constants';
+import { WorkspaceSwitcher } from './WorkspaceSwitcher';
+import { DragItemType, useDrop } from '../utils/dnd';
 
 const SidebarContext = React.createContext(null);
 
@@ -55,7 +54,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     username: null,
     avatarUrl: null,
   });
-  const { dashboard, user } = state;
+  const { dashboard, user, activeTeam } = state;
 
   React.useEffect(() => {
     actions.dashboard.getTeams();
@@ -108,8 +107,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     setNewFolderPath,
   };
 
-  const history = useHistory();
-
   return (
     <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
       <Stack
@@ -135,162 +132,38 @@ export const Sidebar: React.FC<SidebarProps> = ({
       >
         <List>
           <ListItem gap={2} css={css({ paddingX: 0, height: 10 })}>
-            {user && (
-              <Stack
-                css={css({
-                  width: '100%',
-                  height: '100%',
-                  borderBottom: '1px solid',
-                  borderColor: 'sideBar.border',
-                })}
-              >
-                <Menu>
-                  <Stack
-                    as={Menu.Button}
-                    justify="space-between"
-                    align="center"
-                    css={css({
-                      width: SIDEBAR_WIDTH - 32,
-                      height: '100%',
-                      paddingLeft: 2,
-                      borderRadius: 0,
-                      ':hover, :focus-within': {
-                        backgroundColor: 'sideBar.hoverBackground',
-                      },
-                    })}
-                  >
-                    <Stack as="span" align="center">
-                      <Stack
-                        as="span"
-                        css={css({ width: 10 })}
-                        align="center"
-                        justify="center"
-                      >
-                        {activeAccount.avatarUrl ? (
-                          <Avatar user={activeAccount} css={css({ size: 6 })} />
-                        ) : (
-                          <TeamAvatar name={activeAccount.username} />
-                        )}
-                      </Stack>
-                      <Text size={4} weight="normal" maxWidth={140}>
-                        {activeAccount.username}
-                      </Text>
-                    </Stack>
-                    <Icon name="caret" size={8} />
-                  </Stack>
-                  <Menu.List
-                    css={css({
-                      width: SIDEBAR_WIDTH,
-                      marginLeft: 4,
-                      marginTop: '-4px',
-                      backgroundColor: 'grays.600',
-                    })}
-                  >
-                    <Menu.Item
-                      css={css({
-                        height: 10,
-                        textAlign: 'left',
-                        backgroundColor: !inTeamContext
-                          ? 'grays.500'
-                          : 'transparent',
-                      })}
-                      style={{ paddingLeft: 8 }}
-                      onSelect={() => {
-                        actions.dashboard.setActiveTeam({ id: null });
-                        track('Dashboard - Change workspace', {
-                          dashboardVersion: 2,
-                        });
-                      }}
-                    >
-                      <Stack align="center" gap={2}>
-                        <Avatar user={user} css={css({ size: 6 })} />
-                        <Text size={3}>{user.username} (Personal)</Text>
-                      </Stack>
-                    </Menu.Item>
-                    {dashboard.teams.map(team => (
-                      <Stack
-                        as={Menu.Item}
-                        key={team.id}
-                        align="center"
-                        gap={2}
-                        css={css({
-                          height: 10,
-                          textAlign: 'left',
-                          backgroundColor:
-                            activeAccount.username === team.name
-                              ? 'grays.500'
-                              : 'transparent',
-                        })}
-                        style={{ paddingLeft: 8 }}
-                        onSelect={() =>
-                          actions.dashboard.setActiveTeam({ id: team.id })
-                        }
-                      >
-                        <TeamAvatar name={team.name} size="small" />
-                        <Text size={3}>{team.name}</Text>
-                      </Stack>
-                    ))}
-                    <Menu.Divider />
-                    <Stack
-                      as={Menu.Item}
-                      align="center"
-                      gap={2}
-                      css={css({
-                        height: 10,
-                        textAlign: 'left',
-                      })}
-                      style={{ paddingLeft: 8 }}
-                      onSelect={() =>
-                        history.push('/new-dashboard/settings/new')
-                      }
-                    >
-                      <Stack
-                        justify="center"
-                        align="center"
-                        css={css({
-                          size: 6,
-                          borderRadius: 'small',
-                          border: '1px solid',
-                          borderColor: 'avatar.border',
-                        })}
-                      >
-                        <Icon name="plus" size={10} />
-                      </Stack>
-                      <Text size={3} variant="muted">
-                        Create a new workspace
-                      </Text>
-                    </Stack>
-                  </Menu.List>
-                </Menu>
-
-                <Link as={RouterLink} to="/new-dashboard/settings">
-                  <IconButton
-                    name="gear"
-                    size={8}
-                    title="Settings"
-                    css={css({ width: 8, height: '100%', borderRadius: 0 })}
-                  />
-                </Link>
-              </Stack>
-            )}
+            <WorkspaceSwitcher
+              activeAccount={activeAccount}
+              inTeamContext={inTeamContext}
+            />
           </ListItem>
-          <RowItem name="Home" path="/home" icon="box" />
+          <RowItem
+            name="Home"
+            page="home"
+            path={dashboardUrls.home(activeTeam)}
+            icon="box"
+          />
           {inTeamContext ? null : (
-            <RowItem name="Recent" path="/recent" icon="clock" />
+            <RowItem
+              name="Recent"
+              page="recents"
+              path={dashboardUrls.recents(activeTeam)}
+              icon="clock"
+            />
           )}
           <RowItem
-            name={!inTeamContext ? 'Drafts' : 'My Drafts'}
-            path="/drafts"
+            name="My Drafts"
+            page="drafts"
+            path={dashboardUrls.drafts(activeTeam)}
             icon="file"
           />
 
           {inTeamContext ? <Menu.Divider /> : null}
 
           <NestableRowItem
-            name="All sandboxes"
-            path="/all"
-            folderPath=""
-            rootPath="/all"
+            name="All Sandboxes"
+            path={dashboardUrls.allSandboxes('/', activeTeam)}
+            folderPath="/"
             folders={[
               ...folders,
               ...(newFolderPath
@@ -300,15 +173,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
           />
 
           {inTeamContext ? (
-            <RowItem name="Recently Modified" path="/recent" icon="clock" />
+            <RowItem
+              name="Recently Modified"
+              page="recents"
+              path={dashboardUrls.recents(activeTeam)}
+              icon="clock"
+            />
           ) : null}
-          <RowItem name="Templates" path="/templates" icon="star" />
-          <RowItem name="Recently Deleted" path="/deleted" icon="trash" />
+          <RowItem
+            name="Templates"
+            page="templates"
+            path={dashboardUrls.templates(activeTeam)}
+            icon="star"
+          />
+          <RowItem
+            name="Recently Deleted"
+            page="deleted"
+            path={dashboardUrls.deleted(activeTeam)}
+            icon="trash"
+          />
         </List>
         <Element margin={4}>
           <Button
             as={RouterLink}
-            to="/new-dashboard/settings/new"
+            to={dashboardUrls.createWorkspace()}
             variant="secondary"
           >
             <Icon name="plus" size={10} marginRight={1} />
@@ -336,6 +224,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         )}
       </AnimatePresence>
       <ContextMenu
+        activeTeam={activeTeam}
         visible={menuVisible}
         setVisibility={setMenuVisibility}
         position={menuPosition}
@@ -360,16 +249,29 @@ const linkStyles = {
   flexShrink: 0,
 };
 
-const canNotAcceptSandboxes = ['home', 'recent', 'all'];
-const canNotAcceptFolders = ['home', 'recent', '/drafts', 'templates'];
+const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents'];
+const canNotAcceptFolders: PageTypes[] = [
+  'home',
+  'recents',
+  'drafts',
+  'templates',
+];
 
-const isSamePath = (draggedItem, dropPath) => {
+const isSamePath = (
+  draggedItem: DragItemType,
+  currentPage: PageTypes,
+  dropPath: string
+) => {
   if (!draggedItem) return false;
 
   if (
     draggedItem.type === 'sandbox' &&
-    draggedItem.collectionPath === dropPath
+    draggedItem.sandbox.collection?.path === dropPath
   ) {
+    return true;
+  }
+
+  if (draggedItem.type === 'template' && currentPage === 'templates') {
     return true;
   }
 
@@ -387,6 +289,7 @@ interface RowItemProps {
   name: string;
   path: string;
   icon: IconNames;
+  page: PageTypes;
   setFoldersVisibility?: (val: boolean) => void;
   folderPath?: string;
   style?: React.CSSProperties;
@@ -396,44 +299,48 @@ const RowItem: React.FC<RowItemProps> = ({
   name,
   path,
   folderPath = path,
+  page,
   icon,
   setFoldersVisibility = null,
   ...props
 }) => {
-  const accepts = [];
-  if (!canNotAcceptSandboxes.includes(path)) accepts.push('sandbox');
-  if (!canNotAcceptFolders.includes(path)) accepts.push('folder');
+  const accepts: Array<'sandbox' | 'folder' | 'template'> = [];
+  if (!canNotAcceptSandboxes.includes(page)) {
+    accepts.push('template');
+    accepts.push('sandbox');
+  }
+  if (!canNotAcceptFolders.includes(page)) accepts.push('folder');
 
   const usedPath = folderPath || path;
   const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
     accept: accepts,
-    drop: (item, monitor) => ({
+    drop: item => ({
+      page,
       path: usedPath,
-      isSamePath: isSamePath(item, usedPath),
+      isSamePath: isSamePath(item, page, usedPath),
     }),
     collect: monitor => ({
       isOver: monitor.isOver(),
-      canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), usedPath),
+      canDrop:
+        monitor.canDrop() && !isSamePath(monitor.getItem(), page, usedPath),
       isDragging: !!monitor.getItem(),
     }),
   });
 
   const { onSidebarToggle } = React.useContext(SidebarContext);
 
-  let linkTo: string;
-  if (path === '/drafts') linkTo = '/new-dashboard/drafts';
-  else linkTo = '/new-dashboard' + path;
+  const linkTo: string = path;
 
   const location = useLocation();
-  const isCurrentLink = linkTo === location.pathname;
+  const isCurrentLink = linkTo.replace(/\?.*/, '') === location.pathname;
   const history = useHistory();
 
   /** Toggle nested folders when user
    * is drags an item over a folder after a treshold
-   * We open All sandboxes instantly because that's the root
+   * We open All Sandboxes instantly because that's the root
    * and you can't drop anything in it
    */
-  const HOVER_THRESHOLD = name === 'All sandboxes' ? 0 : 500; // ms
+  const HOVER_THRESHOLD = name === 'All Sandboxes' ? 0 : 500; // ms
   const isOverCache = React.useRef(false);
 
   React.useEffect(() => {
@@ -510,7 +417,6 @@ interface NestableRowItemProps {
   name: string;
   folderPath: string;
   path: string;
-  rootPath: string;
   folders: DashboardBaseFolder[];
 }
 
@@ -519,9 +425,8 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   path,
   folderPath,
   folders,
-  rootPath,
 }) => {
-  const { actions } = useOvermind();
+  const { actions, state } = useOvermind();
 
   const {
     menuState: {
@@ -541,7 +446,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   let hasNewNestedFolder = false;
   if (newFolderPath !== null) {
     const newFolderParent = newFolderPath.replace('/__NEW__', '');
-    if (name === 'All sandboxes') {
+    if (name === 'All Sandboxes') {
       hasNewNestedFolder = true;
     } else if (newFolderParent.length && folderPath.includes(newFolderParent)) {
       hasNewNestedFolder = true;
@@ -549,23 +454,22 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   }
 
   const location = useLocation();
-  const currentFolderLocationPath = '/new-dashboard' + rootPath + folderPath;
+  const currentFolderLocationPath = dashboardUrls.allSandboxes(folderPath);
   React.useEffect(() => {
     // Auto open folder in the sidebar if it's opened
     const pathName = location.pathname;
+    const prefixCheck =
+      folderPath === '/'
+        ? currentFolderLocationPath
+        : currentFolderLocationPath + '/';
 
-    if (
-      pathName.startsWith(currentFolderLocationPath + '/') &&
-      !foldersVisible
-    ) {
+    if (pathName.startsWith(prefixCheck) && !foldersVisible) {
       setFoldersVisibility(true);
     }
-  }, [
-    location.pathname,
-    currentFolderLocationPath,
-    foldersVisible,
-    setFoldersVisibility,
-  ]);
+
+    // We don't want to recalculate after mount
+    // eslint-disable-next-line
+  }, [location.pathname, currentFolderLocationPath, setFoldersVisibility]);
 
   React.useEffect(() => {
     if (hasNewNestedFolder) setFoldersVisibility(true);
@@ -579,7 +483,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   };
 
   let subFolders: DashboardBaseFolder[];
-  if (name === 'All sandboxes') {
+  if (name === 'All Sandboxes') {
     subFolders = folders.filter(folder => {
       if (folder.path === newFolderPath) {
         return newFolderPath.replace('/__NEW__', '') === '';
@@ -597,7 +501,8 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     });
   }
 
-  const nestingLevel = folderPath.split('/').length - 1;
+  const nestingLevel =
+    folderPath === '/' ? 0 : folderPath.split('/').length - 1;
   const history = useHistory();
 
   /* Rename logic */
@@ -637,6 +542,8 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
       await actions.dashboard.renameFolder({
         path: folderPath,
         newPath,
+        teamId: state.activeTeam,
+        newTeamId: state.activeTeam,
       });
 
       track('Dashboard - Rename Folder', {
@@ -646,7 +553,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
 
       if (currentFolderLocationPath === location.pathname) {
         // if this directory is opened
-        history.push('/new-dashboard' + rootPath + newPath);
+        history.push(dashboardUrls.allSandboxes(newPath, state.activeTeam));
       }
     }
 
@@ -661,22 +568,26 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     onSubmit();
   };
 
+  const folderUrl = dashboardUrls.allSandboxes(folderPath, state.activeTeam);
+
   return (
     <>
       <RowItem
         name={name}
         path={path}
         folderPath={folderPath}
+        page="sandboxes"
         icon="folder"
         style={{ height: nestingLevel ? 8 : 10 }}
         setFoldersVisibility={setFoldersVisibility}
       >
         <Link
-          onClick={() => history.push('/new-dashboard' + path)}
+          to={folderUrl}
+          onClick={() => history.push(folderUrl)}
           onContextMenu={onContextMenu}
           onKeyDown={event => {
             if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
-              history.push('/new-dashboard' + path, {
+              history.push(folderUrl, {
                 focus: 'FIRST_ITEM',
               });
             }
@@ -750,13 +661,15 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
             style={{ paddingLeft: 0 }}
           >
             {orderBy(subFolders, 'name')
-              .sort(a => (a.path === '/drafts' ? -1 : 1))
+              .sort(a => 1)
               .map(folder => (
                 <NestableRowItem
                   key={folder.path}
                   name={folder.name}
-                  path={rootPath + folder.path}
-                  rootPath={rootPath}
+                  path={dashboardUrls.allSandboxes(
+                    folder.path,
+                    state.activeTeam
+                  )}
                   folderPath={folder.path}
                   folders={folders}
                 />

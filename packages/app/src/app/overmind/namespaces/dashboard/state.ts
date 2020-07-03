@@ -8,6 +8,7 @@ import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
+import { parseISO } from 'date-fns';
 import { derived } from 'overmind';
 
 export type OrderBy = {
@@ -19,7 +20,6 @@ export type DELETE_ME_COLLECTION = Collection & {
   name: string;
   level: number;
   parent: string;
-  sandboxes: number;
 };
 
 export enum sandboxesTypes {
@@ -90,50 +90,48 @@ export const state: State = {
   teams: [],
   recentSandboxesByTime: derived(({ sandboxes }: State) => {
     const recentSandboxes = sandboxes.RECENT;
+
+    const base: {
+      day: Sandbox[];
+      week: Sandbox[];
+      month: Sandbox[];
+      older: Sandbox[];
+    } = {
+      day: [],
+      week: [],
+      month: [],
+      older: [],
+    };
     if (!recentSandboxes) {
-      return {
-        day: [],
-        week: [],
-        month: [],
-        older: [],
-      };
+      return base;
     }
 
     const noTemplateSandboxes = recentSandboxes.filter(s => !s.customTemplate);
     const timeSandboxes = noTemplateSandboxes.reduce(
-      (accumulator, currentValue: any) => {
+      (accumulator, currentValue) => {
         if (!currentValue.updatedAt) return accumulator;
-        if (isSameDay(new Date(currentValue.updatedAt), new Date())) {
-          // these errors make no sense
-          // @ts-ignore
+        const date = parseISO(currentValue.updatedAt);
+        if (isSameDay(date, new Date())) {
           accumulator.day.push(currentValue);
 
           return accumulator;
         }
-        if (isSameWeek(new Date(currentValue.updatedAt), new Date())) {
-          // @ts-ignore
+        if (isSameWeek(date, new Date())) {
           accumulator.week.push(currentValue);
 
           return accumulator;
         }
-        if (isSameMonth(new Date(currentValue.updatedAt), new Date())) {
-          // @ts-ignore
+        if (isSameMonth(date, new Date())) {
           accumulator.month.push(currentValue);
 
           return accumulator;
         }
 
-        // @ts-ignore
         accumulator.older.push(currentValue);
 
         return accumulator;
       },
-      {
-        day: [],
-        week: [],
-        month: [],
-        older: [],
-      }
+      base
     );
 
     return timeSandboxes;
@@ -197,7 +195,7 @@ export const state: State = {
       let orderedSandboxes = (sortBy(sandboxes, s => {
         const sandbox = s!;
         if (isDateField) {
-          return +new Date(sandbox[orderField]);
+          return +parseISO(sandbox[orderField]);
         }
 
         if (orderField === 'title') {

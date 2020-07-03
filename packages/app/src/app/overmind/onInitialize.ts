@@ -17,6 +17,8 @@ export const onInitialize: OnInitialize = async (
     onOperationError: actions.live.onOperationError,
   });
 
+  actions.internal.setActiveTeamFromLocalStorage();
+
   effects.flows.initialize(overmindInstance.reaction);
 
   // We consider recover mode something to be done when browser actually crashes, meaning there is no unmount

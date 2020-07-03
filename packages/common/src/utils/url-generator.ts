@@ -1,5 +1,6 @@
 import { Sandbox, SandboxUrlSourceData } from '../types';
 import { isServer } from '../templates/helpers/is-server';
+import * as dashboard from './url-generator/dashboard';
 
 export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
 const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
@@ -221,3 +222,5 @@ export function getSandboxId() {
 }
 export const teamInviteLink = (inviteToken: string) =>
   `${protocolAndHost()}/invite/${inviteToken}`;
+
+export { dashboard };

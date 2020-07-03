@@ -105,6 +105,10 @@ export const loadCursorFromUrl: AsyncAction = async ({
   }
 };
 
+export const refreshPreview: Action = ({ effects }) => {
+  effects.preview.refresh();
+};
+
 export const addNpmDependency: AsyncAction<{
   name: string;
   version?: string;
@@ -585,8 +589,13 @@ export const forkExternalSandbox: AsyncAction<{
 ) => {
   effects.analytics.track('Fork Sandbox', { type: 'external' });
 
+  const usedBody: { collectionId?: string; teamId?: string } = body || {};
+  if (state.activeTeam) {
+    usedBody.teamId = state.activeTeam;
+  }
+
   try {
-    const forkedSandbox = await effects.api.forkSandbox(sandboxId, body);
+    const forkedSandbox = await effects.api.forkSandbox(sandboxId, usedBody);
 
     state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
@@ -601,11 +610,7 @@ export const forkExternalSandbox: AsyncAction<{
   }
 };
 
-export const forkSandboxClicked: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const forkSandboxClicked: AsyncAction = async ({ actions, state }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -773,9 +778,9 @@ export const projectViewToggled: Action = ({ state, actions }) => {
   actions.editor.internal.updatePreviewCode();
 };
 
-export const frozenUpdated: AsyncAction<{ frozen: boolean }> = async (
-  { state, effects },
-  { frozen }
+export const frozenUpdated: AsyncAction<boolean> = async (
+  { effects, state },
+  frozen
 ) => {
   if (!state.editor.currentSandbox) {
     return;
@@ -1242,10 +1247,7 @@ export const openDevtoolsTab: Action<{
   }
 };
 
-export const sessionFreezeOverride: Action<{ frozen: boolean }> = (
-  { state },
-  { frozen }
-) => {
+export const sessionFreezeOverride: Action<boolean> = ({ state }, frozen) => {
   state.editor.sessionFrozen = frozen;
 };
 

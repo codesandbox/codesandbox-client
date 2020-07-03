@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import { Element, Stack, Text, Input, Button } from '@codesandbox/components';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import history from 'app/utils/history';
 import { Card } from './components';
 
 export const NewTeam = () => {
   const {
-    state: { user },
+    state: { user, activeTeam },
     actions: { dashboard },
   } = useOvermind();
   const [loading, setLoading] = useState(false);
@@ -16,14 +17,26 @@ export const NewTeam = () => {
   const onSubmit = async event => {
     event.preventDefault();
     const teamName = event.target.name.value;
-    console.warn(teamName, 'created by', user.username);
-    setLoading(true);
-    try {
-      await dashboard.createTeam({ teamName });
-      setLoading(false);
-      history.push('/new-dashboard/settings/invite');
-    } catch {
-      setLoading(false);
+    if (teamName && teamName.trim()) {
+      console.warn(teamName, 'created by', user.username);
+      event.target.name.setCustomValidity('');
+      setLoading(true);
+      try {
+        await dashboard.createTeam({ teamName });
+        setLoading(false);
+        history.push(dashboardUrls.teamInvite(activeTeam));
+      } catch {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleInput = e => {
+    const { value } = e.target;
+    if (value && value.trim()) {
+      e.target.setCustomValidity('');
+    } else {
+      e.target.setCustomValidity('Workspace name is required.');
     }
   };
 
@@ -65,6 +78,8 @@ export const NewTeam = () => {
                   type="text"
                   placeholder="Workspace name"
                   autoFocus
+                  required
+                  onChange={handleInput}
                   css={css({ height: 8 })}
                 />
                 <Button

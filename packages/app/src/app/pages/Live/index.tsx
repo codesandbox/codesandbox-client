@@ -56,8 +56,9 @@ export const LivePage: React.FC<Props> = ({ match }) => {
               }
               autoWidth
             >
-              <Stack gap={2}>
-                <GithubIcon /> <Text>Sign in with GitHub</Text>
+              <Stack align="center" gap={2}>
+                <GithubIcon />{' '}
+                <Text style={{ lineHeight: 1 }}>Sign in with GitHub</Text>
               </Stack>
             </Button>
           </Element>
