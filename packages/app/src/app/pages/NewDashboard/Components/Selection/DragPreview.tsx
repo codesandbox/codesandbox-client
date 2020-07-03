@@ -164,6 +164,7 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                fontWeight: 500,
               })}
             >
               {selectedIds.length}
