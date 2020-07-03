@@ -103,7 +103,7 @@ export class Workbench {
       label: 'Fork Sandbox',
       category: 'Sandbox',
       run: () => {
-        this.controller.getSignal('editor.forkSandboxClicked')();
+        this.controller.getSignal('editor.forkSandboxClicked')({});
       },
     });
 
