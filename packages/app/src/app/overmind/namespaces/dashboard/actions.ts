@@ -953,6 +953,34 @@ export const createTeam: AsyncAction<{
   }
 };
 
+export const revokeTeamInvitation: AsyncAction<{
+  teamId: string;
+  userId: string;
+}> = async ({ effects, state }, { teamId, userId }) => {
+  const oldInvitees = state.activeTeamInfo!.invitees;
+  const user = state.activeTeamInfo!.invitees.find(f => f.id === userId);
+  state.activeTeamInfo!.invitees = state.activeTeamInfo!.invitees.filter(
+    f => f.id !== userId
+  );
+
+  try {
+    const result = await effects.gql.mutations.revokeTeamInvitation({
+      userId,
+      teamId,
+    });
+
+    state.activeTeamInfo = result.revokeTeamInvitation;
+
+    let successMessage = 'Successfully revoked invitation';
+    if (user) {
+      successMessage += ` to ${user.username}`;
+    }
+    effects.notificationToast.success(successMessage);
+  } catch (e) {
+    state.activeTeamInfo!.invitees = oldInvitees;
+  }
+};
+
 export const setTeamInfo: AsyncAction<{
   name: string;
   description: string | null;

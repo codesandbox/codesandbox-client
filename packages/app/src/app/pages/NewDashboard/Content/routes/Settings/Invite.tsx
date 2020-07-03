@@ -12,6 +12,7 @@ import {
   List,
   ListItem,
   Avatar,
+  IconButton,
 } from '@codesandbox/components';
 import {
   teamInviteLink,
@@ -21,6 +22,8 @@ import { sortBy } from 'lodash-es';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 import { Card } from './components';
+
+const CARD_WIDTH = 528;
 
 export const Invite = () => {
   const {
@@ -59,6 +62,8 @@ export const Invite = () => {
     }, 1500);
   };
 
+  const hasAddedUser = team.users.length + team.invitees.length > 1;
+
   return (
     <>
       <Helmet>
@@ -82,7 +87,7 @@ export const Invite = () => {
         >
           <Card
             css={css({
-              width: 528,
+              width: CARD_WIDTH,
               height: 'auto',
               paddingY: 10,
               paddingX: [6, '64px', '64px'],
@@ -170,18 +175,53 @@ export const Invite = () => {
                     justify="space-between"
                     css={css({ height: 12, paddingX: 0 })}
                   >
-                    <Stack gap={2} align="center">
+                    <Stack
+                      css={css({ flex: 1, width: '100%' })}
+                      gap={2}
+                      align="center"
+                    >
                       <Avatar user={user} />
                       <Text size={3}>{user.username}</Text>
                     </Stack>
 
                     <Text variant="muted" size={3}>
-                      Invited
+                      Pending...
                     </Text>
+
+                    <IconButton
+                      title="Revoke Invitation"
+                      css={css({ marginLeft: 1 })}
+                      size={7}
+                      name="cross"
+                      onClick={() => {
+                        actions.dashboard.revokeTeamInvitation({
+                          teamId: team.id,
+                          userId: user.id,
+                        });
+                      }}
+                    />
                   </ListItem>
                 )
               )}
             </List>
+            {hasAddedUser && (
+              <>
+                <hr
+                  css={css({
+                    width: '100%',
+                    height: '1px',
+                    backgroundColor: 'grays.600',
+                    border: 'none',
+                    outline: 'none',
+                    marginTop: 6,
+                    marginBottom: 10,
+                  })}
+                />
+                <Button as={RouterLink} to={dashboardUrls.settings(activeTeam)}>
+                  Create Team
+                </Button>
+              </>
+            )}
           </Card>
           <Link
             as={RouterLink}

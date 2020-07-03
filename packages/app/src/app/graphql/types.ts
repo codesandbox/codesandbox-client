@@ -1358,7 +1358,9 @@ export type _RevokeTeamInvitationMutationVariables = Exact<{
 export type _RevokeTeamInvitationMutation = {
   __typename?: 'RootMutationType';
 } & {
-  revokeTeamInvitation: { __typename?: 'Team' } & TeamFragmentDashboardFragment;
+  revokeTeamInvitation: {
+    __typename?: 'Team';
+  } & CurrentTeamInfoFragmentFragment;
 };
 
 export type _AcceptTeamInvitationMutationVariables = Exact<{

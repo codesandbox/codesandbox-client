@@ -222,10 +222,10 @@ export const revokeTeamInvitation: Query<
 > = gql`
   mutation _RevokeTeamInvitation($teamId: ID!, $userId: ID!) {
     revokeTeamInvitation(teamId: $teamId, userId: $userId) {
-      ...teamFragmentDashboard
+      ...currentTeamInfoFragment
     }
   }
-  ${teamFragmentDashboard}
+  ${currentTeamInfoFragment}
 `;
 
 export const acceptTeamInvitation: Query<
