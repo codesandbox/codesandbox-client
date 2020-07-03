@@ -417,10 +417,12 @@ export const forkSandbox: AsyncAction<{
       teamId?: string;
     } = body || {};
 
-    if (teamId === undefined && state.activeTeam) {
-      usedBody.teamId = state.activeTeam;
-    } else if (teamId !== null) {
-      usedBody.teamId = teamId;
+    if (state.user?.experiments.inPilot) {
+      if (teamId === undefined && state.activeTeam) {
+        usedBody.teamId = state.activeTeam;
+      } else if (teamId !== null) {
+        usedBody.teamId = teamId;
+      }
     }
 
     const forkedSandbox = await effects.api.forkSandbox(id, usedBody);
