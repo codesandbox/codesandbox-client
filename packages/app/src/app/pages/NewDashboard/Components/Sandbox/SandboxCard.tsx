@@ -176,6 +176,8 @@ export const SandboxCard = ({
     string
   >(screenshotUrl);
 
+  const lastSandboxId = React.useRef(sandbox.id);
+
   const imageLoaded = useImageLoaded(guaranteedScreenshotUrl);
 
   React.useEffect(() => {
@@ -189,10 +191,21 @@ export const SandboxCard = ({
     // We always try to show the cached screenshot first, if someone looks at a sandbox we will try to
     // generate a new one based on the latest contents.
     const generateScreenshotUrl = `/api/v1/sandboxes/${sandbox.id}/screenshot.png`;
-    if (stoppedScrolling && !guaranteedScreenshotUrl) {
-      setGuaranteedScreenshotUrl(generateScreenshotUrl);
+    if (
+      stoppedScrolling &&
+      (lastSandboxId.current !== sandbox.id || !guaranteedScreenshotUrl)
+    ) {
+      setGuaranteedScreenshotUrl(
+        sandbox.screenshotUrl || generateScreenshotUrl
+      );
+      lastSandboxId.current = sandbox.id;
     }
-  }, [stoppedScrolling, guaranteedScreenshotUrl, sandbox.id]);
+  }, [
+    stoppedScrolling,
+    guaranteedScreenshotUrl,
+    sandbox.id,
+    sandbox.screenshotUrl,
+  ]);
 
   return (
     <Stack
