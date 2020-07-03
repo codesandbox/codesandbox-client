@@ -346,9 +346,9 @@ export const onChatEnabledToggle: Action = ({ effects, state }) => {
   }
 };
 
-export const onFollow: Action<string> = (
+export const onFollow: Action<{ liveUserId: string }> = (
   { actions, effects, state },
-  liveUserId
+  { liveUserId }
 ) => {
   if (!state.live.roomInfo) {
     return;

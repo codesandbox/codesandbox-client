@@ -138,7 +138,7 @@ export const CollaboratorHeads: FunctionComponent = () => {
     if (liveUserId === user.id || followingUserId === user.id) {
       actions.live.onStopFollow();
     } else {
-      actions.live.onFollow(user.id);
+      actions.live.onFollow({ liveUserId: user.id });
     }
   };
 
