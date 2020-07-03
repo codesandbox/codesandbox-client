@@ -14,6 +14,7 @@ import {
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
+import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 import { Card } from './components';
 import { MemberList } from './components/MemberList';
 
@@ -21,6 +22,7 @@ export const TeamSettings = () => {
   const {
     state: { user: stateUser, activeTeam, activeTeamInfo: team },
     actions,
+    effects,
   } = useOvermind();
 
   const [editing, setEditing] = useState(false);
@@ -55,15 +57,23 @@ export const TeamSettings = () => {
   };
 
   if (!team || !stateUser) {
-    return <Header title="Workspace settings" activeTeam={null} />;
+    return <Header title="Workspace Settings" activeTeam={null} />;
   }
+
+  const onCopyInviteUrl = async event => {
+    event.preventDefault();
+
+    effects.browser.copyToClipboard(teamInviteLink(team.inviteToken));
+    effects.notificationToast.success('Copied Team Invite URL!');
+  };
+
   const created = team.users.find(user => user.id === team.creatorId);
   return (
     <>
       <Helmet>
         <title>Workspace Settings - CodeSandbox</title>
       </Helmet>
-      <Header title="Workspace settings" activeTeam={activeTeam} />
+      <Header title="Workspace Settings" activeTeam={activeTeam} />
       <Element
         css={css({
           height: 'calc(100vh - 140px)',
@@ -183,7 +193,23 @@ export const TeamSettings = () => {
             </Card>
           </Grid>
           <Stack align="center" justify="space-between" gap={2}>
-            <Text size={4}>Members</Text>
+            <Text
+              css={css({
+                display: 'flex',
+                alignItems: 'center',
+              })}
+              size={4}
+            >
+              Members{' '}
+              <IconButton
+                css={css({ marginLeft: 2 })}
+                size={12}
+                title="Copy Invite Url"
+                name="link"
+                onClick={onCopyInviteUrl}
+              />
+            </Text>
+
             <Stack
               as="form"
               onSubmit={inviteLoading ? undefined : onInviteSubmit}
