@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Stack,
-  Element,
   Text,
   Input,
   Icon,
@@ -109,36 +108,29 @@ type SandboxStatsProps = Pick<
   'isHomeTemplate' | 'sandbox' | 'viewCount' | 'sandboxLocation' | 'lastUpdated'
 >;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
-  ({ isHomeTemplate, sandbox, viewCount, sandboxLocation, lastUpdated }) => (
-    <Stack marginX={4} gap={1} align="center">
-      <Stack gap={1} align="center">
-        <Icon name="eye" size={14} css={css({ color: 'mutedForeground' })} />
-        <Text size={3} variant="muted">
-          {viewCount}
+  ({ isHomeTemplate, viewCount, sandboxLocation, lastUpdated }) => {
+    let finalText = viewCount;
+
+    if (!isHomeTemplate) {
+      finalText += ` • ${shortDistance(lastUpdated)}`;
+    }
+
+    if (sandboxLocation) {
+      finalText += ` • ${sandboxLocation}`;
+    }
+
+    return (
+      <div style={{ margin: '0 16px' }}>
+        <Text
+          style={{ display: 'flex', alignItems: 'center' }}
+          size={3}
+          variant="muted"
+        >
+          <Icon style={{ marginRight: 2 }} name="eye" size={14} /> {finalText}
         </Text>
-      </Stack>
-      {isHomeTemplate ? null : (
-        <>
-          <Text size={3} variant="muted">
-            •
-          </Text>
-          <Text size={3} variant="muted" css={{ flexShrink: 0 }}>
-            {shortDistance(lastUpdated)}
-          </Text>
-        </>
-      )}
-      {sandboxLocation ? (
-        <>
-          <Text size={3} variant="muted">
-            •
-          </Text>
-          <Text size={3} variant="muted" maxWidth="100%">
-            {sandboxLocation}
-          </Text>
-        </>
-      ) : null}
-    </Stack>
-  )
+      </div>
+    );
+  }
 );
 
 export const SandboxCard = ({
@@ -171,13 +163,11 @@ export const SandboxCard = ({
   ...props
 }: SandboxItemComponentProps) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
-
   const [guaranteedScreenshotUrl, setGuaranteedScreenshotUrl] = React.useState<
     string
   >(screenshotUrl);
 
   const lastSandboxId = React.useRef(sandbox.id);
-
   const imageLoaded = useImageLoaded(guaranteedScreenshotUrl);
 
   React.useEffect(() => {
@@ -233,45 +223,46 @@ export const SandboxCard = ({
         },
       })}
     >
-      <Stack
+      <div
         ref={thumbnailRef}
-        justify="center"
-        align="center"
-        css={css({
-          height: 160,
-          backgroundColor: 'grays.600',
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '160px',
+          backgroundColor: '#242424',
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-          svg: {
-            filter: 'grayscale(1)',
-            opacity: 0.1,
-          },
-        })}
-        style={{
+
           [imageLoaded
             ? 'backgroundImage'
             : null]: `url(${guaranteedScreenshotUrl})`,
         }}
       >
-        {imageLoaded ? null : <TemplateIcon width="60" height="60" />}
-      </Stack>
-      <Element
-        css={css({
+        {imageLoaded ? null : (
+          <TemplateIcon
+            style={{ filter: 'grayscale(1)', opacity: 0.1 }}
+            width="60"
+            height="60"
+          />
+        )}
+      </div>
+      <div
+        style={{
           position: 'absolute',
-          top: 1,
-          right: 1,
-          size: 6,
-          width: '22px',
-          height: '22px',
-          backgroundColor: 'grays.500',
+          top: 2,
+          right: 2,
+          width: 16,
+          height: 16,
           border: '3px solid',
-          borderColor: 'grays.500',
-          borderRadius: 'medium',
-        })}
+          borderRadius: 2,
+          backgroundColor: '#343434',
+          borderColor: '#343434',
+        }}
       >
         <TemplateIcon width="16" height="16" />
-      </Element>
+      </div>
 
       <SandboxTitle
         editing={editing}
