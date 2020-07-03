@@ -177,6 +177,7 @@ export const useCodesandboxMention = ({
           }}
         >
           <List
+            onKeyDown={onKeyDown}
             css={css({
               position: 'fixed',
               width: '250px',
