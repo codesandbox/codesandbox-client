@@ -12,6 +12,7 @@ import {
   Icon,
   IconButton,
 } from '@codesandbox/components';
+import { sortBy } from 'lodash-es';
 import css from '@styled-system/css';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { SIDEBAR_WIDTH } from './constants';
@@ -43,7 +44,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
           width: '100%',
           height: '100%',
           borderBottom: '1px solid',
-          borderColor: 'sideBar.border',
+          borderColor: 'grays.500',
         })}
       >
         <Menu>
@@ -56,8 +57,9 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
               height: '100%',
               paddingLeft: 2,
               borderRadius: 0,
-              ':hover, :focus-within': {
-                backgroundColor: 'sideBar.hoverBackground',
+
+              '&:hover': {
+                backgroundColor: 'grays.600',
               },
             })}
           >
@@ -83,20 +85,27 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
           <Menu.List
             css={css({
               width: SIDEBAR_WIDTH,
-              marginLeft: 4,
+              marginLeft: 2,
               marginTop: '-4px',
               backgroundColor: 'grays.600',
             })}
+            style={{ backgroundColor: '#242424', borderColor: '#343434' }} // TODO: find a way to override reach styles without the selector mess
           >
             <Menu.Item
               css={css({
                 height: 10,
                 textAlign: 'left',
-                backgroundColor: !inTeamContext ? 'grays.500' : 'transparent',
+                backgroundColor: 'grays.600',
+                borderBottom: '1px solid',
+                borderColor: 'grays.500',
+
+                '&[data-reach-menu-item][data-component=MenuItem][data-selected]': {
+                  backgroundColor: 'grays.500',
+                },
               })}
               style={{ paddingLeft: 8 }}
               onSelect={() => {
-                actions.dashboard.setActiveTeam({ id: null });
+                actions.setActiveTeam({ id: null });
                 track('Dashboard - Change workspace', {
                   dashboardVersion: 2,
                 });
@@ -104,10 +113,14 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
             >
               <Stack align="center" gap={2}>
                 <Avatar user={user} css={css({ size: 6 })} />
-                <Text size={3}>{user.username} (Personal)</Text>
+                <Text css={css({ width: '100%' })} size={3}>
+                  {user.username} (Personal)
+                </Text>
+
+                {!inTeamContext && <Icon name="simpleCheck" />}
               </Stack>
             </Menu.Item>
-            {dashboard.teams.map(team => (
+            {sortBy(dashboard.teams, t => t.name.toLowerCase()).map(team => (
               <Stack
                 as={Menu.Item}
                 key={team.id}
@@ -116,21 +129,27 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
                 css={css({
                   height: 10,
                   textAlign: 'left',
-                  backgroundColor:
-                    activeAccount.username === team.name
-                      ? 'grays.500'
-                      : 'transparent',
+                  backgroundColor: 'grays.600',
+                  borderBottom: '1px solid',
+                  borderColor: 'grays.500',
+
+                  '&[data-reach-menu-item][data-component=MenuItem][data-selected]': {
+                    backgroundColor: 'grays.500',
+                  },
                 })}
                 style={{ paddingLeft: 8 }}
-                onSelect={() =>
-                  actions.dashboard.setActiveTeam({ id: team.id })
-                }
+                onSelect={() => actions.setActiveTeam({ id: team.id })}
               >
                 <TeamAvatar name={team.name} size="small" />
-                <Text size={3}>{team.name}</Text>
+                <Text css={css({ width: '100%' })} size={3}>
+                  {team.name}
+                </Text>
+
+                {activeAccount.username === team.name && (
+                  <Icon name="simpleCheck" />
+                )}
               </Stack>
             ))}
-            <Menu.Divider />
             <Stack
               as={Menu.Item}
               align="center"
@@ -149,14 +168,12 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
                   size: 6,
                   borderRadius: 'small',
                   border: '1px solid',
-                  borderColor: 'avatar.border',
+                  borderColor: 'grays.500',
                 })}
               >
                 <Icon name="plus" size={10} />
               </Stack>
-              <Text size={3} variant="muted">
-                Create a new workspace
-              </Text>
+              <Text size={3}>Create a new workspace</Text>
             </Stack>
           </Menu.List>
         </Menu>

@@ -7,7 +7,6 @@ import {
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
 } from 'app/graphql/types';
-import { TEAM_ID_LOCAL_STORAGE } from 'app/overmind/utils/team';
 import { OrderBy, sandboxesTypes } from './state';
 import { getDecoratedCollection } from './utilts';
 
@@ -23,24 +22,6 @@ export const setTrashSandboxes: Action<{
   sandboxIds: string[];
 }> = ({ state }, { sandboxIds }) => {
   state.dashboard.trashSandboxIds = sandboxIds;
-};
-
-export const setActiveTeam: Action<{
-  id: string | null;
-}> = ({ state, effects }, { id }) => {
-  // ignore if its already selected
-  if (id === state.activeTeam) return;
-
-  state.activeTeam = id;
-  effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
-  state.dashboard.sandboxes = {
-    ...state.dashboard.sandboxes,
-    DRAFTS: null,
-    TEMPLATES: null,
-    RECENT: null,
-    SEARCH: null,
-    ALL: null,
-  };
 };
 
 export const dragChanged: Action<{ isDragging: boolean }> = (
@@ -184,7 +165,7 @@ export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
       teamId: state.activeTeam,
     });
 
-    actions.dashboard.setActiveTeam({ id: null });
+    actions.setActiveTeam({ id: null });
     actions.dashboard.getTeams();
 
     effects.notificationToast.success(
@@ -204,7 +185,7 @@ export const inviteToTeam: AsyncAction<string> = async (
   if (!state.activeTeam) return;
   const isEmail = value.includes('@');
   try {
-    let data: any = null;
+    let data: any | null = null;
     if (isEmail) {
       const emailInvited = await effects.gql.mutations.inviteToTeamVieEmail({
         teamId: state.activeTeam,
@@ -213,12 +194,13 @@ export const inviteToTeam: AsyncAction<string> = async (
 
       data = emailInvited.inviteToTeamViaEmail;
     } else {
-      const usernameInvited = await effects.gql.mutations.inviteToTeam({
+      const result = await effects.gql.mutations.inviteToTeam({
         teamId: state.activeTeam,
         username: value,
       });
 
-      data = usernameInvited.inviteToTeam;
+      state.activeTeamInfo = result.inviteToTeam;
+      data = result.inviteToTeam;
     }
 
     if (!data) {
@@ -475,11 +457,11 @@ export const getStartPageSandboxes: AsyncAction = async ({
 
     dashboard.sandboxes.TEMPLATE_HOME = usedTemplates.me.recentlyUsedTemplates.slice(
       0,
-      3
+      5
     );
 
     const result = await effects.gql.queries.recentlyAccessedSandboxes({
-      limit: 7,
+      limit: 12,
       teamId: state.activeTeam,
     });
 
@@ -957,15 +939,45 @@ export const addSandboxesToFolder: AsyncAction<{
 
 export const createTeam: AsyncAction<{
   teamName: string;
-}> = async ({ effects, actions, state }, { teamName }) => {
+  pilot?: boolean;
+}> = async ({ effects, actions, state }, { teamName, pilot = false }) => {
   try {
     const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
       name: teamName,
+      pilot,
     });
     state.dashboard.teams = [...state.dashboard.teams, newTeam];
-    actions.dashboard.setActiveTeam({ id: newTeam.id });
+    actions.setActiveTeam({ id: newTeam.id });
   } catch {
     effects.notificationToast.error('There was a problem creating your team');
+  }
+};
+
+export const revokeTeamInvitation: AsyncAction<{
+  teamId: string;
+  userId: string;
+}> = async ({ effects, state }, { teamId, userId }) => {
+  const oldInvitees = state.activeTeamInfo!.invitees;
+  const user = state.activeTeamInfo!.invitees.find(f => f.id === userId);
+  state.activeTeamInfo!.invitees = state.activeTeamInfo!.invitees.filter(
+    f => f.id !== userId
+  );
+
+  try {
+    const result = await effects.gql.mutations.revokeTeamInvitation({
+      userId,
+      teamId,
+    });
+
+    state.activeTeamInfo = result.revokeTeamInvitation;
+
+    let successMessage = 'Successfully revoked invitation';
+    if (user) {
+      successMessage += ` to ${user.username}`;
+    }
+    effects.notificationToast.success(successMessage);
+  } catch (e) {
+    state.activeTeamInfo!.invitees = oldInvitees;
   }
 };
 

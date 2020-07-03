@@ -36,6 +36,8 @@ export const TeamAvatar = ({
       align="center"
       css={css({
         size: 6,
+        minWidth: 6,
+        minHeight: 6,
         borderRadius: 'small',
         textTransform: 'uppercase',
         backgroundColor,

@@ -261,7 +261,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
         primary: {
           label: 'Fork',
           run: () => {
-            actions.editor.forkSandboxClicked();
+            actions.editor.forkSandboxClicked({});
           },
         },
       },
@@ -610,13 +610,16 @@ export const forkExternalSandbox: AsyncAction<{
   }
 };
 
-export const forkSandboxClicked: AsyncAction = async ({ actions, state }) => {
+export const forkSandboxClicked: AsyncAction<{
+  teamId?: string | null;
+}> = async ({ state, actions }, { teamId }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
 
   await actions.editor.internal.forkSandbox({
     sandboxId: state.editor.currentSandbox.id,
+    teamId,
   });
 };
 

@@ -30,7 +30,7 @@ const ITEM_MIN_WIDTH = 220;
 const ITEM_HEIGHT_GRID = 240;
 const ITEM_HEIGHT_LIST = 64;
 const HEADER_HEIGHT = 64;
-const GRID_VERTICAL_OFFSET = 120;
+// const GRID_VERTICAL_OFFSET = 120;
 const ITEM_VERTICAL_OFFSET = 32;
 
 type WindowItemProps = {
@@ -265,11 +265,7 @@ export const VariableGrid = ({
     return <EmptyScreen page={page} collectionId={collectionId} />;
 
   return (
-    <Element
-      css={{
-        height: `calc(100vh - ${GRID_VERTICAL_OFFSET}px)`,
-      }}
-    >
+    <Element style={{ width: '100%', height: '100%' }}>
       <AutoSizer onResize={onResize}>
         {({ width, height }) => {
           const cappedWith = Math.min(width, GRID_MAX_WIDTH);

@@ -3,6 +3,8 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
+import { zonedTimeToUtc } from 'date-fns-tz';
+
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
@@ -68,7 +70,7 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   const sandboxLocation = getFolderName(item);
 
   const lastUpdated = formatDistanceStrict(
-    new Date(sandbox.updatedAt.replace(/ /g, 'T')),
+    zonedTimeToUtc(sandbox.updatedAt, 'Etc/UTC'),
     new Date(),
     {
       addSuffix: true,

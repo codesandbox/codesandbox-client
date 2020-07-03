@@ -64,14 +64,16 @@ export const withLoadApp = <T>(
 
   if (state.hasLogIn) {
     try {
-      const [user] = await Promise.all([
-        effects.api.getCurrentUser(),
-        actions.getActiveTeam(),
+      await Promise.all([
+        effects.api.getCurrentUser().then(user => {
+          state.user = user;
+        }),
+        actions.getActiveTeamInfo(),
       ]);
-      state.user = user;
+
       actions.internal.setPatronPrice();
       effects.analytics.identify('signed_in', true);
-      effects.analytics.setUserId(state.user.id, state.user.email);
+      effects.analytics.setUserId(state.user!.id, state.user!.email);
 
       try {
         actions.internal.trackCurrentTeams().catch(e => {});

@@ -9,7 +9,6 @@ import { Card } from './components';
 
 export const NewTeam = () => {
   const {
-    state: { user, activeTeam },
     actions: { dashboard },
   } = useOvermind();
   const [loading, setLoading] = useState(false);
@@ -18,13 +17,15 @@ export const NewTeam = () => {
     event.preventDefault();
     const teamName = event.target.name.value;
     if (teamName && teamName.trim()) {
-      console.warn(teamName, 'created by', user.username);
       event.target.name.setCustomValidity('');
       setLoading(true);
       try {
-        await dashboard.createTeam({ teamName });
+        await dashboard.createTeam({
+          teamName,
+          pilot: location.search.includes('pilot'),
+        });
         setLoading(false);
-        history.push(dashboardUrls.teamInvite(activeTeam));
+        history.push(dashboardUrls.teamInvite());
       } catch {
         setLoading(false);
       }
@@ -67,8 +68,8 @@ export const NewTeam = () => {
                   Create a workspace
                 </Text>
                 <Text size={3} variant="muted" align="center">
-                  You are one step away from seamlessly collaborating, managing
-                  projects and much more...
+                  Collaborate on code with friends or co-workers. Manage and
+                  work on sandboxes together.
                 </Text>
               </Stack>
 
@@ -88,7 +89,7 @@ export const NewTeam = () => {
                   type="submit"
                   css={css({ height: 8, fontSize: 3 })}
                 >
-                  Create workspace
+                  Create Workspace
                 </Button>
               </Stack>
             </Stack>
