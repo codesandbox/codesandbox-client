@@ -68,8 +68,8 @@ export const NewTeam = () => {
                   Create a workspace
                 </Text>
                 <Text size={3} variant="muted" align="center">
-                  You are one step away from seamlessly collaborating, managing
-                  projects and much more...
+                  Collaborate on code with friends or co-workers. Manage and
+                  work on sandboxes together.
                 </Text>
               </Stack>
 
@@ -89,7 +89,7 @@ export const NewTeam = () => {
                   type="submit"
                   css={css({ height: 8, fontSize: 3 })}
                 >
-                  Create workspace
+                  Create Workspace
                 </Button>
               </Stack>
             </Stack>
