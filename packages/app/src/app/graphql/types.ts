@@ -1658,7 +1658,6 @@ export type LatestTeamSandboxesQueryVariables = Exact<{
   orderField: Scalars['String'];
   orderDirection: Direction;
   teamId: Scalars['ID'];
-  authorId: Scalars['ID'];
 }>;
 
 export type LatestTeamSandboxesQuery = { __typename?: 'RootQueryType' } & {

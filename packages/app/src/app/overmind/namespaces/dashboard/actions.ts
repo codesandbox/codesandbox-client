@@ -229,7 +229,6 @@ export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
     if (state.activeTeam) {
       const data = await effects.gql.queries.recentTeamSandboxes({
         teamId: state.activeTeam,
-        authorId: null,
         limit: 200,
         orderField: dashboard.orderBy.field,
         orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
