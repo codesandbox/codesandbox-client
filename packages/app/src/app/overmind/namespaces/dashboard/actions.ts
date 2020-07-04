@@ -224,19 +224,37 @@ export const inviteToTeam: AsyncAction<string> = async (
 export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
   const { dashboard } = state;
   try {
-    const data = await effects.gql.queries.recentSandboxes({
-      limit: 200,
-      orderField: dashboard.orderBy.field,
-      orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
-    });
-    if (!data || !data.me) {
-      return;
+    let sandboxes;
+
+    if (state.activeTeam) {
+      const data = await effects.gql.queries.recentTeamSandboxes({
+        teamId: state.activeTeam,
+        authorId: null,
+        limit: 200,
+        orderField: dashboard.orderBy.field,
+        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
+      });
+
+      if (!data.me?.team?.sandboxes) {
+        return;
+      }
+
+      sandboxes = data.me.team.sandboxes;
+    } else {
+      const data = await effects.gql.queries.recentPersonalSandboxes({
+        limit: 200,
+        orderField: dashboard.orderBy.field,
+        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
+      });
+
+      if (!data?.me?.sandboxes) {
+        return;
+      }
+
+      sandboxes = data.me.sandboxes;
     }
 
-    // TODO: look into recents. Do we still want to have it this way?
-    dashboard.sandboxes[sandboxesTypes.RECENT] = data.me.sandboxes
-      .filter(sandbox => sandbox.teamId === state.activeTeam)
-      .slice(0, 50);
+    dashboard.sandboxes[sandboxesTypes.RECENT] = sandboxes;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your recent Sandboxes'
