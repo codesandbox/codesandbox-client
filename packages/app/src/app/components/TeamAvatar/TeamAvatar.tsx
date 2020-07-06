@@ -33,15 +33,15 @@ export const TeamAvatar = ({
   // consistent color
   const index = name.length % (backgrounds.length - 1);
   const backgroundColor = backgrounds[index];
-  const s = size === 'bigger' ? 55 : 6;
+  const avatarSize = size === 'bigger' ? 55 : 6;
 
   return avatar ? (
     <>
       <img
         {...props}
         css={css({
-          maxWidth: s,
-          maxHeight: s,
+          maxWidth: avatarSize,
+          maxHeight: avatarSize,
           borderRadius: 'small',
           borderColor: 'sideBar.border',
           borderStyle: 'solid',
@@ -57,9 +57,9 @@ export const TeamAvatar = ({
       justify="center"
       align="center"
       css={css({
-        size: s,
-        minWidth: s,
-        minHeight: s,
+        size: avatarSize,
+        minWidth: avatarSize,
+        minHeight: avatarSize,
         borderRadius: 'small',
         textTransform: 'uppercase',
         backgroundColor,
