@@ -68,7 +68,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     if (state.activeTeam) {
       const team = dashboard.teams.find(({ id }) => id === state.activeTeam);
 
-      if (team) setActiveAccount({ username: team.name, avatarUrl: null });
+      if (team)
+        setActiveAccount({ username: team.name, avatarUrl: team.avatarUrl });
     } else if (user) {
       setActiveAccount({
         username: user.username,

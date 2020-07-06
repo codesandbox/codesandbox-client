@@ -167,6 +167,7 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
       teams {
         id
         name
+        avatarUrl
       }
     }
   }

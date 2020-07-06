@@ -51,7 +51,10 @@ export const WorkspaceDashboardIcon = () => {
           <Icon style={{ color: 'white' }} name="backArrow" />
         </div>
         {state.activeTeam && state.activeTeamInfo ? (
-          <TeamAvatar name={state.activeTeamInfo.name} />
+          <TeamAvatar
+            avatar={state.activeTeamInfo.avatarUrl}
+            name={state.activeTeamInfo.name}
+          />
         ) : (
           <Avatar css={css({ size: 6, borderRadius: 2 })} user={user} />
         )}

@@ -15,29 +15,51 @@ export const backgrounds = [
 
 interface TeamAvatarProps {
   name: string;
-  size?: 'small' | 'big';
+  size?: 'small' | 'big' | 'bigger';
   className?: string;
+  avatar?: string;
+  style?: any;
 }
 
 export const TeamAvatar = ({
   name,
   size = 'big',
   className,
+  avatar,
+  ...props
 }: TeamAvatarProps) => {
   if (!name) return null;
 
   // consistent color
   const index = name.length % (backgrounds.length - 1);
   const backgroundColor = backgrounds[index];
+  const s = size === 'bigger' ? 55 : 6;
 
-  return (
+  return avatar ? (
+    <>
+      <img
+        {...props}
+        css={css({
+          maxWidth: s,
+          maxHeight: s,
+          borderRadius: 'small',
+          borderColor: 'sideBar.border',
+          borderStyle: 'solid',
+          borderWidth: 1,
+        })}
+        src={avatar}
+        alt={name}
+      />
+    </>
+  ) : (
     <Stack
+      {...props}
       justify="center"
       align="center"
       css={css({
-        size: 6,
-        minWidth: 6,
-        minHeight: 6,
+        size: s,
+        minWidth: s,
+        minHeight: s,
         borderRadius: 'small',
         textTransform: 'uppercase',
         backgroundColor,

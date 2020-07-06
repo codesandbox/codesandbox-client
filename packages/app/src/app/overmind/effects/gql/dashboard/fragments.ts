@@ -98,6 +98,7 @@ export const teamFragmentDashboard = gql`
     name
     description
     creatorId
+    avatarUrl
 
     users {
       id
@@ -123,6 +124,7 @@ export const currentTeamInfoFragment = gql`
     inviteToken
     joinedPilotAt
     name
+    avatarUrl
 
     users {
       id
