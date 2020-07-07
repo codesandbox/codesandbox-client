@@ -51,6 +51,7 @@ export const TeamAvatar = ({
           borderColor: 'sideBar.border',
           borderStyle: 'solid',
           borderWidth: 1,
+          boxSizing: 'border-box',
         })}
         style={style}
         src={avatar}
