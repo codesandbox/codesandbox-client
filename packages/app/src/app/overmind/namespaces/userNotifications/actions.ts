@@ -202,7 +202,7 @@ export const getNotificationPreferences: AsyncAction = async ({
     state.userNotifications.preferences = data.me.notificationPreferences;
   } catch {
     effects.notificationToast.error(
-      'There has been a problem getting your notification preferences'
+      'There has been a problem getting your email preferences'
     );
   }
 };
@@ -228,7 +228,7 @@ export const updateNotificationPreferences: AsyncAction<
   } catch {
     state.userNotifications.preferences = oldPreferences;
     effects.notificationToast.error(
-      'There has been a problem getting your notification preferences'
+      'There has updating your email preferences'
     );
   }
 };
