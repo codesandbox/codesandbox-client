@@ -114,9 +114,6 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const folders = (items || []).filter(
     item => item.type === 'folder'
   ) as DashboardFolder[];
-  const repos = (items || []).filter(
-    item => item.type === 'repo'
-  ) as DashboardRepo[];
   const sandboxes = (items || []).filter(
     item => item.type === 'sandbox' || item.type === 'template'
   ) as Array<DashboardSandbox | DashboardTemplate>;
@@ -573,48 +570,6 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const onContainerMouseUp = () => {
     if (drawingRect) resetSelectionRect();
   };
-  if (page === 'repos') {
-    return (
-      <Context.Provider
-        value={{
-          sandboxes,
-          selectedIds,
-          onClick,
-          onMouseDown,
-          onBlur,
-          onRightClick,
-          onMenuEvent,
-          onDragStart,
-          onDrop,
-          thumbnailRef,
-          isDragging,
-          isRenaming,
-          setRenaming,
-          activeTeamId,
-        }}
-      >
-        <Element
-          onContextMenu={onContainerContextMenu}
-          css={css({ paddingTop: 10 })}
-        >
-          {children}
-        </Element>
-        <ContextMenu
-          visible={menuVisible}
-          position={menuPosition}
-          setVisibility={setMenuVisibility}
-          selectedIds={selectedIds}
-          sandboxes={sandboxes || []}
-          folders={folders || []}
-          repos={repos || []}
-          page={page}
-          setRenaming={setRenaming}
-          createNewFolder={createNewFolder}
-          createNewSandbox={createNewSandbox}
-        />
-      </Context.Provider>
-    );
-  }
 
   return (
     <Context.Provider

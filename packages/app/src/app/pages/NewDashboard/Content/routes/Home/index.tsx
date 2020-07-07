@@ -33,7 +33,8 @@ export const Home = () => {
         type: 'template' as 'template',
         sandbox,
         template: templateValues,
-        isHomeTemplate: true,
+        autoFork: true,
+        noDrag: true,
       };
 
       return dashboardTemplate;

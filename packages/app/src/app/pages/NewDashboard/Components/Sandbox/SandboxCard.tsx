@@ -124,10 +124,10 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type SandboxStatsProps = Pick<
   SandboxItemComponentProps,
-  'isHomeTemplate' | 'sandbox' | 'viewCount' | 'sandboxLocation' | 'lastUpdated'
+  'noDrag' | 'viewCount' | 'sandboxLocation' | 'lastUpdated'
 >;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
-  ({ isHomeTemplate, sandbox, viewCount, sandboxLocation, lastUpdated }) => (
+  ({ noDrag, viewCount, sandboxLocation, lastUpdated }) => (
     <Stack marginX={4} gap={1} align="center">
       <Stack gap={1} align="center">
         <Icon name="eye" size={14} css={css({ color: 'mutedForeground' })} />
@@ -135,7 +135,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
           {viewCount}
         </Text>
       </Stack>
-      {isHomeTemplate ? null : (
+      {noDrag ? null : (
         <>
           <Text size={3} variant="muted">
             •
@@ -163,7 +163,8 @@ export const SandboxCard = ({
   sandbox,
   sandboxTitle,
   sandboxLocation,
-  isHomeTemplate,
+  noDrag,
+  autoFork,
   lastUpdated,
   viewCount,
   TemplateIcon,
@@ -295,9 +296,8 @@ export const SandboxCard = ({
       />
 
       <SandboxStats
-        isHomeTemplate={isHomeTemplate}
+        noDrag={noDrag}
         lastUpdated={lastUpdated}
-        sandbox={sandbox}
         viewCount={viewCount}
         sandboxLocation={sandboxLocation}
       />

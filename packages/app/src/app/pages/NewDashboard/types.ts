@@ -20,7 +20,8 @@ export type DashboardSandbox = {
     prNumber?: number;
     originalGit?: RepoFragmentDashboardFragment['originalGit'];
   };
-  isHomeTemplate?: false;
+  noDrag?: false;
+  autoFork?: false;
 };
 
 export type DashboardTemplate = {
@@ -30,7 +31,8 @@ export type DashboardTemplate = {
     prNumber?: number;
     originalGit?: RepoFragmentDashboardFragment['originalGit'];
   };
-  isHomeTemplate?: boolean;
+  noDrag?: boolean;
+  autoFork?: boolean;
 };
 
 export type DashboardFolder = DELETE_ME_COLLECTION &

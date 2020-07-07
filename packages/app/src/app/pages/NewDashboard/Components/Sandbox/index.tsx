@@ -62,7 +62,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     actions,
   } = useOvermind();
 
-  const { sandbox, type, isHomeTemplate } = item;
+  const { sandbox, type, noDrag, autoFork } = item;
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
@@ -160,7 +160,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
     // Templates in Home should fork, everything else opens
     if (event.ctrlKey || event.metaKey) {
-      if (isHomeTemplate) {
+      if (autoFork) {
         actions.editor.forkExternalSandbox({
           sandboxId: sandbox.id,
           openInNewWindow: true,
@@ -172,7 +172,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
         source: 'Home',
         dashboardVersion: 2,
       });
-    } else if (isHomeTemplate) {
+    } else if (autoFork) {
       actions.editor.forkExternalSandbox({
         sandboxId: sandbox.id,
       });
@@ -243,7 +243,8 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   };
 
   const sandboxProps = {
-    isHomeTemplate: item.isHomeTemplate,
+    autoFork: item.autoFork,
+    noDrag: item.noDrag,
     sandboxTitle,
     sandboxLocation,
     lastUpdated,
@@ -265,7 +266,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     opacity: isDragging ? 0.25 : 1,
   };
 
-  const dragProps = isHomeTemplate
+  const dragProps = noDrag
     ? {}
     : {
         ref: dragRef,
