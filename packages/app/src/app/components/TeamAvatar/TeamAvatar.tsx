@@ -18,7 +18,7 @@ interface TeamAvatarProps {
   size?: 'small' | 'big' | 'bigger';
   className?: string;
   avatar?: string;
-  style?: any;
+  style?: React.CSSProperties;
 }
 
 export const TeamAvatar = ({
