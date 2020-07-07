@@ -1,10 +1,27 @@
 import {
   RecentNotificationsQuery,
   RecentNotificationsQueryVariables,
+  EmailPreferencesQuery,
+  EmailPreferencesQueryVariables,
 } from 'app/graphql/types';
 import { Query, gql } from 'overmind-graphql';
 
 import { recentNotificationFragment } from './fragments';
+
+export const getEmailPreferences: Query<
+  EmailPreferencesQuery,
+  EmailPreferencesQueryVariables
+> = gql`
+  query EmailPreferences {
+    me {
+      notificationPreferences {
+        emailCommentMention
+        emailCommentReply
+        emailNewComment
+      }
+    }
+  }
+`;
 
 export const getRecentNotifications: Query<
   RecentNotificationsQuery,

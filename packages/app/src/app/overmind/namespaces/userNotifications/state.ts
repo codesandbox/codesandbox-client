@@ -11,6 +11,11 @@ type State = {
     userAvatar: string;
   } | null;
   activeFilters: string[];
+  preferences: {
+    emailCommentMention: boolean;
+    emailCommentReply: boolean;
+    emailNewComment: boolean;
+  } | null;
 };
 
 export const state: State = {
@@ -20,4 +25,5 @@ export const state: State = {
   notificationsOpened: false,
   activeInvitation: null,
   activeFilters: [],
+  preferences: null,
 };

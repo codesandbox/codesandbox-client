@@ -1837,6 +1837,23 @@ export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<
   'id' | 'type' | 'data' | 'insertedAt' | 'read'
 >;
 
+export type UpdateNotificationPreferencesMutationVariables = Exact<{
+  emailCommentMention: Maybe<Scalars['Boolean']>;
+  emailCommentReply: Maybe<Scalars['Boolean']>;
+  emailNewComment: Maybe<Scalars['Boolean']>;
+}>;
+
+export type UpdateNotificationPreferencesMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  updateNotificationPreferences: {
+    __typename?: 'NotificationPreferences';
+  } & Pick<
+    NotificationPreferences,
+    'emailCommentMention' | 'emailCommentReply' | 'emailNewComment'
+  >;
+};
+
 export type MarkNotificationsAsReadMutationVariables = Exact<{
   [key: string]: never;
 }>;
@@ -1887,6 +1904,21 @@ export type ClearNotificationCountMutationVariables = Exact<{
 export type ClearNotificationCountMutation = {
   __typename?: 'RootMutationType';
 } & { clearNotificationCount: { __typename?: 'User' } & Pick<User, 'id'> };
+
+export type EmailPreferencesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type EmailPreferencesQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      notificationPreferences: Maybe<
+        { __typename?: 'NotificationPreferences' } & Pick<
+          NotificationPreferences,
+          'emailCommentMention' | 'emailCommentReply' | 'emailNewComment'
+        >
+      >;
+    }
+  >;
+};
 
 export type RecentNotificationsQueryVariables = Exact<{
   type: Maybe<Array<Maybe<Scalars['String']>>>;

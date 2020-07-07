@@ -9,8 +9,31 @@ import {
   MarkNotificationsAsReadMutationVariables,
   UpdateNotificationReadStatusMutation,
   UpdateNotificationReadStatusMutationVariables,
+  UpdateNotificationPreferencesMutation,
+  UpdateNotificationPreferencesMutationVariables,
 } from 'app/graphql/types';
 import { Query, gql } from 'overmind-graphql';
+
+export const updateNotificationPreferences: Query<
+  UpdateNotificationPreferencesMutation,
+  UpdateNotificationPreferencesMutationVariables
+> = gql`
+  mutation UpdateNotificationPreferences(
+    $emailCommentMention: Boolean
+    $emailCommentReply: Boolean
+    $emailNewComment: Boolean
+  ) {
+    updateNotificationPreferences(
+      emailCommentMention: $emailCommentMention
+      emailCommentReply: $emailCommentReply
+      emailNewComment: $emailNewComment
+    ) {
+      emailCommentMention
+      emailCommentReply
+      emailNewComment
+    }
+  }
+`;
 
 export const markAllNotificationsAsRead: Query<
   MarkNotificationsAsReadMutation,
