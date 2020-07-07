@@ -1121,6 +1121,37 @@ export type CommentRemovedSubscription = {
   } & CommentFragment;
 };
 
+export type RepoFragmentDashboardFragment = { __typename?: 'Sandbox' } & Pick<
+  Sandbox,
+  | 'id'
+  | 'alias'
+  | 'title'
+  | 'insertedAt'
+  | 'updatedAt'
+  | 'removedAt'
+  | 'privacy'
+  | 'screenshotUrl'
+  | 'screenshotOutdated'
+  | 'likeCount'
+  | 'forkCount'
+  | 'viewCount'
+  | 'prNumber'
+> & {
+    source: { __typename?: 'Source' } & Pick<Source, 'template'>;
+    baseGit: Maybe<
+      { __typename?: 'Git' } & Pick<
+        Git,
+        'branch' | 'id' | 'repo' | 'username' | 'path'
+      >
+    >;
+    originalGit: Maybe<
+      { __typename?: 'Git' } & Pick<
+        Git,
+        'branch' | 'id' | 'repo' | 'username' | 'path'
+      >
+    >;
+  };
+
 export type SandboxFragmentDashboardFragment = {
   __typename?: 'Sandbox';
 } & Pick<
@@ -1511,6 +1542,36 @@ export type AllCollectionsQuery = { __typename?: 'RootQueryType' } & {
     { __typename?: 'CurrentUser' } & {
       collections: Array<
         { __typename?: 'Collection' } & SidebarCollectionDashboardFragment
+      >;
+    }
+  >;
+};
+
+export type GetPersonalReposQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetPersonalReposQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      sandboxes: Array<
+        { __typename?: 'Sandbox' } & RepoFragmentDashboardFragment
+      >;
+    }
+  >;
+};
+
+export type GetTeamReposQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type GetTeamReposQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      team: Maybe<
+        { __typename?: 'Team' } & {
+          sandboxes: Array<
+            { __typename?: 'Sandbox' } & RepoFragmentDashboardFragment
+          >;
+        }
       >;
     }
   >;

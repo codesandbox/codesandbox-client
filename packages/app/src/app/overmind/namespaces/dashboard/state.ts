@@ -1,6 +1,6 @@
 import {
-  SidebarCollectionDashboardFragment as Collection,
   SandboxFragmentDashboardFragment as Sandbox,
+  RepoFragmentDashboardFragment as Repo,
   Team,
   TemplateFragmentDashboardFragment as Template,
 } from 'app/graphql/types';
@@ -11,28 +11,7 @@ import { sortBy } from 'lodash-es';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import { derived } from 'overmind';
 
-export type OrderBy = {
-  field: string;
-  order: 'desc' | 'asc';
-};
-
-export type DELETE_ME_COLLECTION = Collection & {
-  name: string;
-  level: number;
-  parent: string;
-};
-
-export enum sandboxesTypes {
-  DRAFTS = 'DRAFTS',
-  TEMPLATES = 'TEMPLATES',
-  DELETED = 'DELETED',
-  RECENT = 'RECENT',
-  HOME = 'HOME',
-  TEMPLATE_HOME = 'TEMPLATE_HOME',
-  RECENT_HOME = 'RECENT_HOME',
-  ALL = 'ALL',
-  SEARCH = 'SEARCH',
-}
+import { DELETE_ME_COLLECTION, OrderBy } from './types';
 
 type State = {
   sandboxes: {
@@ -45,6 +24,15 @@ type State = {
     RECENT_HOME: Sandbox[] | null;
     ALL: {
       [path: string]: Sandbox[];
+    } | null;
+    REPOS: {
+      [path: string]: {
+        branch: string;
+        name: string;
+        owner: string;
+        lastEdited: Date;
+        sandboxes: Repo[];
+      };
     } | null;
   };
   teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
@@ -60,7 +48,7 @@ type State = {
   };
   isTemplateSelected: (templateName: string) => boolean;
   getFilteredSandboxes: (
-    sandboxes: Array<Sandbox | Template['sandbox']>
+    sandboxes: Array<Sandbox | Repo | Template['sandbox']>
   ) => Sandbox[];
   recentSandboxesByTime: {
     day: Sandbox[];
@@ -83,6 +71,7 @@ export const state: State = {
     TEMPLATE_HOME: null,
     RECENT_HOME: null,
     ALL: null,
+    REPOS: null,
     SEARCH: null,
   },
   viewMode: 'grid',

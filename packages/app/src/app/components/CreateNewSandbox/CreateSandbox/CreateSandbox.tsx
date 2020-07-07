@@ -39,6 +39,13 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
+    if (location.pathname.includes('/repositories')) {
+      tab.select('Import');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     const infoData = getInfoFromMarkdown(latestChangelog);
     setInfo(infoData);
     const key = 'last_changelog_viewed_create_sandbox_modal';

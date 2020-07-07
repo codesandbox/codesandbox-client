@@ -1,7 +1,8 @@
 import { DashboardSandbox, DashboardTemplate } from '../../types';
 
 export interface SandboxItemComponentProps {
-  isHomeTemplate: boolean;
+  noDrag?: boolean;
+  autoFork?: boolean;
   sandbox: DashboardSandbox['sandbox'] | DashboardTemplate['sandbox'];
   sandboxTitle: string;
   sandboxLocation: string;

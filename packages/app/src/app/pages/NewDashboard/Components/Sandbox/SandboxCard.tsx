@@ -1,4 +1,5 @@
 import React from 'react';
+import { RepoFragmentDashboardFragment } from 'app/graphql/types';
 import {
   Stack,
   Text,
@@ -6,6 +7,7 @@ import {
   Icon,
   IconButton,
   SkeletonText,
+  Link,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
@@ -29,7 +31,11 @@ const useImageLoaded = (url: string) => {
   return loaded;
 };
 
-type SandboxTitleProps = { stoppedScrolling: boolean } & Pick<
+type SandboxTitleProps = {
+  stoppedScrolling: boolean;
+  prNumber?: number;
+  originalGit?: RepoFragmentDashboardFragment['originalGit'];
+} & Pick<
   SandboxItemComponentProps,
   | 'editing'
   | 'onContextMenu'
@@ -44,6 +50,8 @@ type SandboxTitleProps = { stoppedScrolling: boolean } & Pick<
 
 const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
   ({
+    originalGit,
+    prNumber,
     editing,
     stoppedScrolling,
     onContextMenu,
@@ -68,6 +76,16 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
         </form>
       ) : (
         <Stack gap={1} align="center">
+          {prNumber ? (
+            <Link
+              title="Open pull request on GitHub"
+              css={css({ display: 'flex' })}
+              href={`https://github.com/${originalGit.username}/${originalGit.repo}/pull/${prNumber}`}
+              target="_blank"
+            >
+              <Icon name="pr" color="#5BC266" />
+            </Link>
+          ) : null}
           <PrivacyIcon />
           <Text size={3} weight="medium">
             {sandboxTitle}
@@ -106,13 +124,13 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type SandboxStatsProps = Pick<
   SandboxItemComponentProps,
-  'isHomeTemplate' | 'sandbox' | 'viewCount' | 'sandboxLocation' | 'lastUpdated'
+  'noDrag' | 'viewCount' | 'sandboxLocation' | 'lastUpdated'
 >;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
-  ({ isHomeTemplate, viewCount, sandboxLocation, lastUpdated }) => {
+  ({ noDrag, viewCount, sandboxLocation, lastUpdated }) => {
     let finalText = viewCount;
 
-    if (!isHomeTemplate) {
+    if (!noDrag) {
       finalText += ` • ${shortDistance(lastUpdated)}`;
     }
 
@@ -138,7 +156,8 @@ export const SandboxCard = ({
   sandbox,
   sandboxTitle,
   sandboxLocation,
-  isHomeTemplate,
+  noDrag,
+  autoFork,
   lastUpdated,
   viewCount,
   TemplateIcon,
@@ -235,7 +254,8 @@ export const SandboxCard = ({
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-
+          borderBottom: '1px solid',
+          borderColor: '#242424',
           [imageLoaded
             ? 'backgroundImage'
             : null]: `url(${guaranteedScreenshotUrl})`,
@@ -266,6 +286,8 @@ export const SandboxCard = ({
       </div>
 
       <SandboxTitle
+        originalGit={sandbox.originalGit}
+        prNumber={sandbox.prNumber}
         editing={editing}
         stoppedScrolling={stoppedScrolling}
         onContextMenu={onContextMenu}
@@ -279,9 +301,8 @@ export const SandboxCard = ({
       />
 
       <SandboxStats
-        isHomeTemplate={isHomeTemplate}
+        noDrag={noDrag}
         lastUpdated={lastUpdated}
-        sandbox={sandbox}
         viewCount={viewCount}
         sandboxLocation={sandboxLocation}
       />

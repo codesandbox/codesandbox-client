@@ -14,7 +14,7 @@ import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
-import { DashboardSandbox, DashboardTemplate } from '../../types';
+import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../types';
 import { SandboxItemComponentProps } from './types';
 import { useDrag } from '../../utils/dnd';
 
@@ -25,6 +25,7 @@ const PrivacyIcons = {
 };
 
 interface GenericSandboxProps {
+  page: PageTypes;
   isScrolling: boolean;
   item: DashboardSandbox | DashboardTemplate;
 }
@@ -56,13 +57,13 @@ function getFolderName(item: GenericSandboxProps['item']): string {
   return 'Drafts';
 }
 
-const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
+const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const {
     state: { dashboard },
     actions,
   } = useOvermind();
 
-  const { sandbox, type, isHomeTemplate } = item;
+  const { sandbox, type, noDrag, autoFork } = item;
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
@@ -160,7 +161,7 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
 
     // Templates in Home should fork, everything else opens
     if (event.ctrlKey || event.metaKey) {
-      if (isHomeTemplate) {
+      if (autoFork) {
         actions.editor.forkExternalSandbox({
           sandboxId: sandbox.id,
           openInNewWindow: true,
@@ -172,7 +173,7 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
         source: 'Home',
         dashboardVersion: 2,
       });
-    } else if (isHomeTemplate) {
+    } else if (autoFork) {
       actions.editor.forkExternalSandbox({
         sandboxId: sandbox.id,
       });
@@ -210,14 +211,17 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
     async (event?: React.FormEvent<HTMLFormElement>) => {
       if (event) event.preventDefault();
       await actions.dashboard.renameSandbox({
+        page,
         id: sandbox.id,
         title: newTitle,
         oldTitle: sandboxTitle,
+        repoName: sandbox.originalGit?.repo,
       });
       setRenaming(false);
       track('Dashboard - Rename sandbox', { dashboardVersion: 2 });
     },
-    [actions.dashboard, setRenaming, sandbox.id, newTitle, sandboxTitle]
+    // eslint-disable-next-line
+    [actions.dashboard, page, sandbox.id, newTitle, sandboxTitle, setRenaming]
   );
 
   const onInputBlur = React.useCallback(() => {
@@ -240,7 +244,8 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   };
 
   const sandboxProps = {
-    isHomeTemplate: item.isHomeTemplate,
+    autoFork: item.autoFork,
+    noDrag: item.noDrag,
     sandboxTitle,
     sandboxLocation,
     lastUpdated,
@@ -262,7 +267,7 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
     opacity: isDragging ? 0.25 : 1,
   };
 
-  const dragProps = isHomeTemplate
+  const dragProps = noDrag
     ? {}
     : {
         ref: dragRef,
