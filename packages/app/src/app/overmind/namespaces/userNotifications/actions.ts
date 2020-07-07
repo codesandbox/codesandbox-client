@@ -207,17 +207,19 @@ export const getNotificationPreferences: AsyncAction = async ({
   }
 };
 
-export const updateNotificationPreferences: AsyncAction<
-  {
-    [key in keyof preferenceTypes]?: boolean;
-  }
-> = async ({ state, effects }, preference) => {
+type PreferenceTypes = {
+  [key in keyof preferenceTypes]: boolean;
+};
+
+export const updateNotificationPreferences: AsyncAction<Partial<
+  PreferenceTypes
+>> = async ({ state, effects }, preference) => {
   if (!state.user) return;
   const oldPreferences = state.userNotifications.preferences;
   const newPreferences = {
     ...oldPreferences,
     ...preference,
-  };
+  } as PreferenceTypes;
   try {
     state.userNotifications.preferences = newPreferences;
     await effects.gql.mutations.updateNotificationPreferences(newPreferences);
