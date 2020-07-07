@@ -21,12 +21,18 @@ interface TeamAvatarProps {
   style?: React.CSSProperties;
 }
 
+const textSizes = {
+  small: 2,
+  big: 3,
+  bigger: 6,
+};
+
 export const TeamAvatar = ({
   name,
   size = 'big',
   className,
   avatar,
-  ...props
+  style,
 }: TeamAvatarProps) => {
   if (!name) return null;
 
@@ -38,7 +44,6 @@ export const TeamAvatar = ({
   return avatar ? (
     <>
       <img
-        {...props}
         css={css({
           maxWidth: avatarSize,
           maxHeight: avatarSize,
@@ -47,13 +52,14 @@ export const TeamAvatar = ({
           borderStyle: 'solid',
           borderWidth: 1,
         })}
+        style={style}
         src={avatar}
         alt={name}
       />
     </>
   ) : (
     <Stack
-      {...props}
+      style={style}
       justify="center"
       align="center"
       css={css({
@@ -69,7 +75,7 @@ export const TeamAvatar = ({
       })}
       className={className}
     >
-      <Text size={size === 'small' ? 2 : 3}>{name[0]}</Text>
+      <Text size={textSizes[size]}>{name[0]}</Text>
     </Stack>
   );
 };
