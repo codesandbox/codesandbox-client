@@ -1,4 +1,3 @@
-import { omit } from 'lodash-es';
 import { client } from 'app/graphql/client';
 import { Action, AsyncAction } from 'app/overmind';
 
@@ -210,14 +209,13 @@ export const getNotificationPreferences: AsyncAction = async ({
 
 export const updateNotificationPreferences: AsyncAction<
   {
-    [key in keyof preferenceTypes]: boolean;
+    [key in keyof preferenceTypes]?: boolean;
   }
 > = async ({ state, effects }, preference) => {
   if (!state.user) return;
   const oldPreferences = state.userNotifications.preferences;
-
   const newPreferences = {
-    ...omit(oldPreferences, Object.keys(preference)[0]),
+    ...oldPreferences,
     ...preference,
   };
   try {
