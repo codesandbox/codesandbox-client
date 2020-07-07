@@ -95,6 +95,10 @@ export const useCodesandboxMention = ({
   };
 
   function renderResult() {
+    if (mention.query == null) {
+      return null;
+    }
+
     if (mention.query.length < 3) {
       return <ListAction>Please type more than 3 characters</ListAction>;
     }
@@ -146,6 +150,9 @@ export const useCodesandboxMention = ({
     ));
   }
 
+  const result = renderResult();
+  const resultHeight = result ? React.Children.count(result) : 0;
+
   return [
     <div style={{ position: 'relative' }}>
       <FormField label="Add a comment" hideLabel>
@@ -169,8 +176,12 @@ export const useCodesandboxMention = ({
           })}
           style={{
             bottom: fixed
-              ? window.innerHeight - textareaBoundingRect.top - mention.top + 40
-              : textareaBoundingRect.height - mention.top + 40,
+              ? window.innerHeight -
+                (textareaBoundingRect.top - mention.top) +
+                (resultHeight * 32 + 8)
+              : textareaBoundingRect.height -
+                mention.top +
+                (resultHeight * 32 + 8),
             left: fixed
               ? textareaBoundingRect.left + mention.left - 8 // 8 = padding
               : mention.left,
@@ -191,7 +202,7 @@ export const useCodesandboxMention = ({
               borderColor: 'dialog.border',
             })}
           >
-            {renderResult()}
+            {result}
           </List>
         </div>
       ) : null}
