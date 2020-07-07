@@ -35,7 +35,7 @@ export const NotOwner: FunctionComponent = () => {
 
         <Button
           disabled={isForkingSandbox}
-          onClick={forkSandboxClicked}
+          onClick={() => forkSandboxClicked({})}
           variant="primary"
         >
           {isForkingSandbox ? 'Forking Sandbox...' : 'Fork Sandbox'}

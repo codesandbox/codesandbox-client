@@ -1,8 +1,9 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-import { motion } from 'framer-motion';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
+import { zonedTimeToUtc } from 'date-fns-tz';
+
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
@@ -68,7 +69,7 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
   const sandboxLocation = getFolderName(item);
 
   const lastUpdated = formatDistanceStrict(
-    new Date(sandbox.updatedAt.replace(/ /g, 'T')),
+    zonedTimeToUtc(sandbox.updatedAt, 'Etc/UTC'),
     new Date(),
     {
       addSuffix: true,
@@ -274,29 +275,14 @@ const GenericSandbox = ({ isScrolling, item }: GenericSandboxProps) => {
     });
   }, [preview]);
 
-  const resizing = useResizing();
-  const motionProps = resizing
-    ? {}
-    : {
-        layoutTransition: {
-          type: 'spring',
-          damping: 300,
-          stiffness: 300,
-        },
-      };
-
   return (
-    <>
-      <div {...dragProps}>
-        <motion.div {...motionProps}>
-          <Component
-            {...sandboxProps}
-            {...interactionProps}
-            isScrolling={isScrolling}
-          />
-        </motion.div>
-      </div>
-    </>
+    <div {...dragProps}>
+      <Component
+        {...sandboxProps}
+        {...interactionProps}
+        isScrolling={isScrolling}
+      />
+    </div>
   );
 };
 
@@ -317,23 +303,4 @@ export const SkeletonSandbox = () => {
     return <SkeletonListItem />;
   }
   return <SkeletonCard />;
-};
-
-const useResizing = () => {
-  const TIMEOUT = 250;
-  const [resizing, setResizing] = React.useState(false);
-
-  React.useEffect(() => {
-    let timeoutId = null;
-
-    const handler = () => {
-      setResizing(true);
-      window.clearTimeout(timeoutId);
-      timeoutId = window.setTimeout(() => setResizing(false), TIMEOUT);
-    };
-    window.addEventListener('resize', handler);
-    return () => window.removeEventListener('resize', handler);
-  }, []);
-
-  return resizing;
 };

@@ -7,7 +7,11 @@ export interface SandboxItemComponentProps {
   sandboxLocation: string;
   lastUpdated: string;
   viewCount: number | string;
-  TemplateIcon: React.FC<{ width: string; height: string }>;
+  TemplateIcon: React.FC<{
+    width: string;
+    height: string;
+    style?: React.CSSProperties;
+  }>;
   PrivacyIcon: React.FC;
   screenshotUrl: string | null;
 

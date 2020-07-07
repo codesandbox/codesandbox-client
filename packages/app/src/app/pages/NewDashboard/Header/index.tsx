@@ -67,7 +67,12 @@ export const Header: React.FC<HeaderProps> = React.memo(
         })}
       >
         <Link href="/" css={css({ display: ['none', 'none', 'block'] })}>
-          <LogoIcon height={24} />
+          <LogoIcon
+            style={{
+              marginLeft: -6, // Logo positioning tweak
+            }}
+            height={24}
+          />
         </Link>
         <IconButton
           name="menu"

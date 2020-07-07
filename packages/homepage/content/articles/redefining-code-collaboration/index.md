@@ -85,10 +85,11 @@ share for code interviews, reviews, and demoing or teaching one or many others.
 ## Be Part of the Future of Code Collaboration
 
 These updates provide new ways to use CodeSandbox with others, but they also lay
-the groundwork for what's to come. [Sign up now](https://airtable.com/shrlgLSJWiX8rYqyG) to be one of the first to try our
-upcoming collaboration features, which will forever change how you work with
-others to create things with code. We'll be opening up beta access to one of
-many in just a few weeks.
+the groundwork for what's to come.
+[Sign up now](https://airtable.com/shrlgLSJWiX8rYqyG) to be one of the first to
+try our upcoming collaboration features, which will forever change how you work
+with others to create things with code. We'll be opening up beta access to one
+of many in just a few weeks.
 
 In the meantime, [create a team](/dashboard/teams/new) and invite your friends
 and co-workers to try out the all-new CodeSandbox Live today.

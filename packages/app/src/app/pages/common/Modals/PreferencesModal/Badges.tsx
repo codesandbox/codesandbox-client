@@ -1,7 +1,8 @@
-import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
 import { Text, Element } from '@codesandbox/components';
 import Badge from '@codesandbox/common/lib/utils/badges/Badge';
+import React, { FunctionComponent } from 'react';
+
+import { useOvermind } from 'app/overmind';
 
 export const Badges: FunctionComponent = () => {
   const {
@@ -15,14 +16,14 @@ export const Badges: FunctionComponent = () => {
 
   return (
     <>
-      <Text size={4} marginBottom={6} block variant="muted" weight="bold">
+      <Text block marginBottom={6} size={4} variant="muted" weight="bold">
         Badges
       </Text>
 
       <Text size={3}>
-        You currently have {badges.length} badge
-        {badges.length === 1 ? '' : 's'}. You can click on the badges to toggle
-        visibility.
+        You currently have{' '}
+        {`${badges.length} badge${badges.length === 1 ? '' : 's'}`}. You can
+        click on the badges to toggle visibility.
       </Text>
 
       <Element marginTop={4}>

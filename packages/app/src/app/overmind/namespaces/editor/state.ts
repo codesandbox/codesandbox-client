@@ -18,9 +18,9 @@ import {
   Tabs,
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
-import { RecoverData } from 'app/overmind/effects/moduleRecover.ts';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
+import { RecoverData } from 'app/overmind/effects/moduleRecover.ts';
 import immer from 'immer';
 import { derived } from 'overmind';
 

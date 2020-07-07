@@ -1,7 +1,7 @@
 export const DASHBOARD_URL_PREFIX = '/new-dashboard';
 export const ALL_SANDBOXES_URL_PREFIX = `${DASHBOARD_URL_PREFIX}/all`;
 
-function appendTeamIdQueryParam(url: string, teamId?: string) {
+function appendTeamIdQueryParam(url: string, teamId?: string | null) {
   if (teamId) {
     return `${url}?workspace=${teamId}`;
   }
@@ -21,37 +21,37 @@ function sanitizePath(path: string) {
     .join('/');
 }
 
-export const allSandboxes = (path: string, teamId?: string) =>
+export const allSandboxes = (path: string, teamId?: string | null) =>
   appendTeamIdQueryParam(
     `${ALL_SANDBOXES_URL_PREFIX}${sanitizePath(path)}`,
     teamId
   );
 
-export const drafts = (teamId?: string) =>
+export const drafts = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/drafts`, teamId);
 
-export const templates = (teamId?: string) =>
+export const templates = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/templates`, teamId);
 
-export const recents = (teamId?: string) =>
+export const recents = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/recent`, teamId);
 
-export const deleted = (teamId?: string) =>
+export const deleted = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/deleted`, teamId);
 
-export const home = (teamId?: string) =>
+export const home = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/home`, teamId);
 
-export const settings = (teamId?: string) =>
+export const settings = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings`, teamId);
 
-export const teamInvite = (teamId?: string) =>
+export const teamInvite = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings/invite`, teamId);
 
-export const createWorkspace = (teamId?: string) =>
+export const createWorkspace = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings/new`, teamId);
 
-export const search = (query: string, teamId?: string) => {
+export const search = (query: string, teamId?: string | null) => {
   let searchUrl = appendTeamIdQueryParam(
     `${DASHBOARD_URL_PREFIX}/search`,
     teamId

@@ -46,14 +46,15 @@ import {
   teamFragmentDashboard,
   sidebarCollectionDashboard,
   sandboxFragmentDashboard,
+  currentTeamInfoFragment,
 } from './fragments';
 
 export const createTeam: Query<
   _CreateTeamMutation,
   _CreateTeamMutationVariables
 > = gql`
-  mutation _CreateTeam($name: String!) {
-    createTeam(name: $name) {
+  mutation _CreateTeam($name: String!, $pilot: Boolean) {
+    createTeam(name: $name, pilot: $pilot) {
       ...teamFragmentDashboard
     }
   }
@@ -200,10 +201,10 @@ export const inviteToTeam: Query<
 > = gql`
   mutation _InviteToTeam($teamId: ID!, $username: String!) {
     inviteToTeam(teamId: $teamId, username: $username) {
-      ...teamFragmentDashboard
+      ...currentTeamInfoFragment
     }
   }
-  ${teamFragmentDashboard}
+  ${currentTeamInfoFragment}
 `;
 
 export const inviteToTeamVieEmail: Query<
@@ -221,10 +222,10 @@ export const revokeTeamInvitation: Query<
 > = gql`
   mutation _RevokeTeamInvitation($teamId: ID!, $userId: ID!) {
     revokeTeamInvitation(teamId: $teamId, userId: $userId) {
-      ...teamFragmentDashboard
+      ...currentTeamInfoFragment
     }
   }
-  ${teamFragmentDashboard}
+  ${currentTeamInfoFragment}
 `;
 
 export const acceptTeamInvitation: Query<

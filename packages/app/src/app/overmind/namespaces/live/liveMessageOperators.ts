@@ -5,15 +5,17 @@ import {
   LiveMessage,
   LiveUser,
   Module,
+  RoomInfo,
   UserSelection,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
-import { Operator } from 'app/overmind';
-import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
+
+import { Operator } from 'app/overmind';
+import { getSavedCode } from 'app/overmind/utils/sandbox';
 
 export const onSave: Operator<LiveMessage<{
   saved_code: string;
@@ -553,8 +555,8 @@ export const onUserViewRange: Operator<LiveMessage<{
 });
 
 export const onLiveMode: Operator<LiveMessage<{
-  mode: string;
-}>> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
+  mode: RoomInfo['mode'];
+}>> = mutate(({ actions, state }, { _isOwnMessage, data }) => {
   if (!state.live.roomInfo) {
     return;
   }

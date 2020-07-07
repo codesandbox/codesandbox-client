@@ -7,9 +7,11 @@ import {
   ServerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
+import history from 'app/utils/history';
 import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { NotificationStatus } from '@codesandbox/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import values from 'lodash-es/values';
 
 import { ApiError } from './effects/api/apiFactory';
@@ -121,10 +123,10 @@ export const authorize: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const signInGithub: Action<
-  { useExtraScopes?: boolean },
-  Promise<void>
-> = ({ effects }, options) => {
+export const signInGithub: AsyncAction<{ useExtraScopes?: boolean }> = (
+  { effects },
+  options
+) => {
   const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
   const authPath = new URL(
     location.origin + (hasDevAuth ? '/auth/dev' : '/auth/github')
@@ -165,6 +167,16 @@ export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
   state.currentModal = null;
 };
 
+export const currentSandboxChanged: Action = ({ state, effects, actions }) => {
+  const sandbox = state.editor.currentSandbox!;
+  if (
+    hasPermission(sandbox.authorization, 'owner') &&
+    state.user?.experiments.inPilot
+  ) {
+    actions.setActiveTeam({ id: sandbox.team?.id || null });
+  }
+};
+
 export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   { state, effects, actions },
   sandbox
@@ -196,10 +208,7 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
       const resolvedModule = effects.utils.resolveModule(
         sandboxOptions.currentModule,
         sandbox.modules,
-        sandbox.directories,
-        // currentModule is a string... something wrong here?
-        // @ts-ignore
-        sandboxOptions.currentModule.directoryShortid
+        sandbox.directories
       );
       currentModuleShortid = resolvedModule
         ? resolvedModule.shortid
@@ -267,6 +276,8 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   // sandbox without a git
   actions.workspace.openDefaultItem();
   actions.server.startContainer(sandbox);
+
+  actions.internal.currentSandboxChanged();
 };
 
 export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
@@ -451,17 +462,32 @@ export const handleError: Action<{
   });
 };
 
-export const trackCurrentTeams: AsyncAction = async ({ effects }) => {
-  const { me } = await effects.gql.queries.teams({});
-  if (me) {
-    effects.analytics.setGroup(
-      'teamName',
-      me.teams.map(m => m.name)
-    );
-    effects.analytics.setGroup(
-      'teamId',
-      me.teams.map(m => m.id)
-    );
+export const trackCurrentTeams: AsyncAction = async ({ effects, state }) => {
+  const user = state.user;
+  if (!user) {
+    return;
+  }
+
+  if (user.experiments.inPilot) {
+    if (state.activeTeamInfo) {
+      effects.analytics.setGroup('teamName', state.activeTeamInfo.name);
+      effects.analytics.setGroup('teamId', state.activeTeamInfo.id);
+    } else {
+      effects.analytics.setGroup('teamName', []);
+      effects.analytics.setGroup('teamId', []);
+    }
+  } else {
+    const { me } = await effects.gql.queries.teams({});
+    if (me) {
+      effects.analytics.setGroup(
+        'teamName',
+        me.teams.map(m => m.name)
+      );
+      effects.analytics.setGroup(
+        'teamId',
+        me.teams.map(m => m.id)
+      );
+    }
   }
 };
 
@@ -469,6 +495,7 @@ export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
   const user = state.user;
   if (user) {
     effects.analytics.identify('pilot', user.experiments.inPilot);
+    effects.browser.storage.set('pilot', user.experiments.inPilot);
 
     const profileData = await effects.api.getProfile(user.username);
     effects.analytics.identify('sandboxCount', profileData.sandboxCount);
@@ -508,14 +535,72 @@ export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
 const VIEW_MODE_DASHBOARD = 'VIEW_MODE_DASHBOARD';
 export const setViewModeForDashboard: Action = ({ effects, state }) => {
   const localStorageViewMode = effects.browser.storage.get(VIEW_MODE_DASHBOARD);
-  if (localStorageViewMode) {
+  if (localStorageViewMode === 'grid' || localStorageViewMode === 'list') {
     state.dashboard.viewMode = localStorageViewMode;
   }
 };
 
-export const setActiveTeamFromLocalStorage: Action = ({ effects, state }) => {
+export const setActiveTeamFromUrlOrStore: Action<void, string | null> = ({
+  actions,
+}) =>
+  actions.internal.setActiveTeamFromUrl() ||
+  actions.internal.setActiveTeamFromLocalStorage();
+
+export const setActiveTeamFromLocalStorage: Action<void, string | null> = ({
+  effects,
+  actions,
+}) => {
   const localStorageTeam = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
-  if (localStorageTeam) {
-    state.activeTeam = localStorageTeam;
+
+  if (typeof localStorageTeam === 'string') {
+    actions.setActiveTeam({ id: localStorageTeam });
+    return localStorageTeam;
   }
+
+  return null;
+};
+
+export const setActiveTeamFromUrl: Action<void, string | null> = ({
+  effects,
+  actions,
+}) => {
+  const currentUrl =
+    typeof document === 'undefined' ? null : document.location.href;
+  if (!currentUrl) {
+    return null;
+  }
+
+  const searchParams = new URL(currentUrl).searchParams;
+
+  if (searchParams.get('workspace')) {
+    const teamId = searchParams.get('workspace');
+    actions.setActiveTeam({ id: teamId });
+    return teamId;
+  }
+
+  return null;
+};
+
+export const replaceWorkspaceParameterInUrl: Action = ({ state }) => {
+  const id = state.activeTeam;
+  const currentUrl =
+    typeof document === 'undefined' ? null : document.location.href;
+
+  if (!currentUrl) {
+    return;
+  }
+
+  const urlInfo = new URL(currentUrl);
+  const params = urlInfo.searchParams;
+  if (!params.get('workspace')) {
+    return;
+  }
+
+  if (id) {
+    urlInfo.searchParams.set('workspace', id);
+  } else {
+    urlInfo.searchParams.delete('workspace');
+  }
+
+  history.replace(urlInfo.toString().replace(urlInfo.origin, ''));
 };

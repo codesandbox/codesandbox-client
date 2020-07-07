@@ -1,4 +1,4 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { Button } from '@codesandbox/components';
 import styled, { css } from 'styled-components';
 
 export const Title = styled.h1`

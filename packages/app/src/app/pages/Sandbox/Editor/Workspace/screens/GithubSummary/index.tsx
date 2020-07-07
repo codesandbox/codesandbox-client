@@ -46,7 +46,7 @@ export const GithubSummary = () => {
             marginTop={8}
             variant="primary"
             loading={editor.isForkingSandbox}
-            onClick={() => forkSandboxClicked()}
+            onClick={() => forkSandboxClicked({})}
           >
             {editor.isForkingSandbox ? 'Forking...' : 'Fork'}
           </Button>

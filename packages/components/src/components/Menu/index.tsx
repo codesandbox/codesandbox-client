@@ -30,6 +30,8 @@ export const MenuStyles = createGlobalStyle(
   css({
     '[data-reach-menu]': {
       zIndex: 11, // TODO: we need to sort out our z indexes!
+      fontFamily: 'Inter, sans-serif',
+      fontWeight: 500,
     },
     '[data-reach-menu][hidden],[data-reach-menu-popover][hidden]': {
       display: 'none',
@@ -221,7 +223,12 @@ const MenuItem = props => (
 );
 
 const MenuDivider = props => (
-  <Element as="hr" data-component="MenuDivider" {...props} />
+  <Element
+    as="hr"
+    data-component="MenuDivider"
+    style={{ margin: '0.25rem 0' }}
+    {...props}
+  />
 );
 
 Menu.Button = MenuButton;

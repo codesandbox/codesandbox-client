@@ -18,6 +18,7 @@ import React, {
 } from 'react';
 import { Link } from 'react-router-dom';
 
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { PrivacyTooltip } from '../PrivacyTooltip';
 import { Folder, Form, Main, NameInput, TemplateBadge } from './elements';
 
@@ -110,15 +111,18 @@ export const SandboxName: FunctionComponent = () => {
 
   const value = name !== 'Untitled' && updatingName ? name : '';
 
+  if (!currentSandbox) {
+    return null;
+  }
+
   const folderName = getFolderName(currentSandbox);
 
-  const { customTemplate, owned } = currentSandbox || {
-    customTemplate: null,
-    owned: false,
-  };
+  const { customTemplate } = currentSandbox;
 
   const git =
     !updatingName && (currentSandbox.git || currentSandbox.originalGit);
+
+  const owned = hasPermission(currentSandbox.authorization, 'owner');
 
   return (
     <Main style={fadeIn ? { opacity: 1 } : null}>

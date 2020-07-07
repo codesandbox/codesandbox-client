@@ -12,14 +12,18 @@ import {
   List,
   ListItem,
   Avatar,
+  IconButton,
 } from '@codesandbox/components';
 import {
   teamInviteLink,
   dashboard as dashboardUrls,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { sortBy } from 'lodash-es';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 import { Card } from './components';
+
+const CARD_WIDTH = 528;
 
 export const Invite = () => {
   const {
@@ -29,10 +33,6 @@ export const Invite = () => {
   } = useOvermind();
 
   const inviteLink = team && teamInviteLink(team.inviteToken);
-
-  React.useEffect(() => {
-    actions.getActiveTeam();
-  }, [actions, activeTeam]);
 
   const [inviteValue, setInviteValue] = React.useState('');
   const [linkCopied, setLinkCopied] = React.useState(false);
@@ -62,6 +62,8 @@ export const Invite = () => {
     }, 1500);
   };
 
+  const hasAddedUser = team.users.length + team.invitees.length > 1;
+
   return (
     <>
       <Helmet>
@@ -85,7 +87,7 @@ export const Invite = () => {
         >
           <Card
             css={css({
-              width: 528,
+              width: CARD_WIDTH,
               height: 'auto',
               paddingY: 10,
               paddingX: [6, '64px', '64px'],
@@ -147,7 +149,7 @@ export const Invite = () => {
             </Stack>
 
             <List>
-              {team.users.map(user => (
+              {sortBy(team.users, u => u.username.toLowerCase()).map(user => (
                 <ListItem
                   key={user.username}
                   align="center"
@@ -164,7 +166,62 @@ export const Invite = () => {
                   </Text>
                 </ListItem>
               ))}
+
+              {sortBy(team.invitees, u => u.username.toLowerCase()).map(
+                user => (
+                  <ListItem
+                    key={user.username}
+                    align="center"
+                    justify="space-between"
+                    css={css({ height: 12, paddingX: 0 })}
+                  >
+                    <Stack
+                      css={css({ flex: 1, width: '100%' })}
+                      gap={2}
+                      align="center"
+                    >
+                      <Avatar user={user} />
+                      <Text size={3}>{user.username}</Text>
+                    </Stack>
+
+                    <Text variant="muted" size={3}>
+                      Pending...
+                    </Text>
+
+                    <IconButton
+                      title="Revoke Invitation"
+                      css={css({ marginLeft: 1 })}
+                      size={7}
+                      name="cross"
+                      onClick={() => {
+                        actions.dashboard.revokeTeamInvitation({
+                          teamId: team.id,
+                          userId: user.id,
+                        });
+                      }}
+                    />
+                  </ListItem>
+                )
+              )}
             </List>
+            {hasAddedUser && (
+              <>
+                <hr
+                  css={css({
+                    width: '100%',
+                    height: '1px',
+                    backgroundColor: 'grays.600',
+                    border: 'none',
+                    outline: 'none',
+                    marginTop: 6,
+                    marginBottom: 10,
+                  })}
+                />
+                <Button as={RouterLink} to={dashboardUrls.settings(activeTeam)}>
+                  Create Team
+                </Button>
+              </>
+            )}
           </Card>
           <Link
             as={RouterLink}

@@ -237,7 +237,7 @@ export const listPersonalTemplates: Query<
   ${templateFragmentDashboard}
 `;
 
-export const recentSandboxes: Query<
+export const recentPersonalSandboxes: Query<
   LatestSandboxesQuery,
   LatestSandboxesQueryVariables
 > = gql`
@@ -281,13 +281,11 @@ export const recentTeamSandboxes: Query<
     $orderField: String!
     $orderDirection: Direction!
     $teamId: ID!
-    $authorId: ID!
   ) {
     me {
       team(id: $teamId) {
         sandboxes(
           limit: $limit
-          authorId: $authorId
           orderBy: { field: $orderField, direction: $orderDirection }
         ) {
           ...sandboxFragmentDashboard

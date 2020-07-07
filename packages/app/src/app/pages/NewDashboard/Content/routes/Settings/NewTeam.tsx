@@ -9,7 +9,6 @@ import { Card } from './components';
 
 export const NewTeam = () => {
   const {
-    state: { user, activeTeam },
     actions: { dashboard },
   } = useOvermind();
   const [loading, setLoading] = useState(false);
@@ -17,14 +16,28 @@ export const NewTeam = () => {
   const onSubmit = async event => {
     event.preventDefault();
     const teamName = event.target.name.value;
-    console.warn(teamName, 'created by', user.username);
-    setLoading(true);
-    try {
-      await dashboard.createTeam({ teamName });
-      setLoading(false);
-      history.push(dashboardUrls.teamInvite(activeTeam));
-    } catch {
-      setLoading(false);
+    if (teamName && teamName.trim()) {
+      event.target.name.setCustomValidity('');
+      setLoading(true);
+      try {
+        await dashboard.createTeam({
+          teamName,
+          pilot: location.search.includes('pilot'),
+        });
+        setLoading(false);
+        history.push(dashboardUrls.teamInvite());
+      } catch {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleInput = e => {
+    const { value } = e.target;
+    if (value && value.trim()) {
+      e.target.setCustomValidity('');
+    } else {
+      e.target.setCustomValidity('Workspace name is required.');
     }
   };
 
@@ -55,8 +68,8 @@ export const NewTeam = () => {
                   Create a workspace
                 </Text>
                 <Text size={3} variant="muted" align="center">
-                  You are one step away from seamlessly collaborating, managing
-                  projects and much more...
+                  Collaborate on code with friends or co-workers. Manage and
+                  work on sandboxes together.
                 </Text>
               </Stack>
 
@@ -66,6 +79,8 @@ export const NewTeam = () => {
                   type="text"
                   placeholder="Workspace name"
                   autoFocus
+                  required
+                  onChange={handleInput}
                   css={css({ height: 8 })}
                 />
                 <Button
@@ -74,7 +89,7 @@ export const NewTeam = () => {
                   type="submit"
                   css={css({ height: 8, fontSize: 3 })}
                 >
-                  Create workspace
+                  Create Workspace
                 </Button>
               </Stack>
             </Stack>
