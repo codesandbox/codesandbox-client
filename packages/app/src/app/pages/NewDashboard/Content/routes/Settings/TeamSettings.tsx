@@ -15,6 +15,7 @@ import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
 import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
+import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { Card } from './components';
 import { MemberList } from './components/MemberList';
@@ -348,7 +349,7 @@ export const TeamSettings = () => {
                     },
                 ].filter(Boolean);
               }}
-              users={team.users}
+              users={sortBy(team.users, 'username')}
             />
 
             <MemberList
@@ -371,7 +372,7 @@ export const TeamSettings = () => {
                   },
                 ].filter(Boolean);
               }}
-              users={team.invitees}
+              users={sortBy(team.invitees, 'username')}
             />
           </div>
         </Stack>
