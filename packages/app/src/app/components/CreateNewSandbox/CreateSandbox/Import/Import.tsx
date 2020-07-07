@@ -1,33 +1,33 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
 import {
+  gitHubRepoPattern,
   gitHubToSandboxUrl,
   protocolAndHost,
-  gitHubRepoPattern,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Button } from '@codesandbox/components';
-import { Link } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { SignInButton } from 'app/pages/common/SignInButton';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { TerminalIcon } from '../Icons/TerminalIcon';
-import { DownloadIcon } from '../Icons/DownloadIcon';
-import { GitHubIcon, StackbitIcon } from '../Icons';
+import React, { useCallback, useEffect, useState } from 'react';
+
 import { Header } from '../elements';
-import { StackbitButton } from './Stackbit';
+import { GitHubIcon, StackbitIcon } from '../Icons';
+import { DownloadIcon } from '../Icons/DownloadIcon';
+import { TerminalIcon } from '../Icons/TerminalIcon';
 import {
-  Features,
+  ButtonContainer,
   Column,
   FeatureName,
   FeatureText,
-  Input,
-  ButtonContainer,
-  PlaceHolderLink,
-  ImportChoices,
-  VerticalSeparator,
+  Features,
   GitHubLink,
-  StyledInfoIcon,
   IconLink,
+  ImportChoices,
+  Input,
+  PlaceHolderLink,
+  StyledInfoIcon,
+  VerticalSeparator,
 } from './elements';
+import { StackbitButton } from './Stackbit';
 
 const getFullGitHubUrl = (url: string) =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
@@ -115,13 +115,11 @@ export const Import = () => {
                 autoWidth
                 style={{ fontSize: 11 }}
                 disabled={!transformedUrl}
-                as={Link}
-                to={gitHubToSandboxUrl(url)}
                 onClick={() => {
-                  actions.modalClosed();
+                  actions.git.importFromGithub(gitHubToSandboxUrl(url));
                 }}
               >
-                Generate Sandbox
+                Import and Fork
               </Button>
             </ButtonContainer>
           </form>

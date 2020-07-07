@@ -2,7 +2,6 @@ import React from 'react';
 import { RepoFragmentDashboardFragment } from 'app/graphql/types';
 import {
   Stack,
-  Element,
   Text,
   Input,
   Icon,
@@ -11,6 +10,7 @@ import {
   Link,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import { SandboxItemComponentProps } from './types';
 
 const useImageLoaded = (url: string) => {
@@ -127,36 +127,29 @@ type SandboxStatsProps = Pick<
   'noDrag' | 'viewCount' | 'sandboxLocation' | 'lastUpdated'
 >;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
-  ({ noDrag, viewCount, sandboxLocation, lastUpdated }) => (
-    <Stack marginX={4} gap={1} align="center">
-      <Stack gap={1} align="center">
-        <Icon name="eye" size={14} css={css({ color: 'mutedForeground' })} />
-        <Text size={3} variant="muted">
-          {viewCount}
+  ({ noDrag, viewCount, sandboxLocation, lastUpdated }) => {
+    let finalText = viewCount;
+
+    if (!noDrag) {
+      finalText += ` • ${shortDistance(lastUpdated)}`;
+    }
+
+    if (sandboxLocation) {
+      finalText += ` • ${sandboxLocation}`;
+    }
+
+    return (
+      <div style={{ margin: '0 16px' }}>
+        <Text
+          style={{ display: 'flex', alignItems: 'center' }}
+          size={3}
+          variant="muted"
+        >
+          <Icon style={{ marginRight: 2 }} name="eye" size={14} /> {finalText}
         </Text>
-      </Stack>
-      {noDrag ? null : (
-        <>
-          <Text size={3} variant="muted">
-            •
-          </Text>
-          <Text size={3} variant="muted" css={{ flexShrink: 0 }}>
-            {shortDistance(lastUpdated)}
-          </Text>
-        </>
-      )}
-      {sandboxLocation ? (
-        <>
-          <Text size={3} variant="muted">
-            •
-          </Text>
-          <Text size={3} variant="muted" maxWidth="100%">
-            {sandboxLocation}
-          </Text>
-        </>
-      ) : null}
-    </Stack>
-  )
+      </div>
+    );
+  }
 );
 
 export const SandboxCard = ({
@@ -194,6 +187,7 @@ export const SandboxCard = ({
     string
   >(screenshotUrl);
 
+  const lastSandboxId = React.useRef(sandbox.id);
   const imageLoaded = useImageLoaded(guaranteedScreenshotUrl);
 
   React.useEffect(() => {
@@ -207,10 +201,21 @@ export const SandboxCard = ({
     // We always try to show the cached screenshot first, if someone looks at a sandbox we will try to
     // generate a new one based on the latest contents.
     const generateScreenshotUrl = `/api/v1/sandboxes/${sandbox.id}/screenshot.png`;
-    if (stoppedScrolling && !guaranteedScreenshotUrl) {
-      setGuaranteedScreenshotUrl(generateScreenshotUrl);
+    if (
+      stoppedScrolling &&
+      (lastSandboxId.current !== sandbox.id || !guaranteedScreenshotUrl)
+    ) {
+      setGuaranteedScreenshotUrl(
+        sandbox.screenshotUrl || generateScreenshotUrl
+      );
+      lastSandboxId.current = sandbox.id;
     }
-  }, [stoppedScrolling, guaranteedScreenshotUrl, sandbox.id]);
+  }, [
+    stoppedScrolling,
+    guaranteedScreenshotUrl,
+    sandbox.id,
+    sandbox.screenshotUrl,
+  ]);
 
   return (
     <Stack
@@ -238,47 +243,47 @@ export const SandboxCard = ({
         },
       })}
     >
-      <Stack
+      <div
         ref={thumbnailRef}
-        justify="center"
-        align="center"
-        css={css({
-          height: 160,
-          backgroundColor: 'grays.600',
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '160px',
+          backgroundColor: '#242424',
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
           borderBottom: '1px solid',
-          borderColor: 'grays.600',
-          svg: {
-            filter: 'grayscale(1)',
-            opacity: 0.1,
-          },
-        })}
-        style={{
+          borderColor: '#242424',
           [imageLoaded
             ? 'backgroundImage'
             : null]: `url(${guaranteedScreenshotUrl})`,
         }}
       >
-        {imageLoaded ? null : <TemplateIcon width="60" height="60" />}
-      </Stack>
-      <Element
-        css={css({
+        {imageLoaded ? null : (
+          <TemplateIcon
+            style={{ filter: 'grayscale(1)', opacity: 0.1 }}
+            width="60"
+            height="60"
+          />
+        )}
+      </div>
+      <div
+        style={{
           position: 'absolute',
-          top: 1,
-          right: 1,
-          size: 6,
-          width: '22px',
-          height: '22px',
-          backgroundColor: 'grays.500',
+          top: 2,
+          right: 2,
+          width: 16,
+          height: 16,
           border: '3px solid',
-          borderColor: 'grays.500',
-          borderRadius: 'medium',
-        })}
+          borderRadius: 2,
+          backgroundColor: '#343434',
+          borderColor: '#343434',
+        }}
       >
         <TemplateIcon width="16" height="16" />
-      </Element>
+      </div>
 
       <SandboxTitle
         originalGit={sandbox.originalGit}
@@ -325,19 +330,3 @@ export const SkeletonCard = () => (
     </Stack>
   </Stack>
 );
-
-const shortDistance = distance =>
-  // we remove long names for short letters
-  distance
-    .replace(' years', 'y')
-    .replace(' year', 'y')
-    .replace(' months', 'm')
-    .replace(' month', 'm')
-    .replace(' days', 'd')
-    .replace(' day', 'd')
-    .replace(' hours', 'h')
-    .replace(' hour', 'h')
-    .replace(' minutes', 'min')
-    .replace(' minute', 'min')
-    .replace(' seconds', 's')
-    .replace(' second', 's');

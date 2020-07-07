@@ -1,131 +1,118 @@
-import React, { useMemo } from 'react';
-import { useOvermind } from 'app/overmind';
-import css from '@styled-system/css';
 import { Stack } from '@codesandbox/components';
+import css from '@styled-system/css';
+import React, { ComponentProps, ComponentType, FunctionComponent } from 'react';
 
-import AppearanceIcon from 'react-icons/lib/md/color-lens';
 import CodeIcon from 'react-icons/lib/fa/code';
-import CreditCardIcon from 'react-icons/lib/md/credit-card';
-import BrowserIcon from 'react-icons/lib/go/browser';
-import StarIcon from 'react-icons/lib/go/star';
-import FlaskIcon from 'react-icons/lib/fa/flask';
 import CodeFormatIcon from 'react-icons/lib/fa/dedent';
-import IntegrationIcon from 'react-icons/lib/md/device-hub';
+import FlaskIcon from 'react-icons/lib/fa/flask';
+import BrowserIcon from 'react-icons/lib/go/browser';
 import KeyboardIcon from 'react-icons/lib/go/keyboard';
+import StarIcon from 'react-icons/lib/go/star';
+import AppearanceIcon from 'react-icons/lib/md/color-lens';
+import CreditCardIcon from 'react-icons/lib/md/credit-card';
+import IntegrationIcon from 'react-icons/lib/md/device-hub';
 
-import { SideNavigation } from './SideNavigation';
+import { useOvermind } from 'app/overmind';
 
-import { Appearance } from './Appearance';
-import { EditorSettings } from './EditorPageSettings/EditorSettings';
-import { PreviewSettings } from './EditorPageSettings/PreviewSettings';
-import { CodeFormatting } from './CodeFormatting';
-import { PaymentInfo } from './PaymentInfo';
-import { Integrations } from './Integrations';
-import { Badges } from './Badges';
-import { Experiments } from './Experiments';
-import { KeyMapping } from './KeyMapping';
 import { Alert } from '../Common/Alert';
 
-const PreferencesModal: React.FC = () => {
+import { Appearance } from './Appearance';
+import { Badges } from './Badges';
+import { CodeFormatting } from './CodeFormatting';
+import { EditorSettings } from './EditorPageSettings/EditorSettings';
+import { PreviewSettings } from './EditorPageSettings/PreviewSettings';
+import { Experiments } from './Experiments';
+import { Integrations } from './Integrations';
+import { KeyMapping } from './KeyMapping';
+import { PaymentInfo } from './PaymentInfo';
+import { SideNavigation } from './SideNavigation';
+
+type MenuItem = ComponentProps<typeof SideNavigation>['menuItems'][0] & {
+  Content: ComponentType;
+};
+const getItems = (isLoggedIn: boolean, isPatron: boolean): MenuItem[] =>
+  [
+    {
+      Content: Appearance,
+      Icon: AppearanceIcon,
+      id: 'appearance',
+      title: 'Appearance',
+    },
+    {
+      Content: EditorSettings,
+      Icon: CodeIcon,
+      id: 'editor',
+      title: 'Editor',
+    },
+    {
+      Content: CodeFormatting,
+      Icon: CodeFormatIcon,
+      id: 'prettierSettings',
+      title: 'Prettier Settings',
+    },
+    {
+      Content: PreviewSettings,
+      Icon: BrowserIcon,
+      id: 'preview',
+      title: 'Preview',
+    },
+    {
+      Content: KeyMapping,
+      Icon: KeyboardIcon,
+      id: 'keybindings',
+      title: 'Key Bindings',
+    },
+    isLoggedIn && {
+      Content: Integrations,
+      Icon: IntegrationIcon,
+      id: 'integrations',
+      title: 'Integrations',
+    },
+    isPatron && {
+      Content: PaymentInfo,
+      Icon: CreditCardIcon,
+      id: 'paymentInfo',
+      title: 'Payment Info',
+    },
+    isPatron && {
+      Content: Badges,
+      Icon: StarIcon,
+      id: 'badges',
+      title: 'Badges',
+    },
+    {
+      Content: Experiments,
+      Icon: FlaskIcon,
+      id: 'experiments',
+      title: 'Experiments',
+    },
+  ].filter(Boolean);
+
+export const PreferencesModal: FunctionComponent = () => {
   const {
     state: {
-      isPatron,
       isLoggedIn,
+      isPatron,
       preferences: { itemId = 'appearance' },
     },
-    actions: {
-      preferences: { itemIdChanged },
-    },
   } = useOvermind();
-
-  const items = useMemo(
-    () =>
-      [
-        {
-          id: 'appearance',
-          title: 'Appearance',
-          icon: <AppearanceIcon />,
-          content: <Appearance />,
-        },
-        {
-          id: 'editor',
-          title: 'Editor',
-          icon: <CodeIcon />,
-          content: <EditorSettings />,
-        },
-        {
-          id: 'prettierSettings',
-          title: 'Prettier Settings',
-          icon: <CodeFormatIcon />,
-          content: <CodeFormatting />,
-        },
-        {
-          id: 'preview',
-          title: 'Preview',
-          icon: <BrowserIcon />,
-          content: <PreviewSettings />,
-        },
-        {
-          id: 'keybindings',
-          title: 'Key Bindings',
-          icon: <KeyboardIcon />,
-          content: <KeyMapping />,
-        },
-        isLoggedIn && {
-          id: 'integrations',
-          title: 'Integrations',
-          icon: <IntegrationIcon />,
-          content: <Integrations />,
-        },
-        isPatron && {
-          id: 'paymentInfo',
-          title: 'Payment Info',
-          icon: <CreditCardIcon />,
-          content: <PaymentInfo />,
-        },
-        isPatron && {
-          id: 'badges',
-          title: 'Badges',
-          icon: <StarIcon />,
-          content: <Badges />,
-        },
-        {
-          id: 'experiments',
-          title: 'Experiments',
-          icon: <FlaskIcon />,
-          content: <Experiments />,
-        },
-      ].filter(Boolean),
-    [isLoggedIn, isPatron]
-  );
-
-  const item = items.find(currentItem => currentItem.id === itemId);
+  const items = getItems(isLoggedIn, isPatron);
+  const { Content } = items.find(({ id }) => id === itemId);
 
   return (
-    <Stack
-      css={css({
-        fontFamily: "'Inter', sans-serif",
-      })}
-    >
-      <SideNavigation
-        itemId={itemId}
-        menuItems={items}
-        setItem={itemIdChanged}
-      />
+    <Stack css={css({ fontFamily: "'Inter', sans-serif" })}>
+      <SideNavigation menuItems={items} />
+
       <Alert
         css={css({
           height: 482,
           width: '100%',
           padding: 6,
-          '*': {
-            boxSizing: 'border-box',
-          },
+          '*': { boxSizing: 'border-box' },
         })}
       >
-        {item.content}
+        <Content />
       </Alert>
     </Stack>
   );
 };
-
-export default PreferencesModal;

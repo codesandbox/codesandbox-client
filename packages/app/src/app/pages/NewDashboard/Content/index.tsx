@@ -36,6 +36,7 @@ export const Content = withRouter(({ history }) => {
     <Element
       css={css({
         width: '100%',
+        height: '100%',
         margin: '0 auto',
       })}
     >

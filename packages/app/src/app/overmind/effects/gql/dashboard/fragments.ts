@@ -156,13 +156,19 @@ export const currentTeamInfoFragment = gql`
     creatorId
     description
     inviteToken
+    joinedPilotAt
     name
+
     users {
-      avatarUrl
-      name
-      lastName
-      username
       id
+      avatarUrl
+      username
+    }
+
+    invitees {
+      id
+      avatarUrl
+      username
     }
   }
 `;

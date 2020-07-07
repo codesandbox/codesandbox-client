@@ -8,7 +8,7 @@ import {
   PreferenceContainer,
   PaddedPreference,
   Rule,
-} from '../../elements';
+} from '../elements';
 
 export const Prettier: FunctionComponent = () => {
   const {
@@ -17,7 +17,10 @@ export const Prettier: FunctionComponent = () => {
     },
     state: {
       preferences: {
-        settings: { prettierConfig },
+        settings: {
+          prettierConfig,
+          prettierConfig: { fluid },
+        },
       },
     },
   } = useOvermind();
@@ -56,23 +59,16 @@ export const Prettier: FunctionComponent = () => {
         </Text>
 
         <Rule />
-        <Element
-          css={css({
-            pointerEvents: prettierConfig.fluid ? 'none' : 'all',
-          })}
-        >
+
+        <Element css={css({ pointerEvents: fluid ? 'none' : 'all' })}>
           <PaddedPreference
-            style={{ opacity: prettierConfig.fluid ? 0.5 : 1 }}
+            style={{ opacity: fluid ? 0.5 : 1 }}
             title="Print width"
             type="number"
             {...bindValue('printWidth')}
           />
 
-          <Text
-            size={2}
-            variant="muted"
-            style={{ opacity: prettierConfig.fluid ? 0.5 : 1 }}
-          >
+          <Text size={2} variant="muted" style={{ opacity: fluid ? 0.5 : 1 }}>
             Specify the line length that the printer will wrap on.
           </Text>
         </Element>

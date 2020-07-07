@@ -48,7 +48,7 @@ export const LiveSessionEnded: FunctionComponent = () => {
               width: 'auto',
             })}
             onClick={() => {
-              forkSandboxClicked();
+              forkSandboxClicked({});
               modalClosed();
             }}
             variant="link"

@@ -27,9 +27,9 @@ import { Markdown } from 'app/components/Markdown';
 import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
 
-import { GitHubIcon } from '../GitHub/Icons';
+import { GitHubIcon } from '../../GitHub/Icons';
 import { EditSummary } from './EditSummary';
-import { PenIcon } from './icons';
+import { PenIcon } from '../icons';
 import { TemplateConfig } from './TemplateConfig';
 
 export const Summary = () => {
@@ -56,17 +56,17 @@ export const Summary = () => {
   useEffect(() => {
     // always freeze it on start
     if (customTemplate) {
-      frozenUpdated({ frozen: true });
+      frozenUpdated(true);
     }
   }, [customTemplate, frozenUpdated]);
 
   const updateFrozenState = e => {
     e.preventDefault();
     if (customTemplate) {
-      return sessionFreezeOverride({ frozen: !sessionFrozen });
+      return sessionFreezeOverride(!sessionFrozen);
     }
 
-    return frozenUpdated({ frozen: !isFrozen });
+    return frozenUpdated(!isFrozen);
   };
 
   const isForked = forkedFromSandbox || forkedTemplateSandbox;

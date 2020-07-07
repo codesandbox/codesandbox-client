@@ -91,7 +91,7 @@ export const SearchComponent = () => {
         templates={getPossibleTemplates(foundSandboxes)}
       />
 
-      <section style={{ position: 'relative' }}>
+      <section style={{ position: 'relative', height: '100%', width: '100%' }}>
         <VariableGrid items={items} page={pageType} />
       </section>
     </SelectionProvider>

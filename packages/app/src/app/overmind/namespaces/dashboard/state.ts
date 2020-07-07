@@ -8,7 +8,7 @@ import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
-import { parseISO } from 'date-fns';
+import { zonedTimeToUtc } from 'date-fns-tz';
 import { derived } from 'overmind';
 
 import { DELETE_ME_COLLECTION, OrderBy } from './types';
@@ -99,7 +99,7 @@ export const state: State = {
     const timeSandboxes = noTemplateSandboxes.reduce(
       (accumulator, currentValue) => {
         if (!currentValue.updatedAt) return accumulator;
-        const date = parseISO(currentValue.updatedAt);
+        const date = zonedTimeToUtc(currentValue.updatedAt, 'Etc/UTC');
         if (isSameDay(date, new Date())) {
           accumulator.day.push(currentValue);
 
@@ -184,7 +184,7 @@ export const state: State = {
       let orderedSandboxes = (sortBy(sandboxes, s => {
         const sandbox = s!;
         if (isDateField) {
-          return +parseISO(sandbox[orderField]);
+          return +zonedTimeToUtc(sandbox[orderField], 'Etc/UTC');
         }
 
         if (orderField === 'title') {

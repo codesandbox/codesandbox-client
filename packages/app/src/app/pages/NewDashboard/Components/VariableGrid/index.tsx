@@ -2,7 +2,7 @@ import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Element, Stack, Text, Link } from '@codesandbox/components';
-import { VariableSizeGrid } from 'react-window';
+import { VariableSizeGrid, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
@@ -36,7 +36,7 @@ const ITEM_MIN_WIDTH = 220;
 const ITEM_HEIGHT_GRID = 240;
 const ITEM_HEIGHT_LIST = 64;
 const HEADER_HEIGHT = 64;
-const GRID_VERTICAL_OFFSET = 120;
+// const GRID_VERTICAL_OFFSET = 120;
 const ITEM_VERTICAL_OFFSET = 32;
 
 type WindowItemProps = {
@@ -127,73 +127,72 @@ const ComponentForTypes: ComponentForTypes = {
   skeleton: () => <SkeletonSandbox />,
 };
 
-const Item = ({
-  data,
-  rowIndex,
-  columnIndex,
-  style,
-  isScrolling,
-}: WindowItemProps) => {
-  const { columnCount, filledItems, containerWidth, viewMode, page } = data;
+const Item = React.memo(
+  ({ data, rowIndex, columnIndex, style, isScrolling }: WindowItemProps) => {
+    const { columnCount, filledItems, containerWidth, viewMode, page } = data;
 
-  /**
-   * react-window does not support gutter or maxWidth
-   * we take over the width and offset calculations
-   * to add these features
-   *
-   * |     |----[       ]----[       ]----[       ]----|     |
-   *         G    item    G    item    G    item    G
-   */
+    /**
+     * react-window does not support gutter or maxWidth
+     * we take over the width and offset calculations
+     * to add these features
+     *
+     * |     |----[       ]----[       ]----[       ]----|     |
+     *         G    item    G    item    G    item    G
+     */
 
-  // adjusting total width based on allowed maxWidth
-  const totalWidth = Math.min(containerWidth, GRID_MAX_WIDTH);
-  const containerLeftOffset =
-    containerWidth > GRID_MAX_WIDTH ? (containerWidth - GRID_MAX_WIDTH) / 2 : 0;
+    // adjusting total width based on allowed maxWidth
+    const totalWidth = Math.min(containerWidth, GRID_MAX_WIDTH);
+    const containerLeftOffset =
+      containerWidth > GRID_MAX_WIDTH
+        ? (containerWidth - GRID_MAX_WIDTH) / 2
+        : 0;
 
-  // we calculate width by making enough room for gutters between
-  // each item + on the 2 ends
-  const spaceReqiuredForGutters = GUTTER * (columnCount + 1);
-  const spaceLeftForItems = totalWidth - spaceReqiuredForGutters;
-  const numberOfItems = columnCount;
-  const eachItemWidth = spaceLeftForItems / numberOfItems;
+    // we calculate width by making enough room for gutters between
+    // each item + on the 2 ends
+    const spaceReqiuredForGutters = GUTTER * (columnCount + 1);
+    const spaceLeftForItems = totalWidth - spaceReqiuredForGutters;
+    const numberOfItems = columnCount;
+    const eachItemWidth = spaceLeftForItems / numberOfItems;
 
-  // to get the left offset, we need to add the space taken by
-  // previous elements + the gutter just before this item
-  const spaceTakenBeforeThisItem =
-    containerLeftOffset + columnIndex * (eachItemWidth + GUTTER);
-  const leftOffset = spaceTakenBeforeThisItem + GUTTER;
+    // to get the left offset, we need to add the space taken by
+    // previous elements + the gutter just before this item
+    const spaceTakenBeforeThisItem =
+      containerLeftOffset + columnIndex * (eachItemWidth + GUTTER);
+    const leftOffset = spaceTakenBeforeThisItem + GUTTER;
 
-  const index = rowIndex * data.columnCount + columnIndex;
-  const item = filledItems[index];
-  if (!item) return null;
+    const index = rowIndex * data.columnCount + columnIndex;
+    const item = filledItems[index];
+    if (!item) return null;
 
-  const Component = ComponentForTypes[item.type];
+    const Component = ComponentForTypes[item.type];
 
-  const isHeader = item.type === 'header' || item.type === 'header-link';
-  const marginTopMap = {
-    header: ITEM_VERTICAL_OFFSET + 24,
-    headerLink: ITEM_VERTICAL_OFFSET + 28,
-  };
+    const isHeader = item.type === 'header' || item.type === 'header-link';
+    const marginTopMap = {
+      header: ITEM_VERTICAL_OFFSET + 24,
+      headerLink: ITEM_VERTICAL_OFFSET + 28,
+    };
 
-  const margins = {
-    marginTop: marginTopMap[item.type] || ITEM_VERTICAL_OFFSET,
-    marginBottom: viewMode === 'list' || isHeader ? 0 : ITEM_VERTICAL_OFFSET,
-  };
+    const margins = {
+      marginTop: marginTopMap[item.type] || ITEM_VERTICAL_OFFSET,
+      marginBottom: viewMode === 'list' || isHeader ? 0 : ITEM_VERTICAL_OFFSET,
+    };
 
-  return (
-    <div
-      style={{
-        ...style,
-        width: eachItemWidth,
-        left: leftOffset,
-        height: (style.height as number) - GUTTER,
-        ...margins,
-      }}
-    >
-      <Component item={item} page={page} isScrolling={isScrolling} />
-    </div>
-  );
-};
+    return (
+      <div
+        style={{
+          ...style,
+          width: eachItemWidth,
+          left: leftOffset,
+          height: (style.height as number) - GUTTER,
+          ...margins,
+        }}
+      >
+        <Component item={item} page={page} isScrolling={isScrolling} />
+      </div>
+    );
+  },
+  areEqual
+);
 
 interface VariableGridProps {
   items: DashboardGridItem[];
@@ -286,11 +285,7 @@ export const VariableGrid = ({
     return <EmptyScreen page={page} collectionId={collectionId} />;
 
   return (
-    <Element
-      css={{
-        height: `calc(100vh - ${GRID_VERTICAL_OFFSET}px)`,
-      }}
-    >
+    <Element style={{ width: '100%', height: '100%' }}>
       <AutoSizer onResize={onResize}>
         {({ width, height }) => {
           const cappedWith = Math.min(width, GRID_MAX_WIDTH);

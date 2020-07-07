@@ -1,6 +1,6 @@
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import React, { FunctionComponent } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { FunctionComponent, useEffect } from 'react';
+import { Redirect, useLocation } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Media from 'react-media';
 import Backend from 'react-dnd-html5-backend';
@@ -26,6 +26,7 @@ const GlobalStyles = createGlobalStyle({
 export const Dashboard: FunctionComponent = () => {
   const {
     state: { hasLogIn },
+    actions,
   } = useOvermind();
 
   // only used for mobile
@@ -36,8 +37,16 @@ export const Dashboard: FunctionComponent = () => {
   );
   const theme = useTheme() as any;
 
+  const location = useLocation();
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get('workspace')) {
+      actions.setActiveTeam({ id: searchParams.get('workspace') });
+    }
+  }, [location.search, actions]);
+
   if (!hasLogIn) {
-    return <Redirect to={signInPageUrl()} />;
+    return <Redirect to={signInPageUrl(location.pathname)} />;
   }
 
   return (

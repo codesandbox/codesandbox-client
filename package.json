@@ -10,7 +10,6 @@
   "workspaces": {
     "packages": [
       "packages/@styled-system/css",
-      "packages/@types/ot",
       "packages/app",
       "packages/homepage",
       "packages/common",
@@ -53,6 +52,7 @@
     "start:dev_api": "concurrently --raw \"cd packages/app && yarn start:dev_api\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
     "start:fast": "cross-env NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
+    "start:profiling": "cross-env NODE_ENV=production PROFILING=true concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:hot": "cross-env NODE_ENV=development APP_ONLY=true concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:fast:stream": "cross-env ENDPOINT=https://codesandbox.stream NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:fast:local": "cross-env ENDPOINT=http://localhost:4000 NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",

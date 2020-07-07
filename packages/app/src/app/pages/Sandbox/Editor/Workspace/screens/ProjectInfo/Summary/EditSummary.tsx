@@ -1,17 +1,27 @@
-import React from 'react';
-import { useOvermind } from 'app/overmind';
-import css from '@styled-system/css';
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import {
-  Stack,
+  Button,
   FormField,
   Input,
-  Textarea,
-  Button,
+  Stack,
   TagInput,
+  Textarea,
 } from '@codesandbox/components';
-import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import css from '@styled-system/css';
+import React, {
+  ChangeEvent,
+  FormEvent,
+  FunctionComponent,
+  KeyboardEvent,
+  useState,
+} from 'react';
 
-export const EditSummary = ({ setEditing }) => {
+import { useOvermind } from 'app/overmind';
+
+type Props = {
+  setEditing: (editing: boolean) => void;
+};
+export const EditSummary: FunctionComponent<Props> = ({ setEditing }) => {
   const {
     actions: {
       workspace: { sandboxInfoUpdated, valueChanged, tagsChanged2 },
@@ -25,25 +35,24 @@ export const EditSummary = ({ setEditing }) => {
       },
     },
   } = useOvermind();
+  const [newTags, setNewTags] = useState(tags || []);
 
-  const onTitleChange = event => {
-    valueChanged({ field: 'title', value: event.target.value });
-  };
-
-  const onDescriptionChange = event => {
-    valueChanged({ field: 'description', value: event.target.value });
-  };
+  const onTitleChange = ({ target }: ChangeEvent<HTMLInputElement>) =>
+    valueChanged({ field: 'title', value: target.value });
+  const onDescriptionChange = ({ target }: ChangeEvent<HTMLTextAreaElement>) =>
+    valueChanged({ field: 'description', value: target.value });
 
   // Text input elements treat Enter as submit
   // but textarea doesn't, so we need to hijack it.
-  const submitOnEnter = event => {
-    if (event.keyCode === ENTER && !event.shiftKey) onSubmit(event);
+  const submitOnEnter = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.keyCode === ENTER && !event.shiftKey) {
+      onSubmit(event);
+    }
   };
 
-  const [newTags, setNewTags] = React.useState(tags || []);
-
-  const onSubmit = event => {
+  const onSubmit = (event: FormEvent) => {
     event.preventDefault();
+
     sandboxInfoUpdated();
     tagsChanged2(newTags);
     setEditing(false);
@@ -55,50 +64,52 @@ export const EditSummary = ({ setEditing }) => {
         as="section"
         direction="vertical"
         gap={2}
-        paddingX={2}
         marginBottom={6}
+        paddingX={2}
       >
         <FormField
-          label="Sandbox Name"
-          hideLabel
           css={css({ paddingX: 0, width: '100%' })}
+          hideLabel
+          label="Sandbox Name"
         >
           <Input
-            value={title}
+            autoFocus
             onChange={onTitleChange}
             placeholder="Title"
-            autoFocus
             type="text"
+            value={title}
           />
         </FormField>
+
         <FormField
-          direction="vertical"
-          label="Sandbox Description"
-          hideLabel
           css={css({ paddingX: 0 })}
+          direction="vertical"
+          hideLabel
+          label="Sandbox Description"
         >
           <Textarea
-            rows={2}
-            placeholder="Description"
             maxLength={280}
             onChange={onDescriptionChange}
             onKeyDown={submitOnEnter}
+            placeholder="Description"
+            rows={2}
             value={description}
           />
         </FormField>
 
-        <TagInput value={newTags} onChange={setNewTags} />
+        <TagInput onChange={setNewTags} value={newTags} />
       </Stack>
 
       <Stack justify="space-between" paddingX={2}>
         <Button
-          variant="link"
           css={{ flex: 1 }}
           onClick={() => setEditing(false)}
+          variant="link"
         >
           Cancel
         </Button>
-        <Button type="submit" css={{ flex: 1 }} variant="secondary">
+
+        <Button css={{ flex: 1 }} type="submit" variant="secondary">
           Save
         </Button>
       </Stack>

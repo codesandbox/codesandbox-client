@@ -111,6 +111,7 @@ export const createRepoClicked: AsyncAction = async ({
   effects,
   actions,
 }) => {
+  effects.analytics.track('GitHub - Create Repo');
   const { repoTitle } = state.git;
   const modulesNotSaved = !state.editor.isAllModulesSynced;
 
@@ -154,7 +155,12 @@ export const createRepoClicked: AsyncAction = async ({
     git.commitSha = null;
     state.git.isExported = true;
     state.currentModal = null;
-    effects.router.updateSandboxUrl({ git });
+
+    actions.editor.internal.forkSandbox({
+      sandboxId: `github/${git.username}/${git.repo}/tree/${
+        git.branch
+      }/${git.path || ''}`,
+    });
   } catch (error) {
     actions.internal.handleError({
       error,
@@ -164,7 +170,20 @@ export const createRepoClicked: AsyncAction = async ({
   }
 };
 
+export const importFromGithub: AsyncAction<string> = async (
+  { state, effects, actions },
+  sandboxUrl
+) => {
+  actions.modalClosed();
+  state.currentModal = 'exportGithub';
+  await actions.editor.internal.forkSandbox({
+    sandboxId: sandboxUrl.replace('/s/', ''),
+  });
+  state.currentModal = null;
+};
+
 export const openSourceSandbox: Action = ({ state, effects }) => {
+  effects.analytics.track('GitHub - Open Source Sandbox');
   const git = state.editor.currentSandbox!.baseGit
     ? state.editor.currentSandbox!.baseGit
     : state.editor.currentSandbox!.originalGit;
@@ -177,6 +196,7 @@ export const createCommitClicked: AsyncAction = async ({
   effects,
   actions,
 }) => {
+  effects.analytics.track('GitHub - Create Commit');
   const sandbox = state.editor.currentSandbox!;
   const git = state.git;
 
@@ -249,6 +269,7 @@ export const createPrClicked: AsyncAction = async ({
   effects,
   actions,
 }) => {
+  effects.analytics.track('GitHub - Open PR');
   const git = state.git;
   git.isCreatingPr = true;
   git.pr = null;
@@ -337,9 +358,10 @@ export const updateGitChanges: Operator = pipe(
 );
 
 export const resolveConflicts: AsyncAction<Module> = async (
-  { state, actions },
+  { state, actions, effects },
   module
 ) => {
+  effects.analytics.track('GitHub - Resolve Conflicts');
   const conflict = state.git.conflicts.find(
     conflictItem => module.path === '/' + conflictItem.filename
   );
@@ -423,6 +445,7 @@ export const resolveOutOfSync: AsyncAction = async ({
   actions,
   effects,
 }) => {
+  effects.analytics.track('GitHub - Resolve out of sync');
   const git = state.git;
   const { added, deleted, modified } = git.outOfSyncUpdates;
   git.isResolving = true;

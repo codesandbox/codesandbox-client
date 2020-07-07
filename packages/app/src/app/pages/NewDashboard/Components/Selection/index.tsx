@@ -597,7 +597,12 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         onMouseMove={onContainerMouseMove}
         onMouseUp={onContainerMouseUp}
         onContextMenu={onContainerContextMenu}
-        css={css({ paddingTop: 10 })}
+        css={css({
+          paddingTop: 10,
+          paddingBottom: 8,
+          width: '100%',
+          height: '100%',
+        })}
       >
         <SkipNav.Content
           tabIndex={0}
