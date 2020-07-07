@@ -1,4 +1,8 @@
-import { CommentsFilterOption, Module } from '@codesandbox/common/lib/types';
+import {
+  CommentsFilterOption,
+  Module,
+  UserQuery,
+} from '@codesandbox/common/lib/types';
 import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import {
@@ -7,18 +11,27 @@ import {
 } from 'app/constants';
 import {
   CodeReference,
+  CodeReferenceMetadata,
+  CodeReferenceMetadataFragment,
   CommentAddedSubscription,
   CommentChangedSubscription,
   CommentFragment,
   CommentRemovedSubscription,
+  UserReference,
+  UserReferenceMetadata,
 } from 'app/graphql/types';
-import { Action, AsyncAction } from 'app/overmind';
+import { Action, AsyncAction, Operator } from 'app/overmind';
+import {
+  convertMentionsToMentionLinks,
+  convertMentionsToUserReferences,
+} from 'app/overmind/utils/comments';
 import {
   indexToLineAndColumn,
   lineAndColumnToIndex,
 } from 'app/overmind/utils/common';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Selection, TextOperation } from 'ot';
+import { debounce, filter, map, mutate, pipe } from 'overmind';
 import * as uuid from 'uuid';
 
 import { OPTIMISTIC_COMMENT_ID } from './state';
@@ -32,16 +45,17 @@ export const selectCommentsFilter: Action<CommentsFilterOption> = (
 
 export const updateComment: AsyncAction<{
   commentId: string;
+  mentions: { [username: string]: UserQuery };
   content: string;
-}> = async ({ actions, effects, state }, { commentId, content }) => {
+}> = async ({ actions, effects, state }, { commentId, content, mentions }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
 
   if (commentId === OPTIMISTIC_COMMENT_ID) {
-    await actions.comments.addComment({
+    await actions.comments.saveOptimisticComment({
       content,
-      isOptimistic: true,
+      mentions,
     });
     return;
   }
@@ -51,13 +65,18 @@ export const updateComment: AsyncAction<{
 
   effects.analytics.track('Comments - Update Comment');
 
-  comment.content = content;
+  comment.content = convertMentionsToMentionLinks(content, mentions);
 
   try {
     await effects.gql.mutations.updateComment({
       commentId,
-      content,
+      content: comment.content,
       sandboxId,
+      codeReferences: [],
+      userReferences: Object.keys(mentions).map(username => ({
+        username,
+        userId: mentions[username].id,
+      })),
     });
   } catch (error) {
     effects.notificationToast.error(
@@ -65,6 +84,23 @@ export const updateComment: AsyncAction<{
     );
   }
 };
+
+export const queryUsers: Operator<string | null> = pipe(
+  mutate(({ state }, query) => {
+    state.comments.isQueryingUsers = true;
+    // We reset the users when we detect a new query being written
+    if (query && query.length === 3) {
+      state.comments.usersQueryResult = [];
+    }
+  }),
+  debounce(200),
+  filter((_, query) => Boolean(query && query.length >= 3)),
+  map(({ effects }, query) => effects.api.queryUsers(query!)),
+  mutate(({ state }, result) => {
+    state.comments.usersQueryResult = result;
+    state.comments.isQueryingUsers = false;
+  })
+);
 
 export const getCommentReplies: AsyncAction<string> = async (
   { state, effects },
@@ -117,9 +153,7 @@ export const onCommentClick: Action<{
   }
 
   if (!commentIds.length) {
-    actions.comments.createComment({
-      isLineComment: true,
-    });
+    actions.comments.createCodeLineComment();
   } else if (commentIds.length === 1) {
     effects.analytics.track('Comments - Open Comment');
     actions.comments.selectComment({
@@ -182,20 +216,17 @@ export const selectComment: AsyncAction<{
     return;
   }
 
-  if (
-    comment &&
-    comment.references.length &&
-    comment.references[0].type === 'code'
-  ) {
+  if (comment.anchorReference && comment.anchorReference.type === 'code') {
     if (module) {
       await actions.editor.moduleSelected({
-        path: comment.references[0].metadata.path,
+        path: (comment.anchorReference
+          .metadata as CodeReferenceMetadataFragment).path,
       });
 
       // update comment position with precise info
       const referenceBounds = await effects.vscode.getCodeReferenceBoundary(
         commentId,
-        comment.references[0].metadata
+        comment.anchorReference.metadata as CodeReferenceMetadata
       );
 
       if (state.comments.currentCommentId === OPTIMISTIC_COMMENT_ID) {
@@ -222,77 +253,95 @@ export const selectComment: AsyncAction<{
   }
 };
 
-export const createComment: AsyncAction<{
-  isLineComment: boolean;
-}> = async ({ state, effects }, { isLineComment }) => {
-  if (!state.user || !state.editor.currentSandbox) {
-    return;
-  }
-
-  const id = OPTIMISTIC_COMMENT_ID;
-  const sandbox = state.editor.currentSandbox;
-  const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
-  let codeReference: CodeReference | null = null;
-  const selection = state.live.currentSelection;
-  if (selection) {
-    let anchor =
-      selection.primary.selection[0] || selection.primary.cursorPosition;
-    let head =
-      selection.primary.selection[1] || selection.primary.cursorPosition;
-
-    if (isLineComment) {
-      const codeLines = state.editor.currentModule.code.split('\n');
-      const { lineNumber } = indexToLineAndColumn(codeLines, anchor);
-      const newAnchor = lineAndColumnToIndex(codeLines, lineNumber, 1);
-
-      anchor = newAnchor;
-      head = newAnchor;
-    }
-
-    codeReference = {
-      anchor,
-      head,
-      code: selection.primary.selection.length
-        ? state.editor.currentModule.code.substr(
-            selection.primary.selection[0],
-            selection.primary.selection[1] - selection.primary.selection[0]
-          )
-        : '',
-      path: state.editor.currentModule.path,
-      lastUpdatedAt: state.editor.currentModule.updatedAt,
-    };
-  }
+export const createCodeLineComment: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  const selection = state.live.currentSelection!;
+  const codeLines = state.editor.currentModule.code.split('\n');
+  const { lineNumber } = indexToLineAndColumn(
+    codeLines,
+    selection.primary.selection[0] || selection.primary.cursorPosition
+  );
+  const anchor = lineAndColumnToIndex(codeLines, lineNumber, 1);
 
   effects.analytics.track('Comments - Compose Comment', {
-    type: codeReference ? 'code' : 'global',
+    type: 'code',
+    isLineComment: true,
   });
 
+  actions.comments.addOptimisticCodeComment({
+    __typename: 'CodeReferenceMetadata',
+    sandboxId: state.editor.currentSandbox!.id,
+    anchor,
+    head: anchor,
+    code: state.editor.currentModule.code.substr(
+      anchor,
+      lineAndColumnToIndex(codeLines, lineNumber + 1, 1)
+    ),
+    path: state.editor.currentModule.path,
+  });
+};
+
+export const createCodeComment: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  const selection = state.live.currentSelection!;
+
+  effects.analytics.track('Comments - Compose Comment', {
+    type: 'code',
+    isLineComment: false,
+  });
+
+  actions.comments.addOptimisticCodeComment({
+    __typename: 'CodeReferenceMetadata',
+    sandboxId: state.editor.currentSandbox!.id,
+    anchor: selection.primary.selection[0] || selection.primary.cursorPosition,
+    head: selection.primary.selection[1] || selection.primary.cursorPosition,
+    code: selection.primary.selection.length
+      ? state.editor.currentModule.code.substr(
+          selection.primary.selection[0],
+          selection.primary.selection[1] - selection.primary.selection[0]
+        )
+      : '',
+    path: state.editor.currentModule.path,
+  });
+};
+
+export const addOptimisticCodeComment: AsyncAction<CodeReferenceMetadata> = async (
+  { state, effects },
+  codeReference
+) => {
+  const sandbox = state.editor.currentSandbox!;
+  const user = state.user!;
+  const id = OPTIMISTIC_COMMENT_ID;
+  const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
+  const comments = state.comments.comments;
   const optimisticComment: CommentFragment = {
     parentComment: null,
     id,
+    anchorReference: {
+      id: uuid.v4(),
+      type: 'code',
+      metadata: codeReference,
+      resource: state.editor.currentModule.path,
+    },
     insertedAt: now,
     updatedAt: now,
     content: '',
     isResolved: false,
     user: {
-      id: state.user.id,
-      name: state.user.name,
-      username: state.user.username,
-      avatarUrl: state.user.avatarUrl,
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      avatarUrl: user.avatarUrl,
     },
-    references: codeReference
-      ? [
-          {
-            id: uuid.v4(),
-            type: 'code',
-            metadata: codeReference,
-            resource: state.editor.currentModule.path,
-          },
-        ]
-      : [],
+    references: [],
     replyCount: 0,
   };
-  const comments = state.comments.comments;
 
   if (!comments[sandbox.id]) {
     comments[sandbox.id] = {};
@@ -305,10 +354,7 @@ export const createComment: AsyncAction<{
     right,
     top,
     bottom,
-  } = await effects.vscode.getCodeReferenceBoundary(
-    id,
-    optimisticComment.references[0].metadata
-  );
+  } = await effects.vscode.getCodeReferenceBoundary(id, codeReference);
   state.comments.currentCommentId = id;
   state.comments.currentCommentPositions = {
     trigger: {
@@ -326,17 +372,36 @@ export const createComment: AsyncAction<{
   };
 };
 
-export const addComment: AsyncAction<{
+export const saveOptimisticComment: AsyncAction<{
   content: string;
-  parentCommentId?: string;
-  isOptimistic?: boolean;
-}> = async ({ state, effects }, { content, parentCommentId, isOptimistic }) => {
-  if (!state.user || !state.editor.currentSandbox) {
-    return;
-  }
-
-  const sandbox = state.editor.currentSandbox;
+  mentions: { [username: string]: UserQuery };
+}> = async ({ state, actions }, { content: rawContent, mentions }) => {
+  const sandbox = state.editor.currentSandbox!;
   const sandboxId = sandbox.id;
+  const id = uuid.v4();
+  const content = convertMentionsToMentionLinks(rawContent, mentions);
+  const comment = {
+    ...state.comments.comments[sandboxId][OPTIMISTIC_COMMENT_ID],
+    content,
+    id,
+  };
+  state.comments.comments[sandbox.id][id] = comment;
+  state.comments.currentCommentId = state.comments.currentCommentId ? id : null;
+  delete state.comments.comments[sandbox.id][OPTIMISTIC_COMMENT_ID];
+
+  return actions.comments.saveComment(comment);
+};
+
+export const saveNewComment: AsyncAction<{
+  content: string;
+  mentions: { [username: string]: UserQuery };
+  parentCommentId?: string;
+}> = async (
+  { state, actions },
+  { content: rawContent, mentions, parentCommentId }
+) => {
+  const user = state.user!;
+  const sandbox = state.editor.currentSandbox!;
   const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   const comments = state.comments.comments;
 
@@ -345,83 +410,131 @@ export const addComment: AsyncAction<{
   }
 
   const id = uuid.v4();
-  let optimisticComment: CommentFragment;
-  if (isOptimistic) {
-    optimisticComment = {
-      ...state.comments.comments[sandboxId][OPTIMISTIC_COMMENT_ID],
-      content,
-      id,
-    };
-    state.comments.comments[sandbox.id][id] = optimisticComment;
-    state.comments.currentCommentId = state.comments.currentCommentId
-      ? id
-      : null;
-    delete state.comments.comments[sandbox.id][OPTIMISTIC_COMMENT_ID];
-  } else {
-    optimisticComment = {
-      parentComment: parentCommentId ? { id: parentCommentId } : null,
-      id,
-      insertedAt: now,
-      updatedAt: now,
-      content,
-      isResolved: false,
-      user: {
-        id: state.user.id,
-        name: state.user.name,
-        username: state.user.username,
-        avatarUrl: state.user.avatarUrl,
-      },
-      references: [],
-      replyCount: 0,
-    };
-    comments[sandbox.id][id] = optimisticComment;
-  }
+  const content = convertMentionsToMentionLinks(rawContent, mentions);
+  const comment: CommentFragment = {
+    parentComment: parentCommentId ? { id: parentCommentId } : null,
+    anchorReference: null,
+    id,
+    insertedAt: now,
+    updatedAt: now,
+    content,
+    isResolved: false,
+    user: {
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      avatarUrl: user.avatarUrl,
+    },
+    references: convertMentionsToUserReferences(mentions),
+    replyCount: 0,
+  };
+
+  return actions.comments.saveComment(comment);
+};
+
+export const saveComment: AsyncAction<CommentFragment> = async (
+  { state, effects },
+  comment
+) => {
+  const comments = state.comments.comments;
+  const sandbox = state.editor.currentSandbox!;
 
   state.comments.selectedCommentsFilter = CommentsFilterOption.OPEN;
+  comments[sandbox.id][comment.id] = comment;
 
-  if (parentCommentId) {
-    comments[sandbox.id][parentCommentId].replyCount++;
+  if (comment.parentComment) {
+    comments[sandbox.id][comment.parentComment.id].replyCount++;
   }
 
   effects.analytics.track('Comments - Create Comment', {
-    type: optimisticComment.references.length ? 'code' : 'global',
+    type: (comment.anchorReference && comment.anchorReference.type) || 'global',
   });
 
   // The server might be ahead on sandbox version, so we need to try to save
   // several times
   let tryCount = 0;
 
-  async function saveComment() {
+  async function trySaveComment() {
     tryCount++;
 
-    await effects.gql.mutations.createComment({
-      id,
-      parentCommentId: parentCommentId || null,
-      sandboxId: sandbox.id,
-      content,
-      codeReference: optimisticComment.references.length
-        ? {
-            ...optimisticComment.references[0].metadata,
-            lastUpdatedAt: sandbox.modules.find(
+    const { userReferences, codeReferences } = comment.references.reduce<{
+      userReferences: UserReference[];
+      codeReferences: CodeReference[];
+    }>(
+      (aggr, reference) => {
+        if (reference.type === 'user') {
+          aggr.userReferences.push({
+            userId: (reference.metadata as UserReferenceMetadata).userId,
+            username: (reference.metadata as UserReferenceMetadata).username,
+          });
+        } else if (reference.type === 'code') {
+          aggr.codeReferences.push({
+            anchor: (reference.metadata as CodeReferenceMetadata).anchor,
+            code: (reference.metadata as CodeReferenceMetadata).code,
+            head: (reference.metadata as CodeReferenceMetadata).head,
+            path: (reference.metadata as CodeReferenceMetadata).path,
+            lastUpdatedAt: state.editor.currentSandbox!.modules.find(
               module =>
-                module.path === optimisticComment.references[0].metadata.path
+                module.path ===
+                (reference.metadata as CodeReferenceMetadata).path
             )!.updatedAt,
-          }
-        : null,
-    });
+          });
+        }
+        return aggr;
+      },
+      {
+        userReferences: [],
+        codeReferences: [],
+      }
+    );
+    const baseCommentPayload = {
+      id: comment.id,
+      parentCommentId: comment.parentComment ? comment.parentComment.id : null,
+      sandboxId: sandbox.id,
+      content: comment.content || '',
+      userReferences,
+      codeReferences,
+    };
+
+    if (comment.anchorReference) {
+      const reference = comment.anchorReference;
+
+      if (reference.type === 'code') {
+        const metadata = reference.metadata as CodeReferenceMetadata;
+        await effects.gql.mutations.createCodeComment({
+          ...baseCommentPayload,
+          anchorReference: {
+            anchor: metadata.anchor,
+            head: metadata.head,
+            code: metadata.code,
+            path: metadata.path,
+            lastUpdatedAt: state.editor.currentSandbox!.modules.find(
+              module => module.path === metadata.path
+            )!.updatedAt,
+          },
+        });
+      }
+    } else {
+      await effects.gql.mutations.createComment(baseCommentPayload);
+    }
   }
 
   try {
-    await saveComment();
+    await trySaveComment();
   } catch (error) {
     if (error.response?.data?.error === 'old_version' && tryCount < 3) {
-      await saveComment();
+      await trySaveComment();
     } else {
       captureException(error);
       effects.notificationToast.error(
         'Unable to create your comment, please try again'
       );
-      delete comments[sandboxId][id];
+
+      if (comment.parentComment) {
+        comments[sandbox.id][comment.parentComment.id].replyCount--;
+      }
+
+      delete comments[sandbox.id][comment.id];
     }
   }
 };
@@ -580,15 +693,16 @@ export const onCommentAdded: Action<CommentAddedSubscription> = (
   { state },
   { commentAdded: comment }
 ) => {
-  if (comment.references[0] && comment.references[0].type === 'code') {
-    const codeReference = comment.references[0].metadata;
+  if (comment.anchorReference && comment.anchorReference.type === 'code') {
+    const metadata = comment.anchorReference
+      .metadata as CodeReferenceMetadataFragment;
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
       return;
     }
 
     const module = sandbox.modules.find(
-      moduleItem => moduleItem.path === codeReference.path
+      moduleItem => moduleItem.path === metadata.path
     );
 
     if (!module) {
@@ -601,11 +715,11 @@ export const onCommentAdded: Action<CommentAddedSubscription> = (
       module.savedCode || module.code,
       module.code
     );
-    const range = new Selection.Range(codeReference.anchor, codeReference.head);
+    const range = new Selection.Range(metadata.anchor, metadata.head);
     const newRange = range.transform(diffOperation);
 
-    codeReference.anchor = newRange.anchor;
-    codeReference.head = newRange.head;
+    metadata.anchor = newRange.anchor;
+    metadata.head = newRange.head;
   }
 
   state.comments.comments[comment.sandbox.id][comment.id] = comment;
@@ -641,9 +755,11 @@ export const transposeComments: Action<{
     const range = new Selection.Range(...fileComment.range);
     const newRange = range.transform(operation);
     const comment = state.comments.comments[sandbox.id][fileComment.commentId];
-    if (comment.references && comment.references[0].type === 'code') {
-      comment.references[0].metadata.anchor = newRange.anchor;
-      comment.references[0].metadata.head = newRange.head;
+    if (comment.anchorReference && comment.anchorReference.type === 'code') {
+      const metadata = comment.anchorReference
+        .metadata as CodeReferenceMetadataFragment;
+      metadata.anchor = newRange.anchor;
+      metadata.head = newRange.head;
     }
   });
 };

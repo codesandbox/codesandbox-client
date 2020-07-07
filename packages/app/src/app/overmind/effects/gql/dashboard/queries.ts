@@ -27,8 +27,12 @@ import {
   _SearchTeamSandboxesQueryVariables,
   GetTeamQuery,
   GetTeamQueryVariables,
+  GetPersonalReposQueryVariables,
+  GetPersonalReposQuery,
   TeamDraftsQuery,
   TeamDraftsQueryVariables,
+  GetTeamReposQueryVariables,
+  GetTeamReposQuery,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -36,6 +40,7 @@ import {
   sandboxFragmentDashboard,
   sidebarCollectionDashboard,
   templateFragmentDashboard,
+  repoFragmentDashboard,
   currentTeamInfoFragment,
 } from './fragments';
 
@@ -125,6 +130,36 @@ export const getCollections: Query<
     }
   }
   ${sidebarCollectionDashboard}
+`;
+
+export const getPersonalRepos: Query<
+  GetPersonalReposQuery,
+  GetPersonalReposQueryVariables
+> = gql`
+  query getPersonalRepos {
+    me {
+      sandboxes {
+        ...repoFragmentDashboard
+      }
+    }
+  }
+  ${repoFragmentDashboard}
+`;
+
+export const getTeamRepos: Query<
+  GetTeamReposQuery,
+  GetTeamReposQueryVariables
+> = gql`
+  query getTeamRepos($id: ID!) {
+    me {
+      team(id: $id) {
+        sandboxes {
+          ...repoFragmentDashboard
+        }
+      }
+    }
+  }
+  ${repoFragmentDashboard}
 `;
 
 export const teamTemplates: Query<

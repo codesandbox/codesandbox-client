@@ -314,6 +314,12 @@ export enum SandboxGitState {
   RESOLVED_PR_BASE = 'resolved pr base',
 }
 
+export type UserQuery = {
+  id: string;
+  avatarUrl: string;
+  username: string;
+};
+
 export type PopularSandboxes = {
   startDate: string;
   sandboxes: MiniSandbox[];

@@ -6,7 +6,10 @@ import { VariableSizeGrid, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
+import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
+import { ImportRepo } from '../Repo/ImportRepo';
 import { Folder } from '../Folder';
+import { Repo } from '../Repo';
 import { EmptyScreen } from '../EmptyScreen';
 import {
   DashboardGridItem,
@@ -19,6 +22,9 @@ import {
   DashboardBlank,
   DashboardSkeleton,
   DashboardNewFolder,
+  DashboardRepo,
+  DashboardNewRepo,
+  DashboardNewMasterBranch,
   PageTypes,
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
@@ -39,6 +45,7 @@ type WindowItemProps = {
     filledItems: DashboardGridItem[];
     containerWidth: number;
     viewMode: 'grid' | 'list';
+    page: PageTypes;
   };
   style: React.CSSProperties;
   columnIndex: number;
@@ -49,14 +56,17 @@ type WindowItemProps = {
 type DecoratedItemProps<T> = {
   item: T;
   isScrolling?: boolean;
+  page?: PageTypes;
 };
-// TODO: make this a generic type. How can we convert DashboardGridItem to this?
 interface ComponentForTypes {
   sandbox: React.FC<DecoratedItemProps<DashboardSandbox>>;
   template: React.FC<DecoratedItemProps<DashboardTemplate>>;
   folder: React.FC<DecoratedItemProps<DashboardFolder>>;
+  repo: React.FC<DecoratedItemProps<DashboardRepo>>;
   'new-folder': React.FC<DecoratedItemProps<DashboardNewFolder>>;
   'new-sandbox': React.FC<DecoratedItemProps<DashboardNewSandbox>>;
+  'new-repo': React.FC<DecoratedItemProps<DashboardNewRepo>>;
+  'new-master-branch': React.FC<DecoratedItemProps<DashboardNewMasterBranch>>;
   header: React.FC<DecoratedItemProps<DashboardHeader>>;
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
@@ -65,14 +75,25 @@ interface ComponentForTypes {
 
 const ComponentForTypes: ComponentForTypes = {
   sandbox: React.memo(props => (
-    <Sandbox item={props.item} isScrolling={props.isScrolling} />
+    <Sandbox
+      page={props.page}
+      item={props.item}
+      isScrolling={props.isScrolling}
+    />
   )),
   template: React.memo(props => (
-    <Sandbox item={props.item} isScrolling={props.isScrolling} />
+    <Sandbox
+      page={props.page}
+      item={props.item}
+      isScrolling={props.isScrolling}
+    />
   )),
   folder: props => <Folder {...props.item} />,
+  repo: props => <Repo {...props.item} isScrolling={props.isScrolling} />,
   'new-folder': props => <CreateFolder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
+  'new-repo': () => <ImportRepo />,
+  'new-master-branch': props => <NewMasterSandbox {...props.item} />,
   header: ({ item }) => (
     <Stack justify="space-between" align="center">
       <Text block style={{ userSelect: 'none' }}>
@@ -108,7 +129,7 @@ const ComponentForTypes: ComponentForTypes = {
 
 const Item = React.memo(
   ({ data, rowIndex, columnIndex, style, isScrolling }: WindowItemProps) => {
-    const { columnCount, filledItems, containerWidth, viewMode } = data;
+    const { columnCount, filledItems, containerWidth, viewMode, page } = data;
 
     /**
      * react-window does not support gutter or maxWidth
@@ -166,7 +187,7 @@ const Item = React.memo(
           ...margins,
         }}
       >
-        <Component item={item} isScrolling={isScrolling} />
+        <Component item={item} page={page} isScrolling={isScrolling} />
       </div>
     );
   },
@@ -361,6 +382,7 @@ export const VariableGrid = ({
                   filledItems,
                   containerWidth: width,
                   viewMode,
+                  page,
                 }}
                 style={{ overflowX: 'hidden', userSelect: 'none' }}
               >

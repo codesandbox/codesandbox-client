@@ -30,6 +30,9 @@ export const allSandboxes = (path: string, teamId?: string | null) =>
 export const drafts = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/drafts`, teamId);
 
+export const repos = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories`, teamId);
+
 export const templates = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/templates`, teamId);
 

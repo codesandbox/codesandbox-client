@@ -1,5 +1,5 @@
 import { SidebarCollectionDashboardFragment as Collection } from 'app/graphql/types';
-import { DELETE_ME_COLLECTION } from './state';
+import { DELETE_ME_COLLECTION } from './types';
 
 export function getDecoratedCollection(
   collection: Collection

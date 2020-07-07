@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { useOvermind } from 'app/overmind';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Breadcrumbs } from '../Breadcrumbs';
@@ -17,12 +18,14 @@ type Props = {
   showFilters?: boolean;
   showViewOptions?: boolean;
   showSortOptions?: boolean;
+  repos?: boolean;
   activeTeam: string;
 };
 
 export const Header = ({
   createNewFolder,
   templates,
+  repos,
   path,
   title,
   activeTeam,
@@ -31,6 +34,10 @@ export const Header = ({
   showSortOptions = false,
 }: Props) => {
   const location = useLocation();
+  const {
+    actions,
+    state: { dashboard },
+  } = useOvermind();
 
   return (
     <Stack
@@ -52,7 +59,7 @@ export const Header = ({
           {title}
         </Text>
       ) : (
-        <Breadcrumbs activeTeam={activeTeam} path={path} />
+        <Breadcrumbs repos={repos} activeTeam={activeTeam} path={path} />
       )}
       <Stack gap={4} align="center">
         {location.pathname.includes('/all') && (
@@ -69,6 +76,21 @@ export const Header = ({
             + New Folder
           </Button>
         )}
+        {location.pathname.includes('/repositories') &&
+          dashboard.viewMode === 'list' && (
+            <Button
+              onClick={() => actions.modals.newSandboxModal.open({})}
+              variant="link"
+              css={css({
+                fontSize: 2,
+                color: 'mutedForeground',
+                padding: 0,
+                width: 'auto',
+              })}
+            >
+              + Import Repo
+            </Button>
+          )}
 
         <Stack gap={4}>
           {showFilters && <FilterOptions possibleTemplates={templates} />}

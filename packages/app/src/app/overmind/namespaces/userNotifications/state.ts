@@ -1,7 +1,7 @@
-import { Notification } from 'app/graphql/types';
+import { RecentNotificationFragment } from 'app/graphql/types';
 
 type State = {
-  notifications: Notification[] | null;
+  notifications: RecentNotificationFragment[] | null;
   connected: boolean;
   unreadCount: number;
   notificationsOpened: boolean;

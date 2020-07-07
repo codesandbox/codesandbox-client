@@ -1,8 +1,12 @@
 import {
   SandboxFragmentDashboardFragment,
   TemplateFragmentDashboardFragment,
+  RepoFragmentDashboardFragment,
 } from 'app/graphql/types';
-import { DELETE_ME_COLLECTION } from 'app/overmind/namespaces/dashboard/state';
+import {
+  PageTypes as PT,
+  DELETE_ME_COLLECTION,
+} from 'app/overmind/namespaces/dashboard/types';
 
 export type DashboardBaseFolder = {
   name: string;
@@ -12,21 +16,45 @@ export type DashboardBaseFolder = {
 
 export type DashboardSandbox = {
   type: 'sandbox';
-  sandbox: SandboxFragmentDashboardFragment;
-  isHomeTemplate?: false;
+  sandbox: SandboxFragmentDashboardFragment & {
+    prNumber?: number;
+    originalGit?: RepoFragmentDashboardFragment['originalGit'];
+  };
+  noDrag?: boolean;
+  autoFork?: boolean;
 };
 
 export type DashboardTemplate = {
   type: 'template';
   template: Omit<TemplateFragmentDashboardFragment, 'sandbox'>;
-  sandbox: TemplateFragmentDashboardFragment['sandbox'];
-  isHomeTemplate?: boolean;
+  sandbox: TemplateFragmentDashboardFragment['sandbox'] & {
+    prNumber?: number;
+    originalGit?: RepoFragmentDashboardFragment['originalGit'];
+  };
+  noDrag?: boolean;
+  autoFork?: boolean;
 };
 
 export type DashboardFolder = DELETE_ME_COLLECTION &
   DashboardBaseFolder & {
     type: 'folder';
   };
+
+export type DashboardRepo = {
+  type: 'repo';
+  path?: string;
+  lastEdited?: Date;
+  branch: string;
+  name: string;
+  owner: string;
+  sandboxes: RepoFragmentDashboardFragment[];
+  isScrolling?: boolean;
+};
+
+export type DashboardRepoSandbox = {
+  type: 'sandbox';
+  sandbox: RepoFragmentDashboardFragment;
+};
 
 export type DashboardNewFolder = {
   type: 'new-folder';
@@ -43,6 +71,10 @@ export type DashboardHeader = {
 
 export type DashboardNewSandbox = {
   type: 'new-sandbox';
+};
+
+export type DashboardNewRepo = {
+  type: 'new-repo';
 };
 
 export type DashboardSkeletonRow = {
@@ -70,14 +102,16 @@ export type DashboardSkeleton = {
   type: 'skeleton';
 };
 
-export type PageTypes =
-  | 'search'
-  | 'home'
-  | 'recents'
-  | 'deleted'
-  | 'templates'
-  | 'drafts'
-  | 'sandboxes';
+export type DashboardNewMasterBranch = {
+  type: 'new-master-branch';
+  repo: {
+    owner: string;
+    name: string;
+    branch: string;
+  };
+};
+
+export type PageTypes = PT;
 
 export type DashboardGridItem =
   | DashboardSandbox
@@ -87,7 +121,11 @@ export type DashboardGridItem =
   | DashboardHeaderLink
   | DashboardNewFolder
   | DashboardNewSandbox
+  | DashboardNewRepo
   | DashboardSkeletonRow
+  | DashboardNewMasterBranch
   | DashboardBlank
+  | DashboardRepo
+  | DashboardRepoSandbox
   | DashboardBlankRowFill
   | DashboardSkeleton;

@@ -6,19 +6,25 @@ import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 interface BreadcrumbProps {
   path: string;
   activeTeam: string;
+  repos?: boolean;
 }
 
 export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
   path,
   activeTeam,
+  repos,
 }) => (
   <Text marginBottom={1} block weight="bold" size={5}>
     <Link
-      to={dashboard.allSandboxes('/', activeTeam)}
+      to={
+        repos
+          ? dashboard.repos(activeTeam)
+          : dashboard.allSandboxes('/', activeTeam)
+      }
       as={LinkBase}
       variant={path && path.split('/').length ? 'muted' : 'body'}
     >
-      All Sandboxes {path && ' / '}
+      {repos ? 'Repositories' : 'All Sandboxes'} {path && ' / '}
     </Link>
     {path
       ? path.split('/').map((p, i) => {
@@ -31,7 +37,11 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
             <Link
               key={p}
               as={LinkBase}
-              to={dashboard.allSandboxes('/' + partPath, activeTeam)}
+              to={
+                repos
+                  ? dashboard.repos(activeTeam)
+                  : dashboard.allSandboxes('/' + partPath, activeTeam)
+              }
               variant={i < path.split('/').length - 1 ? 'muted' : 'body'}
             >
               {p} {i < path.split('/').length - 1 && '/ '}

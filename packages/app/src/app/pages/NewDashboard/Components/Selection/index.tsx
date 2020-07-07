@@ -24,6 +24,7 @@ import {
   DashboardSandbox,
   DashboardFolder,
   DashboardGridItem,
+  DashboardRepo,
   PageTypes,
 } from '../../types';
 import { DndDropType } from '../../utils/dnd';
@@ -98,11 +99,15 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     item =>
       item.type === 'sandbox' ||
       item.type === 'template' ||
-      item.type === 'folder'
-  ) as Array<DashboardSandbox | DashboardTemplate | DashboardFolder>;
+      item.type === 'folder' ||
+      item.type === 'repo'
+  ) as Array<
+    DashboardSandbox | DashboardTemplate | DashboardFolder | DashboardRepo
+  >;
 
   const selectionItems = possibleItems.map(item => {
     if (item.type === 'folder') return item.path;
+    if (item.type === 'repo') return item.name;
     return item.sandbox.id;
   });
 
@@ -407,9 +412,9 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
 
     if (sandboxIds.length) {
       if (dropPage === 'deleted') {
-        actions.dashboard.deleteSandbox(sandboxIds);
+        actions.dashboard.deleteSandbox({ ids: sandboxIds, page });
       } else if (dropPage === 'templates') {
-        actions.dashboard.makeTemplates({ sandboxIds });
+        actions.dashboard.makeTemplates({ sandboxIds, page });
       } else if (dropPage === 'drafts') {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
@@ -562,7 +567,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     else if (new Date().getTime() - callbackCalledAt.current > 60) callback();
   };
 
-  const onContainerMouseUp = event => {
+  const onContainerMouseUp = () => {
     if (drawingRect) resetSelectionRect();
   };
 
@@ -640,6 +645,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         sandboxes={sandboxes || []}
         folders={folders || []}
         setRenaming={setRenaming}
+        page={page}
         createNewFolder={createNewFolder}
         createNewSandbox={createNewSandbox}
       />
