@@ -20,8 +20,8 @@ export type DashboardSandbox = {
     prNumber?: number;
     originalGit?: RepoFragmentDashboardFragment['originalGit'];
   };
-  noDrag?: false;
-  autoFork?: false;
+  noDrag?: boolean;
+  autoFork?: boolean;
 };
 
 export type DashboardTemplate = {
