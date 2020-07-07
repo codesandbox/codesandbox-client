@@ -121,6 +121,10 @@ export const state: State = {
         return 0;
       }
 
+      if (!comments[currentSandbox.id][currentCommentId]) {
+        return null;
+      }
+
       return {
         ...comments[currentSandbox.id][currentCommentId],
         comments: Object.keys(comments[currentSandbox.id])

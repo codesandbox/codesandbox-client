@@ -31,14 +31,18 @@ import { useCodesandboxMention } from '../hooks/useCodesandboxMention';
 import { Reply, SkeletonReply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
 
-export const CommentDialog = props =>
+interface CommentDialogProps {
+  comment: CommentWithRepliesFragment;
+}
+
+export const CommentDialog: React.FC<CommentDialogProps> = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
-export const Dialog: React.FC = () => {
+export const Dialog: React.FC<CommentDialogProps> = props => {
   const { state, actions } = useOvermind();
   const controller = useAnimation();
 
-  const comment = state.comments.currentComment;
+  const { comment } = props;
   const replies = comment.comments;
 
   // This comment doens't exist in the database, it's an optimistic comment
