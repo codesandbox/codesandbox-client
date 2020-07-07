@@ -468,9 +468,14 @@ export const trackCurrentTeams: AsyncAction = async ({ effects, state }) => {
     return;
   }
 
-  if (user.experiments.inPilot && state.activeTeamInfo) {
-    effects.analytics.setGroup('teamName', state.activeTeamInfo.name);
-    effects.analytics.setGroup('teamId', state.activeTeamInfo.id);
+  if (user.experiments.inPilot) {
+    if (state.activeTeamInfo) {
+      effects.analytics.setGroup('teamName', state.activeTeamInfo.name);
+      effects.analytics.setGroup('teamId', state.activeTeamInfo.id);
+    } else {
+      effects.analytics.setGroup('teamName', []);
+      effects.analytics.setGroup('teamId', []);
+    }
   } else {
     const { me } = await effects.gql.queries.teams({});
     if (me) {

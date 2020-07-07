@@ -3,8 +3,8 @@ export const shortDistance = distance =>
   distance
     .replace(' years', 'y')
     .replace(' year', 'y')
-    .replace(' months', 'm')
-    .replace(' month', 'm')
+    .replace(' months', 'mo')
+    .replace(' month', 'mo')
     .replace(' days', 'd')
     .replace(' day', 'd')
     .replace(' hours', 'h')
