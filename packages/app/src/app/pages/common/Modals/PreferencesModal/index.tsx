@@ -14,6 +14,7 @@ import CreditCardIcon from 'react-icons/lib/md/credit-card';
 import IntegrationIcon from 'react-icons/lib/md/device-hub';
 
 import { useOvermind } from 'app/overmind';
+import { CurrentUser } from '@codesandbox/common/lib/types';
 
 import { Alert } from '../Common/Alert';
 
@@ -36,7 +37,7 @@ type MenuItem = ComponentProps<typeof SideNavigation>['menuItems'][0] & {
 const getItems = (
   isLoggedIn: boolean,
   isPatron: boolean,
-  user: any
+  user: CurrentUser
 ): MenuItem[] =>
   [
     {
