@@ -1142,17 +1142,19 @@ export const revokeTeamInvitation: AsyncAction<{
 export const setTeamInfo: AsyncAction<{
   name: string;
   description: string | null;
-  file: { name: string; url: string };
+  file: { name: string; url: string } | null;
 }> = async ({ effects, state, actions }, { name, description, file }) => {
   if (!state.activeTeam) return;
-  const oldTeamInfo = state.dashboard.teams.find(team => team.name === name);
+  const oldTeamInfo = state.dashboard.teams.find(
+    team => team.id === state.activeTeam
+  );
   const oldActiveTeamInfo = state.activeTeamInfo;
   try {
     await effects.gql.mutations.setTeamName({
       name,
       // only way to pass, null is a value in the BE
       // @ts-ignore
-      teamId: state.activeTeam || undefined,
+      teamId: state.activeTeam,
     });
 
     if (description) {
@@ -1160,7 +1162,7 @@ export const setTeamInfo: AsyncAction<{
         description,
         // only way to pass, null is a value in the BE
         // @ts-ignore
-        teamId: state.activeTeam || undefined,
+        teamId: state.activeTeam,
       });
     }
 
@@ -1171,12 +1173,12 @@ export const setTeamInfo: AsyncAction<{
       });
     }
     state.dashboard.teams = state.dashboard.teams.map(team => {
-      if (team.name === name) {
+      if (oldTeamInfo && team.id === oldTeamInfo.id) {
         return {
           ...team,
           name,
           description,
-          avatarUrl: file.url,
+          avatarUrl: file ? file.url : team.avatarUrl,
         };
       }
 
@@ -1188,7 +1190,7 @@ export const setTeamInfo: AsyncAction<{
         ...oldActiveTeamInfo,
         name,
         description,
-        avatarUrl: file.url,
+        avatarUrl: file ? file.url : oldActiveTeamInfo.avatarUrl,
       };
     }
   } catch (e) {
@@ -1198,7 +1200,10 @@ export const setTeamInfo: AsyncAction<{
     if (state.dashboard.teams && oldTeamInfo) {
       state.dashboard.teams = [...state.dashboard.teams, oldTeamInfo];
     }
-    effects.notificationToast.error('There was a problem renaming your team');
+    actions.internal.handleError({
+      message: 'There was a problem renaming your team',
+      error: e,
+    });
   }
 };
 
