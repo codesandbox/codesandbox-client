@@ -145,7 +145,17 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
           size={3}
           variant="muted"
         >
-          <Icon style={{ marginRight: 2 }} name="eye" size={14} /> {finalText}
+          <Icon style={{ marginRight: 2, minWidth: 14 }} name="eye" size={14} />{' '}
+          <span
+            style={{
+              maxWidth: '100%',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {finalText}
+          </span>
         </Text>
       </div>
     );
