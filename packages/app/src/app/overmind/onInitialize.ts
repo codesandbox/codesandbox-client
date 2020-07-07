@@ -4,7 +4,6 @@ export const onInitialize: OnInitialize = async (
   { state, effects, actions },
   overmindInstance
 ) => {
-  state.currentModal = 'preferencesModal';
   const provideJwtToken = () => effects.api.getJWTToken();
   state.isFirstVisit = Boolean(
     !state.hasLogIn && !effects.browser.storage.get('hasVisited')
