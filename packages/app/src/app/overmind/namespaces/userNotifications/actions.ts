@@ -1,6 +1,7 @@
-import { AsyncAction, Action } from 'app/overmind';
 import { client } from 'app/graphql/client';
+import { Action, AsyncAction } from 'app/overmind';
 import gql from 'graphql-tag';
+
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
@@ -53,7 +54,8 @@ export const filterNotifications: AsyncAction<string> = async (
       type: state.userNotifications.activeFilters,
     });
 
-    state.userNotifications.notifications = me.notifications;
+    state.userNotifications.notifications =
+      me && me.notifications ? me.notifications : null;
   } catch {
     state.userNotifications.activeFilters = filters;
   }
@@ -167,7 +169,8 @@ export const getNotifications: AsyncAction = async ({ state, effects }) => {
       type: [],
     });
 
-    state.userNotifications.notifications = me.notifications;
+    state.userNotifications.notifications =
+      me && me.notifications ? me.notifications : null;
   } catch {
     effects.notificationToast.error(
       'There has been a problem getting your notifications'

@@ -1,5 +1,9 @@
-import { CommentsFilterOption } from '@codesandbox/common/lib/types';
-import { CommentFragment, CommentWithRepliesFragment } from 'app/graphql/types';
+import { CommentsFilterOption, UserQuery } from '@codesandbox/common/lib/types';
+import {
+  CodeReferenceMetadata,
+  CommentFragment,
+  CommentWithRepliesFragment,
+} from 'app/graphql/types';
 import { RootState } from 'app/overmind';
 import isToday from 'date-fns/isToday';
 import { derived } from 'overmind';
@@ -20,6 +24,7 @@ type State = {
     };
   };
   currentComments: CommentFragment[];
+  isQueryingUsers: boolean;
   selectedCommentsFilter: CommentsFilterOption;
   currentCommentId: string | null;
   currentCommentPositions: {
@@ -28,6 +33,7 @@ type State = {
   } | null;
   currentComment: CommentWithRepliesFragment | null;
   fileComments: FileComments;
+  usersQueryResult: UserQuery[];
   currentCommentsByDate: {
     today: CommentFragment[];
     prev: CommentFragment[];
@@ -41,7 +47,9 @@ type State = {
 
 export const state: State = {
   multiCommentsSelector: null,
+  isQueryingUsers: false,
   currentCommentPositions: null,
+  usersQueryResult: [],
   comments: {},
   currentCommentId: null,
   fileComments: derived(
@@ -59,17 +67,20 @@ export const state: State = {
           range: [number, number];
         }>;
       }>((aggr, comment) => {
-        comment.references.forEach(reference => {
-          if (reference.type === 'code') {
-            if (!aggr[reference.metadata.path]) {
-              aggr[reference.metadata.path] = [];
-            }
-            aggr[reference.metadata.path].push({
-              commentId: comment.id,
-              range: [reference.metadata.anchor, reference.metadata.head],
-            });
+        if (
+          comment.anchorReference &&
+          comment.anchorReference.type === 'code'
+        ) {
+          const metadata = comment.anchorReference
+            .metadata as CodeReferenceMetadata;
+          if (!aggr[metadata.path]) {
+            aggr[metadata.path] = [];
           }
-        });
+          aggr[metadata.path].push({
+            commentId: comment.id,
+            range: [metadata.anchor, metadata.head],
+          });
+        }
 
         return aggr;
       }, {});
