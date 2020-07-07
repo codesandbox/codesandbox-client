@@ -1142,7 +1142,9 @@ export const revokeTeamInvitation: AsyncAction<{
 export const setTeamInfo: AsyncAction<{
   name: string;
   description: string | null;
-}> = async ({ effects, state }, { name, description }) => {
+  file: { name: string; url: string };
+}> = async ({ effects, state, actions }, { name, description, file }) => {
+  if (!state.activeTeam) return;
   const oldTeamInfo = state.dashboard.teams.find(team => team.name === name);
   const oldActiveTeamInfo = state.activeTeamInfo;
   try {
@@ -1161,12 +1163,20 @@ export const setTeamInfo: AsyncAction<{
         teamId: state.activeTeam || undefined,
       });
     }
+
+    if (file) {
+      await actions.dashboard.updateTeamAvatar({
+        ...file,
+        teamId: state.activeTeam,
+      });
+    }
     state.dashboard.teams = state.dashboard.teams.map(team => {
       if (team.name === name) {
         return {
           ...team,
           name,
           description,
+          avatarUrl: file.url,
         };
       }
 
@@ -1178,6 +1188,7 @@ export const setTeamInfo: AsyncAction<{
         ...oldActiveTeamInfo,
         name,
         description,
+        avatarUrl: file.url,
       };
     }
   } catch (e) {
@@ -1311,4 +1322,25 @@ export const changeSandboxPrivacyInState: Action<{
       }),
     {}
   );
+};
+
+export const updateTeamAvatar: AsyncAction<{
+  name: string;
+  url: string;
+  teamId: string;
+}> = async ({ actions, effects, state }, { name, url, teamId }) => {
+  if (!state.activeTeamInfo) return;
+  const oldAvatar = state.activeTeamInfo.avatarUrl;
+  state.activeTeamInfo.avatarUrl = url;
+
+  try {
+    await effects.api.updateTeamAvatar(name, url, teamId);
+  } catch (error) {
+    state.activeTeamInfo.avatarUrl = oldAvatar;
+
+    actions.internal.handleError({
+      message: "We weren't able to update your team avatar",
+      error,
+    });
+  }
 };

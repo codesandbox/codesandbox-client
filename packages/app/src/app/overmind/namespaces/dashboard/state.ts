@@ -35,7 +35,9 @@ type State = {
       };
     } | null;
   };
-  teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
+  teams: Array<
+    { __typename?: 'Team' } & Pick<Team, 'id' | 'name' | 'avatarUrl'>
+  >;
   allCollections: DELETE_ME_COLLECTION[] | null;
   selectedSandboxes: string[];
   trashSandboxIds: string[];

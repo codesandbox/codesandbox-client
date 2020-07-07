@@ -1304,7 +1304,7 @@ export type TemplateFragmentDashboardFragment = {
 
 export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
   Team,
-  'id' | 'name' | 'description' | 'creatorId'
+  'id' | 'name' | 'description' | 'creatorId' | 'avatarUrl'
 > & {
     users: Array<
       { __typename?: 'User' } & Pick<
@@ -1322,7 +1322,13 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
 
 export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
   Team,
-  'id' | 'creatorId' | 'description' | 'inviteToken' | 'joinedPilotAt' | 'name'
+  | 'id'
+  | 'creatorId'
+  | 'description'
+  | 'inviteToken'
+  | 'joinedPilotAt'
+  | 'name'
+  | 'avatarUrl'
 > & {
     users: Array<
       { __typename?: 'User' } & Pick<User, 'id' | 'avatarUrl' | 'username'>
@@ -1699,7 +1705,9 @@ export type AllTeamsQueryVariables = Exact<{ [key: string]: never }>;
 export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
-      teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
+      teams: Array<
+        { __typename?: 'Team' } & Pick<Team, 'id' | 'name' | 'avatarUrl'>
+      >;
     }
   >;
 };

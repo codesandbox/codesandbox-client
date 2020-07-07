@@ -50,7 +50,7 @@ export const UserSettings = () => {
         <Stack
           direction="vertical"
           gap={8}
-          css={css({ maxWidth: 992, marginX: 'auto' })}
+          css={css({ maxWidth: 1100, marginX: 'auto' })}
         >
           <Grid
             columnGap={4}

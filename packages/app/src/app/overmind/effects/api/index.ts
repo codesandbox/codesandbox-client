@@ -35,6 +35,7 @@ import {
   IDirectoryAPIResponse,
   IModuleAPIResponse,
   SandboxAPIResponse,
+  AvatarAPIResponse,
 } from './types';
 
 let api: Api;
@@ -498,6 +499,16 @@ export default {
       sandbox: {
         privacy,
       },
+    });
+  },
+  updateTeamAvatar(
+    name: string,
+    avatar: string,
+    teamId: string
+  ): Promise<AvatarAPIResponse> {
+    return api.post(`/teams/${teamId}/avatar`, {
+      name,
+      avatar,
     });
   },
   createVercelIntegration(code: string): Promise<CurrentUser> {

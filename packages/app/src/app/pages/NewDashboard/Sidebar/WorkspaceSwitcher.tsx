@@ -70,10 +70,13 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
                 align="center"
                 justify="center"
               >
-                {activeAccount.avatarUrl ? (
+                {!inTeamContext ? (
                   <Avatar user={activeAccount} css={css({ size: 6 })} />
                 ) : (
-                  <TeamAvatar name={activeAccount.username} />
+                  <TeamAvatar
+                    avatar={activeAccount.avatarUrl}
+                    name={activeAccount.username}
+                  />
                 )}
               </Stack>
               <Text size={4} weight="normal" maxWidth={140}>
@@ -140,7 +143,11 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
                 style={{ paddingLeft: 8 }}
                 onSelect={() => actions.setActiveTeam({ id: team.id })}
               >
-                <TeamAvatar name={team.name} size="small" />
+                <TeamAvatar
+                  avatar={team.avatarUrl}
+                  name={team.name}
+                  size="small"
+                />
                 <Text css={css({ width: '100%' })} size={3}>
                   {team.name}
                 </Text>
