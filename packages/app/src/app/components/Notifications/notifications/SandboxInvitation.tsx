@@ -12,6 +12,7 @@ import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Authorization } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { formatDistanceStrict } from 'date-fns';
+import { useHistory } from 'react-router-dom';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import { Menu } from './Menu';
 import { InvitationIcon } from './Icons';
@@ -45,6 +46,7 @@ export const SandboxInvitation = ({
     },
   } = useOvermind();
   const [hover, setHover] = useState(false);
+  const history = useHistory();
   const niceSandboxTitle = sandboxTitle || sandboxAlias || sandboxId;
   let nicePermissionName = 'view';
   if (authorization === Authorization.Comment) {
@@ -61,10 +63,12 @@ export const SandboxInvitation = ({
         if (isMenuClicked(event)) return;
         if (!read) {
           await updateReadStatus(id);
-          window.location.href = sandboxUrl({
-            id: sandboxId,
-            alias: sandboxAlias,
-          });
+          history.push(
+            sandboxUrl({
+              id: sandboxId,
+              alias: sandboxAlias,
+            })
+          );
         }
       }}
       key={sandboxId}

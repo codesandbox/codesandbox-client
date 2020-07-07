@@ -6,6 +6,7 @@ import { Stack, Element, Text, ListAction } from '@codesandbox/components';
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
+import { useHistory } from 'react-router-dom';
 import { CommentIcon } from './Icons';
 import { Menu } from './Menu';
 
@@ -36,6 +37,8 @@ export const Comment = ({
     },
   } = useOvermind();
 
+  const history = useHistory();
+
   const [hover, setHover] = useState(false);
   return (
     <ListAction
@@ -44,7 +47,8 @@ export const Comment = ({
       onMouseLeave={() => setHover(false)}
       onClick={async () => {
         await updateReadStatus(id);
-        window.location.href = sandboxUrl({ id: sandboxId });
+
+        history.push(sandboxUrl({ id: sandboxId }));
       }}
       css={css({ padding: 0 })}
     >
