@@ -1,5 +1,11 @@
 import { RecentNotificationFragment } from 'app/graphql/types';
 
+export type preferenceTypes = {
+  emailCommentMention: boolean;
+  emailCommentReply: boolean;
+  emailNewComment: boolean;
+};
+
 type State = {
   notifications: RecentNotificationFragment[] | null;
   connected: boolean;
@@ -11,11 +17,7 @@ type State = {
     userAvatar: string;
   } | null;
   activeFilters: string[];
-  preferences: {
-    emailCommentMention: boolean;
-    emailCommentReply: boolean;
-    emailNewComment: boolean;
-  } | null;
+  preferences: preferenceTypes | null;
 };
 
 export const state: State = {

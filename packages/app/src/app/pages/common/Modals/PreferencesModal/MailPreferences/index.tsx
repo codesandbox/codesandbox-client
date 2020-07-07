@@ -22,7 +22,7 @@ export const MailPreferences: FunctionComponent = () => {
   return (
     <>
       <Text block marginBottom={6} size={4} variant="muted" weight="bold">
-        Email Settings
+        Email me when...
       </Text>
 
       {userNotifications.preferences ? (
@@ -34,11 +34,20 @@ export const MailPreferences: FunctionComponent = () => {
                   emailNewComment: value,
                 })
               }
-              title="Email me when my sandbox gets a new comment"
+              title="New comment"
               tooltip="Email on new comment"
               type="boolean"
               value={userNotifications.preferences.emailNewComment}
             />
+            <Text
+              block
+              marginTop={2}
+              size={3}
+              style={{ maxWidth: '60%' }}
+              variant="muted"
+            >
+              A user left a comment on one of my sandboxes
+            </Text>
           </Element>
           <Element paddingTop={4}>
             <PaddedPreference
@@ -47,11 +56,20 @@ export const MailPreferences: FunctionComponent = () => {
                   emailCommentReply: value,
                 })
               }
-              title="Email me when my comment gets a reply"
+              title="Replies"
               tooltip="Email on new reply"
               type="boolean"
               value={userNotifications.preferences.emailCommentReply}
             />
+            <Text
+              block
+              marginTop={2}
+              size={3}
+              style={{ maxWidth: '60%' }}
+              variant="muted"
+            >
+              A reply has been left on one of my comments
+            </Text>
           </Element>
           <Element paddingTop={4}>
             <PaddedPreference
@@ -60,12 +78,21 @@ export const MailPreferences: FunctionComponent = () => {
                   emailCommentMention: value,
                 })
               }
-              title="Email me when I get mentioned in a comment"
+              title="@Mentions"
               tooltip="Email on new mention"
               type="boolean"
               value={userNotifications.preferences.emailCommentMention}
             />
           </Element>
+          <Text
+            block
+            marginTop={2}
+            size={3}
+            style={{ maxWidth: '60%' }}
+            variant="muted"
+          >
+            Someone mentioned me in a comment
+          </Text>
         </SubContainer>
       ) : (
         <Text align="center" marginTop={6} size={3}>

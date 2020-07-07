@@ -5,6 +5,7 @@ import { Action, AsyncAction } from 'app/overmind';
 import gql from 'graphql-tag';
 
 import * as internalActions from './internalActions';
+import { preferenceTypes } from './state';
 
 export const internal = internalActions;
 
@@ -209,10 +210,7 @@ export const getNotificationPreferences: AsyncAction = async ({
 
 export const updateNotificationPreferences: AsyncAction<
   {
-    [key in
-      | 'emailNewComment'
-      | 'emailCommentReply'
-      | 'emailCommentMention']: boolean;
+    [key in keyof preferenceTypes]: boolean;
   }
 > = async ({ state, effects }, preference) => {
   if (!state.user) return;
