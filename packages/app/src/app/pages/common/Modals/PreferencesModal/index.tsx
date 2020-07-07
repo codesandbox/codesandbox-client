@@ -5,6 +5,7 @@ import React, { ComponentProps, ComponentType, FunctionComponent } from 'react';
 import CodeIcon from 'react-icons/lib/fa/code';
 import CodeFormatIcon from 'react-icons/lib/fa/dedent';
 import FlaskIcon from 'react-icons/lib/fa/flask';
+import MailIcon from 'react-icons/lib/go/mail';
 import BrowserIcon from 'react-icons/lib/go/browser';
 import KeyboardIcon from 'react-icons/lib/go/keyboard';
 import StarIcon from 'react-icons/lib/go/star';
@@ -13,6 +14,7 @@ import CreditCardIcon from 'react-icons/lib/md/credit-card';
 import IntegrationIcon from 'react-icons/lib/md/device-hub';
 
 import { useOvermind } from 'app/overmind';
+import { CurrentUser } from '@codesandbox/common/lib/types';
 
 import { Alert } from '../Common/Alert';
 
@@ -25,12 +27,18 @@ import { Experiments } from './Experiments';
 import { Integrations } from './Integrations';
 import { KeyMapping } from './KeyMapping';
 import { PaymentInfo } from './PaymentInfo';
+import { MailPreferences } from './MailPreferences';
+
 import { SideNavigation } from './SideNavigation';
 
 type MenuItem = ComponentProps<typeof SideNavigation>['menuItems'][0] & {
   Content: ComponentType;
 };
-const getItems = (isLoggedIn: boolean, isPatron: boolean): MenuItem[] =>
+const getItems = (
+  isLoggedIn: boolean,
+  isPatron: boolean,
+  user: CurrentUser
+): MenuItem[] =>
   [
     {
       Content: Appearance,
@@ -80,6 +88,13 @@ const getItems = (isLoggedIn: boolean, isPatron: boolean): MenuItem[] =>
       id: 'badges',
       title: 'Badges',
     },
+    user &&
+      user.experiments.inPilot && {
+        Content: MailPreferences,
+        Icon: MailIcon,
+        id: 'emailSettings',
+        title: 'Email Settings',
+      },
     {
       Content: Experiments,
       Icon: FlaskIcon,
@@ -93,10 +108,11 @@ export const PreferencesModal: FunctionComponent = () => {
     state: {
       isLoggedIn,
       isPatron,
+      user,
       preferences: { itemId = 'appearance' },
     },
   } = useOvermind();
-  const items = getItems(isLoggedIn, isPatron);
+  const items = getItems(isLoggedIn, isPatron, user);
   const { Content } = items.find(({ id }) => id === itemId);
 
   return (
