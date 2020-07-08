@@ -17,7 +17,7 @@ interface TeamAvatarProps {
   name: string;
   size?: 'small' | 'big' | 'bigger';
   className?: string;
-  avatar?: string;
+  avatar?: string | null;
   style?: React.CSSProperties;
 }
 
