@@ -311,20 +311,22 @@ export const setActiveTeam: AsyncAction<{
 
   actions.internal.replaceWorkspaceParameterInUrl();
 
-  try {
-    const teamInfo = await actions.getActiveTeamInfo();
-    if (teamInfo) {
-      effects.analytics.track('Team - Change Active Team', {
-        newTeamId: id,
-        newTeamName: teamInfo.name,
-      });
+  if (state.activeTeamInfo?.id !== id) {
+    try {
+      const teamInfo = await actions.getActiveTeamInfo();
+      if (teamInfo) {
+        effects.analytics.track('Team - Change Active Team', {
+          newTeamId: id,
+          newTeamName: teamInfo.name,
+        });
+      }
+    } catch (e) {
+      // Something went wrong while fetching the workspace
+      actions.setActiveTeam({ id: null });
     }
-
-    actions.internal.trackCurrentTeams();
-  } catch (e) {
-    // Something went wrong while fetching the workspace
-    actions.setActiveTeam({ id: null });
   }
+
+  actions.internal.trackCurrentTeams();
 };
 
 export const getActiveTeamInfo: AsyncAction<
