@@ -57,10 +57,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const { dashboard, user, activeTeam } = state;
 
   React.useEffect(() => {
-    actions.dashboard.getTeams();
-  }, [actions.dashboard, user?.id]);
-
-  React.useEffect(() => {
     actions.dashboard.getAllFolders();
   }, [actions.dashboard, state.activeTeam]);
 

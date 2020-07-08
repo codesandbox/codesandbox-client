@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import * as React from 'react';
 import { css } from '@styled-system/css';
 import { Button, Menu, Icon, Stack, Avatar } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
+import { CurrentUser } from '@codesandbox/common/lib/types';
 import { ForkIcon } from '../icons';
 
 interface TeamItemProps {
@@ -100,22 +101,18 @@ const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
 interface ForkButtonProps {
   variant: 'primary' | 'secondary';
   forkClicked: (teamId?: string | null) => void;
+  user: CurrentUser;
 }
 
 export const ForkButton: React.FC<ForkButtonProps> = props => {
-  const { state, actions } = useOvermind();
-
-  useEffect(() => {
-    if (state.dashboard.teams.length === 0 && state.user) {
-      actions.dashboard.getTeams();
-    }
-  }, [state.user, state.dashboard.teams, actions.dashboard]);
+  const { state } = useOvermind();
+  const { user } = props;
 
   const userSpace = {
     type: 'user' as 'user',
-    userId: state.user.id,
-    avatarUrl: state.user.avatarUrl,
-    username: state.user.username,
+    userId: user.id,
+    avatarUrl: user.avatarUrl,
+    username: user.username,
   };
 
   const allTeams: TeamOrUser[] = [

@@ -175,6 +175,7 @@ export const Actions = () => {
 
       {user && user.experiments.inPilot ? (
         <ForkButton
+          user={user}
           forkClicked={teamId => forkSandboxClicked({ teamId })}
           variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
         />

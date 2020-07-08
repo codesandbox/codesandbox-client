@@ -69,6 +69,7 @@ export const withLoadApp = <T>(
           state.user = user;
         }),
         actions.getActiveTeamInfo(),
+        actions.dashboard.getTeams(),
       ]);
 
       actions.internal.setPatronPrice();
