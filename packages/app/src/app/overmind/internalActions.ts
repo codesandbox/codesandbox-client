@@ -7,6 +7,7 @@ import {
   ServerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
+import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 import history from 'app/utils/history';
 import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
@@ -171,7 +172,8 @@ export const currentSandboxChanged: Action = ({ state, effects, actions }) => {
   const sandbox = state.editor.currentSandbox!;
   if (
     hasPermission(sandbox.authorization, 'owner') &&
-    state.user?.experiments.inPilot
+    state.user &&
+    NEW_DASHBOARD
   ) {
     actions.setActiveTeam({ id: sandbox.team?.id || null });
   }
@@ -468,7 +470,7 @@ export const trackCurrentTeams: AsyncAction = async ({ effects, state }) => {
     return;
   }
 
-  if (user.experiments.inPilot) {
+  if (NEW_DASHBOARD) {
     if (state.activeTeamInfo) {
       effects.analytics.setGroup('teamName', state.activeTeamInfo.name);
       effects.analytics.setGroup('teamId', state.activeTeamInfo.id);

@@ -6,6 +6,7 @@ import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
+import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 import { Actions } from './Actions';
 import { DashboardIcon } from './icons';
 import { MenuBar } from './MenuBar';
@@ -35,7 +36,7 @@ export const Header = () => {
     >
       <Stack align="center">
         {hasLogIn ? (
-          user && user.experiments.inPilot ? (
+          user && NEW_DASHBOARD ? (
             <WorkspaceDashboardIcon />
           ) : (
             <Link
