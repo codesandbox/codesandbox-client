@@ -1251,7 +1251,6 @@ export type SandboxFragmentDashboardFragment = {
   | 'privacy'
   | 'screenshotUrl'
   | 'screenshotOutdated'
-  | 'likeCount'
   | 'viewCount'
   | 'authorId'
   | 'teamId'

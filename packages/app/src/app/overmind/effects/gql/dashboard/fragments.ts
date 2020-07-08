@@ -47,7 +47,6 @@ export const sandboxFragmentDashboard = gql`
     privacy
     screenshotUrl
     screenshotOutdated
-    likeCount
     viewCount
 
     source {
