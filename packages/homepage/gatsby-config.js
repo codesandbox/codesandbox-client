@@ -75,19 +75,5 @@ module.exports = {
         display: 'swap',
       },
     },
-    {
-      resolve: `gatsby-source-airtable`,
-      options: {
-        apiKey: 'keyJugfwdJzOyL7Aa',
-        tables: [
-          {
-            baseId: `app7kKUn5uIviyA1f`,
-            tableName: `Table`,
-            tableView: `Grid view`,
-            queryName: `starters`,
-          },
-        ],
-      },
-    },
   ],
 };
