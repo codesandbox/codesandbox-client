@@ -60,7 +60,7 @@ export const Home = () => {
         ...templates,
         {
           type: 'header',
-          title: 'Recently Accessed Sandboxes',
+          title: 'Recently Viewed Sandboxes',
           showMoreLink: dashboardUrls.recents(activeTeam),
           showMoreLabel: 'Show more',
         },
@@ -72,7 +72,7 @@ export const Home = () => {
     : [
         { type: 'header', title: 'Recently Used Templates' },
         { type: 'skeleton-row' },
-        { type: 'header', title: 'Recently Accessed Sandboxes' },
+        { type: 'header', title: 'Recently Viewed Sandboxes' },
         { type: 'skeleton-row' },
       ];
 
