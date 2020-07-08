@@ -6,7 +6,6 @@ import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
 import { Notifications } from 'app/components/Notifications';
 
-import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 import {
   EmbedIcon,
   ForkIcon,
@@ -174,7 +173,7 @@ export const Actions = () => {
         </Button>
       )}
 
-      {user && NEW_DASHBOARD ? (
+      {user && user.experiments.inPilot ? (
         <ForkButton
           forkClicked={teamId => forkSandboxClicked({ teamId })}
           variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
