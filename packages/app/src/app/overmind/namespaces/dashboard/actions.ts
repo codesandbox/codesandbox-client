@@ -1100,6 +1100,7 @@ export const createTeam: AsyncAction<{
   pilot?: boolean;
 }> = async ({ effects, actions, state }, { teamName, pilot = false }) => {
   try {
+    effects.analytics.track('Team - Create Team', { dashboardVersion: 2 });
     const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
       name: teamName,
       pilot,
