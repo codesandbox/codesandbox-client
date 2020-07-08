@@ -99,6 +99,9 @@ export default class PreviewManager {
     this.options = options;
     this.sandboxInfo = sandboxInfo;
     this.bundlerURL = options.bundlerURL || BUNDLER_URL;
+    this.managerState = undefined;
+    this.errors = [];
+    this.status = 'initializing'
 
     if (typeof selector === 'string') {
       this.selector = selector;
@@ -145,6 +148,25 @@ export default class PreviewManager {
 
             this.updatePreview();
           }
+          break;
+        }
+        case 'start': {
+          this.errors = [];
+          break;
+        }
+        case 'status': {
+          this.status = message.status;
+          break;
+        }
+        case 'action': {
+          if (message.action === 'show-error') {
+            const { title, path, message, line, column } = message;
+            this.errors = [...this.errors, { title, path, message, line, column }];
+          }
+          break;
+        }
+        case 'state': {
+          this.managerState: message.state;
           break;
         }
         default: {
