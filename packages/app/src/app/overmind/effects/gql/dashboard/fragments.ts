@@ -94,8 +94,6 @@ export const templateFragmentDashboard = gql`
       insertedAt
       updatedAt
       removedAt
-      likeCount
-      forkCount
       viewCount
       screenshotUrl
       screenshotOutdated
