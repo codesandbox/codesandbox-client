@@ -4,7 +4,7 @@ import { host } from '@codesandbox/common/lib/utils/url-generator';
 
 const notRelative = image => {
   if (image.startsWith('/')) {
-    return `https://${host}${image}`;
+    return `https://${host()}${image}`;
   }
 
   return image;
