@@ -1,13 +1,11 @@
 ---
-
 banner: ./images/banner.png
 slug: new-dashboard
-authors: ["Ives van Hoorne"]
+authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
 title: Introducing Workspaces
 description: A new dashboard that's built for collaboration.
 date: 2020-07-08
-
 ---
 
 While we often write code alone, creating products typically takes a whole group
@@ -21,8 +19,12 @@ where you can experiment, work on side-projects, and keep whichever sandboxes
 you want to yourself. But now you can create shared workspaces too. You might
 create one or more to work with a team, or on various projects. Then invite your
 friends and colleagues to join you, so you can all work on a set of shared
-sandboxes, sorted into folders. In the future, you'll be able to set
-workspace-level settings and secrets too.
+sandboxes, sorted into folders. This is the best way to collaborate together on
+sandboxes.
+
+You can create a new workspace for your team
+[here](https://codesandbox.io/new-dashboard/settings/new)! In the future, you'll
+be able to set workspace-level settings and secrets too.
 
 ## A new-look dashboard
 
@@ -30,7 +32,7 @@ But workspaces aren't the only new thing. While staying close to what people are
 familiar with, we've refreshed the look and feel of the dashboard. This update
 evolves the design to bring through the
 [updates made in the editor](https://codesandbox.io/post/new-look-editor) and
-makes working with large numbers of sandboxes a better experience too.
+makes working with large numbers of sandboxes a much better experience too.
 
 ### A new start screen
 
@@ -51,6 +53,8 @@ clutter the old dashboard and make the projects you did want to go back to
 harder to find. By default, new sandboxes now go into drafts.
 
 ### Other dashboard improvements
+
+![The Dashboard Flow](./images/dashboard-flow.gif)
 
 There are other UX improvements too. There's now a list view, perfect for those
 with a large number of sandboxes. The dashboard is keyboard accessible, so you
@@ -74,10 +78,11 @@ For individuals, these updates make the dashboard a more productive starting
 point to jump back into projects and stay organized when you have large numbers
 of sandboxes.
 
-For teams, it's a big step forward in being able to collaborate and work together.
+For teams, it's a big step forward in being able to collaborate and work
+together.
 [Sign up for the Team Pro waiting list](https://airtable.com/shrlgLSJWiX8rYqyG)
-to be one of the first to try other upcoming team features that will
-forever change how you work with others to create things with code.
+to be one of the first to try other upcoming team features that will forever
+change how you work with others to create things with code.
 
 ## Thanks
 
