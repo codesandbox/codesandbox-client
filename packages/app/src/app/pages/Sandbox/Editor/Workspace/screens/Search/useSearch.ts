@@ -50,7 +50,7 @@ export const useSearch = (term: string) => {
         .filter(exists => exists);
       setResults(files);
     }
-  }, [term]);
+  }, [currentSandbox.modules, searchable, term]);
 
   return results;
 };
