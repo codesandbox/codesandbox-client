@@ -47,6 +47,12 @@ exports.Test = Test;
 "
 `;
 
+exports[`convert-esmodule can convert import expressions 1`] = `
+"\\"use strict\\";
+$csbImport(\\"test\\");
+"
+`;
+
 exports[`convert-esmodule can convert named imports 1`] = `
 "\\"use strict\\";
 var $csb__b = require(\\"./b\\");

@@ -20,4 +20,14 @@ export const customGenerator = {
     state.write(' = ');
     this[node.value.type](node.value, state);
   },
+  ImportExpression(
+    node: meriyah.ESTree.ImportExpression,
+    state: { write(s: string): void }
+  ) {
+    // Convert import() to $csbImport()
+
+    state.write('$csbImport(');
+    this[node.source.type](node.source, state);
+    state.write(')');
+  },
 };

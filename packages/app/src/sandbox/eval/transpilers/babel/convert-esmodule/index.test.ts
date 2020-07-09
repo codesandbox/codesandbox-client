@@ -403,4 +403,12 @@ describe('convert-esmodule', () => {
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });
+
+  it('can convert import expressions', () => {
+    const code = `
+    import('test');
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
 });
