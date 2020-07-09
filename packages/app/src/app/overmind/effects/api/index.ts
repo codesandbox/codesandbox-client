@@ -566,11 +566,6 @@ export default {
     return api.get(`/users/search?username=${query}`);
   },
   async makeGitSandbox(sandboxId: string): Promise<Sandbox> {
-    const response = await api.post<Sandbox>(
-      `/sandboxes/${sandboxId}/make_git_sandbox`,
-      null
-    );
-
-    return response;
+    return api.post<Sandbox>(`/sandboxes/${sandboxId}/make_git_sandbox`, null);
   },
 };
