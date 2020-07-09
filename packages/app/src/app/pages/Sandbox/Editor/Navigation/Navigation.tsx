@@ -22,6 +22,7 @@ import {
   LiveIcon,
   ServerIcon,
   SettingsIcon,
+  SearchIcon,
 } from './icons';
 
 const IDS_TO_ICONS = {
@@ -29,6 +30,7 @@ const IDS_TO_ICONS = {
   'project-summary': InfoIcon,
   'github-summary': GithubIcon,
   files: ExplorerIcon,
+  search: SearchIcon,
   github: GithubIcon,
   deploy: DeployIcon,
   config: SettingsIcon,

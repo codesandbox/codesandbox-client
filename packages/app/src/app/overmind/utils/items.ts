@@ -37,11 +37,17 @@ export const GITHUB_SUMMARY: INavigationItem = {
   hasCustomHeader: true,
 };
 
+export const SEARCH: INavigationItem = {
+  id: 'search',
+  name: 'Search',
+  defaultOpen: true,
+};
+
 export const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
-  defaultOpen: true,
+  // defaultOpen: true,
 };
 
 export const GITHUB: INavigationItem = {
@@ -149,6 +155,7 @@ export default function getItems(
     isCustomTemplate ? PROJECT_TEMPLATE : PROJECT,
     FILES,
     CONFIGURATION,
+    SEARCH,
   ];
 
   if (isServer) {

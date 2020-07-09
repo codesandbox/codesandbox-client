@@ -16,7 +16,6 @@ class GetIcon extends Component<Props> {
 
   getIcon = async type => {
     const icon = await getIconURL(type);
-
     this.setState({
       icon,
     });
