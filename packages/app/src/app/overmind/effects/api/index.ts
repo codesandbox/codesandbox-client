@@ -565,4 +565,12 @@ export default {
   queryUsers(query: string): Promise<UserQuery[]> {
     return api.get(`/users/search?username=${query}`);
   },
+  async makeGitSandbox(sandboxId: string): Promise<Sandbox> {
+    const response = await api.post<Sandbox>(
+      `/sandboxes/${sandboxId}/make_git_sandbox`,
+      null
+    );
+
+    return response;
+  },
 };

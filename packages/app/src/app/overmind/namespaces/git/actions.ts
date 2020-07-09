@@ -871,3 +871,19 @@ export const _tryResolveConflict: AsyncAction = async ({
     git.gitState = SandboxGitState.SYNCED;
   }
 };
+
+export const enableGitSync: AsyncAction<string> = async (
+  { state, effects, actions },
+  sandboxId
+) => {
+  if (!state.editor.currentSandbox) return;
+  state.git.isEnablingSync = true;
+  const newGitData = await effects.api.makeGitSandbox(sandboxId);
+  state.editor.currentSandbox = {
+    ...state.editor.currentSandbox,
+    originalGitCommitSha: newGitData.originalGitCommitSha,
+    originalGit: newGitData.originalGit,
+  };
+  state.git.isEnablingSync = false;
+  await actions.git.loadGitSource();
+};
