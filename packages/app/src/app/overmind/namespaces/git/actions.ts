@@ -890,7 +890,7 @@ export const linkToGitSandbox: AsyncAction<string> = async (
     actions.internal.handleError({
       error,
       message:
-        'There has been a prolem connecting your sandbox to the GitHub repo. Please try again.',
+        'There has been a problem connecting your sandbox to the GitHub repo. Please try again.',
     });
   } finally {
     state.git.isLinkingToGitSandbox = false;
