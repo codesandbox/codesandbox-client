@@ -286,6 +286,19 @@ export default class PreviewManager {
       }));
   }
 
+  public getManagerTranspilerContext = (): Promise<{ [transpiler: string]: Object }> =>
+    new Promise(resolve => {
+      const listener = listen((message: any) => {
+        if (message.type === 'transpiler-context') {
+          resolve(message.data);
+
+          listener();
+        }
+      });
+
+        dispatch({ type: 'get-transpiler-context' });
+    });
+
   private getFiles() {
     const { sandboxInfo } = this;
 
@@ -313,17 +326,4 @@ export default class PreviewManager {
 
     this.element.parentNode.replaceChild(this.iframe, this.element);
   }
-
-  public getManagerTranspilerContext = (): Promise<{ [transpiler: string]: Object }> =>
-    new Promise(resolve => {
-      const listener = listen((message: any) => {
-        if (message.type === 'transpiler-context') {
-          resolve(message.data);
-
-          listener();
-        }
-      });
-
-        dispatch({ type: 'get-transpiler-context' });
-    });
 }
