@@ -197,9 +197,9 @@ export const GitHub = () => {
     );
   }
 
-  const forkedSandbox = forkedTemplateSandbox?.git || forkedFromSandbox?.git;
-
-  if (!originalGit && forkedSandbox) {
+  // If there's a forkedFromSandbox we use that, otherwise we use the forkedTemplateSandbox
+  const upstreamSandbox = forkedFromSandbox || forkedTemplateSandbox;
+  if (!originalGit && upstreamSandbox?.git) {
     return (
       <>
         <Collapsible title="GitHub Repository" defaultOpen>
