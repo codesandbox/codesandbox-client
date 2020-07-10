@@ -54,7 +54,7 @@ export const GitHub = () => {
         isFetching,
         isExported,
         pr,
-        isEnablingSync,
+        isLinkingToGitSandbox,
       },
       editor: {
         currentSandbox: {
@@ -65,6 +65,7 @@ export const GitHub = () => {
           originalGitCommitSha,
           prNumber,
           forkedTemplateSandbox,
+          forkedFromSandbox,
         },
         modulesByPath,
       },
@@ -196,7 +197,9 @@ export const GitHub = () => {
     );
   }
 
-  if (!originalGit && forkedTemplateSandbox?.git) {
+  const forkedSandbox = forkedTemplateSandbox?.git || forkedFromSandbox?.git;
+
+  if (!originalGit && forkedSandbox) {
     return (
       <>
         <Collapsible title="GitHub Repository" defaultOpen>
@@ -210,8 +213,8 @@ export const GitHub = () => {
             </Text>
             <Button
               marginTop={4}
-              onClick={() => actions.git.enableGitSync(id)}
-              loading={isEnablingSync}
+              onClick={() => actions.git.linkToGitSandbox(id)}
+              loading={isLinkingToGitSandbox}
             >
               Link Sandbox
             </Button>

@@ -872,18 +872,26 @@ export const _tryResolveConflict: AsyncAction = async ({
   }
 };
 
-export const enableGitSync: AsyncAction<string> = async (
+export const linkToGitSandbox: AsyncAction<string> = async (
   { state, effects, actions },
   sandboxId
 ) => {
   if (!state.editor.currentSandbox) return;
-  state.git.isEnablingSync = true;
-  const newGitData = await effects.api.makeGitSandbox(sandboxId);
-  state.editor.currentSandbox = {
-    ...state.editor.currentSandbox,
-    originalGitCommitSha: newGitData.originalGitCommitSha,
-    originalGit: newGitData.originalGit,
-  };
-  state.git.isEnablingSync = false;
-  await actions.git.loadGitSource();
+  try {
+    state.git.isLinkingToGitSandbox = true;
+    const newGitData = await effects.api.makeGitSandbox(sandboxId);
+    state.editor.currentSandbox = {
+      ...state.editor.currentSandbox,
+      originalGitCommitSha: newGitData.originalGitCommitSha,
+      originalGit: newGitData.originalGit,
+    };
+    state.git.isLinkingToGitSandbox = false;
+    await actions.git.loadGitSource();
+  } catch (error) {
+    actions.internal.handleError({
+      error,
+      message:
+        'There has been a prolem connecting your sandbox to the GitHub repo. Please try again.',
+    });
+  }
 };
