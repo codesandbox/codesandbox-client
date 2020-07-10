@@ -8,6 +8,7 @@ import {
   ListItem,
   Stack,
   Text,
+  Button,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
@@ -53,20 +54,25 @@ export const GitHub = () => {
         isFetching,
         isExported,
         pr,
+        isLinkingToGitSandbox,
       },
       editor: {
         currentSandbox: {
+          id,
           originalGit,
           baseGit,
           owned,
           originalGitCommitSha,
           prNumber,
+          forkedTemplateSandbox,
+          forkedFromSandbox,
         },
         modulesByPath,
       },
       isLoggedIn,
       user,
     },
+    actions,
   } = useOvermind();
 
   const changeCount = gitChanges
@@ -188,6 +194,34 @@ export const GitHub = () => {
           <CommitForm />
         </Element>
       </Collapsible>
+    );
+  }
+
+  const forkedSandbox = forkedTemplateSandbox?.git || forkedFromSandbox?.git;
+
+  if (!originalGit && forkedSandbox) {
+    return (
+      <>
+        <Collapsible title="GitHub Repository" defaultOpen>
+          <Element paddingX={2}>
+            <Text variant="muted">
+              If you wish to contribute back to{' '}
+              {forkedTemplateSandbox.git.username}/
+              {forkedTemplateSandbox.git.repo}, you can link this sandbox to the
+              git repository. This will allow you to create commits and open
+              pull requests with this sandbox.
+            </Text>
+            <Button
+              marginTop={4}
+              onClick={() => actions.git.linkToGitSandbox(id)}
+              loading={isLinkingToGitSandbox}
+            >
+              Link Sandbox
+            </Button>
+          </Element>
+        </Collapsible>
+        <CreateRepo />
+      </>
     );
   }
 

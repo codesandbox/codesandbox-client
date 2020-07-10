@@ -871,3 +871,28 @@ export const _tryResolveConflict: AsyncAction = async ({
     git.gitState = SandboxGitState.SYNCED;
   }
 };
+
+export const linkToGitSandbox: AsyncAction<string> = async (
+  { state, effects, actions },
+  sandboxId
+) => {
+  if (!state.editor.currentSandbox) return;
+  try {
+    state.git.isLinkingToGitSandbox = true;
+    const newGitData = await effects.api.makeGitSandbox(sandboxId);
+    state.editor.currentSandbox = {
+      ...state.editor.currentSandbox,
+      originalGitCommitSha: newGitData.originalGitCommitSha,
+      originalGit: newGitData.originalGit,
+    };
+    await actions.git.loadGitSource();
+  } catch (error) {
+    actions.internal.handleError({
+      error,
+      message:
+        'There has been a prolem connecting your sandbox to the GitHub repo. Please try again.',
+    });
+  } finally {
+    state.git.isLinkingToGitSandbox = false;
+  }
+};
