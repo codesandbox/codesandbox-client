@@ -65,7 +65,7 @@ together in one place. So you can open or fork them with a click, making
 imported GitHub repos just as easy to work with as templates created on
 CodeSandbox. This new section on the dashboard is one part of
 [a significant overhaul of the dashboard experience](https://codesandbox.io/post/new-dashboard)
-that we're also releasing today.
+that we released last week.
 
 Overall, these updates should make working with GitHub on CodeSandbox easier to
 understand and do. Try it out and let us know how you get on.
