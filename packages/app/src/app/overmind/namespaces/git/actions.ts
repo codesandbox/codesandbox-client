@@ -885,7 +885,6 @@ export const linkToGitSandbox: AsyncAction<string> = async (
       originalGitCommitSha: newGitData.originalGitCommitSha,
       originalGit: newGitData.originalGit,
     };
-    state.git.isLinkingToGitSandbox = false;
     await actions.git.loadGitSource();
   } catch (error) {
     actions.internal.handleError({
@@ -893,5 +892,7 @@ export const linkToGitSandbox: AsyncAction<string> = async (
       message:
         'There has been a prolem connecting your sandbox to the GitHub repo. Please try again.',
     });
+  } finally {
+    state.git.isLinkingToGitSandbox = false;
   }
 };
