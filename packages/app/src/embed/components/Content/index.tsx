@@ -131,7 +131,7 @@ export default class Content extends React.PureComponent<Props, State> {
         .filter(Boolean);
     } else if (props.sandbox.modules.length <= 5 || !module) {
       // Show all tabs if there are not many files
-      tabs = [...props.sandbox.modules];
+      tabs = [module, ...props.sandbox.modules.filter(m => m.id !== module.id)];
     } else {
       tabs = [module];
     }
