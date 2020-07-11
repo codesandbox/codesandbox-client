@@ -423,20 +423,13 @@ export const directoryRenamed: AsyncAction<{
     }
 
     const oldTitle = directory.title;
-    const oldPath = directory.path;
 
-    directory.title = title;
-    directory.path = getDirectoryPath(
-      sandbox.modules,
-      sandbox.directories,
-      directory.id
-    );
+    actions.files.internal.renameDirectoryInState({
+      directory,
+      sandbox,
+      title,
+    });
 
-    effects.vscode.sandboxFsSync.rename(
-      state.editor.modulesByPath,
-      oldPath!,
-      directory.path
-    );
     actions.editor.internal.updatePreviewCode();
     try {
       await effects.api.saveDirectoryTitle(sandbox.id, directoryShortid, title);
@@ -447,8 +440,11 @@ export const directoryRenamed: AsyncAction<{
 
       effects.executor.updateFiles(sandbox);
     } catch (error) {
-      directory.title = oldTitle;
-      state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
+      actions.files.internal.renameDirectoryInState({
+        directory,
+        sandbox,
+        title: oldTitle,
+      });
       actions.internal.handleError({
         message: 'Could not rename directory',
         error,
