@@ -11,7 +11,7 @@ Secrets are used to hide sensitive information in your application that you
 don't want the world to see, like passwords and API keys. They're implemented in
 CodeSandbox using environment variables.
 
-Secrets are not be transferred between forks and **can only be used in container
+Secrets are not transferred between forks and **can only be used in container
 sandboxes**.
 
 ## Adding secrets
