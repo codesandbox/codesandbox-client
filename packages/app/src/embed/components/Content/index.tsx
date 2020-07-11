@@ -66,7 +66,6 @@ type Props = {
   verticalMode: boolean;
   tabs?: string[];
   isNotSynced: boolean;
-  tabCount: number;
   sidebarOpen: boolean;
   toggleSidebar: () => void;
   toggleLike: () => void;
@@ -140,18 +139,18 @@ export default class Content extends React.PureComponent<Props, State> {
   };
 
   renderTabStatus = (hovering, closeTab) => {
-    const { isNotSynced, tabCount } = this.props;
+    const { isNotSynced } = this.props;
 
-    if (hovering && isNotSynced && tabCount === 1) {
+    if (hovering && isNotSynced && this.state.tabs.length === 1) {
       return <StyledNotSyncedIcon show="true" />;
     }
-    if (hovering && isNotSynced && tabCount > 1) {
+    if (hovering && isNotSynced && this.state.tabs.length > 1) {
       return <StyledCloseIcon onClick={closeTab} show="true" />;
     }
-    if (hovering && tabCount === 1) {
+    if (hovering && this.state.tabs.length === 1) {
       return <StyledCloseIcon onClick={closeTab} show={undefined} />;
     }
-    if (hovering && tabCount > 1) {
+    if (hovering && this.state.tabs.length > 1) {
       return <StyledCloseIcon onClick={closeTab} show="true" />;
     }
     if (!hovering && isNotSynced) {
@@ -342,12 +341,14 @@ export default class Content extends React.PureComponent<Props, State> {
     this.props.setCurrentModule(moduleId);
   };
 
-  closeTab = (pos: number) => {
-    const newModule =
-      this.state.tabs[pos - 1] ||
-      this.state.tabs[pos + 1] ||
-      this.state.tabs[0];
-    this.props.setCurrentModule(newModule.id);
+  closeTab = (pos: number, active: boolean) => {
+    if (active) {
+      const newModule =
+        this.state.tabs[pos - 1] ||
+        this.state.tabs[pos + 1] ||
+        this.state.tabs[0];
+      this.props.setCurrentModule(newModule.id);
+    }
     this.setState(state => ({ tabs: state.tabs.filter((_, i) => i !== pos) }));
   };
 
@@ -530,10 +531,11 @@ export default class Content extends React.PureComponent<Props, State> {
                   }
                 }
 
+                const active = module.id === currentModule.id;
                 return (
                   <Tab
                     key={module.id}
-                    active={module.id === currentModule.id}
+                    active={active}
                     module={module}
                     onClick={() => this.setCurrentModule(module.id)}
                     tabCount={this.state.tabs.length}
