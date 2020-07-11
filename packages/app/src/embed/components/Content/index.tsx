@@ -511,8 +511,8 @@ export default class Content extends React.PureComponent<Props, State> {
         >
           <>
             <Tabs>
-              <MenuInTabs>
-                <MenuIcon onClick={toggleSidebar} />
+              <MenuInTabs onClick={toggleSidebar}>
+                <MenuIcon />
               </MenuInTabs>
 
               {this.state.tabs.map((module, i) => {
