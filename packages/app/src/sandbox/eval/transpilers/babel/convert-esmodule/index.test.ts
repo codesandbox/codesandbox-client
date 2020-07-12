@@ -411,4 +411,16 @@ describe('convert-esmodule', () => {
 
     expect(convertEsModule(code)).toMatchSnapshot();
   });
+
+  it('defines its exports before requires', () => {
+    const code = `
+    import { COLORS } from './colors-values';
+
+    export function get() {
+      return 5;
+    }
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
 });
