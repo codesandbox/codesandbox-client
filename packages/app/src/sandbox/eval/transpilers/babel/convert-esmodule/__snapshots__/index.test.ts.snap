@@ -38,8 +38,8 @@ exports[`convert-esmodule can convert function exports 1`] = `
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-function test() {}
 exports.test = test;
+function test() {}
 const test2 = () => {};
 exports.test2 = test2;
 class Test {}
@@ -233,6 +233,19 @@ var $csb__templatefactory = require(\\"./template-factory.js\\");
 const short = {
   templateFactory: (0, $csb__templatefactory.templateFactory)
 };
+"
+`;
+
+exports[`convert-esmodule defines its exports before requires 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+exports.get = get;
+var $csb__colorsvalues = require(\\"./colors-values\\");
+function get() {
+  return 5;
+}
 "
 `;
 
