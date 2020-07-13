@@ -60,7 +60,7 @@ export const loadGitSource: AsyncAction = async ({
     actions.internal.handleError({
       error,
       message:
-        'Could not load the source Sandbox for this GitHub sandbox, please refresh or report the issue.',
+        'Could not load the source sandbox for this GitHub sandbox, please refresh or report the issue.',
     });
     return;
   }
@@ -653,10 +653,16 @@ export const _evaluateGitChanges: AsyncAction<
 
 export const _loadSourceSandbox: AsyncAction = async ({ state, effects }) => {
   const sandbox = state.editor.currentSandbox!;
+  const { originalGit } = sandbox;
+
+  if (!originalGit) {
+    return;
+  }
+
   const sourceSandbox = await effects.api.getSandbox(
-    `github/${sandbox.originalGit!.username}/${
-      sandbox.originalGit!.repo
-    }/tree/${sandbox.originalGitCommitSha!}/${sandbox.originalGit!.path}`
+    `github/${originalGit.username}/${
+      originalGit.repo
+    }/tree/${sandbox.originalGitCommitSha!}/${originalGit.path}`
   );
 
   state.editor.sandboxes[sourceSandbox.id] = sourceSandbox;
