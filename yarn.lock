@@ -2788,6 +2788,13 @@
     core-js "2.6.0"
     graphql "14.0.2"
 
+"@koale/useworker@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@koale/useworker/-/useworker-3.2.0.tgz#3bda25026a2ee202f19ccae37a23e6bd3d83c24a"
+  integrity sha512-7pC1dUzJhqSDt2Zg2onA+nnC3ckHath71X2jDHswW6eDjH2lgLPFtPD2ZfIy9RqZY7lCP89LTGT3kKJeQLvj7Q==
+  dependencies:
+    dequal "^1.0.0"
+
 "@kwsites/exec-p@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@kwsites/exec-p/-/exec-p-0.4.0.tgz#ab3765d482849ba6e825721077c248cf9f3323b7"
@@ -10902,6 +10909,11 @@ deprecation@^2.0.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/deprecation/-/deprecation-2.3.1.tgz#6368cbdb40abf3373b525ac87e4a260c3a700919"
   integrity sha512-xmHIy4F3scKVwMsQ4WnVaS8bHOx0DmVwRywosKhaILI0ywMDWPtBSku2HNxRvF7jtwDRsoEwYQSfbxj8b7RlJQ==
+
+dequal@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/dequal/-/dequal-1.0.0.tgz#41c6065e70de738541c82cdbedea5292277a017e"
+  integrity sha512-/Nd1EQbQbI9UbSHrMiKZjFLrXSnU328iQdZKPQf78XQI6C+gutkFUeoHpG5J08Ioa6HeRbRNFpSIclh1xyG0mw==
 
 des.js@^1.0.0:
   version "1.0.0"
