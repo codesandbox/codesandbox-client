@@ -8,6 +8,13 @@ import { CurrentTeamInfoFragmentFragment as CurrentTeam } from 'app/graphql/type
 import { derived } from 'overmind';
 import { hasLogIn } from './utils/user';
 
+export type PendingUserType = {
+  avatarUrl: string | null;
+  username: string;
+  id: string;
+  valid: boolean;
+} | null;
+
 type State = {
   isPatron: boolean;
   isFirstVisit: boolean;
@@ -27,6 +34,7 @@ type State = {
   isLoadingCLI: boolean;
   isLoadingGithub: boolean;
   isLoadingVercel: boolean;
+  pendingUser: PendingUserType;
   contextMenu: {
     show: boolean;
     items: string[];
@@ -45,6 +53,7 @@ type State = {
 };
 
 export const state: State = {
+  pendingUser: null,
   isFirstVisit: false,
   isPatron: derived(({ user }: State) =>
     Boolean(user && user.subscription && user.subscription.since)

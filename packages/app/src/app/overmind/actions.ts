@@ -24,6 +24,16 @@ export const codesadboxMounted: AsyncAction = withLoadApp();
 
 export const genericPageMounted: AsyncAction = withLoadApp();
 
+export const usernameSelectionMounted: AsyncAction<string> = withLoadApp(
+  async ({ state, effects }, id) => {
+    const pendingUser = await effects.api.getPendingUser(id);
+    state.pendingUser = {
+      ...pendingUser,
+      valid: true,
+    };
+  }
+);
+
 export const cliMounted: AsyncAction = withLoadApp(
   async ({ state, actions }) => {
     if (state.user) {
@@ -356,4 +366,34 @@ export const openCreateSandboxModal: Action<{ collectionId?: string }> = (
   { collectionId }
 ) => {
   actions.modals.newSandboxModal.open({ collectionId });
+};
+
+export const validateUsername: AsyncAction<string> = async (
+  { effects, state },
+  userName
+) => {
+  if (!state.pendingUser) return;
+  const validity = await effects.api.validateUsername(userName);
+
+  state.pendingUser.valid = validity.available;
+};
+
+export const finalizeSignUp: AsyncAction = async ({
+  effects,
+  actions,
+  state,
+}) => {
+  if (!state.pendingUser) return;
+  try {
+    effects.api.finalizeSignUp({
+      id: state.pendingUser.id,
+      username: state.pendingUser.username,
+    });
+    state.pendingUser = null;
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'There was a problem creating your account',
+      error,
+    });
+  }
 };
