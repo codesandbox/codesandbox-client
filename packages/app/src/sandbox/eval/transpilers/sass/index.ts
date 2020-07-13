@@ -9,7 +9,7 @@ class SassTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('sass-loader', SassWorker, 2, { hasFS: true });
+    super('sass-loader', SassWorker, 1, { hasFS: true });
 
     this.cacheable = false;
   }
