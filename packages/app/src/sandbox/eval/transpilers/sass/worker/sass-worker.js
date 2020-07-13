@@ -5,7 +5,7 @@ import delay from '@codesandbox/common/lib/utils/delay';
 import { packageFilter } from '../../../utils/resolve-utils';
 
 self.importScripts([
-  'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.11.0/sass.sync.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.11.1/sass.sync.js',
 ]);
 
 self.postMessage('ready');
