@@ -156,7 +156,6 @@ const DEFAULT_RULES = {
   'no-label-var': 'warn',
   'no-labels': ['warn', { allowLoop: true, allowSwitch: false }],
   'no-lone-blocks': 'warn',
-  'no-loop-func': 'warn',
   'no-mixed-operators': [
     'warn',
     {
