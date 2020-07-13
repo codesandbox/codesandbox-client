@@ -6,8 +6,6 @@ import {
   Input,
   ListAction,
   Stack,
-  Button,
-  Link,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import getType from 'app/utils/get-type';
@@ -33,7 +31,7 @@ const search = (term: string, modules: Module[]) => {
 
     return s;
   }
-  console.log('OMG', term, modules);
+
   if (term && modules) {
     const files = searchable
       .map(file => {
@@ -88,12 +86,13 @@ export const Search = () => {
   const [searchWorker, { status: workerStatus, kill: killWorker }] = useWorker(
     search
   );
+  const [queue, setQueue] = useState([]);
   const allModules = JSON.parse(JSON.stringify(currentSandbox.modules));
   const [modules, setModules] = useState(allModules);
 
   const toggleSearch = searchInOpen => {
     setOpenFilesSearch(searchInOpen);
-    console.log(searchInOpen);
+
     if (searchInOpen) {
       const openFiles = (
         window.CSEditor?.editor?.editorService?.editors || []
@@ -119,16 +118,23 @@ export const Search = () => {
     }
   };
 
+  useEffect(() => {
+    if (workerStatus !== 'RUNNING' && queue.length) {
+      while (queue.length > 0) {
+        console.log(queue.length);
+        const fn = queue.shift();
+
+        fn().then(files => {
+          killWorker();
+          setResults(files);
+        });
+      }
+    }
+  }, [workerStatus, queue.length]);
+
   const searchFiles = async value => {
     setSearchTerm(value);
-    if (workerStatus === 'RUNNING') return;
-    try {
-      const files = await searchWorker(value, modules);
-      killWorker();
-      setResults(files);
-    } catch (a) {
-      console.log(a);
-    }
+    setQueue(q => q.concat(() => searchWorker(value, modules)));
   };
 
   return (
