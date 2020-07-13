@@ -198,7 +198,15 @@ export function convertEsModule(code: string) {
 
           const varName = statement.declaration.id.name;
           i++;
-          program.body.splice(i, 0, generateExportStatement(varName, varName));
+          // Add to start of the file, after the defineModule for __esModule. This way this export is already
+          // defined before requiring other modules. This is only possible for function exports.
+          const positionToInsert =
+            statement.declaration.type === n.FunctionDeclaration ? 1 : i;
+          program.body.splice(
+            positionToInsert,
+            0,
+            generateExportStatement(varName, varName)
+          );
         } else {
           // export const a = {}
 

@@ -310,14 +310,17 @@ export const VariableGrid = ({
                 'skeleton-row',
                 'blank-row-fill',
                 'new-sandbox',
+                'template',
+                'sandbox',
               ].includes(item.type)
             ) {
               filledItems.push({ ...item, viewMode });
             }
 
             if (item.type === 'header') {
-              if (columnCount === 1) filledItems.push(item);
-              else {
+              if (columnCount === 1) {
+                filledItems.push(item);
+              } else {
                 const { showMoreLink, showMoreLabel, ...fields } = item;
                 filledItems.push(fields);
                 let blanks = columnCount - 1;
@@ -333,7 +336,25 @@ export const VariableGrid = ({
               }
             } else if (item.type === 'new-sandbox' && viewMode === 'grid') {
               filledItems.push(item);
-            } else if (item.type === 'sandbox') {
+            } else if (item.type === 'sandbox' || item.type === 'template') {
+              if (
+                item.type === 'template' &&
+                item.optional &&
+                viewMode === 'grid'
+              ) {
+                // If it's optional we don't show it if we're on the second row already
+                const previousRowItem = items[index - columnCount];
+
+                if (
+                  previousRowItem?.type === 'template' ||
+                  previousRowItem?.type === 'new-sandbox'
+                ) {
+                  // Don't add if this one is optional and we're on the second row
+                  return;
+                }
+              }
+              filledItems.push(item);
+
               const nextItem = items[index + 1];
               if (nextItem && nextItem.type === 'header') {
                 const currentIndex = filledItems.length - 1;

@@ -6,6 +6,7 @@ import { ThemeProvider } from '@codesandbox/components';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 
+import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 import { RecentSandboxes } from './routes/RecentSandboxes';
 import PathedSandboxes from './routes/PathedSandboxes';
 import { Templates } from './routes/Templates';
@@ -16,16 +17,6 @@ import TeamView from './routes/TeamView';
 
 const Content = () => {
   const { state } = useOvermind();
-
-  // Only use get it from localStorage here, since we need to be able to find this before we can fetch the user.
-  // We shouldn't use it at other places
-  let isPilot;
-
-  try {
-    isPilot = JSON.parse(localStorage.getItem('pilot') || 'undefined');
-  } catch {
-    isPilot = false;
-  }
 
   return (
     <ThemeProvider theme={codesandbox}>
@@ -47,7 +38,7 @@ const Content = () => {
           exact
         />
 
-        {isPilot ? (
+        {NEW_DASHBOARD ? (
           <Redirect to={dashboard.home(state.activeTeam)} />
         ) : (
           <Redirect to="/dashboard/recent" />

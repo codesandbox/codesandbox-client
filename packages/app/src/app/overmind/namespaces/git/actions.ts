@@ -60,7 +60,7 @@ export const loadGitSource: AsyncAction = async ({
     actions.internal.handleError({
       error,
       message:
-        'Could not load the source Sandbox for this GitHub sandbox, please refresh or report the issue.',
+        'Could not load the source sandbox for this GitHub sandbox, please refresh or report the issue.',
     });
     return;
   }
@@ -653,10 +653,16 @@ export const _evaluateGitChanges: AsyncAction<
 
 export const _loadSourceSandbox: AsyncAction = async ({ state, effects }) => {
   const sandbox = state.editor.currentSandbox!;
+  const { originalGit } = sandbox;
+
+  if (!originalGit) {
+    return;
+  }
+
   const sourceSandbox = await effects.api.getSandbox(
-    `github/${sandbox.originalGit!.username}/${
-      sandbox.originalGit!.repo
-    }/tree/${sandbox.originalGitCommitSha!}/${sandbox.originalGit!.path}`
+    `github/${originalGit.username}/${
+      originalGit.repo
+    }/tree/${sandbox.originalGitCommitSha!}/${originalGit.path}`
   );
 
   state.editor.sandboxes[sourceSandbox.id] = sourceSandbox;
@@ -869,5 +875,30 @@ export const _tryResolveConflict: AsyncAction = async ({
     git.title = '';
     git.description = '';
     git.gitState = SandboxGitState.SYNCED;
+  }
+};
+
+export const linkToGitSandbox: AsyncAction<string> = async (
+  { state, effects, actions },
+  sandboxId
+) => {
+  if (!state.editor.currentSandbox) return;
+  try {
+    state.git.isLinkingToGitSandbox = true;
+    const newGitData = await effects.api.makeGitSandbox(sandboxId);
+    state.editor.currentSandbox = {
+      ...state.editor.currentSandbox,
+      originalGitCommitSha: newGitData.originalGitCommitSha,
+      originalGit: newGitData.originalGit,
+    };
+    await actions.git.loadGitSource();
+  } catch (error) {
+    actions.internal.handleError({
+      error,
+      message:
+        'There has been a problem connecting your sandbox to the GitHub repo. Please try again.',
+    });
+  } finally {
+    state.git.isLinkingToGitSandbox = false;
   }
 };

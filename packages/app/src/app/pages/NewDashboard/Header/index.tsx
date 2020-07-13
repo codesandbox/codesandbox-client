@@ -66,7 +66,10 @@ export const Header: React.FC<HeaderProps> = React.memo(
           borderColor: 'titleBar.border',
         })}
       >
-        <Link href="/" css={css({ display: ['none', 'none', 'block'] })}>
+        <Link
+          href="/?from-app=1"
+          css={css({ display: ['none', 'none', 'block'] })}
+        >
           <LogoIcon
             style={{
               marginLeft: -6, // Logo positioning tweak

@@ -68,9 +68,9 @@ export const withLoadApp = <T>(
         effects.api.getCurrentUser().then(user => {
           state.user = user;
         }),
-        actions.getActiveTeamInfo(),
       ]);
 
+      actions.dashboard.getTeams();
       actions.internal.setPatronPrice();
       effects.analytics.identify('signed_in', true);
       effects.analytics.setUserId(state.user!.id, state.user!.email);

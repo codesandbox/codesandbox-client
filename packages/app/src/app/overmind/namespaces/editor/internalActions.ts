@@ -18,6 +18,7 @@ import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { mapValues } from 'lodash-es';
+import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -417,7 +418,7 @@ export const forkSandbox: AsyncAction<{
       teamId?: string;
     } = body || {};
 
-    if (state.user?.experiments.inPilot) {
+    if (state.user && NEW_DASHBOARD) {
       if (teamId === undefined && state.activeTeam) {
         usedBody.teamId = state.activeTeam;
       } else if (teamId !== null) {

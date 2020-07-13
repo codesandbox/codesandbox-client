@@ -24,7 +24,7 @@ import { Folder, Form, Main, NameInput, TemplateBadge } from './elements';
 
 const getFolderName = (sandbox: Sandbox) => {
   if (!sandbox) {
-    return 'My Sandboxes';
+    return 'Drafts';
   }
 
   if (sandbox.collection) {
@@ -34,11 +34,7 @@ const getFolderName = (sandbox: Sandbox) => {
     }
   }
 
-  if (sandbox.team) {
-    return sandbox.team.name;
-  }
-
-  return 'My Sandboxes';
+  return 'Drafts';
 };
 
 export const SandboxName: FunctionComponent = () => {

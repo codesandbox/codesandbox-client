@@ -1,13 +1,22 @@
-import React, { useEffect } from 'react';
+import * as React from 'react';
 import { css } from '@styled-system/css';
-import { Button, Menu, Icon, Stack, Avatar } from '@codesandbox/components';
+import {
+  Button,
+  Menu,
+  Icon,
+  Stack,
+  Avatar,
+  Text,
+} from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
+import { CurrentUser } from '@codesandbox/common/lib/types';
 import { ForkIcon } from '../icons';
 
 interface TeamItemProps {
   id: string;
   name: string;
+  avatar: string | null;
   onSelect: () => void;
 }
 
@@ -16,13 +25,9 @@ const TeamItem = (props: TeamItemProps) => (
     style={{ paddingTop: 8, paddingBottom: 8, fontWeight: 500 }}
     onSelect={props.onSelect}
   >
-    <Stack style={{ alignItems: 'center' }}>
-      <TeamAvatar
-        css={css({ marginRight: 2 })}
-        size="small"
-        name={props.name}
-      />{' '}
-      {props.name}
+    <Stack gap={2} align="center">
+      <TeamAvatar size="small" avatar={props.avatar} name={props.name} />{' '}
+      <Text>{props.name}</Text>
     </Stack>
   </Menu.Item>
 );
@@ -39,15 +44,15 @@ const UserItem = (props: UserItemProps) => (
     style={{ paddingTop: 8, paddingBottom: 8, fontWeight: 500 }}
     onSelect={props.onSelect}
   >
-    <Stack style={{ alignItems: 'center' }}>
+    <Stack gap={2} align="center">
       <Avatar
-        css={css({ marginRight: 2, size: 6 })}
+        css={css({ size: 6 })}
         user={{
           avatarUrl: props.avatarUrl,
           username: props.username,
         }}
       />{' '}
-      {props.username} (Personal)
+      <Text>{props.username} (Personal)</Text>
     </Stack>
   </Menu.Item>
 );
@@ -56,6 +61,7 @@ type TeamItem = {
   type: 'team';
   teamId: string;
   teamName: string;
+  teamAvatar: string | null;
 };
 
 type UserItem = {
@@ -81,6 +87,7 @@ const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
           props.forkClicked(item.teamId);
         }}
         name={props.item.teamName}
+        avatar={props.item.teamAvatar}
       />
     );
   }
@@ -100,22 +107,18 @@ const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
 interface ForkButtonProps {
   variant: 'primary' | 'secondary';
   forkClicked: (teamId?: string | null) => void;
+  user: CurrentUser;
 }
 
 export const ForkButton: React.FC<ForkButtonProps> = props => {
-  const { state, actions } = useOvermind();
-
-  useEffect(() => {
-    if (state.dashboard.teams.length === 0 && state.user) {
-      actions.dashboard.getTeams();
-    }
-  }, [state.user, state.dashboard.teams, actions.dashboard]);
+  const { state } = useOvermind();
+  const { user } = props;
 
   const userSpace = {
     type: 'user' as 'user',
-    userId: state.user.id,
-    avatarUrl: state.user.avatarUrl,
-    username: state.user.username,
+    userId: user.id,
+    avatarUrl: user.avatarUrl,
+    username: user.username,
   };
 
   const allTeams: TeamOrUser[] = [
@@ -124,6 +127,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
       type: 'team' as 'team',
       teamId: team.id,
       teamName: team.name,
+      teamAvatar: team.avatarUrl,
     })),
   ];
 

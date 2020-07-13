@@ -35,6 +35,7 @@ type State = {
   sourceCommitSha: string | null;
   baseCommitSha: string | null;
   isResolving: boolean;
+  isLinkingToGitSandbox: boolean;
 };
 
 export const state: State = {
@@ -68,4 +69,5 @@ export const state: State = {
     deleted: [],
     modified: [],
   },
+  isLinkingToGitSandbox: false,
 };

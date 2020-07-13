@@ -163,6 +163,9 @@ export const removeFromTeam: AsyncAction<string> = async (
 export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
   if (!state.activeTeam || !state.activeTeamInfo) return;
   try {
+    effects.analytics.track('Team - Leave Team', {
+      dashboardVersion: 2,
+    });
     await effects.gql.mutations.leaveTeam({
       teamId: state.activeTeam,
     });
@@ -187,6 +190,10 @@ export const inviteToTeam: AsyncAction<string> = async (
   if (!state.activeTeam) return;
   const isEmail = value.includes('@');
   try {
+    effects.analytics.track('Team - Add Member', {
+      dashboardVersion: 2,
+      isEmail,
+    });
     let data: any | null = null;
     if (isEmail) {
       const emailInvited = await effects.gql.mutations.inviteToTeamVieEmail({
@@ -669,6 +676,10 @@ export const deleteSandbox: AsyncAction<{
 }> = async ({ state, effects, actions }, { ids, page, repoName }) => {
   const { user } = state;
   if (!user) return;
+
+  effects.analytics.track('Dashboard - Delete Sandbox', {
+    dashboardVersion: 2,
+  });
   const oldSandboxes = state.dashboard.sandboxes;
   actions.dashboard.deleteSandboxFromState({ ids, page, repoName });
 
@@ -847,10 +858,14 @@ export const moveFolder: AsyncAction<{
   newTeamId: string | null;
   teamId: string | null;
 }> = async (
-  { state: { dashboard }, actions },
+  { state: { dashboard }, actions, effects },
   { path, newPath, teamId, newTeamId }
 ) => {
   if (!dashboard.allCollections) return;
+
+  effects.analytics.track('Dashboard - Move Folder', {
+    dashboardVersion: 2,
+  });
   actions.dashboard.renameFolder({ path, newPath, teamId, newTeamId });
 };
 
@@ -914,6 +929,10 @@ export const makeTemplates: AsyncAction<{
   { effects, state, actions },
   { sandboxIds: ids, page, repoName }
 ) => {
+  effects.analytics.track('Dashboard - Make Template', {
+    dashboardVersion: 2,
+  });
+
   const oldSandboxes = state.dashboard.sandboxes;
   actions.dashboard.deleteSandboxFromState({ ids, page, repoName });
 
@@ -932,6 +951,11 @@ export const permanentlyDeleteSandboxes: AsyncAction<string[]> = async (
   ids
 ) => {
   if (!state.dashboard.sandboxes.DELETED) return;
+
+  effects.analytics.track('Dashboard - Permanent Delete Sandboxes', {
+    dashboardVersion: 2,
+  });
+
   const oldDeleted = state.dashboard.sandboxes.DELETED;
   state.dashboard.sandboxes.DELETED = oldDeleted.filter(
     sandbox => !ids.includes(sandbox.id)
@@ -950,6 +974,10 @@ export const recoverSandboxes: AsyncAction<string[]> = async (
   { effects, state },
   ids
 ) => {
+  effects.analytics.track('Dashboard - Recover Sandboxes', {
+    dashboardVersion: 2,
+  });
+
   if (!state.dashboard.sandboxes.DELETED) return;
   const oldDeleted = state.dashboard.sandboxes.DELETED;
   state.dashboard.sandboxes.DELETED = oldDeleted.filter(
@@ -975,6 +1003,10 @@ export const downloadSandboxes: AsyncAction<string[]> = async (
   { effects },
   ids
 ) => {
+  effects.analytics.track('Dashboard - Download Sandboxes', {
+    dashboardVersion: 2,
+  });
+
   try {
     const sandboxIds = uniq(ids);
     const sandboxes = await Promise.all(
@@ -1062,6 +1094,10 @@ export const addSandboxesToFolder: AsyncAction<{
   { state, effects, actions },
   { sandboxIds, collectionPath, deleteFromCurrentPath = true }
 ) => {
+  effects.analytics.track('Dashboard - Moved Sandboxes', {
+    dashboardVersion: 2,
+  });
+
   const oldSandboxes = state.dashboard.sandboxes;
   if (deleteFromCurrentPath) {
     actions.dashboard.deleteSandboxFromState({ ids: sandboxIds });
@@ -1100,6 +1136,7 @@ export const createTeam: AsyncAction<{
   pilot?: boolean;
 }> = async ({ effects, actions, state }, { teamName, pilot = false }) => {
   try {
+    effects.analytics.track('Team - Create Team', { dashboardVersion: 2 });
     const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
       name: teamName,
       pilot,
@@ -1145,6 +1182,11 @@ export const setTeamInfo: AsyncAction<{
   file: { name: string; url: string } | null;
 }> = async ({ effects, state, actions }, { name, description, file }) => {
   if (!state.activeTeam) return;
+
+  effects.analytics.track('Team - Update Info', {
+    dashboardVersion: 2,
+  });
+
   const oldTeamInfo = state.dashboard.teams.find(
     team => team.id === state.activeTeam
   );
@@ -1217,6 +1259,12 @@ export const changeSandboxPrivacy: AsyncAction<{
   { actions, effects },
   { id, privacy, oldPrivacy, page, repoName }
 ) => {
+  effects.analytics.track('Sandbox - Update Privacy', {
+    privacy,
+    source: 'dashboard',
+    dashboardVersion: 2,
+  });
+
   // optimistic update
 
   actions.dashboard.changeSandboxPrivacyInState({
@@ -1337,6 +1385,8 @@ export const updateTeamAvatar: AsyncAction<{
   if (!state.activeTeamInfo) return;
   const oldAvatar = state.activeTeamInfo.avatarUrl;
   state.activeTeamInfo.avatarUrl = url;
+
+  effects.analytics.track('Team - Update Team Avatar', { dashboardVersion: 2 });
 
   try {
     await effects.api.updateTeamAvatar(name, url, teamId);

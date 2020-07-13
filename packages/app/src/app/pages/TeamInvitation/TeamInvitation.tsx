@@ -13,7 +13,6 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import { useOvermind } from 'app/overmind';
 import { Helmet } from 'react-helmet';
 import {
-  teamOverviewUrl,
   dashboardUrl,
   dashboard,
 } from '@codesandbox/common/lib/utils/url-generator';
@@ -165,11 +164,7 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
     return <Text size={6}>Joining Team...</Text>;
   }
 
-  if (team.joinedPilotAt) {
-    return <Redirect to={dashboard.home(team.id)} />;
-  }
-
-  return <Redirect to={teamOverviewUrl(team.id)} />;
+  return <Redirect to={dashboard.home(team.id)} />;
 };
 
 export const TeamInvitation: React.FC<{

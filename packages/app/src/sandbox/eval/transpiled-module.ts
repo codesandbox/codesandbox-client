@@ -138,6 +138,7 @@ export type LoaderContext = {
   // Remaining loaders after current loader
   remainingRequests: string;
   template: string;
+  sandboxId: string | null;
 };
 /* eslint-enable */
 
@@ -541,6 +542,7 @@ export default class TranspiledModule {
       path: this.module.path,
       template: manager.preset.name,
       remainingRequests: '', // will be filled during transpilation
+      sandboxId: manager.id,
     };
   }
 

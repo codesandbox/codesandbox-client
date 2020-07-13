@@ -47,8 +47,6 @@ export const sandboxFragmentDashboard = gql`
     privacy
     screenshotUrl
     screenshotOutdated
-    likeCount
-    forkCount
     viewCount
 
     source {
@@ -96,8 +94,6 @@ export const templateFragmentDashboard = gql`
       insertedAt
       updatedAt
       removedAt
-      likeCount
-      forkCount
       viewCount
       screenshotUrl
       screenshotOutdated
