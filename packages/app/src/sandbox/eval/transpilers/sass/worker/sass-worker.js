@@ -83,6 +83,17 @@ const existsPromise = (fs, file) =>
     });
   });
 
+/**
+ * Return and stop as soon as one promise returns a truthy value
+ */
+function firstTrue(promises) {
+  const newPromises = promises.map(
+    p => new Promise((res, reject) => p.then(v => v && res(v), reject))
+  );
+  newPromises.push(Promise.all(promises).then(() => false));
+  return Promise.race(newPromises);
+}
+
 let pathCaches = {};
 const getExistingPath = async (fs, p) => {
   if (p.endsWith('.json')) {
@@ -95,74 +106,80 @@ const getExistingPath = async (fs, p) => {
 
   const possiblePaths = Sass.getPathVariations(p);
 
-  let existedFile = false;
-
-  for (let i = 0; i < possiblePaths.length; i++) {
-    if (!existedFile) {
-      existedFile = await existsPromise(fs, possiblePaths[i]); // eslint-disable-line
-    }
-  }
+  const existedFile = await firstTrue(
+    possiblePaths.map(path => existsPromise(fs, path))
+  );
 
   pathCaches[p] = existedFile;
 
   return existedFile;
 };
 
+const resolvedCache = {};
 const resolveSass = (fs, p, path) => {
   const usedPath = p.startsWith('~') ? p.replace('~', '/node_modules/') : p;
 
+  const sourceDir = dirname(path);
+  resolvedCache[sourceDir] = resolvedCache[sourceDir] || {};
+  if (resolvedCache[sourceDir][usedPath]) {
+    return Promise.resolve(resolvedCache[sourceDir][usedPath]);
+  }
+
   return new Promise((r, reject) => {
+    const directPath = join(sourceDir, usedPath);
+
     // First try to do the relative path, as a performance optimization
-    getExistingPath(fs, join(dirname(path), usedPath + '.scss')).then(
-      foundPath => {
-        if (foundPath) {
-          r(foundPath);
-          return;
-        }
-
-        resolve(
-          usedPath,
-          {
-            filename: path,
-            extensions: ['.scss', '.css', '.sass'],
-            moduleDirectory: ['node_modules'],
-            packageFilter: packageFilter(),
-            isFile: async (pp, c, cb) => {
-              const exists = !!(await getExistingPath(fs, pp));
-              const callback = c || cb;
-
-              return callback(null, exists);
-            },
-            readFile: async (pp, encoding, cb) => {
-              const newFoundPath = await getExistingPath(fs, pp);
-
-              if (!newFoundPath) {
-                const err = new Error('Could not find ' + pp);
-                // $FlowIssue
-                err.code = 'ENOENT';
-
-                return cb(err);
-              }
-
-              return fs.readFile(newFoundPath, encoding, cb);
-            },
-          },
-          async (err, resolvedPath) => {
-            if (err) {
-              if (/^\w/.test(p)) {
-                r(resolveSass(fs, '.' + absolute(p), path));
-              }
-
-              reject(err);
-            } else {
-              const newFoundPath = await getExistingPath(fs, resolvedPath);
-
-              r(newFoundPath);
-            }
-          }
-        );
+    getExistingPath(fs, directPath).then(foundPath => {
+      if (foundPath) {
+        r(foundPath);
+        return;
       }
-    );
+
+      resolve(
+        usedPath,
+        {
+          filename: path,
+          extensions: ['.scss', '.css', '.sass'],
+          moduleDirectory: ['node_modules'],
+          packageFilter: packageFilter(),
+          isFile: async (pp, c, cb) => {
+            const exists = !!(await getExistingPath(fs, pp));
+            const callback = c || cb;
+
+            return callback(null, exists);
+          },
+          readFile: async (pp, encoding, cb) => {
+            const newFoundPath = await getExistingPath(fs, pp);
+
+            if (!newFoundPath) {
+              const err = new Error('Could not find ' + pp);
+              // $FlowIssue
+              err.code = 'ENOENT';
+
+              return cb(err);
+            }
+
+            return fs.readFile(newFoundPath, encoding, cb);
+          },
+        },
+        async (err, resolvedPath) => {
+          if (err) {
+            if (/^\w/.test(p)) {
+              r(resolveSass(fs, '.' + absolute(p), path));
+            }
+
+            reject(err);
+          } else {
+            const newFoundPath = await getExistingPath(fs, resolvedPath);
+
+            r(newFoundPath);
+          }
+        }
+      );
+    });
+  }).then(result => {
+    resolvedCache[sourceDir][usedPath] = result;
+    return result;
   });
 };
 
@@ -182,6 +199,7 @@ function initializeBrowserFS() {
 }
 
 let fsInitialized = false;
+const foundFileCache = {};
 
 self.addEventListener('message', async event => {
   const { code, path, indentedSyntax, codesandbox } = event.data;
@@ -204,7 +222,6 @@ self.addEventListener('message', async event => {
 
   pathCaches = {};
   Sass._path = '/';
-  Sass.clearFiles();
 
   // register a custom importer callback
   Sass.importer(async (request, done) => {
@@ -224,6 +241,10 @@ self.addEventListener('message', async event => {
         isAbsolute: true,
       });
 
+      if (foundFileCache[foundPath]) {
+        done({ path: foundPath });
+        return;
+      }
       fs.readFile(foundPath, {}, (error, data) => {
         if (error) {
           done({ error: error.message });
@@ -232,9 +253,8 @@ self.addEventListener('message', async event => {
         const depCode = data.toString();
 
         Sass.writeFile(foundPath, depCode, () => {
-          done({
-            path: foundPath,
-          });
+          foundFileCache[foundPath] = true;
+          done({ path: foundPath });
         });
       });
     } catch (e) {
