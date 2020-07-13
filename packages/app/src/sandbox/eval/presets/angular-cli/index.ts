@@ -1,5 +1,7 @@
 // @flow
 import { join, absolute } from '@codesandbox/common/lib/utils/path';
+import Manager from 'sandbox/eval/manager';
+import TranspiledModule from 'sandbox/eval/transpiled-module';
 import Preset from '..';
 
 import angular2Transpiler from '../../transpilers/angular2-template';
@@ -75,7 +77,7 @@ async function addAngularJSONResources(manager) {
       tModule.evaluate(manager);
     }
 
-    const scriptTModules = await Promise.all(
+    const scriptTModules: TranspiledModule[] = await Promise.all(
       scripts.map(async p => {
         const finalPath = absolute(join(project.root, p));
         const tModule = await manager.resolveTranspiledModuleAsync(
@@ -103,7 +105,7 @@ const getPathFromResource = (root, p) => {
   return absolute(join(root || 'src', p));
 };
 
-async function addAngularCLIResources(manager) {
+async function addAngularCLIResources(manager: Manager) {
   const { parsed } = manager.configurations['angular-cli'];
   if (parsed.apps && parsed.apps[0]) {
     const app = parsed.apps[0];
@@ -126,7 +128,7 @@ async function addAngularCLIResources(manager) {
     }
     /* eslint-enable no-await-in-loop */
 
-    const scriptTModules = await Promise.all(
+    const scriptTModules: TranspiledModule[] = await Promise.all(
       scripts.map(async p => {
         const finalPath = getPathFromResource(app.root, p);
         const tModule = await manager.resolveTranspiledModuleAsync(
