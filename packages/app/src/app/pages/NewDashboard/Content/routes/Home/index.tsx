@@ -26,7 +26,7 @@ export const Home = () => {
   }, [actions.dashboard, activeTeam]);
 
   const templates: DashboardGridItem[] = (sandboxes.TEMPLATE_HOME || []).map(
-    template => {
+    (template, i) => {
       const { sandbox, ...templateValues } = template;
 
       const dashboardTemplate: DashboardTemplate = {
@@ -35,6 +35,7 @@ export const Home = () => {
         template: templateValues,
         autoFork: true,
         noDrag: true,
+        optional: i >= 3,
       };
 
       return dashboardTemplate;

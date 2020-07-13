@@ -33,6 +33,10 @@ export type DashboardTemplate = {
   };
   noDrag?: boolean;
   autoFork?: boolean;
+  /**
+   * Whether this column should be hidden if it's on the second row of subsequent templates
+   */
+  optional?: boolean;
 };
 
 export type DashboardFolder = DELETE_ME_COLLECTION &
