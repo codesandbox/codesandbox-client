@@ -1,5 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`convert-esmodule can convert + + 1`] = `
+"\\"use strict\\";
+c = (10, + +15);
+"
+`;
+
 exports[`convert-esmodule can convert class default exports 1`] = `
 "\\"use strict\\";
 Object.defineProperty(exports, \\"__esModule\\", {
