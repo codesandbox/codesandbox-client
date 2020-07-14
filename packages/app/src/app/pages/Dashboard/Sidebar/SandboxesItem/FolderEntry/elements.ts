@@ -14,7 +14,7 @@ export const Container = styled(NavLink)<{
   text-decoration: none;
 
   border-left: 2px solid transparent;
-  padding-left: ${props => 1 + (props.depth || 0) * 0.75}rem;
+  padding-left: ${props => (props.depth || 0) * 0.75}rem;
 
   user-select: none;
 

@@ -46,7 +46,8 @@ import {
 type Props = {
   name: string;
   path: string;
-  url: string;
+  url?: string;
+  readOnly?: string;
   folders: { path: string }[];
   foldersByPath: { [path: string]: string };
   selectedSandboxes: string[];
@@ -147,74 +148,77 @@ class FolderEntry extends React.Component<Props, State> {
       currentPath,
       currentTeamId,
       history,
+      readOnly,
     } = this.props;
 
     const children = getDirectChildren(path, folders);
 
-    const menuItems = [
-      {
-        title: 'Rename Folder',
-        icon: RenameIcon,
-        action: () => {
-          this.setState({ renamingDirectory: true });
-          return true;
-        },
-      },
-      {
-        title: 'Delete Folder',
-        icon: TrashIcon,
-        color: theme.red.darken(0.2)(),
-        action: () => {
-          track('Dashboard - Folder Deleted');
-          client.mutate({
-            mutation: DELETE_FOLDER_MUTATION,
-            variables: { path, teamId },
+    const menuItems = readOnly
+      ? []
+      : [
+          {
+            title: 'Rename Folder',
+            icon: RenameIcon,
+            action: () => {
+              this.setState({ renamingDirectory: true });
+              return true;
+            },
+          },
+          {
+            title: 'Delete Folder',
+            icon: TrashIcon,
+            color: theme.red.darken(0.2)(),
+            action: () => {
+              track('Dashboard - Folder Deleted');
+              client.mutate({
+                mutation: DELETE_FOLDER_MUTATION,
+                variables: { path, teamId },
 
-            refetchQueries: [
-              {
-                query: PATHED_SANDBOXES_CONTENT_QUERY,
-                variables: { path: '/', teamId },
-              },
-            ],
-            update: (cache, { data: { deleteCollection } }) => {
-              const variables: PathedSandboxesFoldersQueryVariables = {
-                teamId,
-              };
-
-              const cacheData = cache.readQuery<
-                PathedSandboxesFoldersQuery,
-                PathedSandboxesFoldersQueryVariables
-              >({
-                query: PATHED_SANDBOXES_FOLDER_QUERY,
-                variables,
-              });
-
-              cache.writeQuery({
-                query: PATHED_SANDBOXES_FOLDER_QUERY,
-                variables,
-                data: {
-                  ...cacheData,
-                  me: {
-                    // @ts-ignore
-                    ...cacheData.me,
-                    collections: deleteCollection,
+                refetchQueries: [
+                  {
+                    query: PATHED_SANDBOXES_CONTENT_QUERY,
+                    variables: { path: '/', teamId },
                   },
+                ],
+                update: (cache, { data: { deleteCollection } }) => {
+                  const variables: PathedSandboxesFoldersQueryVariables = {
+                    teamId,
+                  };
+
+                  const cacheData = cache.readQuery<
+                    PathedSandboxesFoldersQuery,
+                    PathedSandboxesFoldersQueryVariables
+                  >({
+                    query: PATHED_SANDBOXES_FOLDER_QUERY,
+                    variables,
+                  });
+
+                  cache.writeQuery({
+                    query: PATHED_SANDBOXES_FOLDER_QUERY,
+                    variables,
+                    data: {
+                      ...cacheData,
+                      me: {
+                        // @ts-ignore
+                        ...cacheData.me,
+                        collections: deleteCollection,
+                      },
+                    },
+                  });
                 },
               });
+
+              const subPath = path
+                .split('/')
+                .slice(0, -1)
+                .join('/');
+
+              history.replace(`${basePath}${subPath}`);
+
+              return true;
             },
-          });
-
-          const subPath = path
-            .split('/')
-            .slice(0, -1)
-            .join('/');
-
-          history.replace(`${basePath}${subPath}`);
-
-          return true;
-        },
-      },
-    ];
+          },
+        ];
 
     if (allowCreate) {
       menuItems.unshift({

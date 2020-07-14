@@ -1,49 +1,47 @@
 import React from 'react';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import track from '@codesandbox/common/lib/utils/analytics';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
-import {
-  Link,
-  Avatar,
-  Text,
-  Menu,
-  Stack,
-  Icon,
-  IconButton,
-} from '@codesandbox/components';
+import { Avatar, Text, Menu, Stack, Icon } from '@codesandbox/components';
 import { sortBy } from 'lodash-es';
 import css from '@styled-system/css';
 import { TeamAvatar } from 'app/components/TeamAvatar';
-import { SIDEBAR_WIDTH } from './constants';
 
-interface WorkspaceSwitcherProps {
-  activeAccount: {
-    username: string | null;
-    avatarUrl: string | null;
-  };
+type Team = {
+  type: 'team';
+  id: string;
+  name: string;
+  avatarUrl: string | null;
+};
+
+type User = {
+  type: 'user';
+  id: string;
+  username: string;
+  avatarUrl: string;
+};
+
+interface WorkspaceSelectProps {
+  activeAccount: Team | User;
+  onSelect: (account: Team | User) => void;
 }
 
-export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
-  ({ activeAccount }) => {
-    const { state, actions } = useOvermind();
+export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
+  ({ activeAccount, onSelect }) => {
+    const { state } = useOvermind();
     const { user, dashboard } = state;
     const history = useHistory();
 
-    const inTeamContext =
-      activeAccount && user && activeAccount.username !== user.username;
-
-    if (!user) {
-      return null;
-    }
+    const name =
+      activeAccount.type === 'user'
+        ? activeAccount.username
+        : activeAccount.name;
 
     return (
       <Stack
         css={css({
           width: '100%',
           height: '100%',
-          borderBottom: '1px solid',
-          borderColor: 'grays.500',
         })}
       >
         <Menu>
@@ -52,7 +50,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
             justify="space-between"
             align="center"
             css={css({
-              width: SIDEBAR_WIDTH - 32,
+              width: '100%',
               height: '100%',
               paddingLeft: 2,
               borderRadius: 0,
@@ -62,31 +60,26 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
               },
             })}
           >
-            <Stack as="span" align="center">
-              <Stack
-                as="span"
-                css={css({ width: 10 })}
-                align="center"
-                justify="center"
-              >
-                {!inTeamContext ? (
-                  <Avatar user={activeAccount} css={css({ size: 6 })} />
-                ) : (
+            <Stack gap={2} as="span" align="center">
+              <Stack as="span" align="center" justify="center">
+                {activeAccount.type === 'team' ? (
                   <TeamAvatar
                     avatar={activeAccount.avatarUrl}
-                    name={activeAccount.username}
+                    name={activeAccount.name}
                   />
+                ) : (
+                  <Avatar user={activeAccount} css={css({ size: 6 })} />
                 )}
               </Stack>
               <Text size={4} weight="normal" maxWidth={140}>
-                {activeAccount.username}
+                {name}
               </Text>
             </Stack>
             <Icon name="caret" size={8} />
           </Stack>
           <Menu.List
             css={css({
-              width: SIDEBAR_WIDTH,
+              width: '100%',
               marginLeft: 2,
               marginTop: '-4px',
               backgroundColor: 'grays.600',
@@ -107,9 +100,11 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
               })}
               style={{ paddingLeft: 8 }}
               onSelect={() => {
-                actions.setActiveTeam({ id: null });
-                track('Dashboard - Change workspace', {
-                  dashboardVersion: 2,
+                onSelect({
+                  type: 'user',
+                  username: user.username,
+                  id: user.id,
+                  avatarUrl: user.avatarUrl,
                 });
               }}
             >
@@ -119,7 +114,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
                   {user.username} (Personal)
                 </Text>
 
-                {!inTeamContext && <Icon name="simpleCheck" />}
+                {activeAccount.type === 'user' && <Icon name="simpleCheck" />}
               </Stack>
             </Menu.Item>
             {sortBy(dashboard.teams, t => t.name.toLowerCase()).map(team => (
@@ -140,7 +135,14 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
                   },
                 })}
                 style={{ paddingLeft: 8 }}
-                onSelect={() => actions.setActiveTeam({ id: team.id })}
+                onSelect={() =>
+                  onSelect({
+                    type: 'team',
+                    name: team.name,
+                    id: team.id,
+                    avatarUrl: team.avatarUrl,
+                  })
+                }
               >
                 <TeamAvatar
                   avatar={team.avatarUrl}
@@ -151,9 +153,10 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
                   {team.name}
                 </Text>
 
-                {activeAccount.username === team.name && (
-                  <Icon name="simpleCheck" />
-                )}
+                {activeAccount.type === 'team' &&
+                  activeAccount.name === team.name && (
+                    <Icon name="simpleCheck" />
+                  )}
               </Stack>
             ))}
             <Stack
@@ -183,15 +186,6 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(
             </Stack>
           </Menu.List>
         </Menu>
-
-        <Link as={RouterLink} to={dashboardUrls.settings(state.activeTeam)}>
-          <IconButton
-            name="gear"
-            size={8}
-            title="Settings"
-            css={css({ width: 8, height: '100%', borderRadius: 0 })}
-          />
-        </Link>
       </Stack>
     );
   }

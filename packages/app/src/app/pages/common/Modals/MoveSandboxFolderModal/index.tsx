@@ -4,16 +4,20 @@ import ChevronRight from 'react-icons/lib/md/chevron-right';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { Button, Stack, Element } from '@codesandbox/components';
+import { Button, Stack, Element, Menu, Text } from '@codesandbox/components';
 import { addSandboxesToFolder } from '../../../Dashboard/queries';
 
 import { DirectoryPicker } from './DirectoryPicker';
 import { Alert } from '../Common/Alert';
 
+import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
+
 export const MoveSandboxFolderModal: FunctionComponent = () => {
   const {
     actions: { modalClosed, refetchSandboxInfo },
     state: {
+      activeTeamInfo,
+      user,
       editor: { currentSandbox },
     },
   } = useOvermind();
@@ -22,6 +26,22 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
   const [loading, setLoading] = useState(false);
   const [path, setPath] = useState(collection?.path || '/');
   const [teamId, setTeamId] = useState(team?.id);
+
+  const [selectedTeam, setSelectedTeam] = useState(
+    activeTeamInfo
+      ? {
+          type: 'team',
+          id: team.id,
+          name: activeTeamInfo.name,
+          avatarUrl: activeTeamInfo.avatarUrl,
+        }
+      : {
+          type: 'user',
+          id: user.id,
+          username: user.username,
+          avatarUrl: user.avatarUrl,
+        }
+  );
 
   const handleMove = () => {
     setLoading(true);
@@ -55,74 +75,80 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
   }, [id, loading, modalClosed, path, refetchSandboxInfo, teamId]);
 
   return (
-    <Alert
-      title="Move to Folder"
-      css={css({
-        paddingRight: 0,
-        paddingLeft: 0,
-        '> span': {
-          paddingLeft: 4,
-          paddingBottom: 4,
-          borderBottom: '1px solid',
-          borderColor: 'sideBar.border',
-        },
-      })}
+    <Stack
+      css={css({ width: '100%', paddingX: 6, paddingY: 7 })}
+      gap={6}
+      direction="vertical"
     >
-      <Element
-        css={css({
-          maxHeight: 400,
-          overflow: 'auto',
-        })}
-      >
-        <DirectoryPicker
-          currentPath={path}
-          currentTeamId={teamId}
-          onSelect={onSelect}
-        />
-      </Element>
-
-      {error}
-
-      <Stack
-        marginTop={4}
-        align="flex-end"
-        gap={2}
-        justify="flex-end"
-        css={css({
-          paddingTop: 4,
-          paddingRight: 4,
-          borderTop: '1px solid',
-          borderColor: 'sideBar.border',
-        })}
-      >
-        <Button
-          css={css({ width: 'auto' })}
-          variant="secondary"
-          onClick={modalClosed}
+      <Text size={6} weight="bold">
+        Move to Folder
+      </Text>
+      <Stack gap={4} direction="vertical">
+        <Element
+          css={css({
+            height: 10,
+            borderRadius: 4,
+            border: '1px solid',
+            borderColor: 'sideBar.border',
+          })}
         >
-          Cancel
-        </Button>
+          <WorkspaceSelect
+            onSelect={team => {
+              setSelectedTeam(team);
+            }}
+            activeAccount={selectedTeam}
+          />
+        </Element>
+        <Stack direction="vertical" gap={4}>
+          <Element
+            css={css({
+              maxHeight: 400,
+              overflow: 'auto',
+              border: '1px solid',
+              borderColor: 'sideBar.border',
+              borderRadius: 4,
+            })}
+          >
+            <DirectoryPicker
+              currentPath={path}
+              currentTeamId={teamId}
+              onSelect={onSelect}
+            />
+          </Element>
 
-        <Button
-          css={css({ width: 'auto' })}
-          disabled={loading}
-          onClick={handleMove}
-        >
-          {loading ? (
-            'Moving Sandbox...'
-          ) : (
-            <>
-              {`Move to ${
-                path !== '/'
-                  ? basename(path)
-                  : `${teamId ? 'Our' : 'My'} Sandboxes`
-              }`}
+          {error}
 
-              <ChevronRight />
-            </>
-          )}
-        </Button>
+          <Stack align="flex-end" gap={2} justify="flex-end">
+            <Button
+              css={css({ width: 'auto' })}
+              variant="secondary"
+              onClick={modalClosed}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              css={css({ width: 'auto' })}
+              disabled={loading}
+              onClick={handleMove}
+            >
+              {loading ? (
+                'Moving Sandbox...'
+              ) : (
+                <>
+                  {`Move to ${
+                    path !== '/'
+                      ? basename(path)
+                      : `${teamId ? 'Our' : 'My'} Sandboxes`
+                  }`}
+
+                  <ChevronRight />
+                </>
+              )}
+            </Button>
+          </Stack>
+        </Stack>
       </Stack>
-    </Alert>
+    </Stack>
   );
 };

@@ -126,7 +126,7 @@ const modals = {
   },
   moveSandbox: {
     Component: MoveSandboxFolderModal,
-    width: 350,
+    width: 480,
   },
   feedback: {
     Component: FeedbackModal,

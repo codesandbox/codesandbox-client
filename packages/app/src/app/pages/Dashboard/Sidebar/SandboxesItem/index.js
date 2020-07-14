@@ -48,95 +48,77 @@ class SandboxesItemComponent extends React.Component {
 
     return connectDropTarget(
       <div>
-        <Item
-          as={onSelect ? 'div' : undefined}
-          onClick={onSelect ? this.handleSelect : undefined}
-          active={currentPath === '/' && currentTeamId === teamId}
-          openByDefault={openByDefault}
-          path={basePath}
-          Icon={InfoIcon}
-          name={teamId ? `${teamName || 'Team'} Sandboxes` : 'My Sandboxes'}
-          style={
-            isOver && canDrop ? { backgroundColor: 'rgba(0, 0, 0, 0.3)' } : {}
-          }
-          contextItems={[
-            {
-              title: 'Create Folder',
-              icon: AddFolderIcon,
-              action: () => {
-                this.setState({ creatingDirectory: true });
-                return true;
-              },
-            },
-          ]}
-        >
-          <Query variables={{ teamId }} query={PATHED_SANDBOXES_FOLDER_QUERY}>
-            {({ data, loading, error }) => {
-              if (loading) {
-                return (
-                  <DelayedAnimation
-                    style={{
-                      margin: '1rem',
-                      fontWeight: 600,
-                      color: 'rgba(255, 255, 255, 0.6)',
-                    }}
-                    delay={0.6}
-                  >
-                    Loading...
-                  </DelayedAnimation>
-                );
-              }
-
-              if (error || !data.me) {
-                return <div>Error!</div>;
-              }
-              const { children, folders, foldersByPath } = getChildCollections(
-                data.me.collections
-              );
-
+        <Query variables={{ teamId }} query={PATHED_SANDBOXES_FOLDER_QUERY}>
+          {({ data, loading, error }) => {
+            if (loading) {
               return (
-                <Container>
-                  {Array.from(children)
-                    .sort()
-                    .map(name => {
-                      const path = '/' + name;
-                      const url = basePath + '/' + encodeURIComponent(name);
-                      return (
-                        <DropFolderEntry
-                          key={path}
-                          selectedSandboxes={selectedSandboxes}
-                          basePath={basePath}
-                          teamId={teamId}
-                          path={path}
-                          url={url}
-                          folders={folders}
-                          foldersByPath={foldersByPath}
-                          name={name}
-                          open={
-                            currentPath.indexOf(path) === 0 &&
-                            currentTeamId === teamId
-                          }
-                          onSelect={onSelect}
-                          currentPath={currentPath}
-                          currentTeamId={currentTeamId}
-                        />
-                      );
-                    })}
-                  {(this.state.creatingDirectory || children.size === 0) && (
-                    <CreateFolderEntry
-                      teamId={teamId}
-                      noFocus={!this.state.creatingDirectory}
-                      basePath=""
-                      close={() => {
-                        this.setState({ creatingDirectory: false });
-                      }}
-                    />
-                  )}
-                </Container>
+                <DelayedAnimation
+                  style={{
+                    margin: '1rem',
+                    fontWeight: 600,
+                    color: 'rgba(255, 255, 255, 0.6)',
+                  }}
+                  delay={0.6}
+                >
+                  Loading...
+                </DelayedAnimation>
               );
-            }}
-          </Query>
-        </Item>
+            }
+
+            if (error || !data.me) {
+              return <div>Error!</div>;
+            }
+            const { children, folders, foldersByPath } = getChildCollections(
+              data.me.collections
+            );
+
+            return (
+              <Container>
+                <DropFolderEntry
+                  selectedSandboxes={selectedSandboxes}
+                  basePath={basePath}
+                  teamId={teamId}
+                  path="/Drafts"
+                  url="/"
+                  folders={[]}
+                  foldersByPath={{}}
+                  readOnly
+                  name="Drafts"
+                  open
+                  onSelect={onSelect}
+                  currentPath={currentPath}
+                  currentTeamId={currentTeamId}
+                />
+
+                <DropFolderEntry
+                  selectedSandboxes={selectedSandboxes}
+                  basePath={basePath}
+                  teamId={teamId}
+                  path="/"
+                  url="/"
+                  folders={folders}
+                  foldersByPath={foldersByPath}
+                  name="All Sandboxes"
+                  open
+                  onSelect={onSelect}
+                  currentPath={currentPath}
+                  currentTeamId={currentTeamId}
+                />
+
+                {(this.state.creatingDirectory || children.size === 0) && (
+                  <CreateFolderEntry
+                    teamId={teamId}
+                    noFocus={!this.state.creatingDirectory}
+                    basePath=""
+                    close={() => {
+                      this.setState({ creatingDirectory: false });
+                    }}
+                  />
+                )}
+              </Container>
+            );
+          }}
+        </Query>
       </div>
     );
   }
