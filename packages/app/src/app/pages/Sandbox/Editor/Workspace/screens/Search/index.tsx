@@ -121,10 +121,10 @@ export const Search = () => {
   useEffect(() => {
     if (workerStatus !== 'RUNNING' && queue.length) {
       while (queue.length > 0) {
-        console.log(queue.length);
-        const fn = queue.shift();
+        const current = queue.shift();
 
-        fn().then(files => {
+        searchWorker(current.value, current.files).then(files => {
+          console.log('AAAAAA', files);
           killWorker();
           setResults(files);
         });
@@ -134,7 +134,9 @@ export const Search = () => {
 
   const searchFiles = async value => {
     setSearchTerm(value);
-    setQueue(q => q.concat(() => searchWorker(value, modules)));
+    setQueue(q =>
+      q.concat({ value, files: JSON.parse(JSON.stringify(modules)) })
+    );
   };
 
   return (

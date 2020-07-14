@@ -2696,10 +2696,10 @@
     core-js "2.6.0"
     graphql "14.0.2"
 
-"@koale/useworker@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@koale/useworker/-/useworker-3.2.0.tgz#3bda25026a2ee202f19ccae37a23e6bd3d83c24a"
-  integrity sha512-7pC1dUzJhqSDt2Zg2onA+nnC3ckHath71X2jDHswW6eDjH2lgLPFtPD2ZfIy9RqZY7lCP89LTGT3kKJeQLvj7Q==
+"@koale/useworker@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@koale/useworker/-/useworker-3.2.1.tgz#3d45593887e1df7ae8b469f1512fbaff85e4db2f"
+  integrity sha512-oTATxVRYceI0ZrlcAYGwhXU5l+rHd14yFlAyQfgbwi+vfFnnMX9EwU85RlGHIKf0BT4rrIIJm73L9lgz/+/EnA==
   dependencies:
     dequal "^1.0.0"
 
