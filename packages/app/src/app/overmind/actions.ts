@@ -378,16 +378,15 @@ export const validateUsername: AsyncAction<string> = async (
   state.pendingUser.valid = validity.available;
 };
 
-export const finalizeSignUp: AsyncAction = async ({
-  effects,
-  actions,
-  state,
-}) => {
+export const finalizeSignUp: AsyncAction<string> = async (
+  { effects, actions, state },
+  username
+) => {
   if (!state.pendingUser) return;
   try {
     effects.api.finalizeSignUp({
       id: state.pendingUser.id,
-      username: state.pendingUser.username,
+      username,
     });
     state.pendingUser = null;
   } catch (error) {

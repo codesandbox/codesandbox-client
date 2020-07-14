@@ -30,6 +30,7 @@ export const UserNameSelection: React.FC = () => {
   useEffect(() => {
     setNewUsername(pendingUser?.username);
   }, [pendingUser]);
+
   if (!pendingUser) {
     return (
       <ThemeProvider>
@@ -77,7 +78,7 @@ export const UserNameSelection: React.FC = () => {
                   </Text>
                 ) : null}
                 <Button
-                  onClick={finalizeSignUp}
+                  onClick={() => finalizeSignUp(newUsername)}
                   disabled={loading || !pendingUser.valid}
                 >
                   {loading ? 'Checking username...' : 'Finish Sign Up'}
