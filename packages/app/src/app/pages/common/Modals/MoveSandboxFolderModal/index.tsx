@@ -5,12 +5,12 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { Button, Stack, Element, Menu, Text } from '@codesandbox/components';
+import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { addSandboxesToFolder } from '../../../Dashboard/queries';
 
 import { DirectoryPicker } from './DirectoryPicker';
 import { Alert } from '../Common/Alert';
 
-import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 
 export const MoveSandboxFolderModal: FunctionComponent = () => {
   const {

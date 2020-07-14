@@ -24,13 +24,13 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
+import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder, PageTypes } from '../types';
 import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH } from './constants';
 import { WorkspaceSwitcher } from './WorkspaceSwitcher';
 import { DragItemType, useDrop } from '../utils/dnd';
-import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 
 const SidebarContext = React.createContext(null);
 
