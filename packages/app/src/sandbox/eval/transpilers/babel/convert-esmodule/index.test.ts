@@ -423,4 +423,12 @@ describe('convert-esmodule', () => {
 
     expect(convertEsModule(code)).toMatchSnapshot();
   });
+
+  it('can convert + +', () => {
+    const code = `
+    c = (10.0, + +(15))
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
 });
