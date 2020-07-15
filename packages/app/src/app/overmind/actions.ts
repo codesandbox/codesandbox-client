@@ -27,6 +27,7 @@ export const genericPageMounted: AsyncAction = withLoadApp();
 export const getPendingUser: AsyncAction = async ({ state, effects }) => {
   if (!state.pendingUserId) return;
   const pendingUser = await effects.api.getPendingUser(state.pendingUserId);
+  if (!pendingUser) return;
   state.pendingUser = {
     ...pendingUser,
     valid: true,

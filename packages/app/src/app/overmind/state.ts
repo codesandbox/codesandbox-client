@@ -12,7 +12,7 @@ export type PendingUserType = {
   avatarUrl: string | null;
   username: string;
   id: string;
-  valid: boolean;
+  valid?: boolean;
 } | null;
 
 type State = {
