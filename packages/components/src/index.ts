@@ -15,6 +15,7 @@ export * from './components/Radio';
 export * from './components/SearchInput';
 export * from './components/Select';
 export * from './components/SkeletonText';
+export * from './components/SkipNav';
 export * from './components/Stats';
 export * from './components/Switch';
 export * from './components/Text';
@@ -30,7 +31,6 @@ export * from './components/TagInput';
 export * from './components/Tags';
 export * from './components/Tags/Tag';
 export * from './components/Tooltip';
-export * from './components/SkipNav';
 
 // layout
 export * from './components/Grid';

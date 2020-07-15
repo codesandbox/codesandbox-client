@@ -22,7 +22,7 @@ import { LiveSessionEnded } from './LiveSessionEnded';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
-import PreferencesModal from './PreferencesModal';
+import { PreferencesModal } from './PreferencesModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
 import { ShareModal } from './ShareModal';
