@@ -1,6 +1,6 @@
 {
   "name": "@codesandbox/components",
-  "version": "0.0.3",
+  "version": "0.0.2",
   "main": "lib/index",
   "source": true,
   "contributors": [
