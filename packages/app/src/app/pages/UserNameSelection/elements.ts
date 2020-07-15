@@ -13,13 +13,3 @@ export const Page = styled.div(
     minHeight: '100vh',
   })
 );
-
-export const Avatar = styled.img(
-  css({
-    width: 100,
-    height: 100,
-    border: '1px solid',
-    borderColor: 'grays.500',
-    borderRadius: 'medium',
-  })
-);

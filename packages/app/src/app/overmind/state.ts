@@ -34,6 +34,7 @@ type State = {
   isLoadingCLI: boolean;
   isLoadingGithub: boolean;
   isLoadingVercel: boolean;
+  pendingUserId: string | null;
   pendingUser: PendingUserType;
   contextMenu: {
     show: boolean;
@@ -53,6 +54,7 @@ type State = {
 };
 
 export const state: State = {
+  pendingUserId: null,
   pendingUser: null,
   isFirstVisit: false,
   isPatron: derived(({ user }: State) =>

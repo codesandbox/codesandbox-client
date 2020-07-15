@@ -24,15 +24,14 @@ export const codesadboxMounted: AsyncAction = withLoadApp();
 
 export const genericPageMounted: AsyncAction = withLoadApp();
 
-export const usernameSelectionMounted: AsyncAction<string> = withLoadApp(
-  async ({ state, effects }, id) => {
-    const pendingUser = await effects.api.getPendingUser(id);
-    state.pendingUser = {
-      ...pendingUser,
-      valid: true,
-    };
-  }
-);
+export const getPendingUser: AsyncAction = async ({ state, effects }) => {
+  if (!state.pendingUserId) return;
+  const pendingUser = await effects.api.getPendingUser(state.pendingUserId);
+  state.pendingUser = {
+    ...pendingUser,
+    valid: true,
+  };
+};
 
 export const cliMounted: AsyncAction = withLoadApp(
   async ({ state, actions }) => {
@@ -122,18 +121,18 @@ export const signInButtonClicked: AsyncAction<{
     await actions.internal.signIn({
       useExtraScopes: false,
     });
-    state.signInModalOpen = false;
+    if (state.user) state.signInModalOpen = false;
     return;
   }
   await actions.internal.signIn(options);
-  state.signInModalOpen = false;
+  if (state.user) state.signInModalOpen = false;
 };
 
 export const signInCliClicked: AsyncAction = async ({ state, actions }) => {
   await actions.internal.signIn({
     useExtraScopes: false,
   });
-  state.signInModalOpen = false;
+  if (state.user) state.signInModalOpen = false;
 
   if (state.user) {
     await actions.internal.authorize();
@@ -385,11 +384,16 @@ export const finalizeSignUp: AsyncAction = async ({
 }) => {
   if (!state.pendingUser) return;
   try {
-    effects.api.finalizeSignUp({
+    await effects.api.finalizeSignUp({
       id: state.pendingUser.id,
       username: state.pendingUser.username,
     });
-    state.pendingUser = null;
+    window.postMessage(
+      {
+        type: 'signin',
+      },
+      '*'
+    );
   } catch (error) {
     actions.internal.handleError({
       message: 'There was a problem creating your account',
