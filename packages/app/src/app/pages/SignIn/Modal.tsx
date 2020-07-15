@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
 import { github as GitHubIcon } from '@codesandbox/components/lib/components/Icon/icons';
-import {
-  Element,
-  Text,
-  Stack,
-  Input,
-  Button as SignUpButton,
-} from '@codesandbox/components';
+import { Element, Text } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import history from 'app/utils/history';
 import { LeftSide } from './components/LeftSide';
 import { Wrapper } from './components/Wrapper';
 import { Button } from './components/Button';
+import { UserNameSelection } from './components/UserNameSelection';
 
 type SignInModalElementProps = {
   redirectTo?: string;
@@ -25,15 +20,8 @@ export const SignInModalElement = ({
 }: SignInModalElementProps) => {
   const {
     state: { pendingUser, pendingUserId },
-    actions: {
-      signInButtonClicked,
-      getPendingUser,
-      validateUsername,
-      finalizeSignUp,
-    },
+    actions: { signInButtonClicked, getPendingUser },
   } = useOvermind();
-  const [newUsername, setNewUsername] = useState('');
-  const [loadingUsername, setLoadingUserName] = useState(false);
 
   useEffect(() => {
     if (pendingUserId) {
@@ -41,9 +29,6 @@ export const SignInModalElement = ({
     }
   }, [getPendingUser, pendingUserId]);
 
-  useEffect(() => {
-    setNewUsername(pendingUser?.username);
-  }, [pendingUser]);
   const [loading, setLoading] = useState(false);
 
   const handleSignIn = async () => {
@@ -65,56 +50,7 @@ export const SignInModalElement = ({
   return (
     <Wrapper usernameSelection={pendingUser}>
       {pendingUser ? (
-        <Stack
-          justify="center"
-          align="center"
-          marginTop={6}
-          style={{ height: 'calc(100vh - 72px)' }}
-        >
-          <Element style={{ maxWidth: 1024 }}>
-            <Element style={{ maxWidth: 400 }}>
-              <Stack direction="vertical" align="center" gap={4}>
-                <Element>
-                  <img
-                    alt={pendingUser.username}
-                    css={css({
-                      width: 100,
-                      height: 100,
-                      border: '1px solid',
-                      borderColor: 'grays.500',
-                      borderRadius: 'medium',
-                    })}
-                    src={pendingUser.avatarUrl}
-                  />
-                </Element>
-                <Text weight="bold" size={6}>
-                  Please select your username
-                </Text>
-
-                <Input
-                  onBlur={async e => {
-                    setLoadingUserName(true);
-                    await validateUsername(e.target.value);
-                    setLoadingUserName(false);
-                  }}
-                  value={newUsername}
-                  onChange={e => setNewUsername(e.target.value)}
-                />
-                {!pendingUser.valid ? (
-                  <Text size={3} variant="danger">
-                    Sorry, that username is already taken.
-                  </Text>
-                ) : null}
-                <SignUpButton
-                  onClick={finalizeSignUp}
-                  disabled={loadingUsername || !pendingUser.valid}
-                >
-                  {loadingUsername ? 'Checking username...' : 'Finish Sign Up'}
-                </SignUpButton>
-              </Stack>
-            </Element>
-          </Element>
-        </Stack>
+        <UserNameSelection />
       ) : (
         <>
           <LeftSide />

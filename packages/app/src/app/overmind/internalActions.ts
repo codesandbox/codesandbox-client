@@ -159,14 +159,12 @@ export const signInGithub: AsyncAction<{ useExtraScopes?: boolean }, any> = (
       popup.close();
     });
 
-  const signUpPromise = effects.browser
-    .waitForMessage('signup')
-    .then((data: any) => {
-      state.pendingUserId = data.id;
-      popup.close();
-    });
+  effects.browser.waitForMessage('signup').then((data: any) => {
+    state.pendingUserId = data.id;
+    popup.close();
+  });
 
-  return Promise.all([signInPromise, signUpPromise]);
+  return signInPromise;
 };
 
 export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
