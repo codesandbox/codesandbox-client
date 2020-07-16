@@ -19,7 +19,7 @@ export const UserNameSelection = () => {
   return (
     <Stack justify="center" align="center">
       <Element>
-        <Element style={{ maxWidth: 400 }}>
+        <Element>
           <Stack direction="vertical" align="center" gap={4}>
             <Element>
               <img
@@ -37,27 +37,40 @@ export const UserNameSelection = () => {
             <Text weight="bold" size={6}>
               Please select your username
             </Text>
-
-            <Input
-              onBlur={async e => {
-                setLoadingUserName(true);
-                await validateUsername(e.target.value);
-                setLoadingUserName(false);
+            <Stack
+              css={css({
+                width: 300,
+              })}
+              as="form"
+              direction="vertical"
+              align="center"
+              gap={4}
+              onSubmit={e => {
+                e.preventDefault();
+                finalizeSignUp(newUsername);
               }}
-              value={newUsername}
-              onChange={e => setNewUsername(e.target.value)}
-            />
-            {!pendingUser.valid ? (
-              <Text size={3} variant="danger">
-                Sorry, that username is already taken.
-              </Text>
-            ) : null}
-            <Button
-              onClick={e => finalizeSignUp(newUsername)}
-              disabled={loadingUsername || !pendingUser.valid}
             >
-              {loadingUsername ? 'Checking username...' : 'Finish Sign Up'}
-            </Button>
+              <Input
+                onBlur={async e => {
+                  setLoadingUserName(true);
+                  await validateUsername(e.target.value);
+                  setLoadingUserName(false);
+                }}
+                value={newUsername}
+                onChange={e => setNewUsername(e.target.value)}
+              />
+              {!pendingUser.valid ? (
+                <Text size={3} variant="danger">
+                  Sorry, that username is already taken.
+                </Text>
+              ) : null}
+              <Button
+                type="submit"
+                disabled={loadingUsername || !pendingUser.valid}
+              >
+                {loadingUsername ? 'Checking username...' : 'Finish Sign Up'}
+              </Button>
+            </Stack>
           </Stack>
         </Element>
       </Element>

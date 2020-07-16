@@ -5,6 +5,7 @@ import {
 import { identify } from '@codesandbox/common/lib/utils/analytics';
 import { CurrentTeamInfoFragmentFragment } from 'app/graphql/types';
 
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
 import { Action, AsyncAction } from '.';
@@ -122,22 +123,20 @@ export const signInButtonClicked: AsyncAction<{
     await actions.internal.signIn({
       useExtraScopes: false,
     });
-    if (state.user) state.signInModalOpen = false;
+    state.signInModalOpen = false;
     return;
   }
   await actions.internal.signIn(options);
-  if (state.user) state.signInModalOpen = false;
+  state.signInModalOpen = false;
 };
 
 export const signInCliClicked: AsyncAction = async ({ state, actions }) => {
   await actions.internal.signIn({
     useExtraScopes: false,
   });
-  if (state.user) state.signInModalOpen = false;
+  state.signInModalOpen = false;
 
-  if (state.user) {
-    await actions.internal.authorize();
-  }
+  await actions.internal.authorize();
 };
 
 export const addNotification: Action<{
@@ -392,7 +391,7 @@ export const finalizeSignUp: AsyncAction<string> = async (
       {
         type: 'signin',
       },
-      '*'
+      protocolAndHost()
     );
   } catch (error) {
     actions.internal.handleError({

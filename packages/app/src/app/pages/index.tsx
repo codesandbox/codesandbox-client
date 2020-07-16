@@ -80,10 +80,10 @@ const CliInstructions = Loadable(() =>
 const Patron = Loadable(() =>
   import(/* webpackChunkName: 'page-patron' */ './Patron')
 );
-const UserNameSelection = Loadable(() =>
-  import(
-    /* webpackChunkName: 'page-patron' */ './UserNameSelection'
-  ).then(module => ({ default: module.UserNameSelection }))
+const SignUp = Loadable(() =>
+  import(/* webpackChunkName: 'page-signup' */ './SignUp').then(module => ({
+    default: module.SignUp,
+  }))
 );
 const Pro = Loadable(() => import(/* webpackChunkName: 'page-pro' */ './Pro'));
 const Curator = Loadable(() =>
@@ -145,8 +145,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
             <Route path="/signin" exact component={SignIn} />
-            <Route path="/signup/:userId" exact component={UserNameSelection} />
-            <Route path="/signup/:jwt?" component={SignInAuth} />
+            <Route path="/signup/:userId" exact component={SignUp} />
             <Route path="/signin/:jwt?" component={SignInAuth} />
             <Route path="/u/:username" component={Profile} />
             <Route path="/search" component={Search} />
