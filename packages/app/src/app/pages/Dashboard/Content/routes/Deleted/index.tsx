@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
-import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
-import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
-import { DashboardGridItem, PageTypes } from 'app/pages/NewDashboard/types';
+import { Header } from 'app/pages/Dashboard/Components/Header';
+import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
+import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
+import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
 import { getPossibleTemplates } from '../../utils';
 

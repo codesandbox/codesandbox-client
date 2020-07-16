@@ -2,14 +2,14 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
-import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
+import { Header } from 'app/pages/Dashboard/Components/Header';
+import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import {
   DashboardGridItem,
   DashboardRepoSandbox,
   PageTypes,
-} from 'app/pages/NewDashboard/types';
-import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+} from 'app/pages/Dashboard/types';
+import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 

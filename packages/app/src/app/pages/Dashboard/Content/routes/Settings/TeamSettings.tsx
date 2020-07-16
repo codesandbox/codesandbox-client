@@ -13,7 +13,7 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
-import { Header } from 'app/pages/NewDashboard/Components/Header';
+import { Header } from 'app/pages/Dashboard/Components/Header';
 import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';

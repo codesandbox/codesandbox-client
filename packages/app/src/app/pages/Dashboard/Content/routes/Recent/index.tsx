@@ -1,16 +1,16 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
-import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
+import { Header } from 'app/pages/Dashboard/Components/Header';
+import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import {
   DashboardGridItem,
   DashboardHeader,
   DashboardSandbox,
   PageTypes,
-} from 'app/pages/NewDashboard/types';
+} from 'app/pages/Dashboard/types';
 import { getPossibleTemplates } from '../../utils';
 
 export const Recent = () => {

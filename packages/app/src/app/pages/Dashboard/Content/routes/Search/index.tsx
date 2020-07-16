@@ -2,12 +2,12 @@ import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Helmet } from 'react-helmet';
 import Fuse from 'fuse.js';
-import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
-import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import { Header } from 'app/pages/Dashboard/Components/Header';
+import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
+import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { DashboardGridItem, PageTypes } from 'app/pages/NewDashboard/types';
+import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
 import { getPossibleTemplates } from '../../utils';
 

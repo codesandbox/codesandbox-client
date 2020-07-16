@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
-import { Header } from 'app/pages/NewDashboard/Components/Header';
-import { VariableGrid } from 'app/pages/NewDashboard/Components/VariableGrid';
-import { SelectionProvider } from 'app/pages/NewDashboard/Components/Selection';
+import { Header } from 'app/pages/Dashboard/Components/Header';
+import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
+import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { Helmet } from 'react-helmet';
 import {
   DashboardGridItem,
   DashboardTemplate,
   PageTypes,
-} from 'app/pages/NewDashboard/types';
+} from 'app/pages/Dashboard/types';
 
 export const Home = () => {
   const {

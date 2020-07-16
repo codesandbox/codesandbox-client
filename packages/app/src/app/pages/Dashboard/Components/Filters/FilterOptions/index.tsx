@@ -7,7 +7,7 @@ import { orderBy, noop } from 'lodash-es';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { Text, Menu, Checkbox } from '@codesandbox/components';
-import { TemplateFilter } from 'app/pages/NewDashboard/Content/utils';
+import { TemplateFilter } from 'app/pages/Dashboard/Content/utils';
 
 type Props = {
   possibleTemplates?: TemplateFilter[];

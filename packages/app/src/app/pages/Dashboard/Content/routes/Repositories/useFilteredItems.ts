@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { compareDesc } from 'date-fns';
 import { useOvermind } from 'app/overmind';
-import { DashboardGridItem } from 'app/pages/NewDashboard/types';
+import { DashboardGridItem } from 'app/pages/Dashboard/types';
 
 type Params = {
   path?: string;

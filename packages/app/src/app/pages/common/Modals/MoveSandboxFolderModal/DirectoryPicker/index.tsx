@@ -1,6 +1,6 @@
 import React, { ComponentProps, FunctionComponent } from 'react';
 
-import { SandboxesItem } from 'app/pages/Dashboard/Sidebar/SandboxesItem';
+// import { SandboxesItem } from 'app/pages/Dashboard/Sidebar/SandboxesItem';
 
 import { TeamsPicker } from './TeamsPicker';
 
@@ -14,13 +14,13 @@ export const DirectoryPicker: FunctionComponent<Props> = ({
   onSelect,
 }) => (
   <>
-    <SandboxesItem
+    {/* <SandboxesItem
       currentPath={currentPath}
       currentTeamId={currentTeamId}
       onSelect={onSelect}
       openByDefault
       teamId={undefined}
-    />
+    /> */}
 
     <TeamsPicker
       currentPath={currentPath}

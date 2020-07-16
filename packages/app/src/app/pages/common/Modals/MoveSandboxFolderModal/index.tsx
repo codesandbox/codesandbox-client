@@ -1,23 +1,23 @@
-import track from '@codesandbox/common/lib/utils/analytics';
+// import track from '@codesandbox/common/lib/utils/analytics';
 import { basename } from 'path';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { Button, Stack, Element } from '@codesandbox/components';
-import { addSandboxesToFolder } from '../../../Dashboard/queries';
+// import { addSandboxesToFolder } from '../../../Dashboard/queries';
 
 import { DirectoryPicker } from './DirectoryPicker';
 import { Alert } from '../Common/Alert';
 
 export const MoveSandboxFolderModal: FunctionComponent = () => {
   const {
-    actions: { modalClosed, refetchSandboxInfo },
+    actions: { modalClosed },
     state: {
       editor: { currentSandbox },
     },
   } = useOvermind();
-  const { collection, id, team } = currentSandbox || {};
+  const { collection, team } = currentSandbox || {};
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const [path, setPath] = useState(collection?.path || '/');
@@ -33,26 +33,26 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     setPath(newPath);
   };
 
-  useEffect(() => {
-    if (!loading) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (!loading) {
+  //     return;
+  //   }
 
-    addSandboxesToFolder([id], path, teamId)
-      .then(() => {
-        refetchSandboxInfo();
+  //   addSandboxesToFolder([id], path, teamId)
+  //     .then(() => {
+  //       refetchSandboxInfo();
 
-        setLoading(false);
-        modalClosed();
+  //       setLoading(false);
+  //       modalClosed();
 
-        track('Move Sandbox From Editor');
-      })
-      .catch(({ message }) => {
-        setError(message);
+  //       track('Move Sandbox From Editor');
+  //     })
+  //     .catch(({ message }) => {
+  //       setError(message);
 
-        setLoading(false);
-      });
-  }, [id, loading, modalClosed, path, refetchSandboxInfo, teamId]);
+  //       setLoading(false);
+  //     });
+  // }, [id, loading, modalClosed, path, refetchSandboxInfo, teamId]);
 
   return (
     <Alert

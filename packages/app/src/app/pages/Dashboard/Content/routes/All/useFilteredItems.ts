@@ -6,7 +6,7 @@ import {
   DashboardFolder,
   DashboardTemplate,
   DashboardSkeletonRow,
-} from 'app/pages/NewDashboard/types';
+} from 'app/pages/Dashboard/types';
 
 type Params = {
   path?: string;
