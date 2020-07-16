@@ -31,15 +31,17 @@ export const Sandbox = React.memo<Props>(
     const { state, actions } = useOvermind();
 
     useEffect(() => {
-      if (window.screen.availWidth < 800) {
-        if (!document.location.search.includes('from-embed')) {
-          const addedSign = document.location.search ? '&' : '?';
-          document.location.href =
-            document.location.href.replace('/s/', '/embed/') +
-            addedSign +
-            'codemirror=1';
-        } else {
-          actions.preferences.codeMirrorForced();
+      if (!showNewSandboxModal) {
+        if (window.screen.availWidth < 800) {
+          if (!document.location.search.includes('from-embed')) {
+            const addedSign = document.location.search ? '&' : '?';
+            document.location.href =
+              document.location.href.replace('/s/', '/embed/') +
+              addedSign +
+              'codemirror=1';
+          } else {
+            actions.preferences.codeMirrorForced();
+          }
         }
       }
 
@@ -47,7 +49,13 @@ export const Sandbox = React.memo<Props>(
       if (match?.params) {
         actions.editor.sandboxChanged({ id: match.params.id });
       }
-    }, [actions.live, actions.editor, actions.preferences, match?.params]);
+    }, [
+      actions.live,
+      actions.editor,
+      actions.preferences,
+      match.params,
+      showNewSandboxModal,
+    ]);
 
     useEffect(
       () => () => {
