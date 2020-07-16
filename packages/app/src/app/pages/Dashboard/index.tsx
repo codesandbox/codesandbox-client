@@ -1,75 +1,128 @@
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import React, { useState, useEffect, FunctionComponent } from 'react';
-import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
-
-import { client } from 'app/graphql/client';
+import React, { FunctionComponent, useEffect } from 'react';
+import { Redirect, useLocation } from 'react-router-dom';
+import { DndProvider } from 'react-dnd';
+import Media from 'react-media';
+import Backend from 'react-dnd-html5-backend';
 import { useOvermind } from 'app/overmind';
-import { ThemeProvider } from '@codesandbox/components';
-import { Navigation } from './Navigation';
-
-import Content from './Content';
 import {
-  Container,
-  ContentContainer,
-  LeftIcon,
-  RightIcon,
-  SidebarContainer,
-  ShowSidebarButton,
-} from './elements';
+  ThemeProvider,
+  Stack,
+  Element,
+  SkipNav,
+} from '@codesandbox/components';
+import { createGlobalStyle, useTheme } from 'styled-components';
+import css from '@styled-system/css';
+
+import { Header } from './Header';
 import { Sidebar } from './Sidebar';
+import { SIDEBAR_WIDTH } from './Sidebar/constants';
+import { Content } from './Content';
 
-type Props = RouteComponentProps;
-const DashboardComponent: FunctionComponent<Props> = ({ history }) => {
+const GlobalStyles = createGlobalStyle({
+  body: { overflow: 'hidden' },
+});
+
+export const Dashboard: FunctionComponent = () => {
   const {
-    actions: {
-      dashboard: { dashboardMounted },
-    },
     state: { hasLogIn },
+    actions,
   } = useOvermind();
-  const [showSidebar, setShowSidebar] = useState(false);
 
+  // only used for mobile
+  const [sidebarVisible, setSidebarVisibility] = React.useState(false);
+  const onSidebarToggle = React.useCallback(
+    () => setSidebarVisibility(s => !s),
+    [setSidebarVisibility]
+  );
+  const theme = useTheme() as any;
+
+  const location = useLocation();
   useEffect(() => {
-    dashboardMounted();
-
-    // Reset store so new visits get fresh data
-    return () => client.resetStore();
-  }, [dashboardMounted]);
-
-  useEffect(() => {
-    history.listen(({ state }) => {
-      if (state?.from === 'sandboxSearchFocused') {
-        return;
-      }
-
-      setShowSidebar(false);
-    });
-  }, [history]);
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get('workspace')) {
+      actions.setActiveTeam({ id: searchParams.get('workspace') });
+    }
+  }, [location.search, actions]);
 
   if (!hasLogIn) {
-    return <Redirect to={signInPageUrl()} />;
+    return <Redirect to={signInPageUrl(location.pathname)} />;
   }
 
   return (
     <ThemeProvider>
-      <Container>
-        <Navigation float searchNoInput title="Dashboard" />
+      <GlobalStyles />
+      <DndProvider backend={Backend}>
+        <Stack
+          direction="vertical"
+          css={css({
+            fontFamily: "'Inter', sans-serif",
+            backgroundColor: 'sideBar.background',
+            color: 'sideBar.foreground',
+            width: '100vw',
+            minHeight: '100vh',
+          })}
+        >
+          <SkipNav.Link />
+          <Header onSidebarToggle={onSidebarToggle} />
+          <Stack css={{ flexGrow: 1 }}>
+            <Media
+              query={theme.media
+                .lessThan(theme.sizes.medium)
+                .replace('@media ', '')}
+            >
+              {match =>
+                match ? (
+                  <Sidebar
+                    id="mobile-sidebar"
+                    css={css({ display: ['block', 'block', 'none'] })}
+                    visible={sidebarVisible}
+                    onSidebarToggle={onSidebarToggle}
+                    style={{
+                      // We set sidebar as absolute so that content can
+                      // take 100% width, this helps us enable dragging
+                      // sandboxes onto the sidebar more freely.
+                      position: 'absolute',
+                      height: 'calc(100% - 48px)',
+                    }}
+                  />
+                ) : (
+                  <Element
+                    as="aside"
+                    id="desktop-sidebar"
+                    css={css({ display: ['none', 'none', 'block'] })}
+                  >
+                    <Sidebar
+                      visible
+                      onSidebarToggle={() => {
+                        /* do nothing */
+                      }}
+                      style={{
+                        // We set sidebar as absolute so that content can
+                        // take 100% width, this helps us enable dragging
+                        // sandboxes onto the sidebar more freely.
+                        position: 'absolute',
+                        height: 'calc(100% - 48px)',
+                      }}
+                    />
+                  </Element>
+                )
+              }
+            </Media>
 
-        <div style={{ display: 'flex', overflow: 'hidden' }}>
-          <SidebarContainer active={showSidebar}>
-            <Sidebar />
-
-            <ShowSidebarButton onClick={() => setShowSidebar(show => !show)}>
-              {showSidebar ? <LeftIcon /> : <RightIcon />}
-            </ShowSidebarButton>
-          </SidebarContainer>
-
-          <ContentContainer>
-            <Content />
-          </ContentContainer>
-        </div>
-      </Container>
+            <Element
+              as="main"
+              css={css({
+                width: '100%',
+                height: 'calc(100vh - 48px)',
+                paddingLeft: [0, 0, SIDEBAR_WIDTH],
+              })}
+            >
+              <Content />
+            </Element>
+          </Stack>
+        </Stack>
+      </DndProvider>
     </ThemeProvider>
   );
 };
-
-export const Dashboard = withRouter(DashboardComponent);
