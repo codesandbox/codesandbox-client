@@ -42,6 +42,7 @@ export const initializeSandbox: AsyncAction<Sandbox> = async (
     actions.editor.internal.initializeLiveSandbox(sandbox),
     actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
     actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id }),
+    actions.internal.switchCurrentWorkspaceBySandbox({ sandbox }),
   ]);
 };
 

@@ -13,19 +13,11 @@ export const DirectoryPicker: FunctionComponent<Props> = ({
   currentTeamId,
   onSelect,
 }) => (
-  <>
-    <SandboxesItem
-      currentPath={currentPath}
-      currentTeamId={currentTeamId}
-      onSelect={onSelect}
-      openByDefault
-      teamId={undefined}
-    />
-
-    <TeamsPicker
-      currentPath={currentPath}
-      currentTeamId={currentTeamId}
-      onSelect={onSelect}
-    />
-  </>
+  <SandboxesItem
+    currentPath={currentPath}
+    currentTeamId={currentTeamId}
+    onSelect={onSelect}
+    openByDefault
+    teamId={currentTeamId}
+  />
 );

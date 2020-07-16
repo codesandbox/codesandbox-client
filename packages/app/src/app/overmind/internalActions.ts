@@ -168,8 +168,10 @@ export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
   state.currentModal = null;
 };
 
-export const currentSandboxChanged: Action = ({ state, effects, actions }) => {
-  const sandbox = state.editor.currentSandbox!;
+export const switchCurrentWorkspaceBySandbox: Action<{ sandbox: Sandbox }> = (
+  { state, actions },
+  { sandbox }
+) => {
   if (
     hasPermission(sandbox.authorization, 'owner') &&
     state.user &&
@@ -177,6 +179,13 @@ export const currentSandboxChanged: Action = ({ state, effects, actions }) => {
   ) {
     actions.setActiveTeam({ id: sandbox.team?.id || null });
   }
+};
+
+export const currentSandboxChanged: Action = ({ state, actions }) => {
+  const sandbox = state.editor.currentSandbox!;
+  actions.internal.switchCurrentWorkspaceBySandbox({
+    sandbox,
+  });
 };
 
 export const setCurrentSandbox: AsyncAction<Sandbox> = async (

@@ -58,7 +58,7 @@ type Props = {
   basePath: string;
   teamId: string;
   onSelect: (params: { teamId: string; path: string }) => void;
-  currentPath: string;
+  currentPath: string | null;
   currentTeamId: string;
 
   // dnd handlers
@@ -137,7 +137,6 @@ class FolderEntry extends React.Component<Props, State> {
       depth,
       isOver,
       toToggle = true,
-      allowCreate = true,
       canDrop,
       connectDropTarget,
       connectDragSource,
@@ -149,6 +148,7 @@ class FolderEntry extends React.Component<Props, State> {
       currentTeamId,
       history,
       readOnly,
+      allowCreate = !readOnly,
     } = this.props;
 
     const children = getDirectChildren(path, folders);
@@ -246,7 +246,8 @@ class FolderEntry extends React.Component<Props, State> {
                 backgroundColor:
                   isOver && canDrop ? 'rgba(0, 0, 0, 0.3)' : undefined,
 
-                ...(decodeURIComponent(currentPath) === path &&
+                ...(currentPath &&
+                decodeURIComponent(currentPath) === path &&
                 currentTeamId === teamId
                   ? {
                       borderColor: theme.secondary(),
@@ -388,7 +389,7 @@ class FolderEntry extends React.Component<Props, State> {
                     key={childName}
                     name={childName}
                     depth={this.props.depth + 1}
-                    open={currentPath.indexOf(childPath) === 0}
+                    open={currentPath && currentPath.indexOf(childPath) === 0}
                     onSelect={onSelect}
                     currentPath={currentPath}
                     currentTeamId={currentTeamId}
@@ -411,7 +412,7 @@ class FolderEntry extends React.Component<Props, State> {
 }
 
 const entrySource = {
-  canDrag: () => true,
+  canDrag: props => !props.readOnly,
 
   beginDrag: props => {
     if (props.closeTree) props.closeTree();

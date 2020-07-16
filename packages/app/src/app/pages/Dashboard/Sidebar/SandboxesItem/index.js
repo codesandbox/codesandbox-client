@@ -1,11 +1,10 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { DropTarget } from 'react-dnd';
-import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
 import { Query } from 'react-apollo';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
-import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
-import { Item } from '../Item';
+import { Icon } from '@codesandbox/components';
+import theme from '@codesandbox/common/lib/theme';
 import { Container } from './elements';
 import { DropFolderEntry } from './FolderEntry';
 import { CreateFolderEntry } from './FolderEntry/CreateFolderEntry';
@@ -15,6 +14,11 @@ import { entryTarget, collectTarget } from './folder-drop-target';
 import getChildCollections from '../../utils/get-child-collections';
 
 import { PATHED_SANDBOXES_FOLDER_QUERY } from '../../queries';
+import {
+  CreateDirectoryContainer as FolderContainer,
+  IconContainer as FolderIconContainer,
+  AnimatedChevron as FolderChevron,
+} from './FolderEntry/elements';
 
 class SandboxesItemComponent extends React.Component {
   state = {
@@ -30,12 +34,8 @@ class SandboxesItemComponent extends React.Component {
 
   render() {
     const {
-      isOver,
-      canDrop,
       teamId,
-      teamName,
       connectDropTarget,
-      openByDefault,
       onSelect,
       currentPath,
       currentTeamId,
@@ -74,21 +74,25 @@ class SandboxesItemComponent extends React.Component {
 
             return (
               <Container>
-                <DropFolderEntry
-                  selectedSandboxes={selectedSandboxes}
-                  basePath={basePath}
-                  teamId={teamId}
-                  path="/Drafts"
-                  url="/"
-                  folders={[]}
-                  foldersByPath={{}}
-                  readOnly
-                  name="Drafts"
-                  open
-                  onSelect={onSelect}
-                  currentPath={currentPath}
-                  currentTeamId={currentTeamId}
-                />
+                <FolderContainer
+                  style={{
+                    ...(currentPath === null && currentTeamId === teamId
+                      ? {
+                          borderColor: theme.secondary(),
+                          color: 'white',
+                        }
+                      : {}),
+                  }}
+                  onClick={() => {
+                    onSelect({ path: null, teamId });
+                  }}
+                >
+                  <FolderIconContainer>
+                    <FolderChevron style={{ opacity: 0 }} />
+                    <Icon name="file" />
+                  </FolderIconContainer>
+                  Drafts
+                </FolderContainer>
 
                 <DropFolderEntry
                   selectedSandboxes={selectedSandboxes}
@@ -110,6 +114,7 @@ class SandboxesItemComponent extends React.Component {
                     teamId={teamId}
                     noFocus={!this.state.creatingDirectory}
                     basePath=""
+                    depth={1}
                     close={() => {
                       this.setState({ creatingDirectory: false });
                     }}

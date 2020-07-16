@@ -150,18 +150,16 @@ export const RENAME_FOLDER_MUTATION = gql`
 
 export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
   mutation AddToCollection(
-    $collectionPath: String!
+    $collectionPath: String
     $sandboxIds: [ID!]!
     $teamId: ID
   ) {
-    addToCollection(
+    addToCollectionOrTeam(
       collectionPath: $collectionPath
       sandboxIds: $sandboxIds
       teamId: $teamId
     ) {
-      sandboxes {
-        ...Sandbox
-      }
+      ...Sandbox
     }
   }
   ${SANDBOX_FRAGMENT}
@@ -262,7 +260,7 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
 
 export function addSandboxesToFolder(
   selectedSandboxes: string[],
-  path: string,
+  path: string | null,
   teamId: string | null
 ) {
   return client.mutate<

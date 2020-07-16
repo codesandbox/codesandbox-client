@@ -1,16 +1,14 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { basename } from 'path';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { Button, Stack, Element, Menu, Text } from '@codesandbox/components';
+import { Button, Stack, Element, Text } from '@codesandbox/components';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { addSandboxesToFolder } from '../../../Dashboard/queries';
 
 import { DirectoryPicker } from './DirectoryPicker';
-import { Alert } from '../Common/Alert';
-
 
 export const MoveSandboxFolderModal: FunctionComponent = () => {
   const {
@@ -24,19 +22,19 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
   const { collection, id, team } = currentSandbox || {};
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
-  const [path, setPath] = useState(collection?.path || '/');
+  const [path, setPath] = useState<string | null>(collection?.path || null);
   const [teamId, setTeamId] = useState(team?.id);
 
   const [selectedTeam, setSelectedTeam] = useState(
     activeTeamInfo
       ? {
-          type: 'team',
+          type: 'team' as const,
           id: team.id,
           name: activeTeamInfo.name,
           avatarUrl: activeTeamInfo.avatarUrl,
         }
       : {
-          type: 'user',
+          type: 'user' as const,
           id: user.id,
           username: user.username,
           avatarUrl: user.avatarUrl,
@@ -46,17 +44,6 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
   const handleMove = () => {
     setLoading(true);
     setError(undefined);
-  };
-
-  const onSelect = ({ teamId: newTeamId, path: newPath }) => {
-    setTeamId(newTeamId);
-    setPath(newPath);
-  };
-
-  useEffect(() => {
-    if (!loading) {
-      return;
-    }
 
     addSandboxesToFolder([id], path, teamId)
       .then(() => {
@@ -72,7 +59,12 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
 
         setLoading(false);
       });
-  }, [id, loading, modalClosed, path, refetchSandboxInfo, teamId]);
+  };
+
+  const onSelect = ({ teamId: newTeamId, path: newPath }) => {
+    setTeamId(newTeamId);
+    setPath(newPath);
+  };
 
   return (
     <Stack
@@ -93,8 +85,9 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
           })}
         >
           <WorkspaceSelect
-            onSelect={team => {
-              setSelectedTeam(team);
+            onSelect={workspace => {
+              setSelectedTeam(workspace);
+              setTeamId(workspace.type === 'user' ? null : workspace.id);
             }}
             activeAccount={selectedTeam}
           />
@@ -137,9 +130,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
               ) : (
                 <>
                   {`Move to ${
-                    path !== '/'
-                      ? basename(path)
-                      : `${teamId ? 'Our' : 'My'} Sandboxes`
+                    path === null ? 'Drafts' : basename(path) || 'All Sandboxes'
                   }`}
 
                   <ChevronRight />

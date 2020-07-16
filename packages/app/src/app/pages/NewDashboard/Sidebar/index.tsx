@@ -29,7 +29,6 @@ import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder, PageTypes } from '../types';
 import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH } from './constants';
-import { WorkspaceSwitcher } from './WorkspaceSwitcher';
 import { DragItemType, useDrop } from '../utils/dnd';
 
 const SidebarContext = React.createContext(null);
@@ -48,13 +47,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ...props
 }) => {
   const { state, actions } = useOvermind();
-  const [activeAccount, setActiveAccount] = useState<{
-    username: string | null;
-    avatarUrl: string | null;
-  }>({
-    username: null,
-    avatarUrl: null,
-  });
+  const [activeAccount, setActiveAccount] = useState<
+    | {
+        type: 'user';
+        id: string;
+        username: string;
+        avatarUrl: string;
+      }
+    | {
+        type: 'team';
+        id: string;
+        name: string;
+        avatarUrl: string;
+      }
+    | null
+  >(null);
   const { dashboard, user, activeTeam } = state;
 
   React.useEffect(() => {
@@ -66,17 +73,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
       const team = dashboard.teams.find(({ id }) => id === state.activeTeam);
 
       if (team)
-        setActiveAccount({ username: team.name, avatarUrl: team.avatarUrl });
+        setActiveAccount({
+          type: 'team',
+          id: team.id,
+          name: team.name,
+          avatarUrl: team.avatarUrl,
+        });
     } else if (user) {
       setActiveAccount({
+        type: 'user',
+        id: user.id,
         username: user.username,
         avatarUrl: user.avatarUrl,
       });
     }
   }, [state.activeTeam, state.activeTeamInfo, dashboard.teams, user]);
-
-  const inTeamContext =
-    activeAccount && user && activeAccount.username !== user.username;
 
   const folders = dashboard.allCollections || [];
 
@@ -137,7 +148,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
               borderColor: 'sideBar.border',
             })}
           >
-            <WorkspaceSelect activeAccount={activeAccount} />
+            {activeAccount && (
+              <WorkspaceSelect
+                onSelect={workspace => {
+                  actions.setActiveTeam({
+                    id: workspace.type === 'user' ? null : workspace.id,
+                  });
+                }}
+                activeAccount={activeAccount}
+              />
+            )}
             <Link
               css={css({ height: '100%' })}
               as={RouterLink}
