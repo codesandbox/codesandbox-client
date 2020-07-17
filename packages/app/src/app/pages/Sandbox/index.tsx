@@ -56,6 +56,7 @@ export const Sandbox = React.memo<Props>(
       actions.editor,
       actions.preferences,
       showNewSandboxModal,
+      match?.params,
     ]);
 
     useEffect(
