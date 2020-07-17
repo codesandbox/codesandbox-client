@@ -115,8 +115,9 @@ export const Import = () => {
                 autoWidth
                 style={{ fontSize: 11 }}
                 disabled={!transformedUrl}
-                onClick={() => {
-                  actions.git.importFromGithub(gitHubToSandboxUrl(url));
+                onClick={async () => {
+                  await actions.git.importFromGithub(gitHubToSandboxUrl(url));
+                  actions.modals.newSandboxModal.close();
                 }}
               >
                 Import and Fork
