@@ -192,7 +192,7 @@ export const createModals = <
   };
 } => {
   function createModal(name, modal) {
-    let resolver;
+    let resolver: ((res: T) => void) | null;
 
     const open: AsyncAction<any, any> = async ({ state }, newState = {}) => {
       state.modals.current = name;
@@ -206,7 +206,9 @@ export const createModals = <
 
     const close: AsyncAction<T> = async ({ state }, payload) => {
       state.modals.current = null;
-      resolver(payload || modal.result);
+      if (resolver) {
+        resolver(payload || modal.result);
+      }
     };
 
     return {
