@@ -49,11 +49,12 @@ export const Sandbox = React.memo<Props>(
       if (match?.params) {
         actions.editor.sandboxChanged({ id: match.params.id });
       }
+
+      // eslint-disable-next-line
     }, [
       actions.live,
       actions.editor,
       actions.preferences,
-      match.params,
       showNewSandboxModal,
     ]);
 
