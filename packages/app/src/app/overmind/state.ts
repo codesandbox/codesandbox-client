@@ -6,7 +6,7 @@ import {
 } from '@codesandbox/common/lib/types';
 import { CurrentTeamInfoFragmentFragment as CurrentTeam } from 'app/graphql/types';
 import { derived } from 'overmind';
-import { hasLogIn } from '@codesandbox/common/src/utils/user';
+import { hasLogIn } from '@codesandbox/common/lib/utils/user';
 
 export type PendingUserType = {
   avatarUrl: string | null;
