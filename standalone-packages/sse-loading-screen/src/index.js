@@ -246,9 +246,6 @@ async function start() {
     transports: ['websocket'],
     reconnectionAttempts: 5,
     reconnectionDelayMax: 32000,
-    query: {
-      sandboxid: sandbox,
-    },
   });
 
   socket.on('connect', () => {
