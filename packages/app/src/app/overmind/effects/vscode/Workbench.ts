@@ -150,7 +150,7 @@ export class Workbench {
             // @ts-ignore - safari has this under a webkit flag
           } else if (document.documentElement.webkitRequestFullscreen) {
             // @ts-ignore - safari has this under a webkit flag
-            document.documentElement.webkitRequestFullScreen();
+            document.documentElement.webkitRequestFullscreen();
           }
 
           this.addNotification({
