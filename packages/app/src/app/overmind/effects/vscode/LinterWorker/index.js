@@ -3,7 +3,7 @@ import Linter from 'eslint/lib/linter';
 import monkeypatch from './monkeypatch-babel-eslint';
 
 self.importScripts(
-  `${process.env.CODESANDBOX_HOST}/static/browserfs10/browserfs.min.js`
+  `${process.env.CODESANDBOX_HOST}/static/browserfs11/browserfs.min.js`
 );
 
 /* eslint-disable global-require */
@@ -156,7 +156,6 @@ const DEFAULT_RULES = {
   'no-label-var': 'warn',
   'no-labels': ['warn', { allowLoop: true, allowSwitch: false }],
   'no-lone-blocks': 'warn',
-  'no-loop-func': 'warn',
   'no-mixed-operators': [
     'warn',
     {

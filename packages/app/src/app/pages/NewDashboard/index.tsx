@@ -1,16 +1,22 @@
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import React, { FunctionComponent } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { FunctionComponent, useEffect } from 'react';
+import { Redirect, useLocation } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
+import Media from 'react-media';
 import Backend from 'react-dnd-html5-backend';
 import { useOvermind } from 'app/overmind';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
-import { ThemeProvider, Stack, Element } from '@codesandbox/components';
-import { createGlobalStyle } from 'styled-components';
+import {
+  ThemeProvider,
+  Stack,
+  Element,
+  SkipNav,
+} from '@codesandbox/components';
+import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
 
 import { Header } from './Header';
-import { Sidebar, SIDEBAR_WIDTH } from './Sidebar';
+import { Sidebar } from './Sidebar';
+import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
 
 const GlobalStyles = createGlobalStyle({
@@ -20,14 +26,31 @@ const GlobalStyles = createGlobalStyle({
 export const Dashboard: FunctionComponent = () => {
   const {
     state: { hasLogIn },
+    actions,
   } = useOvermind();
 
+  // only used for mobile
+  const [sidebarVisible, setSidebarVisibility] = React.useState(false);
+  const onSidebarToggle = React.useCallback(
+    () => setSidebarVisibility(s => !s),
+    [setSidebarVisibility]
+  );
+  const theme = useTheme() as any;
+
+  const location = useLocation();
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get('workspace')) {
+      actions.setActiveTeam({ id: searchParams.get('workspace') });
+    }
+  }, [location.search, actions]);
+
   if (!hasLogIn) {
-    return <Redirect to={signInPageUrl()} />;
+    return <Redirect to={signInPageUrl(location.pathname)} />;
   }
 
   return (
-    <ThemeProvider theme={codesandboxBlack}>
+    <ThemeProvider>
       <GlobalStyles />
       <DndProvider backend={Backend}>
         <Stack
@@ -40,29 +63,58 @@ export const Dashboard: FunctionComponent = () => {
             minHeight: '100vh',
           })}
         >
-          <Header />
+          <SkipNav.Link />
+          <Header onSidebarToggle={onSidebarToggle} />
           <Stack css={{ flexGrow: 1 }}>
-            <Sidebar
-              css={css({
-                // We set sidebar as absolute so that content can
-                // take 100% width, this helps us enable dragging
-                // sandboxes onto the sidebar more freely.
-                position: 'absolute',
-                borderRight: '1px solid',
-                borderColor: 'sideBar.border',
-                width: [0, 0, SIDEBAR_WIDTH],
-                height: 'calc(100% - 48px)',
-                flexShrink: 0,
-                display: ['none', 'none', 'flex'],
-              })}
-            />
+            <Media
+              query={theme.media
+                .lessThan(theme.sizes.medium)
+                .replace('@media ', '')}
+            >
+              {match =>
+                match ? (
+                  <Sidebar
+                    id="mobile-sidebar"
+                    css={css({ display: ['block', 'block', 'none'] })}
+                    visible={sidebarVisible}
+                    onSidebarToggle={onSidebarToggle}
+                    style={{
+                      // We set sidebar as absolute so that content can
+                      // take 100% width, this helps us enable dragging
+                      // sandboxes onto the sidebar more freely.
+                      position: 'absolute',
+                      height: 'calc(100% - 48px)',
+                    }}
+                  />
+                ) : (
+                  <Element
+                    as="aside"
+                    id="desktop-sidebar"
+                    css={css({ display: ['none', 'none', 'block'] })}
+                  >
+                    <Sidebar
+                      visible
+                      onSidebarToggle={() => {
+                        /* do nothing */
+                      }}
+                      style={{
+                        // We set sidebar as absolute so that content can
+                        // take 100% width, this helps us enable dragging
+                        // sandboxes onto the sidebar more freely.
+                        position: 'absolute',
+                        height: 'calc(100% - 48px)',
+                      }}
+                    />
+                  </Element>
+                )
+              }
+            </Media>
 
             <Element
               as="main"
               css={css({
                 width: '100%',
                 height: 'calc(100vh - 48px)',
-                overflowY: 'scroll',
                 paddingLeft: [0, 0, SIDEBAR_WIDTH],
               })}
             >

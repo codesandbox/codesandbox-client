@@ -110,7 +110,7 @@ export const Vercel: FunctionComponent = () => {
             </Stack>
 
             <Button
-              css={{ width: 'auto' }}
+              autoWidth
               disabled={deploying}
               onClick={signInVercelClicked}
             >

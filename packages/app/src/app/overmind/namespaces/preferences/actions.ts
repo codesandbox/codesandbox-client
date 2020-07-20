@@ -18,9 +18,10 @@ export const setDevtoolsOpen: Action<boolean> = ({ state }, isOpen) => {
   state.preferences.showDevtools = isOpen;
 };
 
-export const itemIdChanged: AsyncAction<{
-  itemId: string;
-}> = async ({ state, actions, effects }, { itemId }) => {
+export const itemIdChanged: AsyncAction<string> = async (
+  { actions, state },
+  itemId
+) => {
   state.preferences.itemId = itemId;
 
   if (itemId === 'integrations') {

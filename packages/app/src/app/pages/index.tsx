@@ -7,6 +7,7 @@ import Loadable from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
+import { CreateSandboxModal } from 'app/components/CreateNewSandbox/CreateSandbox/CreateSandboxModal';
 
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
@@ -14,7 +15,6 @@ import { Dashboard } from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 import { Dashboard as NewDashboard } from './NewDashboard';
-import { NewSandbox } from './NewSandbox';
 import { Sandbox } from './Sandbox';
 
 const routeDebugger = _debug('cs:app:router');
@@ -80,6 +80,11 @@ const CliInstructions = Loadable(() =>
 const Patron = Loadable(() =>
   import(/* webpackChunkName: 'page-patron' */ './Patron')
 );
+const SignUp = Loadable(() =>
+  import(/* webpackChunkName: 'page-signup' */ './SignUp').then(module => ({
+    default: module.SignUp,
+  }))
+);
 const Pro = Loadable(() => import(/* webpackChunkName: 'page-pro' */ './Pro'));
 const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator').then(module => ({
@@ -123,8 +128,16 @@ const RoutesComponent: React.FC = () => {
             <Route exact path="/" render={() => <Redirect to="/s" />} />
             <Route exact path="/s/github" component={GitHub} />
             <Route exact path="/s/cli" component={CliInstructions} />
-            <Route exact path="/s" component={NewSandbox} />
-            <Route exact path="/s2" component={NewSandbox} />
+            <Route
+              exact
+              path="/s"
+              component={() => <Sandbox showNewSandboxModal />}
+            />
+            <Route
+              exact
+              path="/s2"
+              component={() => <Sandbox showNewSandboxModal />}
+            />
             <Route path="/invite/:token" component={TeamInvitation} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/new-dashboard" component={NewDashboard} />
@@ -132,6 +145,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
             <Route path="/signin" exact component={SignIn} />
+            <Route path="/signup/:userId" exact component={SignUp} />
             <Route path="/signin/:jwt?" component={SignInAuth} />
             <Route path="/u/:username" component={Profile} />
             <Route path="/search" component={Search} />
@@ -143,15 +157,14 @@ const RoutesComponent: React.FC = () => {
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (
               <Route path="/auth/dev" component={DevAuthPage} />
             )}
-            {process.env.NODE_ENV === `development` && (
-              <Route path="/codesadbox" component={CodeSadbox} />
-            )}
+            <Route path="/codesadbox" component={CodeSadbox} />
             <Route component={NotFound} />
           </Switch>
         </Content>
+        <Modals />
+        {signInModalOpen && !user ? <SignInModal /> : null}
+        <CreateSandboxModal />
       </Boundary>
-      <Modals />
-      {signInModalOpen && !user ? <SignInModal /> : null}
     </Container>
   );
 };

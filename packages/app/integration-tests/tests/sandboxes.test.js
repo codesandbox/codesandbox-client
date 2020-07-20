@@ -81,6 +81,14 @@ function loadSandbox(page, sandboxId, timeout) {
     page.goto(sandboxUrl(sandboxId), {
       timeout: 0, // we manage the timeout ourselves
     });
+    page.on('console', msg => {
+      for (let i = 0; i < msg.args().length; ++i) {
+        console.log(`${i}: ${msg.args()[i]}`); // eslint-disable-line
+      }
+    });
+    page.on('error', msg => {
+      console.log('error', msg); // eslint-disable-line
+    });
     await pageLoaded(page);
     clearTimeout(timer);
     await page.waitFor(2 * SECOND);

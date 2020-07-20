@@ -62,3 +62,11 @@ will cause the files shown in the Editor to become out of sync, such as manually
 running `yarn add` or running `git` commands. We don't sync files and
 directories that are ignored via `.gitignore`, and there is a sync limit of 10
 files per second and a maximum file size of 2mb.
+
+## How can I tell if I am in a container sandbox?
+
+When you are in a container sandbox an environment variable called
+`CODESANDBOX_SSE` will be available and you can always use it to check what your
+current environment is.
+
+https://codesandbox.io/s/codesandboxsse-example-spgyv

@@ -128,10 +128,11 @@ class RawAutoComplete extends React.Component {
                     }
 
                     const parts = name.split('@');
-
-                    requestAnimationFrame(() => {
-                      refine(`${parts[0]}`);
-                    });
+                    if (parts) {
+                      requestAnimationFrame(() => {
+                        refine(`${parts[0]}`);
+                      });
+                    }
                   });
                 },
 

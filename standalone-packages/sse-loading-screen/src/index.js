@@ -246,6 +246,9 @@ async function start() {
     transports: ['websocket'],
     reconnectionAttempts: 5,
     reconnectionDelayMax: 32000,
+    query: {
+      sandboxid: sandbox,
+    },
   });
 
   socket.on('connect', () => {
@@ -309,7 +312,6 @@ async function start() {
   });
 
   socket.on('sandbox:port', portList => {
-    // console.log('ports:', JSON.stringify(portList, null, 2));
     portList.forEach(({ port: newPort, main }) => {
       if ((port === '' && main) || newPort.toString() === port) {
         setTimeout(() => {

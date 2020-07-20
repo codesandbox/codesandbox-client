@@ -10,7 +10,11 @@ import { PersonalTemplates } from './PersonalTemplates';
 import { SearchBox } from '../SearchBox';
 import { getTemplateInfosFromAPI } from '../utils/api';
 
-export const Create = () => {
+interface CreateProps {
+  collectionId?: string;
+}
+
+export const Create: React.FC<CreateProps> = ({ collectionId }) => {
   const { state, actions } = useOvermind();
   const [filter, setFilter] = React.useState('');
   const [officialTemplateInfos, setOfficialTemplates] = React.useState([]);
@@ -41,7 +45,7 @@ export const Create = () => {
         {!state.hasLogIn && (
           <CenteredMessage>
             <div>
-              <LinkButton onClick={actions.signInGithubClicked}>
+              <LinkButton onClick={() => actions.signInClicked()}>
                 Sign in
               </LinkButton>{' '}
               to create and bookmark templates for later use.
@@ -53,6 +57,7 @@ export const Create = () => {
           filter={filter}
           hasLogIn={state.hasLogIn}
           officialTemplateInfos={officialTemplateInfos}
+          collectionId={collectionId}
         />
       </Scrollable>
     </>

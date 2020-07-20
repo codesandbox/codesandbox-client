@@ -1,5 +1,4 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Row from '@codesandbox/common/lib/components/flex/Row';
+import { Button, Stack, Text } from '@codesandbox/components';
 import React, { ComponentProps, FunctionComponent } from 'react';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import { useOvermind } from 'app/overmind';
@@ -13,11 +12,12 @@ export const SignInButton: FunctionComponent<Props> = props => {
     <Button
       {...props}
       onClick={() => actions.signInClicked(props.redirectTo)}
-      small
+      autoWidth
     >
-      <Row>
-        <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with GitHub
-      </Row>
+      <Stack align="center" gap={2}>
+        <GithubIcon />{' '}
+        <Text style={{ lineHeight: 1 }}>Sign in with GitHub</Text>
+      </Stack>
     </Button>
   );
 };

@@ -1,12 +1,14 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
-import Padding from '@codesandbox/common/lib/components/spacing/Padding';
+import css from '@styled-system/css';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { Title } from 'app/components/Title';
 import { useOvermind } from 'app/overmind';
-import { ThemeProvider } from '@codesandbox/components';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
+import {
+  ThemeProvider,
+  Button,
+  Grid,
+  Text,
+  Element,
+  Stack,
+} from '@codesandbox/components';
 import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
@@ -16,7 +18,8 @@ import { Link } from 'react-router-dom';
 import Editor from './Editor';
 
 interface Props {
-  match: {
+  showNewSandboxModal?: boolean;
+  match?: {
     params: {
       id: string;
     };
@@ -24,26 +27,37 @@ interface Props {
 }
 
 export const Sandbox = React.memo<Props>(
-  ({ match }) => {
+  ({ match, showNewSandboxModal }) => {
     const { state, actions } = useOvermind();
 
     useEffect(() => {
-      if (window.screen.availWidth < 800) {
-        if (!document.location.search.includes('from-embed')) {
-          const addedSign = document.location.search ? '&' : '?';
-          document.location.href =
-            document.location.href.replace('/s/', '/embed/') +
-            addedSign +
-            'codemirror=1';
-        } else {
-          actions.preferences.codeMirrorForced();
+      if (!showNewSandboxModal) {
+        if (window.screen.availWidth < 800) {
+          if (!document.location.search.includes('from-embed')) {
+            const addedSign = document.location.search ? '&' : '?';
+            document.location.href =
+              document.location.href.replace('/s/', '/embed/') +
+              addedSign +
+              'codemirror=1';
+          } else {
+            actions.preferences.codeMirrorForced();
+          }
         }
       }
 
       actions.live.onNavigateAway();
+      if (match?.params) {
+        actions.editor.sandboxChanged({ id: match.params.id });
+      }
 
-      actions.editor.sandboxChanged({ id: match.params.id });
-    }, [actions.live, actions.editor, actions.preferences, match.params.id]);
+      // eslint-disable-next-line
+    }, [
+      actions.live,
+      actions.editor,
+      actions.preferences,
+      showNewSandboxModal,
+      match?.params,
+    ]);
 
     useEffect(
       () => () => {
@@ -60,61 +74,40 @@ export const Sandbox = React.memo<Props>(
       } = state;
 
       if (error) {
-        const isGithub = match.params.id.includes('github');
+        const isGithub = match?.params?.id.includes('github');
 
         return (
           <>
-            <div
+            <Text weight="bold" size={6} marginBottom={4}>
+              Something went wrong
+            </Text>
+            <Text size={4}>{error.message}</Text>
+            <Grid
+              marginTop={4}
               style={{
-                fontWeight: 300,
-                color: 'rgba(255, 255, 255, 0.5)',
-                marginBottom: '1rem',
-                fontSize: '1.5rem',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                maxWidth: 400,
+                width: '100%',
+                gridGap: 8,
               }}
             >
-              Something went wrong
-            </div>
-            <Title style={{ fontSize: '1.25rem', marginBottom: 0 }}>
-              {error.message}
-            </Title>
-            <br />
-            <div style={{ display: 'flex', maxWidth: 400, width: '100%' }}>
-              <Button block small style={{ margin: '.5rem' }} href="/s">
-                Create Sandbox
-              </Button>
-              <Button block small style={{ margin: '.5rem' }} href="/">
-                {hasLogIn ? 'Dashboard' : 'Homepage'}
-              </Button>
-            </div>
+              <a href="/s" style={{ textDecoration: 'none' }}>
+                <Button>Create Sandbox</Button>
+              </a>
+              <a href="/" style={{ textDecoration: 'none' }}>
+                <Button>{hasLogIn ? 'Dashboard' : 'Homepage'}</Button>
+              </a>
+            </Grid>
             {isLoggedIn && isGithub && error.status !== 422 && (
-              <div
-                style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}
-              >
-                <div
-                  style={{
-                    fontWeight: 300,
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    marginBottom: '1rem',
-                    fontSize: '1rem',
-                    textAlign: 'center',
-                    lineHeight: 1.6,
-                  }}
-                >
+              <Element marginTop={9} style={{ maxWidth: 400, width: '100%' }}>
+                <Text size={4} block align="center" marginBottom={4}>
                   Did you try to open a private GitHub repository and are you a{' '}
                   <Link to="/pro">pro</Link>? Then you might need to get private
                   access:
-                </div>
+                </Text>
                 <GithubIntegration small />
-                <div
-                  style={{
-                    fontWeight: 300,
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    marginTop: '1rem',
-                    fontSize: '1rem',
-                    textAlign: 'center',
-                    lineHeight: 1.6,
-                  }}
-                >
+                <Text size={4} block align="center" marginTop={4}>
                   If you{"'"}re importing a sandbox from an organization, make
                   sure to enable organization access{' '}
                   <a
@@ -125,8 +118,8 @@ export const Sandbox = React.memo<Props>(
                     here
                   </a>
                   .
-                </div>
-              </div>
+                </Text>
+              </Element>
             )}
           </>
         );
@@ -139,11 +132,19 @@ export const Sandbox = React.memo<Props>(
 
     if (content) {
       return (
-        <ThemeProvider theme={codesandboxBlack}>
-          <Fullscreen>
-            <Padding
+        <ThemeProvider>
+          <Element
+            css={css({
+              display: 'flex',
+              flex: 'auto',
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'sideBar.background',
+              fontFamily: 'Inter',
+            })}
+          >
+            <Stack
               style={{
-                display: 'flex',
                 flexDirection: 'column',
                 width: '100vw',
                 height: '100vh',
@@ -151,15 +152,19 @@ export const Sandbox = React.memo<Props>(
               margin={1}
             >
               <Navigation title="Sandbox Editor" />
-              <Centered
-                style={{ flex: 1, width: '100%', height: '100%' }}
-                horizontal
-                vertical
+              <Stack
+                align="center"
+                justify="center"
+                style={{
+                  flexDirection: 'column',
+                  width: '100%',
+                  height: '100%',
+                }}
               >
                 {content}
-              </Centered>
-            </Padding>
-          </Fullscreen>
+              </Stack>
+            </Stack>
+          </Element>
         </ThemeProvider>
       );
     }
@@ -173,7 +178,7 @@ export const Sandbox = React.memo<Props>(
             {sandbox ? getSandboxName(sandbox) : 'Loading...'} - CodeSandbox
           </title>
         </Helmet>
-        <Editor />
+        <Editor showNewSandboxModal={showNewSandboxModal} />
       </>
     );
   },

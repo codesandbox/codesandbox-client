@@ -1,4 +1,39 @@
-import gql from 'graphql-tag';
+import { gql } from 'overmind-graphql';
+
+export const repoFragmentDashboard = gql`
+  fragment repoFragmentDashboard on Sandbox {
+    id
+    alias
+    title
+    insertedAt
+    updatedAt
+    removedAt
+    privacy
+    screenshotUrl
+    screenshotOutdated
+    likeCount
+    forkCount
+    viewCount
+    source {
+      template
+    }
+    baseGit {
+      branch
+      id
+      repo
+      username
+      path
+    }
+    originalGit {
+      branch
+      id
+      repo
+      username
+      path
+    }
+    prNumber
+  }
+`;
 
 export const sandboxFragmentDashboard = gql`
   fragment sandboxFragmentDashboard on Sandbox {
@@ -12,8 +47,6 @@ export const sandboxFragmentDashboard = gql`
     privacy
     screenshotUrl
     screenshotOutdated
-    likeCount
-    forkCount
     viewCount
 
     source {
@@ -32,8 +65,10 @@ export const sandboxFragmentDashboard = gql`
 
     collection {
       path
-      teamId
     }
+
+    authorId
+    teamId
   }
 `;
 
@@ -41,6 +76,7 @@ export const sidebarCollectionDashboard = gql`
   fragment sidebarCollectionDashboard on Collection {
     id
     path
+    sandboxCount
   }
 `;
 
@@ -57,16 +93,23 @@ export const templateFragmentDashboard = gql`
       description
       insertedAt
       updatedAt
-      likeCount
-      forkCount
+      removedAt
       viewCount
       screenshotUrl
       screenshotOutdated
+      privacy
 
-      collection {
-        team {
-          name
-        }
+      git {
+        id
+        username
+        commitSha
+        path
+        repo
+        branch
+      }
+
+      team {
+        name
       }
 
       author {
@@ -86,6 +129,7 @@ export const teamFragmentDashboard = gql`
     name
     description
     creatorId
+    avatarUrl
 
     users {
       id
@@ -99,6 +143,30 @@ export const teamFragmentDashboard = gql`
       name
       username
       avatarUrl
+    }
+  }
+`;
+
+export const currentTeamInfoFragment = gql`
+  fragment currentTeamInfoFragment on Team {
+    id
+    creatorId
+    description
+    inviteToken
+    joinedPilotAt
+    name
+    avatarUrl
+
+    users {
+      id
+      avatarUrl
+      username
+    }
+
+    invitees {
+      id
+      avatarUrl
+      username
     }
   }
 `;

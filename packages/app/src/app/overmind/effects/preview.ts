@@ -1,36 +1,13 @@
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import { blocker } from 'app/utils/blocker';
 
-import { Reaction } from '..';
-
 let _preview = blocker<BasePreview>();
-let _reaction: Reaction;
 
 export default {
-  initialize(reaction: Reaction) {
-    _reaction = reaction;
-  },
+  initialize() {},
   initializePreview(preview: any) {
     _preview.resolve(preview);
-
-    const dispose = _reaction(
-      state => [
-        state.editor.isAllModulesSynced,
-        state.editor.currentSandbox?.template,
-        state.preferences.settings.livePreviewEnabled,
-      ],
-      ([isAllModulesSynced, template, livePreviewEnabled]) => {
-        if (
-          isAllModulesSynced &&
-          (template === 'static' || !livePreviewEnabled)
-        ) {
-          preview.handleRefresh();
-        }
-      }
-    );
-
     return () => {
-      dispose();
       _preview = blocker<any>();
     };
   },

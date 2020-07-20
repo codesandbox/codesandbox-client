@@ -1,89 +1,107 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-import { motion } from 'framer-motion';
+import formatDistanceStrict from 'date-fns/formatDistanceStrict';
+import { zonedTimeToUtc } from 'date-fns-tz';
+
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { isMenuClicked } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { Icon } from '@codesandbox/components';
+import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
+import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
+import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../types';
+import { SandboxItemComponentProps } from './types';
+import { useDrag } from '../../utils/dnd';
 
-export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
+const PrivacyIcons = {
+  0: () => null,
+  1: () => <Icon name="link" size={12} />,
+  2: () => <Icon name="lock" size={12} />,
+};
+
+interface GenericSandboxProps {
+  page: PageTypes;
+  isScrolling: boolean;
+  item: DashboardSandbox | DashboardTemplate;
+}
+
+function getFolderName(item: GenericSandboxProps['item']): string {
+  if (item.type === 'template') {
+    const { sandbox } = item;
+    if (sandbox.team) {
+      return sandbox.team.name;
+    }
+    if (sandbox.author) {
+      return sandbox.author.username;
+    }
+    if (sandbox.git) {
+      return 'from GitHub';
+    }
+    return 'Templates';
+  }
+  const { sandbox } = item;
+
+  if (sandbox.collection) {
+    if (sandbox.collection.path === '/' && !sandbox.teamId) {
+      return 'Drafts';
+    }
+
+    return sandbox.collection.path.split('/').pop();
+  }
+
+  return 'Drafts';
+}
+
+const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const {
     state: { dashboard },
     actions,
   } = useOvermind();
 
+  const { sandbox, type, noDrag, autoFork } = item;
+
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
-  const { UserIcon } = getTemplateIcon(
-    sandbox.forkedTemplate?.iconUrl,
-    sandbox.source.template
+  const sandboxLocation = getFolderName(item);
+
+  const lastUpdated = formatDistanceStrict(
+    zonedTimeToUtc(sandbox.updatedAt, 'Etc/UTC'),
+    new Date(),
+    {
+      addSuffix: true,
+    }
   );
 
-  const [edit, setEdit] = React.useState(false);
-  const [newTitle, setNewTitle] = React.useState(sandboxTitle);
+  const viewCount = formatNumber(sandbox.viewCount);
 
   const url = sandboxUrl({
     id: sandbox.id,
     alias: sandbox.alias,
   });
 
-  /* Edit logic */
+  const TemplateIcon = getTemplateIcon(sandbox);
+  const PrivacyIcon = PrivacyIcons[sandbox.privacy || 0];
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTitle(event.target.value);
-  };
-  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.keyCode === ESC) {
-      // Reset value and exit without saving
-      setNewTitle(sandboxTitle);
-      setEdit(false);
-    }
-  };
-
-  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
-    if (event) event.preventDefault();
-    await actions.dashboard.renameSandbox({
-      id: sandbox.id,
-      title: newTitle,
-      oldTitle: sandboxTitle,
-    });
-    setEdit(false);
-  };
-
-  const onInputBlur = () => {
-    // save value when you click outside or tab away
-    onSubmit();
-  };
-
-  const inputRef = React.useRef(null);
-  const enterEditing = () => {
-    setEdit(true);
-    // Menu defaults to sending focus back to Menu Button
-    // Send focus to input in the next tick
-    // after menu is done closing.
-    setTimeout(() => inputRef.current.focus());
-  };
+  let screenshotUrl = sandbox.screenshotUrl;
+  // We set a fallback thumbnail in the API which is used for
+  // both old and new dashboard, we can move this logic to the
+  // backend when we deprecate the old dashboard
+  if (screenshotUrl === 'https://codesandbox.io/static/img/banner.png') {
+    screenshotUrl = '/static/img/default-sandbox-thumbnail.png';
+  }
 
   /* Drag logic */
 
   const location = useLocation();
-  const currentCollectionPath = location.pathname
-    .replace('/new-dashboard', '')
-    .replace('/all', '');
 
   const [, dragRef, preview] = useDrag({
-    item: {
-      type: 'sandbox',
-      id: sandbox.id,
-      collectionPath: currentCollectionPath,
-    },
-    end: (item, monitor) => {
+    item,
+    end: (_item, monitor) => {
       const dropResult = monitor.getDropResult();
 
       if (!dropResult || !dropResult.path) return;
@@ -96,105 +114,186 @@ export const Sandbox = ({ sandbox, isTemplate = false, ...props }) => {
   let viewMode: string;
 
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
-  const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
+  const Component: React.FC<SandboxItemComponentProps> =
+    viewMode === 'list' ? SandboxListItem : SandboxCard;
 
   // interactions
   const {
     selectedIds,
     onClick: onSelectionClick,
+    onMouseDown,
     onRightClick,
+    onMenuEvent,
     onBlur,
-    onKeyDown,
     onDragStart,
     onDrop,
     thumbnailRef,
     isDragging: isAnythingDragging,
+    isRenaming,
+    setRenaming,
   } = useSelection();
 
   const selected = selectedIds.includes(sandbox.id);
   const isDragging = isAnythingDragging && selected;
 
   const onClick = event => {
-    if (edit || isDragging || isMenuClicked(event)) return;
     onSelectionClick(event, sandbox.id);
   };
 
-  const onContextMenu = event => {
-    event.preventDefault();
-    onRightClick(event, sandbox.id);
-  };
+  const onContextMenu = React.useCallback(
+    event => {
+      event.preventDefault();
+      if (event.type === 'contextmenu') onRightClick(event, sandbox.id);
+      else onMenuEvent(event, sandbox.id);
+    },
+    [onRightClick, onMenuEvent, sandbox.id]
+  );
 
   const history = useHistory();
   const onDoubleClick = event => {
-    if (edit || isDragging || isMenuClicked(event)) return;
+    // can't open deleted items, they don't exist anymore
+    if (location.pathname.includes('deleted')) {
+      onContextMenu(event);
+      return;
+    }
 
+    // Templates in Home should fork, everything else opens
     if (event.ctrlKey || event.metaKey) {
-      window.open(url, '_blank');
+      if (autoFork) {
+        actions.editor.forkExternalSandbox({
+          sandboxId: sandbox.id,
+          openInNewWindow: true,
+        });
+      } else {
+        window.open(url, '_blank');
+      }
+      track('Dashboard - Recent template forked', {
+        source: 'Home',
+        dashboardVersion: 2,
+      });
+    } else if (autoFork) {
+      actions.editor.forkExternalSandbox({
+        sandboxId: sandbox.id,
+      });
     } else {
       history.push(url);
     }
+    track('Dashboard - Recent sandbox opened', {
+      source: 'Home',
+      dashboardVersion: 2,
+    });
   };
+
+  /* Edit logic */
+
+  const [newTitle, setNewTitle] = React.useState(sandboxTitle);
+
+  const onChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setNewTitle(event.target.value);
+    },
+    [setNewTitle]
+  );
+  const onInputKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.keyCode === ESC) {
+        // Reset value and exit without saving
+        setNewTitle(sandboxTitle);
+        setRenaming(false);
+      }
+    },
+    [setNewTitle, setRenaming, sandboxTitle]
+  );
+
+  const onSubmit = React.useCallback(
+    async (event?: React.FormEvent<HTMLFormElement>) => {
+      if (event) event.preventDefault();
+      await actions.dashboard.renameSandbox({
+        page,
+        id: sandbox.id,
+        title: newTitle,
+        oldTitle: sandboxTitle,
+        repoName: sandbox.originalGit?.repo,
+      });
+      setRenaming(false);
+      track('Dashboard - Rename sandbox', { dashboardVersion: 2 });
+    },
+    // eslint-disable-next-line
+    [actions.dashboard, page, sandbox.id, newTitle, sandboxTitle, setRenaming]
+  );
+
+  const onInputBlur = React.useCallback(() => {
+    // save value when you click outside or tab away
+    onSubmit();
+  }, [onSubmit]);
 
   const interactionProps = {
     tabIndex: 0, // make div focusable
-    style: { outline: 'none' }, // we handle outline with border
+    style: {
+      outline: 'none',
+    }, // we handle outline with border
     selected,
     onClick,
+    onMouseDown,
     onDoubleClick,
     onContextMenu,
     onBlur,
-    onKeyDown,
     'data-selection-id': sandbox.id,
   };
 
   const sandboxProps = {
+    autoFork: item.autoFork,
+    noDrag: item.noDrag,
     sandboxTitle,
+    sandboxLocation,
+    lastUpdated,
+    viewCount,
     sandbox,
-    isTemplate,
-    TemplateIcon: UserIcon,
+    isTemplate: type === 'template',
+    TemplateIcon,
+    PrivacyIcon,
+    screenshotUrl,
     // edit mode
-    edit,
+    editing: isRenaming && selected,
     newTitle,
-    inputRef,
     onChange,
     onInputKeyDown,
     onSubmit,
     onInputBlur,
-    enterEditing,
     // drag preview
     thumbnailRef,
     opacity: isDragging ? 0.25 : 1,
   };
 
-  const dragProps = {
-    ref: dragRef,
-  };
+  const dragProps = noDrag
+    ? {}
+    : {
+        ref: dragRef,
+        onDragStart: event => onDragStart(event, sandbox.id),
+      };
 
   React.useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true });
+    preview(getEmptyImage(), {
+      captureDraggingState: true,
+    });
   }, [preview]);
 
   return (
-    <>
-      <div {...dragProps} onDragStart={event => onDragStart(event, sandbox.id)}>
-        <motion.div
-          layoutTransition={{
-            type: 'spring',
-            damping: 300,
-            stiffness: 300,
-          }}
-        >
-          <Component {...sandboxProps} {...interactionProps} {...props} />
-        </motion.div>
-      </div>
-    </>
+    <div {...dragProps}>
+      <Component
+        {...sandboxProps}
+        {...interactionProps}
+        isScrolling={isScrolling}
+      />
+    </div>
   );
 };
 
-export const SkeletonSandbox = props => {
+export const Sandbox = GenericSandbox;
+
+export const SkeletonSandbox = () => {
   const {
     state: { dashboard },
   } = useOvermind();
@@ -203,11 +302,10 @@ export const SkeletonSandbox = props => {
 
   let viewMode;
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   if (viewMode === 'list') {
-    return <SkeletonListItem {...props} />;
+    return <SkeletonListItem />;
   }
-  return <SkeletonCard {...props} />;
+  return <SkeletonCard />;
 };

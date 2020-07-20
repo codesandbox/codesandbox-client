@@ -7,6 +7,11 @@ import generatePackageJSON, {
   getPackageJSON,
 } from '../utils/generate-package-json';
 import version from '../version';
+import {
+  IManagerState,
+  IModuleError,
+  ManagerStatus,
+} from '../../typings/types';
 
 export interface IManagerOptions {
   /**
@@ -88,6 +93,9 @@ export default class PreviewManager {
   listener?: Function;
   fileResolverProtocol?: Protocol;
   bundlerURL: string;
+  managerState: IManagerState | undefined;
+  errors: Array<IModuleError>;
+  status: ManagerStatus;
 
   sandboxInfo: ISandboxInfo;
 
@@ -99,6 +107,9 @@ export default class PreviewManager {
     this.options = options;
     this.sandboxInfo = sandboxInfo;
     this.bundlerURL = options.bundlerURL || BUNDLER_URL;
+    this.managerState = undefined;
+    this.errors = [];
+    this.status = 'initializing';
 
     if (typeof selector === 'string') {
       this.selector = selector;
@@ -117,12 +128,13 @@ export default class PreviewManager {
     }
     this.iframe.setAttribute(
       'sandbox',
-      'allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation allow-autoplay'
+      'allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts'
     );
+
     this.iframe.src = this.bundlerURL;
 
-    this.listener = listen((message: any) => {
-      switch (message.type) {
+    this.listener = listen((mes: any) => {
+      switch (mes.type) {
         case 'initialized': {
           if (this.iframe) {
             if (this.iframe.contentWindow) {
@@ -145,6 +157,25 @@ export default class PreviewManager {
 
             this.updatePreview();
           }
+          break;
+        }
+        case 'start': {
+          this.errors = [];
+          break;
+        }
+        case 'status': {
+          this.status = mes.status;
+          break;
+        }
+        case 'action': {
+          if (mes.action === 'show-error') {
+            const { title, path, message, line, column } = mes;
+            this.errors = [...this.errors, { title, path, message, line, column }];
+          }
+          break;
+        }
+        case 'state': {
+          this.managerState = mes.state;
           break;
         }
         default: {
@@ -254,6 +285,19 @@ export default class PreviewManager {
         embedUrl: `https://codesandbox.io/embed/${res.sandbox_id}`,
       }));
   }
+
+  public getManagerTranspilerContext = (): Promise<{ [transpiler: string]: Object }> =>
+    new Promise(resolve => {
+      const listener = listen((message: any) => {
+        if (message.type === 'transpiler-context') {
+          resolve(message.data);
+
+          listener();
+        }
+      });
+
+        dispatch({ type: 'get-transpiler-context' });
+    });
 
   private getFiles() {
     const { sandboxInfo } = this;

@@ -262,6 +262,10 @@ export const moduleMovedToDirectory: AsyncAction<{
         error,
       });
     }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
@@ -313,6 +317,10 @@ export const directoryMovedToDirectory: AsyncAction<{
         message: 'Could not save new directory location',
         error,
       });
+    }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
     }
   },
   async () => {},
@@ -388,6 +396,10 @@ export const directoryDeleted: AsyncAction<{
         error,
       });
     }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
@@ -411,20 +423,13 @@ export const directoryRenamed: AsyncAction<{
     }
 
     const oldTitle = directory.title;
-    const oldPath = directory.path;
 
-    directory.title = title;
-    directory.path = getDirectoryPath(
-      sandbox.modules,
-      sandbox.directories,
-      directory.id
-    );
+    actions.files.internal.renameDirectoryInState({
+      directory,
+      sandbox,
+      title,
+    });
 
-    effects.vscode.sandboxFsSync.rename(
-      state.editor.modulesByPath,
-      oldPath!,
-      directory.path
-    );
     actions.editor.internal.updatePreviewCode();
     try {
       await effects.api.saveDirectoryTitle(sandbox.id, directoryShortid, title);
@@ -435,8 +440,11 @@ export const directoryRenamed: AsyncAction<{
 
       effects.executor.updateFiles(sandbox);
     } catch (error) {
-      directory.title = oldTitle;
-      state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
+      actions.files.internal.renameDirectoryInState({
+        directory,
+        sandbox,
+        title: oldTitle,
+      });
       actions.internal.handleError({
         message: 'Could not rename directory',
         error,
@@ -487,6 +495,10 @@ export const addedFileToSandbox: AsyncAction<Pick<
     });
 
     effects.executor.updateFiles(state.editor.currentSandbox);
+
+    if (state.editor.currentSandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
@@ -724,6 +736,10 @@ export const moduleCreated: AsyncAction<{
         error,
       });
     }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
@@ -766,6 +782,10 @@ export const moduleDeleted: AsyncAction<{
       sandbox.modules.push(removedModule);
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
       actions.internal.handleError({ message: 'Could not delete file', error });
+    }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
     }
   },
   async () => {},

@@ -1,4 +1,6 @@
 import {
+  CreateCodeCommentMutation,
+  CreateCodeCommentMutationVariables,
   CreateCommentMutation,
   CreateCommentMutationVariables,
   DeleteCommentMutation,
@@ -10,8 +12,7 @@ import {
   UpdateCommentMutation,
   UpdateCommentMutationVariables,
 } from 'app/graphql/types';
-import gql from 'graphql-tag';
-import { Query } from 'overmind-graphql';
+import { Query, gql } from 'overmind-graphql';
 
 import { commentFragment } from './fragments';
 
@@ -24,19 +25,49 @@ export const createComment: Query<
     $content: String!
     $sandboxId: ID!
     $parentCommentId: ID
-    $codeReference: CodeReference
+    $userReferences: [UserReference!]
+    $codeReferences: [CodeReference!]
   ) {
     createComment(
       id: $id
       content: $content
       sandboxId: $sandboxId
       parentCommentId: $parentCommentId
-      codeReference: $codeReference
+      userReferences: $userReferences
+      codeReferences: $codeReferences
     ) {
       ...Comment
     }
-    ${commentFragment}
   }
+  ${commentFragment}
+`;
+
+export const createCodeComment: Query<
+  CreateCodeCommentMutation,
+  CreateCodeCommentMutationVariables
+> = gql`
+  mutation CreateCodeComment(
+    $id: ID
+    $content: String!
+    $sandboxId: ID!
+    $parentCommentId: ID
+    $anchorReference: CodeReference!
+    $userReferences: [UserReference!]
+    $codeReferences: [CodeReference!]
+  ) {
+    createCodeComment(
+      id: $id
+      content: $content
+      sandboxId: $sandboxId
+      parentCommentId: $parentCommentId
+      anchorReference: $anchorReference
+      userReferences: $userReferences
+      codeReferences: $codeReferences
+    ) {
+      ...Comment
+    }
+  }
+  ${commentFragment}
 `;
 
 export const deleteComment: Query<
@@ -54,11 +85,19 @@ export const updateComment: Query<
   UpdateCommentMutation,
   UpdateCommentMutationVariables
 > = gql`
-  mutation UpdateComment($commentId: ID!, $sandboxId: ID!, $content: String) {
+  mutation UpdateComment(
+    $commentId: ID!
+    $sandboxId: ID!
+    $content: String
+    $userReferences: [UserReference!]
+    $codeReferences: [CodeReference!]
+  ) {
     updateComment(
       commentId: $commentId
       sandboxId: $sandboxId
       content: $content
+      userReferences: $userReferences
+      codeReferences: $codeReferences
     ) {
       id
     }

@@ -37,22 +37,24 @@ import {
   MakeSandboxesTemplateMutationVariables,
   CreateFolderMutation,
   CreateFolderMutationVariables,
+  SetTeamNameMutation,
+  SetTeamNameMutationVariables,
 } from 'app/graphql/types';
-import gql from 'graphql-tag';
-import { Query } from 'overmind-graphql';
+import { gql, Query } from 'overmind-graphql';
 
 import {
   teamFragmentDashboard,
   sidebarCollectionDashboard,
   sandboxFragmentDashboard,
+  currentTeamInfoFragment,
 } from './fragments';
 
 export const createTeam: Query<
   _CreateTeamMutation,
   _CreateTeamMutationVariables
 > = gql`
-  mutation _CreateTeam($name: String!) {
-    createTeam(name: $name) {
+  mutation _CreateTeam($name: String!, $pilot: Boolean) {
+    createTeam(name: $name, pilot: $pilot) {
       ...teamFragmentDashboard
     }
   }
@@ -87,8 +89,18 @@ export const renameFolder: Query<
   RenameFolderMutation,
   RenameFolderMutationVariables
 > = gql`
-  mutation renameFolder($path: String!, $newPath: String!) {
-    renameCollection(path: $path, newPath: $newPath) {
+  mutation renameFolder(
+    $path: String!
+    $newPath: String!
+    $teamId: ID
+    $newTeamId: ID
+  ) {
+    renameCollection(
+      path: $path
+      newPath: $newPath
+      teamId: $teamId
+      newTeamId: $newTeamId
+    ) {
       ...sidebarCollectionDashboard
     }
   }
@@ -100,18 +112,16 @@ export const addSandboxToFolder: Query<
   AddToFolderMutationVariables
 > = gql`
   mutation AddToFolder(
-    $collectionPath: String!
+    $collectionPath: String
     $sandboxIds: [ID!]!
     $teamId: ID
   ) {
-    addToCollection(
+    addToCollectionOrTeam(
       collectionPath: $collectionPath
       sandboxIds: $sandboxIds
       teamId: $teamId
     ) {
-      sandboxes {
-        ...sandboxFragmentDashboard
-      }
+      ...sandboxFragmentDashboard
     }
   }
   ${sandboxFragmentDashboard}
@@ -191,10 +201,10 @@ export const inviteToTeam: Query<
 > = gql`
   mutation _InviteToTeam($teamId: ID!, $username: String!) {
     inviteToTeam(teamId: $teamId, username: $username) {
-      ...teamFragmentDashboard
+      ...currentTeamInfoFragment
     }
   }
-  ${teamFragmentDashboard}
+  ${currentTeamInfoFragment}
 `;
 
 export const inviteToTeamVieEmail: Query<
@@ -212,10 +222,10 @@ export const revokeTeamInvitation: Query<
 > = gql`
   mutation _RevokeTeamInvitation($teamId: ID!, $userId: ID!) {
     revokeTeamInvitation(teamId: $teamId, userId: $userId) {
-      ...teamFragmentDashboard
+      ...currentTeamInfoFragment
     }
   }
-  ${teamFragmentDashboard}
+  ${currentTeamInfoFragment}
 `;
 
 export const acceptTeamInvitation: Query<
@@ -271,4 +281,16 @@ export const makeSandboxesTemplate: Query<
       id
     }
   }
+`;
+
+export const setTeamName: Query<
+  SetTeamNameMutation,
+  SetTeamNameMutationVariables
+> = gql`
+  mutation _SetTeamName($teamId: ID!, $name: String!) {
+    setTeamName(teamId: $teamId, name: $name) {
+      ...teamFragmentDashboard
+    }
+  }
+  ${teamFragmentDashboard}
 `;

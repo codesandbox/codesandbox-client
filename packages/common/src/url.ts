@@ -51,7 +51,7 @@ export const getSandboxOptions = (url: string) => {
 
   const highlightMatch = url.match(/(\?|&)(highlights)=([^&]+)/);
   if (highlightMatch && highlightMatch[3]) {
-    result.highlightedLines = highlightMatch[3]
+    result.highlightedLines = decodeURIComponent(highlightMatch[3])
       .split(',')
       .map(number => Number(number));
   }

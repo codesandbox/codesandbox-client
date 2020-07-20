@@ -4,10 +4,9 @@ export const onInitialize: OnInitialize = async (
   { state, effects, actions },
   overmindInstance
 ) => {
-  const provideJwtToken = () => state.jwt || effects.jwt.get();
-
+  const provideJwtToken = () => effects.api.getJWTToken();
   state.isFirstVisit = Boolean(
-    !effects.jwt.get() && !effects.browser.storage.get('hasVisited')
+    !state.hasLogIn && !effects.browser.storage.get('hasVisited')
   );
 
   effects.browser.storage.set('hasVisited', true);
@@ -28,21 +27,32 @@ export const onInitialize: OnInitialize = async (
   });
 
   effects.api.initialize({
-    provideJwtToken,
     getParsedConfigurations() {
       return state.editor.parsedConfigurations;
     },
+    provideJwtToken() {
+      if (process.env.LOCAL_SERVER || process.env.STAGING) {
+        return localStorage.getItem('devJwt');
+      }
+
+      return null;
+    },
   });
 
-  effects.gql.initialize(
-    {
-      endpoint: `${location.origin}/api/graphql`,
-      headers: () => ({
-        Authorization: `Bearer ${state.jwt}`,
-      }),
-    },
-    () => (effects.jwt.get() ? effects.live.getSocket() : null)
-  );
+  const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
+  const gqlOptions: Parameters<typeof effects.gql.initialize>[0] = {
+    endpoint: `${location.origin}/api/graphql`,
+  };
+
+  if (hasDevAuth) {
+    gqlOptions.headers = () => ({
+      Authorization: `Bearer ${localStorage.getItem('devJwt')}`,
+    });
+  }
+
+  effects.gql.initialize(gqlOptions, () => effects.live.socket);
+
+  actions.internal.setActiveTeamFromUrlOrStore();
 
   effects.notifications.initialize({
     provideSocket() {
@@ -101,7 +111,7 @@ export const onInitialize: OnInitialize = async (
       path.split('.').reduce((aggr, key) => aggr[key], actions),
   });
 
-  effects.preview.initialize(overmindInstance.reaction);
+  effects.preview.initialize();
 
   actions.internal.showPrivacyPolicyNotification();
   actions.internal.setViewModeForDashboard();

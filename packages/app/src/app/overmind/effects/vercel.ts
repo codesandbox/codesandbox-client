@@ -24,7 +24,7 @@ interface ApiData {
   files: File[];
   forceNew?: boolean;
   name: string;
-  public: boolean;
+  public?: boolean;
   regions: string[];
   routes: Object[];
   scope?: string;
@@ -222,9 +222,8 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     nowJSON = packageJSON.now;
   }
 
-  const nowDefaults: Pick<ApiData, 'name' | 'public'> = {
+  const nowDefaults: Pick<ApiData, 'name'> = {
     name: `csb-${sandbox.id}`,
-    public: true,
   };
 
   const filePaths = nowJSON.files || Object.keys(contents.files);
@@ -238,7 +237,9 @@ async function getApiData(contents: any, sandbox: Sandbox) {
 
   apiData.name = nowJSON.name || nowDefaults.name;
   apiData.deploymentType = nowJSON.type;
-  apiData.public = nowJSON.public || nowDefaults.public;
+  if (nowJSON.public) {
+    apiData.public = nowJSON.public;
+  }
 
   // if now v2 we need to tell now the version, builds and routes
   if (nowJSON.version === 1) {

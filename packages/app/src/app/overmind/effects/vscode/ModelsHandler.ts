@@ -6,7 +6,6 @@ import {
   UserSelection,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import { actions, dispatch } from 'codesandbox-api';
@@ -155,18 +154,16 @@ export class ModelsHandler {
   }
 
   public clearComments() {
-    if (COMMENTS) {
-      Object.values(this.moduleModels).forEach(moduleModel => {
-        if (!moduleModel.model) {
-          return;
-        }
-        moduleModel.comments = [];
-        moduleModel.currentCommentDecorations = moduleModel.model.deltaDecorations(
-          moduleModel.currentCommentDecorations,
-          []
-        );
-      });
-    }
+    Object.values(this.moduleModels).forEach(moduleModel => {
+      if (!moduleModel.model) {
+        return;
+      }
+      moduleModel.comments = [];
+      moduleModel.currentCommentDecorations = moduleModel.model.deltaDecorations(
+        moduleModel.currentCommentDecorations,
+        []
+      );
+    });
   }
 
   public isModuleOpened(module: Module) {
@@ -188,7 +185,7 @@ export class ModelsHandler {
 
     const model = moduleModel.model;
 
-    if (COMMENTS) {
+    if (this.sandbox.featureFlags.comments) {
       const newDecorationComments = this.createCommentDecorations(
         moduleModel.comments,
         model,
@@ -798,7 +795,10 @@ export class ModelsHandler {
     currentCommentThreadId: string | null,
     currentLineNumber: number
   ) {
-    if (!hasPermission(this.sandbox.authorization, 'comment')) {
+    if (
+      !hasPermission(this.sandbox.authorization, 'comment') ||
+      !this.sandbox.featureFlags.comments
+    ) {
       return [];
     }
     const commentDecorationsByLineNumber = commentThreadDecorations.reduce<{

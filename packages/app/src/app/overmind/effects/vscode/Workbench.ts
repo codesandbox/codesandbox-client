@@ -1,4 +1,3 @@
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import {
   NotificationMessage,
@@ -95,7 +94,7 @@ export class Workbench {
       label: 'New Sandbox...',
       category: 'Sandbox',
       run: () => {
-        this.controller.getSignal('modalOpened')({ modal: 'newSandbox' });
+        this.controller.getSignal('openCreateSandboxModal')({});
       },
     });
 
@@ -104,7 +103,7 @@ export class Workbench {
       label: 'Fork Sandbox',
       category: 'Sandbox',
       run: () => {
-        this.controller.getSignal('editor.forkSandboxClicked')();
+        this.controller.getSignal('editor.forkSandboxClicked')({});
       },
     });
 
@@ -127,6 +126,18 @@ export class Workbench {
     });
 
     this.addWorkbenchAction({
+      id: 'codesandbox.preview.refresh',
+      label: 'Refresh Preview',
+      category: 'View',
+      run: () => {
+        this.controller.getSignal('editor.refreshPreview')();
+      },
+      keybindings: {
+        primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_R,
+      },
+    });
+
+    this.addWorkbenchAction({
       id: 'view.fullscreen',
       label: 'Toggle Fullscreen',
       category: 'View',
@@ -134,7 +145,13 @@ export class Workbench {
         if (document.fullscreenElement) {
           document.exitFullscreen();
         } else {
-          document.documentElement.requestFullscreen();
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+            // @ts-ignore - safari has this under a webkit flag
+          } else if (document.documentElement.webkitRequestFullscreen) {
+            // @ts-ignore - safari has this under a webkit flag
+            document.documentElement.webkitRequestFullscreen();
+          }
 
           this.addNotification({
             title: 'Fullscreen',
@@ -162,15 +179,15 @@ export class Workbench {
       },
     });
 
-    if (COMMENTS) {
+    if (
+      this.controller.getState().editor.currentSandbox?.featureFlags.comments
+    ) {
       this.addWorkbenchAction({
         id: 'comments.add',
         label: 'Comment on code',
         category: 'Comments',
         run: () => {
-          this.controller.getSignal('comments.createComment')({
-            isLineComment: false,
-          });
+          this.controller.getSignal('comments.createCodeComment')();
         },
       });
     }
@@ -360,7 +377,9 @@ export class Workbench {
       },
     });
 
-    if (COMMENTS) {
+    if (
+      this.controller.getState().editor.currentSandbox?.featureFlags.comments
+    ) {
       this.appendMenuItem(MenuId.EditorContext, {
         group: '0_comments',
         order: 0,

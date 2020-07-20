@@ -12,13 +12,13 @@ import {
   Settings,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import {
   NotificationMessage,
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
-import { CommentFragment } from 'app/graphql/types';
+import { CodeReferenceMetadata } from 'app/graphql/types';
 import { Reaction } from 'app/overmind';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import prettify from 'app/src/app/utils/prettify';
@@ -147,20 +147,18 @@ export class VSCodeEffect {
 
     this.prepareElements();
 
-    if (COMMENTS) {
-      this.options.reaction(
-        state => ({
-          fileComments: json(state.comments.fileComments),
-          currentCommentId: state.comments.currentCommentId,
-        }),
-        ({ fileComments, currentCommentId }) => {
-          if (this.modelsHandler) {
-            this.modelsHandler.applyComments(fileComments, currentCommentId);
-          }
+    this.options.reaction(
+      state => ({
+        fileComments: json(state.comments.fileComments),
+        currentCommentId: state.comments.currentCommentId,
+      }),
+      ({ fileComments, currentCommentId }) => {
+        if (this.modelsHandler) {
+          this.modelsHandler.applyComments(fileComments, currentCommentId);
         }
-      );
-      this.listenToCommentClick();
-    }
+      }
+    );
+    this.listenToCommentClick();
 
     // We instantly create a sandbox sync, as we want our
     // extension host to get its messages handled to initialize
@@ -208,6 +206,8 @@ export class VSCodeEffect {
       // you should not be allowed to edit.
       options.reaction(
         state =>
+          (state.editor.currentSandbox &&
+            Boolean(state.editor.currentSandbox.git)) ||
           !state.live.isLive ||
           state.live.roomInfo?.mode === 'open' ||
           (state.live.roomInfo?.mode === 'classroom' &&
@@ -227,7 +227,7 @@ export class VSCodeEffect {
 
   public async getCodeReferenceBoundary(
     commentId: string,
-    reference: CommentFragment['references'][0]['metadata']
+    reference: CodeReferenceMetadata
   ) {
     this.revealPositionInCenterIfOutsideViewport(reference.anchor, 1);
 
@@ -366,7 +366,6 @@ export class VSCodeEffect {
 
   public setReadOnly(enabled: boolean) {
     this.readOnly = enabled;
-
     this.updateOptions({ readOnly: enabled });
   }
 
@@ -412,6 +411,14 @@ export class VSCodeEffect {
     }
     try {
       this.mountableFilesystem.umount('/sandbox/node_modules');
+    } catch {
+      //
+    }
+    try {
+      // After navigation, this mount is already mounted and throws error,
+      // which cause that Phonenix is not reconnected, so the file's content cannot be seen
+      // https://github.com/codesandbox/codesandbox-client/issues/4143
+      this.mountableFilesystem.umount('/home/sandbox/.cache');
     } catch {
       //
     }
@@ -749,9 +756,7 @@ export class VSCodeEffect {
   private getLspEndpoint() {
     // return 'ws://localhost:1023';
     // TODO: merge host logic with executor-manager
-    const sseHost = process.env.STAGING_API
-      ? 'https://codesandbox.stream'
-      : 'https://codesandbox.io';
+    const sseHost = process.env.ENDPOINT || 'https://codesandbox.io';
     return sseHost.replace(
       'https://',
       `wss://${this.options.getCurrentSandbox()?.id}-lsp.sse.`
@@ -1010,7 +1015,7 @@ export class VSCodeEffect {
         editorService.onDidActiveEditorChange(this.onActiveEditorChange);
         this.initializeCodeSandboxAPIListener();
 
-        if (this.settings.lintEnabled) {
+        if (!this.linter && this.settings.lintEnabled) {
           this.createLinter();
         }
 
@@ -1205,7 +1210,11 @@ export class VSCodeEffect {
 
       this.modelCursorPositionListener = activeEditor.onDidChangeCursorPosition(
         cursor => {
-          if (COMMENTS) {
+          if (
+            sandbox &&
+            sandbox.featureFlags.comments &&
+            hasPermission(sandbox.authorization, 'comment')
+          ) {
             const model = activeEditor.getModel();
 
             this.modelsHandler.updateLineCommentIndication(

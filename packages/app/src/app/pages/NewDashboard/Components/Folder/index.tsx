@@ -1,98 +1,38 @@
 import React from 'react';
 import { join, dirname } from 'path';
-import { useDrop, useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
 import { useLocation, useHistory } from 'react-router-dom';
-import { isMenuClicked } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
 import { useSelection } from '../Selection';
+import { DashboardFolder } from '../../types';
+import { useDrop, useDrag, DragItemType } from '../../utils/dnd';
 
-export const Folder = ({
-  name = '',
-  path = null,
-  sandboxes = 0,
-  setCreating,
-  ...props
-}) => {
+export const Folder = (folderItem: DashboardFolder) => {
   const {
     state: { dashboard },
     actions,
   } = useOvermind();
 
-  const isNewFolder = !path;
+  const {
+    name = '',
+    path = null,
+    sandboxCount = 0,
+    type,
+    ...props
+  } = folderItem;
 
   const location = useLocation();
-
-  /* Edit logic */
-  const [editing, setEditing] = React.useState(isNewFolder || false);
-  const [newName, setNewName] = React.useState(name);
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewName(event.target.value);
-  };
-  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.keyCode === ESC) {
-      // Reset value and exit without saving
-      setNewName(name);
-      setEditing(false);
-      setCreating(false);
-    }
-  };
-
-  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
-    if (event) event.preventDefault();
-
-    if (name === newName) {
-      // do nothing
-    } else if (isNewFolder) {
-      if (newName) {
-        const folderLocation = location.pathname.split(
-          '/new-dashboard/all/'
-        )[1];
-
-        const folderPath =
-          '' + (folderLocation && '/' + folderLocation) + '/' + newName;
-
-        await actions.dashboard.createFolder(folderPath);
-      }
-    } else {
-      await actions.dashboard.renameFolder({
-        path,
-        newPath: join(dirname(path), newName),
-      });
-    }
-
-    setCreating(false);
-    return setEditing(false);
-  };
-
-  const onInputBlur = () => {
-    // save value when you click outside or tab away
-    onSubmit();
-  };
-
-  const inputRef = React.useRef(null);
-  const enterEditing = () => {
-    setEditing(true);
-    // Menu defaults to sending focus back to Menu Button
-    // Send focus to input in the next tick
-    // after menu is done closing.
-    setTimeout(() => inputRef.current.focus());
-  };
-  // If it's a new folder, enter editing and focus on render
-  React.useEffect(() => {
-    if (isNewFolder) enterEditing();
-  }, [isNewFolder]);
 
   /* View logic */
 
   let viewMode: string;
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else if (location.pathname.includes('start')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const Component = viewMode === 'list' ? FolderListItem : FolderCard;
@@ -101,29 +41,30 @@ export const Folder = ({
   const {
     selectedIds,
     onClick: onSelectionClick,
+    onMouseDown,
     onRightClick,
+    onMenuEvent,
     onBlur,
-    onKeyDown,
     onDragStart,
     onDrop,
     thumbnailRef,
     isDragging: isAnythingDragging,
+    isRenaming,
+    setRenaming,
+    activeTeamId,
   } = useSelection();
 
   const selected = selectedIds.includes(path);
   const isDragging = isAnythingDragging && selected;
 
-  /* Prevent opening sandbox while interacting */
   const onClick = event => {
-    if (editing || isMenuClicked(event)) event.preventDefault();
     onSelectionClick(event, path);
   };
 
   const history = useHistory();
   const onDoubleClick = event => {
-    if (editing || isDragging || isMenuClicked(event)) return;
+    const url = dashboardUrls.allSandboxes(path, activeTeamId);
 
-    const url = '/new-dashboard/all' + path;
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
     } else {
@@ -133,7 +74,9 @@ export const Folder = ({
 
   const onContextMenu = event => {
     event.preventDefault();
-    onRightClick(event, path);
+
+    if (event.type === 'contextmenu') onRightClick(event, path);
+    else onMenuEvent(event, path);
   };
 
   const interactionProps = {
@@ -141,18 +84,20 @@ export const Folder = ({
     style: { outline: 'none' }, // we handle outline with border
     selected,
     onClick,
+    onMouseDown,
     onDoubleClick,
     onContextMenu,
     onBlur,
-    onKeyDown,
     'data-selection-id': path,
   };
 
   /* Drop target logic */
 
+  const accepts = ['sandbox'];
+
   const [{ isOver, canDrop }, dropRef] = useDrop({
-    accept: ['sandbox', 'folder'],
-    drop: () => ({ path }),
+    accept: accepts,
+    drop: () => ({ path, page: 'sandboxes', isSamePath: false }),
     collect: monitor => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path),
@@ -165,19 +110,13 @@ export const Folder = ({
 
   /* Drag logic */
 
-  const parent =
-    !isNewFolder &&
-    path
-      .split('/')
-      .slice(0, -1)
-      .join('/');
-
   const [, dragRef, preview] = useDrag({
-    item: { type: 'folder', path, parent, name },
+    item: folderItem,
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
 
       if (!dropResult || !dropResult.path) return;
+      if (isSamePath(dropResult, path)) return;
 
       onDrop(dropResult);
     },
@@ -185,24 +124,64 @@ export const Folder = ({
 
   const dragProps = {
     ref: dragRef,
+    onDragStart: event => onDragStart(event, path),
   };
 
   React.useEffect(() => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, [preview]);
 
+  /* Edit logic */
+  const [newName, setNewName] = React.useState(name);
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewName(event.target.value);
+  };
+  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === ESC) {
+      // Reset value and exit without saving
+      setNewName(name);
+      setRenaming(false);
+    }
+  };
+
+  const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
+    if (event) event.preventDefault();
+
+    if (name === newName) {
+      // nothing to do here
+    } else {
+      await actions.dashboard.renameFolder({
+        path,
+        newPath: join(dirname(path), newName),
+        teamId: activeTeamId,
+        newTeamId: activeTeamId,
+      });
+      track('Dashboard - Rename Folder', {
+        source: 'Grid',
+        dashboardVersion: 2,
+      });
+    }
+
+    return setRenaming(false);
+  };
+
+  const onInputBlur = () => {
+    // save value when you click outside or tab away
+    setRenaming(false);
+    onSubmit();
+  };
+
   const folderProps = {
     name,
     path,
-    numberOfSandboxes: sandboxes,
+    numberOfSandboxes: sandboxCount,
     onClick,
     onDoubleClick,
     // edit mode
-    editing,
-    enterEditing,
-    isNewFolder,
+    editing: isRenaming && selected,
+    isNewFolder: false,
     newName,
-    inputRef,
     onChange,
     onInputKeyDown,
     onSubmit,
@@ -214,7 +193,7 @@ export const Folder = ({
 
   return (
     <>
-      <div {...dragProps} onDragStart={event => onDragStart(event, path)}>
+      <div {...dragProps}>
         <motion.div
           initial={{ scale: 1 }}
           animate={{ scale: isOver && canDrop ? 1.02 : 1 }}
@@ -232,7 +211,20 @@ export const Folder = ({
   );
 };
 
-const isSamePath = (draggedItem, selfPath) => {
-  if (draggedItem && draggedItem.path === selfPath) return true;
+const isSamePath = (draggedItem: DragItemType, selfPath: string) => {
+  if (!draggedItem) {
+    return false;
+  }
+
+  if (draggedItem.type === 'folder' && draggedItem.path === selfPath) {
+    return true;
+  }
+  if (
+    draggedItem.type === 'sandbox' &&
+    draggedItem.sandbox.collection?.path === selfPath
+  ) {
+    return true;
+  }
+
   return false;
 };

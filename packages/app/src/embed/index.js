@@ -5,10 +5,11 @@ import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import 'normalize.css';
 import '@codesandbox/common/lib/global.css';
 import track, { identify } from '@codesandbox/common/lib/utils/analytics';
+import { hasLogIn } from '@codesandbox/common/lib/utils/user';
 import App from './components/App';
 
 try {
-  identify('signed_in', Boolean(localStorage.jwt));
+  identify('signed_in', Boolean(hasLogIn()));
 } catch (e) {
   /* ignore error */
 }
