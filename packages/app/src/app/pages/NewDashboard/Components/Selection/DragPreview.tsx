@@ -151,24 +151,26 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
               stiffness: 1000,
             }}
           >
-            <div
-              css={css({
-                position: 'fixed',
-                top: '-1rem',
-                right: '-1rem',
-                zIndex: 20,
-                borderRadius: '50%',
-                width: 32,
-                height: 32,
-                backgroundColor: 'blues.600',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 500,
-              })}
-            >
-              {selectedIds.length}
-            </div>
+            {selectedIds.length > 1 ? (
+              <div
+                css={css({
+                  position: 'fixed',
+                  top: '-1rem',
+                  right: '-1rem',
+                  zIndex: 20,
+                  borderRadius: '50%',
+                  width: 32,
+                  height: 32,
+                  backgroundColor: 'blues.600',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 500,
+                })}
+              >
+                {selectedIds.length}
+              </div>
+            ) : null}
             {selectedItems.map((item, index) => (
               <Stack gap={2} align="center" key={item.id || item.path}>
                 <Stack
