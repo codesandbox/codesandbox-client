@@ -6,7 +6,14 @@ import {
 } from '@codesandbox/common/lib/types';
 import { CurrentTeamInfoFragmentFragment as CurrentTeam } from 'app/graphql/types';
 import { derived } from 'overmind';
-import { hasLogIn } from './utils/user';
+import { hasLogIn } from '@codesandbox/common/lib/utils/user';
+
+export type PendingUserType = {
+  avatarUrl: string | null;
+  username: string;
+  id: string;
+  valid?: boolean;
+} | null;
 
 type State = {
   isPatron: boolean;
@@ -27,6 +34,8 @@ type State = {
   isLoadingCLI: boolean;
   isLoadingGithub: boolean;
   isLoadingVercel: boolean;
+  pendingUserId: string | null;
+  pendingUser: PendingUserType;
   contextMenu: {
     show: boolean;
     items: string[];
@@ -45,6 +54,8 @@ type State = {
 };
 
 export const state: State = {
+  pendingUserId: null,
+  pendingUser: null,
   isFirstVisit: false,
   isPatron: derived(({ user }: State) =>
     Boolean(user && user.subscription && user.subscription.since)

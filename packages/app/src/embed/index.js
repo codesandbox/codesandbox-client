@@ -4,11 +4,12 @@ import { render } from 'react-dom';
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import 'normalize.css';
 import '@codesandbox/common/lib/global.css';
-import track, { identify } from '@codesandbox/common/lib/utils/analytics';
+import track, { identifyOnce } from '@codesandbox/common/lib/utils/analytics';
 import App from './components/App';
 
 try {
-  identify('signed_in', Boolean(localStorage.jwt));
+  // If this value is not set, set it to false
+  identifyOnce('signed_in', false);
 } catch (e) {
   /* ignore error */
 }

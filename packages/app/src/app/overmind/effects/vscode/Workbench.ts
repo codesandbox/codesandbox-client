@@ -145,7 +145,13 @@ export class Workbench {
         if (document.fullscreenElement) {
           document.exitFullscreen();
         } else {
-          document.documentElement.requestFullscreen();
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+            // @ts-ignore - safari has this under a webkit flag
+          } else if (document.documentElement.webkitRequestFullscreen) {
+            // @ts-ignore - safari has this under a webkit flag
+            document.documentElement.webkitRequestFullscreen();
+          }
 
           this.addNotification({
             title: 'Fullscreen',

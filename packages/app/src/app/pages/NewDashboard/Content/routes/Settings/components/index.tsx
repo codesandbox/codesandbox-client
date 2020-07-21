@@ -6,7 +6,7 @@ export const Card = props => (
   <Element
     {...props}
     css={css({
-      height: 180,
+      height: 200,
       padding: 6,
       backgroundColor: 'grays.800',
       border: '1px solid',

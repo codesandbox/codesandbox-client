@@ -20,6 +20,12 @@ export const GithubSummary = () => {
       editor: { forkSandboxClicked },
     },
   } = useOvermind();
+
+  if (!editor.currentSandbox?.git) {
+    // Race condition where `git` is undefined, but this is still rendered
+    return null;
+  }
+
   return (
     <>
       <Collapsible title="GitHub Repository" defaultOpen>

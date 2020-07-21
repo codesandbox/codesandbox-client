@@ -1,6 +1,7 @@
 import { flattenDeep, uniq, values } from 'lodash-es';
 import { Protocol } from 'codesandbox-api';
 import resolve from 'browser-resolve';
+import fs from 'fs';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import _debug from '@codesandbox/common/lib/utils/debug';
@@ -98,6 +99,14 @@ type TManagerOptions = {
   hasFileResolver: boolean;
 };
 
+function triggerFileWatch(path: string, type: 'rename' | 'change') {
+  try {
+    // @ts-ignore
+    fs.getFSModule().fileWatcher.triggerWatch(path, type);
+  } catch (e) {
+    /* ignore */
+  }
+}
 export default class Manager implements IEvaluator {
   id: string;
   transpiledModules: {
@@ -388,6 +397,8 @@ export default class Manager implements IEvaluator {
     this.transpiledModules[module.path] = this.transpiledModules[
       module.path
     ] || { module, tModules: {} };
+
+    triggerFileWatch(module.path, 'rename');
   }
 
   addTranspiledModule(module: Module, query: string = ''): TranspiledModule {
@@ -464,6 +475,8 @@ export default class Manager implements IEvaluator {
     });
 
     delete this.transpiledModules[module.path];
+
+    triggerFileWatch(module.path, 'rename');
   }
 
   moveModule(module: Module, newPath: string) {
@@ -856,6 +869,8 @@ export default class Manager implements IEvaluator {
 
   updateModule(m: Module) {
     this.transpiledModules[m.path].module = m;
+
+    triggerFileWatch(m.path, 'change');
     return this.getTranspiledModulesByModule(m).map(tModule => {
       tModule.update(m);
 

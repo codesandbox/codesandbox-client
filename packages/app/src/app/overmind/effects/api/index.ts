@@ -24,6 +24,7 @@ import {
 } from '@codesandbox/common/lib/types';
 import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 import { client } from 'app/graphql/client';
+import { PendingUserType } from 'app/overmind/state';
 
 import {
   transformDirectory,
@@ -447,6 +448,24 @@ export default {
   },
   getSandboxes(): Promise<UserSandbox[]> {
     return api.get('/sandboxes');
+  },
+  getPendingUser(id: string): Promise<PendingUserType> {
+    return api.get('/users/pending/' + id);
+  },
+  validateUsername(username: string): Promise<{ available: boolean }> {
+    return api.get('/users/available/' + username);
+  },
+  finalizeSignUp({
+    username,
+    id,
+  }: {
+    username: string;
+    id: string;
+  }): Promise<void> {
+    return api.post('/users/finalize', {
+      username,
+      id,
+    });
   },
   updateShowcasedSandbox(username: string, sandboxId: string) {
     return api.patch(`/users/${username}`, {

@@ -107,7 +107,7 @@ as the [embed options](https://codesandbox.io/docs/embedding/#embed-options).
 | `parameters`    | Parameters used to define how the sandbox should be created.                         | Example below               |
 | `query`         | The query that will be used in the redirect url.                                     | `view=preview&runonclick=1` |
 | `embed`         | Whether we should redirect to the embed instead of the editor.                       | `1`                         |
-| `json`          | Instead of redirecting we will send a JSON reponse with `{"sandbox_id": sandboxId}`. | `1`                         |
+| `json`          | Instead of redirecting we will send a JSON response with `{"sandbox_id": sandboxId}`. | `1`                         |
 
 ### How it works
 

@@ -58,6 +58,18 @@ export const identify = async (key: string, value: any) => {
   }
 };
 
+export const identifyOnce = async (key: string, value: any) => {
+  const amplitude = await getAmplitude();
+  if (amplitude) {
+    const identity = new amplitude.Identify();
+    identity.setOnce(key, value);
+    amplitude.identify(identity);
+    debug('[Amplitude] Identifying', key, value);
+  } else {
+    debug('[Amplitude] NOT identifying because Amplitude is not loaded');
+  }
+};
+
 export const setUserId = async (userId: string) => {
   const amplitude = await getAmplitude();
   if (amplitude) {
