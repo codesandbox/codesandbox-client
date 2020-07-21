@@ -87,7 +87,8 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
           direction="vertical"
         >
           <Text size={6} weight="bold">
-            Move {modals.moveSandboxModal.sandboxIds.length} items
+            Move {modals.moveSandboxModal.sandboxIds.length}{' '}
+            {modals.moveSandboxModal.sandboxIds.length > 1 ? 'items' : 'item'}
           </Text>
           <Stack gap={4} direction="vertical">
             <Element

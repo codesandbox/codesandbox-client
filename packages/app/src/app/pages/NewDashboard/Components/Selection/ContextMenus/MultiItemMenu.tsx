@@ -106,7 +106,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   };
 
   const MOVE_ITEMS = {
-    label: 'Move to Folder',
+    label: 'Move to folder',
     fn: moveToFolder,
   };
 
