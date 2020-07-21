@@ -87,15 +87,15 @@ export async function initializeBrowserFS({
             },
           },
         };
-      }
 
-      config.options['/extensions/node_modules/typescript'] = {
-        fs: 'JSDelivrRequest',
-        options: {
-          dependency: 'typescript',
-          version: '3.9.5',
-        },
-      };
+        config.options['/extensions/node_modules/typescript'] = {
+          fs: 'JSDelivrRequest',
+          options: {
+            dependency: 'typescript',
+            version: '3.9.7',
+          },
+        };
+      }
 
       config.options['/sandbox'] = {
         fs: 'CodeSandboxEditorFS',
