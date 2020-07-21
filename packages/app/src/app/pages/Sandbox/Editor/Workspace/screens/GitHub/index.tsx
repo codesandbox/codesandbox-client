@@ -205,11 +205,10 @@ export const GitHub = () => {
         <Collapsible title="GitHub Repository" defaultOpen>
           <Element paddingX={2}>
             <Text variant="muted">
-              If you wish to contribute back to{' '}
-              {forkedTemplateSandbox.git.username}/
-              {forkedTemplateSandbox.git.repo}, you can link this sandbox to the
-              git repository. This will allow you to create commits and open
-              pull requests with this sandbox.
+              If you wish to contribute back to {upstreamSandbox.git.username}/
+              {upstreamSandbox.git.repo}, you can link this sandbox to the git
+              repository. This will allow you to create commits and open pull
+              requests with this sandbox.
             </Text>
             <Button
               marginTop={4}
