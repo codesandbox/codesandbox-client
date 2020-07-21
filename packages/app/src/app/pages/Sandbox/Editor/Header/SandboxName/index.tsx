@@ -39,7 +39,7 @@ const getFolderName = (sandbox: Sandbox) => {
 export const SandboxName: FunctionComponent = () => {
   const {
     actions: {
-      modalOpened,
+      modals,
       workspace: { sandboxInfoUpdated, valueChanged },
     },
     state: {
@@ -128,7 +128,11 @@ export const SandboxName: FunctionComponent = () => {
               <Button
                 variant="link"
                 css={css({ fontSize: 3, width: 'auto' })}
-                onClick={() => modalOpened({ modal: 'moveSandbox' })}
+                onClick={() =>
+                  modals.moveSandboxModal.open({
+                    sandboxIds: [currentSandbox.id],
+                  })
+                }
                 arial-label="Change sandbox folder"
               >
                 {folderName}

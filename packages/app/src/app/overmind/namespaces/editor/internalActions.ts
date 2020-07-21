@@ -35,7 +35,7 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
 };
 
 export const initializeSandbox: AsyncAction<Sandbox> = async (
-  { actions, effects },
+  { actions },
   sandbox
 ) => {
   await Promise.all([
