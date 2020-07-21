@@ -145,11 +145,6 @@ export const entryTarget = {
       }
       return true;
     }
-
-    if (props.readOnly) {
-      return false;
-    }
-
     return source.path !== props.path;
   },
 };

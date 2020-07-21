@@ -46,8 +46,7 @@ import {
 type Props = {
   name: string;
   path: string;
-  url?: string;
-  readOnly?: string;
+  url: string;
   folders: { path: string }[];
   foldersByPath: { [path: string]: string };
   selectedSandboxes: string[];
@@ -58,7 +57,7 @@ type Props = {
   basePath: string;
   teamId: string;
   onSelect: (params: { teamId: string; path: string }) => void;
-  currentPath: string | null;
+  currentPath: string;
   currentTeamId: string;
 
   // dnd handlers
@@ -137,6 +136,7 @@ class FolderEntry extends React.Component<Props, State> {
       depth,
       isOver,
       toToggle = true,
+      allowCreate = true,
       canDrop,
       connectDropTarget,
       connectDragSource,
@@ -147,78 +147,74 @@ class FolderEntry extends React.Component<Props, State> {
       currentPath,
       currentTeamId,
       history,
-      readOnly,
-      allowCreate = !readOnly,
     } = this.props;
 
     const children = getDirectChildren(path, folders);
 
-    const menuItems = readOnly
-      ? []
-      : [
-          {
-            title: 'Rename Folder',
-            icon: RenameIcon,
-            action: () => {
-              this.setState({ renamingDirectory: true });
-              return true;
-            },
-          },
-          {
-            title: 'Delete Folder',
-            icon: TrashIcon,
-            color: theme.red.darken(0.2)(),
-            action: () => {
-              track('Dashboard - Folder Deleted');
-              client.mutate({
-                mutation: DELETE_FOLDER_MUTATION,
-                variables: { path, teamId },
+    const menuItems = [
+      {
+        title: 'Rename Folder',
+        icon: RenameIcon,
+        action: () => {
+          this.setState({ renamingDirectory: true });
+          return true;
+        },
+      },
+      {
+        title: 'Delete Folder',
+        icon: TrashIcon,
+        color: theme.red.darken(0.2)(),
+        action: () => {
+          track('Dashboard - Folder Deleted');
+          client.mutate({
+            mutation: DELETE_FOLDER_MUTATION,
+            variables: { path, teamId },
 
-                refetchQueries: [
-                  {
-                    query: PATHED_SANDBOXES_CONTENT_QUERY,
-                    variables: { path: '/', teamId },
-                  },
-                ],
-                update: (cache, { data: { deleteCollection } }) => {
-                  const variables: PathedSandboxesFoldersQueryVariables = {
-                    teamId,
-                  };
+            refetchQueries: [
+              {
+                query: PATHED_SANDBOXES_CONTENT_QUERY,
+                variables: { path: '/', teamId },
+              },
+            ],
+            update: (cache, { data: { deleteCollection } }) => {
+              const variables: PathedSandboxesFoldersQueryVariables = {
+                teamId,
+              };
 
-                  const cacheData = cache.readQuery<
-                    PathedSandboxesFoldersQuery,
-                    PathedSandboxesFoldersQueryVariables
-                  >({
-                    query: PATHED_SANDBOXES_FOLDER_QUERY,
-                    variables,
-                  });
-
-                  cache.writeQuery({
-                    query: PATHED_SANDBOXES_FOLDER_QUERY,
-                    variables,
-                    data: {
-                      ...cacheData,
-                      me: {
-                        // @ts-ignore
-                        ...cacheData.me,
-                        collections: deleteCollection,
-                      },
-                    },
-                  });
-                },
+              const cacheData = cache.readQuery<
+                PathedSandboxesFoldersQuery,
+                PathedSandboxesFoldersQueryVariables
+              >({
+                query: PATHED_SANDBOXES_FOLDER_QUERY,
+                variables,
               });
 
-              const subPath = path
-                .split('/')
-                .slice(0, -1)
-                .join('/');
-
-              history.replace(`${basePath}${subPath}`);
-
-              return true;
+              cache.writeQuery({
+                query: PATHED_SANDBOXES_FOLDER_QUERY,
+                variables,
+                data: {
+                  ...cacheData,
+                  me: {
+                    // @ts-ignore
+                    ...cacheData.me,
+                    collections: deleteCollection,
+                  },
+                },
+              });
             },
-          },
-        ];
+          });
+
+          const subPath = path
+            .split('/')
+            .slice(0, -1)
+            .join('/');
+
+          history.replace(`${basePath}${subPath}`);
+
+          return true;
+        },
+      },
+    ];
 
     if (allowCreate) {
       menuItems.unshift({
@@ -246,8 +242,7 @@ class FolderEntry extends React.Component<Props, State> {
                 backgroundColor:
                   isOver && canDrop ? 'rgba(0, 0, 0, 0.3)' : undefined,
 
-                ...(currentPath &&
-                decodeURIComponent(currentPath) === path &&
+                ...(decodeURIComponent(currentPath) === path &&
                 currentTeamId === teamId
                   ? {
                       borderColor: theme.secondary(),
@@ -389,7 +384,7 @@ class FolderEntry extends React.Component<Props, State> {
                     key={childName}
                     name={childName}
                     depth={this.props.depth + 1}
-                    open={currentPath && currentPath.indexOf(childPath) === 0}
+                    open={currentPath.indexOf(childPath) === 0}
                     onSelect={onSelect}
                     currentPath={currentPath}
                     currentTeamId={currentTeamId}
@@ -412,7 +407,7 @@ class FolderEntry extends React.Component<Props, State> {
 }
 
 const entrySource = {
-  canDrag: props => !props.readOnly,
+  canDrag: () => true,
 
   beginDrag: props => {
     if (props.closeTree) props.closeTree();
