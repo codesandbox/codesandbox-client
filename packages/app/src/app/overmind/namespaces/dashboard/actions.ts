@@ -1089,10 +1089,16 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
 export const addSandboxesToFolder: AsyncAction<{
   sandboxIds: string[];
   collectionPath: string | null;
+  teamId?: string | null;
   deleteFromCurrentPath?: boolean;
 }> = async (
   { state, effects, actions },
-  { sandboxIds, collectionPath, deleteFromCurrentPath = true }
+  {
+    sandboxIds,
+    collectionPath,
+    teamId = state.activeTeam,
+    deleteFromCurrentPath = true,
+  }
 ) => {
   effects.analytics.track('Dashboard - Moved Sandboxes', {
     dashboardVersion: 2,
@@ -1114,9 +1120,7 @@ export const addSandboxesToFolder: AsyncAction<{
     await effects.gql.mutations.addSandboxToFolder({
       sandboxIds,
       collectionPath,
-      // only way to pass, null is a value in the BE
-      // @ts-ignore
-      teamId: state.activeTeam || undefined,
+      teamId,
     });
 
     if (collectionPath) {

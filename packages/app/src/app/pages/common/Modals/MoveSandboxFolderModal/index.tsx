@@ -13,13 +13,12 @@ import {
 } from '@codesandbox/components';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import Modal from 'app/components/Modal';
-import { addSandboxesToFolder } from '../../../Dashboard/queries';
 
 import { DirectoryPicker } from './DirectoryPicker';
 
 export const MoveSandboxFolderModal: FunctionComponent = () => {
   const {
-    actions: { refetchSandboxInfo, modals: modalsActions },
+    actions: { dashboard, refetchSandboxInfo, modals: modalsActions },
     state: { activeTeamInfo, activeTeam, user, modals },
   } = useOvermind();
   const [error, setError] = useState(undefined);
@@ -49,7 +48,12 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     setLoading(true);
     setError(undefined);
 
-    addSandboxesToFolder(modals.moveSandboxModal.sandboxIds, path, teamId)
+    dashboard
+      .addSandboxesToFolder({
+        sandboxIds: modals.moveSandboxModal.sandboxIds,
+        collectionPath: path,
+        teamId,
+      })
       .then(() => {
         refetchSandboxInfo();
 

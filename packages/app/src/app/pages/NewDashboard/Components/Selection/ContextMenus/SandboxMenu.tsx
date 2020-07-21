@@ -113,6 +113,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Show in Folder
         </MenuItem>
       ) : null}
+
       <Menu.Divider />
       <MenuItem
         onSelect={() => {
@@ -131,6 +132,17 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           }}
         >
           Fork sandbox
+        </MenuItem>
+      ) : null}
+      {isOwner ? (
+        <MenuItem
+          onSelect={() => {
+            actions.modals.moveSandboxModal.open({
+              sandboxIds: [item.sandbox.id],
+            });
+          }}
+        >
+          Move to Folder
         </MenuItem>
       ) : null}
       <MenuItem

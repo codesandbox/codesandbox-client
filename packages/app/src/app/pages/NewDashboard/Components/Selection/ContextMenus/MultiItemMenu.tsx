@@ -66,6 +66,12 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     });
   };
 
+  const moveToFolder = () => {
+    actions.modals.moveSandboxModal.open({
+      sandboxIds: [...sandboxes, ...templates].map(s => s.sandbox.id),
+    });
+  };
+
   const deleteItems = () => {
     folders.forEach(folder =>
       actions.dashboard.deleteFolder({ path: folder.path })
@@ -99,16 +105,21 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     fn: convertToSandboxes,
   };
 
+  const MOVE_ITEMS = {
+    label: 'Move to Folder',
+    fn: moveToFolder,
+  };
+
   let options = [];
 
   if (folders.length) {
     options = [DELETE];
   } else if (sandboxes.length && templates.length) {
-    options = [EXPORT, DELETE];
+    options = [EXPORT, MOVE_ITEMS, DELETE];
   } else if (templates.length) {
-    options = [EXPORT, CONVERT_TO_SANDBOX, DELETE];
+    options = [EXPORT, MOVE_ITEMS, CONVERT_TO_SANDBOX, DELETE];
   } else if (sandboxes.length) {
-    options = [EXPORT, CONVERT_TO_TEMPLATE, DELETE];
+    options = [EXPORT, MOVE_ITEMS, CONVERT_TO_TEMPLATE, DELETE];
   }
 
   return (
