@@ -21,7 +21,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   page,
 }) => {
   const {
-    state: { user, activeTeam },
+    state: { user, activeTeam, activeTeamInfo },
     effects,
     actions,
   } = useOvermind();
@@ -41,6 +41,10 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'template' : 'sandbox';
+
+  // default to ADMIN if we don't know (personal space + not set)
+  const authorization = activeTeamInfo?.userAuthorization || 'ADMIN';
+
   const isOwner = React.useMemo(() => {
     if (item.type !== 'template') {
       return true;
@@ -51,6 +55,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   }, [item, user]);
 
   if (location.pathname.includes('deleted')) {
+    if (authorization === 'READ') return null;
+
     return (
       <Menu.ContextMenu
         visible={visible}
@@ -84,7 +90,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       position={position}
       style={{ width: 200 }}
     >
-      {isTemplate ? (
+      {isTemplate && authorization !== 'READ' ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -121,7 +127,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       >
         Copy {label} link
       </MenuItem>
-      {!isTemplate ? (
+      {!isTemplate && authorization !== 'READ' ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -133,14 +139,17 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Fork sandbox
         </MenuItem>
       ) : null}
-      <MenuItem
-        onSelect={() => {
-          actions.dashboard.downloadSandboxes([sandbox.id]);
-        }}
-      >
-        Export {label}
-      </MenuItem>
-      {isOwner ? (
+      {authorization !== 'READ' && (
+        <MenuItem
+          onSelect={() => {
+            actions.dashboard.downloadSandboxes([sandbox.id]);
+          }}
+        >
+          Export {label}
+        </MenuItem>
+      )}
+
+      {isOwner && authorization !== 'READ' ? (
         <>
           <Menu.Divider />
           {sandbox.privacy !== 0 && (
