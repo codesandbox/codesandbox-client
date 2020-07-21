@@ -357,6 +357,15 @@ export const getActiveTeamInfo: AsyncAction<
 
   state.activeTeamInfo = currentTeam;
 
+  if (state.activeTeamInfo.userAuthorizations) {
+    state.activeTeamInfo.userAuthorization = state.activeTeamInfo.userAuthorizations.find(
+      auth => auth.userId === state.user.id
+    ).authorization;
+  } else {
+    // backward compatible
+    state.activeTeamInfo.userAuthorization = 'WRITE';
+  }
+
   return currentTeam;
 };
 

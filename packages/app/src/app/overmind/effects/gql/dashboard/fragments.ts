@@ -168,5 +168,10 @@ export const currentTeamInfoFragment = gql`
       avatarUrl
       username
     }
+
+    userAuthorizations {
+      userId
+      authorization
+    }
   }
 `;
