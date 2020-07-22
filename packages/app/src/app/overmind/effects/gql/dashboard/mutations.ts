@@ -39,6 +39,8 @@ import {
   CreateFolderMutationVariables,
   SetTeamNameMutation,
   SetTeamNameMutationVariables,
+  ChangeTeamMemberAuthorizationMutation,
+  ChangeTeamMemberAuthorizationMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -293,4 +295,22 @@ export const setTeamName: Query<
     }
   }
   ${teamFragmentDashboard}
+`;
+
+export const changeTeamMemberAuthorization: Query<
+  ChangeTeamMemberAuthorizationMutation,
+  ChangeTeamMemberAuthorizationMutationVariables
+> = gql`
+  mutation _ChangeTeamMemberAuthorization(
+    $teamId: ID!
+    $userId: ID!
+    $authorization: TeamMemberAuthorization!
+  ) {
+    changeTeamMemberAuthorizations(
+      teamId: $teamId
+      memberAuthorizations: { userId: $userId, authorization: $authorization }
+    ) {
+      id
+    }
+  }
 `;

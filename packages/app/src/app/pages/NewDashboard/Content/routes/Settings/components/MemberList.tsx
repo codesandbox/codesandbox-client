@@ -39,6 +39,12 @@ export const MemberList: React.FC<MemberListProps> = ({
     {users.map(user => {
       const actions = getActions(user);
 
+      const permissionMap = {
+        ADMIN: 'Admin',
+        WRITE: 'Can Edit',
+        READ: 'Can View',
+      };
+
       return (
         <ListAction
           key={user.username}
@@ -68,7 +74,7 @@ export const MemberList: React.FC<MemberListProps> = ({
                 css={{ height: '100%' }}
               >
                 <Text variant="muted" size={3} css={css({ width: '100%' })}>
-                  {getPermission(user)}
+                  {permissionMap[getPermission(user)]}
                 </Text>
                 {actions.length > 0 ? (
                   <Menu>

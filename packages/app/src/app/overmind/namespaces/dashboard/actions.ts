@@ -8,6 +8,7 @@ import {
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
+  TeamMemberAuthorization,
 } from 'app/graphql/types';
 import { getDecoratedCollection } from './utils';
 import { PageTypes, OrderBy, sandboxesTypes } from './types';
@@ -1396,6 +1397,48 @@ export const updateTeamAvatar: AsyncAction<{
     actions.internal.handleError({
       message: "We weren't able to update your team avatar",
       error,
+    });
+  }
+};
+
+export const changeAuthorizationInState: Action<{
+  userId: string;
+  authorization;
+}> = ({ state }, { userId, authorization }) => {
+  state.activeTeamInfo.userAuthorizations = state.activeTeamInfo.userAuthorizations.map(
+    user => {
+      if (user.userId === userId) user.authorization = authorization;
+      return user;
+    }
+  );
+};
+
+export const changeAuthorization: AsyncAction<{
+  userId: string;
+  authorization: TeamMemberAuthorization;
+}> = async ({ state, effects, actions }, { userId, authorization }) => {
+  // optimistic update
+  const oldAuthorization = state.activeTeamInfo.userAuthorizations.find(
+    user => user.userId === userId
+  ).authorization;
+
+  actions.dashboard.changeAuthorizationInState({ userId, authorization });
+
+  try {
+    await effects.gql.mutations.changeTeamMemberAuthorization({
+      teamId: state.activeTeam,
+      userId,
+      authorization,
+    });
+  } catch (e) {
+    effects.notificationToast.error(
+      'There has been a problem changing user authorization'
+    );
+
+    // undo optimistic update
+    actions.dashboard.changeAuthorizationInState({
+      userId,
+      authorization: oldAuthorization,
     });
   }
 };

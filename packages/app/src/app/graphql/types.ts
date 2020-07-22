@@ -214,6 +214,14 @@ export type Reference = {
 /** The metadata of a reference */
 export type ReferenceMetadata = CodeReferenceMetadata | UserReferenceMetadata;
 
+/** Team authorization */
+export type TeamMemberAuthorization = 'ADMIN' | 'WRITE' | 'READ';
+
+export type MemberAuthorization = {
+  userId: Scalars['ID'];
+  authorization: TeamMemberAuthorization;
+};
+
 export type RootMutationType = {
   __typename?: 'RootMutationType';
   /** bookmark a template */
@@ -1332,11 +1340,8 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
     invitees: Array<
       { __typename?: 'User' } & Pick<User, 'id' | 'avatarUrl' | 'username'>
     >;
-    userAuthorizations: Array<{
-      userId: 'string';
-      authorization: 'ADMIN' | 'READ' | 'WRITE';
-    }>;
-    userAuthorization: 'ADMIN' | 'READ' | 'WRITE';
+    userAuthorizations: Array<MemberAuthorization>;
+    userAuthorization: TeamMemberAuthorization;
   };
 
 export type _CreateTeamMutationVariables = Exact<{
@@ -2290,6 +2295,18 @@ export type SetTeamNameMutationVariables = Exact<{
 
 export type SetTeamNameMutation = { __typename?: 'RootMutationType' } & {
   setTeamName: { __typename?: 'Team' } & TeamFragment;
+};
+
+export type ChangeTeamMemberAuthorizationMutationVariables = Exact<{
+  teamId: Scalars['ID'];
+  userId: Scalars['ID'];
+  authorization: TeamMemberAuthorization;
+}>;
+
+export type ChangeTeamMemberAuthorizationMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  setTeamName: { __typename?: 'Team' } & Pick<Team, 'id'>;
 };
 
 export type BookmarkTemplateMutationVariables = Exact<{
