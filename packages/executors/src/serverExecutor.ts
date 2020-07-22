@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import { dispatch } from 'codesandbox-api';
 import _debug from 'debug';
+import axios from 'axios';
 
 import { IExecutor, IFiles, ISetupParams } from './executor';
 
@@ -71,20 +72,18 @@ export class ServerExecutor implements IExecutor {
     this.token = this.retrieveSSEToken();
   }
 
-  private initializeSocket() {
+  private async initializeSocket() {
     if (!this.sandboxId) {
       throw new Error('initializeSocket: sandboxId is not defined');
     }
-
     const usedHost = this.host || 'https://codesandbox.io';
-    const sseHost = usedHost.replace('https://', 'https://sse.');
+    const sseLbHost = usedHost.replace('https://', 'https://sse-lb.');
+    const res = await axios.get(`${sseLbHost}/api/cluster/${this.sandboxId}`);
+    const sseHost = res.data.hostname;
 
     this.socket = io(sseHost, {
       autoConnect: false,
       transports: ['websocket', 'polling'],
-      query: {
-        sandboxid: this.sandboxId,
-      },
     });
   }
 
@@ -100,7 +99,7 @@ export class ServerExecutor implements IExecutor {
     await this.dispose();
     await tick();
 
-    this.initializeSocket();
+    await this.initializeSocket();
   }
 
   public async setup() {
@@ -110,8 +109,10 @@ export class ServerExecutor implements IExecutor {
   }
 
   public async dispose() {
-    this.socket?.removeAllListeners();
-    this.socket?.close();
+    if (this.socket) {
+      this.socket.removeAllListeners();
+      this.socket.close();
+    }
   }
 
   public updateFiles(newFiles: IFiles) {
@@ -131,11 +132,15 @@ export class ServerExecutor implements IExecutor {
   }
 
   public emit(event: string, data?: any) {
-    this.socket?.emit(event, data);
+    if (this.socket) {
+      this.socket.emit(event, data);
+    }
   }
 
   public on(event: string, listener: (data: any) => void) {
-    this.socket?.on(event, listener);
+    if (this.socket) {
+      this.socket.on(event, listener);
+    }
   }
 
   private openSocket() {
@@ -144,7 +149,7 @@ export class ServerExecutor implements IExecutor {
     }
 
     return new Promise<void>((resolve, reject) => {
-      this.socket?.on('connect', async () => {
+      this.socket!.on('connect', async () => {
         try {
           if (this.connectTimeout) {
             clearTimeout(this.connectTimeout);
@@ -160,7 +165,7 @@ export class ServerExecutor implements IExecutor {
         }
       });
 
-      this.socket?.on('sandbox:start', () => {
+      this.socket!.on('sandbox:start', () => {
         sseTerminalMessage(`Sandbox ${this.sandboxId} started`);
       });
 
