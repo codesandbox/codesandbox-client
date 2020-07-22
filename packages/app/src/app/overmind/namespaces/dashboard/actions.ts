@@ -1403,14 +1403,16 @@ export const updateTeamAvatar: AsyncAction<{
 
 export const changeAuthorizationInState: Action<{
   userId: string;
-  authorization;
+  authorization: TeamMemberAuthorization;
 }> = ({ state }, { userId, authorization }) => {
-  state.activeTeamInfo.userAuthorizations = state.activeTeamInfo.userAuthorizations.map(
+  const userAuthorizations = state.activeTeamInfo.userAuthorizations.map(
     user => {
-      if (user.userId === userId) user.authorization = authorization;
+      if (user.userId === userId) return { ...user, authorization };
       return user;
     }
   );
+
+  state.activeTeamInfo = { ...state.activeTeamInfo, userAuthorizations };
 };
 
 export const changeAuthorization: AsyncAction<{
