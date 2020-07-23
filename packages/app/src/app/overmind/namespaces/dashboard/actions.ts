@@ -1434,9 +1434,12 @@ export const changeAuthorization: AsyncAction<{
     });
     actions.getActiveTeamInfo();
   } catch (e) {
-    effects.notificationToast.error(
-      'There has been a problem changing user authorization'
-    );
+    let message = 'There has been a problem changing user authorization.';
+    if (e?.response?.errors) {
+      message += ' ' + e.response.errors.map(error => error.message).join(', ');
+    }
+
+    effects.notificationToast.error(message);
 
     // undo optimistic update
     actions.dashboard.changeAuthorizationInState({
