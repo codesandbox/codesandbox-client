@@ -1432,6 +1432,7 @@ export const changeAuthorization: AsyncAction<{
       userId,
       authorization,
     });
+    actions.getActiveTeamInfo();
   } catch (e) {
     effects.notificationToast.error(
       'There has been a problem changing user authorization'

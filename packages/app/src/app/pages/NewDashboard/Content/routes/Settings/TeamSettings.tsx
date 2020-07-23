@@ -230,12 +230,14 @@ export const TeamSettings = () => {
                       <Text size={6} weight="bold">
                         {team.name}
                       </Text>
-                      <IconButton
-                        name="edit"
-                        size={12}
-                        title="Edit team"
-                        onClick={() => setEditing(true)}
-                      />
+                      {team.userAuthorization === 'ADMIN' && (
+                        <IconButton
+                          name="edit"
+                          size={12}
+                          title="Edit team"
+                          onClick={() => setEditing(true)}
+                        />
+                      )}
                     </Stack>
                     <Text size={3}>
                       {team.joinedPilotAt
