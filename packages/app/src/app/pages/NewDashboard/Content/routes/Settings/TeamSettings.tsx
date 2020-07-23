@@ -296,13 +296,15 @@ export const TeamSettings = () => {
               size={4}
             >
               Members{' '}
-              <IconButton
-                css={css({ marginLeft: 2 })}
-                size={12}
-                title="Copy Invite URL"
-                name="link"
-                onClick={onCopyInviteUrl}
-              />
+              {team.userAuthorization !== 'READ' && (
+                <IconButton
+                  css={css({ marginLeft: 2 })}
+                  size={12}
+                  title="Copy Invite URL"
+                  name="link"
+                  onClick={onCopyInviteUrl}
+                />
+              )}
             </Text>
 
             <Stack
@@ -418,7 +420,7 @@ export const TeamSettings = () => {
             />
 
             <MemberList
-              getPermission={() => 'Pending...'}
+              getPermission={() => 'PENDING'}
               getActions={user =>
                 [
                   {

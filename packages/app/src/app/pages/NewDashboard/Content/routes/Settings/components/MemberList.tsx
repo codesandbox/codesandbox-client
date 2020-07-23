@@ -43,6 +43,7 @@ export const MemberList: React.FC<MemberListProps> = ({
         ADMIN: 'Admin',
         WRITE: 'Can Edit',
         READ: 'Can View',
+        PENDING: 'Pending...',
       };
 
       return (
