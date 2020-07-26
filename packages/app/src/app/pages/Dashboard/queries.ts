@@ -275,12 +275,7 @@ export function addSandboxesToFolder(
     },
     optimisticResponse: {
       __typename: 'RootMutationType',
-      addToCollection: {
-        __typename: 'Collection',
-        // We keep this empty, because it will be loaded later regardless. We
-        // just want the main directory to update immediately
-        sandboxes: [],
-      },
+      addToCollectionOrTeam: [],
     },
 
     refetchQueries: ['PathedSandboxes'],
@@ -299,12 +294,7 @@ export function undeleteSandboxes(selectedSandboxes) {
     },
     optimisticResponse: {
       __typename: 'RootMutationType',
-      addToCollection: {
-        __typename: 'Collection',
-        // We keep this empty, because it will be loaded later regardless. We
-        // just want the main directory to update immediately
-        sandboxes: [],
-      },
+      addToCollectionOrTeam: [],
     },
 
     refetchQueries: ['DeletedSandboxes'],
