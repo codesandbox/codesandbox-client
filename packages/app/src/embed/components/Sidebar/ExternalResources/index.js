@@ -38,7 +38,7 @@ function ExternalResources({ sandbox }) {
           {externalResources.map(dep => (
             <Row key={dep}>
               <span>{getName(dep)}</span>
-              <a href={dep} rel="nofollow noopener noreferrer" target="_blank">
+              <a href={dep} rel="nofollow noopener noreferrer" target="_blank" style={{overflow:"scroll"}}>
                 open
               </a>
             </Row>
