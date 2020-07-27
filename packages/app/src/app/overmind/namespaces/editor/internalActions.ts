@@ -428,7 +428,7 @@ export const forkSandbox: AsyncAction<{
 
     const forkedSandbox = await effects.api.forkSandbox(id, {
       ...(sandbox.title && !sandbox.title.includes('(Forked)')
-        ? { title: sandbox.title + ' (Forked)' }
+        ? { title: `${sandbox.title} (Forked)` }
         : {}),
       ...usedBody,
     });
