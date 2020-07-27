@@ -8,6 +8,7 @@ import {
   ServerContainerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
+import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import {
@@ -18,7 +19,6 @@ import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { mapValues } from 'lodash-es';
-import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -426,7 +426,12 @@ export const forkSandbox: AsyncAction<{
       }
     }
 
-    const forkedSandbox = await effects.api.forkSandbox(id, usedBody);
+    const forkedSandbox = await effects.api.forkSandbox(id, {
+      ...(sandbox.title && !sandbox.title.includes('(FORKED)')
+        ? { title: sandbox.title + ' (FORKED)' }
+        : {}),
+      ...usedBody,
+    });
 
     // Copy over any unsaved code
     Object.assign(forkedSandbox, {
