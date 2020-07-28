@@ -41,9 +41,7 @@ const Input = styled.input`
   padding-right: 40px;
   border: none;
 
-  @media screen and (max-width: 768px) {
-    border-radius: 10px;
-  }
+  
 
   ::-webkit-input-placeholder {
     font-size: 23px;
@@ -61,6 +59,37 @@ const Input = styled.input`
     font-size: 23px;
     color: #757575;
   }
+
+
+
+  }
+
+
+
+  @media screen and (max-width: 768px) {
+  ::-webkit-input-placeholder {
+    font-size: 16px;
+    color: #757575;
+  }
+  ::-moz-placeholder {
+    font-size: 16px;
+    color: #757575;
+  }
+  :-ms-input-placeholder {
+    font-size: 16px;
+    color: #757575;
+  }
+  :-moz-placeholder {
+    font-size: 16px;
+    color: #757575;
+  }
+  }
+
+
+
+
+
+
 `;
 
 const IconWrapper = styled(Element)`
@@ -115,7 +144,7 @@ const Docs = ({ data }) => {
         css={`
           padding-top: 6rem;
           width: 1095px;
-          max-width: 80%;
+          max-width: 95%;
           margin: auto;
           background-size: cover;
 
