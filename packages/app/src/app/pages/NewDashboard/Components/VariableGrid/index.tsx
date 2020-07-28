@@ -96,7 +96,7 @@ const ComponentForTypes: ComponentForTypes = {
   'new-master-branch': props => <NewMasterSandbox {...props.item} />,
   header: ({ item }) => (
     <Stack justify="space-between" align="center">
-      <Text block style={{ userSelect: 'none' }}>
+      <Text block weight="medium" style={{ userSelect: 'none' }}>
         {item.title}
       </Text>
       {item.showMoreLink
@@ -169,13 +169,17 @@ const Item = React.memo(
     const isHeader = item.type === 'header' || item.type === 'header-link';
     const marginTopMap = {
       header: ITEM_VERTICAL_OFFSET + 24,
-      headerLink: ITEM_VERTICAL_OFFSET + 28,
+      'header-link': ITEM_VERTICAL_OFFSET + 28,
     };
 
     const margins = {
       marginTop: marginTopMap[item.type] || ITEM_VERTICAL_OFFSET,
       marginBottom: viewMode === 'list' || isHeader ? 0 : ITEM_VERTICAL_OFFSET,
     };
+
+    const numberOfRows = Math.ceil(filledItems.length / columnCount);
+    const isLastRow = rowIndex === numberOfRows - 1;
+    if (isLastRow) margins.marginBottom += viewMode === 'list' ? 64 + 32 : 32;
 
     return (
       <div
