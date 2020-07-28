@@ -535,8 +535,9 @@ export const resolveOutOfSync: AsyncAction = async ({
     );
     sandbox.originalGit!.commitSha = git.sourceCommitSha;
     sandbox.originalGitCommitSha = git.sourceCommitSha;
-    await actions.git._loadSourceSandbox();
   }
+
+  await actions.git._loadSourceSandbox();
 
   actions.git._setGitChanges();
   git.outOfSyncUpdates.added = [];
