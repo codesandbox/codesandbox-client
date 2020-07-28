@@ -58,7 +58,7 @@ const animation = styledcss`
  * so we apply global styles with their [data-reach-name]
  */
 
-const TooltipStyles = createGlobalStyle(
+export const TooltipStyles = createGlobalStyle(
   css({
     '[data-reach-tooltip][data-component=Tooltip]': {
       backgroundColor: 'grays.900',
@@ -70,7 +70,7 @@ const TooltipStyles = createGlobalStyle(
       paddingY: 1,
       fontSize: 3,
       lineHeight: 1,
-      zIndex: 3,
+      zIndex: 20, // TODO: we need to sort out our z indexes!
 
       // multiline
       maxWidth: 160,
@@ -80,6 +80,10 @@ const TooltipStyles = createGlobalStyle(
   }),
   animation
 );
+interface TooltipProps {
+  label: string;
+  children: React.ReactElement;
+}
 
 /** Dragon number 3:
  * to attach a triangle and transitions to the tooltip,
@@ -87,13 +91,12 @@ const TooltipStyles = createGlobalStyle(
  * TooltipPopup and create the triangle in another component
  */
 
-const Tooltip = props => {
+const Tooltip: React.FC<TooltipProps> = props => {
   const [trigger, tooltip] = useTooltip();
   const { isVisible, triggerRect } = tooltip;
 
   return (
     <>
-      <TooltipStyles />
       {React.cloneElement(props.children, trigger)}
       <TooltipPopup
         {...tooltip}

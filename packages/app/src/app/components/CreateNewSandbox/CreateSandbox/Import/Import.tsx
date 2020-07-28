@@ -1,32 +1,33 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
 import {
+  gitHubRepoPattern,
   gitHubToSandboxUrl,
   protocolAndHost,
-  gitHubRepoPattern,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { Button } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { SignInButton } from 'app/pages/common/SignInButton';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { TerminalIcon } from '../Icons/TerminalIcon';
-import { DownloadIcon } from '../Icons/DownloadIcon';
-import { GitHubIcon, StackbitIcon } from '../Icons';
+import React, { useCallback, useEffect, useState } from 'react';
+
 import { Header } from '../elements';
-import { StackbitButton } from './Stackbit';
+import { GitHubIcon, StackbitIcon } from '../Icons';
+import { DownloadIcon } from '../Icons/DownloadIcon';
+import { TerminalIcon } from '../Icons/TerminalIcon';
 import {
-  Features,
+  ButtonContainer,
   Column,
   FeatureName,
   FeatureText,
-  Input,
-  ButtonContainer,
-  PlaceHolderLink,
-  ImportChoices,
-  VerticalSeparator,
+  Features,
   GitHubLink,
-  StyledInfoIcon,
   IconLink,
+  ImportChoices,
+  Input,
+  PlaceHolderLink,
+  StyledInfoIcon,
+  VerticalSeparator,
 } from './elements';
+import { StackbitButton } from './Stackbit';
 
 const getFullGitHubUrl = (url: string) =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
@@ -103,7 +104,7 @@ export const Import = () => {
 
             <ButtonContainer>
               <Button
-                small
+                autoWidth
                 style={{ fontSize: 11 }}
                 onClick={() => effects.browser.copyToClipboard(transformedUrl)}
                 disabled={!transformedUrl}
@@ -111,15 +112,15 @@ export const Import = () => {
                 Copy Link
               </Button>
               <Button
-                small
+                autoWidth
                 style={{ fontSize: 11 }}
                 disabled={!transformedUrl}
-                to={gitHubToSandboxUrl(url)}
-                onClick={() => {
-                  actions.modalClosed();
+                onClick={async () => {
+                  await actions.git.importFromGithub(gitHubToSandboxUrl(url));
+                  actions.modals.newSandboxModal.close();
                 }}
               >
-                Generate Sandbox
+                Import and Fork
               </Button>
             </ButtonContainer>
           </form>

@@ -1,13 +1,13 @@
-import React from 'react';
-import { Element } from '@codesandbox/components';
-import AddIcon from 'react-icons/lib/md/add';
-import RemoveIcon from 'react-icons/lib/md/remove';
-import FollowIcon from 'react-icons/lib/io/eye';
-import UnfollowIcon from 'react-icons/lib/io/eye-disabled';
+import React, { FunctionComponent, SVGProps } from 'react';
 
-export { AddIcon, RemoveIcon, FollowIcon, UnfollowIcon };
+export { default as AddIcon } from 'react-icons/lib/md/add';
+export { default as RemoveIcon } from 'react-icons/lib/md/remove';
+export { default as FollowIcon } from 'react-icons/lib/io/eye';
+export { default as UnfollowIcon } from 'react-icons/lib/io/eye-disabled';
 
-export const LiveIcon = props => (
+type IconProps = SVGProps<SVGSVGElement>;
+
+export const LiveIcon: FunctionComponent<IconProps> = props => (
   <svg
     width="8"
     height="8"
@@ -19,9 +19,8 @@ export const LiveIcon = props => (
   </svg>
 );
 
-export const StopIcon = props => (
-  <Element
-    as="svg"
+export const StopIcon: FunctionComponent<IconProps> = props => (
+  <svg
     width="8"
     height="8"
     viewBox="0 0 8 8"
@@ -30,10 +29,10 @@ export const StopIcon = props => (
     {...props}
   >
     <rect width="8" height="8" rx="1" fill="currentcolor" />
-  </Element>
+  </svg>
 );
 
-export const OpenIcon = props => (
+export const OpenIcon: FunctionComponent<IconProps> = props => (
   <svg width={10} height={10} fill="none" viewBox="0 0 10 10" {...props}>
     <path
       fill="currentcolor"
@@ -42,7 +41,7 @@ export const OpenIcon = props => (
   </svg>
 );
 
-export const ClassroomIcon = props => (
+export const ClassroomIcon: FunctionComponent<IconProps> = props => (
   <svg
     width="15"
     height="8"

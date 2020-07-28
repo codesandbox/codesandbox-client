@@ -1,5 +1,5 @@
 import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextArea';
-import { Button } from '@codesandbox/components';
+import { Button, Input } from '@codesandbox/components';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -12,6 +12,7 @@ import Helmet from 'react-helmet';
 import {
   REVOKE_TEAM_INVITATION,
   SET_TEAM_DESCRIPTION,
+  SET_TEAM_NAME,
   TEAM_QUERY,
 } from '../../../queries';
 import { Container, Description, HeaderContainer } from '../../elements';
@@ -53,6 +54,7 @@ const User = ({ user, rightElement }) => (
 class TeamView extends React.PureComponent {
   state = {
     editingDescription: false,
+    editingName: false,
   };
 
   render() {
@@ -79,7 +81,77 @@ class TeamView extends React.PureComponent {
                       <title>{data.me.team.name} - CodeSandbox</title>
                     </Helmet>
                     <Section>
-                      <HeaderContainer>{data.me.team.name}</HeaderContainer>
+                      <HeaderContainer>
+                        {this.state.editingName ? (
+                          <Mutation mutation={SET_TEAM_NAME}>
+                            {(mutate, { loading: nameLoading }) => {
+                              let input = null;
+
+                              const stopEditing = () => {
+                                this.setState({ editingName: false });
+                              };
+                              const submit = e => {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                mutate({
+                                  variables: {
+                                    teamId,
+                                    name: input.value,
+                                  },
+                                }).then(stopEditing);
+                              };
+
+                              return (
+                                <form
+                                  onSubmit={nameLoading ? undefined : submit}
+                                  style={{ width: '100%' }}
+                                >
+                                  <div
+                                    style={{
+                                      width: '100%',
+                                      lineHeight: '1.6',
+                                    }}
+                                  >
+                                    <Input
+                                      ref={node => {
+                                        input = node;
+                                        if (node) {
+                                          node.focus();
+                                        }
+                                      }}
+                                      onBlur={() => {
+                                        stopEditing();
+                                      }}
+                                      style={{
+                                        padding: '.5em',
+                                        lineHeight: '1.6',
+                                      }}
+                                      defaultValue={data.me.team.name}
+                                    />
+                                  </div>
+                                </form>
+                              );
+                            }}
+                          </Mutation>
+                        ) : (
+                          <div
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            {data.me.team.name}{' '}
+                            <StyledEditIcon
+                              onClick={() => {
+                                this.setState(currentState => ({
+                                  editingName: !currentState.editingName,
+                                }));
+                              }}
+                            />
+                          </div>
+                        )}
+                      </HeaderContainer>
                       <Description>
                         {this.state.editingDescription ? (
                           <Mutation mutation={SET_TEAM_DESCRIPTION}>

@@ -1,8 +1,10 @@
 import {
   TeamTemplatesQuery,
   TeamTemplatesQueryVariables,
-  RecentlyDeletedSandboxesQuery,
-  RecentlyDeletedSandboxesQueryVariables,
+  RecentlyDeletedPersonalSandboxesQuery,
+  RecentlyDeletedPersonalSandboxesQueryVariables,
+  RecentlyDeletedTeamSandboxesQuery,
+  RecentlyDeletedTeamSandboxesQueryVariables,
   SandboxesByPathQuery,
   SandboxesByPathQueryVariables,
   OwnedTemplatesQuery,
@@ -13,31 +15,65 @@ import {
   ListUserTemplatesQueryVariables,
   LatestSandboxesQuery,
   LatestSandboxesQueryVariables,
+  RecentlyAccessedSandboxesQuery,
+  RecentlyAccessedSandboxesQueryVariables,
+  LatestTeamSandboxesQuery,
+  LatestTeamSandboxesQueryVariables,
   AllCollectionsQuery,
   AllCollectionsQueryVariables,
-  _SearchSandboxesQuery,
-  _SearchSandboxesQueryVariables,
+  _SearchPersonalSandboxesQuery,
+  _SearchPersonalSandboxesQueryVariables,
+  _SearchTeamSandboxesQuery,
+  _SearchTeamSandboxesQueryVariables,
+  GetTeamQuery,
+  GetTeamQueryVariables,
+  GetPersonalReposQueryVariables,
+  GetPersonalReposQuery,
+  TeamDraftsQuery,
+  TeamDraftsQueryVariables,
+  GetTeamReposQueryVariables,
+  GetTeamReposQuery,
 } from 'app/graphql/types';
-import gql from 'graphql-tag';
-import { Query } from 'overmind-graphql';
+import { gql, Query } from 'overmind-graphql';
 
 import {
   sandboxFragmentDashboard,
   sidebarCollectionDashboard,
   templateFragmentDashboard,
+  repoFragmentDashboard,
+  currentTeamInfoFragment,
 } from './fragments';
 
-export const deletedSandboxes: Query<
-  RecentlyDeletedSandboxesQuery,
-  RecentlyDeletedSandboxesQueryVariables
+export const deletedPersonalSandboxes: Query<
+  RecentlyDeletedPersonalSandboxesQuery,
+  RecentlyDeletedPersonalSandboxesQueryVariables
 > = gql`
-  query recentlyDeletedSandboxes {
+  query recentlyDeletedPersonalSandboxes {
     me {
       sandboxes(
         showDeleted: true
         orderBy: { field: "updated_at", direction: DESC }
       ) {
         ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const deletedTeamSandboxes: Query<
+  RecentlyDeletedTeamSandboxesQuery,
+  RecentlyDeletedTeamSandboxesQueryVariables
+> = gql`
+  query recentlyDeletedTeamSandboxes($teamId: ID!) {
+    me {
+      team(id: $teamId) {
+        sandboxes(
+          showDeleted: true
+          orderBy: { field: "updated_at", direction: DESC }
+        ) {
+          ...sandboxFragmentDashboard
+        }
       }
     }
   }
@@ -66,6 +102,22 @@ export const sandboxesByPath: Query<
   ${sidebarCollectionDashboard}
 `;
 
+export const getTeamDrafts: Query<
+  TeamDraftsQuery,
+  TeamDraftsQueryVariables
+> = gql`
+  query TeamDrafts($teamId: ID!, $authorId: ID) {
+    me {
+      team(id: $teamId) {
+        drafts(authorId: $authorId) {
+          ...sandboxFragmentDashboard
+        }
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
 export const getCollections: Query<
   AllCollectionsQuery,
   AllCollectionsQueryVariables
@@ -74,13 +126,40 @@ export const getCollections: Query<
     me {
       collections(teamId: $teamId) {
         ...sidebarCollectionDashboard
-        sandboxes {
-          id
-        }
       }
     }
   }
   ${sidebarCollectionDashboard}
+`;
+
+export const getPersonalRepos: Query<
+  GetPersonalReposQuery,
+  GetPersonalReposQueryVariables
+> = gql`
+  query getPersonalRepos {
+    me {
+      sandboxes {
+        ...repoFragmentDashboard
+      }
+    }
+  }
+  ${repoFragmentDashboard}
+`;
+
+export const getTeamRepos: Query<
+  GetTeamReposQuery,
+  GetTeamReposQueryVariables
+> = gql`
+  query getTeamRepos($id: ID!) {
+    me {
+      team(id: $id) {
+        sandboxes {
+          ...repoFragmentDashboard
+        }
+      }
+    }
+  }
+  ${repoFragmentDashboard}
 `;
 
 export const teamTemplates: Query<
@@ -123,19 +202,36 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
       teams {
         id
         name
+        avatarUrl
       }
     }
   }
 `;
 
-export const searchSandboxes: Query<
-  _SearchSandboxesQuery,
-  _SearchSandboxesQueryVariables
+export const searchPersonalSandboxes: Query<
+  _SearchPersonalSandboxesQuery,
+  _SearchPersonalSandboxesQueryVariables
 > = gql`
-  query _SearchSandboxes {
+  query _SearchPersonalSandboxes {
     me {
       sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
         ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const searchTeamSandboxes: Query<
+  _SearchTeamSandboxesQuery,
+  _SearchTeamSandboxesQueryVariables
+> = gql`
+  query _SearchTeamSandboxes($teamId: ID!) {
+    me {
+      team(id: $teamId) {
+        sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
+          ...sandboxFragmentDashboard
+        }
       }
     }
   }
@@ -146,25 +242,15 @@ export const listPersonalTemplates: Query<
   ListUserTemplatesQuery,
   ListUserTemplatesQueryVariables
 > = gql`
-  query ListUserTemplates {
+  query ListUserTemplates($teamId: ID) {
     me {
+      id
       templates {
         ...templateFragmentDashboard
       }
 
-      recentlyUsedTemplates {
+      recentlyUsedTemplates(teamId: $teamId) {
         ...templateFragmentDashboard
-
-        sandbox {
-          git {
-            id
-            username
-            commitSha
-            path
-            repo
-            branch
-          }
-        }
       }
 
       bookmarkedTemplates {
@@ -187,7 +273,7 @@ export const listPersonalTemplates: Query<
   ${templateFragmentDashboard}
 `;
 
-export const recentSandboxes: Query<
+export const recentPersonalSandboxes: Query<
   LatestSandboxesQuery,
   LatestSandboxesQueryVariables
 > = gql`
@@ -206,4 +292,53 @@ export const recentSandboxes: Query<
     }
   }
   ${sandboxFragmentDashboard}
+`;
+
+export const recentlyAccessedSandboxes: Query<
+  RecentlyAccessedSandboxesQuery,
+  RecentlyAccessedSandboxesQueryVariables
+> = gql`
+  query RecentlyAccessedSandboxes($limit: Int!, $teamId: ID) {
+    me {
+      recentlyAccessedSandboxes(limit: $limit, teamId: $teamId) {
+        ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const recentTeamSandboxes: Query<
+  LatestTeamSandboxesQuery,
+  LatestTeamSandboxesQueryVariables
+> = gql`
+  query LatestTeamSandboxes(
+    $limit: Int!
+    $orderField: String!
+    $orderDirection: Direction!
+    $teamId: ID!
+  ) {
+    me {
+      team(id: $teamId) {
+        sandboxes(
+          limit: $limit
+          orderBy: { field: $orderField, direction: $orderDirection }
+        ) {
+          ...sandboxFragmentDashboard
+        }
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
+  query getTeam($teamId: ID!) {
+    me {
+      team(id: $teamId) {
+        ...currentTeamInfoFragment
+      }
+    }
+  }
+  ${currentTeamInfoFragment}
 `;

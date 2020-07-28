@@ -25,6 +25,7 @@ export const Tabs = styled(TabList)`
 `;
 
 export const Tab = styled(BaseTab)`
+  position: relative;
   display: flex;
   align-items: center;
   padding: 0.5rem 1rem;
@@ -57,6 +58,7 @@ export const TabContent = styled(TabPanel)`
   max-height: 496px;
   width: 100%;
   border-left: 1px solid #040404;
+  height: 100%;
 
   outline: none;
 `;

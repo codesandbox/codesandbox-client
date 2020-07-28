@@ -9,9 +9,11 @@ import FullHeartIcon from 'react-icons/lib/fa/heart';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
 import { Link } from 'react-router-dom';
 
-import { DeleteSandboxButton } from '../DeleteSandboxButton';
+import { useOvermind } from 'app/overmind';
+
 import { PrivacyStatus } from '../PrivacyStatus';
 
+import { DeleteSandboxButton } from './DeleteSandboxButton';
 import {
   Body,
   DeleteBody,
@@ -23,81 +25,91 @@ import {
   Table,
 } from './elements';
 
+type SandboxSource = 'currentLikedSandboxes' | 'currentSandboxes';
 type Props = {
-  isCurrentUser: boolean;
-  onDelete: (id: string) => void;
   sandboxes: SmallSandbox[];
+  source: SandboxSource;
 };
 export const SandboxList: FunctionComponent<Props> = ({
   sandboxes,
-  isCurrentUser,
-  onDelete,
-}) => (
-  <Table>
-    <thead>
-      <HeaderRow>
-        <HeaderTitle>Title</HeaderTitle>
+  source,
+}) => {
+  const {
+    state: {
+      profile: { isProfileCurrentUser },
+    },
+  } = useOvermind();
+  const showDeleteButton =
+    isProfileCurrentUser && source === 'currentSandboxes';
 
-        <HeaderTitle>Created</HeaderTitle>
+  return (
+    <Table>
+      <thead>
+        <HeaderRow>
+          <HeaderTitle>Title</HeaderTitle>
 
-        <HeaderTitle>Updated</HeaderTitle>
+          <HeaderTitle>Created</HeaderTitle>
 
-        <StatTitle />
+          <HeaderTitle>Updated</HeaderTitle>
 
-        <StatTitle>
-          <FullHeartIcon />
-        </StatTitle>
+          <StatTitle />
 
-        <StatTitle>
-          <EyeIcon />
-        </StatTitle>
+          <StatTitle>
+            <FullHeartIcon />
+          </StatTitle>
 
-        <StatTitle>
-          <ForkIcon />
-        </StatTitle>
+          <StatTitle>
+            <EyeIcon />
+          </StatTitle>
 
-        {isCurrentUser && <HeaderTitle />}
-      </HeaderRow>
-    </thead>
+          <StatTitle>
+            <ForkIcon />
+          </StatTitle>
 
-    <Body>
-      {sandboxes.map((sandbox, i) => {
-        // TODO: investigate type mismatch between SmallSandbox and getIcon
-        // @ts-ignore
-        const Icon = getIcon(sandbox.template);
+          {showDeleteButton ? <HeaderTitle /> : null}
+        </HeaderRow>
+      </thead>
 
-        return (
-          <SandboxRow delay={i} key={sandbox.id}>
-            <td>
-              {/* We should probably use the Sandbox interface instead
+      <Body>
+        {sandboxes.map((sandbox, i) => {
+          // TODO: investigate type mismatch between SmallSandbox and getIcon
+          // @ts-ignore
+          const Icon = getIcon(sandbox.template);
+
+          return (
+            <SandboxRow delay={i} key={sandbox.id}>
+              <td>
+                {/* We should probably use the Sandbox interface instead
                  * of SmallSandbox
                 // @ts-ignore */}
-              <Link to={sandboxUrl(sandbox)}>{getSandboxName(sandbox)}</Link>
-              <PrivacyStatus privacy={sandbox.privacy} asIcon />
-            </td>
+                <Link to={sandboxUrl(sandbox)}>{getSandboxName(sandbox)}</Link>
 
-            <td>{format(new Date(sandbox.insertedAt), 'MMM dd, yyyy')}</td>
+                <PrivacyStatus privacy={sandbox.privacy} asIcon />
+              </td>
 
-            <td>{format(new Date(sandbox.updatedAt), 'MMM dd, yyyy')}</td>
+              <td>{format(new Date(sandbox.insertedAt), 'MMM dd, yyyy')}</td>
 
-            <StatBody>
-              <Icon width={30} height={30} />
-            </StatBody>
+              <td>{format(new Date(sandbox.updatedAt), 'MMM dd, yyyy')}</td>
 
-            <StatBody>{sandbox.likeCount}</StatBody>
+              <StatBody>
+                <Icon width={30} height={30} />
+              </StatBody>
 
-            <StatBody>{sandbox.viewCount}</StatBody>
+              <StatBody>{sandbox.likeCount}</StatBody>
 
-            <StatBody>{sandbox.forkCount}</StatBody>
+              <StatBody>{sandbox.viewCount}</StatBody>
 
-            {isCurrentUser && onDelete ? (
-              <DeleteBody>
-                <DeleteSandboxButton id={sandbox.id} onDelete={onDelete} />
-              </DeleteBody>
-            ) : null}
-          </SandboxRow>
-        );
-      })}
-    </Body>
-  </Table>
-);
+              <StatBody>{sandbox.forkCount}</StatBody>
+
+              {showDeleteButton ? (
+                <DeleteBody>
+                  <DeleteSandboxButton id={sandbox.id} />
+                </DeleteBody>
+              ) : null}
+            </SandboxRow>
+          );
+        })}
+      </Body>
+    </Table>
+  );
+};

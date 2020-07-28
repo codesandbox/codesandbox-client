@@ -18,6 +18,7 @@ aliases:
       - packages/executors/dist
       - packages/node-services/lib
       - packages/notifications/lib
+      - packages/template-icons/lib
       - packages/sse-hooks/dist
       - standalone-packages/codesandbox-browserfs/dist
       - standalone-packages/codesandbox-browserfs/build
@@ -26,18 +27,19 @@ aliases:
 
   - &restore_deps_cache
     keys:
-      - v34-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v34-dependency-cache-{{ .Branch }}
-      - v34-dependency-cache
+      - v37-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v37-dependency-cache-{{ .Branch }}
+      - v37-dependency-cache
 
   - &save_deps_cache
-    key: v34-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    key: v37-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
     paths:
       - node_modules
       - packages/app/node_modules
       - packages/chrome-extension/node_modules
       - packages/codesandbox-api/node_modules
       - packages/components/node_modules
+      - packages/template-icons/node_modules
       - packages/common/node_modules
       - packages/dynamic-pages/node_modules
       - packages/deps/node_modules
@@ -51,51 +53,51 @@ aliases:
 
   - &restore_standalone_deps_cache
     keys:
-      - v34-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      - v37-standalone-dependency-cache-{{ .Branch }}-{{ checksum
         "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-      - v34-standalone-dependency-cache-{{ .Branch }}
-      - v34-standalone-dependency-cache
+      - v37-standalone-dependency-cache-{{ .Branch }}
+      - v37-standalone-dependency-cache
 
   - &save_standalone_deps_cache
     key:
-      v34-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      v37-standalone-dependency-cache-{{ .Branch }}-{{ checksum
       "standalone-packages/codesandbox-browserfs/yarn.lock" }}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
   - &restore_prod_homepage_cache
-    key: v34-prod-homepage-build-cache-master
+    key: v37-prod-homepage-build-cache-master
 
   - &restore_prod_result
     key:
-      v34-prod-build-result-{{ .Environment.CIRCLE_BRANCH
+      v37-prod-build-result-{{ .Environment.CIRCLE_BRANCH
       }}-{{.Environment.CIRCLE_SHA1 }}
 
   - &save_prod_build_cache
     key:
-      v34-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
       }}-{{.Environment.CIRCLE_SHA1 }}
     paths:
       - packages/app/node_modules/.cache
 
   - &restore_prod_build_cache
     keys:
-      - v34-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      - v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
         }}-{{.Environment.CIRCLE_SHA1 }}
-      - v34-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
-      - v34-prod-build-cache-master-
+      - v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
+      - v37-prod-build-cache-master-
 
   # To persist the images built by sharp
   - &save_prod_homepage_cache
     key:
-      v34-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v37-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/homepage/public
 
   - &save_prod_result
     key:
-      v34-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v37-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
@@ -141,14 +143,14 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v34-source-cache-{{ .Branch }}-{{ .Revision }}
-            - v34-source-cache-{{ .Branch }}-
-            - v34-source-cache-
+            - v37-source-cache-{{ .Branch }}-{{ .Revision }}
+            - v37-source-cache-{{ .Branch }}-
+            - v37-source-cache-
 
       - checkout
 
       - save_cache:
-          key: v34-source-cache-{{ .Branch }}-{{ .Revision }}
+          key: v37-source-cache-{{ .Branch }}-{{ .Revision }}
           paths:
             - '.git'
   build_deps:
@@ -214,13 +216,13 @@ commands:
             JEST_JUNIT_OUTPUT: '/tmp/test-results/js-test-results.xml'
       - store_test_results: *store_test_results
       - store_artifacts: *store_artifacts
-  # test_visual_regressions:
-  #   description: "Test Chromatic with 'yarn chromatic'"
-  #   steps:
-  #     - restore_cache: *restore_deps_cache
-  #     - attach_workspace: *attach_deps_workspace
-  #     - run:
-  #         command: yarn chromatic
+  test_visual_regressions:
+    description: "Test Chromatic with 'yarn chromatic'"
+    steps:
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
+      - run:
+          command: yarn chromatic
   test_jest:
     description: 'Test with `yarn test`'
     steps:
@@ -298,11 +300,11 @@ jobs:
     steps:
       - checkout_with_cache
       - test_integrations
-  # test-visual-regressions:
-  #   executor: node
-  #   steps:
-  #     - checkout_with_cache
-  #     - test_visual_regressions
+  test-visual-regressions:
+    executor: node
+    steps:
+      - checkout_with_cache
+      - test_visual_regressions
   test-jest:
     executor: node
     steps:
@@ -363,9 +365,9 @@ workflows:
       - test-integrations:
           requires:
             - build-deps
-      # - test-visual-regressions:
-      #     requires:
-      #       - build-deps
+      - test-visual-regressions:
+          requires:
+            - build-deps
       - typecheck:
           requires:
             - build-deps
@@ -384,12 +386,11 @@ workflows:
       - deploy-to-production:
           requires:
             - create-docker-image
-            - build-prod
             - lint
             - typecheck
             - test-integrations
             - test-jest
-            # - test-visual-regressions
+            - test-visual-regressions
           filters:
             branches:
               only:

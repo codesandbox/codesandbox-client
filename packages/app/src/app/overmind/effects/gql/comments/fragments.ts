@@ -1,4 +1,20 @@
-import gql from 'graphql-tag';
+import { gql } from 'overmind-graphql';
+
+export const codeReferenceMetadataFragment = gql`
+  fragment CodeReferenceMetadata on CodeReferenceMetadata {
+    anchor
+    code
+    head
+    path
+  }
+`;
+
+export const usereferenceMetadataFragment = gql`
+  fragment UserReferenceMetadata on UserReferenceMetadata {
+    username
+    userId
+  }
+`;
 
 export const commentFragment = gql`
   fragment Comment on Comment {
@@ -7,14 +23,24 @@ export const commentFragment = gql`
     insertedAt
     updatedAt
     isResolved
-    references {
+    anchorReference {
       id
       metadata {
         ... on CodeReferenceMetadata {
-          anchor
-          code
-          head
-          path
+          ...CodeReferenceMetadata
+        }
+      }
+      resource
+      type
+    }
+    references {
+      id
+      metadata {
+        ... on UserReferenceMetadata {
+          ...UserReferenceMetadata
+        }
+        ... on CodeReferenceMetadata {
+          ...CodeReferenceMetadata
         }
       }
       resource
@@ -31,6 +57,8 @@ export const commentFragment = gql`
     }
     replyCount
   }
+  ${codeReferenceMetadataFragment}
+  ${usereferenceMetadataFragment}
 `;
 
 export const commentWithRepliesFragment = gql`
@@ -43,11 +71,11 @@ export const commentWithRepliesFragment = gql`
     references {
       id
       metadata {
+        ... on UserReferenceMetadata {
+          ...UserReferenceMetadata
+        }
         ... on CodeReferenceMetadata {
-          anchor
-          code
-          head
-          path
+          ...CodeReferenceMetadata
         }
       }
       resource
@@ -68,4 +96,6 @@ export const commentWithRepliesFragment = gql`
     }
   }
   ${commentFragment}
+  ${codeReferenceMetadataFragment}
+  ${usereferenceMetadataFragment}
 `;

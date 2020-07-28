@@ -1,7 +1,7 @@
 import ArrowDown from 'react-icons/lib/md/arrow-downward';
 import styled, { css } from 'styled-components';
 
-import { OrderBy } from 'app/overmind/namespaces/dashboard/state';
+import { OrderBy } from 'app/overmind/namespaces/dashboard/types';
 
 export const Container = styled.div<{
   hideOrder: boolean;
@@ -12,6 +12,7 @@ export const Container = styled.div<{
     font-size: 0.875rem;
     width: 175px;
     text-align: right;
+    display: flex;
 
     ${hideOrder &&
       css`
@@ -25,6 +26,7 @@ export const OrderName = styled.span`
   transition: 0.3s ease color;
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
+  margin-left: 1em;
 
   &:hover {
     color: white;

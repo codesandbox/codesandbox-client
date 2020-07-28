@@ -2,10 +2,14 @@ import {
   NotificationType,
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
+import { identify } from '@codesandbox/common/lib/utils/analytics';
+import { CurrentTeamInfoFragmentFragment } from 'app/graphql/types';
 
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
 import { Action, AsyncAction } from '.';
+import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 
 export const internal = internalActions;
 
@@ -20,6 +24,16 @@ export const searchMounted: AsyncAction = withLoadApp();
 export const codesadboxMounted: AsyncAction = withLoadApp();
 
 export const genericPageMounted: AsyncAction = withLoadApp();
+
+export const getPendingUser: AsyncAction = async ({ state, effects }) => {
+  if (!state.pendingUserId) return;
+  const pendingUser = await effects.api.getPendingUser(state.pendingUserId);
+  if (!pendingUser) return;
+  state.pendingUser = {
+    ...pendingUser,
+    valid: true,
+  };
+};
 
 export const cliMounted: AsyncAction = withLoadApp(
   async ({ state, actions }) => {
@@ -68,7 +82,6 @@ type ModalName =
   | 'liveSessionEnded'
   | 'moveSandbox'
   | 'netlifyLogs'
-  | 'newSandbox'
   | 'preferences'
   | 'searchDependencies'
   | 'share'
@@ -94,19 +107,36 @@ export const modalClosed: Action = ({ state }) => {
   state.currentModal = null;
 };
 
-export const signInClicked: AsyncAction<{ useExtraScopes: boolean }> = (
-  { actions },
-  options
-) => actions.internal.signIn(options);
+export const signInClicked: Action<string | void> = ({ state }, redirectTo) => {
+  state.signInModalOpen = true;
+  state.redirectOnLogin = redirectTo || '';
+};
+
+export const toggleSignInModal: Action = ({ state }) => {
+  state.signInModalOpen = !state.signInModalOpen;
+};
+
+export const signInButtonClicked: AsyncAction<{
+  useExtraScopes: boolean;
+} | void> = async ({ actions, state }, options) => {
+  if (!options) {
+    await actions.internal.signIn({
+      useExtraScopes: false,
+    });
+    state.signInModalOpen = false;
+    return;
+  }
+  await actions.internal.signIn(options);
+  state.signInModalOpen = false;
+};
 
 export const signInCliClicked: AsyncAction = async ({ state, actions }) => {
   await actions.internal.signIn({
     useExtraScopes: false,
   });
+  state.signInModalOpen = false;
 
-  if (state.user) {
-    await actions.internal.authorize();
-  }
+  await actions.internal.authorize();
 };
 
 export const addNotification: Action<{
@@ -129,12 +159,12 @@ export const removeNotification: Action<number> = ({ state }, id) => {
   state.notifications.splice(notificationToRemoveIndex, 1);
 };
 
-export const signInZeitClicked: AsyncAction = async ({
+export const signInVercelClicked: AsyncAction = async ({
   state,
   effects: { browser, api, notificationToast },
   actions,
 }) => {
-  state.isLoadingZeit = true;
+  state.isLoadingVercel = true;
 
   const popup = browser.openPopup('/auth/zeit', 'sign in');
   const data: { code: string } = await browser.waitForMessage('signin');
@@ -143,24 +173,24 @@ export const signInZeitClicked: AsyncAction = async ({
 
   if (data && data.code) {
     try {
-      state.user = await api.createZeitIntegration(data.code);
-      await actions.deployment.internal.getZeitUserDetails();
+      state.user = await api.createVercelIntegration(data.code);
+      await actions.deployment.internal.getVercelUserDetails();
     } catch (error) {
       actions.internal.handleError({
-        message: 'Could not authorize with ZEIT',
+        message: 'Could not authorize with Vercel',
         error,
       });
     }
   } else {
-    notificationToast.error('Could not authorize with ZEIT');
+    notificationToast.error('Could not authorize with Vercel');
   }
 
-  state.isLoadingZeit = false;
+  state.isLoadingVercel = false;
 };
 
-export const signOutZeitClicked: AsyncAction = async ({ state, effects }) => {
+export const signOutVercelClicked: AsyncAction = async ({ state, effects }) => {
   if (state.user?.integrations?.zeit) {
-    await effects.api.signoutZeit();
+    await effects.api.signoutVercel();
     delete state.user.integrations.zeit;
   }
 };
@@ -177,6 +207,9 @@ export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
   state.isLoadingGithub = true;
   await actions.internal.signIn({ useExtraScopes: true });
   state.isLoadingGithub = false;
+  if (state.editor.currentSandbox?.originalGit) {
+    actions.git.loadGitSource();
+  }
 };
 
 export const signOutClicked: AsyncAction = async ({
@@ -190,7 +223,11 @@ export const signOutClicked: AsyncAction = async ({
     actions.live.internal.disconnect();
   }
   await effects.api.signout();
-  effects.jwt.reset();
+  identify('signed_in', false);
+  document.cookie = 'signedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  document.cookie =
+    'signedInDev=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  state.hasLogIn = false;
   state.user = null;
   effects.browser.reload();
 };
@@ -240,6 +277,7 @@ export const refetchSandboxInfo: AsyncAction = async ({
   sandbox.roomId = updatedSandbox.roomId;
   sandbox.authorization = updatedSandbox.authorization;
   sandbox.privacy = updatedSandbox.privacy;
+  sandbox.featureFlags = updatedSandbox.featureFlags;
 
   await actions.editor.internal.initializeSandbox(sandbox);
 };
@@ -263,4 +301,102 @@ export const rejectTeamInvitation: Action<{ teamName: string }> = (
   effects.analytics.track('Team - Invitation Rejected', {});
 
   effects.notificationToast.success(`Rejected invitation to ${teamName}`);
+};
+
+export const setActiveTeam: AsyncAction<{
+  id: string | null;
+}> = async ({ state, actions, effects }, { id }) => {
+  // ignore if its already selected
+  if (id === state.activeTeam) return;
+
+  state.activeTeam = id;
+  effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
+  state.dashboard.sandboxes = {
+    ...state.dashboard.sandboxes,
+    DRAFTS: null,
+    TEMPLATES: null,
+    RECENT: null,
+    SEARCH: null,
+    ALL: null,
+  };
+
+  actions.internal.replaceWorkspaceParameterInUrl();
+
+  if (state.activeTeamInfo?.id !== id) {
+    try {
+      const teamInfo = await actions.getActiveTeamInfo();
+      if (teamInfo) {
+        effects.analytics.track('Team - Change Active Team', {
+          newTeamId: id,
+          newTeamName: teamInfo.name,
+        });
+      }
+    } catch (e) {
+      // Something went wrong while fetching the workspace
+      actions.setActiveTeam({ id: null });
+    }
+  }
+
+  actions.internal.trackCurrentTeams();
+};
+
+export const getActiveTeamInfo: AsyncAction<
+  void,
+  CurrentTeamInfoFragmentFragment | null
+> = async ({ state, effects }) => {
+  if (!state.activeTeam) return null;
+
+  const team = await effects.gql.queries.getTeam({
+    teamId: state.activeTeam,
+  });
+
+  const currentTeam = team?.me?.team;
+  if (!currentTeam) {
+    return null;
+  }
+
+  state.activeTeamInfo = currentTeam;
+
+  return currentTeam;
+};
+
+export const openCreateSandboxModal: Action<{ collectionId?: string }> = (
+  { actions },
+  { collectionId }
+) => {
+  actions.modals.newSandboxModal.open({ collectionId });
+};
+
+export const validateUsername: AsyncAction<string> = async (
+  { effects, state },
+  userName
+) => {
+  if (!state.pendingUser) return;
+  const validity = await effects.api.validateUsername(userName);
+
+  state.pendingUser.valid = validity.available;
+};
+
+export const finalizeSignUp: AsyncAction<string> = async (
+  { effects, actions, state },
+  username
+) => {
+  if (!state.pendingUser) return;
+  try {
+    await effects.api.finalizeSignUp({
+      id: state.pendingUser.id,
+      username,
+    });
+    window.postMessage(
+      {
+        type: 'signin',
+      },
+      protocolAndHost()
+    );
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'There was a problem creating your account',
+      error,
+    });
+  }
 };

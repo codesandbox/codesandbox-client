@@ -1,15 +1,12 @@
-import { NotificationStatus } from '@codesandbox/notifications';
 import { OnInitialize } from '.';
 
 export const onInitialize: OnInitialize = async (
   { state, effects, actions },
   overmindInstance
 ) => {
-  const provideJwtToken = () => state.jwt || effects.jwt.get();
-  const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX';
-
+  const provideJwtToken = () => effects.api.getJWTToken();
   state.isFirstVisit = Boolean(
-    !effects.jwt.get() && !effects.browser.storage.get('hasVisited')
+    !state.hasLogIn && !effects.browser.storage.get('hasVisited')
   );
 
   effects.browser.storage.set('hasVisited', true);
@@ -17,8 +14,6 @@ export const onInitialize: OnInitialize = async (
   effects.live.initialize({
     provideJwtToken,
     onApplyOperation: actions.live.applyTransformation,
-    isLiveBlockerExperiement: () =>
-      Boolean(state.user?.experiments.liveBlocker),
     onOperationError: actions.live.onOperationError,
   });
 
@@ -32,21 +27,32 @@ export const onInitialize: OnInitialize = async (
   });
 
   effects.api.initialize({
-    provideJwtToken,
     getParsedConfigurations() {
       return state.editor.parsedConfigurations;
     },
+    provideJwtToken() {
+      if (process.env.LOCAL_SERVER || process.env.STAGING) {
+        return localStorage.getItem('devJwt');
+      }
+
+      return null;
+    },
   });
 
-  effects.gql.initialize(
-    {
-      endpoint: `${location.origin}/api/graphql`,
-      headers: () => ({
-        Authorization: `Bearer ${state.jwt}`,
-      }),
-    },
-    () => (effects.jwt.get() ? effects.live.getSocket() : null)
-  );
+  const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
+  const gqlOptions: Parameters<typeof effects.gql.initialize>[0] = {
+    endpoint: `${location.origin}/api/graphql`,
+  };
+
+  if (hasDevAuth) {
+    gqlOptions.headers = () => ({
+      Authorization: `Bearer ${localStorage.getItem('devJwt')}`,
+    });
+  }
+
+  effects.gql.initialize(gqlOptions, () => effects.live.socket);
+
+  actions.internal.setActiveTeamFromUrlOrStore();
 
   effects.notifications.initialize({
     provideSocket() {
@@ -54,7 +60,7 @@ export const onInitialize: OnInitialize = async (
     },
   });
 
-  effects.zeit.initialize({
+  effects.vercel.initialize({
     getToken() {
       return state.user?.integrations.zeit?.token ?? null;
     },
@@ -105,28 +111,8 @@ export const onInitialize: OnInitialize = async (
       path.split('.').reduce((aggr, key) => aggr[key], actions),
   });
 
-  effects.preview.initialize(overmindInstance.reaction);
+  effects.preview.initialize();
 
-  // show terms message on first visit since new terms
-  if (!effects.browser.storage.get(seenTermsKey) && !state.isFirstVisit) {
-    effects.analytics.track('Saw Privacy Policy Notification');
-    effects.notificationToast.add({
-      message:
-        'Hello, our privacy policy has been updated recently. What’s new? CodeSandbox emails. Please read and reach out.',
-      title: 'Updated Privacy',
-      status: NotificationStatus.NOTICE,
-      sticky: true,
-      actions: {
-        primary: [
-          {
-            label: 'Open Privacy Policy',
-            run: () => {
-              window.open('https://codesandbox.io/legal/privacy', '_blank');
-            },
-          },
-        ],
-      },
-    });
-  }
-  effects.browser.storage.set(seenTermsKey, true);
+  actions.internal.showPrivacyPolicyNotification();
+  actions.internal.setViewModeForDashboard();
 };

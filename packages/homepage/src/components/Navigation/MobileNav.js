@@ -1,6 +1,8 @@
+/* eslint-disable import/no-cycle */
 import React, { useState } from 'react';
 import { Link } from 'gatsby';
 import { motion, AnimatePresence } from 'framer-motion';
+import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import Logo from '../../assets/images/logo.svg';
 import {
   MobileNav,
@@ -10,6 +12,7 @@ import {
   Headers,
   Items,
   Pricing,
+  LinkButton,
 } from './elements';
 import SupportIcon from '../../assets/icons/Support';
 import StatusIcon from '../../assets/icons/Status';
@@ -36,7 +39,9 @@ export default () => {
           CodeSandbox
         </LogoWrapper>
         <div>
-          <a href="https://codesandbox.io/signin">Sign In</a>
+          <LinkButton as="a" href={signInPageUrl()}>
+            Sign In
+          </LinkButton>
           {open ? (
             <svg
               onClick={() => setOpen(!open)}
@@ -143,7 +148,7 @@ export default () => {
               <Headers>Resources</Headers>
               <Items>
                 <li>
-                  <Link to="/docs">
+                  <Link to="/docs/start">
                     <section>
                       <DocsIcon />
                     </section>

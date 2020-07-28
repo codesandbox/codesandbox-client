@@ -1,5 +1,6 @@
 import { Sandbox, SandboxUrlSourceData } from '../types';
 import { isServer } from '../templates/helpers/is-server';
+import * as dashboard from './url-generator/dashboard';
 
 export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
 const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
@@ -142,12 +143,12 @@ export const signInPageUrl = (redirectTo?: string) => {
 
 export const signInUrl = (extraScopes: boolean = false) =>
   '/auth/github' + (extraScopes ? '?scope=user:email,public_repo' : '');
-export const signInZeitUrl = () => '/auth/zeit';
+export const signInVercelUrl = () => '/auth/vercel';
 
 export const profileUrl = (username: string) => `/u/${username}`;
 export const dashboardUrl = () => `/dashboard`;
 export const exploreUrl = () => `/explore`;
-export const teamOverviewUrl = teamId => `/dashboard/teams/${teamId}`;
+export const teamOverviewUrl = (teamId: string) => `/dashboard/teams/${teamId}`;
 export const profileSandboxesUrl = (username: string, page?: number) =>
   `${profileUrl(username)}/sandboxes${page ? `/${page}` : ''}`;
 export const profileLikesUrl = (username: string, page?: number) =>
@@ -221,3 +222,5 @@ export function getSandboxId() {
 }
 export const teamInviteLink = (inviteToken: string) =>
   `${protocolAndHost()}/invite/${inviteToken}`;
+
+export { dashboard };

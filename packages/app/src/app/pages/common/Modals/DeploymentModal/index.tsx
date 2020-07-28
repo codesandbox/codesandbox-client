@@ -3,8 +3,8 @@ import { Element, Button, Text, Stack, Link } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { VercelIntegration } from 'app/pages/common/VercelIntegration';
 import { Alert } from '../Common/Alert';
-import { ZeitIcon } from './ZeitLogo';
 
 export const DeploymentModal: FunctionComponent = () => {
   const {
@@ -14,7 +14,6 @@ export const DeploymentModal: FunctionComponent = () => {
     },
     actions: {
       deployment: { deployClicked },
-      signInZeitClicked,
     },
   } = useOvermind();
 
@@ -23,14 +22,14 @@ export const DeploymentModal: FunctionComponent = () => {
   }
 
   const {
-    integrations: { zeit },
+    integrations: { zeit: vercel },
   } = user;
-  const zeitSignedIn = Boolean(zeit);
+  const vercelSignedIn = Boolean(vercel);
 
   return (
     <Alert
       title="Deployment"
-      description="Deploy a production version of your Sandbox to ZEIT Now"
+      description="Deploy a production version of your Sandbox to Vercel"
     >
       {url ? (
         <Element marginBottom={4}>
@@ -44,7 +43,7 @@ export const DeploymentModal: FunctionComponent = () => {
             You can manage your deployments{' '}
             <Link
               variant="muted"
-              href="https://zeit.co/dashboard"
+              href="https://vercel.com/dashboard"
               target="_blank"
               rel="noreferrer noopener"
             >
@@ -63,34 +62,17 @@ export const DeploymentModal: FunctionComponent = () => {
             borderRadius: 'medium',
           })}
         >
-          <ZeitIcon />
-          <Element paddingLeft={4}>
-            {zeitSignedIn ? (
-              <>
-                <Text size={3} block paddingBottom={1} variant="muted">
-                  Signed in with
-                </Text>
-                <Text size={3}>{zeit.email || 'Loading...'}</Text>
-              </>
-            ) : (
-              <>
-                <Text size={3} block paddingBottom={1}>
-                  Please sign in
-                </Text>
-                <Button onClick={signInZeitClicked}>Sign In</Button>
-              </>
-            )}
-          </Element>
+          <VercelIntegration />
         </Stack>
       )}
       <Stack justify="flex-end">
         <Button
           css={css({ width: 'auto' })}
           onClick={() => {
-            track('Deploy Clicked', { provider: 'zeit' });
+            track('Deploy Clicked', { provider: 'vercel' });
             deployClicked();
           }}
-          disabled={!zeitSignedIn || deploying}
+          disabled={!vercelSignedIn || deploying}
         >
           {deploying ? 'Deploying' : 'Deploy Sandbox'}
         </Button>

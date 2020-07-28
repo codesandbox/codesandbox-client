@@ -1,9 +1,13 @@
 import {
+  IModuleStateModule,
   LiveMessage,
   LiveMessageEvent,
+  RoomInfo,
   UserSelection,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
@@ -11,7 +15,6 @@ import { filter, fork, pipe } from 'overmind';
 
 import * as internalActions from './internalActions';
 import * as liveMessage from './liveMessageOperators';
-import { IModuleStateModule } from './types';
 
 export const internal = internalActions;
 
@@ -78,9 +81,15 @@ export const roomJoined: AsyncAction<{
   });
 
   effects.vscode.startExtensionHost();
-
-  effects.live.sendModuleStateSyncRequest();
   effects.vscode.openModule(state.editor.currentModule);
+
+  if (
+    sandbox.featureFlags.comments &&
+    hasPermission(sandbox.authorization, 'comment')
+  ) {
+    actions.comments.getSandboxComments(sandbox.id);
+  }
+
   state.editor.isLoading = false;
 });
 
@@ -111,8 +120,6 @@ export const createLiveClicked: AsyncAction<string> = async (
     }),
   });
   state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-
-  effects.live.sendModuleStateSyncRequest();
 };
 
 export const liveMessageReceived: Operator<LiveMessage, any> = pipe(
@@ -122,6 +129,7 @@ export const liveMessageReceived: Operator<LiveMessage, any> = pipe(
   filter(({ state }) => Boolean(state.live.isLive && state.live.roomInfo)),
   fork((_, payload) => payload.event, {
     [LiveMessageEvent.JOIN]: liveMessage.onJoin,
+    [LiveMessageEvent.SAVE]: liveMessage.onSave,
     [LiveMessageEvent.MODULE_STATE]: liveMessage.onModuleState,
     [LiveMessageEvent.USER_ENTERED]: liveMessage.onUserEntered,
     [LiveMessageEvent.USERS_CHANGED]: liveMessage.onUsersChanged,
@@ -160,6 +168,13 @@ export const applyTransformation: AsyncAction<{
   } catch (error) {
     // Do not care about the error, but something went wrong and we
     // need a full sync
+    logBreadcrumb({
+      category: 'ot',
+      message: `Apply transformation to VSCode failed ${JSON.stringify({
+        moduleShortid,
+        operation,
+      })}`,
+    });
     effects.live.sendModuleStateSyncRequest();
   }
 };
@@ -262,9 +277,9 @@ export const onSelectionChanged: Action<UserSelection> = (
   }
 };
 
-export const onModeChanged: Action<{ mode: string }> = (
-  { state, effects },
-  { mode }
+export const onModeChanged: Action<RoomInfo['mode']> = (
+  { effects, state },
+  mode
 ) => {
   if (state.live.isOwner && state.live.roomInfo) {
     state.live.roomInfo.mode = mode;
@@ -272,31 +287,30 @@ export const onModeChanged: Action<{ mode: string }> = (
   }
 };
 
-export const onAddEditorClicked: Action<{
-  liveUserId: string;
-}> = ({ state, effects }, { liveUserId }) => {
+export const onAddEditorClicked: Action<string> = (
+  { effects, state },
+  liveUserId
+) => {
   if (!state.live.roomInfo) {
     return;
   }
+
   state.live.roomInfo.editorIds.push(liveUserId);
 
   effects.live.sendEditorAdded(liveUserId);
 };
 
-export const onRemoveEditorClicked: Action<any> = (
-  { state, effects },
-  { liveUserId, data }
+export const onRemoveEditorClicked: Action<string> = (
+  { effects, state },
+  liveUserId
 ) => {
-  const userId = liveUserId || data.editor_user_id;
-
   if (!state.live.roomInfo) {
     return;
   }
 
-  const editors = state.live.roomInfo.editorIds;
-  const newEditors = editors.filter(id => id !== userId);
-
-  state.live.roomInfo.editorIds = newEditors;
+  state.live.roomInfo.editorIds = state.live.roomInfo.editorIds.filter(
+    id => id !== liveUserId
+  );
 
   effects.live.sendEditorRemoved(liveUserId);
 };
@@ -333,16 +347,17 @@ export const onChatEnabledToggle: Action = ({ effects, state }) => {
   }
 };
 
-export const onFollow: Action<{
-  liveUserId: string;
-}> = ({ state, effects, actions }, { liveUserId }) => {
+export const onFollow: Action<{ liveUserId: string }> = (
+  { actions, effects, state },
+  { liveUserId }
+) => {
   if (!state.live.roomInfo) {
     return;
   }
 
   effects.analytics.track('Follow Along in Live');
   state.live.followingUserId = liveUserId;
-  actions.live.revealViewRange({ liveUserId });
+  actions.live.revealViewRange(liveUserId);
 
   if (state.editor.currentModule) {
     // In case the selections were hidden first
@@ -382,15 +397,15 @@ export const onStopFollow: Action = ({ state, effects, actions }) => {
   }
 };
 
-export const revealViewRange: Action<{ liveUserId: string }> = (
-  { state, effects, actions },
-  { liveUserId }
+export const revealViewRange: Action<string> = (
+  { actions, effects, state },
+  liveUserId
 ) => {
   if (!state.live.roomInfo) {
     return;
   }
 
-  const user = state.live.roomInfo.users.find(u => u.id === liveUserId);
+  const user = state.live.roomInfo.users.find(({ id }) => id === liveUserId);
 
   if (user && user.currentModuleShortid && state.editor.currentSandbox) {
     const { modules } = state.editor.currentSandbox;

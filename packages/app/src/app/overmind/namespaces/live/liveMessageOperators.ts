@@ -5,26 +5,54 @@ import {
   LiveMessage,
   LiveUser,
   Module,
+  RoomInfo,
   UserSelection,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
+import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
-import { Operator } from 'app/overmind';
 import { camelizeKeys } from 'humps';
 import { json, mutate } from 'overmind';
-import { logError } from '@codesandbox/common/lib/utils/analytics';
+
+import { Operator } from 'app/overmind';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
+
+export const onSave: Operator<LiveMessage<{
+  saved_code: string;
+  updated_at: string;
+  inserted_at: string;
+  version: number;
+  path: string;
+}>> = mutate(({ state, effects }, { data }) => {
+  const sandbox = state.editor.currentSandbox;
+
+  if (!sandbox) {
+    return;
+  }
+  const module = sandbox.modules.find(
+    moduleItem => moduleItem.path === data.path
+  );
+
+  if (!module) {
+    return;
+  }
+
+  module.savedCode = module.code === data.saved_code ? null : data.saved_code;
+  module.updatedAt = data.updated_at;
+  module.insertedAt = data.inserted_at;
+  sandbox.version = data.version;
+  effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
+
+  if (module.savedCode === null) {
+    effects.vscode.syncModule(module);
+  }
+});
 
 export const onJoin: Operator<LiveMessage<{
   status: 'connected';
   live_user_id: string;
 }>> = mutate(({ effects, actions, state }, { data }) => {
   state.live.liveUserId = data.live_user_id;
-
-  // Show message to confirm that you've joined a live session if you're not the owner
-  if (!state.live.isCurrentEditor) {
-    effects.notificationToast.success('Connected to Live!');
-  }
 
   if (state.live.reconnecting) {
     // We reconnected!
@@ -191,7 +219,7 @@ export const onModuleSaved: Operator<LiveMessage<{
 
 export const onModuleCreated: Operator<LiveMessage<{
   module: Module;
-}>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
+}>> = mutate(({ state, actions, effects }, { _isOwnMessage, data }) => {
   if (_isOwnMessage || !state.editor.currentSandbox) {
     return;
   }
@@ -200,6 +228,9 @@ export const onModuleCreated: Operator<LiveMessage<{
     state.editor.modulesByPath,
     data.module
   );
+  if (state.editor.currentSandbox.originalGit) {
+    actions.git.updateGitChanges();
+  }
 });
 
 export const onModuleMassCreated: Operator<LiveMessage<{
@@ -221,6 +252,9 @@ export const onModuleMassCreated: Operator<LiveMessage<{
   );
 
   actions.editor.internal.updatePreviewCode();
+  if (state.editor.currentSandbox.originalGit) {
+    actions.git.updateGitChanges();
+  }
 });
 
 export const onModuleUpdated: Operator<LiveMessage<{
@@ -259,6 +293,9 @@ export const onModuleUpdated: Operator<LiveMessage<{
   }
 
   actions.editor.internal.updatePreviewCode();
+  if (state.editor.currentSandbox!.originalGit) {
+    actions.git.updateGitChanges();
+  }
 });
 
 export const onModuleDeleted: Operator<LiveMessage<{
@@ -290,6 +327,9 @@ export const onModuleDeleted: Operator<LiveMessage<{
   }
 
   actions.editor.internal.updatePreviewCode();
+  if (state.editor.currentSandbox.originalGit) {
+    actions.git.updateGitChanges();
+  }
 });
 
 export const onDirectoryCreated: Operator<LiveMessage<{
@@ -324,7 +364,12 @@ export const onDirectoryUpdated: Operator<LiveMessage<{
   if (hasChangedPath) {
     const prevCurrentModulePath = state.editor.currentModule.path;
 
-    state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
+    actions.files.internal.renameDirectoryInState({
+      directory: existingDirectory,
+      sandbox,
+      title: data.module.title,
+    });
+
     actions.editor.internal.updatePreviewCode();
 
     if (prevCurrentModulePath !== state.editor.currentModule.path) {
@@ -383,6 +428,10 @@ export const onDirectoryDeleted: Operator<LiveMessage<{
   if (state.editor.mainModule)
     effects.vscode.openModule(state.editor.mainModule);
   actions.editor.internal.updatePreviewCode();
+
+  if (state.editor.currentSandbox!.originalGit) {
+    actions.git.updateGitChanges();
+  }
 });
 
 export const onUserSelection: Operator<LiveMessage<{
@@ -511,8 +560,8 @@ export const onUserViewRange: Operator<LiveMessage<{
 });
 
 export const onLiveMode: Operator<LiveMessage<{
-  mode: string;
-}>> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
+  mode: RoomInfo['mode'];
+}>> = mutate(({ actions, state }, { _isOwnMessage, data }) => {
   if (!state.live.roomInfo) {
     return;
   }
@@ -569,7 +618,7 @@ export const onLiveRemoveEditor: Operator<LiveMessage<{
 export const onOperation: Operator<LiveMessage<{
   module_shortid: string;
   operation: any;
-}>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
+}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
   if (state.live.isLoading) {
     return;
   }
@@ -582,7 +631,12 @@ export const onOperation: Operator<LiveMessage<{
       // Something went wrong, probably a sync mismatch. Request new version
       console.error('Something went wrong with applying OT operation');
 
-      logError(e);
+      logBreadcrumb({
+        category: 'ot',
+        message: `Apply operation from server to OT client failed ${JSON.stringify(
+          data
+        )}`,
+      });
 
       effects.live.sendModuleStateSyncRequest();
     }

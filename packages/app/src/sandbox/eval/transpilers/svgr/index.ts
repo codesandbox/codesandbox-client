@@ -1,5 +1,6 @@
 import Transpiler from '..';
 import { LoaderContext } from '../../transpiled-module';
+import { getModuleHTTPPath } from '../utils/binary';
 
 class SVGRTranspiler extends Transpiler {
   async doTranspilation(code: string, loaderContext: LoaderContext) {
@@ -8,19 +9,20 @@ class SVGRTranspiler extends Transpiler {
     // export, this forces that.
 
     const codeIsHttp = loaderContext._module.module.code.startsWith('http');
+    const sandboxId = loaderContext.sandboxId;
     const state = {
       webpack: {
         previousExport: `"${
           codeIsHttp
             ? loaderContext._module.module.code
-            : loaderContext._module.module.path
+            : getModuleHTTPPath(loaderContext._module.module, sandboxId)
         }"`,
       },
     };
 
     let downloadedCode = code;
 
-    if (code.startsWith('http')) {
+    if (codeIsHttp) {
       await fetch(code)
         .then(res => res.text())
         .then(r => {

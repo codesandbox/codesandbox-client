@@ -22,6 +22,13 @@ export interface IDirectoryAPIResponse {
   updatedAt: string;
 }
 
+export interface AvatarAPIResponse {
+  data: {
+    id: string;
+    url: string;
+  };
+}
+
 export type SandboxAPIResponse = Omit<Sandbox, 'environmentVariables'> & {
   modules: IModuleAPIResponse[];
   directories: IDirectoryAPIResponse[];

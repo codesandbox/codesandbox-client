@@ -58,19 +58,17 @@ class DevToolTerminal extends React.Component<
           notificationState.addNotification({
             title: 'Terminal Read-Only',
             message:
-              "The main terminal is read-only and runs what's defined in package.json#start, you can create a new terminal to input commands",
+              "The main terminal is read-only and runs what's defined in package.json#dev, you can create a new terminal to input commands",
             status: NotificationStatus.NOTICE,
             actions: {
-              primary: [
-                {
-                  label: 'Create Terminal',
-                  run: () => {
-                    dispatch({
-                      type: 'codesandbox:create-shell',
-                    });
-                  },
+              primary: {
+                label: 'Create Terminal',
+                run: () => {
+                  dispatch({
+                    type: 'codesandbox:create-shell',
+                  });
                 },
-              ],
+              },
             },
           });
         }

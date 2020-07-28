@@ -47,6 +47,8 @@ export const SANDBOX_FRAGMENT = gql`
       color
     }
 
+    teamId
+
     collection {
       path
       teamId
@@ -259,7 +261,7 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
 `;
 
 export function addSandboxesToFolder(
-  selectedSandboxes,
+  selectedSandboxes: string[],
   path: string,
   teamId: string | null
 ) {
@@ -493,6 +495,15 @@ export const REJECT_TEAM_INVITATION = gql`
 export const SET_TEAM_DESCRIPTION = gql`
   mutation SetTeamDescription($teamId: ID!, $description: String!) {
     setTeamDescription(teamId: $teamId, description: $description) {
+      ...Team
+    }
+  }
+  ${TEAM_FRAGMENT}
+`;
+
+export const SET_TEAM_NAME = gql`
+  mutation SetTeamName($teamId: ID!, $name: String!) {
+    setTeamName(teamId: $teamId, name: $name) {
       ...Team
     }
   }

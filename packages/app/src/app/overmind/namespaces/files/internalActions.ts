@@ -1,8 +1,9 @@
-import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Action, AsyncAction } from 'app/overmind';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
 import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 import { chunk } from 'lodash-es';
+import { Directory, Sandbox } from '@codesandbox/common/lib/types';
+import { getDirectoryPath } from '@codesandbox/common/lib/sandbox/modules';
 
 export const recoverFiles: Action = ({ effects, actions, state }) => {
   const sandbox = state.editor.currentSandbox;
@@ -30,33 +31,8 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
   }, [] as typeof recoverList);
 
   if (recoveredList.length > 0) {
-    effects.notificationToast.add({
-      sticky: true,
-      message: `We recovered ${recoveredList.length} unsaved ${
-        recoveredList.length > 1 ? 'files' : 'file'
-      } from a previous session, what do you want to do?`,
-      actions: {
-        primary: [
-          {
-            label: 'Apply changes',
-            run: () => actions.files.applyRecover(recoveredList),
-          },
-        ],
-        secondary: [
-          {
-            label: 'Compare',
-            hideOnClick: true,
-            run: () => actions.files.createRecoverDiffs(recoveredList),
-          },
-          {
-            label: 'Discard',
-            hideOnClick: true,
-            run: () => actions.files.discardRecover(),
-          },
-        ],
-      },
-      status: NotificationStatus.NOTICE,
-    });
+    state.editor.recoveredFiles = recoveredList;
+    state.currentModal = 'recoveredFiles';
   }
 };
 
@@ -154,4 +130,38 @@ export const uploadFiles: AsyncAction<
     modules: relativeModules,
     directories: relativeDirectories,
   };
+};
+
+export const renameDirectoryInState: Action<{
+  title: string;
+  directory: Directory;
+  sandbox: Sandbox;
+}> = ({ state, effects }, { title, directory, sandbox }) => {
+  const oldPath = directory.path;
+  directory.title = title;
+  const newPath = getDirectoryPath(
+    sandbox.modules,
+    sandbox.directories,
+    directory.id
+  );
+  directory.path = newPath;
+
+  effects.vscode.sandboxFsSync.rename(
+    state.editor.modulesByPath,
+    oldPath!,
+    directory.path
+  );
+
+  if (oldPath) {
+    sandbox.modules.forEach(m => {
+      if (m.path && m.path.startsWith(oldPath + '/')) {
+        m.path = m.path.replace(oldPath, newPath);
+      }
+    });
+    sandbox.directories.forEach(d => {
+      if (d.path && d.path.startsWith(oldPath + '/')) {
+        d.path = d.path.replace(oldPath, newPath);
+      }
+    });
+  }
 };

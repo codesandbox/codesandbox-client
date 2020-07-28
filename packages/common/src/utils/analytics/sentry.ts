@@ -58,17 +58,13 @@ export async function initialize(dsn: string) {
 
         "undefined is not an object (evaluating 'window.__pad.performLoop')", // Only happens on Safari, but spams our servers. Doesn't break anything
       ],
-      whitelistUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
+      allowUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
       maxBreadcrumbs: 100,
       /**
        * Don't send messages from the sandbox, so don't send from eg.
        * new.codesandbox.io or new.csb.app
        */
-      blacklistUrls: [
-        'codesandbox.editor.main.js',
-        /.*\.codesandbox\.io/,
-        /.*\.csb\.app/,
-      ],
+      denyUrls: ['codesandbox.editor.main.js', /.*\.csb\.app/],
       beforeSend: (event, hint) => {
         const exception = event?.exception?.values?.[0];
         const exceptionFrame = exception?.stacktrace?.frames?.[0];
@@ -139,10 +135,11 @@ export const logBreadcrumb = (breadcrumb: Breadcrumb) => {
   }
 };
 
-export const captureException = err => {
+export const captureException = (err: Error) => {
   if (_Sentry) {
-    _Sentry.captureException(err);
+    return _Sentry.captureException(err);
   }
+  return null;
 };
 
 export const configureScope = cb => {

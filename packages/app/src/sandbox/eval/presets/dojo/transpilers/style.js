@@ -12,8 +12,20 @@ class DojoStyleTranspiler extends StyleTranspiler {
   async doTranspilation(code: string, loaderContext: LoaderContext) {
     const id = getStyleId(loaderContext._module.getId());
     const { path } = loaderContext;
-    const modules = loaderContext.getModules();
+    let modules = loaderContext.getModules();
     let result = modules.find(module => module.path === `${path}.js`);
+
+    if (!result && path.indexOf('/node_modules/') > -1) {
+      try {
+        await loaderContext.resolveTranspiledModuleAsync(`${path}.js`, {
+          ignoredExtensions: [],
+        });
+      } catch {
+        // Do nothing
+      }
+    }
+    modules = loaderContext.getModules();
+    result = modules.find(module => module.path === `${path}.js`);
     if (result) {
       return { transpiledCode: `${insertCss(id, code)}\n${result.code}` };
     }

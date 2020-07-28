@@ -1,6 +1,7 @@
 import React from 'react';
 import deepmerge from 'deepmerge';
 import styled, { keyframes } from 'styled-components';
+import { Link } from 'react-router-dom';
 import VisuallyHidden from '@reach/visually-hidden';
 import { Element, IElementProps } from '../Element';
 
@@ -66,15 +67,16 @@ const commonStyles = {
   cursor: 'pointer',
   fontFamily: 'Inter, sans-serif',
   paddingY: 0,
+  width: '100%',
   paddingX: 2,
   height: '26px', // match with inputs
-  width: '100%',
   fontSize: 2,
   fontWeight: 'medium',
   lineHeight: 1, // trust the height
   border: 'none',
   borderRadius: 'small',
   transition: 'all ease-in',
+  textDecoration: 'none',
   transitionDuration: theme => theme.speeds[2],
 
   ':focus': {
@@ -87,35 +89,46 @@ const commonStyles = {
     opacity: '0.4',
     cursor: 'not-allowed',
   },
-  '&[data-loading]': {
+  '&[data-loading="true"]': {
     opacity: 1,
     cursor: 'default',
   },
+  '&[data-auto-width="true"]': {
+    width: 'fit-content',
+  },
 };
-
-const merge = (...objs) =>
-  objs.reduce(function mergeAll(merged, currentValue = {}) {
-    return deepmerge(merged, currentValue);
-  }, {});
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     IElementProps {
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
   loading?: boolean;
+  href?: string;
+  to?: string;
+  as?: any;
+  target?: any;
+  autoWidth?: boolean;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button({ variant = 'primary', loading, css = {}, ...props }, ref) {
-    const styles = merge(variantStyles[variant], commonStyles, css);
+  function Button(
+    { variant = 'primary', loading, css = {}, autoWidth, as: pAs, ...props },
+    ref
+  ) {
+    const styles = deepmerge.all([variantStyles[variant], commonStyles, css]);
+    const usedAs = pAs || (props.to ? Link : 'button');
+    // default type is button unless props.as was changed
+    const type = usedAs === 'button' && 'button';
 
     return (
       <Element
-        as="button"
+        as={usedAs}
+        type={type}
         css={styles}
         ref={ref}
         disabled={props.disabled || loading}
         data-loading={loading}
+        data-auto-width={autoWidth}
         {...props}
       >
         {loading ? <AnimatingDots /> : props.children}
@@ -123,10 +136,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
-
-Button.defaultProps = {
-  type: 'button',
-};
 
 /** Animation dots, we use the styled.span syntax
  *  because keyframes aren't supported in the object syntax

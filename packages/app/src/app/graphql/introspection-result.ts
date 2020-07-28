@@ -9,7 +9,6 @@ export interface IntrospectionResultData {
     }[];
   };
 }
-
 const result: IntrospectionResultData = {
   __schema: {
     types: [
@@ -32,10 +31,12 @@ const result: IntrospectionResultData = {
           {
             name: 'CodeReferenceMetadata',
           },
+          {
+            name: 'UserReferenceMetadata',
+          },
         ],
       },
     ],
   },
 };
-
 export default result;

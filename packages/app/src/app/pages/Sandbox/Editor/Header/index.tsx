@@ -1,18 +1,21 @@
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { Link as RouterLink } from 'react-router-dom';
 import { Link, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
+import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 import { Actions } from './Actions';
 import { DashboardIcon } from './icons';
 import { MenuBar } from './MenuBar';
 import { SandboxName } from './SandboxName';
+import { WorkspaceDashboardIcon } from './WorkspaceDashboardIcon';
 
 export const Header = () => {
   const {
-    state: { hasLogIn, editor, isAuthenticating },
+    state: { hasLogIn, editor, isAuthenticating, user },
   } = useOvermind();
 
   return (
@@ -33,13 +36,26 @@ export const Header = () => {
     >
       <Stack align="center">
         {hasLogIn ? (
-          <Link
-            variant="muted"
-            href={dashboardUrl()}
-            css={{ lineHeight: 0 /* micro adjustment */ }}
-          >
-            <DashboardIcon />
-          </Link>
+          user && NEW_DASHBOARD ? (
+            <WorkspaceDashboardIcon />
+          ) : (
+            <Link
+              as={RouterLink}
+              variant="muted"
+              to={dashboardUrl()}
+              style={{ color: 'inherit' }}
+              css={{
+                transition: '0.3s ease opacity',
+                opacity: 0.6,
+                lineHeight: 0 /* micro adjustment */,
+                ':hover': {
+                  opacity: 1,
+                },
+              }}
+            >
+              <DashboardIcon />
+            </Link>
+          )
         ) : (
           <Link href="/" css={{ padding: '2px' /* micro adjustment */ }}>
             <LogoIcon height={24} />

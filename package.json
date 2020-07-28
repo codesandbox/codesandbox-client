@@ -9,7 +9,7 @@
   "license": "GPL-3.0",
   "workspaces": {
     "packages": [
-      "packages/@types/ot",
+      "packages/@styled-system/css",
       "packages/app",
       "packages/homepage",
       "packages/common",
@@ -22,7 +22,8 @@
       "packages/dynamic-pages",
       "packages/notifications",
       "packages/deps",
-      "packages/executors"
+      "packages/executors",
+      "packages/template-icons"
     ],
     "nohoist": [
       "**/react-codemirror2",
@@ -51,7 +52,10 @@
     "start:dev_api": "concurrently --raw \"cd packages/app && yarn start:dev_api\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
     "start:fast": "cross-env NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
-    "start:fast:stream": "cross-env STAGING_API=1 NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
+    "start:profiling": "cross-env NODE_ENV=production PROFILING=true concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
+    "start:hot": "cross-env NODE_ENV=development APP_ONLY=true concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
+    "start:fast:stream": "cross-env ENDPOINT=https://codesandbox.stream NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
+    "start:fast:local": "cross-env ENDPOINT=http://localhost:4000 NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:home": "yarn build:deps && yarn start:home:fast",
     "start:home:fast": "cd packages/homepage && yarn start",
     "start:overmind": "yarn build:deps && concurrently \"lerna run start --scope app --stream\" \"overmind-devtools\"",
@@ -73,7 +77,7 @@
   },
   "devDependencies": {
     "all-contributors-cli": "^6.9.2",
-    "babel-eslint": "^10.0.2",
+    "babel-eslint": "10.0.2",
     "concurrently": "^4.1.0",
     "cross-env": "^6.0.0",
     "eslint": "5.16.0",
@@ -84,14 +88,14 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "~7.14.3",
-    "eslint-plugin-react-hooks": "^1.7.0",
+    "eslint-plugin-react-hooks": "^4.0.8",
     "gulp": "^3.9.1",
     "husky": "^2.2.0",
     "lerna": "^3.16.4",
     "lint-staged": "^9.2.5",
     "prettier": "1.19.1",
     "pretty-quick": "^2.0.1",
-    "typescript": "3.7.4",
+    "typescript": "3.9.2",
     "username": "^5.1.0"
   },
   "husky": {

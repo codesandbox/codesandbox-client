@@ -1,5 +1,5 @@
 ---
-title: Git Committing and PRs
+title: GitHub Committing and PRs
 authors: ['CompuIves']
 description:
   CodeSandbox allows you to import, commit, and make pull requests to GitHub
@@ -8,10 +8,10 @@ description:
 
 ## Base Concept
 
-With CodeSandbox you can import any GitHub repository as a sandbox (this concept
-is described in more detail [here](/docs/importing#import-from-github)). An
-imported sandbox will automatically stay in sync with the GitHub repository; if
-you make a commit to GitHub it will reflect immediately in the sandbox.
+With CodeSandbox you can import any GitHub repository as a sandbox (detailed
+[here](/docs/importing#import-from-github)). An imported sandbox will
+automatically stay in sync with the GitHub repository; if you make a commit to
+GitHub it will reflect immediately in the sandbox.
 
 For that reason we've made GitHub sandboxes immutable, this means that you
 cannot make direct changes to the sandbox itself. They are treated as

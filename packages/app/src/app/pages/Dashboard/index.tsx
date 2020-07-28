@@ -4,7 +4,8 @@ import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
 
 import { client } from 'app/graphql/client';
 import { useOvermind } from 'app/overmind';
-import { Navigation } from 'app/pages/common/Navigation';
+import { ThemeProvider } from '@codesandbox/components';
+import { Navigation } from './Navigation';
 
 import Content from './Content';
 import {
@@ -34,36 +35,40 @@ const DashboardComponent: FunctionComponent<Props> = ({ history }) => {
     return () => client.resetStore();
   }, [dashboardMounted]);
 
-  history.listen(({ state }) => {
-    if (state?.from === 'sandboxSearchFocused') {
-      return;
-    }
+  useEffect(() => {
+    history.listen(({ state }) => {
+      if (state?.from === 'sandboxSearchFocused') {
+        return;
+      }
 
-    setShowSidebar(false);
-  });
+      setShowSidebar(false);
+    });
+  }, [history]);
 
   if (!hasLogIn) {
     return <Redirect to={signInPageUrl()} />;
   }
 
   return (
-    <Container>
-      <Navigation float searchNoInput title="Dashboard" />
+    <ThemeProvider>
+      <Container>
+        <Navigation float searchNoInput title="Dashboard" />
 
-      <div style={{ display: 'flex', overflow: 'hidden' }}>
-        <SidebarContainer active={showSidebar}>
-          <Sidebar />
+        <div style={{ display: 'flex', overflow: 'hidden' }}>
+          <SidebarContainer active={showSidebar}>
+            <Sidebar />
 
-          <ShowSidebarButton onClick={() => setShowSidebar(show => !show)}>
-            {showSidebar ? <LeftIcon /> : <RightIcon />}
-          </ShowSidebarButton>
-        </SidebarContainer>
+            <ShowSidebarButton onClick={() => setShowSidebar(show => !show)}>
+              {showSidebar ? <LeftIcon /> : <RightIcon />}
+            </ShowSidebarButton>
+          </SidebarContainer>
 
-        <ContentContainer>
-          <Content />
-        </ContentContainer>
-      </div>
-    </Container>
+          <ContentContainer>
+            <Content />
+          </ContentContainer>
+        </div>
+      </Container>
+    </ThemeProvider>
   );
 };
 

@@ -55,15 +55,15 @@ type Modal = {
 interface Props {
   id: string;
   root?: boolean;
+  readonly?: boolean;
   initializeProperties?: Function;
   shortid?: string;
   store?: any;
   connectDropTarget?: Function;
   isOver?: boolean;
   canDrop?: boolean;
-  siblings?: any;
   signals?: any;
-  title?: string;
+  title: string;
   sandboxId?: string;
   sandboxTemplate?: any;
   mainModuleId?: string;
@@ -82,6 +82,7 @@ interface Props {
 
 const DirectoryEntry: React.FunctionComponent<Props> = ({
   id,
+  readonly,
   root,
   initializeProperties,
   shortid,
@@ -90,6 +91,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
   depth = 0,
   getModulePath,
   canDrop,
+  title: directoryTitle,
 }) => {
   const {
     state: {
@@ -115,7 +117,9 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
   } = useOvermind();
 
   const [creating, setCreating] = React.useState<ItemTypes>(null);
-  const [open, setOpen] = React.useState(root || shouldDirectoryBeOpen(id));
+  const [open, setOpen] = React.useState(
+    root || shouldDirectoryBeOpen({ directoryId: id })
+  );
   const [modalConfirm, setModalConfirm] = React.useState<Modal | null>(null);
 
   React.useEffect(() => {
@@ -132,12 +136,19 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
   React.useEffect(
     () =>
       reaction(
-        ({ editor }) => editor.currentModuleShortid,
-        () => {
-          setOpen(isOpen => isOpen || shouldDirectoryBeOpen(id));
+        ({ editor }) => editor.currentModule,
+        currentModule => {
+          setOpen(
+            isOpen =>
+              isOpen ||
+              shouldDirectoryBeOpen({ directoryId: id, module: currentModule })
+          );
         }
       ),
-    [id, reaction, shouldDirectoryBeOpen]
+
+    // shouldDirectoryOpen causes this to unmount for some reason, which bugs out how directories open and close
+    // eslint-disable-next-line
+    [id, reaction]
   );
 
   React.useEffect(() => {
@@ -328,8 +339,6 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     moduleDoubleClicked();
   }, [moduleDoubleClicked]);
 
-  const title = root ? 'Project' : directories.find(m => m.id === id).title;
-
   return connectDropTarget(
     <div style={{ position: 'relative' }}>
       <Overlay isOver={isOver && canDrop} />
@@ -338,7 +347,8 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
           <Entry
             id={id}
             shortid={shortid}
-            title={title}
+            readonly={readonly}
+            title={directoryTitle}
             depth={depth}
             type={open ? 'directory-open' : 'directory'}
             root={root}
@@ -346,7 +356,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
             onClick={toggleOpen}
             renameValidator={validateDirectoryTitle}
             discardModuleChanges={confirmDiscardChanges}
-            rename={!root && renameDirectory}
+            rename={!readonly && !root && renameDirectory}
             onCreateModuleClick={onCreateModuleClick}
             onCreateDirectoryClick={onCreateDirectoryClick}
             onUploadFileClick={isLoggedIn && privacy === 0 && onUploadFileClick}
@@ -378,6 +388,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
           )}
           <DirectoryChildren
             depth={depth}
+            readonly={readonly}
             renameModule={renameModule}
             parentShortid={shortid}
             renameValidator={validateModuleTitle}
@@ -443,6 +454,7 @@ const entryTarget = {
   },
 
   canDrop: (props, monitor) => {
+    if (props.readonly) return false;
     if (monitor == null) return false;
     const source = monitor.getItem();
     if (source == null) return false;

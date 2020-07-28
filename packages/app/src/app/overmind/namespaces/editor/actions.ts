@@ -10,8 +10,8 @@ import {
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -33,7 +33,7 @@ import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
 import { debounce } from 'lodash-es';
-import { Selection, TextOperation } from 'ot';
+import { TextOperation } from 'ot';
 import { json } from 'overmind';
 
 import eventToTransform from '../../utils/event-to-transform';
@@ -50,6 +50,10 @@ export const persistCursorToUrl: Action<{
 }> = debounce(({ effects }, { module, selection }) => {
   let parameter = module.path;
 
+  if (!parameter) {
+    return;
+  }
+
   if (selection?.primary?.selection?.length) {
     const [head, anchor] = selection.primary.selection;
     const serializedSelection = head + '-' + anchor;
@@ -61,12 +65,14 @@ export const persistCursorToUrl: Action<{
 
   // Restore the URI encoded parts to their original values. Our server handles this well
   // and all the browsers do too.
-  effects.router.replace(
-    newUrl
-      .toString()
-      .replace(/%2F/g, '/')
-      .replace('%3A', ':')
-  );
+  if (newUrl) {
+    effects.router.replace(
+      newUrl
+        .toString()
+        .replace(/%2F/g, '/')
+        .replace('%3A', ':')
+    );
+  }
 }, 500);
 
 export const loadCursorFromUrl: AsyncAction = async ({
@@ -101,6 +107,10 @@ export const loadCursorFromUrl: AsyncAction = async ({
   }
 };
 
+export const refreshPreview: Action = ({ effects }) => {
+  effects.preview.refresh();
+};
+
 export const addNpmDependency: AsyncAction<{
   name: string;
   version?: string;
@@ -109,10 +119,10 @@ export const addNpmDependency: AsyncAction<{
   async ({ actions, effects, state }, { name, version, isDev }) => {
     effects.analytics.track('Add NPM Dependency');
     state.currentModal = null;
-    let newVersion = version;
+    let newVersion = version || 'latest';
 
-    if (!newVersion) {
-      const dependency = await effects.api.getDependency(name);
+    if (!isAbsoluteVersion(newVersion)) {
+      const dependency = await effects.api.getDependency(name, newVersion);
       newVersion = dependency.version;
     }
 
@@ -141,7 +151,9 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 }>(async ({ state, actions, effects }, { id }) => {
   // This happens when we fork. This can be avoided with state first routing
   if (state.editor.isForkingSandbox && state.editor.currentSandbox) {
-    effects.vscode.openModule(state.editor.currentModule);
+    if (state.editor.currentModule.id) {
+      effects.vscode.openModule(state.editor.currentModule);
+    }
 
     await actions.editor.internal.initializeSandbox(
       state.editor.currentSandbox
@@ -154,6 +166,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   await effects.vscode.closeAllTabs();
 
   state.editor.error = null;
+  state.git.sourceSandboxId = null;
 
   let newId = id;
 
@@ -209,7 +222,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     const sandbox = await effects.api.getSandbox(newId);
 
     actions.internal.setCurrentSandbox(sandbox);
-    actions.workspace.openDefaultItem();
   } catch (error) {
     const data = error.response?.data;
     const errors = data?.errors;
@@ -254,19 +266,15 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
       status: convertTypeToStatus('notice'),
       sticky: true,
       actions: {
-        primary: [
-          {
-            label: 'Fork',
-            run: () => {
-              actions.editor.forkSandboxClicked();
-            },
+        primary: {
+          label: 'Fork',
+          run: () => {
+            actions.editor.forkSandboxClicked({});
           },
-        ],
+        },
       },
     });
   }
-
-  actions.internal.ensurePackageJSON();
 
   await actions.editor.internal.initializeSandbox(sandbox);
 
@@ -289,8 +297,15 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
      */
   }
 
-  if (COMMENTS && hasPermission(sandbox.authorization, 'comment')) {
+  if (
+    sandbox.featureFlags.comments &&
+    hasPermission(sandbox.authorization, 'comment')
+  ) {
     actions.comments.getSandboxComments(sandbox.id);
+  }
+
+  if (sandbox.originalGit && hasPermission(sandbox.authorization, 'owner')) {
+    actions.git.loadGitSource();
   }
 
   state.editor.isLoading = false;
@@ -324,7 +339,7 @@ export const codeSaved: AsyncAction<{
   moduleShortid: string;
   cbID: string | null;
 }> = withOwnedSandbox(
-  async ({ actions }, { code, moduleShortid, cbID }) => {
+  async ({ state, actions }, { code, moduleShortid, cbID }) => {
     actions.editor.internal.saveCode({
       code,
       moduleShortid,
@@ -341,8 +356,9 @@ export const codeSaved: AsyncAction<{
 
 export const onOperationApplied: Action<{
   moduleShortid: string;
+  operation: TextOperation;
   code: string;
-}> = ({ state, effects, actions }, { code, moduleShortid }) => {
+}> = ({ state, effects, actions }, { code, moduleShortid, operation }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -355,6 +371,8 @@ export const onOperationApplied: Action<{
     return;
   }
 
+  actions.comments.transposeComments({ module, operation });
+
   actions.editor.internal.updateModuleCode({
     module,
     code,
@@ -365,6 +383,58 @@ export const onOperationApplied: Action<{
   // If we are in a state of sync, we set "revertModule" to set it as saved
   if (module.savedCode !== null && module.code === module.savedCode) {
     effects.vscode.syncModule(module);
+  }
+
+  if (state.editor.currentSandbox.originalGit) {
+    actions.git.updateGitChanges();
+  }
+};
+
+/**
+ * Set the code of the module and send it if live is turned on. Keep in mind that this overwrites the editor state,
+ * which means that if the user was typing something else in the file, it will get overwritten(!).
+ *
+ * There is some extra logic to handle files that are opened and not opened. If the file is opened we will set the code
+ * within VSCode and let the event that VSCode generates handle the rest, however, if the file is not opened in VSCode,
+ * we'll just update it in the state and send a live message based on the diff.
+ *
+ * The difference between `setCode` and `codeChanged` is small but important to keep in mind. Calling this method will *always*
+ * cause `codeChanged` to be called. But from different sources based on whether the file is currently open. I'd recommend to always
+ * call this function if you're aiming to manually set code (like updating package.json), while editors shouild call codeChanged.
+ *
+ * The two cases:
+ *
+ * ### Already opened in VSCode
+ *  1. set code in VSCode
+ *  2. which generates an event
+ *  3. which triggers codeChanged
+ *
+ * ### Not opened in VSCode
+ *  1. codeChanged called directly
+ */
+export const setCode: Action<{
+  moduleShortid: string;
+  code: string;
+}> = ({ effects, state, actions }, { code, moduleShortid }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+  // If the code is opened in VSCode, change the code in VSCode and let
+  // other clients know via the event triggered by VSCode. Otherwise
+  // send a manual event and just change the state.
+  if (effects.vscode.isModuleOpened(module)) {
+    effects.vscode.setModuleCode({ ...module, code }, true);
+  } else {
+    actions.editor.codeChanged({ moduleShortid, code });
   }
 };
 
@@ -378,8 +448,6 @@ export const codeChanged: Action<{
   if (!state.editor.currentSandbox) {
     return;
   }
-
-  const sandbox = state.editor.currentSandbox;
 
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
@@ -416,17 +484,7 @@ export const codeChanged: Action<{
 
     effects.live.sendCodeUpdate(moduleShortid, operation);
 
-    const comments = state.comments.fileComments[module.path] || [];
-    comments.forEach(fileComment => {
-      const range = new Selection.Range(...fileComment.range);
-      const newRange = range.transform(operation);
-      const comment =
-        state.comments.comments[sandbox.id][fileComment.commentId];
-      if (comment.references && comment.references[0].type === 'code') {
-        comment.references[0].metadata.anchor = newRange.anchor;
-        comment.references[0].metadata.head = newRange.head;
-      }
-    });
+    actions.comments.transposeComments({ module, operation });
   }
 
   actions.editor.internal.updateModuleCode({
@@ -443,6 +501,11 @@ export const codeChanged: Action<{
   if (!isServer && state.preferences.settings.livePreviewEnabled) {
     actions.editor.internal.updatePreviewCode();
   }
+
+  if (state.editor.currentSandbox.originalGit) {
+    actions.git.updateGitChanges();
+    actions.git.resolveConflicts(module);
+  }
 };
 
 export const saveClicked: AsyncAction = withOwnedSandbox(
@@ -458,47 +521,53 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
         state.editor.changedModuleShortids.includes(module.shortid)
       );
 
-      await Promise.all(
-        changedModules.map(module => effects.live.saveModule(module))
-      );
+      if (sandbox.featureFlags.comments) {
+        const versions = await Promise.all(
+          changedModules.map(module =>
+            effects.live
+              .saveModule(module)
+              .then(({ saved_code, updated_at, inserted_at, version }) => {
+                module.savedCode = saved_code;
+                module.updatedAt = updated_at;
+                module.insertedAt = inserted_at;
 
-      const updatedModules = await effects.api.saveModules(
-        sandbox.id,
-        changedModules
-      );
-
-      updatedModules.forEach(updatedModule => {
-        const module = sandbox.modules.find(
-          moduleItem => moduleItem.shortid === updatedModule.shortid
+                return version;
+              })
+          )
+        );
+        sandbox.version = Math.max(...versions);
+      } else {
+        const updatedModules = await effects.api.saveModules(
+          sandbox.id,
+          changedModules
         );
 
-        if (module) {
-          module.insertedAt = updatedModule.insertedAt;
-          module.updatedAt = updatedModule.updatedAt;
-
-          module.savedCode =
-            updatedModule.code === module.code ? null : updatedModule.code;
-
-          effects.vscode.sandboxFsSync.writeFile(
-            state.editor.modulesByPath,
-            module
+        updatedModules.forEach(updatedModule => {
+          const module = sandbox.modules.find(
+            moduleItem => moduleItem.shortid === updatedModule.shortid
           );
 
-          effects.moduleRecover.remove(sandbox.id, module);
-        } else {
-          // We might not have the module, as it was created by the server. In
-          // this case we put it in. There is an edge case here where the user
-          // might delete the module while it is being updated, but it will very
-          // likely not happen
-          sandbox.modules.push(updatedModule);
-        }
-      });
+          if (module) {
+            module.insertedAt = updatedModule.insertedAt;
+            module.updatedAt = updatedModule.updatedAt;
 
-      if (
-        sandbox.originalGit &&
-        state.workspace.openedWorkspaceItem === 'github'
-      ) {
-        actions.git.internal.fetchGitChanges();
+            module.savedCode =
+              updatedModule.code === module.code ? null : updatedModule.code;
+
+            effects.vscode.sandboxFsSync.writeFile(
+              state.editor.modulesByPath,
+              module
+            );
+
+            effects.moduleRecover.remove(sandbox.id, module);
+          } else {
+            // We might not have the module, as it was created by the server. In
+            // this case we put it in. There is an edge case here where the user
+            // might delete the module while it is being updated, but it will very
+            // likely not happen
+            sandbox.modules.push(updatedModule);
+          }
+        });
       }
 
       effects.preview.executeCodeImmediately();
@@ -528,8 +597,13 @@ export const forkExternalSandbox: AsyncAction<{
 ) => {
   effects.analytics.track('Fork Sandbox', { type: 'external' });
 
+  const usedBody: { collectionId?: string; teamId?: string } = body || {};
+  if (state.activeTeam) {
+    usedBody.teamId = state.activeTeam;
+  }
+
   try {
-    const forkedSandbox = await effects.api.forkSandbox(sandboxId, body);
+    const forkedSandbox = await effects.api.forkSandbox(sandboxId, usedBody);
 
     state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
@@ -544,17 +618,16 @@ export const forkExternalSandbox: AsyncAction<{
   }
 };
 
-export const forkSandboxClicked: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const forkSandboxClicked: AsyncAction<{
+  teamId?: string | null;
+}> = async ({ state, actions }, { teamId }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
 
   await actions.editor.internal.forkSandbox({
     sandboxId: state.editor.currentSandbox.id,
+    teamId,
   });
 };
 
@@ -680,28 +753,6 @@ export const tabMoved: Action<{
   state.editor.tabs.splice(nextIndex, 0, tab);
 };
 
-export const prettifyClicked: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
-  effects.analytics.track('Prettify Code');
-  const module = state.editor.currentModule;
-  if (!module.id) {
-    return;
-  }
-  const newCode = await effects.prettyfier.prettify(
-    module.id,
-    module.title,
-    module.code || ''
-  );
-
-  actions.editor.codeChanged({
-    code: newCode,
-    moduleShortid: module.shortid,
-  });
-};
-
 // TODO(@CompuIves): Look into whether we even want to call this function.
 // We can probably call the dispatch from the bundler itself instead.
 export const errorsCleared: Action = ({ state, effects }) => {
@@ -738,9 +789,9 @@ export const projectViewToggled: Action = ({ state, actions }) => {
   actions.editor.internal.updatePreviewCode();
 };
 
-export const frozenUpdated: AsyncAction<{ frozen: boolean }> = async (
-  { state, effects },
-  { frozen }
+export const frozenUpdated: AsyncAction<boolean> = async (
+  { effects, state },
+  frozen
 ) => {
   if (!state.editor.currentSandbox) {
     return;
@@ -865,14 +916,12 @@ export const showEnvironmentVariablesNotification: AsyncAction = async ({
       title: 'Unset Secrets',
       message: `This sandbox has ${emptyVarCount} secrets that need to be set. You can set them in the server tab.`,
       actions: {
-        primary: [
-          {
-            label: 'Open Server Tab',
-            run: () => {
-              actions.workspace.setWorkspaceItem({ item: SERVER.id });
-            },
+        primary: {
+          label: 'Open Server Tab',
+          run: () => {
+            actions.workspace.setWorkspaceItem({ item: SERVER.id });
           },
-        ],
+        },
       },
     });
   }
@@ -1209,10 +1258,7 @@ export const openDevtoolsTab: Action<{
   }
 };
 
-export const sessionFreezeOverride: Action<{ frozen: boolean }> = (
-  { state },
-  { frozen }
-) => {
+export const sessionFreezeOverride: Action<boolean> = ({ state }, frozen) => {
   state.editor.sessionFrozen = frozen;
 };
 

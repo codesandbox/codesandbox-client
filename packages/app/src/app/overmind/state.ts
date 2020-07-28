@@ -4,28 +4,38 @@ import {
   Sandbox,
   UploadFile,
 } from '@codesandbox/common/lib/types';
-import store from 'store/dist/store.modern';
+import { CurrentTeamInfoFragmentFragment as CurrentTeam } from 'app/graphql/types';
+import { derived } from 'overmind';
+import { hasLogIn } from '@codesandbox/common/lib/utils/user';
 
-import { Derive } from '.';
+export type PendingUserType = {
+  avatarUrl: string | null;
+  username: string;
+  id: string;
+  valid?: boolean;
+} | null;
 
 type State = {
-  isPatron: Derive<State, boolean>;
+  isPatron: boolean;
   isFirstVisit: boolean;
-  isLoggedIn: Derive<State, boolean>;
-  hasLogIn: Derive<State, boolean>;
+  isLoggedIn: boolean;
+  hasLogIn: boolean;
   popularSandboxes: Sandbox[] | null;
   hasLoadedApp: boolean;
-  jwt: string | null;
   isAuthenticating: boolean;
   authToken: string | null;
   error: string | null;
   contributors: string[];
   user: CurrentUser | null;
+  activeTeam: string | null;
+  activeTeamInfo: CurrentTeam | null;
   connected: boolean;
   notifications: Notification[];
   isLoadingCLI: boolean;
   isLoadingGithub: boolean;
-  isLoadingZeit: boolean;
+  isLoadingVercel: boolean;
+  pendingUserId: string | null;
+  pendingUser: PendingUserType;
   contextMenu: {
     show: boolean;
     items: string[];
@@ -38,33 +48,40 @@ type State = {
   maxStorage: number;
   usedStorage: number;
   updateStatus: string | null;
-  isContributor: Derive<State, (username: String) => boolean>;
+  isContributor: (username: String) => boolean;
+  signInModalOpen: boolean;
+  redirectOnLogin: string | null;
 };
 
 export const state: State = {
+  pendingUserId: null,
+  pendingUser: null,
   isFirstVisit: false,
-  isPatron: ({ user }) =>
-    Boolean(user && user.subscription && user.subscription.since),
-  isLoggedIn: ({ jwt, user }) => Boolean(jwt) && Boolean(user),
+  isPatron: derived(({ user }: State) =>
+    Boolean(user && user.subscription && user.subscription.since)
+  ),
+  isLoggedIn: derived(({ hasLogIn: has, user }: State) => has && Boolean(user)),
   // TODO: Should not reference store directly here, rather initialize
   // the state with "onInitialize" setting the jwt
-  hasLogIn: ({ jwt }) => !!jwt || !!store.get('jwt'),
-  isContributor: ({ contributors }) => username =>
+  hasLogIn: hasLogIn(),
+  isContributor: derived(({ contributors }: State) => username =>
     contributors.findIndex(
       contributor =>
         contributor.toLocaleLowerCase() === username.toLocaleLowerCase()
-    ) > -1,
+    ) > -1
+  ),
   popularSandboxes: null,
   hasLoadedApp: false,
-  jwt: null,
   isAuthenticating: true,
   authToken: null,
   error: null,
   user: null,
+  activeTeam: null,
+  activeTeamInfo: null,
   connected: true,
   notifications: [],
   contributors: [],
-  isLoadingZeit: false,
+  isLoadingVercel: false,
   isLoadingCLI: false,
   isLoadingGithub: false,
   contextMenu: {
@@ -79,4 +96,6 @@ export const state: State = {
   maxStorage: 0,
   usedStorage: 0,
   updateStatus: null,
+  signInModalOpen: false,
+  redirectOnLogin: null,
 };

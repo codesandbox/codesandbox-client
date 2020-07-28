@@ -8,14 +8,13 @@ import {
   Element,
   Button,
 } from '@codesandbox/components';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { useOvermind } from 'app/overmind';
 import { Helmet } from 'react-helmet';
 import {
-  teamOverviewUrl,
   dashboardUrl,
+  dashboard,
 } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { PageContainer, ContentContainer } from './elements';
@@ -115,11 +114,7 @@ const TeamSignIn = ({ inviteToken }: { inviteToken: string }) => {
         }
         description="Please sign in to GitHub to continue"
         action={
-          <Button
-            onClick={() => {
-              actions.signInClicked({ useExtraScopes: false });
-            }}
-          >
+          <Button onClick={() => actions.signInClicked()}>
             Sign in to GitHub
           </Button>
         }
@@ -131,7 +126,10 @@ const TeamSignIn = ({ inviteToken }: { inviteToken: string }) => {
 const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
   const { effects } = useOvermind();
   const [loading, setLoading] = React.useState(true);
-  const [teamId, setTeamId] = React.useState<string | null>(null);
+  const [team, setTeam] = React.useState<{
+    id: string;
+    joinedPilotAt: string | null;
+  } | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
 
   const [joinTeam] = useMutation(joinTeamMutation);
@@ -142,12 +140,12 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
         track('Team - Join Team', { source: 'url' });
 
         const result = await joinTeam({ variables: { inviteToken } });
-        const team = result.data.redeemTeamInviteToken;
+        const resultTeam = result.data.redeemTeamInviteToken;
         effects.notificationToast.success(
-          'Successfully joined ' + team.name + '!'
+          `Successfully joined ${resultTeam.name}!`
         );
 
-        setTeamId(team.id);
+        setTeam(resultTeam);
       } catch (e) {
         setError(e);
       } finally {
@@ -162,11 +160,11 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
     return <ErrorDialog error={error} />;
   }
 
-  if (loading || !teamId) {
+  if (loading || !team?.id) {
     return <Text size={6}>Joining Team...</Text>;
   }
 
-  return <Redirect to={teamOverviewUrl(teamId)} />;
+  return <Redirect to={dashboard.home(team.id)} />;
 };
 
 export const TeamInvitation: React.FC<{
@@ -184,7 +182,7 @@ export const TeamInvitation: React.FC<{
   })();
 
   return (
-    <ThemeProvider theme={codesandboxBlack}>
+    <ThemeProvider>
       <PageContainer>
         <ContentContainer>{content}</ContentContainer>
       </PageContainer>

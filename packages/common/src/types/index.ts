@@ -116,7 +116,6 @@ export type CurrentUser = {
   name: string | null;
   username: string;
   avatarUrl: string;
-  jwt: string | null;
   subscription: {
     since: string;
     amount: number;
@@ -278,11 +277,47 @@ export type GitCommit = {
 };
 
 export type GitPr = {
-  git: GitInfo;
-  newBranch: string;
-  sha: string;
-  url: string;
-  prURL: string;
+  number: number;
+  repo: string;
+  username: string;
+  branch: string;
+  merged: boolean;
+  state: string;
+  mergeable: boolean;
+  mergeableState: string;
+  commitSha: string;
+  baseCommitSha: string;
+  rebaseable: boolean;
+  commits: number;
+  additions: number;
+  deletions: number;
+  changed_files: number;
+};
+
+export type GitFileCompare = {
+  additions: number;
+  changes: number;
+  deletions: number;
+  filename: string;
+  status: 'added' | 'modified' | 'removed';
+  content?: string;
+};
+
+export enum SandboxGitState {
+  SYNCED = 'synced',
+  CONFLICT_SOURCE = 'conflict in source',
+  CONFLICT_PR_BASE = 'conflict in pr base',
+  OUT_OF_SYNC_SOURCE = 'out of sync with source',
+  OUT_OF_SYNC_PR_BASE = 'out of sync with pr base',
+  SYNCING = 'syncing',
+  RESOLVED_SOURCE = 'resolved source',
+  RESOLVED_PR_BASE = 'resolved pr base',
+}
+
+export type UserQuery = {
+  id: string;
+  avatarUrl: string;
+  username: string;
 };
 
 export type PopularSandboxes = {
@@ -360,6 +395,7 @@ export type Sandbox = {
   git: GitInfo | null;
   tags: string[];
   isFrozen: boolean;
+  isSse?: boolean;
   environmentVariables: {
     [key: string]: string;
   } | null;
@@ -375,7 +411,10 @@ export type Sandbox = {
   template: TemplateType;
   entry: string;
   originalGit: GitInfo | null;
+  baseGit: GitInfo | null;
+  prNumber: number | null;
   originalGitCommitSha: string | null;
+  baseGitCommitSha: string | null;
   originalGitChanges: {
     added: string[];
     modified: string[];
@@ -546,7 +585,7 @@ export type ServerPort = {
   name?: string;
 };
 
-export type ZeitUser = {
+export type VercelUser = {
   uid: string;
   email: string;
   name: string;
@@ -568,23 +607,23 @@ export type ZeitUser = {
   }>;
 };
 
-export type ZeitCreator = {
+export type VercelCreator = {
   uid: string;
 };
 
-export type ZeitScale = {
+export type VercelScale = {
   current: number;
   min: number;
   max: number;
 };
 
-export type ZeitAlias = {
+export type VercelAlias = {
   alias: string;
   created: string;
   uid: string;
 };
 
-export enum ZeitDeploymentState {
+export enum VercelDeploymentState {
   DEPLOYING = 'DEPLOYING',
   INITIALIZING = 'INITIALIZING',
   DEPLOYMENT_ERROR = 'DEPLOYMENT_ERROR',
@@ -596,27 +635,27 @@ export enum ZeitDeploymentState {
   ERROR = 'ERROR',
 }
 
-export enum ZeitDeploymentType {
+export enum VercelDeploymentType {
   'NPM',
   'DOCKER',
   'STATIC',
   'LAMBDAS',
 }
 
-export type ZeitDeployment = {
+export type VercelDeployment = {
   uid: string;
   name: string;
   url: string;
   created: number;
-  state: ZeitDeploymentState;
+  state: VercelDeploymentState;
   instanceCount: number;
-  alias: ZeitAlias[];
-  scale: ZeitScale;
-  createor: ZeitCreator;
-  type: ZeitDeploymentType;
+  alias: VercelAlias[];
+  scale: VercelScale;
+  createor: VercelCreator;
+  type: VercelDeploymentType;
 };
 
-export type ZeitConfig = {
+export type VercelConfig = {
   name?: string;
   alias?: string;
 };
@@ -659,11 +698,20 @@ export type DiffTab = {
 
 export type Tabs = Array<ModuleTab | DiffTab>;
 
-export type GitChanges = {
+export type GitPathChanges = {
   added: string[];
   deleted: string[];
   modified: string[];
-  rights: string;
+};
+
+export type GitChanges = {
+  added: Array<{ path: string; content: string; encoding: 'utf-8' | 'binary' }>;
+  deleted: string[];
+  modified: Array<{
+    path: string;
+    content: string;
+    encoding: 'utf-8' | 'binary';
+  }>;
 };
 
 export type EnvironmentVariable = {
@@ -695,6 +743,7 @@ export type LiveMessage<data = unknown> = {
 };
 
 export enum LiveMessageEvent {
+  SAVE = 'save',
   JOIN = 'join',
   MODULE_STATE = 'module_state',
   USER_ENTERED = 'user:entered',
@@ -742,3 +791,14 @@ export type PatronTier = 1 | 2 | 3 | 4;
 export type SandboxFs = {
   [path: string]: Module | Directory;
 };
+
+export interface IModuleStateModule {
+  synced?: boolean;
+  revision?: number;
+  code?: string;
+  saved_code?: string | null;
+}
+
+export interface IModuleState {
+  [moduleId: string]: IModuleStateModule;
+}

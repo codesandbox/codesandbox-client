@@ -76,7 +76,7 @@ export default {
     location.reload(true);
   },
   storage: {
-    get(key: string) {
+    get(key: string): unknown | null {
       const value = localStorage.getItem(key);
 
       if (value) {

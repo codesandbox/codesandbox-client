@@ -12,13 +12,13 @@ import {
   Settings,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import {
   NotificationMessage,
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
-import { CommentFragment } from 'app/graphql/types';
+import { CodeReferenceMetadata } from 'app/graphql/types';
 import { Reaction } from 'app/overmind';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import prettify from 'app/src/app/utils/prettify';
@@ -27,6 +27,7 @@ import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
+import { TextOperation } from 'ot';
 import { json } from 'overmind';
 import io from 'socket.io-client';
 
@@ -147,20 +148,18 @@ export class VSCodeEffect {
 
     this.prepareElements();
 
-    if (COMMENTS) {
-      this.options.reaction(
-        state => ({
-          fileComments: json(state.comments.fileComments),
-          currentCommentId: state.comments.currentCommentId,
-        }),
-        ({ fileComments, currentCommentId }) => {
-          if (this.modelsHandler) {
-            this.modelsHandler.applyComments(fileComments, currentCommentId);
-          }
+    this.options.reaction(
+      state => ({
+        fileComments: json(state.comments.fileComments),
+        currentCommentId: state.comments.currentCommentId,
+      }),
+      ({ fileComments, currentCommentId }) => {
+        if (this.modelsHandler) {
+          this.modelsHandler.applyComments(fileComments, currentCommentId);
         }
-      );
-      this.listenToCommentClick();
-    }
+      }
+    );
+    this.listenToCommentClick();
 
     // We instantly create a sandbox sync, as we want our
     // extension host to get its messages handled to initialize
@@ -208,6 +207,8 @@ export class VSCodeEffect {
       // you should not be allowed to edit.
       options.reaction(
         state =>
+          (state.editor.currentSandbox &&
+            Boolean(state.editor.currentSandbox.git)) ||
           !state.live.isLive ||
           state.live.roomInfo?.mode === 'open' ||
           (state.live.roomInfo?.mode === 'classroom' &&
@@ -227,9 +228,9 @@ export class VSCodeEffect {
 
   public async getCodeReferenceBoundary(
     commentId: string,
-    reference: CommentFragment['references'][0]
+    reference: CodeReferenceMetadata
   ) {
-    this.revealPositionInCenterIfOutsideViewport(reference.metadata.anchor, 1);
+    this.revealPositionInCenterIfOutsideViewport(reference.anchor, 1);
 
     return new Promise<DOMRect>((resolve, reject) => {
       let checkCount = 0;
@@ -327,10 +328,7 @@ export class VSCodeEffect {
     this.modelsHandler.syncModule(module);
   }
 
-  public async applyOperation(
-    moduleShortid: string,
-    operation: (string | number)[]
-  ) {
+  public async applyOperation(moduleShortid: string, operation: TextOperation) {
     if (!this.modelsHandler) {
       return;
     }
@@ -369,7 +367,6 @@ export class VSCodeEffect {
 
   public setReadOnly(enabled: boolean) {
     this.readOnly = enabled;
-
     this.updateOptions({ readOnly: enabled });
   }
 
@@ -415,6 +412,14 @@ export class VSCodeEffect {
     }
     try {
       this.mountableFilesystem.umount('/sandbox/node_modules');
+    } catch {
+      //
+    }
+    try {
+      // After navigation, this mount is already mounted and throws error,
+      // which cause that Phonenix is not reconnected, so the file's content cannot be seen
+      // https://github.com/codesandbox/codesandbox-client/issues/4143
+      this.mountableFilesystem.umount('/home/sandbox/.cache');
     } catch {
       //
     }
@@ -496,12 +501,12 @@ export class VSCodeEffect {
     this.isRunningExtensionHost = false;
   }
 
-  public async setModuleCode(module: Module) {
+  public setModuleCode(module: Module, triggerChangeEvent = false) {
     if (!this.modelsHandler) {
       return;
     }
 
-    await this.modelsHandler.setModuleCode(module);
+    this.modelsHandler.setModuleCode(module, triggerChangeEvent);
   }
 
   public async closeAllTabs() {
@@ -622,6 +627,10 @@ export class VSCodeEffect {
         pinned: true,
       },
     });
+  }
+
+  public clearComments() {
+    this.modelsHandler.clearComments();
   }
 
   public setCorrections = (corrections: ModuleCorrection[]) => {
@@ -765,9 +774,7 @@ export class VSCodeEffect {
   private getLspEndpoint() {
     // return 'ws://localhost:1023';
     // TODO: merge host logic with executor-manager
-    const sseHost = process.env.STAGING_API
-      ? 'https://codesandbox.stream'
-      : 'https://codesandbox.io';
+    const sseHost = process.env.ENDPOINT || 'https://codesandbox.io';
     return sseHost.replace(
       'https://',
       `wss://${this.options.getCurrentSandbox()?.id}-lsp.sse.`
@@ -820,6 +827,7 @@ export class VSCodeEffect {
       this.createFileSystem('CodeSandboxEditorFS', {
         api: {
           getSandboxFs: this.options.getSandboxFs,
+          getJwt: () => this.options.getState().jwt,
         },
       }),
       this.createFileSystem('LocalStorage', {}),
@@ -1025,7 +1033,7 @@ export class VSCodeEffect {
         editorService.onDidActiveEditorChange(this.onActiveEditorChange);
         this.initializeCodeSandboxAPIListener();
 
-        if (this.settings.lintEnabled) {
+        if (!this.linter && this.settings.lintEnabled) {
           this.createLinter();
         }
 
@@ -1220,7 +1228,11 @@ export class VSCodeEffect {
 
       this.modelCursorPositionListener = activeEditor.onDidChangeCursorPosition(
         cursor => {
-          if (COMMENTS) {
+          if (
+            sandbox &&
+            sandbox.featureFlags.comments &&
+            hasPermission(sandbox.authorization, 'comment')
+          ) {
             const model = activeEditor.getModel();
 
             this.modelsHandler.updateLineCommentIndication(

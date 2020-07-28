@@ -368,9 +368,9 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>ZEIT Now Deploy</FeatureTitle>
+          <FeatureTitle>Vercel Deploy</FeatureTitle>
           <P muted small>
-            Deploy a production version of your sandbox to ZEIT Now.
+            Deploy a production version of your sandbox to Vercel.
           </P>
         </div>
         <span>✓</span>
@@ -568,7 +568,7 @@ export default () => (
         <div>
           <FeatureTitle>Configuration UI</FeatureTitle>
           <P muted small>
-            Edit config files for npm, Prettier, Netlify, Now, TypeScript,
+            Edit config files for npm, Prettier, Netlify, Vercel, TypeScript,
             JavaScript, and your sandbox.
           </P>
         </div>

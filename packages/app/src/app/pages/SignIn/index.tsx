@@ -3,15 +3,10 @@ import { Redirect } from 'react-router-dom';
 
 import { useOvermind } from 'app/overmind';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
-import {
-  Container,
-  LoggedInContainer,
-  LoggedInTitle,
-  OffsettedLogo,
-  Centered,
-} from './elements';
-import { SignInButton } from '../common/SignInButton';
+import { Element, Stack, ThemeProvider } from '@codesandbox/components';
+import { css } from '@styled-system/css';
 import { Navigation } from '../common/Navigation';
+import { SignInModalElement } from './Modal';
 
 const SignIn = () => {
   const {
@@ -29,23 +24,29 @@ const SignIn = () => {
   }
 
   return (
-    <div>
-      <Navigation float title="Sign In" />
-      <Container>
-        <Centered>
-          <LoggedInContainer>
-            <OffsettedLogo />
-            <LoggedInTitle>Sign in to CodeSandbox</LoggedInTitle>
-
-            <SignInButton
-              redirectTo={redirectTo}
-              big
-              style={{ fontSize: '1rem' }}
-            />
-          </LoggedInContainer>
-        </Centered>
-      </Container>
-    </div>
+    <ThemeProvider>
+      <Element
+        css={css({
+          backgroundColor: 'sideBar.background',
+          minHeight: '100vh',
+          fontFamily: 'Inter, sans-serif',
+          overflow: 'hidden',
+        })}
+      >
+        <Navigation title="Sign In" />
+        <Stack
+          css={css({
+            width: '100vw',
+            height: '100%',
+            marginBottom: 100,
+          })}
+          align="center"
+          justify="center"
+        >
+          <SignInModalElement redirectTo={redirectTo} />
+        </Stack>
+      </Element>
+    </ThemeProvider>
   );
 };
 

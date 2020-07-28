@@ -18,6 +18,7 @@ import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { mapValues } from 'lodash-es';
+import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -100,7 +101,7 @@ export const setModuleSavedCode: Action<{
   );
 
   if (moduleIndex > -1) {
-    const module = state.editor.sandboxes[sandbox.id].modules[moduleIndex];
+    const module = sandbox.modules[moduleIndex];
 
     module.savedCode = module.code === savedCode ? null : savedCode;
   }
@@ -125,13 +126,36 @@ export const saveCode: AsyncAction<{
     return;
   }
 
+  effects.preview.executeCodeImmediately();
+
   try {
-    await effects.live.saveModule(module);
-    const updatedModule = await effects.api.saveModuleCode(
-      sandbox.id,
-      module.shortid,
-      code
-    );
+    let updatedModule: {
+      updatedAt: string;
+      insertedAt: string;
+      code: string;
+      isBinary: boolean;
+    };
+    if (sandbox.featureFlags.comments) {
+      await effects.live.waitForLiveReady();
+      const {
+        saved_code,
+        updated_at,
+        inserted_at,
+      } = await effects.live.saveModule(module);
+
+      updatedModule = {
+        code: saved_code,
+        updatedAt: updated_at,
+        insertedAt: inserted_at,
+        isBinary: false,
+      };
+    } else {
+      updatedModule = await effects.api.saveModuleCode(
+        sandbox.id,
+        module.shortid,
+        code
+      );
+    }
 
     module.insertedAt = updatedModule.insertedAt;
     module.updatedAt = updatedModule.updatedAt;
@@ -145,25 +169,29 @@ export const saveCode: AsyncAction<{
 
     module.savedCode = savedCode;
 
-    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
     if (savedCode === null) {
       // If the savedCode is also module.code
       effects.moduleRecover.remove(sandbox.id, module);
-    }
-
-    if (cbID) {
-      effects.vscode.callCallback(cbID);
+      effects.vscode.syncModule(module);
     }
 
     if (
-      sandbox.originalGit &&
-      state.workspace.openedWorkspaceItem === 'github'
+      state.live.isLive &&
+      state.live.isCurrentEditor &&
+      !sandbox.featureFlags.comments
     ) {
-      state.git.isFetching = true;
-      state.git.originalGitChanges = await effects.api.getGitChanges(
-        sandbox.id
-      );
-      state.git.isFetching = false;
+      setTimeout(() => {
+        // Send the save event 50ms later so the operation can be sent first (the operation that says the
+        // file difference created by VSCode due to the file watch event). If the other client gets the save before the operation,
+        // the other client will also send an operation with the same difference resulting in a duplicate event.
+        effects.live.sendModuleSaved(module);
+      }, 50);
+    }
+
+    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
+
+    if (cbID) {
+      effects.vscode.callCallback(cbID);
     }
 
     // If the executor is a server we only should send updates if the sandbox has been
@@ -175,27 +203,13 @@ export const saveCode: AsyncAction<{
       effects.executor.updateFiles(sandbox);
     }
 
-    if (state.live.isLive && state.live.isCurrentEditor) {
-      setTimeout(() => {
-        // Send the save event 50ms later so the operation can be sent first (the operation that says the
-        // file difference created by VSCode due to the file watch event). If the other client gets the save before the operation,
-        // the other client will also send an operation with the same difference resulting in a duplicate event.
-        effects.live.sendModuleSaved(module);
-      }, 50);
+    if (sandbox.template === 'static') {
+      effects.preview.refresh();
     }
 
     await actions.editor.internal.updateCurrentTemplate();
 
     effects.vscode.runCommand('workbench.action.keepEditor');
-
-    const tabs = state.editor.tabs as ModuleTab[];
-    const tab = tabs.find(
-      tabItem => tabItem.moduleShortid === updatedModule.shortid
-    );
-
-    if (tab) {
-      tab.dirty = false;
-    }
   } catch (error) {
     actions.internal.handleError({
       message: 'There was a problem with saving the code, please try again',
@@ -263,10 +277,11 @@ export const updateCurrentTemplate: AsyncAction = async ({
 };
 
 export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
-  { state, actions },
+  { state, actions, effects },
   name
 ) => {
   if (
+    !state.editor.currentSandbox ||
     !state.editor.currentPackageJSONCode ||
     !state.editor.currentPackageJSON
   ) {
@@ -277,9 +292,21 @@ export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
 
   delete packageJson.dependencies[name];
 
+  const code = JSON.stringify(packageJson, null, 2);
+  const moduleShortid = state.editor.currentPackageJSON.shortid;
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+  actions.editor.setCode({ moduleShortid, code });
+
   await actions.editor.codeSaved({
-    code: JSON.stringify(packageJson, null, 2),
-    moduleShortid: state.editor.currentPackageJSON.shortid,
+    code,
+    moduleShortid,
     cbID: null,
   });
 };
@@ -288,8 +315,9 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   name: string;
   version?: string;
   isDev: boolean;
-}> = async ({ state, actions }, { name, isDev, version }) => {
+}> = async ({ state, actions, effects }, { name, isDev, version }) => {
   if (
+    !state.editor.currentSandbox ||
     !state.editor.currentPackageJSONCode ||
     !state.editor.currentPackageJSON
   ) {
@@ -304,9 +332,22 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   packageJson[type][name] = version || 'latest';
   packageJson[type] = sortObjectByKeys(packageJson[type]);
 
+  const code = JSON.stringify(packageJson, null, 2);
+  const moduleShortid = state.editor.currentPackageJSON.shortid;
+
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  if (!module) {
+    return;
+  }
+
+  actions.editor.setCode({ moduleShortid, code });
+
   await actions.editor.codeSaved({
-    code: JSON.stringify(packageJson, null, 2),
-    moduleShortid: state.editor.currentPackageJSON.shortid,
+    code,
+    moduleShortid,
     cbID: null,
   });
 };
@@ -342,11 +383,12 @@ export const updateModuleCode: Action<{
 
 export const forkSandbox: AsyncAction<{
   sandboxId: string;
+  teamId?: string | null;
   body?: { collectionId: string | undefined };
   openInNewWindow?: boolean;
 }> = async (
   { state, effects, actions },
-  { sandboxId: id, body, openInNewWindow = false }
+  { sandboxId: id, teamId, body, openInNewWindow = false }
 ) => {
   const sandbox = state.editor.currentSandbox;
   const currentSandboxId = state.editor.currentId;
@@ -371,7 +413,20 @@ export const forkSandbox: AsyncAction<{
   try {
     state.editor.isForkingSandbox = true;
 
-    const forkedSandbox = await effects.api.forkSandbox(id, body);
+    const usedBody: {
+      collectionId?: string;
+      teamId?: string;
+    } = body || {};
+
+    if (state.user && NEW_DASHBOARD) {
+      if (teamId === undefined && state.activeTeam) {
+        usedBody.teamId = state.activeTeam;
+      } else if (teamId !== null) {
+        usedBody.teamId = teamId;
+      }
+    }
+
+    const forkedSandbox = await effects.api.forkSandbox(id, usedBody);
 
     // Copy over any unsaved code
     Object.assign(forkedSandbox, {
@@ -397,6 +452,7 @@ export const forkSandbox: AsyncAction<{
     state.workspace.project.description = forkedSandbox.description || '';
     state.workspace.project.alias = forkedSandbox.alias || '';
 
+    effects.vscode.clearComments();
     Object.assign(state.editor.sandboxes[currentSandboxId]!, forkedSandbox);
     state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
       forkedSandbox
@@ -408,7 +464,10 @@ export const forkSandbox: AsyncAction<{
       actions.server.startContainer(forkedSandbox);
     }
 
-    if (state.workspace.openedWorkspaceItem === 'project-summary') {
+    if (
+      state.workspace.openedWorkspaceItem === 'project-summary' ||
+      state.workspace.openedWorkspaceItem === 'github-summary'
+    ) {
       actions.workspace.openDefaultItem();
     }
 
@@ -419,6 +478,12 @@ export const forkSandbox: AsyncAction<{
     }
 
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
+
+    if (sandbox.originalGit) {
+      actions.git.loadGitSource();
+    }
+
+    actions.internal.currentSandboxChanged();
   } catch (error) {
     console.error(error);
     actions.internal.handleError({
@@ -463,6 +528,7 @@ export const setCurrentModule: AsyncAction<Module> = async (
 
 export const updateSandboxPackageJson: AsyncAction = async ({
   state,
+  effects,
   actions,
 }) => {
   const sandbox = state.editor.currentSandbox;
@@ -488,6 +554,14 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   const code = JSON.stringify(parsed, null, 2);
   const moduleShortid = state.editor.currentPackageJSON.shortid;
 
+  const module = sandbox.modules.find(m => m.shortid === moduleShortid);
+
+  if (!module) {
+    return;
+  }
+
+  actions.editor.setCode({ moduleShortid, code });
+
   await actions.editor.codeSaved({
     code,
     moduleShortid,
@@ -507,6 +581,10 @@ export const updateDevtools: AsyncAction<{
       state.editor.modulesByPath['/.codesandbox/workspace.json'];
 
     if (devtoolsModule) {
+      actions.editor.codeChanged({
+        moduleShortid: devtoolsModule.shortid,
+        code,
+      });
       await actions.editor.codeSaved({
         code,
         moduleShortid: devtoolsModule.shortid,

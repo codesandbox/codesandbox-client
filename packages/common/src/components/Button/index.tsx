@@ -21,6 +21,7 @@ type Props = {
 const Button: FunctionComponent<Props> = ({ style = {}, ...props }) => {
   // Link
   if (typeof props.to === 'string') {
+    // @ts-ignore
     return <LinkButton {...props} style={style} to={props.to} />;
   }
 

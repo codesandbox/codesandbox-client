@@ -1,7 +1,5 @@
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { identify } from '@codesandbox/common/lib/utils/analytics';
 import {
-  Module,
   ModuleTab,
   NotificationButton,
   Sandbox,
@@ -9,15 +7,19 @@ import {
   ServerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
+import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
+import history from 'app/utils/history';
 import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { NotificationStatus } from '@codesandbox/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import values from 'lodash-es/values';
 
 import { ApiError } from './effects/api/apiFactory';
-import { createOptimisticModule } from './utils/common';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
 import { Action, AsyncAction } from '.';
+import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 
 export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
   { state, effects, actions },
@@ -25,17 +27,18 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
 ) => {
   effects.analytics.track('Sign In', {});
   try {
-    const jwt = await actions.internal.signInGithub(options);
-    actions.internal.setJwt(jwt);
+    await actions.internal.signInGithub(options);
+    state.signInModalOpen = false;
+    state.pendingUser = null;
     state.user = await effects.api.getCurrentUser();
+    await effects.live.getSocket();
     actions.internal.setPatronPrice();
-    actions.internal.setSignedInCookie();
     effects.analytics.identify('signed_in', true);
     effects.analytics.setUserId(state.user.id, state.user.email);
     actions.internal.setStoredSettings();
-    effects.live.connect();
     actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
     actions.refetchSandboxInfo();
+    state.hasLogIn = true;
     state.isAuthenticating = false;
   } catch (error) {
     actions.internal.handleError({
@@ -72,10 +75,6 @@ export const setPatronPrice: Action = ({ state }) => {
     : 10;
 };
 
-export const setSignedInCookie: Action = ({ state }) => {
-  document.cookie = 'signedIn=true; Path=/;';
-};
-
 export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
   if (state.user?.sendSurvey) {
     // Let the server know that we've seen the survey
@@ -88,16 +87,14 @@ export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
       status: NotificationStatus.NOTICE,
       sticky: true,
       actions: {
-        primary: [
-          {
-            label: 'Open Survey',
-            run: () => {
-              actions.modalOpened({
-                modal: 'userSurvey',
-              });
-            },
+        primary: {
+          label: 'Open Survey',
+          run: () => {
+            actions.modalOpened({
+              modal: 'userSurvey',
+            });
           },
-        ],
+        },
       },
     });
   }
@@ -129,35 +126,45 @@ export const authorize: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const signInGithub: Action<
-  { useExtraScopes?: boolean },
-  Promise<string>
-> = ({ effects }, options) => {
-  const authPath =
-    process.env.LOCAL_SERVER || process.env.STAGING
-      ? '/auth/dev'
-      : `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`;
+export const signInGithub: AsyncAction<{ useExtraScopes?: boolean }, any> = (
+  { effects, state },
+  options
+) => {
+  const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
+  const authPath = new URL(
+    location.origin + (hasDevAuth ? '/auth/dev' : '/auth/github')
+  );
 
-  const popup = effects.browser.openPopup(authPath, 'sign in');
+  authPath.searchParams.set('version', '2');
+  if (options.useExtraScopes) {
+    authPath.searchParams.set('scope', 'user:email,repo');
+  }
 
-  return effects.browser
-    .waitForMessage<{ jwt: string }>('signin')
-    .then(data => {
-      const { jwt } = data;
+  const popup = effects.browser.openPopup(authPath.toString(), 'sign in');
 
-      popup.close();
+  const signInPromise = effects.browser
+    .waitForMessage('signin')
+    .then((data: any) => {
+      if (hasDevAuth) {
+        localStorage.setItem('devJwt', data.jwt);
 
-      if (jwt) {
-        return jwt;
+        // Today + 30 days
+        const DAY = 1000 * 60 * 60 * 24;
+        const expiryDate = new Date(Date.now() + DAY * 30);
+
+        document.cookie = `signedInDev=true; expires=${expiryDate.toUTCString()}; path=/`;
+      } else if (data?.jwt) {
+        effects.api.revokeToken(data.jwt);
       }
-
-      throw new Error('Could not get sign in token');
+      popup.close();
     });
-};
 
-export const setJwt: Action<string> = ({ state, effects }, jwt) => {
-  effects.jwt.set(jwt);
-  state.jwt = jwt;
+  effects.browser.waitForMessage('signup').then((data: any) => {
+    state.pendingUserId = data.id;
+    popup.close();
+  });
+
+  return signInPromise;
 };
 
 export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
@@ -170,6 +177,17 @@ export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
   }
 
   state.currentModal = null;
+};
+
+export const currentSandboxChanged: Action = ({ state, effects, actions }) => {
+  const sandbox = state.editor.currentSandbox!;
+  if (
+    hasPermission(sandbox.authorization, 'owner') &&
+    state.user &&
+    NEW_DASHBOARD
+  ) {
+    actions.setActiveTeam({ id: sandbox.team?.id || null });
+  }
 };
 
 export const setCurrentSandbox: AsyncAction<Sandbox> = async (
@@ -203,10 +221,7 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
       const resolvedModule = effects.utils.resolveModule(
         sandboxOptions.currentModule,
         sandbox.modules,
-        sandbox.directories,
-        // currentModule is a string... something wrong here?
-        // @ts-ignore
-        sandboxOptions.currentModule.directoryShortid
+        sandbox.directories
       );
       currentModuleShortid = resolvedModule
         ? resolvedModule.shortid
@@ -269,58 +284,13 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   state.workspace.project.description = sandbox.description || '';
   state.workspace.project.alias = sandbox.alias || '';
 
+  // Do this before startContainer, because startContainer flushes in overmind and causes
+  // the components to rerender. Because of this sometimes the GitHub component will get a
+  // sandbox without a git
+  actions.workspace.openDefaultItem();
   actions.server.startContainer(sandbox);
-};
 
-export const ensurePackageJSON: AsyncAction = async ({
-  state,
-  actions,
-  effects,
-}) => {
-  const sandbox = state.editor.currentSandbox;
-  if (!sandbox) {
-    return;
-  }
-
-  const existingPackageJson = sandbox.modules.find(
-    module => module.directoryShortid == null && module.title === 'package.json'
-  );
-
-  if (sandbox.owned && !existingPackageJson) {
-    const optimisticId = effects.utils.createOptimisticId();
-    const optimisticModule = createOptimisticModule({
-      id: optimisticId,
-      title: 'package.json',
-      code: generatePackageJsonFromSandbox(sandbox),
-      path: '/package.json',
-    });
-
-    sandbox.modules.push(optimisticModule as Module);
-    optimisticModule.path = getModulePath(
-      sandbox.modules,
-      sandbox.directories,
-      optimisticId
-    );
-
-    // We grab the module from the state to continue working with it (proxy)
-    const module = sandbox.modules[sandbox.modules.length - 1];
-
-    effects.vscode.sandboxFsSync.writeFile(state.editor.modulesByPath, module);
-
-    try {
-      const updatedModule = await effects.api.createModule(sandbox.id, module);
-
-      module.id = updatedModule.id;
-      module.shortid = updatedModule.shortid;
-    } catch (error) {
-      sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
-      state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
-      actions.internal.handleError({
-        message: 'Could not add package.json file',
-        error,
-      });
-    }
-  }
+  actions.internal.currentSandboxChanged();
 };
 
 export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
@@ -427,7 +397,7 @@ export const handleError: Action<{
 
   if (response?.status === 401) {
     // Reset existing sign in info
-    effects.jwt.reset();
+    identify('signed_in', false);
     effects.analytics.setAnonymousId();
 
     // Allow user to sign in again in notification
@@ -435,14 +405,10 @@ export const handleError: Action<{
       message: 'Your session seems to be expired, please log in again...',
       status: NotificationStatus.ERROR,
       actions: {
-        primary: [
-          {
-            label: 'Sign in',
-            run: () => {
-              actions.signInClicked({ useExtraScopes: false });
-            },
-          },
-        ],
+        primary: {
+          label: 'Sign in',
+          run: () => actions.signInClicked(),
+        },
       },
     });
 
@@ -451,9 +417,7 @@ export const handleError: Action<{
 
   error.message = actions.internal.getErrorMessage({ error });
 
-  const notificationActions = {
-    primary: [] as Array<{ label: string; run: () => void }>,
-  };
+  const notificationActions: NotificationMessage['actions'] = {};
 
   if (error.message.startsWith('You need to sign in to create more than')) {
     // Error for "You need to sign in to create more than 10 sandboxes"
@@ -461,23 +425,23 @@ export const handleError: Action<{
       errorMessage: error.message,
     });
 
-    notificationActions.primary.push({
+    notificationActions.primary = {
       label: 'Sign in',
       run: () => {
         actions.internal.signIn({});
       },
-    });
+    };
   } else if (error.message.startsWith('You reached the maximum of')) {
     effects.analytics.track('Non-Patron Sandbox Limit Reached', {
       errorMessage: error.message,
     });
 
-    notificationActions.primary.push({
+    notificationActions.primary = {
       label: 'Open Patron Page',
       run: () => {
         window.open(patronUrl(), '_blank');
       },
-    });
+    };
   } else if (
     error.message.startsWith(
       'You reached the limit of server sandboxes, you can create more server sandboxes as a patron.'
@@ -487,12 +451,12 @@ export const handleError: Action<{
       errorMessage: error.message,
     });
 
-    notificationActions.primary.push({
+    notificationActions.primary = {
       label: 'Open Patron Page',
       run: () => {
         window.open(patronUrl(), '_blank');
       },
-    });
+    };
   } else if (
     error.message.startsWith(
       'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
@@ -507,22 +471,149 @@ export const handleError: Action<{
     title: message,
     message: error.message,
     status: NotificationStatus.ERROR,
-    ...(notificationActions.primary.length
-      ? { actions: notificationActions }
-      : {}),
+    ...(notificationActions.primary ? { actions: notificationActions } : {}),
   });
 };
 
-export const trackCurrentTeams: AsyncAction = async ({ state, effects }) => {
-  const { me } = await effects.gql.queries.teams({});
-  if (me) {
-    effects.analytics.setGroup(
-      'teamName',
-      me.teams.map(m => m.name)
-    );
-    effects.analytics.setGroup(
-      'teamId',
-      me.teams.map(m => m.id)
-    );
+export const trackCurrentTeams: AsyncAction = async ({ effects, state }) => {
+  const user = state.user;
+  if (!user) {
+    return;
   }
+
+  if (NEW_DASHBOARD) {
+    if (state.activeTeamInfo) {
+      effects.analytics.setGroup('teamName', state.activeTeamInfo.name);
+      effects.analytics.setGroup('teamId', state.activeTeamInfo.id);
+    } else {
+      effects.analytics.setGroup('teamName', []);
+      effects.analytics.setGroup('teamId', []);
+    }
+  } else {
+    const { me } = await effects.gql.queries.teams({});
+    if (me) {
+      effects.analytics.setGroup(
+        'teamName',
+        me.teams.map(m => m.name)
+      );
+      effects.analytics.setGroup(
+        'teamId',
+        me.teams.map(m => m.id)
+      );
+    }
+  }
+};
+
+export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
+  const user = state.user;
+  if (user) {
+    effects.analytics.identify('pilot', user.experiments.inPilot);
+    effects.browser.storage.set('pilot', user.experiments.inPilot);
+
+    const profileData = await effects.api.getProfile(user.username);
+    effects.analytics.identify('sandboxCount', profileData.sandboxCount);
+    effects.analytics.identify('pro', Boolean(profileData.subscriptionSince));
+    effects.analytics.identify('receivedViewCount', profileData.viewCount);
+  }
+};
+
+const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX';
+export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
+  if (effects.browser.storage.get(seenTermsKey)) {
+    return;
+  }
+
+  if (!state.isFirstVisit) {
+    effects.analytics.track('Saw Privacy Policy Notification');
+    effects.notificationToast.add({
+      message:
+        'Hello, our privacy policy has been updated recently. What’s new? CodeSandbox emails. Please read and reach out.',
+      title: 'Updated Privacy',
+      status: NotificationStatus.NOTICE,
+      sticky: true,
+      actions: {
+        primary: {
+          label: 'Open Privacy Policy',
+          run: () => {
+            window.open('https://codesandbox.io/legal/privacy', '_blank');
+          },
+        },
+      },
+    });
+  }
+
+  effects.browser.storage.set(seenTermsKey, true);
+};
+
+const VIEW_MODE_DASHBOARD = 'VIEW_MODE_DASHBOARD';
+export const setViewModeForDashboard: Action = ({ effects, state }) => {
+  const localStorageViewMode = effects.browser.storage.get(VIEW_MODE_DASHBOARD);
+  if (localStorageViewMode === 'grid' || localStorageViewMode === 'list') {
+    state.dashboard.viewMode = localStorageViewMode;
+  }
+};
+
+export const setActiveTeamFromUrlOrStore: Action<void, string | null> = ({
+  actions,
+}) =>
+  actions.internal.setActiveTeamFromUrl() ||
+  actions.internal.setActiveTeamFromLocalStorage();
+
+export const setActiveTeamFromLocalStorage: Action<void, string | null> = ({
+  effects,
+  actions,
+}) => {
+  const localStorageTeam = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
+
+  if (typeof localStorageTeam === 'string') {
+    actions.setActiveTeam({ id: localStorageTeam });
+    return localStorageTeam;
+  }
+
+  return null;
+};
+
+export const setActiveTeamFromUrl: Action<void, string | null> = ({
+  effects,
+  actions,
+}) => {
+  const currentUrl =
+    typeof document === 'undefined' ? null : document.location.href;
+  if (!currentUrl) {
+    return null;
+  }
+
+  const searchParams = new URL(currentUrl).searchParams;
+
+  if (searchParams.get('workspace')) {
+    const teamId = searchParams.get('workspace');
+    actions.setActiveTeam({ id: teamId });
+    return teamId;
+  }
+
+  return null;
+};
+
+export const replaceWorkspaceParameterInUrl: Action = ({ state }) => {
+  const id = state.activeTeam;
+  const currentUrl =
+    typeof document === 'undefined' ? null : document.location.href;
+
+  if (!currentUrl) {
+    return;
+  }
+
+  const urlInfo = new URL(currentUrl);
+  const params = urlInfo.searchParams;
+  if (!params.get('workspace')) {
+    return;
+  }
+
+  if (id) {
+    urlInfo.searchParams.set('workspace', id);
+  } else {
+    urlInfo.searchParams.delete('workspace');
+  }
+
+  history.replace(urlInfo.toString().replace(urlInfo.origin, ''));
 };
