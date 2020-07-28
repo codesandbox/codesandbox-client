@@ -361,7 +361,6 @@ export const resolveConflicts: AsyncAction<Module> = async (
   { state, actions, effects },
   module
 ) => {
-  effects.analytics.track('GitHub - Resolve Conflicts');
   const conflict = state.git.conflicts.find(
     conflictItem => module.path === '/' + conflictItem.filename
   );
@@ -375,6 +374,7 @@ export const resolveConflicts: AsyncAction<Module> = async (
       cbID: null,
     });
 
+    effects.analytics.track('GitHub - Resolve Conflicts');
     actions.git._tryResolveConflict();
   }
 };
