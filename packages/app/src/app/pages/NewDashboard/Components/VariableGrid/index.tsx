@@ -177,6 +177,10 @@ const Item = React.memo(
       marginBottom: viewMode === 'list' || isHeader ? 0 : ITEM_VERTICAL_OFFSET,
     };
 
+    const numberOfRows = Math.ceil(filledItems.length / columnCount);
+    const isLastRow = rowIndex === numberOfRows - 1;
+    if (isLastRow) margins.marginBottom += 32;
+
     return (
       <div
         style={{
