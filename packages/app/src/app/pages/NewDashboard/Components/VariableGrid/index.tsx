@@ -179,7 +179,7 @@ const Item = React.memo(
 
     const numberOfRows = Math.ceil(filledItems.length / columnCount);
     const isLastRow = rowIndex === numberOfRows - 1;
-    if (isLastRow) margins.marginBottom += 32;
+    if (isLastRow) margins.marginBottom += viewMode === 'list' ? 64 + 32 : 32;
 
     return (
       <div
