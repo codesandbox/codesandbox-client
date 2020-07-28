@@ -428,11 +428,13 @@ export const deleteConflictedFile: AsyncAction<GitFileCompare> = async (
   actions.git._tryResolveConflict();
 };
 
-export const diffConflictedFile: Action<GitFileCompare> = (
+export const diffConflictedFile: AsyncAction<GitFileCompare> = async (
   { state, actions },
   conflict
 ) => {
   const module = state.editor.modulesByPath['/' + conflict.filename] as Module;
+
+  await actions.editor.moduleSelected({ id: module.id });
 
   actions.editor.setCode({
     moduleShortid: module.shortid,
@@ -504,13 +506,13 @@ export const resolveOutOfSync: AsyncAction = async ({
   if (git.gitState === SandboxGitState.OUT_OF_SYNC_PR_BASE) {
     const changes: GitChanges = {
       added: added.map(change => ({
-        path: change.filename,
+        path: '/' + change.filename,
         content: change.content!,
         encoding: 'utf-8',
       })),
-      deleted: deleted.map(change => change.filename),
+      deleted: deleted.map(change => '/' + change.filename),
       modified: modified.map(change => ({
-        path: change.filename,
+        path: '/' + change.filename,
         content: change.content!,
         encoding: 'utf-8',
       })),
@@ -521,7 +523,6 @@ export const resolveOutOfSync: AsyncAction = async ({
       changes,
       [git.sourceCommitSha!]
     );
-    actions.git._setGitChanges();
     sandbox.originalGit!.commitSha = commit.sha;
     sandbox.originalGitCommitSha = commit.sha;
 
@@ -534,8 +535,10 @@ export const resolveOutOfSync: AsyncAction = async ({
     );
     sandbox.originalGit!.commitSha = git.sourceCommitSha;
     sandbox.originalGitCommitSha = git.sourceCommitSha;
+    await actions.git._loadSourceSandbox();
   }
 
+  actions.git._setGitChanges();
   git.outOfSyncUpdates.added = [];
   git.outOfSyncUpdates.deleted = [];
   git.outOfSyncUpdates.modified = [];
@@ -582,25 +585,25 @@ export const _evaluateGitChanges: AsyncAction<
   const conflicts = changes.reduce<GitFileCompare[]>((aggr, change) => {
     const path = '/' + change.filename;
 
-    // We are in conflict if a file has been removed and it is still present
-    // in the sandbox
-    if (change.status === 'removed' && state.editor.modulesByPath[path]) {
-      return aggr.concat(change);
-    }
-
-    // We are in conflict if a file has been deleted in the sandbox, but
-    // is still present in the source
+    // We are in conflict if a file has been removed in the source and the
+    // sandbox has made changes to it
     if (
-      (change.status === 'modified' || change.status === 'added') &&
-      !state.editor.modulesByPath[path]
+      change.status === 'removed' &&
+      state.editor.modulesByPath[path] &&
+      (state.editor.modulesByPath[path] as Module).code !== change.content
     ) {
       return aggr.concat(change);
     }
 
-    // We are in conflict if the file exists in the sandbox, but
-    // the contents is different than both the change and the
+    // We are in conflict if a file has been modified in the source, but removed
+    // from the sandbox
+    if (change.status === 'modified' && !state.editor.modulesByPath[path]) {
+      return aggr.concat(change);
+    }
+
+    // We are in conflict if the source changed the file and sandbox also changed the file
     if (
-      (change.status === 'added' || change.status === 'modified') &&
+      change.status === 'modified' &&
       (state.editor.modulesByPath[path] as Module).code !== change.content &&
       (state.editor.modulesByPath[path] as Module).code !==
         state.git.sourceModulesByPath[path]
@@ -635,7 +638,9 @@ export const _evaluateGitChanges: AsyncAction<
           (state.editor.modulesByPath['/' + change.filename] as Module).code !==
             change.content)
       ) {
-        aggr[change.status].push(change);
+        aggr[change.status === 'removed' ? 'deleted' : change.status].push(
+          change
+        );
       }
 
       return aggr;
