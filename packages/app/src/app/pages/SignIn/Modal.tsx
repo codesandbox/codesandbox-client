@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
-import { github as GitHubIcon } from '@codesandbox/components/lib/components/Icon/icons';
+import {
+  github as GitHubIcon,
+  GoogleIcon,
+} from '@codesandbox/components/lib/components/Icon/icons';
 import { Element, Text } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import history from 'app/utils/history';
@@ -29,10 +32,11 @@ export const SignInModalElement = ({
     }
   }, [getPendingUser, pendingUserId]);
 
-  const [loading, setLoading] = useState(false);
+  const [githubLoading, setGithubLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleSignIn = async () => {
-    setLoading(true);
+    setGithubLoading(true);
     await signInButtonClicked({ useExtraScopes: false });
 
     if (onSignIn) {
@@ -42,7 +46,23 @@ export const SignInModalElement = ({
     if (redirectTo) {
       return history.push(redirectTo.replace(location.origin, ''));
     }
-    setLoading(false);
+    setGithubLoading(false);
+
+    return null;
+  };
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    await signInButtonClicked({ google: true });
+
+    if (onSignIn) {
+      return onSignIn();
+    }
+
+    if (redirectTo) {
+      return history.push(redirectTo.replace(location.origin, ''));
+    }
+    setGoogleLoading(false);
 
     return null;
   };
@@ -62,10 +82,16 @@ export const SignInModalElement = ({
               Get a free account, no credit card required
             </Text>
 
-            <Button loading={loading} onClick={handleSignIn}>
+            <Button loading={githubLoading} onClick={handleSignIn}>
               <GitHubIcon width="20" height="20" />
               <Element css={css({ width: '100%' })}>
                 Sign in with GitHub
+              </Element>
+            </Button>
+            <Button loading={googleLoading} onClick={handleGoogleSignIn}>
+              <GoogleIcon width="20" height="20" />
+              <Element css={css({ width: '100%' })}>
+                Sign in with Google
               </Element>
             </Button>
             <Text
