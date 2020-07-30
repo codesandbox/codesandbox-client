@@ -352,16 +352,10 @@ export const getActiveTeamInfo: AsyncAction<
 
   const currentTeam = team?.me?.team;
   if (!currentTeam) {
-    // default to ADMIN for personal workspace
-    state.activeAuthorization = 'ADMIN';
     return null;
   }
 
   state.activeTeamInfo = currentTeam;
-
-  state.activeAuthorization = state.activeTeamInfo.userAuthorizations.find(
-    auth => auth.userId === state.user!.id
-  )!.authorization;
 
   return currentTeam;
 };

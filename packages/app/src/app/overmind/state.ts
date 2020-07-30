@@ -80,7 +80,15 @@ export const state: State = {
   authToken: null,
   error: null,
   user: null,
-  activeAuthorization: 'ADMIN',
+  activeAuthorization: derived(
+    ({ user, activeTeam, activeTeamInfo }: State) => {
+      if (!activeTeam || !activeTeamInfo) return 'ADMIN';
+
+      return activeTeamInfo.userAuthorizations.find(
+        auth => auth.userId === user!.id
+      )!.authorization;
+    }
+  ),
   activeTeam: null,
   activeTeamInfo: null,
   connected: true,
