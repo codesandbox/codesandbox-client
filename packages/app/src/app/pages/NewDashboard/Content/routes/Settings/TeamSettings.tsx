@@ -428,18 +428,16 @@ export const TeamSettings = () => {
 
             <MemberList
               getPermission={() => 'PENDING'}
-              getActions={user =>
-                [
-                  {
-                    label: 'Revoke Invitation',
-                    onSelect: () =>
-                      actions.dashboard.revokeTeamInvitation({
-                        teamId: team.id,
-                        userId: user.id,
-                      }),
-                  },
-                ].filter(Boolean)
-              }
+              getActions={user => [
+                {
+                  label: 'Revoke Invitation',
+                  onSelect: () =>
+                    actions.dashboard.revokeTeamInvitation({
+                      teamId: team.id,
+                      userId: user.id,
+                    }),
+                },
+              ]}
               users={sortBy(team.invitees, 'username')}
             />
           </div>
