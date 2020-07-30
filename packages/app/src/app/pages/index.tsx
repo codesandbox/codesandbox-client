@@ -146,6 +146,7 @@ const RoutesComponent: React.FC = () => {
               component={() => <Sandbox showNewSandboxModal />}
             />
             <Route path="/invite/:token" component={TeamInvitation} />
+
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/new-dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
