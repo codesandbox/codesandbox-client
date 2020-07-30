@@ -358,8 +358,8 @@ export const getActiveTeamInfo: AsyncAction<
   state.activeTeamInfo = currentTeam;
 
   state.activeTeamInfo.userAuthorization = state.activeTeamInfo.userAuthorizations.find(
-    auth => auth.userId === state.user.id
-  ).authorization;
+    auth => auth.userId === state.user!.id
+  )!.authorization;
 
   return currentTeam;
 };

@@ -1401,10 +1401,10 @@ export const changeAuthorizationInState: Action<{
   userId: string;
   authorization: TeamMemberAuthorization;
 }> = ({ state }, { userId, authorization }) => {
-  const user = state.activeTeamInfo.userAuthorizations.find(
+  const user = state.activeTeamInfo!.userAuthorizations.find(
     row => row.userId === userId
   );
-  user.authorization = authorization;
+  user!.authorization = authorization;
 };
 
 export const changeAuthorization: AsyncAction<{
@@ -1412,15 +1412,15 @@ export const changeAuthorization: AsyncAction<{
   authorization: TeamMemberAuthorization;
 }> = async ({ state, effects, actions }, { userId, authorization }) => {
   // optimistic update
-  const oldAuthorization = state.activeTeamInfo.userAuthorizations.find(
+  const oldAuthorization = state.activeTeamInfo!.userAuthorizations.find(
     user => user.userId === userId
-  ).authorization;
+  )!.authorization;
 
   actions.dashboard.changeAuthorizationInState({ userId, authorization });
 
   try {
     await effects.gql.mutations.changeTeamMemberAuthorization({
-      teamId: state.activeTeam,
+      teamId: state.activeTeam!,
       userId,
       authorization,
     });
