@@ -242,7 +242,7 @@ export const TeamSettings = () => {
                       <Text size={6} weight="bold">
                         {team.name}
                       </Text>
-                      {team.userAuthorization === 'ADMIN' && (
+                      {activeAuthorization === 'ADMIN' && (
                         <IconButton
                           name="edit"
                           size={12}
@@ -308,7 +308,7 @@ export const TeamSettings = () => {
               size={4}
             >
               Members{' '}
-              {team.userAuthorization !== 'READ' && (
+              {activeAuthorization !== 'READ' && (
                 <IconButton
                   css={css({ marginLeft: 2 })}
                   size={12}
