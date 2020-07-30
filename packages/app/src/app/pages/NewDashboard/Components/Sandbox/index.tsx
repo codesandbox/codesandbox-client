@@ -59,7 +59,7 @@ function getFolderName(item: GenericSandboxProps['item']): string {
 
 const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const {
-    state: { dashboard, activeAuthorization },
+    state: { dashboard, activeWorkspaceAuthorization },
     actions,
   } = useOvermind();
 
@@ -121,7 +121,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   /** Access restrictions */
   let { noDrag, autoFork } = item;
-  if (activeAuthorization === 'READ') {
+  if (activeWorkspaceAuthorization === 'READ') {
     noDrag = true;
     autoFork = false;
   }

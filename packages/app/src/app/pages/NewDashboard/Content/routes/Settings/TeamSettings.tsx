@@ -30,7 +30,7 @@ export const TeamSettings = () => {
       user: stateUser,
       activeTeam,
       activeTeamInfo: team,
-      activeAuthorization,
+      activeWorkspaceAuthorization,
     },
     actions,
     effects,
@@ -242,7 +242,7 @@ export const TeamSettings = () => {
                       <Text size={6} weight="bold">
                         {team.name}
                       </Text>
-                      {activeAuthorization === 'ADMIN' && (
+                      {activeWorkspaceAuthorization === 'ADMIN' && (
                         <IconButton
                           name="edit"
                           size={12}
@@ -308,7 +308,7 @@ export const TeamSettings = () => {
               size={4}
             >
               Members{' '}
-              {activeAuthorization !== 'READ' && (
+              {activeWorkspaceAuthorization !== 'READ' && (
                 <IconButton
                   css={css({ marginLeft: 2 })}
                   size={12}
@@ -345,7 +345,7 @@ export const TeamSettings = () => {
               getPermission={user => getAuthorization(user, team)}
               getActions={user => {
                 const you = stateUser.id === user.id;
-                const yourAuthorization = activeAuthorization;
+                const yourAuthorization = activeWorkspaceAuthorization;
 
                 const userAuthorization = getAuthorization(user, team);
 

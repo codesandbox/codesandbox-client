@@ -1405,10 +1405,11 @@ export const changeAuthorizationInState: Action<{
   userId: string;
   authorization: TeamMemberAuthorization;
 }> = ({ state }, { userId, authorization }) => {
-  const user = state.activeTeamInfo!.userAuthorizations.find(
+  const index = state.activeTeamInfo!.userAuthorizations.findIndex(
     row => row.userId === userId
   );
-  user!.authorization = authorization;
+
+  state.activeTeamInfo!.userAuthorizations[index].authorization = authorization;
 };
 
 export const changeAuthorization: AsyncAction<{

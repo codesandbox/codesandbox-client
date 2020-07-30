@@ -257,7 +257,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </AnimatePresence>
       <ContextMenu
         activeTeam={activeTeam}
-        authorization={state.activeAuthorization}
+        authorization={state.activeWorkspaceAuthorization}
         visible={menuVisible}
         setVisibility={setMenuVisibility}
         position={menuPosition}

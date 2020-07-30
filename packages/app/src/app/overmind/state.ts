@@ -30,7 +30,7 @@ type State = {
   error: string | null;
   contributors: string[];
   user: CurrentUser | null;
-  activeAuthorization: TeamMemberAuthorization;
+  activeWorkspaceAuthorization: TeamMemberAuthorization;
   activeTeam: string | null;
   activeTeamInfo: CurrentTeam | null;
   connected: boolean;
@@ -80,7 +80,7 @@ export const state: State = {
   authToken: null,
   error: null,
   user: null,
-  activeAuthorization: derived(
+  activeWorkspaceAuthorization: derived(
     ({ user, activeTeam, activeTeamInfo }: State) => {
       if (!activeTeam || !activeTeamInfo) return 'ADMIN';
 

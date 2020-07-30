@@ -21,7 +21,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   page,
 }) => {
   const {
-    state: { user, activeTeam, activeAuthorization },
+    state: { user, activeTeam, activeWorkspaceAuthorization },
     effects,
     actions,
   } = useOvermind();
@@ -55,7 +55,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   }, [item, user]);
 
   if (location.pathname.includes('deleted')) {
-    if (activeAuthorization === 'READ') return null;
+    if (activeWorkspaceAuthorization === 'READ') return null;
 
     return (
       <Menu.ContextMenu
@@ -90,7 +90,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       position={position}
       style={{ width: 200 }}
     >
-      {isTemplate && activeAuthorization !== 'READ' ? (
+      {isTemplate && activeWorkspaceAuthorization !== 'READ' ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -128,7 +128,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       >
         Copy {label} link
       </MenuItem>
-      {!isTemplate && activeAuthorization !== 'READ' ? (
+      {!isTemplate && activeWorkspaceAuthorization !== 'READ' ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -140,7 +140,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Fork sandbox
         </MenuItem>
       ) : null}
-      {isOwner && activeAuthorization !== 'READ' ? (
+      {isOwner && activeWorkspaceAuthorization !== 'READ' ? (
         <MenuItem
           onSelect={() => {
             actions.modals.moveSandboxModal.open({
@@ -151,7 +151,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Move to Folder
         </MenuItem>
       ) : null}
-      {activeAuthorization !== 'READ' && (
+      {activeWorkspaceAuthorization !== 'READ' && (
         <MenuItem
           onSelect={() => {
             actions.dashboard.downloadSandboxes([sandbox.id]);
