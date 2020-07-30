@@ -1401,14 +1401,10 @@ export const changeAuthorizationInState: Action<{
   userId: string;
   authorization: TeamMemberAuthorization;
 }> = ({ state }, { userId, authorization }) => {
-  const userAuthorizations = state.activeTeamInfo.userAuthorizations.map(
-    user => {
-      if (user.userId === userId) return { ...user, authorization };
-      return user;
-    }
+  const user = state.activeTeamInfo.userAuthorizations.find(
+    row => row.userId === userId
   );
-
-  state.activeTeamInfo.userAuthorizations = userAuthorizations;
+  user.authorization = authorization;
 };
 
 export const changeAuthorization: AsyncAction<{
@@ -1418,7 +1414,7 @@ export const changeAuthorization: AsyncAction<{
   // optimistic update
   const oldAuthorization = state.activeTeamInfo.userAuthorizations.find(
     user => user.userId === userId
-  )!.authorization;
+  ).authorization;
 
   actions.dashboard.changeAuthorizationInState({ userId, authorization });
 
