@@ -448,19 +448,9 @@ export const TeamSettings = () => {
 };
 
 const getAuthorization = (user, team) => {
-  let authorization;
-
-  if (team.userAuthorizations) {
-    authorization = team.userAuthorizations.find(
-      auth => auth.userId === user.id
-    ).authorization;
-  } else if (user.id === team.creatorId) {
-    // backward compatible
-    authorization = 'ADMIN';
-  } else {
-    // backward compatible
-    authorization = 'WRITE';
-  }
+  const authorization = team.userAuthorizations.find(
+    auth => auth.userId === user.id
+  ).authorization;
 
   return authorization;
 };
