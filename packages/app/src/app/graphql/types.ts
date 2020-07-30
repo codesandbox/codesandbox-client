@@ -1341,7 +1341,6 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
       { __typename?: 'User' } & Pick<User, 'id' | 'avatarUrl' | 'username'>
     >;
     userAuthorizations: Array<MemberAuthorization>;
-    userAuthorization: TeamMemberAuthorization;
   };
 
 export type _CreateTeamMutationVariables = Exact<{
