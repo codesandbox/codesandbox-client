@@ -1,8 +1,9 @@
-import React from 'react';
-import { Text } from '@codesandbox/components';
 import { GitFileCompare } from '@codesandbox/common/lib/types';
-import { getConflictType } from './getConflictType';
+import { Text } from '@codesandbox/components';
+import React from 'react';
+
 import { ConflictType } from '../types';
+import { getConflictType } from './getConflictType';
 
 export function getConflictText(
   branch: string,
@@ -14,7 +15,8 @@ export function getConflictText(
   if (conflictType === ConflictType.SOURCE_ADDED_SANDBOX_DELETED) {
     return (
       <Text>
-        <Text weight="bold">{branch}</Text> added this file, but you deleted it
+        <Text weight="bold">{branch}</Text> added this file, but it does not
+        exist in this sandbox
       </Text>
     );
   }
