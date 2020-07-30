@@ -1412,7 +1412,7 @@ export const changeAuthorizationInState: Action<{
     }
   );
 
-  state.activeTeamInfo = { ...state.activeTeamInfo, userAuthorizations };
+  state.activeTeamInfo.userAuthorizations = userAuthorizations;
 };
 
 export const changeAuthorization: AsyncAction<{
@@ -1422,7 +1422,7 @@ export const changeAuthorization: AsyncAction<{
   // optimistic update
   const oldAuthorization = state.activeTeamInfo.userAuthorizations.find(
     user => user.userId === userId
-  ).authorization;
+  )!.authorization;
 
   actions.dashboard.changeAuthorizationInState({ userId, authorization });
 

@@ -360,7 +360,7 @@ export const getActiveTeamInfo: AsyncAction<
   if (state.activeTeamInfo.userAuthorizations) {
     state.activeTeamInfo.userAuthorization = state.activeTeamInfo.userAuthorizations.find(
       auth => auth.userId === state.user.id
-    ).authorization;
+    )!.authorization;
   } else {
     // backward compatible
     state.activeTeamInfo.userAuthorization = 'WRITE';
