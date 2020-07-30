@@ -1,4 +1,11 @@
-import { Button } from '@codesandbox/components';
+import {
+  Button,
+  Text,
+  Stack,
+  Element,
+  Collapsible,
+} from '@codesandbox/components';
+import css from '@styled-system/css';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -101,7 +108,8 @@ export const ShareModal: React.FC<Props> = () => {
   }
 
   function setTheme(theme: string) {
-    updateState({ ...state, theme });
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    updateState({ ...state, theme: newTheme });
   }
 
   function select(event) {
@@ -129,33 +137,60 @@ export const ShareModal: React.FC<Props> = () => {
   const defaultModule = state.defaultModule || mainModule.id;
 
   return (
-    <>
-      <header
-        // eslint-disable-next-line
-        dangerouslySetInnerHTML={{
-          __html: getIframeScript(sandbox, mainModule, state),
-        }}
-      />
-
-      <ShareOptions>
-        <Wrapper>
-          <section>
-            <SideTitle>Configure</SideTitle>
-            <Title title="Appearance">
+    <Stack>
+      <Element
+        css={css({
+          width: 320,
+          backgroundColor: 'sideBar.background',
+        })}
+      >
+        <Collapsible title="Embed" defaultOpen>
+          <Element padding={4}>
+            <Text block variant="muted">
+              Customize the embed to better integrate dwith your website, blog
+              or documentation{' '}
+            </Text>
+            <Element
+              marginTop={4}
+              css={css({
+                'div > div': {
+                  width: '100%',
+                },
+              })}
+            >
               <PaddedPreference
-                title="Default View"
                 type="dropdown"
                 options={VIEW_OPTIONS}
                 value={view}
                 setValue={setView}
               />
+            </Element>
+            <Element marginTop={4}>
               <PaddedPreference
-                title="Theme"
-                type="dropdown"
-                options={THEME_OPTIONS}
-                value={theme}
+                title="Light Theme"
+                type="boolean"
+                value={theme === 'light'}
                 setValue={setTheme}
               />
+            </Element>
+          </Element>
+        </Collapsible>
+        <Collapsible title="Share" defaultOpen>
+          <Element padding={4}>
+            <LinkName>iframe</LinkName>
+            <textarea
+              onFocus={select}
+              value={getIframeScript(sandbox, mainModule, state)}
+              readOnly
+            />
+          </Element>
+        </Collapsible>
+        {/* <Wrapper>
+          <section>
+            <SideTitle>Configure</SideTitle>
+            <Title title="Appearance">
+
+
               <PaddedPreference
                 title="Auto resize"
                 type="boolean"
@@ -209,12 +244,10 @@ export const ShareModal: React.FC<Props> = () => {
                 setValue={setEnableEslint}
               />
               <div>
-                {/* eslint-disable-next-line */}
+
                 <h4>Default module to show</h4>
 
                 <FilesContainer>
-                  {/*
-                  // @ts-ignore */}
                   <Files
                     modules={sandbox.modules}
                     directoryId={null}
@@ -333,8 +366,19 @@ export const ShareModal: React.FC<Props> = () => {
               </Inputs>
             </Title>
           </section>
-        </Wrapper>
-      </ShareOptions>
-    </>
+        </Wrapper> */}
+      </Element>
+      <Element
+        css={css({
+          width: '100%',
+          height: '100%',
+          position: 'relative',
+        })}
+        // eslint-disable-next-line
+        dangerouslySetInnerHTML={{
+          __html: getIframeScript(sandbox, mainModule, state),
+        }}
+      />
+    </Stack>
   );
 };
