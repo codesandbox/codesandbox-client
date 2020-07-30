@@ -42,8 +42,10 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
   const label = isTemplate ? 'template' : 'sandbox';
 
-  // default to ADMIN if we don't know (personal space + not set)
-  const authorization = activeTeamInfo?.userAuthorization || 'ADMIN';
+  // default to ADMIN if it's your personal workspace
+  const authorization = activeTeamInfo
+    ? activeTeamInfo.userAuthorization
+    : 'ADMIN';
 
   // @ts-ignore
   const isPro = user.subscription_plan || user.subscription;
