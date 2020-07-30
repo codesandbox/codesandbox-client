@@ -14,6 +14,10 @@ import {
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 import { Header } from 'app/pages/NewDashboard/Components/Header';
+import {
+  GRID_MAX_WIDTH,
+  GUTTER,
+} from 'app/pages/NewDashboard/Components/VariableGrid';
 import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
@@ -99,14 +103,17 @@ export const TeamSettings = () => {
         css={css({
           height: 'calc(100vh - 140px)',
           overflowY: 'scroll',
-          paddingX: 4,
           paddingY: 10,
         })}
       >
         <Stack
           direction="vertical"
           gap={8}
-          css={css({ maxWidth: 1100, marginX: 'auto' })}
+          css={css({
+            marginX: 'auto',
+            width: `calc(100% - ${2 * GUTTER}px)`,
+            maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
+          })}
         >
           <Grid
             columnGap={4}

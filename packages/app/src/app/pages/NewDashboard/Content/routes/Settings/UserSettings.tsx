@@ -13,6 +13,7 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { Header } from '../../../Components/Header';
+import { GRID_MAX_WIDTH, GUTTER } from '../../../Components/VariableGrid';
 import { Card } from './components';
 
 export const UserSettings = () => {
@@ -43,14 +44,17 @@ export const UserSettings = () => {
         css={css({
           height: 'calc(100vh - 140px)',
           overflowY: 'scroll',
-          paddingX: 4,
           paddingY: 10,
         })}
       >
         <Stack
           direction="vertical"
           gap={8}
-          css={css({ maxWidth: 1100, marginX: 'auto' })}
+          css={css({
+            marginX: 'auto',
+            width: `calc(100% - ${2 * GUTTER}px)`,
+            maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
+          })}
         >
           <Grid
             columnGap={4}

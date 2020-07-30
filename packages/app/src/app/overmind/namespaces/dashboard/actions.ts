@@ -446,37 +446,33 @@ export const getReposByPath: AsyncAction<string> = async (
       dashboard.sandboxes.REPOS = {};
     }
 
-    const repos = sandboxes
-      .filter(s => s.originalGit && s.originalGit.repo !== 'static-template')
-      .reduce((acc, curr) => {
-        if (!curr.originalGit || !curr.originalGit.repo) return acc;
-        if (acc[curr.originalGit.repo]) {
-          const newSandboxes = acc[curr.originalGit.repo].sandboxes.concat(
-            curr
-          );
-          acc[curr.originalGit.repo] = {
-            ...acc[curr.originalGit.repo],
-            sandboxes: newSandboxes,
-            lastEdited: newSandboxes
-              .map(s => parseISO(s.updatedAt))
-              .sort(compareDesc)[0],
-          };
-
-          return acc;
-        }
-
+    const repos = sandboxes.reduce((acc, curr) => {
+      if (!curr.originalGit || !curr.originalGit.repo) return acc;
+      if (acc[curr.originalGit.repo]) {
+        const newSandboxes = acc[curr.originalGit.repo].sandboxes.concat(curr);
         acc[curr.originalGit.repo] = {
-          id: curr.originalGit.id,
-          name: curr.originalGit.repo,
-          branch: curr.originalGit.branch,
-          owner: curr.originalGit.username,
-          path: '/' + curr.originalGit.repo,
-          lastEdited: parseISO(curr.updatedAt),
-          sandboxes: [curr],
+          ...acc[curr.originalGit.repo],
+          sandboxes: newSandboxes,
+          lastEdited: newSandboxes
+            .map(s => parseISO(s.updatedAt))
+            .sort(compareDesc)[0],
         };
 
         return acc;
-      }, {});
+      }
+
+      acc[curr.originalGit.repo] = {
+        id: curr.originalGit.id,
+        name: curr.originalGit.repo,
+        branch: curr.originalGit.branch,
+        owner: curr.originalGit.username,
+        path: '/' + curr.originalGit.repo,
+        lastEdited: parseISO(curr.updatedAt),
+        sandboxes: [curr],
+      };
+
+      return acc;
+    }, {});
     dashboard.sandboxes.REPOS = repos;
   } catch (error) {
     effects.notificationToast.error('There was a problem getting your repos');
