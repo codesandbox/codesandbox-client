@@ -119,6 +119,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Show in Folder
         </MenuItem>
       ) : null}
+
       <Menu.Divider />
       <MenuItem
         onSelect={() => {
@@ -139,6 +140,17 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Fork sandbox
         </MenuItem>
       ) : null}
+      {isOwner && activeAuthorization !== 'READ' ? (
+        <MenuItem
+          onSelect={() => {
+            actions.modals.moveSandboxModal.open({
+              sandboxIds: [item.sandbox.id],
+            });
+          }}
+        >
+          Move to Folder
+        </MenuItem>
+      ) : null}
       {activeAuthorization !== 'READ' && (
         <MenuItem
           onSelect={() => {
@@ -148,8 +160,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Export {label}
         </MenuItem>
       )}
-
-      {isOwner && activeAuthorization !== 'READ' ? (
+      {isOwner ? (
         <>
           {isPro ? (
             <>

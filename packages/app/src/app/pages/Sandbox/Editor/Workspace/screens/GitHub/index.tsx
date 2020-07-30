@@ -1,6 +1,7 @@
 import { GitFileCompare, SandboxGitState } from '@codesandbox/common/lib/types';
 import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
+  Button,
   Collapsible,
   Element,
   Link,
@@ -8,7 +9,6 @@ import {
   ListItem,
   Stack,
   Text,
-  Button,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
@@ -162,6 +162,7 @@ export const GitHub = () => {
                   <ListItem
                     gap={2}
                     key={conflict.filename}
+                    marginBottom={4}
                     css={{ display: 'block' }}
                   >
                     <Stack gap={3} align="center" marginBottom={4}>

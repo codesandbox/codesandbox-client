@@ -1,13 +1,13 @@
 import { useQuery } from '@apollo/react-hooks';
-import React, { ComponentProps, FunctionComponent } from 'react';
+import React, { FunctionComponent } from 'react';
 
 import { TEAMS_QUERY } from 'app/pages/Dashboard/queries';
-import { SandboxesItem } from 'app/pages/Dashboard/Sidebar/SandboxesItem';
+import { SandboxesItem, SandboxesItemComponentProps } from '../SandboxesItem';
 
 import { TeamContainer, TeamName } from './elements';
 
 type Props = Pick<
-  ComponentProps<typeof SandboxesItem>,
+  SandboxesItemComponentProps,
   'currentPath' | 'currentTeamId' | 'onSelect'
 >;
 export const TeamsPicker: FunctionComponent<Props> = ({
@@ -30,7 +30,6 @@ export const TeamsPicker: FunctionComponent<Props> = ({
           <SandboxesItem
             currentPath={currentPath}
             currentTeamId={currentTeamId}
-            openByDefault
             teamId={id}
             onSelect={onSelect}
           />

@@ -17,6 +17,14 @@ import { Container, Content } from './elements';
 import { Dashboard as NewDashboard } from './NewDashboard';
 import { Sandbox } from './Sandbox';
 
+const MoveSandboxFolderModal = Loadable(() =>
+  import(
+    /* webpackChunkName: 'move-sandbox-modal' */ './common/Modals/MoveSandboxFolderModal'
+  ).then(module => ({
+    default: module.MoveSandboxFolderModal,
+  }))
+);
+
 const routeDebugger = _debug('cs:app:router');
 
 const SignInAuth = Loadable(() =>
@@ -98,7 +106,7 @@ const Boundary = withRouter(ErrorBoundary);
 const RoutesComponent: React.FC = () => {
   const {
     actions: { appUnmounted },
-    state: { signInModalOpen, user },
+    state: { signInModalOpen, user, modals },
   } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
@@ -164,6 +172,7 @@ const RoutesComponent: React.FC = () => {
         <Modals />
         {signInModalOpen && !user ? <SignInModal /> : null}
         <CreateSandboxModal />
+        {modals.moveSandboxModal.isCurrent && <MoveSandboxFolderModal />}
       </Boundary>
     </Container>
   );
