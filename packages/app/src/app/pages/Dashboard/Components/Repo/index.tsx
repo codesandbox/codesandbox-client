@@ -31,7 +31,7 @@ export const Repo = ({ name = '', path = null, ...props }: DashboardRepo) => {
 
   const history = useHistory();
   const onDoubleClick = event => {
-    const url = '/new-dashboard/repositories' + path;
+    const url = '/dashboard/repositories' + path;
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
     } else {

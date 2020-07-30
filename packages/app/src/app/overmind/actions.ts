@@ -5,6 +5,7 @@ import {
 import { identify } from '@codesandbox/common/lib/utils/analytics';
 import { CurrentTeamInfoFragmentFragment } from 'app/graphql/types';
 
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
 import { Action, AsyncAction } from '.';
@@ -23,6 +24,16 @@ export const searchMounted: AsyncAction = withLoadApp();
 export const codesadboxMounted: AsyncAction = withLoadApp();
 
 export const genericPageMounted: AsyncAction = withLoadApp();
+
+export const getPendingUser: AsyncAction = async ({ state, effects }) => {
+  if (!state.pendingUserId) return;
+  const pendingUser = await effects.api.getPendingUser(state.pendingUserId);
+  if (!pendingUser) return;
+  state.pendingUser = {
+    ...pendingUser,
+    valid: true,
+  };
+};
 
 export const cliMounted: AsyncAction = withLoadApp(
   async ({ state, actions }) => {
@@ -69,7 +80,6 @@ type ModalName =
   | 'feedback'
   | 'forkServerModal'
   | 'liveSessionEnded'
-  | 'moveSandbox'
   | 'netlifyLogs'
   | 'preferences'
   | 'searchDependencies'
@@ -125,9 +135,7 @@ export const signInCliClicked: AsyncAction = async ({ state, actions }) => {
   });
   state.signInModalOpen = false;
 
-  if (state.user) {
-    await actions.internal.authorize();
-  }
+  await actions.internal.authorize();
 };
 
 export const addNotification: Action<{
@@ -264,6 +272,7 @@ export const refetchSandboxInfo: AsyncAction = async ({
   sandbox.owned = updatedSandbox.owned;
   sandbox.userLiked = updatedSandbox.userLiked;
   sandbox.title = updatedSandbox.title;
+  sandbox.description = updatedSandbox.description;
   sandbox.team = updatedSandbox.team;
   sandbox.roomId = updatedSandbox.roomId;
   sandbox.authorization = updatedSandbox.authorization;
@@ -356,4 +365,38 @@ export const openCreateSandboxModal: Action<{ collectionId?: string }> = (
   { collectionId }
 ) => {
   actions.modals.newSandboxModal.open({ collectionId });
+};
+
+export const validateUsername: AsyncAction<string> = async (
+  { effects, state },
+  userName
+) => {
+  if (!state.pendingUser) return;
+  const validity = await effects.api.validateUsername(userName);
+
+  state.pendingUser.valid = validity.available;
+};
+
+export const finalizeSignUp: AsyncAction<string> = async (
+  { effects, actions, state },
+  username
+) => {
+  if (!state.pendingUser) return;
+  try {
+    await effects.api.finalizeSignUp({
+      id: state.pendingUser.id,
+      username,
+    });
+    window.postMessage(
+      {
+        type: 'signin',
+      },
+      protocolAndHost()
+    );
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'There was a problem creating your account',
+      error,
+    });
+  }
 };

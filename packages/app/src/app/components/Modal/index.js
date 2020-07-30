@@ -61,7 +61,7 @@ class ModalComponent extends React.Component {
     overlay: {
       backgroundColor: 'rgba(0, 0, 0, 0.75)',
       overflowY: 'auto',
-      zIndex: 30,
+      zIndex: 10,
       transform: 'translate3d(0, 0, 0)',
     },
     content: {

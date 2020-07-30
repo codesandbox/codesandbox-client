@@ -22,7 +22,6 @@ interface WorkspaceSwitcherProps {
     username: string | null;
     avatarUrl: string | null;
   };
-  inTeamContext: boolean;
 }
 
 export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = React.memo(

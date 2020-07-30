@@ -1,14 +1,13 @@
-// import { useQuery } from '@apollo/react-hooks';
-import React, { ComponentProps, FunctionComponent } from 'react';
+import { useQuery } from '@apollo/react-hooks';
+import React, { FunctionComponent } from 'react';
 
-// import { TEAMS_QUERY } from 'app/pages/Dashboard/queries';
-// import { SandboxesItem } from 'app/pages/Dashboard/Sidebar/SandboxesItem';
+import { TEAMS_QUERY } from 'app/pages/Dashboard/queries';
+import { SandboxesItem, SandboxesItemComponentProps } from '../SandboxesItem';
 
 import { TeamContainer, TeamName } from './elements';
 
 type Props = Pick<
-  ComponentProps<any>,
-  // <typeof SandboxesItem>,
+  SandboxesItemComponentProps,
   'currentPath' | 'currentTeamId' | 'onSelect'
 >;
 export const TeamsPicker: FunctionComponent<Props> = ({
@@ -16,12 +15,7 @@ export const TeamsPicker: FunctionComponent<Props> = ({
   currentTeamId,
   onSelect,
 }) => {
-  // const { loading, error, data } = useQuery(TEAMS_QUERY);
-  const { loading, error, data } = {
-    data: { me: { teams: [] } },
-    error: null,
-    loading: false,
-  };
+  const { loading, error, data } = useQuery(TEAMS_QUERY);
 
   if (loading || error) {
     return null;
@@ -33,13 +27,12 @@ export const TeamsPicker: FunctionComponent<Props> = ({
         <TeamContainer key={id}>
           <TeamName>{name}</TeamName>
 
-          {/* <SandboxesItem
+          <SandboxesItem
             currentPath={currentPath}
             currentTeamId={currentTeamId}
-            openByDefault
             teamId={id}
             onSelect={onSelect}
-          /> */}
+          />
         </TeamContainer>
       ))}
     </>

@@ -41,6 +41,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'template' : 'sandbox';
+  // @ts-ignore
+  const isPro = user.subscription_plan || user.subscription;
   const isOwner = React.useMemo(() => {
     if (item.type !== 'template') {
       return true;
@@ -113,6 +115,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Show in Folder
         </MenuItem>
       ) : null}
+
       <Menu.Divider />
       <MenuItem
         onSelect={() => {
@@ -133,6 +136,17 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Fork sandbox
         </MenuItem>
       ) : null}
+      {isOwner ? (
+        <MenuItem
+          onSelect={() => {
+            actions.modals.moveSandboxModal.open({
+              sandboxIds: [item.sandbox.id],
+            });
+          }}
+        >
+          Move to Folder
+        </MenuItem>
+      ) : null}
       <MenuItem
         onSelect={() => {
           actions.dashboard.downloadSandboxes([sandbox.id]);
@@ -142,52 +156,56 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       </MenuItem>
       {isOwner ? (
         <>
-          <Menu.Divider />
-          {sandbox.privacy !== 0 && (
-            <MenuItem
-              onSelect={() =>
-                actions.dashboard.changeSandboxPrivacy({
-                  id: sandbox.id,
-                  privacy: 0,
-                  oldPrivacy: sandbox.privacy as 0 | 1 | 2,
-                  page,
-                  repoName: sandbox.originalGit?.repo,
-                })
-              }
-            >
-              Make {label} public
-            </MenuItem>
-          )}
-          {sandbox.privacy !== 1 && (
-            <MenuItem
-              onSelect={() =>
-                actions.dashboard.changeSandboxPrivacy({
-                  id: sandbox.id,
-                  privacy: 1,
-                  oldPrivacy: sandbox.privacy as 0 | 1 | 2,
-                  page,
-                  repoName: sandbox.originalGit?.repo,
-                })
-              }
-            >
-              Make {label} unlisted
-            </MenuItem>
-          )}
-          {sandbox.privacy !== 2 && (
-            <MenuItem
-              onSelect={() =>
-                actions.dashboard.changeSandboxPrivacy({
-                  id: sandbox.id,
-                  privacy: 2,
-                  oldPrivacy: sandbox.privacy as 0 | 1 | 2,
-                  page,
-                  repoName: sandbox.originalGit?.repo,
-                })
-              }
-            >
-              Make {label} private
-            </MenuItem>
-          )}
+          {isPro ? (
+            <>
+              <Menu.Divider />
+              {sandbox.privacy !== 0 && (
+                <MenuItem
+                  onSelect={() =>
+                    actions.dashboard.changeSandboxPrivacy({
+                      id: sandbox.id,
+                      privacy: 0,
+                      oldPrivacy: sandbox.privacy as 0 | 1 | 2,
+                      page,
+                      repoName: sandbox.originalGit?.repo,
+                    })
+                  }
+                >
+                  Make {label} public
+                </MenuItem>
+              )}
+              {sandbox.privacy !== 1 && (
+                <MenuItem
+                  onSelect={() =>
+                    actions.dashboard.changeSandboxPrivacy({
+                      id: sandbox.id,
+                      privacy: 1,
+                      oldPrivacy: sandbox.privacy as 0 | 1 | 2,
+                      page,
+                      repoName: sandbox.originalGit?.repo,
+                    })
+                  }
+                >
+                  Make {label} unlisted
+                </MenuItem>
+              )}
+              {sandbox.privacy !== 2 && (
+                <MenuItem
+                  onSelect={() =>
+                    actions.dashboard.changeSandboxPrivacy({
+                      id: sandbox.id,
+                      privacy: 2,
+                      oldPrivacy: sandbox.privacy as 0 | 1 | 2,
+                      page,
+                      repoName: sandbox.originalGit?.repo,
+                    })
+                  }
+                >
+                  Make {label} private
+                </MenuItem>
+              )}
+            </>
+          ) : null}
           <Menu.Divider />
           <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
           {isTemplate ? (

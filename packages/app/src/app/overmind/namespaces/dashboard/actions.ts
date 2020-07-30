@@ -445,37 +445,33 @@ export const getReposByPath: AsyncAction<string> = async (
       dashboard.sandboxes.REPOS = {};
     }
 
-    const repos = sandboxes
-      .filter(s => s.originalGit && s.originalGit.repo !== 'static-template')
-      .reduce((acc, curr) => {
-        if (!curr.originalGit || !curr.originalGit.repo) return acc;
-        if (acc[curr.originalGit.repo]) {
-          const newSandboxes = acc[curr.originalGit.repo].sandboxes.concat(
-            curr
-          );
-          acc[curr.originalGit.repo] = {
-            ...acc[curr.originalGit.repo],
-            sandboxes: newSandboxes,
-            lastEdited: newSandboxes
-              .map(s => parseISO(s.updatedAt))
-              .sort(compareDesc)[0],
-          };
-
-          return acc;
-        }
-
+    const repos = sandboxes.reduce((acc, curr) => {
+      if (!curr.originalGit || !curr.originalGit.repo) return acc;
+      if (acc[curr.originalGit.repo]) {
+        const newSandboxes = acc[curr.originalGit.repo].sandboxes.concat(curr);
         acc[curr.originalGit.repo] = {
-          id: curr.originalGit.id,
-          name: curr.originalGit.repo,
-          branch: curr.originalGit.branch,
-          owner: curr.originalGit.username,
-          path: '/' + curr.originalGit.repo,
-          lastEdited: parseISO(curr.updatedAt),
-          sandboxes: [curr],
+          ...acc[curr.originalGit.repo],
+          sandboxes: newSandboxes,
+          lastEdited: newSandboxes
+            .map(s => parseISO(s.updatedAt))
+            .sort(compareDesc)[0],
         };
 
         return acc;
-      }, {});
+      }
+
+      acc[curr.originalGit.repo] = {
+        id: curr.originalGit.id,
+        name: curr.originalGit.repo,
+        branch: curr.originalGit.branch,
+        owner: curr.originalGit.username,
+        path: '/' + curr.originalGit.repo,
+        lastEdited: parseISO(curr.updatedAt),
+        sandboxes: [curr],
+      };
+
+      return acc;
+    }, {});
     dashboard.sandboxes.REPOS = repos;
   } catch (error) {
     effects.notificationToast.error('There was a problem getting your repos');
@@ -1089,10 +1085,16 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
 export const addSandboxesToFolder: AsyncAction<{
   sandboxIds: string[];
   collectionPath: string | null;
+  teamId?: string | null;
   deleteFromCurrentPath?: boolean;
 }> = async (
   { state, effects, actions },
-  { sandboxIds, collectionPath, deleteFromCurrentPath = true }
+  {
+    sandboxIds,
+    collectionPath,
+    teamId = state.activeTeam,
+    deleteFromCurrentPath = true,
+  }
 ) => {
   effects.analytics.track('Dashboard - Moved Sandboxes', {
     dashboardVersion: 2,
@@ -1114,9 +1116,7 @@ export const addSandboxesToFolder: AsyncAction<{
     await effects.gql.mutations.addSandboxToFolder({
       sandboxIds,
       collectionPath,
-      // only way to pass, null is a value in the BE
-      // @ts-ignore
-      teamId: state.activeTeam || undefined,
+      teamId,
     });
 
     if (collectionPath) {

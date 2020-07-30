@@ -28,6 +28,8 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
   effects.analytics.track('Sign In', {});
   try {
     await actions.internal.signInGithub(options);
+    state.signInModalOpen = false;
+    state.pendingUser = null;
     state.user = await effects.api.getCurrentUser();
     await effects.live.getSocket();
     actions.internal.setPatronPrice();
@@ -124,8 +126,8 @@ export const authorize: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const signInGithub: AsyncAction<{ useExtraScopes?: boolean }> = (
-  { effects },
+export const signInGithub: AsyncAction<{ useExtraScopes?: boolean }, any> = (
+  { effects, state },
   options
 ) => {
   const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
@@ -140,20 +142,29 @@ export const signInGithub: AsyncAction<{ useExtraScopes?: boolean }> = (
 
   const popup = effects.browser.openPopup(authPath.toString(), 'sign in');
 
-  return effects.browser.waitForMessage('signin').then((data: any) => {
-    if (hasDevAuth) {
-      localStorage.setItem('devJwt', data.jwt);
+  const signInPromise = effects.browser
+    .waitForMessage('signin')
+    .then((data: any) => {
+      if (hasDevAuth) {
+        localStorage.setItem('devJwt', data.jwt);
 
-      // Today + 30 days
-      const DAY = 1000 * 60 * 60 * 24;
-      const expiryDate = new Date(Date.now() + DAY * 30);
+        // Today + 30 days
+        const DAY = 1000 * 60 * 60 * 24;
+        const expiryDate = new Date(Date.now() + DAY * 30);
 
-      document.cookie = `signedInDev=true; expires=${expiryDate.toUTCString()}; path=/`;
-    } else {
-      effects.api.revokeToken(data.jwt);
-    }
+        document.cookie = `signedInDev=true; expires=${expiryDate.toUTCString()}; path=/`;
+      } else if (data?.jwt) {
+        effects.api.revokeToken(data.jwt);
+      }
+      popup.close();
+    });
+
+  effects.browser.waitForMessage('signup').then((data: any) => {
+    state.pendingUserId = data.id;
     popup.close();
   });
+
+  return signInPromise;
 };
 
 export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
@@ -168,8 +179,10 @@ export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
   state.currentModal = null;
 };
 
-export const currentSandboxChanged: Action = ({ state, effects, actions }) => {
-  const sandbox = state.editor.currentSandbox!;
+export const switchCurrentWorkspaceBySandbox: Action<{ sandbox: Sandbox }> = (
+  { state, actions },
+  { sandbox }
+) => {
   if (
     hasPermission(sandbox.authorization, 'owner') &&
     state.user &&
@@ -177,6 +190,13 @@ export const currentSandboxChanged: Action = ({ state, effects, actions }) => {
   ) {
     actions.setActiveTeam({ id: sandbox.team?.id || null });
   }
+};
+
+export const currentSandboxChanged: Action = ({ state, actions }) => {
+  const sandbox = state.editor.currentSandbox!;
+  actions.internal.switchCurrentWorkspaceBySandbox({
+    sandbox,
+  });
 };
 
 export const setCurrentSandbox: AsyncAction<Sandbox> = async (

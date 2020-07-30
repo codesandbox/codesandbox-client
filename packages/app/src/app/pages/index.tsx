@@ -16,6 +16,14 @@ import { Container, Content } from './elements';
 import { Dashboard } from './Dashboard';
 import { Sandbox } from './Sandbox';
 
+const MoveSandboxFolderModal = Loadable(() =>
+  import(
+    /* webpackChunkName: 'move-sandbox-modal' */ './common/Modals/MoveSandboxFolderModal'
+  ).then(module => ({
+    default: module.MoveSandboxFolderModal,
+  }))
+);
+
 const routeDebugger = _debug('cs:app:router');
 
 const SignInAuth = Loadable(() =>
@@ -79,6 +87,11 @@ const CliInstructions = Loadable(() =>
 const Patron = Loadable(() =>
   import(/* webpackChunkName: 'page-patron' */ './Patron')
 );
+const SignUp = Loadable(() =>
+  import(/* webpackChunkName: 'page-signup' */ './SignUp').then(module => ({
+    default: module.SignUp,
+  }))
+);
 const Pro = Loadable(() => import(/* webpackChunkName: 'page-pro' */ './Pro'));
 const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator').then(module => ({
@@ -92,7 +105,7 @@ const Boundary = withRouter(ErrorBoundary);
 const RoutesComponent: React.FC = () => {
   const {
     actions: { appUnmounted },
-    state: { signInModalOpen, user },
+    state: { signInModalOpen, user, modals },
   } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
@@ -139,6 +152,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
             <Route path="/signin" exact component={SignIn} />
+            <Route path="/signup/:userId" exact component={SignUp} />
             <Route path="/signin/:jwt?" component={SignInAuth} />
             <Route path="/u/:username" component={Profile} />
             <Route path="/search" component={Search} />
@@ -157,6 +171,7 @@ const RoutesComponent: React.FC = () => {
         <Modals />
         {signInModalOpen && !user ? <SignInModal /> : null}
         <CreateSandboxModal />
+        {modals.moveSandboxModal.isCurrent && <MoveSandboxFolderModal />}
       </Boundary>
     </Container>
   );

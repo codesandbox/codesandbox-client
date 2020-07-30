@@ -2,6 +2,9 @@ import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
 import rawTranspiler from '../../transpilers/raw';
 import svelteTranspiler from '../../transpilers/svelte';
+import sassTranspiler from '../../transpilers/sass';
+import styleProcessor from '../../transpilers/postcss';
+import stylesTranspiler from '../../transpilers/style';
 
 import Preset from '..';
 
@@ -21,6 +24,23 @@ export default function initialize() {
 
   sveltePreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
     { transpiler: babelTranspiler, options: babelOptions },
+  ]);
+
+  sveltePreset.registerTranspiler(module => /\.css$/.test(module.path), [
+    { transpiler: styleProcessor },
+    {
+      transpiler: stylesTranspiler,
+      options: { hmrEnabled: false },
+    },
+  ]);
+
+  sveltePreset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
+    { transpiler: sassTranspiler },
+    { transpiler: styleProcessor },
+    {
+      transpiler: stylesTranspiler,
+      options: { hmrEnabled: false },
+    },
   ]);
 
   sveltePreset.registerTranspiler(module => /\.svelte$/.test(module.path), [
