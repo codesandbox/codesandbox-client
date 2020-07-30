@@ -21,7 +21,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   page,
 }) => {
   const {
-    state: { user, activeTeam, activeTeamInfo },
+    state: { user, activeTeam, activeAuthorization },
     effects,
     actions,
   } = useOvermind();
@@ -42,11 +42,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
   const label = isTemplate ? 'template' : 'sandbox';
 
-  // default to ADMIN if it's your personal workspace
-  const authorization = activeTeamInfo
-    ? activeTeamInfo.userAuthorization
-    : 'ADMIN';
-
   // @ts-ignore
   const isPro = user.subscription_plan || user.subscription;
 
@@ -60,7 +55,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   }, [item, user]);
 
   if (location.pathname.includes('deleted')) {
-    if (authorization === 'READ') return null;
+    if (activeAuthorization === 'READ') return null;
 
     return (
       <Menu.ContextMenu
@@ -95,7 +90,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       position={position}
       style={{ width: 200 }}
     >
-      {isTemplate && authorization !== 'READ' ? (
+      {isTemplate && activeAuthorization !== 'READ' ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -132,7 +127,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       >
         Copy {label} link
       </MenuItem>
-      {!isTemplate && authorization !== 'READ' ? (
+      {!isTemplate && activeAuthorization !== 'READ' ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -144,7 +139,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Fork sandbox
         </MenuItem>
       ) : null}
-      {authorization !== 'READ' && (
+      {activeAuthorization !== 'READ' && (
         <MenuItem
           onSelect={() => {
             actions.dashboard.downloadSandboxes([sandbox.id]);
@@ -154,7 +149,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         </MenuItem>
       )}
 
-      {isOwner && authorization !== 'READ' ? (
+      {isOwner && activeAuthorization !== 'READ' ? (
         <>
           {isPro ? (
             <>

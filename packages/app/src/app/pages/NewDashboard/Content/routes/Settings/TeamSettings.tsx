@@ -26,7 +26,12 @@ import { MemberList } from './components/MemberList';
 
 export const TeamSettings = () => {
   const {
-    state: { user: stateUser, activeTeam, activeTeamInfo: team },
+    state: {
+      user: stateUser,
+      activeTeam,
+      activeTeamInfo: team,
+      activeAuthorization,
+    },
     actions,
     effects,
   } = useOvermind();
@@ -340,7 +345,7 @@ export const TeamSettings = () => {
               getPermission={user => getAuthorization(user, team)}
               getActions={user => {
                 const you = stateUser.id === user.id;
-                const yourAuthorization = getAuthorization(stateUser, team);
+                const yourAuthorization = activeAuthorization;
 
                 const userAuthorization = getAuthorization(user, team);
 

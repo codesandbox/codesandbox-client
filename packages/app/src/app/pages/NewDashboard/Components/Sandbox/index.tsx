@@ -59,7 +59,7 @@ function getFolderName(item: GenericSandboxProps['item']): string {
 
 const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const {
-    state: { dashboard, activeTeamInfo },
+    state: { dashboard, activeAuthorization },
     actions,
   } = useOvermind();
 
@@ -119,9 +119,9 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const Component: React.FC<SandboxItemComponentProps> =
     viewMode === 'list' ? SandboxListItem : SandboxCard;
 
-  /** User Authorization */
+  /** Access restrictions */
   let { noDrag, autoFork } = item;
-  if (activeTeamInfo?.userAuthorization === 'READ') {
+  if (activeAuthorization === 'READ') {
     noDrag = true;
     autoFork = false;
   }
