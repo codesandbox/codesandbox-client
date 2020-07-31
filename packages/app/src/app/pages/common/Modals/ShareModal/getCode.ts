@@ -92,3 +92,19 @@ export const getButtonHTML = (sandbox, mainModule, state) => {
 </a>
 `;
 };
+
+export const getDevToLink = sandbox =>
+  `https://dev.to/new?prefill=---%5Cn%20title:${encodeURIComponent(
+    sandbox.title || sandbox.id
+  )}%5Cn%20published:%20false%5Cn%20tags:%20codesandbox%5Cn%20---%5Cn%20%5Cn%20%5Cn%20%5Cn%20%7B%25%20codesandbox%20${encodeURIComponent(
+    sandbox.id
+  )}%20%25%7D`;
+
+export const getTwitterLink = (sandbox, mainModule, state) =>
+  `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    `${sandbox.title || sandbox.id}. ${getEditorUrl(
+      sandbox,
+      mainModule,
+      state
+    )}`
+  )}`;
