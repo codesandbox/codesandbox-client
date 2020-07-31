@@ -10,30 +10,18 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 // eslint-disable-next-line
 import Files from 'embed/components/Sidebar/FileTree';
-import QRCode from 'qrcode.react';
 import React, { useEffect, useState } from 'react';
 
 import { PaddedPreference } from './elements';
-import {
-  BUTTON_URL,
-  VIEW_OPTIONS,
-  getButtonHTML,
-  getButtonMarkdown,
-  getEditorUrl,
-  getEmbedUrl,
-  getIframeScript,
-  getDevToLink,
-  getTwitterLink,
-} from './getCode';
+import { VIEW_OPTIONS, getEditorUrl, getIframeScript } from './getCode';
+import { SocialShare } from './SocialShare';
 
 interface Props {}
 
-const Field = ({ children, label }) => (
+export const Field = ({ children, label }) => (
   <FormField
     css={css({
       padding: 0,
@@ -301,54 +289,12 @@ export const ShareModal: React.FC<Props> = () => {
             </Field>
           </Element>
         </Collapsible>
-        <Collapsible title="Other Share Options">
-          <Element paddingX={4}>
-            <Text size={3} weight="bold" block marginBottom={2}>
-              Share CodeSandbox Button
-            </Text>
-            <a href={sandboxUrl(sandbox)}>
-              <img alt={getSandboxName(sandbox)} src={BUTTON_URL} />
-            </a>
-            <Field label="Markdown">
-              <Textarea
-                onFocus={select}
-                value={getButtonMarkdown(sandbox, mainModule, state)}
-                readOnly
-              />
-            </Field>
-            <Field label="HTML">
-              <Textarea
-                onFocus={select}
-                value={getButtonHTML(sandbox, mainModule, state)}
-                readOnly
-              />
-            </Field>
-
-            <Text size={3} marginTop={4} weight="bold" block marginBottom={2}>
-              Share QR Code
-            </Text>
-            <QRCode
-              value={getEmbedUrl(sandbox, mainModule, state)}
-              size="100%"
-              renderAs="svg"
-            />
-            <Text size={3} marginTop={4} weight="bold" block marginBottom={2}>
-              Share on Social Media
-            </Text>
-            <Stack gap={2}>
-              <Button autoWidth target="_blank" href={getDevToLink(sandbox)}>
-                Share on DEV
-              </Button>
-              <Button
-                autoWidth
-                target="_blank"
-                href={getTwitterLink(sandbox, mainModule, state)}
-              >
-                Share on Twitter
-              </Button>
-            </Stack>
-          </Element>
-        </Collapsible>
+        <SocialShare
+          sandbox={sandbox}
+          mainModule={mainModule}
+          state={state}
+          select={select}
+        />
       </Element>
       <Element
         css={css({
