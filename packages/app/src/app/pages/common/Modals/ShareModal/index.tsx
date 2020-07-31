@@ -14,11 +14,11 @@ import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 // eslint-disable-next-line
-import Files from 'embed/components/legacy/Files';
+import Files from 'embed/components/Sidebar/FileTree';
 import QRCode from 'qrcode.react';
 import React, { useEffect, useState } from 'react';
 
-import { FilesContainer, PaddedPreference } from './elements';
+import { PaddedPreference } from './elements';
 import {
   BUTTON_URL,
   VIEW_OPTIONS,
@@ -274,16 +274,22 @@ export const ShareModal: React.FC<Props> = () => {
               <Text size={3} block paddingBottom={2}>
                 Default module to show
               </Text>
-              <FilesContainer>
+              <Element
+                css={css({
+                  maxHeight: 300,
+                  overflow: 'auto',
+                  '> div > div[class*="FileContainer"]': {
+                    paddingLeft: 0,
+                  },
+                })}
+              >
                 {/* @ts-ignore */}
                 <Files
-                  modules={sandbox.modules}
-                  directoryId={null}
-                  directories={sandbox.directories}
-                  currentModule={defaultModule}
-                  setCurrentModule={setDefaultModule}
+                  sandbox={sandbox}
+                  currentModuleId={defaultModule}
+                  setCurrentModuleId={setDefaultModule}
                 />
-              </FilesContainer>
+              </Element>
             </div>
             <Field label="Project Initial Path">
               <Input
