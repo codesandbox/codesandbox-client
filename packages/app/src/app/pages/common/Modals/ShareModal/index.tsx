@@ -192,14 +192,14 @@ export const ShareModal: React.FC<Props> = () => {
           <Element paddingX={4}>
             <Textarea
               onFocus={select}
-              value={getIframeScript(sandbox, mainModule, state)}
+              value={getIframeScript(sandbox, mainModule, state, 500)}
               readOnly
             />
             <Button
               marginTop={4}
               onClick={() =>
                 effects.browser.copyToClipboard(
-                  getIframeScript(sandbox, mainModule, state)
+                  getIframeScript(sandbox, mainModule, state, 500)
                 )
               }
             >
@@ -352,7 +352,7 @@ export const ShareModal: React.FC<Props> = () => {
         })}
         // eslint-disable-next-line
         dangerouslySetInnerHTML={{
-          __html: getIframeScript(sandbox, mainModule, state),
+          __html: getIframeScript(sandbox, mainModule, state, 580),
         }}
       />
     </Stack>
