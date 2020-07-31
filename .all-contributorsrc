@@ -1586,6 +1586,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "saurabhdaware",
+      "name": "Saurabh Daware",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/30949385?v=4",
+      "profile": "https://saurabhdaware.in/",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
     }
   ],
   "contributorsPerLine": 7,
