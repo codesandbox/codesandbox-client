@@ -244,16 +244,12 @@ class FolderEntry extends React.Component<Props, State> {
                 color: isOver && canDrop ? theme.secondary() : undefined,
                 backgroundColor:
                   isOver && canDrop ? 'rgba(0, 0, 0, 0.3)' : undefined,
-
-                ...(currentPath &&
+              }}
+              active={
+                currentPath &&
                 decodeURIComponent(currentPath) === path &&
                 currentTeamId === teamId
-                  ? {
-                      borderColor: theme.secondary(),
-                      color: 'white',
-                    }
-                  : {}),
-              }}
+              }
               exact
               depth={depth}
               to={url}

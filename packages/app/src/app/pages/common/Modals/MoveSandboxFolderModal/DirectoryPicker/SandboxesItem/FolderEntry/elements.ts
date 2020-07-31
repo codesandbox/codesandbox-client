@@ -1,9 +1,15 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 
+const activeStyles = css`
+  outline: none;
+  background-color: ${props => props.theme.colors.grays[600]};
+  color: rgba(255, 255, 255, 1);
+`;
 export const Container = styled(NavLink)<{
   depth?: number;
+  active?: boolean;
 }>`
   transition: 0.25s ease all;
   display: flex;
@@ -13,7 +19,6 @@ export const Container = styled(NavLink)<{
   color: rgba(255, 255, 255, 0.6);
   text-decoration: none;
 
-  border-left: 2px solid transparent;
   padding-left: ${props => (props.depth || 0) * 0.75}rem;
 
   user-select: none;
@@ -24,10 +29,11 @@ export const Container = styled(NavLink)<{
     color: rgba(255, 255, 255, 0.8);
   }
 
+  ${props => props.active && activeStyles}
+
   &:focus {
-    outline: none;
-    border-color: ${props => props.theme.secondary.clearer(0.5)};
     color: rgba(255, 255, 255, 0.8);
+    ${activeStyles}
   }
 `;
 
