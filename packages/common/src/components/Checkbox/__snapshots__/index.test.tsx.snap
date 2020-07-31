@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`<Checkbox /> rendering checkbox checked 1`] = `ReactWrapper {}`;
-
-exports[`<Checkbox /> rendering no props 1`] = `ReactWrapper {}`;
