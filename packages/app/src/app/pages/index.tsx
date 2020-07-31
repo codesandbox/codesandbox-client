@@ -11,10 +11,9 @@ import { CreateSandboxModal } from 'app/components/CreateNewSandbox/CreateSandbo
 
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
-import { Dashboard } from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
-import { Dashboard as NewDashboard } from './NewDashboard';
+import { Dashboard } from './Dashboard';
 import { Sandbox } from './Sandbox';
 
 const MoveSandboxFolderModal = Loadable(() =>
@@ -147,8 +146,9 @@ const RoutesComponent: React.FC = () => {
               component={() => <Sandbox showNewSandboxModal />}
             />
             <Route path="/invite/:token" component={TeamInvitation} />
+
             <Route path="/dashboard" component={Dashboard} />
-            <Route path="/new-dashboard" component={NewDashboard} />
+            <Route path="/new-dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
