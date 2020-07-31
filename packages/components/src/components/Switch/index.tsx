@@ -14,6 +14,7 @@ const SwitchBackground = styled.div(
     position: 'relative',
     transition: 'background-color ease',
     transitionDuration: theme => theme.speeds[3],
+    boxSizing: 'border-box',
   })
 );
 
@@ -28,6 +29,7 @@ const SwitchToggle = styled.span(
     left: 0,
     transition: 'left ease',
     transitionDuration: theme => theme.speeds[3],
+    boxSizing: 'border-box',
   })
 );
 
