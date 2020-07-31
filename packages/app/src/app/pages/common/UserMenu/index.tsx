@@ -1,4 +1,3 @@
-import Relative from '@codesandbox/common/lib/components/Relative';
 import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 import { MenuDisclosure, useMenuState } from 'reakit/Menu';
@@ -29,7 +28,11 @@ export const UserMenu: FunctionComponent = props => {
 
   return (
     <UserMenuContainer>
-      <Relative>
+      <div
+        css={`
+          position: relative;
+        `}
+      >
         <MenuDisclosure
           as={ClickableContainer}
           {...menu}
@@ -59,7 +62,7 @@ export const UserMenu: FunctionComponent = props => {
           }
           showBecomePro={!user.subscription}
         />
-      </Relative>
+      </div>
     </UserMenuContainer>
   );
 };
