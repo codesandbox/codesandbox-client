@@ -256,7 +256,7 @@ export const ShareModal: React.FC<Props> = () => {
             />
           </Element>
         </Collapsible>
-        <Collapsible title="Editor">
+        <Collapsible title="Advanced Options">
           <Element paddingX={4}>
             <PaddedPreference
               title="Use CodeMirror instead of Monaco editor"
@@ -355,6 +355,7 @@ export const ShareModal: React.FC<Props> = () => {
           width: '100%',
           height: '100%',
           position: 'relative',
+          padding: 2,
         })}
         // eslint-disable-next-line
         dangerouslySetInnerHTML={{
