@@ -9,8 +9,8 @@ description:
 
 #### Features
 
-1. Repositories Sandboxes in the Dashboard - Quickly access all our sandboxes
-   linked with GitHub from the dashboard
+1. Repositories Sandboxes in the Dashboard  
+   Quickly access all our sandboxes linked with GitHub from the dashboard
 2. Codesandbox sets the TS version of the editor dynamically
 3. Added sass and CSS support to svelte
 
