@@ -143,6 +143,8 @@ export const ShareModal: React.FC<Props> = () => {
           width: 320,
           maxHeight: 600,
           backgroundColor: 'sideBar.background',
+          borderRight: '1px solid',
+          borderColor: 'sideBar.border',
         })}
       >
         <Collapsible title="Embed" defaultOpen>

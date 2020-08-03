@@ -57,7 +57,7 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 class ModalComponent extends React.Component {
-  getStyles = (width = 400, top = 20) => ({
+  getStyles = (width = 400, top = 15) => ({
     overlay: {
       backgroundColor: 'rgba(0, 0, 0, 0.75)',
       overflowY: 'auto',
