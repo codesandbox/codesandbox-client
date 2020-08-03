@@ -47,11 +47,13 @@ export const CreateSandboxModal = () => {
   return (
     <ThemeProvider>
       <Modal
+        style={{ margin: 0, zIndex: 999 }}
         isOpen={modals.newSandboxModal.isCurrent}
         onClose={() => modalsActions.newSandboxModal.close()}
         width={window.outerWidth > COLUMN_MEDIA_THRESHOLD ? 1200 : 950}
       >
         <CreateSandbox
+          isModal
           collectionId={
             modals.newSandboxModal.collectionId || implicitCollection?.id
           }

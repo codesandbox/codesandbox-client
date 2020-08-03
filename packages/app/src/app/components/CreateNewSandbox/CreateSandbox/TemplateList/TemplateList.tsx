@@ -360,7 +360,9 @@ export const TemplateList = ({
           return (
             <TemplateInfoContainer key={key}>
               {title !== undefined && <SubHeader>{title}</SubHeader>}
-              <Grid columnCount={columnCount}>
+              <Grid
+                columnCount={window.screen.availWidth < 600 ? 1 : columnCount}
+              >
                 {templates.map((template: TemplateFragment, i) => {
                   const index = offset + i;
                   const focused = focusedTemplateIndex === offset + i;
