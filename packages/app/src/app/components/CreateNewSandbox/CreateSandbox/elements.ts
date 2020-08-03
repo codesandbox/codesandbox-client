@@ -20,6 +20,10 @@ export const Container = styled.div`
     min-width: auto;
     height: 100vh;
     border-radius: 0;
+
+    div[role='tabpanel'] {
+      padding-bottom: 40px;
+    }
   }
 `;
 
