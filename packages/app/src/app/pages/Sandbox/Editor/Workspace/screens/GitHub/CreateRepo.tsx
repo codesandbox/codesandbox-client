@@ -38,14 +38,10 @@ export const CreateRepo = () => {
   const disabled = Boolean(error) || !repoTitle || !isAllModulesSynced;
 
   return (
-    <Collapsible
-      title={originalGit ? 'Create GitHub Repository' : 'GitHub'}
-      defaultOpen={!originalGit}
-    >
+    <Collapsible title="Create GitHub Repository" defaultOpen={!originalGit}>
       <Element paddingX={2}>
         <Text variant="muted" marginBottom={4} block>
-          Create a GitHub repository to host your sandbox code and keep it in
-          sync with CodeSandbox.
+          Export the content of this sandbox to a new Github repository.
         </Text>
         {!isAllModulesSynced && (
           <Text marginBottom={2} block variant="danger">
@@ -71,12 +67,12 @@ export const CreateRepo = () => {
               type="text"
               onChange={updateRepoTitle}
               value={repoTitle}
-              placeholder="Enter repository name"
+              placeholder="Enter new repository name"
             />
           </FormField>
           <Element paddingX={2}>
             <Button type="submit" disabled={disabled} variant="secondary">
-              Create Repository
+              Create repository on Github
             </Button>
           </Element>
         </Stack>
