@@ -2,9 +2,12 @@ import styled from 'styled-components';
 import Row from '@codesandbox/common/lib/components/flex/Row';
 
 export const UserMenuContainer = styled.div`
-  z-index: 9;
   margin: 5px 0;
   font-size: 0.8rem;
+
+  div[role='menu'] {
+    z-index: 999999999999;
+  }
 `;
 
 export const ClickableContainer = styled(Row)`
