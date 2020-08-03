@@ -14,7 +14,6 @@ const SwitchBackground = styled.div(
     position: 'relative',
     transition: 'background-color ease',
     transitionDuration: theme => theme.speeds[3],
-    boxSizing: 'border-box',
   })
 );
 
@@ -49,6 +48,9 @@ const SwitchContainer = styled(Element)(
     },
     'input:checked + [data-component=SwitchBackground] [data-component=SwitchToggle]': {
       left: theme => theme.space[4] - 4 + 'px',
+    },
+    '*': {
+      boxSizing: 'border-box',
     },
   })
 );
