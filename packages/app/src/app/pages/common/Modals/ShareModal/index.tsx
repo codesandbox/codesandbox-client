@@ -303,10 +303,14 @@ export const ShareModal: React.FC<Props> = () => {
           width: '100%',
           height: '100%',
           position: 'relative',
+          iframe: {
+            display: 'block',
+            borderRadius: '0 !important',
+          },
         })}
         // eslint-disable-next-line
         dangerouslySetInnerHTML={{
-          __html: getIframeScript(sandbox, mainModule, state, 580),
+          __html: getIframeScript(sandbox, mainModule, state, 600),
         }}
       />
     </Stack>
