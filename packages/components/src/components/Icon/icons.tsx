@@ -502,3 +502,17 @@ export const fork = props => (
     />
   </svg>
 );
+
+export const heart = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M7.88809 16C21.8973 7.96635 14.9691 -2.96644 7.8881 2.44885C1.1128 -2.96644 -5.8154 7.96634 7.88809 16Z"
+      fill="currentColor"
+    />
+  </Element>
+);
