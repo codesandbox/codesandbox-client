@@ -55,6 +55,11 @@ const Profile = Loadable(() =>
     default: module.Profile,
   }))
 );
+const Profile2 = Loadable(() =>
+  import(/* webpackChunkName: 'page-profile' */ './Profile2').then(module => ({
+    default: module.Profile,
+  }))
+);
 const Search = Loadable(() =>
   import(/* webpackChunkName: 'page-search' */ './Search').then(module => ({
     default: module.Search,
@@ -156,6 +161,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/signup/:userId" exact component={SignUp} />
             <Route path="/signin/:jwt?" component={SignInAuth} />
             <Route path="/u/:username" component={Profile} />
+            <Route path="/u2/:username" component={Profile2} />
             <Route path="/search" component={Search} />
             <Route path="/patron" component={Patron} />
             <Route path="/pro" component={Pro} />
