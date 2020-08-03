@@ -41,7 +41,8 @@ export const CreateRepo = () => {
     <Collapsible title="Create GitHub Repository" defaultOpen={!originalGit}>
       <Element paddingX={2}>
         <Text variant="muted" marginBottom={4} block>
-          Export the content of this sandbox to a new Github repository.
+          Export the content of this sandbox to a new Github repository,
+          allowing you to commit changes made on Codesandbox to Github.
         </Text>
         {!isAllModulesSynced && (
           <Text marginBottom={2} block variant="danger">
@@ -67,12 +68,12 @@ export const CreateRepo = () => {
               type="text"
               onChange={updateRepoTitle}
               value={repoTitle}
-              placeholder="Enter new repository name"
+              placeholder="Repository name..."
             />
           </FormField>
           <Element paddingX={2}>
             <Button type="submit" disabled={disabled} variant="secondary">
-              Create repository on Github
+              Create new repository on Github
             </Button>
           </Element>
         </Stack>
