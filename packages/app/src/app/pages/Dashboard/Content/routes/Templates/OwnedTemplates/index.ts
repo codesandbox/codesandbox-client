@@ -1,1 +1,0 @@
-export { OwnedTemplates } from './OwnedTemplates';

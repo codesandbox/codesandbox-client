@@ -138,7 +138,7 @@ export const getPersonalRepos: Query<
 > = gql`
   query getPersonalRepos {
     me {
-      sandboxes {
+      sandboxes(hasOriginalGit: true) {
         ...repoFragmentDashboard
       }
     }
@@ -153,7 +153,7 @@ export const getTeamRepos: Query<
   query getTeamRepos($id: ID!) {
     me {
       team(id: $id) {
-        sandboxes {
+        sandboxes(hasOriginalGit: true) {
           ...repoFragmentDashboard
         }
       }
