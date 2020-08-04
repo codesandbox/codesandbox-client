@@ -1,6 +1,6 @@
 {
   "name": "smooshpack",
-  "version": "0.0.63",
+  "version": "0.0.66",
   "description": "",
   "keywords": [],
   "repository": {
@@ -96,7 +96,7 @@
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^7.0.0",
     "typedoc": "^0.11.1",
-    "typescript": "3.7.4",
+    "typescript": "3.9.7",
     "validate-commit-msg": "^2.12.2"
   },
   "engines": {

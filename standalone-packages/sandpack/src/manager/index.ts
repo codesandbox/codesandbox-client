@@ -7,11 +7,11 @@ import generatePackageJSON, {
   getPackageJSON,
 } from '../utils/generate-package-json';
 import version from '../version';
-import {
+import type {
   IManagerState,
   IModuleError,
   ManagerStatus,
-} from '../../typings/types';
+} from '../typings/types';
 
 export interface IManagerOptions {
   /**

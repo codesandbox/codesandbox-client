@@ -3065,11 +3065,6 @@ codemirror@^5.35.0:
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.49.0.tgz#adedbffcc81091e4a0334bcb96b1ae3b7ada5e3f"
   integrity sha512-Hyzr0HToBdZpLBN9dYFO/KlJAsKH37/cXVHPAqa+imml0R92tb9AkmsvjnXL+SluEvjjdfkDgRjc65NG5jnMYA==
 
-codesandbox-api@0.0.23:
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.23.tgz#bf650a21b5f3c2369e03f0c19d10b4e2ba255b4f"
-  integrity sha512-fFGBkIghDkQILh7iHYlpZU5sfWncCDb92FQSFE4rR3VBcTfUsD5VZgpQi+JjZQuwWIdfl4cOhcIFrUYwshUezA==
-
 codesandbox-api@0.0.24:
   version "0.0.24"
   resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.24.tgz#f0523c0a6f11a9be4bde3ef5f4657f74a992bbfa"
@@ -10788,12 +10783,12 @@ slide@^1.1.3:
   resolved "https://registry.yarnpkg.com/slide/-/slide-1.1.6.tgz#56eb027d65b4d2dce6cb2e2d32c4d4afc9e1d707"
   integrity sha1-VusCfWW00tzmyy4tMsTUr8nh1wc=
 
-smooshpack@^0.0.62:
-  version "0.0.62"
-  resolved "https://registry.yarnpkg.com/smooshpack/-/smooshpack-0.0.62.tgz#cb31b9f808f73de3146b050f84d044eb353b5503"
-  integrity sha512-lFuJV2f504/U78sifWy0V2FyoE/8mTgOXM4DL918ncNxAxbtu236XSCLAH3SQwXZWn0JdmRnWs/XU4+sIUVVmQ==
+smooshpack@^0.0.65:
+  version "0.0.65"
+  resolved "https://registry.yarnpkg.com/smooshpack/-/smooshpack-0.0.65.tgz#e1a6be92c0f09145f5542124e689887e103aece8"
+  integrity sha512-NBQccPpzklPA90o/fwuGwuEVuZkZtQpOwWFj48UweJ8k8NRGOrl0BUDcNifTRr5o2/POtzz3pprN9+lH1nsJNQ==
   dependencies:
-    codesandbox-api "0.0.23"
+    codesandbox-api "0.0.24"
     codesandbox-import-utils "^1.2.3"
     lodash.isequal "^4.5.0"
 
@@ -11760,10 +11755,10 @@ typescript@2.7.1:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.7.1.tgz#bb3682c2c791ac90e7c6210b26478a8da085c359"
   integrity sha512-bqB1yS6o9TNA9ZC/MJxM0FZzPnZdtHj0xWK/IZ5khzVqdpGul/R/EIiHRgFXlwTD7PSIaYVnGKq1QgMCu2mnqw==
 
-typescript@3.7.4:
-  version "3.7.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.4.tgz#1743a5ec5fef6a1fa9f3e4708e33c81c73876c19"
-  integrity sha512-A25xv5XCtarLwXpcDNZzCGvW2D1S3/bACratYBx2sax8PefsFhlYmkQicKHvpYflFS8if4zne5zT5kpJ7pzuvw==
+typescript@3.9.7:
+  version "3.9.7"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
+  integrity sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
 
 ua-parser-js@^0.7.18:
   version "0.7.20"
