@@ -67,10 +67,9 @@ export const getEmbedUrl = (sandbox, mainModule, state) =>
   embedUrl(sandbox) +
   getOptionsUrl(sandbox, mainModule, state);
 
-export const getIframeScript = (sandbox, mainModule, state) =>
-  `<iframe
-     src="${getEmbedUrl(sandbox, mainModule, state)}"
-     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+export const getIframeScript = (sandbox, mainModule, state, height) =>
+  `<iframe src="${getEmbedUrl(sandbox, mainModule, state)}"
+     style="width:100%; height:${height}px; border:0; border-radius: 4px; overflow:hidden;"
      title="${escapeHtml(getSandboxName(sandbox))}"
      allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
@@ -92,3 +91,19 @@ export const getButtonHTML = (sandbox, mainModule, state) => {
 </a>
 `;
 };
+
+export const getDevToLink = sandbox =>
+  `https://dev.to/new?prefill=---%5Cn%20title:${encodeURIComponent(
+    sandbox.title || sandbox.id
+  )}%5Cn%20published:%20false%5Cn%20tags:%20codesandbox%5Cn%20---%5Cn%20%5Cn%20%5Cn%20%5Cn%20%7B%25%20codesandbox%20${encodeURIComponent(
+    sandbox.id
+  )}%20%25%7D`;
+
+export const getTwitterLink = (sandbox, mainModule, state) =>
+  `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    `${sandbox.title || sandbox.id}. ${getEditorUrl(
+      sandbox,
+      mainModule,
+      state
+    )}`
+  )}`;
