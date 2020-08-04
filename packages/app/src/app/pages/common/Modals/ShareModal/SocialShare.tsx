@@ -23,7 +23,7 @@ import {
 import { Field } from '.';
 
 export const SocialShare = ({ sandbox, mainModule, state, select }) => (
-  <Collapsible title="Other Share Options">
+  <Collapsible title="Other Sharing Options">
     <Element paddingX={4}>
       <Text size={3} weight="bold" block marginBottom={2}>
         Share CodeSandbox Button
