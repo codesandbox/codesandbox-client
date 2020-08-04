@@ -60,7 +60,9 @@ export type StyledComponentProps<
           ReactDefaultizedProps<
             C,
             React.ComponentPropsWithRef<
-              C extends keyof JSX.IntrinsicElements | React.ComponentType<any> ? C : never
+              C extends keyof JSX.IntrinsicElements | React.ComponentType<any>
+                ? C
+                : never
             >
           > &
             O,
@@ -69,7 +71,9 @@ export type StyledComponentProps<
           Partial<
             Pick<
               React.ComponentPropsWithRef<
-                C extends keyof JSX.IntrinsicElements | React.ComponentType<any> ? C : never
+                C extends keyof JSX.IntrinsicElements | React.ComponentType<any>
+                  ? C
+                  : never
               > &
                 O,
               A

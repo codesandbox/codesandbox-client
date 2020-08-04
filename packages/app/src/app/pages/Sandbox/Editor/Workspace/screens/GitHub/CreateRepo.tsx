@@ -17,10 +17,7 @@ export const CreateRepo = () => {
       git: { createRepoClicked, repoTitleChanged },
     },
     state: {
-      editor: {
-        isAllModulesSynced,
-        currentSandbox: { originalGit },
-      },
+      editor: { isAllModulesSynced },
       git: { error, repoTitle },
     },
   } = useOvermind();
@@ -38,11 +35,11 @@ export const CreateRepo = () => {
   const disabled = Boolean(error) || !repoTitle || !isAllModulesSynced;
 
   return (
-    <Collapsible title="Create GitHub Repository" defaultOpen={!originalGit}>
+    <Collapsible title="Export to new Github repository">
       <Element paddingX={2}>
         <Text variant="muted" marginBottom={4} block>
-          Export the content of this sandbox to a new Github repository,
-          allowing you to commit changes made on Codesandbox to Github.
+          Export the content of this sandbox to a new GitHub repository,
+          allowing you to commit changes made on Codesandbox to GitHub.
         </Text>
         {!isAllModulesSynced && (
           <Text marginBottom={2} block variant="danger">
@@ -73,7 +70,7 @@ export const CreateRepo = () => {
           </FormField>
           <Element paddingX={2}>
             <Button type="submit" disabled={disabled} variant="secondary">
-              Create new repository on Github
+              Create new repository on GitHub
             </Button>
           </Element>
         </Stack>

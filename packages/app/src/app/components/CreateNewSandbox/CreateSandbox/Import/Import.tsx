@@ -32,15 +32,11 @@ import { StackbitButton } from './Stackbit';
 const getFullGitHubUrl = (url: string) =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
 
-export const Import = () => {
-  const { state, actions, effects } = useOvermind();
+export const ImportFromGithub = () => {
+  const { actions, effects } = useOvermind();
   const [error, setError] = useState(null);
   const [transformedUrl, setTransformedUrl] = useState('');
   const [url, setUrl] = useState('');
-
-  useEffect(() => {
-    track('Create Sandbox Tab Open', { tab: 'import' });
-  }, []);
 
   const updateUrl = useCallback(({ target: { value: newUrl } }) => {
     if (!newUrl) {
@@ -58,6 +54,60 @@ export const Import = () => {
     }
   }, []);
 
+  return (
+    <form>
+      <Input
+        value={url}
+        onChange={updateUrl}
+        type="text"
+        placeholder="GitHub Repository URL..."
+      />
+
+      {transformedUrl ? (
+        <GitHubLink
+          href={transformedUrl}
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          {transformedUrl.replace(/^https?:\/\//, '')}
+        </GitHubLink>
+      ) : (
+        <PlaceHolderLink error={error}>
+          {error || 'Enter a Github URL to see the Sandbox URL'}
+        </PlaceHolderLink>
+      )}
+
+      <ButtonContainer>
+        <Button
+          autoWidth
+          style={{ fontSize: 11 }}
+          onClick={() => effects.browser.copyToClipboard(transformedUrl)}
+          disabled={!transformedUrl}
+        >
+          Copy Link
+        </Button>
+        <Button
+          autoWidth
+          style={{ fontSize: 11 }}
+          disabled={!transformedUrl}
+          onClick={async () => {
+            await actions.git.importFromGithub(gitHubToSandboxUrl(url));
+            actions.modals.newSandboxModal.close();
+          }}
+        >
+          Import and Fork
+        </Button>
+      </ButtonContainer>
+    </form>
+  );
+};
+
+export const Import = () => {
+  const { state, actions } = useOvermind();
+
+  useEffect(() => {
+    track('Create Sandbox Tab Open', { tab: 'import' });
+  }, []);
   return (
     <>
       <Header>
@@ -80,50 +130,7 @@ export const Import = () => {
               branches here.
             </small>
           </FeatureText>
-          <form>
-            <Input
-              value={url}
-              onChange={updateUrl}
-              type="text"
-              placeholder="GitHub Repository URL..."
-            />
-
-            {transformedUrl ? (
-              <GitHubLink
-                href={transformedUrl}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                {transformedUrl.replace(/^https?:\/\//, '')}
-              </GitHubLink>
-            ) : (
-              <PlaceHolderLink error={error}>
-                {error || 'Enter a URL to see the generated URL'}
-              </PlaceHolderLink>
-            )}
-
-            <ButtonContainer>
-              <Button
-                autoWidth
-                style={{ fontSize: 11 }}
-                onClick={() => effects.browser.copyToClipboard(transformedUrl)}
-                disabled={!transformedUrl}
-              >
-                Copy Link
-              </Button>
-              <Button
-                autoWidth
-                style={{ fontSize: 11 }}
-                disabled={!transformedUrl}
-                onClick={async () => {
-                  await actions.git.importFromGithub(gitHubToSandboxUrl(url));
-                  actions.modals.newSandboxModal.close();
-                }}
-              >
-                Import and Fork
-              </Button>
-            </ButtonContainer>
-          </form>
+          <ImportFromGithub />
         </Column>
 
         <>
