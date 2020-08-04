@@ -42,6 +42,7 @@ export const ShareModal: React.FC<Props> = () => {
     state: { editor },
     effects,
   } = useOvermind();
+  const [copied, setCopied] = useState(false);
   const [state, updateState] = useState({
     view: VIEW_OPTIONS[0],
     theme: 'dark',
@@ -187,13 +188,17 @@ export const ShareModal: React.FC<Props> = () => {
             />
             <Button
               marginTop={4}
-              onClick={() =>
+              onClick={() => {
+                setCopied(true);
+                window.setTimeout(() => {
+                  setCopied(false);
+                }, 2000);
                 effects.browser.copyToClipboard(
                   getIframeScript(sandbox, mainModule, state, 500)
-                )
-              }
+                );
+              }}
             >
-              Copy Embed Code
+              {copied ? 'Copied' : 'Copy Embed Code'}
             </Button>
             <Field label="Editor url (also works on Medium)">
               <Input
