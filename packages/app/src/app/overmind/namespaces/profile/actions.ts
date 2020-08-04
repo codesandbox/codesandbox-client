@@ -154,6 +154,8 @@ export const updateUserProfile: AsyncAction<{
   bio: string;
   socialLinks: string[];
 }> = async ({ actions, effects, state }, { bio, socialLinks }) => {
+  if (!state.profile.current) return;
+
   // optimistic update
   const oldBio = state.profile.current.bio;
   state.profile.current.bio = bio;
@@ -162,7 +164,7 @@ export const updateUserProfile: AsyncAction<{
 
   try {
     await effects.api.updateUserProfile(
-      state.profile.currentProfileId,
+      state.profile.current.id,
       bio,
       socialLinks
     );
