@@ -7,7 +7,7 @@ import generatePackageJSON, {
   getPackageJSON,
 } from '../utils/generate-package-json';
 import version from '../version';
-import type {
+import {
   IManagerState,
   IModuleError,
   ManagerStatus,
