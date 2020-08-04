@@ -555,6 +555,7 @@ export type Profile = {
   badges: Badge[];
   avatarUrl: string;
   bio?: string;
+  socialLinks?: string[];
 };
 
 export type UserSandbox = {
