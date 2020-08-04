@@ -58,10 +58,11 @@ export const SocialShare = ({ sandbox, mainModule, state, select }) => (
         Share on Social Media
       </Text>
       <Stack gap={2}>
-        <Button autoWidth target="_blank" href={getDevToLink(sandbox)}>
+        <Button as="a" autoWidth target="_blank" href={getDevToLink(sandbox)}>
           Share on DEV
         </Button>
         <Button
+          as="a"
           autoWidth
           target="_blank"
           href={getTwitterLink(sandbox, mainModule, state)}
