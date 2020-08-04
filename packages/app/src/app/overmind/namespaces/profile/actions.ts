@@ -149,3 +149,33 @@ export const sandboxDeleted: AsyncAction = async ({ state, effects }) => {
 
   state.profile.isLoadingSandboxes = false;
 };
+
+export const updateUserProfile: AsyncAction<{
+  bio: string;
+  socialLinks: string[];
+}> = async ({ actions, effects, state }, { bio, socialLinks }) => {
+  if (!state.profile.current) return;
+
+  // optimistic update
+  const oldBio = state.profile.current.bio;
+  state.profile.current.bio = bio;
+  const oldSocialLinks = state.profile.current.socialLinks;
+  state.profile.current.socialLinks = socialLinks;
+
+  try {
+    await effects.api.updateUserProfile(
+      state.profile.current.id,
+      bio,
+      socialLinks
+    );
+  } catch (error) {
+    // revert optimistic update
+    state.profile.current.bio = oldBio;
+    state.profile.current.socialLinks = oldSocialLinks;
+
+    actions.internal.handleError({
+      message: "We weren't able to update your bio",
+      error,
+    });
+  }
+};

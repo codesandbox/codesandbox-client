@@ -18,7 +18,7 @@ type PreferenceType =
 type PreferenceProps<TString extends PreferenceType> = {
   className?: string;
   style?: React.CSSProperties;
-  title: string;
+  title?: string;
   tooltip?: string;
   options?: any[];
   type: TString;
@@ -80,7 +80,7 @@ export const Preference: FunctionComponent<Props> = ({
 
   return (
     <Container className={className} style={style}>
-      {Title}
+      {title ? Title : null}
 
       <div>{getContent()}</div>
     </Container>

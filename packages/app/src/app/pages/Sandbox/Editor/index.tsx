@@ -210,6 +210,13 @@ const Editor = ({ showNewSandboxModal }: EditorTypes) => {
                               width: 1200,
                               position: 'relative',
                               zIndex: 100,
+
+                              '@media screen and (max-width: 800px)': {
+                                position: 'absolute',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                margin: 0,
+                              },
                             })}
                             marginTop={8}
                           >
