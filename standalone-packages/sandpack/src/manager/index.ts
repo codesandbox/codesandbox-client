@@ -11,7 +11,7 @@ import {
   IManagerState,
   IModuleError,
   ManagerStatus,
-} from '../../typings/types';
+} from '../typings/types';
 
 export interface IManagerOptions {
   /**
@@ -90,6 +90,7 @@ export default class PreviewManager {
   element: Element;
   iframe: HTMLIFrameElement;
   options: IManagerOptions;
+  id: string | null = null;
   listener?: Function;
   fileResolverProtocol?: Protocol;
   bundlerURL: string;
@@ -134,11 +135,16 @@ export default class PreviewManager {
     this.iframe.src = this.bundlerURL;
 
     this.listener = listen((mes: any) => {
+      if (mes.type !== 'initialized' && mes.id && mes.id !== this.id) {
+        // This message was not meant for this instance of the manager.
+        return;
+      }
       switch (mes.type) {
         case 'initialized': {
           if (this.iframe) {
             if (this.iframe.contentWindow) {
               registerFrame(this.iframe.contentWindow, this.bundlerURL);
+              this.id = mes.id || null;
 
               if (this.options.fileResolver) {
                 this.fileResolverProtocol = new Protocol(
@@ -229,7 +235,7 @@ export default class PreviewManager {
       {}
     );
 
-    dispatch({
+    this.dispatch({
       type: 'compile',
       codesandbox: true,
       version: 3,
@@ -250,6 +256,8 @@ export default class PreviewManager {
   }
 
   public dispatch(message: Object) {
+    // @ts-ignore We want to add the id, don't use Object.assign since that copies the whole message
+    message.id = this.id;
     dispatch(message);
   }
 
@@ -296,7 +304,7 @@ export default class PreviewManager {
         }
       });
 
-        dispatch({ type: 'get-transpiler-context' });
+        this.dispatch({ type: 'get-transpiler-context' });
     });
 
   private getFiles() {
