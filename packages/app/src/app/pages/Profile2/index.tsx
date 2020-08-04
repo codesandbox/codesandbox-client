@@ -61,6 +61,7 @@ const Header = () => (
     align="center"
     paddingX={4}
     css={css({
+      width: '100%',
       boxSizing: 'border-box',
       fontFamily: 'Inter, sans-serif',
       height: 12,
