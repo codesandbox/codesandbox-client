@@ -2,7 +2,7 @@ import { dispatch, actions, listen } from 'codesandbox-api';
 import { react, reactTs } from '@codesandbox/common/lib/templates';
 import { messages } from '@codesandbox/common/lib/utils/jest-lite';
 
-import expect from 'jest-matchers';
+import expect from 'expect';
 import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';
 
