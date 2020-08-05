@@ -206,14 +206,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.templates(activeTeam)}
             icon="star"
           />
-          {user && (user.provider === 'github' || user.integrations.github) ? (
-            <RowItem
-              name="Repositories"
-              page="repos"
-              path={dashboardUrls.repos(activeTeam)}
-              icon="fork"
-            />
-          ) : null}
+          <RowItem
+            name="Repositories"
+            page="repos"
+            path={dashboardUrls.repos(activeTeam)}
+            icon="fork"
+          />
           <RowItem
             name="Recently Modified"
             page="recents"
