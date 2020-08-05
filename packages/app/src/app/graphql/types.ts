@@ -1309,7 +1309,12 @@ export type TemplateFragmentDashboardFragment = {
 
 export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
   Team,
-  'id' | 'name' | 'description' | 'creatorId' | 'avatarUrl'
+  | 'id'
+  | 'name'
+  | 'description'
+  | 'creatorId'
+  | 'avatarUrl'
+  | 'userAuthorizations'
 > & {
     users: Array<
       { __typename?: 'User' } & Pick<
@@ -1712,7 +1717,10 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
       teams: Array<
-        { __typename?: 'Team' } & Pick<Team, 'id' | 'name' | 'avatarUrl'>
+        { __typename?: 'Team' } & Pick<
+          Team,
+          'id' | 'name' | 'avatarUrl' | 'userAuthorizations'
+        >
       >;
     }
   >;
