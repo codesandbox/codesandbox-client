@@ -46,7 +46,7 @@ export const signIn: AsyncAction<{
     state.isAuthenticating = false;
   } catch (error) {
     actions.internal.handleError({
-      message: 'Could not authenticate with Github',
+      message: 'Could not authenticate',
       error,
     });
   }
@@ -163,6 +163,11 @@ export const signInGithub: AsyncAction<{ useExtraScopes?: boolean }, any> = (
       popup.close();
     });
 
+  effects.browser.waitForMessage('duplicate').then((data: any) => {
+    window.location.href = data.url + `&continue=/dashboard`;
+    popup.close();
+  });
+
   effects.browser.waitForMessage('signup').then((data: any) => {
     state.pendingUserId = data.id;
     popup.close();
@@ -194,11 +199,15 @@ export const signInGoogle: AsyncAction = ({ effects, state }) => {
         effects.api.revokeToken(data.jwt);
       }
       popup.close();
-    })
-    .catch(alert);
+    });
 
   effects.browser.waitForMessage('signup').then((data: any) => {
     state.pendingUserId = data.id;
+    popup.close();
+  });
+
+  effects.browser.waitForMessage('duplicate').then((data: any) => {
+    window.location.href = data.url + `&continue=/dashboard`;
     popup.close();
   });
 

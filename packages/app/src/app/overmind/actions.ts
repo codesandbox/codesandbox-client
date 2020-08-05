@@ -216,6 +216,10 @@ export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
   }
 };
 
+export const signInGoogleClicked: AsyncAction = async ({ actions }) => {
+  await actions.internal.signInGoogle();
+};
+
 export const signOutClicked: AsyncAction = async ({
   state,
   effects,

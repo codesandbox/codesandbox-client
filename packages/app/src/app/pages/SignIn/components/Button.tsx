@@ -3,7 +3,13 @@ import React from 'react';
 import { Button as BaseButton } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 
-export const Button = ({ children, loading, ...props }) => (
+type Props = {
+  children: any;
+  loading?: boolean;
+  onClick: any;
+};
+
+export const Button = ({ children, loading, ...props }: Props) => (
   <BaseButton
     loading={loading}
     {...props}
