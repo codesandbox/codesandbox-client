@@ -156,28 +156,40 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
 
   return (
     <Stack>
-      <Button
-        onClick={() => props.forkClicked()}
-        loading={state.editor.isForkingSandbox}
-        variant={props.variant}
-        css={{
-          width: 'calc(100% - 26px)',
-          borderTopRightRadius: 0,
-          borderBottomRightRadius: 0,
-        }}
-        disabled={state.activeWorkspaceAuthorization === 'READ'}
-      >
-        <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
-      </Button>
+      {state.activeWorkspaceAuthorization === 'READ' ? null : (
+        <Button
+          onClick={() => props.forkClicked()}
+          loading={state.editor.isForkingSandbox}
+          variant={props.variant}
+          css={{
+            width: 'calc(100% - 26px)',
+            borderTopRightRadius: 0,
+            borderBottomRightRadius: 0,
+          }}
+        >
+          <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
+        </Button>
+      )}
+
       <Menu>
         <Menu.Button
           variant={props.variant}
-          css={{
-            width: '26px',
-            borderTopLeftRadius: 0,
-            borderBottomLeftRadius: 0,
-          }}
+          css={
+            state.activeWorkspaceAuthorization === 'READ'
+              ? {}
+              : {
+                  width: '26px',
+                  borderTopLeftRadius: 0,
+                  borderBottomLeftRadius: 0,
+                }
+          }
         >
+          {state.activeWorkspaceAuthorization === 'READ' ? (
+            <>
+              <ForkIcon css={css({ height: 3, marginRight: 1 })} />{' '}
+              <Text css={css({ marginRight: 2 })}>Fork</Text>
+            </>
+          ) : null}
           <Icon size={8} name="caret" />
         </Menu.Button>
         <Menu.List
