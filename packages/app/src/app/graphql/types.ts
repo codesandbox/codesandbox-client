@@ -659,6 +659,7 @@ export type Team = {
   sandboxes: Array<Sandbox>;
   templates: Array<Template>;
   users: Array<User>;
+  userAuthorizations: Array<MemberAuthorization>;
 };
 
 export type TeamDraftsArgs = {

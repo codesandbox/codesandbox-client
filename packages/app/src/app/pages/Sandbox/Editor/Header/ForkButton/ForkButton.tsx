@@ -11,6 +11,7 @@ import {
 import { useOvermind } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { CurrentUser } from '@codesandbox/common/lib/types';
+import { MemberAuthorization } from 'app/graphql/types';
 import { ForkIcon } from '../icons';
 
 interface TeamItemProps {
@@ -18,11 +19,18 @@ interface TeamItemProps {
   name: string;
   avatar: string | null;
   onSelect: () => void;
+  disabled: boolean;
 }
 
 const TeamItem = (props: TeamItemProps) => (
   <Menu.Item
-    style={{ paddingTop: 8, paddingBottom: 8, fontWeight: 500 }}
+    style={{
+      paddingTop: 8,
+      paddingBottom: 8,
+      fontWeight: 500,
+      opacity: props.disabled ? 0.4 : 1,
+      cursor: props.disabled ? 'not-allowed' : 'pointer',
+    }}
     onSelect={props.onSelect}
   >
     <Stack gap={2} align="center">
@@ -62,6 +70,7 @@ type TeamItem = {
   teamId: string;
   teamName: string;
   teamAvatar: string | null;
+  userAuthorizations: MemberAuthorization[];
 };
 
 type UserItem = {
@@ -76,6 +85,7 @@ type TeamOrUser = TeamItem | UserItem;
 interface TeamOrUserItemProps {
   item: TeamOrUser;
   forkClicked: (teamId?: string | null) => void;
+  disabled: boolean;
 }
 const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
   if (props.item.type === 'team') {
@@ -83,11 +93,13 @@ const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
       <TeamItem
         id={props.item.teamId}
         onSelect={() => {
+          if (props.disabled) return;
           const item = props.item as TeamItem;
           props.forkClicked(item.teamId);
         }}
         name={props.item.teamName}
         avatar={props.item.teamAvatar}
+        disabled={props.disabled}
       />
     );
   }
@@ -128,6 +140,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
       teamId: team.id,
       teamName: team.name,
       teamAvatar: team.avatarUrl,
+      userAuthorizations: team.userAuthorizations,
     })),
   ];
 
@@ -152,6 +165,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
           borderTopRightRadius: 0,
           borderBottomRightRadius: 0,
         }}
+        disabled={state.activeWorkspaceAuthorization === 'READ'}
       >
         <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
       </Button>
@@ -178,13 +192,23 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
             marginTop: -4,
           }}
         >
-          <TeamOrUserItem forkClicked={props.forkClicked} item={currentSpace} />
+          <TeamOrUserItem
+            forkClicked={props.forkClicked}
+            item={currentSpace}
+            disabled={state.activeWorkspaceAuthorization === 'READ'}
+          />
           <Menu.Divider />
           {otherWorkspaces.map((space, i) => (
             <TeamOrUserItem
               key={space.type === 'user' ? 'personal' : space.teamId}
               forkClicked={props.forkClicked}
               item={space}
+              disabled={
+                space.type === 'team' &&
+                space.userAuthorizations.find(
+                  authorization => authorization.userId === user.id
+                )?.authorization === 'READ'
+              }
             />
           ))}
         </Menu.List>
