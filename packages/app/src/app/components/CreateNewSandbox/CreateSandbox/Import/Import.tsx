@@ -4,9 +4,8 @@ import {
   gitHubToSandboxUrl,
   protocolAndHost,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { Button } from '@codesandbox/components';
+import { Button, Icon } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-import { SignInButton } from 'app/pages/common/SignInButton';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Header } from '../elements';
@@ -145,8 +144,13 @@ export const Import = () => {
               . This generates a project for you that{"'"}s automatically set up
               with any Theme, Site Generator and CMS.
             </FeatureText>
-            {!state.user ? (
-              <SignInButton />
+            {!state.user ||
+            (state.user.provider === 'google' &&
+              !state.user.integrations.github) ? (
+              <Button autoWidth onClick={() => actions.signInGithubClicked()}>
+                <Icon name="github" marginRight={2} />
+                Sign in with GitHub
+              </Button>
             ) : (
               <StackbitButton
                 style={{ fontSize: 11 }}

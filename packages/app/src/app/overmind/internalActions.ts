@@ -194,7 +194,8 @@ export const signInGoogle: AsyncAction = ({ effects, state }) => {
         effects.api.revokeToken(data.jwt);
       }
       popup.close();
-    });
+    })
+    .catch(alert);
 
   effects.browser.waitForMessage('signup').then((data: any) => {
     state.pendingUserId = data.id;
