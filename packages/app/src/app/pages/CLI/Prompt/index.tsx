@@ -5,11 +5,11 @@ import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
 import { useOvermind } from 'app/overmind';
 
+import { SignInModalElement } from 'app/pages/SignIn/Modal';
 import { Buttons, Container, TokenInput } from './elements';
 
 export const Prompt: FunctionComponent = () => {
   const {
-    actions: { signInCliClicked },
     state: { authToken, error, isLoadingCLI, user },
   } = useOvermind();
   const tokenInputRef = useRef<HTMLInputElement>(null);
@@ -35,15 +35,11 @@ export const Prompt: FunctionComponent = () => {
       <Container>
         <Title>Welcome to CodeSandbox!</Title>
 
-        <SubTitle>
-          You need to sign in with your GitHub account to use the CLI.
+        <SubTitle style={{ paddingBottom: 16 }}>
+          You need to sign in with to use the CLI.
         </SubTitle>
 
-        <Buttons>
-          <Button autoWidth onClick={() => signInCliClicked()}>
-            Sign in with GitHub
-          </Button>
-        </Buttons>
+        <SignInModalElement />
       </Container>
     );
   }
