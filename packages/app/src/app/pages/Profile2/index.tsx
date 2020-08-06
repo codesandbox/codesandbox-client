@@ -120,6 +120,8 @@ const ProfileCard = ({ defaultEditing = false }) => {
     setEditing(false);
   };
 
+  const myProfile = loggedInUser?.username === user.username;
+
   return (
     <Stack as={motion.div} marginX={64}>
       <Stack
@@ -143,7 +145,8 @@ const ProfileCard = ({ defaultEditing = false }) => {
             css={css({
               paddingX: 6,
               paddingY: 6,
-              height: 230,
+              // fix height to avoid jumping
+              height: myProfile ? 230 : 'auto',
             })}
           >
             <Stack gap={4} align="center">
@@ -228,7 +231,7 @@ const ProfileCard = ({ defaultEditing = false }) => {
           </Stack>
         </Stack>
 
-        {loggedInUser?.username === user.username ? (
+        {myProfile ? (
           <Stack
             direction="vertical"
             gap={1}
