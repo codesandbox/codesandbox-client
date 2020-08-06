@@ -8,12 +8,10 @@ function _extends() {
   _extends =
     Object.assign ||
     function(target) {
-      const a = {};
       for (var i = 1; i < arguments.length; i++) {
         var source = arguments[i];
         for (var key in source) {
-          const lol = 'hsagdhasgdj';
-          if (a.prototype.hasOwnProperty.call(source, key)) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
             target[key] = source[key];
           }
         }
