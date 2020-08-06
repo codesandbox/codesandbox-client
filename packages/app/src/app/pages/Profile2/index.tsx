@@ -11,7 +11,9 @@ import {
   Button,
   Textarea,
   Input,
+  Tooltip,
 } from '@codesandbox/components';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 
@@ -178,19 +180,31 @@ const ProfileCard = ({ defaultEditing = false }) => {
               </Stack>
             )}
           </Stack>
-          {/* <Stack
-                gap={4}
-                css={css({
-                  paddingX: 6,
-                  paddingY: 4,
-                  borderTop: '1px solid',
-                  borderColor: 'grays.600',
-                })}
-              >
-                <Text size={2} weight="bold">
-                  Team
-                </Text>
-              </Stack> */}
+          {user.teams.length ? (
+            <Stack
+              direction="vertical"
+              gap={4}
+              css={css({
+                paddingX: 6,
+                paddingY: 4,
+                borderTop: '1px solid',
+                borderColor: 'grays.600',
+              })}
+            >
+              <Text size={2} weight="bold">
+                Team
+              </Text>
+              <Stack gap={3}>
+                {user.teams.map(team => (
+                  <Tooltip key={team.id} label={team.name}>
+                    <span>
+                      <TeamAvatar name={team.name} avatar={team.avatarUrl} />
+                    </span>
+                  </Tooltip>
+                ))}
+              </Stack>
+            </Stack>
+          ) : null}
           <Stack
             css={css({
               paddingX: 6,
@@ -302,7 +316,7 @@ const SocialLinks = ({ username, socialLinks, editing, setSocialLinks }) => (
     ) : (
       <>
         {socialLinks.map(link => (
-          <Stack gap={2} align="center">
+          <Stack gap={2} align="center" key={link}>
             <Icon name={getIconNameFromUrl(link)} />
             <Text size={3}>{getPrettyLinkFromUrl(link)}</Text>
           </Stack>
