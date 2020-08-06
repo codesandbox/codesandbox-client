@@ -96,7 +96,7 @@ export const DuplicateAccount: FunctionComponent = () => {
               css={css({ color: 'white' })}
               block
               align="center"
-              marginBottom={4}
+              marginBottom={8}
             >
               Existing account found. Please sign in with{' '}
               {providerToLoginWith === 'github' ? 'Github' : 'Google'} instead.
