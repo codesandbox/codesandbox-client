@@ -1,11 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import {
-  Stack,
-  ThemeProvider,
-  Element,
-  Text,
-  Button,
-} from '@codesandbox/components';
+import { Stack, ThemeProvider, Element, Text } from '@codesandbox/components';
 import history from 'app/utils/history';
 import css from '@styled-system/css';
 import {
@@ -15,6 +9,7 @@ import {
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
+import { Button } from 'app/pages/SignIn/components/Button';
 
 export const DuplicateAccount: FunctionComponent = () => {
   const {
@@ -106,13 +101,19 @@ export const DuplicateAccount: FunctionComponent = () => {
               Existing account found. Please sign in with{' '}
               {providerToLoginWith === 'github' ? 'Github' : 'Google'} instead.
             </Text>
-            <Stack justify="center">
+            <Stack
+              justify="center"
+              css={css({
+                button: {
+                  width: 'auto',
+                  ':hover, :focus': {
+                    background: 'white !important',
+                  },
+                },
+              })}
+            >
               {providerToLoginWith === 'github' ? (
-                <Button
-                  autoWidth
-                  loading={githubLoading}
-                  onClick={handleSignIn}
-                >
+                <Button loading={githubLoading} onClick={handleSignIn}>
                   <GitHubIcon
                     width="16"
                     height="16"
@@ -124,11 +125,7 @@ export const DuplicateAccount: FunctionComponent = () => {
                 </Button>
               ) : null}
               {providerToLoginWith === 'google' ? (
-                <Button
-                  autoWidth
-                  loading={googleLoading}
-                  onClick={handleGoogleSignIn}
-                >
+                <Button loading={googleLoading} onClick={handleGoogleSignIn}>
                   <GoogleIcon
                     width="16"
                     height="16"

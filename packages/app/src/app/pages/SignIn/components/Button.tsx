@@ -12,7 +12,6 @@ type Props = {
 export const Button = ({ children, loading, ...props }: Props) => (
   <BaseButton
     loading={loading}
-    {...props}
     css={css({
       fontSize: '1em',
       backgroundColor: 'white',
@@ -49,6 +48,7 @@ export const Button = ({ children, loading, ...props }: Props) => (
         color: 'grays.900',
       },
     })}
+    {...props}
   >
     {children}
   </BaseButton>
