@@ -89,6 +89,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
 
   let menu: React.ReactNode;
   if (selectedItems.length === 0) {
+    if (page === 'repos') return null;
     menu = (
       <ContainerMenu
         createNewSandbox={createNewSandbox}
