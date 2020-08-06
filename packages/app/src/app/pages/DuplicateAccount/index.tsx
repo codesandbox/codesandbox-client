@@ -123,7 +123,7 @@ export const DuplicateAccount: FunctionComponent = () => {
                   </Element>
                 </Button>
               ) : null}
-              {providerToLoginWith === 'gooogle' ? (
+              {providerToLoginWith === 'google' ? (
                 <Button
                   autoWidth
                   loading={googleLoading}
