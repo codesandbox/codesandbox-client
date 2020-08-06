@@ -28,7 +28,7 @@ export const RepoCard = ({
       gap={2}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
-      onContextMenu={onContextMenu}
+      onContextMenu={() => {}}
       {...props}
       css={css({
         width: '100%',
