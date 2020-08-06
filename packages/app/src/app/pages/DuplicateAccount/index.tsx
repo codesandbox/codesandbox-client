@@ -103,7 +103,8 @@ export const DuplicateAccount: FunctionComponent = () => {
               align="center"
               marginBottom={4}
             >
-              Existing account found. Please sign in with Github instead.
+              Existing account found. Please sign in with{' '}
+              {providerToLoginWith === 'github' ? 'Github' : 'Google'} instead.
             </Text>
             <Stack justify="center">
               {providerToLoginWith === 'github' ? (
