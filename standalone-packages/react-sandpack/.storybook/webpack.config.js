@@ -7,6 +7,7 @@ module.exports = (baseConfig, env) => {
   config.module.rules.push({
     test: /\.(ts|tsx)$/,
     loader: require.resolve('awesome-typescript-loader'),
+    options: { errorsAsWarnings: true },
   });
   config.resolve.extensions.push('.ts', '.tsx');
 
