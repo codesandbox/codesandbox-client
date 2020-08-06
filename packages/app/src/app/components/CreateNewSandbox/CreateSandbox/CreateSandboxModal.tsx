@@ -50,8 +50,10 @@ export const CreateSandboxModal = () => {
         isOpen={modals.newSandboxModal.isCurrent}
         onClose={() => modalsActions.newSandboxModal.close()}
         width={window.outerWidth > COLUMN_MEDIA_THRESHOLD ? 1200 : 950}
+        fullWidth={window.screen.availWidth < 800}
       >
         <CreateSandbox
+          isModal
           collectionId={
             modals.newSandboxModal.collectionId || implicitCollection?.id
           }

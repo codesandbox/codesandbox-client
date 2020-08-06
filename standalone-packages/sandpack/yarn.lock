@@ -1158,10 +1158,10 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codesandbox-api@0.0.23:
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.23.tgz#bf650a21b5f3c2369e03f0c19d10b4e2ba255b4f"
-  integrity sha512-fFGBkIghDkQILh7iHYlpZU5sfWncCDb92FQSFE4rR3VBcTfUsD5VZgpQi+JjZQuwWIdfl4cOhcIFrUYwshUezA==
+codesandbox-api@0.0.24:
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.24.tgz#f0523c0a6f11a9be4bde3ef5f4657f74a992bbfa"
+  integrity sha512-apo40Pus8maNBOBJSjYMh2T5cnAZRGuZc0B12X6S8eNesaPJ2InWan71jlmgn2+d1m8e0a0zdP3cFBDY09c6iA==
 
 codesandbox-import-util-types@^1.3.7:
   version "1.3.7"
@@ -6351,10 +6351,10 @@ typescript@2.7.2:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.7.2.tgz#2d615a1ef4aee4f574425cdff7026edf81919836"
   integrity sha512-p5TCYZDAO0m4G344hD+wx/LATebLWZNkkh2asWUFqSsD2OrDNhbAHuSjobrmsUmdzjJjEeZVU9g1h3O6vpstnw==
 
-typescript@3.7.2:
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.2.tgz#27e489b95fa5909445e9fef5ee48d81697ad18fb"
-  integrity sha512-ml7V7JfiN2Xwvcer+XAf2csGO1bPBdRbFCkYBczNZggrBZ9c7G3riSUeJmqEU5uOtXNPMhE3n+R4FA/3YOAWOQ==
+typescript@3.9.7:
+  version "3.9.7"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
+  integrity sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
 
 uglify-js@^3.1.4:
   version "3.6.0"

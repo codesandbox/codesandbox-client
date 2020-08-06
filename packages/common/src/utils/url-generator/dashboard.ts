@@ -1,4 +1,4 @@
-export const DASHBOARD_URL_PREFIX = '/new-dashboard';
+export const DASHBOARD_URL_PREFIX = '/dashboard';
 export const ALL_SANDBOXES_URL_PREFIX = `${DASHBOARD_URL_PREFIX}/all`;
 
 function appendTeamIdQueryParam(url: string, teamId?: string | null) {

@@ -7,7 +7,14 @@ import latestChangelog from 'homepage/content/changelog';
 import { ThemeProvider, Element } from '@codesandbox/components';
 import { getInfoFromMarkdown } from './utils/getInfoFromMarkdown';
 import { Create } from './Create';
-import { Container, Tab, TabContent, Tabs } from './elements';
+import {
+  Container,
+  Tab,
+  TabContent,
+  Tabs,
+  MobileTabs,
+  CloseModal,
+} from './elements';
 import { Explore } from './Explore';
 import {
   CodeSandboxIcon,
@@ -24,17 +31,20 @@ export const COLUMN_MEDIA_THRESHOLD = 1600;
 
 interface CreateSandboxProps {
   collectionId?: string;
+  isModal?: boolean;
 }
 
 export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
   const {
     state: { isFirstVisit },
     effects: { browser },
+    actions,
   } = useOvermind();
   const [newChangelogToSee, setNewChangelogToSee] = useState(false);
   const tab = useTabState({
     orientation: 'vertical',
-    selectedId: isFirstVisit ? 'Welcome' : 'Create',
+    selectedId:
+      isFirstVisit && !(window.screen.availWidth < 800) ? 'Welcome' : 'Create',
   });
   const [info, setInfo] = useState(null);
 
@@ -110,9 +120,39 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
         <TabContent {...tab} stopId="Create">
           {rProps =>
             !rProps.hidden && (
-              <div {...rProps}>
-                <Create collectionId={props.collectionId} />
-              </div>
+              <>
+                <div {...rProps}>
+                  <MobileTabs>
+                    <Tab {...tab} className="active" stopId="Create">
+                      Create Sandbox
+                    </Tab>
+                    <Tab {...tab} stopId="Import">
+                      Import Project
+                    </Tab>
+                    {props.isModal ? (
+                      <CloseModal
+                        type="button"
+                        onClick={() => actions.modals.newSandboxModal.close()}
+                      >
+                        <svg
+                          width={10}
+                          height={10}
+                          fill="none"
+                          viewBox="0 0 10 10"
+                          {...props}
+                        >
+                          <path
+                            fill="#fff"
+                            d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
+                          />
+                        </svg>
+                      </CloseModal>
+                    ) : null}
+                  </MobileTabs>
+
+                  <Create collectionId={props.collectionId} />
+                </div>
+              </>
             )
           }
         </TabContent>
@@ -143,6 +183,33 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
           {rProps =>
             !rProps.hidden && (
               <div {...rProps}>
+                <MobileTabs>
+                  <Tab {...tab} stopId="Create">
+                    Create Sandbox
+                  </Tab>
+                  <Tab className="active" {...tab} stopId="Import">
+                    Import Project
+                  </Tab>
+                  {props.isModal ? (
+                    <CloseModal
+                      type="button"
+                      onClick={() => actions.modals.newSandboxModal.close()}
+                    >
+                      <svg
+                        width={10}
+                        height={10}
+                        fill="none"
+                        viewBox="0 0 10 10"
+                        {...props}
+                      >
+                        <path
+                          fill="#fff"
+                          d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
+                        />
+                      </svg>
+                    </CloseModal>
+                  ) : null}
+                </MobileTabs>
                 <Import />
               </div>
             )

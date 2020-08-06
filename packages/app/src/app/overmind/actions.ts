@@ -80,7 +80,6 @@ type ModalName =
   | 'feedback'
   | 'forkServerModal'
   | 'liveSessionEnded'
-  | 'moveSandbox'
   | 'netlifyLogs'
   | 'preferences'
   | 'searchDependencies'
@@ -273,6 +272,7 @@ export const refetchSandboxInfo: AsyncAction = async ({
   sandbox.owned = updatedSandbox.owned;
   sandbox.userLiked = updatedSandbox.userLiked;
   sandbox.title = updatedSandbox.title;
+  sandbox.description = updatedSandbox.description;
   sandbox.team = updatedSandbox.team;
   sandbox.roomId = updatedSandbox.roomId;
   sandbox.authorization = updatedSandbox.authorization;

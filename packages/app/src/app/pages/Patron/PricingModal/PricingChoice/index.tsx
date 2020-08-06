@@ -2,7 +2,6 @@ import React, { FunctionComponent } from 'react';
 import { format } from 'date-fns';
 import { PatronBadge } from '@codesandbox/common/lib/types';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Relative from '@codesandbox/common/lib/components/Relative';
 import badges from '@codesandbox/common/lib/utils/badges/patron-info';
 import { useOvermind } from 'app/overmind';
 import { SubscribeForm } from 'app/components/SubscribeForm';
@@ -44,7 +43,11 @@ export const PricingChoice: FunctionComponent<Props> = ({ badge }) => {
           />
         )}
 
-        <Relative>
+        <div
+          css={`
+            position: relative;
+          `}
+        >
           <Currency>$</Currency>
           <PriceInput
             onChange={e => priceChanged({ price: Number(e.target.value) })}
@@ -53,7 +56,7 @@ export const PricingChoice: FunctionComponent<Props> = ({ badge }) => {
             type="number"
           />
           <Month>/month</Month>
-        </Relative>
+        </div>
 
         <RangeContainer>
           <Range

@@ -150,18 +150,16 @@ export const RENAME_FOLDER_MUTATION = gql`
 
 export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
   mutation AddToCollection(
-    $collectionPath: String!
+    $collectionPath: String
     $sandboxIds: [ID!]!
     $teamId: ID
   ) {
-    addToCollection(
+    addToCollectionOrTeam(
       collectionPath: $collectionPath
       sandboxIds: $sandboxIds
       teamId: $teamId
     ) {
-      sandboxes {
-        ...Sandbox
-      }
+      ...Sandbox
     }
   }
   ${SANDBOX_FRAGMENT}
@@ -262,7 +260,7 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
 
 export function addSandboxesToFolder(
   selectedSandboxes: string[],
-  path: string,
+  path: string | null,
   teamId: string | null
 ) {
   return client.mutate<
@@ -277,12 +275,7 @@ export function addSandboxesToFolder(
     },
     optimisticResponse: {
       __typename: 'RootMutationType',
-      addToCollection: {
-        __typename: 'Collection',
-        // We keep this empty, because it will be loaded later regardless. We
-        // just want the main directory to update immediately
-        sandboxes: [],
-      },
+      addToCollectionOrTeam: [],
     },
 
     refetchQueries: ['PathedSandboxes'],
@@ -301,12 +294,7 @@ export function undeleteSandboxes(selectedSandboxes) {
     },
     optimisticResponse: {
       __typename: 'RootMutationType',
-      addToCollection: {
-        __typename: 'Collection',
-        // We keep this empty, because it will be loaded later regardless. We
-        // just want the main directory to update immediately
-        sandboxes: [],
-      },
+      addToCollectionOrTeam: [],
     },
 
     refetchQueries: ['DeletedSandboxes'],

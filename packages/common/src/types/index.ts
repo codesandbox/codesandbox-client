@@ -554,6 +554,8 @@ export type Profile = {
   forkedCount: number;
   badges: Badge[];
   avatarUrl: string;
+  bio?: string;
+  socialLinks?: string[];
 };
 
 export type UserSandbox = {

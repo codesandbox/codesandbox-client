@@ -171,12 +171,22 @@ export const Sandbox = React.memo<Props>(
 
     const sandbox = state.editor.currentSandbox;
 
+    const getTitle = () => {
+      if (showNewSandboxModal) {
+        return 'Create a new Sandbox';
+      }
+
+      if (sandbox) {
+        return getSandboxName(sandbox);
+      }
+
+      return 'Loading...';
+    };
+
     return (
       <>
         <Helmet>
-          <title>
-            {sandbox ? getSandboxName(sandbox) : 'Loading...'} - CodeSandbox
-          </title>
+          <title>{getTitle()} - CodeSandbox</title>
         </Helmet>
         <Editor showNewSandboxModal={showNewSandboxModal} />
       </>

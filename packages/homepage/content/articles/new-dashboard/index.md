@@ -23,8 +23,8 @@ sandboxes, sorted into folders. This is the best way to collaborate together on
 sandboxes.
 
 You can create a new workspace for your team
-[here](https://codesandbox.io/new-dashboard/settings/new)! In the future, you'll
-be able to set workspace-level settings and secrets too.
+[here](https://codesandbox.io/dashboard/settings/new)! In the future, you'll be
+able to set workspace-level settings and secrets too.
 
 ## A new-look dashboard
 
