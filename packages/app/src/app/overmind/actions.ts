@@ -1,15 +1,15 @@
+import { identify } from '@codesandbox/common/lib/utils/analytics';
 import {
   NotificationType,
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
-import { identify } from '@codesandbox/common/lib/utils/analytics';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { CurrentTeamInfoFragmentFragment } from 'app/graphql/types';
 
-import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
-import { Action, AsyncAction } from '.';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
+import { Action, AsyncAction } from '.';
 
 export const internal = internalActions;
 
@@ -360,11 +360,11 @@ export const getActiveTeamInfo: AsyncAction<
   return currentTeam;
 };
 
-export const openCreateSandboxModal: Action<{ collectionId?: string }> = (
-  { actions },
-  { collectionId }
-) => {
-  actions.modals.newSandboxModal.open({ collectionId });
+export const openCreateSandboxModal: Action<{
+  collectionId?: string;
+  initialTab?: 'Import';
+}> = ({ actions }, props) => {
+  actions.modals.newSandboxModal.open(props);
 };
 
 export const validateUsername: AsyncAction<string> = async (

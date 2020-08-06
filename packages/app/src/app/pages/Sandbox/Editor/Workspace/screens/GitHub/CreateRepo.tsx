@@ -16,6 +16,7 @@ export const CreateRepo = () => {
   const {
     actions: {
       git: { createRepoClicked, repoTitleChanged },
+      openCreateSandboxModal,
     },
     state: {
       editor: { isAllModulesSynced, currentSandbox },
@@ -45,7 +46,13 @@ export const CreateRepo = () => {
           Export the content of this sandbox to a new GitHub repository,
           allowing you to commit changes made on Codesandbox to GitHub. If you
           want to rather import an existing repository,{' '}
-          <Link css={{ color: 'white' }}>open the Github import</Link>.
+          <Link
+            css={{ color: 'white' }}
+            onClick={() => openCreateSandboxModal({ initialTab: 'Import' })}
+          >
+            open the Github import
+          </Link>
+          .
         </Text>
         {!isAllModulesSynced && (
           <Text marginBottom={2} block variant="danger">
