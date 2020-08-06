@@ -61,7 +61,10 @@ export const updateNotificationReadStatus: Query<
   UpdateNotificationReadStatusMutation,
   UpdateNotificationReadStatusMutationVariables
 > = gql`
-  mutation UpdateNotificationReadStatus($notificationId: ID!, $read: Boolean!) {
+  mutation UpdateNotificationReadStatus(
+    $notificationId: UUID4!
+    $read: Boolean!
+  ) {
     updateNotificationReadStatus(notificationId: $notificationId, read: $read) {
       id
     }
@@ -72,7 +75,7 @@ export const archiveNotification: Query<
   ArchiveNotificationMutation,
   ArchiveNotificationMutationVariables
 > = gql`
-  mutation ArchiveNotification($notificationId: ID!) {
+  mutation ArchiveNotification($notificationId: UUID4!) {
     archiveNotification(notificationId: $notificationId) {
       id
     }

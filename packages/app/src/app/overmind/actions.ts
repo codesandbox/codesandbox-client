@@ -118,7 +118,8 @@ export const toggleSignInModal: Action = ({ state }) => {
 export const signInButtonClicked: AsyncAction<{
   useExtraScopes?: boolean;
   google?: boolean;
-} | null> = async ({ actions, state }, { useExtraScopes, google }) => {
+}> = async ({ actions, state }, options) => {
+  const { useExtraScopes, google } = options || {};
   if (!useExtraScopes) {
     await actions.internal.signIn({
       google,
