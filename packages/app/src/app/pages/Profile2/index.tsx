@@ -48,7 +48,14 @@ export const Profile = props => {
       >
         <Header />
 
-        <ProfileCard />
+        <Stack>
+          <div>
+            <ProfileCard />
+          </div>
+          {/* <div style={{ marginLeft: -100 }}>
+            <ProfileCard defaultEditing />
+          </div> */}
+        </Stack>
       </Stack>
     </ThemeProvider>
   );
@@ -82,17 +89,18 @@ const Header = () => (
   </Stack>
 );
 
-const ProfileCard = () => {
+const ProfileCard = ({ defaultEditing = false }) => {
   const {
     actions: {
       profile: { updateUserProfile },
     },
     state: {
+      user: loggedInUser,
       profile: { current: user },
     },
   } = useOvermind();
 
-  const [editing, setEditing] = React.useState(false);
+  const [editing, setEditing] = React.useState(defaultEditing);
   const [bio, setBio] = React.useState(user.bio || '');
   const [socialLinks, setSocialLinks] = React.useState(user.socialLinks || []);
 
@@ -205,20 +213,30 @@ const ProfileCard = () => {
             </Stack>
           </Stack>
         </Stack>
-        <Stack direction="vertical" gap={1} marginX={6}>
-          {editing ? (
-            <>
-              <Button onClick={onSubmit}>Save changes</Button>
-              <Button variant="link" type="button" onClick={onCancel}>
-                Cancel
+
+        {loggedInUser?.username === user.username ? (
+          <Stack
+            direction="vertical"
+            gap={1}
+            marginX={6}
+            marginTop={
+              editing ? 0 : socialLinks.length * 10 + 42 // precise measurement to keep CTA in the same spot
+            }
+          >
+            {editing ? (
+              <>
+                <Button onClick={onSubmit}>Save changes</Button>
+                <Button variant="link" type="button" onClick={onCancel}>
+                  Cancel
+                </Button>
+              </>
+            ) : (
+              <Button variant="secondary" onClick={() => setEditing(true)}>
+                Edit Profile
               </Button>
-            </>
-          ) : (
-            <Button variant="secondary" onClick={() => setEditing(true)}>
-              Edit Profile
-            </Button>
-          )}
-        </Stack>
+            )}
+          </Stack>
+        ) : null}
       </Stack>
     </Stack>
   );
