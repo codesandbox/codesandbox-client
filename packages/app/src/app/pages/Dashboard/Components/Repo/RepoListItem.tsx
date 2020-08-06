@@ -26,7 +26,7 @@ export const RepoListItem = ({
     <ListAction
       onClick={onClick}
       onDoubleClick={onDoubleClick}
-      onContextMenu={onContextMenu}
+      onContextMenu={() => {}}
       {...props}
       css={css({
         paddingX: 0,
