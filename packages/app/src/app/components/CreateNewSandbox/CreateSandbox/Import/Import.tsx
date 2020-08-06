@@ -4,7 +4,8 @@ import {
   gitHubToSandboxUrl,
   protocolAndHost,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { Button } from '@codesandbox/components';
+import { Button, Icon, Input, Stack } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { SignInButton } from 'app/pages/common/SignInButton';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -19,10 +20,8 @@ import {
   FeatureName,
   FeatureText,
   Features,
-  GitHubLink,
   IconLink,
   ImportChoices,
-  Input,
   PlaceHolderLink,
   StyledInfoIcon,
   VerticalSeparator,
@@ -60,32 +59,56 @@ export const ImportFromGithub = () => {
         value={url}
         onChange={updateUrl}
         type="text"
+        css={css({
+          backgroundColor: 'white',
+          color: 'grays.900',
+        })}
         placeholder="GitHub Repository URL..."
       />
 
-      {transformedUrl ? (
-        <GitHubLink
-          href={transformedUrl}
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          {transformedUrl.replace(/^https?:\/\//, '')}
-        </GitHubLink>
-      ) : (
-        <PlaceHolderLink error={error}>
-          {error || 'Enter a Github URL to see the Sandbox URL'}
-        </PlaceHolderLink>
-      )}
+      <Stack
+        align="center"
+        justify="stretch"
+        css={{ height: 40, width: '100%' }}
+      >
+        {transformedUrl ? (
+          <Stack
+            css={css({
+              width: '100%',
+              borderWidth: '1px',
+              borderColor: 'grays.500',
+              borderRadius: 2,
+            })}
+          >
+            <Input
+              css={{
+                border: 0,
+                borderRadius: 0,
+              }}
+              value={transformedUrl.replace(/^https?:\/\//, '')}
+              readOnly
+              type="text"
+            />
+            <Button
+              autoWidth
+              css={css({
+                border: 0,
+                borderRadius: 0,
+                backgroundColor: 'grays.500',
+              })}
+              onClick={() => effects.browser.copyToClipboard(transformedUrl)}
+            >
+              <Icon name="link" size={10} />
+            </Button>
+          </Stack>
+        ) : (
+          <PlaceHolderLink error={error}>
+            {error || 'Enter a Github URL and generate a sandbox link'}
+          </PlaceHolderLink>
+        )}
+      </Stack>
 
       <ButtonContainer>
-        <Button
-          autoWidth
-          style={{ fontSize: 11 }}
-          onClick={() => effects.browser.copyToClipboard(transformedUrl)}
-          disabled={!transformedUrl}
-        >
-          Copy Link
-        </Button>
         <Button
           autoWidth
           style={{ fontSize: 11 }}
@@ -123,8 +146,8 @@ export const Import = () => {
             </IconLink>
           </FeatureName>
           <FeatureText>
-            Enter the URL to your GitHub repository to generate a URL to your
-            sandbox. The sandbox will stay in sync with your repository.
+            Enter the URL to your GitHub repository to import it as a repository
+            sandbox.
             <small>
               Tip: you can also link to specific directories, commits and
               branches here.

@@ -5,6 +5,7 @@ import {
   Element,
   FormField,
   Input,
+  Link,
   Stack,
   Text,
 } from '@codesandbox/components';
@@ -17,7 +18,7 @@ export const CreateRepo = () => {
       git: { createRepoClicked, repoTitleChanged },
     },
     state: {
-      editor: { isAllModulesSynced },
+      editor: { isAllModulesSynced, currentSandbox },
       git: { error, repoTitle },
     },
   } = useOvermind();
@@ -35,11 +36,16 @@ export const CreateRepo = () => {
   const disabled = Boolean(error) || !repoTitle || !isAllModulesSynced;
 
   return (
-    <Collapsible title="Export to new Github repository">
+    <Collapsible
+      title="Export to new Github repository"
+      defaultOpen={!currentSandbox.originalGit}
+    >
       <Element paddingX={2}>
         <Text variant="muted" marginBottom={4} block>
           Export the content of this sandbox to a new GitHub repository,
-          allowing you to commit changes made on Codesandbox to GitHub.
+          allowing you to commit changes made on Codesandbox to GitHub. If you
+          want to rather import an existing repository,{' '}
+          <Link css={{ color: 'white' }}>open the Github import</Link>.
         </Text>
         {!isAllModulesSynced && (
           <Text marginBottom={2} block variant="danger">

@@ -191,7 +191,7 @@ export const CommitForm = () => {
           </Button>
           {isAllModulesSynced && !title && (
             <Text variant="danger" margin={2} align="center">
-              Please insert a subject
+              Please insert a summary
             </Text>
           )}
           {!isAllModulesSynced && (

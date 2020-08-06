@@ -36,7 +36,6 @@ import { MergedPr } from './components/MergedPr';
 import { CreateRepo } from './CreateRepo';
 import { GithubLogin } from './GithubLogin';
 import { GitHubIcon } from './Icons';
-import { ImportRepo } from './ImportRepo';
 import { NotLoggedIn } from './NotLoggedIn';
 import { NotOwner } from './NotOwner';
 import { ConflictType } from './types';
@@ -237,7 +236,6 @@ export const GitHub = () => {
             </Button>
           </Element>
         </Collapsible>
-        <ImportRepo isOpen={false} />
         <CreateRepo />
       </>
     );
@@ -265,12 +263,10 @@ export const GitHub = () => {
             </Element>
           </Collapsible>
           {getContent()}
-          <ImportRepo isOpen={false} />
           <CreateRepo />
         </>
       ) : (
         <>
-          <ImportRepo isOpen />
           <CreateRepo />
         </>
       )}

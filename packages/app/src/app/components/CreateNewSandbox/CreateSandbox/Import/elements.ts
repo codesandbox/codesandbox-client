@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+
 import { InfoIcon } from '../Icons';
 
 export const Features = styled.section`
@@ -89,31 +90,6 @@ export const ButtonContainer = styled.div`
 
   button:first-child {
     margin-right: 0.5rem;
-  }
-`;
-
-export const Input = styled.input`
-  padding: 0.25rem 0.5rem;
-  background: #222222;
-  border: 0.957784px solid #040404;
-  box-sizing: border-box;
-  border-radius: 2px;
-  font-size: 13px;
-  color: white;
-  width: 100%;
-  max-width: 300px;
-
-  &::-webkit-input-placeholder {
-    /* Chrome/Opera/Safari */
-    color: #757575;
-  }
-  &::-moz-placeholder {
-    /* Firefox 19+ */
-    color: #757575;
-  }
-  &:-ms-input-placeholder {
-    /* IE 10+ */
-    color: #757575;
   }
 `;
 
