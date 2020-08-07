@@ -1,21 +1,9 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import LogoIcon from '@codesandbox/common/lib/components/Logo';
-import {
-  ThemeProvider,
-  Stack,
-  Avatar,
-  Link,
-  Text,
-  Icon,
-  Button,
-  Textarea,
-  Input,
-  Tooltip,
-} from '@codesandbox/components';
-import { TeamAvatar } from 'app/components/TeamAvatar';
+import { ThemeProvider, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import { Header } from './Header';
+import { ProfileCard } from './ProfileCard';
 
 export const Profile = props => {
   const { username } = props.match.params;
@@ -25,7 +13,7 @@ export const Profile = props => {
       profile: { profileMounted },
     },
     state: {
-      profile: { current: user },
+      profile: { current: user, showcasedSandbox },
     },
   } = useOvermind();
 
@@ -39,7 +27,6 @@ export const Profile = props => {
     <ThemeProvider>
       <Stack
         direction="vertical"
-        align="center"
         gap={104}
         css={css({
           height: '100vh',
@@ -50,294 +37,25 @@ export const Profile = props => {
       >
         <Header />
 
-        <Stack>
-          <div>
-            <ProfileCard />
-          </div>
-          {/* <div style={{ marginLeft: -100 }}>
-            <ProfileCard defaultEditing />
-          </div> */}
+        <Stack marginX={64} gap={8}>
+          <ProfileCard />
+          {showcasedSandbox && (
+            <iframe
+              src={`https://codesandbox.io/embed/${showcasedSandbox.id}?fontsize=14&hidenavigation=1&theme=dark&view=preview`}
+              style={{
+                width: '100%',
+                height: 360,
+                border: 0,
+                borderRadius: '4px',
+                overflow: 'hidden',
+              }}
+              title="React"
+              allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+              sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+            />
+          )}
         </Stack>
       </Stack>
     </ThemeProvider>
   );
 };
-
-const Header = () => (
-  <Stack
-    as="header"
-    justify="space-between"
-    align="center"
-    paddingX={4}
-    css={css({
-      width: '100%',
-      boxSizing: 'border-box',
-      fontFamily: 'Inter, sans-serif',
-      height: 12,
-      backgroundColor: 'titleBar.activeBackground',
-      color: 'titleBar.activeForeground',
-      borderBottom: '1px solid',
-      borderColor: 'titleBar.border',
-    })}
-  >
-    <Link href="/?from-app=1" css={css({ display: ['none', 'none', 'block'] })}>
-      <LogoIcon
-        style={{
-          marginLeft: -6, // Logo positioning tweak
-        }}
-        height={24}
-      />
-    </Link>
-  </Stack>
-);
-
-const ProfileCard = ({ defaultEditing = false }) => {
-  const {
-    actions: {
-      profile: { updateUserProfile },
-    },
-    state: {
-      user: loggedInUser,
-      profile: { current: user },
-    },
-  } = useOvermind();
-
-  const [editing, setEditing] = React.useState(defaultEditing);
-  const [bio, setBio] = React.useState(user.bio || '');
-  const [socialLinks, setSocialLinks] = React.useState(user.socialLinks || []);
-
-  const onSubmit = event => {
-    event.preventDefault();
-    updateUserProfile({ bio, socialLinks: socialLinks.filter(item => item) });
-
-    setSocialLinks(socialLinks.filter(item => item));
-    setEditing(false);
-  };
-
-  const onCancel = () => {
-    setBio(user.bio);
-    setSocialLinks(user.socialLinks);
-    setEditing(false);
-  };
-
-  const myProfile = loggedInUser?.username === user.username;
-
-  return (
-    <Stack as={motion.div} marginX={64}>
-      <Stack
-        direction="vertical"
-        justify="space-between"
-        css={css({
-          width: '320px',
-          minHeight: '320px',
-          backgroundColor: 'grays.700',
-          borderRadius: 'medium',
-          border: '1px solid',
-          borderColor: 'grays.600',
-          paddingTop: 2,
-          paddingBottom: 6,
-        })}
-      >
-        <Stack direction="vertical">
-          <Stack
-            direction="vertical"
-            gap={4}
-            css={css({
-              paddingX: 6,
-              paddingY: 6,
-              // fix height to avoid jumping
-              height: myProfile ? 230 : 'auto',
-            })}
-          >
-            <Stack gap={4} align="center">
-              <Avatar
-                user={user}
-                css={css({
-                  size: 64,
-                  img: { borderRadius: 'medium' },
-                  span: { fontSize: 3, height: 4, lineHeight: '16px' },
-                })}
-              />
-              <Stack direction="vertical">
-                <Text size={5} weight="bold">
-                  {user.name}
-                </Text>
-                <Text size={3} variant="muted">
-                  {user.username}
-                </Text>
-              </Stack>
-            </Stack>
-
-            <Bio bio={bio} editing={editing} setBio={setBio} />
-
-            {editing ? null : (
-              <Stack direction="vertical" gap={3}>
-                <Stack gap={2} align="center">
-                  <Icon name="box" />
-                  <Text size={3}>{user.sandboxCount} Sandboxes</Text>
-                </Stack>
-                <Stack gap={2} align="center">
-                  <Icon name="heart" />
-                  <Text size={3}>{user.receivedLikeCount} Likes</Text>
-                </Stack>
-              </Stack>
-            )}
-          </Stack>
-          {user.teams.length ? (
-            <Stack
-              direction="vertical"
-              gap={4}
-              css={css({
-                paddingX: 6,
-                paddingY: 4,
-                borderTop: '1px solid',
-                borderColor: 'grays.600',
-              })}
-            >
-              <Text size={2} weight="bold">
-                Team
-              </Text>
-              <Stack gap={3}>
-                {user.teams.map(team => (
-                  <Tooltip key={team.id} label={team.name}>
-                    <span>
-                      <TeamAvatar name={team.name} avatar={team.avatarUrl} />
-                    </span>
-                  </Tooltip>
-                ))}
-              </Stack>
-            </Stack>
-          ) : null}
-          <Stack
-            css={css({
-              paddingX: 6,
-              paddingY: 4,
-              marginBottom: 4,
-              borderTop: '1px solid',
-              borderColor: 'grays.600',
-            })}
-          >
-            <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
-              <Text size={2} weight="bold">
-                Other places
-              </Text>
-              <SocialLinks
-                username={user.username}
-                socialLinks={socialLinks}
-                editing={editing}
-                setSocialLinks={setSocialLinks}
-              />
-            </Stack>
-          </Stack>
-        </Stack>
-
-        {myProfile ? (
-          <Stack
-            direction="vertical"
-            gap={1}
-            marginX={6}
-            marginTop={
-              editing ? 0 : socialLinks.length * 10 + 42 // precise measurement to keep CTA in the same spot
-            }
-          >
-            {editing ? (
-              <>
-                <Button onClick={onSubmit}>Save changes</Button>
-                <Button variant="link" type="button" onClick={onCancel}>
-                  Cancel
-                </Button>
-              </>
-            ) : (
-              <Button variant="secondary" onClick={() => setEditing(true)}>
-                Edit Profile
-              </Button>
-            )}
-          </Stack>
-        ) : null}
-      </Stack>
-    </Stack>
-  );
-};
-
-const Bio = ({ bio, editing, setBio }) => (
-  <>
-    {editing ? (
-      <Textarea
-        autosize
-        maxLength={280}
-        defaultValue={bio}
-        onChange={event => setBio(event.target.value)}
-      />
-    ) : (
-      <Text size={3} variant="muted">
-        {bio}
-      </Text>
-    )}
-  </>
-);
-
-const SocialLinks = ({ username, socialLinks, editing, setSocialLinks }) => (
-  <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
-    <Stack gap={2} align="center">
-      <Icon name="github" />
-      <Text size={3}>{username}</Text>
-    </Stack>
-    {editing ? (
-      <Stack
-        as="form"
-        direction="vertical"
-        gap={4}
-        onSubmit={event => {
-          event.preventDefault();
-        }}
-      >
-        {socialLinks.map((link, index) => (
-          <Input
-            key={link}
-            defaultValue={link}
-            autoFocus
-            onChange={event => {
-              const links = [...socialLinks];
-              links[index] = event.target.value;
-              setSocialLinks(links);
-            }}
-          />
-        ))}
-
-        <Button
-          variant="link"
-          css={css({
-            fontWeight: 'normal',
-            justifyContent: 'start',
-            paddingX: 0,
-          })}
-          onClick={() => setSocialLinks([...socialLinks, 'https://'])}
-        >
-          + Add website
-        </Button>
-      </Stack>
-    ) : (
-      <>
-        {socialLinks.map(link => (
-          <Stack gap={2} align="center" key={link}>
-            <Icon name={getIconNameFromUrl(link)} />
-            <Text size={3}>{getPrettyLinkFromUrl(link)}</Text>
-          </Stack>
-        ))}
-      </>
-    )}
-  </Stack>
-);
-
-const getIconNameFromUrl = url => {
-  if (url.includes('github.com')) return 'github';
-  if (url.includes('twitter.com')) return 'twitter';
-  return 'globe';
-};
-
-const getPrettyLinkFromUrl = url =>
-  url
-    .replace('https://', '')
-    .replace('http://', '')
-    .replace('twitter.com/', '')
-    .replace('gituhb.com/', '');
