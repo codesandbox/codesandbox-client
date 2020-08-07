@@ -484,6 +484,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     // right click
     if (event.button === 2) return;
 
+    setRenaming(false);
     setDrawingRect(true);
     setSelectionRect({
       start: {
