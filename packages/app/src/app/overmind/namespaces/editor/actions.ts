@@ -300,6 +300,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     actions.comments.getSandboxComments(sandbox.id);
   }
 
+  actions.git.loadGitSource();
+
   state.editor.isLoading = false;
 });
 
