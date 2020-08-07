@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Text } from '@codesandbox/components';
+import { Stack, Text, IconButton, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { CardIcon } from './Icons';
 
@@ -28,7 +28,7 @@ export const RepoCard = ({
       gap={2}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
-      onContextMenu={() => {}}
+      onContextMenu={onContextMenu}
       {...props}
       css={css({
         width: '100%',
@@ -85,6 +85,27 @@ export const RepoCard = ({
             {props.branch}
           </Text>
         </Stack>
+        {!stoppedScrolling ? (
+          <div
+            style={{
+              width: 26,
+              height: 26,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            css={css({ color: 'mutedForeground' })}
+          >
+            <Icon size={9} name="more" />
+          </div>
+        ) : (
+          <IconButton
+            name="more"
+            size={9}
+            title="Repo actions"
+            onClick={onContextMenu}
+          />
+        )}
       </Stack>
     </Stack>
   );
