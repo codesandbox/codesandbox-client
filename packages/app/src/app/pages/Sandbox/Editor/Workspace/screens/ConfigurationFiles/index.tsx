@@ -81,11 +81,7 @@ export const ConfigurationFilesComponent = ({ theme }) => {
   return (
     <>
       <Collapsible title="Configuration Files" defaultOpen>
-        <Stack
-          direction="vertical"
-          gap={6}
-          style={{ padding: `0 ${theme.space[3]}px` }}
-        >
+        <Stack direction="vertical" gap={6} padding={2}>
           <Element>
             <Text block marginBottom={2}>
               Configuration for your Sandbox
