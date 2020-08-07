@@ -208,6 +208,10 @@ export const requestAuthorisation: AsyncAction = async ({ actions }) => {
   await actions.internal.authorize();
 };
 
+export const setPendingUserId: Action<string> = ({ state }, id) => {
+  state.pendingUserId = id;
+};
+
 export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
   state.isLoadingGithub = true;
   await actions.internal.signIn({ useExtraScopes: true });

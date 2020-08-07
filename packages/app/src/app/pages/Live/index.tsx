@@ -12,7 +12,6 @@ import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import GithubIcon from 'react-icons/lib/go/mark-github';
 import { Link } from 'react-router-dom';
 
 import Editor from '../Sandbox/Editor';
@@ -57,8 +56,7 @@ export const LivePage: React.FC<Props> = ({ match }) => {
               autoWidth
             >
               <Stack align="center" gap={2}>
-                <GithubIcon />{' '}
-                <Text style={{ lineHeight: 1 }}>Sign in with GitHub</Text>
+                <Text style={{ lineHeight: 1 }}>Sign in</Text>
               </Stack>
             </Button>
           </Element>
