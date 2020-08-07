@@ -3,7 +3,6 @@ import { CSB_PKG_PROTOCOL } from '@codesandbox/common/lib/utils/ci';
 import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
-import delay from 'sandbox/utils/delay';
 import { Module } from '../types/module';
 import Manager from '../manager';
 
@@ -11,149 +10,49 @@ import getDependencyName from '../utils/get-dependency-name';
 import { packageFilter } from '../utils/resolve-utils';
 import TranspiledModule from '../transpiled-module';
 
-type Meta = {
-  [path: string]: any;
+import { CsbFetcher } from './fetch-protocols/csb';
+import { UnpkgFetcher } from './fetch-protocols/unpkg';
+import { JSDelivrNPMFetcher } from './fetch-protocols/jsdelivr/jsdelivr-npm';
+import { JSDelivrGHFetcher } from './fetch-protocols/jsdelivr/jsdelivr-gh';
+import { TarFetcher } from './fetch-protocols/tar';
+
+export type Meta = {
+  [path: string]: true;
 };
 type Metas = {
-  [dependencyAndVersion: string]: Meta;
+  [dependencyAndVersion: string]: Promise<Meta>;
 };
 
 type Packages = {
   [path: string]: Promise<Module>;
 };
 
-type MetaFiles = Array<{
-  path: string;
-  type: 'file' | 'directory';
-  files?: MetaFiles;
-}>;
-
 const metas: Metas = {};
 export let combinedMetas: Meta = {}; // eslint-disable-line
 const normalizedMetas: { [key: string]: Meta } = {};
 const packages: Packages = {};
 
-function normalize(files: MetaFiles, fileObject: Meta = {}, rootPath: string) {
-  for (let i = 0; i < files.length; i += 1) {
-    if (files[i].type === 'file') {
-      const absolutePath = rootPath + files[i].path;
-      fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
-    }
+function prependRootPath(meta: Meta, rootPath: string): Meta {
+  const newMeta: Meta = {};
+  Object.keys(meta).forEach(path => {
+    newMeta[rootPath + path] = meta[path];
+  });
 
-    if (files[i].files) {
-      normalize(files[i].files, fileObject, rootPath);
-    }
-  }
-
-  return fileObject;
+  return newMeta;
 }
 
-function normalizeJSDelivr(files: any, fileObject: Meta = {}, rootPath) {
-  for (let i = 0; i < files.length; i += 1) {
-    const absolutePath = pathUtils.join(rootPath, files[i].name);
-    fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
-  }
-
-  return fileObject;
+export interface FetchProtocol {
+  file(name: string, version: string, path: string): Promise<string>;
+  meta(name: string, version: string): Promise<Meta>;
 }
-
-/**
- * Converts urls like "https://github.com/user/repo.git" to "user/repo".
- */
-const convertGitHubURLToVersion = (version: string) => {
-  const result = version.match(/https:\/\/github\.com\/(.*)$/);
-  if (result && result[1]) {
-    const repo = result[1];
-    return repo.replace(/\.git$/, '');
-  }
-
-  return version;
-};
 
 const urlProtocols = {
-  csbGH: {
-    file: async (name: string, version: string, path: string) =>
-      `${version.replace(/\/_pkg.tgz$/, '')}${path}`,
-    meta: async (name: string, version: string) =>
-      `${version.replace(/\/\.pkg.tgz$/, '')}/_csb-meta.json`,
-    normalizeMeta: normalize,
-  },
-  unpkg: {
-    file: async (name: string, version: string, path: string) =>
-      `https://unpkg.com/${name}@${version}${path}`,
-    meta: async (name: string, version: string) =>
-      `https://unpkg.com/${name}@${version}/?meta`,
-    normalizeMeta: normalize,
-  },
-  jsDelivrNPM: {
-    file: async (name: string, version: string, path: string) =>
-      `https://cdn.jsdelivr.net/npm/${name}@${version}${path}`,
-    meta: async (name: string, version: string) => {
-      // if it's a tag it won't work, so we fetch latest version otherwise
-      const latestVersion = /^\d/.test(version)
-        ? version
-        : JSON.parse(
-            (await downloadDependency(name, version, '/package.json')).code
-          ).version;
-
-      return `https://data.jsdelivr.com/v1/package/npm/${name}@${latestVersion}/flat`;
-    },
-    normalizeMeta: normalizeJSDelivr,
-  },
-  jsDelivrGH: {
-    file: async (name: string, version: string, path: string) =>
-      `https://cdn.jsdelivr.net/gh/${convertGitHubURLToVersion(
-        version
-      )}${path}`,
-    meta: async (name: string, version: string) => {
-      // First get latest sha from GitHub API
-      const sha = await fetch(
-        `https://api.github.com/repos/${convertGitHubURLToVersion(
-          version
-        )}/commits/master`
-      )
-        .then(x => x.json())
-        .then(x => x.sha);
-
-      return `https://data.jsdelivr.com/v1/package/gh/${convertGitHubURLToVersion(
-        version
-      )}@${sha}/flat`;
-    },
-    normalizeMeta: normalizeJSDelivr,
-  },
+  csbGH: new CsbFetcher(),
+  unpkg: new UnpkgFetcher(),
+  jsDelivrNPM: new JSDelivrNPMFetcher(),
+  jsDelivrGH: new JSDelivrGHFetcher(),
+  tar: new TarFetcher(),
 };
-
-async function fetchWithRetries(url: string, retries = 6): Promise<Response> {
-  const doFetch = () =>
-    window.fetch(url).then(x => {
-      if (x.ok) {
-        return x;
-      }
-
-      throw new Error(`Could not fetch ${url}`);
-    });
-
-  let lastTryTime = 0;
-  for (let i = 0; i < retries; i++) {
-    if (Date.now() - lastTryTime < 3000) {
-      // Ensure that we at least wait 3s before retrying a request to prevent rate limits
-      // eslint-disable-next-line
-      await delay(3000 - (Date.now() - lastTryTime));
-    }
-    try {
-      lastTryTime = Date.now();
-      // eslint-disable-next-line
-      return await doFetch();
-    } catch (e) {
-      console.error(e);
-      if (i === retries - 1) {
-        throw e;
-      }
-    }
-  }
-
-  throw new Error('Could not fetch');
-}
 
 export function setCombinedMetas(givenCombinedMetas: Meta) {
   combinedMetas = givenCombinedMetas;
@@ -164,6 +63,10 @@ const getFetchProtocol = (depVersion: string, useFallback = false) => {
 
   if (isDraftProtocol) {
     return urlProtocols.csbGH;
+  }
+
+  if (depVersion.includes('http') && !depVersion.includes('github.com')) {
+    return urlProtocols.tar;
   }
 
   const isGitHub = /\//.test(depVersion);
@@ -208,15 +111,11 @@ async function getMeta(
 
   const protocol = getFetchProtocol(depVersion, useFallback);
 
-  metas[id] = protocol
-    .meta(nameWithoutAlias, depVersion)
-    .then(fetchWithRetries)
-    .then(x => x.json())
-    .catch(e => {
-      delete metas[id];
+  metas[id] = protocol.meta(nameWithoutAlias, depVersion).catch(e => {
+    delete metas[id];
 
-      throw e;
-    });
+    throw e;
+  });
 
   return metas[id];
 }
@@ -246,21 +145,13 @@ export async function downloadDependency(
 
   packages[id] = protocol
     .file(nameWithoutAlias, depVersion, relativePath)
-    .then(fetchWithRetries)
-    .then(x => x.text())
     .catch(async () => {
       const fallbackProtocol = getFetchProtocol(depVersion, true);
-      const fallbackUrl = await fallbackProtocol.file(
-        nameWithoutAlias,
-        depVersion,
-        relativePath
-      );
-
-      return fetchWithRetries(fallbackUrl).then(x => x.text());
+      return fallbackProtocol.file(nameWithoutAlias, depVersion, relativePath);
     })
-    .then(x => ({
+    .then(code => ({
       path,
-      code: x,
+      code,
       downloaded: true,
     }));
 
@@ -499,32 +390,27 @@ export default async function fetchModule(
   const { packageJSONPath, version } = versionInfo;
 
   let meta: Meta;
-  let normalizeFunction: typeof normalize;
 
   try {
-    if (dependencyName === 'd3-interpolate') {
-      // A folder is missing on d3-interpolate on jsdelivr, this way we force unpkg.com.
-      // Keep track: https://github.com/jsdelivr/jsdelivr/issues/18223
-      throw new Error("Doesn't work on jsdelivr yet");
-    }
-
-    normalizeFunction = getFetchProtocol(version).normalizeMeta;
     meta = await getMeta(dependencyName, packageJSONPath, version);
   } catch (e) {
     // Use fallback
     meta = await getMeta(dependencyName, packageJSONPath, version, true);
-    normalizeFunction = getFetchProtocol(version, true).normalizeMeta;
   }
 
   const rootPath = packageJSONPath
     ? pathUtils.dirname(packageJSONPath)
     : pathUtils.join('/node_modules', dependencyName);
   const normalizedCacheKey = dependencyName + rootPath;
+
   const normalizedMeta =
-    normalizedMetas[normalizedCacheKey] ||
-    normalizeFunction(meta.files, {}, rootPath);
-  normalizedMetas[normalizedCacheKey] = normalizedMeta;
-  combinedMetas = { ...combinedMetas, ...normalizedMeta };
+    normalizedMetas[normalizedCacheKey] || prependRootPath(meta, rootPath);
+
+  if (!normalizedMetas[normalizedCacheKey]) {
+    normalizedMetas[normalizedCacheKey] = normalizedMeta;
+  } else {
+    combinedMetas = { ...combinedMetas, ...normalizedMeta };
+  }
 
   const foundPath = await resolvePath(
     path,
