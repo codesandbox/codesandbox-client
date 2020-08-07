@@ -1,5 +1,13 @@
 import React from 'react';
-import { Stack, ListAction, Text, Grid, Column } from '@codesandbox/components';
+import {
+  Stack,
+  ListAction,
+  Text,
+  IconButton,
+  Grid,
+  Column,
+  Icon,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
 import { ListIcon } from './Icons';
 
@@ -26,7 +34,7 @@ export const RepoListItem = ({
     <ListAction
       onClick={onClick}
       onDoubleClick={onDoubleClick}
-      onContextMenu={() => {}}
+      onContextMenu={onContextMenu}
       {...props}
       css={css({
         paddingX: 0,
@@ -72,6 +80,27 @@ export const RepoListItem = ({
           {/* empty column to align with sandbox list items */}
         </Column>
       </Grid>
+      {!stoppedScrolling ? (
+        <div
+          style={{
+            width: 26,
+            height: 26,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          css={css({ color: 'mutedForeground' })}
+        >
+          <Icon size={9} name="more" />
+        </div>
+      ) : (
+        <IconButton
+          name="more"
+          size={9}
+          title="Repository actions"
+          onClick={onContextMenu}
+        />
+      )}
     </ListAction>
   );
 };
