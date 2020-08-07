@@ -159,6 +159,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
       state.editor.currentSandbox
     );
 
+    actions.git.loadGitSource();
+
     state.editor.isForkingSandbox = false;
     return;
   }
@@ -296,10 +298,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     hasPermission(sandbox.authorization, 'comment')
   ) {
     actions.comments.getSandboxComments(sandbox.id);
-  }
-
-  if (sandbox.originalGit && hasPermission(sandbox.authorization, 'owner')) {
-    actions.git.loadGitSource();
   }
 
   state.editor.isLoading = false;
