@@ -46,69 +46,71 @@ export const loadGitSource: AsyncAction = async ({
   effects,
 }) => {
   const sandbox = state.editor.currentSandbox!;
+  state.git.isFetching = true;
   state.git.isExported = false;
   state.git.pr = null;
   state.git.repoTitle = '';
 
-  if (sandbox.originalGit && hasPermission(sandbox.authorization, 'owner')) {
-    state.git.isFetching = true;
-
-    if (!state.user || !state.user.integrations.github) {
-      return;
-    }
-
-    // We go grab the current version of the source
-    try {
-      await actions.git._loadSourceSandbox();
-    } catch (error) {
-      actions.internal.handleError({
-        error,
-        message:
-          'Could not load the source sandbox for this GitHub sandbox, please refresh or report the issue.',
-      });
-      return;
-    }
-
-    try {
-      state.git.permission = await effects.api.getGitRights(sandbox.id);
-    } catch (error) {
-      actions.internal.handleError({
-        error,
-        message:
-          'Could not get information about your permissions, please refresh or report the issue.',
-      });
-      return;
-    }
-
-    // Now let us compare whatever has changed between our current
-    // state and the source
-    try {
-      await actions.git._compareWithSource();
-    } catch (error) {
-      actions.internal.handleError({
-        error,
-        message:
-          'We were not able to compare the content with the source, please refresh or report the issue.',
-      });
-      return;
-    }
-
-    if (state.git.gitState === SandboxGitState.SYNCED && sandbox.prNumber) {
-      try {
-        await actions.git._compareWithBase();
-      } catch (error) {
-        actions.internal.handleError({
-          error,
-          message:
-            'We were not able to compare the content with the PR, please refresh or report the issue.',
-        });
-        return;
-      }
-    }
-
-    actions.git._setGitChanges();
-    state.git.isFetching = false;
+  if (
+    !state.user ||
+    !state.user.integrations.github ||
+    !sandbox.originalGit ||
+    !hasPermission(sandbox.authorization, 'owner')
+  ) {
+    return;
   }
+
+  // We go grab the current version of the source
+  try {
+    await actions.git._loadSourceSandbox();
+  } catch (error) {
+    actions.internal.handleError({
+      error,
+      message:
+        'Could not load the source sandbox for this GitHub sandbox, please refresh or report the issue.',
+    });
+    return;
+  }
+
+  try {
+    state.git.permission = await effects.api.getGitRights(sandbox.id);
+  } catch (error) {
+    actions.internal.handleError({
+      error,
+      message:
+        'Could not get information about your permissions, please refresh or report the issue.',
+    });
+    return;
+  }
+
+  // Now let us compare whatever has changed between our current
+  // state and the source
+  try {
+    await actions.git._compareWithSource();
+  } catch (error) {
+    actions.internal.handleError({
+      error,
+      message:
+        'We were not able to compare the content with the source, please refresh or report the issue.',
+    });
+    return;
+  }
+
+  if (state.git.gitState === SandboxGitState.SYNCED && sandbox.prNumber) {
+    try {
+      await actions.git._compareWithBase();
+    } catch (error) {
+      actions.internal.handleError({
+        error,
+        message:
+          'We were not able to compare the content with the PR, please refresh or report the issue.',
+      });
+      return;
+    }
+  }
+
+  actions.git._setGitChanges();
+  state.git.isFetching = false;
 };
 
 export const createRepoClicked: AsyncAction = async ({
