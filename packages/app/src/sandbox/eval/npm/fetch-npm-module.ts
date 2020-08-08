@@ -10,11 +10,7 @@ import getDependencyName from '../utils/get-dependency-name';
 import { packageFilter } from '../utils/resolve-utils';
 import TranspiledModule from '../transpiled-module';
 
-import { CsbFetcher } from './fetch-protocols/csb';
-import { UnpkgFetcher } from './fetch-protocols/unpkg';
-import { JSDelivrNPMFetcher } from './fetch-protocols/jsdelivr/jsdelivr-npm';
-import { JSDelivrGHFetcher } from './fetch-protocols/jsdelivr/jsdelivr-gh';
-import { TarFetcher } from './fetch-protocols/tar';
+import { protocols } from './fetch-protocols';
 
 export type Meta = {
   [path: string]: true;
@@ -46,36 +42,32 @@ export interface FetchProtocol {
   meta(name: string, version: string): Promise<Meta>;
 }
 
-const urlProtocols = {
-  csbGH: new CsbFetcher(),
-  unpkg: new UnpkgFetcher(),
-  jsDelivrNPM: new JSDelivrNPMFetcher(),
-  jsDelivrGH: new JSDelivrGHFetcher(),
-  tar: new TarFetcher(),
-};
-
 export function setCombinedMetas(givenCombinedMetas: Meta) {
   combinedMetas = givenCombinedMetas;
 }
 
 const getFetchProtocol = (depVersion: string, useFallback = false) => {
+  if (depVersion.startsWith('file:')) {
+    return protocols.file;
+  }
+
   const isDraftProtocol = CSB_PKG_PROTOCOL.test(depVersion);
 
   if (isDraftProtocol) {
-    return urlProtocols.csbGH;
+    return protocols.csbGH;
   }
 
   if (depVersion.includes('http') && !depVersion.includes('github.com')) {
-    return urlProtocols.tar;
+    return protocols.tar;
   }
 
   const isGitHub = /\//.test(depVersion);
 
   if (isGitHub) {
-    return urlProtocols.jsDelivrGH;
+    return protocols.jsDelivrGH;
   }
 
-  return useFallback ? urlProtocols.unpkg : urlProtocols.jsDelivrNPM;
+  return useFallback ? protocols.unpkg : protocols.jsDelivrNPM;
 };
 
 // Strips the version of a path, eg. test/1.3.0 -> test
