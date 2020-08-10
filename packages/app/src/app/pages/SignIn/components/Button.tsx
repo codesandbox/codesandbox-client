@@ -4,7 +4,7 @@ import { Button as BaseButton } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 
 type Props = {
-  children: any;
+  children: React.ReactNode;
   loading?: boolean;
   onClick: any;
 };
