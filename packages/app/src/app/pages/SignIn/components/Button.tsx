@@ -6,7 +6,7 @@ import { css } from '@styled-system/css';
 type Props = {
   children: React.ReactNode;
   loading?: boolean;
-  onClick: any;
+  onClick: () => void;
 };
 
 export const Button = ({ children, loading, ...props }: Props) => (
