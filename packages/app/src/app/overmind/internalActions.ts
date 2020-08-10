@@ -25,14 +25,12 @@ export const signIn: AsyncAction<{
   useExtraScopes?: boolean;
   provider?: 'google' | 'github';
 }> = async ({ state, effects, actions }, options) => {
-  effects.analytics.track('Sign In', {});
+  effects.analytics.track('Sign In', {
+    provider: options.provider,
+  });
   try {
-    if (options.provider === 'google') {
-      await actions.internal.signInGoogle();
-    }
-    if (options.provider === 'github') {
-      await actions.internal.signInGithub(options);
-    }
+    await actions.internal.runProviderAuth(options);
+
     state.signInModalOpen = false;
     state.pendingUser = null;
     state.user = await effects.api.getCurrentUser();
@@ -130,19 +128,22 @@ export const authorize: AsyncAction = async ({ state, effects }) => {
     state.editor.error = error.message;
   }
 };
-
-export const signInGithub: AsyncAction<{ useExtraScopes?: boolean }, any> = (
-  { effects, state },
-  options
-) => {
+export const runProviderAuth: AsyncAction<
+  { useExtraScopes?: boolean; provider?: 'github' | 'google' },
+  any
+> = ({ effects, state }, { provider, useExtraScopes }) => {
   const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
+
   const authPath = new URL(
-    location.origin + (hasDevAuth ? '/auth/dev' : '/auth/github')
+    location.origin + (hasDevAuth ? '/auth/dev' : `/auth/${provider}`)
   );
 
   authPath.searchParams.set('version', '2');
-  if (options.useExtraScopes) {
-    authPath.searchParams.set('scope', 'user:email,repo');
+
+  if (provider === 'github') {
+    if (useExtraScopes) {
+      authPath.searchParams.set('scope', 'user:email,repo');
+    }
   }
 
   const popup = effects.browser.openPopup(authPath.toString(), 'sign in');
@@ -174,47 +175,6 @@ export const signInGithub: AsyncAction<{ useExtraScopes?: boolean }, any> = (
 
   effects.browser.waitForMessage('signup').then((data: any) => {
     state.pendingUserId = data.id;
-    popup.close();
-  });
-
-  return signInPromise;
-};
-
-export const signInGoogle: AsyncAction = ({ effects, state }) => {
-  const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
-  const authPath = new URL(
-    location.origin + (hasDevAuth ? '/auth/dev' : '/auth/google')
-  );
-
-  const popup = effects.browser.openPopup(authPath.toString(), 'sign in');
-
-  const signInPromise = effects.browser
-    .waitForMessage('signin')
-    .then((data: any) => {
-      if (hasDevAuth) {
-        localStorage.setItem('devJwt', data.jwt);
-
-        // Today + 30 days
-        const DAY = 1000 * 60 * 60 * 24;
-        const expiryDate = new Date(Date.now() + DAY * 30);
-
-        document.cookie = `signedInDev=true; expires=${expiryDate.toUTCString()}; path=/`;
-      } else if (data?.jwt) {
-        effects.api.revokeToken(data.jwt);
-      }
-      popup.close();
-    });
-
-  effects.browser.waitForMessage('signup').then((data: any) => {
-    state.pendingUserId = data.id;
-    popup.close();
-  });
-
-  effects.browser.waitForMessage('duplicate').then((data: any) => {
-    state.duplicateAccountStatus = {
-      duplicate: true,
-      provider: data.provider,
-    };
     popup.close();
   });
 

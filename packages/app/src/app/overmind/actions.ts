@@ -222,7 +222,7 @@ export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
 };
 
 export const signInGoogleClicked: AsyncAction = async ({ actions }) => {
-  await actions.internal.signInGoogle();
+  await actions.internal.signIn({ provider: 'google' });
 };
 
 export const signOutClicked: AsyncAction = async ({

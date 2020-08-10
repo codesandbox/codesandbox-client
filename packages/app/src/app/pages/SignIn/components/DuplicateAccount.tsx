@@ -51,7 +51,7 @@ export const DuplicateAccount = ({
           marginBottom={8}
         >
           We found an existing account, please sign in with{' '}
-          {provider === 'github' ? 'Github' : 'Google'} instead.
+          {provider === 'github' ? 'GitHub' : 'Google'} instead.
         </Text>
         <Stack
           justify="center"
