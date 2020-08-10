@@ -36,7 +36,7 @@ export const Prompt: FunctionComponent = () => {
         <Title>Welcome to CodeSandbox!</Title>
 
         <SubTitle style={{ paddingBottom: 16 }}>
-          You need to sign in with to use the CLI.
+          You need to sign in to use the CLI.
         </SubTitle>
 
         <SignInModalElement />
