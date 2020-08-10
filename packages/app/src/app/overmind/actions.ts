@@ -214,7 +214,7 @@ export const setPendingUserId: Action<string> = ({ state }, id) => {
 
 export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
   state.isLoadingGithub = true;
-  await actions.internal.signIn({ useExtraScopes: true });
+  await actions.internal.signIn({ useExtraScopes: true, provider: 'github' });
   state.isLoadingGithub = false;
   if (state.editor.currentSandbox?.originalGit) {
     actions.git.loadGitSource();
