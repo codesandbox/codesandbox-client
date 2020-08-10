@@ -47,138 +47,137 @@ export const ProfileCard = ({ defaultEditing = false }) => {
   const myProfile = loggedInUser?.username === user.username;
 
   return (
-    <Stack as={motion.div}>
-      <Stack
-        direction="vertical"
-        justify="space-between"
-        css={css({
-          width: '320px',
-          minHeight: '320px',
-          backgroundColor: 'grays.700',
-          borderRadius: 'medium',
-          border: '1px solid',
-          borderColor: 'grays.600',
-          paddingTop: 2,
-          paddingBottom: 6,
-        })}
-      >
-        <Stack direction="vertical">
+    <Stack
+      as={motion.div}
+      direction="vertical"
+      justify="space-between"
+      css={css({
+        width: '320px',
+        minHeight: '320px',
+        backgroundColor: 'grays.700',
+        borderRadius: 'medium',
+        border: '1px solid',
+        borderColor: 'grays.600',
+        paddingTop: 2,
+        paddingBottom: 6,
+      })}
+    >
+      <Stack direction="vertical">
+        <Stack
+          direction="vertical"
+          gap={4}
+          css={css({
+            paddingX: 6,
+            paddingY: 6,
+            // fix height to avoid jumping
+            height: myProfile ? 230 : 'auto',
+          })}
+        >
+          <Stack gap={4} align="center">
+            <Avatar
+              user={user}
+              css={css({
+                size: 64,
+                img: { borderRadius: 'medium' },
+                span: { fontSize: 3, height: 4, lineHeight: '16px' },
+              })}
+            />
+            <Stack direction="vertical">
+              <Text size={5} weight="bold">
+                {user.name}
+              </Text>
+              <Text size={3} variant="muted">
+                {user.username}
+              </Text>
+            </Stack>
+          </Stack>
+
+          <Bio bio={bio} editing={editing} setBio={setBio} />
+
+          {editing ? null : (
+            <Stack direction="vertical" gap={3}>
+              <Stack gap={2} align="center">
+                <Icon name="box" />
+                <Text size={3}>{user.sandboxCount} Sandboxes</Text>
+              </Stack>
+              <Stack gap={2} align="center">
+                <Icon name="heart" />
+                <Text size={3}>{user.receivedLikeCount} Likes</Text>
+              </Stack>
+            </Stack>
+          )}
+        </Stack>
+        {user.teams.length ? (
           <Stack
             direction="vertical"
             gap={4}
             css={css({
               paddingX: 6,
-              paddingY: 6,
-              // fix height to avoid jumping
-              height: myProfile ? 230 : 'auto',
-            })}
-          >
-            <Stack gap={4} align="center">
-              <Avatar
-                user={user}
-                css={css({
-                  size: 64,
-                  img: { borderRadius: 'medium' },
-                  span: { fontSize: 3, height: 4, lineHeight: '16px' },
-                })}
-              />
-              <Stack direction="vertical">
-                <Text size={5} weight="bold">
-                  {user.name}
-                </Text>
-                <Text size={3} variant="muted">
-                  {user.username}
-                </Text>
-              </Stack>
-            </Stack>
-
-            <Bio bio={bio} editing={editing} setBio={setBio} />
-
-            {editing ? null : (
-              <Stack direction="vertical" gap={3}>
-                <Stack gap={2} align="center">
-                  <Icon name="box" />
-                  <Text size={3}>{user.sandboxCount} Sandboxes</Text>
-                </Stack>
-                <Stack gap={2} align="center">
-                  <Icon name="heart" />
-                  <Text size={3}>{user.receivedLikeCount} Likes</Text>
-                </Stack>
-              </Stack>
-            )}
-          </Stack>
-          {user.teams.length ? (
-            <Stack
-              direction="vertical"
-              gap={4}
-              css={css({
-                paddingX: 6,
-                paddingY: 4,
-                borderTop: '1px solid',
-                borderColor: 'grays.600',
-              })}
-            >
-              <Text size={2} weight="bold">
-                Team
-              </Text>
-              <Stack gap={3}>
-                {user.teams.map(team => (
-                  <Tooltip key={team.id} label={team.name}>
-                    <span>
-                      <TeamAvatar name={team.name} avatar={team.avatarUrl} />
-                    </span>
-                  </Tooltip>
-                ))}
-              </Stack>
-            </Stack>
-          ) : null}
-          <Stack
-            css={css({
-              paddingX: 6,
               paddingY: 4,
-              marginBottom: 4,
               borderTop: '1px solid',
               borderColor: 'grays.600',
             })}
           >
-            <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
-              <Text size={2} weight="bold">
-                Other places
-              </Text>
-              <SocialLinks
-                username={user.username}
-                socialLinks={socialLinks}
-                editing={editing}
-                setSocialLinks={setSocialLinks}
-              />
+            <Text size={2} weight="bold">
+              Team
+            </Text>
+            <Stack gap={3}>
+              {user.teams.map(team => (
+                <Tooltip key={team.id} label={team.name}>
+                  <span>
+                    <TeamAvatar name={team.name} avatar={team.avatarUrl} />
+                  </span>
+                </Tooltip>
+              ))}
             </Stack>
           </Stack>
-        </Stack>
-
-        {myProfile ? (
-          <Stack
-            direction="vertical"
-            gap={1}
-            marginX={6}
-            marginTop={
-              editing ? 0 : socialLinks.length * 10 + 42 // precise measurement to keep CTA in the same spot
-            }
-          >
-            {editing ? (
-              <>
-                <Button onClick={onSubmit}>Save changes</Button>
-                <Button variant="link" type="button" onClick={onCancel}>
-                  Cancel
-                </Button>
-              </>
-            ) : (
-              <Button variant="secondary" onClick={() => setEditing(true)}>
-                Edit Profile
-              </Button>
-            )}
-          </Stack>
         ) : null}
+        <Stack
+          css={css({
+            paddingX: 6,
+            paddingY: 4,
+            marginBottom: 4,
+            borderTop: '1px solid',
+            borderColor: 'grays.600',
+          })}
+        >
+          <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
+            <Text size={2} weight="bold">
+              Other places
+            </Text>
+            <SocialLinks
+              username={user.username}
+              socialLinks={socialLinks}
+              editing={editing}
+              setSocialLinks={setSocialLinks}
+            />
+          </Stack>
+        </Stack>
       </Stack>
+
+      {myProfile ? (
+        <Stack
+          direction="vertical"
+          gap={1}
+          marginX={6}
+          marginTop={
+            editing ? 0 : socialLinks.length * 10 + 42 // precise measurement to keep CTA in the same spot
+          }
+        >
+          {editing ? (
+            <>
+              <Button onClick={onSubmit}>Save changes</Button>
+              <Button variant="link" type="button" onClick={onCancel}>
+                Cancel
+              </Button>
+            </>
+          ) : (
+            <Button variant="secondary" onClick={() => setEditing(true)}>
+              Edit Profile
+            </Button>
+          )}
+        </Stack>
+      ) : null}
     </Stack>
   );
 };
