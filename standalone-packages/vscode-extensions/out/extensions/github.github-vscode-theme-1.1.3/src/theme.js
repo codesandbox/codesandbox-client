@@ -13,7 +13,7 @@ function getTheme({ style, name }) {
   const foreground = pick({ light: primer.gray[8], dark: primer.gray[7] });
 
   return {
-    name: name,
+    name,
     colors: {
       focusBorder: pick({ light: primer.blue[4], dark: primer.blue[3] }),
       foreground: pick({ light: primer.gray[7], dark: primer.gray[6] }),

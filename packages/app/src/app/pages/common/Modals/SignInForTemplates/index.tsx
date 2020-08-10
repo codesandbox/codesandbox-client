@@ -4,7 +4,7 @@ import { Alert } from '../Common/Alert';
 
 const SignInForTemplates: FunctionComponent = () => {
   const {
-    actions: { modalClosed, signInClicked },
+    actions: { modalClosed, toggleSignInModal },
   } = useOvermind();
 
   return (
@@ -12,8 +12,8 @@ const SignInForTemplates: FunctionComponent = () => {
       title="Sign in to create templates"
       description="You can only create templates as a logged in user."
       onCancel={modalClosed}
-      onPrimaryAction={() => signInClicked()}
-      confirmMessage="Sign in with GitHub"
+      onPrimaryAction={() => toggleSignInModal()}
+      confirmMessage="Sign in"
     />
   );
 };

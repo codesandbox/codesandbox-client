@@ -12,7 +12,7 @@ export const comment: Query<
   SandboxCommentQuery,
   SandboxCommentQueryVariables
 > = gql`
-  query SandboxComment($sandboxId: ID!, $commentId: ID!) {
+  query SandboxComment($sandboxId: ID!, $commentId: UUID4!) {
     sandbox(sandboxId: $sandboxId) {
       comment(commentId: $commentId) {
         ...CommentWithReplies
