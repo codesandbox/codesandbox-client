@@ -165,7 +165,10 @@ export const signInGithub: AsyncAction<{ useExtraScopes?: boolean }, any> = (
     });
 
   effects.browser.waitForMessage('duplicate').then((data: any) => {
-    window.location.href = data.url + `&continue=/dashboard`;
+    state.duplicateAccountStatus = {
+      duplicate: true,
+      provider: data.provider,
+    };
     popup.close();
   });
 
@@ -208,7 +211,10 @@ export const signInGoogle: AsyncAction = ({ effects, state }) => {
   });
 
   effects.browser.waitForMessage('duplicate').then((data: any) => {
-    window.location.href = data.url + `&continue=/dashboard`;
+    state.duplicateAccountStatus = {
+      duplicate: true,
+      provider: data.provider,
+    };
     popup.close();
   });
 

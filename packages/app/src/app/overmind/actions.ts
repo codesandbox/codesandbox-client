@@ -414,3 +414,10 @@ export const finalizeSignUp: AsyncAction<string> = async (
     });
   }
 };
+
+export const setLoadingAuth: AsyncAction<'google' | 'github'> = async (
+  { state },
+  provider
+) => {
+  state.loadingAuth[provider] = !state.loadingAuth[provider];
+};

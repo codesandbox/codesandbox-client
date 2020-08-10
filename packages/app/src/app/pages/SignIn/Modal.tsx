@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
 import {
   github as GitHubIcon,
@@ -11,6 +11,7 @@ import { LeftSide } from './components/LeftSide';
 import { Wrapper } from './components/Wrapper';
 import { Button } from './components/Button';
 import { UserNameSelection } from './components/UserNameSelection';
+import { DuplicateAccount } from './components/DuplicateAccount';
 
 type SignInModalElementProps = {
   redirectTo?: string;
@@ -22,8 +23,8 @@ export const SignInModalElement = ({
   onSignIn,
 }: SignInModalElementProps) => {
   const {
-    state: { pendingUser, pendingUserId },
-    actions: { signInButtonClicked, getPendingUser },
+    state: { duplicateAccountStatus, pendingUser, pendingUserId, loadingAuth },
+    actions: { signInButtonClicked, getPendingUser, setLoadingAuth },
   } = useOvermind();
 
   useEffect(() => {
@@ -32,11 +33,8 @@ export const SignInModalElement = ({
     }
   }, [getPendingUser, pendingUserId]);
 
-  const [githubLoading, setGithubLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
-
   const handleSignIn = async () => {
-    setGithubLoading(true);
+    setLoadingAuth('github');
     await signInButtonClicked({ provider: 'github', useExtraScopes: false });
 
     if (onSignIn) {
@@ -46,13 +44,14 @@ export const SignInModalElement = ({
     if (redirectTo) {
       return history.push(redirectTo.replace(location.origin, ''));
     }
-    setGithubLoading(false);
+    setLoadingAuth('github');
+    window.close();
 
     return null;
   };
 
   const handleGoogleSignIn = async () => {
-    setGoogleLoading(true);
+    setLoadingAuth('google');
     await signInButtonClicked({ provider: 'google' });
 
     if (onSignIn) {
@@ -62,60 +61,67 @@ export const SignInModalElement = ({
     if (redirectTo) {
       return history.push(redirectTo.replace(location.origin, ''));
     }
-    setGoogleLoading(false);
+    setLoadingAuth('google');
+    window.close();
 
     return null;
   };
 
-  return (
-    <Wrapper usernameSelection={pendingUser}>
-      {pendingUser ? (
+  if (duplicateAccountStatus) {
+    return (
+      <Wrapper oneCol>
+        <DuplicateAccount provider={duplicateAccountStatus.provider} />
+      </Wrapper>
+    );
+  }
+
+  if (pendingUser) {
+    return (
+      <Wrapper oneCol>
         <UserNameSelection />
-      ) : (
-        <>
-          <LeftSide />
-          <Element padding={8}>
-            <Text weight="bold" size={23} paddingBottom={3} block>
-              Sign in to CodeSandbox
-            </Text>
-            <Text variant="muted" size={3} paddingBottom={60} block>
-              Get a free account, no credit card required
-            </Text>
+      </Wrapper>
+    );
+  }
 
-            <Button loading={githubLoading} onClick={handleSignIn}>
-              <GitHubIcon width="20" height="20" />
-              <Element css={css({ width: '100%' })}>
-                Sign in with GitHub
-              </Element>
-            </Button>
-            <Button loading={googleLoading} onClick={handleGoogleSignIn}>
-              <GoogleIcon width="20" height="20" />
-              <Element css={css({ width: '100%' })}>
-                Sign in with Google
-              </Element>
-            </Button>
-            <Text
-              variant="muted"
-              align="center"
-              size={10}
-              block
-              css={css({
-                lineHeight: '13px',
-                maxWidth: '200px',
-                margin: 'auto',
+  return (
+    <Wrapper>
+      <LeftSide />
+      <Element padding={8}>
+        <Text weight="bold" size={23} paddingBottom={3} block>
+          Sign in to CodeSandbox
+        </Text>
+        <Text variant="muted" size={3} paddingBottom={60} block>
+          Get a free account, no credit card required
+        </Text>
 
-                a: {
-                  color: 'inherit',
-                },
-              })}
-            >
-              By continuing, you agree to CodeSandbox{' '}
-              <a href="https://codesandbox.io/legal/terms">Terms of Service</a>,{' '}
-              <a href="https://codesandbox.io/legal/privacy">Privacy Policy</a>
-            </Text>
-          </Element>
-        </>
-      )}
+        <Button loading={loadingAuth.github} onClick={handleSignIn}>
+          <GitHubIcon width="20" height="20" />
+          <Element css={css({ width: '100%' })}>Sign in with GitHub</Element>
+        </Button>
+        <Button loading={loadingAuth.google} onClick={handleGoogleSignIn}>
+          <GoogleIcon width="20" height="20" />
+          <Element css={css({ width: '100%' })}>Sign in with Google</Element>
+        </Button>
+        <Text
+          variant="muted"
+          align="center"
+          size={10}
+          block
+          css={css({
+            lineHeight: '13px',
+            maxWidth: '200px',
+            margin: 'auto',
+
+            a: {
+              color: 'inherit',
+            },
+          })}
+        >
+          By continuing, you agree to CodeSandbox{' '}
+          <a href="https://codesandbox.io/legal/terms">Terms of Service</a>,{' '}
+          <a href="https://codesandbox.io/legal/privacy">Privacy Policy</a>
+        </Text>
+      </Element>
     </Wrapper>
   );
 };
