@@ -39,7 +39,7 @@ export const DuplicateAccount: FunctionComponent = () => {
 
   const handleSignIn = async () => {
     setGithubLoading(true);
-    await signInButtonClicked({ useExtraScopes: false });
+    await signInButtonClicked({ provider: 'github', useExtraScopes: false });
 
     if (redirectTo) {
       return history.push(redirectTo.replace(location.origin, ''));
@@ -51,7 +51,7 @@ export const DuplicateAccount: FunctionComponent = () => {
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
-    await signInButtonClicked({ google: true });
+    await signInButtonClicked({ provider: 'google' });
 
     if (redirectTo) {
       return history.push(redirectTo.replace(location.origin, ''));

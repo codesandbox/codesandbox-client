@@ -37,7 +37,7 @@ export const SignInModalElement = ({
 
   const handleSignIn = async () => {
     setGithubLoading(true);
-    await signInButtonClicked({ useExtraScopes: false });
+    await signInButtonClicked({ provider: 'github', useExtraScopes: false });
 
     if (onSignIn) {
       return onSignIn();
@@ -53,7 +53,7 @@ export const SignInModalElement = ({
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
-    await signInButtonClicked({ google: true });
+    await signInButtonClicked({ provider: 'google' });
 
     if (onSignIn) {
       return onSignIn();

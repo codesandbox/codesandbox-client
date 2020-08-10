@@ -117,12 +117,12 @@ export const toggleSignInModal: Action = ({ state }) => {
 
 export const signInButtonClicked: AsyncAction<{
   useExtraScopes?: boolean;
-  google?: boolean;
+  provider?: 'google' | 'github';
 }> = async ({ actions, state }, options) => {
-  const { useExtraScopes, google } = options || {};
+  const { useExtraScopes, provider } = options || {};
   if (!useExtraScopes) {
     await actions.internal.signIn({
-      google,
+      provider,
       useExtraScopes: false,
     });
     state.signInModalOpen = false;
@@ -130,7 +130,7 @@ export const signInButtonClicked: AsyncAction<{
   }
   await actions.internal.signIn({
     useExtraScopes,
-    google,
+    provider,
   });
   state.signInModalOpen = false;
 };

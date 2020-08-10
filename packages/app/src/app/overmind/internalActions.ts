@@ -23,13 +23,14 @@ import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 
 export const signIn: AsyncAction<{
   useExtraScopes?: boolean;
-  google?: boolean;
+  provider?: 'google' | 'github';
 }> = async ({ state, effects, actions }, options) => {
   effects.analytics.track('Sign In', {});
   try {
-    if (options.google) {
+    if (options.provider === 'google') {
       await actions.internal.signInGoogle();
-    } else {
+    }
+    if (options.provider === 'github') {
       await actions.internal.signInGithub(options);
     }
     state.signInModalOpen = false;
