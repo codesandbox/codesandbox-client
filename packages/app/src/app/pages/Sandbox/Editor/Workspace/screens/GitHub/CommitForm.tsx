@@ -1,8 +1,8 @@
 import {
   Button,
-  Radio,
   FormField,
   Input,
+  Radio,
   Stack,
   Text,
   Textarea,
@@ -40,14 +40,6 @@ export const CommitForm = () => {
 
   const changeTitle = ({ target: { value } }: ChangeEvent<HTMLInputElement>) =>
     titleChanged(value);
-
-  const getButtonTitle = (buttonTitle: string) => {
-    if (!isAllModulesSynced) {
-      return 'Save all files first...';
-    }
-
-    return buttonTitle;
-  };
 
   const hasChanges = Boolean(
     gitChanges.added.length ||
@@ -91,8 +83,9 @@ export const CommitForm = () => {
             disabled={!title || !canUpdate}
             onClick={() => createCommitClicked()}
           >
-            {getButtonTitle('Commit changes')}
+            Commit changes
           </Button>
+          {isAllModulesSynced ? null : <Text>- Save all files first</Text>}
         </Stack>
       </Stack>
     );
@@ -185,7 +178,7 @@ export const CommitForm = () => {
             <Text variant="muted"> for the commit and start a</Text> PR
           </Text>
         </Stack>
-        <Stack css={{ width: '100%' }}>
+        <Stack css={{ width: '100%' }} direction="vertical">
           <Button
             loading={isCommitting || isCreatingPr}
             css={{
@@ -194,8 +187,18 @@ export const CommitForm = () => {
             disabled={!title || !canUpdate}
             onClick={() => actions[evaluatedAction].action()}
           >
-            {getButtonTitle('Commit changes')}
+            Commit changes
           </Button>
+          {isAllModulesSynced && !title && (
+            <Text variant="danger" margin={2} align="center">
+              Please insert a summary
+            </Text>
+          )}
+          {!isAllModulesSynced && (
+            <Text variant="danger" margin={2} align="center">
+              You have unsaved files
+            </Text>
+          )}
         </Stack>
       </Stack>
     </Stack>

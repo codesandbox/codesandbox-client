@@ -1,10 +1,11 @@
-import * as React from 'react';
+import { ThemeProvider } from '@codesandbox/components';
 import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
-import { ThemeProvider } from '@codesandbox/components';
-import { useLocation } from 'react-router-dom';
 import { DELETE_ME_COLLECTION } from 'app/overmind/namespaces/dashboard/types';
-import { CreateSandbox, COLUMN_MEDIA_THRESHOLD } from './CreateSandbox';
+import * as React from 'react';
+import { useLocation } from 'react-router-dom';
+
+import { COLUMN_MEDIA_THRESHOLD, CreateSandbox } from './CreateSandbox';
 
 /**
  * If you have the dashboard open, in a collection path, we want to create new sandboxes
@@ -57,6 +58,7 @@ export const CreateSandboxModal = () => {
           collectionId={
             modals.newSandboxModal.collectionId || implicitCollection?.id
           }
+          initialTab={modals.newSandboxModal.initialTab}
         />
       </Modal>
     </ThemeProvider>
