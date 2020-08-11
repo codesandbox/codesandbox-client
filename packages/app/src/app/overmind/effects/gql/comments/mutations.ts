@@ -74,7 +74,7 @@ export const deleteComment: Query<
   DeleteCommentMutation,
   DeleteCommentMutationVariables
 > = gql`
-  mutation DeleteComment($commentId: ID!, $sandboxId: ID!) {
+  mutation DeleteComment($commentId: UUID4!, $sandboxId: ID!) {
     deleteComment(commentId: $commentId, sandboxId: $sandboxId) {
       id
     }
@@ -86,7 +86,7 @@ export const updateComment: Query<
   UpdateCommentMutationVariables
 > = gql`
   mutation UpdateComment(
-    $commentId: ID!
+    $commentId: UUID4!
     $sandboxId: ID!
     $content: String
     $userReferences: [UserReference!]
@@ -108,7 +108,7 @@ export const resolveComment: Query<
   ResolveCommentMutation,
   ResolveCommentMutationVariables
 > = gql`
-  mutation ResolveComment($commentId: ID!, $sandboxId: ID!) {
+  mutation ResolveComment($commentId: UUID4!, $sandboxId: ID!) {
     resolveComment(commentId: $commentId, sandboxId: $sandboxId) {
       id
     }
@@ -119,7 +119,7 @@ export const unresolveComment: Query<
   UnresolveCommentMutation,
   UnresolveCommentMutationVariables
 > = gql`
-  mutation UnresolveComment($commentId: ID!, $sandboxId: ID!) {
+  mutation UnresolveComment($commentId: UUID4!, $sandboxId: ID!) {
     unresolveComment(commentId: $commentId, sandboxId: $sandboxId) {
       id
     }

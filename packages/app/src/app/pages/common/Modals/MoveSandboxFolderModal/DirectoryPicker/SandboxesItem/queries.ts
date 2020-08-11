@@ -73,7 +73,7 @@ export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
 `;
 
 export const CREATE_FOLDER_MUTATION = gql`
-  mutation createCollection($path: String!, $teamId: ID) {
+  mutation createCollection($path: String!, $teamId: UUID4) {
     createCollection(path: $path, teamId: $teamId) {
       ...SidebarCollection
     }
@@ -82,7 +82,7 @@ export const CREATE_FOLDER_MUTATION = gql`
 `;
 
 export const DELETE_FOLDER_MUTATION = gql`
-  mutation deleteCollection($path: String!, $teamId: ID) {
+  mutation deleteCollection($path: String!, $teamId: UUID4) {
     deleteCollection(path: $path, teamId: $teamId) {
       ...SidebarCollection
     }
@@ -94,8 +94,8 @@ export const RENAME_FOLDER_MUTATION = gql`
   mutation renameCollection(
     $path: String!
     $newPath: String!
-    $teamId: ID
-    $newTeamId: ID
+    $teamId: UUID4
+    $newTeamId: UUID4
   ) {
     renameCollection(
       path: $path

@@ -128,6 +128,7 @@ export type CurrentUser = {
   };
   curatorAt: string;
   badges: Badge[];
+  provider: 'github' | 'google';
   integrations: {
     zeit: {
       token: string;
@@ -554,6 +555,13 @@ export type Profile = {
   forkedCount: number;
   badges: Badge[];
   avatarUrl: string;
+  bio?: string;
+  socialLinks?: string[];
+  teams: Array<{
+    id: string;
+    name: string;
+    avatarUrl?: string;
+  }>;
 };
 
 export type UserSandbox = {

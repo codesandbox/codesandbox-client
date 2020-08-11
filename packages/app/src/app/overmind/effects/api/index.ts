@@ -587,4 +587,12 @@ export default {
   makeGitSandbox(sandboxId: string): Promise<Sandbox> {
     return api.post<Sandbox>(`/sandboxes/${sandboxId}/make_git_sandbox`, null);
   },
+  updateUserProfile(username: string, bio: string, socialLinks: string[]) {
+    return api.patch(`/users/${username}`, {
+      user: {
+        bio,
+        socialLinks,
+      },
+    });
+  },
 };

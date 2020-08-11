@@ -80,13 +80,19 @@ export const UserSettings = () => {
                     <Text size={3} maxWidth="100%">
                       {user.email}
                     </Text>
-                    <Link
-                      size={3}
-                      href={`https://github.com/${user.username}`}
-                      target="_blank"
-                    >
-                      Account managed by GitHub
-                    </Link>
+                    {user.provider === 'google' ? (
+                      <Text size={3} maxWidth="100%">
+                        Account managed by Google
+                      </Text>
+                    ) : (
+                      <Link
+                        size={3}
+                        href={`https://github.com/${user.username}`}
+                        target="_blank"
+                      >
+                        Account managed by GitHub
+                      </Link>
+                    )}
                   </Stack>
                 </Stack>
               </Stack>

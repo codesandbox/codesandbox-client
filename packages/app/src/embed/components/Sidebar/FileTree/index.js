@@ -45,6 +45,7 @@ function SubTree({ files, allFiles, selectedFile, onSelect }) {
           <React.Fragment key={child.id}>
             {child.type === 'directory' ? (
               <Directory
+                className="directory"
                 files={files}
                 allFiles={allFiles}
                 selectedFile={selectedFile}
