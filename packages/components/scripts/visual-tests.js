@@ -2,7 +2,7 @@ const execa = require('execa');
 const git = require('simple-git')();
 
 const hasChanges = async () => {
-  const result = await git.diffSummary(['master...HEAD', './src']);
+  const result = await git.diffSummary(['master...HEAD']);
   if (result.files.length) return true;
   return false;
 };
