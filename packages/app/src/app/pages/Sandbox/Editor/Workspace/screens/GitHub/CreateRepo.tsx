@@ -38,7 +38,7 @@ export const CreateRepo = () => {
 
   return (
     <Collapsible
-      title="Export to new Github repository"
+      title="Export to new GitHub repository"
       defaultOpen={!currentSandbox.originalGit}
     >
       <Element paddingX={2}>
@@ -50,7 +50,7 @@ export const CreateRepo = () => {
             css={{ color: 'white' }}
             onClick={() => openCreateSandboxModal({ initialTab: 'Import' })}
           >
-            open the Github import
+            open the GitHub import
           </Link>
           .
         </Text>
