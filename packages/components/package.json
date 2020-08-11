@@ -21,10 +21,8 @@
     "start": "yarn tsc --watch",
     "start:storybook": "start-storybook",
     "typecheck": "tsc --noEmit --pretty",
-    "chromatic": "(if-env CIRCLE_BRANCH=master && yarn chromatic:master) || yarn chromatic:branch",
+    "chromatic": "node scripts/visual-tests",
     "chromatic:base": "./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes --project-token=nffds42ndde",
-    "chromatic:master": "yarn chromatic:base --auto-accept-changes",
-    "chromatic:branch": "(!(git diff master...HEAD --quiet ./src) && yarn chromatic:base) || echo 'Not running Chromatic...'",
     "prepublish": "yarn build"
   },
   "dependencies": {
@@ -62,6 +60,7 @@
     "np": "^5.2.1",
     "postinstall-postinstall": "^2.1.0",
     "rimraf": "^3.0.0",
+    "simple-git": "^2.17.0",
     "storybook-addon-styled-component-theme": "^1.3.0",
     "typescript": "3.7.4"
   },
