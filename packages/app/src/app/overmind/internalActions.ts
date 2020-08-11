@@ -21,13 +21,16 @@ import { parseConfigurations } from './utils/parse-configurations';
 import { Action, AsyncAction } from '.';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 
-export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
-  { state, effects, actions },
-  options
-) => {
-  effects.analytics.track('Sign In', {});
+export const signIn: AsyncAction<{
+  useExtraScopes?: boolean;
+  provider?: 'google' | 'github';
+}> = async ({ state, effects, actions }, options) => {
+  effects.analytics.track('Sign In', {
+    provider: options.provider,
+  });
   try {
-    await actions.internal.signInGithub(options);
+    await actions.internal.runProviderAuth(options);
+
     state.signInModalOpen = false;
     state.pendingUser = null;
     state.user = await effects.api.getCurrentUser();
@@ -42,7 +45,7 @@ export const signIn: AsyncAction<{ useExtraScopes?: boolean }> = async (
     state.isAuthenticating = false;
   } catch (error) {
     actions.internal.handleError({
-      message: 'Could not authenticate with Github',
+      message: 'Could not authenticate',
       error,
     });
   }
@@ -125,19 +128,22 @@ export const authorize: AsyncAction = async ({ state, effects }) => {
     state.editor.error = error.message;
   }
 };
-
-export const signInGithub: AsyncAction<{ useExtraScopes?: boolean }, any> = (
-  { effects, state },
-  options
-) => {
+export const runProviderAuth: AsyncAction<
+  { useExtraScopes?: boolean; provider?: 'github' | 'google' },
+  any
+> = ({ effects, state }, { provider, useExtraScopes }) => {
   const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
+
   const authPath = new URL(
-    location.origin + (hasDevAuth ? '/auth/dev' : '/auth/github')
+    location.origin + (hasDevAuth ? '/auth/dev' : `/auth/${provider}`)
   );
 
   authPath.searchParams.set('version', '2');
-  if (options.useExtraScopes) {
-    authPath.searchParams.set('scope', 'user:email,repo');
+
+  if (provider === 'github') {
+    if (useExtraScopes) {
+      authPath.searchParams.set('scope', 'user:email,repo');
+    }
   }
 
   const popup = effects.browser.openPopup(authPath.toString(), 'sign in');
@@ -158,6 +164,14 @@ export const signInGithub: AsyncAction<{ useExtraScopes?: boolean }, any> = (
       }
       popup.close();
     });
+
+  effects.browser.waitForMessage('duplicate').then((data: any) => {
+    state.duplicateAccountStatus = {
+      duplicate: true,
+      provider: data.provider,
+    };
+    popup.close();
+  });
 
   effects.browser.waitForMessage('signup').then((data: any) => {
     state.pendingUserId = data.id;
@@ -375,7 +389,10 @@ export const handleError: Action<{
   message: string;
   error: ApiError | Error;
   hideErrorMessage?: boolean;
-}> = ({ actions, effects }, { message, error, hideErrorMessage = false }) => {
+}> = (
+  { actions, effects, state },
+  { message, error, hideErrorMessage = false }
+) => {
   if (hideErrorMessage) {
     effects.analytics.logError(error);
     effects.notificationToast.add({
@@ -437,7 +454,7 @@ export const handleError: Action<{
     notificationActions.primary = {
       label: 'Sign in',
       run: () => {
-        actions.internal.signIn({});
+        state.signInModalOpen = true;
       },
     };
   } else if (error.message.startsWith('You reached the maximum of')) {

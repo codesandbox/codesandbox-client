@@ -116,16 +116,22 @@ export const toggleSignInModal: Action = ({ state }) => {
 };
 
 export const signInButtonClicked: AsyncAction<{
-  useExtraScopes: boolean;
-} | void> = async ({ actions, state }, options) => {
-  if (!options) {
+  useExtraScopes?: boolean;
+  provider?: 'google' | 'github';
+}> = async ({ actions, state }, options) => {
+  const { useExtraScopes, provider } = options || {};
+  if (!useExtraScopes) {
     await actions.internal.signIn({
+      provider,
       useExtraScopes: false,
     });
     state.signInModalOpen = false;
     return;
   }
-  await actions.internal.signIn(options);
+  await actions.internal.signIn({
+    useExtraScopes,
+    provider,
+  });
   state.signInModalOpen = false;
 };
 
@@ -202,13 +208,21 @@ export const requestAuthorisation: AsyncAction = async ({ actions }) => {
   await actions.internal.authorize();
 };
 
+export const setPendingUserId: Action<string> = ({ state }, id) => {
+  state.pendingUserId = id;
+};
+
 export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
   state.isLoadingGithub = true;
-  await actions.internal.signIn({ useExtraScopes: true });
+  await actions.internal.signIn({ useExtraScopes: true, provider: 'github' });
   state.isLoadingGithub = false;
   if (state.editor.currentSandbox?.originalGit) {
     actions.git.loadGitSource();
   }
+};
+
+export const signInGoogleClicked: AsyncAction = async ({ actions }) => {
+  await actions.internal.signIn({ provider: 'google' });
 };
 
 export const signOutClicked: AsyncAction = async ({
@@ -399,4 +413,11 @@ export const finalizeSignUp: AsyncAction<string> = async (
       error,
     });
   }
+};
+
+export const setLoadingAuth: AsyncAction<'google' | 'github'> = async (
+  { state },
+  provider
+) => {
+  state.loadingAuth[provider] = !state.loadingAuth[provider];
 };

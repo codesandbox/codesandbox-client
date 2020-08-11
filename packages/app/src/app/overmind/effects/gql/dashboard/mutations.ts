@@ -65,7 +65,7 @@ export const createFolder: Query<
   CreateFolderMutation,
   CreateFolderMutationVariables
 > = gql`
-  mutation createFolder($path: String!, $teamId: ID) {
+  mutation createFolder($path: String!, $teamId: UUID4) {
     createCollection(path: $path, teamId: $teamId) {
       ...sidebarCollectionDashboard
     }
@@ -77,7 +77,7 @@ export const deleteFolder: Query<
   DeleteFolderMutation,
   DeleteFolderMutationVariables
 > = gql`
-  mutation deleteFolder($path: String!, $teamId: ID) {
+  mutation deleteFolder($path: String!, $teamId: UUID4) {
     deleteCollection(path: $path, teamId: $teamId) {
       ...sidebarCollectionDashboard
     }
@@ -92,8 +92,8 @@ export const renameFolder: Query<
   mutation renameFolder(
     $path: String!
     $newPath: String!
-    $teamId: ID
-    $newTeamId: ID
+    $teamId: UUID4
+    $newTeamId: UUID4
   ) {
     renameCollection(
       path: $path
@@ -114,7 +114,7 @@ export const addSandboxToFolder: Query<
   mutation AddToFolder(
     $collectionPath: String
     $sandboxIds: [ID!]!
-    $teamId: ID
+    $teamId: UUID4
   ) {
     addToCollectionOrTeam(
       collectionPath: $collectionPath
@@ -178,7 +178,7 @@ export const leaveTeam: Query<
   _LeaveTeamMutation,
   _LeaveTeamMutationVariables
 > = gql`
-  mutation _LeaveTeam($teamId: ID!) {
+  mutation _LeaveTeam($teamId: UUID4!) {
     leaveTeam(teamId: $teamId)
   }
 `;
@@ -187,7 +187,7 @@ export const removeFromTeam: Query<
   _RemoveFromTeamMutation,
   _RemoveFromTeamMutationVariables
 > = gql`
-  mutation _RemoveFromTeam($teamId: ID!, $userId: ID!) {
+  mutation _RemoveFromTeam($teamId: UUID4!, $userId: UUID4!) {
     removeFromTeam(teamId: $teamId, userId: $userId) {
       ...teamFragmentDashboard
     }
@@ -199,7 +199,7 @@ export const inviteToTeam: Query<
   _InviteToTeamMutation,
   _InviteToTeamMutationVariables
 > = gql`
-  mutation _InviteToTeam($teamId: ID!, $username: String!) {
+  mutation _InviteToTeam($teamId: UUID4!, $username: String!) {
     inviteToTeam(teamId: $teamId, username: $username) {
       ...currentTeamInfoFragment
     }
@@ -211,7 +211,7 @@ export const inviteToTeamVieEmail: Query<
   _InviteToTeamViaEmailMutation,
   _InviteToTeamViaEmailMutationVariables
 > = gql`
-  mutation _InviteToTeamViaEmail($teamId: ID!, $email: String!) {
+  mutation _InviteToTeamViaEmail($teamId: UUID4!, $email: String!) {
     inviteToTeamViaEmail(teamId: $teamId, email: $email)
   }
 `;
@@ -220,7 +220,7 @@ export const revokeTeamInvitation: Query<
   _RevokeTeamInvitationMutation,
   _RevokeTeamInvitationMutationVariables
 > = gql`
-  mutation _RevokeTeamInvitation($teamId: ID!, $userId: ID!) {
+  mutation _RevokeTeamInvitation($teamId: UUID4!, $userId: UUID4!) {
     revokeTeamInvitation(teamId: $teamId, userId: $userId) {
       ...currentTeamInfoFragment
     }
@@ -232,7 +232,7 @@ export const acceptTeamInvitation: Query<
   _AcceptTeamInvitationMutation,
   _AcceptTeamInvitationMutationVariables
 > = gql`
-  mutation _AcceptTeamInvitation($teamId: ID!) {
+  mutation _AcceptTeamInvitation($teamId: UUID4!) {
     acceptTeamInvitation(teamId: $teamId) {
       ...teamFragmentDashboard
     }
@@ -244,7 +244,7 @@ export const rejectTeamInvitation: Query<
   _RejectTeamInvitationMutation,
   _RejectTeamInvitationMutationVariables
 > = gql`
-  mutation _RejectTeamInvitation($teamId: ID!) {
+  mutation _RejectTeamInvitation($teamId: UUID4!) {
     rejectTeamInvitation(teamId: $teamId)
   }
 `;
@@ -253,7 +253,7 @@ export const setTeamDescription: Query<
   _SetTeamDescriptionMutation,
   _SetTeamDescriptionMutationVariables
 > = gql`
-  mutation _SetTeamDescription($teamId: ID!, $description: String!) {
+  mutation _SetTeamDescription($teamId: UUID4!, $description: String!) {
     setTeamDescription(teamId: $teamId, description: $description) {
       ...teamFragmentDashboard
     }
@@ -287,7 +287,7 @@ export const setTeamName: Query<
   SetTeamNameMutation,
   SetTeamNameMutationVariables
 > = gql`
-  mutation _SetTeamName($teamId: ID!, $name: String!) {
+  mutation _SetTeamName($teamId: UUID4!, $name: String!) {
     setTeamName(teamId: $teamId, name: $name) {
       ...teamFragmentDashboard
     }

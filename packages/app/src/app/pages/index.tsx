@@ -24,6 +24,14 @@ const MoveSandboxFolderModal = Loadable(() =>
   }))
 );
 
+const DuplicateAccount = Loadable(() =>
+  import(
+    /* webpackChunkName: 'move-sandbox-modal' */ './DuplicateAccount'
+  ).then(module => ({
+    default: module.DuplicateAccount,
+  }))
+);
+
 const routeDebugger = _debug('cs:app:router');
 
 const SignInAuth = Loadable(() =>
@@ -158,6 +166,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
             <Route path="/signin" exact component={SignIn} />
+            <Route path="/signin/duplicate" component={DuplicateAccount} />
             <Route path="/signup/:userId" exact component={SignUp} />
             <Route path="/signin/:jwt?" component={SignInAuth} />
             <Route path="/u/:username" component={Profile} />

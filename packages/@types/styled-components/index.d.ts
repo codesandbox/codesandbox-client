@@ -1,14 +1,15 @@
+/* eslint-disable react/prefer-stateless-function */
 // forward declarations
+import * as CSS from 'csstype';
+import * as React from 'react';
+import * as hoistNonReactStatics from 'hoist-non-react-statics';
+
 declare global {
   namespace NodeJS {
     // tslint:disable-next-line:no-empty-interface
     interface ReadableStream {}
   }
 }
-
-import * as CSS from 'csstype';
-import * as React from 'react';
-import * as hoistNonReactStatics from 'hoist-non-react-statics';
 
 export type CSSProperties = CSS.Properties<string | number>;
 
@@ -461,6 +462,7 @@ export class ServerStyleSheet {
   interleaveWithNodeStream(
     readableStream: NodeJS.ReadableStream
   ): NodeJS.ReadableStream;
+
   readonly instance: this;
   seal(): void;
 }
