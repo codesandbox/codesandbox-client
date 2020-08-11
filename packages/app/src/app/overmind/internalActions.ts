@@ -23,7 +23,7 @@ import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 
 export const signIn: AsyncAction<{
   useExtraScopes?: boolean;
-  provider?: 'google' | 'github';
+  provider: 'google' | 'github';
 }> = async ({ state, effects, actions }, options) => {
   effects.analytics.track('Sign In', {
     provider: options.provider,
