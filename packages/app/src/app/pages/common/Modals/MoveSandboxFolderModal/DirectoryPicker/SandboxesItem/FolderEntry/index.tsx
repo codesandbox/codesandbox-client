@@ -29,6 +29,7 @@ import {
   PathedSandboxesFoldersQuery,
   PathedSandboxesFoldersQueryVariables,
 } from 'app/graphql/types';
+import { Tooltip } from '@codesandbox/components';
 import { Container, AnimatedChevron, IconContainer } from './elements';
 
 import getDirectChildren from '../../utils/get-direct-children';
@@ -46,6 +47,7 @@ import {
 type Props = {
   name: string;
   path: string;
+  disabled?: string;
   url?: string;
   readOnly?: string;
   folders: { path: string }[];
@@ -146,6 +148,7 @@ class FolderEntry extends React.Component<Props, State> {
       currentTeamId,
       history,
       readOnly,
+      disabled,
       allowCreate = !readOnly,
     } = this.props;
 
@@ -237,121 +240,124 @@ class FolderEntry extends React.Component<Props, State> {
       connectDragSource(
         <div>
           <ContextMenu items={menuItems}>
-            <UnTypedContainer
-              as={onSelect ? 'div' : undefined}
-              onClick={onSelect ? this.handleSelect : undefined}
-              style={{
-                color: isOver && canDrop ? theme.secondary() : undefined,
-                backgroundColor:
-                  isOver && canDrop ? 'rgba(0, 0, 0, 0.3)' : undefined,
+            <Tooltip label={disabled}>
+              <UnTypedContainer
+                as={onSelect ? 'div' : undefined}
+                onClick={onSelect ? this.handleSelect : undefined}
+                style={{
+                  color: isOver && canDrop ? theme.secondary() : undefined,
+                  backgroundColor:
+                    isOver && canDrop ? 'rgba(0, 0, 0, 0.3)' : undefined,
 
-                ...(currentPath &&
-                decodeURIComponent(currentPath) === path &&
-                currentTeamId === teamId
-                  ? {
-                      borderColor: theme.secondary(),
-                      color: 'white',
-                    }
-                  : {}),
-              }}
-              exact
-              depth={depth}
-              to={url}
-              onKeyDown={this.handleKeyDown}
-              tabIndex={0}
-            >
-              <IconContainer>
-                {toToggle ? (
-                  <AnimatedChevron
-                    onClick={this.toggleOpen}
-                    open={this.state.open}
-                    style={{ opacity: children.size > 0 ? 1 : 0 }}
-                  />
-                ) : null}
-                <FolderIcon />
-              </IconContainer>{' '}
-              {this.state.renamingDirectory ? (
-                <Mutation mutation={RENAME_FOLDER_MUTATION}>
-                  {(mutate, { loading }) => {
-                    let input;
-
-                    const submit = e => {
-                      track('Dashboard - Folder Renamed');
-                      if (e) {
-                        e.preventDefault();
+                  ...(currentPath &&
+                  decodeURIComponent(currentPath) === path &&
+                  currentTeamId === teamId
+                    ? {
+                        borderColor: theme.secondary(),
+                        color: 'white',
                       }
-                      mutate({
-                        variables: {
-                          path,
-                          newPath: join(dirname(path), input.value),
-                          teamId,
-                          newTeamId: teamId,
-                        },
-                        update: (cache, { data: { renameCollection } }) => {
-                          const variables: { teamId?: string } = {};
-                          if (teamId) {
-                            variables.teamId = teamId;
-                          }
+                    : {}),
+                }}
+                disabled={disabled}
+                exact
+                depth={depth}
+                to={url}
+                onKeyDown={this.handleKeyDown}
+                tabIndex={0}
+              >
+                <IconContainer>
+                  {toToggle ? (
+                    <AnimatedChevron
+                      onClick={this.toggleOpen}
+                      open={this.state.open}
+                      style={{ opacity: children.size > 0 ? 1 : 0 }}
+                    />
+                  ) : null}
+                  <FolderIcon />
+                </IconContainer>{' '}
+                {this.state.renamingDirectory ? (
+                  <Mutation mutation={RENAME_FOLDER_MUTATION}>
+                    {(mutate, { loading }) => {
+                      let input;
 
-                          const cacheData: { me: any } = cache.readQuery({
-                            query: PATHED_SANDBOXES_FOLDER_QUERY,
-                            variables,
-                          });
+                      const submit = e => {
+                        track('Dashboard - Folder Renamed');
+                        if (e) {
+                          e.preventDefault();
+                        }
+                        mutate({
+                          variables: {
+                            path,
+                            newPath: join(dirname(path), input.value),
+                            teamId,
+                            newTeamId: teamId,
+                          },
+                          update: (cache, { data: { renameCollection } }) => {
+                            const variables: { teamId?: string } = {};
+                            if (teamId) {
+                              variables.teamId = teamId;
+                            }
 
-                          cache.writeQuery({
-                            query: PATHED_SANDBOXES_FOLDER_QUERY,
-                            data: {
-                              ...cacheData,
-                              me: {
-                                ...cacheData.me,
-                                collections: renameCollection,
+                            const cacheData: { me: any } = cache.readQuery({
+                              query: PATHED_SANDBOXES_FOLDER_QUERY,
+                              variables,
+                            });
+
+                            cache.writeQuery({
+                              query: PATHED_SANDBOXES_FOLDER_QUERY,
+                              data: {
+                                ...cacheData,
+                                me: {
+                                  ...cacheData.me,
+                                  collections: renameCollection,
+                                },
                               },
-                            },
-                            variables,
-                          });
-                          const modifiedPath = path
-                            .split('/')
-                            .slice(0, -1)
-                            .join('/');
+                              variables,
+                            });
+                            const modifiedPath = path
+                              .split('/')
+                              .slice(0, -1)
+                              .join('/');
 
-                          history.replace(
-                            `${basePath}${modifiedPath}/${input.value}`
-                          );
-                        },
-                      });
+                            history.replace(
+                              `${basePath}${modifiedPath}/${input.value}`
+                            );
+                          },
+                        });
 
-                      this.handleBlur();
-                    };
+                        this.handleBlur();
+                      };
 
-                    return loading ? (
-                      input.value
-                    ) : (
-                      <form onSubmit={submit}>
-                        <Input
-                          block
-                          ref={node => {
-                            if (node) {
-                              input = node;
-                              node.focus();
-                              node.select();
-                            }
-                          }}
-                          defaultValue={name}
-                          onBlur={this.handleBlur}
-                          onKeyDown={e => {
-                            if (e.keyCode === ESC) {
-                              this.handleBlur();
-                            }
-                          }}
-                        />
-                      </form>
-                    );
-                  }}
-                </Mutation>
-              ) : (
-                name
-              )}
-            </UnTypedContainer>
+                      return loading ? (
+                        input.value
+                      ) : (
+                        <form onSubmit={submit}>
+                          <Input
+                            block
+                            ref={node => {
+                              if (node) {
+                                input = node;
+                                node.focus();
+                                node.select();
+                              }
+                            }}
+                            defaultValue={name}
+                            onBlur={this.handleBlur}
+                            onKeyDown={e => {
+                              if (e.keyCode === ESC) {
+                                this.handleBlur();
+                              }
+                            }}
+                          />
+                        </form>
+                      );
+                    }}
+                  </Mutation>
+                ) : (
+                  name
+                )}
+              </UnTypedContainer>
+            </Tooltip>
           </ContextMenu>
 
           <ReactShow
