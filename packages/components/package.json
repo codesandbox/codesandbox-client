@@ -21,7 +21,7 @@
     "start": "yarn tsc --watch",
     "start:storybook": "start-storybook",
     "typecheck": "tsc --noEmit --pretty",
-    "chromatic": "node scripts/visual-tests",
+    "chromatic": "yarn build:storybook && node scripts/visual-tests",
     "chromatic:base": "./node_modules/.bin/chromatic --build-script-name=build:storybook --exit-zero-on-changes --project-token=nffds42ndde",
     "prepublish": "yarn build"
   },
