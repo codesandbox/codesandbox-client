@@ -224,7 +224,7 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   const parsedConfigs = parseConfigurations(sandbox);
   const main = mainModule(sandbox, parsedConfigs);
 
-  state.editor.mainModuleShortid = main.shortid;
+  state.editor.mainModuleShortid = main?.shortid;
 
   // Only change the module shortid if it doesn't exist in the new sandbox
   // This can happen when a sandbox is opened that's different from the current
