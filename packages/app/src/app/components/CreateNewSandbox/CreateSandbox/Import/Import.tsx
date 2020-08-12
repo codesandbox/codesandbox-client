@@ -177,7 +177,12 @@ export const Import = () => {
             {!state.user ||
             (state.user.provider === 'google' &&
               !state.user.integrations.github) ? (
-              <Button autoWidth onClick={() => actions.signInGithubClicked()}>
+              <Button
+                autoWidth
+                onClick={() =>
+                  actions.signInButtonClicked({ provider: 'github' })
+                }
+              >
                 <Icon name="github" marginRight={2} />
                 Sign in with GitHub
               </Button>

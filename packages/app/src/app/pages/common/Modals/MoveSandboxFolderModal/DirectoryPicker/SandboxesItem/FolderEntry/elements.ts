@@ -10,6 +10,7 @@ const activeStyles = css`
 export const Container = styled(NavLink)<{
   depth?: number;
   active?: boolean;
+  disabled?: boolean;
 }>`
   transition: 0.25s ease all;
   display: flex;
@@ -36,6 +37,26 @@ export const Container = styled(NavLink)<{
     color: rgba(255, 255, 255, 0.8);
     ${activeStyles}
   }
+
+  ${props =>
+    props.disabled
+      ? css`
+          opacity: 0.8;
+          outline: none;
+        `
+      : css`
+          cursor: pointer;
+
+          &:hover {
+            color: rgba(255, 255, 255, 0.8);
+          }
+
+          &:focus {
+            outline: none;
+            border-color: ${() => props.theme.secondary.clearer(0.5)};
+            color: rgba(255, 255, 255, 0.8);
+          }
+        `}
 `;
 
 export const CreateDirectoryContainer = Container.withComponent('div');

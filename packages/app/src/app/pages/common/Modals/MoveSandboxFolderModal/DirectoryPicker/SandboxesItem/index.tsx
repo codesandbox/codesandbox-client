@@ -81,6 +81,11 @@ class SandboxesItemComponent extends React.Component<
               data.me.collections
             );
 
+            const disabledMessage =
+              teamId == null
+                ? "It's currently not possible to move sandboxes to 'All Sandboxes' in a personal workspace"
+                : undefined;
+
             return (
               <Container>
                 <FolderContainer
@@ -104,8 +109,13 @@ class SandboxesItemComponent extends React.Component<
                   folders={folders}
                   foldersByPath={foldersByPath}
                   name="All Sandboxes"
+                  disabled={disabledMessage}
                   open
-                  onSelect={onSelect}
+                  onSelect={args => {
+                    if (!disabledMessage) {
+                      onSelect(args);
+                    }
+                  }}
                   currentPath={currentPath}
                   currentTeamId={currentTeamId}
                 />
