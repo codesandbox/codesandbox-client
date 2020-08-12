@@ -54,7 +54,7 @@ export const loadGitSource: AsyncAction = async ({
     !state.user ||
     !state.user.integrations.github ||
     !sandbox.originalGit ||
-    !hasPermission(sandbox.authorization, 'owner')
+    !hasPermission(sandbox.authorization, 'write_code')
   ) {
     return;
   }
