@@ -285,7 +285,8 @@ export const getAllFolders: AsyncAction = async ({ state, effects }) => {
     );
 
     state.dashboard.allCollections = collectionsByLevel.filter(
-      c => c.id && c.name
+      // c => c.id
+      c => c.id
     );
   } catch {
     effects.notificationToast.error(
