@@ -1,5 +1,4 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { Menu } from '@codesandbox/components';
 import { Context, MenuItem } from '../ContextMenu';
 
@@ -13,7 +12,6 @@ export const ContainerMenu: React.FC<ContainerMenuProps> = ({
   createNewSandbox,
 }) => {
   const { visible, setVisibility, position } = React.useContext(Context);
-  const location = useLocation();
 
   return (
     <Menu.ContextMenu
@@ -22,8 +20,12 @@ export const ContainerMenu: React.FC<ContainerMenuProps> = ({
       position={position}
       style={{ width: 160 }}
     >
-      {location.pathname !== '/dashboard/all/' && (
-        <MenuItem onSelect={() => createNewSandbox()}>
+      {typeof createNewSandbox === 'function' && (
+        <MenuItem
+          onSelect={() => {
+            createNewSandbox();
+          }}
+        >
           Create new sandbox
         </MenuItem>
       )}
