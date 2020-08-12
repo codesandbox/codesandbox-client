@@ -46,7 +46,6 @@ export const loadGitSource: AsyncAction = async ({
   effects,
 }) => {
   const sandbox = state.editor.currentSandbox!;
-  state.git.isFetching = true;
   state.git.isExported = false;
   state.git.pr = null;
   state.git.repoTitle = '';
@@ -59,6 +58,8 @@ export const loadGitSource: AsyncAction = async ({
   ) {
     return;
   }
+
+  state.git.isFetching = true;
 
   // We go grab the current version of the source
   try {
