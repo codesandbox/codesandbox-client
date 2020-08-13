@@ -41,7 +41,7 @@ export const Profile = props => {
         css={css({
           height: '100%',
           width: '100vw',
-          backgroundColor: 'grays.800',
+          backgroundColor: 'grays.900',
           color: 'white',
           fontFamily: 'Inter, sans-serif',
         })}
@@ -121,6 +121,7 @@ const AllSandboxes = () => {
             direction="vertical"
             gap={4}
             css={css({
+              backgroundColor: 'grays.700',
               border: '1px solid',
               borderColor: 'grays.600',
               borderRadius: 'medium',
