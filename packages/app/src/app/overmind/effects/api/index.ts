@@ -434,7 +434,7 @@ export default {
     username: string,
     page: number
   ): Promise<{ [page: string]: Sandbox[] }> {
-    return api.get(`/users/${username}/sandboxes`, {
+    return api.get(`/users/${username}/sandboxes?sort_by=view_count`, {
       page: String(page),
     });
   },

@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   ThemeProvider,
+  Element,
   Stack,
   Grid,
   Column,
@@ -53,15 +54,18 @@ export const Profile = props => {
           </div>
           <Stack direction="vertical" gap={10} css={{ flexGrow: 1 }}>
             {showcasedSandbox && (
-              <iframe
-                src={`https://codesandbox.io/embed/${showcasedSandbox.id}?fontsize=14&hidenavigation=1&theme=dark&view=preview&runonclick=1`}
-                style={{
+              <Element
+                as="iframe"
+                src={`https://${showcasedSandbox.id}.csb.app?standalone=1`}
+                css={css({
+                  backgroundColor: 'white',
                   width: '100%',
                   height: 360,
-                  border: 0,
                   borderRadius: '4px',
                   overflow: 'hidden',
-                }}
+                  border: '1px solid',
+                  borderColor: 'grays.600',
+                })}
                 title="React"
                 allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
                 sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
