@@ -77,7 +77,7 @@ self.addEventListener('message', event => {
 
     const sourceFile = ts.createSourceFile(
       path,
-      code,
+      compiledCode,
       ts.ScriptTarget.Latest,
       true,
       ts.ScriptKind.TS
