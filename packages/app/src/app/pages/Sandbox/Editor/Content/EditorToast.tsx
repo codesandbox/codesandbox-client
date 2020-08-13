@@ -1,14 +1,12 @@
-import * as React from 'react';
-import css from '@styled-system/css';
-
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { Icons } from 'app/components/CodeEditor/elements';
-import { useOvermind } from 'app/overmind';
-import QuestionIcon from 'react-icons/lib/go/question';
-
 import { LiveUser } from '@codesandbox/common/lib/types';
 import { Stack } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { Icons } from 'app/components/CodeEditor/elements';
+import { useOvermind } from 'app/overmind';
+import * as React from 'react';
+import QuestionIcon from 'react-icons/lib/go/question';
 
 export const EditorToast = () => {
   const { state } = useOvermind();
@@ -32,9 +30,9 @@ export const EditorToast = () => {
     <Stack
       css={css({
         position: 'absolute',
-        top: 34,
+        bottom: 0,
         zIndex: 45,
-        right: 0,
+        right: 15,
       })}
       gap={1}
       direction="vertical"

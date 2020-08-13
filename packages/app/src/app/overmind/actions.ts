@@ -1,15 +1,15 @@
+import { identify } from '@codesandbox/common/lib/utils/analytics';
 import {
   NotificationType,
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
-import { identify } from '@codesandbox/common/lib/utils/analytics';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { CurrentTeamInfoFragmentFragment } from 'app/graphql/types';
 
-import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
-import { Action, AsyncAction } from '.';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
+import { Action, AsyncAction } from '.';
 
 export const internal = internalActions;
 
@@ -116,26 +116,23 @@ export const toggleSignInModal: Action = ({ state }) => {
 };
 
 export const signInButtonClicked: AsyncAction<{
-  useExtraScopes: boolean;
-} | void> = async ({ actions, state }, options) => {
-  if (!options) {
+  useExtraScopes?: boolean;
+  provider: 'google' | 'github';
+}> = async ({ actions, state }, options) => {
+  const { useExtraScopes, provider } = options || {};
+  if (!useExtraScopes) {
     await actions.internal.signIn({
+      provider,
       useExtraScopes: false,
     });
     state.signInModalOpen = false;
     return;
   }
-  await actions.internal.signIn(options);
-  state.signInModalOpen = false;
-};
-
-export const signInCliClicked: AsyncAction = async ({ state, actions }) => {
   await actions.internal.signIn({
-    useExtraScopes: false,
+    useExtraScopes,
+    provider,
   });
   state.signInModalOpen = false;
-
-  await actions.internal.authorize();
 };
 
 export const addNotification: Action<{
@@ -202,13 +199,21 @@ export const requestAuthorisation: AsyncAction = async ({ actions }) => {
   await actions.internal.authorize();
 };
 
+export const setPendingUserId: Action<string> = ({ state }, id) => {
+  state.pendingUserId = id;
+};
+
 export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
   state.isLoadingGithub = true;
-  await actions.internal.signIn({ useExtraScopes: true });
+  await actions.internal.signIn({ useExtraScopes: true, provider: 'github' });
   state.isLoadingGithub = false;
   if (state.editor.currentSandbox?.originalGit) {
     actions.git.loadGitSource();
   }
+};
+
+export const signInGoogleClicked: AsyncAction = async ({ actions }) => {
+  await actions.internal.signIn({ provider: 'google' });
 };
 
 export const signOutClicked: AsyncAction = async ({
@@ -360,11 +365,11 @@ export const getActiveTeamInfo: AsyncAction<
   return currentTeam;
 };
 
-export const openCreateSandboxModal: Action<{ collectionId?: string }> = (
-  { actions },
-  { collectionId }
-) => {
-  actions.modals.newSandboxModal.open({ collectionId });
+export const openCreateSandboxModal: Action<{
+  collectionId?: string;
+  initialTab?: 'Import';
+}> = ({ actions }, props) => {
+  actions.modals.newSandboxModal.open(props);
 };
 
 export const validateUsername: AsyncAction<string> = async (
@@ -399,4 +404,11 @@ export const finalizeSignUp: AsyncAction<string> = async (
       error,
     });
   }
+};
+
+export const setLoadingAuth: AsyncAction<'google' | 'github'> = async (
+  { state },
+  provider
+) => {
+  state.loadingAuth[provider] = !state.loadingAuth[provider];
 };

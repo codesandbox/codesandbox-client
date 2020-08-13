@@ -188,12 +188,27 @@ export const GitHub = () => {
       );
     }
 
+    if (
+      conflictPaths.length ||
+      gitChanges.added.length ||
+      gitChanges.deleted.length ||
+      gitChanges.modified.length
+    ) {
+      return (
+        <Collapsible title={`Changes (${changeCount})`} defaultOpen>
+          <Element>
+            <Changes conflicts={conflictPaths} {...gitChanges} />
+            <CommitForm />
+          </Element>
+        </Collapsible>
+      );
+    }
+
     return (
       <Collapsible title={`Changes (${changeCount})`} defaultOpen>
-        <Element>
-          <Changes conflicts={conflictPaths} {...gitChanges} />
-          <CommitForm />
-        </Element>
+        <Stack align="center" justify="center" padding={3}>
+          <Text size={4}>No changes</Text>
+        </Stack>
       </Collapsible>
     );
   }
@@ -203,13 +218,14 @@ export const GitHub = () => {
   if (!originalGit && upstreamSandbox?.git) {
     return (
       <>
-        <Collapsible title="GitHub Repository" defaultOpen>
+        <Collapsible title="Link to GitHub repository" defaultOpen>
           <Element paddingX={2}>
+            <Text variant="muted">If you wish to contribute back to</Text>{' '}
+            {upstreamSandbox.git.username}/{upstreamSandbox.git.repo}
             <Text variant="muted">
-              If you wish to contribute back to {upstreamSandbox.git.username}/
-              {upstreamSandbox.git.repo}, you can link this sandbox to the git
-              repository. This will allow you to create commits and open pull
-              requests with this sandbox.
+              , you can link this sandbox to the GitHub repository. This will
+              allow you to create commits and open pull requests with this
+              sandbox.
             </Text>
             <Button
               marginTop={4}
@@ -229,7 +245,7 @@ export const GitHub = () => {
     <>
       {originalGit ? (
         <>
-          <Collapsible title="GitHub Repository" defaultOpen>
+          <Collapsible title="GitHub repository" defaultOpen>
             <Element paddingX={2}>
               <Link
                 target="_blank"
@@ -250,7 +266,9 @@ export const GitHub = () => {
           <CreateRepo />
         </>
       ) : (
-        <CreateRepo />
+        <>
+          <CreateRepo />
+        </>
       )}
     </>
   );

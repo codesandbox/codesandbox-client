@@ -1,10 +1,10 @@
 import { Contributor, PermissionType } from '@codesandbox/common/lib/types';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { identify } from '@codesandbox/common/lib/utils/analytics';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { IState, derived } from 'overmind';
 
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
 import { AsyncAction, RootState } from '.';
 
 /*
@@ -206,6 +206,9 @@ export const createModals = <
 
     const close: AsyncAction<T> = async ({ state }, payload) => {
       state.modals.current = null;
+      Object.keys(modal.state).forEach(stateKey => {
+        state.modals[name][stateKey] = modal.state[stateKey];
+      });
       if (resolver) {
         resolver(payload || modal.result);
       }

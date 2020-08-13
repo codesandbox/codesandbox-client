@@ -1,36 +1,37 @@
-import { useOvermind } from 'app/overmind';
-import React, { useState, useEffect } from 'react';
-import { useTabState } from 'reakit/Tab';
+import { Element, ThemeProvider } from '@codesandbox/components';
 import css from '@styled-system/css';
-
+import { useOvermind } from 'app/overmind';
 import latestChangelog from 'homepage/content/changelog';
-import { ThemeProvider, Element } from '@codesandbox/components';
-import { getInfoFromMarkdown } from './utils/getInfoFromMarkdown';
+import React, { useEffect, useState } from 'react';
+import { useTabState } from 'reakit/Tab';
+
 import { Create } from './Create';
 import {
+  CloseModal,
   Container,
+  MobileTabs,
   Tab,
   TabContent,
   Tabs,
-  MobileTabs,
-  CloseModal,
 } from './elements';
 import { Explore } from './Explore';
 import {
   CodeSandboxIcon,
+  NewIcon,
   PlusIcon,
   StarIcon,
   UploadIcon,
-  NewIcon,
 } from './Icons';
 import { Import } from './Import';
-import { Welcome } from './Welcome';
 import { New } from './New';
+import { getInfoFromMarkdown } from './utils/getInfoFromMarkdown';
+import { Welcome } from './Welcome';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
 interface CreateSandboxProps {
   collectionId?: string;
+  initialTab?: 'Import';
   isModal?: boolean;
 }
 
@@ -44,7 +45,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
   const tab = useTabState({
     orientation: 'vertical',
     selectedId:
-      isFirstVisit && !(window.screen.availWidth < 800) ? 'Welcome' : 'Create',
+      props.initialTab ||
+      (isFirstVisit && !(window.screen.availWidth < 800)
+        ? 'Welcome'
+        : 'Create'),
   });
   const [info, setInfo] = useState(null);
 

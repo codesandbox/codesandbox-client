@@ -1,9 +1,10 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 
 export const Container = styled(NavLink)<{
   depth?: number;
+  disabled?: boolean;
 }>`
   transition: 0.25s ease all;
   display: flex;
@@ -18,17 +19,25 @@ export const Container = styled(NavLink)<{
 
   user-select: none;
 
-  cursor: pointer;
+  ${props =>
+    props.disabled
+      ? css`
+          opacity: 0.8;
+          outline: none;
+        `
+      : css`
+          cursor: pointer;
 
-  &:hover {
-    color: rgba(255, 255, 255, 0.8);
-  }
+          &:hover {
+            color: rgba(255, 255, 255, 0.8);
+          }
 
-  &:focus {
-    outline: none;
-    border-color: ${props => props.theme.secondary.clearer(0.5)};
-    color: rgba(255, 255, 255, 0.8);
-  }
+          &:focus {
+            outline: none;
+            border-color: ${() => props.theme.secondary.clearer(0.5)};
+            color: rgba(255, 255, 255, 0.8);
+          }
+        `}
 `;
 
 export const CreateDirectoryContainer = Container.withComponent('div');

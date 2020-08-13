@@ -128,6 +128,7 @@ export type CurrentUser = {
   };
   curatorAt: string;
   badges: Badge[];
+  provider: 'github' | 'google';
   integrations: {
     zeit: {
       token: string;

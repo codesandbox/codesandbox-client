@@ -20,8 +20,8 @@ export const internal = internalActions;
 
 export const signInToRoom: AsyncAction<{
   roomId: string;
-}> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {
-  await actions.internal.signIn({});
+}> = withLoadApp(async ({ state, actions }, { roomId }) => {
+  state.signInModalOpen = true;
 
   if (state.isLoggedIn) {
     await actions.live.roomJoined({
