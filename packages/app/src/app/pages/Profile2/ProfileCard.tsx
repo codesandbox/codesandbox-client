@@ -122,13 +122,18 @@ export const ProfileCard = ({ defaultEditing = false }) => {
               Team
             </Text>
             <Stack gap={3}>
-              {user.teams.map(team => (
-                <Tooltip key={team.id} label={team.name}>
-                  <span>
-                    <TeamAvatar name={team.name} avatar={team.avatarUrl} />
-                  </span>
-                </Tooltip>
-              ))}
+              {user.teams
+                .slice()
+                .sort((team1, team2) =>
+                  team1.avatarUrl && !team2.avatarUrl ? -1 : 1
+                )
+                .map(team => (
+                  <Tooltip key={team.id} label={team.name}>
+                    <span>
+                      <TeamAvatar name={team.name} avatar={team.avatarUrl} />
+                    </span>
+                  </Tooltip>
+                ))}
             </Stack>
           </Stack>
         ) : null}
