@@ -6,8 +6,10 @@ import {
   Column,
   Text,
   Stats,
+  Link,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
 import { Header } from './Header';
 import { ProfileCard } from './ProfileCard';
@@ -36,9 +38,9 @@ export const Profile = props => {
         direction="vertical"
         gap={104}
         css={css({
-          height: '100vh',
+          height: '100%',
           width: '100vw',
-          backgroundColor: 'grays.900',
+          backgroundColor: 'grays.800',
           color: 'white',
           fontFamily: 'Inter, sans-serif',
         })}
@@ -110,6 +112,8 @@ const AllSandboxes = () => {
       {sandboxes.map(sandbox => (
         <Column key={sandbox.id}>
           <Stack
+            as={Link}
+            href={sandboxUrl({ id: sandbox.id, alias: sandbox.alias })}
             direction="vertical"
             gap={4}
             css={css({
@@ -117,6 +121,9 @@ const AllSandboxes = () => {
               borderColor: 'grays.600',
               borderRadius: 'medium',
               overflow: 'hidden',
+              ':hover, :focus, :focus-within': {
+                boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+              },
             })}
           >
             <div
