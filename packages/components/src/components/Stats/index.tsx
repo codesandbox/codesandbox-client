@@ -45,7 +45,7 @@ export const Stats = ({ sandbox, ...props }) => (
   <Stack gap={4} {...props}>
     <Stack gap={2} align="center">
       <Text variant="muted" style={{ display: 'flex', alignItems: 'center' }}>
-        <Icon name="heart" />
+        <Icon name="heart" size={13} />
       </Text>
       <Text size={3} variant="muted">
         {formatNumber(sandbox.likeCount)}
@@ -53,7 +53,7 @@ export const Stats = ({ sandbox, ...props }) => (
     </Stack>
     <Stack gap={2} align="center">
       <Text variant="muted" style={{ display: 'flex', alignItems: 'center' }}>
-        <Icon name="eye" size={20} />
+        <Icon name="eye" size={16} />
       </Text>
       <Text size={3} variant="muted">
         {formatNumber(sandbox.viewCount)}
@@ -61,7 +61,7 @@ export const Stats = ({ sandbox, ...props }) => (
     </Stack>
     <Stack gap={2} align="center">
       <Text variant="muted" style={{ display: 'flex', alignItems: 'center' }}>
-        <Icon name="fork" />
+        <Icon name="forkFilled" size={14} />
       </Text>
       <Text size={3} variant="muted">
         {formatNumber(sandbox.forkCount)}
