@@ -1,10 +1,13 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
-import { ThemeProvider, Element, Stack } from '@codesandbox/components';
+import { ThemeProvider, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { DndProvider, useDrop } from 'react-dnd';
+import Backend from 'react-dnd-html5-backend';
 import { Header } from './Header';
 import { ProfileCard } from './ProfileCard';
 import { AllSandboxes } from './AllSandboxes';
+import { ShowcaseSandbox } from './ShowcaseSandbox';
 
 export const Profile = props => {
   const { username } = props.match.params;
@@ -14,6 +17,7 @@ export const Profile = props => {
       profile: { profileMounted },
     },
     state: {
+      user: loggedInUser,
       profile: { current: user, showcasedSandbox },
     },
   } = useOvermind();
@@ -23,6 +27,8 @@ export const Profile = props => {
   }, [profileMounted, username]);
 
   if (!user) return null;
+
+  const myProfile = loggedInUser?.username === user.username;
 
   return (
     <ThemeProvider>
@@ -43,29 +49,47 @@ export const Profile = props => {
           <div>
             <ProfileCard />
           </div>
-          <Stack direction="vertical" gap={10} css={{ flexGrow: 1 }}>
-            {showcasedSandbox && (
-              <Element
-                as="iframe"
-                src={`https://${showcasedSandbox.id}.csb.app?standalone=1`}
-                css={css({
-                  backgroundColor: 'white',
-                  width: '100%',
-                  height: 360,
-                  borderRadius: '4px',
-                  overflow: 'hidden',
-                  border: '1px solid',
-                  borderColor: 'grays.600',
-                })}
-                title="React"
-                allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-                sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-              />
-            )}
-            <AllSandboxes />
-          </Stack>
+          <DndProvider backend={Backend}>
+            <Stack direction="vertical" gap={10} css={{ flexGrow: 1 }}>
+              {showcasedSandbox && (
+                <ShowcaseSandbox sandbox={showcasedSandbox} />
+              )}
+
+              <PinnedSandboxes myProfile={myProfile} />
+
+              <AllSandboxes />
+            </Stack>
+          </DndProvider>
         </Stack>
       </Stack>
     </ThemeProvider>
   );
+};
+
+const PinnedSandboxes = ({ myProfile }) => {
+  const [{ isOver }, drop] = useDrop({
+    accept: 'sandbox',
+    drop: () => ({ name: 'PINNED_SANDBOXES' }),
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+  return myProfile ? (
+    <div ref={drop}>
+      <Stack
+        justify="center"
+        align="center"
+        css={css({
+          height: 180,
+          backgroundColor: isOver ? 'grays.700' : 'transparent',
+          transition: theme => `background-color ${theme.speeds[2]}`,
+          backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23757575' stroke-width='1' stroke-dasharray='8%2c8' stroke-dashoffset='4' stroke-linecap='square'/%3e%3c/svg%3e");border-radius: 4px;`,
+        })}
+      >
+        <Text variant="muted" size={4} weight="medium">
+          Drag your Sandbox here to pin them to your profile
+        </Text>
+      </Stack>
+    </div>
+  ) : null;
 };

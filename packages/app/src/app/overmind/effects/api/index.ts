@@ -595,4 +595,11 @@ export default {
       },
     });
   },
+  updateUserFeaturedSandboxes(username: string, featuredSandboxIds: string[]) {
+    return api.patch(`/users/${username}`, {
+      user: {
+        featuredSandboxes: featuredSandboxIds,
+      },
+    });
+  },
 };
