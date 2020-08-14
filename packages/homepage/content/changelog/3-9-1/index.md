@@ -10,11 +10,11 @@ description:
 #### Features
 
 1. Google Sign-In  
-2. New Github themes
+2. New Github VScode themes
 3. Update prettier to 2.0.5
 4. Updated Embed UI
 5. Updated Overmind
-6. [@Saurabhdaware](https://github.com/codesandbox/codesandbox-client/pull/4628) .abell language features to vscode-extensions
+6. [@Saurabhdaware](https://github.com/codesandbox/codesandbox-client/pull/4628) added .abell language features to vscode-extensions
 
 #### Fixes
 
