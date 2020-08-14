@@ -13,19 +13,22 @@ const checkboxStyles = css({
     position: 'absolute',
     top: 0,
     left: 0,
-    height: 22,
-    width: 22,
+    height: 32,
+    width: 32,
     appearance: 'none',
+    cursor: 'pointer',
   },
   'input[type="checkbox"]:checked + label:after': {
     transform: 'scale(1)',
   },
   label: {
     display: 'flex',
+    cursor: 'pointer',
     position: 'relative',
 
     ':after, :before': {
       pointerEvents: 'none',
+      cursor: 'pointer',
     },
     ':before': {
       display: 'flex',
@@ -58,7 +61,7 @@ export const Dependency = ({
   dependency,
   handleSelect,
   selectedDeps,
-  setSelectedDeps,
+  onChange,
 }) => {
   const versions = v =>
     Object.keys(v).sort((a, b) => {
@@ -74,25 +77,29 @@ export const Dependency = ({
 
   return (
     <Stack
+      as="button"
       padding={4}
       paddingLeft={2}
       gap={4}
       css={css({
         color: 'sideBar.foreground',
+        border: 'none',
+        cursor: 'pointer',
+        background: 'transparent',
+        width: '100%',
+        outline: 'none',
+
+        ':hover, :focus': {
+          backgroundColor: 'sideBar.border',
+        },
       })}
     >
       <Element css={checkboxStyles}>
         <input
           type="checkbox"
           id={dependency.name}
-          value={dependency.name}
           checked={selectedDeps.objectID}
-          onChange={() =>
-            setSelectedDeps(deps => ({
-              ...deps,
-              [dependency.objectID]: !deps.objectID,
-            }))
-          }
+          onChange={onChange}
         />
         <label htmlFor={dependency.name} />
       </Element>

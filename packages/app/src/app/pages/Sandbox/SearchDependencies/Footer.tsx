@@ -10,6 +10,7 @@ export const AddDependencyModalFooter = ({ selectedDeps, onClick }) => (
     justify="flex-end"
     align="center"
     css={css({
+      boxShadow: '0px -4px 8px rgba(0,0,0,0.25)',
       backgroundColor: 'sideBar.background',
       borderWidth: 0,
       borderTopWidth: '1px',

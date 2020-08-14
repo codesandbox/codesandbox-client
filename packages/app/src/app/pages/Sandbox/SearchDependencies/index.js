@@ -70,7 +70,7 @@ const SearchDependencies = ({ onConfirm }) => {
       className="search-dependencies"
       css={css({
         backgroundColor: 'sideBar.background',
-        maxHeight: '70vh',
+        height: '70vh',
         position: 'relative',
       })}
     >
@@ -80,14 +80,19 @@ const SearchDependencies = ({ onConfirm }) => {
       />
       <Element
         css={css({
-          maxHeight: '60vh',
+          height: '60vh',
           overflow: 'auto',
         })}
       >
         {dependencies.map(dependency => (
           <Dependency
             selectedDeps={selectedDeps}
-            setSelectedDeps={setSelectedDeps}
+            onChange={() => {
+              setSelectedDeps(deps => ({
+                ...deps,
+                [dependency.objectID]: !deps[dependency.objectID],
+              }));
+            }}
             dependency={dependency}
             handleSelect={handleSelect}
           />
