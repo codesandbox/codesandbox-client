@@ -4,7 +4,7 @@ title: v3.9.1
 slug: Google Sign-In
 date: 2020-08-14
 description:
-  You can now use Google to sign in to CodeSandbox
+  You can now use Google to sign in to CodeSandbox.
 ---
 
 #### Features
