@@ -55,6 +55,10 @@ const SearchDependencies = ({ onConfirm }) => {
     setDependencies(all.hits);
   };
 
+  const onSelectDependencies = () => {
+    Object.keys(selectedDeps).map(handleManualSelect);
+  };
+
   const onDebouncedChange = value => getDependencies(value);
 
   useEffect(() => {
@@ -91,7 +95,7 @@ const SearchDependencies = ({ onConfirm }) => {
       </Element>
       <AddDependencyModalFooter
         selectedDeps={selectedDeps}
-        onClick={() => {}}
+        onClick={onSelectDependencies}
       />
     </div>
   );
