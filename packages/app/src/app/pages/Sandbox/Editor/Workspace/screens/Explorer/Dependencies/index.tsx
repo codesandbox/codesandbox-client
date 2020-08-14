@@ -6,13 +6,16 @@ import {
   Text,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 
 import { Dependency } from './Dependency';
 
 export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
   readonly = false,
 }) => {
+  useEffect(() => {
+    modalOpened({ modal: 'searchDependencies' });
+  }, []);
   const {
     actions: {
       modalOpened,
