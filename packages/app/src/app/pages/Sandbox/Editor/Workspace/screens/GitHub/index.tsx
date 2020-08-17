@@ -7,6 +7,7 @@ import {
   Link,
   List,
   ListItem,
+  Select,
   Stack,
   Text,
 } from '@codesandbox/components';
@@ -55,6 +56,7 @@ export const GitHub = () => {
         isExported,
         pr,
         isLinkingToGitSandbox,
+        forks,
       },
       editor: {
         currentSandbox: {
@@ -252,13 +254,47 @@ export const GitHub = () => {
                 rel="noopener noreferrer"
                 href={githubRepoUrl(originalGit)}
               >
-                <Stack gap={2} marginBottom={6} align="center">
+                <Stack gap={2} marginBottom={4} align="center">
                   <GitHubIcon width={20} />
                   <Text size={2}>
                     {originalGit.username}/{originalGit.repo}
                   </Text>
                 </Stack>
               </Link>
+              <Element marginBottom={3}>
+                <Select
+                  onChange={({ target: { value } }) => {
+                    if (value === 'fork') {
+                      actions.editor.forkExternalSandbox({
+                        sandboxId: id,
+                      });
+                    } else if (value === 'source') {
+                      actions.git.openSourceSandbox();
+                    } else {
+                      actions.git.openSandboxFork(value);
+                    }
+                  }}
+                  value={0}
+                >
+                  <option value="fork">
+                    New fork from {originalGit.branch}...
+                  </option>
+                  <option disabled>──────────</option>
+                  <option value="source">{originalGit.branch} sandbox</option>
+                  <option disabled>──────────</option>
+                  {forks.map((fork, index) => (
+                    <option key={fork.id} value={fork.id}>
+                      {fork.title || fork.id}{' '}
+                      {index === 0 ? ' (current)' : null}
+                      {index > 0 && typeof fork.prNumber === 'number'
+                        ? ' (pr)'
+                        : null}
+                    </option>
+                  ))}
+                  <option value={1}>strange-jones-frfp8 (pr)</option>
+                  <option value={2}>strange-jones-frfp8</option>
+                </Select>
+              </Element>
               {getText()}
             </Element>
           </Collapsible>
