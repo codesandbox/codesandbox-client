@@ -35,7 +35,7 @@ interface IContextMenuProps extends IMenuProps {
   folders: Array<DashboardFolder>;
   repos?: Array<DashboardRepo>;
   setRenaming: null | ((value: boolean) => void);
-  createNewFolder: () => void;
+  createNewFolder: (() => void) | null;
   createNewSandbox: () => void;
   page: PageTypes;
 }

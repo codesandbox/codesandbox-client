@@ -4,7 +4,7 @@ import { Context, MenuItem } from '../ContextMenu';
 
 interface ContainerMenuProps {
   createNewFolder: () => void;
-  createNewSandbox: () => void;
+  createNewSandbox: (() => void) | null;
 }
 
 export const ContainerMenu: React.FC<ContainerMenuProps> = ({
