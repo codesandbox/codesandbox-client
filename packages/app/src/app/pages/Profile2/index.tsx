@@ -48,7 +48,7 @@ export const Profile = props => {
             <ProfileCard />
           </div>
           <DndProvider backend={Backend}>
-            <Stack direction="vertical" gap={10} css={{ flexGrow: 1 }}>
+            <Stack direction="vertical" gap={14} css={{ flexGrow: 1 }}>
               <ShowcaseSandbox />
               <PinnedSandboxes />
               <AllSandboxes />

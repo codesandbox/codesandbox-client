@@ -1,17 +1,24 @@
 import React from 'react';
+import { useDrag } from 'react-dnd';
+import { useOvermind } from 'app/overmind';
 import { Stack, Text, Stats, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useDrag } from 'react-dnd';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-export const SandboxCard = ({ sandbox, updateFeaturedSandboxes }) => {
+export const SandboxCard = ({ sandbox }) => {
+  const {
+    actions: {
+      profile: { addFeaturedSandboxes },
+    },
+  } = useOvermind();
+
   const [, drag] = useDrag({
     item: { id: sandbox.id, type: 'sandbox' },
     end: (item: { id: string }, monitor) => {
       const dropResult = monitor.getDropResult();
       if (dropResult.name === 'PINNED_SANDBOXES') {
         const { id } = item;
-        updateFeaturedSandboxes({ featuredSandboxIds: [id] });
+        addFeaturedSandboxes({ sandboxId: id });
       }
     },
   });

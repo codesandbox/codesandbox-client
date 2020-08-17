@@ -7,9 +7,6 @@ import { SandboxCard } from './SandboxCard';
 
 export const PinnedSandboxes = () => {
   const {
-    actions: {
-      profile: { updateFeaturedSandboxes },
-    },
     state: {
       user: loggedInUser,
       profile: { current: user },
@@ -38,10 +35,7 @@ export const PinnedSandboxes = () => {
     >
       {user.featuredSandboxes.map(sandbox => (
         <Column key={sandbox.id}>
-          <SandboxCard
-            sandbox={sandbox}
-            updateFeaturedSandboxes={updateFeaturedSandboxes}
-          />
+          <SandboxCard sandbox={sandbox} />
         </Column>
       ))}
       <div ref={drop}>

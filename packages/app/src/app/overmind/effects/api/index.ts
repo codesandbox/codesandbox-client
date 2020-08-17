@@ -595,7 +595,10 @@ export default {
       },
     });
   },
-  updateUserFeaturedSandboxes(username: string, featuredSandboxIds: string[]) {
+  updateUserFeaturedSandboxes(
+    username: string,
+    featuredSandboxIds: string[]
+  ): Promise<Profile> {
     return api.patch(`/users/${username}`, {
       user: {
         featuredSandboxes: featuredSandboxIds,

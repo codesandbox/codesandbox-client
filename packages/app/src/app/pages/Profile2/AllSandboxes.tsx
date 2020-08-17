@@ -6,7 +6,7 @@ import { SandboxCard } from './SandboxCard';
 export const AllSandboxes = () => {
   const {
     actions: {
-      profile: { sandboxesPageChanged, updateFeaturedSandboxes },
+      profile: { sandboxesPageChanged },
     },
     state: {
       profile: {
@@ -27,7 +27,10 @@ export const AllSandboxes = () => {
 
   if (!fetchedSandboxes[username]) return <span>none</span>;
 
-  const sandboxes = fetchedSandboxes[username][page];
+  const featuredSandboxIds = featuredSandboxes.map(sandbox => sandbox.id);
+  const sandboxes = fetchedSandboxes[username][page].filter(
+    sandbox => !featuredSandboxIds.includes(sandbox.id)
+  );
 
   return (
     <Stack as="section" direction="vertical" gap={6}>
@@ -45,10 +48,7 @@ export const AllSandboxes = () => {
       >
         {sandboxes.map(sandbox => (
           <Column key={sandbox.id}>
-            <SandboxCard
-              sandbox={sandbox}
-              updateFeaturedSandboxes={updateFeaturedSandboxes}
-            />
+            <SandboxCard sandbox={sandbox} />
           </Column>
         ))}
       </Grid>

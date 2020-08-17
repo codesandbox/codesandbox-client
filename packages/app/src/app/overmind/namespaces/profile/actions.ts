@@ -180,27 +180,23 @@ export const updateUserProfile: AsyncAction<{
   }
 };
 
-export const updateFeaturedSandboxes: AsyncAction<{
-  featuredSandboxIds: string[];
-}> = async ({ actions, effects, state }, { featuredSandboxIds }) => {
+export const addFeaturedSandboxes: AsyncAction<{
+  sandboxId: string;
+}> = async ({ actions, effects, state }, { sandboxId }) => {
   if (!state.profile.current) return;
 
-  // optimistic update
-  //  const oldBio = state.profile.current.bio;
-  //  state.profile.current.bio = bio;
-  //  const oldSocialLinks = state.profile.current.socialLinks;
-  //  state.profile.current.socialLinks = socialLinks;
+  const oldFeaturedSandboxIds = state.profile.current.featuredSandboxes.map(
+    sandbox => sandbox.id
+  );
 
   try {
-    await effects.api.updateUserFeaturedSandboxes(
+    const profile = await effects.api.updateUserFeaturedSandboxes(
       state.profile.current.id,
-      featuredSandboxIds
+      [...oldFeaturedSandboxIds, sandboxId]
     );
-  } catch (error) {
-    // revert optimistic update
-    // state.profile.current.bio = oldBio;
-    // state.profile.current.socialLinks = oldSocialLinks;
 
+    state.profile.current.featuredSandboxes = profile.featuredSandboxes;
+  } catch (error) {
     actions.internal.handleError({
       message: "We weren't able to update your pinned sandboxes",
       error,
