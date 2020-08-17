@@ -7,6 +7,7 @@ import {
   Stack,
   Avatar,
   Text,
+  Tooltip,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
@@ -19,7 +20,6 @@ interface TeamItemProps {
   name: string;
   avatar: string | null;
   onSelect: () => void;
-  disabled: boolean;
 }
 
 const TeamItem = (props: TeamItemProps) => (
@@ -28,8 +28,8 @@ const TeamItem = (props: TeamItemProps) => (
       paddingTop: 8,
       paddingBottom: 8,
       fontWeight: 500,
-      opacity: props.disabled ? 0.4 : 1,
-      cursor: props.disabled ? 'not-allowed' : 'pointer',
+      opacity: 1,
+      cursor: 'pointer',
     }}
     onSelect={props.onSelect}
   >
@@ -37,6 +37,26 @@ const TeamItem = (props: TeamItemProps) => (
       <TeamAvatar size="small" avatar={props.avatar} name={props.name} />{' '}
       <Text>{props.name}</Text>
     </Stack>
+  </Menu.Item>
+);
+
+const DisabledTeamItem = (props: TeamItemProps) => (
+  <Menu.Item
+    style={{
+      paddingTop: 8,
+      paddingBottom: 8,
+      fontWeight: 500,
+      opacity: 0.4,
+      cursor: 'not-allowed',
+    }}
+    onSelect={props.onSelect}
+  >
+    <Tooltip label="You don't have access to fork sandboxes in this workspace.">
+      <Stack gap={2} align="center">
+        <TeamAvatar size="small" avatar={props.avatar} name={props.name} />
+        <Text>{props.name}</Text>
+      </Stack>
+    </Tooltip>
   </Menu.Item>
 );
 
@@ -89,17 +109,26 @@ interface TeamOrUserItemProps {
 }
 const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
   if (props.item.type === 'team') {
+    if (props.disabled) {
+      return (
+        <DisabledTeamItem
+          id={props.item.teamId}
+          name={props.item.teamName}
+          avatar={props.item.teamAvatar}
+          onSelect={() => {}}
+        />
+      );
+    }
+
     return (
       <TeamItem
         id={props.item.teamId}
         onSelect={() => {
-          if (props.disabled) return;
           const item = props.item as TeamItem;
           props.forkClicked(item.teamId);
         }}
         name={props.item.teamName}
         avatar={props.item.teamAvatar}
-        disabled={props.disabled}
       />
     );
   }
