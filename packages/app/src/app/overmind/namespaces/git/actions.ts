@@ -116,9 +116,11 @@ export const loadGitSource: AsyncAction = async ({
       ...(sandbox.baseGit || sandbox.originalGit),
       teamId: state.activeTeam || undefined,
     });
-    state.git.forks = git.baseGitSandboxes
-      .concat(git.originalGitSandboxes)
-      .sort((a, b) => (a.id === sandbox.id ? -1 : 1));
+    state.git.forks = git
+      ? git.baseGitSandboxes
+          .concat(git.originalGitSandboxes)
+          .sort((a, b) => (a.id === sandbox.id ? -1 : 1))
+      : [];
   } catch (error) {
     actions.internal.handleError({
       error,
