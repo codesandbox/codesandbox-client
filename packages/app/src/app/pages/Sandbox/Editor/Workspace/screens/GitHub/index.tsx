@@ -266,7 +266,9 @@ export const GitHub = () => {
                   onChange={({ target: { value } }) => {
                     if (value === 'fork') {
                       actions.editor.forkExternalSandbox({
-                        sandboxId: id,
+                        sandboxId: baseGit
+                          ? `/github/${baseGit.username}/${baseGit.repo}/${baseGit.path}`
+                          : `/github/${originalGit.username}/${originalGit.repo}/${originalGit.path}`,
                       });
                     } else if (value === 'source') {
                       actions.git.openSourceSandbox();
@@ -274,16 +276,22 @@ export const GitHub = () => {
                       actions.git.openSandboxFork(value);
                     }
                   }}
-                  value={0}
                 >
                   <option value="fork">
-                    New fork from {originalGit.branch}...
+                    New fork from{' '}
+                    {baseGit ? baseGit.branch : originalGit.branch}...
                   </option>
                   <option disabled>──────────</option>
-                  <option value="source">{originalGit.branch} sandbox</option>
+                  <option value="source">
+                    {baseGit ? baseGit.branch : originalGit.branch} sandbox
+                  </option>
                   <option disabled>──────────</option>
                   {forks.map((fork, index) => (
-                    <option key={fork.id} value={fork.id}>
+                    <option
+                      key={fork.id}
+                      value={fork.id}
+                      selected={index === 0}
+                    >
                       {fork.title || fork.id}{' '}
                       {index === 0 ? ' (current)' : null}
                       {index > 0 && typeof fork.prNumber === 'number'
