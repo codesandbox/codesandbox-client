@@ -1,13 +1,14 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
-import { ThemeProvider, Stack, Text } from '@codesandbox/components';
+import { ThemeProvider, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { DndProvider, useDrop } from 'react-dnd';
+import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 import { Header } from './Header';
 import { ProfileCard } from './ProfileCard';
-import { AllSandboxes } from './AllSandboxes';
 import { ShowcaseSandbox } from './ShowcaseSandbox';
+import { PinnedSandboxes } from './PinnedSandboxes';
+import { AllSandboxes } from './AllSandboxes';
 
 export const Profile = props => {
   const { username } = props.match.params;
@@ -17,8 +18,7 @@ export const Profile = props => {
       profile: { profileMounted },
     },
     state: {
-      user: loggedInUser,
-      profile: { current: user, showcasedSandbox },
+      profile: { current: user },
     },
   } = useOvermind();
 
@@ -27,8 +27,6 @@ export const Profile = props => {
   }, [profileMounted, username]);
 
   if (!user) return null;
-
-  const myProfile = loggedInUser?.username === user.username;
 
   return (
     <ThemeProvider>
@@ -51,12 +49,8 @@ export const Profile = props => {
           </div>
           <DndProvider backend={Backend}>
             <Stack direction="vertical" gap={10} css={{ flexGrow: 1 }}>
-              {showcasedSandbox && (
-                <ShowcaseSandbox sandbox={showcasedSandbox} />
-              )}
-
-              <PinnedSandboxes myProfile={myProfile} />
-
+              <ShowcaseSandbox />
+              <PinnedSandboxes />
               <AllSandboxes />
             </Stack>
           </DndProvider>
@@ -64,33 +58,4 @@ export const Profile = props => {
       </Stack>
     </ThemeProvider>
   );
-};
-
-const PinnedSandboxes = ({ myProfile }) => {
-  const [{ isOver }, drop] = useDrop({
-    accept: 'sandbox',
-    drop: () => ({ name: 'PINNED_SANDBOXES' }),
-    collect: monitor => ({
-      isOver: monitor.isOver(),
-    }),
-  });
-  return myProfile ? (
-    <div ref={drop}>
-      <Stack
-        justify="center"
-        align="center"
-        css={css({
-          height: 180,
-          padding: 4,
-          backgroundColor: isOver ? 'grays.700' : 'transparent',
-          transition: theme => `background-color ${theme.speeds[2]}`,
-          backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23757575' stroke-width='1' stroke-dasharray='8%2c8' stroke-dashoffset='4' stroke-linecap='square'/%3e%3c/svg%3e");border-radius: 4px;`,
-        })}
-      >
-        <Text variant="muted" size={4} weight="medium" align="center">
-          Drag your Sandbox here to pin them to your profile
-        </Text>
-      </Stack>
-    </div>
-  ) : null;
 };
