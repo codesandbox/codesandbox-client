@@ -10,7 +10,7 @@ export const AllSandboxes = () => {
     },
     state: {
       profile: {
-        current: { username },
+        current: { username, featuredSandboxes },
         isLoadingSandboxes,
         sandboxes: fetchedSandboxes,
       },
@@ -31,9 +31,11 @@ export const AllSandboxes = () => {
 
   return (
     <Stack as="section" direction="vertical" gap={6}>
-      <Text size={7} weight="bold">
-        All Sandboxes
-      </Text>
+      {featuredSandboxes.length ? (
+        <Text size={7} weight="bold">
+          All Sandboxes
+        </Text>
+      ) : null}
       <Grid
         rowGap={6}
         columnGap={6}
