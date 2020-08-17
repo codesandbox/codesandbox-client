@@ -39,12 +39,12 @@ export const SandboxCard = ({ sandbox, updateFeaturedSandboxes }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            height: '160px',
+            height: 160 + 1,
+            borderBottom: '1px solid',
             backgroundColor: 'grays.600',
             backgroundSize: 'cover',
             backgroundPosition: 'top center',
             backgroundRepeat: 'no-repeat',
-            borderBottom: '1px solid',
             borderColor: 'grays.600',
           })}
           style={{

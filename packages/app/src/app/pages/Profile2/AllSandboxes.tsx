@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Column } from '@codesandbox/components';
+import { Grid, Column, Stack, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { SandboxCard } from './SandboxCard';
 
@@ -30,21 +30,26 @@ export const AllSandboxes = () => {
   const sandboxes = fetchedSandboxes[username][page];
 
   return (
-    <Grid
-      rowGap={6}
-      columnGap={6}
-      css={{
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      }}
-    >
-      {sandboxes.map(sandbox => (
-        <Column key={sandbox.id}>
-          <SandboxCard
-            sandbox={sandbox}
-            updateFeaturedSandboxes={updateFeaturedSandboxes}
-          />
-        </Column>
-      ))}
-    </Grid>
+    <Stack as="section" direction="vertical" gap={6}>
+      <Text size={7} weight="bold">
+        All Sandboxes
+      </Text>
+      <Grid
+        rowGap={6}
+        columnGap={6}
+        css={{
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        }}
+      >
+        {sandboxes.map(sandbox => (
+          <Column key={sandbox.id}>
+            <SandboxCard
+              sandbox={sandbox}
+              updateFeaturedSandboxes={updateFeaturedSandboxes}
+            />
+          </Column>
+        ))}
+      </Grid>
+    </Stack>
   );
 };
