@@ -284,9 +284,7 @@ export const getAllFolders: AsyncAction = async ({ state, effects }) => {
       getDecoratedCollection(collection)
     );
 
-    state.dashboard.allCollections = collectionsByLevel.filter(
-      c => c.id && c.name
-    );
+    state.dashboard.allCollections = collectionsByLevel.filter(c => c.id);
   } catch {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'

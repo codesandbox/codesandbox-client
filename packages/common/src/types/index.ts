@@ -557,6 +557,7 @@ export type Profile = {
   avatarUrl: string;
   bio?: string;
   socialLinks?: string[];
+  featuredSandboxes: Sandbox[];
   teams: Array<{
     id: string;
     name: string;
