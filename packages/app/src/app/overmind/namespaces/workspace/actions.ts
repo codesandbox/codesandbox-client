@@ -6,6 +6,7 @@ import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
+import { json } from 'overmind';
 
 export const valueChanged: Action<{
   field: string;
@@ -484,5 +485,5 @@ export const handleVersionChange: Action<{
   dependency: Dependency;
   version: string;
 }> = ({ state }, { dependency, version }) => {
-  state.workspace.hitToVersionMap.set(dependency, version);
+  json(state.workspace.hitToVersionMap).set(dependency.objectID, version);
 };

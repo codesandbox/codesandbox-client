@@ -38,7 +38,7 @@ const checkboxStyles = css({
       width: 21,
       borderWidth: '1px',
       borderStyle: 'solid',
-      borderColor: 'sideBar.border',
+      borderColor: 'grays.400',
       borderRadius: '50%',
       marginRight: 4,
     },
@@ -114,7 +114,13 @@ export const Dependency = ({ dependency }) => {
           <Text block size={4} weight="bold">
             {dependency.name}
           </Text>
-          <Text block size={3} variant="muted" marginTop={1}>
+          <Text
+            block
+            size={3}
+            variant="muted"
+            marginTop={1}
+            css={css({ wordBreak: 'break-all' })}
+          >
             {dependency.description}
           </Text>
 
@@ -134,12 +140,12 @@ export const Dependency = ({ dependency }) => {
         <Element css={{ flexShrink: 0, width: 208 }}>
           <Select
             onClick={e => e.stopPropagation()}
-            onChange={e =>
+            onChange={e => {
               actions.workspace.handleVersionChange({
                 dependency,
                 version: e.target.value,
-              })
-            }
+              });
+            }}
           >
             {Object.keys(dependency.versions)
               .reverse()

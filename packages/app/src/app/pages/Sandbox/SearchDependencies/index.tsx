@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { json } from 'overmind';
 import { Dependency as DependencyType } from '@codesandbox/common/lib/types/algolia';
 import { useOvermind } from 'app/overmind';
 import { Element, Text, Stack } from '@codesandbox/components';
@@ -14,7 +15,7 @@ const SearchDependencies = ({ onConfirm }) => {
   } = useOvermind();
 
   const handleSelect = (hit: DependencyType) => {
-    let version = workspace.hitToVersionMap.get(hit);
+    let version = json(workspace.hitToVersionMap).get(hit.objectID);
 
     if (!version && hit.tags) {
       version = hit.tags.latest;
@@ -43,7 +44,7 @@ const SearchDependencies = ({ onConfirm }) => {
   };
 
   const onSelectDependencies = () => {
-    Object.values(workspace.starterDependencies)
+    Object.values(workspace.selectedDependencies)
       .filter(a => a)
       .map(handleSelect);
   };
