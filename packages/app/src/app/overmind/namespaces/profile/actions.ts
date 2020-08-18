@@ -179,3 +179,27 @@ export const updateUserProfile: AsyncAction<{
     });
   }
 };
+
+export const addFeaturedSandboxes: AsyncAction<{
+  sandboxId: string;
+}> = async ({ actions, effects, state }, { sandboxId }) => {
+  if (!state.profile.current) return;
+
+  const oldFeaturedSandboxIds = state.profile.current.featuredSandboxes.map(
+    sandbox => sandbox.id
+  );
+
+  try {
+    const profile = await effects.api.updateUserFeaturedSandboxes(
+      state.profile.current.id,
+      [...oldFeaturedSandboxIds, sandboxId]
+    );
+
+    state.profile.current.featuredSandboxes = profile.featuredSandboxes;
+  } catch (error) {
+    actions.internal.handleError({
+      message: "We weren't able to update your pinned sandboxes",
+      error,
+    });
+  }
+};
