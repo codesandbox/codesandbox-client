@@ -13,27 +13,27 @@
 [![first-timers-only Friendly](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](http://www.firsttimersonly.com/)
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
 
-An instantly ready, full-featured online IDE for web development on any device
-with a browser. Enabling you to start new projects quickly and prototype
-rapidly. With CodeSandbox, you can create web apps, experiment with code, test
-ideas, and share creations easily.
+Мгновенно готовая полнофункциональная онлайн-среда IDE для веб-разработки на любом устройстве
+с браузером. Это позволит вам быстро начать новые проекты и прототипировать их быстро. 
+С помощью CodeSandbox вы можете создавать веб-приложения, экспериментировать с кодом, тестировать
+идеи и легко делиться творениями.
 
-## Other CodeSandbox repositories
+## Другие репозитории CodeSandbox
 
-CodeSandbox consists of several separate servers, some of which are open
-sourced.
+CodeSandbox состоит из нескольких отдельных серверов, некоторые из них с открытым
+источником.
 
-- Client: the web application
-- Server: the [Phoenix](https://github.com/phoenixframework/phoenix) API server
-- Nginx: Nginx config files
+- Клиент: веб-приложение
+- Сервер: [Phoenix](https://github.com/phoenixframework/phoenix) API-сервер
+- Nginx: Файлы конфигурации Nginx
 - [Git Extractor](https://github.com/codesandbox/codesandbox-importers):
-  responsible for extracting the source from a GitHub repository
+  отвечает за извлечение исходного кода из репозитория GitHub
 - [CLI](https://github.com/codesandbox/codesandbox-importers/tree/master/packages/cli):
-  the CLI to upload a CodeSandbox project from your command line
+  интерфейс для загрузки проекта CodeSandbox из командной строки
 
-## Contributors ✨
+## Авторы ✨
 
-Thanks goes to these wonderful people
+Спасибо этим замечательным людям
 ([emoji key](https://github.com/all-contributors/all-contributors#emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
@@ -270,5 +270,5 @@ Thanks goes to these wonderful people
 
 <a href="https://www.chromaticqa.com/"><img src="https://cdn-images-1.medium.com/letterbox/147/36/50/50/1*oHHjTjInDOBxIuYHDY2gFA.png?source=logoAvatar-d7276495b101---37816ec27d7a" width="120"/></a>
 
-Thanks to [Chromatic](https://www.chromaticqa.com/) for providing the visual
-testing platform that helps us catch unexpected changes.
+Спасибо [Chromatic](https://www.chromaticqa.com/) за визуальную платформу для тестирования, 
+которая помогает нам обнаруживать неожиданные изменения.
