@@ -203,3 +203,27 @@ export const addFeaturedSandboxes: AsyncAction<{
     });
   }
 };
+
+export const removeFeaturedSandboxes: AsyncAction<{
+  sandboxId: string;
+}> = async ({ actions, effects, state }, { sandboxId }) => {
+  if (!state.profile.current) return;
+
+  const filteredSandboxIds = state.profile.current.featuredSandboxes
+    .map(sandbox => sandbox.id)
+    .filter(id => id !== sandboxId);
+
+  try {
+    const profile = await effects.api.updateUserFeaturedSandboxes(
+      state.profile.current.id,
+      filteredSandboxIds
+    );
+
+    state.profile.current.featuredSandboxes = profile.featuredSandboxes;
+  } catch (error) {
+    actions.internal.handleError({
+      message: "We weren't able to update your pinned sandboxes",
+      error,
+    });
+  }
+};

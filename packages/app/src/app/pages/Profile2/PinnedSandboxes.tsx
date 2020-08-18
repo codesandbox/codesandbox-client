@@ -5,7 +5,7 @@ import { Grid, Column, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SandboxCard } from './SandboxCard';
 
-export const PinnedSandboxes = () => {
+export const PinnedSandboxes = ({ menuControls }) => {
   const {
     state: {
       user: loggedInUser,
@@ -35,7 +35,7 @@ export const PinnedSandboxes = () => {
     >
       {user.featuredSandboxes.map(sandbox => (
         <Column key={sandbox.id}>
-          <SandboxCard sandbox={sandbox} />
+          <SandboxCard sandbox={sandbox} menuControls={menuControls} />
         </Column>
       ))}
       <div ref={drop}>
@@ -55,7 +55,7 @@ export const PinnedSandboxes = () => {
           </Text>
         </Stack>
       </div>
-      <div />
+      {user.featuredSandboxes.length ? <div /> : null}
     </Grid>
   );
 };

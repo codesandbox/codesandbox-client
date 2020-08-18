@@ -155,7 +155,7 @@ const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
             <MenuContext.Provider value={{ trigger: null, portal: false }}>
               <ReachMenu.MenuPopover
                 position={(targetRect, popoverRect) => ({
-                  position: 'absolute',
+                  position: 'fixed',
                   left: Math.min(
                     position.x,
                     window.innerWidth -

@@ -3,7 +3,7 @@ import { Grid, Column, Stack, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { SandboxCard } from './SandboxCard';
 
-export const AllSandboxes = () => {
+export const AllSandboxes = ({ menuControls }) => {
   const {
     actions: {
       profile: { sandboxesPageChanged },
@@ -48,7 +48,7 @@ export const AllSandboxes = () => {
       >
         {sandboxes.map(sandbox => (
           <Column key={sandbox.id}>
-            <SandboxCard sandbox={sandbox} />
+            <SandboxCard sandbox={sandbox} menuControls={menuControls} />
           </Column>
         ))}
       </Grid>
