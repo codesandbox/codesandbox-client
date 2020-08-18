@@ -108,6 +108,16 @@ export const Search = () => {
     }
   };
 
+  const searchFiles = useCallback(
+    async value => {
+      setSearchTerm(value);
+      setQueue(q =>
+        q.concat({ value, files: JSON.parse(JSON.stringify(modules)) })
+      );
+    },
+    [modules]
+  );
+
   useEffect(() => {
     if (searchTerm && modules) {
       searchFiles(searchTerm);
@@ -134,16 +144,6 @@ export const Search = () => {
       }
     }
   }, [workerStatus, queue.length, queue, searchWorker, killWorker]);
-
-  const searchFiles = useCallback(
-    async value => {
-      setSearchTerm(value);
-      setQueue(q =>
-        q.concat({ value, files: JSON.parse(JSON.stringify(modules)) })
-      );
-    },
-    [modules]
-  );
 
   return (
     <Collapsible defaultOpen title="Search">
