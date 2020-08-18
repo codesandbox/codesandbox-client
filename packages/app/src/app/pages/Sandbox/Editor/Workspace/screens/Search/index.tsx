@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Collapsible,
   Text,
@@ -32,28 +32,33 @@ const search = (term: string, modules: Module[]) => {
     return s;
   }
 
+  function getAllMatches(text: string, searchTerm: string) {
+    const searchStrLen = term.length;
+    if (searchStrLen === 0) {
+      return [];
+    }
+    let pointer = 0;
+    let index = text.substring(pointer).search(searchTerm);
+    const indices = [];
+
+    while (index > -1) {
+      indices.push([pointer + index, pointer + index + searchStrLen]);
+      pointer += index + searchStrLen;
+      index = text.substring(pointer).search(searchTerm);
+    }
+    return indices;
+  }
+
   if (term && modules) {
-    const files = searchable
+    return searchable
       .map(file => {
         const s = file.code
           .toLocaleLowerCase()
           .search(String2Regex(term.toLowerCase()));
         if (s !== -1) {
           const str = file.code.toLocaleLowerCase();
-          let lastMatch: number;
-          const matches = [];
-          lastMatch = str.search(String2Regex(term.toLowerCase()));
-          if (lastMatch >= 0) {
-            matches.push([lastMatch, lastMatch + term.length]);
-
-            // while (lastMatch >= 0) {
-            //   lastMatch = str
-            //     .substring(lastMatch + term.length)
-            //     .search(String2Regex(term));
-            //   matches.push([lastMatch, lastMatch + term.length]);
-            // }
-          }
-
+          const searchTerm = String2Regex(term.toLowerCase());
+          const matches = getAllMatches(str, searchTerm);
           return {
             code: file.code,
             id: file.id,
@@ -66,7 +71,6 @@ const search = (term: string, modules: Module[]) => {
         return false;
       })
       .filter(exists => exists);
-    return files;
   }
 
   return [];
@@ -108,7 +112,7 @@ export const Search = () => {
     if (searchTerm && modules) {
       searchFiles(searchTerm);
     }
-  }, [modules]);
+  }, [modules, searchFiles, searchTerm]);
 
   const open = async (id, match) => {
     await actions.editor.moduleSelected({ id });
@@ -124,20 +128,22 @@ export const Search = () => {
         const current = queue.shift();
 
         searchWorker(current.value, current.files).then(files => {
-          console.log('AAAAAA', files);
           killWorker();
           setResults(files);
         });
       }
     }
-  }, [workerStatus, queue.length]);
+  }, [workerStatus, queue.length, queue, searchWorker, killWorker]);
 
-  const searchFiles = async value => {
-    setSearchTerm(value);
-    setQueue(q =>
-      q.concat({ value, files: JSON.parse(JSON.stringify(modules)) })
-    );
-  };
+  const searchFiles = useCallback(
+    async value => {
+      setSearchTerm(value);
+      setQueue(q =>
+        q.concat({ value, files: JSON.parse(JSON.stringify(modules)) })
+      );
+    },
+    [modules]
+  );
 
   return (
     <Collapsible defaultOpen title="Search">
@@ -183,10 +189,7 @@ export const Search = () => {
             })}
           >
             <Text block variant="muted" align="center">
-              {results.reduce((acc, curr) => {
-                acc += curr.matches.length;
-                return acc;
-              }, 0)}{' '}
+              {results.reduce((acc, curr) => acc + curr.matches.length, 0)}{' '}
               results in {results.length} files
             </Text>
           </Element>
