@@ -206,9 +206,11 @@ export const createModals = <
 
     const close: AsyncAction<T> = async ({ state }, payload) => {
       state.modals.current = null;
-      Object.keys(modal.state).forEach(stateKey => {
-        state.modals[name][stateKey] = modal.state[stateKey];
-      });
+      if (modal.state) {
+        Object.keys(modal.state).forEach(stateKey => {
+          state.modals[name][stateKey] = modal.state[stateKey];
+        });
+      }
       if (resolver) {
         resolver(payload || modal.result);
       }
