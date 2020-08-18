@@ -1,5 +1,6 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ThemeProvider, Stack, Menu } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { DndProvider } from 'react-dnd';
@@ -89,12 +90,20 @@ export const Profile = props => {
 const ContextMenu = ({ visible, setVisibility, position, sandboxId }) => {
   const {
     actions: {
-      profile: { addFeaturedSandboxes, removeFeaturedSandboxes },
+      editor: { forkExternalSandbox },
+      profile: {
+        addFeaturedSandboxes,
+        removeFeaturedSandboxes,
+        deleteSandboxClicked,
+      },
     },
     state: {
+      user: loggedInUser,
       profile: { current: user },
     },
   } = useOvermind();
+
+  const myProfile = loggedInUser?.username === user.username;
 
   const isFeatured = user.featuredSandboxes
     .map(sandbox => sandbox.id)
@@ -106,23 +115,45 @@ const ContextMenu = ({ visible, setVisibility, position, sandboxId }) => {
       setVisibility={setVisibility}
       position={position}
     >
-      {isFeatured ? (
-        <Menu.Item onSelect={() => removeFeaturedSandboxes({ sandboxId })}>
-          Unpin sandbox
-        </Menu.Item>
-      ) : (
-        <Menu.Item onSelect={() => addFeaturedSandboxes({ sandboxId })}>
-          Pin sandbox
-        </Menu.Item>
+      {myProfile && (
+        <>
+          {isFeatured ? (
+            <Menu.Item onSelect={() => removeFeaturedSandboxes({ sandboxId })}>
+              Unpin sandbox
+            </Menu.Item>
+          ) : (
+            <Menu.Item onSelect={() => addFeaturedSandboxes({ sandboxId })}>
+              Pin sandbox
+            </Menu.Item>
+          )}
+          <Menu.Divider />
+        </>
       )}
-      <Menu.Divider />
-      <Menu.Item onSelect={() => {}}>Open sandbox</Menu.Item>
-      <Menu.Item onSelect={() => {}}>Fork sandbox</Menu.Item>
-      <Menu.Divider />
-      <Menu.Item onSelect={() => {}}>Make sandbox unlisted</Menu.Item>
-      <Menu.Item onSelect={() => {}}>Make sandbox private</Menu.Item>
-      <Menu.Divider />
-      <Menu.Item onSelect={() => {}}>Delete sandbox</Menu.Item>
+      <Menu.Item
+        onSelect={() => {
+          location.href = sandboxUrl({ id: sandboxId });
+        }}
+      >
+        Open sandbox
+      </Menu.Item>
+      <Menu.Item
+        onSelect={() => {
+          forkExternalSandbox({ sandboxId, openInNewWindow: true });
+        }}
+      >
+        Fork sandbox
+      </Menu.Item>
+      {myProfile && (
+        <>
+          <Menu.Divider />
+          <Menu.Item onSelect={() => {}}>Make sandbox unlisted</Menu.Item>
+          <Menu.Item onSelect={() => {}}>Make sandbox private</Menu.Item>
+          <Menu.Divider />
+          <Menu.Item onSelect={() => deleteSandboxClicked(sandboxId)}>
+            Delete sandbox
+          </Menu.Item>
+        </>
+      )}
     </Menu.ContextMenu>
   );
 };

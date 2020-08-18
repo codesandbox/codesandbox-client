@@ -30,7 +30,7 @@ export const SandboxCard = ({
     <div ref={drag}>
       <Stack
         as={Link}
-        href={sandboxUrl({ id: sandbox.id, alias: sandbox.alias })}
+        href={sandboxUrl({ id: sandbox.id })}
         direction="vertical"
         gap={4}
         onContextMenu={event => onContextMenu(event, sandbox.id)}
