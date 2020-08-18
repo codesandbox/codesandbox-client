@@ -61,23 +61,22 @@ export const Dependency = ({
   dependency,
   handleSelect,
   selectedDeps,
-  onChange,
+  onVersionChange,
 }) => {
-  const versions = v =>
-    Object.keys(v).sort((a, b) => {
-      try {
-        return compareVersions(b, a);
-      } catch (e) {
-        return 0;
-      }
-    });
+  // const versions = v =>
+  //   Object.keys(v).sort((a, b) => {
+  //     try {
+  //       return compareVersions(b, a);
+  //     } catch (e) {
+  //       return 0;
+  //     }
+  //   });
 
   const getTagName = (tags, version) =>
     Object.keys(tags).find(key => tags[key] === version);
 
   return (
     <Stack
-      as="button"
       padding={4}
       paddingLeft={2}
       gap={4}
@@ -98,8 +97,8 @@ export const Dependency = ({
         <input
           type="checkbox"
           id={dependency.name}
-          checked={selectedDeps.objectID}
-          onChange={onChange}
+          checked={selectedDeps[dependency.objectID]}
+          onChange={handleSelect}
         />
         <label htmlFor={dependency.name} />
       </Element>
@@ -132,15 +131,20 @@ export const Dependency = ({
           </Stack>
         </Element>
         <Element css={{ flexShrink: 0, width: 208 }}>
-          <Select>
-            {versions(dependency.versions).map(v => {
-              const tagName = getTagName(dependency.tags, v);
-              return (
-                <option value={v} key={v}>
-                  {v} {tagName && `- ${tagName}`}
-                </option>
-              );
-            })}
+          <Select
+            onClick={e => e.stopPropagation()}
+            onChange={e => onVersionChange(dependency, e.target.value)}
+          >
+            {Object.keys(dependency.versions)
+              .reverse()
+              .map(v => {
+                const tagName = getTagName(dependency.tags, v);
+                return (
+                  <option value={v} key={v}>
+                    {v} {tagName && `- ${tagName}`}
+                  </option>
+                );
+              })}
           </Select>
           <Stack justify="flex-end" marginTop={2} gap={4} align="center">
             <Element>
@@ -165,7 +169,17 @@ export const Dependency = ({
               <Text size={3} variant="muted">
                 {dependency.humanDownloadsLast30Days.toUpperCase()}
               </Text>
-              <Text size={3} variant="muted" css={css({ maxWidth: 40 })}>
+              <Text
+                title={dependency.license}
+                size={3}
+                variant="muted"
+                css={css({
+                  maxWidth: 40,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                })}
+              >
                 {dependency.license}
               </Text>
             </Stack>
