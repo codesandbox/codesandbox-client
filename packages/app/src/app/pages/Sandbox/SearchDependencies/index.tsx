@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
+import { Dependency as DependencyType } from '@codesandbox/common/lib/types/algolia';
 import { useOvermind } from 'app/overmind';
 import { Element, Text, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SearchBox } from './SearchBox';
 import { Dependency } from './Dependency';
 import { AddDependencyModalFooter } from './Footer';
-import { dependencyType } from './types';
 
 const SearchDependencies = ({ onConfirm }) => {
   const {
@@ -13,7 +13,7 @@ const SearchDependencies = ({ onConfirm }) => {
     actions,
   } = useOvermind();
 
-  const handleSelect = (hit: dependencyType) => {
+  const handleSelect = (hit: DependencyType) => {
     let version = workspace.hitToVersionMap.get(hit);
 
     if (!version && hit.tags) {
@@ -57,7 +57,7 @@ const SearchDependencies = ({ onConfirm }) => {
   };
 
   useEffect(() => {
-    actions.workspace.getDependencies('');
+    actions.workspace.getDependencies();
   }, []);
 
   return (

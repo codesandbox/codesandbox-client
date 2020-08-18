@@ -1,12 +1,11 @@
-import algoliasearch from 'algoliasearch';
 import getTemplate from '@codesandbox/common/lib/templates';
+import { Dependency } from '@codesandbox/common/lib/types/algolia';
 import { CustomTemplate } from '@codesandbox/common/lib/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
-import { Dependency } from './state';
 
 export const valueChanged: Action<{
   field: string;
@@ -447,31 +446,20 @@ export const openDefaultItem: Action = ({ state }) => {
   state.workspace.openedWorkspaceItem = defaultItem.id;
 };
 
-export const getDependencies: AsyncAction<string> = async (
-  { state },
+export const getDependencies: AsyncAction<string | void> = async (
+  { state, effects },
   value
 ) => {
-  const client = algoliasearch(
-    'OFCNCOG2CU',
-    '00383ecd8441ead30b1b0ff981c426f5'
-  );
-  const index = client.initIndex('npm-search');
   state.workspace.loadingDependencySearch = true;
-  // @ts-ignore
-  const all: {
-    hits: Dependency[];
-  } = await index.search(value, {
-    // @ts-ignore
-    hitsPerPage: 10,
-  });
+  const searchResults = await effects.algoliaSearch.searchDependencies(value);
 
   state.workspace.loadingDependencySearch = false;
 
   if (!value) {
-    state.workspace.starterDependencies = [...all.hits];
+    state.workspace.starterDependencies = [...searchResults];
   }
 
-  state.workspace.dependencies = [...all.hits];
+  state.workspace.dependencies = [...searchResults];
 };
 
 export const setDependencies: Action<Dependency[]> = (
