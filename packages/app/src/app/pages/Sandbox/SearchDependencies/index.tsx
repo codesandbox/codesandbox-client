@@ -58,6 +58,7 @@ const SearchDependencies = ({ onConfirm }) => {
   };
 
   useEffect(() => {
+    actions.workspace.clearSelectedDependencies();
     actions.workspace.getDependencies();
   }, []);
 

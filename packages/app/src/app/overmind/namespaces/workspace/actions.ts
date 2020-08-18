@@ -487,3 +487,7 @@ export const handleVersionChange: Action<{
 }> = ({ state }, { dependency, version }) => {
   json(state.workspace.hitToVersionMap).set(dependency.objectID, version);
 };
+
+export const clearSelectedDependencies: Action = ({ state }) => {
+  state.workspace.selectedDependencies = [];
+};

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { AlgoliaIcon } from './icons';
 
 export const SearchBox = ({ handleManualSelect, onChange }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -32,6 +33,7 @@ export const SearchBox = ({ handleManualSelect, onChange }) => {
         <Input
           placeholder="Add npm dependency"
           css={css({
+            paddingRight: 140,
             paddingLeft: 50,
             height: 65,
             fontSize: 4,
@@ -44,6 +46,13 @@ export const SearchBox = ({ handleManualSelect, onChange }) => {
           })}
           onChange={e => setSearchValue(e.target.value)}
           value={searchValue}
+        />
+        <AlgoliaIcon
+          css={css({
+            top: 4,
+            right: 4,
+            position: 'absolute',
+          })}
         />
       </Element>
     </form>
