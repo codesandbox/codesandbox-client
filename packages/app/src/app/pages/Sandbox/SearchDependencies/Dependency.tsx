@@ -9,6 +9,8 @@ import { HomeIcon, GitHubIcon, CSBIcon } from './icons';
 
 const checkboxStyles = css({
   position: 'relative',
+  display: 'flex',
+  alignItems: 'center',
 
   "input[type='checkbox']": {
     position: 'absolute',
@@ -79,7 +81,6 @@ export const Dependency = ({ dependency }) => {
   return (
     <Stack
       padding={4}
-      paddingLeft={2}
       gap={4}
       css={css({
         color: 'sideBar.foreground',
