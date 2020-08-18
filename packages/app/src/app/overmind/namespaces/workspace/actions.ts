@@ -1,3 +1,4 @@
+import algoliasearch from 'algoliasearch';
 import getTemplate from '@codesandbox/common/lib/templates';
 import { CustomTemplate } from '@codesandbox/common/lib/types';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -5,6 +6,7 @@ import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
+import { Dependency } from './state';
 
 export const valueChanged: Action<{
   field: string;
@@ -443,4 +445,56 @@ export const openDefaultItem: Action = ({ state }) => {
   const defaultItem = items.find(i => i.defaultOpen) || items[0];
 
   state.workspace.openedWorkspaceItem = defaultItem.id;
+};
+
+export const getDependencies: AsyncAction<string> = async (
+  { state },
+  value
+) => {
+  const client = algoliasearch(
+    'OFCNCOG2CU',
+    '00383ecd8441ead30b1b0ff981c426f5'
+  );
+  const index = client.initIndex('npm-search');
+  state.workspace.loadingDependencySearch = true;
+  // @ts-ignore
+  const all: {
+    hits: Dependency[];
+  } = await index.search(value, {
+    // @ts-ignore
+    hitsPerPage: 10,
+  });
+
+  state.workspace.loadingDependencySearch = false;
+
+  if (!value) {
+    state.workspace.starterDependencies = [...all.hits];
+  }
+
+  state.workspace.dependencies = [...all.hits];
+};
+
+export const setDependencies: Action<Dependency[]> = (
+  { state },
+  newDependencies
+) => {
+  state.workspace.dependencies = [...newDependencies];
+};
+
+export const setSelectedDependencies: Action<Dependency> = (
+  { state },
+  dependency
+) => {
+  const oldDeps = state.workspace.selectedDependencies;
+  state.workspace.selectedDependencies = {
+    ...oldDeps,
+    [dependency.objectID]: oldDeps[dependency.objectID] ? null : dependency,
+  };
+};
+
+export const handleVersionChange: Action<{
+  dependency: Dependency;
+  version: string;
+}> = ({ state }, { dependency, version }) => {
+  state.workspace.hitToVersionMap.set(dependency, version);
 };

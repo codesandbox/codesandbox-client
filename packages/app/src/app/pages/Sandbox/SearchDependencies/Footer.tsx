@@ -1,10 +1,16 @@
 import React from 'react';
 import { Stack, Element, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
 
-export const AddDependencyModalFooter = ({ selectedDeps, onClick }) => {
-  const numberOfDependencies = Object.values(selectedDeps).filter(a => a)
-    .length;
+export const AddDependencyModalFooter = ({ onClick }) => {
+  const {
+    state: { workspace },
+  } = useOvermind();
+
+  const numberOfDependencies = Object.values(
+    workspace.selectedDependencies
+  ).filter(a => a).length;
   return (
     <Stack
       paddingY={4}

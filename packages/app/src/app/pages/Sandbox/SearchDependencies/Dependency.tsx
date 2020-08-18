@@ -2,8 +2,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
 import { Text, Element, Stack, Select, Link } from '@codesandbox/components';
-import compareVersions from 'compare-versions';
+// import compareVersions from 'compare-versions';
 import { HomeIcon, GitHubIcon, CSBIcon } from './icons';
 
 const checkboxStyles = css({
@@ -57,12 +58,12 @@ const checkboxStyles = css({
   },
 });
 
-export const Dependency = ({
-  dependency,
-  handleSelect,
-  selectedDeps,
-  onVersionChange,
-}) => {
+export const Dependency = ({ dependency }) => {
+  const {
+    state: { workspace },
+    actions,
+  } = useOvermind();
+
   // const versions = v =>
   //   Object.keys(v).sort((a, b) => {
   //     try {
@@ -97,14 +98,14 @@ export const Dependency = ({
         <input
           type="checkbox"
           id={dependency.name}
-          checked={selectedDeps[dependency.objectID]}
-          onChange={handleSelect}
+          checked={workspace.selectedDependencies[dependency.objectID]}
+          onChange={() => actions.workspace.setSelectedDependencies(dependency)}
         />
         <label htmlFor={dependency.name} />
       </Element>
       <Stack
         justify="space-between"
-        onClick={() => handleSelect(dependency)}
+        onClick={() => actions.workspace.setSelectedDependencies(dependency)}
         css={css({
           flexGrow: 1,
         })}
@@ -133,7 +134,12 @@ export const Dependency = ({
         <Element css={{ flexShrink: 0, width: 208 }}>
           <Select
             onClick={e => e.stopPropagation()}
-            onChange={e => onVersionChange(dependency, e.target.value)}
+            onChange={e =>
+              actions.workspace.handleVersionChange({
+                dependency,
+                version: e.target.value,
+              })
+            }
           >
             {Object.keys(dependency.versions)
               .reverse()
