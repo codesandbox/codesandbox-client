@@ -1,7 +1,7 @@
-import algoliasearch from 'algoliasearch';
+import search from 'algoliasearch';
 import { Dependency } from '@codesandbox/common/lib/types/algolia';
 
-const client = algoliasearch('OFCNCOG2CU', '00383ecd8441ead30b1b0ff981c426f5');
+const client = search('OFCNCOG2CU', '00383ecd8441ead30b1b0ff981c426f5');
 const NPMSearchIndex = client.initIndex('npm-search');
 
 export default {
