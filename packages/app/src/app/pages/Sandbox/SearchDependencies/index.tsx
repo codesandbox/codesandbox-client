@@ -73,6 +73,7 @@ const SearchDependencies = ({ onConfirm }) => {
     >
       <SearchBox onChange={onChange} handleManualSelect={handleManualSelect} />
       <Element
+        paddingBottom={10}
         css={css({
           height: '60vh',
           overflow: 'auto',

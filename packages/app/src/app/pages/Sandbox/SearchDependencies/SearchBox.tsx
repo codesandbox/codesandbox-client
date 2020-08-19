@@ -39,7 +39,7 @@ export const SearchBox = ({ handleManualSelect, onChange }) => {
             fontSize: 4,
             color: 'white',
             backgroundColor: 'sideBar.background',
-
+            border: 'none',
             ':focus, :hover': {
               border: 'none',
             },

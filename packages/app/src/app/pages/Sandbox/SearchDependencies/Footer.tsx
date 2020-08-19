@@ -30,7 +30,7 @@ export const AddDependencyModalFooter = ({ onClick }) => {
         width: '100%',
         left: 0,
       })}
-      gap={4}
+      gap={2}
     >
       {numberOfDependencies ? (
         <Element
@@ -44,7 +44,6 @@ export const AddDependencyModalFooter = ({ onClick }) => {
             alignItems: 'center',
             justifyContent: 'center',
           })}
-          marginRight={2}
         >
           <Text size={2}>{numberOfDependencies}</Text>
         </Element>
