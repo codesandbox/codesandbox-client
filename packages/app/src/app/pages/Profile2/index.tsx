@@ -3,6 +3,8 @@
  * - Can templates be featured?
  * - Filter out unlisted and private from API response
  * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
+ * - Custom drag preview
+ * - Sandbox picker
  */
 
 import React from 'react';

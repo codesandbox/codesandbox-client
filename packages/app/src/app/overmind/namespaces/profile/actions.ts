@@ -183,21 +183,25 @@ export const updateUserProfile: AsyncAction<{
 export const addFeaturedSandboxesInState: Action<{
   sandboxId: string;
 }> = ({ state, actions, effects }, { sandboxId }) => {
-  const page = state.profile.currentSandboxesPage;
+  if (!state.profile.current) return;
+
   const username = state.profile.current.username;
+  const page = state.profile.currentSandboxesPage;
   const sandboxesOnPage = state.profile.sandboxes[username][page];
 
   const sandbox = sandboxesOnPage.find(s => s.id === sandboxId);
 
   state.profile.current.featuredSandboxes = [
     ...state.profile.current.featuredSandboxes,
-    sandbox,
+    sandbox!,
   ];
 };
 
 export const removeFeaturedSandboxesInState: Action<{
   sandboxId: string;
 }> = ({ state, actions, effects }, { sandboxId }) => {
+  if (!state.profile.current) return;
+
   state.profile.current.featuredSandboxes = state.profile.current.featuredSandboxes.filter(
     sandbox => sandbox.id !== sandboxId
   );
@@ -267,8 +271,12 @@ export const changeSandboxPrivacyInState: Action<{
   sandboxId: string;
   privacy: 0 | 1 | 2;
 }> = ({ state, actions, effects }, { sandboxId, privacy }) => {
-  const page = state.profile.currentSandboxesPage;
+  if (!state.profile.current) {
+    return;
+  }
+
   const username = state.profile.current.username;
+  const page = state.profile.currentSandboxesPage;
   const sandboxes = state.profile.sandboxes[username][page];
 
   state.profile.sandboxes[username][page] = sandboxes.map(sandbox => {
