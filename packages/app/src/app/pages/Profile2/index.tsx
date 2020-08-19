@@ -1,3 +1,10 @@
+/**
+ * TODO:
+ * - Can templates be featured?
+ * - Filter out unlisted and private from API response
+ * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
+ */
+
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -94,6 +101,7 @@ const ContextMenu = ({ visible, setVisibility, position, sandboxId }) => {
       profile: {
         addFeaturedSandboxes,
         removeFeaturedSandboxes,
+        changeSandboxPrivacy,
         deleteSandboxClicked,
       },
     },
@@ -143,11 +151,19 @@ const ContextMenu = ({ visible, setVisibility, position, sandboxId }) => {
       >
         Fork sandbox
       </Menu.Item>
-      {myProfile && (
+      {myProfile && !isFeatured && (
         <>
           <Menu.Divider />
-          <Menu.Item onSelect={() => {}}>Make sandbox unlisted</Menu.Item>
-          <Menu.Item onSelect={() => {}}>Make sandbox private</Menu.Item>
+          <Menu.Item
+            onSelect={() => changeSandboxPrivacy({ sandboxId, privacy: 1 })}
+          >
+            Make sandbox unlisted
+          </Menu.Item>
+          <Menu.Item
+            onSelect={() => changeSandboxPrivacy({ sandboxId, privacy: 2 })}
+          >
+            Make sandbox private
+          </Menu.Item>
           <Menu.Divider />
           <Menu.Item onSelect={() => deleteSandboxClicked(sandboxId)}>
             Delete sandbox

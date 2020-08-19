@@ -28,9 +28,12 @@ export const AllSandboxes = ({ menuControls }) => {
   if (!fetchedSandboxes[username]) return <span>none</span>;
 
   const featuredSandboxIds = featuredSandboxes.map(sandbox => sandbox.id);
-  const sandboxes = fetchedSandboxes[username][page].filter(
-    sandbox => !featuredSandboxIds.includes(sandbox.id)
-  );
+
+  const sandboxes = fetchedSandboxes[username][page]
+    // filter out featured sandboxes so that we don't show them twice
+    .filter(sandbox => !featuredSandboxIds.includes(sandbox.id))
+    // only show public sandboxes on profile
+    .filter(sandbox => sandbox.privacy === 0);
 
   return (
     <Stack as="section" direction="vertical" gap={6}>
