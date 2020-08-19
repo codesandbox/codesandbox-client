@@ -10,6 +10,10 @@ export const SandboxCard = ({
   menuControls: { onKeyDown, onContextMenu },
 }) => {
   const {
+    state: {
+      user: loggedInUser,
+      profile: { current: user },
+    },
     actions: {
       profile: { addFeaturedSandboxes },
     },
@@ -26,8 +30,10 @@ export const SandboxCard = ({
     },
   });
 
+  const myProfile = loggedInUser?.username === user.username;
+
   return (
-    <div ref={drag}>
+    <div ref={myProfile ? drag : null}>
       <Stack
         as={Link}
         href={sandboxUrl({ id: sandbox.id })}
