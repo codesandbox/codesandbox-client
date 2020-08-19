@@ -52,7 +52,7 @@ async function test(prId) {
     .then(() => spawnPromise('yarn', ['lint']))
     .catch(() => {
       console.error(
-        'Something wrong happened building the deps, maybe missing a new package added. Please install and run build:deps manually before continuing'
+        'Ошибка при сборке deps может быть вызвана отсутствием нового пакета. Пожалуйста, установите и запустите build:deps вручную, прежде чем продолжить'
       );
     });
 }
@@ -60,5 +60,5 @@ async function test(prId) {
 if (id && Number(id)) {
   test(Number(id));
 } else {
-  throw new Error('You have to pass the ID of a PR, ex: yarn test:pr 1234');
+  throw new Error('Вы должны передать ID PR, например: yarn test: pr 1234');
 }
