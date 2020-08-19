@@ -21,6 +21,7 @@ type State = {
     | {};
   loadingDependencySearch: boolean;
   hitToVersionMap: Map<any, any>;
+  showingSelectedDependencies: boolean;
 };
 
 export const state: State = {
@@ -40,4 +41,5 @@ export const state: State = {
   selectedDependencies: {},
   loadingDependencySearch: false,
   hitToVersionMap: new Map(),
+  showingSelectedDependencies: false,
 };

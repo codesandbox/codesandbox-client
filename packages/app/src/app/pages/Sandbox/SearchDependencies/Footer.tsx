@@ -2,15 +2,18 @@ import React from 'react';
 import { Stack, Element, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import { CloseIcon } from './icons';
 
 export const AddDependencyModalFooter = ({ onClick }) => {
   const {
+    actions,
     state: { workspace },
   } = useOvermind();
 
   const numberOfDependencies = Object.values(
     workspace.selectedDependencies
   ).filter(a => a).length;
+
   return (
     <Stack
       paddingY={4}
@@ -34,18 +37,29 @@ export const AddDependencyModalFooter = ({ onClick }) => {
     >
       {numberOfDependencies ? (
         <Element
+          onClick={() => actions.workspace.toggleShowingSelectedDependencies()}
+          as="button"
           css={css({
             borderRadius: 'small',
             width: 26,
             height: 26,
-            backgroundColor: 'green',
+            backgroundColor: workspace.showingSelectedDependencies
+              ? 'sideBar.foreground'
+              : 'green',
             color: 'sideBar.background',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            border: 'none',
+            cursor: 'pointer',
+            outline: 'none',
           })}
         >
-          <Text size={2}>{numberOfDependencies}</Text>
+          {workspace.showingSelectedDependencies ? (
+            <CloseIcon />
+          ) : (
+            <Text size={2}>{numberOfDependencies} </Text>
+          )}
         </Element>
       ) : null}
       <Button

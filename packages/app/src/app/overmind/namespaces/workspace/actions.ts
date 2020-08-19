@@ -491,3 +491,8 @@ export const handleVersionChange: Action<{
 export const clearSelectedDependencies: Action = ({ state }) => {
   state.workspace.selectedDependencies = [];
 };
+
+export const toggleShowingSelectedDependencies: Action = ({ state }) => {
+  state.workspace.showingSelectedDependencies = !state.workspace
+    .showingSelectedDependencies;
+};

@@ -87,9 +87,13 @@ const SearchDependencies = ({ onConfirm }) => {
             </Text>
           </Stack>
         ) : null}
-        {workspace.dependencies.map(dependency => (
-          <Dependency key={dependency.objectID} dependency={dependency} />
-        ))}
+        {workspace.showingSelectedDependencies
+          ? Object.values(workspace.selectedDependencies).map(dependency => (
+              <Dependency key={dependency.objectID} dependency={dependency} />
+            ))
+          : workspace.dependencies.map(dependency => (
+              <Dependency key={dependency.objectID} dependency={dependency} />
+            ))}
       </Element>
       <AddDependencyModalFooter onClick={onSelectDependencies} />
     </div>

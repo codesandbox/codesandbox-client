@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Element } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
 import { AlgoliaIcon } from './icons';
 
 export const SearchBox = ({ handleManualSelect, onChange }) => {
+  const { state, actions } = useOvermind();
   const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
@@ -44,7 +46,12 @@ export const SearchBox = ({ handleManualSelect, onChange }) => {
               border: 'none',
             },
           })}
-          onChange={e => setSearchValue(e.target.value)}
+          onChange={e => {
+            setSearchValue(e.target.value);
+            if (state.workspace.showingSelectedDependencies) {
+              actions.workspace.toggleShowingSelectedDependencies();
+            }
+          }}
           value={searchValue}
         />
         <AlgoliaIcon

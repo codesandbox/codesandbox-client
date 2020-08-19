@@ -59,3 +59,12 @@ export const AlgoliaIcon = props => (
     />
   </svg>
 );
+
+export const CloseIcon = props => (
+  <svg width={12} height={12} fill="none" viewBox="0 0 12 12" {...props}>
+    <path
+      fill="#343434"
+      d="M12 1.09L10.91 0 6 4.91 1.09 0 0 1.09 4.91 6 0 10.91 1.09 12 6 7.09 10.91 12 12 10.91 7.09 6 12 1.09z"
+    />
+  </svg>
+);
