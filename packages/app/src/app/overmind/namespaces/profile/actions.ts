@@ -180,25 +180,128 @@ export const updateUserProfile: AsyncAction<{
   }
 };
 
+export const addFeaturedSandboxesInState: Action<{
+  sandboxId: string;
+}> = ({ state, actions, effects }, { sandboxId }) => {
+  if (!state.profile.current) return;
+
+  const username = state.profile.current.username;
+  const page = state.profile.currentSandboxesPage;
+  const sandboxesOnPage = state.profile.sandboxes[username][page];
+
+  const sandbox = sandboxesOnPage.find(s => s.id === sandboxId);
+
+  state.profile.current.featuredSandboxes = [
+    ...state.profile.current.featuredSandboxes,
+    sandbox!,
+  ];
+};
+
+export const removeFeaturedSandboxesInState: Action<{
+  sandboxId: string;
+}> = ({ state, actions, effects }, { sandboxId }) => {
+  if (!state.profile.current) return;
+
+  state.profile.current.featuredSandboxes = state.profile.current.featuredSandboxes.filter(
+    sandbox => sandbox.id !== sandboxId
+  );
+};
+
 export const addFeaturedSandboxes: AsyncAction<{
   sandboxId: string;
 }> = async ({ actions, effects, state }, { sandboxId }) => {
   if (!state.profile.current) return;
 
-  const oldFeaturedSandboxIds = state.profile.current.featuredSandboxes.map(
+  const currentFeaturedSandboxIds = state.profile.current.featuredSandboxes.map(
     sandbox => sandbox.id
   );
+
+  // optimistic update
+  actions.profile.addFeaturedSandboxesInState({ sandboxId });
 
   try {
     const profile = await effects.api.updateUserFeaturedSandboxes(
       state.profile.current.id,
-      [...oldFeaturedSandboxIds, sandboxId]
+      [...currentFeaturedSandboxIds, sandboxId]
     );
 
     state.profile.current.featuredSandboxes = profile.featuredSandboxes;
   } catch (error) {
+    // rollback optimisic update
+    actions.profile.removeFeaturedSandboxesInState({ sandboxId });
+
     actions.internal.handleError({
       message: "We weren't able to update your pinned sandboxes",
+      error,
+    });
+  }
+};
+
+export const removeFeaturedSandboxes: AsyncAction<{
+  sandboxId: string;
+}> = async ({ actions, effects, state }, { sandboxId }) => {
+  if (!state.profile.current) return;
+
+  const filteredSandboxIds = state.profile.current.featuredSandboxes
+    .map(sandbox => sandbox.id)
+    .filter(id => id !== sandboxId);
+
+  // optimisic update
+  actions.profile.removeFeaturedSandboxesInState({ sandboxId });
+
+  try {
+    const profile = await effects.api.updateUserFeaturedSandboxes(
+      state.profile.current.id,
+      filteredSandboxIds
+    );
+
+    state.profile.current.featuredSandboxes = profile.featuredSandboxes;
+  } catch (error) {
+    // rollback optimisic update
+    actions.profile.addFeaturedSandboxesInState({ sandboxId });
+
+    actions.internal.handleError({
+      message: "We weren't able to update your pinned sandboxes",
+      error,
+    });
+  }
+};
+
+export const changeSandboxPrivacyInState: Action<{
+  sandboxId: string;
+  privacy: 0 | 1 | 2;
+}> = ({ state, actions, effects }, { sandboxId, privacy }) => {
+  if (!state.profile.current) {
+    return;
+  }
+
+  const username = state.profile.current.username;
+  const page = state.profile.currentSandboxesPage;
+  const sandboxes = state.profile.sandboxes[username][page];
+
+  state.profile.sandboxes[username][page] = sandboxes.map(sandbox => {
+    if (sandbox.id === sandboxId) sandbox.privacy = privacy;
+    return sandbox;
+  });
+};
+
+export const changeSandboxPrivacy: AsyncAction<{
+  sandboxId: string;
+  privacy: 0 | 1 | 2;
+}> = async ({ state, actions, effects }, { sandboxId, privacy }) => {
+  // optimisitc update
+  actions.profile.changeSandboxPrivacyInState({ sandboxId, privacy });
+
+  try {
+    await effects.api.updatePrivacy(sandboxId, privacy);
+  } catch (error) {
+    // rollback optimistic update
+    // it is safe to assume that the sandbox was public (privacy:0)
+    // earlier because it was on profiles
+    actions.profile.changeSandboxPrivacyInState({ sandboxId, privacy: 0 });
+
+    actions.internal.handleError({
+      message: "We weren't able to update sandbox privacy",
       error,
     });
   }
