@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Grid,
-  Column,
-  Stack,
-  Text,
-  Button,
-  IconButton,
-} from '@codesandbox/components';
+import { Grid, Column, Stack, Text, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { SandboxCard } from './SandboxCard';
@@ -82,11 +75,6 @@ const Pagination = ({ page: currentPage, setPage }) => {
     (sandboxCount + templateCount) / SANDBOXES_PER_PAGE
   );
 
-  const pages = Array(numberOfPages)
-    .fill(true)
-    .map((_, index) => index)
-    .filter(page => page);
-
   return (
     <nav role="navigation" aria-label="Pagination Navigation">
       <Stack
@@ -94,7 +82,7 @@ const Pagination = ({ page: currentPage, setPage }) => {
         gap={4}
         justify="center"
         align="center"
-        css={{ marginX: 0, marginY: 10, listStyle: 'none' }}
+        css={css({ marginX: 0, marginY: 10, listStyle: 'none' })}
       >
         <li>
           <IconButton
@@ -104,29 +92,6 @@ const Pagination = ({ page: currentPage, setPage }) => {
             disabled={currentPage === 1}
           />
         </li>
-        {pages.map(page => (
-          <li>
-            <Button
-              key={page}
-              variant="link"
-              onClick={() => setPage(page)}
-              aria-label={`Goto page ${page}`}
-              aria-current={page === currentPage}
-              css={css({
-                flex: 0,
-                borderRadius: 0,
-                fontWeight: page === currentPage ? 'bold' : 'normal',
-                color: page === currentPage ? 'foreground' : 'mutedForeground',
-                boxShadow: theme =>
-                  page === currentPage
-                    ? `0px 1px 0px 0px ${theme.colors.blues[500]}`
-                    : 'none',
-              })}
-            >
-              {page}
-            </Button>
-          </li>
-        ))}
         <li>
           <IconButton
             name="backArrow"
