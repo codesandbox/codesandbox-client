@@ -1,7 +1,14 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
 import { useOvermind } from 'app/overmind';
-import { Stack, Text, Stats, Link, IconButton } from '@codesandbox/components';
+import {
+  Stack,
+  Text,
+  Stats,
+  Link,
+  IconButton,
+  SkeletonText,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
@@ -90,3 +97,31 @@ export const SandboxCard = ({
     </div>
   );
 };
+
+export const SkeletonCard = () => (
+  <div>
+    <Stack
+      direction="vertical"
+      gap={4}
+      css={css({
+        backgroundColor: 'grays.700',
+        border: '1px solid',
+        borderColor: 'grays.600',
+        borderRadius: 'medium',
+      })}
+    >
+      <SkeletonText
+        css={css({
+          width: '100%',
+          height: 160 + 1,
+          borderBottom: '1px solid',
+          borderColor: 'grays.600',
+        })}
+      />
+      <Stack direction="vertical" gap={2} marginX={4} marginBottom={5}>
+        <SkeletonText />
+        <SkeletonText />
+      </Stack>
+    </Stack>
+  </div>
+);

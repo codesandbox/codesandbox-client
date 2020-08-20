@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Column, Stack, Text, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { SandboxCard } from './SandboxCard';
+import { SandboxCard, SkeletonCard } from './SandboxCard';
 
 export const AllSandboxes = ({ menuControls }) => {
   const {
@@ -24,13 +24,12 @@ export const AllSandboxes = ({ menuControls }) => {
     sandboxesPageChanged(page);
   }, [sandboxesPageChanged, page]);
 
-  if (isLoadingSandboxes) return <span>loading</span>;
-
-  if (!fetchedSandboxes[username]) return <span>none</span>;
-
   const featuredSandboxIds = featuredSandboxes.map(sandbox => sandbox.id);
 
-  const sandboxes = (fetchedSandboxes[username][page] || [])
+  const sandboxes = (
+    (fetchedSandboxes[username] && fetchedSandboxes[username][page]) ||
+    []
+  )
     // filter out featured sandboxes so that we don't show them twice
     .filter(sandbox => !featuredSandboxIds.includes(sandbox.id))
     // only show public sandboxes on profile
@@ -50,11 +49,20 @@ export const AllSandboxes = ({ menuControls }) => {
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
         }}
       >
-        {sandboxes.map(sandbox => (
-          <Column key={sandbox.id}>
-            <SandboxCard sandbox={sandbox} menuControls={menuControls} />
-          </Column>
-        ))}
+        {isLoadingSandboxes
+          ? Array(15)
+              .fill(true)
+              .map((_, index) => (
+                // eslint-disable-next-line
+                <Column key={index}>
+                  <SkeletonCard />
+                </Column>
+              ))
+          : sandboxes.map((sandbox, index) => (
+              <Column key={sandbox.id}>
+                <SandboxCard sandbox={sandbox} menuControls={menuControls} />
+              </Column>
+            ))}
       </Grid>
       <Pagination page={page} setPage={setPage} />
     </Stack>
