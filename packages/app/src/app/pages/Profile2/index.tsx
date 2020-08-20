@@ -1,7 +1,7 @@
 /**
  * TODO:
- * - Pagination
  * - Skeleton
+ * - Fold number of pages shown in pagination
  * - Can templates be featured?
  * - Filter out unlisted and private from API response
  * - Get more sandboxes than required to fill All Sandboxes (or filter featured)

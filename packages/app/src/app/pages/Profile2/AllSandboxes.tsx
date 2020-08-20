@@ -82,44 +82,61 @@ const Pagination = ({ page: currentPage, setPage }) => {
     (sandboxCount + templateCount) / SANDBOXES_PER_PAGE
   );
 
+  const pages = Array(numberOfPages)
+    .fill(true)
+    .map((_, index) => index)
+    .filter(page => page);
+
   return (
-    <Stack gap={4} justify="center" align="center" marginY={10}>
-      <IconButton
-        name="backArrow"
-        title="Previous page"
-        onClick={() => setPage(currentPage - 1)}
-        disabled={currentPage === 1}
-      />
-      {Array(numberOfPages)
-        .fill(true)
-        .map((_, index) => index)
-        .filter(page => page)
-        .map(page => (
-          <Button
-            key={page}
-            variant="link"
-            onClick={() => setPage(page)}
-            css={css({
-              flex: 0,
-              borderRadius: 0,
-              fontWeight: page === currentPage ? 'bold' : 'normal',
-              color: page === currentPage ? 'foreground' : 'mutedForeground',
-              boxShadow: theme =>
-                page === currentPage
-                  ? `0px 1px 0px 0px ${theme.colors.blues[500]}`
-                  : 'none',
-            })}
-          >
-            {page}
-          </Button>
+    <nav role="navigation" aria-label="Pagination Navigation">
+      <Stack
+        as="ul"
+        gap={4}
+        justify="center"
+        align="center"
+        css={{ marginX: 0, marginY: 10, listStyle: 'none' }}
+      >
+        <li>
+          <IconButton
+            name="backArrow"
+            title="Previous page"
+            onClick={() => setPage(currentPage - 1)}
+            disabled={currentPage === 1}
+          />
+        </li>
+        {pages.map(page => (
+          <li>
+            <Button
+              key={page}
+              variant="link"
+              onClick={() => setPage(page)}
+              aria-label={`Goto page ${page}`}
+              aria-current={page === currentPage}
+              css={css({
+                flex: 0,
+                borderRadius: 0,
+                fontWeight: page === currentPage ? 'bold' : 'normal',
+                color: page === currentPage ? 'foreground' : 'mutedForeground',
+                boxShadow: theme =>
+                  page === currentPage
+                    ? `0px 1px 0px 0px ${theme.colors.blues[500]}`
+                    : 'none',
+              })}
+            >
+              {page}
+            </Button>
+          </li>
         ))}
-      <IconButton
-        name="backArrow"
-        title="Next page"
-        style={{ transform: 'scaleX(-1)' }}
-        onClick={() => setPage(currentPage + 1)}
-        disabled={currentPage === numberOfPages}
-      />
-    </Stack>
+        <li>
+          <IconButton
+            name="backArrow"
+            title="Next page"
+            style={{ transform: 'scaleX(-1)' }}
+            onClick={() => setPage(currentPage + 1)}
+            disabled={currentPage === numberOfPages}
+          />
+        </li>
+      </Stack>
+    </nav>
   );
 };
