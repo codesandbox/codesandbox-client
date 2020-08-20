@@ -474,11 +474,14 @@ export const setSelectedDependencies: Action<Dependency> = (
   { state },
   dependency
 ) => {
-  const oldDeps = state.workspace.selectedDependencies;
-  state.workspace.selectedDependencies = {
-    ...oldDeps,
-    [dependency.objectID]: oldDeps[dependency.objectID] ? null : dependency,
-  };
+  const selectedDependencies = state.workspace.selectedDependencies;
+  const dep = json(dependency);
+
+  if (selectedDependencies[dep.objectID]) {
+    delete selectedDependencies[dep.objectID];
+  } else {
+    selectedDependencies[dep.objectID] = dep;
+  }
 };
 
 export const handleVersionChange: Action<{
@@ -489,7 +492,7 @@ export const handleVersionChange: Action<{
 };
 
 export const clearSelectedDependencies: Action = ({ state }) => {
-  state.workspace.selectedDependencies = [];
+  state.workspace.selectedDependencies = {};
 };
 
 export const toggleShowingSelectedDependencies: Action = ({ state }) => {

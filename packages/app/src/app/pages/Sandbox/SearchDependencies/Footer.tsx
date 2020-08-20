@@ -10,9 +10,8 @@ export const AddDependencyModalFooter = ({ onClick }) => {
     state: { workspace },
   } = useOvermind();
 
-  const numberOfDependencies = Object.values(
-    workspace.selectedDependencies
-  ).filter(a => a).length;
+  const numberOfDependencies = Object.keys(workspace.selectedDependencies)
+    .length;
 
   return (
     <Stack
