@@ -1,10 +1,15 @@
 /**
  * TODO:
+ * - Pagination
+ * - Skeleton
  * - Can templates be featured?
  * - Filter out unlisted and private from API response
  * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
  * - Custom drag preview
+ * - Sort sandboxes
  * - Sandbox picker
+ * - Order sandboxes
+ * - Likes tab
  */
 
 import React from 'react';

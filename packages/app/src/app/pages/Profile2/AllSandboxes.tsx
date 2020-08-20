@@ -1,5 +1,13 @@
 import React from 'react';
-import { Grid, Column, Stack, Text } from '@codesandbox/components';
+import {
+  Grid,
+  Column,
+  Stack,
+  Text,
+  Button,
+  IconButton,
+} from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { SandboxCard } from './SandboxCard';
 
@@ -17,7 +25,7 @@ export const AllSandboxes = ({ menuControls }) => {
     },
   } = useOvermind();
 
-  const [page] = React.useState(0);
+  const [page, setPage] = React.useState(1);
 
   React.useEffect(() => {
     sandboxesPageChanged(page);
@@ -29,7 +37,7 @@ export const AllSandboxes = ({ menuControls }) => {
 
   const featuredSandboxIds = featuredSandboxes.map(sandbox => sandbox.id);
 
-  const sandboxes = fetchedSandboxes[username][page]
+  const sandboxes = (fetchedSandboxes[username][page] || [])
     // filter out featured sandboxes so that we don't show them twice
     .filter(sandbox => !featuredSandboxIds.includes(sandbox.id))
     // only show public sandboxes on profile
@@ -55,6 +63,63 @@ export const AllSandboxes = ({ menuControls }) => {
           </Column>
         ))}
       </Grid>
+      <Pagination page={page} setPage={setPage} />
+    </Stack>
+  );
+};
+
+const SANDBOXES_PER_PAGE = 15;
+const Pagination = ({ page: currentPage, setPage }) => {
+  const {
+    state: {
+      profile: {
+        current: { sandboxCount, templateCount },
+      },
+    },
+  } = useOvermind();
+
+  const numberOfPages = Math.ceil(
+    (sandboxCount + templateCount) / SANDBOXES_PER_PAGE
+  );
+
+  return (
+    <Stack gap={4} justify="center" align="center" marginY={10}>
+      <IconButton
+        name="backArrow"
+        title="Previous page"
+        onClick={() => setPage(currentPage - 1)}
+        disabled={currentPage === 1}
+      />
+      {Array(numberOfPages)
+        .fill(true)
+        .map((_, index) => index)
+        .filter(page => page)
+        .map(page => (
+          <Button
+            key={page}
+            variant="link"
+            onClick={() => setPage(page)}
+            css={css({
+              flex: 0,
+              borderRadius: 0,
+              fontWeight: page === currentPage ? 'bold' : 'normal',
+              color: page === currentPage ? 'foreground' : 'mutedForeground',
+              boxShadow: theme =>
+                page === currentPage
+                  ? `0px 1px 0px 0px ${theme.colors.blues[500]}`
+                  : 'none',
+            })}
+          >
+            {page}
+          </Button>
+        ))}
+      <IconButton
+        name="backArrow"
+        title="Next page"
+        style={{ transform: 'scaleX(-1)' }}
+        onClick={() => setPage(currentPage + 1)}
+        disabled={currentPage === numberOfPages}
+      />
     </Stack>
   );
 };
