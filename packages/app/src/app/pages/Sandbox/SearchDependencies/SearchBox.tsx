@@ -33,6 +33,7 @@ export const SearchBox = ({ handleManualSelect, onChange }) => {
         })}
       >
         <Input
+          autoFocus
           placeholder="Add npm dependency"
           css={css({
             paddingRight: 140,
