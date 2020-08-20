@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { Text, Element, Stack, Select, Link } from '@codesandbox/components';
@@ -166,20 +167,25 @@ export const Dependency = ({ dependency }) => {
           <Stack justify="flex-end" marginTop={2} gap={4} align="center">
             <Element>
               {dependency.homepage ? (
-                <a href={dependency.homepage}>
-                  <HomeIcon />
-                </a>
+                <Tooltip content="Homepage">
+                  <a href={dependency.homepage}>
+                    <HomeIcon />
+                  </a>
+                </Tooltip>
               ) : null}
-
-              <Link href={`/examples/package/${dependency.name}`}>
-                <CSBIcon />
-              </Link>
+              <Tooltip content="Examples">
+                <Link href={`/examples/package/${dependency.name}`}>
+                  <CSBIcon />
+                </Link>
+              </Tooltip>
               {dependency.githubRepo ? (
-                <a
-                  href={`https://github.com/${dependency.githubRepo.user}/${dependency.githubRepo.project}`}
-                >
-                  <GitHubIcon />
-                </a>
+                <Tooltip content="GitHub Repo">
+                  <a
+                    href={`https://github.com/${dependency.githubRepo.user}/${dependency.githubRepo.project}`}
+                  >
+                    <GitHubIcon />
+                  </a>
+                </Tooltip>
               ) : null}
             </Element>
             <Stack gap={2}>
