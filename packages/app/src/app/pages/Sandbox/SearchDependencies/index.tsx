@@ -14,14 +14,14 @@ const SearchDependencies = ({ onConfirm }) => {
     actions,
   } = useOvermind();
 
-  const handleSelect = (hit: DependencyType) => {
+  const handleSelect = async (hit: DependencyType) => {
     let version = json(workspace.hitToVersionMap).get(hit.objectID);
 
     if (!version && hit.tags) {
       version = hit.tags.latest;
     }
 
-    onConfirm(hit.name, version);
+    await onConfirm(hit.name, version);
   };
 
   const handleManualSelect = (hitName: string) => {
