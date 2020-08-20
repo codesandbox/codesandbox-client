@@ -19,6 +19,13 @@ export const SearchBox = ({ handleManualSelect, onChange }) => {
         paddingLeft={4}
         css={css({
           position: 'relative',
+          borderBottomWidth: '1px',
+          borderBottomStyle: 'solid',
+          borderBottomColor: 'sideBar.border',
+
+          '&:active:before': {
+            background: 'red',
+          },
           '&:before': {
             left: 4,
             width: 32,
