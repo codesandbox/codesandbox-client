@@ -6,28 +6,21 @@ import { SandboxCard, SkeletonCard } from './SandboxCard';
 
 export const AllSandboxes = ({ menuControls }) => {
   const {
-    actions: {
-      profile: { sandboxesPageChanged },
-    },
     state: {
       profile: {
         current: { username, featuredSandboxes },
+        currentSandboxesPage,
         isLoadingSandboxes,
         sandboxes: fetchedSandboxes,
       },
     },
   } = useOvermind();
 
-  const [page, setPage] = React.useState(1);
-
-  React.useEffect(() => {
-    sandboxesPageChanged(page);
-  }, [sandboxesPageChanged, page]);
-
   const featuredSandboxIds = featuredSandboxes.map(sandbox => sandbox.id);
 
   const sandboxes = (
-    (fetchedSandboxes[username] && fetchedSandboxes[username][page]) ||
+    (fetchedSandboxes[username] &&
+      fetchedSandboxes[username][currentSandboxesPage]) ||
     []
   )
     // filter out featured sandboxes so that we don't show them twice
@@ -64,16 +57,20 @@ export const AllSandboxes = ({ menuControls }) => {
               </Column>
             ))}
       </Grid>
-      <Pagination page={page} setPage={setPage} />
+      <Pagination />
     </Stack>
   );
 };
 
 const SANDBOXES_PER_PAGE = 15;
-const Pagination = ({ page: currentPage, setPage }) => {
+const Pagination = () => {
   const {
+    actions: {
+      profile: { sandboxesPageChanged },
+    },
     state: {
       profile: {
+        currentSandboxesPage,
         current: { sandboxCount, templateCount },
       },
     },
@@ -96,8 +93,8 @@ const Pagination = ({ page: currentPage, setPage }) => {
           <IconButton
             name="backArrow"
             title="Previous page"
-            onClick={() => setPage(currentPage - 1)}
-            disabled={currentPage === 1}
+            onClick={() => sandboxesPageChanged(currentSandboxesPage - 1)}
+            disabled={currentSandboxesPage === 1}
           />
         </li>
         <li>
@@ -105,8 +102,8 @@ const Pagination = ({ page: currentPage, setPage }) => {
             name="backArrow"
             title="Next page"
             style={{ transform: 'scaleX(-1)' }}
-            onClick={() => setPage(currentPage + 1)}
-            disabled={currentPage === numberOfPages}
+            onClick={() => sandboxesPageChanged(currentSandboxesPage + 1)}
+            disabled={currentSandboxesPage === numberOfPages}
           />
         </li>
       </Stack>

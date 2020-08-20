@@ -1,12 +1,12 @@
 /**
  * TODO:
- * - Skeleton
- * - Fold number of pages shown in pagination
- * - Can templates be featured?
+ * - Mobile view
+ * - Page number in url
  * - Filter out unlisted and private from API response
  * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
  * - Custom drag preview
  * - Sort sandboxes
+ * - Search sandboxes
  * - Sandbox picker
  * - Order sandboxes
  * - Likes tab
