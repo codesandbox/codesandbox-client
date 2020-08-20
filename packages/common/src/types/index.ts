@@ -548,6 +548,7 @@ export type Profile = {
   subscriptionSince: string;
   showcasedSandboxShortid: string;
   sandboxCount: number;
+  templateCount: number;
   receivedLikeCount: number;
   name: string;
   id: string;
