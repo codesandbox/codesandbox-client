@@ -28,7 +28,7 @@
 Вставлено из [https://github.com/jvilk/BrowserFS](https://github.com/jvilk/BrowserFS), 
 с дополнительным [CodeSandbox backend](https://github.com/codesandbox/codesandbox-client/blob/master/standalone-packages/codesandbox-browserfs/src/backend/CodeSandboxFS.ts).
 
-Эта версия CodeSandbox использует производственный сервер в качестве источника правды, это задается переменной окружения `LOCAL_SERVER`. 
+Эта версия CodeSandbox использует в качестве источника правды свой сервер, что задается переменной окружения `LOCAL_SERVER`. 
 При работе с функцией, для которой нужно, чтобы вы вошли в систему, вы можете войти в систему
 [https://codesandbox.io/](https://codesandbox.io/) и скопировать содержимое "Ключ к локальному хранению данных в вашей среде разработки" на [http://localhost:3000/](http://localhost:3000/).  
 **Осторожнее с обработкой маркера**, так как любой, кто его знает, может войти в систему, как вы, и прочитать/записать доступ ко всему содержимому CodeSandbox!
