@@ -123,31 +123,31 @@ export interface Dependency {
   changelogFilename: null;
   jsDelivrHits: number;
   objectID: string;
-  // _highlightResult: {
-  //   name: { value: 'lodash', matchLevel: 'none', matchedWords: [] },
-  //   description: {
-  //     value: 'Lodash modular utilities.',
-  //     matchLevel: 'none',
-  //     matchedWords: [],
-  //   },
-  //   owner: { name: { value: 'lodash', matchLevel: 'none', matchedWords: [] } },
-  //   keywords: [
-  //     { value: 'modules', matchLevel: 'none', matchedWords: [] },
-  //     { value: 'stdlib', matchLevel: 'none', matchedWords: [] },
-  //     { value: 'util', matchLevel: 'none', matchedWords: [] },
-  //   ],
-  //   owners: [
-  //     { name: { value: 'bnjmnt4n', matchLevel: 'none', matchedWords: [] } },
-  //     { name: { value: 'jdalton', matchLevel: 'none', matchedWords: [] } },
-  //     { name: { value: 'mathias', matchLevel: 'none', matchedWords: [] } },
-  //   ],
-  //   _searchInternal: {
-  //     alternativeNames: [
-  //       { value: 'lodash', matchLevel: 'none', matchedWords: [] },
-  //       { value: 'lodash.js', matchLevel: 'none', matchedWords: [] },
-  //       { value: 'lodashjs', matchLevel: 'none', matchedWords: [] },
-  //     ],
-  //     popularName: { value: 'lodash', matchLevel: 'none', matchedWords: [] },
-  //   },
-  // },
+  _highlightResult: {
+    name: { value: string; matchLevel: string; matchedWords: string[] };
+    description: {
+      value: string;
+      matchLevel: string;
+      matchedWords: string[];
+    };
+    owner: {
+      name: { value: string; matchLevel: string; matchedWords: string[] };
+    };
+    keywords: { value: string; matchLevel: string; matchedWords: string[] }[];
+    owners: {
+      name: { value: string; matchLevel: string; matchedWords: string[] };
+    }[];
+    _searchInternal: {
+      alternativeNames: {
+        value: string;
+        matchLevel: string;
+        matchedWords: [];
+      }[];
+      popularName: {
+        value: string;
+        matchLevel: string;
+        matchedWords: string[];
+      };
+    };
+  };
 }
