@@ -28,9 +28,9 @@
 Вставлено из [https://github.com/jvilk/BrowserFS](https://github.com/jvilk/BrowserFS), 
 с дополнительным [CodeSandbox backend](https://github.com/codesandbox/codesandbox-client/blob/master/standalone-packages/codesandbox-browserfs/src/backend/CodeSandboxFS.ts).
 
-Эта версия CodeSandbox использует в качестве источника правды свой сервер, что задается переменной окружения `LOCAL_SERVER`. 
-При работе с функцией, для которой нужно, чтобы вы вошли в систему, вы можете войти в систему
-[https://codesandbox.io/](https://codesandbox.io/) и скопировать содержимое "Ключ к локальному хранению данных в вашей среде разработки" на [http://localhost:3000/](http://localhost:3000/).  
+Эта версия CodeSandbox использует в качестве источника правды свой сервер, что задается переменной окружения `LOCAL_SERVER`.  
+При работе с функцией, которая требует вход в систему, вы можете войти в систему [https://codesandbox.io/](https://codesandbox.io/)  
+и скопировать содержимое "Ключ к локальному хранению данных в вашей среде разработки" на [http://localhost:3000/](http://localhost:3000/).  
 **Осторожнее с обработкой маркера**, так как любой, кто его знает, может войти в систему, как вы, и прочитать/записать доступ ко всему содержимому CodeSandbox!
 
 **Работа над вашим первым запросом на вытягивание?** Вы можете узнать, как это сделать из этой _free_ серии  
@@ -63,19 +63,18 @@
     - если вы хотите работать на главной странице, начните с `yarn start:home`, она будет доступна на [http://localhost:8000/](http://localhost:8000/).
 
 > Совет: Держите ветку `master`, указывающую на исходный репозиторий, и делайте запросы на вытаскивание из ветки на вилке. Чтобы сделать это, беги:
->
 > ```sh
 > git remote add upstream https://github.com/codesandbox/codesandbox-client.git
 > git fetch upstream
 > git branch --set-upstream-to=upstream/master master
 > ```
->
-> This will add the original repository as a "remote" called "upstream," then
-> fetch the git information from that remote, then set your local `master`
-> branch to use the upstream master branch whenever you run `git pull`. Then you
-> can make all of your pull request branches based on this `master` branch.
-> Whenever you want to update your version of `master`, do a regular `git pull`.
+> Это добавит оригинальный репозиторий в качестве "remote" под названием "upstream", 
+> Затем извлечёт информацию о git'е с этого "remote", 
+> Затем установит вашу локальную ветку `master`, чтобы использовать главную ветку "upstream" всякий раз, когда вы запускаете `git pull`. 
+> Затем вы можете тянуть ветки запроса на основе этой ветки `master`. 
+> Всякий раз, когда вы хотите обновить свою версию `master`, делайте регулярные `git pull`.
 
+ 
 5. If you want to debug the state of the app, install the
    [Cerebral Debugger](https://github.com/cerebral/cerebral-debugger/releases)
    and connect it to the port `8383`. After that, if you refresh the app, you
