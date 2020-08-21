@@ -26,7 +26,7 @@ const checkboxStyles = css({
     transform: 'scale(1)',
   },
   'input[type="checkbox"]:checked + label:before': {
-    borderColor: 'green',
+    borderColor: 'transparent',
   },
   label: {
     display: 'flex',
@@ -57,7 +57,7 @@ const checkboxStyles = css({
       content: "' '",
       height: 21,
       width: 21,
-      backgroundImage: `url('data:image/svg+xml,%3Csvg width="33" height="32" viewBox="0 0 33 32" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath fill-rule="evenodd" clip-rule="evenodd" d="M16 27.2808C22.0751 27.2808 27 22.3559 27 16.2808C27 10.2056 22.0751 5.28076 16 5.28076C9.92487 5.28076 5 10.2056 5 16.2808C5 22.3559 9.92487 27.2808 16 27.2808ZM22 12.2808L15.4971 18.603L11.3942 14.6141L10 16.0481L15.4971 21.3925L23.3942 13.7148L22 12.2808Z" fill="%235BC266"/%3E%3C/svg%3E%0A')`,
+      backgroundImage: `url('data:image/svg+xml,%3Csvg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath fill-rule="evenodd" clip-rule="evenodd" d="M11 22.2808C17.0751 22.2808 22 17.3559 22 11.2808C22 5.20563 17.0751 0.280762 11 0.280762C4.92487 0.280762 0 5.20563 0 11.2808C0 17.3559 4.92487 22.2808 11 22.2808ZM17 7.28076L10.4971 13.603L6.39416 9.6141L5 11.0481L10.4971 16.3925L18.3942 8.71475L17 7.28076Z" fill="%235BC266"/%3E%3C/svg%3E%0A')`,
       transform: 'scale(0)',
       borderRadius: '50%',
       transition: 'transform .3s ease',
