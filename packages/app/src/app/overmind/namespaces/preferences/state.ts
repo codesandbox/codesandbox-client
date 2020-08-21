@@ -1,7 +1,7 @@
 import { PaymentDetails, Settings } from '@codesandbox/common/lib/types';
 import { KEYBINDINGS } from '@codesandbox/common/lib/utils/keybindings';
 import { isIOS } from '@codesandbox/common/lib/utils/platform';
-import { Derive } from 'app/overmind';
+import { derived } from 'overmind';
 
 type State = {
   settings: Settings;
@@ -15,7 +15,7 @@ type State = {
   paymentDetailError: string | null;
   paymentDetails: PaymentDetails | null;
   runOnClick: boolean;
-  keybindings: Derive<State, any>;
+  keybindings: any;
 };
 
 export const state: State = {
@@ -75,7 +75,7 @@ export const state: State = {
   showPreview: true,
   showDevtools: false,
   runOnClick: false,
-  keybindings: currentState => {
+  keybindings: derived((currentState: State) => {
     const userBindings = currentState.settings.keybindings;
     const userBindingsMap = userBindings.reduce(
       (bindings, binding) => ({
@@ -95,5 +95,5 @@ export const state: State = {
       }),
       {}
     );
-  },
+  }),
 };

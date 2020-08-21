@@ -1,11 +1,11 @@
 import React from 'react';
 import history from 'app/utils/history';
-import { Button } from '@codesandbox/common/lib/components/Button';
+import { Button } from '@codesandbox/components';
 import { gitHubToSandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 function openStackbit(username: string, closeModal: () => void) {
   const stackbitWindow = window.open(
-    `https://app.stackbit.com/wizard?ref=codesandbox&githubUser=${username}&ssgExclusive=1&ssg=gatsby&cmsExclusive=netlifycms,forestry,nocms`,
+    `https://app.stackbit.com/wizard?ref=codesandbox&githubUser=${username}`,
     '_blank',
     'width=1210,height=800'
   );
@@ -41,7 +41,7 @@ interface Props {
 export const StackbitButton = ({ username, style, closeModal }: Props) => (
   <Button
     style={style}
-    small
+    autoWidth
     onClick={() => openStackbit(username, closeModal)}
   >
     Generate Sandbox

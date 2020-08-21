@@ -11,6 +11,7 @@ interface ITextareaProps
   autosize?: boolean;
   value?: string;
   defaultValue?: string;
+  ref?: any;
 }
 
 export const TextareaComponent: any = styled(Input).attrs({
@@ -38,69 +39,90 @@ const Count = styled.div<{ limit: boolean }>(({ limit }) =>
   })
 );
 
-export const Textarea: React.FC<ITextareaProps> = ({
-  maxLength,
-  defaultValue = '',
-  value = '',
-  onChange,
-  onKeyPress,
-  autosize,
-  ...props
-}) => {
-  const [innerValue, setInnerValue] = React.useState<string>(defaultValue);
-
-  /**
-   * To support both contolled and uncontrolled components
-   * We sync props.value with internalValue
-   */
-  React.useEffect(
-    function syncValue() {
-      setInnerValue(value);
+export const Textarea: React.FC<ITextareaProps> = React.forwardRef(
+  (
+    {
+      maxLength,
+      defaultValue = '',
+      value = '',
+      onChange,
+      onKeyPress,
+      autosize,
+      ...props
     },
-    [value]
-  );
+    ref
+  ) => {
+    const [innerValue, setInnerValue] = React.useState<string>(defaultValue);
 
-  const internalOnChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (onChange) onChange(event);
-    setInnerValue(event.target.value);
-  };
+    /**
+     * To support both contolled and uncontrolled components
+     * We sync props.value with internalValue
+     */
+    React.useEffect(
+      function syncValue() {
+        setInnerValue(value || defaultValue);
+      },
+      [value, defaultValue]
+    );
 
-  const Wrapper = useCallback(
-    ({ children }) =>
-      maxLength ? (
-        <Stack direction="vertical" css={{ width: '100%' }}>
-          {children}
-        </Stack>
-      ) : (
-        children
-      ),
-    [maxLength]
-  );
+    const internalOnChange = (
+      event: React.ChangeEvent<HTMLTextAreaElement>
+    ) => {
+      if (onChange) onChange(event);
+      setInnerValue(event.target.value);
+    };
 
-  return (
-    <>
-      <Wrapper>
-        <Autosize value={innerValue} style={props.style}>
-          {(height: number) => (
+    const Wrapper = useCallback(
+      ({ children }) =>
+        maxLength ? (
+          <Stack direction="vertical" css={{ width: '100%' }}>
+            {children}
+          </Stack>
+        ) : (
+          children
+        ),
+      [maxLength]
+    );
+
+    return (
+      <>
+        <Wrapper>
+          {autosize ? (
+            <Autosize value={innerValue} style={props.style}>
+              {(height: number) => (
+                <TextareaComponent
+                  value={innerValue}
+                  onChange={internalOnChange}
+                  maxLength={maxLength}
+                  ref={ref}
+                  {...props}
+                  style={{
+                    ...(props.style || {}),
+                    height,
+                  }}
+                />
+              )}
+            </Autosize>
+          ) : (
             <TextareaComponent
               value={innerValue}
               onChange={internalOnChange}
               maxLength={maxLength}
+              ref={ref}
               {...props}
-              style={{ ...(props.style || {}), height }}
             />
           )}
-        </Autosize>
 
-        {maxLength ? (
-          <Count limit={maxLength <= innerValue.length}>
-            {innerValue.length}/{maxLength}
-          </Count>
-        ) : null}
-      </Wrapper>
-    </>
-  );
-};
+          {maxLength ? (
+            <Count limit={maxLength <= innerValue.length}>
+              {innerValue.length}/{maxLength}
+            </Count>
+          ) : null}
+        </Wrapper>
+      </>
+    );
+  }
+);
 
 const Autosize = ({ value, style = {}, ...props }) => (
   <Rect>

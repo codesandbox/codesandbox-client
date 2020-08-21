@@ -24,7 +24,7 @@ export const AddFileToSandboxButton: FunctionComponent<Props> = ({
 
   return (
     <Button
-      css={{ width: 'auto' }}
+      autoWidth
       variant="secondary"
       disabled={!currentSandbox}
       title="Add file to sandbox"

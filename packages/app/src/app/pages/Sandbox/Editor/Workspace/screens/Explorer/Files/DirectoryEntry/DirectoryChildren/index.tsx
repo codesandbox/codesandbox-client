@@ -9,6 +9,7 @@ import DirectoryEntry from '..';
 
 interface IDirectoryChildrenProps {
   depth?: number;
+  readonly?: boolean;
   renameModule?: (title: string, moduleShortid: string) => void;
   setCurrentModule?: (id: string) => void;
   parentShortid?: string;
@@ -26,6 +27,7 @@ interface IDirectoryChildrenProps {
 
 const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
   depth = 0,
+  readonly,
   renameModule,
   setCurrentModule,
   parentShortid,
@@ -84,6 +86,7 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
       ).map(m => (
         <ModuleEntry
           key={m.id}
+          readonly={readonly}
           module={m}
           depth={depth}
           setCurrentModule={setCurrentModule}

@@ -1,6 +1,8 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
 import { graphql, Link } from 'gatsby';
 import React from 'react';
+
+import { Button, ThemeProvider } from '@codesandbox/components';
+import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
@@ -17,29 +19,31 @@ export default ({
   },
 }) => (
   <Layout>
-    <TitleAndMetaTags title={`${title} - CodeSandbox Careers`} />
+    <ThemeProvider theme={codesandboxBlack}>
+      <TitleAndMetaTags title={`${title} - CodeSandbox Careers`} />
 
-    <PageContainer width={800}>
-      <Button small as={Link} to="/jobs">
-        See all jobs
-      </Button>
+      <PageContainer width={800}>
+        <Button autoWidth as={Link} to="/jobs">
+          See all jobs
+        </Button>
 
-      <Title>{title}</Title>
+        <Title>{title}</Title>
 
-      <ContentBlock dangerouslySetInnerHTML={{ __html: html }} />
+        <ContentBlock dangerouslySetInnerHTML={{ __html: html }} />
 
-      <ContentBlock>
-        <h2>Applying</h2>
+        <ContentBlock>
+          <h2>Applying</h2>
 
-        <p>
-          Not sure you meet 100% of our qualifications? Please apply anyway!
-        </p>
-      </ContentBlock>
+          <p>
+            Not sure you meet 100% of our qualifications? Please apply anyway!
+          </p>
+        </ContentBlock>
 
-      <ApplyButton href={applyLink} small target="_blank">
-        Apply now
-      </ApplyButton>
-    </PageContainer>
+        <ApplyButton href={applyLink} autoWidth target="_blank">
+          Apply now
+        </ApplyButton>
+      </PageContainer>
+    </ThemeProvider>
   </Layout>
 );
 

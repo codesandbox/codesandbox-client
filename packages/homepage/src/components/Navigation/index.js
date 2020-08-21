@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, Location } from '@reach/router';
+import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useTheme } from '../layout';
 import Button from '../Button';
 import Logo from '../../assets/images/logo.svg';
@@ -16,6 +17,7 @@ import TeamsIcon from '../../assets/icons/Teams';
 import SearchIcon from '../../assets/icons/Search';
 import HighlightedICon from '../../assets/icons/Highlighted';
 import NewIcon from '../../assets/icons/New';
+import { useLogin } from '../../hooks/useLogin';
 import {
   Header,
   Nav,
@@ -30,7 +32,7 @@ import SubNav from './SubNav';
 import MobileNav from './MobileNav';
 
 const Navigation = () => {
-  const [user, setUser] = useState(null);
+  const user = useLogin();
   const [openedNav, setOpenedNav] = useState();
   const [hasOpened, setHasOpened] = useState(false);
   const muted = useTheme().homepage.muted;
@@ -53,25 +55,6 @@ const Navigation = () => {
       />
     </svg>
   );
-
-  const fetchCurrentUser = async () => {
-    const jwt = JSON.parse(localStorage.getItem('jwt'));
-
-    const BASE =
-      process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
-
-    const { data } = await fetch(BASE + '/api/v1/users/current', {
-      headers: { Authorization: `Bearer ${jwt}` },
-    }).then(x => x.json());
-
-    setUser(data);
-  };
-
-  useEffect(() => {
-    if (localStorage.getItem('jwt')) {
-      fetchCurrentUser();
-    }
-  }, []);
 
   useEffect(() => {
     if (openedNav) {
@@ -155,7 +138,7 @@ const Navigation = () => {
                       <li className="tablet-remove">
                         <a
                           onMouseEnter={() => setOpenedNav(null)}
-                          href="https://codesandbox.io/signin"
+                          href={signInPageUrl()}
                         >
                           Sign In
                         </a>
@@ -192,7 +175,6 @@ const Navigation = () => {
                   width: 100%;
                   background: #151515;
                   overflow: hidden;
-                  border-bottom: 1px solid ${props => props.theme.homepage.grey};
                   z-index: 99;
                   box-shadow: 0, 8px, 1rem rgba(0, 0, 0, 0.12), 0, 4px,
                     2px rgba(0, 0, 0, 0.24);
@@ -211,7 +193,7 @@ const Navigation = () => {
                   components={[
                     {
                       Icon: () => (
-                        <Link to="/docs" title="Documentation">
+                        <Link to="/docs/start" title="Documentation">
                           <DocsIcon />
                         </Link>
                       ),

@@ -1,16 +1,18 @@
-import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
-
 import {
-  Collapsible,
-  Text,
-  SidebarRow,
-  List,
   Button,
+  Collapsible,
+  List,
+  SidebarRow,
+  Text,
 } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
+
 import { Dependency } from './Dependency';
 
-export const Dependencies: FunctionComponent = () => {
+export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
+  readonly = false,
+}) => {
   const {
     actions: {
       modalOpened,
@@ -56,14 +58,16 @@ export const Dependencies: FunctionComponent = () => {
             />
           ))}
       </List>
-      <SidebarRow marginX={2}>
-        <Button
-          variant="secondary"
-          onClick={() => modalOpened({ modal: 'searchDependencies' })}
-        >
-          Add dependency
-        </Button>
-      </SidebarRow>
+      {!readonly && (
+        <SidebarRow marginX={2}>
+          <Button
+            variant="secondary"
+            onClick={() => modalOpened({ modal: 'searchDependencies' })}
+          >
+            Add dependency
+          </Button>
+        </SidebarRow>
+      )}
     </Collapsible>
   );
 };

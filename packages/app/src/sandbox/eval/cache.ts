@@ -9,7 +9,7 @@ const debug = _debug('cs:compiler:cache');
 
 const host = process.env.CODESANDBOX_HOST;
 
-const MAX_CACHE_SIZE = 1024 * 1024 * 7;
+const MAX_CACHE_SIZE = 1024 * 1024 * 20;
 let APICacheUsed = false;
 
 try {
@@ -188,7 +188,7 @@ export async function consumeCache(manager: Manager) {
         }
 
         debug(
-          `Loading cache from ${cache === localData ? 'localStorage' : 'API'}`,
+          `Loading cache from ${cache === localData ? 'IndexedDB' : 'API'}`,
           cache
         );
 

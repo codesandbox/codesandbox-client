@@ -10,7 +10,8 @@ import {
 } from '@codesandbox/components';
 import VisuallyHidden from '@reach/visually-hidden';
 import { css } from '@styled-system/css';
-import { CommentFragment } from 'app/graphql/types';
+import { Markdown } from 'app/components/Markdown';
+import { CodeReferenceMetadata, CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
@@ -113,7 +114,7 @@ export const Comment = React.memo<{
             </Menu>
           </Stack>
         </Stack>
-        {comment.references[0] && (
+        {comment.anchorReference && comment.anchorReference.type === 'code' && (
           <Link
             variant="muted"
             css={css({
@@ -130,7 +131,7 @@ export const Comment = React.memo<{
               },
             })}
           >
-            {comment.references[0].metadata.path}
+            {(comment.anchorReference.metadata as CodeReferenceMetadata).path}
           </Link>
         )}
         <Element
@@ -146,7 +147,7 @@ export const Comment = React.memo<{
           })}
         >
           <Text itemProp="text" block css={truncateText} marginBottom={2}>
-            {comment.content}
+            <Markdown source={comment.content} />
           </Text>
           <Text variant="muted" size={2}>
             {getRepliesString(comment.replyCount)}

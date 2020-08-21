@@ -1,5 +1,6 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
+import { motion } from 'framer-motion';
 
 import theme from '@codesandbox/common/lib/theme';
 import { VisuallyHidden } from './style';
@@ -57,10 +58,64 @@ const TemplateWrapper = ({ children, noWrapperStyling }) => (
       </div>
       <Navigation />
 
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        css={`
+          border-bottom: 1px solid #242424;
+        `}
+        transition={{
+          duration: 1,
+          ease: 'easeIn',
+        }}
+      >
+        <div
+          css={`
+            padding: 0.5rem 0;
+            text-align: center;
+            font-weight: bold;
+            line-height: 3rem;
+            font-size: 13px;
+            /* border-bottom:1px solid #242424;   */
+
+            @media screen and (max-width: 768px) {
+              padding: 0.5rem 0;
+            }
+          `}
+        >
+          <div>
+            <span>Black Lives Matter.</span>
+            <a
+              css={`
+                font-weight: bold;
+                color: #0971f1;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                line-height: 24px;
+                width: 100%;
+                line-height: 1;
+                border-bottom: none;
+                text-decoration: none;
+                width: auto;
+                margin-left: 0.5rem;
+              `}
+              href="https://www.theokraproject.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Support the Okra Project
+            </a>
+          </div>
+        </div>
+      </motion.div>
+
       <main
         style={noWrapperStyling ? {} : WRAPPER_STYLING}
-        id="main"
         aria-label="main content"
+        css="margin-top:-1px;"
       >
         {children}
       </main>

@@ -123,7 +123,7 @@ export default function initialize() {
   let refreshInitialized = false;
   const preset = new Preset(
     'create-react-app',
-    ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx'],
+    ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx', 'mjs'],
     aliases,
     {
       hasDotEnv: true,
@@ -153,7 +153,7 @@ export default function initialize() {
             preset.registerTranspiler(
               module =>
                 !module.path.startsWith('/node_modules') &&
-                /\.(t|j)sx?$/.test(module.path) &&
+                /\.m?(t|j)sx?$/.test(module.path) &&
                 !module.path.endsWith('.d.ts'),
               [
                 {
@@ -178,7 +178,8 @@ export default function initialize() {
 
           preset.registerTranspiler(
             module =>
-              /\.(t|j)sx?$/.test(module.path) && !module.path.endsWith('.d.ts'),
+              /\.m?(t|j)sx?$/.test(module.path) &&
+              !module.path.endsWith('.d.ts'),
             [{ transpiler: babelTranspiler, options: BABEL7_CONFIG }]
           );
 

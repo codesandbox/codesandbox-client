@@ -57,6 +57,7 @@ export interface IManager {
   getSandboxFs: () => {
     [path: string]: IFile | IDirectory;
   };
+  getJwt: () => string;
 }
 
 
@@ -237,7 +238,16 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
       const { isBinary, savedCode, code } = moduleInfo;
 
       if (isBinary) {
-        fetch(getCode(savedCode, code)).then(x => x.blob()).then(blob => {
+        const url = getCode(savedCode, code);
+        const jwt = this.api.getJwt && this.api.getJwt();
+        const sendAuth = jwt && new URL(url).origin === document.location.origin;
+        const headers: {} | {
+          Authorization: string
+        } = sendAuth ? { 
+          Authorization: `Bearer ${this.api.getJwt && this.api.getJwt()}` 
+        } : {};
+
+        fetch(url, { headers }).then(x => x.blob()).then(blob => {
           const stats = new Stats(FileType.FILE, blob.size, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
 
           blobToBuffer(blob, (err, r) => {

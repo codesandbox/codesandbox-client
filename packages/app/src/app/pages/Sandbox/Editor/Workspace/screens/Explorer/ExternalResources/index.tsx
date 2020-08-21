@@ -1,27 +1,28 @@
-import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import CrossIcon from 'react-icons/lib/md/clear';
-
 import {
+  Button,
   Collapsible,
-  Link,
-  Stack,
-  Input,
-  Select,
   FormField,
+  Input,
+  Link,
   List,
   ListAction,
+  Select,
   SidebarRow,
-  Button,
+  Stack,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import React, { FunctionComponent } from 'react';
+import CrossIcon from 'react-icons/lib/md/clear';
 
 import { fonts as listOfFonts } from './google-fonts';
 
 const isGoogleFont = url => url.includes('fonts.googleapis.com/css');
 
-export const ExternalResources: FunctionComponent = () => {
+export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
+  readonly,
+}) => {
   const {
     actions: {
       workspace: { externalResourceAdded, externalResourceRemoved },
@@ -58,13 +59,15 @@ export const ExternalResources: FunctionComponent = () => {
                 <Link href={resource} target="_blank">
                   {getName(resource)}
                 </Link>
-                <Button
-                  variant="link"
-                  css={css({ width: 'auto' })}
-                  onClick={() => externalResourceRemoved(resource)}
-                >
-                  <CrossIcon />
-                </Button>
+                {!readonly && (
+                  <Button
+                    variant="link"
+                    css={css({ width: 'auto' })}
+                    onClick={() => externalResourceRemoved(resource)}
+                  >
+                    <CrossIcon />
+                  </Button>
+                )}
               </ListAction>
             ))}
 
@@ -80,65 +83,71 @@ export const ExternalResources: FunctionComponent = () => {
                 <Link href={resource} target="_blank">
                   {getFontFamily(resource).name}
                 </Link>
-                <Button
-                  variant="link"
-                  css={css({ width: 'auto' })}
-                  onClick={() => externalResourceRemoved(resource)}
-                >
-                  <CrossIcon />
-                </Button>
+                {!readonly && (
+                  <Button
+                    variant="link"
+                    css={css({ width: 'auto' })}
+                    onClick={() => externalResourceRemoved(resource)}
+                  >
+                    <CrossIcon />
+                  </Button>
+                )}
               </ListAction>
             ))}
           </List>
         ) : null}
 
-        <form
-          onSubmit={event => {
-            event.preventDefault();
-            const url = event.target[0].value.trim();
-            externalResourceAdded(url);
-          }}
-        >
-          <FormField label="External URL" direction="vertical">
-            <Input
-              type="text"
-              required
-              placeholder="https://cdn.com/bootstrap.css"
-              key={otherResources.length}
-            />
-          </FormField>
-          <SidebarRow marginX={2}>
-            <Button type="submit" variant="secondary">
-              Add resource
-            </Button>
-          </SidebarRow>
-        </form>
+        {!readonly && (
+          <form
+            onSubmit={event => {
+              event.preventDefault();
+              const url = event.target[0].value.trim();
+              externalResourceAdded(url);
+            }}
+          >
+            <FormField label="External URL" direction="vertical">
+              <Input
+                type="text"
+                required
+                placeholder="https://cdn.com/bootstrap.css"
+                key={otherResources.length}
+              />
+            </FormField>
+            <SidebarRow marginX={2}>
+              <Button type="submit" variant="secondary">
+                Add resource
+              </Button>
+            </SidebarRow>
+          </form>
+        )}
 
-        <form
-          onSubmit={event => {
-            event.preventDefault();
-            const fontName = event.target[0].value.trim().replace(/ /g, '+');
-            const url = `https://fonts.googleapis.com/css?family=${fontName}&display=swap`;
-            externalResourceAdded(url);
-          }}
-        >
-          <FormField label="Google Fonts" direction="vertical">
-            <Select
-              required
-              placeholder="Select a font family"
-              key={fonts.length}
-            >
-              {listOfFonts.sort().map(name => (
-                <option key={name}>{name}</option>
-              ))}
-            </Select>
-          </FormField>
-          <SidebarRow marginX={2}>
-            <Button type="submit" variant="secondary">
-              Add font
-            </Button>
-          </SidebarRow>
-        </form>
+        {!readonly && (
+          <form
+            onSubmit={event => {
+              event.preventDefault();
+              const fontName = event.target[0].value.trim().replace(/ /g, '+');
+              const url = `https://fonts.googleapis.com/css?family=${fontName}&display=swap`;
+              externalResourceAdded(url);
+            }}
+          >
+            <FormField label="Google Fonts" direction="vertical">
+              <Select
+                required
+                placeholder="Select a font family"
+                key={fonts.length}
+              >
+                {listOfFonts.sort().map(name => (
+                  <option key={name}>{name}</option>
+                ))}
+              </Select>
+            </FormField>
+            <SidebarRow marginX={2}>
+              <Button type="submit" variant="secondary">
+                Add font
+              </Button>
+            </SidebarRow>
+          </form>
+        )}
       </Stack>
     </Collapsible>
   );

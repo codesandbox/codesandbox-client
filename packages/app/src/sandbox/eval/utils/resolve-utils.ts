@@ -1,10 +1,12 @@
 import { PackageJSON } from '@codesandbox/common/lib/types';
 
-export function packageFilter(p: PackageJSON) {
-  if (p.module && !p.main) {
-    // eslint-disable-next-line
+export const packageFilter = (isFile: (p: string) => boolean = () => true) => (
+  p: PackageJSON,
+  pkgLocation: string
+) => {
+  if (p.module) {
     p.main = p.module;
   }
 
   return p;
-}
+};

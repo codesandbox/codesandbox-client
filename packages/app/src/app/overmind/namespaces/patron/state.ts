@@ -1,26 +1,26 @@
 import { PatronBadge, PatronTier } from '@codesandbox/common/lib/types';
-import { Derive } from 'app/overmind';
+import { derived } from 'overmind';
 
 type State = {
   price: number;
   isUpdatingSubscription: boolean;
-  tier: Derive<State, PatronTier>;
+  tier: PatronTier;
   error: string | null;
-  badge: Derive<State, PatronBadge>;
+  badge: PatronBadge;
 };
 
 export const state: State = {
   price: 10,
   error: null,
   isUpdatingSubscription: false,
-  tier: ({ price }) => {
+  tier: derived(({ price }: State) => {
     if (price >= 20) return 4;
     if (price >= 15) return 3;
     if (price >= 10) return 2;
 
     return 1;
-  },
-  badge: ({ tier }) => {
+  }),
+  badge: derived(({ tier }: State) => {
     switch (tier) {
       case 1:
         return PatronBadge.ONE;
@@ -36,5 +36,5 @@ export const state: State = {
         return neverTier;
       }
     }
-  },
+  }),
 };

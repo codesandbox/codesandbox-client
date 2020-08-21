@@ -143,25 +143,21 @@ export const InspiredText = styled.span`
 export const HeroImage = styled.img`
   max-width: 576px;
   min-width: 100%;
-  padding: 0 1rem;
+  box-shadow: 0.25rem 0 2rem #000;
 
   overflow: hidden;
   border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.3) 20px 14px 47px 0px;
 
   @media screen and (min-width: 576px) {
     max-width: 576px;
-    padding: 0 1rem;
   }
 
   @media screen and (min-width: 768px) {
     max-width: 768px;
-    padding: 0 1rem;
   }
 
   @media screen and (min-width: 960px) {
     max-width: 960px;
-    padding: 0 1rem;
   }
 `;
 
@@ -205,6 +201,7 @@ export const SandboxButtons = styled.section`
   height: auto;
   width: auto;
   margin: 5rem 0;
+  transition: all 200ms ease-in;
 `;
 
 export const Sandbox = styled.a`
@@ -212,12 +209,33 @@ export const Sandbox = styled.a`
   width: 2rem;
   height: 2rem;
   margin: 0 0.75rem;
-  opacity: 0.2;
+  opacity: 0.4;
   border: none;
   background-color: transparent;
   background-size: cover;
-  transform: scale(1);
-  transition: all 100ms ease-in;
+
+  transition: all 200ms ease-in;
+
+  animation: easeInOutBack 1s cubic-bezier(0, -0.6, 0.12, 2) 1s backwards;
+
+  @keyframes easeInOutBack {
+    0% {
+      opacity: 0;
+      transform: scale(0.01);
+    }
+
+    100% {
+      opacity: 0.4;
+      transform: scale(1);
+    }
+  }
+
+  :hover {
+    cursor: pointer;
+    animation-play-state: paused;
+    transform: scale(1.2);
+    opacity: 1;
+  }
 
   @media screen and (min-width: 576px) {
     width: 3rem;
@@ -229,10 +247,5 @@ export const Sandbox = styled.a`
     width: 4rem;
     height: 4rem;
     margin: 0 2rem;
-  }
-
-  :hover {
-    transform: scale(0.9);
-    opacity: 1;
   }
 `;

@@ -4,8 +4,7 @@ import {
   SandboxCommentsQuery,
   SandboxCommentsQueryVariables,
 } from 'app/graphql/types';
-import gql from 'graphql-tag';
-import { Query } from 'overmind-graphql';
+import { gql, Query } from 'overmind-graphql';
 
 import { commentFragment, commentWithRepliesFragment } from './fragments';
 
@@ -13,14 +12,14 @@ export const comment: Query<
   SandboxCommentQuery,
   SandboxCommentQueryVariables
 > = gql`
-  query SandboxComment($sandboxId: ID!, $commentId: ID!) {
+  query SandboxComment($sandboxId: ID!, $commentId: UUID4!) {
     sandbox(sandboxId: $sandboxId) {
       comment(commentId: $commentId) {
         ...CommentWithReplies
       }
     }
-    ${commentWithRepliesFragment}
   }
+  ${commentWithRepliesFragment}
 `;
 
 export const comments: Query<
@@ -33,6 +32,6 @@ export const comments: Query<
         ...Comment
       }
     }
-    ${commentFragment}
   }
+  ${commentFragment}
 `;

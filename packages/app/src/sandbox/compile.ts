@@ -577,9 +577,8 @@ async function compile({
       await manager.preset.preEvaluate(manager, updatedModules);
 
       if (!manager.webpackHMR) {
-        const htmlModulePath = templateDefinition
-          .getHTMLEntries(configurations)
-          .find(p => Boolean(modules[p]));
+        const htmlEntries = templateDefinition.getHTMLEntries(configurations);
+        const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
         const htmlModule = modules[htmlModulePath];
 
         const { head, body } = getHTMLParts(
@@ -597,11 +596,11 @@ async function compile({
           manager.clearCompiledCache();
         }
 
-        if (
-          !manager.preset.htmlDisabled ||
-          !firstLoad ||
-          process.env.LOCAL_SERVER
-        ) {
+        // Whether the server has provided the HTML file. If that isn't the case
+        // we have to fall back to setting `document.body;innerHTML`, which isn't
+        // preferred.
+        const serverProvidedHTML = modules[htmlEntries[0]];
+        if (!serverProvidedHTML || !firstLoad || process.env.LOCAL_SERVER) {
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
           // on the first run.
           document.body.innerHTML = body;

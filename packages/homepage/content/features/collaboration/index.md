@@ -13,6 +13,7 @@ tweetJob: Co-founder, Egghead
 tweetName: John Lindquist
 tweetHandle: johnlindquist
 bgColor: FBCC43
+bgImage: ./yellow.jpg
 coverImage: ./collaboration.svg
 coverReversed: true
 coverSmaller: true

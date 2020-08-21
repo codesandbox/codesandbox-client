@@ -13,6 +13,7 @@ export default function initialize() {
     'web.tsx',
     'tsx',
     'js',
+    'mjs',
   ]);
 
   preset.registerTranspiler(module => /\.css$/.test(module.path), [
@@ -65,7 +66,8 @@ export default function initialize() {
     },
   };
   preset.registerTranspiler(
-    module => /\.(t|j)sx?$/.test(module.path) && !module.path.endsWith('.d.ts'),
+    module =>
+      /\.m?(t|j)sx?$/.test(module.path) && !module.path.endsWith('.d.ts'),
     [
       {
         transpiler: babelTranspiler,

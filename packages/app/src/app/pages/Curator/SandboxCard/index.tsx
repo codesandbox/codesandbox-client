@@ -7,6 +7,7 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import GithubIcon from 'react-icons/lib/fa/github';
+import { Button } from '@codesandbox/components';
 
 import {
   Avatar,
@@ -14,7 +15,6 @@ import {
   Details,
   FlexCenter,
   ImageMessage,
-  Pick,
   SandboxImage,
   SandboxImageContainer,
   SandboxInfo,
@@ -165,9 +165,9 @@ export const SandboxCard: React.FC<Props> = ({
           </div>
         </SandboxInfo>
 
-        <Pick onClick={() => pickSandbox(id, title, description)} small>
+        <Button onClick={() => pickSandbox(id, title, description)}>
           {!picks.length ? '✨ Pick Sandbox' : '✨ Pick Sandbox again'}
-        </Pick>
+        </Button>
       </Container>
     </div>
   );

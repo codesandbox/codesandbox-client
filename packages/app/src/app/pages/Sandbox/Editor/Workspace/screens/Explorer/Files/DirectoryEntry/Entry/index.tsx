@@ -1,22 +1,20 @@
 import theme from '@codesandbox/common/lib/theme';
 import { Directory, Module } from '@codesandbox/common/lib/types';
+import { ListAction, Stack, Text } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { ContextMenu, Item } from 'app/components/ContextMenu';
 import React, { useState } from 'react';
 import { DragSource } from 'react-dnd';
 
-import { Stack, Text, ListAction } from '@codesandbox/components';
-import css from '@styled-system/css';
-
 import {
-  EditIcon,
-  DeleteIcon,
   AddDirectoryIcon,
-  UploadFileIcon,
   AddFileIcon,
-  UndoIcon,
+  DeleteIcon,
+  EditIcon,
   NotSyncedIcon,
+  UndoIcon,
+  UploadFileIcon,
 } from '../../icons';
-
 import EditIcons from './EditIcons';
 import EntryIcons from './EntryIcons';
 import { FileInput } from './FileInput';
@@ -24,6 +22,7 @@ import { FileInput } from './FileInput';
 interface IEntryProps {
   renameValidator?: (id: string, title: string) => string | false | null;
   shortid?: string;
+  readonly?: boolean;
   id: string;
   title?: string;
   root?: boolean;
@@ -59,6 +58,7 @@ interface IEntryProps {
 const Entry: React.FC<IEntryProps> = ({
   title,
   id,
+  readonly,
   depth,
   type,
   active,
@@ -173,7 +173,7 @@ const Entry: React.FC<IEntryProps> = ({
 
   return connectDragSource(
     <div>
-      <ContextMenu items={items}>
+      <ContextMenu items={readonly ? [] : items}>
         <ListAction
           justify="space-between"
           onClick={setCurrentModule ? setCurrentModuleAction : onClick}
@@ -229,17 +229,19 @@ const Entry: React.FC<IEntryProps> = ({
                   entry
                 </Text>
               )}
-              <EditIcons
-                hovering={hovering}
-                onCreateFile={onCreateModuleClick}
-                onCreateDirectory={onCreateDirectoryClick}
-                onUploadFile={onUploadFileClick}
-                onDiscardChanges={isNotSynced && discardModuleChangesAction}
-                onDelete={deleteEntry && deleteAction}
-                onEdit={rename && renameAction}
-                active={active}
-                forceShow={window.__isTouch && type === 'directory-open'}
-              />
+              {!readonly && (
+                <EditIcons
+                  hovering={hovering}
+                  onCreateFile={onCreateModuleClick}
+                  onCreateDirectory={onCreateDirectoryClick}
+                  onUploadFile={onUploadFileClick}
+                  onDiscardChanges={isNotSynced && discardModuleChangesAction}
+                  onDelete={deleteEntry && deleteAction}
+                  onEdit={rename && renameAction}
+                  active={active}
+                  forceShow={window.__isTouch && type === 'directory-open'}
+                />
+              )}
             </Stack>
           )}
         </ListAction>
@@ -266,7 +268,7 @@ const Entry: React.FC<IEntryProps> = ({
 };
 
 const entrySource = {
-  canDrag: props => !!props.id,
+  canDrag: props => !props.readonly && !!props.id,
   beginDrag: props => {
     if (props.closeTree) props.closeTree();
 

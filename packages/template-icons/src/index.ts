@@ -32,6 +32,7 @@ import { NestIcon } from './NestIcon';
 import { NextIcon } from './NextIcon';
 import { NodeIcon } from './NodeIcon';
 import { NuxtIcon } from './NuxtIcon';
+import { P5Icon } from './P5Icon';
 import { ParcelIcon } from './ParcelIcon';
 import { PolymerIcon } from './PolymerIcon';
 import { PreactIcon } from './PreactIcon';
@@ -89,6 +90,7 @@ export const ColorIcons = {
   NextIcon,
   NodeIcon,
   NuxtIcon,
+  P5Icon,
   ParcelIcon,
   PolymerIcon,
   PreactIcon,
@@ -147,6 +149,7 @@ export const Icons = {
   NextIcon,
   NodeIcon,
   NuxtIcon,
+  P5Icon,
   ParcelIcon,
   PolymerIcon,
   PreactIcon,
@@ -204,6 +207,7 @@ export { NestIcon } from './NestIcon';
 export { NextIcon } from './NextIcon';
 export { NodeIcon } from './NodeIcon';
 export { NuxtIcon } from './NuxtIcon';
+export { P5Icon } from './P5Icon';
 export { ParcelIcon } from './ParcelIcon';
 export { PolymerIcon } from './PolymerIcon';
 export { PreactIcon } from './PreactIcon';

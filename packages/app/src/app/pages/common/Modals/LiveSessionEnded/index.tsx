@@ -27,7 +27,7 @@ export const LiveSessionEnded: FunctionComponent = () => {
 
   return (
     <Alert
-      title="  The live session has ended"
+      title="The live session has ended"
       description={`${currentModalMessage ||
         'The session has ended due to inactivity'}, ${suggestion}`}
     >
@@ -48,7 +48,7 @@ export const LiveSessionEnded: FunctionComponent = () => {
               width: 'auto',
             })}
             onClick={() => {
-              forkSandboxClicked();
+              forkSandboxClicked({});
               modalClosed();
             }}
             variant="link"

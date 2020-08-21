@@ -24,7 +24,7 @@ export default function initialize() {
     }
   );
 
-  preactPreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
+  preactPreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {

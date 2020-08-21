@@ -1,14 +1,14 @@
 import styled from 'styled-components';
-import Color from 'color';
 import Select from '@codesandbox/common/lib/components/Select';
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
+import { getColorInstance } from '@codesandbox/common/lib/utils/get-color';
 import { GitHubLogo } from 'app/components/GitHubLogo';
 
 export const GitHubLogoStyled = styled(GitHubLogo)``;
 
 const getContainerColor = props => {
   if (props.highlighted) {
-    return Color(props.theme.colors.dialog.background)
+    return getColorInstance(props.theme.colors.dialog.background)
       .darken(0.2)
       .rgbString();
   }
@@ -25,14 +25,14 @@ export const Container = styled.div`
   &:not(:last-child) {
     border-bottom: 1px solid
       ${props =>
-        Color(props.theme.colors.dialog.background)
+        getColorInstance(props.theme.colors.dialog.background)
           .darken(0.4)
           .rgbString()};
   }
 
   &:hover {
     background-color: ${props =>
-      Color(props.theme.colors.dialog.background)
+      getColorInstance(props.theme.colors.dialog.background)
         .darken(0.2)
         .rgbString()};
   }
@@ -58,7 +58,7 @@ export const Description = styled(Row)`
   font-size: 0.875rem;
 
   color: ${props =>
-    Color(props.theme.colors.dialog.foreground)
+    getColorInstance(props.theme.colors.dialog.foreground)
       .alpha(0.6)
       .rgbString()};
 `;
@@ -72,14 +72,14 @@ export const Downloads = styled.span`
 export const License = styled.span`
   border: 1px solid
     ${props =>
-      Color(props.theme.colors.dialog.border)
+      getColorInstance(props.theme.colors.dialog.border)
         .alpha(0.4)
         .rgbString()};
   border-radius: 3px;
   padding: 1px 3px;
 
   color: ${props =>
-    Color(props.theme.colors.dialog.foreground)
+    getColorInstance(props.theme.colors.dialog.foreground)
       .alpha(0.6)
       .rgbString()};
   font-size: 12px;
@@ -88,7 +88,7 @@ export const License = styled.span`
 export const IconLink = styled.a`
   font-size: 1rem;
   color: ${props =>
-    Color(props.theme.colors.icon.foreground)
+    getColorInstance(props.theme.colors.icon.foreground)
       .alpha(1)
       .rgbString()};
 

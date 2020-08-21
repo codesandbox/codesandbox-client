@@ -1,20 +1,19 @@
+/* eslint-enable import/default */
+import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
+import isESModule from 'sandbox/eval/utils/is-es-module';
 /* eslint-disable import/default */
 // @ts-ignore
 import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index';
-/* eslint-enable import/default */
-import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
-
-import isESModule from 'sandbox/eval/utils/is-es-module';
-import { measure, endMeasure } from '../../../utils/metrics';
-import regexGetRequireStatements from './worker/simple-get-require-statements';
-import getBabelConfig from './babel-parser';
-import WorkerTranspiler from '../worker-transpiler';
-import { LoaderContext } from '../../transpiled-module';
-import Manager from '../../manager';
 
 import delay from '../../../utils/delay';
-import { shouldTranspile } from './check';
+import { endMeasure, measure } from '../../../utils/metrics';
+import Manager from '../../manager';
+import { LoaderContext } from '../../transpiled-module';
+import WorkerTranspiler from '../worker-transpiler';
+import getBabelConfig from './babel-parser';
+import { hasNewSyntax } from './check';
 import { convertEsModule } from './convert-esmodule';
+import regexGetRequireStatements from './worker/simple-get-require-statements';
 
 const global = window as any;
 
@@ -51,11 +50,15 @@ class BabelTranspiler extends WorkerTranspiler {
       const { path } = loaderContext;
       let newCode = code;
 
-      if (isESModule(newCode) && path.indexOf('/node_modules') > -1) {
+      const isNodeModule = path.startsWith('/node_modules');
+
+      let convertedToEsmodule = false;
+      if (isESModule(newCode) && isNodeModule) {
         try {
           measure(`esconvert-${path}`);
           newCode = convertEsModule(newCode);
           endMeasure(`esconvert-${path}`, { silent: true });
+          convertedToEsmodule = true;
         } catch (e) {
           console.warn(
             `Error when converting '${path}' esmodule to commonjs: ${e.message}`
@@ -69,9 +72,9 @@ class BabelTranspiler extends WorkerTranspiler {
         // with a regex since commonjs modules just have `require` and regex is MUCH
         // faster than generating an AST from the code.
         if (
-          (loaderContext.options.simpleRequire ||
-            path.startsWith('/node_modules')) &&
-          !shouldTranspile(newCode, path)
+          (loaderContext.options.simpleRequire || isNodeModule) &&
+          !hasNewSyntax(newCode, path) &&
+          !(isESModule(newCode) && !convertedToEsmodule)
         ) {
           regexGetRequireStatements(newCode).forEach(dependency => {
             if (dependency.isGlob) {
@@ -114,7 +117,7 @@ class BabelTranspiler extends WorkerTranspiler {
         loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
 
       const hasMacros = Object.keys(dependencies).some(
-        d => d.indexOf('macro') > -1
+        d => d.indexOf('macro') > -1 || d.indexOf('codegen') > -1
       );
 
       const babelConfig = getBabelConfig(
@@ -171,7 +174,7 @@ class BabelTranspiler extends WorkerTranspiler {
         // @ts-ignore
         {},
         (err, data) => {
-          const { version, availablePlugins, availablePresets } = data;
+          const { version, availablePlugins, availablePresets } = data as any;
 
           resolve({
             ...baseConfig,

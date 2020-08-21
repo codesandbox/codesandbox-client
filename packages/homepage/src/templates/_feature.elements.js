@@ -37,9 +37,9 @@ export const Description = styled.h2`
 `;
 
 export const Banner = styled.div`
-  ${({ color, reverse, coverSmaller }) => css`
-    background: #${color};
-
+  ${({ color, bgImage, reverse, coverSmaller }) => css`
+    background: #${color} url(${bgImage}) center;
+    background-size: cover;
     height: ${coverSmaller ? '380px' : '480px'};
     width: 100%;
 
@@ -53,7 +53,7 @@ export const Banner = styled.div`
     align-items: flex-end;
     flex-grow: 0;
     flex-shrink: 1;
-    /* border-radius: 4px; */
+
     clip-path: inset(0px round 0.5rem);
     -webkit-mask-image: -webkit-radial-gradient(white, black);
     overflow: hidden;

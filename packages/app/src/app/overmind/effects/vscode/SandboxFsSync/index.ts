@@ -11,8 +11,8 @@ import {
   Sandbox,
   SandboxFs,
 } from '@codesandbox/common/lib/types';
-import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import delay from '@codesandbox/common/lib/utils/delay';
+import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
 import { json } from 'overmind';
@@ -377,7 +377,12 @@ class SandboxFsSync {
       return this.typesInfo;
     }
 
-    this.typesInfo = fetch('https://unpkg.com/types-registry@latest/index.json')
+    this.typesInfo = fetch(
+      'https://unpkg.com/types-registry@latest/index.json',
+      // This falls back to etag caching, ensuring we always have latest version
+      // https://hacks.mozilla.org/2016/03/referrer-and-cache-control-apis-for-fetch/
+      { cache: 'no-cache' }
+    )
       .then(x => x.json())
       .then(x => x.entries);
 
@@ -394,8 +399,35 @@ class SandboxFsSync {
         this.types[name] = {};
       }
 
-      Object.assign(this.types[name], types);
-      this.send('package-types-sync', types);
+      const existingDeps = Object.keys(this.types);
+      /*
+        We have to ensure that a dependency does not override the types of the main
+        package if it is installed (their versions might differ)
+      */
+      const filteredTypes = Object.keys(types).reduce((aggr, newTypePath) => {
+        const alreadyExists = existingDeps.reduce((subAggr, depName) => {
+          // If we have already installed the typing from the main package
+          if (
+            subAggr ||
+            (depName !== name &&
+              this.types[depName][newTypePath] &&
+              newTypePath.startsWith('/' + depName + '/'))
+          ) {
+            return true;
+          }
+
+          return subAggr;
+        }, false);
+
+        if (!alreadyExists) {
+          aggr[newTypePath] = types[newTypePath];
+        }
+
+        return aggr;
+      }, {});
+
+      Object.assign(this.types[name], filteredTypes);
+      this.send('package-types-sync', filteredTypes);
     }
   }
 
@@ -404,30 +436,36 @@ class SandboxFsSync {
     autoInstallTypes: boolean
   ) {
     try {
-      if (
-        autoInstallTypes &&
-        this.typesInfo[dep.name] &&
-        !dep.name.startsWith('@types/')
-      ) {
-        const name = `@types/${dep.name}`;
-        this.fetchDependencyTypingFiles(name, this.typesInfo[dep.name].latest)
-          .then(files => {
-            this.setAndSendPackageTypes(dep.name, files);
-          })
-          .catch(e => {
-            if (process.env.NODE_ENV === 'development') {
-              console.warn('Trouble fetching types for ' + name);
-            }
-          });
-      }
-
       try {
         const files = await this.fetchDependencyTypingFiles(
           dep.name,
           dep.version
         );
+        const hasTypes = Boolean(
+          Object.keys(files).some(
+            key => key.startsWith('/' + dep.name) && key.endsWith('.d.ts')
+          )
+        );
 
-        this.setAndSendPackageTypes(dep.name, files);
+        if (
+          !hasTypes &&
+          autoInstallTypes &&
+          this.typesInfo[dep.name] &&
+          !dep.name.startsWith('@types/')
+        ) {
+          const name = `@types/${dep.name}`;
+          this.fetchDependencyTypingFiles(name, this.typesInfo[dep.name].latest)
+            .then(typesFiles => {
+              this.setAndSendPackageTypes(dep.name, typesFiles);
+            })
+            .catch(e => {
+              if (process.env.NODE_ENV === 'development') {
+                console.warn('Trouble fetching types for ' + name);
+              }
+            });
+        } else {
+          this.setAndSendPackageTypes(dep.name, files);
+        }
       } catch (e) {
         if (process.env.NODE_ENV === 'development') {
           console.warn('Trouble fetching types for ' + dep.name);

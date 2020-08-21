@@ -151,7 +151,7 @@ export const List = styled.ul`
       margin-right: 3rem;
 
       @media screen and (max-width: 900px) {
-        margin-right: 1.5rem;
+        margin-right: 1rem;
       }
     }
   }

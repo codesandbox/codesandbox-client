@@ -1,10 +1,13 @@
-import React from 'react';
 import { useOvermind } from 'app/overmind';
-import { Files } from './Files';
+import React from 'react';
+
 import { Dependencies } from './Dependencies';
 import { ExternalResources } from './ExternalResources';
+import { Files } from './Files';
 
-export const Explorer = () => {
+export const Explorer: React.FC<{ readonly?: boolean }> = ({
+  readonly = false,
+}) => {
   const {
     state: { editor },
   } = useOvermind();
@@ -13,11 +16,11 @@ export const Explorer = () => {
 
   return (
     <>
-      <Files />
+      <Files readonly={readonly} />
       {template !== 'static' && (
         <>
-          <Dependencies />
-          <ExternalResources />
+          <Dependencies readonly={readonly} />
+          <ExternalResources readonly={readonly} />
         </>
       )}
     </>

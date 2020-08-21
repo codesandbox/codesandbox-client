@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import { PatronBadge } from '@codesandbox/common/lib/types';
-import Relative from '@codesandbox/common/lib/components/Relative';
 import badges from '@codesandbox/common/lib/utils/badges/patron-info';
 import './animations.css';
 import { Particles } from './Particles';
@@ -16,7 +15,11 @@ export const Badge: React.FC<IBadgeProps> = memo(({ badge, subscribed }) => {
   const BadgeComponent = badges[badge].Badge;
 
   return (
-    <Relative>
+    <div
+      css={`
+        position: relative;
+      `}
+    >
       {/* We prerender all particles, performance reasons */}
       <Particles makeItRain={subscribed} badge={badge} />
       <BadgeContainer key={badge} id="badge">
@@ -27,6 +30,6 @@ export const Badge: React.FC<IBadgeProps> = memo(({ badge, subscribed }) => {
           alt={badge}
         />
       </BadgeContainer>
-    </Relative>
+    </div>
   );
 });

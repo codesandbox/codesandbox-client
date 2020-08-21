@@ -20,9 +20,7 @@ const { staticAssets } = require('../config/build');
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
-const PROXY_DOMAIN = process.env.STAGING_API
-  ? 'https://codesandbox.stream'
-  : 'https://codesandbox.io';
+const PROXY_DOMAIN = process.env.ENDPOINT || 'https://codesandbox.io';
 var compiler;
 var handleCompile;
 var compileStart;

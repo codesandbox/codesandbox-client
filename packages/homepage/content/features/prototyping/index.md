@@ -12,6 +12,7 @@ tweetJob: Software Architect, Universal Audio
 tweetName: Rob Eisenberg
 tweetHandle: EisenbergEffect
 bgColor: BF5AF2
+bgImage: ./purple.jpg
 coverImage: ./prototyping.svg
 coverReversed: true
 coverSmaller: true

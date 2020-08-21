@@ -4,7 +4,9 @@ import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
+import { Notifications } from 'app/components/Notifications';
 
+import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 import {
   EmbedIcon,
   ForkIcon,
@@ -15,6 +17,7 @@ import {
 } from './icons';
 import { Collaborators } from './Collaborators';
 import { CollaboratorHeads } from './CollaboratorHeads';
+import { ForkButton } from './ForkButton';
 
 const TooltipButton = ({ tooltip, ...props }) => (
   <Tooltip content={tooltip}>
@@ -26,6 +29,7 @@ export const Actions = () => {
   const {
     actions: {
       modalOpened,
+      openCreateSandboxModal,
       editor: { likeSandboxToggled, forkSandboxClicked },
       explore: { pickSandboxModal },
     },
@@ -35,6 +39,7 @@ export const Actions = () => {
       user,
       live: { isLive },
       editor: {
+        isForkingSandbox,
         currentSandbox: {
           id,
           author,
@@ -64,7 +69,7 @@ export const Actions = () => {
 
   const handleSignIn = () => signInClicked();
 
-  let primaryAction;
+  let primaryAction: 'Sign in' | 'Share' | 'Fork';
   if (!hasLogIn) primaryAction = 'Sign in';
   else primaryAction = owned ? 'Share' : 'Fork';
 
@@ -98,7 +103,7 @@ export const Actions = () => {
         </TooltipButton>
       )}
 
-      {user?.experiments.collaborator && isLive ? (
+      {user?.experiments?.collaborator && isLive ? (
         <CollaboratorHeads />
       ) : (
         <>
@@ -169,19 +174,29 @@ export const Actions = () => {
         </Button>
       )}
 
-      <Button
-        variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
-        onClick={forkSandboxClicked}
-      >
-        <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
-      </Button>
+      {user && NEW_DASHBOARD ? (
+        <ForkButton
+          user={user}
+          forkClicked={teamId => forkSandboxClicked({ teamId })}
+          variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
+        />
+      ) : (
+        <Button
+          loading={isForkingSandbox}
+          variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
+          onClick={() => forkSandboxClicked({})}
+        >
+          <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
+        </Button>
+      )}
       <Button
         variant="secondary"
         css={css({ paddingX: 3 })}
-        onClick={() => modalOpened({ modal: 'newSandbox' })}
+        onClick={() => openCreateSandboxModal({})}
       >
         Create Sandbox
       </Button>
+      {hasLogIn && <Notifications />}
       {hasLogIn ? (
         <UserMenu>
           {user?.experiments.collaborator ? (

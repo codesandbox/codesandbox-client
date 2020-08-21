@@ -53,7 +53,7 @@ export default function initialize() {
     { transpiler: babelTranspiler },
   ]);
 
-  parcelPreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
+  parcelPreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {

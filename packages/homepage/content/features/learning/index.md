@@ -13,6 +13,7 @@ tweetJob: Software Engineer Educator
 tweetName: Kent C. Dodds
 tweetHandle: kentcdodds
 bgColor: 52579F
+bgImage: ./purple.jpg
 coverImage: ./learning.svg
 coverReversed: true
 coverSmaller: true

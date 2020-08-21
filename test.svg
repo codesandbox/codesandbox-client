@@ -1,0 +1,37 @@
+       <svg width={24} height={16} fill="none">
+              <g filter="url(#prefix__filter0_d)">
+                <path
+                  d="M24 1.053L22.788 0l-9.091 7.895L5.212.526 4 1.58 13.697 10 24 1.053z"
+                  fill="#E6E6E6"
+                />
+              </g>
+              <defs>
+                <filter
+                  id="prefix__filter0_d"
+                  x={0}
+                  y={0}
+                  width={24}
+                  height={18}
+                  filterUnits="userSpaceOnUse"
+                  colorInterpolationFilters="sRGB"
+                >
+                  <feFlood floodOpacity={0} result="BackgroundImageFix" />
+                  <feColorMatrix
+                    in="SourceAlpha"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                  />
+                  <feOffset dy={4} />
+                  <feGaussianBlur stdDeviation={2} />
+                  <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                  <feBlend
+                    in2="BackgroundImageFix"
+                    result="effect1_dropShadow"
+                  />
+                  <feBlend
+                    in="SourceGraphic"
+                    in2="effect1_dropShadow"
+                    result="shape"
+                  />
+                </filter>
+              </defs>
+            </svg>

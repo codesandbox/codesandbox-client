@@ -119,7 +119,13 @@ export const Dependency = ({
         <Link
           href={`/examples/package/${dependency}`}
           target="_blank"
-          css={{ position: 'absolute', zIndex: 2 }}
+          title={dependency}
+          maxWidth="60%"
+          css={{
+            position: 'absolute',
+            zIndex: 2,
+            maxWidth: '60%',
+          }}
         >
           {dependency}
         </Link>

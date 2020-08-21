@@ -86,7 +86,7 @@ export const AddCollaboratorForm = () => {
         />
       </motion.div>
 
-      <Button type="submit" css={css({ width: 'initial' })} paddingLeft={1}>
+      <Button type="submit" css={css({ width: 'initial' })} marginLeft={1}>
         Send
       </Button>
     </Stack>

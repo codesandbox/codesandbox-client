@@ -1,10 +1,14 @@
+import { identify } from '@codesandbox/common/lib/utils/analytics';
 import {
   NotificationType,
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { CurrentTeamInfoFragmentFragment } from 'app/graphql/types';
 
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
+import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 import { Action, AsyncAction } from '.';
 
 export const internal = internalActions;
@@ -20,6 +24,16 @@ export const searchMounted: AsyncAction = withLoadApp();
 export const codesadboxMounted: AsyncAction = withLoadApp();
 
 export const genericPageMounted: AsyncAction = withLoadApp();
+
+export const getPendingUser: AsyncAction = async ({ state, effects }) => {
+  if (!state.pendingUserId) return;
+  const pendingUser = await effects.api.getPendingUser(state.pendingUserId);
+  if (!pendingUser) return;
+  state.pendingUser = {
+    ...pendingUser,
+    valid: true,
+  };
+};
 
 export const cliMounted: AsyncAction = withLoadApp(
   async ({ state, actions }) => {
@@ -66,9 +80,7 @@ type ModalName =
   | 'feedback'
   | 'forkServerModal'
   | 'liveSessionEnded'
-  | 'moveSandbox'
   | 'netlifyLogs'
-  | 'newSandbox'
   | 'preferences'
   | 'searchDependencies'
   | 'share'
@@ -104,28 +116,23 @@ export const toggleSignInModal: Action = ({ state }) => {
 };
 
 export const signInButtonClicked: AsyncAction<{
-  useExtraScopes: boolean;
-} | void> = async ({ actions, state }, options) => {
-  if (!options) {
+  useExtraScopes?: boolean;
+  provider: 'google' | 'github';
+}> = async ({ actions, state }, options) => {
+  const { useExtraScopes, provider } = options || {};
+  if (!useExtraScopes) {
     await actions.internal.signIn({
+      provider,
       useExtraScopes: false,
     });
     state.signInModalOpen = false;
     return;
   }
-  await actions.internal.signIn(options);
-  state.signInModalOpen = false;
-};
-
-export const signInCliClicked: AsyncAction = async ({ state, actions }) => {
   await actions.internal.signIn({
-    useExtraScopes: false,
+    useExtraScopes,
+    provider,
   });
   state.signInModalOpen = false;
-
-  if (state.user) {
-    await actions.internal.authorize();
-  }
 };
 
 export const addNotification: Action<{
@@ -192,10 +199,21 @@ export const requestAuthorisation: AsyncAction = async ({ actions }) => {
   await actions.internal.authorize();
 };
 
+export const setPendingUserId: Action<string> = ({ state }, id) => {
+  state.pendingUserId = id;
+};
+
 export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
   state.isLoadingGithub = true;
-  await actions.internal.signIn({ useExtraScopes: true });
+  await actions.internal.signIn({ useExtraScopes: true, provider: 'github' });
   state.isLoadingGithub = false;
+  if (state.editor.currentSandbox?.originalGit) {
+    actions.git.loadGitSource();
+  }
+};
+
+export const signInGoogleClicked: AsyncAction = async ({ actions }) => {
+  await actions.internal.signIn({ provider: 'google' });
 };
 
 export const signOutClicked: AsyncAction = async ({
@@ -209,7 +227,11 @@ export const signOutClicked: AsyncAction = async ({
     actions.live.internal.disconnect();
   }
   await effects.api.signout();
-  effects.jwt.reset();
+  identify('signed_in', false);
+  document.cookie = 'signedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  document.cookie =
+    'signedInDev=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  state.hasLogIn = false;
   state.user = null;
   effects.browser.reload();
 };
@@ -255,10 +277,12 @@ export const refetchSandboxInfo: AsyncAction = async ({
   sandbox.owned = updatedSandbox.owned;
   sandbox.userLiked = updatedSandbox.userLiked;
   sandbox.title = updatedSandbox.title;
+  sandbox.description = updatedSandbox.description;
   sandbox.team = updatedSandbox.team;
   sandbox.roomId = updatedSandbox.roomId;
   sandbox.authorization = updatedSandbox.authorization;
   sandbox.privacy = updatedSandbox.privacy;
+  sandbox.featureFlags = updatedSandbox.featureFlags;
 
   await actions.editor.internal.initializeSandbox(sandbox);
 };
@@ -282,4 +306,109 @@ export const rejectTeamInvitation: Action<{ teamName: string }> = (
   effects.analytics.track('Team - Invitation Rejected', {});
 
   effects.notificationToast.success(`Rejected invitation to ${teamName}`);
+};
+
+export const setActiveTeam: AsyncAction<{
+  id: string | null;
+}> = async ({ state, actions, effects }, { id }) => {
+  // ignore if its already selected
+  if (id === state.activeTeam) return;
+
+  state.activeTeam = id;
+  effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
+  state.dashboard.sandboxes = {
+    ...state.dashboard.sandboxes,
+    DRAFTS: null,
+    TEMPLATES: null,
+    RECENT: null,
+    SEARCH: null,
+    ALL: null,
+  };
+
+  actions.internal.replaceWorkspaceParameterInUrl();
+
+  if (state.activeTeamInfo?.id !== id) {
+    try {
+      const teamInfo = await actions.getActiveTeamInfo();
+      if (teamInfo) {
+        effects.analytics.track('Team - Change Active Team', {
+          newTeamId: id,
+          newTeamName: teamInfo.name,
+        });
+      }
+    } catch (e) {
+      // Something went wrong while fetching the workspace
+      actions.setActiveTeam({ id: null });
+    }
+  }
+
+  actions.internal.trackCurrentTeams();
+};
+
+export const getActiveTeamInfo: AsyncAction<
+  void,
+  CurrentTeamInfoFragmentFragment | null
+> = async ({ state, effects }) => {
+  if (!state.activeTeam) return null;
+
+  const team = await effects.gql.queries.getTeam({
+    teamId: state.activeTeam,
+  });
+
+  const currentTeam = team?.me?.team;
+  if (!currentTeam) {
+    return null;
+  }
+
+  state.activeTeamInfo = currentTeam;
+
+  return currentTeam;
+};
+
+export const openCreateSandboxModal: Action<{
+  collectionId?: string;
+  initialTab?: 'Import';
+}> = ({ actions }, props) => {
+  actions.modals.newSandboxModal.open(props);
+};
+
+export const validateUsername: AsyncAction<string> = async (
+  { effects, state },
+  userName
+) => {
+  if (!state.pendingUser) return;
+  const validity = await effects.api.validateUsername(userName);
+
+  state.pendingUser.valid = validity.available;
+};
+
+export const finalizeSignUp: AsyncAction<string> = async (
+  { effects, actions, state },
+  username
+) => {
+  if (!state.pendingUser) return;
+  try {
+    await effects.api.finalizeSignUp({
+      id: state.pendingUser.id,
+      username,
+    });
+    window.postMessage(
+      {
+        type: 'signin',
+      },
+      protocolAndHost()
+    );
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'There was a problem creating your account',
+      error,
+    });
+  }
+};
+
+export const setLoadingAuth: AsyncAction<'google' | 'github'> = async (
+  { state },
+  provider
+) => {
+  state.loadingAuth[provider] = !state.loadingAuth[provider];
 };

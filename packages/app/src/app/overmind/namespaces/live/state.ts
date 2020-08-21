@@ -4,7 +4,7 @@ import {
   UserSelection,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
-import { Derive } from 'app/overmind';
+import { derived } from 'overmind';
 
 type State = {
   isLive: boolean;
@@ -22,16 +22,13 @@ type State = {
   joinSource: 'sandbox' | 'live';
   currentSelection: UserSelection | null;
   currentViewRange: UserViewRange | null;
-  liveUser: Derive<State, LiveUser | null>;
-  isEditor: Derive<State, (liveUserId: string) => boolean>;
-  isCurrentEditor: Derive<State, boolean>;
-  isOwner: Derive<State, boolean>;
-  liveUsersByModule: Derive<
-    State,
-    {
-      [id: string]: number[][];
-    }
-  >;
+  liveUser: LiveUser | null;
+  isEditor: (liveUserId: string) => boolean;
+  isCurrentEditor: boolean;
+  isOwner: boolean;
+  liveUsersByModule: {
+    [id: string]: number[][];
+  };
 };
 
 export const state: State = {
@@ -54,28 +51,34 @@ export const state: State = {
   },
   currentViewRange: null,
   joinSource: 'sandbox',
-  liveUser: currentState =>
-    currentState.roomInfo?.users.find(u => u.id === currentState.liveUserId) ||
-    null,
-  isEditor: currentState => liveUserId =>
+  liveUser: derived(
+    (currentState: State) =>
+      currentState.roomInfo?.users.find(
+        u => u.id === currentState.liveUserId
+      ) || null
+  ),
+  isEditor: derived((currentState: State) => liveUserId =>
     Boolean(
       currentState.isLive &&
         currentState.roomInfo &&
         (currentState.roomInfo.mode === 'open' ||
           currentState.roomInfo.ownerIds.includes(liveUserId) ||
           currentState.roomInfo.editorIds.includes(liveUserId))
-    ),
-  isCurrentEditor: currentState =>
+    )
+  ),
+  isCurrentEditor: derived((currentState: State) =>
     Boolean(
       currentState.liveUserId && currentState.isEditor(currentState.liveUserId)
-    ),
-  isOwner: currentState =>
+    )
+  ),
+  isOwner: derived((currentState: State) =>
     Boolean(
       currentState.isLive &&
         currentState.liveUserId &&
         currentState.roomInfo?.ownerIds.includes(currentState.liveUserId)
-    ),
-  liveUsersByModule: currentState => {
+    )
+  ),
+  liveUsersByModule: derived((currentState: State) => {
     const usersByModule: { [id: string]: number[][] } = {};
 
     if (!currentState.isLive || !currentState.roomInfo) {
@@ -94,5 +97,5 @@ export const state: State = {
     });
 
     return usersByModule;
-  },
+  }),
 };

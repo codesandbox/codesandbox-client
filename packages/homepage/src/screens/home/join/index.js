@@ -22,7 +22,15 @@ const Join = ({ src, ...style }) => {
           `}
           style={{ ...style, y }}
         >
-          <IDE src={HeroSmall} alt="safari with codesandbox" />
+          <IDE
+            src={HeroSmall}
+            alt="safari with codesandbox"
+            css={`
+              width: 613px;
+              box-shadow: 0 0.5rem 2rem #040404;
+              border-radius: 0.25rem 0 0 0;
+            `}
+          />
         </motion.div>
       </JoinWrapper>
     </>

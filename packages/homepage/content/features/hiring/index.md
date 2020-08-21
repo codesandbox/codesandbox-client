@@ -12,6 +12,7 @@ tweetJob: Head of Developer Experience, Netlify
 tweetName: Sarah Drasner
 tweetHandle: sarah_edo
 bgColor: F69935
+bgImage: ./orange.jpg
 coverImage: ./hiring.svg
 coverReversed: true
 coverSmaller: true

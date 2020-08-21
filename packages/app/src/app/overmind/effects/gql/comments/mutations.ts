@@ -1,4 +1,6 @@
 import {
+  CreateCodeCommentMutation,
+  CreateCodeCommentMutationVariables,
   CreateCommentMutation,
   CreateCommentMutationVariables,
   DeleteCommentMutation,
@@ -10,8 +12,7 @@ import {
   UpdateCommentMutation,
   UpdateCommentMutationVariables,
 } from 'app/graphql/types';
-import gql from 'graphql-tag';
-import { Query } from 'overmind-graphql';
+import { Query, gql } from 'overmind-graphql';
 
 import { commentFragment } from './fragments';
 
@@ -24,26 +25,56 @@ export const createComment: Query<
     $content: String!
     $sandboxId: ID!
     $parentCommentId: ID
-    $codeReference: CodeReference
+    $userReferences: [UserReference!]
+    $codeReferences: [CodeReference!]
   ) {
     createComment(
       id: $id
       content: $content
       sandboxId: $sandboxId
       parentCommentId: $parentCommentId
-      codeReference: $codeReference
+      userReferences: $userReferences
+      codeReferences: $codeReferences
     ) {
       ...Comment
     }
-    ${commentFragment}
   }
+  ${commentFragment}
+`;
+
+export const createCodeComment: Query<
+  CreateCodeCommentMutation,
+  CreateCodeCommentMutationVariables
+> = gql`
+  mutation CreateCodeComment(
+    $id: ID
+    $content: String!
+    $sandboxId: ID!
+    $parentCommentId: ID
+    $anchorReference: CodeReference!
+    $userReferences: [UserReference!]
+    $codeReferences: [CodeReference!]
+  ) {
+    createCodeComment(
+      id: $id
+      content: $content
+      sandboxId: $sandboxId
+      parentCommentId: $parentCommentId
+      anchorReference: $anchorReference
+      userReferences: $userReferences
+      codeReferences: $codeReferences
+    ) {
+      ...Comment
+    }
+  }
+  ${commentFragment}
 `;
 
 export const deleteComment: Query<
   DeleteCommentMutation,
   DeleteCommentMutationVariables
 > = gql`
-  mutation DeleteComment($commentId: ID!, $sandboxId: ID!) {
+  mutation DeleteComment($commentId: UUID4!, $sandboxId: ID!) {
     deleteComment(commentId: $commentId, sandboxId: $sandboxId) {
       id
     }
@@ -54,11 +85,19 @@ export const updateComment: Query<
   UpdateCommentMutation,
   UpdateCommentMutationVariables
 > = gql`
-  mutation UpdateComment($commentId: ID!, $sandboxId: ID!, $content: String) {
+  mutation UpdateComment(
+    $commentId: UUID4!
+    $sandboxId: ID!
+    $content: String
+    $userReferences: [UserReference!]
+    $codeReferences: [CodeReference!]
+  ) {
     updateComment(
       commentId: $commentId
       sandboxId: $sandboxId
       content: $content
+      userReferences: $userReferences
+      codeReferences: $codeReferences
     ) {
       id
     }
@@ -69,7 +108,7 @@ export const resolveComment: Query<
   ResolveCommentMutation,
   ResolveCommentMutationVariables
 > = gql`
-  mutation ResolveComment($commentId: ID!, $sandboxId: ID!) {
+  mutation ResolveComment($commentId: UUID4!, $sandboxId: ID!) {
     resolveComment(commentId: $commentId, sandboxId: $sandboxId) {
       id
     }
@@ -80,7 +119,7 @@ export const unresolveComment: Query<
   UnresolveCommentMutation,
   UnresolveCommentMutationVariables
 > = gql`
-  mutation UnresolveComment($commentId: ID!, $sandboxId: ID!) {
+  mutation UnresolveComment($commentId: UUID4!, $sandboxId: ID!) {
     unresolveComment(commentId: $commentId, sandboxId: $sandboxId) {
       id
     }

@@ -22,7 +22,6 @@ export { default as codesandboxApi } from './codesandboxApi';
 export { default as themes } from './themes';
 export { default as executor } from './executor';
 export { default as stripe } from './stripe';
-export { default as jwt } from './jwt';
 export { default as preview } from './preview';
 export { default as flows } from './flows';
 export { default as gql } from './gql';

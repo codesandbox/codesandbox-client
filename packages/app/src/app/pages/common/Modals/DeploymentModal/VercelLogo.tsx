@@ -2,10 +2,11 @@ import React, { FunctionComponent } from 'react';
 
 export const VercelIcon: FunctionComponent = props => (
   <svg
-    width={283}
-    height={64}
+    width={130}
+    height={56}
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 283 64"
     {...props}
   >
     <path

@@ -207,11 +207,18 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const allDocs = await graphql(`
     {
-      allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/docs/" } }) {
+      allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/docs/" }
+          fields: { slug: { nin: ["/api", "/faqs"] } }
+        }
+        sort: { fields: [fileAbsolutePath], order: [ASC] }
+      ) {
         edges {
           node {
             fields {
               slug
+              title
             }
           }
         }
@@ -223,21 +230,23 @@ exports.createPages = async ({ graphql, actions }) => {
 
     throw Error(allDocs.errors);
   }
-  allDocs.data.allMarkdownRemark.edges.forEach(
-    ({
-      node: {
-        fields: { slug },
+  allDocs.data.allMarkdownRemark.edges.forEach(({ node }, index) => {
+    const {
+      fields: { slug },
+    } = node;
+    const all = allDocs.data.allMarkdownRemark.edges;
+    const prev = index === 0 ? {} : all[index - 1].node;
+    const next = index === all.length - 1 ? {} : all[index + 1].node;
+    createPage({
+      path: `docs${slug}`,
+      component: docsTemplate,
+      context: {
+        slug,
+        prev,
+        next,
       },
-    }) => {
-      createPage({
-        path: `docs${slug}`,
-        component: docsTemplate,
-        context: {
-          slug,
-        },
-      });
-    }
-  );
+    });
+  });
 
   // JOBS
 

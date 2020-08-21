@@ -3,7 +3,7 @@ import React from 'react';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
 
-import HeroA from '../screens/home/hero';
+import HeroB from '../screens/home/heroB';
 import Prototype from '../screens/home/prototype';
 import Started from '../screens/home/started';
 import LoadInView from '../components/LoadInView';
@@ -29,7 +29,7 @@ const Homepage = () => (
         margin-bottom: 8rem;
       `}
     >
-      <HeroA />
+      <HeroB />
     </section>
 
     <div style={WRAPPER_STYLING}>
@@ -60,6 +60,6 @@ const Homepage = () => (
   </Layout>
 );
 
-identifyFromCookie('heroAB', 'hero0420');
+identifyFromCookie('heroAB', 'hero0529');
 
 export default Homepage;

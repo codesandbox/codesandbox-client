@@ -1,6 +1,7 @@
-import {default as Stats, FileType} from '../core/node_fs_stats';
 import * as path from 'path';
+import {default as Stats, FileType} from '../core/node_fs_stats';
 import { UNPKGMeta, UNPKGMetaDirectory } from '../backend/UNPKGRequest';
+import { JSDelivrMeta } from '../backend/JSDelivrRequest';
 
 /**
  * A simple class for storing a filesystem index. Assumes that all paths passed
@@ -68,6 +69,17 @@ export class FileIndex<T> {
     }
 
     idx._index['/'] = handleDir('/', listing);
+
+    return idx;
+  }
+
+  public static fromJSDelivr<T>(listing: JSDelivrMeta): FileIndex<T> {
+    const idx = new FileIndex<T>();
+
+    listing.files.forEach((file) => {
+      const inode = new FileInode<Stats>(new Stats(FileType.FILE, file.size));
+      idx.addPathFast(file.name, inode);
+    });
 
     return idx;
   }
@@ -302,9 +314,11 @@ export class DirInode<T> implements Inode {
   public isFile(): boolean {
     return false;
   }
+
   public isDir(): boolean {
     return true;
   }
+
   public getData(): T | null { return this.data; }
 
   /**
@@ -315,6 +329,7 @@ export class DirInode<T> implements Inode {
   public getStats(): Stats {
     return new Stats(FileType.DIRECTORY, 4096, 0x16D);
   }
+
   /**
    * Returns the directory listing for this directory. Paths in the directory are
    * relative to the directory's path.
@@ -323,6 +338,7 @@ export class DirInode<T> implements Inode {
   public getListing(): string[] {
     return Object.keys(this._ls);
   }
+
   /**
    * Returns the inode for the indicated item, or null if it does not exist.
    * @param p Name of item in this directory.
@@ -332,6 +348,7 @@ export class DirInode<T> implements Inode {
 
     return item && this._ls.hasOwnProperty(p) ? item : null;
   }
+
   /**
    * Add the given item to the directory listing. Note that the given inode is
    * not copied, and will be mutated by the DirInode if it is a DirInode.
@@ -347,6 +364,7 @@ export class DirInode<T> implements Inode {
     this._ls[p] = inode;
     return true;
   }
+
   /**
    * Removes the given item from the directory listing.
    * @param p Name of item to remove from the directory listing.

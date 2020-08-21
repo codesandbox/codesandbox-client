@@ -33,7 +33,7 @@ export function Tag({ tag, onRemove }: TagProps) {
       {onRemove && (
         <Button
           variant="link"
-          css={{ width: 'auto' }}
+          autoWidth
           onClick={() => onRemove(tag)}
           marginLeft={1}
         >

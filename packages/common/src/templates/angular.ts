@@ -114,6 +114,7 @@ export default new AngularTemplate(
     extraConfigurations: {
       '/.angular-cli.json': configurations.angularCli,
       '/angular.json': configurations.angularJSON,
+      '/tsconfig.json': configurations.tsconfig,
     },
     netlify: false,
     isTypescript: true,
