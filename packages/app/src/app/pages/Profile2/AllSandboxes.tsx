@@ -6,6 +6,9 @@ import { SandboxCard, SkeletonCard } from './SandboxCard';
 
 export const AllSandboxes = ({ menuControls }) => {
   const {
+    actions: {
+      profile: { sandboxesPageChanged },
+    },
     state: {
       profile: {
         current: { username, featuredSandboxes },
@@ -17,6 +20,11 @@ export const AllSandboxes = ({ menuControls }) => {
   } = useOvermind();
 
   const featuredSandboxIds = featuredSandboxes.map(sandbox => sandbox.id);
+
+  // explicitly call it on first page render
+  React.useEffect(() => {
+    if (currentSandboxesPage === 1) sandboxesPageChanged(currentSandboxesPage);
+  }, [currentSandboxesPage, sandboxesPageChanged]);
 
   const sandboxes = (
     (fetchedSandboxes[username] &&
