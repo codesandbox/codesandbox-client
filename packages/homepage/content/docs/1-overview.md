@@ -1,35 +1,31 @@
 ---
-title: Documentation
-authors: ['CompuIves']
+заголовок: Документация
+авторы: ['CompuIves']
 slug: /
-description: Learn what CodeSandbox is and how to use it.
+описание: Узнайте, что такое CodeSandbox и как им пользоваться.
 ---
 
-## What is CodeSandbox
+## Что такое CodeSandbox
 
-CodeSandbox is an online editor for rapid web development. With CodeSandbox, you
-can prototype quickly, experiment easily, and share creations with a click.
+CodeSandbox - онлайн-редактор для быстрой веб-разработки. 
+С помощью CodeSandbox вы можете быстро создавать прототипы, легко экспериментировать и делиться творениями одним щелчком мыши.
 
-Use it to create static sites, full-stack web apps or components, on any device
-with a web browser.
+Используйте его для создания статических сайтов, полностопных веб-приложений или компонентов на любом устройстве с веб-браузером.
 
-## Product Values
+## Значения продукта
 
-Our mission is to make web development faster. By removing complexity, we enable
-web developers to be more productive. By simplifying collaboration, we make it
-easier for teams to work on code together.
+Наша миссия - сделать веб-разработки более быстрыми. Устраняя сложность, мы позволяем веб-разработчикам быть более продуктивными.  
+Упрощая совместную работу, мы облегчаем совместную работу команд над кодом.
 
-### Code, not infrastructure
+### Код, а не инфраструктура
 
-We handle the development environment, taking on setup, tooling, and
-provisioning, so it’s as fast as possible to start and build projects.
+Мы работаем со средой разработки, беря на себя настройку, инструменты и обеспечение, чтобы как можно быстрее начать и построить проекты.
 
-### Shareable by default
+### Общий доступ по умолчанию
 
-We create solutions that enable developers to work from anywhere and teams to
-build together in new and more effective ways.
+Мы создаем решения, которые позволяют разработчикам работать из любого места, а командам строить вместе новые и более эффективные способы.
 
-### Work like local
+### Работать локально
 
-We equip developers with a local editor experience that’s familiar and
-integrated with popular developer tools, so the process of creation is seamless.
+Мы вооружаем разработчиков опытом работы с локальными редакторами, которые знакомы и интегрированы с популярными инструментами разработчиков, 
+так что процесс создания проходит гладко.
