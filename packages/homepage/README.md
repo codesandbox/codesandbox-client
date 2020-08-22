@@ -1,16 +1,16 @@
 # gatsby-starter-default
 
-The default Gatsby starter
+Стартер Гэтсби по умолчанию
 
-For an overview of the project structure please refer to the
-[Gatsby documentation - Building with Components](https://www.gatsbyjs.org/docs/building-with-components/)
+Обзор структуры проекта см. в разделе
+[Документация Гэтсби - здание с компонентами](https://www.gatsbyjs.org/docs/building-with-components/)
 
-Install this starter (assuming Gatsby is installed) by running from your CLI:
+Установите этот стартер (при условии, что Gatsby установлен), запустив его из вашего CLI:
 
 ```
 gatsby new gatsby-example-site
 ```
 
-## Deploy
+## Развернуть
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/gatsbyjs/gatsby-starter-default)
+[![Развернуть в Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/gatsbyjs/gatsby-starter-default)
