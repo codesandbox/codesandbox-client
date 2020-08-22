@@ -1,197 +1,145 @@
-# Contribute with a Template
+# Внести свой вклад с помощью шаблона
 
-To contribute with a CodeSandbox template, you need to complete multiple steps
-and submit two Pull Requests. We have created this guide to help you do this.
-Here you will find descriptions and explanations for what you need to do, along
-with some examples that we have added as references.
+Чтобы внести свой вклад с помощью шаблона CodeSandbox, необходимо выполнить несколько шагов и отправить два запроса Pull. 
+Мы создали это руководство, чтобы помочь вам в этом.
+Здесь вы найдете описания и объяснения того, что вам нужно сделать, а также некоторые примеры, которые мы добавили в качестве ссылок.
 
-We realise that the process of submitting a template is not straightforward and
-we hope that this guide will help you along the way. We are working on a system
-that will make it easier.
+Мы понимаем, что процесс подачи шаблона не является простым, и надеемся, что это руководство поможет вам на этом пути. 
+Мы работаем над системой, которая сделает это проще.
 
-If you think that we missed something in this guide or believe we could explain
-something better, please let us know by submitting an
-[issue](https://github.com/codesandbox/codesandbox-client/issues/new/choose)
-with your feedback.
+Если вы считаете, что мы что-то пропустили в этом руководстве, или считаете, что мы могли бы объяснить что-то получше, 
+пожалуйста, сообщите нам об этом, отправив [вопрос](https://github.com/codesandbox/codesandbox-client/issues/new/choose) с вашими отзывами.
 
-## What is a template?
+## Что такое шаблон?
 
-A template is an identifier for a specific type of sandbox project that you can
-create on [codesandbox.io](https://codesandbox.io), like projects using
-`Gatsby`, `React` or `Vue.js`.
+Шаблон - это идентификатор для конкретного типа проекта песочницы, который вы можете создать на [codesandbox.io](https://codesandbox.io), 
+как и проекты, использующие `Gatsby`, `React` или `Vue.js`.
 
-When you create a template you can customise how the template behaves, in order
-to improve the User Experience of your template in the CodeSandbox editor and
-preview. Examples of this include configuring which file should be opened in the
-editor by default when choosing a template, or changing the default `eslint`
-rules in a template, like with `vue-cli`.
+Когда вы создаете шаблон, вы можете настроить поведение шаблона, чтобы улучшить пользовательский опыт вашего шаблона в редакторе CodeSandbox и в предварительном просмотре. 
+Примером может служить настройка того, какой файл должен быть открыт в редакторе по умолчанию при выборе шаблона, 
+или изменение правил `eslint` по умолчанию в шаблоне, например, с помощью `vue-cli`.
 
-We encourage template creators to improve the editor experience for their
-templates in order to give everyone the best possible experience when using
-templates.
+Мы призываем создателей шаблонов улучшать редактирование своих шаблонов, чтобы дать всем желающим лучший опыт при использовании шаблонов.
 
-## Template types
+## Типы шаблонов
 
-Templates can be of different types: **Sandboxes** or **Containers**, and have
-major differences in functionality. It's important to know these differences
-before you start working on a new template.
+Шаблоны могут быть разных типов: **Песочницы** или **Контейнеры**, и имеют значительные различия в функциональности. 
+Важно знать эти различия до начала работы над новым шаблоном.
 
 ### Sandboxes
 
-CodeSandbox executes projects in the browser, which we call sandboxes. This
-means that the transpiling, bundling, dependency resolvement and more happens in
-the browser itself, without a server being involved. This has some advantages
-over conventional approaches; it works offline, is more performant and doesn't
-give us server costs, which means we can have many sandboxes without having to
-worry (a lot ;-)).
+CodeSandbox выполняет проекты в браузере, которые мы называем песочницами. 
+Это означает, что перенос, объединение, разрешение зависимостей и многое другое происходит в самом браузере, без участия сервера. 
+Это имеет некоторые преимущества перед традиционными подходами; он работает в автономном режиме, более производительный и не дает нам затраты на сервер, что означает, что мы можем иметь много песочниц, не беспокоясь (много ;-)).
 
-There are also some disadvantages to this approach. When sandboxes run in the
-browser, we lose flexibility. It's no longer possible to run Command Line
-Interface (CLI) commands and in some cases custom configurations are not
-supported, for example a custom webpack configuration. This is why we have
-developed a new kind of sandbox called **Container**, which we released in
-September 2018.
+Есть также некоторые недостатки этого подхода. Когда песочницы работают в браузере, мы теряем гибкость. 
+Теряется возможность выполнять команды интерфейса командной строки (CLI), а в некоторых случаях пользовательские конфигурации не поддерживаются, 
+например, пользовательская настройка web-пакета. 
+Вот почему мы разработали новый вид песочницы под названием **Контейнер**, который выпустили в сентябре 2018 года.
 
-### Containers
+### Контейнеры
 
-Unlike sandboxes, **containers** are executed on a server. This makes it
-possible to create projects that are end-to-end based, like `Next.js` with
-CodeSandbox, and also makes it possible to build bigger projects. **Containers**
-let you run any command, and everything that works locally will also work in
-container.
+В отличие от песочницы, **контейнеры** выполняются на сервере. 
+Это позволяет создавать проекты, которые являются сквозными, например `Next.js` с CodeSandbox, а также дает возможность строить более крупные проекты. 
+**Контейнеры** позволяют выполнять любую команду, и все, что работает локально, также будет работать в контейнере.
 
-However, like the sandboxes, **containers** also come with some limitations. In
-order to work on a container, you need to be signed in as a user, you can't edit
-containers while offline, it's not possible to edit them from an embed, and you
-can only have a limited amount of container based projects.
+Однако, как и песочницы, **контейнеры** также поставляются с некоторыми ограничениями. 
+Для того, чтобы работать над контейнером, вам нужно быть зарегистрированным пользователем, вы не можете редактировать контейнеры в автономном режиме, 
+невозможно редактировать их из встраиваемого модуля, и вы можете иметь только ограниченное количество проектов, основанных на контейнере.
 
-### Which one to choose?
+### Какой из них выбрать?
 
-As you have read above, the template type determines whether a project is
-executed in a _sandbox in a browser_ or in a _container on a server_. This means
-that the template type you have to choose, depends on your specific use-case and
-where you want your project to be executed.
+Как вы уже читали выше, тип шаблона определяет, выполняется ли проект в _sandbox в браузере или в _container на сервере. 
+Это означает, что тип шаблона, который вы должны выбрать, зависит от вашего конкретного варианта использования и того, где вы хотите, чтобы ваш проект был выполнен.
 
-If you would like to demonstrate CLI functionality, we recommend that you use a
-**container** type template, and if you want to demonstrate a JavaScript
-framework (like `React`) we recommended using a **sandbox** type template.
+Если вы хотите продемонстрировать функциональность CLI, мы рекомендуем использовать шаблон типа **контейнер**, 
+а если вы хотите продемонстрировать фреймворк JavaScript (например, `React`), мы рекомендуем использовать шаблон типа **sandbox**.
 
-We encourage everyone to first evaluate whether the template works as a sandbox,
-before deciding on using a container.
+Мы призываем всех сначала оценить, работает ли шаблон как песочница, прежде чем принимать решение об использовании контейнера.
 
-## Adding a new template
+## Добавление нового шаблона
 
-In order to add a new template, you need to go through a set of steps. Some of
-these steps you have to do, others depend on the type of template you want to
-add (**sandbox** vs. **container**).
+Для того, чтобы добавить новый шаблон, необходимо пройти ряд шагов. 
+Некоторые из этих шагов должны сделать вы, другие зависят от типа шаблона, который вы хотите добавить (**sandbox** vs. **контейнер**).
 
-To get started, you should first follow the steps in our contribution guidelines
-in order to
-[set up CodeSandbox locally](https://github.com/codesandbox/codesandbox-client/blob/master/CONTRIBUTING.md#setting-up-the-project-locally).
+Для начала вы должны выполнить шаги, описанные в наших рекомендациях по вкладу, чтобы [настроить CodeSandbox локально](https://github.com/codesandbox/codesandbox-client/blob/master/CONTRIBUTING.md#setting-up-the-project-locally).
 
-### 1. Add template logo
+### 1. Добавить логотип шаблона
 
-Add the logo for your template in the
-[templates repo](https://github.com/codesandbox/codesandbox-client/tree/master/packages/template-icons/src)
-(`codesandbox-templates/packages/template-icons/src`).
+Добавьте логотип для вашего шаблона в [templates repo](https://github.com/codesandbox/codesandbox-client/tree/master/packages/template-icons/src) (`codesandbox-templates/packages/template-icons/src`).
 
-#### SVG logos
+#### Логотипы SVG
 
-Create a `.tsx` file in the `/src` directory with the appropriate name and
-content. If your template's name is "Banana", name your logo file "BananaIcon".
+Создайте `.tsx` файл в каталоге `/src` с соответствующим именем и содержанием. Если ваш шаблон называется "Banana", назовите ваш файл с логотипом "BananaIcon".
 
-Examples:
+Примеры:
 
 - [Vue logo](https://github.com/codesandbox/codesandbox-client/tree/master/packages/template-icons/src/VueIcon.tsx)
 - [React logo](https://github.com/codesandbox/codesandbox-client/tree/master/packages/template-icons/src/ReactIcon.tsx)
 
-### 2. Add template definition
+### 2. Добавить определение шаблона
 
-In order for CodeSandbox to recognise your template, you need to add a new
-definition of it in the `codesandbox-client/packages/common/src/templates`
-[directory](https://github.com/codesandbox/codesandbox-client/tree/master/packages/common/src/templates).
-You do this by creating a new `.ts` file with the name of your template.
+Для того, чтобы CodeSandbox мог распознать ваш шаблон, вам нужно добавить новое определение в `codesandbox-client/packages/common/src/templates` [каталог](https://github.com/codesandbox/codesandbox-client/tree/master/packages/common/src/templates).
+Вы делаете это, создавая новый `.ts` файл с именем вашего шаблона.
 
-Examples:
+Примеры:
 
 - [Parcel](https://github.com/codesandbox/codesandbox-client/blob/master/packages/common/src/templates/parcel.ts)
 - [Gatsby](https://github.com/codesandbox/codesandbox-client/blob/master/packages/common/src/templates/gatsby.ts)
 
-The template definition can have various options, which you can find more
-information about in
+Определение шаблона может иметь различные опции, более подробную информацию о которых вы можете найти в 
 [template.ts](https://github.com/codesandbox/codesandbox-client/blob/master/packages/common/src/templates/template.ts).
 
-We encourage you to improve the user experience of your templates by taking
-advantage of the options you have available while writing your template
-definition.
+Мы рекомендуем вам улучшить пользовательский опыт ваших шаблонов, воспользовавшись доступными опциями во время написания определения шаблона.
 
-Examples:
+Примеры:
 
-- Which file the editor should open by default
-- Default rules the template should use
+- Какой редактор должен открыть файл по умолчанию
+- Правила по умолчанию, которые шаблон должен использовать
 
-<!-- TODO: Add more examples -->
+<!-- TODO: Добавить дополнительные примеры -->
 
-After writing your template definition, you also need to add it to the
-[index.js](https://github.com/codesandbox/codesandbox-client/blob/master/packages/common/src/templates/index.ts)
-file in the same directory (`codesandbox-client/packages/common/src/templates`)
-in order for CodeSandbox to be able to retrieve your template.
+После написания определения Вашего шаблона, Вам также необходимо добавить его в файл [index.js](https://github.com/codesandbox/codesandbox-client/blob/master/packages/common/src/templates/index.ts) в том же каталоге (`codesandbox-client/packages/common/src/templates`), чтобы CodeSandbox мог извлечь Ваш шаблон.
 
-### 3. Define transpilers for sandbox
+### 3. Определение транспилеров для песочницы
 
-_If you are adding a template for a **container** sandbox, you can skip this
-step and proceed to step 4._
+_Если вы добавляете шаблон для песочницы **контейнера**, вы можете пропустить это, перейдя к шагу 4._
 
-For the sandboxes that run in the browser we need to define what transpilers
-need to be run. A template will not work in the bundler if it does not have a
-preset.
+Для песочниц, которые запускаются в браузере, нам нужно определить, какие транспайлеры нужно запустить. 
+Шаблон не будет работать в пакете, если он не имеет предустановленных настроек.
 
-We call a template configuration for the bundler in CodeSandbox a 'Preset'. All
-currently installed presets are defined in the
-[index.ts](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/index.ts)
-file under `codesandbox-client/packages/app/src/sandbox/eval/presets`.
+Мы называем конфигурацию шаблона для бандлера в CodeSandbox 'Предустановленный'. Все установленные на данный момент предустановки определены в файле [index.ts](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/index.ts) под `codesandbox-client/packages/app/src/sandbox/eval/presets`.
 
-In order to understand how this configuration works, we recommend you to take a
-look at templates that have already been implemented and their presets.
+Для того, чтобы понять, как работает эта конфигурация, мы рекомендуем вам взглянуть на уже реализованные шаблоны и их предустановки.
 
-Examples:
+Примеры:
 
 - [create-react-app-typescript](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/presets/create-react-app-typescript/index.js)
-  (most basic one)
+  (самый основной)
 - [CxJS](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/presets/cxjs/index.js)
 - [vue-cli](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/presets/vue-cli/index.js)
 
-### 4. Add the importer
+### 4. Добавить импортёра
 
-We allow people to import sandboxes from GitHub/CLI/API, and to make sure that
-the right template is imported we have some specific logic that determines a
-template for every template. This logic is **not** found in `codesanbox-client`.
+Мы позволяем людям импортировать песочницы из GitHub/CLI/API, и чтобы убедиться, что импортирован правильный шаблон, 
+мы имеем некоторую специфическую логику, определяющую шаблон для каждого шаблона. 
+Эта логика **не** находится в `codesanbox-client`.
 
-This means you that you also have to add your template in another file in the
-`codesandbox-importers` repository called
-[templates.ts](https://github.com/codesandbox/codesandbox-importers/blob/master/packages/import-utils/src/create-sandbox/templates.ts).
+Это означает, что вы также должны добавить ваш шаблон в другой файл в репозитории `кодов и ящиков-импортеров` с названием [templates.ts](https://github.com/codesandbox/codesandbox-importers/blob/master/packages/import-utils/src/create-sandbox/templates.ts).
 
-When you create your Pull Request in `codesanbox-client`, you also need to
-create a Pull Request in `codesandbox-importer` and reference it in your Pull
-Request for `codesandbox-client`. Example:
+Когда вы создаете свой Pull Request в `codesanbox-client`, вам также нужно создать Pull Request в `codesandbox-импортере` и сослаться на него в вашем Pull Request for `codesandbox-client`. 
+Пример:
 
-- [Add VuePress](https://github.com/codesandbox/codesandbox-client/pull/1652) in
-  [codesandbox-client](https://github.com/codesandbox/codesandbox-client)
-- [Add VuePress support](https://github.com/codesandbox/codesandbox-importers/pull/30)
-  in
-  [codesandbox-importer](https://github.com/codesandbox/codesandbox-importers)
+- [Добавить VuePress](https://github.com/codesandbox/codesandbox-client/pull/1652) в [codesandbox-client](https://github.com/codesandbox/codesandbox-client)
+- [Добавить VuePress support](https://github.com/codesandbox/codesandbox-importers/pull/30) в [codesandbox-importer](https://github.com/codesandbox/codesandbox-importers)
 
-### 5. Test the template
+### 5. Протестируйте шаблон
 
-You can test your new sandbox template, however you cannot preview the
-functionality of templates using containers.
+Вы можете протестировать ваш новый шаблон песочницы, однако вы не можете предварительно просмотреть функциональность шаблонов с помощью контейнеров.
 
-#### Sandbox template
+#### Шаблон песочницы
 
-To test your new template, you need to create a mock response from the API and
-force the new template specification. To do this, you uncomment
-[this line](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/app/store/actions.js#L17)
-and change `'custom'` to the id/name of your template:
+Чтобы протестировать новый шаблон, необходимо создать имитационный ответ из API и форсировать новую спецификацию шаблона. Для этого вы разряжаете комментарий [этой строки](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/app/store/actions.js#L17) и меняете `'custom'` на id/name вашего шаблона:
 
 ```diff
     .then(data => {
@@ -202,19 +150,16 @@ and change `'custom'` to the id/name of your template:
     })
 ```
 
-#### Container template
+#### Шаблон контейнера
 
-<!-- TODO: clearify what to do here -->
-<!-- TODO: Improve description of step -->
+<!-- TODO: здесь ясно, что делать -->
+<!-- TODO: Улучшить описание шага -->
 
-It's currently not possible to test the preview functionality of container
-sandboxes and we recommend you to test if the sandbox works in a `node`
-template. If your template works using `node`, it will work with your new
-template as well.
+В настоящее время невозможно протестировать функциональность предварительного просмотра песочницы-контейнера и мы рекомендуем Вам проверить, 
+работает ли песочница в шаблоне `node`. 
+Если Ваш шаблон работает с `node`, он будет работать и с Вашим новым шаблоном.
 
-To do this, please add a `sandbox.config.json` file to the root folder of the
-repository that you are using as the basis for your template, with the content
-of:
+Для этого, пожалуйста, добавьте файл `sandbox.config.json` в корневую папку хранилища, которое вы используете в качестве основы для вашего шаблона, с содержимым:
 
 ```json
 {
@@ -222,32 +167,25 @@ of:
 }
 ```
 
-To test it, you use CodeSandbox to access the repository that will be used for
-the template like so: `https://codesanbox.io/s/github/user/repo-name`, where
-`user` is the user/organisation who owns the repository and `repo-name` is the
-name of the repository to use for the template.
+Чтобы протестировать его, вы используете CodeSandbox для доступа к хранилищу, которое будет использоваться для такого шаблона: `https://codesanbox.io/s/github/user/repo-name`, где `user` - это пользователь/организация, которому принадлежит репозиторий, а `repo-name` - это имя репозитория, используемого для шаблона.
 
-After your Pull Request to add a new template has been merged, you can delete
-this `sandbox.json.config` file from your repository.
+После того, как ваш Pull Request для добавления нового шаблона был объединен, вы можете удалить этот `sandbox.json.config` файл из вашего репозитория.
 
-### 6. Add yourself as a contributor
+### 6. Добавьте себя в качестве участника
 
-This project follows the all-contributors specification. Contributions of any
-kind are welcome! To add yourself to the table of contributors in the README.md
-file, please use the automated script as part of your PR:
+Этот проект соответствует спецификации all-contributors. Приветствуются любые взносы! 
+Чтобы добавить себя в таблицу участников в файле README.md, пожалуйста, используйте автоматизированный скрипт как часть вашего PR:
 
 ```
 yarn add-contributor
 ```
 
-Follow the prompt and commit .all-contributorsrc and README.md in the PR.
+Следуйте инструкциям и зафиксируйте .all-contributorsrc и README.md в PR.
 
-Thank you for taking the time to contribute! 👍
+Спасибо, что нашли время внести свой вклад! 👍
 
-### Conclusion
+### Заключение
 
-If your testing went well, congratulations! You have now created a new template
-for CodeSandbox!
+Если ваше тестирование прошло хорошо, поздравляю! Теперь вы создали новый шаблон для CodeSandbox!
 
-We will make sure to merge and deploy the two Pull Requests you made to both
-`codesanbox-client` and `codesandbox-importers` at the same time.
+Мы позаботимся об объединении и развертывании двух Pull Requests, которые вы сделали одновременно для `codesanbox-клиента` и `codesandbox-импортеров`.
