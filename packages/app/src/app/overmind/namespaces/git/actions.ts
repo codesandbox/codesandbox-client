@@ -7,6 +7,7 @@ import {
   SandboxGitState,
 } from '@codesandbox/common/lib/types';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { debounce, mutate, pipe } from 'overmind';
 
@@ -45,13 +46,20 @@ export const loadGitSource: AsyncAction = async ({
   effects,
 }) => {
   const sandbox = state.editor.currentSandbox!;
-  state.git.isFetching = true;
   state.git.isExported = false;
   state.git.pr = null;
+  state.git.repoTitle = '';
 
-  if (!state.user || !state.user.integrations.github) {
+  if (
+    !state.user ||
+    !state.user.integrations.github ||
+    !sandbox.originalGit ||
+    !hasPermission(sandbox.authorization, 'write_code')
+  ) {
     return;
   }
+
+  state.git.isFetching = true;
 
   // We go grab the current version of the source
   try {

@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 const { colors } = require("@primer/primitives");
 
 function getColors(style) {
@@ -14,9 +15,9 @@ function getColors(style) {
       }
     });
     return darkColors;
-  } else {
+  } 
     return colors;
-  }
+  
 }
 
 module.exports = {

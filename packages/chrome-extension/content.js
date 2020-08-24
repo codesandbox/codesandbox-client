@@ -29,11 +29,6 @@ const addButton = () => {
 `;
 
   // Add it to the DOM
-  return toolbar.insertBefore(
-    button,
-    toolbar.querySelector(
-      'a.btn.mr-2.d-none.d-md-block + .details-overlay.details-reset.position-relative'
-    ).nextSibling
-  );
+  toolbar.querySelector('get-repo').parentElement.after(button);
 };
 addButton();

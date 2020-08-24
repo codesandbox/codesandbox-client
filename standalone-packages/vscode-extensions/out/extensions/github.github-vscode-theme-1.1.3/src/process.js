@@ -12,9 +12,9 @@ function getVariant(hex, style) {
       .lightness(100 - c.lightness())
       .hex()
       .toLowerCase();
-  } else {
+  } 
     return hex;
-  }
+  
 }
 
 module.exports = {
