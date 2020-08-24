@@ -90,8 +90,8 @@ export async function getDependenciesFromSources(
 
   try {
     const parsedResolutions = parseResolutions(resolutions);
-    let remainingDependencies = Object.keys(dependencies);
-    let totalDependencies = remainingDependencies.length;
+    const remainingDependencies = Object.keys(dependencies);
+    const totalDependencies = remainingDependencies.length;
 
     const depsWithNodeLibs = removeSpacesFromDependencies({
       'node-libs-browser': '2.2.0',
@@ -103,7 +103,7 @@ export async function getDependenciesFromSources(
       forceFetchDynamically
     );
 
-    function updateLoadScreen() {
+    const updateLoadScreen = () => {
       const progress = totalDependencies - remainingDependencies.length;
       const total = totalDependencies;
 
@@ -127,11 +127,11 @@ export async function getDependenciesFromSources(
           showFullScreen: showLoaderFullScreen,
         });
       }
-    }
+    };
 
     const dynamicPromise = Promise.all(
-      Object.keys(dynamicDependencies).map(depName => {
-        return resolveDependencyInfo(
+      Object.keys(dynamicDependencies).map(depName =>
+        resolveDependencyInfo(
           depName,
           depsWithNodeLibs[depName],
           parsedResolutions
@@ -141,23 +141,22 @@ export async function getDependenciesFromSources(
             1
           );
           updateLoadScreen();
-        });
-      })
+        })
+      )
     );
 
     const prebundledPromise = Promise.all(
-      Object.keys(prebundledDependencies).map(depName => {
-        return getPrebundledDependency(
-          depName,
-          depsWithNodeLibs[depName]
-        ).finally(() => {
-          remainingDependencies.splice(
-            remainingDependencies.indexOf(depName),
-            1
-          );
-          updateLoadScreen();
-        });
-      })
+      Object.keys(prebundledDependencies).map(depName =>
+        getPrebundledDependency(depName, depsWithNodeLibs[depName]).finally(
+          () => {
+            remainingDependencies.splice(
+              remainingDependencies.indexOf(depName),
+              1
+            );
+            updateLoadScreen();
+          }
+        )
+      )
     );
 
     const [
