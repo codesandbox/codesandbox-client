@@ -98,7 +98,9 @@ export const ProfileCard = ({ defaultEditing = false }) => {
             <Stack direction="vertical" gap={3}>
               <Stack gap={2} align="center">
                 <Icon name="box" />
-                <Text size={3}>{user.sandboxCount} Sandboxes</Text>
+                <Text size={3}>
+                  {user.sandboxCount + user.templateCount} Sandboxes
+                </Text>
               </Stack>
               <Stack gap={2} align="center">
                 <Icon name="heart" />
