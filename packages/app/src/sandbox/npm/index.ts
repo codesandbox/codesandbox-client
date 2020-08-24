@@ -164,12 +164,6 @@ export async function getDependenciesFromSources(
       prebundledLoadedDependencies,
     ] = await Promise.all([dynamicPromise, prebundledPromise]);
 
-    console.log(
-      mergeDependencies([
-        ...dynamicLoadedDependencies,
-        ...prebundledLoadedDependencies,
-      ])
-    );
     return mergeDependencies([
       ...dynamicLoadedDependencies,
       ...prebundledLoadedDependencies,
