@@ -83,19 +83,19 @@ export async function getDependenciesFromSources(
 ) {
   setScreen({
     type: 'loading',
-    text: 'Downloading Dependencies...',
+    text: 'Installing Dependencies...',
     showFullScreen: showLoaderFullScreen,
   });
 
   try {
     const parsedResolutions = parseResolutions(resolutions);
+    let remainingDependencies = Object.keys(dependencies);
+    let totalDependencies = remainingDependencies.length;
+
     const depsWithNodeLibs = removeSpacesFromDependencies({
       'node-libs-browser': '2.2.0',
       ...dependencies,
     });
-
-    let remainingDependencies = Object.keys(dependencies);
-    let totalDependencies = remainingDependencies.length;
 
     const { dynamicDependencies, prebundledDependencies } = splitDependencies(
       depsWithNodeLibs,
@@ -111,16 +111,18 @@ export async function getDependenciesFromSources(
         return;
       }
 
-      if (remainingDependencies.length === 1) {
+      if (remainingDependencies.length <= 6) {
         setScreen({
           type: 'loading',
-          text: `Loading Dependencies: ${progress}/${total} (${remainingDependencies[0]})`,
+          text: `Installing Dependencies: ${progress}/${total} (${remainingDependencies.join(
+            ', '
+          )})`,
           showFullScreen: showLoaderFullScreen,
         });
       } else {
         setScreen({
           type: 'loading',
-          text: `Loading Dependencies: ${progress}/${total}`,
+          text: `Installing Dependencies: ${progress}/${total}`,
           showFullScreen: showLoaderFullScreen,
         });
       }
