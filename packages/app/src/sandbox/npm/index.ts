@@ -1,16 +1,17 @@
 import { pickBy } from 'lodash-es';
+import { dispatch, actions } from 'codesandbox-api';
 
-import setScreen, { resetScreen } from '../status-screen';
-import dependenciesToQuery from './dependencies-to-query';
 import {
   protocols,
   getFetchProtocol,
 } from 'sandbox/npm/dynamic/fetch-protocols';
+
+import setScreen, { resetScreen } from '../status-screen';
+import dependenciesToQuery from './dependencies-to-query';
 import { parseResolutions } from './dynamic/resolutions';
 import { resolveDependencyInfo } from './dynamic/resolve-dependency';
 import { getDependency as getPrebundledDependency } from './preloaded/fetch-dependencies';
 import { mergeDependencies } from './merge-dependency';
-import { dispatch, actions } from 'codesandbox-api';
 
 let loadedDependencyCombination: string | null = null;
 let manifest = null;

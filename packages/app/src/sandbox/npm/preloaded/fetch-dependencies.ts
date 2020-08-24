@@ -1,12 +1,7 @@
 import _debug from '@codesandbox/common/lib/utils/debug';
-import {
-  getAbsoluteDependencies,
-  getAbsoluteDependency,
-} from '@codesandbox/common/lib/utils/dependencies';
-import { actions, dispatch } from 'codesandbox-api';
+import { getAbsoluteDependency } from '@codesandbox/common/lib/utils/dependencies';
 import { ILambdaResponse } from 'sandbox/npm/merge-dependency';
 
-import setScreen from '../../status-screen';
 import delay from '../../utils/delay';
 import dependenciesToQuery from '../dependencies-to-query';
 
