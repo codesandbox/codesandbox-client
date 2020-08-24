@@ -1,16 +1,14 @@
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
-import { CSB_PKG_PROTOCOL } from '@codesandbox/common/lib/utils/ci';
 import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
-import { Module } from '../types/module';
-import Manager from '../manager';
+import { Module } from '../../eval/types/module';
+import Manager from '../../eval/manager';
 
-import getDependencyName from '../utils/get-dependency-name';
-import { packageFilter } from '../utils/resolve-utils';
-import TranspiledModule from '../transpiled-module';
-
-import { protocols } from './fetch-protocols';
+import getDependencyName from '../../eval/utils/get-dependency-name';
+import { packageFilter } from '../../eval/utils/resolve-utils';
+import TranspiledModule from '../../eval/transpiled-module';
+import { getFetchProtocol } from './fetch-protocols';
 
 export type Meta = {
   [path: string]: true;
@@ -45,30 +43,6 @@ export interface FetchProtocol {
 export function setCombinedMetas(givenCombinedMetas: Meta) {
   combinedMetas = givenCombinedMetas;
 }
-
-const getFetchProtocol = (depVersion: string, useFallback = false) => {
-  if (depVersion.startsWith('file:')) {
-    return protocols.file;
-  }
-
-  const isDraftProtocol = CSB_PKG_PROTOCOL.test(depVersion);
-
-  if (isDraftProtocol) {
-    return protocols.csbGH;
-  }
-
-  if (depVersion.includes('http') && !depVersion.includes('github.com')) {
-    return protocols.tar;
-  }
-
-  const isGitHub = /\//.test(depVersion);
-
-  if (isGitHub) {
-    return protocols.jsDelivrGH;
-  }
-
-  return useFallback ? protocols.unpkg : protocols.jsDelivrNPM;
-};
 
 // Strips the version of a path, eg. test/1.3.0 -> test
 const ALIAS_REGEX = /\/\d*\.\d*\.\d*.*?(\/|$)/;

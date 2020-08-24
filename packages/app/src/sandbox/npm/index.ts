@@ -1,9 +1,16 @@
 import { pickBy } from 'lodash-es';
 
-import setScreen from '../status-screen';
-import { getDependencyVersions } from '../version-resolving';
+import setScreen, { resetScreen } from '../status-screen';
 import dependenciesToQuery from './dependencies-to-query';
-import { fetchDependencies } from './fetch-dependencies';
+import {
+  protocols,
+  getFetchProtocol,
+} from 'sandbox/npm/dynamic/fetch-protocols';
+import { parseResolutions } from './dynamic/resolutions';
+import { resolveDependencyInfo } from './dynamic/resolve-dependency';
+import { getDependency as getPrebundledDependency } from './preloaded/fetch-dependencies';
+import { mergeDependencies } from './merge-dependency';
+import { dispatch, actions } from 'codesandbox-api';
 
 let loadedDependencyCombination: string | null = null;
 let manifest = null;
@@ -12,20 +19,169 @@ export type NPMDependencies = {
   [dependency: string]: string;
 };
 
+const PRELOADED_PROTOCOLS = [protocols.jsDelivrNPM, protocols.unpkg];
+
 /**
- * If there is a URL to a file we need to fetch the dependencies dynamically, at least
- * for the first version. In the future we might want to consider a hybrid version where
- * we only fetch the dynamic files for dependencies with a url as version. But this is a good
- * start.
+ * Depending on the dependency version we decide whether we can load a prebundled bundle (generated
+ * in a lambda) or use a dynamic version of fetching the dependency.
  */
-function shouldFetchDynamically(dependencies: NPMDependencies) {
-  return Object.keys(dependencies).some(depName =>
-    dependencies[depName].includes('http')
-  );
+function shouldFetchDynamically(depVersion: string) {
+  const fetchProtocol = getFetchProtocol(depVersion);
+  return !PRELOADED_PROTOCOLS.includes(fetchProtocol);
 }
 
 /**
- * This fetches the manifest and dependencies from the
+ * Some dependencies have a space in their version for some reason, this is invalid and we
+ * ignore them. This is what yarn does as well.
+ */
+function removeSpacesFromDependencies(dependencies: Object) {
+  const newDeps = {};
+  Object.keys(dependencies).forEach(depName => {
+    const [version] = dependencies[depName].split(' ');
+    newDeps[depName] = version;
+  });
+  return newDeps;
+}
+
+/**
+ * Split the dependencies between whether they should be loaded from dynamically or from an endpoint
+ * that has the dependency already prebundled.
+ */
+function splitDependencies(
+  dependencies: NPMDependencies,
+  forceFetchDynamically: boolean
+): {
+  dynamicDependencies: NPMDependencies;
+  prebundledDependencies: NPMDependencies;
+} {
+  if (forceFetchDynamically) {
+    return { dynamicDependencies: dependencies, prebundledDependencies: {} };
+  }
+
+  const dynamicDependencies = {};
+  const prebundledDependencies = {};
+
+  Object.keys(dependencies).forEach(depName => {
+    const version = dependencies[depName];
+    if (shouldFetchDynamically(version)) {
+      dynamicDependencies[depName] = version;
+    } else {
+      prebundledDependencies[depName] = version;
+    }
+  });
+
+  return { dynamicDependencies, prebundledDependencies };
+}
+
+export async function getDependenciesFromSources(
+  dependencies: {
+    [depName: string]: string;
+  },
+  resolutions: { [startGlob: string]: string },
+  showLoaderFullScreen: boolean,
+  forceFetchDynamically: boolean
+) {
+  setScreen({
+    type: 'loading',
+    text: 'Downloading Dependencies...',
+    showFullScreen: showLoaderFullScreen,
+  });
+
+  try {
+    const parsedResolutions = parseResolutions(resolutions);
+    const depsWithNodeLibs = removeSpacesFromDependencies({
+      'node-libs-browser': '2.2.0',
+      ...dependencies,
+    });
+
+    let remainingDependencies = Object.keys(dependencies);
+    let totalDependencies = remainingDependencies.length;
+
+    const { dynamicDependencies, prebundledDependencies } = splitDependencies(
+      depsWithNodeLibs,
+      forceFetchDynamically
+    );
+
+    function updateLoadScreen() {
+      const progress = totalDependencies - remainingDependencies.length;
+      const total = totalDependencies;
+
+      if (progress === total) {
+        resetScreen();
+        return;
+      }
+
+      if (remainingDependencies.length === 1) {
+        setScreen({
+          type: 'loading',
+          text: `Loading Dependencies: ${progress}/${total} (${remainingDependencies[0]})`,
+          showFullScreen: showLoaderFullScreen,
+        });
+      } else {
+        setScreen({
+          type: 'loading',
+          text: `Loading Dependencies: ${progress}/${total}`,
+          showFullScreen: showLoaderFullScreen,
+        });
+      }
+    }
+
+    const dynamicPromise = Promise.all(
+      Object.keys(dynamicDependencies).map(depName => {
+        return resolveDependencyInfo(
+          depName,
+          depsWithNodeLibs[depName],
+          parsedResolutions
+        ).finally(() => {
+          remainingDependencies.splice(
+            remainingDependencies.indexOf(depName),
+            1
+          );
+          updateLoadScreen();
+        });
+      })
+    );
+
+    const prebundledPromise = Promise.all(
+      Object.keys(prebundledDependencies).map(depName => {
+        return getPrebundledDependency(
+          depName,
+          depsWithNodeLibs[depName]
+        ).finally(() => {
+          remainingDependencies.splice(
+            remainingDependencies.indexOf(depName),
+            1
+          );
+          updateLoadScreen();
+        });
+      })
+    );
+
+    const [
+      dynamicLoadedDependencies,
+      prebundledLoadedDependencies,
+    ] = await Promise.all([dynamicPromise, prebundledPromise]);
+
+    console.log(
+      mergeDependencies([
+        ...dynamicLoadedDependencies,
+        ...prebundledLoadedDependencies,
+      ])
+    );
+    return mergeDependencies([
+      ...dynamicLoadedDependencies,
+      ...prebundledLoadedDependencies,
+    ]);
+  } catch (e) {
+    e.message = `Could not fetch dependencies, please try again in a couple seconds: ${e.message}`;
+    dispatch(actions.notifications.show(e.message, 'error'));
+
+    throw e;
+  }
+}
+
+/**
+ * This fetches the manifest and dependencies from our packager or dynamic sources
  * @param {*} dependencies
  */
 export async function loadDependencies(
@@ -49,18 +205,11 @@ export async function loadDependencies(
     if (loadedDependencyCombination !== depQuery) {
       isNewCombination = true;
 
-      const fetchDynamically =
-        disableExternalConnection ||
-        shouldFetchDynamically(dependenciesWithoutTypings);
-
-      const fetchFunction = fetchDynamically
-        ? getDependencyVersions
-        : fetchDependencies;
-
-      const data = await fetchFunction(
+      const data = await getDependenciesFromSources(
         dependenciesWithoutTypings,
         resolutions,
-        showFullScreen
+        showFullScreen,
+        disableExternalConnection
       );
 
       // Mark that the last requested url is this
