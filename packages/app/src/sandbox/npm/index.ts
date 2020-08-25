@@ -211,12 +211,6 @@ export async function loadDependencies(
       // Mark that the last requested url is this
       loadedDependencyCombination = depQuery;
       manifest = data;
-
-      setScreen({
-        type: 'loading',
-        text: 'Transpiling Modules...',
-        showFullScreen,
-      });
     }
   } else {
     manifest = null;

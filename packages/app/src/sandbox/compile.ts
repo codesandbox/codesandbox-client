@@ -26,7 +26,7 @@ import Manager from './eval/manager';
 import TranspiledModule from './eval/transpiled-module';
 import handleExternalResources from './external-resources';
 import { loadDependencies, NPMDependencies } from './npm';
-import { resetScreen } from './status-screen';
+import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import * as metrics from './utils/metrics';
 
@@ -540,6 +540,12 @@ async function compile({
 
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
+
+    setScreen({
+      type: 'loading',
+      text: 'Transpiling Modules...',
+      showFullScreen: firstLoad,
+    });
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
