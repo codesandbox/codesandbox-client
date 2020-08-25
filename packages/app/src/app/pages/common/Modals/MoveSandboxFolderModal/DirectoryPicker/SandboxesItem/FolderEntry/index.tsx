@@ -111,10 +111,12 @@ class FolderEntry extends React.Component<Props, State> {
   };
 
   handleSelect = () => {
-    this.props.onSelect({
-      teamId: this.props.teamId,
-      path: this.props.path,
-    });
+    if (!this.props.disabled) {
+      this.props.onSelect({
+        teamId: this.props.teamId,
+        path: this.props.path,
+      });
+    }
   };
 
   handleKeyDown = e => {
