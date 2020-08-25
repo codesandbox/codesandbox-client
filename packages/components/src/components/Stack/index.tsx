@@ -1,22 +1,56 @@
-import styled from 'styled-components';
-import css from '@styled-system/css';
+import React from 'react';
+import deepmerge from 'deepmerge';
 import { Element } from '../Element';
 
-export const Stack = styled(Element)<{
-  gap?: number; // theme.space token
+type StackProps = {
   direction?: 'horizontal' | 'vertical';
   justify?: React.CSSProperties['justifyContent'];
   align?: React.CSSProperties['alignItems'];
   inline?: boolean;
-}>(({ gap = 0, direction = 'horizontal', justify, align, inline }) =>
-  css({
+  gap?: number;
+};
+
+export const Stack: React.FC<StackProps> = React.forwardRef(function Stack(
+  {
+    direction = 'horizontal',
+    inline = false,
+    justify,
+    align,
+    gap,
+    css = {},
+    ...props
+  }: StackProps,
+  ref
+) {
+  const styles = {
     display: inline ? 'inline-flex' : 'flex',
-    flexDirection: direction === 'horizontal' ? 'row' : 'column',
     justifyContent: justify,
     alignItems: align,
+  };
 
-    '> *:not(:last-child)': {
-      [direction === 'horizontal' ? 'marginRight' : 'marginBottom']: gap,
-    },
-  })
-);
+  if (Array.isArray(direction)) {
+    styles.flexDirection = direction.map(d =>
+      d === 'vertical' ? 'column' : 'row'
+    );
+    styles['> * + *'] = direction.map(d => createGap(d, gap));
+  } else {
+    styles.flexDirection = direction === 'vertical' ? 'column' : 'row';
+    styles['> * + *'] = createGap(direction, gap);
+  }
+
+  return <Element ref={ref} css={deepmerge(styles, css)} {...props} />;
+});
+
+const createGap = (direction, gap) => {
+  if (direction === 'vertical') {
+    return {
+      marginTop: gap,
+      marginLeft: 0,
+    };
+  }
+
+  return {
+    marginTop: 0,
+    marginLeft: gap,
+  };
+};
