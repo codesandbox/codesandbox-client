@@ -1,6 +1,6 @@
 import React from 'react';
 import deepmerge from 'deepmerge';
-import { Element } from '../Element';
+import { Element, IElementProps } from '../Element';
 
 type StackProps = {
   direction?: 'horizontal' | 'vertical';
@@ -8,9 +8,13 @@ type StackProps = {
   align?: React.CSSProperties['alignItems'];
   inline?: boolean;
   gap?: number;
-};
+} & React.HTMLAttributes<HTMLDivElement> &
+  IElementProps;
 
-export const Stack: React.FC<StackProps> = React.forwardRef(function Stack(
+export const Stack: React.FC<StackProps> = React.forwardRef<
+  HTMLDivElement,
+  StackProps
+>(function Stack(
   {
     direction = 'horizontal',
     inline = false,
@@ -26,6 +30,7 @@ export const Stack: React.FC<StackProps> = React.forwardRef(function Stack(
     display: inline ? 'inline-flex' : 'flex',
     justifyContent: justify,
     alignItems: align,
+    flexDirection: 'row' as 'row' | 'column' | ('row' | 'column')[],
   };
 
   if (Array.isArray(direction)) {
@@ -38,7 +43,7 @@ export const Stack: React.FC<StackProps> = React.forwardRef(function Stack(
     styles['> * + *'] = createGap(direction, gap);
   }
 
-  return <Element ref={ref} css={deepmerge(styles, css)} {...props} />;
+  return <Element as="div" ref={ref} css={deepmerge(styles, css)} {...props} />;
 });
 
 const createGap = (direction, gap) => {
