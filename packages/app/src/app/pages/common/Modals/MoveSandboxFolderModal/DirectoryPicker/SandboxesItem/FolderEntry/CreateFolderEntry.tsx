@@ -1,5 +1,6 @@
 import React from 'react';
 import { Mutation } from 'react-apollo';
+import { join } from 'path';
 
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
 import Input from '@codesandbox/common/lib/components/Input';
@@ -39,7 +40,7 @@ export const CreateFolderEntry = ({
         <form
           onSubmit={e => {
             e.preventDefault();
-            const path = basePath + '/' + input.value;
+            const path = join(basePath, input.value);
 
             track('Dashboard - Create Directory', {
               path,
@@ -56,10 +57,8 @@ export const CreateFolderEntry = ({
                 },
               },
               update: (proxy, { data: { createCollection } }) => {
-                const variables: { teamId?: string } = {};
-                if (teamId) {
-                  variables.teamId = teamId;
-                }
+                const variables: { teamId?: string } = { teamId: teamId };
+
                 // Read the data from our cache for this query.
                 const d: { me: any } = proxy.readQuery({
                   query: PATHED_SANDBOXES_FOLDER_QUERY,
