@@ -1,50 +1,40 @@
 import React from 'react';
-import deepmerge from 'deepmerge';
-import { Element, IElementProps } from '../Element';
+import styled from 'styled-components';
+import css from '@styled-system/css';
+import { Element } from '../Element';
 
 type StackProps = {
-  direction?: 'horizontal' | 'vertical';
+  direction?: 'horizontal' | 'vertical' | ('horizontal' | 'vertical')[];
   justify?: React.CSSProperties['justifyContent'];
   align?: React.CSSProperties['alignItems'];
   inline?: boolean;
   gap?: number;
-} & React.HTMLAttributes<HTMLDivElement> &
-  IElementProps;
+};
 
-export const Stack: React.FC<StackProps> = React.forwardRef<
-  HTMLDivElement,
-  StackProps
->(function Stack(
-  {
-    direction = 'horizontal',
-    inline = false,
-    justify,
-    align,
-    gap,
-    css = {},
-    ...props
-  }: StackProps,
-  ref
-) {
-  const styles = {
-    display: inline ? 'inline-flex' : 'flex',
-    justifyContent: justify,
-    alignItems: align,
-    flexDirection: 'row' as 'row' | 'column' | ('row' | 'column')[],
-  };
+export const Stack = styled(Element).attrs(p => ({
+  as: ((p as unknown) as { as: string }).as || 'div',
+}))<StackProps>(
+  ({ direction = 'horizontal', justify, align, inline = false, gap }) => {
+    const styles = {
+      display: inline ? 'inline-flex' : 'flex',
+      justifyContent: justify,
+      alignItems: align,
+      flexDirection: 'row' as 'row' | 'column' | ('row' | 'column')[],
+    };
 
-  if (Array.isArray(direction)) {
-    styles.flexDirection = direction.map(d =>
-      d === 'vertical' ? 'column' : 'row'
-    );
-    styles['> * + *'] = direction.map(d => createGap(d, gap));
-  } else {
-    styles.flexDirection = direction === 'vertical' ? 'column' : 'row';
-    styles['> * + *'] = createGap(direction, gap);
+    if (Array.isArray(direction)) {
+      styles.flexDirection = direction.map(d =>
+        d === 'vertical' ? 'column' : 'row'
+      );
+      styles['> * + *'] = direction.map(d => createGap(d, gap));
+    } else {
+      styles.flexDirection = direction === 'vertical' ? 'column' : 'row';
+      styles['> * + *'] = createGap(direction, gap);
+    }
+
+    return css(styles);
   }
-
-  return <Element as="div" ref={ref} css={deepmerge(styles, css)} {...props} />;
-});
+);
 
 const createGap = (direction, gap) => {
   if (direction === 'vertical') {
