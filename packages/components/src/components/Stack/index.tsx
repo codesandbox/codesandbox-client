@@ -11,9 +11,7 @@ type StackProps = {
   gap?: number;
 };
 
-export const Stack = styled(Element).attrs(p => ({
-  as: ((p as unknown) as { as: string }).as || 'div',
-}))<StackProps>(
+export const Stack = styled(Element)<StackProps>(
   ({ direction = 'horizontal', justify, align, inline = false, gap }) => {
     const styles = {
       display: inline ? 'inline-flex' : 'flex',
