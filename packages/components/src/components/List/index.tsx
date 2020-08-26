@@ -13,7 +13,7 @@ export const List = styled(Element).attrs(p => ({
   css({
     listStyle: 'none',
     paddingLeft: 0,
-    margin: 0,
+    marginX: 0,
   })
 );
 
