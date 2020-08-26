@@ -15,7 +15,7 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { ThemeProvider, Stack, Menu } from '@codesandbox/components';
+import { ThemeProvider, Stack, Menu, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
@@ -78,10 +78,16 @@ export const Profile = props => {
       >
         <Header />
 
-        <Stack marginX={64} gap={8}>
-          <div>
+        <Stack
+          gap={8}
+          css={css({
+            flexDirection: ['column', 'row'],
+            marginX: [32, 64],
+          })}
+        >
+          <Element css={css({ width: ['100%', '320px'] })}>
             <ProfileCard />
-          </div>
+          </Element>
           <DndProvider backend={Backend}>
             <Stack direction="vertical" gap={14} css={{ flexGrow: 1 }}>
               <ShowcaseSandbox />

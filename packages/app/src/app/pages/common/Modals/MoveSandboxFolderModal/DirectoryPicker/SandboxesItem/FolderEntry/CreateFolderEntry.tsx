@@ -46,8 +46,13 @@ export const CreateFolderEntry = ({
               path,
             });
 
+            const variables: { teamId?: string; path: string } = { path };
+            if (teamId) {
+              variables.teamId = teamId;
+            }
+
             mutate({
-              variables: { path, teamId },
+              variables,
               optimisticResponse: {
                 __typename: 'Mutation',
                 createCollection: {
@@ -57,12 +62,10 @@ export const CreateFolderEntry = ({
                 },
               },
               update: (proxy, { data: { createCollection } }) => {
-                const variables: { teamId?: string } = { teamId: teamId };
-
                 // Read the data from our cache for this query.
                 const d: { me: any } = proxy.readQuery({
                   query: PATHED_SANDBOXES_FOLDER_QUERY,
-                  variables,
+                  variables: { teamId },
                 });
 
                 // Add our collection from the mutation to the end.
