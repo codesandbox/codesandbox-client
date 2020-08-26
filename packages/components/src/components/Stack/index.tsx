@@ -24,10 +24,10 @@ export const Stack = styled(Element)<StackProps>(
       styles.flexDirection = direction.map(d =>
         d === 'vertical' ? 'column' : 'row'
       );
-      styles['> * + *'] = direction.map(d => createGap(d, gap));
+      styles['> *:not(:last-child)'] = direction.map(d => createGap(d, gap));
     } else {
       styles.flexDirection = direction === 'vertical' ? 'column' : 'row';
-      styles['> * + *'] = createGap(direction, gap);
+      styles['> *:not(:last-child)'] = createGap(direction, gap);
     }
 
     return css(styles);
@@ -37,13 +37,13 @@ export const Stack = styled(Element)<StackProps>(
 const createGap = (direction, gap) => {
   if (direction === 'vertical') {
     return {
-      marginTop: gap,
-      marginLeft: 0,
+      marginBottom: gap,
+      marginRight: 0,
     };
   }
 
   return {
-    marginTop: 0,
-    marginLeft: gap,
+    marginBottom: 0,
+    marginRight: gap,
   };
 };
