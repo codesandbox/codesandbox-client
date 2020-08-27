@@ -1,5 +1,12 @@
 import React from 'react';
-import { Grid, Column, Stack, Text, IconButton } from '@codesandbox/components';
+import {
+  Grid,
+  Column,
+  Stack,
+  Text,
+  IconButton,
+  Menu,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
@@ -7,13 +14,15 @@ import { SandboxCard, SkeletonCard } from './SandboxCard';
 export const AllSandboxes = ({ menuControls }) => {
   const {
     actions: {
-      profile: { sandboxesPageChanged },
+      profile: { fetchSandboxes, sortByChanged, sortDirectionChanged },
     },
     state: {
       profile: {
         current: { username, featuredSandboxes },
         currentSandboxesPage,
         isLoadingSandboxes,
+        currentSortBy,
+        currentSortDirection,
         sandboxes: fetchedSandboxes,
       },
     },
@@ -23,8 +32,8 @@ export const AllSandboxes = ({ menuControls }) => {
 
   // explicitly call it on first page render
   React.useEffect(() => {
-    if (currentSandboxesPage === 1) sandboxesPageChanged(currentSandboxesPage);
-  }, [currentSandboxesPage, sandboxesPageChanged]);
+    if (currentSandboxesPage === 1) fetchSandboxes();
+  }, [currentSandboxesPage]);
 
   const sandboxes = (
     (fetchedSandboxes[username] &&
@@ -38,11 +47,59 @@ export const AllSandboxes = ({ menuControls }) => {
 
   return (
     <Stack as="section" direction="vertical" gap={6}>
-      {featuredSandboxes.length ? (
-        <Text size={7} weight="bold">
-          All Sandboxes
-        </Text>
-      ) : null}
+      <Stack justify="space-between" align="center">
+        {featuredSandboxes.length ? (
+          <Text size={7} weight="bold">
+            All Sandboxes
+          </Text>
+        ) : (
+          <span />
+        )}
+
+        <Menu>
+          <Stack align="center">
+            <Menu.Button>
+              <Text variant="muted">
+                Sort by {currentSortBy === 'view_count' ? 'views' : 'created'}
+              </Text>
+            </Menu.Button>
+            <IconButton
+              name="arrowDown"
+              size={11}
+              title="Reverse sort direction"
+              css={{
+                transform: `rotate(${
+                  currentSortDirection === 'desc' ? 0 : 180
+                }deg)`,
+              }}
+              onClick={() =>
+                sortDirectionChanged(
+                  currentSortDirection === 'asc' ? 'desc' : 'asc'
+                )
+              }
+            />
+          </Stack>
+          <Menu.List>
+            <Menu.Item
+              field="title"
+              onSelect={() => {
+                sortByChanged('view_count');
+              }}
+            >
+              <Text variant="body">Sort by views</Text>
+            </Menu.Item>
+            <Menu.Item
+              field="title"
+              onSelect={() => {
+                sortByChanged('inserted_at');
+              }}
+            >
+              <Text variant="muted">Sort by created</Text>
+            </Menu.Item>
+          </Menu.List>
+        </Menu>
+      </Stack>
+
       <Grid
         rowGap={6}
         columnGap={6}

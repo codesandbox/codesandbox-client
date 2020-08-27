@@ -25,30 +25,57 @@ export const profileMounted: AsyncAction<string> = withLoadApp(
   }
 );
 
-export const sandboxesPageChanged: AsyncAction<number> = async (
-  { effects, state },
-  page
-) => {
+export const fetchSandboxes: AsyncAction = async ({ effects, state }) => {
   state.profile.isLoadingSandboxes = true;
-  state.profile.currentSandboxesPage = page;
 
-  if (!state.profile.current) {
-    return;
-  }
+  if (!state.profile.current) return;
 
   const { username } = state.profile.current;
-  if (
-    !state.profile.sandboxes[username] ||
-    !state.profile.sandboxes[username][page]
-  ) {
-    const data = await effects.api.getUserSandboxes(username, page);
-    if (!state.profile.sandboxes[username]) {
-      state.profile.sandboxes[username] = {};
-    }
-    state.profile.sandboxes[username][page] = data[page];
+  const {
+    currentSandboxesPage: page,
+    currentSortBy: sortBy,
+    currentSortDirection: direction,
+  } = state.profile;
+
+  const data = await effects.api.getUserSandboxes(
+    username,
+    page,
+    sortBy,
+    direction
+  );
+
+  if (!state.profile.sandboxes[username]) {
+    state.profile.sandboxes[username] = {};
   }
 
+  state.profile.sandboxes[username][page] = data[page];
   state.profile.isLoadingSandboxes = false;
+};
+
+export const sandboxesPageChanged: Action<number> = (
+  { state, actions },
+  page
+) => {
+  state.profile.currentSandboxesPage = page;
+  actions.profile.fetchSandboxes();
+};
+
+export const sortByChanged: Action<'view_count' | 'inserted_at'> = (
+  { state, actions },
+  sortBy
+) => {
+  state.profile.currentSortBy = sortBy;
+  state.profile.currentSandboxesPage = 1;
+  actions.profile.fetchSandboxes();
+};
+
+export const sortDirectionChanged: Action<'asc' | 'desc'> = (
+  { state, actions },
+  direction
+) => {
+  state.profile.currentSortDirection = direction;
+  state.profile.currentSandboxesPage = 1;
+  actions.profile.fetchSandboxes();
 };
 
 export const likedSandboxesPageChanged: AsyncAction<number> = async (

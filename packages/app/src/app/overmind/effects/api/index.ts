@@ -432,11 +432,16 @@ export default {
   },
   getUserSandboxes(
     username: string,
-    page: number
+    page: number = 1,
+    sortBy: string = 'view_count',
+    direction: string = 'desc'
   ): Promise<{ [page: string]: Sandbox[] }> {
-    return api.get(`/users/${username}/sandboxes?sort_by=view_count`, {
-      page: String(page),
-    });
+    return api.get(
+      `/users/${username}/sandboxes?sort_by=${sortBy}&direction=${direction}`,
+      {
+        page: String(page),
+      }
+    );
   },
   getUserLikedSandboxes(
     username: string,
