@@ -46,7 +46,7 @@ import {
 type Props = {
   name: string;
   path: string;
-  disabled?: string;
+  disabled?: string | null;
   url?: string;
   readOnly?: string;
   folders: { path: string }[];
@@ -238,7 +238,7 @@ class FolderEntry extends React.Component<Props, State> {
       connectDragSource(
         <div>
           <ContextMenu items={menuItems}>
-            <Tooltip label={disabled}>
+            <Tooltip label={disabled || null}>
               <UnTypedContainer
                 as={onSelect ? 'div' : undefined}
                 onClick={onSelect ? this.handleSelect : undefined}
