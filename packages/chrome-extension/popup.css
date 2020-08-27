@@ -4,7 +4,7 @@
 
 html,
 body {
-  font-family: system-ui;
+  font-family: system-ui, sans-serif;
   font-size: 14px;
   margin: 0;
   padding: 0.25rem 0;
