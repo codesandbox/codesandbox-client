@@ -8,7 +8,6 @@ import { Mutation } from 'react-apollo';
 import { DropTarget, DragSource } from 'react-dnd';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { withRouter } from 'react-router-dom';
-import { History } from 'history';
 import { client } from 'app/graphql/client';
 
 import { Animate as ReactShow } from 'react-show';
@@ -68,8 +67,6 @@ type Props = {
   isDragging?: boolean;
   connectDropTarget?: any;
   connectDragSource?: any;
-
-  history?: History;
 };
 
 type State = {
@@ -111,10 +108,12 @@ class FolderEntry extends React.Component<Props, State> {
   };
 
   handleSelect = () => {
-    this.props.onSelect({
-      teamId: this.props.teamId,
-      path: this.props.path,
-    });
+    if (!this.props.disabled) {
+      this.props.onSelect({
+        teamId: this.props.teamId,
+        path: this.props.path,
+      });
+    }
   };
 
   handleKeyDown = e => {
@@ -146,7 +145,6 @@ class FolderEntry extends React.Component<Props, State> {
       onSelect,
       currentPath,
       currentTeamId,
-      history,
       readOnly,
       disabled,
       allowCreate = !readOnly,
@@ -314,14 +312,6 @@ class FolderEntry extends React.Component<Props, State> {
                               },
                               variables,
                             });
-                            const modifiedPath = path
-                              .split('/')
-                              .slice(0, -1)
-                              .join('/');
-
-                            history.replace(
-                              `${basePath}${modifiedPath}/${input.value}`
-                            );
                           },
                         });
 

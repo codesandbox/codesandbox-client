@@ -111,11 +111,7 @@ class SandboxesItemComponent extends React.Component<
                   name="All Sandboxes"
                   disabled={disabledMessage}
                   open
-                  onSelect={args => {
-                    if (!disabledMessage) {
-                      onSelect(args);
-                    }
-                  }}
+                  onSelect={onSelect}
                   currentPath={currentPath}
                   currentTeamId={currentTeamId}
                 />
