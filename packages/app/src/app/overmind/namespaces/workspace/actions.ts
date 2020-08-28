@@ -458,7 +458,7 @@ export const getExplorerDependencies: AsyncAction<string> = async (
   state.workspace.loadingDependencySearch = true;
   const searchResults = await effects.algoliaSearch.searchDependencies(
     value,
-    5
+    4
   );
 
   state.workspace.loadingDependencySearch = false;
