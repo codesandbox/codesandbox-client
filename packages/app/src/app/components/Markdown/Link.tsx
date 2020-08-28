@@ -4,14 +4,14 @@ import { useOvermind } from 'app/overmind';
 import React from 'react';
 
 export const LinkElement = ({ href, children, ...props }) => {
-  let commentId = '';
+  let commentId = null;
   const { state, actions } = useOvermind();
   const { id, alias } = state.editor.currentSandbox;
 
   try {
     commentId = new URLSearchParams(new URL(href).search).get('comment');
   } catch {
-    commentId = '';
+    commentId = null;
   }
 
   if (!children.length) {
