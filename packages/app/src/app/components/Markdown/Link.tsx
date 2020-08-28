@@ -1,12 +1,22 @@
-import { Button, Link } from '@codesandbox/components';
+import { Button, Link, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
 export const LinkElement = ({ href, children, ...props }) => {
+  let commentId = '';
   const { state, actions } = useOvermind();
   const { id, alias } = state.editor.currentSandbox;
-  const commentId = new URLSearchParams(new URL(href).search).get('comment');
+
+  try {
+    commentId = new URLSearchParams(new URL(href).search).get('comment');
+  } catch {
+    commentId = null;
+  }
+
+  if (!children.length) {
+    return <Text {...props}>{href}</Text>;
+  }
 
   if (href.startsWith('user://')) {
     return (
