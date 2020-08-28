@@ -603,9 +603,10 @@ async function compile({
         }
 
         // Whether the server has provided the HTML file. If that isn't the case
-        // we have to fall back to setting `document.body;innerHTML`, which isn't
+        // we have to fall back to setting `document.body.innerHTML`, which isn't
         // preferred.
-        const serverProvidedHTML = modules[htmlEntries[0]];
+        const serverProvidedHTML =
+          modules[htmlEntries[0]] && !manager.preset.htmlDisabled;
         if (!serverProvidedHTML || !firstLoad || process.env.LOCAL_SERVER) {
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
           // on the first run.
