@@ -8,6 +8,7 @@ import {
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
+  TeamMemberAuthorization,
 } from 'app/graphql/types';
 import { getDecoratedCollection } from './utils';
 import { PageTypes, OrderBy, sandboxesTypes } from './types';
@@ -1394,6 +1395,54 @@ export const updateTeamAvatar: AsyncAction<{
     actions.internal.handleError({
       message: "We weren't able to update your team avatar",
       error,
+    });
+  }
+};
+
+export const changeAuthorizationInState: Action<{
+  userId: string;
+  authorization: TeamMemberAuthorization;
+}> = ({ state }, { userId, authorization }) => {
+  const userAuthorizations = state.activeTeamInfo!.userAuthorizations.map(
+    user => {
+      if (user.userId === userId) return { ...user, authorization };
+      return user;
+    }
+  );
+
+  state.activeTeamInfo!.userAuthorizations = userAuthorizations;
+};
+
+export const changeAuthorization: AsyncAction<{
+  userId: string;
+  authorization: TeamMemberAuthorization;
+}> = async ({ state, effects, actions }, { userId, authorization }) => {
+  // optimistic update
+  const oldAuthorization = state.activeTeamInfo!.userAuthorizations.find(
+    user => user.userId === userId
+  )!.authorization;
+
+  actions.dashboard.changeAuthorizationInState({ userId, authorization });
+
+  try {
+    await effects.gql.mutations.changeTeamMemberAuthorization({
+      teamId: state.activeTeam!,
+      userId,
+      authorization,
+    });
+    actions.getActiveTeamInfo();
+  } catch (e) {
+    let message = 'There has been a problem changing user authorization.';
+    if (e?.response?.errors) {
+      message += ' ' + e.response.errors.map(error => error.message).join(', ');
+    }
+
+    effects.notificationToast.error(message);
+
+    // undo optimistic update
+    actions.dashboard.changeAuthorizationInState({
+      userId,
+      authorization: oldAuthorization,
     });
   }
 };

@@ -21,7 +21,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   page,
 }) => {
   const {
-    state: { user, activeTeam },
+    state: { user, activeTeam, activeWorkspaceAuthorization },
     effects,
     actions,
   } = useOvermind();
@@ -41,8 +41,10 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'template' : 'sandbox';
+
   // @ts-ignore
   const isPro = user.subscription_plan || user.subscription;
+
   const isOwner = React.useMemo(() => {
     if (item.type !== 'template') {
       return true;
@@ -53,6 +55,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   }, [item, user]);
 
   if (location.pathname.includes('deleted')) {
+    if (activeWorkspaceAuthorization === 'READ') return null;
+
     return (
       <Menu.ContextMenu
         visible={visible}
@@ -86,7 +90,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       position={position}
       style={{ width: 200 }}
     >
-      {isTemplate ? (
+      {isTemplate && activeWorkspaceAuthorization !== 'READ' ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -124,7 +128,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       >
         Copy {label} link
       </MenuItem>
-      {!isTemplate ? (
+      {!isTemplate && activeWorkspaceAuthorization !== 'READ' ? (
         <MenuItem
           onSelect={() => {
             actions.editor.forkExternalSandbox({
@@ -136,7 +140,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Fork sandbox
         </MenuItem>
       ) : null}
-      {isOwner ? (
+      {isOwner && activeWorkspaceAuthorization !== 'READ' ? (
         <MenuItem
           onSelect={() => {
             actions.modals.moveSandboxModal.open({
@@ -147,13 +151,15 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Move to Folder
         </MenuItem>
       ) : null}
-      <MenuItem
-        onSelect={() => {
-          actions.dashboard.downloadSandboxes([sandbox.id]);
-        }}
-      >
-        Export {label}
-      </MenuItem>
+      {activeWorkspaceAuthorization !== 'READ' && (
+        <MenuItem
+          onSelect={() => {
+            actions.dashboard.downloadSandboxes([sandbox.id]);
+          }}
+        >
+          Export {label}
+        </MenuItem>
+      )}
       {isOwner ? (
         <>
           {isPro ? (
