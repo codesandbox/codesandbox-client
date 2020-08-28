@@ -2,6 +2,7 @@ import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Element, Stack, Text, Link } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { VariableSizeGrid, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
@@ -96,7 +97,7 @@ const ComponentForTypes: ComponentForTypes = {
   'new-master-branch': props => <NewMasterSandbox {...props.item} />,
   header: ({ item }) => (
     <Stack justify="space-between" align="center">
-      <Text block weight="medium" style={{ userSelect: 'none' }}>
+      <Text block weight="bold" css={css({ userSelect: 'none' })}>
         {item.title}
       </Text>
       {item.showMoreLink

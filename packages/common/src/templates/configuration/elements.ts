@@ -7,10 +7,6 @@ export const PaddedPreference = (styled(Preference)`
   padding: 0;
   font-weight: 400;
 
-  span[data-component='SwitchToggle'] {
-    top: 1px;
-  }
-
   input[type='checkbox']:focus {
     display: none;
   }

@@ -65,7 +65,7 @@ export const deletedTeamSandboxes: Query<
   RecentlyDeletedTeamSandboxesQuery,
   RecentlyDeletedTeamSandboxesQueryVariables
 > = gql`
-  query recentlyDeletedTeamSandboxes($teamId: ID!) {
+  query recentlyDeletedTeamSandboxes($teamId: UUID4!) {
     me {
       team(id: $teamId) {
         sandboxes(
@@ -106,7 +106,7 @@ export const getTeamDrafts: Query<
   TeamDraftsQuery,
   TeamDraftsQueryVariables
 > = gql`
-  query TeamDrafts($teamId: ID!, $authorId: ID) {
+  query TeamDrafts($teamId: UUID4!, $authorId: UUID4) {
     me {
       team(id: $teamId) {
         drafts(authorId: $authorId) {
@@ -150,7 +150,7 @@ export const getTeamRepos: Query<
   GetTeamReposQuery,
   GetTeamReposQueryVariables
 > = gql`
-  query getTeamRepos($id: ID!) {
+  query getTeamRepos($id: UUID4!) {
     me {
       team(id: $id) {
         sandboxes(hasOriginalGit: true) {
@@ -166,7 +166,7 @@ export const teamTemplates: Query<
   TeamTemplatesQuery,
   TeamTemplatesQueryVariables
 > = gql`
-  query TeamTemplates($id: ID!) {
+  query TeamTemplates($id: UUID4!) {
     me {
       team(id: $id) {
         id
@@ -230,7 +230,7 @@ export const searchTeamSandboxes: Query<
   _SearchTeamSandboxesQuery,
   _SearchTeamSandboxesQueryVariables
 > = gql`
-  query _SearchTeamSandboxes($teamId: ID!) {
+  query _SearchTeamSandboxes($teamId: UUID4!) {
     me {
       team(id: $teamId) {
         sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
@@ -246,7 +246,7 @@ export const listPersonalTemplates: Query<
   ListUserTemplatesQuery,
   ListUserTemplatesQueryVariables
 > = gql`
-  query ListUserTemplates($teamId: ID) {
+  query ListUserTemplates($teamId: UUID4) {
     me {
       id
       templates {
@@ -302,7 +302,7 @@ export const recentlyAccessedSandboxes: Query<
   RecentlyAccessedSandboxesQuery,
   RecentlyAccessedSandboxesQueryVariables
 > = gql`
-  query RecentlyAccessedSandboxes($limit: Int!, $teamId: ID) {
+  query RecentlyAccessedSandboxes($limit: Int!, $teamId: UUID4) {
     me {
       recentlyAccessedSandboxes(limit: $limit, teamId: $teamId) {
         ...sandboxFragmentDashboard
@@ -320,7 +320,7 @@ export const recentTeamSandboxes: Query<
     $limit: Int!
     $orderField: String!
     $orderDirection: Direction!
-    $teamId: ID!
+    $teamId: UUID4!
   ) {
     me {
       team(id: $teamId) {
@@ -337,7 +337,7 @@ export const recentTeamSandboxes: Query<
 `;
 
 export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
-  query getTeam($teamId: ID!) {
+  query getTeam($teamId: UUID4!) {
     me {
       team(id: $teamId) {
         ...currentTeamInfoFragment

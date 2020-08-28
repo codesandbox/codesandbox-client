@@ -4,7 +4,7 @@ import { Context, MenuItem } from '../ContextMenu';
 
 interface ContainerMenuProps {
   createNewFolder: () => void;
-  createNewSandbox: () => void;
+  createNewSandbox: (() => void) | null;
 }
 
 export const ContainerMenu: React.FC<ContainerMenuProps> = ({
@@ -20,9 +20,15 @@ export const ContainerMenu: React.FC<ContainerMenuProps> = ({
       position={position}
       style={{ width: 160 }}
     >
-      <MenuItem onSelect={() => createNewSandbox()}>
-        Create new sandbox
-      </MenuItem>
+      {typeof createNewSandbox === 'function' && (
+        <MenuItem
+          onSelect={() => {
+            createNewSandbox();
+          }}
+        >
+          Create new sandbox
+        </MenuItem>
+      )}
       <MenuItem onSelect={() => createNewFolder()}>Create new folder</MenuItem>
     </Menu.ContextMenu>
   );

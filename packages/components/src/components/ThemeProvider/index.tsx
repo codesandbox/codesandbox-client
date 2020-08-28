@@ -17,6 +17,7 @@ import polyfillTheme from '../../utils/polyfill-theme';
 import codesandboxBlack from '../../themes/codesandbox-black';
 import { TooltipStyles } from '../Tooltip';
 import { MenuStyles } from '../Menu';
+import { SkipNavStyles } from '../SkipNav';
 
 export const getThemes = () => {
   const results = VSCodeThemes.map(theme => ({
@@ -94,6 +95,7 @@ export const ThemeProvider = ({
       <BaseThemeProvider theme={usableTheme}>
         <TooltipStyles />
         <MenuStyles />
+        <SkipNavStyles />
         {children}
       </BaseThemeProvider>
     </>

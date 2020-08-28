@@ -17,7 +17,7 @@ import '../dist/styles.css';
 
 setAddon(JSXAddon);
 
-listen(console.log);
+// listen(console.log);
 
 const stories = storiesOf('InTheWild', module);
 
@@ -136,9 +136,9 @@ stories.addWithJSX('transpiled view', () => (
         code: `document.body.innerHTML = \`<div>$\{require('uuid')()}</div>\``,
       },
     }}
-    dependencies={{ uuid: 'latest' }}
+    dependencies={{ uuid: 'latest', '@babel/runtime': 'latest' }}
     entry="/index.js"
-    bundlerURL="http://localhost:3002"
+    bundlerURL="http://localhost:3000"
     fileResolver={{
       isFile: p => p === '/hello.js',
       readFile: p => `export default 'hello'`,

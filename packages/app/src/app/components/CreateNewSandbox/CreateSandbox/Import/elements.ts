@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+
 import { InfoIcon } from '../Icons';
 
 export const Features = styled.section`
@@ -8,6 +9,23 @@ export const Features = styled.section`
   padding: 0 1.5rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid #242424;
+
+  @media screen and (max-width: 800px) {
+    display: block;
+
+    hr {
+      display: none;
+    }
+
+    > div:first-child {
+      margin-bottom: 80px;
+    }
+
+    > div:last-child {
+      padding-top: 20px;
+      border-top: 1px solid #242424;
+    }
+  }
 `;
 
 export const FeatureName = styled.h3`
@@ -21,6 +39,7 @@ export const FeatureName = styled.h3`
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
+  width: 100%;
 `;
 
 export const FeatureText = styled.p`
@@ -92,31 +111,6 @@ export const ButtonContainer = styled.div`
   }
 `;
 
-export const Input = styled.input`
-  padding: 0.25rem 0.5rem;
-  background: #222222;
-  border: 0.957784px solid #040404;
-  box-sizing: border-box;
-  border-radius: 2px;
-  font-size: 13px;
-  color: white;
-  width: 100%;
-  max-width: 300px;
-
-  &::-webkit-input-placeholder {
-    /* Chrome/Opera/Safari */
-    color: #757575;
-  }
-  &::-moz-placeholder {
-    /* Firefox 19+ */
-    color: #757575;
-  }
-  &:-ms-input-placeholder {
-    /* IE 10+ */
-    color: #757575;
-  }
-`;
-
 const linkStyles = css`
   transition: 0.3s ease color;
 
@@ -160,6 +154,10 @@ export const ImportChoices = styled.div`
   margin-bottom: 4rem;
   color: #757575;
 
+  @media screen and (max-width: 800px) {
+    font-size: 13px;
+  }
+
   a {
     transition: 0.3s ease color;
     color: #757575;
@@ -175,5 +173,9 @@ export const ImportChoices = styled.div`
 
   svg {
     margin-right: 0.5rem;
+
+    @media screen and (max-width: 800px) {
+      display: none;
+    }
   }
 `;

@@ -445,9 +445,14 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         // is the same as changing it's path
         folderPaths.forEach(path => {
           const { name } = folders.find(folder => folder.path === path);
+
+          let newPath: string;
+          if (dropResult.path.endsWith('/')) newPath = dropResult.path + name;
+          else newPath = dropResult.path + '/' + name;
+
           actions.dashboard.moveFolder({
             path,
-            newPath: dropResult.path.replace('all', '') + '/' + name,
+            newPath,
             teamId: activeTeam,
             newTeamId: activeTeam,
           });
@@ -484,6 +489,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     // right click
     if (event.button === 2) return;
 
+    setRenaming(false);
     setDrawingRect(true);
     setSelectionRect({
       start: {

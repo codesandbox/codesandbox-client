@@ -13,6 +13,18 @@ export const Container = styled.div`
   color: #fff;
 
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.24);
+
+  @media screen and (max-width: 800px) {
+    max-width: 100%;
+    margin: auto;
+    min-width: auto;
+    height: 100vh;
+    border-radius: 0;
+
+    div[role='tabpanel'] {
+      padding-bottom: 40px;
+    }
+  }
 `;
 
 export const Tabs = styled(TabList)`
@@ -22,6 +34,10 @@ export const Tabs = styled(TabList)`
   padding: 1rem 0;
   width: 176px;
   min-width: 176px;
+
+  @media screen and (max-width: 800px) {
+    display: none;
+  }
 `;
 
 export const Tab = styled(BaseTab)`
@@ -61,6 +77,11 @@ export const TabContent = styled(TabPanel)`
   height: 100%;
 
   outline: none;
+
+  @media screen and (max-width: 800px) {
+    grid-template-rows: 50px auto;
+    max-height: 100%;
+  }
 `;
 
 export const Header = styled.header`
@@ -72,6 +93,10 @@ export const Header = styled.header`
   border-bottom: 1px solid #242424;
   font-size: 19px;
   line-height: 24px;
+
+  @media screen and (max-width: 800px) {
+    display: none;
+  }
 `;
 
 export const Legend = styled.span`
@@ -95,4 +120,29 @@ export const Grid = styled.div<{ columnCount: number }>`
   margin: 0 1.5rem;
   grid-template-columns: repeat(${props => props.columnCount}, 1fr);
   gap: 1rem;
+`;
+
+export const MobileTabs = styled.div`
+  display: none;
+  @media screen and (max-width: 800px) {
+    display: flex;
+    border: 1px solid #242424;
+    z-index: 2147483647;
+
+    button {
+      color: #757575;
+
+      &.active {
+        color: inherit;
+      }
+    }
+  }
+`;
+
+export const CloseModal = styled.button`
+  background: transparent;
+  border: none;
+  position: absolute;
+  right: 16px;
+  top: 13px;
 `;

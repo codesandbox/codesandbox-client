@@ -4,7 +4,6 @@ import { DropTarget } from 'react-dnd';
 import { Query } from 'react-apollo';
 import { DelayedAnimation } from 'app/components/DelayedAnimation';
 import { Icon } from '@codesandbox/components';
-import theme from '@codesandbox/common/lib/theme';
 import { Container } from './elements';
 import { DropFolderEntry } from './FolderEntry';
 import { CreateFolderEntry } from './FolderEntry/CreateFolderEntry';
@@ -82,17 +81,15 @@ class SandboxesItemComponent extends React.Component<
               data.me.collections
             );
 
+            const disabledMessage =
+              teamId == null
+                ? "It's currently not possible to move sandboxes to 'All Sandboxes' in a personal workspace"
+                : null;
+
             return (
               <Container>
                 <FolderContainer
-                  style={{
-                    ...(currentPath === null && currentTeamId === teamId
-                      ? {
-                          borderColor: theme.secondary(),
-                          color: 'white',
-                        }
-                      : {}),
-                  }}
+                  active={currentPath === null && currentTeamId === teamId}
                   onClick={() => {
                     onSelect({ path: null, teamId });
                   }}
@@ -112,6 +109,7 @@ class SandboxesItemComponent extends React.Component<
                   folders={folders}
                   foldersByPath={foldersByPath}
                   name="All Sandboxes"
+                  disabled={disabledMessage}
                   open
                   onSelect={onSelect}
                   currentPath={currentPath}

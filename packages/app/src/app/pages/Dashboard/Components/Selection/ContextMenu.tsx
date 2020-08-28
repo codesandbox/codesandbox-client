@@ -36,7 +36,7 @@ interface IContextMenuProps extends IMenuProps {
   repos?: Array<DashboardRepo>;
   setRenaming: null | ((value: boolean) => void);
   createNewFolder: () => void;
-  createNewSandbox: () => void;
+  createNewSandbox: (() => void) | null;
   page: PageTypes;
 }
 
@@ -89,6 +89,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
 
   let menu: React.ReactNode;
   if (selectedItems.length === 0) {
+    if (page === 'repos') return null;
     menu = (
       <ContainerMenu
         createNewSandbox={createNewSandbox}
