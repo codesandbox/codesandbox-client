@@ -11,7 +11,7 @@ export const LinkElement = ({ href, children, ...props }) => {
   try {
     commentId = new URLSearchParams(new URL(href).search).get('comment');
   } catch {
-    commentId = null;
+    commentId = '';
   }
 
   if (!children.length) {
