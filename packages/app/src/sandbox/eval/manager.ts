@@ -21,7 +21,7 @@ import { SCRIPT_VERSION } from '..';
 import fetchModule, {
   setCombinedMetas,
   combinedMetas,
-} from './npm/fetch-npm-module';
+} from '../npm/dynamic/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
 import dependenciesToQuery from '../npm/dependencies-to-query';

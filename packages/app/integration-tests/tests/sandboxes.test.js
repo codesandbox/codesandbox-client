@@ -18,7 +18,7 @@ const SANDBOXES = [
   'lp5rjr0z4z',
   'nOymMxyY',
   'y26rj99yov', // react transition
-  '6w66jzw3mn', // material-design & preact
+  // '6w66jzw3mn', // material-design & preact
   '4j7m47vlm4', // material-ui
   'cssinjs-egghead-templates-and-variables', // postcss egghead
   'xp5qy8r93q', // babel example

@@ -30,6 +30,8 @@ type State = {
   showcasedSandbox: Sandbox | null;
   currentSandboxes: { [page: string]: Sandbox[] };
   currentLikedSandboxes: { [page: string]: Sandbox[] };
+  currentSortBy: 'view_count' | 'inserted_at';
+  currentSortDirection: 'asc' | 'desc';
 };
 
 export const state: State = {
@@ -70,4 +72,6 @@ export const state: State = {
       ? currentState.sandboxes[currentState.current.username]
       : []
   ),
+  currentSortBy: 'view_count',
+  currentSortDirection: 'desc',
 };

@@ -53,10 +53,12 @@ export const useFilteredItems = (
 
     const sortedFolders = orderBy(folderFolders, 'name').sort(a => 1);
 
-    const decoratedFolders = sortedFolders.map(folder => ({
-      type: 'folder' as 'folder',
-      ...folder,
-    }));
+    const decoratedFolders = sortedFolders
+      .filter(folder => folder.path !== '/')
+      .map(folder => ({
+        type: 'folder' as 'folder',
+        ...folder,
+      }));
 
     const decoratedSandboxes =
       typeof folderSandboxes === 'undefined'

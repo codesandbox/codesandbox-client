@@ -89,7 +89,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
   }, [state.activeTeam, state.activeTeamInfo, dashboard.teams, user]);
 
-  const folders = dashboard.allCollections || [];
+  const folders =
+    (dashboard.allCollections || []).filter(folder => folder.path !== '/') ||
+    [];
 
   // context menu for folders
   const [menuVisible, setMenuVisibility] = React.useState(true);
@@ -257,6 +259,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </AnimatePresence>
       <ContextMenu
         activeTeam={activeTeam}
+        authorization={state.activeWorkspaceAuthorization}
         visible={menuVisible}
         setVisibility={setMenuVisibility}
         position={menuPosition}

@@ -1,19 +1,29 @@
+/**
+ * TODO:
+ * - Mobile view
+ * - Page number in url
+ * - Filter out unlisted and private from API response
+ * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
+ * - Custom drag preview
+ * - Sort sandboxes
+ * - Search sandboxes
+ * - Sandbox picker
+ * - Order sandboxes
+ * - Likes tab
+ */
+
 import React from 'react';
-import {
-  ThemeProvider,
-  Element,
-  Stack,
-  Grid,
-  Column,
-  Text,
-  Stats,
-  Link,
-} from '@codesandbox/components';
-import css from '@styled-system/css';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { ThemeProvider, Stack, Menu, Element } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { DndProvider } from 'react-dnd';
+import Backend from 'react-dnd-html5-backend';
 import { Header } from './Header';
 import { ProfileCard } from './ProfileCard';
+import { ShowcaseSandbox } from './ShowcaseSandbox';
+import { PinnedSandboxes } from './PinnedSandboxes';
+import { AllSandboxes } from './AllSandboxes';
 
 export const Profile = props => {
   const { username } = props.match.params;
@@ -23,13 +33,33 @@ export const Profile = props => {
       profile: { profileMounted },
     },
     state: {
-      profile: { current: user, showcasedSandbox },
+      profile: { current: user },
     },
   } = useOvermind();
 
   React.useEffect(() => {
     profileMounted(username);
   }, [profileMounted, username]);
+
+  const [menuVisible, setMenuVisibility] = React.useState(false);
+  const [menuPosition, setMenuPosition] = React.useState({ x: null, y: null });
+  const [selectedSandboxId, selectSandboxId] = React.useState(null);
+
+  const onContextMenu = (event, sandboxId) => {
+    event.preventDefault();
+    selectSandboxId(sandboxId);
+    setMenuVisibility(true);
+    setMenuPosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const onKeyDown = (event, sandboxId) => {
+    if (event.keyCode !== 18) return; // ALT
+
+    selectSandboxId(sandboxId);
+    setMenuVisibility(true);
+    const rect = event.target.getBoundingClientRect();
+    setMenuPosition({ x: rect.right, y: rect.bottom });
+  };
 
   if (!user) return null;
 
@@ -48,114 +78,111 @@ export const Profile = props => {
       >
         <Header />
 
-        <Stack marginX={64} gap={8}>
-          <div>
+        <Stack
+          gap={8}
+          css={css({
+            flexDirection: ['column', 'row'],
+            marginX: [32, 64],
+          })}
+        >
+          <Element css={css({ width: ['100%', '320px'] })}>
             <ProfileCard />
-          </div>
-          <Stack direction="vertical" gap={10} css={{ flexGrow: 1 }}>
-            {showcasedSandbox && (
-              <Element
-                as="iframe"
-                src={`https://${showcasedSandbox.id}.csb.app?standalone=1`}
-                css={css({
-                  backgroundColor: 'white',
-                  width: '100%',
-                  height: 360,
-                  borderRadius: '4px',
-                  overflow: 'hidden',
-                  border: '1px solid',
-                  borderColor: 'grays.600',
-                })}
-                title="React"
-                allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-                sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-              />
-            )}
-            <AllSandboxes />
-          </Stack>
+          </Element>
+          <DndProvider backend={Backend}>
+            <Stack direction="vertical" gap={14} css={{ flexGrow: 1 }}>
+              <ShowcaseSandbox />
+              <PinnedSandboxes menuControls={{ onContextMenu, onKeyDown }} />
+              <AllSandboxes menuControls={{ onContextMenu, onKeyDown }} />
+            </Stack>
+          </DndProvider>
         </Stack>
       </Stack>
+      <ContextMenu
+        visible={menuVisible}
+        setVisibility={setMenuVisibility}
+        position={menuPosition}
+        sandboxId={selectedSandboxId}
+      />
     </ThemeProvider>
   );
 };
 
-const AllSandboxes = () => {
+const ContextMenu = ({ visible, setVisibility, position, sandboxId }) => {
   const {
     actions: {
-      profile: { sandboxesPageChanged },
+      editor: { forkExternalSandbox },
+      profile: {
+        addFeaturedSandboxes,
+        removeFeaturedSandboxes,
+        changeSandboxPrivacy,
+        deleteSandboxClicked,
+      },
     },
     state: {
-      profile: {
-        current: { username },
-        isLoadingSandboxes,
-        sandboxes: fetchedSandboxes,
-      },
+      user: loggedInUser,
+      profile: { current: user },
     },
   } = useOvermind();
 
-  const [page] = React.useState(0);
+  const myProfile = loggedInUser?.username === user.username;
 
-  React.useEffect(() => {
-    sandboxesPageChanged(page);
-  }, [sandboxesPageChanged, page]);
-
-  if (isLoadingSandboxes) return <span>loading</span>;
-
-  if (!fetchedSandboxes[username]) return <span>none</span>;
-
-  const sandboxes = fetchedSandboxes[username][page];
+  const isFeatured = user.featuredSandboxes
+    .map(sandbox => sandbox.id)
+    .includes(sandboxId);
 
   return (
-    <Grid
-      rowGap={6}
-      columnGap={6}
-      css={{
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      }}
+    <Menu.ContextMenu
+      visible={visible}
+      setVisibility={setVisibility}
+      position={position}
     >
-      {sandboxes.map(sandbox => (
-        <Column key={sandbox.id}>
-          <Stack
-            as={Link}
-            href={sandboxUrl({ id: sandbox.id, alias: sandbox.alias })}
-            direction="vertical"
-            gap={4}
-            css={css({
-              backgroundColor: 'grays.700',
-              border: '1px solid',
-              borderColor: 'grays.600',
-              borderRadius: 'medium',
-              overflow: 'hidden',
-              ':hover, :focus, :focus-within': {
-                boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
-              },
-            })}
+      {myProfile && (
+        <>
+          {isFeatured ? (
+            <Menu.Item onSelect={() => removeFeaturedSandboxes({ sandboxId })}>
+              Unpin sandbox
+            </Menu.Item>
+          ) : (
+            <Menu.Item onSelect={() => addFeaturedSandboxes({ sandboxId })}>
+              Pin sandbox
+            </Menu.Item>
+          )}
+          <Menu.Divider />
+        </>
+      )}
+      <Menu.Item
+        onSelect={() => {
+          location.href = sandboxUrl({ id: sandboxId });
+        }}
+      >
+        Open sandbox
+      </Menu.Item>
+      <Menu.Item
+        onSelect={() => {
+          forkExternalSandbox({ sandboxId, openInNewWindow: true });
+        }}
+      >
+        Fork sandbox
+      </Menu.Item>
+      {myProfile && !isFeatured && (
+        <>
+          <Menu.Divider />
+          <Menu.Item
+            onSelect={() => changeSandboxPrivacy({ sandboxId, privacy: 1 })}
           >
-            <div
-              css={css({
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '160px',
-                backgroundColor: 'grays.600',
-                backgroundSize: 'cover',
-                backgroundPosition: 'top center',
-                backgroundRepeat: 'no-repeat',
-                borderBottom: '1px solid',
-                borderColor: 'grays.600',
-              })}
-              style={{
-                backgroundImage: `url(${sandbox.screenshotUrl ||
-                  `/api/v1/sandboxes/${sandbox.id}/screenshot.png`})`,
-              }}
-            />
-            <Stack direction="vertical" gap={2} marginX={4} marginBottom={4}>
-              <Text>{sandbox.title || sandbox.alias || sandbox.id}</Text>
-              <Stats sandbox={sandbox} />
-            </Stack>
-          </Stack>
-        </Column>
-      ))}
-    </Grid>
+            Make sandbox unlisted
+          </Menu.Item>
+          <Menu.Item
+            onSelect={() => changeSandboxPrivacy({ sandboxId, privacy: 2 })}
+          >
+            Make sandbox private
+          </Menu.Item>
+          <Menu.Divider />
+          <Menu.Item onSelect={() => deleteSandboxClicked(sandboxId)}>
+            Delete sandbox
+          </Menu.Item>
+        </>
+      )}
+    </Menu.ContextMenu>
   );
 };

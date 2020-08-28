@@ -52,7 +52,7 @@ export const ProfileCard = ({ defaultEditing = false }) => {
       direction="vertical"
       justify="space-between"
       css={css({
-        width: '320px',
+        width: '100%',
         minHeight: '320px',
         backgroundColor: 'grays.700',
         borderRadius: 'medium',
@@ -60,6 +60,7 @@ export const ProfileCard = ({ defaultEditing = false }) => {
         borderColor: 'grays.600',
         paddingTop: 2,
         paddingBottom: 6,
+        marginBottom: 8,
       })}
     >
       <Stack direction="vertical">
@@ -98,7 +99,9 @@ export const ProfileCard = ({ defaultEditing = false }) => {
             <Stack direction="vertical" gap={3}>
               <Stack gap={2} align="center">
                 <Icon name="box" />
-                <Text size={3}>{user.sandboxCount} Sandboxes</Text>
+                <Text size={3}>
+                  {user.sandboxCount + user.templateCount} Sandboxes
+                </Text>
               </Stack>
               <Stack gap={2} align="center">
                 <Icon name="heart" />
