@@ -606,7 +606,7 @@ async function compile({
         // we have to fall back to setting `document.body.innerHTML`, which isn't
         // preferred.
         const serverProvidedHTML =
-          modules[htmlEntries[0]] && !manager.preset.htmlDisabled;
+          modules[htmlEntries[0]] || manager.preset.htmlDisabled;
         if (!serverProvidedHTML || !firstLoad || process.env.LOCAL_SERVER) {
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
           // on the first run.
