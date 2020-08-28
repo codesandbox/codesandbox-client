@@ -197,7 +197,11 @@ export const Search = () => {
 
         <Element marginTop={4}>
           {results.map(file => (
-            <ListAction paddingY={2} css={css({ display: 'block' })}>
+            <ListAction
+              key={file.id}
+              paddingY={2}
+              css={css({ display: 'block' })}
+            >
               <Stack gap={2}>
                 <EntryIcon type={getType(file.title)} />
 
@@ -217,6 +221,7 @@ export const Search = () => {
                       width: '100%',
                       cursor: 'pointer',
                     })}
+                    key={`${match[0]}-${match[1]}`}
                     onClick={() => open(file.id, match)}
                   >
                     <Stack
