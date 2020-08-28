@@ -201,7 +201,7 @@ export const UserSettings = () => {
                   </Stack>
                   <Button
                     as="a"
-                    href="https://airtable.com/shrlgLSJWiX8rYqyG"
+                    href="https://codesandbox.io/pro"
                     target="_blank"
                     marginTop={2}
                   >
