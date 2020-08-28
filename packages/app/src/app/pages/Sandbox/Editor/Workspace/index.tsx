@@ -15,6 +15,7 @@ import { Live } from './screens/Live';
 import { NotOwnedSandboxInfo } from './screens/NotOwnedSandboxInfo';
 import { ProjectInfo } from './screens/ProjectInfo';
 import { Server } from './screens/Server';
+import { Search } from './screens/Search';
 
 const workspaceTabs = {
   project: ProjectInfo,
@@ -22,6 +23,7 @@ const workspaceTabs = {
   'github-summary': GithubSummary,
   github: GitHub,
   files: Explorer,
+  search: Search,
   deploy: Deployment,
   config: ConfigurationFiles,
   live: Live,
