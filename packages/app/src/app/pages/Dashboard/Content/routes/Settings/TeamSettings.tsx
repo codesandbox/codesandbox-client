@@ -349,78 +349,47 @@ export const TeamSettings = () => {
           <div>
             <MemberList
               getPermission={user => getAuthorization(user, team)}
+              getPermissionOptions={user => {
+                const yourAuthorization = activeWorkspaceAuthorization;
+
+                return yourAuthorization === TeamMemberAuthorization.Admin &&
+                  user.id !== stateUser.id
+                  ? [
+                      {
+                        label: 'Admin',
+                        onSelect: () => {
+                          actions.dashboard.changeAuthorization({
+                            userId: user.id,
+                            authorization: TeamMemberAuthorization.Admin,
+                          });
+                        },
+                      },
+                      {
+                        label: 'Editor',
+                        onSelect: () => {
+                          actions.dashboard.changeAuthorization({
+                            userId: user.id,
+                            authorization: TeamMemberAuthorization.Write,
+                          });
+                        },
+                      },
+                      {
+                        label: 'Viewer',
+                        onSelect: () => {
+                          actions.dashboard.changeAuthorization({
+                            userId: user.id,
+                            authorization: TeamMemberAuthorization.Read,
+                          });
+                        },
+                      },
+                    ]
+                  : [];
+              }}
               getActions={user => {
                 const you = stateUser.id === user.id;
                 const yourAuthorization = activeWorkspaceAuthorization;
 
-                const userAuthorization = getAuthorization(user, team);
-
                 const options = [];
-
-                if (yourAuthorization === TeamMemberAuthorization.Admin) {
-                  if (userAuthorization === TeamMemberAuthorization.Read) {
-                    options.push({
-                      label: 'Grant Edit access',
-                      onSelect: () => {
-                        actions.dashboard.changeAuthorization({
-                          userId: user.id,
-                          authorization: TeamMemberAuthorization.Write,
-                        });
-                      },
-                    });
-                    options.push({
-                      label: 'Grant Admin access',
-                      onSelect: () => {
-                        actions.dashboard.changeAuthorization({
-                          userId: user.id,
-                          authorization: TeamMemberAuthorization.Admin,
-                        });
-                      },
-                    });
-                  } else if (
-                    userAuthorization === TeamMemberAuthorization.Write
-                  ) {
-                    options.push({
-                      label: 'Only allow View access',
-                      onSelect: () => {
-                        actions.dashboard.changeAuthorization({
-                          userId: user.id,
-                          authorization: TeamMemberAuthorization.Read,
-                        });
-                      },
-                    });
-                    options.push({
-                      label: 'Grant Admin access',
-                      onSelect: () => {
-                        actions.dashboard.changeAuthorization({
-                          userId: user.id,
-                          authorization: TeamMemberAuthorization.Admin,
-                        });
-                      },
-                    });
-                  } else if (
-                    userAuthorization === TeamMemberAuthorization.Admin
-                  ) {
-                    options.push({
-                      label: 'Only allow View access',
-                      onSelect: () => {
-                        actions.dashboard.changeAuthorization({
-                          userId: user.id,
-                          authorization: TeamMemberAuthorization.Read,
-                        });
-                      },
-                    });
-                    options.push({
-                      label: 'Remove Admin access',
-                      onSelect: () => {
-                        actions.dashboard.changeAuthorization({
-                          userId: user.id,
-                          authorization: TeamMemberAuthorization.Write,
-                        });
-                      },
-                    });
-                  }
-                }
 
                 if (you) {
                   options.push({
@@ -446,6 +415,7 @@ export const TeamSettings = () => {
 
             <MemberList
               getPermission={() => 'PENDING'}
+              getPermissionOptions={() => []}
               getActions={user => [
                 {
                   label: 'Revoke Invitation',
