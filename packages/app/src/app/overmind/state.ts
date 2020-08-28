@@ -90,7 +90,8 @@ export const state: State = {
   user: null,
   activeWorkspaceAuthorization: derived(
     ({ user, activeTeam, activeTeamInfo }: State) => {
-      if (!activeTeam || !activeTeamInfo || !user) return 'ADMIN';
+      if (!activeTeam || !activeTeamInfo || !user)
+        return TeamMemberAuthorization.Admin;
 
       return activeTeamInfo.userAuthorizations.find(
         auth => auth.userId === user.id

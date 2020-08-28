@@ -11,7 +11,7 @@ import {
   Text,
 } from '@codesandbox/components';
 
-type User = {
+export type User = {
   id: string;
   avatarUrl: string;
   username: string;
