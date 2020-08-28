@@ -4,9 +4,13 @@ import {
   List,
   SidebarRow,
   Text,
+  SearchInput,
+  ListAction,
+  Element,
 } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 
 import { Dependency } from './Dependency';
 
@@ -17,11 +21,20 @@ export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
     actions: {
       modalOpened,
       editor: { addNpmDependency, npmDependencyRemoved },
+      workspace: { getExplorerDependencies, clearExplorerDependencies },
     },
     state: {
+      workspace: { explorerDependencies },
       editor: { parsedConfigurations },
     },
   } = useOvermind();
+  const [search, setSearch] = useState('');
+
+  const searchDependencies = e => {
+    setSearch(e.target.value);
+
+    getExplorerDependencies(e.target.value);
+  };
 
   if (!parsedConfigurations?.package) {
     return (
@@ -41,11 +54,101 @@ export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
     );
   }
 
+  const addDependency = dependency => {
+    addNpmDependency({
+      name: dependency.name,
+      version: dependency.tags.latest,
+    });
+    setSearch('');
+    clearExplorerDependencies();
+  };
+
   const { dependencies = {} } = parsed;
 
   return (
-    <Collapsible title="Dependencies" defaultOpen>
-      <List marginBottom={2}>
+    <Collapsible
+      title="Dependencies"
+      defaultOpen
+      css={css({
+        'div[open]': {
+          overflow: 'visible',
+        },
+      })}
+    >
+      {!readonly && (
+        <>
+          <SidebarRow
+            css={css({ display: 'block', position: 'relative' })}
+            marginX={2}
+            marginBottom={2}
+          >
+            <SearchInput
+              value={search}
+              onChange={searchDependencies}
+              placeholder="Add npm dependency"
+              css={css({
+                width: '100%',
+              })}
+            />
+            {explorerDependencies.length ? (
+              <Element
+                css={css({
+                  backgroundColor: 'sideBar.background',
+                  position: 'absolute',
+                  zIndex: 10,
+                  width: '100%',
+                  borderRadius: 'medium',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: 'sideBar.border',
+                  marginTop: '2px',
+                  fontWeight: 500,
+                })}
+              >
+                {explorerDependencies.map((dependency, i) => (
+                  <ListAction
+                    onClick={() => addDependency(dependency)}
+                    key={dependency.objectID}
+                    justify="space-between"
+                    css={css({ color: 'sideBar.foreground', paddingY: 2 })}
+                  >
+                    <Text>{dependency.name}</Text>
+                    <Text variant="muted">Ctrl + {i + 1}</Text>
+                  </ListAction>
+                ))}
+                <ListAction
+                  key="show-all"
+                  justify="space-between"
+                  css={css({
+                    color: 'sideBar.foreground',
+                    borderWidth: 0,
+                    borderTopWidth: '1px',
+                    borderStyle: 'solid',
+                    borderColor: 'sideBar.border',
+                    paddingY: 2,
+                  })}
+                  onClick={() => modalOpened({ modal: 'searchDependencies' })}
+                >
+                  <Text>Show All</Text>
+                  <Text variant="muted">Ctrl + D</Text>
+                </ListAction>
+              </Element>
+            ) : null}
+          </SidebarRow>
+          <SidebarRow marginX={2} marginBottom={4}>
+            <Button
+              variant="secondary"
+              css={css({
+                color: 'sideBar.foreground',
+              })}
+              onClick={() => modalOpened({ modal: 'searchDependencies' })}
+            >
+              All dependencies
+            </Button>
+          </SidebarRow>
+        </>
+      )}
+      <List>
         {Object.keys(dependencies)
           .sort()
           .map(dependency => (
@@ -58,16 +161,6 @@ export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
             />
           ))}
       </List>
-      {!readonly && (
-        <SidebarRow marginX={2}>
-          <Button
-            variant="secondary"
-            onClick={() => modalOpened({ modal: 'searchDependencies' })}
-          >
-            Add dependency
-          </Button>
-        </SidebarRow>
-      )}
     </Collapsible>
   );
 };

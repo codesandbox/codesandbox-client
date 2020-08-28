@@ -447,6 +447,29 @@ export const openDefaultItem: Action = ({ state }) => {
   state.workspace.openedWorkspaceItem = defaultItem.id;
 };
 
+export const getExplorerDependencies: AsyncAction<string> = async (
+  { state, effects },
+  value
+) => {
+  if (!value) {
+    state.workspace.explorerDependencies = [];
+    return;
+  }
+  state.workspace.loadingDependencySearch = true;
+  const searchResults = await effects.algoliaSearch.searchDependencies(
+    value,
+    5
+  );
+
+  state.workspace.loadingDependencySearch = false;
+
+  state.workspace.explorerDependencies = [...searchResults];
+};
+
+export const clearExplorerDependencies: Action = ({ state }) => {
+  state.workspace.explorerDependencies = [];
+};
+
 export const getDependencies: AsyncAction<string | void> = async (
   { state, effects },
   value

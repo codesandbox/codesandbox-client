@@ -14,6 +14,7 @@ type State = {
   showDeleteSandboxModal: boolean;
   dependencies: Dependency[];
   starterDependencies: Dependency[];
+  explorerDependencies: Dependency[];
   selectedDependencies:
     | {
         [a: string]: Dependency;
@@ -37,6 +38,7 @@ export const state: State = {
   workspaceHidden: false,
   showDeleteSandboxModal: false,
   dependencies: [],
+  explorerDependencies: [],
   starterDependencies: [],
   selectedDependencies: {},
   loadingDependencySearch: false,
