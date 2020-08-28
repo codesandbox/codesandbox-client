@@ -6,7 +6,7 @@ import { Element } from '../Element';
 
 const SearchInputComponent = styled(Input)(
   css({
-    paddingLeft: 5,
+    paddingLeft: 7,
 
     '::-ms-clear, ::-ms-reveal': {
       display: 'none',
@@ -35,7 +35,7 @@ export const SearchIcon = styled(SearchIconBase)(
     position: 'absolute',
     top: '50%',
     transform: 'translateY(-50%)',
-    left: 1,
+    left: 2,
 
     path: {
       fill: 'input.placeholderForeground',

@@ -1,3 +1,4 @@
+import React, { FunctionComponent, useState, useEffect } from 'react';
 import {
   SidebarRow,
   Text,
@@ -9,8 +10,20 @@ import css from '@styled-system/css';
 import useKeys from 'react-use/lib/useKeyboardJs';
 import { useOvermind } from 'app/overmind';
 
-import React, { FunctionComponent, useState, useEffect } from 'react';
+const buttonStyles = css({
+  appearance: 'none',
+  border: 'none',
+  background: 'transparent',
+  display: 'flex',
+  color: 'inherit',
+  width: '100%',
+  paddingY: 2,
+  justifyContent: 'space-between',
 
+  ':focus': {
+    outline: 'none',
+  },
+});
 export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
   const {
     actions: {
@@ -96,13 +109,18 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
         >
           {explorerDependencies.map((dependency, i) => (
             <ListAction
-              onClick={() => addDependency(dependency)}
               key={dependency.objectID}
               justify="space-between"
-              css={css({ color: 'sideBar.foreground', paddingY: 2 })}
+              css={css({ color: 'sideBar.foreground' })}
             >
-              <Text>{dependency.name}</Text>
-              <Text variant="muted">Ctrl + {i + 1}</Text>
+              <button
+                css={buttonStyles}
+                type="button"
+                onClick={() => addDependency(dependency)}
+              >
+                <Text>{dependency.name}</Text>
+                <Text variant="muted">Ctrl + {i + 1}</Text>
+              </button>
             </ListAction>
           ))}
           <ListAction
@@ -114,12 +132,16 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
               borderTopWidth: '1px',
               borderStyle: 'solid',
               borderColor: 'sideBar.border',
-              paddingY: 2,
             })}
-            onClick={() => modalOpened({ modal: 'searchDependencies' })}
           >
-            <Text>Show All</Text>
-            <Text variant="muted">Ctrl + D</Text>
+            <button
+              css={buttonStyles}
+              type="button"
+              onClick={() => modalOpened({ modal: 'searchDependencies' })}
+            >
+              <Text>Show All</Text>
+              <Text variant="muted">Ctrl + D</Text>
+            </button>
           </ListAction>
         </Element>
       ) : null}
