@@ -131,6 +131,11 @@ export const teamFragmentDashboard = gql`
     creatorId
     avatarUrl
 
+    userAuthorizations {
+      userId
+      authorization
+    }
+
     users {
       id
       name
