@@ -301,7 +301,7 @@ export const changeTeamMemberAuthorization: Query<
   ChangeTeamMemberAuthorizationMutation,
   ChangeTeamMemberAuthorizationMutationVariables
 > = gql`
-  mutation _ChangeTeamMemberAuthorization(
+  mutation ChangeTeamMemberAuthorization(
     $teamId: ID!
     $userId: ID!
     $authorization: TeamMemberAuthorization!

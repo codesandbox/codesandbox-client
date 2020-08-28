@@ -1364,6 +1364,12 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
   Team,
   'id' | 'name' | 'description' | 'creatorId' | 'avatarUrl'
 > & {
+    userAuthorizations: Array<
+      { __typename?: 'UserAuthorization' } & Pick<
+        UserAuthorization,
+        'userId' | 'authorization'
+      >
+    >;
     users: Array<
       { __typename?: 'User' } & Pick<
         User,
@@ -1611,13 +1617,13 @@ export type _SetTeamNameMutation = { __typename?: 'RootMutationType' } & {
   setTeamName: { __typename?: 'Team' } & TeamFragmentDashboardFragment;
 };
 
-export type _ChangeTeamMemberAuthorizationMutationVariables = Exact<{
+export type ChangeTeamMemberAuthorizationMutationVariables = Exact<{
   teamId: Scalars['ID'];
   userId: Scalars['ID'];
   authorization: TeamMemberAuthorization;
 }>;
 
-export type _ChangeTeamMemberAuthorizationMutation = {
+export type ChangeTeamMemberAuthorizationMutation = {
   __typename?: 'RootMutationType';
 } & {
   changeTeamMemberAuthorizations: { __typename?: 'Team' } & Pick<Team, 'id'>;

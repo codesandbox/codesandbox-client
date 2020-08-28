@@ -21,8 +21,12 @@ import {
 import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
+import {
+  TeamMemberAuthorization,
+  CurrentTeamInfoFragmentFragment,
+} from 'app/graphql/types';
 import { Card } from './components';
-import { MemberList } from './components/MemberList';
+import { MemberList, User } from './components/MemberList';
 
 export const TeamSettings = () => {
   const {
@@ -242,7 +246,8 @@ export const TeamSettings = () => {
                       <Text size={6} weight="bold">
                         {team.name}
                       </Text>
-                      {activeWorkspaceAuthorization === 'ADMIN' && (
+                      {activeWorkspaceAuthorization ===
+                        TeamMemberAuthorization.Admin && (
                         <IconButton
                           name="edit"
                           size={12}
@@ -308,7 +313,8 @@ export const TeamSettings = () => {
               size={4}
             >
               Members{' '}
-              {activeWorkspaceAuthorization !== 'READ' && (
+              {activeWorkspaceAuthorization !==
+                TeamMemberAuthorization.Read && (
                 <IconButton
                   css={css({ marginLeft: 2 })}
                   size={12}
@@ -343,74 +349,47 @@ export const TeamSettings = () => {
           <div>
             <MemberList
               getPermission={user => getAuthorization(user, team)}
+              getPermissionOptions={user => {
+                const yourAuthorization = activeWorkspaceAuthorization;
+
+                return yourAuthorization === TeamMemberAuthorization.Admin &&
+                  user.id !== stateUser.id
+                  ? [
+                      {
+                        label: 'Admin',
+                        onSelect: () => {
+                          actions.dashboard.changeAuthorization({
+                            userId: user.id,
+                            authorization: TeamMemberAuthorization.Admin,
+                          });
+                        },
+                      },
+                      {
+                        label: 'Editor',
+                        onSelect: () => {
+                          actions.dashboard.changeAuthorization({
+                            userId: user.id,
+                            authorization: TeamMemberAuthorization.Write,
+                          });
+                        },
+                      },
+                      {
+                        label: 'Viewer',
+                        onSelect: () => {
+                          actions.dashboard.changeAuthorization({
+                            userId: user.id,
+                            authorization: TeamMemberAuthorization.Read,
+                          });
+                        },
+                      },
+                    ]
+                  : [];
+              }}
               getActions={user => {
                 const you = stateUser.id === user.id;
                 const yourAuthorization = activeWorkspaceAuthorization;
 
-                const userAuthorization = getAuthorization(user, team);
-
                 const options = [];
-
-                if (yourAuthorization === 'ADMIN') {
-                  if (userAuthorization === 'READ') {
-                    options.push({
-                      label: 'Grant Edit access',
-                      onSelect: () => {
-                        actions.dashboard.changeAuthorization({
-                          userId: user.id,
-                          authorization: 'WRITE',
-                        });
-                      },
-                    });
-                    options.push({
-                      label: 'Grant Admin access',
-                      onSelect: () => {
-                        actions.dashboard.changeAuthorization({
-                          userId: user.id,
-                          authorization: 'ADMIN',
-                        });
-                      },
-                    });
-                  } else if (userAuthorization === 'WRITE') {
-                    options.push({
-                      label: 'Only allow View access',
-                      onSelect: () => {
-                        actions.dashboard.changeAuthorization({
-                          userId: user.id,
-                          authorization: 'READ',
-                        });
-                      },
-                    });
-                    options.push({
-                      label: 'Grant Admin access',
-                      onSelect: () => {
-                        actions.dashboard.changeAuthorization({
-                          userId: user.id,
-                          authorization: 'ADMIN',
-                        });
-                      },
-                    });
-                  } else if (userAuthorization === 'ADMIN') {
-                    options.push({
-                      label: 'Only allow View access',
-                      onSelect: () => {
-                        actions.dashboard.changeAuthorization({
-                          userId: user.id,
-                          authorization: 'READ',
-                        });
-                      },
-                    });
-                    options.push({
-                      label: 'Remove Admin access',
-                      onSelect: () => {
-                        actions.dashboard.changeAuthorization({
-                          userId: user.id,
-                          authorization: 'WRITE',
-                        });
-                      },
-                    });
-                  }
-                }
 
                 if (you) {
                   options.push({
@@ -419,7 +398,10 @@ export const TeamSettings = () => {
                   });
                 }
 
-                if (!you && yourAuthorization === 'ADMIN') {
+                if (
+                  !you &&
+                  yourAuthorization === TeamMemberAuthorization.Admin
+                ) {
                   options.push({
                     label: 'Remove Member',
                     onSelect: () => actions.dashboard.removeFromTeam(user.id),
@@ -433,6 +415,7 @@ export const TeamSettings = () => {
 
             <MemberList
               getPermission={() => 'PENDING'}
+              getPermissionOptions={() => []}
               getActions={user => [
                 {
                   label: 'Revoke Invitation',
@@ -452,7 +435,10 @@ export const TeamSettings = () => {
   );
 };
 
-const getAuthorization = (user, team) => {
+const getAuthorization = (
+  user: User,
+  team: CurrentTeamInfoFragmentFragment
+): TeamMemberAuthorization => {
   const authorization = team.userAuthorizations.find(
     auth => auth.userId === user.id
   ).authorization;
