@@ -70,21 +70,7 @@ export const withLoadApp = <T>(
         }),
       ]);
 
-      actions.dashboard.getTeams();
-      actions.internal.setPatronPrice();
-      effects.analytics.identify('signed_in', true);
-      effects.analytics.setUserId(state.user!.id, state.user!.email);
-
-      try {
-        actions.internal.trackCurrentTeams().catch(e => {});
-        actions.internal.identifyCurrentUser().catch(e => {});
-      } catch (e) {
-        // Not majorly important
-      }
-      actions.internal.showUserSurveyIfNeeded();
-      await effects.live.getSocket();
-      actions.userNotifications.internal.initialize();
-      effects.api.preloadTemplates();
+      await actions.internal.initializeNewUser();
       state.hasLogIn = true;
     } catch (error) {
       actions.internal.handleError({
