@@ -40,10 +40,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
   const folderUrl = getFolderUrl(item, activeTeam);
 
-  const label = isTemplate ? 'template' : 'sandbox';
-
-  // @ts-ignore
-  const isPro = user.subscription_plan || user.subscription;
+  const label = isTemplate ? 'Template' : 'Sandbox';
+  const isPro = Boolean(user.subscription);
 
   const isOwner = React.useMemo(() => {
     if (item.type !== 'template') {
@@ -108,7 +106,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           window.open(`https://codesandbox.io${url}`, '_blank');
         }}
       >
-        Open {label} in new tab
+        Open {label} in New Tab
       </MenuItem>
       {isOwner && folderUrl !== location.pathname ? (
         <MenuItem
@@ -121,12 +119,13 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       ) : null}
 
       <Menu.Divider />
+
       <MenuItem
         onSelect={() => {
           effects.browser.copyToClipboard(`https://codesandbox.io${url}`);
         }}
       >
-        Copy {label} link
+        Copy {label} Link
       </MenuItem>
       {!isTemplate && activeWorkspaceAuthorization !== 'READ' ? (
         <MenuItem
@@ -137,7 +136,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             });
           }}
         >
-          Fork sandbox
+          Fork Sandbox
         </MenuItem>
       ) : null}
       {isOwner && activeWorkspaceAuthorization !== 'READ' ? (
@@ -168,46 +167,43 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               {sandbox.privacy !== 0 && (
                 <MenuItem
                   onSelect={() =>
-                    actions.dashboard.changeSandboxPrivacy({
-                      id: sandbox.id,
+                    actions.dashboard.changeSandboxesPrivacy({
+                      sandboxIds: [sandbox.id],
                       privacy: 0,
-                      oldPrivacy: sandbox.privacy as 0 | 1 | 2,
                       page,
                       repoName: sandbox.originalGit?.repo,
                     })
                   }
                 >
-                  Make {label} public
+                  Make {label} Public
                 </MenuItem>
               )}
               {sandbox.privacy !== 1 && (
                 <MenuItem
                   onSelect={() =>
-                    actions.dashboard.changeSandboxPrivacy({
-                      id: sandbox.id,
+                    actions.dashboard.changeSandboxesPrivacy({
+                      sandboxIds: [sandbox.id],
                       privacy: 1,
-                      oldPrivacy: sandbox.privacy as 0 | 1 | 2,
                       page,
                       repoName: sandbox.originalGit?.repo,
                     })
                   }
                 >
-                  Make {label} unlisted
+                  Make {label} Unlisted
                 </MenuItem>
               )}
               {sandbox.privacy !== 2 && (
                 <MenuItem
                   onSelect={() =>
-                    actions.dashboard.changeSandboxPrivacy({
-                      id: sandbox.id,
+                    actions.dashboard.changeSandboxesPrivacy({
+                      sandboxIds: [sandbox.id],
                       privacy: 2,
-                      oldPrivacy: sandbox.privacy as 0 | 1 | 2,
                       page,
                       repoName: sandbox.originalGit?.repo,
                     })
                   }
                 >
-                  Make {label} private
+                  Make {label} Private
                 </MenuItem>
               )}
             </>
@@ -222,7 +218,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 });
               }}
             >
-              Convert to sandbox
+              Convert to Sandbox
             </MenuItem>
           ) : (
             <MenuItem
@@ -234,7 +230,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 });
               }}
             >
-              Make sandbox a template
+              Make Sandbox a Template
             </MenuItem>
           )}
           <Menu.Divider />
@@ -249,7 +245,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 setVisibility(false);
               }}
             >
-              Delete template
+              Delete Template
             </MenuItem>
           ) : (
             <MenuItem
@@ -262,7 +258,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 setVisibility(false);
               }}
             >
-              Delete sandbox
+              Delete Sandbox
             </MenuItem>
           )}
         </>
