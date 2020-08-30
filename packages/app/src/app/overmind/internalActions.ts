@@ -21,6 +21,34 @@ import { parseConfigurations } from './utils/parse-configurations';
 import { Action, AsyncAction } from '.';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 
+/**
+ * After getting the current user we need to hydrate the app with new data from that user.
+ * Everything with fetching for the user happens here.
+ */
+export const initializeNewUser: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  actions.dashboard.getTeams();
+  actions.internal.setPatronPrice();
+  effects.analytics.identify('signed_in', true);
+  effects.analytics.setUserId(state.user!.id, state.user!.email);
+
+  try {
+    actions.internal.trackCurrentTeams().catch(e => {});
+    actions.internal.identifyCurrentUser().catch(e => {});
+  } catch (e) {
+    // Not majorly important
+  }
+
+  actions.internal.showUserSurveyIfNeeded();
+  await effects.live.getSocket();
+  actions.userNotifications.internal.initialize();
+  actions.internal.setStoredSettings();
+  effects.api.preloadTemplates();
+};
+
 export const signIn: AsyncAction<{
   useExtraScopes?: boolean;
   provider: 'google' | 'github';
@@ -34,12 +62,7 @@ export const signIn: AsyncAction<{
     state.signInModalOpen = false;
     state.pendingUser = null;
     state.user = await effects.api.getCurrentUser();
-    await effects.live.getSocket();
-    actions.internal.setPatronPrice();
-    effects.analytics.identify('signed_in', true);
-    effects.analytics.setUserId(state.user.id, state.user.email);
-    actions.internal.setStoredSettings();
-    actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
+    await actions.internal.initializeNewUser();
     actions.refetchSandboxInfo();
     state.hasLogIn = true;
     state.isAuthenticating = false;
