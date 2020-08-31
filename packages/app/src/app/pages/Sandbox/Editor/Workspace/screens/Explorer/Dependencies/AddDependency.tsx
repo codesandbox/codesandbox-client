@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import {
   SidebarRow,
   Text,
@@ -11,6 +11,7 @@ import useKeys from 'react-use/lib/useKeyboardJs';
 import { useOvermind } from 'app/overmind';
 
 const buttonStyles = css({
+  padding: 0,
   appearance: 'none',
   border: 'none',
   background: 'transparent',
@@ -29,21 +30,22 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
     actions: {
       modalOpened,
       editor: { addNpmDependency },
-      workspace: { getExplorerDependencies, clearExplorerDependencies },
+      workspace: { getExplorerDependencies, changeDependencySearch },
     },
     state: {
-      workspace: { explorerDependencies },
+      currentModal,
+      workspace: { explorerDependencies, dependencySearch },
     },
   } = useOvermind();
+  const modalOpen = currentModal === 'searchDependencies';
   const [one] = useKeys('ctrl + one');
   const [two] = useKeys('ctrl + two');
   const [three] = useKeys('ctrl + three');
   const [four] = useKeys('ctrl + four');
   const [all] = useKeys('ctrl + d');
-  const [search, setSearch] = useState('');
 
   const searchDependencies = e => {
-    setSearch(e.target.value);
+    changeDependencySearch(e.target.value);
 
     getExplorerDependencies(e.target.value);
   };
@@ -63,8 +65,6 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
     }
     if (all) {
       modalOpened({ modal: 'searchDependencies' });
-      setSearch('');
-      clearExplorerDependencies();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [one, two, three, four, all]);
@@ -74,8 +74,6 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
       name: dependency.name,
       version: dependency.tags.latest,
     });
-    setSearch('');
-    clearExplorerDependencies();
   };
 
   return (
@@ -85,14 +83,14 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
       marginBottom={2}
     >
       <SearchInput
-        value={search}
+        value={modalOpen ? '' : dependencySearch}
         onChange={searchDependencies}
         placeholder="Add npm dependency"
         css={css({
           width: '100%',
         })}
       />
-      {explorerDependencies.length ? (
+      {!modalOpen && explorerDependencies.length ? (
         <Element
           css={css({
             backgroundColor: 'sideBar.background',
@@ -137,7 +135,9 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
             <button
               css={buttonStyles}
               type="button"
-              onClick={() => modalOpened({ modal: 'searchDependencies' })}
+              onClick={() => {
+                modalOpened({ modal: 'searchDependencies' });
+              }}
             >
               <Text>Show All</Text>
               <Text variant="muted">Ctrl + D</Text>

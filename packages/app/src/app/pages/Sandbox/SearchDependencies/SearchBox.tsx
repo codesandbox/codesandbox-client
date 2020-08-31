@@ -5,17 +5,21 @@ import css from '@styled-system/css';
 import { AlgoliaIcon } from './icons';
 
 export const SearchBox = ({ handleManualSelect, onChange }) => {
-  const { state, actions } = useOvermind();
-  const [searchValue, setSearchValue] = useState('');
+  const {
+    state: { workspace },
+    actions: {
+      workspace: { changeDependencySearch, toggleShowingSelectedDependencies },
+    },
+  } = useOvermind();
   const [focus, setFocus] = useState(false);
 
   useEffect(() => {
-    onChange(searchValue);
+    onChange(workspace.dependencySearch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchValue]);
+  }, [workspace.dependencySearch]);
 
   return (
-    <form onSubmit={() => handleManualSelect(searchValue)}>
+    <form onSubmit={() => handleManualSelect(workspace.dependencySearch)}>
       <Element
         paddingLeft={4}
         css={css({
@@ -56,12 +60,12 @@ export const SearchBox = ({ handleManualSelect, onChange }) => {
             },
           })}
           onChange={e => {
-            setSearchValue(e.target.value);
-            if (state.workspace.showingSelectedDependencies) {
-              actions.workspace.toggleShowingSelectedDependencies();
+            changeDependencySearch(e.target.value);
+            if (workspace.showingSelectedDependencies) {
+              toggleShowingSelectedDependencies();
             }
           }}
-          value={searchValue}
+          value={workspace.dependencySearch}
         />
         <AlgoliaIcon
           css={css({

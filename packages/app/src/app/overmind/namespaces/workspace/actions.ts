@@ -447,6 +447,10 @@ export const openDefaultItem: Action = ({ state }) => {
   state.workspace.openedWorkspaceItem = defaultItem.id;
 };
 
+export const changeDependencySearch: Action<string> = ({ state }, value) => {
+  state.workspace.dependencySearch = value;
+};
+
 export const getExplorerDependencies: AsyncAction<string> = async (
   { state, effects },
   value
