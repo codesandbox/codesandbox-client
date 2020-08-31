@@ -12,6 +12,7 @@ type State = {
   sandboxes: {
     [username: string]: {
       [page: number]: Sandbox[];
+      all?: Sandbox[];
     };
   };
   likedSandboxes: {
@@ -23,6 +24,7 @@ type State = {
   currentSandboxesPage: number;
   showSelectSandboxModal: boolean;
   currentLikedSandboxesPage: number;
+  searchQuery: string | null;
   isLoadingSandboxes: boolean;
   sandboxToDeleteId: string | null;
   current: Profile | null;
@@ -45,6 +47,7 @@ export const state: State = {
   userSandboxes: [],
   currentSandboxesPage: 1,
   currentLikedSandboxesPage: 1,
+  searchQuery: null,
   isLoadingSandboxes: false,
   sandboxToDeleteId: null,
   isProfileCurrentUser: derived((currentState: State, rootState: RootState) =>
