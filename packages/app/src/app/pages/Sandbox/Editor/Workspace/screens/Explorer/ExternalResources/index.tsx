@@ -56,7 +56,7 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
                   ':hover, :focus-within': { button: { opacity: 1 } },
                 }}
               >
-                <Link href={resource} target="_blank">
+                <Link block maxWidth="100%" href={resource} target="_blank">
                   {getName(resource)}
                 </Link>
                 {!readonly && (

@@ -10,6 +10,7 @@ import {
   findCurrentModule,
   findMainModule,
 } from '@codesandbox/common/lib/sandbox/modules';
+import { isIOS, isAndroid } from '@codesandbox/common/lib/utils/platform';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
 import Content from '../Content';
@@ -106,7 +107,7 @@ export default class App extends React.PureComponent<
       hideDevTools,
       tabs,
       theme,
-      runOnClick,
+      runOnClick: runOnClick === undefined ? isAndroid || isIOS : runOnClick,
       verticalMode,
       highlightedLines: highlightedLines || [],
     };

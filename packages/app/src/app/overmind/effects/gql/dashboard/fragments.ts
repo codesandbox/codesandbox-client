@@ -131,6 +131,11 @@ export const teamFragmentDashboard = gql`
     creatorId
     avatarUrl
 
+    userAuthorizations {
+      userId
+      authorization
+    }
+
     users {
       id
       name
@@ -167,6 +172,11 @@ export const currentTeamInfoFragment = gql`
       id
       avatarUrl
       username
+    }
+
+    userAuthorizations {
+      userId
+      authorization
     }
   }
 `;

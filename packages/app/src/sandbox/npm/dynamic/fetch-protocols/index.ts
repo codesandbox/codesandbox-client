@@ -5,6 +5,7 @@ import { JSDelivrNPMFetcher } from './jsdelivr/jsdelivr-npm';
 import { JSDelivrGHFetcher } from './jsdelivr/jsdelivr-gh';
 import { TarFetcher } from './tar';
 import { FileFetcher } from './file';
+import { GistFetcher } from './gist';
 
 export const protocols = {
   csbGH: new CsbFetcher(),
@@ -13,11 +14,16 @@ export const protocols = {
   jsDelivrGH: new JSDelivrGHFetcher(),
   tar: new TarFetcher(),
   file: new FileFetcher(),
+  gist: new GistFetcher(),
 };
 
 export function getFetchProtocol(depVersion: string, useFallback = false) {
   if (depVersion.startsWith('file:')) {
     return protocols.file;
+  }
+
+  if (depVersion.startsWith('gist:')) {
+    return protocols.gist;
   }
 
   const isDraftProtocol = CSB_PKG_PROTOCOL.test(depVersion);
