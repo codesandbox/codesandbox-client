@@ -63,6 +63,9 @@ export const SearchedSandboxes = ({ menuControls }) => {
                   <SandboxCard sandbox={sandbox} menuControls={menuControls} />
                 </Column>
               ))}
+
+        <div />
+        <div />
       </Grid>
       <Pagination
         page={page}
