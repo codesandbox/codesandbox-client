@@ -6,6 +6,7 @@ import {
   ListAction,
   Element,
 } from '@codesandbox/components';
+import OutsideClickHandler from 'react-outside-click-handler';
 import css from '@styled-system/css';
 import useKeys from 'react-use/lib/useKeyboardJs';
 import { useOvermind } from 'app/overmind';
@@ -30,7 +31,11 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
     actions: {
       modalOpened,
       editor: { addNpmDependency },
-      workspace: { getExplorerDependencies, changeDependencySearch },
+      workspace: {
+        getExplorerDependencies,
+        clearExplorerDependencies,
+        changeDependencySearch,
+      },
     },
     state: {
       currentModal,
@@ -91,59 +96,61 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
         })}
       />
       {!modalOpen && explorerDependencies.length ? (
-        <Element
-          css={css({
-            backgroundColor: 'sideBar.background',
-            position: 'absolute',
-            zIndex: 10,
-            width: '100%',
-            borderRadius: 'medium',
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'sideBar.border',
-            marginTop: '2px',
-            fontWeight: 500,
-          })}
-        >
-          {explorerDependencies.map((dependency, i) => (
+        <OutsideClickHandler onOutsideClick={() => clearExplorerDependencies()}>
+          <Element
+            css={css({
+              backgroundColor: 'sideBar.background',
+              position: 'absolute',
+              zIndex: 10,
+              width: '100%',
+              borderRadius: 'medium',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: 'sideBar.border',
+              marginTop: '2px',
+              fontWeight: 500,
+            })}
+          >
+            {explorerDependencies.map((dependency, i) => (
+              <ListAction
+                key={dependency.objectID}
+                justify="space-between"
+                css={css({ color: 'sideBar.foreground' })}
+              >
+                <button
+                  css={buttonStyles}
+                  type="button"
+                  onClick={() => addDependency(dependency)}
+                >
+                  <Text>{dependency.name}</Text>
+                  <Text variant="muted">Ctrl + {i + 1}</Text>
+                </button>
+              </ListAction>
+            ))}
             <ListAction
-              key={dependency.objectID}
+              key="show-all"
               justify="space-between"
-              css={css({ color: 'sideBar.foreground' })}
+              css={css({
+                color: 'sideBar.foreground',
+                borderWidth: 0,
+                borderTopWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: 'sideBar.border',
+              })}
             >
               <button
                 css={buttonStyles}
                 type="button"
-                onClick={() => addDependency(dependency)}
+                onClick={() => {
+                  modalOpened({ modal: 'searchDependencies' });
+                }}
               >
-                <Text>{dependency.name}</Text>
-                <Text variant="muted">Ctrl + {i + 1}</Text>
+                <Text>Show All</Text>
+                <Text variant="muted">Ctrl + D</Text>
               </button>
             </ListAction>
-          ))}
-          <ListAction
-            key="show-all"
-            justify="space-between"
-            css={css({
-              color: 'sideBar.foreground',
-              borderWidth: 0,
-              borderTopWidth: '1px',
-              borderStyle: 'solid',
-              borderColor: 'sideBar.border',
-            })}
-          >
-            <button
-              css={buttonStyles}
-              type="button"
-              onClick={() => {
-                modalOpened({ modal: 'searchDependencies' });
-              }}
-            >
-              <Text>Show All</Text>
-              <Text variant="muted">Ctrl + D</Text>
-            </button>
-          </ListAction>
-        </Element>
+          </Element>
+        </OutsideClickHandler>
       ) : null}
     </SidebarRow>
   );
