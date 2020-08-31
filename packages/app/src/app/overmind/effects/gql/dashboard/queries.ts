@@ -203,6 +203,10 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
         id
         name
         avatarUrl
+        userAuthorizations {
+          userId
+          authorization
+        }
       }
     }
   }

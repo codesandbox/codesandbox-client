@@ -36,7 +36,10 @@ type State = {
     } | null;
   };
   teams: Array<
-    { __typename?: 'Team' } & Pick<Team, 'id' | 'name' | 'avatarUrl'>
+    { __typename?: 'Team' } & Pick<
+      Team,
+      'id' | 'name' | 'avatarUrl' | 'userAuthorizations'
+    >
   >;
   allCollections: DELETE_ME_COLLECTION[] | null;
   selectedSandboxes: string[];

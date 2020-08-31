@@ -38,6 +38,19 @@ export function isAbsoluteVersion(version: string) {
   return isAbsolute || /\//.test(version);
 }
 
+export async function getAbsoluteDependency(
+  depName: string,
+  depVersion: string
+): Promise<{ name: string; version: string }> {
+  if (isAbsoluteVersion(depVersion)) {
+    return { name: depName, version: depVersion };
+  }
+
+  const data = await fetchPackageJSON(depName, depVersion);
+
+  return { name: depName, version: data.version };
+}
+
 export async function getAbsoluteDependencies(dependencies: Object) {
   const nonAbsoluteDependencies = Object.keys(dependencies).filter(
     dep => !isAbsoluteVersion(dependencies[dep])
@@ -48,9 +61,12 @@ export async function getAbsoluteDependencies(dependencies: Object) {
   await Promise.all(
     nonAbsoluteDependencies.map(async dep => {
       try {
-        const data = await fetchPackageJSON(dep, dependencies[dep]);
+        const { version } = await getAbsoluteDependency(
+          dep,
+          nonAbsoluteDependencies[dep]
+        );
 
-        newDependencies[dep] = data.version;
+        newDependencies[dep] = version;
       } catch (e) {
         /* ignore */
       }

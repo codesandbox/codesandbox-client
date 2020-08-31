@@ -1,8 +1,8 @@
 import minimatch from 'minimatch';
 import * as semver from 'semver';
 
-import { ILambdaResponse } from './merge-dependency';
-import { downloadDependency } from '../eval/npm/fetch-npm-module';
+import { ILambdaResponse } from '../merge-dependency';
+import { downloadDependency } from './fetch-npm-module';
 import { IParsedResolution } from './resolutions';
 
 async function getPackageJSON(dep: string, version: string) {

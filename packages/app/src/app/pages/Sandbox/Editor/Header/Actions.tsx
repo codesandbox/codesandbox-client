@@ -37,6 +37,7 @@ export const Actions = () => {
       hasLogIn,
       updateStatus,
       user,
+      activeWorkspaceAuthorization,
       live: { isLive },
       editor: {
         isForkingSandbox,
@@ -193,6 +194,7 @@ export const Actions = () => {
         variant="secondary"
         css={css({ paddingX: 3 })}
         onClick={() => openCreateSandboxModal({})}
+        disabled={activeWorkspaceAuthorization === 'READ'}
       >
         Create Sandbox
       </Button>

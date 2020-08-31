@@ -13,6 +13,7 @@ const Context = React.createContext({
 
 interface ContextMenuProps {
   activeTeam: string | null;
+  authorization: string | null;
   visible: boolean;
   setVisibility: (val: boolean) => void;
   position: Position;
@@ -23,6 +24,7 @@ interface ContextMenuProps {
 
 export const ContextMenu: React.FC<ContextMenuProps> = ({
   activeTeam,
+  authorization,
   visible,
   position,
   setVisibility,
@@ -38,7 +40,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 
   let menuOptions;
 
-  if (folder.name === 'Drafts') {
+  if (folder.name === 'Drafts' || authorization === 'READ') {
     menuOptions = (
       <MenuItem onSelect={() => {}}>
         <Stack gap={1}>
