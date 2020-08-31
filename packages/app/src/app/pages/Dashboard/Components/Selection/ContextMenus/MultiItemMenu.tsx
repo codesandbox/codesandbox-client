@@ -22,8 +22,15 @@ interface IMultiMenuProps {
   page: PageTypes;
 }
 
+type MenuAction =
+  | 'divider'
+  | {
+      label: string;
+      fn: () => void;
+    };
+
 export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
-  const { actions } = useOvermind();
+  const { actions, state } = useOvermind();
   const { visible, setVisibility, position } = React.useContext(Context);
 
   /*
@@ -94,32 +101,66 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     setVisibility(false);
   };
 
-  const EXPORT = { label: 'Export items', fn: exportItems };
-  const DELETE = { label: 'Delete items', fn: deleteItems };
+  const changeItemPrivacy = (privacy: 0 | 1 | 2) => () => {
+    actions.dashboard.changeSandboxesPrivacy({
+      sandboxIds: [...sandboxes, ...templates].map(s => s.sandbox.id),
+      privacy,
+      page,
+      repoName: null,
+    });
+  };
+
+  const DIVIDER = 'divider' as const;
+
+  const MAKE_PUBLIC = { label: 'Make Items Public', fn: changeItemPrivacy(0) };
+  const MAKE_UNLISTED = {
+    label: 'Make Items Unlisted',
+    fn: changeItemPrivacy(1),
+  };
+  const MAKE_PRIVATE = {
+    label: 'Make Items Private',
+    fn: changeItemPrivacy(2),
+  };
+  const PRIVACY_ITEMS = state.user.subscription
+    ? [MAKE_PUBLIC, MAKE_UNLISTED, MAKE_PRIVATE, DIVIDER]
+    : [];
+  const EXPORT = { label: 'Export Items', fn: exportItems };
+  const DELETE = { label: 'Delete Items', fn: deleteItems };
   const CONVERT_TO_TEMPLATE = {
-    label: 'Convert to templates',
+    label: 'Convert to Templates',
     fn: convertToTemplates,
   };
   const CONVERT_TO_SANDBOX = {
-    label: 'Convert to sandboxes',
+    label: 'Convert to Sandboxes',
     fn: convertToSandboxes,
   };
-
   const MOVE_ITEMS = {
-    label: 'Move to folder',
+    label: 'Move to Folder',
     fn: moveToFolder,
   };
 
-  let options = [];
+  let options: MenuAction[] = [];
 
   if (folders.length) {
     options = [DELETE];
   } else if (sandboxes.length && templates.length) {
-    options = [EXPORT, MOVE_ITEMS, DELETE];
+    options = [...PRIVACY_ITEMS, EXPORT, MOVE_ITEMS, DELETE];
   } else if (templates.length) {
-    options = [EXPORT, MOVE_ITEMS, CONVERT_TO_SANDBOX, DELETE];
+    options = [
+      ...PRIVACY_ITEMS,
+      EXPORT,
+      MOVE_ITEMS,
+      CONVERT_TO_SANDBOX,
+      DELETE,
+    ];
   } else if (sandboxes.length) {
-    options = [EXPORT, MOVE_ITEMS, CONVERT_TO_TEMPLATE, DELETE];
+    options = [
+      ...PRIVACY_ITEMS,
+      EXPORT,
+      MOVE_ITEMS,
+      CONVERT_TO_TEMPLATE,
+      DELETE,
+    ];
   }
 
   return (
@@ -129,11 +170,15 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
       position={position}
       style={{ width: 160 }}
     >
-      {options.map(option => (
-        <MenuItem key={option.label} onSelect={option.fn}>
-          {option.label}
-        </MenuItem>
-      ))}
+      {options.map(option =>
+        option === 'divider' ? (
+          <Menu.Divider />
+        ) : (
+          <MenuItem key={option.label} onSelect={option.fn}>
+            {option.label}
+          </MenuItem>
+        )
+      )}
     </Menu.ContextMenu>
   );
 };
