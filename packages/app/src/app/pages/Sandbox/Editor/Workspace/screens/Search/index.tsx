@@ -15,13 +15,25 @@ import { Module } from '@codesandbox/common/lib/types';
 import { FileIcon } from './icons';
 import EntryIcon from '../../Files/DirectoryEntry/Entry/EntryIcons';
 import { TabButton } from './components/TabButton';
+import SearchOptions from './components/SearchOptions';
 
-const search = (term: string, modules: Module[]) => {
+export enum OptionTypes {
+  CaseSensitive = 'caseSensitive',
+  Regex = 'regex',
+  MathFullWord = 'matchFullWord',
+}
+
+export type Options = {
+  [key in OptionTypes]: boolean;
+};
+
+const search = (term: string, modules: Module[], options: Options) => {
   const searchable = modules.map(m => ({
     ...m,
     matches: [],
   }));
   function String2Regex(s) {
+    if (!options.regex) return s;
     const one = s.match(/\/(.+)\/.*/);
     const two = s.match(/\/.+\/(.*)/);
 
@@ -52,12 +64,15 @@ const search = (term: string, modules: Module[]) => {
   if (term && modules) {
     return searchable
       .map(file => {
-        const s = file.code
-          .toLocaleLowerCase()
-          .search(String2Regex(term.toLowerCase()));
+        const searchTerm = String2Regex(
+          options.caseSensitive ? term : term.toLowerCase()
+        );
+        const fileCode = options.caseSensitive
+          ? file.code
+          : file.code.toLocaleLowerCase();
+        const s = fileCode.search(searchTerm);
         if (s !== -1) {
           const str = file.code.toLocaleLowerCase();
-          const searchTerm = String2Regex(term.toLowerCase());
           const matches = getAllMatches(str, searchTerm);
           return {
             code: file.code,
@@ -93,6 +108,11 @@ export const Search = () => {
   const [queue, setQueue] = useState([]);
   const allModules = JSON.parse(JSON.stringify(currentSandbox.modules));
   const [modules, setModules] = useState(allModules);
+  const [options, setOptions] = useState({
+    [OptionTypes.CaseSensitive]: false,
+    [OptionTypes.Regex]: false,
+    [OptionTypes.MathFullWord]: false,
+  });
 
   const toggleSearch = searchInOpen => {
     setOpenFilesSearch(searchInOpen);
@@ -119,6 +139,10 @@ export const Search = () => {
   );
 
   useEffect(() => {
+    searchFiles(searchTerm);
+  }, [options]);
+
+  useEffect(() => {
     if (searchTerm && modules) {
       searchFiles(searchTerm);
     }
@@ -137,22 +161,32 @@ export const Search = () => {
       while (queue.length > 0) {
         const current = queue.shift();
 
-        searchWorker(current.value, current.files).then(files => {
+        searchWorker(current.value, current.files, options).then(files => {
           killWorker();
           setResults(files);
         });
       }
     }
-  }, [workerStatus, queue.length, queue, searchWorker, killWorker]);
+  }, [workerStatus, queue.length, queue, searchWorker, killWorker, options]);
 
   return (
     <Collapsible defaultOpen title="Search">
       <Element padding={2} marginBottom={5}>
-        <Input
-          marginBottom={4}
-          placeholder="Search"
-          onChange={e => searchFiles(e.target.value)}
-        />
+        <Element
+          css={css({
+            position: 'relative',
+          })}
+        >
+          <Input
+            marginBottom={4}
+            css={css({
+              paddingRight: '50px',
+            })}
+            placeholder="Search"
+            onChange={e => searchFiles(e.target.value)}
+          />
+          <SearchOptions options={options} setOptions={setOptions} />
+        </Element>
         <Stack
           gap={2}
           paddingY={2}
