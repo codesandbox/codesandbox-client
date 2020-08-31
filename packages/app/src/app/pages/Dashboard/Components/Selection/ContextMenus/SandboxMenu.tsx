@@ -41,7 +41,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'Template' : 'Sandbox';
-  const isPro = Boolean(user.subscription);
+  const isPro = user && Boolean(user.subscription);
 
   const isOwner = React.useMemo(() => {
     if (item.type !== 'template') {
