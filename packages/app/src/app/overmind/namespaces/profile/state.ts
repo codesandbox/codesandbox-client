@@ -30,7 +30,7 @@ type State = {
   current: Profile | null;
   isProfileCurrentUser: boolean;
   showcasedSandbox: Sandbox | null;
-  currentSandboxes: { [page: string]: Sandbox[] };
+  currentSandboxes: { [page: number]: Sandbox[]; all?: Sandbox[] };
   currentLikedSandboxes: { [page: string]: Sandbox[] };
   currentSortBy: 'view_count' | 'inserted_at';
   currentSortDirection: 'asc' | 'desc';
