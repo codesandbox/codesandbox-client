@@ -43,7 +43,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const label = isTemplate ? 'template' : 'sandbox';
 
   // @ts-ignore
-  const isPro = user.subscription_plan || user.subscription;
+  const isPro = user && (user.subscription_plan || user.subscription);
 
   const isOwner = React.useMemo(() => {
     if (item.type !== 'template') {
