@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent, useRef } from 'react';
 import {
   SidebarRow,
   Text,
@@ -8,8 +8,9 @@ import {
 } from '@codesandbox/components';
 import OutsideClickHandler from 'react-outside-click-handler';
 import css from '@styled-system/css';
-import useKeys from 'react-use/lib/useKeyboardJs';
+
 import { useOvermind } from 'app/overmind';
+import { useKeyboard } from './useKeys';
 
 const buttonStyles = css({
   padding: 0,
@@ -42,43 +43,14 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
       workspace: { explorerDependencies, dependencySearch },
     },
   } = useOvermind();
+  const id = 'search-deps';
   const modalOpen = currentModal === 'searchDependencies';
-  const [one] = useKeys('ctrl + one');
-  const [two] = useKeys('ctrl + two');
-  const [three] = useKeys('ctrl + three');
-  const [four] = useKeys('ctrl + four');
-  const [all] = useKeys('ctrl + d');
+  const list = useRef();
+  useKeyboard(list, id);
 
-  const searchDependencies = e => {
+  const searchDependencies = (e: React.ChangeEvent<HTMLInputElement>) => {
     changeDependencySearch(e.target.value);
-
     getExplorerDependencies(e.target.value);
-  };
-
-  useEffect(() => {
-    if (one) {
-      addDependency(explorerDependencies[0]);
-    }
-    if (two && explorerDependencies[1]) {
-      addDependency(explorerDependencies[1]);
-    }
-    if (three && explorerDependencies[2]) {
-      addDependency(explorerDependencies[2]);
-    }
-    if (four && explorerDependencies[3]) {
-      addDependency(explorerDependencies[3]);
-    }
-    if (all) {
-      modalOpened({ modal: 'searchDependencies' });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [one, two, three, four, all]);
-
-  const addDependency = dependency => {
-    addNpmDependency({
-      name: dependency.name,
-      version: dependency.tags.latest,
-    });
   };
 
   return (
@@ -88,16 +60,25 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
       marginBottom={2}
     >
       <SearchInput
+        id={id}
         value={modalOpen ? '' : dependencySearch}
         onChange={searchDependencies}
         placeholder="Add npm dependency"
         css={css({
           width: '100%',
         })}
+        onFocus={() => {
+          if (dependencySearch) {
+            getExplorerDependencies(dependencySearch);
+          }
+        }}
       />
       {!modalOpen && explorerDependencies.length ? (
         <OutsideClickHandler onOutsideClick={() => clearExplorerDependencies()}>
           <Element
+            as="ul"
+            ref={list}
+            padding={0}
             css={css({
               backgroundColor: 'sideBar.background',
               position: 'absolute',
@@ -120,7 +101,12 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                 <button
                   css={buttonStyles}
                   type="button"
-                  onClick={() => addDependency(dependency)}
+                  onClick={() =>
+                    addNpmDependency({
+                      name: dependency.name,
+                      version: dependency.tags.latest,
+                    })
+                  }
                 >
                   <Text>{dependency.name}</Text>
                   <Text variant="muted">Ctrl + {i + 1}</Text>
@@ -139,6 +125,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
               })}
             >
               <button
+                tabIndex={0}
                 css={buttonStyles}
                 type="button"
                 onClick={() => {
