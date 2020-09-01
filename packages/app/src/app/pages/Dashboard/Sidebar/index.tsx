@@ -47,21 +47,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ...props
 }) => {
   const { state, actions } = useOvermind();
-  const [activeAccount, setActiveAccount] = useState<
-    | {
-        type: 'user';
-        id: string;
-        username: string;
-        avatarUrl: string;
-      }
-    | {
-        type: 'team';
-        id: string;
-        name: string;
-        avatarUrl: string;
-      }
-    | null
-  >(null);
+  const [activeAccount, setActiveAccount] = useState<{
+    id: string;
+    name: string;
+    avatarUrl: string;
+  } | null>(null);
   const { dashboard, user, activeTeam } = state;
 
   React.useEffect(() => {
@@ -154,7 +144,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <WorkspaceSelect
                 onSelect={workspace => {
                   actions.setActiveTeam({
-                    id: workspace.type === 'user' ? null : workspace.id,
+                    id: workspace.id,
                   });
                 }}
                 activeAccount={activeAccount}
