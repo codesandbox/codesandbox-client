@@ -30,6 +30,7 @@ export const useKeyboard = (list: { current: HTMLElement }, id: string) => {
   useEffect(() => {
     if (list && list.current) {
       const first = list.current.firstChild;
+      const last = list.current.lastChild;
       const input = document.getElementById(id);
       const activeElement = document.activeElement;
       if (up) {
@@ -47,7 +48,9 @@ export const useKeyboard = (list: { current: HTMLElement }, id: string) => {
         }
       }
       if (down) {
-        if (activeElement === input) {
+        if (activeElement === last || last.contains(activeElement)) {
+          // do nothing
+        } else if (activeElement === input) {
           // @ts-ignore
           first.firstChild.focus();
         } else {
