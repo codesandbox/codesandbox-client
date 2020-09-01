@@ -2,7 +2,10 @@ import { useEffect } from 'react';
 import useKeys from 'react-use/lib/useKeyboardJs';
 import { useOvermind } from 'app/overmind';
 
-export const useKeyboard = (list: { current: HTMLElement }, id: string) => {
+export const useKeyboard = (
+  list: { current: HTMLElement },
+  searchInput: { current: HTMLElement }
+) => {
   const {
     actions: {
       modalOpened,
@@ -31,7 +34,7 @@ export const useKeyboard = (list: { current: HTMLElement }, id: string) => {
     if (list && list.current) {
       const first = list.current.firstChild;
       const last = list.current.lastChild;
-      const input = document.getElementById(id);
+      const input = searchInput.current;
       const activeElement = document.activeElement;
       if (up) {
         if (

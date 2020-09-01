@@ -18,6 +18,7 @@ const buttonStyles = css({
   border: 'none',
   background: 'transparent',
   display: 'flex',
+  alignItems: 'center',
   color: 'inherit',
   width: '100%',
   paddingY: 2,
@@ -43,10 +44,10 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
       workspace: { explorerDependencies, dependencySearch },
     },
   } = useOvermind();
-  const id = 'search-deps';
   const modalOpen = currentModal === 'searchDependencies';
   const list = useRef();
-  useKeyboard(list, id);
+  const searchInput = useRef();
+  useKeyboard(list, searchInput);
 
   const searchDependencies = (e: React.ChangeEvent<HTMLInputElement>) => {
     changeDependencySearch(e.target.value);
@@ -60,7 +61,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
       marginBottom={2}
     >
       <SearchInput
-        id={id}
+        ref={searchInput}
         value={modalOpen ? '' : dependencySearch}
         onChange={searchDependencies}
         placeholder="Add npm dependency"
@@ -108,7 +109,13 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                     })
                   }
                 >
-                  <Text>{dependency.name}</Text>
+                  <Text
+                    css={css({
+                      maxWidth: '80%',
+                    })}
+                  >
+                    {dependency.name}
+                  </Text>
                   <Text variant="muted">Ctrl + {i + 1}</Text>
                 </button>
               </ListAction>
