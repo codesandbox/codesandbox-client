@@ -432,7 +432,7 @@ export default {
   },
   getUserSandboxes(
     username: string,
-    page: number = 1,
+    page: number | 'all' = 1,
     sortBy: string = 'view_count',
     direction: string = 'desc'
   ): Promise<{ [page: string]: Sandbox[] }> {

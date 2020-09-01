@@ -26,9 +26,9 @@ export const profileMounted: AsyncAction<string> = withLoadApp(
 );
 
 export const fetchSandboxes: AsyncAction = async ({ effects, state }) => {
-  state.profile.isLoadingSandboxes = true;
-
   if (!state.profile.current) return;
+
+  state.profile.isLoadingSandboxes = true;
 
   const { username } = state.profile.current;
   const {
@@ -331,5 +331,36 @@ export const changeSandboxPrivacy: AsyncAction<{
       message: "We weren't able to update sandbox privacy",
       error,
     });
+  }
+};
+
+export const fetchAllSandboxes: AsyncAction = async ({ effects, state }) => {
+  if (!state.profile.current) return;
+
+  const { username } = state.profile.current;
+  const page = 'all';
+
+  if (!state.profile.sandboxes[username]) {
+    state.profile.sandboxes[username] = {};
+  }
+
+  if (state.profile.sandboxes[username][page]) return;
+
+  state.profile.isLoadingSandboxes = true;
+  const data = await effects.api.getUserSandboxes(username, page);
+  state.profile.sandboxes[username][page] = data.sandboxes;
+  state.profile.isLoadingSandboxes = false;
+};
+
+export const searchQueryChanged: AsyncAction<string> = async (
+  { state, actions, effects },
+  query
+) => {
+  state.profile.searchQuery = query;
+
+  // Search works on all sandboxes
+  // We check for isLoading to avoid multiple requests
+  if (!state.profile.isLoadingSandboxes) {
+    await actions.profile.fetchAllSandboxes();
   }
 };

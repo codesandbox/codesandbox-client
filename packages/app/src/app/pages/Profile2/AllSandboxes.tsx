@@ -33,7 +33,7 @@ export const AllSandboxes = ({ menuControls }) => {
   // explicitly call it on first page render
   React.useEffect(() => {
     if (currentSandboxesPage === 1) fetchSandboxes();
-  }, [currentSandboxesPage]);
+  }, [currentSandboxesPage, fetchSandboxes]);
 
   const sandboxes = (
     (fetchedSandboxes[username] &&

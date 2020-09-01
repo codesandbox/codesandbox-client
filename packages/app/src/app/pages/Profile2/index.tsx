@@ -24,6 +24,7 @@ import { ProfileCard } from './ProfileCard';
 import { ShowcaseSandbox } from './ShowcaseSandbox';
 import { PinnedSandboxes } from './PinnedSandboxes';
 import { AllSandboxes } from './AllSandboxes';
+import { SearchedSandboxes } from './SearchedSandboxes';
 
 export const Profile = props => {
   const { username } = props.match.params;
@@ -33,7 +34,7 @@ export const Profile = props => {
       profile: { profileMounted },
     },
     state: {
-      profile: { current: user },
+      profile: { current: user, searchQuery },
     },
   } = useOvermind();
 
@@ -90,9 +91,19 @@ export const Profile = props => {
           </Element>
           <DndProvider backend={Backend}>
             <Stack direction="vertical" gap={14} css={{ flexGrow: 1 }}>
-              <ShowcaseSandbox />
-              <PinnedSandboxes menuControls={{ onContextMenu, onKeyDown }} />
-              <AllSandboxes menuControls={{ onContextMenu, onKeyDown }} />
+              {searchQuery ? (
+                <SearchedSandboxes
+                  menuControls={{ onContextMenu, onKeyDown }}
+                />
+              ) : (
+                <>
+                  <ShowcaseSandbox />
+                  <PinnedSandboxes
+                    menuControls={{ onContextMenu, onKeyDown }}
+                  />
+                  <AllSandboxes menuControls={{ onContextMenu, onKeyDown }} />
+                </>
+              )}
             </Stack>
           </DndProvider>
         </Stack>
