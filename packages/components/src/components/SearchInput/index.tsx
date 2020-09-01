@@ -4,6 +4,9 @@ import css from '@styled-system/css';
 import { Input } from '../Input';
 import { Element } from '../Element';
 
+interface ISearchInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {}
+
 const SearchInputComponent = styled(Input)(
   css({
     paddingLeft: 7,
@@ -43,11 +46,13 @@ export const SearchIcon = styled(SearchIconBase)(
   })
 );
 
-export const SearchInput = React.forwardRef((props, ref) => (
-  <>
-    <Element css={{ position: 'relative' }}>
-      <SearchIcon />
-      <SearchInputComponent type="search" ref={ref} {...props} />
-    </Element>
-  </>
-));
+export const SearchInput = React.forwardRef(
+  (props: ISearchInputProps, ref: any) => (
+    <>
+      <Element css={{ position: 'relative' }}>
+        <SearchIcon />
+        <SearchInputComponent type="search" ref={ref} {...props} />
+      </Element>
+    </>
+  )
+);
