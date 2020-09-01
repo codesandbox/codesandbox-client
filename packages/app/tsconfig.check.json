@@ -3,7 +3,6 @@
   "exclude": ["codesandbox-browserfs/*"],
   "compilerOptions": {
     "allowJs": false,
-    "skipLibCheck": true,
-    "strictNullChecks": true
+    "skipLibCheck": true
   }
 }

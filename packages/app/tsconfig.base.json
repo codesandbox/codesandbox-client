@@ -2,7 +2,6 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "esModuleInterop": true,
-    "strictNullChecks": true,
     "baseUrl": "./",
     "typeRoots": ["./src/app/graphql", "../../node_modules/@types"],
     "paths": {
