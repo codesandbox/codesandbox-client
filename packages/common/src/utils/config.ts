@@ -1,5 +1,5 @@
-export const ALGOLIA_API_KEY = '7675b9e87ed7dd5bbf18f3e5310f92d6';
-export const ALGOLIA_APPLICATION_ID = 'ZACZHDBO7S';
+export const ALGOLIA_API_KEY = '85194a1433e4196466a0f80135439c79';
+export const ALGOLIA_APPLICATION_ID = '5O7BRBEIVD';
 export const ALGOLIA_DEFAULT_INDEX =
   process.env.NODE_ENV === 'production' || process.env.LOCAL_SERVER
     ? 'prod_sandboxes'
