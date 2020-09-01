@@ -2,40 +2,38 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
-import { Avatar, Text, Menu, Stack, Icon } from '@codesandbox/components';
+import { Text, Menu, Stack, Icon } from '@codesandbox/components';
 import { sortBy } from 'lodash-es';
 import css from '@styled-system/css';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 
 type Team = {
-  type: 'team';
   id: string;
   name: string;
   avatarUrl: string | null;
 };
 
-type User = {
-  type: 'user';
-  id: string;
-  username: string;
-  avatarUrl: string;
-};
-
 interface WorkspaceSelectProps {
-  activeAccount: Team | User;
-  onSelect: (account: Team | User) => void;
+  activeAccount: Team;
+  onSelect: (account: Team) => void;
 }
 
 export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
   ({ activeAccount, onSelect }) => {
     const { state } = useOvermind();
-    const { user, dashboard } = state;
+    const { dashboard } = state;
     const history = useHistory();
 
-    const name =
-      activeAccount.type === 'user'
-        ? activeAccount.username
-        : activeAccount.name;
+    const personalWorkspace = dashboard.teams.find(
+      t => t.id === state.personalWorkspaceId
+    )!;
+    const workspaces = [
+      personalWorkspace,
+      ...sortBy(
+        dashboard.teams.filter(t => t.id !== state.personalWorkspaceId),
+        t => t.name.toLowerCase()
+      ),
+    ];
 
     return (
       <Stack
@@ -62,17 +60,13 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
           >
             <Stack gap={2} as="span" align="center">
               <Stack as="span" align="center" justify="center">
-                {activeAccount.type === 'team' ? (
-                  <TeamAvatar
-                    avatar={activeAccount.avatarUrl}
-                    name={activeAccount.name}
-                  />
-                ) : (
-                  <Avatar user={activeAccount} css={css({ size: 6 })} />
-                )}
+                <TeamAvatar
+                  avatar={activeAccount.avatarUrl}
+                  name={activeAccount.name}
+                />
               </Stack>
               <Text size={4} weight="normal" maxWidth={140}>
-                {name}
+                {activeAccount.name}
               </Text>
             </Stack>
             <Icon name="caret" size={8} />
@@ -86,38 +80,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
             })}
             style={{ backgroundColor: '#242424', borderColor: '#343434' }} // TODO: find a way to override reach styles without the selector mess
           >
-            <Menu.Item
-              css={css({
-                height: 10,
-                textAlign: 'left',
-                backgroundColor: 'grays.600',
-                borderBottom: '1px solid',
-                borderColor: 'grays.500',
-
-                '&[data-reach-menu-item][data-component=MenuItem][data-selected]': {
-                  backgroundColor: 'grays.500',
-                },
-              })}
-              style={{ paddingLeft: 8 }}
-              onSelect={() => {
-                onSelect({
-                  type: 'user',
-                  username: user.username,
-                  id: user.id,
-                  avatarUrl: user.avatarUrl,
-                });
-              }}
-            >
-              <Stack align="center" gap={2}>
-                <Avatar user={user} css={css({ size: 6 })} />
-                <Text css={css({ width: '100%' })} size={3}>
-                  {user.username} (Personal)
-                </Text>
-
-                {activeAccount.type === 'user' && <Icon name="simpleCheck" />}
-              </Stack>
-            </Menu.Item>
-            {sortBy(dashboard.teams, t => t.name.toLowerCase()).map(team => (
+            {workspaces.map(team => (
               <Stack
                 as={Menu.Item}
                 key={team.id}
@@ -137,7 +100,6 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 style={{ paddingLeft: 8 }}
                 onSelect={() =>
                   onSelect({
-                    type: 'team',
                     name: team.name,
                     id: team.id,
                     avatarUrl: team.avatarUrl,
@@ -151,12 +113,10 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 />
                 <Text css={css({ width: '100%' })} size={3}>
                   {team.name}
+                  {team.id === state.personalWorkspaceId && ' (Personal)'}
                 </Text>
 
-                {activeAccount.type === 'team' &&
-                  activeAccount.name === team.name && (
-                    <Icon name="simpleCheck" />
-                  )}
+                {activeAccount.id === team.id && <Icon name="simpleCheck" />}
               </Stack>
             ))}
             <Stack

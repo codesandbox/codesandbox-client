@@ -7,7 +7,6 @@ import {
   ServerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
-import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 import history from 'app/utils/history';
 import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
@@ -223,9 +222,9 @@ export const switchCurrentWorkspaceBySandbox: Action<{ sandbox: Sandbox }> = (
   if (
     hasPermission(sandbox.authorization, 'owner') &&
     state.user &&
-    NEW_DASHBOARD
+    sandbox.team
   ) {
-    actions.setActiveTeam({ id: sandbox.team?.id || null });
+    actions.setActiveTeam({ id: sandbox.team.id });
   }
 };
 
@@ -530,26 +529,12 @@ export const trackCurrentTeams: AsyncAction = async ({ effects, state }) => {
     return;
   }
 
-  if (NEW_DASHBOARD) {
-    if (state.activeTeamInfo) {
-      effects.analytics.setGroup('teamName', state.activeTeamInfo.name);
-      effects.analytics.setGroup('teamId', state.activeTeamInfo.id);
-    } else {
-      effects.analytics.setGroup('teamName', []);
-      effects.analytics.setGroup('teamId', []);
-    }
+  if (state.activeTeamInfo) {
+    effects.analytics.setGroup('teamName', state.activeTeamInfo.name);
+    effects.analytics.setGroup('teamId', state.activeTeamInfo.id);
   } else {
-    const { me } = await effects.gql.queries.teams({});
-    if (me) {
-      effects.analytics.setGroup(
-        'teamName',
-        me.teams.map(m => m.name)
-      );
-      effects.analytics.setGroup(
-        'teamId',
-        me.teams.map(m => m.id)
-      );
-    }
+    effects.analytics.setGroup('teamName', []);
+    effects.analytics.setGroup('teamId', []);
   }
 };
 
@@ -602,11 +587,12 @@ export const setViewModeForDashboard: Action = ({ effects, state }) => {
   }
 };
 
-export const setActiveTeamFromUrlOrStore: Action<void, string | null> = ({
+export const setActiveTeamFromUrlOrStore: AsyncAction<void, string> = async ({
   actions,
 }) =>
   actions.internal.setActiveTeamFromUrl() ||
-  actions.internal.setActiveTeamFromLocalStorage();
+  actions.internal.setActiveTeamFromLocalStorage() ||
+  actions.internal.setActiveTeamFromPersonalWorkspaceId();
 
 export const setActiveTeamFromLocalStorage: Action<void, string | null> = ({
   effects,
@@ -623,7 +609,6 @@ export const setActiveTeamFromLocalStorage: Action<void, string | null> = ({
 };
 
 export const setActiveTeamFromUrl: Action<void, string | null> = ({
-  effects,
   actions,
 }) => {
   const currentUrl =
@@ -634,10 +619,29 @@ export const setActiveTeamFromUrl: Action<void, string | null> = ({
 
   const searchParams = new URL(currentUrl).searchParams;
 
-  if (searchParams.get('workspace')) {
-    const teamId = searchParams.get('workspace');
-    actions.setActiveTeam({ id: teamId });
-    return teamId;
+  const workspaceParam = searchParams.get('workspace');
+  if (workspaceParam) {
+    actions.setActiveTeam({ id: workspaceParam });
+    return workspaceParam;
+  }
+
+  return null;
+};
+
+export const setActiveTeamFromPersonalWorkspaceId: AsyncAction<
+  void,
+  string
+> = async ({ actions, state, effects }) => {
+  const personalWorkspaceId = state.personalWorkspaceId;
+
+  if (personalWorkspaceId) {
+    actions.setActiveTeam({ id: personalWorkspaceId });
+    return personalWorkspaceId;
+  }
+  const res = await effects.gql.queries.getPersonalWorkspaceId({});
+  if (res.me) {
+    actions.setActiveTeam({ id: res.me.personalWorkspaceId });
+    return res.me.personalWorkspaceId;
   }
 
   return null;

@@ -309,7 +309,7 @@ export const rejectTeamInvitation: Action<{ teamName: string }> = (
 };
 
 export const setActiveTeam: AsyncAction<{
-  id: string | null;
+  id: string;
 }> = async ({ state, actions, effects }, { id }) => {
   // ignore if its already selected
   if (id === state.activeTeam) return;
@@ -337,8 +337,10 @@ export const setActiveTeam: AsyncAction<{
         });
       }
     } catch (e) {
-      // Something went wrong while fetching the workspace
-      actions.setActiveTeam({ id: null });
+      if (state.personalWorkspaceId) {
+        // Something went wrong while fetching the workspace
+        actions.setActiveTeam({ id: state.personalWorkspaceId });
+      }
     }
   }
 

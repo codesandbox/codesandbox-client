@@ -4,7 +4,7 @@ import { gql, Query } from 'overmind-graphql';
 export const teams: Query<TeamsQuery, TeamsQueryVariables> = gql`
   query Teams {
     me {
-      teams {
+      workspaces {
         id
         name
       }
