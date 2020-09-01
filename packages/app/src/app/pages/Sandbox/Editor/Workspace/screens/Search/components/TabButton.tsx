@@ -6,14 +6,13 @@ export const TabButton = ({ children, onClick, active }) => (
   <Text
     variant="muted"
     align="center"
+    paddingY={1}
+    block
     css={css({
-      paddingTop: ' 4px !important',
-      paddingBottom: ' 4px !important',
       cursor: 'pointer',
       backgroundColor: active ? 'input.background' : 'transparent',
       border: 'none',
       color: active ? 'sideBar.foreground' : 'mutedForeground',
-      display: 'block',
       borderRadius: 'small',
       width: '100%',
     })}

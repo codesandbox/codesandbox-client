@@ -41,7 +41,7 @@ const OptionButton = ({ title, active, onClick, children }) => (
   </Tooltip>
 );
 
-const SearchOptions = ({ options, setOptions }) => {
+export const SearchOptions = ({ options, setOptions }) => {
   const toggleOptions = (key: OptionTypes) => {
     setOptions(prevOptions => ({
       ...prevOptions,
@@ -75,5 +75,3 @@ const SearchOptions = ({ options, setOptions }) => {
     </Stack>
   );
 };
-
-export default SearchOptions;
