@@ -4,8 +4,9 @@ import React from 'react';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import compareVersions from 'compare-versions';
+import { Dependency as DependencyType } from '@codesandbox/common/lib/types/algolia';
 import { Text, Element, Stack, Select, Link } from '@codesandbox/components';
-// import compareVersions from 'compare-versions';
 import { HomeIcon, GitHubIcon, CSBIcon } from './icons';
 
 const checkboxStyles = css({
@@ -65,22 +66,21 @@ const checkboxStyles = css({
   },
 });
 
-export const Dependency = ({ dependency }) => {
+export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
   const {
     state: { workspace },
     actions,
   } = useOvermind();
 
-  // const versions = v =>
-  //   Object.keys(v).sort((a, b) => {
-  //     try {
-  //       return compareVersions(b, a);
-  //     } catch (e) {
-  //       return 0;
-  //     }
-  //   });
+  const versions = Object.keys(dependency.versions).sort((a, b) => {
+    try {
+      return compareVersions(b, a);
+    } catch (e) {
+      return 0;
+    }
+  });
 
-  const getTagName = (tags, version) =>
+  const getTagName = (tags: DependencyType['tags'], version: string) =>
     Object.keys(tags).find(key => tags[key] === version);
 
   return (
@@ -163,16 +163,14 @@ export const Dependency = ({ dependency }) => {
               });
             }}
           >
-            {Object.keys(dependency.versions)
-              .reverse()
-              .map(v => {
-                const tagName = getTagName(dependency.tags, v);
-                return (
-                  <option value={v} key={v}>
-                    {v} {tagName && `- ${tagName}`}
-                  </option>
-                );
-              })}
+            {versions.map(v => {
+              const tagName = getTagName(dependency.tags, v);
+              return (
+                <option value={v} key={v}>
+                  {v} {tagName && `- ${tagName}`}
+                </option>
+              );
+            })}
           </Select>
           <Stack justify="flex-end" marginTop={2} gap={4} align="center">
             <Element>
