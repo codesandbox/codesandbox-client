@@ -10,6 +10,7 @@ import {
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
+import { SANDBOXES_PER_PAGE } from './constants';
 
 export const AllSandboxes = ({ menuControls }) => {
   const {
@@ -108,7 +109,7 @@ export const AllSandboxes = ({ menuControls }) => {
         }}
       >
         {isLoadingSandboxes
-          ? Array(15)
+          ? Array(SANDBOXES_PER_PAGE)
               .fill(true)
               .map((_, index) => (
                 // eslint-disable-next-line
@@ -127,7 +128,6 @@ export const AllSandboxes = ({ menuControls }) => {
   );
 };
 
-const SANDBOXES_PER_PAGE = 15;
 const Pagination = () => {
   const {
     actions: {

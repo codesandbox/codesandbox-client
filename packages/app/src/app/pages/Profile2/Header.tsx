@@ -1,8 +1,8 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
+import { useHistory, useLocation } from 'react-router-dom';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
-
 import { Stack, Input, Button, Link, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -19,6 +19,10 @@ export const Header: React.FC = () => {
       profile: { searchQuery },
     },
   } = useOvermind();
+
+  const history = useHistory();
+  const location = useLocation();
+  if (!location.search) searchQueryChanged('');
 
   return (
     <Stack
@@ -63,8 +67,22 @@ export const Header: React.FC = () => {
             paddingLeft: 7,
             width: [0, 360, 480],
           })}
-          defaultValue={searchQuery}
-          onChange={event => searchQueryChanged(event.target.value)}
+          value={searchQuery}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            const query = event.target.value;
+            searchQueryChanged(query);
+
+            if (!query.length) {
+              history.push('');
+              return;
+            }
+
+            if (history.location.pathname === '/search') {
+              history.replace('/search?query=' + query);
+            } else {
+              history.push('/search?query=' + query);
+            }
+          }}
         />
       </Stack>
 
