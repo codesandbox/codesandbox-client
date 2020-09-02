@@ -467,7 +467,7 @@ export const getExplorerDependencies: AsyncAction<string> = async (
 
   state.workspace.loadingDependencySearch = false;
 
-  state.workspace.explorerDependencies = [...searchResults];
+  state.workspace.explorerDependencies = searchResults;
 };
 
 export const clearExplorerDependencies: Action = ({ state }) => {
