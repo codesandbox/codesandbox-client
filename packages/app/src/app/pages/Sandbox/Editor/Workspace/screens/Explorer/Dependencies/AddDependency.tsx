@@ -139,7 +139,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                   modalOpened({ modal: 'searchDependencies' });
                 }}
               >
-                <Text>Show All</Text>
+                <Text>Open dependency search</Text>
                 <Text variant="muted">Ctrl + D</Text>
               </button>
             </ListAction>

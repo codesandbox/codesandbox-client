@@ -22,6 +22,7 @@ export const useKeyboard = (
   const [all] = useKeys('ctrl + d');
   const [up] = useKeys('up');
   const [down] = useKeys('down');
+  const [enter] = useKeys('enter');
 
   const addDependency = dependency => {
     addNpmDependency({
@@ -62,22 +63,23 @@ export const useKeyboard = (
         }
       }
     }
-
-    if (one) {
-      addDependency(explorerDependencies[0]);
-    }
-    if (two && explorerDependencies[1]) {
-      addDependency(explorerDependencies[1]);
-    }
-    if (three && explorerDependencies[2]) {
-      addDependency(explorerDependencies[2]);
-    }
-    if (four && explorerDependencies[3]) {
-      addDependency(explorerDependencies[3]);
-    }
-    if (all) {
-      modalOpened({ modal: 'searchDependencies' });
+    if (explorerDependencies.length) {
+      if (one || enter) {
+        addDependency(explorerDependencies[0]);
+      }
+      if (two && explorerDependencies[1]) {
+        addDependency(explorerDependencies[1]);
+      }
+      if (three && explorerDependencies[2]) {
+        addDependency(explorerDependencies[2]);
+      }
+      if (four && explorerDependencies[3]) {
+        addDependency(explorerDependencies[3]);
+      }
+      if (all) {
+        modalOpened({ modal: 'searchDependencies' });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [one, two, three, four, all, up, down, list]);
+  }, [one, two, three, four, all, up, down, list, enter]);
 };
