@@ -67,7 +67,7 @@ export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
               })}
               onClick={() => modalOpened({ modal: 'searchDependencies' })}
             >
-              All dependencies
+              Open dependency search
             </Button>
           </SidebarRow>
         </>
