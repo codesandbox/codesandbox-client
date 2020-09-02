@@ -11,6 +11,7 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { debounce, mutate, pipe } from 'overmind';
 
+import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import * as internalActions from './internalActions';
 import { createDiff } from './utils';
 
@@ -256,11 +257,28 @@ export const createCommitClicked: AsyncAction = async ({
     effects.notificationToast.success('Successfully created your commit');
   } catch (error) {
     state.git.isCommitting = false;
-    actions.internal.handleError({
-      error,
-      message:
-        'We were unable to create your commit. Please try again or report the issue.',
-    });
+
+    if (error.message.includes('code 422')) {
+      effects.notificationToast.add({
+        message: `You do not seem to have access to commit to ${sandbox.originalGit.username}/${sandbox.originalGit.repo}. Please read the documentation to grant access.`,
+        title: 'Error creating commit',
+        status: NotificationStatus.ERROR,
+        actions: {
+          primary: {
+            label: 'Open documentation',
+            run: () => {
+              effects.browser.openWindow('/docs');
+            },
+          },
+        },
+      });
+    } else {
+      actions.internal.handleError({
+        error,
+        message:
+          'We were unable to create your commit. Please try again or report the issue.',
+      });
+    }
   }
 };
 
