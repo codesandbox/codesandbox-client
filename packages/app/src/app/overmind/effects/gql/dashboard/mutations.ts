@@ -9,9 +9,11 @@ import {
   AddToFolderMutationVariables,
   MoveToTrashMutation,
   MoveToTrashMutationVariables,
-  ChangePrivacyMutationVariables,
   _PermanentlyDeleteSandboxesMutationVariables,
   ChangePrivacyMutation,
+  ChangePrivacyMutationVariables,
+  ChangeFrozenMutation,
+  ChangeFrozenMutationVariables,
   _PermanentlyDeleteSandboxesMutation,
   _LeaveTeamMutationVariables,
   _LeaveTeamMutation,
@@ -147,6 +149,18 @@ export const changePrivacy: Query<
 > = gql`
   mutation changePrivacy($sandboxIds: [ID!]!, $privacy: Int!) {
     setSandboxesPrivacy(sandboxIds: $sandboxIds, privacy: $privacy) {
+      ...sandboxFragmentDashboard
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const changeFrozen: Query<
+  ChangeFrozenMutation,
+  ChangeFrozenMutationVariables
+> = gql`
+  mutation changeFrozen($sandboxIds: [ID!]!, $isFrozen: Boolean!) {
+    setSandboxesFrozen(sandboxIds: $sandboxIds, isFrozen: $isFrozen) {
       ...sandboxFragmentDashboard
     }
   }

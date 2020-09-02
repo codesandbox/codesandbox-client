@@ -97,18 +97,12 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
       />
     );
   } else if (selectedItems.length > 1) {
-    menu = <MultiMenu selectedItems={selectedItems} page={page} />;
+    menu = <MultiMenu selectedItems={selectedItems} />;
   } else if (
     selectedItems[0].type === 'sandbox' ||
     selectedItems[0].type === 'template'
   ) {
-    menu = (
-      <SandboxMenu
-        item={selectedItems[0]}
-        setRenaming={setRenaming}
-        page={page}
-      />
-    );
+    menu = <SandboxMenu item={selectedItems[0]} setRenaming={setRenaming} />;
   } else if (selectedItems[0].type === 'folder') {
     menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
   } else if (selectedItems[0].type === 'repo') {

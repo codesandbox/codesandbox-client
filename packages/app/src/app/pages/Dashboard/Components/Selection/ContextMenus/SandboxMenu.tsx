@@ -8,17 +8,15 @@ import {
   dashboard,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Context, MenuItem } from '../ContextMenu';
-import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../../types';
+import { DashboardSandbox, DashboardTemplate } from '../../../types';
 
 interface SandboxMenuProps {
   item: DashboardSandbox | DashboardTemplate;
   setRenaming: (value: boolean) => void;
-  page: PageTypes;
 }
 export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   item,
   setRenaming,
-  page,
 }) => {
   const {
     state: { user, activeTeam, activeWorkspaceAuthorization },
@@ -108,6 +106,13 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       >
         Open {label} in New Tab
       </MenuItem>
+      <MenuItem
+        onSelect={() => {
+          effects.browser.copyToClipboard(`https://codesandbox.io${url}`);
+        }}
+      >
+        Copy {label} Link
+      </MenuItem>
       {isOwner && folderUrl !== location.pathname ? (
         <MenuItem
           onSelect={() => {
@@ -120,13 +125,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
       <Menu.Divider />
 
-      <MenuItem
-        onSelect={() => {
-          effects.browser.copyToClipboard(`https://codesandbox.io${url}`);
-        }}
-      >
-        Copy {label} Link
-      </MenuItem>
       {!isTemplate && activeWorkspaceAuthorization !== 'READ' ? (
         <MenuItem
           onSelect={() => {
@@ -159,110 +157,122 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Export {label}
         </MenuItem>
       )}
-      {isOwner ? (
+
+      {isPro ? (
         <>
-          {isPro ? (
-            <>
-              <Menu.Divider />
-              {sandbox.privacy !== 0 && (
-                <MenuItem
-                  onSelect={() =>
-                    actions.dashboard.changeSandboxesPrivacy({
-                      sandboxIds: [sandbox.id],
-                      privacy: 0,
-                      page,
-                      repoName: sandbox.originalGit?.repo,
-                    })
-                  }
-                >
-                  Make {label} Public
-                </MenuItem>
-              )}
-              {sandbox.privacy !== 1 && (
-                <MenuItem
-                  onSelect={() =>
-                    actions.dashboard.changeSandboxesPrivacy({
-                      sandboxIds: [sandbox.id],
-                      privacy: 1,
-                      page,
-                      repoName: sandbox.originalGit?.repo,
-                    })
-                  }
-                >
-                  Make {label} Unlisted
-                </MenuItem>
-              )}
-              {sandbox.privacy !== 2 && (
-                <MenuItem
-                  onSelect={() =>
-                    actions.dashboard.changeSandboxesPrivacy({
-                      sandboxIds: [sandbox.id],
-                      privacy: 2,
-                      page,
-                      repoName: sandbox.originalGit?.repo,
-                    })
-                  }
-                >
-                  Make {label} Private
-                </MenuItem>
-              )}
-            </>
-          ) : null}
           <Menu.Divider />
-          <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
-          {isTemplate ? (
+          {sandbox.privacy !== 0 && (
             <MenuItem
-              onSelect={() => {
-                actions.dashboard.unmakeTemplates({
-                  templateIds: [sandbox.id],
-                });
-              }}
-            >
-              Convert to Sandbox
-            </MenuItem>
-          ) : (
-            <MenuItem
-              onSelect={() => {
-                actions.dashboard.makeTemplates({
+              onSelect={() =>
+                actions.dashboard.changeSandboxesPrivacy({
                   sandboxIds: [sandbox.id],
-                  page,
-                  repoName: sandbox.originalGit?.repo,
-                });
-              }}
+                  privacy: 0,
+                })
+              }
             >
-              Make Sandbox a Template
+              Make {label} Public
             </MenuItem>
           )}
-          <Menu.Divider />
-          {isTemplate ? (
+          {sandbox.privacy !== 1 && (
             <MenuItem
-              onSelect={() => {
-                const template = item as DashboardTemplate;
-                actions.dashboard.deleteTemplate({
-                  sandboxId: template.sandbox.id,
-                  templateId: template.template.id,
-                });
-                setVisibility(false);
-              }}
+              onSelect={() =>
+                actions.dashboard.changeSandboxesPrivacy({
+                  sandboxIds: [sandbox.id],
+                  privacy: 1,
+                })
+              }
             >
-              Delete Template
+              Make {label} Unlisted
             </MenuItem>
-          ) : (
+          )}
+          {sandbox.privacy !== 2 && (
             <MenuItem
-              onSelect={() => {
-                actions.dashboard.deleteSandbox({
-                  ids: [sandbox.id],
-                  page,
-                  repoName: sandbox.originalGit?.repo,
-                });
-                setVisibility(false);
-              }}
+              onSelect={() =>
+                actions.dashboard.changeSandboxesPrivacy({
+                  sandboxIds: [sandbox.id],
+                  privacy: 2,
+                })
+              }
             >
-              Delete Sandbox
+              Make {label} Private
             </MenuItem>
           )}
         </>
       ) : null}
+      <Menu.Divider />
+      <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
+      {activeWorkspaceAuthorization !== 'READ' &&
+      !isTemplate &&
+      sandbox.isFrozen ? (
+        <MenuItem
+          onSelect={() => {
+            actions.dashboard.changeSandboxesFrozen({
+              sandboxIds: [sandbox.id],
+              isFrozen: false,
+            });
+          }}
+        >
+          Unfreeze {label}
+        </MenuItem>
+      ) : (
+        <MenuItem
+          onSelect={() => {
+            actions.dashboard.changeSandboxesFrozen({
+              sandboxIds: [sandbox.id],
+              isFrozen: true,
+            });
+          }}
+        >
+          Freeze {label}
+        </MenuItem>
+      )}
+      {isTemplate ? (
+        <MenuItem
+          onSelect={() => {
+            actions.dashboard.unmakeTemplates({
+              templateIds: [sandbox.id],
+            });
+          }}
+        >
+          Convert to Sandbox
+        </MenuItem>
+      ) : (
+        <MenuItem
+          onSelect={() => {
+            actions.dashboard.makeTemplates({
+              sandboxIds: [sandbox.id],
+            });
+          }}
+        >
+          Make Sandbox a Template
+        </MenuItem>
+      )}
+      <Menu.Divider />
+      {isTemplate ? (
+        <MenuItem
+          onSelect={() => {
+            const template = item as DashboardTemplate;
+            actions.dashboard.deleteTemplate({
+              sandboxId: template.sandbox.id,
+              templateId: template.template.id,
+            });
+            setVisibility(false);
+          }}
+        >
+          Delete Template
+        </MenuItem>
+      ) : (
+        <MenuItem
+          onSelect={() => {
+            actions.dashboard.deleteSandbox({
+              ids: [sandbox.id],
+            });
+            setVisibility(false);
+          }}
+        >
+          Delete Sandbox
+        </MenuItem>
+      )}
     </Menu.ContextMenu>
   );
 };

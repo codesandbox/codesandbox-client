@@ -8,7 +8,6 @@ import {
   DashboardFolder,
   DashboardRepo,
   DashboardNewMasterBranch,
-  PageTypes,
 } from '../../../types';
 
 interface IMultiMenuProps {
@@ -19,7 +18,6 @@ interface IMultiMenuProps {
     | DashboardRepo
     | DashboardNewMasterBranch
   >;
-  page: PageTypes;
 }
 
 type MenuAction =
@@ -29,7 +27,7 @@ type MenuAction =
       fn: () => void;
     };
 
-export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
+export const MultiMenu = ({ selectedItems }: IMultiMenuProps) => {
   const { actions, state } = useOvermind();
   const { visible, setVisibility, position } = React.useContext(Context);
 
@@ -63,7 +61,6 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const convertToTemplates = () => {
     actions.dashboard.makeTemplates({
       sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-      page,
     });
   };
 
@@ -94,7 +91,6 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     if (sandboxes.length) {
       actions.dashboard.deleteSandbox({
         ids: sandboxes.map(sandbox => sandbox.sandbox.id),
-        page,
       });
     }
 
@@ -105,8 +101,6 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     actions.dashboard.changeSandboxesPrivacy({
       sandboxIds: [...sandboxes, ...templates].map(s => s.sandbox.id),
       privacy,
-      page,
-      repoName: null,
     });
   };
 
@@ -124,6 +118,28 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const PRIVACY_ITEMS = state.user.subscription
     ? [MAKE_PUBLIC, MAKE_UNLISTED, MAKE_PRIVATE, DIVIDER]
     : [];
+
+  const FROZEN_ITEMS = [
+    sandboxes.some(s => !s.sandbox.isFrozen) && {
+      label: 'Freeze Sandboxes',
+      fn: () => {
+        actions.dashboard.changeSandboxesFrozen({
+          sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+          isFrozen: true,
+        });
+      },
+    },
+    sandboxes.some(s => s.sandbox.isFrozen) && {
+      label: 'Unfreeze Sandboxes',
+      fn: () => {
+        actions.dashboard.changeSandboxesFrozen({
+          sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+          isFrozen: false,
+        });
+      },
+    },
+  ].filter(Boolean);
+
   const EXPORT = { label: 'Export Items', fn: exportItems };
   const DELETE = { label: 'Delete Items', fn: deleteItems };
   const CONVERT_TO_TEMPLATE = {
@@ -144,21 +160,26 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   if (folders.length) {
     options = [DELETE];
   } else if (sandboxes.length && templates.length) {
-    options = [...PRIVACY_ITEMS, EXPORT, MOVE_ITEMS, DELETE];
+    options = [...PRIVACY_ITEMS, EXPORT, MOVE_ITEMS, DIVIDER, DELETE];
   } else if (templates.length) {
     options = [
       ...PRIVACY_ITEMS,
       EXPORT,
       MOVE_ITEMS,
       CONVERT_TO_SANDBOX,
+      DIVIDER,
       DELETE,
     ];
   } else if (sandboxes.length) {
     options = [
       ...PRIVACY_ITEMS,
       EXPORT,
+      DIVIDER,
+      ...FROZEN_ITEMS,
+      DIVIDER,
       MOVE_ITEMS,
       CONVERT_TO_TEMPLATE,
+      DIVIDER,
       DELETE,
     ];
   }
