@@ -259,6 +259,7 @@ export const createCommitClicked: AsyncAction = async ({
     state.git.isCommitting = false;
 
     if (error.message.includes('code 422')) {
+      if (!sandbox.originalGit) return;
       effects.notificationToast.add({
         message: `You do not seem to have access to commit to ${sandbox.originalGit.username}/${sandbox.originalGit.repo}. Please read the documentation to grant access.`,
         title: 'Error creating commit',
