@@ -268,7 +268,9 @@ export const createCommitClicked: AsyncAction = async ({
           primary: {
             label: 'Open documentation',
             run: () => {
-              effects.browser.openWindow('/docs');
+              effects.browser.openWindow(
+                'docs/git#committing-to-organizations'
+              );
             },
           },
         },
