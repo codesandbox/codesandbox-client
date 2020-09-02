@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useRef } from 'react';
 import {
   SidebarRow,
+  Button,
   Text,
   SearchInput,
   ListAction,
@@ -13,21 +14,10 @@ import { useOvermind } from 'app/overmind';
 import { useKeyboard } from './useKeys';
 
 const buttonStyles = css({
-  padding: 0,
-  appearance: 'none',
-  border: 'none',
-  background: 'transparent',
-  display: 'flex',
-  alignItems: 'center',
   color: 'inherit',
-  width: '100%',
-  paddingY: 2,
   justifyContent: 'space-between',
-
-  ':focus': {
-    outline: 'none',
-  },
 });
+
 export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
   const {
     actions: {
@@ -99,8 +89,9 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                 justify="space-between"
                 css={css({ color: 'sideBar.foreground' })}
               >
-                <button
+                <Button
                   css={buttonStyles}
+                  variant="link"
                   type="button"
                   onClick={() =>
                     addNpmDependency({
@@ -117,7 +108,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                     {dependency.name}
                   </Text>
                   <Text variant="muted">Ctrl + {i + 1}</Text>
-                </button>
+                </Button>
               </ListAction>
             ))}
             <ListAction
@@ -131,9 +122,10 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                 borderColor: 'sideBar.border',
               })}
             >
-              <button
-                tabIndex={0}
+              <Button
                 css={buttonStyles}
+                tabIndex={0}
+                variant="link"
                 type="button"
                 onClick={() => {
                   modalOpened({ modal: 'searchDependencies' });
@@ -141,7 +133,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
               >
                 <Text>Show All</Text>
                 <Text variant="muted">Ctrl + D</Text>
-              </button>
+              </Button>
             </ListAction>
           </Element>
         </OutsideClickHandler>
