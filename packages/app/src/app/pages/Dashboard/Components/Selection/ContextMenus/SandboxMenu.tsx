@@ -202,30 +202,30 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       <Menu.Divider />
       <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
       {activeWorkspaceAuthorization !== 'READ' &&
-      !isTemplate &&
-      sandbox.isFrozen ? (
-        <MenuItem
-          onSelect={() => {
-            actions.dashboard.changeSandboxesFrozen({
-              sandboxIds: [sandbox.id],
-              isFrozen: false,
-            });
-          }}
-        >
-          Unfreeze {label}
-        </MenuItem>
-      ) : (
-        <MenuItem
-          onSelect={() => {
-            actions.dashboard.changeSandboxesFrozen({
-              sandboxIds: [sandbox.id],
-              isFrozen: true,
-            });
-          }}
-        >
-          Freeze {label}
-        </MenuItem>
-      )}
+        !isTemplate &&
+        (sandbox.isFrozen ? (
+          <MenuItem
+            onSelect={() => {
+              actions.dashboard.changeSandboxesFrozen({
+                sandboxIds: [sandbox.id],
+                isFrozen: false,
+              });
+            }}
+          >
+            Unfreeze {label}
+          </MenuItem>
+        ) : (
+          <MenuItem
+            onSelect={() => {
+              actions.dashboard.changeSandboxesFrozen({
+                sandboxIds: [sandbox.id],
+                isFrozen: true,
+              });
+            }}
+          >
+            Freeze {label}
+          </MenuItem>
+        ))}
       {isTemplate ? (
         <MenuItem
           onSelect={() => {
