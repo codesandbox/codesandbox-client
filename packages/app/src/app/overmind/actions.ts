@@ -11,6 +11,7 @@ import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 import { Action, AsyncAction } from '.';
+import { DEFAULT_DASHBOARD_SANDBOXES } from './namespaces/dashboard/state';
 
 export const internal = internalActions;
 
@@ -317,14 +318,7 @@ export const setActiveTeam: AsyncAction<{
 
   state.activeTeam = id;
   effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
-  state.dashboard.sandboxes = {
-    ...state.dashboard.sandboxes,
-    DRAFTS: null,
-    TEMPLATES: null,
-    RECENT: null,
-    SEARCH: null,
-    ALL: null,
-  };
+  state.dashboard.sandboxes = DEFAULT_DASHBOARD_SANDBOXES;
 
   actions.internal.replaceWorkspaceParameterInUrl();
 
