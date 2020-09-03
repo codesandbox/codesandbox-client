@@ -340,7 +340,7 @@ export const setActiveTeam: AsyncAction<{
       effects.notificationToast.add({
         title: 'Could not find current workspace',
         message: "We've switched you to your personal workspace",
-        status: NotificationStatus.ERROR,
+        status: NotificationStatus.WARNING,
       });
       // Something went wrong while fetching the workspace
       actions.setActiveTeam({ id: personalWorkspaceId! });
