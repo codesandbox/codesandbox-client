@@ -52,7 +52,7 @@ export const onInitialize: OnInitialize = async (
 
   effects.gql.initialize(gqlOptions, () => effects.live.socket);
 
-  actions.internal.setActiveTeamFromUrlOrStore();
+  await actions.internal.setActiveTeamFromUrlOrStore();
 
   effects.notifications.initialize({
     provideSocket() {

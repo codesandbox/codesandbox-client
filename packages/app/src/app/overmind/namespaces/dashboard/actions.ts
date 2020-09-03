@@ -139,7 +139,8 @@ export const getTeams: AsyncAction = async ({ state, effects }) => {
     return;
   }
 
-  state.dashboard.teams = teams.me.teams;
+  state.dashboard.teams = teams.me.workspaces;
+  state.personalWorkspaceId = teams.me.personalWorkspaceId;
 };
 
 export const removeFromTeam: AsyncAction<string> = async (
@@ -174,7 +175,7 @@ export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
       teamId: state.activeTeam,
     });
 
-    actions.setActiveTeam({ id: null });
+    actions.setActiveTeam({ id: state.personalWorkspaceId! });
     actions.dashboard.getTeams();
 
     effects.notificationToast.success(

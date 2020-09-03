@@ -90,7 +90,7 @@ export const SandboxCard = ({
             name="more"
             size={9}
             title="Sandbox actions"
-            onClick={event => onContextMenu(event, sandbox.id)}
+            onClick={event => onContextMenu(event, sandbox)}
           />
         </Stack>
       </Stack>

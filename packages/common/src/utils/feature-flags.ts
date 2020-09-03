@@ -5,5 +5,3 @@
 
   it's a TS file, so you can add whatever logic you want as long as it's static
 */
-
-export const NEW_DASHBOARD = true;
