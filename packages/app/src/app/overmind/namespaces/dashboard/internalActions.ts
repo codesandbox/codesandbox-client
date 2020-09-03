@@ -30,7 +30,7 @@ export const changeSandboxesInState: Action<
 
   type SandboxTypes = keyof typeof dashboard.sandboxes;
   Object.keys(dashboard.sandboxes)
-    .filter(t => !dashboard.sandboxes[t])
+    .filter(t => dashboard.sandboxes[t])
     .forEach((type: SandboxTypes) => {
       // For typescript, we've filtered out all pages that have `null` as value, but we need to let TS
       // know that's the case here
@@ -102,7 +102,7 @@ export const deleteSandboxesFromState: Action<{
 
   type SandboxTypes = keyof typeof dashboard.sandboxes;
   Object.keys(dashboard.sandboxes)
-    .filter(t => !dashboard.sandboxes[t])
+    .filter(t => dashboard.sandboxes[t])
     .forEach((type: SandboxTypes) => {
       // For typescript, we've filtered out all pages that have `null` as value, but we need to let TS
       // know that's the case here
