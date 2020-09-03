@@ -75,28 +75,23 @@
 > Всякий раз, когда вы хотите обновить свою версию `master`, делайте регулярные `git pull`.
 
  
-5. If you want to debug the state of the app, install the
-   [Cerebral Debugger](https://github.com/cerebral/cerebral-debugger/releases)
-   and connect it to the port `8383`. After that, if you refresh the app, you
-   should be able to see the state, the sequences executed and so on. See
-   [documentation](https://cerebraljs.com/docs/introduction/devtools.html) for
-   reference.
+5. Если вы хотите отладить состояние приложения, установите [Cerebral Debugger](https://github.com/cerebral/cerebral-debugger/releases) и подключите его к порту "8383".            После этого, если вы обновите приложение, вы сможете увидеть состояние, выполненные последовательности и так далее. 
+   См. [documentation](https://cerebraljs.com/docs/introduction/devtools.html) для справки.
 
 ## Submitting a Pull Request
 
 Please go through existing issues and pull requests to check if somebody else is
 already working on it, we use `someone working on it` label to mark such issues.
+Пожалуйста, просмотрите существующие проблемы и вытяните запросы, чтобы проверить, не работает ли кто-то еще над этим, мы используем ярлык `someone working on it`, чтобы отметить такие проблемы.
 
-Also, make sure to run the tests and lint the code before you commit your
-changes.
+Кроме того, убедитесь, что вы выполнили тесты и обработали код перед фиксацией изменений.
 
 ```sh
 yarn test
 yarn lint
 ```
 
-Before running `yarn lint`, you must have build our `common` and `notifications`
-packages.
+Перед запуском `yarn lint` вы должны построить наши пакеты `common` и `notifications`.
 
 ```sh
 yarn build:deps
@@ -104,17 +99,14 @@ yarn build:deps
 
 ## Add yourself as a contributor
 
-This project follows the
-[all-contributors](https://github.com/all-contributors/all-contributors)
-specification. Contributions of any kind welcome!
+Этот проект следует за [всеми участниками](https://github.com/all-contributors/all-contributors) спецификации. Вклады любого рода приветствуются!
 
-To add yourself to the table of contributors on the `README.md`, please use the
-automated script as part of your PR:
+Чтобы добавить себя в таблицу вкладчиков на `README.md`, пожалуйста, используйте автоматизированный скрипт как часть вашего PR:
 
 ```sh
 yarn contributors:add
 ```
 
-Follow the prompt and commit `.all-contributorsrc` and `README.md` in the PR.
+Следуйте подсказке и зафиксируйте `.all-contributorsrc` и `README.md` в PR.
 
-Thank you for taking the time to contribute! 👍
+Спасибо, что нашли время внести свой вклад! 👍
