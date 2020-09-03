@@ -6,6 +6,7 @@ import {
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { CurrentTeamInfoFragmentFragment } from 'app/graphql/types';
 
+import { NotificationStatus } from '@codesandbox/notifications';
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
@@ -337,10 +338,18 @@ export const setActiveTeam: AsyncAction<{
         });
       }
     } catch (e) {
-      if (state.personalWorkspaceId) {
-        // Something went wrong while fetching the workspace
-        actions.setActiveTeam({ id: state.personalWorkspaceId });
+      let personalWorkspaceId = state.personalWorkspaceId;
+      if (!personalWorkspaceId) {
+        const res = await effects.gql.queries.getPersonalWorkspaceId({});
+        personalWorkspaceId = res.me.personalWorkspaceId;
       }
+      effects.notificationToast.add({
+        title: 'Could not find current workspace',
+        message: "We've switched you to your personal workspace",
+        status: NotificationStatus.ERROR,
+      });
+      // Something went wrong while fetching the workspace
+      actions.setActiveTeam({ id: state.personalWorkspaceId });
     }
   }
 
