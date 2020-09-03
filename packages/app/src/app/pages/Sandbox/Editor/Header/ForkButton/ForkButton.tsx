@@ -122,7 +122,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
   }[] = [
     userSpace,
     ...state.dashboard.teams.filter(t => t.id !== state.personalWorkspaceId),
-  ];
+  ].filter(Boolean);
 
   if (allTeams.length) {
     teams = allTeams.map(team => ({
