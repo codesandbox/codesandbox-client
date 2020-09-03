@@ -106,23 +106,34 @@ interface ForkButtonProps {
 export const ForkButton: React.FC<ForkButtonProps> = props => {
   const { state } = useOvermind();
   const { user } = props;
+  let teams: TeamItem[] = [];
+  let currentSpace: TeamItem = null;
+  let otherWorkspaces: TeamItem[] = [];
 
   const userSpace = state.dashboard.teams.find(
     t => t.id === state.personalWorkspaceId
   )!;
 
-  const allTeams: TeamItem[] = [
+  const allTeams: {
+    id: string;
+    name: string;
+    avatarUrl: string;
+    userAuthorizations: MemberAuthorization[];
+  }[] = [
     userSpace,
     ...state.dashboard.teams.filter(t => t.id !== state.personalWorkspaceId),
-  ].map(team => ({
-    teamId: team.id,
-    teamName: team.name,
-    teamAvatar: team.avatarUrl,
-    userAuthorizations: team.userAuthorizations,
-  }));
+  ];
 
-  const currentSpace = allTeams.find(t => t.teamId === state.activeTeam)!;
-  const otherWorkspaces = allTeams.filter(t => t !== currentSpace)!;
+  if (allTeams.length) {
+    teams = allTeams.map(team => ({
+      teamId: team.id,
+      teamName: team.name,
+      teamAvatar: team.avatarUrl,
+      userAuthorizations: team.userAuthorizations,
+    }));
+    currentSpace = teams.find(t => t.teamId === state.activeTeam)!;
+    otherWorkspaces = teams.filter(t => t !== currentSpace)!;
+  }
 
   return (
     <Stack>
@@ -131,73 +142,80 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
           onClick={() => props.forkClicked()}
           loading={state.editor.isForkingSandbox}
           variant={props.variant}
-          css={{
-            width: 'calc(100% - 26px)',
-            borderTopRightRadius: 0,
-            borderBottomRightRadius: 0,
-          }}
+          css={
+            otherWorkspaces.length
+              ? {
+                  width: 'calc(100% - 26px)',
+                  borderTopRightRadius: 0,
+                  borderBottomRightRadius: 0,
+                }
+              : {}
+          }
         >
           <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
         </Button>
       )}
-
-      <Menu>
-        <Menu.Button
-          variant={props.variant}
-          css={
-            state.activeWorkspaceAuthorization === 'READ'
-              ? {}
-              : {
-                  width: '26px',
-                  borderTopLeftRadius: 0,
-                  borderBottomLeftRadius: 0,
-                }
-          }
-        >
-          {state.activeWorkspaceAuthorization === 'READ' ? (
-            <>
-              <ForkIcon css={css({ height: 3, marginRight: 1 })} />{' '}
-              <Text css={css({ marginRight: 2 })}>Fork</Text>
-            </>
-          ) : null}
-          <Icon size={8} name="caret" />
-        </Menu.Button>
-        <Menu.List
-          css={css({
-            fontSize: 2,
-            lineHeight: 1,
-          })}
-          style={{
-            paddingTop: 4,
-            paddingBottom: 4,
-            marginLeft: '-4rem',
-            marginTop: -4,
-          }}
-        >
-          <TeamOrUserItem
-            forkClicked={props.forkClicked}
-            item={currentSpace}
-            disabled={state.activeWorkspaceAuthorization === 'READ'}
-            isPersonal={
-              currentSpace && currentSpace.teamId === state.personalWorkspaceId
+      {otherWorkspaces.length ? (
+        <Menu>
+          <Menu.Button
+            variant={props.variant}
+            css={
+              state.activeWorkspaceAuthorization === 'READ'
+                ? {}
+                : {
+                    width: '26px',
+                    borderTopLeftRadius: 0,
+                    borderBottomLeftRadius: 0,
+                  }
             }
-          />
-          <Menu.Divider />
-          {otherWorkspaces.map((space, i) => (
+          >
+            {state.activeWorkspaceAuthorization === 'READ' ? (
+              <>
+                <ForkIcon css={css({ height: 3, marginRight: 1 })} />{' '}
+                <Text css={css({ marginRight: 2 })}>Fork</Text>
+              </>
+            ) : null}
+            <Icon size={8} name="caret" />
+          </Menu.Button>
+          <Menu.List
+            css={css({
+              fontSize: 2,
+              lineHeight: 1,
+            })}
+            style={{
+              paddingTop: 4,
+              paddingBottom: 4,
+              marginLeft: '-4rem',
+              marginTop: -4,
+            }}
+          >
             <TeamOrUserItem
-              isPersonal={space.teamId === state.personalWorkspaceId}
-              key={space.teamId}
               forkClicked={props.forkClicked}
-              item={space}
-              disabled={
-                space.userAuthorizations.find(
-                  authorization => authorization.userId === user.id
-                )?.authorization === 'READ'
+              item={currentSpace}
+              disabled={state.activeWorkspaceAuthorization === 'READ'}
+              isPersonal={
+                currentSpace &&
+                currentSpace.teamId === state.personalWorkspaceId
               }
             />
-          ))}
-        </Menu.List>
-      </Menu>
+
+            <Menu.Divider />
+            {otherWorkspaces.map((space, i) => (
+              <TeamOrUserItem
+                isPersonal={space.teamId === state.personalWorkspaceId}
+                key={space.teamId}
+                forkClicked={props.forkClicked}
+                item={space}
+                disabled={
+                  space.userAuthorizations.find(
+                    authorization => authorization.userId === user.id
+                  )?.authorization === 'READ'
+                }
+              />
+            ))}
+          </Menu.List>
+        </Menu>
+      ) : null}
     </Stack>
   );
 };
