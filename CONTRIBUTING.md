@@ -2,18 +2,18 @@
 
 ## Table of Contents
 
-- [Code of Conduct](#code-of-conduct)
-- [Code Organization](#code-organization)
-- [Setting Up the project locally](#setting-up-the-project-locally)
-- [Submitting a Pull Request](#submitting-a-pull-request)
-- [Add yourself as a contributor](#add-yourself-as-a-contributor)
+- [Кодекс поведения](#code-of-conduct)
+- [Организация кода](#code-organization)
+- [Настройка проекта локально](#setting-up-the-project-locally)
+- [Отправка запроса pull](#submitting-a-pull-request)
+- [Добавить себя в качестве вкладчика](#add-yourself-as-a-contributor)
 
-## Code of Conduct
+## Кодекс поведения
 
 У нас есть кодекс поведения, который вы можете найти [здесь](./CODE_OF_CONDUCT.md) и каждый вкладчик должен подчиняться этим правилам. 
 Любые вопросы или PR, которые не соответствуют кодексу поведения, могут быть закрыты.
 
-## Code Organization
+## Организация кода
 
 Клиент CodeSandbox в настоящее время разделен на 5 частей. Мы используем `lerna`, чтобы
 разделять зависимости между этими частями.
@@ -36,7 +36,7 @@
 **Работа над вашим первым запросом на вытягивание?** Вы можете узнать, как это сделать из этой _free_ серии  
 [Как внести свой вклад в проект с открытым исходным кодом на GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
 
-## Setting Up the project locally
+## Настройка проекта локально
 
 Для установки проекта необходимо иметь `yarn` и `node`.
 
@@ -78,7 +78,7 @@
 5. Если вы хотите отладить состояние приложения, установите [Cerebral Debugger](https://github.com/cerebral/cerebral-debugger/releases) и подключите его к порту "8383".            После этого, если вы обновите приложение, вы сможете увидеть состояние, выполненные последовательности и так далее. 
    См. [documentation](https://cerebraljs.com/docs/introduction/devtools.html) для справки.
 
-## Submitting a Pull Request
+## Отправка запроса pull
 
 Please go through existing issues and pull requests to check if somebody else is
 already working on it, we use `someone working on it` label to mark such issues.
@@ -97,7 +97,7 @@ yarn lint
 yarn build:deps
 ```
 
-## Add yourself as a contributor
+## Добавить себя в качестве вкладчика
 
 Этот проект следует за [всеми участниками](https://github.com/all-contributors/all-contributors) спецификации. Вклады любого рода приветствуются!
 
