@@ -247,94 +247,100 @@ export type ReferenceMetadata = CodeReferenceMetadata | UserReferenceMetadata;
 
 export type RootMutationType = {
   __typename?: 'RootMutationType';
-  /** Invite someone to a team via email */
-  inviteToTeamViaEmail: Scalars['String'];
-  /** Create a team */
-  createTeam: Team;
+  createComment: Comment;
+  resolveComment: Comment;
   /** Set team member authorization levels */
   changeTeamMemberAuthorizations: Team;
-  /** Invite someone to a team */
-  inviteToTeam: Team;
+  /** Create a team */
+  createTeam: Team;
+  changeSandboxInvitationAuthorization: Invitation;
+  /** Unbookmark a template */
+  unbookmarkTemplate: Maybe<Template>;
+  /** Remove someone from a team */
+  removeFromTeam: Team;
+  setSandboxesPrivacy: Array<Sandbox>;
+  /** Set the description of the team */
+  setTeamDescription: Team;
+  /** Redeem an invite token from a team */
+  redeemTeamInviteToken: Team;
+  /** Make templates from sandboxes */
+  makeSandboxesTemplates: Array<Template>;
+  /** bookmark a template */
+  bookmarkTemplate: Maybe<Template>;
   /** Change authorization of a collaborator */
   changeCollaboratorAuthorization: Collaborator;
+  revokeSandboxInvitation: Invitation;
+  /** Add a collaborator */
+  addCollaborator: Collaborator;
+  unresolveComment: Comment;
+  /** Delete a collection and all subfolders */
+  deleteCollection: Array<Collection>;
+  /** Accept an invitation to a team */
+  acceptTeamInvitation: Team;
+  /** Set a user's notification preferences */
+  updateNotificationPreferences: NotificationPreferences;
+  /** Delete sandboxes */
+  deleteSandboxes: Array<Sandbox>;
+  /** Archive all notifications */
+  archiveAllNotifications: User;
   /** Mark one notification as read */
   markNotificationAsRead: Notification;
+  createCodeComment: Comment;
   redeemSandboxInvitation: Invitation;
   /** Rename a collection and all subfolders */
   renameCollection: Array<Collection>;
-  /** Set a user's notification preferences */
-  updateNotificationPreferences: NotificationPreferences;
-  /** Remove someone from a team */
-  removeFromTeam: Team;
-  renameSandbox: Sandbox;
-  /** Delete a collection and all subfolders */
-  deleteCollection: Array<Collection>;
-  /** Add a collaborator */
-  addCollaborator: Collaborator;
-  /** Convert templates back to sandboxes */
-  unmakeSandboxesTemplates: Array<Template>;
-  /** Leave a team */
-  leaveTeam: Scalars['String'];
-  /** Revoke an invitation to a team */
-  revokeTeamInvitation: Team;
-  createComment: Comment;
-  /** Create a collection */
-  createCollection: Collection;
-  changeSandboxInvitationAuthorization: Invitation;
-  createCodeComment: Comment;
   /** Remove a collaborator */
   removeCollaborator: Collaborator;
-  unresolveComment: Comment;
-  setSandboxesPrivacy: Array<Sandbox>;
-  /** Delete sandboxes */
-  deleteSandboxes: Array<Sandbox>;
-  updateComment: Comment;
-  /** Unbookmark a template */
-  unbookmarkTemplate: Maybe<Template>;
-  /** Accept an invitation to a team */
-  acceptTeamInvitation: Team;
-  /** Set the description of the team */
-  setTeamDescription: Team;
-  /** bookmark a template */
-  bookmarkTemplate: Maybe<Template>;
-  /** Add sandboxes to a collection */
-  addToCollection: Collection;
-  /** Update notification read status */
-  updateNotificationReadStatus: Notification;
-  revokeSandboxInvitation: Invitation;
-  permanentlyDeleteSandboxes: Array<Sandbox>;
-  resolveComment: Comment;
-  /** Archive one notification */
-  archiveNotification: Notification;
-  /** Mark all notifications as read */
-  markAllNotificationsAsRead: User;
+  /** Invite someone to a team */
+  inviteToTeam: Team;
+  /** Create a collection */
+  createCollection: Collection;
   /** Reject an invitation to a team */
   rejectTeamInvitation: Scalars['String'];
-  createSandboxInvitation: Invitation;
-  /** Make templates from sandboxes */
-  makeSandboxesTemplates: Array<Template>;
-  /** Archive all notifications */
-  archiveAllNotifications: User;
-  /** Redeem an invite token from a team */
-  redeemTeamInviteToken: Team;
-  /** Clear notification unread count */
-  clearNotificationCount: User;
-  /** Set the name of the team */
-  setTeamName: Team;
+  updateComment: Comment;
+  /** Revoke an invitation to a team */
+  revokeTeamInvitation: Team;
+  /** Archive one notification */
+  archiveNotification: Notification;
+  /** Convert templates back to sandboxes */
+  unmakeSandboxesTemplates: Array<Template>;
+  /** Invite someone to a team via email */
+  inviteToTeamViaEmail: Scalars['String'];
   /** Add sandboxes to a collection and/or team */
   addToCollectionOrTeam: Array<Maybe<Sandbox>>;
+  /** Add sandboxes to a collection */
+  addToCollection: Collection;
+  setSandboxesFrozen: Array<Sandbox>;
+  permanentlyDeleteSandboxes: Array<Sandbox>;
+  renameSandbox: Sandbox;
+  /** Clear notification unread count */
+  clearNotificationCount: User;
   /** Soft delete a comment. Note: all child comments will also be deleted. */
   deleteComment: Comment;
+  /** Update notification read status */
+  updateNotificationReadStatus: Notification;
+  /** Mark all notifications as read */
+  markAllNotificationsAsRead: User;
+  createSandboxInvitation: Invitation;
+  /** Leave a team */
+  leaveTeam: Scalars['String'];
+  /** Set the name of the team */
+  setTeamName: Team;
 };
 
-export type RootMutationTypeInviteToTeamViaEmailArgs = {
-  email: Scalars['String'];
-  teamId: Scalars['UUID4'];
+export type RootMutationTypeCreateCommentArgs = {
+  codeReference: Maybe<CodeReference>;
+  codeReferences: Maybe<Array<CodeReference>>;
+  content: Scalars['String'];
+  id: Maybe<Scalars['ID']>;
+  parentCommentId: Maybe<Scalars['ID']>;
+  sandboxId: Scalars['ID'];
+  userReferences: Maybe<Array<UserReference>>;
 };
 
-export type RootMutationTypeCreateTeamArgs = {
-  name: Scalars['String'];
-  pilot: Maybe<Scalars['Boolean']>;
+export type RootMutationTypeResolveCommentArgs = {
+  commentId: Scalars['UUID4'];
+  sandboxId: Scalars['ID'];
 };
 
 export type RootMutationTypeChangeTeamMemberAuthorizationsArgs = {
@@ -342,9 +348,48 @@ export type RootMutationTypeChangeTeamMemberAuthorizationsArgs = {
   teamId: Scalars['ID'];
 };
 
-export type RootMutationTypeInviteToTeamArgs = {
+export type RootMutationTypeCreateTeamArgs = {
+  name: Scalars['String'];
+  pilot: Maybe<Scalars['Boolean']>;
+};
+
+export type RootMutationTypeChangeSandboxInvitationAuthorizationArgs = {
+  authorization: Authorization;
+  invitationId: Scalars['UUID4'];
+  sandboxId: Scalars['ID'];
+};
+
+export type RootMutationTypeUnbookmarkTemplateArgs = {
+  teamId: Maybe<Scalars['UUID4']>;
+  templateId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeRemoveFromTeamArgs = {
   teamId: Scalars['UUID4'];
-  username: Scalars['String'];
+  userId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeSetSandboxesPrivacyArgs = {
+  privacy: Maybe<Scalars['Int']>;
+  sandboxIds: Array<Scalars['ID']>;
+};
+
+export type RootMutationTypeSetTeamDescriptionArgs = {
+  description: Scalars['String'];
+  teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeRedeemTeamInviteTokenArgs = {
+  inviteToken: Scalars['String'];
+};
+
+export type RootMutationTypeMakeSandboxesTemplatesArgs = {
+  sandboxIds: Array<Scalars['ID']>;
+};
+
+export type RootMutationTypeBookmarkTemplateArgs = {
+  teamId: Maybe<Scalars['UUID4']>;
+  templateId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeChangeCollaboratorAuthorizationArgs = {
@@ -353,8 +398,53 @@ export type RootMutationTypeChangeCollaboratorAuthorizationArgs = {
   username: Scalars['String'];
 };
 
+export type RootMutationTypeRevokeSandboxInvitationArgs = {
+  invitationId: Scalars['UUID4'];
+  sandboxId: Scalars['ID'];
+};
+
+export type RootMutationTypeAddCollaboratorArgs = {
+  authorization: Authorization;
+  sandboxId: Scalars['ID'];
+  username: Scalars['String'];
+};
+
+export type RootMutationTypeUnresolveCommentArgs = {
+  commentId: Scalars['UUID4'];
+  sandboxId: Scalars['ID'];
+};
+
+export type RootMutationTypeDeleteCollectionArgs = {
+  path: Scalars['String'];
+  teamId: Maybe<Scalars['UUID4']>;
+};
+
+export type RootMutationTypeAcceptTeamInvitationArgs = {
+  teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeUpdateNotificationPreferencesArgs = {
+  emailCommentMention: Maybe<Scalars['Boolean']>;
+  emailCommentReply: Maybe<Scalars['Boolean']>;
+  emailNewComment: Maybe<Scalars['Boolean']>;
+};
+
+export type RootMutationTypeDeleteSandboxesArgs = {
+  sandboxIds: Array<Scalars['ID']>;
+};
+
 export type RootMutationTypeMarkNotificationAsReadArgs = {
   notificationId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeCreateCodeCommentArgs = {
+  anchorReference: CodeReference;
+  codeReferences: Maybe<Array<CodeReference>>;
+  content: Scalars['String'];
+  id: Maybe<Scalars['ID']>;
+  parentCommentId: Maybe<Scalars['ID']>;
+  sandboxId: Scalars['ID'];
+  userReferences: Maybe<Array<UserReference>>;
 };
 
 export type RootMutationTypeRedeemSandboxInvitationArgs = {
@@ -369,54 +459,14 @@ export type RootMutationTypeRenameCollectionArgs = {
   teamId: Maybe<Scalars['UUID4']>;
 };
 
-export type RootMutationTypeUpdateNotificationPreferencesArgs = {
-  emailCommentMention: Maybe<Scalars['Boolean']>;
-  emailCommentReply: Maybe<Scalars['Boolean']>;
-  emailNewComment: Maybe<Scalars['Boolean']>;
-};
-
-export type RootMutationTypeRemoveFromTeamArgs = {
-  teamId: Scalars['UUID4'];
-  userId: Scalars['UUID4'];
-};
-
-export type RootMutationTypeRenameSandboxArgs = {
-  id: Scalars['ID'];
-  title: Scalars['String'];
-};
-
-export type RootMutationTypeDeleteCollectionArgs = {
-  path: Scalars['String'];
-  teamId: Maybe<Scalars['UUID4']>;
-};
-
-export type RootMutationTypeAddCollaboratorArgs = {
-  authorization: Authorization;
+export type RootMutationTypeRemoveCollaboratorArgs = {
   sandboxId: Scalars['ID'];
   username: Scalars['String'];
 };
 
-export type RootMutationTypeUnmakeSandboxesTemplatesArgs = {
-  sandboxIds: Array<Scalars['ID']>;
-};
-
-export type RootMutationTypeLeaveTeamArgs = {
+export type RootMutationTypeInviteToTeamArgs = {
   teamId: Scalars['UUID4'];
-};
-
-export type RootMutationTypeRevokeTeamInvitationArgs = {
-  teamId: Scalars['UUID4'];
-  userId: Scalars['UUID4'];
-};
-
-export type RootMutationTypeCreateCommentArgs = {
-  codeReference: Maybe<CodeReference>;
-  codeReferences: Maybe<Array<CodeReference>>;
-  content: Scalars['String'];
-  id: Maybe<Scalars['ID']>;
-  parentCommentId: Maybe<Scalars['ID']>;
-  sandboxId: Scalars['ID'];
-  userReferences: Maybe<Array<UserReference>>;
+  username: Scalars['String'];
 };
 
 export type RootMutationTypeCreateCollectionArgs = {
@@ -424,39 +474,8 @@ export type RootMutationTypeCreateCollectionArgs = {
   teamId: Maybe<Scalars['UUID4']>;
 };
 
-export type RootMutationTypeChangeSandboxInvitationAuthorizationArgs = {
-  authorization: Authorization;
-  invitationId: Scalars['UUID4'];
-  sandboxId: Scalars['ID'];
-};
-
-export type RootMutationTypeCreateCodeCommentArgs = {
-  anchorReference: CodeReference;
-  codeReferences: Maybe<Array<CodeReference>>;
-  content: Scalars['String'];
-  id: Maybe<Scalars['ID']>;
-  parentCommentId: Maybe<Scalars['ID']>;
-  sandboxId: Scalars['ID'];
-  userReferences: Maybe<Array<UserReference>>;
-};
-
-export type RootMutationTypeRemoveCollaboratorArgs = {
-  sandboxId: Scalars['ID'];
-  username: Scalars['String'];
-};
-
-export type RootMutationTypeUnresolveCommentArgs = {
-  commentId: Scalars['UUID4'];
-  sandboxId: Scalars['ID'];
-};
-
-export type RootMutationTypeSetSandboxesPrivacyArgs = {
-  privacy: Maybe<Scalars['Int']>;
-  sandboxIds: Array<Scalars['ID']>;
-};
-
-export type RootMutationTypeDeleteSandboxesArgs = {
-  sandboxIds: Array<Scalars['ID']>;
+export type RootMutationTypeRejectTeamInvitationArgs = {
+  teamId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeUpdateCommentArgs = {
@@ -467,74 +486,21 @@ export type RootMutationTypeUpdateCommentArgs = {
   userReferences: Maybe<Array<UserReference>>;
 };
 
-export type RootMutationTypeUnbookmarkTemplateArgs = {
-  teamId: Maybe<Scalars['UUID4']>;
-  templateId: Scalars['UUID4'];
-};
-
-export type RootMutationTypeAcceptTeamInvitationArgs = {
+export type RootMutationTypeRevokeTeamInvitationArgs = {
   teamId: Scalars['UUID4'];
-};
-
-export type RootMutationTypeSetTeamDescriptionArgs = {
-  description: Scalars['String'];
-  teamId: Scalars['UUID4'];
-};
-
-export type RootMutationTypeBookmarkTemplateArgs = {
-  teamId: Maybe<Scalars['UUID4']>;
-  templateId: Scalars['UUID4'];
-};
-
-export type RootMutationTypeAddToCollectionArgs = {
-  collectionPath: Scalars['String'];
-  sandboxIds: Maybe<Array<Maybe<Scalars['ID']>>>;
-  teamId: Maybe<Scalars['UUID4']>;
-};
-
-export type RootMutationTypeUpdateNotificationReadStatusArgs = {
-  notificationId: Scalars['UUID4'];
-  read: Scalars['Boolean'];
-};
-
-export type RootMutationTypeRevokeSandboxInvitationArgs = {
-  invitationId: Scalars['UUID4'];
-  sandboxId: Scalars['ID'];
-};
-
-export type RootMutationTypePermanentlyDeleteSandboxesArgs = {
-  sandboxIds: Array<Scalars['ID']>;
-};
-
-export type RootMutationTypeResolveCommentArgs = {
-  commentId: Scalars['UUID4'];
-  sandboxId: Scalars['ID'];
+  userId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeArchiveNotificationArgs = {
   notificationId: Scalars['UUID4'];
 };
 
-export type RootMutationTypeRejectTeamInvitationArgs = {
-  teamId: Scalars['UUID4'];
-};
-
-export type RootMutationTypeCreateSandboxInvitationArgs = {
-  authorization: Authorization;
-  email: Scalars['String'];
-  sandboxId: Scalars['ID'];
-};
-
-export type RootMutationTypeMakeSandboxesTemplatesArgs = {
+export type RootMutationTypeUnmakeSandboxesTemplatesArgs = {
   sandboxIds: Array<Scalars['ID']>;
 };
 
-export type RootMutationTypeRedeemTeamInviteTokenArgs = {
-  inviteToken: Scalars['String'];
-};
-
-export type RootMutationTypeSetTeamNameArgs = {
-  name: Scalars['String'];
+export type RootMutationTypeInviteToTeamViaEmailArgs = {
+  email: Scalars['String'];
   teamId: Scalars['UUID4'];
 };
 
@@ -544,9 +510,49 @@ export type RootMutationTypeAddToCollectionOrTeamArgs = {
   teamId: Maybe<Scalars['UUID4']>;
 };
 
+export type RootMutationTypeAddToCollectionArgs = {
+  collectionPath: Scalars['String'];
+  sandboxIds: Maybe<Array<Maybe<Scalars['ID']>>>;
+  teamId: Maybe<Scalars['UUID4']>;
+};
+
+export type RootMutationTypeSetSandboxesFrozenArgs = {
+  isFrozen: Scalars['Boolean'];
+  sandboxIds: Array<Scalars['ID']>;
+};
+
+export type RootMutationTypePermanentlyDeleteSandboxesArgs = {
+  sandboxIds: Array<Scalars['ID']>;
+};
+
+export type RootMutationTypeRenameSandboxArgs = {
+  id: Scalars['ID'];
+  title: Scalars['String'];
+};
+
 export type RootMutationTypeDeleteCommentArgs = {
   commentId: Scalars['UUID4'];
   sandboxId: Scalars['ID'];
+};
+
+export type RootMutationTypeUpdateNotificationReadStatusArgs = {
+  notificationId: Scalars['UUID4'];
+  read: Scalars['Boolean'];
+};
+
+export type RootMutationTypeCreateSandboxInvitationArgs = {
+  authorization: Authorization;
+  email: Scalars['String'];
+  sandboxId: Scalars['ID'];
+};
+
+export type RootMutationTypeLeaveTeamArgs = {
+  teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeSetTeamNameArgs = {
+  name: Scalars['String'];
+  teamId: Scalars['UUID4'];
 };
 
 export type RootQueryType = {
@@ -653,6 +659,7 @@ export type Sandbox = {
   id: Scalars['ID'];
   insertedAt: Scalars['String'];
   invitations: Array<Invitation>;
+  isFrozen: Scalars['Boolean'];
   likeCount: Scalars['Int'];
   /** If the sandbox has been forked from a git sandbox this will be set */
   originalGit: Maybe<Git>;
@@ -1271,37 +1278,6 @@ export type CommentRemovedSubscription = {
   } & CommentFragment;
 };
 
-export type RepoFragmentDashboardFragment = { __typename?: 'Sandbox' } & Pick<
-  Sandbox,
-  | 'id'
-  | 'alias'
-  | 'title'
-  | 'insertedAt'
-  | 'updatedAt'
-  | 'removedAt'
-  | 'privacy'
-  | 'screenshotUrl'
-  | 'screenshotOutdated'
-  | 'likeCount'
-  | 'forkCount'
-  | 'viewCount'
-  | 'prNumber'
-> & {
-    source: { __typename?: 'Source' } & Pick<Source, 'template'>;
-    baseGit: Maybe<
-      { __typename?: 'Git' } & Pick<
-        Git,
-        'branch' | 'id' | 'repo' | 'username' | 'path'
-      >
-    >;
-    originalGit: Maybe<
-      { __typename?: 'Git' } & Pick<
-        Git,
-        'branch' | 'id' | 'repo' | 'username' | 'path'
-      >
-    >;
-  };
-
 export type SandboxFragmentDashboardFragment = {
   __typename?: 'Sandbox';
 } & Pick<
@@ -1314,6 +1290,7 @@ export type SandboxFragmentDashboardFragment = {
   | 'updatedAt'
   | 'removedAt'
   | 'privacy'
+  | 'isFrozen'
   | 'screenshotUrl'
   | 'screenshotOutdated'
   | 'viewCount'
@@ -1328,6 +1305,24 @@ export type SandboxFragmentDashboardFragment = {
     collection: Maybe<{ __typename?: 'Collection' } & Pick<Collection, 'path'>>;
   };
 
+export type RepoFragmentDashboardFragment = { __typename?: 'Sandbox' } & Pick<
+  Sandbox,
+  'prNumber'
+> & {
+    baseGit: Maybe<
+      { __typename?: 'Git' } & Pick<
+        Git,
+        'branch' | 'id' | 'repo' | 'username' | 'path'
+      >
+    >;
+    originalGit: Maybe<
+      { __typename?: 'Git' } & Pick<
+        Git,
+        'branch' | 'id' | 'repo' | 'username' | 'path'
+      >
+    >;
+  } & SandboxFragmentDashboardFragment;
+
 export type SidebarCollectionDashboardFragment = {
   __typename?: 'Collection';
 } & Pick<Collection, 'id' | 'path' | 'sandboxCount'>;
@@ -1336,30 +1331,17 @@ export type TemplateFragmentDashboardFragment = {
   __typename?: 'Template';
 } & Pick<Template, 'id' | 'color' | 'iconUrl' | 'published'> & {
     sandbox: Maybe<
-      { __typename?: 'Sandbox' } & Pick<
-        Sandbox,
-        | 'id'
-        | 'alias'
-        | 'title'
-        | 'description'
-        | 'insertedAt'
-        | 'updatedAt'
-        | 'removedAt'
-        | 'viewCount'
-        | 'screenshotUrl'
-        | 'screenshotOutdated'
-        | 'privacy'
-      > & {
-          git: Maybe<
-            { __typename?: 'Git' } & Pick<
-              Git,
-              'id' | 'username' | 'commitSha' | 'path' | 'repo' | 'branch'
-            >
-          >;
-          team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'name'>>;
-          author: Maybe<{ __typename?: 'User' } & Pick<User, 'username'>>;
-          source: { __typename?: 'Source' } & Pick<Source, 'template'>;
-        }
+      { __typename?: 'Sandbox' } & {
+        git: Maybe<
+          { __typename?: 'Git' } & Pick<
+            Git,
+            'id' | 'username' | 'commitSha' | 'path' | 'repo' | 'branch'
+          >
+        >;
+        team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'name'>>;
+        author: Maybe<{ __typename?: 'User' } & Pick<User, 'username'>>;
+        source: { __typename?: 'Source' } & Pick<Source, 'template'>;
+      } & SandboxFragmentDashboardFragment
     >;
   };
 
@@ -1484,6 +1466,17 @@ export type ChangePrivacyMutationVariables = Exact<{
 
 export type ChangePrivacyMutation = { __typename?: 'RootMutationType' } & {
   setSandboxesPrivacy: Array<
+    { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
+  >;
+};
+
+export type ChangeFrozenMutationVariables = Exact<{
+  sandboxIds: Array<Scalars['ID']>;
+  isFrozen: Scalars['Boolean'];
+}>;
+
+export type ChangeFrozenMutation = { __typename?: 'RootMutationType' } & {
+  setSandboxesFrozen: Array<
     { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
   >;
 };
