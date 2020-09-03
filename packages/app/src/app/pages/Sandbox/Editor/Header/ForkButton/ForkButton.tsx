@@ -107,7 +107,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
   const { state } = useOvermind();
   const { user } = props;
   let teams: TeamItem[] = [];
-  let currentSpace: TeamItem = null;
+  let currentSpace: TeamItem | null = null;
   let otherWorkspaces: TeamItem[] = [];
 
   const userSpace = state.dashboard.teams.find(
