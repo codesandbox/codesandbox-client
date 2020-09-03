@@ -178,7 +178,9 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
             forkClicked={props.forkClicked}
             item={currentSpace}
             disabled={state.activeWorkspaceAuthorization === 'READ'}
-            isPersonal={currentSpace.teamId === state.personalWorkspaceId}
+            isPersonal={
+              currentSpace && currentSpace.teamId === state.personalWorkspaceId
+            }
           />
           <Menu.Divider />
           {otherWorkspaces.map((space, i) => (
