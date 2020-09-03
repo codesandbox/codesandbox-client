@@ -4,7 +4,10 @@ import {
   Sandbox,
   UploadFile,
 } from '@codesandbox/common/lib/types';
-import { CurrentTeamInfoFragmentFragment as CurrentTeam } from 'app/graphql/types';
+import {
+  CurrentTeamInfoFragmentFragment as CurrentTeam,
+  TeamMemberAuthorization,
+} from 'app/graphql/types';
 import { derived } from 'overmind';
 import { hasLogIn } from '@codesandbox/common/lib/utils/user';
 
@@ -27,6 +30,7 @@ type State = {
   error: string | null;
   contributors: string[];
   user: CurrentUser | null;
+  activeWorkspaceAuthorization: TeamMemberAuthorization;
   activeTeam: string | null;
   activeTeamInfo: CurrentTeam | null;
   connected: boolean;
@@ -51,6 +55,14 @@ type State = {
   isContributor: (username: String) => boolean;
   signInModalOpen: boolean;
   redirectOnLogin: string | null;
+  duplicateAccountStatus: {
+    duplicate: boolean;
+    provider: 'google' | 'github';
+  } | null;
+  loadingAuth: {
+    google: boolean;
+    github: boolean;
+  };
 };
 
 export const state: State = {
@@ -76,6 +88,16 @@ export const state: State = {
   authToken: null,
   error: null,
   user: null,
+  activeWorkspaceAuthorization: derived(
+    ({ user, activeTeam, activeTeamInfo }: State) => {
+      if (!activeTeam || !activeTeamInfo || !user)
+        return TeamMemberAuthorization.Admin;
+
+      return activeTeamInfo.userAuthorizations.find(
+        auth => auth.userId === user.id
+      )!.authorization;
+    }
+  ),
   activeTeam: null,
   activeTeamInfo: null,
   connected: true,
@@ -98,4 +120,9 @@ export const state: State = {
   updateStatus: null,
   signInModalOpen: false,
   redirectOnLogin: null,
+  duplicateAccountStatus: null,
+  loadingAuth: {
+    google: false,
+    github: false,
+  },
 };

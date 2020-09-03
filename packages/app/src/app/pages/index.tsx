@@ -11,11 +11,26 @@ import { CreateSandboxModal } from 'app/components/CreateNewSandbox/CreateSandbo
 
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
-import { Dashboard } from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
-import { Dashboard as NewDashboard } from './NewDashboard';
+import { Dashboard } from './Dashboard';
 import { Sandbox } from './Sandbox';
+
+const MoveSandboxFolderModal = Loadable(() =>
+  import(
+    /* webpackChunkName: 'move-sandbox-modal' */ './common/Modals/MoveSandboxFolderModal'
+  ).then(module => ({
+    default: module.MoveSandboxFolderModal,
+  }))
+);
+
+const DuplicateAccount = Loadable(() =>
+  import(
+    /* webpackChunkName: 'move-sandbox-modal' */ './DuplicateAccount'
+  ).then(module => ({
+    default: module.DuplicateAccount,
+  }))
+);
 
 const routeDebugger = _debug('cs:app:router');
 
@@ -45,6 +60,11 @@ const NotFound = Loadable(() =>
 );
 const Profile = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile').then(module => ({
+    default: module.Profile,
+  }))
+);
+const Profile2 = Loadable(() =>
+  import(/* webpackChunkName: 'page-profile' */ './Profile2').then(module => ({
     default: module.Profile,
   }))
 );
@@ -98,7 +118,7 @@ const Boundary = withRouter(ErrorBoundary);
 const RoutesComponent: React.FC = () => {
   const {
     actions: { appUnmounted },
-    state: { signInModalOpen, user },
+    state: { signInModalOpen, user, modals },
   } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
@@ -139,15 +159,18 @@ const RoutesComponent: React.FC = () => {
               component={() => <Sandbox showNewSandboxModal />}
             />
             <Route path="/invite/:token" component={TeamInvitation} />
+
             <Route path="/dashboard" component={Dashboard} />
-            <Route path="/new-dashboard" component={NewDashboard} />
+            <Route path="/new-dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
             <Route path="/signin" exact component={SignIn} />
+            <Route path="/signin/duplicate" component={DuplicateAccount} />
             <Route path="/signup/:userId" exact component={SignUp} />
             <Route path="/signin/:jwt?" component={SignInAuth} />
             <Route path="/u/:username" component={Profile} />
+            <Route path="/u2/:username" component={Profile2} />
             <Route path="/search" component={Search} />
             <Route path="/patron" component={Patron} />
             <Route path="/pro" component={Pro} />
@@ -164,6 +187,7 @@ const RoutesComponent: React.FC = () => {
         <Modals />
         {signInModalOpen && !user ? <SignInModal /> : null}
         <CreateSandboxModal />
+        {modals.moveSandboxModal.isCurrent && <MoveSandboxFolderModal />}
       </Boundary>
     </Container>
   );

@@ -1,8 +1,8 @@
 import styled, { css } from 'styled-components';
 import BaseSearchIcon from 'react-icons/lib/go/search';
-import Relative from '@codesandbox/common/lib/components/Relative';
 
-export const Container = styled(Relative)`
+export const Container = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   font-weight: 500;

@@ -8,6 +8,7 @@ import {
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
+  TeamMemberAuthorization,
 } from 'app/graphql/types';
 import { getDecoratedCollection } from './utils';
 import { PageTypes, OrderBy, sandboxesTypes } from './types';
@@ -284,9 +285,7 @@ export const getAllFolders: AsyncAction = async ({ state, effects }) => {
       getDecoratedCollection(collection)
     );
 
-    state.dashboard.allCollections = collectionsByLevel.filter(
-      c => c.id && c.name
-    );
+    state.dashboard.allCollections = collectionsByLevel.filter(c => c.id);
   } catch {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
@@ -445,37 +444,33 @@ export const getReposByPath: AsyncAction<string> = async (
       dashboard.sandboxes.REPOS = {};
     }
 
-    const repos = sandboxes
-      .filter(s => s.originalGit && s.originalGit.repo !== 'static-template')
-      .reduce((acc, curr) => {
-        if (!curr.originalGit || !curr.originalGit.repo) return acc;
-        if (acc[curr.originalGit.repo]) {
-          const newSandboxes = acc[curr.originalGit.repo].sandboxes.concat(
-            curr
-          );
-          acc[curr.originalGit.repo] = {
-            ...acc[curr.originalGit.repo],
-            sandboxes: newSandboxes,
-            lastEdited: newSandboxes
-              .map(s => parseISO(s.updatedAt))
-              .sort(compareDesc)[0],
-          };
-
-          return acc;
-        }
-
+    const repos = sandboxes.reduce((acc, curr) => {
+      if (!curr.originalGit || !curr.originalGit.repo) return acc;
+      if (acc[curr.originalGit.repo]) {
+        const newSandboxes = acc[curr.originalGit.repo].sandboxes.concat(curr);
         acc[curr.originalGit.repo] = {
-          id: curr.originalGit.id,
-          name: curr.originalGit.repo,
-          branch: curr.originalGit.branch,
-          owner: curr.originalGit.username,
-          path: '/' + curr.originalGit.repo,
-          lastEdited: parseISO(curr.updatedAt),
-          sandboxes: [curr],
+          ...acc[curr.originalGit.repo],
+          sandboxes: newSandboxes,
+          lastEdited: newSandboxes
+            .map(s => parseISO(s.updatedAt))
+            .sort(compareDesc)[0],
         };
 
         return acc;
-      }, {});
+      }
+
+      acc[curr.originalGit.repo] = {
+        id: curr.originalGit.id,
+        name: curr.originalGit.repo,
+        branch: curr.originalGit.branch,
+        owner: curr.originalGit.username,
+        path: '/' + curr.originalGit.repo,
+        lastEdited: parseISO(curr.updatedAt),
+        sandboxes: [curr],
+      };
+
+      return acc;
+    }, {});
     dashboard.sandboxes.REPOS = repos;
   } catch (error) {
     effects.notificationToast.error('There was a problem getting your repos');
@@ -1089,10 +1084,16 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
 export const addSandboxesToFolder: AsyncAction<{
   sandboxIds: string[];
   collectionPath: string | null;
+  teamId?: string | null;
   deleteFromCurrentPath?: boolean;
 }> = async (
   { state, effects, actions },
-  { sandboxIds, collectionPath, deleteFromCurrentPath = true }
+  {
+    sandboxIds,
+    collectionPath,
+    teamId = state.activeTeam,
+    deleteFromCurrentPath = true,
+  }
 ) => {
   effects.analytics.track('Dashboard - Moved Sandboxes', {
     dashboardVersion: 2,
@@ -1114,9 +1115,7 @@ export const addSandboxesToFolder: AsyncAction<{
     await effects.gql.mutations.addSandboxToFolder({
       sandboxIds,
       collectionPath,
-      // only way to pass, null is a value in the BE
-      // @ts-ignore
-      teamId: state.activeTeam || undefined,
+      teamId,
     });
 
     if (collectionPath) {
@@ -1249,16 +1248,12 @@ export const setTeamInfo: AsyncAction<{
   }
 };
 
-export const changeSandboxPrivacy: AsyncAction<{
-  id: string;
+export const changeSandboxesPrivacy: AsyncAction<{
+  sandboxIds: string[];
   privacy: 0 | 1 | 2;
-  oldPrivacy: 0 | 1 | 2;
   page: PageTypes;
   repoName: string | null;
-}> = async (
-  { actions, effects },
-  { id, privacy, oldPrivacy, page, repoName }
-) => {
+}> = async ({ actions, effects }, { sandboxIds, privacy, page, repoName }) => {
   effects.analytics.track('Sandbox - Update Privacy', {
     privacy,
     source: 'dashboard',
@@ -1266,25 +1261,27 @@ export const changeSandboxPrivacy: AsyncAction<{
   });
 
   // optimistic update
-
-  actions.dashboard.changeSandboxPrivacyInState({
-    id,
+  const changedPrivacies = actions.dashboard.changeSandboxPrivacyInState({
+    sandboxIds,
     privacy,
     page,
     repoName,
   });
 
   try {
-    await effects.api.updatePrivacy(id, privacy);
+    await effects.gql.mutations.changePrivacy({ sandboxIds, privacy });
   } catch (error) {
-    // rollback optimistic
-
-    actions.dashboard.changeSandboxPrivacyInState({
-      id,
-      privacy: oldPrivacy,
-      page,
-      repoName,
-    });
+    // rollback optimistic by using the old privacies that have been changed
+    for (let i = 0; i <= 2; i++) {
+      if (changedPrivacies.changedSandboxes[i].length > 0) {
+        actions.dashboard.changeSandboxPrivacyInState({
+          sandboxIds: changedPrivacies.changedSandboxes[i],
+          privacy: i as 0 | 1 | 2,
+          page,
+          repoName,
+        });
+      }
+    }
 
     actions.internal.handleError({
       message: "We weren't able to update the sandbox privacy",
@@ -1293,15 +1290,32 @@ export const changeSandboxPrivacy: AsyncAction<{
   }
 };
 
-export const changeSandboxPrivacyInState: Action<{
-  id: string;
-  privacy: 0 | 1 | 2;
-  page?: string;
-  repoName: string | null;
-}> = ({ state: { dashboard } }, { id, privacy, page, repoName }) => {
+/**
+ * Change sandbox privacy in state and returns the sandboxes per *old* privacy that have changed
+ */
+export const changeSandboxPrivacyInState: Action<
+  {
+    sandboxIds: string[];
+    privacy: 0 | 1 | 2;
+    page?: string;
+    repoName: string | null;
+  },
+  {
+    changedSandboxes: {
+      0: string[];
+      1: string[];
+      2: string[];
+    };
+  }
+> = ({ state: { dashboard } }, { sandboxIds, privacy, page, repoName }) => {
+  const changedSandboxes = {
+    0: [] as string[],
+    1: [] as string[],
+    2: [] as string[],
+  };
   if (page === 'repos' && repoName) {
     if (!dashboard.sandboxes.REPOS || !dashboard.sandboxes.REPOS[repoName]) {
-      return;
+      return { changedSandboxes };
     }
 
     const repoSandboxes = dashboard.sandboxes.REPOS[repoName];
@@ -1310,7 +1324,8 @@ export const changeSandboxPrivacyInState: Action<{
       [repoName]: {
         ...repoSandboxes,
         sandboxes: repoSandboxes?.sandboxes.map(sandbox => {
-          if (sandbox.id === id) {
+          if (sandboxIds.includes(sandbox.id)) {
+            changedSandboxes[sandbox.privacy].push(sandbox.id);
             return {
               ...sandbox,
               privacy,
@@ -1321,14 +1336,17 @@ export const changeSandboxPrivacyInState: Action<{
         }),
       },
     };
-    return;
+
+    return { changedSandboxes };
   }
 
   const values = Object.keys(dashboard.sandboxes).map(type => {
     if (dashboard.sandboxes[type]) {
+      // If it's not a folder
       if (Array.isArray(dashboard.sandboxes[type])) {
         return dashboard.sandboxes[type].map(sandbox => {
-          if (sandbox.id === id) {
+          if (sandboxIds.includes(sandbox.id)) {
+            changedSandboxes[sandbox.privacy].push(sandbox.id);
             return {
               ...sandbox,
               privacy,
@@ -1342,7 +1360,8 @@ export const changeSandboxPrivacyInState: Action<{
       const folderNames = dashboard.sandboxes[type];
       const sandboxes = Object.keys(folderNames).map(folderName => ({
         [folderName]: folderNames[folderName].map(sandbox => {
-          if (sandbox.id === id) {
+          if (sandboxIds.includes(sandbox.id)) {
+            changedSandboxes[sandbox.privacy].push(sandbox.id);
             return {
               ...sandbox,
               privacy,
@@ -1375,6 +1394,8 @@ export const changeSandboxPrivacyInState: Action<{
       }),
     {}
   );
+
+  return { changedSandboxes };
 };
 
 export const updateTeamAvatar: AsyncAction<{
@@ -1396,6 +1417,54 @@ export const updateTeamAvatar: AsyncAction<{
     actions.internal.handleError({
       message: "We weren't able to update your team avatar",
       error,
+    });
+  }
+};
+
+export const changeAuthorizationInState: Action<{
+  userId: string;
+  authorization: TeamMemberAuthorization;
+}> = ({ state }, { userId, authorization }) => {
+  const userAuthorizations = state.activeTeamInfo!.userAuthorizations.map(
+    user => {
+      if (user.userId === userId) return { ...user, authorization };
+      return user;
+    }
+  );
+
+  state.activeTeamInfo!.userAuthorizations = userAuthorizations;
+};
+
+export const changeAuthorization: AsyncAction<{
+  userId: string;
+  authorization: TeamMemberAuthorization;
+}> = async ({ state, effects, actions }, { userId, authorization }) => {
+  // optimistic update
+  const oldAuthorization = state.activeTeamInfo!.userAuthorizations.find(
+    user => user.userId === userId
+  )!.authorization;
+
+  actions.dashboard.changeAuthorizationInState({ userId, authorization });
+
+  try {
+    await effects.gql.mutations.changeTeamMemberAuthorization({
+      teamId: state.activeTeam!,
+      userId,
+      authorization,
+    });
+    actions.getActiveTeamInfo();
+  } catch (e) {
+    let message = 'There has been a problem changing user authorization.';
+    if (e?.response?.errors) {
+      message += ' ' + e.response.errors.map(error => error.message).join(', ');
+    }
+
+    effects.notificationToast.error(message);
+
+    // undo optimistic update
+    actions.dashboard.changeAuthorizationInState({
+      userId,
+      authorization: oldAuthorization,
     });
   }
 };

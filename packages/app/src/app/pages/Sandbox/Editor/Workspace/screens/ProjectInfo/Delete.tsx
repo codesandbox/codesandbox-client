@@ -41,7 +41,11 @@ export const Delete: FunctionComponent = () => {
     <Element>
       <Stack justify="center" marginBottom={6}>
         <Button
-          css={css({ ':hover,:focus': { color: 'errorForeground' } })}
+          css={css({
+            ':hover:not(:disabled),:focus:not(:disabled)': {
+              color: 'errorForeground',
+            },
+          })}
           // @ts-ignore
           onClick={onDelete}
           variant="link"

@@ -432,11 +432,16 @@ export default {
   },
   getUserSandboxes(
     username: string,
-    page: number
+    page: number | 'all' = 1,
+    sortBy: string = 'view_count',
+    direction: string = 'desc'
   ): Promise<{ [page: string]: Sandbox[] }> {
-    return api.get(`/users/${username}/sandboxes`, {
-      page: String(page),
-    });
+    return api.get(
+      `/users/${username}/sandboxes?sort_by=${sortBy}&direction=${direction}`,
+      {
+        page: String(page),
+      }
+    );
   },
   getUserLikedSandboxes(
     username: string,
@@ -586,5 +591,23 @@ export default {
   },
   makeGitSandbox(sandboxId: string): Promise<Sandbox> {
     return api.post<Sandbox>(`/sandboxes/${sandboxId}/make_git_sandbox`, null);
+  },
+  updateUserProfile(username: string, bio: string, socialLinks: string[]) {
+    return api.patch(`/users/${username}`, {
+      user: {
+        bio,
+        socialLinks,
+      },
+    });
+  },
+  updateUserFeaturedSandboxes(
+    username: string,
+    featuredSandboxIds: string[]
+  ): Promise<Profile> {
+    return api.patch(`/users/${username}`, {
+      user: {
+        featuredSandboxes: featuredSandboxIds,
+      },
+    });
   },
 };

@@ -12,6 +12,7 @@ type State = {
   sandboxes: {
     [username: string]: {
       [page: number]: Sandbox[];
+      all?: Sandbox[];
     };
   };
   likedSandboxes: {
@@ -23,13 +24,16 @@ type State = {
   currentSandboxesPage: number;
   showSelectSandboxModal: boolean;
   currentLikedSandboxesPage: number;
+  searchQuery: string | null;
   isLoadingSandboxes: boolean;
   sandboxToDeleteId: string | null;
   current: Profile | null;
   isProfileCurrentUser: boolean;
   showcasedSandbox: Sandbox | null;
-  currentSandboxes: { [page: string]: Sandbox[] };
+  currentSandboxes: { [page: number]: Sandbox[]; all?: Sandbox[] };
   currentLikedSandboxes: { [page: string]: Sandbox[] };
+  currentSortBy: 'view_count' | 'inserted_at';
+  currentSortDirection: 'asc' | 'desc';
 };
 
 export const state: State = {
@@ -43,6 +47,7 @@ export const state: State = {
   userSandboxes: [],
   currentSandboxesPage: 1,
   currentLikedSandboxesPage: 1,
+  searchQuery: null,
   isLoadingSandboxes: false,
   sandboxToDeleteId: null,
   isProfileCurrentUser: derived((currentState: State, rootState: RootState) =>
@@ -70,4 +75,6 @@ export const state: State = {
       ? currentState.sandboxes[currentState.current.username]
       : []
   ),
+  currentSortBy: 'view_count',
+  currentSortDirection: 'desc',
 };

@@ -4,7 +4,7 @@ import { useOvermind } from 'app/overmind';
 import { LinkButton } from 'app/components/LinkButton';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Header } from '../elements';
-import { CenteredMessage } from './elements';
+import { CenteredMessage, SearchWrapper } from './elements';
 
 import { PersonalTemplates } from './PersonalTemplates';
 import { SearchBox } from '../SearchBox';
@@ -33,13 +33,13 @@ export const Create: React.FC<CreateProps> = ({ collectionId }) => {
     <>
       <Header>
         <span>Create Sandbox</span>
-        <div>
+        <SearchWrapper>
           <SearchBox
             onChange={evt => setFilter(evt.target.value)}
             value={filter}
             placeholder="Filter Templates"
           />
-        </div>
+        </SearchWrapper>
       </Header>
       <Scrollable>
         {!state.hasLogIn && (

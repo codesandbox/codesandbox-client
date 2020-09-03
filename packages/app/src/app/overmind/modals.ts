@@ -3,9 +3,21 @@ export const forkFrozenModal = {
 };
 
 export const newSandboxModal: {
-  state: { collectionId?: null | string };
+  state: { collectionId?: null | string; initialTab?: 'Import' | null };
   result: undefined;
 } = {
-  state: { collectionId: null },
+  state: { collectionId: null, initialTab: null },
+  result: undefined,
+};
+
+export const moveSandboxModal: {
+  state: {
+    sandboxIds: string[];
+    collectionIds?: string[];
+    defaultOpenedPath?: string | null;
+  };
+  result: undefined;
+} = {
+  state: { sandboxIds: [], collectionIds: [], defaultOpenedPath: null },
   result: undefined,
 };
