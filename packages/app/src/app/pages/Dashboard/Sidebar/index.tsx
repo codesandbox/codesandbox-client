@@ -52,7 +52,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     name: string;
     avatarUrl: string;
   } | null>(null);
-  const { dashboard, user, activeTeam } = state;
+  const { dashboard, activeTeam } = state;
 
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
@@ -64,20 +64,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       if (team)
         setActiveAccount({
-          type: 'team',
           id: team.id,
           name: team.name,
           avatarUrl: team.avatarUrl,
         });
-    } else if (user) {
-      setActiveAccount({
-        type: 'user',
-        id: user.id,
-        username: user.username,
-        avatarUrl: user.avatarUrl,
-      });
     }
-  }, [state.activeTeam, state.activeTeamInfo, dashboard.teams, user]);
+  }, [state.activeTeam, state.activeTeamInfo, dashboard.teams]);
 
   const folders =
     (dashboard.allCollections || []).filter(folder => folder.path !== '/') ||

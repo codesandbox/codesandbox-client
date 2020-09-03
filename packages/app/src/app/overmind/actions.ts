@@ -343,7 +343,7 @@ export const setActiveTeam: AsyncAction<{
         status: NotificationStatus.ERROR,
       });
       // Something went wrong while fetching the workspace
-      actions.setActiveTeam({ id: state.personalWorkspaceId });
+      actions.setActiveTeam({ id: personalWorkspaceId! });
     }
   }
 
