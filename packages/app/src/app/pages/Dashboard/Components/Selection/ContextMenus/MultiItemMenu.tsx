@@ -134,6 +134,14 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
       );
     },
   };
+  const PERMANENTLY_DELETE = {
+    label: 'Permanently Delete Sandboxes',
+    fn: () => {
+      actions.dashboard.permanentlyDeleteSandboxes(
+        [...sandboxes, ...templates].map(s => s.sandbox.id)
+      );
+    },
+  };
   const CONVERT_TO_TEMPLATE = {
     label: 'Convert to Templates',
     fn: convertToTemplates,
@@ -150,7 +158,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   let options: MenuAction[] = [];
 
   if (page === 'deleted') {
-    options = [RECOVER];
+    options = [RECOVER, DIVIDER, PERMANENTLY_DELETE];
   } else if (folders.length) {
     options = [DELETE];
   } else if (sandboxes.length && templates.length) {
