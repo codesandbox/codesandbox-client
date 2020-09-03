@@ -335,15 +335,17 @@ export const setActiveTeam: AsyncAction<{
       let personalWorkspaceId = state.personalWorkspaceId;
       if (!personalWorkspaceId) {
         const res = await effects.gql.queries.getPersonalWorkspaceId({});
-        personalWorkspaceId = res.me.personalWorkspaceId;
+        personalWorkspaceId = res.me?.personalWorkspaceId;
       }
-      effects.notificationToast.add({
-        title: 'Could not find current workspace',
-        message: "We've switched you to your personal workspace",
-        status: NotificationStatus.WARNING,
-      });
-      // Something went wrong while fetching the workspace
-      actions.setActiveTeam({ id: personalWorkspaceId! });
+      if (personalWorkspaceId) {
+        effects.notificationToast.add({
+          title: 'Could not find current workspace',
+          message: "We've switched you to your personal workspace",
+          status: NotificationStatus.WARNING,
+        });
+        // Something went wrong while fetching the workspace
+        actions.setActiveTeam({ id: personalWorkspaceId! });
+      }
     }
   }
 
