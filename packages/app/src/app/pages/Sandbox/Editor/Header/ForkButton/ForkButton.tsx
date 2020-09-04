@@ -189,15 +189,14 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
               marginTop: -4,
             }}
           >
-            <TeamOrUserItem
-              forkClicked={props.forkClicked}
-              item={currentSpace}
-              disabled={state.activeWorkspaceAuthorization === 'READ'}
-              isPersonal={
-                currentSpace &&
-                currentSpace.teamId === state.personalWorkspaceId
-              }
-            />
+            {currentSpace && (
+              <TeamOrUserItem
+                forkClicked={props.forkClicked}
+                item={currentSpace}
+                disabled={state.activeWorkspaceAuthorization === 'READ'}
+                isPersonal={currentSpace.teamId === state.personalWorkspaceId}
+              />
+            )}
 
             <Menu.Divider />
             {otherWorkspaces.map((space, i) => (
