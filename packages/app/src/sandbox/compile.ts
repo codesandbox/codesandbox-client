@@ -675,6 +675,10 @@ async function compile({
       createCodeSandboxOverlay(modules);
     }
 
+    if (firstLoad) {
+      window.dispatchEvent(new Event('load'));
+    }
+
     debug(`Total time: ${Date.now() - startTime}ms`);
 
     metrics.endMeasure('compilation', { displayName: 'Compilation' });
