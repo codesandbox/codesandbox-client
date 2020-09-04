@@ -2,13 +2,13 @@
 banner: ./3-9-2.jpg
 title: v3.9.2
 slug: Team members management
-date: 2020-09-4
+date: 2020-09-04
 description: Dashboard - team members management
 ---
 
 #### Features
 
-1. Dashboard - team members management
+1. Team members management in the dashboard
 2. Add freezing/unfreezing in the dashboard
 3. Update Algolia info to use our new index
 4. Allow changing privacy of multiple sandboxes
