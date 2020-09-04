@@ -424,11 +424,18 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
-  it('can convert + +', () => {
-    const code = `
-    c = (10.0, + +(15))
-    `;
+  describe('printer issues', () => {
+    it('can convert + +', () => {
+      const code = `
+      c = (10.0, + +(15))
+      `;
 
-    expect(convertEsModule(code)).toMatchSnapshot();
+      expect(convertEsModule(code)).toMatchSnapshot();
+    });
+
+    it('can convert -(--i)', () => {
+      const code = `a = -(--i)`;
+      expect(convertEsModule(code)).toBe('"use strict";\na = - --i;\n');
+    });
   });
 });

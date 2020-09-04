@@ -69,10 +69,7 @@ export const customGenerator = {
   ) {
     if (node.prefix) {
       state.write(node.operator);
-      if (
-        node.operator.length > 1 ||
-        node.argument.type === 'UnaryExpression'
-      ) {
+      if (node.operator.length > 1) {
         state.write(' ');
       }
       if (
@@ -83,6 +80,7 @@ export const customGenerator = {
         this[node.argument.type](node.argument, state);
         state.write(')');
       } else {
+        state.write(' ');
         this[node.argument.type](node.argument, state);
       }
     } else {
