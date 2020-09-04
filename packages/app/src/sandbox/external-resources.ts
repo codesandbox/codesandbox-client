@@ -3,7 +3,7 @@ function getExternalResourcesConcatenation(resources: Array<string>) {
 }
 /* eslint-disable no-cond-assign */
 function clearExternalResources() {
-  let el = null;
+  let el: HTMLElement | null = null;
   // eslint-disable-next-line no-cond-assign
   while ((el = document.getElementById('external-css'))) {
     el.remove();
