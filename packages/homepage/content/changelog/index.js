@@ -1,3 +1,3 @@
-import latest from './3-9-1/index.md';
+import latest from './3-9-2/index.md';
 
 export default latest;
