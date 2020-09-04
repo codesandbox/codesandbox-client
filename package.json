@@ -69,7 +69,8 @@
     "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
     "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
     "chromatic": "lerna run chromatic --scope=@codesandbox/components --stream",
-    "typecheck": "lerna run typecheck"
+    "typecheck": "lerna run typecheck",
+    "prettify": "prettier -w ."
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^1.13.0",
@@ -94,8 +95,8 @@
     "husky": "^2.2.0",
     "lerna": "^3.16.4",
     "lint-staged": "^9.2.5",
-    "prettier": "1.19.1",
-    "pretty-quick": "^2.0.1",
+    "prettier": "2.1.1",
+    "pretty-quick": "^3.0.0",
     "typescript": "3.9.2",
     "username": "^5.1.0"
   },
@@ -112,7 +113,7 @@
     ]
   },
   "engines": {
-    "node": "^10.0.0"
+    "node": "^10.13.0"
   },
   "collective": {
     "type": "opencollective",
