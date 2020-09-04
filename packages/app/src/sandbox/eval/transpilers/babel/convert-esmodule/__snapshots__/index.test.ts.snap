@@ -1,11 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`convert-esmodule can convert + + 1`] = `
-"\\"use strict\\";
-c = (10, + +15);
-"
-`;
-
 exports[`convert-esmodule can convert class default exports 1`] = `
 "\\"use strict\\";
 Object.defineProperty(exports, \\"__esModule\\", {
@@ -298,7 +292,7 @@ exports[`convert-esmodule doesn't set var definitions 1`] = `
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-var global = typeof window !== \\"undefined\\" ? window : {};
+var global = typeof  window !== \\"undefined\\" ? window : {};
 exports.global = global;
 "
 `;
@@ -632,6 +626,12 @@ var $csb__2 = require(\\"2\\");
 exports[`convert-esmodule parses and writes chars with linebreaks 1`] = `
 "\\"use strict\\";
 var WS_CHARS = \\"u2000-     　﻿\\";
+"
+`;
+
+exports[`convert-esmodule printer issues can convert + + 1`] = `
+"\\"use strict\\";
+c = (10, + + 15);
 "
 `;
 
