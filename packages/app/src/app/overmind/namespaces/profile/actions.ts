@@ -305,7 +305,7 @@ export const reorderFeaturedSandboxesInState: Action<{
 
   // optimisic update
   const featuredSandboxes = [...state.profile.current.featuredSandboxes];
-  const sandbox = featuredSandboxes.find((_, index) => index === startPosition);
+  const sandbox = featuredSandboxes[startPosition]!;
 
   // remove element first
   featuredSandboxes.splice(startPosition, 1);
@@ -320,6 +320,8 @@ export const saveFeaturedSandboxesOrder: AsyncAction = async ({
   effects,
   state,
 }) => {
+  if (!state.profile.current) return;
+
   try {
     const featuredSandboxIds = state.profile.current.featuredSandboxes.map(
       s => s.id
