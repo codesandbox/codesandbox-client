@@ -43,7 +43,7 @@ export const New = ({
               {info.title}
             </Text>
             <Text variant="muted" block paddingBottom={3} size={3}>
-              {format(new Date(info.date), 'MMMM d yyyy')}
+              {format(new Date(info.date.trim()), 'MMMM d yyyy')}
             </Text>
             <Text size={16} css={css({ lineHeight: '23px' })}>
               {info.description}
