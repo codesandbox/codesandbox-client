@@ -2,7 +2,7 @@
 banner: ./3-9-2.jpg
 title: v3.9.2
 slug: Team members management
-date: 2020-09-4
+date: 2020-09-04
 description: Dashboard - team members management
 ---
 
