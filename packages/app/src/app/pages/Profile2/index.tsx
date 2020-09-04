@@ -10,6 +10,8 @@
  * - Sandbox picker
  * - Order sandboxes
  * - Likes tab
+ * - Drag item for non-draggy pages
+ * - Drag items from all
  */
 
 import React from 'react';

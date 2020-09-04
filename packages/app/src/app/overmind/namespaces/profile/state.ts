@@ -50,6 +50,8 @@ export const state: State = {
   searchQuery: null,
   isLoadingSandboxes: false,
   sandboxToDeleteId: null,
+  currentSortBy: 'view_count',
+  currentSortDirection: 'desc',
   isProfileCurrentUser: derived((currentState: State, rootState: RootState) =>
     Boolean(
       rootState.user && rootState.user.id === currentState.currentProfileId
@@ -75,6 +77,4 @@ export const state: State = {
       ? currentState.sandboxes[currentState.current.username]
       : []
   ),
-  currentSortBy: 'view_count',
-  currentSortDirection: 'desc',
 };
