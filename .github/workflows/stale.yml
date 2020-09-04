@@ -1,5 +1,7 @@
 name: 'Close stale issues and PRs'
 on:
+  repository_dispatch:
+    types: close-prs
   schedule:
     - cron: '0 0 * * *'
 
