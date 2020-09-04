@@ -25,7 +25,7 @@ const LOADERS = {
  *
  * will not be converted
  */
-export default detectiveListener(path => {
+export default detectiveListener((path) => {
   if (
     path.container &&
     path.container.specifiers &&

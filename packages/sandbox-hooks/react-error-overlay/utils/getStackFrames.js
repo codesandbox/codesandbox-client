@@ -29,11 +29,12 @@ function getStackFrames(
   } else {
     enhancedFramesPromise = map(parsedFrames, contextSize);
   }
-  return enhancedFramesPromise.then(enhancedFrames => {
+  return enhancedFramesPromise.then((enhancedFrames) => {
     if (
       enhancedFrames
-        .map(f => f._originalFileName)
-        .filter(f => f != null && f.indexOf('node_modules') === -1).length === 0
+        .map((f) => f._originalFileName)
+        .filter((f) => f != null && f.indexOf('node_modules') === -1).length ===
+      0
     ) {
       return null;
     }

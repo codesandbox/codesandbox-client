@@ -38,7 +38,7 @@ export default function initialize() {
     {},
     {
       htmlDisabled: true,
-      setup: manager => {
+      setup: (manager) => {
         const packageJSON = manager.configurations.package;
 
         if (packageJSON && packageJSON.parsed && packageJSON.parsed.alias) {
@@ -48,12 +48,12 @@ export default function initialize() {
     }
   );
 
-  parcelPreset.registerTranspiler(module => /\.coffee$/.test(module.path), [
+  parcelPreset.registerTranspiler((module) => /\.coffee$/.test(module.path), [
     { transpiler: coffeeTranspiler },
     { transpiler: babelTranspiler },
   ]);
 
-  parcelPreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  parcelPreset.registerTranspiler((module) => /\.m?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {
@@ -62,7 +62,7 @@ export default function initialize() {
     },
   ]);
 
-  parcelPreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
+  parcelPreset.registerTranspiler((module) => /\.tsx?$/.test(module.path), [
     { transpiler: tsTranspiler },
     {
       transpiler: babelTranspiler,
@@ -72,25 +72,25 @@ export default function initialize() {
     },
   ]);
 
-  parcelPreset.registerTranspiler(module => /\.pug$/.test(module.path), [
+  parcelPreset.registerTranspiler((module) => /\.pug$/.test(module.path), [
     { transpiler: pugTranspiler },
     { transpiler: htmlTranspiler },
   ]);
 
-  parcelPreset.registerTranspiler(module => /\.html$/.test(module.path), [
+  parcelPreset.registerTranspiler((module) => /\.html$/.test(module.path), [
     { transpiler: htmlTranspiler },
   ]);
 
-  parcelPreset.registerTranspiler(module => /\.css$/.test(module.path), [
+  parcelPreset.registerTranspiler((module) => /\.css$/.test(module.path), [
     { transpiler: stylesTranspiler },
   ]);
 
-  parcelPreset.registerTranspiler(module => /\.json$/.test(module.path), [
+  parcelPreset.registerTranspiler((module) => /\.json$/.test(module.path), [
     { transpiler: jsonTranspiler },
   ]);
 
   // VUE START
-  parcelPreset.registerTranspiler(module => /\.vue$/.test(module.path), [
+  parcelPreset.registerTranspiler((module) => /\.vue$/.test(module.path), [
     { transpiler: vueTranspiler },
   ]);
   parcelPreset.registerTranspiler(() => false, [
@@ -134,9 +134,9 @@ export default function initialize() {
    * @returns
    */
   function registerStyleTranspilers() {
-    return Object.keys(styles).forEach(type => {
+    return Object.keys(styles).forEach((type) => {
       parcelPreset.registerTranspiler(
-        module => new RegExp(`\\.${type}`).test(module.path),
+        (module) => new RegExp(`\\.${type}`).test(module.path),
         [...styles[type], { transpiler: stylesTranspiler }]
       );
     });

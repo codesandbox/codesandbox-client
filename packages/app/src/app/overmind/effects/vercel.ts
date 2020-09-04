@@ -80,7 +80,7 @@ export default (() => {
     ) {
       const nowData = this.getConfig(sandbox);
       if (!nowData || !nowData.env) return null;
-      const all = Object.keys(nowData.env).map(async envVar => {
+      const all = Object.keys(nowData.env).map(async (envVar) => {
         const name = nowData.env[envVar].split('@')[1];
 
         if (envVars[envVar]) {
@@ -108,11 +108,11 @@ export default (() => {
     getConfig(sandbox: Sandbox): VercelConfig {
       const nowConfigs = sandbox.modules
         .filter(
-          m =>
+          (m) =>
             m.title === 'now.json' ||
             (m.title === 'package.json' && JSON.parse(m.code).now)
         )
-        .map(c => JSON.parse(c.code));
+        .map((c) => JSON.parse(c.code));
       const nowData = nowConfigs[0] || {};
 
       if (!nowData.name) {
@@ -130,10 +130,10 @@ export default (() => {
       );
 
       const deploysNoAlias = response.data.deployments
-        .filter(d => d.name === name)
+        .filter((d) => d.name === name)
         .sort((a, b) => (a.created < b.created ? 1 : -1));
 
-      const assignAlias = async d => {
+      const assignAlias = async (d) => {
         const alias = await deploysByID(d.uid);
         if (alias) {
           // eslint-disable-next-line
@@ -282,7 +282,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     if (
       filePath === 'package.json' &&
       apiData?.files &&
-      !apiData.files.find(f => f.file === 'package.json')
+      !apiData.files.find((f) => f.file === 'package.json')
     ) {
       apiData.files.push({
         file: 'package.json',

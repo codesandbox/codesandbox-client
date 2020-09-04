@@ -40,7 +40,9 @@ export const NewMasterSandboxListItem = ({ repo }: NewMasterSandboxProps) => {
       onDoubleClick={() => {
         window.location.href = `https://codesandbox.io/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`;
       }}
-      onContextMenu={e => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
+      onContextMenu={(e) =>
+        onRightClick(e, `/github/${repo.owner}/${repo.name}`)
+      }
       css={css({
         paddingX: 0,
         ':hover, :focus, :focus-within': {
@@ -96,7 +98,7 @@ export const NewMasterSandboxListItem = ({ repo }: NewMasterSandboxProps) => {
         name="more"
         size={9}
         title="Master Branch actions"
-        onClick={e =>
+        onClick={(e) =>
           // @ts-ignore
           onRightClick(e, `/github/${repo.owner}/${repo.name}`)
         }
@@ -112,7 +114,9 @@ export const NewMasterSandboxCard = ({ repo }: NewMasterSandboxProps) => {
       onDoubleClick={() => {
         window.location.href = `https://codesandbox.io/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`;
       }}
-      onContextMenu={e => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
+      onContextMenu={(e) =>
+        onRightClick(e, `/github/${repo.owner}/${repo.name}`)
+      }
       direction="vertical"
       gap={2}
       css={css({
@@ -125,9 +129,9 @@ export const NewMasterSandboxCard = ({ repo }: NewMasterSandboxProps) => {
         borderRadius: 'medium',
         overflow: 'hidden',
         transition: 'box-shadow ease-in-out',
-        transitionDuration: theme => theme.speeds[4],
+        transitionDuration: (theme) => theme.speeds[4],
         ':hover, :focus, :focus-within': {
-          boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+          boxShadow: (theme) => '0 4px 16px 0 ' + theme.colors.grays[900],
         },
       })}
     >
@@ -169,7 +173,7 @@ export const NewMasterSandboxCard = ({ repo }: NewMasterSandboxProps) => {
           size={9}
           title="Sandbox actions"
           // @ts-ignore
-          onClick={e => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
+          onClick={(e) => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
         />
       </Stack>
 

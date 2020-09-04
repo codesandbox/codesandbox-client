@@ -2,7 +2,7 @@ import React from 'react';
 import Helmet from 'react-helmet';
 import { host } from '@codesandbox/common/lib/utils/url-generator';
 
-const notRelative = image => {
+const notRelative = (image) => {
   if (image.startsWith('/')) {
     return `https://${host()}${image}`;
   }

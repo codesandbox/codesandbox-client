@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Twitter = props => (
+const Twitter = (props) => (
   <svg width={18} height={18} fill="none" viewBox="0 0 18 18" {...props}>
     <path
       fill="#9d9d9d"

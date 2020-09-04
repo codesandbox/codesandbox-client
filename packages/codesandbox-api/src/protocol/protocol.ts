@@ -5,7 +5,7 @@ const generateId = () =>
 const getConstructorName = (x: any) => {
   try {
     return x.constructor.name;
-  } catch(e) {
+  } catch (e) {
     return '';
   }
 };
@@ -38,7 +38,7 @@ export default class Protocol {
   }
 
   sendMessage<PromiseType>(data: any): Promise<PromiseType> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const messageId = generateId();
 
       const message = {

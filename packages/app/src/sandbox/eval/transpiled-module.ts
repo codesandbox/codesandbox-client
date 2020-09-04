@@ -232,14 +232,14 @@ export default class TranspiledModule {
     this.reset();
 
     // Reset parents
-    this.initiators.forEach(tModule => {
+    this.initiators.forEach((tModule) => {
       tModule.resetTranspilation();
     });
 
     // There are no other modules calling this module, so we run a function on
     // all transpilers that clears side effects if there are any. Example:
     // Remove CSS styles from the dom.
-    manager.preset.getLoaders(this.module, manager, this.query).forEach(t => {
+    manager.preset.getLoaders(this.module, manager, this.query).forEach((t) => {
       if (t.transpiler.cleanModule) {
         t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
       }
@@ -252,7 +252,7 @@ export default class TranspiledModule {
     // accepted for this module. We only mark it as changed so we can properly
     // handle the update in the evaluation.
 
-    this.childModules.forEach(m => {
+    this.childModules.forEach((m) => {
       m.reset();
     });
     this.childModules = [];
@@ -265,8 +265,8 @@ export default class TranspiledModule {
 
   resetTranspilation() {
     Array.from(this.transpilationInitiators)
-      .filter(t => t.source)
-      .forEach(dep => {
+      .filter((t) => t.source)
+      .forEach((dep) => {
         dep.resetTranspilation();
       });
 
@@ -276,7 +276,7 @@ export default class TranspiledModule {
     this.errors = [];
     this.warnings = [];
 
-    Array.from(this.dependencies).forEach(t => {
+    Array.from(this.dependencies).forEach((t) => {
       t.initiators.delete(this);
     });
     // Don't do it for transpilation dependencies, since those cannot be traced back since we also reset transpilation of them.
@@ -295,14 +295,14 @@ export default class TranspiledModule {
       }
 
       Array.from(this.initiators)
-        .filter(t => t.compilation)
-        .forEach(dep => {
+        .filter((t) => t.compilation)
+        .forEach((dep) => {
           dep.resetCompilation();
         });
 
       Array.from(this.transpilationInitiators)
-        .filter(t => t.compilation)
-        .forEach(dep => {
+        .filter((t) => t.compilation)
+        .forEach((dep) => {
           dep.resetCompilation();
         });
 
@@ -310,8 +310,8 @@ export default class TranspiledModule {
       // Entries generally have side effects
       if (this.isEntry) {
         Array.from(this.dependencies)
-          .filter(t => t.compilation && t.isEntry)
-          .forEach(dep => {
+          .filter((t) => t.compilation && t.isEntry)
+          .forEach((dep) => {
             dep.resetCompilation();
           });
       }
@@ -373,7 +373,7 @@ export default class TranspiledModule {
         if (manager.fileResolver) {
           this.asyncDependencies.push(
             // eslint-disable-next-line
-            new Promise(async resolve => {
+            new Promise(async (resolve) => {
               try {
                 const tModule = await manager.resolveTranspiledModule(
                   depPath,
@@ -441,10 +441,10 @@ export default class TranspiledModule {
     transpilerOptions: Object = {}
   ): LoaderContext {
     return {
-      emitWarning: warning => {
+      emitWarning: (warning) => {
         this.warnings.push(new ModuleWarning(this, warning));
       },
-      emitError: error => {
+      emitError: (error) => {
         this.errors.push(new ModuleError(this, error));
       },
       emitModule: (
@@ -508,7 +508,7 @@ export default class TranspiledModule {
           options && options.isAbsolute ? '/' : this.module.path
         );
 
-        tModules.forEach(tModule => {
+        tModules.forEach((tModule) => {
           this.dependencies.add(tModule);
           tModule.initiators.add(this);
 
@@ -576,13 +576,13 @@ export default class TranspiledModule {
 
     // Remove this module from the initiators of old deps, so we can populate a
     // fresh cache
-    this.dependencies.forEach(tModule => {
+    this.dependencies.forEach((tModule) => {
       tModule.initiators.delete(this);
     });
-    this.transpilationDependencies.forEach(tModule => {
+    this.transpilationDependencies.forEach((tModule) => {
       tModule.transpilationInitiators.delete(this);
     });
-    this.childModules.forEach(tModule => {
+    this.childModules.forEach((tModule) => {
       tModule.dispose(manager);
     });
     this.dependencies.clear();
@@ -599,7 +599,7 @@ export default class TranspiledModule {
       // We now know that this has been transpiled on the server, so we shortcut
       const loaderContext = this.getLoaderContext(manager, {});
       // These are precomputed requires, for npm dependencies
-      requires.forEach(r => {
+      requires.forEach((r) => {
         if (r.indexOf('glob:') === 0) {
           const reGlob = r.replace('glob:', '');
           loaderContext.addDependenciesInDirectory(reGlob);
@@ -625,7 +625,7 @@ export default class TranspiledModule {
         );
         loaderContext.remainingRequests = transpilers
           .slice(i + 1)
-          .map(transpiler => transpiler.transpiler.name)
+          .map((transpiler) => transpiler.transpiler.name)
           .concat([this.module.path])
           .join('!');
 
@@ -686,7 +686,7 @@ export default class TranspiledModule {
     ) {
       const hasHMR = manager.preset
         .getLoaders(this.module, manager, this.query)
-        .some(t =>
+        .some((t) =>
           t.transpiler.HMREnabled == null ? true : t.transpiler.HMREnabled
         );
 
@@ -698,7 +698,7 @@ export default class TranspiledModule {
     }
 
     await Promise.all(
-      this.asyncDependencies.map(async p => {
+      this.asyncDependencies.map(async (p) => {
         try {
           const tModule = await p;
 
@@ -714,10 +714,10 @@ export default class TranspiledModule {
 
     await Promise.all(
       flattenDeep([
-        ...Array.from(this.transpilationInitiators).map(t =>
+        ...Array.from(this.transpilationInitiators).map((t) =>
           t.transpile(manager)
         ),
-        ...Array.from(this.dependencies).map(t => t.transpile(manager)),
+        ...Array.from(this.dependencies).map((t) => t.transpile(manager)),
       ])
     );
 
@@ -736,7 +736,7 @@ export default class TranspiledModule {
         // because it is working on executing the promise. This rare case only
         // happens when we have a dependency loop, which could result in a
         // StackTraceOverflow. Dependency loop: A -> B -> C -> A -> B -> C
-        return new Promise(async resolve => {
+        return new Promise(async (resolve) => {
           while (!this.source && manager.transpileJobs[id] === true) {
             // eslint-disable-next-line
             await delay(10);
@@ -763,7 +763,7 @@ export default class TranspiledModule {
 
   logWarnings = () => {
     if (this.warnings.length) {
-      this.warnings.forEach(warning => {
+      this.warnings.forEach((warning) => {
         console.warn(warning.message); // eslint-disable-line no-console
         dispatch(
           actions.correction.show(warning.message, {
@@ -902,7 +902,7 @@ export default class TranspiledModule {
           } else {
             const paths = typeof path === 'string' ? [path] : path;
 
-            paths.forEach(async p => {
+            paths.forEach(async (p) => {
               const tModule = await manager.resolveTranspiledModule(
                 p,
                 this.module.path
@@ -924,7 +924,7 @@ export default class TranspiledModule {
           } else {
             const paths = typeof path === 'string' ? [path] : path;
 
-            paths.forEach(async p => {
+            paths.forEach(async (p) => {
               const tModule = await manager.resolveTranspiledModule(
                 p,
                 this.module.path
@@ -1030,7 +1030,7 @@ export default class TranspiledModule {
       usedGlobals.$csbImport = (path: string) =>
         manager
           .evaluate(path, this)
-          .then(result => interopRequireWildcard(result));
+          .then((result) => interopRequireWildcard(result));
 
       const exports = evaluate(
         this.source.compiledCode,
@@ -1083,7 +1083,7 @@ export default class TranspiledModule {
     if (
       manager.preset
         .getLoaders(this.module, manager, this.query)
-        .some(t =>
+        .some((t) =>
           t.transpiler.cacheable == null ? false : !t.transpiler.cacheable
         )
     ) {
@@ -1106,19 +1106,19 @@ export default class TranspiledModule {
       isTestFile: this.isTestFile,
 
       sourceEqualsCompiled,
-      childModules: this.childModules.map(m => m.getId()),
-      dependencies: Array.from(this.dependencies).map(m => m.getId()),
-      initiators: Array.from(this.initiators).map(m => m.getId()),
+      childModules: this.childModules.map((m) => m.getId()),
+      dependencies: Array.from(this.dependencies).map((m) => m.getId()),
+      initiators: Array.from(this.initiators).map((m) => m.getId()),
       transpilationDependencies: Array.from(
         this.transpilationDependencies
-      ).map(m => m.getId()),
-      transpilationInitiators: Array.from(this.transpilationInitiators).map(m =>
-        m.getId()
-      ),
+      ).map((m) => m.getId()),
+      transpilationInitiators: Array.from(
+        this.transpilationInitiators
+      ).map((m) => m.getId()),
       asyncDependencies: await Promise.all(
-        Array.from(this.asyncDependencies).map(m => m.then(x => x.getId()))
+        Array.from(this.asyncDependencies).map((m) => m.then((x) => x.getId()))
       ),
-      warnings: this.warnings.map(war => war.serialize()),
+      warnings: this.warnings.map((war) => war.serialize()),
       hasMissingDependencies: this.hasMissingDependencies,
     };
 
@@ -1213,7 +1213,7 @@ export default class TranspiledModule {
     });
 
     this.warnings =
-      data.warnings.map(war => new ModuleWarning(this, war)) || [];
+      data.warnings.map((war) => new ModuleWarning(this, war)) || [];
     this.logWarnings();
   }
 }

@@ -9,8 +9,8 @@ export function mainModule(sandbox: Sandbox, parsedConfigurations: any) {
 
   const module = templateDefinition
     .getEntries(parsedConfigurations)
-    .map(p => resolve(p))
-    .find(m => Boolean(m));
+    .map((p) => resolve(p))
+    .find((m) => Boolean(m));
 
   return module || sandbox.modules[0];
 }
@@ -25,8 +25,8 @@ export function defaultOpenedModule(
 
   const module = templateDefinition
     .getDefaultOpenedFiles(parsedConfigurations)
-    .map(p => resolve(p))
-    .find(m => Boolean(m));
+    .map((p) => resolve(p))
+    .find((m) => Boolean(m));
 
   return module || sandbox.modules[0];
 }

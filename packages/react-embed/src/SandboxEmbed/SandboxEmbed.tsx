@@ -172,7 +172,7 @@ export default class SandboxEmbed extends React.PureComponent<Props> {
 
     embedOptions.module = embedOptions.module || '/example.js';
     const options = Object.keys(embedOptions)
-      .map(option => `${option}=${getValue(option, embedOptions[option])}`)
+      .map((option) => `${option}=${getValue(option, embedOptions[option])}`)
       .join('&');
 
     if (options) {

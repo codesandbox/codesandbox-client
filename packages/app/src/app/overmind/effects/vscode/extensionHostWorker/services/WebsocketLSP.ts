@@ -45,24 +45,24 @@ export class WebsocketLSP implements IForkHandler {
       endpoint + `?type=language-server&pid=${pidCountByEndpoint[endpoint]++}`
     );
     this.io.on('connect', () => {
-      this.messagesQueue.forEach(message => {
+      this.messagesQueue.forEach((message) => {
         this.postMessage(message);
       });
     });
-    this.io.on('connect_error', error => {
+    this.io.on('connect_error', (error) => {
       // eslint-disable-next-line
       console.log('WEBSOCKET_LSP - ERROR', error);
     });
-    this.io.on('disconnect', reason => {
+    this.io.on('disconnect', (reason) => {
       console.error('WEBSOCKET_LSP - CLOSE', reason);
     });
 
-    this.io.on('language-server', data => {
+    this.io.on('language-server', (data) => {
       /*
         const json = event.data.split('\n').find(line => line[0] === '{');
         console.log('OUT', JSON.stringify(JSON.parse(json), null, 2));
         */
-      this.listeners.forEach(listener => {
+      this.listeners.forEach((listener) => {
         listener({
           data: {
             $data: `Content-Length: ${data.length + 1}\r\n\r\n${data}\n`,

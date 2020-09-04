@@ -33,18 +33,18 @@ export const Header = styled(SidebarRow).attrs({ gap: 2 })(
 // temporary: replace with <Icon name="triangle/toggle">
 const Icon = styled.svg<{
   open?: boolean;
-}>(props =>
+}>((props) =>
   css({
     transform: props.open ? 'rotate(0)' : 'rotate(-90deg)',
     transition: 'transform',
-    transitionDuration: theme => theme.speeds[1],
+    transitionDuration: (theme) => theme.speeds[1],
     opacity: 0.25,
   })
 );
 
 export const Body = styled(Element)<{
   open?: boolean;
-}>(props =>
+}>((props) =>
   css({
     borderBottom: props.open ? '1px solid' : 'none',
     borderColor: 'sideBar.border',
@@ -53,11 +53,11 @@ export const Body = styled(Element)<{
     paddingBottom: props.open ? 8 : 0,
     opacity: props.open ? 1 : 0,
     transition: 'all',
-    transitionDuration: theme => theme.speeds[4],
+    transitionDuration: (theme) => theme.speeds[4],
   })
 );
 
-const ToggleIcon = props => (
+const ToggleIcon = (props) => (
   <Icon
     width="9"
     height="6"

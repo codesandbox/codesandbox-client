@@ -20,15 +20,15 @@ import { MenuStyles } from '../Menu';
 import { SkipNavStyles } from '../SkipNav';
 
 export const getThemes = () => {
-  const results = VSCodeThemes.map(theme => ({
+  const results = VSCodeThemes.map((theme) => ({
     name: theme.name,
     ...theme.content,
   }));
 
-  return results.filter(a => a);
+  return results.filter((a) => a);
 };
 
-const guessType = theme => {
+const guessType = (theme) => {
   if (theme.type) return theme.type;
 
   if (theme.name && theme.name.toLowerCase().includes('light')) return 'light';

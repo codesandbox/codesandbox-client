@@ -21,7 +21,7 @@ export function Tags({ tags, ...props }: Props) {
       }}
       {...props}
     >
-      {tags.slice().map(tag => (
+      {tags.slice().map((tag) => (
         <Tag key={tag} tag={tag} {...props} />
       ))}
     </Stack>

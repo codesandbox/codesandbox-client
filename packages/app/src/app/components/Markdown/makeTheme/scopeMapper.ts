@@ -40,7 +40,7 @@ const scopeMap = {
   'markup.changed': 'changed',
 };
 
-export const mapScope = scope => {
+export const mapScope = (scope) => {
   // If the scope includes a whitespace, it's a specific
   // type that we don't support
   if (scope.includes(' ')) {

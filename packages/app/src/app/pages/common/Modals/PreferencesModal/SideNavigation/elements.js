@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   flex: 1;
-  background-color: ${props => props.theme.background2};
+  background-color: ${(props) => props.theme.background2};
   width: 100%;
   padding-bottom: 5rem;
 `;
@@ -23,7 +23,7 @@ export const Item = styled.div`
   align-items: center;
   transition: 0.3s ease all;
   position: absolute;
-  top: ${props => props.top}px;
+  top: ${(props) => props.top}px;
   left: 0;
   right: 0;
   height: ${ITEM_HEIGHT - 2}px;
@@ -34,14 +34,14 @@ export const Item = styled.div`
   z-index: 1;
   cursor: pointer;
   border-radius: 4px;
-  color: ${props => (props.selected ? 'white' : 'rgba(255, 255, 255, 0.4)')};
+  color: ${(props) => (props.selected ? 'white' : 'rgba(255, 255, 255, 0.4)')};
 
-  ${props =>
+  ${(props) =>
     !props.selected &&
     css`
       &:hover {
         color: rgba(255, 255, 255, 0.6);
-        background-color: ${styleProps => styleProps.theme.background};
+        background-color: ${(styleProps) => styleProps.theme.background};
       }
     `};
 `;
@@ -55,8 +55,8 @@ export const Selector = styled.div`
   height: ${ITEM_HEIGHT - 2}px;
   border-radius: 4px;
   z-index: 0;
-  background-color: ${props => props.theme.secondary};
+  background-color: ${(props) => props.theme.secondary};
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
 
-  transform: translateY(${props => props.offset + 1}px);
+  transform: translateY(${(props) => props.offset + 1}px);
 `;

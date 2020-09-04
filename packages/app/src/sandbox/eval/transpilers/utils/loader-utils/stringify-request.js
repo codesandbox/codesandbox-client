@@ -17,7 +17,7 @@ export default function stringifyRequest(loaderContext, request) {
     (loaderContext.options && loaderContext.options.context);
   return JSON.stringify(
     splitted
-      .map(part => {
+      .map((part) => {
         // First, separate singlePath from query, because the query might contain paths again
         const splittedPart = part.match(/^(.*?)(\?.*)/);
         let singlePath = splittedPart ? splittedPart[1] : part;

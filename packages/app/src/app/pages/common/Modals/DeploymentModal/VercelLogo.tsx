@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-export const VercelIcon: FunctionComponent = props => (
+export const VercelIcon: FunctionComponent = (props) => (
   <svg
     width={130}
     height={56}

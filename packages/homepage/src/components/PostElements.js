@@ -6,7 +6,7 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.h2`
-  font-family: ${props => props.theme.homepage.appleFont};
+  font-family: ${(props) => props.theme.homepage.appleFont};
   font-weight: 600;
   font-size: 1.25rem;
   line-height: 1.2;
@@ -16,7 +16,7 @@ export const Title = styled.h2`
 `;
 
 export const PostDate = styled.span`
-  font-family: ${props => props.theme.homepage.appleFont};
+  font-family: ${(props) => props.theme.homepage.appleFont};
   font-weight: 500;
   font-size: 14px;
   color: #b8b9ba;
@@ -32,7 +32,7 @@ export const AuthorImage = styled.img`
 `;
 
 export const Author = styled.h4`
-  font-family: ${props => props.theme.homepage.appleFont};
+  font-family: ${(props) => props.theme.homepage.appleFont};
   font-weight: 500;
   font-size: 18px;
   margin: 0;

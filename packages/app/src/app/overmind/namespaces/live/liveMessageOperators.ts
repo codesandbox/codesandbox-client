@@ -30,7 +30,7 @@ export const onSave: Operator<LiveMessage<{
     return;
   }
   const module = sandbox.modules.find(
-    moduleItem => moduleItem.path === data.path
+    (moduleItem) => moduleItem.path === data.path
   );
 
   if (!module) {
@@ -56,7 +56,7 @@ export const onJoin: Operator<LiveMessage<{
 
   if (state.live.reconnecting) {
     // We reconnected!
-    effects.live.getAllClients().forEach(client => {
+    effects.live.getAllClients().forEach((client) => {
       client.serverReconnect();
     });
 
@@ -138,7 +138,7 @@ export const onUserEntered: Operator<LiveMessage<{
     return;
   }
 
-  const user = data.users.find(u => u.id === data.joined_user_id);
+  const user = data.users.find((u) => u.id === data.joined_user_id);
 
   if (
     !state.live.notificationsHidden &&
@@ -164,7 +164,7 @@ export const onUserLeft: Operator<LiveMessage<{
 
   if (!state.live.notificationsHidden) {
     const { users } = state.live.roomInfo;
-    const user = users ? users.find(u => u.id === data.left_user_id) : null;
+    const user = users ? users.find((u) => u.id === data.left_user_id) : null;
 
     if (
       user &&
@@ -195,7 +195,7 @@ export const onModuleSaved: Operator<LiveMessage<{
     return;
   }
   const module = state.editor.currentSandbox.modules.find(
-    moduleItem => moduleItem.shortid === data.moduleShortid
+    (moduleItem) => moduleItem.shortid === data.moduleShortid
   );
 
   if (module) {
@@ -268,7 +268,7 @@ export const onModuleUpdated: Operator<LiveMessage<{
   }
 
   const moduleIndex = sandbox.modules.findIndex(
-    moduleEntry => moduleEntry.shortid === data.moduleShortid
+    (moduleEntry) => moduleEntry.shortid === data.moduleShortid
   );
   const existingModule =
     state.editor.sandboxes[sandbox.id].modules[moduleIndex];
@@ -305,7 +305,7 @@ export const onModuleDeleted: Operator<LiveMessage<{
     return;
   }
   const removedModule = state.editor.currentSandbox.modules.find(
-    directory => directory.shortid === data.moduleShortid
+    (directory) => directory.shortid === data.moduleShortid
   );
   if (!removedModule) {
     return;
@@ -353,7 +353,7 @@ export const onDirectoryUpdated: Operator<LiveMessage<{
   }
 
   const directoryIndex = sandbox.directories.findIndex(
-    directoryEntry => directoryEntry.shortid === data.directoryShortid
+    (directoryEntry) => directoryEntry.shortid === data.directoryShortid
   );
   const existingDirectory =
     state.editor.sandboxes[sandbox.id].directories[directoryIndex];
@@ -387,7 +387,7 @@ export const onDirectoryDeleted: Operator<LiveMessage<{
   }
 
   const directory = sandbox.directories.find(
-    directoryItem => directoryItem.shortid === data.directoryShortid
+    (directoryItem) => directoryItem.shortid === data.directoryShortid
   );
 
   if (!directory) {
@@ -407,7 +407,7 @@ export const onDirectoryDeleted: Operator<LiveMessage<{
     sandbox.directories
   );
 
-  removedModules.forEach(removedModule => {
+  removedModules.forEach((removedModule) => {
     effects.vscode.sandboxFsSync.unlink(
       state.editor.modulesByPath,
       removedModule
@@ -415,7 +415,7 @@ export const onDirectoryDeleted: Operator<LiveMessage<{
     sandbox.modules.splice(sandbox.modules.indexOf(removedModule), 1);
   });
 
-  removedDirectories.forEach(removedDirectoryItem => {
+  removedDirectories.forEach((removedDirectoryItem) => {
     sandbox.directories.splice(
       sandbox.directories.indexOf(removedDirectoryItem),
       1
@@ -447,7 +447,7 @@ export const onUserSelection: Operator<LiveMessage<{
   const { moduleShortid } = data;
   const { selection } = data;
   const userIndex = state.live.roomInfo.users.findIndex(
-    u => u.id === userSelectionLiveUserId
+    (u) => u.id === userSelectionLiveUserId
   );
 
   if (userIndex > -1) {
@@ -456,7 +456,7 @@ export const onUserSelection: Operator<LiveMessage<{
   }
 
   const module = state.editor.currentSandbox.modules.find(
-    m => m.shortid === moduleShortid
+    (m) => m.shortid === moduleShortid
   );
 
   const isFollowingUser =
@@ -466,7 +466,7 @@ export const onUserSelection: Operator<LiveMessage<{
     (state.live.isEditor(userSelectionLiveUserId) || isFollowingUser)
   ) {
     const user = state.live.roomInfo.users.find(
-      u => u.id === userSelectionLiveUserId
+      (u) => u.id === userSelectionLiveUserId
     );
 
     if (user) {
@@ -496,7 +496,7 @@ export const onUserCurrentModule: Operator<LiveMessage<{
     return;
   }
   const userIndex = state.live.roomInfo.users.findIndex(
-    u => u.id === data.live_user_id
+    (u) => u.id === data.live_user_id
   );
 
   if (userIndex > -1) {
@@ -512,7 +512,7 @@ export const onUserCurrentModule: Operator<LiveMessage<{
   ) {
     const { moduleShortid } = data;
     const { modules } = state.editor.currentSandbox;
-    const module = modules.find(m => m.shortid === moduleShortid);
+    const module = modules.find((m) => m.shortid === moduleShortid);
 
     if (!module) {
       return;
@@ -537,7 +537,7 @@ export const onUserViewRange: Operator<LiveMessage<{
   const { moduleShortid } = data;
   const { viewRange } = data;
   const userIndex = state.live.roomInfo.users.findIndex(
-    u => u.id === userSelectionLiveUserId
+    (u) => u.id === userSelectionLiveUserId
   );
 
   if (userIndex !== -1) {
@@ -546,11 +546,11 @@ export const onUserViewRange: Operator<LiveMessage<{
   }
 
   const module = state.editor.currentSandbox.modules.find(
-    m => m.shortid === moduleShortid
+    (m) => m.shortid === moduleShortid
   );
   if (module) {
     const user = state.live.roomInfo.users.find(
-      u => u.id === userSelectionLiveUserId
+      (u) => u.id === userSelectionLiveUserId
     );
 
     if (user && state.live.followingUserId === userSelectionLiveUserId) {
@@ -609,7 +609,7 @@ export const onLiveRemoveEditor: Operator<LiveMessage<{
 
   if (!_isOwnMessage) {
     const editors = state.live.roomInfo.editorIds;
-    const newEditors = editors.filter(id => id !== userId);
+    const newEditors = editors.filter((id) => id !== userId);
 
     state.live.roomInfo.editorIds = newEditors;
   }
@@ -656,7 +656,7 @@ export const onConnectionLoss: Operator<LiveMessage> = mutate(
 
       state.live.reconnecting = true;
 
-      await effects.flows.waitUntil(s => s.live.reconnecting === false);
+      await effects.flows.waitUntil((s) => s.live.reconnecting === false);
       if (notificationId) {
         effects.notificationToast.remove(notificationId);
       }
@@ -706,7 +706,7 @@ export const onChat: Operator<LiveMessage<{
 
   if (!name) {
     const user = state.live.roomInfo.users.find(
-      u => u.id === data.live_user_id
+      (u) => u.id === data.live_user_id
     );
 
     if (user) {

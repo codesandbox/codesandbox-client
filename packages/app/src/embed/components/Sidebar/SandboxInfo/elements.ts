@@ -47,10 +47,10 @@ export const Stats = styled(CommonStats)(
 export const Button = styled.a(
   css({
     transition: '0.3s ease background-color',
-    backgroundColor: theme => (theme.light ? 'grays.200' : 'grays.500'),
+    backgroundColor: (theme) => (theme.light ? 'grays.200' : 'grays.500'),
     padding: 2,
     display: 'block',
-    color: theme => (theme.light ? 'grays.800' : 'white'),
+    color: (theme) => (theme.light ? 'grays.800' : 'white'),
     border: 'none',
     outline: 'none',
     borderRadius: 2,
@@ -61,7 +61,7 @@ export const Button = styled.a(
     textDecoration: 'none',
     textAlign: 'center',
     ':hover': {
-      backgroundColor: theme => (theme.light ? 'grays.300' : 'grays.600'),
+      backgroundColor: (theme) => (theme.light ? 'grays.300' : 'grays.600'),
     },
   })
 );

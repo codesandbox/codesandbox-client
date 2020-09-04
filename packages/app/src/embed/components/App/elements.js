@@ -33,10 +33,10 @@ export const Moving = styled.div`
   position: absolute;
   top: 0;
   bottom: 0;
-  left: ${props => (props.sidebarOpen ? 250 : 0)}px;
+  left: ${(props) => (props.sidebarOpen ? 250 : 0)}px;
   right: 0;
-  width: ${props => (props.sidebarOpen ? 'calc(100% - 250px)' : '100%')};
+  width: ${(props) => (props.sidebarOpen ? 'calc(100% - 250px)' : '100%')};
   border: 1px solid;
   /* 8 digit hex code with last 2 for opacity */
-  border-color: ${props => props.theme.colors.sideBar.border + '33'};
+  border-color: ${(props) => props.theme.colors.sideBar.border + '33'};
 `;

@@ -27,13 +27,13 @@ export default () => {
 
   const createBox = React.useCallback(
     ({ position, rotation } = {}) => {
-      setBoxes(b => {
+      setBoxes((b) => {
         if (b.length > 10) {
           setShowPlane(false);
           setTimeout(() => {
             setShowPlane(true);
 
-            setBoxes(bb => {
+            setBoxes((bb) => {
               const newBoxes = [...bb];
               newBoxes.length = 1;
               return newBoxes;
@@ -66,7 +66,7 @@ export default () => {
   React.useEffect(() => {
     const timeout = setTimeout(() => {
       createBox({ position: [0, 0, 10], rotation: [1.2, 0, 0] });
-      setSandboxesCreatedCount(i => i + 1);
+      setSandboxesCreatedCount((i) => i + 1);
     }, 1000 + Math.random() * 500);
 
     return () => {
@@ -92,7 +92,7 @@ export default () => {
           createBox();
         }
 
-        setSandboxesCreatedCount(i => i + 1);
+        setSandboxesCreatedCount((i) => i + 1);
       });
 
       return () => {

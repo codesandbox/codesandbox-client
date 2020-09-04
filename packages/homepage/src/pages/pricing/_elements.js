@@ -4,7 +4,8 @@ export const Card = styled.div`
   width: 100%;
   height: 30rem;
 
-  background: ${props => (props.dark ? '#151515' : props.theme.homepage.blue)};
+  background: ${(props) =>
+    props.dark ? '#151515' : props.theme.homepage.blue};
   border-radius: 0.25rem;
   padding: 2.5rem;
   text-align: center;
@@ -18,7 +19,7 @@ export const CardTitle = styled.h3`
   font-style: normal;
   font-weight: 500;
   font-size: 1.4rem;
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
 `;
 
 export const Price = styled.h6`
@@ -26,7 +27,7 @@ export const Price = styled.h6`
   font-size: 2.25rem;
   text-align: center;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
 `;
 
 export const PriceSubText = styled.p`
@@ -40,29 +41,29 @@ export const List = styled.ul`
   font-style: normal;
   font-size: 1.4rem;
   text-align: left;
-  color: ${props => props.theme.homepage.muted};
+  color: ${(props) => props.theme.homepage.muted};
   margin-top: 3rem;
   margin-left: 1rem;
 
   li span {
-    color: ${props => props.theme.homepage.white};
+    color: ${(props) => props.theme.homepage.white};
   }
 `;
 
 export const Button = styled.a`
   height: 2.75rem;
   text-decoration: none;
-  background: ${props => props.theme.homepage.grey};
+  background: ${(props) => props.theme.homepage.grey};
   border-radius: 0.125rem;
   font-weight: 500;
   font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
   transition: all 200ms ease;
 
-  ${props =>
+  ${(props) =>
     props.white &&
     `
     background: ${props.theme.homepage.white};
@@ -87,19 +88,19 @@ export const FeaturesTableHeader = styled.div`
   font-weight: 500;
   font-size: 1.4rem;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
   padding-bottom: 1rem;
   margin-bottom: 1rem;
-  border-bottom: 1px solid ${props => props.theme.homepage.grey};
+  border-bottom: 1px solid ${(props) => props.theme.homepage.grey};
   margin-top: 5rem;
 
-  ${props =>
+  ${(props) =>
     props.inside &&
     `
     margin-left: 2.5rem;
   `}
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     grid-template-columns: 1fr 5.625rem 3.75rem;
     font-size: 1rem;
     margin-left: 0 !important;
@@ -110,13 +111,13 @@ export const FeaturesTable = styled.ul`
   list-style: none;
   margin: 0;
 
-  ${props =>
+  ${(props) =>
     props.inside &&
     `
     margin-left: 2.5rem;
   `}
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     margin-left: 0 !important;
   }
 
@@ -125,7 +126,7 @@ export const FeaturesTable = styled.ul`
     grid-template-columns: 1fr 11.875rem 11.875rem;
     margin-bottom: 1rem;
 
-    ${props => props.theme.breakpoints.md} {
+    ${(props) => props.theme.breakpoints.md} {
       grid-template-columns: 1fr 3.75rem 3.75rem;
     }
 
@@ -136,7 +137,7 @@ export const FeaturesTable = styled.ul`
       font-weight: 500;
       font-size: 1.4rem;
 
-      ${props => props.theme.breakpoints.md} {
+      ${(props) => props.theme.breakpoints.md} {
         font-size: 1rem;
       }
     }
@@ -148,7 +149,7 @@ export const FeatureTitle = styled.span`
   font-weight: 500;
   font-size: 1.4rem;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
   text-align: left !important;
   padding-bottom: 0.25rem;
 `;
@@ -163,7 +164,7 @@ export const CardContainer = styled.div`
   justify-content: center;
   margin-top: 4rem;
 
-  ${props => props.theme.breakpoints.lg} {
+  ${(props) => props.theme.breakpoints.lg} {
     grid-template-columns: minmax(100%, 26rem);
     grid-template-areas:
       'free'
@@ -176,7 +177,7 @@ export const FeaturesTitle = styled.h3`
   font-weight: 500;
   font-size: 2.25rem;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
   margin-bottom: 3.75rem;
   margin-top: 6rem;
 `;

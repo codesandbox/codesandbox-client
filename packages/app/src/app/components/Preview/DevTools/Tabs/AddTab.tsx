@@ -37,7 +37,7 @@ export function AddTab() {
         },
       ]}
     >
-      {onContextMenu => (
+      {(onContextMenu) => (
         <Container onClick={onContextMenu}>
           <PlusIcon />
         </Container>

@@ -11,7 +11,7 @@ export const Container = styled.div`
   display: flex;
   height: ${HEIGHT};
   flex: 0 0 ${HEIGHT};
-  color: ${props =>
+  color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
 
   background-color: ${({ theme }) =>
@@ -70,7 +70,7 @@ export const Line = styled.div`
   height: 12px;
   width: 1px;
 
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.theme['editorGroupHeader.tabsBorder'] || 'rgba(255, 255, 255, 0.3)'};
 `;
 
@@ -101,7 +101,7 @@ export const IconWrapper = styled.div`
         color: ${props.theme['editor.foreground'] || 'white'};
       `};
 
-    ${props =>
+    ${(props) =>
       props.disabled &&
       css`
         opacity: 0;

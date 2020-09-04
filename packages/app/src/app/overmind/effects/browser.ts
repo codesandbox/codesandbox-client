@@ -63,7 +63,7 @@ export default {
     document.body.removeChild(el);
   },
   waitForMessage<T>(type): Promise<T> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       window.addEventListener('message', function onMessage(event) {
         if (event.data.type === type) {
           window.removeEventListener('message', onMessage);
@@ -103,7 +103,7 @@ export default {
       }, ms);
       const startTime = Date.now();
       cb()
-        .then(value => {
+        .then((value) => {
           resolveValue = value;
           if (Date.now() - startTime > ms) {
             resolve(resolveValue);

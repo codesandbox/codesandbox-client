@@ -76,11 +76,11 @@ export default (() => {
       }
 
       await axios.post(
-        `${NetlifyBaseURL}/${
-          sandbox.id
-        }/deploys?siteId=${id}&dist=${buildConfig.publish ||
-          template.distDir}&buildCommand=${buildCommandFromConfig ||
-          buildCommand(template.name)}`,
+        `${NetlifyBaseURL}/${sandbox.id}/deploys?siteId=${id}&dist=${
+          buildConfig.publish || template.distDir
+        }&buildCommand=${
+          buildCommandFromConfig || buildCommand(template.name)
+        }`,
         file,
         {
           headers: {
@@ -95,7 +95,7 @@ export default (() => {
 })();
 
 function delay(t) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, t);
   });
 }
@@ -120,7 +120,7 @@ function pollUntilDone(http, url, interval, timeout, onLogUrlUpdate) {
         // run again with a short delay
         return delay(interval).then(run);
       })
-      .catch(e => e);
+      .catch((e) => e);
   }
   return run();
 }

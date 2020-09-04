@@ -15,12 +15,12 @@ export const Container = styled.div<{
   font-size: 0.875rem;
   cursor: pointer;
 
-  border-bottom: 1px solid ${props => props.theme['tab.border']};
+  border-bottom: 1px solid ${(props) => props.theme['tab.border']};
 
   padding: 0 1rem;
   padding-left: 0.75rem;
   padding-right: 0.125rem;
-  color: ${props =>
+  color: ${(props) =>
     props.theme['tab.inactiveForeground'] ||
     (props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)')};
 
@@ -29,25 +29,25 @@ export const Container = styled.div<{
     margin-right: 0.5rem;
   }
 
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.theme['tab.inactiveBackground'] || 'transparent'};
 
-  ${props =>
+  ${(props) =>
     props.isOver &&
     css`
       background-color: ${props.theme.background2.lighten(0.2)};
     `};
-  ${props =>
+  ${(props) =>
     props.active &&
     css`
       background-color: ${props.theme['tab.activeBackground'] ||
-        props.theme.background2};
+      props.theme.background2};
       border-color: ${props.theme['tab.activeBorder']};
       color: ${props.theme['tab.activeForeground'] ||
-        props.theme['editor.foreground'] ||
-        'white'};
+      props.theme['editor.foreground'] ||
+      'white'};
     `};
-  ${props =>
+  ${(props) =>
     props.dirty &&
     css`
       font-style: italic;
@@ -72,11 +72,11 @@ export const StyledCloseIcon = styled(CloseIcon)<{ show?: boolean | string }>`
 
   float: right;
   opacity: 1;
-  color: ${props =>
+  color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.9)'};
   margin-right: 0;
 
-  ${props =>
+  ${(props) =>
     !props.show &&
     css`
       pointer-events: none;

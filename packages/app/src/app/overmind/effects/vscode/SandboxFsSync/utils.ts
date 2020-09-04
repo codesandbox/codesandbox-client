@@ -10,7 +10,7 @@ export const writeFile = (fs: SandboxFs, module: Module) => {
 };
 
 export const rename = (fs: SandboxFs, fromPath: string, toPath: string) => {
-  Object.keys(fs).forEach(path => {
+  Object.keys(fs).forEach((path) => {
     if (path.startsWith(fromPath + '/') || path === fromPath) {
       const newPath = path.replace(fromPath, toPath);
       const module = fs[path];
@@ -22,7 +22,7 @@ export const rename = (fs: SandboxFs, fromPath: string, toPath: string) => {
 };
 
 export const rmdir = (fs: SandboxFs, directory: Directory) => {
-  Object.keys(fs).forEach(path => {
+  Object.keys(fs).forEach((path) => {
     if (path.startsWith(directory.path!)) {
       delete fs[path];
     }

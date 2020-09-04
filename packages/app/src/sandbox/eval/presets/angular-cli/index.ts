@@ -78,7 +78,7 @@ async function addAngularJSONResources(manager) {
     }
 
     const scriptTModules: TranspiledModule[] = await Promise.all(
-      scripts.map(async p => {
+      scripts.map(async (p) => {
         const finalPath = absolute(join(project.root, p));
         const tModule = await manager.resolveTranspiledModuleAsync(
           finalPath,
@@ -89,7 +89,7 @@ async function addAngularJSONResources(manager) {
       })
     );
 
-    scriptTModules.forEach(t => {
+    scriptTModules.forEach((t) => {
       t.evaluate(manager, { asUMD: true });
     });
   }
@@ -129,7 +129,7 @@ async function addAngularCLIResources(manager: Manager) {
     /* eslint-enable no-await-in-loop */
 
     const scriptTModules: TranspiledModule[] = await Promise.all(
-      scripts.map(async p => {
+      scripts.map(async (p) => {
         const finalPath = getPathFromResource(app.root, p);
         const tModule = await manager.resolveTranspiledModuleAsync(
           finalPath,
@@ -140,7 +140,7 @@ async function addAngularCLIResources(manager: Manager) {
       })
     );
 
-    scriptTModules.forEach(t => {
+    scriptTModules.forEach((t) => {
       t.evaluate(manager, { asUMD: true });
     });
 
@@ -158,7 +158,7 @@ export default function initialize() {
     ['web.ts', 'ts', 'json', 'web.tsx', 'tsx', 'js'],
     {},
     {
-      setup: async manager => {
+      setup: async (manager) => {
         if (!polyfillsLoaded) {
           const zone = manager.resolveModule('zone.js', '/');
           await manager.transpileModules(zone);
@@ -210,9 +210,9 @@ export default function initialize() {
    * @returns
    */
   function registerStyleTranspilers() {
-    return Object.keys(styles).forEach(type => {
+    return Object.keys(styles).forEach((type) => {
       preset.registerTranspiler(
-        module => new RegExp(`\\.${type}`).test(module.path),
+        (module) => new RegExp(`\\.${type}`).test(module.path),
         [...styles[type], { transpiler: stylesTranspiler }]
       );
     });
@@ -220,12 +220,12 @@ export default function initialize() {
 
   registerStyleTranspilers();
 
-  preset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.tsx?$/.test(module.path), [
     { transpiler: angular2Transpiler, options: { preTranspilers: styles } },
     { transpiler: typescriptTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.m?js$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.m?js$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {
@@ -258,7 +258,7 @@ export default function initialize() {
     },
   ]);
 
-  preset.registerTranspiler(module => /\.json$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.json$/.test(module.path), [
     { transpiler: jsonTranspiler },
   ]);
 

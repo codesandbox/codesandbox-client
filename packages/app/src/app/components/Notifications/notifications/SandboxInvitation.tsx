@@ -59,7 +59,7 @@ export const SandboxInvitation = ({
     <ListAction
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      onClick={async event => {
+      onClick={async (event) => {
         if (isMenuClicked(event)) return;
         if (!read) {
           await updateReadStatus(id);

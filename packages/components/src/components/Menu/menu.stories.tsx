@@ -37,7 +37,7 @@ export const Access = () => {
           </Element>
         </Menu.Button>
         <Menu.List>
-          {permissions.map(permission => (
+          {permissions.map((permission) => (
             <Menu.Item onSelect={() => select(permission)}>
               {permission}
             </Menu.Item>
@@ -62,7 +62,7 @@ export const IconButton = () => {
           }}
         />
         <Menu.List>
-          {options.map(option => (
+          {options.map((option) => (
             <Menu.Item onSelect={() => select(option)}>{option}</Menu.Item>
           ))}
         </Menu.List>
@@ -75,13 +75,13 @@ export const ContextMenu = () => {
   const [visible, setVisibility] = React.useState(false);
   const [position, setPosition] = React.useState({ x: null, y: null });
 
-  const onContextMenu = event => {
+  const onContextMenu = (event) => {
     event.preventDefault();
     setVisibility(true);
     setPosition({ x: event.clientX, y: event.clientY });
   };
 
-  const onKeyDown = event => {
+  const onKeyDown = (event) => {
     if (event.keyCode !== 18) return; // ALT
 
     setVisibility(true);

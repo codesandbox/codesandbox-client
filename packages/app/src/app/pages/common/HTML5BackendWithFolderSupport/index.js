@@ -5,7 +5,7 @@ export default (manager: Object) => {
   const backend = HTML5Backend(manager);
   const orgTopDropCapture = backend.handleTopDropCapture;
 
-  backend.handleTopDropCapture = e => {
+  backend.handleTopDropCapture = (e) => {
     orgTopDropCapture.call(backend, e);
 
     const item = backend.monitor.getItem();
@@ -14,7 +14,7 @@ export default (manager: Object) => {
       // We monkey patch the getData function to return the right URI, normally
       // we have to do this on the drag event with setData instead of the drop event, but we
       // don't have access to it so we monkey-patch.
-      e.dataTransfer.getData = type => {
+      e.dataTransfer.getData = (type) => {
         if (type !== 'ResourceURLs') {
           return '';
         }

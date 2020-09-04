@@ -40,7 +40,7 @@ function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
 
-var CodeSandboxDeployer = (function(_Component) {
+var CodeSandboxDeployer = (function (_Component) {
   (0, _inherits3.default)(CodeSandboxDeployer, _Component);
 
   function CodeSandboxDeployer() {
@@ -76,7 +76,7 @@ var CodeSandboxDeployer = (function(_Component) {
           isLoading: false,
           isDeploying: false,
         }),
-        (_this.loadFiles = function() {
+        (_this.loadFiles = function () {
           var _this$props = _this.props,
             onLoadComplete = _this$props.onLoadComplete,
             providedFiles = _this$props.providedFiles,
@@ -89,7 +89,7 @@ var CodeSandboxDeployer = (function(_Component) {
           // resolved
 
           var deployPromise = (0, _codesandboxer.fetchFiles)(_this.props)
-            .then(function(fetchedInfo) {
+            .then(function (fetchedInfo) {
               var template = 'create-react-app';
               if (_this.props.template) {
                 template = _this.props.template;
@@ -111,7 +111,7 @@ var CodeSandboxDeployer = (function(_Component) {
                   isLoading: false,
                   files: fetchedInfo.files,
                 },
-                function() {
+                function () {
                   if (onLoadComplete) {
                     onLoadComplete({
                       parameters: parameters,
@@ -121,7 +121,7 @@ var CodeSandboxDeployer = (function(_Component) {
                 }
               );
             })
-            .catch(function(error) {
+            .catch(function (error) {
               _this.setState({ error: error, isLoading: false });
               if (onLoadComplete) onLoadComplete({ error: error });
             });
@@ -133,7 +133,7 @@ var CodeSandboxDeployer = (function(_Component) {
 
           return deployPromise;
         }),
-        (_this.deploy = function() {
+        (_this.deploy = function () {
           var _this$props2 = _this.props,
             afterDeploy = _this$props2.afterDeploy,
             skipRedirect = _this$props2.skipRedirect,
@@ -145,7 +145,7 @@ var CodeSandboxDeployer = (function(_Component) {
           if (error) return;
 
           (0, _codesandboxer.sendFilesToCSB)(parameters)
-            .then(function(_ref2) {
+            .then(function (_ref2) {
               var sandboxId = _ref2.sandboxId,
                 sandboxUrl = _ref2.sandboxUrl;
 
@@ -165,7 +165,7 @@ var CodeSandboxDeployer = (function(_Component) {
                 );
               }
             })
-            .catch(function(errors) {
+            .catch(function (errors) {
               if (afterDeployError) {
                 afterDeployError({
                   name: 'error deploying to codesandbox',
@@ -180,7 +180,7 @@ var CodeSandboxDeployer = (function(_Component) {
               });
             });
         }),
-        (_this.deployToCSB = function(e) {
+        (_this.deployToCSB = function (e) {
           var _this$state2 = _this.state,
             deployPromise = _this$state2.deployPromise,
             isDeploying = _this$state2.isDeploying;
@@ -197,7 +197,7 @@ var CodeSandboxDeployer = (function(_Component) {
             _this.loadFiles().then(_this.deploy);
           }
         }),
-        (_this.getButton = function(ref) {
+        (_this.getButton = function (ref) {
           if (!ref) return;
           _this.button = ref;
         }),

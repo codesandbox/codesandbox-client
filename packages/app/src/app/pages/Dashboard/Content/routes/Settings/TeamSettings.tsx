@@ -44,10 +44,10 @@ export const TeamSettings = () => {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<{ name: string; url: string } | null>(null);
 
-  const getFile = async avatar => {
-    const url = await new Promise(resolve => {
+  const getFile = async (avatar) => {
+    const url = await new Promise((resolve) => {
       const reader = new FileReader();
-      reader.onload = e => {
+      reader.onload = (e) => {
         resolve(e.target.result);
       };
       reader.readAsDataURL(avatar);
@@ -61,7 +61,7 @@ export const TeamSettings = () => {
     });
   };
 
-  const onSubmit = async event => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     const name = event.target.name.value;
     const description = event.target.description.value;
@@ -82,7 +82,7 @@ export const TeamSettings = () => {
   const [inviteValue, setInviteValue] = useState('');
   const [inviteLoading, setInviteLoading] = useState(false);
 
-  const onInviteSubmit = async event => {
+  const onInviteSubmit = async (event) => {
     event.preventDefault();
     setInviteLoading(true);
     setInviteValue('');
@@ -94,14 +94,14 @@ export const TeamSettings = () => {
     return <Header title="Workspace Settings" activeTeam={null} />;
   }
 
-  const onCopyInviteUrl = async event => {
+  const onCopyInviteUrl = async (event) => {
     event.preventDefault();
 
     effects.browser.copyToClipboard(teamInviteLink(team.inviteToken));
     effects.notificationToast.success('Copied Team Invite URL!');
   };
 
-  const created = team.users.find(user => user.id === team.creatorId);
+  const created = team.users.find((user) => user.id === team.creatorId);
   return (
     <>
       <Helmet>
@@ -159,7 +159,7 @@ export const TeamSettings = () => {
                             zIndex: -1,
                           })}
                           type="file"
-                          onChange={e => getFile(e.target.files[0])}
+                          onChange={(e) => getFile(e.target.files[0])}
                           id="avatar"
                           name="avatar"
                           accept="image/png, image/jpeg"
@@ -333,7 +333,7 @@ export const TeamSettings = () => {
               <UserSearchInput
                 inputValue={inviteValue}
                 allowSelf={false}
-                onInputValueChange={val => {
+                onInputValueChange={(val) => {
                   setInviteValue(val);
                 }}
               />
@@ -348,8 +348,8 @@ export const TeamSettings = () => {
           </Stack>
           <div>
             <MemberList
-              getPermission={user => getAuthorization(user, team)}
-              getPermissionOptions={user => {
+              getPermission={(user) => getAuthorization(user, team)}
+              getPermissionOptions={(user) => {
                 const yourAuthorization = activeWorkspaceAuthorization;
 
                 return yourAuthorization === TeamMemberAuthorization.Admin &&
@@ -385,7 +385,7 @@ export const TeamSettings = () => {
                     ]
                   : [];
               }}
-              getActions={user => {
+              getActions={(user) => {
                 const you = stateUser.id === user.id;
                 const yourAuthorization = activeWorkspaceAuthorization;
 
@@ -416,7 +416,7 @@ export const TeamSettings = () => {
             <MemberList
               getPermission={() => 'PENDING'}
               getPermissionOptions={() => []}
-              getActions={user => [
+              getActions={(user) => [
                 {
                   label: 'Revoke Invitation',
                   onSelect: () =>
@@ -440,7 +440,7 @@ const getAuthorization = (
   team: CurrentTeamInfoFragmentFragment
 ): TeamMemberAuthorization => {
   const authorization = team.userAuthorizations.find(
-    auth => auth.userId === user.id
+    (auth) => auth.userId === user.id
   ).authorization;
 
   return authorization;

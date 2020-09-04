@@ -113,16 +113,16 @@ export const CollaboratorHeads: FunctionComponent = () => {
   const liveUserId = state.live.liveUserId;
   const followingUserId = state.live.followingUserId;
   const orderedLiveUsers = React.useMemo(() => {
-    const currentUser = liveUsers.find(u => u.id === liveUserId);
-    const followingUser = liveUsers.find(u => u.id === followingUserId);
+    const currentUser = liveUsers.find((u) => u.id === liveUserId);
+    const followingUser = liveUsers.find((u) => u.id === followingUserId);
     const filteredLiveUsers = sortBy(
-      liveUsers.filter(u => u.id !== liveUserId),
+      liveUsers.filter((u) => u.id !== liveUserId),
       'id'
     );
 
     if (followingUser) {
       const followingUserIndex = filteredLiveUsers.findIndex(
-        u => u.id === followingUserId
+        (u) => u.id === followingUserId
       );
 
       const followingUserIsInFirst4 =
@@ -157,7 +157,7 @@ export const CollaboratorHeads: FunctionComponent = () => {
   return (
     <Stack justify="center">
       <SingletonTooltip interactive>
-        {singleton => (
+        {(singleton) => (
           <AnimatePresence>
             {firstLiveUsers.map((user, i) => (
               <motion.div
@@ -215,7 +215,7 @@ export const CollaboratorHeads: FunctionComponent = () => {
             {restLiveUsers.length}
           </Menu.Button>
           <Menu.List>
-            {restLiveUsers.map(restUser => (
+            {restLiveUsers.map((restUser) => (
               <Menu.Item
                 key={restUser.id}
                 onSelect={() => followLiveUser(restUser)}

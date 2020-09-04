@@ -12,7 +12,7 @@ export default function initialize() {
     {}
   );
 
-  babelPreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
+  babelPreset.registerTranspiler((module) => /\.jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {
@@ -21,7 +21,7 @@ export default function initialize() {
     },
   ]);
 
-  babelPreset.registerTranspiler(module => /\.json$/.test(module.path), [
+  babelPreset.registerTranspiler((module) => /\.json$/.test(module.path), [
     { transpiler: jsonTranspiler },
   ]);
 

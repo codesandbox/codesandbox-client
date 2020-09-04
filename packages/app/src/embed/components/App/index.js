@@ -134,9 +134,9 @@ export default class App extends React.PureComponent<
 
   fetchSandbox = async (id: string) => {
     if (id === 'custom') {
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         window.parent.postMessage('ready', '*');
-        window.addEventListener('message', e => {
+        window.addEventListener('message', (e) => {
           if (e.data && e.data.sandbox) {
             this.setState({
               sandbox: e.data.sandbox,
@@ -157,11 +157,12 @@ export default class App extends React.PureComponent<
             },
           }
         )
-          .then(res => res.json())
+          .then((res) => res.json())
           .then(camelizeKeys);
 
-        document.title = `${response.data.title ||
-          response.data.id} - CodeSandbox`;
+        document.title = `${
+          response.data.title || response.data.id
+        } - CodeSandbox`;
 
         this.setState({ sandbox: response.data });
       } catch (e) {
@@ -211,7 +212,7 @@ export default class App extends React.PureComponent<
   };
 
   toggleSidebar = () =>
-    this.setState(state => ({ sidebarOpen: !state.sidebarOpen }));
+    this.setState((state) => ({ sidebarOpen: !state.sidebarOpen }));
 
   // eslint-disable-next-line
   setProjectView = (sandboxId?: ?string, isOpen: boolean, cb: Function) => {
@@ -242,7 +243,7 @@ export default class App extends React.PureComponent<
     track('Embed - Toggle Like');
 
     if (this.state.sandbox.userLiked && jwt) {
-      this.setState(s => ({
+      this.setState((s) => ({
         sandbox: {
           ...s.sandbox,
           userLiked: false,
@@ -259,9 +260,9 @@ export default class App extends React.PureComponent<
           id: this.state.sandbox.id,
         }),
       })
-        .then(x => x.json())
-        .then(res => {
-          this.setState(s => ({
+        .then((x) => x.json())
+        .then((res) => {
+          this.setState((s) => ({
             sandbox: {
               ...s.sandbox,
               userLiked: false,
@@ -270,7 +271,7 @@ export default class App extends React.PureComponent<
           }));
         })
         .catch(() => {
-          this.setState(s => ({
+          this.setState((s) => ({
             sandbox: {
               ...s.sandbox,
               userLiked: true,
@@ -279,7 +280,7 @@ export default class App extends React.PureComponent<
           }));
         });
     } else {
-      this.setState(s => ({
+      this.setState((s) => ({
         sandbox: {
           ...s.sandbox,
           userLiked: true,
@@ -293,14 +294,14 @@ export default class App extends React.PureComponent<
           Authorization: `Bearer ${jwt}`,
         },
       })
-        .then(x => x.json())
-        .then(res => {
-          this.setState(s => ({
+        .then((x) => x.json())
+        .then((res) => {
+          this.setState((s) => ({
             sandbox: { ...s.sandbox, userLiked: true, likeCount: res.count },
           }));
         })
         .catch(() => {
-          this.setState(s => ({
+          this.setState((s) => ({
             sandbox: {
               ...s.sandbox,
               userLiked: false,

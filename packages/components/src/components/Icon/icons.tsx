@@ -3,7 +3,7 @@ import React from 'react';
 import { Element } from '../Element';
 
 // we use this icon as a error state fallback
-export const notFound = props => (
+export const notFound = (props) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"
@@ -23,7 +23,7 @@ export const notFound = props => (
  * All icons should be in a 16x16 viewbox
  */
 
-export const filter = props => (
+export const filter = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -39,7 +39,7 @@ export const filter = props => (
   </Element>
 );
 
-export const github = props => (
+export const github = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -53,7 +53,7 @@ export const github = props => (
   </Element>
 );
 
-export const gitAdded = props => (
+export const gitAdded = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -69,7 +69,7 @@ export const gitAdded = props => (
   </Element>
 );
 
-export const gitRemoved = props => (
+export const gitRemoved = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -85,7 +85,7 @@ export const gitRemoved = props => (
   </Element>
 );
 
-export const gitModified = props => (
+export const gitModified = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -101,7 +101,7 @@ export const gitModified = props => (
   </Element>
 );
 
-export const comments = props => (
+export const comments = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -125,7 +125,7 @@ export const comments = props => (
   </Element>
 );
 
-export const simpleCheck = props => (
+export const simpleCheck = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -141,7 +141,7 @@ export const simpleCheck = props => (
   </Element>
 );
 
-export const backArrow = props => (
+export const backArrow = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -155,7 +155,7 @@ export const backArrow = props => (
   </Element>
 );
 
-export const check = props => (
+export const check = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -171,7 +171,7 @@ export const check = props => (
   </Element>
 );
 
-export const more = props => (
+export const more = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -187,7 +187,7 @@ export const more = props => (
   </Element>
 );
 
-export const chevronDown = props => (
+export const chevronDown = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -202,7 +202,7 @@ export const chevronDown = props => (
   </Element>
 );
 
-export const caret = props => (
+export const caret = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -217,7 +217,7 @@ export const caret = props => (
   </Element>
 );
 
-export const cross = props => (
+export const cross = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -231,7 +231,7 @@ export const cross = props => (
   </Element>
 );
 
-export const plus = props => (
+export const plus = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -245,7 +245,7 @@ export const plus = props => (
   </Element>
 );
 
-export const plusInCircle = props => (
+export const plusInCircle = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -261,7 +261,7 @@ export const plusInCircle = props => (
   </Element>
 );
 
-export const menu = props => (
+export const menu = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -277,7 +277,7 @@ export const menu = props => (
   </Element>
 );
 
-export const bell = props => (
+export const bell = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -293,7 +293,7 @@ export const bell = props => (
   </Element>
 );
 
-export const box = props => (
+export const box = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -307,7 +307,7 @@ export const box = props => (
   </Element>
 );
 
-export const file = props => (
+export const file = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -323,7 +323,7 @@ export const file = props => (
   </Element>
 );
 
-export const clock = props => (
+export const clock = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -339,7 +339,7 @@ export const clock = props => (
   </Element>
 );
 
-export const folder = props => (
+export const folder = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -353,7 +353,7 @@ export const folder = props => (
   </Element>
 );
 
-export const star = props => (
+export const star = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -367,7 +367,7 @@ export const star = props => (
   </Element>
 );
 
-export const trash = props => (
+export const trash = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -387,7 +387,7 @@ export const trash = props => (
   </Element>
 );
 
-export const gear = props => (
+export const gear = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -403,7 +403,7 @@ export const gear = props => (
   </Element>
 );
 
-export const edit = props => (
+export const edit = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -419,7 +419,7 @@ export const edit = props => (
   </Element>
 );
 
-export const lock = props => (
+export const lock = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -435,7 +435,7 @@ export const lock = props => (
   </Element>
 );
 
-export const arrowDown = props => (
+export const arrowDown = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -451,7 +451,7 @@ export const arrowDown = props => (
   </Element>
 );
 
-export const link = props => (
+export const link = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -465,7 +465,7 @@ export const link = props => (
   </Element>
 );
 
-export const eye = props => (
+export const eye = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -483,7 +483,7 @@ export const eye = props => (
   </Element>
 );
 
-export const pr = props => (
+export const pr = (props) => (
   <svg width="1em" height="1em" viewBox="0 0 14 16" fill="none" {...props}>
     <path
       fillRule="evenodd"
@@ -494,7 +494,7 @@ export const pr = props => (
   </svg>
 );
 
-export const fork = props => (
+export const fork = (props) => (
   <svg width="1em" height="1em" viewBox="0 0 11 15" fill="none" {...props}>
     <path
       d="M11 1.833A1.816 1.816 0 009.167 0a1.816 1.816 0 00-1.834 1.833c0 .66.367 1.284.917 1.577v1.187a.917.917 0 01-.237.615L6.18 7.24a.917.917 0 01-1.36 0L2.987 5.21a.917.917 0 01-.237-.614V3.41c.55-.293.917-.88.917-1.577A1.816 1.816 0 001.833 0 1.816 1.816 0 000 1.833c0 .66.367 1.284.917 1.577v1.882c0 .228.085.448.238.617l3.19 3.509a.917.917 0 01.238.616v1.223c-.55.33-.916.916-.916 1.576 0 1.027.806 1.834 1.833 1.834a1.816 1.816 0 001.833-1.834c0-.66-.366-1.246-.916-1.576v-1.223c0-.228.085-.448.238-.616l3.19-3.51a.917.917 0 00.238-.616V3.41c.55-.293.917-.88.917-1.577z"
@@ -503,7 +503,7 @@ export const fork = props => (
   </svg>
 );
 
-export const GoogleIcon = props => (
+export const GoogleIcon = (props) => (
   <svg width={22} height={20} fill="none" viewBox="0 0 22 20" {...props}>
     <path
       fill="#4285F4"
@@ -532,7 +532,7 @@ export const GoogleIcon = props => (
   </svg>
 );
 
-export const heart = props => (
+export const heart = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -546,7 +546,7 @@ export const heart = props => (
   </Element>
 );
 
-export const twitter = props => (
+export const twitter = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -560,7 +560,7 @@ export const twitter = props => (
   </Element>
 );
 
-export const globe = props => (
+export const globe = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -574,7 +574,7 @@ export const globe = props => (
   </Element>
 );
 
-export const forkFilled = props => (
+export const forkFilled = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -590,7 +590,7 @@ export const forkFilled = props => (
   </Element>
 );
 
-export const search = props => (
+export const search = (props) => (
   <Element
     as="svg"
     viewBox="0 0 16 16"
@@ -606,7 +606,7 @@ export const search = props => (
   </Element>
 );
 
-export const frozen = props => (
+export const frozen = (props) => (
   <Element
     as="svg"
     viewBox="0 0 10 11"

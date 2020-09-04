@@ -35,9 +35,9 @@ export async function isMinimalReactVersion(
 export async function hasRefresh(
   dependencies: { name: string; version: string }[]
 ) {
-  const hasReactRefresh = dependencies.find(n => n.name === 'react-refresh');
+  const hasReactRefresh = dependencies.find((n) => n.name === 'react-refresh');
   if (hasReactRefresh) {
-    const reactDom = dependencies.find(dep => dep.name === 'react-dom');
+    const reactDom = dependencies.find((dep) => dep.name === 'react-dom');
 
     if (reactDom) {
       return isMinimalReactVersion(reactDom.version, '16.9.0');
@@ -56,7 +56,7 @@ export function cleanUsingUnmount(manager: Manager) {
     // Do unmounting for react
     if (
       manager.manifest &&
-      manager.manifest.dependencies.find(n => n.name === 'react-dom')
+      manager.manifest.dependencies.find((n) => n.name === 'react-dom')
     ) {
       const reactDOMModule = manager.resolveModule('react-dom', '');
       const reactDOM = manager.evaluateModule(reactDOMModule);

@@ -68,7 +68,7 @@ export const client = new ApolloClient({
     errorHandler.concat(absintheAfterware.concat(httpLink))
   ),
   cache: new InMemoryCache({
-    dataIdFromObject: o => o.id,
+    dataIdFromObject: (o) => o.id,
     fragmentMatcher,
     cacheRedirects: {
       Query: {

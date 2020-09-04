@@ -122,19 +122,19 @@ class SandboxFsSync {
   public create(sandbox: Sandbox): SandboxFs {
     const sandboxFs = {};
 
-    sandbox.directories.forEach(d => {
+    sandbox.directories.forEach((d) => {
       const path = getDirectoryPath(sandbox.modules, sandbox.directories, d.id);
 
       d.path = path;
       // If this is a single directory with no children
-      if (!Object.keys(sandboxFs).some(p => dirname(p) === path)) {
+      if (!Object.keys(sandboxFs).some((p) => dirname(p) === path)) {
         sandboxFs[path] = { ...d, type: 'directory' };
       }
 
       browserFs.mkdir(join('/sandbox', path), () => {});
     });
 
-    sandbox.modules.forEach(m => {
+    sandbox.modules.forEach((m) => {
       const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
       if (path) {
         m.path = path;
@@ -211,7 +211,7 @@ class SandboxFsSync {
     browserFs.mkdir(join('/sandbox', directory.path!), () => {});
   }
 
-  private onWorkerMessage = evt => {
+  private onWorkerMessage = (evt) => {
     if (evt.data.$fs_id && !this.workerIds.includes(evt.data.$fs_id)) {
       this.workerIds.push(evt.data.$fs_id);
     }
@@ -258,7 +258,7 @@ class SandboxFsSync {
 
         this.deps = newDeps;
 
-        added.forEach(dep => {
+        added.forEach((dep) => {
           this.fetchDependencyTyping(dep, syncDetails.autoInstall);
         });
 
@@ -267,7 +267,7 @@ class SandboxFsSync {
 
           // We go through removed deps to figure out what typings packages
           // has been removed, then delete the from our types as well
-          removed.forEach(removedDep => {
+          removed.forEach((removedDep) => {
             const typings = this.types[removedDep.name] || {};
 
             Object.assign(removedTypings, typings);
@@ -297,7 +297,7 @@ class SandboxFsSync {
       });
     }
 
-    newDepsKeys.forEach(newDepKey => {
+    newDepsKeys.forEach((newDepKey) => {
       if (
         !this.deps[newDepKey] ||
         this.deps[newDepKey] !== newDeps[newDepKey]
@@ -309,7 +309,7 @@ class SandboxFsSync {
       }
     });
 
-    currentDepsKeys.forEach(currentDepKey => {
+    currentDepsKeys.forEach((currentDepKey) => {
       if (currentDepKey !== '@types/jest' && !newDeps[currentDepKey]) {
         removed.push({
           name: currentDepKey,
@@ -383,8 +383,8 @@ class SandboxFsSync {
       // https://hacks.mozilla.org/2016/03/referrer-and-cache-control-apis-for-fetch/
       { cache: 'no-cache' }
     )
-      .then(x => x.json())
-      .then(x => x.entries);
+      .then((x) => x.json())
+      .then((x) => x.entries);
 
     return this.typesInfo;
   }
@@ -443,7 +443,7 @@ class SandboxFsSync {
         );
         const hasTypes = Boolean(
           Object.keys(files).some(
-            key => key.startsWith('/' + dep.name) && key.endsWith('.d.ts')
+            (key) => key.startsWith('/' + dep.name) && key.endsWith('.d.ts')
           )
         );
 
@@ -455,10 +455,10 @@ class SandboxFsSync {
         ) {
           const name = `@types/${dep.name}`;
           this.fetchDependencyTypingFiles(name, this.typesInfo[dep.name].latest)
-            .then(typesFiles => {
+            .then((typesFiles) => {
               this.setAndSendPackageTypes(dep.name, typesFiles);
             })
-            .catch(e => {
+            .catch((e) => {
               if (process.env.NODE_ENV === 'development') {
                 console.warn('Trouble fetching types for ' + name);
               }
@@ -481,7 +481,7 @@ class SandboxFsSync {
 
     try {
       const url = `${BUCKET_URL}/${name}/${version}.json`;
-      return await requestPackager(url, 0).then(x => x.files);
+      return await requestPackager(url, 0).then((x) => x.files);
     } catch (e) {
       // Hasn't been generated
     }
@@ -501,7 +501,7 @@ class SandboxFsSync {
 
     const kids = browserFs.readdirSync(dir);
 
-    kids.forEach(kid => {
+    kids.forEach((kid) => {
       const path = join(dir, kid);
 
       try {

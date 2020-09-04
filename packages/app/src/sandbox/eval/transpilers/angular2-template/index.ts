@@ -19,7 +19,7 @@ function replaceStringsWithRequires(string, extensionConfig, addDependency) {
     const transpilers = extensionConfig[extension] || [];
 
     const finalUrl = `!raw-loader!${transpilers
-      .map(t => t.transpiler.name)
+      .map((t) => t.transpiler.name)
       .join('!')}!${url}`;
 
     addDependency(finalUrl, { isAbsolute: false });

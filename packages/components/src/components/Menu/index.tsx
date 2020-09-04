@@ -117,7 +117,7 @@ const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
   // handle key down events - close on escape + disable the rest
   // TODO: handle arrow keys and space/enter.
   React.useEffect(() => {
-    const handler = event => {
+    const handler = (event) => {
       if (!visible) return;
       if (
         event.keyCode === ESC ||
@@ -180,7 +180,7 @@ const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
   );
 };
 
-const MenuButton = props => (
+const MenuButton = (props) => (
   <Button
     as={ReachMenu.MenuButton}
     variant="link"
@@ -199,11 +199,11 @@ const MenuButton = props => (
   </Button>
 );
 
-const MenuIconButton = props => (
+const MenuIconButton = (props) => (
   <IconButton as={ReachMenu.MenuButton} {...props} />
 );
 
-const MenuList = props => {
+const MenuList = (props) => {
   const { trigger, portal } = React.useContext(MenuContext);
   return (
     <List
@@ -218,11 +218,11 @@ const MenuList = props => {
   );
 };
 
-const MenuItem = props => (
+const MenuItem = (props) => (
   <Element as={ReachMenu.MenuItem} data-component="MenuItem" {...props} />
 );
 
-const MenuDivider = props => (
+const MenuDivider = (props) => (
   <Element
     as="hr"
     data-component="MenuDivider"
@@ -238,7 +238,7 @@ Menu.Item = MenuItem;
 Menu.Divider = MenuDivider;
 Menu.ContextMenu = ContextMenu;
 
-export const isMenuClicked = event => {
+export const isMenuClicked = (event) => {
   // don't trigger comment if you click on the menu
   // we handle this because of an upstream
   // bug in reach/menu-button

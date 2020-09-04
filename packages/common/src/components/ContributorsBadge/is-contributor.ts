@@ -8,9 +8,9 @@ export async function isContributor(username: string) {
         .fetch(
           'https://raw.githubusercontent.com/codesandbox/codesandbox-client/master/.all-contributorsrc'
         )
-        .then(x => x.json())
-        .then(x => x.contributors.map(u => u.login))
-        .then(names => {
+        .then((x) => x.json())
+        .then((x) => x.contributors.map((u) => u.login))
+        .then((names) => {
           contributors = names;
         })
         .catch(() => {})));

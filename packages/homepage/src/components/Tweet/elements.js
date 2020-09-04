@@ -5,7 +5,7 @@ export const TweetsWrapper = styled.a`
   text-decoration: none;
   position: absolute;
   width: 520px;
-  background: ${props => props.theme.homepage.grey};
+  background: ${(props) => props.theme.homepage.grey};
   box-shadow: 0px 1rem 1rem rgba(4, 4, 4, 0.25);
   border-radius: 4px;
   margin-top: 5.5rem;
@@ -16,14 +16,14 @@ export const TweetsWrapper = styled.a`
     right: 0;
   }
 
-  ${props =>
+  ${(props) =>
     props.right &&
     `
     left: auto;
     right: -6.7rem;
   `}
 
-  ${props => props.theme.breakpoints.lg} {
+  ${(props) => props.theme.breakpoints.lg} {
     position: relative;
     right: auto;
     left: auto;
@@ -31,7 +31,7 @@ export const TweetsWrapper = styled.a`
     height: auto;
   }
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     background: transparent;
     padding: 0;
     margin: 0;
@@ -46,11 +46,11 @@ export const Quote = styled.blockquote`
   font-size: 1.4375rem;
   line-height: 32px;
 
-  color: ${props => props.theme.homepage.muted};
+  color: ${(props) => props.theme.homepage.muted};
   margin: 0;
   margin-bottom: 2rem;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     font-size: 1.2rem;
     line-height: 1.5;
   }
@@ -63,7 +63,7 @@ export const Info = styled.p`
   line-height: 24px;
   margin: 0;
 
-  color: ${props => props.theme.homepage.muted};
+  color: ${(props) => props.theme.homepage.muted};
 `;
 
 export const Avatar = styled.img`
@@ -73,7 +73,7 @@ export const Avatar = styled.img`
   border-radius: 50%;
   margin-right: 1rem;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     margin-bottom: 1rem;
     margin-right: 0;
   }
@@ -83,7 +83,7 @@ export const Author = styled.footer`
   display: flex;
   align-items: center;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     flex-direction: column;
     text-align: center;
   }

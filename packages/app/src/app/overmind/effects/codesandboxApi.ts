@@ -8,7 +8,7 @@ export default {
       listeners.get(action)();
     }
 
-    const disposer = listen(data => {
+    const disposer = listen((data) => {
       action({ data: data || {} });
     });
     listeners.set(action, disposer);

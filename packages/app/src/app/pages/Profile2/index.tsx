@@ -30,7 +30,7 @@ import { SearchedSandboxes } from './SearchedSandboxes';
 import { LikedSandboxes } from './LikedSandboxes';
 import { ContextMenu } from './ContextMenu';
 
-export const Profile = props => {
+export const Profile = (props) => {
   const { username } = props.match.params;
 
   const {

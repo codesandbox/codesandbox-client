@@ -74,7 +74,7 @@ tolerant threshold. We iterate this list to create test cases:
 const SANDBOXES = [];
 
 describe('sandboxes', () => {
-  SANDBOXES.forEach(sandbox => {
+  SANDBOXES.forEach((sandbox) => {
     const id = sandbox.id || sandbox;
     const threshold = sandbox.threshold || 0.01;
 
@@ -118,7 +118,7 @@ const SANDBOXES = [
 ];
 
 function pageLoaded(page) {
-  return new Promise(async resolve => {
+  return new Promise(async (resolve) => {
     // We expose a function which the bundler will call after evaluation
     await page.exposeFunction('__puppeteer__', () => {
       if (resolve) {
@@ -136,7 +136,7 @@ describe('sandboxes', () => {
     browser.close();
   });
 
-  SANDBOXES.forEach(sandbox => {
+  SANDBOXES.forEach((sandbox) => {
     const id = sandbox.id || sandbox;
     const threshold = sandbox.threshold || 0.01;
 

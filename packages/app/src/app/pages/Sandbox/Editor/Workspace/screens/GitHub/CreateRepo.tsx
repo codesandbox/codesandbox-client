@@ -28,7 +28,7 @@ export const CreateRepo = () => {
     target: { value: title },
   }: ChangeEvent<HTMLInputElement>) => repoTitleChanged({ title });
 
-  const createRepo = e => {
+  const createRepo = (e) => {
     e.preventDefault();
     track('Export to GitHub Clicked');
     createRepoClicked();

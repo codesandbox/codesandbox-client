@@ -20,19 +20,20 @@ import { ThemeProvider } from '@codesandbox/components';
 import { ImageViewer } from './ImageViewer';
 import MonacoDiff from './MonacoDiff';
 
-const CodeMirror = Loadable(() =>
-  import(
-    /* webpackChunkName: 'codemirror-editor' */ 'app/components/CodeEditor/CodeMirror'
-  )
+const CodeMirror = Loadable(
+  () =>
+    import(
+      /* webpackChunkName: 'codemirror-editor' */ 'app/components/CodeEditor/CodeMirror'
+    )
 );
 
-const Monaco = Loadable(() =>
-  import(/* webpackChunkName: 'monaco-editor' */ './Monaco')
+const Monaco = Loadable(
+  () => import(/* webpackChunkName: 'monaco-editor' */ './Monaco')
 );
 
 const getDependencies = (sandbox: Sandbox): { [key: string]: string } => {
   const packageJSON = sandbox.modules.find(
-    m => m.title === 'package.json' && m.directoryShortid == null
+    (m) => m.title === 'package.json' && m.directoryShortid == null
   );
 
   if (packageJSON != null) {
@@ -42,7 +43,7 @@ const getDependencies = (sandbox: Sandbox): { [key: string]: string } => {
       );
 
       const usedDevDependencies = {};
-      Object.keys(devDependencies).forEach(d => {
+      Object.keys(devDependencies).forEach((d) => {
         if (d.startsWith('@types')) {
           usedDevDependencies[d] = devDependencies[d];
         }
@@ -76,7 +77,7 @@ export class CodeEditorComponent extends React.PureComponent<
   };
 
   toggleConfigUI = () => {
-    this.setState(state => ({ showConfigUI: !state.showConfigUI }));
+    this.setState((state) => ({ showConfigUI: !state.showConfigUI }));
   };
 
   render() {

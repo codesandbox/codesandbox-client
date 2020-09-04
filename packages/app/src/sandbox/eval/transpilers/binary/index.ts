@@ -17,8 +17,8 @@ class BinaryTranspiler extends Transpiler {
     loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
     return fetch(code)
-      .then(res => res.blob())
-      .then(blob => ({ transpiledCode: blob }));
+      .then((res) => res.blob())
+      .then((blob) => ({ transpiledCode: blob }));
   }
 }
 

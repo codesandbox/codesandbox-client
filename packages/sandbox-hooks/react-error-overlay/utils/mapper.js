@@ -26,7 +26,7 @@ async function map(
 ): Promise<StackFrame[]> {
   const cache: any = {};
   const files: string[] = [];
-  frames.forEach(frame => {
+  frames.forEach((frame) => {
     const { fileName } = frame;
     if (fileName == null) {
       return;
@@ -37,7 +37,7 @@ async function map(
     files.push(fileName);
   });
   await settle(
-    files.map(async fileName => {
+    files.map(async (fileName) => {
       const manager = getCurrentManager();
       if (manager != null && !fileName.startsWith('webpack')) {
         let transpiledModule;
@@ -63,7 +63,7 @@ async function map(
       }
     })
   );
-  return frames.map(frame => {
+  return frames.map((frame) => {
     const { functionName, fileName, lineNumber, columnNumber } = frame;
     let { map, fileSource } = cache[fileName] || {};
     if (map == null || lineNumber == null) {

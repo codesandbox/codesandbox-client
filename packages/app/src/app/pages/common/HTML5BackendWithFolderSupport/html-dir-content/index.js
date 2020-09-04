@@ -18,7 +18,7 @@ const getFiles = (item, options = {}) =>
   getFileList(getAsEntry(item), initOptions(options));
 
 const getDataTransferItemFiles = (item, options) =>
-  getFiles(item, options).then(files => {
+  getFiles(item, options).then((files) => {
     if (!files.length) {
       // perhaps its a regular file
       const file = item.getAsFile();
@@ -42,13 +42,13 @@ const getFilesFromDragEvent = (evt, options = {}) => {
   // eslint-disable-next-line
   options = initOptions(options);
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if (evt.dataTransfer.items) {
       Promise.all(
         getListAsArray(evt.dataTransfer.items)
-          .filter(item => isItemFileEntry(item))
-          .map(item => getDataTransferItemFiles(item, options))
-      ).then(files => resolve(getListAsArray(files)));
+          .filter((item) => isItemFileEntry(item))
+          .map((item) => getDataTransferItemFiles(item, options))
+      ).then((files) => resolve(getListAsArray(files)));
     } else if (evt.dataTransfer.files) {
       resolve(getListAsArray(evt.dataTransfer.files)); // turn into regular array (instead of FileList)
     } else {

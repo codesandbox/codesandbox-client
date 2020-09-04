@@ -7,7 +7,7 @@ import { NotificationStatus } from '@codesandbox/notifications';
 export function initializeThemeCache() {
   try {
     if (!localStorage.getItem('vs-global://colorThemeData')) {
-      import('./theme-cache').then(rawTheme => {
+      import('./theme-cache').then((rawTheme) => {
         localStorage.setItem('vs-global://colorThemeData', rawTheme.default);
       });
     }

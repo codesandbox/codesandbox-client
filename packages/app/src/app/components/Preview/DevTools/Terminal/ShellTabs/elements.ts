@@ -3,14 +3,14 @@ import CrossIconClean from 'react-icons/lib/md/clear';
 
 export const Container = styled.div`
   display: flex;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.theme['editorGroupHeader.tabsBackground'] || props.theme.background4};
 
   width: 100%;
   align-items: center;
   font-size: 0.875rem;
 
-  color: ${props =>
+  color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.7)'};
 `;
 
@@ -18,12 +18,12 @@ export const CrossIcon = styled(CrossIconClean)`
   transition: 0.3s ease color;
   position: absolute;
   right: 1rem;
-  color: ${props =>
+  color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.5)'};
   cursor: pointer;
 
   &:hover {
-    color: ${props =>
+    color: ${(props) =>
       props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.7)'};
   }
 `;
@@ -41,14 +41,14 @@ export const Tab = styled.div<{ selected: boolean }>`
   cursor: pointer;
   border-bottom: 1px solid transparent;
   border-right: 1px solid
-    ${props =>
+    ${(props) =>
       props.theme.light ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.4)'};
 
-  ${props =>
+  ${(props) =>
     props.selected
       ? css`
           background-color: ${props.theme['tab.activeBackground'] ||
-            props.theme.background2};
+          props.theme.background2};
           color: ${props.theme.light
             ? 'rgba(0, 0, 0, 0.8)'
             : 'rgba(255, 255, 255, 0.9)'};
@@ -59,7 +59,7 @@ export const Tab = styled.div<{ selected: boolean }>`
             ${props.theme.light ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.4)'};
           &:hover {
             background-color: ${props.theme['tab.inactiveBackground'] ||
-              props.theme.background2.darken(0.2)};
+            props.theme.background2.darken(0.2)};
             color: ${props.theme.light
               ? 'rgba(0, 0, 0, 0.8)'
               : 'rgba(255, 255, 255, 0.9)'};
@@ -86,13 +86,13 @@ export const PlusContainer = styled.button`
 
   cursor: pointer;
 
-  color: ${props =>
+  color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.5)'};
 
   &:hover {
-    background-color: ${props =>
+    background-color: ${(props) =>
       `${props.theme['tab.activeBackground'] || props.theme.background2}`};
-    color: ${props =>
+    color: ${(props) =>
       props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.7)'};
   }
 `;

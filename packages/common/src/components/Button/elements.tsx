@@ -110,18 +110,18 @@ export const styles = css<ComponentProps<typeof Button> | any>`
 
   border: none;
   outline: none;
-  ${props => getBackgroundColor(props)};
+  ${(props) => getBackgroundColor(props)};
   background-size: 720%;
 
-  border: ${props => getBorder(props)};
+  border: ${(props) => getBorder(props)};
   border-radius: 4px;
 
   box-sizing: border-box;
   font-size: 1.125em;
   text-align: center;
-  color: ${props => getColor(props)};
+  color: ${(props) => getColor(props)};
   font-weight: 600;
-  width: ${props => (props.block ? '100%' : 'inherit')};
+  width: ${(props) => (props.block ? '100%' : 'inherit')};
 
   user-select: none;
   text-decoration: none;
@@ -129,7 +129,7 @@ export const styles = css<ComponentProps<typeof Button> | any>`
   white-space: nowrap;
   text-overflow: ellipsis;
 
-  ${props =>
+  ${(props) =>
     props.small
       ? css`
           padding: 0.5em 0.7em;
@@ -139,7 +139,7 @@ export const styles = css<ComponentProps<typeof Button> | any>`
           padding: 0.65em 2.25em;
         `};
 
-  ${props =>
+  ${(props) =>
     !props.disabled &&
     css`
       cursor: pointer;
@@ -147,8 +147,8 @@ export const styles = css<ComponentProps<typeof Button> | any>`
 
   &:hover,
   &:focus {
-    ${props => getBackgroundHoverColor(props)};
-    ${props => getHoverColor(props)};
+    ${(props) => getBackgroundHoverColor(props)};
+    ${(props) => getHoverColor(props)};
 
     outline: 0 !important;
   }
@@ -158,8 +158,10 @@ export const styles = css<ComponentProps<typeof Button> | any>`
 export const LinkButton = styled(withoutProps(`small`)(Link))`
   ${styles};
 `;
-// eslint-disable-next-line
-export const AButton = styled(withoutProps(`small`)(props => <a {...props} />))`
+export const AButton = styled(
+  // eslint-disable-next-line
+  withoutProps(`small`)((props) => <a {...props} />)
+)`
   ${styles};
 `;
 export const ReakitButton = styled(withoutProps(`small`)(ReakitButtonBase))`

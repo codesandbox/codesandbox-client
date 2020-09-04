@@ -39,7 +39,7 @@ export class TarFetcher implements FetchProtocol {
 
   private normalizeTar(tarContents: UntarredFiles) {
     const normalized: { [path: string]: DeserializedFetchedTar } = {};
-    tarContents.forEach(tar => {
+    tarContents.forEach((tar) => {
       normalized[tar.name.replace(/^package/, '')] = {
         // TODO(@CompuIves): store buffers rather than strings for binary files
         content: Buffer.from(tar.buffer).toString(),
@@ -52,7 +52,7 @@ export class TarFetcher implements FetchProtocol {
     const tarKey = this.generateKey(name, version);
 
     this.fetchedTars[tarKey] = (async () => {
-      const file = await fetchWithRetries(version).then(x => x.arrayBuffer());
+      const file = await fetchWithRetries(version).then((x) => x.arrayBuffer());
       const unzippedFile = gzip.unzip(new Uint8Array(file));
       const untarredFile = await untar(new Uint8Array(unzippedFile).buffer);
       const normalizedTar = this.normalizeTar(untarredFile);
@@ -78,7 +78,7 @@ export class TarFetcher implements FetchProtocol {
 
     const meta: Meta = {};
 
-    Object.keys(tar).forEach(path => {
+    Object.keys(tar).forEach((path) => {
       meta[path] = true;
     });
 

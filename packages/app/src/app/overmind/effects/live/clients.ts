@@ -66,7 +66,7 @@ export class CodeSandboxOTClient extends OTClient {
     }
 
     return this.onSendOperation(revision, operation)
-      .then(result => {
+      .then((result) => {
         logBreadcrumb({
           category: 'ot',
           message: `Acknowledging ${JSON.stringify({
@@ -102,7 +102,7 @@ export class CodeSandboxOTClient extends OTClient {
           );
         }
       })
-      .catch(error => {
+      .catch((error) => {
         // If an operation errors on the server we will reject
         // the blocker, as an action might be waiting for it to resolve,
         // creating a user friendly error related to trying to save
@@ -208,7 +208,7 @@ export class CodesandboxOTClientsManager {
       moduleShortid,
       (revision, operation) =>
         this.sendOperation(moduleShortid, revision, operation),
-      operation => {
+      (operation) => {
         this.applyOperation(moduleShortid, operation);
       }
     );

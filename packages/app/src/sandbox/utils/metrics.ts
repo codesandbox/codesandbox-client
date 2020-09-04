@@ -78,7 +78,7 @@ export function getCumulativeMeasure(
   prefix: string,
   options: { displayName?: string; silent?: boolean } = {}
 ) {
-  const keys = Object.keys(measurements).filter(p =>
+  const keys = Object.keys(measurements).filter((p) =>
     p.startsWith(prefix + '-')
   );
 

@@ -148,7 +148,7 @@ export class VSCodeEffect {
     this.prepareElements();
 
     this.options.reaction(
-      state => ({
+      (state) => ({
         fileComments: json(state.comments.fileComments),
         currentCommentId: state.comments.currentCommentId,
       }),
@@ -170,18 +170,18 @@ export class VSCodeEffect {
     import(
       // @ts-ignore
       'worker-loader?publicPath=/&name=client-ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/client-ext-host'
-    ).then(ExtHostWorkerLoader => {
+    ).then((ExtHostWorkerLoader) => {
       this.clientExtensionHost = ExtHostWorkerLoader.default;
     });
 
     import(
       // @ts-ignore
       'worker-loader?publicPath=/&name=container-ext-host-worker.[hash:8].worker.js!./extensionHostWorker/bootstrappers/container-ext-host'
-    ).then(ExtHostWorkerLoader => {
+    ).then((ExtHostWorkerLoader) => {
       this.containerExtensionHost = ExtHostWorkerLoader.default;
     });
 
-    this.initialized = this.initializeFileSystem().then(mfs => {
+    this.initialized = this.initializeFileSystem().then((mfs) => {
       this.mountableFilesystem = mfs;
       // We want to initialize before VSCode, but after browserFS is configured
       // For first-timers initialize a theme in the cache so it doesn't jump colors
@@ -205,14 +205,14 @@ export class VSCodeEffect {
       // most important one is Live. If you're in a classroom live session as spectator,
       // you should not be allowed to edit.
       options.reaction(
-        state =>
+        (state) =>
           (state.editor.currentSandbox &&
             Boolean(state.editor.currentSandbox.git)) ||
           !state.live.isLive ||
           state.live.roomInfo?.mode === 'open' ||
           (state.live.roomInfo?.mode === 'classroom' &&
             state.live.isCurrentEditor),
-        canEdit => {
+        (canEdit) => {
           this.setReadOnly(!canEdit);
         }
       );
@@ -245,7 +245,7 @@ export class VSCodeEffect {
           const commentGlyphs = document.querySelectorAll(
             '.editor-comments-glyph'
           );
-          const el = Array.from(commentGlyphs).find(glyphEl =>
+          const el = Array.from(commentGlyphs).find((glyphEl) =>
             glyphEl.className.includes(commentId)
           );
 
@@ -452,7 +452,7 @@ export class VSCodeEffect {
     if (isFirstLoad) {
       const container = this.elements.editor;
 
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
       }).then(() => this.loadEditor(window.monaco, container));
     }
@@ -496,7 +496,7 @@ export class VSCodeEffect {
       const groupsToClose = this.editorApi.editorService.editorGroupService.getGroups();
 
       await Promise.all(
-        groupsToClose.map(group =>
+        groupsToClose.map((group) =>
           Promise.all([
             group.closeAllEditors(),
             this.editorApi.editorService.editorGroupService.removeGroup(group),
@@ -517,7 +517,7 @@ export class VSCodeEffect {
     // allowing for a paint, like selections in explorer. For this to work we have to ensure
     // that we are actually indeed still trying to open this file, as we might have changed
     // the file
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       requestAnimationFrame(async () => {
         const currentModule = this.options.getCurrentModule();
         if (currentModule && module.id === currentModule.id) {
@@ -543,10 +543,10 @@ export class VSCodeEffect {
       if (errors.length > 0) {
         const currentPath = this.getCurrentModelPath();
         const thisModuleErrors = errors.filter(
-          error => error.path === currentPath
+          (error) => error.path === currentPath
         );
         const errorMarkers = thisModuleErrors
-          .map(error => {
+          .map((error) => {
             if (error) {
               return {
                 severity: this.monaco.MarkerSeverity.Error,
@@ -560,7 +560,7 @@ export class VSCodeEffect {
 
             return null;
           })
-          .filter(x => x);
+          .filter((x) => x);
 
         this.monaco.editor.setModelMarkers(
           activeEditor.getModel(),
@@ -621,8 +621,8 @@ export class VSCodeEffect {
       if (corrections.length > 0) {
         const currentPath = this.getCurrentModelPath();
         const correctionMarkers = corrections
-          .filter(correction => correction.path === currentPath)
-          .map(correction => {
+          .filter((correction) => correction.path === currentPath)
+          .map((correction) => {
             if (correction) {
               return {
                 severity:
@@ -640,7 +640,7 @@ export class VSCodeEffect {
 
             return null;
           })
-          .filter(x => x);
+          .filter((x) => x);
 
         this.monaco.editor.setModelMarkers(
           activeEditor.getModel(),
@@ -741,7 +741,7 @@ export class VSCodeEffect {
   private createContainerForkHandler() {
     return () => {
       const host = this.containerExtensionHost();
-      host.addEventListener('message', event => {
+      host.addEventListener('message', (event) => {
         if (event.data.$type === 'request_lsp_endpoint') {
           event.target.postMessage({
             $type: 'respond_lsp_endpoint',
@@ -862,7 +862,7 @@ export class VSCodeEffect {
   private initializeReactions() {
     const { reaction } = this.options;
 
-    reaction(state => state.preferences.settings, this.changeSettings, {
+    reaction((state) => state.preferences.settings, this.changeSettings, {
       nested: true,
       immediate: true,
     });
@@ -873,7 +873,7 @@ export class VSCodeEffect {
       .promise;
     const extensionIdentifier = (
       await extensionEnablementService.getDisabledExtensions()
-    ).find(ext => ext.id === id);
+    ).find((ext) => ext.id === id);
 
     if (extensionIdentifier) {
       // Sadly we have to call a private api for this. Might change this once we have extension management
@@ -929,13 +929,13 @@ export class VSCodeEffect {
       r('vs/platform/contextview/browser/contextView'),
     ];
 
-    const { serviceCollection } = await new Promise<any>(resolve => {
+    const { serviceCollection } = await new Promise<any>((resolve) => {
       monaco.editor.create(
         container,
         {
-          codesandboxService: i =>
+          codesandboxService: (i) =>
             new SyncDescriptor(CodeSandboxService, [this.controller, this]),
-          codesandboxConfigurationUIService: i =>
+          codesandboxConfigurationUIService: (i) =>
             new SyncDescriptor(CodeSandboxConfigurationUIService, [
               this.customEditorApi,
             ]),
@@ -944,91 +944,93 @@ export class VSCodeEffect {
       );
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       // It has to run the accessor within the callback
-      serviceCollection.get(IInstantiationService).invokeFunction(accessor => {
-        // Initialize these services
-        accessor.get(CodeSandboxConfigurationUIService);
-        accessor.get(ICodeSandboxEditorConnectorService);
+      serviceCollection
+        .get(IInstantiationService)
+        .invokeFunction((accessor) => {
+          // Initialize these services
+          accessor.get(CodeSandboxConfigurationUIService);
+          accessor.get(ICodeSandboxEditorConnectorService);
 
-        const statusbarPart = accessor.get(IStatusbarService);
-        const menubarPart = accessor.get('menubar');
-        const commandService = accessor.get(ICommandService);
-        const extensionService = accessor.get(IExtensionService);
-        const extensionEnablementService = accessor.get(
-          IExtensionEnablementService
-        );
+          const statusbarPart = accessor.get(IStatusbarService);
+          const menubarPart = accessor.get('menubar');
+          const commandService = accessor.get(ICommandService);
+          const extensionService = accessor.get(IExtensionService);
+          const extensionEnablementService = accessor.get(
+            IExtensionEnablementService
+          );
 
-        this.commandService.resolve(commandService);
-        this.extensionService.resolve(extensionService);
+          this.commandService.resolve(commandService);
+          this.extensionService.resolve(extensionService);
 
-        this.extensionEnablementService.resolve(extensionEnablementService);
+          this.extensionEnablementService.resolve(extensionEnablementService);
 
-        const editorPart = accessor.get(IEditorGroupsService);
+          const editorPart = accessor.get(IEditorGroupsService);
 
-        const codeEditorService = accessor.get(ICodeEditorService);
-        const textFileService = accessor.get(ITextFileService);
-        const editorService = accessor.get(IEditorService);
-        const contextViewService = accessor.get(IContextViewService);
+          const codeEditorService = accessor.get(ICodeEditorService);
+          const textFileService = accessor.get(ITextFileService);
+          const editorService = accessor.get(IEditorService);
+          const contextViewService = accessor.get(IContextViewService);
 
-        contextViewService.setContainer(container);
+          contextViewService.setContainer(container);
 
-        this.editorApi = {
-          openFile(path) {
-            return codeEditorService.openCodeEditor({
-              resource: monaco.Uri.file('/sandbox' + path),
-            });
-          },
-          getActiveCodeEditor() {
-            return codeEditorService.getActiveCodeEditor();
-          },
-          textFileService,
-          editorPart,
-          editorService,
-          codeEditorService,
-          extensionService,
-        };
+          this.editorApi = {
+            openFile(path) {
+              return codeEditorService.openCodeEditor({
+                resource: monaco.Uri.file('/sandbox' + path),
+              });
+            },
+            getActiveCodeEditor() {
+              return codeEditorService.getActiveCodeEditor();
+            },
+            textFileService,
+            editorPart,
+            editorService,
+            codeEditorService,
+            extensionService,
+          };
 
-        window.CSEditor = {
-          editor: this.editorApi,
-          monaco,
-        };
+          window.CSEditor = {
+            editor: this.editorApi,
+            monaco,
+          };
 
-        if (process.env.NODE_ENV === 'development') {
-          // eslint-disable-next-line
-          console.log(accessor);
-        }
+          if (process.env.NODE_ENV === 'development') {
+            // eslint-disable-next-line
+            console.log(accessor);
+          }
 
-        statusbarPart.create(this.elements.statusbar);
-        menubarPart.create(this.elements.menubar);
-        editorPart.create(this.elements.editorPart);
-        editorPart.layout(container.offsetWidth, container.offsetHeight);
+          statusbarPart.create(this.elements.statusbar);
+          menubarPart.create(this.elements.menubar);
+          editorPart.create(this.elements.editorPart);
+          editorPart.layout(container.offsetWidth, container.offsetHeight);
 
-        editorPart.parent = container;
+          editorPart.parent = container;
 
-        container.appendChild(this.elements.editorPart);
+          container.appendChild(this.elements.editorPart);
 
-        this.initializeReactions();
+          this.initializeReactions();
 
-        this.configureMonacoLanguages(monaco);
+          this.configureMonacoLanguages(monaco);
 
-        editorService.onDidActiveEditorChange(this.onActiveEditorChange);
-        this.initializeCodeSandboxAPIListener();
+          editorService.onDidActiveEditorChange(this.onActiveEditorChange);
+          this.initializeCodeSandboxAPIListener();
 
-        if (!this.linter && this.settings.lintEnabled) {
-          this.createLinter();
-        }
+          if (!this.linter && this.settings.lintEnabled) {
+            this.createLinter();
+          }
 
-        const lifecycleService = accessor.get(ILifecycleService);
+          const lifecycleService = accessor.get(ILifecycleService);
 
-        // Trigger all VSCode lifecycle listeners
-        lifecycleService.phase = 2; // Restoring
-        requestAnimationFrame(() => {
-          lifecycleService.phase = 3; // Running
+          // Trigger all VSCode lifecycle listeners
+          lifecycleService.phase = 2; // Restoring
+          requestAnimationFrame(() => {
+            lifecycleService.phase = 3; // Running
+          });
+
+          resolve();
         });
-
-        resolve();
-      });
     });
   }
 
@@ -1064,7 +1066,7 @@ export class VSCodeEffect {
       'html',
       'markdown',
       'json',
-    ].forEach(language => {
+    ].forEach((language) => {
       monaco.languages.registerDocumentFormattingEditProvider(language, {
         provideDocumentFormattingEdits: this.provideDocumentFormattingEdits,
       });
@@ -1078,7 +1080,7 @@ export class VSCodeEffect {
       this.getPrettierConfig(),
       () => false,
       token
-    ).then(newCode => [
+    ).then((newCode) => [
       {
         range: model.getFullModelRange(),
         text: newCode,
@@ -1196,7 +1198,7 @@ export class VSCodeEffect {
         r1.endLineNumber !== r2.endLineNumber ||
         r1.endColumn !== r2.endColumn;
 
-      this.modelViewRangeListener = activeEditor.onDidScrollChange(e => {
+      this.modelViewRangeListener = activeEditor.onDidScrollChange((e) => {
         const [range] = activeEditor.getVisibleRanges();
 
         if (
@@ -1209,7 +1211,7 @@ export class VSCodeEffect {
       });
 
       this.modelCursorPositionListener = activeEditor.onDidChangeCursorPosition(
-        cursor => {
+        (cursor) => {
           if (
             sandbox &&
             sandbox.featureFlags.comments &&
@@ -1226,12 +1228,12 @@ export class VSCodeEffect {
       );
 
       this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
-        selectionChange => {
+        (selectionChange) => {
           const model = activeEditor.getModel();
           const lines = model.getLinesContent() || [];
           const data: onSelectionChangeData = {
             primary: getSelection(lines, selectionChange.selection),
-            secondary: selectionChange.secondarySelections.map(s =>
+            secondary: selectionChange.secondarySelections.map((s) =>
               getSelection(lines, s)
             ),
             source: selectionChange.source,
@@ -1339,7 +1341,7 @@ export class VSCodeEffect {
   }
 
   private listenToCommentClick() {
-    window.addEventListener('click', event => {
+    window.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
       if (target.classList.contains('editor-comments-glyph')) {
         /*

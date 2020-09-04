@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   padding: 1rem;
-  background-color: ${props => props.theme.background2};
+  background-color: ${(props) => props.theme.background2};
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 2px;
   margin-bottom: 1rem;
@@ -21,7 +21,7 @@ export const Container = styled.div`
   }
 
   @media (max-width: 768px) {
-    ${props =>
+    ${(props) =>
       !props.open &&
       css`
         height: 30px;
@@ -52,5 +52,5 @@ export const Title = styled.div`
 export const Button = styled.button`
   border: none;
   background: inherit;
-  color: ${props => props.theme.white};
+  color: ${(props) => props.theme.white};
 `;

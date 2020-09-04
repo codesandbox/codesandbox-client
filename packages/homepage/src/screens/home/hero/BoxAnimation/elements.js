@@ -10,7 +10,7 @@ export const AnimationContainer = styled.div`
 `;
 
 export const FallbackImageBackground = styled.div`
-  background-image: url(${props => props.fallback});
+  background-image: url(${(props) => props.fallback});
   width: 100%;
   height: 100%;
   background-size: cover;

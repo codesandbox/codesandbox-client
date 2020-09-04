@@ -86,8 +86,8 @@ export default class FeaturedSandbox extends React.PureComponent<
     }
 
     return fetch(`${protocolAndHost()}/api/v1/sandboxes/${id}`)
-      .then(x => x.json())
-      .then(x => {
+      .then((x) => x.json())
+      .then((x) => {
         this.fetchedSandboxes[x.data.id] = camelizeKeys(x.data);
 
         return x.data;
@@ -104,7 +104,7 @@ export default class FeaturedSandbox extends React.PureComponent<
 
   componentDidMount() {
     if (this.props.sandboxId) {
-      this.fetchSandbox(this.props.sandboxId).then(sandbox => {
+      this.fetchSandbox(this.props.sandboxId).then((sandbox) => {
         this.setState({ sandbox: camelizeKeys(sandbox) as Sandbox });
         this.setUpPreview();
       });
@@ -114,14 +114,14 @@ export default class FeaturedSandbox extends React.PureComponent<
   }
 
   fetchAllFeaturedSandboxes = () => {
-    (this.props.featuredSandboxes || []).forEach(s => {
+    (this.props.featuredSandboxes || []).forEach((s) => {
       this.fetchSandbox(s.sandboxId);
     });
   };
 
   async componentWillReceiveProps(nextProps: FeaturedSandboxProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
-      this.fetchSandbox(nextProps.sandboxId).then(sandbox => {
+      this.fetchSandbox(nextProps.sandboxId).then((sandbox) => {
         this.setState({ sandbox });
       });
     }
@@ -151,7 +151,7 @@ export default class FeaturedSandbox extends React.PureComponent<
                 from={{ height: 0, opacity: 0, overflow: 'hidden' }}
                 to={{ height: 28, opacity: 1 }}
               >
-                {style => (
+                {(style) => (
                   <StyledStats
                     style={style}
                     viewCount={sandbox.viewCount}
@@ -169,7 +169,7 @@ export default class FeaturedSandbox extends React.PureComponent<
               from={{ height: 0, opacity: 0, overflow: 'hidden' }}
               to={{ height: 28, opacity: 1 }}
             >
-              {style => (
+              {(style) => (
                 <animated.div style={style}>
                   {sandbox.author && (
                     <a href={profileUrl(sandbox.author.username)}>
@@ -228,9 +228,9 @@ export default class FeaturedSandbox extends React.PureComponent<
             }}
             native
           >
-            {show =>
+            {(show) =>
               show
-                ? style => (
+                ? (style) => (
                     <animated.div style={style}>
                       <Preview
                         sandbox={sandbox}
@@ -254,7 +254,7 @@ export default class FeaturedSandbox extends React.PureComponent<
                       />
                     </animated.div>
                   )
-                : style => (
+                : (style) => (
                     <animated.div style={style}>
                       <div
                         style={{
@@ -270,8 +270,9 @@ export default class FeaturedSandbox extends React.PureComponent<
                             height: '100%',
                             width: '100%',
                             backgroundColor: 'white',
-                            backgroundImage: `url(${sandbox &&
-                              sandbox.screenshotUrl})`,
+                            backgroundImage: `url(${
+                              sandbox && sandbox.screenshotUrl
+                            })`,
                             backgroundRepeat: 'no-repeat',
                             backgroundPositionX: 'center',
                             transform: 'scale(1.025, 1.025)',

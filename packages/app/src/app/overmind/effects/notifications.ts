@@ -21,16 +21,16 @@ export default {
       }
       channel
         .leave()
-        .receive('ok', resp => {
+        .receive('ok', (resp) => {
           if (!channel) {
             return;
           }
-          channel.onMessage = d => d;
+          channel.onMessage = (d) => d;
           channel = null;
 
           resolve(resp);
         })
-        .receive('error', resp => reject(resp));
+        .receive('error', (resp) => reject(resp));
     });
   },
   async joinChannel(userId: string): Promise<{ unread: number }> {
@@ -47,8 +47,8 @@ export default {
       }
       channel
         .join()
-        .receive('ok', resp => resolve(resp))
-        .receive('error', resp => reject(resp));
+        .receive('ok', (resp) => resolve(resp))
+        .receive('error', (resp) => reject(resp));
     });
   },
   listen(action: (message: { event: string; data: any }) => void) {

@@ -46,7 +46,7 @@ const GlobalStyle = createGlobalStyle`
   ${global}
 `;
 
-export const withGlobal = cb => (
+export const withGlobal = (cb) => (
   <Fragment>
     <GlobalStyle />
     {cb()}

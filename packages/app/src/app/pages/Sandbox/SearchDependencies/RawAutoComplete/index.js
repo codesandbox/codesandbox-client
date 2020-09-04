@@ -45,7 +45,7 @@ function getIsValid(value: string, hit, version: string) {
 }
 
 function getHit(value: string, hits) {
-  return value && hits.find(hit => hit.name.startsWith(value));
+  return value && hits.find((hit) => hit.name.startsWith(value));
 }
 
 class RawAutoComplete extends React.Component {
@@ -67,7 +67,7 @@ class RawAutoComplete extends React.Component {
     const version = getVersion(this.state.value, hit);
     const isValid = getIsValid(this.state.value, hit, version);
 
-    const autoCompletedQuery = noName => {
+    const autoCompletedQuery = (noName) => {
       if (isExplicitVersion(this.state.value)) return null;
 
       if (hit && isValid)
@@ -85,7 +85,7 @@ class RawAutoComplete extends React.Component {
     };
 
     return (
-      <Downshift itemToString={h => (h ? h.name : h)} onSelect={onSelect}>
+      <Downshift itemToString={(h) => (h ? h.name : h)} onSelect={onSelect}>
         {({ getInputProps, getItemProps, highlightedIndex }) => (
           <div>
             {highlightedIndex == null && (
@@ -116,7 +116,7 @@ class RawAutoComplete extends React.Component {
                 value: this.state.value,
                 placeholder: 'Search or enter npm dependency',
 
-                onChange: e => {
+                onChange: (e) => {
                   const name = e.target.value;
 
                   this.setState({ value: name }, () => {
@@ -136,7 +136,7 @@ class RawAutoComplete extends React.Component {
                   });
                 },
 
-                onKeyUp: e => {
+                onKeyUp: (e) => {
                   // If enter with no selection
                   if (e.keyCode === ENTER) {
                     onManualSelect(autoCompletedQuery() || e.target.value);

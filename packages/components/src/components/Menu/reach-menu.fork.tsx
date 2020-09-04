@@ -363,7 +363,7 @@ const MenuItemImpl = forwardRefWithAs<MenuItemImplProps, 'div'>(
     // typeahead functionality.
     let [valueText, setValueText] = useState(valueTextProp || '');
     let setValueTextFromDom = useCallback(
-      node => {
+      (node) => {
         if (node) {
           ownRef.current = node;
           if (
@@ -632,7 +632,7 @@ export const MenuItems = forwardRefWithAs<MenuItemsProps, 'div'>(
         dispatch({
           type: SELECT_ITEM_AT_INDEX,
           payload: {
-            index: menuItems.findIndex(i => i.key === prevSelected.key),
+            index: menuItems.findIndex((i) => i.key === prevSelected.key),
           },
         });
       }
@@ -657,7 +657,7 @@ export const MenuItems = forwardRefWithAs<MenuItemsProps, 'div'>(
           case 'Enter':
           case ' ':
             let selected = menuItems.find(
-              item => item.index === selectionIndex
+              (item) => item.index === selectionIndex
             );
             // For links, the Enter key will trigger a click by default, but for
             // consistent behavior across menu items we'll trigger a click when

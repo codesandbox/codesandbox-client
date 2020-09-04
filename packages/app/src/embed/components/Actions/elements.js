@@ -4,7 +4,7 @@ import { CodeSandboxIcon as CodeSandboxIconBase } from '@codesandbox/common/lib/
 import { PreviewIcon as PreviewIconBase } from '@codesandbox/common/lib/components/icons/Preview';
 import { HeartIconSVG, ReloadIconSVG, NewWindowIconSVG } from './icons';
 
-export const Container = styled.div(props =>
+export const Container = styled.div((props) =>
   css({
     position: 'absolute',
     [props.align]: 16,
@@ -20,7 +20,7 @@ export const Container = styled.div(props =>
     bottom: props.isDragging ? -32 : props.offsetBottom ? 28 + 16 : 16,
     opacity: props.isDragging ? 0 : 1,
     transitionProperty: 'opacity, bottom',
-    transitionDuration: theme =>
+    transitionDuration: (theme) =>
       // go out fast, come back slow
       props.isDragging ? theme.speed[3] : theme.speed[5],
   })
@@ -50,7 +50,7 @@ export const Button = styled.button(
   })
 );
 
-export const HeartIcon = styled(HeartIconSVG)(props =>
+export const HeartIcon = styled(HeartIconSVG)((props) =>
   css({
     path: {
       stroke: props.liked ? 'reds.300' : 'white',

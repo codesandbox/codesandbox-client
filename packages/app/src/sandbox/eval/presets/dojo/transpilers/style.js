@@ -6,14 +6,14 @@ import insertCss from '../../../transpilers/style/utils/insert-css';
 import toDefinition from '../../../transpilers/style/utils/to-definition';
 import getModules from '../../../transpilers/style/get-modules';
 
-const getStyleId = id => id + '-css';
+const getStyleId = (id) => id + '-css';
 
 class DojoStyleTranspiler extends StyleTranspiler {
   async doTranspilation(code: string, loaderContext: LoaderContext) {
     const id = getStyleId(loaderContext._module.getId());
     const { path } = loaderContext;
     let modules = loaderContext.getModules();
-    let result = modules.find(module => module.path === `${path}.js`);
+    let result = modules.find((module) => module.path === `${path}.js`);
 
     if (!result && path.indexOf('/node_modules/') > -1) {
       try {
@@ -25,12 +25,12 @@ class DojoStyleTranspiler extends StyleTranspiler {
       }
     }
     modules = loaderContext.getModules();
-    result = modules.find(module => module.path === `${path}.js`);
+    result = modules.find((module) => module.path === `${path}.js`);
     if (result) {
       return { transpiledCode: `${insertCss(id, code)}\n${result.code}` };
     }
     const { code: packageJson } = modules.find(
-      module => module.path === '/package.json'
+      (module) => module.path === '/package.json'
     );
     const { name: packageName } = JSON.parse(packageJson);
     const [, baseName] = /\/([^/.]*)[^/]*$/.exec(path);

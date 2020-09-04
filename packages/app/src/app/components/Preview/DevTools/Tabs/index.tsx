@@ -63,10 +63,10 @@ export const DevToolTabs = ({
               pane={view}
               options={pane.options || {}}
               active={active}
-              onMouseDown={e => {
+              onMouseDown={(e) => {
                 e.stopPropagation();
               }}
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 setPane(i);

@@ -12,19 +12,19 @@ export const ProgressBar = styled.div`
 const BaseBar = styled.div<{ count: number }>`
   border-radius: 1px;
   height: 3px;
-  flex: ${props => props.count};
-  margin: 0 ${props => (props.count !== 0 ? 3 : 0)}px;
+  flex: ${(props) => props.count};
+  margin: 0 ${(props) => (props.count !== 0 ? 3 : 0)}px;
 `;
 
 export const SuccessBar = styled(BaseBar)`
-  background-color: ${props => props.theme.green};
+  background-color: ${(props) => props.theme.green};
 `;
 
 export const FailedBar = styled(BaseBar)`
-  background-color: ${props => props.theme.red};
+  background-color: ${(props) => props.theme.red};
 `;
 
 export const IdleBar = styled(BaseBar)`
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
 `;

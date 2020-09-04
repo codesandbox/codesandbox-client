@@ -24,7 +24,7 @@ const validUrls = [
 
 describe('url-generator', () => {
   describe('gitHubToSandboxUrl', () => {
-    validUrls.forEach(inputUrl => {
+    validUrls.forEach((inputUrl) => {
       test(`handles ${inputUrl} urls`, () => {
         expect(gitHubToSandboxUrl(inputUrl)).toBe('/s/github/user/repo');
       });
@@ -32,13 +32,13 @@ describe('url-generator', () => {
   });
 
   describe('gitHubRepoPattern', () => {
-    validUrls.forEach(inputUrl => {
+    validUrls.forEach((inputUrl) => {
       test(`validates ${inputUrl} as truthy`, () => {
         expect(gitHubRepoPattern.test(inputUrl)).toBeTruthy();
       });
     });
 
-    invalidUrls.forEach(inputUrl => {
+    invalidUrls.forEach((inputUrl) => {
       test(`validates ${inputUrl} as falsy`, () => {
         expect(gitHubRepoPattern.test(inputUrl)).toBeFalsy();
       });

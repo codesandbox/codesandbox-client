@@ -1,7 +1,7 @@
 import styled, { css, createGlobalStyle } from 'styled-components';
 
 export const CustomLightStyles = createGlobalStyle`
-${props =>
+${(props) =>
   props.light &&
   css`
     html {
@@ -43,7 +43,7 @@ export const Title = styled.h1`
     max-width: 60%;
     margin: auto;
 
-    ${props => props.theme.breakpoints.md} {
+    ${(props) => props.theme.breakpoints.md} {
       font-size: 1.5rem;
       line-height: 1.2;
       max-width: 80%;
@@ -82,7 +82,7 @@ export const ContentBlock = styled.div`
     line-height: 1.5rem;
     color: ${theme.homepage.muted};
 
-    ${props => props.theme.breakpoints.md} {
+    ${(props) => props.theme.breakpoints.md} {
       grid-template-columns: repeat(1, 1fr);
     }
 
@@ -154,14 +154,14 @@ export const Switch = styled.div`
     &:before {
       content: '';
       padding-left: 0.625rem;
-      background-color: ${props => props.theme.homepage.grey};
-      color: ${props => props.theme.homepage.white};
+      background-color: ${(props) => props.theme.homepage.grey};
+      color: ${(props) => props.theme.homepage.white};
     }
     &:after {
       content: '';
       padding-right: 0.625rem;
-      background-color: ${props => props.theme.homepage.grey};
-      color: ${props => props.theme.homepage.white};
+      background-color: ${(props) => props.theme.homepage.grey};
+      color: ${(props) => props.theme.homepage.white};
       text-align: right;
     }
   }
@@ -170,7 +170,7 @@ export const Switch = styled.div`
     display: block;
     width: 1.25rem;
     margin: 0.125rem;
-    background: ${props => props.theme.homepage.white};
+    background: ${(props) => props.theme.homepage.white};
     position: absolute;
     top: 0;
     bottom: 0;
@@ -194,12 +194,12 @@ export const Customizations = styled.ul`
   list-style: none;
   margin-bottom: 7.5rem;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     justify-content: center;
     margin-bottom: 3.5rem;
   }
 
-  ${props => props.theme.breakpoints.sm} {
+  ${(props) => props.theme.breakpoints.sm} {
     flex-direction: column;
     align-items: center;
   }
@@ -212,7 +212,7 @@ export const Customizations = styled.ul`
       margin-right: 3rem;
     }
 
-    ${props => props.theme.breakpoints.sm} {
+    ${(props) => props.theme.breakpoints.sm} {
       &:not(:last-child) {
         margin-right: initial;
       }

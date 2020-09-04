@@ -30,7 +30,7 @@ export function getTextOperation(originalText: string, modifiedText: string) {
 
   let lastPos = 0;
 
-  diffs.forEach(change => {
+  diffs.forEach((change) => {
     const start = change.originalStart;
     const end = change.originalStart + change.originalLength;
 

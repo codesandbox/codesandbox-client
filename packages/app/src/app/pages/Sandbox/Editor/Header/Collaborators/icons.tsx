@@ -1,7 +1,7 @@
 import React from 'react';
 import IconBase from 'react-icons/IconBase';
 
-export const Mail = props => (
+export const Mail = (props) => (
   <IconBase
     fill="none"
     viewBox="0 0 32 32"
@@ -17,7 +17,7 @@ export const Mail = props => (
   </IconBase>
 );
 
-export const WarningIcon = props => (
+export const WarningIcon = (props) => (
   <IconBase
     viewBox="0 0 12 12"
     fill="none"

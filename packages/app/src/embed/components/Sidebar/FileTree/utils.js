@@ -23,7 +23,7 @@ export function isRootLevel(files, file) {
   const parentId = file.directory;
   if (!parentId) return true;
 
-  const parent = files.find(f => f.id === parentId);
+  const parent = files.find((f) => f.id === parentId);
   if (!parent) return true;
   return false;
 }
@@ -31,7 +31,7 @@ export function isRootLevel(files, file) {
 export function getParentDirectory(allFiles, file) {
   if (!file.directory) return null;
 
-  return allFiles.find(parent => parent.id === file.directory);
+  return allFiles.find((parent) => parent.id === file.directory);
 }
 
 export function getDepth(allFiles, file) {
@@ -64,5 +64,5 @@ export function getFilesInSubTree(allFiles, selectedFile) {
 export function isChildSelected({ allFiles, directory, selectedFile }) {
   const filesInCurrentSubTree = getFilesInSubTree(allFiles, selectedFile);
 
-  return filesInCurrentSubTree.find(file => file.id === directory.id);
+  return filesInCurrentSubTree.find((file) => file.id === directory.id);
 }

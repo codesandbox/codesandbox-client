@@ -37,7 +37,7 @@ const addModifier = (fn, method, ...modifierArgs) => (...args) =>
  */
 export const decorateSelector = (selector: any) => {
   // add member functions to our selector
-  colorMethods.forEach(method => {
+  colorMethods.forEach((method) => {
     selector[method] = memoizeOne((...args) =>
       decorateSelector(addModifier(selector, method, ...args))
     );

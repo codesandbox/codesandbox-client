@@ -40,7 +40,7 @@ export const RepoCard = ({
         overflow: 'hidden',
         borderColor: selected ? 'blues.600' : 'grays.500',
         ':hover, :focus, :focus-within': {
-          boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+          boxShadow: (theme) => '0 4px 16px 0 ' + theme.colors.grays[900],
         },
       })}
     >

@@ -4,9 +4,9 @@ import { Template } from '@codesandbox/common/lib/types';
 
 const usedTemplates = sortBy(
   Object.keys(templates)
-    .filter(x => x !== 'default')
-    .map(t => templates[t])
-    .filter(t => t.showOnHomePage),
+    .filter((x) => x !== 'default')
+    .map((t) => templates[t])
+    .filter((t) => t.showOnHomePage),
   'niceName'
 );
 
@@ -28,16 +28,16 @@ export const presets = [
 export const popular = [
   {
     name: 'Client Templates',
-    templates: usedTemplates.filter(t => t.popular && !t.isServer),
+    templates: usedTemplates.filter((t) => t.popular && !t.isServer),
   },
   {
     name: 'Server Templates',
-    templates: usedTemplates.filter(t => t.popular && t.isServer),
+    templates: usedTemplates.filter((t) => t.popular && t.isServer),
   },
   { name: 'Presets', templates: presets },
 ];
 
-export const client = usedTemplates.filter(t => !t.isServer);
-export const container = usedTemplates.filter(t => t.isServer);
+export const client = usedTemplates.filter((t) => !t.isServer);
+export const container = usedTemplates.filter((t) => t.isServer);
 
 export const all: Template[] = [...client, ...presets, ...container];

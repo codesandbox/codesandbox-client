@@ -37,7 +37,7 @@ export default class extends React.PureComponent<Props> {
       <Container onClick={this.focus}>
         <InputContainer>
           <input
-            ref={e => {
+            ref={(e) => {
               this.input = e;
             }}
             onChange={this.onChange}

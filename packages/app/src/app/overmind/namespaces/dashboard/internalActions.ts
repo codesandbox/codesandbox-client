@@ -30,7 +30,7 @@ export const changeSandboxesInState: Action<
 
   type SandboxTypes = keyof typeof dashboard.sandboxes;
   Object.keys(dashboard.sandboxes)
-    .filter(t => dashboard.sandboxes[t])
+    .filter((t) => dashboard.sandboxes[t])
     .forEach((type: SandboxTypes) => {
       // For typescript, we've filtered out all pages that have `null` as value, but we need to let TS
       // know that's the case here
@@ -39,13 +39,13 @@ export const changeSandboxesInState: Action<
       };
 
       if (type === 'REPOS') {
-        Object.keys(sandboxStructure.REPOS).forEach(repoName => {
+        Object.keys(sandboxStructure.REPOS).forEach((repoName) => {
           const repoSandboxes = sandboxStructure.REPOS[repoName];
           if (!repoSandboxes.sandboxes) {
             return;
           }
 
-          repoSandboxes.sandboxes = repoSandboxes.sandboxes.map(sandbox => {
+          repoSandboxes.sandboxes = repoSandboxes.sandboxes.map((sandbox) => {
             if (sandboxIds.includes(sandbox.id)) {
               return doMutateSandbox(sandbox);
             }
@@ -54,7 +54,7 @@ export const changeSandboxesInState: Action<
           });
         });
       } else if (type === 'TEMPLATES' || type === 'TEMPLATE_HOME') {
-        dashboard.sandboxes[type] = sandboxStructure[type].map(template => {
+        dashboard.sandboxes[type] = sandboxStructure[type].map((template) => {
           if (template.sandbox && sandboxIds.includes(template.sandbox.id)) {
             return {
               ...template,
@@ -69,8 +69,8 @@ export const changeSandboxesInState: Action<
         const folders = sandboxStructure.ALL;
         const folderNames = Object.keys(folders);
 
-        folderNames.forEach(folderName => {
-          folders[folderName] = folders[folderName].map(sandbox => {
+        folderNames.forEach((folderName) => {
+          folders[folderName] = folders[folderName].map((sandbox) => {
             if (sandboxIds.includes(sandbox.id)) {
               return doMutateSandbox(sandbox);
             }
@@ -80,7 +80,7 @@ export const changeSandboxesInState: Action<
         });
       } else {
         // If it's not a folder
-        dashboard.sandboxes[type] = sandboxStructure[type].map(sandbox => {
+        dashboard.sandboxes[type] = sandboxStructure[type].map((sandbox) => {
           if (sandboxIds.includes(sandbox.id)) {
             return doMutateSandbox(sandbox);
           }
@@ -102,7 +102,7 @@ export const deleteSandboxesFromState: Action<{
 
   type SandboxTypes = keyof typeof dashboard.sandboxes;
   Object.keys(dashboard.sandboxes)
-    .filter(t => dashboard.sandboxes[t])
+    .filter((t) => dashboard.sandboxes[t])
     .forEach((type: SandboxTypes) => {
       // For typescript, we've filtered out all pages that have `null` as value, but we need to let TS
       // know that's the case here
@@ -112,7 +112,7 @@ export const deleteSandboxesFromState: Action<{
 
       if (type === 'ALL') {
         const folderNames = Object.keys(sandboxStructure[type]);
-        folderNames.forEach(folderName => {
+        folderNames.forEach((folderName) => {
           if (!sandboxStructure.ALL[folderName]) {
             return;
           }
@@ -126,7 +126,7 @@ export const deleteSandboxesFromState: Action<{
         });
       } else if (type === 'TEMPLATES' || type === 'TEMPLATE_HOME') {
         const newTemplates = sandboxStructure[type].filter(
-          t => t.sandbox && !ids.includes(t.sandbox.id)
+          (t) => t.sandbox && !ids.includes(t.sandbox.id)
         );
 
         if (newTemplates.length !== sandboxStructure[type].length) {
@@ -134,7 +134,7 @@ export const deleteSandboxesFromState: Action<{
         }
       } else if (type === 'REPOS') {
         const repos = Object.keys(sandboxStructure.REPOS);
-        repos.forEach(repo => {
+        repos.forEach((repo) => {
           const repoSandbox = sandboxStructure.REPOS[repo];
           const newSandboxes = repoSandbox.sandboxes.filter(sandboxFilter);
           if (newSandboxes.length !== repoSandbox.sandboxes.length) {

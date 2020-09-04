@@ -90,7 +90,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
               })}
             >
               <WorkspaceSelect
-                onSelect={workspace => {
+                onSelect={(workspace) => {
                   setSelectedTeam(workspace);
                   setTeamId(workspace.id);
                 }}

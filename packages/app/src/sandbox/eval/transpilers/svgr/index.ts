@@ -24,8 +24,8 @@ class SVGRTranspiler extends Transpiler {
 
     if (codeIsHttp) {
       await fetch(code)
-        .then(res => res.text())
-        .then(r => {
+        .then((res) => res.text())
+        .then((r) => {
           downloadedCode = r;
         });
     }

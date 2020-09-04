@@ -28,7 +28,7 @@ export const EditComment: React.FC<{
   return (
     <Stack
       as="form"
-      onSubmit={event => {
+      onSubmit={(event) => {
         event.preventDefault();
         onSave(value, mentions);
       }}

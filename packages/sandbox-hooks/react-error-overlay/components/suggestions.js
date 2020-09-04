@@ -15,7 +15,7 @@ export function createSuggestions(error: SandboxError) {
   applyStyles(title, suggestionsTitleStyle);
   container.appendChild(title);
 
-  error.suggestions.forEach(suggestion => {
+  error.suggestions.forEach((suggestion) => {
     const button = document.createElement('button');
     button.appendChild(document.createTextNode(suggestion.title));
     button.setAttribute('onmouseover', 'this.style.backgroundColor="#78CDF7"');
@@ -25,7 +25,7 @@ export function createSuggestions(error: SandboxError) {
     );
     applyStyles(button, suggestionsButtonStyle);
 
-    button.addEventListener('click', e => {
+    button.addEventListener('click', (e) => {
       e.preventDefault();
       suggestion.action();
     });

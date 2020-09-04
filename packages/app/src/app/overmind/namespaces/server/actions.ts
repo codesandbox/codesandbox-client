@@ -76,10 +76,10 @@ export const onSSEMessage: Action<{
       const newPorts = data as ServerPort[];
       const currentPorts = server.ports;
       const removedPorts = currentPorts.filter(
-        port => !newPorts.find(p => p.port === port.port)
+        (port) => !newPorts.find((p) => p.port === port.port)
       );
       const addedPorts = newPorts.filter(
-        port => !currentPorts.find(p => p.port === port.port)
+        (port) => !currentPorts.find((p) => p.port === port.port)
       );
       const openedPorts: number[] = [];
 
@@ -90,14 +90,14 @@ export const onSSEMessage: Action<{
             removedPorts.length === 1
               ? `Port ${removedPorts[0].port} closed`
               : `The following ports closed: ${removedPorts
-                  .map(p => p.port)
+                  .map((p) => p.port)
                   .join(', ')}`,
           status: NotificationStatus.NOTICE,
         });
       }
 
-      editor.devToolTabs.forEach(view => {
-        view.views.forEach(tab => {
+      editor.devToolTabs.forEach((view) => {
+        view.views.forEach((tab) => {
           if (
             tab.id === 'codesandbox.browser' &&
             tab.options &&
@@ -108,7 +108,7 @@ export const onSSEMessage: Action<{
         });
       });
 
-      addedPorts.forEach(port => {
+      addedPorts.forEach((port) => {
         if (!port.main && openedPorts.indexOf(port.port) === -1) {
           effects.notificationToast.add({
             title: `Port ${port.port} Opened`,
@@ -237,7 +237,7 @@ export const startContainer: AsyncAction<Sandbox> = async (
     'sandbox:port',
     'shell:out',
     'shell:exit',
-  ].forEach(message => {
+  ].forEach((message) => {
     effects.executor.listen(message, actions.server.onSSEMessage);
   });
 

@@ -9,7 +9,7 @@ export async function getConfig(linter) {
     pluginsInitialized = true;
 
     linter.defineParser('vue-eslint-parser', parser);
-    Object.keys(plugin.rules).forEach(name => {
+    Object.keys(plugin.rules).forEach((name) => {
       linter.defineRule(`vue/${name}`, plugin.rules[name]);
     });
   }

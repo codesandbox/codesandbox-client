@@ -5,8 +5,8 @@ export const Block = styled.div<{ last: boolean }>`
   padding: 0.5rem 0.4rem;
   padding-left: 0.5rem;
   position: relative;
-  margin-right: ${props => (props.last ? 0 : 12)}px;
-  color: ${props =>
+  margin-right: ${(props) => (props.last ? 0 : 12)}px;
+  color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
 
   white-space: nowrap;
@@ -21,12 +21,12 @@ export const Block = styled.div<{ last: boolean }>`
     height: 8px;
     transform: rotate(45deg);
     border-right: 1px solid
-      ${props =>
+      ${(props) =>
         props.theme.light
           ? `rgba(0, 0, 0, ${props.last ? 0.3 : 0.4})`
           : `rgba(255, 255, 255, ${props.last ? 0.3 : 0.4})`};
     border-top: 1px solid
-      ${props =>
+      ${(props) =>
         props.theme.light
           ? `rgba(0, 0, 0, ${props.last ? 0.3 : 0.4})`
           : `rgba(255, 255, 255, ${props.last ? 0.3 : 0.4})`};
@@ -38,7 +38,7 @@ export const Block = styled.div<{ last: boolean }>`
 export const TestName = styled.div`
   padding: 0.4rem;
   padding-left: 20px;
-  color: ${props =>
+  color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
   flex: auto;
   white-space: nowrap;

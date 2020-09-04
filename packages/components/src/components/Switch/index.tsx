@@ -13,7 +13,7 @@ const SwitchBackground = styled.div(
     borderRadius: 'large',
     position: 'relative',
     transition: 'background-color ease',
-    transitionDuration: theme => theme.speeds[3],
+    transitionDuration: (theme) => theme.speeds[3],
   })
 );
 
@@ -27,7 +27,7 @@ const SwitchToggle = styled.span(
     margin: '1px',
     left: 0,
     transition: 'left ease',
-    transitionDuration: theme => theme.speeds[3],
+    transitionDuration: (theme) => theme.speeds[3],
     boxSizing: 'border-box',
   })
 );
@@ -47,7 +47,7 @@ const SwitchContainer = styled(Element)(
       backgroundColor: 'switch.backgroundOn',
     },
     'input:checked + [data-component=SwitchBackground] [data-component=SwitchToggle]': {
-      left: theme => theme.space[4] - 4 + 'px',
+      left: (theme) => theme.space[4] - 4 + 'px',
     },
     '*': {
       boxSizing: 'border-box',

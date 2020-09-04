@@ -50,7 +50,7 @@ export const PricingChoice: FunctionComponent<Props> = ({ badge }) => {
         >
           <Currency>$</Currency>
           <PriceInput
-            onChange={e => priceChanged({ price: Number(e.target.value) })}
+            onChange={(e) => priceChanged({ price: Number(e.target.value) })}
             value={patron.price}
             min={5}
             type="number"
@@ -60,7 +60,7 @@ export const PricingChoice: FunctionComponent<Props> = ({ badge }) => {
 
         <RangeContainer>
           <Range
-            onChange={value => priceChanged({ price: Number(value) })}
+            onChange={(value) => priceChanged({ price: Number(value) })}
             min={5}
             max={50}
             step={1}

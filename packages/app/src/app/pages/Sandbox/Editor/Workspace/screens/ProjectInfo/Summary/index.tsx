@@ -60,7 +60,7 @@ export const Summary = () => {
     }
   }, [customTemplate, frozenUpdated]);
 
-  const updateFrozenState = e => {
+  const updateFrozenState = (e) => {
     e.preventDefault();
     if (customTemplate) {
       return sessionFreezeOverride(!sessionFrozen);
@@ -226,7 +226,7 @@ const TemplateIcon = ({ iconUrl, environment }) => {
   return <UserIcon />;
 };
 
-const Divider = props => (
+const Divider = (props) => (
   <Element
     as="hr"
     css={css({

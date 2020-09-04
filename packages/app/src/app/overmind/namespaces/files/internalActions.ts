@@ -62,7 +62,7 @@ export const uploadFiles: AsyncAction<
   /* eslint-disable no-restricted-syntax, no-await-in-loop */
   for (const filePathsChunk of chunkedFilePaths) {
     await Promise.all(
-      filePathsChunk.map(async filePath => {
+      filePathsChunk.map(async (filePath) => {
         const file = files[filePath];
         const { dataURI } = file;
 
@@ -103,7 +103,7 @@ export const uploadFiles: AsyncAction<
 
   // If the directory was dropped in a subdirectory we need to shift all
   // the root directories to that directory
-  const relativeDirectories = directories.map(dir => {
+  const relativeDirectories = directories.map((dir) => {
     if (dir.directoryShortid == null) {
       return {
         ...dir,
@@ -114,7 +114,7 @@ export const uploadFiles: AsyncAction<
     return dir;
   });
 
-  const relativeModules = modules.map(m => {
+  const relativeModules = modules.map((m) => {
     if (m.directoryShortid == null) {
       return {
         ...m,
@@ -153,12 +153,12 @@ export const renameDirectoryInState: Action<{
   );
 
   if (oldPath) {
-    sandbox.modules.forEach(m => {
+    sandbox.modules.forEach((m) => {
       if (m.path && m.path.startsWith(oldPath + '/')) {
         m.path = m.path.replace(oldPath, newPath);
       }
     });
-    sandbox.directories.forEach(d => {
+    sandbox.directories.forEach((d) => {
       if (d.path && d.path.startsWith(oldPath + '/')) {
         d.path = d.path.replace(oldPath, newPath);
       }

@@ -9,7 +9,7 @@ const pulse = keyframes`
   100% { background-position: -100% 50%; }
 `;
 
-export const SkeletonText = styled(Element)(props => {
+export const SkeletonText = styled(Element)((props) => {
   const color = props.theme.colors.sideBar.border;
   const themeType = props.theme.type || props.theme.vscodeTheme.type;
 

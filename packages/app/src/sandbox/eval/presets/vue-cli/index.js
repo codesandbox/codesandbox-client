@@ -24,7 +24,7 @@ import coffeeTranspiler from '../../transpilers/coffee';
 
 import Preset from '..';
 
-const getFileNameFromVm = vm => {
+const getFileNameFromVm = (vm) => {
   if (vm) {
     const options =
       typeof vm === 'function' && vm.cid != null
@@ -109,27 +109,27 @@ export default function initialize() {
       styl: [stylusWithConfig],
     };
 
-    return Object.keys(styles).forEach(type => {
+    return Object.keys(styles).forEach((type) => {
       vuePreset.registerTranspiler(
-        module => new RegExp(`\\.${type}`).test(module.path),
+        (module) => new RegExp(`\\.${type}`).test(module.path),
         [...styles[type], { transpiler: stylesTranspiler }]
       );
     });
   }
 
-  vuePreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  vuePreset.registerTranspiler((module) => /\.m?jsx?$/.test(module.path), [
     { transpiler: babelTranspiler },
   ]);
-  vuePreset.registerTranspiler(module => /\.m?tsx?$/.test(module.path), [
+  vuePreset.registerTranspiler((module) => /\.m?tsx?$/.test(module.path), [
     { transpiler: typescriptTranspiler },
   ]);
-  vuePreset.registerTranspiler(module => /\.json$/.test(module.path), [
+  vuePreset.registerTranspiler((module) => /\.json$/.test(module.path), [
     { transpiler: jsonTranspiler },
   ]);
-  vuePreset.registerTranspiler(module => /\.vue$/.test(module.path), [
+  vuePreset.registerTranspiler((module) => /\.vue$/.test(module.path), [
     { transpiler: vueTranspiler },
   ]);
-  vuePreset.registerTranspiler(module => /\.coffee$/.test(module.path), [
+  vuePreset.registerTranspiler((module) => /\.coffee$/.test(module.path), [
     { transpiler: coffeeTranspiler },
     { transpiler: babelTranspiler },
   ]);
@@ -146,15 +146,15 @@ export default function initialize() {
   vuePreset.registerTranspiler(() => false, [{ transpiler: vueStyleLoader }]);
   vuePreset.registerTranspiler(() => false, [{ transpiler: cssLoader }]);
 
-  vuePreset.registerTranspiler(module => /\.png$/.test(module.path), [
+  vuePreset.registerTranspiler((module) => /\.png$/.test(module.path), [
     { transpiler: binaryTranspiler },
     { transpiler: base64Transpiler },
   ]);
-  vuePreset.registerTranspiler(module => /!noop/.test(module.path), [
+  vuePreset.registerTranspiler((module) => /!noop/.test(module.path), [
     { transpiler: noopTranspiler },
   ]);
   vuePreset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);
-  vuePreset.registerTranspiler(module => /\.pug$/.test(module.path), [
+  vuePreset.registerTranspiler((module) => /\.pug$/.test(module.path), [
     { transpiler: pugTranspiler },
   ]);
 

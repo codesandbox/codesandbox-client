@@ -55,7 +55,7 @@ export default function SplitView({
   const [isDragging, setDragging] = React.useState(false);
 
   // #3. snap to edges, much logic, such wow.
-  const handleAutomaticSnapping = newSize => {
+  const handleAutomaticSnapping = (newSize) => {
     /* snap threshold on desktop is 50px on the left
       and 175px on the right (to keep the open sandbox button on one side)
       On mobile, it's 50% of the screen
@@ -89,7 +89,7 @@ export default function SplitView({
     setDraggingProp(true);
   };
 
-  const onDragFinished = newSize => {
+  const onDragFinished = (newSize) => {
     setDragging(false);
     setDraggingProp(false);
 

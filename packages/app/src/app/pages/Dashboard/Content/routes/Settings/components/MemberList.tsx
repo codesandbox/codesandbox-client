@@ -39,7 +39,7 @@ export const MemberList: React.FC<MemberListProps> = ({
   getActions,
 }) => (
   <List>
-    {users.map(user => {
+    {users.map((user) => {
       const actions = getActions(user);
       const permissionActions = getPermissionOptions(user);
 
@@ -90,7 +90,7 @@ export const MemberList: React.FC<MemberListProps> = ({
                       <Icon name="caret" size={8} marginLeft={1} />
                     </Menu.Button>
                     <Menu.List>
-                      {permissionActions.map(action => (
+                      {permissionActions.map((action) => (
                         <Menu.Item
                           key={action.label}
                           onSelect={action.onSelect}
@@ -123,7 +123,7 @@ export const MemberList: React.FC<MemberListProps> = ({
                       title="Member options"
                     />
                     <Menu.List>
-                      {actions.map(action => (
+                      {actions.map((action) => (
                         <Menu.Item
                           key={action.label}
                           onSelect={action.onSelect}

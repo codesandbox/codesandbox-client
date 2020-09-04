@@ -30,7 +30,7 @@ export const useFilteredItems = (params: Params) => {
   useEffect(() => {
     if (param) {
       setItems(
-        sandboxesForPath.map(sandbox => ({
+        sandboxesForPath.map((sandbox) => ({
           type: 'sandbox' as 'sandbox',
           noDrag: true,
           sandbox,
@@ -40,7 +40,7 @@ export const useFilteredItems = (params: Params) => {
       setItems(
         repos
           .sort((a, b) => compareDesc(a.lastEdited, b.lastEdited))
-          .map(repo => ({
+          .map((repo) => ({
             type: 'repo' as 'repo',
             noDrag: true,
             ...repo,

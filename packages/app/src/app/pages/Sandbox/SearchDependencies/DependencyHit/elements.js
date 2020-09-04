@@ -6,7 +6,7 @@ import { GitHubLogo } from 'app/components/GitHubLogo';
 
 export const GitHubLogoStyled = styled(GitHubLogo)``;
 
-const getContainerColor = props => {
+const getContainerColor = (props) => {
   if (props.highlighted) {
     return getColorInstance(props.theme.colors.dialog.background)
       .darken(0.2)
@@ -18,20 +18,20 @@ const getContainerColor = props => {
 
 export const Container = styled.div`
   display: flex;
-  color: ${props => props.theme.colors.dialog.foreground};
+  color: ${(props) => props.theme.colors.dialog.foreground};
   background-color: ${getContainerColor};
   cursor: pointer;
 
   &:not(:last-child) {
     border-bottom: 1px solid
-      ${props =>
+      ${(props) =>
         getColorInstance(props.theme.colors.dialog.background)
           .darken(0.4)
           .rgbString()};
   }
 
   &:hover {
-    background-color: ${props =>
+    background-color: ${(props) =>
       getColorInstance(props.theme.colors.dialog.background)
         .darken(0.2)
         .rgbString()};
@@ -57,28 +57,28 @@ export const Row = styled.div`
 export const Description = styled(Row)`
   font-size: 0.875rem;
 
-  color: ${props =>
+  color: ${(props) =>
     getColorInstance(props.theme.colors.dialog.foreground)
       .alpha(0.6)
       .rgbString()};
 `;
 
 export const Downloads = styled.span`
-  color: ${props => props.theme['panelTitle.inactiveForeground']};
+  color: ${(props) => props.theme['panelTitle.inactiveForeground']};
   font-weight: 500;
   font-size: 12px;
 `;
 
 export const License = styled.span`
   border: 1px solid
-    ${props =>
+    ${(props) =>
       getColorInstance(props.theme.colors.dialog.border)
         .alpha(0.4)
         .rgbString()};
   border-radius: 3px;
   padding: 1px 3px;
 
-  color: ${props =>
+  color: ${(props) =>
     getColorInstance(props.theme.colors.dialog.foreground)
       .alpha(0.6)
       .rgbString()};
@@ -87,10 +87,8 @@ export const License = styled.span`
 
 export const IconLink = styled.a`
   font-size: 1rem;
-  color: ${props =>
-    getColorInstance(props.theme.colors.icon.foreground)
-      .alpha(1)
-      .rgbString()};
+  color: ${(props) =>
+    getColorInstance(props.theme.colors.icon.foreground).alpha(1).rgbString()};
 
   ${GitHubLogoStyled} {
     circle {

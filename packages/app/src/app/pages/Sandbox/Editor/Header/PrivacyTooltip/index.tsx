@@ -37,7 +37,7 @@ export const PrivacyTooltip: FunctionComponent = () => {
     },
   };
 
-  const onChange = event => {
+  const onChange = (event) => {
     const value = event.target.value;
     sandboxPrivacyChanged({
       privacy: Number(value) as 0 | 1 | 2,

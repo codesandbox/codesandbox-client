@@ -7,7 +7,7 @@ interface NewSandboxProps {
   collectionId?: string;
 }
 
-export const NewSandbox: React.FC<NewSandboxProps> = props => {
+export const NewSandbox: React.FC<NewSandboxProps> = (props) => {
   const { actions } = useOvermind();
 
   const onClick = () =>
@@ -24,9 +24,9 @@ export const NewSandbox: React.FC<NewSandboxProps> = props => {
         borderColor: 'grays.600',
         borderRadius: 'medium',
         transition: 'all ease-in',
-        transitionDuration: theme => theme.speeds[2],
+        transitionDuration: (theme) => theme.speeds[2],
         ':hover, :focus, :focus-within': {
-          boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+          boxShadow: (theme) => '0 4px 16px 0 ' + theme.colors.grays[900],
         },
       })}
     >

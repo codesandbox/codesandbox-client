@@ -34,7 +34,7 @@ export const Title = styled.div(
   })
 );
 
-export const Icon = styled.svg(props =>
+export const Icon = styled.svg((props) =>
   css({
     marginRight: 2,
     transform: props.open ? 'rotate(0)' : 'rotate(-90deg)',

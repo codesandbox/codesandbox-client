@@ -32,7 +32,7 @@ export const Dashboard: FunctionComponent = () => {
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
   const onSidebarToggle = React.useCallback(
-    () => setSidebarVisibility(s => !s),
+    () => setSidebarVisibility((s) => !s),
     [setSidebarVisibility]
   );
   const theme = useTheme() as any;
@@ -71,7 +71,7 @@ export const Dashboard: FunctionComponent = () => {
                 .lessThan(theme.sizes.medium)
                 .replace('@media ', '')}
             >
-              {match =>
+              {(match) =>
                 match ? (
                   <Sidebar
                     id="mobile-sidebar"

@@ -69,7 +69,7 @@ export default class SandboxCard extends React.PureComponent<Props> {
     this.props.selectSandbox({ ...this.props.sandbox });
   };
 
-  handleKeyUp = e => {
+  handleKeyUp = (e) => {
     if (e.keyCode === ENTER) {
       this.toggleOpen();
     }

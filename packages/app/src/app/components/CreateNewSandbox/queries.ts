@@ -161,7 +161,7 @@ export function unmakeTemplates(selectedSandboxes: string[]) {
       'SearchSandboxes',
       'ListTemplates',
     ],
-    update: cache => {
+    update: (cache) => {
       try {
         const variables: ListTemplatesQueryVariables = {
           showAll: false,
@@ -175,17 +175,17 @@ export function unmakeTemplates(selectedSandboxes: string[]) {
           variables,
         });
 
-        const data = immer(oldTemplatesCache, draft => {
+        const data = immer(oldTemplatesCache, (draft) => {
           if (draft?.me?.templates && draft?.me?.teams) {
-            draft.me.templates = draft.me.templates.filter(x =>
+            draft.me.templates = draft.me.templates.filter((x) =>
               x?.sandbox?.id
                 ? selectedSandboxes.indexOf(x.sandbox.id) === -1
                 : true
             );
 
-            draft.me.teams = draft.me.teams.map(t => ({
+            draft.me.teams = draft.me.teams.map((t) => ({
               ...t,
-              templates: t?.templates?.filter(x =>
+              templates: t?.templates?.filter((x) =>
                 x?.sandbox?.id
                   ? selectedSandboxes.indexOf(x.sandbox.id) === -1
                   : true
@@ -234,9 +234,9 @@ export function makeTemplates(
           'SearchSandboxes',
           'ListTemplates',
         ],
-        update: cache => {
+        update: (cache) => {
           if (collections) {
-            collections.forEach(variables => {
+            collections.forEach((variables) => {
               try {
                 const oldFolderCacheData = cache.readQuery<
                   PathedSandboxesQuery,
@@ -246,13 +246,13 @@ export function makeTemplates(
                   variables,
                 });
 
-                const data = immer(oldFolderCacheData, draft => {
+                const data = immer(oldFolderCacheData, (draft) => {
                   if (
                     draft?.me?.collection &&
                     oldFolderCacheData?.me?.collection?.sandboxes
                   ) {
                     draft.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
-                      x =>
+                      (x) =>
                         x?.id ? selectedSandboxes.indexOf(x.id) === -1 : true
                     );
                   }

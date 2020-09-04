@@ -6,7 +6,7 @@ type RangeProps = {
   color: string;
 } & SliderProps;
 
-export const Range: React.FC<RangeProps> = props => (
+export const Range: React.FC<RangeProps> = (props) => (
   <Slider
     railStyle={{ background: 'rgba(0, 0, 0, 0.3)', height: 12 }}
     trackStyle={{

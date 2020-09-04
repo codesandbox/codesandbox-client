@@ -5,7 +5,7 @@ self.importScripts(
 );
 self.postMessage('ready');
 
-self.addEventListener('message', event => {
+self.addEventListener('message', (event) => {
   const { code, path } = event.data;
 
   try {

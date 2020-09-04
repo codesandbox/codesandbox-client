@@ -8,7 +8,7 @@
 */
 
 /* Jison generated parser */
-var jsonlint = (function() {
+var jsonlint = (function () {
   var parser = {
     trace: function trace() {},
     yy: {},
@@ -477,7 +477,7 @@ var jsonlint = (function() {
     },
   };
   /* Jison generated lexer */
-  var lexer = (function() {
+  var lexer = (function () {
     var lexer = {
       EOF: 1,
       parseError: function parseError(str, hash) {
@@ -487,7 +487,7 @@ var jsonlint = (function() {
           throw new Error(str);
         }
       },
-      setInput: function(input) {
+      setInput: function (input) {
         this._input = input;
         this._more = this._less = this.done = false;
         this.yylineno = this.yyleng = 0;
@@ -501,7 +501,7 @@ var jsonlint = (function() {
         };
         return this;
       },
-      input: function() {
+      input: function () {
         var ch = this._input[0];
         this.yytext += ch;
         this.yyleng++;
@@ -512,18 +512,18 @@ var jsonlint = (function() {
         this._input = this._input.slice(1);
         return ch;
       },
-      unput: function(ch) {
+      unput: function (ch) {
         this._input = ch + this._input;
         return this;
       },
-      more: function() {
+      more: function () {
         this._more = true;
         return this;
       },
-      less: function(n) {
+      less: function (n) {
         this._input = this.match.slice(n) + this._input;
       },
-      pastInput: function() {
+      pastInput: function () {
         var past = this.matched.substr(
           0,
           this.matched.length - this.match.length
@@ -532,7 +532,7 @@ var jsonlint = (function() {
           (past.length > 20 ? '...' : '') + past.substr(-20).replace(/\n/g, '')
         );
       },
-      upcomingInput: function() {
+      upcomingInput: function () {
         var next = this.match;
         if (next.length < 20) {
           next += this._input.substr(0, 20 - next.length);
@@ -542,12 +542,12 @@ var jsonlint = (function() {
           ''
         );
       },
-      showPosition: function() {
+      showPosition: function () {
         var pre = this.pastInput();
         var c = new Array(pre.length + 1).join('-');
         return pre + this.upcomingInput() + '\n' + c + '^';
       },
-      next: function() {
+      next: function () {
         if (this.done) {
           return this.EOF;
         }
@@ -626,7 +626,7 @@ var jsonlint = (function() {
           this.conditionStack[this.conditionStack.length - 1]
         ].rules;
       },
-      topState: function() {
+      topState: function () {
         return this.conditionStack[this.conditionStack.length - 2];
       },
       pushState: function begin(condition) {
@@ -716,6 +716,6 @@ var jsonlint = (function() {
 })();
 
 exports.parser = jsonlint;
-exports.parse = function() {
+exports.parse = function () {
   return jsonlint.parse.apply(jsonlint, arguments);
 };

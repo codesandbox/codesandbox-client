@@ -81,7 +81,7 @@ export const onInitialize: OnInitialize = async (
     getPrettierConfig() {
       let config = state.preferences.settings.prettierConfig;
       const configFromSandbox = state.editor.currentSandbox?.modules.find(
-        module =>
+        (module) =>
           module.directoryShortid == null && module.title === '.prettierrc'
       );
 
@@ -100,7 +100,7 @@ export const onInitialize: OnInitialize = async (
     getCurrentUser: () => state.user,
     onOperationApplied: actions.editor.onOperationApplied,
     onCodeChange: actions.editor.codeChanged,
-    onSelectionChanged: selection => {
+    onSelectionChanged: (selection) => {
       actions.editor.onSelectionChanged(selection);
       actions.live.onSelectionChanged(selection);
     },

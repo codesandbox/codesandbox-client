@@ -21,14 +21,14 @@ const addLib = (virtualPath, typings, fetchedPaths) => {
 
 const fetchCache = new Map();
 
-const doFetch = url => {
+const doFetch = (url) => {
   const cached = fetchCache.get(url);
   if (cached) {
     return cached;
   }
 
   const promise = fetch(url)
-    .then(response => {
+    .then((response) => {
       if (response.status >= 200 && response.status < 300) {
         return Promise.resolve(response);
       }
@@ -37,7 +37,7 @@ const doFetch = url => {
       error.response = response;
       return Promise.reject(error);
     })
-    .then(response => response.text());
+    .then((response) => response.text());
 
   fetchCache.set(url, promise);
   return promise;
@@ -48,7 +48,7 @@ const fetchFromDefinitelyTyped = (dependency, version, fetchedPaths) =>
     `${ROOT_URL}npm/@types/${dependency
       .replace('@', '')
       .replace(/\//g, '__')}/index.d.ts`
-  ).then(typings => {
+  ).then((typings) => {
     addLib(
       `node_modules/@types/${dependency}/index.d.ts`,
       typings,
@@ -67,7 +67,7 @@ const getRequireStatements = (title: string, code: string) => {
     self.ts.ScriptKind.TS
   );
 
-  self.ts.forEachChild(sourceFile, node => {
+  self.ts.forEachChild(sourceFile, (node) => {
     switch (node.kind) {
       case self.ts.SyntaxKind.ImportDeclaration: {
         requires.push(node.moduleSpecifier.text);
@@ -89,10 +89,10 @@ const getRequireStatements = (title: string, code: string) => {
   return requires;
 };
 
-const tempTransformFiles = files => {
+const tempTransformFiles = (files) => {
   const finalObj = {};
 
-  files.forEach(d => {
+  files.forEach((d) => {
     finalObj[d.name] = d;
   });
 
@@ -103,8 +103,10 @@ const getFileMetaData = (dependency, version, depPath) =>
   doFetch(
     `https://data.jsdelivr.com/v1/package/npm/${dependency}@${version}/flat`
   )
-    .then(response => JSON.parse(response))
-    .then(response => response.files.filter(f => f.name.startsWith(depPath)))
+    .then((response) => JSON.parse(response))
+    .then((response) =>
+      response.files.filter((f) => f.name.startsWith(depPath))
+    )
     .then(tempTransformFiles);
 
 const resolveAppropiateFile = (fileMetaData, relativePath) => {
@@ -130,7 +132,7 @@ const getFileTypes = (
 
   if (fetchedPaths[virtualPath]) return null;
 
-  return doFetch(`${depUrl}/${depPath}`).then(typings => {
+  return doFetch(`${depUrl}/${depPath}`).then((typings) => {
     if (fetchedPaths[virtualPath]) return null;
 
     addLib(virtualPath, typings, fetchedPaths);
@@ -140,11 +142,13 @@ const getFileTypes = (
       getRequireStatements(depPath, typings)
         .filter(
           // Don't add global deps
-          dep => dep.startsWith('.')
+          (dep) => dep.startsWith('.')
         )
-        .map(relativePath => path.join(path.dirname(depPath), relativePath))
-        .map(relativePath => resolveAppropiateFile(fileMetaData, relativePath))
-        .map(nextDepPath =>
+        .map((relativePath) => path.join(path.dirname(depPath), relativePath))
+        .map((relativePath) =>
+          resolveAppropiateFile(fileMetaData, relativePath)
+        )
+        .map((nextDepPath) =>
           getFileTypes(
             depUrl,
             dependency,
@@ -160,8 +164,8 @@ const getFileTypes = (
 function fetchFromMeta(dependency, version, fetchedPaths) {
   const depUrl = `https://data.jsdelivr.com/v1/package/npm/${dependency}@${version}/flat`;
   return doFetch(depUrl)
-    .then(response => JSON.parse(response))
-    .then(meta => {
+    .then((response) => JSON.parse(response))
+    .then((meta) => {
       const filterAndFlatten = (files, filter) =>
         files.reduce((paths, file) => {
           if (filter.test(file.name)) {
@@ -181,11 +185,11 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
       }
 
       return Promise.all(
-        dtsFiles.map(file =>
+        dtsFiles.map((file) =>
           doFetch(
             `https://cdn.jsdelivr.net/npm/${dependency}@${version}${file}`
           )
-            .then(dtsFile =>
+            .then((dtsFile) =>
               addLib(`node_modules/${dependency}${file}`, dtsFile, fetchedPaths)
             )
             .catch(() => {})
@@ -197,8 +201,8 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
 function fetchFromTypings(dependency, version, fetchedPaths) {
   const depUrl = `${ROOT_URL}npm/${dependency}@${version}`;
   return doFetch(`${depUrl}/package.json`)
-    .then(response => JSON.parse(response))
-    .then(packageJSON => {
+    .then((response) => JSON.parse(response))
+    .then((packageJSON) => {
       const types = packageJSON.typings || packageJSON.types;
       if (types) {
         // Add package.json, since this defines where all types lie
@@ -213,7 +217,7 @@ function fetchFromTypings(dependency, version, fetchedPaths) {
           dependency,
           version,
           path.join('/', path.dirname(types))
-        ).then(fileData =>
+        ).then((fileData) =>
           getFileTypes(
             depUrl,
             dependency,
@@ -234,7 +238,7 @@ async function fetchAndAddDependencies(dependencies) {
   const depNames = Object.keys(dependencies);
 
   await Promise.all(
-    depNames.map(async dep => {
+    depNames.map(async (dep) => {
       try {
         if (!loadedTypings.includes(dep)) {
           loadedTypings.push(dep);
@@ -242,8 +246,8 @@ async function fetchAndAddDependencies(dependencies) {
           const depVersion = await doFetch(
             `https://data.jsdelivr.com/v1/package/resolve/npm/${dep}@${dependencies[dep]}`
           )
-            .then(x => JSON.parse(x))
-            .then(x => x.version);
+            .then((x) => JSON.parse(x))
+            .then((x) => x.version);
           // eslint-disable-next-line no-await-in-loop
           await fetchFromTypings(dep, depVersion, fetchedPaths).catch(() =>
             // not available in package.json, try checking meta for inline .d.ts files
@@ -265,7 +269,7 @@ async function fetchAndAddDependencies(dependencies) {
   self.postMessage(fetchedPaths);
 }
 
-self.addEventListener('message', event => {
+self.addEventListener('message', (event) => {
   const { dependencies } = event.data;
 
   fetchAndAddDependencies(dependencies);

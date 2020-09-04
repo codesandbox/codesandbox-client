@@ -39,7 +39,7 @@ export function updateUserSelections(
 
   const lines = editor.getModel().getLinesContent() || [];
 
-  userSelections.forEach(data => {
+  userSelections.forEach((data) => {
     const { userId } = data;
 
     const decorationId = currentModule.shortid + userId;
@@ -172,7 +172,7 @@ export function updateUserSelections(
       }
 
       if (selection.secondary.length) {
-        selection.secondary.forEach(s => {
+        selection.secondary.forEach((s) => {
           addCursor(s.cursorPosition, secondaryCursorClassName);
 
           if (s.selection.length) {

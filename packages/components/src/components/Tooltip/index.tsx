@@ -95,7 +95,7 @@ interface TooltipProps {
  * Render a tooltip around the children, if you pass `null` to `label` the Tooltip
  * won't be rendered.
  */
-const Tooltip: React.FC<TooltipProps> = props => {
+const Tooltip: React.FC<TooltipProps> = (props) => {
   const [trigger, tooltip] = useTooltip();
   const { isVisible, triggerRect } = tooltip;
 

@@ -11,7 +11,7 @@ export const DynamicWidthTemplateList = (
   templateListProps: ITemplateListProps
 ) => (
   <Media query={`(min-width: ${COLUMN_MEDIA_THRESHOLD}px)`}>
-    {matches => (
+    {(matches) => (
       <TemplateList {...templateListProps} columnCount={matches ? 3 : 2} />
     )}
   </Media>

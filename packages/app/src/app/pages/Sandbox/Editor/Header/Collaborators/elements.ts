@@ -17,7 +17,7 @@ export const HorizontalSeparator = styled.hr<{ margin?: number }>`
   margin-block-start: 0;
   margin-block-end: 0;
 
-  ${props =>
+  ${(props) =>
     props.margin &&
     css`
       margin: ${props.theme.space[props.margin]}px 0;

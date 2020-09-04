@@ -22,7 +22,7 @@ import {
   GitHubLogoStyled,
 } from './elements';
 
-const getDefaultSelectedVersion = tags => {
+const getDefaultSelectedVersion = (tags) => {
   if (!tags) {
     return '';
   }
@@ -51,7 +51,7 @@ export default class DependencyHit extends React.PureComponent {
     e.stopPropagation();
   }
 
-  handleVersionChange = e => {
+  handleVersionChange = (e) => {
     const selectedVersion = e.target.value;
     this.setState({ selectedVersion });
     this.props.onVersionChange(selectedVersion);
@@ -77,9 +77,9 @@ export default class DependencyHit extends React.PureComponent {
     });
 
     const getTagName = (tags, version) =>
-      Object.keys(tags).find(key => tags[key] === version);
+      Object.keys(tags).find((key) => tags[key] === version);
 
-    const validDescription = description =>
+    const validDescription = (description) =>
       description &&
       !description.includes('&lt') &&
       !description.includes('&gt') &&
@@ -145,7 +145,7 @@ export default class DependencyHit extends React.PureComponent {
                 onChange={this.handleVersionChange}
                 value={this.state.selectedVersion}
               >
-                {versions.map(v => {
+                {versions.map((v) => {
                   const tagName = getTagName(hit.tags, v);
                   return (
                     <option value={v} key={v}>

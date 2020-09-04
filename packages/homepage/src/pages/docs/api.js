@@ -15,8 +15,8 @@ const FAQS = ({ data, location }) => {
       .getElementsByClassName('html-faq')[0]
       .getElementsByTagName('h2');
 
-    Array.from(allH2).map(link =>
-      setLinks(l =>
+    Array.from(allH2).map((link) =>
+      setLinks((l) =>
         l.concat({
           to: link.id,
           text: link.innerText,
@@ -63,7 +63,7 @@ const FAQS = ({ data, location }) => {
                 display: none;
               }
             `}
-            onClick={() => setShowMobileMenu(s => !s)}
+            onClick={() => setShowMobileMenu((s) => !s)}
           >
             <Text weight="bold">API Documentation</Text>
             <svg width={28} height={18} fill="none">
@@ -108,7 +108,7 @@ const FAQS = ({ data, location }) => {
           <Element
             showMobileMenu={showMobileMenu}
             css={`
-              background: ${props =>
+              background: ${(props) =>
                 props.showMobileMenu ? '#151515 ' : 'transparant'};
               width: 100%;
               position: sticky;
@@ -116,7 +116,7 @@ const FAQS = ({ data, location }) => {
               transition: all 200ms ease;
 
               @media screen and (max-width: 900px) {
-                height: ${props => (props.showMobileMenu ? '100%' : '0')};
+                height: ${(props) => (props.showMobileMenu ? '100%' : '0')};
                 overflow: hidden;
               }
             `}

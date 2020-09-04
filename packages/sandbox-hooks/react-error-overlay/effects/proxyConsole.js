@@ -26,9 +26,9 @@ export type { ReactFrame };
 const registerReactStack = () => {
   if (typeof console !== 'undefined') {
     // $FlowFixMe
-    console.reactStack = frames => reactFrameStack.push(frames);
+    console.reactStack = (frames) => reactFrameStack.push(frames);
     // $FlowFixMe
-    console.reactStackEnd = frames => reactFrameStack.pop();
+    console.reactStackEnd = (frames) => reactFrameStack.pop();
   }
 };
 
@@ -57,7 +57,7 @@ const permanentRegister = function proxyConsole(
           }
         } catch (err) {
           // Warnings must never crash. Rethrow with a clean stack.
-          setTimeout(function() {
+          setTimeout(function () {
             throw err;
           });
         }

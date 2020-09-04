@@ -2,7 +2,7 @@ const OPTS_SYM = 'opts_init'; // not using Symbol to avoid polyfill
 const BAIL_LEVEL = 1000;
 const arrayConcat = Array.prototype.concat;
 
-const initOptions = options =>
+const initOptions = (options) =>
   options[OPTS_SYM] === true
     ? options
     : {
@@ -11,7 +11,7 @@ const initOptions = options =>
         bail: options.bail && options.bail > 0 ? options.bail : BAIL_LEVEL,
       };
 
-const getFileFromFileEntry = entry =>
+const getFileFromFileEntry = (entry) =>
   new Promise((resolve, reject) => {
     if (entry.file) {
       entry.file(resolve, reject);
@@ -22,9 +22,9 @@ const getFileFromFileEntry = entry =>
     () => null // swallow errors
   );
 
-const isItemFileEntry = item => item.kind === 'file';
+const isItemFileEntry = (item) => item.kind === 'file';
 
-const getAsEntry = item => {
+const getAsEntry = (item) => {
   if (item.getAsEntry) {
     return item.getAsEntry();
   }

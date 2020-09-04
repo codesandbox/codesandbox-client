@@ -12,7 +12,7 @@ class PostCSSCompiler extends Transpiler {
   doTranspilation(code: string, loaderContext: LoaderContext) {
     return import(
       /* webpackChunkName: 'postcss-compiler' */ './loader'
-    ).then(loader => loader.default(code, loaderContext));
+    ).then((loader) => loader.default(code, loaderContext));
   }
 }
 

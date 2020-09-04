@@ -59,7 +59,7 @@ const META = {
   ],
 };
 
-self.addEventListener('message', async event => {
+self.addEventListener('message', async (event) => {
   try {
     const { code } = event.data;
 
@@ -88,7 +88,7 @@ self.addEventListener('message', async event => {
     function addSrcSetDependencies(srcset: string) {
       const newSources = [];
 
-      srcset.split(',').forEach(source => {
+      srcset.split(',').forEach((source) => {
         const pair = source.trim().split(' ');
         if (pair.length === 0) return;
         pair[0] = addDependency(pair[0]);
@@ -101,7 +101,7 @@ self.addEventListener('message', async event => {
     res.walk = api.walk;
     res.match = api.match;
 
-    res.walk(node => {
+    res.walk((node) => {
       if (node == null) {
         return node;
       }
@@ -109,7 +109,7 @@ self.addEventListener('message', async event => {
       if (node.attrs) {
         if (node.tag === 'meta') {
           if (
-            !Object.keys(node.attrs).some(attr => {
+            !Object.keys(node.attrs).some((attr) => {
               const values = META[attr];
               return values && values.includes(node.attrs[attr]);
             })
@@ -167,7 +167,7 @@ self.addEventListener('message', async event => {
 
     compiledCode += '\n';
     compiledCode += 'function loadResources() {';
-    resources.forEach(resource => {
+    resources.forEach((resource) => {
       const resourcePath = JSON.stringify(resource);
       compiledCode += `\n`;
       compiledCode += `\trequire(${resourcePath});\n`;

@@ -14,8 +14,8 @@ const versionTimeout = 1 * 60 * 1000;
 function getLatestVersion() {
   if (!latestVersionPromise) {
     latestVersionPromise = fetch('/version.txt')
-      .then(x => x.text())
-      .catch(x => '');
+      .then((x) => x.text())
+      .catch((x) => '');
 
     setTimeout(() => {
       latestVersionPromise = undefined;
@@ -142,15 +142,15 @@ export const captureException = (err: Error) => {
   return null;
 };
 
-export const configureScope = cb => {
+export const configureScope = (cb) => {
   if (_Sentry) {
     _Sentry.configureScope(cb);
   }
 };
 
-export const setUserId = userId => {
+export const setUserId = (userId) => {
   if (_Sentry) {
-    _Sentry.configureScope(scope => {
+    _Sentry.configureScope((scope) => {
       scope.setUser({ id: userId });
     });
   }
@@ -158,7 +158,7 @@ export const setUserId = userId => {
 
 export const resetUserId = () => {
   if (_Sentry) {
-    _Sentry.configureScope(scope => {
+    _Sentry.configureScope((scope) => {
       scope.setUser({ id: undefined });
     });
   }

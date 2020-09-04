@@ -126,12 +126,12 @@ export const tagsChanged2: AsyncAction<string[]> = withOwnedSandbox(
 
     const { tags: oldTags } = sandbox;
 
-    const removedTags = oldTags.filter(tag => !newTags.includes(tag));
-    const addedTags = newTags.filter(tag => !oldTags.includes(tag));
+    const removedTags = oldTags.filter((tag) => !newTags.includes(tag));
+    const addedTags = newTags.filter((tag) => !oldTags.includes(tag));
 
     removedTags.forEach(actions.workspace.tagRemoved);
 
-    addedTags.forEach(async tag => {
+    addedTags.forEach(async (tag) => {
       const cleanTag = tag.replace(/#/g, '');
 
       // use old methods to update tags
@@ -440,7 +440,7 @@ export const addedTemplate: AsyncAction<{
 
 export const openDefaultItem: Action = ({ state }) => {
   const items = getItems(state);
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+  const defaultItem = items.find((i) => i.defaultOpen) || items[0];
 
   state.workspace.openedWorkspaceItem = defaultItem.id;
 };

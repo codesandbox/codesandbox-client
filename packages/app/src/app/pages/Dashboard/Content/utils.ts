@@ -24,7 +24,7 @@ export function getPossibleTemplates(
 ): TemplateFilter[] {
   if (!sandboxes) return [];
   return uniqBy(
-    sandboxes.map(x => {
+    sandboxes.map((x) => {
       // @ts-ignore TODO: check if we need to set this for template as well
       const templateId = x.source?.template as TemplateType;
       const template = getDefinition(templateId);
@@ -36,6 +36,6 @@ export function getPossibleTemplates(
         niceName: template.niceName,
       };
     }),
-    template => template.id
+    (template) => template.id
   );
 }

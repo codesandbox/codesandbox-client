@@ -58,7 +58,7 @@ export const state: State = {
         return {};
       }
       const rootComments = Object.values(comments[currentSandbox.id]).filter(
-        comment => comment.parentComment == null && !comment.isResolved
+        (comment) => comment.parentComment == null && !comment.isResolved
       );
 
       return rootComments.reduce<{
@@ -171,7 +171,7 @@ export const state: State = {
       }
 
       const rootComments = Object.values(comments[currentSandbox.id]).filter(
-        comment =>
+        (comment) =>
           comment.parentComment == null && comment.id !== OPTIMISTIC_COMMENT_ID
       );
       switch (selectedCommentsFilter) {
@@ -179,11 +179,11 @@ export const state: State = {
           return rootComments.sort(sortByInsertedAt);
         case CommentsFilterOption.RESOLVED:
           return rootComments
-            .filter(comment => comment.isResolved)
+            .filter((comment) => comment.isResolved)
             .sort(sortByInsertedAt);
         case CommentsFilterOption.OPEN:
           return rootComments
-            .filter(comment => !comment.isResolved)
+            .filter((comment) => !comment.isResolved)
             .sort(sortByInsertedAt);
         default:
           return [];

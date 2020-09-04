@@ -72,7 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   }, [state.activeTeam, state.activeTeamInfo, dashboard.teams]);
 
   const folders =
-    (dashboard.allCollections || []).filter(folder => folder.path !== '/') ||
+    (dashboard.allCollections || []).filter((folder) => folder.path !== '/') ||
     [];
 
   // context menu for folders
@@ -134,7 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           >
             {activeAccount && (
               <WorkspaceSelect
-                onSelect={workspace => {
+                onSelect={(workspace) => {
                   actions.setActiveTeam({
                     id: workspace.id,
                   });
@@ -331,12 +331,12 @@ const RowItem: React.FC<RowItemProps> = ({
   const usedPath = folderPath || path;
   const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
     accept: accepts,
-    drop: item => ({
+    drop: (item) => ({
       page,
       path: usedPath,
       isSamePath: isSamePath(item, page, usedPath),
     }),
-    collect: monitor => ({
+    collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop:
         monitor.canDrop() && !isSamePath(monitor.getItem(), page, usedPath),
@@ -392,7 +392,7 @@ const RowItem: React.FC<RowItemProps> = ({
             backgroundColor:
               canDrop && isOver ? 'list.hoverBackground' : 'transparent',
             transition: 'all ease-in',
-            transitionDuration: theme => theme.speeds[4],
+            transitionDuration: (theme) => theme.speeds[4],
             a: {
               ':focus': {
                 // focus state is handled by ListAction:focus-within
@@ -409,7 +409,7 @@ const RowItem: React.FC<RowItemProps> = ({
           as={RouterLink}
           to={linkTo}
           style={linkStyles}
-          onKeyDown={event => {
+          onKeyDown={(event) => {
             if (event.keyCode === ENTER) {
               history.push(linkTo, { focus: 'FIRST_ITEM' });
             }
@@ -492,7 +492,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     if (hasNewNestedFolder) setFoldersVisibility(true);
   }, [hasNewNestedFolder]);
 
-  const onContextMenu = event => {
+  const onContextMenu = (event) => {
     event.preventDefault();
     setMenuVisibility(true);
     setMenuFolder({ name, path: folderPath });
@@ -501,18 +501,15 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
 
   let subFolders: DashboardBaseFolder[];
   if (name === 'All Sandboxes') {
-    subFolders = folders.filter(folder => {
+    subFolders = folders.filter((folder) => {
       if (folder.path === newFolderPath) {
         return newFolderPath.replace('/__NEW__', '') === '';
       }
       return !folder.parent;
     });
   } else {
-    subFolders = folders.filter(folder => {
-      const parentPath = folder.path
-        .split('/')
-        .slice(0, -1)
-        .join('/');
+    subFolders = folders.filter((folder) => {
+      const parentPath = folder.path.split('/').slice(0, -1).join('/');
 
       return parentPath === folderPath;
     });
@@ -602,7 +599,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
           to={folderUrl}
           onClick={() => history.push(folderUrl)}
           onContextMenu={onContextMenu}
-          onKeyDown={event => {
+          onKeyDown={(event) => {
             if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
               history.push(folderUrl, {
                 focus: 'FIRST_ITEM',
@@ -620,7 +617,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
               name="caret"
               size={8}
               title="Toggle folders"
-              onClick={event => {
+              onClick={(event) => {
                 setFoldersVisibility(!foldersVisible);
                 event.stopPropagation();
               }}
@@ -631,7 +628,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 svg: {
                   transform: foldersVisible ? 'rotate(0deg)' : 'rotate(-90deg)',
                   transition: 'transform ease-in-out',
-                  transitionDuration: theme => theme.speeds[2],
+                  transitionDuration: (theme) => theme.speeds[2],
                 },
               })}
             />
@@ -678,8 +675,8 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
             style={{ paddingLeft: 0 }}
           >
             {orderBy(subFolders, 'name')
-              .sort(a => 1)
-              .map(folder => (
+              .sort((a) => 1)
+              .map((folder) => (
                 <NestableRowItem
                   key={folder.path}
                   name={folder.name}

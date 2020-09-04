@@ -27,7 +27,7 @@ export const Badges: FunctionComponent = () => {
       </Text>
 
       <Element marginTop={4}>
-        {badges.map(badge => (
+        {badges.map((badge) => (
           <Badge
             badge={badge}
             onClick={({ id, visible }) =>

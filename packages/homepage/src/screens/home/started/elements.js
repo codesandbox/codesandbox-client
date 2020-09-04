@@ -6,11 +6,11 @@ export const Grid = styled.div`
   grid-template-columns: 1fr 642px;
   grid-gap: 30px;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     margin-bottom: 200px;
   }
 
-  ${props => props.theme.breakpoints.lg} {
+  ${(props) => props.theme.breakpoints.lg} {
     grid-template-columns: 1fr;
   }
 `;
@@ -29,13 +29,13 @@ export const tweetStyle = css`
     right: auto;
   }
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     grid-template-columns: 1fr;
   }
 `;
 
 export const Img = styled.img`
-  ${props => props.theme.breakpoints.lg} {
+  ${(props) => props.theme.breakpoints.lg} {
     display: none;
   }
 `;

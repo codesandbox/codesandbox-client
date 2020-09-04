@@ -55,7 +55,7 @@ export default () => {
               type="checkbox"
               name="toggleTheme"
               id="toggleTheme"
-              onClick={() => setTheme(t => (t === 'dark' ? 'light' : 'dark'))}
+              onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
             />
             {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <label htmlFor="toggleTheme">

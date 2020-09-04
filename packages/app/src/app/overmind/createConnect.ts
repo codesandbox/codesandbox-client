@@ -76,7 +76,7 @@ export const createConnect = <ThisConfig extends IConfiguration>(
 
   if (isClassComponent) {
     const originalRender = component.prototype.render;
-    component.prototype.render = function() {
+    component.prototype.render = function () {
       if (this.props.overmind) {
         return this.props.overmind.tree.trackScope(
           () => originalRender.call(this),

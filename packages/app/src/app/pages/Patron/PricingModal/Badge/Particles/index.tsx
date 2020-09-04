@@ -89,7 +89,7 @@ export class Particles extends React.Component<ParticlesProps> {
   render() {
     return (
       <div>
-        {Object.keys(badges).map(badge =>
+        {Object.keys(badges).map((badge) =>
           createParticles(badges[badge].particleCount, badge)
         )}
       </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../components/layout';
 
-const PreviewMode = props => {
+const PreviewMode = (props) => {
   const { white, grey, whiteDark, greyLight } = useTheme().homepage;
 
   const getFill = () => {

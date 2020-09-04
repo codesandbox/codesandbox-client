@@ -3,7 +3,7 @@ async function fetchWithRetries(url: string) {
   for (let i = 0; i < 5; i++) {
     try {
       // eslint-disable-next-line
-      return await fetch(url).then(x => {
+      return await fetch(url).then((x) => {
         if (x.ok) {
           return x.json();
         }
@@ -53,13 +53,13 @@ export async function getAbsoluteDependency(
 
 export async function getAbsoluteDependencies(dependencies: Object) {
   const nonAbsoluteDependencies = Object.keys(dependencies).filter(
-    dep => !isAbsoluteVersion(dependencies[dep])
+    (dep) => !isAbsoluteVersion(dependencies[dep])
   );
 
   const newDependencies = { ...dependencies };
 
   await Promise.all(
-    nonAbsoluteDependencies.map(async dep => {
+    nonAbsoluteDependencies.map(async (dep) => {
       try {
         const { version } = await getAbsoluteDependency(
           dep,

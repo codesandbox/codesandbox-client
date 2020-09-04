@@ -1,7 +1,7 @@
 const fontFamilies = (...families) =>
   families
     .filter(Boolean)
-    .map(family =>
+    .map((family) =>
       family.indexOf(' ') !== -1 ? JSON.stringify(family) : family
     )
     .join(', ');

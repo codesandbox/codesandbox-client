@@ -24,7 +24,7 @@ const Filters = () => (
       attributeName="template"
       operator="or"
       title="Environment"
-      transformItems={items =>
+      transformItems={(items) =>
         items.map(({ label, ...item }) => {
           const { name, niceName } = getTemplate(label);
 

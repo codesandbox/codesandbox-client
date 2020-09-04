@@ -145,7 +145,7 @@ export const Actions = () => {
         <>
           {author ? (
             <Collaborators
-              renderButton={props => (
+              renderButton={(props) => (
                 <Button
                   variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
                   {...props}
@@ -177,7 +177,7 @@ export const Actions = () => {
       {user ? (
         <ForkButton
           user={user}
-          forkClicked={teamId => forkSandboxClicked({ teamId })}
+          forkClicked={(teamId) => forkSandboxClicked({ teamId })}
           variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
         />
       ) : (

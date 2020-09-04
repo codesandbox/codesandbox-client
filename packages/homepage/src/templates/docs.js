@@ -6,11 +6,7 @@ import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import { DocumentationContent } from './_docs.elements';
 
-const normalize = value =>
-  value
-    .split(' ')
-    .join('-')
-    .toLowerCase();
+const normalize = (value) => value.split(' ').join('-').toLowerCase();
 
 const Docs = ({
   location,
@@ -64,7 +60,7 @@ const Docs = ({
                 display: none;
               }
             `}
-            onClick={() => setShowMobileMenu(s => !s)}
+            onClick={() => setShowMobileMenu((s) => !s)}
           >
             <Text weight="bold">Documentation</Text>
 
@@ -73,7 +69,7 @@ const Docs = ({
               css={`
                 transition: 250ms cubic-bezier(0.68, -0.6, 0.32, 1.6);
                 transform: rotate(
-                  ${props => (props.showMobileMenu ? '0' : '180')}deg
+                  ${(props) => (props.showMobileMenu ? '0' : '180')}deg
                 );
                 transform-origin: center center;
               `}
@@ -101,7 +97,7 @@ const Docs = ({
               transition: 300ms ease-out;
 
               @media screen and (max-width: 900px) {
-                height: ${props => (props.showMobileMenu ? '100%' : '0')};
+                height: ${(props) => (props.showMobileMenu ? '100%' : '0')};
                 overflow: hidden;
               }
 
@@ -194,7 +190,7 @@ const Docs = ({
                     `}
                   >
                     {location.pathname.split('/docs')[1] === node.fields.slug &&
-                      node.headings.map(heading => (
+                      node.headings.map((heading) => (
                         <li
                           css={`
                             padding: 0 2rem;

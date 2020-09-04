@@ -38,13 +38,13 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
   background-color: ${BG_COLOR};
   box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
 
-  ${props =>
+  ${(props) =>
     props.small &&
     css`
       min-width: auto;
     `};
 
-  ${props =>
+  ${(props) =>
     props.noMargin &&
     css`
       margin: 0;
@@ -69,7 +69,7 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
 `;
 
 export const SandboxTitle = styled.h2`
-  color: ${props => props.color};
+  color: ${(props) => props.color};
   font-family: 'Poppins', sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
@@ -88,7 +88,7 @@ export const SandboxTitle = styled.h2`
 
 export const SandboxDescription = styled.p`
   font-size: 0.8rem;
-  color: ${props => props.theme.lightText};
+  color: ${(props) => props.theme.lightText};
   font-weight: 500;
   line-height: 1.3;
   margin: 0;
@@ -108,7 +108,7 @@ export const SandboxImage = styled.img`
   display: block;
   margin-bottom: 0;
   z-index: 0;
-  border-bottom: 3px solid ${props => props.color};
+  border-bottom: 3px solid ${(props) => props.color};
   height: auto;
   width: 100%;
   background-color: ${BG_HOVER};
@@ -146,7 +146,7 @@ export const Stats = styled.ul`
   display: flex;
   align-items: center;
 
-  color: ${props => props.theme.placeholder};
+  color: ${(props) => props.theme.placeholder};
 
   li:not(:last-child) {
     margin-right: 8px;
@@ -159,7 +159,7 @@ export const Stats = styled.ul`
     svg {
       margin-right: 6px;
       width: 16px;
-      color: ${props => props.theme.placeholder.darken(0.3)};
+      color: ${(props) => props.theme.placeholder.darken(0.3)};
     }
   }
 `;

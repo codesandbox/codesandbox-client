@@ -6,7 +6,7 @@ export const Container = styled.div`
   height: 2rem;
   min-height: 2rem;
   width: 100%;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.theme['input.background'] || props.theme.background.darken(0.3)};
 
   display: flex;
@@ -17,11 +17,11 @@ export const Input = styled.input`
   position: relative;
   height: 1.5rem;
   width: 100%;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.theme['input.background'] || props.theme.background.darken(0.3)};
   border: none;
   outline: none;
-  color: ${props =>
+  color: ${(props) =>
     props.theme['input.foreground'] || 'rgba(255, 255, 255, 0.8)'};
   font-family: Menlo, monospace;
   font-size: 13px;
@@ -38,7 +38,7 @@ export const IconContainer = styled.div`
 export const CodeMirrorContainer = styled(CodeContainer)`
   display: flex;
   align-items: center;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.theme['input.background'] || props.theme.background.darken(0.3)};
 
   > div {
@@ -46,7 +46,7 @@ export const CodeMirrorContainer = styled(CodeContainer)`
   }
 
   .CodeMirror {
-    background: ${props =>
+    background: ${(props) =>
       props.theme['input.background'] || props.theme.background.darken(0.3)};
   }
 `;

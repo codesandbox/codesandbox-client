@@ -61,7 +61,7 @@ function render(
       CONTEXT_SIZE,
       currReferenceIndex + 1,
       errorReferences.length,
-      offset => {
+      (offset) => {
         switchError(offset);
       },
       () => {
@@ -69,8 +69,8 @@ function render(
       }
     );
     if (w != null) {
-      w.onkeydown = event => {
-        keyEventHandler(type => shortcutHandler(type), event);
+      w.onkeydown = (event) => {
+        keyEventHandler((type) => shortcutHandler(type), event);
       };
     }
     if (document.body != null) {
@@ -145,7 +145,7 @@ function unmount(force: boolean = true) {
 }
 
 function sendErrorsToEditor() {
-  errorReferences.forEach(ref => {
+  errorReferences.forEach((ref) => {
     const error = getErrorRecord(ref);
     buildError(error);
   });
@@ -158,10 +158,10 @@ function sendErrorsToEditor() {
 function transformErrors() {
   const manager = getCurrentManager();
   if (manager) {
-    errorReferences.forEach(ref => {
+    errorReferences.forEach((ref) => {
       const errRef = getErrorRecord(ref);
 
-      const relevantFrame = errRef.enhancedFrames.find(r => {
+      const relevantFrame = errRef.enhancedFrames.find((r) => {
         try {
           return (
             manager &&
@@ -223,7 +223,7 @@ function crash(error: Error, unhandledRejection = false) {
   }
 
   consumeError(error, unhandledRejection, CONTEXT_SIZE)
-    .then(ref => {
+    .then((ref) => {
       if (ref == null) {
         return;
       }
@@ -238,7 +238,7 @@ function crash(error: Error, unhandledRejection = false) {
           additionalReference,
           currReferenceIndex + 1,
           errorReferences.length,
-          offset => {
+          (offset) => {
             switchError(offset);
           }
         );
@@ -249,7 +249,7 @@ function crash(error: Error, unhandledRejection = false) {
         renderErrorByIndex((currReferenceIndex = 0));
       }
     })
-    .catch(e => {
+    .catch((e) => {
       console.log('Could not consume error:', e);
     });
 }
@@ -278,7 +278,7 @@ function shortcutHandler(type: string) {
 let listenToRuntimeErrorsUnmounter;
 
 function inject() {
-  listenToRuntimeErrorsUnmounter = listenToRuntimeErrors(error => {
+  listenToRuntimeErrorsUnmounter = listenToRuntimeErrors((error) => {
     crash(error.error);
   });
 }

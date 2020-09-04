@@ -18,10 +18,10 @@ export default styled.select<{ error?: boolean }>`
   appearance: none;
 
   border: 1px solid
-    ${props =>
+    ${(props) =>
       props.error ? props.theme.red.clearer(0.5) : 'rgba(0, 0, 0, 0.1)'};
 
   &:focus {
-    border-color: ${props => props.theme.secondary.clearer(0.6)};
+    border-color: ${(props) => props.theme.secondary.clearer(0.6)};
   }
 `;

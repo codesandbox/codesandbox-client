@@ -15,12 +15,12 @@ type Props = {
 };
 
 export const TestOverview = ({ tests, openFile }: Props) => {
-  const failedTests = tests.filter(t => t.status === 'fail');
+  const failedTests = tests.filter((t) => t.status === 'fail');
 
-  const testPassCount = tests.filter(t => t.status === 'pass').length;
+  const testPassCount = tests.filter((t) => t.status === 'pass').length;
   const testFailCount = failedTests.length;
   const testIdleCount = tests.filter(
-    t => t.status === 'idle' || t.status === 'running'
+    (t) => t.status === 'idle' || t.status === 'running'
   ).length;
   const totalTestCount = tests.length;
   return (
@@ -41,7 +41,7 @@ export const TestOverview = ({ tests, openFile }: Props) => {
 
       <Tests>
         {failedTests.length > 0
-          ? failedTests.map(t => (
+          ? failedTests.map((t) => (
               <TestBlock
                 openFile={() => openFile(t.path)}
                 key={t.testName.join('-')}

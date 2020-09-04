@@ -158,13 +158,15 @@ export const state: State = {
     ({ currentSandbox, currentModuleShortid }: State) =>
       (currentSandbox &&
         currentSandbox.modules.find(
-          module => module.shortid === currentModuleShortid
+          (module) => module.shortid === currentModuleShortid
         )) ||
       ({} as Module)
   ),
   currentTab: derived(({ currentTabId, currentModuleShortid, tabs }: State) => {
     if (currentTabId) {
-      const foundTab = tabs.find(tab => 'id' in tab && tab.id === currentTabId);
+      const foundTab = tabs.find(
+        (tab) => 'id' in tab && tab.id === currentTabId
+      );
 
       if (foundTab) {
         return foundTab;
@@ -172,7 +174,7 @@ export const state: State = {
     }
 
     return tabs.find(
-      tab =>
+      (tab) =>
         'moduleShortid' in tab && tab.moduleShortid === currentModuleShortid
     );
   }),
@@ -202,7 +204,7 @@ export const state: State = {
     }
 
     const module = currentSandbox.modules.find(
-      m => m.directoryShortid == null && m.title === 'package.json'
+      (m) => m.directoryShortid == null && m.title === 'package.json'
     );
 
     return module || null;
@@ -257,9 +259,9 @@ export const state: State = {
       );
 
       // Do it in an immutable manner, prevents changing the original object
-      return immer(views, draft => {
+      return immer(views, (draft) => {
         const sandboxConfig = sandbox.modules.find(
-          x => x.directoryShortid == null && x.title === 'sandbox.config.json'
+          (x) => x.directoryShortid == null && x.title === 'sandbox.config.json'
         );
         let view = 'browser';
         if (sandboxConfig) {
@@ -285,12 +287,12 @@ export const state: State = {
           // Backwards compatibility for sandbox.config.json
           if (view === 'console') {
             draft[0].views = draft[0].views.filter(
-              t => t.id !== 'codesandbox.console'
+              (t) => t.id !== 'codesandbox.console'
             );
             draft[0].views.unshift({ id: 'codesandbox.console' });
           } else if (view === 'tests') {
             draft[0].views = draft[0].views.filter(
-              t => t.id !== 'codesandbox.tests'
+              (t) => t.id !== 'codesandbox.tests'
             );
             draft[0].views.unshift({ id: 'codesandbox.tests' });
           }
@@ -306,18 +308,18 @@ function getModuleParents(
   directories: Directory[],
   id: string
 ): string[] {
-  const module = modules.find(moduleEntry => moduleEntry.id === id);
+  const module = modules.find((moduleEntry) => moduleEntry.id === id);
 
   if (!module) return [];
 
   let directory = directories.find(
-    directoryEntry => directoryEntry.shortid === module.directoryShortid
+    (directoryEntry) => directoryEntry.shortid === module.directoryShortid
   );
   let directoryIds: string[] = [];
   while (directory != null) {
     directoryIds = [...directoryIds, directory!.id];
     directory = directories.find(
-      directoryEntry => directoryEntry.shortid === directory!.directoryShortid // eslint-disable-line
+      (directoryEntry) => directoryEntry.shortid === directory!.directoryShortid // eslint-disable-line
     );
   }
 

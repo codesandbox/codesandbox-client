@@ -33,8 +33,10 @@ export const FilesList: FunctionComponent = () => {
     uploadedFiles.filter(({ id }) => selectedItems.includes(id));
 
   const toggleCheckbox = (id: string) =>
-    setSelectedItems(items =>
-      items.includes(id) ? items.filter(item => item !== id) : items.concat(id)
+    setSelectedItems((items) =>
+      items.includes(id)
+        ? items.filter((item) => item !== id)
+        : items.concat(id)
     );
 
   return (

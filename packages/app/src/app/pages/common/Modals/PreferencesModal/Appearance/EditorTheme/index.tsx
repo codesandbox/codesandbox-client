@@ -18,7 +18,7 @@ export const EditorTheme: FunctionComponent = () => {
   } = useOvermind();
 
   const bindValue = (name: string, setUndefined?: boolean) => ({
-    setValue: value => settingChanged({ name, value }),
+    setValue: (value) => settingChanged({ name, value }),
     value: setUndefined ? settings[name] || undefined : settings[name],
   });
 

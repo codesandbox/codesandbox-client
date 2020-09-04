@@ -28,7 +28,7 @@ export const IconContainer = styled(Stack)<{
   selected: boolean;
   isDisabled: boolean;
 }>(
-  props => css`
+  (props) => css`
     transition: ${props.theme.speeds[1]}ms ease all;
     height: ${props.theme.space[9]}px;
     width: ${props.theme.space[10]}px;
@@ -50,22 +50,22 @@ export const IconContainer = styled(Stack)<{
     }
 
     ${props.selected &&
-      css`
-        color: ${props.theme.colors.activityBar.selectedForeground};
-      `};
+    css`
+      color: ${props.theme.colors.activityBar.selectedForeground};
+    `};
 
     ${props.isDisabled &&
-      !props.selected &&
-      css`
-        opacity: 0.4;
-      `}
+    !props.selected &&
+    css`
+      opacity: 0.4;
+    `}
   `
 );
 
 export const Separator = styled.hr`
   width: calc(100% - 20px);
   height: 1px;
-  background-color: ${props => props.theme.colors.sideBar.border};
+  background-color: ${(props) => props.theme.colors.sideBar.border};
   margin: 0.25rem 0;
   outline: none;
   border: none;

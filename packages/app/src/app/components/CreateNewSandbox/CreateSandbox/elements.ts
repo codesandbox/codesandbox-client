@@ -118,7 +118,7 @@ export const SubHeader = styled.h2`
 export const Grid = styled.div<{ columnCount: number }>`
   display: grid;
   margin: 0 1.5rem;
-  grid-template-columns: repeat(${props => props.columnCount}, 1fr);
+  grid-template-columns: repeat(${(props) => props.columnCount}, 1fr);
   gap: 1rem;
 `;
 

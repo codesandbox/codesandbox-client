@@ -13,7 +13,7 @@ export const Container = styled.div`
   margin: auto;
   padding-bottom: 0.25rem;
 
-  background-color: ${props => props.theme.background};
+  background-color: ${(props) => props.theme.background};
 
   max-width: 650px;
   width: 100%;
@@ -52,7 +52,7 @@ export const Entry = styled.div`
   ${({ isActive }) =>
     isActive &&
     css`
-      background-color: ${props => props.theme.secondary.clearer(0.7)};
+      background-color: ${(props) => props.theme.secondary.clearer(0.7)};
     `};
 `;
 
@@ -60,7 +60,7 @@ export const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
   position: absolute;
   left: 0.75rem;
   top: 0;
-  color: ${props => props.theme.templateColor || props.theme.secondary};
+  color: ${(props) => props.theme.templateColor || props.theme.secondary};
   vertical-align: middle;
 
   margin-top: 6px;
@@ -70,7 +70,7 @@ export const CurrentModuleText = styled.div`
   position: absolute;
   right: 0.75rem;
   font-weight: 500;
-  color: ${props => props.theme.secondary};
+  color: ${(props) => props.theme.secondary};
 `;
 
 export const Name = styled.span`

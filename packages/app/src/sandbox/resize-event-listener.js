@@ -25,31 +25,31 @@ export default function createDetectElementResize(nonce?: string) {
   var attachEvent = typeof document !== 'undefined' && document.attachEvent;
 
   if (!attachEvent) {
-    var requestFrame = (function() {
+    var requestFrame = (function () {
       var raf =
         _window.requestAnimationFrame ||
         _window.mozRequestAnimationFrame ||
         _window.webkitRequestAnimationFrame ||
-        function(fn) {
+        function (fn) {
           return _window.setTimeout(fn, 20);
         };
-      return function(fn) {
+      return function (fn) {
         return raf(fn);
       };
     })();
 
-    var cancelFrame = (function() {
+    var cancelFrame = (function () {
       var cancel =
         _window.cancelAnimationFrame ||
         _window.mozCancelAnimationFrame ||
         _window.webkitCancelAnimationFrame ||
         _window.clearTimeout;
-      return function(id) {
+      return function (id) {
         return cancel(id);
       };
     })();
 
-    var resetTriggers = function(element) {
+    var resetTriggers = function (element) {
       var triggers = element.__resizeTriggers__,
         expand = triggers.firstElementChild,
         contract = triggers.lastElementChild,
@@ -62,14 +62,14 @@ export default function createDetectElementResize(nonce?: string) {
       expand.scrollTop = expand.scrollHeight;
     };
 
-    var checkTriggers = function(element) {
+    var checkTriggers = function (element) {
       return (
         element.offsetWidth != element.__resizeLast__.width ||
         element.offsetHeight != element.__resizeLast__.height
       );
     };
 
-    var scrollListener = function(e) {
+    var scrollListener = function (e) {
       // Don't measure (which forces) reflow for scrolls that happen inside of children!
       if (
         e.target.className.indexOf('contract-trigger') < 0 &&
@@ -81,11 +81,11 @@ export default function createDetectElementResize(nonce?: string) {
       var element = this;
       resetTriggers(this);
       if (this.__resizeRAF__) cancelFrame(this.__resizeRAF__);
-      this.__resizeRAF__ = requestFrame(function() {
+      this.__resizeRAF__ = requestFrame(function () {
         if (checkTriggers(element)) {
           element.__resizeLast__.width = element.offsetWidth;
           element.__resizeLast__.height = element.offsetHeight;
-          element.__resizeListeners__.forEach(function(fn) {
+          element.__resizeListeners__.forEach(function (fn) {
             fn.call(element, e);
           });
         }
@@ -133,7 +133,7 @@ export default function createDetectElementResize(nonce?: string) {
       keyframeprefix + 'animation: 1ms ' + animationName + '; ';
   }
 
-  var createStyles = function() {
+  var createStyles = function () {
     if (!document.getElementById('detectElementResize')) {
       //opacity:0 works around a chrome bug https://code.google.com/p/chromium/issues/detail?id=286360
       var css =
@@ -162,7 +162,7 @@ export default function createDetectElementResize(nonce?: string) {
     }
   };
 
-  var addResizeListener = function(element, fn) {
+  var addResizeListener = function (element, fn) {
     if (attachEvent) element.attachEvent('onresize', fn);
     else {
       if (!element.__resizeTriggers__) {
@@ -199,7 +199,7 @@ export default function createDetectElementResize(nonce?: string) {
     }
   };
 
-  var removeResizeListener = function(element, fn) {
+  var removeResizeListener = function (element, fn) {
     if (attachEvent) element.detachEvent('onresize', fn);
     else {
       element.__resizeListeners__.splice(

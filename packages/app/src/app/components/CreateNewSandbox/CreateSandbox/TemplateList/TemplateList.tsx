@@ -136,7 +136,7 @@ export const TemplateList = ({
     (setter: (newPos: number) => number) => {
       const totalCount = getTotalTemplateCount();
 
-      return setFocusedTemplate(i =>
+      return setFocusedTemplate((i) =>
         Math.max(0, Math.min(setter(i), totalCount - 1))
       );
     },
@@ -149,7 +149,7 @@ export const TemplateList = ({
     const totalCount = getTotalTemplateCount();
 
     if (focusedTemplateIndex >= totalCount || focusedTemplateIndex < 0) {
-      safeSetFocusedTemplate(i => i);
+      safeSetFocusedTemplate((i) => i);
     }
 
     // We only want this check to happen if templateInfos changes. Only then we
@@ -159,12 +159,12 @@ export const TemplateList = ({
 
   useKey(
     'ArrowRight',
-    evt => {
+    (evt) => {
       if ((evt.target as HTMLInputElement).id === 'filter-templates') {
         return;
       }
       evt.preventDefault();
-      safeSetFocusedTemplate(i => i + 1);
+      safeSetFocusedTemplate((i) => i + 1);
     },
     {},
     [safeSetFocusedTemplate]
@@ -172,12 +172,12 @@ export const TemplateList = ({
 
   useKey(
     'ArrowLeft',
-    evt => {
+    (evt) => {
       if ((evt.target as HTMLInputElement).id === 'filter-templates') {
         return;
       }
       evt.preventDefault();
-      safeSetFocusedTemplate(i => i - 1);
+      safeSetFocusedTemplate((i) => i - 1);
     },
     {},
     [safeSetFocusedTemplate]
@@ -185,7 +185,7 @@ export const TemplateList = ({
 
   useKey(
     'ArrowDown',
-    evt => {
+    (evt) => {
       if ((evt.target as HTMLInputElement).id === 'filter-templates') {
         return;
       }
@@ -217,7 +217,7 @@ export const TemplateList = ({
         (isLastRow ? columnCountInLastRow : columnCount) - 1 - indexInRow;
 
       safeSetFocusedTemplate(
-        i =>
+        (i) =>
           i +
           Math.min(
             hasItemUnder
@@ -252,7 +252,7 @@ export const TemplateList = ({
 
   useKey(
     'ArrowUp',
-    evt => {
+    (evt) => {
       if ((evt.target as HTMLInputElement).id === 'filter-templates') {
         return;
       }
@@ -278,7 +278,7 @@ export const TemplateList = ({
           columnCountInPreviousRow > indexInRow);
 
       safeSetFocusedTemplate(
-        i => i - (hasItemAbove ? columnCountInPreviousRow : indexInRow + 1)
+        (i) => i - (hasItemAbove ? columnCountInPreviousRow : indexInRow + 1)
       );
     },
     {},
@@ -294,12 +294,12 @@ export const TemplateList = ({
    * Our listener for CMD/CTRL + Num calls
    */
   useKey(
-    e => {
+    (e) => {
       const num = getNumber(e);
       const modifierCheck = isMac ? e.ctrlKey : e.shiftKey;
       return num > 0 && num < 10 && modifierCheck;
     },
-    e => {
+    (e) => {
       if (showSecondaryShortcuts) {
         const num = getNumber(e);
 
@@ -322,7 +322,7 @@ export const TemplateList = ({
    */
   useKey(
     'Enter',
-    e => {
+    (e) => {
       if (
         !e.defaultPrevented &&
         document.activeElement &&
@@ -396,7 +396,7 @@ export const TemplateList = ({
                           safeSetFocusedTemplate(() => index);
                         }
                       }}
-                      onKeyPress={e => {
+                      onKeyPress={(e) => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
 
@@ -409,7 +409,7 @@ export const TemplateList = ({
                           );
                         }
                       }}
-                      onClick={e => {
+                      onClick={(e) => {
                         e.preventDefault();
 
                         track('Template Modal - Open Sandbox', {
@@ -427,7 +427,7 @@ export const TemplateList = ({
                           ? () => (
                               <Tooltip content="Edit Template">
                                 <EditIcon
-                                  onClick={evt => {
+                                  onClick={(evt) => {
                                     evt.stopPropagation();
                                     actions.modalClosed();
                                   }}

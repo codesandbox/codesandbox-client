@@ -76,7 +76,7 @@ export class ContextMenu extends React.PureComponent<Props, State> {
     }
   };
 
-  onContextMenu: OnContextMenu = event => {
+  onContextMenu: OnContextMenu = (event) => {
     if (!this.unmounted) {
       const { body } = document;
       const html = document.documentElement;
@@ -177,14 +177,14 @@ export class ContextMenu extends React.PureComponent<Props, State> {
           tabIndex={0}
           key={item.title}
           color={item.color}
-          onMouseDown={e => {
+          onMouseDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
           }}
-          onMouseUp={e => {
+          onMouseUp={(e) => {
             handlePress(e);
           }}
-          onKeyUp={e => {
+          onKeyUp={(e) => {
             if (e.keyCode === ENTER) {
               handlePress(e);
             }
@@ -210,7 +210,7 @@ export class ContextMenu extends React.PureComponent<Props, State> {
         {show && (
           <Portal>
             <div
-              ref={el => {
+              ref={(el) => {
                 if (el && this.el !== el) {
                   // First time mounting
                   el.focus();

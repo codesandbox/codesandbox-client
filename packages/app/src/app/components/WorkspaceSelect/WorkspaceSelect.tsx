@@ -25,13 +25,13 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const history = useHistory();
 
     const personalWorkspace = dashboard.teams.find(
-      t => t.id === state.personalWorkspaceId
+      (t) => t.id === state.personalWorkspaceId
     )!;
     const workspaces = [
       personalWorkspace,
       ...sortBy(
-        dashboard.teams.filter(t => t.id !== state.personalWorkspaceId),
-        t => t.name.toLowerCase()
+        dashboard.teams.filter((t) => t.id !== state.personalWorkspaceId),
+        (t) => t.name.toLowerCase()
       ),
     ];
 
@@ -80,7 +80,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
             })}
             style={{ backgroundColor: '#242424', borderColor: '#343434' }} // TODO: find a way to override reach styles without the selector mess
           >
-            {workspaces.map(team => (
+            {workspaces.map((team) => (
               <Stack
                 as={Menu.Item}
                 key={team.id}

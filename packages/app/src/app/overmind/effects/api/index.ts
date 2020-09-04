@@ -144,7 +144,7 @@ export default {
       .put<IModuleAPIResponse[]>(`/sandboxes/${sandboxId}/modules/mupdate`, {
         modules,
       })
-      .then(modulesResult => modulesResult.map(transformModule));
+      .then((modulesResult) => modulesResult.map(transformModule));
   },
   getGitChanges(sandboxId: string): Promise<GitPathChanges> {
     return api.get(`/sandboxes/${sandboxId}/git/diff`);
@@ -569,7 +569,7 @@ export default {
           template,
         }
       )
-      .then(data => data.template);
+      .then((data) => data.template);
   },
   createTemplate(
     sandboxId: string,
@@ -579,7 +579,7 @@ export default {
       .post<{ template: CustomTemplate }>(`/sandboxes/${sandboxId}/templates`, {
         template,
       })
-      .then(data => data.template);
+      .then((data) => data.template);
   },
   updateExperiments(experiments: { [key: string]: boolean }): Promise<void> {
     return api.post(`/users/experiments`, {

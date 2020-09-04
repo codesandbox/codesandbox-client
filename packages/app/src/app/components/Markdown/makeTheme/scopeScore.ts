@@ -29,7 +29,7 @@ export const getScoreForScope = (scope, mappedScope) => {
   if (scoreForMapped) {
     // If the scope is in the specific mapped scope we add the baseScoreSize to this
     // score
-    const mappedIndex = scoreForMapped.findIndex(x => scope.startsWith(x));
+    const mappedIndex = scoreForMapped.findIndex((x) => scope.startsWith(x));
     if (mappedIndex !== -1) {
       return baseScoreSize + (scoreForMapped.length - mappedIndex);
     }

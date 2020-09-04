@@ -36,7 +36,7 @@ export const PermissionSelect = ({
       {authToName[selectedValue]} <Icon name="caret" size={8} marginLeft={1} />
     </Menu.Button>
     <Menu.List>
-      {permissions.map(auth => (
+      {permissions.map((auth) => (
         <Menu.Item key={auth} onSelect={() => onChange(auth)}>
           {authToName[auth]}
         </Menu.Item>

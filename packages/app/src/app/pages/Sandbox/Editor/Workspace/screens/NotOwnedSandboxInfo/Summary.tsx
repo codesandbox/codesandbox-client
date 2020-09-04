@@ -172,7 +172,7 @@ const TemplateIcon = ({ iconUrl, environment }) => {
   return <UserIcon />;
 };
 
-const Divider = props => (
+const Divider = (props) => (
   <Element
     as="hr"
     css={css({

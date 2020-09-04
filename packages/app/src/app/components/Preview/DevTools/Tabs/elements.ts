@@ -23,7 +23,7 @@ export const Actions = styled.div`
     transition: 0.3s ease all;
 
     cursor: pointer;
-    color: ${props =>
+    color: ${(props) =>
       props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.7)'};
 
     &:hover {

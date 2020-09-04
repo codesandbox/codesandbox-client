@@ -5,7 +5,7 @@ type Unpacked<T> = T extends Promise<infer U> ? U : T;
 
 const Loadable: <T extends Promise<{ default: React.ComponentType }>>(
   loader: () => T
-) => Unpacked<T>['default'] = loader =>
+) => Unpacked<T>['default'] = (loader) =>
   class extends React.Component {
     state = {
       LoadedComponent: null,
@@ -15,7 +15,7 @@ const Loadable: <T extends Promise<{ default: React.ComponentType }>>(
     timer: number;
 
     componentDidMount() {
-      loader().then(module => {
+      loader().then((module) => {
         this.setState({
           LoadedComponent: module.default,
         });

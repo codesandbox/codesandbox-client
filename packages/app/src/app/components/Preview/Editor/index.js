@@ -8,7 +8,7 @@ import { getCodeMirror } from 'app/utils/codemirror';
 import { Container } from './elements';
 
 export default class Editor extends React.PureComponent {
-  setUpCodeMirror = el => {
+  setUpCodeMirror = (el) => {
     const { code, readOnly } = this.props;
     const doc = new CodeMirror.Doc(code, 'jsx');
     this.codemirror = getCodeMirror(el, doc);

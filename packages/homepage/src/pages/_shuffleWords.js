@@ -3,7 +3,7 @@ import TextLoop from 'react-text-loop';
 import styled from 'styled-components';
 
 const ShuffleWords = styled.section`
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
   font-size: 2em;
   font-family: 'dank mono', 'dm', monospace;
   text-align: center;
@@ -20,7 +20,7 @@ const ShuffleWords = styled.section`
   }
 `;
 
-const shuffle = a => {
+const shuffle = (a) => {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
@@ -45,7 +45,9 @@ export default () => (
   <ShuffleWords>
     import {'{ '}
     use
-    <TextLoop interval={1500}>{shuffle(words).map(word => word)}</TextLoop>{' '}
+    <TextLoop interval={1500}>
+      {shuffle(words).map((word) => word)}
+    </TextLoop>{' '}
     {'  }'} from {"'"}
     react
     {"'"}

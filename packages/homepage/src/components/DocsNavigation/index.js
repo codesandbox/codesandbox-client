@@ -92,7 +92,7 @@ const DocsNavigation = () => {
               <List>
                 {enabled ? (
                   <>
-                    <OpenSearch onClick={() => setSearch(s => !s)}>
+                    <OpenSearch onClick={() => setSearch((s) => !s)}>
                       <svg width={32} height={32} fill="none">
                         <path
                           fillRule="evenodd"

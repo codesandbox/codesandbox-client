@@ -12,9 +12,10 @@ description: Dashboard - team members management
 2. Add freezing/unfreezing in the dashboard
 3. Update Algolia info to use our new index
 4. Allow changing privacy of multiple sandboxes
-6. [ @JohnPremKumar ](https://github.com/codesandbox/codesandbox-client/pull/4535) Additional properties added to Preview Manager
-7. [@maier49](https://github.com/codesandbox/codesandbox-client/pull/4548) Add missing js modules for dojo styles 
-
+5. [ @JohnPremKumar ](https://github.com/codesandbox/codesandbox-client/pull/4535)
+   Additional properties added to Preview Manager
+6. [@maier49](https://github.com/codesandbox/codesandbox-client/pull/4548) Add
+   missing js modules for dojo styles
 
 #### Fixes
 

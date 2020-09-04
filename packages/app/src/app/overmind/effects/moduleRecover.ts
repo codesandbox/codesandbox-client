@@ -47,8 +47,8 @@ export default {
   clearSandbox(sandboxId: string) {
     try {
       Object.keys(localStorage)
-        .filter(key => key.startsWith(`recover:${sandboxId}`))
-        .forEach(key => {
+        .filter((key) => key.startsWith(`recover:${sandboxId}`))
+        .forEach((key) => {
           localStorage.removeItem(key);
         });
     } catch (e) {
@@ -57,13 +57,13 @@ export default {
   },
 
   getRecoverList(sandboxId: string, modules: Module[]) {
-    const localKeys = Object.keys(localStorage).filter(key =>
+    const localKeys = Object.keys(localStorage).filter((key) =>
       key.startsWith(`recover:${sandboxId}`)
     );
 
     return modules
-      .filter(m => localKeys.includes(getKey(sandboxId, m.shortid)))
-      .map(module => {
+      .filter((m) => localKeys.includes(getKey(sandboxId, m.shortid)))
+      .map((module) => {
         const key = getKey(sandboxId, module.shortid);
 
         try {

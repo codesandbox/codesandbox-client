@@ -248,7 +248,7 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
     }
   }) as EventListener);
 
-  forkHandler.addEventListener('message', e => {
+  forkHandler.addEventListener('message', (e) => {
     const { data } = e;
 
     if (data.$broadcast) {
@@ -315,7 +315,7 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
       }
     }, 1500);
 
-    forkHandler.addEventListener('message', e => {
+    forkHandler.addEventListener('message', (e) => {
       if (!sentReady && e.data && e.data.$type === 'ready') {
         forkHandler.postMessage({
           $type: 'worker-manager',

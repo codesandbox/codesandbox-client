@@ -68,7 +68,7 @@ export const BookmarkTemplateButton = () => {
         template: {
           __typename: 'Template',
           id: customTemplate.id,
-          bookmarked: bookmarkInfos.map(b => {
+          bookmarked: bookmarkInfos.map((b) => {
             if (b.entity.id !== bookmarkInfo.entity.id) {
               return b;
             }

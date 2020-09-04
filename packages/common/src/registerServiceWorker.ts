@@ -53,7 +53,7 @@ function registerValidSW(
 ) {
   navigator.serviceWorker
     .register(swUrl)
-    .then(registration => {
+    .then((registration) => {
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
         installingWorker.onstatechange = () => {
@@ -75,7 +75,7 @@ function registerValidSW(
             }
           } else if (installingWorker.state === 'redundant') {
             if ('storage' in navigator && 'estimate' in navigator.storage) {
-              navigator.storage.estimate().then(results => {
+              navigator.storage.estimate().then((results) => {
                 const percentUsed = results.usage / results.quota;
                 // Let's assume that if we're using 95% of our quota, then this failure
                 // was due to quota exceeded errors.
@@ -89,8 +89,8 @@ function registerValidSW(
                   // blowing away storage being used on the origin by something other than
                   // our service worker.
                   // I don't think that the Clear-Site-Data: header helps here, unfortunately.
-                  self.caches.keys().then(names => {
-                    names.forEach(name => {
+                  self.caches.keys().then((names) => {
+                    names.forEach((name) => {
                       self.caches.delete(name);
                     });
                   });
@@ -106,7 +106,7 @@ function registerValidSW(
         };
       };
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Error during service worker registration:', error);
     });
 }
@@ -114,14 +114,14 @@ function registerValidSW(
 function checkValidServiceWorker(swUrl, { onUpdated, onInstalled }) {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl)
-    .then(response => {
+    .then((response) => {
       // Ensure service worker exists, and that we really are getting a JS file.
       if (
         response.status === 404 ||
         response.headers.get('content-type').indexOf('javascript') === -1
       ) {
         // No service worker found. Probably a different app. Reload the page.
-        navigator.serviceWorker.ready.then(registration => {
+        navigator.serviceWorker.ready.then((registration) => {
           registration.unregister().then(() => {
             window.location.reload();
           });
@@ -131,7 +131,7 @@ function checkValidServiceWorker(swUrl, { onUpdated, onInstalled }) {
         registerValidSW(swUrl, { onUpdated, onInstalled });
       }
     })
-    .catch(e => {
+    .catch((e) => {
       // eslint-disable-next-line no-console
       console.log(
         'No internet connection found. App is running in offline mode.',
@@ -142,7 +142,7 @@ function checkValidServiceWorker(swUrl, { onUpdated, onInstalled }) {
 
 export function unregister() {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then(registration => {
+    navigator.serviceWorker.ready.then((registration) => {
       registration.unregister();
     });
   }

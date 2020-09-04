@@ -2,7 +2,7 @@ import React, { FunctionComponent, SVGProps } from 'react';
 
 type IconProps = SVGProps<SVGSVGElement>;
 
-export const TwitterIcon: FunctionComponent<IconProps> = props => (
+export const TwitterIcon: FunctionComponent<IconProps> = (props) => (
   <svg width={20} height={16} fill="none" viewBox="0 0 20 16" {...props}>
     <path
       fill="currentColor"
@@ -11,7 +11,7 @@ export const TwitterIcon: FunctionComponent<IconProps> = props => (
   </svg>
 );
 
-export const GithubIcon: FunctionComponent<IconProps> = props => (
+export const GithubIcon: FunctionComponent<IconProps> = (props) => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="currentColor"
@@ -20,7 +20,7 @@ export const GithubIcon: FunctionComponent<IconProps> = props => (
   </svg>
 );
 
-export const GlobeIcon: FunctionComponent<IconProps> = props => (
+export const GlobeIcon: FunctionComponent<IconProps> = (props) => (
   <svg width={10} height={10} fill="none" viewBox="0 0 10 10" {...props}>
     <path
       fill="#757575"
@@ -29,7 +29,7 @@ export const GlobeIcon: FunctionComponent<IconProps> = props => (
   </svg>
 );
 
-export const PenIcon = props => (
+export const PenIcon = (props) => (
   <svg width={13} height={13} fill="none" viewBox="0 0 13 13" {...props}>
     <path
       fill="#fff"

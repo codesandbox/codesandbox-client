@@ -54,14 +54,14 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
   return (
     <div>
       {sortBy(directories, 'title')
-        .filter(x => x.directoryShortid === parentShortid)
+        .filter((x) => x.directoryShortid === parentShortid)
         .filter(
-          x =>
+          (x) =>
             !(
               x.directoryShortid == null && HIDDEN_DIRECTORIES.includes(x.title)
             )
         )
-        .map(dir => (
+        .map((dir) => (
           <DirectoryEntry
             key={dir.id}
             depth={depth + 1}
@@ -81,9 +81,9 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
           />
         ))}
       {sortBy(
-        modules.filter(x => x.directoryShortid === parentShortid),
+        modules.filter((x) => x.directoryShortid === parentShortid),
         'title'
-      ).map(m => (
+      ).map((m) => (
         <ModuleEntry
           key={m.id}
           readonly={readonly}

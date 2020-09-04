@@ -16,7 +16,7 @@ import {
 
 import { Container, Icon } from './elements';
 
-const handleClick = func => e => {
+const handleClick = (func) => (e) => {
   e.preventDefault();
   e.stopPropagation();
   func();
@@ -45,7 +45,7 @@ function EditIcons({
     <div className={className}>
       {hovering || (window.__isTouch && active) || forceShow ? (
         <SingletonTooltip>
-          {singleton => (
+          {(singleton) => (
             <Container>
               {onDownload && (
                 <Tooltip content="Export to ZIP" singleton={singleton}>

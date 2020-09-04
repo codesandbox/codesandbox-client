@@ -35,7 +35,7 @@ function callApi(url: string, method = 'GET') {
   return fetch(url, {
     method,
   })
-    .then(async response => {
+    .then(async (response) => {
       if (!response.ok) {
         const error = new Error(response.statusText || '' + response.status);
 
@@ -50,7 +50,7 @@ function callApi(url: string, method = 'GET') {
 
       return response;
     })
-    .then(response => response.json());
+    .then((response) => response.json());
 }
 
 /**

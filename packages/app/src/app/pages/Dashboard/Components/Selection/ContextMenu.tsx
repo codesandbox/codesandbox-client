@@ -61,10 +61,10 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     | DashboardTemplate
     | DashboardRepo
     | DashboardNewMasterBranch
-  > = selectedIds.map(id => {
+  > = selectedIds.map((id) => {
     if (id.startsWith('/')) {
       if (repos && repos.length) {
-        const repo = repos.find(f => '/' + f.name === id);
+        const repo = repos.find((f) => '/' + f.name === id);
         return { type: 'repo', ...repo };
       }
 
@@ -80,10 +80,10 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
         };
       }
 
-      const folder = folders.find(f => f.path === id);
+      const folder = folders.find((f) => f.path === id);
       return { type: 'folder', ...folder };
     }
-    const sandbox = sandboxes.find(s => s.sandbox.id === id);
+    const sandbox = sandboxes.find((s) => s.sandbox.id === id);
     return sandbox;
   });
 

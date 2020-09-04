@@ -31,7 +31,8 @@ export const AddComment: React.FC<Props> = ({ onSubmit }) => {
         zIndex: 2,
         borderTop: '1px solid',
         borderColor: 'sideBar.border',
-        boxShadow: theme => `0px -32px 32px ${theme.colors.dialog.background}`,
+        boxShadow: (theme) =>
+          `0px -32px 32px ${theme.colors.dialog.background}`,
       })}
     >
       <form css={{ position: 'relative' }}>{elements}</form>

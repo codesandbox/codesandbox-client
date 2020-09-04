@@ -6,7 +6,7 @@ export const PADDING = 32;
 
 export const Container = styled.div`
   ${fadeIn(0)};
-  background-color: ${props => props.theme.colors.sideBar.background};
+  background-color: ${(props) => props.theme.colors.sideBar.background};
   overflow: hidden;
   border-radius: 2px;
   user-select: none;

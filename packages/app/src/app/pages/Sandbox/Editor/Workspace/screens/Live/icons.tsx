@@ -7,7 +7,7 @@ export { default as UnfollowIcon } from 'react-icons/lib/io/eye-disabled';
 
 type IconProps = SVGProps<SVGSVGElement>;
 
-export const LiveIcon: FunctionComponent<IconProps> = props => (
+export const LiveIcon: FunctionComponent<IconProps> = (props) => (
   <svg
     width="8"
     height="8"
@@ -19,7 +19,7 @@ export const LiveIcon: FunctionComponent<IconProps> = props => (
   </svg>
 );
 
-export const StopIcon: FunctionComponent<IconProps> = props => (
+export const StopIcon: FunctionComponent<IconProps> = (props) => (
   <svg
     width="8"
     height="8"
@@ -32,7 +32,7 @@ export const StopIcon: FunctionComponent<IconProps> = props => (
   </svg>
 );
 
-export const OpenIcon: FunctionComponent<IconProps> = props => (
+export const OpenIcon: FunctionComponent<IconProps> = (props) => (
   <svg width={10} height={10} fill="none" viewBox="0 0 10 10" {...props}>
     <path
       fill="currentcolor"
@@ -41,7 +41,7 @@ export const OpenIcon: FunctionComponent<IconProps> = props => (
   </svg>
 );
 
-export const ClassroomIcon: FunctionComponent<IconProps> = props => (
+export const ClassroomIcon: FunctionComponent<IconProps> = (props) => (
   <svg
     width="15"
     height="8"

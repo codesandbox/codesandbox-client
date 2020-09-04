@@ -33,7 +33,7 @@ const setIframeStyle = (iframe: HTMLIFrameElement, showFullScreen: boolean) => {
 };
 
 function createIframe(showFullScreen: boolean): Promise<HTMLIFrameElement> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     iframeRenderedAt = Date.now();
     if (iframeReference) {
       document.body.appendChild(iframeReference);

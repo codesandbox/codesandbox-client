@@ -19,7 +19,7 @@ export default class ContributorsBadge extends React.Component<Props, State> {
   };
 
   updateContributorStatus(props = this.props) {
-    isContributor(props.username).then(contributor => {
+    isContributor(props.username).then((contributor) => {
       this.setState({ isContributor: contributor });
     });
   }
@@ -42,7 +42,7 @@ export default class ContributorsBadge extends React.Component<Props, State> {
       <a
         target="_blank"
         rel="noreferrer noopener"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
         href={`https://github.com/codesandbox/codesandbox-client/commits?author=${username}`}
       >
         <Tooltip

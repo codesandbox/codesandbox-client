@@ -5,7 +5,7 @@ const animation = keyframes`
   100% { opacity: 1; }
 `;
 
-export default delay =>
+export default (delay) =>
   css`
     animation: ${animation} 0.3s;
     animation-delay: ${delay}s;

@@ -128,7 +128,7 @@ const linkStyles = css`
 export const PlaceHolderLink = styled.span<{ error: string }>`
   ${linkStyles};
 
-  ${props =>
+  ${(props) =>
     props.error &&
     css`
       color: ${props.theme.red};

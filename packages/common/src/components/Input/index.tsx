@@ -8,9 +8,9 @@ export interface IInputProps {
 
 export const styles = css<IInputProps>`
   transition: 0.3s ease border-color;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.theme['input.background'] || 'rgba(0, 0, 0, 0.3)'};
-  color: ${props =>
+  color: ${(props) =>
     props.theme['input.foreground'] ||
     (props.theme.light ? '#636363' : 'white')};
   border: none;
@@ -21,11 +21,11 @@ export const styles = css<IInputProps>`
   box-sizing: border-box;
 
   border: 1px solid
-    ${props =>
+    ${(props) =>
       props.error ? props.theme.red.clearer(0.5) : 'rgba(0, 0, 0, 0.1)'};
 
   &:focus {
-    border-color: ${props => props.theme.secondary.clearer(0.6)};
+    border-color: ${(props) => props.theme.secondary.clearer(0.6)};
   }
 `;
 

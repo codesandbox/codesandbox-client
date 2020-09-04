@@ -30,7 +30,7 @@ export const Deleted = () => {
 
     return [
       { type: 'header', title },
-      ...deletedSandboxes.map(sandbox => ({
+      ...deletedSandboxes.map((sandbox) => ({
         type: 'sandbox' as 'sandbox',
         sandbox,
       })),

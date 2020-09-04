@@ -21,7 +21,7 @@ export const PreferenceDropdown: FunctionComponent<Props> = ({
 
   return (
     <Select onChange={handleChange} value={value}>
-      {options.map(option => (
+      {options.map((option) => (
         <option key={option} value={option}>
           {mapName ? mapName(option) : option}
         </option>

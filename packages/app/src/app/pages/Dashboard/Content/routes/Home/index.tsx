@@ -65,7 +65,7 @@ export const Home = () => {
           showMoreLink: dashboardUrls.recents(activeTeam),
           showMoreLabel: 'Show more',
         },
-        ...(sandboxes.RECENT_HOME || []).map(sandbox => ({
+        ...(sandboxes.RECENT_HOME || []).map((sandbox) => ({
           type: 'sandbox' as 'sandbox',
           sandbox,
         })),

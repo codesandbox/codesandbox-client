@@ -37,7 +37,7 @@ export const SearchResults = ({ search }: { search: string }) => (
       <SubHeader>
         <Stats
           translations={{
-            stats: nbHits => `${nbHits.toLocaleString()} results found`,
+            stats: (nbHits) => `${nbHits.toLocaleString()} results found`,
           }}
         />
       </SubHeader>

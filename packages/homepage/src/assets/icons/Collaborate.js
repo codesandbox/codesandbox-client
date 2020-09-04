@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../components/layout';
 
-const Collaborate = props => {
+const Collaborate = (props) => {
   const white = useTheme().homepage.white;
   return (
     <svg width={47} height={55} fill="none" viewBox="0 0 47 55" {...props}>

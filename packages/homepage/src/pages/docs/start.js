@@ -93,7 +93,7 @@ const Input = styled.input`
 `;
 
 const IconWrapper = styled(Element)`
-  background: ${props => props.bg};
+  background: ${(props) => props.bg};
 
   height: 231px;
   display: flex;

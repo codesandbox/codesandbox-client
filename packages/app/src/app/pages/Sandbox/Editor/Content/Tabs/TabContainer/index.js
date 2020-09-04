@@ -89,7 +89,7 @@ function collectTarget(connectMonitor, monitor) {
 
 const entrySource = {
   canDrag: () => true,
-  beginDrag: props => ({ position: props.position }),
+  beginDrag: (props) => ({ position: props.position }),
 };
 
 const collectSource = (connect, monitor) => ({

@@ -4,7 +4,7 @@ import { Container, Row } from './elements';
 function getFontFamily(search) {
   const hashes = search.slice(search.indexOf('?') + 1).split('&');
   const family = hashes
-    .find(hash => hash.split('=')[0] === 'family')
+    .find((hash) => hash.split('=')[0] === 'family')
     .split('=')[1];
 
   return family.split('+').join(' ');
@@ -35,7 +35,7 @@ function ExternalResources({ sandbox }) {
     <Container>
       {externalResources.length > 0 && (
         <>
-          {externalResources.map(dep => (
+          {externalResources.map((dep) => (
             <Row key={dep}>
               <span>{getName(dep)}</span>
               <a href={dep} rel="nofollow noopener noreferrer" target="_blank">

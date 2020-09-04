@@ -76,7 +76,7 @@ function replacePaths(
   oldName: string,
   newName: string
 ) {
-  Object.keys(paths).forEach(al => {
+  Object.keys(paths).forEach((al) => {
     if (al.startsWith(`${oldName}/`) || al === oldName) {
       paths[al.replace(oldName, newName)] =
         typeof paths[al] === 'string'
@@ -118,11 +118,11 @@ function replaceDependencyInfo(
   for (const n of Object.keys(r.dependencyDependencies)) {
     r.dependencyDependencies[n].parents = r.dependencyDependencies[
       n
-    ].parents.map(p => (p === depDepName ? newPath : p));
+    ].parents.map((p) => (p === depDepName ? newPath : p));
   }
 
   r.dependencyAliases = r.dependencyAliases || {};
-  newDepDep.parents.forEach(p => {
+  newDepDep.parents.forEach((p) => {
     r.dependencyAliases[p] = r.dependencyAliases[p] || {};
     r.dependencyAliases[p][depDepName] = newPath;
   });
@@ -145,7 +145,7 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
 
   const response: IResponse = {
     contents: {},
-    dependencies: sortedResponses.map(r => r.dependency),
+    dependencies: sortedResponses.map((r) => r.dependency),
     dependencyAliases: {},
     dependencyDependencies: {},
   };
@@ -157,7 +157,7 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
 
       const newDepDep = r.dependencyDependencies[depDepName];
       const rootDependency = response.dependencies.find(
-        d => d.name === depDepName
+        (d) => d.name === depDepName
       );
 
       if (

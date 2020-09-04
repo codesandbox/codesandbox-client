@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const MenuIconSVG = props => (
+export const MenuIconSVG = (props) => (
   <svg
     width="13"
     height="9"
@@ -18,7 +18,7 @@ export const MenuIconSVG = props => (
   </svg>
 );
 
-export const HeartIconSVG = props => (
+export const HeartIconSVG = (props) => (
   <svg
     width="14"
     height="13"
@@ -35,7 +35,7 @@ export const HeartIconSVG = props => (
   </svg>
 );
 
-export const LinkIconSVG = props => (
+export const LinkIconSVG = (props) => (
   <svg
     width="16"
     height="16"
@@ -61,7 +61,7 @@ export const LinkIconSVG = props => (
   </svg>
 );
 
-export const EditorViewIconSVG = props => (
+export const EditorViewIconSVG = (props) => (
   <svg
     width="22"
     height="16"
@@ -79,7 +79,7 @@ export const EditorViewIconSVG = props => (
   </svg>
 );
 
-export const SplitViewIconSVG = props => (
+export const SplitViewIconSVG = (props) => (
   <svg
     width="22"
     height="16"
@@ -109,7 +109,7 @@ export const SplitViewIconSVG = props => (
   </svg>
 );
 
-export const PreviewViewIconSVG = props => (
+export const PreviewViewIconSVG = (props) => (
   <svg
     width="22"
     height="16"

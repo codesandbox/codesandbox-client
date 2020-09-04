@@ -13,7 +13,7 @@ export const SignInModal = () => {
   } = useOvermind();
 
   const closeModal = useCallback(
-    event => {
+    (event) => {
       if (event.keyCode === ESC && open) {
         toggleSignInModal();
       }

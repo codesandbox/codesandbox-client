@@ -6,7 +6,7 @@ export const Container = styled.tr<{ disabled: boolean }>`
   font-weight: 400;
   color: rgba(255, 255, 255, 0.8);
 
-  ${props =>
+  ${(props) =>
     props.disabled &&
     css`
       opacity: 0.5;
@@ -24,7 +24,7 @@ export const Value = styled.td<{ supporter?: boolean }>`
   padding: 0 2rem;
   font-weight: 300;
 
-  ${props =>
+  ${(props) =>
     props.supporter &&
     css`
       background-color: rgba(0, 0, 0, 0.3);

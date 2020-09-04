@@ -25,12 +25,12 @@ export const Repo = ({ name = '', path = null, ...props }: DashboardRepo) => {
 
   const selected = selectedIds.includes(path);
 
-  const onClick = event => {
+  const onClick = (event) => {
     onSelectionClick(event, path);
   };
 
   const history = useHistory();
-  const onDoubleClick = event => {
+  const onDoubleClick = (event) => {
     const url = '/dashboard/repositories' + path;
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
@@ -39,7 +39,7 @@ export const Repo = ({ name = '', path = null, ...props }: DashboardRepo) => {
     }
   };
 
-  const onContextMenu = event => {
+  const onContextMenu = (event) => {
     event.preventDefault();
 
     if (event.type === 'contextmenu') onRightClick(event, path);

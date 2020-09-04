@@ -127,7 +127,7 @@ const preactPreset = new Preset(
   }
 );
 
-preactPreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
+preactPreset.registerTranspiler((module) => /\.jsx?$/.test(module.title), [
   {
     transpiler: babelTranspiler,
     options: {
@@ -154,21 +154,21 @@ preactPreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
   },
 ]);
 
-preactPreset.registerTranspiler(module => /\.s[a|c]ss/.test(module.title), [
+preactPreset.registerTranspiler((module) => /\.s[a|c]ss/.test(module.title), [
   { transpiler: sassTranspiler },
   { transpiler: stylesTranspiler },
 ]);
 
-preactPreset.registerTranspiler(module => /\.less/.test(module.title), [
+preactPreset.registerTranspiler((module) => /\.less/.test(module.title), [
   { transpiler: lessTranspiler },
   { transpiler: stylesTranspiler },
 ]);
 
-preactPreset.registerTranspiler(module => /\.json/.test(module.title), [
+preactPreset.registerTranspiler((module) => /\.json/.test(module.title), [
   { transpiler: jsonTranspiler },
 ]);
 
-preactPreset.registerTranspiler(module => /\.styl/.test(module.title), [
+preactPreset.registerTranspiler((module) => /\.styl/.test(module.title), [
   { transpiler: stylusTranspiler },
   { transpiler: stylesTranspiler },
 ]);

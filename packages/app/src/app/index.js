@@ -57,7 +57,7 @@ console.warn = (...args) => {
 
 window.setImmediate = (func, delay) => setTimeout(func, delay);
 
-window.addEventListener('unhandledrejection', e => {
+window.addEventListener('unhandledrejection', (e) => {
   if (e && e.reason && e.reason.name === 'Canceled') {
     // This is an error from vscode that vscode uses to cancel some actions
     // We don't want to show this to the user
@@ -98,7 +98,7 @@ if (process.env.NODE_ENV === 'production') {
       'https://f595bc90ce3646c4a9d76a8d3b84b403@sentry.io/2071895'
     );
 
-    overmind.eventHub.on('action:start', event => {
+    overmind.eventHub.on('action:start', (event) => {
       if (ignoredOvermindActions.includes(event.actionName)) {
         return;
       }
@@ -130,11 +130,11 @@ if (process.env.NODE_ENV === 'production') {
   Temporary global functions to grab state and actions, related to old
   Cerebral implementation
 */
-window.getState = path =>
+window.getState = (path) =>
   path
     ? path.split('.').reduce((aggr, key) => aggr[key], overmind.state)
     : overmind.state;
-window.getSignal = path =>
+window.getSignal = (path) =>
   path.split('.').reduce((aggr, key) => aggr[key], overmind.actions);
 
 const rootEl = document.getElementById('root');

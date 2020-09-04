@@ -33,7 +33,7 @@ export async function identify(key: string, value: any) {
   if (!DO_NOT_TRACK_ENABLED) {
     amplitude.identify(key, value);
 
-    sentry.configureScope(scope => {
+    sentry.configureScope((scope) => {
       scope.setExtra(key, value);
     });
   }
@@ -53,11 +53,7 @@ export async function setAnonymousId() {
     let anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);
 
     if (!anonymousUid) {
-      anonymousUid = String(
-        Math.random()
-          .toString(36)
-          .substring(2)
-      );
+      anonymousUid = String(Math.random().toString(36).substring(2));
 
       localStorage.setItem(ANONYMOUS_UID_KEY, anonymousUid);
     }

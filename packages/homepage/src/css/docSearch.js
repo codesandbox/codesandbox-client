@@ -26,7 +26,7 @@ export default createGlobalStyle`
       .algolia-docsearch-suggestion.algolia-docsearch-suggestion__secondary {
         padding: 0;
         border: none;
-        background: ${props => props.theme.background2};
+        background: ${(props) => props.theme.background2};
       }
 
       .algolia-docsearch-suggestion.algolia-docsearch-suggestion__secondary {
@@ -44,13 +44,13 @@ export default createGlobalStyle`
       }
 
       .ds-dropdown-menu:before {
-        background: ${props => props.theme.background2};
-        border-top: 1px solid ${props => props.theme.background2};
-        border-right: 1px solid ${props => props.theme.background2};
+        background: ${(props) => props.theme.background2};
+        border-top: 1px solid ${(props) => props.theme.background2};
+        border-right: 1px solid ${(props) => props.theme.background2};
       }
 
       .algolia-docsearch-suggestion {
-        background: ${props => props.theme.background2};
+        background: ${(props) => props.theme.background2};
       }
       .ds-dropdown-menu .ds-suggestions {
         margin-top: 0;
@@ -71,7 +71,7 @@ export default createGlobalStyle`
         font-size: 0.875rem;
         margin-top: 0.8125rem;
 
-        color: ${props => props.theme.lightText};
+        color: ${(props) => props.theme.lightText};
       }
 
       .algolia-docsearch-footer {
@@ -80,7 +80,7 @@ export default createGlobalStyle`
 
       .algolia-docsearch-suggestion--category-header {
         background: transparent;
-        color: ${props => props.theme.lightText};
+        color: ${(props) => props.theme.lightText};
         padding: 8px;
         font-weight: 600;
         font-size: 18px;
@@ -94,7 +94,7 @@ export default createGlobalStyle`
       .algolia-docsearch-suggestion--title,
       .algolia-docsearch-suggestion--text {
         font-size: 0.875rem;
-        color: ${props => props.theme.lightText};
+        color: ${(props) => props.theme.lightText};
         max-width: 90%;
       }
 

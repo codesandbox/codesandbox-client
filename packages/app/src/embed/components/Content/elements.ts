@@ -24,7 +24,7 @@ export const Tabs = styled.div(
     minHeight: 34,
     backgroundColor: 'tab.inactiveBackground',
     /* shadow instead of border to align with the border of the child tab */
-    boxShadow: theme => 'inset 0px -1px 0 ' + theme['sideBar.border'],
+    boxShadow: (theme) => 'inset 0px -1px 0 ' + theme['sideBar.border'],
     overflowX: 'auto',
     fontSize: 3,
 

@@ -99,8 +99,8 @@ const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
         'rules'
       )
     )
-    .filter(filename => path.extname(filename) === '.js')
-    .map(filename => {
+    .filter((filename) => path.extname(filename) === '.js')
+    .map((filename) => {
       const ruleId = path.basename(filename, '.js');
       return `        "${ruleId}": require("eslint-plugin-vue/lib/rules/${filename}"),`;
     })

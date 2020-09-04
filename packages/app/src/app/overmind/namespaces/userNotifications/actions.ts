@@ -47,7 +47,7 @@ export const filterNotifications: AsyncAction<string> = async (
 ) => {
   const filters = state.userNotifications.activeFilters;
   if (filters.includes(filter)) {
-    state.userNotifications.activeFilters = filters.filter(f => f !== filter);
+    state.userNotifications.activeFilters = filters.filter((f) => f !== filter);
   } else {
     state.userNotifications.activeFilters = filters.concat(filter);
   }
@@ -85,7 +85,7 @@ export const markAllNotificationsAsRead: AsyncAction = async ({
   const count = state.userNotifications.unreadCount;
   try {
     state.userNotifications.notifications = state.userNotifications.notifications.map(
-      notification => ({
+      (notification) => ({
         ...notification,
         read: true,
       })
@@ -110,7 +110,7 @@ export const archiveNotification: AsyncAction<string> = async (
   const oldNots = state.userNotifications.notifications;
   try {
     state.userNotifications.notifications = state.userNotifications.notifications.filter(
-      not => not.id !== id
+      (not) => not.id !== id
     );
     await effects.gql.mutations.archiveNotification({
       notificationId: id,
@@ -141,11 +141,11 @@ export const updateReadStatus: AsyncAction<string> = async (
   if (!state.userNotifications.notifications) return;
   const oldNots = state.userNotifications.notifications;
   const currentValue = (
-    state.userNotifications.notifications.find(not => not.id === id) || {}
+    state.userNotifications.notifications.find((not) => not.id === id) || {}
   ).read;
   try {
     state.userNotifications.notifications = state.userNotifications.notifications.map(
-      not => {
+      (not) => {
         if (not.id === id) {
           return {
             ...not,

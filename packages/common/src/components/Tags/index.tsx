@@ -18,7 +18,7 @@ function Tags({ tags, align, ...props }: Props) {
       {tags
         .slice()
         .sort()
-        .map(tag => (
+        .map((tag) => (
           <Margin key={tag} vertical={0.5} horizontal={0.2}>
             <Tag tag={tag} />
           </Margin>

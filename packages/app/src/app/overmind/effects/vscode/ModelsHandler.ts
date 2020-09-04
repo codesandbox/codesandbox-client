@@ -90,7 +90,7 @@ export class ModelsHandler {
   public dispose(): null {
     this.modelAddedListener.dispose();
     this.modelRemovedListener.dispose();
-    Object.keys(this.moduleModels).forEach(path => {
+    Object.keys(this.moduleModels).forEach((path) => {
       const changeListener = this.moduleModels[path].changeListener;
       if (changeListener) {
         changeListener.dispose();
@@ -105,7 +105,7 @@ export class ModelsHandler {
     const fileModel = this.editorApi.textFileService
       .getFileModels()
       .find(
-        fileModelItem =>
+        (fileModelItem) =>
           fileModelItem.resource.path === '/sandbox' + module.path
       );
 
@@ -154,7 +154,7 @@ export class ModelsHandler {
   }
 
   public clearComments() {
-    Object.values(this.moduleModels).forEach(moduleModel => {
+    Object.values(this.moduleModels).forEach((moduleModel) => {
       if (!moduleModel.model) {
         return;
       }
@@ -180,8 +180,8 @@ export class ModelsHandler {
 
     moduleModel.model = await this.editorApi.textFileService.models
       .loadOrCreate(this.monaco.Uri.file('/sandbox' + module.path))
-      .then(textFileEditorModel => textFileEditorModel.load())
-      .then(textFileEditorModel => textFileEditorModel.textEditorModel);
+      .then((textFileEditorModel) => textFileEditorModel.load())
+      .then((textFileEditorModel) => textFileEditorModel.textEditorModel);
 
     const model = moduleModel.model;
 
@@ -216,13 +216,13 @@ export class ModelsHandler {
     this.currentCommentThreadId = currentCommentThreadId;
 
     // Ensure we have the moduleModels
-    Object.keys(commentThreadsByPath).forEach(path => {
+    Object.keys(commentThreadsByPath).forEach((path) => {
       this.getOrCreateModuleModelByPath(path).comments =
         commentThreadsByPath[path];
     });
 
     // Apply the decorations
-    Object.keys(this.moduleModels).forEach(path => {
+    Object.keys(this.moduleModels).forEach((path) => {
       const moduleModel = this.moduleModels[path];
       const model = moduleModel.model;
 
@@ -233,8 +233,8 @@ export class ModelsHandler {
       // Clean out any removed comments
       const currentCommentIds = (
         commentThreadsByPath[path.replace('/sandbox', '')] || []
-      ).map(comment => comment.commentId);
-      moduleModel.comments = moduleModel.comments.filter(comment =>
+      ).map((comment) => comment.commentId);
+      moduleModel.comments = moduleModel.comments.filter((comment) =>
         currentCommentIds.includes(comment.commentId)
       );
 
@@ -258,7 +258,7 @@ export class ModelsHandler {
     const newModelPath = '/sandbox' + newPath;
 
     return Promise.all(
-      Object.keys(this.moduleModels).map(path => {
+      Object.keys(this.moduleModels).map((path) => {
         if (oldModelPath === path && this.moduleModels[path].model) {
           const model = this.moduleModels[path].model;
 
@@ -275,7 +275,9 @@ export class ModelsHandler {
   }
 
   public async applyOperation(moduleShortid: string, operation: TextOperation) {
-    const module = this.sandbox.modules.find(m => m.shortid === moduleShortid);
+    const module = this.sandbox.modules.find(
+      (m) => m.shortid === moduleShortid
+    );
 
     if (!module) {
       return;
@@ -284,7 +286,7 @@ export class ModelsHandler {
     const moduleModel = this.getOrCreateModuleModelByPath(module.path);
 
     const modelEditor = this.editorApi.editorService.editors.find(
-      editor => editor.resource && editor.resource.path === moduleModel.path
+      (editor) => editor.resource && editor.resource.path === moduleModel.path
     );
 
     // We keep a reference to the model on our own. We keep it as a
@@ -293,12 +295,12 @@ export class ModelsHandler {
     if (!moduleModel.model) {
       if (modelEditor) {
         moduleModel.model = await modelEditor.textModelReference.then(
-          ref => ref.object.textEditorModel
+          (ref) => ref.object.textEditorModel
         );
       } else {
         moduleModel.model = await this.editorApi.textFileService.models
           .loadOrCreate(this.monaco.Uri.file(moduleModel.path))
-          .then(model => model.textEditorModel);
+          .then((model) => model.textEditorModel);
       }
     }
 
@@ -342,10 +344,10 @@ export class ModelsHandler {
   }
 
   public clearUserSelections(userId: string) {
-    const decorations = Object.keys(this.userSelectionDecorations).filter(d =>
+    const decorations = Object.keys(this.userSelectionDecorations).filter((d) =>
       d.startsWith(userId)
     );
-    Object.keys(this.moduleModels).forEach(key => {
+    Object.keys(this.moduleModels).forEach((key) => {
       const moduleModel = this.moduleModels[key];
 
       if (!moduleModel?.model) {
@@ -354,7 +356,7 @@ export class ModelsHandler {
 
       const model = moduleModel.model;
 
-      decorations.forEach(decorationId => {
+      decorations.forEach((decorationId) => {
         const userDecorationIdPrefix = this.getSelectionDecorationId(
           userId,
           model.id
@@ -382,7 +384,7 @@ export class ModelsHandler {
   ) => {
     const existingSelectionDecorations = Object.keys(
       this.userSelectionDecorations
-    ).filter(s => s.endsWith([model.id, moduleShortid].join('|')));
+    ).filter((s) => s.endsWith([model.id, moduleShortid].join('|')));
 
     const newUserSelections = {};
     for (let i = 0; i < userSelectionsToKeep.length; i++) {
@@ -390,7 +392,7 @@ export class ModelsHandler {
         userSelectionsToKeep[i];
     }
 
-    existingSelectionDecorations.forEach(existingDecorationId => {
+    existingSelectionDecorations.forEach((existingDecorationId) => {
       const userId = existingDecorationId.split('|')[0];
       if (!newUserSelections[userId]) {
         const decorationId = this.getSelectionDecorationId(
@@ -582,7 +584,7 @@ export class ModelsHandler {
         }
 
         if (selection.secondary.length) {
-          selection.secondary.forEach(s => {
+          selection.secondary.forEach((s) => {
             decorations.push(
               getCursorDecoration(s.cursorPosition, secondaryCursorClassName)
             );
@@ -717,7 +719,7 @@ export class ModelsHandler {
 
   private listenForChanges() {
     this.modelAddedListener = this.editorApi.textFileService.modelService.onModelAdded(
-      model => {
+      (model) => {
         try {
           const module = resolveModule(
             model.uri.path.replace(/^\/sandbox/, ''),
@@ -739,7 +741,7 @@ export class ModelsHandler {
     );
 
     this.modelRemovedListener = this.editorApi.textFileService.modelService.onModelRemoved(
-      model => {
+      (model) => {
         if (this.moduleModels[model.uri.path]) {
           const changeListener = this.moduleModels[model.uri.path]
             .changeListener;
@@ -759,7 +761,7 @@ export class ModelsHandler {
   }
 
   private getModelContentChangeListener(sandbox: Sandbox, model) {
-    return model.onDidChangeContent(e => {
+    return model.onDidChangeContent((e) => {
       if (this.isApplyingOperation) {
         return;
       }
@@ -846,11 +848,11 @@ export class ModelsHandler {
           commentDecorationsByLineNumber[lineNumberKey];
         const lineNumber = Number(lineNumberKey);
         const activeCommentDecoration = lineCommentDecorations.find(
-          commentDecoration =>
+          (commentDecoration) =>
             commentDecoration.commentId === currentCommentThreadId
         );
         const ids = lineCommentDecorations.map(
-          commentDecoration => commentDecoration.commentId
+          (commentDecoration) => commentDecoration.commentId
         );
         const commentRange = activeCommentDecoration
           ? [

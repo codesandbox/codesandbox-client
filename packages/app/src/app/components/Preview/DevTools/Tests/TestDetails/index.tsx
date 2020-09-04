@@ -31,13 +31,13 @@ export const TestDetails = ({ file, status, openFile, runTests }: Props) => {
   const Element = StatusElements[status];
 
   const passedCount = Object.keys(file.tests).filter(
-    f => file.tests[f].status === 'pass'
+    (f) => file.tests[f].status === 'pass'
   ).length;
   const failedCount = Object.keys(file.tests).filter(
-    f => file.tests[f].status === 'fail'
+    (f) => file.tests[f].status === 'fail'
   ).length;
   const idleCount = Object.keys(file.tests).filter(
-    f => file.tests[f].status === 'idle'
+    (f) => file.tests[f].status === 'idle'
   ).length;
   const totalCount = Object.keys(file.tests).length;
 
@@ -63,7 +63,7 @@ export const TestDetails = ({ file, status, openFile, runTests }: Props) => {
         <Action>
           <Tooltip content="Open File">
             <FileIcon
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 openFile(file.fileName);
               }}
@@ -73,7 +73,7 @@ export const TestDetails = ({ file, status, openFile, runTests }: Props) => {
         <Action>
           <Tooltip content="Run Tests">
             <PlayIcon
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 runTests(file);
               }}
@@ -97,7 +97,7 @@ export const TestDetails = ({ file, status, openFile, runTests }: Props) => {
             <ErrorDetails path={file.fileName} error={file.fileError} />
           </ErrorNotice>
         ) : (
-          Object.keys(file.tests).map(tName => {
+          Object.keys(file.tests).map((tName) => {
             const test = file.tests[tName];
 
             return <TestBlock key={tName} test={test} />;

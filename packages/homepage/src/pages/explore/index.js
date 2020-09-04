@@ -65,12 +65,12 @@ export default class Explore extends React.PureComponent {
         this.state.currentPage
       }`
     )
-      .then(x => x.json())
-      .then(data => {
+      .then((x) => x.json())
+      .then((data) => {
         if (data.sandboxes.length === 0) {
           this.setState({ loadedAll: true });
         } else {
-          this.setState(s => ({
+          this.setState((s) => ({
             fetching: false,
             sandboxes: [...s.sandboxes, ...data.sandboxes],
             currentPage: s.currentPage + 1,
@@ -83,8 +83,8 @@ export default class Explore extends React.PureComponent {
     this.setState({ selectedSandbox: undefined });
   };
 
-  openSandbox = index => {
-    this.setState(state => {
+  openSandbox = (index) => {
+    this.setState((state) => {
       const sandbox = state.sandboxes[index];
       const { id, picks } = sandbox;
       const { title, description } = picks[0];
@@ -99,11 +99,11 @@ export default class Explore extends React.PureComponent {
     });
   };
 
-  openPreviousSandbox = currentIndex => () => {
+  openPreviousSandbox = (currentIndex) => () => {
     this.openSandbox(currentIndex - 1);
   };
 
-  openNextSandbox = currentIndex => () => {
+  openNextSandbox = (currentIndex) => () => {
     this.openSandbox(currentIndex + 1);
   };
 
@@ -146,7 +146,7 @@ export default class Explore extends React.PureComponent {
   getCurrentIndex = () =>
     this.state.selectedSandbox
       ? this.state.sandboxes.findIndex(
-          s => this.state.selectedSandbox.id === s.id
+          (s) => this.state.selectedSandbox.id === s.id
         )
       : -1;
 

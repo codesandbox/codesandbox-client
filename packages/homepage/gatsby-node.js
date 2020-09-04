@@ -4,7 +4,7 @@ const { createFilePath } = require('gatsby-source-filesystem');
 const noop = require('lodash/noop');
 const { resolve } = require('path');
 
-const getRelativePath = absolutePath => absolutePath.replace(__dirname, '');
+const getRelativePath = (absolutePath) => absolutePath.replace(__dirname, '');
 
 const getNodeType = ({ fileAbsolutePath }) =>
   getRelativePath(fileAbsolutePath).split('/')[2];
@@ -20,9 +20,7 @@ const getBlogNodeInfo = ({
   photo,
 });
 const getDocsSlug = ({ node: { fileAbsolutePath } }) => {
-  const fileName = getRelativePath(fileAbsolutePath)
-    .split('/')
-    .reverse()[0];
+  const fileName = getRelativePath(fileAbsolutePath).split('/').reverse()[0];
 
   return fileName.split('.md')[0].split('-')[1];
 };
@@ -82,7 +80,7 @@ const createNodeFieldsFromNodeInfo = ({
   nodeFieldNames,
   nodeInfo,
 }) => {
-  nodeFieldNames.forEach(nodeFieldName => {
+  nodeFieldNames.forEach((nodeFieldName) => {
     createNodeField({ name: nodeFieldName, value: nodeInfo[nodeFieldName] });
   });
 };
@@ -192,7 +190,7 @@ exports.createPages = async ({ graphql, actions }) => {
       }
     }
   `);
-  allMarkdownArticles.data.allMarkdownRemark.edges.forEach(edge => {
+  allMarkdownArticles.data.allMarkdownRemark.edges.forEach((edge) => {
     const { slug } = edge.node.frontmatter;
     const { id } = edge.node;
 
@@ -265,7 +263,7 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   `);
   if (allJobs.data) {
-    allJobs.data.allMarkdownRemark.edges.forEach(edge => {
+    allJobs.data.allMarkdownRemark.edges.forEach((edge) => {
       createPage({
         path: 'job/' + edge.node.frontmatter.slug,
         component: jobTemplate,
@@ -291,7 +289,7 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   `);
   if (allFeatures.data) {
-    allFeatures.data.allMarkdownRemark.edges.forEach(edge => {
+    allFeatures.data.allMarkdownRemark.edges.forEach((edge) => {
       createPage({
         path: edge.node.frontmatter.slug,
         component: featureTemplate,
@@ -311,7 +309,7 @@ exports.onCreateWebpackConfig = ({ getConfig, loaders, actions, plugins }) => {
   config.module.rules = [
     // Omit the default rule where test === '\.jsx?$'
     ...config.module.rules.filter(
-      rule => String(rule.test) !== String(/\.jsx?$/)
+      (rule) => String(rule.test) !== String(/\.jsx?$/)
     ),
 
     // Recreate it with custom exclude filter
@@ -331,7 +329,7 @@ exports.onCreateWebpackConfig = ({ getConfig, loaders, actions, plugins }) => {
       test: /\.jsx?$/,
 
       // Exclude all node_modules from transpilation, except for 'common' and 'app'
-      exclude: modulePath =>
+      exclude: (modulePath) =>
         /node_modules/.test(modulePath) &&
         !/node_modules\/(common|app)/.test(modulePath),
     },

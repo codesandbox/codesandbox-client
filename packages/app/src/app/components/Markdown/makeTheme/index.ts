@@ -1,6 +1,6 @@
 import { collectAllSettings } from './collectStyles';
 
-export const makeTheme = theme => {
+export const makeTheme = (theme) => {
   const prismTheme = collectAllSettings(theme.tokenColors);
 
   const json = {

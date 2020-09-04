@@ -3,7 +3,7 @@ import { Text } from '../Text';
 import { Stack } from '../Stack';
 import { Icon } from '../Icon';
 
-export const HeartIcon = props => (
+export const HeartIcon = (props) => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="currentColor"
@@ -12,7 +12,7 @@ export const HeartIcon = props => (
   </svg>
 );
 
-export const ViewIcon = props => (
+export const ViewIcon = (props) => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <g fill="currentColor">
       <path
@@ -25,7 +25,7 @@ export const ViewIcon = props => (
   </svg>
 );
 
-export const ForkIcon = props => (
+export const ForkIcon = (props) => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="currentColor"

@@ -9,7 +9,7 @@ import transformRequire from './modules/transform-require';
 import transformSrcset from './modules/transform-srcset';
 
 const hotReloadAPIPath = '!noop-loader!/node_modules/vue-hot-reload-api.js';
-export default function(html: string, loaderContext: LoaderContext) {
+export default function (html: string, loaderContext: LoaderContext) {
   loaderContext.emitModule(
     hotReloadAPIPath,
     vueHotReloadAPIRaw,
@@ -41,7 +41,7 @@ export default function(html: string, loaderContext: LoaderContext) {
 
   // tips
   if (compiled.tips && compiled.tips.length) {
-    compiled.tips.forEach(tip => {
+    compiled.tips.forEach((tip) => {
       loaderContext.emitWarning({
         name: 'vue-warning',
         message: tip,
@@ -60,7 +60,7 @@ export default function(html: string, loaderContext: LoaderContext) {
     loaderContext.emitError(
       new Error(
         `\n  Error compiling template:\n${pad(html)}\n` +
-          compiled.errors.map(e => `  - ${e}`).join('\n') +
+          compiled.errors.map((e) => `  - ${e}`).join('\n') +
           '\n'
       )
     );
@@ -70,7 +70,7 @@ export default function(html: string, loaderContext: LoaderContext) {
     const stripWith = bubleOptions.transforms.stripWith !== false;
     const { stripWithFunctional } = bubleOptions.transforms;
 
-    const staticRenderFns = compiled.staticRenderFns.map(fn =>
+    const staticRenderFns = compiled.staticRenderFns.map((fn) =>
       toFunction(fn, stripWithFunctional)
     );
 
@@ -124,6 +124,6 @@ function toFunction(code, stripWithFunctional) {
 function pad(html) {
   return html
     .split(/\r?\n/)
-    .map(line => `  ${line}`)
+    .map((line) => `  ${line}`)
     .join('\n');
 }

@@ -26,7 +26,7 @@ export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   dateTime?: string;
 }
 
-export const Text = styled(Element).attrs(p => ({
+export const Text = styled(Element).attrs((p) => ({
   as: ((p as unknown) as { as: string }).as || 'span',
 }))<ITextProps>(
   ({

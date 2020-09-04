@@ -13,7 +13,7 @@ export default (userOptions, loaderContext: LoaderContext) => {
     : defaultOptions;
 
   return {
-    postTransformNode: node => {
+    postTransformNode: (node) => {
       transform(node, options, loaderContext);
     },
   };
@@ -24,10 +24,10 @@ function transform(node, options, loaderContext: LoaderContext) {
     if (node.tag === tag && node.attrs) {
       var attributes = options[tag];
       if (typeof attributes === 'string') {
-        node.attrs.some(attr => rewrite(attr, attributes, loaderContext));
+        node.attrs.some((attr) => rewrite(attr, attributes, loaderContext));
       } else if (Array.isArray(attributes)) {
-        attributes.forEach(item =>
-          node.attrs.some(attr => rewrite(attr, item, loaderContext))
+        attributes.forEach((item) =>
+          node.attrs.some((attr) => rewrite(attr, item, loaderContext))
         );
       }
     }

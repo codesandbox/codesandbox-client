@@ -21,7 +21,7 @@ const Container = styled.div`
   position: relative;
   max-height: 100%;
   width: 100%;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.theme['input.background'] || props.theme.background.darken(0.3)};
   display: flex;
 
@@ -58,7 +58,7 @@ export class ConsoleInput extends React.PureComponent<Props, State> {
 
   codemirror: CodeMirror.Editor;
 
-  mountCodeMirror = el => {
+  mountCodeMirror = (el) => {
     this.codemirror = getCodeMirror(el, new CodeMirror.Doc('', 'javascript'), {
       lineNumbers: false,
       foldGutter: false,
@@ -78,7 +78,7 @@ export class ConsoleInput extends React.PureComponent<Props, State> {
           const command = this.codemirror.getDoc().getValue();
           evaluateConsole(command);
           this.codemirror.getDoc().setValue('');
-          this.setState(state => ({
+          this.setState((state) => ({
             commandCursor: -1,
             commandHistory: [command, ...state.commandHistory],
           }));
@@ -88,7 +88,7 @@ export class ConsoleInput extends React.PureComponent<Props, State> {
             return;
           }
 
-          this.setState(state => {
+          this.setState((state) => {
             const newCursor = Math.min(
               state.commandCursor + 1,
               state.commandHistory.length - 1
@@ -106,7 +106,7 @@ export class ConsoleInput extends React.PureComponent<Props, State> {
             return;
           }
 
-          this.setState(state => {
+          this.setState((state) => {
             const newCursor = Math.max(state.commandCursor - 1, -1);
             this.codemirror
               .getDoc()

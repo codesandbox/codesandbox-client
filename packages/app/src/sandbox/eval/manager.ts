@@ -170,7 +170,7 @@ export default class Manager implements IEvaluator {
     this.stage = 'transpilation';
 
     this.modules = modules;
-    Object.keys(modules).forEach(k => this.addModule(modules[k]));
+    Object.keys(modules).forEach((k) => this.addModule(modules[k]));
 
     getGlobal().manager = this;
     if (process.env.NODE_ENV === 'development') {
@@ -250,7 +250,7 @@ export default class Manager implements IEvaluator {
   };
 
   resetAllModules() {
-    this.getTranspiledModules().forEach(t => {
+    this.getTranspiledModules().forEach((t) => {
       t.resetTranspilation();
       t.resetCompilation();
     });
@@ -271,7 +271,7 @@ export default class Manager implements IEvaluator {
     }
 
     if (returnValue == null && hasCallback && this.fileResolver) {
-      return this.fileResolver.isFile(p).then(bool => {
+      return this.fileResolver.isFile(p).then((bool) => {
         callback(null, Boolean(bool));
       });
     }
@@ -291,7 +291,7 @@ export default class Manager implements IEvaluator {
       return hasCallback ? callback(null, code) : code;
     }
     if (hasCallback && this.fileResolver) {
-      return this.fileResolver.readFile(p).then(code => {
+      return this.fileResolver.readFile(p).then((code) => {
         this.addModule({ code, path: p });
 
         callback(null, code);
@@ -320,7 +320,7 @@ export default class Manager implements IEvaluator {
       dependencyAliases: {},
     };
 
-    Object.keys(this.manifest.contents).forEach(path => {
+    Object.keys(this.manifest.contents).forEach((path) => {
       const module: Module = {
         path,
         code: this.manifest.contents[path].content,
@@ -356,8 +356,8 @@ export default class Manager implements IEvaluator {
 
     // Evaluate the *changed* HMR modules first
     this.getTranspiledModules()
-      .filter(t => t.hmrConfig && t.hmrConfig.isDirty())
-      .forEach(t => t.evaluate(this));
+      .filter((t) => t.hmrConfig && t.hmrConfig.isDirty())
+      .forEach((t) => t.evaluate(this));
 
     const transpiledModule = this.getTranspiledModule(module);
 
@@ -377,7 +377,7 @@ export default class Manager implements IEvaluator {
       return exports;
     } finally {
       // Run post evaluate
-      this.getTranspiledModules().forEach(t => t.postEvaluate(this));
+      this.getTranspiledModules().forEach((t) => t.postEvaluate(this));
     }
   }
 
@@ -469,7 +469,7 @@ export default class Manager implements IEvaluator {
 
     const existingModule = this.transpiledModules[module.path];
 
-    values(existingModule.tModules).forEach(m => {
+    values(existingModule.tModules).forEach((m) => {
       m.dispose(this);
       this.removeTranspiledModule(m);
     });
@@ -490,7 +490,7 @@ export default class Manager implements IEvaluator {
 
       this.envVariables = {};
       try {
-        envCode.split('\n').forEach(envLine => {
+        envCode.split('\n').forEach((envLine) => {
           const [name, ...val] = envLine.split('=');
 
           this.envVariables[name] = val.join('=').replace(/^('|")|('|")$/g, '');
@@ -514,7 +514,7 @@ export default class Manager implements IEvaluator {
     transpiledModule.setIsTestFile(isTestFile);
 
     const result = await transpiledModule.transpile(this);
-    this.getTranspiledModules().forEach(t => t.postTranspile(this));
+    this.getTranspiledModules().forEach((t) => t.postTranspile(this));
 
     return result;
   }
@@ -522,21 +522,21 @@ export default class Manager implements IEvaluator {
   verifyTreeTranspiled() {
     return Promise.all(
       this.getTranspiledModules()
-        .filter(tModule => tModule.shouldTranspile())
-        .map(tModule => tModule.transpile(this))
+        .filter((tModule) => tModule.shouldTranspile())
+        .map((tModule) => tModule.transpile(this))
     );
   }
 
   clearCompiledCache() {
-    this.getTranspiledModules().map(tModule => tModule.resetCompilation());
+    this.getTranspiledModules().map((tModule) => tModule.resetCompilation());
   }
 
   clearTranspilationCache() {
-    this.getTranspiledModules().map(tModule => tModule.resetTranspilation());
+    this.getTranspiledModules().map((tModule) => tModule.resetTranspilation());
   }
 
   getModules(): Array<Module | ChildModule> {
-    return values(this.transpiledModules).map(t => t.module);
+    return values(this.transpiledModules).map((t) => t.module);
   }
 
   /**
@@ -611,7 +611,7 @@ export default class Manager implements IEvaluator {
     const baseTSCompilerConfig = [
       this.configurations.typescript,
       this.configurations.jsconfig,
-    ].find(config => config && config.generated !== true);
+    ].find((config) => config && config.generated !== true);
 
     let baseUrl: string | undefined =
       baseTSCompilerConfig?.parsed?.compilerOptions?.baseUrl;
@@ -669,7 +669,7 @@ export default class Manager implements IEvaluator {
         shimmedPath,
         {
           filename: currentPath,
-          extensions: defaultExtensions.map(ext => '.' + ext),
+          extensions: defaultExtensions.map((ext) => '.' + ext),
           isFile: this.isFile,
           readFile: this.readFileSync,
           packageFilter: packageFilter(this.isFile),
@@ -707,7 +707,7 @@ export default class Manager implements IEvaluator {
             if (
               dependencyName &&
               (this.manifest.dependencies.find(
-                d => d.name === dependencyName
+                (d) => d.name === dependencyName
               ) ||
                 this.manifest.dependencyDependencies[dependencyName] ||
                 this.manifest.contents[
@@ -787,7 +787,7 @@ export default class Manager implements IEvaluator {
       try {
         resolvedPath = resolve.sync(shimmedPath, {
           filename: currentPath,
-          extensions: defaultExtensions.map(ext => '.' + ext),
+          extensions: defaultExtensions.map((ext) => '.' + ext),
           isFile: this.isFile,
           readFileSync: this.readFileSync,
           packageFilter: packageFilter(this.isFile),
@@ -833,7 +833,7 @@ export default class Manager implements IEvaluator {
         // TODO: fix the stack hack
         if (
           dependencyName &&
-          (this.manifest.dependencies.find(d => d.name === dependencyName) ||
+          (this.manifest.dependencies.find((d) => d.name === dependencyName) ||
             this.manifest.dependencyDependencies[dependencyName] ||
             this.manifest.contents[
               `/node_modules/${dependencyName}/package.json`
@@ -864,14 +864,14 @@ export default class Manager implements IEvaluator {
       currentTModule,
       this,
       ignoredExtensions
-    ).then(module => this.getTranspiledModule(module, query));
+    ).then((module) => this.getTranspiledModule(module, query));
   }
 
   updateModule(m: Module) {
     this.transpiledModules[m.path].module = m;
 
     triggerFileWatch(m.path, 'change');
-    return this.getTranspiledModulesByModule(m).map(tModule => {
+    return this.getTranspiledModulesByModule(m).map((tModule) => {
       tModule.update(m);
 
       return tModule;
@@ -907,7 +907,7 @@ export default class Manager implements IEvaluator {
   };
 
   setHmrStatus = (status: HMRStatus) => {
-    this.hmrStatusChangeListeners.forEach(v => {
+    this.hmrStatusChangeListeners.forEach((v) => {
       v(status);
     });
     this.hmrStatus = status;
@@ -958,7 +958,7 @@ export default class Manager implements IEvaluator {
         modulePath,
         currentPath,
         ignoredExtensions || this.preset.ignoredExtensions
-      ).then(module => this.getTranspiledModule(module, queryPath));
+      ).then((module) => this.getTranspiledModule(module, queryPath));
     }
 
     const module = this.resolveModule(
@@ -982,8 +982,8 @@ export default class Manager implements IEvaluator {
     );
 
     return Object.keys(this.transpiledModules)
-      .filter(p => p.startsWith(joinedPath))
-      .map(m =>
+      .filter((p) => p.startsWith(joinedPath))
+      .map((m) =>
         this.getTranspiledModule(this.transpiledModules[m].module, queryPath)
       );
   }
@@ -1015,7 +1015,7 @@ export default class Manager implements IEvaluator {
     const addedModules: Array<Module> = [];
     const updatedModules: Array<Module> = [];
 
-    Object.keys(modules).forEach(k => {
+    Object.keys(modules).forEach((k) => {
       const module: Module = modules[k];
       const mirrorModule = this.transpiledModules[k];
 
@@ -1030,7 +1030,7 @@ export default class Manager implements IEvaluator {
       }
     });
 
-    this.getModules().forEach(m => {
+    this.getModules().forEach((m) => {
       if (
         !m.path.startsWith('/node_modules') &&
         m.path !== '/var/task/node_modules/browser-resolve/empty.js' &&
@@ -1041,7 +1041,7 @@ export default class Manager implements IEvaluator {
       }
     });
 
-    addedModules.forEach(m => {
+    addedModules.forEach((m) => {
       this.addTranspiledModule(m);
     });
 
@@ -1053,13 +1053,13 @@ export default class Manager implements IEvaluator {
     // We eagerly transpile changed files,
     // this way we don't have to traverse the whole
     // dependency graph each time a file changes
-    const tModulesToUpdate = modulesToUpdate.map(m => this.updateModule(m));
+    const tModulesToUpdate = modulesToUpdate.map((m) => this.updateModule(m));
 
     if (tModulesToUpdate.length > 0 && this.configurations.sandbox) {
       this.hardReload = this.configurations.sandbox.parsed.hardReloadOnChange;
     }
 
-    const modulesWithErrors = this.getTranspiledModules().filter(t => {
+    const modulesWithErrors = this.getTranspiledModules().filter((t) => {
       if (t.hasMissingDependencies) {
         t.resetTranspilation();
       }
@@ -1072,14 +1072,14 @@ export default class Manager implements IEvaluator {
 
     const allModulesToUpdate = uniq(flattenedTModulesToUpdate);
     const transpiledModulesToUpdate = allModulesToUpdate.filter(
-      m => !m.isTestFile
+      (m) => !m.isTestFile
     );
 
     // Reset test files, but don't transpile. We want to do that in the test runner
     // so we can catch any errors
     allModulesToUpdate
-      .filter(m => m.isTestFile)
-      .forEach(m => {
+      .filter((m) => m.isTestFile)
+      .forEach((m) => {
         m.resetTranspilation();
       });
 
@@ -1090,7 +1090,7 @@ export default class Manager implements IEvaluator {
 
     const transpilationResults = await Promise.all(
       transpiledModulesToUpdate
-        .map(tModule => {
+        .map((tModule) => {
           if (tModule.shouldTranspile()) {
             return tModule.transpile(this);
           }
@@ -1123,10 +1123,10 @@ export default class Manager implements IEvaluator {
     const serializedTModules: { [id: string]: SerializedTranspiledModule } = {};
 
     await Promise.all(
-      Object.keys(this.transpiledModules).map(path =>
+      Object.keys(this.transpiledModules).map((path) =>
         Promise.all(
           Object.keys(this.transpiledModules[path].tModules).map(
-            async query => {
+            async (query) => {
               const tModule = this.transpiledModules[path].tModules[query];
 
               if (
@@ -1147,7 +1147,7 @@ export default class Manager implements IEvaluator {
     const dependenciesQuery = this.getDependencyQuery();
 
     const meta = {};
-    Object.keys(combinedMetas || {}).forEach(p => {
+    Object.keys(combinedMetas || {}).forEach((p) => {
       const dir = pathUtils.dirname(p.replace('/node_modules', ''));
       meta[dir] = meta[dir] || [];
       meta[dir].push(pathUtils.basename(p));
@@ -1172,7 +1172,7 @@ export default class Manager implements IEvaluator {
 
     const normalizedDependencies = {};
 
-    this.manifest.dependencies.forEach(dep => {
+    this.manifest.dependencies.forEach((dep) => {
       normalizedDependencies[dep.name] = dep.version;
     });
 
@@ -1207,8 +1207,8 @@ export default class Manager implements IEvaluator {
           dependenciesQuery === this.getDependencyQuery()
         ) {
           const newCombinedMetas = {};
-          Object.keys(meta).forEach(dir => {
-            meta[dir].forEach(file => {
+          Object.keys(meta).forEach((dir) => {
+            meta[dir].forEach((file) => {
               newCombinedMetas[`/node_modules` + dir + '/' + file] = true;
             });
           });
@@ -1219,7 +1219,7 @@ export default class Manager implements IEvaluator {
 
           const tModules: { [id: string]: TranspiledModule } = {};
           // First create tModules for all the saved modules, so we have references
-          Object.keys(serializedTModules).forEach(id => {
+          Object.keys(serializedTModules).forEach((id) => {
             const sTModule = serializedTModules[id];
 
             const tModule = this.addTranspiledModule(
@@ -1229,7 +1229,7 @@ export default class Manager implements IEvaluator {
             tModules[id] = tModule;
           });
 
-          Object.keys(tModules).forEach(id => {
+          Object.keys(tModules).forEach((id) => {
             const tModule = tModules[id];
 
             tModule.load(serializedTModules[id], tModules, this);
@@ -1248,7 +1248,7 @@ export default class Manager implements IEvaluator {
 
   dispose() {
     if (this.preset) {
-      this.preset.transpilers.forEach(t => {
+      this.preset.transpilers.forEach((t) => {
         if (t.dispose) {
           t.dispose();
         }
@@ -1283,14 +1283,14 @@ export default class Manager implements IEvaluator {
     const info = {};
 
     const data = await Promise.all(
-      Array.from(this.preset.transpilers).map(t =>
+      Array.from(this.preset.transpilers).map((t) =>
         t
           .getTranspilerContext(this)
-          .then(context => ({ name: t.name, data: context }))
+          .then((context) => ({ name: t.name, data: context }))
       )
     );
 
-    data.forEach(t => {
+    data.forEach((t) => {
       info[t.name] = t.data;
     });
 

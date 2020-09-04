@@ -20,7 +20,7 @@ export default function parseQuery(query) {
   }
   const queryArgs = query.split(/[,&]/g);
   const result = {};
-  queryArgs.forEach(arg => {
+  queryArgs.forEach((arg) => {
     const idx = arg.indexOf('=');
     if (idx >= 0) {
       let name = arg.substr(0, idx);

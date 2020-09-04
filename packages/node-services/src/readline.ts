@@ -14,7 +14,7 @@ interface IReadlineOptions {
 export function createInterface(options: IReadlineOptions) {
   const emitter = new EventEmitter();
 
-  options.input.on('data', data => {
+  options.input.on('data', (data) => {
     emitter.emit('line', data);
   });
 

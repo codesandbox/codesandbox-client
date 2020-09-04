@@ -10,7 +10,7 @@ type ReasonModule = Module & {
 };
 
 function addScript(src) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const s = document.createElement('script');
     s.setAttribute('src', src);
     document.body.appendChild(s);
@@ -50,8 +50,8 @@ function getDependencyList(
   const deps =
     cache ||
     listFunction(module.code)
-      .filter(x => IGNORED_DEPENDENCIES.indexOf(x) === -1)
-      .filter(x => !list.has(x));
+      .filter((x) => IGNORED_DEPENDENCIES.indexOf(x) === -1)
+      .filter((x) => !list.has(x));
 
   if (!cache) {
     // Didn't get it from the cache
@@ -62,9 +62,9 @@ function getDependencyList(
     cachedDependencies.set(module.path, deps);
   }
 
-  deps.forEach(dep => {
+  deps.forEach((dep) => {
     const foundModule = modules.find(
-      x => x.moduleName === dep && !x.path.endsWith('.rei')
+      (x) => x.moduleName === dep && !x.path.endsWith('.rei')
     );
 
     if (foundModule) {
@@ -97,31 +97,31 @@ class ReasonTranspiler extends Transpiler {
     const reasonModules = loaderContext
       .getModules()
       .filter(
-        x =>
+        (x) =>
           x.path.endsWith('.re') ||
           x.path.endsWith('.rei') ||
           x.path.endsWith('.ml')
       )
-      .map(x => ({
+      .map((x) => ({
         ...x,
         moduleName: getModuleName(x.path),
       }));
 
     const mainReasonModule: ReasonModule = reasonModules.find(
-      m => m.path === loaderContext._module.module.path
+      (m) => m.path === loaderContext._module.module.path
     );
 
     const modulesToAdd: Set<ReasonModule> = new Set();
     getDependencyList(reasonModules, modulesToAdd, mainReasonModule);
 
-    modulesToAdd.forEach(m => {
+    modulesToAdd.forEach((m) => {
       if (m.path !== loaderContext._module.module.path) {
         loaderContext.addTranspilationDependency(m.path, {});
       }
     });
 
     const newCode = Array.from(modulesToAdd)
-      .map(x => {
+      .map((x) => {
         const usedCode = x.path.endsWith('.re')
           ? x.code
           : global.printRE(global.parseML(x.code));
@@ -134,7 +134,7 @@ class ReasonTranspiler extends Transpiler {
         );
 
         const typesModule = reasonModules.find(
-          module => module.path === typesPath
+          (module) => module.path === typesPath
         );
 
         let reasonCode = `module ${moduleName}`;

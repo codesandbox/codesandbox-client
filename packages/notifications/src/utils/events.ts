@@ -2,7 +2,7 @@ export class Emitter<T> {
   private listeners: Set<(message: T) => void> = new Set();
 
   emit(message: T) {
-    this.listeners.forEach(listener => {
+    this.listeners.forEach((listener) => {
       listener(message);
     });
   }

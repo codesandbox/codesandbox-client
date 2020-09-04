@@ -19,7 +19,7 @@ export default {
   title: 'examples/SandboxLive',
 };
 
-const LiveIcon = props => (
+const LiveIcon = (props) => (
   <Element
     as="svg"
     width="8"
@@ -32,7 +32,7 @@ const LiveIcon = props => (
   </Element>
 );
 
-const GlobeIcon = props => (
+const GlobeIcon = (props) => (
   <svg width={10} height={10} fill="none" viewBox="0 0 10 10" {...props}>
     <path
       fill="#757575"

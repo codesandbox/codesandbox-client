@@ -119,7 +119,7 @@ async function getSourceMap(
   } else {
     const index = fileUri.lastIndexOf('/');
     const url = fileUri.substring(0, index + 1) + sm;
-    const obj = await fetch(url).then(res => res.json());
+    const obj = await fetch(url).then((res) => res.json());
     return new SourceMap(new SourceMapConsumer(obj));
   }
 }

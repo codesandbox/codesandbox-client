@@ -23,7 +23,7 @@ try {
 }
 `);
 
-export const getTimestamp = version => +version.split('-')[1];
+export const getTimestamp = (version) => +version.split('-')[1];
 
 export default preval(
   `module.exports = "${versionType}-${versionNumber}-${shortCommitSha}";`

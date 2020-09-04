@@ -30,7 +30,7 @@ export const NavigationLink = styled(Link)`
     content: '';
     margin-top: 8px;
     display: block;
-    background: ${props => props.theme.link};
+    background: ${(props) => props.theme.link};
     height: 2px;
     box-sizing: border-box;
     width: 0%;
@@ -44,7 +44,7 @@ export const NavigationLink = styled(Link)`
 
   &.active,
   &:hover {
-    color: ${props => props.theme.homepage.white};
+    color: ${(props) => props.theme.homepage.white};
 
     &:after {
       width: 110%;

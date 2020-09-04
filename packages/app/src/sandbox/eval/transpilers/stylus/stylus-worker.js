@@ -14,7 +14,7 @@ declare var stylus: {
   ) => void,
 };
 
-self.addEventListener('message', event => {
+self.addEventListener('message', (event) => {
   const { code, path } = event.data;
 
   // register a custom importer callback

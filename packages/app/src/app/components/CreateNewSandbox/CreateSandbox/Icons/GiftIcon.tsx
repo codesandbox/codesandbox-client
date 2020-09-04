@@ -1,7 +1,7 @@
 import React from 'react';
 import IconBase from 'react-icons/IconBase';
 
-export const GiftIcon = props => (
+export const GiftIcon = (props) => (
   <IconBase viewBox="0 0 32 32" {...props}>
     <path
       d="M14.2222 18.5263H1.77778V28.6316C1.77778 30.4919 3.36965 32 5.33333 32H14.2222V18.5263Z"

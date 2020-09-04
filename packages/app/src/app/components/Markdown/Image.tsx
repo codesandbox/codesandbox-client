@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import { Text, Element, Button, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-export const Image = props => {
+export const Image = (props) => {
   const { state } = useOvermind();
   const [modalOpen, setModalOpen] = useState(false);
   const privateSandbox =

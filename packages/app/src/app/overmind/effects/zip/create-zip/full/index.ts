@@ -10,14 +10,14 @@ export default async function createZip(
 ) {
   await Promise.all(
     modules
-      .filter(x => x.directoryShortid == null)
-      .map(x => createFile(x, zip, downloadBlobs))
+      .filter((x) => x.directoryShortid == null)
+      .map((x) => createFile(x, zip, downloadBlobs))
   );
 
   await Promise.all(
     directories
-      .filter(x => x.directoryShortid == null)
-      .map(x =>
+      .filter((x) => x.directoryShortid == null)
+      .map((x) =>
         createDirectoryWithFiles(modules, directories, x, zip, downloadBlobs)
       )
   );

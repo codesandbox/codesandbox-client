@@ -45,19 +45,19 @@ export const UserNameSelection = () => {
               direction="vertical"
               align="center"
               gap={4}
-              onSubmit={e => {
+              onSubmit={(e) => {
                 e.preventDefault();
                 finalizeSignUp(newUsername);
               }}
             >
               <Input
-                onBlur={async e => {
+                onBlur={async (e) => {
                   setLoadingUserName(true);
                   await validateUsername(e.target.value);
                   setLoadingUserName(false);
                 }}
                 value={newUsername}
-                onChange={e => setNewUsername(e.target.value)}
+                onChange={(e) => setNewUsername(e.target.value)}
               />
               {!pendingUser.valid ? (
                 <Text size={3} variant="danger">

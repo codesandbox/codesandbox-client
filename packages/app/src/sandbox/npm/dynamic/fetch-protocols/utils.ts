@@ -5,7 +5,7 @@ export async function fetchWithRetries(
   retries = 6
 ): Promise<Response> {
   const doFetch = () =>
-    window.fetch(url).then(x => {
+    window.fetch(url).then((x) => {
       if (x.ok) {
         return x;
       }

@@ -8,7 +8,7 @@ export const FooterWrapper = styled.footer`
 
 export const Nav = styled.section`
   padding-top: 2.5rem;
-  border-top: 1px solid ${props => props.theme.homepage.grey};
+  border-top: 1px solid ${(props) => props.theme.homepage.grey};
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   grid-gap: 3rem;
@@ -22,7 +22,7 @@ export const Nav = styled.section`
     text-decoration: none;
 
     &:hover {
-      color: ${props => props.theme.homepage.white};
+      color: ${(props) => props.theme.homepage.white};
     }
   }
 
@@ -52,7 +52,7 @@ export const Social = styled.ul`
     }
 
     &:hover path {
-      fill: ${props => props.theme.homepage.white};
+      fill: ${(props) => props.theme.homepage.white};
     }
   }
 `;

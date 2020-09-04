@@ -6,15 +6,15 @@ export const InputContainer = styled.div<{ errorMessage?: boolean }>`
   input {
     transition: 0.3s ease all;
     font-family: inherit;
-    border: 1px solid ${props => props.theme.primary};
+    border: 1px solid ${(props) => props.theme.primary};
     outline: none;
-    background-color: ${props =>
+    background-color: ${(props) =>
       props.errorMessage
         ? props.theme.redBackground.clearer(0.5)
         : 'rgba(0, 0, 0, 0.2)'};
     padding-left: 0.25rem;
     margin-left: 0.25rem;
-    color: ${props =>
+    color: ${(props) =>
       props.errorMessage ? props.theme.red : props.theme.white};
 
     &:focus {

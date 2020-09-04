@@ -16,7 +16,7 @@ const Results = (props: ResultsProps) => {
     const onSentinelIntersection = (entries: IntersectionObserverEntry[]) => {
       const { hasMore, refineNext } = props;
 
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting && hasMore) {
           refineNext();
         }
@@ -37,7 +37,7 @@ const Results = (props: ResultsProps) => {
 
   const searchTemplateInfo: ITemplateInfo = {
     key: 'search-results',
-    templates: hits.map(hit => ({
+    templates: hits.map((hit) => ({
       id: hit.custom_template.id,
       color: hit.custom_template.color,
       iconUrl: hit.custom_template.icon_url,

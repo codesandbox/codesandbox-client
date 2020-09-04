@@ -59,7 +59,7 @@ export const New = ({
         >
           <ReactMarkdown
             renderers={{
-              heading: props => {
+              heading: (props) => {
                 if (!props.children.length) return null;
 
                 return React.createElement(

@@ -97,7 +97,7 @@ class Live {
         revision,
       },
       45000
-    ).catch(error => {
+    ).catch((error) => {
       logBreadcrumb({
         category: 'ot',
         message: `ERROR ${JSON.stringify({
@@ -192,12 +192,12 @@ class Live {
 
       this.channel
         .leave()
-        .receive('ok', resp => {
+        .receive('ok', (resp) => {
           if (!this.channel) {
             return resolve({});
           }
 
-          this.channel.onMessage = d => d;
+          this.channel.onMessage = (d) => d;
           this.channel = null;
           this.pendingMessages.clear();
           this.messageIndex = 0;
@@ -205,7 +205,7 @@ class Live {
           return resolve(resp);
         })
         // eslint-disable-next-line prefer-promise-reject-errors
-        .receive('error', resp => reject(resp));
+        .receive('error', (resp) => reject(resp));
     });
   }
 
@@ -219,7 +219,7 @@ class Live {
 
       this.channel
         .join()
-        .receive('ok', resp => {
+        .receive('ok', (resp) => {
           const result = camelizeKeys(resp) as JoinChannelResponse;
           result.moduleState = resp.module_state; // Don't camelize this!!
 

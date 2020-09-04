@@ -34,7 +34,7 @@ export const BundleSizes = ({ dependency, version = '' }: Props) => {
 
   const getSizeForPKG = (pkg: string) => {
     fetch(`https://bundlephobia.com/api/size?package=${pkg}`)
-      .then(rsp => rsp.json())
+      .then((rsp) => rsp.json())
       .then(setSize)
       .catch(setError);
   };

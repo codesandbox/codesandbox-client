@@ -112,7 +112,7 @@ export class TerminalComponentNoTheme extends React.PureComponent<Props> {
           paddingBottom: 0,
           visibility: hidden ? 'hidden' : 'visible',
         }}
-        ref={node => {
+        ref={(node) => {
           if (node && !this.node) {
             this.node = node;
             this.setupResizeObserver(node);

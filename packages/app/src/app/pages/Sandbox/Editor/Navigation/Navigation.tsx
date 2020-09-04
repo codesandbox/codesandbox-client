@@ -138,13 +138,13 @@ export const Navigation: FunctionComponent<Props> = ({
       aria-label="Sandbox Navigation"
     >
       <SingletonTooltip placement="right">
-        {singleton => (
+        {(singleton) => (
           <>
-            {shownItems.map(item => (
+            {shownItems.map((item) => (
               <IconComponent key={item.id} item={item} singleton={singleton} />
             ))}
 
-            {disabledItems.map(item => (
+            {disabledItems.map((item) => (
               <IconComponent
                 key={item.id}
                 item={item}

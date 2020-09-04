@@ -74,7 +74,7 @@ export default abstract class WorkerTranspiler extends Transpiler {
     this.loadingWorkers++;
     const t = Date.now();
     const worker = await this.getWorker();
-    const readyListener = e => {
+    const readyListener = (e) => {
       if (e.data === 'ready') {
         debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
         worker.removeEventListener('message', readyListener);
@@ -106,7 +106,7 @@ export default abstract class WorkerTranspiler extends Transpiler {
   }
 
   dispose() {
-    this.workers.forEach(w => w.terminate());
+    this.workers.forEach((w) => w.terminate());
     this.initialized = false;
     this.tasks = {};
     this.workers.length = 0;
@@ -132,11 +132,11 @@ export default abstract class WorkerTranspiler extends Transpiler {
     err: Error | undefined,
     data?: TranspilerResult
   ) {
-    callbacks.forEach(c => c(err, data));
+    callbacks.forEach((c) => c(err, data));
   }
 
   executeTask({ message, loaderContext, callbacks }: Task, worker: Worker) {
-    worker.onmessage = async newMessage => {
+    worker.onmessage = async (newMessage) => {
       const { data } = newMessage;
 
       if (data) {
@@ -261,7 +261,7 @@ export default abstract class WorkerTranspiler extends Transpiler {
   }
 
   async getTranspilerContext(manager: Manager) {
-    return super.getTranspilerContext(manager).then(x => ({
+    return super.getTranspilerContext(manager).then((x) => ({
       ...x,
       worker: true,
       hasFS: this.hasFS,

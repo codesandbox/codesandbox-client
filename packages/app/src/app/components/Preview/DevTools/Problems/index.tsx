@@ -38,11 +38,11 @@ class Problems extends React.PureComponent<DevToolProps, State> {
     this.listener();
   }
 
-  handleMessage = data => {
+  handleMessage = (data) => {
     if (data.action === 'show-correction') {
       const correction: CorrectionAction = data;
       correction.path = correction.path || 'root';
-      this.setState(state => {
+      this.setState((state) => {
         const newMessages = [
           ...(state.corrections[correction.path] || []),
           correction,
@@ -60,7 +60,7 @@ class Problems extends React.PureComponent<DevToolProps, State> {
     } else if (data.action === 'show-error') {
       const correction: ErrorAction = data;
       correction.path = correction.path || 'root';
-      this.setState(state => {
+      this.setState((state) => {
         const newMessages = [
           ...(state.corrections[correction.path] || []),
           correction,
@@ -83,12 +83,12 @@ class Problems extends React.PureComponent<DevToolProps, State> {
       const path = message.path || 'root';
 
       this.setState(
-        state => ({
-          corrections: immer(state.corrections, draft => {
+        (state) => ({
+          corrections: immer(state.corrections, (draft) => {
             const clearCorrections = (clearPath: string) => {
               if (draft[clearPath]) {
                 draft[clearPath] = draft[clearPath].filter(
-                  corr => corr.source !== message.source
+                  (corr) => corr.source !== message.source
                 );
 
                 if (Object.keys(draft[clearPath]).length === 0) {
@@ -98,7 +98,7 @@ class Problems extends React.PureComponent<DevToolProps, State> {
             };
 
             if (path === '*') {
-              Object.keys(draft).forEach(p => {
+              Object.keys(draft).forEach((p) => {
                 clearCorrections(p);
               });
             } else {
@@ -119,7 +119,7 @@ class Problems extends React.PureComponent<DevToolProps, State> {
       []
     );
     const count = messages.length;
-    const isError = messages.some(m => m.severity === 'error');
+    const isError = messages.some((m) => m.severity === 'error');
 
     this.props.updateStatus(isError ? 'error' : 'warning', count);
   };
@@ -131,7 +131,7 @@ class Problems extends React.PureComponent<DevToolProps, State> {
 
     const files = Object.keys(this.state.corrections)
       .sort()
-      .filter(x => x !== 'root');
+      .filter((x) => x !== 'root');
 
     const { root } = this.state.corrections;
 
@@ -146,7 +146,7 @@ class Problems extends React.PureComponent<DevToolProps, State> {
           </div>
         )}
         {files.map(
-          file =>
+          (file) =>
             this.state.corrections[file] && (
               <FileErrors
                 key={file}

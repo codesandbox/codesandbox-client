@@ -75,26 +75,26 @@ interface ComponentForTypes {
 }
 
 const ComponentForTypes: ComponentForTypes = {
-  sandbox: React.memo(props => (
+  sandbox: React.memo((props) => (
     <Sandbox
       page={props.page}
       item={props.item}
       isScrolling={props.isScrolling}
     />
   )),
-  template: React.memo(props => (
+  template: React.memo((props) => (
     <Sandbox
       page={props.page}
       item={props.item}
       isScrolling={props.isScrolling}
     />
   )),
-  folder: props => <Folder {...props.item} />,
-  repo: props => <Repo {...props.item} isScrolling={props.isScrolling} />,
-  'new-folder': props => <CreateFolder {...props.item} />,
+  folder: (props) => <Folder {...props.item} />,
+  repo: (props) => <Repo {...props.item} isScrolling={props.isScrolling} />,
+  'new-folder': (props) => <CreateFolder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
   'new-repo': () => <ImportRepo />,
-  'new-master-branch': props => <NewMasterSandbox {...props.item} />,
+  'new-master-branch': (props) => <NewMasterSandbox {...props.item} />,
   header: ({ item }) => (
     <Stack justify="space-between" align="center">
       <Text block weight="bold" css={css({ userSelect: 'none' })}>
@@ -266,7 +266,7 @@ export const VariableGrid = ({
 
     const handler = (event: CustomEvent) => {
       const index = filledItemsRef.current.findIndex(
-        item => item.id === event.detail
+        (item) => item.id === event.detail
       );
 
       const columnCount = parseInt(containerElement.dataset.columnCount, 10);
@@ -302,9 +302,11 @@ export const VariableGrid = ({
                   MAX_COLUMN_COUNT
                 );
 
-          const filledItems: Array<DashboardGridItem & {
-            viewMode?: 'list' | 'grid';
-          }> = [];
+          const filledItems: Array<
+            DashboardGridItem & {
+              viewMode?: 'list' | 'grid';
+            }
+          > = [];
           const blankItem = { type: 'blank' as 'blank' };
           const skeletonItem = { type: 'skeleton' as 'skeleton' };
 
@@ -396,8 +398,8 @@ export const VariableGrid = ({
                 rowCount={Math.ceil(filledItems.length / columnCount)}
                 width={width}
                 height={height}
-                columnWidth={index => width / columnCount}
-                rowHeight={rowIndex =>
+                columnWidth={(index) => width / columnCount}
+                rowHeight={(rowIndex) =>
                   getRowHeight(rowIndex, columnCount, filledItems)
                 }
                 estimatedColumnWidth={width / columnCount}

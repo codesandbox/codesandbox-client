@@ -16,19 +16,19 @@ export default function initialize() {
     { hasDotEnv: true }
   );
 
-  preset.registerTranspiler(module => /\.css$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.css$/.test(module.path), [
     { transpiler: stylesTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.m?jsx?$/.test(module.path), [
     { transpiler: babelTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.json$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.json$/.test(module.path), [
     { transpiler: jsonTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.re$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.re$/.test(module.path), [
     { transpiler: reasonTranspiler },
     { transpiler: babelTranspiler, options: { simpleRequire: true } },
   ]);

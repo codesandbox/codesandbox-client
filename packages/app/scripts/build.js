@@ -42,7 +42,7 @@ function getDifferenceLabel(currentSize, previousSize) {
 // This lets us display how much they changed later.
 recursive(paths.appBuild, (err, fileNames) => {
   const previousSizeMap = (fileNames || [])
-    .filter(fileName => /\.(js|css)$/.test(fileName))
+    .filter((fileName) => /\.(js|css)$/.test(fileName))
     .reduce((memo, fileName) => {
       const contents = fs.readFileSync(fileName);
       const key = removeFileNameHash(fileName);
@@ -62,8 +62,8 @@ recursive(paths.appBuild, (err, fileNames) => {
 function printFileSizes(stats, previousSizeMap) {
   const assets = stats
     .toJson()
-    .assets.filter(asset => /\.(js|css)$/.test(asset.name))
-    .map(asset => {
+    .assets.filter((asset) => /\.(js|css)$/.test(asset.name))
+    .map((asset) => {
       try {
         const fileContents = fs.readFileSync(`${paths.appBuild}/${asset.name}`);
         const size = gzipSize(fileContents);
@@ -86,9 +86,11 @@ function printFileSizes(stats, previousSizeMap) {
   assets.sort((a, b) => b.size - a.size);
   let longestSizeLabelLength = Math.max.apply(
     null,
-    assets.map(a => (a.error ? 'ERROR'.length : stripAnsi(a.sizeLabel).length))
+    assets.map((a) =>
+      a.error ? 'ERROR'.length : stripAnsi(a.sizeLabel).length
+    )
   );
-  assets.forEach(asset => {
+  assets.forEach((asset) => {
     let sizeLabel = asset.sizeLabel;
     const sizeLength = stripAnsi(sizeLabel).length;
     if (sizeLength < longestSizeLabelLength) {
@@ -149,8 +151,9 @@ function build(previousSizeMap) {
 
     console.log(
       chalk.green(
-        `Built ${stats.hasWarnings() ? 'with warnings ' : ''}in ${took /
-          1000}s.`
+        `Built ${stats.hasWarnings() ? 'with warnings ' : ''}in ${
+          took / 1000
+        }s.`
       )
     );
     console.log();

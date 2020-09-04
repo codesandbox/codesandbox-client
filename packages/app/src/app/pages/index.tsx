@@ -19,7 +19,7 @@ import { Sandbox } from './Sandbox';
 const MoveSandboxFolderModal = Loadable(() =>
   import(
     /* webpackChunkName: 'move-sandbox-modal' */ './common/Modals/MoveSandboxFolderModal'
-  ).then(module => ({
+  ).then((module) => ({
     default: module.MoveSandboxFolderModal,
   }))
 );
@@ -27,54 +27,56 @@ const MoveSandboxFolderModal = Loadable(() =>
 const DuplicateAccount = Loadable(() =>
   import(
     /* webpackChunkName: 'move-sandbox-modal' */ './DuplicateAccount'
-  ).then(module => ({
+  ).then((module) => ({
     default: module.DuplicateAccount,
   }))
 );
 
 const routeDebugger = _debug('cs:app:router');
 
-const SignInAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
+const SignInAuth = Loadable(
+  () => import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
 );
-const SignIn = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './SignIn')
+const SignIn = Loadable(
+  () => import(/* webpackChunkName: 'page-sign-in' */ './SignIn')
 );
 const Live = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './Live').then(module => ({
+  import(/* webpackChunkName: 'page-sign-in' */ './Live').then((module) => ({
     default: module.LivePage,
   }))
 );
-const VercelSignIn = Loadable(() =>
-  import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
+const VercelSignIn = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
 );
-const PreviewAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
+const PreviewAuth = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
 );
 const NotFound = Loadable(() =>
   import(/* webpackChunkName: 'page-not-found' */ './common/NotFound').then(
-    module => ({
+    (module) => ({
       default: module.NotFound,
     })
   )
 );
 const Profile = Loadable(() =>
-  import(/* webpackChunkName: 'page-profile' */ './Profile').then(module => ({
+  import(/* webpackChunkName: 'page-profile' */ './Profile').then((module) => ({
     default: module.Profile,
   }))
 );
 const Profile2 = Loadable(() =>
-  import(/* webpackChunkName: 'page-profile' */ './Profile2').then(module => ({
-    default: module.Profile,
-  }))
+  import(/* webpackChunkName: 'page-profile' */ './Profile2').then(
+    (module) => ({
+      default: module.Profile,
+    })
+  )
 );
 const Search = Loadable(() =>
-  import(/* webpackChunkName: 'page-search' */ './Search').then(module => ({
+  import(/* webpackChunkName: 'page-search' */ './Search').then((module) => ({
     default: module.Search,
   }))
 );
 const CLI = Loadable(() =>
-  import(/* webpackChunkName: 'page-cli' */ './CLI').then(module => ({
+  import(/* webpackChunkName: 'page-cli' */ './CLI').then((module) => ({
     default: module.CLI,
   }))
 );
@@ -82,32 +84,32 @@ const CLI = Loadable(() =>
 const TeamInvitation = Loadable(() =>
   import(
     /* webpackChunkName: 'page-team-invitation' */ './TeamInvitation'
-  ).then(module => ({
+  ).then((module) => ({
     default: module.TeamInvitation,
   }))
 );
 
 const GitHub = Loadable(() =>
-  import(/* webpackChunkName: 'page-github' */ './GitHub').then(module => ({
+  import(/* webpackChunkName: 'page-github' */ './GitHub').then((module) => ({
     default: module.GitHub,
   }))
 );
 const CliInstructions = Loadable(() =>
   import(
     /* webpackChunkName: 'page-cli-instructions' */ './CliInstructions'
-  ).then(module => ({ default: module.CLIInstructions }))
+  ).then((module) => ({ default: module.CLIInstructions }))
 );
-const Patron = Loadable(() =>
-  import(/* webpackChunkName: 'page-patron' */ './Patron')
+const Patron = Loadable(
+  () => import(/* webpackChunkName: 'page-patron' */ './Patron')
 );
 const SignUp = Loadable(() =>
-  import(/* webpackChunkName: 'page-signup' */ './SignUp').then(module => ({
+  import(/* webpackChunkName: 'page-signup' */ './SignUp').then((module) => ({
     default: module.SignUp,
   }))
 );
 const Pro = Loadable(() => import(/* webpackChunkName: 'page-pro' */ './Pro'));
 const Curator = Loadable(() =>
-  import(/* webpackChunkName: 'page-curator' */ './Curator').then(module => ({
+  import(/* webpackChunkName: 'page-curator' */ './Curator').then((module) => ({
     default: module.Curator,
   }))
 );

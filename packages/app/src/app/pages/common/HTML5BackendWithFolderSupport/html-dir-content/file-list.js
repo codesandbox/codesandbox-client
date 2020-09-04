@@ -9,7 +9,7 @@ const getEntryData = (entry, options, level, path) => {
       ? getFileList(entry, options, level + 1, join(path, entry.name)) // eslint-disable-line
       : Promise.resolve([]);
   } else {
-    promise = getFileFromFileEntry(entry).then(file => {
+    promise = getFileFromFileEntry(entry).then((file) => {
       if (file) {
         // eslint-disable-next-line no-param-reassign
         file.path = join(path, file.name);
@@ -27,12 +27,12 @@ const getEntryData = (entry, options, level, path) => {
  */
 const getFileList = (root, options, level = 0, path = root.name) =>
   root && level < options.bail && root.isDirectory && root.createReader
-    ? new Promise(resolve => {
+    ? new Promise((resolve) => {
         root.createReader().readEntries(
-          entries =>
+          (entries) =>
             Promise.all(
-              entries.map(entry => getEntryData(entry, options, level, path))
-            ).then(results => resolve(getListAsArray(results))), // flatten the results
+              entries.map((entry) => getEntryData(entry, options, level, path))
+            ).then((results) => resolve(getListAsArray(results))), // flatten the results
           () => resolve([])
         ); // fail silently
       })

@@ -192,7 +192,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     requestAnimationFrame(() => {
       this.setupWorkers();
-      editor.onDidChangeModelContent(e => {
+      editor.onDidChangeModelContent((e) => {
         const { isLive, sendTransforms } = this.props;
 
         if (isLive && sendTransforms && !this.receivingCode) {
@@ -273,7 +273,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       },
     });
 
-    editor.onDidChangeCursorSelection(selectionChange => {
+    editor.onDidChangeCursorSelection((selectionChange) => {
       // TODO: add another debounced action to send the current data. So we can
       // have the correct cursor pos no matter what
       const { onSelectionChanged, isLive } = this.props;
@@ -282,7 +282,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         const lines = editor.getModel().getLinesContent() || [];
         const data = {
           primary: getSelection(lines, selectionChange.selection),
-          secondary: selectionChange.secondarySelections.map(s =>
+          secondary: selectionChange.secondarySelections.map((s) =>
             getSelection(lines, s)
           ),
         };
@@ -415,7 +415,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
   };
 
-  onSelectionChangedDebounced = data => {
+  onSelectionChangedDebounced = (data) => {
     if (this.props.onSelectionChanged) {
       this.props.onSelectionChanged(data);
     }
@@ -423,7 +423,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   liveOperationCode = '';
 
-  sendChangeOperations = changeEvent => {
+  sendChangeOperations = (changeEvent) => {
     const { sendTransforms, isLive, onCodeReceived } = this.props;
 
     if (sendTransforms && changeEvent.changes) {
@@ -483,7 +483,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     newCurrentModule: Module,
     dependencies: $PropertyType<Props, 'dependencies'>
   ): Promise<null> =>
-    new Promise(resolve => {
+    new Promise((resolve) => {
       const oldSandbox = this.sandbox;
 
       this.sandbox = newSandbox;
@@ -569,13 +569,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   applyOperations = (operations: { [moduleShortid: string]: any }) => {
     const operationsJSON = operations.toJSON();
 
-    Object.keys(operationsJSON).forEach(moduleShortid => {
+    Object.keys(operationsJSON).forEach((moduleShortid) => {
       const operation = TextOperation.fromJSON(operationsJSON[moduleShortid]);
 
       if (moduleShortid !== this.currentModule.shortid) {
         // Apply the code to the current module code itself
         const module = this.sandbox.modules.find(
-          m => m.shortid === moduleShortid
+          (m) => m.shortid === moduleShortid
         );
 
         if (!module) {
@@ -621,7 +621,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   updateModules = () => {
     const { sandbox } = this;
 
-    sandbox.modules.forEach(module => {
+    sandbox.modules.forEach((module) => {
       if (modelCache[module.id] && modelCache[module.id].model) {
         const path = getModulePath(
           sandbox.modules,
@@ -649,7 +649,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           this.disposeModel(module.id);
 
           this.createModel(module, sandbox.modules, sandbox.directories).then(
-            newModel => {
+            (newModel) => {
               if (isCurrentlyOpened) {
                 // Open it again if it was open
                 this.editor.setModel(newModel);
@@ -661,9 +661,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
 
     // Also check for deleted modules
-    Object.keys(modelCache).forEach(moduleId => {
+    Object.keys(modelCache).forEach((moduleId) => {
       // This module got deleted, dispose it
-      if (!sandbox.modules.find(m => m.id === moduleId)) {
+      if (!sandbox.modules.find((m) => m.id === moduleId)) {
         this.disposeModel(moduleId);
       }
     });
@@ -673,10 +673,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (errors.length > 0) {
       const currentPath = this.editor.getModel().uri.path;
       const thisModuleErrors = errors.filter(
-        error => error.path === currentPath
+        (error) => error.path === currentPath
       );
       const errorMarkers = thisModuleErrors
-        .map(error => {
+        .map((error) => {
           if (error) {
             return {
               severity: this.monaco.MarkerSeverity.Error,
@@ -690,7 +690,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
           return null;
         })
-        .filter(x => x);
+        .filter((x) => x);
 
       this.monaco.editor.setModelMarkers(
         this.editor.getModel(),
@@ -707,8 +707,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       const currentPath = this.editor.getModel().uri.path;
 
       const correctionMarkers = corrections
-        .filter(correction => correction.path === currentPath)
-        .map(correction => {
+        .filter((correction) => correction.path === currentPath)
+        .map((correction) => {
           if (correction) {
             return {
               severity:
@@ -726,7 +726,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
           return null;
         })
-        .filter(x => x);
+        .filter((x) => x);
 
       this.monaco.editor.setModelMarkers(
         this.editor.getModel(),
@@ -766,7 +766,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             const prefix = textUntilPosition.match(/[./]+$/)[0];
 
             const modulesByPath = new WeakMap();
-            this.sandbox.modules.forEach(module => {
+            this.sandbox.modules.forEach((module) => {
               const path = getModulePath(
                 this.sandbox.modules,
                 this.sandbox.directories,
@@ -786,7 +786,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
             const relativePath = join(dirname(currentModulePath), prefix);
             return this.sandbox.modules
-              .filter(m => {
+              .filter((m) => {
                 const path = modulesByPath.get(m);
 
                 return (
@@ -795,7 +795,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
                   path.startsWith(relativePath)
                 );
               })
-              .map(module => {
+              .map((module) => {
                 let path = modulesByPath.get(module);
 
                 if (!path) return null;
@@ -825,7 +825,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           const deps = this.dependencies;
           if (deps) {
             // User is trying to import a dependency
-            return Object.keys(deps).map(name => ({
+            return Object.keys(deps).map((name) => ({
               label: name,
               detail: deps[name],
               kind: this.monaco.languages.CompletionItemKind.Module,
@@ -846,7 +846,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.fetchDependencyTypings(this.dependencies || {});
 
     if (this.typingsFetcherWorker) {
-      this.typingsFetcherWorker.addEventListener('message', event => {
+      this.typingsFetcherWorker.addEventListener('message', (event) => {
         const { sandbox } = this;
         const dependencies = this.dependencies || sandbox.npmDependencies;
 
@@ -879,7 +879,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (!this.lintWorker) {
       this.lintWorker = new LinterWorker();
 
-      this.lintWorker.addEventListener('message', event => {
+      this.lintWorker.addEventListener('message', (event) => {
         const { markers, version } = event.data;
         requestAnimationFrame(() => {
           if (this.editor.getModel()) {
@@ -887,7 +887,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             dispatch(actions.correction.clear(modelPath, 'eslint'));
 
             if (version === this.editor.getModel().getVersionId()) {
-              markers.forEach(marker => {
+              markers.forEach((marker) => {
                 dispatch(
                   actions.correction.show(marker.message, {
                     line: marker.startLineNumber,
@@ -935,7 +935,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   updateDecorations = async (classifications: Array<Object>) => {
-    const decorations = classifications.map(classification => ({
+    const decorations = classifications.map((classification) => ({
       range: new this.monaco.Range(
         classification.startLine,
         classification.start,
@@ -981,7 +981,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     // throw an error 'Cannot use detached model'. So that's why we get the desired values first.
     const { id } = currentModule;
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       // We load this in a later moment so the rest of the ui already updates before the editor
       // this will give a perceived speed boost. Inspiration from vscode team
       setTimeout(async () => {
@@ -1060,7 +1060,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     // VSCode
     const template = getTemplate(sandbox.template);
     if (template.name === 'create-react-app') {
-      return sandbox.modules.some(m => m.title.endsWith('.tsx'));
+      return sandbox.modules.some((m) => m.title.endsWith('.tsx'));
     }
     return template.isTypescript;
   };
@@ -1079,7 +1079,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       uri: string,
     }> = (
       await Promise.all(
-        Object.keys(configurations).map(async p => {
+        Object.keys(configurations).map(async (p) => {
           const config = configurations[p];
 
           if (this.fetchedSchemas[config.title]) {
@@ -1088,7 +1088,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
           if (config.schema) {
             try {
-              const schema = await fetch(config.schema).then(x => x.json());
+              const schema = await fetch(config.schema).then((x) => x.json());
               return { fileName: config.title, schema, uri: config.schema };
             } catch (e) {
               return null;
@@ -1097,9 +1097,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           return null;
         })
       )
-    ).filter(x => x);
+    ).filter((x) => x);
 
-    const monacoSchemas = schemas.map(data => {
+    const monacoSchemas = schemas.map((data) => {
       this.fetchedSchemas[data.fileName] = true;
 
       return {
@@ -1141,7 +1141,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
 
     if (this.monaco) {
-      modules.forEach(m => {
+      modules.forEach((m) => {
         this.disposeModel(m.id);
       });
     }
@@ -1150,7 +1150,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   initializeModules = (modules: Array<Module>) =>
-    Promise.all(modules.map(module => this.createModel(module, modules)));
+    Promise.all(modules.map((module) => this.createModel(module, modules)));
 
   resizeEditor = () => {
     this.resizeEditorInstantly();
@@ -1267,7 +1267,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const { modules } = this.sandbox;
 
     if (!modelCache[id] || !modelCache[id].model) {
-      const module = modules.find(m => m.id === id);
+      const module = modules.find((m) => m.id === id);
 
       if (module) {
         await this.createModel(module);
@@ -1278,7 +1278,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   getModelByShortid = async (shortid: string) => {
-    const module = this.sandbox.modules.find(m => m.shortid === shortid);
+    const module = this.sandbox.modules.find((m) => m.shortid === shortid);
 
     if (!module) {
       throw new Error('Cannot find module with shortid: ' + shortid);
@@ -1318,7 +1318,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   setCurrentModule = (moduleId: string) => {
     this.closeFuzzySearch();
 
-    const module = this.sandbox.modules.find(m => m.id === moduleId);
+    const module = this.sandbox.modules.find((m) => m.id === moduleId);
     if (module) {
       if (this.props.onModuleChange) {
         this.props.onModuleChange(moduleId);
@@ -1326,9 +1326,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  openReference = model => {
+  openReference = (model) => {
     const foundModuleId = Object.keys(modelCache).find(
-      mId => modelCache[mId].model === model
+      (mId) => modelCache[mId].model === model
     );
 
     if (foundModuleId) {
@@ -1406,7 +1406,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             theme="CodeSandbox"
             options={options}
             editorDidMount={this.configureEditor}
-            editorWillMount={monaco =>
+            editorWillMount={(monaco) =>
               defineTheme(monaco, this.props.theme.vscodeTheme)
             }
             getEditorOptions={this.getEditorOptions}

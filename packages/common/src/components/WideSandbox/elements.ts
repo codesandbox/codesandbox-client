@@ -24,13 +24,13 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
   background-color: ${BG_COLOR};
   border: 1px solid ${BG_HOVER};
 
-  ${props =>
+  ${(props) =>
     props.small &&
     css`
       min-width: auto;
     `};
 
-  ${props =>
+  ${(props) =>
     props.noMargin &&
     css`
       margin: 0;
@@ -52,7 +52,7 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
 `;
 
 export const SandboxTitle = styled.h2`
-  color: ${props => props.color};
+  color: ${(props) => props.color};
   font-family: 'Poppins', sans-serif;
   font-size: 1rem;
   font-weight: 600;
@@ -86,7 +86,7 @@ export const SandboxImage = styled.img`
   display: block;
   margin-bottom: 0;
   z-index: 0;
-  border-bottom: 3.2px solid ${props => props.color};
+  border-bottom: 3.2px solid ${(props) => props.color};
   height: auto;
   width: 100%;
   background-color: ${BG_HOVER};
@@ -101,7 +101,7 @@ export const SandboxInfo = styled.div<{ noHeight?: boolean }>`
   z-index: 1;
   height: 130px;
 
-  ${props =>
+  ${(props) =>
     props.noHeight &&
     css`
       height: auto;

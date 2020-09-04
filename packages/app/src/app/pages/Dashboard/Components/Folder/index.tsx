@@ -57,12 +57,12 @@ export const Folder = (folderItem: DashboardFolder) => {
   const selected = selectedIds.includes(path);
   const isDragging = isAnythingDragging && selected;
 
-  const onClick = event => {
+  const onClick = (event) => {
     onSelectionClick(event, path);
   };
 
   const history = useHistory();
-  const onDoubleClick = event => {
+  const onDoubleClick = (event) => {
     const url = dashboardUrls.allSandboxes(path, activeTeamId);
 
     if (event.ctrlKey || event.metaKey) {
@@ -72,7 +72,7 @@ export const Folder = (folderItem: DashboardFolder) => {
     }
   };
 
-  const onContextMenu = event => {
+  const onContextMenu = (event) => {
     event.preventDefault();
 
     if (event.type === 'contextmenu') onRightClick(event, path);
@@ -98,7 +98,7 @@ export const Folder = (folderItem: DashboardFolder) => {
   const [{ isOver, canDrop }, dropRef] = useDrop({
     accept: accepts,
     drop: () => ({ path, page: 'sandboxes', isSamePath: false }),
-    collect: monitor => ({
+    collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path),
     }),
@@ -124,7 +124,7 @@ export const Folder = (folderItem: DashboardFolder) => {
 
   const dragProps = {
     ref: dragRef,
-    onDragStart: event => onDragStart(event, path),
+    onDragStart: (event) => onDragStart(event, path),
   };
 
   React.useEffect(() => {

@@ -25,11 +25,11 @@ export const Container = styled.button<{
   }
 
   svg {
-    ${props => props.hasText && `margin-right: 0.25rem;`};
+    ${(props) => props.hasText && `margin-right: 0.25rem;`};
     font-size: 1rem;
   }
 
-  ${props =>
+  ${(props) =>
     props.loggedIn &&
     css`
       cursor: pointer;
@@ -38,7 +38,7 @@ export const Container = styled.button<{
       }
     `};
 
-  ${props =>
+  ${(props) =>
     props.liked &&
     props.highlightHover &&
     css`

@@ -47,7 +47,7 @@ export default ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       css={`
-        ${props => props.theme.breakpoints.md} {
+        ${(props) => props.theme.breakpoints.md} {
           grid-row: 1;
         }
       `}

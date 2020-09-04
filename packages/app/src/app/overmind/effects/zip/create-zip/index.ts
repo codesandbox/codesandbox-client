@@ -36,7 +36,7 @@ export function getIndexHtmlBody(
   directories?: Array<Directory>
 ) {
   let indexHtmlModule = modules.find(
-    m => m.title === 'index.html' && m.directoryShortid == null
+    (m) => m.title === 'index.html' && m.directoryShortid == null
   );
 
   if (!indexHtmlModule && directories) {
@@ -68,7 +68,7 @@ function slugify(text) {
     .toString()
     .toLowerCase()
     .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(p, c => b.charAt(a.indexOf(c))) // Replace special chars
+    .replace(p, (c) => b.charAt(a.indexOf(c))) // Replace special chars
     .replace(/&/g, '-and-') // Replace & with 'and'
     .replace(/[^\w\-]+/g, '') // Remove all non-word chars
     .replace(/\-\-+/g, '-') // Replace multiple - with single -
@@ -88,7 +88,7 @@ export function createPackageJSON(
   const version = `0.0.${sandbox.version}`;
 
   const packageJSONModule = sandbox.modules.find(
-    m => m.directoryShortid == null && m.title === 'package.json'
+    (m) => m.directoryShortid == null && m.title === 'package.json'
   );
 
   try {
@@ -149,7 +149,7 @@ export async function createFile(
     if (downloadBlobs) {
       const code = await window
         .fetch(module.code)
-        .then<string | Blob>(response => {
+        .then<string | Blob>((response) => {
           const contentType = response.headers['Content-Type'];
 
           if (contentType && contentType.startsWith('text/plain')) {
@@ -183,14 +183,14 @@ export async function createDirectoryWithFiles(
 
   await Promise.all(
     modules
-      .filter(x => x.directoryShortid === directory.shortid)
-      .map(x => createFile(x, newZip, downloadBlobs))
+      .filter((x) => x.directoryShortid === directory.shortid)
+      .map((x) => createFile(x, newZip, downloadBlobs))
   );
 
   await Promise.all(
     directories
-      .filter(x => x.directoryShortid === directory.shortid)
-      .map(x =>
+      .filter((x) => x.directoryShortid === directory.shortid)
+      .map((x) =>
         createDirectoryWithFiles(modules, directories, x, newZip, downloadBlobs)
       )
   );
@@ -208,21 +208,21 @@ export async function createZip(
 
   if (useGitIgnore) {
     const gitIgnore = modules.find(
-      module =>
+      (module) =>
         module.title === '.gitignore' && module.directoryShortid === null
     );
 
     ignorer.add(gitIgnore ? gitIgnore.code : '');
   }
 
-  const filteredModules = modules.filter(module => {
+  const filteredModules = modules.filter((module) => {
     // Relative path
     const path = getModulePath(modules, directories, module.id).substring(1);
     return !ignorer.ignores(path);
   });
 
   const fullPromise = () =>
-    import(/* webpackChunkName: 'full-zip' */ './full').then(generator =>
+    import(/* webpackChunkName: 'full-zip' */ './full').then((generator) =>
       generator.default(
         zip,
         sandbox,
@@ -237,7 +237,7 @@ export async function createZip(
   if (
     sandbox.template !== vue.name &&
     sandbox.template !== reactTs.name &&
-    directories.find(m => m.title === 'src' && m.directoryShortid == null)
+    directories.find((m) => m.title === 'src' && m.directoryShortid == null)
   ) {
     // This is a full project, with all files already in there. We need to create
     // a zip by just adding all existing files to it (downloading binaries too).
@@ -245,19 +245,19 @@ export async function createZip(
   } else if (sandbox.template === react.name) {
     promise = import(
       /* webpackChunkName: 'create-react-app-zip' */ './create-react-app'
-    ).then(generator =>
+    ).then((generator) =>
       generator.default(zip, sandbox, filteredModules, directories)
     );
   } else if (sandbox.template === reactTs.name) {
     promise = import(
       /* webpackChunkName: 'create-react-app-typescript-zip' */ './create-react-app-typescript'
-    ).then(generator =>
+    ).then((generator) =>
       generator.default(zip, sandbox, filteredModules, directories)
     );
   } else if (sandbox.template === vue.name) {
     try {
       const packageJSONModule = sandbox.modules.find(
-        m => m.directoryShortid == null && m.title === 'package.json'
+        (m) => m.directoryShortid == null && m.title === 'package.json'
       );
 
       const pkgJSON = packageJSONModule?.code
@@ -272,7 +272,7 @@ export async function createZip(
       } else {
         promise = import(
           /* webpackChunkName: 'vue-zip' */ './vue-cli'
-        ).then(generator =>
+        ).then((generator) =>
           generator.default(zip, sandbox, filteredModules, directories)
         );
       }
@@ -282,20 +282,20 @@ export async function createZip(
   } else if (sandbox.template === preact.name) {
     promise = import(
       /* webpackChunkName: 'preact-zip' */ './preact-cli'
-    ).then(generator =>
+    ).then((generator) =>
       generator.default(zip, sandbox, filteredModules, directories)
     );
   } else if (sandbox.template === svelte.name) {
     promise = import(
       /* webpackChunkName: 'svelte-zip' */ './svelte'
-    ).then(generator =>
+    ).then((generator) =>
       generator.default(zip, sandbox, filteredModules, directories)
     );
   } else {
     // If no specific zip generator is found we will default to the full generator
     promise = import(
       /* webpackChunkName: 'full-zip' */ './full'
-    ).then(generator =>
+    ).then((generator) =>
       generator.default(
         zip,
         sandbox,

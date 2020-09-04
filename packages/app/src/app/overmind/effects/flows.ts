@@ -8,8 +8,8 @@ export default (() => {
       _reaction = reaction;
     },
     waitUntil(test: (state: RootState) => boolean): Promise<boolean> {
-      return new Promise(resolve => {
-        _reaction(test, bool => {
+      return new Promise((resolve) => {
+        _reaction(test, (bool) => {
           if (bool === true) {
             resolve();
           }

@@ -4,7 +4,7 @@ let cachedBoilerplates = [];
 
 export async function evalBoilerplates(boilerplates) {
   cachedBoilerplates = await Promise.all(
-    boilerplates.map(async boilerplate => {
+    boilerplates.map(async (boilerplate) => {
       const fakeModule = {
         path: `/boilerplate-${boilerplate.condition}${boilerplate.extension}`,
         code: boilerplate.code,
@@ -26,7 +26,7 @@ export function getBoilerplates() {
 
 export function findBoilerplate(module) {
   const boilerplates = getBoilerplates();
-  const boilerplate = boilerplates.find(b => {
+  const boilerplate = boilerplates.find((b) => {
     const regex = new RegExp(b.condition);
     return regex.test(module.path);
   });

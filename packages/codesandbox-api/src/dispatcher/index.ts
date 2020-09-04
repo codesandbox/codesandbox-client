@@ -22,7 +22,7 @@ let initializeResolved: () => void;
 /**
  * Resolves when the handshake between the frame and the editor has succeeded
  */
-export const intializedPromise = new Promise(resolve => {
+export const intializedPromise = new Promise((resolve) => {
   initializeResolved = resolve;
 });
 
@@ -96,7 +96,7 @@ export function listen(callback: Callback): () => void {
 
 export function notifyListeners(data: object, source?: MessageEvent['source']) {
   // eslint-disable-next-line no-shadow
-  Object.keys(listeners).forEach(listenerId => {
+  Object.keys(listeners).forEach((listenerId) => {
     if (listeners[listenerId]) {
       try {
         listeners[listenerId](data, source);

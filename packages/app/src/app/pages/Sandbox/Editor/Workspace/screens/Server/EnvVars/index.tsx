@@ -45,7 +45,7 @@ export const EnvVars: FunctionComponent = () => {
 
       {envVars ? (
         <List paddingTop={4}>
-          {Object.keys(envVars).map(keyName => (
+          {Object.keys(envVars).map((keyName) => (
             <>
               {editMode === keyName || !envVars[keyName] ? (
                 <VarForm

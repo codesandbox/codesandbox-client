@@ -45,9 +45,9 @@ export const Dependency = ({
 
   const setVersionsForLatestPkg = (pkg: string) => {
     fetch(`/api/v1/dependencies/${pkg}`)
-      .then(response => response.json())
-      .then(data => setVersion(data.data.version))
-      .catch(err => {
+      .then((response) => response.json())
+      .then((data) => setVersion(data.data.version))
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           console.error(err); // eslint-disable-line no-console
         }
@@ -79,7 +79,7 @@ export const Dependency = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleRemove = e => {
+  const handleRemove = (e) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -87,7 +87,7 @@ export const Dependency = ({
     onRemove(dependency);
   };
 
-  const handleRefresh = e => {
+  const handleRefresh = (e) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -161,16 +161,16 @@ export const Dependency = ({
         >
           <Select
             css={{ width: '80px' }}
-            value={versions.find(v => v === dependencies[dependency])}
-            onChange={e => onRefresh(dependency, e.target.value)}
+            value={versions.find((v) => v === dependencies[dependency])}
+            onChange={(e) => onRefresh(dependency, e.target.value)}
           >
-            {versions.map(a => (
+            {versions.map((a) => (
               <option key={a}>{a}</option>
             ))}
           </Select>
 
           <SingletonTooltip>
-            {singleton => (
+            {(singleton) => (
               <>
                 <Tooltip
                   content={open ? 'Hide sizes' : 'Show sizes'}

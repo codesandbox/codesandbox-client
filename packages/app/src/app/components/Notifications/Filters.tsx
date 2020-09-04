@@ -69,7 +69,7 @@ export const Filters = () => {
             Clear all notifications
           </Menu.Item>
           {!userNotifications.notifications.every(
-            notification => notification.read
+            (notification) => notification.read
           ) ? (
             <Menu.Item
               onSelect={() => {

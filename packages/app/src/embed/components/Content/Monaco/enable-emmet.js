@@ -16,7 +16,7 @@ const enableEmmet = (editor, monaco) => {
   // if whole string matches emmet rules, return it
   // if a substring(right to left) split by white space matches emmet rules, return the substring
   // if nothing matches, return empty string
-  const getLegalEmmet = str => {
+  const getLegalEmmet = (str) => {
     // empty or ends with white space, illegal
     if (str === '' || str.match(/\s$/)) return '';
 
@@ -57,7 +57,7 @@ const enableEmmet = (editor, monaco) => {
   // register a context key to make sure emmet triggered at proper condition
   const emmetLegal = editor.createContextKey('emmetLegal', false);
 
-  editor.onDidChangeCursorPosition(cur => {
+  editor.onDidChangeCursorPosition((cur) => {
     // to ensure emmet triggered at the right time
     // we need to do grammar analysis
 

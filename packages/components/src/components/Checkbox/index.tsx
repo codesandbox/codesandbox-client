@@ -45,7 +45,7 @@ const Label = styled(Text)(
       backgroundColor: 'input.background',
       color: 'input.foreground',
       transition: 'all ease-in',
-      transitionDuration: theme => theme.speeds[2],
+      transitionDuration: (theme) => theme.speeds[2],
     },
     '&::after': {
       content: "''",
@@ -56,7 +56,7 @@ const Label = styled(Text)(
       opacity: 0,
       position: 'absolute',
       top: 1,
-      backgroundImage: theme =>
+      backgroundImage: (theme) =>
         `url('data:image/svg+xml,%3Csvg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath fill-rule="evenodd" clip-rule="evenodd" d="M5.0442 5.99535L10.2229 0.444443L11.3332 1.70347L5.0442 8.44444L0.666504 3.75212L1.77676 2.49309L5.0442 5.99535Z" fill="${theme.colors.input.foreground.replace(
           '#',
           '%23'
@@ -64,7 +64,7 @@ const Label = styled(Text)(
       backgroundRepeat: 'no-repeat',
       width: 3,
       transition: 'all ease-in',
-      transitionDuration: theme => theme.speeds[2],
+      transitionDuration: (theme) => theme.speeds[2],
     },
   })
 );

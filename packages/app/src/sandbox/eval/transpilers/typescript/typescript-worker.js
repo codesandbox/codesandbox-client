@@ -19,7 +19,7 @@ declare var ts: {
   registerPlugin: (name: string, plugin: Function) => void,
 };
 
-self.addEventListener('message', event => {
+self.addEventListener('message', (event) => {
   const { code, path, config, typescriptVersion } = event.data;
 
   if (typescriptVersion !== '3.4.1') {
@@ -85,7 +85,7 @@ self.addEventListener('message', event => {
 
     const dependencies = getDependencies(sourceFile, self.ts);
 
-    dependencies.forEach(dependency => {
+    dependencies.forEach((dependency) => {
       self.postMessage({
         type: 'add-dependency',
         path: dependency.path,

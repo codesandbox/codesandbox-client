@@ -31,18 +31,18 @@ export const Column = styled(Element)<{
     display?: string | Array<string>;
   } = {};
 
-  if (Array.isArray(start)) styles.gridColumnStart = start.map(s => s);
+  if (Array.isArray(start)) styles.gridColumnStart = start.map((s) => s);
   else if (start) styles.gridColumnStart = start;
 
-  if (Array.isArray(end)) styles.gridColumnEnd = end.map(s => s + 1);
+  if (Array.isArray(end)) styles.gridColumnEnd = end.map((s) => s + 1);
   else if (end) styles.gridColumnEnd = end + 1;
 
-  if (Array.isArray(span)) styles.gridColumnEnd = span.map(s => 'span  ' + s);
+  if (Array.isArray(span)) styles.gridColumnEnd = span.map((s) => 'span  ' + s);
   else if (span) styles.gridColumnEnd = 'span ' + span;
 
   // not sure if span=0 is a good idea, we'll find out
   if (Array.isArray(span)) {
-    styles.display = span.map(s => (s === 0 ? 'none' : 'inherit'));
+    styles.display = span.map((s) => (s === 0 ? 'none' : 'inherit'));
   } else if (span === 0) styles.display = 'none';
 
   return css(styles);

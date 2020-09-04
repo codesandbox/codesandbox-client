@@ -1,9 +1,9 @@
 export const media = {
   between(lowerBound, upperBound, excludeLarge = false) {
     if (excludeLarge)
-      return `@media (min-width: ${
-        lowerBound.min
-      }px) and (max-width: ${upperBound.min - 1}px)`;
+      return `@media (min-width: ${lowerBound.min}px) and (max-width: ${
+        upperBound.min - 1
+      }px)`;
     if (upperBound.max === Infinity)
       return `@media (min-width: lowerBound.min}px)`;
     return `@media (min-width: lowerBound.min}px) and (max-width: ${upperBound.max}px)`;

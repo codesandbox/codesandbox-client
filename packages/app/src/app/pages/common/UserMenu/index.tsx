@@ -9,7 +9,7 @@ import {
 } from './elements';
 import { Menu } from './Menu';
 
-export const UserMenu: FunctionComponent = props => {
+export const UserMenu: FunctionComponent = (props) => {
   const {
     actions: {
       modalOpened,

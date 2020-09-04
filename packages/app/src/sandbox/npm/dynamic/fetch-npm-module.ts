@@ -28,7 +28,7 @@ const packages: Packages = {};
 
 function prependRootPath(meta: Meta, rootPath: string): Meta {
   const newMeta: Meta = {};
-  Object.keys(meta).forEach(path => {
+  Object.keys(meta).forEach((path) => {
     newMeta[rootPath + path] = meta[path];
   });
 
@@ -77,7 +77,7 @@ async function getMeta(
 
   const protocol = getFetchProtocol(depVersion, useFallback);
 
-  metas[id] = protocol.meta(nameWithoutAlias, depVersion).catch(e => {
+  metas[id] = protocol.meta(nameWithoutAlias, depVersion).catch((e) => {
     delete metas[id];
 
     throw e;
@@ -115,7 +115,7 @@ export async function downloadDependency(
       const fallbackProtocol = getFetchProtocol(depVersion, true);
       return fallbackProtocol.file(nameWithoutAlias, depVersion, relativePath);
     })
-    .then(code => ({
+    .then((code) => ({
       path,
       code,
       downloaded: true,
@@ -149,7 +149,7 @@ function resolvePath(
       path,
       {
         filename: currentPath,
-        extensions: defaultExtensions.map(ext => '.' + ext),
+        extensions: defaultExtensions.map((ext) => '.' + ext),
         packageFilter: packageFilter(isFile),
         moduleDirectory: [
           'node_modules',
@@ -265,7 +265,7 @@ async function getDependencyVersion(
       pathUtils.join('/node_modules', dependencyName, 'package.json')
     ) {
       const rootDependency = manifest.dependencies.find(
-        dep => dep.name === dependencyName
+        (dep) => dep.name === dependencyName
       );
       if (rootDependency) {
         return {
@@ -313,7 +313,7 @@ async function getDependencyVersion(
       version = manifest.dependencyDependencies[dependencyName].resolved;
     }
   } else {
-    const dep = manifest.dependencies.find(m => m.name === dependencyName);
+    const dep = manifest.dependencies.find((m) => m.name === dependencyName);
 
     if (dep) {
       // eslint-disable-next-line

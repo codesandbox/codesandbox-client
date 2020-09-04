@@ -65,7 +65,7 @@ export const SearchComponent = () => {
 
   const items: DashboardGridItem[] =
     foundSandboxes != null
-      ? getFilteredSandboxes(foundSandboxes).map(sandbox => ({
+      ? getFilteredSandboxes(foundSandboxes).map((sandbox) => ({
           type: 'sandbox',
           sandbox,
         }))

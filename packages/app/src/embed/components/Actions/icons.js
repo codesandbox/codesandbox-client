@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const HeartIconSVG = props => (
+export const HeartIconSVG = (props) => (
   <svg
     width="14"
     height="14"
@@ -16,7 +16,7 @@ export const HeartIconSVG = props => (
   </svg>
 );
 
-export const ReloadIconSVG = props => (
+export const ReloadIconSVG = (props) => (
   <svg
     width="11"
     height="11"
@@ -34,7 +34,7 @@ export const ReloadIconSVG = props => (
   </svg>
 );
 
-export const NewWindowIconSVG = props => (
+export const NewWindowIconSVG = (props) => (
   <svg
     width="15"
     height="12"

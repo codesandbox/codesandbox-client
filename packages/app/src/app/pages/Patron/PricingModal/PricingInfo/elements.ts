@@ -10,7 +10,7 @@ export const CenteredHeader = styled.th<{ supporter?: boolean }>`
   text-align: center;
   padding: 1rem 0;
 
-  ${props =>
+  ${(props) =>
     props.supporter &&
     css`
       background-color: rgba(0, 0, 0, 0.3);

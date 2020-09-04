@@ -71,7 +71,7 @@ export const useMention = (
       // This handles rerendering on moving the selection
       // as well
       const onKeyUp = () => {
-        forceRerender(i => i + 1);
+        forceRerender((i) => i + 1);
       };
 
       current.addEventListener('keyup', onKeyUp);
@@ -150,7 +150,7 @@ export const useMention = (
       top: caret.top,
       left: caret.left,
       add: (mentionName, meta) => {
-        setMentions(currentMentions => ({
+        setMentions((currentMentions) => ({
           ...currentMentions,
           [mentionName]: meta,
         }));

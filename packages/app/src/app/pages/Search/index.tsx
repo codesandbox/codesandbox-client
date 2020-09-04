@@ -34,7 +34,7 @@ import Styles from './search';
 
 const updateAfter = 700;
 
-const createURL = state => `?${qs.stringify(state)}`;
+const createURL = (state) => `?${qs.stringify(state)}`;
 
 const searchStateToUrl = (location, searchState) =>
   searchState ? `${location.pathname}${createURL(searchState)}` : '';
@@ -64,7 +64,7 @@ export const Search: FunctionComponent<Props> = ({ history, location }) => {
   }, [history]);
 
   const onSearchStateChange = useCallback(
-    newSearchState => {
+    (newSearchState) => {
       clearTimeout(debouncedSetState.current);
 
       debouncedSetState.current = setTimeout(() => {

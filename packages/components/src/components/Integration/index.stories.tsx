@@ -12,7 +12,7 @@ export default {
   component: Integration,
 };
 
-const GitHubIcon = props => (
+const GitHubIcon = (props) => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="#fff"
@@ -20,7 +20,7 @@ const GitHubIcon = props => (
     />
   </svg>
 );
-const NetlifyIcon = props => (
+const NetlifyIcon = (props) => (
   <svg width={11} height={11} fill="none" viewBox="0 0 11 11" {...props}>
     <path
       fill="#4CAA9F"
@@ -29,7 +29,7 @@ const NetlifyIcon = props => (
   </svg>
 );
 
-const VercelIcon = props => (
+const VercelIcon = (props) => (
   <svg width={12} height={10} fill="none" viewBox="0 0 12 10" {...props}>
     <path fill="#fff" d="M6 0l6 10H0L6 0z" />
   </svg>

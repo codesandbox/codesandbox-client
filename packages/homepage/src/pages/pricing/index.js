@@ -87,7 +87,7 @@ export default () => (
         </Button>
       </Card>
       <Card
-        css={props => `
+        css={(props) => `
           grid-area: team;
           background: transparent;
           border: 1px solid;
@@ -100,7 +100,7 @@ export default () => (
           <Price>Coming soon</Price>
 
           <div
-            css={props => `
+            css={(props) => `
               font-size: 1.4rem;
               margin-bottom: 1rem;
               color: ${props.theme.homepage.greyLight};

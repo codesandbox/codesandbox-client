@@ -21,7 +21,7 @@ export const PreviewSettings: FunctionComponent = () => {
   } = useOvermind();
 
   const bindValue = (name: string) => ({
-    setValue: value => settingChanged({ name, value }),
+    setValue: (value) => settingChanged({ name, value }),
     value: settings[name],
   });
 

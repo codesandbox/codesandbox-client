@@ -17,7 +17,7 @@ export default function initialize() {
     {}
   );
 
-  cxjsPreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  cxjsPreset.registerTranspiler((module) => /\.m?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {
@@ -53,15 +53,15 @@ export default function initialize() {
     },
   ]);
 
-  cxjsPreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
+  cxjsPreset.registerTranspiler((module) => /\.tsx?$/.test(module.path), [
     { transpiler: tsTranspiler },
   ]);
 
-  cxjsPreset.registerTranspiler(module => /\.css$/.test(module.path), [
+  cxjsPreset.registerTranspiler((module) => /\.css$/.test(module.path), [
     { transpiler: stylesTranspiler },
   ]);
 
-  cxjsPreset.registerTranspiler(module => /\.json$/.test(module.path), [
+  cxjsPreset.registerTranspiler((module) => /\.json$/.test(module.path), [
     { transpiler: jsonTranspiler },
   ]);
 
@@ -93,9 +93,9 @@ export default function initialize() {
    * @returns
    */
   function registerStyleTranspilers() {
-    return Object.keys(styles).forEach(type => {
+    return Object.keys(styles).forEach((type) => {
       cxjsPreset.registerTranspiler(
-        module => new RegExp(`\\.${type}`).test(module.path),
+        (module) => new RegExp(`\\.${type}`).test(module.path),
         [...styles[type], { transpiler: stylesTranspiler }]
       );
     });

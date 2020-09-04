@@ -97,10 +97,10 @@ class FolderEntry extends React.Component<Props, State> {
     }
   }
 
-  toggleOpen = e => {
+  toggleOpen = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.setState(state => ({ open: !state.open }));
+    this.setState((state) => ({ open: !state.open }));
   };
 
   handleBlur = () => {
@@ -116,7 +116,7 @@ class FolderEntry extends React.Component<Props, State> {
     }
   };
 
-  handleKeyDown = e => {
+  handleKeyDown = (e) => {
     if (!this.state.renamingDirectory) {
       if (e.keyCode === ARROW_RIGHT) {
         this.setState({ open: true });
@@ -278,7 +278,7 @@ class FolderEntry extends React.Component<Props, State> {
                     {(mutate, { loading }) => {
                       let input;
 
-                      const submit = e => {
+                      const submit = (e) => {
                         track('Dashboard - Folder Renamed');
                         if (e) {
                           e.preventDefault();
@@ -324,7 +324,7 @@ class FolderEntry extends React.Component<Props, State> {
                         <form onSubmit={submit}>
                           <Input
                             block
-                            ref={node => {
+                            ref={(node) => {
                               if (node) {
                                 input = node;
                                 node.focus();
@@ -333,7 +333,7 @@ class FolderEntry extends React.Component<Props, State> {
                             }}
                             defaultValue={name}
                             onBlur={this.handleBlur}
-                            onKeyDown={e => {
+                            onKeyDown={(e) => {
                               if (e.keyCode === ESC) {
                                 this.handleBlur();
                               }
@@ -406,9 +406,9 @@ class FolderEntry extends React.Component<Props, State> {
 }
 
 const entrySource = {
-  canDrag: props => !props.readOnly,
+  canDrag: (props) => !props.readOnly,
 
-  beginDrag: props => {
+  beginDrag: (props) => {
     if (props.closeTree) props.closeTree();
     return {
       path: props.path,

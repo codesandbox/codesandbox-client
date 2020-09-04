@@ -1,7 +1,7 @@
 import React from 'react';
 import IconBase from 'react-icons/IconBase';
 
-export const ProjectViewIcon = props => (
+export const ProjectViewIcon = (props) => (
   <IconBase fill="none" viewBox="0 0 24 24" {...props}>
     <rect
       width={4.998}

@@ -65,7 +65,7 @@ export default () => (
               height: 0;
               position: relative;
               z-index: 2;
-              ${props => props.theme.breakpoints.md} {
+              ${(props) => props.theme.breakpoints.md} {
                 height: auto;
               }
             `}
@@ -81,7 +81,7 @@ export default () => (
               ease: 'easeOut',
             }}
             css={`
-              ${props => props.theme.breakpoints.md} {
+              ${(props) => props.theme.breakpoints.md} {
                 display: none !important;
               }
               z-index: 0;
@@ -193,14 +193,14 @@ export default () => (
     <Border />
     <TweetsWrapper>
       <ul>
-        {tweets.map(tweet => (
+        {tweets.map((tweet) => (
           <li>
             <Quote> "{tweet.quote}"</Quote>
             <div>
               <img
                 src={`https://twitter-avatar-csb.vercel.app/${tweet.username}`}
                 alt={tweet.quote}
-                onError={e => {
+                onError={(e) => {
                   e.target.src = `https://twitter-avatar-csb.vercel.app/codesandbox`;
                 }}
               />

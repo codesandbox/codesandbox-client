@@ -11,7 +11,7 @@ const compareTitle = (
 ) => {
   if (original === test) return true;
 
-  return ignoredExtensions.some(ext => original === `${test}.${ext}`);
+  return ignoredExtensions.some((ext) => original === `${test}.${ext}`);
 };
 
 const throwError = (path: string) => {
@@ -37,10 +37,7 @@ export function resolveDirectory(
   }
 
   // Split path
-  const splitPath = path
-    .replace(/^.\//, '')
-    .split('/')
-    .filter(Boolean);
+  const splitPath = path.replace(/^.\//, '').split('/').filter(Boolean);
 
   const foundDirectoryShortid = splitPath.reduce(
     (dirId: string | undefined, pathPart: string, i: number) => {
@@ -51,7 +48,7 @@ export function resolveDirectory(
 
       if (pathPart === '..') {
         // Find the parent
-        const dir = directories.find(d => d.shortid === dirId);
+        const dir = directories.find((d) => d.shortid === dirId);
         if (dir == null) throwError(path);
 
         return dir.directoryShortid;
@@ -59,10 +56,10 @@ export function resolveDirectory(
 
       const directoriesInDirectory = directories.filter(
         // eslint-disable-next-line eqeqeq
-        m => m.directoryShortid == dirId
+        (m) => m.directoryShortid == dirId
       );
 
-      const nextDirectory = directoriesInDirectory.find(d =>
+      const nextDirectory = directoriesInDirectory.find((d) =>
         compareTitle(d.title, pathPart, [])
       );
 
@@ -73,7 +70,7 @@ export function resolveDirectory(
     startdirectoryShortid
   );
 
-  return directories.find(d => d.shortid === foundDirectoryShortid);
+  return directories.find((d) => d.shortid === foundDirectoryShortid);
 }
 
 export function getModulesAndDirectoriesInDirectory(
@@ -83,11 +80,11 @@ export function getModulesAndDirectoriesInDirectory(
 ) {
   const { path } = directory;
   return {
-    removedModules: modules.filter(moduleItem =>
+    removedModules: modules.filter((moduleItem) =>
       moduleItem.path.startsWith(path)
     ),
     removedDirectories: directories.filter(
-      directoryItem =>
+      (directoryItem) =>
         directoryItem.path.startsWith(path) && directoryItem !== directory
     ),
   };
@@ -108,15 +105,9 @@ export function getModulesInDirectory(
   }
 
   // Split path
-  const splitPath = path
-    .replace(/^.\//, '')
-    .split('/')
-    .filter(Boolean);
+  const splitPath = path.replace(/^.\//, '').split('/').filter(Boolean);
 
-  const dirPath = path
-    .replace(/^.\//, '')
-    .split('/')
-    .filter(Boolean);
+  const dirPath = path.replace(/^.\//, '').split('/').filter(Boolean);
   dirPath.pop();
 
   const dir = resolveDirectory(
@@ -130,7 +121,7 @@ export function getModulesInDirectory(
   const lastPath = splitPath[splitPath.length - 1];
   const modulesInFoundDirectory = modules.filter(
     // eslint-disable-next-line eqeqeq
-    m => m.directoryShortid == foundDirectoryShortid
+    (m) => m.directoryShortid == foundDirectoryShortid
   );
 
   return {
@@ -159,7 +150,7 @@ export const resolveModule = (
   } = getModulesInDirectory(path, modules, directories, startdirectoryShortid);
 
   // Find module with same name
-  const foundModule = modulesInFoundDirectory.find(m =>
+  const foundModule = modulesInFoundDirectory.find((m) =>
     compareTitle(m.title, lastPath, ignoredExtensions)
   );
   if (foundModule) return foundModule;
@@ -167,9 +158,9 @@ export const resolveModule = (
   // Check all directories in said directory for same name
   const directoriesInFoundDirectory = directories.filter(
     // eslint-disable-next-line eqeqeq
-    m => m.directoryShortid == foundDirectoryShortid
+    (m) => m.directoryShortid == foundDirectoryShortid
   );
-  const foundDirectory = directoriesInFoundDirectory.find(m =>
+  const foundDirectory = directoriesInFoundDirectory.find((m) =>
     compareTitle(m.title, lastPath, ignoredExtensions)
   );
 
@@ -177,7 +168,7 @@ export const resolveModule = (
   if (foundDirectory) {
     // Find module named index
     const indexModule = modules.find(
-      m =>
+      (m) =>
         // eslint-disable-next-line eqeqeq
         m.directoryShortid == foundDirectory.shortid &&
         compareTitle(m.title, 'index', ignoredExtensions)
@@ -188,7 +179,7 @@ export const resolveModule = (
 
   if (splitPath[splitPath.length - 1] === '') {
     // Last resort, check if there is something in the same folder called index
-    const indexModule = modulesInFoundDirectory.find(m =>
+    const indexModule = modulesInFoundDirectory.find((m) =>
       compareTitle(m.title, 'index', ignoredExtensions)
     );
     if (indexModule) return indexModule;
@@ -198,14 +189,14 @@ export const resolveModule = (
 };
 
 function findById(entities: Array<Module | Directory>, id: string) {
-  return entities.find(e => e.id === id);
+  return entities.find((e) => e.id === id);
 }
 
 function findByShortid(
   entities: Array<Module | Directory>,
   shortid: string | undefined
 ) {
-  return entities.find(e => e.shortid === shortid);
+  return entities.find((e) => e.shortid === shortid);
 }
 
 const getPath = (
@@ -243,8 +234,8 @@ const getPath = (
 
 const memoizeFunction = (modules, directories, id) =>
   id +
-  modules.map(m => m.id + m.title + m.directoryShortid).join(',') +
-  directories.map(d => d.id + d.title + d.directoryShortid).join(',');
+  modules.map((m) => m.id + m.title + m.directoryShortid).join(',') +
+  directories.map((d) => d.id + d.title + d.directoryShortid).join(',');
 
 export const getModulePath = (
   modules: Array<Module>,
@@ -264,8 +255,8 @@ export const getChildren = memoize(
     directories: Array<Directory> = [],
     id: string
   ) => [
-    ...directories.filter(d => d.directoryShortid === id),
-    ...modules.filter(m => m.directoryShortid === id),
+    ...directories.filter((d) => d.directoryShortid === id),
+    ...modules.filter((m) => m.directoryShortid === id),
   ],
   memoizeFunction
 );
@@ -300,8 +291,8 @@ export const findMainModule = (sandbox?: Sandbox) => {
   );
 
   const defaultOpenModule = defaultOpenedFiles
-    .map(path => resolve(path))
-    .find(module => Boolean(module));
+    .map((path) => resolve(path))
+    .find((module) => Boolean(module));
 
   if (defaultOpenModule) {
     return defaultOpenModule;
@@ -334,13 +325,13 @@ export const findCurrentModule = (
 
   return (
     foundModule ||
-    modules.find(m => m.id === modulePath) ||
-    modules.find(m => m.shortid === modulePath) || // deep-links requires this
+    modules.find((m) => m.id === modulePath) ||
+    modules.find((m) => m.shortid === modulePath) || // deep-links requires this
     mainModule
   );
 };
 
-export const resolveModuleWrapped = sandbox => (path: string) => {
+export const resolveModuleWrapped = (sandbox) => (path: string) => {
   try {
     return resolveModule(path, sandbox.modules, sandbox.directories);
   } catch (e) {
@@ -348,7 +339,7 @@ export const resolveModuleWrapped = sandbox => (path: string) => {
   }
 };
 
-export const resolveDirectoryWrapped = sandbox => (path: string) => {
+export const resolveDirectoryWrapped = (sandbox) => (path: string) => {
   try {
     return resolveDirectory(path, sandbox.modules, sandbox.directories);
   } catch (e) {
@@ -359,7 +350,7 @@ export const resolveDirectoryWrapped = sandbox => (path: string) => {
 const inDirectoryMemoize = (directories, sourceShortid, destinationShortid) =>
   sourceShortid +
   destinationShortid +
-  directories.map(d => d.id + d.title + d.directoryShortid).join(',');
+  directories.map((d) => d.id + d.title + d.directoryShortid).join(',');
 
 export const inDirectory = memoize(
   (directories: Directory[], rootShortid: string, shortid: string) => {

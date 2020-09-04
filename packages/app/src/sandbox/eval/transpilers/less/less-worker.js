@@ -27,11 +27,11 @@ declare var less: {
   render: (code: string) => Promise<string>,
 };
 
-self.addEventListener('message', event => {
+self.addEventListener('message', (event) => {
   const { code, path, files } = event.data;
 
   const context = {
-    addDependency: depPath => {
+    addDependency: (depPath) => {
       self.postMessage({ type: 'add-transpilation-dependency', path: depPath });
     },
   };
@@ -51,7 +51,7 @@ self.addEventListener('message', event => {
           transpiledCode: css,
         })
       )
-      .catch(err =>
+      .catch((err) =>
         self.postMessage({
           type: 'error',
           error: buildWorkerError(err),

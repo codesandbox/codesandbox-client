@@ -6,7 +6,7 @@ export default async (code: string, loaderContext: LoaderContext) => {
   if (!core) {
     const Core = await import(
       /* webpackChunkName: 'css-modules-loader-core' */ 'css-modules-loader-core'
-    ).then(x => x.default);
+    ).then((x) => x.default);
 
     core = new Core();
   }

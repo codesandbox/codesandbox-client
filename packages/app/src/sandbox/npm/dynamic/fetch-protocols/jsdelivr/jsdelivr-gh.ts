@@ -20,7 +20,7 @@ export class JSDelivrGHFetcher implements FetchProtocol {
     const url = `https://cdn.jsdelivr.net/gh/${convertGitHubURLToVersion(
       version
     )}${path}`;
-    const result = await fetchWithRetries(url).then(x => x.text());
+    const result = await fetchWithRetries(url).then((x) => x.text());
 
     return result;
   }
@@ -32,14 +32,14 @@ export class JSDelivrGHFetcher implements FetchProtocol {
         version
       )}/commits/master`
     )
-      .then(x => x.json())
-      .then(x => x.sha);
+      .then((x) => x.json())
+      .then((x) => x.sha);
 
     const url = `https://data.jsdelivr.com/v1/package/gh/${convertGitHubURLToVersion(
       version
     )}@${sha}/flat`;
 
-    const result: JSDelivrMeta = await fetchWithRetries(url).then(x =>
+    const result: JSDelivrMeta = await fetchWithRetries(url).then((x) =>
       x.json()
     );
 

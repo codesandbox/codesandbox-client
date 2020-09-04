@@ -2,7 +2,7 @@ import React, { FunctionComponent, SVGProps } from 'react';
 
 type IconProps = SVGProps<SVGSVGElement>;
 
-export const AmexIcon: FunctionComponent<IconProps> = props => (
+export const AmexIcon: FunctionComponent<IconProps> = (props) => (
   <svg width={58} height={38} fill="none" viewBox="0 0 58 38" {...props}>
     <filter
       id="a"
@@ -45,7 +45,7 @@ export const AmexIcon: FunctionComponent<IconProps> = props => (
   </svg>
 );
 
-export const MasterCardIcon: FunctionComponent<IconProps> = props => (
+export const MasterCardIcon: FunctionComponent<IconProps> = (props) => (
   <svg width={58} height={38} fill="none" viewBox="0 0 58 38" {...props}>
     <filter
       id="a"
@@ -96,7 +96,7 @@ export const MasterCardIcon: FunctionComponent<IconProps> = props => (
   </svg>
 );
 
-export const VisaIcon: FunctionComponent<IconProps> = props => (
+export const VisaIcon: FunctionComponent<IconProps> = (props) => (
   <svg width={58} height={38} fill="none" viewBox="0 0 58 38" {...props}>
     <filter
       id="a"
@@ -140,7 +140,7 @@ export const VisaIcon: FunctionComponent<IconProps> = props => (
   </svg>
 );
 
-export const BlankIcon: FunctionComponent<IconProps> = props => (
+export const BlankIcon: FunctionComponent<IconProps> = (props) => (
   <svg width={58} height={38} fill="none" viewBox="0 0 58 38" {...props}>
     <filter
       id="a"
@@ -194,7 +194,7 @@ export const BlankIcon: FunctionComponent<IconProps> = props => (
   </svg>
 );
 
-export const DiscoverIcon: FunctionComponent<IconProps> = props => (
+export const DiscoverIcon: FunctionComponent<IconProps> = (props) => (
   <svg width={58} height={38} fill="none" viewBox="0 0 58 38" {...props}>
     <filter
       id="a"

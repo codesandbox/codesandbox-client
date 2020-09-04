@@ -10,7 +10,7 @@ const Container = styled.div<{ responsive?: boolean }>`
   width: 100%;
   justify-content: center;
 
-  ${props =>
+  ${(props) =>
     props.responsive &&
     css`
       @media (max-width: 768px) {
@@ -21,7 +21,7 @@ const Container = styled.div<{ responsive?: boolean }>`
 
 const InnerContainer = styled.div<{ width: number }>`
   width: 100%;
-  max-width: ${props => props.width}px;
+  max-width: ${(props) => props.width}px;
 `;
 
 export default ({

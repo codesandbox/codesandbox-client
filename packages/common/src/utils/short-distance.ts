@@ -1,4 +1,4 @@
-export const shortDistance = distance =>
+export const shortDistance = (distance) =>
   // we remove long names for short letters
   distance
     .replace(' years', 'y')

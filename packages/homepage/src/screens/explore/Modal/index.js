@@ -22,7 +22,7 @@ const Container = styled(animated.div)`
 
   background-color: rgba(0, 0, 0, 0.5);
 
-  display: ${props => (props.isOpen ? 'flex' : 'none')};
+  display: ${(props) => (props.isOpen ? 'flex' : 'none')};
 
   justify-content: center;
 `;
@@ -43,7 +43,7 @@ export default class Modal extends React.PureComponent {
     window.removeEventListener('keydown', this.listenForEsc);
   }
 
-  listenForEsc = e => {
+  listenForEsc = (e) => {
     if (e.keyCode === ESC) {
       this.props.onClose();
     }
@@ -60,7 +60,7 @@ export default class Modal extends React.PureComponent {
           config={{ tension: 240, velocity: 10 }}
           native
         >
-          {props => (
+          {(props) => (
             <Container
               role="dialog"
               aria-modal="true"
@@ -69,7 +69,7 @@ export default class Modal extends React.PureComponent {
               isOpen={this.props.isOpen}
             >
               <Content
-                onClick={e => {
+                onClick={(e) => {
                   if (e) {
                     e.stopPropagation();
                   }

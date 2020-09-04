@@ -10,17 +10,17 @@ export const Title = styled.h1`
     margin: 0.5rem 0;
 
     ${textCenter &&
-      css`
-        text-align: center;
-        max-width: 50%;
-        margin: auto;
-      `}
+    css`
+      text-align: center;
+      max-width: 50%;
+      margin: auto;
+    `}
   `};
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     max-width: 80%;
   }
 
-  ${props => props.theme.breakpoints.sm} {
+  ${(props) => props.theme.breakpoints.sm} {
     font-size: 2.1rem;
   }
 `;
@@ -58,11 +58,11 @@ export const Banner = styled.div`
     -webkit-mask-image: -webkit-radial-gradient(white, black);
     overflow: hidden;
 
-    ${props => props.theme.breakpoints.lg} {
+    ${(props) => props.theme.breakpoints.lg} {
       grid-template-columns: ${reverse ? '30% 1fr' : '1fr 30%'};
     }
 
-    ${props => props.theme.breakpoints.md} {
+    ${(props) => props.theme.breakpoints.md} {
       grid-template-columns: 1fr;
       height: auto;
     }
@@ -71,17 +71,17 @@ export const Banner = styled.div`
       display: block;
       filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.4));
 
-      ${props => props.theme.breakpoints.lg} {
+      ${(props) => props.theme.breakpoints.lg} {
         width: 230%;
         ${reverse &&
-          css`
-            transform: translateX(-56%);
-          `};
+        css`
+          transform: translateX(-56%);
+        `};
 
         max-width: initial;
       }
 
-      ${props => props.theme.breakpoints.md} {
+      ${(props) => props.theme.breakpoints.md} {
         transform: translateX(0);
         filter: none;
         max-width: 100%;
@@ -92,7 +92,7 @@ export const Banner = styled.div`
 `;
 
 export const SeoText = styled.p`
-  color: ${props => props.theme.homepage.muted};
+  color: ${(props) => props.theme.homepage.muted};
   font-style: normal;
   font-weight: 500;
   font-size: 1.4375rem;
@@ -108,7 +108,7 @@ export const ContentBlock = styled.div`
     line-height: 1.5rem;
     color: ${theme.homepage.muted};
 
-    ${props => props.theme.breakpoints.md} {
+    ${(props) => props.theme.breakpoints.md} {
       grid-template-columns: 1fr;
     }
 
@@ -134,7 +134,7 @@ export const Tweet = styled.div`
     line-height: 32px;
     align-self: center;
 
-    ${props => props.theme.breakpoints.md} {
+    ${(props) => props.theme.breakpoints.md} {
       padding-top: 2rem;
 
       max-width: 80%;
@@ -174,7 +174,7 @@ export const TitleWrapper = styled.div`
   justify-content: space-between;
   align-items: flex-start;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     display: block;
   }
 `;

@@ -4,12 +4,12 @@ export default function getRequireStatements(metadata) {
   const res = {};
 
   if (metadata.strings) {
-    metadata.strings.forEach(s => {
+    metadata.strings.forEach((s) => {
       res[s.value] = 'direct';
     });
   }
   if (metadata.expressions) {
-    metadata.expressions.forEach(s => {
+    metadata.expressions.forEach((s) => {
       if (s.type === 'BinaryExpression') {
         res[s.left.value] = 'glob';
       } else if (s.type === 'TemplateLiteral') {

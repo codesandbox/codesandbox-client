@@ -28,13 +28,13 @@ export default class Module {
   static _extensions: {
     [ext: string]: (module: Module, filename: string) => void;
   } = {
-    '.js': function(module: Module, filename: string) {
+    '.js': function (module: Module, filename: string) {
       const fs = BrowserFS.BFSRequire('fs');
       const content = fs.readFileSync(filename, 'utf8');
 
       module._compile(content, filename);
     },
-    '.json': function(module: Module, filename: string) {
+    '.json': function (module: Module, filename: string) {
       const fs = BrowserFS.BFSRequire('fs');
       const content = fs.readFileSync(filename, 'utf8');
 
@@ -94,7 +94,7 @@ export default class Module {
 
     require.cache = Module._cache;
 
-    require.resolve = function(request: string) {
+    require.resolve = function (request: string) {
       return Module._resolveFilename(request, _self);
     };
 
@@ -123,7 +123,7 @@ export default class Module {
 
     const result = (0, eval)(newCode).apply(
       this,
-      Object.keys(global).map(m => global[m])
+      Object.keys(global).map((m) => global[m])
     );
 
     (self as any).define = oldamd;

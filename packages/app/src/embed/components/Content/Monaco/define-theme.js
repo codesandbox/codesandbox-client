@@ -2,7 +2,7 @@ import Color from 'color';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
 
-const sanitizeColor = color => {
+const sanitizeColor = (color) => {
   if (!color) {
     return color;
   }
@@ -26,10 +26,10 @@ const colorsAllowed = ({ foreground, background }) => {
   return true;
 };
 
-const getTheme = theme => {
+const getTheme = (theme) => {
   const { tokenColors = [], colors = {} } = theme;
   const rules = tokenColors
-    .filter(t => t.settings && t.scope && colorsAllowed(t.settings))
+    .filter((t) => t.settings && t.scope && colorsAllowed(t.settings))
     .reduce((acc, token) => {
       const settings = {
         foreground: sanitizeColor(token.settings.foreground),
@@ -39,10 +39,10 @@ const getTheme = theme => {
 
       const scope =
         typeof token.scope === 'string'
-          ? token.scope.split(',').map(a => a.trim())
+          ? token.scope.split(',').map((a) => a.trim())
           : token.scope;
 
-      scope.map(s =>
+      scope.map((s) =>
         acc.push({
           token: s,
           ...settings,
@@ -53,7 +53,7 @@ const getTheme = theme => {
     }, []);
 
   const newColors = colors;
-  Object.keys(colors).forEach(c => {
+  Object.keys(colors).forEach((c) => {
     if (newColors[c]) return c;
 
     delete newColors[c];
@@ -68,7 +68,7 @@ const getTheme = theme => {
   };
 };
 
-const getBase = type => {
+const getBase = (type) => {
   if (type === 'dark') {
     return 'vs-dark';
   }

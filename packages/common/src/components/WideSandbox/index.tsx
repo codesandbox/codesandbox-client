@@ -15,7 +15,7 @@ import {
   Author,
 } from './elements';
 
-const getScreenshot = id =>
+const getScreenshot = (id) =>
   `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
 
 /* eslint-disable camelcase */
@@ -75,7 +75,7 @@ export default class WideSandbox extends React.PureComponent<Props> {
     });
   };
 
-  handleKeyUp = e => {
+  handleKeyUp = (e) => {
     if (e.keyCode === ENTER) {
       this.toggleOpen();
     }
@@ -116,7 +116,7 @@ export default class WideSandbox extends React.PureComponent<Props> {
           src={sandbox.screenshot_url || getScreenshot(sandbox.id)}
           color={template.color()}
           style={{ height: this.state.imageLoaded ? 'auto' : defaultHeight }}
-          ref={img => {
+          ref={(img) => {
             if (img && img.complete) {
               this.setState({ imageLoaded: true });
             }

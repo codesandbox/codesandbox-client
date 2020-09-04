@@ -13,9 +13,9 @@ fetch('https://deploy-api.ops.csb.dev/image', {
     deploy: true,
   }),
 })
-  .then(x => {
+  .then((x) => {
     if (!x.ok) {
-      return x.json().then(res => {
+      return x.json().then((res) => {
         console.error(res);
         throw new Error('Request failed');
       });
@@ -23,12 +23,12 @@ fetch('https://deploy-api.ops.csb.dev/image', {
 
     return x.json();
   })
-  .then(res => {
+  .then((res) => {
     // eslint-disable-next-line
     console.log(res);
     process.exit(0);
   })
-  .catch(e => {
+  .catch((e) => {
     console.error(e);
     process.exit(1);
   });

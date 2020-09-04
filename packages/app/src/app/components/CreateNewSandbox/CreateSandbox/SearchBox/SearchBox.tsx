@@ -36,7 +36,7 @@ export const SearchBox = ({
       noValidate
       action=""
       role="search"
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.preventDefault();
       }}
     >

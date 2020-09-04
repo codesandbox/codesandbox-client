@@ -17,7 +17,7 @@ export const Files: React.FC<IFilesProps> = ({ setEditActions }) => {
 
   const { currentSandbox: sandbox } = editorState;
 
-  const _getModulePath = moduleId => {
+  const _getModulePath = (moduleId) => {
     try {
       return getModulePath(sandbox.modules, sandbox.directories, moduleId);
     } catch (e) {

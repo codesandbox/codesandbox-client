@@ -112,11 +112,11 @@ export default class Content extends React.PureComponent<Props, State> {
   getInitTabs = (props: Props) => {
     let tabs: Array<Module> = [];
     const module = props.sandbox.modules.find(
-      m => m.id === props.currentModule.id
+      (m) => m.id === props.currentModule.id
     );
     if (props.tabs) {
       tabs = props.tabs
-        .map(modulePath => {
+        .map((modulePath) => {
           try {
             return resolveModule(
               modulePath,
@@ -130,7 +130,10 @@ export default class Content extends React.PureComponent<Props, State> {
         .filter(Boolean);
     } else if (props.sandbox.modules.length <= 5 || !module) {
       // Show all tabs if there are not many files
-      tabs = [module, ...props.sandbox.modules.filter(m => m.id !== module.id)];
+      tabs = [
+        module,
+        ...props.sandbox.modules.filter((m) => m.id !== module.id),
+      ];
     } else {
       tabs = [module];
     }
@@ -169,12 +172,12 @@ export default class Content extends React.PureComponent<Props, State> {
 
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (this.props.currentModule !== nextProps.currentModule) {
-      if (!this.state.tabs.some(x => x.id === nextProps.currentModule.id)) {
+      if (!this.state.tabs.some((x) => x.id === nextProps.currentModule.id)) {
         const module = nextProps.sandbox.modules.find(
-          m => m.id === nextProps.currentModule.id
+          (m) => m.id === nextProps.currentModule.id
         );
         if (module) {
-          this.setState(state => ({
+          this.setState((state) => ({
             tabs: [...state.tabs, module],
           }));
         }
@@ -349,7 +352,9 @@ export default class Content extends React.PureComponent<Props, State> {
         this.state.tabs[0];
       this.props.setCurrentModule(newModule.id);
     }
-    this.setState(state => ({ tabs: state.tabs.filter((_, i) => i !== pos) }));
+    this.setState((state) => ({
+      tabs: state.tabs.filter((_, i) => i !== pos),
+    }));
   };
 
   onCodeEditorInitialized = (editor: Editor) => {
@@ -371,7 +376,7 @@ export default class Content extends React.PureComponent<Props, State> {
     }
   };
 
-  setEditorSize = editorSize => {
+  setEditorSize = (editorSize) => {
     this.setState({
       editorSize,
     });
@@ -423,7 +428,7 @@ export default class Content extends React.PureComponent<Props, State> {
     let views = getPreviewTabs(sandbox, parsedConfigurations);
 
     const sandboxConfig = sandbox.modules.find(
-      x => x.directoryShortid == null && x.title === 'sandbox.config.json'
+      (x) => x.directoryShortid == null && x.title === 'sandbox.config.json'
     );
 
     let view = 'browser';
@@ -465,7 +470,7 @@ export default class Content extends React.PureComponent<Props, State> {
 
     const browserConfig: IViewType = {
       id: 'codesandbox.browser',
-      title: options =>
+      title: (options) =>
         options.port ? `Browser (:${options.port})` : `Browser`,
       Content: ({ hidden, options }: DevToolProps) => (
         <BasePreview
@@ -518,13 +523,13 @@ export default class Content extends React.PureComponent<Props, State> {
 
               {this.state.tabs.map((module, i) => {
                 const tabsWithSameName = this.state.tabs.filter(
-                  m => m.title === module.title
+                  (m) => m.title === module.title
                 );
                 let dirName = null;
 
                 if (tabsWithSameName.length > 1 && module.directoryShortid) {
                   const dir = sandbox.directories.find(
-                    d => d.shortid === module.directoryShortid
+                    (d) => d.shortid === module.directoryShortid
                   );
                   if (dir) {
                     dirName = dir.title;

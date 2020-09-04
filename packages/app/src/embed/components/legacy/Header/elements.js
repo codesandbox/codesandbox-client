@@ -20,11 +20,11 @@ export const Container = styled.div`
 
   padding: 0 1rem;
   box-sizing: border-box;
-  background-color: ${props => props.theme['editor.background']};
+  background-color: ${(props) => props.theme['editor.background']};
 
   /* compatibility mode for the redesign */
   height: calc(32px + 1px);
-  border-bottom: 1px solid ${props => props.theme['sideBar.border']};
+  border-bottom: 1px solid ${(props) => props.theme['sideBar.border']};
 `;
 
 export const LeftAligned = styled.div`
@@ -81,7 +81,7 @@ export const Title = styled.div`
 
 export const OnlyShowWideText = styled.span`
   margin-left: 0.4rem;
-  @media (max-width: ${props => props.hideOn || 400}px) {
+  @media (max-width: ${(props) => props.hideOn || 400}px) {
     display: none;
   }
 `;
@@ -120,7 +120,7 @@ export const MenuIcon = styled(MenuIconSVG)(
 
 export const LinkIcon = styled(LinkIconSVG)(css({}));
 
-export const HeartButton = styled(Button)(props =>
+export const HeartButton = styled(Button)((props) =>
   css({
     '&:hover': {
       svg: {
@@ -130,13 +130,13 @@ export const HeartButton = styled(Button)(props =>
   })
 );
 
-export const HeartIcon = styled(HeartIconSVG)(props =>
+export const HeartIcon = styled(HeartIconSVG)((props) =>
   css({
     color: props.liked ? 'reds.300' : 'grays.400',
   })
 );
 
-const ModeStyleStyles = props =>
+const ModeStyleStyles = (props) =>
   css({
     color: props.active ? 'white' : 'grays.400',
     borderRadius: 2,
@@ -147,7 +147,7 @@ const ModeStyleStyles = props =>
     },
     path: {
       transitionProperty: 'fill',
-      transitionDuration: theme => theme.speed[2],
+      transitionDuration: (theme) => theme.speed[2],
     },
   });
 

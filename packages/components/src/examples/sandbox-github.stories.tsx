@@ -18,7 +18,7 @@ export default {
   title: 'examples/SandboxGithub',
 };
 
-const Sidebar = props => (
+const Sidebar = (props) => (
   <Element
     as="aside"
     css={{

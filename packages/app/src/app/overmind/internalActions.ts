@@ -35,8 +35,8 @@ export const initializeNewUser: AsyncAction = async ({
   effects.analytics.setUserId(state.user!.id, state.user!.email);
 
   try {
-    actions.internal.trackCurrentTeams().catch(e => {});
-    actions.internal.identifyCurrentUser().catch(e => {});
+    actions.internal.trackCurrentTeams().catch((e) => {});
+    actions.internal.identifyCurrentUser().catch((e) => {});
   } catch (e) {
     // Not majorly important
   }
@@ -252,7 +252,7 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   // This can happen when a sandbox is opened that's different from the current
   // sandbox, with completely different files
   if (
-    !sandbox.modules.find(module => module.shortid === currentModuleShortid)
+    !sandbox.modules.find((module) => module.shortid === currentModuleShortid)
   ) {
     const defaultModule = defaultOpenedModule(sandbox, parsedConfigs);
 

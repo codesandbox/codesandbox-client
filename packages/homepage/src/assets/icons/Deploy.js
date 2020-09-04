@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../components/layout';
 
-const Deploy = props => {
+const Deploy = (props) => {
   const white = useTheme().homepage.white;
   return (
     <svg width={188} height={82} fill="none" viewBox="0 0 188 82" {...props}>

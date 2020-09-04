@@ -48,14 +48,15 @@ export const useFilteredItems = (
     const parent = path.split('/').pop();
     const folderFolders =
       allCollections?.filter(
-        collection => collection.level === level && collection.parent === parent
+        (collection) =>
+          collection.level === level && collection.parent === parent
       ) || [];
 
-    const sortedFolders = orderBy(folderFolders, 'name').sort(a => 1);
+    const sortedFolders = orderBy(folderFolders, 'name').sort((a) => 1);
 
     const decoratedFolders = sortedFolders
-      .filter(folder => folder.path !== '/')
-      .map(folder => ({
+      .filter((folder) => folder.path !== '/')
+      .map((folder) => ({
         type: 'folder' as 'folder',
         ...folder,
       }));
@@ -63,7 +64,7 @@ export const useFilteredItems = (
     const decoratedSandboxes =
       typeof folderSandboxes === 'undefined'
         ? [skeletonRow]
-        : sandboxesForPath.map(sandbox => ({
+        : sandboxesForPath.map((sandbox) => ({
             type: 'sandbox' as 'sandbox',
             sandbox,
           }));

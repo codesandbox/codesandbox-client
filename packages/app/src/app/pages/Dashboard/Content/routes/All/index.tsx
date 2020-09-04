@@ -64,7 +64,7 @@ export const AllPage = () => {
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   const currentCollection = allCollections?.find(
-    c => c.path === '/' + currentPath
+    (c) => c.path === '/' + currentPath
   );
 
   const pageType: PageTypes = 'sandboxes';

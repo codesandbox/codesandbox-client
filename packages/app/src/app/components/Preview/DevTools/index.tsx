@@ -204,7 +204,7 @@ export class DevTools extends React.PureComponent<Props, State> {
 
   setHidden = (hidden: boolean) => {
     if (!hidden) {
-      return this.setState(state => ({
+      return this.setState((state) => ({
         status: {
           ...state.status,
           [this.getCurrentPane().id]: null,
@@ -252,7 +252,7 @@ export class DevTools extends React.PureComponent<Props, State> {
       unread = count;
     }
 
-    this.setState(state => ({
+    this.setState((state) => ({
       status: {
         ...state.status,
         [id]: {
@@ -276,7 +276,7 @@ export class DevTools extends React.PureComponent<Props, State> {
       const { clientY } = event;
       unFocus(document, window);
       // @ts-ignore
-      this.setState(state => ({
+      this.setState((state) => ({
         startY: clientY,
         startHeight: state.height,
         mouseDown: true,
@@ -446,7 +446,7 @@ export class DevTools extends React.PureComponent<Props, State> {
 
     return (
       <Container
-        ref={el => {
+        ref={(el) => {
           this.node = el || this.node;
 
           if (this.node) {

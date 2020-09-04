@@ -36,7 +36,7 @@ export const Curator: FunctionComponent = withTheme(({ theme }) => {
   const [showPicker, setShowPicker] = useState(false);
 
   const fetchPopularSandboxes = useCallback(
-    date => {
+    (date) => {
       popularSandboxesMounted(date);
     },
     [popularSandboxesMounted]
@@ -54,7 +54,7 @@ export const Curator: FunctionComponent = withTheme(({ theme }) => {
   );
 
   const handleDayClick = useCallback(
-    date => {
+    (date) => {
       fetchPopularSandboxes(getTime(new Date(date)));
 
       setSelectedDate(date);
@@ -109,7 +109,7 @@ export const Curator: FunctionComponent = withTheme(({ theme }) => {
               >
                 Last 6 Months
               </Button>
-              <Button onClick={() => setShowPicker(show => !show)} autoWidth>
+              <Button onClick={() => setShowPicker((show) => !show)} autoWidth>
                 {selectedDate
                   ? format(new Date(selectedDate), 'dd/MM/yyyy')
                   : 'Custom'}
@@ -126,7 +126,7 @@ export const Curator: FunctionComponent = withTheme(({ theme }) => {
 
             {popularSandboxes ? (
               <Container>
-                {popularSandboxes.sandboxes.map(sandbox => (
+                {popularSandboxes.sandboxes.map((sandbox) => (
                   <SandboxCard
                     key={sandbox.id}
                     {...sandbox}

@@ -29,7 +29,7 @@ const highlightLines = (
   cm: typeof CodeMirror,
   highlightedLines: Array<number>
 ) => {
-  highlightedLines.forEach(line => {
+  highlightedLines.forEach((line) => {
     cm.addLineClass(+line - 1, 'background', 'cm-line-highlight');
   });
 };
@@ -60,7 +60,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
 
   setupCodeSandboxListener = () => listen(this.handleMessage);
 
-  handleMessage = action => {
+  handleMessage = (action) => {
     if (action.action === 'editor.open-module') {
       try {
         const module = resolveModule(
@@ -124,7 +124,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
       this.codemirror.removeLineClass(i, 'background', 'cm-line-error');
     });
 
-    errors.forEach(error => {
+    errors.forEach((error) => {
       if (error.line !== 0 && error.line <= codeLines.length) {
         this.codemirror.addLineClass(
           error.line - 1,
@@ -162,7 +162,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
 
         if (version === code) {
           updateLinting(
-            markers.map(error => ({
+            markers.map((error) => ({
               message: `eslint: ${error.message}`,
               severity: error.severity === 2 ? 'warning' : 'error',
               from: new CodeMirror.Pos(
@@ -182,7 +182,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
 
   changeSettings = async (settings: $PropertyType<Props, 'settings'>) => {
     const defaultKeys = {
-      'Cmd-/': cm => {
+      'Cmd-/': (cm) => {
         cm.listSelections().forEach(() => {
           cm.toggleComment({ lineComment: '//' });
         });
@@ -192,13 +192,13 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
       },
     };
 
-    const updateArgHints = cm => {
+    const updateArgHints = (cm) => {
       if (this.server) {
         this.server.updateArgHints(cm);
       }
     };
 
-    const showAutoComplete = cm => {
+    const showAutoComplete = (cm) => {
       if (this.server) {
         const filter = new RegExp('[.a-z_$]', 'i');
 
@@ -249,28 +249,28 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
       this.codemirror.on('cursorActivity', updateArgHints);
       this.codemirror.on('inputRead', showAutoComplete);
       this.codemirror.setOption('extraKeys', {
-        'Ctrl-Space': cm => {
+        'Ctrl-Space': (cm) => {
           if (this.server) this.server.complete(cm);
         },
-        'Ctrl-I': cm => {
+        'Ctrl-I': (cm) => {
           if (this.server) this.server.showType(cm);
         },
-        'Ctrl-O': cm => {
+        'Ctrl-O': (cm) => {
           if (this.server) this.server.showDocs(cm);
         },
-        'Alt-.': cm => {
+        'Alt-.': (cm) => {
           if (this.server) this.server.jumpToDef(cm);
         },
-        'Alt-,': cm => {
+        'Alt-,': (cm) => {
           if (this.server) this.server.jumpBack(cm);
         },
-        'Ctrl-Q': cm => {
+        'Ctrl-Q': (cm) => {
           if (this.server) this.server.rename(cm);
         },
-        'Ctrl-.': cm => {
+        'Ctrl-.': (cm) => {
           if (this.server) this.server.selectName(cm);
         },
-        Tab: cm => {
+        Tab: (cm) => {
           // Indent, or place 2 spaces
           if (cm.somethingSelected()) {
             cm.indentSelection('add');
@@ -515,7 +515,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
               height: '100%',
               fontSize: settings.fontSize || 14,
             }}
-            ref={node => {
+            ref={(node) => {
               this.codemirrorElement = node;
             }}
           />

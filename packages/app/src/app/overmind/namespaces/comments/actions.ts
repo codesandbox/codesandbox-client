@@ -73,7 +73,7 @@ export const updateComment: AsyncAction<{
       content: comment.content,
       sandboxId,
       codeReferences: [],
-      userReferences: Object.keys(mentions).map(username => ({
+      userReferences: Object.keys(mentions).map((username) => ({
         username,
         userId: mentions[username].id,
       })),
@@ -125,7 +125,7 @@ export const getCommentReplies: AsyncAction<string> = async (
         })
     );
 
-    comment.comments.forEach(childComment => {
+    comment.comments.forEach((childComment) => {
       state.comments.comments[sandbox.id][childComment.id] = childComment;
     });
   } catch (e) {
@@ -474,7 +474,7 @@ export const saveComment: AsyncAction<CommentFragment> = async (
             head: (reference.metadata as CodeReferenceMetadata).head,
             path: (reference.metadata as CodeReferenceMetadata).path,
             lastUpdatedAt: state.editor.currentSandbox!.modules.find(
-              module =>
+              (module) =>
                 module.path ===
                 (reference.metadata as CodeReferenceMetadata).path
             )!.updatedAt,
@@ -509,7 +509,7 @@ export const saveComment: AsyncAction<CommentFragment> = async (
             code: metadata.code,
             path: metadata.path,
             lastUpdatedAt: state.editor.currentSandbox!.modules.find(
-              module => module.path === metadata.path
+              (module) => module.path === metadata.path
             )!.updatedAt,
           },
         });
@@ -675,9 +675,9 @@ export const getSandboxComments: AsyncAction<string> = async (
   // When we load the comments there might be changes already, lets make sure we transpose
   // any comments on these changes. This does not fix it if you already managed to save, but
   // that is considered an extreme edge case
-  state.editor.changedModuleShortids.forEach(moduleShortid => {
+  state.editor.changedModuleShortids.forEach((moduleShortid) => {
     const module = state.editor.currentSandbox!.modules.find(
-      moduleItem => moduleItem.shortid === moduleShortid
+      (moduleItem) => moduleItem.shortid === moduleShortid
     );
 
     if (!module) {
@@ -702,7 +702,7 @@ export const onCommentAdded: Action<CommentAddedSubscription> = (
     }
 
     const module = sandbox.modules.find(
-      moduleItem => moduleItem.path === metadata.path
+      (moduleItem) => moduleItem.path === metadata.path
     );
 
     if (!module) {
@@ -751,7 +751,7 @@ export const transposeComments: Action<{
     return;
   }
   const comments = state.comments.fileComments[module.path] || [];
-  comments.forEach(fileComment => {
+  comments.forEach((fileComment) => {
     const range = new Selection.Range(...fileComment.range);
     const newRange = range.transform(operation);
     const comment = state.comments.comments[sandbox.id][fileComment.commentId];

@@ -7,7 +7,7 @@ import { SIDEBAR_WIDTH } from '../../Sidebar/constants';
 
 export const DragPreview = ({ name, viewMode, thumbnailRef }) => {
   const { isDragging, initialOffset, currentOffset } = useDragLayer(
-    monitor => ({
+    (monitor) => ({
       initialOffset: monitor.getInitialSourceClientOffset(),
       currentOffset: monitor.getSourceClientOffset(),
       isDragging: monitor.isDragging(),

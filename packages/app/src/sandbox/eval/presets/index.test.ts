@@ -54,11 +54,11 @@ describe('preset', () => {
   describe('query', () => {
     const preset = new Preset('test', [], {});
 
-    preset.registerTranspiler(t => t.path.endsWith('.js'), [
+    preset.registerTranspiler((t) => t.path.endsWith('.js'), [
       { transpiler: createDummyTranspiler('babel-loader') },
     ]);
 
-    preset.registerTranspiler(t => t.path.endsWith('.css'), [
+    preset.registerTranspiler((t) => t.path.endsWith('.css'), [
       { transpiler: createDummyTranspiler('style-loader') },
       { transpiler: createDummyTranspiler('modules-loader') },
     ]);

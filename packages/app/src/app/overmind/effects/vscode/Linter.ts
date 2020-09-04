@@ -6,8 +6,8 @@ import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8]
 
 import { getCurrentModelPath } from './utils';
 
-const requireAMDModule = paths =>
-  new Promise(resolve => (window as any).require(paths, () => resolve()));
+const requireAMDModule = (paths) =>
+  new Promise((resolve) => (window as any).require(paths, () => resolve()));
 
 export class Linter {
   private worker: LinterWorker;
@@ -31,7 +31,7 @@ export class Linter {
     return null;
   }
 
-  private onMessage = event => {
+  private onMessage = (event) => {
     const { markers, version } = event.data;
     const activeEditor = this.editor.getActiveCodeEditor();
 
@@ -41,7 +41,7 @@ export class Linter {
       );
 
       if (version === activeEditor.getModel().getVersionId()) {
-        markers.forEach(marker => {
+        markers.forEach((marker) => {
           dispatch(
             actions.correction.show(marker.message, {
               line: marker.startLineNumber,
@@ -94,7 +94,7 @@ export class Linter {
       if (kind[1] === 'vue') {
         if (
           this.monaco.languages.getLanguages &&
-          !this.monaco.languages.getLanguages().find(l => l.id === 'vue')
+          !this.monaco.languages.getLanguages().find((l) => l.id === 'vue')
         ) {
           await requireAMDModule(['vs/language/vue/monaco.contribution']);
         }

@@ -81,7 +81,7 @@ export const GitHub = () => {
       gitChanges.deleted.length
     : 0;
 
-  const conflictPaths = conflicts.map(conflict => '/' + conflict.filename);
+  const conflictPaths = conflicts.map((conflict) => '/' + conflict.filename);
 
   if (!isLoggedIn) return <NotLoggedIn />;
   if (!owned) return <NotOwner />;
@@ -158,7 +158,7 @@ export const GitHub = () => {
           <Element>
             <Stack direction="vertical">
               <List paddingBottom={6}>
-                {conflicts.map(conflict => (
+                {conflicts.map((conflict) => (
                   <ListItem
                     gap={2}
                     key={conflict.filename}

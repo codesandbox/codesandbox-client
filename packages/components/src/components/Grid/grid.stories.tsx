@@ -126,8 +126,9 @@ export const ImageGallery = () => (
           height: 150,
           width: '100%',
           backgroundSize: 'cover',
-          backgroundImage: `url(https://i.picsum.photos/id/${index +
-            100}/200/200.jpg)`,
+          backgroundImage: `url(https://i.picsum.photos/id/${
+            index + 100
+          }/200/200.jpg)`,
         }}
       />
     ))}

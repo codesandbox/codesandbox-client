@@ -12,7 +12,7 @@ class CSSTranspiler extends Transpiler {
   doTranspilation(code: string, loaderContext: LoaderContext) {
     return import(
       /* webpackChunkName: 'css-loader' */ './loader'
-    ).then(loader => loader.default(code, loaderContext));
+    ).then((loader) => loader.default(code, loaderContext));
   }
 }
 

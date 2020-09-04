@@ -31,7 +31,7 @@ export const LikedSandboxes = ({ menuControls }) => {
     []
   )
     // only show public sandboxes on profile
-    .filter(sandbox => sandbox.privacy === 0);
+    .filter((sandbox) => sandbox.privacy === 0);
 
   return (
     <Stack as="section" direction="vertical" gap={6}>

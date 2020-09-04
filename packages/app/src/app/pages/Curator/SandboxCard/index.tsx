@@ -90,7 +90,7 @@ export const SandboxCard: React.FC<Props> = ({
     return `Generating Screenshot...`;
   }, [template]);
 
-  const openUser = useCallback(username => {
+  const openUser = useCallback((username) => {
     const url = profileUrl(username);
 
     window.open(url, '_blank');

@@ -76,7 +76,7 @@ class BabelTranspiler extends WorkerTranspiler {
           !hasNewSyntax(newCode, path) &&
           !(isESModule(newCode) && !convertedToEsmodule)
         ) {
-          regexGetRequireStatements(newCode).forEach(dependency => {
+          regexGetRequireStatements(newCode).forEach((dependency) => {
             if (dependency.isGlob) {
               loaderContext.addDependenciesInDirectory(dependency.path);
             } else {
@@ -117,7 +117,7 @@ class BabelTranspiler extends WorkerTranspiler {
         loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
 
       const hasMacros = Object.keys(dependencies).some(
-        d => d.indexOf('macro') > -1 || d.indexOf('codegen') > -1
+        (d) => d.indexOf('macro') > -1 || d.indexOf('codegen') > -1
       );
 
       const babelConfig = getBabelConfig(
@@ -157,7 +157,7 @@ class BabelTranspiler extends WorkerTranspiler {
   }
 
   async getTranspilerContext(manager: Manager): Promise<any> {
-    return new Promise(async resolve => {
+    return new Promise(async (resolve) => {
       const baseConfig = await super.getTranspilerContext(manager);
 
       const babelTranspilerOptions =

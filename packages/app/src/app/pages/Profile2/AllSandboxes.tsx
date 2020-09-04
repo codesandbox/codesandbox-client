@@ -30,7 +30,7 @@ export const AllSandboxes = ({ menuControls }) => {
     },
   } = useOvermind();
 
-  const featuredSandboxIds = featuredSandboxes.map(sandbox => sandbox.id);
+  const featuredSandboxIds = featuredSandboxes.map((sandbox) => sandbox.id);
 
   // explicitly call it on first page render
   React.useEffect(() => {
@@ -43,9 +43,9 @@ export const AllSandboxes = ({ menuControls }) => {
     []
   )
     // filter out featured sandboxes so that we don't show them twice
-    .filter(sandbox => !featuredSandboxIds.includes(sandbox.id))
+    .filter((sandbox) => !featuredSandboxIds.includes(sandbox.id))
     // only show public sandboxes on profile
-    .filter(sandbox => sandbox.privacy === 0);
+    .filter((sandbox) => sandbox.privacy === 0);
 
   return (
     <Stack as="section" direction="vertical" gap={6}>

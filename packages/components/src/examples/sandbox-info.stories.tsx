@@ -21,7 +21,7 @@ export default {
   title: 'examples/SandboxInfo',
 };
 
-const GlobeIcon = props => (
+const GlobeIcon = (props) => (
   <svg width={10} height={10} fill="none" viewBox="0 0 10 10" {...props}>
     <path
       fill="currentcolor"

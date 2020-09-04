@@ -27,7 +27,7 @@ function getImplicitCollectionIdFromFolder(
     pathname.replace(collectionPathRegex, '')
   );
 
-  const collection = collections.find(c => c.path === collectionPath);
+  const collection = collections.find((c) => c.path === collectionPath);
 
   return collection;
 }

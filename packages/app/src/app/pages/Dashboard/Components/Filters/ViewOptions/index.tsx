@@ -33,7 +33,7 @@ export const ViewOptions: FunctionComponent = React.memo(() => {
           {viewMode === 'grid' ? <GridIcon /> : <ListIcon />}
         </Menu.Button>
         <Menu.List>
-          {STATES.map(viewState => (
+          {STATES.map((viewState) => (
             <Menu.Item
               key={viewState.key}
               field={viewState.key}

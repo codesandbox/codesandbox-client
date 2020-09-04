@@ -14,7 +14,7 @@ export const AuthorName = styled.span<{ useBigName?: boolean }>`
   align-items: center;
   margin: 0 0.75em;
 
-  ${props =>
+  ${(props) =>
     props.useBigName &&
     css`
       margin: 0 0.75em;
@@ -29,7 +29,7 @@ export const Names = styled.div`
 `;
 
 export const Username = styled.div<{ hasTwoNames?: boolean }>`
-  ${props =>
+  ${(props) =>
     props.hasTwoNames &&
     css`
       opacity: 0.7;

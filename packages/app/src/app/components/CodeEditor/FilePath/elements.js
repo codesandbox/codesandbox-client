@@ -23,14 +23,14 @@ export const Chevron = styled(ChevronLeft)`
   opacity: 0;
   cursor: pointer;
 
-  ${props => props.hovering === 'true' && 'opacity: 1;'};
+  ${(props) => props.hovering === 'true' && 'opacity: 1;'};
 
   transform: rotateZ(
-    ${props => (props.workspacehidden === 'true' ? '180deg' : '0')}
+    ${(props) => (props.workspacehidden === 'true' ? '180deg' : '0')}
   );
   &:hover {
     transform: rotateZ(
-      ${props => (props.workspacehidden === 'true' ? '135deg' : '45deg')}
+      ${(props) => (props.workspacehidden === 'true' ? '135deg' : '45deg')}
     );
     color: white;
   }
@@ -38,7 +38,7 @@ export const Chevron = styled(ChevronLeft)`
 
 export const FileName = styled.div`
   transition: 0.3s ease transform;
-  transform: ${props => (props.hovering ? 'translateX(20px)' : 'none')};
+  transform: ${(props) => (props.hovering ? 'translateX(20px)' : 'none')};
   flex: 1;
 `;
 

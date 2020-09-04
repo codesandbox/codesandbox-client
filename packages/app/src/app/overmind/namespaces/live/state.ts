@@ -54,10 +54,10 @@ export const state: State = {
   liveUser: derived(
     (currentState: State) =>
       currentState.roomInfo?.users.find(
-        u => u.id === currentState.liveUserId
+        (u) => u.id === currentState.liveUserId
       ) || null
   ),
-  isEditor: derived((currentState: State) => liveUserId =>
+  isEditor: derived((currentState: State) => (liveUserId) =>
     Boolean(
       currentState.isLive &&
         currentState.roomInfo &&
@@ -87,7 +87,7 @@ export const state: State = {
 
     const { liveUserId } = currentState;
 
-    currentState.roomInfo.users.forEach(user => {
+    currentState.roomInfo.users.forEach((user) => {
       const userId = user.id;
       if (user && userId !== liveUserId && user.currentModuleShortid) {
         usersByModule[user.currentModuleShortid] =

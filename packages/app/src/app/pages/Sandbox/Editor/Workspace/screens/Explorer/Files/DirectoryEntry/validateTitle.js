@@ -16,7 +16,9 @@ export default (id, title, siblings = []) => {
     return "The title can't include slash or backslash";
   }
 
-  if (siblings.find(sibling => sibling.title === title && sibling.id !== id)) {
+  if (
+    siblings.find((sibling) => sibling.title === title && sibling.id !== id)
+  ) {
     return `A file or folder ${title} already exists at this location`;
   }
 

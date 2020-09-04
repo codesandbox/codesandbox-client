@@ -26,7 +26,7 @@ export function FileErrors({ file, corrections }: Props) {
   const fileName = splittedPath.pop();
 
   const sortedCorrections = React.useMemo(
-    () => sortBy(corrections, s => severityToNumber[s.severity]),
+    () => sortBy(corrections, (s) => severityToNumber[s.severity]),
     [corrections]
   );
 
@@ -40,7 +40,7 @@ export function FileErrors({ file, corrections }: Props) {
         <Actions>
           <Tooltip content="Open File">
             <FileIcon
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 dispatch(actions.editor.openModule(file));
               }}
@@ -60,7 +60,7 @@ export function FileErrors({ file, corrections }: Props) {
         }}
         show={show}
       >
-        {sortedCorrections.map(message => (
+        {sortedCorrections.map((message) => (
           <ProblemMessage
             key={message.message + (message.line || 0) + (message.column || 0)}
             message={message}

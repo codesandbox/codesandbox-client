@@ -37,8 +37,8 @@ const Content = makeBorderedContainer(
     white-space: pre-wrap;
     justify-content: center;
     align-items: center;
-    min-height: ${props => props.minHeight}px;
-    min-width: ${props => props.minWidth}px;
+    min-height: ${(props) => props.minHeight}px;
+    min-width: ${(props) => props.minWidth}px;
   `,
   'green'
 );

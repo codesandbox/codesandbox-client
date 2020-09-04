@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../components/layout';
 
-const VSCode = props => {
+const VSCode = (props) => {
   const { white, muted } = useTheme().homepage;
   return (
     <svg width={111} height={110} fill="none" viewBox="0 0 111 110" {...props}>

@@ -25,7 +25,7 @@ export function removeListener(element) {
   element.removeEventListener('mousewheel', preventScroll);
 }
 
-export default function(element) {
+export default function (element) {
   // Add the event listener which gets triggered when using the trackpad
   element.addEventListener('mousewheel', preventScroll, false);
 }

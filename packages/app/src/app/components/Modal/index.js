@@ -100,7 +100,7 @@ class ModalComponent extends React.Component {
         <GlobalStyles />
         <Modal
           isOpen={isOpen}
-          onRequestClose={e => {
+          onRequestClose={(e) => {
             onClose(e.type === 'keydown');
           }}
           contentLabel={title || 'Modal'}

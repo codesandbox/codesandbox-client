@@ -26,7 +26,7 @@ export default async ({
         version,
         browser,
       },
-      err => {
+      (err) => {
         if (err) {
           console.error(err);
           reject();

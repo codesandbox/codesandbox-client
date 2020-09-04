@@ -24,7 +24,7 @@ export default function initialize() {
     }
   );
 
-  preactPreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  preactPreset.registerTranspiler((module) => /\.m?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {
@@ -77,7 +77,7 @@ export default function initialize() {
     '/routes',
   ];
 
-  const cssModulesRegex = extension =>
+  const cssModulesRegex = (extension) =>
     new RegExp(`^(${cssModulesPaths.join('|')})\\/.*\\.${extension}$`);
 
   const cssTypes = {
@@ -87,9 +87,9 @@ export default function initialize() {
     styl: [{ transpiler: stylusTranspiler }],
   };
 
-  Object.keys(cssTypes).forEach(cssType => {
+  Object.keys(cssTypes).forEach((cssType) => {
     preactPreset.registerTranspiler(
-      module => cssModulesRegex(cssType).test(module.path),
+      (module) => cssModulesRegex(cssType).test(module.path),
       [
         ...cssTypes[cssType],
         { transpiler: stylesTranspiler, options: { module: true } },
@@ -97,12 +97,12 @@ export default function initialize() {
     );
 
     preactPreset.registerTranspiler(
-      module => new RegExp(`\\.${cssType}$`).test(module.path),
+      (module) => new RegExp(`\\.${cssType}$`).test(module.path),
       [...cssTypes[cssType], { transpiler: stylesTranspiler }]
     );
   });
 
-  preactPreset.registerTranspiler(module => /\.json/.test(module.path), [
+  preactPreset.registerTranspiler((module) => /\.json/.test(module.path), [
     { transpiler: jsonTranspiler },
   ]);
 

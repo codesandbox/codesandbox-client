@@ -50,7 +50,7 @@ export const PickSandboxModal: FunctionComponent = () => {
             marginTop={2}
             id="title"
             name="title"
-            onChange={e => setTitle(e.target.value)}
+            onChange={(e) => setTitle(e.target.value)}
             required
             value={title}
           />
@@ -66,7 +66,7 @@ export const PickSandboxModal: FunctionComponent = () => {
             marginTop={2}
             id="description"
             name="description"
-            onChange={e => setDescription(e.target.value)}
+            onChange={(e) => setDescription(e.target.value)}
             required
             rows={3}
             value={description}

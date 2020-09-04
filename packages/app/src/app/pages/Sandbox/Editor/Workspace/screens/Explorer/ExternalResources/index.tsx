@@ -18,7 +18,7 @@ import CrossIcon from 'react-icons/lib/md/clear';
 
 import { fonts as listOfFonts } from './google-fonts';
 
-const isGoogleFont = url => url.includes('fonts.googleapis.com/css');
+const isGoogleFont = (url) => url.includes('fonts.googleapis.com/css');
 
 export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
   readonly,
@@ -36,7 +36,7 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
 
   const fonts = externalResources.filter(isGoogleFont);
   const otherResources = externalResources.filter(
-    resource => !isGoogleFont(resource)
+    (resource) => !isGoogleFont(resource)
   );
 
   const { externalResourcesEnabled } = getTemplateDefinition(template);
@@ -47,7 +47,7 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
       <Stack direction="vertical" gap={6}>
         {otherResources.length || fonts.length ? (
           <List>
-            {otherResources.map(resource => (
+            {otherResources.map((resource) => (
               <ListAction
                 key={resource}
                 justify="space-between"
@@ -71,7 +71,7 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
               </ListAction>
             ))}
 
-            {fonts.map(resource => (
+            {fonts.map((resource) => (
               <ListAction
                 key={resource}
                 justify="space-between"
@@ -99,7 +99,7 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
 
         {!readonly && (
           <form
-            onSubmit={event => {
+            onSubmit={(event) => {
               event.preventDefault();
               const url = event.target[0].value.trim();
               externalResourceAdded(url);
@@ -123,7 +123,7 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
 
         {!readonly && (
           <form
-            onSubmit={event => {
+            onSubmit={(event) => {
               event.preventDefault();
               const fontName = event.target[0].value.trim().replace(/ /g, '+');
               const url = `https://fonts.googleapis.com/css?family=${fontName}&display=swap`;
@@ -136,7 +136,7 @@ export const ExternalResources: FunctionComponent<{ readonly: boolean }> = ({
                 placeholder="Select a font family"
                 key={fonts.length}
               >
-                {listOfFonts.sort().map(name => (
+                {listOfFonts.sort().map((name) => (
                   <option key={name}>{name}</option>
                 ))}
               </Select>
@@ -171,14 +171,11 @@ const getName = (resource: string) => {
 const getFontFamily = (search: string) => {
   const hashes = search.slice(search.indexOf('?') + 1).split('&');
   const family = hashes
-    .find(hash => hash && hash.split('=')[0] === 'family')
+    .find((hash) => hash && hash.split('=')[0] === 'family')
     .split('=')[1];
 
   return {
     name: family.split('+').join(' '),
-    id: family
-      .split('+')
-      .join('-')
-      .toLowerCase(),
+    id: family.split('+').join('-').toLowerCase(),
   };
 };

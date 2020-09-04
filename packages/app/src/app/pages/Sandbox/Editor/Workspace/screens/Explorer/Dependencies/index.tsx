@@ -48,7 +48,7 @@ export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
       <List marginBottom={2}>
         {Object.keys(dependencies)
           .sort()
-          .map(dependency => (
+          .map((dependency) => (
             <Dependency
               dependencies={dependencies}
               dependency={dependency}

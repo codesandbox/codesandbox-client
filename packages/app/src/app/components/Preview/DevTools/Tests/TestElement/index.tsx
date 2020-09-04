@@ -95,8 +95,8 @@ export class TestElement extends React.Component<Props> {
         {this.props.isExpanded && (
           <Tests>
             {testKeys
-              .filter(t => file.tests[t].status === 'fail')
-              .map(tName => {
+              .filter((t) => file.tests[t].status === 'fail')
+              .map((tName) => {
                 const test = file.tests[tName];
 
                 const TestStatusElement = StatusElements[test.status];

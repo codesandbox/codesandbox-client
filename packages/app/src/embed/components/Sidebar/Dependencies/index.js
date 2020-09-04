@@ -6,7 +6,7 @@ function Dependencies({ sandbox }) {
   let { npmDependencies } = sandbox;
 
   const packageJSON = sandbox.modules.find(
-    m => m.title === 'package.json' && m.directoryShortid == null
+    (m) => m.title === 'package.json' && m.directoryShortid == null
   );
 
   if (packageJSON) {
@@ -21,7 +21,7 @@ function Dependencies({ sandbox }) {
 
   return (
     <Container>
-      {Object.keys(npmDependencies).map(dep => (
+      {Object.keys(npmDependencies).map((dep) => (
         <Row key={dep}>
           <Link href={`/examples/package/${dep}`} target="_blank">
             {dep}

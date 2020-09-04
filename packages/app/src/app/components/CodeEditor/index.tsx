@@ -25,7 +25,7 @@ export class CodeEditor extends React.PureComponent<
   };
 
   toggleConfigUI = () => {
-    this.setState(state => ({ showConfigUI: !state.showConfigUI }));
+    this.setState((state) => ({ showConfigUI: !state.showConfigUI }));
   };
 
   render() {

@@ -22,7 +22,7 @@ export interface NotificationToast {
 const convertMapToToasts = (
   notifications: Map<string, NotificationMessage>
 ): NotificationToast[] =>
-  Array.from(notifications.keys()).map(id => ({
+  Array.from(notifications.keys()).map((id) => ({
     id,
     createdAt: Date.now(),
     notification: notifications.get(id),
@@ -88,9 +88,9 @@ export function Toasts({
   );
 
   const removeNotification = React.useCallback((id: string) => {
-    setNotificationsToShow(notifs => {
-      const newNotifs = notifs.filter(notif => notif.id !== id);
-      const notifToHide = notifs.find(notif => notif.id === id);
+    setNotificationsToShow((notifs) => {
+      const newNotifs = notifs.filter((notif) => notif.id !== id);
+      const notifToHide = notifs.find((notif) => notif.id === id);
 
       if (newNotifs.length !== notifs.length) {
         return newNotifs;
@@ -106,14 +106,14 @@ export function Toasts({
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setNotificationsToShow(notifs => {
+      setNotificationsToShow((notifs) => {
         if (mouseOverRef.current) {
           // Don't remove notifs if there is a mouse there
           return notifs;
         }
 
         const newNotifs = notifs.filter(
-          notif =>
+          (notif) =>
             isSticky(notif) ||
             Date.now() <
               notif.createdAt +
@@ -135,9 +135,9 @@ export function Toasts({
   }, []);
 
   React.useEffect(() => {
-    const addListener = state.onNotificationUpdated(event => {
+    const addListener = state.onNotificationUpdated((event) => {
       if (event.type === NotificationChange.ADD) {
-        setNotificationsToShow(notifications => [
+        setNotificationsToShow((notifications) => [
           ...notifications,
           convertNotificationEventToToast(event),
         ]);
@@ -150,9 +150,9 @@ export function Toasts({
   }, [state]);
 
   React.useEffect(() => {
-    const removeListener = state.onNotificationRemoved(event => {
-      setNotificationsToShow(notifications =>
-        notifications.filter(n => n.id !== event.id)
+    const removeListener = state.onNotificationRemoved((event) => {
+      setNotificationsToShow((notifications) =>
+        notifications.filter((n) => n.id !== event.id)
       );
     });
 
@@ -164,10 +164,10 @@ export function Toasts({
   const transitions = useTransition<
     NotificationToast,
     { overflow: string; opacity: number; height: number }
-  >(notificationsToShow, n => n.id, {
+  >(notificationsToShow, (n) => n.id, {
     from: { opacity: 0, height: 0 },
     // @ts-ignore: not typed properly in react-spring
-    enter: item => next =>
+    enter: (item) => (next) =>
       next({
         opacity: 1,
         height: refMap.get(item) ? refMap.get(item).offsetHeight + 16 : 0,
@@ -191,7 +191,7 @@ export function Toasts({
               <Toast
                 Button={Button}
                 colors={colors}
-                getRef={ref => ref && refMap.set(item, ref)}
+                getRef={(ref) => ref && refMap.set(item, ref)}
                 toast={item}
                 removeToast={(id: string) => {
                   removeNotification(id);

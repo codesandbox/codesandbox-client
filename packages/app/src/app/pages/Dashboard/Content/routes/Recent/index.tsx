@@ -36,7 +36,7 @@ export const Recent = () => {
 
     return [
       { type: 'header', title },
-      ...recentSandboxes.map(sandbox => ({
+      ...recentSandboxes.map((sandbox) => ({
         type: 'sandbox' as 'sandbox',
         sandbox,
       })),

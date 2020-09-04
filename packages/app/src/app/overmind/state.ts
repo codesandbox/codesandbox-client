@@ -77,9 +77,9 @@ export const state: State = {
   // TODO: Should not reference store directly here, rather initialize
   // the state with "onInitialize" setting the jwt
   hasLogIn: hasLogIn(),
-  isContributor: derived(({ contributors }: State) => username =>
+  isContributor: derived(({ contributors }: State) => (username) =>
     contributors.findIndex(
-      contributor =>
+      (contributor) =>
         contributor.toLocaleLowerCase() === username.toLocaleLowerCase()
     ) > -1
   ),
@@ -95,7 +95,7 @@ export const state: State = {
         return TeamMemberAuthorization.Admin;
 
       return activeTeamInfo.userAuthorizations.find(
-        auth => auth.userId === user.id
+        (auth) => auth.userId === user.id
       )!.authorization;
     }
   ),

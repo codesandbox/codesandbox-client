@@ -23,7 +23,7 @@ import {
   CodeSandboxIcon,
 } from './Icons';
 
-const getIcon = name => {
+const getIcon = (name) => {
   const icons = {
     'netlify.toml': NetlifyIcon,
     'package.json': NPMIcon,
@@ -58,7 +58,7 @@ export const ConfigurationFilesComponent = ({ theme }) => {
 
   Object.keys(configurationFiles)
     .sort()
-    .forEach(p => {
+    .forEach((p) => {
       const config = configurationFiles[p];
 
       try {
@@ -92,7 +92,7 @@ export const ConfigurationFilesComponent = ({ theme }) => {
             </Text>
           </Element>
           <Stack direction="vertical" gap={4}>
-            {Object.keys(createdPaths).map(path => {
+            {Object.keys(createdPaths).map((path) => {
               const { config, module } = createdPaths[path];
               const Icon = getIcon(config.title);
               return (
@@ -128,7 +128,7 @@ export const ConfigurationFilesComponent = ({ theme }) => {
           gap={4}
           style={{ padding: `0 ${theme.space[3]}px` }}
         >
-          {Object.keys(restPaths).map(path => {
+          {Object.keys(restPaths).map((path) => {
             const { config } = restPaths[path];
             const Icon = getIcon(config.title);
             return (

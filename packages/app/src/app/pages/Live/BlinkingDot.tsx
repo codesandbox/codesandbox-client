@@ -20,7 +20,7 @@ export class BlinkingDot extends React.PureComponent<{}, { showing: boolean }> {
 
   componentDidMount() {
     this.timer = window.setInterval(() => {
-      this.setState(state => ({ showing: !state.showing }));
+      this.setState((state) => ({ showing: !state.showing }));
     }, 1000);
   }
 

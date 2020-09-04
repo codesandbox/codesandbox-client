@@ -234,7 +234,7 @@ class Tests extends React.Component<DevToolProps, State> {
 
   selectFile = (file: File) => {
     this.setStateDebounced(
-      state => ({
+      (state) => ({
         selectedFilePath:
           file.fileName === state.selectedFilePath ? null : file.fileName,
       }),
@@ -244,8 +244,8 @@ class Tests extends React.Component<DevToolProps, State> {
 
   toggleFileExpansion = (file: File) => {
     this.setStateDebounced(
-      oldState =>
-        immer(oldState, state => {
+      (oldState) =>
+        immer(oldState, (state) => {
           state.fileExpansionState[file.fileName] = !state.fileExpansionState[
             file.fileName
           ];
@@ -312,10 +312,10 @@ class Tests extends React.Component<DevToolProps, State> {
 
           const files = Object.keys(this.state.files);
           const failingTests = files.filter(
-            f => this.getStatus(this.state.files[f]) === 'fail'
+            (f) => this.getStatus(this.state.files[f]) === 'fail'
           ).length;
           const passingTests = files.filter(
-            f => this.getStatus(this.state.files[f]) === 'pass'
+            (f) => this.getStatus(this.state.files[f]) === 'pass'
           ).length;
 
           if (this.props.updateStatus) {
@@ -333,8 +333,8 @@ class Tests extends React.Component<DevToolProps, State> {
         }
 
         case messages.ADD_FILE: {
-          this.setStateDebounced(oldState =>
-            immer(oldState, state => {
+          this.setStateDebounced((oldState) =>
+            immer(oldState, (state) => {
               state.files[data.path] = {
                 tests: {},
                 fileName: data.path,
@@ -346,8 +346,8 @@ class Tests extends React.Component<DevToolProps, State> {
           break;
         }
         case 'remove_file': {
-          this.setStateDebounced(oldState =>
-            immer(oldState, state => {
+          this.setStateDebounced((oldState) =>
+            immer(oldState, (state) => {
               if (state.files[data.path]) {
                 delete state.files[data.path];
               }
@@ -358,8 +358,8 @@ class Tests extends React.Component<DevToolProps, State> {
           break;
         }
         case messages.FILE_ERROR: {
-          this.setStateDebounced(oldState =>
-            immer(oldState, state => {
+          this.setStateDebounced((oldState) =>
+            immer(oldState, (state) => {
               if (state.files[data.path]) {
                 state.files[data.path].fileError = data.error;
               }
@@ -378,8 +378,8 @@ class Tests extends React.Component<DevToolProps, State> {
         case messages.ADD_TEST: {
           const testName = [...this.currentDescribeBlocks, data.testName];
 
-          this.setStateDebounced(oldState =>
-            immer(oldState, state => {
+          this.setStateDebounced((oldState) =>
+            immer(oldState, (state) => {
               if (!state.files[data.path]) {
                 state.files[data.path] = {
                   tests: {},
@@ -404,8 +404,8 @@ class Tests extends React.Component<DevToolProps, State> {
           const { test } = data;
           const testName = [...test.blocks, test.name];
 
-          this.setStateDebounced(oldState =>
-            immer(oldState, state => {
+          this.setStateDebounced((oldState) =>
+            immer(oldState, (state) => {
               if (!state.files[test.path]) {
                 state.files[test.path] = {
                   tests: {},
@@ -435,8 +435,8 @@ class Tests extends React.Component<DevToolProps, State> {
           const { test } = data;
           const testName = [...test.blocks, test.name];
 
-          this.setStateDebounced(oldState =>
-            immer(oldState, state => {
+          this.setStateDebounced((oldState) =>
+            immer(oldState, (state) => {
               if (!state.files[test.path]) {
                 return;
               }
@@ -524,7 +524,7 @@ class Tests extends React.Component<DevToolProps, State> {
   };
 
   toggleWatching = () => {
-    this.setStateDebounced(state => ({ watching: !state.watching }), 0);
+    this.setStateDebounced((state) => ({ watching: !state.watching }), 0);
     dispatch({
       type: 'set-test-watching',
       watching: !this.state.watching,
@@ -540,8 +540,8 @@ class Tests extends React.Component<DevToolProps, State> {
 
   runTests = (file: File) => {
     this.setStateDebounced(
-      oldState =>
-        immer(oldState, state => {
+      (oldState) =>
+        immer(oldState, (state) => {
           if (state.files[file.fileName]) {
             state.files[file.fileName].tests = {};
           }
@@ -567,15 +567,15 @@ class Tests extends React.Component<DevToolProps, State> {
     const selectedFile = this.state.files[selectedFilePath || ''];
 
     const fileStatuses = {};
-    Object.keys(this.state.files).forEach(path => {
+    Object.keys(this.state.files).forEach((path) => {
       fileStatuses[path] = this.getStatus(this.state.files[path]);
     });
 
     const tests = [];
-    Object.keys(this.state.files).forEach(path => {
+    Object.keys(this.state.files).forEach((path) => {
       const file = this.state.files[path];
       if (file && file.tests) {
-        Object.keys(file.tests).forEach(t => {
+        Object.keys(file.tests).forEach((t) => {
           tests.push(file.tests[t]);
         });
       }
@@ -600,7 +600,7 @@ class Tests extends React.Component<DevToolProps, State> {
             <div style={{ marginTop: '1rem' }}>
               {Object.keys(this.state.files)
                 .sort()
-                .map(fileName => (
+                .map((fileName) => (
                   <TestElement
                     selectFile={this.selectFile}
                     selectedFile={selectedFile}

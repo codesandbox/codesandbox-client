@@ -14,7 +14,7 @@ export default function initialize() {
     ['ts', 'tsx', 'js', 'json'],
     {},
     {
-      setup: async manager => {
+      setup: async (manager) => {
         const stylesPath = absolute(join('src', 'main.css'));
 
         try {
@@ -36,11 +36,11 @@ export default function initialize() {
     }
   );
 
-  preset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.tsx?$/.test(module.path), [
     { transpiler: typescriptTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.m?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {
@@ -54,15 +54,15 @@ export default function initialize() {
     },
   ]);
 
-  preset.registerTranspiler(module => /\.json$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.json$/.test(module.path), [
     { transpiler: jsonTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.m\.css$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.m\.css$/.test(module.path), [
     { transpiler: dojoStylesTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.css$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.css$/.test(module.path), [
     { transpiler: stylesTranspiler },
   ]);
 

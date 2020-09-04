@@ -11,7 +11,7 @@ class VueTranspiler extends Transpiler {
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
     return import(/* webpackChunkName: 'vue-loader' */ './loader').then(
-      loader => {
+      (loader) => {
         const transpiledCode = loader.default(code, loaderContext);
 
         return Promise.resolve({ transpiledCode });

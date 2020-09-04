@@ -72,11 +72,11 @@ export const roomJoined: AsyncAction<{
 
   actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id });
   const items = getItems(state);
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+  const defaultItem = items.find((i) => i.defaultOpen) || items[0];
 
   state.workspace.openedWorkspaceItem = defaultItem.id;
 
-  await effects.vscode.changeSandbox(sandbox, fs => {
+  await effects.vscode.changeSandbox(sandbox, (fs) => {
     state.editor.modulesByPath = fs;
   });
 
@@ -108,9 +108,10 @@ export const createLiveClicked: AsyncAction<string> = async (
   }
 
   Object.assign(sandbox, {
-    modules: sandbox.modules.map(module => {
+    modules: sandbox.modules.map((module) => {
       const currentModule = currentSandbox.modules.find(
-        currentSandboxModule => currentSandboxModule.shortid === module.shortid
+        (currentSandboxModule) =>
+          currentSandboxModule.shortid === module.shortid
       );
       return {
         ...module,
@@ -229,7 +230,7 @@ export const onViewRangeChanged: Action<UserViewRange> = (
 
     state.live.currentViewRange = viewRange;
     const userIndex = state.live.roomInfo.users.findIndex(
-      u => u.id === liveUserId
+      (u) => u.id === liveUserId
     );
 
     if (userIndex !== -1) {
@@ -262,7 +263,7 @@ export const onSelectionChanged: Action<UserSelection> = (
 
   state.live.currentSelection = selection;
   const userIndex = state.live.roomInfo.users.findIndex(
-    u => u.id === liveUserId
+    (u) => u.id === liveUserId
   );
 
   if (userIndex > -1) {
@@ -308,7 +309,7 @@ export const onRemoveEditorClicked: Action<string> = (
   }
 
   state.live.roomInfo.editorIds = state.live.roomInfo.editorIds.filter(
-    id => id !== liveUserId
+    (id) => id !== liveUserId
   );
 
   effects.live.sendEditorRemoved(liveUserId);
@@ -428,7 +429,7 @@ export const revealCursorPosition: AsyncAction<{ liveUserId: string }> = async (
     return;
   }
 
-  const user = state.live.roomInfo.users.find(u => u.id === liveUserId);
+  const user = state.live.roomInfo.users.find((u) => u.id === liveUserId);
 
   if (user && user.currentModuleShortid && state.editor.currentSandbox) {
     const { modules } = state.editor.currentSandbox;

@@ -8,7 +8,7 @@ const LOCAL_SERVER = Boolean(JSON.stringify(process.env.LOCAL_SERVER));
 const STAGING_API = Boolean(JSON.stringify(process.env.STAGING_API));
 
 export default Object.keys(process.env)
-  .filter(key => REACT_APP.test(key))
+  .filter((key) => REACT_APP.test(key))
   .reduce(
     (env, key) => {
       env['process.env.' + key] = JSON.stringify(process.env[key]);

@@ -44,7 +44,7 @@ export const SandboxCard = ({
 
   const [{ isDragging }, drag] = useDrag({
     item: { type, sandboxId: sandbox.id, index },
-    collect: monitor => {
+    collect: (monitor) => {
       const dragItem = monitor.getItem();
       return {
         isDragging: dragItem?.sandboxId === sandbox.id,
@@ -76,7 +76,7 @@ export const SandboxCard = ({
       }
 
       if (dropResult.name === 'PINNED_SANDBOXES') {
-        if (featuredSandboxes.find(s => s.id === item.sandboxId)) {
+        if (featuredSandboxes.find((s) => s.id === item.sandboxId)) {
           saveFeaturedSandboxesOrder();
         } else {
           addFeaturedSandboxes({ sandboxId: item.sandboxId });
@@ -103,11 +103,11 @@ export const SandboxCard = ({
         // into featuredSandboxes in state.
         if (
           hoverIndex &&
-          !featuredSandboxes.find(s => s.id === item.sandboxId)
+          !featuredSandboxes.find((s) => s.id === item.sandboxId)
         ) {
           addFeaturedSandboxesInState({ sandboxId: item.sandboxId });
         }
-        dragIndex = featuredSandboxes.findIndex(s => s.id === item.sandboxId);
+        dragIndex = featuredSandboxes.findIndex((s) => s.id === item.sandboxId);
       }
 
       // If the item doesn't exist in featured sandboxes yet, return
@@ -158,8 +158,8 @@ export const SandboxCard = ({
         href={sandboxUrl({ id: sandbox.id })}
         direction="vertical"
         gap={4}
-        onContextMenu={event => onContextMenu(event, sandbox.id)}
-        onKeyDown={event => onKeyDown(event, sandbox.id)}
+        onContextMenu={(event) => onContextMenu(event, sandbox.id)}
+        onKeyDown={(event) => onKeyDown(event, sandbox.id)}
         style={{ opacity: isDragging ? 0.2 : 1 }}
         css={css({
           backgroundColor: 'grays.700',
@@ -168,7 +168,7 @@ export const SandboxCard = ({
           borderRadius: 'medium',
           overflow: 'hidden',
           ':hover, :focus, :focus-within': {
-            boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+            boxShadow: (theme) => '0 4px 16px 0 ' + theme.colors.grays[900],
           },
           ':focus, :focus-within': {
             outline: 'none',
@@ -190,8 +190,10 @@ export const SandboxCard = ({
             borderColor: 'grays.600',
           })}
           style={{
-            backgroundImage: `url(${sandbox.screenshotUrl ||
-              `/api/v1/sandboxes/${sandbox.id}/screenshot.png`})`,
+            backgroundImage: `url(${
+              sandbox.screenshotUrl ||
+              `/api/v1/sandboxes/${sandbox.id}/screenshot.png`
+            })`,
           }}
         />
         <Stack justify="space-between">
@@ -205,7 +207,7 @@ export const SandboxCard = ({
             name="more"
             size={9}
             title="Sandbox actions"
-            onClick={event => onContextMenu(event, sandbox)}
+            onClick={(event) => onContextMenu(event, sandbox)}
           />
         </Stack>
       </Stack>

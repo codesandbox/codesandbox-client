@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../components/layout';
 
-const Navigation = props => {
+const Navigation = (props) => {
   const { white, grey, whiteDark, greyLight } = useTheme().homepage;
 
   const getFill = () => {

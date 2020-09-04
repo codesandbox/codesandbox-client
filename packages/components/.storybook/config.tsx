@@ -68,7 +68,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 const allThemes = getThemes();
-const vsCodeThemes = allThemes.map(b => makeTheme(b, b.name));
+const vsCodeThemes = allThemes.map((b) => makeTheme(b, b.name));
 
 const blackCodesandbox = vsCodeThemes.find(
   (theme: Theme) => theme.name === 'CodeSandbox Black'

@@ -20,7 +20,7 @@ const SearchInputComponent = styled(Input)(
   })
 );
 
-const SearchIconBase = props => (
+const SearchIconBase = (props) => (
   <svg fill="none" width="12" height="12" {...props}>
     <path
       fillRule="evenodd"
@@ -43,7 +43,7 @@ export const SearchIcon = styled(SearchIconBase)(
   })
 );
 
-export const SearchInput = props => (
+export const SearchInput = (props) => (
   <>
     <Element css={{ position: 'relative' }}>
       <SearchIcon />

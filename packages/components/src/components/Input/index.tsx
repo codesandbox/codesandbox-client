@@ -9,7 +9,7 @@ const placeholderStyles = {
 
 interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-export const Input = styled(Element).attrs(p => ({
+export const Input = styled(Element).attrs((p) => ({
   as: ((p as unknown) as { as: string }).as || 'input',
 }))<IInputProps>(
   css({
@@ -28,7 +28,7 @@ export const Input = styled(Element).attrs(p => ({
     '::-ms-input-placeholder': placeholderStyles,
     '::placeholder': placeholderStyles,
     transition: 'all ease',
-    transitionDuration: theme => theme.speeds[2],
+    transitionDuration: (theme) => theme.speeds[2],
 
     ':hover, :focus': {
       borderColor: 'inputOption.activeBorder',

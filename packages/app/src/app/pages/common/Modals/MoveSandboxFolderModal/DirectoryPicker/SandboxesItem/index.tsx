@@ -57,7 +57,7 @@ class SandboxesItemComponent extends React.Component<
     return connectDropTarget(
       <div>
         <Query variables={{ teamId }} query={PATHED_SANDBOXES_FOLDER_QUERY}>
-          {result => {
+          {(result) => {
             if (result.loading) {
               return (
                 <DelayedAnimation

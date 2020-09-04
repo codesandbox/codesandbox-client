@@ -6,7 +6,7 @@ export default function getChildCollections(
 ) {
   const foldersByPath: { [path: string]: { path: string } } = {};
 
-  folders.forEach(collection => {
+  folders.forEach((collection) => {
     foldersByPath[collection?.path] = collection;
   });
 

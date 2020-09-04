@@ -107,13 +107,13 @@ export default class Preset {
     this.ignoredExtensions = ignoredExtensions || ['js', 'jsx', 'json', 'mjs'];
 
     const noop = () => {};
-    this.processDependencies = processDependencies || (async deps => deps);
+    this.processDependencies = processDependencies || (async (deps) => deps);
     this.setup = setup || noop;
     this.teardown = teardown || noop;
     this.preEvaluate = preEvaluate || noop;
     this.htmlDisabled = htmlDisabled || false;
 
-    this.postTranspilers.forEach(transpiler => {
+    this.postTranspilers.forEach((transpiler) => {
       this.transpilers.add(transpiler.transpiler);
     });
   }
@@ -148,8 +148,8 @@ export default class Preset {
 
     const aliases = Object.keys(this.alias);
 
-    const exactAliases = aliases.filter(a => a.endsWith('$'));
-    const exactFoundAlias = exactAliases.find(a => {
+    const exactAliases = aliases.filter((a) => a.endsWith('$'));
+    const exactFoundAlias = exactAliases.find((a) => {
       const alias = a.slice(0, -1);
 
       if (path === alias) {
@@ -167,10 +167,12 @@ export default class Preset {
     const pathParts = path.split('/');
 
     // Find matching aliases
-    const foundAlias = orderBy(aliases, a => -a.split('/').length).find(a => {
-      const parts = a.split('/');
-      return parts.every((p, i) => pathParts[i] === p);
-    });
+    const foundAlias = orderBy(aliases, (a) => -a.split('/').length).find(
+      (a) => {
+        const parts = a.split('/');
+        return parts.every((p, i) => pathParts[i] === p);
+      }
+    );
 
     if (foundAlias) {
       const replacedPath = path.replace(foundAlias, this.alias[foundAlias]);
@@ -199,7 +201,7 @@ export default class Preset {
       this.loaders.push(transpilerObject);
     }
 
-    transpilers.forEach(t => this.transpilers.add(t.transpiler));
+    transpilers.forEach((t) => this.transpilers.add(t.transpiler));
 
     return this.loaders;
   }
@@ -213,7 +215,7 @@ export default class Preset {
     evaluator: IEvaluator,
     query: string = ''
   ): Array<TranspilerDefinition> {
-    const loader = this.loaders.find(t => t.test(module));
+    const loader = this.loaders.find((t) => t.test(module));
 
     // Starting !, drop all transpilers
     const transpilers = query.startsWith('!') // eslint-disable-line no-nested-ternary
@@ -223,14 +225,14 @@ export default class Preset {
       : [];
 
     // Remove "" values
-    const transpilerNames = query.split('!').filter(x => x);
+    const transpilerNames = query.split('!').filter((x) => x);
 
     const extraTranspilers = transpilerNames
-      .map(loaderName => {
+      .map((loaderName) => {
         const [name, options] = loaderName.split('?');
 
         let transpiler = Array.from(this.transpilers).find(
-          t => t.name === name
+          (t) => t.name === name
         );
 
         if (!transpiler) {
@@ -274,6 +276,6 @@ export default class Preset {
   getQuery(module: Module, evaluator: IEvaluator, query: string = '') {
     const loaders = this.getLoaders(module, evaluator, query);
 
-    return `!${loaders.map(t => t.transpiler.name).join('!')}`;
+    return `!${loaders.map((t) => t.transpiler.name).join('!')}`;
   }
 }

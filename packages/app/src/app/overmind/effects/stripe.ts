@@ -3,7 +3,7 @@ import { STRIPE_API_KEY } from '@codesandbox/common/lib/utils/config';
 declare let Stripe: any;
 
 function loadScript(path: string) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if (typeof document !== 'undefined') {
       const script = document.createElement('script');
       script.onload = resolve;

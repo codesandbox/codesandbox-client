@@ -75,7 +75,7 @@ const Context = React.createContext<SelectionContext>({
   thumbnailRef: null,
   isDragging: false,
   isRenaming: false,
-  setRenaming: renaming => {},
+  setRenaming: (renaming) => {},
   activeTeamId: null,
 });
 
@@ -96,7 +96,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   children,
 }) => {
   const possibleItems = (items || []).filter(
-    item =>
+    (item) =>
       item.type === 'sandbox' ||
       item.type === 'template' ||
       item.type === 'folder' ||
@@ -105,17 +105,17 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     DashboardSandbox | DashboardTemplate | DashboardFolder | DashboardRepo
   >;
 
-  const selectionItems = possibleItems.map(item => {
+  const selectionItems = possibleItems.map((item) => {
     if (item.type === 'folder') return item.path;
     if (item.type === 'repo') return item.name;
     return item.sandbox.id;
   });
 
   const folders = (items || []).filter(
-    item => item.type === 'folder'
+    (item) => item.type === 'folder'
   ) as DashboardFolder[];
   const sandboxes = (items || []).filter(
-    item => item.type === 'sandbox' || item.type === 'template'
+    (item) => item.type === 'sandbox' || item.type === 'template'
   ) as Array<DashboardSandbox | DashboardTemplate>;
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
@@ -130,7 +130,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       // select multiple with modifier
 
       if (selectedIds.includes(itemId)) {
-        setSelectedIds(selectedIds.filter(id => id !== itemId));
+        setSelectedIds(selectedIds.filter((id) => id !== itemId));
       } else {
         setSelectedIds([...selectedIds, itemId]);
       }
@@ -141,9 +141,9 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       // end = find index for itemId
       // find everything in between and add them
       const start = selectionItems.findIndex(
-        id => id === selectedIds[selectedIds.length - 1]
+        (id) => id === selectedIds[selectedIds.length - 1]
       );
-      const end = selectionItems.findIndex(id => id === itemId);
+      const end = selectionItems.findIndex((id) => id === itemId);
 
       const itemsInRange = [];
 
@@ -189,7 +189,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         React.KeyboardEvent<HTMLDivElement>,
       itemId: string
     ) => {
-      setSelectedIds(s => {
+      setSelectedIds((s) => {
         if (!s.includes(itemId)) {
           return [itemId];
         }
@@ -209,7 +209,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         | React.KeyboardEvent<HTMLDivElement>,
       itemId: string
     ) => {
-      setSelectedIds(s => {
+      setSelectedIds((s) => {
         if (itemId && !s.includes(itemId)) {
           return [itemId];
         }
@@ -304,7 +304,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         url = dashboardUrls.allSandboxes(selectedId, activeTeamId);
       } else {
         const selectedItem = sandboxes.find(
-          item => item.sandbox.id === selectedId
+          (item) => item.sandbox.id === selectedId
         );
         url = sandboxUrl({
           id: selectedItem.sandbox.id,
@@ -341,7 +341,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
 
     const lastSelectedItemId = selectedIds[selectedIds.length - 1];
 
-    const index = selectionItems.findIndex(id => id === lastSelectedItemId);
+    const index = selectionItems.findIndex((id) => id === lastSelectedItemId);
 
     let direction = [ARROW_RIGHT, ARROW_DOWN].includes(event.keyCode)
       ? 'forward'
@@ -393,7 +393,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const onDragStart = React.useCallback(
     (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
       // if the dragged sandbox isn't selected. select it alone
-      setSelectedIds(s => (s.includes(itemId) ? s : [itemId]));
+      setSelectedIds((s) => (s.includes(itemId) ? s : [itemId]));
     },
     [setSelectedIds]
   );
@@ -435,7 +435,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
 
     if (folderPaths.length) {
       if (dropResult.path === 'deleted') {
-        folderPaths.forEach(path => actions.dashboard.deleteFolder({ path }));
+        folderPaths.forEach((path) => actions.dashboard.deleteFolder({ path }));
       } else if (dropResult.path === 'templates') {
         // folders can't be dropped into templates
       } else if (dropResult.path === 'drafts') {
@@ -443,8 +443,8 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       } else {
         // moving folders into another folder
         // is the same as changing it's path
-        folderPaths.forEach(path => {
-          const { name } = folders.find(folder => folder.path === path);
+        folderPaths.forEach((path) => {
+          const { name } = folders.find((folder) => folder.path === path);
 
           let newPath: string;
           if (dropResult.path.endsWith('/')) newPath = dropResult.path + name;
@@ -483,7 +483,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     });
   };
 
-  const onContainerMouseDown = event => {
+  const onContainerMouseDown = (event) => {
     setSelectedIds([]); // global blur
 
     // right click
@@ -500,7 +500,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     });
   };
 
-  const onContainerContextMenu = event => {
+  const onContainerContextMenu = (event) => {
     // global context menu is only relevent inside All sandboxes/*
     if (typeof createNewFolder !== 'function') return;
 
@@ -511,7 +511,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
 
   const callbackCalledAt = React.useRef(null);
 
-  const onContainerMouseMove = event => {
+  const onContainerMouseMove = (event) => {
     if (!drawingRect) return;
 
     setSelectionRect({
@@ -540,7 +540,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       const visibleItems = document.querySelectorAll('[data-selection-id]');
       const overlappingItems = [];
 
-      visibleItems.forEach(item => {
+      visibleItems.forEach((item) => {
         const rect = item.getBoundingClientRect();
 
         // left-right doesn't matter for list view
@@ -558,7 +558,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       });
 
       const overlappingIds = [];
-      overlappingItems.forEach(item => {
+      overlappingItems.forEach((item) => {
         overlappingIds.push(item.dataset.selectionId);
       });
 
@@ -723,4 +723,4 @@ const scrollIntoViewport = (id: string) => {
 
 const isFolderPath = (id: string) => id.startsWith('/');
 const isSandboxId = (id: string) => !isFolderPath(id);
-const notDrafts = folder => folder.path !== '/drafts';
+const notDrafts = (folder) => folder.path !== '/drafts';

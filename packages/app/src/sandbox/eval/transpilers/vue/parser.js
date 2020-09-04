@@ -7,7 +7,7 @@ const SourceMapGenerator = require('source-map').SourceMapGenerator;
 const splitRE = /\r?\n/g;
 const emptyRE = /^(?:\/\/)?\s*$/;
 
-module.exports = function(content, filename, needMap, sourceRoot) {
+module.exports = function (content, filename, needMap, sourceRoot) {
   const cacheKey = hash(filename + content);
   // source-map cache busting for hot-reloadded modules
   const filenameWithHash = filename + '?' + cacheKey;
@@ -24,7 +24,7 @@ module.exports = function(content, filename, needMap, sourceRoot) {
       );
     }
     if (output.styles) {
-      output.styles.forEach(style => {
+      output.styles.forEach((style) => {
         if (!style.src) {
           style.map = generateSourceMap(
             filenameWithHash,

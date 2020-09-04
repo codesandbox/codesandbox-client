@@ -8,10 +8,10 @@ const requestFrame = (() => {
     // @ts-ignore
     g.mozRequestAnimationFrame ||
     g.webkitRequestAnimationFrame ||
-    function(fn) {
+    function (fn) {
       return g.setTimeout(fn, 20);
     };
-  return function(fn) {
+  return function (fn) {
     return raf(fn);
   };
 })();
@@ -19,7 +19,7 @@ const requestFrame = (() => {
 const hasGlobalDeclaration = /^const global/m;
 
 /* eslint-disable no-unused-vars */
-export default function(
+export default function (
   code: string,
   require: Function,
   module: { exports: any },
@@ -56,7 +56,7 @@ export default function(
 
   const allGlobalKeys = Object.keys(allGlobals);
   const globalsCode = allGlobalKeys.length ? allGlobalKeys.join(', ') : '';
-  const globalsValues = allGlobalKeys.map(k => allGlobals[k]);
+  const globalsValues = allGlobalKeys.map((k) => allGlobals[k]);
   try {
     const newCode = `(function evaluate(` + globalsCode + `) {` + code + `\n})`;
     // eslint-disable-next-line no-eval

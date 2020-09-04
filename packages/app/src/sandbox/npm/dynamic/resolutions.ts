@@ -53,5 +53,5 @@ export function parseResolutions(resolutions?: {
   }
 
   const keys = Object.keys(resolutions);
-  return keys.map(key => parsePatternInfo(key, resolutions[key]));
+  return keys.map((key) => parsePatternInfo(key, resolutions[key]));
 }

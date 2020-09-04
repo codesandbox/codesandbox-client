@@ -35,7 +35,7 @@ const postcssExtensions = ['postcss', 'pcss', 'sugarss', 'sss'];
 
 const rewriterInjectRE = /\b(css(?:-loader)?(?:\?[^!]+)?)(?:!|$)/;
 
-export default function(content: string, loaderContext: LoaderContext) {
+export default function (content: string, loaderContext: LoaderContext) {
   // Emit the vue-hot-reload-api so it's available in the sandbox
   loaderContext.emitModule(
     hotReloadAPIPath,
@@ -144,7 +144,7 @@ export default function(content: string, loaderContext: LoaderContext) {
       const hasStyleLoader = requireString.indexOf('style-loader') > -1;
       // const hasVueStyleLoader = requireString.indexOf('vue-style-loader') > -1;
 
-      const invokeStyle = c => `  ${c}\n`;
+      const invokeStyle = (c) => `  ${c}\n`;
 
       const moduleName = style.module === true ? '$style' : style.module;
       // setCssModule
@@ -478,7 +478,7 @@ export default function(content: string, loaderContext: LoaderContext) {
   // stringify an Array of loader objects
   function stringifyLoaders(loaders) {
     return loaders
-      .map(obj =>
+      .map((obj) =>
         obj && typeof obj === 'object' && typeof obj.loader === 'string'
           ? obj.loader + (obj.options ? '?' + JSON.stringify(obj.options) : '')
           : obj
@@ -590,7 +590,7 @@ export default function(content: string, loaderContext: LoaderContext) {
   function ensureLoader(lang) {
     return lang
       .split('!')
-      .map(loader =>
+      .map((loader) =>
         loader.replace(
           /^([\w-]+)(\?.*)?/,
           (_, name, query) =>

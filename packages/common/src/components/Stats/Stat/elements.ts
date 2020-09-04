@@ -4,7 +4,7 @@ export const CenteredText = styled.div<{
   disableCenter: boolean;
   text: string;
 }>`
-  ${props =>
+  ${(props) =>
     !props.disableCenter &&
     css`
       justify-content: center;
@@ -14,7 +14,7 @@ export const CenteredText = styled.div<{
   flex-direction: row;
   margin-bottom: 0.5rem;
 
-  width: ${props => (props.text ? '10em' : '5em')};
+  width: ${(props) => (props.text ? '10em' : '5em')};
 
   svg {
     opacity: 0.75;

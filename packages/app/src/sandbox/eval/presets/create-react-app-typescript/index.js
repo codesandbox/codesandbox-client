@@ -16,7 +16,7 @@ export default function initialize() {
     'mjs',
   ]);
 
-  preset.registerTranspiler(module => /\.css$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.css$/.test(module.path), [
     { transpiler: stylesTranspiler },
   ]);
 
@@ -66,7 +66,7 @@ export default function initialize() {
     },
   };
   preset.registerTranspiler(
-    module =>
+    (module) =>
       /\.m?(t|j)sx?$/.test(module.path) && !module.path.endsWith('.d.ts'),
     [
       {
@@ -77,7 +77,7 @@ export default function initialize() {
     true
   );
 
-  preset.registerTranspiler(module => /\.json$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.json$/.test(module.path), [
     { transpiler: jsonTranspiler },
   ]);
 

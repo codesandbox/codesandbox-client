@@ -31,7 +31,7 @@ export default function HTML(props) {
           dangerouslySetInnerHTML={{ __html: props.body }}
         />
         {props.postBodyComponents}
-        {JS_NPM_URLS.map(url => (
+        {JS_NPM_URLS.map((url) => (
           <script key={url} src={url} defer />
         ))}
       </body>

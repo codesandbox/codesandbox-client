@@ -15,7 +15,7 @@ const Filter = ({
   const [open, setOpen] = useState(false);
 
   const toggle = useCallback(() => {
-    setOpen(isOpen => !isOpen);
+    setOpen((isOpen) => !isOpen);
   }, []);
 
   return (

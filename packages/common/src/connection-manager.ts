@@ -4,7 +4,7 @@ const listeners = {};
 function updateOnlineStatus(event) {
   isOnline = navigator.onLine;
 
-  Object.keys(listeners).forEach(listener => {
+  Object.keys(listeners).forEach((listener) => {
     listeners[listener](isOnline);
   });
 }

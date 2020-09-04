@@ -69,7 +69,7 @@ export const AddCollaboratorForm = () => {
       >
         <UserSearchInput
           inputValue={inputValue}
-          onInputValueChange={val => {
+          onInputValueChange={(val) => {
             setInputValue(val);
           }}
           css={css({ paddingRight: MENU_WIDTH })}

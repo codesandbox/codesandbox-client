@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const CodeAnywhere = props => (
+export const CodeAnywhere = (props) => (
   <svg
     width="200"
     height="100"

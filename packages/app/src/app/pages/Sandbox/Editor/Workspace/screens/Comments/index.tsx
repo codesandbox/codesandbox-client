@@ -134,7 +134,7 @@ export const Comments: React.FC = () => {
               })}
             />
             <Menu.List>
-              {options.map(option => (
+              {options.map((option) => (
                 <Menu.Item
                   key={option}
                   onSelect={() => commentsActions.selectCommentsFilter(option)}
@@ -165,7 +165,7 @@ export const Comments: React.FC = () => {
                 <Text size={3} weight="bold" block margin={2}>
                   Today
                 </Text>
-                {currentCommentsByDate.today.map(comment => (
+                {currentCommentsByDate.today.map((comment) => (
                   <Comment key={comment.id} comment={comment} />
                 ))}
               </>
@@ -175,7 +175,7 @@ export const Comments: React.FC = () => {
                 <Text size={3} weight="bold" block margin={2} marginTop={4}>
                   Earlier
                 </Text>
-                {currentCommentsByDate.prev.map(comment => (
+                {currentCommentsByDate.prev.map((comment) => (
                   <Comment key={comment.id} comment={comment} />
                 ))}
               </>

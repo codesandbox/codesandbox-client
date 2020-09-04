@@ -40,13 +40,13 @@ export const TestSummary = ({
   const totalDuration = tests.reduce((p, n) => p + (n.duration || 0), 0);
 
   const fileTestSuccessCount = Object.keys(fileStatuses).filter(
-    f => fileStatuses[f] === 'pass'
+    (f) => fileStatuses[f] === 'pass'
   ).length;
   const fileTestFailCount = Object.keys(fileStatuses).filter(
-    f => fileStatuses[f] === 'fail'
+    (f) => fileStatuses[f] === 'fail'
   ).length;
   const fileTestIdleCount = Object.keys(fileStatuses).filter(
-    f => fileStatuses[f] === 'idle' || fileStatuses[f] === 'running'
+    (f) => fileStatuses[f] === 'idle' || fileStatuses[f] === 'running'
   ).length;
   const totalTestCount = Object.keys(files).length;
 

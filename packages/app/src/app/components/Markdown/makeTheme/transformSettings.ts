@@ -4,7 +4,7 @@ type Output = {
   fontStyle?: string;
 };
 
-export const transformSettings = settings => {
+export const transformSettings = (settings) => {
   const output: Output = {};
 
   if (settings.foreground) {

@@ -53,7 +53,7 @@ const Editor = ({ showNewSandboxModal }: EditorTypes) => {
   useEffect(() => {
     let timeout;
     const dispose = reaction(
-      reactionState => reactionState.editor.hasLoadedInitialModule,
+      (reactionState) => reactionState.editor.hasLoadedInitialModule,
       () => {
         timeout = setTimeout(() => setShowSkeleton(false), 500);
       }
@@ -143,7 +143,7 @@ const Editor = ({ showNewSandboxModal }: EditorTypes) => {
               resizerStyle={state.editor.isLoading ? { display: 'none' } : null}
               onDragStarted={() => actions.editor.resizingStarted()}
               onDragFinished={() => actions.editor.resizingStopped()}
-              onChange={size => {
+              onChange={(size) => {
                 if (size > 0 && state.workspace.workspaceHidden) {
                   actions.workspace.setWorkspaceHidden({ hidden: false });
                 } else if (size === 0 && !state.workspace.workspaceHidden) {
@@ -274,7 +274,7 @@ export default Editor;
  *  the code is garbage
  */
 /* eslint-disable */
-const FakeStatusBarText = props => {
+const FakeStatusBarText = (props) => {
   const [copied, setCopied] = React.useState(false);
 
   const copyText = () => {

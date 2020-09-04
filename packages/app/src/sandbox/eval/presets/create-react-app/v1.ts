@@ -13,7 +13,7 @@ export default function initialize() {
     aliases,
     {
       hasDotEnv: true,
-      preEvaluate: async manager => {
+      preEvaluate: async (manager) => {
         if (!manager.webpackHMR) {
           cleanUsingUnmount(manager);
         }
@@ -21,11 +21,11 @@ export default function initialize() {
     }
   );
 
-  preset.registerTranspiler(module => /\.css$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.css$/.test(module.path), [
     { transpiler: stylesTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.m?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {
@@ -58,7 +58,7 @@ export default function initialize() {
     },
   ]);
 
-  preset.registerTranspiler(module => /\.json$/.test(module.path), [
+  preset.registerTranspiler((module) => /\.json$/.test(module.path), [
     { transpiler: jsonTranspiler },
   ]);
 

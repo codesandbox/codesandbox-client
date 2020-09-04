@@ -1,7 +1,7 @@
 import React from 'react';
 import IconBase from 'react-icons/IconBase';
 
-export const ProIcon = props => (
+export const ProIcon = (props) => (
   <IconBase fill="none" viewBox="0 0 24 24" {...props}>
     <rect fill="#535bcf" height="10" rx="1" width="24.2857" y="7" />
     <path

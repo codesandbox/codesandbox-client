@@ -4,7 +4,7 @@ import { basename } from '@codesandbox/common/lib/utils/path';
 
 function findRawModule(module) {
   const rawModule = Array.from(module.dependencies).find(
-    m => !/\.([\w]{2}|[\w]{3})$/.test(m.module.path)
+    (m) => !/\.([\w]{2}|[\w]{3})$/.test(m.module.path)
   );
 
   if (rawModule) {
@@ -29,7 +29,7 @@ function findRawModule(module) {
  * @param {any} module
  * @returns
  */
-export default function(error: Error, module) {
+export default function (error: Error, module) {
   if (
     error.message.includes(
       "Failed to execute 'createElement' on 'Document': The tag name provided "

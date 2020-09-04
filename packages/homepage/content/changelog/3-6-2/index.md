@@ -15,7 +15,7 @@ description: This release includes bug fixes.
 3. [@jyash97](https://github.com/codesandbox/codesandbox-client/pull/3886) added
    a copy sandbox link option for sandboxes on the dashboard
 4. We added a button when viewing previews fullscreen to protect folks from
-  phishing attempts
+   phishing attempts
 
 #### Fixes
 
@@ -25,8 +25,8 @@ description: This release includes bug fixes.
 - We made some performance improvements that make VSCode load faster
 - VSCode user snippets and extension quick input commands work again
 - We’ve updated the TypeScript version in the editor from 3.6 to 3.8
-- Upgraded the type fetching service to handle more concurrent requests and type more
-  dependencies
+- Upgraded the type fetching service to handle more concurrent requests and type
+  more dependencies
 - We now display the correct loading state for buttons when forking
 - Fixed running Jest tests with JSDOM
 - Setting custom VSCode themes now works again
@@ -41,10 +41,10 @@ description: This release includes bug fixes.
 - [@MichaelDeBoey](https://github.com/codesandbox/codesandbox-client/pull/3888)
   and [@FWeinb](https://github.com/codesandbox/codesandbox-client/pull/3871)
   updated embed example code to allow more services
-- We now show huge text files properly in the editor although they are
-  read-only
+- We now show huge text files properly in the editor although they are read-only
 - Handlebar files are now handled correctly
 - Thanks to
   [@jyash97](https://github.com/codesandbox/codesandbox-client/pull/3836) we now
   hide delete buttons on the liked sandboxes page of user profiles
-- We now support showing type definitions from dependencies that have git dependencies
+- We now support showing type definitions from dependencies that have git
+  dependencies

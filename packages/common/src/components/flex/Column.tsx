@@ -8,9 +8,9 @@ export default styled.div<{
   display: flex;
   flex-direction: column;
 
-  ${props => props.flex && `flex: ${props.flex}`};
+  ${(props) => props.flex && `flex: ${props.flex}`};
 
-  ${props =>
+  ${(props) =>
     props.justifyContent && `justify-content: ${props.justifyContent}`};
-  ${props => props.alignItems && `align-items: ${props.alignItems}`};
+  ${(props) => props.alignItems && `align-items: ${props.alignItems}`};
 `;

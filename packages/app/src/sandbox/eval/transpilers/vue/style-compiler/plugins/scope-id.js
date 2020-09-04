@@ -2,8 +2,8 @@
 var postcss = require('postcss');
 var selectorParser = require('postcss-selector-parser');
 
-export default postcss.plugin('add-id', function(opts) {
-  return function(root) {
+export default postcss.plugin('add-id', function (opts) {
+  return function (root) {
     var keyframes = Object.create(null);
 
     root.each(function rewriteSelector(node) {
@@ -19,10 +19,10 @@ export default postcss.plugin('add-id', function(opts) {
         }
         return;
       }
-      node.selector = selectorParser(function(selectors) {
-        selectors.each(function(selector) {
+      node.selector = selectorParser(function (selectors) {
+        selectors.each(function (selector) {
           var node = null;
-          selector.each(function(n) {
+          selector.each(function (n) {
             // ">>>" combinator
             if (n.type === 'combinator' && n.value === '>>>') {
               n.value = ' ';
@@ -57,19 +57,19 @@ export default postcss.plugin('add-id', function(opts) {
     // Caveat: this only works for keyframes and animation rules in the same
     // <style> element.
     if (Object.keys(keyframes).length) {
-      root.walkDecls(decl => {
+      root.walkDecls((decl) => {
         // individual animation-name declaration
         if (/-?animation-name$/.test(decl.prop)) {
           decl.value = decl.value
             .split(',')
-            .map(v => keyframes[v.trim()] || v.trim())
+            .map((v) => keyframes[v.trim()] || v.trim())
             .join(',');
         }
         // shorthand
         if (/-?animation$/.test(decl.prop)) {
           decl.value = decl.value
             .split(',')
-            .map(v => {
+            .map((v) => {
               var vals = v.split(/\s+/);
               var name = vals[0];
               if (keyframes[name]) {

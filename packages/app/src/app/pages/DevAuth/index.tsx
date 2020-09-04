@@ -19,11 +19,11 @@ export const DevAuthPage = withTheme(({ theme }) => {
     setError(null);
     let ok = true;
     fetch(`/api/v1/auth/verify/${authCode}`)
-      .then(res => {
+      .then((res) => {
         ok = res.ok;
         return res.json();
       })
-      .then(res => {
+      .then((res) => {
         if (!ok) {
           throw new Error(res.errors.detail[0]);
         }
@@ -42,7 +42,7 @@ export const DevAuthPage = withTheme(({ theme }) => {
           );
         }
       })
-      .catch(e => {
+      .catch((e) => {
         setError(e.message);
       });
   };
@@ -74,7 +74,7 @@ export const DevAuthPage = withTheme(({ theme }) => {
             href={cliLoginUrl}
             target="popup"
             rel="noreferrer noopener"
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault();
               window.open(cliLoginUrl, 'popup', 'width=600,height=600');
               return false;
@@ -89,7 +89,7 @@ export const DevAuthPage = withTheme(({ theme }) => {
             style={{ width: 600, height: 26 }}
             placeholder="Auth Code"
             value={authCode}
-            onChange={e => {
+            onChange={(e) => {
               setAuthCode(e.target.value);
             }}
           />

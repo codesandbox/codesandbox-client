@@ -148,16 +148,16 @@ export const LiveNow: FunctionComponent = () => {
 
       <Collapsible defaultOpen title="Editors">
         <Stack direction="vertical" gap={2} paddingX={2}>
-          {owners.map(user => (
+          {owners.map((user) => (
             <User key={user.id} liveRole="owner" user={user} />
           ))}
 
-          {editors.map(user => (
+          {editors.map((user) => (
             <User key={user.id} liveRole="editor" user={user} />
           ))}
 
           {mode === 'open' &&
-            spectators.map(user => (
+            spectators.map((user) => (
               <User key={user.id} liveRole="editor" user={user} />
             ))}
         </Stack>
@@ -166,7 +166,7 @@ export const LiveNow: FunctionComponent = () => {
       {mode === 'classroom' && (
         <Collapsible defaultOpen title="Viewers">
           <Stack direction="vertical" gap={2} paddingX={2}>
-            {spectators.map(user => (
+            {spectators.map((user) => (
               <User key={user.id} liveRole="spectator" user={user} />
             ))}
 

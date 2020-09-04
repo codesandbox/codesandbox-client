@@ -170,7 +170,7 @@ const Modals: FunctionComponent = () => {
           modal &&
           (typeof modal.width === 'function' ? modal.width() : modal.width)
         }
-        onClose={isKeyDown => actions.modalClosed()}
+        onClose={(isKeyDown) => actions.modalClosed()}
       >
         {modal
           ? React.createElement(modal.Component, {

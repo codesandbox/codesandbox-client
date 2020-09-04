@@ -19,7 +19,7 @@ export const Badges: FunctionComponent = () => {
   return (
     <Margin right={2}>
       <Link to={patronUrl()}>
-        {badges.map(badge => (
+        {badges.map((badge) => (
           <Badge badge={badge} key={badge.id} size={64} />
         ))}
       </Link>

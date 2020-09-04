@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const DashboardIcon = props => (
+export const DashboardIcon = (props) => (
   <svg
     width="40"
     height="32"
@@ -18,7 +18,7 @@ export const DashboardIcon = props => (
   </svg>
 );
 
-export const ReloadIcon = props => (
+export const ReloadIcon = (props) => (
   <svg
     width="16"
     height="16"
@@ -36,7 +36,7 @@ export const ReloadIcon = props => (
   </svg>
 );
 
-export const LikeIcon = props => (
+export const LikeIcon = (props) => (
   <svg
     width="16"
     height="16"
@@ -52,7 +52,7 @@ export const LikeIcon = props => (
   </svg>
 );
 
-export const EmbedIcon = props => (
+export const EmbedIcon = (props) => (
   <svg
     width="16"
     height="16"
@@ -70,7 +70,7 @@ export const EmbedIcon = props => (
   </svg>
 );
 
-export const ForkIcon = props => (
+export const ForkIcon = (props) => (
   <svg
     width="16"
     height="16"
@@ -86,7 +86,7 @@ export const ForkIcon = props => (
   </svg>
 );
 
-export const PreferenceIcon = props => (
+export const PreferenceIcon = (props) => (
   <svg
     width="16"
     height="16"
@@ -104,7 +104,7 @@ export const PreferenceIcon = props => (
   </svg>
 );
 
-export const MoreMenuIcon = props => (
+export const MoreMenuIcon = (props) => (
   <svg
     width="4"
     height="13"

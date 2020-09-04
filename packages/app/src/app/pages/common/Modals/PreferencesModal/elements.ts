@@ -16,11 +16,11 @@ export const PreferenceContainer = styled.div<{ disabled?: boolean }>`
     padding-top: 0.5rem;
 
     ${disabled &&
-      css`
-        opacity: 0.5;
-        pointer-events: none;
-        cursor: disabled;
-      `}
+    css`
+      opacity: 0.5;
+      pointer-events: none;
+      cursor: disabled;
+    `}
   `};
 `;
 

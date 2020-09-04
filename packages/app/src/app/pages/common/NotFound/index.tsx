@@ -43,13 +43,13 @@ const Glitch = styled(Text)`
     animation: ${noiseAnimation} 3s infinite linear alternate-reverse;
     left: 2px;
     text-shadow: -1px 0 red;
-    background: ${props => props.theme.colors.grays[900]};
+    background: ${(props) => props.theme.colors.grays[900]};
   }
   &::after {
     animation: ${noiseAnimation} 6s infinite linear alternate-reverse;
     left: -2px;
     text-shadow: -1px 0 blue;
-    background: ${props => props.theme.colors.grays[900]};
+    background: ${(props) => props.theme.colors.grays[900]};
   }
 `;
 

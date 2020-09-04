@@ -111,7 +111,7 @@ class DevToolTerminal extends React.Component<
       ended: false,
     };
 
-    this.setState(s => ({
+    this.setState((s) => ({
       shells: [...s.shells, newShell],
       selectedShell: newShell.id,
     }));
@@ -123,7 +123,7 @@ class DevToolTerminal extends React.Component<
 
   getShellIdLeftOfCurrentShell = () => {
     const { shells, selectedShell } = this.state;
-    const currentIndex = shells.findIndex(s => s.id === selectedShell);
+    const currentIndex = shells.findIndex((s) => s.id === selectedShell);
 
     const newShell = shells[currentIndex - 1];
     if (newShell) {
@@ -134,7 +134,7 @@ class DevToolTerminal extends React.Component<
   };
 
   closeShell = (shellId: string) => {
-    this.setState(s => {
+    this.setState((s) => {
       const selectedShell =
         shellId === s.selectedShell
           ? this.getShellIdLeftOfCurrentShell()
@@ -142,7 +142,7 @@ class DevToolTerminal extends React.Component<
 
       return {
         selectedShell,
-        shells: s.shells.filter(x => x.id !== shellId),
+        shells: s.shells.filter((x) => x.id !== shellId),
       };
     });
   };
@@ -153,8 +153,8 @@ class DevToolTerminal extends React.Component<
    * we still want to show output.
    */
   endShell = (shellId: string) => {
-    this.setState(s => ({
-      shells: s.shells.map(shell =>
+    this.setState((s) => ({
+      shells: s.shells.map((shell) =>
         shell.id === shellId ? { ...shell, ended: true } : shell
       ),
     }));
@@ -183,7 +183,7 @@ class DevToolTerminal extends React.Component<
             theme={theme}
             onTerminalInitialized={this.setTerminal}
           />
-          {this.state.shells.map(shell => (
+          {this.state.shells.map((shell) => (
             <Shell
               key={shell.id}
               id={shell.id}

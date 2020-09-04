@@ -16,13 +16,13 @@ const variantStyles = {
 };
 
 const variantCarets = {
-  default: fill => `
+  default: (fill) => `
     <svg width="8" height="24" viewBox="0 0 8 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M4 7L7 11H1L4 7Z" fill="${fill}" />
       <path d="M4 17L1 13L7 13L4 17Z" fill="${fill}" />
     </svg>
   `,
-  link: fill => `
+  link: (fill) => `
     <svg width="8" height="24" viewBox="0 0 8 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M4 15L1 11L7 11L4 15Z" fill="${fill}" />
     </svg>
@@ -51,11 +51,11 @@ const SelectComponent = styled(Input).attrs(() => ({ as: 'select' }))<{
       appearance: 'none',
       color: 'input.placeholderForeground',
       transition: 'all ease',
-      transitionDuration: theme => theme.speeds[2],
+      transitionDuration: (theme) => theme.speeds[2],
 
       paddingRight: 5, // select has a caret icon on the right
 
-      backgroundImage: theme =>
+      backgroundImage: (theme) =>
         theme &&
         `url(${getSVG(variant, theme.colors.input.placeholderForeground)})`,
       backgroundPosition: 'calc(100% - 8px) center',
@@ -63,7 +63,7 @@ const SelectComponent = styled(Input).attrs(() => ({ as: 'select' }))<{
 
       ':hover, :focus': {
         color: 'input.foreground',
-        backgroundImage: theme =>
+        backgroundImage: (theme) =>
           theme && `url(${getSVG(variant, theme.colors.input.foreground)})`,
       },
     })
@@ -77,7 +77,7 @@ const SelectWithIcon = styled(Element)<{
     position: 'relative',
     color: 'input.placeholderForeground',
     transition: 'all ease',
-    transitionDuration: theme => theme.speeds[2],
+    transitionDuration: (theme) => theme.speeds[2],
 
     select: {
       paddingLeft: 7,
@@ -95,7 +95,7 @@ const SelectWithIcon = styled(Element)<{
       color: 'input.foreground',
       select: {
         color: 'input.foreground',
-        backgroundImage: theme =>
+        backgroundImage: (theme) =>
           `url(${getSVG(variant, theme.colors.input.foreground)})`,
       },
     },

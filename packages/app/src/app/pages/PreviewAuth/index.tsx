@@ -37,7 +37,7 @@ const PreviewAuth = (props: RouteComponentProps<{ id: string }>) => {
 
       effects.api
         .getSandbox(id)
-        .then(sandbox => {
+        .then((sandbox) => {
           const sandboxUrl = frameUrl(sandbox, '', {
             port: port ? Number.parseInt(port, 10) : undefined,
           });
@@ -60,7 +60,7 @@ const PreviewAuth = (props: RouteComponentProps<{ id: string }>) => {
 
           window.addEventListener('message', listener);
         })
-        .catch(e => {
+        .catch((e) => {
           setError("We couldn't find the sandbox");
         });
     }

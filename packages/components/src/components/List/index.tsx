@@ -7,7 +7,7 @@ type ListActionProps = {
   disabled?: boolean;
 };
 
-export const List = styled(Element).attrs(p => ({
+export const List = styled(Element).attrs((p) => ({
   as: ((p as unknown) as { as: string }).as || 'ul',
 }))(
   css({

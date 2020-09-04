@@ -12,7 +12,7 @@ export default function getDirectChildren(
 ): Set<string> {
   const usedChildren = new Set();
 
-  children.forEach(c => {
+  children.forEach((c) => {
     const { path } = c;
 
     const normalizedPath = addSlash(path);

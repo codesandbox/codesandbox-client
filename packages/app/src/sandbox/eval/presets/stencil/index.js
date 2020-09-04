@@ -23,16 +23,17 @@ export default function initialize() {
     {}
   );
 
-  stencilPreset.registerTranspiler(module => /\.(t|j)sx?$/.test(module.path), [
-    { transpiler: stencilTranspiler },
-  ]);
+  stencilPreset.registerTranspiler(
+    (module) => /\.(t|j)sx?$/.test(module.path),
+    [{ transpiler: stencilTranspiler }]
+  );
 
-  stencilPreset.registerTranspiler(module => /\.mjs$/.test(module.path), [
+  stencilPreset.registerTranspiler((module) => /\.mjs$/.test(module.path), [
     { transpiler: stencilTranspiler },
     { transpiler: babelTranspiler, options: babelOptions },
   ]);
 
-  stencilPreset.registerTranspiler(module => /\.json$/.test(module.path), [
+  stencilPreset.registerTranspiler((module) => /\.json$/.test(module.path), [
     { transpiler: jsonTranspiler },
   ]);
 

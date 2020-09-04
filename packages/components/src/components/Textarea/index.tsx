@@ -26,7 +26,7 @@ export const TextareaComponent: any = styled(Input).attrs({
     // autosize styles
     overflow: 'hidden',
     transitionProperty: 'height',
-    transitionDuration: theme => theme.speeds[2],
+    transitionDuration: (theme) => theme.speeds[2],
   })
 );
 

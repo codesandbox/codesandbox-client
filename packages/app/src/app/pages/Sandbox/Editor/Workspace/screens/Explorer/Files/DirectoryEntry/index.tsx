@@ -16,9 +16,9 @@ import Entry from './Entry';
 import validateTitle from './validateTitle';
 
 const readDataURL = (file: File): Promise<string | ArrayBuffer> =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = (e) => {
       resolve(e.target.result);
     };
     reader.readAsDataURL(file);
@@ -30,7 +30,7 @@ const getFiles = async (files: File[] | FileList): Promise<parsedFiles> => {
   await Promise.all(
     Array.from(files)
       .filter(Boolean)
-      .map(async file => {
+      .map(async (file) => {
         const dataURI = await readDataURL(file);
         // @ts-ignore
         returnedFiles[file.path || file.name] = {
@@ -137,9 +137,9 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     () =>
       reaction(
         ({ editor }) => editor.currentModule,
-        currentModule => {
+        (currentModule) => {
           setOpen(
-            isOpen =>
+            (isOpen) =>
               isOpen ||
               shouldDirectoryBeOpen({ directoryId: id, module: currentModule })
           );
@@ -241,7 +241,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     const fileSelector = document.createElement('input');
     fileSelector.setAttribute('type', 'file');
     fileSelector.setAttribute('multiple', 'true');
-    fileSelector.onchange = async event => {
+    fileSelector.onchange = async (event) => {
       const target = event.target as HTMLInputElement;
       const files = await getFiles(target.files);
 
@@ -432,7 +432,7 @@ const entryTarget = {
     if (sourceItem.dirContent) {
       sourceItem.dirContent.then(async (droppedFiles: File[]) => {
         const files = await getFiles(
-          droppedFiles.filter(file => !FILES_TO_IGNORE.includes(file.name))
+          droppedFiles.filter((file) => !FILES_TO_IGNORE.includes(file.name))
         );
 
         props.signals.files.filesUploaded({

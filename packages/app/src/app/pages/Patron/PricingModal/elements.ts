@@ -4,7 +4,7 @@ export const Container = styled.div`
   margin: 8rem auto;
   width: 1024px;
   padding: 1rem;
-  background-color: ${props => props.theme.background};
+  background-color: ${(props) => props.theme.background};
 
   box-shadow: 0 2px 14px rgba(0, 0, 0, 0.25);
   border-radius: 2px;

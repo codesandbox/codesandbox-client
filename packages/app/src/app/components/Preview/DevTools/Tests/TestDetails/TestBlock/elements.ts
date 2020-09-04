@@ -9,7 +9,7 @@ export const BlockHeader = styled.div`
   padding: 0rem 1rem;
 
   overflow: hidden;
-  background-color: ${props =>
+  background-color: ${(props) =>
     Color(props.theme['sideBar.background'])
       .darken(props.theme.light ? 0.1 : 0.3)
       .rgbString()};
@@ -29,7 +29,7 @@ export const Actions = styled.div`
   padding-right: 0;
 
   font-size: 0.875rem;
-  color: ${props =>
+  color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
 
   svg {
@@ -37,7 +37,7 @@ export const Actions = styled.div`
     margin-right: 1rem;
     font-size: 1.125rem;
     cursor: pointer;
-    color: ${props => props.theme['button.hoverBackground']};
+    color: ${(props) => props.theme['button.hoverBackground']};
     opacity: 0.8;
     &:hover {
       opacity: 1;

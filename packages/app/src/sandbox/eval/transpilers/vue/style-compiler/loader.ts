@@ -39,7 +39,7 @@ async function resolveCSSFile(
   return loaderContext.resolveTranspiledModuleAsync(fullPath);
 }
 
-export default function(
+export default function (
   code: string,
   loaderContext: LoaderContext
 ): Promise<{ transpiledCode: string; sourceMap: any }> {
@@ -104,10 +104,10 @@ export default function(
       postcss(plugins)
         // Explcitly give undefined if code is null, otherwise postcss crashses
         .process(code === null ? undefined : code, options)
-        .then(result => {
+        .then((result) => {
           if (result.messages) {
             const messages = result.messages as any[];
-            messages.forEach(m => {
+            messages.forEach((m) => {
               if (m.type === 'dependency') {
                 loaderContext.addDependency(m.file);
               }
@@ -119,7 +119,7 @@ export default function(
 
           return null; // silence bluebird warning
         })
-        .catch(err => reject(err))
+        .catch((err) => reject(err))
     );
   });
 }

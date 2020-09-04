@@ -234,8 +234,8 @@ const Entry: React.FC<IEntryProps> = ({
 };
 
 const entrySource = {
-  canDrag: props => !!props.id,
-  beginDrag: props => {
+  canDrag: (props) => !!props.id,
+  beginDrag: (props) => {
     if (props.closeTree) props.closeTree();
 
     const directory =

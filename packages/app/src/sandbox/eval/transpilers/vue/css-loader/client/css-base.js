@@ -4,12 +4,12 @@
 	Author Tobias Koppers @sokra
 */
 // css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
+module.exports = function (useSourceMap) {
   var list = [];
 
   // return the list of modules as css string
   list.toString = function toString() {
-    return this.map(function(item) {
+    return this.map(function (item) {
       var content = cssWithMappingToString(item, useSourceMap);
       if (item[2]) {
         return '@media ' + item[2] + '{' + content + '}';
@@ -20,7 +20,7 @@ module.exports = function(useSourceMap) {
   };
 
   // import a list of modules into the list
-  list.i = function(modules, mediaQuery) {
+  list.i = function (modules, mediaQuery) {
     if (typeof modules === 'string') modules = [[null, modules, '']];
     var alreadyImportedModules = {};
     for (var i = 0; i < this.length; i++) {
@@ -55,14 +55,11 @@ function cssWithMappingToString(item, useSourceMap) {
 
   if (useSourceMap && typeof btoa === 'function') {
     var sourceMapping = toComment(cssMapping);
-    var sourceURLs = cssMapping.sources.map(function(source) {
+    var sourceURLs = cssMapping.sources.map(function (source) {
       return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */';
     });
 
-    return [content]
-      .concat(sourceURLs)
-      .concat([sourceMapping])
-      .join('\n');
+    return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
   }
 
   return [content].join('\n');

@@ -10,7 +10,7 @@ export const Container = styled.div`
   bottom: 0;
 
   .Resizer {
-    background: ${props => props.theme['sideBar.border'] || 'black'};
+    background: ${(props) => props.theme['sideBar.border'] || 'black'};
     background-clip: padding-box;
   }
 `;

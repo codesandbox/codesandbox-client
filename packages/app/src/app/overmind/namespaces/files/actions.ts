@@ -83,7 +83,7 @@ export const moduleRenamed: AsyncAction<{
       return;
     }
     const module = sandbox.modules.find(
-      moduleItem => moduleItem.shortid === moduleShortid
+      (moduleItem) => moduleItem.shortid === moduleShortid
     );
 
     if (!module || !module.id) {
@@ -177,7 +177,7 @@ export const directoryCreated: AsyncAction<{
         title
       );
       const directory = sandbox.directories.find(
-        directoryItem => directoryItem.shortid === optimisticDirectory.shortid
+        (directoryItem) => directoryItem.shortid === optimisticDirectory.shortid
       );
 
       if (!directory) {
@@ -196,7 +196,7 @@ export const directoryCreated: AsyncAction<{
       effects.executor.updateFiles(sandbox);
     } catch (error) {
       const directoryIndex = sandbox.directories.findIndex(
-        directoryItem => directoryItem.shortid === optimisticDirectory.shortid
+        (directoryItem) => directoryItem.shortid === optimisticDirectory.shortid
       );
 
       sandbox.directories.splice(directoryIndex, 1);
@@ -221,7 +221,7 @@ export const moduleMovedToDirectory: AsyncAction<{
       return;
     }
     const module = sandbox.modules.find(
-      moduleItem => moduleItem.shortid === moduleShortid
+      (moduleItem) => moduleItem.shortid === moduleShortid
     );
 
     if (!module || !module.id) {
@@ -281,7 +281,7 @@ export const directoryMovedToDirectory: AsyncAction<{
       return;
     }
     const directoryToMove = sandbox.directories.find(
-      directoryItem => directoryItem.shortid === shortid
+      (directoryItem) => directoryItem.shortid === shortid
     );
 
     if (!directoryToMove) {
@@ -336,7 +336,7 @@ export const directoryDeleted: AsyncAction<{
       return;
     }
     const directory = sandbox.directories.find(
-      directoryItem => directoryItem.shortid === directoryShortid
+      (directoryItem) => directoryItem.shortid === directoryShortid
     );
 
     if (!directory) {
@@ -356,7 +356,7 @@ export const directoryDeleted: AsyncAction<{
       sandbox.directories
     );
 
-    removedModules.forEach(removedModule => {
+    removedModules.forEach((removedModule) => {
       effects.vscode.sandboxFsSync.unlink(
         state.editor.modulesByPath,
         removedModule
@@ -364,7 +364,7 @@ export const directoryDeleted: AsyncAction<{
       sandbox.modules.splice(sandbox.modules.indexOf(removedModule), 1);
     });
 
-    removedDirectories.forEach(removedDirectoryItem => {
+    removedDirectories.forEach((removedDirectoryItem) => {
       sandbox.directories.splice(
         sandbox.directories.indexOf(removedDirectoryItem),
         1
@@ -384,10 +384,10 @@ export const directoryDeleted: AsyncAction<{
     } catch (error) {
       sandbox.directories.push(removedDirectory);
 
-      removedModules.forEach(removedModule => {
+      removedModules.forEach((removedModule) => {
         sandbox.modules.push(removedModule);
       });
-      removedDirectories.forEach(removedDirectoryItem => {
+      removedDirectories.forEach((removedDirectoryItem) => {
         sandbox.directories.push(removedDirectoryItem);
       });
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
@@ -415,7 +415,7 @@ export const directoryRenamed: AsyncAction<{
       return;
     }
     const directory = sandbox.directories.find(
-      directoryEntry => directoryEntry.shortid === directoryShortid
+      (directoryEntry) => directoryEntry.shortid === directoryShortid
     );
 
     if (!directory) {
@@ -511,7 +511,7 @@ export const deletedUploadedFile: AsyncAction<string> = async (
   if (!state.uploadedFiles) {
     return;
   }
-  const index = state.uploadedFiles.findIndex(file => file.id === id);
+  const index = state.uploadedFiles.findIndex((file) => file.id === id);
   const removedFiles = state.uploadedFiles.splice(index, 1);
 
   try {
@@ -754,7 +754,7 @@ export const moduleDeleted: AsyncAction<{
       return;
     }
     const moduleToDeleteIndex = sandbox.modules.findIndex(
-      module => module.shortid === moduleShortid
+      (module) => module.shortid === moduleShortid
     );
     const removedModule = sandbox.modules.splice(moduleToDeleteIndex, 1)[0];
     const wasCurrentModule =
@@ -825,7 +825,7 @@ export const syncSandbox: AsyncAction<any[]> = async (
   try {
     const newSandbox = await effects.api.getSandbox(id);
 
-    updates.forEach(update => {
+    updates.forEach((update) => {
       const { op, path, type } = update;
 
       if (type === 'file') {
@@ -860,7 +860,7 @@ export const syncSandbox: AsyncAction<any[]> = async (
           const oldDirectory = resolveDirectoryOld(path);
           if (oldDirectory) {
             const directory = oldSandbox.directories.find(
-              directoryItem => directoryItem.shortid === oldDirectory.shortid
+              (directoryItem) => directoryItem.shortid === oldDirectory.shortid
             );
             if (directory) {
               oldSandbox.directories.splice(

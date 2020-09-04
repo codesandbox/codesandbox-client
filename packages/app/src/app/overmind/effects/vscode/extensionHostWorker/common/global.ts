@@ -35,11 +35,11 @@ export const initializeGlobals = () => {
   ctx.setTimeout = setTimeout.bind(ctx);
   ctx.clearTimeout = clearTimeout.bind(ctx);
   ctx.setImmediate = (func, delay) => setTimeout(func, delay);
-  ctx.clearImmediate = id => ctx.clearTimeout(id);
+  ctx.clearImmediate = (id) => ctx.clearTimeout(id);
 };
 
 export function initializeAll() {
-  return new Promise(async resolve => {
+  return new Promise(async (resolve) => {
     await initializePolyfills();
     loadBrowserFS();
     initializeGlobals();

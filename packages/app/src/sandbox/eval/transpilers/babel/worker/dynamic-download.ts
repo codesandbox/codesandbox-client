@@ -102,7 +102,7 @@ function downloadRequires(currentPath: string, code: string) {
 
   // Download all other needed files
   return Promise.all(
-    requires.map(async foundR => {
+    requires.map(async (foundR) => {
       if (foundR.type === 'direct') {
         if (foundR.path === 'babel-plugin-macros') {
           return;

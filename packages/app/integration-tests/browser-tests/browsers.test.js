@@ -4,8 +4,8 @@ const hash = require('child_process')
   .execSync('git rev-parse --short HEAD')
   .toString();
 
-const delay = ms =>
-  new Promise(resolve => {
+const delay = (ms) =>
+  new Promise((resolve) => {
     setTimeout(() => {
       resolve();
     }, ms);

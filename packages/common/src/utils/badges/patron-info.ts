@@ -27,7 +27,7 @@ const info = {
 };
 
 // Preload the images
-Object.keys(info).forEach(badge => {
+Object.keys(info).forEach((badge) => {
   new Image().src = info[badge].Badge;
 });
 

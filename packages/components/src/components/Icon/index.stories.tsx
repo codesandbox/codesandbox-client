@@ -25,7 +25,7 @@ export const Comments = () => (
 
 export const List = () => (
   <Stack css={{ flexWrap: 'wrap' }}>
-    {Object.keys(icons).map(name => (
+    {Object.keys(icons).map((name) => (
       <Stack
         key={name}
         direction="vertical"

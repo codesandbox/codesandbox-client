@@ -21,7 +21,7 @@ export const Container = styled.div`
     */
     transform: translateZ(0);
 
-    background-color: ${props => props.theme.colors.separator.background};
+    background-color: ${(props) => props.theme.colors.separator.background};
     width: ${RESIZER_WIDTH}px;
     display: block;
     height: 100%;
@@ -32,7 +32,7 @@ export const Container = styled.div`
   .Resizer::after {
     content: '';
     display: flex;
-    background: ${props => props.theme.colors.separator.foreground};
+    background: ${(props) => props.theme.colors.separator.foreground};
     border-radius: 50px;
     position: absolute;
 
@@ -54,7 +54,7 @@ export const Container = styled.div`
   }
 
   .Pane {
-    transition: ${props => (props.isDragging ? null : 'width 200ms ease')};
+    transition: ${(props) => (props.isDragging ? null : 'width 200ms ease')};
     overflow: hidden;
   }
 `;

@@ -14,11 +14,11 @@ var Yallist = require('yallist');
 var hasSymbol = typeof Symbol === 'function';
 var makeSymbol;
 if (hasSymbol) {
-  makeSymbol = function(key) {
+  makeSymbol = function (key) {
     return Symbol(key);
   };
 } else {
-  makeSymbol = function(key) {
+  makeSymbol = function (key) {
     return '_' + key;
   };
 }
@@ -79,38 +79,38 @@ function LRUCache(options) {
 
 // resize the cache when the max changes.
 Object.defineProperty(LRUCache.prototype, 'max', {
-  set: function(mL) {
+  set: function (mL) {
     if (!mL || !(typeof mL === 'number') || mL <= 0) {
       mL = Infinity;
     }
     this[MAX] = mL;
     trim(this);
   },
-  get: function() {
+  get: function () {
     return this[MAX];
   },
   enumerable: true,
 });
 
 Object.defineProperty(LRUCache.prototype, 'allowStale', {
-  set: function(allowStale) {
+  set: function (allowStale) {
     this[ALLOW_STALE] = !!allowStale;
   },
-  get: function() {
+  get: function () {
     return this[ALLOW_STALE];
   },
   enumerable: true,
 });
 
 Object.defineProperty(LRUCache.prototype, 'maxAge', {
-  set: function(mA) {
+  set: function (mA) {
     if (!mA || !(typeof mA === 'number') || mA < 0) {
       mA = 0;
     }
     this[MAX_AGE] = mA;
     trim(this);
   },
-  get: function() {
+  get: function () {
     return this[MAX_AGE];
   },
   enumerable: true,
@@ -118,41 +118,41 @@ Object.defineProperty(LRUCache.prototype, 'maxAge', {
 
 // resize the cache when the lengthCalculator changes.
 Object.defineProperty(LRUCache.prototype, 'lengthCalculator', {
-  set: function(lC) {
+  set: function (lC) {
     if (typeof lC !== 'function') {
       lC = naiveLength;
     }
     if (lC !== this[LENGTH_CALCULATOR]) {
       this[LENGTH_CALCULATOR] = lC;
       this[LENGTH] = 0;
-      this[LRU_LIST].forEach(function(hit) {
+      this[LRU_LIST].forEach(function (hit) {
         hit.length = this[LENGTH_CALCULATOR](hit.value, hit.key);
         this[LENGTH] += hit.length;
       }, this);
     }
     trim(this);
   },
-  get: function() {
+  get: function () {
     return this[LENGTH_CALCULATOR];
   },
   enumerable: true,
 });
 
 Object.defineProperty(LRUCache.prototype, 'length', {
-  get: function() {
+  get: function () {
     return this[LENGTH];
   },
   enumerable: true,
 });
 
 Object.defineProperty(LRUCache.prototype, 'itemCount', {
-  get: function() {
+  get: function () {
     return this[LRU_LIST].length;
   },
   enumerable: true,
 });
 
-LRUCache.prototype.rforEach = function(fn, thisp) {
+LRUCache.prototype.rforEach = function (fn, thisp) {
   thisp = thisp || this;
   for (var walker = this[LRU_LIST].tail; walker !== null; ) {
     var prev = walker.prev;
@@ -174,7 +174,7 @@ function forEachStep(self, fn, node, thisp) {
   }
 }
 
-LRUCache.prototype.forEach = function(fn, thisp) {
+LRUCache.prototype.forEach = function (fn, thisp) {
   thisp = thisp || this;
   for (var walker = this[LRU_LIST].head; walker !== null; ) {
     var next = walker.next;
@@ -183,21 +183,21 @@ LRUCache.prototype.forEach = function(fn, thisp) {
   }
 };
 
-LRUCache.prototype.keys = function() {
-  return this[LRU_LIST].toArray().map(function(k) {
+LRUCache.prototype.keys = function () {
+  return this[LRU_LIST].toArray().map(function (k) {
     return k.key;
   }, this);
 };
 
-LRUCache.prototype.values = function() {
-  return this[LRU_LIST].toArray().map(function(k) {
+LRUCache.prototype.values = function () {
+  return this[LRU_LIST].toArray().map(function (k) {
     return k.value;
   }, this);
 };
 
-LRUCache.prototype.reset = function() {
+LRUCache.prototype.reset = function () {
   if (this[DISPOSE] && this[LRU_LIST] && this[LRU_LIST].length) {
-    this[LRU_LIST].forEach(function(hit) {
+    this[LRU_LIST].forEach(function (hit) {
       this[DISPOSE](hit.key, hit.value);
     }, this);
   }
@@ -207,8 +207,8 @@ LRUCache.prototype.reset = function() {
   this[LENGTH] = 0; // length of items in the list
 };
 
-LRUCache.prototype.dump = function() {
-  return this[LRU_LIST].map(function(hit) {
+LRUCache.prototype.dump = function () {
+  return this[LRU_LIST].map(function (hit) {
     if (!isStale(this, hit)) {
       return {
         k: hit.key,
@@ -218,16 +218,16 @@ LRUCache.prototype.dump = function() {
     }
   }, this)
     .toArray()
-    .filter(function(h) {
+    .filter(function (h) {
       return h;
     });
 };
 
-LRUCache.prototype.dumpLru = function() {
+LRUCache.prototype.dumpLru = function () {
   return this[LRU_LIST];
 };
 
-LRUCache.prototype.inspect = function(n, opts) {
+LRUCache.prototype.inspect = function (n, opts) {
   var str = 'LRUCache {';
   var extras = false;
 
@@ -265,7 +265,7 @@ LRUCache.prototype.inspect = function(n, opts) {
   }
 
   var didFirst = false;
-  this[LRU_LIST].forEach(function(item) {
+  this[LRU_LIST].forEach(function (item) {
     if (didFirst) {
       str += ',\n  ';
     } else {
@@ -275,10 +275,7 @@ LRUCache.prototype.inspect = function(n, opts) {
       didFirst = true;
       str += '\n  ';
     }
-    var key = util
-      .inspect(item.key)
-      .split('\n')
-      .join('\n  ');
+    var key = util.inspect(item.key).split('\n').join('\n  ');
     var val = { value: item.value };
     if (item.maxAge !== maxAge) {
       val.maxAge = item.maxAge;
@@ -290,10 +287,7 @@ LRUCache.prototype.inspect = function(n, opts) {
       val.stale = true;
     }
 
-    val = util
-      .inspect(val, opts)
-      .split('\n')
-      .join('\n  ');
+    val = util.inspect(val, opts).split('\n').join('\n  ');
     str += key + ' => ' + val;
   });
 
@@ -305,7 +299,7 @@ LRUCache.prototype.inspect = function(n, opts) {
   return str;
 };
 
-LRUCache.prototype.set = function(key, value, maxAge) {
+LRUCache.prototype.set = function (key, value, maxAge) {
   maxAge = maxAge || this[MAX_AGE];
 
   var now = maxAge ? Date.now() : 0;
@@ -355,7 +349,7 @@ LRUCache.prototype.set = function(key, value, maxAge) {
   return true;
 };
 
-LRUCache.prototype.has = function(key) {
+LRUCache.prototype.has = function (key) {
   if (!this[CACHE].has(key)) return false;
   var hit = this[CACHE].get(key).value;
   if (isStale(this, hit)) {
@@ -364,26 +358,26 @@ LRUCache.prototype.has = function(key) {
   return true;
 };
 
-LRUCache.prototype.get = function(key) {
+LRUCache.prototype.get = function (key) {
   return get(this, key, true);
 };
 
-LRUCache.prototype.peek = function(key) {
+LRUCache.prototype.peek = function (key) {
   return get(this, key, false);
 };
 
-LRUCache.prototype.pop = function() {
+LRUCache.prototype.pop = function () {
   var node = this[LRU_LIST].tail;
   if (!node) return null;
   del(this, node);
   return node.value;
 };
 
-LRUCache.prototype.del = function(key) {
+LRUCache.prototype.del = function (key) {
   del(this, this[CACHE].get(key));
 };
 
-LRUCache.prototype.load = function(arr) {
+LRUCache.prototype.load = function (arr) {
   // reset the cache
   this.reset();
 
@@ -405,9 +399,9 @@ LRUCache.prototype.load = function(arr) {
   }
 };
 
-LRUCache.prototype.prune = function() {
+LRUCache.prototype.prune = function () {
   var self = this;
-  this[CACHE].forEach(function(value, key) {
+  this[CACHE].forEach(function (value, key) {
     get(self, key, false);
   });
 };

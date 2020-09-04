@@ -3,7 +3,7 @@ import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/
 // eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
 
-export const Directory = props => (
+export const Directory = (props) => (
   <svg
     width="32"
     height="32"
@@ -19,7 +19,7 @@ export const Directory = props => (
   </svg>
 );
 
-export const File = props => {
+export const File = (props) => {
   const type = getType(props.title);
   return <EntryIcons type={type} />;
 };

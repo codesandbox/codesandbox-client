@@ -33,6 +33,6 @@ const ColoredChildren = styled.div`
   }
 `;
 
-export const LayoutDecorator: DecoratorFunction = story => (
+export const LayoutDecorator: DecoratorFunction = (story) => (
   <ColoredChildren>{story()}</ColoredChildren>
 );

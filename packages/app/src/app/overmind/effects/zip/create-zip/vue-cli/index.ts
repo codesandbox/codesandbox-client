@@ -9,17 +9,17 @@ export default function createZip(
   modules: Array<Module>,
   directories: Array<Directory>
 ) {
-  return zip.loadAsync(files).then(async src => {
+  return zip.loadAsync(files).then(async (src) => {
     await Promise.all(
       modules
-        .filter(x => x.directoryShortid == null)
-        .map(x => createFile(x, src))
+        .filter((x) => x.directoryShortid == null)
+        .map((x) => createFile(x, src))
     );
 
     await Promise.all(
       directories
-        .filter(x => x.directoryShortid == null)
-        .map(x => createDirectoryWithFiles(modules, directories, x, src))
+        .filter((x) => x.directoryShortid == null)
+        .map((x) => createDirectoryWithFiles(modules, directories, x, src))
     );
   });
 }

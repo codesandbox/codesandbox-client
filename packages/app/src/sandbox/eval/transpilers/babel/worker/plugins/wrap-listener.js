@@ -1,19 +1,19 @@
 /* eslint-disable */
-module.exports = function(listener, name, options) {
+module.exports = function (listener, name, options) {
   return function detective(babel) {
     // Babel 6
     return {
       visitor: {
-        ImportDeclaration: function(path, state) {
+        ImportDeclaration: function (path, state) {
           return visitImportDeclaration(path, state.file, state.opts);
         },
-        CallExpression: function(path, state) {
+        CallExpression: function (path, state) {
           return visitCallExpression(path, state.file, state.opts);
         },
-        ExportNamedDeclaration: function(path, state) {
+        ExportNamedDeclaration: function (path, state) {
           return visitExportDeclaration(path, state.file, state.opts);
         },
-        ExportAllDeclaration: function(path, state) {
+        ExportAllDeclaration: function (path, state) {
           return visitExportDeclaration(path, state.file, state.opts);
         },
       },

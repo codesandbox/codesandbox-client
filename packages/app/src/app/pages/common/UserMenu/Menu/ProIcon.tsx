@@ -2,7 +2,7 @@
 import React from 'react';
 import IconBase from 'react-icons/lib/IconBase';
 
-export const ProIcon = props => (
+export const ProIcon = (props) => (
   <IconBase viewBox="0 0 58 26" {...props}>
     <rect
       x="1.20896"

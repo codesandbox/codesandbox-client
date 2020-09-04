@@ -9,10 +9,10 @@ export function clearCorrectionsFromAction<
   action: CorrectionClearAction | ErrorClearAction
 ): T[] {
   if (action.path === '*') {
-    return currentCorrections.filter(cor => cor.source !== action.source);
+    return currentCorrections.filter((cor) => cor.source !== action.source);
   }
 
   return currentCorrections.filter(
-    cor => cor.source !== action.source && cor.path !== action.path
+    (cor) => cor.source !== action.source && cor.path !== action.path
   );
 }

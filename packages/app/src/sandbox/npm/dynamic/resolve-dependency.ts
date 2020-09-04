@@ -117,7 +117,7 @@ export async function resolveDependencyInfo(
   };
 
   const resolutionsByPackage = {};
-  parsedResolutions.forEach(res => {
+  parsedResolutions.forEach((res) => {
     resolutionsByPackage[res.name] = resolutionsByPackage[res.name] || [];
     resolutionsByPackage[res.name].push(res);
   });

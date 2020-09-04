@@ -38,7 +38,7 @@ const mapAPIResponseToTemplateInfo = (
 ): ITemplateInfo => ({
   key: exploreTemplate.title,
   title: exploreTemplate.title,
-  templates: exploreTemplate.sandboxes.map(sandbox => ({
+  templates: exploreTemplate.sandboxes.map((sandbox) => ({
     id: sandbox.custom_template.id,
     color: sandbox.custom_template.color,
     iconUrl: sandbox.custom_template.icon_url,
@@ -71,5 +71,5 @@ export const getTemplateInfosFromAPI = (
   url: string
 ): Promise<ITemplateInfo[]> =>
   fetch(url)
-    .then(res => res.json())
+    .then((res) => res.json())
     .then((body: IExploreTemplate[]) => body.map(mapAPIResponseToTemplateInfo));

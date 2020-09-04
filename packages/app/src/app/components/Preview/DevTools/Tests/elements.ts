@@ -10,8 +10,8 @@ export const Container = styled.div`
   width: 100%;
   height: 100%;
 
-  background-color: ${props => props.theme['sideBar.background']};
-  color: ${props =>
+  background-color: ${(props) => props.theme['sideBar.background']};
+  color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
 `;
 
@@ -24,13 +24,13 @@ export const Navigation = styled.div`
 `;
 
 export const TestContainer = styled(Navigation)`
-  background-color: ${props => props.theme['sideBar.background']};
+  background-color: ${(props) => props.theme['sideBar.background']};
   height: 100%;
 `;
 
 export const TestDetails = styled.div`
   flex: 3;
-  background-color: ${props => props.theme['sideBar.background']};
+  background-color: ${(props) => props.theme['sideBar.background']};
   height: 100%;
 `;
 
@@ -42,22 +42,22 @@ const iconStyles = css`
 
 export const Loading = styled(LoadingBubbles)`
   ${iconStyles};
-  color: ${props => props.theme.secondary};
+  color: ${(props) => props.theme.secondary};
 `;
 
 export const Success = styled(Check)`
   ${iconStyles};
-  color: ${props => props.theme.green};
+  color: ${(props) => props.theme.green};
 `;
 
 export const Fail = styled(Cross)`
   ${iconStyles};
-  color: ${props => props.theme.red};
+  color: ${(props) => props.theme.red};
 `;
 
 export const Dot = styled(DotIcon)`
   ${iconStyles};
-  color: ${props =>
+  color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'};
 `;
 

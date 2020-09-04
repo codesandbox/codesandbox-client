@@ -41,7 +41,7 @@ function consume(
   } else {
     enhancedFramesPromise = map(parsedFrames, contextSize);
   }
-  return enhancedFramesPromise.then(enhancedFrames => {
+  return enhancedFramesPromise.then((enhancedFrames) => {
     // // We comment this out, because we always want to show errors
     // if (
     //   enhancedFrames

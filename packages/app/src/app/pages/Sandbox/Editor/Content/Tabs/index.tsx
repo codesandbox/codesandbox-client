@@ -53,7 +53,7 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
     }
   }, [container, currentModuleId, tabEls]);
 
-  const closeTab = tabIndex => {
+  const closeTab = (tabIndex) => {
     editorAction.tabClosed({ tabIndex });
   };
 
@@ -68,11 +68,11 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
     editorAction.moduleDoubleClicked();
   };
 
-  const setCurrentModule = moduleId => {
+  const setCurrentModule = (moduleId) => {
     editorAction.moduleSelected({ id: moduleId });
   };
 
-  const discardModuleChanges = moduleShortid => {
+  const discardModuleChanges = (moduleShortid) => {
     editorAction.discardModuleChanges({ moduleShortid });
   };
 
@@ -82,7 +82,7 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
     });
   };
 
-  const canPrettify = module => {
+  const canPrettify = (module) => {
     if (!module) {
       return false;
     }
@@ -96,14 +96,14 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
   // In that case we need to show which directory the module is in.
   const tabNamesObject = {};
 
-  sandbox.modules.forEach(m => {
+  sandbox.modules.forEach((m) => {
     moduleObject[m.shortid] = m;
   });
 
   editorState.tabs
-    .filter(tab => tab.type === 'MODULE')
-    .filter(tab => moduleObject[tab.moduleShortid])
-    .forEach(tab => {
+    .filter((tab) => tab.type === 'MODULE')
+    .filter((tab) => moduleObject[tab.moduleShortid])
+    .forEach((tab) => {
       const module = moduleObject[tab.moduleShortid];
 
       tabNamesObject[module.title] = tabNamesObject[module.title] || [];
@@ -118,12 +118,12 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
   return (
     <Container>
       <TabsContainer
-        ref={el => {
+        ref={(el) => {
           container = el;
         }}
       >
         {editorState.tabs
-          .map(tab => ({ ...tab, module: moduleObject[tab.moduleShortid] }))
+          .map((tab) => ({ ...tab, module: moduleObject[tab.moduleShortid] }))
           .map((tab, i) => {
             if (tab.type === 'MODULE') {
               if (tab.module == null) {
@@ -140,7 +140,7 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
                 module.directoryShortid != null
               ) {
                 const dir = sandbox.directories.find(
-                  d =>
+                  (d) =>
                     d.shortid === module.directoryShortid &&
                     d.sourceId === module.sourceId
                 );
@@ -160,7 +160,7 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
                   key={id}
                   module={tab.module}
                   hasError={Boolean(
-                    editorState.errors.filter(error => error.moduleId === id)
+                    editorState.errors.filter((error) => error.moduleId === id)
                       .length
                   )}
                   closeTab={closeTab}
@@ -175,7 +175,7 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
                       tab.module.shortid
                     )
                   )}
-                  ref={el => {
+                  ref={(el) => {
                     tabEls[id] = el;
                   }}
                 />
@@ -194,7 +194,7 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
                   tabCount={editorState.tabs.length}
                   position={i}
                   dirty={tab.dirty}
-                  ref={el => {
+                  ref={(el) => {
                     tabEls[tab.id] = el;
                   }}
                   title={`Diff: ${tab.titleA} - ${tab.titleB}`}

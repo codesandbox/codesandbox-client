@@ -8,16 +8,16 @@ function spawnPromise(command, args) {
   return new Promise((resolve, reject) => {
     const p = spawn(command, args);
 
-    p.stdout.on('data', data => {
+    p.stdout.on('data', (data) => {
       // eslint-disable-next-line
       console.log(data.toString());
     });
 
-    p.stderr.on('data', data => {
+    p.stderr.on('data', (data) => {
       console.error(data.toString());
     });
 
-    p.on('exit', code => {
+    p.on('exit', (code) => {
       if (code === 0) {
         resolve();
       } else {

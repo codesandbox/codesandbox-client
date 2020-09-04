@@ -87,7 +87,7 @@ export function start({
     process.argv = ['node', data.data.entry, ...data.data.argv] || [];
   };
 
-  self.addEventListener('message', async e => {
+  self.addEventListener('message', async (e) => {
     const { data } = e;
 
     if (data.$type === 'worker-manager') {

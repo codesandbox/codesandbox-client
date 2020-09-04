@@ -31,11 +31,11 @@ export const ProfileCard = ({ defaultEditing = false }) => {
   const [bio, setBio] = React.useState(user.bio || '');
   const [socialLinks, setSocialLinks] = React.useState(user.socialLinks || []);
 
-  const onSubmit = event => {
+  const onSubmit = (event) => {
     event.preventDefault();
-    updateUserProfile({ bio, socialLinks: socialLinks.filter(item => item) });
+    updateUserProfile({ bio, socialLinks: socialLinks.filter((item) => item) });
 
-    setSocialLinks(socialLinks.filter(item => item));
+    setSocialLinks(socialLinks.filter((item) => item));
     setEditing(false);
   };
 
@@ -133,7 +133,7 @@ export const ProfileCard = ({ defaultEditing = false }) => {
                 .sort((team1, team2) =>
                   team1.avatarUrl && !team2.avatarUrl ? -1 : 1
                 )
-                .map(team => (
+                .map((team) => (
                   <Tooltip key={team.id} label={team.name}>
                     <span>
                       <TeamAvatar name={team.name} avatar={team.avatarUrl} />
@@ -200,7 +200,7 @@ const Bio = ({ bio, editing, setBio }) => (
         autosize
         maxLength={280}
         defaultValue={bio}
-        onChange={event => setBio(event.target.value)}
+        onChange={(event) => setBio(event.target.value)}
       />
     ) : (
       <Text size={3} variant="muted">
@@ -228,7 +228,7 @@ const SocialLinks = ({ username, socialLinks, editing, setSocialLinks }) => (
         as="form"
         direction="vertical"
         gap={4}
-        onSubmit={event => {
+        onSubmit={(event) => {
           event.preventDefault();
         }}
       >
@@ -237,7 +237,7 @@ const SocialLinks = ({ username, socialLinks, editing, setSocialLinks }) => (
             key={link}
             defaultValue={link}
             autoFocus
-            onChange={event => {
+            onChange={(event) => {
               const links = [...socialLinks];
               links[index] = event.target.value;
               setSocialLinks(links);
@@ -259,7 +259,7 @@ const SocialLinks = ({ username, socialLinks, editing, setSocialLinks }) => (
       </Stack>
     ) : (
       <>
-        {socialLinks.map(link => (
+        {socialLinks.map((link) => (
           <Stack
             as={Link}
             href={link}
@@ -277,13 +277,13 @@ const SocialLinks = ({ username, socialLinks, editing, setSocialLinks }) => (
   </Stack>
 );
 
-const getIconNameFromUrl = url => {
+const getIconNameFromUrl = (url) => {
   if (url.includes('github.com')) return 'github';
   if (url.includes('twitter.com')) return 'twitter';
   return 'globe';
 };
 
-const getPrettyLinkFromUrl = url =>
+const getPrettyLinkFromUrl = (url) =>
   url
     .replace('https://', '')
     .replace('http://', '')

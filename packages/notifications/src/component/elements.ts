@@ -48,7 +48,7 @@ export const ColorLine = styled(Element)<{ bg: string }>`
   left: 0;
   top: 0;
   bottom: 0;
-  background-color: ${props => props.bg};
+  background-color: ${(props) => props.bg};
   width: 4px;
 `;
 

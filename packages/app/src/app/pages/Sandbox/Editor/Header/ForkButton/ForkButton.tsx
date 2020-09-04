@@ -72,7 +72,7 @@ interface TeamOrUserItemProps {
   disabled: boolean;
   isPersonal: boolean;
 }
-const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
+const TeamOrUserItem: React.FC<TeamOrUserItemProps> = (props) => {
   if (props.disabled) {
     return (
       <DisabledTeamItem
@@ -103,7 +103,7 @@ interface ForkButtonProps {
   user: CurrentUser;
 }
 
-export const ForkButton: React.FC<ForkButtonProps> = props => {
+export const ForkButton: React.FC<ForkButtonProps> = (props) => {
   const { state } = useOvermind();
   const { user } = props;
   let teams: TeamItem[] = [];
@@ -111,7 +111,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
   let otherWorkspaces: TeamItem[] = [];
 
   const userSpace = state.dashboard.teams.find(
-    t => t.id === state.personalWorkspaceId
+    (t) => t.id === state.personalWorkspaceId
   )!;
 
   const allTeams: {
@@ -121,18 +121,18 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
     userAuthorizations: MemberAuthorization[];
   }[] = [
     userSpace,
-    ...state.dashboard.teams.filter(t => t.id !== state.personalWorkspaceId),
+    ...state.dashboard.teams.filter((t) => t.id !== state.personalWorkspaceId),
   ].filter(Boolean);
 
   if (allTeams.length) {
-    teams = allTeams.map(team => ({
+    teams = allTeams.map((team) => ({
       teamId: team.id,
       teamName: team.name,
       teamAvatar: team.avatarUrl,
       userAuthorizations: team.userAuthorizations,
     }));
-    currentSpace = teams.find(t => t.teamId === state.activeTeam)!;
-    otherWorkspaces = teams.filter(t => t !== currentSpace)!;
+    currentSpace = teams.find((t) => t.teamId === state.activeTeam)!;
+    otherWorkspaces = teams.filter((t) => t !== currentSpace)!;
   }
 
   return (
@@ -207,7 +207,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
                 item={space}
                 disabled={
                   space.userAuthorizations.find(
-                    authorization => authorization.userId === user.id
+                    (authorization) => authorization.userId === user.id
                   )?.authorization === 'READ'
                 }
               />

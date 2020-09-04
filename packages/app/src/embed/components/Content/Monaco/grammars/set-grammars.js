@@ -35,7 +35,7 @@ class TokenizerState {
  */
 export function wireTmGrammars(monaco, registry, languages) {
   return Promise.all(
-    Array.from(languages.keys()).map(async languageId => {
+    Array.from(languages.keys()).map(async (languageId) => {
       try {
         const grammar = await registry.loadGrammar(languages.get(languageId));
 
@@ -46,7 +46,7 @@ export function wireTmGrammars(monaco, registry, languages) {
 
             return {
               endState: new TokenizerState(res.ruleStack),
-              tokens: res.tokens.map(token => ({
+              tokens: res.tokens.map((token) => ({
                 ...token,
                 // TODO: At the moment, monaco-editor doesn't seem to accept array of scopes
                 scopes: token.scopes[token.scopes.length - 1],

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const NetlifyIcon = props => (
+export const NetlifyIcon = (props) => (
   <svg width={12} height={12} fill="none" viewBox="0 0 12 12" {...props}>
     <path
       fill="#4CAA9F"
@@ -9,7 +9,7 @@ export const NetlifyIcon = props => (
   </svg>
 );
 
-export const PrettierIcon = props => (
+export const PrettierIcon = (props) => (
   <svg width={10} height={11} fill="none" viewBox="0 0 10 11" {...props}>
     <path
       fill="#56B3B4"
@@ -94,7 +94,7 @@ export const PrettierIcon = props => (
   </svg>
 );
 
-export const NPMIcon = props => (
+export const NPMIcon = (props) => (
   <svg width={17} height={16} fill="none" viewBox="0 0 17 16" {...props}>
     <path
       fill="#FF453A"
@@ -103,13 +103,13 @@ export const NPMIcon = props => (
   </svg>
 );
 
-export const VercelIcon = props => (
+export const VercelIcon = (props) => (
   <svg width={12} height={10} fill="none" viewBox="0 0 12 10" {...props}>
     <path fill="#fff" d="M6 0l6 10H0L6 0z" />
   </svg>
 );
 
-export const JSIcon = props => (
+export const JSIcon = (props) => (
   <svg width={16} height={16} viewBox="0 0 16 16" {...props}>
     <g id="Page-1" fill="none" fillRule="evenodd" stroke="none" strokeWidth={1}>
       <g id="configJS" fillRule="nonzero">
@@ -125,7 +125,7 @@ export const JSIcon = props => (
   </svg>
 );
 
-export const CodeSandboxIcon = props => (
+export const CodeSandboxIcon = (props) => (
   <svg width={16} height={16} viewBox="0 0 16 16" {...props}>
     <g id="Page-1" fill="none" fillRule="evenodd" stroke="none" strokeWidth={1}>
       <g id="configCodesandbox">

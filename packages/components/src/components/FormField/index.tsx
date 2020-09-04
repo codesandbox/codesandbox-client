@@ -27,7 +27,7 @@ export const FormField: React.FC<IFormFieldProps> = ({
   const inputId = useId(id);
 
   const LabelWrapper = hideLabel ? VisuallyHidden : React.Fragment;
-  const InputElement = React.Children.map(props.children, child =>
+  const InputElement = React.Children.map(props.children, (child) =>
     React.cloneElement(child as React.ReactElement<any>, {
       id: inputId,
     })

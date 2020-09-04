@@ -43,14 +43,14 @@ export default class KeybindingInput extends React.Component<Props, State> {
     recordedKeys: [],
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     const { value } = e.target;
 
     this.props.setValue(value);
   };
 
   keypresses = 0;
-  handleKeyDown = e => {
+  handleKeyDown = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -74,19 +74,19 @@ export default class KeybindingInput extends React.Component<Props, State> {
     ) {
       this.keypresses += 1;
 
-      this.setState(state => ({
+      this.setState((state) => ({
         recordedKeys: sortKeys([...state.recordedKeys, upperCaseKey]),
       }));
     }
   };
 
-  handleKeyUp = e => {
+  handleKeyUp = (e) => {
     e.preventDefault();
     e.stopPropagation();
     this.keypresses -= 1;
   };
 
-  handleKeyPress = e => {
+  handleKeyPress = (e) => {
     e.preventDefault();
     e.stopPropagation();
   };

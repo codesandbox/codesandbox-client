@@ -145,12 +145,12 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const selected = selectedIds.includes(sandbox.id);
   const isDragging = isAnythingDragging && selected;
 
-  const onClick = event => {
+  const onClick = (event) => {
     onSelectionClick(event, sandbox.id);
   };
 
   const onContextMenu = React.useCallback(
-    event => {
+    (event) => {
       event.preventDefault();
       if (event.type === 'contextmenu') onRightClick(event, sandbox.id);
       else onMenuEvent(event, sandbox.id);
@@ -159,7 +159,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   );
 
   const history = useHistory();
-  const onDoubleClick = event => {
+  const onDoubleClick = (event) => {
     // can't open deleted items, they don't exist anymore
     if (location.pathname.includes('deleted')) {
       onContextMenu(event);
@@ -275,7 +275,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     ? {}
     : {
         ref: dragRef,
-        onDragStart: event => onDragStart(event, sandbox.id),
+        onDragStart: (event) => onDragStart(event, sandbox.id),
       };
 
   React.useEffect(() => {

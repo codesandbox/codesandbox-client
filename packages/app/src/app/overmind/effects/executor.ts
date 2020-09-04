@@ -17,7 +17,7 @@ export default {
       );
     }
 
-    return executor.on(event, data => {
+    return executor.on(event, (data) => {
       action({ event, data: data || {} });
     });
   },

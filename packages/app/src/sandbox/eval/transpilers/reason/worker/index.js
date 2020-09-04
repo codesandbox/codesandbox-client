@@ -7,7 +7,7 @@ self.importScripts('https://reason.surge.sh/bucklescript-deps.js');
 
 self.postMessage('ready');
 
-self.addEventListener('message', ev => {
+self.addEventListener('message', (ev) => {
   const { codesandbox, code } = ev.data;
 
   if (!codesandbox) {

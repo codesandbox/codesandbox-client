@@ -1,7 +1,7 @@
 import React from 'react';
 import IconBase from 'react-icons/IconBase';
 
-export const CodeSandboxIcon = props => (
+export const CodeSandboxIcon = (props) => (
   <IconBase fill="none" viewBox="0 0 24 24" {...props}>
     <g clipRule="evenodd" fillRule="evenodd">
       <path

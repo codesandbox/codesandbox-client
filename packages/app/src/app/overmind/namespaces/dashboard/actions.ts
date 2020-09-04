@@ -67,7 +67,7 @@ export const blacklistedTemplateRemoved: Action<string> = (
   template
 ) => {
   state.dashboard.filters.blacklistedTemplates = state.dashboard.filters.blacklistedTemplates.filter(
-    currentTemplate => currentTemplate !== template
+    (currentTemplate) => currentTemplate !== template
   );
 };
 
@@ -156,7 +156,9 @@ export const removeFromTeam: AsyncAction<string> = async (
 
     state.activeTeamInfo = {
       ...state.activeTeamInfo,
-      users: (state.activeTeamInfo.users || []).filter(user => user.id !== id),
+      users: (state.activeTeamInfo.users || []).filter(
+        (user) => user.id !== id
+      ),
     };
   } catch {
     effects.notificationToast.error(
@@ -285,11 +287,11 @@ export const getAllFolders: AsyncAction = async ({ state, effects }) => {
     }
 
     // this is here because it will be done in the backend in the *FUTURE*
-    const collectionsByLevel = data.me.collections.map(collection =>
+    const collectionsByLevel = data.me.collections.map((collection) =>
       getDecoratedCollection(collection)
     );
 
-    state.dashboard.allCollections = collectionsByLevel.filter(c => c.id);
+    state.dashboard.allCollections = collectionsByLevel.filter((c) => c.id);
   } catch {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
@@ -316,7 +318,7 @@ export const createFolder: AsyncAction<string> = async (
     });
 
     state.dashboard.allCollections = state.dashboard.allCollections.map(
-      folder => {
+      (folder) => {
         if (folder.id === 'FAKE_ID') {
           return {
             ...folder,
@@ -360,7 +362,7 @@ export const getDrafts: AsyncAction = async ({ state, effects }) => {
     }
 
     dashboard.sandboxes[sandboxesTypes.DRAFTS] = sandboxes.filter(
-      s => !s.customTemplate
+      (s) => !s.customTemplate
     );
   } catch (error) {
     effects.notificationToast.error(
@@ -400,7 +402,7 @@ export const getSandboxesByPath: AsyncAction<string> = async (
     }
 
     dashboard.sandboxes.ALL[cleanPath] = data.me.collection.sandboxes.filter(
-      s => !s.customTemplate
+      (s) => !s.customTemplate
     );
   } catch (error) {
     effects.notificationToast.error(
@@ -456,7 +458,7 @@ export const getReposByPath: AsyncAction<string> = async (
           ...acc[curr.originalGit.repo],
           sandboxes: newSandboxes,
           lastEdited: newSandboxes
-            .map(s => parseISO(s.updatedAt))
+            .map((s) => parseISO(s.updatedAt))
             .sort(compareDesc)[0],
         };
 
@@ -583,7 +585,7 @@ export const deleteTemplateFromState: Action<string[]> = (
   ids
 ) => {
   const { sandboxes } = dashboard;
-  ids.map(id => {
+  ids.map((id) => {
     if (sandboxes.TEMPLATE_HOME) {
       sandboxes.TEMPLATE_HOME = sandboxes.TEMPLATE_HOME
         ? sandboxes.TEMPLATE_HOME.filter(
@@ -662,7 +664,7 @@ export const renameFolderInState: Action<{ path: string; newPath: string }> = (
   { path, newPath }
 ) => {
   if (!dashboard.allCollections) return;
-  const newFolders = dashboard.allCollections.map(folder => {
+  const newFolders = dashboard.allCollections.map((folder) => {
     if (folder.path === path) {
       return getDecoratedCollection({ ...folder, path: newPath });
     }
@@ -680,7 +682,7 @@ export const renameSandbox: AsyncAction<{
     changedSandboxes,
   } = actions.dashboard.internal.changeSandboxesInState({
     sandboxIds: [id],
-    sandboxMutation: sandbox => ({ ...sandbox, title }),
+    sandboxMutation: (sandbox) => ({ ...sandbox, title }),
   });
 
   try {
@@ -689,10 +691,10 @@ export const renameSandbox: AsyncAction<{
       title,
     });
   } catch {
-    changedSandboxes.forEach(oldSandbox =>
+    changedSandboxes.forEach((oldSandbox) =>
       actions.dashboard.internal.changeSandboxesInState({
         sandboxIds: [oldSandbox.id],
-        sandboxMutation: sandbox => ({ ...sandbox, title: oldSandbox.title }),
+        sandboxMutation: (sandbox) => ({ ...sandbox, title: oldSandbox.title }),
       })
     );
 
@@ -756,7 +758,7 @@ export const deleteFolder: AsyncAction<{
   if (!dashboard.allCollections) return;
   const oldCollections = dashboard.allCollections;
   dashboard.allCollections = dashboard.allCollections.filter(
-    folder => folder.path !== path
+    (folder) => folder.path !== path
   );
   try {
     await effects.gql.mutations.deleteFolder({
@@ -803,7 +805,7 @@ export const permanentlyDeleteSandboxes: AsyncAction<string[]> = async (
 
   const oldDeleted = state.dashboard.sandboxes.DELETED;
   state.dashboard.sandboxes.DELETED = oldDeleted.filter(
-    sandbox => !ids.includes(sandbox.id)
+    (sandbox) => !ids.includes(sandbox.id)
   );
   try {
     await effects.gql.mutations.permanentlyDeleteSandboxes({ sandboxIds: ids });
@@ -826,7 +828,7 @@ export const recoverSandboxes: AsyncAction<string[]> = async (
   if (!state.dashboard.sandboxes.DELETED) return;
   const oldDeleted = state.dashboard.sandboxes.DELETED;
   state.dashboard.sandboxes.DELETED = oldDeleted.filter(
-    sandbox => !ids.includes(sandbox.id)
+    (sandbox) => !ids.includes(sandbox.id)
   );
   try {
     await effects.gql.mutations.addSandboxToFolder({
@@ -855,9 +857,9 @@ export const downloadSandboxes: AsyncAction<string[]> = async (
   try {
     const sandboxIds = uniq(ids);
     const sandboxes = await Promise.all(
-      sandboxIds.map(s => effects.api.getSandbox(s))
+      sandboxIds.map((s) => effects.api.getSandbox(s))
     );
-    Promise.all(sandboxes.map(s => downloadZip(s, s.modules, s.directories)));
+    Promise.all(sandboxes.map((s) => downloadZip(s, s.modules, s.directories)));
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem reverting your template'
@@ -892,7 +894,7 @@ export const getSearchSandboxes: AsyncAction = async ({ state, effects }) => {
 
     const sandboxesToShow = state.dashboard
       .getFilteredSandboxes(sandboxes)
-      .filter(x => !x.customTemplate);
+      .filter((x) => !x.customTemplate);
 
     dashboard.sandboxes[sandboxesTypes.SEARCH] = sandboxesToShow;
   } catch (error) {
@@ -955,7 +957,7 @@ export const addSandboxesToFolder: AsyncAction<{
   }
 
   const existingCollection = state.dashboard?.allCollections?.find(
-    f => f.path === collectionPath
+    (f) => f.path === collectionPath
   );
   if (existingCollection) {
     existingCollection.sandboxCount += sandboxIds.length;
@@ -1002,9 +1004,9 @@ export const revokeTeamInvitation: AsyncAction<{
   userId: string;
 }> = async ({ effects, state }, { teamId, userId }) => {
   const oldInvitees = state.activeTeamInfo!.invitees;
-  const user = state.activeTeamInfo!.invitees.find(f => f.id === userId);
+  const user = state.activeTeamInfo!.invitees.find((f) => f.id === userId);
   state.activeTeamInfo!.invitees = state.activeTeamInfo!.invitees.filter(
-    f => f.id !== userId
+    (f) => f.id !== userId
   );
 
   try {
@@ -1037,7 +1039,7 @@ export const setTeamInfo: AsyncAction<{
   });
 
   const oldTeamInfo = state.dashboard.teams.find(
-    team => team.id === state.activeTeam
+    (team) => team.id === state.activeTeam
   );
   const oldActiveTeamInfo = state.activeTeamInfo;
   try {
@@ -1063,7 +1065,7 @@ export const setTeamInfo: AsyncAction<{
         teamId: state.activeTeam,
       });
     }
-    state.dashboard.teams = state.dashboard.teams.map(team => {
+    state.dashboard.teams = state.dashboard.teams.map((team) => {
       if (oldTeamInfo && team.id === oldTeamInfo.id) {
         return {
           ...team,
@@ -1113,16 +1115,16 @@ export const changeSandboxesFrozen: AsyncAction<{
     changedSandboxes,
   } = actions.dashboard.internal.changeSandboxesInState({
     sandboxIds,
-    sandboxMutation: sandbox => ({ ...sandbox, isFrozen }),
+    sandboxMutation: (sandbox) => ({ ...sandbox, isFrozen }),
   });
 
   try {
     await effects.gql.mutations.changeFrozen({ sandboxIds, isFrozen });
   } catch (error) {
-    changedSandboxes.forEach(oldSandbox =>
+    changedSandboxes.forEach((oldSandbox) =>
       actions.dashboard.internal.changeSandboxesInState({
         sandboxIds: [oldSandbox.id],
-        sandboxMutation: sandbox => ({
+        sandboxMutation: (sandbox) => ({
           ...sandbox,
           isFrozen: oldSandbox.isFrozen,
         }),
@@ -1151,16 +1153,16 @@ export const changeSandboxesPrivacy: AsyncAction<{
     changedSandboxes,
   } = actions.dashboard.internal.changeSandboxesInState({
     sandboxIds,
-    sandboxMutation: sandbox => ({ ...sandbox, privacy }),
+    sandboxMutation: (sandbox) => ({ ...sandbox, privacy }),
   });
 
   try {
     await effects.gql.mutations.changePrivacy({ sandboxIds, privacy });
   } catch (error) {
-    changedSandboxes.forEach(oldSandbox => {
+    changedSandboxes.forEach((oldSandbox) => {
       actions.dashboard.internal.changeSandboxesInState({
         sandboxIds: [oldSandbox.id],
-        sandboxMutation: s => ({ ...s, privacy: oldSandbox.privacy }),
+        sandboxMutation: (s) => ({ ...s, privacy: oldSandbox.privacy }),
       });
     });
 
@@ -1199,7 +1201,7 @@ export const changeAuthorizationInState: Action<{
   authorization: TeamMemberAuthorization;
 }> = ({ state }, { userId, authorization }) => {
   const userAuthorizations = state.activeTeamInfo!.userAuthorizations.map(
-    user => {
+    (user) => {
       if (user.userId === userId) return { ...user, authorization };
       return user;
     }
@@ -1214,7 +1216,7 @@ export const changeAuthorization: AsyncAction<{
 }> = async ({ state, effects, actions }, { userId, authorization }) => {
   // optimistic update
   const oldAuthorization = state.activeTeamInfo!.userAuthorizations.find(
-    user => user.userId === userId
+    (user) => user.userId === userId
   )!.authorization;
 
   actions.dashboard.changeAuthorizationInState({ userId, authorization });
@@ -1229,7 +1231,8 @@ export const changeAuthorization: AsyncAction<{
   } catch (e) {
     let message = 'There has been a problem changing user authorization.';
     if (e?.response?.errors) {
-      message += ' ' + e.response.errors.map(error => error.message).join(', ');
+      message +=
+        ' ' + e.response.errors.map((error) => error.message).join(', ');
     }
 
     effects.notificationToast.error(message);

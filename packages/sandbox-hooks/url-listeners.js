@@ -110,7 +110,7 @@ export default function setupHistoryListeners() {
 
   document.addEventListener(
     'click',
-    ev => {
+    (ev) => {
       const el = ev.target;
       if (
         el.nodeName === 'A' &&

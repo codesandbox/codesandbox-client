@@ -65,7 +65,7 @@ export const withLoadApp = <T>(
   if (state.hasLogIn) {
     try {
       await Promise.all([
-        effects.api.getCurrentUser().then(user => {
+        effects.api.getCurrentUser().then((user) => {
           state.user = user;
         }),
       ]);
@@ -98,7 +98,7 @@ export const withLoadApp = <T>(
     );
 
     state.contributors = response.data.contributors.map(
-      contributor => contributor.login
+      (contributor) => contributor.login
     );
   } catch (error) {
     // Something wrong in the parsing probably, make sure the file is JSON valid
@@ -185,7 +185,7 @@ export const createModals = <
 
       Object.assign(state.modals[name], newState);
 
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         resolver = resolve;
       });
     };
@@ -193,7 +193,7 @@ export const createModals = <
     const close: AsyncAction<T> = async ({ state }, payload) => {
       state.modals.current = null;
       if (modal.state) {
-        Object.keys(modal.state).forEach(stateKey => {
+        Object.keys(modal.state).forEach((stateKey) => {
           state.modals[name][stateKey] = modal.state[stateKey];
         });
       }

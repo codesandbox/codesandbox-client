@@ -33,7 +33,7 @@ export const ContextMenu = ({
   const likesPage = location.pathname === '/likes';
 
   const isFeatured = user.featuredSandboxes
-    .map(sandbox => sandbox.id)
+    .map((sandbox) => sandbox.id)
     .includes(sandboxId);
 
   return (

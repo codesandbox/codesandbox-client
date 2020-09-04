@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../components/layout';
 
-const DevTools = props => {
+const DevTools = (props) => {
   const { white, grey, greyLight, whiteDark } = useTheme().homepage;
 
   const getFill = () => {

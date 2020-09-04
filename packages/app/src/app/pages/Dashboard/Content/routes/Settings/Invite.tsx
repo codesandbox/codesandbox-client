@@ -40,7 +40,7 @@ export const Invite = () => {
 
   const [loading, setLoading] = React.useState(false);
 
-  const onSubmit = async event => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
     setInviteValue('');
@@ -82,7 +82,7 @@ export const Invite = () => {
           css={css({
             marginTop: 10,
             transition: 'height ease-in',
-            transitionDuration: theme => theme.speeds[2],
+            transitionDuration: (theme) => theme.speeds[2],
           })}
         >
           <Card
@@ -133,7 +133,7 @@ export const Invite = () => {
               <Stack as="form" onSubmit={onSubmit} gap={2}>
                 <UserSearchInput
                   inputValue={inviteValue}
-                  onInputValueChange={val => {
+                  onInputValueChange={(val) => {
                     setInviteValue(val);
                   }}
                 />
@@ -149,26 +149,28 @@ export const Invite = () => {
             </Stack>
 
             <List>
-              {sortBy(team.users, u => u.username.toLowerCase()).map(user => (
-                <ListItem
-                  key={user.username}
-                  align="center"
-                  justify="space-between"
-                  css={css({ height: 12, paddingX: 0 })}
-                >
-                  <Stack gap={2} align="center">
-                    <Avatar user={user} />
-                    <Text size={3}>{user.username}</Text>
-                  </Stack>
+              {sortBy(team.users, (u) => u.username.toLowerCase()).map(
+                (user) => (
+                  <ListItem
+                    key={user.username}
+                    align="center"
+                    justify="space-between"
+                    css={css({ height: 12, paddingX: 0 })}
+                  >
+                    <Stack gap={2} align="center">
+                      <Avatar user={user} />
+                      <Text size={3}>{user.username}</Text>
+                    </Stack>
 
-                  <Text variant="muted" size={3}>
-                    {user.id === team.creatorId ? 'Admin' : 'Member'}
-                  </Text>
-                </ListItem>
-              ))}
+                    <Text variant="muted" size={3}>
+                      {user.id === team.creatorId ? 'Admin' : 'Member'}
+                    </Text>
+                  </ListItem>
+                )
+              )}
 
-              {sortBy(team.invitees, u => u.username.toLowerCase()).map(
-                user => (
+              {sortBy(team.invitees, (u) => u.username.toLowerCase()).map(
+                (user) => (
                   <ListItem
                     key={user.username}
                     align="center"

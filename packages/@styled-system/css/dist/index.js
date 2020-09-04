@@ -7,7 +7,7 @@ exports['default'] = exports.css = exports.responsive = exports.get = void 0;
 function _extends() {
   _extends =
     Object.assign ||
-    function(target) {
+    function (target) {
       for (var i = 1; i < arguments.length; i++) {
         var source = arguments[i];
         for (var key in source) {
@@ -33,7 +33,7 @@ var get = function get(obj, key, def, p, undef) {
 };
 
 exports.get = get;
-var defaultBreakpoints = [40, 52, 64].map(function(n) {
+var defaultBreakpoints = [40, 52, 64].map(function (n) {
   return n + 'em';
 });
 var defaultTheme = {
@@ -161,7 +161,7 @@ var transforms = [
   'bottom',
   'left',
   'right',
-].reduce(function(acc, curr) {
+].reduce(function (acc, curr) {
   var _extends2;
 
   return _extends(
@@ -172,11 +172,11 @@ var transforms = [
 }, {});
 
 var responsive = function responsive(styles) {
-  return function(theme) {
+  return function (theme) {
     var next = {};
     var breakpoints = get(theme, 'breakpoints', defaultBreakpoints);
     var mediaQueries = [null].concat(
-      breakpoints.map(function(n) {
+      breakpoints.map(function (n) {
         return '@media screen and (min-width: ' + n + ')';
       })
     );
@@ -212,7 +212,7 @@ var responsive = function responsive(styles) {
 exports.responsive = responsive;
 
 var css = function css(args) {
-  return function(props) {
+  return function (props) {
     if (props === void 0) {
       props = {};
     }

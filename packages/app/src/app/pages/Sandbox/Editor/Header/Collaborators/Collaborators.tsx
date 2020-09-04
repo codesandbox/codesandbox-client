@@ -47,7 +47,7 @@ export const Collaborators: FunctionComponent<{
 }> = ({ renderButton }) => (
   <>
     <Overlay event="Collaborators" content={CollaboratorContent}>
-      {open => renderButton({ onClick: () => open() })}
+      {(open) => renderButton({ onClick: () => open() })}
     </Overlay>
   </>
 );

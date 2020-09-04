@@ -79,7 +79,7 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
   return <div />;
 };
 
-export const NotificationsContent = props => {
+export const NotificationsContent = (props) => {
   const {
     state: { userNotifications },
     actions: {
@@ -108,7 +108,7 @@ export const NotificationsContent = props => {
       );
     }
 
-    return userNotifications.notifications.map(notification =>
+    return userNotifications.notifications.map((notification) =>
       getNotificationComponent(notification)
     );
   };

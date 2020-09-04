@@ -2,10 +2,10 @@ import styled, { css } from 'styled-components';
 import { Link } from '@reach/router';
 
 export const Header = styled.header`
-  box-shadow: 0px 1px 0px ${props => props.theme.homepage.grey};
+  box-shadow: 0px 1px 0px ${(props) => props.theme.homepage.grey};
   height: 48px;
   width: 100%;
-  background: ${props => props.theme.homepage.greyDark};
+  background: ${(props) => props.theme.homepage.greyDark};
 `;
 
 export const SubNav = styled.div`
@@ -18,7 +18,7 @@ export const SubNav = styled.div`
   transform: translateX(-50%);
   z-index: 999;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
 
   > nav {
     width: 1081px;
@@ -31,7 +31,7 @@ export const SubNav = styled.div`
 
   a {
     text-decoration: none;
-    color: ${props => props.theme.homepage.white};
+    color: ${(props) => props.theme.homepage.white};
   }
 
   ul {
@@ -74,11 +74,11 @@ export const Nav = styled.nav`
   justify-content: space-between;
   font-size: 0.8125rem;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     display: none;
   }
 
-  ${props => props.theme.breakpoints.lg} {
+  ${(props) => props.theme.breakpoints.lg} {
     .tablet-remove {
       display: none;
     }
@@ -93,7 +93,7 @@ export const Wrapper = styled.div`
 `;
 
 export const UserAvatar = styled.img`
-  border: 1px solid ${props => props.theme.homepage.grey};
+  border: 1px solid ${(props) => props.theme.homepage.grey};
   border-radius: 2px;
   width: 24px;
   height: 24px;
@@ -101,7 +101,7 @@ export const UserAvatar = styled.img`
 `;
 
 export const LogoWrapper = styled(Link)`
-  font-family: ${props => props.theme.homepage.appleFont};
+  font-family: ${(props) => props.theme.homepage.appleFont};
   display: flex;
   align-items: center;
   font-size: 0.8125rem;
@@ -123,16 +123,16 @@ const buttonCSS = css`
   border: none;
   cursor: pointer;
   text-decoration: none;
-  color: ${props => props.theme.homepage.muted};
+  color: ${(props) => props.theme.homepage.muted};
   transition: all 200ms ease;
   outline: none;
   padding: 0;
 
   &:hover {
-    color: ${props => props.theme.homepage.white};
+    color: ${(props) => props.theme.homepage.white};
 
     svg path {
-      fill: ${props => props.theme.homepage.white};
+      fill: ${(props) => props.theme.homepage.white};
     }
   }
 `;
@@ -184,9 +184,9 @@ export const MobileNav = styled.nav`
   height: 100%;
   position: relative;
   z-index: 3;
-  background: ${props => props.theme.homepage.greyDark};
+  background: ${(props) => props.theme.homepage.greyDark};
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     display: flex;
   }
 
@@ -205,7 +205,7 @@ export const MobileNav = styled.nav`
     font-size: 1rem;
     text-decoration: none;
     margin-right: 1rem;
-    color: ${props => props.theme.homepage.white};
+    color: ${(props) => props.theme.homepage.white};
   }
 `;
 
@@ -228,7 +228,7 @@ export const Headers = styled.h3`
   margin-top: 2rem;
   padding-left: 1rem;
 
-  color: ${props => props.theme.greyLight};
+  color: ${(props) => props.theme.greyLight};
 `;
 
 export const Items = styled.ul`
@@ -241,7 +241,7 @@ export const Items = styled.ul`
     padding-left: 1rem;
 
     &:hover {
-      background: ${props => props.theme.homepage.grey};
+      background: ${(props) => props.theme.homepage.grey};
     }
   }
 
@@ -261,7 +261,7 @@ export const Items = styled.ul`
 
     margin-left: 1rem;
 
-    color: ${props => props.theme.homepage.white};
+    color: ${(props) => props.theme.homepage.white};
   }
 `;
 
@@ -273,7 +273,7 @@ export const Pricing = styled.li`
   a {
     display: flex;
     align-items: center;
-    color: ${props => props.theme.homepage.white};
+    color: ${(props) => props.theme.homepage.white};
     text-decoration: none;
     text-decoration: none;
   }

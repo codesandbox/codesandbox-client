@@ -216,7 +216,7 @@ export const addFeaturedSandboxesInState: Action<{
   const page = state.profile.currentSandboxesPage;
   const sandboxesOnPage = state.profile.sandboxes[username][page];
 
-  const sandbox = sandboxesOnPage.find(s => s.id === sandboxId);
+  const sandbox = sandboxesOnPage.find((s) => s.id === sandboxId);
 
   state.profile.current.featuredSandboxes = [
     ...state.profile.current.featuredSandboxes,
@@ -230,7 +230,7 @@ export const removeFeaturedSandboxesInState: Action<{
   if (!state.profile.current) return;
 
   state.profile.current.featuredSandboxes = state.profile.current.featuredSandboxes.filter(
-    sandbox => sandbox.id !== sandboxId
+    (sandbox) => sandbox.id !== sandboxId
   );
 };
 
@@ -240,7 +240,7 @@ export const addFeaturedSandboxes: AsyncAction<{
   if (!state.profile.current) return;
 
   const currentFeaturedSandboxIds = state.profile.current.featuredSandboxes.map(
-    sandbox => sandbox.id
+    (sandbox) => sandbox.id
   );
 
   // already featured
@@ -273,8 +273,8 @@ export const removeFeaturedSandboxes: AsyncAction<{
   if (!state.profile.current) return;
 
   const filteredSandboxIds = state.profile.current.featuredSandboxes
-    .map(sandbox => sandbox.id)
-    .filter(id => id !== sandboxId);
+    .map((sandbox) => sandbox.id)
+    .filter((id) => id !== sandboxId);
 
   // optimisic update
   actions.profile.removeFeaturedSandboxesInState({ sandboxId });
@@ -324,7 +324,7 @@ export const saveFeaturedSandboxesOrder: AsyncAction = async ({
 
   try {
     const featuredSandboxIds = state.profile.current.featuredSandboxes.map(
-      s => s.id
+      (s) => s.id
     );
     const profile = await effects.api.updateUserFeaturedSandboxes(
       state.profile.current.id,
@@ -353,7 +353,7 @@ export const changeSandboxPrivacyInState: Action<{
   const page = state.profile.currentSandboxesPage;
   const sandboxes = state.profile.sandboxes[username][page];
 
-  state.profile.sandboxes[username][page] = sandboxes.map(sandbox => {
+  state.profile.sandboxes[username][page] = sandboxes.map((sandbox) => {
     if (sandbox.id === sandboxId) sandbox.privacy = privacy;
     return sandbox;
   });

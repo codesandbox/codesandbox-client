@@ -26,7 +26,7 @@ export const Prettier: FunctionComponent = () => {
   } = useOvermind();
 
   const bindValue = (name: string) => ({
-    setValue: value =>
+    setValue: (value) =>
       settingChanged({ name: `prettierConfig.${name}`, value }),
     value: prettierConfig[name],
   });

@@ -1,7 +1,7 @@
 import React from 'react';
 import IconBase from 'react-icons/IconBase';
 
-export const NewIcon = props => (
+export const NewIcon = (props) => (
   <IconBase viewBox="0 0 16 16" {...props}>
     <path
       fill="#fff"

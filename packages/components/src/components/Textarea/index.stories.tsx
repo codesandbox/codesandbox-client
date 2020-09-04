@@ -56,7 +56,7 @@ export const Controlled = () => {
           autosize
           maxLength={20}
           value={value}
-          onChange={event => setValue(event.target.value)}
+          onChange={(event) => setValue(event.target.value)}
           placeholder="Write a lot of lines here"
         />
       </Wrapper>

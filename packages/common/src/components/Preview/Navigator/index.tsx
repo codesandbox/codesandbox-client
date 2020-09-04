@@ -56,7 +56,7 @@ function Navigator({
         </Icon>
       </Icons>
       <AddressBarContainer
-        onMouseDown={e => {
+        onMouseDown={(e) => {
           e.stopPropagation();
         }}
       >

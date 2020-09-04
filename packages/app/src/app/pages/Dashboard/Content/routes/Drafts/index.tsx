@@ -24,8 +24,8 @@ export const Drafts = () => {
 
   const items: DashboardGridItem[] = sandboxes.DRAFTS
     ? getFilteredSandboxes(sandboxes.DRAFTS)
-        .filter(s => s.authorId === user?.id)
-        .map(sandbox => ({
+        .filter((s) => s.authorId === user?.id)
+        .map((sandbox) => ({
           type: 'sandbox',
           sandbox,
         }))

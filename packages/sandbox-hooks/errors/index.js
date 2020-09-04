@@ -69,7 +69,7 @@ function buildDynamicError(ref: ErrorRecord) {
   // like a file store
   const manager = getCurrentManager();
 
-  const relevantFrame = ref.enhancedFrames.find(r =>
+  const relevantFrame = ref.enhancedFrames.find((r) =>
     wrappedResolveModule(
       manager,
       (r._originalFileName || r.fileName || '')

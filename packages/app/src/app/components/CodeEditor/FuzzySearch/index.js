@@ -25,7 +25,7 @@ export default class FuzzySearch extends React.PureComponent {
 
   UNSAFE_componentWillMount() {
     const { modules, directories } = this.props;
-    const modulePathData = modules.map(m => {
+    const modulePathData = modules.map((m) => {
       const path = getModulePath(modules, directories, m.id);
       return {
         m,
@@ -34,9 +34,9 @@ export default class FuzzySearch extends React.PureComponent {
       };
     });
 
-    const groupedPaths = groupBy(modulePathData, n => n.depth);
-    const sortedPaths = Object.values(groupedPaths).map(group =>
-      sortBy(group, n => n.path)
+    const groupedPaths = groupBy(modulePathData, (n) => n.depth);
+    const sortedPaths = Object.values(groupedPaths).map((group) =>
+      sortBy(group, (n) => n.path)
     );
     const flattenedPaths = flatten(sortedPaths);
 
@@ -49,19 +49,19 @@ export default class FuzzySearch extends React.PureComponent {
     );
   }
 
-  itemToString = m => (m ? m.path : '');
+  itemToString = (m) => (m ? m.path : '');
 
   getItems = (value = '') => {
-    const pathArray = Object.keys(this.paths).map(id => this.paths[id]);
+    const pathArray = Object.keys(this.paths).map((id) => this.paths[id]);
 
     return matchSorter(pathArray, value, { keys: ['path'] });
   };
 
-  onChange = item => {
+  onChange = (item) => {
     this.props.setCurrentModule(item.m.id);
   };
 
-  handleKeyUp = e => {
+  handleKeyUp = (e) => {
     if (e.keyCode === ESC) {
       this.props.closeFuzzySearch();
     }
@@ -88,7 +88,7 @@ export default class FuzzySearch extends React.PureComponent {
               <InputContainer>
                 <Input
                   {...getInputProps({
-                    ref: el => el && el.focus(),
+                    ref: (el) => el && el.focus(),
                     onKeyUp: this.handleKeyUp,
                     // Timeout so the fuzzy handler can still select the module
                     onBlur: () => setTimeout(this.props.closeFuzzySearch, 100),

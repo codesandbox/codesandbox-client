@@ -12,7 +12,7 @@ import designLanguage from '../design-language';
 import codesandboxBlack from '../themes/codesandbox-black';
 import codesandboxLight from '../themes/codesandbox-light.json';
 
-const polyfillTheme = vsCodeTheme => {
+const polyfillTheme = (vsCodeTheme) => {
   /**
    *
    * In order of importance, this is the value we use:
@@ -232,20 +232,14 @@ const polyfillTheme = vsCodeTheme => {
 
 export default polyfillTheme;
 
-const guessType = theme => {
+const guessType = (theme) => {
   if (theme.name && theme.name.toLowerCase().includes('light')) return 'light';
   return 'dark';
 };
 
-const lighten = (color, value) =>
-  Color(color)
-    .lighten(value)
-    .hex();
+const lighten = (color, value) => Color(color).lighten(value).hex();
 
-const darken = (color, value) =>
-  Color(color)
-    .darken(value)
-    .hex();
+const darken = (color, value) => Color(color).darken(value).hex();
 
 const withContrast = (color, background, type, contrastType = 'text') => {
   const contrastRatio = { text: 4.5, icon: 1.6 };

@@ -18,14 +18,14 @@ class Tab extends React.Component {
     });
   };
 
-  onMouseDown = e => {
+  onMouseDown = (e) => {
     if (e.button === 1) {
       // Middle mouse button
       this.closeTab(e);
     }
   };
 
-  closeTab = e => {
+  closeTab = (e) => {
     e.preventDefault();
     e.stopPropagation();
 

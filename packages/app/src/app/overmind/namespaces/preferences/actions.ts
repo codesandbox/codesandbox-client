@@ -102,7 +102,7 @@ export const keybindingChanged: Action<{
   value: any;
 }> = ({ state, effects }, { name, value }) => {
   const { keybindings } = state.preferences.settings;
-  const currentIndex = keybindings.findIndex(binding => binding.key === name);
+  const currentIndex = keybindings.findIndex((binding) => binding.key === name);
   const newBinding = {
     key: name,
     bindings: JSON.parse(JSON.stringify(value)),

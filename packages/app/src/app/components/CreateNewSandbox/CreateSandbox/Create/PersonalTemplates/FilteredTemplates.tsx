@@ -19,7 +19,7 @@ export const FilteredTemplates = ({
   const searchIndex = React.useMemo(
     () =>
       new Fuse(
-        uniqBy(flatten(templateInfos.map(t => t.templates)), t => t.id),
+        uniqBy(flatten(templateInfos.map((t) => t.templates)), (t) => t.id),
         {
           shouldSort: true,
           threshold: 0.3,

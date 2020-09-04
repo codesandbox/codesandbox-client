@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const CommentsIcon = props => (
+export const CommentsIcon = (props) => (
   <svg width={40} height={32} fill="none" viewBox="0 0 40 32" {...props}>
     <g fillRule="evenodd" clipRule="evenodd">
       <path fill="currentColor" d="M10 14a6 6 0 116 6h-6z" />
@@ -12,7 +12,7 @@ export const CommentsIcon = props => (
   </svg>
 );
 
-export const DeployIcon = props => (
+export const DeployIcon = (props) => (
   <svg width={40} height={32} fill="none" viewBox="0 0 40 32" {...props}>
     <g fill="currentColor">
       <path
@@ -25,7 +25,7 @@ export const DeployIcon = props => (
   </svg>
 );
 
-export const ExplorerIcon = props => (
+export const ExplorerIcon = (props) => (
   <svg width={40} height={32} fill="none" viewBox="0 0 40 32" {...props}>
     <path
       fill="currentColor"
@@ -36,7 +36,7 @@ export const ExplorerIcon = props => (
   </svg>
 );
 
-export const ServerIcon = props => (
+export const ServerIcon = (props) => (
   <svg width={40} height={32} fill="none" viewBox="0 0 40 32" {...props}>
     <path
       fill="currentColor"
@@ -47,7 +47,7 @@ export const ServerIcon = props => (
   </svg>
 );
 
-export const GithubIcon = props => (
+export const GithubIcon = (props) => (
   <svg width={40} height={32} fill="none" viewBox="0 0 40 32" {...props}>
     <path
       fill="currentColor"
@@ -56,7 +56,7 @@ export const GithubIcon = props => (
   </svg>
 );
 
-export const InfoIcon = props => (
+export const InfoIcon = (props) => (
   <svg width={40} height={32} fill="none" viewBox="0 0 40 32" {...props}>
     <path
       fill="currentColor"
@@ -65,7 +65,7 @@ export const InfoIcon = props => (
   </svg>
 );
 
-export const LiveIcon = props => (
+export const LiveIcon = (props) => (
   <svg width={40} height={32} fill="none" viewBox="0 0 40 32" {...props}>
     <g fill="currentColor" fillRule="evenodd" clipRule="evenodd">
       <path d="M15.222 19.113c2.193 0 3.976-2.108 4.023-4.533a.981.981 0 00.178-.48.92.92 0 00-.202-.698c-.114-2.225-.684-4.592-3.033-4.876l-.027-.003c-.681-.083-2.23-.27-2.548.665-2.144-.26-2.41 2.012-2.425 3.889-.248.153-.378.513-.297.886a.944.944 0 00.308.528c.005 2.463 1.804 4.622 4.023 4.622zm1.775 7.354c-.016-2.005-.032-4.022 2.003-5.304C17.645 18.895 5.439 19.5 8.487 27H17l-.003-.533z" />
@@ -73,7 +73,7 @@ export const LiveIcon = props => (
     </g>
   </svg>
 );
-export const SettingsIcon = props => (
+export const SettingsIcon = (props) => (
   <svg width={40} height={32} fill="none" viewBox="0 0 40 32" {...props}>
     <path
       fill="currentColor"

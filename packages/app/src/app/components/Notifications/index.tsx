@@ -28,13 +28,14 @@ export const Notifications = () => {
       onOpen={notificationsOpened}
       width={321}
     >
-      {open => (
+      {(open) => (
         <Button
           variant="secondary"
           css={css({
             size: 26,
             ':hover .border-for-bell': {
-              background: theme => theme.colors.secondaryButton.hoverBackground,
+              background: (theme) =>
+                theme.colors.secondaryButton.hoverBackground,
             },
           })}
           onClick={open}

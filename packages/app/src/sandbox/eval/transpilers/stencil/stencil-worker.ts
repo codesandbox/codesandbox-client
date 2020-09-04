@@ -14,7 +14,7 @@ const loadStencilVersion = (version: string) => {
 ctx.importScripts('https://unpkg.com/typescript@3.5.3/lib/typescript.js');
 ctx.postMessage('ready');
 
-ctx.addEventListener('message', event => {
+ctx.addEventListener('message', (event) => {
   const { code, path, stencilVersion } = event.data;
 
   loadStencilVersion(stencilVersion);
@@ -24,8 +24,8 @@ ctx.addEventListener('message', event => {
     module: 'cjs',
   };
 
-  ctx.stencil.compile(code, opts).then(results => {
-    results.imports.forEach(dependency => {
+  ctx.stencil.compile(code, opts).then((results) => {
+    results.imports.forEach((dependency) => {
       ctx.postMessage({
         type: 'add-dependency',
         path: dependency.path,

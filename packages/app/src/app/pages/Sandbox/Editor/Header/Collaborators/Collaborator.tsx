@@ -237,7 +237,7 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
 
   const isReadOnly = readOnly || !isPatron;
 
-  const onChange = value => {
+  const onChange = (value) => {
     actions.workspace.sandboxPrivacyChanged({
       privacy: Number(value) as 0 | 1 | 2,
       source: 'collaboratorss',
@@ -255,7 +255,7 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
               <Icon name="caret" size={8} marginLeft={1} />
             </Menu.Button>
             <Menu.List>
-              {Object.keys(privacyToName).map(p => (
+              {Object.keys(privacyToName).map((p) => (
                 <Menu.Item key={p} onSelect={() => onChange(p)}>
                   {privacyToName[p]}
                 </Menu.Item>

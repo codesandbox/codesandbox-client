@@ -191,7 +191,7 @@ export default function prettify(
       });
     }
 
-    handler = e => {
+    handler = (e) => {
       const { result, text, error } = e.data;
 
       if (text === getCode()) {

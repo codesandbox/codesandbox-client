@@ -31,7 +31,7 @@ function createCode(
 ) {
   const sourceCode = [];
   let whiteSpace = Infinity;
-  sourceLines.forEach(function(e) {
+  sourceLines.forEach(function (e) {
     const { content: text } = e;
     const m = text.match(/^\s*/);
     if (text === '') {
@@ -43,7 +43,7 @@ function createCode(
       whiteSpace = 0;
     }
   });
-  sourceLines.forEach(function(e) {
+  sourceLines.forEach(function (e) {
     let { content: text } = e;
     const { lineNumber: line } = e;
 
@@ -94,7 +94,7 @@ function createCode(
   if (typeof onSourceClick === 'function') {
     let handler = onSourceClick;
     pre.style.cursor = 'pointer';
-    pre.addEventListener('click', function() {
+    pre.addEventListener('click', function () {
       handler();
     });
   }

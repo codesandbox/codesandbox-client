@@ -37,7 +37,7 @@ function shouldFetchDynamically(depVersion: string) {
  */
 function removeSpacesFromDependencies(dependencies: Object) {
   const newDeps = {};
-  Object.keys(dependencies).forEach(depName => {
+  Object.keys(dependencies).forEach((depName) => {
     const [version] = dependencies[depName].split(' ');
     newDeps[depName] = version;
   });
@@ -62,7 +62,7 @@ function splitDependencies(
   const dynamicDependencies = {};
   const prebundledDependencies = {};
 
-  Object.keys(dependencies).forEach(depName => {
+  Object.keys(dependencies).forEach((depName) => {
     const version = dependencies[depName];
     if (shouldFetchDynamically(version)) {
       dynamicDependencies[depName] = version;
@@ -130,7 +130,7 @@ export async function getDependenciesFromSources(
     };
 
     const dynamicPromise = Promise.all(
-      Object.keys(dynamicDependencies).map(depName =>
+      Object.keys(dynamicDependencies).map((depName) =>
         resolveDependencyInfo(
           depName,
           depsWithNodeLibs[depName],
@@ -146,7 +146,7 @@ export async function getDependenciesFromSources(
     );
 
     const prebundledPromise = Promise.all(
-      Object.keys(prebundledDependencies).map(depName =>
+      Object.keys(prebundledDependencies).map((depName) =>
         getPrebundledDependency(depName, depsWithNodeLibs[depName]).finally(
           () => {
             remainingDependencies.splice(

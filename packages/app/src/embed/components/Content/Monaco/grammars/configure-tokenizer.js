@@ -19,7 +19,7 @@ export async function liftOff(monaco) {
   await loadWASM('/public/onigasm/2.2.1/onigasm.wasm'); // See https://www.npmjs.com/package/onigasm#light-it-up
 
   const registry = new Registry({
-    getGrammarDefinition: async scopeName => {
+    getGrammarDefinition: async (scopeName) => {
       if (scopeName === 'source.css') {
         return {
           format: 'json',

@@ -117,7 +117,7 @@ export class Server extends EventEmitter {
     this.removeAllListeners();
 
     // This is not according to spec, but we do this anyways for clean cleanup
-    this.listenerFunctions.forEach(func => {
+    this.listenerFunctions.forEach((func) => {
       self.removeEventListener('message', func);
     });
 
@@ -167,7 +167,7 @@ export class WebSocketServer extends EventEmitter {
   listen(listenPath: string, listenCallback?: Function) {
     this.socket = new WebSocket(this.url);
 
-    this.socket.onmessage = message => {
+    this.socket.onmessage = (message) => {
       blobToBuffer(message.data, (err, r) => {
         this.emit('data', r);
       });
@@ -200,7 +200,7 @@ export class WebSocketServer extends EventEmitter {
     this.removeAllListeners();
 
     // This is not according to spec, but we do this anyways for clean cleanup
-    this.listenerFunctions.forEach(func => {
+    this.listenerFunctions.forEach((func) => {
       self.removeEventListener('message', func);
     });
 

@@ -10,7 +10,7 @@ export const Right = styled.div`
 
 export const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
   margin-left: 2px;
-  color: ${props => props.theme.templateColor || props.theme.secondary};
+  color: ${(props) => props.theme.templateColor || props.theme.secondary};
   vertical-align: middle;
 
   margin-top: 1.5px;

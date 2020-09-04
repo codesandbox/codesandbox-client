@@ -55,7 +55,7 @@ const sandboxesToTest = SANDBOXES.slice(
 );
 
 function pageLoaded(page) {
-  return new Promise(resolve =>
+  return new Promise((resolve) =>
     page.exposeFunction('__puppeteer__', () => {
       if (resolve) {
         resolve();
@@ -73,20 +73,21 @@ function loadSandbox(page, sandboxId, timeout) {
     const timer = setTimeout(async () => {
       reject(
         Error(
-          `Timeout: loading sandbox '${sandboxId}' took more than ${timeout /
-            SECOND}s`
+          `Timeout: loading sandbox '${sandboxId}' took more than ${
+            timeout / SECOND
+          }s`
         )
       );
     }, timeout);
     page.goto(sandboxUrl(sandboxId), {
       timeout: 0, // we manage the timeout ourselves
     });
-    page.on('console', msg => {
+    page.on('console', (msg) => {
       for (let i = 0; i < msg.args().length; ++i) {
         console.log(`${i}: ${msg.args()[i]}`); // eslint-disable-line
       }
     });
-    page.on('error', msg => {
+    page.on('error', (msg) => {
       console.log('error', msg); // eslint-disable-line
     });
     await pageLoaded(page);
@@ -130,7 +131,7 @@ describe('sandboxes', () => {
     browser.close();
   });
 
-  sandboxesToTest.forEach(sandbox => {
+  sandboxesToTest.forEach((sandbox) => {
     const id = sandbox.id || sandbox;
     const threshold = sandbox.threshold || 0.01;
 

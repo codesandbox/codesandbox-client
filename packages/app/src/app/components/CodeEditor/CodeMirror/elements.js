@@ -9,8 +9,8 @@ const fadeInAnimation = keyframes`
 const fontFamilies = (...families) =>
   families
     .filter(Boolean)
-    .map(family => (family === 'Dank Mono' ? 'dm' : family))
-    .map(family => (family.includes(' ') ? JSON.stringify(family) : family))
+    .map((family) => (family === 'Dank Mono' ? 'dm' : family))
+    .map((family) => (family.includes(' ') ? JSON.stringify(family) : family))
     .join(', ');
 
 export const Container = styled.div`
@@ -29,17 +29,17 @@ const getTokenColor = (scope, defaultStyles) => ({ theme: givenTheme }) => {
   }
 
   const foundScope = givenTheme.vscodeTheme.tokenColors.find(
-    token => token && token.scope && token.scope.indexOf(scope) === 0
+    (token) => token && token.scope && token.scope.indexOf(scope) === 0
   );
 
   if (foundScope && foundScope.settings) {
     return css`
       ${foundScope.settings.foreground &&
-        `color: ${foundScope.settings.foreground};`}
+      `color: ${foundScope.settings.foreground};`}
       ${foundScope.settings.background &&
-        `background: ${foundScope.settings.background};`}
-      ${foundScope.settings.fontStyle &&
-        `font-style: ${foundScope.settings.fontStyle};`}
+      `background: ${foundScope.settings.background};`}
+      ${foundScope
+        .settings.fontStyle && `font-style: ${foundScope.settings.fontStyle};`}
     `;
   }
 
@@ -53,12 +53,12 @@ export const CodeContainer = styled.div`
   height: 100%;
   flex: 1 1 auto;
   .CodeMirror {
-    font-family: ${props =>
+    font-family: ${(props) =>
       fontFamilies(props.fontFamily, 'Menlo', 'Source Code Pro', 'monospace')};
-    line-height: ${props => props.lineHeight};
-    background: ${props =>
+    line-height: ${(props) => props.lineHeight};
+    background: ${(props) =>
       props.theme['editor.background'] || theme.background2()};
-    color: ${props =>
+    color: ${(props) =>
       props.theme['editor.foreground'] || props.theme.foreground || '#e0e0e0'};
     height: 100%;
     font-weight: 500;
@@ -69,20 +69,20 @@ export const CodeContainer = styled.div`
     }
   }
   div.CodeMirror-selected {
-    background: ${props => props.theme['selection.background'] || '#65737e'};
+    background: ${(props) => props.theme['selection.background'] || '#65737e'};
   }
   .CodeMirror-line::selection,
   .CodeMirror-line > span::selection,
   .CodeMirror-line > span > span::selection {
-    background: ${props => props.theme['selection.background'] || '#65737e'};
+    background: ${(props) => props.theme['selection.background'] || '#65737e'};
   }
   .CodeMirror-line::-moz-selection,
   .CodeMirror-line > span::-moz-selection,
   .CodeMirror-line > span > span::-moz-selection {
-    background: ${props => props.theme['selection.background'] || '#65737e'};
+    background: ${(props) => props.theme['selection.background'] || '#65737e'};
   }
   .CodeMirror-gutters {
-    background: ${props =>
+    background: ${(props) =>
       props.theme['editorGutter.background'] || theme.background2()};
     border-right: 0px;
   }
@@ -90,14 +90,16 @@ export const CodeContainer = styled.div`
     color: #ac4142;
   }
   .CodeMirror-guttermarker-subtle {
-    color: ${props => props.theme['editorLineNumber.foreground'] || '#505050'};
+    color: ${(props) =>
+      props.theme['editorLineNumber.foreground'] || '#505050'};
   }
   .CodeMirror-linenumber {
-    color: ${props => props.theme['editorLineNumber.foreground'] || '#505050'};
+    color: ${(props) =>
+      props.theme['editorLineNumber.foreground'] || '#505050'};
   }
   .CodeMirror-cursor {
     border-left: 1px solid
-      ${props => props.theme['editorCursor.foreground'] || '#b0b0b0'};
+      ${(props) => props.theme['editorCursor.foreground'] || '#b0b0b0'};
   }
 
   span.cm-comment {
@@ -170,12 +172,12 @@ export const CodeContainer = styled.div`
   }
 
   .CodeMirror-activeline-background {
-    background: ${props =>
+    background: ${(props) =>
       props.theme['editor.lineHighlightBackground'] || 'rgba(0, 0, 0, 0.3)'};
   }
 
   div.cm-line-highlight.CodeMirror-linebackground {
-    background: ${props =>
+    background: ${(props) =>
       props.theme['editor.lineHighlightBackground'] || 'rgba(0, 0, 0, 0.3)'};
   }
 `;

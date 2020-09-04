@@ -31,7 +31,7 @@ export const LinkElement = ({ href, children, ...props }) => {
         })}
         href={`/u/${children[0].props.children.substr(1)}`}
         target="_blank"
-        onClick={event => event.stopPropagation()}
+        onClick={(event) => event.stopPropagation()}
       >
         {children[0].props.children}
       </Link>

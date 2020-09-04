@@ -22,7 +22,7 @@ export const EditorToast = () => {
 
   if (followingUserId && state.live.roomInfo && state.live.isLive) {
     followingUser = state.live.roomInfo.users.find(
-      u => u.id === followingUserId
+      (u) => u.id === followingUserId
     );
   }
 

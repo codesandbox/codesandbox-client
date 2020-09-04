@@ -25,7 +25,7 @@ export const pickSandbox: AsyncAction<PickedSandboxDetails> = async (
     const data = await effects.api.saveSandboxPick(id, title, description);
     const popularSandbox = (
       state.explore.popularSandboxes?.sandboxes || []
-    ).find(module => module.id === id);
+    ).find((module) => module.id === id);
 
     if (popularSandbox) {
       popularSandbox.picks.push({
@@ -78,7 +78,7 @@ export const pickedSandboxesMounted: AsyncAction = async ({
     const pickedSandboxes = await effects.api.getPickedSandboxes();
 
     state.explore.pickedSandboxesIndexes = pickedSandboxes.sandboxes.map(
-      a => a.id
+      (a) => a.id
     );
     state.explore.pickedSandboxes = pickedSandboxes;
   } catch (error) {

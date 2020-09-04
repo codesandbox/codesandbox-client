@@ -17,17 +17,17 @@ const baseTestStyles = css`
 
 export const PassedTests = styled.div`
   ${baseTestStyles};
-  color: ${props => props.theme.green};
+  color: ${(props) => props.theme.green};
 `;
 
 export const FailedTests = styled.div`
   ${baseTestStyles};
-  color: ${props => props.theme.red};
+  color: ${(props) => props.theme.red};
 `;
 
 export const TotalTests = styled.div`
   ${baseTestStyles};
-  color: ${props =>
+  color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
 `;
 

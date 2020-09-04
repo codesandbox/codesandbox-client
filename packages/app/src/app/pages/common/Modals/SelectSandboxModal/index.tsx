@@ -36,7 +36,7 @@ export const SelectSandboxModal: FunctionComponent = () => {
   return (
     <Alert title="Select a Sandbox">
       <List>
-        {userSandboxes.filter(Boolean).map(sandbox => (
+        {userSandboxes.filter(Boolean).map((sandbox) => (
           <ListAction
             justify="space-between"
             disabled={sandbox.id === showcasedSandbox.id}

@@ -6,7 +6,7 @@ export const useLogin = () => {
     const BASE =
       process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
 
-    const { data } = await fetch(BASE + '/api/v1/users/current').then(x =>
+    const { data } = await fetch(BASE + '/api/v1/users/current').then((x) =>
       x.json()
     );
 

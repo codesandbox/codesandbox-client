@@ -8,7 +8,7 @@ export const Element = styled.div<{
   margin?: number;
   marginX?: number;
   marginBottom?: number;
-}>(props =>
+}>((props) =>
   css({
     margin: props.margin || null,
     marginX: props.marginX || null,
@@ -34,7 +34,7 @@ export const Text = styled(Element)<{
   color?: string;
   size?: string;
   align?: string;
-}>(props =>
+}>((props) =>
   css({
     color: props.color || 'white',
     fontSize: props.size || 'inherit',

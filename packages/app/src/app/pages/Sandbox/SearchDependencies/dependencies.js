@@ -13,9 +13,9 @@ export default createGlobalStyle`
 .search-dependencies {
 
   .ais-Pagination {
-    color: ${props =>
+    color: ${(props) =>
       props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
-    background-color: ${props => props.theme['sideBar.background']};
+    background-color: ${(props) => props.theme['sideBar.background']};
     border-radius: 0;
     display: flex;
     justify-content: center;
@@ -24,7 +24,7 @@ export default createGlobalStyle`
 
   .ais-Pagination-link {
     &:not(.ais-Pagination-link--selected) {
-      color: ${props =>
+      color: ${(props) =>
         Color(props.theme.colors.dialog.foreground)
           .alpha(0.6)
           .rgbString()} !important;
@@ -32,22 +32,22 @@ export default createGlobalStyle`
   }
 
   .ais-Pagination-item--selected {
-    color: ${props => props.theme.white};
-    background: ${props => props.theme['button.hoverBackground']};
+    color: ${(props) => props.theme.white};
+    background: ${(props) => props.theme['button.hoverBackground']};
   }
 
   .ais-Highlight-highlighted {
-    color: ${props => props.theme.colors.button.background};
+    color: ${(props) => props.theme.colors.button.background};
   }
 
   .ais-PoweredBy-link svg {
-    fill: ${props =>
+    fill: ${(props) =>
       Color(props.theme.colors.dialog.foreground)
         .alpha(0.8)
         .rgbString()} !important;
 
     path:nth-child(4) {
-      fill: ${props =>
+      fill: ${(props) =>
         Color(props.theme.colors.dialog.foreground)
           .alpha(0.8)
           .rgbString()} !important;
@@ -56,10 +56,10 @@ export default createGlobalStyle`
 
   footer {
     height: 40px;
-    background-color: ${props => props.theme['sideBar.background']};
+    background-color: ${(props) => props.theme['sideBar.background']};
 
     .ais-PoweredBy {
-      color: ${props =>
+      color: ${(props) =>
         Color(props.theme.colors.dialog.foreground).rgbString()} !important;
     }
   }

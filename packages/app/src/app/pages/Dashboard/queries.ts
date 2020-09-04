@@ -310,7 +310,7 @@ export function permanentlyDeleteSandboxes(selectedSandboxes: string[]) {
     variables: {
       sandboxIds: selectedSandboxes,
     },
-    update: cache => {
+    update: (cache) => {
       try {
         const oldDeleteCache = cache.readQuery<
           DeletedSandboxesQuery,
@@ -324,7 +324,7 @@ export function permanentlyDeleteSandboxes(selectedSandboxes: string[]) {
           me: {
             ...(oldDeleteCache && oldDeleteCache.me ? oldDeleteCache.me : null),
             sandboxes: (oldDeleteCache?.me?.sandboxes || []).filter(
-              x => !selectedSandboxes.includes(x.id)
+              (x) => !selectedSandboxes.includes(x.id)
             ),
           },
         };
@@ -354,7 +354,7 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
       'RecentSandboxes',
       'SearchSandboxes',
     ],
-    update: cache => {
+    update: (cache) => {
       if (collections) {
         collections.forEach(({ path, teamId }) => {
           try {
@@ -371,7 +371,7 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
               variables,
             });
 
-            const data = immer(oldFolderCacheData, draft => {
+            const data = immer(oldFolderCacheData, (draft) => {
               if (
                 !draft?.me?.collection ||
                 !oldFolderCacheData?.me?.collection?.sandboxes
@@ -379,7 +379,7 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
                 return;
               }
               draft.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
-                x => !selectedSandboxes.includes(x?.id)
+                (x) => !selectedSandboxes.includes(x?.id)
               );
             });
 

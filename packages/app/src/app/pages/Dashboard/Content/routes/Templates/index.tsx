@@ -32,15 +32,15 @@ export const Templates = () => {
   >();
 
   const templates = sandboxes.TEMPLATES || [];
-  templates.forEach(template => {
+  templates.forEach((template) => {
     sandboxIdsToTemplate.set(template.sandbox.id, template);
   });
   const filteredTemplates = getFilteredSandboxes(
     templates.map(({ sandbox }) => sandbox)
-  ).map(sandbox => sandboxIdsToTemplate.get(sandbox.id));
+  ).map((sandbox) => sandboxIdsToTemplate.get(sandbox.id));
 
   const items: DashboardGridItem[] = sandboxes.TEMPLATES
-    ? filteredTemplates.map(template => {
+    ? filteredTemplates.map((template) => {
         const { sandbox, ...templateValues } = template;
         return {
           type: 'template' as 'template',

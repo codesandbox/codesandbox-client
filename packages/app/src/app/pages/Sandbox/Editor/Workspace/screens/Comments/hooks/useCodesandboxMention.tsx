@@ -57,7 +57,7 @@ export const useCodesandboxMention = ({
   // propagation
   React.useEffect(() => {
     if (ref.current) {
-      const onKeyDown = event => {
+      const onKeyDown = (event) => {
         if (event.keyCode === ESC) {
           event.stopPropagation();
         }
@@ -73,7 +73,7 @@ export const useCodesandboxMention = ({
     // eslint-disable-next-line
   }, [ref.current]);
 
-  const onKeyDown = event => {
+  const onKeyDown = (event) => {
     if (mention.query !== null) {
       if (event.keyCode === ENTER) {
         event.preventDefault();
@@ -82,10 +82,10 @@ export const useCodesandboxMention = ({
         }
       } else if (event.keyCode === 38) {
         event.preventDefault();
-        setMenuIndex(i => (i === 0 ? users.length - 1 : i - 1));
+        setMenuIndex((i) => (i === 0 ? users.length - 1 : i - 1));
       } else if (event.keyCode === 40) {
         event.preventDefault();
-        setMenuIndex(i => (i === users.length - 1 ? 0 : i + 1));
+        setMenuIndex((i) => (i === users.length - 1 ? 0 : i + 1));
       }
     } else if (event.keyCode === ENTER && !event.shiftKey) {
       event.preventDefault();
@@ -162,7 +162,7 @@ export const useCodesandboxMention = ({
           value={value}
           autoComplete="off"
           placeholder="Add a comment..."
-          onChange={event => setValue(event.target.value)}
+          onChange={(event) => setValue(event.target.value)}
           onKeyDown={onKeyDown}
         />
       </FormField>

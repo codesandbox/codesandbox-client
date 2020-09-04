@@ -12,12 +12,7 @@ function appendTeamIdQueryParam(url: string, teamId?: string | null) {
 function sanitizePath(path: string) {
   return path
     .split('/')
-    .map(p =>
-      p
-        .split(' ')
-        .map(encodeURIComponent)
-        .join(' ')
-    )
+    .map((p) => p.split(' ').map(encodeURIComponent).join(' '))
     .join('/');
 }
 

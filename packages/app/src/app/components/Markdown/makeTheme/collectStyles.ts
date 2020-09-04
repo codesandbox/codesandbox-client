@@ -3,7 +3,7 @@ import { getScoreForScope } from './scopeScore';
 import { transformSettings } from './transformSettings';
 import { minify } from './minify';
 
-export const collectAllSettings = tokenColors => {
+export const collectAllSettings = (tokenColors) => {
   const output = {};
 
   tokenColors.forEach(({ scope, settings }) => {
@@ -18,7 +18,7 @@ export const collectAllSettings = tokenColors => {
       return;
     }
 
-    normScope.forEach(scopeName => {
+    normScope.forEach((scopeName) => {
       const mappedScope = mapScope(scopeName);
       // Return when no mapping scope has been returned
       if (!mappedScope) {
@@ -36,11 +36,11 @@ export const collectAllSettings = tokenColors => {
     });
   });
 
-  const styles = Object.keys(output).map(mappedScope => {
+  const styles = Object.keys(output).map((mappedScope) => {
     const matchesArr = output[mappedScope];
 
     // Get score for each match
-    const scored = matchesArr.map(match => {
+    const scored = matchesArr.map((match) => {
       const score = getScoreForScope(match.scope, mappedScope);
 
       return {

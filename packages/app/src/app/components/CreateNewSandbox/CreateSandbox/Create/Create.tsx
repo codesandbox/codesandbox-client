@@ -24,9 +24,11 @@ export const Create: React.FC<CreateProps> = ({ collectionId }) => {
   }, []);
 
   useEffect(() => {
-    getTemplateInfosFromAPI('/api/v1/sandboxes/templates/official').then(x => {
-      setOfficialTemplates(x);
-    });
+    getTemplateInfosFromAPI('/api/v1/sandboxes/templates/official').then(
+      (x) => {
+        setOfficialTemplates(x);
+      }
+    );
   }, []);
 
   return (
@@ -35,7 +37,7 @@ export const Create: React.FC<CreateProps> = ({ collectionId }) => {
         <span>Create Sandbox</span>
         <SearchWrapper>
           <SearchBox
-            onChange={evt => setFilter(evt.target.value)}
+            onChange={(evt) => setFilter(evt.target.value)}
             value={filter}
             placeholder="Filter Templates"
           />

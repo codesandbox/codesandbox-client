@@ -48,7 +48,7 @@ const Label = styled(Text)(
       borderStyle: 'solid',
       borderWidth: '1px',
       transition: 'all ease-in',
-      transitionDuration: theme => theme.speeds[2],
+      transitionDuration: (theme) => theme.speeds[2],
     },
     '&::after': {
       borderRadius: '50%',
@@ -63,7 +63,7 @@ const Label = styled(Text)(
       backgroundColor: 'input.foreground',
       width: '6px',
       transition: 'all ease-in',
-      transitionDuration: theme => theme.speeds[2],
+      transitionDuration: (theme) => theme.speeds[2],
     },
   })
 );

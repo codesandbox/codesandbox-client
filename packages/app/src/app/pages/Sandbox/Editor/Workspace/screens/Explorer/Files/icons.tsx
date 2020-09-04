@@ -3,7 +3,7 @@ import DeleteIcon from 'react-icons/lib/go/trashcan';
 import UndoIcon from 'react-icons/lib/md/undo';
 import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 
-const CrossIcon = props => (
+const CrossIcon = (props) => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="currentColor"
@@ -12,7 +12,7 @@ const CrossIcon = props => (
   </svg>
 );
 
-const EditIcon = props => (
+const EditIcon = (props) => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="currentColor"
@@ -21,7 +21,7 @@ const EditIcon = props => (
   </svg>
 );
 
-const AddDirectoryIcon = props => (
+const AddDirectoryIcon = (props) => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="currentColor"
@@ -30,7 +30,7 @@ const AddDirectoryIcon = props => (
   </svg>
 );
 
-const AddFileIcon = props => (
+const AddFileIcon = (props) => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="currentColor"
@@ -41,7 +41,7 @@ const AddFileIcon = props => (
   </svg>
 );
 
-const DownloadIcon = props => (
+const DownloadIcon = (props) => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <g clipPath="url(#clip0)">
       <path
@@ -59,7 +59,7 @@ const DownloadIcon = props => (
   </svg>
 );
 
-const UploadFileIcon = props => (
+const UploadFileIcon = (props) => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <g clipPath="url(#clip0)">
       <path

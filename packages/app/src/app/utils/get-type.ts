@@ -49,7 +49,7 @@ const regexCasesMap = {
 };
 
 const getKeyByValue = (object: regexCasesMap, value: RegExp) =>
-  Object.keys(object).find(key => object[key] === value);
+  Object.keys(object).find((key) => object[key] === value);
 
 export function getMode(title: string = '') {
   // Remove Ignore
@@ -69,7 +69,7 @@ export function getMode(title: string = '') {
 
   // TEST BASED
   const regexValues = Object.values(regexCasesMap);
-  const match = regexValues.find(value =>
+  const match = regexValues.find((value) =>
     new RegExp(value).test(removeIgnoreTitle)
   );
 

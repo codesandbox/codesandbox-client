@@ -12,7 +12,7 @@ export const Container = styled.div<{ height?: number }>`
   background-color: ${theme.new.bg};
   border-radius: 8px;
   color: ${theme.new.title};
-  height: ${props => props.height || 500}px;
+  height: ${(props) => props.height || 500}px;
   display: flex;
   box-shadow: 0 9px 14px rgba(0, 0, 0, 0.25);
   overflow: hidden;

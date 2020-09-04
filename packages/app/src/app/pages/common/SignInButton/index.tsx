@@ -6,7 +6,7 @@ import { useOvermind } from 'app/overmind';
 type Props = Omit<ComponentProps<typeof Button>, 'onClick' | 'small'> & {
   redirectTo?: string;
 };
-export const SignInButton: FunctionComponent<Props> = props => {
+export const SignInButton: FunctionComponent<Props> = (props) => {
   const { actions } = useOvermind();
   return (
     <Button

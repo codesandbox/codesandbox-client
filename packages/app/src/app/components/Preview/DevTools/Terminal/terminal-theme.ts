@@ -58,7 +58,7 @@ export default function getTerminalTheme(theme: VSTheme): ITheme {
   };
 }
 
-export const flattenTerminalTheme = theme => ({
+export const flattenTerminalTheme = (theme) => ({
   ...theme,
   vscodeTheme: {
     ...theme.vscodeTheme,

@@ -10,7 +10,7 @@ import '../css/global.css';
 import Navigation from './Navigation/index';
 import Footer from './Footer';
 
-const text = number => `@media only screen and (max-width: ${number}px)`;
+const text = (number) => `@media only screen and (max-width: ${number}px)`;
 
 export const SMALL_BREAKPOINT = 576;
 export const MEDIUM_BREAKPOINT = 768;

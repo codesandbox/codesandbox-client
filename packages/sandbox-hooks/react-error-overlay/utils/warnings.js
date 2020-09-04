@@ -13,7 +13,7 @@ import type { ReactFrame } from '../effects/proxyConsole';
 function stripInlineStacktrace(message: string): string {
   return message
     .split('\n')
-    .filter(line => !line.match(/^\s*in/))
+    .filter((line) => !line.match(/^\s*in/))
     .join('\n'); // "  in Foo"
 }
 

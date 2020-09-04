@@ -43,47 +43,47 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   */
 
   const folders = selectedItems.filter(
-    item => item.type === 'folder'
+    (item) => item.type === 'folder'
   ) as DashboardFolder[];
   const templates = selectedItems.filter(
-    item => item.type === 'template'
+    (item) => item.type === 'template'
   ) as DashboardTemplate[];
   const sandboxes = selectedItems.filter(
-    item => item.type === 'sandbox'
+    (item) => item.type === 'sandbox'
   ) as DashboardSandbox[];
 
   const exportItems = () => {
     const ids = [
-      ...sandboxes.map(sandbox => sandbox.sandbox.id),
-      ...templates.map(template => template.sandbox.id),
+      ...sandboxes.map((sandbox) => sandbox.sandbox.id),
+      ...templates.map((template) => template.sandbox.id),
     ];
     actions.dashboard.downloadSandboxes(ids);
   };
 
   const convertToTemplates = () => {
     actions.dashboard.makeTemplates({
-      sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+      sandboxIds: sandboxes.map((sandbox) => sandbox.sandbox.id),
     });
   };
 
   const convertToSandboxes = () => {
     actions.dashboard.unmakeTemplates({
-      templateIds: templates.map(template => template.sandbox.id),
+      templateIds: templates.map((template) => template.sandbox.id),
     });
   };
 
   const moveToFolder = () => {
     actions.modals.moveSandboxModal.open({
-      sandboxIds: [...sandboxes, ...templates].map(s => s.sandbox.id),
+      sandboxIds: [...sandboxes, ...templates].map((s) => s.sandbox.id),
     });
   };
 
   const deleteItems = () => {
-    folders.forEach(folder =>
+    folders.forEach((folder) =>
       actions.dashboard.deleteFolder({ path: folder.path })
     );
 
-    templates.forEach(sandbox =>
+    templates.forEach((sandbox) =>
       actions.dashboard.deleteTemplate({
         sandboxId: sandbox.sandbox.id,
         templateId: sandbox.template.id,
@@ -92,7 +92,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
 
     if (sandboxes.length) {
       actions.dashboard.deleteSandbox({
-        ids: sandboxes.map(sandbox => sandbox.sandbox.id),
+        ids: sandboxes.map((sandbox) => sandbox.sandbox.id),
       });
     }
 
@@ -101,7 +101,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
 
   const changeItemPrivacy = (privacy: 0 | 1 | 2) => () => {
     actions.dashboard.changeSandboxesPrivacy({
-      sandboxIds: [...sandboxes, ...templates].map(s => s.sandbox.id),
+      sandboxIds: [...sandboxes, ...templates].map((s) => s.sandbox.id),
       privacy,
     });
   };
@@ -122,20 +122,20 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     : [];
 
   const FROZEN_ITEMS = [
-    sandboxes.some(s => !s.sandbox.isFrozen) && {
+    sandboxes.some((s) => !s.sandbox.isFrozen) && {
       label: 'Freeze Sandboxes',
       fn: () => {
         actions.dashboard.changeSandboxesFrozen({
-          sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+          sandboxIds: sandboxes.map((sandbox) => sandbox.sandbox.id),
           isFrozen: true,
         });
       },
     },
-    sandboxes.some(s => s.sandbox.isFrozen) && {
+    sandboxes.some((s) => s.sandbox.isFrozen) && {
       label: 'Unfreeze Sandboxes',
       fn: () => {
         actions.dashboard.changeSandboxesFrozen({
-          sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+          sandboxIds: sandboxes.map((sandbox) => sandbox.sandbox.id),
           isFrozen: false,
         });
       },
@@ -148,7 +148,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     label: 'Recover Sandboxes',
     fn: () => {
       actions.dashboard.recoverSandboxes(
-        [...sandboxes, ...templates].map(s => s.sandbox.id)
+        [...sandboxes, ...templates].map((s) => s.sandbox.id)
       );
     },
   };
@@ -156,7 +156,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     label: 'Permanently Delete Sandboxes',
     fn: () => {
       actions.dashboard.permanentlyDeleteSandboxes(
-        [...sandboxes, ...templates].map(s => s.sandbox.id)
+        [...sandboxes, ...templates].map((s) => s.sandbox.id)
       );
     },
   };
@@ -211,7 +211,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
       position={position}
       style={{ width: 160 }}
     >
-      {options.map(option =>
+      {options.map((option) =>
         option === 'divider' ? (
           <Menu.Divider />
         ) : (

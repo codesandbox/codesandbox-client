@@ -171,9 +171,9 @@ export const githubRepoUrl = ({
 export const optionsToParameterizedUrl = (options: Object) => {
   const keyValues = Object.keys(options)
     .sort()
-    .filter(a => options[a])
+    .filter((a) => options[a])
     .map(
-      key => `${encodeURIComponent(key)}=${encodeURIComponent(options[key])}`
+      (key) => `${encodeURIComponent(key)}=${encodeURIComponent(options[key])}`
     )
     .join('&');
 
@@ -205,7 +205,7 @@ export function getSandboxId() {
   }
 
   let result: string;
-  [csbHost, sandboxHost[csbHost]].filter(Boolean).forEach(tryHost => {
+  [csbHost, sandboxHost[csbHost]].filter(Boolean).forEach((tryHost) => {
     const hostRegex = tryHost.replace(/https?:\/\//, '').replace(/\./g, '\\.');
     const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
     const matches = document.location.host.match(sandboxRegex);

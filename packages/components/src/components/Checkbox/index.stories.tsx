@@ -7,15 +7,18 @@ export default {
 };
 
 export const Basic = () => (
-  // eslint-disable-next-line no-console
-  <Checkbox label="A checkbox" onChange={e => console.log(e.target.checked)} />
+  <Checkbox
+    label="A checkbox"
+    // eslint-disable-next-line no-console
+    onChange={(e) => console.log(e.target.checked)}
+  />
 );
 export const Checked = () => {
   const [checked, setChecked] = useState(true);
   return (
     <Checkbox
       checked={checked}
-      onChange={e => setChecked(e.target.checked)}
+      onChange={(e) => setChecked(e.target.checked)}
       label="A checkbox"
     />
   );

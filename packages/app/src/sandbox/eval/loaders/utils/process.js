@@ -21,7 +21,7 @@ function defaultSetTimout() {
 function defaultClearTimeout() {
   throw new Error('clearTimeout has not been defined');
 }
-(function() {
+(function () {
   try {
     if (typeof setTimeout === 'function') {
       cachedSetTimeout = setTimeout;
@@ -139,10 +139,10 @@ function Item(fun, array) {
   this.fun = fun;
   this.array = array;
 }
-Item.prototype.run = function() {
+Item.prototype.run = function () {
   this.fun.apply(null, this.array);
 };
-process.nextTick = function(fun) {
+process.nextTick = function (fun) {
   const args = new Array(arguments.length - 1);
   if (arguments.length > 1) {
     for (let i = 1; i < arguments.length; i++) {
@@ -174,21 +174,21 @@ process.emit = noop;
 process.prependListener = noop;
 process.prependOnceListener = noop;
 
-process.listeners = function() {
+process.listeners = function () {
   return [];
 };
 
-process.binding = function() {
+process.binding = function () {
   throw new Error('process.binding is not supported');
 };
 
-process.cwd = function() {
+process.cwd = function () {
   return '/';
 };
-process.chdir = function() {
+process.chdir = function () {
   throw new Error('process.chdir is not supported');
 };
-process.umask = function() {
+process.umask = function () {
   return 0;
 };
 

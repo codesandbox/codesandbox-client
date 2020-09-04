@@ -57,7 +57,7 @@ export const CommitForm = () => {
         as="form"
         direction="vertical"
         gap={1}
-        onSubmit={event => event.preventDefault()}
+        onSubmit={(event) => event.preventDefault()}
       >
         <FormField direction="vertical" label="Title" hideLabel>
           <Input
@@ -109,7 +109,7 @@ export const CommitForm = () => {
       as="form"
       direction="vertical"
       gap={1}
-      onSubmit={event => event.preventDefault()}
+      onSubmit={(event) => event.preventDefault()}
     >
       <FormField direction="vertical" label="Title" hideLabel>
         <Input

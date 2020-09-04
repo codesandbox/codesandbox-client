@@ -4,8 +4,8 @@ const _rimraf = require('rimraf');
 function rimraf(dir) {
   let retries = 0;
 
-  const retry = cb => {
-    _rimraf(dir, { maxBusyTries: 1 }, err => {
+  const retry = (cb) => {
+    _rimraf(dir, { maxBusyTries: 1 }, (err) => {
       if (!err) {
         return cb();
       }
@@ -18,7 +18,7 @@ function rimraf(dir) {
     });
   };
 
-  return cb => retry(cb);
+  return (cb) => retry(cb);
 }
 
 gulp.task('clean-vscode', rimraf('standalone-packages/monaco-editor-core'));

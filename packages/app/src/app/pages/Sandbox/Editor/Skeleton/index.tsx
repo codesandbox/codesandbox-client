@@ -64,7 +64,7 @@ const SkeletonExplorerContents = () => (
   </>
 );
 
-export const File = props => (
+export const File = (props) => (
   <ListItem
     justify="space-between"
     align="center"

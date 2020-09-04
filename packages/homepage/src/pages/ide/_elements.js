@@ -10,7 +10,7 @@ import Manage from '../../assets/icons/Manage';
 export const H6 = styled.h6`
   font-size: 19px;
   margin-bottom: 1rem;
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
 `;
 
 export const CreateSandbox = styled(Button)`
@@ -21,7 +21,7 @@ export const CreateSandbox = styled(Button)`
   font-size: 0.875rem;
   padding: 10px 25px;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     top: 2.5rem;
   }
 `;
@@ -33,7 +33,7 @@ export const Title = styled(H2)`
   max-width: 547px;
   margin: auto;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     top: 0;
   }
 
@@ -49,7 +49,7 @@ export const MacBookWrapper = styled.div`
   overflow: visible;
   margin-bottom: 8rem;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     min-height: auto;
   }
 `;
@@ -61,7 +61,7 @@ export const Titles = styled.h3`
   line-height: 38px;
   text-align: center;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
 `;
 
 export const Description = styled.h4`
@@ -70,7 +70,7 @@ export const Description = styled.h4`
   font-size: 1rem;
   text-align: center;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
 `;
 
 export const ArtWorkWrapper = styled.div`
@@ -79,9 +79,9 @@ export const ArtWorkWrapper = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  background: url(${props => props.bg}) center;
+  background: url(${(props) => props.bg}) center;
   background-size: cover;
-  border: 1px solid ${props => props.theme.homepage.grey};
+  border: 1px solid ${(props) => props.theme.homepage.grey};
   box-sizing: border-box;
   border-radius: 4px;
   margin: 2.5rem 0;
@@ -90,11 +90,11 @@ export const ArtWorkWrapper = styled.div`
     max-height: 100%;
   }
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     height: 250px;
   }
 
-  ${props => props.theme.breakpoints.sm} {
+  ${(props) => props.theme.breakpoints.sm} {
     height: 150px;
   }
 `;
@@ -106,11 +106,11 @@ export const Grid = styled.section`
   margin-bottom: 6.875rem;
   line-height: 1.5rem;
 
-  ${props => props.theme.breakpoints.lg} {
+  ${(props) => props.theme.breakpoints.lg} {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     grid-template-columns: repeat(1, 1fr);
   }
 `;
@@ -131,7 +131,7 @@ export const BigTitles = styled.h3`
   margin-bottom: 2.5rem;
   text-align: center;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
 `;
 
 export const JoinTitle = styled(H2)`
@@ -163,7 +163,7 @@ export const TweetsWrapper = styled.div`
       overflow-style: none;
     }
 
-    ${props => props.theme.breakpoints.sm} {
+    ${(props) => props.theme.breakpoints.sm} {
       display: none;
     }
   }
@@ -179,7 +179,7 @@ export const TweetsWrapper = styled.div`
     margin-top: 2rem;
     z-index: 10;
 
-    ${props => props.theme.breakpoints.sm} {
+    ${(props) => props.theme.breakpoints.sm} {
       display: none;
     }
   }
@@ -212,7 +212,7 @@ export const TweetsWrapper = styled.div`
       max-width: 80%;
       padding: 2.125rem;
       background: #151515;
-      border: 1px solid ${props => props.theme.homepage.grey};
+      border: 1px solid ${(props) => props.theme.homepage.grey};
       box-sizing: border-box;
       border-radius: 4px;
       margin-right: 2rem;
@@ -243,7 +243,7 @@ export const Quote = styled.div`
   font-size: 23px;
   line-height: 32px;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
 `;
 
 export const TweetAuthor = styled.span`
@@ -253,7 +253,7 @@ export const TweetAuthor = styled.span`
   line-height: 20px;
   margin-left: 1rem;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
 `;
 
 export const Join = styled.div`
@@ -296,7 +296,7 @@ export const ManageIcon = styled(Manage)`
 
 export const Border = styled.div`
   position: absolute;
-  background: ${props => props.theme.homepage.grey};
+  background: ${(props) => props.theme.homepage.grey};
   width: 1200px;
   max-width: 80%;
   height: 1px;

@@ -7,7 +7,7 @@ describe('OTClient', () => {
       0,
       'test',
       (revision, operation) => Promise.resolve({}),
-      operation => {}
+      (operation) => {}
     );
 
     const op = getTextOperation('ab', 'a');

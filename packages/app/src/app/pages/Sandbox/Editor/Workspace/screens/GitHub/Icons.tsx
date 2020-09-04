@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const GitHubIcon = props => (
+export const GitHubIcon = (props) => (
   <svg
     width="16"
     height="16"

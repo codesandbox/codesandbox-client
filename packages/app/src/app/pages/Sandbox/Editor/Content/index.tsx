@@ -66,16 +66,16 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
     setConsoleDevtoolIndex(() =>
       views.findIndex(
         ({ views: panes }) =>
-          panes.findIndex(pane => pane.id === 'codesandbox.console') !== -1
+          panes.findIndex((pane) => pane.id === 'codesandbox.console') !== -1
       )
     );
   }, [views]);
 
   useKey(
-    e => e.ctrlKey && e.keyCode === BACKTICK,
-    e => {
+    (e) => e.ctrlKey && e.keyCode === BACKTICK,
+    (e) => {
       e.preventDefault();
-      setShowConsoleDevtool(value => !value);
+      setShowConsoleDevtool((value) => !value);
     },
     {},
     []
@@ -89,7 +89,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
 
   const browserConfig = {
     id: 'codesandbox.browser',
-    title: options =>
+    title: (options) =>
       options.port || options.title
         ? `Browser (${options.title || `:${options.port}`})`
         : `Browser`,
@@ -214,7 +214,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                     addedViews={{
                       'codesandbox.browser': browserConfig,
                     }}
-                    setDragging={dragging => {
+                    setDragging={(dragging) => {
                       if (dragging) {
                         actions.editor.resizingStarted();
                       } else {
@@ -225,7 +225,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                     template={sandbox.template}
                     shouldExpandDevTools={state.preferences.showDevtools}
                     zenMode={preferences.settings.zenMode}
-                    setDevToolsOpen={open => {
+                    setDevToolsOpen={(open) => {
                       actions.preferences.setDevtoolsOpen(open);
 
                       if (
@@ -241,12 +241,12 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                     moveTab={(prevPos, nextPos) => {
                       actions.editor.onDevToolsTabMoved({ prevPos, nextPos });
                     }}
-                    closeTab={pos => {
+                    closeTab={(pos) => {
                       actions.editor.onDevToolsTabClosed({ pos });
                     }}
                     currentDevToolIndex={currentPosition.devToolIndex}
                     currentTabPosition={currentPosition.tabPosition}
-                    setPane={position =>
+                    setPane={(position) =>
                       actions.editor.onDevToolsPositionChanged({
                         position,
                       })

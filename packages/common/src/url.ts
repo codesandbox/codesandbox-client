@@ -53,7 +53,7 @@ export const getSandboxOptions = (url: string) => {
   if (highlightMatch && highlightMatch[3]) {
     result.highlightedLines = decodeURIComponent(highlightMatch[3])
       .split(',')
-      .map(number => Number(number));
+      .map((number) => Number(number));
   }
 
   const editorSizeMatch = url.match(/(\?|&)(editorsize)=([^&]+)/);

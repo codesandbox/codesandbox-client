@@ -18,7 +18,7 @@ export const DeleteFileButton: FunctionComponent<Props> = ({ id }) => {
       css={css({
         width: 'auto',
         '&:hover': {
-          background: theme =>
+          background: (theme) =>
             theme.colors.dangerButton.background + ' !important',
           color: 'dangerButton.foreground',
         },

@@ -4,7 +4,7 @@ import ChevronRight from 'react-icons/lib/md/chevron-right';
 
 const activeStyles = css`
   outline: none;
-  background-color: ${props => props.theme.colors.grays[600]};
+  background-color: ${(props) => props.theme.colors.grays[600]};
   color: rgba(255, 255, 255, 1);
 `;
 export const Container = styled(NavLink)<{
@@ -20,7 +20,7 @@ export const Container = styled(NavLink)<{
   color: rgba(255, 255, 255, 0.6);
   text-decoration: none;
 
-  padding-left: ${props => (props.depth || 0) * 0.75}rem;
+  padding-left: ${(props) => (props.depth || 0) * 0.75}rem;
 
   user-select: none;
 
@@ -31,14 +31,14 @@ export const Container = styled(NavLink)<{
     ${activeStyles}
   }
 
-  ${props => props.active && activeStyles}
+  ${(props) => props.active && activeStyles}
 
   &:focus {
     color: rgba(255, 255, 255, 0.8);
     ${activeStyles}
   }
 
-  ${props =>
+  ${(props) =>
     props.disabled
       ? css`
           opacity: 0.8;
@@ -70,6 +70,6 @@ export const IconContainer = styled.div`
 
 export const AnimatedChevron = styled(ChevronRight)<{ open?: boolean }>`
   transition: 0.25s ease transform;
-  transform: rotate(${props => (props.open ? 90 : 0)}deg);
+  transform: rotate(${(props) => (props.open ? 90 : 0)}deg);
   margin-right: 0.25rem;
 `;

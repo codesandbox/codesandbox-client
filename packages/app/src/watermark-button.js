@@ -19,11 +19,11 @@ const buttonStyles = `
   z-index: 99999999999;
 `;
 
-const setButtonStyles = button => {
+const setButtonStyles = (button) => {
   button.setAttribute('style', buttonStyles);
 };
 
-const setIframeStyle = iframe => {
+const setIframeStyle = (iframe) => {
   iframe.setAttribute(
     'style',
     `

@@ -56,23 +56,23 @@ export default function createZip(
   return zip
     .folder('src')
     .loadAsync(files)
-    .then(async src => {
+    .then(async (src) => {
       await Promise.all(
         modules
-          .filter(x => x.directoryShortid == null)
-          .filter(x => x.title !== 'index.html') // This will be included in the body
-          .map(x => createFile(x, src))
+          .filter((x) => x.directoryShortid == null)
+          .filter((x) => x.title !== 'index.html') // This will be included in the body
+          .map((x) => createFile(x, src))
       );
 
       await Promise.all(
         directories
-          .filter(x => x.directoryShortid == null)
-          .map(x => createDirectoryWithFiles(modules, directories, x, src))
+          .filter((x) => x.directoryShortid == null)
+          .map((x) => createDirectoryWithFiles(modules, directories, x, src))
       );
 
       if (
         modules.filter(
-          m => m.directoryShortid == null && m.title === 'index.html'
+          (m) => m.directoryShortid == null && m.title === 'index.html'
         ).length ||
         sandbox.externalResources.length
       ) {

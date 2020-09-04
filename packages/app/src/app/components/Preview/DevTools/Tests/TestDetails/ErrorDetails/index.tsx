@@ -14,9 +14,9 @@ const Container = styled.div`
   font-size: 0.875rem;
   line-height: 1.6;
 
-  color: ${props =>
+  color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
-  background-color: ${props => props.theme['sideBar.background']};
+  background-color: ${(props) => props.theme['sideBar.background']};
   white-space: pre-wrap;
 
   &:last-child {
@@ -61,7 +61,7 @@ const formatDiffMessage = (error: TestError, path: string) => {
     const widestNumber =
       Math.max(
         ...mappedError._originalScriptCode.map(
-          code => (code.lineNumber + '').length
+          (code) => (code.lineNumber + '').length
         )
       ) + 2;
     const margin = Array.from({ length: widestNumber }).map(() => ' ');
@@ -70,8 +70,8 @@ const formatDiffMessage = (error: TestError, path: string) => {
     finalMessage += '<br />';
     finalMessage += '<div>';
     mappedError._originalScriptCode
-      .filter(x => x.content.trim())
-      .forEach(code => {
+      .filter((x) => x.content.trim())
+      .forEach((code) => {
         const currentLineMargin = (code.lineNumber + '').length;
         const newMargin = [...margin];
         newMargin.length -= currentLineMargin;

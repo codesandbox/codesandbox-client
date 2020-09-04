@@ -18,7 +18,7 @@ export default function monkeypatch(modules, eslintOptions) {
   estraverse.VisitorKeys.Property.push('decorators');
 
   var { analyze } = escope;
-  escope.analyze = function(ast, opts) {
+  escope.analyze = function (ast, opts) {
     opts = opts || {};
     opts.ecmaVersion = eslintOptions.ecmaVersion;
     opts.sourceType = eslintOptions.sourceType;
@@ -53,7 +53,7 @@ export default function monkeypatch(modules, eslintOptions) {
     'ObjectPattern',
     'RestElement',
   ]);
-  var visitorKeysMap = Object.keys(t.VISITOR_KEYS).reduce(function(acc, key) {
+  var visitorKeysMap = Object.keys(t.VISITOR_KEYS).reduce(function (acc, key) {
     var value = t.VISITOR_KEYS[key];
     if (!flowFlippedAliasKeys.includes(value)) {
       acc[key] = value;
@@ -154,7 +154,7 @@ export default function monkeypatch(modules, eslintOptions) {
         checkIdentifierOrVisit.call(this, name);
       }
     }
-    scope.__define = function() {
+    scope.__define = function () {
       return parentScope.__define.apply(parentScope, arguments);
     };
     return scope;
@@ -162,7 +162,7 @@ export default function monkeypatch(modules, eslintOptions) {
 
   // visit decorators that are in: ClassDeclaration / ClassExpression
   var { visitClass } = referencer.prototype;
-  referencer.prototype.visitClass = function(node) {
+  referencer.prototype.visitClass = function (node) {
     visitDecorators.call(this, node);
     var typeParamScope;
     if (node.typeParameters) {
@@ -187,7 +187,7 @@ export default function monkeypatch(modules, eslintOptions) {
 
   // visit decorators that are in: Property / MethodDefinition
   var { visitProperty } = referencer.prototype;
-  referencer.prototype.visitProperty = function(node) {
+  referencer.prototype.visitProperty = function (node) {
     if (node.value && node.value.type === 'TypeCastExpression') {
       visitTypeAnnotation.call(this, node.value);
     }
@@ -210,7 +210,7 @@ export default function monkeypatch(modules, eslintOptions) {
 
   // visit flow type in FunctionDeclaration, FunctionExpression, ArrowFunctionExpression
   var { visitFunction } = referencer.prototype;
-  referencer.prototype.visitFunction = function(node) {
+  referencer.prototype.visitFunction = function (node) {
     var typeParamScope;
     if (node.typeParameters) {
       typeParamScope = nestTypeParamScope.call(this, this.scopeManager, node);
@@ -246,7 +246,7 @@ export default function monkeypatch(modules, eslintOptions) {
 
   // visit flow type in VariableDeclaration
   var variableDeclaration = referencer.prototype.VariableDeclaration;
-  referencer.prototype.VariableDeclaration = function(node) {
+  referencer.prototype.VariableDeclaration = function (node) {
     if (node.declarations) {
       for (var i = 0; i < node.declarations.length; i++) {
         var { id } = node.declarations[i];
@@ -266,7 +266,7 @@ export default function monkeypatch(modules, eslintOptions) {
     );
   }
 
-  referencer.prototype.InterfaceDeclaration = function(node) {
+  referencer.prototype.InterfaceDeclaration = function (node) {
     createScopeVariable.call(this, node, node.id);
     var typeParamScope;
     if (node.typeParameters) {
@@ -282,7 +282,7 @@ export default function monkeypatch(modules, eslintOptions) {
     }
   };
 
-  referencer.prototype.TypeAlias = function(node) {
+  referencer.prototype.TypeAlias = function (node) {
     createScopeVariable.call(this, node, node.id);
     var typeParamScope;
     if (node.typeParameters) {
@@ -296,7 +296,7 @@ export default function monkeypatch(modules, eslintOptions) {
     }
   };
 
-  referencer.prototype.DeclareModule = referencer.prototype.DeclareFunction = referencer.prototype.DeclareVariable = referencer.prototype.DeclareClass = function(
+  referencer.prototype.DeclareModule = referencer.prototype.DeclareFunction = referencer.prototype.DeclareVariable = referencer.prototype.DeclareClass = function (
     node
   ) {
     if (node.id) {

@@ -24,11 +24,11 @@ async function registerTranspilers(
   configModule.setIsEntry(true);
 
   const initializers = await Promise.all(
-    Object.keys(transpilerConfig).map(async expression => {
+    Object.keys(transpilerConfig).map(async (expression) => {
       const transpilers = transpilerConfig[expression];
 
       const evaluatedTranspilers = await Promise.all(
-        transpilers.map(async t => {
+        transpilers.map(async (t) => {
           if (savedTranspilers[t]) {
             return savedTranspilers[t];
           }
@@ -72,7 +72,7 @@ async function registerTranspilers(
       return () => {
         const regex = new RegExp(expression);
         preset.registerTranspiler(
-          module => regex.test(module.path),
+          (module) => regex.test(module.path),
           evaluatedTranspilers
         );
       };
@@ -81,14 +81,16 @@ async function registerTranspilers(
 
   preset.resetTranspilers();
 
-  initializers.forEach(x => x());
+  initializers.forEach((x) => x());
 }
 
 export default function initialize() {
   let initialized = false;
   const customPreset = new Preset('custom', undefined, undefined, {
     setup: async (manager: Manager, updatedModules) => {
-      if (updatedModules.some(m => m.module.path.startsWith('/.codesandbox'))) {
+      if (
+        updatedModules.some((m) => m.module.path.startsWith('/.codesandbox'))
+      ) {
         initialized = false;
         manager.clearCompiledCache();
         manager.clearCache();
@@ -99,11 +101,11 @@ export default function initialize() {
         console.log('Initializing custom template');
         customPreset.resetTranspilers();
         // Our JS/JSON transpiler to transpile the transpilers
-        customPreset.registerTranspiler(m => /\.jsx?$/.test(m.path), [
+        customPreset.registerTranspiler((m) => /\.jsx?$/.test(m.path), [
           { transpiler: babelTranspiler },
         ]);
 
-        customPreset.registerTranspiler(m => /\.json$/.test(m.path), [
+        customPreset.registerTranspiler((m) => /\.json$/.test(m.path), [
           { transpiler: jsonTranspiler },
         ]);
 

@@ -11,7 +11,7 @@ self.importScripts([
 self.postMessage('ready');
 
 declare var Sass: {
-  options: Object => void,
+  options: (Object) => void,
   writeFile: ({ [fileName: string]: string }, callback: Function) => void,
   compileFile: (path: string) => string,
   compile: (code: string, options: Object, callback: Function) => string,
@@ -31,7 +31,7 @@ const resolveAsyncModule = (
       options: { isAbsolute: true, ignoredExtensions },
     });
 
-    const resolveFunc = message => {
+    const resolveFunc = (message) => {
       const { type, id, found } = message.data;
 
       if (
@@ -53,7 +53,7 @@ const resolveAsyncModule = (
 const SUPPORTED_EXTS = ['scss', 'sass', 'css'];
 
 const existsPromise = (fs, file) =>
-  new Promise(r => {
+  new Promise((r) => {
     fs.stat(file, async (err, stats) => {
       if (err || stats.isDirectory()) {
         if (stats && stats.isDirectory()) {
@@ -88,7 +88,7 @@ const existsPromise = (fs, file) =>
  */
 function firstTrue(promises) {
   const newPromises = promises.map(
-    p => new Promise((res, reject) => p.then(v => v && res(v), reject))
+    (p) => new Promise((res, reject) => p.then((v) => v && res(v), reject))
   );
   newPromises.push(Promise.all(promises).then(() => false));
   return Promise.race(newPromises);
@@ -107,7 +107,7 @@ const getExistingPath = async (fs, p) => {
   const possiblePaths = Sass.getPathVariations(p);
 
   const existedFile = await firstTrue(
-    possiblePaths.map(path => existsPromise(fs, path))
+    possiblePaths.map((path) => existsPromise(fs, path))
   );
 
   pathCaches[p] = existedFile;
@@ -129,7 +129,7 @@ const resolveSass = (fs, p, path) => {
     const directPath = join(sourceDir, usedPath);
 
     // First try to do the relative path, as a performance optimization
-    getExistingPath(fs, directPath).then(foundPath => {
+    getExistingPath(fs, directPath).then((foundPath) => {
       if (foundPath) {
         r(foundPath);
         return;
@@ -177,14 +177,14 @@ const resolveSass = (fs, p, path) => {
         }
       );
     });
-  }).then(result => {
+  }).then((result) => {
     resolvedCache[sourceDir][usedPath] = result;
     return result;
   });
 };
 
 function initializeBrowserFS() {
-  return new Promise(res => {
+  return new Promise((res) => {
     // eslint-disable-next-line
     BrowserFS.configure(
       {
@@ -201,7 +201,7 @@ function initializeBrowserFS() {
 let fsInitialized = false;
 const foundFileCache = {};
 
-self.addEventListener('message', async event => {
+self.addEventListener('message', async (event) => {
   const { code, path, indentedSyntax, codesandbox } = event.data;
 
   if (!codesandbox) {
@@ -268,7 +268,7 @@ self.addEventListener('message', async event => {
       sourceMapEmbed: true,
       indentedSyntax,
     },
-    result => {
+    (result) => {
       if (result.status === 0) {
         self.postMessage({
           type: 'result',

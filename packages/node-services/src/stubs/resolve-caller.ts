@@ -38,7 +38,7 @@ export function getCallSites() {
 
     stacks.shift();
 
-    return stacks.map(s => {
+    return stacks.map((s) => {
       const filename = stripURLAndLine(s);
 
       return {

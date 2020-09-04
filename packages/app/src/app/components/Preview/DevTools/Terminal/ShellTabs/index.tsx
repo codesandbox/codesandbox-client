@@ -23,7 +23,7 @@ export class ShellTabs extends React.PureComponent<Props> {
         >
           yarn start
         </Tab>
-        {shells.map(shell => (
+        {shells.map((shell) => (
           <Tab
             selected={selectedShell === shell.id}
             key={shell.id}
@@ -33,7 +33,7 @@ export class ShellTabs extends React.PureComponent<Props> {
             {shell.ended && ' (closed)'}
 
             <CrossIcon
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 this.props.closeShell(shell.id);

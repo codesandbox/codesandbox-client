@@ -35,10 +35,10 @@ interface CommentDialogProps {
   comment: CommentWithRepliesFragment;
 }
 
-export const CommentDialog: React.FC<CommentDialogProps> = props =>
+export const CommentDialog: React.FC<CommentDialogProps> = (props) =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
-export const Dialog: React.FC<CommentDialogProps> = props => {
+export const Dialog: React.FC<CommentDialogProps> = (props) => {
   const { state, actions } = useOvermind();
   const controller = useAnimation();
 
@@ -103,7 +103,7 @@ export const Dialog: React.FC<CommentDialogProps> = props => {
   };
 
   React.useEffect(() => {
-    const listener = event => {
+    const listener = (event) => {
       if (event.which === ESC) {
         actions.comments.closeComment();
       }
@@ -315,12 +315,12 @@ const DialogHeader = ({ comment, hasShadow }) => {
       paddingRight={2}
       marginBottom={2}
       css={css({
-        boxShadow: theme =>
+        boxShadow: (theme) =>
           hasShadow
             ? `0px 32px 32px ${theme.colors.dialog.background}`
             : 'none',
         transition: 'box-shadow ease-in-out',
-        transitionDuration: theme => theme.speeds[1],
+        transitionDuration: (theme) => theme.speeds[1],
       })}
     >
       <Text size={3} weight="bold">
@@ -340,7 +340,7 @@ const DialogHeader = ({ comment, hasShadow }) => {
             title={comment.isResolved ? 'Unresolve Comment' : 'Resolve Comment'}
             css={css({
               transition: 'color',
-              transitionDuration: theme => theme.speeds[1],
+              transitionDuration: (theme) => theme.speeds[1],
               color: comment.isResolved ? 'green' : 'mutedForeground',
               ':hover:not(:disabled), :focus:not(:disabled)': {
                 color: comment.isResolved ? 'green' : 'foreground',
@@ -623,7 +623,7 @@ const Replies = ({ replies, replyCount, listRef, repliesRenderedCallback }) => {
       >
         <>
           {replies.map(
-            reply => reply && <Reply reply={reply} key={reply.id} />
+            (reply) => reply && <Reply reply={reply} key={reply.id} />
           )}
         </>
       </motion.ul>
@@ -683,7 +683,7 @@ const Overlay = () => (
 // trying to match the position for code comments
 const FALLBACK_POSITION = { x: 800, y: 120 };
 
-const getInitialPosition = currentCommentPositions => {
+const getInitialPosition = (currentCommentPositions) => {
   let animateFrom = { x: null, y: null };
 
   if (currentCommentPositions?.trigger) {

@@ -1,9 +1,9 @@
 /* eslint-disable */
 // vue compiler module for transforming `img:srcset` to a number of `require`s
 
-export default function() {
+export default function () {
   return {
-    postTransformNode: node => {
+    postTransformNode: (node) => {
       transform(node);
     },
   };
@@ -13,7 +13,7 @@ function transform(node) {
   const tags = ['img', 'source'];
 
   if (tags.indexOf(node.tag) !== -1 && node.attrs) {
-    node.attrs.forEach(attr => {
+    node.attrs.forEach((attr) => {
       if (attr.name === 'srcset') {
         // same logic as in transform-require.js
         var value = attr.value;
@@ -29,7 +29,7 @@ function transform(node) {
         const imageCandidates = value
           .substr(1, value.length - 2)
           .split(',')
-          .map(s => {
+          .map((s) => {
             // The attribute value arrives here with all whitespace, except normal spaces, represented by escape sequences
             const [url, descriptor] = s
               .replace(escapedSpaceCharacters, ' ')

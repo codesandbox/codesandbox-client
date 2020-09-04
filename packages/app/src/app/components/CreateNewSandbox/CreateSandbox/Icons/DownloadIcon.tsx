@@ -1,7 +1,7 @@
 import React from 'react';
 import IconBase from 'react-icons/IconBase';
 
-export const DownloadIcon = props => (
+export const DownloadIcon = (props) => (
   <IconBase viewBox="0 0 23 20" {...props}>
     <path
       fill="currentColor"

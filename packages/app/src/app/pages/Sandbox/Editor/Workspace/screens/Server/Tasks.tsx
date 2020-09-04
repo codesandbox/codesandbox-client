@@ -39,8 +39,8 @@ export const Tasks: FunctionComponent = () => {
     <Collapsible defaultOpen title="Run Script">
       <List>
         {Object.keys(pkg.scripts)
-          .filter(script => !blacklistedScripts.includes(script))
-          .map(script => {
+          .filter((script) => !blacklistedScripts.includes(script))
+          .map((script) => {
             const Icon = getIcon(script);
 
             return (

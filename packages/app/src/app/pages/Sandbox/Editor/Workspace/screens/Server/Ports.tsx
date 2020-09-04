@@ -37,7 +37,7 @@ export const Ports: FunctionComponent = () => {
     <Collapsible title="Open Ports" defaultOpen>
       <List>
         {ports.length > 0 ? (
-          ports.map(port => (
+          ports.map((port) => (
             <ListAction onClick={() => onBrowserFromPortOpened(port)}>
               <Stack css={css({ width: '100%' })} justify="space-between">
                 <Stack align="center">

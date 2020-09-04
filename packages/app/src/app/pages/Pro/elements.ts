@@ -40,7 +40,7 @@ export const SubHeading = styled.span(
   })
 );
 
-export const BillText = styled.span<{ on: boolean }>(props =>
+export const BillText = styled.span<{ on: boolean }>((props) =>
   css({
     color: props.on ? 'white' : 'grays.300',
     margin: '0 1rem',
@@ -60,7 +60,7 @@ export const DurationChoice = styled.div(() =>
   })
 );
 
-export const Form = styled.form<{ disabled: boolean }>(props =>
+export const Form = styled.form<{ disabled: boolean }>((props) =>
   css({
     fontSize: 3,
     width: 300,
@@ -71,7 +71,7 @@ export const Form = styled.form<{ disabled: boolean }>(props =>
       width: '100%',
     },
     transition: 'opacity',
-    transitionDuration: theme => theme.speeds[2],
+    transitionDuration: (theme) => theme.speeds[2],
     opacity: props.disabled ? 0.5 : 1,
   })
 );
@@ -106,7 +106,7 @@ export const Input = styled.input(
     paddingX: 4,
     borderRadius: 'medium',
     transition: 'border',
-    transitionDuration: theme => theme.speeds[2],
+    transitionDuration: (theme) => theme.speeds[2],
 
     ':hover': {
       backgroundColor: 'grays.700',
@@ -139,7 +139,7 @@ export const Button = styled.button(
     boxSizing: 'border-box',
     cursor: 'pointer',
     transition: 'backgroundColor',
-    transitionDuration: theme => theme.speeds[2],
+    transitionDuration: (theme) => theme.speeds[2],
 
     ':hover': {
       backgroundColor: 'blues.500',
@@ -227,7 +227,7 @@ const badgeBackground = {
   patron: 'green',
 };
 
-export const Badge = styled.span<{ type: string }>(props =>
+export const Badge = styled.span<{ type: string }>((props) =>
   css({
     backgroundColor: badgeBackground[props.type],
     color: props.type === 'pro' ? 'white' : 'grays.900',

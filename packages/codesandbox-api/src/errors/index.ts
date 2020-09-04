@@ -24,7 +24,9 @@ export function transformError(
   module: TranspiledModule,
   modules: TranspiledModule[]
 ) {
-  const transformedErrors = transformers.map(c => c(error, module, modules)).filter(x => x != null);
+  const transformedErrors = transformers
+    .map((c) => c(error, module, modules))
+    .filter((x) => x != null);
 
   return transformedErrors[0];
 }

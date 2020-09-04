@@ -41,15 +41,15 @@ const UserAutoComplete = ({
       // Small debounce
       timeoutId = window.setTimeout(() => {
         fetch(`/api/v1/users/search?username=${inputValue}`)
-          .then(x => x.json())
-          .then(x => {
+          .then((x) => x.json())
+          .then((x) => {
             const fetchedUsers = allowSelf
               ? x
-              : x.filter(member => member.username !== user?.username);
+              : x.filter((member) => member.username !== user?.username);
             setUsers(fetchedUsers);
             setLoading(false);
           })
-          .catch(e => {
+          .catch((e) => {
             setError(e);
           });
       }, 300);

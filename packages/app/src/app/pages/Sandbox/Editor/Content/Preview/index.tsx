@@ -67,7 +67,7 @@ export const Preview: FunctionComponent<Props> = ({
       initialPath={initialPath}
       isInProjectView={isInProjectView}
       isResizing={isResizing}
-      onAction={action => previewActionReceived(action)}
+      onAction={(action) => previewActionReceived(action)}
       onClearErrors={() => errorsCleared()}
       onMount={initializePreview}
       noPreview={!previewWindowVisible}

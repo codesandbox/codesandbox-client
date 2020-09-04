@@ -99,7 +99,7 @@ export const Reply = ({ reply }: ReplyProps) => {
   );
 };
 
-export const SkeletonReply = props => (
+export const SkeletonReply = (props) => (
   <Element marginX={4} paddingTop={6} {...props}>
     <Stack align="center" gap={2} marginBottom={4}>
       <SkeletonText style={{ width: '32px', height: '32px', animationDelay }} />

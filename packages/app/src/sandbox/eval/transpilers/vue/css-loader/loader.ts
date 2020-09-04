@@ -6,7 +6,7 @@ import getModules from './get-modules';
 
 const CSSBasePath = '/node_modules/css-loader/css-base.js';
 
-const getStyleId = id => id + '-css'; // eslint-disable-line
+const getStyleId = (id) => id + '-css'; // eslint-disable-line
 
 export default function transpile(
   content: string,

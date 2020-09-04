@@ -23,11 +23,11 @@ const dropIn = (offset = 100) => keyframes`
 `;
 
 export const EditorElement = styled.img`
-  animation: ${props => dropIn(props.i * 250)} 3s;
-  animation-delay: ${props => props.i * 100}ms;
+  animation: ${(props) => dropIn(props.i * 250)} 3s;
+  animation-delay: ${(props) => props.i * 100}ms;
   animation-fill-mode: backwards;
 
-  z-index: ${props => props.i};
+  z-index: ${(props) => props.i};
 `;
 
 export const HeroWrapper = styled.section`
@@ -44,7 +44,7 @@ export const HeroWrapper = styled.section`
 
   perspective: 1000;
 
-  ${props => props.theme.breakpoints.sm} {
+  ${(props) => props.theme.breakpoints.sm} {
     min-height: 800px;
   }
 `;
@@ -59,7 +59,7 @@ export const SignUp = styled.p`
 
 export const Border = styled.div`
   position: absolute;
-  background: ${props => props.theme.homepage.grey};
+  background: ${(props) => props.theme.homepage.grey};
   left: 0;
   width: 100%;
   height: 1px;
@@ -101,7 +101,7 @@ export const HeroBottom = styled.div`
   justify-content: center;
   align-items: center;
 
-  ${props => props.theme.breakpoints.sm} {
+  ${(props) => props.theme.breakpoints.sm} {
     padding: 0 0.5rem;
     line-height: 1.4;
     bottom: -50px;
@@ -112,7 +112,7 @@ export const CountText = styled.div`
   font-size: 1.25rem;
   color: #757575;
   margin-bottom: 1.5rem;
-  ${props => props.theme.breakpoints.sm} {
+  ${(props) => props.theme.breakpoints.sm} {
     font-size: 0.875rem;
   }
 `;
@@ -124,7 +124,7 @@ export const InspiredText = styled.span`
   margin-bottom: 1rem;
   text-decoration: none;
 
-  ${props => props.theme.breakpoints.sm} {
+  ${(props) => props.theme.breakpoints.sm} {
     font-size: 0.875rem;
   }
 `;
@@ -136,7 +136,7 @@ export const HeroImage = styled.img`
   border-radius: 4px;
   box-shadow: rgba(0, 0, 0, 0.3) 20px 14px 47px 0px;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     width: 120vw;
   }
 `;
@@ -144,20 +144,20 @@ export const HeroImage = styled.img`
 export const Title = styled.h1`
   font-size: 2.5rem;
   line-height: 57px;
-  font-family: ${props => props.theme.homepage.appleFont};
+  font-family: ${(props) => props.theme.homepage.appleFont};
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
   padding: 0;
   margin: 0;
   margin-bottom: 0.5rem;
   font-weight: 500;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     font-size: 1.8rem;
     line-height: 1.2;
   }
 
-  ${props => props.theme.breakpoints.sm} {
+  ${(props) => props.theme.breakpoints.sm} {
     font-size: 1.4rem;
   }
 `;
@@ -166,11 +166,11 @@ export const SubTitle = styled.h2`
   font-weight: normal;
   font-size: 1.125rem;
   line-height: 1.3;
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
   margin: 0;
   margin-bottom: 1rem;
 
-  ${props => props.theme.breakpoints.sm} {
+  ${(props) => props.theme.breakpoints.sm} {
     font-size: 0.875rem;
   }
 `;

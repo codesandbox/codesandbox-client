@@ -21,7 +21,7 @@ const getDiff = (oldFiles: IFiles, newFiles: IFiles) => {
   const diff: IFiles = {};
 
   Object.keys(newFiles)
-    .filter(p => {
+    .filter((p) => {
       const newSavedCode = newFiles[p].savedCode || newFiles[p].code;
       if (oldFiles[p]) {
         const oldSavedCode = oldFiles[p].savedCode || oldFiles[p].code;
@@ -34,7 +34,7 @@ const getDiff = (oldFiles: IFiles, newFiles: IFiles) => {
 
       return false;
     })
-    .forEach(p => {
+    .forEach((p) => {
       diff[p] = {
         code: newFiles[p].code,
         path: newFiles[p].path,
@@ -43,7 +43,7 @@ const getDiff = (oldFiles: IFiles, newFiles: IFiles) => {
       };
     });
 
-  Object.keys(oldFiles).forEach(p => {
+  Object.keys(oldFiles).forEach((p) => {
     if (!newFiles[p]) {
       diff[p] = {
         path: oldFiles[p].path,
@@ -58,7 +58,7 @@ const getDiff = (oldFiles: IFiles, newFiles: IFiles) => {
 };
 
 const MAX_SSE_AGE = 24 * 60 * 60 * 1000; // 1 day
-const tick = () => new Promise(r => setTimeout(() => r(), 0));
+const tick = () => new Promise((r) => setTimeout(() => r(), 0));
 
 export class ServerExecutor implements IExecutor {
   socket?: SocketIOClient.Socket;
@@ -202,8 +202,8 @@ export class ServerExecutor implements IExecutor {
         'Content-Type': 'application/json',
       },
     })
-      .then(x => x.json())
-      .then(result => result.jwt)
+      .then((x) => x.json())
+      .then((result) => result.jwt)
       .then((token: string) => {
         debug('Retrieved SSE token from API');
         localStorage.setItem(

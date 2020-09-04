@@ -118,7 +118,7 @@ const _callHook = (hook: Hook, testContext?: TestContext): Promise<any> => {
   const { testTimeout: timeout } = getState();
   return callAsyncFn(hook.fn, testContext, { isHook: true, timeout })
     .then(() => dispatch({ hook, name: 'hook_success' }))
-    .catch(error => dispatch({ error, hook, name: 'hook_failure' }));
+    .catch((error) => dispatch({ error, hook, name: 'hook_failure' }));
 };
 
 const _callTest = async (
@@ -135,7 +135,7 @@ const _callTest = async (
 
   return callAsyncFn(test.fn, testContext, { isHook: false, timeout })
     .then(() => dispatch({ name: 'test_success', test }))
-    .catch(error => dispatch({ error, name: 'test_failure', test }));
+    .catch((error) => dispatch({ error, name: 'test_failure', test }));
 };
 
 export default run;

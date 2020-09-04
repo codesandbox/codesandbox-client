@@ -37,7 +37,7 @@ export const Feedback: FunctionComponent<Props> = ({ id, user }) => {
   const [feedback, setFeedback] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const listenForEsc = e => {
+  const listenForEsc = (e) => {
     if (e.keyCode === ESC) {
       modalClosed();
     }

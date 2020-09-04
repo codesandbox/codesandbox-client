@@ -17,7 +17,7 @@ export const NetlifyLogs: FunctionComponent = () => {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const { logs: fetchedLogs } = await fetch(netlifyLogsUrl).then(data =>
+      const { logs: fetchedLogs } = await fetch(netlifyLogsUrl).then((data) =>
         data.json()
       );
 
@@ -47,7 +47,7 @@ export const NetlifyLogs: FunctionComponent = () => {
           borderColor: 'sideBar.border',
         })}
       >
-        {logs.map(log => (
+        {logs.map((log) => (
           <Item marginBottom={2} key={log}>
             {log}
           </Item>

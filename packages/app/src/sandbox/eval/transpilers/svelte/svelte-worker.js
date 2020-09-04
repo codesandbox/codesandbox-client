@@ -21,7 +21,7 @@ function getV3Code(code, version, path) {
       source: 'svelte',
     });
 
-    warnings.forEach(w => {
+    warnings.forEach((w) => {
       self.postMessage({
         type: 'warning',
         warning: buildWorkerWarning(
@@ -71,14 +71,14 @@ function getV2Code(code, version, path) {
     cascade: false,
     store: true,
 
-    onerror: e => {
+    onerror: (e) => {
       self.postMessage({
         type: 'error',
         error: buildWorkerError(e),
       });
     },
 
-    onwarn: w => {
+    onwarn: (w) => {
       self.postMessage({
         type: 'warning',
         warning: buildWorkerWarning(
@@ -107,14 +107,14 @@ function getV1Code(code, version, path) {
     cascade: false,
     store: true,
 
-    onerror: e => {
+    onerror: (e) => {
       self.postMessage({
         type: 'error',
         error: buildWorkerError(e),
       });
     },
 
-    onwarn: w => {
+    onwarn: (w) => {
       self.postMessage({
         type: 'warning',
         warning: buildWorkerWarning(
@@ -131,7 +131,7 @@ function getV1Code(code, version, path) {
   });
 }
 
-self.addEventListener('message', event => {
+self.addEventListener('message', (event) => {
   const { code, path, version } = event.data;
   let versionCode = '';
 

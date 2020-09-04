@@ -3,7 +3,7 @@ import stringify from 'remark-stringify';
 import unified from 'unified';
 import frontmatter from 'remark-frontmatter';
 
-export const getInfoFromMarkdown = latestChangelog => {
+export const getInfoFromMarkdown = (latestChangelog) => {
   let desc = false;
   const rawMarkdown = unified()
     .use(parse)

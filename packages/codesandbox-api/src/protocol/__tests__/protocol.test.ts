@@ -25,15 +25,7 @@ describe('protocol', () => {
   });
 
   it('can read and respond to data', async () => {
-    const p1 = new Protocol(
-      'test',
-      (s: string) =>
-        s
-          .split('')
-          .reverse()
-          .join(''),
-      self
-    );
+    const p1 = new Protocol('test', (s: string) => s.split('').reverse().join(''), self);
     const p2 = new Protocol('test', () => 'taalb', self);
 
     const res = await p2.sendMessage('ab');
@@ -45,19 +37,11 @@ describe('protocol', () => {
   });
 
   it('ignores the wrong listener types', async () => {
-    const p1 = new Protocol(
-      'test',
-      (s: string) =>
-        s
-          .split('')
-          .reverse()
-          .join(''),
-      self
-    );
+    const p1 = new Protocol('test', (s: string) => s.split('').reverse().join(''), self);
     const p2 = new Protocol('aa', () => 'saalp', self);
     const p3 = new Protocol(
       'test',
-      () => new Promise(r => setTimeout(() => r('taalb'), 1000)),
+      () => new Promise((r) => setTimeout(() => r('taalb'), 1000)),
       self
     );
 

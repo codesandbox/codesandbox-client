@@ -80,7 +80,7 @@ function setupCompiler(port, protocol) {
   // recompiling a bundle. WebpackDevServer takes care to pause serving the
   // bundle, so if you refresh, it'll wait instead of serving the old one.
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
-  compiler.hooks.invalid.tap('invalid', function(module) {
+  compiler.hooks.invalid.tap('invalid', function (module) {
     clearConsole();
     compileStart = Date.now();
     console.log(`Module ${chalk.yellow(module)} updated, re-compiling...`);
@@ -88,7 +88,7 @@ function setupCompiler(port, protocol) {
 
   // "done" event fires when Webpack has finished recompiling the bundle.
   // Whether or not you have warnings or errors, you will get this event.
-  compiler.hooks.done.tap('done', stats => {
+  compiler.hooks.done.tap('done', (stats) => {
     clearConsole();
     const took = new Date() - compileStart;
 
@@ -101,7 +101,7 @@ function setupCompiler(port, protocol) {
       console.log(chalk.red(`Failed to compile after ${took / 1000}s.\n`));
       var json = stats.toJson({}, true);
       var formattedErrors = json.errors.map(
-        message => 'Error in ' + formatMessage(message)
+        (message) => 'Error in ' + formatMessage(message)
       );
       if (formattedErrors.some(isLikelyASyntaxError)) {
         // If there are any syntax errors, show just them.
@@ -109,7 +109,7 @@ function setupCompiler(port, protocol) {
         // preceding a much more useful Babel syntax error.
         formattedErrors = formattedErrors.filter(isLikelyASyntaxError);
       }
-      formattedErrors.forEach(message => {
+      formattedErrors.forEach((message) => {
         console.log(`${message}\n`);
       });
       // If errors exist, ignore warnings.
@@ -126,8 +126,8 @@ function setupCompiler(port, protocol) {
     // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
     //   in ./packages/app/src/app/components/CodeEditor/CodeMirror/index.js
     const warnings = stats.compilation.warnings
-      .concat(...stats.compilation.children.map(child => child.warnings))
-      .filter(warning => warning.error.name !== 'CriticalDependencyWarning');
+      .concat(...stats.compilation.children.map((child) => child.warnings))
+      .filter((warning) => warning.error.name !== 'CriticalDependencyWarning');
     const hasWarnings = warnings.length > 0;
     if (hasWarnings) {
       console.log(chalk.yellow(`Compiled with warnings in ${took / 1000}s.\n`));
@@ -185,7 +185,7 @@ function openBrowser(port, protocol) {
 }
 
 function addMiddleware(devServer, index) {
-  devServer.use(function(req, res, next) {
+  devServer.use(function (req, res, next) {
     if (req.url === '/') {
       req.url = '/homepage';
     }
@@ -294,7 +294,7 @@ function runDevServer(port, protocol, index) {
   const { wsProxy } = addMiddleware(devServer, index);
 
   // Launch WebpackDevServer.
-  devServer.listen(port, err => {
+  devServer.listen(port, (err) => {
     if (err) {
       return console.log(err);
     }
@@ -319,7 +319,7 @@ function run(port) {
     // Sandbox server
     const proxy = httpProxy.createProxyServer({});
     http
-      .createServer(function(req, res) {
+      .createServer(function (req, res) {
         if (req.url.includes('.js')) {
           proxy.web(req, res, { target: 'http://localhost:3000' });
         } else {

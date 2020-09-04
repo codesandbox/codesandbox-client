@@ -30,10 +30,10 @@ export const Dot = styled.button`
   outline: 0;
   padding: 0;
 
-  background-color: ${props => props.color};
+  background-color: ${(props) => props.color};
   cursor: pointer;
 
-  ${props =>
+  ${(props) =>
     props.active
       ? css`
           width: 12px;
@@ -48,7 +48,7 @@ export const Dot = styled.button`
 `;
 
 export const Container = styled.div`
-  color: ${props => props.theme.new.title};
+  color: ${(props) => props.theme.new.title};
   padding-top: 4rem;
   margin-bottom: 4rem;
 `;
@@ -78,7 +78,7 @@ export const ShowMore = styled.button`
   border-radius: 4px;
   margin-bottom: 1rem;
   font-size: 1.5rem;
-  color: ${props => props.theme.new.title};
+  color: ${(props) => props.theme.new.title};
   border: 0;
   outline: 0;
   display: flex;
@@ -88,7 +88,7 @@ export const ShowMore = styled.button`
 
   cursor: pointer;
 
-  ${props =>
+  ${(props) =>
     props.disable
       ? css`
           cursor: auto;
@@ -121,7 +121,7 @@ const ArrowStyles = css`
   position: absolute;
 
   &:hover {
-    color: ${props => props.theme.homepage.white};
+    color: ${(props) => props.theme.homepage.white};
   }
 `;
 
@@ -129,7 +129,7 @@ export const StyledRightArrow = styled(RightArrow)`
   ${ArrowStyles};
   right: -40px;
 
-  ${props =>
+  ${(props) =>
     props.disable &&
     css`
       opacity: 0.5;
@@ -142,7 +142,7 @@ export const StyledLeftArrow = styled(LeftArrow)`
   ${ArrowStyles};
   left: -40px;
 
-  ${props =>
+  ${(props) =>
     props.disable &&
     css`
       opacity: 0.5;
@@ -153,10 +153,10 @@ export const StyledLeftArrow = styled(LeftArrow)`
 
 export const PickedQuestion = styled(Link)`
   transition: 0.3s ease color;
-  color: ${props => props.theme.new.description};
+  color: ${(props) => props.theme.new.description};
   text-decoration: none;
 
   &:hover {
-    color: ${props => props.theme.new.title};
+    color: ${(props) => props.theme.new.title};
   }
 `;

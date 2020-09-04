@@ -74,7 +74,7 @@ const config: ConfigurationFile = {
           const parsed = JSON.parse(packageJSONModule.code);
 
           let pragma = null;
-          Object.keys(JSX_PRAGMA).forEach(dep => {
+          Object.keys(JSX_PRAGMA).forEach((dep) => {
             if (
               (parsed.dependencies && parsed.dependencies[dep]) ||
               (parsed.devDependencies && parsed.devDependencies[dep])

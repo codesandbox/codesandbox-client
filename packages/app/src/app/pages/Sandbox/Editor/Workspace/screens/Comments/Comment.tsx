@@ -43,12 +43,12 @@ export const Comment = React.memo<{
         display: 'block',
         color: 'inherit',
         transition: 'opacity',
-        transitionDuration: theme => theme.speeds[1],
+        transitionDuration: (theme) => theme.speeds[1],
         opacity: comment.isResolved ? 0.2 : 1,
         paddingRight: 0, // the actions menu should be at the edge
       })}
       id={comment.id}
-      onClick={event => {
+      onClick={(event) => {
         // don't trigger comment if you click on the menu
         // we have to handle this because of an upstream
         // bug in reach/menu-button
@@ -123,7 +123,7 @@ export const Comment = React.memo<{
               paddingBottom: 2,
               display: 'block',
               transition: 'all ease',
-              transitionDuration: theme => theme.speeds[1],
+              transitionDuration: (theme) => theme.speeds[1],
 
               ':hover': {
                 opacity: 1,
@@ -161,7 +161,7 @@ export const Comment = React.memo<{
   );
 });
 
-const getRepliesString = length => {
+const getRepliesString = (length) => {
   if (length === 0) return 'No Replies';
   if (length === 1) return '1 Reply';
   return length + ' Replies';

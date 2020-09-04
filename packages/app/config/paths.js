@@ -14,7 +14,7 @@ const path = require('path');
 const nodePaths = (process.env.NODE_PATH || '')
   .split(process.platform === 'win32' ? ';' : ':')
   .filter(Boolean)
-  .map(p => path.resolve(p));
+  .map((p) => path.resolve(p));
 
 function resolveApp(relativePath) {
   return path.resolve(relativePath);

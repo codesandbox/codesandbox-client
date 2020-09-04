@@ -22,7 +22,7 @@ export const GitProgress: FunctionComponent<Props> = ({ message, result }) => (
         <DeployAnimationContainer deploying>
           <OpaqueLogo height={70} width={70} />
 
-          {[0, 1, 2, 3].map(i => (
+          {[0, 1, 2, 3].map((i) => (
             <Cube delay={i} key={i} size={20} />
           ))}
 

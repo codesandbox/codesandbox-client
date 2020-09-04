@@ -15,7 +15,7 @@ import { Container, Sandboxes } from './explore/_elements';
 
 export default class extends React.PureComponent {
   state = {
-    sandboxes: this.props.data.allAirtable.edges.map(s => ({
+    sandboxes: this.props.data.allAirtable.edges.map((s) => ({
       ...s.node.data,
       title: s.node.data.title,
     })),
@@ -30,8 +30,8 @@ export default class extends React.PureComponent {
     this.setState({ renderModal: true });
   }
 
-  openSandbox = index => {
-    this.setState(state => {
+  openSandbox = (index) => {
+    this.setState((state) => {
       const sandbox = state.sandboxes[index];
       const { id, title, description } = sandbox;
       return {
@@ -45,11 +45,11 @@ export default class extends React.PureComponent {
     });
   };
 
-  openPreviousSandbox = currentIndex => () => {
+  openPreviousSandbox = (currentIndex) => () => {
     this.openSandbox(currentIndex - 1);
   };
 
-  openNextSandbox = currentIndex => () => {
+  openNextSandbox = (currentIndex) => () => {
     this.openSandbox(currentIndex + 1);
   };
 
@@ -62,7 +62,7 @@ export default class extends React.PureComponent {
   getCurrentIndex = () =>
     this.state.selectedSandbox
       ? this.state.sandboxes.findIndex(
-          s => this.state.selectedSandbox.id === s.id
+          (s) => this.state.selectedSandbox.id === s.id
         )
       : -1;
 
@@ -113,7 +113,7 @@ export default class extends React.PureComponent {
             </Heading2>
             <ShuffleWords />
             <Sandboxes>
-              {sandboxes.map(sandbox => (
+              {sandboxes.map((sandbox) => (
                 <Margin key={sandbox.id} bottom={2}>
                   <WideSandbox
                     selectSandbox={this.selectSandbox}

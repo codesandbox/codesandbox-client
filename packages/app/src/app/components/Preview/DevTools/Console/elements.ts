@@ -1,16 +1,16 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.theme['panel.background'] || props.theme.background};
   font-family: Menlo, monospace;
-  color: ${props =>
+  color: ${(props) =>
     props.theme['editor.foreground'] ||
     (props.theme.light ? '#636363' : 'rgba(255, 255, 255, 0.8)')};
   flex: auto;
   display: flex;
   flex-direction: column;
-  border-color: ${props => props.theme['statusBar.border'] || '#191C1D'};
+  border-color: ${(props) => props.theme['statusBar.border'] || '#191C1D'};
 `;
 
 export const Messages = styled.div`
@@ -35,7 +35,7 @@ export const IconContainer = styled.div`
 
 export const FilterInput = styled.input`
   transition: 0.4s ease all;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.theme['input.background'] || 'rgba(255, 255, 255, 0.1)'};
   border: 1px solid transparent;
   outline: none;
@@ -47,15 +47,16 @@ export const FilterInput = styled.input`
   font-weight: 600;
   font-size: 0.875rem;
 
-  color: ${props => props.theme['input.foreground'] || 'white'};
+  color: ${(props) => props.theme['input.foreground'] || 'white'};
 
   &:focus {
     width: 8em;
-    border-color: ${props => props.theme.focusBorder || props.theme.secondary};
+    border-color: ${(props) =>
+      props.theme.focusBorder || props.theme.secondary};
   }
 `;
 
-export const inspectorTheme = theme => ({
+export const inspectorTheme = (theme) => ({
   PADDING: '0.4rem 1.5rem 0.4rem 0px',
 
   LOG_ICON: '',

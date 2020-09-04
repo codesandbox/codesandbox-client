@@ -15,7 +15,7 @@ declare const __DEV__: boolean;
 
 const ctx: any = self;
 
-self.addEventListener('message', async e => {
+self.addEventListener('message', async (e) => {
   const { data } = e;
 
   if (data.$type === 'worker-manager') {

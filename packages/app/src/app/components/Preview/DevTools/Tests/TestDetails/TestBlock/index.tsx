@@ -28,7 +28,7 @@ export const TestBlock = ({ test, openFile }: Props) => (
     </BlockHeader>
     {test.errors &&
       test.errors.length !== 0 &&
-      test.errors.map(error => (
+      test.errors.map((error) => (
         <ErrorDetails error={error} path={test.path} key={error.message} />
       ))}
   </Container>

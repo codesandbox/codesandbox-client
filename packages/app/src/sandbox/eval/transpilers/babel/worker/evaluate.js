@@ -163,7 +163,7 @@ export default function evaluate(
   // require.resolve is often used in .babelrc configs to resolve the correct plugin path,
   // we want to return a function for that, because our babelrc configs don't really understand
   // strings as plugins.
-  require.resolve = requirePath => requirePath;
+  require.resolve = (requirePath) => requirePath;
 
   const id = hashsum(code + path);
   cache[id] = {

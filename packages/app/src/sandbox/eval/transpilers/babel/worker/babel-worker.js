@@ -46,7 +46,7 @@ self.process = {
   stderr: {},
 };
 // This one is called from the babel transpiler and babel-plugin-macros
-self.require = path => {
+self.require = (path) => {
   if (path === 'resolve') {
     return patchedResolve();
   }
@@ -98,7 +98,7 @@ async function initializeBrowserFS() {
 
   const modules = await getModulesFromMainThread();
   const tModules = {};
-  modules.forEach(module => {
+  modules.forEach((module) => {
     tModules[module.path] = { module };
   });
 
@@ -110,7 +110,7 @@ async function initializeBrowserFS() {
     updateModule: () => {},
   };
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     BrowserFS.configure(
       {
         fs: 'OverlayFS',
@@ -124,7 +124,7 @@ async function initializeBrowserFS() {
           },
         },
       },
-      e => {
+      (e) => {
         if (e) {
           console.error(e);
           return;
@@ -286,7 +286,7 @@ async function installPreset(Babel, BFSRequire, preset, currentPath, isV7) {
 }
 
 function stripParams(regexp) {
-  return p => {
+  return (p) => {
     if (typeof p === 'string') {
       return p.replace(regexp, '');
     }
@@ -421,7 +421,7 @@ async function compile(code, customConfig, path, isV7) {
       });
     }
 
-    dependencies.forEach(dependency => {
+    dependencies.forEach((dependency) => {
       self.postMessage({
         type: 'add-dependency',
         path: dependency.path,
@@ -515,7 +515,7 @@ function loadCustomTranspiler(babelUrl, babelEnvUrl) {
 
 registerCodeSandboxPlugins();
 
-self.addEventListener('message', async event => {
+self.addEventListener('message', async (event) => {
   if (!event.data.codesandbox) {
     return;
   }
@@ -701,8 +701,8 @@ self.addEventListener('message', async event => {
 
     await Promise.all(
       flattenedPlugins
-        .filter(p => typeof p === 'string')
-        .map(async p => {
+        .filter((p) => typeof p === 'string')
+        .map(async (p) => {
           const normalizedName = p
             .replace('babel-plugin-', '')
             .replace('@babel/plugin-', '');
@@ -730,8 +730,8 @@ self.addEventListener('message', async event => {
 
     await Promise.all(
       flattenedPresets
-        .filter(p => typeof p === 'string')
-        .map(async p => {
+        .filter((p) => typeof p === 'string')
+        .map(async (p) => {
           const normalizedName = p
             .replace('babel-preset-', '')
             .replace('@babel/preset-', '');

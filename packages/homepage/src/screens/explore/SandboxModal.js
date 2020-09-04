@@ -44,7 +44,7 @@ export default class SandboxModal extends React.PureComponent {
 
   loadedSandboxes = {};
 
-  getSandbox = sandboxId => {
+  getSandbox = (sandboxId) => {
     track('Explore Sandbox Open', { sandboxId });
 
     if (this.loadedSandboxes[sandboxId]) {
@@ -56,8 +56,8 @@ export default class SandboxModal extends React.PureComponent {
         'Content-Type': 'application/json',
       },
     })
-      .then(x => x.json())
-      .then(x => {
+      .then((x) => x.json())
+      .then((x) => {
         const data = camelizeKeys(x.data);
         this.loadedSandboxes[data.id] = data;
         return data;
@@ -83,7 +83,7 @@ export default class SandboxModal extends React.PureComponent {
     this.fetchSandbox();
     this.registerListeners();
 
-    this.frameInitializedPromise = new Promise(resolve => {
+    this.frameInitializedPromise = new Promise((resolve) => {
       this.resolveFrameInitializedPromise = resolve;
     });
   }
@@ -101,7 +101,7 @@ export default class SandboxModal extends React.PureComponent {
     window.removeEventListener('message', this.listenForInitialized);
   };
 
-  handleKeyPress = e => {
+  handleKeyPress = (e) => {
     if (!this.props.sandboxId) return;
     const code = e.which || e.keyCode;
 
@@ -122,7 +122,7 @@ export default class SandboxModal extends React.PureComponent {
     }
   }
 
-  listenForInitialized = e => {
+  listenForInitialized = (e) => {
     if (e && e.data === 'ready') {
       this.resolveFrameInitializedPromise();
 
@@ -130,7 +130,7 @@ export default class SandboxModal extends React.PureComponent {
     }
   };
 
-  setupFrame = el => {
+  setupFrame = (el) => {
     this.frame = el;
 
     window.addEventListener('message', this.listenForInitialized);
@@ -158,7 +158,7 @@ export default class SandboxModal extends React.PureComponent {
             from={{ opacity: this.state.sandbox ? 1 : 0 }}
             to={{ opacity: this.state.sandbox ? 1 : 0 }}
           >
-            {styles => (
+            {(styles) => (
               <div
                 style={{
                   position: 'relative',
@@ -208,7 +208,7 @@ export default class SandboxModal extends React.PureComponent {
               <StatsHeader>Stats</StatsHeader>
               {sandbox && (
                 <Spring from={{ opacity: sandbox ? 1 : 0 }} to={{ opacity: 1 }}>
-                  {style => (
+                  {(style) => (
                     <StyledStats
                       style={style}
                       vertical

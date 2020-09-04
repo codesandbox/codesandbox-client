@@ -22,7 +22,7 @@ export const clearUserSelections: Action<string | null> = (
 
   const clearSelections = (userId: string) => {
     const roomInfo = state.live.roomInfo!;
-    const userIndex = roomInfo.users.findIndex(u => u.id === userId);
+    const userIndex = roomInfo.users.findIndex((u) => u.id === userId);
 
     effects.vscode.clearUserSelections(userId);
     if (userIndex > -1) {
@@ -35,7 +35,7 @@ export const clearUserSelections: Action<string | null> = (
 
   if (!live_user_id) {
     // All users
-    state.live.roomInfo.users.forEach(u => clearSelections(u.id));
+    state.live.roomInfo.users.forEach((u) => clearSelections(u.id));
   } else {
     clearSelections(live_user_id);
   }
@@ -67,7 +67,7 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
       roomInfo,
       liveUserId,
       moduleState,
-    } = await effects.live.joinChannel(id, reason => {
+    } = await effects.live.joinChannel(id, (reason) => {
       if (reason === 'room not found') {
         actions.refetchSandboxInfo();
       }
@@ -88,10 +88,10 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
     effects.live.listen(actions.live.liveMessageReceived);
     actions.live.internal.sendUnsavedChanges({ sandbox, moduleState });
 
-    state.editor.changedModuleShortids.forEach(moduleShortId => {
+    state.editor.changedModuleShortids.forEach((moduleShortId) => {
       effects.vscode.openModule(
         sandbox!.modules.find(
-          moduleItem => moduleItem.shortid === moduleShortId
+          (moduleItem) => moduleItem.shortid === moduleShortId
         )!
       );
     });
@@ -120,7 +120,7 @@ export const initializeModuleFromState: Action<{
   }
 
   // Module has not been saved, so is different
-  const module = sandbox.modules.find(m => m.shortid === moduleShortid);
+  const module = sandbox.modules.find((m) => m.shortid === moduleShortid);
 
   if (module) {
     effects.live.createClient(moduleShortid, moduleInfo.revision || 0);
@@ -170,7 +170,7 @@ export const initializeModuleState: Action<IModuleState> = (
     category: 'ot',
     message: 'Applying new module state',
   });
-  Object.keys(moduleState).forEach(moduleShortid => {
+  Object.keys(moduleState).forEach((moduleShortid) => {
     const moduleInfo = moduleState[moduleShortid];
 
     actions.live.internal.initializeModuleFromState({
@@ -194,7 +194,7 @@ export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
     return selections;
   }
 
-  state.live.roomInfo.users.forEach(user => {
+  state.live.roomInfo.users.forEach((user) => {
     const userId = user.id;
     if (
       userId === state.live.liveUserId ||
@@ -229,9 +229,9 @@ export const sendUnsavedChanges: Action<{
   // There is the scenario where you edit a file and press fork. Then the server
   // doesn't know about how you got to that dirty state.
   const changedModules = sandbox.modules.filter(
-    m => getSavedCode(m.code, m.savedCode) !== m.code
+    (m) => getSavedCode(m.code, m.savedCode) !== m.code
   );
-  changedModules.forEach(m => {
+  changedModules.forEach((m) => {
     if (!moduleState[m.shortid]) {
       const savedCode = getSavedCode(m.code, m.savedCode);
       // Update server with latest data

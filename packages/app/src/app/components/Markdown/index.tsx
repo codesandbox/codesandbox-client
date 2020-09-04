@@ -57,7 +57,7 @@ export const Markdown = ({ source }) => (
         ),
         code: Code,
         link: LinkElement,
-        linkReference: props => <Link {...props}>{props.children}</Link>,
+        linkReference: (props) => <Link {...props}>{props.children}</Link>,
         image: Image,
         imageReference: Image,
         thematicBreak: () => null,

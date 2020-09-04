@@ -178,7 +178,7 @@ export default class Template {
       '/index.tsx',
       '/README.md',
       '/package.json',
-    ].filter(x => x);
+    ].filter((x) => x);
   }
 
   /**
@@ -209,7 +209,9 @@ export default class Template {
    * Alter the apiData to Vercel for making deployment work
    */
   alterDeploymentData = (apiData: any) => {
-    const packageJSONFile = apiData.files.find(x => x.file === 'package.json');
+    const packageJSONFile = apiData.files.find(
+      (x) => x.file === 'package.json'
+    );
     const parsedFile = JSON.parse(packageJSONFile.data);
 
     const newParsedFile = {
@@ -227,7 +229,7 @@ export default class Template {
     return {
       ...apiData,
       files: [
-        ...apiData.files.filter(x => x.file !== 'package.json'),
+        ...apiData.files.filter((x) => x.file !== 'package.json'),
         {
           file: 'package.json',
           data: JSON.stringify(newParsedFile, null, 2),

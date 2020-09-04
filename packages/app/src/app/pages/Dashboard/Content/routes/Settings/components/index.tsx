@@ -2,7 +2,7 @@ import React from 'react';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-export const Card = props => (
+export const Card = (props) => (
   <Element
     {...props}
     css={css({

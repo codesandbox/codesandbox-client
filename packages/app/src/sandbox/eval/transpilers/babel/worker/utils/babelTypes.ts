@@ -5,7 +5,7 @@ let types: unknown = null;
  * custom plugins and presets, but we don't want to include it in the main bundle.
  */
 export function loadBabelTypes(): Promise<void> {
-  return import('@babel/types').then(typesResult => {
+  return import('@babel/types').then((typesResult) => {
     types = typesResult;
   });
 }

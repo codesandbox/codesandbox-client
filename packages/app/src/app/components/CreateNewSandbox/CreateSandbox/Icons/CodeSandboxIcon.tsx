@@ -1,7 +1,7 @@
 import React from 'react';
 import IconBase from 'react-icons/IconBase';
 
-export const CodeSandboxIcon = props => (
+export const CodeSandboxIcon = (props) => (
   <IconBase viewBox="0 0 32 32" {...props}>
     <path
       fillRule="evenodd"

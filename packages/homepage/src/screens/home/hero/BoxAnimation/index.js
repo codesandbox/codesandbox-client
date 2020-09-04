@@ -46,7 +46,7 @@ function Plane({ position, disableAnimation }) {
   });
 
   const fn = React.useCallback(
-    body => {
+    (body) => {
       body.addShape(new CANNON.Plane());
       body.position.set(...position);
 
@@ -72,7 +72,7 @@ function Box({ position, rotation, onDrag, onDragStop }) {
   const bodyRef = React.useRef();
 
   const fn = React.useCallback(
-    body => {
+    (body) => {
       body.addShape(new CANNON.Box(new CANNON.Vec3(1, 1, 1)));
       body.position.set(...position);
       body.angularVelocity.set(...rotation);
@@ -189,7 +189,7 @@ export default function App({ boxes, showPlane }) {
             />
           )}
 
-          {boxes.map(pos => (
+          {boxes.map((pos) => (
             <Box
               onDrag={setDraggingTrue}
               onDragStop={setDraggingFalse}

@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 
 export const useAccordion = () => {
-  const toggleChildrenClass = parent => {
-    Array.from(parent.getElementsByTagName('p')).map(p =>
+  const toggleChildrenClass = (parent) => {
+    Array.from(parent.getElementsByTagName('p')).map((p) =>
       p.classList.toggle('show')
     );
 
-    Array.from(parent.getElementsByTagName('ul')).map(p =>
+    Array.from(parent.getElementsByTagName('ul')).map((p) =>
       p.classList.toggle('show')
     );
   };
@@ -18,7 +18,7 @@ export const useAccordion = () => {
       document.getElementById(hash).classList.toggle('open');
       toggleChildrenClass(parent);
     }
-    const toggleClasses = e => {
+    const toggleClasses = (e) => {
       if (e.target.localName !== 'h2') return;
       history.replaceState({}, '', '#' + e.target.id);
       history.scrollRestoration = 'manual';

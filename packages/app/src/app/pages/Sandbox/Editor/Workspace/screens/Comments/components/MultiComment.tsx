@@ -80,7 +80,7 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
     },
   });
 
-  const date = comment =>
+  const date = (comment) =>
     formatDistanceStrict(
       zonedTimeToUtc(comment.insertedAt, 'Etc/UTC'),
       new Date(),
@@ -96,7 +96,7 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
       >
         <Element as="ul" css={list}>
           {ids
-            .map(id => comments.comments[editor.currentSandbox.id][id])
+            .map((id) => comments.comments[editor.currentSandbox.id][id])
             .sort((commentA, commentB) => {
               const dateA = new Date(commentA.insertedAt);
               const dateB = new Date(commentB.insertedAt);
@@ -110,12 +110,12 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
 
               return 0;
             })
-            .map(comment => (
+            .map((comment) => (
               <Element as="li" key={comment.id}>
                 <Element
                   as="button"
                   type="button"
-                  onClick={event => {
+                  onClick={(event) => {
                     const bounds = event.currentTarget.getBoundingClientRect();
                     actions.comments.selectComment({
                       commentId: comment.id,

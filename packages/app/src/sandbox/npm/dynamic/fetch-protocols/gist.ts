@@ -44,7 +44,7 @@ export class GistFetcher implements FetchProtocol {
     }
 
     const url = this.getAPIURl(version);
-    const result: GistAPIResponse = await fetchWithRetries(url).then(x =>
+    const result: GistAPIResponse = await fetchWithRetries(url).then((x) =>
       x.json()
     );
     this.fetchedGists[version] = result;
@@ -59,7 +59,7 @@ export class GistFetcher implements FetchProtocol {
       throw new Error('File not found: ' + path);
     }
     if (file.truncated) {
-      return fetchWithRetries(file.raw_url).then(t => t.text());
+      return fetchWithRetries(file.raw_url).then((t) => t.text());
     }
 
     return file.content;

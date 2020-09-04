@@ -9,13 +9,13 @@ export const Container = styled.div`
   position: relative;
   height: 900px;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     transform: scale(0.75, 0.75);
     transform-origin: 100% 0%;
     height: 600px;
   }
 
-  ${props => props.theme.breakpoints.sm} {
+  ${(props) => props.theme.breakpoints.sm} {
     transform: scale(0.5, 0.5);
     transform-origin: 100% 0%;
     height: 340px;
@@ -28,12 +28,12 @@ export const ImageWrapper = styled.div`
   height: 900px;
   right: 0;
   top: 0;
-  width: ${props => props.width}px;
+  width: ${(props) => props.width}px;
   overflow: hidden;
 
   margin-left: -${itemWidth + viewPortMargin}px;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     margin-top: 0;
   }
 
@@ -96,7 +96,7 @@ export const Wrapper = styled.div`
   transition: 0.3s ease opacity;
 
   animation: 7s ${floatAnimation} infinite;
-  animation-delay: ${props => (props.index || 0) * 250}ms;
+  animation-delay: ${(props) => (props.index || 0) * 250}ms;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
@@ -107,11 +107,11 @@ export const Wrapper = styled.div`
   animation-timing-function: ease;
 
   position: absolute;
-  left: ${props => props.index * 334}px;
+  left: ${(props) => props.index * 334}px;
   top: 0;
 
   width: ${itemWidth}px;
-  height: ${props =>
+  height: ${(props) =>
     props.big ? bigItemHeight + 'px' : smallItemHeight + 'px'};
 
   &:hover {
@@ -123,7 +123,7 @@ export const Image = styled.img``;
 
 export const Iframe = styled.iframe`
   width: ${itemWidth}px;
-  height: ${props =>
+  height: ${(props) =>
     props.big ? bigItemHeight + 'px' : smallItemHeight + 'px'};
   border: 0;
   border-radius: 4;

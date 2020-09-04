@@ -7,7 +7,7 @@ const hasChanges = async () => {
   return false;
 };
 
-const run = autoAccept => {
+const run = (autoAccept) => {
   const options = ['chromatic:base'];
   if (autoAccept) options.push('--auto-accept-changes');
 

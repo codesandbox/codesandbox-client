@@ -18,7 +18,7 @@ export const Files: React.FC<{ readonly?: boolean }> = ({ readonly }) => {
   const { currentSandbox: sandbox } = editorState;
 
   const _getModulePath = React.useCallback(
-    moduleId => {
+    (moduleId) => {
       try {
         return getModulePath(sandbox.modules, sandbox.directories, moduleId);
       } catch (e) {

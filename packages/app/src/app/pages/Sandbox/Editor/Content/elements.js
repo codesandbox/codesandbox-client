@@ -9,6 +9,6 @@ export const FullSize = styled.div`
   display: flex;
   flex-direction: column;
 
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.theme['editor.background'] || 'transparent'};
 `;

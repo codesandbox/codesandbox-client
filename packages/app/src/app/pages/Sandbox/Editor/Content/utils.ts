@@ -20,7 +20,7 @@ export function addDevToolsTab(
   };
 
   return {
-    devTools: immer(tabs, draft => {
+    devTools: immer(tabs, (draft) => {
       const devTools = draft[positionToAdd.devToolIndex];
 
       devTools.views.splice(positionToAdd.tabPosition, 0, newTab);
@@ -39,7 +39,7 @@ export function moveDevToolsTab(
   }
 
   // We want to do this immutable, to prevent conflicts while the file is changing
-  return immer(tabs, draft => {
+  return immer(tabs, (draft) => {
     const prevDevTools = draft[prevPos.devToolIndex];
     const nextDevTools = draft[nextPos.devToolIndex];
     const prevTab = draft[prevPos.devToolIndex].views[prevPos.tabPosition];
@@ -69,7 +69,7 @@ export function closeDevToolsTab(
   closePos: DevToolsTabPosition
 ) {
   // We want to do this immutable, to prevent conflicts while the file is changing
-  return immer(tabs, draft => {
+  return immer(tabs, (draft) => {
     const devTools = draft[closePos.devToolIndex];
 
     devTools.views.splice(closePos.tabPosition, 1);

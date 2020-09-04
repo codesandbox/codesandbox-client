@@ -13,7 +13,7 @@ const Navigation = styled.nav`
   margin-right: 1rem;
   width: 250px;
 
-  ${props =>
+  ${(props) =>
     props.fixed &&
     css`
       position: sticky;
@@ -21,7 +21,7 @@ const Navigation = styled.nav`
       height: 100vh;
     `};
 
-  ${props =>
+  ${(props) =>
     props.absoluteTop &&
     css`
       position: absolute;
@@ -60,7 +60,7 @@ const PrimaryNavigationLink = styled(Link)`
   font-weight: 500;
 
   &:hover {
-    color: ${props => props.theme.homepage.white};
+    color: ${(props) => props.theme.homepage.white};
   }
 `;
 
@@ -71,7 +71,7 @@ const SecondaryNavigationLink = styled(Link)`
   font-weight: 500;
 
   &:hover {
-    color: ${props => props.theme.homepage.white};
+    color: ${(props) => props.theme.homepage.white};
   }
 `;
 
@@ -83,7 +83,7 @@ const MissingNotice = styled.a`
   font-size: 0.875rem;
 
   &:hover {
-    color: ${props => props.theme.homepage.white};
+    color: ${(props) => props.theme.homepage.white};
   }
 `;
 

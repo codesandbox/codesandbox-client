@@ -123,7 +123,7 @@ export const Overlay: React.FC<IOverlayProps> = ({
         <Portal>
           <ContentContainer onClick={handleClose}>
             <motion.div
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
               style={{
                 opacity: 0.6,
                 position: 'absolute',

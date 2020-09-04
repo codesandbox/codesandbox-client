@@ -1,7 +1,7 @@
 import React from 'react';
 import IconBase from 'react-icons/IconBase';
 
-export const UserIcon = props => (
+export const UserIcon = (props) => (
   <IconBase fill="none" viewBox="0 0 24 24" {...props}>
     <path
       clipRule="evenodd"

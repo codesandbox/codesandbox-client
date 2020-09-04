@@ -2,7 +2,7 @@ import { createGlobalStyle, css } from 'styled-components';
 
 const POSITION = css`
   top: 0px;
-  left: ${props => props.theme.space[2] + 1}px;
+  left: ${(props) => props.theme.space[2] + 1}px;
 `;
 
 const primary = (theme: any) =>
@@ -98,9 +98,9 @@ ${({ theme }: any) => css`
       theme
     )}"/%3E%3C/svg%3E%0A`}');
 
-      &::before {
-        content: '';
-      }
+    &::before {
+      content: '';
+    }
   }
 
   .editor-comments-add:before {

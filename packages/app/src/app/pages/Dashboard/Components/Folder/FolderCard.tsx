@@ -44,15 +44,15 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
       // drop ssarget
       borderColor: getBorderColor(selected, showDropStyles),
       transition: 'box-shadow ease-in-out',
-      transitionDuration: theme => theme.speeds[4],
-      boxShadow: theme =>
+      transitionDuration: (theme) => theme.speeds[4],
+      boxShadow: (theme) =>
         showDropStyles ? '0 4px 16px 0 ' + theme.colors.grays[900] : null,
 
       // drag state,
       opacity,
 
       ':hover, :focus, :focus-within': {
-        boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+        boxShadow: (theme) => '0 4px 16px 0 ' + theme.colors.grays[900],
       },
     })}
   >

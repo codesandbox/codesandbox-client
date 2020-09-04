@@ -19,7 +19,7 @@ function getExecutorType(isServer: boolean) {
 function getModulesToSend(sandbox: Sandbox): IFiles {
   const modulesObject: IFiles = {};
 
-  sandbox.modules.forEach(m => {
+  sandbox.modules.forEach((m) => {
     const { path } = m;
     if (path) {
       modulesObject[path] = {

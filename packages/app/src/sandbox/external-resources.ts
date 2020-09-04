@@ -47,14 +47,14 @@ function addResource(resource: string) {
       ? addCSS(resource)
       : addJS(resource);
 
-  return new Promise(r => {
+  return new Promise((r) => {
     el.onload = r;
     el.onerror = r;
   });
 }
 
 function waitForLoaded() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if (document.readyState !== 'complete') {
       window.addEventListener('load', resolve);
     } else {

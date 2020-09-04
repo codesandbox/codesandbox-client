@@ -62,8 +62,8 @@ export const PersonalTemplates = ({
           isOwned: true,
         },
         ...data.me.teams
-          .filter(t => t.templates.length > 0)
-          .map(team => ({
+          .filter((t) => t.templates.length > 0)
+          .map((team) => ({
             key: `${team.id}-templates`,
             title: `${team.name}${
               team.name.endsWith('s') ? "'" : "'s"
@@ -78,8 +78,8 @@ export const PersonalTemplates = ({
           templates: data.me.bookmarkedTemplates,
         },
         ...data.me.teams
-          .filter(t => t.bookmarkedTemplates.length > 0)
-          .map(team => ({
+          .filter((t) => t.bookmarkedTemplates.length > 0)
+          .map((team) => ({
             key: `${team.id}-bookmarked-templates`,
             title: `${team.name}${
               team.name.endsWith('s') ? "'" : "'s"

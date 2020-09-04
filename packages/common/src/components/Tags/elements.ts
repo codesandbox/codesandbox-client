@@ -7,18 +7,18 @@ export const TagContainer = styled.div<{ align: 'left' | 'right' }>`
   flex-wrap: wrap;
   margin-left: -0.2rem;
   margin-right: -0.2rem;
-  ${props => props.align === 'right' && `justify-content: flex-end;`};
+  ${(props) => props.align === 'right' && `justify-content: flex-end;`};
 `;
 
 export const Container = styled.span<{ canRemove: boolean }>`
   position: relative;
   color: white;
-  background-color: ${props => props.theme.secondary};
+  background-color: ${(props) => props.theme.secondary};
   padding: 0.3em 0.5em;
   border-radius: 4px;
   font-weight: 500;
 
-  ${props =>
+  ${(props) =>
     props.canRemove &&
     css`
       padding-right: 1.5rem;

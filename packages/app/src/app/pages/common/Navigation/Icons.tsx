@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Logo = props => (
+export const Logo = (props) => (
   <svg width={23} height={23} fill="none" viewBox="0 0 23 23" {...props}>
     <path
       fill="#fff"

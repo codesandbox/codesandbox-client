@@ -67,7 +67,7 @@ export async function initializeBrowserFS({
     };
   } = {};
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const config = { ...BROWSER_FS_CONFIG };
     let currentSandboxFs = {};
 
@@ -119,7 +119,7 @@ export async function initializeBrowserFS({
       );
     }
 
-    global.BrowserFS.configure(config, e => {
+    global.BrowserFS.configure(config, (e) => {
       if (e) {
         console.error(e);
         return;
@@ -137,7 +137,7 @@ export async function initializeBrowserFS({
           resolve();
         };
 
-        self.addEventListener('message', evt => {
+        self.addEventListener('message', (evt) => {
           // Some messages are specific to this worker
           if (!evt.data.$fs_ids || !evt.data.$fs_ids.includes(fsId)) {
             return;
@@ -174,7 +174,7 @@ export async function initializeBrowserFS({
             case 'types-remove': {
               const deps = evt.data.$data;
 
-              Object.keys(deps).forEach(depKey => {
+              Object.keys(deps).forEach((depKey) => {
                 delete types[depKey];
               });
               touchFileSystem();

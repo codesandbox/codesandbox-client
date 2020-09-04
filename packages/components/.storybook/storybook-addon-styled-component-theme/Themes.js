@@ -32,11 +32,11 @@ export const Themes = compose(
   withState('theme', 'setTheme', null),
   withState('themes', 'setThemes', List()),
   withHandlers({
-    onSelectTheme: ({ channel, setTheme }) => theme => {
+    onSelectTheme: ({ channel, setTheme }) => (theme) => {
       setTheme(theme);
       channel.emit('selectTheme', theme.name);
     },
-    onReceiveThemes: ({ setTheme, setThemes, channel }) => newThemes => {
+    onReceiveThemes: ({ setTheme, setThemes, channel }) => (newThemes) => {
       const themes = List(newThemes);
       setThemes(List(themes));
       if (themes.count() > 0) {

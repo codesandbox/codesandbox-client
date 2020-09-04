@@ -6,7 +6,7 @@ export const PageContainer = styled.main`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${props => props.theme.colors.grays[700]};
+  background-color: ${(props) => props.theme.colors.grays[700]};
 `;
 
 export const ContentContainer = styled.div`

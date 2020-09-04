@@ -12,7 +12,7 @@ const ConnectedAutoComplete = connectAutoComplete(RawAutoComplete);
 export default class SearchDependencies extends React.PureComponent {
   hitToVersionMap = new Map();
 
-  handleSelect = hit => {
+  handleSelect = (hit) => {
     let version = this.hitToVersionMap.get(hit);
 
     if (!version && hit.tags) {
@@ -22,7 +22,7 @@ export default class SearchDependencies extends React.PureComponent {
     this.props.onConfirm(hit.name, version);
   };
 
-  handleManualSelect = hitName => {
+  handleManualSelect = (hitName) => {
     if (!hitName) {
       return;
     }

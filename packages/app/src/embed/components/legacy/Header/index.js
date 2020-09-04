@@ -31,7 +31,7 @@ type Props = {
   toggleSidebar: () => void,
 };
 
-const copyToClipboard = str => {
+const copyToClipboard = (str) => {
   track('Embed - Copy URL');
   const el = document.createElement('textarea');
   el.value = str;

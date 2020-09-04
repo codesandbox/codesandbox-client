@@ -42,7 +42,7 @@ export default ({
         <PostTitle>{title}</PostTitle>
 
         <MetaData>
-          {authors.map(author => (
+          {authors.map((author) => (
             <AuthorContainer key={author}>
               {authors.length === 1 && <AuthorImage alt={author} src={photo} />}
 

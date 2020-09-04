@@ -411,7 +411,7 @@ function getSeverity(error) {
 }
 
 // Respond to message from parent thread
-self.addEventListener('message', async event => {
+self.addEventListener('message', async (event) => {
   const { code, version, title: filename, template } = event.data;
 
   let config =
@@ -437,7 +437,7 @@ self.addEventListener('message', async event => {
 
   const validations = linter.verify(code, config, options);
 
-  const markers = validations.map(error => {
+  const markers = validations.map((error) => {
     const {
       line: startL,
       column: startCol,

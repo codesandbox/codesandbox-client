@@ -218,11 +218,11 @@ export function convertEsModule(code: string) {
             declaration,
             // @ts-ignore
             ...flatten(
-              declaration.declarations.map(node => {
+              declaration.declarations.map((node) => {
                 if (node.id.type === n.ObjectPattern) {
                   // export const { a } = c;
                   return flatten(
-                    node.id.properties.map(property => {
+                    node.id.properties.map((property) => {
                       if (
                         property.type !== n.Property ||
                         property.value.type !== n.Identifier
@@ -252,7 +252,7 @@ export function convertEsModule(code: string) {
       } else if (statement.specifiers) {
         program.body.splice(i, 1);
         i--;
-        statement.specifiers.forEach(specifier => {
+        statement.specifiers.forEach((specifier) => {
           if (specifier.type === n.ExportSpecifier) {
             i++;
 
@@ -358,7 +358,7 @@ export function convertEsModule(code: string) {
       );
       importOffset++;
 
-      statement.specifiers.reverse().forEach(specifier => {
+      statement.specifiers.reverse().forEach((specifier) => {
         let localName: string;
         let importName: string;
 
@@ -473,8 +473,8 @@ export function convertEsModule(code: string) {
     const scopeManager = escope.analyze(program);
 
     scopeManager.acquire(program);
-    scopeManager.scopes.forEach(scope => {
-      scope.references.forEach(ref => {
+    scopeManager.scopes.forEach((scope) => {
+      scope.references.forEach((ref) => {
         // If the variable cannot be resolved, it must be the var that we had
         // just changed.
         if (

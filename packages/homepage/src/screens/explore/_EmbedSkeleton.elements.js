@@ -5,7 +5,7 @@ export const Header = styled.div`
   min-height: 48px;
 
   width: 100%;
-  background-color: ${props => props.theme.background};
+  background-color: ${(props) => props.theme.background};
 `;
 
 export const NavigationBar = styled.div`
@@ -19,5 +19,5 @@ export const StatusBar = styled.div`
   height: 33px;
   min-height: 33px;
   width: 100%;
-  background-color: ${props => props.theme.background4};
+  background-color: ${(props) => props.theme.background4};
 `;

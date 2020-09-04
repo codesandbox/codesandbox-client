@@ -8,8 +8,9 @@ const particleAnimation = (deg: number) => keyframes`
   }
 
   100% {
-    transform: rotate(${deg}deg) translateY(${200 +
-  Math.random() * 100}px) scale3d(0, 0, 0);
+    transform: rotate(${deg}deg) translateY(${
+  200 + Math.random() * 100
+}px) scale3d(0, 0, 0);
   }
 `;
 
@@ -18,7 +19,7 @@ export const Particle = styled.div<{
   i: number;
   badge: PatronBadge;
 }>`
-  animation: ${props => particleAnimation(props.deg)} 700ms ease;
+  animation: ${(props) => particleAnimation(props.deg)} 700ms ease;
   position: absolute;
   top: 0;
   bottom: 20px;
@@ -28,7 +29,7 @@ export const Particle = styled.div<{
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  ${props => {
+  ${(props) => {
     const color =
       badges[props.badge].colors[props.i % badges[props.badge].colors.length];
 

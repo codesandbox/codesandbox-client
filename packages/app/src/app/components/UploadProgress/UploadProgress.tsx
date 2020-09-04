@@ -31,7 +31,7 @@ export const UploadProgress: React.FC<IUploadProgressProps> = ({
               color: 'sideBar.foreground',
             })}
           />
-          {[0, 1, 2, 3].map(i => (
+          {[0, 1, 2, 3].map((i) => (
             <StyledCube key={i} delay={i} size={20} />
           ))}
           <StyledLogo width={70} height={70} />

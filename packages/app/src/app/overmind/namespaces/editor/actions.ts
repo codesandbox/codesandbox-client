@@ -67,10 +67,7 @@ export const persistCursorToUrl: Action<{
   // and all the browsers do too.
   if (newUrl) {
     effects.router.replace(
-      newUrl
-        .toString()
-        .replace(/%2F/g, '/')
-        .replace('%3A', ':')
+      newUrl.toString().replace(/%2F/g, '/').replace('%3A', ':')
     );
   }
 }, 500);
@@ -90,7 +87,9 @@ export const loadCursorFromUrl: AsyncAction = async ({
   }
   const [path, selection] = parameter.split(':');
 
-  const module = state.editor.currentSandbox.modules.find(m => m.path === path);
+  const module = state.editor.currentSandbox.modules.find(
+    (m) => m.path === path
+  );
   if (!module) {
     return;
   }
@@ -249,7 +248,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 
   const sandbox = state.editor.currentSandbox!;
 
-  await effects.vscode.changeSandbox(sandbox, fs => {
+  await effects.vscode.changeSandbox(sandbox, (fs) => {
     state.editor.modulesByPath = fs;
   });
 
@@ -306,7 +305,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 });
 
 export const contentMounted: Action = ({ state, effects }) => {
-  effects.browser.onUnload(event => {
+  effects.browser.onUnload((event) => {
     if (!state.editor.isAllModulesSynced && !state.editor.isForkingSandbox) {
       const returnMessage =
         'You have not saved all your modules, are you sure you want to close this tab?';
@@ -358,7 +357,7 @@ export const onOperationApplied: Action<{
   }
 
   const module = state.editor.currentSandbox.modules.find(
-    m => m.shortid === moduleShortid
+    (m) => m.shortid === moduleShortid
   );
 
   if (!module) {
@@ -415,7 +414,7 @@ export const setCode: Action<{
   }
 
   const module = state.editor.currentSandbox.modules.find(
-    m => m.shortid === moduleShortid
+    (m) => m.shortid === moduleShortid
   );
 
   if (!module) {
@@ -444,7 +443,7 @@ export const codeChanged: Action<{
   }
 
   const module = state.editor.currentSandbox.modules.find(
-    m => m.shortid === moduleShortid
+    (m) => m.shortid === moduleShortid
   );
 
   if (!module) {
@@ -511,13 +510,13 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
     }
 
     try {
-      const changedModules = sandbox.modules.filter(module =>
+      const changedModules = sandbox.modules.filter((module) =>
         state.editor.changedModuleShortids.includes(module.shortid)
       );
 
       if (sandbox.featureFlags.comments) {
         const versions = await Promise.all(
-          changedModules.map(module =>
+          changedModules.map((module) =>
             effects.live
               .saveModule(module)
               .then(({ saved_code, updated_at, inserted_at, version }) => {
@@ -536,9 +535,9 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
           changedModules
         );
 
-        updatedModules.forEach(updatedModule => {
+        updatedModules.forEach((updatedModule) => {
           const module = sandbox.modules.find(
-            moduleItem => moduleItem.shortid === updatedModule.shortid
+            (moduleItem) => moduleItem.shortid === updatedModule.shortid
           );
 
           if (module) {
@@ -669,7 +668,7 @@ export const moduleSelected: AsyncAction<
           sandbox.modules,
           sandbox.directories
         )
-      : sandbox.modules.filter(moduleItem => moduleItem.id === id)[0];
+      : sandbox.modules.filter((moduleItem) => moduleItem.id === id)[0];
 
     if (module.shortid === state.editor.currentModuleShortid && path) {
       // If this comes from VSCode we can return, but if this call comes from CodeSandbox
@@ -688,7 +687,7 @@ export const moduleSelected: AsyncAction<
 
       if (state.live.followingUserId) {
         const followingUser = state.live.roomInfo.users.find(
-          u => u.id === state.live.followingUserId
+          (u) => u.id === state.live.followingUserId
         );
 
         if (
@@ -722,7 +721,7 @@ export const moduleDoubleClicked: Action = ({ state, effects }) => {
   const { currentModule } = state.editor;
   const tabs = state.editor.tabs as ModuleTab[];
   const tab = tabs.find(
-    tabItem => tabItem.moduleShortid === currentModule.shortid
+    (tabItem) => tabItem.moduleShortid === currentModule.shortid
   );
 
   if (tab) {
@@ -756,7 +755,7 @@ export const errorsCleared: Action = ({ state, effects }) => {
   }
 
   if (state.editor.errors.length) {
-    state.editor.errors.forEach(error => {
+    state.editor.errors.forEach((error) => {
       try {
         const module = resolveModule(
           error.path,
@@ -828,7 +827,7 @@ export const discardModuleChanges: Action<{
   }
 
   const module = sandbox.modules.find(
-    moduleItem => moduleItem.shortid === moduleShortid
+    (moduleItem) => moduleItem.shortid === moduleShortid
   );
 
   if (!module) {
@@ -903,7 +902,7 @@ export const showEnvironmentVariablesNotification: AsyncAction = async ({
 
   const environmentVariables = sandbox.environmentVariables!;
   const emptyVarCount = Object.keys(environmentVariables).filter(
-    key => !environmentVariables[key]
+    (key) => !environmentVariables[key]
   ).length;
   if (emptyVarCount > 0) {
     effects.notificationToast.add({
@@ -1029,7 +1028,7 @@ export const previewActionReceived: Action<any> = (
       const newErrors = clearCorrectionsFromAction(currentErrors, action);
 
       if (newErrors.length !== currentErrors.length) {
-        state.editor.errors.forEach(error => {
+        state.editor.errors.forEach((error) => {
           try {
             const module = resolveModule(
               error.path,
@@ -1042,7 +1041,7 @@ export const previewActionReceived: Action<any> = (
             // Module doesn't exist anymore
           }
         });
-        newErrors.forEach(error => {
+        newErrors.forEach((error) => {
           const module = resolveModule(
             error.path,
             sandbox.modules,
@@ -1071,7 +1070,7 @@ export const previewActionReceived: Action<any> = (
       );
 
       if (newCorrections.length !== currentCorrections.length) {
-        state.editor.corrections.forEach(correction => {
+        state.editor.corrections.forEach((correction) => {
           try {
             const module = resolveModule(
               correction.path!,
@@ -1085,7 +1084,7 @@ export const previewActionReceived: Action<any> = (
             // our store
           }
         });
-        newCorrections.forEach(correction => {
+        newCorrections.forEach((correction) => {
           const module = resolveModule(
             correction.path!,
             sandbox.modules,
@@ -1112,7 +1111,7 @@ export const previewActionReceived: Action<any> = (
 
       if (module) {
         const sandboxModule = sandbox.modules.find(
-          moduleEntry => moduleEntry.shortid === module.shortid
+          (moduleEntry) => moduleEntry.shortid === module.shortid
         );
 
         if (sandboxModule) {
@@ -1141,7 +1140,7 @@ export const renameModule: AsyncAction<{
       return;
     }
     const module = sandbox.modules.find(
-      moduleItem => moduleItem.shortid === moduleShortid
+      (moduleItem) => moduleItem.shortid === moduleShortid
     );
 
     if (!module) {
@@ -1266,7 +1265,7 @@ export const listenToSandboxChanges: AsyncAction<{
     return;
   }
 
-  effects.gql.subscriptions.onSandboxChangged({ sandboxId }, result => {
+  effects.gql.subscriptions.onSandboxChangged({ sandboxId }, (result) => {
     const sandbox = state.editor.sandboxes[sandboxId];
 
     if (sandbox) {
@@ -1311,19 +1310,19 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
 
     state.editor.collaborators = collaboratorResponse.sandbox.collaborators;
 
-    effects.gql.subscriptions.onCollaboratorAdded({ sandboxId }, event => {
+    effects.gql.subscriptions.onCollaboratorAdded({ sandboxId }, (event) => {
       const newCollaborator = event.collaboratorAdded;
       state.editor.collaborators = [
         ...state.editor.collaborators.filter(
-          c => c.user.username !== event.collaboratorAdded.user.username
+          (c) => c.user.username !== event.collaboratorAdded.user.username
         ),
         newCollaborator,
       ];
     });
 
-    effects.gql.subscriptions.onCollaboratorChanged({ sandboxId }, event => {
+    effects.gql.subscriptions.onCollaboratorChanged({ sandboxId }, (event) => {
       const existingCollaborator = state.editor.collaborators.find(
-        c => c.user.username === event.collaboratorChanged.user.username
+        (c) => c.user.username === event.collaboratorChanged.user.username
       );
       if (existingCollaborator) {
         existingCollaborator.authorization =
@@ -1334,9 +1333,9 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
       }
     });
 
-    effects.gql.subscriptions.onCollaboratorRemoved({ sandboxId }, event => {
+    effects.gql.subscriptions.onCollaboratorRemoved({ sandboxId }, (event) => {
       state.editor.collaborators = state.editor.collaborators.filter(
-        c => c.user.username !== event.collaboratorRemoved.user.username
+        (c) => c.user.username !== event.collaboratorRemoved.user.username
       );
     });
 
@@ -1351,7 +1350,7 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
 
       state.editor.invitations = sandbox.invitations;
 
-      effects.gql.subscriptions.onInvitationCreated({ sandboxId }, event => {
+      effects.gql.subscriptions.onInvitationCreated({ sandboxId }, (event) => {
         if (event.invitationCreated.id === null) {
           // Ignore this
           return;
@@ -1360,15 +1359,15 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
         const newInvitation = event.invitationCreated;
         state.editor.invitations = [
           ...state.editor.invitations.filter(
-            i => i.id !== event.invitationCreated.id
+            (i) => i.id !== event.invitationCreated.id
           ),
           newInvitation,
         ];
       });
 
-      effects.gql.subscriptions.onInvitationChanged({ sandboxId }, event => {
+      effects.gql.subscriptions.onInvitationChanged({ sandboxId }, (event) => {
         const existingInvitation = state.editor.invitations.find(
-          i => i.id === event.invitationChanged.id
+          (i) => i.id === event.invitationChanged.id
         );
         if (existingInvitation) {
           existingInvitation.authorization =
@@ -1376,9 +1375,9 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
         }
       });
 
-      effects.gql.subscriptions.onInvitationRemoved({ sandboxId }, event => {
+      effects.gql.subscriptions.onInvitationRemoved({ sandboxId }, (event) => {
         state.editor.invitations = state.editor.invitations.filter(
-          i => i.id !== event.invitationRemoved.id
+          (i) => i.id !== event.invitationRemoved.id
         );
       });
     }
@@ -1397,7 +1396,7 @@ export const changeCollaboratorAuthorization: AsyncAction<{
   });
 
   const existingCollaborator = state.editor.collaborators.find(
-    c => c.user.username === username
+    (c) => c.user.username === username
   );
 
   let oldAuthorization: Authorization | null = null;
@@ -1447,12 +1446,12 @@ export const addCollaborator: AsyncAction<{
       authorization,
     });
     state.editor.collaborators = [
-      ...state.editor.collaborators.filter(c => c.user.username !== username),
+      ...state.editor.collaborators.filter((c) => c.user.username !== username),
       result.addCollaborator,
     ];
   } catch (e) {
     state.editor.collaborators = state.editor.collaborators.filter(
-      c => c.id !== 'OPTIMISTIC_ID'
+      (c) => c.id !== 'OPTIMISTIC_ID'
     );
   }
 };
@@ -1463,11 +1462,11 @@ export const removeCollaborator: AsyncAction<{
 }> = async ({ state, effects }, { username, sandboxId }) => {
   effects.analytics.track('Remove Collaborator');
   const existingCollaborator = state.editor.collaborators.find(
-    c => c.user.username === username
+    (c) => c.user.username === username
   );
 
   state.editor.collaborators = state.editor.collaborators.filter(
-    c => c.user.username !== username
+    (c) => c.user.username !== username
   );
 
   try {
@@ -1511,12 +1510,12 @@ export const inviteCollaborator: AsyncAction<{
       // When it's null it has already tied the email to a collaborator, and the collaborator
       // has been added via websockets
       state.editor.invitations = state.editor.invitations.filter(
-        c => c.id !== 'OPTIMISTIC_ID'
+        (c) => c.id !== 'OPTIMISTIC_ID'
       );
     } else {
       state.editor.invitations = [
         ...state.editor.invitations.filter(
-          c =>
+          (c) =>
             c.id !== 'OPTIMISTIC_ID' &&
             c.id !== result.createSandboxInvitation.id
         ),
@@ -1526,7 +1525,7 @@ export const inviteCollaborator: AsyncAction<{
     }
   } catch (e) {
     state.editor.invitations = state.editor.invitations.filter(
-      c => c.id !== 'OPTIMISTIC_ID'
+      (c) => c.id !== 'OPTIMISTIC_ID'
     );
   }
 };
@@ -1538,11 +1537,11 @@ export const revokeSandboxInvitation: AsyncAction<{
   effects.analytics.track('Cancel Invite Collaborator (Email)');
 
   const existingInvitation = state.editor.invitations.find(
-    c => c.id === invitationId
+    (c) => c.id === invitationId
   );
 
   state.editor.invitations = state.editor.invitations.filter(
-    c => c.id !== invitationId
+    (c) => c.id !== invitationId
   );
 
   try {
@@ -1566,7 +1565,7 @@ export const changeInvitationAuthorization: AsyncAction<{
   sandboxId: string;
 }> = async ({ state, effects }, { invitationId, sandboxId, authorization }) => {
   const existingInvitation = state.editor.invitations.find(
-    c => c.id === invitationId
+    (c) => c.id === invitationId
   );
 
   let oldAuthorization: Authorization | null = null;

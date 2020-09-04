@@ -9,7 +9,7 @@ export function useMatchMedia(query, defaultMatch = false) {
   );
 
   React.useEffect(() => {
-    const handleMatchChange = ev => setMatch(ev.matches);
+    const handleMatchChange = (ev) => setMatch(ev.matches);
 
     mediaQueryList.addListener(handleMatchChange);
 

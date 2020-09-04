@@ -47,7 +47,7 @@ function addScript(src: string) {
     s.onload = () => {
       resolve();
     };
-    s.onerror = error => {
+    s.onerror = (error) => {
       reject(error);
     };
   });
@@ -182,12 +182,12 @@ export default class TestRunner {
       return true;
     }
 
-    return endsWith.filter(ext => testPath.endsWith(ext)).length > 0;
+    return endsWith.filter((ext) => testPath.endsWith(ext)).length > 0;
   }
 
   findTests(modules: { [path: string]: Module }) {
     if (this.tests) {
-      this.tests.forEach(t => {
+      this.tests.forEach((t) => {
         if (!modules[t.path]) {
           // A removed test
           this.sendMessage(messages.REMOVE_FILE, { path: t.path });
@@ -196,7 +196,7 @@ export default class TestRunner {
     }
     this.tests = Object.keys(modules)
       .filter(TestRunner.isTest)
-      .map(p => modules[p]);
+      .map((p) => modules[p]);
 
     return this.tests;
   }
@@ -204,7 +204,7 @@ export default class TestRunner {
   /* istanbul ignore next */
   async transpileTests() {
     return Promise.all(
-      (this.tests || []).map(async t => {
+      (this.tests || []).map(async (t) => {
         const tModule = this.manager.getTranspiledModule(t, '');
         if (
           tModule.source &&
@@ -312,7 +312,7 @@ export default class TestRunner {
 
     if (testModules.length) {
       await Promise.all(
-        testModules.map(testSetup =>
+        testModules.map((testSetup) =>
           this.manager.transpileModules(testSetup, true)
         )
       );
@@ -323,19 +323,19 @@ export default class TestRunner {
     }
 
     // $FlowIssue
-    const tests: Array<Module> = (await this.transpileTests()).filter(t => t);
+    const tests: Array<Module> = (await this.transpileTests()).filter((t) => t);
 
     resetTestState();
 
     await this.setup();
 
     await Promise.all(
-      tests.map(async t => {
+      tests.map(async (t) => {
         dispatch(actions.error.clear(t.path, 'jest'));
 
         try {
           if (testModules.length) {
-            testModules.forEach(module => {
+            testModules.forEach((module) => {
               this.manager.evaluateModule(module, {
                 force: true,
                 globals: this.testGlobals(module),
@@ -435,7 +435,7 @@ export default class TestRunner {
         const test = await this.testToCodeSandbox(message.test);
 
         if (test.errors) {
-          test.errors.forEach(err => {
+          test.errors.forEach((err) => {
             if (err.mappedErrors && err.mappedErrors.length) {
               const { mappedErrors } = err;
               const [mappedError] = mappedErrors;

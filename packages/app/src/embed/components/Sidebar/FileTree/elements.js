@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import css from '@styled-system/css';
 
-export const FileContainer = styled.div(props =>
-  css(theme => ({
+export const FileContainer = styled.div((props) =>
+  css((theme) => ({
     display: 'flex',
     alignItems: 'center',
     fontSize: 3,

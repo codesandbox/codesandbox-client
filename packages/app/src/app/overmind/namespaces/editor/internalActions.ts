@@ -27,7 +27,7 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   const { sandboxes } = state.editor;
   const matchingSandboxId = Object.keys(sandboxes).find(
     // @ts-ignore
-    idItem => sandboxUrl(sandboxes[idItem]) === `${editorUrl()}${id}`
+    (idItem) => sandboxUrl(sandboxes[idItem]) === `${editorUrl()}${id}`
   );
 
   return matchingSandboxId || id;
@@ -97,7 +97,7 @@ export const setModuleSavedCode: Action<{
   }
 
   const moduleIndex = sandbox.modules.findIndex(
-    m => m.shortid === moduleShortid
+    (m) => m.shortid === moduleShortid
   );
 
   if (moduleIndex > -1) {
@@ -120,7 +120,7 @@ export const saveCode: AsyncAction<{
     return;
   }
 
-  const module = sandbox.modules.find(m => m.shortid === moduleShortid);
+  const module = sandbox.modules.find((m) => m.shortid === moduleShortid);
 
   if (!module) {
     return;
@@ -243,7 +243,7 @@ export const updateCurrentTemplate: AsyncAction = async ({
     ) {
       const { parsed = {} } = state.editor.parsedConfigurations?.package || {};
 
-      const modulesByPath = mapValues(state.editor.modulesByPath, module => ({
+      const modulesByPath = mapValues(state.editor.modulesByPath, (module) => ({
         // No idea why this typing fails!
         // @ts-ignore
         content: module.code || '',
@@ -295,7 +295,7 @@ export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
   const code = JSON.stringify(packageJson, null, 2);
   const moduleShortid = state.editor.currentPackageJSON.shortid;
   const module = state.editor.currentSandbox.modules.find(
-    m => m.shortid === moduleShortid
+    (m) => m.shortid === moduleShortid
   );
 
   if (!module) {
@@ -336,7 +336,7 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   const moduleShortid = state.editor.currentPackageJSON.shortid;
 
   const module = state.editor.currentSandbox.modules.find(
-    m => m.shortid === moduleShortid
+    (m) => m.shortid === moduleShortid
   );
 
   if (!module) {
@@ -369,7 +369,7 @@ export const updateModuleCode: Action<{
   effects.vscode.runCommand('workbench.action.keepEditor');
 
   const tabs = state.editor.tabs as ModuleTab[];
-  const tab = tabs.find(tabItem => tabItem.moduleShortid === module.shortid);
+  const tab = tabs.find((tabItem) => tabItem.moduleShortid === module.shortid);
 
   if (tab) {
     tab.dirty = false;
@@ -430,9 +430,9 @@ export const forkSandbox: AsyncAction<{
 
     // Copy over any unsaved code
     Object.assign(forkedSandbox, {
-      modules: forkedSandbox.modules.map(module => {
+      modules: forkedSandbox.modules.map((module) => {
         const foundEquivalentModule = sandbox.modules.find(
-          currentSandboxModule =>
+          (currentSandboxModule) =>
             currentSandboxModule.shortid === module.shortid
         );
 
@@ -503,10 +503,10 @@ export const setCurrentModule: AsyncAction<Module> = async (
   state.editor.currentTabId = null;
 
   const tabs = state.editor.tabs as ModuleTab[];
-  const tab = tabs.find(tabItem => tabItem.moduleShortid === module.shortid);
+  const tab = tabs.find((tabItem) => tabItem.moduleShortid === module.shortid);
 
   if (!tab) {
-    const dirtyTabIndex = tabs.findIndex(tabItem => tabItem.dirty);
+    const dirtyTabIndex = tabs.findIndex((tabItem) => tabItem.dirty);
     const newTab: ModuleTab = {
       type: TabType.MODULE,
       moduleShortid: module.shortid,
@@ -554,7 +554,7 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   const code = JSON.stringify(parsed, null, 2);
   const moduleShortid = state.editor.currentPackageJSON.shortid;
 
-  const module = sandbox.modules.find(m => m.shortid === moduleShortid);
+  const module = sandbox.modules.find((m) => m.shortid === moduleShortid);
 
   if (!module) {
     return;

@@ -47,7 +47,7 @@ const Layout = styled(Input).attrs({
 
 // Input takes the size of the content inside it by using
 // a decoy span to calculate width
-const AutosizeInput = props => {
+const AutosizeInput = (props) => {
   const spanRef = React.useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = React.useState('');
 
@@ -79,7 +79,7 @@ export const TagInput = ({ value, onChange }) => (
     renderTag={({ key, tag, onRemove }) => (
       <Tag tag={tag} key={key} onRemove={() => onRemove(key)} />
     )}
-    renderInput={props => <AutosizeInput id="tags-input" {...props} />}
+    renderInput={(props) => <AutosizeInput id="tags-input" {...props} />}
     renderLayout={(tagsComponent, inputComponent) => (
       <Layout>
         {tagsComponent}

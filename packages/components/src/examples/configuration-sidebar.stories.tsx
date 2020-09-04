@@ -5,7 +5,7 @@ export default {
   title: 'examples/SidebarConfig',
 };
 
-const NetlifyIcon = props => (
+const NetlifyIcon = (props) => (
   <svg width={12} height={12} fill="none" viewBox="0 0 12 12" {...props}>
     <path
       fill="#4CAA9F"
@@ -14,7 +14,7 @@ const NetlifyIcon = props => (
   </svg>
 );
 
-const PrettierIcon = props => (
+const PrettierIcon = (props) => (
   <svg width={10} height={11} fill="none" viewBox="0 0 10 11" {...props}>
     <path
       fill="#56B3B4"
@@ -99,7 +99,7 @@ const PrettierIcon = props => (
   </svg>
 );
 
-const NPMIcon = props => (
+const NPMIcon = (props) => (
   <svg width={17} height={16} fill="none" viewBox="0 0 17 16" {...props}>
     <path
       fill="#FF453A"
@@ -108,7 +108,7 @@ const NPMIcon = props => (
   </svg>
 );
 
-const VercelIcon = props => (
+const VercelIcon = (props) => (
   <svg width={12} height={10} fill="none" viewBox="0 0 12 10" {...props}>
     <path fill="#fff" d="M6 0l6 10H0L6 0z" />
   </svg>

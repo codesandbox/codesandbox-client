@@ -127,7 +127,7 @@ export default function initialize() {
     aliases,
     {
       hasDotEnv: true,
-      processDependencies: async dependencies => {
+      processDependencies: async (dependencies) => {
         if (
           dependencies['react-dom'] &&
           isMinimalReactVersion(dependencies['react-dom'], '16.9.0')
@@ -137,7 +137,7 @@ export default function initialize() {
 
         return dependencies;
       },
-      setup: async manager => {
+      setup: async (manager) => {
         const dependencies = manager.manifest.dependencies;
         const isRefresh = await hasRefresh(dependencies);
 
@@ -151,7 +151,7 @@ export default function initialize() {
             // Add react refresh babel plugin for non-node_modules
 
             preset.registerTranspiler(
-              module =>
+              (module) =>
                 !module.path.startsWith('/node_modules') &&
                 /\.m?(t|j)sx?$/.test(module.path) &&
                 !module.path.endsWith('.d.ts'),
@@ -177,19 +177,19 @@ export default function initialize() {
           }
 
           preset.registerTranspiler(
-            module =>
+            (module) =>
               /\.m?(t|j)sx?$/.test(module.path) &&
               !module.path.endsWith('.d.ts'),
             [{ transpiler: babelTranspiler, options: BABEL7_CONFIG }]
           );
 
-          preset.registerTranspiler(module => /\.svg$/.test(module.path), [
+          preset.registerTranspiler((module) => /\.svg$/.test(module.path), [
             { transpiler: svgrTranspiler },
             { transpiler: babelTranspiler, options: BABEL7_CONFIG },
           ]);
 
           preset.registerTranspiler(
-            module => /\.module\.s[c|a]ss$/.test(module.path),
+            (module) => /\.module\.s[c|a]ss$/.test(module.path),
             [
               { transpiler: sassTranspiler },
               { transpiler: styleProcessor },
@@ -200,7 +200,7 @@ export default function initialize() {
             ]
           );
           preset.registerTranspiler(
-            module => /\.module\.css$/.test(module.path),
+            (module) => /\.module\.css$/.test(module.path),
             [
               { transpiler: styleProcessor },
               {
@@ -210,23 +210,26 @@ export default function initialize() {
             ]
           );
 
-          preset.registerTranspiler(module => /\.css$/.test(module.path), [
+          preset.registerTranspiler((module) => /\.css$/.test(module.path), [
             { transpiler: styleProcessor },
             {
               transpiler: stylesTranspiler,
               options: { hmrEnabled: isRefresh },
             },
           ]);
-          preset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
-            { transpiler: sassTranspiler },
-            { transpiler: styleProcessor },
-            {
-              transpiler: stylesTranspiler,
-              options: { hmrEnabled: isRefresh },
-            },
-          ]);
+          preset.registerTranspiler(
+            (module) => /\.s[c|a]ss$/.test(module.path),
+            [
+              { transpiler: sassTranspiler },
+              { transpiler: styleProcessor },
+              {
+                transpiler: stylesTranspiler,
+                options: { hmrEnabled: isRefresh },
+              },
+            ]
+          );
 
-          preset.registerTranspiler(module => /\.json$/.test(module.path), [
+          preset.registerTranspiler((module) => /\.json$/.test(module.path), [
             { transpiler: jsonTranspiler },
           ]);
 
@@ -235,7 +238,7 @@ export default function initialize() {
           ]);
         }
       },
-      preEvaluate: async manager => {
+      preEvaluate: async (manager) => {
         if (manager.isFirstLoad) {
           await initializeReactDevTools();
         }
@@ -245,7 +248,7 @@ export default function initialize() {
         }
 
         const reactDom = manager.manifest.dependencies.find(
-          n => n.name === 'react-dom'
+          (n) => n.name === 'react-dom'
         );
         if (
           reactDom &&

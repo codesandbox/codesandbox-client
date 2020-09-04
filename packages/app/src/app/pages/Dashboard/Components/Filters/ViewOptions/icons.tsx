@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const GridIcon = props => (
+export const GridIcon = (props) => (
   <svg width={15} height={14} fill="none" viewBox="0 0 15 14" {...props}>
     <path
       fill={props.active ? '#fff' : '#757575'}
@@ -11,7 +11,7 @@ export const GridIcon = props => (
   </svg>
 );
 
-export const ListIcon = props => (
+export const ListIcon = (props) => (
   <svg width={15} height={15} fill="none" viewBox="0 0 10 10" {...props}>
     <path
       fill={props.active ? '#fff' : '#757575'}

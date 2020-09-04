@@ -34,7 +34,7 @@ export const Explore: React.FC<ExploreProps> = ({ collectionId }) => {
     }, 600);
 
     getTemplateInfosFromAPI('/api/v1/sandboxes/templates/explore').then(
-      body => {
+      (body) => {
         setExploreTemplates(body);
         setLoading(false);
 
@@ -54,7 +54,7 @@ export const Explore: React.FC<ExploreProps> = ({ collectionId }) => {
         <span>Template Universe</span>
         <div>
           <SearchBox
-            onChange={evt => setSearch(evt.target.value)}
+            onChange={(evt) => setSearch(evt.target.value)}
             value={search}
             placeholder="Search Public Templates"
           />

@@ -20,7 +20,7 @@ export const PinnedSandboxes = ({ menuControls }) => {
   const [{ isOver }, drop] = useDrop({
     accept: [SandboxTypes.ALL_SANDBOX, SandboxTypes.PINNED_SANDBOX],
     drop: () => ({ name: 'PINNED_SANDBOXES' }),
-    collect: monitor => ({
+    collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
   });
@@ -54,7 +54,7 @@ export const PinnedSandboxes = ({ menuControls }) => {
               height: 240,
               padding: 4,
               backgroundColor: isOver ? 'grays.700' : 'transparent',
-              transition: theme => `background-color ${theme.speeds[2]}`,
+              transition: (theme) => `background-color ${theme.speeds[2]}`,
               backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23757575' stroke-width='1' stroke-dasharray='8%2c8' stroke-dashoffset='4' stroke-linecap='square'/%3e%3c/svg%3e");border-radius: 4px;`,
             })}
           >

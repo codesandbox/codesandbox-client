@@ -29,7 +29,7 @@ const Animated = ({ showMountAnimations, ...props }) => (
 );
 
 function getLiveUser(currentUserId: string, roomInfo: RoomInfo) {
-  return roomInfo?.users?.find(u => u.userId === currentUserId);
+  return roomInfo?.users?.find((u) => u.userId === currentUserId);
 }
 
 export const CollaboratorList = () => {
@@ -48,7 +48,7 @@ export const CollaboratorList = () => {
   const { author, team } = state.editor.currentSandbox;
 
   const collaboratorsConnectedWithLive = state.editor.collaborators.map(
-    collaborator => {
+    (collaborator) => {
       const currentLiveUser = getLiveUser(
         collaborator.user.id,
         state.live?.roomInfo
@@ -61,7 +61,7 @@ export const CollaboratorList = () => {
     }
   );
 
-  const sortedCollaborators = sortBy(collaboratorsConnectedWithLive, c => [
+  const sortedCollaborators = sortBy(collaboratorsConnectedWithLive, (c) => [
     -(c.lastSeenAt === Infinity
       ? new Date().getTime()
       : new Date(c.lastSeenAt || 0).getTime()),
@@ -101,7 +101,7 @@ export const CollaboratorList = () => {
       </Animated>
 
       <AnimatePresence>
-        {sortedCollaborators.map(collaborator => (
+        {sortedCollaborators.map((collaborator) => (
           <Animated
             showMountAnimations={showMountAnimations}
             key={collaborator.user.username}
@@ -119,7 +119,7 @@ export const CollaboratorList = () => {
           </Animated>
         ))}
 
-        {state.editor.invitations.map(invitation => (
+        {state.editor.invitations.map((invitation) => (
           <Animated
             showMountAnimations={showMountAnimations}
             key={invitation.email}

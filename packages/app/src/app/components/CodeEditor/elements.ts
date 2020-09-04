@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Icons = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 2px;
-  color: ${props =>
+  color: ${(props) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
   padding: 0.5rem 1rem;
   z-index: 40;

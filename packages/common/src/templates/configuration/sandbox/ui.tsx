@@ -69,20 +69,20 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
   const currentTemplate = templates.default(sandbox.template);
 
   const possibleTemplates: Array<Template> = Object.keys(templates)
-    .filter(t => t !== 'default')
-    .map(n => templates[n]);
+    .filter((t) => t !== 'default')
+    .map((n) => templates[n]);
 
   const templateOptions = sortBy(
     possibleTemplates.filter(
-      template =>
+      (template) =>
         template.isServer === currentTemplate.isServer &&
         template.showOnHomePage
     ),
-    template => template.niceName
-  ).map(template => template.name);
+    (template) => template.niceName
+  ).map((template) => template.name);
 
   const templateNameMap = {};
-  possibleTemplates.forEach(template => {
+  possibleTemplates.forEach((template) => {
     templateNameMap[template.name] = template.niceName;
   });
 
@@ -136,7 +136,7 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
             title="Template"
             type="dropdown"
             options={templateOptions}
-            mapName={name => templateNameMap[name]}
+            mapName={(name) => templateNameMap[name]}
             {...bindValue(parsedFile, 'template', currentTemplate.name)}
           />
         </ConfigItem>

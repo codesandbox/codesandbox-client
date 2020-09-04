@@ -1,7 +1,7 @@
 import React from 'react';
 import IconBase from 'react-icons/IconBase';
 
-export const TeamIcon = props => (
+export const TeamIcon = (props) => (
   <IconBase
     viewBox="0 0 33 32"
     fill="none"

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TemplateUniverse = props => (
+const TemplateUniverse = (props) => (
   <svg width={880} height={338} fill="none" viewBox="0 0 880 338" {...props}>
     <g filter="url(#filter0_dd)">
       <path

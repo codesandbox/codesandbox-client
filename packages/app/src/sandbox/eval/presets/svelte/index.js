@@ -22,11 +22,11 @@ const babelOptions = {
 export default function initialize() {
   const sveltePreset = new Preset('svelte', ['js', 'jsx', 'svelte'], {});
 
-  sveltePreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  sveltePreset.registerTranspiler((module) => /\.m?jsx?$/.test(module.path), [
     { transpiler: babelTranspiler, options: babelOptions },
   ]);
 
-  sveltePreset.registerTranspiler(module => /\.css$/.test(module.path), [
+  sveltePreset.registerTranspiler((module) => /\.css$/.test(module.path), [
     { transpiler: styleProcessor },
     {
       transpiler: stylesTranspiler,
@@ -34,7 +34,7 @@ export default function initialize() {
     },
   ]);
 
-  sveltePreset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
+  sveltePreset.registerTranspiler((module) => /\.s[c|a]ss$/.test(module.path), [
     { transpiler: sassTranspiler },
     { transpiler: styleProcessor },
     {
@@ -43,17 +43,17 @@ export default function initialize() {
     },
   ]);
 
-  sveltePreset.registerTranspiler(module => /\.svelte$/.test(module.path), [
+  sveltePreset.registerTranspiler((module) => /\.svelte$/.test(module.path), [
     { transpiler: svelteTranspiler },
     { transpiler: babelTranspiler, options: babelOptions },
   ]);
 
-  sveltePreset.registerTranspiler(module => /\.html$/.test(module.path), [
+  sveltePreset.registerTranspiler((module) => /\.html$/.test(module.path), [
     { transpiler: svelteTranspiler },
     { transpiler: babelTranspiler, options: babelOptions },
   ]);
 
-  sveltePreset.registerTranspiler(module => /\.json/.test(module.path), [
+  sveltePreset.registerTranspiler((module) => /\.json/.test(module.path), [
     { transpiler: jsonTranspiler },
   ]);
 

@@ -145,7 +145,7 @@ const Pro = ({ user, modalOpened, cancelSubscriptionClicked }) => {
           )}
           . You can{' '}
           <LinkButton
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault();
               modalOpened({
                 modal: 'preferences',
@@ -157,7 +157,7 @@ const Pro = ({ user, modalOpened, cancelSubscriptionClicked }) => {
           </LinkButton>{' '}
           or{' '}
           <LinkButton
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault();
               cancelSubscriptionClicked();
             }}
@@ -211,7 +211,7 @@ const NotPro = ({
         <BillText on={duration === 'monthly'}>Bill monthly</BillText>
         <Switch
           onChange={() =>
-            setDuration(d => (d === 'yearly' ? 'monthly' : 'yearly'))
+            setDuration((d) => (d === 'yearly' ? 'monthly' : 'yearly'))
           }
           on={duration === 'yearly'}
         />

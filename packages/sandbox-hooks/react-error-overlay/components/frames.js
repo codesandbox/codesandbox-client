@@ -48,7 +48,7 @@ function createFrameWrapper(
     const compiledText = document.createTextNode(
       'View ' + (o && o.compiled ? 'source' : 'compiled')
     );
-    compiledDiv.addEventListener('click', function() {
+    compiledDiv.addEventListener('click', function () {
       if (o) {
         o.compiled = !o.compiled;
       }
@@ -95,7 +95,7 @@ function createFrames(
   let index = 0;
   let critical = true;
   const omits: OmitsObject = { value: 0, bundle: 1, hasReachedAppCode: false };
-  resolvedFrames.forEach(function(frame) {
+  resolvedFrames.forEach(function (frame) {
     const lIndex = index++;
     const elem = createFrameWrapper(
       document,

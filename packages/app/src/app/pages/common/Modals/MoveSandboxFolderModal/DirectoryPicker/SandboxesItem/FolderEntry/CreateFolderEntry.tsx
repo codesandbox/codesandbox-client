@@ -36,9 +36,9 @@ export const CreateFolderEntry = ({
   let input;
   return (
     <Mutation mutation={CREATE_FOLDER_MUTATION}>
-      {mutate => (
+      {(mutate) => (
         <form
-          onSubmit={e => {
+          onSubmit={(e) => {
             e.preventDefault();
             const path = join(basePath, input.value);
 
@@ -93,13 +93,13 @@ export const CreateFolderEntry = ({
               placeholder="Folder Name"
               style={{ marginRight: '1rem' }}
               onBlur={close}
-              onKeyDown={e => {
+              onKeyDown={(e) => {
                 if (e.keyCode === ESC) {
                   e.preventDefault();
                   close();
                 }
               }}
-              ref={el => {
+              ref={(el) => {
                 if (el) {
                   if (!noFocus) {
                     el.focus();

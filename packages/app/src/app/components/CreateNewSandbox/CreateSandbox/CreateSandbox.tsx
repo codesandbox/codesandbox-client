@@ -35,7 +35,7 @@ interface CreateSandboxProps {
   isModal?: boolean;
 }
 
-export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
+export const CreateSandbox: React.FC<CreateSandboxProps> = (props) => {
   const {
     state: { isFirstVisit },
     effects: { browser },
@@ -112,7 +112,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
         </Tabs>
         {isFirstVisit ? (
           <TabContent {...tab} stopId="Welcome">
-            {rProps =>
+            {(rProps) =>
               !rProps.hidden && (
                 <div {...rProps}>
                   <Welcome goToTab={() => tab.select('Create')} />
@@ -122,7 +122,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
           </TabContent>
         ) : null}
         <TabContent {...tab} stopId="Create">
-          {rProps =>
+          {(rProps) =>
             !rProps.hidden && (
               <>
                 <div {...rProps}>
@@ -162,7 +162,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
         </TabContent>
 
         <TabContent {...tab} stopId="New">
-          {rProps =>
+          {(rProps) =>
             !rProps.hidden && (
               <div {...rProps}>
                 <New
@@ -175,7 +175,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
           }
         </TabContent>
         <TabContent {...tab} stopId="Explore">
-          {rProps =>
+          {(rProps) =>
             !rProps.hidden && (
               <div {...rProps}>
                 <Explore collectionId={props.collectionId} />
@@ -184,7 +184,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
           }
         </TabContent>
         <TabContent {...tab} stopId="Import">
-          {rProps =>
+          {(rProps) =>
             !rProps.hidden && (
               <div {...rProps}>
                 <MobileTabs>

@@ -103,8 +103,8 @@ export async function saveCache(
           'Content-Type': 'application/json',
         },
       })
-      .then(x => x.json())
-      .catch(e => {
+      .then((x) => x.json())
+      .catch((e) => {
         if (process.env.NODE_ENV === 'development') {
           console.error('Something went wrong while saving cache.');
           console.error(e);
@@ -128,8 +128,8 @@ export function deleteAPICache(sandboxId: string): Promise<any> {
           'Content-Type': 'application/json',
         },
       })
-      .then(x => x.json())
-      .catch(e => {
+      .then((x) => x.json())
+      .catch((e) => {
         console.error('Something went wrong while deleting cache.');
         console.error(e);
       });

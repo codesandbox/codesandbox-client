@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const PrototypeRapidly = props => (
+export const PrototypeRapidly = (props) => (
   <svg
     width="200"
     height="100"

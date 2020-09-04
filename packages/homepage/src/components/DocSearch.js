@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import DocSearchStyle from '../css/docSearch';
 
 const StyledInput = styled(Input)`
-  border: 1px solid ${props => props.theme.background2.lighten(0.3)};
+  border: 1px solid ${(props) => props.theme.background2.lighten(0.3)};
   transition: all 300ms ease;
   box-sizing: border-box;
   padding-left: 0.5rem;

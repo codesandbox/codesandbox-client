@@ -53,8 +53,8 @@ function fetchTheme(foundTheme) {
 
   return window
     .fetch(foundTheme.url)
-    .then(x => x.text())
-    .then(text => {
+    .then((x) => x.text())
+    .then((text) => {
       let theme;
       try {
         theme = parseTheme(text);
@@ -86,7 +86,7 @@ const findTheme = async (themeName, customTheme) => {
     }
   }
 
-  const foundTheme = themes.find(t => t.name === themeName);
+  const foundTheme = themes.find((t) => t.name === themeName);
 
   const fetchedTheme = await fetchTheme(foundTheme);
 

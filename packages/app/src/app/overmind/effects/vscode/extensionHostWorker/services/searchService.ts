@@ -12,7 +12,7 @@ initializeGlobals();
 async function initialize() {
   await initializeBrowserFS({ syncSandbox: true, syncTypes: true });
 
-  self.addEventListener('message', e => {
+  self.addEventListener('message', (e) => {
     if (e.data.$type === 'input-write') {
       const { $type, $data } = e.data.$data;
       if ($type === 'file-search') {

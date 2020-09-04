@@ -11,7 +11,7 @@ import {
 function FileTree({ sandbox, currentModuleId, setCurrentModuleId }) {
   const { modules, directories } = sandbox;
 
-  const allFiles = [...directories, ...modules].map(file => ({
+  const allFiles = [...directories, ...modules].map((file) => ({
     id: file.shortid,
     longid: file.id,
     title: file.title,
@@ -20,8 +20,8 @@ function FileTree({ sandbox, currentModuleId, setCurrentModuleId }) {
     type: file.code ? 'file' : 'directory',
   }));
 
-  const selectedFile = allFiles.find(file => file.longid === currentModuleId);
-  const onSelect = file => setCurrentModuleId(file.longid);
+  const selectedFile = allFiles.find((file) => file.longid === currentModuleId);
+  const onSelect = (file) => setCurrentModuleId(file.longid);
 
   return (
     <SubTree
@@ -39,9 +39,9 @@ function SubTree({ files, allFiles, selectedFile, onSelect }) {
   return (
     <div>
       {files
-        .filter(child => isRootLevel(files, child))
+        .filter((child) => isRootLevel(files, child))
         .sort(sortingFunction)
-        .map(child => (
+        .map((child) => (
           <React.Fragment key={child.id}>
             {child.type === 'directory' ? (
               <Directory
@@ -67,7 +67,7 @@ function SubTree({ files, allFiles, selectedFile, onSelect }) {
 }
 
 function Directory(props) {
-  const children = props.allFiles.filter(file => file.directory === props.id);
+  const children = props.allFiles.filter((file) => file.directory === props.id);
 
   const defaultOpen = isChildSelected({
     allFiles: props.allFiles,

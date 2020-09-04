@@ -5,5 +5,5 @@ import rawReactErrorTransformer from './raw-react-component-error';
 const transformers = [rawReactErrorTransformer];
 
 export default function registerErrorTransformers() {
-  transformers.forEach(t => registerErrorTransformer(t));
+  transformers.forEach((t) => registerErrorTransformer(t));
 }

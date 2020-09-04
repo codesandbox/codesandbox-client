@@ -80,10 +80,10 @@ export const KEYBINDINGS = {
     type: 'View',
     bindings: [[ctrlOrAltKey, 'W']],
     signal: 'editor.tabClosed',
-    payload: state => ({
+    payload: (state) => ({
       tabIndex: state.editor.tabs
-        .filter(x => x)
-        .findIndex(t => t.moduleId === state.currentModuleId),
+        .filter((x) => x)
+        .findIndex((t) => t.moduleId === state.currentModuleId),
     }),
   },
 
@@ -92,7 +92,7 @@ export const KEYBINDINGS = {
     type: 'View',
     bindings: [[metaKey, 'K', 'Z']],
     signal: 'preferences.settingChanged',
-    payload: state => ({
+    payload: (state) => ({
       name: 'zenMode',
       value: !state.preferences.settings.zenMode,
     }),
@@ -130,7 +130,7 @@ export const KEYBINDINGS = {
     type: 'Source',
     bindings: [],
     signal: 'editor.prettifyClicked',
-    payload: state => ({
+    payload: (state) => ({
       moduleShortid: state.editor.currentModule.shortid,
     }),
   },
@@ -140,7 +140,7 @@ export const KEYBINDINGS = {
     type: 'Source',
     bindings: [[metaOrCtrlKey, 'S']],
     signal: 'editor.codeSaved',
-    payload: state => ({
+    payload: (state) => ({
       moduleShortid: state.editor.currentModule.shortid,
     }),
   },

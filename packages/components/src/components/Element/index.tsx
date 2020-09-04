@@ -19,7 +19,7 @@ export interface IElementProps {
   css?: Object;
 }
 
-export const Element = styled.div<IElementProps>(props =>
+export const Element = styled.div<IElementProps>((props) =>
   css({
     boxSizing: 'border-box',
     margin: nullCheck(props.margin),
@@ -40,7 +40,7 @@ export const Element = styled.div<IElementProps>(props =>
   })
 );
 
-const nullCheck = value => {
+const nullCheck = (value) => {
   // 0 is an allowed value, even though it's falsy
   if (typeof value !== 'undefined') return value;
   return null;

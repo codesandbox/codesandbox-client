@@ -17,7 +17,7 @@ class MonacoEditor extends React.PureComponent {
     this.destroyMonaco();
   }
 
-  editorWillMount = monaco => {
+  editorWillMount = (monaco) => {
     const { editorWillMount } = this.props;
     editorWillMount(monaco);
   };
@@ -50,12 +50,12 @@ class MonacoEditor extends React.PureComponent {
       this.editorWillMount(context.monaco);
 
       window.monacoCodeSandbox = {
-        openModel: model => this.props.openReference(model),
+        openModel: (model) => this.props.openReference(model),
       };
 
       const appliedOptions = { ...options };
 
-      const fonts = appliedOptions.fontFamily.split(',').map(x => x.trim());
+      const fonts = appliedOptions.fontFamily.split(',').map((x) => x.trim());
       // We first just set the default fonts for the editor. When the custom font has loaded
       // we set that one so that Monaco doesn't get confused.
       // https://github.com/Microsoft/monaco-editor/issues/392
@@ -100,7 +100,7 @@ class MonacoEditor extends React.PureComponent {
     }
   };
 
-  assignRef = component => {
+  assignRef = (component) => {
     this.containerElement = component;
   };
 

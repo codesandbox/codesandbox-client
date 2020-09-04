@@ -77,23 +77,23 @@ requirePolyfills().then(() => {
         credentials: 'include',
         mode: 'cors',
       })
-      .then(res => {
+      .then((res) => {
         if (res.status === 404) {
           show404(id);
         }
         return res.json();
       })
-      .then(res => {
+      .then((res) => {
         const camelized = camelizeKeys(res);
         camelized.data.npmDependencies = res.data.npm_dependencies;
 
         return camelized;
       })
-      .then(x => {
+      .then((x) => {
         const moduleObject = {};
 
         // We convert the modules to a format the manager understands
-        x.data.modules.forEach(m => {
+        x.data.modules.forEach((m) => {
           const path = getModulePath(x.data.modules, x.data.directories, m.id);
           moduleObject[path] = {
             path,

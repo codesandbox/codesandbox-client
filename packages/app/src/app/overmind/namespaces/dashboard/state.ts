@@ -104,7 +104,9 @@ export const state: State = {
       return base;
     }
 
-    const noTemplateSandboxes = recentSandboxes.filter(s => !s.customTemplate);
+    const noTemplateSandboxes = recentSandboxes.filter(
+      (s) => !s.customTemplate
+    );
     const timeSandboxes = noTemplateSandboxes.reduce(
       (accumulator, currentValue) => {
         if (!currentValue.updatedAt) return accumulator;
@@ -141,7 +143,9 @@ export const state: State = {
         week: [],
         older: [],
       };
-    const noTemplateSandboxes = deletedSandboxes.filter(s => !s.customTemplate);
+    const noTemplateSandboxes = deletedSandboxes.filter(
+      (s) => !s.customTemplate
+    );
     const timeSandboxes = noTemplateSandboxes.reduce(
       (accumulator, currentValue) => {
         if (!currentValue.removedAt) return accumulator;
@@ -190,7 +194,7 @@ export const state: State = {
       const isDateField =
         orderField === 'insertedAt' || orderField === 'updatedAt';
 
-      let orderedSandboxes = (sortBy(sandboxes, s => {
+      let orderedSandboxes = (sortBy(sandboxes, (s) => {
         const sandbox = s!;
         if (isDateField) {
           return +zonedTimeToUtc(sandbox[orderField], 'Etc/UTC');
@@ -203,7 +207,7 @@ export const state: State = {
 
         return sandbox[orderField];
       }) as Sandbox[]).filter(
-        x =>
+        (x) =>
           x.source &&
           x.source.template &&
           blacklistedTemplates.indexOf(x.source.template) === -1

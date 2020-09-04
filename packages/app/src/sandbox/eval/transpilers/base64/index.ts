@@ -6,12 +6,12 @@ class Base64Transpiler extends Transpiler {
   }
 
   doTranspilation(code: string) {
-    return new Promise<TranspilerResult>(resolve => {
+    return new Promise<TranspilerResult>((resolve) => {
       const reader = new FileReader();
       // @ts-ignore
       reader.readAsDataURL(code);
 
-      reader.onloadend = function() {
+      reader.onloadend = function () {
         const base64data = reader.result;
         resolve({
           transpiledCode: `module.exports = "${base64data.toString()}"`,

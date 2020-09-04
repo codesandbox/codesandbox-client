@@ -42,7 +42,7 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
     setDragging,
   }) => {
     const { isDragging, initialOffset, currentOffset } = useDragLayer(
-      monitor => ({
+      (monitor) => ({
         initialOffset: monitor.getInitialSourceClientOffset(),
         currentOffset: monitor.getSourceClientOffset(),
         isDragging: monitor.isDragging(),
@@ -58,10 +58,10 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
     const selectedItems = React.useMemo(
       () =>
         selectionItems
-          .filter(id => selectedIds.includes(id))
-          .map(id => {
+          .filter((id) => selectedIds.includes(id))
+          .map((id) => {
             if (id.startsWith('/')) {
-              const folder = folders.find(f => f.path === id);
+              const folder = folders.find((f) => f.path === id);
               return {
                 type: 'folder',
                 title: folder.name,
@@ -69,7 +69,7 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
               };
             }
 
-            const sandbox = sandboxes.find(s => s.sandbox.id === id)!.sandbox;
+            const sandbox = sandboxes.find((s) => s.sandbox.id === id)!.sandbox;
 
             let screenshotUrl = sandbox.screenshotUrl;
             // We set a fallback thumbnail in the API which is used for
@@ -296,7 +296,7 @@ const useMousePosition = () => {
   });
 
   React.useEffect(() => {
-    const handler = event =>
+    const handler = (event) =>
       setPosition({
         x: event.clientX,
         y: event.clientY,

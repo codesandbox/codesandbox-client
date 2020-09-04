@@ -16,6 +16,6 @@ export const StripeInput = styled(Input)`
 
 export const ErrorText = styled.div`
   margin: 0.25rem 0;
-  color: ${props => props.theme.red};
+  color: ${(props) => props.theme.red};
   font-size: 0.875rem;
 `;

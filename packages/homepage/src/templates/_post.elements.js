@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const PostContainer = styled.div`
   ${({ theme }) => css`
-    color: ${props => props.theme.homepage.white};
+    color: ${(props) => props.theme.homepage.white};
     font-size: 1.1rem;
     line-height: 1.6rem;
     font-weight: 300;
@@ -14,7 +14,7 @@ export const PostContainer = styled.div`
     h4,
     h5,
     h6 {
-      color: ${props => props.theme.homepage.white};
+      color: ${(props) => props.theme.homepage.white};
       line-height: 1.2;
       font-weight: 700;
     }

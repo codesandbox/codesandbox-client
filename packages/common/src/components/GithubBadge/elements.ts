@@ -13,7 +13,7 @@ export const BorderRadius = styled.div<{ hasUrl?: boolean }>`
 export const Text = styled.span`
   display: inline-block;
 
-  color: ${props => (props.theme.light ? 'black' : 'white')};
+  color: ${(props) => (props.theme.light ? 'black' : 'white')};
   word-wrap: break-word;
 `;
 
@@ -21,7 +21,7 @@ export const Icon = styled.span`
   display: inline-block;
   margin-right: 0.5rem;
   border-radius: 2px;
-  color: ${props => props.theme['editor.foreground']};
+  color: ${(props) => props.theme['editor.foreground']};
   font-size: 1.25em;
 `;
 

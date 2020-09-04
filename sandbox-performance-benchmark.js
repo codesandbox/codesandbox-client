@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 
 function pageLoaded(page) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     page.exposeFunction('__puppeteer__', () => {
       if (resolve) {
         resolve();
@@ -14,7 +14,7 @@ let browser = puppeteer.launch({ headless: true });
 const SANDBOX_ID = process.argv[2];
 const results = [];
 
-(async function() {
+(async function () {
   browser = await browser;
   console.log('Testing speed of ' + SANDBOX_ID);
 

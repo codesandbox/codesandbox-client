@@ -9,10 +9,10 @@ export default {
 export const Basic = () => (
   <>
     {/* eslint-disable-next-line no-console */}
-    <Radio label="A Radio" onChange={e => console.log(e.target.checked)} />
+    <Radio label="A Radio" onChange={(e) => console.log(e.target.checked)} />
     <div style={{ marginTop: 20 }}>
       {/* eslint-disable-next-line no-console */}
-      <Radio label="A Radio" onChange={e => console.log(e.target.checked)} />
+      <Radio label="A Radio" onChange={(e) => console.log(e.target.checked)} />
     </div>
   </>
 );
@@ -22,12 +22,12 @@ export const Checked = () => {
     <>
       <Radio
         checked={checked}
-        onChange={e => setChecked(e.target.checked)}
+        onChange={(e) => setChecked(e.target.checked)}
         label="Option one"
       />
       <Radio
         checked={checked}
-        onChange={e => setChecked(e.target.checked)}
+        onChange={(e) => setChecked(e.target.checked)}
         label="A Radio"
       />
     </>

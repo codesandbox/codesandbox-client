@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../components/layout';
 
-const GitHub = props => {
+const GitHub = (props) => {
   const white = useTheme().homepage.white;
   return (
     <svg width={82} height={84} fill="none" viewBox="0 0 82 84" {...props}>

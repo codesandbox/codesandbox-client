@@ -27,7 +27,7 @@ class ShellComponent extends React.PureComponent<Props> {
   initializeTerminal = (terminal: TerminalWithFit) => {
     this.term = terminal;
 
-    this.term.on('data', data => {
+    this.term.on('data', (data) => {
       if (!this.props.ended) {
         dispatch({
           type: 'socket:message',

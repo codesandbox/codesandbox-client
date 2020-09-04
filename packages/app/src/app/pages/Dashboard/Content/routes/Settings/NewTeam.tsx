@@ -13,7 +13,7 @@ export const NewTeam = () => {
   } = useOvermind();
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async event => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     const teamName = event.target.name.value;
     if (teamName && teamName.trim()) {
@@ -32,7 +32,7 @@ export const NewTeam = () => {
     }
   };
 
-  const handleInput = e => {
+  const handleInput = (e) => {
     const { value } = e.target;
     if (value && value.trim()) {
       e.target.setCustomValidity('');

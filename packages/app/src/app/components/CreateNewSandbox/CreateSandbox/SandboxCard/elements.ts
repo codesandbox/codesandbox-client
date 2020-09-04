@@ -17,7 +17,7 @@ export const Container = styled.button<{ focused?: boolean }>`
     outline: 0;
   }
 
-  ${props =>
+  ${(props) =>
     props.focused &&
     css`
       background-color: #242424;

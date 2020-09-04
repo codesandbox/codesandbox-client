@@ -14,7 +14,8 @@ type Props = {
   settings: Settings,
 };
 
-export default class MonacoDiff extends React.Component<Props>
+export default class MonacoDiff
+  extends React.Component<Props>
   implements Editor {
   editor: any;
   monaco: any;

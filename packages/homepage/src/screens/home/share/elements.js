@@ -6,7 +6,7 @@ export const Grid = styled.div`
   grid-gap: 2.5rem;
   position: relative;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     grid-template-columns: 1fr;
   }
 `;
@@ -20,12 +20,12 @@ export const Section = styled.section`
   z-index: 2;
   justify-content: flex-end;
 
-  ${props => props.theme.breakpoints.lg} {
+  ${(props) => props.theme.breakpoints.lg} {
     margin-left: 0px;
     grid-template-columns: repeat(3, 1fr);
   }
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     grid-template-columns: repeat(3, 1fr);
     margin-top: 2.5rem;
     grid-gap: 1rem;
@@ -37,7 +37,7 @@ export const Section = styled.section`
 `;
 
 export const White = styled.span`
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
 `;
 
 const shared = css`
@@ -52,7 +52,7 @@ const shared = css`
 
 export const tweetStyle = css`
   ${shared}
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     display: none;
   }
 
@@ -65,7 +65,7 @@ export const tweetStyleMobile = css`
   ${shared}
   display: none;
   margin-top: 3.5rem !important;
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     display: block;
   }
 `;
