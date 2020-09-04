@@ -1,9 +1,11 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useDrop } from 'react-dnd';
+import { motion } from 'framer-motion';
 import { Grid, Column, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SandboxCard } from './SandboxCard';
+import { SandboxTypes } from './constants';
 
 export const PinnedSandboxes = ({ menuControls }) => {
   const {
@@ -16,7 +18,7 @@ export const PinnedSandboxes = ({ menuControls }) => {
   const myProfile = loggedInUser?.username === user.username;
 
   const [{ isOver }, drop] = useDrop({
-    accept: 'sandbox',
+    accept: [SandboxTypes.ALL_SANDBOX, SandboxTypes.PINNED_SANDBOX],
     drop: () => ({ name: 'PINNED_SANDBOXES' }),
     collect: monitor => ({
       isOver: monitor.isOver(),
@@ -31,9 +33,16 @@ export const PinnedSandboxes = ({ menuControls }) => {
         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
       }}
     >
-      {user.featuredSandboxes.map(sandbox => (
+      {user.featuredSandboxes.map((sandbox, index) => (
         <Column key={sandbox.id}>
-          <SandboxCard sandbox={sandbox} menuControls={menuControls} />
+          <motion.div layoutTransition={{ duration: 0.15 }}>
+            <SandboxCard
+              type={SandboxTypes.PINNED_SANDBOX}
+              sandbox={sandbox}
+              index={index}
+              menuControls={menuControls}
+            />
+          </motion.div>
         </Column>
       ))}
       {myProfile && (

@@ -243,6 +243,9 @@ export const addFeaturedSandboxes: AsyncAction<{
     sandbox => sandbox.id
   );
 
+  // already featured
+  if (currentFeaturedSandboxIds.includes(sandboxId)) return;
+
   // optimistic update
   actions.profile.addFeaturedSandboxesInState({ sandboxId });
 
@@ -289,6 +292,48 @@ export const removeFeaturedSandboxes: AsyncAction<{
 
     actions.internal.handleError({
       message: "We weren't able to update your pinned sandboxes",
+      error,
+    });
+  }
+};
+
+export const reorderFeaturedSandboxesInState: Action<{
+  startPosition: number;
+  endPosition: number;
+}> = ({ state, actions, effects }, { startPosition, endPosition }) => {
+  if (!state.profile.current) return;
+
+  // optimisic update
+  const featuredSandboxes = [...state.profile.current.featuredSandboxes];
+  const sandbox = featuredSandboxes.find((_, index) => index === startPosition);
+
+  // remove element first
+  featuredSandboxes.splice(startPosition, 1);
+  // now add at new position
+  featuredSandboxes.splice(endPosition, 0, sandbox);
+
+  state.profile.current.featuredSandboxes = featuredSandboxes;
+};
+
+export const saveFeaturedSandboxesOrder: AsyncAction = async ({
+  actions,
+  effects,
+  state,
+}) => {
+  try {
+    const featuredSandboxIds = state.profile.current.featuredSandboxes.map(
+      s => s.id
+    );
+    const profile = await effects.api.updateUserFeaturedSandboxes(
+      state.profile.current.id,
+      featuredSandboxIds
+    );
+    state.profile.current.featuredSandboxes = profile.featuredSandboxes;
+  } catch (error) {
+    // TODO: rollback optimisic update
+
+    actions.internal.handleError({
+      message: "We weren't able to re-order your pinned sandboxes",
       error,
     });
   }
