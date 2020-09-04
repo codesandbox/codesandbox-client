@@ -1,6 +1,3 @@
-import { useOvermind } from 'app/overmind';
-import React, { useEffect, useState } from 'react';
-
 import {
   Collapsible,
   Text,
@@ -9,35 +6,43 @@ import {
   ListItem,
   Stack,
 } from '@codesandbox/components';
-import { DeleteIcon, EditIcon } from './Icons';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+
+import { useOvermind } from 'app/overmind';
+
+import { DeleteIcon, EditIcon } from '../Icons';
+
 import { VarForm } from './VarForm';
 
-export const EnvVars = () => {
-  const [editMode, setEditMode] = useState(null);
+export const EnvVars: FunctionComponent = () => {
   const {
-    actions: { editor },
+    actions: {
+      editor: {
+        deleteEnvironmentVariable,
+        fetchEnvironmentVariables,
+        updateEnvironmentVariables,
+      },
+    },
     state: {
       editor: { currentSandbox },
     },
   } = useOvermind();
+  const [editMode, setEditMode] = useState(null);
 
   useEffect(() => {
-    editor.fetchEnvironmentVariables();
-  }, [editor]);
-
-  const deleteEnv = (name: string) => {
-    editor.deleteEnvironmentVariable({ name });
-  };
+    fetchEnvironmentVariables();
+  }, [fetchEnvironmentVariables]);
   const envVars = currentSandbox.environmentVariables;
 
   return (
-    <Collapsible title="Secret Keys" defaultOpen>
+    <Collapsible defaultOpen title="Secret Keys">
       <Element paddingX={2}>
-        <Text variant="muted" block>
+        <Text block variant="muted">
           Secrets are available as environment variables. They are kept private
           and will not be transferred between forks.
         </Text>
       </Element>
+
       {envVars ? (
         <List paddingTop={4}>
           {Object.keys(envVars).map(keyName => (
@@ -45,24 +50,26 @@ export const EnvVars = () => {
               {editMode === keyName || !envVars[keyName] ? (
                 <VarForm
                   name={keyName}
-                  value={envVars[keyName]}
                   onCancel={() => setEditMode(null)}
                   onSubmit={({ name, value }) => {
-                    editor.updateEnvironmentVariables({ name, value });
+                    updateEnvironmentVariables({ name, value });
                     setEditMode(null);
                   }}
+                  value={envVars[keyName]}
                 />
               ) : (
                 <ListItem justify="space-between" marginTop={editMode ? 4 : 0}>
                   <Text>{keyName}</Text>
+
                   <Stack gap={2}>
                     <EditIcon
-                      style={{ cursor: 'pointer' }}
                       onClick={() => setEditMode(keyName)}
-                    />
-                    <DeleteIcon
                       style={{ cursor: 'pointer' }}
-                      onClick={() => deleteEnv(keyName)}
+                    />
+
+                    <DeleteIcon
+                      onClick={() => deleteEnvironmentVariable(keyName)}
+                      style={{ cursor: 'pointer' }}
                     />
                   </Stack>
                 </ListItem>
@@ -72,11 +79,7 @@ export const EnvVars = () => {
         </List>
       ) : null}
 
-      <VarForm
-        onSubmit={({ name, value }) =>
-          editor.updateEnvironmentVariables({ name, value })
-        }
-      />
+      <VarForm onSubmit={updateEnvironmentVariables} />
     </Collapsible>
   );
 };
