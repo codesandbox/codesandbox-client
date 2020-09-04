@@ -31,7 +31,7 @@ export class CodeEditor extends React.PureComponent<
   render() {
     const { props } = this;
 
-    const { isModuleSynced, sandbox, currentModule: module } = props;
+    const { sandbox, currentModule: module } = props;
 
     const template = getDefinition(sandbox.template);
     const modulePath = getModulePath(
@@ -54,12 +54,6 @@ export class CodeEditor extends React.PureComponent<
           ...props.style,
         }}
       >
-        {!isModuleSynced(module.shortid) && module.title === 'index.html' && (
-          <Icons>
-            You may have to save this file and refresh the preview to see
-            changes
-          </Icons>
-        )}
         {config && getUI(config.type) ? (
           <Icons>
             {config.partialSupportDisclaimer ? (
