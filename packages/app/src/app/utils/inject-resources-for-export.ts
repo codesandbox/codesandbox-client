@@ -5,14 +5,16 @@ import {
   createExternalJSLink,
 } from 'sandbox/external-resources';
 
-const PATHS_TO_INJECT = ['/public/index.html'];
+function isFileHTML(path: string) {
+  return /\.html$/g.test(path);
+}
 
 function addElementToHTMLHead(code: string, resource: string) {
   const element: HTMLLinkElement | HTMLScriptElement = resourceIsCss(resource)
     ? createExternalCSSLink(resource)
     : createExternalJSLink(resource);
 
-  const newCode = code.replace(/<\/head>/g, `${element.outerHTML}\n</head>`);
+  const newCode = code.replace(/<\/head>/g, `\t${element.outerHTML}\n</head>`);
 
   return newCode;
 }
@@ -26,7 +28,7 @@ export function injectExternalResources(
   const modifiedModules = modules.map(mod => {
     const modifiedModule = { ...mod };
 
-    if (mod.type === 'file' && PATHS_TO_INJECT.includes(mod.path)) {
+    if (mod.type === 'file' && isFileHTML(mod.path)) {
       externalResources.forEach(resource => {
         modifiedModule.code = addElementToHTMLHead(
           modifiedModule.code,
