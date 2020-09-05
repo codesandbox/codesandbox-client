@@ -73,7 +73,7 @@
     "react-textarea-autosize": "^6.1.0",
     "semver": "^5.6.0",
     "sha1": "^1.1.1",
-    "styled-components": "^5.1.0",
+    "styled-components": "^5.2.0",
     "template-icons": "^1.0.0",
     "typeface-inter": "^3.10.0"
   },
