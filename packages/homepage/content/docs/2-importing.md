@@ -20,7 +20,7 @@ and begin creating your own sandbox.
 ## Import from GitHub
 
 You can import a GitHub repository in to CodeSandbox using our
-[import wizard](https://codesandbox.io/s/github) and pasting the URL to your
+[import wizard](https://codesandbox.stream/s/github) and pasting the URL to your
 GitHub repository. We support custom branches and subdirectories.
 
 The imported repository will always stay up to date with your latest commits.
@@ -41,7 +41,7 @@ https://github.com/reduxjs/redux/tree/master/examples/todomvc.
 To: https://githubbox.com/reduxjs/redux/tree/master/examples/todomvc.
 
 The result is we take the last part of the url (everything after github.com) and
-use it in our importer at codesandbox.io/s/github/, adding the repo to
+use it in our importer at codesandbox.stream/s/github/, adding the repo to
 CodeSandbox.
 
 ### Using a Browser Extension
@@ -94,13 +94,13 @@ $ codesandbox ./
 We offer an API that allows you to programmatically create a sandbox. This is
 useful for documentation, enabling you to generate a sandbox on the fly from
 code examples. You can call the endpoint
-`https://codesandbox.io/api/v1/sandboxes/define` both with a `GET` and with a
+`https://codesandbox.stream/api/v1/sandboxes/define` both with a `GET` and with a
 `POST` request.
 
 ### Supported Parameters
 
 We currently support three extra parameters. The query accepts the same options
-as the [embed options](https://codesandbox.io/docs/embedding/#embed-options).
+as the [embed options](https://codesandbox.stream/docs/embedding/#embed-options).
 
 | Query Parameter | Description                                                                          | Example Input               |
 | --------------- | ------------------------------------------------------------------------------------ | --------------------------- |
@@ -166,12 +166,12 @@ const parameters = getParameters({
   },
 });
 
-const url = `https://codesandbox.io/api/v1/sandboxes/define?parameters=${parameters}`;
+const url = `https://codesandbox.stream/api/v1/sandboxes/define?parameters=${parameters}`;
 ```
 
 #### Example Sandbox
 
-<iframe src="https://codesandbox.io/embed/6yznjvl7nw?editorsize=50&fontsize=14&hidenavigation=1&runonclick=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+<iframe src="https://codesandbox.stream/embed/6yznjvl7nw?editorsize=50&fontsize=14&hidenavigation=1&runonclick=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 
 ### POST Form
 
@@ -180,13 +180,13 @@ show a form. With a POST request you can create bigger sandboxes.
 
 #### Example Sandbox
 
-<iframe src="https://codesandbox.io/embed/qzlp7nw34q?editorsize=70&fontsize=14&hidenavigation=1&runonclick=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+<iframe src="https://codesandbox.stream/embed/qzlp7nw34q?editorsize=70&fontsize=14&hidenavigation=1&runonclick=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 
 ### Define without render
 
 If you want to define a new sandbox without getting it rendered, you can add
 `?json=1` to the request. For instance
-`https://codesandbox.io/api/v1/sandboxes/define?json=1`. Instead of the render,
+`https://codesandbox.stream/api/v1/sandboxes/define?json=1`. Instead of the render,
 the result will be json data providing you with the `sandbox_id` of the new
 sandbox.
 
@@ -201,7 +201,7 @@ Both `get` and `post` requests are supported.
 You can also create a sandbox using an XHR request, like using `fetch`. An
 example sandbox of that is here:
 
-<iframe src="https://codesandbox.io/embed/9loovqj5oy?editorsize=70&fontsize=14&hidenavigation=1&runonclick=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+<iframe src="https://codesandbox.stream/embed/9loovqj5oy?editorsize=70&fontsize=14&hidenavigation=1&runonclick=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 
 ## Import Single Components
 

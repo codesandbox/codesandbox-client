@@ -11,7 +11,7 @@ date: 2018-10-22
 ---
 
 I often get asked: "What's the difference between
-[CodeSandbox](https://codesandbox.io) and <another online editor>?". I don't
+[CodeSandbox](https://codesandbox.stream) and <another online editor>?". I don't
 like getting these kinds of questions because:
 
 1. I am extremely biased, any answer or comparison I could give would be unfair
@@ -106,7 +106,7 @@ That's why we show error suggestions for some errors (like 'Add Missing
 [npm](https://npmjs.com) Dependency' or 'Rename `App` to `App.js`'). For known
 configuration files we show a UI and description.
 
-We also have a [search page](https://codesandbox.io/search), on this page you
+We also have a [search page](https://codesandbox.stream/search), on this page you
 can search for sandboxes (850.000 at the time of writing) when you need to find
 any examples. You can filter on dependency, on template and on tags to make it
 easier. If you, for example, ever want to know how
@@ -132,7 +132,7 @@ header of their own.
 
 #### Private/Unlisted Sandboxes
 
-As a [Patron](https://codesandbox.io/patron) you can create sandboxes that are
+As a [Patron](https://codesandbox.stream/patron) you can create sandboxes that are
 either private (not viewable apart from you/your team) or unlisted (not viewable
 from search) sandboxes.
 

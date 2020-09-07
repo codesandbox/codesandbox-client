@@ -10,7 +10,7 @@ description:
 date: 2019-03-21
 ---
 
-It's time for the second announcement of [CodeSandbox](https://codesandbox.io)!
+It's time for the second announcement of [CodeSandbox](https://codesandbox.stream)!
 In September we made the announcement of
 [CodeSandbox Containers](/post/announcing-codesandbox-containers), with
 containers we execute the code you write on a server instead of in the browser.
@@ -36,7 +36,7 @@ CodeSandbox.
 #### React Native Expo
 
 [Phil Plückthun](https://twitter.com/_philpl) created
-[a sandbox that runs Expo](https://codesandbox.io/s/wkjn0zlxpw)! This way you
+[a sandbox that runs Expo](https://codesandbox.stream/s/wkjn0zlxpw)! This way you
 can build [React Native](https://github.com/facebook/react-native) apps directly
 on CodeSandbox.
 
@@ -48,7 +48,7 @@ One of the best examples we can give you for the stability of containers is the
 homepage for [Nuxt.js](https://github.com/nuxt/nuxt.js) as they have been using
 it from almost the start and have been integral in testing the resilience of our
 containers.
-[This is their starter example](https://codesandbox.io/s/github/nuxt/codesandbox-nuxt/tree/master?fontsize=14).
+[This is their starter example](https://codesandbox.stream/s/github/nuxt/codesandbox-nuxt/tree/master?fontsize=14).
 
 ![](images/1.png)
 
@@ -61,17 +61,17 @@ Containers have also been used a lot by
 They have set up [GitHub](https://github.com) repositories that link to
 sandboxes to showcase how their frameworks work. If you're interested in setting
 this up for your framework, don't hesitate to shoot us an email to
-hello@codesandbox.io!
+hello@codesandbox.stream!
 
 Here is a
-[Gatsby](https://codesandbox.io/s/github/gatsbyjs/gatsby-starter-default/tree/master),
-[Next.js](https://codesandbox.io/s/github/zeit/next.js/tree/master/examples/hello-world)
-and [Apollo](https://codesandbox.io/s/apollo-server) example.
+[Gatsby](https://codesandbox.stream/s/github/gatsbyjs/gatsby-starter-default/tree/master),
+[Next.js](https://codesandbox.stream/s/github/zeit/next.js/tree/master/examples/hello-world)
+and [Apollo](https://codesandbox.stream/s/apollo-server) example.
 
 #### Node Streaming Example
 
 Another cool example is the [Node](https://github.com/nodejs/node) video
-streaming demo, showcased [here](https://codesandbox.io/s/14n6q1yr33). It shows
+streaming demo, showcased [here](https://codesandbox.stream/s/14n6q1yr33). It shows
 how you can stream videos using
 [`express`](https://github.com/expressjs/express).
 
@@ -103,7 +103,7 @@ soon!
 
 Up until now we you were able to create up to a maximum of 5 container sandboxes
 as regular user, and you had a limit of 20 sandboxes as a
-[patron](https://codesandbox.io/patron). Today, as we mark the service as
+[patron](https://codesandbox.stream/patron). Today, as we mark the service as
 stable, we are increasing the maximum number of container sandboxes to 15 for
 anyone and 30 for patrons. We may raise the limits based on usage in the future.
 

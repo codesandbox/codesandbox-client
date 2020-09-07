@@ -7,11 +7,11 @@ export default {
 };
 
 export const Basic = () => (
-  <Link href="https://codesandbox.io">Plan old boring text</Link>
+  <Link href="https://codesandbox.stream">Plan old boring text</Link>
 );
 
 export const Muted = () => (
-  <Link variant="muted" href="https://codesandbox.io">
+  <Link variant="muted" href="https://codesandbox.stream">
     muted link
   </Link>
 );

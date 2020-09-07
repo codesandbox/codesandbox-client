@@ -74,7 +74,7 @@ export class ExecutorsManager {
       this.executor = new ExecutorType();
     }
 
-    const sseHost = process.env.ENDPOINT || 'https://codesandbox.io';
+    const sseHost = process.env.ENDPOINT || 'https://codesandbox.stream';
 
     await this.executor!.initialize({
       sandboxId: sandbox.id,

@@ -10,7 +10,7 @@ description:
 date: 2017-07-21
 ---
 
-It has been only 3 weeks since [our](https://codesandbox.io) last article
+It has been only 3 weeks since [our](https://codesandbox.stream) last article
 '[The Future of CodeSandbox](/post/the-future-of-codesandbox)' has been
 released. We haven't stopped working in the meantime and are proud to release
 our biggest update yet today! I wanted to dedicate a separate post for this
@@ -34,7 +34,7 @@ ado, let's look at the new features in detail!
 It's now possible to tag sandboxes, so you're able to sort and group them based
 on given tags. This is especially useful with the next feature.
 
-#### [Search](https://codesandbox.io/search)
+#### [Search](https://codesandbox.stream/search)
 
 Yes! I'm really excited for this feature. We now have search powered by
 [Algolia](https://algolia.com). It's insanely fast, I was never able to exceed
@@ -59,7 +59,7 @@ shine, since you can also filter on tags.
 The search isn't fully done yet, I also want to add 'Popular Sandboxes', 'Top of
 this week' and 'Top of this month' to increase discoverability.
 
-#### [CodeSandbox Patron](https://codesandbox.io/patron)
+#### [CodeSandbox Patron](https://codesandbox.stream/patron)
 
 You can now support CodeSandbox by becoming a Patron! You get a badge based on
 the amount you donate per month, which will be shown on your profile page. You
@@ -73,7 +73,7 @@ mostly limits are lifted when you are a Patron. As you can see you can pay what
 you want, this goes from $5 to $∞. We handle all payments through
 [Stripe](https://stripe.com), and we're also working on
 [PayPal](https://paypal.com) integration. You can find the patron page
-[here](https://codesandbox.io/patron).
+[here](https://codesandbox.stream/patron).
 
 #### Private Sandboxes
 
@@ -118,7 +118,7 @@ Throughout the coming months we'll build more badges and a separate badges page.
 
 Hosting user created content is legally quite tricky. A Terms of Service and a
 Privacy Policy were long due and we've put a lot of time in writing one. You can
-read it [here](https://codesandbox.io/legal).
+read it [here](https://codesandbox.stream/legal).
 
 ## What will come
 
@@ -180,4 +180,4 @@ Also a BIG thanks to everyone else helping out by talking about and using
 CodeSandbox, we're really amazed by your positive response and support.
 
 You can always contact us through [my Twitter](https://twitter.com/CompuIves) or
-by emailing us at hello@codesandbox.io. Don't hesitate to say hi 😃.
+by emailing us at hello@codesandbox.stream. Don't hesitate to say hi 😃.

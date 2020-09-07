@@ -10,7 +10,7 @@ description:
 date: 2019-07-18
 ---
 
-Have you ever been using [CodeSandbox](https://codesandbox.io) only to encounter
+Have you ever been using [CodeSandbox](https://codesandbox.stream) only to encounter
 a suddenly blank screen? We certainly have in development! Often, this occurs
 when one of our components encounters an error during render. For our part, we
 try our best to weed out all of these cases before shipping new updates to you,

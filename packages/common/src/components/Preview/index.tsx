@@ -66,7 +66,7 @@ type State = {
 
 const sseDomain = process.env.STAGING_API
   ? 'codesandbox.stream'
-  : 'codesandbox.io';
+  : 'codesandbox.stream';
 
 const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
   `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
@@ -149,7 +149,7 @@ class BasePreview extends React.Component<Props, State> {
   /**
    * We have a different domain for the preview (currently :id.csb.app), some corporate
    * firewalls block calls to these domains. Which is why we ping the domain here, if it
-   * returns a bad response we fall back to using our main domain (:id.codesandbox.io).
+   * returns a bad response we fall back to using our main domain (:id.codesandbox.stream).
    *
    * We use a different domain for the preview, since Chrome runs iframes from a different root
    * domain in a different process, which means for us that we have a snappier editor

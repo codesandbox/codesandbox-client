@@ -756,7 +756,7 @@ export class VSCodeEffect {
   private getLspEndpoint() {
     // return 'ws://localhost:1023';
     // TODO: merge host logic with executor-manager
-    const sseHost = process.env.ENDPOINT || 'https://codesandbox.io';
+    const sseHost = process.env.ENDPOINT || 'https://codesandbox.stream';
     return sseHost.replace(
       'https://',
       `wss://${this.options.getCurrentSandbox()?.id}-lsp.sse.`

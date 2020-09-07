@@ -229,7 +229,7 @@ module.exports = merge(commonConfig, {
       },
       minify: true,
       // For unknown URLs, fallback to the index page
-      navigateFallback: 'https://new.codesandbox.io/frame.html',
+      navigateFallback: 'https://new.codesandbox.stream/frame.html',
       staticFileGlobs: process.env.SANDBOX_ONLY
         ? ['www/index.html']
         : ['www/frame.html'],

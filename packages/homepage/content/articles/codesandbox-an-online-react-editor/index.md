@@ -8,7 +8,7 @@ date: 2017-04-13
 ---
 
 Already more than a week ago [Bas Buursma](https://twitter.com/bazzjuh) and I
-released [CodeSandbox](https://codesandbox.io): an online code editor with a
+released [CodeSandbox](https://codesandbox.stream): an online code editor with a
 focus on sharing projects in React. The response was beyond all my expectations:
 already more than 1500 sandboxes have been created and more than 280 users
 signed in via [GitHub](https://github.com)!
@@ -25,7 +25,7 @@ libraries we have.
 
 Simply said: CodeSandbox is an online code editor. It automates things like
 transpiling, bundling and dependency management for you so you can easily create
-a new project in a single [click](https://codesandbox.io/s/new). After creating
+a new project in a single [click](https://codesandbox.stream/s/new). After creating
 something interesting you can show it to others by just sharing the url.
 CodeSandbox features a live preview to show the result of the code while you're
 typing. The editor works with all JavaScript projects, but it has some React
@@ -70,9 +70,9 @@ but you can share a fullscreen version of it. The fullscreen version is a small
 version of CodeSandbox with just the editor and preview. You can specify what
 file and what view to show with the sharing options in the header.
 
-<!-- https://new.codesandbox.io -->
+<!-- https://new.codesandbox.stream -->
 
-https://codesandbox.io/s/new?fontsize=14&view=split
+https://codesandbox.stream/s/new?fontsize=14&view=split
 
 ![The share options](./images/2.png)
 
@@ -135,7 +135,7 @@ imported project will automatically be credited in the final project as
 CodeSandbox has been a great ride so far, the reactions have been incredible and
 the support has been immense. If you have any suggestions/ideas about
 CodeSandbox or the roadmap we'd love to hear them! You can access us by emailing
-hello@codesandbox.io or by direct messaging
+hello@codesandbox.stream or by direct messaging
 [@CompuIves](https://twitter.com/CompuIves) on Twitter, we also watch the
 comments here.
 
@@ -143,10 +143,10 @@ I'd like to end this article by sharing some cool sandboxes that already have
 been created, we encourage you to share yours! 😉
 
 - Redux Form by
-  [Erik Rasmussen](https://twitter.com/erikras) — [https://codesandbox.io/s/mZRjw05yp](https://codesandbox.io/s/mZRjw05yp)
+  [Erik Rasmussen](https://twitter.com/erikras) — [https://codesandbox.stream/s/mZRjw05yp](https://codesandbox.stream/s/mZRjw05yp)
 - Glamorous by
-  [Kent C. Dodds](https://twitter.com/kentcdodds) — [https://codesandbox.io/s/o2yq9MkQk](https://codesandbox.io/s/o2yq9MkQk)
+  [Kent C. Dodds](https://twitter.com/kentcdodds) — [https://codesandbox.stream/s/o2yq9MkQk](https://codesandbox.stream/s/o2yq9MkQk)
 - RxJS tutorial by
-  [Jan Tuitman](https://codesandbox.io/u/jantuitman) — [https://codesandbox.io/s/PNkNMk9Z2](https://codesandbox.io/s/PNkNMk9Z2)
+  [Jan Tuitman](https://codesandbox.stream/u/jantuitman) — [https://codesandbox.stream/s/PNkNMk9Z2](https://codesandbox.stream/s/PNkNMk9Z2)
 - React Router V4 by
-  [me](https://twitter.com/CompuIves) — [https://codesandbox.io/s/r0wXp0Njw](https://codesandbox.io/s/r0wXp0Njw)
+  [me](https://twitter.com/CompuIves) — [https://codesandbox.stream/s/r0wXp0Njw](https://codesandbox.stream/s/r0wXp0Njw)

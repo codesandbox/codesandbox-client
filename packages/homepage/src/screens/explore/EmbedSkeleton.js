@@ -31,7 +31,7 @@ export default ({ id, screenshotUrl, style }) => (
         style={{
           // TODO CHANGE THIS TO THE URL GIVEn TO THE SANDBOX SO IT CAN BE PReCHACED
           backgroundImage: `url("${screenshotUrl ||
-            `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`}")`,
+            `https://codesandbox.stream/api/v1/sandboxes/${id}/screenshot.png`}")`,
           backgroundRepeat: 'no-repeat',
           backgroundPositionX: 'center',
           transform: 'scale(1.025, 1.025)',

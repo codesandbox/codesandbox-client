@@ -23,7 +23,7 @@ sandboxes, sorted into folders. This is the best way to collaborate together on
 sandboxes.
 
 You can create a new workspace for your team
-[here](https://codesandbox.io/dashboard/settings/new)! In the future, you'll be
+[here](https://codesandbox.stream/dashboard/settings/new)! In the future, you'll be
 able to set workspace-level settings and secrets too.
 
 ## A new-look dashboard
@@ -31,7 +31,7 @@ able to set workspace-level settings and secrets too.
 But workspaces aren't the only new thing. While staying close to what people are
 familiar with, we've refreshed the look and feel of the dashboard. This update
 evolves the design to bring through the
-[updates made in the editor](https://codesandbox.io/post/new-look-editor) and
+[updates made in the editor](https://codesandbox.stream/post/new-look-editor) and
 makes working with large numbers of sandboxes a much better experience too.
 
 ### A new start screen
@@ -69,7 +69,7 @@ know we have notifications—they've only been used for team invitations in the
 dashboard to date. Now they're shown in the editor as well and let you know
 about new sandbox invitations too. Notifications will become increasingly useful
 as we deliver on more of our
-[planned collaboration features](https://codesandbox.io/post/redefining-code-collaboration),
+[planned collaboration features](https://codesandbox.stream/post/redefining-code-collaboration),
 which is why we've also added new filter and dismiss options.
 
 ## Join the Team Pro waiting list

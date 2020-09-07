@@ -10,7 +10,7 @@ description:
 
 It's sometimes desired to have either images or big files in a sandbox. We allow
 you to upload these within CodeSandbox. As a
-[patron](https://codesandbox.io/patron) you are allowed to upload a maximum of
+[patron](https://codesandbox.stream/patron) you are allowed to upload a maximum of
 500MB, otherwise you are able to upload 20MB. Remember that all uploaded files
 are public, regardless of the privacy of the sandbox
 

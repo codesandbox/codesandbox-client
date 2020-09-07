@@ -13,7 +13,7 @@ date: 2019-05-07
 
 ## Our Story
 
-Two years ago we released [CodeSandbox](https://codesandbox.io) as the result of
+Two years ago we released [CodeSandbox](https://codesandbox.stream) as the result of
 a side project while I was studying at the university. At the time there was no
 easy way to start or share modern JavaScript projects, and I needed this when
 working at [Catawiki](https://catawiki.com).
@@ -90,7 +90,7 @@ collaborative, and we'll do everything with lowering the bar of entry in mind.
 
 Not only are we looking for your feedback, this also means you can work with us.
 So if you're interested in working on CodeSandbox please send us a message
-[from here](https://codesandbox.io/jobs)!
+[from here](https://codesandbox.stream/jobs)!
 
 ## Thank You
 

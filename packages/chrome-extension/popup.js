@@ -38,7 +38,7 @@ function callback(tabs) {
     }
   }
 
-  if (url.indexOf('https://codesandbox.io/s/') > -1) {
+  if (url.indexOf('https://codesandbox.stream/s/') > -1) {
     addProtect();
   }
 }

@@ -9,7 +9,7 @@ description:
 date: 2018-07-03
 ---
 
-Starting new projects and sandboxes on [CodeSandbox](https://codesandbox.io) has
+Starting new projects and sandboxes on [CodeSandbox](https://codesandbox.stream) has
 always been very easy, but managing and collaborating on the created projects
 has been cumbersome.
 
@@ -22,7 +22,7 @@ Today we're happy to announce **Dashboard** and **Teams**. Along with these two
 new features we now make **CodeSandbox Live free for everyone!** Let's take a
 look!
 
-## [Dashboard](https://codesandbox.io/dashboard)
+## [Dashboard](https://codesandbox.stream/dashboard)
 
 ![](./images/0.png)
 
@@ -81,7 +81,7 @@ URL.
 We're planning to release something called 'Team Pro' in the future. 'Team Pro
 is a seat-based subscription that allows your team to create private sandboxes
 within your team. We haven't released this yet, so you will now be able to do
-this as a [patron](http://codesandbox.io/patron). If you're interested in this
+this as a [patron](http://codesandbox.stream/patron). If you're interested in this
 functionality you can subscribe by joining this
 [mailing list](https://airtable.com/shrlgLSJWiX8rYqyG).
 

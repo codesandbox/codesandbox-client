@@ -83,7 +83,7 @@ export interface ISandboxInfo {
 const BUNDLER_URL =
   process.env.CODESANDBOX_ENV === 'development'
     ? 'http://localhost:3002'
-    : `https://sandpack-${version.replace(/\./g, '-')}.codesandbox.io`;
+    : `https://sandpack-${version.replace(/\./g, '-')}.codesandbox.stream`;
 
 export default class PreviewManager {
   selector: string | undefined;
@@ -278,7 +278,7 @@ export default class PreviewManager {
       {}
     );
 
-    return fetch('https://codesandbox.io/api/v1/sandboxes/define?json=1', {
+    return fetch('https://codesandbox.stream/api/v1/sandboxes/define?json=1', {
       method: 'POST',
       body: JSON.stringify({ files: paramFiles }),
       headers: {
@@ -289,8 +289,8 @@ export default class PreviewManager {
       .then(x => x.json())
       .then((res: { sandbox_id: string }) => ({
         sandboxId: res.sandbox_id,
-        editorUrl: `https://codesandbox.io/s/${res.sandbox_id}`,
-        embedUrl: `https://codesandbox.io/embed/${res.sandbox_id}`,
+        editorUrl: `https://codesandbox.stream/s/${res.sandbox_id}`,
+        embedUrl: `https://codesandbox.stream/embed/${res.sandbox_id}`,
       }));
   }
 

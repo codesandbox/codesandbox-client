@@ -5,7 +5,7 @@ import configurations from './configuration';
 export default new Template(
   'custom',
   'Custom',
-  'https://codesandbox.io',
+  'https://codesandbox.stream',
   'custom',
   decorateSelector(() => '#F5DA55'),
   {

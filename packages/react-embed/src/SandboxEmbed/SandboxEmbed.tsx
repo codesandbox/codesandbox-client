@@ -155,7 +155,7 @@ export default class SandboxEmbed extends React.PureComponent<Props> {
   newSandboxTimeout = null;
 
   generateEmbedURL = (sandboxId: string) => {
-    let url = `https://codesandbox.io/embed/${sandboxId}`;
+    let url = `https://codesandbox.stream/embed/${sandboxId}`;
     function getValue(option, value) {
       if (typeof value === 'boolean') {
         return value ? 1 : 0;

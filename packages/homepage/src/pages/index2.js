@@ -17,7 +17,7 @@ import { identifyFromCookie } from '../utils/identifyFromCookie';
 
 // eslint-disable-next-line
 console.log(
-  'Hi, We love curious people that dive in to see how things are working! We are always looking for talented, hard working people. Drop us a line and show us your work. We are hiring: https://codesandbox.io/jobs'
+  'Hi, We love curious people that dive in to see how things are working! We are always looking for talented, hard working people. Drop us a line and show us your work. We are hiring: https://codesandbox.stream/jobs'
 );
 
 const Homepage = () => (

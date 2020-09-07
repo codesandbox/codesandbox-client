@@ -18,7 +18,7 @@ We also have container templates for: Node.js, Angular, Adonis, Gatsby, Marko,
 Nuxt, Next, Sapper, Apollo, Ember, Nest, Styleguidist, MDX Deck, Gridsome,
 Quasar, and Vuepress.
 
-[Create a sandbox from a template](https://codesandbox.io/s/), or read more
+[Create a sandbox from a template](https://codesandbox.stream/s/), or read more
 about the
 [difference between client and container sandboxes](/docs/environment).
 
@@ -28,7 +28,7 @@ You can set a sandbox as private in two main ways: From the editor, change the
 privacy setting from the Privacy drop-down under Sandbox Info, and from the
 dashboard right-click and select make private.
 
-Note that a [Pro subscription](https://codesandbox.io/pricing) is required to
+Note that a [Pro subscription](https://codesandbox.stream/pricing) is required to
 make sandboxes private or unlisted.
 
 ![Make private in the editor](./images/sandbox-private.png)
@@ -38,7 +38,7 @@ make sandboxes private or unlisted.
 There are a few possible reasons a repo might throw that error on import. The
 most common are either a lack of a `package.json` file, or the project using
 more than 500 modules (files). If you think it's something else, or you're not
-able to solve this yourself, then [get in touch](mailto:hello@codesandbox.io)
+able to solve this yourself, then [get in touch](mailto:hello@codesandbox.stream)
 and provide a link to the repo you're importing and we can look into this for
 you.
 
@@ -56,7 +56,7 @@ version can't be changed, you can instead make use of the
 package you would like to use to your sandbox in the same way you would any
 other package. Then update the path to node you use to make use of this local
 version of node instead of the system version. Here's a
-[working example](https://codesandbox.io/s/node-custom-version-j7xvv).
+[working example](https://codesandbox.stream/s/node-custom-version-j7xvv).
 
 ## Can I open the terminal or console or test panel instead of the browser in a sandbox?
 
@@ -82,7 +82,7 @@ from File > Preferences > Settings in the editor.
 - The maximum file size that can be opened in the editor is 2MB. Files uploaded
   that are larger than that still exist but are linked as a static asset.
 - The maximum file upload size is 7MB. If you need this raised, please
-  [email us](mailto:hello@codesandbox.io) with your username and the typical
+  [email us](mailto:hello@codesandbox.stream) with your username and the typical
   type and size of files you want to upload.
 - In container sandboxes, there is a sync limit of 10 files per second and only
   files up to 2MB are synced with the editor. Files larger than that still exist
@@ -104,12 +104,12 @@ repo for large binary files and remove them.
 
 Yes. Container sandboxes on CodeSandbox have a persistent filesystem, so you're
 able to use file-based database options like
-[SQLite](https://codesandbox.io/s/sqlite3-sequelize-example-starter-lst3n),
-[Lowdb](https://codesandbox.io/s/lowdb-json-file-database-example-starter-pldy5),
-and [NeDB](https://codesandbox.io/s/nedb-example-starter-kyv7s). For more
+[SQLite](https://codesandbox.stream/s/sqlite3-sequelize-example-starter-lst3n),
+[Lowdb](https://codesandbox.stream/s/lowdb-json-file-database-example-starter-pldy5),
+and [NeDB](https://codesandbox.stream/s/nedb-example-starter-kyv7s). For more
 powerful databases, like MongoDB, MySQL etc. we recommend using a third-party
 host, like
-[MongoDB Atlas](https://codesandbox.io/s/mongodb-database-example-starter-v3ker),
+[MongoDB Atlas](https://codesandbox.stream/s/mongodb-database-example-starter-v3ker),
 and interacting with them via an API/SDK.
 
 ## How do I change the editor theme?
@@ -125,15 +125,15 @@ avatar menu. After completing that you need to reload the browser and select
 ## I can't edit my code because of an infinite loop
 
 While we do have infinite loop protection as a
-[configurable option](https://codesandbox.io/docs/configuration) it doesn't
+[configurable option](https://codesandbox.stream/docs/configuration) it doesn't
 prevent all scenarios where infinite loops can occur, such as with incomplete
 code. When this happens, you can append `runonclick=1` to the editor URL to stop
 the code from being automatically executed enabling you to edit your code to
 resolve it. For example:
-[https://codesandbox.io/s/new?runonclick=1](https://codesandbox.io/s/new?runonclick=1)
+[https://codesandbox.stream/s/new?runonclick=1](https://codesandbox.stream/s/new?runonclick=1)
 
 ## How do I cancel my Pro or Patron plan?
 
 For Pro users, you can cancel your subscription on the
-[Pro page](https://codesandbox.io/pro). For legacy Patron users, you can cancel
-your subscription on the [Patron page](https://codesandbox.io/patron).
+[Pro page](https://codesandbox.stream/pro). For legacy Patron users, you can cancel
+your subscription on the [Patron page](https://codesandbox.stream/patron).

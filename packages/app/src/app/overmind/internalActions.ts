@@ -507,7 +507,7 @@ export const handleError: Action<{
     };
   } else if (
     error.message.startsWith(
-      'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
+      'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.stream for more server sandboxes.'
     )
   ) {
     effects.analytics.track('Patron Server Sandbox Limit Reached', {
@@ -569,7 +569,7 @@ export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
         primary: {
           label: 'Open Privacy Policy',
           run: () => {
-            window.open('https://codesandbox.io/legal/privacy', '_blank');
+            window.open('https://codesandbox.stream/legal/privacy', '_blank');
           },
         },
       },

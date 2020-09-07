@@ -1,4 +1,4 @@
-// Test it here: https://codesandbox.io/s/codesandbox-watermark-5onwl?file=/src/index.js
+// Test it here: https://codesandbox.stream/s/codesandbox-watermark-5onwl?file=/src/index.js
 
 const buttonStyles = `
   display: inline-flex;
@@ -84,7 +84,7 @@ const createIframe = () => {
     link.innerText = 'Open Sandbox';
 
     link.href =
-      'https://codesandbox.io/s/' + document.location.host.split('.')[0];
+      'https://codesandbox.stream/s/' + document.location.host.split('.')[0];
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
 
