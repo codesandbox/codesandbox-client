@@ -136,7 +136,6 @@ export const addNpmDependency: AsyncAction<{
     actions.workspace.clearExplorerDependencies();
 
     effects.preview.executeCodeImmediately();
-    effects.notificationToast.success('Dependency installed');
   }
 );
 

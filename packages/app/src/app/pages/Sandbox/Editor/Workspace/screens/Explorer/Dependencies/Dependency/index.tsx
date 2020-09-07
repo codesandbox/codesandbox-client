@@ -9,7 +9,7 @@ import Tooltip, {
   SingletonTooltip,
 } from '@codesandbox/common/lib/components/Tooltip';
 import { formatVersion } from '@codesandbox/common/lib/utils/ci';
-
+import { motion } from 'framer-motion';
 import css from '@styled-system/css';
 import {
   ListAction,
@@ -22,6 +22,18 @@ import {
 } from '@codesandbox/components';
 
 import { BundleSizes } from './BundleSizes';
+
+const Animated = ({ children }) => (
+  <motion.div
+    animate={{ opacity: 1, height: 'auto' }}
+    initial={{ opacity: 0, height: 0 }}
+    exit={{ opacity: 0, height: 0 }}
+    style={{ width: '100%', overflow: 'hidden' }}
+    positionTransition
+  >
+    {children}
+  </motion.div>
+);
 
 interface Props {
   dependencies: { [dep: string]: string };
@@ -100,7 +112,7 @@ export const Dependency = ({
   }
 
   return (
-    <>
+    <Animated>
       <ListAction
         justify="space-between"
         align="center"
@@ -224,6 +236,6 @@ export const Dependency = ({
           />
         </SidebarRow>
       ) : null}
-    </>
+    </Animated>
   );
 };
