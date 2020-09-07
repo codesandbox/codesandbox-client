@@ -91,7 +91,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   // We set a fallback thumbnail in the API which is used for
   // both old and new dashboard, we can move this logic to the
   // backend when we deprecate the old dashboard
-  if (screenshotUrl === 'https://codesandbox.io/static/img/banner.png') {
+  if (screenshotUrl === 'https://codesandbox.stream/static/img/banner.png') {
     screenshotUrl = '/static/img/default-sandbox-thumbnail.png';
   }
 

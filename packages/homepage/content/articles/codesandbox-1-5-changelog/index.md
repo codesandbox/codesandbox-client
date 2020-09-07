@@ -10,8 +10,8 @@ description:
 date: 2017-08-16
 ---
 
-This is [CodeSandbox](https://codesandbox.io) 1.5! I don't know how to call all
-updates anymore, so I decided to version CodeSandbox with arbitrary numbers.
+This is [CodeSandbox](https://codesandbox.stream) 1.5! I don't know how to call
+all updates anymore, so I decided to version CodeSandbox with arbitrary numbers.
 
 This is a big update, I rewrote the editor, the preview screen and the packager.
 All these changes made the deployment quite exciting, but it's online now. Let's
@@ -82,7 +82,7 @@ detect this and give the suggestion to rename the file. I'm thinking of writing
 an API that allows library developers to add suggestions for errors for their
 specific library.
 
-https://codesandbox.io/s/241mz6qwmr?fontsize=14&view=split
+https://codesandbox.stream/s/241mz6qwmr?fontsize=14&view=split
 
 <!-- Error overlay (suggestions and error navigation don't work here as you're not in the editor) -->
 

@@ -10,12 +10,12 @@ description:
 date: 2019-07-18
 ---
 
-Have you ever been using [CodeSandbox](https://codesandbox.io) only to encounter
-a suddenly blank screen? We certainly have in development! Often, this occurs
-when one of our components encounters an error during render. For our part, we
-try our best to weed out all of these cases before shipping new updates to you,
-but occasionally these sorts of errors can and do pop up in rare edge cases in
-our production app.
+Have you ever been using [CodeSandbox](https://codesandbox.stream) only to
+encounter a suddenly blank screen? We certainly have in development! Often, this
+occurs when one of our components encounters an error during render. For our
+part, we try our best to weed out all of these cases before shipping new updates
+to you, but occasionally these sorts of errors can and do pop up in rare edge
+cases in our production app.
 
 To make it more obvious that you've entered one of these states, we've
 implemented a new _Error Boundary_ component that will display a fallback UI

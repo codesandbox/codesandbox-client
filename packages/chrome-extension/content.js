@@ -16,7 +16,7 @@ const addButton = () => {
 
   // Create the button
   const button = document.createElement('a');
-  button.setAttribute('href', `https://codesandbox.io/s/github${URL}`);
+  button.setAttribute('href', `https://codesandbox.stream/s/github${URL}`);
   button.setAttribute('target', '_blank');
   button.setAttribute('rel', 'noopener noreferrer');
 

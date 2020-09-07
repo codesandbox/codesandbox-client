@@ -12,9 +12,9 @@ Personalizing color schemes is one of the most important things to have in an
 application. It's not only used as a way of styling to personal preference, it's
 also very important for accessibility.
 
-[CodeSandbox](https://codesandbox.io) didn't have any way to personalize colors
-in the editor since release, but I'm happy to announce that we do now. The best
-part is that we were able to reuse a big chunk of logic from
+[CodeSandbox](https://codesandbox.stream) didn't have any way to personalize
+colors in the editor since release, but I'm happy to announce that we do now.
+The best part is that we were able to reuse a big chunk of logic from
 [VS Code](https://github.com/Microsoft/vscode) directly and thus we support any
 [VS Code theme](https://code.visualstudio.com/docs/getstarted/themes) natively
 in CodeSandbox!

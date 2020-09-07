@@ -8,11 +8,11 @@ description: It's possible to create any JavaScript project now on CodeSandbox!
 date: 2018-09-27
 ---
 
-[CodeSandbox](https://codesandbox.io) is often used to create new websites or to
-quickly edit existing websites. Until now this was only possible for projects
-that follow the default template layout, and if you wanted to change something
-like the [`webpack`](https://github.com/webpack/webpack) configuration you would
-have to continue locally. Well, not anymore!
+[CodeSandbox](https://codesandbox.stream) is often used to create new websites
+or to quickly edit existing websites. Until now this was only possible for
+projects that follow the default template layout, and if you wanted to change
+something like the [`webpack`](https://github.com/webpack/webpack) configuration
+you would have to continue locally. Well, not anymore!
 
 Today we're happy to announce **CodeSandbox Containers**. We execute your code
 on a server, which allows you to work on **any JavaScript project that works
@@ -31,7 +31,7 @@ Gatsby, [Nuxt.js](https://github.com/nuxt/nuxt.js),
 [ReasonML](https://github.com/facebook/reason)** right from within CodeSandbox!
 We give first-class support for these templates, but you will still be able to
 run anything you want on CodeSandbox. You can
-[create a new project here](https://codesandbox.io/s).
+[create a new project here](https://codesandbox.stream/s).
 
 ## Run Any Project
 
@@ -74,7 +74,7 @@ can **live collaborate with others on a Gatsby template** or **quickly create a
 new post for your Next.js website using our GitHub integration**.
 
 Go check out what templates we fully support here:
-[https://codesandbox.io/s](https://codesandbox.io/s).
+[https://codesandbox.stream/s](https://codesandbox.stream/s).
 
 #### ReasonML
 
@@ -83,9 +83,9 @@ in the browser. We are still testing Reason and could use all your help, so if
 you find anything out of order don't hesitate to
 [send us an issue](https://github.com/codesandbox/codesandbox-client/issues/new/choose)!
 
-<!-- https://reason.codesandbox.io -->
+<!-- https://reason.codesandbox.stream -->
 
-https://codesandbox.io/s/reason?fontsize=14&view=split
+https://codesandbox.stream/s/reason?fontsize=14&view=split
 
 ## Beta and Thanks
 
@@ -108,7 +108,7 @@ itself yet. This is top on our priority list and we will get this in as soon as
 possible!
 
 We have a limit of 5 server sandboxes for free accounts currently, we have a
-limit of 15 server sandboxes for [Patron](https://codesandbox.io/patron)
+limit of 15 server sandboxes for [Patron](https://codesandbox.stream/patron)
 accounts. These limits will probably change.
 
 ### Thanks

@@ -10,7 +10,7 @@ date: 2017-06-28
 ---
 
 It's already been two months since we 'officially' released
-[CodeSandbox](https://codesandbox.io) with
+[CodeSandbox](https://codesandbox.stream) with
 [this](/post/codesandbox-an-online-react-editor) article. In the article I
 started out with sharing some stats, so let's do this again for old times' sake.
 
@@ -32,8 +32,8 @@ of new functionalities. Here are some highlights of the biggest changes:
 You can now see what others are building on CodeSandbox, every user has a
 profile view that shows all their sandboxes. You can also 'like' other sandboxes
 and see how many views your sandbox has received.
-[BTMPL's profile](https://codesandbox.io/u/BTMPL) contains some great examples,
-and all his sandboxes are nicely tagged.
+[BTMPL's profile](https://codesandbox.stream/u/BTMPL) contains some great
+examples, and all his sandboxes are nicely tagged.
 
 ![An example profile view](./images/0.png)
 
@@ -44,9 +44,9 @@ like [Medium](https://medium.com). You can even edit the embedded sandboxes on
 there, which means that you can do some pretty creative things like a component
 tutorial on Medium with interactive examples.
 
-<!-- https://new.codesandbox.io -->
+<!-- https://new.codesandbox.stream -->
 
-https://codesandbox.io/s/new?fontsize=14&view=split
+https://codesandbox.stream/s/new?fontsize=14&view=split
 
 <!-- The 'new' sandbox on Medium, try editing it! -->
 
@@ -137,13 +137,13 @@ easily discover these libraries and examples.
 
 There are dozens of sandboxes with lessons about React too. People use sandboxes
 to teach others about different concepts, like
-[the difference between a](https://codesandbox.io/s/Wn3zGj3pn)
-[`PureComponent`](https://codesandbox.io/s/Wn3zGj3pn)
-[and](https://codesandbox.io/s/Wn3zGj3pn)
-[`Component`](https://codesandbox.io/s/Wn3zGj3pn), or
-[how to do a delayed navigation with](https://codesandbox.io/s/XoBNWnBWv)
-[`react-router`](https://codesandbox.io/s/XoBNWnBWv). These sandboxes are often
-shared on [Reactiflux](https://www.reactiflux.com) or
+[the difference between a](https://codesandbox.stream/s/Wn3zGj3pn)
+[`PureComponent`](https://codesandbox.stream/s/Wn3zGj3pn)
+[and](https://codesandbox.stream/s/Wn3zGj3pn)
+[`Component`](https://codesandbox.stream/s/Wn3zGj3pn), or
+[how to do a delayed navigation with](https://codesandbox.stream/s/XoBNWnBWv)
+[`react-router`](https://codesandbox.stream/s/XoBNWnBWv). These sandboxes are
+often shared on [Reactiflux](https://www.reactiflux.com) or
 [Twitter](https://twitter.com), but it would also be great if you could discover
 them via CodeSandbox.
 
@@ -160,10 +160,10 @@ on CodeSandbox.
 
 Importing from [GitHub](https://github.com) was a much requested feature, and
 now it's here! The implementation is fairly simple, you can pick a GitHub URL,
-replace `github.com` with `codesandbox.io/s/github` and that path will point to
-a sandbox that'll automatically stay up to date with the git repository.
+replace `github.com` with `codesandbox.stream/s/github` and that path will point
+to a sandbox that'll automatically stay up to date with the git repository.
 
-https://codesandbox.io/s/lOBDPMW7M?autoresize=1&hidenavigation=1&view=preview
+https://codesandbox.stream/s/lOBDPMW7M?autoresize=1&hidenavigation=1&view=preview
 
 For now we only officially support
 [`create-react-app`](https://github.com/facebook/create-react-app) projects on
@@ -281,7 +281,7 @@ Git Extractor:
 On that note, don't hesitate to ping us with your ideas; they've helped us a lot
 in the past months. You can tweet or DM at me
 ([@CompuIves](https://twitter.com/CompuIves)) or shoot an email to
-hello@codesandbox.io.
+hello@codesandbox.stream.
 
 Let's make CodeSandbox a helpful tool for web application development, both for
 beginners and experienced developers.

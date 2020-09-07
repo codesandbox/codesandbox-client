@@ -70,7 +70,7 @@ improve the embed experience on mobile.”_
 
 See the difference for yourself:
 
-https://codesandbox.io/s/new?fontsize=14&hidenavigation=1&hidedevtools=1
+https://codesandbox.stream/s/new?fontsize=14&hidenavigation=1&hidedevtools=1
 
 ### The next big design trend?
 
@@ -83,7 +83,7 @@ for some site designs. So we've added a new white-based theme for embeds, which
 you can toggle on when creating an embed from the Share menu in the editor.
 
 The new design is already live, so check it out and take a look at
-[our docs](https://codesandbox.io/docs/embedding) for more info.
+[our docs](https://codesandbox.stream/docs/embedding) for more info.
 
 ### Get more done
 

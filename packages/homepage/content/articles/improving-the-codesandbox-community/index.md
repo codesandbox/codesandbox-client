@@ -10,10 +10,10 @@ description: >-
 date: 2018-12-19
 ---
 
-It's time for a new update to [CodeSandbox](https://codesandbox.io)! This time
-we focused on the most important part of CodeSandbox: the community. Without a
-community, CodeSandbox would not be the platform it would be today, and it
-definitely deserves some more love.
+It's time for a new update to [CodeSandbox](https://codesandbox.stream)! This
+time we focused on the most important part of CodeSandbox: the community.
+Without a community, CodeSandbox would not be the platform it would be today,
+and it definitely deserves some more love.
 
 We did three things to make it easier for everyone to find and share sandboxes.
 Let's get to it!
@@ -29,7 +29,7 @@ CodeSandbox we found so many hidden gems, and we feel like we should bring them
 more to light.
 
 That's why we're happy to announce the
-[explore page](https://codesandbox.io/explore)! A page with hand-picked
+[explore page](https://codesandbox.stream/explore)! A page with hand-picked
 sandboxes which we deem either interesting, beautiful or both! We have invited a
 group of curators who can pick sandboxes that go on the explore page. We
 constantly pick new sandboxes for the explore page.
@@ -39,7 +39,7 @@ Please send us all your cool sandboxes by tweeting with a mention to
 explore page!
 
 _We created a documentation entry with answers to some questions about the
-explore page [here](https://codesandbox.io/docs/explore)._
+explore page [here](https://codesandbox.stream/docs/explore)._
 
 ## Move to Spectrum
 

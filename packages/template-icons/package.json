@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Collection of SVG icons as React Components for usage with CodeSandbox Templates.",
   "license": "MIT",
-  "author": "Drake Costa <drake@codesandbox.io> (https://github.com/Saeris)",
+  "author": "Drake Costa <drake@codesandbox.stream> (https://github.com/Saeris)",
   "contributors": [
-    "Ives van Hoorne <ives@codesandbox.io> (https://github.com/CompuIves)",
-    "Sara Vieira <sara@codesandbox.io> (https://github.com/SaraVieira)"
+    "Ives van Hoorne <ives@codesandbox.stream> (https://github.com/CompuIves)",
+    "Sara Vieira <sara@codesandbox.stream> (https://github.com/SaraVieira)"
   ],
-  "homepage": "https://codesandbox.io/",
+  "homepage": "https://codesandbox.stream/",
   "publishConfig": {
     "access": "public"
   },

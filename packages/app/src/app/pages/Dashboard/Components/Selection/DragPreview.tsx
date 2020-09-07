@@ -76,7 +76,8 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
             // both old and new dashboard, we can move this logic to the
             // backend when we deprecate the old dashboard
             if (
-              screenshotUrl === 'https://codesandbox.io/static/img/banner.png'
+              screenshotUrl ===
+              'https://codesandbox.stream/static/img/banner.png'
             ) {
               screenshotUrl = '/static/img/default-sandbox-thumbnail.png';
             }

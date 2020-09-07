@@ -62,7 +62,7 @@ export async function initialize(dsn: string) {
       maxBreadcrumbs: 100,
       /**
        * Don't send messages from the sandbox, so don't send from eg.
-       * new.codesandbox.io or new.csb.app
+       * new.codesandbox.stream or new.csb.app
        */
       denyUrls: ['codesandbox.editor.main.js', /.*\.csb\.app/],
       beforeSend: (event, hint) => {

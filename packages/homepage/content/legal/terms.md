@@ -8,8 +8,9 @@ lastEdited: 2017-07-20
 _Last Edited on 2017-07-20_
 
 These Terms and Conditions ("Terms", "Terms and Conditions") govern your
-relationship with https://codesandbox.io website (the "Service") and the Sandbox
-creation service therein operated by CodeSandbox BV ("us", "we", or "our").
+relationship with https://codesandbox.stream website (the "Service") and the
+Sandbox creation service therein operated by CodeSandbox BV ("us", "we", or
+"our").
 
 Please read these Terms and Conditions carefully before using the Service.
 
@@ -183,4 +184,4 @@ the new terms, please stop using the Service.
 ## Contact Us
 
 If you have any questions about these Terms, please contact us at
-[hello@codesandbox.io](mailto:hello@codesandbox.io).
+[hello@codesandbox.stream](mailto:hello@codesandbox.stream).

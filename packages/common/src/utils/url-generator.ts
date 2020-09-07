@@ -8,7 +8,7 @@ const dotGit = /(\.git)$/;
 
 const sandboxHost = {
   'https://codesandbox.io': 'https://csb.app',
-  'https://codesandbox.io': 'https://codesandbox.dev',
+  'https://codesandbox.stream': 'https://codesandbox.dev',
 };
 
 const buildEncodedUri = (

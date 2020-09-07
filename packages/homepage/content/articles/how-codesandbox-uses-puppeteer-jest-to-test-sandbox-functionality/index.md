@@ -16,7 +16,7 @@ This tool is a headless [Chrome](https://google.com/chrome), which means that
 with it you can interact with and visit websites programmatically. This is a
 powerful concept that has many uses.
 
-[CodeSandbox](https://codesandbox.io) uses Puppeteer extensively nowadays. I
+[CodeSandbox](https://codesandbox.stream) uses Puppeteer extensively nowadays. I
 want to explain in 2 posts how we use Puppeteer. In this post I will explain why
 and how we use Puppeteer for our test suite. In the next post I will cover how
 we use Puppeteer and
@@ -91,14 +91,14 @@ describe('sandboxes', () => {
 
 The biggest question was how to take a screenshot of a single sandbox. This
 turned out to be quite simple, we already support opening a sandbox as a
-separate page by going to `https://:id.codesandbox.io` (example:
-[https://vue.codesandbox.io](https://vue.codesandbox.io)). So the only thing
-left for me was adding this functionality to the development server, so we can
-create screenshots with the new code. I ended up changing our `webpack` config
-to have a 'test' mode, this mode will only build the sandbox bundler and host it
-at `http://localhost:3001#:id` (example: `http://localhost:3001#vue`). Note that
-we set the id as a hash, this way we don't interfere with the routing of the
-sandbox.
+separate page by going to `https://:id.codesandbox.stream` (example:
+[https://vue.codesandbox.stream](https://vue.codesandbox.stream)). So the only
+thing left for me was adding this functionality to the development server, so we
+can create screenshots with the new code. I ended up changing our `webpack`
+config to have a 'test' mode, this mode will only build the sandbox bundler and
+host it at `http://localhost:3001#:id` (example: `http://localhost:3001#vue`).
+Note that we set the id as a hash, this way we don't interfere with the routing
+of the sandbox.
 
 ![A generated screenshot of a todo redux example](./images/0.png)
 

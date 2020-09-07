@@ -77,7 +77,7 @@ export default () => {
   const socketRef = useRef(
     typeof window === 'undefined'
       ? undefined
-      : new Socket('wss://codesandbox.io/anon-socket')
+      : new Socket('wss://codesandbox.stream/anon-socket')
   );
 
   useEffect(() => {

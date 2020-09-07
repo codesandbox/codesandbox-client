@@ -11,8 +11,8 @@ date: 2019-07-02
 ---
 
 Today we're excited to launch a new feature that we believe will speed up your
-prototyping workflow here in [CodeSandbox](https://codesandbox.io)! Say hello to
-templates!
+prototyping workflow here in [CodeSandbox](https://codesandbox.stream)! Say
+hello to templates!
 
 ## What are Templates?
 

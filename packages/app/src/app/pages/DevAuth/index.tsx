@@ -82,7 +82,8 @@ export const DevAuthPage = withTheme(({ theme }) => {
           >
             here
           </a>
-          . This token will sign you in with your account from codesandbox.io.
+          . This token will sign you in with your account from
+          codesandbox.stream.
         </Text>
         <Stack justify="center" marginTop={4}>
           <Input

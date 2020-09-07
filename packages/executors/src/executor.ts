@@ -9,7 +9,7 @@ export interface IFiles {
 
 export interface ISetupParams {
   /**
-   * Eg. https://codesandbox.io
+   * Eg. https://codesandbox.stream
    */
   host: string;
   files: IFiles;

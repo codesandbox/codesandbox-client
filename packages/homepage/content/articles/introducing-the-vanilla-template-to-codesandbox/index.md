@@ -9,8 +9,8 @@ description:
 date: 2018-02-28
 ---
 
-From day one [we](https://codesandbox.io)'ve always tied templates to a CLI. The
-main reason for this is that we want to keep sandboxes simple, you shouldn't
+From day one [we](https://codesandbox.stream)'ve always tied templates to a CLI.
+The main reason for this is that we want to keep sandboxes simple, you shouldn't
 need to do any configuration to get started. I didn't want to create a
 '`Vanilla`' template because there was no way to create 'vanilla' web projects
 without configuration, until recently.
@@ -66,9 +66,9 @@ the second block we won't.
 
 You can try it out here:
 
-<!-- https://vanilla.codesandbox.io -->
+<!-- https://vanilla.codesandbox.stream -->
 
-https://codesandbox.io/s/vanilla?fontsize=14&view=split
+https://codesandbox.stream/s/vanilla?fontsize=14&view=split
 
 #### Configuration
 
@@ -99,6 +99,6 @@ Great work!
 
 If you like what we're doing, consider becoming a
 [contributor](https://github.com/codesandbox/codesandbox-client) or a
-[patron](http://codesandbox.io/patron)! You can stay up to date with CodeSandbox
-news either on [@CompuIves](https://twitter.com/CompuIves) or
+[patron](http://codesandbox.stream/patron)! You can stay up to date with
+CodeSandbox news either on [@CompuIves](https://twitter.com/CompuIves) or
 [@codesandbox](https://twitter.com/codesandbox).

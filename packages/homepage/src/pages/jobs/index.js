@@ -88,7 +88,7 @@ const Careers = ({
 
           <Button
             as="a"
-            href="mailto:careers@codesandbox.io"
+            href="mailto:careers@codesandbox.stream"
             autoWidth
             target="_blank"
           >

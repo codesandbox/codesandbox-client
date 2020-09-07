@@ -198,7 +198,9 @@ const Navigation = () => {
                         </Link>
                       ),
                       Label: () => (
-                        <a href="https://codesandbox.io/docs">Documentation</a>
+                        <a href="https://codesandbox.stream/docs">
+                          Documentation
+                        </a>
                       ),
                     },
                     {
@@ -218,12 +220,15 @@ const Navigation = () => {
                   components={[
                     {
                       Icon: () => (
-                        <a href="mailto:hello@codesandbox.io" title="Support">
+                        <a
+                          href="mailto:hello@codesandbox.stream"
+                          title="Support"
+                        >
                           <SupportIcon />
                         </a>
                       ),
                       Label: () => (
-                        <a href="mailto:hello@codesandbox.io">
+                        <a href="mailto:hello@codesandbox.stream">
                           Contact Support
                         </a>
                       ),
@@ -233,7 +238,7 @@ const Navigation = () => {
                         <a
                           target="_blank"
                           rel="noopener noreferrer"
-                          href="https://status.codesandbox.io"
+                          href="https://status.codesandbox.stream"
                           title="Status"
                         >
                           <StatusIcon />
@@ -243,7 +248,7 @@ const Navigation = () => {
                         <a
                           target="_blank"
                           rel="noopener noreferrer"
-                          href="https://status.codesandbox.io"
+                          href="https://status.codesandbox.stream"
                         >
                           Status
                         </a>

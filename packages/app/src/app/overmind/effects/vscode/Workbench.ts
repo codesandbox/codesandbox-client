@@ -265,22 +265,22 @@ export class Workbench {
     addBrowserNavigationCommand(
       'codesandbox.help.documentation',
       'Documentation',
-      'https://codesandbox.io/docs'
+      'https://codesandbox.stream/docs'
     );
     addBrowserNavigationCommand(
       'codesandbox.explore',
       'Explore Sandboxes',
-      'https://codesandbox.io/explore'
+      'https://codesandbox.stream/explore'
     );
     addBrowserNavigationCommand(
       'codesandbox.search',
       'Search',
-      'https://codesandbox.io/search'
+      'https://codesandbox.stream/search'
     );
     addBrowserNavigationCommand(
       'codesandbox.dashboard',
       'Dashboard',
-      'https://codesandbox.io/dashboard'
+      'https://codesandbox.stream/dashboard'
     );
     addBrowserNavigationCommand(
       'codesandbox.help.open-issue',

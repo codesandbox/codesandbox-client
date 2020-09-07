@@ -12,7 +12,7 @@ date: 2019-03-19
 We're back with one of the biggest updates we've done so far! It's very similar
 to the [CodeSandbox 2.5 update one year ago](/post/announcing-codesandbox-2-5).
 It includes [VS Code](https://github.com/Microsoft/vscode) extensions, many
-design tweaks, and a new devtool pane. [CodeSandbox](https://codesandbox.io)
+design tweaks, and a new devtool pane. [CodeSandbox](https://codesandbox.stream)
 will feel far more polished from now on. Let's get to it!
 
 ## VS Code Integration
@@ -125,7 +125,7 @@ things like tests or console output. This also affects the embed. Here's an
 embed with the console pane as the first tab. Expect to see more devtools added
 in the future!
 
-https://codesandbox.io/s/v19jww3x3l?fontsize=14&view=split
+https://codesandbox.stream/s/v19jww3x3l?fontsize=14&view=split
 
 #### Menu bar & Status bar
 

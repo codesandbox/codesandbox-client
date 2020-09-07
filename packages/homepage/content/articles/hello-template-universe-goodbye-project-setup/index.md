@@ -75,8 +75,8 @@ public sandboxes as they need for free.
 
 Templates are a great way to boost your productivity, and you can now create
 sandboxes without limits. Start a new sandbox with
-[Template Universe](https://codesandbox.io/s), or read about how to create your
-own [custom templates](/docs/templates).
+[Template Universe](https://codesandbox.stream/s), or read about how to create
+your own [custom templates](/docs/templates).
 
 ## Thanks
 

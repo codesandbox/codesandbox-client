@@ -14,7 +14,7 @@ year since I made the
 [first commit](https://github.com/codesandbox/codesandbox-client/commit/c5f43786fe6a4e54c3b7729d8992dba5a4adeeaf).
 Can you imagine? This certainly deserves a celebration, and we decided to do
 that with a big update! I took the last 2 weeks off to work fulltime on
-[CodeSandbox](https://codesandbox.io) and we were able to get a lot done.  
+[CodeSandbox](https://codesandbox.stream) and we were able to get a lot done.  
 Let's dive in!
 
 ## New Homepage
@@ -27,7 +27,7 @@ homepage didn't receive a single update. This caused confusion, as people didn't
 know about the things we built. It was time to do something about that. We've
 now designed and built the homepage from scratch using
 [Gatsby](https://github.com/gatsbyjs/gatsby).
-[You can see it here](https://codesandbox.io)! A very big thanks to
+[You can see it here](https://codesandbox.stream)! A very big thanks to
 [Danny Ruchtie](https://twitter.com/druchtie) for helping us with the design.
 
 ![](./images/0.gif)
@@ -58,9 +58,9 @@ create a repository and then redirect you to the Git version of the sandbox.
 #### Committing & Opening PRs
 
 To commit to your repository you'll need to import it first. You can import any
-GitHub repository by appending the GitHub URL to `codesandbox.io/s/github`. For
-example, for my test repository the url would be:
-[codesandbox.io/s/github/CompuIves/codesandbox-test-git-app](https://codesandbox.io/s/github/CompuIves/codesandbox-test-git-app).
+GitHub repository by appending the GitHub URL to `codesandbox.stream/s/github`.
+For example, for my test repository the url would be:
+[codesandbox.stream/s/github/CompuIves/codesandbox-test-git-app](https://codesandbox.stream/s/github/CompuIves/codesandbox-test-git-app).
 The next step is to create a fork of this sandbox and make your changes, from
 then on you can commit or open a PR, by clicking on the buttons in the sidebar.
 
@@ -100,7 +100,7 @@ static images, mock API call responses now. You also get full control of
 
 Here is an example sandbox:
 
-https://codesandbox.io/s/wkzowlw747?fontsize=14&view=split
+https://codesandbox.stream/s/wkzowlw747?fontsize=14&view=split
 
 <!-- We download test.json from the public folder -->
 
@@ -143,6 +143,6 @@ contributors deserve one extra big thanks.
 ![](./images/6.png)
 
 If you like what we're doing, consider becoming a
-[Patron](https://codesandbox.io/patron). The last 2 weeks were amazing, and I'd
-love to work more fulltime on CodeSandbox. But this is only possible if I'm able
-to afford my food 😃.
+[Patron](https://codesandbox.stream/patron). The last 2 weeks were amazing, and
+I'd love to work more fulltime on CodeSandbox. But this is only possible if I'm
+able to afford my food 😃.

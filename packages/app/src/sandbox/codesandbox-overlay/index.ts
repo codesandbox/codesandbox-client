@@ -33,7 +33,7 @@ export default function createOverlay(modules) {
     iframe.onload = () => {
       iframe.contentDocument.body.innerHTML = `
         <form
-          action="https://codesandbox.io/api/v1/sandboxes/define"
+          action="https://codesandbox.stream/api/v1/sandboxes/define"
           method="POST"
           target="_blank"
           style="cursor:pointer;"

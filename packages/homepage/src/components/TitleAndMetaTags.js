@@ -13,7 +13,7 @@ const notRelative = image => {
 export default ({
   title = 'CodeSandbox: Online IDE for Rapid Web Development',
   description = 'CodeSandbox is an online code editor and prototyping tool that makes creating and sharing web apps faster',
-  image = 'https://codesandbox.io/static/img/banner.png',
+  image = 'https://codesandbox.stream/static/img/banner.png',
 }) => (
   <Helmet
     title={title}
@@ -32,7 +32,7 @@ export default ({
 
       { name: 'referrer', content: 'origin' },
       { property: 'og:type', content: 'website' },
-      { property: 'og:author', content: 'https://codesandbox.io' },
+      { property: 'og:author', content: 'https://codesandbox.stream' },
       { name: 'theme-color', content: '#040404' },
       { property: 'og:image:width', content: '1200' },
       { property: 'og:image:height', content: '630' },
