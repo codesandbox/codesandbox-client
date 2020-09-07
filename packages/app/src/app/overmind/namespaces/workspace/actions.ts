@@ -484,17 +484,17 @@ export const getDependencies: AsyncAction<string | void> = async (
   state.workspace.loadingDependencySearch = false;
 
   if (!value) {
-    state.workspace.starterDependencies = searchResults;
+    state.workspace.starterDependencies = [...searchResults];
   }
 
-  state.workspace.dependencies = searchResults;
+  state.workspace.dependencies = [...searchResults];
 };
 
 export const setDependencies: Action<Dependency[]> = (
   { state },
   newDependencies
 ) => {
-  state.workspace.dependencies = newDependencies;
+  state.workspace.dependencies = [...newDependencies];
 };
 
 export const setSelectedDependencies: Action<Dependency> = (

@@ -120,14 +120,7 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
         })}
       >
         <Element paddingRight={4}>
-          <Text
-            block
-            size={4}
-            weight="bold"
-            css={css({
-              wordBreak: 'break-all',
-            })}
-          >
+          <Text block size={4} weight="bold">
             {dependency.name}
           </Text>
           <Text

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { json } from 'overmind';
 import { Dependency as DependencyType } from '@codesandbox/common/lib/types/algolia';
 import { useOvermind } from 'app/overmind';
@@ -7,12 +7,17 @@ import css from '@styled-system/css';
 import { SearchBox } from './SearchBox';
 import { Dependency } from './Dependency';
 import { AddDependencyModalFooter } from './Footer';
+import { useKeyboard } from '../Editor/Workspace/screens/Explorer/Dependencies/useKeys';
 
 const SearchDependencies = ({ onConfirm }) => {
   const {
     state: { workspace },
     actions,
   } = useOvermind();
+  const aaa = useRef();
+  const input = useRef();
+
+  useKeyboard(aaa, input);
 
   const handleSelect = async (hit: DependencyType) => {
     let version = json(workspace.hitToVersionMap).get(hit.objectID);
@@ -71,8 +76,13 @@ const SearchDependencies = ({ onConfirm }) => {
         position: 'relative',
       })}
     >
-      <SearchBox onChange={onChange} handleManualSelect={handleManualSelect} />
+      <SearchBox
+        onChange={onChange}
+        addRef={input}
+        handleManualSelect={handleManualSelect}
+      />
       <Element
+        ref={aaa}
         paddingBottom={10}
         css={css({
           height: '60vh',
