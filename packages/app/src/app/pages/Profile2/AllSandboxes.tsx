@@ -8,8 +8,10 @@ import {
   Menu,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
+import { SANDBOXES_PER_PAGE, SandboxTypes } from './constants';
 
 export const AllSandboxes = ({ menuControls }) => {
   const {
@@ -33,7 +35,7 @@ export const AllSandboxes = ({ menuControls }) => {
   // explicitly call it on first page render
   React.useEffect(() => {
     if (currentSandboxesPage === 1) fetchSandboxes();
-  }, [currentSandboxesPage]);
+  }, [currentSandboxesPage, fetchSandboxes]);
 
   const sandboxes = (
     (fetchedSandboxes[username] &&
@@ -108,7 +110,7 @@ export const AllSandboxes = ({ menuControls }) => {
         }}
       >
         {isLoadingSandboxes
-          ? Array(15)
+          ? Array(SANDBOXES_PER_PAGE)
               .fill(true)
               .map((_, index) => (
                 // eslint-disable-next-line
@@ -118,7 +120,13 @@ export const AllSandboxes = ({ menuControls }) => {
               ))
           : sandboxes.map((sandbox, index) => (
               <Column key={sandbox.id}>
-                <SandboxCard sandbox={sandbox} menuControls={menuControls} />
+                <motion.div layoutTransition={{ duration: 0.15 }}>
+                  <SandboxCard
+                    type={SandboxTypes.ALL_SANDBOX}
+                    sandbox={sandbox}
+                    menuControls={menuControls}
+                  />
+                </motion.div>
               </Column>
             ))}
       </Grid>
@@ -127,7 +135,6 @@ export const AllSandboxes = ({ menuControls }) => {
   );
 };
 
-const SANDBOXES_PER_PAGE = 15;
 const Pagination = () => {
   const {
     actions: {

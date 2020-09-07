@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useOvermind } from 'app/overmind';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   Stack,
   Avatar,
@@ -13,7 +15,6 @@ import {
 } from '@codesandbox/components';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
 
 export const ProfileCard = ({ defaultEditing = false }) => {
   const {
@@ -99,13 +100,15 @@ export const ProfileCard = ({ defaultEditing = false }) => {
             <Stack direction="vertical" gap={3}>
               <Stack gap={2} align="center">
                 <Icon name="box" />
-                <Text size={3}>
+                <Link as={RouterLink} to="/" size={3}>
                   {user.sandboxCount + user.templateCount} Sandboxes
-                </Text>
+                </Link>
               </Stack>
               <Stack gap={2} align="center">
                 <Icon name="heart" />
-                <Text size={3}>{user.receivedLikeCount} Likes</Text>
+                <Link as={RouterLink} to="/likes" size={3}>
+                  {user.givenLikeCount} Likes
+                </Link>
               </Stack>
             </Stack>
           )}

@@ -47,22 +47,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ...props
 }) => {
   const { state, actions } = useOvermind();
-  const [activeAccount, setActiveAccount] = useState<
-    | {
-        type: 'user';
-        id: string;
-        username: string;
-        avatarUrl: string;
-      }
-    | {
-        type: 'team';
-        id: string;
-        name: string;
-        avatarUrl: string;
-      }
-    | null
-  >(null);
-  const { dashboard, user, activeTeam } = state;
+  const [activeAccount, setActiveAccount] = useState<{
+    id: string;
+    name: string;
+    avatarUrl: string;
+  } | null>(null);
+  const { dashboard, activeTeam } = state;
 
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
@@ -74,20 +64,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       if (team)
         setActiveAccount({
-          type: 'team',
           id: team.id,
           name: team.name,
           avatarUrl: team.avatarUrl,
         });
-    } else if (user) {
-      setActiveAccount({
-        type: 'user',
-        id: user.id,
-        username: user.username,
-        avatarUrl: user.avatarUrl,
-      });
     }
-  }, [state.activeTeam, state.activeTeamInfo, dashboard.teams, user]);
+  }, [state.activeTeam, state.activeTeamInfo, dashboard.teams]);
 
   const folders =
     (dashboard.allCollections || []).filter(folder => folder.path !== '/') ||
@@ -154,7 +136,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <WorkspaceSelect
                 onSelect={workspace => {
                   actions.setActiveTeam({
-                    id: workspace.type === 'user' ? null : workspace.id,
+                    id: workspace.id,
                   });
                 }}
                 activeAccount={activeAccount}
