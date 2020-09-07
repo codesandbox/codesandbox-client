@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Input, Element } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
+import useKeys from 'react-use/lib/useKeyboardJs';
 import { AlgoliaIcon } from './icons';
 
 export const SearchBox = ({ handleManualSelect, onChange }) => {
@@ -12,6 +13,47 @@ export const SearchBox = ({ handleManualSelect, onChange }) => {
     },
   } = useOvermind();
   const [focus, setFocus] = useState(false);
+  const form = useRef<HTMLFormElement>();
+  const [up] = useKeys('up');
+  const [down] = useKeys('down');
+
+  useEffect(() => {
+    const list = document.getElementById('list') as HTMLUListElement;
+    const first = list.firstChild as HTMLButtonElement;
+    const last = list.lastChild as HTMLButtonElement;
+    const formRef: HTMLFormElement = form.current;
+    const activeElement = document.activeElement as
+      | HTMLButtonElement
+      | HTMLInputElement;
+
+    if (formRef) {
+      const input = formRef.getElementsByTagName('input')[0];
+      if (up) {
+        if (
+          activeElement === (input || first) ||
+          !activeElement.previousSibling
+        ) {
+          if (activeElement === first) {
+            input.focus();
+          }
+          // do nothing
+        } else {
+          const prev = activeElement.previousSibling as HTMLButtonElement;
+          prev.focus();
+        }
+      }
+      if (down) {
+        if (activeElement === last) {
+          // do nothing
+        } else if (activeElement === input) {
+          first.focus();
+        } else {
+          const next = activeElement.nextSibling as HTMLButtonElement;
+          next.focus();
+        }
+      }
+    }
+  }, [up, down]);
 
   useEffect(() => {
     onChange(workspace.dependencySearch);
@@ -19,7 +61,10 @@ export const SearchBox = ({ handleManualSelect, onChange }) => {
   }, [workspace.dependencySearch]);
 
   return (
-    <form onSubmit={() => handleManualSelect(workspace.dependencySearch)}>
+    <form
+      ref={form}
+      onSubmit={() => handleManualSelect(workspace.dependencySearch)}
+    >
       <Element
         paddingLeft={4}
         css={css({

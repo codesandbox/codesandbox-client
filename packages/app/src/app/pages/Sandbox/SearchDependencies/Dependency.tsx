@@ -6,7 +6,14 @@ import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import compareVersions from 'compare-versions';
 import { Dependency as DependencyType } from '@codesandbox/common/lib/types/algolia';
-import { Text, Element, Stack, Select, Link } from '@codesandbox/components';
+import {
+  Text,
+  Element,
+  Stack,
+  Select,
+  Link,
+  Button,
+} from '@codesandbox/components';
 import { HomeIcon, GitHubIcon, CSBIcon } from './icons';
 
 const checkboxStyles = css({
@@ -84,132 +91,140 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
     Object.keys(tags).find(key => tags[key] === version);
 
   return (
-    <Stack
-      padding={4}
-      gap={4}
+    <Button
+      variant="link"
+      onClick={() => actions.workspace.setSelectedDependencies(dependency)}
       css={css({
-        color: 'sideBar.foreground',
-        border: 'none',
-        cursor: 'pointer',
-        background: 'transparent',
-        width: '100%',
-        outline: 'none',
-        borderBottomWidth: '1px',
-        borderBottomStyle: 'solid',
-        borderBottomColor: 'sideBar.border',
-
+        height: 'auto',
         ':hover, :focus': {
           backgroundColor: 'sideBar.border',
         },
       })}
     >
-      <Element css={checkboxStyles}>
-        <input
-          type="checkbox"
-          id={dependency.name}
-          checked={workspace.selectedDependencies[dependency.objectID]}
-          onChange={() => actions.workspace.setSelectedDependencies(dependency)}
-        />
-        <label htmlFor={dependency.name} />
-      </Element>
       <Stack
-        justify="space-between"
-        onClick={() => actions.workspace.setSelectedDependencies(dependency)}
+        padding={4}
+        gap={4}
         css={css({
-          flexGrow: 1,
+          color: 'sideBar.foreground',
+          border: 'none',
+          cursor: 'pointer',
+          background: 'transparent',
+          width: '100%',
+          outline: 'none',
+          borderBottomWidth: '1px',
+          borderBottomStyle: 'solid',
+          borderBottomColor: 'sideBar.border',
         })}
       >
-        <Element paddingRight={4}>
-          <Text block size={4} weight="bold">
-            {dependency.name}
-          </Text>
-          <Text
-            block
-            size={3}
-            variant="muted"
-            marginTop={1}
-            css={css({ wordBreak: 'break-all' })}
-          >
-            {dependency.description}
-          </Text>
+        <Element css={checkboxStyles}>
+          <input
+            type="checkbox"
+            id={dependency.name}
+            checked={workspace.selectedDependencies[dependency.objectID]}
+            onChange={() =>
+              actions.workspace.setSelectedDependencies(dependency)
+            }
+          />
+          <label htmlFor={dependency.name} />
+        </Element>
+        <Stack
+          justify="space-between"
+          css={css({
+            flexGrow: 1,
+          })}
+        >
+          <Element paddingRight={4}>
+            <Text block size={4} weight="bold">
+              {dependency.name}
+            </Text>
+            <Text
+              block
+              size={3}
+              variant="muted"
+              marginTop={1}
+              css={css({ wordBreak: 'break-all' })}
+            >
+              {dependency.description}
+            </Text>
 
-          <Stack align="center" gap={2} marginTop={2}>
-            <img
-              css={css({
-                borderRadius: 'small',
-                width: '6',
-                height: '6',
-              })}
-              src={dependency.owner?.avatar}
-              alt={dependency.owner?.name}
-            />
-            <Text size={3}>{dependency.owner?.name}</Text>
-          </Stack>
-        </Element>
-        <Element css={{ flexShrink: 0, width: 208 }}>
-          <Select
-            onClick={e => e.stopPropagation()}
-            onChange={e => {
-              actions.workspace.handleVersionChange({
-                dependency,
-                version: e.target.value,
-              });
-            }}
-          >
-            {versions.map(v => {
-              const tagName = getTagName(dependency.tags, v);
-              return (
-                <option value={v} key={v}>
-                  {v} {tagName && `- ${tagName}`}
-                </option>
-              );
-            })}
-          </Select>
-          <Stack justify="flex-end" marginTop={2} gap={4} align="center">
-            <Element>
-              {dependency.homepage ? (
-                <Tooltip content="Homepage">
-                  <a href={dependency.homepage}>
-                    <HomeIcon />
-                  </a>
-                </Tooltip>
-              ) : null}
-              <Tooltip content="Examples">
-                <Link href={`/examples/package/${dependency.name}`}>
-                  <CSBIcon />
-                </Link>
-              </Tooltip>
-              {dependency.githubRepo ? (
-                <Tooltip content="GitHub Repo">
-                  <a
-                    href={`https://github.com/${dependency.githubRepo.user}/${dependency.githubRepo.project}`}
-                  >
-                    <GitHubIcon />
-                  </a>
-                </Tooltip>
-              ) : null}
-            </Element>
-            <Stack gap={2}>
-              <Text size={3} variant="muted">
-                {dependency.humanDownloadsLast30Days.toUpperCase()}
-              </Text>
-              <Text
-                title={dependency.license}
-                size={3}
-                variant="muted"
+            <Stack align="center" gap={2} marginTop={2}>
+              <img
                 css={css({
-                  maxWidth: 40,
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
+                  borderRadius: 'small',
+                  width: '6',
+                  height: '6',
                 })}
-              >
-                {dependency.license}
-              </Text>
+                src={dependency.owner?.avatar}
+                alt={dependency.owner?.name}
+              />
+              <Text size={3}>{dependency.owner?.name}</Text>
             </Stack>
-          </Stack>
-        </Element>
+          </Element>
+          <Element css={{ flexShrink: 0, width: 208 }}>
+            <Select
+              onClick={e => e.stopPropagation()}
+              onChange={e => {
+                actions.workspace.handleVersionChange({
+                  dependency,
+                  version: e.target.value,
+                });
+              }}
+            >
+              {versions.map(v => {
+                const tagName = getTagName(dependency.tags, v);
+                return (
+                  <option value={v} key={v}>
+                    {v} {tagName && `- ${tagName}`}
+                  </option>
+                );
+              })}
+            </Select>
+            <Stack justify="flex-end" marginTop={2} gap={4} align="center">
+              <Element>
+                {dependency.homepage ? (
+                  <Tooltip content="Homepage">
+                    <a href={dependency.homepage}>
+                      <HomeIcon />
+                    </a>
+                  </Tooltip>
+                ) : null}
+                <Tooltip content="Examples">
+                  <Link href={`/examples/package/${dependency.name}`}>
+                    <CSBIcon />
+                  </Link>
+                </Tooltip>
+                {dependency.githubRepo ? (
+                  <Tooltip content="GitHub Repo">
+                    <a
+                      href={`https://github.com/${dependency.githubRepo.user}/${dependency.githubRepo.project}`}
+                    >
+                      <GitHubIcon />
+                    </a>
+                  </Tooltip>
+                ) : null}
+              </Element>
+              <Stack gap={2}>
+                <Text size={3} variant="muted">
+                  {dependency.humanDownloadsLast30Days.toUpperCase()}
+                </Text>
+                <Text
+                  title={dependency.license}
+                  size={3}
+                  variant="muted"
+                  css={css({
+                    maxWidth: 40,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  })}
+                >
+                  {dependency.license}
+                </Text>
+              </Stack>
+            </Stack>
+          </Element>
+        </Stack>
       </Stack>
-    </Stack>
+    </Button>
   );
 };

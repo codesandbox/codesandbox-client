@@ -8,7 +8,7 @@ import { SearchBox } from './SearchBox';
 import { Dependency } from './Dependency';
 import { AddDependencyModalFooter } from './Footer';
 
-const SearchDependencies = ({ onConfirm }) => {
+export const SearchDependencies = ({ onConfirm }) => {
   const {
     state: { workspace },
     actions,
@@ -73,6 +73,7 @@ const SearchDependencies = ({ onConfirm }) => {
     >
       <SearchBox onChange={onChange} handleManualSelect={handleManualSelect} />
       <Element
+        id="list"
         paddingBottom={10}
         css={css({
           height: '60vh',
@@ -99,5 +100,3 @@ const SearchDependencies = ({ onConfirm }) => {
     </div>
   );
 };
-
-export default SearchDependencies;
