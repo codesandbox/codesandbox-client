@@ -4,7 +4,7 @@ import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
 import { AlgoliaIcon } from './icons';
 
-export const SearchBox = ({ handleManualSelect, onChange, addRef }) => {
+export const SearchBox = ({ handleManualSelect, onChange }) => {
   const {
     state: { workspace },
     actions: {
@@ -43,7 +43,6 @@ export const SearchBox = ({ handleManualSelect, onChange, addRef }) => {
         })}
       >
         <Input
-          ref={addRef}
           autoFocus
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}

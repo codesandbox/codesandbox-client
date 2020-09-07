@@ -62,22 +62,26 @@ export const useKeyboard = (
           activeElement.parentNode.nextSibling.firstChild.focus();
         }
       }
-    }
-    if (explorerDependencies.length) {
-      if (one || enter) {
-        addDependency(explorerDependencies[0]);
-      }
-      if (two && explorerDependencies[1]) {
-        addDependency(explorerDependencies[1]);
-      }
-      if (three && explorerDependencies[2]) {
-        addDependency(explorerDependencies[2]);
-      }
-      if (four && explorerDependencies[3]) {
-        addDependency(explorerDependencies[3]);
-      }
-      if (all) {
-        modalOpened({ modal: 'searchDependencies' });
+
+      if (explorerDependencies.length) {
+        if (enter && activeElement === input) {
+          addDependency(explorerDependencies[0]);
+        }
+        if (one) {
+          addDependency(explorerDependencies[0]);
+        }
+        if (two && explorerDependencies[1]) {
+          addDependency(explorerDependencies[1]);
+        }
+        if (three && explorerDependencies[2]) {
+          addDependency(explorerDependencies[2]);
+        }
+        if (four && explorerDependencies[3]) {
+          addDependency(explorerDependencies[3]);
+        }
+        if (all) {
+          modalOpened({ modal: 'searchDependencies' });
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
