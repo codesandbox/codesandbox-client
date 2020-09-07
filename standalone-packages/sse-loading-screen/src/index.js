@@ -249,6 +249,7 @@ async function start() {
   });
 
   socket.on('connect', () => {
+    console.log('HELLO')
     socket.emit('sandbox', { id: sandboxId });
     socket.emit('sandbox:start');
   });
