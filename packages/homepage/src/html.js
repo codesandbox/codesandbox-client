@@ -16,7 +16,7 @@ export default function HTML(props) {
         />
         <link
           rel="preload"
-          href="https://codesandbox.stream/static/fonts/inter/inter.css"
+          href="https://codesandbox.io/static/fonts/inter/inter.css"
         />
         {props.headComponents}
       </head>

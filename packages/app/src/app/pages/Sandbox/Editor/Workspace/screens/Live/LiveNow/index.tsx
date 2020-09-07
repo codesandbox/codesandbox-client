@@ -79,7 +79,7 @@ export const LiveNow: FunctionComponent = () => {
           </Text>
 
           <Input
-            defaultValue={`https://codesandbox.stream/live/${roomId}`}
+            defaultValue={`https://codesandbox.io/live/${roomId}`}
             onFocus={({ target }) => target.select()}
             marginBottom={2}
             readOnly

@@ -95,12 +95,12 @@ const Sandbox = ({
         <Iframe
           big={big}
           title={id}
-          src={`https://codesandbox.stream/embed/${id}?fontsize=14&hidenavigation=1&view=preview&hidedevtools=1`}
+          src={`https://codesandbox.io/embed/${id}?fontsize=14&hidenavigation=1&view=preview&hidedevtools=1`}
           allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
           sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
         />
       ) : (
-        <Button href={`https://codesandbox.stream/s/${id}`} target="_blank">
+        <Button href={`https://codesandbox.io/s/${id}`} target="_blank">
           <Image big={big} src={image} alt={id} />
         </Button>
       )}

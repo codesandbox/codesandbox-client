@@ -77,10 +77,10 @@ function getProtocolAndHostWithSSE() {
   }
 
   if (document.location.host.endsWith('.stream')) {
-    return 'https://codesandbox.stream';
+    return 'https://codesandbox.io';
   }
 
-  return 'https://codesandbox.stream';
+  return 'https://codesandbox.io';
 }
 
 export const requestPreviewSecretFromApp = sandboxId => {

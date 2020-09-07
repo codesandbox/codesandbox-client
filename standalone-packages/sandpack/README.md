@@ -26,7 +26,7 @@ This is a list of features that the bundler supports out of the box, the list ma
 
 ## Example usage
 
-This repo serves as an interface to communicate with the bundler. The bundler itself is hosted on `sandpack-{version}.codesandbox.stream` and is heavily cached by a CDN. We also included the necessary files under `sandpack` if you want to host the bundler yourself.
+This repo serves as an interface to communicate with the bundler. The bundler itself is hosted on `sandpack-{version}.codesandbox.io` and is heavily cached by a CDN. We also included the necessary files under `sandpack` if you want to host the bundler yourself.
 
 ### Using the Manager
 
@@ -177,7 +177,7 @@ The third argument in the constructor of `Manager` is extra options. It has this
 ```ts
 {
   /**
-   * Location of the bundler. Defaults to `sandpack-${version}.codesandbox.stream`
+   * Location of the bundler. Defaults to `sandpack-${version}.codesandbox.io`
    */
   bundlerURL?: string;
   /**
@@ -219,8 +219,8 @@ Create a sandbox from the current files and return an object in this form:
 ```js
 {
   sandboxId: sandbox_id,
-  editorUrl: `https://codesandbox.stream/s/${sandbox_id}`,
-  embedUrl: `https://codesandbox.stream/embed/${sandbox_id}`,
+  editorUrl: `https://codesandbox.io/s/${sandbox_id}`,
+  embedUrl: `https://codesandbox.io/embed/${sandbox_id}`,
 }
 ```
 

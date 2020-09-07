@@ -69,4 +69,4 @@ When you are in a container sandbox an environment variable called
 `CODESANDBOX_SSE` will be available and you can always use it to check what your
 current environment is.
 
-https://codesandbox.stream/s/codesandboxsse-example-spgyv
+https://codesandbox.io/s/codesandboxsse-example-spgyv

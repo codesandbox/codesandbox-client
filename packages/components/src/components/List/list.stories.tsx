@@ -26,7 +26,7 @@ export const withJustify = () => (
     <ListItem justify="space-between">
       <span>Template</span>
       <a
-        href="https://codesandbox.stream/s/react-new"
+        href="https://codesandbox.io/s/react-new"
         target="_blank"
         rel="noopener noreferrer"
       >

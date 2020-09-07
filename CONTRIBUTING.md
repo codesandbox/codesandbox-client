@@ -34,7 +34,7 @@ share dependencies between these parts.
 This version of CodeSandbox is using the production server as source of truth,
 this is specified by the environment variable `LOCAL_SERVER`. If you're working
 on a feature that needs you to be logged in, you can login on
-[https://codesandbox.stream/](https://codesandbox.stream/) and copy the contents of the
+[https://codesandbox.io/](https://codesandbox.io/) and copy the contents of the
 `jwt` local storage key over to your development environment on
 [http://localhost:3000/](http://localhost:3000/). **Be very careful with how you
 handle the token**, as anyone who knows it can login as you and have read/write

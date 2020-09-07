@@ -43,7 +43,7 @@ export const sara = {
   id: '8d35d7c1-eecb-4aad-87b0-c22d30d12081',
   insertedAt: '2017-07-18T23:49:53',
   name: 'Sara Vieira',
-  profileEmail: 'sara@codesandbox.stream',
+  profileEmail: 'sara@codesandbox.io',
   receivedLikeCount: 86,
   sandboxCount: 611,
   sandboxCountPerTemplate: {

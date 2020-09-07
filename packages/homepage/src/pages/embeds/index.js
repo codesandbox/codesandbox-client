@@ -75,7 +75,7 @@ export default () => {
         <Banner>
           <Iframe
             title="embed-example"
-            src={`https://codesandbox.stream/embed/static-2lqup?fontsize=14&theme=${theme}&hidenavigation=${navigation}&view=${view}&hidedevtools=${devToolsHidden}`}
+            src={`https://codesandbox.io/embed/static-2lqup?fontsize=14&theme=${theme}&hidenavigation=${navigation}&view=${view}&hidedevtools=${devToolsHidden}`}
           />
         </Banner>
         <Customizations>

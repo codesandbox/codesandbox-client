@@ -18,13 +18,13 @@ const VERSION = 2;
 const DEV_URLS = {
   packager:
     'https://xi5p9f7czk.execute-api.eu-west-1.amazonaws.com/dev/packages',
-  bucket: 'https://dev-packager-packages.codesandbox.stream',
+  bucket: 'https://dev-packager-packages.codesandbox.io',
 };
 // eslint-disable-next-line
 const PROD_URLS = {
   packager:
     'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages',
-  bucket: 'https://prod-packager-packages.codesandbox.stream',
+  bucket: 'https://prod-packager-packages.codesandbox.io',
 };
 
 const URLS = PROD_URLS;

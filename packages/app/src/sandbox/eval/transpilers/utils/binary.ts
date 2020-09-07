@@ -5,5 +5,5 @@ export function getModuleHTTPPath(module: Module, sandboxId: string | null) {
     return module.path;
   }
 
-  return `https://codesandbox.stream/api/v1/sandboxes/${sandboxId}/fs${module.path}`;
+  return `https://codesandbox.io/api/v1/sandboxes/${sandboxId}/fs${module.path}`;
 }

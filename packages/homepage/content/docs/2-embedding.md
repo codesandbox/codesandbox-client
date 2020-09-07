@@ -14,7 +14,7 @@ time.
 CodeSandbox has a separate application for the embed. This application is
 specifically built to be as small as possible. If you replace `s` in the URL of
 a sandbox to `embed` you have the embed version of the sandbox. Example:
-https://codesandbox.stream/s/new => https://codesandbox.stream/embed/new. Notice that
+https://codesandbox.io/s/new => https://codesandbox.io/embed/new. Notice that
 the embed doesn't have all of the features of the full editor.
 
 ## Generate an Embed URL
@@ -27,7 +27,7 @@ and selecting the options you want to have enabled.
 ## Embed on Medium
 
 You can easily embed on Medium by taking your sandbox URL (like
-https://codesandbox.stream/s/new) and pasting it in a Medium article. It should
+https://codesandbox.io/s/new) and pasting it in a Medium article. It should
 automatically become an embed after you press enter.
 
 ## Embed Options
@@ -64,13 +64,13 @@ These are some examples of embeds, based on their properties.
 
 This embed is focused on being as light as possible:
 
-`https://codesandbox.stream/embed/new?codemirror=1`
+`https://codesandbox.io/embed/new?codemirror=1`
 
 Use this code to embed:
 
 ```html
 <iframe
-  src="https://codesandbox.stream/embed/new?codemirror=1"
+  src="https://codesandbox.io/embed/new?codemirror=1"
   style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
   allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
   sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
@@ -79,20 +79,20 @@ Use this code to embed:
 
 That will give to a result like this:
 
-<iframe src="https://codesandbox.stream/embed/new?codemirror=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+<iframe src="https://codesandbox.io/embed/new?codemirror=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 
 ### Code Example Embed
 
 You can also use CodeSandbox to show code examples, with highlighted lines. This
 is only supported with the CodeMirror editor currently:
 
-`https://codesandbox.stream/embed/new?codemirror=1&highlights=11,12,13,14`
+`https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14`
 
 Use this code to embed:
 
 ```html
 <iframe
-  src="https://codesandbox.stream/embed/new?codemirror=1&highlights=6,7,8,9"
+  src="https://codesandbox.io/embed/new?codemirror=1&highlights=6,7,8,9"
   style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
   allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
   sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
@@ -101,4 +101,4 @@ Use this code to embed:
 
 That will give to a result like this:
 
-<iframe src="https://codesandbox.stream/embed/new?codemirror=1&highlights=6,7,8,9" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+<iframe src="https://codesandbox.io/embed/new?codemirror=1&highlights=6,7,8,9" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>

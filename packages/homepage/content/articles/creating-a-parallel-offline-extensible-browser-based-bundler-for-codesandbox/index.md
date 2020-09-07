@@ -12,7 +12,7 @@ description:
 date: 2017-08-27
 ---
 
-When I first started [CodeSandbox](https://codesandbox.stream), I was completely
+When I first started [CodeSandbox](https://codesandbox.io), I was completely
 focused on [React](https://github.com/facebook/react) development. We even named
 it 'ReactSandbox' at first, but I changed it to CodeSandbox last minute so we
 could expand to other libraries. I'm proud to say that we now succeeded in that
@@ -28,15 +28,15 @@ suggestions). To make this happen I had to rewrite the bundler from scratch. In
 this post I will explain mostly how the new bundler is built and what decisions
 I took to get there.
 
-<!-- https://vue.codesandbox.stream -->
+<!-- https://vue.codesandbox.io -->
 
-https://codesandbox.stream/s/vue?fontsize=14&view=split
+https://codesandbox.io/s/vue?fontsize=14&view=split
 
 <!-- Vue -->
 
-<!-- https://preact.codesandbox.stream -->
+<!-- https://preact.codesandbox.io -->
 
-https://codesandbox.stream/s/preact?fontsize=14&view=split
+https://codesandbox.io/s/preact?fontsize=14&view=split
 
 <!-- Preact -->
 
@@ -204,7 +204,7 @@ One file can be associated with multiple `TranspiledModule`s, because files can
 be required in different ways. For example, `require('raw-loader!./Hello.js')`
 isn't the same as `require('./Hello.js')`.
 
-https://codesandbox.stream/s/q8kjprjnww?fontsize=14&view=split
+https://codesandbox.io/s/q8kjprjnww?fontsize=14&view=split
 
 <!-- Different require syntax is supported! -->
 

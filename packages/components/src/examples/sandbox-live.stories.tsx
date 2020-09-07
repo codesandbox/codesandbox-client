@@ -102,7 +102,7 @@ export const Live = () => (
         </Text>
 
         <Input
-          defaultValue="https://codesandbox.stream/live/aiusdba"
+          defaultValue="https://codesandbox.io/live/aiusdba"
           marginBottom={2}
         />
 

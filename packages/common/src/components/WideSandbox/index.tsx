@@ -16,7 +16,7 @@ import {
 } from './elements';
 
 const getScreenshot = id =>
-  `https://codesandbox.stream/api/v1/sandboxes/${id}/screenshot.png`;
+  `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
 
 /* eslint-disable camelcase */
 export type Props = {

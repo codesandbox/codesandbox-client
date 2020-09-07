@@ -4,7 +4,7 @@
   "short_name": "CodeSandbox",
   "version": "2.0",
   "description": "Quickly open a new Sandbox and this extentions adds an 'Open in CodeSandbox' button to GitHub repos",
-  "homepage_url": "https://codesandbox.stream",
+  "homepage_url": "https://codesandbox.io",
   "icons": {
     "16": "./assets/icon16.png",
     "48": "./assets/icon48.png",

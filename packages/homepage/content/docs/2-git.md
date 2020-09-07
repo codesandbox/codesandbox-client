@@ -21,7 +21,7 @@ repository. This allows you to create commits and open pull requests from the
 forked sandboxes.
 
 Anyone can import public GitHub repositories. You need a
-[Pro subscription](https://codesandbox.stream/pricing) to be able to import private
+[Pro subscription](https://codesandbox.io/pricing) to be able to import private
 repos.
 
 ## Committing and Opening PRs

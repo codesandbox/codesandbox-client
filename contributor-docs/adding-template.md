@@ -17,7 +17,7 @@ with your feedback.
 ## What is a template?
 
 A template is an identifier for a specific type of sandbox project that you can
-create on [codesandbox.stream](https://codesandbox.stream), like projects using
+create on [codesandbox.io](https://codesandbox.io), like projects using
 `Gatsby`, `React` or `Vue.js`.
 
 When you create a template you can customise how the template behaves, in order

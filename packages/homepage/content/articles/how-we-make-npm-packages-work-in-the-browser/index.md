@@ -11,7 +11,7 @@ date: 2017-10-06
 ---
 
 I always left [npm](https://npmjs.com) dependency support out of scope during
-initial development of [CodeSandbox](https://codesandbox.stream). I thought it would
+initial development of [CodeSandbox](https://codesandbox.io). I thought it would
 be impossible to install an arbitrary, random amount of packages in the browser,
 even thinking about it caused my brain to block.
 

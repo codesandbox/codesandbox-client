@@ -3,7 +3,7 @@ import { NetlifySite, Sandbox } from '@codesandbox/common/lib/types';
 import getNetlifyConfig from 'app/utils/getNetlifyConfig';
 import axios from 'axios';
 
-const NetlifyBaseURL = 'https://netlify.deploy.codesandbox.stream/site';
+const NetlifyBaseURL = 'https://netlify.deploy.codesandbox.io/site';
 
 type Options = {
   getUserId(): string | null;

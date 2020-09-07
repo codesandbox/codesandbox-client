@@ -4,7 +4,7 @@ const config: ConfigurationFile = {
   title: 'template.json',
   type: 'customTemplate',
   description: 'Configuration for the custom template',
-  moreInfoUrl: 'https://codesandbox.stream',
+  moreInfoUrl: 'https://codesandbox.io',
 
   getDefaultCode: () =>
     JSON.stringify(

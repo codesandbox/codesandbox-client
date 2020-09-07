@@ -22,8 +22,8 @@ import { appendFile, mkdir, rename, rmdir, unlink, writeFile } from './utils';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
-const SERVICE_URL = 'https://ata.codesandbox.stream/api/v8';
-const BUCKET_URL = 'https://prod-packager-packages.codesandbox.stream/v1/typings';
+const SERVICE_URL = 'https://ata.codesandbox.io/api/v8';
+const BUCKET_URL = 'https://prod-packager-packages.codesandbox.io/v1/typings';
 
 async function callApi(url: string, method = 'GET') {
   const response = await fetch(url, {

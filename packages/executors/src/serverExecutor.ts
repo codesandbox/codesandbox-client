@@ -76,7 +76,7 @@ export class ServerExecutor implements IExecutor {
     if (!this.sandboxId) {
       throw new Error('initializeSocket: sandboxId is not defined');
     }
-    const usedHost = this.host || 'https://codesandbox.stream';
+    const usedHost = this.host || 'https://codesandbox.io';
     const sseLbHost = usedHost.replace('https://', 'https://sse-lb.');
     const res = await axios.get(`${sseLbHost}/api/cluster/${this.sandboxId}`);
     const sseHost = res.data.hostname;

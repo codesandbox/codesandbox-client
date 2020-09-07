@@ -136,12 +136,12 @@ const Footer = () => (
         </li>
         <li>
           <P small muted>
-            <a href="mailto:hello@codesandbox.stream">Contact Support</a>
+            <a href="mailto:hello@codesandbox.io">Contact Support</a>
           </P>
         </li>
         <li>
           <P small muted>
-            <a href="https://status.codesandbox.stream">Status</a>
+            <a href="https://status.codesandbox.io">Status</a>
           </P>
         </li>
       </ul>

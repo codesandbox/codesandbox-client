@@ -69,7 +69,7 @@ Processing of personal data may be deemed necessary or reasonable when we:
   via email when you have paid for our services.
 - Have to perform our agreement in delivering the service described in this
   privacy document and in more detail in our
-  [terms of service](https://codesandbox.stream/legal/terms);
+  [terms of service](https://codesandbox.io/legal/terms);
 - Have to comply with legal obligations.
 - Have your explicit consent to process personal data.
 
@@ -271,7 +271,7 @@ CodeSandbox B.V. in its role as data controller is a for profit company with its
 operational headquarters at Singel 542, 1017 AZ, Amsterdam, The Netherlands,
 available at +1 (650) 731-3185‬. To exercise any of the rights described above
 or in case of concerns, questions or inquiries, please email us at
-[hello@codesandbox.stream](mailto:hello@codesandbox.stream).
+[hello@codesandbox.io](mailto:hello@codesandbox.io).
 
 We promise to respond as soon as possible and in any case within fourteen (14)
 business days of your request. For account deletion or data dumps, please
@@ -318,5 +318,5 @@ User. Anyone exposed to any CodeSandbox Service. We consider several types:
 those who view or interact with CodeSandbox embeds via other websites, visitors
 not signed in and users with a CodeSandbox account who are signed in.
 
-Websites or Domains. [codesandbox.stream](http://codesandbox.stream/) and
+Websites or Domains. [codesandbox.io](http://codesandbox.io/) and
 \*.[csb.app](http://csb.app/) or any of its user-facing subdomains.

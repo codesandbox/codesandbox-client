@@ -11,7 +11,7 @@ date: 2018-02-07
 ---
 
 It's February and high time for a new big update for
-[CodeSandbox](https://codesandbox.stream)! We've been very quiet the past month, but
+[CodeSandbox](https://codesandbox.io)! We've been very quiet the past month, but
 we were not sitting still. This update is **packed** with new features, I
 believe this is the biggest update to date, by far. And the best part is that
 many contributors helped with this update!
@@ -150,7 +150,7 @@ especially useful for Babel plugins like
 [`babel-plugin-preval`](https://github.com/kentcdodds/babel-plugin-preval). Go
 ahead and try it!
 
-https://codesandbox.stream/s/xp5qy8r93q?fontsize=14&view=split
+https://codesandbox.io/s/xp5qy8r93q?fontsize=14&view=split
 
 <!-- Live in action! It's still a bit rough, sometimes you need to hard reload to see changes. -->
 
@@ -164,7 +164,7 @@ and select presets.
 
 You can now configure your sandbox using `sandbox.config.json`. You can find
 more documentation about `sandbox.config.json`
-[here](https://codesandbox.stream/docs/configuration#sandbox-configuration).
+[here](https://codesandbox.io/docs/configuration#sandbox-configuration).
 
 ![Configuration options](./images/10.png)
 
@@ -178,11 +178,11 @@ including the corresponding `angular-cli.json` file that comes with it!
 
 Give it a try here:
 
-<!-- https://angular.codesandbox.stream -->
+<!-- https://angular.codesandbox.io -->
 
-https://codesandbox.stream/s/angular?fontsize=14&view=split
+https://codesandbox.io/s/angular?fontsize=14&view=split
 
-[Or open it in the new editor!](https://codesandbox.stream/s/angular)
+[Or open it in the new editor!](https://codesandbox.io/s/angular)
 
 ## Native Jest Support
 
@@ -220,7 +220,7 @@ the Jest team did an **incredible** job by
 [publishing all their functionality in separate packages](https://jestjs.io/docs/en/jest-platform.html).
 We just cherry picked the packages that we needed to make Jest work in the
 CodeSandbox!
-[The Redux TodoMVC example](http://codesandbox.stream/s/github/reduxjs/redux/tree/master/examples/todomvc)
+[The Redux TodoMVC example](http://codesandbox.io/s/github/reduxjs/redux/tree/master/examples/todomvc)
 is a good sandbox to play with Jest support.
 
 > Note that this is not fully native Jest, we don't support writing snapshots,
@@ -254,7 +254,7 @@ out of the box!
 
 ![Using HMR together with Redux to hot reload its state](./images/16.gif)
 
-https://codesandbox.stream/s/rw6k1nkxj4?fontsize=14&view=split
+https://codesandbox.io/s/rw6k1nkxj4?fontsize=14&view=split
 
 <!-- Vue Example: edit the template or the styles and see that the state doesn't change -->
 
@@ -290,11 +290,11 @@ remembering a key binding.
 #### CodeSandbox Documentation
 
 To answer questions or explain CodeSandbox concepts we now have an
-[official documentation](https://codesandbox.stream/docs).
+[official documentation](https://codesandbox.io/docs).
 
 You can follow either [CodeSandbox](https://twitter.com/codesandbox) or
 [me](https://twitter.com/CompuIves) on Twitter to keep up to date with any
-changes. We also keep a changelog [here](https://codesandbox.stream/changelog).
+changes. We also keep a changelog [here](https://codesandbox.io/changelog).
 
 ## What's Next
 
@@ -343,4 +343,4 @@ If you want to chat, we have an active
 [Spectrum community](https://spectrum.chat/codesandbox).
 
 Also, if you would like to support CodeSandbox financially, you can become a
-[CodeSandbox Patron](https://codesandbox.stream/patron)!
+[CodeSandbox Patron](https://codesandbox.io/patron)!

@@ -21,7 +21,7 @@ people that are active on CodeSandbox or are knowledgeable in a specific field
 (eg. animations).
 
 If you're interested in becoming a curator, send us an e-mail at
-<mailto:curators@codesandbox.stream>.
+<mailto:curators@codesandbox.io>.
 
 ## Which sandboxes get picked?
 

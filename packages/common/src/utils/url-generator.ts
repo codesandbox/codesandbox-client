@@ -7,8 +7,8 @@ const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
 const dotGit = /(\.git)$/;
 
 const sandboxHost = {
-  'https://codesandbox.stream': 'https://csb.app',
-  'https://codesandbox.stream': 'https://codesandbox.dev',
+  'https://codesandbox.io': 'https://csb.app',
+  'https://codesandbox.io': 'https://codesandbox.dev',
 };
 
 const buildEncodedUri = (

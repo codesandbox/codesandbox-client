@@ -38,7 +38,7 @@ export const NewMasterSandboxListItem = ({ repo }: NewMasterSandboxProps) => {
   return (
     <ListAction
       onDoubleClick={() => {
-        window.location.href = `https://codesandbox.stream/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`;
+        window.location.href = `https://codesandbox.io/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`;
       }}
       onContextMenu={e => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
       css={css({
@@ -110,7 +110,7 @@ export const NewMasterSandboxCard = ({ repo }: NewMasterSandboxProps) => {
   return (
     <Stack
       onDoubleClick={() => {
-        window.location.href = `https://codesandbox.stream/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`;
+        window.location.href = `https://codesandbox.io/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`;
       }}
       onContextMenu={e => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
       direction="vertical"

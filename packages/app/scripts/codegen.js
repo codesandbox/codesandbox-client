@@ -7,10 +7,10 @@ const host = (() => {
   }
 
   if (isStaging) {
-    return 'https://codesandbox.stream';
+    return 'https://codesandbox.io';
   }
 
-  return 'https://codesandbox.stream';
+  return 'https://codesandbox.io';
 })();
 
 const URL = `${host}/api/graphql`;

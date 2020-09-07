@@ -11,7 +11,7 @@ description:
 date: 2018-03-26
 ---
 
-I started [CodeSandbox](https://codesandbox.stream) with the ambition to make
+I started [CodeSandbox](https://codesandbox.io) with the ambition to make
 sharing and collaboration of web applications easier and more accessible.
 Nowadays it's being used for documentation, job interviews, prototyping,
 troubleshooting, bug reports, workshops, and probably much more.
@@ -68,7 +68,7 @@ but we probably missed something. That's why we want to mark this as a beta for
 the time being. If you find any issues you can
 [open up an issue on our GitHub repository](https://github.com/codesandbox/codesandbox-client/issues/new/choose).
 To test the load we've marked this feature as Patron-only: a live room can only
-be created if you are a [Patron](https://codesandbox.stream/patron), everyone can
+be created if you are a [Patron](https://codesandbox.io/patron), everyone can
 still join created rooms.
 
 ## Test Sessions

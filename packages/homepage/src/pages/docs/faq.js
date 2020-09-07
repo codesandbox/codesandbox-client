@@ -42,7 +42,7 @@ const FAQS = ({ data }) => {
             `}
           >
             Have a look at our <Link to="/docs">Documentation</Link>,{' '}
-            <a href="mailto:hello@codesandbox.stream">Contact Developer Support</a>{' '}
+            <a href="mailto:hello@codesandbox.io">Contact Developer Support</a>{' '}
             or open an issue{' '}
             <a
               target="_blank"

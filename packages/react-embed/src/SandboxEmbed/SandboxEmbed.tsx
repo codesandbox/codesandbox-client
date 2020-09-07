@@ -13,36 +13,36 @@ export interface CodeSandboxerProps {
    * The absolute path to the example within the git file structure
    *
    * Example: 'examples/Basic.js'
-   **/
+   * */
   examplePath: string;
-  /** Name for the codesandbox instance **/
+  /** Name for the codesandbox instance * */
   name?: string;
-  /** This is all the information we need to fetch information from github or bitbucket **/
+  /** This is all the information we need to fetch information from github or bitbucket * */
   gitInfo?: GitInfo;
-  /** Pass in the example as code to prevent it being fetched **/
+  /** Pass in the example as code to prevent it being fetched * */
   example?: string | Promise<string>;
-  /** Either take in a package.json object, or a string as the path of the package.json **/
+  /** Either take in a package.json object, or a string as the path of the package.json * */
   pkgJSON?: Package | string | Promise<Package | string>;
-  /** paths in the example that we do not want to be pulled from their relativeLocation **/
+  /** paths in the example that we do not want to be pulled from their relativeLocation * */
   importReplacements?: Array<ImportReplacement>;
-  /** Dependencies we always include. Most likely react and react-dom **/
+  /** Dependencies we always include. Most likely react and react-dom * */
   dependencies?: { [dep: string]: string };
-  /** Do not actually deploy to codesanbox. Used to for testing alongside the return values of the render prop. **/
+  /** Do not actually deploy to codesanbox. Used to for testing alongside the return values of the render prop. * */
   skipRedirect?: boolean;
   ignoreInternalImports?: boolean;
-  /** Called once loading has finished, whether it preloaded or not **/
+  /** Called once loading has finished, whether it preloaded or not * */
   onLoadComplete?: (
     params: { parameters: string; files: Files } | { error: any }
   ) => void;
-  /** Called once a deploy has occurred. This will still be called if skipRedirect is chosen **/
+  /** Called once a deploy has occurred. This will still be called if skipRedirect is chosen * */
   afterDeploy?: (sandboxUrl: string, sandboxId: string) => void;
-  /** Called once a deploy has occurred. This will still be called if skipRedirect is chosen **/
+  /** Called once a deploy has occurred. This will still be called if skipRedirect is chosen * */
   afterDeployError?: (e: Error) => void;
-  /** Pass in files separately to fetching them. Useful to go alongisde specific replacements in importReplacements **/
+  /** Pass in files separately to fetching them. Useful to go alongisde specific replacements in importReplacements * */
   providedFiles?: Files;
   /**
    * Allow codesandboxer to accept more extensions like .jsx
-   **/
+   * */
   extensions?: string[];
   template?: 'create-react-app' | 'create-react-app-typescript';
 }
@@ -50,7 +50,7 @@ export interface CodeSandboxerProps {
 export interface Props {
   /**
    * Consumers may need access to the wrapper's style
-   **/
+   * */
   style?: Object;
   /**
    * What to show during loading
@@ -152,10 +152,11 @@ export default class SandboxEmbed extends React.PureComponent<Props> {
     oldSandboxId: null,
     error: null,
   };
+
   newSandboxTimeout = null;
 
   generateEmbedURL = (sandboxId: string) => {
-    let url = `https://codesandbox.stream/embed/${sandboxId}`;
+    let url = `https://codesandbox.io/embed/${sandboxId}`;
     function getValue(option, value) {
       if (typeof value === 'boolean') {
         return value ? 1 : 0;
@@ -249,7 +250,7 @@ export default class SandboxEmbed extends React.PureComponent<Props> {
     const usedSandboxId = this.state.sandboxId || this.state.oldSandboxId;
 
     return (
-      <React.Fragment>
+      <>
         {usedSandboxId && (
           <iframe
             name="codesandbox"
@@ -272,7 +273,7 @@ export default class SandboxEmbed extends React.PureComponent<Props> {
             }
           </CodeSandboxer>
         )}
-      </React.Fragment>
+      </>
     );
   }
 }

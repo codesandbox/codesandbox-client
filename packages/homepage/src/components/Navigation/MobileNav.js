@@ -167,7 +167,7 @@ export default () => {
               <Headers>Support</Headers>
               <Items>
                 <li>
-                  <a href="mailto:hello@codesandbox.stream" title="Support">
+                  <a href="mailto:hello@codesandbox.io" title="Support">
                     <section>
                       <SupportIcon />
                     </section>
@@ -178,7 +178,7 @@ export default () => {
                   <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="https://status.codesandbox.stream"
+                    href="https://status.codesandbox.io"
                     title="Status"
                   >
                     <section>

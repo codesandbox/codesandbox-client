@@ -1,5 +1,5 @@
-declare var process: { env: { CODESANDBOX_HOST: string | undefined } };
+let var process: { env: { CODESANDBOX_HOST: string | undefined } };
 
 const host = process.env.CODESANDBOX_HOST;
 
-export default host || 'https://codesandbox.stream';
+export default host || 'https://codesandbox.io';
