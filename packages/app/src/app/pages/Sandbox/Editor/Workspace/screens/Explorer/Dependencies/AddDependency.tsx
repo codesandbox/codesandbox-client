@@ -45,55 +45,59 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
   };
 
   return (
-    <SidebarRow
-      css={css({ position: 'relative' })}
-      gap={1}
-      marginX={2}
-      marginBottom={2}
-    >
-      <Element
-        css={css({
-          width: '100%',
-          flexGrow: 1,
-        })}
+    <>
+      <SidebarRow
+        css={css({ position: 'relative' })}
+        gap={1}
+        marginX={2}
+        marginBottom={2}
       >
-        <SearchInput
-          ref={searchInput}
-          value={modalOpen ? '' : dependencySearch}
-          onChange={searchDependencies}
-          placeholder="Add Dependency"
-          onFocus={() => {
-            if (dependencySearch) {
-              getExplorerDependencies(dependencySearch);
-            }
-          }}
-        />
-      </Element>
-      <Button
-        variant="secondary"
-        css={css({
-          width: 6,
-          height: 6,
-          backgroundColor: 'inputOption.activeBorder',
-          padding: 0,
-        })}
-        onClick={() => modalOpened({ modal: 'searchDependencies' })}
-      >
-        <svg width={24} height={24} fill="none" viewBox="0 0 24 24">
-          <path
-            css={css({ fill: 'tab.inactiveForeground' })}
-            fillRule="evenodd"
-            d="M18 7.5a.5.5 0 00-.5-.5h-11a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h11a.5.5 0 00.5-.5v-1zm-12 4a.5.5 0 01.5-.5h11a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5v-1zm0 4a.5.5 0 01.5-.5h11a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5v-1z"
-            clipRule="evenodd"
+        <Element
+          css={css({
+            width: '100%',
+            flexGrow: 1,
+          })}
+        >
+          <SearchInput
+            ref={searchInput}
+            value={modalOpen ? '' : dependencySearch}
+            onChange={searchDependencies}
+            placeholder="Add Dependency"
+            onFocus={() => {
+              if (dependencySearch) {
+                getExplorerDependencies(dependencySearch);
+              }
+            }}
           />
-        </svg>
-      </Button>
+        </Element>
+        <Button
+          variant="secondary"
+          css={css({
+            width: 6,
+            height: 6,
+            backgroundColor: 'inputOption.activeBorder',
+            padding: 0,
+          })}
+          onClick={() => modalOpened({ modal: 'searchDependencies' })}
+        >
+          <svg width={24} height={24} fill="none" viewBox="0 0 24 24">
+            <path
+              css={css({ fill: 'tab.inactiveForeground' })}
+              fillRule="evenodd"
+              d="M18 7.5a.5.5 0 00-.5-.5h-11a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h11a.5.5 0 00.5-.5v-1zm-12 4a.5.5 0 01.5-.5h11a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5v-1zm0 4a.5.5 0 01.5-.5h11a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5v-1z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </Button>
+      </SidebarRow>
+
       {!modalOpen && explorerDependencies.length ? (
         <OutsideClickHandler onOutsideClick={() => clearExplorerDependencies()}>
           <Element
             as="ul"
             ref={list}
             padding={0}
+            marginX={2}
             css={css({
               backgroundColor: 'sideBar.background',
               position: 'absolute',
@@ -103,7 +107,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
               borderWidth: '1px',
               borderStyle: 'solid',
               borderColor: 'sideBar.border',
-              marginTop: '2px',
+              marginTop: '-6px',
               fontWeight: 500,
             })}
           >
@@ -162,6 +166,6 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
           </Element>
         </OutsideClickHandler>
       ) : null}
-    </SidebarRow>
+    </>
   );
 };
