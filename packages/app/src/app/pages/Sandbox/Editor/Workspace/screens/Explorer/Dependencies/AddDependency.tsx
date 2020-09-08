@@ -46,24 +46,48 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
 
   return (
     <SidebarRow
-      css={css({ display: 'block', position: 'relative' })}
+      css={css({ position: 'relative' })}
+      gap={1}
       marginX={2}
       marginBottom={2}
     >
-      <SearchInput
-        ref={searchInput}
-        value={modalOpen ? '' : dependencySearch}
-        onChange={searchDependencies}
-        placeholder="Add npm dependency"
+      <Element
         css={css({
           width: '100%',
+          flexGrow: 1,
         })}
-        onFocus={() => {
-          if (dependencySearch) {
-            getExplorerDependencies(dependencySearch);
-          }
-        }}
-      />
+      >
+        <SearchInput
+          ref={searchInput}
+          value={modalOpen ? '' : dependencySearch}
+          onChange={searchDependencies}
+          placeholder="Add Dependency"
+          onFocus={() => {
+            if (dependencySearch) {
+              getExplorerDependencies(dependencySearch);
+            }
+          }}
+        />
+      </Element>
+      <Button
+        variant="secondary"
+        css={css({
+          width: 6,
+          height: 6,
+          backgroundColor: 'inputOption.activeBorder',
+          padding: 0,
+        })}
+        onClick={() => modalOpened({ modal: 'searchDependencies' })}
+      >
+        <svg width={24} height={24} fill="none" viewBox="0 0 24 24">
+          <path
+            css={css({ fill: 'tab.inactiveForeground' })}
+            fillRule="evenodd"
+            d="M18 7.5a.5.5 0 00-.5-.5h-11a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h11a.5.5 0 00.5-.5v-1zm-12 4a.5.5 0 01.5-.5h11a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5v-1zm0 4a.5.5 0 01.5-.5h11a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5v-1z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </Button>
       {!modalOpen && explorerDependencies.length ? (
         <OutsideClickHandler onOutsideClick={() => clearExplorerDependencies()}>
           <Element

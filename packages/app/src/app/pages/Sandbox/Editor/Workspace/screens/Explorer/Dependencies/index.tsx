@@ -1,10 +1,4 @@
-import {
-  Button,
-  Collapsible,
-  List,
-  SidebarRow,
-  Text,
-} from '@codesandbox/components';
+import { Collapsible, List, SidebarRow, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 
@@ -18,7 +12,6 @@ export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
 }) => {
   const {
     actions: {
-      modalOpened,
       editor: { addNpmDependency, npmDependencyRemoved },
     },
     state: {
@@ -56,22 +49,7 @@ export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
         },
       })}
     >
-      {!readonly && (
-        <>
-          <AddDependency />
-          <SidebarRow marginX={2} marginBottom={4}>
-            <Button
-              variant="secondary"
-              css={css({
-                color: 'sideBar.foreground',
-              })}
-              onClick={() => modalOpened({ modal: 'searchDependencies' })}
-            >
-              Open dependency search
-            </Button>
-          </SidebarRow>
-        </>
-      )}
+      {!readonly && <AddDependency />}
       <List>
         {Object.keys(dependencies)
           .sort()
