@@ -9,6 +9,7 @@ import { Files } from './Files';
 type Props = {
   readonly?: boolean;
 };
+
 export const Explorer: FunctionComponent<Props> = ({ readonly = false }) => {
   const {
     state: {
@@ -22,13 +23,13 @@ export const Explorer: FunctionComponent<Props> = ({ readonly = false }) => {
     <>
       <Files readonly={readonly} />
 
-      {template === 'static' ? null : (
+      {template !== 'static' ? (
         <>
           <Dependencies readonly={readonly} />
 
           <ExternalResources readonly={readonly} />
         </>
-      )}
+      ) : null}
     </>
   );
 };
