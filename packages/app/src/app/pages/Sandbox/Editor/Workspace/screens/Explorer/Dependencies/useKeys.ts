@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import useKeys from 'react-use/lib/useKeyboardJs';
 import { useOvermind } from 'app/overmind';
+import { Dependency } from '@codesandbox/common/lib/types/algolia';
 
 export const useKeyboard = (
   list: { current: HTMLElement },
-  searchInput: { current: HTMLElement }
+  searchInput: { current: HTMLFormElement }
 ) => {
   const {
     actions: {
@@ -24,7 +25,7 @@ export const useKeyboard = (
   const [down] = useKeys('down');
   const [enter] = useKeys('enter');
 
-  const addDependency = dependency => {
+  const addDependency = (dependency: Dependency) => {
     addNpmDependency({
       name: dependency.name,
       version: dependency.tags.latest,
@@ -32,11 +33,34 @@ export const useKeyboard = (
   };
 
   useEffect(() => {
+    const activeElement = document.activeElement;
+    const input = searchInput.current;
+
+    if (enter && activeElement === input) {
+      if (input.value.includes('@')) {
+        const isScoped = input.value.startsWith('@');
+        let version = 'latest';
+
+        const dependencyAndVersion = input.value.split('@');
+
+        if (dependencyAndVersion.length > (isScoped ? 2 : 1)) {
+          version = dependencyAndVersion.pop();
+        }
+
+        addNpmDependency({
+          name: dependencyAndVersion.join('@'),
+          version,
+        });
+      }
+
+      if (list && list.current && explorerDependencies.length) {
+        addDependency(explorerDependencies[0]);
+      }
+    }
+
     if (list && list.current) {
       const first = list.current.firstChild;
       const last = list.current.lastChild;
-      const input = searchInput.current;
-      const activeElement = document.activeElement;
       if (up) {
         if (
           activeElement === (input || first) ||
@@ -64,9 +88,6 @@ export const useKeyboard = (
       }
 
       if (explorerDependencies.length) {
-        if (enter && activeElement === input) {
-          addDependency(explorerDependencies[0]);
-        }
         if (one) {
           addDependency(explorerDependencies[0]);
         }
