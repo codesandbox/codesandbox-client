@@ -1,8 +1,9 @@
 # VSCode TextMate [![Build Status](https://travis-ci.org/Microsoft/vscode-textmate.svg?branch=master)](https://travis-ci.org/Microsoft/vscode-textmate) [![Coverage Status](https://coveralls.io/repos/github/Microsoft/vscode-textmate/badge.svg?branch=master)](https://coveralls.io/github/Microsoft/vscode-textmate?branch=master)
 
-An interpreter for grammar files as defined by TextMate. Supports loading grammar files from JSON or PLIST format. Cross - grammar injections are currently not supported.
+Интерпретатор для файлов грамматики, как это определено TextMate. Поддерживает загрузку файлов грамматики из формата JSON или PLIST. 
+Внедрение кросс-грамматики в настоящее время не поддерживается.
 
-## Installing
+## Установка
 
 ```sh
 npm install vscode-textmate
@@ -35,9 +36,9 @@ var registry = new vsctm.Registry({
 	}
 });
 
-// Load the JavaScript grammar and any other grammars included by it async.
+// Загрузите грамматику JavaScript и любые другие грамматики, включенные в нее async.
 registry.loadGrammar('source.js').then(grammar => {
-	// at this point `grammar` is available...
+	// на данный момент доступна `грамматика` ...
 	var lineTokens = grammar.tokenizeLine('function add(a,b) { return a+b; }');
 	for (var i = 0; i < lineTokens.tokens.length; i++) {
 		var token = lineTokens.tokens[i];
@@ -47,9 +48,9 @@ registry.loadGrammar('source.js').then(grammar => {
 
 ```
 
-## Tokenizing multiple lines
+## Токенизация нескольких строк
 
-To tokenize multiple lines, you must pass in the previous returned `ruleStack`.
+Чтобы токенизировать несколько строк, вы должны передать предыдущий возвращенный `ruleStack`.
 
 ```javascript
 var ruleStack = null;
@@ -62,20 +63,20 @@ for (var i = 0; i < lines.length; i++) {
 
 ## API doc
 
-See [the main.ts file](./src/main.ts)
+См. [main.ts файл](./src/main.ts)
 
-## Developing
+## Развитие
 
-* Clone the repository
-* Run `npm install`
-* Compile in the background with `npm run watch`
-* Run tests with `npm test`
-* Run benchmark with `npm run benchmark`
-* Troubleshoot a grammar with `npm run inspect -- PATH_TO_GRAMMAR PATH_TO_FILE`
+* Клонировать репозиторий
+* Грузить `npm install`
+* Компилировать в фоновом режиме с `npm run watch`
+* Выполнить тесты с `npm test`
+* Запустить бенчмарк с помощью `npm run benchmark`
+* Устранить неполадки грамматики с помощью `npm run inspect -- PATH_TO_GRAMMAR PATH_TO_FILE`
 
-## Code of Conduct
+## Кодекс поведения
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+Этот проект был принят на вооружение [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). Для получения дополнительной информации см. [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) или контакт [opencode@microsoft.com](mailto:opencode@microsoft.com) с любыми дополнительными вопросами или комментариями.
 
 
 ## License
