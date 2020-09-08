@@ -5,11 +5,12 @@ import {
   Stack,
   Text,
   Stats,
-  Link,
   IconButton,
   SkeletonText,
+  isMenuClicked,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { SandboxTypes } from './constants';
 
@@ -154,18 +155,30 @@ export const SandboxCard = ({
   return (
     <div ref={ref}>
       <Stack
-        as={Link}
-        href={sandboxUrl({ id: sandbox.id })}
         direction="vertical"
         gap={4}
         onContextMenu={event => onContextMenu(event, sandbox.id)}
-        onKeyDown={event => onKeyDown(event, sandbox.id)}
-        style={{ opacity: isDragging ? 0.2 : 1 }}
+        onClick={() => {
+          // we use on click instead of anchor tag so that safari renders
+          // the html5 drag thumbnail instead of text
+          if (isMenuClicked(event)) return;
+          window.location.href = sandboxUrl({ id: sandbox.id });
+        }}
+        tabIndex={0}
+        onKeyDown={event => {
+          if (event.keyCode === ENTER && !isMenuClicked(event)) {
+            window.location.href = sandboxUrl({ id: sandbox.id });
+          } else {
+            onKeyDown(event, sandbox.id);
+          }
+        }}
+        style={{ opacity: isDragging ? 0.5 : 1 }}
         css={css({
           backgroundColor: 'grays.700',
           border: '1px solid',
           borderColor: 'grays.600',
           borderRadius: 'medium',
+          cursor: 'pointer',
           overflow: 'hidden',
           ':hover, :focus, :focus-within': {
             boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
