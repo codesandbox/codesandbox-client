@@ -12,7 +12,7 @@ import { Code, Container, Content } from './elements';
 
 export const CLIInstructions: FunctionComponent = () => {
   const {
-    actions: { cliInstructionsMounted },
+    actions: { cliInstructionsMounted }
   } = useOvermind();
 
   useEffect(() => {
