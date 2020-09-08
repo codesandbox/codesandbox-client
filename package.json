@@ -4,7 +4,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/codesandbox/codesandbox-client"
+    "url": "https://github.com/warsan/codesandbox-client"
   },
   "license": "GPL-3.0",
   "workspaces": {
