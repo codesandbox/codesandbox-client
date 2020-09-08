@@ -479,71 +479,25 @@ export const resolveOutOfSync: AsyncAction = async ({
   effects.analytics.track('GitHub - Resolve out of sync');
   const git = state.git;
   const { added, deleted, modified } = git.outOfSyncUpdates;
+
   git.isResolving = true;
-  if (added.length) {
-    await actions.files.createModulesByPath({
-      files: added.reduce((aggr, change) => {
-        aggr[change.filename] = { content: change.content };
-
-        return aggr;
-      }, {}),
-    });
-    // We optimistically keep source in sync
-    added.forEach(change => {
-      git.sourceModulesByPath['/' + change.filename] = change.content!;
-    });
-  }
-
-  if (deleted.length) {
-    await Promise.all(
-      deleted.map(change => {
-        const module = state.editor.modulesByPath['/' + change.filename];
-
-        return actions.files.moduleDeleted({ moduleShortid: module.shortid });
-      })
-    );
-    // We optimistically keep source in sync
-    deleted.forEach(change => {
-      delete git.sourceModulesByPath['/' + change.filename];
-    });
-  }
-  if (modified.length) {
-    await Promise.all(
-      modified.map(change => {
-        const module = state.editor.modulesByPath['/' + change.filename];
-
-        actions.editor.setCode({
-          moduleShortid: module.shortid,
-          code: change.content!,
-        });
-        return actions.editor.codeSaved({
-          moduleShortid: module.shortid,
-          code: change.content!,
-          cbID: null,
-        });
-      })
-    );
-    // We optimistically keep source in sync
-    modified.forEach(change => {
-      git.sourceModulesByPath['/' + change.filename] = change.content!;
-    });
-  }
 
   const sandbox = state.editor.currentSandbox!;
 
-  // When we have a PR and the source is out of sync with base, we need to create a commit to update it
+  // When we have a PR and the source is out of sync with base, we need to create a commit to update it. We do this
+  // first, because we need the new source to deal with binary files
   if (git.gitState === SandboxGitState.OUT_OF_SYNC_PR_BASE) {
     const changes: GitChanges = {
       added: added.map(change => ({
         path: '/' + change.filename,
         content: change.content!,
-        encoding: 'utf-8',
+        encoding: change.isBinary ? 'base64' : 'utf-8',
       })),
       deleted: deleted.map(change => '/' + change.filename),
       modified: modified.map(change => ({
         path: '/' + change.filename,
         content: change.content!,
-        encoding: 'utf-8',
+        encoding: change.isBinary ? 'base64' : 'utf-8',
       })),
     };
     const commit = await effects.api.createGitCommit(
@@ -567,6 +521,52 @@ export const resolveOutOfSync: AsyncAction = async ({
   }
 
   await actions.git._loadSourceSandbox();
+
+  if (added.length) {
+    await actions.files.createModulesByPath({
+      files: added.reduce((aggr, change) => {
+        aggr[change.filename] = change.isBinary
+          ? {
+              content: git.sourceModulesByPath['/' + change.filename],
+              isBinary: true,
+            }
+          : { content: change.content };
+
+        return aggr;
+      }, {}),
+    });
+  }
+
+  if (deleted.length) {
+    await Promise.all(
+      deleted.map(change => {
+        const module = state.editor.modulesByPath['/' + change.filename];
+
+        return actions.files.moduleDeleted({ moduleShortid: module.shortid });
+      })
+    );
+  }
+  if (modified.length) {
+    await Promise.all(
+      modified.map(change => {
+        const module = state.editor.modulesByPath['/' + change.filename];
+
+        actions.editor.setCode({
+          moduleShortid: module.shortid,
+          code: change.isBinary
+            ? git.sourceModulesByPath['/' + change.filename]
+            : change.content!,
+        });
+        return actions.editor.codeSaved({
+          moduleShortid: module.shortid,
+          code: change.isBinary
+            ? git.sourceModulesByPath['/' + change.filename]
+            : change.content!,
+          cbID: null,
+        });
+      })
+    );
+  }
 
   actions.git._setGitChanges();
   git.outOfSyncUpdates.added = [];
@@ -620,6 +620,7 @@ export const _evaluateGitChanges: AsyncAction<
     if (
       change.status === 'removed' &&
       state.editor.modulesByPath[path] &&
+      !(state.editor.modulesByPath[path] as Module).isBinary &&
       (state.editor.modulesByPath[path] as Module).code !== change.content
     ) {
       return aggr.concat(change);
@@ -634,6 +635,7 @@ export const _evaluateGitChanges: AsyncAction<
     // We are in conflict if the source changed the file and sandbox also changed the file
     if (
       change.status === 'modified' &&
+      !(state.editor.modulesByPath[path] as Module).isBinary &&
       (state.editor.modulesByPath[path] as Module).code !== change.content &&
       (state.editor.modulesByPath[path] as Module).code !==
         state.git.sourceModulesByPath[path]
