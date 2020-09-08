@@ -1,9 +1,9 @@
 @types/react-native
 packages/app/node_modules/styled-components
 
-# Prevent duplicate graphql. This doesn't seem to break anything
+# Предотвратить дублирование graphql. Кажется, это ничего не сломает
 @divyenduz/ts-graphql-plugin/node_modules/**
 graphql-config/node_modules/**
 
-# Issue with jest conflicting with jest-styled-components
+# Проблема с конфликтом шутки с компонентами в стиле шутки
 jest-styled-components/typings/**
