@@ -1,13 +1,11 @@
+import React from 'react';
+import isChromatic from 'chromatic/isChromatic';
 import { withKnobs } from '@storybook/addon-knobs';
 import { withA11y } from '@storybook/addon-a11y';
 import { addDecorator, addParameters, configure } from '@storybook/react';
 import { themes } from '@storybook/theming';
-import isChromatic from 'chromatic/isChromatic';
-import React from 'react';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
-
 import { makeTheme, getThemes } from '../src/components/ThemeProvider';
-
 import { withThemesProvider } from './storybook-addon-styled-component-theme';
 
 type Theme = {
@@ -37,6 +35,8 @@ const viewports = {
 // new globals based on theme?
 // using sidebar as the styles for body for now 🤷
 const GlobalStyle = createGlobalStyle`
+
+
   html body {
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: auto;
@@ -64,43 +64,45 @@ const GlobalStyle = createGlobalStyle`
     a {
       color: #40a9f3;
     }
+
   }
 `;
-const allThemes: Theme[] = getThemes();
-const vsCodeThemes: Theme[] = allThemes.map(b => makeTheme(b, b.name));
+const allThemes = getThemes();
+const vsCodeThemes = allThemes.map((b) => makeTheme(b, b.name));
 
-const CodeSandboxBlack = vsCodeThemes.find(
-  ({ name }) => name === 'CodeSandbox Black'
+const blackCodesandbox = vsCodeThemes.find(
+  (theme: Theme) => theme.name === 'CodeSandbox Black'
 );
 
-if (isChromatic()) {
-  const withGlobal = (story: any) => (
-    <ThemeProvider theme={makeTheme(CodeSandboxBlack, 'default')}>
+if (!isChromatic()) {
+  const withGlobal = (cb: any) => (
+    <>
       <GlobalStyle />
+      {cb()}
+    </>
+  );
 
-      {story()}
+  const rest = vsCodeThemes.filter(
+    (theme: Theme) => theme.name !== 'CodeSandbox Black'
+  );
+  addDecorator(withGlobal);
+  addDecorator(withThemesProvider([blackCodesandbox, ...rest]));
+} else {
+  const withGlobal = (cb: any) => (
+    <ThemeProvider theme={makeTheme(blackCodesandbox, 'default')}>
+      <GlobalStyle />
+      {cb()}
     </ThemeProvider>
   );
 
   addDecorator(withGlobal);
-} else {
-  const withGlobal = (story: any) => (
-    <>
-      <GlobalStyle />
-
-      {story()}
-    </>
-  );
-
-  const rest = vsCodeThemes.filter(({ name }) => name !== 'CodeSandbox Black');
-  addDecorator(withGlobal);
-  addDecorator(withThemesProvider([CodeSandboxBlack, ...rest]));
 }
 addDecorator(withA11y);
 addDecorator(withKnobs);
-
 addParameters({ viewport: { viewports } });
+
+// Option defaults.
 addParameters({ options: { theme: themes.dark } });
 
-// automatically import all files ending in *.stories.tsx
+// automatically import all files ending in *.stories.js
 configure(require.context('../src', true, /\.stories\.tsx$/), module);

@@ -1,4 +1,5 @@
 import addons from '@storybook/addons';
+import { List } from 'immutable';
 import * as React from 'react';
 import {
   branch,
@@ -16,15 +17,15 @@ const BaseComponent = ({ theme, Provider, children }) => (
 );
 
 export const ThemesProvider = compose(
-  mapProps(props => {
+  mapProps((props) => {
     const { CustomThemeProvider } = props;
     const Provider = CustomThemeProvider ? CustomThemeProvider : ThemeProvider;
     return { ...props, Provider };
   }),
   withState('theme', 'setTheme', null),
   withHandlers({
-    onSelectTheme: ({ setTheme, themes }) => name => {
-      const theme = themes.find(th => th.name === name);
+    onSelectTheme: ({ setTheme, themes }) => (name) => {
+      const theme = themes.find((th) => th.name === name);
       setTheme(theme);
     },
   }),
@@ -41,5 +42,5 @@ export const ThemesProvider = compose(
       channel.removeListener('selectTheme', onSelectTheme);
     },
   }),
-  branch(props => !props.theme, renderNothing)
+  branch((props) => !props.theme, renderNothing)
 )(BaseComponent);
