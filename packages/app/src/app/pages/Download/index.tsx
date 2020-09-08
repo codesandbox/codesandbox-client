@@ -6,13 +6,15 @@ import { Text, Stack, ThemeProvider } from '@codesandbox/components';
 import { useParams } from 'react-router-dom';
 
 export const Download: FunctionComponent = () => {
-  const { actions } = useOvermind();
+  const { actions, state } = useOvermind();
   const { id } = useParams();
 
   useEffect(() => {
-    actions.editor.sandboxChanged({ id });
+    if (!state.editor.currentSandbox) {
+      actions.editor.sandboxChanged({ id });
+    }
     actions.editor.createZipClicked();
-  }, []);
+  }, [state.editor.currentSandbox]);
 
   return (
     <ThemeProvider>
