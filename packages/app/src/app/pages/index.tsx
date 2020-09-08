@@ -42,7 +42,7 @@ const SignIn = Loadable(() =>
 );
 const Live = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './Live').then(module => ({
-    default: module.LivePage,
+    default: module.Live,
   }))
 );
 const VercelSignIn = Loadable(() =>
@@ -164,7 +164,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/new-dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
-            <Route path="/live/:id" component={Live} />
+            <Route path="/live/:roomId" component={Live} />
             <Route path="/signin" exact component={SignIn} />
             <Route path="/signin/duplicate" component={DuplicateAccount} />
             <Route path="/signup/:userId" exact component={SignUp} />
