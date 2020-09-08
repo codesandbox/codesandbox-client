@@ -7,7 +7,7 @@ const execSync = require('child_process').execSync;
 const path = require('path');
 // Browser detection does not work properly on Travis.
 const installedBrowsers = isTravis ? ['Firefox'] : detectBrowsers.getInstalledBrowsers()
-  // XXX: Browsers with spaces in their name (e.g. Chrome Canary) need to have the space removed
+  // XXX: В браузерах, в названии которых есть пробелы (например, Chrome Canary), необходимо удалить пробел.
   .map(function(browser) { return browser.name.replace(/ /, ''); })
   .filter(function(browser) {
     if (seenBrowsers[browser]) {
@@ -22,19 +22,19 @@ let dropbox = false;
 let continuous = false;
 let coverage = false;
 let karmaFiles = [
-  // Main module and fixtures loader
+  // Загрузчик основного модуля и приспособлений
   'test/harness/test.js',
-  // WebWorker script.
+  // Скрипт WebWorker.
   { pattern: 'test/harness/factories/workerfs_worker.js', included: false, watched: true },
-  // Source map support
+  // Поддержка исходной карты
   { pattern: 'src/**/*', included: false, watched: false },
   { pattern: 'test/**/*', included: false, watched: false }
 ];
 
-// The presence of the Dropbox library dynamically toggles the tests.
+// Наличие библиотеки Dropbox динамически переключает тесты.
 if (dropbox) {
   karmaFiles.unshift('node_modules/dropbox/dist/Dropbox-sdk.min.js');
-  // Generate token.
+  // Создать токен.
   execSync(`node ${path.resolve(__dirname, './build/scripts/get_db_credentials.js')} ${path.resolve(__dirname, './test/fixtures/dropbox/token.json')}`, {
     stdio: 'inherit'
   });
@@ -64,9 +64,9 @@ module.exports = function(configSetter) {
     coverageReporter: undefined,
     client: {
       mocha: {
-        // Stop tests after first failure.
-        // Our tests have some global state (e.g. # of pending callbacks). Once those get messed up by a failing test,
-        // subsequent tests are likely to fail.
+        // Остановите тесты после первого сбоя.
+        // Наши тесты имеют некоторое глобальное состояние (например, количество ожидающих обратных вызовов). 
+        // Как только они запутаются из-за неудачного теста, последующие тесты, скорее всего, не пройдут.
         bail: true
       }
     },
