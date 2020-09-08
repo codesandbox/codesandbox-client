@@ -56,13 +56,13 @@ export const BundleSizes: FunctionComponent<Props> = ({
   return bundle ? (
     <Stack justify="space-between" css={{ width: '100%' }}>
       <Text>
-        <Text variant="muted">Gzip:</Text>
+        <Text variant="muted">Gzip: </Text>
 
         {formatSize(bundle.gzip)}
       </Text>
 
       <Text>
-        <Text variant="muted">Size:</Text>
+        <Text variant="muted">Size: </Text>
 
         {formatSize(bundle.size)}
       </Text>

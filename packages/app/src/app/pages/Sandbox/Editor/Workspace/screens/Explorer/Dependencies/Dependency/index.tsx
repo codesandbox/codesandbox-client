@@ -141,9 +141,8 @@ export const Dependency: FunctionComponent<Props> = ({
           justify="flex-end"
         >
           <Text maxWidth="30%" variant="muted">
-            {`${formatVersion(dependencies[dependency])} (${formatVersion(
-              version
-            )})`}
+            {formatVersion(dependencies[dependency])}{' '}
+            {version && <span>({formatVersion(version)})</span>}
           </Text>
         </Stack>
 
