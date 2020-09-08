@@ -1,5 +1,5 @@
 [ignore]
-# We vendor our src directory, which is not needed for type-checking
+# Мы поставляем наш каталог src, который не нужен для проверки типов.
 .*/styled-components/src/.*
 .*/node_modules/*
 
@@ -7,18 +7,17 @@
 .*/node_modules/common*
 
 [libs]
-# This is were your own flow-typed libdefs go
+# Это были ваши собственные библиотеки libdef с потоком
 flow-typed
 
-# These declarations are super explicit...
-# We want to show what libdef files we need to make
-# flow understand all external dependencies
+# Эти объявления очень явные...
+# Мы хотим показать, какие файлы libdef нам нужно сделать
+# поток понимает все внешние зависимости
 #
-# If you have similar dependencies, you will need to
-# check which libdef files are covered by your flow-typed
-# directory!
+# Если у вас есть похожие зависимости, вам нужно будет 18 
+# проверяем, какие файлы libdef покрываются вашим потоком 19 # каталог!
 #
-# A more generic approach (please use with caution!):
+# Более общий подход (используйте с осторожностью!): 21 год 
 # node_modules/styled-components/flow-typed/*.js
 
 node_modules/styled-components/flow-typed/react-native.js
@@ -32,6 +31,6 @@ module.system.node.resolve_dirname=node_modules
 module.system.node.resolve_dirname=src
 module.system.node.resolve_dirname=packages
 
-# Yeah, we use this to ignore errors...
-# Just add it, if you have a different suppress_comment notation
+# Да, мы используем это, чтобы игнорировать ошибки...
+# Просто добавьте его, если у вас другая нотация suppress_comment
 suppress_comment=.*\\$FlowIssue
