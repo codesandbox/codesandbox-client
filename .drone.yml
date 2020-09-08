@@ -50,9 +50,9 @@ steps:
       channel: infra
       template: >
         {{#success build.status}}
-          👍 {{repo.owner}}/{{repo.name}} pull request #{{build.pull}} successfully built. Access it at https://pr{{build.pull}}.build.csb.dev/ and see the build logs <{{build.link}}|here>.
+          👍 {{repo.owner}}/{{repo.name}} pull request #{{build.pull}} успешно построен. Доступ к нему на https://pr{{build.pull}}.build.csb.dev/ и посмотрите журналы сборки <{{build.link}}|here>.
         {{else}}
-          👎 {{repo.owner}}/{{repo.name}} pull request #{{build.pull}} building failed. See what happened <{{build.link}}|here>.
+          👎 {{repo.owner}}/{{repo.name}} pull request #{{build.pull}} здание не удалось. Посмотри, что случилось <{{build.link}}|here>.
         {{/success}}
     when:
       status:
@@ -141,9 +141,9 @@ steps:
       channel: infra
       template: >
         {{#success build.status}}
-          👍 {{repo.owner}}/{{repo.name}} branch {{build.branch}} successfully built. Access it at https://{{build.branch}}.build.csb.dev/ and see the build logs <{{build.link}}|here>.
+          👍 {{repo.owner}}/{{repo.name}} branch {{build.branch}} успешно построен. Доступ к нему на https://{{build.branch}}.build.csb.dev/ и посмотрите журналы сборки <{{build.link}}|here>.
         {{else}}
-          👎 {{repo.owner}}/{{repo.name}} branch {{build.branch}} building failed. See what happened <{{build.link}}|here>.
+          👎 {{repo.owner}}/{{repo.name}} branch {{build.branch}} здание не удалось. Посмотри, что случилось <{{build.link}}|here>.
         {{/success}}
     when:
       status:
