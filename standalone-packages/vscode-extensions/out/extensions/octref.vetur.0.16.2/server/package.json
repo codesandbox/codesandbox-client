@@ -31,6 +31,7 @@
     "lodash": "^4.17.4",
     "nuxt-helper-json": "^1.0.0",
     "parse-gitignore": "^1.0.1",
+    "prettier": "^1.16.4",
     "prettier-eslint": "^8.8.2",
     "read-pkg-up": "^4.0.0",
     "resolve": "^1.8.1",
