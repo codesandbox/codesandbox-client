@@ -9,6 +9,13 @@ export const codeReferenceMetadataFragment = gql`
   }
 `;
 
+export const usereferenceMetadataFragment = gql`
+  fragment UserReferenceMetadata on UserReferenceMetadata {
+    username
+    userId
+  }
+`;
+
 export const commentFragment = gql`
   fragment Comment on Comment {
     id
@@ -16,9 +23,22 @@ export const commentFragment = gql`
     insertedAt
     updatedAt
     isResolved
+    anchorReference {
+      id
+      metadata {
+        ... on CodeReferenceMetadata {
+          ...CodeReferenceMetadata
+        }
+      }
+      resource
+      type
+    }
     references {
       id
       metadata {
+        ... on UserReferenceMetadata {
+          ...UserReferenceMetadata
+        }
         ... on CodeReferenceMetadata {
           ...CodeReferenceMetadata
         }
@@ -38,6 +58,7 @@ export const commentFragment = gql`
     replyCount
   }
   ${codeReferenceMetadataFragment}
+  ${usereferenceMetadataFragment}
 `;
 
 export const commentWithRepliesFragment = gql`
@@ -50,6 +71,9 @@ export const commentWithRepliesFragment = gql`
     references {
       id
       metadata {
+        ... on UserReferenceMetadata {
+          ...UserReferenceMetadata
+        }
         ... on CodeReferenceMetadata {
           ...CodeReferenceMetadata
         }
@@ -73,4 +97,5 @@ export const commentWithRepliesFragment = gql`
   }
   ${commentFragment}
   ${codeReferenceMetadataFragment}
+  ${usereferenceMetadataFragment}
 `;

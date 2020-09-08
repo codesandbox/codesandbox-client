@@ -1,7 +1,10 @@
-import { AsyncAction, Action } from 'app/overmind';
 import { client } from 'app/graphql/client';
+import { Action, AsyncAction } from 'app/overmind';
+
 import gql from 'graphql-tag';
+
 import * as internalActions from './internalActions';
+import { preferenceTypes } from './state';
 
 export const internal = internalActions;
 
@@ -53,7 +56,8 @@ export const filterNotifications: AsyncAction<string> = async (
       type: state.userNotifications.activeFilters,
     });
 
-    state.userNotifications.notifications = me.notifications;
+    state.userNotifications.notifications =
+      me && me.notifications ? me.notifications : null;
   } catch {
     state.userNotifications.activeFilters = filters;
   }
@@ -167,7 +171,8 @@ export const getNotifications: AsyncAction = async ({ state, effects }) => {
       type: [],
     });
 
-    state.userNotifications.notifications = me.notifications;
+    state.userNotifications.notifications =
+      me && me.notifications ? me.notifications : null;
   } catch {
     effects.notificationToast.error(
       'There has been a problem getting your notifications'
@@ -182,4 +187,46 @@ export const openTeamAcceptModal: Action<{
 }> = ({ state }, activeInvitation) => {
   state.userNotifications.activeInvitation = activeInvitation;
   state.currentModal = 'teamInvite';
+};
+
+export const getNotificationPreferences: AsyncAction = async ({
+  state,
+  effects,
+}) => {
+  if (!state.user) return;
+  try {
+    const data = await effects.gql.queries.getEmailPreferences({});
+
+    if (!data.me || !data.me.notificationPreferences) return;
+
+    state.userNotifications.preferences = data.me.notificationPreferences;
+  } catch {
+    effects.notificationToast.error(
+      'There has been a problem getting your email preferences'
+    );
+  }
+};
+
+type PreferenceTypes = {
+  [key in keyof preferenceTypes]: boolean;
+};
+
+export const updateNotificationPreferences: AsyncAction<Partial<
+  PreferenceTypes
+>> = async ({ state, effects }, preference) => {
+  if (!state.user) return;
+  const oldPreferences = state.userNotifications.preferences;
+  const newPreferences = {
+    ...oldPreferences,
+    ...preference,
+  } as PreferenceTypes;
+  try {
+    state.userNotifications.preferences = newPreferences;
+    await effects.gql.mutations.updateNotificationPreferences(newPreferences);
+  } catch {
+    state.userNotifications.preferences = oldPreferences;
+    effects.notificationToast.error(
+      'There has updating your email preferences'
+    );
+  }
 };

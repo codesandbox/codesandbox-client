@@ -38,12 +38,18 @@ exports[`convert-esmodule can convert function exports 1`] = `
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-function test() {}
 exports.test = test;
+function test() {}
 const test2 = () => {};
 exports.test2 = test2;
 class Test {}
 exports.Test = Test;
+"
+`;
+
+exports[`convert-esmodule can convert import expressions 1`] = `
+"\\"use strict\\";
+$csbImport(\\"test\\");
 "
 `;
 
@@ -230,6 +236,19 @@ const short = {
 "
 `;
 
+exports[`convert-esmodule defines its exports before requires 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+exports.get = get;
+var $csb__colorsvalues = require(\\"./colors-values\\");
+function get() {
+  return 5;
+}
+"
+`;
+
 exports[`convert-esmodule does empty exports 1`] = `
 "\\"use strict\\";
 Object.defineProperty(exports, \\"__esModule\\", {
@@ -273,7 +292,7 @@ exports[`convert-esmodule doesn't set var definitions 1`] = `
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-var global = typeof window !== \\"undefined\\" ? window : {};
+var global = typeof  window !== \\"undefined\\" ? window : {};
 exports.global = global;
 "
 `;
@@ -607,6 +626,12 @@ var $csb__2 = require(\\"2\\");
 exports[`convert-esmodule parses and writes chars with linebreaks 1`] = `
 "\\"use strict\\";
 var WS_CHARS = \\"u2000-     　﻿\\";
+"
+`;
+
+exports[`convert-esmodule printer issues can convert + + 1`] = `
+"\\"use strict\\";
+c = (10, + + 15);
 "
 `;
 

@@ -1,30 +1,44 @@
+import { UserQuery } from '@codesandbox/common/lib/types';
+import { Button, Stack } from '@codesandbox/components';
 import React from 'react';
-import { Stack, Textarea, Button } from '@codesandbox/components';
+
+import { useCodesandboxMention } from '../hooks/useCodesandboxMention';
 
 export const EditComment: React.FC<{
   initialValue?: string;
-  onSave: (value: string) => void;
+  initialMentions?: { [mentionName: string]: UserQuery };
+  onSave: (
+    value: string,
+    mentions: { [mentionName: string]: UserQuery }
+  ) => void;
   onCancel: () => void;
-}> = ({ initialValue = '', onSave, onCancel }) => {
-  const [value, setValue] = React.useState(initialValue);
+}> = ({ initialValue = '', initialMentions = {}, onSave, onCancel }) => {
+  const [elements, value, mentions] = useCodesandboxMention({
+    initialValue,
+    initialMentions,
+    onSubmit: onSave,
+    fixed: false,
+    props: {
+      autosize: true,
+      autoFocus: true,
+      style: { lineHeight: 1.2 },
+    },
+  });
 
   return (
     <Stack
       as="form"
       onSubmit={event => {
         event.preventDefault();
-        onSave(value);
+        onSave(value, mentions);
+      }}
+      css={{
+        position: 'relative',
       }}
       direction="vertical"
       gap={2}
     >
-      <Textarea
-        autosize
-        autoFocus
-        value={value}
-        style={{ lineHeight: 1.2 }}
-        onChange={event => setValue(event.target.value)}
-      />
+      {elements}
       <Stack justify="flex-end">
         <Button
           type="button"

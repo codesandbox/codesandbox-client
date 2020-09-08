@@ -1,8 +1,43 @@
-import { gql, Query } from 'overmind-graphql';
+import {
+  ArchiveAllNotificationsMutation,
+  ArchiveAllNotificationsMutationVariables,
+  ArchiveNotificationMutation,
+  ArchiveNotificationMutationVariables,
+  ClearNotificationCountMutation,
+  ClearNotificationCountMutationVariables,
+  MarkNotificationsAsReadMutation,
+  MarkNotificationsAsReadMutationVariables,
+  UpdateNotificationReadStatusMutation,
+  UpdateNotificationReadStatusMutationVariables,
+  UpdateNotificationPreferencesMutation,
+  UpdateNotificationPreferencesMutationVariables,
+} from 'app/graphql/types';
+import { Query, gql } from 'overmind-graphql';
+
+export const updateNotificationPreferences: Query<
+  UpdateNotificationPreferencesMutation,
+  UpdateNotificationPreferencesMutationVariables
+> = gql`
+  mutation UpdateNotificationPreferences(
+    $emailCommentMention: Boolean
+    $emailCommentReply: Boolean
+    $emailNewComment: Boolean
+  ) {
+    updateNotificationPreferences(
+      emailCommentMention: $emailCommentMention
+      emailCommentReply: $emailCommentReply
+      emailNewComment: $emailNewComment
+    ) {
+      emailCommentMention
+      emailCommentReply
+      emailNewComment
+    }
+  }
+`;
 
 export const markAllNotificationsAsRead: Query<
-  { markAllNotificationsAsRead: { id: string } },
-  {}
+  MarkNotificationsAsReadMutation,
+  MarkNotificationsAsReadMutationVariables
 > = gql`
   mutation MarkNotificationsAsRead {
     markAllNotificationsAsRead {
@@ -12,8 +47,8 @@ export const markAllNotificationsAsRead: Query<
 `;
 
 export const archiveAllNotifications: Query<
-  { archiveAllNotifications: { id: string } },
-  {}
+  ArchiveAllNotificationsMutation,
+  ArchiveAllNotificationsMutationVariables
 > = gql`
   mutation ArchiveAllNotifications {
     archiveAllNotifications {
@@ -23,10 +58,13 @@ export const archiveAllNotifications: Query<
 `;
 
 export const updateNotificationReadStatus: Query<
-  { markAllNotificationsAsRead: { id: string } },
-  { notificationId: string; read: boolean }
+  UpdateNotificationReadStatusMutation,
+  UpdateNotificationReadStatusMutationVariables
 > = gql`
-  mutation UpdateNotificationReadStatus($notificationId: ID!, $read: Boolean!) {
+  mutation UpdateNotificationReadStatus(
+    $notificationId: UUID4!
+    $read: Boolean!
+  ) {
     updateNotificationReadStatus(notificationId: $notificationId, read: $read) {
       id
     }
@@ -34,10 +72,10 @@ export const updateNotificationReadStatus: Query<
 `;
 
 export const archiveNotification: Query<
-  { archiveNotification: { id: string } },
-  { notificationId: string }
+  ArchiveNotificationMutation,
+  ArchiveNotificationMutationVariables
 > = gql`
-  mutation ArchiveNotification($notificationId: ID!) {
+  mutation ArchiveNotification($notificationId: UUID4!) {
     archiveNotification(notificationId: $notificationId) {
       id
     }
@@ -45,8 +83,8 @@ export const archiveNotification: Query<
 `;
 
 export const clearNotificationCount: Query<
-  { clearNotificationCount: { id: string } },
-  {}
+  ClearNotificationCountMutation,
+  ClearNotificationCountMutationVariables
 > = gql`
   mutation ClearNotificationCount {
     clearNotificationCount {

@@ -18,32 +18,28 @@ import React, {
 } from 'react';
 import { Link } from 'react-router-dom';
 
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { PrivacyTooltip } from '../PrivacyTooltip';
 import { Folder, Form, Main, NameInput, TemplateBadge } from './elements';
 
 const getFolderName = (sandbox: Sandbox) => {
   if (!sandbox) {
-    return 'My Sandboxes';
+    return 'Drafts';
   }
 
   if (sandbox.collection) {
     const base = basename(sandbox.collection.path);
-    if (base) {
-      return base;
-    }
+
+    return base || 'All Sandboxes';
   }
 
-  if (sandbox.team) {
-    return sandbox.team.name;
-  }
-
-  return 'My Sandboxes';
+  return 'Drafts';
 };
 
 export const SandboxName: FunctionComponent = () => {
   const {
     actions: {
-      modalOpened,
+      modals,
       workspace: { sandboxInfoUpdated, valueChanged },
     },
     state: {
@@ -110,15 +106,18 @@ export const SandboxName: FunctionComponent = () => {
 
   const value = name !== 'Untitled' && updatingName ? name : '';
 
+  if (!currentSandbox) {
+    return null;
+  }
+
   const folderName = getFolderName(currentSandbox);
 
-  const { customTemplate, owned } = currentSandbox || {
-    customTemplate: null,
-    owned: false,
-  };
+  const { customTemplate } = currentSandbox;
 
   const git =
     !updatingName && (currentSandbox.git || currentSandbox.originalGit);
+
+  const owned = hasPermission(currentSandbox.authorization, 'owner');
 
   return (
     <Main style={fadeIn ? { opacity: 1 } : null}>
@@ -129,7 +128,11 @@ export const SandboxName: FunctionComponent = () => {
               <Button
                 variant="link"
                 css={css({ fontSize: 3, width: 'auto' })}
-                onClick={() => modalOpened({ modal: 'moveSandbox' })}
+                onClick={() =>
+                  modals.moveSandboxModal.open({
+                    sandboxIds: [currentSandbox.id],
+                  })
+                }
                 arial-label="Change sandbox folder"
               >
                 {folderName}

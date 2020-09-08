@@ -10,10 +10,9 @@ export const sandboxFragmentDashboard = gql`
     updatedAt
     removedAt
     privacy
+    isFrozen
     screenshotUrl
     screenshotOutdated
-    likeCount
-    forkCount
     viewCount
 
     source {
@@ -39,6 +38,29 @@ export const sandboxFragmentDashboard = gql`
   }
 `;
 
+export const repoFragmentDashboard = gql`
+  fragment repoFragmentDashboard on Sandbox {
+    ...sandboxFragmentDashboard
+    baseGit {
+      branch
+      id
+      repo
+      username
+      path
+    }
+    originalGit {
+      branch
+      id
+      repo
+      username
+      path
+    }
+    prNumber
+  }
+
+  ${sandboxFragmentDashboard}
+`;
+
 export const sidebarCollectionDashboard = gql`
   fragment sidebarCollectionDashboard on Collection {
     id
@@ -54,19 +76,7 @@ export const templateFragmentDashboard = gql`
     iconUrl
     published
     sandbox {
-      id
-      alias
-      title
-      description
-      insertedAt
-      updatedAt
-      removedAt
-      likeCount
-      forkCount
-      viewCount
-      screenshotUrl
-      screenshotOutdated
-      privacy
+      ...sandboxFragmentDashboard
 
       git {
         id
@@ -90,6 +100,7 @@ export const templateFragmentDashboard = gql`
       }
     }
   }
+  ${sandboxFragmentDashboard}
 `;
 
 export const teamFragmentDashboard = gql`
@@ -98,6 +109,12 @@ export const teamFragmentDashboard = gql`
     name
     description
     creatorId
+    avatarUrl
+
+    userAuthorizations {
+      userId
+      authorization
+    }
 
     users {
       id
@@ -121,13 +138,25 @@ export const currentTeamInfoFragment = gql`
     creatorId
     description
     inviteToken
+    joinedPilotAt
     name
+    avatarUrl
+
     users {
-      avatarUrl
-      name
-      lastName
-      username
       id
+      avatarUrl
+      username
+    }
+
+    invitees {
+      id
+      avatarUrl
+      username
+    }
+
+    userAuthorizations {
+      userId
+      authorization
     }
   }
 `;

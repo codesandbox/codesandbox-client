@@ -65,12 +65,14 @@ export const persistCursorToUrl: Action<{
 
   // Restore the URI encoded parts to their original values. Our server handles this well
   // and all the browsers do too.
-  effects.router.replace(
-    newUrl
-      .toString()
-      .replace(/%2F/g, '/')
-      .replace('%3A', ':')
-  );
+  if (newUrl) {
+    effects.router.replace(
+      newUrl
+        .toString()
+        .replace(/%2F/g, '/')
+        .replace('%3A', ':')
+    );
+  }
 }, 500);
 
 export const loadCursorFromUrl: AsyncAction = async ({
@@ -149,11 +151,15 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
 }>(async ({ state, actions, effects }, { id }) => {
   // This happens when we fork. This can be avoided with state first routing
   if (state.editor.isForkingSandbox && state.editor.currentSandbox) {
-    effects.vscode.openModule(state.editor.currentModule);
+    if (state.editor.currentModule.id) {
+      effects.vscode.openModule(state.editor.currentModule);
+    }
 
     await actions.editor.internal.initializeSandbox(
       state.editor.currentSandbox
     );
+
+    actions.git.loadGitSource();
 
     state.editor.isForkingSandbox = false;
     return;
@@ -259,7 +265,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
         primary: {
           label: 'Fork',
           run: () => {
-            actions.editor.forkSandboxClicked();
+            actions.editor.forkSandboxClicked({});
           },
         },
       },
@@ -294,9 +300,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     actions.comments.getSandboxComments(sandbox.id);
   }
 
-  if (sandbox.originalGit && hasPermission(sandbox.authorization, 'owner')) {
-    actions.git.loadGitSource();
-  }
+  actions.git.loadGitSource();
 
   state.editor.isLoading = false;
 });
@@ -608,13 +612,16 @@ export const forkExternalSandbox: AsyncAction<{
   }
 };
 
-export const forkSandboxClicked: AsyncAction = async ({ actions, state }) => {
+export const forkSandboxClicked: AsyncAction<{
+  teamId?: string | null;
+}> = async ({ state, actions }, { teamId }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
 
   await actions.editor.internal.forkSandbox({
     sandboxId: state.editor.currentSandbox.id,
+    teamId,
   });
 };
 
@@ -861,9 +868,10 @@ export const updateEnvironmentVariables: AsyncAction<EnvironmentVariable> = asyn
   effects.codesandboxApi.restartSandbox();
 };
 
-export const deleteEnvironmentVariable: AsyncAction<{
-  name: string;
-}> = async ({ state, effects }, { name }) => {
+export const deleteEnvironmentVariable: AsyncAction<string> = async (
+  { effects, state },
+  name
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }

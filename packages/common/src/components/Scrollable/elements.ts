@@ -6,6 +6,9 @@ export const Container = styled(Scrollbar)`
 `;
 
 export const BaseScroller = styled.span`
+  @media screen and (max-width: 800px) {
+    padding-bottom: 40px;
+  }
   ::-webkit-scrollbar {
     width: 0;
     height: 0;

@@ -1,7 +1,13 @@
-import { Notification } from 'app/graphql/types';
+import { RecentNotificationFragment } from 'app/graphql/types';
+
+export type preferenceTypes = {
+  emailCommentMention: boolean;
+  emailCommentReply: boolean;
+  emailNewComment: boolean;
+};
 
 type State = {
-  notifications: Notification[] | null;
+  notifications: RecentNotificationFragment[] | null;
   connected: boolean;
   unreadCount: number;
   notificationsOpened: boolean;
@@ -11,6 +17,7 @@ type State = {
     userAvatar: string;
   } | null;
   activeFilters: string[];
+  preferences: preferenceTypes | null;
 };
 
 export const state: State = {
@@ -20,4 +27,5 @@ export const state: State = {
   notificationsOpened: false,
   activeInvitation: null,
   activeFilters: [],
+  preferences: null,
 };

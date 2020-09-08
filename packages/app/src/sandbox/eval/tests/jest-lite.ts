@@ -2,7 +2,7 @@ import { dispatch, actions, listen } from 'codesandbox-api';
 import { react, reactTs } from '@codesandbox/common/lib/templates';
 import { messages } from '@codesandbox/common/lib/utils/jest-lite';
 
-import expect from 'jest-matchers';
+import expect from 'expect';
 import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';
 
@@ -58,12 +58,12 @@ let jsdomPromise = null;
  * Load JSDOM while the sandbox loads. Before we run a test we make sure that this has been loaded.
  */
 const getJSDOM = () => {
-  let jsdomPath = '/static/js/jsdom-4.0.0.min.js';
+  let jsdomPath = '/static/js/jsdom-16.3.0.min.js';
   if (
     navigator.userAgent.indexOf('jsdom') !== -1 &&
     process.env.NODE_ENV === 'test'
   ) {
-    jsdomPath = 'file://' + path.resolve('./static/js/jsdom-4.0.0.min.js');
+    jsdomPath = 'file://' + path.resolve('./static/js/jsdom-16.3.0.min.js');
   }
 
   jsdomPromise = jsdomPromise || addScript(jsdomPath);

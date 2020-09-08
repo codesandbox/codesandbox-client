@@ -1,10 +1,10 @@
 import { Contributor, PermissionType } from '@codesandbox/common/lib/types';
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { identify } from '@codesandbox/common/lib/utils/analytics';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { IState, derived } from 'overmind';
 
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
 import { AsyncAction, RootState } from '.';
 
 /*
@@ -64,25 +64,13 @@ export const withLoadApp = <T>(
 
   if (state.hasLogIn) {
     try {
-      const [user] = await Promise.all([
-        effects.api.getCurrentUser(),
-        actions.getActiveTeam(),
+      await Promise.all([
+        effects.api.getCurrentUser().then(user => {
+          state.user = user;
+        }),
       ]);
-      state.user = user;
-      actions.internal.setPatronPrice();
-      effects.analytics.identify('signed_in', true);
-      effects.analytics.setUserId(state.user.id, state.user.email);
 
-      try {
-        actions.internal.trackCurrentTeams().catch(e => {});
-        actions.internal.identifyCurrentUser().catch(e => {});
-      } catch (e) {
-        // Not majorly important
-      }
-      actions.internal.showUserSurveyIfNeeded();
-      await effects.live.getSocket();
-      actions.userNotifications.internal.initialize();
-      effects.api.preloadTemplates();
+      await actions.internal.initializeNewUser();
       state.hasLogIn = true;
     } catch (error) {
       actions.internal.handleError({
@@ -190,7 +178,7 @@ export const createModals = <
   };
 } => {
   function createModal(name, modal) {
-    let resolver;
+    let resolver: ((res: T) => void) | null;
 
     const open: AsyncAction<any, any> = async ({ state }, newState = {}) => {
       state.modals.current = name;
@@ -204,7 +192,14 @@ export const createModals = <
 
     const close: AsyncAction<T> = async ({ state }, payload) => {
       state.modals.current = null;
-      resolver(payload || modal.result);
+      if (modal.state) {
+        Object.keys(modal.state).forEach(stateKey => {
+          state.modals[name][stateKey] = modal.state[stateKey];
+        });
+      }
+      if (resolver) {
+        resolver(payload || modal.result);
+      }
     };
 
     return {

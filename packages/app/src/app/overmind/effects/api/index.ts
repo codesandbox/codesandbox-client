@@ -19,10 +19,12 @@ import {
   Sandbox,
   SandboxPick,
   UploadedFilesInfo,
+  UserQuery,
   UserSandbox,
 } from '@codesandbox/common/lib/types';
 import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 import { client } from 'app/graphql/client';
+import { PendingUserType } from 'app/overmind/state';
 
 import {
   transformDirectory,
@@ -34,6 +36,7 @@ import {
   IDirectoryAPIResponse,
   IModuleAPIResponse,
   SandboxAPIResponse,
+  AvatarAPIResponse,
 } from './types';
 
 let api: Api;
@@ -429,11 +432,16 @@ export default {
   },
   getUserSandboxes(
     username: string,
-    page: number
+    page: number | 'all' = 1,
+    sortBy: string = 'view_count',
+    direction: string = 'desc'
   ): Promise<{ [page: string]: Sandbox[] }> {
-    return api.get(`/users/${username}/sandboxes`, {
-      page: String(page),
-    });
+    return api.get(
+      `/users/${username}/sandboxes?sort_by=${sortBy}&direction=${direction}`,
+      {
+        page: String(page),
+      }
+    );
   },
   getUserLikedSandboxes(
     username: string,
@@ -445,6 +453,24 @@ export default {
   },
   getSandboxes(): Promise<UserSandbox[]> {
     return api.get('/sandboxes');
+  },
+  getPendingUser(id: string): Promise<PendingUserType> {
+    return api.get('/users/pending/' + id);
+  },
+  validateUsername(username: string): Promise<{ available: boolean }> {
+    return api.get('/users/available/' + username);
+  },
+  finalizeSignUp({
+    username,
+    id,
+  }: {
+    username: string;
+    id: string;
+  }): Promise<void> {
+    return api.post('/users/finalize', {
+      username,
+      id,
+    });
   },
   updateShowcasedSandbox(username: string, sandboxId: string) {
     return api.patch(`/users/${username}`, {
@@ -499,6 +525,16 @@ export default {
       },
     });
   },
+  updateTeamAvatar(
+    name: string,
+    avatar: string,
+    teamId: string
+  ): Promise<AvatarAPIResponse> {
+    return api.post(`/teams/${teamId}/avatar`, {
+      name,
+      avatar,
+    });
+  },
   createVercelIntegration(code: string): Promise<CurrentUser> {
     return api.post(`/users/current_user/integrations/zeit`, {
       code,
@@ -548,6 +584,30 @@ export default {
   updateExperiments(experiments: { [key: string]: boolean }): Promise<void> {
     return api.post(`/users/experiments`, {
       experiments,
+    });
+  },
+  queryUsers(query: string): Promise<UserQuery[]> {
+    return api.get(`/users/search?username=${query}`);
+  },
+  makeGitSandbox(sandboxId: string): Promise<Sandbox> {
+    return api.post<Sandbox>(`/sandboxes/${sandboxId}/make_git_sandbox`, null);
+  },
+  updateUserProfile(username: string, bio: string, socialLinks: string[]) {
+    return api.patch(`/users/${username}`, {
+      user: {
+        bio,
+        socialLinks,
+      },
+    });
+  },
+  updateUserFeaturedSandboxes(
+    username: string,
+    featuredSandboxIds: string[]
+  ): Promise<Profile> {
+    return api.patch(`/users/${username}`, {
+      user: {
+        featuredSandboxes: featuredSandboxIds,
+      },
     });
   },
 };

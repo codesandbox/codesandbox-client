@@ -39,6 +39,15 @@ export async function identify(key: string, value: any) {
   }
 }
 
+/**
+ * An identify that only sets the value if it hasn't been set before
+ */
+export async function identifyOnce(key: string, value: any) {
+  if (!DO_NOT_TRACK_ENABLED) {
+    amplitude.identifyOnce(key, value);
+  }
+}
+
 export async function setAnonymousId() {
   if (!DO_NOT_TRACK_ENABLED && typeof localStorage !== 'undefined') {
     let anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);

@@ -30,7 +30,7 @@ class Tab extends React.Component {
     e.stopPropagation();
 
     if (this.props.closeTab) {
-      this.props.closeTab(this.props.position);
+      this.props.closeTab(this.props.position, this.props.active);
     }
   };
 

@@ -7,6 +7,11 @@ import generatePackageJSON, {
   getPackageJSON,
 } from '../utils/generate-package-json';
 import version from '../version';
+import {
+  IManagerState,
+  IModuleError,
+  ManagerStatus,
+} from '../typings/types';
 
 export interface IManagerOptions {
   /**
@@ -85,9 +90,13 @@ export default class PreviewManager {
   element: Element;
   iframe: HTMLIFrameElement;
   options: IManagerOptions;
+  id: string | null = null;
   listener?: Function;
   fileResolverProtocol?: Protocol;
   bundlerURL: string;
+  managerState: IManagerState | undefined;
+  errors: Array<IModuleError>;
+  status: ManagerStatus;
 
   sandboxInfo: ISandboxInfo;
 
@@ -99,6 +108,9 @@ export default class PreviewManager {
     this.options = options;
     this.sandboxInfo = sandboxInfo;
     this.bundlerURL = options.bundlerURL || BUNDLER_URL;
+    this.managerState = undefined;
+    this.errors = [];
+    this.status = 'initializing';
 
     if (typeof selector === 'string') {
       this.selector = selector;
@@ -119,14 +131,20 @@ export default class PreviewManager {
       'sandbox',
       'allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts'
     );
+
     this.iframe.src = this.bundlerURL;
 
-    this.listener = listen((message: any) => {
-      switch (message.type) {
+    this.listener = listen((mes: any) => {
+      if (mes.type !== 'initialized' && mes.id && mes.id !== this.id) {
+        // This message was not meant for this instance of the manager.
+        return;
+      }
+      switch (mes.type) {
         case 'initialized': {
           if (this.iframe) {
             if (this.iframe.contentWindow) {
               registerFrame(this.iframe.contentWindow, this.bundlerURL);
+              this.id = mes.id || null;
 
               if (this.options.fileResolver) {
                 this.fileResolverProtocol = new Protocol(
@@ -145,6 +163,25 @@ export default class PreviewManager {
 
             this.updatePreview();
           }
+          break;
+        }
+        case 'start': {
+          this.errors = [];
+          break;
+        }
+        case 'status': {
+          this.status = mes.status;
+          break;
+        }
+        case 'action': {
+          if (mes.action === 'show-error') {
+            const { title, path, message, line, column } = mes;
+            this.errors = [...this.errors, { title, path, message, line, column }];
+          }
+          break;
+        }
+        case 'state': {
+          this.managerState = mes.state;
           break;
         }
         default: {
@@ -198,7 +235,7 @@ export default class PreviewManager {
       {}
     );
 
-    dispatch({
+    this.dispatch({
       type: 'compile',
       codesandbox: true,
       version: 3,
@@ -219,6 +256,8 @@ export default class PreviewManager {
   }
 
   public dispatch(message: Object) {
+    // @ts-ignore We want to add the id, don't use Object.assign since that copies the whole message
+    message.id = this.id;
     dispatch(message);
   }
 
@@ -254,6 +293,19 @@ export default class PreviewManager {
         embedUrl: `https://codesandbox.io/embed/${res.sandbox_id}`,
       }));
   }
+
+  public getManagerTranspilerContext = (): Promise<{ [transpiler: string]: Object }> =>
+    new Promise(resolve => {
+      const listener = listen((message: any) => {
+        if (message.type === 'transpiler-context') {
+          resolve(message.data);
+
+          listener();
+        }
+      });
+
+        this.dispatch({ type: 'get-transpiler-context' });
+    });
 
   private getFiles() {
     const { sandboxInfo } = this;

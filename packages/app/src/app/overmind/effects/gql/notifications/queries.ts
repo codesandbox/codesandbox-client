@@ -1,9 +1,32 @@
-import { gql, Query } from 'overmind-graphql';
-import { Notification } from 'app/graphql/types';
+import {
+  RecentNotificationsQuery,
+  RecentNotificationsQueryVariables,
+  EmailPreferencesQuery,
+  EmailPreferencesQueryVariables,
+} from 'app/graphql/types';
+import { Query, gql } from 'overmind-graphql';
 
-type response = { me: { notifications: Notification[] } };
+import { recentNotificationFragment } from './fragments';
 
-export const getRecentNotifications: Query<response, { type: string[] }> = gql`
+export const getEmailPreferences: Query<
+  EmailPreferencesQuery,
+  EmailPreferencesQueryVariables
+> = gql`
+  query EmailPreferences {
+    me {
+      notificationPreferences {
+        emailCommentMention
+        emailCommentReply
+        emailNewComment
+      }
+    }
+  }
+`;
+
+export const getRecentNotifications: Query<
+  RecentNotificationsQuery,
+  RecentNotificationsQueryVariables
+> = gql`
   query RecentNotifications($type: [String]) {
     me {
       notifications(
@@ -11,12 +34,9 @@ export const getRecentNotifications: Query<response, { type: string[] }> = gql`
         type: $type
         orderBy: { field: "insertedAt", direction: ASC }
       ) {
-        id
-        type
-        data
-        insertedAt
-        read
+        ...RecentNotification
       }
     }
   }
+  ${recentNotificationFragment}
 `;

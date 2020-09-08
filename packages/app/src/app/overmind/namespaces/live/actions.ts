@@ -20,8 +20,8 @@ export const internal = internalActions;
 
 export const signInToRoom: AsyncAction<{
   roomId: string;
-}> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {
-  await actions.internal.signIn({});
+}> = withLoadApp(async ({ state, actions }, { roomId }) => {
+  state.signInModalOpen = true;
 
   if (state.isLoggedIn) {
     await actions.live.roomJoined({
@@ -346,9 +346,9 @@ export const onChatEnabledToggle: Action = ({ effects, state }) => {
   }
 };
 
-export const onFollow: Action<string> = (
+export const onFollow: Action<{ liveUserId: string }> = (
   { actions, effects, state },
-  liveUserId
+  { liveUserId }
 ) => {
   if (!state.live.roomInfo) {
     return;

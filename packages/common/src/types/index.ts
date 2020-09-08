@@ -128,6 +128,7 @@ export type CurrentUser = {
   };
   curatorAt: string;
   badges: Badge[];
+  provider: 'github' | 'google';
   integrations: {
     zeit: {
       token: string;
@@ -313,6 +314,12 @@ export enum SandboxGitState {
   RESOLVED_SOURCE = 'resolved source',
   RESOLVED_PR_BASE = 'resolved pr base',
 }
+
+export type UserQuery = {
+  id: string;
+  avatarUrl: string;
+  username: string;
+};
 
 export type PopularSandboxes = {
   startDate: string;
@@ -541,6 +548,7 @@ export type Profile = {
   subscriptionSince: string;
   showcasedSandboxShortid: string;
   sandboxCount: number;
+  templateCount: number;
   receivedLikeCount: number;
   name: string;
   id: string;
@@ -548,6 +556,14 @@ export type Profile = {
   forkedCount: number;
   badges: Badge[];
   avatarUrl: string;
+  bio?: string;
+  socialLinks?: string[];
+  featuredSandboxes: Sandbox[];
+  teams: Array<{
+    id: string;
+    name: string;
+    avatarUrl?: string;
+  }>;
 };
 
 export type UserSandbox = {

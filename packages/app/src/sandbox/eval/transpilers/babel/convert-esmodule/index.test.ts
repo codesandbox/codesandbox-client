@@ -403,4 +403,39 @@ describe('convert-esmodule', () => {
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });
+
+  it('can convert import expressions', () => {
+    const code = `
+    import('test');
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('defines its exports before requires', () => {
+    const code = `
+    import { COLORS } from './colors-values';
+
+    export function get() {
+      return 5;
+    }
+    `;
+
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  describe('printer issues', () => {
+    it('can convert + +', () => {
+      const code = `
+      c = (10.0, + +(15))
+      `;
+
+      expect(convertEsModule(code)).toMatchSnapshot();
+    });
+
+    it('can convert -(--i)', () => {
+      const code = `a = -(--i)`;
+      expect(convertEsModule(code)).toBe('"use strict";\na = - --i;\n');
+    });
+  });
 });

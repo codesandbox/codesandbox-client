@@ -15,27 +15,58 @@ export const backgrounds = [
 
 interface TeamAvatarProps {
   name: string;
-  size?: 'small' | 'big';
+  size?: 'small' | 'big' | 'bigger';
   className?: string;
+  avatar?: string | null;
+  style?: React.CSSProperties;
 }
+
+const textSizes = {
+  small: 2,
+  big: 3,
+  bigger: 6,
+};
 
 export const TeamAvatar = ({
   name,
   size = 'big',
   className,
+  avatar,
+  style,
 }: TeamAvatarProps) => {
   if (!name) return null;
 
   // consistent color
   const index = name.length % (backgrounds.length - 1);
   const backgroundColor = backgrounds[index];
+  const avatarSize = size === 'bigger' ? '55px' : '26px';
 
-  return (
+  return avatar ? (
+    <>
+      <img
+        css={css({
+          maxWidth: avatarSize,
+          maxHeight: avatarSize,
+          borderRadius: 'small',
+          borderColor: 'sideBar.border',
+          borderStyle: 'solid',
+          borderWidth: 1,
+          boxSizing: 'border-box',
+        })}
+        style={style}
+        src={avatar}
+        alt={name}
+      />
+    </>
+  ) : (
     <Stack
+      style={style}
       justify="center"
       align="center"
       css={css({
-        size: 6,
+        size: avatarSize,
+        minWidth: avatarSize,
+        minHeight: avatarSize,
         borderRadius: 'small',
         textTransform: 'uppercase',
         backgroundColor,
@@ -45,7 +76,7 @@ export const TeamAvatar = ({
       })}
       className={className}
     >
-      <Text size={size === 'small' ? 2 : 3}>{name[0]}</Text>
+      <Text size={textSizes[size]}>{name[0]}</Text>
     </Stack>
   );
 };

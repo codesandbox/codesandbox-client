@@ -27,8 +27,14 @@ import {
   _SearchTeamSandboxesQueryVariables,
   GetTeamQuery,
   GetTeamQueryVariables,
+  GetPersonalReposQueryVariables,
+  GetPersonalReposQuery,
   TeamDraftsQuery,
   TeamDraftsQueryVariables,
+  GetTeamReposQueryVariables,
+  GetTeamReposQuery,
+  GetPersonalWorkspaceIdQuery,
+  GetPersonalWorkspaceIdQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -36,6 +42,7 @@ import {
   sandboxFragmentDashboard,
   sidebarCollectionDashboard,
   templateFragmentDashboard,
+  repoFragmentDashboard,
   currentTeamInfoFragment,
 } from './fragments';
 
@@ -60,7 +67,7 @@ export const deletedTeamSandboxes: Query<
   RecentlyDeletedTeamSandboxesQuery,
   RecentlyDeletedTeamSandboxesQueryVariables
 > = gql`
-  query recentlyDeletedTeamSandboxes($teamId: ID!) {
+  query recentlyDeletedTeamSandboxes($teamId: UUID4!) {
     me {
       team(id: $teamId) {
         sandboxes(
@@ -101,7 +108,7 @@ export const getTeamDrafts: Query<
   TeamDraftsQuery,
   TeamDraftsQueryVariables
 > = gql`
-  query TeamDrafts($teamId: ID!, $authorId: ID) {
+  query TeamDrafts($teamId: UUID4!, $authorId: UUID4) {
     me {
       team(id: $teamId) {
         drafts(authorId: $authorId) {
@@ -127,11 +134,41 @@ export const getCollections: Query<
   ${sidebarCollectionDashboard}
 `;
 
+export const getPersonalRepos: Query<
+  GetPersonalReposQuery,
+  GetPersonalReposQueryVariables
+> = gql`
+  query getPersonalRepos {
+    me {
+      sandboxes(hasOriginalGit: true) {
+        ...repoFragmentDashboard
+      }
+    }
+  }
+  ${repoFragmentDashboard}
+`;
+
+export const getTeamRepos: Query<
+  GetTeamReposQuery,
+  GetTeamReposQueryVariables
+> = gql`
+  query getTeamRepos($id: UUID4!) {
+    me {
+      team(id: $id) {
+        sandboxes(hasOriginalGit: true) {
+          ...repoFragmentDashboard
+        }
+      }
+    }
+  }
+  ${repoFragmentDashboard}
+`;
+
 export const teamTemplates: Query<
   TeamTemplatesQuery,
   TeamTemplatesQueryVariables
 > = gql`
-  query TeamTemplates($id: ID!) {
+  query TeamTemplates($id: UUID4!) {
     me {
       team(id: $id) {
         id
@@ -164,9 +201,15 @@ export const ownedTemplates: Query<
 export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
   query AllTeams {
     me {
-      teams {
+      personalWorkspaceId
+      workspaces {
         id
         name
+        avatarUrl
+        userAuthorizations {
+          userId
+          authorization
+        }
       }
     }
   }
@@ -190,7 +233,7 @@ export const searchTeamSandboxes: Query<
   _SearchTeamSandboxesQuery,
   _SearchTeamSandboxesQueryVariables
 > = gql`
-  query _SearchTeamSandboxes($teamId: ID!) {
+  query _SearchTeamSandboxes($teamId: UUID4!) {
     me {
       team(id: $teamId) {
         sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
@@ -206,7 +249,7 @@ export const listPersonalTemplates: Query<
   ListUserTemplatesQuery,
   ListUserTemplatesQueryVariables
 > = gql`
-  query ListUserTemplates($teamId: ID) {
+  query ListUserTemplates($teamId: UUID4) {
     me {
       id
       templates {
@@ -237,7 +280,7 @@ export const listPersonalTemplates: Query<
   ${templateFragmentDashboard}
 `;
 
-export const recentSandboxes: Query<
+export const recentPersonalSandboxes: Query<
   LatestSandboxesQuery,
   LatestSandboxesQueryVariables
 > = gql`
@@ -262,7 +305,7 @@ export const recentlyAccessedSandboxes: Query<
   RecentlyAccessedSandboxesQuery,
   RecentlyAccessedSandboxesQueryVariables
 > = gql`
-  query RecentlyAccessedSandboxes($limit: Int!, $teamId: ID) {
+  query RecentlyAccessedSandboxes($limit: Int!, $teamId: UUID4) {
     me {
       recentlyAccessedSandboxes(limit: $limit, teamId: $teamId) {
         ...sandboxFragmentDashboard
@@ -280,14 +323,12 @@ export const recentTeamSandboxes: Query<
     $limit: Int!
     $orderField: String!
     $orderDirection: Direction!
-    $teamId: ID!
-    $authorId: ID!
+    $teamId: UUID4!
   ) {
     me {
       team(id: $teamId) {
         sandboxes(
           limit: $limit
-          authorId: $authorId
           orderBy: { field: $orderField, direction: $orderDirection }
         ) {
           ...sandboxFragmentDashboard
@@ -299,7 +340,7 @@ export const recentTeamSandboxes: Query<
 `;
 
 export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
-  query getTeam($teamId: ID!) {
+  query getTeam($teamId: UUID4!) {
     me {
       team(id: $teamId) {
         ...currentTeamInfoFragment
@@ -307,4 +348,15 @@ export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
     }
   }
   ${currentTeamInfoFragment}
+`;
+
+export const getPersonalWorkspaceId: Query<
+  GetPersonalWorkspaceIdQuery,
+  GetPersonalWorkspaceIdQueryVariables
+> = gql`
+  query getPersonalWorkspaceId {
+    me {
+      personalWorkspaceId
+    }
+  }
 `;

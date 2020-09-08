@@ -16,6 +16,7 @@ import {
 } from './icons';
 import { Collaborators } from './Collaborators';
 import { CollaboratorHeads } from './CollaboratorHeads';
+import { ForkButton } from './ForkButton';
 
 const TooltipButton = ({ tooltip, ...props }) => (
   <Tooltip content={tooltip}>
@@ -35,8 +36,10 @@ export const Actions = () => {
       hasLogIn,
       updateStatus,
       user,
+      activeWorkspaceAuthorization,
       live: { isLive },
       editor: {
+        isForkingSandbox,
         currentSandbox: {
           id,
           author,
@@ -66,7 +69,7 @@ export const Actions = () => {
 
   const handleSignIn = () => signInClicked();
 
-  let primaryAction;
+  let primaryAction: 'Sign in' | 'Share' | 'Fork';
   if (!hasLogIn) primaryAction = 'Sign in';
   else primaryAction = owned ? 'Share' : 'Fork';
 
@@ -171,16 +174,26 @@ export const Actions = () => {
         </Button>
       )}
 
-      <Button
-        variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
-        onClick={forkSandboxClicked}
-      >
-        <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
-      </Button>
+      {user ? (
+        <ForkButton
+          user={user}
+          forkClicked={teamId => forkSandboxClicked({ teamId })}
+          variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
+        />
+      ) : (
+        <Button
+          loading={isForkingSandbox}
+          variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
+          onClick={() => forkSandboxClicked({})}
+        >
+          <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
+        </Button>
+      )}
       <Button
         variant="secondary"
         css={css({ paddingX: 3 })}
         onClick={() => openCreateSandboxModal({})}
+        disabled={activeWorkspaceAuthorization === 'READ'}
       >
         Create Sandbox
       </Button>

@@ -364,7 +364,12 @@ export const onDirectoryUpdated: Operator<LiveMessage<{
   if (hasChangedPath) {
     const prevCurrentModulePath = state.editor.currentModule.path;
 
-    state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
+    actions.files.internal.renameDirectoryInState({
+      directory: existingDirectory,
+      sandbox,
+      title: data.module.title,
+    });
+
     actions.editor.internal.updatePreviewCode();
 
     if (prevCurrentModulePath !== state.editor.currentModule.path) {

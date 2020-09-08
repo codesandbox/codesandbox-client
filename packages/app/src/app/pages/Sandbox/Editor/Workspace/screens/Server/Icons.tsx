@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { FunctionComponent, SVGProps } from 'react';
 
-export const EditIcon = props => (
+type IconProps = SVGProps<SVGSVGElement>;
+
+export const EditIcon: FunctionComponent<IconProps> = props => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="#757575"
@@ -9,7 +11,7 @@ export const EditIcon = props => (
   </svg>
 );
 
-export const DeleteIcon = props => (
+export const DeleteIcon: FunctionComponent<IconProps> = props => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
     <path
       fill="#757575"
@@ -18,7 +20,7 @@ export const DeleteIcon = props => (
   </svg>
 );
 
-export const RestartServerIcon = props => (
+export const RestartServerIcon: FunctionComponent<IconProps> = props => (
   <svg width={12} height={11} fill="none" viewBox="0 0 12 11" {...props}>
     <path
       fill="#fff"

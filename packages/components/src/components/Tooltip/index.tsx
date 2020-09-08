@@ -80,6 +80,10 @@ export const TooltipStyles = createGlobalStyle(
   }),
   animation
 );
+interface TooltipProps {
+  label: string | null;
+  children: React.ReactElement;
+}
 
 /** Dragon number 3:
  * to attach a triangle and transitions to the tooltip,
@@ -87,9 +91,17 @@ export const TooltipStyles = createGlobalStyle(
  * TooltipPopup and create the triangle in another component
  */
 
-const Tooltip = props => {
+/**
+ * Render a tooltip around the children, if you pass `null` to `label` the Tooltip
+ * won't be rendered.
+ */
+const Tooltip: React.FC<TooltipProps> = props => {
   const [trigger, tooltip] = useTooltip();
   const { isVisible, triggerRect } = tooltip;
+
+  if (props.label === null) {
+    return props.children;
+  }
 
   return (
     <>

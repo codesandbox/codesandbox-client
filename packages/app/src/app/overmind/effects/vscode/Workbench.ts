@@ -103,7 +103,7 @@ export class Workbench {
       label: 'Fork Sandbox',
       category: 'Sandbox',
       run: () => {
-        this.controller.getSignal('editor.forkSandboxClicked')();
+        this.controller.getSignal('editor.forkSandboxClicked')({});
       },
     });
 
@@ -145,7 +145,13 @@ export class Workbench {
         if (document.fullscreenElement) {
           document.exitFullscreen();
         } else {
-          document.documentElement.requestFullscreen();
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+            // @ts-ignore - safari has this under a webkit flag
+          } else if (document.documentElement.webkitRequestFullscreen) {
+            // @ts-ignore - safari has this under a webkit flag
+            document.documentElement.webkitRequestFullscreen();
+          }
 
           this.addNotification({
             title: 'Fullscreen',
@@ -181,9 +187,7 @@ export class Workbench {
         label: 'Comment on code',
         category: 'Comments',
         run: () => {
-          this.controller.getSignal('comments.createComment')({
-            isLineComment: false,
-          });
+          this.controller.getSignal('comments.createCodeComment')();
         },
       });
     }

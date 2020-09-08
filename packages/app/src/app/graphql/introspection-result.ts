@@ -31,6 +31,9 @@ const result: IntrospectionResultData = {
           {
             name: 'CodeReferenceMetadata',
           },
+          {
+            name: 'UserReferenceMetadata',
+          },
         ],
       },
     ],

@@ -21,7 +21,7 @@ export const initializePolyfills = () => {
 
 export const loadBrowserFS = () => {
   ctx.importScripts(
-    `${process.env.CODESANDBOX_HOST}/static/browserfs11/browserfs.min.js`
+    `${process.env.CODESANDBOX_HOST}/static/browserfs12/browserfs.min.js`
   );
 };
 

@@ -105,7 +105,10 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
 
 export const CollaboratorHeads: FunctionComponent = () => {
   const { state, actions } = useOvermind();
-  const liveUsers = state.live.roomInfo.users;
+
+  const liveUsers = React.useMemo(() => state.live.roomInfo?.users || [], [
+    state.live.roomInfo,
+  ]);
 
   const liveUserId = state.live.liveUserId;
   const followingUserId = state.live.followingUserId;
@@ -138,7 +141,7 @@ export const CollaboratorHeads: FunctionComponent = () => {
     if (liveUserId === user.id || followingUserId === user.id) {
       actions.live.onStopFollow();
     } else {
-      actions.live.onFollow(user.id);
+      actions.live.onFollow({ liveUserId: user.id });
     }
   };
 

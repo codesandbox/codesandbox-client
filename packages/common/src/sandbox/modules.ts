@@ -377,3 +377,33 @@ export const inDirectory = memoize(
   },
   inDirectoryMemoize
 );
+
+const readDataURL = (file: File): Promise<string | ArrayBuffer> =>
+  new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      resolve(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  });
+
+type parsedFiles = { [k: string]: { dataURI: string; type: string } };
+export const getFiles = async (
+  files: File[] | FileList
+): Promise<parsedFiles> => {
+  const returnedFiles = {};
+  await Promise.all(
+    Array.from(files)
+      .filter(Boolean)
+      .map(async file => {
+        const dataURI = await readDataURL(file);
+        // @ts-ignore
+        returnedFiles[file.path || file.webkitRelativePath || file.name] = {
+          dataURI,
+          type: file.type,
+        };
+      })
+  );
+
+  return returnedFiles;
+};

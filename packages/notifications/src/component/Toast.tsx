@@ -63,7 +63,11 @@ export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
 
   const action = (type: 'primary' | 'secondary') => {
     if (actions) {
-      return Array.isArray(actions) ? actions[0][type] : actions[type];
+      if (Array.isArray(actions[type])) {
+        return actions[type][0];
+      }
+
+      return actions[type];
     }
 
     return null;

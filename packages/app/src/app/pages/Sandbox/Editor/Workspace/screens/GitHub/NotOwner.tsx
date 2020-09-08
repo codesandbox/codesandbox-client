@@ -33,7 +33,7 @@ export const NotOwner = () => {
         <Button
           variant="primary"
           disabled={isForkingSandbox}
-          onClick={() => forkSandboxClicked()}
+          onClick={() => forkSandboxClicked({})}
         >
           {isForkingSandbox ? 'Forking Sandbox...' : 'Fork Sandbox'}
         </Button>

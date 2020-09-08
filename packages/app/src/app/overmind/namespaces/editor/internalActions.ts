@@ -34,13 +34,14 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
 };
 
 export const initializeSandbox: AsyncAction<Sandbox> = async (
-  { actions, effects },
+  { actions },
   sandbox
 ) => {
   await Promise.all([
     actions.editor.internal.initializeLiveSandbox(sandbox),
     actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
     actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id }),
+    actions.internal.switchCurrentWorkspaceBySandbox({ sandbox }),
   ]);
 };
 
@@ -382,11 +383,12 @@ export const updateModuleCode: Action<{
 
 export const forkSandbox: AsyncAction<{
   sandboxId: string;
+  teamId?: string | null;
   body?: { collectionId: string | undefined };
   openInNewWindow?: boolean;
 }> = async (
   { state, effects, actions },
-  { sandboxId: id, body, openInNewWindow = false }
+  { sandboxId: id, teamId, body, openInNewWindow = false }
 ) => {
   const sandbox = state.editor.currentSandbox;
   const currentSandboxId = state.editor.currentId;
@@ -416,8 +418,12 @@ export const forkSandbox: AsyncAction<{
       teamId?: string;
     } = body || {};
 
-    if (state.activeTeam) {
-      usedBody.teamId = state.activeTeam;
+    if (state.user) {
+      if (teamId === undefined && state.activeTeam) {
+        usedBody.teamId = state.activeTeam;
+      } else if (teamId !== null) {
+        usedBody.teamId = teamId;
+      }
     }
 
     const forkedSandbox = await effects.api.forkSandbox(id, usedBody);
@@ -476,6 +482,8 @@ export const forkSandbox: AsyncAction<{
     if (sandbox.originalGit) {
       actions.git.loadGitSource();
     }
+
+    actions.internal.currentSandboxChanged();
   } catch (error) {
     console.error(error);
     actions.internal.handleError({

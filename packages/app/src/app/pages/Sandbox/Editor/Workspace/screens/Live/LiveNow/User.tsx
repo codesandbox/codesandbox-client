@@ -14,7 +14,12 @@ type Props = {
 export const User: FunctionComponent<Props> = ({ liveRole, user }) => {
   const {
     actions: {
-      live: { onAddEditorClicked, onFollow, onRemoveEditorClicked },
+      live: {
+        onAddEditorClicked,
+        onFollow,
+        onStopFollow,
+        onRemoveEditorClicked,
+      },
     },
     state: {
       live: {
@@ -93,14 +98,14 @@ export const User: FunctionComponent<Props> = ({ liveRole, user }) => {
               <Tooltip content="Stop following">
                 <UnfollowIcon
                   css={{ cursor: 'pointer' }}
-                  onClick={() => onFollow(null)}
+                  onClick={() => onStopFollow()}
                 />
               </Tooltip>
             ) : (
               <Tooltip content="Follow along">
                 <FollowIcon
                   css={{ cursor: 'pointer' }}
-                  onClick={() => onFollow(user.id)}
+                  onClick={() => onFollow({ liveUserId: user.id })}
                 />
               </Tooltip>
             )}

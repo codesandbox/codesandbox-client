@@ -1,6 +1,7 @@
 import { GitFileCompare, SandboxGitState } from '@codesandbox/common/lib/types';
 import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
+  Button,
   Collapsible,
   Element,
   Link,
@@ -53,20 +54,25 @@ export const GitHub = () => {
         isFetching,
         isExported,
         pr,
+        isLinkingToGitSandbox,
       },
       editor: {
         currentSandbox: {
+          id,
           originalGit,
           baseGit,
           owned,
           originalGitCommitSha,
           prNumber,
+          forkedTemplateSandbox,
+          forkedFromSandbox,
         },
         modulesByPath,
       },
       isLoggedIn,
       user,
     },
+    actions,
   } = useOvermind();
 
   const changeCount = gitChanges
@@ -156,6 +162,7 @@ export const GitHub = () => {
                   <ListItem
                     gap={2}
                     key={conflict.filename}
+                    marginBottom={4}
                     css={{ display: 'block' }}
                   >
                     <Stack gap={3} align="center" marginBottom={4}>
@@ -181,13 +188,56 @@ export const GitHub = () => {
       );
     }
 
+    if (
+      conflictPaths.length ||
+      gitChanges.added.length ||
+      gitChanges.deleted.length ||
+      gitChanges.modified.length
+    ) {
+      return (
+        <Collapsible title={`Changes (${changeCount})`} defaultOpen>
+          <Element>
+            <Changes conflicts={conflictPaths} {...gitChanges} />
+            <CommitForm />
+          </Element>
+        </Collapsible>
+      );
+    }
+
     return (
       <Collapsible title={`Changes (${changeCount})`} defaultOpen>
-        <Element>
-          <Changes conflicts={conflictPaths} {...gitChanges} />
-          <CommitForm />
-        </Element>
+        <Stack align="center" justify="center" padding={3}>
+          <Text size={4}>No changes</Text>
+        </Stack>
       </Collapsible>
+    );
+  }
+
+  // If there's a forkedFromSandbox we use that, otherwise we use the forkedTemplateSandbox
+  const upstreamSandbox = forkedFromSandbox || forkedTemplateSandbox;
+  if (!originalGit && upstreamSandbox?.git) {
+    return (
+      <>
+        <Collapsible title="Link to GitHub repository" defaultOpen>
+          <Element paddingX={2}>
+            <Text variant="muted">If you wish to contribute back to</Text>{' '}
+            {upstreamSandbox.git.username}/{upstreamSandbox.git.repo}
+            <Text variant="muted">
+              , you can link this sandbox to the GitHub repository. This will
+              allow you to create commits and open pull requests with this
+              sandbox.
+            </Text>
+            <Button
+              marginTop={4}
+              onClick={() => actions.git.linkToGitSandbox(id)}
+              loading={isLinkingToGitSandbox}
+            >
+              Link Sandbox
+            </Button>
+          </Element>
+        </Collapsible>
+        <CreateRepo />
+      </>
     );
   }
 
@@ -195,7 +245,7 @@ export const GitHub = () => {
     <>
       {originalGit ? (
         <>
-          <Collapsible title="GitHub Repository" defaultOpen>
+          <Collapsible title="GitHub repository" defaultOpen>
             <Element paddingX={2}>
               <Link
                 target="_blank"
@@ -216,7 +266,9 @@ export const GitHub = () => {
           <CreateRepo />
         </>
       ) : (
-        <CreateRepo />
+        <>
+          <CreateRepo />
+        </>
       )}
     </>
   );
