@@ -147,15 +147,29 @@ export async function getDependenciesFromSources(
 
     const prebundledPromise = Promise.all(
       Object.keys(prebundledDependencies).map(depName =>
-        getPrebundledDependency(depName, depsWithNodeLibs[depName]).finally(
-          () => {
+        getPrebundledDependency(depName, depsWithNodeLibs[depName])
+          .then(d => {
+            // Unfortunately we've let this through in our system, some dependencies will just be { error: string }.
+            // The bug has been fixed, but dependencies have been cached, we have to filter them out and fetch them
+            // dynamically.
+            // @ts-ignore not possible anymore
+            if (d.error) {
+              return resolveDependencyInfo(
+                depName,
+                depsWithNodeLibs[depName],
+                parsedResolutions
+              );
+            }
+
+            return d;
+          })
+          .finally(() => {
             remainingDependencies.splice(
               remainingDependencies.indexOf(depName),
               1
             );
             updateLoadScreen();
-          }
-        )
+          })
       )
     );
 
