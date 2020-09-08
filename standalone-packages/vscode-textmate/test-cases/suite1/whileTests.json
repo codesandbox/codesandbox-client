@@ -4,7 +4,7 @@
 			"fixtures/whileLang.plist"
 		],
 		"grammarPath": "fixtures/whileLang.plist",
-		"desc": "While should match begin and stop on next line if while condition fails",
+		"desc": "While должно совпадать с началом и остановкой на следующей строке, если условие while не выполняется",
 		"lines": [
 			{
 				"line": "A x",
@@ -51,7 +51,7 @@
 			"fixtures/whileLang.plist"
 		],
 		"grammarPath": "fixtures/whileLang.plist",
-		"desc": "While should match multiple lines while condition holds",
+		"desc": "Пока должно соответствовать нескольким строкам, пока выполняется условие",
 		"lines": [
 			{
 				"line": "A x",
@@ -133,7 +133,7 @@
 			"fixtures/whileLang.plist"
 		],
 		"grammarPath": "fixtures/whileLang.plist",
-		"desc": "While condition can match anywhere in line",
+		"desc": "Хотя условие может совпадать в любом месте строки",
 		"lines": [
 			{
 				"line": "A x",
@@ -196,7 +196,7 @@
 			"fixtures/whileLang.plist"
 		],
 		"grammarPath": "fixtures/whileLang.plist",
-		"desc": "Begin of while should consume entire rest of line.",
+		"desc": "Начало while должно занять всю оставшуюся часть строки.",
 		"lines": [
 			{
 				"line": "A x B 1",
@@ -264,7 +264,7 @@
 			"fixtures/whileLang.plist"
 		],
 		"grammarPath": "fixtures/whileLang.plist",
-		"desc": "Nested whiles should match using only inner most while on a mached line",
+		"desc": "Вложенные while должны соответствовать, используя только внутреннее большинство, в то время как на mached строке",
 		"lines": [
 			{
 				"line": "AB",
@@ -331,7 +331,7 @@
 			"fixtures/whileLang.plist"
 		],
 		"grammarPath": "fixtures/whileLang.plist",
-		"desc": "Nested whiles should check line for outer most while to inner most while",
+		"desc": "Вложенные while должны проверять строку на наличие самой внешней, а самой внутренней - пока",
 		"lines": [
 			{
 				"line": "AB",
@@ -371,7 +371,7 @@
 			"fixtures/whileLang.plist"
 		],
 		"grammarPath": "fixtures/whileLang.plist",
-		"desc": "Nested whiles should move line ahead before checking other conditions",
+		"desc": "Вложенные while должны перемещать строку вперед перед проверкой других условий",
 		"lines": [
 			{
 				"line": "AB",
@@ -427,7 +427,7 @@
 			"fixtures/whileLang.plist"
 		],
 		"grammarPath": "fixtures/whileLang.plist",
-		"desc": "Nested whiles should check line for outer most while to inner most while",
+		"desc": "Вложенные while должны проверять строку на наличие самой внешней, а самой внутренней - пока",
 		"lines": [
 			{
 				"line": "AB",
