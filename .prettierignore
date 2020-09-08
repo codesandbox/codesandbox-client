@@ -7,7 +7,7 @@ lib/
 static/
 /standalone-packages/*
 
-# Our server side code changes html, we don't want to unintentionally break this by formatting
+# Наш серверный код изменяет html, мы не хотим непреднамеренно нарушать это форматированием
 *.html
 
 .drone.yml
