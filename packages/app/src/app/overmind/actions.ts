@@ -1,7 +1,7 @@
 import { identify } from '@codesandbox/common/lib/utils/analytics';
 import {
   NotificationType,
-  convertTypeToStatus,
+  convertTypeToStatus
 } from '@codesandbox/common/lib/utils/notifications';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { CurrentTeamInfoFragmentFragment } from 'app/graphql/types';
@@ -33,7 +33,7 @@ export const getPendingUser: AsyncAction = async ({ state, effects }) => {
   if (!pendingUser) return;
   state.pendingUser = {
     ...pendingUser,
-    valid: true,
+    valid: true
   };
 };
 
@@ -53,7 +53,7 @@ export const notificationAdded: Action<{
   effects.notificationToast.add({
     message: title,
     status: convertTypeToStatus(notificationType),
-    timeAlive: timeAlive ? timeAlive * 1000 : undefined,
+    timeAlive: timeAlive ? timeAlive * 1000 : undefined
   });
 };
 
@@ -125,14 +125,14 @@ export const signInButtonClicked: AsyncAction<{
   if (!useExtraScopes) {
     await actions.internal.signIn({
       provider,
-      useExtraScopes: false,
+      useExtraScopes: false
     });
     state.signInModalOpen = false;
     return;
   }
   await actions.internal.signIn({
     useExtraScopes,
-    provider,
+    provider
   });
   state.signInModalOpen = false;
 };
@@ -145,7 +145,7 @@ export const addNotification: Action<{
   effects.notificationToast.add({
     message,
     status: effects.notificationToast.convertTypeToStatus(type),
-    timeAlive: timeAlive * 1000,
+    timeAlive: timeAlive * 1000
   });
 };
 
@@ -160,7 +160,7 @@ export const removeNotification: Action<number> = ({ state }, id) => {
 export const signInVercelClicked: AsyncAction = async ({
   state,
   effects: { browser, api, notificationToast },
-  actions,
+  actions
 }) => {
   state.isLoadingVercel = true;
 
@@ -176,7 +176,7 @@ export const signInVercelClicked: AsyncAction = async ({
     } catch (error) {
       actions.internal.handleError({
         message: 'Could not authorize with Vercel',
-        error,
+        error
       });
     }
   } else {
@@ -221,7 +221,7 @@ export const signInGoogleClicked: AsyncAction = async ({ actions }) => {
 export const signOutClicked: AsyncAction = async ({
   state,
   effects,
-  actions,
+  actions
 }) => {
   effects.analytics.track('Sign Out', {});
   state.workspace.openedWorkspaceItem = 'files';
@@ -240,7 +240,7 @@ export const signOutClicked: AsyncAction = async ({
 
 export const signOutGithubIntegration: AsyncAction = async ({
   state,
-  effects,
+  effects
 }) => {
   if (state.user?.integrations?.github) {
     await effects.api.signoutGithubIntegration();
@@ -265,7 +265,7 @@ export const track: Action<{ name: string; data: any }> = (
 export const refetchSandboxInfo: AsyncAction = async ({
   actions,
   effects,
-  state,
+  state
 }) => {
   const sandbox = state.editor.currentSandbox;
 
@@ -328,7 +328,7 @@ export const setActiveTeam: AsyncAction<{
       if (teamInfo) {
         effects.analytics.track('Team - Change Active Team', {
           newTeamId: id,
-          newTeamName: teamInfo.name,
+          newTeamName: teamInfo.name
         });
       }
     } catch (e) {
@@ -341,7 +341,7 @@ export const setActiveTeam: AsyncAction<{
         effects.notificationToast.add({
           title: 'Could not find current workspace',
           message: "We've switched you to your personal workspace",
-          status: NotificationStatus.WARNING,
+          status: NotificationStatus.WARNING
         });
         // Something went wrong while fetching the workspace
         actions.setActiveTeam({ id: personalWorkspaceId! });
@@ -359,7 +359,7 @@ export const getActiveTeamInfo: AsyncAction<
   if (!state.activeTeam) return null;
 
   const team = await effects.gql.queries.getTeam({
-    teamId: state.activeTeam,
+    teamId: state.activeTeam
   });
 
   const currentTeam = team?.me?.team;
@@ -397,18 +397,18 @@ export const finalizeSignUp: AsyncAction<string> = async (
   try {
     await effects.api.finalizeSignUp({
       id: state.pendingUser.id,
-      username,
+      username
     });
     window.postMessage(
       {
-        type: 'signin',
+        type: 'signin'
       },
       protocolAndHost()
     );
   } catch (error) {
     actions.internal.handleError({
       message: 'There was a problem creating your account',
-      error,
+      error
     });
   }
 };

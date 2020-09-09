@@ -1,8 +1,7 @@
 import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 import {
   getChildren as calculateChildren,
-  inDirectory,
-  getFiles
+  inDirectory
 } from '@codesandbox/common/lib/sandbox/modules';
 import { Directory, Module } from '@codesandbox/common/lib/types';
 import { useOvermind } from 'app/overmind';
@@ -15,6 +14,34 @@ import DirectoryEntryModal from './DirectoryEntryModal';
 import { EntryContainer, Opener, Overlay } from './elements';
 import Entry from './Entry';
 import validateTitle from './validateTitle';
+
+const readDataURL = (file: File): Promise<string | ArrayBuffer> =>
+  new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      resolve(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  });
+
+type parsedFiles = { [k: string]: { dataURI: string; type: string } };
+const getFiles = async (files: File[] | FileList): Promise<parsedFiles> => {
+  const returnedFiles = {};
+  await Promise.all(
+    Array.from(files)
+      .filter(Boolean)
+      .map(async file => {
+        const dataURI = await readDataURL(file);
+        // @ts-ignore
+        returnedFiles[file.path || file.name] = {
+          dataURI,
+          type: file.type
+        };
+      })
+  );
+
+  return returnedFiles;
+};
 
 type ItemTypes = 'module' | 'directory';
 
@@ -195,7 +222,6 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     const fileSelector = document.createElement('input');
     fileSelector.setAttribute('type', 'file');
     fileSelector.setAttribute('multiple', 'true');
-    fileSelector.setAttribute('webkitdirectory', '');
     fileSelector.onchange = async event => {
       const target = event.target as HTMLInputElement;
       const files = await getFiles(target.files);

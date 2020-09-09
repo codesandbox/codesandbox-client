@@ -12,7 +12,7 @@ import {
 import css from '@styled-system/css';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { SandboxTypes } from './constants';
+import { SandboxTypes, DropTargets } from './constants';
 
 type DragItem = { type: 'sandbox'; sandboxId: string; index: number | null };
 
@@ -35,7 +35,8 @@ export const SandboxCard = ({
         addFeaturedSandboxes,
         reorderFeaturedSandboxesInState,
         saveFeaturedSandboxesOrder,
-        removeFeaturedSandboxesInState
+        removeFeaturedSandboxesInState,
+        newSandboxShowcaseSelected
       }
     }
   } = useOvermind();
@@ -76,12 +77,14 @@ export const SandboxCard = ({
         return;
       }
 
-      if (dropResult.name === 'PINNED_SANDBOXES') {
+      if (dropResult.name === DropTargets.PINNED_SANDBOXES) {
         if (featuredSandboxes.find(s => s.id === item.sandboxId)) {
           saveFeaturedSandboxesOrder();
         } else {
           addFeaturedSandboxes({ sandboxId: item.sandboxId });
         }
+      } else if (dropResult.name === DropTargets.SHOWCASED_SANDBOX) {
+        newSandboxShowcaseSelected(item.sandboxId);
       }
     }
   });
@@ -142,7 +145,7 @@ export const SandboxCard = ({
       // We're mutating the monitor item here to avoid expensive index searches!
       item.index = hoverIndex;
     },
-    drop: () => ({ name: 'PINNED_SANDBOXES' })
+    drop: () => ({ name: DropTargets.PINNED_SANDBOXES })
   });
 
   const myProfile = loggedInUser?.username === username;
