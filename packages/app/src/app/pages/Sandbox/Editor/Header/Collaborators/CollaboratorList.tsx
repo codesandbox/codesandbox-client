@@ -21,7 +21,7 @@ const Animated = ({ showMountAnimations, ...props }) => (
   >
     <Element
       css={css({
-        marginTop: 4,
+        marginTop: 4
       })}
       {...props}
     />
@@ -65,7 +65,7 @@ export const CollaboratorList = () => {
     -(c.lastSeenAt === Infinity
       ? new Date().getTime()
       : new Date(c.lastSeenAt || 0).getTime()),
-    c.user.username,
+    c.user.username
   ]);
 
   return (
@@ -75,7 +75,7 @@ export const CollaboratorList = () => {
         maxHeight: 250,
         minHeight: 100,
         overflowY: 'auto',
-        paddingBottom: 4,
+        paddingBottom: 4
       })}
     >
       {team && (
