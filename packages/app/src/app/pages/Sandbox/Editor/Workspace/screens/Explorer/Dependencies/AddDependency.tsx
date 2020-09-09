@@ -139,12 +139,22 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                         })
                       }
                     >
-                      <Text
-                        css={css({
-                          maxWidth: '80%'
-                        })}
-                      >
-                        {dependency.name}
+                      <Text width="80%" weight="400">
+                        {dependency._highlightResult ? (
+                          <Text
+                            css={css({
+                              em: {
+                                fontWeight: 'bold',
+                                fontStyle: 'initial'
+                              }
+                            })}
+                            dangerouslySetInnerHTML={{
+                              __html: dependency._highlightResult.name?.value
+                            }}
+                          />
+                        ) : (
+                          dependency.name
+                        )}
                       </Text>
                       <Text variant="muted">Ctrl + {i + 1}</Text>
                     </Button>
@@ -195,7 +205,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                       modalOpened({ modal: 'searchDependencies' });
                     }}
                   >
-                    <Text>Show All</Text>
+                    <Text weight="400">Show All</Text>
                     <Text variant="muted">Ctrl + D</Text>
                   </Button>
                 </ListAction>

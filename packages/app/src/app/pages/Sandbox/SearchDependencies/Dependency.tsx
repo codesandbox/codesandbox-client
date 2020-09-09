@@ -139,8 +139,22 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
           })}
         >
           <Element paddingRight={4}>
-            <Text block size={4} weight="bold">
-              {dependency.name}
+            <Text block size={4} weight="400">
+              {dependency._highlightResult ? (
+                <Text
+                  css={css({
+                    em: {
+                      fontWeight: 'bold',
+                      fontStyle: 'initial'
+                    }
+                  })}
+                  dangerouslySetInnerHTML={{
+                    __html: dependency._highlightResult.name?.value
+                  }}
+                />
+              ) : (
+                dependency.name
+              )}
             </Text>
             <Text
               block
