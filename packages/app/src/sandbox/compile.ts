@@ -218,7 +218,7 @@ function getDependencies(
   // Add all babel plugins/presets to whitelisted dependencies
   if (configurations && configurations.babel && configurations.babel.parsed) {
     flatten(configurations.babel.parsed.presets || [])
-      .filter(p => typeof p === 'string')
+      .filter((p) => typeof p === 'string')
       .forEach((p: string) => {
         const [first, ...parts] = p.split('/');
         const prefixedName = p.startsWith('@')
@@ -230,7 +230,7 @@ function getDependencies(
       });
 
     flatten(configurations.babel.parsed.plugins || [])
-      .filter(p => typeof p === 'string')
+      .filter((p) => typeof p === 'string')
       .forEach((p: string) => {
         const [first, ...parts] = p.split('/');
         const prefixedName = p.startsWith('@')
@@ -242,7 +242,7 @@ function getDependencies(
       });
   }
 
-  Object.keys(d).forEach(dep => {
+  Object.keys(d).forEach((dep) => {
     const usedDep = DEPENDENCY_ALIASES[dep] || dep;
 
     if (dep === 'reason-react') {
@@ -252,7 +252,7 @@ function getDependencies(
     returnedDependencies[usedDep] = d[dep];
   });
 
-  Object.keys(devDependencies).forEach(dep => {
+  Object.keys(devDependencies).forEach((dep) => {
     const usedDep = DEPENDENCY_ALIASES[dep] || dep;
 
     if (foundWhitelistedDevDependencies.indexOf(usedDep) > -1) {
@@ -303,7 +303,7 @@ function getDependencies(
   returnedDependencies.csbbust = '1.0.0';
   returnedDependencies['node-libs-browser'] = '2.2.0';
 
-  preinstalledDependencies.forEach(dep => {
+  preinstalledDependencies.forEach((dep) => {
     if (returnedDependencies[dep]) {
       delete returnedDependencies[dep];
     }
@@ -335,7 +335,7 @@ async function updateManager(
 ): Promise<TranspiledModule[]> {
   manager.updateConfigurations(configurations);
   await manager.preset.setup(manager);
-  return manager.updateData(managerModules).then(x => {
+  return manager.updateData(managerModules).then((x) => {
     changedModuleCount = x.length;
     return x;
   });
@@ -404,6 +404,7 @@ interface CompileOptions {
   skipEval?: boolean;
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
+  clearConsoleDisabled?: boolean;
 }
 
 async function compile({
@@ -418,10 +419,18 @@ async function compile({
   skipEval = false,
   hasFileResolver = false,
   disableDependencyPreprocessing = false,
+  clearConsoleDisabled = false,
 }: CompileOptions) {
-  dispatch({
-    type: 'start',
-  });
+  if (firstLoad) {
+    // Clear the console on first load, but don't clear the console on HMR updates
+    if (!clearConsoleDisabled) {
+      // @ts-ignore Chrome behaviour
+      console.clear('__internal__'); // eslint-disable-line no-console
+      dispatch({ type: 'clear-console' });
+    }
+  }
+
+  dispatch({ type: 'start' });
   metrics.measure('compilation');
 
   const startTime = Date.now();
@@ -444,12 +453,12 @@ async function compile({
     const configurations = parseConfigurations(
       template,
       templateDefinition.configurationFiles,
-      path => modules[path]
+      (path) => modules[path]
     );
 
     const errors = Object.keys(configurations)
-      .map(c => configurations[c])
-      .filter(x => x.error);
+      .map((c) => configurations[c])
+      .filter((x) => x.error);
 
     if (errors.length) {
       const e = new Error(
@@ -530,7 +539,7 @@ async function compile({
 
     const foundMain = isModuleView
       ? entry
-      : possibleEntries.find(p => Boolean(modules[p]));
+      : possibleEntries.find((p) => Boolean(modules[p]));
 
     if (!foundMain) {
       throw new Error(
@@ -584,7 +593,7 @@ async function compile({
 
       if (!manager.webpackHMR) {
         const htmlEntries = templateDefinition.getHTMLEntries(configurations);
-        const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
+        const htmlModulePath = htmlEntries.find((p) => Boolean(modules[p]));
         const htmlModule = modules[htmlModulePath];
 
         const { head, body } = getHTMLParts(
