@@ -89,7 +89,7 @@ export function getModulesAndDirectoriesInDirectory(
     removedDirectories: directories.filter(
       directoryItem =>
         directoryItem.path.startsWith(path) && directoryItem !== directory
-    ),
+    )
   };
 }
 
@@ -137,7 +137,7 @@ export function getModulesInDirectory(
     modules: modulesInFoundDirectory,
     foundDirectoryShortid,
     lastPath,
-    splitPath,
+    splitPath
   };
 }
 
@@ -155,7 +155,7 @@ export const resolveModule = (
     modules: modulesInFoundDirectory,
     lastPath,
     splitPath,
-    foundDirectoryShortid,
+    foundDirectoryShortid
   } = getModulesInDirectory(path, modules, directories, startdirectoryShortid);
 
   // Find module with same name
@@ -265,7 +265,7 @@ export const getChildren = memoize(
     id: string
   ) => [
     ...directories.filter(d => d.directoryShortid === id),
-    ...modules.filter(m => m.directoryShortid === id),
+    ...modules.filter(m => m.directoryShortid === id)
   ],
   memoizeFunction
 );
@@ -377,33 +377,3 @@ export const inDirectory = memoize(
   },
   inDirectoryMemoize
 );
-
-const readDataURL = (file: File): Promise<string | ArrayBuffer> =>
-  new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      resolve(e.target.result);
-    };
-    reader.readAsDataURL(file);
-  });
-
-type parsedFiles = { [k: string]: { dataURI: string; type: string } };
-export const getFiles = async (
-  files: File[] | FileList
-): Promise<parsedFiles> => {
-  const returnedFiles = {};
-  await Promise.all(
-    Array.from(files)
-      .filter(Boolean)
-      .map(async file => {
-        const dataURI = await readDataURL(file);
-        // @ts-ignore
-        returnedFiles[file.path || file.webkitRelativePath || file.name] = {
-          dataURI,
-          type: file.type,
-        };
-      })
-  );
-
-  return returnedFiles;
-};
