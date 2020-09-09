@@ -9,7 +9,7 @@ import { useOvermind } from 'app/overmind';
 export const SignInModal = () => {
   const {
     actions: { toggleSignInModal },
-    state: { redirectOnLogin },
+    state: { redirectOnLogin, signInModalOpen, user }
   } = useOvermind();
 
   const closeModal = useCallback(
@@ -25,6 +25,10 @@ export const SignInModal = () => {
     document.addEventListener('keydown', closeModal, false);
     return () => document.removeEventListener('keydown', closeModal, false);
   }, [closeModal]);
+
+  if (!signInModalOpen || user) {
+    return null;
+  }
 
   return (
     <ThemeProvider>
@@ -44,7 +48,7 @@ export const SignInModal = () => {
               right: 0,
               bottom: 0,
               zIndex: 9999,
-              background: 'rgba(0, 0, 0, 0.75)',
+              background: 'rgba(0, 0, 0, 0.75)'
             }}
           >
             <OutsideClickHandler onOutsideClick={toggleSignInModal}>
