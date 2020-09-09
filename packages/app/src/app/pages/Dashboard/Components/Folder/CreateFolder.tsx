@@ -11,7 +11,7 @@ import { DashboardNewFolder } from '../../types';
 export const CreateFolder = ({ basePath, setCreating }: DashboardNewFolder) => {
   const {
     state: { dashboard },
-    actions,
+    actions
   } = useOvermind();
 
   const location = useLocation();
@@ -40,13 +40,13 @@ export const CreateFolder = ({ basePath, setCreating }: DashboardNewFolder) => {
     if (event) event.preventDefault();
 
     setCreating(false);
-    if (newName) {
+    if (newName && newName.trim()) {
       const newFolderPath = join('/', basePath, newName);
 
       track('Dashboard - Create Directory', {
         source: 'Grid',
         dashboardVersion: 2,
-        folderPath: newFolderPath,
+        folderPath: newFolderPath
       });
       await actions.dashboard.createFolder(newFolderPath);
     }
@@ -69,7 +69,7 @@ export const CreateFolder = ({ basePath, setCreating }: DashboardNewFolder) => {
     onChange,
     onInputKeyDown,
     onSubmit,
-    onInputBlur,
+    onInputBlur
   };
 
   return <Component {...folderProps} />;

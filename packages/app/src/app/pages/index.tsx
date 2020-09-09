@@ -118,7 +118,7 @@ const Boundary = withRouter(ErrorBoundary);
 const RoutesComponent: React.FC = () => {
   const {
     actions: { appUnmounted },
-    state: { signInModalOpen, user, modals }
+    state: { modals }
   } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
@@ -185,7 +185,7 @@ const RoutesComponent: React.FC = () => {
           </Switch>
         </Content>
         <Modals />
-        {signInModalOpen && !user ? <SignInModal /> : null}
+        <SignInModal />
         <CreateSandboxModal />
         {modals.moveSandboxModal.isCurrent && <MoveSandboxFolderModal />}
       </Boundary>
