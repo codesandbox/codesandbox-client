@@ -73,9 +73,9 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
         <Button
           variant="secondary"
           css={css({
-            width: 6,
-            height: 6,
-            backgroundColor: 'inputOption.activeBorder',
+            width: 26,
+            height: 26,
+            backgroundColor: 'activityBarBadge.background',
             padding: 0,
             border: '1px solid',
             borderColor: 'input.border'
