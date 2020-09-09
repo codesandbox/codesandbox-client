@@ -1,5 +1,4 @@
 import addons from '@storybook/addons';
-import { List } from 'immutable';
 import * as React from 'react';
 import {
   branch,
@@ -8,7 +7,7 @@ import {
   mapProps,
   renderNothing,
   withHandlers,
-  withState,
+  withState
 } from 'recompose';
 import { ThemeProvider } from 'styled-components';
 
@@ -27,7 +26,7 @@ export const ThemesProvider = compose(
     onSelectTheme: ({ setTheme, themes }) => name => {
       const theme = themes.find(th => th.name === name);
       setTheme(theme);
-    },
+    }
   }),
   lifecycle({
     componentDidMount() {
@@ -40,7 +39,7 @@ export const ThemesProvider = compose(
       const { onSelectTheme } = this.props;
       const channel = addons.getChannel();
       channel.removeListener('selectTheme', onSelectTheme);
-    },
+    }
   }),
   branch(props => !props.theme, renderNothing)
 )(BaseComponent);

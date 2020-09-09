@@ -8,15 +8,15 @@ import { Dependency } from './Dependency';
 import { AddDependency } from './AddDependency';
 
 export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
-  readonly = false,
+  readonly = false
 }) => {
   const {
     actions: {
-      editor: { addNpmDependency, npmDependencyRemoved },
+      editor: { addNpmDependency, npmDependencyRemoved }
     },
     state: {
-      editor: { parsedConfigurations },
-    },
+      editor: { parsedConfigurations }
+    }
   } = useOvermind();
 
   if (!parsedConfigurations?.package) {
@@ -45,8 +45,8 @@ export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
       defaultOpen
       css={css({
         'div[open]': {
-          overflow: 'visible',
-        },
+          overflow: 'visible'
+        }
       })}
     >
       {!readonly && <AddDependency />}
