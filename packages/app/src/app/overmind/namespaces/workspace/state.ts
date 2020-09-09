@@ -15,6 +15,7 @@ type State = {
   dependencies: Dependency[];
   starterDependencies: Dependency[];
   explorerDependencies: Dependency[];
+  explorerDependenciesEmpty: boolean;
   selectedDependencies:
     | {
         [a: string]: Dependency;
@@ -30,20 +31,21 @@ export const state: State = {
   project: {
     title: '',
     description: '',
-    alias: '',
+    alias: ''
   },
   tags: {
-    tagName: '',
+    tagName: ''
   },
   openedWorkspaceItem: null,
   workspaceHidden: false,
   showDeleteSandboxModal: false,
   dependencies: [],
   explorerDependencies: [],
+  explorerDependenciesEmpty: false,
   starterDependencies: [],
   selectedDependencies: {},
   loadingDependencySearch: false,
   hitToVersionMap: new Map(),
   showingSelectedDependencies: false,
-  dependencySearch: '',
+  dependencySearch: ''
 };
