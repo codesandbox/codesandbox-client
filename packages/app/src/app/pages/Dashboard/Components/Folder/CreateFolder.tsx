@@ -40,7 +40,7 @@ export const CreateFolder = ({ basePath, setCreating }: DashboardNewFolder) => {
     if (event) event.preventDefault();
 
     setCreating(false);
-    if (newName) {
+    if (newName && newName.trim()) {
       const newFolderPath = join('/', basePath, newName);
 
       track('Dashboard - Create Directory', {

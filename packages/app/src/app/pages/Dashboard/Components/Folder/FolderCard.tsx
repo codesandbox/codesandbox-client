@@ -87,6 +87,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
         <form onSubmit={onSubmit}>
           <Input
             autoFocus
+            required
             value={newName}
             onChange={onChange}
             onKeyDown={onInputKeyDown}
