@@ -172,7 +172,13 @@ export const SandboxCard = ({
             onKeyDown(event, sandbox.id);
           }
         }}
-        style={{ opacity: isDragging ? 0.5 : 1 }}
+        style={{
+          opacity: isDragging ? 0 : 1,
+          // we transition the thumbnail out so that
+          // the dragged thumbnail is 100% opacity
+          transition: 'opacity 75ms',
+          transitionDelay: '16ms',
+        }}
         css={css({
           backgroundColor: 'grays.700',
           border: '1px solid',
