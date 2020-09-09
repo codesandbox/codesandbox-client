@@ -28,7 +28,9 @@ const checkboxStyles = css({
     height: 32,
     width: 32,
     appearance: 'none',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    border: 'none',
+    background: 'transparent'
   },
   'input[type="checkbox"]:checked + label:after': {
     transform: 'scale(1)'
