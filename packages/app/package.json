@@ -142,7 +142,6 @@
     "humps": "CompuIves/humps",
     "ignore": "^5.1.4",
     "immer": "^3.2.0",
-    "immutability-helper": "^2.6.6",
     "instantsearch.css": "^7.1.0",
     "is-url": "^1.2.2",
     "jest-circus": "^22.1.4",
