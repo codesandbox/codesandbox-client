@@ -75,7 +75,6 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
           css={css({
             width: 26,
             height: 26,
-            backgroundColor: 'activityBarBadge.background',
             padding: 0,
             border: '1px solid',
             borderColor: 'input.border'
@@ -94,77 +93,82 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
       </SidebarRow>
 
       {!modalOpen && explorerDependencies.length ? (
-        <OutsideClickHandler onOutsideClick={() => clearExplorerDependencies()}>
-          <Element
-            as="ul"
-            ref={list}
-            padding={0}
-            marginX={2}
-            css={css({
-              backgroundColor: 'sideBar.background',
-              position: 'absolute',
-              zIndex: 10,
-              width: 'calc(100% - 16px)',
-              borderRadius: 'medium',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              borderColor: 'sideBar.border',
-              marginTop: '-6px',
-              fontWeight: 500
-            })}
-          >
-            {explorerDependencies.map((dependency, i) => (
+        <OutsideClickHandler
+          css={css({ position: 'relative' })}
+          onOutsideClick={() => clearExplorerDependencies()}
+        >
+          <Element css={css({ position: 'relative' })}>
+            <Element
+              as="ul"
+              ref={list}
+              padding={0}
+              marginX={2}
+              css={css({
+                backgroundColor: 'sideBar.background',
+                position: 'absolute',
+                zIndex: 10,
+                width: 'calc(100% - 16px)',
+                borderRadius: 'medium',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: 'sideBar.border',
+                marginTop: '-6px',
+                fontWeight: 500
+              })}
+            >
+              {explorerDependencies.map((dependency, i) => (
+                <ListAction
+                  key={dependency.objectID}
+                  justify="space-between"
+                  css={css({ color: 'sideBar.foreground' })}
+                >
+                  <Button
+                    css={buttonStyles}
+                    variant="link"
+                    type="button"
+                    onClick={() =>
+                      addNpmDependency({
+                        name: dependency.name,
+                        version: dependency.tags.latest
+                      })
+                    }
+                  >
+                    <Text
+                      css={css({
+                        maxWidth: '80%'
+                      })}
+                    >
+                      {dependency.name}
+                    </Text>
+                    <Text variant="muted">Ctrl + {i + 1}</Text>
+                  </Button>
+                </ListAction>
+              ))}
               <ListAction
-                key={dependency.objectID}
+                key="show-all"
                 justify="space-between"
-                css={css({ color: 'sideBar.foreground' })}
+                css={css({
+                  color: 'sideBar.foreground',
+                  borderWidth: 0,
+                  borderTopWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: 'sideBar.border'
+                })}
               >
                 <Button
                   css={buttonStyles}
+                  tabIndex={0}
                   variant="link"
                   type="button"
-                  onClick={() =>
-                    addNpmDependency({
-                      name: dependency.name,
-                      version: dependency.tags.latest
-                    })
-                  }
+                  onClick={() => {
+                    modalOpened({ modal: 'searchDependencies' });
+                  }}
                 >
-                  <Text
-                    css={css({
-                      maxWidth: '80%'
-                    })}
-                  >
-                    {dependency.name}
-                  </Text>
-                  <Text variant="muted">Ctrl + {i + 1}</Text>
+                  <Text>Show All</Text>
+                  <Text variant="muted">Ctrl + D</Text>
                 </Button>
               </ListAction>
-            ))}
-            <ListAction
-              key="show-all"
-              justify="space-between"
-              css={css({
-                color: 'sideBar.foreground',
-                borderWidth: 0,
-                borderTopWidth: '1px',
-                borderStyle: 'solid',
-                borderColor: 'sideBar.border'
-              })}
-            >
-              <Button
-                css={buttonStyles}
-                tabIndex={0}
-                variant="link"
-                type="button"
-                onClick={() => {
-                  modalOpened({ modal: 'searchDependencies' });
-                }}
-              >
-                <Text>Show All</Text>
-                <Text variant="muted">Ctrl + D</Text>
-              </Button>
-            </ListAction>
+            </Element>
           </Element>
         </OutsideClickHandler>
       ) : null}
