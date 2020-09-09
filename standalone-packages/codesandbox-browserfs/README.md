@@ -1,27 +1,27 @@
 # BrowserFS v2.0.0-beta
-> BrowserFS is an in-browser file system that emulates the [Node JS file system API](http://nodejs.org/api/fs.html) and supports storing and retrieving files from various backends. BrowserFS also integrates nicely into the Emscripten file system.
+> BrowserFS - это файловая система в браузере, которая имитирует [Node JS file system API](http://nodejs.org/api/fs.html) и поддерживает хранение и извлечение файлов из различных бэкэндов. BrowserFS также прекрасно интегрируется в файловую систему Emscripten.
 
 [![Build Status](https://travis-ci.org/jvilk/BrowserFS.svg?branch=master)](https://travis-ci.org/jvilk/BrowserFS)
 [![Build Status](https://ci.appveyor.com/api/projects/status/bammh2x1bud8h7a5/branch/master?svg=true)](https://ci.appveyor.com/project/jvilk/browserfs/branch/master)
 [![NPM version](https://badge.fury.io/js/browserfs.svg)](http://badge.fury.io/js/browserfs)
 
-### Backends
+### Бэкэнды
 
-BrowserFS is highly extensible, and ships with many filesystem backends:
+BrowserFS обладает широкими возможностями расширения и поставляется с множеством серверных частей файловой системы:
 
-* `HTTPRequest`: Downloads files on-demand from a webserver via `XMLHttpRequest` or `fetch`.
-* `LocalStorage`: Stores files in the browser's `localStorage`.
-* `HTML5FS`: Stores files into the HTML5 `FileSystem` API.
-* `IndexedDB`: Stores files into the browser's `IndexedDB` object database.
-* `Dropbox`: Stores files into the user's Dropbox account.
-  * Note: You provide this filesystem with an authenticated [DropboxJS V2 JS SDK client](https://github.com/dropbox/dropbox-sdk-js).
-* `InMemory`: Stores files in-memory. Thus, it is a temporary file store that clears when the user navigates away.
-* `ZipFS`: Read-only zip file-backed FS. Lazily decompresses files as you access them.
-  * Supports DEFLATE out-of-the-box.
-  * Have super old zip files? [The `browserfs-zipfs-extras` package](https://github.com/jvilk/browserfs-zipfs-extras) adds support for EXPLODE, UNREDUCE, and UNSHRINK.
-* `IsoFS`: Mount an .iso file into the file system.
-  * Supports Microsoft Joliet and Rock Ridge extensions to the ISO9660 standard.
-* `WorkerFS`: Lets you mount the BrowserFS file system configured in the main thread in a WebWorker, or the other way around!
+* `HTTPRequest`: Загружает файлы по запросу с веб-сервера через `XMLHttpRequest` или `fetch`.
+* `LocalStorage`: Сохраняет файлы в браузере `localStorage`.
+* `HTML5FS`: Сохраняет файлы в HTML5 `FileSystem` API.
+* `IndexedDB`: Сохраняет файлы в объектной базе данных браузера `IndexedDB`.
+* `Dropbox`: Сохраняет файлы в учетной записи Dropbox пользователя.
+  * Примечание. Вы предоставляете этой файловой системе аутентифицированный [DropboxJS V2 JS SDK client](https://github.com/dropbox/dropbox-sdk-js).
+* `InMemory`: Хранит файлы в памяти. Таким образом, это временное хранилище файлов, которое очищается, когда пользователь уходит.
+* `ZipFS`: FS с поддержкой zip-файлов только для чтения. Лениво распаковывает файлы по мере доступа к ним.
+  * Поддерживает DEFLATE прямо из коробки.
+  * Есть супер старые zip-файлы? [The `browserfs-zipfs-extras` package](https://github.com/jvilk/browserfs-zipfs-extras) добавляет поддержку EXPLODE, UNREDUCE, и UNSHRINK.
+* `IsoFS`: Смонтирует файл .iso в файловую систему.
+  * Поддерживает расширения Microsoft Joliet и Rock Ridge до стандарта ISO9660.
+* `WorkerFS`: Позволяет смонтировать файловую систему BrowserFS, настроенную в основном потоке в WebWorker, или наоборот!
 * `MountableFileSystem`: Lets you mount multiple file systems into a single directory hierarchy, as in *nix-based OSes.
 * `OverlayFS`: Mount a read-only file system as read-write by overlaying a writable file system on top of it. Like Docker's overlayfs, it will only write changed files to the writable file system.
 * `AsyncMirror`: Use an asynchronous backend synchronously. Invaluable for Emscripten; let your Emscripten applications write to larger file stores with no additional effort!
