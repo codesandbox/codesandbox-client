@@ -12,7 +12,7 @@ import {
   Stack,
   Select,
   Link,
-  Button,
+  Button
 } from '@codesandbox/components';
 import { HomeIcon, GitHubIcon, CSBIcon } from './icons';
 
@@ -28,13 +28,13 @@ const checkboxStyles = css({
     height: 32,
     width: 32,
     appearance: 'none',
-    cursor: 'pointer',
+    cursor: 'pointer'
   },
   'input[type="checkbox"]:checked + label:after': {
-    transform: 'scale(1)',
+    transform: 'scale(1)'
   },
   'input[type="checkbox"]:checked + label:before': {
-    borderColor: 'transparent',
+    borderColor: 'transparent'
   },
   label: {
     display: 'flex',
@@ -43,7 +43,7 @@ const checkboxStyles = css({
 
     ':after, :before': {
       pointerEvents: 'none',
-      cursor: 'pointer',
+      cursor: 'pointer'
     },
     ':before': {
       display: 'flex',
@@ -55,7 +55,7 @@ const checkboxStyles = css({
       borderColor: 'grays.400',
       borderRadius: '50%',
       marginRight: 4,
-      boxSizing: 'border-box',
+      boxSizing: 'border-box'
     },
     ':after': {
       position: 'absolute',
@@ -68,15 +68,15 @@ const checkboxStyles = css({
       backgroundImage: `url('data:image/svg+xml,%3Csvg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath fill-rule="evenodd" clip-rule="evenodd" d="M11 22.2808C17.0751 22.2808 22 17.3559 22 11.2808C22 5.20563 17.0751 0.280762 11 0.280762C4.92487 0.280762 0 5.20563 0 11.2808C0 17.3559 4.92487 22.2808 11 22.2808ZM17 7.28076L10.4971 13.603L6.39416 9.6141L5 11.0481L10.4971 16.3925L18.3942 8.71475L17 7.28076Z" fill="%235BC266"/%3E%3C/svg%3E%0A')`,
       transform: 'scale(0)',
       borderRadius: '50%',
-      transition: 'transform .3s ease',
-    },
-  },
+      transition: 'transform .3s ease'
+    }
+  }
 });
 
 export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
   const {
     state: { workspace },
-    actions,
+    actions
   } = useOvermind();
 
   const versions = Object.keys(dependency.versions).sort((a, b) => {
@@ -97,8 +97,11 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
       css={css({
         height: 'auto',
         ':hover, :focus': {
-          backgroundColor: 'sideBar.border',
+          backgroundColor: 'sideBar.border'
         },
+        ':active:not(:disabled)': {
+          transform: 'scale(1)'
+        }
       })}
     >
       <Stack
@@ -113,7 +116,7 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
           outline: 'none',
           borderBottomWidth: '1px',
           borderBottomStyle: 'solid',
-          borderBottomColor: 'sideBar.border',
+          borderBottomColor: 'sideBar.border'
         })}
       >
         <Element css={checkboxStyles}>
@@ -130,7 +133,7 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
         <Stack
           justify="space-between"
           css={css({
-            flexGrow: 1,
+            flexGrow: 1
           })}
         >
           <Element paddingRight={4}>
@@ -152,7 +155,7 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
                 css={css({
                   borderRadius: 'small',
                   width: '6',
-                  height: '6',
+                  height: '6'
                 })}
                 src={dependency.owner?.avatar}
                 alt={dependency.owner?.name}
@@ -166,7 +169,7 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
               onChange={e => {
                 actions.workspace.handleVersionChange({
                   dependency,
-                  version: e.target.value,
+                  version: e.target.value
                 });
               }}
             >
@@ -215,7 +218,7 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
                     maxWidth: 40,
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
-                    textOverflow: 'ellipsis',
+                    textOverflow: 'ellipsis'
                   })}
                 >
                   {dependency.license}

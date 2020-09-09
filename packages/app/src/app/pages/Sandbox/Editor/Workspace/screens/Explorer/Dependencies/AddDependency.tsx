@@ -5,7 +5,7 @@ import {
   Text,
   SearchInput,
   ListAction,
-  Element,
+  Element
 } from '@codesandbox/components';
 import OutsideClickHandler from 'react-outside-click-handler';
 import css from '@styled-system/css';
@@ -15,7 +15,7 @@ import { useKeyboard } from './useKeys';
 
 const buttonStyles = css({
   color: 'inherit',
-  justifyContent: 'space-between',
+  justifyContent: 'space-between'
 });
 
 export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
@@ -26,13 +26,13 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
       workspace: {
         getExplorerDependencies,
         clearExplorerDependencies,
-        changeDependencySearch,
-      },
+        changeDependencySearch
+      }
     },
     state: {
       currentModal,
-      workspace: { explorerDependencies, dependencySearch },
-    },
+      workspace: { explorerDependencies, dependencySearch }
+    }
   } = useOvermind();
   const modalOpen = currentModal === 'searchDependencies';
   const list = useRef();
@@ -55,7 +55,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
         <Element
           css={css({
             width: '100%',
-            flexGrow: 1,
+            flexGrow: 1
           })}
         >
           <SearchInput
@@ -77,6 +77,8 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
             height: 6,
             backgroundColor: 'inputOption.activeBorder',
             padding: 0,
+            border: '1px solid',
+            borderColor: 'input.border'
           })}
           onClick={() => modalOpened({ modal: 'searchDependencies' })}
         >
@@ -102,13 +104,13 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
               backgroundColor: 'sideBar.background',
               position: 'absolute',
               zIndex: 10,
-              width: '100%',
+              width: 'calc(100% - 16px)',
               borderRadius: 'medium',
               borderWidth: '1px',
               borderStyle: 'solid',
               borderColor: 'sideBar.border',
               marginTop: '-6px',
-              fontWeight: 500,
+              fontWeight: 500
             })}
           >
             {explorerDependencies.map((dependency, i) => (
@@ -124,13 +126,13 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                   onClick={() =>
                     addNpmDependency({
                       name: dependency.name,
-                      version: dependency.tags.latest,
+                      version: dependency.tags.latest
                     })
                   }
                 >
                   <Text
                     css={css({
-                      maxWidth: '80%',
+                      maxWidth: '80%'
                     })}
                   >
                     {dependency.name}
@@ -147,7 +149,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                 borderWidth: 0,
                 borderTopWidth: '1px',
                 borderStyle: 'solid',
-                borderColor: 'sideBar.border',
+                borderColor: 'sideBar.border'
               })}
             >
               <Button
