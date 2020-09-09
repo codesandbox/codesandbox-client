@@ -56,7 +56,7 @@ const checkboxStyles = css({
       borderStyle: 'solid',
       borderColor: 'grays.400',
       borderRadius: '50%',
-      marginRight: 4,
+      marginRight: 2,
       boxSizing: 'border-box'
     },
     ':after': {
@@ -108,6 +108,7 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
     >
       <Stack
         padding={4}
+        paddingLeft={1}
         gap={4}
         css={css({
           color: 'sideBar.foreground',

@@ -139,7 +139,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                         })
                       }
                     >
-                      <Text width="80%" weight="400">
+                      <Text maxWidth="80%" weight="400">
                         {dependency._highlightResult ? (
                           <Text
                             css={css({

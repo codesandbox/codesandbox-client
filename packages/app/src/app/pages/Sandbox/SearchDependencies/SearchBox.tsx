@@ -99,7 +99,7 @@ export const SearchBox = ({ handleManualSelect, onChange }) => {
           placeholder="Add npm dependency"
           css={css({
             paddingRight: 140,
-            paddingLeft: 50,
+            paddingLeft: 10,
             height: 65,
             fontSize: 4,
             color: 'white',
