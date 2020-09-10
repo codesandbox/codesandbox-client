@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { json } from 'overmind';
 import { Dependency as DependencyType } from '@codesandbox/common/lib/types/algolia';
 import { useOvermind } from 'app/overmind';
@@ -13,6 +13,7 @@ export const SearchDependencies = ({ onConfirm }) => {
     state: { workspace },
     actions
   } = useOvermind();
+  const list = useRef();
 
   const handleSelect = async (hit: DependencyType) => {
     let version = json(workspace.hitToVersionMap).get(hit.objectID);
@@ -71,9 +72,13 @@ export const SearchDependencies = ({ onConfirm }) => {
         position: 'relative'
       })}
     >
-      <SearchBox onChange={onChange} handleManualSelect={handleManualSelect} />
+      <SearchBox
+        onChange={onChange}
+        handleManualSelect={handleManualSelect}
+        listRef={list}
+      />
       <Element
-        id="list"
+        ref={list}
         paddingBottom={10}
         css={css({
           height: '60vh',

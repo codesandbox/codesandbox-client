@@ -10,7 +10,7 @@ const getBackgroundColor = focus =>
     focus ? 'FFFFFF' : '757575'
   }"/%3E%3C/svg%3E%0A')`;
 
-export const SearchBox = ({ handleManualSelect, onChange }) => {
+export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
   const {
     state: { workspace },
     actions: {
@@ -23,7 +23,7 @@ export const SearchBox = ({ handleManualSelect, onChange }) => {
   const [down] = useKeys('down');
 
   useEffect(() => {
-    const list = document.getElementById('list') as HTMLUListElement;
+    const list = listRef.current as HTMLUListElement;
     const first = list.firstChild as HTMLButtonElement;
     const last = list.lastChild as HTMLButtonElement;
     const formRef: HTMLFormElement = form.current;
