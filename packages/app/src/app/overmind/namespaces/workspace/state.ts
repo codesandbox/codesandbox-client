@@ -22,7 +22,9 @@ type State = {
       }
     | {};
   loadingDependencySearch: boolean;
-  hitToVersionMap: Map<any, any>;
+  hitToVersionMap: {
+    [name: string]: string;
+  };
   showingSelectedDependencies: boolean;
   dependencySearch: string;
 };
@@ -45,7 +47,7 @@ export const state: State = {
   starterDependencies: [],
   selectedDependencies: {},
   loadingDependencySearch: false,
-  hitToVersionMap: new Map(),
+  hitToVersionMap: {},
   showingSelectedDependencies: false,
   dependencySearch: ''
 };

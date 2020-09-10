@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { json } from 'overmind';
 import { Dependency as DependencyType } from '@codesandbox/common/lib/types/algolia';
 import { useOvermind } from 'app/overmind';
 import { Element, Text, Stack } from '@codesandbox/components';
@@ -16,7 +15,7 @@ export const SearchDependencies = ({ onConfirm }) => {
   const list = useRef();
 
   const handleSelect = async (hit: DependencyType) => {
-    let version = json(workspace.hitToVersionMap).get(hit.objectID);
+    let version = workspace.hitToVersionMap[hit.objectID];
 
     if (!version && hit.tags) {
       version = hit.tags.latest;

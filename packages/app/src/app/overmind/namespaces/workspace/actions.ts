@@ -519,7 +519,7 @@ export const handleVersionChange: Action<{
   dependency: Dependency;
   version: string;
 }> = ({ state }, { dependency, version }) => {
-  json(state.workspace.hitToVersionMap).set(dependency.objectID, version);
+  state.workspace.hitToVersionMap[dependency.objectID] = version;
 };
 
 export const clearSelectedDependencies: Action = ({ state }) => {
