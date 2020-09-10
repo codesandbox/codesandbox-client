@@ -179,6 +179,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                     })}
                     size={2}
                     align="center"
+                    variant="muted"
                   >
                     It looks like there aren’t any matches for your query
                   </Text>
