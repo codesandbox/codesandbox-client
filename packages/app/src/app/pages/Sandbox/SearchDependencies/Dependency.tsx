@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
+import { json } from 'overmind';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
@@ -77,7 +78,9 @@ const checkboxStyles = css({
 
 export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
   const {
-    state: { workspace },
+    state: {
+      workspace: { selectedDependencies }
+    },
     actions
   } = useOvermind();
 
@@ -126,7 +129,7 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
           <input
             type="checkbox"
             id={dependency.name}
-            checked={workspace.selectedDependencies[dependency.objectID]}
+            checked={Boolean(json(selectedDependencies)[dependency.objectID])}
             onChange={() =>
               actions.workspace.setSelectedDependencies(dependency)
             }
