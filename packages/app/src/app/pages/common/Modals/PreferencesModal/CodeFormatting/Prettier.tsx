@@ -26,7 +26,7 @@ export const Prettier: FunctionComponent = () => {
   } = useOvermind();
 
   const bindValue = (name: string) => ({
-    setValue: value =>
+    setValue: (value) =>
       settingChanged({ name: `prettierConfig.${name}`, value }),
     value: prettierConfig[name],
   });
@@ -36,14 +36,15 @@ export const Prettier: FunctionComponent = () => {
       <PreferenceContainer>
         <Text size={3} variant="muted">
           This configuration can be overridden by a{' '}
+          <code>&quot;prettier&quot;</code> key in the <code>package.json</code>{' '}
+          or by a <code>.prettierrc</code> file at the route of the sandbox.{' '}
           <a
             href="https://prettier.io/docs/en/configuration.html"
             rel="noopener noreferrer"
             target="_blank"
           >
-            .prettierrc
-          </a>{' '}
-          JSON file at the root of the sandbox.
+            More info...
+          </a>
         </Text>
 
         <Rule />
