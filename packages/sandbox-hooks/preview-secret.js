@@ -10,7 +10,7 @@ export const getPreviewSecret = () =>
     '$1'
   );
 
-export const setPreviewSecret = (secret) => {
+export const setPreviewSecret = secret => {
   if (secret === null) {
     return;
   }
@@ -34,7 +34,7 @@ export const setPreviewSecret = (secret) => {
 };
 
 export const listenForPreviewSecret = () => {
-  const listener = (data) => {
+  const listener = data => {
     if (data.data && data.data.$type === 'preview-secret') {
       const { previewSecret } = data.data;
       setPreviewSecret(previewSecret);
@@ -86,7 +86,7 @@ function getProtocolAndHostWithSSE() {
   return 'https://codesandbox.io';
 }
 
-export const requestPreviewSecretFromApp = (sandboxId) => {
+export const requestPreviewSecretFromApp = sandboxId => {
   const host = getProtocolAndHostWithSSE();
   const popup = window.open(
     host + '/auth/sandbox/' + sandboxId,
@@ -98,7 +98,7 @@ export const requestPreviewSecretFromApp = (sandboxId) => {
     popup.postMessage({ $type: 'request-preview-secret' }, host);
   }, 500);
 
-  const listener = (e) => {
+  const listener = e => {
     if (e.data && e.data.$type === 'preview-secret') {
       setPreviewSecret(e.data.previewSecret);
       window.removeEventListener('message', listener);
