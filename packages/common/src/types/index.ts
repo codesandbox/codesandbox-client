@@ -65,6 +65,7 @@ export type Module = {
   insertedAt: string;
   updatedAt: string;
   path: string;
+  uploadId?: string;
   type: 'file';
 };
 

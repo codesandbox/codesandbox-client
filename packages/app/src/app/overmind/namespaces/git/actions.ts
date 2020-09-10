@@ -237,10 +237,10 @@ export const createCommitClicked: AsyncAction = async ({
         : [git.sourceCommitSha!]
     );
     changes.added.forEach(change => {
-      git.sourceModulesByPath[change.path] = change.content;
+      git.sourceModulesByPath[change.path].code = change.content;
     });
     changes.modified.forEach(change => {
-      git.sourceModulesByPath[change.path] = change.content;
+      git.sourceModulesByPath[change.path].code = change.content;
     });
     changes.deleted.forEach(path => {
       delete git.sourceModulesByPath[path];
@@ -324,10 +324,10 @@ export const createPrClicked: AsyncAction = async ({
     );
 
     changes.added.forEach(change => {
-      git.sourceModulesByPath[change.path] = change.content;
+      git.sourceModulesByPath[change.path].code = change.content;
     });
     changes.modified.forEach(change => {
-      git.sourceModulesByPath[change.path] = change.content;
+      git.sourceModulesByPath[change.path].code = change.content;
     });
     changes.deleted.forEach(path => {
       delete git.sourceModulesByPath[path];
@@ -418,7 +418,9 @@ export const addConflictedFile: AsyncAction<GitFileCompare> = async (
       [conflict.filename]: { content: conflict.content!, isBinary: false },
     },
   });
-  state.git.sourceModulesByPath['/' + conflict.filename] = conflict.content!;
+  state.git.sourceModulesByPath[
+    '/' + conflict.filename
+  ].code = conflict.content!;
 
   state.git.conflictsResolving.splice(
     state.git.conflictsResolving.indexOf(conflict.filename),
@@ -527,8 +529,9 @@ export const resolveOutOfSync: AsyncAction = async ({
       files: added.reduce((aggr, change) => {
         aggr[change.filename] = change.isBinary
           ? {
-              content: git.sourceModulesByPath['/' + change.filename],
+              content: git.sourceModulesByPath['/' + change.filename].code,
               isBinary: true,
+              uploadId: git.sourceModulesByPath['/' + change.filename].uploadId,
             }
           : { content: change.content };
 
@@ -554,13 +557,13 @@ export const resolveOutOfSync: AsyncAction = async ({
         actions.editor.setCode({
           moduleShortid: module.shortid,
           code: change.isBinary
-            ? git.sourceModulesByPath['/' + change.filename]
+            ? git.sourceModulesByPath['/' + change.filename].code
             : change.content!,
         });
         return actions.editor.codeSaved({
           moduleShortid: module.shortid,
           code: change.isBinary
-            ? git.sourceModulesByPath['/' + change.filename]
+            ? git.sourceModulesByPath['/' + change.filename].code
             : change.content!,
           cbID: null,
         });
@@ -592,7 +595,7 @@ export const _setGitChanges: Action = ({ state }) => {
       changes.added.push(module.path);
     } else if (
       !module.isBinary &&
-      state.git.sourceModulesByPath[module.path] !== module.code
+      state.git.sourceModulesByPath[module.path].code !== module.code
     ) {
       changes.modified.push(module.path);
     }
@@ -638,7 +641,7 @@ export const _evaluateGitChanges: AsyncAction<
       !(state.editor.modulesByPath[path] as Module).isBinary &&
       (state.editor.modulesByPath[path] as Module).code !== change.content &&
       (state.editor.modulesByPath[path] as Module).code !==
-        state.git.sourceModulesByPath[path]
+        state.git.sourceModulesByPath[path].code
     ) {
       return aggr.concat(change);
     }
@@ -714,7 +717,11 @@ export const _loadSourceSandbox: AsyncAction = async ({ state, effects }) => {
       );
       module.path = path;
       if (path) {
-        aggr[path] = module.code;
+        aggr[path] = {
+          code: module.code,
+          isBinary: module.isBinary,
+          uploadId: module.uploadId,
+        };
       }
 
       return aggr;

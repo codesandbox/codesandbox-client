@@ -23,7 +23,13 @@ type State = {
   sourceGitChanges: {
     [path: string]: GitFileCompare;
   };
-  sourceModulesByPath: { [path: string]: string };
+  sourceModulesByPath: {
+    [path: string]: {
+      code: string;
+      isBinary: boolean;
+      uploadId?: string;
+    };
+  };
   permission: 'admin' | 'write' | 'read';
   conflictsResolving: string[];
   outOfSyncUpdates: {
