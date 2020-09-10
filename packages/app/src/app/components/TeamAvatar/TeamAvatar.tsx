@@ -10,7 +10,7 @@ export const backgrounds = [
   'orange',
   'blues.300',
   'blues.600',
-  'blues.700',
+  'blues.700'
 ];
 
 interface TeamAvatarProps {
@@ -24,7 +24,7 @@ interface TeamAvatarProps {
 const textSizes = {
   small: 2,
   big: 3,
-  bigger: 6,
+  bigger: 6
 };
 
 export const TeamAvatar = ({
@@ -32,7 +32,7 @@ export const TeamAvatar = ({
   size = 'big',
   className,
   avatar,
-  style,
+  style
 }: TeamAvatarProps) => {
   if (!name) return null;
 
@@ -45,13 +45,14 @@ export const TeamAvatar = ({
     <>
       <img
         css={css({
-          maxWidth: avatarSize,
-          maxHeight: avatarSize,
+          width: avatarSize,
+          height: avatarSize,
+          objectFit: 'cover',
           borderRadius: 'small',
           borderColor: 'sideBar.border',
           borderStyle: 'solid',
           borderWidth: 1,
-          boxSizing: 'border-box',
+          boxSizing: 'border-box'
         })}
         style={style}
         src={avatar}
@@ -72,7 +73,7 @@ export const TeamAvatar = ({
         backgroundColor,
         color: 'white',
         fontWeight: 600,
-        fontFamily: 'Inter',
+        fontFamily: 'Inter'
       })}
       className={className}
     >

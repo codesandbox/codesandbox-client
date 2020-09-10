@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { Link as RouterLink } from 'react-router-dom';
 import {
+  Grid,
   Stack,
   Avatar,
   Text,
@@ -11,7 +12,7 @@ import {
   Button,
   Textarea,
   Input,
-  Tooltip,
+  Tooltip
 } from '@codesandbox/components';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import css from '@styled-system/css';
@@ -19,12 +20,12 @@ import css from '@styled-system/css';
 export const ProfileCard = ({ defaultEditing = false }) => {
   const {
     actions: {
-      profile: { updateUserProfile },
+      profile: { updateUserProfile }
     },
     state: {
       user: loggedInUser,
-      profile: { current: user },
-    },
+      profile: { current: user }
+    }
   } = useOvermind();
 
   const [editing, setEditing] = React.useState(defaultEditing);
@@ -61,7 +62,7 @@ export const ProfileCard = ({ defaultEditing = false }) => {
         borderColor: 'grays.600',
         paddingTop: 2,
         paddingBottom: 6,
-        marginBottom: 8,
+        marginBottom: 8
       })}
     >
       <Stack direction="vertical">
@@ -72,7 +73,7 @@ export const ProfileCard = ({ defaultEditing = false }) => {
             paddingX: 6,
             paddingY: 6,
             // fix height to avoid jumping
-            height: myProfile ? 230 : 'auto',
+            height: myProfile ? 230 : 'auto'
           })}
         >
           <Stack gap={4} align="center">
@@ -81,7 +82,7 @@ export const ProfileCard = ({ defaultEditing = false }) => {
               css={css({
                 size: 64,
                 img: { borderRadius: 'medium' },
-                span: { fontSize: 3, height: 4, lineHeight: '16px' },
+                span: { fontSize: 3, height: 4, lineHeight: '16px' }
               })}
             />
             <Stack direction="vertical">
@@ -121,15 +122,17 @@ export const ProfileCard = ({ defaultEditing = false }) => {
               paddingX: 6,
               paddingY: 4,
               borderTop: '1px solid',
-              borderColor: 'grays.600',
+              borderColor: 'grays.600'
             })}
           >
             <Text size={2} weight="bold">
-              Team
+              Teams
             </Text>
-            <Stack gap={3}>
+            <Grid
+              css={{ gridTemplateColumns: 'repeat(auto-fill, 26px)', gap: 12 }}
+            >
               {user.teams
-                .slice()
+                .slice(1) // first one is always personal workspace
                 .sort((team1, team2) =>
                   team1.avatarUrl && !team2.avatarUrl ? -1 : 1
                 )
@@ -140,7 +143,7 @@ export const ProfileCard = ({ defaultEditing = false }) => {
                     </span>
                   </Tooltip>
                 ))}
-            </Stack>
+            </Grid>
           </Stack>
         ) : null}
         <Stack
@@ -149,7 +152,7 @@ export const ProfileCard = ({ defaultEditing = false }) => {
             paddingY: 4,
             marginBottom: 4,
             borderTop: '1px solid',
-            borderColor: 'grays.600',
+            borderColor: 'grays.600'
           })}
         >
           <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
@@ -250,7 +253,7 @@ const SocialLinks = ({ username, socialLinks, editing, setSocialLinks }) => (
           css={css({
             fontWeight: 'normal',
             justifyContent: 'start',
-            paddingX: 0,
+            paddingX: 0
           })}
           onClick={() => setSocialLinks([...socialLinks, 'https://'])}
         >
