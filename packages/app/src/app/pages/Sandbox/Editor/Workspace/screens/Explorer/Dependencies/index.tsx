@@ -10,14 +10,12 @@ import React, { FunctionComponent } from 'react';
 
 import { Dependency } from './Dependency';
 
-export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
-  readonly = false,
-}) => {
+type Props = {
+  readonly: boolean;
+};
+export const Dependencies: FunctionComponent<Props> = ({ readonly }) => {
   const {
-    actions: {
-      modalOpened,
-      editor: { addNpmDependency, npmDependencyRemoved },
-    },
+    actions: { modalOpened },
     state: {
       editor: { parsedConfigurations },
     },
@@ -32,7 +30,6 @@ export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
   }
 
   const { error, parsed } = parsedConfigurations.package;
-
   if (error) {
     return (
       <SidebarRow marginX={2}>
@@ -42,9 +39,8 @@ export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
   }
 
   const { dependencies = {} } = parsed;
-
   return (
-    <Collapsible title="Dependencies" defaultOpen>
+    <Collapsible defaultOpen title="Dependencies">
       <List marginBottom={2}>
         {Object.keys(dependencies)
           .sort()
@@ -53,16 +49,15 @@ export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
               dependencies={dependencies}
               dependency={dependency}
               key={dependency}
-              onRefresh={(name, version) => addNpmDependency({ name, version })}
-              onRemove={npmDependencyRemoved}
             />
           ))}
       </List>
-      {!readonly && (
+
+      {readonly ? null : (
         <SidebarRow marginX={2}>
           <Button
-            variant="secondary"
             onClick={() => modalOpened({ modal: 'searchDependencies' })}
+            variant="secondary"
           >
             Add dependency
           </Button>

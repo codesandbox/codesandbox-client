@@ -5,13 +5,14 @@ import {
   Stack,
   Text,
   Stats,
-  Link,
   IconButton,
   SkeletonText,
+  isMenuClicked,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { SandboxTypes } from './constants';
+import { SandboxTypes, DropTargets } from './constants';
 
 type DragItem = { type: 'sandbox'; sandboxId: string; index: number | null };
 
@@ -35,6 +36,7 @@ export const SandboxCard = ({
         reorderFeaturedSandboxesInState,
         saveFeaturedSandboxesOrder,
         removeFeaturedSandboxesInState,
+        newSandboxShowcaseSelected,
       },
     },
   } = useOvermind();
@@ -75,12 +77,14 @@ export const SandboxCard = ({
         return;
       }
 
-      if (dropResult.name === 'PINNED_SANDBOXES') {
+      if (dropResult.name === DropTargets.PINNED_SANDBOXES) {
         if (featuredSandboxes.find(s => s.id === item.sandboxId)) {
           saveFeaturedSandboxesOrder();
         } else {
           addFeaturedSandboxes({ sandboxId: item.sandboxId });
         }
+      } else if (dropResult.name === DropTargets.SHOWCASED_SANDBOX) {
+        newSandboxShowcaseSelected(item.sandboxId);
       }
     },
   });
@@ -141,7 +145,7 @@ export const SandboxCard = ({
       // We're mutating the monitor item here to avoid expensive index searches!
       item.index = hoverIndex;
     },
-    drop: () => ({ name: 'PINNED_SANDBOXES' }),
+    drop: () => ({ name: DropTargets.PINNED_SANDBOXES }),
   });
 
   const myProfile = loggedInUser?.username === username;
@@ -154,18 +158,36 @@ export const SandboxCard = ({
   return (
     <div ref={ref}>
       <Stack
-        as={Link}
-        href={sandboxUrl({ id: sandbox.id })}
         direction="vertical"
         gap={4}
         onContextMenu={event => onContextMenu(event, sandbox.id)}
-        onKeyDown={event => onKeyDown(event, sandbox.id)}
-        style={{ opacity: isDragging ? 0.2 : 1 }}
+        onClick={() => {
+          // we use on click instead of anchor tag so that safari renders
+          // the html5 drag thumbnail instead of text
+          if (isMenuClicked(event)) return;
+          window.location.href = sandboxUrl({ id: sandbox.id });
+        }}
+        tabIndex={0}
+        onKeyDown={event => {
+          if (event.keyCode === ENTER && !isMenuClicked(event)) {
+            window.location.href = sandboxUrl({ id: sandbox.id });
+          } else {
+            onKeyDown(event, sandbox.id);
+          }
+        }}
+        style={{
+          opacity: isDragging ? 0 : 1,
+          // we transition the thumbnail out so that
+          // the dragged thumbnail is 100% opacity
+          transition: 'opacity 75ms',
+          transitionDelay: '16ms',
+        }}
         css={css({
           backgroundColor: 'grays.700',
           border: '1px solid',
           borderColor: 'grays.600',
           borderRadius: 'medium',
+          cursor: 'pointer',
           overflow: 'hidden',
           ':hover, :focus, :focus-within': {
             boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],

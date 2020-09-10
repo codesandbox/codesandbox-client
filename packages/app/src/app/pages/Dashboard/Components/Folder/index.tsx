@@ -135,7 +135,13 @@ export const Folder = (folderItem: DashboardFolder) => {
   const [newName, setNewName] = React.useState(name);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewName(event.target.value);
+    const { value } = event.target;
+    if (value && value.trim()) {
+      event.target.setCustomValidity('');
+    } else {
+      event.target.setCustomValidity('Folder name is required.');
+    }
+    setNewName(value);
   };
   const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === ESC) {

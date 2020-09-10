@@ -20,7 +20,7 @@ const MoveSandboxFolderModal = Loadable(() =>
   import(
     /* webpackChunkName: 'move-sandbox-modal' */ './common/Modals/MoveSandboxFolderModal'
   ).then(module => ({
-    default: module.MoveSandboxFolderModal,
+    default: module.MoveSandboxFolderModal
   }))
 );
 
@@ -28,7 +28,7 @@ const DuplicateAccount = Loadable(() =>
   import(
     /* webpackChunkName: 'move-sandbox-modal' */ './DuplicateAccount'
   ).then(module => ({
-    default: module.DuplicateAccount,
+    default: module.DuplicateAccount
   }))
 );
 
@@ -42,7 +42,7 @@ const SignIn = Loadable(() =>
 );
 const Live = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './Live').then(module => ({
-    default: module.LivePage,
+    default: module.Live
   }))
 );
 const VercelSignIn = Loadable(() =>
@@ -54,28 +54,28 @@ const PreviewAuth = Loadable(() =>
 const NotFound = Loadable(() =>
   import(/* webpackChunkName: 'page-not-found' */ './common/NotFound').then(
     module => ({
-      default: module.NotFound,
+      default: module.NotFound
     })
   )
 );
 const Profile = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile').then(module => ({
-    default: module.Profile,
+    default: module.Profile
   }))
 );
 const Profile2 = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile2').then(module => ({
-    default: module.Profile,
+    default: module.Profile
   }))
 );
 const Search = Loadable(() =>
   import(/* webpackChunkName: 'page-search' */ './Search').then(module => ({
-    default: module.Search,
+    default: module.Search
   }))
 );
 const CLI = Loadable(() =>
   import(/* webpackChunkName: 'page-cli' */ './CLI').then(module => ({
-    default: module.CLI,
+    default: module.CLI
   }))
 );
 
@@ -83,13 +83,13 @@ const TeamInvitation = Loadable(() =>
   import(
     /* webpackChunkName: 'page-team-invitation' */ './TeamInvitation'
   ).then(module => ({
-    default: module.TeamInvitation,
+    default: module.TeamInvitation
   }))
 );
 
 const GitHub = Loadable(() =>
   import(/* webpackChunkName: 'page-github' */ './GitHub').then(module => ({
-    default: module.GitHub,
+    default: module.GitHub
   }))
 );
 const CliInstructions = Loadable(() =>
@@ -102,13 +102,13 @@ const Patron = Loadable(() =>
 );
 const SignUp = Loadable(() =>
   import(/* webpackChunkName: 'page-signup' */ './SignUp').then(module => ({
-    default: module.SignUp,
+    default: module.SignUp
   }))
 );
 const Pro = Loadable(() => import(/* webpackChunkName: 'page-pro' */ './Pro'));
 const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator').then(module => ({
-    default: module.Curator,
+    default: module.Curator
   }))
 );
 const CodeSadbox = () => this[`💥`].kaboom();
@@ -118,7 +118,7 @@ const Boundary = withRouter(ErrorBoundary);
 const RoutesComponent: React.FC = () => {
   const {
     actions: { appUnmounted },
-    state: { signInModalOpen, user, modals },
+    state: { modals }
   } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
@@ -164,7 +164,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/new-dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
-            <Route path="/live/:id" component={Live} />
+            <Route path="/live/:roomId" component={Live} />
             <Route path="/signin" exact component={SignIn} />
             <Route path="/signin/duplicate" component={DuplicateAccount} />
             <Route path="/signup/:userId" exact component={SignUp} />
@@ -185,7 +185,7 @@ const RoutesComponent: React.FC = () => {
           </Switch>
         </Content>
         <Modals />
-        {signInModalOpen && !user ? <SignInModal /> : null}
+        <SignInModal />
         <CreateSandboxModal />
         {modals.moveSandboxModal.isCurrent && <MoveSandboxFolderModal />}
       </Boundary>
