@@ -51,8 +51,20 @@ export const SearchDependencies = ({ onConfirm }) => {
   };
 
   const onChange = (value?: string) => {
-    if (value) {
-      actions.workspace.getDependencies(value);
+    let searchValue = value;
+    if (searchValue.includes('@') && !searchValue.startsWith('@')) {
+      searchValue = value.split('@')[0];
+    }
+
+    if (searchValue.startsWith('@')) {
+      // if it starts with one and has a version
+      if (searchValue.split('@').length === 3) {
+        const part = searchValue.split('@');
+        searchValue = `@${part[0]}${part[1]}`;
+      }
+    }
+    if (searchValue) {
+      actions.workspace.getDependencies(searchValue);
     } else {
       actions.workspace.setDependencies(workspace.starterDependencies);
     }

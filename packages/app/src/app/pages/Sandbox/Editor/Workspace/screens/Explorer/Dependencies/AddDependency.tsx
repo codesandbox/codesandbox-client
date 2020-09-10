@@ -44,8 +44,22 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
   useKeyboard(list, searchInput);
 
   const searchDependencies = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+
+    if (value.includes('@') && !value.startsWith('@')) {
+      value = value.split('@')[0];
+    }
+
+    if (value.startsWith('@')) {
+      // if it starts with one and has a version
+      if (value.split('@').length === 3) {
+        const part = value.split('@');
+        value = `@${part[0]}${part[1]}`;
+      }
+    }
+
     changeDependencySearch(e.target.value);
-    getExplorerDependencies(e.target.value);
+    getExplorerDependencies(value);
   };
 
   return (

@@ -10,11 +10,11 @@ export const useKeyboard = (
   const {
     actions: {
       modalOpened,
-      editor: { addNpmDependency },
+      editor: { addNpmDependency }
     },
     state: {
-      workspace: { explorerDependencies },
-    },
+      workspace: { explorerDependencies }
+    }
   } = useOvermind();
   const [one] = useKeys('ctrl + one');
   const [two] = useKeys('ctrl + two');
@@ -28,7 +28,7 @@ export const useKeyboard = (
   const addDependency = (dependency: Dependency) => {
     addNpmDependency({
       name: dependency.name,
-      version: dependency.tags.latest,
+      version: dependency.tags.latest
     });
   };
 
@@ -49,7 +49,7 @@ export const useKeyboard = (
 
         addNpmDependency({
           name: dependencyAndVersion.join('@'),
-          version,
+          version
         });
       }
 
