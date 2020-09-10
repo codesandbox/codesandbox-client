@@ -1110,7 +1110,7 @@ export class VSCodeEffect {
       (m) => m.type === 'file' && m.path === '/package.json'
     );
     const packageJson = JSON.parse(packageJsonFile.code);
-    if (packageJson.prettier) {
+    if (packageJson?.prettier) {
       return packageJson.prettier;
     }
 

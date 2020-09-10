@@ -1,0 +1,219 @@
+diff a/packages/app/src/app/overmind/effects/vscode/index.ts b/packages/app/src/app/overmind/effects/vscode/index.ts	(rejected hunks)
+@@ -498 +498 @@ export class VSCodeEffect {
+-        groupsToClose.map(group =>
++        groupsToClose.map((group) =>
+@@ -519 +519 @@ export class VSCodeEffect {
+-    return new Promise(resolve => {
++    return new Promise((resolve) => {
+@@ -545 +545 @@ export class VSCodeEffect {
+-          error => error.path === currentPath
++          (error) => error.path === currentPath
+@@ -548 +548 @@ export class VSCodeEffect {
+-          .map(error => {
++          .map((error) => {
+@@ -562 +562 @@ export class VSCodeEffect {
+-          .filter(x => x);
++          .filter((x) => x);
+@@ -623,2 +623,2 @@ export class VSCodeEffect {
+-          .filter(correction => correction.path === currentPath)
+-          .map(correction => {
++          .filter((correction) => correction.path === currentPath)
++          .map((correction) => {
+@@ -642 +642 @@ export class VSCodeEffect {
+-          .filter(x => x);
++          .filter((x) => x);
+@@ -743 +743 @@ export class VSCodeEffect {
+-      host.addEventListener('message', event => {
++      host.addEventListener('message', (event) => {
+@@ -864 +864 @@ export class VSCodeEffect {
+-    reaction(state => state.preferences.settings, this.changeSettings, {
++    reaction((state) => state.preferences.settings, this.changeSettings, {
+@@ -875 +875 @@ export class VSCodeEffect {
+-    ).find(ext => ext.id === id);
++    ).find((ext) => ext.id === id);
+@@ -931 +931 @@ export class VSCodeEffect {
+-    const { serviceCollection } = await new Promise<any>(resolve => {
++    const { serviceCollection } = await new Promise<any>((resolve) => {
+@@ -935 +935 @@ export class VSCodeEffect {
+-          codesandboxService: i =>
++          codesandboxService: (i) =>
+@@ -937 +937 @@ export class VSCodeEffect {
+-          codesandboxConfigurationUIService: i =>
++          codesandboxConfigurationUIService: (i) =>
+@@ -946 +946 @@ export class VSCodeEffect {
+-    return new Promise(resolve => {
++    return new Promise((resolve) => {
+@@ -948,12 +948,14 @@ export class VSCodeEffect {
+-      serviceCollection.get(IInstantiationService).invokeFunction(accessor => {
+-        // Initialize these services
+-        accessor.get(CodeSandboxConfigurationUIService);
+-        accessor.get(ICodeSandboxEditorConnectorService);
+-
+-        const statusbarPart = accessor.get(IStatusbarService);
+-        const menubarPart = accessor.get('menubar');
+-        const commandService = accessor.get(ICommandService);
+-        const extensionService = accessor.get(IExtensionService);
+-        const extensionEnablementService = accessor.get(
+-          IExtensionEnablementService
+-        );
++      serviceCollection
++        .get(IInstantiationService)
++        .invokeFunction((accessor) => {
++          // Initialize these services
++          accessor.get(CodeSandboxConfigurationUIService);
++          accessor.get(ICodeSandboxEditorConnectorService);
++
++          const statusbarPart = accessor.get(IStatusbarService);
++          const menubarPart = accessor.get('menubar');
++          const commandService = accessor.get(ICommandService);
++          const extensionService = accessor.get(IExtensionService);
++          const extensionEnablementService = accessor.get(
++            IExtensionEnablementService
++          );
+@@ -961,2 +963,2 @@ export class VSCodeEffect {
+-        this.commandService.resolve(commandService);
+-        this.extensionService.resolve(extensionService);
++          this.commandService.resolve(commandService);
++          this.extensionService.resolve(extensionService);
+@@ -964 +966 @@ export class VSCodeEffect {
+-        this.extensionEnablementService.resolve(extensionEnablementService);
++          this.extensionEnablementService.resolve(extensionEnablementService);
+@@ -966 +968 @@ export class VSCodeEffect {
+-        const editorPart = accessor.get(IEditorGroupsService);
++          const editorPart = accessor.get(IEditorGroupsService);
+@@ -968,4 +970,4 @@ export class VSCodeEffect {
+-        const codeEditorService = accessor.get(ICodeEditorService);
+-        const textFileService = accessor.get(ITextFileService);
+-        const editorService = accessor.get(IEditorService);
+-        const contextViewService = accessor.get(IContextViewService);
++          const codeEditorService = accessor.get(ICodeEditorService);
++          const textFileService = accessor.get(ITextFileService);
++          const editorService = accessor.get(IEditorService);
++          const contextViewService = accessor.get(IContextViewService);
+@@ -973 +975 @@ export class VSCodeEffect {
+-        contextViewService.setContainer(container);
++          contextViewService.setContainer(container);
+@@ -975,25 +977,20 @@ export class VSCodeEffect {
+-        this.editorApi = {
+-          openFile(path) {
+-            return codeEditorService.openCodeEditor({
+-              resource: monaco.Uri.file('/sandbox' + path),
+-            });
+-          },
+-          getActiveCodeEditor() {
+-            return codeEditorService.getActiveCodeEditor();
+-          },
+-          textFileService,
+-          editorPart,
+-          editorService,
+-          codeEditorService,
+-          extensionService,
+-        };
+-
+-        window.CSEditor = {
+-          editor: this.editorApi,
+-          monaco,
+-        };
+-
+-        if (process.env.NODE_ENV === 'development') {
+-          // eslint-disable-next-line
+-          console.log(accessor);
+-        }
++          this.editorApi = {
++            openFile(path) {
++              return codeEditorService.openCodeEditor({
++                resource: monaco.Uri.file('/sandbox' + path),
++              });
++            },
++            getActiveCodeEditor() {
++              return codeEditorService.getActiveCodeEditor();
++            },
++            textFileService,
++            editorPart,
++            editorService,
++            codeEditorService,
++            extensionService,
++          };
++
++          window.CSEditor = {
++            editor: this.editorApi,
++            monaco,
++          };
+@@ -1001,4 +998,4 @@ export class VSCodeEffect {
+-        statusbarPart.create(this.elements.statusbar);
+-        menubarPart.create(this.elements.menubar);
+-        editorPart.create(this.elements.editorPart);
+-        editorPart.layout(container.offsetWidth, container.offsetHeight);
++          if (process.env.NODE_ENV === 'development') {
++            // eslint-disable-next-line
++            console.log(accessor);
++          }
+@@ -1006 +1003,4 @@ export class VSCodeEffect {
+-        editorPart.parent = container;
++          statusbarPart.create(this.elements.statusbar);
++          menubarPart.create(this.elements.menubar);
++          editorPart.create(this.elements.editorPart);
++          editorPart.layout(container.offsetWidth, container.offsetHeight);
+@@ -1008 +1008 @@ export class VSCodeEffect {
+-        container.appendChild(this.elements.editorPart);
++          editorPart.parent = container;
+@@ -1010 +1010 @@ export class VSCodeEffect {
+-        this.initializeReactions();
++          container.appendChild(this.elements.editorPart);
+@@ -1012 +1012 @@ export class VSCodeEffect {
+-        this.configureMonacoLanguages(monaco);
++          this.initializeReactions();
+@@ -1014,2 +1014 @@ export class VSCodeEffect {
+-        editorService.onDidActiveEditorChange(this.onActiveEditorChange);
+-        this.initializeCodeSandboxAPIListener();
++          this.configureMonacoLanguages(monaco);
+@@ -1017,3 +1016,2 @@ export class VSCodeEffect {
+-        if (!this.linter && this.settings.lintEnabled) {
+-          this.createLinter();
+-        }
++          editorService.onDidActiveEditorChange(this.onActiveEditorChange);
++          this.initializeCodeSandboxAPIListener();
+@@ -1021 +1019,3 @@ export class VSCodeEffect {
+-        const lifecycleService = accessor.get(ILifecycleService);
++          if (!this.linter && this.settings.lintEnabled) {
++            this.createLinter();
++          }
+@@ -1023,5 +1023 @@ export class VSCodeEffect {
+-        // Trigger all VSCode lifecycle listeners
+-        lifecycleService.phase = 2; // Restoring
+-        requestAnimationFrame(() => {
+-          lifecycleService.phase = 3; // Running
+-        });
++          const lifecycleService = accessor.get(ILifecycleService);
+@@ -1029,2 +1025,8 @@ export class VSCodeEffect {
+-        resolve();
+-      });
++          // Trigger all VSCode lifecycle listeners
++          lifecycleService.phase = 2; // Restoring
++          requestAnimationFrame(() => {
++            lifecycleService.phase = 3; // Running
++          });
++
++          resolve();
++        });
+@@ -1066 +1068 @@ export class VSCodeEffect {
+-    ].forEach(language => {
++    ].forEach((language) => {
+@@ -1080 +1082 @@ export class VSCodeEffect {
+-    ).then(newCode => [
++    ).then((newCode) => [
+@@ -1204 +1206 @@ export class VSCodeEffect {
+-      this.modelViewRangeListener = activeEditor.onDidScrollChange(e => {
++      this.modelViewRangeListener = activeEditor.onDidScrollChange((e) => {
+@@ -1217 +1219 @@ export class VSCodeEffect {
+-        cursor => {
++        (cursor) => {
+@@ -1234 +1236 @@ export class VSCodeEffect {
+-        selectionChange => {
++        (selectionChange) => {
+@@ -1239 +1241 @@ export class VSCodeEffect {
+-            secondary: selectionChange.secondarySelections.map(s =>
++            secondary: selectionChange.secondarySelections.map((s) =>
+@@ -1347 +1349 @@ export class VSCodeEffect {
+-    window.addEventListener('click', event => {
++    window.addEventListener('click', (event) => {
