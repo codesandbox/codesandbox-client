@@ -16,7 +16,7 @@ const ROOT_NODE_ID: string = "/";
  */
 let emptyDirNode: Buffer | null = null;
 /**
- * Returns an empty directory node.
+ * Возвращает пустой узел каталога.
  * @hidden
  */
 function getEmptyDirNode(): Buffer {
@@ -40,8 +40,8 @@ function GenerateRandomID(): string {
 }
 
 /**
- * Helper function. Checks if 'e' is defined. If so, it triggers the callback
- * with 'e' and returns false. Otherwise, returns true.
+ * Вспомогательная функция. Проверяет, определено ли 'e'. 
+ * Если это так, он запускает обратный вызов с помощью 'e' и возвращает false. В противном случае возвращает истину.
  * @hidden
  */
 function noError(e: ApiError | undefined | null, cb: (e: ApiError) => void): boolean {
@@ -53,8 +53,8 @@ function noError(e: ApiError | undefined | null, cb: (e: ApiError) => void): boo
 }
 
 /**
- * Helper function. Checks if 'e' is defined. If so, it aborts the transaction,
- * triggers the callback with 'e', and returns false. Otherwise, returns true.
+ * Вспомогательная функция. Проверяет, определено ли 'e'. 
+ Если это так, транзакция прерывается, запускается обратный вызов с помощью 'e' и возвращается false. В противном случае возвращает истину.
  * @hidden
  */
 function noErrorTx(e: ApiError | undefined | null, tx: AsyncKeyValueRWTransaction, cb: (e: ApiError) => void): boolean {
@@ -68,72 +68,69 @@ function noErrorTx(e: ApiError | undefined | null, tx: AsyncKeyValueRWTransactio
 }
 
 /**
- * Represents a *synchronous* key-value store.
+ * 
  */
 export interface SyncKeyValueStore {
   /**
-   * The name of the key-value store.
+   * Представляет *синхронное* хранилище ключей и значений.
    */
   name(): string;
   /**
-   * Empties the key-value store completely.
+   * Полностью очищает хранилище ключей и значений.
    */
   clear(): void;
   /**
-   * Begins a new read-only transaction.
+   * Начинает новую транзакцию только для чтения.
    */
   beginTransaction(type: "readonly"): SyncKeyValueROTransaction;
   /**
-   * Begins a new read-write transaction.
+   * Начинает новую транзакцию чтения-записи.
    */
   beginTransaction(type: "readwrite"): SyncKeyValueRWTransaction;
   beginTransaction(type: string): SyncKeyValueROTransaction;
 }
 
 /**
- * A read-only transaction for a synchronous key value store.
+ * Транзакция только для чтения для синхронного хранилища значений ключей.
  */
 export interface SyncKeyValueROTransaction {
   /**
-   * Retrieves the data at the given key. Throws an ApiError if an error occurs
-   * or if the key does not exist.
-   * @param key The key to look under for data.
-   * @return The data stored under the key, or undefined if not present.
+   * Извлекает данные по заданному ключу. Выбрасывает ApiError, если возникает ошибка * или если ключ не существует.
+   * @param key Ключ для поиска данных.
+   * @return Данные, хранящиеся под ключом, или неопределенные, если они отсутствуют.
    */
   get(key: string): Buffer | undefined;
 }
 
 /**
- * A read-write transaction for a synchronous key value store.
+ * Транзакция чтения-записи для синхронного хранилища значений ключей.
  */
 export interface SyncKeyValueRWTransaction extends SyncKeyValueROTransaction {
   /**
-   * Adds the data to the store under the given key.
-   * @param key The key to add the data under.
-   * @param data The data to add to the store.
-   * @param overwrite If 'true', overwrite any existing data. If 'false',
-   *   avoids storing the data if the key exists.
-   * @return True if storage succeeded, false otherwise.
+   * Добавляет данные в хранилище по заданному ключу.
+   * @param key Ключ для добавления данных.
+   * @param data Данные для добавления в магазин.
+   * @param overwrite Если «истина», перезаписать все существующие данные. Если «ложно», избегает сохранения данных, если ключ существует.
+   * @return Истина, если хранилище удалось, в противном случае - false
    */
   put(key: string, data: Buffer, overwrite: boolean): boolean;
   /**
-   * Deletes the data at the given key.
-   * @param key The key to delete from the store.
+   * Удаляет данные по данному ключу.
+   * @param key Ключ удалить из магазина.
    */
   del(key: string): void;
   /**
-   * Commits the transaction.
+   * Совершает транзакцию.
    */
   commit(): void;
   /**
-   * Aborts and rolls back the transaction.
+   * Прерывает и откатывает транзакцию.
    */
   abort(): void;
 }
 
 /**
- * An interface for simple synchronous key-value stores that don't have special
- * support for transactions and such.
+ * Интерфейс для простых синхронных хранилищ ключей и значений, не имеющих специальной поддержки транзакций и т. Д.
  */
 export interface SimpleSyncStore {
   get(key: string): Buffer | undefined;
@@ -147,7 +144,7 @@ class LRUNode {
   constructor(public key: string, public value: string) {}
 }
 
-// Adapted from https://chrisrng.svbtle.com/lru-cache-in-javascript
+// Адаптировано из https://chrisrng.svbtle.com/lru-cache-in-javascript
 class LRUCache {
   private size = 0;
   private map: {[id: string]: LRUNode} = {};
@@ -156,8 +153,8 @@ class LRUCache {
   constructor(public readonly limit: number) {}
 
   /**
-   * Change or add a new value in the cache
-   * We overwrite the entry if it already exists
+   * Измените или добавьте новое значение в кеш
+   * Мы перезаписываем запись, если она уже существует
    */
   public set(key: string, value: string): void {
     const node = new LRUNode(key, value);
@@ -175,7 +172,7 @@ class LRUCache {
     this.setHead(node);
   }
 
-  /* Retrieve a single entry from the cache */
+  /* Получить одну запись из кеша */
   public get(key: string): string | null {
     if (this.map[key]) {
       const value = this.map[key].value;
@@ -188,7 +185,7 @@ class LRUCache {
     }
   }
 
-  /* Remove a single entry from the cache */
+  /* Удалить одну запись из кеша */
   public remove(key: string): void {
     const node = this.map[key];
     if (!node) {
@@ -208,7 +205,7 @@ class LRUCache {
     this.size--;
   }
 
-  /* Resets the entire cache - Argument limit is optional to be reset */
+  /* Сбрасывает весь кеш - ограничение аргумента необязательно сбрасывать */
   public removeAll() {
     this.size = 0;
     this.map = {};
@@ -232,16 +229,16 @@ class LRUCache {
 }
 
 /**
- * A simple RW transaction for simple synchronous key-value stores.
+ * Простая транзакция RW для простых синхронных хранилищ ключей и значений.
  */
 export class SimpleSyncRWTransaction implements SyncKeyValueRWTransaction {
   /**
-   * Stores data in the keys we modify prior to modifying them.
+   * Сохраняет данные в ключах, которые мы изменяем перед их изменением.
    * Allows us to roll back commits.
    */
   private originalData: { [key: string]: Buffer | undefined } = {};
   /**
-   * List of keys modified in this transaction, if any.
+   * Список ключей, измененных в этой транзакции, если таковые имеются.
    */
   private modifiedKeys: string[] = [];
 
@@ -280,10 +277,9 @@ export class SimpleSyncRWTransaction implements SyncKeyValueRWTransaction {
   }
 
   /**
-   * Stashes given key value pair into `originalData` if it doesn't already
-   * exist. Allows us to stash values the program is requesting anyway to
-   * prevent needless `get` requests if the program modifies the data later
-   * on during the transaction.
+   * Сохраняет заданную пару значений ключа в `originalData`, если она еще не существует. 
+   * Позволяет нам хранить значения, которые программа запрашивает в любом случае, чтобы предотвратить ненужные запросы `get`, 
+   * если программа изменяет данные позже во время транзакции.
    */
   private stashOldValue(key: string, value: Buffer | undefined) {
     // Keep only the earliest value in the transaction.
@@ -293,8 +289,7 @@ export class SimpleSyncRWTransaction implements SyncKeyValueRWTransaction {
   }
 
   /**
-   * Marks the given key as modified, and stashes its value if it has not been
-   * stashed already.
+   * Отмечает данный ключ как измененный и сохраняет его значение, если оно ещё не было сохранено.
    */
   private markModified(key: string) {
     if (this.modifiedKeys.indexOf(key) === -1) {
@@ -308,22 +303,21 @@ export class SimpleSyncRWTransaction implements SyncKeyValueRWTransaction {
 
 export interface SyncKeyValueFileSystemOptions {
   /**
-   * The actual key-value store to read from/write to.
+   * Фактическое хранилище значений ключей для чтения/записи.
    */
   store: SyncKeyValueStore;
   /**
-   * Should the file system support properties (mtime/atime/ctime/chmod/etc)?
-   * Enabling this slightly increases the storage space per file, and adds
-   * atime updates every time a file is accessed, mtime updates every time
-   * a file is modified, and permission checks on every operation.
+   * Должна ли файловая система поддерживать свойства (mtime/atime/ctime/chmod/etc)?
+   * Включение этого немного увеличивает пространство для хранения для каждого файла и добавляет временные обновления при каждом доступе к файлу, 
+   * mtime обновляется каждый раз при изменении файла и проверки прав доступа при каждой операции.
    *
-   * Defaults to *false*.
+   * По умолчанию *false*.
    */
-  // supportProps?: boolean;
+  // supportProps?: логический;
   /**
-   * Should the file system support links?
+   * Должна ли файловая система поддерживать ссылки?
    */
-  // supportLinks?: boolean;
+  // supportLinks?: логический;
 }
 
 export class SyncKeyValueFile extends PreloadFile<SyncKeyValueFileSystem> implements File {
@@ -344,13 +338,11 @@ export class SyncKeyValueFile extends PreloadFile<SyncKeyValueFileSystem> implem
 }
 
 /**
- * A "Synchronous key-value file system". Stores data to/retrieves data from an
- * underlying key-value store.
+ * "Синхронная файловая система" ключ-значение ". Хранит данные в / извлекает данные из базового хранилища ключей и значений.
  *
- * We use a unique ID for each node in the file system. The root node has a
- * fixed ID.
- * @todo Introduce Node ID caching.
- * @todo Check modes.
+ * Мы используем уникальный идентификатор для каждого узла в файловой системе. Корневой узел имеет фиксированный идентификатор.
+ * @todo Введение кэширования идентификаторов Node.
+ * @todo Проверить режимы.
  */
 export class SyncKeyValueFileSystem extends SynchronousFileSystem {
   public static isAvailable(): boolean { return true; }
@@ -371,7 +363,7 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
   public supportsSynch(): boolean { return true; }
 
   /**
-   * Delete all contents stored in the file system.
+   * Удалите все содержимое, хранящееся в файловой системе.
    */
   public empty(): void {
     this.store.clear();
@@ -393,19 +385,17 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
     const nodeId: string = oldDirList[oldName];
     delete oldDirList[oldName];
 
-    // Invariant: Can't move a folder inside itself.
-    // This funny little hack ensures that the check passes only if oldPath
-    // is a subpath of newParent. We append '/' to avoid matching folders that
-    // are a substring of the bottom-most folder in the path.
+    // Неизменяемый: нельзя переместить папку внутри себя.
+    // Этот забавный небольшой прием гарантирует, что проверка пройдет, только если oldPath является подпутьем newParent. 
+    // Мы добавляем '/', чтобы избежать совпадения папок, которые являются подстрокой самой нижней папки в пути.
     if ((newParent + '/').indexOf(oldPath + '/') === 0) {
       throw new ApiError(ErrorCode.EBUSY, oldParent);
     }
 
-    // Add newPath to parent's directory listing.
+    // Добавьте newPath в список родительских каталогов.
     let newDirNode: Inode, newDirList: typeof oldDirList;
     if (newParent === oldParent) {
-      // Prevent us from re-grabbing the same directory listing, which still
-      // contains oldName.
+      // Не позволяйте нам повторно получить тот же список каталогов, который все еще содержит oldName.
       newDirNode = oldDirNode;
       newDirList = oldDirList;
     } else {
@@ -425,13 +415,13 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
           throw e;
         }
       } else {
-        // If it's a directory, throw a permissions error.
+        // Если это каталог, выдает ошибку разрешений.
         throw ApiError.EPERM(newPath);
       }
     }
     newDirList[newName] = nodeId;
 
-    // Commit the two changed directory listings.
+    // Зафиксируйте два измененных списка каталогов.
     try {
       tx.put(oldDirNode.id, Buffer.from(JSON.stringify(oldDirList)), true);
       tx.put(newDirNode.id, Buffer.from(JSON.stringify(newDirList)), true);
@@ -444,7 +434,7 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
   }
 
   public statSync(p: string, isLstat: boolean): Stats {
-    // Get the inode to the item, convert it into a Stats object.
+    // Получите индексный дескриптор элемента, преобразуйте его в объект статистики.
     return this.findINode(this.store.beginTransaction('readonly'), p).toStats();
   }
 
@@ -491,16 +481,15 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
   }
 
   public _syncSync(p: string, data: Buffer, stats: Stats): void {
-    // @todo Ensure mtime updates properly, and use that to determine if a data
-    //       update is required.
+    // @todo Убедитесь, что mtime обновляется правильно, и используйте это, чтобы определить, требуется ли обновление данных.
     const tx = this.store.beginTransaction('readwrite'),
-      // We use the _findInode helper because we actually need the INode id.
+      // Мы используем помощник _findInode, потому что нам действительно нужен идентификатор INode.
       fileInodeId = this._findINode(tx, path.dirname(p), path.basename(p)),
       fileInode = this.getINode(tx, p, fileInodeId),
       inodeChanged = fileInode.update(stats);
 
     try {
-      // Sync data.
+      // Синхронизировать данные.
       tx.put(fileInode.id, data, true);
       // Sync metadata.
       if (inodeChanged) {
@@ -514,17 +503,16 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
   }
 
   /**
-   * Checks if the root directory exists. Creates it if it doesn't.
+   * Проверяет, существует ли корневой каталог. Создает его, если нет.
    */
   private makeRootDirectory() {
     const tx = this.store.beginTransaction('readwrite');
     if (tx.get(ROOT_NODE_ID) === undefined) {
-      // Create new inode.
+      // Создайте новый индексный дескриптор.
       const currTime = (new Date()).getTime(),
         // Mode 0666
         dirInode = new Inode(GenerateRandomID(), 4096, 511 | FileType.DIRECTORY, currTime, currTime, currTime);
-      // If the root doesn't exist, the first random ID shouldn't exist,
-      // either.
+      // Если корень не существует, тоже не должно быть первого случайного идентификатора.
       tx.put(dirInode.id, getEmptyDirNode(), false);
       tx.put(ROOT_NODE_ID, dirInode.toBuffer(), false);
       tx.commit();
@@ -532,17 +520,16 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
   }
 
   /**
-   * Helper function for findINode.
-   * @param parent The parent directory of the file we are attempting to find.
-   * @param filename The filename of the inode we are attempting to find, minus
-   *   the parent.
-   * @return string The ID of the file's inode in the file system.
+   * Вспомогательная функция для findINode.
+   * @param parent Родительский каталог файла, который мы пытаемся найти.
+   * @param filename Имя файла inode, который мы пытаемся найти, минус родительский.
+   * @return string Идентификатор индексного дескриптора файла в файловой системе.
    */
   private _findINode(tx: SyncKeyValueROTransaction, parent: string, filename: string): string {
     const readDirectory = (inode: Inode): string => {
-      // Get the root's directory listing.
+      // Получите список корневого каталога.
       const dirList = this.getDirListing(tx, parent, inode);
-      // Get the file's ID.
+      // Получите идентификатор файла.
       if (dirList[filename]) {
         return dirList[filename];
       } else {
@@ -551,10 +538,10 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
     };
     if (parent === '/') {
       if (filename === '') {
-        // BASE CASE #1: Return the root's ID.
+        // БАЗОВЫЙ СЛУЧАЙ №1: вернуть идентификатор корня.
         return ROOT_NODE_ID;
       } else {
-        // BASE CASE #2: Find the item in the root ndoe.
+        // БАЗОВЫЙ СЛУЧАЙ №2: Найдите элемент в корневом каталоге ndoe.
         return readDirectory(this.getINode(tx, parent, ROOT_NODE_ID));
       }
     } else {
@@ -564,9 +551,9 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
   }
 
   /**
-   * Finds the Inode of the given path.
-   * @param p The path to look up.
-   * @return The Inode of the path p.
+   * Находит индекс заданного пути.
+   * @param p Путь для поиска.
+   * @return Inode пути p.
    * @todo memoize/cache
    */
   private findINode(tx: SyncKeyValueROTransaction, p: string): Inode {
@@ -574,10 +561,10 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
   }
 
   /**
-   * Given the ID of a node, retrieves the corresponding Inode.
-   * @param tx The transaction to use.
-   * @param p The corresponding path to the file (used for error messages).
-   * @param id The ID to look up.
+   * По идентификатору узла получает соответствующий индексный дескриптор.
+   * @param tx Используемая транзакция.
+   * @param p Соответствующий путь к файлу (используется для сообщений об ошибках).
+   * @param id ID для поиска.
    */
   private getINode(tx: SyncKeyValueROTransaction, p: string, id: string): Inode {
     const inode = tx.get(id);
@@ -588,8 +575,7 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
   }
 
   /**
-   * Given the Inode of a directory, retrieves the corresponding directory
-   * listing.
+   * Учитывая индексный дескриптор каталога, получает список соответствующего каталога.
    */
   private getDirListing(tx: SyncKeyValueROTransaction, p: string, inode: Inode): { [fileName: string]: string } {
     if (!inode.isDirectory()) {
@@ -603,9 +589,9 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
   }
 
   /**
-   * Creates a new node under a random ID. Retries 5 times before giving up in
-   * the exceedingly unlikely chance that we try to reuse a random GUID.
-   * @return The GUID that the data was stored under.
+   * Создает новый узел со случайным идентификатором. 
+   * Попытки повторяются 5 раз, прежде чем отказаться от чрезвычайно маловероятной возможности повторного использования случайного GUID.
+   * @return GUID, под которым хранились данные.
    */
   private addNewNode(tx: SyncKeyValueRWTransaction, data: Buffer): string {
     const retries = 0;
@@ -616,21 +602,20 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
         tx.put(currId, data, false);
         return currId;
       } catch (e) {
-        // Ignore and reroll.
+        // Игнорировать и перебрасывать.
       }
     }
-    throw new ApiError(ErrorCode.EIO, 'Unable to commit data to key-value store.');
+    throw new ApiError(ErrorCode.EIO, 'Невозможно передать данные в хранилище "ключ-значение".');
   }
 
   /**
-   * Commits a new file (well, a FILE or a DIRECTORY) to the file system with
-   * the given mode.
-   * Note: This will commit the transaction.
-   * @param p The path to the new file.
-   * @param type The type of the new file.
-   * @param mode The mode to create the new file with.
-   * @param data The data to store at the file's data node.
-   * @return The Inode for the new file.
+   * Фиксирует новый файл (ну, ФАЙЛ или КАТАЛОГ) в файловую систему с заданным режимом.
+   * Note: Это зафиксирует транзакцию.
+   * @param p Путь к новому файлу.
+   * @param type Тип нового файла.
+   * @param mode Режим для создания нового файла.
+   * @param data Данные для хранения в узле данных файла.
+   * @return Inode для нового файла.
    */
   private commitNewFile(tx: SyncKeyValueRWTransaction, p: string, type: FileType, mode: number, data: Buffer): Inode {
     const parentDir = path.dirname(p),
@@ -639,26 +624,25 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
       dirListing = this.getDirListing(tx, parentDir, parentNode),
       currTime = (new Date()).getTime();
 
-    // Invariant: The root always exists.
-    // If we don't check this prior to taking steps below, we will create a
-    // file with name '' in root should p == '/'.
+    // Инвариант: корень существует всегда.
+    // Если мы не проверим это перед выполнением шагов ниже, мы создадим файл с именем '' в корне, должно p == '/'.
     if (p === '/') {
       throw ApiError.EEXIST(p);
     }
 
-    // Check if file already exists.
+    // Проверьте, существует ли уже файл.
     if (dirListing[fname]) {
       throw ApiError.EEXIST(p);
     }
 
     let fileNode: Inode;
     try {
-      // Commit data.
+      // Зафиксируйте данные.
       const dataId = this.addNewNode(tx, data);
       fileNode = new Inode(dataId, data.length, mode | type, currTime, currTime, currTime);
-      // Commit file node.
+      // Зафиксировать node файла.
       const fileNodeId = this.addNewNode(tx, fileNode.toBuffer());
-      // Update and commit parent directory listing.
+      // Обновите и зафиксируйте список родительских каталогов.
       dirListing[fname] = fileNodeId;
       tx.put(parentNode.id, Buffer.from(JSON.stringify(dirListing)), true);
     } catch (e) {
@@ -670,10 +654,10 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
   }
 
   /**
-   * Remove all traces of the given path from the file system.
-   * @param p The path to remove from the file system.
-   * @param isDir Does the path belong to a directory, or a file?
-   * @todo Update mtime.
+   * Удалите все следы указанного пути из файловой системы.
+   * @param p Путь для удаления из файловой системы.
+   * @param isDir Путь принадлежит каталогу или файлу?
+   * @todo Обновите mtime.
    */
   private removeEntry(p: string, isDir: boolean): void {
     const tx = this.store.beginTransaction('readwrite'),
@@ -686,11 +670,11 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
       throw ApiError.ENOENT(p);
     }
 
-    // Remove from directory listing of parent.
+    // Удалить из каталога родительский листинг.
     const fileNodeId = parentListing[fileName];
     delete parentListing[fileName];
 
-    // Get file inode.
+    // Получить индекс файла.
     const fileNode = this.getINode(tx, p, fileNodeId);
     if (!isDir && fileNode.isDirectory()) {
       throw ApiError.EISDIR(p);
@@ -699,81 +683,78 @@ export class SyncKeyValueFileSystem extends SynchronousFileSystem {
     }
 
     try {
-      // Delete data.
+      // Удалить данные.
       tx.del(fileNode.id);
-      // Delete node.
+      // Удалить узел.
       tx.del(fileNodeId);
-      // Update directory listing.
+      // Обновить список каталогов.
       tx.put(parentNode.id, Buffer.from(JSON.stringify(parentListing)), true);
     } catch (e) {
       tx.abort();
       throw e;
     }
-    // Success.
+    // Успех.
     tx.commit();
   }
 }
 
 /**
- * Represents an *asynchronous* key-value store.
+ * Представляет *асинхронное* хранилище ключей и значений.
  */
 export interface AsyncKeyValueStore {
   /**
-   * The name of the key-value store.
+   * Имя хранилища ключей и значений.
    */
   name(): string;
   /**
-   * Empties the key-value store completely.
+   * Полностью очищает хранилище ключей и значений.
    */
   clear(cb: BFSOneArgCallback): void;
   /**
-   * Begins a read-write transaction.
+   * Начинает транзакцию чтения-записи.
    */
   beginTransaction(type: 'readwrite'): AsyncKeyValueRWTransaction;
   /**
-   * Begins a read-only transaction.
+   * Начинает транзакцию только для чтения.
    */
   beginTransaction(type: 'readonly'): AsyncKeyValueROTransaction;
   beginTransaction(type: string): AsyncKeyValueROTransaction;
 }
 
 /**
- * Represents an asynchronous read-only transaction.
+ * Представляет асинхронную транзакцию только для чтения.
  */
 export interface AsyncKeyValueROTransaction {
   /**
-   * Retrieves the data at the given key.
-   * @param key The key to look under for data.
+   * Извлекает данные по заданному ключу.
+   * @param key Ключ для поиска данных.
    */
   get(key: string, cb: BFSCallback<Buffer>): void;
 }
 
 /**
- * Represents an asynchronous read-write transaction.
+ * Представляет асинхронную транзакцию чтения-записи.
  */
 export interface AsyncKeyValueRWTransaction extends AsyncKeyValueROTransaction {
   /**
-   * Adds the data to the store under the given key. Overwrites any existing
-   * data.
-   * @param key The key to add the data under.
-   * @param data The data to add to the store.
-   * @param overwrite If 'true', overwrite any existing data. If 'false',
-   *   avoids writing the data if the key exists.
-   * @param cb Triggered with an error and whether or not the value was
-   *   committed.
+   * Добавляет данные в хранилище по заданному ключу. Заменяет любые существующие данные.
+   * @param key Ключ для добавления данных.
+   * @param data Данные для добавления в магазин.
+   * @param overwrite Если «истина», перезаписать все существующие данные. Если «false», избегает записи данных, если ключ существует.
+   * @param cb Вызывается ошибкой, независимо от того, зафиксировано ли значение.
    */
   put(key: string, data: Buffer, overwrite: boolean, cb: BFSCallback<boolean>): void;
   /**
-   * Deletes the data at the given key.
-   * @param key The key to delete from the store.
+   * Удаляет данные по данному ключу.
+   * @param key Ключ удалить из магазина.
    */
   del(key: string, cb: BFSOneArgCallback): void;
   /**
-   * Commits the transaction.
+   * Совершает транзакцию.
    */
   commit(cb: BFSOneArgCallback): void;
   /**
-   * Aborts and rolls back the transaction.
+   * Прерывает и откатывает транзакцию.
    */
   abort(cb: BFSOneArgCallback): void;
 }
@@ -802,8 +783,7 @@ export class AsyncKeyValueFile extends PreloadFile<AsyncKeyValueFileSystem> impl
 }
 
 /**
- * An "Asynchronous key-value file system". Stores data to/retrieves data from
- * an underlying asynchronous key-value store.
+ * "Асинхронная" файловая система "ключ-значение". Сохраняет данные в / извлекает данные из базового асинхронного хранилища ключей и значений.
  */
 export class AsyncKeyValueFileSystem extends BaseFileSystem {
   public static isAvailable(): boolean { return true; }
@@ -819,12 +799,11 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
   }
 
   /**
-   * Initializes the file system. Typically called by subclasses' async
-   * constructors.
+   * Инициализирует файловую систему. Обычно вызывается конструкторами async подклассов.
    */
   public init(store: AsyncKeyValueStore, cb: BFSOneArgCallback) {
     this.store = store;
-    // INVARIANT: Ensure that the root exists.
+    // ИНВАРИАНТ: Убедитесь, что корень существует.
     this.makeRootDirectory(cb);
   }
   public getName(): string { return this.store.name(); }
@@ -834,7 +813,7 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
   public supportsSynch(): boolean { return false; }
 
   /**
-   * Delete all contents stored in the file system.
+   * Удалите все содержимое, хранящееся в файловой системе.
    */
   public empty(cb: BFSOneArgCallback): void {
     if (this._cache) {
@@ -842,22 +821,22 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
     }
     this.store.clear((e?) => {
       if (noError(e, cb)) {
-        // INVARIANT: Root always exists.
+        // ИНВАРИАНТ: Корень существует всегда.
         this.makeRootDirectory(cb);
       }
     });
   }
 
   public rename(oldPath: string, newPath: string, cb: BFSOneArgCallback): void {
-    // TODO: Make rename compatible with the cache.
+    // TODO: Сделайте переименование совместимым с кешем.
     if (this._cache) {
-      // Clear and disable cache during renaming process.
+      // Очистите и отключите кеш во время процесса переименования.
       const c = this._cache;
       this._cache = null;
       c.removeAll();
       const oldCb = cb;
       cb = (e?: ApiError | null) => {
-        // Restore empty cache.
+        // Восстановить пустой кеш.
         this._cache = c;
         oldCb(e);
       };
@@ -872,46 +851,43 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
     } = {};
     let errorOccurred: boolean = false;
 
-    // Invariant: Can't move a folder inside itself.
-    // This funny little hack ensures that the check passes only if oldPath
-    // is a subpath of newParent. We append '/' to avoid matching folders that
-    // are a substring of the bottom-most folder in the path.
+    // Инвариант: нельзя переместить папку внутри себя.
+    // Этот забавный небольшой прием гарантирует, что проверка пройдет, только если oldPath является подпутьем newParent. 
+    // Мы добавляем '/', чтобы избежать совпадения папок, которые являются подстрокой самой нижней папки в пути.
     if ((newParent + '/').indexOf(oldPath + '/') === 0) {
       return cb(new ApiError(ErrorCode.EBUSY, oldParent));
     }
 
     /**
-     * Responsible for Phase 2 of the rename operation: Modifying and
-     * committing the directory listings. Called once we have successfully
-     * retrieved both the old and new parent's inodes and listings.
+     * Ответственный за Фазу 2 операции переименования: изменение и фиксацию списков каталогов. 
+     * Вызывается после того, как мы успешно извлекли индексные дескрипторы и списки как старого, так и нового родителя.
      */
     const theOleSwitcharoo = (): void => {
-      // Sanity check: Ensure both paths are present, and no error has occurred.
+      // Проверка работоспособности: убедитесь, что присутствуют оба пути и нет ошибок.
       if (errorOccurred || !lists.hasOwnProperty(oldParent) || !lists.hasOwnProperty(newParent)) {
         return;
       }
       const oldParentList = lists[oldParent], oldParentINode = inodes[oldParent],
         newParentList = lists[newParent], newParentINode = inodes[newParent];
 
-      // Delete file from old parent.
+      // Удалить файл из старого родителя.
       if (!oldParentList[oldName]) {
         cb(ApiError.ENOENT(oldPath));
       } else {
         const fileId = oldParentList[oldName];
         delete oldParentList[oldName];
 
-        // Finishes off the renaming process by adding the file to the new
-        // parent.
+        // Завершает процесс переименования, добавляя файл к новому родительскому объекту.
         const completeRename = () => {
           newParentList[newName] = fileId;
-          // Commit old parent's list.
+          // Зафиксируйте список старых родителей.
           tx.put(oldParentINode.id, Buffer.from(JSON.stringify(oldParentList)), true, (e: ApiError) => {
             if (noErrorTx(e, tx, cb)) {
               if (oldParent === newParent) {
-                // DONE!
+                // СДЕЛАНО!
                 tx.commit(cb);
               } else {
-                // Commit new parent's list.
+                // Зафиксируйте новый родительский список.
                 tx.put(newParentINode.id, Buffer.from(JSON.stringify(newParentList)), true, (e: ApiError) => {
                   if (noErrorTx(e, tx, cb)) {
                     tx.commit(cb);
@@ -923,12 +899,11 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
         };
 
         if (newParentList[newName]) {
-          // 'newPath' already exists. Check if it's a file or a directory, and
-          // act accordingly.
+          // 'newPath' уже существует. Проверьте, является ли это файлом или каталогом, и действуйте соответственно.
           this.getINode(tx, newPath, newParentList[newName], (e: ApiError, inode?: Inode) => {
             if (noErrorTx(e, tx, cb)) {
               if (inode!.isFile()) {
-                // Delete the file and continue.
+                // Удалите файл и продолжайте.
                 tx.del(inode!.id, (e?: ApiError) => {
                   if (noErrorTx(e, tx, cb)) {
                     tx.del(newParentList[newName], (e?: ApiError) => {
@@ -939,7 +914,7 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
                   }
                 });
               } else {
-                // Can't overwrite a directory using rename.
+                // Невозможно перезаписать каталог с помощью переименования.
                 tx.abort((e?) => {
                   cb(ApiError.EPERM(newPath));
                 });
@@ -953,8 +928,7 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
     };
 
     /**
-     * Grabs a path's inode and directory listing, and shoves it into the
-     * inodes and lists hashes.
+     * Захватывает индексный дескриптор пути и список каталогов, помещает его в индексные дескрипторы и перечисляет хэши.
      */
     const processInodeAndListings = (p: string): void => {
       this.findINodeAndDirListing(tx, p, (e?: ApiError | null, node?: Inode, dirList?: {[name: string]: string}): void => {
@@ -965,7 +939,7 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
               cb(e);
             });
           }
-          // If error has occurred already, just stop here.
+          // Если ошибка уже произошла, просто остановитесь здесь.
         } else {
           inodes[p] = node!;
           lists[p] = dirList!;
@@ -1056,20 +1030,19 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
   }
 
   public _sync(p: string, data: Buffer, stats: Stats, cb: BFSOneArgCallback): void {
-    // @todo Ensure mtime updates properly, and use that to determine if a data
-    //       update is required.
+    // @todo Убедитесь, что mtime обновляется правильно, и используйте это, чтобы определить, требуется ли обновление данных.
     const tx = this.store.beginTransaction('readwrite');
-    // Step 1: Get the file node's ID.
+    // Шаг 1: Получите идентификатор файлового узла.
     this._findINode(tx, path.dirname(p), path.basename(p), (e: ApiError, fileInodeId?: string): void => {
       if (noErrorTx(e, tx, cb)) {
-        // Step 2: Get the file inode.
+        // Шаг 2: Получите индексный дескриптор файла.
         this.getINode(tx, p, fileInodeId!, (e: ApiError, fileInode?: Inode): void => {
           if (noErrorTx(e, tx, cb)) {
             const inodeChanged: boolean = fileInode!.update(stats);
-            // Step 3: Sync the data.
+            // Шаг 3. Синхронизируйте данные.
             tx.put(fileInode!.id, data, true, (e: ApiError): void => {
               if (noErrorTx(e, tx, cb)) {
-                // Step 4: Sync the metadata (if it changed)!
+                // Шаг 4. Синхронизируйте метаданные (если они изменились)!
                 if (inodeChanged) {
                   tx.put(fileInodeId!, fileInode!.toBuffer(), true, (e: ApiError): void => {
                     if (noErrorTx(e, tx, cb)) {
@@ -1077,7 +1050,7 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
                     }
                   });
                 } else {
-                  // No need to sync metadata; return.
+                  // Нет необходимости синхронизировать метаданные; возвращение.
                   tx.commit(cb);
                 }
               }
@@ -1089,18 +1062,17 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
   }
 
   /**
-   * Checks if the root directory exists. Creates it if it doesn't.
+   * Проверяет, существует ли корневой каталог. Создает его, если нет.
    */
   private makeRootDirectory(cb: BFSOneArgCallback) {
     const tx = this.store.beginTransaction('readwrite');
     tx.get(ROOT_NODE_ID, (e: ApiError, data?: Buffer) => {
       if (e || data === undefined) {
-        // Create new inode.
+        // Создайте новый индексный дескриптор.
         const currTime = (new Date()).getTime(),
           // Mode 0666
           dirInode = new Inode(GenerateRandomID(), 4096, 511 | FileType.DIRECTORY, currTime, currTime, currTime);
-        // If the root doesn't exist, the first random ID shouldn't exist,
-        // either.
+        // Если корень не существует, тоже не должно быть первого случайного идентификатора.
         tx.put(dirInode.id, getEmptyDirNode(), false, (e?: ApiError) => {
           if (noErrorTx(e, tx, cb)) {
             tx.put(ROOT_NODE_ID, dirInode.toBuffer(), false, (e?: ApiError) => {
@@ -1113,18 +1085,17 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
           }
         });
       } else {
-        // We're good.
+        // Были хороши.
         tx.commit(cb);
       }
     });
   }
 
   /**
-   * Helper function for findINode.
-   * @param parent The parent directory of the file we are attempting to find.
-   * @param filename The filename of the inode we are attempting to find, minus
-   *   the parent.
-   * @param cb Passed an error or the ID of the file's inode in the file system.
+   * Вспомогательная функция для findINode.
+   * @param parent Родительский каталог файла, который мы пытаемся найти.
+   * @param filename Имя файла inode, который мы пытаемся найти, минус * родительский.
+   * @param cb Передана ошибка или идентификатор индексного дескриптора файла в файловой системе.
    */
   private _findINode(tx: AsyncKeyValueROTransaction, parent: string, filename: string, cb: BFSCallback<string>): void {
     if (this._cache) {
@@ -1149,33 +1120,32 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
 
     if (parent === '/') {
       if (filename === '') {
-        // BASE CASE #1: Return the root's ID.
+        // БАЗОВЫЙ СЛУЧАЙ №1: вернуть идентификатор корня.
         if (this._cache) {
           this._cache.set(path.join(parent, filename), ROOT_NODE_ID);
         }
         cb(null, ROOT_NODE_ID);
       } else {
-        // BASE CASE #2: Find the item in the root node.
+        // БАЗОВЫЙ СЛУЧАЙ № 2: Найдите элемент в корневом узле.
         this.getINode(tx, parent, ROOT_NODE_ID, (e: ApiError, inode?: Inode): void => {
           if (noError(e, cb)) {
             this.getDirListing(tx, parent, inode!, (e: ApiError, dirList?: {[name: string]: string}): void => {
-              // handle_directory_listings will handle e for us.
+              // handle_directory_listings обработает e за нас.
               handleDirectoryListings(e, inode, dirList);
             });
           }
         });
       }
     } else {
-      // Get the parent directory's INode, and find the file in its directory
-      // listing.
+      // Получите INode родительского каталога и найдите файл в его листинге.
       this.findINodeAndDirListing(tx, parent, handleDirectoryListings);
     }
   }
 
   /**
-   * Finds the Inode of the given path.
-   * @param p The path to look up.
-   * @param cb Passed an error or the Inode of the path p.
+   * Находит индекс заданного пути.
+   * @param p Путь для поиска.
+   * @param cb Пройдена ошибка или Inode пути p.
    * @todo memoize/cache
    */
   private findINode(tx: AsyncKeyValueROTransaction, p: string, cb: BFSCallback<Inode>): void {
@@ -1187,11 +1157,11 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
   }
 
   /**
-   * Given the ID of a node, retrieves the corresponding Inode.
-   * @param tx The transaction to use.
-   * @param p The corresponding path to the file (used for error messages).
-   * @param id The ID to look up.
-   * @param cb Passed an error or the inode under the given id.
+   * По идентификатору узла получает соответствующий индексный дескриптор.
+   * @param tx Используемая транзакция.
+   * @param p Соответствующий путь к файлу (используется для сообщений об ошибках).
+   * @param id ID для поиска.
+   * @param cb Передана ошибка или индексный дескриптор под данным идентификатором.
    */
   private getINode(tx: AsyncKeyValueROTransaction, p: string, id: string, cb: BFSCallback<Inode>): void {
     tx.get(id, (e: ApiError, data?: Buffer): void => {
@@ -1206,8 +1176,7 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
   }
 
   /**
-   * Given the Inode of a directory, retrieves the corresponding directory
-   * listing.
+   * Учитывая индексный дескриптор каталога, получает список соответствующего каталога.
    */
   private getDirListing(tx: AsyncKeyValueROTransaction, p: string, inode: Inode, cb: BFSCallback<{ [fileName: string]: string }>): void {
     if (!inode.isDirectory()) {
@@ -1218,9 +1187,8 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
           try {
             cb(null, JSON.parse(data!.toString()));
           } catch (e) {
-            // Occurs when data is undefined, or corresponds to something other
-            // than a directory listing. The latter should never occur unless
-            // the file system is corrupted.
+            // Происходит, когда данные не определены или соответствуют чему-то другому, кроме списка каталогов. 
+            // Последнее не должно происходить, если файловая система не повреждена.
             cb(ApiError.ENOENT(p));
           }
         }
@@ -1229,8 +1197,7 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
   }
 
   /**
-   * Given a path to a directory, retrieves the corresponding INode and
-   * directory listing.
+   * Получив путь к каталогу, извлекает соответствующий список каталогов INode.
    */
   private findINodeAndDirListing(tx: AsyncKeyValueROTransaction, p: string, cb: BFSThreeArgCallback<Inode, { [fileName: string]: string }>): void {
     this.findINode(tx, p, (e: ApiError, inode?: Inode): void => {
@@ -1245,24 +1212,24 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
   }
 
   /**
-   * Adds a new node under a random ID. Retries 5 times before giving up in
-   * the exceedingly unlikely chance that we try to reuse a random GUID.
-   * @param cb Passed an error or the GUID that the data was stored under.
+   * Добавляет новый узел со случайным идентификатором. 
+   * Попытки повторяются 5 раз, прежде чем отказаться от чрезвычайно маловероятной возможности повторного использования случайного GUID.
+   * @param cb Передана ошибка или идентификатор GUID, под которым хранились данные.
    */
   private addNewNode(tx: AsyncKeyValueRWTransaction, data: Buffer, cb: BFSCallback<string>): void {
     let retries = 0, currId: string;
     const reroll = () => {
       if (++retries === 5) {
-        // Max retries hit. Return with an error.
+        // Максимальное количество попыток удара. Возврат с ошибкой.
         cb(new ApiError(ErrorCode.EIO, 'Unable to commit data to key-value store.'));
       } else {
-        // Try again.
+        // Попробуй еще раз.
         currId = GenerateRandomID();
         tx.put(currId, data, false, (e: ApiError, committed?: boolean) => {
           if (e || !committed) {
             reroll();
           } else {
-            // Successfully stored under 'currId'.
+            // Успешно сохранено в currId.
             cb(null, currId);
           }
         });
@@ -1272,50 +1239,48 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
   }
 
   /**
-   * Commits a new file (well, a FILE or a DIRECTORY) to the file system with
-   * the given mode.
-   * Note: This will commit the transaction.
-   * @param p The path to the new file.
-   * @param type The type of the new file.
-   * @param mode The mode to create the new file with.
-   * @param data The data to store at the file's data node.
-   * @param cb Passed an error or the Inode for the new file.
+   * Фиксирует новый файл (ну, ФАЙЛ или КАТАЛОГ) в файловую систему с заданным режимом.
+   * Note: Это зафиксирует транзакцию.
+   * @param p Путь к новому файлу.
+   * @param type Тип нового файла.
+   * @param mode Режим для создания нового файла.
+   * @param data Данные для хранения в узле данных файла.
+   * @param cb Передана ошибка или индексный дескриптор нового файла.
    */
   private commitNewFile(tx: AsyncKeyValueRWTransaction, p: string, type: FileType, mode: number, data: Buffer, cb: BFSCallback<Inode>): void {
     const parentDir = path.dirname(p),
       fname = path.basename(p),
       currTime = (new Date()).getTime();
 
-    // Invariant: The root always exists.
-    // If we don't check this prior to taking steps below, we will create a
-    // file with name '' in root should p == '/'.
+    // Инвариант: корень существует всегда.
+    // Если мы не проверим это перед выполнением шагов ниже, мы создадим файл с именем '' в корне, должно p == '/'.
     if (p === '/') {
       return cb(ApiError.EEXIST(p));
     }
 
-    // Let's build a pyramid of code!
+    // Построим пирамиду кода!
 
-    // Step 1: Get the parent directory's inode and directory listing
+    // Шаг 1. Получите индексный дескриптор родительского каталога и список каталогов
     this.findINodeAndDirListing(tx, parentDir, (e?: ApiError | null, parentNode?: Inode, dirListing?: {[name: string]: string}): void => {
       if (noErrorTx(e, tx, cb)) {
         if (dirListing![fname]) {
-          // File already exists.
+          // Файл уже существует.
           tx.abort(() => {
             cb(ApiError.EEXIST(p));
           });
         } else {
-          // Step 2: Commit data to store.
+          // Шаг 2: Зафиксируйте данные для хранения.
           this.addNewNode(tx, data, (e: ApiError, dataId?: string): void => {
             if (noErrorTx(e, tx, cb)) {
-              // Step 3: Commit the file's inode to the store.
+              // Шаг 3. Зафиксируйте индексный дескриптор файла в магазине.
               const fileInode = new Inode(dataId!, data.length, mode | type, currTime, currTime, currTime);
               this.addNewNode(tx, fileInode.toBuffer(), (e: ApiError, fileInodeId?: string): void => {
                 if (noErrorTx(e, tx, cb)) {
-                  // Step 4: Update parent directory's listing.
+                  // Шаг 4: Обновите список родительского каталога.
                   dirListing![fname] = fileInodeId!;
                   tx.put(parentNode!.id, Buffer.from(JSON.stringify(dirListing)), true, (e: ApiError): void => {
                     if (noErrorTx(e, tx, cb)) {
-                      // Step 5: Commit and return the new inode.
+                      // Шаг 5: Зафиксируйте и верните новый индексный дескриптор.
                       tx.commit((e?: ApiError): void => {
                         if (noErrorTx(e, tx, cb)) {
                           cb(null, fileInode);
@@ -1333,19 +1298,19 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
   }
 
   /**
-   * Remove all traces of the given path from the file system.
-   * @param p The path to remove from the file system.
-   * @param isDir Does the path belong to a directory, or a file?
-   * @todo Update mtime.
+   * Удалите все следы указанного пути из файловой системы.
+   * @param p Путь для удаления из файловой системы.
+   * @param isDir Путь принадлежит каталогу или файлу?
+   * @todo Обновите mtime.
    */
   private removeEntry(p: string, isDir: boolean, cb: BFSOneArgCallback): void {
-    // Eagerly delete from cache (harmless even if removal fails)
+    // Быстро удалить из кеша (безвредно, даже если удаление не удалось)
     if (this._cache) {
       this._cache.remove(p);
     }
     const tx = this.store.beginTransaction('readwrite'),
       parent: string = path.dirname(p), fileName: string = path.basename(p);
-    // Step 1: Get parent directory's node and directory listing.
+    // Шаг 1: Получите узел родительского каталога и список каталогов.
     this.findINodeAndDirListing(tx, parent, (e?: ApiError | null, parentNode?: Inode, parentListing?: {[name: string]: string}): void => {
       if (noErrorTx(e, tx, cb)) {
         if (!parentListing![fileName]) {
@@ -1353,10 +1318,10 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
             cb(ApiError.ENOENT(p));
           });
         } else {
-          // Remove from directory listing of parent.
+          // Удалить из каталога родительский листинг.
           const fileNodeId = parentListing![fileName];
           delete parentListing![fileName];
-          // Step 2: Get file inode.
+          // Шаг 2: Получите индексный дескриптор файла.
           this.getINode(tx, p, fileNodeId, (e: ApiError, fileNode?: Inode): void => {
             if (noErrorTx(e, tx, cb)) {
               if (!isDir && fileNode!.isDirectory()) {
@@ -1368,13 +1333,13 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
                   cb(ApiError.ENOTDIR(p));
                 });
               } else {
-                // Step 3: Delete data.
+                // Шаг 3: Удалите данные.
                 tx.del(fileNode!.id, (e?: ApiError): void => {
                   if (noErrorTx(e, tx, cb)) {
-                    // Step 4: Delete node.
+                    // Шаг 4: Удалить узел.
                     tx.del(fileNodeId, (e?: ApiError): void => {
                       if (noErrorTx(e, tx, cb)) {
-                        // Step 5: Update directory listing.
+                        // Шаг 5: Обновите список каталогов.
                         tx.put(parentNode!.id, Buffer.from(JSON.stringify(parentListing)), true, (e: ApiError): void => {
                           if (noErrorTx(e, tx, cb)) {
                             tx.commit(cb);
