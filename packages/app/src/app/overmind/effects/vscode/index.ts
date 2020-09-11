@@ -46,6 +46,7 @@ import {
   OnOperationAppliedData,
   onSelectionChangeData,
 } from './ModelsHandler';
+import { getPrettierConfigFromSandbox } from './prettier-config';
 import SandboxFsSync from './SandboxFsSync';
 import { getSelection } from './utils';
 import loadScript from './vscode-script-loader';
@@ -1106,22 +1107,9 @@ export class VSCodeEffect {
       return null;
     }
 
-    const packageJsonFile = sandbox.modules.find(
-      (m) => m.type === 'file' && m.path === '/package.json'
-    );
-    const packageJson = JSON.parse(packageJsonFile.code);
-    if (packageJson?.prettier) {
-      return packageJson.prettier;
-    }
+    const config = getPrettierConfigFromSandbox(sandbox)
 
-    const prettierConfigFile = sandbox.modules.find(
-      (m) => m.type === 'file' && m.path === '/.prettierrc'
-    );
-    if (prettierConfigFile?.code) {
-      return JSON.parse(prettierConfigFile.code);
-    }
-
-    return this.settings.prettierConfig || DEFAULT_PRETTIER_CONFIG;
+    return config || this.settings.prettierConfig || DEFAULT_PRETTIER_CONFIG;
   };
 
   private onOperationApplied = (data: OnOperationAppliedData) => {
