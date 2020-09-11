@@ -62,7 +62,7 @@ export const notificationRemoved: Action<{
 }> = ({ state }, { id }) => {
   const { notifications } = state;
   const notificationToRemoveIndex = notifications.findIndex(
-    (notification) => notification.id === id
+    notification => notification.id === id
   );
 
   state.notifications.splice(notificationToRemoveIndex, 1);
@@ -151,7 +151,7 @@ export const addNotification: Action<{
 
 export const removeNotification: Action<number> = ({ state }, id) => {
   const notificationToRemoveIndex = state.notifications.findIndex(
-    (notification) => notification.id === id
+    notification => notification.id === id
   );
 
   state.notifications.splice(notificationToRemoveIndex, 1);

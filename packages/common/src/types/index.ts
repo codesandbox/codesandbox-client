@@ -345,6 +345,8 @@ export type SandboxAuthor = {
   avatarUrl: string;
   badges: Badge[];
   subscriptionSince: string | null;
+  subscriptionPlan: 'pro' | 'patron';
+  personalWorkspaceId: string;
 };
 
 export enum CommentsFilterOption {
@@ -388,6 +390,7 @@ export type Sandbox = {
   team: {
     id: string;
     name: string;
+    avatarUrl: string | undefined;
   } | null;
   roomId: string | null;
   privacy: 0 | 1 | 2;
