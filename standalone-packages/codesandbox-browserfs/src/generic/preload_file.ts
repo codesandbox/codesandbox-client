@@ -7,13 +7,11 @@ import fs from '../core/node_fs';
 import {emptyBuffer} from '../core/util';
 
 /**
- * An implementation of the File interface that operates on a file that is
- * completely in-memory. PreloadFiles are backed by a Buffer.
+ * Реализация интерфейса File, который работает с файлом, полностью * находящимся в памяти. PreloadFiles поддерживаются буфером.
  *
- * This is also an abstract class, as it lacks an implementation of 'sync' and
- * 'close'. Each filesystem that wishes to use this file representation must
- * extend this class and implement those two methods.
- * @todo 'close' lever that disables functionality once closed.
+ * Это тоже абстрактный класс, так как в нем отсутствуют реализации «синхронизация» и «закрытие». 
+ * Каждая файловая система, которая хочет использовать это представление файла, должна расширить этот класс и реализовать эти два метода.
+ * @todo 'close' рычаг, который отключает функциональность после закрытия.
  */
 export default class PreloadFile<T extends FileSystem> extends BaseFile {
   protected _fs: T;
@@ -24,18 +22,15 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   private _buffer: Buffer;
   private _dirty: boolean = false;
   /**
-   * Creates a file with the given path and, optionally, the given contents. Note
-   * that, if contents is specified, it will be mutated by the file!
-   * @param _fs The file system that created the file.
-   * @param _path
-   * @param _mode The mode that the file was opened using.
-   *   Dictates permissions and where the file pointer starts.
-   * @param _stat The stats object for the given file.
-   *   PreloadFile will mutate this object. Note that this object must contain
-   *   the appropriate mode that the file was opened as.
-   * @param contents A buffer containing the entire
-   *   contents of the file. PreloadFile will mutate this buffer. If not
-   *   specified, we assume it is a new file.
+   * Создает файл с заданным путем и, необязательно, с заданным содержимым.  
+   * Обратите внимание, что, если указано содержимое, оно будет изменено файлом!
+   * @param _fs Файловая система, создавшая файл.
+   * @param _path Указывает разрешения и место начала указателя файла.
+   * @param _mode Режим, в котором был открыт файл.
+   * @param _stat Объект статистики для данного файла. PreloadFile изменит этот объект. 
+   *  Обратите внимание, что этот объект должен содержать соответствующий режим, в котором был открыт файл.
+   * @param contents Буфер, содержащий всё содержимое файла. PreloadFile изменит этот буфер. 
+   *  Если не указано, мы предполагаем, что это новый файл.
    */
   constructor(_fs: T, _path: string, _flag: FileFlag, _stat: Stats, contents?: Buffer) {
     super();
@@ -44,24 +39,22 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
     this._flag = _flag;
     this._stat = _stat;
     this._buffer = contents ? contents : emptyBuffer();
-    // Note: This invariant is *not* maintained once the file starts getting
-    // modified.
-    // Note: Only actually matters if file is readable, as writeable modes may
-    // truncate/append to file.
+    // Note: Этот инвариант * не * поддерживается после того, как файл начинает изменяться.
+    // Note: Фактически имеет значение только то, доступен ли файл для чтения, поскольку режимы с возможностью записи могут обрезать / добавлять в файл.
     if (this._stat.size !== this._buffer.length && this._flag.isReadable()) {
-      throw new Error(`Invalid buffer: Buffer is ${this._buffer.length} long, yet Stats object specifies that file is ${this._stat.size} long.`);
+      throw new Error(`Invalid buffer: Буфер ${this._buffer.length} длинный, но объект Stats указывает, что файл ${this._stat.size} длинный.`);
     }
   }
 
   /**
-   * NONSTANDARD: Get the underlying buffer for this file. !!DO NOT MUTATE!! Will mess up dirty tracking.
+   * НЕСТАНДАРТНЫЙ: Получите базовый буфер для этого файла. !!НЕ МУТАЙТЕ!! Запутает грязное отслеживание.
    */
   public getBuffer(): Buffer {
     return this._buffer;
   }
 
   /**
-   * NONSTANDARD: Get underlying stats for this file. !!DO NOT MUTATE!!
+   * НЕСТАНДАРТНЫЙ: получить базовую статистику для этого файла. !!НЕ МУТАЙТЕ!!
    */
   public getStats(): Stats {
     return this._stat;
@@ -72,21 +65,20 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * Get the path to this file.
-   * @return [String] The path to the file.
+   * Получите путь к этому файлу.
+   * @return [String] Путь к файлу.
    */
   public getPath(): string {
     return this._path;
   }
 
   /**
-   * Get the current file position.
+   * Получить текущую позицию в файле.
    *
-   * We emulate the following bug mentioned in the Node documentation:
-   * > On Linux, positional writes don't work when the file is opened in append
-   *   mode. The kernel ignores the position argument and always appends the data
-   *   to the end of the file.
-   * @return [Number] The current file position.
+   * Мы эмулируем следующую ошибку, упомянутую в документации по Node:
+   * > В Linux позиционная запись не работает, когда файл открывается в режиме добавления.
+   * Ядро игнорирует аргумент позиции и всегда добавляет данные в конец файла.
+   * @return [Number] Текущая позиция в файле.
    */
   public getPos(): number {
     if (this._flag.isAppendable()) {
@@ -96,7 +88,7 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * Advance the current file position by the indicated number of positions.
+   * Переместить текущую позицию в файле на указанное количество позиций.
    * @param [Number] delta
    */
   public advancePos(delta: number): number {
@@ -104,7 +96,7 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * Set the file position.
+   * Установите положение файла.
    * @param [Number] newPos
    */
   public setPos(newPos: number): number {
@@ -112,8 +104,7 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * **Core**: Asynchronous sync. Must be implemented by subclasses of this
-   * class.
+   * **Core**: Асинхронная синхронизация. Должен быть реализован подклассами этого класса.
    * @param [Function(BrowserFS.ApiError)] cb
    */
   public sync(cb: BFSOneArgCallback): void {
@@ -126,15 +117,14 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * **Core**: Synchronous sync.
+   * **Core**: Синхронная синхронизация.
    */
   public syncSync(): void {
     throw new ApiError(ErrorCode.ENOTSUP);
   }
 
   /**
-   * **Core**: Asynchronous close. Must be implemented by subclasses of this
-   * class.
+   * **Core**: Асинхронное закрытие. Должен быть реализован подклассами этого класса.
    * @param [Function(BrowserFS.ApiError)] cb
    */
   public close(cb: BFSOneArgCallback): void {
@@ -147,14 +137,14 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * **Core**: Synchronous close.
+   * **Core**: Синхронное закрытие.
    */
   public closeSync(): void {
     throw new ApiError(ErrorCode.ENOTSUP);
   }
 
   /**
-   * Asynchronous `stat`.
+   * Асинхронный `stat`.
    * @param [Function(BrowserFS.ApiError, BrowserFS.node.fs.Stats)] cb
    */
   public stat(cb: BFSCallback<Stats>): void {
@@ -166,14 +156,14 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * Synchronous `stat`.
+   * Синхронный `stat`.
    */
   public statSync(): Stats {
     return Stats.clone(this._stat);
   }
 
   /**
-   * Asynchronous truncate.
+   * Асинхронное усечение.
    * @param [Number] len
    * @param [Function(BrowserFS.ApiError)] cb
    */
@@ -190,13 +180,13 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * Synchronous truncate.
+   * Синхронное усечение.
    * @param [Number] len
    */
   public truncateSync(len: number): void {
     this._dirty = true;
     if (!this._flag.isWriteable()) {
-      throw new ApiError(ErrorCode.EPERM, 'File not opened with a writeable mode.');
+      throw new ApiError(ErrorCode.EPERM, 'Файл не открыт в режиме с возможностью записи.');
     }
     this._stat.mtimeMs = Date.now();
     if (len > this._buffer.length) {
@@ -219,18 +209,15 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * Write buffer to the file.
-   * Note that it is unsafe to use fs.write multiple times on the same file
-   * without waiting for the callback.
-   * @param [BrowserFS.node.Buffer] buffer Buffer containing the data to write to
-   *  the file.
-   * @param [Number] offset Offset in the buffer to start reading data from.
-   * @param [Number] length The amount of bytes to write to the file.
-   * @param [Number] position Offset from the beginning of the file where this
-   *   data should be written. If position is null, the data will be written at
-   *   the current position.
+   * Записать буфер в файл.
+   * Обратите внимание, что небезопасно использовать fs.write несколько раз для одного и того же файла, не дожидаясь обратного вызова.
+   * @param [BrowserFS.node.Buffer] buffer Буфер, содержащий данные для записи в файл.
+   * @param [Number] offset Смещение в буфере, из которого начинается чтение данных.
+   * @param [Number] length Количество байтов для записи в файл.
+   * @param [Number] position Смещение от начала файла, куда должны быть записаны эти данные. 
+   *  Если позиция равна нулю, данные будут записаны в текущей позиции.
    * @param [Function(BrowserFS.ApiError, Number, BrowserFS.node.Buffer)]
-   *   cb The number specifies the number of bytes written into the file.
+   *   cb Число указывает количество байтов, записанных в файл.
    */
   public write(buffer: Buffer, offset: number, length: number, position: number, cb: BFSThreeArgCallback<number, Buffer>): void {
     try {
@@ -241,16 +228,13 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * Write buffer to the file.
-   * Note that it is unsafe to use fs.writeSync multiple times on the same file
-   * without waiting for the callback.
-   * @param [BrowserFS.node.Buffer] buffer Buffer containing the data to write to
-   *  the file.
-   * @param [Number] offset Offset in the buffer to start reading data from.
-   * @param [Number] length The amount of bytes to write to the file.
-   * @param [Number] position Offset from the beginning of the file where this
-   *   data should be written. If position is null, the data will be written at
-   *   the current position.
+   * Записать буфер в файл.
+   * Обратите внимание, что небезопасно использовать fs.writeSync несколько раз в одном файле без ожидания обратного вызова.
+   * @param [BrowserFS.node.Buffer] buffer Буфер, содержащий данные для записи * в файл.
+   * @param [Number] offset Смещение в буфере для начала чтения данных.
+   * @param [Number] length Количество байтов для записи в файл.
+   * @param [Number] position Смещение от начала файла, куда должны быть записаны эти данные. 
+   *  Если позиция равна нулю, данные будут записаны в * текущей позиции.
    * @return [Number]
    */
   public writeSync(buffer: Buffer, offset: number, length: number, position: number): number {
@@ -259,7 +243,7 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
       position = this.getPos();
     }
     if (!this._flag.isWriteable()) {
-      throw new ApiError(ErrorCode.EPERM, 'File not opened with a writeable mode.');
+      throw new ApiError(ErrorCode.EPERM, 'Файл не открыт в режиме с возможностью записи.');
     }
     const endFp = position + length;
     if (endFp > this._stat.size) {
@@ -282,17 +266,13 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * Read data from the file.
-   * @param [BrowserFS.node.Buffer] buffer The buffer that the data will be
-   *   written to.
-   * @param [Number] offset The offset within the buffer where writing will
-   *   start.
-   * @param [Number] length An integer specifying the number of bytes to read.
-   * @param [Number] position An integer specifying where to begin reading from
-   *   in the file. If position is null, data will be read from the current file
-   *   position.
-   * @param [Function(BrowserFS.ApiError, Number, BrowserFS.node.Buffer)] cb The
-   *   number is the number of bytes read
+   * Прочитать данные из файла.
+   * @param [BrowserFS.node.Buffer] buffer Буфер, в который будут записываться данные.
+   * @param [Number] offset Смещение в буфере, где начнется запись.
+   * @param [Number] length Целое число, определяющее количество байтов для чтения.
+   * @param [Number] position Целое число, указывающее, с чего начать чтение в файле. 
+   *  Если позиция равна нулю, данные будут считаны из текущего файла * позиция.
+   * @param [Function(BrowserFS.ApiError, Number, BrowserFS.node.Buffer)] cb Число - это количество прочитанных байтов.
    */
   public read(buffer: Buffer, offset: number, length: number, position: number, cb: BFSThreeArgCallback<number, Buffer>): void {
     try {
@@ -303,20 +283,17 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * Read data from the file.
-   * @param [BrowserFS.node.Buffer] buffer The buffer that the data will be
-   *   written to.
-   * @param [Number] offset The offset within the buffer where writing will
-   *   start.
-   * @param [Number] length An integer specifying the number of bytes to read.
-   * @param [Number] position An integer specifying where to begin reading from
-   *   in the file. If position is null, data will be read from the current file
-   *   position.
+   * Прочитать данные из файла.
+   * @param [BrowserFS.node.Buffer] buffer Буфер, в который будут записываться данные.
+   * @param [Number] offset Смещение в буфере, где начнется запись.
+   * @param [Number] length Целое число, определяющее количество байтов для чтения.
+   * @param [Number] position Целое число, указывающее, с чего начать чтение в файле. 
+   *  Если позиция равна нулю, данные будут считаны из текущего файла * позиция.
    * @return [Number]
    */
   public readSync(buffer: Buffer, offset: number, length: number, position: number): number {
     if (!this._flag.isReadable()) {
-      throw new ApiError(ErrorCode.EPERM, 'File not opened with a readable mode.');
+      throw new ApiError(ErrorCode.EPERM, 'Файл не открыт в читаемом режиме.');
     }
     if (position === undefined || position === null) {
       position = this.getPos();
@@ -332,7 +309,7 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * Asynchronous `fchmod`.
+   * Асинхронный `fchmod`.
    * @param [Number|String] mode
    * @param [Function(BrowserFS.ApiError)] cb
    */
@@ -346,7 +323,7 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * Asynchronous `fchmod`.
+   * Асинхронный `fchmod`.
    * @param [Number] mode
    */
   public chmodSync(mode: number): void {
@@ -363,7 +340,7 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
   }
 
   /**
-   * Resets the dirty bit. Should only be called after a sync has completed successfully.
+   * Сбрасывает грязный бит. Должен вызываться только после успешного завершения синхронизации.
    */
   protected resetDirty() {
     this._dirty = false;
@@ -371,35 +348,35 @@ export default class PreloadFile<T extends FileSystem> extends BaseFile {
 }
 
 /**
- * File class for the InMemory and XHR file systems.
- * Doesn't sync to anything, so it works nicely for memory-only files.
+ * Файловый класс для файловых систем InMemory и XHR.
+ * Не синхронизируется ни с чем, поэтому отлично работает с файлами только в памяти.
  */
 export class NoSyncFile<T extends FileSystem> extends PreloadFile<T> implements File {
   constructor(_fs: T, _path: string, _flag: FileFlag, _stat: Stats, contents?: Buffer) {
     super(_fs, _path, _flag, _stat, contents);
   }
   /**
-   * Asynchronous sync. Doesn't do anything, simply calls the cb.
+   * Асинхронный sync. Ничего не делает, просто вызывает cb.
    * @param [Function(BrowserFS.ApiError)] cb
    */
   public sync(cb: BFSOneArgCallback): void {
     cb();
   }
   /**
-   * Synchronous sync. Doesn't do anything.
+   * Синхронный sync. Ничего не делает.
    */
   public syncSync(): void {
     // NOP.
   }
   /**
-   * Asynchronous close. Doesn't do anything, simply calls the cb.
+   * Асинхронный close. Ничего не делает, просто вызывает cb.
    * @param [Function(BrowserFS.ApiError)] cb
    */
   public close(cb: BFSOneArgCallback): void {
     cb();
   }
   /**
-   * Synchronous close. Doesn't do anything.
+   * Синхронный close. Ничего не делает.
    */
   public closeSync(): void {
     // NOP.
