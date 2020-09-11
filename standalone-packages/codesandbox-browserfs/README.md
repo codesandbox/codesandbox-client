@@ -22,62 +22,60 @@ BrowserFS обладает широкими возможностями расш�
 * `IsoFS`: Смонтирует файл .iso в файловую систему.
   * Поддерживает расширения Microsoft Joliet и Rock Ridge до стандарта ISO9660.
 * `WorkerFS`: Позволяет смонтировать файловую систему BrowserFS, настроенную в основном потоке в WebWorker, или наоборот!
-* `MountableFileSystem`: Lets you mount multiple file systems into a single directory hierarchy, as in *nix-based OSes.
-* `OverlayFS`: Mount a read-only file system as read-write by overlaying a writable file system on top of it. Like Docker's overlayfs, it will only write changed files to the writable file system.
-* `AsyncMirror`: Use an asynchronous backend synchronously. Invaluable for Emscripten; let your Emscripten applications write to larger file stores with no additional effort!
-  * Note: Loads the entire contents of the file system into a synchronous backend during construction. Performs synchronous operations in-memory, and enqueues them to be mirrored onto the asynchronous backend.
-* `FolderAdapter`: Wraps a file system, and scopes all interactions to a subfolder of that file system.
-* `Emscripten`: Lets you mount Emscripten file systems inside BrowserFS.
+* `MountableFileSystem`: Позволяет монтировать несколько файловых систем в одну иерархию каталогов, как в операционных системах на базе * nix.
+* `OverlayFS`: Смонтируйте файловую систему только для чтения как чтение-запись, наложив поверх нее файловую систему с возможностью записи. 
+*  Как и Docker overlayfs, он будет записывать только измененные файлы в файловую систему с возможностью записи.
+* `AsyncMirror`: Используйте асинхронный бэкэнд синхронно. Бесценен для Emscripten; позвольте вашим приложениям Emscripten записывать файлы в большие хранилища без дополнительных усилий!
+  * Note: Загружает все содержимое файловой системы в синхронный сервер во время построения. Выполняет синхронные операции в памяти и ставит их в очередь для зеркалирования на асинхронном сервере.
+* `FolderAdapter`: Оборачивает файловую систему и переносит все взаимодействия в подпапку этой файловой системы.
+* `Emscripten`: Позволяет монтировать файловые системы Emscripten внутри BrowserFS.
 
-More backends can be defined by separate libraries, so long as they extend the `BaseFileSystem` class. Multiple backends can be active at once at different locations in the directory hierarchy.
+Отдельные библиотеки могут определять больше бэкендов, если они расширяют класс `BaseFileSystem`. Несколько серверных ВМ могут быть активны одновременно в разных местах в иерархии каталогов.
 
-For more information, see the [API documentation for BrowserFS](https://jvilk.com/browserfs/2.0.0-beta/index.html).
+Дополнительные сведения см. В [документации API для BrowserFS].(https://jvilk.com/browserfs/2.0.0-beta/index.html).
 
-### Building
+### Сборка
 
-Prerequisites:
+Предпосылки:
 
 * Node and NPM
-* Run `yarn install` (or `npm install`) to install local dependencies and build BrowserFS
+* Запустите `yarn install` (или `npm install`), чтобы установить локальные зависимости и построить BrowserFS.
 
-A minified build can be found in `dist/browserfs.min.js`, and the unminified build can be found in `dist/browserfs.js`.
+Минифицированную сборку можно найти в `dist/browserfs.min.js`, а неминифицированную сборку можно найти в `dist/browserfs.js`.
 
-Custom builds:
+Пользовательские сборки:
 
-If you want to build BrowserFS with a subset of the available backends,
-change `src/core/backends.ts` to include only the backends you require,
-and re-build.
+Если вы хотите собрать BrowserFS с подмножеством доступных бэкендов, измените `src/core/backends.ts`, чтобы включить только нужные вам бэкенды, и перестройте.
 
-### Using
+### Польза
 
-Using `BrowserFS.configure()`, you can easily configure BrowserFS to use a variety of file system types.
+Используя BrowserFS.configure (), вы можете легко настроить BrowserFS на использование различных типов файловых систем.
 
-Here's a simple usage example using the LocalStorage-backed file system:
+Вот простой пример использования файловой системы с поддержкой LocalStorage:
 
 ```html
 <script type="text/javascript" src="browserfs.min.js"></script>
 <script type="text/javascript">
-  // Installs globals onto window:
-  // * Buffer
-  // * require (monkey-patches if already defined)
-  // * process
-  // You can pass in an arbitrary object if you do not wish to pollute
-  // the global namespace.
+  // Устанавливает глобальные объекты в окно:
+  // * Буфер
+  // * require ( if already defined) требуется (monkey-patches, если они уже определены)
+  // * процесс
+  // Вы можете передать произвольный объект, если не хотите загрязнять // глобальное пространство имён.
   BrowserFS.install(window);
-  // Configures BrowserFS to use the LocalStorage file system.
+  // Настраивает BrowserFS для использования файловой системы LocalStorage.
   BrowserFS.configure({
     fs: "LocalStorage"
   }, function(e) {
     if (e) {
-      // An error happened!
+      // Произошла ошибка!
       throw e;
     }
-    // Otherwise, BrowserFS is ready-to-use!
+    // В остальном BrowserFS готов к использованию!
   });
 </script>
 ```
 
-Now, you can write code like this:
+Теперь вы можете написать такой код:
 
 ```js
 var fs = require('fs');
@@ -88,10 +86,10 @@ fs.writeFile('/test.txt', 'Cool, I can do this in the browser!', function(err) {
 });
 ```
 
-The following code mounts a zip file to `/zip`, in-memory storage to `/tmp`, and IndexedDB browser-local storage to `/home`:
+Следующий код монтирует zip-файл в `/zip`, хранилище в памяти в `/tmp` и локальное хранилище браузера IndexedDB в `/home`:
 
 ```js
-// Note: This is the new fetch API in the browser. You can use XHR too.
+// Примечание. Это новый API извлечения в браузере. Вы тоже можете использовать XHR.
 fetch('mydata.zip').then(function(response) {
   return response.arraybuffer();
 }).then(function(zipData) {
@@ -103,7 +101,7 @@ fetch('mydata.zip').then(function(response) {
       "/zip": {
         fs: "ZipFS",
         options: {
-          // Wrap as Buffer object.
+          // Обернуть как объект-буфер.
           zipData: Buffer.from(zipData)
         }
       },
@@ -115,25 +113,23 @@ fetch('mydata.zip').then(function(response) {
       // An error occurred.
       throw e;
     }
-    // Otherwise, BrowserFS is ready to use!
+    // В противном случае BrowserFS готов к использованию!
   });
 });
 ```
 
-### Using with Browserify and Webpack
+### Использование с Browserify и Webpack
 
-BrowserFS is published as a UMD module, so you can either include it on your webpage in a `script` tag or bundle it with your favorite
-JavaScript module bundler.
+BrowserFS публикуется как модуль UMD, поэтому вы можете либо включить его на свою веб-страницу в теге `script`, либо связать его с вашим любимым сборщиком модулей JavaScript.
 
-You can also use BrowserFS to supply your application with `fs`, `path`, and `buffer` modules, as well as the `Buffer` and `process`
-globals. BrowserFS contains shim modules for `fs`, `buffer`, `path`, and `process` that you can use with Webpack and Browserify.
+Вы также можете использовать BrowserFS, чтобы снабдить свое приложение модулями `fs`, `path` и `buffer`, а также глобальными объектами `Buffer` и `process`. BrowserFS содержит модули прокладки для `fs`, `buffer`, `path` и `process`, которые вы можете использовать с Webpack и Browserify.
 
 Webpack:
 
 ```javascript
 module.exports = {
   resolve: {
-    // Use our versions of Node modules.
+    // Используйте наши версии модулей Node.
     alias: {
       'fs': 'browserfs/dist/shims/fs.js',
       'buffer': 'browserfs/dist/shims/buffer.js',
@@ -143,18 +139,18 @@ module.exports = {
       'bfsGlobal': require.resolve('browserfs')
     }
   },
-  // REQUIRED to avoid issue "Uncaught TypeError: BrowserFS.BFSRequire is not a function"
+  // ТРЕБУЕТСЯ, чтобы избежать проблемы "Uncaught TypeError: BrowserFS.BFSRequire не является функцией"
   // See: https://github.com/jvilk/BrowserFS/issues/201
   module: {
     noParse: /browserfs\.js/
   },
   plugins: [
-    // Expose BrowserFS, process, and Buffer globals.
-    // NOTE: If you intend to use BrowserFS in a script tag, you do not need
-    // to expose a BrowserFS global.
+    // Откройте глобальные файлы BrowserFS, process и Buffer.
+    // NOTE: Если вы собираетесь использовать BrowserFS в теге скрипта, вам не нужно 
+    // предоставлять глобальный файл BrowserFS.
     new webpack.ProvidePlugin({ BrowserFS: 'bfsGlobal', process: 'processGlobal', Buffer: 'bufferGlobal' })
   ],
-  // DISABLE Webpack's built-in process and Buffer polyfills!
+  // ОТКЛЮЧИТЕ встроенный процесс Webpack и полифилы буфера!
   node: {
     process: false,
     Buffer: false
@@ -167,16 +163,16 @@ Browserify:
 ```javascript
 var browserfsPath = require.resolve('browserfs');
 var browserifyConfig = {
-  // Override Browserify's builtins for buffer/fs/path.
+  // Переопределите встроенные функции Browserify для buffer/fs/path.
   builtins: Object.assign({}, require('browserify/lib/builtins'), {
     "buffer": require.resolve('browserfs/dist/shims/buffer.js'),
     "fs": require.resolve("browserfs/dist/shims/fs.js"),
     "path": require.resolve("browserfs/dist/shims/path.js")
   }),
   insertGlobalVars: {
-    // process, Buffer, and BrowserFS globals.
-    // BrowserFS global is not required if you include browserfs.js
-    // in a script tag.
+    // процесс, буфер и глобальные файлы BrowserFS.
+    // BrowserFS global не требуется, если вы включаете browserfs.js 
+    // в тег скрипта.
     "process": function () { return "require('browserfs/dist/shims/process.js')" },
     'Buffer': function () { return "require('buffer').Buffer" },
     "BrowserFS": function() { return "require('" + browserfsPath + "')" }
@@ -184,49 +180,50 @@ var browserifyConfig = {
 };
 ```
 
-### Using with Node
+### Использование с Node
 
-You can use BrowserFS with Node. Simply add `browserfs` as an NPM dependency, and `require('browserfs')`.
-The object returned from this action is the same `BrowserFS` global described above.
+Вы можете использовать BrowserFS с Node. Просто добавьте `browserfs` как зависимость NPM, и `require('browserfs')`.
+В результате этого действия возвращается тот же самый глобальный объект `BrowserFS`, который описан выше.
 
-If you need BrowserFS to return Node Buffer objects (instead of objects that implement the same interface),
-simply `require('browserfs/dist/node/index')` instead.
+Если вам нужно, чтобы BrowserFS возвращал объекты буфера узла (вместо объектов, реализующих тот же интерфейс),
+вместо этого просто `require('browserfs/dist/node/index')`.
 
-### Using with Emscripten
+### Использование с Emscripten
 
-You can use any *synchronous* BrowserFS file systems with Emscripten!
-Persist particular folders in the Emscripten file system to `localStorage`, or enable Emscripten to synchronously download files from another folder as they are requested.
+Вы можете использовать любые *синхронные* файловые системы BrowserFS с Emscripten!
+Сохраняйте определенные папки в файловой системе Emscripten в `localStorage` или разрешайте Emscripten синхронно загружать файлы из другой папки по запросу.
 
-Include `browserfs.min.js` into the page, and configure BrowserFS prior to running your Emscripten code. Then, add code similar to the following to your `Module`'s `preRun` array:
+Include `browserfs.min.js` into the page, and configure BrowserFS prior to running your Emscripten code. Then, add code similar to the following to your `Module`'s `preRun` array: 
+Включите на страницу `browserfs.min.js` и настройте BrowserFS перед запуском кода Emscripten. Затем добавьте код, аналогичный приведенному ниже, в массив `preRun` вашего `Module`:
 
 ```javascript
 /**
- * Mounts a localStorage-backed file system into the /data folder of Emscripten's file system.
+ * Монтирует файловую систему с поддержкой localStorage в папку /data файловой системы Emscripten.
  */
 function setupBFS() {
-  // Grab the BrowserFS Emscripten FS plugin.
+  // Скачайте плагин BrowserFS Emscripten FS.
   var BFS = new BrowserFS.EmscriptenFS();
-  // Create the folder that we'll turn into a mount point.
+  // Создайте папку, которую мы превратим в точку монтирования.
   FS.createFolder(FS.root, 'data', true, true);
-  // Mount BFS's root folder into the '/data' folder.
+  // Смонтируйте корневую папку BFS в папку `/data`.
   FS.mount(BFS, {root: '/'}, '/data');
 }
 ```
 
-Note: Do **NOT** use `BrowserFS.install(window)` on a page with an Emscripten application! Emscripten will be tricked into thinking that it is running in Node JS.
+Note: Не используй `BrowserFS.install(window)` на странице с приложением Emscripten! Emscripten будет обманут, заставив думать, что он работает в Node JS.
 
-If you wish to use an asynchronous BrowserFS backend with Emscripten (e.g. Dropbox), you'll need to wrap it into an `AsyncMirror` file system first:
+Если вы хотите использовать асинхронный бэкэнд BrowserFS с Emscripten (например, Dropbox), вам нужно сначала обернуть его в файловую систему `AsyncMirror`:
 
 ```javascript
 /**
- * Run this prior to starting your Emscripten module.
- * @param dropboxClient An authenticated DropboxJS client.
+ * Запустите это перед запуском модуля Emscripten.
+ * @param dropboxClient Аутентифицированный клиент DropboxJS.
  */
 function asyncSetup(dropboxClient, cb) {
-  // This wraps Dropbox in the AsyncMirror file system.
-  // BrowserFS will download all of Dropbox into an
-  // InMemory file system, and mirror operations to
-  // the two to keep them in sync.
+  // Это обертывает Dropbox в файловую систему AsyncMirror.
+  // BrowserFS загрузит весь Dropbox в
+  // InMemory файловую систему и 
+  // зеркальные операции для их синхронизации.
   BrowserFS.configure({
     fs: "AsyncMirror",
     options: {
@@ -243,25 +240,25 @@ function asyncSetup(dropboxClient, cb) {
   }, cb);
 }
 function setupBFS() {
-  // Grab the BrowserFS Emscripten FS plugin.
+  // Скачайте плагин BrowserFS Emscripten FS.
   var BFS = new BrowserFS.EmscriptenFS();
-  // Create the folder that we'll turn into a mount point.
+  // Создайте папку, которую мы превратим в точку монтирования.
   FS.createFolder(FS.root, 'data', true, true);
-  // Mount BFS's root folder into the '/data' folder.
+  // Смонтируйте корневую папку BFS в папку `/data`.
   FS.mount(BFS, {root: '/'}, '/data');
 }
 ```
 
-### Testing
+### Тестирование
 
-To run unit tests, simply run `npm test`.
+Чтобы запустить модульные тесты, просто запустите `npm test`.
 
-### Citing
+### Цитирование
 
-BrowserFS is a component of the [Doppio](http://doppiojvm.org/) and [Browsix](https://browsix.org/) research projects from the PLASMA lab at the University of Massachusetts Amherst. If you decide to use BrowserFS in a project that leads to a publication, please cite the academic papers on [Doppio](https://dl.acm.org/citation.cfm?doid=2594291.2594293) and [Browsix](https://dl.acm.org/citation.cfm?id=3037727):
+BrowserFS - это компонент [Doppio](http://doppiojvm.org/) и [Browsix](https://browsix.org/) исследовательских проектов из лаборатории ПЛАЗМЫ Массачусетского университета в Амхерсте. Если вы решите использовать BrowserFS в проекте, который ведет к публикации, пожалуйста, цитируйте научные статьи на [Doppio](https://dl.acm.org/citation.cfm?doid=2594291.2594293) и [Browsix](https://dl.acm.org/citation.cfm?id=3037727):
 
-> John Vilk and Emery D. Berger. Doppio: Breaking the Browser Language Barrier. In
-*Proceedings of the 35th ACM SIGPLAN Conference on Programming Language Design and Implementation*
+> John Vilk и Emery D. Berger. Doppio: Преодолевая языковой барьер браузера. 
+В *материалах 35-й конференции ACM SIGPLAN по проектированию и реализации языков программирования*
 (2014), pp. 508–518.
 
 ```bibtex
@@ -295,6 +292,6 @@ BrowserFS is a component of the [Doppio](http://doppiojvm.org/) and [Browsix](ht
 ```
 
 
-### License
+### Лицензия
 
-BrowserFS is licensed under the MIT License. See `LICENSE` for details.
+BrowserFS находится под лицензией MIT. Подробности см. В разделе `ЛИЦЕНЗИЯ`.
