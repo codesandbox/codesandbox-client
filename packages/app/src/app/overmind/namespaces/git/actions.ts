@@ -185,10 +185,30 @@ export const importFromGithub: AsyncAction<string> = async (
 ) => {
   actions.modalClosed();
   state.currentModal = 'exportGithub';
-  await actions.editor.forkExternalSandbox({
-    sandboxId: sandboxUrl.replace('/s/', ''),
-  });
-  state.currentModal = null;
+  try {
+    await actions.editor.forkExternalSandbox({
+      sandboxId: sandboxUrl.replace('/s/', ''),
+    });
+    state.currentModal = null;
+  } catch (e) {
+    if (!state.user.integrations.github) {
+      state.currentModal = null;
+      effects.notificationToast.add({
+        title: 'Can not import repo',
+        message: 'This seems to be a private repo, you have to sign in first',
+        status: NotificationStatus.ERROR,
+        actions: {
+          primary: {
+            label: 'Sign in',
+            run: () => {
+              actions.signInGithubClicked();
+            },
+          },
+        },
+      });
+    }
+    throw e;
+  }
 };
 
 export const openSourceSandbox: Action = ({ state, effects }) => {
@@ -236,13 +256,13 @@ export const createCommitClicked: AsyncAction = async ({
         ? [git.sourceCommitSha!, git.baseCommitSha]
         : [git.sourceCommitSha!]
     );
-    changes.added.forEach((change) => {
+    changes.added.forEach(change => {
       git.sourceModulesByPath[change.path] = change.content;
     });
-    changes.modified.forEach((change) => {
+    changes.modified.forEach(change => {
       git.sourceModulesByPath[change.path] = change.content;
     });
-    changes.deleted.forEach((path) => {
+    changes.deleted.forEach(path => {
       delete git.sourceModulesByPath[path];
     });
     actions.git._setGitChanges();
@@ -323,13 +343,13 @@ export const createPrClicked: AsyncAction = async ({
       changes
     );
 
-    changes.added.forEach((change) => {
+    changes.added.forEach(change => {
       git.sourceModulesByPath[change.path] = change.content;
     });
-    changes.modified.forEach((change) => {
+    changes.modified.forEach(change => {
       git.sourceModulesByPath[change.path] = change.content;
     });
-    changes.deleted.forEach((path) => {
+    changes.deleted.forEach(path => {
       delete git.sourceModulesByPath[path];
     });
     actions.git._setGitChanges();
@@ -391,7 +411,7 @@ export const resolveConflicts: AsyncAction<Module> = async (
   module
 ) => {
   const conflict = state.git.conflicts.find(
-    (conflictItem) => module.path === '/' + conflictItem.filename
+    conflictItem => module.path === '/' + conflictItem.filename
   );
 
   if (conflict && module.code.indexOf('<<<<<<< Codesandbox') === -1) {
@@ -489,27 +509,27 @@ export const resolveOutOfSync: AsyncAction = async ({
       }, {}),
     });
     // We optimistically keep source in sync
-    added.forEach((change) => {
+    added.forEach(change => {
       git.sourceModulesByPath['/' + change.filename] = change.content!;
     });
   }
 
   if (deleted.length) {
     await Promise.all(
-      deleted.map((change) => {
+      deleted.map(change => {
         const module = state.editor.modulesByPath['/' + change.filename];
 
         return actions.files.moduleDeleted({ moduleShortid: module.shortid });
       })
     );
     // We optimistically keep source in sync
-    deleted.forEach((change) => {
+    deleted.forEach(change => {
       delete git.sourceModulesByPath['/' + change.filename];
     });
   }
   if (modified.length) {
     await Promise.all(
-      modified.map((change) => {
+      modified.map(change => {
         const module = state.editor.modulesByPath['/' + change.filename];
 
         actions.editor.setCode({
@@ -524,7 +544,7 @@ export const resolveOutOfSync: AsyncAction = async ({
       })
     );
     // We optimistically keep source in sync
-    modified.forEach((change) => {
+    modified.forEach(change => {
       git.sourceModulesByPath['/' + change.filename] = change.content!;
     });
   }
@@ -534,13 +554,13 @@ export const resolveOutOfSync: AsyncAction = async ({
   // When we have a PR and the source is out of sync with base, we need to create a commit to update it
   if (git.gitState === SandboxGitState.OUT_OF_SYNC_PR_BASE) {
     const changes: GitChanges = {
-      added: added.map((change) => ({
+      added: added.map(change => ({
         path: '/' + change.filename,
         content: change.content!,
         encoding: 'utf-8',
       })),
-      deleted: deleted.map((change) => '/' + change.filename),
-      modified: modified.map((change) => ({
+      deleted: deleted.map(change => '/' + change.filename),
+      modified: modified.map(change => ({
         path: '/' + change.filename,
         content: change.content!,
         encoding: 'utf-8',
@@ -587,7 +607,7 @@ export const _setGitChanges: Action = ({ state }) => {
     modified: [],
   };
 
-  state.editor.currentSandbox!.modules.forEach((module) => {
+  state.editor.currentSandbox!.modules.forEach(module => {
     if (!(module.path in state.git.sourceModulesByPath)) {
       changes.added.push(module.path);
     } else if (
@@ -597,7 +617,7 @@ export const _setGitChanges: Action = ({ state }) => {
       changes.modified.push(module.path);
     }
   });
-  Object.keys(state.git.sourceModulesByPath).forEach((path) => {
+  Object.keys(state.git.sourceModulesByPath).forEach(path => {
     if (!state.editor.modulesByPath[path]) {
       changes.deleted.push(path);
     }
@@ -844,9 +864,9 @@ export const _getGitChanges: Action<void, GitChanges> = ({ state }) => {
   const sandbox = state.editor.currentSandbox!;
 
   return {
-    added: git.gitChanges.added.map((path) => {
+    added: git.gitChanges.added.map(path => {
       const module = sandbox.modules.find(
-        (moduleItem) => moduleItem.path === path
+        moduleItem => moduleItem.path === path
       );
 
       return {
@@ -856,9 +876,9 @@ export const _getGitChanges: Action<void, GitChanges> = ({ state }) => {
       };
     }),
     deleted: git.gitChanges.deleted,
-    modified: git.gitChanges.modified.map((path) => {
+    modified: git.gitChanges.modified.map(path => {
       const module = sandbox.modules.find(
-        (moduleItem) => moduleItem.path === path
+        moduleItem => moduleItem.path === path
       );
 
       return {
