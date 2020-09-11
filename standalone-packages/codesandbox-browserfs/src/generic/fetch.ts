@@ -1,5 +1,5 @@
 /**
- * Contains utility methods using 'fetch'.
+ * Содержит служебные методы, использующие `выборку`.
  */
 
 import {ApiError, ErrorCode} from '../core/api_error';
@@ -8,10 +8,9 @@ import {BFSCallback} from '../core/file_system';
 export const fetchIsAvailable = (typeof(fetch) !== "undefined" && fetch !== null);
 
 /**
- * Asynchronously download a file as a buffer or a JSON object.
- * Note that the third function signature with a non-specialized type is
- * invalid, but TypeScript requires it when you specialize string arguments to
- * constants.
+ * Асинхронно загружайте файл как буфер или объект JSON.
+ * Обратите внимание, что третья сигнатура функции с неспециализированным типом недопустима, 
+ * но TypeScript требует этого, когда вы специализируете строковые аргументы для констант.
  * @hidden
  */
 export function fetchFileAsync(p: string, type: 'buffer', cb: BFSCallback<Buffer>): void;
@@ -22,7 +21,7 @@ export function fetchFileAsync(p: string, type: string, cb: BFSCallback<any>): v
   try {
     request = fetch(p);
   } catch (e) {
-    // XXX: fetch will throw a TypeError if the URL has credentials in it
+    // XXX: fetch выдаст TypeError, если URL-адрес содержит учетные данные
     return cb(new ApiError(ErrorCode.EINVAL, e.message));
   }
   request
@@ -50,7 +49,7 @@ export function fetchFileAsync(p: string, type: string, cb: BFSCallback<any>): v
 }
 
 /**
- * Asynchronously retrieves the size of the given file in bytes.
+ * Асинхронно извлекает размер данного файла в байтах.
  * @hidden
  */
 export function fetchFileSizeAsync(p: string, cb: BFSCallback<number>): void {
