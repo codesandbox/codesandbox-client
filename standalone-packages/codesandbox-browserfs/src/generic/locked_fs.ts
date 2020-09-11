@@ -6,13 +6,10 @@ import {default as Stats} from '../core/node_fs_stats';
 import {File} from '../core/file';
 
 /**
- * This class serializes access to an underlying async filesystem.
- * For example, on an OverlayFS instance with an async lower
- * directory operations like rename and rmdir may involve multiple
- * requests involving both the upper and lower filesystems -- they
- * are not executed in a single atomic step.  OverlayFS uses this
- * LockedFS to avoid having to reason about the correctness of
- * multiple requests interleaving.
+ * Этот класс сериализует доступ к базовой асинхронной файловой системе.
+ * Например, на экземпляре OverlayFS с асинхронным нижним каталогом операции, такие как переименование и rmdir, 
+ * могут включать несколько запросов, включающих как верхнюю, так и нижнюю файловые системы - они не выполняются за один атомарный шаг. 
+ * OverlayFS использует эту LockedFS, чтобы избежать необходимости рассуждать о правильности чередования нескольких запросов.
  */
 export default class LockedFS<T extends FileSystem> implements FileSystem {
   private _fs: T;
@@ -32,7 +29,7 @@ export default class LockedFS<T extends FileSystem> implements FileSystem {
   }
 
   public diskSpace(p: string, cb: (total: number, free: number) => any): void {
-    // FIXME: should this lock?
+    // FIXME: должна эта блокировка?
     this._fs.diskSpace(p, cb);
   }
 
