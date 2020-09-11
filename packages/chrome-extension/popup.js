@@ -27,7 +27,7 @@ function callback(tabs) {
 
     function openLink() {
       const href = this.href;
-      chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         const tab = tabs[0];
         chrome.tabs.update(tab.id, { url: href });
       });

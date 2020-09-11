@@ -34,15 +34,15 @@ export const Tab = styled.div<{ active: boolean; isOver: boolean }>`
     props.active
       ? css`
           background-color: ${props.theme['tab.activeBackground'] ||
-            props.theme['editor.background'] ||
-            'transparent'};
+          props.theme['editor.background'] ||
+          'transparent'};
           color: ${props.theme['tab.activeForeground'] ||
-            (props.theme.light ? '#000000' : '#FFFFFF')};
+          (props.theme.light ? '#000000' : '#FFFFFF')};
         `
       : css`
           &:hover {
             color: ${props.theme['tab.activeForeground'] ||
-              (props.theme.light ? '#000000' : '#FFFFFF')};
+            (props.theme.light ? '#000000' : '#FFFFFF')};
           }
         `};
 
@@ -50,7 +50,7 @@ export const Tab = styled.div<{ active: boolean; isOver: boolean }>`
     props.isOver &&
     css`
       background-color: ${props.theme['editorGroup.dropBackground'] ||
-        'rgba(0, 0, 0, 0.3)'};
+      'rgba(0, 0, 0, 0.3)'};
     `};
 `;
 

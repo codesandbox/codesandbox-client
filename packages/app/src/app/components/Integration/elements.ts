@@ -13,15 +13,15 @@ export const Container = styled.div<{
     overflow: hidden;
 
     ${small &&
-      css`
-        flex-direction: column;
-        font-size: 0.875rem;
-      `};
+    css`
+      flex-direction: column;
+      font-size: 0.875rem;
+    `};
 
     ${loading &&
-      css`
-        opacity: 0.5;
-      `};
+    css`
+      opacity: 0.5;
+    `};
   `}
 `;
 
@@ -36,10 +36,10 @@ export const IntegrationBlock = styled.div<{ bgColor: string; small: boolean }>`
     font-size: 1.25em;
 
     ${small &&
-      css`
-        padding: 0.75em 0.75em;
-        font-size: 1em;
-      `};
+    css`
+      padding: 0.75em 0.75em;
+      font-size: 1em;
+    `};
   `}
 `;
 

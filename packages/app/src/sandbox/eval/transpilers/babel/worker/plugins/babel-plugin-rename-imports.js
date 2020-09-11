@@ -1,7 +1,7 @@
 /**
  * Rename import() -> $csbImport()
  */
-export default function() {
+export default function () {
   return {
     name: 'babel-plugin-csb-rename-import', // not required
     visitor: {

@@ -270,8 +270,9 @@ export default class FeaturedSandbox extends React.PureComponent<
                             height: '100%',
                             width: '100%',
                             backgroundColor: 'white',
-                            backgroundImage: `url(${sandbox &&
-                              sandbox.screenshotUrl})`,
+                            backgroundImage: `url(${
+                              sandbox && sandbox.screenshotUrl
+                            })`,
                             backgroundRepeat: 'no-repeat',
                             backgroundPositionX: 'center',
                             transform: 'scale(1.025, 1.025)',

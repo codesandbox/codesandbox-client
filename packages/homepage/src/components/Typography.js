@@ -31,9 +31,9 @@ export const P = styled.p`
     font-size: 0.875rem;
   `}
 
-    ${props =>
-      props.big &&
-      `
+  ${props =>
+    props.big &&
+    `
   font-size: 1.4375rem;
   `}
 
@@ -44,8 +44,8 @@ export const P = styled.p`
   `}
 
     ${props =>
-      props.center &&
-      `
+    props.center &&
+    `
 text-align: center;
   `}
 

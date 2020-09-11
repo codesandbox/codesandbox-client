@@ -1,8 +1,9 @@
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import sourceMaps from 'rollup-plugin-sourcemaps';
-const pkg = require('./package.json');
+
 const camelCase = require('lodash.camelcase');
+const pkg = require('./package.json');
 
 const libraryName = 'codesandbox';
 
@@ -26,7 +27,7 @@ export default {
     // Resolve source maps to the original source
     sourceMaps(),
   ],
-  onwarn: function(warning) {
+  onwarn(warning) {
     if (warning.code !== 'THIS_IS_UNDEFINED') {
       console.warn(warning);
     }

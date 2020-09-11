@@ -38,11 +38,9 @@ export const Test = styled.div<{ status: Status }>`
     cursor: pointer;
 
     ${status === 'idle' &&
-      css`
-        color: ${theme.light
-          ? 'rgba(0, 0, 0, 0.4)'
-          : 'rgba(255, 255, 255, 0.4)'};
-      `};
+    css`
+      color: ${theme.light ? 'rgba(0, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.4)'};
+    `};
   `};
 `;
 
@@ -138,32 +136,32 @@ export const Container = styled.div<{ selected: boolean }>`
     }
 
     ${selected &&
-      css`
+    css`
+      border-left-color: ${theme.secondary};
+      background-color: ${!theme.light
+        ? 'rgba(0, 0, 0, 0.2)'
+        : 'rgba(255, 255, 255, 0.2)'};
+      color: ${theme.light ? '#000000' : '#FFFFFF'};
+
+      ${Test} {
+        ${TestName} {
+          background-color: ${!theme.light
+            ? 'rgba(0, 0, 0, 0.2)'
+            : 'rgba(255, 255, 255, 0.2)'};
+          color: ${theme.light ? '#000000' : '#FFFFFF'};
+        }
+
+        ${Block} {
+          background-color: ${!theme.light
+            ? 'rgba(0, 0, 0, 0.2)'
+            : 'rgba(255, 255, 255, 0.2)'};
+          color: ${theme.light ? '#000000' : '#FFFFFF'};
+        }
+      }
+
+      &:hover {
         border-left-color: ${theme.secondary};
-        background-color: ${!theme.light
-          ? 'rgba(0, 0, 0, 0.2)'
-          : 'rgba(255, 255, 255, 0.2)'};
-        color: ${theme.light ? '#000000' : '#FFFFFF'};
-
-        ${Test} {
-          ${TestName} {
-            background-color: ${!theme.light
-              ? 'rgba(0, 0, 0, 0.2)'
-              : 'rgba(255, 255, 255, 0.2)'};
-            color: ${theme.light ? '#000000' : '#FFFFFF'};
-          }
-
-          ${Block} {
-            background-color: ${!theme.light
-              ? 'rgba(0, 0, 0, 0.2)'
-              : 'rgba(255, 255, 255, 0.2)'};
-            color: ${theme.light ? '#000000' : '#FFFFFF'};
-          }
-        }
-
-        &:hover {
-          border-left-color: ${theme.secondary};
-        }
-      `};
+      }
+    `};
   `};
 `;

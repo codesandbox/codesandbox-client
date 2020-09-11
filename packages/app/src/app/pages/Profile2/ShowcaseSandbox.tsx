@@ -9,8 +9,8 @@ import { SandboxTypes, DropTargets } from './constants';
 export const ShowcaseSandbox = () => {
   const {
     state: {
-      profile: { showcasedSandbox }
-    }
+      profile: { showcasedSandbox },
+    },
   } = useOvermind();
 
   const [{ isOver, isDragging }, drop] = useDrop({
@@ -18,8 +18,8 @@ export const ShowcaseSandbox = () => {
     drop: () => ({ name: DropTargets.SHOWCASED_SANDBOX }),
     collect: monitor => ({
       isOver: monitor.isOver(),
-      isDragging: !!monitor.getItem()
-    })
+      isDragging: !!monitor.getItem(),
+    }),
   });
 
   return (
@@ -39,7 +39,7 @@ export const ShowcaseSandbox = () => {
               height: isDragging ? 0 : 360,
               borderRadius: '4px',
               border: '1px solid',
-              borderColor: 'grays.600'
+              borderColor: 'grays.600',
             })}
             scrolling="no"
             allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
@@ -69,7 +69,7 @@ export const ShowcaseSandbox = () => {
           padding: 4,
           backgroundColor: isOver ? 'grays.700' : 'grays.900',
           transition: theme => `background-color ${theme.speeds[2]}`,
-          backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23757575' stroke-width='1' stroke-dasharray='8%2c8' stroke-dashoffset='4' stroke-linecap='square'/%3e%3c/svg%3e");border-radius: 4px;`
+          backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23757575' stroke-width='1' stroke-dasharray='8%2c8' stroke-dashoffset='4' stroke-linecap='square'/%3e%3c/svg%3e");border-radius: 4px;`,
         })}
       >
         <Text variant="muted" size={4} weight="medium" align="center">

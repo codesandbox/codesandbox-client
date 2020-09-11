@@ -36,7 +36,7 @@ async function resolveCSSFile(
   return loaderContext.resolveTranspiledModuleAsync(fullPath);
 }
 
-export default function(
+export default function (
   code: string,
   loaderContext: LoaderContext
 ): Promise<{ transpiledCode: string; sourceMap: any }> {

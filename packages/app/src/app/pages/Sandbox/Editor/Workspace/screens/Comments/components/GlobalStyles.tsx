@@ -98,9 +98,9 @@ ${({ theme }: any) => css`
       theme
     )}"/%3E%3C/svg%3E%0A`}');
 
-      &::before {
-        content: '';
-      }
+    &::before {
+      content: '';
+    }
   }
 
   .editor-comments-add:before {

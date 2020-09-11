@@ -2,8 +2,8 @@
 var postcss = require('postcss');
 var selectorParser = require('postcss-selector-parser');
 
-export default postcss.plugin('add-id', function(opts) {
-  return function(root) {
+export default postcss.plugin('add-id', function (opts) {
+  return function (root) {
     var keyframes = Object.create(null);
 
     root.each(function rewriteSelector(node) {
@@ -19,10 +19,10 @@ export default postcss.plugin('add-id', function(opts) {
         }
         return;
       }
-      node.selector = selectorParser(function(selectors) {
-        selectors.each(function(selector) {
+      node.selector = selectorParser(function (selectors) {
+        selectors.each(function (selector) {
           var node = null;
-          selector.each(function(n) {
+          selector.each(function (n) {
             // ">>>" combinator
             if (n.type === 'combinator' && n.value === '>>>') {
               n.value = ' ';

@@ -237,15 +237,9 @@ const guessType = theme => {
   return 'dark';
 };
 
-const lighten = (color, value) =>
-  Color(color)
-    .lighten(value)
-    .hex();
+const lighten = (color, value) => Color(color).lighten(value).hex();
 
-const darken = (color, value) =>
-  Color(color)
-    .darken(value)
-    .hex();
+const darken = (color, value) => Color(color).darken(value).hex();
 
 const withContrast = (color, background, type, contrastType = 'text') => {
   const contrastRatio = { text: 4.5, icon: 1.6 };

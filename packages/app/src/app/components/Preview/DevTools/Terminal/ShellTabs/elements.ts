@@ -48,7 +48,7 @@ export const Tab = styled.div<{ selected: boolean }>`
     props.selected
       ? css`
           background-color: ${props.theme['tab.activeBackground'] ||
-            props.theme.background2};
+          props.theme.background2};
           color: ${props.theme.light
             ? 'rgba(0, 0, 0, 0.8)'
             : 'rgba(255, 255, 255, 0.9)'};
@@ -59,7 +59,7 @@ export const Tab = styled.div<{ selected: boolean }>`
             ${props.theme.light ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.4)'};
           &:hover {
             background-color: ${props.theme['tab.inactiveBackground'] ||
-              props.theme.background2.darken(0.2)};
+            props.theme.background2.darken(0.2)};
             color: ${props.theme.light
               ? 'rgba(0, 0, 0, 0.8)'
               : 'rgba(255, 255, 255, 0.9)'};

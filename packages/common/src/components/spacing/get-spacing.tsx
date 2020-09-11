@@ -8,7 +8,7 @@ export type Options = {
   vertical?: number;
 };
 
-export default function({
+export default function ({
   margin,
   top,
   right,

@@ -183,9 +183,6 @@ const getFontFamily = (search: string) => {
 
   return {
     name: family.split('+').join(' '),
-    id: family
-      .split('+')
-      .join('-')
-      .toLowerCase(),
+    id: family.split('+').join('-').toLowerCase(),
   };
 };

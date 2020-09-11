@@ -13,7 +13,7 @@ import loaderUtils from '../../utils/loader-utils';
 const addStylesClientPath = '/node_modules/vue-style-loader/addStylesClient.js';
 const listToStylesPath = '/node_modules/vue-style-loader/listToStyles.js';
 
-export default function(content: string, loaderContext) {
+export default function (content: string, loaderContext) {
   const isServer = false;
   const isProduction = false;
 

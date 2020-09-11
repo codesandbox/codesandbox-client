@@ -7,7 +7,7 @@ const SourceMapGenerator = require('source-map').SourceMapGenerator;
 const splitRE = /\r?\n/g;
 const emptyRE = /^(?:\/\/)?\s*$/;
 
-module.exports = function(content, filename, needMap, sourceRoot) {
+module.exports = function (content, filename, needMap, sourceRoot) {
   const cacheKey = hash(filename + content);
   // source-map cache busting for hot-reloadded modules
   const filenameWithHash = filename + '?' + cacheKey;

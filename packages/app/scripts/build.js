@@ -149,8 +149,9 @@ function build(previousSizeMap) {
 
     console.log(
       chalk.green(
-        `Built ${stats.hasWarnings() ? 'with warnings ' : ''}in ${took /
-          1000}s.`
+        `Built ${stats.hasWarnings() ? 'with warnings ' : ''}in ${
+          took / 1000
+        }s.`
       )
     );
     console.log();

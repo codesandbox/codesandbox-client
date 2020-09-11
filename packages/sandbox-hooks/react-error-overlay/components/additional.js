@@ -42,7 +42,7 @@ function updateAdditional(
 
   const left = document.createElement('button');
   applyStyles(left, groupElemLeft);
-  left.addEventListener('click', function(e: MouseEvent) {
+  left.addEventListener('click', (e: MouseEvent) => {
     consumeEvent(e);
     switchCallback(-1);
   });
@@ -51,7 +51,7 @@ function updateAdditional(
 
   const right = document.createElement('button');
   applyStyles(right, groupElemRight);
-  right.addEventListener('click', function(e: MouseEvent) {
+  right.addEventListener('click', (e: MouseEvent) => {
     consumeEvent(e);
     switchCallback(1);
   });

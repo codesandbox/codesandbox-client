@@ -21,9 +21,7 @@ export const SuggestionInput = styled(AutoCompleteInput)`
   top: 0;
   left: 0;
   color: ${props =>
-    Color(props.theme.colors.dialog.foreground)
-      .alpha(0.3)
-      .rgbString()};
+    Color(props.theme.colors.dialog.foreground).alpha(0.3).rgbString()};
   background-color: transparent;
   z-index: 1;
   pointer-events: none;

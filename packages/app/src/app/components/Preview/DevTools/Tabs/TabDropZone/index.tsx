@@ -20,7 +20,7 @@ const DropZone = styled.div<{ isOver: boolean }>`
     props.isOver
       ? css`
           background-color: ${props.theme['editorGroup.dropBackground'] ||
-            'rgba(0, 0, 0, 0.3)'};
+          'rgba(0, 0, 0, 0.3)'};
         `
       : ''};
 `;

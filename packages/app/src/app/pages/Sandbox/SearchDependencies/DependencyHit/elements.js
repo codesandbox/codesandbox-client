@@ -88,9 +88,7 @@ export const License = styled.span`
 export const IconLink = styled.a`
   font-size: 1rem;
   color: ${props =>
-    getColorInstance(props.theme.colors.icon.foreground)
-      .alpha(1)
-      .rgbString()};
+    getColorInstance(props.theme.colors.icon.foreground).alpha(1).rgbString()};
 
   ${GitHubLogoStyled} {
     circle {

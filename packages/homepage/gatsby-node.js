@@ -20,9 +20,7 @@ const getBlogNodeInfo = ({
   photo,
 });
 const getDocsSlug = ({ node: { fileAbsolutePath } }) => {
-  const fileName = getRelativePath(fileAbsolutePath)
-    .split('/')
-    .reverse()[0];
+  const fileName = getRelativePath(fileAbsolutePath).split('/').reverse()[0];
 
   return fileName.split('.md')[0].split('-')[1];
 };

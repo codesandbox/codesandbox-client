@@ -3,9 +3,4 @@ import * as path from './path';
 
 const exts = new Set(imageExtensions);
 export default filepath =>
-  exts.has(
-    path
-      .extname(filepath)
-      .slice(1)
-      .toLowerCase()
-  );
+  exts.has(path.extname(filepath).slice(1).toLowerCase());

@@ -46,7 +46,7 @@ var head =
 var singletonElement = null;
 var singletonCounter = 0;
 var isProduction = false;
-var noop = function() {};
+var noop = function () {};
 
 // Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
 // tags it will allow on a page
@@ -54,7 +54,7 @@ var isOldIE =
   typeof navigator !== 'undefined' &&
   /msie [6-9]\b/.test(navigator.userAgent.toLowerCase());
 
-module.exports = function(parentId, list, _isProduction) {
+module.exports = function (parentId, list, _isProduction) {
   isProduction = _isProduction;
 
   var styles = listToStyles(parentId, list);
@@ -150,7 +150,7 @@ function addStyle(obj /* StyleObjectPart */) {
     // use multi-style-tag mode in all other cases
     styleElement = createStyleElement();
     update = applyToTag.bind(null, styleElement);
-    remove = function() {
+    remove = function () {
       styleElement.parentNode.removeChild(styleElement);
     };
   }
@@ -173,10 +173,10 @@ function addStyle(obj /* StyleObjectPart */) {
   };
 }
 
-var replaceText = (function() {
+var replaceText = (function () {
   var textStore = [];
 
-  return function(index, replacement) {
+  return function (index, replacement) {
     textStore[index] = replacement;
     return textStore.filter(Boolean).join('\n');
   };

@@ -35,7 +35,7 @@ const postcssExtensions = ['postcss', 'pcss', 'sugarss', 'sss'];
 
 const rewriterInjectRE = /\b(css(?:-loader)?(?:\?[^!]+)?)(?:!|$)/;
 
-export default function(content: string, loaderContext: LoaderContext) {
+export default function (content: string, loaderContext: LoaderContext) {
   // Emit the vue-hot-reload-api so it's available in the sandbox
   loaderContext.emitModule(
     hotReloadAPIPath,

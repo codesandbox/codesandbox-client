@@ -41,11 +41,11 @@ export const Container = styled.div<{
     props.active &&
     css`
       background-color: ${props.theme['tab.activeBackground'] ||
-        props.theme.background2};
+      props.theme.background2};
       border-color: ${props.theme['tab.activeBorder']};
       color: ${props.theme['tab.activeForeground'] ||
-        props.theme['editor.foreground'] ||
-        'white'};
+      props.theme['editor.foreground'] ||
+      'white'};
     `};
   ${props =>
     props.dirty &&

@@ -8,7 +8,7 @@ exports.__esModule = true;
 /**
  * Represents information about a specific difference between two sequences.
  */
-var DiffChange = /** @class */ (function() {
+var DiffChange = /** @class */ (function () {
   /**
    * Constructs a new DiffChange with the given sequence information
    * and content.
@@ -28,23 +28,23 @@ var DiffChange = /** @class */ (function() {
   /**
    * The end point (exclusive) of the change in the original sequence.
    */
-  DiffChange.prototype.getOriginalEnd = function() {
+  DiffChange.prototype.getOriginalEnd = function () {
     return this.originalStart + this.originalLength;
   };
   /**
    * The end point (exclusive) of the change in the modified sequence.
    */
-  DiffChange.prototype.getModifiedEnd = function() {
+  DiffChange.prototype.getModifiedEnd = function () {
     return this.modifiedStart + this.modifiedLength;
   };
   return DiffChange;
 })();
 function createStringSequence(a) {
   return {
-    getLength: function() {
+    getLength: function () {
       return a.length;
     },
-    getElementAtIndex: function(pos) {
+    getElementAtIndex: function (pos) {
       return a.charCodeAt(pos);
     },
   };
@@ -59,9 +59,9 @@ exports.stringDiff = stringDiff;
 //
 // The code below has been ported from a C# implementation in VS
 //
-var Debug = /** @class */ (function() {
+var Debug = /** @class */ (function () {
   function Debug() {}
-  Debug.Assert = function(condition, message) {
+  Debug.Assert = function (condition, message) {
     if (!condition) {
       throw new Error(message);
     }
@@ -69,7 +69,7 @@ var Debug = /** @class */ (function() {
   return Debug;
 })();
 exports.Debug = Debug;
-var MyArray = /** @class */ (function() {
+var MyArray = /** @class */ (function () {
   function MyArray() {}
   /**
    * Copies a range of elements from an Array starting at the specified source index and pastes
@@ -86,7 +86,7 @@ var MyArray = /** @class */ (function() {
    * length:
    *		A 64-bit integer that represents the number of elements to copy.
    */
-  MyArray.Copy = function(
+  MyArray.Copy = function (
     sourceArray,
     sourceIndex,
     destinationArray,
@@ -121,7 +121,7 @@ var MaxDifferencesHistory = 1447;
  * distinct changes. At the end, the Changes property can be called to retrieve
  * the constructed changes.
  */
-var DiffChangeHelper = /** @class */ (function() {
+var DiffChangeHelper = /** @class */ (function () {
   /**
    * Constructs a new DiffChangeHelper for the given DiffSequences.
    */
@@ -135,7 +135,7 @@ var DiffChangeHelper = /** @class */ (function() {
   /**
    * Marks the beginning of the next change in the set of differences.
    */
-  DiffChangeHelper.prototype.MarkNextChange = function() {
+  DiffChangeHelper.prototype.MarkNextChange = function () {
     // Only add to the list if there is something to add
     if (this.m_originalCount > 0 || this.m_modifiedCount > 0) {
       // Add the new change to our list
@@ -161,7 +161,7 @@ var DiffChangeHelper = /** @class */ (function() {
    * @param originalIndex The index of the original element to add.
    * @param modifiedIndex The index of the modified element that provides corresponding position in the modified sequence.
    */
-  DiffChangeHelper.prototype.AddOriginalElement = function(
+  DiffChangeHelper.prototype.AddOriginalElement = function (
     originalIndex,
     modifiedIndex
   ) {
@@ -177,7 +177,7 @@ var DiffChangeHelper = /** @class */ (function() {
    * @param originalIndex The index of the original element that provides corresponding position in the original sequence.
    * @param modifiedIndex The index of the modified element to add.
    */
-  DiffChangeHelper.prototype.AddModifiedElement = function(
+  DiffChangeHelper.prototype.AddModifiedElement = function (
     originalIndex,
     modifiedIndex
   ) {
@@ -189,7 +189,7 @@ var DiffChangeHelper = /** @class */ (function() {
   /**
    * Retrieves all of the changes marked by the class.
    */
-  DiffChangeHelper.prototype.getChanges = function() {
+  DiffChangeHelper.prototype.getChanges = function () {
     if (this.m_originalCount > 0 || this.m_modifiedCount > 0) {
       // Finish up on whatever is left
       this.MarkNextChange();
@@ -199,7 +199,7 @@ var DiffChangeHelper = /** @class */ (function() {
   /**
    * Retrieves all of the changes marked by the class in the reverse order
    */
-  DiffChangeHelper.prototype.getReverseChanges = function() {
+  DiffChangeHelper.prototype.getReverseChanges = function () {
     if (this.m_originalCount > 0 || this.m_modifiedCount > 0) {
       // Finish up on whatever is left
       this.MarkNextChange();
@@ -213,7 +213,7 @@ var DiffChangeHelper = /** @class */ (function() {
  * An implementation of the difference algorithm described in
  * "An O(ND) Difference Algorithm and its variations" by Eugene W. Myers
  */
-var LcsDiff = /** @class */ (function() {
+var LcsDiff = /** @class */ (function () {
   /**
    * Constructs the DiffFinder
    */
@@ -227,25 +227,25 @@ var LcsDiff = /** @class */ (function() {
     this.m_forwardHistory = [];
     this.m_reverseHistory = [];
   }
-  LcsDiff.prototype.ElementsAreEqual = function(originalIndex, newIndex) {
+  LcsDiff.prototype.ElementsAreEqual = function (originalIndex, newIndex) {
     return (
       this.OriginalSequence.getElementAtIndex(originalIndex) ===
       this.ModifiedSequence.getElementAtIndex(newIndex)
     );
   };
-  LcsDiff.prototype.OriginalElementsAreEqual = function(index1, index2) {
+  LcsDiff.prototype.OriginalElementsAreEqual = function (index1, index2) {
     return (
       this.OriginalSequence.getElementAtIndex(index1) ===
       this.OriginalSequence.getElementAtIndex(index2)
     );
   };
-  LcsDiff.prototype.ModifiedElementsAreEqual = function(index1, index2) {
+  LcsDiff.prototype.ModifiedElementsAreEqual = function (index1, index2) {
     return (
       this.ModifiedSequence.getElementAtIndex(index1) ===
       this.ModifiedSequence.getElementAtIndex(index2)
     );
   };
-  LcsDiff.prototype.ComputeDiff = function(pretty) {
+  LcsDiff.prototype.ComputeDiff = function (pretty) {
     return this._ComputeDiff(
       0,
       this.OriginalSequence.getLength() - 1,
@@ -259,7 +259,7 @@ var LcsDiff = /** @class */ (function() {
    * sequences on the bounded range.
    * @returns An array of the differences between the two input sequences.
    */
-  LcsDiff.prototype._ComputeDiff = function(
+  LcsDiff.prototype._ComputeDiff = function (
     originalStart,
     originalEnd,
     modifiedStart,
@@ -287,7 +287,7 @@ var LcsDiff = /** @class */ (function() {
    * recursively.
    * @returns An array of the differences between the two input sequences.
    */
-  LcsDiff.prototype.ComputeDiffRecursive = function(
+  LcsDiff.prototype.ComputeDiffRecursive = function (
     originalStart,
     originalEnd,
     modifiedStart,
@@ -421,7 +421,7 @@ var LcsDiff = /** @class */ (function() {
       ),
     ];
   };
-  LcsDiff.prototype.WALKTRACE = function(
+  LcsDiff.prototype.WALKTRACE = function (
     diagonalForwardBase,
     diagonalForwardStart,
     diagonalForwardEnd,
@@ -588,7 +588,7 @@ var LcsDiff = /** @class */ (function() {
    * @param midModified The middle point of the modified sequence range
    * @returns The diff changes, if available, otherwise null
    */
-  LcsDiff.prototype.ComputeRecursionPoint = function(
+  LcsDiff.prototype.ComputeRecursionPoint = function (
     originalStart,
     originalEnd,
     modifiedStart,
@@ -968,7 +968,7 @@ var LcsDiff = /** @class */ (function() {
    * @param changes The list of changes to shift
    * @returns The shifted changes
    */
-  LcsDiff.prototype.ShiftChanges = function(changes) {
+  LcsDiff.prototype.ShiftChanges = function (changes) {
     var mergedDiffs;
     do {
       mergedDiffs = false;
@@ -1084,14 +1084,14 @@ var LcsDiff = /** @class */ (function() {
     }
     return changes;
   };
-  LcsDiff.prototype._OriginalIsBoundary = function(index) {
+  LcsDiff.prototype._OriginalIsBoundary = function (index) {
     if (index <= 0 || index >= this.OriginalSequence.getLength() - 1) {
       return true;
     }
     var element = this.OriginalSequence.getElementAtIndex(index);
     return typeof element === 'string' && /^\s*$/.test(element);
   };
-  LcsDiff.prototype._OriginalRegionIsBoundary = function(
+  LcsDiff.prototype._OriginalRegionIsBoundary = function (
     originalStart,
     originalLength
   ) {
@@ -1112,14 +1112,14 @@ var LcsDiff = /** @class */ (function() {
     }
     return false;
   };
-  LcsDiff.prototype._ModifiedIsBoundary = function(index) {
+  LcsDiff.prototype._ModifiedIsBoundary = function (index) {
     if (index <= 0 || index >= this.ModifiedSequence.getLength() - 1) {
       return true;
     }
     var element = this.ModifiedSequence.getElementAtIndex(index);
     return typeof element === 'string' && /^\s*$/.test(element);
   };
-  LcsDiff.prototype._ModifiedRegionIsBoundary = function(
+  LcsDiff.prototype._ModifiedRegionIsBoundary = function (
     modifiedStart,
     modifiedLength
   ) {
@@ -1140,7 +1140,7 @@ var LcsDiff = /** @class */ (function() {
     }
     return false;
   };
-  LcsDiff.prototype._boundaryScore = function(
+  LcsDiff.prototype._boundaryScore = function (
     originalStart,
     originalLength,
     modifiedStart,
@@ -1167,7 +1167,7 @@ var LcsDiff = /** @class */ (function() {
    * @param The right changes
    * @returns The concatenated list
    */
-  LcsDiff.prototype.ConcatenateChanges = function(left, right) {
+  LcsDiff.prototype.ConcatenateChanges = function (left, right) {
     var mergedChangeArr = [];
     var result = null;
     if (left.length === 0 || right.length === 0) {
@@ -1199,7 +1199,7 @@ var LcsDiff = /** @class */ (function() {
    * @param mergedChange The merged change if the two overlap, null otherwise
    * @returns True if the two changes overlap
    */
-  LcsDiff.prototype.ChangesOverlap = function(left, right, mergedChangeArr) {
+  LcsDiff.prototype.ChangesOverlap = function (left, right, mergedChangeArr) {
     Debug.Assert(
       left.originalStart <= right.originalStart,
       'Left change is not less than or equal to right change'
@@ -1248,7 +1248,7 @@ var LcsDiff = /** @class */ (function() {
    * @param numDiagonals The total number of diagonals.
    * @returns The clipped diagonal index.
    */
-  LcsDiff.prototype.ClipDiagonalBound = function(
+  LcsDiff.prototype.ClipDiagonalBound = function (
     diagonal,
     numDifferences,
     diagonalBaseIndex,

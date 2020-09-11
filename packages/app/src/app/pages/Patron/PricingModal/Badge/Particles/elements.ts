@@ -8,8 +8,9 @@ const particleAnimation = (deg: number) => keyframes`
   }
 
   100% {
-    transform: rotate(${deg}deg) translateY(${200 +
-  Math.random() * 100}px) scale3d(0, 0, 0);
+    transform: rotate(${deg}deg) translateY(${
+  200 + Math.random() * 100
+}px) scale3d(0, 0, 0);
   }
 `;
 

@@ -28,8 +28,9 @@ export const LiveSessionEnded: FunctionComponent = () => {
   return (
     <Alert
       title="The live session has ended"
-      description={`${currentModalMessage ||
-        'The session has ended due to inactivity'}, ${suggestion}`}
+      description={`${
+        currentModalMessage || 'The session has ended due to inactivity'
+      }, ${suggestion}`}
     >
       <Stack gap={2} align="center" justify="flex-end">
         {owned ? (

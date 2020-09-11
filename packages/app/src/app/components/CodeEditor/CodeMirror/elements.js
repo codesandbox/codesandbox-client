@@ -35,11 +35,11 @@ const getTokenColor = (scope, defaultStyles) => ({ theme: givenTheme }) => {
   if (foundScope && foundScope.settings) {
     return css`
       ${foundScope.settings.foreground &&
-        `color: ${foundScope.settings.foreground};`}
+      `color: ${foundScope.settings.foreground};`}
       ${foundScope.settings.background &&
-        `background: ${foundScope.settings.background};`}
-      ${foundScope.settings.fontStyle &&
-        `font-style: ${foundScope.settings.fontStyle};`}
+      `background: ${foundScope.settings.background};`}
+      ${foundScope
+        .settings.fontStyle && `font-style: ${foundScope.settings.fontStyle};`}
     `;
   }
 

@@ -19,7 +19,7 @@ export const Input = styled.input.attrs({
     border: 1px solid transparent;
     border-radius: 4px;
     background-color: ${theme[`input.background`] ||
-      css`rgba(255, 255, 255, 0.1)`};
+    css`rgba(255, 255, 255, 0.1)`};
     color: ${theme[`input.foreground`] || css`white`};
     font-weight: 500;
     transition: 0.4s ease all;

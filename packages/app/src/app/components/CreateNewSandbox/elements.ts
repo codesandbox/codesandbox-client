@@ -29,9 +29,9 @@ export const Container = styled.div<{ hide?: boolean; color?: any }>`
     transition: 0.3s ease background-color;
 
     ${hide &&
-      css`
-        opacity: 0;
-      `};
+    css`
+      opacity: 0;
+    `};
 
     &:first-child {
       border-bottom: 0;

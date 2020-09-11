@@ -1,8 +1,9 @@
 import { buildWorkerError } from '../utils/worker-error-handler';
 
 self.importScripts(
-  `${process.env.CODESANDBOX_HOST ||
-    ''}/static/js/browserified-pug.0.1.0.min.js`
+  `${
+    process.env.CODESANDBOX_HOST || ''
+  }/static/js/browserified-pug.0.1.0.min.js`
 );
 self.postMessage('ready');
 

@@ -47,7 +47,7 @@ module.exports = function normalizeComponent(
   var hook;
   if (moduleIdentifier) {
     // server build
-    hook = function(context) {
+    hook = function (context) {
       // 2.3 injection
       context =
         context || // cached call

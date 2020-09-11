@@ -36,42 +36,42 @@ export const Icon = styled.button<{ moduleView?: boolean; disabled?: boolean }>`
     transition: 0.2s ease fill;
   }
 
-${({ moduleView, disabled, theme }) =>
-  !moduleView &&
-  (disabled
-    ? css`
-        cursor: default;
-        opacity: 0.6;
-      `
-    : css`
-        &:hover svg path,
-        &:hover svg rect {
-          fill: ${theme.light ? 'black' : 'white'};
-        }
-      `)}
+  ${({ moduleView, disabled, theme }) =>
+    !moduleView &&
+    (disabled
+      ? css`
+          cursor: default;
+          opacity: 0.6;
+        `
+      : css`
+          &:hover svg path,
+          &:hover svg rect {
+            fill: ${theme.light ? 'black' : 'white'};
+          }
+        `)}
 
   /* // TODO: Replace with new theme */
 ${({ moduleView, theme }) =>
-  moduleView &&
-  css`
-    ${theme.light
-      ? css`
-          svg rect[fill='#E6E6E6'] {
-            fill: #343434;
-          }
-          svg rect[fill='#343434'] {
-            fill: #e6e6e6;
-          }
-          &:hover svg rect {
-            fill: black;
-          }
-        `
-      : css`
-          &:hover svg rect:not([fill='#E6E6E6']) {
-            fill: #757575;
-          }
-        `}
-  `}
+    moduleView &&
+    css`
+      ${theme.light
+        ? css`
+            svg rect[fill='#E6E6E6'] {
+              fill: #343434;
+            }
+            svg rect[fill='#343434'] {
+              fill: #e6e6e6;
+            }
+            &:hover svg rect {
+              fill: black;
+            }
+          `
+        : css`
+            &:hover svg rect:not([fill='#E6E6E6']) {
+              fill: #757575;
+            }
+          `}
+    `}
 `;
 
 export const IconWithBackground = styled(Icon)`

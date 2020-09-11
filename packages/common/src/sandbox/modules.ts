@@ -37,10 +37,7 @@ export function resolveDirectory(
   }
 
   // Split path
-  const splitPath = path
-    .replace(/^.\//, '')
-    .split('/')
-    .filter(Boolean);
+  const splitPath = path.replace(/^.\//, '').split('/').filter(Boolean);
 
   const foundDirectoryShortid = splitPath.reduce(
     (dirId: string | undefined, pathPart: string, i: number) => {
@@ -89,7 +86,7 @@ export function getModulesAndDirectoriesInDirectory(
     removedDirectories: directories.filter(
       directoryItem =>
         directoryItem.path.startsWith(path) && directoryItem !== directory
-    )
+    ),
   };
 }
 
@@ -108,15 +105,9 @@ export function getModulesInDirectory(
   }
 
   // Split path
-  const splitPath = path
-    .replace(/^.\//, '')
-    .split('/')
-    .filter(Boolean);
+  const splitPath = path.replace(/^.\//, '').split('/').filter(Boolean);
 
-  const dirPath = path
-    .replace(/^.\//, '')
-    .split('/')
-    .filter(Boolean);
+  const dirPath = path.replace(/^.\//, '').split('/').filter(Boolean);
   dirPath.pop();
 
   const dir = resolveDirectory(
@@ -137,7 +128,7 @@ export function getModulesInDirectory(
     modules: modulesInFoundDirectory,
     foundDirectoryShortid,
     lastPath,
-    splitPath
+    splitPath,
   };
 }
 
@@ -155,7 +146,7 @@ export const resolveModule = (
     modules: modulesInFoundDirectory,
     lastPath,
     splitPath,
-    foundDirectoryShortid
+    foundDirectoryShortid,
   } = getModulesInDirectory(path, modules, directories, startdirectoryShortid);
 
   // Find module with same name
@@ -265,7 +256,7 @@ export const getChildren = memoize(
     id: string
   ) => [
     ...directories.filter(d => d.directoryShortid === id),
-    ...modules.filter(m => m.directoryShortid === id)
+    ...modules.filter(m => m.directoryShortid === id),
   ],
   memoizeFunction
 );

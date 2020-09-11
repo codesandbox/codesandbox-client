@@ -8,16 +8,16 @@ import { SANDBOXES_PER_PAGE } from './constants';
 export const LikedSandboxes = ({ menuControls }) => {
   const {
     actions: {
-      profile: { likedSandboxesPageChanged }
+      profile: { likedSandboxesPageChanged },
     },
     state: {
       profile: {
         current: { username },
         isLoadingSandboxes,
         currentLikedSandboxesPage,
-        likedSandboxes
-      }
-    }
+        likedSandboxes,
+      },
+    },
   } = useOvermind();
 
   // explicitly call it on first page render
@@ -45,7 +45,7 @@ export const LikedSandboxes = ({ menuControls }) => {
         rowGap={6}
         columnGap={6}
         css={{
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
         }}
       >
         {isLoadingSandboxes
@@ -73,14 +73,14 @@ export const LikedSandboxes = ({ menuControls }) => {
 const Pagination = () => {
   const {
     actions: {
-      profile: { likedSandboxesPageChanged }
+      profile: { likedSandboxesPageChanged },
     },
     state: {
       profile: {
         currentLikedSandboxesPage,
-        current: { givenLikeCount }
-      }
-    }
+        current: { givenLikeCount },
+      },
+    },
   } = useOvermind();
 
   const numberOfPages = Math.ceil(givenLikeCount / SANDBOXES_PER_PAGE);

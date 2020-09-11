@@ -50,15 +50,15 @@ export const IconContainer = styled(Stack)<{
     }
 
     ${props.selected &&
-      css`
-        color: ${props.theme.colors.activityBar.selectedForeground};
-      `};
+    css`
+      color: ${props.theme.colors.activityBar.selectedForeground};
+    `};
 
     ${props.isDisabled &&
-      !props.selected &&
-      css`
-        opacity: 0.4;
-      `}
+    !props.selected &&
+    css`
+      opacity: 0.4;
+    `}
   `
 );
 

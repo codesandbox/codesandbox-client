@@ -53,11 +53,7 @@ export async function setAnonymousId() {
     let anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);
 
     if (!anonymousUid) {
-      anonymousUid = String(
-        Math.random()
-          .toString(36)
-          .substring(2)
-      );
+      anonymousUid = String(Math.random().toString(36).substring(2));
 
       localStorage.setItem(ANONYMOUS_UID_KEY, anonymousUid);
     }

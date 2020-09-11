@@ -76,11 +76,11 @@ export default (() => {
       }
 
       await axios.post(
-        `${NetlifyBaseURL}/${
-          sandbox.id
-        }/deploys?siteId=${id}&dist=${buildConfig.publish ||
-          template.distDir}&buildCommand=${buildCommandFromConfig ||
-          buildCommand(template.name)}`,
+        `${NetlifyBaseURL}/${sandbox.id}/deploys?siteId=${id}&dist=${
+          buildConfig.publish || template.distDir
+        }&buildCommand=${
+          buildCommandFromConfig || buildCommand(template.name)
+        }`,
         file,
         {
           headers: {

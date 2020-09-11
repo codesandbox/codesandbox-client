@@ -1,17 +1,17 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable func-names */
-export default function(loaderContext, files) {
+export default function (loaderContext, files) {
   return {
     install(less, pluginManager) {
       function CSBFileManager() {}
 
       CSBFileManager.prototype = new less.FileManager();
       CSBFileManager.prototype.constructor = CSBFileManager;
-      CSBFileManager.prototype.supports = function(filename) {
+      CSBFileManager.prototype.supports = function (filename) {
         return true;
       };
 
-      CSBFileManager.prototype.resolve = function(filename) {
+      CSBFileManager.prototype.resolve = function (filename) {
         return new Promise((resolve, reject) => {
           try {
             loaderContext.addDependency(filename);
@@ -24,7 +24,7 @@ export default function(loaderContext, files) {
         });
       };
 
-      CSBFileManager.prototype.loadFile = function(filename) {
+      CSBFileManager.prototype.loadFile = function (filename) {
         return this.resolve(filename).then(code => ({
           contents: code,
           filename,
