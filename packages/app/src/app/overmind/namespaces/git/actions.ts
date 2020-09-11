@@ -860,7 +860,7 @@ export const _getGitChanges: AsyncAction<void, GitChanges> = async ({
           return {
             path,
             content: await effects.http.blobToBase64(module!.code),
-            encoding: 'base64' as 'base64',
+            encoding: 'utf-8' as 'utf-8',
           };
         }
 
