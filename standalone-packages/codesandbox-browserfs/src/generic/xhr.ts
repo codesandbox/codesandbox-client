@@ -1,6 +1,5 @@
 /**
- * Contains utility methods for performing a variety of tasks with
- * XmlHttpRequest across browsers.
+ * Содержит служебные методы для выполнения различных задач с помощью XmlHttpRequest в браузерах.
  */
 
 import {isIE, emptyBuffer} from '../core/util';
@@ -24,8 +23,8 @@ function asyncDownloadFileModern(p: string, type: string, cb: BFSCallback<any>):
       req.responseType = 'arraybuffer';
       break;
     case 'json':
-     // Some browsers don't support the JSON response type.
-     // They either reset responseType, or throw an exception.
+     // Некоторые браузеры не поддерживают тип ответа JSON.
+     // Они либо сбрасывают responseType, либо вызывают исключение.
      // @see https://github.com/Modernizr/Modernizr/blob/master/src/testXhrType.js
       try {
         req.responseType = 'json';
@@ -42,7 +41,7 @@ function asyncDownloadFileModern(p: string, type: string, cb: BFSCallback<any>):
       if (req.status === 200) {
         switch (type) {
           case 'buffer':
-            // XXX: WebKit-based browsers return *null* when XHRing an empty file.
+            // XXX: Браузеры на основе WebKit возвращают *null*, когда XHR обрабатывает пустой файл.
             return cb(null, req.response ? Buffer.from(req.response) : emptyBuffer());
           case 'json':
             if (jsonSupported) {
@@ -52,7 +51,7 @@ function asyncDownloadFileModern(p: string, type: string, cb: BFSCallback<any>):
             }
         }
       } else {
-        return cb(new ApiError(ErrorCode.EIO, `XHR error: response returned code ${req.status}`));
+        return cb(new ApiError(ErrorCode.EIO, `XHR error: ответ вернул код ${req.status}`));
       }
     }
   };
@@ -69,24 +68,23 @@ function syncDownloadFileModern(p: string, type: string): any {
   const req = new XMLHttpRequest();
   req.open('GET', p, false);
 
-  // On most platforms, we cannot set the responseType of synchronous downloads.
-  // @todo Test for this; IE10 allows this, as do older versions of Chrome/FF.
+  // На большинстве платформ мы не можем установить responseType для синхронных загрузок.
+  // @todo Проверьте это; IE10 позволяет это, как и более старые версии Chrome/FF.
   let data: any = null;
   let err: any = null;
-  // Classic hack to download binary data as a string.
+  // Классический способ загрузки двоичных данных в виде строки.
   req.overrideMimeType('text/plain; charset=x-user-defined');
   req.onreadystatechange = function(e) {
     if (req.readyState === 4) {
       if (req.status === 200) {
         switch (type) {
           case 'buffer':
-            // Convert the text into a buffer.
+            // Преобразуйте текст в буфер.
             const text = req.responseText;
             data = Buffer.alloc(text.length);
-            // Throw away the upper bits of each character.
+            // Выбросьте верхние биты каждого символа.
             for (let i = 0; i < text.length; i++) {
-              // This will automatically throw away the upper bit of each
-              // character for us.
+              // Это автоматически отбросит для нас верхний бит каждого символа.
               data[i] = text.charCodeAt(i);
             }
             return;
@@ -95,7 +93,7 @@ function syncDownloadFileModern(p: string, type: string): any {
             return;
         }
       } else {
-        err = new ApiError(ErrorCode.EIO, `XHR error: response returned code ${req.status}`);
+        err = new ApiError(ErrorCode.EIO, `XHR error: ответ вернул код ${req.status}`);
         return;
       }
     }
@@ -108,8 +106,8 @@ function syncDownloadFileModern(p: string, type: string): any {
 }
 
 /**
- * IE10 allows us to perform synchronous binary file downloads.
- * @todo Feature detect this, as older versions of FF/Chrome do too!
+ * IE10 позволяет нам выполнять синхронную загрузку двоичных файлов.
+ * @todo Функция обнаруживает это, как и старые версии FF/Chrome!
  * @hidden
  */
 function syncDownloadFileIE10(p: string, type: 'buffer'): Buffer;
@@ -123,10 +121,10 @@ function syncDownloadFileIE10(p: string, type: string): any {
       req.responseType = 'arraybuffer';
       break;
     case 'json':
-      // IE10 does not support the JSON type.
+      // IE10 не поддерживает тип JSON.
       break;
     default:
-      throw new ApiError(ErrorCode.EINVAL, "Invalid download type: " + type);
+      throw new ApiError(ErrorCode.EINVAL, "Неверный тип загрузки: " + type);
   }
   let data: any;
   let err: any;
@@ -142,7 +140,7 @@ function syncDownloadFileIE10(p: string, type: string): any {
             break;
         }
       } else {
-        err = new ApiError(ErrorCode.EIO, `XHR error: response returned code ${req.status}`);
+        err = new ApiError(ErrorCode.EIO, `XHR error: ответ вернул код ${req.status}`);
       }
     }
   };
@@ -165,11 +163,11 @@ function getFileSize(async: boolean, p: string, cb: BFSCallback<number>): void {
         try {
           return cb(null, parseInt(req.getResponseHeader('Content-Length') || '-1', 10));
         } catch (e) {
-          // In the event that the header isn't present or there is an error...
-          return cb(new ApiError(ErrorCode.EIO, "XHR HEAD error: Could not read content-length."));
+          // В случае, если заголовок отсутствует или возникла ошибка ...
+          return cb(new ApiError(ErrorCode.EIO, "XHR HEAD error: Не удалось прочитать длину содержимого."));
         }
       } else {
-        return cb(new ApiError(ErrorCode.EIO, `XHR HEAD error: response returned code ${req.status}`));
+        return cb(new ApiError(ErrorCode.EIO, `XHR HEAD error: ответ вернул код ${req.status}`));
       }
     }
   };
@@ -177,10 +175,9 @@ function getFileSize(async: boolean, p: string, cb: BFSCallback<number>): void {
 }
 
 /**
- * Asynchronously download a file as a buffer or a JSON object.
- * Note that the third function signature with a non-specialized type is
- * invalid, but TypeScript requires it when you specialize string arguments to
- * constants.
+ * Асинхронно загружайте файл как буфер или объект JSON.
+ * Обратите внимание, что третья сигнатура функции с неспециализированным типом недопустима, 
+ * но TypeScript требует этого, когда вы специализируете строковые аргументы для констант.
  * @hidden
  */
 export let asyncDownloadFile: {
@@ -190,10 +187,9 @@ export let asyncDownloadFile: {
 } = asyncDownloadFileModern;
 
 /**
- * Synchronously download a file as a buffer or a JSON object.
- * Note that the third function signature with a non-specialized type is
- * invalid, but TypeScript requires it when you specialize string arguments to
- * constants.
+ * Синхронно загрузите файл как буфер или объект JSON.
+ * Обратите внимание, что третья сигнатура функции с неспециализированным типом недопустима, 
+ * но TypeScript требует этого, когда вы специализируете строковые аргументы для констант.
  * @hidden
  */
 export let syncDownloadFile: {
@@ -203,7 +199,7 @@ export let syncDownloadFile: {
 } = (isIE && typeof Blob !== 'undefined') ? syncDownloadFileIE10 : syncDownloadFileModern;
 
 /**
- * Synchronously retrieves the size of the given file in bytes.
+ * Синхронно извлекает размер данного файла в байтах.
  * @hidden
  */
 export function getFileSizeSync(p: string): number {
@@ -218,7 +214,7 @@ export function getFileSizeSync(p: string): number {
 }
 
 /**
- * Asynchronously retrieves the size of the given file in bytes.
+ * Асинхронно извлекает размер данного файла в байтах.
  * @hidden
  */
 export function getFileSizeAsync(p: string, cb: (err: ApiError, size?: number) => void): void {
