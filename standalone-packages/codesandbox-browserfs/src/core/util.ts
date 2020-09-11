@@ -1,5 +1,5 @@
 /**
- * Grab bag of utility functions used across the code.
+ * Возьмите набор служебных функций, используемых в коде.
  */
 import {FileSystem, BFSOneArgCallback, FileSystemConstructor} from './file_system';
 import {ErrorCode, ApiError} from './api_error';
@@ -9,20 +9,19 @@ import * as path from 'path';
 export function deprecationMessage(print: boolean, fsName: string, opts: any): void {
   if (print) {
     // tslint:disable-next-line:no-console
-    console.warn(`[${fsName}] Direct file system constructor usage is deprecated for this file system, and will be removed in the next major version. Please use the '${fsName}.Create(${JSON.stringify(opts)}, callback)' method instead. See https://github.com/jvilk/BrowserFS/issues/176 for more details.`);
+    console.warn(`[${fsName}] Использование прямого конструктора файловой системы для этой файловой системы не рекомендуется и будет удалено в следующей основной версии. Пожалуйста, вместо него используйте '${fsName}.Create(${JSON.stringify(opts)}, callback)' метод. См. https://github.com/jvilk/BrowserFS/issues/176 для подробностей.`);
     // tslint:enable-next-line:no-console
   }
 }
 
 /**
- * Checks for any IE version, including IE11 which removed MSIE from the
- * userAgent string.
+ * Проверяет наличие любой версии IE, включая IE11, который удалил MSIE из строки userAgent.
  * @hidden
  */
 export const isIE: boolean = typeof navigator !== "undefined" && Boolean(/(msie) ([\w.]+)/.exec(navigator.userAgent.toLowerCase()) || navigator.userAgent.indexOf('Trident') !== -1);
 
 /**
- * Check if we're in a web worker.
+ * Проверьте, не являемся ли мы веб-работником.
  * @hidden
  */
 export const isWebWorker: boolean = typeof window === "undefined";
@@ -36,15 +35,15 @@ export interface Arrayish<T> {
 }
 
 /**
- * Throws an exception. Called on code paths that should be impossible.
+ * Выдает исключение. Вызывается на путях кода, что должно быть невозможно.
  * @hidden
  */
 export function fail() {
-  throw new Error("BFS has reached an impossible code path; please file a bug.");
+  throw new Error("BFS достиг невозможного пути кода; пожалуйста, сообщите об ошибке.");
 }
 
 /**
- * Synchronous recursive makedir.
+ * Синхронный рекурсивный македир.
  * @hidden
  */
 export function mkdirpSync(p: string, mode: number, fs: FileSystem): void {
@@ -55,8 +54,7 @@ export function mkdirpSync(p: string, mode: number, fs: FileSystem): void {
 }
 
 /**
- * Converts a buffer into an array buffer. Attempts to do so in a
- * zero-copy manner, e.g. the array references the same memory.
+ * Преобразует буфер в буфер массива. Попытки сделать это способом с нулевым копированием, например массив ссылается на ту же самую память.
  * @hidden
  */
 export function buffer2ArrayBuffer(buff: Buffer): ArrayBuffer | SharedArrayBuffer {
@@ -71,8 +69,7 @@ export function buffer2ArrayBuffer(buff: Buffer): ArrayBuffer | SharedArrayBuffe
 }
 
 /**
- * Converts a buffer into a Uint8Array. Attempts to do so in a
- * zero-copy manner, e.g. the array references the same memory.
+ * Преобразует буфер в Uint8Array. Попытки сделать это способом с нулевым копированием, например массив ссылается на ту же самую память.
  * @hidden
  */
 export function buffer2Uint8array(buff: Buffer): Uint8Array {
@@ -80,15 +77,14 @@ export function buffer2Uint8array(buff: Buffer): Uint8Array {
     // BFS & Node v4.0 buffers *are* Uint8Arrays.
     return <any> buff;
   } else {
-    // Uint8Arrays can be constructed from arrayish numbers.
-    // At this point, we assume this isn't a BFS array.
+    // Uint8Arrays могут быть построены из массивов чисел.
+    // На данный момент мы предполагаем, что это не массив BFS.
     return new Uint8Array(buff);
   }
 }
 
 /**
- * Converts the given arrayish object into a Buffer. Attempts to
- * be zero-copy.
+ * Преобразует заданный объект массива в буфер. Попытки быть нулевой копией.
  * @hidden
  */
 export function arrayish2Buffer(arr: Arrayish<number>): Buffer {
@@ -102,7 +98,7 @@ export function arrayish2Buffer(arr: Arrayish<number>): Buffer {
 }
 
 /**
- * Converts the given Uint8Array into a Buffer. Attempts to be zero-copy.
+ * Преобразует заданный Uint8Array в буфер. Попытки быть нулевой копией.
  * @hidden
  */
 export function uint8Array2Buffer(u8: Uint8Array): Buffer {
@@ -116,8 +112,7 @@ export function uint8Array2Buffer(u8: Uint8Array): Buffer {
 }
 
 /**
- * Converts the given array buffer into a Buffer. Attempts to be
- * zero-copy.
+ * Преобразует указанный буфер массива в буфер. Попытки быть нулевой копией.
  * @hidden
  */
 export function arrayBuffer2Buffer(ab: ArrayBuffer | SharedArrayBuffer): Buffer {
@@ -125,7 +120,7 @@ export function arrayBuffer2Buffer(ab: ArrayBuffer | SharedArrayBuffer): Buffer 
 }
 
 /**
- * Copies a slice of the given buffer
+ * Копирует часть указанного буфера
  * @hidden
  */
 export function copyingSlice(buff: Buffer, start: number = 0, end = buff.length): Buffer {
@@ -133,7 +128,7 @@ export function copyingSlice(buff: Buffer, start: number = 0, end = buff.length)
     throw new TypeError(`Invalid slice bounds on buffer of length ${buff.length}: [${start}, ${end}]`);
   }
   if (buff.length === 0) {
-    // Avoid s0 corner case in ArrayBuffer case.
+    // Избегайте углового регистра s0 в случае ArrayBuffer.
     return emptyBuffer();
   } else {
     const u8 = buffer2Uint8array(buff),
@@ -142,7 +137,7 @@ export function copyingSlice(buff: Buffer, start: number = 0, end = buff.length)
 
     buff[0] = newS0;
     if (u8[0] === newS0) {
-      // Same memory. Revert & copy.
+      // То же воспоминание. Вернуть и скопировать.
       u8[0] = s0;
       return uint8Array2Buffer(u8.slice(start, end));
     } else {
@@ -169,7 +164,7 @@ export function emptyBuffer(): Buffer {
 }
 
 /**
- * Option validator for a Buffer file system option.
+ * Валидатор параметров для параметра файловой системы буфера.
  * @hidden
  */
 export function bufferValidator(v: object, cb: BFSOneArgCallback): void {
@@ -181,7 +176,7 @@ export function bufferValidator(v: object, cb: BFSOneArgCallback): void {
 }
 
 /**
- * Checks that the given options object is valid for the file system options.
+ * Проверяет допустимость заданного объекта параметров для параметров файловой системы.
  * @hidden
  */
 export function checkOptions(fsType: FileSystemConstructor, opts: any, cb: BFSOneArgCallback): void {
@@ -204,7 +199,7 @@ export function checkOptions(fsType: FileSystemConstructor, opts: any, cb: BFSOn
     }
   }
 
-  // Check for required options.
+  // Проверьте наличие необходимых опций.
   for (const optName in optsInfo) {
     if (optsInfo.hasOwnProperty(optName)) {
       const opt = optsInfo[optName];
@@ -212,22 +207,22 @@ export function checkOptions(fsType: FileSystemConstructor, opts: any, cb: BFSOn
 
       if (providedValue === undefined || providedValue === null) {
         if (!opt.optional) {
-          // Required option, not provided.
-          // Any incorrect options provided? Which ones are close to the provided one?
+          // Обязательный вариант, не предусмотрен.
+          // Предоставлены какие-либо неправильные варианты? Какие из них близки к предоставленной?
           // (edit distance 5 === close)
           const incorrectOptions = Object.keys(opts).filter((o) => !(o in optsInfo)).map((a: string) => {
             return {str: a, distance: levenshtein(optName, a)};
           }).filter((o) => o.distance < 5).sort((a, b) => a.distance - b.distance);
-          // Validators may be synchronous.
+          // Валидаторы могут быть синхронными.
           if (callbackCalled) {
             return;
           }
           callbackCalled = true;
-          return cb(new ApiError(ErrorCode.EINVAL, `[${fsName}] Required option '${optName}' not provided.${incorrectOptions.length > 0 ? ` You provided unrecognized option '${incorrectOptions[0].str}'; perhaps you meant to type '${optName}'.` : ''}\nOption description: ${opt.description}`));
+          return cb(new ApiError(ErrorCode.EINVAL, `[${fsName}] Required option '${optName}' not provided.${incorrectOptions.length > 0 ? ` Вы предоставили неопознанный вариант '${incorrectOptions[0].str}'; возможно вы хотели напечатать '${optName}'.` : ''}\nОписание варианта: ${opt.description}`));
         }
-        // Else: Optional option, not provided. That is OK.
+        // Иначе: дополнительный вариант не предусмотрен. Всё в порядке.
       } else {
-        // Option provided! Check type.
+        // Вариант предусмотрен! Тип проверки.
         let typeMatches = false;
         if (Array.isArray(opt.type)) {
           typeMatches = opt.type.indexOf(typeof(providedValue)) !== -1;
@@ -235,17 +230,17 @@ export function checkOptions(fsType: FileSystemConstructor, opts: any, cb: BFSOn
           typeMatches = typeof(providedValue) === opt.type;
         }
         if (!typeMatches) {
-          // Validators may be synchronous.
+          // Валидаторы могут быть синхронными.
           if (callbackCalled) {
             return;
           }
           callbackCalled = true;
-          return cb(new ApiError(ErrorCode.EINVAL, `[${fsName}] Value provided for option ${optName} is not the proper type. Expected ${Array.isArray(opt.type) ? `one of {${opt.type.join(", ")}}` : opt.type}, but received ${typeof(providedValue)}\nOption description: ${opt.description}`));
+          return cb(new ApiError(ErrorCode.EINVAL, `[${fsName}] Значение, указанное для опции ${optName}, не является правильным типом. Expected ${Array.isArray(opt.type) ? `one of {${opt.type.join(", ")}}` : opt.type}, but received ${typeof(providedValue)}\nOption description: ${opt.description}`));
         } else if (opt.validator) {
           pendingValidators++;
           opt.validator(providedValue, validatorCallback);
         }
-        // Otherwise: All good!
+        // В противном случае: всё хорошо!
       }
     }
   }
