@@ -1,8 +1,7 @@
 /**
- * (Nonstandard) String utility function for 8-bit ASCII with the extended
- * character set. Unlike the ASCII above, we do not mask the high bits.
+ * (Нестандартный) Строковая служебная функция для 8-битного ASCII с расширенным набором символов. В отличие от ASCII выше, мы не маскируем старшие биты.
  *
- * Placed into a separate file so it can be used with other Buffer implementations.
+ * Помещен в отдельный файл, чтобы его можно было использовать с другими реализациями Buffer.
  * @see http://en.wikipedia.org/wiki/Extended_ASCII
  */
 export default class ExtendedASCII {
@@ -29,12 +28,12 @@ export default class ExtendedASCII {
     for (let i = 0; i < length; i++) {
       let charCode = str.charCodeAt(i);
       if (charCode > 0x7F) {
-        // Check if extended ASCII.
+        // Проверьте, расширен ли ASCII.
         const charIdx = ExtendedASCII.extendedChars.indexOf(str.charAt(i));
         if (charIdx > -1) {
           charCode = charIdx + 0x80;
         }
-        // Otherwise, keep it as-is.
+        // В противном случае оставьте все как есть.
       }
       buf[charCode] = i;
     }
