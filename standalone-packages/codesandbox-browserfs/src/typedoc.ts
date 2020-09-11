@@ -1,49 +1,49 @@
 import {FileSystem} from './core/file_system';
 
 /**
- * We use typedoc in 'file' mode to avoid many issues.
- * Unfortunately, it does not process export statements properly in some circumstances.
- * Here, we redefine the main BrowserFS object for documentation purposes.
+ * Мы используем 'typedoc' в файловом режиме, чтобы избежать многих проблем.
+ * К сожалению, в некоторых случаях он не обрабатывает операторы экспорта должным образом.
+ * Здесь мы переопределяем основной объект BrowserFS для целей документации.
  */
 
 import {FileSystem as Backends, BFSRequire} from './index';
 
 /**
- * BrowserFS's main interface.
+ * Основной интерфейс BrowserFS.
  *
- * In the browser, this is exposed as the `BrowserFS` global.
+ * В браузере это отображается как глобальный файл `BrowserFS`.
  *
- * In node, this is the object you receive when you `require('browserfs')`.
+ * В узле это объект, который вы получаете, когда `require('browserfs')`.
  */
 export interface BrowserFS {
   /**
-   * Exposes all of the file system backends available in BrowserFS.
+   * Предоставляет все серверные части файловой системы, доступные в BrowserFS.
    */
   FileSystem: typeof Backends;
   /**
-   * Emulates Node's `require()` function for filesystem-related modules (`'fs'`, `'path'`, `'buffer'`, etc).
+   * Эмулирует функцию Node `require ()` для модулей, связанных с файловой системой (`'fs'`, `'path'`, `'buffer'`, и т.д).
    */
   BFSRequire: typeof BFSRequire;
   /**
-   * You must call this function with a properly-instantiated root file system
-   * before using any file system API method.
-   * @param rootFS The root filesystem to use for the
-   *   entire BrowserFS file system.
+   * Вы должны вызвать эту функцию с правильно созданной корневой файловой системой 
+   * перед использованием любого метода API файловой системы.
+   * @param rootFS Корневая файловая система для использования 
+   * всей файловой системы BrowserFS.
    */
   initialize(rootFS: FileSystem): void;
   /**
-   * Installs BrowserFS onto the given object.
-   * We recommend that you run install with the 'window' object to make things
-   * global, as in Node.
+   * Устанавливает BrowserFS на указанный объект.
+   * Мы рекомендуем вам запустить установку с объектом 'window', чтобы 
+   * сделать вещи глобальными, как в Node.
    *
-   * Properties installed:
+   * Установленные свойства:
    *
    * * Buffer
    * * process
    * * require (we monkey-patch it)
    *
-   * This allows you to write code as if you were running inside Node.
-   * @param obj The object to install things onto (e.g. window)
+   * Это позволяет вам писать код, как если бы вы работали внутри Node.
+   * @param obj Объект для установки (например, window)
    */
   install(obj: any): void;
 }
