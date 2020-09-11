@@ -15,10 +15,14 @@ export default {
           new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = function () {
-              resolve(String(this.result));
+              resolve(
+                window.btoa(
+                  window.atob((reader.result as string).replace(/^(.+,)/, ''))
+                )
+              );
             };
             reader.onerror = reject;
-            reader.readAsBinaryString(blob);
+            reader.readAsDataURL(blob);
           })
       ),
 };
