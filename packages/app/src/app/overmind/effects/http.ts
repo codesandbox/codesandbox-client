@@ -15,6 +15,8 @@ export default {
           new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = function () {
+              // Github interprets base64 differently, so this fixes it, insane right?
+              // https://stackoverflow.com/questions/39234218/github-api-upload-an-image-to-repo-from-base64-array?rq=1
               resolve(
                 window.btoa(
                   window.atob((reader.result as string).replace(/^(.+,)/, ''))
