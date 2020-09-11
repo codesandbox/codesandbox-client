@@ -3,18 +3,15 @@ import useKeys from 'react-use/lib/useKeyboardJs';
 import { useOvermind } from 'app/overmind';
 import { Dependency } from '@codesandbox/common/lib/types/algolia';
 
-export const useKeyboard = (
-  list: { current: HTMLElement },
-  searchInput: { current: HTMLFormElement }
-) => {
+export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
   const {
     actions: {
       modalOpened,
-      editor: { addNpmDependency },
+      editor: { addNpmDependency }
     },
     state: {
-      workspace: { explorerDependencies },
-    },
+      workspace: { explorerDependencies }
+    }
   } = useOvermind();
   const [one] = useKeys('ctrl + one');
   const [two] = useKeys('ctrl + two');
@@ -26,14 +23,14 @@ export const useKeyboard = (
   const addDependency = (dependency: Dependency) => {
     addNpmDependency({
       name: dependency.name,
-      version: dependency.tags.latest,
+      version: dependency.tags.latest
     });
   };
 
   useEffect(() => {
+    const list = document.getElementById('list');
     const activeElement = document.activeElement;
     const input = searchInput.current;
-
     if (enter && activeElement === input) {
       if (input.value.includes('@')) {
         const isScoped = input.value.startsWith('@');
@@ -47,16 +44,14 @@ export const useKeyboard = (
 
         addNpmDependency({
           name: dependencyAndVersion.join('@'),
-          version,
+          version
         });
-      }
-
-      if (list && list.current && explorerDependencies.length) {
+      } else if (list && explorerDependencies.length) {
         addDependency(explorerDependencies[0]);
       }
     }
 
-    if (list && list.current && explorerDependencies.length) {
+    if (list && explorerDependencies.length) {
       if (one) {
         addDependency(explorerDependencies[0]);
       }
@@ -74,5 +69,5 @@ export const useKeyboard = (
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [one, two, three, four, all, list, enter]);
+  }, [one, two, three, four, all, enter]);
 };

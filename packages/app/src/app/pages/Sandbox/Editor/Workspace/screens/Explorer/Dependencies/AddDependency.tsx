@@ -5,7 +5,7 @@ import {
   Text,
   SearchInput,
   ListAction,
-  Element,
+  Element
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import Downshift from 'downshift';
@@ -15,7 +15,7 @@ import { useKeyboard } from './useKeys';
 
 const buttonStyles = css({
   color: 'inherit',
-  justifyContent: 'space-between',
+  justifyContent: 'space-between'
 });
 
 export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
@@ -26,22 +26,21 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
       workspace: {
         getExplorerDependencies,
         clearExplorerDependencies,
-        changeDependencySearch,
-      },
+        changeDependencySearch
+      }
     },
     state: {
       currentModal,
       workspace: {
         explorerDependencies,
         explorerDependenciesEmpty,
-        dependencySearch,
-      },
-    },
+        dependencySearch
+      }
+    }
   } = useOvermind();
   const modalOpen = currentModal === 'searchDependencies';
-  const list = useRef();
   const searchInput = useRef();
-  useKeyboard(list, searchInput);
+  useKeyboard(searchInput);
 
   const searchDependencies = (inputValue: string) => {
     let value = inputValue;
@@ -63,32 +62,32 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
 
   const usedExplorerDependencies = [
     ...explorerDependencies,
-    'OPEN_MODAL' as const,
+    'OPEN_MODAL' as const
   ];
 
   return (
     <>
       <Downshift
-        onChange={(dependency) => {
+        onChange={dependency => {
           if (dependency === 'OPEN_MODAL') {
             modalOpened({ modal: 'searchDependencies' });
           } else if (dependency) {
             addNpmDependency({
               name: dependency.name,
-              version: dependency.tags.latest,
+              version: dependency.tags.latest
             });
             clearExplorerDependencies();
             changeDependencySearch('');
           }
         }}
-        itemToString={(dependency) => {
+        itemToString={dependency => {
           if (dependency === 'OPEN_MODAL') {
             return 'OPEN_MODAL';
           }
           return dependency ? dependency.objectID : '';
         }}
         inputValue={dependencySearch}
-        onInputValueChange={(inputValue) => {
+        onInputValueChange={inputValue => {
           searchDependencies(inputValue);
         }}
       >
@@ -99,7 +98,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
           isOpen,
           inputValue,
           highlightedIndex,
-          getRootProps,
+          getRootProps
         }) => (
           <>
             <SidebarRow
@@ -111,7 +110,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
               <Element
                 css={css({
                   width: '100%',
-                  flexGrow: 1,
+                  flexGrow: 1
                 })}
                 {...getRootProps(
                   { refKey: 'innerRef' },
@@ -137,7 +136,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                   height: 26,
                   padding: 0,
                   border: '1px solid',
-                  borderColor: 'input.border',
+                  borderColor: 'input.border'
                 })}
                 onClick={() => modalOpened({ modal: 'searchDependencies' })}
               >
@@ -158,7 +157,6 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
               <Element css={css({ position: 'relative' })}>
                 <Element
                   as="ul"
-                  ref={list}
                   padding={0}
                   marginX={2}
                   css={css({
@@ -171,9 +169,10 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                     borderStyle: 'solid',
                     borderColor: 'sideBar.border',
                     marginTop: '-6px',
-                    fontWeight: 500,
+                    fontWeight: 500
                   })}
                   {...getMenuProps()}
+                  id="list"
                 >
                   {!explorerDependenciesEmpty ? (
                     usedExplorerDependencies.map((dependency, i) =>
@@ -187,12 +186,12 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                             borderWidth: 0,
                             borderTopWidth: '1px',
                             borderStyle: 'solid',
-                            borderColor: 'sideBar.border',
+                            borderColor: 'sideBar.border'
                           })}
                           {...getItemProps({
                             key: 'OPEN_MODAL',
                             index: i,
-                            item: 'OPEN_MODAL',
+                            item: 'OPEN_MODAL'
                           })}
                         >
                           <Button
@@ -214,7 +213,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                           {...getItemProps({
                             key: dependency.objectID,
                             index: i,
-                            item: dependency,
+                            item: dependency
                           })}
                         >
                           <Button
@@ -224,7 +223,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                             onClick={() =>
                               addNpmDependency({
                                 name: dependency.name,
-                                version: dependency.tags.latest,
+                                version: dependency.tags.latest
                               })
                             }
                           >
@@ -234,12 +233,12 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                                   css={css({
                                     em: {
                                       fontWeight: 'bold',
-                                      fontStyle: 'initial',
-                                    },
+                                      fontStyle: 'initial'
+                                    }
                                   })}
                                   dangerouslySetInnerHTML={{
                                     __html:
-                                      dependency._highlightResult.name?.value,
+                                      dependency._highlightResult.name?.value
                                   }}
                                 />
                               ) : (
@@ -259,14 +258,14 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                         borderTopWidth: '1px',
                         borderStyle: 'solid',
                         borderColor: 'sideBar.border',
-                        padding: 3,
+                        padding: 3
                       })}
                     >
                       <Text
                         css={css({
                           maxWidth: '80%',
                           margin: 'auto',
-                          lineHeight: 1.5,
+                          lineHeight: 1.5
                         })}
                         size={2}
                         align="center"
