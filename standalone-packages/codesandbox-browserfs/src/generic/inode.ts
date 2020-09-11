@@ -1,11 +1,11 @@
 import {default as Stats, FileType} from '../core/node_fs_stats';
 
 /**
- * Generic inode definition that can easily be serialized.
+ * Общее определение inode, которое можно легко сериализовать.
  */
 export default class Inode {
   /**
-   * Converts the buffer into an Inode.
+   * Преобразует буфер в индексный дескриптор.
    */
   public static fromBuffer(buffer: Buffer): Inode {
     if (buffer === undefined) {
@@ -28,7 +28,7 @@ export default class Inode {
               public ctime: number) { }
 
   /**
-   * Handy function that converts the Inode to a Node Stats object.
+   * Удобная функция, которая преобразует Inode в объект Node Stats.
    */
   public toStats(): Stats {
     return new Stats(
@@ -37,15 +37,15 @@ export default class Inode {
   }
 
   /**
-   * Get the size of this Inode, in bytes.
+   * Получите размер этого Inode в байтах.
    */
   public getSize(): number {
-    // ASSUMPTION: ID is ASCII (1 byte per char).
+    // ПРЕДПОЛОЖЕНИЕ: идентификатор - ASCII (1 байт на символ).
     return 30 + this.id.length;
   }
 
   /**
-   * Writes the inode into the start of the buffer.
+   * Записывает индексный дескриптор в начало буфера.
    */
   public toBuffer(buff: Buffer = Buffer.alloc(this.getSize())): Buffer {
     buff.writeUInt32LE(this.size, 0);
@@ -58,14 +58,11 @@ export default class Inode {
   }
 
   /**
-   * Updates the Inode using information from the stats object. Used by file
-   * systems at sync time, e.g.:
-   * - Program opens file and gets a File object.
-   * - Program mutates file. File object is responsible for maintaining
-   *   metadata changes locally -- typically in a Stats object.
-   * - Program closes file. File object's metadata changes are synced with the
-   *   file system.
-   * @return True if any changes have occurred.
+   * Обновляет индексный дескриптор, используя информацию из объекта статистики. Используется файловыми системами во время синхронизации, например:
+   * - Программа открывает файл и получает объект File.
+   * - Программа изменяет файл. Файловый объект отвечает за поддержание изменений метаданных локально - обычно в объекте Stats.
+   * - Программа закрывает файл. Изменения метаданных файлового объекта синхронизируются с файловой системой.
+   * @return Верно, если произошли какие-либо изменения.
    */
   public update(stats: Stats): boolean {
     let hasChanged = false;
@@ -100,18 +97,17 @@ export default class Inode {
     return hasChanged;
   }
 
-  // XXX: Copied from Stats. Should reconcile these two into something more
-  //      compact.
+  // XXX: Скопировано из статистики. Следует примирить эти два во что-то более компактное.
 
   /**
-   * @return [Boolean] True if this item is a file.
+   * @return [Boolean] Истинно, если это файл.
    */
   public isFile(): boolean {
     return (this.mode & 0xF000) === FileType.FILE;
   }
 
   /**
-   * @return [Boolean] True if this item is a directory.
+   * @return [Boolean] Истинно, если этот элемент является каталогом.
    */
   public isDirectory(): boolean {
     return (this.mode & 0xF000) === FileType.DIRECTORY;
