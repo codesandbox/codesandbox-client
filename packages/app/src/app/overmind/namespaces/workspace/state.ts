@@ -13,7 +13,6 @@ type State = {
   workspaceHidden: boolean;
   showDeleteSandboxModal: boolean;
   dependencies: Dependency[];
-  starterDependencies: Dependency[];
   explorerDependencies: Dependency[];
   explorerDependenciesEmpty: boolean;
   selectedDependencies:
@@ -44,7 +43,6 @@ export const state: State = {
   dependencies: [],
   explorerDependencies: [],
   explorerDependenciesEmpty: false,
-  starterDependencies: [],
   selectedDependencies: {},
   loadingDependencySearch: false,
   hitToVersionMap: {},

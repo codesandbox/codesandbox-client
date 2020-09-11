@@ -62,11 +62,8 @@ export const SearchDependencies = ({ onConfirm }) => {
         searchValue = `@${part[0]}${part[1]}`;
       }
     }
-    if (searchValue) {
-      actions.workspace.getDependencies(searchValue);
-    } else {
-      actions.workspace.setDependencies(workspace.starterDependencies);
-    }
+
+    actions.workspace.getDependencies(searchValue);
   };
 
   useEffect(() => {
