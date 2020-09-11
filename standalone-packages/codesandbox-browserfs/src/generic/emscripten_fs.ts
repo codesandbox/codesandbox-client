@@ -1,12 +1,10 @@
 /**
- * Defines an Emscripten file system object for use in the Emscripten virtual
- * filesystem. Allows you to use synchronous BrowserFS file systems from within
- * Emscripten.
+ * Определяет объект файловой системы Emscripten для использования в виртуальной файловой системе Emscripten. 
+ * Позволяет использовать синхронные файловые системы BrowserFS из Emscripten.
  *
- * You can construct a BFSEmscriptenFS, mount it using its mount command,
- * and then mount it into Emscripten.
+ * Вы можете создать BFSEmscriptenFS, смонтировать его с помощью команды 'mount', а затем смонтировать в Emscripten.
  *
- * Adapted from Emscripten's NodeFS:
+ * Адаптировано из Emscripten NodeFS:
  * https://raw.github.com/kripken/emscripten/master/src/library_nodefs.js
  */
 import FS from '../core/FS';
@@ -120,7 +118,7 @@ class BFSEmscriptenStreamOps implements EmscriptenStreamOps {
   }
 
   public read(stream: EmscriptenStream, buffer: Uint8Array, offset: number, length: number, position: number): number {
-    // Avoid copying overhead by reading directly into buffer.
+    // Избегайте накладных расходов на копирование путем чтения непосредственно в буфер.
     try {
       return this.nodefs.readSync(stream.nfd, uint8Array2Buffer(buffer), offset, length, position);
     } catch (e) {
@@ -129,7 +127,7 @@ class BFSEmscriptenStreamOps implements EmscriptenStreamOps {
   }
 
   public write(stream: EmscriptenStream, buffer: Uint8Array, offset: number, length: number, position: number): number {
-    // Avoid copying overhead.
+    // Избегайте накладных расходов на копирование.
     try {
       return this.nodefs.writeSync(stream.nfd, uint8Array2Buffer(buffer), offset, length, position);
     } catch (e) {
@@ -218,8 +216,7 @@ class BFSEmscriptenNodeOps implements EmscriptenNodeOps {
       if (!e.code) {
         throw e;
       }
-      // Ignore not supported errors. Emscripten does utimesSync when it
-      // writes files, but never really requires the value to be set.
+      // Игнорировать неподдерживаемые ошибки. Emscripten выполняет utimesSync при записи файлов, но никогда не требует установки значения.
       if (e.code !== "ENOTSUP") {
         throw new this.FS.ErrnoError(this.ERRNO_CODES[e.code]);
       }
@@ -266,8 +263,7 @@ class BFSEmscriptenNodeOps implements EmscriptenNodeOps {
     const newPath = this.PATH.join2(this.fs.realPath(newDir), newName);
     try {
       this.nodefs.renameSync(oldPath, newPath);
-      // This logic is missing from the original NodeFS,
-      // causing Emscripten's filesystem to think that the old file still exists.
+      // Эта логика отсутствует в исходной NodeFS, из-за чего файловая система Emscripten думает, что старый файл все еще существует.
       oldNode.name = newName;
       oldNode.parent = newDir;
     } catch (e) {
@@ -344,8 +340,8 @@ class BFSEmscriptenNodeOps implements EmscriptenNodeOps {
 }
 
 export default class BFSEmscriptenFS implements EmscriptenFS {
-  // This maps the integer permission modes from http://linux.die.net/man/3/open
-  // to node.js-specific file open permission strings at http://nodejs.org/api/fs.html#fs_fs_open_path_flags_mode_callback
+  // Это отображает целочисленные режимы разрешений из http://linux.die.net/man/3/open
+  // к node.js-specific строки разрешения на открытие файла в http://nodejs.org/api/fs.html#fs_fs_open_path_flags_mode_callback
   public flagsToPermissionStringMap = {
     0/*O_RDONLY*/: 'r',
     1/*O_WRONLY*/: 'r+',
