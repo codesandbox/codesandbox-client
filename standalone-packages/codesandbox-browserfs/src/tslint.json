@@ -92,11 +92,11 @@
     "no-angle-bracket-type-assertion": false,
     "unified-signatures": false,
     "ban-types": [true,
-        ["Object", "Avoid using the `Object` type. Did you mean `object`?"],
-        ["Boolean", "Avoid using the `Boolean` type. Did you mean `boolean`?"],
-        ["Number", "Avoid using the `Number` type. Did you mean `number`?"],
-        ["String", "Avoid using the `String` type. Did you mean `string`?"],
-        ["Symbol", "Avoid using the `Symbol` type. Did you mean `symbol`?"]
+        ["Object", "Избегайте использования `Object` type. Вы имели в виду `object`?"],
+        ["Boolean", "Избегайте использования `Boolean` type. Вы имели в виду `boolean`?"],
+        ["Number", "Избегайте использования `Number` type. Вы имели в виду `number`?"],
+        ["String", "Избегайте использования `String` type. Вы имели в виду `string`?"],
+        ["Symbol", "Избегайте использования `Symbol` type. Вы имели в виду `symbol`?"]
     ],
     "no-submodule-imports": false,
     "no-implicit-dependencies": false
