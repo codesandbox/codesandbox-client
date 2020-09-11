@@ -1,5 +1,5 @@
-This folder contains the source files for BrowserFS.
+# Эта папка содержит исходные файлы для BrowserFS.
 
-* `core`: Contains the 'core' of BrowserFS including interfaces and API definitions.
-* `generic`: Contains 'generic' building blocks that multiple backends share (e.g. `File` implementations and index classes).
-* `backend`: Contains backend-specific files.
+* `core`: Содержит `ядро` BrowserFS, включая интерфейсы и определения API.
+* `generic`: Содержит блоки 'generic', которые используют несколько бэкендов (например, реализации `File` и индексные классы).
+* `backend`: Содержит файлы, специфичные для серверной части.
