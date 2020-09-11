@@ -1,25 +1,24 @@
 /**
- * BrowserFS's main entry point.
- * It installs all of the needed polyfills, and requires() the main module.
+ * Основная точка входа в BrowserFS.
+ * Он устанавливает все необходимые полифилы и требует () основного модуля.
  */
 
-// IE substr does not support negative indices
+// IE substr не поддерживает отрицательные индексы
 if ('ab'.substr(-1) !== 'b') {
   String.prototype.substr = function(substr: (start: number, length?: number) => string) {
     return function(this: string, start: number, length?: number): string {
-      // did we get a negative start, calculate how much it is from the
-      // beginning of the string
+      // получили ли мы отрицательное начало, посчитаем сколько он от начала строки
       if (start < 0) {
         start = this.length + start;
       }
-      // call the original function
+      // вызвать исходную функцию
       return substr.call(this, start, length);
     };
   }(String.prototype.substr);
 }
 
-// Polyfill for Uint8Array.prototype.slice.
-// Safari and some other browsers do not define it.
+// Полифилл для Uint8Array.prototype.slice.
+// Safari и некоторые другие браузеры не определяют его.
 if (typeof(ArrayBuffer) !== 'undefined' && typeof(Uint8Array) !== 'undefined') {
   if (!Uint8Array.prototype['slice']) {
     Uint8Array.prototype.slice = function(this: Uint8Array, start: number = 0, end: number = this.length): Uint8Array {
