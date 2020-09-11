@@ -149,6 +149,9 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
           <PaddedPreference
             title="Port"
             type="number"
+            innerStyle={{ width: '5rem' }}
+            min={1024}
+            max={65535}
             {...bindValue(parsedFile, 'container.port')}
           />
           <ConfigDescription>
