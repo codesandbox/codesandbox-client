@@ -31,7 +31,7 @@ export default {
     sourcemaps(),
     buble({
       transforms: {
-        // Assumes all `for of` statements are on arrays or array-like items.
+        // Предполагает, что все операторы `for of` относятся к массивам или элементам, подобным массивам.
         dangerousForOf: true,
         generator: false
       }
