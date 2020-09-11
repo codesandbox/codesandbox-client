@@ -48,6 +48,15 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
         });
       } else if (list && explorerDependencies.length) {
         addDependency(explorerDependencies[0]);
+      } else if (
+        input.value.startsWith('https://') ||
+        input.value.startsWith('http://')
+      ) {
+        const value = input.value.split('/');
+        addNpmDependency({
+          name: value[value.length - 1],
+          version: input.value
+        });
       }
     }
 
