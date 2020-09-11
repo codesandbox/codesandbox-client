@@ -1,51 +1,48 @@
-# BrowserFS API Documentation
+# Документация по API BrowserFS
 
-BrowserFS is an in-browser file system that emulates the [Node JS file system API](http://nodejs.org/api/fs.html) and supports storing and retrieving files from various backends. BrowserFS also integrates nicely into the Emscripten file system.
+BrowserFS - это файловая система в браузере, которая имитирует [Node JS file system API](http://nodejs.org/api/fs.html) и поддерживает хранение и извлечение файлов из различных бэкэндов. BrowserFS также прекрасно интегрируется в файловую систему Emscripten.
 
-The [README](https://github.com/jvilk/browserfs) provides an overview of how to integrate BrowserFS into your project. This API documentation will focus on how to use BrowserFS once you have added it to your project.
+[README](https://github.com/jvilk/browserfs) предоставляет обзор того, как интегрировать BrowserFS в ваш проект. В этой документации по API основное внимание будет уделено тому, как использовать BrowserFS после того, как вы добавили его в свой проект.
 
-## Configuring BrowserFS
+## Настройка BrowserFS
 
-The main BrowserFS interface is [documented here](modules/_core_browserfs_.html).
+Основной интерфейс BrowserFS [задокументирован здесь](modules/_core_browserfs_.html).
 
-Before you can use BrowserFS, you need to answer the following questions:
+Прежде чем вы сможете использовать BrowserFS, вам необходимо ответить на следующие вопросы:
 
-1. **What file system backends do I want to use?**
-2. **What configuration options do I pass to each?**
+1. **Какие серверные части файловой системы я хочу использовать?**
+2. **Какие параметры конфигурации передать каждому?**
 
-### What Backend(s) to Use?
+### Какой бэкэнд (ы) использовать?
 
-Before you can use BrowserFS, you must initialize it with a single root file system backend. Think of each backend
-as a "storage device". It can be read-only (a zip file or an ISO), read-write (browser-local IndexedDB storage),
-and it can even be cloud storage (Dropbox).
+Прежде чем вы сможете использовать BrowserFS, вы должны инициализировать его с помощью бэкэнда с одной корневой файловой системой. Думайте о каждом сервере как о «запоминающем устройстве». Он может быть доступен только для чтения (zip-файл или ISO), для чтения-записи (локальное хранилище IndexedDB в браузере) и даже может быть облачным хранилищем (Dropbox).
 
-If you need to use multiple "storage devices", you can use the `MountableFileSystem` backend to "mount" backends at
-different locations in the directory hierarchy.
+Если вам нужно использовать несколько «запоминающих устройств», вы можете использовать бэкэнд `MountableFileSystem` для «монтирования» бэкэндов в разных местах в иерархии каталогов.
 
-There are all sorts of adapter file systems available to make it easy to access files stored in Emscripten, files stored in a different context (e.g., a web worker), isolate file operations to a particular folder, access asynchronous storage backends synchronously, and more!
+Доступны всевозможные файловые системы адаптеров, позволяющие упростить доступ к файлам, хранящимся в Emscripten, файлам, хранящимся в другом контексте (например, веб-воркер), изолировать файловые операции с определенной папкой, синхронно обращаться к асинхронным серверам хранения и т.д.!
 
-Check out the "Overview" of backends below for a list of backends and their capabilities.
+Просмотрите «Обзор» серверных ВМ ниже, чтобы узнать о них и их возможностях.
 
-### What Configuration Options For Each?
+### Какие варианты конфигурации для каждого?
 
-Different backends require different configuration options. Review the documentation page for each backend you want to use, and note the options passed to its `Create()` method. Some are optional, others are required.
+Разные серверные ВМ требуют разных параметров конфигурации. Просмотрите страницу документации для каждого внутреннего интерфейса, который вы хотите использовать, и обратите внимание на параметры, переданные его методу `Create()`. Некоторые из них являются необязательными, другие - обязательными.
 
-### Putting It All Together
+### Собираем всё вместе
 
-Once you know the backend(s) you want to use, and the options to pass to each, you can configure BrowserFS with a single configuration object:
+После того, как вы узнаете, какие серверные модули хотите использовать, и параметры, которые нужно передать каждому, вы можете настроить BrowserFS с помощью одного объекта конфигурации:
 
 ```javascript
 BrowserFS.configure({
   fs: "name of file system type" // from Backends table below,
   options: {
-    // options for the file system
+    // опции для файловой системы
   }
 }, function (e) {
   if (e) {
-    // An error occurred.
+    // Произошла ошибка.
     throw e;
   }
-  // Otherwise, you can interact with the configured backends via our Node FS polyfill!
+  // В противном случае вы можете взаимодействовать с настроенными бэкэндами через наш полифил Node FS!
   var fs = BrowserFS.BFSRequire('fs');
   fs.readdir('/', function(e, contents) {
     // etc.
@@ -53,8 +50,7 @@ BrowserFS.configure({
 });
 ```
 
-In the case where a file system's options object takes another file system, you can nest another configuration object
-in place of the actual file system object:
+В случае, когда объект параметров файловой системы принимает другую файловую систему, вы можете вложить другой объект конфигурации вместо фактического объекта файловой системы:
 
 ```javascript
 var Buffer = BrowserFS.BFSRequire('buffer').Buffer;
@@ -76,7 +72,7 @@ BrowserFS.configure({
 });
 ```
 
-Using this method, it's easy to configure mount points in the `MountableFileSystem`:
+Используя этот метод, легко настроить точки монтирования в `MountableFileSystem`:
 
 ```javascript
 BrowserFS.configure({
@@ -91,9 +87,9 @@ BrowserFS.configure({
 });
 ```
 
-### Advanced Usage
+### Расширенное использование
 
-If `BrowserFS.configure` is not to your liking, you can manually instantiate file system backends and pass the root backend to BrowserFS via its `BrowserFS.initialize()` function.
+Если `BrowserFS.configure` вам не по душе, вы можете вручную создать экземпляры серверных модулей файловой системы и передать корневой сервер в BrowserFS через его функцию `BrowserFS.initialize()`.
 
 ```javascript
 BrowserFS.FileSystem.LocalStorage.Create(function(e, lsfs) {
@@ -105,39 +101,39 @@ BrowserFS.FileSystem.LocalStorage.Create(function(e, lsfs) {
         '/mnt/usb0': lsfs
       }, function(e, mfs) {
         BrowserFS.initialize(mfs);
-        // BFS is now ready to use!
+        // BFS теперь готов к использованию!
       });
     });
   });
 });
 ```
 
-## Usage with Emscripten
+## Использование с Emscripten
 
-Once you have configured BrowserFS, you can mount it into the Emscripten file system. More details are in the BrowserFS [README](https://github.com/jvilk/browserfs).
+После того, как вы настроили BrowserFS, вы можете смонтировать его в файловую систему Emscripten. Более подробная информация находится в BrowserFS [README](https://github.com/jvilk/browserfs).
 
-## Overview of Backends
+## Обзор бэкэндов
 
-**Key:**
+**Ключ:**
 
 * ✓ means 'yes'
 * ✗ means 'no'
-* ? means 'depends on configuration'
+* ? means 'зависит от конфигурации'
 
-Note that any asynchronous file system can be accessed synchronously using the [AsyncMirror](classes/_backend_asyncmirror_.asyncmirror.html) file system at the cost of preloading the entire file system into some synchronous backend (e.g., `InMemory`).
+Обратите внимание, что к любой асинхронной файловой системе можно получить синхронно, используя [AsyncMirror](classes/_backend_asyncmirror_.asyncmirror.html) файловая система за счет предварительной загрузки всей файловой системы в какой-то синхронный бэкэнд (например, `InMemory`).
 
 <table>
   <tr>
     <th></th>
     <th></th>
-    <th colspan="3">Optional API Support</th>
+    <th colspan="3">Дополнительная поддержка API</th>
   </tr>
   <tr>
-    <th>Backend Name</th>
-    <th>Writable?</th>
-    <th>Synchronous</th>
-    <th>Properties</th>
-    <th>Links</th>
+    <th>Имя бэкэнда</th>
+    <th>Записываемый?</th>
+    <th>Синхронный</th>
+    <th>Свойства</th>
+    <th>Ссылки</th>
   </tr>
   <tr>
     <td><a href="classes/_backend_asyncmirror_.asyncmirror.html">AsyncMirror</a></td>
