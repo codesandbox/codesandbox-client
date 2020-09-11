@@ -856,10 +856,10 @@ export const _getGitChanges: AsyncAction<void, GitChanges> = async ({
           (moduleItem) => moduleItem.path === path
         );
 
-        if (module.isBinary) {
+        if (module!.isBinary) {
           return {
             path,
-            content: await effects.http.blobToBase64(module.code),
+            content: await effects.http.blobToBase64(module!.code),
             encoding: 'base64' as 'base64',
           };
         }
