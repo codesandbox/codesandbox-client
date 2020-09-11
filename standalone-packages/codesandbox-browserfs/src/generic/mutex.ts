@@ -1,7 +1,7 @@
 import setImmediate from '../generic/setImmediate';
 
 /**
- * Non-recursive mutex
+ * Нерекурсивный мьютекс
  * @hidden
  */
 export default class Mutex {
@@ -19,16 +19,13 @@ export default class Mutex {
 
   public unlock(): void {
     if (!this._locked) {
-      throw new Error('unlock of a non-locked mutex');
+      throw new Error('разблокировка неблокированного мьютекса');
     }
 
     const next = this._waiters.shift();
-    // don't unlock - we want to queue up next for the
-    // _end_ of the current task execution, but we don't
-    // want it to be called inline with whatever the
-    // current stack is.  This way we still get the nice
-    // behavior that an unlock immediately followed by a
-    // lock won't cause starvation.
+    // не разблокировать - мы хотим встать в очередь на _end_ выполнения текущей задачи, но мы не хотим, 
+    // чтобы вызывалась встроенная функция независимо от текущего стека.  
+    // Таким образом, мы по-прежнему получаем приятное поведение: разблокировка, сразу за которой следует блокировка, не вызовет голодания.
     if (next) {
       setImmediate(next);
       return;
