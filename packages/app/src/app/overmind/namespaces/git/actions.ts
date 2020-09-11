@@ -4,7 +4,7 @@ import {
   GitFileCompare,
   GitInfo,
   Module,
-  SandboxGitState
+  SandboxGitState,
 } from '@codesandbox/common/lib/types';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
@@ -44,7 +44,7 @@ export const repoTitleChanged: Action<{
 export const loadGitSource: AsyncAction = async ({
   state,
   actions,
-  effects
+  effects,
 }) => {
   const sandbox = state.editor.currentSandbox!;
   state.git.isExported = false;
@@ -69,7 +69,7 @@ export const loadGitSource: AsyncAction = async ({
     actions.internal.handleError({
       error,
       message:
-        'Could not load the source sandbox for this GitHub sandbox, please refresh or report the issue.'
+        'Could not load the source sandbox for this GitHub sandbox, please refresh or report the issue.',
     });
     return;
   }
@@ -80,7 +80,7 @@ export const loadGitSource: AsyncAction = async ({
     actions.internal.handleError({
       error,
       message:
-        'Could not get information about your permissions, please refresh or report the issue.'
+        'Could not get information about your permissions, please refresh or report the issue.',
     });
     return;
   }
@@ -93,7 +93,7 @@ export const loadGitSource: AsyncAction = async ({
     actions.internal.handleError({
       error,
       message:
-        'We were not able to compare the content with the source, please refresh or report the issue.'
+        'We were not able to compare the content with the source, please refresh or report the issue.',
     });
     return;
   }
@@ -105,7 +105,7 @@ export const loadGitSource: AsyncAction = async ({
       actions.internal.handleError({
         error,
         message:
-          'We were not able to compare the content with the PR, please refresh or report the issue.'
+          'We were not able to compare the content with the PR, please refresh or report the issue.',
       });
       return;
     }
@@ -118,7 +118,7 @@ export const loadGitSource: AsyncAction = async ({
 export const createRepoClicked: AsyncAction = async ({
   state,
   effects,
-  actions
+  actions,
 }) => {
   effects.analytics.track('GitHub - Create Repo');
   const { repoTitle } = state.git;
@@ -166,15 +166,15 @@ export const createRepoClicked: AsyncAction = async ({
     state.currentModal = null;
 
     actions.editor.internal.forkSandbox({
-      sandboxId: `github/${git.username}/${git.repo}/tree/${
-        git.branch
-      }/${git.path || ''}`
+      sandboxId: `github/${git.username}/${git.repo}/tree/${git.branch}/${
+        git.path || ''
+      }`,
     });
   } catch (error) {
     actions.internal.handleError({
       error,
       message:
-        'Unable to create the repo. Please refresh and try again or report issue.'
+        'Unable to create the repo. Please refresh and try again or report issue.',
     });
   }
 };
@@ -186,7 +186,7 @@ export const importFromGithub: AsyncAction<string> = async (
   actions.modalClosed();
   state.currentModal = 'exportGithub';
   await actions.editor.forkExternalSandbox({
-    sandboxId: sandboxUrl.replace('/s/', '')
+    sandboxId: sandboxUrl.replace('/s/', ''),
   });
   state.currentModal = null;
 };
@@ -203,7 +203,7 @@ export const openSourceSandbox: Action = ({ state, effects }) => {
 export const createCommitClicked: AsyncAction = async ({
   state,
   effects,
-  actions
+  actions,
 }) => {
   effects.analytics.track('GitHub - Create Commit');
   const sandbox = state.editor.currentSandbox!;
@@ -225,7 +225,7 @@ export const createCommitClicked: AsyncAction = async ({
       }
     }
 
-    const changes = actions.git._getGitChanges();
+    const changes = await actions.git._getGitChanges();
     const commit = await effects.api.createGitCommit(
       sandbox.id,
       `${git.title}\n${git.description}`,
@@ -265,15 +265,15 @@ export const createCommitClicked: AsyncAction = async ({
               effects.browser.openWindow(
                 'docs/git#committing-to-organizations'
               );
-            }
-          }
-        }
+            },
+          },
+        },
       });
     } else {
       actions.internal.handleError({
         error,
         message:
-          'We were unable to create your commit. Please try again or report the issue.'
+          'We were unable to create your commit. Please try again or report the issue.',
       });
     }
   }
@@ -290,7 +290,7 @@ export const descriptionChanged: Action<string> = ({ state }, description) => {
 export const createPrClicked: AsyncAction = async ({
   state,
   effects,
-  actions
+  actions,
 }) => {
   effects.analytics.track('GitHub - Open PR');
   const git = state.git;
@@ -309,7 +309,7 @@ export const createPrClicked: AsyncAction = async ({
       }
     }
 
-    const changes = actions.git._getGitChanges();
+    const changes = await actions.git._getGitChanges();
     const pr = await effects.api.createGitPr(
       id,
       state.git.title,
@@ -317,19 +317,19 @@ export const createPrClicked: AsyncAction = async ({
       changes
     );
 
-    changes.added.forEach(change => {
+    changes.added.forEach((change) => {
       git.sourceModulesByPath[change.path].code = change.content;
     });
-    changes.modified.forEach(change => {
+    changes.modified.forEach((change) => {
       git.sourceModulesByPath[change.path].code = change.content;
     });
-    changes.deleted.forEach(path => {
+    changes.deleted.forEach((path) => {
       delete git.sourceModulesByPath[path];
     });
     actions.git._setGitChanges();
 
     sandbox.baseGit = {
-      ...sandbox.originalGit
+      ...sandbox.originalGit,
     } as GitInfo;
     sandbox.baseGitCommitSha = sandbox.originalGit!.commitSha;
     sandbox.originalGit = {
@@ -337,7 +337,7 @@ export const createPrClicked: AsyncAction = async ({
       commitSha: pr.commitSha,
       repo: pr.repo,
       username: pr.username,
-      path: ''
+      path: '',
     };
     sandbox.originalGitCommitSha = pr.commitSha;
     sandbox.prNumber = pr.number;
@@ -361,16 +361,16 @@ export const createPrClicked: AsyncAction = async ({
                 sandbox.baseGit!.repo
               }/pull/${sandbox.prNumber!}`
             );
-          }
-        }
-      }
+          },
+        },
+      },
     });
   } catch (error) {
     git.isCreatingPr = false;
     actions.internal.handleError({
       error,
       message:
-        'We were unable to create your PR. Please try again or report the issue.'
+        'We were unable to create your PR. Please try again or report the issue.',
     });
   }
 };
@@ -385,7 +385,7 @@ export const resolveConflicts: AsyncAction<Module> = async (
   module
 ) => {
   const conflict = state.git.conflicts.find(
-    conflictItem => module.path === '/' + conflictItem.filename
+    (conflictItem) => module.path === '/' + conflictItem.filename
   );
 
   if (conflict && module.code.indexOf('<<<<<<< Codesandbox') === -1) {
@@ -394,7 +394,7 @@ export const resolveConflicts: AsyncAction<Module> = async (
     await actions.editor.codeSaved({
       moduleShortid: module.shortid,
       code: module.code,
-      cbID: null
+      cbID: null,
     });
 
     effects.analytics.track('GitHub - Resolve Conflicts');
@@ -409,8 +409,8 @@ export const addConflictedFile: AsyncAction<GitFileCompare> = async (
   state.git.conflictsResolving.push(conflict.filename);
   await actions.files.createModulesByPath({
     files: {
-      [conflict.filename]: { content: conflict.content!, isBinary: false }
-    }
+      [conflict.filename]: { content: conflict.content!, isBinary: false },
+    },
   });
   state.git.sourceModulesByPath[
     '/' + conflict.filename
@@ -463,14 +463,14 @@ export const diffConflictedFile: AsyncAction<GitFileCompare> = async (
 
   actions.editor.setCode({
     moduleShortid: module.shortid,
-    code: createDiff(module.code, conflict.content)
+    code: createDiff(module.code, conflict.content),
   });
 };
 
 export const resolveOutOfSync: AsyncAction = async ({
   state,
   actions,
-  effects
+  effects,
 }) => {
   effects.analytics.track('GitHub - Resolve out of sync');
   const git = state.git;
@@ -484,17 +484,17 @@ export const resolveOutOfSync: AsyncAction = async ({
   // first, because we need the new source to deal with binary files
   if (git.gitState === SandboxGitState.OUT_OF_SYNC_PR_BASE) {
     const changes: GitChanges = {
-      added: added.map(change => ({
+      added: added.map((change) => ({
         path: '/' + change.filename,
         content: change.content!,
-        encoding: change.isBinary ? 'base64' : 'utf-8'
+        encoding: change.isBinary ? 'base64' : 'utf-8',
       })),
-      deleted: deleted.map(change => '/' + change.filename),
-      modified: modified.map(change => ({
+      deleted: deleted.map((change) => '/' + change.filename),
+      modified: modified.map((change) => ({
         path: '/' + change.filename,
         content: change.content!,
-        encoding: change.isBinary ? 'base64' : 'utf-8'
-      }))
+        encoding: change.isBinary ? 'base64' : 'utf-8',
+      })),
     };
     const commit = await effects.api.createGitCommit(
       sandbox.id,
@@ -525,18 +525,18 @@ export const resolveOutOfSync: AsyncAction = async ({
           ? {
               content: git.sourceModulesByPath['/' + change.filename].code,
               isBinary: true,
-              uploadId: git.sourceModulesByPath['/' + change.filename].uploadId
+              uploadId: git.sourceModulesByPath['/' + change.filename].uploadId,
             }
           : { content: change.content };
 
         return aggr;
-      }, {})
+      }, {}),
     });
   }
 
   if (deleted.length) {
     await Promise.all(
-      deleted.map(change => {
+      deleted.map((change) => {
         const module = state.editor.modulesByPath['/' + change.filename];
 
         return actions.files.moduleDeleted({ moduleShortid: module.shortid });
@@ -545,21 +545,21 @@ export const resolveOutOfSync: AsyncAction = async ({
   }
   if (modified.length) {
     await Promise.all(
-      modified.map(change => {
+      modified.map((change) => {
         const module = state.editor.modulesByPath['/' + change.filename];
 
         actions.editor.setCode({
           moduleShortid: module.shortid,
           code: change.isBinary
             ? git.sourceModulesByPath['/' + change.filename].code
-            : change.content!
+            : change.content!,
         });
         return actions.editor.codeSaved({
           moduleShortid: module.shortid,
           code: change.isBinary
             ? git.sourceModulesByPath['/' + change.filename].code
             : change.content!,
-          cbID: null
+          cbID: null,
         });
       })
     );
@@ -581,10 +581,10 @@ export const _setGitChanges: Action = ({ state }) => {
   } = {
     added: [],
     deleted: [],
-    modified: []
+    modified: [],
   };
 
-  state.editor.currentSandbox!.modules.forEach(module => {
+  state.editor.currentSandbox!.modules.forEach((module) => {
     if (!(module.path in state.git.sourceModulesByPath)) {
       changes.added.push(module.path);
     } else if (
@@ -594,7 +594,7 @@ export const _setGitChanges: Action = ({ state }) => {
       changes.modified.push(module.path);
     }
   });
-  Object.keys(state.git.sourceModulesByPath).forEach(path => {
+  Object.keys(state.git.sourceModulesByPath).forEach((path) => {
     if (!state.editor.modulesByPath[path]) {
       changes.deleted.push(path);
     }
@@ -681,7 +681,7 @@ export const _evaluateGitChanges: AsyncAction<
       toUpdate.added.length +
       toUpdate.modified.length +
       toUpdate.deleted.length,
-    conflicts
+    conflicts,
   };
 };
 
@@ -714,7 +714,7 @@ export const _loadSourceSandbox: AsyncAction = async ({ state, effects }) => {
         aggr[path] = {
           code: module.code,
           isBinary: module.isBinary,
-          uploadId: module.uploadId
+          uploadId: module.uploadId,
         };
       }
 
@@ -727,7 +727,7 @@ export const _loadSourceSandbox: AsyncAction = async ({ state, effects }) => {
 export const _compareWithSource: AsyncAction = async ({
   state,
   effects,
-  actions
+  actions,
 }) => {
   const sandbox = state.editor.currentSandbox!;
   const originalGitCommitSha = sandbox.originalGitCommitSha;
@@ -756,7 +756,7 @@ export const _compareWithSource: AsyncAction = async ({
           label: 'Resolve',
           run: () => {
             actions.workspace.setWorkspaceItem({ item: 'github' });
-          }
+          },
         },
         secondary: {
           label: 'See changes',
@@ -768,9 +768,9 @@ export const _compareWithSource: AsyncAction = async ({
                 sandbox.originalGit!.branch
               }`
             );
-          }
-        }
-      }
+          },
+        },
+      },
     });
     effects.preview.refresh();
     state.git.gitState = updates.conflicts.length
@@ -784,7 +784,7 @@ export const _compareWithSource: AsyncAction = async ({
 export const _compareWithBase: AsyncAction = async ({
   state,
   effects,
-  actions
+  actions,
 }) => {
   const sandbox = state.editor.currentSandbox!;
 
@@ -817,7 +817,7 @@ export const _compareWithBase: AsyncAction = async ({
           label: 'Resolve',
           run: () => {
             actions.workspace.setWorkspaceItem({ item: 'github' });
-          }
+          },
         },
         secondary: {
           label: 'See changes',
@@ -829,9 +829,9 @@ export const _compareWithBase: AsyncAction = async ({
                 sandbox.originalGit!.branch
               }`
             );
-          }
-        }
-      }
+          },
+        },
+      },
     });
     effects.preview.refresh();
     state.git.gitState = updates.conflicts.length
@@ -842,41 +842,56 @@ export const _compareWithBase: AsyncAction = async ({
   }
 };
 
-export const _getGitChanges: Action<void, GitChanges> = ({ state }) => {
+export const _getGitChanges: AsyncAction<void, GitChanges> = async ({
+  state,
+  effects,
+}) => {
   const git = state.git;
   const sandbox = state.editor.currentSandbox!;
 
   return {
-    added: git.gitChanges.added.map(path => {
+    added: await Promise.all(
+      git.gitChanges.added.map(async (path) => {
+        const module = sandbox.modules.find(
+          (moduleItem) => moduleItem.path === path
+        );
+
+        if (module.isBinary) {
+          return {
+            path,
+            content: await effects.http.blobToBase64(module.code),
+            encoding: 'base64' as 'base64',
+          };
+        }
+
+        return {
+          path,
+          content: module!.code,
+          encoding: 'utf-8' as 'utf-8',
+        };
+      })
+    ),
+    deleted: git.gitChanges.deleted,
+    modified: git.gitChanges.modified.map((path) => {
       const module = sandbox.modules.find(
-        moduleItem => moduleItem.path === path
+        (moduleItem) => moduleItem.path === path
       );
 
+      // A binary can not be modified, because we have no mechanism for comparing
+      // private binary files, as their urls are based on moduleId (which is different across sandboxes)
       return {
         path,
         content: module!.code,
-        encoding: 'utf-8'
+        encoding: 'utf-8',
       };
     }),
-    deleted: git.gitChanges.deleted,
-    modified: git.gitChanges.modified.map(path => {
-      const module = sandbox.modules.find(
-        moduleItem => moduleItem.path === path
-      );
-
-      return {
-        path,
-        content: module!.code,
-        encoding: 'utf-8'
-      };
-    })
   };
 };
 
 export const _tryResolveConflict: AsyncAction = async ({
   state,
   effects,
-  actions
+  actions,
 }) => {
   const git = state.git;
   actions.git._setGitChanges();
@@ -897,7 +912,7 @@ export const _tryResolveConflict: AsyncAction = async ({
   ) {
     state.git.isCommitting = true;
     const sandbox = state.editor.currentSandbox!;
-    const changes = actions.git._getGitChanges();
+    const changes = await actions.git._getGitChanges();
     state.git.title = 'Resolve conflict';
     const commit = await effects.api.createGitCommit(
       sandbox.id,
@@ -927,14 +942,14 @@ export const linkToGitSandbox: AsyncAction<string> = async (
     state.editor.currentSandbox = {
       ...state.editor.currentSandbox,
       originalGitCommitSha: newGitData.originalGitCommitSha,
-      originalGit: newGitData.originalGit
+      originalGit: newGitData.originalGit,
     };
     await actions.git.loadGitSource();
   } catch (error) {
     actions.internal.handleError({
       error,
       message:
-        'There has been a problem connecting your sandbox to the GitHub repo. Please try again.'
+        'There has been a problem connecting your sandbox to the GitHub repo. Please try again.',
     });
   } finally {
     state.git.isLinkingToGitSandbox = false;
