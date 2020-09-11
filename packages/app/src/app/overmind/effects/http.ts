@@ -18,7 +18,7 @@ export default {
               resolve(String(this.result));
             };
             reader.onerror = reject;
-            reader.readAsDataURL(blob);
+            reader.readAsBinaryString(blob);
           })
       ),
 };
