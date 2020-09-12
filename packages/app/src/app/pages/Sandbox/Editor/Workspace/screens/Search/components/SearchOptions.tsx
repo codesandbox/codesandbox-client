@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Stack, Tooltip } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { CaseSensitiveIcon, RegexIcon } from '../icons';
-import { OptionTypes } from '../index';
+import { OptionTypes } from '../search';
 
 const OptionButton = ({ title, active, onClick, children }) => (
   <Tooltip label={title}>

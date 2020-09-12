@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Collapsible,
   Text,
@@ -7,15 +7,13 @@ import {
   Stack,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
-
 import css from '@styled-system/css';
-import { useWorker } from '@koale/useworker';
 import { Module } from '@codesandbox/common/lib/types';
-
+import { Result } from './components/Result';
+import SearchWorker from './search.worker.ts';
 import { TabButton } from './components/TabButton';
 import { SearchOptions } from './components/SearchOptions';
-import { SearchSandbox, OptionTypes } from './search';
-import { Result } from './components/Result';
+import { OptionTypes } from './search';
 
 export const Search = () => {
   const {
@@ -24,12 +22,7 @@ export const Search = () => {
     },
   } = useOvermind();
   const [openFilesSearch, setOpenFilesSearch] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
-  const [searchWorker, { status: workerStatus, kill: killWorker }] = useWorker(
-    SearchSandbox
-  );
-  const [queue, setQueue] = useState([]);
   const allModules = JSON.parse(JSON.stringify(currentSandbox.modules));
   const [modules, setModules] = useState<Module[]>(allModules);
   const [options, setOptions] = useState({
@@ -54,39 +47,44 @@ export const Search = () => {
     }
   };
 
-  const searchFiles = useCallback(
-    async value => {
-      setSearchTerm(value);
-      setQueue(q =>
-        q.concat({ value, files: JSON.parse(JSON.stringify(modules)) })
-      );
-    },
-    [modules]
-  );
+  const searchWorker = useRef();
+
+  const createWorker = async () => {
+    searchWorker.current = await new SearchWorker();
+  };
 
   useEffect(() => {
-    searchFiles(searchTerm);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options]);
-
-  useEffect(() => {
-    if (searchTerm && modules) {
-      searchFiles(searchTerm);
-    }
-  }, [modules, searchFiles, searchTerm]);
-
-  useEffect(() => {
-    if (workerStatus !== 'RUNNING' && queue.length) {
-      while (queue.length > 0) {
-        const current = queue.shift();
-
-        searchWorker(current.value, current.files, options).then(files => {
-          killWorker();
-          setResults(files);
-        });
+    createWorker();
+    return () => {
+      if (searchWorker.current) {
+        searchWorker.current.terminate();
       }
+    };
+  }, []);
+
+  const searchCall = async data => {
+    if (searchWorker.current) {
+      const val = await searchWorker.current.search(data.value, data.files);
+      setResults(val);
     }
-  }, [workerStatus, queue.length, queue, searchWorker, killWorker, options]);
+  };
+
+  const searchFiles = value => {
+    searchCall({ value, files: JSON.parse(JSON.stringify(modules)) });
+  };
+
+  // useEffect(() => {
+  //   if (workerStatus !== 'RUNNING' && queue.length) {
+  //     while (queue.length > 0) {
+  //       const current = queue.shift();
+  //
+  //       searchWorker(current.value, current.files).then(files => {
+  //         killWorker();
+  //         setResults(files);
+  //       });
+  //     }
+  //   }
+  // }, [workerStatus, queue.length, queue, searchWorker, killWorker]);
 
   return (
     <Collapsible defaultOpen title="Search">

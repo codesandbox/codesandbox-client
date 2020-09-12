@@ -110,6 +110,8 @@
     "codesandbox-api": "0.0.24",
     "codesandbox-import-utils": "^2.1.14",
     "color": "^0.11.4",
+    "comlink": "^4.3.0",
+    "comlink-loader": "^2.0.0",
     "compare-versions": "^3.1.0",
     "console": "^0.7.2",
     "console-feed": "^2.8.11",
@@ -237,6 +239,7 @@
     "vue-hot-reload-api": "^2.3.3",
     "vue-template-compiler": "^2.6.10",
     "vue-template-es2015-compiler": "^1.9.1",
+    "worker-plugin": "^5.0.0",
     "xterm": "3.7.0"
   },
   "devDependencies": {
