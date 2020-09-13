@@ -10,10 +10,19 @@ import { useOvermind } from 'app/overmind';
 import css from '@styled-system/css';
 import { Module } from '@codesandbox/common/lib/types';
 import { Result } from './components/Result';
-import SearchWorker from './search.worker.ts';
+import SearchWorker from './search.worker';
 import { TabButton } from './components/TabButton';
 import { SearchOptions } from './components/SearchOptions';
-import { OptionTypes } from './search';
+
+export enum OptionTypes {
+  CaseSensitive = 'caseSensitive',
+  Regex = 'regex',
+  MatchFullWord = 'matchFullWord',
+}
+
+export type Options = {
+  [key in OptionTypes]: boolean;
+};
 
 export const Search = () => {
   const {
@@ -28,7 +37,7 @@ export const Search = () => {
   const [options, setOptions] = useState({
     [OptionTypes.CaseSensitive]: false,
     [OptionTypes.Regex]: false,
-    [OptionTypes.MathFullWord]: false,
+    [OptionTypes.MatchFullWord]: false,
   });
 
   const toggleSearch = (searchIsOpen: boolean) => {
@@ -55,11 +64,6 @@ export const Search = () => {
 
   useEffect(() => {
     createWorker();
-    return () => {
-      if (searchWorker.current) {
-        searchWorker.current.terminate();
-      }
-    };
   }, []);
 
   const searchCall = async data => {
@@ -72,19 +76,6 @@ export const Search = () => {
   const searchFiles = value => {
     searchCall({ value, files: JSON.parse(JSON.stringify(modules)) });
   };
-
-  // useEffect(() => {
-  //   if (workerStatus !== 'RUNNING' && queue.length) {
-  //     while (queue.length > 0) {
-  //       const current = queue.shift();
-  //
-  //       searchWorker(current.value, current.files).then(files => {
-  //         killWorker();
-  //         setResults(files);
-  //       });
-  //     }
-  //   }
-  // }, [workerStatus, queue.length, queue, searchWorker, killWorker]);
 
   return (
     <Collapsible defaultOpen title="Search">
@@ -147,7 +138,7 @@ export const Search = () => {
         ) : null}
 
         <Element marginTop={4}>
-          {results.map(file => (
+          {results.splice(0, 10).map(file => (
             <Result {...file} />
           ))}
         </Element>

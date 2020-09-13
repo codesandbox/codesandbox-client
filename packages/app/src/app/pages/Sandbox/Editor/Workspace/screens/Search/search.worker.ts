@@ -1,15 +1,13 @@
-export default class SearchWorker {
-  terminate() {
-    close();
-  }
+import { Module } from '@codesandbox/common/lib/types';
 
-  async search(term: string, modules: any[]) {
+export default class SearchWorker {
+  async search(term: string, modules: Module[]) {
     const searchable = modules.map(m => ({
       ...m,
       matches: [],
     }));
 
-    function String2Regex(s: any) {
+    function String2Regex(s: string) {
       const one = s.match(/\/(.+)\/.*/);
       const two = s.match(/\/.+\/(.*)/);
 
