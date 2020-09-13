@@ -19,20 +19,25 @@ export function getPrettierConfigFromSandbox(sandbox: Sandbox) {
 
 function getPrettierFromPackageJson(modules: Module[]) {
   const packageJsonFile = modules.find(
-    m => m.type === 'file' && m.path === '/package.json'
+    (m) => m.type === 'file' && m.path === '/package.json'
   );
-  const packageJson = JSON.parse(packageJsonFile.code);
 
-  return packageJson?.prettier;
+  if (packageJsonFile?.code) {
+    const packageJson = JSON.parse(packageJsonFile.code);
+
+    return packageJson?.prettier;
+  }
+
+  return null;
 }
 
 function lookForFileAndParse(
   modules: Module[],
   fileNames: string[],
   parse: (s: string) => Object
-): Object {
+) {
   const foundFile = modules.find(
-    m => m.type === 'file' && fileNames.includes(m.path)
+    (m) => m.type === 'file' && fileNames.includes(m.path)
   );
 
   if (foundFile?.code) {
@@ -43,7 +48,7 @@ function lookForFileAndParse(
 }
 
 function getPrettierFromPrettierRC(modules: Module[]) {
-  return lookForFileAndParse(modules, ['/.prettierrc'], code => {
+  return lookForFileAndParse(modules, ['/.prettierrc'], (code) => {
     try {
       return JSON.parse(code);
     } catch (err) {
@@ -75,8 +80,8 @@ function getPrettierFromModule(modules: Module[], directories: Directory[]) {
     '/.prettierrc.js',
     '/.prettierrc.cjs',
     '/prettier.config.js',
-    '/prettier.config.cjs'
-  ].forEach(path => {
+    '/prettier.config.cjs',
+  ].forEach((path) => {
     try {
       const prettierConfig = resolveModule(path, modules, directories);
       return prettierConfig;
