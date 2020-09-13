@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { VariableSizeList as List } from 'react-window';
 import {
   Collapsible,
   Text,
@@ -30,6 +31,8 @@ export const Search = () => {
       editor: { currentSandbox },
     },
   } = useOvermind();
+  const list = useRef<any>();
+  const wrapper = useRef<any>();
   const [openFilesSearch, setOpenFilesSearch] = useState(false);
   const [results, setResults] = useState([]);
   const allModules = JSON.parse(JSON.stringify(currentSandbox.modules));
@@ -56,7 +59,7 @@ export const Search = () => {
     }
   };
 
-  const searchWorker = useRef();
+  const searchWorker = useRef<any>();
 
   const createWorker = async () => {
     searchWorker.current = await new SearchWorker();
@@ -66,20 +69,47 @@ export const Search = () => {
     createWorker();
   }, []);
 
-  const searchCall = async data => {
+  const searchCall = async ({ value, files }) => {
     if (searchWorker.current) {
-      const val = await searchWorker.current.search(data.value, data.files);
+      const val = await searchWorker.current.search(value, files);
       setResults(val);
+      if (list.current) {
+        list.current.resetAfterIndex(0);
+      }
     }
   };
 
-  const searchFiles = value => {
+  const searchFiles = (value: string) => {
     searchCall({ value, files: JSON.parse(JSON.stringify(modules)) });
   };
 
+  const getHeight = (i: string) => 32 + results[i].matches.length * 26;
+
+  const Row = ({ index, style }) => (
+    <Element style={style}>
+      <Result {...results[index]} />
+    </Element>
+  );
+
   return (
-    <Collapsible defaultOpen title="Search">
-      <Element padding={2} marginBottom={5}>
+    <Collapsible
+      defaultOpen
+      title="Search"
+      css={css({
+        height: '100%',
+        'div[open]': {
+          height: 'calc(100% - 36px)',
+          overflow: 'hidden',
+          paddingBottom: 0,
+          borderBottom: 'none',
+        },
+      })}
+    >
+      <Element
+        padding={2}
+        marginBottom={5}
+        css={{ height: 'calc(100% - 16px)', overflow: 'hidden' }}
+      >
         <Element
           css={css({
             position: 'relative',
@@ -136,11 +166,20 @@ export const Search = () => {
             </Text>
           </Element>
         ) : null}
-
-        <Element marginTop={4}>
-          {results.splice(0, 10).map(file => (
-            <Result {...file} />
-          ))}
+        <Element
+          ref={wrapper}
+          marginTop={4}
+          css={{ height: 'calc(100% - 16px)' }}
+        >
+          <List
+            height={wrapper.current ? wrapper.current.clientHeight : 0}
+            itemCount={results.length}
+            itemSize={getHeight}
+            width={wrapper.current ? wrapper.current.clientWidth : 0}
+            ref={list}
+          >
+            {Row}
+          </List>
         </Element>
       </Element>
     </Collapsible>
