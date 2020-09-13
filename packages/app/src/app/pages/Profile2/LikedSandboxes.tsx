@@ -62,6 +62,8 @@ export const LikedSandboxes = ({ menuControls }) => {
                 <SandboxCard sandbox={sandbox} menuControls={menuControls} />
               </Column>
             ))}
+        <div />
+        <div />
       </Grid>
       <Pagination />
     </Stack>

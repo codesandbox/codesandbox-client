@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { Link as RouterLink } from 'react-router-dom';
 import {
+  Grid,
   Stack,
   Avatar,
   Text,
@@ -125,11 +126,13 @@ export const ProfileCard = ({ defaultEditing = false }) => {
             })}
           >
             <Text size={2} weight="bold">
-              Team
+              Teams
             </Text>
-            <Stack gap={3}>
+            <Grid
+              css={{ gridTemplateColumns: 'repeat(auto-fill, 26px)', gap: 12 }}
+            >
               {user.teams
-                .slice()
+                .slice(1) // first one is always personal workspace
                 .sort((team1, team2) =>
                   team1.avatarUrl && !team2.avatarUrl ? -1 : 1
                 )
@@ -140,7 +143,7 @@ export const ProfileCard = ({ defaultEditing = false }) => {
                     </span>
                   </Tooltip>
                 ))}
-            </Stack>
+            </Grid>
           </Stack>
         ) : null}
         <Stack

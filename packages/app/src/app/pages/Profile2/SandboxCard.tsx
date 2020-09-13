@@ -7,7 +7,7 @@ import {
   Stats,
   IconButton,
   SkeletonText,
-  isMenuClicked
+  isMenuClicked,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
@@ -20,14 +20,14 @@ export const SandboxCard = ({
   type = SandboxTypes.DEFAULT_SANDBOX,
   sandbox,
   menuControls: { onKeyDown, onContextMenu },
-  index = null
+  index = null,
 }) => {
   const {
     state: {
       user: loggedInUser,
       profile: {
-        current: { username, featuredSandboxes }
-      }
+        current: { username, featuredSandboxes },
+      },
     },
     actions: {
       profile: {
@@ -36,9 +36,9 @@ export const SandboxCard = ({
         reorderFeaturedSandboxesInState,
         saveFeaturedSandboxesOrder,
         removeFeaturedSandboxesInState,
-        newSandboxShowcaseSelected
-      }
-    }
+        newSandboxShowcaseSelected,
+      },
+    },
   } = useOvermind();
 
   const ref = React.useRef(null);
@@ -49,7 +49,7 @@ export const SandboxCard = ({
     collect: monitor => {
       const dragItem = monitor.getItem();
       return {
-        isDragging: dragItem?.sandboxId === sandbox.id
+        isDragging: dragItem?.sandboxId === sandbox.id,
       };
     },
 
@@ -67,7 +67,7 @@ export const SandboxCard = ({
           // Rollback any reordering
           reorderFeaturedSandboxesInState({
             startPosition: index,
-            endPosition: previousPosition
+            endPosition: previousPosition,
           });
         } else {
           // remove newly added from featured in state
@@ -86,7 +86,7 @@ export const SandboxCard = ({
       } else if (dropResult.name === DropTargets.SHOWCASED_SANDBOX) {
         newSandboxShowcaseSelected(item.sandboxId);
       }
-    }
+    },
   });
 
   const [, drop] = useDrop({
@@ -140,12 +140,12 @@ export const SandboxCard = ({
 
       reorderFeaturedSandboxesInState({
         startPosition: dragIndex,
-        endPosition: hoverIndex
+        endPosition: hoverIndex,
       });
       // We're mutating the monitor item here to avoid expensive index searches!
       item.index = hoverIndex;
     },
-    drop: () => ({ name: DropTargets.PINNED_SANDBOXES })
+    drop: () => ({ name: DropTargets.PINNED_SANDBOXES }),
   });
 
   const myProfile = loggedInUser?.username === username;
@@ -161,11 +161,13 @@ export const SandboxCard = ({
         direction="vertical"
         gap={4}
         onContextMenu={event => onContextMenu(event, sandbox.id)}
-        onClick={() => {
+        onClick={(event: React.MouseEvent<HTMLDivElement>) => {
           // we use on click instead of anchor tag so that safari renders
           // the html5 drag thumbnail instead of text
           if (isMenuClicked(event)) return;
-          window.location.href = sandboxUrl({ id: sandbox.id });
+          const url = sandboxUrl({ id: sandbox.id });
+          if (event.ctrlKey || event.metaKey) window.open(url, '_blank');
+          else window.open(url);
         }}
         tabIndex={0}
         onKeyDown={event => {
@@ -180,7 +182,7 @@ export const SandboxCard = ({
           // we transition the thumbnail out so that
           // the dragged thumbnail is 100% opacity
           transition: 'opacity 75ms',
-          transitionDelay: '16ms'
+          transitionDelay: '16ms',
         }}
         css={css({
           backgroundColor: 'grays.700',
@@ -190,12 +192,12 @@ export const SandboxCard = ({
           cursor: 'pointer',
           overflow: 'hidden',
           ':hover, :focus, :focus-within': {
-            boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900]
+            boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
           },
           ':focus, :focus-within': {
             outline: 'none',
-            borderColor: 'blues.600'
-          }
+            borderColor: 'blues.600',
+          },
         })}
       >
         <div
@@ -209,11 +211,13 @@ export const SandboxCard = ({
             backgroundSize: 'cover',
             backgroundPosition: 'top center',
             backgroundRepeat: 'no-repeat',
-            borderColor: 'grays.600'
+            borderColor: 'grays.600',
           })}
           style={{
-            backgroundImage: `url(${sandbox.screenshotUrl ||
-              `/api/v1/sandboxes/${sandbox.id}/screenshot.png`})`
+            backgroundImage: `url(${
+              sandbox.screenshotUrl ||
+              `/api/v1/sandboxes/${sandbox.id}/screenshot.png`
+            })`,
           }}
         />
         <Stack justify="space-between">
@@ -244,7 +248,7 @@ export const SkeletonCard = () => (
         backgroundColor: 'grays.700',
         border: '1px solid',
         borderColor: 'grays.600',
-        borderRadius: 'medium'
+        borderRadius: 'medium',
       })}
     >
       <SkeletonText
@@ -252,7 +256,7 @@ export const SkeletonCard = () => (
           width: '100%',
           height: 160 + 1,
           borderBottom: '1px solid',
-          borderColor: 'grays.600'
+          borderColor: 'grays.600',
         })}
       />
       <Stack direction="vertical" gap={2} marginX={4} marginBottom={5}>

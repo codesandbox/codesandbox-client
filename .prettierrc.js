@@ -1,4 +1,6 @@
 module.exports = {
+  arrowParens: 'avoid',
   proseWrap: 'always',
-  singleQuote: true
+  singleQuote: true,
+  trailingComma: 'es5',
 };

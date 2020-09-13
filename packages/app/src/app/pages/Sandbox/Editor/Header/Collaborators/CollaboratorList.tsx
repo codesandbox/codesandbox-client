@@ -4,11 +4,11 @@ import { Element } from '@codesandbox/components';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { useOvermind } from 'app/overmind';
-import { TeamIcon } from '@codesandbox/common/lib/components/icons/Team';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Authorization } from 'app/graphql/types';
 import { sortBy } from 'lodash-es';
 import { RoomInfo } from '@codesandbox/common/lib/types';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 import { CollaboratorItem, Collaborator, Invitation } from './Collaborator';
 
 const Animated = ({ showMountAnimations, ...props }) => (
@@ -21,7 +21,7 @@ const Animated = ({ showMountAnimations, ...props }) => (
   >
     <Element
       css={css({
-        marginTop: 4
+        marginTop: 4,
       })}
       {...props}
     />
@@ -65,7 +65,7 @@ export const CollaboratorList = () => {
     -(c.lastSeenAt === Infinity
       ? new Date().getTime()
       : new Date(c.lastSeenAt || 0).getTime()),
-    c.user.username
+    c.user.username,
   ]);
 
   return (
@@ -75,17 +75,25 @@ export const CollaboratorList = () => {
         maxHeight: 250,
         minHeight: 100,
         overflowY: 'auto',
-        paddingBottom: 4
+        paddingBottom: 4,
       })}
     >
-      {team && (
+      {team && team.id !== author.personalWorkspaceId && (
         <Animated showMountAnimations={showMountAnimations}>
           <CollaboratorItem
             name={team.name}
-            avatarComponent={<TeamIcon width={24} height={24} />}
+            avatarComponent={
+              <TeamAvatar
+                style={{ width: '100%', height: '100%', borderWidth: 0 }}
+                name={team.name}
+                avatar={team.avatarUrl}
+                removeBorder
+              />
+            }
             authorization={Authorization.Owner}
             permissions={[]}
-            permissionText="Owner"
+            permissionText="Can Access"
+            subtext="All workspace members"
           />
         </Animated>
       )}
