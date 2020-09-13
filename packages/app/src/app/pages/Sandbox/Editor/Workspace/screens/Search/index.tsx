@@ -34,6 +34,7 @@ export const Search = () => {
   const list = useRef<any>();
   const wrapper = useRef<any>();
   const [openFilesSearch, setOpenFilesSearch] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const [results, setResults] = useState([]);
   const allModules = JSON.parse(JSON.stringify(currentSandbox.modules));
   const [modules, setModules] = useState<Module[]>(allModules);
@@ -69,9 +70,16 @@ export const Search = () => {
     createWorker();
   }, []);
 
+  useEffect(() => {
+    if (searchValue) {
+      searchFiles(searchValue);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [options]);
+
   const searchCall = async ({ value, files }) => {
     if (searchWorker.current) {
-      const val = await searchWorker.current.search(value, files);
+      const val = await searchWorker.current.search(value, files, options);
       setResults(val);
       if (list.current) {
         list.current.resetAfterIndex(0);
@@ -80,7 +88,7 @@ export const Search = () => {
   };
 
   const searchFiles = (value: string) => {
-    searchCall({ value, files: JSON.parse(JSON.stringify(modules)) });
+    searchCall({ value, files: modules });
   };
 
   const getHeight = (i: string) => 32 + results[i].matches.length * 26;
@@ -121,7 +129,10 @@ export const Search = () => {
               paddingRight: '50px',
             })}
             placeholder="Search"
-            onChange={e => searchFiles(e.target.value)}
+            onChange={e => {
+              setSearchValue(e.target.value);
+              searchFiles(e.target.value);
+            }}
           />
           <SearchOptions options={options} setOptions={setOptions} />
         </Element>

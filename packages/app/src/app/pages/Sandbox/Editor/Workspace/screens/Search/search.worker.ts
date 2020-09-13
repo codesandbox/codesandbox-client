@@ -1,7 +1,8 @@
 import { Module } from '@codesandbox/common/lib/types';
+import { Options } from '.';
 
 export default class SearchWorker {
-  async search(term: string, modules: Module[]) {
+  async search(term: string, modules: Module[], options: Options) {
     const searchable = modules.map(m => ({
       ...m,
       matches: [],
@@ -38,12 +39,25 @@ export default class SearchWorker {
     if (term && modules) {
       return searchable
         .map(file => {
-          const s = file.code
-            .toLocaleLowerCase()
-            .search(String2Regex(term.toLowerCase()));
+          let s;
+          if (options.caseSensitive) {
+            s = file.code.search(String2Regex(term));
+          } else {
+            s = file.code
+              .toLocaleLowerCase()
+              .search(String2Regex(term.toLowerCase()));
+          }
+
           if (s !== -1) {
-            const str = file.code.toLocaleLowerCase();
-            const searchTerm = String2Regex(term.toLowerCase());
+            let str;
+            let searchTerm;
+            if (options.caseSensitive) {
+              str = file.code;
+              searchTerm = String2Regex(term);
+            } else {
+              str = file.code.toLocaleLowerCase();
+              searchTerm = String2Regex(term.toLowerCase());
+            }
             const matches = getAllMatches(str, searchTerm);
             return {
               code: file.code,
