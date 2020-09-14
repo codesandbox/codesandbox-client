@@ -166,9 +166,9 @@ export const createRepoClicked: AsyncAction = async ({
     state.currentModal = null;
 
     actions.editor.internal.forkSandbox({
-      sandboxId: `github/${git.username}/${git.repo}/tree/${git.branch}/${
-        git.path || ''
-      }`,
+      sandboxId: `github/${git.username}/${git.repo}/tree/${
+        git.branch
+        }/${git.path || ''}`,
     });
   } catch (error) {
     actions.internal.handleError({
@@ -185,10 +185,30 @@ export const importFromGithub: AsyncAction<string> = async (
 ) => {
   actions.modalClosed();
   state.currentModal = 'exportGithub';
-  await actions.editor.forkExternalSandbox({
-    sandboxId: sandboxUrl.replace('/s/', ''),
-  });
-  state.currentModal = null;
+  try {
+    await actions.editor.forkExternalSandbox({
+      sandboxId: sandboxUrl.replace('/s/', ''),
+    });
+    state.currentModal = null;
+  } catch (e) {
+    if (!state.user || !state.user.integrations?.github) {
+      state.currentModal = null;
+      effects.notificationToast.add({
+        title: 'Can not import repo',
+        message: 'This seems to be a private repo, you have to sign in first',
+        status: NotificationStatus.ERROR,
+        actions: {
+          primary: {
+            label: 'Sign in',
+            run: () => {
+              actions.signInGithubClicked();
+            },
+          },
+        },
+      });
+    }
+    throw e;
+  }
 };
 
 export const openSourceSandbox: Action = ({ state, effects }) => {
@@ -236,6 +256,7 @@ export const createCommitClicked: AsyncAction = async ({
         ? [git.sourceCommitSha!, git.baseCommitSha]
         : [git.sourceCommitSha!]
     );
+
     // We need to load the source again as it has now changed. We can not optimistically deal with
     // this, cause you might have added a binary
     sandbox.originalGit!.commitSha = commit.sha;
@@ -323,7 +344,7 @@ export const createPrClicked: AsyncAction = async ({
     changes.modified.forEach((change) => {
       git.sourceModulesByPath[change.path].code = change.content;
     });
-    changes.deleted.forEach((path) => {
+    changes.deleted.forEach(path => {
       delete git.sourceModulesByPath[path];
     });
     actions.git._setGitChanges();
@@ -358,7 +379,7 @@ export const createPrClicked: AsyncAction = async ({
           run: () => {
             effects.browser.openWindow(
               `https://github.com/${sandbox.baseGit!.username}/${
-                sandbox.baseGit!.repo
+              sandbox.baseGit!.repo
               }/pull/${sandbox.prNumber!}`
             );
           },
@@ -385,7 +406,7 @@ export const resolveConflicts: AsyncAction<Module> = async (
   module
 ) => {
   const conflict = state.git.conflicts.find(
-    (conflictItem) => module.path === '/' + conflictItem.filename
+    conflictItem => module.path === '/' + conflictItem.filename
   );
 
   if (conflict && module.code.indexOf('<<<<<<< Codesandbox') === -1) {
@@ -484,13 +505,13 @@ export const resolveOutOfSync: AsyncAction = async ({
   // first, because we need the new source to deal with binary files
   if (git.gitState === SandboxGitState.OUT_OF_SYNC_PR_BASE) {
     const changes: GitChanges = {
-      added: added.map((change) => ({
+      added: added.map(change => ({
         path: '/' + change.filename,
         content: change.content!,
         encoding: change.isBinary ? 'base64' : 'utf-8',
       })),
-      deleted: deleted.map((change) => '/' + change.filename),
-      modified: modified.map((change) => ({
+      deleted: deleted.map(change => '/' + change.filename),
+      modified: modified.map(change => ({
         path: '/' + change.filename,
         content: change.content!,
         encoding: change.isBinary ? 'base64' : 'utf-8',
@@ -523,10 +544,10 @@ export const resolveOutOfSync: AsyncAction = async ({
       files: added.reduce((aggr, change) => {
         aggr[change.filename] = change.isBinary
           ? {
-              content: git.sourceModulesByPath['/' + change.filename].code,
-              isBinary: true,
-              uploadId: git.sourceModulesByPath['/' + change.filename].uploadId,
-            }
+            content: git.sourceModulesByPath['/' + change.filename].code,
+            isBinary: true,
+            uploadId: git.sourceModulesByPath['/' + change.filename].uploadId,
+          }
           : { content: change.content };
 
         return aggr;
@@ -584,7 +605,7 @@ export const _setGitChanges: Action = ({ state }) => {
     modified: [],
   };
 
-  state.editor.currentSandbox!.modules.forEach((module) => {
+  state.editor.currentSandbox!.modules.forEach(module => {
     if (!(module.path in state.git.sourceModulesByPath)) {
       changes.added.push(module.path);
     } else if (
@@ -595,7 +616,7 @@ export const _setGitChanges: Action = ({ state }) => {
       changes.modified.push(module.path);
     }
   });
-  Object.keys(state.git.sourceModulesByPath).forEach((path) => {
+  Object.keys(state.git.sourceModulesByPath).forEach(path => {
     if (!state.editor.modulesByPath[path]) {
       changes.deleted.push(path);
     }
@@ -636,7 +657,7 @@ export const _evaluateGitChanges: AsyncAction<
       !(state.editor.modulesByPath[path] as Module).isBinary &&
       (state.editor.modulesByPath[path] as Module).code !== change.content &&
       (state.editor.modulesByPath[path] as Module).code !==
-        state.git.sourceModulesByPath[path].code
+      state.git.sourceModulesByPath[path].code
     ) {
       return aggr.concat(change);
     }
@@ -666,7 +687,7 @@ export const _evaluateGitChanges: AsyncAction<
           state.editor.modulesByPath['/' + change.filename]) ||
         (change.status === 'modified' &&
           (state.editor.modulesByPath['/' + change.filename] as Module).code !==
-            change.content)
+          change.content)
       ) {
         aggr[change.status === 'removed' ? 'deleted' : change.status].push(
           change
@@ -696,7 +717,7 @@ export const _loadSourceSandbox: AsyncAction = async ({ state, effects }) => {
 
   const sourceSandbox = await effects.api.getSandbox(
     `github/${originalGit.username}/${
-      originalGit.repo
+    originalGit.repo
     }/tree/${sandbox.originalGitCommitSha!}/${originalGit.path}`
   );
 
@@ -749,7 +770,7 @@ export const _compareWithSource: AsyncAction = async ({
     effects.notificationToast.add({
       message: `The sandbox is out of sync with "${
         sandbox.originalGit!.branch
-      }" ${updates.conflicts.length ? 'and there are conflicts' : ''}`,
+        }" ${updates.conflicts.length ? 'and there are conflicts' : ''}`,
       title: 'Out of sync',
       status: convertTypeToStatus('notice'),
       sticky: false,
@@ -765,9 +786,9 @@ export const _compareWithSource: AsyncAction = async ({
           run: () => {
             effects.browser.openWindow(
               `https://github.com/${sandbox.originalGit!.username}/${
-                sandbox.originalGit!.repo
+              sandbox.originalGit!.repo
               }/compare/${originalGitCommitSha}...${
-                sandbox.originalGit!.branch
+              sandbox.originalGit!.branch
               }`
             );
           },
@@ -810,7 +831,7 @@ export const _compareWithBase: AsyncAction = async ({
     effects.notificationToast.add({
       message: `The sandbox is out of sync with "${sandbox.baseGit!.branch}" ${
         updates.conflicts.length ? 'and there are conflicts' : ''
-      }`,
+        }`,
       title: 'Out of sync',
       status: convertTypeToStatus('notice'),
       sticky: false,
@@ -826,9 +847,9 @@ export const _compareWithBase: AsyncAction = async ({
           run: () => {
             effects.browser.openWindow(
               `https://github.com/${sandbox.originalGit!.username}/${
-                sandbox.originalGit!.repo
+              sandbox.originalGit!.repo
               }/compare/${sandbox.baseGit!.branch}...${
-                sandbox.originalGit!.branch
+              sandbox.originalGit!.branch
               }`
             );
           },
@@ -874,9 +895,9 @@ export const _getGitChanges: AsyncAction<void, GitChanges> = async ({
       })
     ),
     deleted: git.gitChanges.deleted,
-    modified: git.gitChanges.modified.map((path) => {
+    modified: git.gitChanges.modified.map(path => {
       const module = sandbox.modules.find(
-        (moduleItem) => moduleItem.path === path
+        moduleItem => moduleItem.path === path
       );
 
       // A binary can not be modified, because we have no mechanism for comparing

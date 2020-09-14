@@ -18,6 +18,8 @@ type PreferenceType =
 type PreferenceProps<TString extends PreferenceType> = {
   className?: string;
   style?: React.CSSProperties;
+  innerClassName?: string;
+  innerStyle?: React.CSSProperties;
   title?: string;
   tooltip?: string;
   options?: any[];
@@ -51,22 +53,28 @@ export const Preference: FunctionComponent<Props> = ({
   style,
   title,
   tooltip,
+  innerClassName,
+  innerStyle,
   ...contentProps
 }) => {
   const getContent = () => {
+    const stylingProps = {
+      className: innerClassName,
+      style: innerStyle,
+    };
     switch (
       contentProps.type // need 'type' as discriminant of union type
     ) {
       case 'boolean':
-        return <PreferenceSwitch {...contentProps} />;
+        return <PreferenceSwitch {...stylingProps} {...contentProps} />;
       case 'string':
-        return <PreferenceText {...contentProps} />;
+        return <PreferenceText {...stylingProps} {...contentProps} />;
       case 'dropdown':
-        return <PreferenceDropdown {...contentProps} />;
+        return <PreferenceDropdown {...stylingProps} {...contentProps} />;
       case 'keybinding':
-        return <PreferenceKeybinding {...contentProps} />;
+        return <PreferenceKeybinding {...stylingProps} {...contentProps} />;
       default:
-        return <PreferenceNumber {...contentProps} />;
+        return <PreferenceNumber {...stylingProps} {...contentProps} />;
     }
   };
 
