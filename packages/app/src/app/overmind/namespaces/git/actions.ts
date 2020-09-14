@@ -588,7 +588,8 @@ export const _setGitChanges: Action = ({ state }) => {
     if (!(module.path in state.git.sourceModulesByPath)) {
       changes.added.push(module.path);
     } else if (
-      !module.isBinary &&
+      (module.sha &&
+        state.git.sourceModulesByPath[module.path].sha !== module.code) ||
       state.git.sourceModulesByPath[module.path].code !== module.code
     ) {
       changes.modified.push(module.path);
@@ -715,6 +716,7 @@ export const _loadSourceSandbox: AsyncAction = async ({ state, effects }) => {
           code: module.code,
           isBinary: module.isBinary,
           uploadId: module.uploadId,
+          sha: module.sha,
         };
       }
 

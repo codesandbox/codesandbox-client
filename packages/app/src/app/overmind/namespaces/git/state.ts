@@ -28,6 +28,7 @@ type State = {
       code: string;
       isBinary: boolean;
       uploadId?: string;
+      sha?: string;
     };
   };
   permission: 'admin' | 'write' | 'read';
