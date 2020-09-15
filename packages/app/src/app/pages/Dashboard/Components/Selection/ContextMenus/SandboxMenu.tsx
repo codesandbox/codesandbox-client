@@ -41,14 +41,16 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const label = isTemplate ? 'Template' : 'Sandbox';
   const isPro = user && Boolean(user.subscription);
 
-  const hasAccess = React.useMemo(() => item.sandbox.teamId === activeTeam, [
-    item,
-    activeTeam,
-  ]);
+  // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
+  // responding with teamId == null for personal templates anymore.
+  const hasAccess = React.useMemo(
+    () => item.sandbox.teamId === activeTeam || item.sandbox.teamId === null,
+    [item, activeTeam]
+  );
 
   const isOwner = React.useMemo(() => {
     if (item.type !== 'template') {
-      return item.sandbox.teamId === activeTeam;
+      return item.sandbox.teamId === activeTeam || item.sandbox.teamId === null;
     }
 
     return (
