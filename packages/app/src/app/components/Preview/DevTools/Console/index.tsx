@@ -2,7 +2,7 @@ import Select from '@codesandbox/common/lib/components/Select';
 import theme from '@codesandbox/common/lib/theme';
 import { listen, dispatch } from 'codesandbox-api';
 import { Decode, Console as ConsoleFeed } from 'console-feed';
-import update from 'immutability-helper';
+import immer from 'immer';
 import { debounce } from 'lodash-es';
 import React from 'react';
 import ClearIcon from 'react-icons/lib/md/block';
@@ -27,17 +27,27 @@ const StyledClearIcon = styled(ClearIcon)`
   font-size: 0.8em;
 `;
 
-class ConsoleComponent extends React.Component<StyledProps> {
+type State = {
+  messages: any[];
+  filter: Array<'info' | 'log' | 'warn'>;
+  searchKeywords: string;
+};
+
+/**
+ * Max amount of messages that we show in the console
+ */
+const MAX_MESSAGE_COUNT = 500;
+
+class ConsoleComponent extends React.PureComponent<StyledProps, State> {
   state = {
     messages: [],
-    initialClear: true,
     filter: [],
     searchKeywords: '',
   };
 
   listener;
 
-  constructor(props) {
+  constructor(props: StyledProps) {
     super(props);
 
     this.scrollToBottom = debounce(this.scrollToBottom, 1 / 60);
@@ -75,13 +85,8 @@ class ConsoleComponent extends React.Component<StyledProps> {
         break;
       }
       case 'clear-console': {
-        if (this.state.initialClear) {
-          this.setState({
-            initialClear: false,
-          });
-        } else {
-          this.clearConsole();
-        }
+        this.clearConsole();
+
         break;
       }
       case 'eval-result': {
@@ -147,22 +152,18 @@ class ConsoleComponent extends React.Component<StyledProps> {
     }
 
     this.setState(state =>
-      update(state, {
-        messages: {
-          $push: [
-            {
-              method,
-              data,
-            },
-          ],
-        },
+      immer(state, draft => {
+        draft.messages.push({ method, data });
+        draft.messages = draft.messages.slice(
+          Math.max(0, draft.messages.length - MAX_MESSAGE_COUNT)
+        );
       })
     );
   }
 
-  list;
+  list: HTMLDivElement | undefined;
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: StyledProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.clearConsole(true);
     }
@@ -273,7 +274,7 @@ const ConsoleFilterSelect = props => {
   return (
     <Select
       style={{
-        fontFamily: 'Roboto',
+        fontFamily: 'Inter',
         fontWeight: 600,
         fontSize: '0.875rem',
         height: 22,
