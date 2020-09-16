@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Grid, Column, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SandboxCard } from './SandboxCard';
-import { SandboxTypes } from './constants';
+import { SandboxTypes, DropTargets } from './constants';
 
 export const PinnedSandboxes = ({ menuControls }) => {
   const {
@@ -19,7 +19,7 @@ export const PinnedSandboxes = ({ menuControls }) => {
 
   const [{ isOver }, drop] = useDrop({
     accept: [SandboxTypes.ALL_SANDBOX, SandboxTypes.PINNED_SANDBOX],
-    drop: () => ({ name: 'PINNED_SANDBOXES' }),
+    drop: () => ({ name: DropTargets.PINNED_SANDBOXES }),
     collect: monitor => ({
       isOver: monitor.isOver(),
     }),

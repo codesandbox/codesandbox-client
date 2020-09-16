@@ -5,6 +5,8 @@ import { Input } from '@codesandbox/components';
 type Props = {
   setValue: (value: number) => void;
   step?: number;
+  max?: number;
+  min?: number;
   value: number;
   style?: React.CSSProperties;
 };
@@ -14,6 +16,8 @@ export const PreferenceNumber: FunctionComponent<Props> = ({
   step,
   style,
   value,
+  max,
+  min,
 }) => {
   const handleChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
     if (!Number.isNaN(+target.value)) {
@@ -28,6 +32,8 @@ export const PreferenceNumber: FunctionComponent<Props> = ({
       style={{ width: '3rem', ...style }}
       type="number"
       value={value}
+      max={max}
+      min={min}
     />
   );
 };

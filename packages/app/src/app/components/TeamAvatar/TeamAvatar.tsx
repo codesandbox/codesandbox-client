@@ -19,6 +19,7 @@ interface TeamAvatarProps {
   className?: string;
   avatar?: string | null;
   style?: React.CSSProperties;
+  removeBorder?: boolean;
 }
 
 const textSizes = {
@@ -45,8 +46,9 @@ export const TeamAvatar = ({
     <>
       <img
         css={css({
-          maxWidth: avatarSize,
-          maxHeight: avatarSize,
+          width: avatarSize,
+          height: avatarSize,
+          objectFit: 'cover',
           borderRadius: 'small',
           borderColor: 'sideBar.border',
           borderStyle: 'solid',

@@ -57,6 +57,28 @@ export const Container = styled.div`
     transition: ${props => (props.isDragging ? null : 'width 200ms ease')};
     overflow: hidden;
   }
+
+  /*
+    When previewwindow=tests, SplitPane takes the above styles and the
+    resizer between Test and Test Summary appears vertical. Below styles
+    override the resizer to appear horizontally.
+
+    Note: Better fix will be injecting a custom className to resizer and
+    adding the styles based on className. ( SplitPane doesnt accept className prop )
+  */
+  .Pane .Resizer {
+    width: 100%;
+    height: ${RESIZER_WIDTH}px;
+    cursor: ns-resize;
+  }
+
+  .Pane .Resizer::after {
+    width: 41px;
+    height: ${KNOB_WIDTH}px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 `;
 
 export const PaneContainer = styled.div`

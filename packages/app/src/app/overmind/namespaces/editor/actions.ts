@@ -67,10 +67,7 @@ export const persistCursorToUrl: Action<{
   // and all the browsers do too.
   if (newUrl) {
     effects.router.replace(
-      newUrl
-        .toString()
-        .replace(/%2F/g, '/')
-        .replace('%3A', ':')
+      newUrl.toString().replace(/%2F/g, '/').replace('%3A', ':')
     );
   }
 }, 500);
@@ -602,7 +599,6 @@ export const forkExternalSandbox: AsyncAction<{
     state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
   } catch (error) {
-    console.error(error);
     actions.internal.handleError({
       message: 'We were unable to fork the sandbox',
       error,

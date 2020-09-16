@@ -28,7 +28,7 @@ import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder, PageTypes } from '../types';
 import { Position } from '../Components/Selection';
-import { SIDEBAR_WIDTH } from './constants';
+import { SIDEBAR_WIDTH, NEW_FOLDER_ID } from './constants';
 import { DragItemType, useDrop } from '../utils/dnd';
 
 const SidebarContext = React.createContext(null);
@@ -462,7 +462,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
 
   let hasNewNestedFolder = false;
   if (newFolderPath !== null) {
-    const newFolderParent = newFolderPath.replace('/__NEW__', '');
+    const newFolderParent = newFolderPath.replace(`/${NEW_FOLDER_ID}`, '');
     if (name === 'All Sandboxes') {
       hasNewNestedFolder = true;
     } else if (newFolderParent.length && folderPath.includes(newFolderParent)) {
@@ -503,7 +503,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   if (name === 'All Sandboxes') {
     subFolders = folders.filter(folder => {
       if (folder.path === newFolderPath) {
-        return newFolderPath.replace('/__NEW__', '') === '';
+        return newFolderPath.replace(`/${NEW_FOLDER_ID}`, '') === '';
       }
       return !folder.parent;
     });
@@ -528,7 +528,13 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   const [newName, setNewName] = React.useState(name);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewName(event.target.value);
+    const { value } = event.target;
+    if (value && value.trim()) {
+      event.target.setCustomValidity('');
+    } else {
+      event.target.setCustomValidity('Folder name is required.');
+    }
+    setNewName(value);
   };
   const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === ESC) {
@@ -538,6 +544,10 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
       setNewFolderPath(null);
     }
   };
+  const onInputClick = (event: React.MouseEvent<HTMLInputElement>) => {
+    // prevent redirection when Input is clicked.
+    event.stopPropagation();
+  };
 
   const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
     if (event) event.preventDefault();
@@ -546,7 +556,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
       // nothing to do here
     } else if (isNewFolder) {
       if (newName) {
-        const sanitizedPath = folderPath.replace('__NEW__', newName);
+        const sanitizedPath = folderPath.replace(NEW_FOLDER_ID, newName);
         await actions.dashboard.createFolder(sanitizedPath);
         track('Dashboard - Create Directory', {
           source: 'Sidebar',
@@ -652,6 +662,8 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
               <form onSubmit={onSubmit}>
                 <Input
                   autoFocus
+                  required
+                  onClick={onInputClick}
                   value={newName}
                   onChange={onChange}
                   onKeyDown={onInputKeyDown}

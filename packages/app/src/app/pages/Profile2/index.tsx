@@ -1,17 +1,14 @@
 /**
  * TODO:
- * - Mobile view
+ * - Sandbox picker
  * - Page number in url
  * - Filter out unlisted and private from API response
  * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
  * - Custom drag preview
- * - Sort sandboxes
- * - Search sandboxes
- * - Sandbox picker
- * - Order sandboxes
- * - Likes tab
- * - Drag item for non-draggy pages
- * - Drag items from all
+ * - Remove default showcase from API?
+ * - Google signed in profiles
+ * - Don't show other workspaces in API
+ * - Tag personal workspace in API
  */
 
 import React from 'react';
@@ -21,6 +18,7 @@ import css from '@styled-system/css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
+import { ALT } from '@codesandbox/common/lib/utils/keycodes';
 import { Header } from './Header';
 import { ProfileCard } from './ProfileCard';
 import { ShowcaseSandbox } from './ShowcaseSandbox';
@@ -35,11 +33,11 @@ export const Profile = props => {
 
   const {
     actions: {
-      profile: { profileMounted },
+      profile: { profileMounted }
     },
     state: {
-      profile: { current: user },
-    },
+      profile: { current: user }
+    }
   } = useOvermind();
 
   React.useEffect(() => {
@@ -58,8 +56,7 @@ export const Profile = props => {
   };
 
   const onKeyDown = (event, sandboxId) => {
-    if (event.keyCode !== 18) return; // ALT
-
+    if (event.keyCode !== ALT) return;
     selectSandboxId(sandboxId);
     setMenuVisibility(true);
     const rect = event.target.getBoundingClientRect();
@@ -75,11 +72,11 @@ export const Profile = props => {
           direction="vertical"
           gap={104}
           css={css({
-            height: '100%',
+            height: '100vh',
             width: '100vw',
             backgroundColor: 'grays.900',
             color: 'white',
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: 'Inter, sans-serif'
           })}
         >
           <Header />
@@ -88,7 +85,7 @@ export const Profile = props => {
             gap={8}
             css={css({
               flexDirection: ['column', 'row'],
-              marginX: [32, 64],
+              marginX: [32, 64]
             })}
           >
             <Element css={css({ width: ['100%', '320px'] })}>
