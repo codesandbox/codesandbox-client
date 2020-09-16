@@ -153,7 +153,8 @@ export class DevTools extends React.PureComponent<Props, State> {
     setStateFunc:
       | Partial<State>
       | ((state: State, props: Props) => Partial<State>),
-    time = 200
+    time = 200,
+    callback?: () => void
   ) => {
     const draftState = this.draftState || this.state;
 
@@ -169,7 +170,7 @@ export class DevTools extends React.PureComponent<Props, State> {
 
     const updateFunc = () => {
       if (this.draftState) {
-        this.setState(this.draftState);
+        this.setState(this.draftState, callback);
       }
 
       this.draftState = null;
@@ -187,7 +188,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     if (typeof this.state.height === 'string') {
       const { height } = el.getBoundingClientRect();
 
-      this.setState({ height });
+      this.setStateDebounced({ height }, 0);
     }
   };
 
@@ -248,16 +249,19 @@ export class DevTools extends React.PureComponent<Props, State> {
 
   setHidden = (hidden: boolean) => {
     if (!hidden) {
-      return this.setState(state => ({
-        status: {
-          ...state.status,
-          [this.getCurrentPane().id]: null,
-        },
-        hidden: false,
-      }));
+      return this.setStateDebounced(
+        state => ({
+          status: {
+            ...state.status,
+            [this.getCurrentPane().id]: null,
+          },
+          hidden: false,
+        }),
+        0
+      );
     }
 
-    return this.setState({ hidden }, () => {
+    return this.setStateDebounced({ hidden }, 0, () => {
       if (this.props.setDevToolsOpen) {
         const { setDevToolsOpen } = this.props;
         setTimeout(() => setDevToolsOpen(!this.state.hidden), 100);
@@ -320,12 +324,15 @@ export class DevTools extends React.PureComponent<Props, State> {
     if (!this.state.mouseDown && typeof this.state.height === 'number') {
       const { clientY } = event;
       unFocus(document, window);
-      // @ts-ignore
-      this.setState(state => ({
-        startY: clientY,
-        startHeight: state.height,
-        mouseDown: true,
-      }));
+      this.setStateDebounced(
+        // @ts-ignore
+        state => ({
+          startY: clientY,
+          startHeight: state.height,
+          mouseDown: true,
+        }),
+        0
+      );
       if (this.props.setDragging) {
         this.props.setDragging(true);
       }
@@ -338,7 +345,7 @@ export class DevTools extends React.PureComponent<Props, State> {
 
   handleMouseUp = (e: Event) => {
     if (this.state.mouseDown) {
-      this.setState({ mouseDown: false });
+      this.setStateDebounced({ mouseDown: false }, 0);
       if (this.props.setDragging) {
         this.props.setDragging(false);
       }
@@ -382,9 +389,12 @@ export class DevTools extends React.PureComponent<Props, State> {
         this.state.startHeight - (event.clientY - this.state.startY)
       );
 
-      this.setState({
-        height: Math.max(this.closedHeight() - 2, newHeight),
-      });
+      this.setStateDebounced(
+        {
+          height: Math.max(this.closedHeight() - 2, newHeight),
+        },
+        0
+      );
       this.setHidden(newHeight < 64);
     }
   };
@@ -412,7 +422,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     TweenMax.to(heightObject, 0.3, {
       height: store.get('devtools.height') || 300,
       onUpdate: () => {
-        this.setState(heightObject);
+        this.setStateDebounced(heightObject, 0);
       },
       ease: Elastic.easeOut.config(0.25, 1),
     });
@@ -427,7 +437,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     TweenMax.to(heightObject, 0.3, {
       height: this.closedHeight(),
       onUpdate: () => {
-        this.setState(heightObject);
+        this.setStateDebounced(heightObject, 0);
       },
       ease: Elastic.easeOut.config(0.25, 1),
     });
