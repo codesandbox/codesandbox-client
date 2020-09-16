@@ -63,7 +63,7 @@ class ConsoleComponent extends React.PureComponent<StyledProps, State> {
     }
   }
 
-  handleMessage = (data) => {
+  handleMessage = data => {
     switch (data.type) {
       case 'console': {
         const message = Decode(data.log);
@@ -109,7 +109,7 @@ class ConsoleComponent extends React.PureComponent<StyledProps, State> {
           if (aggregatedResults) {
             const { summaryMessage, failedMessages } = aggregatedResults;
             this.addMessage('log', [summaryMessage]);
-            failedMessages.forEach((t) => {
+            failedMessages.forEach(t => {
               this.addMessage('warn', [t]);
             });
           } else {
@@ -151,8 +151,8 @@ class ConsoleComponent extends React.PureComponent<StyledProps, State> {
       this.props.updateStatus(this.getType(method));
     }
 
-    this.setState((state) =>
-      immer(state, (draft) => {
+    this.setState(state =>
+      immer(state, draft => {
         draft.messages.push({ method, data });
         draft.messages = draft.messages.slice(
           Math.max(0, draft.messages.length - MAX_MESSAGE_COUNT)
@@ -233,7 +233,7 @@ class ConsoleComponent extends React.PureComponent<StyledProps, State> {
     return (
       <Container>
         <Messages
-          ref={(el) => {
+          ref={el => {
             this.list = el;
           }}
         >
@@ -261,7 +261,7 @@ const ConsoleFilterInput = ({ style }) => (
   />
 );
 
-const ConsoleFilterSelect = (props) => {
+const ConsoleFilterSelect = props => {
   const handleOnChange = ({ target: { value } }) => {
     if (value === 'all') {
       dispatch({ type: 'filter-log', filters: [] });

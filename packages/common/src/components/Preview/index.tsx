@@ -380,7 +380,7 @@ class BasePreview extends React.Component<Props, State> {
     const modulesObject: IModulesByPath = {};
     const { sandbox } = this.props;
 
-    sandbox.modules.forEach((m) => {
+    sandbox.modules.forEach(m => {
       const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
       if (path) {
         modulesObject[path] = {
@@ -503,7 +503,7 @@ class BasePreview extends React.Component<Props, State> {
     });
   };
 
-  refreshHashedUrl = (url) => {
+  refreshHashedUrl = url => {
     if (!url.includes('#')) {
       return;
     }
