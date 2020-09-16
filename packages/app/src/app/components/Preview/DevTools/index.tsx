@@ -149,7 +149,7 @@ export class DevTools extends React.PureComponent<Props, State> {
    * Every setState call will have to go through this, otherwise we get race conditions
    * where the underlying state has changed, but the draftState didn't change.
    */
-  setStateDebounced = (
+  setStateDelayedFlush = (
     setStateFunc:
       | Partial<State>
       | ((state: State, props: Props) => Partial<State>),
@@ -188,7 +188,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     if (typeof this.state.height === 'string') {
       const { height } = el.getBoundingClientRect();
 
-      this.setStateDebounced({ height }, 0);
+      this.setStateDelayedFlush({ height }, 0);
     }
   };
 
@@ -249,7 +249,7 @@ export class DevTools extends React.PureComponent<Props, State> {
 
   setHidden = (hidden: boolean) => {
     if (!hidden) {
-      return this.setStateDebounced(
+      return this.setStateDelayedFlush(
         state => ({
           status: {
             ...state.status,
@@ -261,7 +261,7 @@ export class DevTools extends React.PureComponent<Props, State> {
       );
     }
 
-    return this.setStateDebounced({ hidden }, 0, () => {
+    return this.setStateDelayedFlush({ hidden }, 0, () => {
       if (this.props.setDevToolsOpen) {
         const { setDevToolsOpen } = this.props;
         setTimeout(() => setDevToolsOpen(!this.state.hidden), 100);
@@ -276,7 +276,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     status: 'success' | 'warning' | 'error' | 'info' | 'clear',
     count?: number
   ) => {
-    this.setStateDebounced(state => {
+    this.setStateDelayedFlush(state => {
       const currentStatus = (status !== 'clear' && state.status[id]) || {
         unread: 0,
         type: 'info',
@@ -324,7 +324,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     if (!this.state.mouseDown && typeof this.state.height === 'number') {
       const { clientY } = event;
       unFocus(document, window);
-      this.setStateDebounced(
+      this.setStateDelayedFlush(
         // @ts-ignore
         state => ({
           startY: clientY,
@@ -345,7 +345,7 @@ export class DevTools extends React.PureComponent<Props, State> {
 
   handleMouseUp = (e: Event) => {
     if (this.state.mouseDown) {
-      this.setStateDebounced({ mouseDown: false }, 0);
+      this.setStateDelayedFlush({ mouseDown: false }, 0);
       if (this.props.setDragging) {
         this.props.setDragging(false);
       }
@@ -389,7 +389,7 @@ export class DevTools extends React.PureComponent<Props, State> {
         this.state.startHeight - (event.clientY - this.state.startY)
       );
 
-      this.setStateDebounced(
+      this.setStateDelayedFlush(
         {
           height: Math.max(this.closedHeight() - 2, newHeight),
         },
@@ -422,7 +422,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     TweenMax.to(heightObject, 0.3, {
       height: store.get('devtools.height') || 300,
       onUpdate: () => {
-        this.setStateDebounced(heightObject, 0);
+        this.setStateDelayedFlush(heightObject, 0);
       },
       ease: Elastic.easeOut.config(0.25, 1),
     });
@@ -437,7 +437,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     TweenMax.to(heightObject, 0.3, {
       height: this.closedHeight(),
       onUpdate: () => {
-        this.setStateDebounced(heightObject, 0);
+        this.setStateDelayedFlush(heightObject, 0);
       },
       ease: Elastic.easeOut.config(0.25, 1),
     });
