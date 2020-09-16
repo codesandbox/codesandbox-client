@@ -2,7 +2,6 @@ import Select from '@codesandbox/common/lib/components/Select';
 import theme from '@codesandbox/common/lib/theme';
 import { listen, dispatch } from 'codesandbox-api';
 import { Decode, Console as ConsoleFeed } from 'console-feed';
-import immer from 'immer';
 import { debounce } from 'lodash-es';
 import React from 'react';
 import ClearIcon from 'react-icons/lib/md/block';
@@ -151,14 +150,13 @@ class ConsoleComponent extends React.PureComponent<StyledProps, State> {
       this.props.updateStatus(this.getType(method));
     }
 
-    this.setState(state =>
-      immer(state, draft => {
-        draft.messages.push({ method, data });
-        draft.messages = draft.messages.slice(
-          Math.max(0, draft.messages.length - MAX_MESSAGE_COUNT)
-        );
-      })
-    );
+    this.setState(state => {
+      const message = { method, data };
+      const messages = [...state.messages];
+      messages.push(message);
+      messages.slice(Math.max(0, messages.length - MAX_MESSAGE_COUNT));
+      return { messages };
+    });
   }
 
   list: HTMLDivElement | undefined;
