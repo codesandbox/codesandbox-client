@@ -478,6 +478,20 @@ export const codeChanged: Action<{
   }
 };
 
+export const getCode: Action<{
+  moduleShortid: string;
+}> = ({ effects, state, actions }, { moduleShortid }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  return module
+};
+
 export const saveClicked: AsyncAction = withOwnedSandbox(
   async ({ state, effects, actions }) => {
     const sandbox = state.editor.currentSandbox;
