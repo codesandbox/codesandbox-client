@@ -1143,6 +1143,22 @@ export const previewActionReceived: Action<any> = (
       }
       break;
     }
+
+    case 'source.module.get-code': {
+      const sandbox = state.editor.currentSandbox;
+      if (!sandbox) {
+        return;
+      }
+      const module = effects.utils.resolveModule(
+        action.path.replace(/^\//, ''),
+        sandbox.modules,
+        sandbox.directories
+      );
+
+      return module
+
+      break;
+    }
   }
 };
 
