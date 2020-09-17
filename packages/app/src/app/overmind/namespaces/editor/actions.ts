@@ -1125,6 +1125,7 @@ export const previewActionReceived: Action<any> = (
           moduleShortid: module.shortid,
           code: action.code,
         });
+        actions.editor.saveClicked()
         effects.vscode.setModuleCode(module);
       }
       break;
