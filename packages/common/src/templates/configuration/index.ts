@@ -10,6 +10,7 @@ import tsconfig from './tsconfig';
 import jsconfig from './jsconfig';
 import babelTranspiler from './babel-transpiler';
 import customCodeSandbox from './custom-codesandbox';
+import fakerConfig from './faker-config';
 
 const configs = {
   babelrc,
@@ -24,6 +25,7 @@ const configs = {
   nowConfig,
   netlifyConfig,
   jsconfig,
+  fakerConfig,
 };
 
 export default configs;

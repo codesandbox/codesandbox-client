@@ -32,6 +32,7 @@ const getIcon = name => {
     'jsconfig.json': JSIcon,
     'tsconfig.json': TypescriptIcon,
     'sandbox.config.json': CodeSandboxIcon,
+    'faker-config.codesandbox.json': CodeSandboxIcon,
   };
 
   return icons[name] || JSIcon;

@@ -42,6 +42,7 @@ const defaultConfigurations = {
   '/sandbox.config.json': configurations.sandboxConfig,
   '/now.json': configurations.nowConfig,
   '/netlify.toml': configurations.netlifyConfig,
+  '/faker-config.codesandbox.json': configurations.fakerConfig,
 };
 
 export interface ViewTab {
