@@ -27,3 +27,11 @@ export function setCode(path: string, code: string): ModuleSetCode {
     code,
   };
 }
+
+export function getCode(path: string): ModuleSetCode {
+  return {
+    type: 'action',
+    action: 'source.module.get-code',
+    path,
+  };
+}
