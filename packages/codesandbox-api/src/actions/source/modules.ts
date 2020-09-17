@@ -10,6 +10,11 @@ export interface ModuleSetCode extends Action {
   code: string;
 }
 
+export interface ModuleGetCode extends Action {
+  path: string;
+}
+
+
 export function rename(path: string, title: string): ModuleRenameAction {
   return {
     type: 'action',
@@ -28,7 +33,7 @@ export function setCode(path: string, code: string): ModuleSetCode {
   };
 }
 
-export function getCode(path: string): ModuleSetCode {
+export function getCode(path: string): ModuleGetCode {
   return {
     type: 'action',
     action: 'source.module.get-code',
