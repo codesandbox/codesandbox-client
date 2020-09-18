@@ -1121,10 +1121,14 @@ export const previewActionReceived: Action<any> = (
       );
 
       if (module) {
-        actions.editor.codeChanged({
+//         actions.editor.codeChanged({
+//           moduleShortid: module.shortid,
+//           code: action.code,
+//         });
+        actions.editor.codeSaved({
           moduleShortid: module.shortid,
           code: action.code,
-        });
+        })
         effects.vscode.setModuleCode(module);
       }
       break;
