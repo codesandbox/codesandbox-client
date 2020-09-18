@@ -176,6 +176,9 @@ export default {
       id: sandboxId,
     });
   },
+  generateFakerData(fakerConfig: object) {
+    return api.post<object>(`/faker`, fakerConfig);
+  },
   savePrivacy(sandboxId: string, privacy: 0 | 1 | 2) {
     return api.patch<SandboxAPIResponse>(`/sandboxes/${sandboxId}/privacy`, {
       sandbox: {

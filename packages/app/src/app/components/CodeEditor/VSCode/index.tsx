@@ -44,6 +44,7 @@ export const VSCode: React.FunctionComponent = () => {
                   onChange={(code, moduleShortid) =>
                     actions.editor.codeChanged({ code, moduleShortid })
                   }
+                  updateFaker={actions.files.updateFakerDataFile}
                   // Copy the object, we don't want mutations in the component
                   currentModule={json(getCurrentModule())}
                   config={config}

@@ -890,3 +890,28 @@ export const syncSandbox: AsyncAction<any[]> = async (
       state.editor.currentSandbox
     );
 };
+
+export const updateFakerDataFile: AsyncAction<object> = async (
+  { state, actions, effects },
+  fakerConfig
+) => {
+  if (!fakerConfig) return;
+
+  const json = await effects.api.generateFakerData(fakerConfig);
+
+  const jsonFile = state.editor.modulesByPath['/data.json'];
+  const code = JSON.stringify(json, null, 2);
+  if (jsonFile) {
+    actions.editor.codeSaved({
+      moduleShortid: jsonFile.shortid,
+      code,
+      cbID: null,
+    });
+  } else {
+    actions.files.moduleCreated({
+      title: 'data.json',
+      code,
+      directoryShortid: null,
+    });
+  }
+};

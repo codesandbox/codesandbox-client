@@ -26,9 +26,11 @@ type Props = EditorProps & {
   onDispose: (cb: () => void) => void;
   openText: () => void;
   theme: any;
+  createFile: () => void;
 };
 
-export class ConfigurationComponent extends React.PureComponent<Props>
+export class ConfigurationComponent
+  extends React.PureComponent<Props>
   implements Editor {
   disposeInitializer: Function;
   currentModule: Module;
@@ -155,6 +157,7 @@ export class ConfigurationComponent extends React.PureComponent<Props>
             sandbox={sandbox}
             updateFile={this.updateFile}
             file={this.props.getCode()}
+            updateFaker={this.props.updateFaker}
           />
         </ThemeProvider>
       </Container>

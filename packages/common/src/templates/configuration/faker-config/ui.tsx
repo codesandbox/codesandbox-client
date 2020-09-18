@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Button, Stack, Element } from '@codesandbox/components';
 import {
   ConfigDescription,
   PaddedConfig,
@@ -7,175 +8,147 @@ import {
 } from '../elements';
 import { ConfigurationUIProps } from '../types';
 
+export const API_ROOT = '/api/v1';
+
 const ALLOWED_OPTIONS = [
-  '_name',
-  '_username',
-  '_email',
-  '_avatar_url',
-  '_pokemon',
-  '_boolean',
+  'name',
+  'username',
+  'email',
+  'avatar_url',
+  'pokemon',
+  'boolean',
 ];
 
-export class ConfigWizard extends React.Component<ConfigurationUIProps> {
-  bindValue = (file: Object, property: string) => ({
-    value: file[property],
-    setValue: (value: any) => {
-      this.props.updateFile(
-        JSON.stringify(
-          {
-            ...file,
-            [property]: value,
-          },
-          null,
-          2
-        )
-      );
-    },
-  });
+export const ConfigWizard = (props: ConfigurationUIProps) => {
+  const [records, setRecords] = useState(2);
+  const defaultState = {
+    i: 0,
+    key: '',
+    value: '',
+  };
+  const [values, setValues] = useState<any>([defaultState]);
 
-  render() {
-    const { file } = this.props;
-
-    let parsedFile;
-    let error;
+  useEffect(() => {
+    let file: {
+      data?: {
+        records: number;
+        fields: object;
+      };
+    };
     try {
-      parsedFile = JSON.parse(file);
-    } catch (e) {
-      error = e;
+      file = JSON.parse(props.file);
+    } catch {
+      file = {};
     }
 
-    if (error) {
-      return (
-        <div>
-          Problem parsing faker-config.codesandbox.json: {error.message}
-        </div>
+    if (file && file.data) {
+      setRecords(file.data.records);
+      const valuesFromFile = Object.keys(file.data.fields).reduce(
+        (acc, curr, i) => {
+          acc.push({
+            i,
+            key: curr,
+            value: file.data.fields[curr],
+          });
+
+          return acc;
+        },
+        []
       );
+      setValues(valuesFromFile);
     }
+  }, [props.file]);
 
-    if (!parsedFile) {
-      return <div>Could not parse faker-config.codesandbox.json</div>;
-    }
-    return (
-      <div>
-        <PaddedConfig>
-          <ConfigItem>
-            <PaddedPreference
-              title="Number of records"
-              type="number"
-              {...this.bindValue(parsedFile, 'records')}
-       ßß
-          </ConfigDescription>
-        </PaddedConfig>
+  const generateFile = async () => {
+    const fields = values.reduce((acc, curr) => {
+      acc[curr.key] = '_' + curr.value;
 
-        <PaddedConfig>
-          <ConfigItem>
-            <PaddedPreference
-              title="Tab Width"
-              type="number"
-              {...this.bindValue(parsedFile, 'tabWidth')}
-            />
-          </ConfigItem>
-          <ConfigDescription>
-            Specify the number of spaces per indentation-level.
-          </ConfigDescription>
-        </PaddedConfig>
+      return acc;
+    }, {});
+    const data = {
+      data: {
+        records,
+        fields,
+      },
+    };
 
-        <PaddedConfig>
-          <ConfigItem>
-            <PaddedPreference
-              title="Use Tabs"
-              type="boolean"
-              {...this.bindValue(parsedFile, 'useTabs')}
-            />
-          </ConfigItem>
-          <ConfigDescription>
-            Indent lines with tabs instead of spaces.
-          </ConfigDescription>
-        </PaddedConfig>
+    props.updateFile(JSON.stringify(data, null, 2));
+    props.updateFaker(data);
+  };
 
-        <PaddedConfig>
-          <ConfigItem>
-            <PaddedPreference
-              title="Semicolons"
-              type="boolean"
-              {...this.bindValue(parsedFile, 'semi')}
-            />
-          </ConfigItem>
-          <ConfigDescription>
-            Print semicolons at the ends of statements.
-          </ConfigDescription>
-        </PaddedConfig>
+  const changeValues = (value: string, i: number, key: string) => {
+    setValues(oldValues =>
+      oldValues.map(a => {
+        if (a.i === i) {
+          a[key] = value;
+        }
 
-        <PaddedConfig>
-          <ConfigItem>
-            <PaddedPreference
-              title="Use Single Quotes"
-              type="boolean"
-              {...this.bindValue(parsedFile, 'singleQuote')}
-            />
-          </ConfigItem>
-          <ConfigDescription>
-            Use {"'"}single{"'"} quotes instead of {'"'}double{'"'} quotes.
-          </ConfigDescription>
-        </PaddedConfig>
-
-        <PaddedConfig>
-          <ConfigItem>
-            <PaddedPreference
-              title="Trailing Commas"
-              type="dropdown"
-              options={['none', 'es5', 'all']}
-              {...this.bindValue(parsedFile, 'trailingComma')}
-            />
-          </ConfigItem>
-          <ConfigDescription>
-            Print trailing commas wherever possible.
-          </ConfigDescription>
-        </PaddedConfig>
-
-        <PaddedConfig>
-          <ConfigItem>
-            <PaddedPreference
-              title="Bracket Spacing"
-              type="boolean"
-              {...this.bindValue(parsedFile, 'bracketSpacing')}
-            />
-          </ConfigItem>
-          <ConfigDescription>
-            Print spaces between brackets in object literals.
-          </ConfigDescription>
-        </PaddedConfig>
-
-        <PaddedConfig>
-          <ConfigItem>
-            <PaddedPreference
-              title="JSX Brackets"
-              type="boolean"
-              {...this.bindValue(parsedFile, 'jsxBracketSameLine')}
-            />
-          </ConfigItem>
-          <ConfigDescription>
-            Put the `{'>'}` of a multi-line JSX element at the end of the last
-            line instead of being alone on the next line.
-          </ConfigDescription>
-        </PaddedConfig>
-        <PaddedConfig>
-          <ConfigItem>
-            <PaddedPreference
-              title="Arrow Function Parentheses"
-              type="dropdown"
-              options={['avoid', 'always']}
-              {...this.bindValue(parsedFile, 'arrowParens')}
-            />
-          </ConfigItem>
-          <ConfigDescription>
-            Include parentheses around a sole arrow function parameter.
-          </ConfigDescription>
-        </PaddedConfig>
-      </div>
+        return a;
+      })
     );
-  }
-}
+  };
+
+  return (
+    <div>
+      <Stack marginY={4}>
+        <Button onClick={generateFile} autoWidth>
+          Generate File
+        </Button>
+      </Stack>
+      <PaddedConfig>
+        <ConfigItem>
+          <PaddedPreference
+            title="Number of records"
+            type="number"
+            value={records}
+            setValue={r => setRecords(r)}
+          />
+        </ConfigItem>
+        <ConfigDescription>
+          How many records would you want us to generate?
+        </ConfigDescription>
+      </PaddedConfig>
+      <Element marginY={4}>
+        <ConfigDescription>
+          Add your what you would like in your data
+        </ConfigDescription>
+      </Element>
+      {values.map((value, i) => (
+        <PaddedConfig>
+          <ConfigItem>
+            <Element style={{ width: '100%' }} paddingRight={2}>
+              <PaddedPreference
+                title="Key"
+                type="string"
+                value={value.key}
+                setValue={v => changeValues(v, i, 'key')}
+              />
+            </Element>
+            <Element style={{ width: '100%' }} paddingLeft={2}>
+              <PaddedPreference
+                title="Value"
+                type="dropdown"
+                value={value.value}
+                options={ALLOWED_OPTIONS}
+                setValue={v => changeValues(v, i, 'value')}
+              />
+            </Element>
+          </ConfigItem>
+        </PaddedConfig>
+      ))}
+      <Button
+        variant="secondary"
+        onClick={() =>
+          setValues(v =>
+            v.concat({ key: '', value: '', i: v[v.length - 1].i + 1 })
+          )
+        }
+      >
+        Add a new row
+      </Button>
+    </div>
+  );
+};
 
 export default {
   ConfigWizard,

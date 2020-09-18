@@ -24,6 +24,7 @@ type PreferenceProps<TString extends PreferenceType> = {
   tooltip?: string;
   options?: any[];
   type: TString;
+  onChange?: any;
 };
 
 export type BooleanPreference = PreferenceProps<'boolean'> &
