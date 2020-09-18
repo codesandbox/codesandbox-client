@@ -19,22 +19,30 @@ const ALLOWED_OPTIONS = [
   'boolean',
 ];
 
+type File = {
+  data?: {
+    records: number;
+    fields: object;
+  };
+};
+
+type Value = {
+  i: number;
+  key: string;
+  value: string;
+};
+
 export const ConfigWizard = (props: ConfigurationUIProps) => {
-  const [records, setRecords] = useState(2);
+  const [records, setRecords] = useState<number>(2);
   const defaultState = {
     i: 0,
     key: '',
     value: '',
   };
-  const [values, setValues] = useState<any>([defaultState]);
+  const [values, setValues] = useState<Value[]>([defaultState]);
 
   useEffect(() => {
-    let file: {
-      data?: {
-        records: number;
-        fields: object;
-      };
-    };
+    let file: File;
     try {
       file = JSON.parse(props.file);
     } catch {
@@ -44,7 +52,7 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
     if (file && file.data) {
       setRecords(file.data.records);
       const valuesFromFile = Object.keys(file.data.fields).reduce(
-        (acc, curr, i) => {
+        (acc: Value[], curr: string, i: number) => {
           acc.push({
             i,
             key: curr,
@@ -60,7 +68,7 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
   }, [props.file]);
 
   const generateFile = async () => {
-    const fields = values.reduce((acc, curr) => {
+    const fields = values.reduce((acc: object, curr: Value) => {
       acc[curr.key] = '_' + curr.value;
 
       return acc;
@@ -77,13 +85,13 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
   };
 
   const changeValues = (value: string, i: number, key: string) => {
-    setValues(oldValues =>
-      oldValues.map(a => {
-        if (a.i === i) {
-          a[key] = value;
+    setValues((oldValues: Value[]) =>
+      oldValues.map(oldValue => {
+        if (oldValue.i === i) {
+          oldValue[key] = value;
         }
 
-        return a;
+        return oldValue;
       })
     );
   };
@@ -101,7 +109,7 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
             title="Number of records"
             type="number"
             value={records}
-            setValue={r => setRecords(r)}
+            setValue={(r: number) => setRecords(r)}
           />
         </ConfigItem>
         <ConfigDescription>
@@ -121,7 +129,7 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
                 title="Key"
                 type="string"
                 value={value.key}
-                setValue={v => changeValues(v, i, 'key')}
+                setValue={(v: string) => changeValues(v, i, 'key')}
               />
             </Element>
             <Element style={{ width: '100%' }} paddingLeft={2}>
@@ -130,7 +138,7 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
                 type="dropdown"
                 value={value.value}
                 options={ALLOWED_OPTIONS}
-                setValue={v => changeValues(v, i, 'value')}
+                setValue={(v: string) => changeValues(v, i, 'value')}
               />
             </Element>
           </ConfigItem>
@@ -139,7 +147,7 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
       <Button
         variant="secondary"
         onClick={() =>
-          setValues(v =>
+          setValues((v: Value[]) =>
             v.concat({ key: '', value: '', i: v[v.length - 1].i + 1 })
           )
         }
