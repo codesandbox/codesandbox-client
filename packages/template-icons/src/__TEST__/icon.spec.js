@@ -10,24 +10,24 @@ Object.entries(Icons).forEach(([name, Icon]) => {
         expect(container.firstChild.nodeName).toBe(`svg`);
       });
 
-      it(`includes a custom class when passed in via the 'className' prop`, () => {
+      it(`включает настраиваемый класс при передаче через свойство 'className'`, () => {
         const { container } = render(<Icon className="custom" />);
         expect(container.firstChild.classList.contains(`custom`)).toBeTruthy();
       });
 
-      it(`has default witdh and height`, () => {
+      it(`имеет значение по умолчанию witdh и height`, () => {
         const { container } = render(<Icon />);
         expect(container.firstChild.getAttribute(`width`)).toEqual(`32`);
         expect(container.firstChild.getAttribute(`height`)).toEqual(`32`);
       });
 
-      it(`scales the width and height when the scale prop is set to a numeric value`, () => {
+      it(`масштабирует ширину и высоту, когда опора шкалы установлена на числовое значение`, () => {
         const { container } = render(<Icon scale={2} />);
         expect(container.firstChild.getAttribute(`width`)).toEqual(`64`);
         expect(container.firstChild.getAttribute(`height`)).toEqual(`64`);
       });
 
-      it(`all icon <defs> have different ids`, () => {
+      it(`все значки <defs> имеют разные идентификаторы`, () => {
         const { container } = render(<Icon />);
         const ids = Array.from(container.querySelectorAll('[id]')).map(
           element => element.id
@@ -35,23 +35,23 @@ Object.entries(Icons).forEach(([name, Icon]) => {
         expect(ids.length).toEqual(new Set(ids).size);
       });
 
-      it(`each icon instance generates unique ids`, () => {
-        // render the icon once
+      it(`каждый экземпляр значка генерирует уникальные идентификаторы`, () => {
+        // визуализировать значок один раз
         const { container: frstContainer } = render(<Icon />);
         const frstIds = Array.from(frstContainer.querySelectorAll('[id]')).map(
           element => element.id
         );
 
-        // render the icon for the 2nd time
+        // визуализировать иконку во второй раз
         const { container: scndContainer } = render(<Icon />);
         const scndIds = Array.from(scndContainer.querySelectorAll('[id]')).map(
           element => element.id
         );
 
-        // put all ids into a single array
+        // поместить все идентификаторы в один массив
         const ids = [...frstIds, ...scndIds];
 
-        // make sure there are not duplicates
+        // убедитесь, что нет дубликатов
         expect(ids.length).toEqual(new Set(ids).size);
       });
     });
