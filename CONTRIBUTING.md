@@ -80,8 +80,6 @@
 
 ## Отправка запроса pull
 
-Please go through existing issues and pull requests to check if somebody else is
-already working on it, we use `someone working on it` label to mark such issues.
 Пожалуйста, просмотрите существующие проблемы и вытяните запросы, чтобы проверить, не работает ли кто-то еще над этим, мы используем ярлык `someone working on it`, чтобы отметить такие проблемы.
 
 Кроме того, убедитесь, что вы выполнили тесты и обработали код перед фиксацией изменений.
