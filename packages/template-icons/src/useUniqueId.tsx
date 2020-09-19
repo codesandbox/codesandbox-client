@@ -1,19 +1,19 @@
 import { useMemo } from 'react';
 
-/* Template icons use <linearGradient/>, <radialGradient/>, <filter/>,
- * <clipPath/> and potentially other svg definitions which require
- * a global identifier that is referenced through `"url(#defId)"`
+/* Шаблонные значки используют <linearGradient/>, <radialGradient/>, <filter/>,
+ * <clipPath/> и потенциально другие определения svg, которые требуют
+ * Глобальный идентификатор, на который ссылаются через `"url(#defId)"`
  *
- * We need a unique global identifier to avoid name collision when
- * an icon is rendered more than once.
+ * Нам нужен уникальный глобальный идентификатор, чтобы избежать столкновения имен, 
+ * когда значок отображается не один раз.
  * https://github.com/codesandbox/codesandbox-templates/issues/4
  */
 
 let counter = 0;
 
-/** Renerate a unique identifier on every mount of a component
+/** Повторно генерировать уникальный идентификатор для каждого крепления компонента
  *
- * That is achieved by the useMemo's second argument [] which says, execute
- * the function and return new value on every mount
+ * Это достигается с помощью второго аргумента useMemo [], который говорит: 
+ * выполнить функцию и вернуть новое значение при каждом монтировании.
  */
 export const useUniqueId = () => useMemo(() => ++counter, []);
