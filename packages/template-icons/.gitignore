@@ -1,7 +1,7 @@
-# Package Directories
+# Каталоги пакетов
 node_modules
 
-# Ignored Directories
+# Игнорируемые каталоги
 .coverage
 .cache
 /pkg
@@ -12,7 +12,7 @@ dist
 .cache
 /lib
 
-# Ignored Files
+# Игнорируемые файлы
 .DS_STORE
 npm-debug.log*
 yarn-error.log*
