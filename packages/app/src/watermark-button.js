@@ -81,7 +81,7 @@ const createIframe = () => {
   iframe.onload = () => {
     iframe.contentDocument.body.appendChild(link);
     setButtonStyles(link);
-    link.innerText = 'Open Sandbox';
+    link.innerText = 'Открыть Sandbox';
 
     link.href =
       'https://codesandbox.io/s/' + document.location.host.split('.')[0];
@@ -89,8 +89,8 @@ const createIframe = () => {
     link.rel = 'noopener noreferrer';
 
     /**
-     * Prevent others from trying to remove this button. If it's removed we just
-     * readd it!
+     * Не позволяйте другим пользователям удалять эту кнопку. 
+     * Если она удалена, мы её лишь читаем!
      */
     const observer = new MutationObserver(() => {
       document.body.removeChild(iframe);
@@ -114,5 +114,5 @@ try {
   }, 250);
 } catch (e) {
   console.error(e);
-  /* catch */
+  /* поймать */
 }
