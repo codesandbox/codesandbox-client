@@ -56,6 +56,38 @@ export const GithubIcon = props => (
   </svg>
 );
 
+export const InspectorIcon = props => (
+  <svg
+    width={40}
+    height={32}
+    viewBox="0 0 73 58"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect
+      x="30"
+      y="5"
+      width="40"
+      height="8"
+      rx="4"
+      transform="rotate(90 30 5)"
+      fill="currentColor"
+    />
+    <rect
+      x="51"
+      y="5"
+      width="41"
+      height="8"
+      rx="4"
+      transform="rotate(90 51 5)"
+      fill="currentColor"
+    />
+    <circle cx="26" cy="44" r="7.5" fill="currentColor" stroke="#E3E3E3" />
+    <circle cx="47" cy="24" r="7.5" fill="currentColor" stroke="#E3E3E3" />
+  </svg>
+);
+
 export const InfoIcon = props => (
   <svg width={40} height={32} fill="none" viewBox="0 0 40 32" {...props}>
     <path

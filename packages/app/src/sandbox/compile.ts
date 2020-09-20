@@ -11,6 +11,7 @@ import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
 import { flatten } from 'lodash';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
+import { getInspectorStateService } from 'inspector/lib/sandbox';
 
 import {
   evalBoilerplates,
@@ -673,6 +674,13 @@ async function compile({
         }
       }
     }
+
+    window.$editor = getInspectorStateService({
+      resolve: async (fromPath: string, toPath: string) => {
+        const module = await manager.resolveModuleAsync(toPath, fromPath);
+        return { resolvedPath: module.path, code: module.code };
+      },
+    });
 
     await manager.preset.teardown(manager, updatedModules);
 

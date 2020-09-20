@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`converts knobs to something new 1`] = `
+"import * as _testJsKnobsJson from \\"./test.js.knobs.json\\";
+import * as knobs from 'knobs';
+let var1 = knobs.number(_testJsKnobsJson.padding, 'padding');
+let var2 = knobs.string(_testJsKnobsJson.name, 'name');"
+`;

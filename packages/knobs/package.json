@@ -1,0 +1,43 @@
+{
+  "name": "knobs",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "umd:main": "dist/knobs.umd.production.js",
+  "module": "dist/knobs.es.production.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test"
+  },
+  "peerDependencies": {},
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "devDependencies": {
+    "@babel/types": "^7.11.5",
+    "@types/jest": "^26.0.14",
+    "husky": "^4.3.0",
+    "prettier": "^2.1.2",
+    "pretty-quick": "^3.0.2",
+    "tsdx": "^0.13.3",
+    "tslib": "^2.0.1",
+    "typescript": "^4.0.2"
+  },
+  "dependencies": {
+    "@babel/helper-module-imports": "^7.10.4",
+    "@babel/traverse": "^7.11.5",
+    "codesandbox-api": "^0.0.24"
+  }
+}

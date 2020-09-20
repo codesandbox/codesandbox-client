@@ -31,6 +31,11 @@ export const PROJECT_SUMMARY: INavigationItem = {
   hasCustomHeader: true,
 };
 
+export const INSPECTOR: INavigationItem = {
+  id: 'inspector',
+  name: 'Inspector',
+};
+
 export const GITHUB_SUMMARY: INavigationItem = {
   id: 'github-summary',
   name: 'GitHub Info',
@@ -148,6 +153,7 @@ export default function getItems(
   const items = [
     isCustomTemplate ? PROJECT_TEMPLATE : PROJECT,
     FILES,
+    INSPECTOR,
     CONFIGURATION,
   ];
 

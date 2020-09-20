@@ -22,12 +22,14 @@ import {
   LiveIcon,
   ServerIcon,
   SettingsIcon,
+  InspectorIcon,
 } from './icons';
 
 const IDS_TO_ICONS = {
   project: InfoIcon,
   'project-summary': InfoIcon,
   'github-summary': GithubIcon,
+  inspector: InspectorIcon,
   files: ExplorerIcon,
   github: GithubIcon,
   deploy: DeployIcon,

@@ -24,7 +24,9 @@
       "packages/notifications",
       "packages/deps",
       "packages/executors",
-      "packages/template-icons"
+      "packages/template-icons",
+      "packages/knobs",
+      "packages/inspector"
     ],
     "nohoist": [
       "**/react-codemirror2",

@@ -15,10 +15,12 @@ import { Live } from './screens/Live';
 import { NotOwnedSandboxInfo } from './screens/NotOwnedSandboxInfo';
 import { ProjectInfo } from './screens/ProjectInfo';
 import { Server } from './screens/Server';
+import { Inspector } from './screens/Inspector';
 
 const workspaceTabs = {
   project: ProjectInfo,
   'project-summary': NotOwnedSandboxInfo,
+  inspector: Inspector,
   'github-summary': GithubSummary,
   github: GitHub,
   files: Explorer,
