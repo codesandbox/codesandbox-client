@@ -1,14 +1,17 @@
 /**
- * TODO:
+ * Features:
  * - Sandbox picker
- * - Page number in url
- * - Filter out unlisted and private from API response
- * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
- * - Custom drag preview
- * - Remove default showcase from API?
- * - Google signed in profiles
- * - Don't show other workspaces in API
+ *
+ * API:
+ * - Add github to social link based on provider
+ * - Remove default showcase
+ * - Filter out unlisted and private
+ * - Don't show sandboxes from non-personal workspaces
  * - Tag personal workspace in API
+ *
+ * 5%
+ * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
+ * - Page number in url
  */
 
 import React from 'react';
@@ -18,6 +21,7 @@ import css from '@styled-system/css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
+import { Helmet } from 'react-helmet';
 import { ALT } from '@codesandbox/common/lib/utils/keycodes';
 import { Header } from './Header';
 import { ProfileCard } from './ProfileCard';
@@ -33,11 +37,11 @@ export const Profile = props => {
 
   const {
     actions: {
-      profile: { profileMounted }
+      profile: { profileMounted },
     },
     state: {
-      profile: { current: user }
-    }
+      profile: { current: user },
+    },
   } = useOvermind();
 
   React.useEffect(() => {
@@ -76,16 +80,19 @@ export const Profile = props => {
             width: '100vw',
             backgroundColor: 'grays.900',
             color: 'white',
-            fontFamily: 'Inter, sans-serif'
+            fontFamily: 'Inter, sans-serif',
           })}
         >
+          <Helmet>
+            <title>{user.name || user.username} - CodeSandbox</title>
+          </Helmet>
           <Header />
 
           <Stack
             gap={8}
             css={css({
               flexDirection: ['column', 'row'],
-              marginX: [32, 64]
+              marginX: [32, 64],
             })}
           >
             <Element css={css({ width: ['100%', '320px'] })}>

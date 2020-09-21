@@ -129,6 +129,8 @@ export const AllSandboxes = ({ menuControls }) => {
                 </motion.div>
               </Column>
             ))}
+        <Column />
+        <Column />
       </Grid>
       <Pagination />
     </Stack>
