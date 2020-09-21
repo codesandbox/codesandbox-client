@@ -21,6 +21,7 @@ import {
   VercelIcon,
   JSIcon,
   CodeSandboxIcon,
+  FakerIcon,
 } from './Icons';
 
 const getIcon = name => {
@@ -32,7 +33,7 @@ const getIcon = name => {
     'jsconfig.json': JSIcon,
     'tsconfig.json': TypescriptIcon,
     'sandbox.config.json': CodeSandboxIcon,
-    'faker-config.codesandbox.json': CodeSandboxIcon,
+    'faker-config.codesandbox.json': FakerIcon,
   };
 
   return icons[name] || JSIcon;

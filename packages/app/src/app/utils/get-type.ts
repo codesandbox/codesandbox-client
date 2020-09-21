@@ -22,6 +22,7 @@ const specialCasesMap = {
   'yarn.lock': 'yarn',
   'package.json': 'npm',
   'sandbox.config.json': 'codesandbox',
+  'faker-config.codesandbox.json': 'faker',
   'now.json': 'now',
   prisma: 'prisma',
   'netlify.toml': 'netlify',

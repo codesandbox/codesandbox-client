@@ -6,11 +6,6 @@ const config: ConfigurationFile = {
   description:
     'Defines the structure of the data you want to fetch from faker.',
   moreInfoUrl: 'https://github.com/marak/Faker.js/',
-  getDefaultCode: () => `{
-    "data": {
-
-    }
-}`,
 };
 
 export default config;

@@ -8,8 +8,6 @@ import {
 } from '../elements';
 import { ConfigurationUIProps } from '../types';
 
-export const API_ROOT = '/api/v1';
-
 const ALLOWED_OPTIONS = [
   'name',
   'username',
