@@ -318,6 +318,10 @@ function run(port) {
   if (process.env.LOCAL_SERVER) {
     // Sandbox server
     const proxy = httpProxy.createProxyServer({});
+    proxy.addListener('error', () => {
+      console.error('Error happened');
+    });
+
     http
       .createServer(function(req, res) {
         if (req.url.includes('.js')) {

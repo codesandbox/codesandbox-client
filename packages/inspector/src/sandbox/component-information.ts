@@ -4,7 +4,10 @@ import { Disposable } from '../common/rpc/disposable';
 import { Resolver } from '.';
 
 export class ComponentInformationResolver extends Disposable {
-  componentInformationByFile = new Map<string, FileComponentInformation>();
+  private componentInformationByFile = new Map<
+    string,
+    FileComponentInformation
+  >();
 
   constructor(private resolver: Resolver) {
     super();

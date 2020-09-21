@@ -119,8 +119,9 @@ export interface DocgenOutput {
 }
 
 function convertReactDocsType(propDescriptor: PropDescriptor): Prop['type'] {
-  if (propDescriptor.tsType) {
-    switch (propDescriptor.tsType.name) {
+  const types = propDescriptor.tsType || propDescriptor.flowType;
+  if (types) {
+    switch (types.name) {
       case 'union':
         return 'enum';
       case 'number':
