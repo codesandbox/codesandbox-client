@@ -1,11 +1,10 @@
 import Manager from '../manager';
 import { LoaderContext } from '../transpiled-module';
-import { SourceMap } from './utils/get-source-map';
 
 export interface TranspilerResult {
   transpiledCode: any;
   ast?: Object;
-  sourceMap?: SourceMap;
+  sourceMap?: any;
 }
 
 export default abstract class Transpiler {

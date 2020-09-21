@@ -104,6 +104,7 @@ export function getMeasurements() {
 }
 
 getGlobal().measurements = {
+  clearMeasurements,
   getCumulativeMeasure,
   getMeasurements,
 };

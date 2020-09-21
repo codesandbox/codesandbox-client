@@ -5,7 +5,7 @@ const specialValues = {
   false: false,
 };
 
-export default function parseQuery(query) {
+export default function parseQuery(query: string) {
   if (query.substr(0, 1) !== '?') {
     throw new Error(
       "A valid query string passed to parseQuery should begin with '?'"

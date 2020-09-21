@@ -7,7 +7,7 @@ import { basename, dirname } from '@codesandbox/common/lib/utils/path';
 import componentNormalizerRaw from '!raw-loader!./component-normalizer';
 import vueHotReloadAPIRaw from '!raw-loader!vue-hot-reload-api';
 import type { LoaderContext } from '../../transpiled-module';
-import loaderUtils from '../utils/loader-utils';
+import loaderUtils from '../../utils/loader-utils';
 
 import genId from './utils/gen-id';
 import parse from './parser';

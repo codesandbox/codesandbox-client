@@ -10,7 +10,7 @@ import { WebpackTranspiler } from '../transpilers/webpack';
 import csbDynamicImportTranspiler from '../transpilers/csb-dynamic-import';
 import { IEvaluator } from '../evaluator';
 
-type TranspilerDefinition = {
+export type TranspilerDefinition = {
   transpiler: Transpiler;
   options?: Object;
 };
@@ -272,8 +272,15 @@ export default class Preset {
    * Get the query syntax of the module
    */
   getQuery(module: Module, evaluator: IEvaluator, query: string = '') {
-    const loaders = this.getLoaders(module, evaluator, query);
+    const loaders = this.getLoaders(module, evaluator, query).reverse();
 
-    return `!${loaders.map(t => t.transpiler.name).join('!')}`;
+    return `!${loaders
+      .map(t => {
+        const configStringified = querystring.encode(t.options);
+        const loaderQuery = configStringified ? '?' + configStringified : '';
+
+        return t.transpiler.name + loaderQuery;
+      })
+      .join('!')}`;
   }
 }

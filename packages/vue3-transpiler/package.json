@@ -1,0 +1,21 @@
+{
+  "name": "vue3-transpiler",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "type": "lib/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsc --watch",
+    "build": "rollup --config ./compiler/rollup.config.js"
+  },
+  "devDependencies": {
+    "@types/hash-sum": "^1.0.0",
+    "app": "^0.1.0",
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "hash-sum": "^2.0.0",
+    "querystring": "0.1.0",
+    "vue3-browser-compiler": "1.0.0"
+  }
+}

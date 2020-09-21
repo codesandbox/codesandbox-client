@@ -1,0 +1,805 @@
+{
+  "program": {
+    "fileInfos": {
+      "./node_modules/typescript/lib/lib.es5.d.ts": {
+        "version": "c9a1f03d6ba0fe3c871eb0dd81622e78fbb61ade70878b34d48a341a690c59e9",
+        "signature": "c9a1f03d6ba0fe3c871eb0dd81622e78fbb61ade70878b34d48a341a690c59e9",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2015.d.ts": {
+        "version": "dc47c4fa66b9b9890cf076304de2a9c5201e94b740cffdf09f87296d877d71f6",
+        "signature": "dc47c4fa66b9b9890cf076304de2a9c5201e94b740cffdf09f87296d877d71f6",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/typescript/lib/lib.es2016.d.ts": {
+        "version": "7a387c58583dfca701b6c85e0adaf43fb17d590fb16d5b2dc0a2fbd89f35c467",
+        "signature": "7a387c58583dfca701b6c85e0adaf43fb17d590fb16d5b2dc0a2fbd89f35c467",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/typescript/lib/lib.es2017.d.ts": {
+        "version": "8a12173c586e95f4433e0c6dc446bc88346be73ffe9ca6eec7aa63c8f3dca7f9",
+        "signature": "8a12173c586e95f4433e0c6dc446bc88346be73ffe9ca6eec7aa63c8f3dca7f9",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/typescript/lib/lib.dom.d.ts": {
+        "version": "38130cdd16bd2318b9362f9d60dd9670f7e38708bb6131cf11fc78a41b2c34a0",
+        "signature": "38130cdd16bd2318b9362f9d60dd9670f7e38708bb6131cf11fc78a41b2c34a0",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.dom.iterable.d.ts": {
+        "version": "fb0c09b697dc42afa84d1587e3c994a2f554d2a45635e4f0618768d16a86b69a",
+        "signature": "fb0c09b697dc42afa84d1587e3c994a2f554d2a45635e4f0618768d16a86b69a",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.webworker.importscripts.d.ts": {
+        "version": "7fac8cb5fc820bc2a59ae11ef1c5b38d3832c6d0dfaec5acdb5569137d09a481",
+        "signature": "7fac8cb5fc820bc2a59ae11ef1c5b38d3832c6d0dfaec5acdb5569137d09a481",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.scripthost.d.ts": {
+        "version": "097a57355ded99c68e6df1b738990448e0bf170e606707df5a7c0481ff2427cd",
+        "signature": "097a57355ded99c68e6df1b738990448e0bf170e606707df5a7c0481ff2427cd",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2015.core.d.ts": {
+        "version": "46ee15e9fefa913333b61eaf6b18885900b139867d89832a515059b62cf16a17",
+        "signature": "46ee15e9fefa913333b61eaf6b18885900b139867d89832a515059b62cf16a17",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2015.collection.d.ts": {
+        "version": "43fb1d932e4966a39a41b464a12a81899d9ae5f2c829063f5571b6b87e6d2f9c",
+        "signature": "43fb1d932e4966a39a41b464a12a81899d9ae5f2c829063f5571b6b87e6d2f9c",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2015.generator.d.ts": {
+        "version": "cdccba9a388c2ee3fd6ad4018c640a471a6c060e96f1232062223063b0a5ac6a",
+        "signature": "cdccba9a388c2ee3fd6ad4018c640a471a6c060e96f1232062223063b0a5ac6a",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2015.iterable.d.ts": {
+        "version": "42f5e41e5893da663dbf0394268f54f1da4b43dc0ddd2ea4bf471fe5361d6faf",
+        "signature": "42f5e41e5893da663dbf0394268f54f1da4b43dc0ddd2ea4bf471fe5361d6faf",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2015.promise.d.ts": {
+        "version": "0b7a905675e6cb4211c128f0a3aa47d414b275180a299a9aad5d3ec298abbfc4",
+        "signature": "0b7a905675e6cb4211c128f0a3aa47d414b275180a299a9aad5d3ec298abbfc4",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2015.proxy.d.ts": {
+        "version": "dfff68b3c34338f6b307a25d4566de15eed7973b0dc5d69f9fde2bcac1c25315",
+        "signature": "dfff68b3c34338f6b307a25d4566de15eed7973b0dc5d69f9fde2bcac1c25315",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2015.reflect.d.ts": {
+        "version": "cb609802a8698aa28b9c56331d4b53f590ca3c1c3a255350304ae3d06017779d",
+        "signature": "cb609802a8698aa28b9c56331d4b53f590ca3c1c3a255350304ae3d06017779d",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2015.symbol.d.ts": {
+        "version": "3013574108c36fd3aaca79764002b3717da09725a36a6fc02eac386593110f93",
+        "signature": "3013574108c36fd3aaca79764002b3717da09725a36a6fc02eac386593110f93",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": {
+        "version": "4670208dd7da9d6c774ab1b75c1527a810388c7989c4905de6aaea8561cb9dce",
+        "signature": "4670208dd7da9d6c774ab1b75c1527a810388c7989c4905de6aaea8561cb9dce",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2016.array.include.d.ts": {
+        "version": "3be5a1453daa63e031d266bf342f3943603873d890ab8b9ada95e22389389006",
+        "signature": "3be5a1453daa63e031d266bf342f3943603873d890ab8b9ada95e22389389006",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2017.object.d.ts": {
+        "version": "17bb1fc99591b00515502d264fa55dc8370c45c5298f4a5c2083557dccba5a2a",
+        "signature": "17bb1fc99591b00515502d264fa55dc8370c45c5298f4a5c2083557dccba5a2a",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts": {
+        "version": "b5e4c2d67aa844ed503b29cd4ca2ede1a229ac7fe874613b2c996fa9c581a25f",
+        "signature": "b5e4c2d67aa844ed503b29cd4ca2ede1a229ac7fe874613b2c996fa9c581a25f",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2017.string.d.ts": {
+        "version": "6a6b173e739a6a99629a8594bfb294cc7329bfb7b227f12e1f7c11bc163b8577",
+        "signature": "6a6b173e739a6a99629a8594bfb294cc7329bfb7b227f12e1f7c11bc163b8577",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2017.intl.d.ts": {
+        "version": "12a310447c5d23c7d0d5ca2af606e3bd08afda69100166730ab92c62999ebb9d",
+        "signature": "12a310447c5d23c7d0d5ca2af606e3bd08afda69100166730ab92c62999ebb9d",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2017.typedarrays.d.ts": {
+        "version": "b0124885ef82641903d232172577f2ceb5d3e60aed4da1153bab4221e1f6dd4e",
+        "signature": "b0124885ef82641903d232172577f2ceb5d3e60aed4da1153bab4221e1f6dd4e",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/typescript/lib/lib.es2017.full.d.ts": {
+        "version": "d2f31f19e1ba6ed59be9259d660a239d9a3fcbbc8e038c6b2009bde34b175fed",
+        "signature": "d2f31f19e1ba6ed59be9259d660a239d9a3fcbbc8e038c6b2009bde34b175fed",
+        "affectsGlobalScope": false
+      },
+      "./src/cssmodules.ts": {
+        "version": "c61ae793d0a9396053714db24689cfa16c7d9da87ceed1ce3efe6bb5f243371a",
+        "signature": "64799ad223aeaa5b2c4137644bf56aa82b831f6da7911c490bb15b8c61c3a2a4",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@vue/shared/dist/shared.d.ts": {
+        "version": "ff82afa6fc4804b9409124d9a4c1df370776e32d22a1559c7f66056b4e96bc68",
+        "signature": "ff82afa6fc4804b9409124d9a4c1df370776e32d22a1559c7f66056b4e96bc68",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@vue/compiler-core/node_modules/@babel/types/lib/index.d.ts": {
+        "version": "f4d27b39be5d82eb94f12c54a15e61f65decb27fb289353d11ef238de49bf5c2",
+        "signature": "f4d27b39be5d82eb94f12c54a15e61f65decb27fb289353d11ef238de49bf5c2",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@vue/compiler-core/node_modules/@babel/parser/typings/babel-parser.d.ts": {
+        "version": "04467c3822f065aee977f9e1225b86b9ac0e976cb42b0c8da0b893a3290920e1",
+        "signature": "04467c3822f065aee977f9e1225b86b9ac0e976cb42b0c8da0b893a3290920e1",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/source-map/source-map.d.ts": {
+        "version": "2887592574fcdfd087647c539dcb0fbe5af2521270dad4a37f9d17c16190d579",
+        "signature": "2887592574fcdfd087647c539dcb0fbe5af2521270dad4a37f9d17c16190d579",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@vue/compiler-core/dist/compiler-core.d.ts": {
+        "version": "8934f30139262e942cb204c07290a9cebf76177d4d1229e55f418bc589a598be",
+        "signature": "8934f30139262e942cb204c07290a9cebf76177d4d1229e55f418bc589a598be",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@vue/compiler-sfc/node_modules/postcss/lib/postcss.d.ts": {
+        "version": "aec0cabbdfacf43db998d8e50ee6f1e72131d24b5018dfb84f14806717baa0a6",
+        "signature": "aec0cabbdfacf43db998d8e50ee6f1e72131d24b5018dfb84f14806717baa0a6",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@vue/compiler-sfc/node_modules/@babel/parser/typings/babel-parser.d.ts": {
+        "version": "04467c3822f065aee977f9e1225b86b9ac0e976cb42b0c8da0b893a3290920e1",
+        "signature": "04467c3822f065aee977f9e1225b86b9ac0e976cb42b0c8da0b893a3290920e1",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@vue/compiler-sfc/node_modules/@babel/types/lib/index.d.ts": {
+        "version": "f4d27b39be5d82eb94f12c54a15e61f65decb27fb289353d11ef238de49bf5c2",
+        "signature": "f4d27b39be5d82eb94f12c54a15e61f65decb27fb289353d11ef238de49bf5c2",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts": {
+        "version": "3757cfee79d1b5f2c079dc2c8247060e20df03e6964911503882d0a43516e416",
+        "signature": "3757cfee79d1b5f2c079dc2c8247060e20df03e6964911503882d0a43516e416",
+        "affectsGlobalScope": false
+      },
+      "../vue3-browser-compiler/lib/index.d.ts": {
+        "version": "b4c01813a5b4da3b3c7c1bdc1c30303bda317c82136653b5c23cc47be0c86fbb",
+        "signature": "b4c01813a5b4da3b3c7c1bdc1c30303bda317c82136653b5c23cc47be0c86fbb",
+        "affectsGlobalScope": false
+      },
+      "./src/formaterror.ts": {
+        "version": "96814bddb9cc55dcf84a4753bbdce9ed2fe3ef9a3f5ca27fd1dfad0c542ab9b9",
+        "signature": "054d5e7db5cb2a9cbfc12ae3bf351d8920b12325adac8cb741eb6614311014d8",
+        "affectsGlobalScope": false
+      },
+      "./src/hotreload.ts": {
+        "version": "35434f03aef7650d6afe74982c2c54f8b74f568310d4d8ce3e39f8bced47b285",
+        "signature": "569fc9b816c491352cd71873af0dd8105ea8c9749d9980fb19a8fca4725379ae",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/hash-sum/index.d.ts": {
+        "version": "b1422e928ebea075ae07cfcac94122425804eb9fa3d7d67c95dc5bc37d05eb59",
+        "signature": "b1422e928ebea075ae07cfcac94122425804eb9fa3d7d67c95dc5bc37d05eb59",
+        "affectsGlobalScope": false
+      },
+      "./src/select.ts": {
+        "version": "8911eb36cb322d88153dd92b49e595866af8235b9731f0f8dc6049b437a44505",
+        "signature": "d0704b6b5ac67a9e1451cbb4be8356ee190334409bd2639444bd0e2e6241e32b",
+        "affectsGlobalScope": false
+      },
+      "./src/templateloader.ts": {
+        "version": "eca4cc9c52b47a0b126ac5aef35d41c11696d6405c7152393edb8870a15477b1",
+        "signature": "c932ab2b89670768649f7328d5e032967dca1b9b86020fac038650c536546750",
+        "affectsGlobalScope": false
+      },
+      "./src/transpilers/template-loader.ts": {
+        "version": "c7921ae1846593eea5e7e15cc47aa7753020496c340b533f5eb6f5dd6cd6946d",
+        "signature": "2f55354986fe6e9e04a32b3b3c76305029673b1ba9518d30efc80e4c35382514",
+        "affectsGlobalScope": false
+      },
+      "./src/stylepostloader.ts": {
+        "version": "2635b8652a5d748bd32bb67742cf8fcf2a42bdf6f1e2bed4f24e275bc387727d",
+        "signature": "9bda240684b923f603973509d821583927fe2471f2d1f6cfd54b66ce23efc09a",
+        "affectsGlobalScope": false
+      },
+      "./src/transpilers/style-post-loader.ts": {
+        "version": "0035a337b510eaa2dc2b0e224fcaa6395c30dfac862af4322f4357526f3fdd1f",
+        "signature": "3c9ddd9a7f1abf4a246d66c26196229b0c25c74b6c6fd283ebce628e96cb5a62",
+        "affectsGlobalScope": false
+      },
+      "./src/index.ts": {
+        "version": "c8c70a06b1302cae8de8ed7da5f9475d11ae2b7c171db83c74115c0df84e4cdf",
+        "signature": "3e155e5c5ef2ce784894ba0ca3e580c23c3c8d4481cb836c0126d3525a0bda5b",
+        "affectsGlobalScope": false
+      },
+      "./src/transpilers/vue-loader.ts": {
+        "version": "b39ac654bb3a043feb4dc900f41bcdd26a44dbcf16613985f1a76995dec20bf7",
+        "signature": "60c875a7a497c9851dca84835455a9da6b104210197d8f5f2b51877b96e255ce",
+        "affectsGlobalScope": false
+      },
+      "./src/transpilers/index.ts": {
+        "version": "6b829937ff306c1b9a1b594bfae6983c0975334191be2dd0f1ea9382fcb884ae",
+        "signature": "dbafd2aa98b6beca838de1774865204966443a9b50f911b15227dd7f476c5cb6",
+        "affectsGlobalScope": false
+      }
+    },
+    "options": {
+      "incremental": true,
+      "target": 4,
+      "module": 6,
+      "moduleResolution": 2,
+      "declaration": true,
+      "declarationMap": true,
+      "strict": true,
+      "types": [],
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "watch": true,
+      "configFilePath": "./tsconfig.json"
+    },
+    "referencedMap": {
+      "../../node_modules/@vue/compiler-core/dist/compiler-core.d.ts": [
+        "../../node_modules/@vue/compiler-core/node_modules/@babel/parser/typings/babel-parser.d.ts",
+        "../../node_modules/@vue/shared/dist/shared.d.ts",
+        "../../node_modules/source-map/source-map.d.ts"
+      ],
+      "../../node_modules/@vue/compiler-core/node_modules/@babel/parser/typings/babel-parser.d.ts": [
+        "../../node_modules/@vue/compiler-core/node_modules/@babel/types/lib/index.d.ts"
+      ],
+      "../../node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts": [
+        "../../node_modules/@vue/compiler-core/dist/compiler-core.d.ts",
+        "../../node_modules/@vue/compiler-core/node_modules/@babel/parser/typings/babel-parser.d.ts",
+        "../../node_modules/@vue/compiler-core/node_modules/@babel/types/lib/index.d.ts",
+        "../../node_modules/@vue/compiler-sfc/node_modules/postcss/lib/postcss.d.ts",
+        "../../node_modules/source-map/source-map.d.ts"
+      ],
+      "../../node_modules/@vue/compiler-sfc/node_modules/@babel/parser/typings/babel-parser.d.ts": [
+        "../../node_modules/@vue/compiler-core/node_modules/@babel/types/lib/index.d.ts"
+      ],
+      "../../node_modules/@vue/compiler-sfc/node_modules/postcss/lib/postcss.d.ts": [
+        "../../node_modules/source-map/source-map.d.ts"
+      ],
+      "../vue3-browser-compiler/lib/index.d.ts": [
+        "../../node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts"
+      ],
+      "./src/formaterror.ts": [
+        "../vue3-browser-compiler/lib/index.d.ts"
+      ],
+      "./src/index.ts": [
+        "../../node_modules/@types/hash-sum/index.d.ts",
+        "../vue3-browser-compiler/lib/index.d.ts",
+        "./src/cssmodules.ts",
+        "./src/formaterror.ts",
+        "./src/hotreload.ts",
+        "./src/select.ts",
+        "./src/transpilers/style-post-loader.ts",
+        "./src/transpilers/template-loader.ts"
+      ],
+      "./src/select.ts": [
+        "../vue3-browser-compiler/lib/index.d.ts"
+      ],
+      "./src/stylepostloader.ts": [
+        "../vue3-browser-compiler/lib/index.d.ts"
+      ],
+      "./src/templateloader.ts": [
+        "../vue3-browser-compiler/lib/index.d.ts",
+        "./src/formaterror.ts",
+        "./src/index.ts"
+      ],
+      "./src/transpilers/index.ts": [
+        "./src/transpilers/style-post-loader.ts",
+        "./src/transpilers/template-loader.ts",
+        "./src/transpilers/vue-loader.ts"
+      ],
+      "./src/transpilers/style-post-loader.ts": [
+        "./src/stylepostloader.ts"
+      ],
+      "./src/transpilers/template-loader.ts": [
+        "./src/templateloader.ts"
+      ],
+      "./src/transpilers/vue-loader.ts": [
+        "./src/index.ts"
+      ]
+    },
+    "exportedModulesMap": {
+      "../../node_modules/@types/hash-sum/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@vue/compiler-core/dist/compiler-core.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@vue/compiler-core/node_modules/@babel/parser/typings/babel-parser.d.ts",
+        "../../node_modules/@vue/shared/dist/shared.d.ts",
+        "../../node_modules/source-map/source-map.d.ts"
+      ],
+      "../../node_modules/@vue/compiler-core/node_modules/@babel/parser/typings/babel-parser.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@vue/compiler-core/node_modules/@babel/types/lib/index.d.ts"
+      ],
+      "../../node_modules/@vue/compiler-core/node_modules/@babel/types/lib/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@vue/compiler-core/dist/compiler-core.d.ts",
+        "../../node_modules/@vue/compiler-core/node_modules/@babel/parser/typings/babel-parser.d.ts",
+        "../../node_modules/@vue/compiler-core/node_modules/@babel/types/lib/index.d.ts",
+        "../../node_modules/@vue/compiler-sfc/node_modules/postcss/lib/postcss.d.ts",
+        "../../node_modules/source-map/source-map.d.ts"
+      ],
+      "../../node_modules/@vue/compiler-sfc/node_modules/@babel/parser/typings/babel-parser.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@vue/compiler-core/node_modules/@babel/types/lib/index.d.ts"
+      ],
+      "../../node_modules/@vue/compiler-sfc/node_modules/@babel/types/lib/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/@vue/compiler-sfc/node_modules/postcss/lib/postcss.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/source-map/source-map.d.ts"
+      ],
+      "../../node_modules/@vue/shared/dist/shared.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/source-map/source-map.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../vue3-browser-compiler/lib/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.dom.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.dom.iterable.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2015.collection.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2015.core.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2015.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2015.generator.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2015.iterable.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2015.promise.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2015.proxy.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2015.reflect.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2015.symbol.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2016.array.include.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2016.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2017.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2017.full.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2017.intl.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2017.object.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2017.string.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es2017.typedarrays.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.es5.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.scripthost.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/typescript/lib/lib.webworker.importscripts.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./src/formaterror.ts": [
+        "../vue3-browser-compiler/lib/index.d.ts"
+      ],
+      "./src/index.ts": [
+        "../app/src/sandbox/eval/transpiled-module.ts",
+        "../app/src/sandbox/eval/transpilers/index.ts",
+        "../vue3-browser-compiler/lib/index.d.ts"
+      ],
+      "./src/select.ts": [
+        "../vue3-browser-compiler/lib/index.d.ts"
+      ],
+      "./src/templateloader.ts": [
+        "../../node_modules/source-map/source-map.d.ts"
+      ],
+      "./src/transpilers/index.ts": [
+        "./src/transpilers/style-post-loader.ts",
+        "./src/transpilers/template-loader.ts",
+        "./src/transpilers/vue-loader.ts"
+      ],
+      "./src/transpilers/style-post-loader.ts": [
+        "../app/src/sandbox/eval/transpiled-module.ts",
+        "../app/src/sandbox/eval/transpilers/index.ts"
+      ],
+      "./src/transpilers/template-loader.ts": [
+        "../app/src/sandbox/eval/transpiled-module.ts",
+        "../app/src/sandbox/eval/transpilers/index.ts"
+      ],
+      "./src/transpilers/vue-loader.ts": [
+        "../app/src/sandbox/eval/transpiled-module.ts",
+        "../app/src/sandbox/eval/transpilers/index.ts"
+      ]
+    },
+    "semanticDiagnosticsPerFile": [
+      "../../node_modules/@types/hash-sum/index.d.ts",
+      "../../node_modules/@vue/compiler-core/dist/compiler-core.d.ts",
+      "../../node_modules/@vue/compiler-core/node_modules/@babel/parser/typings/babel-parser.d.ts",
+      "../../node_modules/@vue/compiler-core/node_modules/@babel/types/lib/index.d.ts",
+      "../../node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts",
+      "../../node_modules/@vue/compiler-sfc/node_modules/@babel/parser/typings/babel-parser.d.ts",
+      "../../node_modules/@vue/compiler-sfc/node_modules/@babel/types/lib/index.d.ts",
+      "../../node_modules/@vue/compiler-sfc/node_modules/postcss/lib/postcss.d.ts",
+      "../../node_modules/@vue/shared/dist/shared.d.ts",
+      "../../node_modules/source-map/source-map.d.ts",
+      "../vue3-browser-compiler/lib/index.d.ts",
+      "./node_modules/typescript/lib/lib.dom.d.ts",
+      "./node_modules/typescript/lib/lib.dom.iterable.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.collection.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.core.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.generator.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.promise.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+      "./node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+      "./node_modules/typescript/lib/lib.es2016.d.ts",
+      "./node_modules/typescript/lib/lib.es2017.d.ts",
+      "./node_modules/typescript/lib/lib.es2017.full.d.ts",
+      "./node_modules/typescript/lib/lib.es2017.intl.d.ts",
+      "./node_modules/typescript/lib/lib.es2017.object.d.ts",
+      "./node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts",
+      "./node_modules/typescript/lib/lib.es2017.string.d.ts",
+      "./node_modules/typescript/lib/lib.es2017.typedarrays.d.ts",
+      "./node_modules/typescript/lib/lib.es5.d.ts",
+      "./node_modules/typescript/lib/lib.scripthost.d.ts",
+      "./node_modules/typescript/lib/lib.webworker.importscripts.d.ts",
+      "./src/cssmodules.ts",
+      "./src/formaterror.ts",
+      "./src/hotreload.ts",
+      [
+        "./src/index.ts",
+        [
+          {
+            "file": "./src/index.ts",
+            "start": 17,
+            "length": 6,
+            "messageText": "Cannot find module 'path' or its corresponding type declarations.",
+            "category": 1,
+            "code": 2307
+          },
+          {
+            "file": "./src/index.ts",
+            "start": 40,
+            "length": 13,
+            "code": 7016,
+            "category": 1,
+            "messageText": {
+              "messageText": "Could not find a declaration file for module 'querystring'. '/Users/ives/Documents/dev/csb-client/packages/vue3-transpiler/node_modules/querystring/querystring.js' implicitly has an 'any' type.",
+              "category": 1,
+              "code": 7016,
+              "next": [
+                {
+                  "messageText": "Try `npm install @types/querystring` if it exists or add a new declaration (.d.ts) file containing `declare module 'querystring';`",
+                  "category": 1,
+                  "code": 7035
+                }
+              ]
+            }
+          },
+          {
+            "file": "./src/index.ts",
+            "start": 108,
+            "length": 53,
+            "messageText": "Output file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/utils/loader-utils/index.d.ts' has not been built from source file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/utils/loader-utils/index.ts'.",
+            "category": 1,
+            "code": 6305
+          },
+          {
+            "file": "./src/index.ts",
+            "start": 586,
+            "length": 40,
+            "messageText": "Output file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpiled-module.d.ts' has not been built from source file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpiled-module.ts'.",
+            "category": 1,
+            "code": 6305
+          },
+          {
+            "file": "./src/index.ts",
+            "start": 661,
+            "length": 34,
+            "messageText": "Output file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/index.d.ts' has not been built from source file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/index.ts'.",
+            "category": 1,
+            "code": 6305
+          },
+          {
+            "file": "./src/index.ts",
+            "start": 2783,
+            "length": 7,
+            "messageText": "Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i @types/node` and then add `node` to the types field in your tsconfig.",
+            "category": 1,
+            "code": 2591
+          },
+          {
+            "file": "./src/index.ts",
+            "start": 4718,
+            "length": 4,
+            "code": 2339,
+            "category": 1,
+            "messageText": "Property 'name' does not exist on type 'VueV3TemplateLoader'."
+          },
+          {
+            "file": "./src/index.ts",
+            "start": 5803,
+            "length": 4,
+            "code": 2339,
+            "category": 1,
+            "messageText": "Property 'name' does not exist on type 'VueV3StylePostLoader'."
+          },
+          {
+            "file": "./src/index.ts",
+            "start": 6091,
+            "length": 4,
+            "code": 2339,
+            "category": 1,
+            "messageText": "Property 'name' does not exist on type 'VueV3StylePostLoader'."
+          }
+        ]
+      ],
+      [
+        "./src/select.ts",
+        [
+          {
+            "file": "./src/select.ts",
+            "start": 86,
+            "length": 13,
+            "code": 7016,
+            "category": 1,
+            "messageText": {
+              "messageText": "Could not find a declaration file for module 'querystring'. '/Users/ives/Documents/dev/csb-client/packages/vue3-transpiler/node_modules/querystring/querystring.js' implicitly has an 'any' type.",
+              "category": 1,
+              "code": 7016,
+              "next": [
+                {
+                  "messageText": "Try `npm install @types/querystring` if it exists or add a new declaration (.d.ts) file containing `declare module 'querystring';`",
+                  "category": 1,
+                  "code": 7035
+                }
+              ]
+            }
+          },
+          {
+            "file": "./src/select.ts",
+            "start": 134,
+            "length": 34,
+            "messageText": "Output file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/index.d.ts' has not been built from source file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/index.ts'.",
+            "category": 1,
+            "code": 6305
+          }
+        ]
+      ],
+      [
+        "./src/stylepostloader.ts",
+        [
+          {
+            "file": "./src/stylepostloader.ts",
+            "start": 15,
+            "length": 13,
+            "code": 7016,
+            "category": 1,
+            "messageText": {
+              "messageText": "Could not find a declaration file for module 'querystring'. '/Users/ives/Documents/dev/csb-client/packages/vue3-transpiler/node_modules/querystring/querystring.js' implicitly has an 'any' type.",
+              "category": 1,
+              "code": 7016,
+              "next": [
+                {
+                  "messageText": "Try `npm install @types/querystring` if it exists or add a new declaration (.d.ts) file containing `declare module 'querystring';`",
+                  "category": 1,
+                  "code": 7035
+                }
+              ]
+            }
+          },
+          {
+            "file": "./src/stylepostloader.ts",
+            "start": 114,
+            "length": 40,
+            "messageText": "Output file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpiled-module.d.ts' has not been built from source file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpiled-module.ts'.",
+            "category": 1,
+            "code": 6305
+          }
+        ]
+      ],
+      [
+        "./src/templateloader.ts",
+        [
+          {
+            "file": "./src/templateloader.ts",
+            "start": 15,
+            "length": 13,
+            "code": 7016,
+            "category": 1,
+            "messageText": {
+              "messageText": "Could not find a declaration file for module 'querystring'. '/Users/ives/Documents/dev/csb-client/packages/vue3-transpiler/node_modules/querystring/querystring.js' implicitly has an 'any' type.",
+              "category": 1,
+              "code": 7016,
+              "next": [
+                {
+                  "messageText": "Try `npm install @types/querystring` if it exists or add a new declaration (.d.ts) file containing `declare module 'querystring';`",
+                  "category": 1,
+                  "code": 7035
+                }
+              ]
+            }
+          },
+          {
+            "file": "./src/templateloader.ts",
+            "start": 54,
+            "length": 53,
+            "messageText": "Output file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/utils/loader-utils/index.d.ts' has not been built from source file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/utils/loader-utils/index.ts'.",
+            "category": 1,
+            "code": 6305
+          },
+          {
+            "file": "./src/templateloader.ts",
+            "start": 298,
+            "length": 40,
+            "messageText": "Output file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpiled-module.d.ts' has not been built from source file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpiled-module.ts'.",
+            "category": 1,
+            "code": 6305
+          },
+          {
+            "file": "./src/templateloader.ts",
+            "start": 1370,
+            "length": 7,
+            "messageText": "Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i @types/node` and then add `node` to the types field in your tsconfig.",
+            "category": 1,
+            "code": 2591
+          }
+        ]
+      ],
+      "./src/transpilers/index.ts",
+      [
+        "./src/transpilers/style-post-loader.ts",
+        [
+          {
+            "file": "./src/transpilers/style-post-loader.ts",
+            "start": 45,
+            "length": 34,
+            "messageText": "Output file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/index.d.ts' has not been built from source file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/index.ts'.",
+            "category": 1,
+            "code": 6305
+          },
+          {
+            "file": "./src/transpilers/style-post-loader.ts",
+            "start": 111,
+            "length": 40,
+            "messageText": "Output file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpiled-module.d.ts' has not been built from source file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpiled-module.ts'.",
+            "category": 1,
+            "code": 6305
+          }
+        ]
+      ],
+      [
+        "./src/transpilers/template-loader.ts",
+        [
+          {
+            "file": "./src/transpilers/template-loader.ts",
+            "start": 45,
+            "length": 34,
+            "messageText": "Output file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/index.d.ts' has not been built from source file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/index.ts'.",
+            "category": 1,
+            "code": 6305
+          },
+          {
+            "file": "./src/transpilers/template-loader.ts",
+            "start": 111,
+            "length": 40,
+            "messageText": "Output file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpiled-module.d.ts' has not been built from source file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpiled-module.ts'.",
+            "category": 1,
+            "code": 6305
+          }
+        ]
+      ],
+      [
+        "./src/transpilers/vue-loader.ts",
+        [
+          {
+            "file": "./src/transpilers/vue-loader.ts",
+            "start": 45,
+            "length": 34,
+            "messageText": "Output file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/index.d.ts' has not been built from source file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpilers/index.ts'.",
+            "category": 1,
+            "code": 6305
+          },
+          {
+            "file": "./src/transpilers/vue-loader.ts",
+            "start": 111,
+            "length": 40,
+            "messageText": "Output file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpiled-module.d.ts' has not been built from source file '/Users/ives/Documents/dev/csb-client/packages/app/src/sandbox/eval/transpiled-module.ts'.",
+            "category": 1,
+            "code": 6305
+          }
+        ]
+      ]
+    ]
+  },
+  "version": "4.0.3"
+}

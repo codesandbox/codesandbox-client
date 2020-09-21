@@ -8,7 +8,7 @@ import hash from 'hash-sum';
 import addStylesClientRaw from '!raw-loader!./addStylesClient';
 import listToStylesRaw from '!raw-loader!./listToStyles';
 
-import loaderUtils from '../../utils/loader-utils';
+import loaderUtils from '../../../utils/loader-utils';
 
 const addStylesClientPath = '/node_modules/vue-style-loader/addStylesClient.js';
 const listToStylesPath = '/node_modules/vue-style-loader/listToStyles.js';

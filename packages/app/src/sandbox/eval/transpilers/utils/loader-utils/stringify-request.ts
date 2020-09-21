@@ -1,20 +1,22 @@
 import path from 'path';
+import { LoaderContext } from 'sandbox/eval/transpiled-module';
 
 const matchRelativePath = /^\.\.?[/\\]/;
 
-function isAbsolutePath(str) {
+function isAbsolutePath(str: string) {
   return str.startsWith('/');
 }
 
-function isRelativePath(str) {
+function isRelativePath(str: string) {
   return matchRelativePath.test(str);
 }
 
-export default function stringifyRequest(loaderContext, request) {
+export default function stringifyRequest(
+  loaderContext: LoaderContext,
+  request: string
+) {
   const splitted = request.split('!');
-  const context =
-    loaderContext.context ||
-    (loaderContext.options && loaderContext.options.context);
+  const context = loaderContext.options && loaderContext.options.context;
   return JSON.stringify(
     splitted
       .map(part => {

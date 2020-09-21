@@ -1,5 +1,5 @@
-import Transpiler from '../..';
-import { LoaderContext } from '../../../transpiled-module';
+import Transpiler from '../../..';
+import { LoaderContext } from '../../../../transpiled-module';
 
 class VueTemplateTranspiler extends Transpiler {
   constructor() {

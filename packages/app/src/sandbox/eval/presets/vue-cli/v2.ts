@@ -1,6 +1,6 @@
 import { dispatch, actions } from 'codesandbox-api';
 
-import type Manager from '../../manager';
+import Manager from '../../manager';
 
 import babelTranspiler from '../../transpilers/babel';
 import typescriptTranspiler from '../../transpilers/typescript';
@@ -12,73 +12,22 @@ import stylusTranspiler from '../../transpilers/stylus';
 import lessTranspiler from '../../transpilers/less';
 import noopTranspiler from '../../transpilers/noop';
 import binaryTranspiler from '../../transpilers/binary';
-import vueTranspiler from '../../transpilers/vue';
-import vueTemplateTranspiler from '../../transpilers/vue/template-compiler';
-import vueStyleTranspiler from '../../transpilers/vue/style-compiler';
-import vueSelector from '../../transpilers/vue/selector';
-import vueStyleLoader from '../../transpilers/vue/style-loader';
-import cssLoader from '../../transpilers/vue/css-loader';
+import vueTranspiler from '../../transpilers/vue/v2';
+import vueTemplateTranspiler from '../../transpilers/vue/v2/template-compiler';
+import vueStyleTranspiler from '../../transpilers/vue/v2/style-compiler';
+import vueSelector from '../../transpilers/vue/v2/selector';
+import vueStyleLoader from '../../transpilers/vue/v2/style-loader';
+import cssLoader from '../../transpilers/vue/v2/css-loader';
 import base64Transpiler from '../../transpilers/base64';
 import pugTranspiler from '../../transpilers/pug';
 import coffeeTranspiler from '../../transpilers/coffee';
 
 import Preset from '..';
 
-const getFileNameFromVm = vm => {
-  if (vm) {
-    const options =
-      typeof vm === 'function' && vm.cid != null
-        ? vm.options
-        : vm._isVue
-        ? vm.$options || vm.constructor.options
-        : vm || {};
-
-    return options.__file;
-  }
-  return undefined;
-};
-
-export default function initialize() {
-  const vuePreset = new Preset(
-    'vue-cli',
-    ['vue', 'json', 'js', 'ts'],
-    {
-      '@': '{{sandboxRoot}}/src',
-      vue$: 'vue/dist/vue.common.js',
-    },
-    {
-      setup: async (manager: Manager) => {
-        try {
-          const vueModule = manager.resolveTranspiledModule('vue', '/');
-
-          if (!vueModule.source) {
-            await vueModule.transpile(manager);
-          }
-          const Vue = vueModule.evaluate(manager);
-
-          if (Vue) {
-            Vue.config.warnHandler = (msg, vm, trace) => {
-              console.error('[Vue warn]: ' + msg + trace);
-
-              const file = getFileNameFromVm(vm);
-
-              dispatch(
-                actions.correction.show(msg, {
-                  line: 1,
-                  column: 1,
-                  path: file,
-                  severity: 'warning',
-                  source: 'Vue',
-                })
-              );
-            };
-          }
-        } catch (e) {
-          /* ignore */
-        }
-      },
-    }
-  );
+export default function initialize(vuePreset: Preset) {
+  vuePreset.setAdditionalAliases({
+    vue$: 'vue/dist/vue.common.js',
+  });
 
   const sassWithConfig = {
     transpiler: sassTranspiler,

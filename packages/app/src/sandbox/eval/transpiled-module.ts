@@ -24,6 +24,7 @@ import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
 import delay from '../utils/delay';
 import { measure, endMeasure } from '../utils/metrics';
+import Preset from './presets';
 
 declare const BrowserFS: any;
 
@@ -139,6 +140,8 @@ export type LoaderContext = {
   remainingRequests: string;
   template: string;
   sandboxId: string | null;
+  resourceQuery: string;
+  getLoaderQuery: (module: Module) => string;
 };
 /* eslint-enable */
 
@@ -543,6 +546,9 @@ export default class TranspiledModule {
       template: manager.preset.name,
       remainingRequests: '', // will be filled during transpilation
       sandboxId: manager.id,
+      resourceQuery: this.query,
+      getLoaderQuery: (module: Module) =>
+        manager.preset.getQuery(module, manager),
     };
   }
 
@@ -889,8 +895,7 @@ export default class TranspiledModule {
         accept: (path: string | Array<string>, cb) => {
           if (
             typeof path === 'undefined' ||
-            typeof path !== 'string' ||
-            !Array.isArray(path)
+            (typeof path !== 'string' && !Array.isArray(path))
           ) {
             // Self mark hot
             this.hmrConfig = this.hmrConfig || new HMR();

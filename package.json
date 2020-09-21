@@ -24,7 +24,9 @@
       "packages/notifications",
       "packages/deps",
       "packages/executors",
-      "packages/template-icons"
+      "packages/template-icons",
+      "packages/vue3-transpiler",
+      "packages/vue3-browser-compiler"
     ],
     "nohoist": [
       "**/react-codemirror2",
