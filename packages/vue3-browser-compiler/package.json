@@ -9,6 +9,7 @@
     "build:dev": "yarn build"
   },
   "devDependencies": {
+    "@rollup/plugin-alias": "^3.1.1",
     "@rollup/plugin-typescript": "^6.0.0",
     "rollup": "^2.28.1",
     "terser": "^5.3.2",
