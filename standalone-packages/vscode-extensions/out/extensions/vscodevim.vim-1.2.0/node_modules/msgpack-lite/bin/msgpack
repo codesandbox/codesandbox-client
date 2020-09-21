@@ -1,5 +1,0 @@
-#!/usr/bin/env node
-
-var args = Array.prototype.slice.call(process.argv, 2);
-
-require("../lib/cli").CLI.apply(null, args);

@@ -82,36 +82,36 @@ Now follows an exhaustive list of every known Vim command that we could find.
 
 ## Text object motions
 
-| Status             | Command    | Description                                            |
-| ------------------ | ---------- | ------------------------------------------------------ |
-| :white_check_mark: | :1234: w   | N words forward                                        |
-| :white_check_mark: | :1234: W   | N blank-separated                                      | WORD | s forward |
-| :white_check_mark: | :1234: e   | N words forward to the end of the Nth word             |
-| :white_check_mark: | :1234: E   | N words forward to the end of the Nth blank-separated  | WORD |
-| :white_check_mark: | :1234: b   | N words backward                                       |
-| :white_check_mark: | :1234: B   | N blank-separated                                      | WORD | s backward |
-| :white_check_mark: | :1234: ge  | N words backward to the end of the Nth word            |
-| :white_check_mark: | :1234: gE  | N words backward to the end of the Nth blank-separated | WORD |
-| :white_check_mark: | :1234: )   | N sentences forward                                    |
-| :white_check_mark: | :1234: (   | N sentences backward                                   |
-| :white_check_mark: | :1234: }   | N paragraphs forward                                   |
-| :white_check_mark: | :1234: {   | N paragraphs backward                                  |
-| :white_check_mark: | :1234: ]]  | N sections forward, at start of section                |
-| :white_check_mark: | :1234: [[  | N sections backward, at start of section               |
-| :white_check_mark: | :1234: ][  | N sections forward, at end of section                  |
-| :white_check_mark: | :1234: []  | N sections backward, at end of section                 |
-| :white_check_mark: | :1234: [(  | N times back to unclosed '('                           |
-| :white_check_mark: | :1234: [{  | N times back to unclosed '{'                           |
-| :arrow_down:       | :1234: [m  | N times back to start of method (for Java)             |
-| :arrow_down:       | :1234: [M  | N times back to end of method (for Java)               |
-| :white_check_mark: | :1234: ])  | N times forward to unclosed ')'                        |
-| :white_check_mark: | :1234: ]}  | N times forward to unclosed '}'                        |
-| :arrow_down:       | :1234: ]m  | N times forward to start of method (for Java)          |
-| :arrow_down:       | :1234: ]M  | N times forward to end of method (for Java)            |
-| :arrow_down:       | :1234: [#  | N times back to unclosed "#if" or "#else"              |
-| :arrow_down:       | :1234: ]#  | N times forward to unclosed "#else" or "#endif"        |
-| :arrow_down:       | :1234: [\* | N times back to start of a C comment "/\*"             |
-| :arrow_down:       | :1234: ]\* | N times forward to end of a C comment "\*/"            |
+| Status             | Command    | Description                                                 |
+| ------------------ | ---------- | ----------------------------------------------------------- |
+| :white_check_mark: | :1234: w   | N words forward                                             |
+| :white_check_mark: | :1234: W   | N blank-separated WORDs forward                             |
+| :white_check_mark: | :1234: e   | N words forward to the end of the Nth word                  |
+| :white_check_mark: | :1234: E   | N words forward to the end of the Nth blank-separated WORD  |
+| :white_check_mark: | :1234: b   | N words backward                                            |
+| :white_check_mark: | :1234: B   | N blank-separated WORDs backward                            |
+| :white_check_mark: | :1234: ge  | N words backward to the end of the Nth word                 |
+| :white_check_mark: | :1234: gE  | N words backward to the end of the Nth blank-separated WORD |
+| :white_check_mark: | :1234: )   | N sentences forward                                         |
+| :white_check_mark: | :1234: (   | N sentences backward                                        |
+| :white_check_mark: | :1234: }   | N paragraphs forward                                        |
+| :white_check_mark: | :1234: {   | N paragraphs backward                                       |
+| :white_check_mark: | :1234: ]]  | N sections forward, at start of section                     |
+| :white_check_mark: | :1234: [[  | N sections backward, at start of section                    |
+| :white_check_mark: | :1234: ][  | N sections forward, at end of section                       |
+| :white_check_mark: | :1234: []  | N sections backward, at end of section                      |
+| :white_check_mark: | :1234: [(  | N times back to unclosed '('                                |
+| :white_check_mark: | :1234: [{  | N times back to unclosed '{'                                |
+| :arrow_down:       | :1234: [m  | N times back to start of method (for Java)                  |
+| :arrow_down:       | :1234: [M  | N times back to end of method (for Java)                    |
+| :white_check_mark: | :1234: ])  | N times forward to unclosed ')'                             |
+| :white_check_mark: | :1234: ]}  | N times forward to unclosed '}'                             |
+| :arrow_down:       | :1234: ]m  | N times forward to start of method (for Java)               |
+| :arrow_down:       | :1234: ]M  | N times forward to end of method (for Java)                 |
+| :arrow_down:       | :1234: [#  | N times back to unclosed "#if" or "#else"                   |
+| :arrow_down:       | :1234: ]#  | N times forward to unclosed "#else" or "#endif"             |
+| :arrow_down:       | :1234: [\* | N times back to start of a C comment "/\*"                  |
+| :arrow_down:       | :1234: ]\* | N times forward to end of a C comment "\*/"                 |
 
 ## Pattern searches
 
@@ -121,36 +121,38 @@ Now follows an exhaustive list of every known Vim command that we could find.
 | :white_check_mark: :star: | :1234: `?{pattern}[?[offset]]<CR>` | search backward for the Nth occurrence of {pattern}    | Currently we only support JavaScript Regex but not Vim's in-house Regex engine. |
 | :warning:                 | :1234: `/<CR>`                     | repeat last search, in the forward direction           | {count} is not supported.                                                       |
 | :warning:                 | :1234: `?<CR>`                     | repeat last search, in the backward direction          | {count} is not supported.                                                       |
-| :warning:                 | :1234: n                           | repeat last search                                     | {count} is not supported.                                                       |
-| :warning:                 | :1234: N                           | repeat last search, in opposite direction              | {count} is not supported.                                                       |
+| :white_check_mark:        | :1234: n                           | repeat last search                                     |
+| :white_check_mark:        | :1234: N                           | repeat last search, in opposite direction              |
 | :white_check_mark:        | :1234: \*                          | search forward for the identifier under the cursor     |
 | :white_check_mark:        | :1234: #                           | search backward for the identifier under the cursor    |
-| :arrow_down:              | :1234: g\*                         | like "\*", but also find partial matches               |
-| :arrow_down:              | :1234: g#                          | like "#", but also find partial matches                |
+| :white_check_mark:        | :1234: g\*                         | like "\*", but also find partial matches               |
+| :white_check_mark:        | :1234: g#                          | like "#", but also find partial matches                |
 | :white_check_mark:        | gd                                 | goto local declaration of identifier under the cursor  |
 | :arrow_down:              | gD                                 | goto global declaration of identifier under the cursor |
 
 ## Marks and motions
 
-| Status             | Command                                                     | Description                                        |
-| ------------------ | ----------------------------------------------------------- | -------------------------------------------------- |
-| :white_check_mark: | m{a-zA-Z}                                                   | mark current position with mark {a-zA-Z}           |
+| Status             | Command                                                     | Description                                            |
+| ------------------ | ----------------------------------------------------------- | ------------------------------------------------------ |
+| :white_check_mark: | m{a-zA-Z}                                                   | mark current position with mark {a-zA-Z}               |
 | :white_check_mark: | `{a-z} | go to mark {a-z} within current file               |
 | :white_check_mark: | `{A-Z} | go to mark {A-Z} in any file                       |
 | :white_check_mark: | `{0-9} | go to the position where Vim was previously exited |
 | :white_check_mark: | `` | go to the position before the last jump                |
 | :arrow_down:       | `" | go to the position when last editing this file         |
-| :arrow_down:       | `[ | go to the start of the previously operated or put text |
-| :arrow_down:       | `] | go to the end of the previously operated or put text   |
+| :white_check_mark: | `[ | go to the start of the previously operated or put text |
+| :white_check_mark: | '[                                                          | go to the start of the previously operated or put text |
+| :white_check_mark: | `] | go to the end of the previously operated or put text   |
+| :white_check_mark: | ']                                                          | go to the end of the previously operated or put text   |
 | :arrow_down:       | `< | go to the start of the (previous) Visual area          |
 | :arrow_down:       | `> | go to the end of the (previous) Visual area            |
 | :white_check_mark: | `. | go to the position of the last change in this file     |
-| :white_check_mark: | '.                                                          | go to the position of the last change in this file |
-| :arrow_down:       | '{a-zA-Z0-9[]'"<>.}                                         | same as `, but on the first non-blank in the line  |
-| :arrow_down:       | :marks                                                      | print the active marks                             |
-| :arrow_down:       | :1234: CTRL-O                                               | go to Nth older position in jump list              |
-| :arrow_down:       | :1234: CTRL-I                                               | go to Nth newer position in jump list              |
-| :arrow_down:       | :ju[mps]                                                    | print the jump list                                |
+| :white_check_mark: | '.                                                          | go to the position of the last change in this file     |
+| :arrow_down:       | '{a-zA-Z0-9[]'"<>.}                                         | same as `, but on the first non-blank in the line      |
+| :arrow_down:       | :marks                                                      | print the active marks                                 |
+| :white_check_mark: | :1234: CTRL-O                                               | go to Nth older position in jump list                  |
+| :white_check_mark: | :1234: CTRL-I                                               | go to Nth newer position in jump list                  |
+| :arrow_down:       | :ju[mps]                                                    | print the jump list                                    |
 
 ## Various motions
 
@@ -277,10 +279,10 @@ moving around:
 
 ## Digraphs
 
-| Status       | Command                                 | Description                   |
-| ------------ | --------------------------------------- | ----------------------------- |
-| :arrow_down: | :dig[raphs]                             | show current list of digraphs |
-| :arrow_down: | :dig[raphs] {char1}{char2} {number} ... | add digraph(s) to the list    |
+| Status             | Command                                 | Description                   |
+| ------------------ | --------------------------------------- | ----------------------------- |
+| :white_check_mark: | :dig[raphs]                             | show current list of digraphs |
+| :arrow_down:       | :dig[raphs] {char1}{char2} {number} ... | add digraph(s) to the list    |
 
 ## Special inserts
 
@@ -308,13 +310,9 @@ moving around:
 
 ## Copying and moving text
 
-Miscellanea:
-
-- We don't support read only registers.
-
-| Status             | Command          | Description                                            | Note                                  |
-| ------------------ | ---------------- | ------------------------------------------------------ | ------------------------------------- |
-| :warning:          | "{char}          | use register {char} for the next delete, yank, or put  | read only registers are not supported |
+| Status             | Command          | Description                                            |
+| ------------------ | ---------------- | ------------------------------------------------------ |
+| :white_check_mark: | "{char}          | use register {char} for the next delete, yank, or put  |
 | :white_check_mark: | "\*              | use register `*` to access system clipboard            |
 | :white_check_mark: | :reg             | show the contents of all registers                     |
 | :white_check_mark: | :reg {arg}       | show the contents of registers mentioned in {arg}      |
@@ -357,8 +355,8 @@ Miscellanea:
 | :white_check_mark: | g~{motion}              | switch case for the text that is moved over with {motion}                                       |
 | :white_check_mark: | gu{motion}              | make the text that is moved over with {motion} lowercase                                        |
 | :white_check_mark: | gU{motion}              | make the text that is moved over with {motion} uppercase                                        |
-| :arrow_down:       | {visual}g?              | perform rot13 encoding on highlighted text                                                      |
-| :arrow_down:       | g?{motion}              | perform rot13 encoding on the text that is moved over with {motion}                             |
+| :white_check_mark: | {visual}g?              | perform rot13 encoding on highlighted text                                                      |
+| :white_check_mark: | g?{motion}              | perform rot13 encoding on the text that is moved over with {motion}                             |
 | :white_check_mark: | :1234: CTRL-A           | add N to the number at or after the cursor                                                      |
 | :white_check_mark: | :1234: CTRL-X           | subtract N from the number at or after the cursor                                               |
 | :white_check_mark: | :1234: <{motion}        | move the lines that are moved over with {motion} one shiftwidth left                            |
@@ -379,7 +377,7 @@ Miscellanea:
 | :arrow_down:                        | `{visual}!{command}<CR>`                       | filter the highlighted lines through {command}                                                                                        |
 | :arrow_down:                        | `:[range]! {command}<CR>`                      | filter [range] lines through {command}                                                                                                |
 | :white_check_mark:                  | :1234: ={motion}                               | filter the lines that are moved over through 'equalprg'                                                                               |
-| :arrow_down:                        | :1234: ==                                      | filter N lines through 'equalprg'                                                                                                     |
+| :white_check_mark:                  | :1234: ==                                      | filter N lines through 'equalprg'                                                                                                     |
 | :white_check_mark:                  | {visual}=                                      | filter the highlighted lines through 'equalprg'                                                                                       |
 | :white_check_mark: :star: :warning: | :[range]s[ubstitute]/{pattern}/{string}/[g][c] | substitute {pattern} by {string} in [range] lines; with [g], replace all occurrences of {pattern}; with [c], confirm each replacement | Currently we only support JavaScript Regex and only options `gi` are implemented |
 | :arrow_down:                        | :[range]s[ubstitute][g][c]                     | repeat previous ":s" with new range and options                                                                                       |
@@ -390,13 +388,11 @@ Miscellanea:
 
 | Status             | Command | Description                                         |
 | ------------------ | ------- | --------------------------------------------------- |
-| :white_check_mark: | v       | start highlighting characters                       |
-| :white_check_mark: | V       | start highlighting linewise                         |
+| :white_check_mark: | v       | start highlighting characters or stop highlighting  |
+| :white_check_mark: | V       | start highlighting linewise or stop highlighting    |
+| :white_check_mark: | CTRL-V  | start highlighting blockwise or stop highlighting   |
 | :white_check_mark: | o       | exchange cursor position with start of highlighting |
 | :white_check_mark: | gv      | start highlighting on previous visual area          |
-| :white_check_mark: | v       | highlight characters or stop highlighting           |
-| :white_check_mark: | V       | highlight linewise or stop highlighting             |
-| :white_check_mark: | CTRL-V  | highlight blockwise or stop highlighting            |
 
 ## Text objects (only in Visual mode or after an operator)
 
@@ -404,8 +400,8 @@ Miscellanea:
 | ------------------ | ------------------------------------------------- | ----------------------------------------------------------- |
 | :white_check_mark: | :1234: aw                                         | Select "a word"                                             |
 | :white_check_mark: | :1234: iw                                         | Select "inner word"                                         |
-| :white_check_mark: | :1234: aW                                         | Select "a                                                   | WORD | " |
-| :white_check_mark: | :1234: iW                                         | Select "inner                                               | WORD | " |
+| :white_check_mark: | :1234: aW                                         | Select "a WORD"                                             |
+| :white_check_mark: | :1234: iW                                         | Select "inner WORD"                                         |
 | :white_check_mark: | :1234: as                                         | Select "a sentence"                                         |
 | :white_check_mark: | :1234: is                                         | Select "inner sentence"                                     |
 | :white_check_mark: | :1234: ap                                         | Select "a paragraph"                                        |
@@ -489,11 +485,11 @@ Since the list is too long, now we just put those already supported options here
 
 ## External commands
 
-| Status       | Command     | Description                                                                |
-| ------------ | ----------- | -------------------------------------------------------------------------- |
-| :arrow_down: | :sh[ell]    | start a shell                                                              |
-| :arrow_down: | :!{command} | execute {command} with a shell                                             |
-| :arrow_down: | K           | lookup keyword under the cursor with 'keywordprg' program (default: "man") |
+| Status             | Command     | Description                                                                |
+| ------------------ | ----------- | -------------------------------------------------------------------------- |
+| :white_check_mark: | :sh[ell]    | start a shell                                                              |
+| :white_check_mark: | :!{command} | execute {command} with a shell                                             |
+| :arrow_down:       | K           | lookup keyword under the cursor with 'keywordprg' program (default: "man") |
 
 ## Ex ranges
 
@@ -526,6 +522,9 @@ Since the list is too long, now we just put those already supported options here
 | :white_check_mark: :star: | &lt;ctrl-w&gt; hl | Switching between windows.                                              | As we don't have the concept of Window in VS Code, we are mapping these commands to switching between Grouped Editors. |
 | :white_check_mark:        | :sp {file}        | Split current window in two.                                            |                                                                                                                        |
 | :white_check_mark: :star: | :vsp {file}       | Split vertically current window in two.                                 |                                                                                                                        |
+| :white_check_mark:        | &lt;ctrl-w&gt; s  | Split current window in two.                                            |                                                                                                                        |
+| :white_check_mark: :star: | &lt;ctrl-w&gt; v  | Split vertically current window in two.                                 |                                                                                                                        |
+| :white_check_mark: :star: | &lt;ctrl-w&gt; o  | Close other editor groups.                                              |                                                                                                                        |
 | :white_check_mark:        | :new              | Create a new window horizontally and start editing an empty file in it. |                                                                                                                        |
 | :white_check_mark: :star: | :vne[w]           | Create a new window vertically and start editing an empty file in it.   |                                                                                                                        |
 
@@ -571,7 +570,7 @@ Pretty much everything fold-related is blocked by [this issue](https://github.co
 | :white_check_mark: | zO                       | Open all folds under the cursor recursively.                                                                 |
 | :white_check_mark: | zc                       | Close one fold under the cursor. When a count is given, that many folds deep are closed.                     |
 | :white_check_mark: | zC                       | Close all folds under the cursor recursively.                                                                |
-| :arrow_down:       | za                       | When on a closed fold: open it. When on an open fold: close it and set 'foldenable'.                         |
+| :white_check_mark: | za                       | When on a closed fold: open it. When on an open fold: close it and set 'foldenable'.                         |
 | :arrow_down:       | zA                       | When on a closed fold: open it recursively. When on an open fold: close it recursively and set 'foldenable'. |
 | :arrow_down:       | zv                       | View cursor line: Open just enough folds to make the line in which the cursor is located not folded.         |
 | :arrow_down:       | zx                       | Update folds: Undo manually opened and closed folds: re-apply 'foldlevel', then do "zv": View cursor line.   |
