@@ -1,3 +1,5 @@
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/codesandbox/codesandbox-client)
+
 <p align="center">
   <a href="https://codesandbox.io">
     <img src="https://codesandbox.io/static/img/banner.png?v=2" height="300px">
