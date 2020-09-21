@@ -404,6 +404,7 @@ interface CompileOptions {
   skipEval?: boolean;
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
+  clearConsoleDisabled?: boolean;
 }
 
 async function compile({
@@ -418,10 +419,18 @@ async function compile({
   skipEval = false,
   hasFileResolver = false,
   disableDependencyPreprocessing = false,
+  clearConsoleDisabled = false,
 }: CompileOptions) {
-  dispatch({
-    type: 'start',
-  });
+  if (firstLoad) {
+    // Clear the console on first load, but don't clear the console on HMR updates
+    if (!clearConsoleDisabled) {
+      // @ts-ignore Chrome behaviour
+      console.clear('__internal__'); // eslint-disable-line no-console
+      dispatch({ type: 'clear-console' });
+    }
+  }
+
+  dispatch({ type: 'start' });
   metrics.measure('compilation');
 
   const startTime = Date.now();

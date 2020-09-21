@@ -417,16 +417,6 @@ class BasePreview extends React.Component<Props, State> {
     const { settings } = this.props;
     const { sandbox } = this.props;
 
-    if (
-      process.env.NODE_ENV !== 'development' &&
-      settings.clearConsoleEnabled &&
-      !this.serverPreview
-    ) {
-      // @ts-ignore Chrome behaviour
-      console.clear('__internal__'); // eslint-disable-line no-console
-      dispatch({ type: 'clear-console' });
-    }
-
     // Do it here so we can see the dependency fetching screen if needed
     this.clearErrors();
     if (settings.forceRefresh && !initialRender) {
@@ -453,6 +443,7 @@ class BasePreview extends React.Component<Props, State> {
           hasActions: Boolean(this.props.onAction),
           previewSecret: sandbox.previewSecret,
           showScreen,
+          clearConsoleDisabled: !settings.clearConsoleEnabled,
         });
       }
     }

@@ -113,8 +113,12 @@ export const ImportFromGithub = () => {
           style={{ fontSize: 11 }}
           disabled={!transformedUrl}
           onClick={async () => {
-            await actions.git.importFromGithub(gitHubToSandboxUrl(url));
-            actions.modals.newSandboxModal.close();
+            try {
+              await actions.git.importFromGithub(gitHubToSandboxUrl(url));
+              actions.modals.newSandboxModal.close();
+            } catch {
+              // Were not able to import, probably private repo
+            }
           }}
         >
           Import and Fork

@@ -5,7 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import {
   sandboxUrl,
-  dashboard
+  dashboard,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Context, MenuItem } from '../ContextMenu';
 import { DashboardSandbox, DashboardTemplate } from '../../../types';
@@ -16,12 +16,12 @@ interface SandboxMenuProps {
 }
 export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   item,
-  setRenaming
+  setRenaming,
 }) => {
   const {
     state: { user, activeTeam, activeWorkspaceAuthorization },
     effects,
-    actions
+    actions,
   } = useOvermind();
   const { sandbox, type } = item;
   const isTemplate = type === 'template';
@@ -33,7 +33,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
   const url = sandboxUrl({
     id: sandbox.id,
-    alias: sandbox.alias
+    alias: sandbox.alias,
   });
 
   const folderUrl = getFolderUrl(item, activeTeam);
@@ -41,14 +41,16 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const label = isTemplate ? 'Template' : 'Sandbox';
   const isPro = user && Boolean(user.subscription);
 
-  const hasAccess = React.useMemo(() => item.sandbox.teamId === activeTeam, [
-    item,
-    activeTeam
-  ]);
+  // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
+  // responding with teamId == null for personal templates anymore.
+  const hasAccess = React.useMemo(
+    () => item.sandbox.teamId === activeTeam || item.sandbox.teamId === null,
+    [item, activeTeam]
+  );
 
   const isOwner = React.useMemo(() => {
     if (item.type !== 'template') {
-      return item.sandbox.teamId === activeTeam;
+      return item.sandbox.teamId === activeTeam || item.sandbox.teamId === null;
     }
 
     return (
@@ -98,7 +100,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           onSelect={() => {
             actions.editor.forkExternalSandbox({
               sandboxId: sandbox.id,
-              openInNewWindow: true
+              openInNewWindow: true,
             });
           }}
         >
@@ -137,7 +139,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           onSelect={() => {
             actions.editor.forkExternalSandbox({
               sandboxId: sandbox.id,
-              openInNewWindow: true
+              openInNewWindow: true,
             });
           }}
         >
@@ -148,7 +150,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         <MenuItem
           onSelect={() => {
             actions.modals.moveSandboxModal.open({
-              sandboxIds: [item.sandbox.id]
+              sandboxIds: [item.sandbox.id],
             });
           }}
         >
@@ -173,7 +175,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               onSelect={() =>
                 actions.dashboard.changeSandboxesPrivacy({
                   sandboxIds: [sandbox.id],
-                  privacy: 0
+                  privacy: 0,
                 })
               }
             >
@@ -185,7 +187,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               onSelect={() =>
                 actions.dashboard.changeSandboxesPrivacy({
                   sandboxIds: [sandbox.id],
-                  privacy: 1
+                  privacy: 1,
                 })
               }
             >
@@ -197,7 +199,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               onSelect={() =>
                 actions.dashboard.changeSandboxesPrivacy({
                   sandboxIds: [sandbox.id],
-                  privacy: 2
+                  privacy: 2,
                 })
               }
             >
@@ -218,7 +220,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             onSelect={() => {
               actions.dashboard.changeSandboxesFrozen({
                 sandboxIds: [sandbox.id],
-                isFrozen: false
+                isFrozen: false,
               });
             }}
           >
@@ -229,7 +231,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             onSelect={() => {
               actions.dashboard.changeSandboxesFrozen({
                 sandboxIds: [sandbox.id],
-                isFrozen: true
+                isFrozen: true,
               });
             }}
           >
@@ -241,7 +243,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           <MenuItem
             onSelect={() => {
               actions.dashboard.unmakeTemplates({
-                templateIds: [sandbox.id]
+                templateIds: [sandbox.id],
               });
             }}
           >
@@ -251,7 +253,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           <MenuItem
             onSelect={() => {
               actions.dashboard.makeTemplates({
-                sandboxIds: [sandbox.id]
+                sandboxIds: [sandbox.id],
               });
             }}
           >
@@ -267,7 +269,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               const template = item as DashboardTemplate;
               actions.dashboard.deleteTemplate({
                 sandboxId: template.sandbox.id,
-                templateId: template.template.id
+                templateId: template.template.id,
               });
               setVisibility(false);
             }}
@@ -278,7 +280,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           <MenuItem
             onSelect={() => {
               actions.dashboard.deleteSandbox({
-                ids: [sandbox.id]
+                ids: [sandbox.id],
               });
               setVisibility(false);
             }}

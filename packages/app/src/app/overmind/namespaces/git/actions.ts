@@ -185,10 +185,30 @@ export const importFromGithub: AsyncAction<string> = async (
 ) => {
   actions.modalClosed();
   state.currentModal = 'exportGithub';
-  await actions.editor.forkExternalSandbox({
-    sandboxId: sandboxUrl.replace('/s/', ''),
-  });
-  state.currentModal = null;
+  try {
+    await actions.editor.forkExternalSandbox({
+      sandboxId: sandboxUrl.replace('/s/', ''),
+    });
+    state.currentModal = null;
+  } catch (e) {
+    if (!state.user || !state.user.integrations?.github) {
+      state.currentModal = null;
+      effects.notificationToast.add({
+        title: 'Can not import repo',
+        message: 'This seems to be a private repo, you have to sign in first',
+        status: NotificationStatus.ERROR,
+        actions: {
+          primary: {
+            label: 'Sign in',
+            run: () => {
+              actions.signInGithubClicked();
+            },
+          },
+        },
+      });
+    }
+    throw e;
+  }
 };
 
 export const openSourceSandbox: Action = ({ state, effects }) => {
