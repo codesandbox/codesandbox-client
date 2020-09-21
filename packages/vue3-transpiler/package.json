@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "tsc --watch",
-    "build": "rollup --config ./compiler/rollup.config.js",
+    "build": "tsc",
     "build:dev": "yarn buid:dev"
   },
   "devDependencies": {
