@@ -8,7 +8,7 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v1
+      - uses: actions/stale@v3
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           stale-issue-message:
@@ -19,6 +19,10 @@ jobs:
             is made or the stale label is removed.'
           stale-issue-label: 'stale'
           exempt-issue-label: '💥 Crash Report'
+          close-issue-message:
+            "This issue has been automatically closed because there wasn't any
+            activity after the previous notice or the stale label wasn't
+            removed."
           stale-pr-message:
             'This PR has automatically been marked stale because there has been
             no activity in a while. Please leave a comment if the issue has not
@@ -27,5 +31,9 @@ jobs:
             made or the stale label is removed.'
           stale-pr-label: 'stale'
           exempt-pr-label: '💥 Crash Report'
+          close-pr-message:
+            "This PR has been automatically closed because there wasn't any
+            activity after the previous notice or the stale label wasn't
+            removed."
           days-before-stale: 90
           days-before-close: 15
