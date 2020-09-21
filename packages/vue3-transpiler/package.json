@@ -2,11 +2,12 @@
   "name": "vue3-transpiler",
   "version": "1.0.0",
   "main": "lib/index.js",
-  "type": "lib/index.d.ts",
+  "typing": "lib/index.d.ts",
   "license": "MIT",
   "scripts": {
     "start": "tsc --watch",
-    "build": "rollup --config ./compiler/rollup.config.js"
+    "build": "rollup --config ./compiler/rollup.config.js",
+    "build:dev": "yarn buid:dev"
   },
   "devDependencies": {
     "@types/hash-sum": "^1.0.0",
