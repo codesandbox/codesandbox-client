@@ -1,0 +1,21 @@
+{
+  "name": "vue-browser-eslint-rules",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "rollup -c && terser lib/index.js > lib/index.min.js",
+    "build:dev": "yarn build"
+  },
+  "dependencies": {
+    "eslint-plugin-vue": "^6.2.2"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^15.1.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "rollup": "^2.28.1",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "terser": "^5.3.2"
+  }
+}
