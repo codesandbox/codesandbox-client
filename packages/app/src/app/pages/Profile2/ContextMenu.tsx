@@ -73,12 +73,12 @@ export const ContextMenu = () => {
         <>
           <Menu.Divider />
           <Menu.Item
-            onSelect={() => changeSandboxPrivacy({ sandboxId, privacy: 1 })}
+            onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 1 })}
           >
             Make sandbox unlisted
           </Menu.Item>
           <Menu.Item
-            onSelect={() => changeSandboxPrivacy({ sandboxId, privacy: 2 })}
+            onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 2 })}
           >
             Make sandbox private
           </Menu.Item>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Profile } from '@codesandbox/common/lib/types';
 import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { Link as RouterLink } from 'react-router-dom';
@@ -14,8 +15,8 @@ import {
   Input,
   Tooltip,
 } from '@codesandbox/components';
-import { TeamAvatar } from 'app/components/TeamAvatar';
 import css from '@styled-system/css';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 
 export const ProfileCard = () => {
   const {
@@ -209,9 +210,9 @@ export const ProfileCard = () => {
 };
 
 export const Bio: React.FC<{
-  bio: string;
+  bio: Profile['bio'];
+  setBio: (bio: Profile['bio']) => void;
   editing: boolean;
-  setBio: (bio: string) => void;
 }> = ({ bio, editing, setBio }) => (
   <>
     {editing ? (
@@ -232,11 +233,11 @@ export const Bio: React.FC<{
 );
 
 const SocialLinks: React.FC<{
-  username: string;
-  socialLinks: string[];
+  username: Profile['username'];
+  socialLinks: Profile['socialLinks'];
   editing: boolean;
-  setSocialLinks: (socialLinks: string[]) => void;
-}> = ({ username, socialLinks, editing, setSocialLinks }) => (
+  setSocialLinks: (socialLinks: Profile['socialLinks']) => void;
+}> = ({ username, socialLinks, setSocialLinks, editing }) => (
   <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
     {editing ? (
       <Stack direction="vertical" gap={4}>
