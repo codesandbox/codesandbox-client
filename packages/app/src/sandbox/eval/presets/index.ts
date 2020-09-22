@@ -276,7 +276,7 @@ export default class Preset {
 
     return `!${loaders
       .map(t => {
-        const configStringified = querystring.encode(t.options);
+        const configStringified = querystring.encode(t.options as any);
         const loaderQuery = configStringified ? '?' + configStringified : '';
 
         return t.transpiler.name + loaderQuery;

@@ -5,6 +5,9 @@
     "composite": true,
     "outDir": "lib",
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "allowJs": false,
+    "incremental": true,
+    "skipLibCheck": true
   }
 }

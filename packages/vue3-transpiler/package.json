@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "tsc --watch",
-    "build": "tsc",
+    "build": "tsc -b",
     "build:dev": "yarn build"
   },
   "devDependencies": {

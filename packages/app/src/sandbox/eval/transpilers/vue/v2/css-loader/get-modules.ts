@@ -1,4 +1,4 @@
-import { LoaderContext } from '../../../transpiled-module';
+import { LoaderContext } from '../../../../transpiled-module';
 
 let core = null;
 

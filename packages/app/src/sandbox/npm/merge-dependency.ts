@@ -34,7 +34,7 @@ interface IDepDepInfo {
   entries: string[];
 }
 
-interface IResponse {
+export interface IResponse {
   contents: { [path: string]: { content: string } };
   dependencies: Array<{ name: string; version: string }>;
   dependencyAliases: { [dep: string]: { [dep: string]: string } };
