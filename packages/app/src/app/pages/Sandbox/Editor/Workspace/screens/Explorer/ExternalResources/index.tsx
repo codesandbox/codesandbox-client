@@ -9,7 +9,7 @@ import {
   ListAction,
   Select,
   SidebarRow,
-  Stack,
+  Stack
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React, { FunctionComponent } from 'react';
@@ -27,13 +27,13 @@ type Props = {
 export const ExternalResources: FunctionComponent<Props> = ({ readonly }) => {
   const {
     actions: {
-      workspace: { externalResourceAdded, externalResourceRemoved },
+      workspace: { externalResourceAdded, externalResourceRemoved }
     },
     state: {
       editor: {
-        currentSandbox: { externalResources, template },
-      },
-    },
+        currentSandbox: { externalResources, template }
+      }
+    }
   } = useOvermind();
 
   const fonts = externalResources.filter(isGoogleFont);
@@ -55,7 +55,7 @@ export const ExternalResources: FunctionComponent<Props> = ({ readonly }) => {
               <ListAction
                 css={{
                   button: { opacity: 0 },
-                  ':hover, :focus-within': { button: { opacity: 1 } },
+                  ':hover, :focus-within': { button: { opacity: 1 } }
                 }}
                 justify="space-between"
                 key={resource}
@@ -80,7 +80,7 @@ export const ExternalResources: FunctionComponent<Props> = ({ readonly }) => {
               <ListAction
                 css={{
                   button: { opacity: 0 },
-                  ':hover, :focus-within': { button: { opacity: 1 } },
+                  ':hover, :focus-within': { button: { opacity: 1 } }
                 }}
                 justify="space-between"
                 key={resource}
@@ -186,6 +186,6 @@ const getFontFamily = (search: string) => {
     id: family
       .split('+')
       .join('-')
-      .toLowerCase(),
+      .toLowerCase()
   };
 };

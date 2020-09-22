@@ -95,7 +95,7 @@ const modals = {
   },
   searchDependencies: {
     Component: SearchDependenciesModal,
-    width: 600,
+    width: 716,
   },
   liveSessionEnded: {
     Component: LiveSessionEnded,

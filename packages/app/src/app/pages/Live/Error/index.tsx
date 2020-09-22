@@ -10,8 +10,8 @@ import { RoomNotFoundError } from './RoomNotFoundError';
 export const Error: FunctionComponent = () => {
   const {
     state: {
-      live: { error },
-    },
+      live: { error }
+    }
   } = useOvermind();
 
   if (error === 'room not found') {

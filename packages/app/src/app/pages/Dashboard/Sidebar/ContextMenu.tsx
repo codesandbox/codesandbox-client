@@ -9,7 +9,7 @@ import { DashboardBaseFolder } from '../types';
 import { NEW_FOLDER_ID } from './constants';
 
 const Context = React.createContext({
-  setVisibility: null,
+  setVisibility: null
 });
 
 interface ContextMenuProps {
@@ -31,7 +31,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   setVisibility,
   folder,
   setRenaming,
-  setNewFolderPath,
+  setNewFolderPath
 }) => {
   const { actions } = useOvermind();
   const history = useHistory();
@@ -85,7 +85,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 
             track('Dashboard - Delete folder', {
               source: 'Sidebar',
-              dashboardVersion: 2,
+              dashboardVersion: 2
             });
           }}
         >

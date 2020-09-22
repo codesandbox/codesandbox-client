@@ -33,11 +33,11 @@ export const Profile = props => {
 
   const {
     actions: {
-      profile: { profileMounted }
+      profile: { profileMounted },
     },
     state: {
-      profile: { current: user }
-    }
+      profile: { current: user },
+    },
   } = useOvermind();
 
   React.useEffect(() => {
@@ -76,7 +76,7 @@ export const Profile = props => {
             width: '100vw',
             backgroundColor: 'grays.900',
             color: 'white',
-            fontFamily: 'Inter, sans-serif'
+            fontFamily: 'Inter, sans-serif',
           })}
         >
           <Header />
@@ -85,7 +85,7 @@ export const Profile = props => {
             gap={8}
             css={css({
               flexDirection: ['column', 'row'],
-              marginX: [32, 64]
+              marginX: [32, 64],
             })}
           >
             <Element css={css({ width: ['100%', '320px'] })}>
