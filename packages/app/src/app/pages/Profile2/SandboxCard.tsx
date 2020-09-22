@@ -9,6 +9,7 @@ import {
   SkeletonText,
   isMenuClicked as isTargetInMenu,
 } from '@codesandbox/components';
+import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import css from '@styled-system/css';
 import { ENTER, SPACE, ALT } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -216,7 +217,8 @@ export const SandboxCard = ({
           cursor: 'pointer',
           overflow: 'hidden',
           ':hover, :focus, :focus-within': {
-            boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+            boxShadow: (theme: typeof designLanguage) =>
+              '0 4px 16px 0 ' + theme.colors.grays[900],
           },
           ':focus, :focus-within': {
             outline: 'none',

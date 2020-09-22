@@ -2,6 +2,7 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useDrop } from 'react-dnd';
 import { Element, Button, Stack, Text } from '@codesandbox/components';
+import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import { SandboxTypes, DropTargets } from './constants';
@@ -75,7 +76,8 @@ export const ShowcaseSandbox = () => {
           height: 360,
           padding: 4,
           backgroundColor: isOver ? 'grays.700' : 'grays.900',
-          transition: theme => `background-color ${theme.speeds[2]}`,
+          transition: (theme: typeof designLanguage) =>
+            `background-color ${theme.speeds[2]}`,
           backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23757575' stroke-width='1' stroke-dasharray='8%2c8' stroke-dashoffset='4' stroke-linecap='square'/%3e%3c/svg%3e");border-radius: 4px;`,
         })}
       >
