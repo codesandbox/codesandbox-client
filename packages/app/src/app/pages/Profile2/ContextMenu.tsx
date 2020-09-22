@@ -35,7 +35,7 @@ export const ContextMenu = () => {
     .map(sandbox => sandbox.id)
     .includes(sandboxId);
 
-  const setVisibility = visible => {
+  const setVisibility = (visible: boolean) => {
     if (!visible) closeContextMenu();
   };
 

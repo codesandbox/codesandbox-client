@@ -20,7 +20,12 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { ThemeProvider, Stack, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  RouteComponentProps,
+} from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 import { Helmet } from 'react-helmet';
@@ -33,9 +38,13 @@ import { SearchedSandboxes } from './SearchedSandboxes';
 import { LikedSandboxes } from './LikedSandboxes';
 import { ContextMenu } from './ContextMenu';
 
-export const Profile = props => {
-  const { username } = props.match.params;
-
+export const Profile: React.FunctionComponent<RouteComponentProps<{
+  username: string;
+}>> = ({
+  match: {
+    params: { username },
+  },
+}) => {
   const {
     actions: {
       profile: { profileMounted },

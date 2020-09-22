@@ -76,7 +76,11 @@ export const SearchedSandboxes = () => {
   );
 };
 
-const Pagination = ({ page, setPage, numberOfPages }) => (
+const Pagination: React.FC<{
+  page: number;
+  setPage: (page: number) => void;
+  numberOfPages: number;
+}> = ({ page, setPage, numberOfPages }) => (
   <nav role="navigation" aria-label="Pagination Navigation">
     <Stack
       as="ul"
