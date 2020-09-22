@@ -1,7 +1,3 @@
-import { dispatch, actions } from 'codesandbox-api';
-
-import Manager from '../../manager';
-
 import babelTranspiler from '../../transpilers/babel';
 import typescriptTranspiler from '../../transpilers/typescript';
 import jsonTranspiler from '../../transpilers/json';

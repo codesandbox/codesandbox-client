@@ -9,22 +9,21 @@ import hashsum from 'hash-sum';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 
-import { Module } from './types/module';
-import { SourceMap } from './transpilers/utils/get-source-map';
+import { Module } from '../types/module';
+import { SourceMap } from '../transpiler/utils/get-source-map';
 import ModuleError from './errors/module-error';
 import ModuleWarning from './errors/module-warning';
 
-import { WarningStructure } from './transpilers/utils/worker-warning-handler';
+import { WarningStructure } from '../transpiler/utils/worker-warning-handler';
 
-import resolveDependency from './loaders/dependency-resolver';
-import evaluate from './loaders/eval';
+import resolveDependency from '../runner/dependency-resolver';
+import evaluate from '../runner/eval';
 
-import Manager, { HMRStatus } from './manager';
+import Manager, { HMRStatus } from '../manager';
 import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
 import delay from '../utils/delay';
 import { measure, endMeasure } from '../utils/metrics';
-import Preset from './presets';
 
 declare const BrowserFS: any;
 
@@ -58,16 +57,9 @@ export type SerializedTranspiledModule = {
   query: string;
   source?: ModuleSource;
   sourceEqualsCompiled: boolean;
-  assets: {
-    [name: string]: ModuleSource;
-  };
   isEntry: boolean;
   isTestFile: boolean;
   childModules: Array<string>;
-  /**
-   * All extra modules emitted by the loader
-   */
-  emittedAssets: Array<ModuleSource>;
   initiators: Array<string>;
   dependencies: Array<string>;
   asyncDependencies: Array<string>;
@@ -88,7 +80,6 @@ export type LoaderContext = {
     overwrite?: boolean,
     isChild?: boolean
   ) => TranspiledModule;
-  emitFile: (name: string, content: string, sourceMap: SourceMap) => void;
   options: {
     context: string;
     config?: object;
@@ -160,24 +151,17 @@ export type Compilation = {
   };
 };
 
-export default class TranspiledModule {
+export class TranspiledModule {
   module: Module;
   query: string;
-  previousSource: ModuleSource | null;
-  source: ModuleSource | null;
-  assets: {
-    [name: string]: ModuleSource;
-  };
+  previousSource: ModuleSource | null = null;
+  source: ModuleSource | null = null;
 
   isEntry: boolean;
   childModules: Array<TranspiledModule>;
   errors: Array<ModuleError>;
   warnings: Array<ModuleWarning>;
-  /**
-   * All extra modules emitted by the loader
-   */
-  emittedAssets: Array<ModuleSource>;
-  compilation: Compilation | null;
+  compilation: Compilation | null = null;
   initiators: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
   dependencies: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
   asyncDependencies: Array<Promise<TranspiledModule>>; // eslint-disable-line no-use-before-define
@@ -193,7 +177,7 @@ export default class TranspiledModule {
    * Set how this module handles HMR. The default is undefined, which means
    * that we handle the HMR like CodeSandbox does.
    */
-  hmrConfig: HMR | null;
+  hmrConfig: HMR | null = null;
 
   hasMissingDependencies: boolean = false;
 
@@ -259,7 +243,6 @@ export default class TranspiledModule {
       m.reset();
     });
     this.childModules = [];
-    this.emittedAssets = [];
     this.resetTranspilation();
 
     this.setIsEntry(false);
@@ -467,7 +450,7 @@ export default class TranspiledModule {
           code,
         };
 
-        let transpiledModule: TranspiledModule;
+        let transpiledModule: TranspiledModule | undefined = undefined;
         if (!overwrite) {
           try {
             transpiledModule = manager.getTranspiledModule(
@@ -492,9 +475,6 @@ export default class TranspiledModule {
         transpiledModule.initiators.add(this);
 
         return transpiledModule;
-      },
-      emitFile: (name: string, content: string, sourceMap: SourceMap) => {
-        this.assets[name] = this.createSourceForAsset(name, content, sourceMap);
       },
       // Add an explicit transpilation dependency, this is needed for loaders
       // that include the source of another file by themselves, we need to
@@ -529,7 +509,7 @@ export default class TranspiledModule {
       resolveTranspiledModuleAsync: (depPath: string, options = {}) =>
         manager.resolveTranspiledModuleAsync(
           depPath,
-          options.isAbsolute ? null : this,
+          options.isAbsolute ? undefined : this,
           options.ignoredExtensions
         ),
       getModules: (): Array<Module> => manager.getModules(),
@@ -829,7 +809,7 @@ export default class TranspiledModule {
           this.query ? `?${this.hash}` : ''
         }`;
 
-        this.source = new ModuleSource(this.module.path, code, null);
+        this.source = new ModuleSource(this.module.path, code, undefined);
 
         if (initiator) {
           initiator.dependencies.add(this);
@@ -871,7 +851,11 @@ export default class TranspiledModule {
       ) {
         return this.compilation.exports;
       }
-    } else if (this.isCompilationCached(globals) && !this.isEntry) {
+    } else if (
+      this.isCompilationCached(globals) &&
+      !this.isEntry &&
+      this.compilation
+    ) {
       return this.compilation.exports;
     }
 
@@ -1104,9 +1088,7 @@ export default class TranspiledModule {
       this.source && this.source.sourceEqualsCompiled;
     const serializableObject: SerializedTranspiledModule = {
       query: this.query,
-      assets: this.assets,
       module: this.module,
-      emittedAssets: this.emittedAssets,
       isEntry: this.isEntry,
       isTestFile: this.isTestFile,
 
@@ -1146,9 +1128,7 @@ export default class TranspiledModule {
     manager: Manager
   ) {
     this.query = data.query;
-    this.assets = data.assets;
     this.module = data.module;
-    this.emittedAssets = data.emittedAssets;
     this.isEntry = data.isEntry;
     this.isTestFile = data.isTestFile;
     this.hasMissingDependencies = data.hasMissingDependencies;

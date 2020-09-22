@@ -10,34 +10,31 @@ import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/temp
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
-import { generateBenchmarkInterface } from '../utils/benchmark';
+import { generateBenchmarkInterface } from './utils/benchmark';
 import { Module } from './types/module';
-import TranspiledModule, {
+import {
+  TranspiledModule,
   ChildModule,
   SerializedTranspiledModule,
-} from './transpiled-module';
-import Preset from './presets';
-import { SCRIPT_VERSION } from '..';
+} from './transpiled-module/transpiled-module';
+import { Preset } from './preset';
 import fetchModule, {
   setCombinedMetas,
   combinedMetas,
-} from '../npm/dynamic/fetch-npm-module';
+} from './npm/dynamic/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
-import getDependencyName from './utils/get-dependency-name';
-import dependenciesToQuery from '../npm/dependencies-to-query';
+import dependenciesToQuery from './npm/dependencies-to-query';
+import { getDependencyName } from './utils/get-dependency-name';
 import { packageFilter } from './utils/resolve-utils';
 
 import { ignoreNextCache, deleteAPICache, clearIndexedDBCache } from './cache';
-import { shouldTranspile } from './transpilers/babel/check';
-import { splitQueryFromPath } from './utils/query-path';
-import { measure, endMeasure } from '../utils/metrics';
+import { splitQueryFromPath } from './transpiled-module/utils/query-path';
+import { measure, endMeasure } from './utils/metrics';
 import { IEvaluator } from './evaluator';
+import { setContributedProtocols } from './npm/dynamic/fetch-protocols';
+import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
 
 declare const BrowserFS: any;
-
-type Externals = {
-  [name: string]: string;
-};
 
 export type ModuleObject = {
   [path: string]: Module;
@@ -97,6 +94,7 @@ type TManagerOptions = {
    * Whether the parent window has its own file resolver that can be used by the manager to resolve files
    */
   hasFileResolver: boolean;
+  versionIdentifier: string;
 };
 
 function triggerFileWatch(path: string, type: 'rename' | 'change') {
@@ -120,15 +118,12 @@ export default class Manager implements IEvaluator {
 
   envVariables: { [envName: string]: string } = {};
   preset: Preset;
-  externals: Externals;
   modules: ModuleObject;
   manifest: Manifest;
-  dependencies: Object;
   webpackHMR: boolean;
   hardReload: boolean;
   hmrStatus: HMRStatus = 'idle';
   hmrStatusChangeListeners: Set<(status: HMRStatus) => void>;
-  testRunner: import('./tests/jest-lite').default;
   isFirstLoad: boolean;
 
   fileResolver: IFileResolver | undefined;
@@ -147,6 +142,8 @@ export default class Manager implements IEvaluator {
   configurations: ParsedConfigurationFiles;
 
   stage: Stage;
+
+  version: string;
 
   constructor(
     id: string,
@@ -168,6 +165,17 @@ export default class Manager implements IEvaluator {
     this.transpiledModulesByHash = {};
     this.configurations = {};
     this.stage = 'transpilation';
+    this.version = options.versionIdentifier;
+
+    /**
+     * Contribute the file fetcher, which needs the manager to resolve the files
+     */
+    setContributedProtocols([
+      {
+        condition: version => version.startsWith('file:'),
+        protocol: new FileFetcher(this),
+      },
+    ]);
 
     this.modules = modules;
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
@@ -208,18 +216,6 @@ export default class Manager implements IEvaluator {
     );
     await tModule.transpile(this);
     return tModule.evaluate(this);
-  }
-
-  async initializeTestRunner() {
-    if (this.testRunner) {
-      return this.testRunner;
-    }
-
-    this.testRunner = await import(
-      /* webpackChunkName: 'jest-lite' */ './tests/jest-lite'
-    ).then(({ default: TestRunner }) => new TestRunner(this));
-
-    return this.testRunner;
   }
 
   setupFileResolver() {
@@ -331,12 +327,6 @@ export default class Manager implements IEvaluator {
         // eslint-disable-next-line
         delete pJsonCode.browser;
         module.code = JSON.stringify(pJsonCode, null, 2);
-      }
-
-      // Check if module syntax, only transpile when that's NOT the case
-      // TODO move this check to the packager
-      if (!shouldTranspile(module.code, path)) {
-        module.requires = this.manifest.contents[path].requires;
       }
 
       this.addModule(module);
@@ -1146,7 +1136,7 @@ export default class Manager implements IEvaluator {
 
     const dependenciesQuery = this.getDependencyQuery();
 
-    const meta = {};
+    const meta: { [dir: string]: string[] } = {};
     Object.keys(combinedMetas || {}).forEach(p => {
       const dir = pathUtils.dirname(p.replace('/node_modules', ''));
       meta[dir] = meta[dir] || [];
@@ -1156,7 +1146,7 @@ export default class Manager implements IEvaluator {
     return {
       transpiledModules: serializedTModules,
       cachedPaths: this.cachedPaths,
-      version: SCRIPT_VERSION,
+      version: this.version,
       timestamp: new Date().getTime(),
       configurations: this.configurations,
       entry: entryPath,
@@ -1186,7 +1176,7 @@ export default class Manager implements IEvaluator {
         const {
           transpiledModules: serializedTModules,
           cachedPaths,
-          version,
+          version: cacheVersion,
           configurations,
           dependenciesQuery,
           meta,
@@ -1197,16 +1187,16 @@ export default class Manager implements IEvaluator {
           timestamp: number;
           configurations: any;
           dependenciesQuery: string;
-          meta: any;
+          meta: { [dir: string]: string[] };
         } = data;
 
         // Only use the cache if the cached version was cached with the same
         // version of the compiler and dependencies haven't changed
         if (
-          version === SCRIPT_VERSION &&
+          cacheVersion === this.version &&
           dependenciesQuery === this.getDependencyQuery()
         ) {
-          const newCombinedMetas = {};
+          const newCombinedMetas: { [file: string]: true } = {};
           Object.keys(meta).forEach(dir => {
             meta[dir].forEach(file => {
               newCombinedMetas[`/node_modules` + dir + '/' + file] = true;
@@ -1262,7 +1252,7 @@ export default class Manager implements IEvaluator {
 
   deleteAPICache() {
     ignoreNextCache();
-    return deleteAPICache(this.id);
+    return deleteAPICache(this.id, this.version);
   }
 
   async clearCache() {

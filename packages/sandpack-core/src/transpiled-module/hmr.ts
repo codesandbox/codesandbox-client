@@ -1,7 +1,7 @@
 export default class HMR {
   callback?: () => void;
   disposeHandler?: (data: Object) => void;
-  data: Object;
+  data: Object = {};
   type?: 'accept' | 'decline';
   dirty: boolean = false;
   selfAccepted: boolean = false;
@@ -10,7 +10,7 @@ export default class HMR {
     if (this.disposeHandler) {
       this.data = {};
       this.disposeHandler(this.data);
-      this.disposeHandler = null;
+      this.disposeHandler = undefined;
     }
   }
 

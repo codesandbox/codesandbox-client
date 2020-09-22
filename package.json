@@ -27,7 +27,8 @@
       "packages/template-icons",
       "packages/vue3-transpiler",
       "packages/vue3-browser-compiler",
-      "packages/vue-browser-eslint-rules"
+      "packages/vue-browser-eslint-rules",
+      "packages/sandpack-core"
     ],
     "nohoist": [
       "**/react-codemirror2",

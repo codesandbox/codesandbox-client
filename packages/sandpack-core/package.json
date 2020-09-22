@@ -1,0 +1,20 @@
+{
+  "name": "sandpack-core",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "@codesandbox/common": "^1.0.8",
+    "browser-resolve": "CompuIves/node-browser-resolve",
+    "codesandbox-api": "^0.0.24",
+    "lodash-es": "^4.17.15",
+    "sandbox-hooks": "0.1.0",
+    "source-map": "^0.7.3"
+  }
+}

@@ -4,11 +4,15 @@ import { UnpkgFetcher } from './unpkg';
 import { JSDelivrNPMFetcher } from './jsdelivr/jsdelivr-npm';
 import { JSDelivrGHFetcher } from './jsdelivr/jsdelivr-gh';
 import { TarFetcher } from './tar';
-import { FileFetcher } from './file';
 import { GistFetcher } from './gist';
 import { FetchProtocol } from '../fetch-npm-module';
 
 let contributedProtocols: ProtocolDefinition[] = [];
+
+export const preloadedProtocols = {
+  jsdelivr: new JSDelivrNPMFetcher(),
+  unpkg: new UnpkgFetcher(),
+};
 
 const protocols: ProtocolDefinition[] = [
   {
@@ -29,10 +33,10 @@ const protocols: ProtocolDefinition[] = [
     condition: version => /\//.test(version),
   },
   {
-    protocol: new UnpkgFetcher(),
+    protocol: preloadedProtocols.unpkg,
     condition: (version, useFallback) => useFallback,
   },
-  { protocol: new JSDelivrNPMFetcher(), condition: () => true },
+  { protocol: preloadedProtocols.jsdelivr, condition: () => true },
 ];
 
 export type ProtocolDefinition = {

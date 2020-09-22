@@ -3,8 +3,6 @@ import localforage from 'localforage';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import Manager from './manager';
 
-import { SCRIPT_VERSION } from '..';
-
 const debug = _debug('cs:compiler:cache');
 
 const host = process.env.CODESANDBOX_HOST;
@@ -48,7 +46,8 @@ export async function saveCache(
   managerModuleToTranspile: any,
   manager: Manager,
   changes: number,
-  firstRun: boolean
+  firstRun: boolean,
+  version: string
 ) {
   if (!sandboxId) {
     return Promise.resolve(false);
@@ -79,7 +78,7 @@ export async function saveCache(
     manager.clearCache();
   }
 
-  if (shouldSaveOnlineCache(firstRun, changes) && SCRIPT_VERSION) {
+  if (shouldSaveOnlineCache(firstRun, changes)) {
     const stringifiedManagerState = JSON.stringify(managerState);
 
     if (stringifiedManagerState.length > MAX_CACHE_SIZE) {
@@ -96,7 +95,7 @@ export async function saveCache(
       .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
         method: 'POST',
         body: JSON.stringify({
-          version: SCRIPT_VERSION,
+          version,
           data: stringifiedManagerState,
         }),
         headers: {
@@ -115,14 +114,17 @@ export async function saveCache(
   return Promise.resolve(false);
 }
 
-export function deleteAPICache(sandboxId: string): Promise<any> {
+export function deleteAPICache(
+  sandboxId: string,
+  version: string
+): Promise<any> {
   if (APICacheUsed) {
     debug('Deleting cache of API');
     return window
       .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
         method: 'DELETE',
         body: JSON.stringify({
-          version: SCRIPT_VERSION,
+          version,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -162,7 +164,7 @@ export function ignoreNextCache() {
   }
 }
 
-export async function consumeCache(manager: Manager) {
+export async function consumeCache(manager: Manager, version: string) {
   try {
     const shouldIgnoreCache =
       localStorage.getItem('ignoreCache') ||
@@ -178,8 +180,6 @@ export async function consumeCache(manager: Manager) {
 
     const cache = findCacheToUse(cacheData && cacheData.data, localData);
     if (cache) {
-      const version = SCRIPT_VERSION;
-
       if (cache.version === version) {
         if (cache === localData) {
           APICacheUsed = false;
