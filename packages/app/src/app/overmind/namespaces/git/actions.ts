@@ -166,9 +166,9 @@ export const createRepoClicked: AsyncAction = async ({
     state.currentModal = null;
 
     actions.editor.internal.forkSandbox({
-      sandboxId: `github/${git.username}/${git.repo}/tree/${
-        git.branch
-        }/${git.path || ''}`,
+      sandboxId: `github/${git.username}/${git.repo}/tree/${git.branch}/${
+        git.path || ''
+      }`,
     });
   } catch (error) {
     actions.internal.handleError({
@@ -338,10 +338,10 @@ export const createPrClicked: AsyncAction = async ({
       changes
     );
 
-    changes.added.forEach((change) => {
+    changes.added.forEach(change => {
       git.sourceModulesByPath[change.path].code = change.content;
     });
-    changes.modified.forEach((change) => {
+    changes.modified.forEach(change => {
       git.sourceModulesByPath[change.path].code = change.content;
     });
     changes.deleted.forEach(path => {
@@ -379,7 +379,7 @@ export const createPrClicked: AsyncAction = async ({
           run: () => {
             effects.browser.openWindow(
               `https://github.com/${sandbox.baseGit!.username}/${
-              sandbox.baseGit!.repo
+                sandbox.baseGit!.repo
               }/pull/${sandbox.prNumber!}`
             );
           },
@@ -544,10 +544,10 @@ export const resolveOutOfSync: AsyncAction = async ({
       files: added.reduce((aggr, change) => {
         aggr[change.filename] = change.isBinary
           ? {
-            content: git.sourceModulesByPath['/' + change.filename].code,
-            isBinary: true,
-            uploadId: git.sourceModulesByPath['/' + change.filename].uploadId,
-          }
+              content: git.sourceModulesByPath['/' + change.filename].code,
+              isBinary: true,
+              uploadId: git.sourceModulesByPath['/' + change.filename].uploadId,
+            }
           : { content: change.content };
 
         return aggr;
@@ -557,7 +557,7 @@ export const resolveOutOfSync: AsyncAction = async ({
 
   if (deleted.length) {
     await Promise.all(
-      deleted.map((change) => {
+      deleted.map(change => {
         const module = state.editor.modulesByPath['/' + change.filename];
 
         return actions.files.moduleDeleted({ moduleShortid: module.shortid });
@@ -566,7 +566,7 @@ export const resolveOutOfSync: AsyncAction = async ({
   }
   if (modified.length) {
     await Promise.all(
-      modified.map((change) => {
+      modified.map(change => {
         const module = state.editor.modulesByPath['/' + change.filename];
 
         actions.editor.setCode({
@@ -609,9 +609,10 @@ export const _setGitChanges: Action = ({ state }) => {
     if (!(module.path in state.git.sourceModulesByPath)) {
       changes.added.push(module.path);
     } else if (
-      (module.sha &&
-        state.git.sourceModulesByPath[module.path].sha !== module.code) ||
-      state.git.sourceModulesByPath[module.path].code !== module.code
+      ('sha' in module &&
+        state.git.sourceModulesByPath[module.path].sha !== module.sha) ||
+      (!('sha' in module) &&
+        state.git.sourceModulesByPath[module.path].code !== module.code)
     ) {
       changes.modified.push(module.path);
     }
@@ -657,7 +658,7 @@ export const _evaluateGitChanges: AsyncAction<
       !(state.editor.modulesByPath[path] as Module).isBinary &&
       (state.editor.modulesByPath[path] as Module).code !== change.content &&
       (state.editor.modulesByPath[path] as Module).code !==
-      state.git.sourceModulesByPath[path].code
+        state.git.sourceModulesByPath[path].code
     ) {
       return aggr.concat(change);
     }
@@ -687,7 +688,7 @@ export const _evaluateGitChanges: AsyncAction<
           state.editor.modulesByPath['/' + change.filename]) ||
         (change.status === 'modified' &&
           (state.editor.modulesByPath['/' + change.filename] as Module).code !==
-          change.content)
+            change.content)
       ) {
         aggr[change.status === 'removed' ? 'deleted' : change.status].push(
           change
@@ -717,7 +718,7 @@ export const _loadSourceSandbox: AsyncAction = async ({ state, effects }) => {
 
   const sourceSandbox = await effects.api.getSandbox(
     `github/${originalGit.username}/${
-    originalGit.repo
+      originalGit.repo
     }/tree/${sandbox.originalGitCommitSha!}/${originalGit.path}`
   );
 
@@ -770,7 +771,7 @@ export const _compareWithSource: AsyncAction = async ({
     effects.notificationToast.add({
       message: `The sandbox is out of sync with "${
         sandbox.originalGit!.branch
-        }" ${updates.conflicts.length ? 'and there are conflicts' : ''}`,
+      }" ${updates.conflicts.length ? 'and there are conflicts' : ''}`,
       title: 'Out of sync',
       status: convertTypeToStatus('notice'),
       sticky: false,
@@ -786,9 +787,9 @@ export const _compareWithSource: AsyncAction = async ({
           run: () => {
             effects.browser.openWindow(
               `https://github.com/${sandbox.originalGit!.username}/${
-              sandbox.originalGit!.repo
+                sandbox.originalGit!.repo
               }/compare/${originalGitCommitSha}...${
-              sandbox.originalGit!.branch
+                sandbox.originalGit!.branch
               }`
             );
           },
@@ -831,7 +832,7 @@ export const _compareWithBase: AsyncAction = async ({
     effects.notificationToast.add({
       message: `The sandbox is out of sync with "${sandbox.baseGit!.branch}" ${
         updates.conflicts.length ? 'and there are conflicts' : ''
-        }`,
+      }`,
       title: 'Out of sync',
       status: convertTypeToStatus('notice'),
       sticky: false,
@@ -847,9 +848,9 @@ export const _compareWithBase: AsyncAction = async ({
           run: () => {
             effects.browser.openWindow(
               `https://github.com/${sandbox.originalGit!.username}/${
-              sandbox.originalGit!.repo
+                sandbox.originalGit!.repo
               }/compare/${sandbox.baseGit!.branch}...${
-              sandbox.originalGit!.branch
+                sandbox.originalGit!.branch
               }`
             );
           },
@@ -874,9 +875,9 @@ export const _getGitChanges: AsyncAction<void, GitChanges> = async ({
 
   return {
     added: await Promise.all(
-      git.gitChanges.added.map(async (path) => {
+      git.gitChanges.added.map(async path => {
         const module = sandbox.modules.find(
-          (moduleItem) => moduleItem.path === path
+          moduleItem => moduleItem.path === path
         );
 
         if (module!.isBinary) {
