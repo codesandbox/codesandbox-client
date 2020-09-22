@@ -7,7 +7,7 @@
   "scripts": {
     "start": "tsc --watch",
     "build": "tsc",
-    "build:dev": "yarn buid:dev"
+    "build:dev": "yarn build"
   },
   "devDependencies": {
     "@types/hash-sum": "^1.0.0",
