@@ -13,6 +13,7 @@
  * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
  * - Page number in url
  * - 404 page
+ * - Logged out nav
  */
 
 import React from 'react';
