@@ -4,20 +4,22 @@ import { Element } from '../Element';
 
 const placeholderStyles = {
   color: 'input.placeholderForeground',
-  fontSize: 3,
+  fontSize: 3
 };
 
-interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  ref?: any;
+}
 
 export const Input = styled(Element).attrs(p => ({
-  as: ((p as unknown) as { as: string }).as || 'input',
+  as: ((p as unknown) as { as: string }).as || 'input'
 }))<IInputProps>(
   css({
     height: '26px',
     width: '100%',
     paddingX: 2,
     fontSize: 3,
-    lineHeight: 1, // trust the height
+    lineHeight: 'auto',
     fontFamily: 'Inter, sans-serif',
     borderRadius: 'small',
     backgroundColor: 'input.background',
@@ -29,16 +31,17 @@ export const Input = styled(Element).attrs(p => ({
     '::placeholder': placeholderStyles,
     transition: 'all ease',
     transitionDuration: theme => theme.speeds[2],
+    appearance: 'none',
 
     ':hover, :focus': {
       borderColor: 'inputOption.activeBorder',
       // need to use !important to override styles from
       // workbench-theme.css, not proud :/
-      outline: 'none !important',
+      outline: 'none !important'
     },
     ':disabled': {
       opacity: 0.4,
-      borderColor: 'input.border', // (default border)
-    },
+      borderColor: 'input.border' // (default border)
+    }
   })
 );

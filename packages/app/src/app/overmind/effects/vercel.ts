@@ -3,7 +3,7 @@ import {
   Sandbox,
   VercelConfig,
   VercelDeployment,
-  VercelUser,
+  VercelUser
 } from '@codesandbox/common/lib/types';
 import axios from 'axios';
 import { omit } from 'lodash-es';
@@ -48,7 +48,7 @@ export default (() => {
     }
 
     return {
-      Authorization: `bearer ${token}`,
+      Authorization: `bearer ${token}`
     };
   }
 
@@ -57,7 +57,7 @@ export default (() => {
       const response = await axios.get(
         `https://api.vercel.com/v2/now/deployments/${id}/aliases`,
         {
-          headers: getDefaultHeaders(),
+          headers: getDefaultHeaders()
         }
       );
 
@@ -89,7 +89,7 @@ export default (() => {
               `https://api.vercel.com/v3/now/secrets/`,
               {
                 name,
-                value: envVars[envVar],
+                value: envVars[envVar]
               },
               { headers: getDefaultHeaders() }
             );
@@ -125,7 +125,7 @@ export default (() => {
       const response = await axios.get<{ deployments: VercelDeployment[] }>(
         'https://api.vercel.com/v4/now/deployments',
         {
-          headers: getDefaultHeaders(),
+          headers: getDefaultHeaders()
         }
       );
 
@@ -148,7 +148,7 @@ export default (() => {
     },
     async getUser(): Promise<VercelUser> {
       const response = await axios.get('https://api.vercel.com/www/user', {
-        headers: getDefaultHeaders(),
+        headers: getDefaultHeaders()
       });
 
       return response.data.user;
@@ -157,7 +157,7 @@ export default (() => {
       const response = await axios.delete(
         `https://api.vercel.com/v9/now/deployments/${id}`,
         {
-          headers: getDefaultHeaders(),
+          headers: getDefaultHeaders()
         }
       );
       return response.data.deployments;
@@ -170,7 +170,7 @@ export default (() => {
         `https://api.vercel.com/${deploymentVersion}/now/deployments?forceNew=1`,
         apiData,
         {
-          headers: getDefaultHeaders(),
+          headers: getDefaultHeaders()
         }
       );
 
@@ -184,12 +184,12 @@ export default (() => {
         `https://api.vercel.com/v2/now/deployments/${id}/aliases`,
         { alias: vercelConfig.alias },
         {
-          headers: getDefaultHeaders(),
+          headers: getDefaultHeaders()
         }
       );
 
       return `https://${response.data.alias}`;
-    },
+    }
   };
 })();
 
@@ -197,7 +197,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
   const template = getTemplate(sandbox.template);
 
   let apiData: Partial<ApiData> = {
-    files: [],
+    files: []
   };
   let packageJSON: any = {};
   let nowJSON: any = {};
@@ -223,7 +223,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
   }
 
   const nowDefaults: Pick<ApiData, 'name'> = {
-    name: `csb-${sandbox.id}`,
+    name: `csb-${sandbox.id}`
   };
 
   const filePaths = nowJSON.files || Object.keys(contents.files);
@@ -257,7 +257,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
   if (!nowJSON.files && apiData?.files) {
     apiData.files.push({
       file: 'package.json',
-      data: JSON.stringify(packageJSON, null, 2),
+      data: JSON.stringify(packageJSON, null, 2)
     });
   }
 
@@ -279,7 +279,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     ) {
       apiData.files.push({
         file: 'package.json',
-        data: JSON.stringify(packageJSON, null, 2),
+        data: JSON.stringify(packageJSON, null, 2)
       });
     }
   }

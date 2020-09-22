@@ -20,7 +20,7 @@ import {
   IconButton,
   Button,
   Input,
-  IconNames,
+  IconNames
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
@@ -66,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         setActiveAccount({
           id: team.id,
           name: team.name,
-          avatarUrl: team.avatarUrl,
+          avatarUrl: team.avatarUrl
         });
     }
   }, [state.activeTeam, state.activeTeamInfo, dashboard.teams]);
@@ -79,11 +79,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [menuVisible, setMenuVisibility] = React.useState(true);
   const [menuPosition, setMenuPosition] = React.useState<Position>({
     x: null,
-    y: null,
+    y: null
   });
   const [
     menuFolder,
-    setMenuFolder,
+    setMenuFolder
   ] = React.useState<DashboardBaseFolder | null>(null);
   const [isRenamingFolder, setRenamingFolder] = React.useState(false);
   const [newFolderPath, setNewFolderPath] = React.useState<string | null>(null);
@@ -97,7 +97,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     isRenamingFolder,
     setRenamingFolder,
     newFolderPath,
-    setNewFolderPath,
+    setNewFolderPath
   };
 
   return (
@@ -108,7 +108,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         justify="space-between"
         animate={{
           left: visible ? 0 : -1 * SIDEBAR_WIDTH,
-          transition: { duration: visible ? 0.2 : 0.15 },
+          transition: { duration: visible ? 0.2 : 0.15 }
         }}
         {...props}
         css={css({
@@ -120,7 +120,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           zIndex: 3,
           overflowY: 'auto',
           overflowX: 'hidden',
-          ...props.css,
+          ...props.css
         })}
       >
         <List>
@@ -129,14 +129,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
               paddingX: 0,
               height: 10,
               borderBottom: '1px solid',
-              borderColor: 'sideBar.border',
+              borderColor: 'sideBar.border'
             })}
           >
             {activeAccount && (
               <WorkspaceSelect
                 onSelect={workspace => {
                   actions.setActiveTeam({
-                    id: workspace.id,
+                    id: workspace.id
                   });
                 }}
                 activeAccount={activeAccount}
@@ -154,7 +154,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 css={css({
                   width: 8,
                   height: '100%',
-                  borderRadius: 0,
+                  borderRadius: 0
                 })}
               />
             </Link>
@@ -181,7 +181,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               ...folders,
               ...(newFolderPath
                 ? [{ path: newFolderPath, name: '', parent: null }]
-                : []),
+                : [])
             ]}
           />
           <RowItem
@@ -234,7 +234,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               backgroundColor: 'sideBar.background',
               height: '100vh',
               width: '100vw',
-              zIndex: 2,
+              zIndex: 2
             })}
           />
         )}
@@ -263,7 +263,7 @@ const linkStyles = {
   alignItems: 'center',
   paddingLeft: 8,
   paddingRight: 8,
-  flexShrink: 0,
+  flexShrink: 0
 };
 
 const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents'];
@@ -271,7 +271,7 @@ const canNotAcceptFolders: PageTypes[] = [
   'home',
   'recents',
   'drafts',
-  'templates',
+  'templates'
 ];
 
 const isSamePath = (
@@ -334,14 +334,14 @@ const RowItem: React.FC<RowItemProps> = ({
     drop: item => ({
       page,
       path: usedPath,
-      isSamePath: isSamePath(item, page, usedPath),
+      isSamePath: isSamePath(item, page, usedPath)
     }),
     collect: monitor => ({
       isOver: monitor.isOver(),
       canDrop:
         monitor.canDrop() && !isSamePath(monitor.getItem(), page, usedPath),
-      isDragging: !!monitor.getItem(),
-    }),
+      isDragging: !!monitor.getItem()
+    })
   });
 
   const { onSidebarToggle } = React.useContext(SidebarContext);
@@ -396,9 +396,9 @@ const RowItem: React.FC<RowItemProps> = ({
             a: {
               ':focus': {
                 // focus state is handled by ListAction:focus-within
-                outline: 'none',
-              },
-            },
+                outline: 'none'
+              }
+            }
           },
           props.style || {}
         )
@@ -441,7 +441,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   name,
   path,
   folderPath,
-  folders,
+  folders
 }) => {
   const { actions, state } = useOvermind();
 
@@ -454,8 +454,8 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
       isRenamingFolder,
       setRenamingFolder,
       newFolderPath,
-      setNewFolderPath,
-    },
+      setNewFolderPath
+    }
   } = React.useContext(SidebarContext);
 
   const [foldersVisible, setFoldersVisibility] = React.useState(false);
@@ -561,7 +561,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
         track('Dashboard - Create Directory', {
           source: 'Sidebar',
           dashboardVersion: 2,
-          folderPath: sanitizedPath,
+          folderPath: sanitizedPath
         });
       }
     } else {
@@ -570,12 +570,12 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
         path: folderPath,
         newPath,
         teamId: state.activeTeam,
-        newTeamId: state.activeTeam,
+        newTeamId: state.activeTeam
       });
 
       track('Dashboard - Rename Folder', {
         source: 'Sidebar',
-        dashboardVersion: 2,
+        dashboardVersion: 2
       });
 
       if (currentFolderLocationPath === location.pathname) {
@@ -615,14 +615,14 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
           onKeyDown={event => {
             if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
               history.push(folderUrl, {
-                focus: 'FIRST_ITEM',
+                focus: 'FIRST_ITEM'
               });
             }
           }}
           tabIndex={0}
           style={{
             ...linkStyles,
-            paddingLeft: nestingLevel * 16,
+            paddingLeft: nestingLevel * 16
           }}
         >
           {subFolders.length ? (
@@ -641,8 +641,8 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 svg: {
                   transform: foldersVisible ? 'rotate(0deg)' : 'rotate(-90deg)',
                   transition: 'transform ease-in-out',
-                  transitionDuration: theme => theme.speeds[2],
-                },
+                  transitionDuration: theme => theme.speeds[2]
+                }
               })}
             />
           ) : (

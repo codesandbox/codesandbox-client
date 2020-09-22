@@ -17,14 +17,14 @@ import { NotAuthenticated } from './NotAuthenticated';
 export const Live: FunctionComponent = () => {
   const {
     actions: {
-      live: { onNavigateAway, roomJoined },
+      live: { onNavigateAway, roomJoined }
     },
     state: {
       editor: { currentSandbox },
       isAuthenticating,
       live: { error },
-      user,
-    },
+      user
+    }
   } = useOvermind();
   const { roomId } = useParams();
 
@@ -57,7 +57,7 @@ export const Live: FunctionComponent = () => {
             width: '100%',
             height: '100%',
             backgroundColor: 'sideBar.background',
-            fontFamily: 'Inter',
+            fontFamily: 'Inter'
           })}
         >
           <Element

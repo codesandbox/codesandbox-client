@@ -1,10 +1,12 @@
 import getTemplate from '@codesandbox/common/lib/templates';
+import { Dependency } from '@codesandbox/common/lib/types/algolia';
 import { CustomTemplate } from '@codesandbox/common/lib/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
+import { json } from 'overmind';
 
 export const valueChanged: Action<{
   field: string;
@@ -83,7 +85,7 @@ export const tagRemoved: AsyncAction<string> = withOwnedSandbox(
       await actions.editor.codeSaved({
         code,
         moduleShortid,
-        cbID: null,
+        cbID: null
       });
     } catch (error) {
       sandbox.tags.splice(tagIndex, 0, tag);
@@ -175,7 +177,7 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
         const updatedSandbox = await effects.api.updateSandbox(sandbox.id, {
           title: project.title,
           description: project.description,
-          alias: project.alias,
+          alias: project.alias
         });
 
         if (!updatedSandbox) {
@@ -190,7 +192,7 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
         actions.internal.handleError({
           message:
             'We were not able to save your sandbox updates, please try again',
-          error,
+          error
         });
       }
     }
@@ -221,7 +223,7 @@ export const externalResourceAdded: AsyncAction<string> = withOwnedSandbox(
       externalResources.splice(externalResources.indexOf(resource), 1);
       actions.internal.handleError({
         message: 'Could not save external resource',
-        error,
+        error
       });
       actions.editor.internal.updatePreviewCode();
     }
@@ -255,7 +257,7 @@ export const externalResourceRemoved: AsyncAction<string> = withOwnedSandbox(
 
       actions.internal.handleError({
         message: 'Could not save removal of external resource',
-        error,
+        error
       });
       actions.editor.internal.updatePreviewCode();
     }
@@ -271,7 +273,7 @@ export const integrationsOpened: Action = ({ state }) => {
 export const sandboxDeleted: AsyncAction = async ({
   state,
   effects,
-  actions,
+  actions
 }) => {
   actions.modalClosed();
 
@@ -298,7 +300,7 @@ export const sandboxPrivacyChanged: AsyncAction<{
 
   track('Sandbox - Update Privacy', {
     privacy,
-    source,
+    source
   });
 
   const oldPrivacy = state.editor.currentSandbox.privacy;
@@ -325,7 +327,7 @@ export const sandboxPrivacyChanged: AsyncAction<{
     state.editor.currentSandbox.privacy = oldPrivacy;
     actions.internal.handleError({
       message: "We weren't able to update the sandbox privacy",
-      error,
+      error
     });
   }
 };
@@ -351,7 +353,7 @@ export const setWorkspaceHidden: Action<{ hidden: boolean }> = (
 export const deleteTemplate: AsyncAction = async ({
   state,
   actions,
-  effects,
+  effects
 }) => {
   effects.analytics.track('Template - Removed', { source: 'editor' });
   if (
@@ -373,7 +375,7 @@ export const deleteTemplate: AsyncAction = async ({
   } catch (error) {
     actions.internal.handleError({
       message: 'Could not delete custom template',
-      error,
+      error
     });
   }
 };
@@ -402,7 +404,7 @@ export const editTemplate: AsyncAction<CustomTemplate> = async (
   } catch (error) {
     actions.internal.handleError({
       message: 'Could not edit custom template',
-      error,
+      error
     });
   }
 };
@@ -430,7 +432,7 @@ export const addedTemplate: AsyncAction<{
   } catch (error) {
     actions.internal.handleError({
       message: 'Could not create template, please try again later',
-      error,
+      error
     });
     if (process.env.NODE_ENV === 'development') {
       console.error(error);
@@ -443,4 +445,76 @@ export const openDefaultItem: Action = ({ state }) => {
   const defaultItem = items.find(i => i.defaultOpen) || items[0];
 
   state.workspace.openedWorkspaceItem = defaultItem.id;
+};
+
+export const changeDependencySearch: Action<string> = ({ state }, value) => {
+  state.workspace.dependencySearch = value;
+};
+
+export const getExplorerDependencies: AsyncAction<string> = async (
+  { state, effects },
+  value
+) => {
+  state.workspace.explorerDependenciesEmpty = false;
+  if (!value) {
+    state.workspace.explorerDependencies = [];
+    return;
+  }
+  state.workspace.loadingDependencySearch = true;
+  const searchResults = await effects.algoliaSearch.searchDependencies(
+    value,
+    4
+  );
+
+  state.workspace.loadingDependencySearch = false;
+  if (searchResults.length) {
+    state.workspace.explorerDependencies = searchResults;
+  } else {
+    state.workspace.explorerDependenciesEmpty = true;
+  }
+};
+
+export const clearExplorerDependencies: Action = ({ state }) => {
+  state.workspace.explorerDependencies = [];
+};
+
+export const getDependencies: AsyncAction<string | void> = async (
+  { state, effects },
+  value
+) => {
+  state.workspace.loadingDependencySearch = true;
+  const searchResults = await effects.algoliaSearch.searchDependencies(value);
+
+  state.workspace.loadingDependencySearch = false;
+  state.workspace.dependencies = searchResults;
+};
+
+export const setSelectedDependencies: Action<Dependency> = (
+  { state },
+  dependency
+) => {
+  const selectedDependencies = state.workspace.selectedDependencies;
+  const dep = json(dependency);
+
+  if (selectedDependencies[dep.objectID]) {
+    delete selectedDependencies[dep.objectID];
+  } else {
+    selectedDependencies[dep.objectID] = dep;
+  }
+};
+
+export const handleVersionChange: Action<{
+  dependency: Dependency;
+  version: string;
+}> = ({ state }, { dependency, version }) => {
+  state.workspace.hitToVersionMap[dependency.objectID] = version;
+};
+
+export const clearSelectedDependencies: Action = ({ state }) => {
+  state.workspace.selectedDependencies = {};
+};
+
+export const toggleShowingSelectedDependencies: Action = ({ state }) => {
+  state.workspace.showingSelectedDependencies = !state.workspace
+    .showingSelectedDependencies;
 };

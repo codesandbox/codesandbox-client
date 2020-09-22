@@ -9,13 +9,13 @@ state.addNotification({
   sticky: true,
   title: 'Forked Sandbox',
   // message: 'This is one of our notifications',
-  status: NotificationStatus.SUCCESS,
+  status: NotificationStatus.SUCCESS
 });
 state.addNotification({
   sticky: true,
   title: 'Test Notification 2',
   message: 'This is one of our notifications',
-  status: NotificationStatus.WARNING,
+  status: NotificationStatus.WARNING
 });
 state.addNotification({
   sticky: true,
@@ -24,10 +24,10 @@ state.addNotification({
   actions: {
     primary: {
       run: () => alert('hello!'),
-      label: 'Run My Command!!',
-    },
+      label: 'Run My Command!!'
+    }
   },
-  status: NotificationStatus.SUCCESS,
+  status: NotificationStatus.SUCCESS
 });
 state.addNotification({
   sticky: true,
@@ -38,14 +38,14 @@ state.addNotification({
     {
       primary: {
         run: () => alert('hello!'),
-        label: 'Run My Command!!',
+        label: 'Run My Command!!'
       },
       secondary: {
         run: () => alert('bye!'),
-        label: 'Bye',
-      },
-    },
-  ],
+        label: 'Bye'
+      }
+    }
+  ]
 });
 
 function App() {
@@ -56,7 +56,7 @@ function App() {
         className="App"
         style={{
           flexWrap: 'wrap',
-          width: '100vw',
+          width: '100vw'
         }}
         padding={10}
       >
@@ -67,7 +67,7 @@ function App() {
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
-              status: NotificationStatus.SUCCESS,
+              status: NotificationStatus.SUCCESS
             });
           }}
         >
@@ -80,7 +80,7 @@ function App() {
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
-              status: NotificationStatus.ERROR,
+              status: NotificationStatus.ERROR
             });
           }}
         >
@@ -93,7 +93,7 @@ function App() {
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
-              status: NotificationStatus.NOTICE,
+              status: NotificationStatus.NOTICE
             });
           }}
         >
@@ -106,7 +106,7 @@ function App() {
           onClick={() => {
             state.addNotification({
               message: 'New notification!',
-              status: NotificationStatus.WARNING,
+              status: NotificationStatus.WARNING
             });
           }}
         >
@@ -121,7 +121,7 @@ function App() {
               title: 'Changes synced from Master',
               message:
                 'We have synced over the changes made in master. View the changes on Github',
-              status: NotificationStatus.NOTICE,
+              status: NotificationStatus.NOTICE
             });
           }}
         >
@@ -138,9 +138,9 @@ function App() {
               actions: {
                 primary: {
                   run: () => alert('hello!'),
-                  label: 'primary',
-                },
-              },
+                  label: 'primary'
+                }
+              }
             });
           }}
         >
@@ -157,13 +157,13 @@ function App() {
               actions: {
                 primary: {
                   run: () => alert('hello!'),
-                  label: 'primary',
+                  label: 'primary'
                 },
                 secondary: {
                   run: () => alert('hello!'),
-                  label: 'secondary',
-                },
-              },
+                  label: 'secondary'
+                }
+              }
             });
           }}
         >

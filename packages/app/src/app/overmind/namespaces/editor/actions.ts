@@ -129,6 +129,9 @@ export const addNpmDependency: AsyncAction<{
       isDev: Boolean(isDev),
     });
 
+    actions.workspace.changeDependencySearch('');
+    actions.workspace.clearExplorerDependencies();
+
     effects.preview.executeCodeImmediately();
   }
 );

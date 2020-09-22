@@ -4,7 +4,7 @@ import {
   LiveMessageEvent,
   RoomInfo,
   UserSelection,
-  UserViewRange,
+  UserViewRange
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
@@ -34,7 +34,7 @@ export const onOperationError: Action<{
 }> = ({ actions }, { moduleShortid, moduleInfo }) => {
   actions.live.internal.initializeModuleFromState({
     moduleShortid,
-    moduleInfo,
+    moduleInfo
   });
 };
 
@@ -112,9 +112,9 @@ export const createLiveClicked: AsyncAction<string> = async (
       );
       return {
         ...module,
-        code: currentModule ? currentModule.code : '',
+        code: currentModule ? currentModule.code : ''
       };
-    }),
+    })
   });
   state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
 };
@@ -152,7 +152,7 @@ export const liveMessageReceived: Operator<LiveMessage, any> = pipe(
     [LiveMessageEvent.DISCONNECT]: liveMessage.onDisconnect,
     [LiveMessageEvent.OWNER_LEFT]: liveMessage.onOwnerLeft,
     [LiveMessageEvent.CHAT]: liveMessage.onChat,
-    [LiveMessageEvent.NOTIFICATION]: liveMessage.onNotification,
+    [LiveMessageEvent.NOTIFICATION]: liveMessage.onNotification
   })
 );
 
@@ -169,8 +169,8 @@ export const applyTransformation: AsyncAction<{
       category: 'ot',
       message: `Apply transformation to VSCode failed ${JSON.stringify({
         moduleShortid,
-        operation,
-      })}`,
+        operation
+      })}`
     });
     effects.live.sendModuleStateSyncRequest();
   }
@@ -359,7 +359,7 @@ export const onFollow: Action<{ liveUserId: string }> = (
   if (state.editor.currentModule) {
     // In case the selections were hidden first
     actions.editor.internal.updateSelectionsOfModule({
-      module: state.editor.currentModule,
+      module: state.editor.currentModule
     });
   }
 };
@@ -389,7 +389,7 @@ export const onStopFollow: Action = ({ state, effects, actions }) => {
   if (state.editor.currentModule) {
     // In case the selections were hidden first
     actions.editor.internal.updateSelectionsOfModule({
-      module: state.editor.currentModule,
+      module: state.editor.currentModule
     });
   }
 };

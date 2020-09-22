@@ -14,6 +14,6 @@ addons.register('storybook/themes', api => {
         api={api}
         active={active}
       />
-    ),
+    )
   });
 });

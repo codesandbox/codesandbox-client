@@ -18,20 +18,20 @@ type Theme = {
 const viewports = {
   mobile: {
     name: 'Mobile',
-    styles: { width: '375px', height: '667px' },
+    styles: { width: '375px', height: '667px' }
   },
   tablet: {
     name: 'Tablet',
-    styles: { width: '768px', height: '1024px' },
+    styles: { width: '768px', height: '1024px' }
   },
   laptop: {
     name: 'Laptop',
-    styles: { width: '1366px', height: '768px' },
+    styles: { width: '1366px', height: '768px' }
   },
   desktop: {
     name: 'Desktop',
-    styles: { width: '1920px', height: '1080px' },
-  },
+    styles: { width: '1920px', height: '1080px' }
+  }
 };
 
 // new globals based on theme?

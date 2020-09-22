@@ -3,7 +3,7 @@ import { dispatch, actions } from 'codesandbox-api';
 
 import {
   protocols,
-  getFetchProtocol,
+  getFetchProtocol
 } from 'sandbox/npm/dynamic/fetch-protocols';
 
 import setScreen, { resetScreen } from '../status-screen';
@@ -85,7 +85,7 @@ export async function getDependenciesFromSources(
   setScreen({
     type: 'loading',
     text: 'Installing Dependencies...',
-    showFullScreen: showLoaderFullScreen,
+    showFullScreen: showLoaderFullScreen
   });
 
   try {
@@ -95,7 +95,7 @@ export async function getDependenciesFromSources(
 
     const depsWithNodeLibs = removeSpacesFromDependencies({
       'node-libs-browser': '2.2.0',
-      ...dependencies,
+      ...dependencies
     });
 
     const { dynamicDependencies, prebundledDependencies } = splitDependencies(
@@ -118,13 +118,13 @@ export async function getDependenciesFromSources(
           text: `Installing Dependencies: ${progress}/${total} (${remainingDependencies.join(
             ', '
           )})`,
-          showFullScreen: showLoaderFullScreen,
+          showFullScreen: showLoaderFullScreen
         });
       } else {
         setScreen({
           type: 'loading',
           text: `Installing Dependencies: ${progress}/${total}`,
-          showFullScreen: showLoaderFullScreen,
+          showFullScreen: showLoaderFullScreen
         });
       }
     };
@@ -175,12 +175,12 @@ export async function getDependenciesFromSources(
 
     const [
       dynamicLoadedDependencies,
-      prebundledLoadedDependencies,
+      prebundledLoadedDependencies
     ] = await Promise.all([dynamicPromise, prebundledPromise]);
 
     return mergeDependencies([
       ...dynamicLoadedDependencies,
-      ...prebundledLoadedDependencies,
+      ...prebundledLoadedDependencies
     ]);
   } catch (e) {
     e.message = `Could not fetch dependencies, please try again in a couple seconds: ${e.message}`;
@@ -199,7 +199,7 @@ export async function loadDependencies(
   {
     disableExternalConnection = false,
     resolutions = undefined,
-    showFullScreen = false,
+    showFullScreen = false
   } = {}
 ) {
   let isNewCombination = false;
