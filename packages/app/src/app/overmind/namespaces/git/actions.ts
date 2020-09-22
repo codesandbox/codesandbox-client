@@ -547,6 +547,7 @@ export const resolveOutOfSync: AsyncAction = async ({
               content: git.sourceModulesByPath['/' + change.filename].code,
               isBinary: true,
               uploadId: git.sourceModulesByPath['/' + change.filename].uploadId,
+              sha: git.sourceModulesByPath['/' + change.filename].sha,
             }
           : { content: change.content };
 
