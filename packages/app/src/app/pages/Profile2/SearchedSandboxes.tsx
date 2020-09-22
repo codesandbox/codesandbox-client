@@ -50,7 +50,7 @@ export const SearchedSandboxes = () => {
         {isLoadingSandboxes
           ? Array(15)
               .fill(true)
-              .map((_, index) => (
+              .map((_: boolean, index) => (
                 // eslint-disable-next-line
                 <Column key={index}>
                   <SkeletonCard />

@@ -11,7 +11,7 @@ import css from '@styled-system/css';
 import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
-import { SANDBOXES_PER_PAGE, SandboxTypes } from './constants';
+import { SANDBOXES_PER_PAGE, sandboxTypes } from './constants';
 
 export const AllSandboxes = () => {
   const {
@@ -112,7 +112,7 @@ export const AllSandboxes = () => {
         {isLoadingSandboxes
           ? Array(SANDBOXES_PER_PAGE)
               .fill(true)
-              .map((_, index) => (
+              .map((_: boolean, index) => (
                 // eslint-disable-next-line
                 <Column key={index}>
                   <SkeletonCard />
@@ -122,7 +122,7 @@ export const AllSandboxes = () => {
               <Column key={sandbox.id}>
                 <motion.div layoutTransition={{ duration: 0.15 }}>
                   <SandboxCard
-                    type={SandboxTypes.ALL_SANDBOX}
+                    type={sandboxTypes.ALL_SANDBOX}
                     sandbox={sandbox}
                   />
                 </motion.div>

@@ -1,6 +1,12 @@
 export const SANDBOXES_PER_PAGE = 15;
 
-export const SandboxTypes = {
+export type SandboxType = 'ALL_SANDBOX' | 'PINNED_SANDBOX' | 'DEFAULT_SANDBOX';
+
+export const sandboxTypes: {
+  ALL_SANDBOX: SandboxType;
+  PINNED_SANDBOX: SandboxType;
+  DEFAULT_SANDBOX: SandboxType;
+} = {
   ALL_SANDBOX: 'ALL_SANDBOX',
   PINNED_SANDBOX: 'PINNED_SANDBOX',
   DEFAULT_SANDBOX: 'DEFAULT_SANDBOX',

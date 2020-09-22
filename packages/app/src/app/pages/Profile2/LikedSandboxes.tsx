@@ -51,7 +51,7 @@ export const LikedSandboxes = () => {
         {isLoadingSandboxes
           ? Array(SANDBOXES_PER_PAGE)
               .fill(true)
-              .map((_, index) => (
+              .map((_: boolean, index) => (
                 // eslint-disable-next-line
                 <Column key={index}>
                   <SkeletonCard />
