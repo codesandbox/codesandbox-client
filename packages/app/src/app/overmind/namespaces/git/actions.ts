@@ -609,10 +609,9 @@ export const _setGitChanges: Action = ({ state }) => {
     if (!(module.path in state.git.sourceModulesByPath)) {
       changes.added.push(module.path);
     } else if (
-      ('sha' in module &&
+      (module.sha &&
         state.git.sourceModulesByPath[module.path].sha !== module.sha) ||
-      (!('sha' in module) &&
-        state.git.sourceModulesByPath[module.path].code !== module.code)
+      state.git.sourceModulesByPath[module.path].code !== module.code
     ) {
       changes.modified.push(module.path);
     }
