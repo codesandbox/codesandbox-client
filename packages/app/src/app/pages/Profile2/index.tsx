@@ -22,7 +22,6 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 import { Helmet } from 'react-helmet';
-import { ALT } from '@codesandbox/common/lib/utils/keycodes';
 import { Header } from './Header';
 import { ProfileCard } from './ProfileCard';
 import { ShowcaseSandbox } from './ShowcaseSandbox';
@@ -52,19 +51,10 @@ export const Profile = props => {
   const [menuPosition, setMenuPosition] = React.useState({ x: null, y: null });
   const [selectedSandboxId, selectSandboxId] = React.useState(null);
 
-  const onContextMenu = (event, sandboxId) => {
-    event.preventDefault();
+  const openContextMenu = ({ sandboxId, position }) => {
     selectSandboxId(sandboxId);
+    setMenuPosition(position);
     setMenuVisibility(true);
-    setMenuPosition({ x: event.clientX, y: event.clientY });
-  };
-
-  const onKeyDown = (event, sandboxId) => {
-    if (event.keyCode !== ALT) return;
-    selectSandboxId(sandboxId);
-    setMenuVisibility(true);
-    const rect = event.target.getBoundingClientRect();
-    setMenuPosition({ x: rect.right, y: rect.bottom });
   };
 
   if (!user) return null;
@@ -101,22 +91,24 @@ export const Profile = props => {
             <Element css={css({ width: ['100%', 'calc(100% - 320px)'] })}>
               <Switch>
                 <Route path="/likes">
-                  <LikedSandboxes menuControls={{ onContextMenu, onKeyDown }} />
+                  <LikedSandboxes menuControls={{ openContextMenu }} />
                 </Route>
                 <Route path="/search">
-                  <SearchedSandboxes
-                    menuControls={{ onContextMenu, onKeyDown }}
-                  />
+                  <SearchedSandboxes menuControls={{ openContextMenu }} />
                 </Route>
                 <Route path="/">
                   <DndProvider backend={Backend}>
                     <Stack direction="vertical" gap={14} css={{ flexGrow: 1 }}>
                       <ShowcaseSandbox />
                       <PinnedSandboxes
-                        menuControls={{ onContextMenu, onKeyDown }}
+                        menuControls={{
+                          openContextMenu,
+                        }}
                       />
                       <AllSandboxes
-                        menuControls={{ onContextMenu, onKeyDown }}
+                        menuControls={{
+                          openContextMenu,
+                        }}
                       />
                     </Stack>
                   </DndProvider>
