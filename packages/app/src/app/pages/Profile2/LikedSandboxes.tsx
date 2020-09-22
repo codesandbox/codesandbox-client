@@ -5,19 +5,19 @@ import { useOvermind } from 'app/overmind';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SANDBOXES_PER_PAGE } from './constants';
 
-export const LikedSandboxes = ({ menuControls }) => {
+export const LikedSandboxes = () => {
   const {
     actions: {
-      profile: { likedSandboxesPageChanged }
+      profile: { likedSandboxesPageChanged },
     },
     state: {
       profile: {
         current: { username },
         isLoadingSandboxes,
         currentLikedSandboxesPage,
-        likedSandboxes
-      }
-    }
+        likedSandboxes,
+      },
+    },
   } = useOvermind();
 
   // explicitly call it on first page render
@@ -45,7 +45,7 @@ export const LikedSandboxes = ({ menuControls }) => {
         rowGap={6}
         columnGap={6}
         css={{
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
         }}
       >
         {isLoadingSandboxes
@@ -59,7 +59,7 @@ export const LikedSandboxes = ({ menuControls }) => {
               ))
           : sandboxes.map((sandbox, index) => (
               <Column key={sandbox.id}>
-                <SandboxCard sandbox={sandbox} menuControls={menuControls} />
+                <SandboxCard sandbox={sandbox} />
               </Column>
             ))}
         <div />
@@ -73,14 +73,14 @@ export const LikedSandboxes = ({ menuControls }) => {
 const Pagination = () => {
   const {
     actions: {
-      profile: { likedSandboxesPageChanged }
+      profile: { likedSandboxesPageChanged },
     },
     state: {
       profile: {
         currentLikedSandboxesPage,
-        current: { givenLikeCount }
-      }
-    }
+        current: { givenLikeCount },
+      },
+    },
   } = useOvermind();
 
   const numberOfPages = Math.ceil(givenLikeCount / SANDBOXES_PER_PAGE);

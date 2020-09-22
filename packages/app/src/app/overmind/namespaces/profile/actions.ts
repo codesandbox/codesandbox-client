@@ -411,3 +411,14 @@ export const searchQueryChanged: AsyncAction<string> = async (
     await actions.profile.fetchAllSandboxes();
   }
 };
+
+export const openContextMenu: Action<{
+  sandboxId: string;
+  position: { x: number; y: number };
+}> = ({ state }, { sandboxId, position }) => {
+  state.profile.contextMenu = { sandboxId, position };
+};
+
+export const closeContextMenu: Action = ({ state }) => {
+  state.profile.contextMenu = { sandboxId: null, position: null };
+};

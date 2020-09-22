@@ -12,6 +12,7 @@
  * 5%
  * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
  * - Page number in url
+ * - 404 page
  */
 
 import React from 'react';
@@ -47,16 +48,6 @@ export const Profile = props => {
     profileMounted(username);
   }, [profileMounted, username]);
 
-  const [menuVisible, setMenuVisibility] = React.useState(false);
-  const [menuPosition, setMenuPosition] = React.useState({ x: null, y: null });
-  const [selectedSandboxId, selectSandboxId] = React.useState(null);
-
-  const openContextMenu = ({ sandboxId, position }) => {
-    selectSandboxId(sandboxId);
-    setMenuPosition(position);
-    setMenuVisibility(true);
-  };
-
   if (!user) return null;
 
   return (
@@ -91,25 +82,17 @@ export const Profile = props => {
             <Element css={css({ width: ['100%', 'calc(100% - 320px)'] })}>
               <Switch>
                 <Route path="/likes">
-                  <LikedSandboxes menuControls={{ openContextMenu }} />
+                  <LikedSandboxes />
                 </Route>
                 <Route path="/search">
-                  <SearchedSandboxes menuControls={{ openContextMenu }} />
+                  <SearchedSandboxes />
                 </Route>
                 <Route path="/">
                   <DndProvider backend={Backend}>
                     <Stack direction="vertical" gap={14} css={{ flexGrow: 1 }}>
                       <ShowcaseSandbox />
-                      <PinnedSandboxes
-                        menuControls={{
-                          openContextMenu,
-                        }}
-                      />
-                      <AllSandboxes
-                        menuControls={{
-                          openContextMenu,
-                        }}
-                      />
+                      <PinnedSandboxes />
+                      <AllSandboxes />
                     </Stack>
                   </DndProvider>
                 </Route>
@@ -117,12 +100,7 @@ export const Profile = props => {
             </Element>
           </Stack>
         </Stack>
-        <ContextMenu
-          visible={menuVisible}
-          setVisibility={setMenuVisibility}
-          position={menuPosition}
-          sandboxId={selectedSandboxId}
-        />
+        <ContextMenu />
       </Router>
     </ThemeProvider>
   );

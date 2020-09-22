@@ -19,7 +19,6 @@ type DragItem = { type: 'sandbox'; sandboxId: string; index: number | null };
 export const SandboxCard = ({
   type = SandboxTypes.DEFAULT_SANDBOX,
   sandbox,
-  menuControls: { openContextMenu },
   index = null,
 }) => {
   const {
@@ -27,6 +26,7 @@ export const SandboxCard = ({
       user: loggedInUser,
       profile: {
         current: { username, featuredSandboxes },
+        contextMenu,
       },
     },
     actions: {
@@ -37,6 +37,7 @@ export const SandboxCard = ({
         saveFeaturedSandboxesOrder,
         removeFeaturedSandboxesInState,
         newSandboxShowcaseSelected,
+        openContextMenu,
       },
     },
   } = useOvermind();
@@ -209,7 +210,8 @@ export const SandboxCard = ({
         css={css({
           backgroundColor: 'grays.700',
           border: '1px solid',
-          borderColor: 'grays.600',
+          borderColor:
+            contextMenu.sandboxId === sandbox.id ? 'blues.600' : 'grays.600',
           borderRadius: 'medium',
           cursor: 'pointer',
           overflow: 'hidden',

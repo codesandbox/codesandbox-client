@@ -13,7 +13,7 @@ import { useOvermind } from 'app/overmind';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SANDBOXES_PER_PAGE, SandboxTypes } from './constants';
 
-export const AllSandboxes = ({ menuControls }) => {
+export const AllSandboxes = () => {
   const {
     actions: {
       profile: { fetchSandboxes, sortByChanged, sortDirectionChanged },
@@ -124,7 +124,6 @@ export const AllSandboxes = ({ menuControls }) => {
                   <SandboxCard
                     type={SandboxTypes.ALL_SANDBOX}
                     sandbox={sandbox}
-                    menuControls={menuControls}
                   />
                 </motion.div>
               </Column>

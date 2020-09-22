@@ -7,7 +7,7 @@ import { SandboxCard, SkeletonCard } from './SandboxCard';
 
 const SANDBOXES_PER_PAGE = 15;
 
-export const SearchedSandboxes = ({ menuControls }) => {
+export const SearchedSandboxes = () => {
   const {
     state: {
       profile: {
@@ -60,7 +60,7 @@ export const SearchedSandboxes = ({ menuControls }) => {
               .slice((page - 1) * SANDBOXES_PER_PAGE, page * SANDBOXES_PER_PAGE)
               .map((sandbox, index) => (
                 <Column key={sandbox.id}>
-                  <SandboxCard sandbox={sandbox} menuControls={menuControls} />
+                  <SandboxCard sandbox={sandbox} />
                 </Column>
               ))}
 

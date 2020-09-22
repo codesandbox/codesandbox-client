@@ -7,7 +7,7 @@ import css from '@styled-system/css';
 import { SandboxCard } from './SandboxCard';
 import { SandboxTypes, DropTargets } from './constants';
 
-export const PinnedSandboxes = ({ menuControls }) => {
+export const PinnedSandboxes = () => {
   const {
     state: {
       user: loggedInUser,
@@ -40,7 +40,6 @@ export const PinnedSandboxes = ({ menuControls }) => {
               type={SandboxTypes.PINNED_SANDBOX}
               sandbox={sandbox}
               index={index}
-              menuControls={menuControls}
             />
           </motion.div>
         </Column>
