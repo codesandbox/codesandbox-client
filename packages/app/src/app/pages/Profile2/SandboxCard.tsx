@@ -11,17 +11,19 @@ import {
 } from '@codesandbox/components';
 import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import css from '@styled-system/css';
+import { Sandbox } from '@codesandbox/common/lib/types';
 import { ENTER, SPACE, ALT } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { SandboxTypes, DropTargets } from './constants';
 
 type DragItem = { type: 'sandbox'; sandboxId: string; index: number | null };
+type DropResult = { name: keyof typeof DropTargets };
 
-export const SandboxCard = ({
-  type = SandboxTypes.DEFAULT_SANDBOX,
-  sandbox,
-  index = null,
-}) => {
+export const SandboxCard: React.FC<{
+  type: keyof typeof SandboxTypes;
+  sandbox: Sandbox;
+  index: number | null;
+}> = ({ type = SandboxTypes.DEFAULT_SANDBOX, sandbox, index = null }) => {
   const {
     state: {
       user: loggedInUser,
@@ -43,13 +45,13 @@ export const SandboxCard = ({
     },
   } = useOvermind();
 
-  const ref = React.useRef(null);
+  const ref = React.useRef<HTMLElement>(null);
   let previousPosition: number;
 
   const [{ isDragging }, drag] = useDrag({
     item: { type, sandboxId: sandbox.id, index },
     collect: monitor => {
-      const dragItem = monitor.getItem();
+      const dragItem: DragItem = monitor.getItem();
       return {
         isDragging: dragItem?.sandboxId === sandbox.id,
       };
@@ -61,7 +63,7 @@ export const SandboxCard = ({
       }
     },
     end: (item: DragItem, monitor) => {
-      const dropResult = monitor.getDropResult();
+      const dropResult: DropResult = monitor.getDropResult();
 
       if (!dropResult) {
         // This is the cancel event
