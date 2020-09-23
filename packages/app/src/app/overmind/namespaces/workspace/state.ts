@@ -1,3 +1,5 @@
+import { Dependency } from '@codesandbox/common/lib/types/algolia';
+
 type State = {
   project: {
     title: string;
@@ -10,6 +12,20 @@ type State = {
   openedWorkspaceItem: string | null;
   workspaceHidden: boolean;
   showDeleteSandboxModal: boolean;
+  dependencies: Dependency[];
+  explorerDependencies: Dependency[];
+  explorerDependenciesEmpty: boolean;
+  selectedDependencies:
+    | {
+        [a: string]: Dependency;
+      }
+    | {};
+  loadingDependencySearch: boolean;
+  hitToVersionMap: {
+    [name: string]: string;
+  };
+  showingSelectedDependencies: boolean;
+  dependencySearch: string;
 };
 
 export const state: State = {
@@ -24,4 +40,12 @@ export const state: State = {
   openedWorkspaceItem: null,
   workspaceHidden: false,
   showDeleteSandboxModal: false,
+  dependencies: [],
+  explorerDependencies: [],
+  explorerDependenciesEmpty: false,
+  selectedDependencies: {},
+  loadingDependencySearch: false,
+  hitToVersionMap: {},
+  showingSelectedDependencies: false,
+  dependencySearch: '',
 };

@@ -7,7 +7,9 @@ const placeholderStyles = {
   fontSize: 3,
 };
 
-interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  ref?: any;
+}
 
 export const Input = styled(Element).attrs(p => ({
   as: ((p as unknown) as { as: string }).as || 'input',
@@ -17,7 +19,7 @@ export const Input = styled(Element).attrs(p => ({
     width: '100%',
     paddingX: 2,
     fontSize: 3,
-    lineHeight: 1, // trust the height
+    lineHeight: 'auto',
     fontFamily: 'Inter, sans-serif',
     borderRadius: 'small',
     backgroundColor: 'input.background',
@@ -29,6 +31,7 @@ export const Input = styled(Element).attrs(p => ({
     '::placeholder': placeholderStyles,
     transition: 'all ease',
     transitionDuration: theme => theme.speeds[2],
+    appearance: 'none',
 
     ':hover, :focus': {
       borderColor: 'inputOption.activeBorder',
