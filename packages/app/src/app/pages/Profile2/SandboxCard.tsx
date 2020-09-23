@@ -242,10 +242,8 @@ export const SandboxCard: React.FC<{
             borderColor: 'grays.600',
           })}
           style={{
-            backgroundImage: `url(${
-              sandbox.screenshotUrl ||
-              `/api/v1/sandboxes/${sandbox.id}/screenshot.png`
-            })`,
+            backgroundImage: `url(${sandbox.screenshotUrl ||
+              `/api/v1/sandboxes/${sandbox.id}/screenshot.png`})`,
           }}
         />
         <Stack justify="space-between">
