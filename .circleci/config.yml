@@ -20,6 +20,10 @@ aliases:
       - packages/notifications/lib
       - packages/template-icons/lib
       - packages/sse-hooks/dist
+      - packages/sandpack-core/lib
+      - packages/vue-browser-eslint-rules/lib
+      - packages/vue3-browser-compiler/lib
+      - packages/vue3-transpiler/lib
       - standalone-packages/codesandbox-browserfs/dist
       - standalone-packages/codesandbox-browserfs/build
       - standalone-packages/vscode-textmate/out
