@@ -71,14 +71,16 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
         onChange={dependency => {
           if (dependency === 'OPEN_MODAL') {
             modalOpened({ modal: 'searchDependencies' });
+            clearExplorerDependencies();
+            changeDependencySearch('');
           } else if (dependency) {
             addNpmDependency({
               name: dependency.name,
               version: dependency.tags.latest,
             });
+            clearExplorerDependencies();
+            changeDependencySearch('');
           }
-          clearExplorerDependencies();
-          changeDependencySearch('');
         }}
         itemToString={dependency => {
           if (dependency === 'OPEN_MODAL') {
