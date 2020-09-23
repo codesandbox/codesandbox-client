@@ -14,16 +14,21 @@ import css from '@styled-system/css';
 import { Sandbox } from '@codesandbox/common/lib/types';
 import { ENTER, SPACE, ALT } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { sandboxTypes, SandboxType, DropTargets } from './constants';
+import {
+  SandboxTypes,
+  SandboxType,
+  DropTargets,
+  DropTarget,
+} from './constants';
 
 type DragItem = { type: SandboxType; sandboxId: string; index: number | null };
-type DropResult = { name: keyof typeof DropTargets };
+type DropResult = { name: DropTarget };
 
 export const SandboxCard: React.FC<{
   type?: SandboxType;
   sandbox: Sandbox;
   index?: number | null;
-}> = ({ type = sandboxTypes.DEFAULT_SANDBOX, sandbox, index = null }) => {
+}> = ({ type = SandboxTypes.DEFAULT_SANDBOX, sandbox, index = null }) => {
   const {
     state: {
       user: loggedInUser,
@@ -58,7 +63,7 @@ export const SandboxCard: React.FC<{
     },
 
     begin: () => {
-      if (type === sandboxTypes.PINNED_SANDBOX) {
+      if (type === SandboxTypes.PINNED_SANDBOX) {
         previousPosition = index;
       }
     },
@@ -67,7 +72,7 @@ export const SandboxCard: React.FC<{
 
       if (!dropResult) {
         // This is the cancel event
-        if (item.type === sandboxTypes.PINNED_SANDBOX) {
+        if (item.type === SandboxTypes.PINNED_SANDBOX) {
           // Rollback any reordering
           reorderFeaturedSandboxesInState({
             startPosition: index,
@@ -94,18 +99,18 @@ export const SandboxCard: React.FC<{
   });
 
   const [, drop] = useDrop({
-    accept: [sandboxTypes.ALL_SANDBOX, sandboxTypes.PINNED_SANDBOX],
+    accept: [SandboxTypes.ALL_SANDBOX, SandboxTypes.PINNED_SANDBOX],
     hover: (item: DragItem, monitor) => {
       if (!ref.current) return;
 
       const hoverIndex = index;
       let dragIndex = -1; // not in list
 
-      if (item.type === sandboxTypes.PINNED_SANDBOX) {
+      if (item.type === SandboxTypes.PINNED_SANDBOX) {
         dragIndex = item.index;
       }
 
-      if (item.type === sandboxTypes.ALL_SANDBOX) {
+      if (item.type === SandboxTypes.ALL_SANDBOX) {
         // When an item from ALL_SANDOXES is hoverered over
         // an item in pinned sandboxes, we insert the sandbox
         // into featuredSandboxes in state.
@@ -155,8 +160,8 @@ export const SandboxCard: React.FC<{
   const myProfile = loggedInUser?.username === username;
 
   if (myProfile) {
-    if (type === sandboxTypes.ALL_SANDBOX) drag(ref);
-    else if (type === sandboxTypes.PINNED_SANDBOX) drag(drop(ref));
+    if (type === SandboxTypes.ALL_SANDBOX) drag(ref);
+    else if (type === SandboxTypes.PINNED_SANDBOX) drag(drop(ref));
   }
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>) => {

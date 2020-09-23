@@ -11,7 +11,7 @@ import css from '@styled-system/css';
 import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
-import { SANDBOXES_PER_PAGE, sandboxTypes } from './constants';
+import { SANDBOXES_PER_PAGE, SandboxTypes } from './constants';
 
 export const AllSandboxes = () => {
   const {
@@ -122,7 +122,7 @@ export const AllSandboxes = () => {
               <Column key={sandbox.id}>
                 <motion.div layoutTransition={{ duration: 0.15 }}>
                   <SandboxCard
-                    type={sandboxTypes.ALL_SANDBOX}
+                    type={SandboxTypes.ALL_SANDBOX}
                     sandbox={sandbox}
                   />
                 </motion.div>

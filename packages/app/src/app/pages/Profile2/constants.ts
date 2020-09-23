@@ -1,18 +1,16 @@
 export const SANDBOXES_PER_PAGE = 15;
 
-export type SandboxType = 'ALL_SANDBOX' | 'PINNED_SANDBOX' | 'DEFAULT_SANDBOX';
-
-export const sandboxTypes: {
-  ALL_SANDBOX: SandboxType;
-  PINNED_SANDBOX: SandboxType;
-  DEFAULT_SANDBOX: SandboxType;
-} = {
-  ALL_SANDBOX: 'ALL_SANDBOX',
-  PINNED_SANDBOX: 'PINNED_SANDBOX',
-  DEFAULT_SANDBOX: 'DEFAULT_SANDBOX',
+export const SandboxTypes = {
+  ALL_SANDBOX: 'ALL_SANDBOX' as const,
+  PINNED_SANDBOX: 'PINNED_SANDBOX' as const,
+  DEFAULT_SANDBOX: 'DEFAULT_SANDBOX' as const,
 };
+
+export type SandboxType = keyof typeof SandboxTypes;
 
 export const DropTargets = {
-  SHOWCASED_SANDBOX: 'SHOWCASED_SANDBOX',
-  PINNED_SANDBOXES: 'PINNED_SANDBOXES',
+  SHOWCASED_SANDBOX: 'SHOWCASED_SANDBOX' as const,
+  PINNED_SANDBOXES: 'PINNED_SANDBOXES' as const,
 };
+
+export type DropTarget = keyof typeof DropTargets;
