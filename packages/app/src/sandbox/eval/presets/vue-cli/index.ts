@@ -41,6 +41,17 @@ export default function initialize() {
         const vue = dependencies.find(dep => dep.name === 'vue');
         const isV3 = vue && isMinimalSemverVersion(vue.version, '3.0.0');
 
+        try {
+          const tModule = manager.resolveTranspiledModule(
+            '@vue/babel-preset-app',
+            '/package.json'
+          );
+          await tModule.transpile(manager);
+        } catch (e) {
+          console.error(e);
+          // Ignore
+        }
+
         if (isV3) {
           initializeV3(vuePreset);
         } else {

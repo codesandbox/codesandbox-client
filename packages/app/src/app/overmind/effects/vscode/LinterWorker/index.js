@@ -412,25 +412,19 @@ function getSeverity(error) {
 self.addEventListener('message', async event => {
   const { code, version, title: filename, template } = event.data;
 
-  let config =
+  const config =
     filename.endsWith('.ts') || filename.endsWith('.tsx')
       ? TYPESCRIPT_PARSER_OPTIONS
       : defaultConfig;
   let options = { filename };
 
   if (template === 'vue-cli' || template === 'nuxt') {
-    const {
-      getConfig: getVueConfig,
-      getVerifyOptions: getVueVerifyOptions,
-    } = await import('./vue');
-
-    config = await getVueConfig(linter);
     config.rules = {
       ...defaultConfig.rules,
       ...config.rules,
       'react-hooks/rules-of-hooks': 'off',
     };
-    options = { ...options, ...getVueVerifyOptions(filename) };
+    options = { ...options };
   }
 
   const validations = linter.verify(code, config, options);
