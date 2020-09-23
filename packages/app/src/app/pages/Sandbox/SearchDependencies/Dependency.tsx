@@ -79,10 +79,12 @@ const checkboxStyles = css({
 export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
   const {
     state: {
-      workspace: { selectedDependencies },
+      workspace: { selectedDependencies, hitToVersionMap },
     },
     actions,
   } = useOvermind();
+
+  const selectedVersion = hitToVersionMap[dependency.objectID];
 
   const versions = Object.keys(dependency.versions).sort((a, b) => {
     try {
@@ -186,6 +188,7 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
           <Element css={{ flexShrink: 0, width: 208 }}>
             <Select
               onClick={e => e.stopPropagation()}
+              defaultValue={selectedVersion}
               onChange={e => {
                 actions.workspace.handleVersionChange({
                   dependency,
