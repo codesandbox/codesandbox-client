@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "tsc --watch",
-    "build": "tsc"
+    "build": "tsc",
+    "build:dev": "yarn build"
   },
   "devDependencies": {
     "typescript": "^4.0.3"
