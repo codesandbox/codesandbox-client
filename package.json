@@ -77,8 +77,8 @@
     "prettify": "prettier -w ."
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^1.13.0",
-    "@typescript-eslint/parser": "^1.13.0",
+    "@typescript-eslint/eslint-plugin": "^4.2.0",
+    "@typescript-eslint/parser": "^4.2.0",
     "opencollective": "^1.0.3"
   },
   "devDependencies": {

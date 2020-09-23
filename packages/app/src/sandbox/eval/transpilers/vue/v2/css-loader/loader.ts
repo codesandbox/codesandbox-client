@@ -1,6 +1,6 @@
 // @ts-ignore
-import CSSBaseRaw from '!raw-loader!./client/css-base';
 import { LoaderContext } from 'sandpack-core/lib/transpiled-module';
+import CSSBaseRaw from '!raw-loader!./client/css-base';
 
 import getModules from './get-modules';
 

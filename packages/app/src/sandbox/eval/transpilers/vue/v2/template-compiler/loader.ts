@@ -2,15 +2,16 @@
 import transpile from 'vue-template-es2015-compiler';
 import * as compiler from 'vue-template-compiler';
 // @ts-ignore
+import { LoaderContext } from 'sandpack-core';
+// @ts-ignore
 import vueHotReloadAPIRaw from '!raw-loader!vue-hot-reload-api';
 
-import { LoaderContext } from 'sandpack-core';
-
+// eslint-disable-next-line
 import transformRequire from './modules/transform-require';
 import transformSrcset from './modules/transform-srcset';
 
 const hotReloadAPIPath = '!noop-loader!/node_modules/vue-hot-reload-api.js';
-export default function(html: string, loaderContext: LoaderContext) {
+export default function (html: string, loaderContext: LoaderContext) {
   loaderContext.emitModule(
     hotReloadAPIPath,
     vueHotReloadAPIRaw,

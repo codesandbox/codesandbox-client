@@ -50,8 +50,6 @@ const allRules = {
     'exhaustive-deps'
   ],
 
-  '@typescript-eslint/no-angle-bracket-type-assertion': require('@typescript-eslint/eslint-plugin/dist/rules/no-angle-bracket-type-assertion')
-    .default,
   '@typescript-eslint/no-array-constructor': require('@typescript-eslint/eslint-plugin/dist/rules/no-array-constructor')
     .default,
   '@typescript-eslint/no-namespace': require('@typescript-eslint/eslint-plugin/dist/rules/no-namespace')

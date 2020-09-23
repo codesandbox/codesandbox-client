@@ -1,3 +1,4 @@
+import { Preset } from 'sandpack-core';
 import babelTranspiler from '../../transpilers/babel';
 import typescriptTranspiler from '../../transpilers/typescript';
 import jsonTranspiler from '../../transpilers/json';
@@ -18,7 +19,6 @@ import base64Transpiler from '../../transpilers/base64';
 import pugTranspiler from '../../transpilers/pug';
 import coffeeTranspiler from '../../transpilers/coffee';
 
-import { Preset } from 'sandpack-core';
 
 export default function initialize(vuePreset: Preset) {
   vuePreset.setAdditionalAliases({

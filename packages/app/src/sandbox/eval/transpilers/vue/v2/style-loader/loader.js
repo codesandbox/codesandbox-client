@@ -5,10 +5,10 @@
 */
 import hash from 'hash-sum';
 
+import loaderUtils from 'sandpack-core/lib/transpiler/utils/loader-utils';
 import addStylesClientRaw from '!raw-loader!./addStylesClient';
 import listToStylesRaw from '!raw-loader!./listToStyles';
 
-import loaderUtils from 'sandpack-core/lib/transpiler/utils/loader-utils';
 
 const addStylesClientPath = '/node_modules/vue-style-loader/addStylesClient.js';
 const listToStylesPath = '/node_modules/vue-style-loader/listToStyles.js';

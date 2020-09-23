@@ -1,9 +1,8 @@
 import path from 'path';
+import { LoaderContext } from 'sandpack-core';
 import parse from '../parser';
 
-import { type LoaderContext } from '../../../transpiled-module';
-
-export default function(code: string, loaderContext: LoaderContext) {
+export default function (code: string, loaderContext: LoaderContext) {
   const query = loaderContext.options;
   const { context } = query;
   let filename = path.basename(loaderContext.path);

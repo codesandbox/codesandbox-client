@@ -22,7 +22,11 @@ createStyleNode(
 ${webpackHMREnabled ? 'module.hot.accept()' : ''}
 `;
 
-export default function(id, css, webpackHMREnabled) {
+export default function (
+  id: string,
+  css?: string,
+  webpackHMREnabled?: boolean
+) {
   const result = wrapper(id, css || '', webpackHMREnabled);
   return result;
 }

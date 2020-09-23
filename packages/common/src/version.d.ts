@@ -1,2 +1,3 @@
 export declare const getTimestamp: () => string;
-export default string;
+declare const version: string;
+export default version;

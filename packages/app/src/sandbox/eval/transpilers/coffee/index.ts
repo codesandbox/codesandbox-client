@@ -3,8 +3,8 @@
 import CoffeeWorker from 'worker-loader?publicPath=/&name=coffee-transpiler.[hash:8].worker.js!./coffee-worker';
 /* eslint-enable import/default */
 
-import WorkerTranspiler from '../worker-transpiler';
 import { LoaderContext, TranspilerResult } from 'sandpack-core';
+import WorkerTranspiler from '../worker-transpiler';
 
 class CoffeeTranspiler extends WorkerTranspiler {
   worker: Worker;

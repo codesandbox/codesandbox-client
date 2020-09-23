@@ -1,4 +1,4 @@
-import { Preset, Manager, Transpiler } from 'sandpack-core';
+import { Preset, Manager } from 'sandpack-core';
 import rawTranspiler from '../../transpilers/raw';
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
