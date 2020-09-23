@@ -34,7 +34,7 @@ it("doesn't convert funcs with different import name", () => {
 
 it('can convert quickly', () => {
   /* eslint-disable */
-  const code = require('../../babel/convert-esmodule/big-file');
+  const code = require('./big-file').default;
 
   const t = performance.now();
 

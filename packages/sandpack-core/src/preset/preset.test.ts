@@ -1,5 +1,4 @@
 import { Preset } from './index';
-
 import { Transpiler } from '../transpiler';
 import { LoaderContext } from '../transpiled-module';
 
@@ -70,7 +69,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator)).toEqual(
-        '!babel-loader!codesandbox-dynamic-imports-loader'
+        '!codesandbox-dynamic-imports-loader!babel-loader'
       );
     });
 
@@ -81,7 +80,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator)).toEqual(
-        '!style-loader!modules-loader!codesandbox-dynamic-imports-loader'
+        '!codesandbox-dynamic-imports-loader!modules-loader!style-loader'
       );
     });
 
@@ -92,7 +91,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator, '!babel-loader')).toEqual(
-        '!babel-loader!codesandbox-dynamic-imports-loader'
+        '!codesandbox-dynamic-imports-loader!babel-loader'
       );
     });
 
@@ -103,7 +102,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator, 'babel-loader')).toEqual(
-        '!style-loader!modules-loader!babel-loader!codesandbox-dynamic-imports-loader'
+        '!codesandbox-dynamic-imports-loader!babel-loader!modules-loader!style-loader'
       );
     });
   });
