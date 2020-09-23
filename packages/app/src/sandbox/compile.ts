@@ -18,8 +18,7 @@ import {
 } from 'sandpack-core/lib/cache';
 import { Module } from 'sandpack-core/lib/types/module';
 import * as metrics from '@codesandbox/common/lib/utils/metrics';
-import { Manager , TranspiledModule } from 'sandpack-core';
-
+import { Manager, TranspiledModule } from 'sandpack-core';
 
 import { loadDependencies, NPMDependencies } from 'sandpack-core/lib/npm';
 import {
@@ -33,7 +32,7 @@ import getPreset from './eval';
 import handleExternalResources from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
-import { SCRIPT_VERSION } from ".";
+import { SCRIPT_VERSION } from '.';
 
 let initializedResizeListener = false;
 let manager: Manager | null = null;
@@ -65,9 +64,7 @@ export function getHTMLParts(html: string) {
   return { head: '', body: html };
 }
 
-let testRunner:
-  | import('./eval/tests/jest-lite').default
-  | undefined;
+let testRunner: import('./eval/tests/jest-lite').default | undefined;
 function sendTestCount(modules: { [path: string]: Module }) {
   const tests = testRunner.findTests(modules);
 

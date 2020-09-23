@@ -1,4 +1,4 @@
-// / <reference lib="webworker" />
+/// <reference lib="webworker" />
 
 type StencilOpts = { file: string; module: string };
 type StencilResult = {

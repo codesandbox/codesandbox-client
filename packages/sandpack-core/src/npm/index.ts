@@ -177,6 +177,11 @@ export async function getDependenciesFromSources(
   }
 }
 
+type DependencyOpts = {
+  disableExternalConnection?: boolean;
+  resolutions?: { [key: string]: string } | undefined;
+};
+
 /**
  * This fetches the manifest and dependencies from our packager or dynamic sources
  * @param {*} dependencies
@@ -184,7 +189,10 @@ export async function getDependenciesFromSources(
 export async function loadDependencies(
   dependencies: NPMDependencies,
   updateProgress: UpdateProgressFunc,
-  { disableExternalConnection = false, resolutions = undefined } = {}
+  {
+    disableExternalConnection = false,
+    resolutions = undefined,
+  }: DependencyOpts = {}
 ) {
   let isNewCombination = false;
   if (Object.keys(dependencies).length !== 0) {

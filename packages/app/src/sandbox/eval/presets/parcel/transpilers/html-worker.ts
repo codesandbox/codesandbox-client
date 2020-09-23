@@ -1,4 +1,4 @@
-// / <reference lib="webworker" />
+/// <reference lib="webworker" />
 /* eslint-disable no-continue */
 /* eslint-disable no-inner-declarations */
 import parse from 'posthtml-parser';

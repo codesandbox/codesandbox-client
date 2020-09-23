@@ -110,7 +110,8 @@
         "import/extensions": 0,
         "import/no-unresolved": 0,
         "no-shadow": "off",
-        "@typescript-eslint/no-shadow": ["error"]
+        "@typescript-eslint/no-shadow": ["error"],
+        "spaced-comment": "warn"
       }
     }
   ]

@@ -51,7 +51,7 @@ export type ModuleObject = {
 
 export type Manifest = {
   contents: {
-    [path: string]: { content: string; requires: Array<string> };
+    [path: string]: { content: string; requires?: Array<string> };
   };
   dependencies: Array<{ name: string; version: string }>;
   dependencyDependencies: {
