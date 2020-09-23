@@ -69,6 +69,10 @@ export const SearchDependencies = ({ onConfirm }) => {
   useEffect(() => {
     actions.workspace.clearSelectedDependencies();
     actions.workspace.getDependencies();
+
+    return () => {
+      actions.workspace.changeDependencySearch('');
+    };
   }, []);
 
   return (
