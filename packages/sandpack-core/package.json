@@ -6,7 +6,8 @@
   "scripts": {
     "start": "tsc --watch",
     "build": "rimraf lib && tsc",
-    "build:dev": "yarn build"
+    "build:dev": "yarn build",
+    "test": "jest"
   },
   "devDependencies": {
     "@types/jest": "^26.0.14",
