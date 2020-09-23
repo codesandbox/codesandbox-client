@@ -5,7 +5,7 @@ import { Element, Button, Stack, Text } from '@codesandbox/components';
 import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
-import { SandboxTypes, DropTargets } from './constants';
+import { SandboxType, DropTarget } from './constants';
 
 export const ShowcaseSandbox = () => {
   const {
@@ -15,8 +15,8 @@ export const ShowcaseSandbox = () => {
   } = useOvermind();
 
   const [{ isOver, isDragging }, drop] = useDrop({
-    accept: [SandboxTypes.ALL_SANDBOX, SandboxTypes.PINNED_SANDBOX],
-    drop: () => ({ name: DropTargets.SHOWCASED_SANDBOX }),
+    accept: [SandboxType.ALL_SANDBOX, SandboxType.PINNED_SANDBOX],
+    drop: () => ({ name: DropTarget.SHOWCASED_SANDBOX }),
     collect: monitor => ({
       isOver: monitor.isOver(),
       isDragging: !!monitor.getItem(),

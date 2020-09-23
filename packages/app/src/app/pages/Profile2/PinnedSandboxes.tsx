@@ -6,7 +6,7 @@ import { Grid, Column, Stack, Text } from '@codesandbox/components';
 import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import css from '@styled-system/css';
 import { SandboxCard } from './SandboxCard';
-import { SandboxTypes, DropTargets } from './constants';
+import { SandboxType, DropTarget } from './constants';
 
 export const PinnedSandboxes = () => {
   const {
@@ -19,8 +19,8 @@ export const PinnedSandboxes = () => {
   const myProfile = loggedInUser?.username === user.username;
 
   const [{ isOver }, drop] = useDrop({
-    accept: [SandboxTypes.ALL_SANDBOX, SandboxTypes.PINNED_SANDBOX],
-    drop: () => ({ name: DropTargets.PINNED_SANDBOXES }),
+    accept: [SandboxType.ALL_SANDBOX, SandboxType.PINNED_SANDBOX],
+    drop: () => ({ name: DropTarget.PINNED_SANDBOXES }),
     collect: monitor => ({
       isOver: monitor.isOver(),
     }),
@@ -38,7 +38,7 @@ export const PinnedSandboxes = () => {
         <Column key={sandbox.id}>
           <motion.div layoutTransition={{ duration: 0.15 }}>
             <SandboxCard
-              type={SandboxTypes.PINNED_SANDBOX}
+              type={SandboxType.PINNED_SANDBOX}
               sandbox={sandbox}
               index={index}
             />

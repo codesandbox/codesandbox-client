@@ -14,12 +14,7 @@ import css from '@styled-system/css';
 import { Sandbox } from '@codesandbox/common/lib/types';
 import { ENTER, SPACE, ALT } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import {
-  SandboxTypes,
-  SandboxType,
-  DropTargets,
-  DropTarget,
-} from './constants';
+import { SandboxType, DropTarget } from './constants';
 
 type DragItem = { type: SandboxType; sandboxId: string; index: number | null };
 type DropResult = { name: DropTarget };
@@ -28,7 +23,7 @@ export const SandboxCard: React.FC<{
   type?: SandboxType;
   sandbox: Sandbox;
   index?: number | null;
-}> = ({ type = SandboxTypes.DEFAULT_SANDBOX, sandbox, index = null }) => {
+}> = ({ type = SandboxType.DEFAULT_SANDBOX, sandbox, index = null }) => {
   const {
     state: {
       user: loggedInUser,
@@ -63,7 +58,7 @@ export const SandboxCard: React.FC<{
     },
 
     begin: () => {
-      if (type === SandboxTypes.PINNED_SANDBOX) {
+      if (type === SandboxType.PINNED_SANDBOX) {
         previousPosition = index;
       }
     },
@@ -72,7 +67,7 @@ export const SandboxCard: React.FC<{
 
       if (!dropResult) {
         // This is the cancel event
-        if (item.type === SandboxTypes.PINNED_SANDBOX) {
+        if (item.type === SandboxType.PINNED_SANDBOX) {
           // Rollback any reordering
           reorderFeaturedSandboxesInState({
             startPosition: index,
@@ -86,31 +81,31 @@ export const SandboxCard: React.FC<{
         return;
       }
 
-      if (dropResult.name === DropTargets.PINNED_SANDBOXES) {
+      if (dropResult.name === DropTarget.PINNED_SANDBOXES) {
         if (featuredSandboxes.find(s => s.id === item.sandboxId)) {
           saveFeaturedSandboxesOrder();
         } else {
           addFeaturedSandboxes({ sandboxId: item.sandboxId });
         }
-      } else if (dropResult.name === DropTargets.SHOWCASED_SANDBOX) {
+      } else if (dropResult.name === DropTarget.SHOWCASED_SANDBOX) {
         newSandboxShowcaseSelected(item.sandboxId);
       }
     },
   });
 
   const [, drop] = useDrop({
-    accept: [SandboxTypes.ALL_SANDBOX, SandboxTypes.PINNED_SANDBOX],
+    accept: [SandboxType.ALL_SANDBOX, SandboxType.PINNED_SANDBOX],
     hover: (item: DragItem, monitor) => {
       if (!ref.current) return;
 
       const hoverIndex = index;
       let dragIndex = -1; // not in list
 
-      if (item.type === SandboxTypes.PINNED_SANDBOX) {
+      if (item.type === SandboxType.PINNED_SANDBOX) {
         dragIndex = item.index;
       }
 
-      if (item.type === SandboxTypes.ALL_SANDBOX) {
+      if (item.type === SandboxType.ALL_SANDBOX) {
         // When an item from ALL_SANDOXES is hoverered over
         // an item in pinned sandboxes, we insert the sandbox
         // into featuredSandboxes in state.
@@ -154,14 +149,14 @@ export const SandboxCard: React.FC<{
       // We're mutating the monitor item here to avoid expensive index searches!
       item.index = hoverIndex;
     },
-    drop: () => ({ name: DropTargets.PINNED_SANDBOXES }),
+    drop: () => ({ name: DropTarget.PINNED_SANDBOXES }),
   });
 
   const myProfile = loggedInUser?.username === username;
 
   if (myProfile) {
-    if (type === SandboxTypes.ALL_SANDBOX) drag(ref);
-    else if (type === SandboxTypes.PINNED_SANDBOX) drag(drop(ref));
+    if (type === SandboxType.ALL_SANDBOX) drag(ref);
+    else if (type === SandboxType.PINNED_SANDBOX) drag(drop(ref));
   }
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
