@@ -11,7 +11,7 @@ export default class ModuleWarning extends Error {
     this.warning = warning.message;
     this.lineNumber = warning.lineNumber;
     this.columnNumber = warning.columnNumber;
-    this.severity = warning.severity;
+    this.severity = warning.severity || 'warning';
     this.source = warning.source;
   }
 

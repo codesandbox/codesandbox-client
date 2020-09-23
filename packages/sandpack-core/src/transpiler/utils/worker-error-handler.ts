@@ -1,7 +1,7 @@
-class FileError extends Error {
-  columnNumber: number;
-  fileName: string;
-  lineNumber: number;
+export class FileError extends Error {
+  fileName?: string;
+  lineNumber?: number;
+  columnNumber?: number;
 }
 
 type WorkerError = {

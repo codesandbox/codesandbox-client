@@ -36,13 +36,13 @@ export type ChildModule = Module & {
 class ModuleSource {
   fileName: string;
   compiledCode: string;
-  sourceMap: SourceMap | undefined;
+  sourceMap: SourceMap | null;
   sourceEqualsCompiled: boolean;
 
   constructor(
     fileName: string,
     compiledCode: string,
-    sourceMap: SourceMap | undefined,
+    sourceMap: SourceMap | null,
     sourceEqualsCompiled = false
   ) {
     this.fileName = fileName;
@@ -55,7 +55,7 @@ class ModuleSource {
 export type SerializedTranspiledModule = {
   module: Module;
   query: string;
-  source?: ModuleSource;
+  source: ModuleSource | null;
   sourceEqualsCompiled: boolean;
   isEntry: boolean;
   isTestFile: boolean;
@@ -809,7 +809,7 @@ export class TranspiledModule {
           this.query ? `?${this.hash}` : ''
         }`;
 
-        this.source = new ModuleSource(this.module.path, code, undefined);
+        this.source = new ModuleSource(this.module.path, code, null);
 
         if (initiator) {
           initiator.dependencies.add(this);
@@ -871,72 +871,74 @@ export class TranspiledModule {
 
     const hotData = this.hmrConfig ? this.hmrConfig.data : undefined;
 
-    this.compilation = this.compilation || {
-      id: this.getId(),
-      exports: {},
-      globals,
-      hot: {
-        accept: (path: string | Array<string>, cb) => {
-          if (
-            typeof path === 'undefined' ||
-            (typeof path !== 'string' && !Array.isArray(path))
-          ) {
-            // Self mark hot
-            this.hmrConfig = this.hmrConfig || new HMR();
-            if (this.hmrConfig) {
-              const { hmrConfig } = this;
-              hmrConfig.setType('accept');
-              hmrConfig.setSelfAccepted(true);
+    this.compilation =
+      this.compilation ||
+      ({
+        id: this.getId(),
+        exports: {},
+        globals,
+        hot: {
+          accept: (path: string | Array<string>, cb) => {
+            if (
+              typeof path === 'undefined' ||
+              (typeof path !== 'string' && !Array.isArray(path))
+            ) {
+              // Self mark hot
+              this.hmrConfig = this.hmrConfig || new HMR();
+              if (this.hmrConfig) {
+                const { hmrConfig } = this;
+                hmrConfig.setType('accept');
+                hmrConfig.setSelfAccepted(true);
+              }
+            } else {
+              const paths = typeof path === 'string' ? [path] : path;
+
+              paths.forEach(async p => {
+                const tModule = await manager.resolveTranspiledModule(
+                  p,
+                  this.module.path
+                );
+
+                tModule.hmrConfig = tModule.hmrConfig || new HMR();
+                const { hmrConfig } = tModule;
+                hmrConfig.setType('accept');
+                hmrConfig.setAcceptCallback(cb);
+              });
             }
-          } else {
-            const paths = typeof path === 'string' ? [path] : path;
+            manager.enableWebpackHMR();
+          },
+          decline: (path: string | Array<string>) => {
+            if (typeof path === 'undefined') {
+              this.hmrConfig = this.hmrConfig || new HMR();
+              this.hmrConfig.setType('decline');
+              this.resetCompilation();
+            } else {
+              const paths = typeof path === 'string' ? [path] : path;
 
-            paths.forEach(async p => {
-              const tModule = await manager.resolveTranspiledModule(
-                p,
-                this.module.path
-              );
-
-              tModule.hmrConfig = tModule.hmrConfig || new HMR();
-              const { hmrConfig } = tModule;
-              hmrConfig.setType('accept');
-              hmrConfig.setAcceptCallback(cb);
-            });
-          }
-          manager.enableWebpackHMR();
-        },
-        decline: (path: string | Array<string>) => {
-          if (typeof path === 'undefined') {
+              paths.forEach(async p => {
+                const tModule = await manager.resolveTranspiledModule(
+                  p,
+                  this.module.path
+                );
+                tModule.hmrConfig = tModule.hmrConfig || new HMR();
+                tModule.hmrConfig.setType('decline');
+                tModule.resetCompilation();
+              });
+            }
+            manager.enableWebpackHMR();
+          },
+          dispose: (cb: () => void) => {
             this.hmrConfig = this.hmrConfig || new HMR();
-            this.hmrConfig.setType('decline');
-            this.resetCompilation();
-          } else {
-            const paths = typeof path === 'string' ? [path] : path;
 
-            paths.forEach(async p => {
-              const tModule = await manager.resolveTranspiledModule(
-                p,
-                this.module.path
-              );
-              tModule.hmrConfig = tModule.hmrConfig || new HMR();
-              tModule.hmrConfig.setType('decline');
-              tModule.resetCompilation();
-            });
-          }
-          manager.enableWebpackHMR();
+            this.hmrConfig.setDisposeHandler(cb);
+          },
+          data: hotData,
+          status: () => manager.hmrStatus,
+          addStatusHandler: manager.addStatusHandler,
+          removeStatusHandler: manager.removeStatusHandler,
         },
-        dispose: (cb: () => void) => {
-          this.hmrConfig = this.hmrConfig || new HMR();
-
-          this.hmrConfig.setDisposeHandler(cb);
-        },
-        data: hotData,
-        status: () => manager.hmrStatus,
-        addStatusHandler: manager.addStatusHandler,
-        removeStatusHandler: manager.removeStatusHandler,
-      },
-    };
-    if (this.compilation.hot) {
+      } as Compilation);
+    if (this.compilation.hot && hotData) {
       this.compilation.hot.data = hotData;
     }
 
@@ -944,7 +946,7 @@ export class TranspiledModule {
 
     try {
       // eslint-disable-next-line no-inner-declarations
-      function require(path: string) {
+      function require(path: string): any {
         if (path === '') {
           throw new Error('Cannot import an empty path');
         }
@@ -968,7 +970,10 @@ export class TranspiledModule {
             id = undefined;
             loaded = false;
 
-            static _resolveFilename(toPath: string, module) {
+            static _resolveFilename(
+              toPath: string,
+              module: { filename: string }
+            ) {
               if (module.filename == null) {
                 throw new Error('Module has no filename');
               }
@@ -998,7 +1003,7 @@ export class TranspiledModule {
         const cache = requiredTranspiledModule.compilation;
 
         return requiredTranspiledModule.isCompilationCached(globals)
-          ? cache.exports
+          ? cache!.exports
           : manager.evaluateTranspiledModule(
               requiredTranspiledModule,
               transpiledModule,
@@ -1084,8 +1089,9 @@ export class TranspiledModule {
   async serialize(
     optimizeForSize: boolean = true
   ): Promise<SerializedTranspiledModule> {
-    const sourceEqualsCompiled =
-      this.source && this.source.sourceEqualsCompiled;
+    const sourceEqualsCompiled = Boolean(
+      this.source && this.source.sourceEqualsCompiled
+    );
     const serializableObject: SerializedTranspiledModule = {
       query: this.query,
       module: this.module,
@@ -1107,6 +1113,7 @@ export class TranspiledModule {
       ),
       warnings: this.warnings.map(war => war.serialize()),
       hasMissingDependencies: this.hasMissingDependencies,
+      source: null,
     };
 
     const isNpmDependency = this.module.path.startsWith('/node_modules/');
@@ -1116,7 +1123,7 @@ export class TranspiledModule {
     const shouldCacheTranspiledSource = !canOptimizeSize && !isNpmDependency;
 
     if (shouldCacheTranspiledSource) {
-      serializableObject.source = this.source;
+      serializableObject.source = this.source || null;
     }
 
     return serializableObject;
@@ -1141,7 +1148,7 @@ export class TranspiledModule {
         true
       );
     } else {
-      this.source = data.source;
+      this.source = data.source || null;
     }
 
     const getModule = (depId: string) => {

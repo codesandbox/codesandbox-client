@@ -3,7 +3,7 @@ import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
 import { Module } from '../../types/module';
-import Manager from '../../manager';
+import Manager, { ReadFileCallback } from '../../manager';
 
 import { getFetchProtocol } from './fetch-protocols';
 import { getDependencyName } from '../../utils/get-dependency-name';
@@ -58,8 +58,8 @@ const resolveNPMAlias = (name: string, version: string): string[] => {
     return [name, version];
   }
 
-  const parts = version.match(/^npm:(.+)@(.+)/);
-  return [parts[1], parts[2]];
+  const parts = version.match(/^npm:(.+)@(.+)/)!;
+  return [parts[1]!, parts[2]!];
 };
 
 async function getMeta(
@@ -129,7 +129,7 @@ function resolvePath(
   currentTModule: TranspiledModule,
   manager: Manager,
   defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs'],
-  meta = {}
+  meta: Meta = {}
 ): Promise<string> {
   const currentPath = currentTModule.module.path;
 
@@ -156,7 +156,12 @@ function resolvePath(
           manager.envVariables.NODE_PATH,
         ].filter(Boolean),
         isFile,
-        readFile: async (p, c, cb) => {
+        // @ts-ignore
+        readFile: async (
+          p: string,
+          c: ReadFileCallback,
+          cb: ReadFileCallback
+        ) => {
           const callback = cb || c;
 
           try {
@@ -213,7 +218,7 @@ function resolvePath(
           }
         },
       },
-      (err, resolvedPath) => {
+      (err: Error | undefined, resolvedPath: string) => {
         if (err) {
           return reject(err);
         }

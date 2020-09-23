@@ -18,7 +18,7 @@ type GistAPIResponse = {
 };
 
 function normalize(files: GistAPIResponse['files']) {
-  const normalizedResponse = {};
+  const normalizedResponse: { [path: string]: true } = {};
   const fileNames = Object.keys(files);
 
   for (let i = 0; i < fileNames.length; i += 1) {

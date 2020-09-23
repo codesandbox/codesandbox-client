@@ -22,14 +22,14 @@ export interface IParsedResolution {
 export function parsePatternInfo(
   globPattern: string,
   range: string
-): IParsedResolution {
+): IParsedResolution | null {
   if (!isValidPackagePath(globPattern)) {
     console.warn('invalidResolutionName');
     return null;
   }
 
   const directories = parsePackagePath(globPattern);
-  const name = directories.pop();
+  const name = directories.pop()!;
 
   // For legacy support of resolutions, replace `name` with `**/name`
   if (name === globPattern) {
@@ -53,5 +53,7 @@ export function parseResolutions(resolutions?: {
   }
 
   const keys = Object.keys(resolutions);
-  return keys.map(key => parsePatternInfo(key, resolutions[key]));
+  return keys
+    .map(key => parsePatternInfo(key, resolutions[key]))
+    .filter(Boolean) as IParsedResolution[];
 }

@@ -108,7 +108,7 @@ describe('preset', () => {
   });
 
   describe('alias', () => {
-    function createPreset(aliases) {
+    function createPreset(aliases: { [p: string]: string }) {
       return new Preset('test', [], aliases);
     }
 

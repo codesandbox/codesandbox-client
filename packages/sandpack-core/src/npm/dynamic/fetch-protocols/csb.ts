@@ -9,13 +9,14 @@ type UnpkgMetaFiles = {
 
 function normalize(files: UnpkgMetaFiles[], fileObject: Meta = {}) {
   for (let i = 0; i < files.length; i += 1) {
-    if (files[i].type === 'file') {
-      const absolutePath = files[i].path;
+    const { files: childFiles, type, path } = files[i];
+    if (type === 'file') {
+      const absolutePath = path;
       fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
     }
 
-    if (files[i].files) {
-      normalize(files[i].files, fileObject);
+    if (childFiles) {
+      normalize(childFiles, fileObject);
     }
   }
 

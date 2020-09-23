@@ -116,7 +116,7 @@ export async function resolveDependencyInfo(
     dependencyAliases: {},
   };
 
-  const resolutionsByPackage = {};
+  const resolutionsByPackage: { [name: string]: IParsedResolution[] } = {};
   parsedResolutions.forEach(res => {
     resolutionsByPackage[res.name] = resolutionsByPackage[res.name] || [];
     resolutionsByPackage[res.name].push(res);

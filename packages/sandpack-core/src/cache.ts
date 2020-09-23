@@ -2,6 +2,8 @@
 import localforage from 'localforage';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import Manager from './manager';
+import { SerializedTranspiledModule } from './transpiled-module';
+import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 
 const debug = _debug('cs:compiler:cache');
 
@@ -139,20 +141,34 @@ export function deleteAPICache(
   return Promise.resolve(false);
 }
 
-function findCacheToUse(cache1, cache2) {
+export type ManagerCache = {
+  transpiledModules: { [id: string]: SerializedTranspiledModule };
+  cachedPaths: { [path: string]: { [path: string]: string } };
+  version: string;
+  timestamp: number;
+  configurations: ParsedConfigurationFiles;
+  entry: string | undefined;
+  meta: { [dir: string]: string[] };
+  dependenciesQuery: string;
+};
+
+function findCacheToUse(
+  cache1: ManagerCache | undefined,
+  cache2: ManagerCache | undefined
+) {
   if (!cache1 && !cache2) {
     return null;
   }
 
   if (cache1 && !cache2) {
-    return cache1;
+    return cache1!;
   }
 
   if (cache2 && !cache1) {
-    return cache2;
+    return cache2!;
   }
 
-  return cache2.timestamp > cache1.timestamp ? cache2 : cache1;
+  return cache2!.timestamp > cache1!.timestamp ? cache2! : cache1!;
 }
 
 export function ignoreNextCache() {
@@ -175,7 +191,9 @@ export async function consumeCache(manager: Manager) {
     }
 
     const cacheData = (window as any).__SANDBOX_DATA__;
-    const localData = await localforage.getItem(manager.id);
+    const localData: ManagerCache | undefined = await localforage.getItem(
+      manager.id
+    );
 
     const cache = findCacheToUse(cacheData && cacheData.data, localData);
     if (cache) {

@@ -10,10 +10,10 @@ import dependenciesToQuery from './dependencies-to-query';
 import { parseResolutions } from './dynamic/resolutions';
 import { resolveDependencyInfo } from './dynamic/resolve-dependency';
 import { getDependency as getPrebundledDependency } from './preloaded/fetch-dependencies';
-import { mergeDependencies } from './merge-dependency';
+import { IResponse, mergeDependencies } from './merge-dependency';
 
 let loadedDependencyCombination: string | null = null;
-let manifest = null;
+let manifest: IResponse | null = null;
 
 export type NPMDependencies = {
   [dependency: string]: string;
@@ -37,8 +37,8 @@ function shouldFetchDynamically(depVersion: string) {
  * Some dependencies have a space in their version for some reason, this is invalid and we
  * ignore them. This is what yarn does as well.
  */
-function removeSpacesFromDependencies(dependencies: Object) {
-  const newDeps = {};
+function removeSpacesFromDependencies(dependencies: NPMDependencies) {
+  const newDeps: NPMDependencies = {};
   Object.keys(dependencies).forEach(depName => {
     const [version] = dependencies[depName].split(' ');
     newDeps[depName] = version;
@@ -61,8 +61,8 @@ function splitDependencies(
     return { dynamicDependencies: dependencies, prebundledDependencies: {} };
   }
 
-  const dynamicDependencies = {};
-  const prebundledDependencies = {};
+  const dynamicDependencies: NPMDependencies = {};
+  const prebundledDependencies: NPMDependencies = {};
 
   Object.keys(dependencies).forEach(depName => {
     const version = dependencies[depName];
@@ -86,7 +86,7 @@ export async function getDependenciesFromSources(
   dependencies: {
     [depName: string]: string;
   },
-  resolutions: { [startGlob: string]: string },
+  resolutions: { [startGlob: string]: string } | undefined,
   forceFetchDynamically: boolean,
   updateProgress: UpdateProgressFunc
 ) {

@@ -132,18 +132,19 @@ export class Preset {
     this.loaders.length = 0;
   };
 
-  aliasedPathCache = {};
+  aliasedPathCache: { [path: string]: string | null } = {};
 
   /**
    * Checks if there is an alias given for the path, if there is it will return
    * the altered path, otherwise it will just return the known path.
    */
   getAliasedPath(path: string): string {
-    if (this.aliasedPathCache[path] === null) {
+    const aliasCache = this.aliasedPathCache[path];
+    if (aliasCache === null) {
       return path;
     }
-    if (this.aliasedPathCache[path]) {
-      return this.aliasedPathCache[path];
+    if (aliasCache) {
+      return aliasCache;
     }
 
     const aliases = Object.keys(this.alias);

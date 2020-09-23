@@ -2,8 +2,8 @@ export type WarningStructure = {
   name?: string;
   message: string;
   fileName?: string;
-  lineNumber: number;
-  columnNumber: number;
+  lineNumber?: number;
+  columnNumber?: number;
   source?: string;
   severity?: 'notice' | 'warning';
 };

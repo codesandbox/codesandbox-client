@@ -36,4 +36,6 @@ export default {
   util: 'util/util.js',
   vm: 'vm-browserify/index.js',
   zlib: 'browserify-zlib/src/index.js',
+} as {
+  [moduleName: string]: string | null;
 };

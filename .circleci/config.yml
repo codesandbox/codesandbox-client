@@ -54,6 +54,10 @@ aliases:
       - packages/react-embed/node_modules
       - packages/sandbox-hooks/node_modules
       - packages/sse-hooks/node_modules
+      - packages/sandpack-core/node_modules
+      - packages/vue-browser-eslint-rules/node_modules
+      - packages/vue3-browser-compiler/node_modules
+      - packages/vue3-transpiler/node_modules
 
   - &restore_standalone_deps_cache
     keys:

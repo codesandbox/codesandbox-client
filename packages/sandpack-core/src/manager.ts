@@ -28,13 +28,22 @@ import dependenciesToQuery from './npm/dependencies-to-query';
 import { getDependencyName } from './utils/get-dependency-name';
 import { packageFilter } from './utils/resolve-utils';
 
-import { ignoreNextCache, deleteAPICache, clearIndexedDBCache } from './cache';
+import {
+  ignoreNextCache,
+  deleteAPICache,
+  clearIndexedDBCache,
+  ManagerCache,
+} from './cache';
 import { splitQueryFromPath } from './transpiled-module/utils/query-path';
 import { IEvaluator } from './evaluator';
 import { setContributedProtocols } from './npm/dynamic/fetch-protocols';
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
 
 declare const BrowserFS: any;
+
+type TranspilerContext = {
+  [transpilerName: string]: unknown;
+};
 
 export type ModuleObject = {
   [path: string]: Module;
@@ -67,7 +76,10 @@ interface IFileResolver {
 
 const NODE_LIBS = ['dgram', 'net', 'tls', 'fs', 'module', 'child_process'];
 // For these dependencies we don't want to follow along with the `browser` field
-const SKIPPED_BROWSER_FIELD_DEPENDENCIES = ['babel-core', '@babel/core'].reduce(
+const SKIPPED_BROWSER_FIELD_DEPENDENCIES: { [path: string]: true } = [
+  'babel-core',
+  '@babel/core',
+].reduce(
   (result, next) => ({
     ...result,
     [`/node_modules/${next}/package.json`]: true,
@@ -97,6 +109,8 @@ type TManagerOptions = {
   versionIdentifier: string;
 };
 
+export type ReadFileCallback = (error: Error | null, code?: string) => void;
+
 function triggerFileWatch(path: string, type: 'rename' | 'change') {
   try {
     // @ts-ignore
@@ -119,7 +133,12 @@ export default class Manager implements IEvaluator {
   envVariables: { [envName: string]: string } = {};
   preset: Preset;
   modules: ModuleObject;
-  manifest: Manifest;
+  manifest: Manifest = {
+    contents: {},
+    dependencies: [],
+    dependencyDependencies: {},
+    dependencyAliases: {},
+  };
   webpackHMR: boolean;
   hardReload: boolean;
   hmrStatus: HMRStatus = 'idle';
@@ -277,20 +296,24 @@ export default class Manager implements IEvaluator {
       : Boolean(returnValue);
   };
 
-  readFileSync = (p: string, cb: Function | undefined, c?: Function) => {
-    const callback = (c || cb)!;
+  readFileSync = (
+    p: string,
+    cb?: ReadFileCallback | undefined,
+    c?: ReadFileCallback
+  ) => {
+    const callback = c || cb;
     const hasCallback = typeof callback === 'function';
 
     if (this.transpiledModules[p]) {
       const { code } = this.transpiledModules[p].module;
 
-      return hasCallback ? callback(null, code) : code;
+      return hasCallback ? callback!(null, code) : code;
     }
     if (hasCallback && this.fileResolver) {
       return this.fileResolver.readFile(p).then(code => {
         this.addModule({ code, path: p });
 
-        callback(null, code);
+        callback!(null, code);
       });
     }
 
@@ -299,7 +322,7 @@ export default class Manager implements IEvaluator {
     err.code = 'ENOENT';
 
     if (hasCallback) {
-      return callback(err);
+      return callback!(err);
     }
     throw err;
   };
@@ -661,11 +684,12 @@ export default class Manager implements IEvaluator {
           filename: currentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
+          // @ts-ignore
           readFile: this.readFileSync,
           packageFilter: packageFilter(this.isFile),
           moduleDirectory: this.getModuleDirectories(),
         },
-        (err, foundPath) => {
+        (err: Error | undefined, foundPath: string) => {
           endMeasure(measureKey, { silent: true });
           if (err) {
             if (
@@ -730,7 +754,7 @@ export default class Manager implements IEvaluator {
                 return;
               }
 
-              this.addModule({ path: foundPath, code });
+              this.addModule({ path: foundPath, code: code || '' });
               promiseResolve(this.transpiledModules[foundPath].module);
             });
           } else {
@@ -779,6 +803,7 @@ export default class Manager implements IEvaluator {
           filename: currentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
+          // @ts-ignore
           readFileSync: this.readFileSync,
           packageFilter: packageFilter(this.isFile),
           moduleDirectory: this.getModuleDirectories(),
@@ -920,7 +945,7 @@ export default class Manager implements IEvaluator {
   resolveTranspiledModule(
     path: string,
     currentPath: string,
-    ignoredExtensions: string[],
+    ignoredExtensions: string[] | undefined,
     async: true
   ): Promise<TranspiledModule>;
 
@@ -1109,7 +1134,7 @@ export default class Manager implements IEvaluator {
     }: { entryPath?: string; optimizeForSize: boolean } = {
       optimizeForSize: true,
     }
-  ) {
+  ): Promise<ManagerCache> {
     const serializedTModules: { [id: string]: SerializedTranspiledModule } = {};
 
     await Promise.all(
@@ -1160,7 +1185,7 @@ export default class Manager implements IEvaluator {
       return '';
     }
 
-    const normalizedDependencies = {};
+    const normalizedDependencies: { [n: string]: string } = {};
 
     this.manifest.dependencies.forEach(dep => {
       normalizedDependencies[dep.name] = dep.version;
@@ -1269,8 +1294,8 @@ export default class Manager implements IEvaluator {
   /**
    * Get information about all transpilers currently registered for this manager
    */
-  async getTranspilerContext() {
-    const info = {};
+  async getTranspilerContext(): Promise<TranspilerContext> {
+    const info: TranspilerContext = {};
 
     const data = await Promise.all(
       Array.from(this.preset.transpilers).map(t =>

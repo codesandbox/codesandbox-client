@@ -1,18 +1,18 @@
 /* eslint-disable */
 // from https://unpkg.com/process@0.11.10/browser.js
 
-const process = {};
+const process: any = {};
 
 // cached from whatever global is present so that test runners that stub it
 // don't break things.  But we need to wrap it in a try catch in case it is
 // wrapped in strict mode code which doesn't define any globals.  It's inside a
 // function because try/catches deoptimize in certain engines.
 
-let cachedSetTimeout;
-let cachedClearTimeout;
-let queue = [];
+let cachedSetTimeout: any;
+let cachedClearTimeout: any;
+let queue: any = [];
 let draining = false;
-let currentQueue;
+let currentQueue: any;
 let queueIndex = -1;
 
 function defaultSetTimout() {
@@ -21,7 +21,7 @@ function defaultSetTimout() {
 function defaultClearTimeout() {
   throw new Error('clearTimeout has not been defined');
 }
-(function () {
+(function() {
   try {
     if (typeof setTimeout === 'function') {
       cachedSetTimeout = setTimeout;
@@ -41,7 +41,7 @@ function defaultClearTimeout() {
     cachedClearTimeout = defaultClearTimeout;
   }
 })();
-function runTimeout(fun) {
+function runTimeout(fun: () => void) {
   if (cachedSetTimeout === setTimeout) {
     // normal enviroments in sane situations
     return setTimeout(fun, 0);
@@ -64,11 +64,12 @@ function runTimeout(fun) {
     } catch (e) {
       // eslint-disable-line no-shadow
       // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+      // @ts-ignore
       return cachedSetTimeout.call(this, fun, 0);
     }
   }
 }
-function runClearTimeout(marker) {
+function runClearTimeout(marker: number) {
   if (cachedClearTimeout === clearTimeout) {
     // normal enviroments in sane situations
     return clearTimeout(marker);
@@ -92,6 +93,7 @@ function runClearTimeout(marker) {
       // eslint-disable-line no-shadow
       // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
       // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+      // @ts-ignore
       return cachedClearTimeout.call(this, marker);
     }
   }
@@ -135,14 +137,16 @@ function cleanUpNextTick() {
   }
 }
 // v8 likes predictible objects
-function Item(fun, array) {
+function Item(fun: () => void, array: any[]) {
+  // @ts-ignore
   this.fun = fun;
+  // @ts-ignore
   this.array = array;
 }
-Item.prototype.run = function () {
+Item.prototype.run = function() {
   this.fun.apply(null, this.array);
 };
-process.nextTick = function (fun) {
+process.nextTick = function(fun: () => void) {
   const args = new Array(arguments.length - 1);
   if (arguments.length > 1) {
     for (let i = 1; i < arguments.length; i++) {
@@ -150,6 +154,7 @@ process.nextTick = function (fun) {
       args[i - 1] = arguments[i];
     }
   }
+  // @ts-ignore
   queue.push(new Item(fun, args));
   if (queue.length === 1 && !draining) {
     runTimeout(drainQueue);
@@ -174,25 +179,25 @@ process.emit = noop;
 process.prependListener = noop;
 process.prependOnceListener = noop;
 
-process.listeners = function () {
+process.listeners = function() {
   return [];
 };
 
-process.binding = function () {
+process.binding = function() {
   throw new Error('process.binding is not supported');
 };
 
-process.cwd = function () {
+process.cwd = function() {
   return '/';
 };
-process.chdir = function () {
+process.chdir = function() {
   throw new Error('process.chdir is not supported');
 };
-process.umask = function () {
+process.umask = function() {
   return 0;
 };
 
-export default function build(env) {
+export default function build(env: object) {
   process.env = { NODE_ENV: 'development', ...env };
   return process;
 }

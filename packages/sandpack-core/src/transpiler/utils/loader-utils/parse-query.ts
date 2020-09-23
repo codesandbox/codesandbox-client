@@ -1,8 +1,8 @@
 /* eslint-disable */
 const specialValues = {
   null: null,
-  true: true,
-  false: false,
+  true: true as const,
+  false: false as const,
 };
 
 export default function parseQuery(query: string) {
@@ -19,13 +19,14 @@ export default function parseQuery(query: string) {
     return JSON.parse(query);
   }
   const queryArgs = query.split(/[,&]/g);
-  const result = {};
+  const result: { [key: string]: any } = {};
   queryArgs.forEach(arg => {
     const idx = arg.indexOf('=');
     if (idx >= 0) {
       let name = arg.substr(0, idx);
-      let value = decodeURIComponent(arg.substr(idx + 1));
+      let value: any = decodeURIComponent(arg.substr(idx + 1));
       if (specialValues.hasOwnProperty(value)) {
+        // @ts-ignore Reapplying new value with different type is weird for TS
         value = specialValues[value];
       }
       if (name.substr(-2) === '[]') {
