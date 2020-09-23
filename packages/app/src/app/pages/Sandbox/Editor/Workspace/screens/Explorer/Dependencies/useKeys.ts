@@ -7,11 +7,12 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
   const {
     actions: {
       modalOpened,
-      editor: { addNpmDependency }
+      editor: { addNpmDependency },
+      workspace,
     },
     state: {
-      workspace: { explorerDependencies }
-    }
+      workspace: { explorerDependencies },
+    },
   } = useOvermind();
   const [one] = useKeys('ctrl + one');
   const [two] = useKeys('ctrl + two');
@@ -23,7 +24,7 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
   const addDependency = (dependency: Dependency) => {
     addNpmDependency({
       name: dependency.name,
-      version: dependency.tags.latest
+      version: dependency.tags.latest,
     });
   };
 
@@ -44,7 +45,7 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
 
         addNpmDependency({
           name: dependencyAndVersion.join('@'),
-          version
+          version,
         });
       } else if (list && explorerDependencies.length) {
         addDependency(explorerDependencies[0]);
@@ -55,7 +56,7 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
         const value = input.value.split('/');
         addNpmDependency({
           name: value[value.length - 1],
-          version: input.value
+          version: input.value,
         });
       }
     }
@@ -75,6 +76,7 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
       }
       if (all) {
         modalOpened({ modal: 'searchDependencies' });
+        workspace.clearExplorerDependencies();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

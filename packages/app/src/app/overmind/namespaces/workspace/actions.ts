@@ -85,7 +85,7 @@ export const tagRemoved: AsyncAction<string> = withOwnedSandbox(
       await actions.editor.codeSaved({
         code,
         moduleShortid,
-        cbID: null
+        cbID: null,
       });
     } catch (error) {
       sandbox.tags.splice(tagIndex, 0, tag);
@@ -177,7 +177,7 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
         const updatedSandbox = await effects.api.updateSandbox(sandbox.id, {
           title: project.title,
           description: project.description,
-          alias: project.alias
+          alias: project.alias,
         });
 
         if (!updatedSandbox) {
@@ -192,7 +192,7 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
         actions.internal.handleError({
           message:
             'We were not able to save your sandbox updates, please try again',
-          error
+          error,
         });
       }
     }
@@ -223,7 +223,7 @@ export const externalResourceAdded: AsyncAction<string> = withOwnedSandbox(
       externalResources.splice(externalResources.indexOf(resource), 1);
       actions.internal.handleError({
         message: 'Could not save external resource',
-        error
+        error,
       });
       actions.editor.internal.updatePreviewCode();
     }
@@ -257,7 +257,7 @@ export const externalResourceRemoved: AsyncAction<string> = withOwnedSandbox(
 
       actions.internal.handleError({
         message: 'Could not save removal of external resource',
-        error
+        error,
       });
       actions.editor.internal.updatePreviewCode();
     }
@@ -273,7 +273,7 @@ export const integrationsOpened: Action = ({ state }) => {
 export const sandboxDeleted: AsyncAction = async ({
   state,
   effects,
-  actions
+  actions,
 }) => {
   actions.modalClosed();
 
@@ -300,7 +300,7 @@ export const sandboxPrivacyChanged: AsyncAction<{
 
   track('Sandbox - Update Privacy', {
     privacy,
-    source
+    source,
   });
 
   const oldPrivacy = state.editor.currentSandbox.privacy;
@@ -327,7 +327,7 @@ export const sandboxPrivacyChanged: AsyncAction<{
     state.editor.currentSandbox.privacy = oldPrivacy;
     actions.internal.handleError({
       message: "We weren't able to update the sandbox privacy",
-      error
+      error,
     });
   }
 };
@@ -353,7 +353,7 @@ export const setWorkspaceHidden: Action<{ hidden: boolean }> = (
 export const deleteTemplate: AsyncAction = async ({
   state,
   actions,
-  effects
+  effects,
 }) => {
   effects.analytics.track('Template - Removed', { source: 'editor' });
   if (
@@ -375,7 +375,7 @@ export const deleteTemplate: AsyncAction = async ({
   } catch (error) {
     actions.internal.handleError({
       message: 'Could not delete custom template',
-      error
+      error,
     });
   }
 };
@@ -404,7 +404,7 @@ export const editTemplate: AsyncAction<CustomTemplate> = async (
   } catch (error) {
     actions.internal.handleError({
       message: 'Could not edit custom template',
-      error
+      error,
     });
   }
 };
@@ -432,7 +432,7 @@ export const addedTemplate: AsyncAction<{
   } catch (error) {
     actions.internal.handleError({
       message: 'Could not create template, please try again later',
-      error
+      error,
     });
     if (process.env.NODE_ENV === 'development') {
       console.error(error);
@@ -482,6 +482,7 @@ export const getDependencies: AsyncAction<string | void> = async (
   { state, effects },
   value
 ) => {
+  if (value === undefined) return;
   state.workspace.loadingDependencySearch = true;
   const searchResults = await effects.algoliaSearch.searchDependencies(value);
 

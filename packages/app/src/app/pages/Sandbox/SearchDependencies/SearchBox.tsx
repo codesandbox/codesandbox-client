@@ -14,8 +14,8 @@ export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
   const {
     state: { workspace },
     actions: {
-      workspace: { changeDependencySearch, toggleShowingSelectedDependencies }
-    }
+      workspace: { changeDependencySearch, toggleShowingSelectedDependencies },
+    },
   } = useOvermind();
   const [focus, setFocus] = useState(false);
   const form = useRef<HTMLFormElement>();
@@ -88,8 +88,8 @@ export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
             backgroundImage: getBackgroundColor(focus),
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center center',
-            opacity: focus ? 1 : 0.8
-          }
+            opacity: focus ? 1 : 0.8,
+          },
         })}
       >
         <Input
@@ -106,20 +106,20 @@ export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
             backgroundColor: 'sideBar.background',
             border: 'none',
             ':focus, :hover': {
-              border: 'none'
+              border: 'none',
             },
             '::-webkit-input-placeholder': {
-              fontSize: 4
+              fontSize: 4,
             },
             '::-moz-placeholder': {
-              fontSize: 4
+              fontSize: 4,
             },
             ':-ms-input-placeholder': {
-              fontSize: 4
+              fontSize: 4,
             },
             ':-moz-placeholder': {
-              fontSize: 4
-            }
+              fontSize: 4,
+            },
           })}
           onChange={e => {
             changeDependencySearch(e.target.value);
@@ -133,7 +133,7 @@ export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
           css={css({
             top: 4,
             right: 4,
-            position: 'absolute'
+            position: 'absolute',
           })}
         />
       </Element>
