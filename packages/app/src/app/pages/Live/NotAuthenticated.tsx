@@ -7,8 +7,8 @@ import { useOvermind } from 'app/overmind';
 export const NotAuthenticated: FunctionComponent = () => {
   const {
     actions: {
-      live: { signInToRoom }
-    }
+      live: { signInToRoom },
+    },
   } = useOvermind();
   const { roomId } = useParams<{ roomId: string }>();
 

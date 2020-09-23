@@ -6,7 +6,7 @@ import ArrowDropUp from 'react-icons/lib/md/keyboard-arrow-up';
 import algoliasearch from 'algoliasearch/lite';
 import compareVersions from 'compare-versions';
 import Tooltip, {
-  SingletonTooltip
+  SingletonTooltip,
 } from '@codesandbox/common/lib/components/Tooltip';
 import { formatVersion } from '@codesandbox/common/lib/utils/ci';
 import css from '@styled-system/css';
@@ -17,7 +17,7 @@ import {
   Select,
   Text,
   Link,
-  Button
+  Button,
 } from '@codesandbox/components';
 
 import { BundleSizes } from './BundleSizes';
@@ -36,7 +36,7 @@ export const Dependency = ({
   dependencies,
   dependency,
   onRemove,
-  onRefresh
+  onRefresh,
 }: Props) => {
   const [version, setVersion] = useState(null);
   const [open, setOpen] = useState(false);
@@ -107,12 +107,12 @@ export const Dependency = ({
           position: 'relative',
           '.actions': {
             backgroundColor: 'sideBar.background',
-            display: 'none'
+            display: 'none',
           },
           ':hover .actions': {
             backgroundColor: 'list.hoverBackground',
-            display: 'flex'
-          }
+            display: 'flex',
+          },
         })}
       >
         <Link
@@ -123,7 +123,7 @@ export const Dependency = ({
           css={{
             position: 'absolute',
             zIndex: 2,
-            maxWidth: '60%'
+            maxWidth: '60%',
           }}
         >
           {dependency}
@@ -137,7 +137,7 @@ export const Dependency = ({
             right: 2,
             flexGrow: 0,
             flexShrink: 1,
-            width: '100%'
+            width: '100%',
           })}
         >
           <Text variant="muted" maxWidth="30%">
@@ -155,7 +155,7 @@ export const Dependency = ({
             right: 0,
             width: 'auto',
             zIndex: 2, // overlay on dependency name
-            paddingLeft: 1
+            paddingLeft: 1,
           })}
         >
           <Select

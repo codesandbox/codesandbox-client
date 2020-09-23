@@ -18,11 +18,11 @@ export const Files: FunctionComponent<Props> = ({ readonly }) => {
     state: {
       editor: editorState,
       editor: {
-        currentSandbox: { directories, modules, privacy, title }
+        currentSandbox: { directories, modules, privacy, title },
       },
-      isLoggedIn
+      isLoggedIn,
     },
-    actions: { editor, files }
+    actions: { editor, files },
   } = useOvermind();
   const [editActions, setEditActions] = useState(null);
 
@@ -49,7 +49,7 @@ export const Files: FunctionComponent<Props> = ({ readonly }) => {
           // to add actions API to collapsible
           position: 'absolute',
           top: 0,
-          right: 2
+          right: 2,
         })}
         justify="flex-end"
       >
@@ -63,7 +63,7 @@ export const Files: FunctionComponent<Props> = ({ readonly }) => {
         initializeProperties={({
           onCreateDirectoryClick,
           onUploadFileClick,
-          onCreateModuleClick
+          onCreateModuleClick,
         }) => {
           setEditActions(
             // @ts-ignore

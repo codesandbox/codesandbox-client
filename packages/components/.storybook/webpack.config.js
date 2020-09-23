@@ -3,7 +3,7 @@ module.exports = ({
     module: { rules, ...module },
     resolve: { extensions, ...resolve },
     ...config
-  }
+  },
 }) => ({
   ...config,
   module: {
@@ -16,20 +16,20 @@ module.exports = ({
           {
             loader: require.resolve('babel-loader'),
             options: {
-              presets: [require.resolve('babel-preset-react-app')]
-            }
-          }
-        ]
+              presets: [require.resolve('babel-preset-react-app')],
+            },
+          },
+        ],
       },
       {
         test: /\.stories\.jsx?$/,
         loaders: [require.resolve('@storybook/addon-storysource/loader')],
-        enforce: 'pre'
-      }
-    ]
+        enforce: 'pre',
+      },
+    ],
   },
   resolve: {
     ...resolve,
-    extensions: [...extensions, '.ts', '.tsx']
-  }
+    extensions: [...extensions, '.ts', '.tsx'],
+  },
 });

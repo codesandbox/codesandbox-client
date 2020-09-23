@@ -63,7 +63,7 @@ class ModalComponent extends React.Component {
       backgroundColor: 'rgba(0, 0, 0, 0.75)',
       overflowY: 'auto',
       zIndex: 10,
-      transform: 'translate3d(0, 0, 0)'
+      transform: 'translate3d(0, 0, 0)',
     },
     content: {
       position: 'relative',
@@ -76,8 +76,8 @@ class ModalComponent extends React.Component {
       right: 0,
       margin: `0 auto`,
       fontFamily: "'Inter', sans-serif",
-      outline: 'none'
-    }
+      outline: 'none',
+    },
   });
 
   render() {
@@ -112,7 +112,7 @@ class ModalComponent extends React.Component {
             backgroundColor: 'sideBar.background',
             boxShadow: 2,
             color: 'sideBar.foreground',
-            lineHeight: 1.2
+            lineHeight: 1.2,
           })}
           style={this.getStyles(width, top, fullWidth)}
           closeTimeoutMS={CLOSE_TIMEOUT_MS}

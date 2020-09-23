@@ -4,13 +4,15 @@ import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useLocation } from 'react-router-dom';
 import { Menu } from '@codesandbox/components';
 
-export const ContextMenu = ({
-  visible,
-  setVisibility,
-  position,
-  sandboxId,
-}) => {
+export const ContextMenu = () => {
   const {
+    state: {
+      user: loggedInUser,
+      profile: {
+        current: user,
+        contextMenu: { sandboxId, position },
+      },
+    },
     actions: {
       editor: { forkExternalSandbox },
       profile: {
@@ -18,16 +20,13 @@ export const ContextMenu = ({
         removeFeaturedSandboxes,
         changeSandboxPrivacy,
         deleteSandboxClicked,
+        closeContextMenu,
       },
-    },
-    state: {
-      user: loggedInUser,
-      profile: { current: user },
     },
   } = useOvermind();
   const location = useLocation();
 
-  if (!visible) return null;
+  if (!sandboxId) return null;
 
   const myProfile = loggedInUser?.username === user.username;
   const likesPage = location.pathname === '/likes';
@@ -36,12 +35,12 @@ export const ContextMenu = ({
     .map(sandbox => sandbox.id)
     .includes(sandboxId);
 
+  const setVisibility = (visible: boolean) => {
+    if (!visible) closeContextMenu();
+  };
+
   return (
-    <Menu.ContextMenu
-      visible={visible}
-      setVisibility={setVisibility}
-      position={position}
-    >
+    <Menu.ContextMenu visible setVisibility={setVisibility} position={position}>
       {myProfile && !likesPage && (
         <>
           {isFeatured ? (
@@ -74,12 +73,12 @@ export const ContextMenu = ({
         <>
           <Menu.Divider />
           <Menu.Item
-            onSelect={() => changeSandboxPrivacy({ sandboxId, privacy: 1 })}
+            onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 1 })}
           >
             Make sandbox unlisted
           </Menu.Item>
           <Menu.Item
-            onSelect={() => changeSandboxPrivacy({ sandboxId, privacy: 2 })}
+            onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 2 })}
           >
             Make sandbox private
           </Menu.Item>

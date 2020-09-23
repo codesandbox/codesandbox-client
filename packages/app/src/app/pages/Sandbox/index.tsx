@@ -7,7 +7,7 @@ import {
   Grid,
   Text,
   Element,
-  Stack
+  Stack,
 } from '@codesandbox/components';
 import { GithubIntegration } from 'app/pages/common/GithubIntegration';
 import { Navigation } from 'app/pages/common/Navigation';
@@ -56,7 +56,7 @@ export const Sandbox = React.memo<Props>(
       actions.editor,
       actions.preferences,
       showNewSandboxModal,
-      match?.params
+      match?.params,
     ]);
 
     useEffect(
@@ -70,7 +70,7 @@ export const Sandbox = React.memo<Props>(
       const {
         hasLogIn,
         isLoggedIn,
-        editor: { error }
+        editor: { error },
       } = state;
 
       if (error) {
@@ -89,7 +89,7 @@ export const Sandbox = React.memo<Props>(
                 gridTemplateColumns: '1fr 1fr',
                 maxWidth: 400,
                 width: '100%',
-                gridGap: 8
+                gridGap: 8,
               }}
             >
               <a href="/s" style={{ textDecoration: 'none' }}>
@@ -140,14 +140,14 @@ export const Sandbox = React.memo<Props>(
               width: '100%',
               height: '100%',
               backgroundColor: 'sideBar.background',
-              fontFamily: 'Inter'
+              fontFamily: 'Inter',
             })}
           >
             <Stack
               style={{
                 flexDirection: 'column',
                 width: '100vw',
-                height: '100vh'
+                height: '100vh',
               }}
               margin={1}
             >
@@ -158,7 +158,7 @@ export const Sandbox = React.memo<Props>(
                 style={{
                   flexDirection: 'column',
                   width: '100%',
-                  height: '100%'
+                  height: '100%',
                 }}
               >
                 {content}

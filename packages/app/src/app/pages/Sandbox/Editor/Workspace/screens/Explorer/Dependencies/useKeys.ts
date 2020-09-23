@@ -7,11 +7,11 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
   const {
     actions: {
       modalOpened,
-      editor: { addNpmDependency }
+      editor: { addNpmDependency },
     },
     state: {
-      workspace: { explorerDependencies }
-    }
+      workspace: { explorerDependencies },
+    },
   } = useOvermind();
   const [one] = useKeys('ctrl + one');
   const [two] = useKeys('ctrl + two');
@@ -23,7 +23,7 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
   const addDependency = (dependency: Dependency) => {
     addNpmDependency({
       name: dependency.name,
-      version: dependency.tags.latest
+      version: dependency.tags.latest,
     });
   };
 
@@ -44,7 +44,7 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
 
         addNpmDependency({
           name: dependencyAndVersion.join('@'),
-          version
+          version,
         });
       } else if (list && explorerDependencies.length) {
         addDependency(explorerDependencies[0]);
@@ -55,7 +55,7 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
         const value = input.value.split('/');
         addNpmDependency({
           name: value[value.length - 1],
-          version: input.value
+          version: input.value,
         });
       }
     }

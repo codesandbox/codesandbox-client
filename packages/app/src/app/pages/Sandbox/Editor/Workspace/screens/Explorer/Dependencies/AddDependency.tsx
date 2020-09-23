@@ -68,17 +68,18 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
   return (
     <>
       <Downshift
-        onChange={dependency => {
+        onSelect={dependency => {
           if (dependency === 'OPEN_MODAL') {
             modalOpened({ modal: 'searchDependencies' });
-          } else if (dependency) {
+            clearExplorerDependencies();
+          } else if (dependency?.name) {
             addNpmDependency({
               name: dependency.name,
               version: dependency.tags.latest,
             });
+            clearExplorerDependencies();
+            changeDependencySearch('');
           }
-          clearExplorerDependencies();
-          changeDependencySearch('');
         }}
         itemToString={dependency => {
           if (dependency === 'OPEN_MODAL') {

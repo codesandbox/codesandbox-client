@@ -6,7 +6,7 @@ import {
   Input,
   IconButton,
   Grid,
-  Column
+  Column,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { FolderItemComponentProps } from './types';
@@ -49,12 +49,12 @@ export const FolderListItem = ({
       color: selected ? 'white' : 'inherit',
       ':hover, :focus, :focus-within': {
         cursor: 'default',
-        backgroundColor: selected ? 'blues.600' : 'list.hoverBackground'
+        backgroundColor: selected ? 'blues.600' : 'list.hoverBackground',
       },
       width: '100%',
       height: 64,
       borderBottom: '1px solid',
-      borderBottomColor: 'grays.600'
+      borderBottomColor: 'grays.600',
     })}
   >
     <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
@@ -65,7 +65,7 @@ export const FolderListItem = ({
             justify="center"
             align="center"
             css={css({
-              height: 32
+              height: 32,
             })}
           >
             <svg width={32} height={24} fill="none" viewBox="0 0 56 49">

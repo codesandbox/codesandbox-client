@@ -10,7 +10,7 @@ import { AddDependencyModalFooter } from './Footer';
 export const SearchDependencies = ({ onConfirm }) => {
   const {
     state: { workspace },
-    actions
+    actions,
   } = useOvermind();
   const list = useRef();
 
@@ -69,6 +69,10 @@ export const SearchDependencies = ({ onConfirm }) => {
   useEffect(() => {
     actions.workspace.clearSelectedDependencies();
     actions.workspace.getDependencies();
+
+    return () => {
+      actions.workspace.changeDependencySearch('');
+    };
   }, []);
 
   return (
@@ -77,7 +81,7 @@ export const SearchDependencies = ({ onConfirm }) => {
       css={css({
         backgroundColor: 'sideBar.background',
         height: '70vh',
-        position: 'relative'
+        position: 'relative',
       })}
     >
       <SearchBox
@@ -90,7 +94,7 @@ export const SearchDependencies = ({ onConfirm }) => {
         paddingBottom={10}
         css={css({
           height: '60vh',
-          overflow: 'auto'
+          overflow: 'auto',
         })}
       >
         {!workspace.dependencies.length &&
