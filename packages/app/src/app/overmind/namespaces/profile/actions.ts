@@ -180,7 +180,7 @@ export const sandboxDeleted: AsyncAction = async ({ state, effects }) => {
 export const updateUserProfile: AsyncAction<Pick<
   Profile,
   'bio' | 'socialLinks'
->> = async ({ actions, effects, state }, { bio, socialLinks }) => {
+>> = async ({ actions, effects, state }, { bio = '', socialLinks = [] }) => {
   if (!state.profile.current) return;
 
   // optimistic update

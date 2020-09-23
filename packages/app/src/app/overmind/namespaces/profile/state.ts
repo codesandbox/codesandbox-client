@@ -34,7 +34,10 @@ type State = {
   currentLikedSandboxes: { [page: string]: Sandbox[] };
   currentSortBy: 'view_count' | 'inserted_at';
   currentSortDirection: 'asc' | 'desc';
-  contextMenu: { sandboxId: string; position: { x: number; y: number } | null };
+  contextMenu: {
+    sandboxId: string | null;
+    position: { x: number; y: number } | null;
+  };
 };
 
 export const state: State = {
