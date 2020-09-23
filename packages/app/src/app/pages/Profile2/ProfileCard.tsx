@@ -1,4 +1,5 @@
 import React from 'react';
+import { Profile } from '@codesandbox/common/lib/types';
 import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { Link as RouterLink } from 'react-router-dom';
@@ -14,10 +15,10 @@ import {
   Input,
   Tooltip,
 } from '@codesandbox/components';
-import { TeamAvatar } from 'app/components/TeamAvatar';
 import css from '@styled-system/css';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 
-export const ProfileCard = ({ defaultEditing = false }) => {
+export const ProfileCard = () => {
   const {
     actions: {
       profile: { updateUserProfile },
@@ -28,11 +29,11 @@ export const ProfileCard = ({ defaultEditing = false }) => {
     },
   } = useOvermind();
 
-  const [editing, setEditing] = React.useState(defaultEditing);
+  const [editing, setEditing] = React.useState(false);
   const [bio, setBio] = React.useState(user.bio || '');
   const [socialLinks, setSocialLinks] = React.useState(user.socialLinks || []);
 
-  const onSubmit = event => {
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     updateUserProfile({ bio, socialLinks: socialLinks.filter(item => item) });
 
@@ -50,7 +51,8 @@ export const ProfileCard = ({ defaultEditing = false }) => {
 
   return (
     <Stack
-      as={motion.div}
+      as={motion.form}
+      onSubmit={onSubmit}
       direction="vertical"
       justify="space-between"
       css={css({
@@ -114,7 +116,7 @@ export const ProfileCard = ({ defaultEditing = false }) => {
             </Stack>
           )}
         </Stack>
-        {user.teams.length ? (
+        {user.teams.length > 1 ? (
           <Stack
             direction="vertical"
             gap={4}
@@ -146,16 +148,20 @@ export const ProfileCard = ({ defaultEditing = false }) => {
             </Grid>
           </Stack>
         ) : null}
-        <Stack
-          css={css({
-            paddingX: 6,
-            paddingY: 4,
-            marginBottom: 4,
-            borderTop: '1px solid',
-            borderColor: 'grays.600',
-          })}
-        >
-          <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
+
+        {socialLinks.length || editing ? (
+          <Stack
+            direction="vertical"
+            gap={4}
+            css={css({
+              width: '100%',
+              paddingX: 6,
+              paddingY: 4,
+              marginBottom: 4,
+              borderTop: '1px solid',
+              borderColor: 'grays.600',
+            })}
+          >
             <Text size={2} weight="bold">
               Other places
             </Text>
@@ -166,7 +172,7 @@ export const ProfileCard = ({ defaultEditing = false }) => {
               setSocialLinks={setSocialLinks}
             />
           </Stack>
-        </Stack>
+        ) : null}
       </Stack>
 
       {myProfile ? (
@@ -180,13 +186,20 @@ export const ProfileCard = ({ defaultEditing = false }) => {
         >
           {editing ? (
             <>
-              <Button onClick={onSubmit}>Save changes</Button>
+              <Button type="submit">Save changes</Button>
               <Button variant="link" type="button" onClick={onCancel}>
                 Cancel
               </Button>
             </>
           ) : (
-            <Button variant="secondary" onClick={() => setEditing(true)}>
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                event.preventDefault();
+                setEditing(true);
+              }}
+            >
               Edit Profile
             </Button>
           )}
@@ -196,14 +209,20 @@ export const ProfileCard = ({ defaultEditing = false }) => {
   );
 };
 
-const Bio = ({ bio, editing, setBio }) => (
+export const Bio: React.FC<{
+  bio: Profile['bio'];
+  setBio: (bio: Profile['bio']) => void;
+  editing: boolean;
+}> = ({ bio, editing, setBio }) => (
   <>
     {editing ? (
       <Textarea
         autosize
         maxLength={280}
         defaultValue={bio}
-        onChange={event => setBio(event.target.value)}
+        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+          setBio(event.target.value)
+        }
       />
     ) : (
       <Text size={3} variant="muted">
@@ -213,34 +232,21 @@ const Bio = ({ bio, editing, setBio }) => (
   </>
 );
 
-const SocialLinks = ({ username, socialLinks, editing, setSocialLinks }) => (
+const SocialLinks: React.FC<{
+  username: Profile['username'];
+  socialLinks: Profile['socialLinks'];
+  editing: boolean;
+  setSocialLinks: (socialLinks: Profile['socialLinks']) => void;
+}> = ({ username, socialLinks, setSocialLinks, editing }) => (
   <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
-    <Stack
-      as={Link}
-      href={`https://github.com/${username}`}
-      target="_blank"
-      gap={2}
-      align="center"
-    >
-      <Icon name="github" />
-      <Text size={3}>{username}</Text>
-    </Stack>
-
     {editing ? (
-      <Stack
-        as="form"
-        direction="vertical"
-        gap={4}
-        onSubmit={event => {
-          event.preventDefault();
-        }}
-      >
+      <Stack direction="vertical" gap={4}>
         {socialLinks.map((link, index) => (
           <Input
             key={link}
             defaultValue={link}
             autoFocus
-            onChange={event => {
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               const links = [...socialLinks];
               links[index] = event.target.value;
               setSocialLinks(links);
@@ -280,15 +286,15 @@ const SocialLinks = ({ username, socialLinks, editing, setSocialLinks }) => (
   </Stack>
 );
 
-const getIconNameFromUrl = url => {
+const getIconNameFromUrl = (url: string) => {
   if (url.includes('github.com')) return 'github';
   if (url.includes('twitter.com')) return 'twitter';
   return 'globe';
 };
 
-const getPrettyLinkFromUrl = url =>
+const getPrettyLinkFromUrl = (url: string) =>
   url
     .replace('https://', '')
     .replace('http://', '')
     .replace('twitter.com/', '')
-    .replace('gituhb.com/', '');
+    .replace('github.com/', '');

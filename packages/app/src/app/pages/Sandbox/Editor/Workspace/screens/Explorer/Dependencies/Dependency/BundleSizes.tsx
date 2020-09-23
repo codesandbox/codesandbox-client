@@ -29,7 +29,7 @@ type Props = {
 };
 export const BundleSizes: FunctionComponent<Props> = ({
   dependency,
-  version
+  version,
 }) => {
   const [bundle, setBundle] = useState<Bundle | null>(null);
   const [error, setError] = useState(null);

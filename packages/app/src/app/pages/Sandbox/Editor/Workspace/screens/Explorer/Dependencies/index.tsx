@@ -19,15 +19,15 @@ const Animated = ({ children, showMountAnimations }) => (
 );
 
 export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
-  readonly = false
+  readonly = false,
 }) => {
   const {
     actions: {
-      editor: { addNpmDependency, npmDependencyRemoved }
+      editor: { addNpmDependency, npmDependencyRemoved },
     },
     state: {
-      editor: { parsedConfigurations }
-    }
+      editor: { parsedConfigurations },
+    },
   } = useOvermind();
   const [showMountAnimations, setShowMountAnimations] = useState(false);
 
@@ -61,8 +61,8 @@ export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
       defaultOpen
       css={css({
         'div[open]': {
-          overflow: 'visible'
-        }
+          overflow: 'visible',
+        },
       })}
     >
       {!readonly && <AddDependency />}

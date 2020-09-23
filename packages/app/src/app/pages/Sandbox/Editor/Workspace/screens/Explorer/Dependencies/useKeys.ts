@@ -8,7 +8,6 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
     actions: {
       modalOpened,
       editor: { addNpmDependency },
-      workspace,
     },
     state: {
       workspace: { explorerDependencies },
@@ -76,7 +75,6 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
       }
       if (all) {
         modalOpened({ modal: 'searchDependencies' });
-        workspace.clearExplorerDependencies();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
