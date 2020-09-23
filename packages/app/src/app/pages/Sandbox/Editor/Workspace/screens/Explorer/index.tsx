@@ -14,9 +14,9 @@ export const Explorer: FunctionComponent<Props> = ({ readonly = false }) => {
   const {
     state: {
       editor: {
-        currentSandbox: { template }
-      }
-    }
+        currentSandbox: { template },
+      },
+    },
   } = useOvermind();
 
   return (

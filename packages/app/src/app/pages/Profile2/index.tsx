@@ -1,24 +1,34 @@
 /**
- * TODO:
+ * Features:
  * - Sandbox picker
- * - Page number in url
- * - Filter out unlisted and private from API response
- * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
- * - Custom drag preview
- * - Remove default showcase from API?
- * - Google signed in profiles
- * - Don't show other workspaces in API
+ *
+ * API:
+ * - Add github to social link based on provider
+ * - Remove default showcase
+ * - Filter out unlisted and private
+ * - Don't show sandboxes from non-personal workspaces
  * - Tag personal workspace in API
+ *
+ * 5%
+ * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
+ * - Page number in url
+ * - 404 page
+ * - Logged out nav
  */
 
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { ThemeProvider, Stack, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  RouteComponentProps,
+} from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
-import { ALT } from '@codesandbox/common/lib/utils/keycodes';
+import { Helmet } from 'react-helmet';
 import { Header } from './Header';
 import { ProfileCard } from './ProfileCard';
 import { ShowcaseSandbox } from './ShowcaseSandbox';
@@ -28,9 +38,13 @@ import { SearchedSandboxes } from './SearchedSandboxes';
 import { LikedSandboxes } from './LikedSandboxes';
 import { ContextMenu } from './ContextMenu';
 
-export const Profile = props => {
-  const { username } = props.match.params;
-
+export const Profile: React.FunctionComponent<RouteComponentProps<{
+  username: string;
+}>> = ({
+  match: {
+    params: { username },
+  },
+}) => {
   const {
     actions: {
       profile: { profileMounted },
@@ -43,25 +57,6 @@ export const Profile = props => {
   React.useEffect(() => {
     profileMounted(username);
   }, [profileMounted, username]);
-
-  const [menuVisible, setMenuVisibility] = React.useState(false);
-  const [menuPosition, setMenuPosition] = React.useState({ x: null, y: null });
-  const [selectedSandboxId, selectSandboxId] = React.useState(null);
-
-  const onContextMenu = (event, sandboxId) => {
-    event.preventDefault();
-    selectSandboxId(sandboxId);
-    setMenuVisibility(true);
-    setMenuPosition({ x: event.clientX, y: event.clientY });
-  };
-
-  const onKeyDown = (event, sandboxId) => {
-    if (event.keyCode !== ALT) return;
-    selectSandboxId(sandboxId);
-    setMenuVisibility(true);
-    const rect = event.target.getBoundingClientRect();
-    setMenuPosition({ x: rect.right, y: rect.bottom });
-  };
 
   if (!user) return null;
 
@@ -79,6 +74,9 @@ export const Profile = props => {
             fontFamily: 'Inter, sans-serif',
           })}
         >
+          <Helmet>
+            <title>{user.name || user.username} - CodeSandbox</title>
+          </Helmet>
           <Header />
 
           <Stack
@@ -94,23 +92,17 @@ export const Profile = props => {
             <Element css={css({ width: ['100%', 'calc(100% - 320px)'] })}>
               <Switch>
                 <Route path="/likes">
-                  <LikedSandboxes menuControls={{ onContextMenu, onKeyDown }} />
+                  <LikedSandboxes />
                 </Route>
                 <Route path="/search">
-                  <SearchedSandboxes
-                    menuControls={{ onContextMenu, onKeyDown }}
-                  />
+                  <SearchedSandboxes />
                 </Route>
                 <Route path="/">
                   <DndProvider backend={Backend}>
                     <Stack direction="vertical" gap={14} css={{ flexGrow: 1 }}>
                       <ShowcaseSandbox />
-                      <PinnedSandboxes
-                        menuControls={{ onContextMenu, onKeyDown }}
-                      />
-                      <AllSandboxes
-                        menuControls={{ onContextMenu, onKeyDown }}
-                      />
+                      <PinnedSandboxes />
+                      <AllSandboxes />
                     </Stack>
                   </DndProvider>
                 </Route>
@@ -118,12 +110,7 @@ export const Profile = props => {
             </Element>
           </Stack>
         </Stack>
-        <ContextMenu
-          visible={menuVisible}
-          setVisibility={setMenuVisibility}
-          position={menuPosition}
-          sandboxId={selectedSandboxId}
-        />
+        <ContextMenu />
       </Router>
     </ThemeProvider>
   );

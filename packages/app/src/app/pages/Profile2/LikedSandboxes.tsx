@@ -5,7 +5,7 @@ import { useOvermind } from 'app/overmind';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SANDBOXES_PER_PAGE } from './constants';
 
-export const LikedSandboxes = ({ menuControls }) => {
+export const LikedSandboxes = () => {
   const {
     actions: {
       profile: { likedSandboxesPageChanged },
@@ -51,7 +51,7 @@ export const LikedSandboxes = ({ menuControls }) => {
         {isLoadingSandboxes
           ? Array(SANDBOXES_PER_PAGE)
               .fill(true)
-              .map((_, index) => (
+              .map((_: boolean, index) => (
                 // eslint-disable-next-line
                 <Column key={index}>
                   <SkeletonCard />
@@ -59,7 +59,7 @@ export const LikedSandboxes = ({ menuControls }) => {
               ))
           : sandboxes.map((sandbox, index) => (
               <Column key={sandbox.id}>
-                <SandboxCard sandbox={sandbox} menuControls={menuControls} />
+                <SandboxCard sandbox={sandbox} />
               </Column>
             ))}
         <div />

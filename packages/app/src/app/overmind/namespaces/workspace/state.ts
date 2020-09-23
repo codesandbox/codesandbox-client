@@ -32,10 +32,10 @@ export const state: State = {
   project: {
     title: '',
     description: '',
-    alias: ''
+    alias: '',
   },
   tags: {
-    tagName: ''
+    tagName: '',
   },
   openedWorkspaceItem: null,
   workspaceHidden: false,
@@ -47,5 +47,5 @@ export const state: State = {
   loadingDependencySearch: false,
   hitToVersionMap: {},
   showingSelectedDependencies: false,
-  dependencySearch: ''
+  dependencySearch: '',
 };

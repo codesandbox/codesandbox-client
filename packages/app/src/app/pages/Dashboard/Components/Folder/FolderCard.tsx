@@ -52,8 +52,8 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
       opacity,
 
       ':hover, :focus, :focus-within': {
-        boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900]
-      }
+        boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+      },
     })}
   >
     <Stack
@@ -67,7 +67,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
         borderWidth: 0,
         borderBottomWidth: 1,
         borderColor: 'grays.500',
-        backgroundColor: 'grays.600'
+        backgroundColor: 'grays.600',
       })}
     >
       <svg width={56} height={49} fill="none" viewBox="0 0 56 49">

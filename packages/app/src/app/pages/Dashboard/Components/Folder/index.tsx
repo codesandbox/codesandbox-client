@@ -16,7 +16,7 @@ import { useDrop, useDrag, DragItemType } from '../../utils/dnd';
 export const Folder = (folderItem: DashboardFolder) => {
   const {
     state: { dashboard },
-    actions
+    actions,
   } = useOvermind();
 
   const {
@@ -51,7 +51,7 @@ export const Folder = (folderItem: DashboardFolder) => {
     isDragging: isAnythingDragging,
     isRenaming,
     setRenaming,
-    activeTeamId
+    activeTeamId,
   } = useSelection();
 
   const selected = selectedIds.includes(path);
@@ -88,7 +88,7 @@ export const Folder = (folderItem: DashboardFolder) => {
     onDoubleClick,
     onContextMenu,
     onBlur,
-    'data-selection-id': path
+    'data-selection-id': path,
   };
 
   /* Drop target logic */
@@ -100,12 +100,12 @@ export const Folder = (folderItem: DashboardFolder) => {
     drop: () => ({ path, page: 'sandboxes', isSamePath: false }),
     collect: monitor => ({
       isOver: monitor.isOver(),
-      canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path)
-    })
+      canDrop: monitor.canDrop() && !isSamePath(monitor.getItem(), path),
+    }),
   });
 
   const dropProps = {
-    ref: dropRef
+    ref: dropRef,
   };
 
   /* Drag logic */
@@ -119,12 +119,12 @@ export const Folder = (folderItem: DashboardFolder) => {
       if (isSamePath(dropResult, path)) return;
 
       onDrop(dropResult);
-    }
+    },
   });
 
   const dragProps = {
     ref: dragRef,
-    onDragStart: event => onDragStart(event, path)
+    onDragStart: event => onDragStart(event, path),
   };
 
   React.useEffect(() => {
@@ -161,11 +161,11 @@ export const Folder = (folderItem: DashboardFolder) => {
         path,
         newPath: join(dirname(path), newName),
         teamId: activeTeamId,
-        newTeamId: activeTeamId
+        newTeamId: activeTeamId,
       });
       track('Dashboard - Rename Folder', {
         source: 'Grid',
-        dashboardVersion: 2
+        dashboardVersion: 2,
       });
     }
 
@@ -194,7 +194,7 @@ export const Folder = (folderItem: DashboardFolder) => {
     onInputBlur,
     // drag preview
     thumbnailRef,
-    opacity: isDragging ? 0.25 : 1
+    opacity: isDragging ? 0.25 : 1,
   };
 
   return (

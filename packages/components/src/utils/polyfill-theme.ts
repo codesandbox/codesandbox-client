@@ -38,7 +38,7 @@ const polyfillTheme = vsCodeTheme => {
     titleBar: {},
     quickInput: {},
     menuList: {},
-    dialog: {}
+    dialog: {},
   };
 
   const type = vsCodeTheme.type || guessType(vsCodeTheme);
@@ -71,7 +71,7 @@ const polyfillTheme = vsCodeTheme => {
     border:
       uiColors.sideBar.border ||
       uiColors.editor.lineHighlightBackground ||
-      codesandboxColors.sideBar.border
+      codesandboxColors.sideBar.border,
   };
 
   uiColors.input = {
@@ -80,12 +80,12 @@ const polyfillTheme = vsCodeTheme => {
     border: uiColors.input.border || uiColors.sideBar.border,
     placeholderForeground:
       uiColors.input.placeholderForeground ||
-      codesandboxColors.input.placeholderForeground
+      codesandboxColors.input.placeholderForeground,
   };
 
   uiColors.quickInput = {
     background: uiColors.quickInput.background || uiColors.sideBar.background,
-    foreground: uiColors.quickInput.foreground || uiColors.sideBar.foreground
+    foreground: uiColors.quickInput.foreground || uiColors.sideBar.foreground,
   };
 
   uiColors.inputOption.activeBorder =
@@ -95,7 +95,7 @@ const polyfillTheme = vsCodeTheme => {
     background:
       uiColors.button.background || codesandboxColors.button.background,
     foreground:
-      uiColors.button.foreground || codesandboxColors.button.foreground
+      uiColors.button.foreground || codesandboxColors.button.foreground,
   };
 
   // Step 3. Infer values that are not defined by vscode theme
@@ -169,43 +169,43 @@ const polyfillTheme = vsCodeTheme => {
     activityBar: {
       selectedForeground: uiColors.sideBar.foreground,
       inactiveForeground: mutedForeground,
-      hoverBackground: uiColors.sideBar.border
+      hoverBackground: uiColors.sideBar.border,
     },
     avatar: { border: uiColors.sideBar.border },
     sideBar: { hoverBackground: uiColors.sideBar.border },
     button: {
-      hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${uiColors.button.background}`
+      hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${uiColors.button.background}`,
     },
     secondaryButton: {
       background: uiColors.input.background,
       foreground: uiColors.input.foreground,
-      hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${uiColors.sideBar.border}`
+      hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${uiColors.sideBar.border}`,
     },
     dangerButton: {
       background: designLanguage.colors.reds[300],
       foreground: 'white',
-      hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${designLanguage.colors.reds[300]}`
+      hoverBackground: `linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), ${designLanguage.colors.reds[300]}`,
     },
     icon: {
-      foreground: uiColors.foreground
+      foreground: uiColors.foreground,
     },
     switch: {
       backgroundOff: uiColors.input.background,
       backgroundOn: uiColors.button.background,
-      toggle: designLanguage.colors.white
+      toggle: designLanguage.colors.white,
     },
     dialog: {
       background: uiColors.quickInput.background,
       foreground: uiColors.quickInput.foreground,
-      border: uiColors.sideBar.border
+      border: uiColors.sideBar.border,
     },
     menuList: {
       background: uiColors.sideBar.background,
       foreground: uiColors.mutedForeground,
       border: uiColors.sideBar.border,
       hoverBackground: uiColors.sideBar.border,
-      hoverForeground: uiColors.sideBar.foreground
-    }
+      hoverForeground: uiColors.sideBar.foreground,
+    },
   };
 
   uiColors = deepmerge(uiColors, addedColors);
