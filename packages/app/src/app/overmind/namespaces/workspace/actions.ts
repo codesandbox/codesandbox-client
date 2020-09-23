@@ -482,6 +482,7 @@ export const getDependencies: AsyncAction<string | void> = async (
   { state, effects },
   value
 ) => {
+  if (value === undefined) return;
   state.workspace.loadingDependencySearch = true;
   const searchResults = await effects.algoliaSearch.searchDependencies(value);
 
