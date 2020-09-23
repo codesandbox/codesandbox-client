@@ -1,8 +1,6 @@
 // @flow
 import { join, absolute } from '@codesandbox/common/lib/utils/path';
-import Manager from 'sandbox/eval/manager';
-import TranspiledModule from 'sandbox/eval/transpiled-module';
-import Preset from '..';
+import { Manager, TranspiledModule, Preset } from 'sandpack-core';
 
 import angular2Transpiler from '../../transpilers/angular2-template';
 import typescriptTranspiler from '../../transpilers/typescript';

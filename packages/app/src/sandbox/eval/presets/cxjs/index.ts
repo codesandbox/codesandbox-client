@@ -1,3 +1,5 @@
+import { Preset } from 'sandpack-core';
+
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
 import stylesTranspiler from '../../transpilers/style';
@@ -6,8 +8,6 @@ import rawTranspiler from '../../transpilers/raw';
 import stylusTranspiler from '../../transpilers/stylus';
 import lessTranspiler from '../../transpilers/less';
 import tsTranspiler from '../../transpilers/typescript';
-
-import Preset from '..';
 
 export default function initialize() {
   const cxjsPreset = new Preset(

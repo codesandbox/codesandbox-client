@@ -1,9 +1,7 @@
-import type { default as Manager } from '../../manager';
+import { Preset, Manager, Transpiler } from 'sandpack-core';
 import rawTranspiler from '../../transpilers/raw';
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
-
-import Preset from '..';
 
 const transpilerMap = {
   'codesandbox:raw': rawTranspiler,
@@ -14,7 +12,7 @@ const transpilerMap = {
 async function registerTranspilers(
   manager: Manager,
   preset: Preset,
-  transpilerConfig
+  transpilerConfig: { [expression: string]: string[] }
 ) {
   const savedTranspilers = {};
   const configModule = manager.resolveTranspiledModule(
@@ -87,12 +85,12 @@ async function registerTranspilers(
 export default function initialize() {
   let initialized = false;
   const customPreset = new Preset('custom', undefined, undefined, {
-    setup: async (manager: Manager, updatedModules) => {
-      if (updatedModules.some(m => m.module.path.startsWith('/.codesandbox'))) {
-        initialized = false;
-        manager.clearCompiledCache();
-        manager.clearCache();
-      }
+    setup: async (manager: Manager) => {
+      // if (updatedModules.some(m => m.module.path.startsWith('/.codesandbox'))) {
+      //   initialized = false;
+      //   manager.clearCompiledCache();
+      //   manager.clearCache();
+      // }
 
       if (!initialized) {
         // eslint-disable-next-line no-console
