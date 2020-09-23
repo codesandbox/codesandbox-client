@@ -1,9 +1,10 @@
 import qs from 'querystring';
-import loaderUtils from 'app/src/sandbox/eval/transpilers/utils/loader-utils';
+import { LoaderContext } from 'sandpack-core';
+import loaderUtils from 'sandpack-core/lib/transpiler/utils/loader-utils';
 import { VueLoaderOptions } from './';
 import { formatError } from './formatError';
 import { compileTemplate, TemplateCompiler } from 'vue3-browser-compiler';
-import { LoaderContext } from 'app/src/sandbox/eval/transpiled-module';
+import { WarningStructure } from 'sandpack-core/lib/transpiler/utils/worker-warning-handler';
 
 // Loader that compiles raw template into JavaScript functions.
 // This is injected by the global pitcher (../pitch) for template
@@ -48,7 +49,15 @@ const TemplateLoader = function (source: string, loaderContext: LoaderContext) {
   // tips
   if (compiled.tips.length) {
     compiled.tips.forEach(tip => {
-      loaderContext.emitWarning(tip);
+      const warning: WarningStructure = {
+        message: tip,
+        fileName: loaderContext.path,
+        source: 'Vue Template Compiler',
+        severity: 'notice',
+        lineNumber: 0,
+        columnNumber: 0,
+      };
+      loaderContext.emitWarning(warning);
     });
   }
 

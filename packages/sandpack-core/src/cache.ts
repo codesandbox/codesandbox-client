@@ -46,8 +46,7 @@ export async function saveCache(
   managerModuleToTranspile: any,
   manager: Manager,
   changes: number,
-  firstRun: boolean,
-  version: string
+  firstRun: boolean
 ) {
   if (!sandboxId) {
     return Promise.resolve(false);
@@ -95,7 +94,7 @@ export async function saveCache(
       .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
         method: 'POST',
         body: JSON.stringify({
-          version,
+          version: manager.version,
           data: stringifiedManagerState,
         }),
         headers: {
@@ -164,7 +163,7 @@ export function ignoreNextCache() {
   }
 }
 
-export async function consumeCache(manager: Manager, version: string) {
+export async function consumeCache(manager: Manager) {
   try {
     const shouldIgnoreCache =
       localStorage.getItem('ignoreCache') ||
@@ -180,7 +179,7 @@ export async function consumeCache(manager: Manager, version: string) {
 
     const cache = findCacheToUse(cacheData && cacheData.data, localData);
     if (cache) {
-      if (cache.version === version) {
+      if (cache.version === manager.version) {
         if (cache === localData) {
           APICacheUsed = false;
         } else {

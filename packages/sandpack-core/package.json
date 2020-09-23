@@ -1,9 +1,10 @@
 {
   "name": "sandpack-core",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
+    "start": "tsc --watch",
     "build": "tsc"
   },
   "devDependencies": {

@@ -1,12 +1,9 @@
 import { dispatch, actions } from 'codesandbox-api';
 import semver from 'semver';
-
-import Manager from '../../manager';
+import { Manager, Preset } from 'sandpack-core';
 
 import initializeV2 from './v2';
 import initializeV3 from './v3';
-
-import Preset from '..';
 
 function isMinimalSemverVersion(version: string, minimalVersion: string) {
   try {

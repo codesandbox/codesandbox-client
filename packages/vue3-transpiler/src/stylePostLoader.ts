@@ -1,6 +1,6 @@
 import qs from 'querystring';
 import { compileStyle } from 'vue3-browser-compiler';
-import { LoaderContext } from 'app/src/sandbox/eval/transpiled-module';
+import { LoaderContext } from 'sandpack-core';
 
 // This is a post loader that handles scoped CSS transforms.
 // Injected right before css-loader by the global pitcher (../pitch.js)

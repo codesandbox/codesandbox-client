@@ -1,10 +1,10 @@
 export type WarningStructure = {
-  name: string | undefined;
+  name?: string;
   message: string;
-  fileName: string | undefined;
+  fileName?: string;
   lineNumber: number;
   columnNumber: number;
-  source: string | undefined;
+  source?: string;
   severity?: 'notice' | 'warning';
 };
 

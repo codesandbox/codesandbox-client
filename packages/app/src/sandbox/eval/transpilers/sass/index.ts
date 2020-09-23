@@ -2,8 +2,7 @@
 import SassWorker from 'worker-loader?publicPath=/&name=sass-transpiler.[hash:8].worker.js!./worker';
 
 import WorkerTranspiler from '../worker-transpiler';
-import { LoaderContext } from '../../transpiled-module';
-import { TranspilerResult } from '..';
+import { LoaderContext, TranspilerResult } from 'sandpack-core';
 
 class SassTranspiler extends WorkerTranspiler {
   worker: Worker;

@@ -1,12 +1,12 @@
 import _debug from '@codesandbox/common/lib/utils/debug';
-import Manager from '../manager';
 import {
   clearMeasurements,
   measure,
   endMeasure,
   getMeasurements,
   getCumulativeMeasure,
-} from './metrics';
+} from '@codesandbox/common/lib/utils/metrics';
+import Manager from '../manager';
 
 const debug = _debug('cs:compiler:benchmarks');
 

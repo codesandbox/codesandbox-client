@@ -4,8 +4,7 @@ import CoffeeWorker from 'worker-loader?publicPath=/&name=coffee-transpiler.[has
 /* eslint-enable import/default */
 
 import WorkerTranspiler from '../worker-transpiler';
-import { LoaderContext } from '../../transpiled-module';
-import { TranspilerResult } from '..';
+import { LoaderContext, TranspilerResult } from 'sandpack-core';
 
 class CoffeeTranspiler extends WorkerTranspiler {
   worker: Worker;

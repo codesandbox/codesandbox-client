@@ -1,5 +1,4 @@
-import Transpiler from '../../..';
-import { LoaderContext } from '../../../../transpiled-module';
+import { LoaderContext, Transpiler } from 'sandpack-core';
 
 import loader from './loader';
 

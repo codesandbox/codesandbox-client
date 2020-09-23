@@ -1,6 +1,6 @@
 import { SFCDescriptor } from 'vue3-browser-compiler';
 import { ParsedUrlQuery } from 'querystring';
-import { TranspilerResult } from 'app/src/sandbox/eval/transpilers';
+import { TranspilerResult } from 'sandpack-core';
 
 export function selectBlock(
   descriptor: SFCDescriptor,

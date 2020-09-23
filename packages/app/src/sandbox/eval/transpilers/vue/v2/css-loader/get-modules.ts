@@ -1,4 +1,4 @@
-import { LoaderContext } from '../../../../transpiled-module';
+import { LoaderContext } from 'sandpack-core/lib/transpiled-module';
 
 let core = null;
 

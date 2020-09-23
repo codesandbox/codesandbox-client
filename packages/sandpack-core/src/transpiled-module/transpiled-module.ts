@@ -23,7 +23,7 @@ import Manager, { HMRStatus } from '../manager';
 import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
 import delay from '../utils/delay';
-import { measure, endMeasure } from '../utils/metrics';
+import { measure, endMeasure } from '@codesandbox/common/lib/utils/metrics';
 
 declare const BrowserFS: any;
 

@@ -2,8 +2,8 @@ import postcss, { ProcessOptions } from 'postcss';
 import postcssImportPlugin from 'postcss-import';
 import { join } from 'path';
 import { isDependencyPath } from 'sandbox/eval/utils/is-dependency-path';
-
-import TranspiledModule, { LoaderContext } from '../../../../transpiled-module';
+import { TranspiledModule } from 'sandpack-core';
+import { LoaderContext } from 'sandpack-core/lib/transpiled-module';
 
 import trim from './plugins/trim';
 import scopeId from './plugins/scope-id';
@@ -39,7 +39,7 @@ async function resolveCSSFile(
   return loaderContext.resolveTranspiledModuleAsync(fullPath);
 }
 
-export default function (
+export default function(
   code: string,
   loaderContext: LoaderContext
 ): Promise<{ transpiledCode: string; sourceMap: any }> {

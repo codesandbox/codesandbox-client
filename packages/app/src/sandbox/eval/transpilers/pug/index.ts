@@ -4,8 +4,7 @@ import PugWorker from 'worker-loader?publicPath=/&name=pug-transpiler.[hash:8].w
 /* eslint-enable import/default */
 
 import WorkerTranspiler from '../worker-transpiler';
-import { LoaderContext } from '../../transpiled-module';
-import { TranspilerResult } from '..';
+import { LoaderContext, TranspilerResult } from 'sandpack-core';
 
 class PugTranspiler extends WorkerTranspiler {
   worker: Worker;

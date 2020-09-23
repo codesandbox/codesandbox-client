@@ -5,10 +5,9 @@ import isESModule from 'sandbox/eval/utils/is-es-module';
 // @ts-ignore
 import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index';
 
-import delay from '../../../utils/delay';
-import { endMeasure, measure } from '../../../utils/metrics';
-import Manager from '../../manager';
-import { LoaderContext } from '../../transpiled-module';
+import delay from '@codesandbox/common/lib/utils/delay';
+import { endMeasure, measure } from 'sandpack-core/lib/utils/metrics';
+import { LoaderContext, Manager } from 'sandpack-core';
 import WorkerTranspiler from '../worker-transpiler';
 import getBabelConfig from './babel-parser';
 import { hasNewSyntax } from './check';

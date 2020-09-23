@@ -17,7 +17,7 @@ import {
   templateLoader,
 } from 'vue3-transpiler/lib/transpilers';
 
-import Preset, { TranspilerDefinition } from '..';
+import { TranspilerDefinition, Preset } from 'sandpack-core';
 
 export default function initialize(vuePreset: Preset) {
   const sassWithConfig: TranspilerDefinition = {

@@ -7,6 +7,7 @@ import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
+import { measure, endMeasure } from '@codesandbox/common/lib/utils/metrics';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
@@ -29,7 +30,6 @@ import { packageFilter } from './utils/resolve-utils';
 
 import { ignoreNextCache, deleteAPICache, clearIndexedDBCache } from './cache';
 import { splitQueryFromPath } from './transpiled-module/utils/query-path';
-import { measure, endMeasure } from './utils/metrics';
 import { IEvaluator } from './evaluator';
 import { setContributedProtocols } from './npm/dynamic/fetch-protocols';
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';

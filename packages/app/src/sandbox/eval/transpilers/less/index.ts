@@ -4,8 +4,7 @@ import LessWorker from 'worker-loader?publicPath=/&name=less-transpiler.[hash:8]
 /* eslint-enable import/default */
 
 import WorkerTranspiler from '../worker-transpiler';
-import { LoaderContext } from '../../transpiled-module';
-import { TranspilerResult } from '..';
+import { LoaderContext, TranspilerResult } from 'sandpack-core';
 
 class LessTranspiler extends WorkerTranspiler {
   worker: Worker;

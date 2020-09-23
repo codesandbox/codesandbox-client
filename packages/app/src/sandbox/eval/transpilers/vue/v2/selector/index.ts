@@ -1,5 +1,5 @@
-import Transpiler from '../../..';
-import { LoaderContext } from '../../../../transpiled-module';
+import { LoaderContext } from 'sandpack-core/lib/transpiled-module';
+import { Transpiler } from 'sandpack-core/lib/transpiler';
 
 class VueSelector extends Transpiler {
   constructor() {

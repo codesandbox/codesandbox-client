@@ -1,5 +1,4 @@
-import Transpiler, { TranspilerResult } from 'app/src/sandbox/eval/transpilers';
-import { LoaderContext } from 'app/src/sandbox/eval/transpiled-module';
+import { Transpiler, TranspilerResult, LoaderContext } from 'sandpack-core';
 import loader from '../';
 
 // This is the most advanced compiler, I wanted to get it working in sync first,

@@ -1,7 +1,8 @@
 import path from 'path';
 import qs from 'querystring';
 import hash from 'hash-sum';
-import loaderUtils from 'app/src/sandbox/eval/transpilers/utils/loader-utils';
+import loaderUtils from 'sandpack-core/lib/transpiler/utils/loader-utils';
+import { LoaderContext, TranspilerResult } from 'sandpack-core';
 import {
   parse,
   compileScript,
@@ -18,8 +19,6 @@ import { genHotReloadCode } from './hotReload';
 import { genCSSModulesCode } from './cssModules';
 import { formatError } from './formatError';
 
-import { LoaderContext } from 'app/src/sandbox/eval/transpiled-module';
-import { TranspilerResult } from 'app/src/sandbox/eval/transpilers';
 import vueTemplateLoader from './transpilers/template-loader';
 import vueStylePostLoader from './transpilers/style-post-loader';
 

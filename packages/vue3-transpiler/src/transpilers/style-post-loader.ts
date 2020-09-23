@@ -1,5 +1,4 @@
-import Transpiler, { TranspilerResult } from 'app/src/sandbox/eval/transpilers';
-import { LoaderContext } from 'app/src/sandbox/eval/transpiled-module';
+import { Transpiler, TranspilerResult, LoaderContext } from 'sandpack-core';
 
 import stylePostLoader from '../stylePostLoader';
 
