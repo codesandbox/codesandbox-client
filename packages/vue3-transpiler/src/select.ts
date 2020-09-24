@@ -28,7 +28,7 @@ export function selectBlock(
     const template = descriptor.template!;
 
     return {
-      transpiledCode: template.content + convertSourceMapToInline(template.map),
+      transpiledCode: template.content,
       sourceMap: template.map,
     };
   }
