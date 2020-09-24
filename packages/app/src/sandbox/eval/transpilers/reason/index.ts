@@ -1,9 +1,8 @@
 import { basename, dirname, join } from 'path';
 import stripANSI from 'strip-ansi';
 
-import Transpiler from '..';
-import { LoaderContext } from '../../transpiled-module';
-import { Module } from '../../types/module';
+import { LoaderContext, Transpiler } from 'sandpack-core';
+import { Module } from 'sandpack-core/lib/types/module';
 
 type ReasonModule = Module & {
   moduleName: string;

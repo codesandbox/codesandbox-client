@@ -84,33 +84,6 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
   return loaders;
 };
 
-// Shim for `eslint-plugin-vue/lib/index.js`
-const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
-  rules: {${fs
-    .readdirSync(
-      path.join(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        'node_modules',
-        'eslint-plugin-vue',
-        'lib',
-        'rules'
-      )
-    )
-    .filter(filename => path.extname(filename) === '.js')
-    .map(filename => {
-      const ruleId = path.basename(filename, '.js');
-      return `        "${ruleId}": require("eslint-plugin-vue/lib/rules/${filename}"),`;
-    })
-    .join('\n')}
-  },
-  processors: {
-      ".vue": require("eslint-plugin-vue/lib/processor")
-  }
-}`;
-
 const sepRe = `\\${path.sep}`; // path separator regex
 
 const threadPoolConfig = {
@@ -282,16 +255,6 @@ module.exports = {
         ].filter(Boolean),
       },
 
-      // `eslint-plugin-vue/lib/index.js` depends on `fs` module we cannot use in browsers, so needs shimming.
-      {
-        test: new RegExp(`eslint-plugin-vue${sepRe}lib${sepRe}index\\.js$`),
-        loader: 'string-replace-loader',
-        options: {
-          search: '[\\s\\S]+', // whole file.
-          replace: ESLINT_PLUGIN_VUE_INDEX,
-          flags: 'g',
-        },
-      },
       // `eslint` has some dynamic `require(...)`.
       // Delete those.
       {
@@ -301,17 +264,6 @@ module.exports = {
           search: '(?:\\|\\||(\\())\\s*require\\(.+?\\)',
           replace: '$1',
           flags: 'g',
-        },
-      },
-      // `vue-eslint-parser` has `require(parserOptions.parser || "espree")`.
-      // Modify it by a static importing.
-      {
-        test: /vue-eslint-parser/,
-        loader: 'string-replace-loader',
-        options: {
-          search: 'require(parserOptions.parser || "espree")',
-          replace:
-            '(parserOptions.parser === "babel-eslint" ? require("babel-eslint") : require("espree"))',
         },
       },
       // Patch for `babel-eslint`
@@ -434,6 +386,7 @@ module.exports = {
 
     alias: {
       moment: 'moment/moment.js',
+      path: 'path-browserify',
 
       fs: 'codesandbox-browserfs/dist/shims/fs.js',
       buffer: 'codesandbox-browserfs/dist/shims/buffer.js',

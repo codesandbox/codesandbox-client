@@ -186,7 +186,12 @@ class Tests extends React.Component<DevToolProps, State> {
    * Every setState call will have to go through this, otherwise we get race conditions
    * where the underlying state has changed, but the draftState didn't change.
    */
-  setStateDebounced = (setStateFunc, time = 200) => {
+  setStateDelayedFlush = (
+    setStateFunc:
+      | Partial<State>
+      | ((state: State, props: DevToolProps) => Partial<State>),
+    time = 200
+  ) => {
     const draftState = this.draftState || this.state;
 
     const newState =
@@ -217,7 +222,7 @@ class Tests extends React.Component<DevToolProps, State> {
 
   UNSAFE_componentWillReceiveProps(nextProps: DevToolProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
-      this.setStateDebounced(
+      this.setStateDelayedFlush(
         {
           files: {},
           selectedFilePath: null,
@@ -233,7 +238,7 @@ class Tests extends React.Component<DevToolProps, State> {
   }
 
   selectFile = (file: File) => {
-    this.setStateDebounced(
+    this.setStateDelayedFlush(
       state => ({
         selectedFilePath:
           file.fileName === state.selectedFilePath ? null : file.fileName,
@@ -243,7 +248,7 @@ class Tests extends React.Component<DevToolProps, State> {
   };
 
   toggleFileExpansion = (file: File) => {
-    this.setStateDebounced(
+    this.setStateDelayedFlush(
       oldState =>
         immer(oldState, state => {
           state.fileExpansionState[file.fileName] = !state.fileExpansionState[
@@ -278,7 +283,7 @@ class Tests extends React.Component<DevToolProps, State> {
           if (this.props.updateStatus) {
             this.props.updateStatus('clear');
           }
-          this.setStateDebounced(INITIAL_STATE, 0);
+          this.setStateDelayedFlush(INITIAL_STATE, 0);
           break;
         }
         case 'test_count': {
@@ -294,7 +299,7 @@ class Tests extends React.Component<DevToolProps, State> {
           if (this.props.updateStatus) {
             this.props.updateStatus('clear');
           }
-          this.setStateDebounced(
+          this.setStateDelayedFlush(
             {
               running: true,
             },
@@ -303,7 +308,7 @@ class Tests extends React.Component<DevToolProps, State> {
           break;
         }
         case messages.TOTAL_TEST_END: {
-          this.setStateDebounced(
+          this.setStateDelayedFlush(
             {
               running: false,
             },
@@ -333,7 +338,7 @@ class Tests extends React.Component<DevToolProps, State> {
         }
 
         case messages.ADD_FILE: {
-          this.setStateDebounced(oldState =>
+          this.setStateDelayedFlush(oldState =>
             immer(oldState, state => {
               state.files[data.path] = {
                 tests: {},
@@ -346,7 +351,7 @@ class Tests extends React.Component<DevToolProps, State> {
           break;
         }
         case 'remove_file': {
-          this.setStateDebounced(oldState =>
+          this.setStateDelayedFlush(oldState =>
             immer(oldState, state => {
               if (state.files[data.path]) {
                 delete state.files[data.path];
@@ -358,7 +363,7 @@ class Tests extends React.Component<DevToolProps, State> {
           break;
         }
         case messages.FILE_ERROR: {
-          this.setStateDebounced(oldState =>
+          this.setStateDelayedFlush(oldState =>
             immer(oldState, state => {
               if (state.files[data.path]) {
                 state.files[data.path].fileError = data.error;
@@ -378,7 +383,7 @@ class Tests extends React.Component<DevToolProps, State> {
         case messages.ADD_TEST: {
           const testName = [...this.currentDescribeBlocks, data.testName];
 
-          this.setStateDebounced(oldState =>
+          this.setStateDelayedFlush(oldState =>
             immer(oldState, state => {
               if (!state.files[data.path]) {
                 state.files[data.path] = {
@@ -404,7 +409,7 @@ class Tests extends React.Component<DevToolProps, State> {
           const { test } = data;
           const testName = [...test.blocks, test.name];
 
-          this.setStateDebounced(oldState =>
+          this.setStateDelayedFlush(oldState =>
             immer(oldState, state => {
               if (!state.files[test.path]) {
                 state.files[test.path] = {
@@ -435,7 +440,7 @@ class Tests extends React.Component<DevToolProps, State> {
           const { test } = data;
           const testName = [...test.blocks, test.name];
 
-          this.setStateDebounced(oldState =>
+          this.setStateDelayedFlush(oldState =>
             immer(oldState, state => {
               if (!state.files[test.path]) {
                 return;
@@ -524,7 +529,7 @@ class Tests extends React.Component<DevToolProps, State> {
   };
 
   toggleWatching = () => {
-    this.setStateDebounced(state => ({ watching: !state.watching }), 0);
+    this.setStateDelayedFlush(state => ({ watching: !state.watching }), 0);
     dispatch({
       type: 'set-test-watching',
       watching: !this.state.watching,
@@ -532,14 +537,14 @@ class Tests extends React.Component<DevToolProps, State> {
   };
 
   runAllTests = () => {
-    this.setStateDebounced({ files: {} }, 0);
+    this.setStateDelayedFlush({ files: {} }, 0);
     dispatch({
       type: 'run-all-tests',
     });
   };
 
   runTests = (file: File) => {
-    this.setStateDebounced(
+    this.setStateDelayedFlush(
       oldState =>
         immer(oldState, state => {
           if (state.files[file.fileName]) {

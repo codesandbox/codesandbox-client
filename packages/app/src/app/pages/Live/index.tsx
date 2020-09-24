@@ -1,110 +1,55 @@
-import css from '@styled-system/css';
-import {
-  ThemeProvider,
-  Button,
-  Text,
-  Element,
-  Stack,
-} from '@codesandbox/components';
-import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
+import CodeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { Element, Stack, ThemeProvider } from '@codesandbox/components';
+import css from '@styled-system/css';
+import React, { FunctionComponent, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
+import { useParams } from 'react-router-dom';
+
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
-import React, { useEffect } from 'react';
-import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 
 import Editor from '../Sandbox/Editor';
 
-interface Props {
-  match: {
-    params: {
-      id: string;
-    };
-  };
-}
+import { Error } from './Error';
+import { NotAuthenticated } from './NotAuthenticated';
 
-export const LivePage: React.FC<Props> = ({ match }) => {
-  const { state, actions } = useOvermind();
+export const Live: FunctionComponent = () => {
+  const {
+    actions: {
+      live: { onNavigateAway, roomJoined },
+    },
+    state: {
+      editor: { currentSandbox },
+      isAuthenticating,
+      live: { error },
+      user,
+    },
+  } = useOvermind();
+  const { roomId } = useParams<{ roomId: string }>();
 
   useEffect(() => {
-    actions.live.roomJoined({ roomId: match.params.id });
-  }, [actions.live, match.params.id]);
+    roomJoined(roomId);
+  }, [roomJoined, roomId]);
 
-  useEffect(
-    () => () => {
-      actions.live.onNavigateAway();
-    },
-    [actions.live]
-  );
+  useEffect(() => () => onNavigateAway(), [onNavigateAway]);
 
-  function getContent() {
-    if (!state.isAuthenticating && !state.user) {
-      return (
-        <>
-          <Text weight="bold" size={6}>
-            Sign in required
-          </Text>
-          <Text block marginTop={4} size={4}>
-            You need to sign in to join this session
-          </Text>
-          <Element marginTop={4}>
-            <Button
-              onClick={() =>
-                actions.live.signInToRoom({ roomId: match.params.id })
-              }
-              autoWidth
-            >
-              <Stack align="center" gap={2}>
-                <Text style={{ lineHeight: 1 }}>Sign in</Text>
-              </Stack>
-            </Button>
-          </Element>
-        </>
-      );
+  const getContent = () => {
+    if (!isAuthenticating && !user) {
+      return <NotAuthenticated />;
     }
 
-    if (state.live.error) {
-      if (state.live.error === 'room not found') {
-        return (
-          <>
-            <Text weight="bold" size={6}>
-              Something went wrong
-            </Text>
-            <Text block marginTop={4} size={4}>
-              It seems like this session doesn
-              {"'"}t exist or has been closed
-            </Text>
-            <Link to="/s" css={css({ textDecoration: 'none' })}>
-              <Button marginTop={5}>Create Sandbox</Button>
-            </Link>
-          </>
-        );
-      }
-
-      return (
-        <>
-          <Text weight="bold" size={6}>
-            An error occurred while connecting to the live session:
-          </Text>
-          <Text block marginTop={4} size={4}>
-            {state.live.error}
-          </Text>
-          <Link to="/s" css={css({ textDecoration: 'none' })}>
-            <Button marginTop={5}>Create Sandbox</Button>
-          </Link>
-        </>
-      );
+    if (error) {
+      return <Error />;
     }
 
     return null;
-  }
+  };
 
   const content = getContent();
-
   if (content) {
     return (
-      <ThemeProvider theme={codesandboxBlack}>
+      <ThemeProvider theme={CodeSandboxBlack}>
         <Element
           css={css({
             display: 'flex',
@@ -119,11 +64,12 @@ export const LivePage: React.FC<Props> = ({ match }) => {
             css={css({ width: '100%', height: '100vh', overflow: 'hidden' })}
           >
             <Navigation title="Live Session" />
+
             <Stack
-              direction="vertical"
               align="center"
-              justify="center"
               css={css({ width: '100%', height: '100%' })}
+              direction="vertical"
+              justify="center"
             >
               {content}
             </Stack>
@@ -133,15 +79,14 @@ export const LivePage: React.FC<Props> = ({ match }) => {
     );
   }
 
-  const sandbox = state.editor.currentSandbox;
-
   return (
     <>
-      {sandbox && (
+      {currentSandbox ? (
         <Helmet>
-          <title>{getSandboxName(sandbox)} - CodeSandbox</title>
+          <title>{getSandboxName(currentSandbox)} - CodeSandbox</title>
         </Helmet>
-      )}
+      ) : null}
+
       <Editor />
     </>
   );

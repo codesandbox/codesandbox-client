@@ -11,7 +11,16 @@ import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
 import { flatten } from 'lodash';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
+import {
+  consumeCache,
+  deleteAPICache,
+  saveCache,
+} from 'sandpack-core/lib/cache';
+import { Module } from 'sandpack-core/lib/types/module';
+import * as metrics from '@codesandbox/common/lib/utils/metrics';
+import { Manager, TranspiledModule } from 'sandpack-core';
 
+import { loadDependencies, NPMDependencies } from 'sandpack-core/lib/npm';
 import {
   evalBoilerplates,
   findBoilerplate,
@@ -20,15 +29,10 @@ import {
 import defaultBoilerplates from './boilerplates/default-boilerplates';
 import createCodeSandboxOverlay from './codesandbox-overlay';
 import getPreset from './eval';
-import { consumeCache, deleteAPICache, saveCache } from './eval/cache';
-import { Module } from './eval/types/module';
-import Manager from './eval/manager';
-import TranspiledModule from './eval/transpiled-module';
 import handleExternalResources from './external-resources';
-import { loadDependencies, NPMDependencies } from './npm';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
-import * as metrics from './utils/metrics';
+import { SCRIPT_VERSION } from '.';
 
 let initializedResizeListener = false;
 let manager: Manager | null = null;
@@ -60,11 +64,8 @@ export function getHTMLParts(html: string) {
   return { head: '', body: html };
 }
 
-function sendTestCount(
-  givenManager: Manager,
-  modules: { [path: string]: Module }
-) {
-  const { testRunner } = givenManager;
+let testRunner: import('./eval/tests/jest-lite').default | undefined;
+function sendTestCount(modules: { [path: string]: Module }) {
   const tests = testRunner.findTests(modules);
 
   dispatch({
@@ -325,6 +326,7 @@ function initializeManager(
     modules,
     {
       hasFileResolver,
+      versionIdentifier: SCRIPT_VERSION,
     }
   );
 }
@@ -404,6 +406,7 @@ interface CompileOptions {
   skipEval?: boolean;
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
+  clearConsoleDisabled?: boolean;
 }
 
 async function compile({
@@ -418,10 +421,18 @@ async function compile({
   skipEval = false,
   hasFileResolver = false,
   disableDependencyPreprocessing = false,
+  clearConsoleDisabled = false,
 }: CompileOptions) {
-  dispatch({
-    type: 'start',
-  });
+  if (firstLoad) {
+    // Clear the console on first load, but don't clear the console on HMR updates
+    if (!clearConsoleDisabled) {
+      // @ts-ignore Chrome behaviour
+      console.clear('__internal__'); // eslint-disable-line no-console
+      dispatch({ type: 'clear-console' });
+    }
+  }
+
+  dispatch({ type: 'start' });
   metrics.measure('compilation');
 
   const startTime = Date.now();
@@ -487,12 +498,42 @@ async function compile({
     dependencies = await manager.preset.processDependencies(dependencies);
 
     metrics.measure('dependencies');
+
+    if (firstLoad) {
+      setScreen({
+        type: 'loading',
+        showFullScreen: firstLoad,
+        text: 'Installing Dependencies',
+      });
+    }
+
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
+      ({ done, total, remainingDependencies }) => {
+        const progress = total - done;
+        if (done === total) {
+          return;
+        }
+
+        if (progress <= 6) {
+          setScreen({
+            type: 'loading',
+            showFullScreen: firstLoad,
+            text: `Installing Dependencies ${progress}/${total} (${remainingDependencies.join(
+              ','
+            )})`,
+          });
+        } else {
+          setScreen({
+            type: 'loading',
+            showFullScreen: firstLoad,
+            text: `Installing Dependencies ${progress}/${total}`,
+          });
+        }
+      },
       {
         disableExternalConnection: disableDependencyPreprocessing,
         resolutions: parsedPackageJSON.resolutions,
-        showFullScreen: firstLoad,
       }
     );
     metrics.endMeasure('dependencies', { displayName: 'Dependencies' });
@@ -693,8 +734,13 @@ async function compile({
 
     setTimeout(async () => {
       try {
-        await manager.initializeTestRunner();
-        sendTestCount(manager, modules);
+        testRunner =
+          testRunner ||
+          (await import('./eval/tests/jest-lite')
+            .then(s => s.default)
+            .then(TestRunner => new TestRunner(manager)));
+
+        sendTestCount(modules);
       } catch (e) {
         if (process.env.NODE_ENV === 'development') {
           console.error('Test error', e);
@@ -710,7 +756,7 @@ async function compile({
       manager.clearCache();
 
       if (firstLoad && changedModuleCount === 0) {
-        await deleteAPICache(manager.id);
+        await deleteAPICache(manager.id, SCRIPT_VERSION);
       }
     }
 

@@ -1,5 +1,5 @@
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
-import { Module } from 'sandbox/eval/types/module';
+import { Module } from 'sandpack-core/lib/types/module';
 
 let lastSendId = 0;
 export function getModulesFromMainThread(): Promise<Module[]> {

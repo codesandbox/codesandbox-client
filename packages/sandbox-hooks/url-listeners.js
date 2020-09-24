@@ -26,8 +26,8 @@ function pathWithHash(location) {
 }
 
 function isInsideVue(el) {
-  if (el === document.body) return false
-  return el.__vue__ || el._vnode || isInsideVue(el.parentElement)
+  if (el === document.body) return false;
+  return el.__vue__ || el._vnode || isInsideVue(el.parentElement);
 }
 
 export default function setupHistoryListeners() {
@@ -131,7 +131,6 @@ export default function setupHistoryListeners() {
           sendUrlChange(document.location.href);
         }
         ev.preventDefault();
-        ev.stopPropagation();
       }
     },
     true

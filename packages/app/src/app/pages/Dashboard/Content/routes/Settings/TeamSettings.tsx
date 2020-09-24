@@ -393,7 +393,7 @@ export const TeamSettings = () => {
 
                 if (you) {
                   options.push({
-                    label: 'Leave Team',
+                    label: 'Leave Workspace',
                     onSelect: () => actions.dashboard.leaveTeam(),
                   });
                 }

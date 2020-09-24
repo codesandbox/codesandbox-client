@@ -412,9 +412,9 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
 
     if (sandboxIds.length) {
       if (dropPage === 'deleted') {
-        actions.dashboard.deleteSandbox({ ids: sandboxIds, page });
+        actions.dashboard.deleteSandbox({ ids: sandboxIds });
       } else if (dropPage === 'templates') {
-        actions.dashboard.makeTemplates({ sandboxIds, page });
+        actions.dashboard.makeTemplates({ sandboxIds });
       } else if (dropPage === 'drafts') {
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,

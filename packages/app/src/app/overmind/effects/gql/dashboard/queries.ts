@@ -33,6 +33,8 @@ import {
   TeamDraftsQueryVariables,
   GetTeamReposQueryVariables,
   GetTeamReposQuery,
+  GetPersonalWorkspaceIdQuery,
+  GetPersonalWorkspaceIdQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -199,7 +201,8 @@ export const ownedTemplates: Query<
 export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
   query AllTeams {
     me {
-      teams {
+      personalWorkspaceId
+      workspaces {
         id
         name
         avatarUrl
@@ -345,4 +348,15 @@ export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
     }
   }
   ${currentTeamInfoFragment}
+`;
+
+export const getPersonalWorkspaceId: Query<
+  GetPersonalWorkspaceIdQuery,
+  GetPersonalWorkspaceIdQueryVariables
+> = gql`
+  query getPersonalWorkspaceId {
+    me {
+      personalWorkspaceId
+    }
+  }
 `;
