@@ -66,9 +66,7 @@ export class Linter {
 
       const mode = (await this.getMonacoMode(title)) || '';
 
-      if (
-        ['javascript', 'typescript', 'typescriptreact', 'vue'].includes(mode)
-      ) {
+      if (['javascript', 'typescript', 'typescriptreact'].includes(mode)) {
         this.worker.postMessage({
           code,
           title,

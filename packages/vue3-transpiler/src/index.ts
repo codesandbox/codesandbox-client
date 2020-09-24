@@ -137,7 +137,7 @@ export default function loader(
     const idQuery = `&id=${id}`;
     const scopedQuery = hasScoped ? `&scoped=true` : ``;
     const attrsQuery = attrsToQuery(descriptor.template.attrs);
-    const bindingsQuery = script
+    const bindingsQuery = script?.bindings
       ? `&bindings=${JSON.stringify(script.bindings)}`
       : ``;
     const query = `?vue&type=template${idQuery}${scopedQuery}${attrsQuery}${bindingsQuery}${resourceQuery}`;
