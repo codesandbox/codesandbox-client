@@ -68,6 +68,7 @@
     "skipLibCheck": true /* Skip type checking of declaration files. */,
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "outDir": "lib",
-    "incremental": true
+    "incremental": true,
+    "allowJs": true
   }
 }
