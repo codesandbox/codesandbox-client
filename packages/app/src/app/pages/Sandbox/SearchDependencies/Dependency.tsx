@@ -172,18 +172,20 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
               {dependency.description}
             </Text>
 
-            <Stack align="center" gap={2} marginTop={2}>
-              <img
-                css={css({
-                  borderRadius: 'small',
-                  width: '6',
-                  height: '6',
-                })}
-                src={dependency.owner?.avatar}
-                alt={dependency.owner?.name}
-              />
-              <Text size={3}>{dependency.owner?.name}</Text>
-            </Stack>
+            {dependency.owner && (
+              <Stack align="center" gap={2} marginTop={2}>
+                <img
+                  css={css({
+                    borderRadius: 'small',
+                    width: '6',
+                    height: '6',
+                  })}
+                  src={dependency.owner.avatar}
+                  alt={dependency.owner.name}
+                />
+                <Text size={3}>{dependency.owner.name}</Text>
+              </Stack>
+            )}
           </Element>
           <Element css={{ flexShrink: 0, width: 208 }}>
             <Select

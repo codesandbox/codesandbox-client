@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Element } from '../Element';
@@ -7,7 +8,8 @@ const placeholderStyles = {
   fontSize: 3,
 };
 
-interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface IInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   ref?: any;
 }
 

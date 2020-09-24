@@ -20,6 +20,10 @@ aliases:
       - packages/notifications/lib
       - packages/template-icons/lib
       - packages/sse-hooks/dist
+      - packages/sandpack-core/lib
+      - packages/browser-eslint-rules/lib
+      - packages/vue3-browser-compiler/lib
+      - packages/vue3-transpiler/lib
       - standalone-packages/codesandbox-browserfs/dist
       - standalone-packages/codesandbox-browserfs/build
       - standalone-packages/vscode-textmate/out
@@ -50,6 +54,10 @@ aliases:
       - packages/react-embed/node_modules
       - packages/sandbox-hooks/node_modules
       - packages/sse-hooks/node_modules
+      - packages/sandpack-core/node_modules
+      - packages/browser-eslint-rules/node_modules
+      - packages/vue3-browser-compiler/node_modules
+      - packages/vue3-transpiler/node_modules
 
   - &restore_standalone_deps_cache
     keys:

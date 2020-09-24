@@ -1,0 +1,34 @@
+{
+	"name": "process-on-spawn",
+	"version": "1.0.0",
+	"description": "Execute callbacks when child processes are spawned",
+	"scripts": {
+		"release": "standard-version --sign",
+		"pretest": "xo",
+		"test": "nyc --silent tape test/*.js | tap-mocha-reporter classic",
+		"posttest": "nyc report --check-coverage"
+	},
+	"engines": {
+		"node": ">=8"
+	},
+	"author": "Corey Farrell",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/cfware/process-on-spawn.git"
+	},
+	"bugs": {
+		"url": "https://github.com/cfware/process-on-spawn/issues"
+	},
+	"homepage": "https://github.com/cfware/process-on-spawn#readme",
+	"dependencies": {
+		"fromentries": "^1.2.0"
+	},
+	"devDependencies": {
+		"nyc": "^15.0.0-beta.3",
+		"standard-version": "^7.0.0",
+		"tap-mocha-reporter": "^5.0.0",
+		"tape": "^4.11.0",
+		"xo": "^0.25.3"
+	}
+}

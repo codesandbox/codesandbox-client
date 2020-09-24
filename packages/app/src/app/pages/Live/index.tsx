@@ -26,7 +26,7 @@ export const Live: FunctionComponent = () => {
       user,
     },
   } = useOvermind();
-  const { roomId } = useParams();
+  const { roomId } = useParams<{ roomId: string }>();
 
   useEffect(() => {
     roomJoined(roomId);

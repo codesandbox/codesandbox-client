@@ -1,4 +1,4 @@
-import { Module } from 'sandbox/eval/types/module';
+import { Module } from 'sandpack-core/lib/types/module';
 
 export function getModuleHTTPPath(module: Module, sandboxId: string | null) {
   if (!sandboxId) {

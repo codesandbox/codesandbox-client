@@ -1,9 +1,8 @@
 // @ts-ignore
 import StencilWorker from 'worker-loader?publicPath=/&name=stencil-transpiler.[hash:8].worker.js!./stencil-worker.ts';
+import { LoaderContext, TranspilerResult } from 'sandpack-core';
 
 import WorkerTranspiler from '../worker-transpiler';
-import { LoaderContext } from '../../transpiled-module';
-import { TranspilerResult } from '..';
 
 const DEFAULT_STENCIL_VERSION = '1.2.0-1';
 

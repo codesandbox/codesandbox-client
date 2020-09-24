@@ -5,7 +5,7 @@ import Rect from '@reach/rect';
 import VisuallyHidden from '@reach/visually-hidden';
 import { Stack, Input, Text } from '../..';
 
-interface ITextareaProps
+export interface ITextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   maxLength?: number;
   autosize?: boolean;

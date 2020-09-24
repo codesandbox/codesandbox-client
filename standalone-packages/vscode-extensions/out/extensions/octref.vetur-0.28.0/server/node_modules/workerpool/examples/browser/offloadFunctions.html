@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Worker pool in the browser</title>
+
+  <script src="../../dist/workerpool.min.js"></script>
+</head>
+<body>
+
+<script>
+  // create a worker pool
+  var pool = workerpool.pool();
+
+  // create a static function
+  function add(a, b) {
+    return a + b;
+  }
+
+  // offload execution of a function to the worker pool
+  pool.exec(add, [3, 4])
+      .then(function (result) {
+        document.write('Result: ' + result); // outputs 7
+      })
+      .catch(function (err) {
+        document.write('Error: ' +  err);
+      });
+
+</script>
+
+</body>
+</html>

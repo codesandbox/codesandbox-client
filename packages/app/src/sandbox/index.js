@@ -5,13 +5,13 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import { endMeasure } from '@codesandbox/common/lib/utils/metrics';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator';
 import { getPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import compile, { getCurrentManager } from './compile';
-import { endMeasure } from './utils/metrics';
 
 const host = process.env.CODESANDBOX_HOST;
 const debug = _debug('cs:sandbox');
