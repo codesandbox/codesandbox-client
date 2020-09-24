@@ -44,17 +44,21 @@ export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
           // do nothing
         } else {
           const prev = activeElement.previousSibling as HTMLButtonElement;
-          prev.focus();
+          if (prev?.focus) {
+            prev.focus();
+          }
         }
       }
       if (down) {
         if (activeElement === last) {
           // do nothing
-        } else if (activeElement === input) {
+        } else if (activeElement === input && first) {
           first.focus();
         } else {
           const next = activeElement.nextSibling as HTMLButtonElement;
-          next.focus();
+          if (next?.focus) {
+            next.focus();
+          }
         }
       }
     }
