@@ -160,7 +160,7 @@ export const removeFromTeam: AsyncAction<string> = async (
     };
   } catch {
     effects.notificationToast.error(
-      'There has been a problem removing them from your team'
+      'There has been a problem removing them from your workspace'
     );
   }
 };
@@ -179,11 +179,11 @@ export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
     actions.dashboard.getTeams();
 
     effects.notificationToast.success(
-      `You successfully left the ${state.activeTeamInfo.name} team`
+      `You successfully left the ${state.activeTeamInfo.name} workspace`
     );
   } catch (e) {
     effects.notificationToast.error(
-      'There has been a problem removing your from the team'
+      'There has been a problem removing your from the workspace'
     );
   }
 };
@@ -222,7 +222,7 @@ export const inviteToTeam: AsyncAction<string> = async (
     }
 
     effects.notificationToast.success(
-      `Successfully invited ${value} to your team`
+      `Successfully invited ${value} to your workspace`
     );
   } catch (e) {
     const errorMessageExists =
@@ -230,7 +230,7 @@ export const inviteToTeam: AsyncAction<string> = async (
     effects.notificationToast.error(
       errorMessageExists
         ? e.response.errors[0].message
-        : `There was a problem inviting ${value} to your team`
+        : `There was a problem inviting ${value} to your workspace`
     );
   }
 };
