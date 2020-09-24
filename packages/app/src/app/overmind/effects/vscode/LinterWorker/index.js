@@ -6,6 +6,9 @@ self.importScripts(
   `${process.env.CODESANDBOX_HOST}/static/browserfs12/browserfs.min.js`
 );
 
+// To make the parser of typescript work
+process.versions.node = '10.10.0';
+
 /* eslint-disable global-require */
 const allRules = {
   'import/first': require('eslint-plugin-import/lib/rules/first'),

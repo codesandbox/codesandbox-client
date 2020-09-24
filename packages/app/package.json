@@ -169,6 +169,7 @@
     "overmind": "^25.0.2",
     "overmind-graphql": "^5.0.2",
     "overmind-react": "^26.0.2",
+    "path-browserify": "1.0.1",
     "phoenix": "^1.5.3",
     "postcss": "^7.0.26",
     "postcss-selector-parser": "^2.2.3",

@@ -9,7 +9,7 @@ import { WarningStructure } from 'sandpack-core/lib/transpiler/utils/worker-warn
 // Loader that compiles raw template into JavaScript functions.
 // This is injected by the global pitcher (../pitch) for template
 // selection requests initiated from vue files.
-const TemplateLoader = function (source: string, loaderContext: LoaderContext) {
+const TemplateLoader = function(source: string, loaderContext: LoaderContext) {
   source = String(source);
   const inMap = undefined;
 
@@ -26,7 +26,8 @@ const TemplateLoader = function (source: string, loaderContext: LoaderContext) {
 
   let compiler: TemplateCompiler | undefined;
   if (typeof options.compiler === 'string') {
-    compiler = require(options.compiler);
+    // compiler = require(options.compiler);
+    throw new Error("Setting compiler via string doesn't work in CodeSandbox");
   } else {
     compiler = options.compiler;
   }

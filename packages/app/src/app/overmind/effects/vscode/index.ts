@@ -844,7 +844,7 @@ export class VSCodeEffect {
       recover,
     ] = fileSystems;
 
-    const mfs = await this.createFileSystem('MountableFileSystem', {
+    const mfs = (await this.createFileSystem('MountableFileSystem', {
       '/': root,
       '/sandbox': sandbox,
       '/vscode': vscode,
@@ -852,7 +852,7 @@ export class VSCodeEffect {
       '/extensions': extensions,
       '/extensions/custom-theme': customTheme,
       '/recover': recover,
-    });
+    })) as any;
 
     window.BrowserFS.initialize(mfs);
 

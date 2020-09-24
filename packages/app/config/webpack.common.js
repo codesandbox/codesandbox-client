@@ -373,6 +373,7 @@ module.exports = {
 
     alias: {
       moment: 'moment/moment.js',
+      path: 'path-browserify',
 
       fs: 'codesandbox-browserfs/dist/shims/fs.js',
       buffer: 'codesandbox-browserfs/dist/shims/buffer.js',
