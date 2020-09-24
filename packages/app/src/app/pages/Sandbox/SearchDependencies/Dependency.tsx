@@ -84,7 +84,8 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
     actions,
   } = useOvermind();
 
-  const selectedVersion = hitToVersionMap[dependency.objectID];
+  const selectedVersion =
+    hitToVersionMap[dependency.objectID] || dependency.tags.latest;
 
   const versions = Object.keys(dependency.versions).sort((a, b) => {
     try {
