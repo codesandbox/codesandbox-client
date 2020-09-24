@@ -59,19 +59,28 @@ export class Linter {
   };
 
   lint = debounce(
-    async (code: string, title: string, version: number, template: string) => {
+    async (
+      code: string,
+      title: string,
+      version: number,
+      template: string,
+      dependencies: { [dep: string]: string }
+    ) => {
       if (!title || this.isDisposed) {
         return;
       }
 
       const mode = (await this.getMonacoMode(title)) || '';
 
-      if (['javascript', 'typescript', 'typescriptreact'].includes(mode)) {
+      if (
+        ['javascript', 'typescript', 'typescriptreact', 'vue'].includes(mode)
+      ) {
         this.worker.postMessage({
           code,
           title,
           version,
           template,
+          dependencies,
         });
       }
     },

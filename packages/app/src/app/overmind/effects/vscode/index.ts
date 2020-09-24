@@ -1289,11 +1289,28 @@ export class VSCodeEffect {
     if (!sandbox || !this.linter) {
       return;
     }
+    let dependencies = {};
+    try {
+      const module = resolveModule(
+        '/package.json',
+        sandbox.modules,
+        sandbox.directories
+      );
+      const parsedPkg = JSON.parse(module.code);
+      dependencies = {
+        ...(parsedPkg.dependencies || {}),
+        ...(parsedPkg.devDependencies || {}),
+      };
+    } catch (e) {
+      /* ignore */
+    }
+
     this.linter.lint(
       model.getValue(),
       title,
       model.getVersionId(),
-      sandbox.template
+      sandbox.template,
+      dependencies
     );
   }
 

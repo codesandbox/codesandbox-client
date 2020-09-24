@@ -103,7 +103,7 @@ export default function(
     return (
       postcss(plugins)
         // Explcitly give undefined if code is null, otherwise postcss crashses
-        .process(code === null ? undefined : code, options)
+        .process(code || '', options)
         .then(result => {
           if (result.messages) {
             const messages = result.messages as any[];

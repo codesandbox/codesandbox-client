@@ -11,7 +11,8 @@
     "@typescript-eslint/eslint-plugin": "^4.2.0",
     "@typescript-eslint/parser": "^4.2.0",
     "eslint": "^7.9.0",
-    "eslint-plugin-vue": "^6.2.2"
+    "eslint-plugin-vue": "next",
+    "vue-eslint-parser": "7.1.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^15.1.0",

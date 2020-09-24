@@ -21,7 +21,7 @@ aliases:
       - packages/template-icons/lib
       - packages/sse-hooks/dist
       - packages/sandpack-core/lib
-      - packages/vue-browser-eslint-rules/lib
+      - packages/browser-eslint-rules/lib
       - packages/vue3-browser-compiler/lib
       - packages/vue3-transpiler/lib
       - standalone-packages/codesandbox-browserfs/dist
@@ -55,7 +55,7 @@ aliases:
       - packages/sandbox-hooks/node_modules
       - packages/sse-hooks/node_modules
       - packages/sandpack-core/node_modules
-      - packages/vue-browser-eslint-rules/node_modules
+      - packages/browser-eslint-rules/node_modules
       - packages/vue3-browser-compiler/node_modules
       - packages/vue3-transpiler/node_modules
 

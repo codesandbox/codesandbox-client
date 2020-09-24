@@ -17,6 +17,10 @@ class SassTranspiler extends WorkerTranspiler {
     code: string,
     loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
+    if (!code) {
+      return Promise.resolve({ transpiledCode: '' });
+    }
+
     const indentedSyntax =
       loaderContext.options.indentedSyntax == null
         ? loaderContext.path.endsWith('.sass')

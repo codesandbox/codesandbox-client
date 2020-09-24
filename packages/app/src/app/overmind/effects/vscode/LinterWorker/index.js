@@ -1,6 +1,16 @@
 import Linter from 'eslint/lib/linter';
+import semver from 'semver';
 
 import monkeypatch from './monkeypatch-babel-eslint';
+
+function isMinimalSemverVersion(version: string, minimalVersion: string) {
+  try {
+    return semver.gte(version, minimalVersion);
+  } catch (e) {
+    // Semver couldn't be parsed, we assume that we're on the bleeding edge now, so true.
+    return true;
+  }
+}
 
 self.importScripts(
   `${process.env.CODESANDBOX_HOST}/static/browserfs12/browserfs.min.js`
@@ -380,6 +390,25 @@ monkeypatch({}, defaultConfig.parserOptions);
 
 const linter = new Linter();
 
+/**
+ * Some code in eslint (specifically vue parser) still uses require(loaderOptions.parser) to get the parser,
+ * we now rewrite that code to globalRequire(loaderOptions.parser), and make sure to return it here if the parser
+ * has been defined already.
+ */
+
+const definedParsers = new Map();
+const oldDefine = linter.defineParser;
+linter.defineParser = (parserName, parser) => {
+  definedParsers.set(parserName, parser);
+  oldDefine.apply(linter, [parserName, parser]);
+};
+self.globalRequire = path => {
+  if (definedParsers.get(path)) {
+    return definedParsers.get(path);
+  }
+  throw new Error('Module ' + path + ' not found in global require.');
+};
+
 linter.defineParser(
   'babel-eslint',
   require('babel-eslint') // eslint-disable-line global-require
@@ -411,21 +440,30 @@ function getSeverity(error) {
 
 // Respond to message from parent thread
 self.addEventListener('message', async event => {
-  const { code, version, title: filename, template } = event.data;
+  const { code, version, title: filename, template, dependencies } = event.data;
 
-  const config =
+  let config =
     filename.endsWith('.ts') || filename.endsWith('.tsx')
       ? TYPESCRIPT_PARSER_OPTIONS
       : defaultConfig;
   let options = { filename };
 
   if (template === 'vue-cli' || template === 'nuxt') {
+    const {
+      getConfig: getVueConfig,
+      getVerifyOptions: getVueVerifyOptions,
+    } = await import('./vue');
+
+    config = await getVueConfig(
+      linter,
+      !isMinimalSemverVersion(dependencies.vue || '2.0.0', '3.0.0')
+    );
     config.rules = {
       ...defaultConfig.rules,
       ...config.rules,
       'react-hooks/rules-of-hooks': 'off',
     };
-    options = { ...options };
+    options = { ...options, ...getVueVerifyOptions(filename) };
   }
 
   const validations = linter.verify(code, config, options);
