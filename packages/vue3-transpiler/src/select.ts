@@ -1,6 +1,21 @@
-import { SFCDescriptor } from 'vue3-browser-compiler';
+import { SFCBlock, SFCDescriptor } from 'vue3-browser-compiler';
 import { ParsedUrlQuery } from 'querystring';
 import { TranspilerResult } from 'sandpack-core';
+
+function convertSourceMapToInline(
+  sourceMap: SFCBlock['map'] | undefined,
+  prefix = '//#',
+  postfix = ''
+) {
+  if (!sourceMap) {
+    return '';
+  }
+
+  return `\n${prefix} sourceMappingURL=data:application/json;charset=utf-8;base64,${Buffer.from(
+    JSON.stringify(sourceMap),
+    'utf-8'
+  ).toString('base64')}${postfix}`;
+}
 
 export function selectBlock(
   descriptor: SFCDescriptor,
@@ -13,7 +28,7 @@ export function selectBlock(
     const template = descriptor.template!;
 
     return {
-      transpiledCode: template.content,
+      transpiledCode: template.content + convertSourceMapToInline(template.map),
       sourceMap: template.map,
     };
   }
@@ -26,7 +41,7 @@ export function selectBlock(
     const script = (descriptor as any).scriptCompiled || descriptor.script;
 
     return {
-      transpiledCode: script.content,
+      transpiledCode: script.content + convertSourceMapToInline(script.map),
       sourceMap: script.map,
     };
   }
@@ -36,7 +51,8 @@ export function selectBlock(
     const style = descriptor.styles[Number(query.index)];
 
     return {
-      transpiledCode: style.content,
+      transpiledCode:
+        style.content + convertSourceMapToInline(style.map, '/*#', '*/'),
       sourceMap: style.map,
     };
   }
