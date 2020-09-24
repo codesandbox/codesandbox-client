@@ -4,7 +4,7 @@
   "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
-    "build": "rollup -c && terser lib/index.js > lib/index.min.js",
+    "build": "rollup -c",
     "build:dev": "yarn build"
   },
   "dependencies": {
