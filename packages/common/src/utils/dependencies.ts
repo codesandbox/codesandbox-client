@@ -19,6 +19,11 @@ async function fetchWithRetries(url: string) {
 }
 
 export async function fetchPackageJSON(dep: string, version: string) {
+  console.log(
+    `https://cdn.jsdelivr.net/npm/${dep}@${encodeURIComponent(
+      version
+    )}/package.json`
+  );
   try {
     return fetchWithRetries(
       `https://cdn.jsdelivr.net/npm/${dep}@${encodeURIComponent(
@@ -44,6 +49,10 @@ export async function getAbsoluteDependency(
 ): Promise<{ name: string; version: string }> {
   if (isAbsoluteVersion(depVersion)) {
     return { name: depName, version: depVersion };
+  }
+
+  if (depVersion === 'latest') {
+    fetch(`https://registry.npmjs.org/${depName}`).then(x => x.json());
   }
 
   const data = await fetchPackageJSON(depName, depVersion);
