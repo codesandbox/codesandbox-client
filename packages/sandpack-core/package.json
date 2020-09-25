@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.14",
+    "fetch-vcr": "^3.2.0",
     "jest": "^26.4.2",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.4.0",

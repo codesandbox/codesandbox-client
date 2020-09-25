@@ -1,4 +1,4 @@
-import { uniq } from 'lodash-es';
+import uniq from 'lodash-es/uniq';
 import * as semver from 'semver';
 
 export interface ILambdaResponse {
@@ -35,7 +35,7 @@ interface IDepDepInfo {
 }
 
 export interface IResponse {
-  contents: { [path: string]: { content: string, requires?: string[] } };
+  contents: { [path: string]: { content: string; requires?: string[] } };
   dependencies: Array<{ name: string; version: string }>;
   dependencyAliases: { [dep: string]: { [dep: string]: string } };
   dependencyDependencies: {
@@ -93,7 +93,10 @@ function replaceDependencyInfo(
   depDepName: string,
   newDepDep: IDepDepInfo
 ) {
-  if (process.env.NODE_ENV === 'development') {
+  if (
+    process.env.NODE_ENV === 'development' ||
+    process.env.NODE_ENV === 'test'
+  ) {
     // eslint-disable-next-line
     console.log(
       'Resolving conflict for ' +

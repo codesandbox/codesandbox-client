@@ -1,0 +1,65 @@
+{
+  "name": "rc-mentions",
+  "version": "1.5.1",
+  "description": "React Mentions",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-mentions",
+    "mentions"
+  ],
+  "main": "./lib/index",
+  "module": "./es/index",
+  "files": [
+    "assets/*.css",
+    "es",
+    "dist",
+    "lib"
+  ],
+  "homepage": "http://github.com/react-component/mentions",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/mentions.git"
+  },
+  "bugs": {
+    "url": "http://github.com/react-component/mentions/issues"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "father doc dev --storybook",
+    "build": "father doc build --storybook",
+    "compile": "father build",
+    "prepublishOnly": "npm run compile && np --yolo --no-publish --any-branch",
+    "lint": "eslint src/ --ext .tsx,.ts",
+    "test": "father test",
+    "now-build": "npm run build"
+  },
+  "peerDependencies": {
+    "react": "*"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.6",
+    "@types/enzyme": "^3.1.15",
+    "@types/react": "^16.7.17",
+    "@types/react-dom": "^16.0.11",
+    "@types/warning": "^3.0.0",
+    "@umijs/fabric": "^2.0.8",
+    "enzyme": "^3.11.0",
+    "enzyme-to-json": "^3.1.4",
+    "eslint": "^7.1.0",
+    "father": "^2.13.6",
+    "lodash.debounce": "^4.0.8",
+    "np": "^6.2.4",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.10.1",
+    "classnames": "^2.2.6",
+    "rc-menu": "^8.0.1",
+    "rc-textarea": "^0.3.0",
+    "rc-trigger": "^5.0.4",
+    "rc-util": "^5.0.1"
+  }
+}

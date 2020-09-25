@@ -69,6 +69,7 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "outDir": "lib",
     "incremental": true,
-    "allowJs": true
+    "allowJs": true,
+    "checkJs": false
   }
 }

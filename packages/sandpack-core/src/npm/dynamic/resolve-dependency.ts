@@ -67,7 +67,9 @@ async function getDependencyDependencies(
       const depVersion = packageJSON.dependencies[depName];
 
       if (peerDependencyResult[depName]) {
-        peerDependencyResult[depName].parents.push(dep);
+        if (peerDependencyResult[depName].parents.indexOf(dep) === -1) {
+          peerDependencyResult[depName].parents.push(dep);
+        }
         return;
       }
 
@@ -78,20 +80,26 @@ async function getDependencyDependencies(
         parsedResolutions
       );
 
-      // eslint-disable-next-line
-      peerDependencyResult[depName] = {
-        semver: depVersion,
-        resolved: absoluteVersion,
-        parents: [dep],
-        entries: [],
-      };
-
-      await getDependencyDependencies(
-        depName,
-        depVersion,
-        parsedResolutions,
-        peerDependencyResult
-      );
+      // In case inbetween the peer dependency result has been added already
+      if (peerDependencyResult[depName]) {
+        if (peerDependencyResult[depName].parents.indexOf(dep) === -1) {
+          peerDependencyResult[depName].parents.push(dep);
+        }
+      } else {
+        // eslint-disable-next-line
+        peerDependencyResult[depName] = {
+          semver: depVersion,
+          resolved: absoluteVersion,
+          parents: [dep],
+          entries: [],
+        };
+        await getDependencyDependencies(
+          depName,
+          depVersion,
+          parsedResolutions,
+          peerDependencyResult
+        );
+      }
     })
   );
 
