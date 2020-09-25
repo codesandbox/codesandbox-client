@@ -497,6 +497,7 @@ export type PackageJSON = {
   name: string;
   version: string;
   description?: string;
+  alias?: { [key: string]: string };
   keywords?: string[];
   main?: string;
   module?: string;

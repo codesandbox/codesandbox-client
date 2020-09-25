@@ -24,11 +24,11 @@ import {
 } from 'jest-circus/build/state';
 import { parse } from 'sandbox-hooks/react-error-overlay/utils/parser';
 import { map } from 'sandbox-hooks/react-error-overlay/utils/mapper';
+import { Manager } from 'sandpack-core';
+import { Module } from 'sandpack-core/lib/types/module';
 
 import run from './run-circus';
 
-import Manager from '../manager';
-import { Module } from '../types/module';
 import { Event, TestEntry, DescribeBlock, TestName, TestFn } from './types';
 
 export { messages };

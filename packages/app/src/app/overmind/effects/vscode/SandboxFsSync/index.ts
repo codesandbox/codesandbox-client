@@ -67,12 +67,6 @@ async function requestPackager(url: string, retryCount = 0, method = 'GET') {
   }
 }
 
-declare global {
-  interface Window {
-    BrowserFS: any;
-  }
-}
-
 type SandboxFsSyncOptions = {
   getSandboxFs: () => SandboxFs;
 };

@@ -1,0 +1,33 @@
+{
+	"name": "vscode-nls",
+	"version": "4.1.2",
+	"description": "NPM module to externalize and localize VSCode extensions",
+	"author": "Microsoft Corporation",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Microsoft/vscode-nls.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Microsoft/vscode-nls/issues"
+	},
+	"main": "./lib/main.js",
+	"typings": "./lib/main",
+	"devDependencies": {
+		"@types/node": "^12.12.29",
+		"@types/mocha": "^7.0.2",
+		"mocha": "^7.1.0",
+		"typescript": "^3.8.3",
+		"eslint": "^6.8.0",
+		"@typescript-eslint/parser": "^2.24.0",
+		"rimraf": "^3.0.2"
+	},
+	"scripts": {
+		"prepublishOnly": "npm run lint && npm run compile && npm run test",
+		"compile": "tsc -p ./src",
+		"watch": "tsc -w -p ./src",
+		"clean": "rimraf lib",
+		"test": "mocha",
+		"lint": "eslint --config .eslintrc.json ./src/**/*.ts"
+	}
+}

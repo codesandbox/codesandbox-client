@@ -8,10 +8,6 @@ import {
   DashboardSkeletonRow,
 } from 'app/pages/Dashboard/types';
 
-type Params = {
-  path?: string;
-};
-
 const skeletonRow = {
   type: 'skeleton-row' as 'skeleton-row',
 };

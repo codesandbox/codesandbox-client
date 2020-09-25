@@ -59,7 +59,13 @@ export class Linter {
   };
 
   lint = debounce(
-    async (code: string, title: string, version: number, template: string) => {
+    async (
+      code: string,
+      title: string,
+      version: number,
+      template: string,
+      dependencies: { [dep: string]: string }
+    ) => {
       if (!title || this.isDisposed) {
         return;
       }
@@ -74,6 +80,7 @@ export class Linter {
           title,
           version,
           template,
+          dependencies,
         });
       }
     },

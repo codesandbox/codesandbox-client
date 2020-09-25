@@ -76,12 +76,10 @@ a:hover {
     color: #fff;
   }
 
-
   hr {
     background: rgba(255, 255, 255, 0.2);
     border: none;
     height: 1px;
     color: #ededed;
   }
-  
 }

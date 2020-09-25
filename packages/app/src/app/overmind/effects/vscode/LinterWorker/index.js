@@ -1,10 +1,23 @@
 import Linter from 'eslint/lib/linter';
+import semver from 'semver';
 
 import monkeypatch from './monkeypatch-babel-eslint';
+
+function isMinimalSemverVersion(version: string, minimalVersion: string) {
+  try {
+    return semver.gte(version, minimalVersion);
+  } catch (e) {
+    // Semver couldn't be parsed, we assume that we're on the bleeding edge now, so true.
+    return true;
+  }
+}
 
 self.importScripts(
   `${process.env.CODESANDBOX_HOST}/static/browserfs12/browserfs.min.js`
 );
+
+// To make the parser of typescript work
+process.versions.node = '10.10.0';
 
 /* eslint-disable global-require */
 const allRules = {
@@ -50,8 +63,6 @@ const allRules = {
     'exhaustive-deps'
   ],
 
-  '@typescript-eslint/no-angle-bracket-type-assertion': require('@typescript-eslint/eslint-plugin/dist/rules/no-angle-bracket-type-assertion')
-    .default,
   '@typescript-eslint/no-array-constructor': require('@typescript-eslint/eslint-plugin/dist/rules/no-array-constructor')
     .default,
   '@typescript-eslint/no-namespace': require('@typescript-eslint/eslint-plugin/dist/rules/no-namespace')
@@ -342,8 +353,6 @@ const TYPESCRIPT_PARSER_OPTIONS = {
     // 'tsc' already handles this (https://github.com/typescript-eslint/typescript-eslint/issues/291)
     'no-dupe-class-members': 'off',
 
-    // Add TypeScript specific rules (and turn off ESLint equivalents)
-    '@typescript-eslint/no-angle-bracket-type-assertion': 'warn',
     'no-array-constructor': 'off',
     '@typescript-eslint/no-array-constructor': 'warn',
     '@typescript-eslint/no-namespace': 'error',
@@ -381,6 +390,25 @@ monkeypatch({}, defaultConfig.parserOptions);
 
 const linter = new Linter();
 
+/**
+ * Some code in eslint (specifically vue parser) still uses require(loaderOptions.parser) to get the parser,
+ * we now rewrite that code to globalRequire(loaderOptions.parser), and make sure to return it here if the parser
+ * has been defined already.
+ */
+
+const definedParsers = new Map();
+const oldDefine = linter.defineParser;
+linter.defineParser = (parserName, parser) => {
+  definedParsers.set(parserName, parser);
+  oldDefine.apply(linter, [parserName, parser]);
+};
+self.globalRequire = path => {
+  if (definedParsers.get(path)) {
+    return definedParsers.get(path);
+  }
+  throw new Error('Module ' + path + ' not found in global require.');
+};
+
 linter.defineParser(
   'babel-eslint',
   require('babel-eslint') // eslint-disable-line global-require
@@ -412,7 +440,7 @@ function getSeverity(error) {
 
 // Respond to message from parent thread
 self.addEventListener('message', async event => {
-  const { code, version, title: filename, template } = event.data;
+  const { code, version, title: filename, template, dependencies } = event.data;
 
   let config =
     filename.endsWith('.ts') || filename.endsWith('.tsx')
@@ -426,7 +454,10 @@ self.addEventListener('message', async event => {
       getVerifyOptions: getVueVerifyOptions,
     } = await import('./vue');
 
-    config = await getVueConfig(linter);
+    config = await getVueConfig(
+      linter,
+      !isMinimalSemverVersion(dependencies.vue || '2.0.0', '3.0.0')
+    );
     config.rules = {
       ...defaultConfig.rules,
       ...config.rules,

@@ -1,0 +1,66 @@
+{
+  "name": "stylint",
+  "version": "2.0.0",
+  "description": "A linter for stylus",
+  "author": "Ross Patton",
+  "license": "GPL-3.0",
+  "keywords": [
+    "cli",
+    "css",
+    "hinter",
+    "lint",
+    "linter",
+    "styl",
+    "style",
+    "stylint",
+    "stylus",
+    "stylus-hint",
+    "stylus-lint"
+  ],
+  "main": "index.js",
+  "files": [
+    "bin/",
+    "index.js",
+    "src/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SimenB/stylint"
+  },
+  "bugs": {
+    "url": "https://github.com/SimenB/stylint/issues"
+  },
+  "bin": {
+    "stylint": "./bin/stylint"
+  },
+  "devDependencies": {
+    "chai": "3.5.0",
+    "eslint": "2.13.1",
+    "jsdoc": "3.6.2",
+    "mocha": "4.1.0",
+    "nyc": "14.1.1",
+    "sinon": "1.17.4",
+    "touch": "1.0.0"
+  },
+  "dependencies": {
+    "async": "1.5.2",
+    "chalk": "1.1.3",
+    "chokidar": "3.0.2",
+    "columnify": "1.5.4",
+    "glob": "7.0.4",
+    "lodash.defaults": "4.2.0",
+    "stampit": "1.2.0",
+    "strip-json-comments": "2.0.1",
+    "user-home": "2.0.0",
+    "yargs": "4.7.1"
+  },
+  "scripts": {
+    "cover": "nyc mocha --exit",
+    "docs": "jsdoc src/ --recurse --destination docs/",
+    "lint": "eslint .",
+    "precover": "npm run lint",
+    "pretest": "npm run lint",
+    "start": "node --harmony index.js",
+    "test": "mocha --exit"
+  }
+}

@@ -1,0 +1,39 @@
+version: ~> 1.0
+language: node_js
+os:
+ - linux
+import:
+ - ljharb/travis-ci:node/majors/all.yml
+ - ljharb/travis-ci:node/0.x/all.yml
+ - ljharb/travis-ci:node/pretest.yml
+ - ljharb/travis-ci:node/posttest.yml
+ - ./.travis.011.yml
+install:
+ - 'npm install'
+ - 'if [ "${CORE_JS-}" ]; then npm install --no-save core-js@${CORE_JS}; fi'
+script:
+ - 'if [ "${TRAVIS_NODE_VERSION}" = "13.2" ] || [ "${TRAVIS_NODE_VERSION}" = "13.7" ]; then npm run tests-esm; fi'
+env:
+ - TEST=true TEST_VARIANT=es6-shim
+ - TEST=true TEST_VARIANT=core-js CORE_JS=2
+ - TEST=true TEST_VARIANT=core-js CORE_JS=3
+matrix:
+  include:
+    - node_js: '13.7'
+      env: TEST=true TEST_VARIANT=node
+    - node_js: '13.6'
+      env: TEST=true TEST_VARIANT=node
+    - node_js: '13.5'
+      env: TEST=true TEST_VARIANT=node
+    - node_js: '13.4'
+      env: TEST=true TEST_VARIANT=node
+    - node_js: '13.3'
+      env: TEST=true TEST_VARIANT=node
+    - node_js: '13.2'
+      env: TEST=true TEST_VARIANT=node
+    - node_js: '13.1'
+      env: TEST=true TEST_VARIANT=node
+    - node_js: '13.0'
+      env: TEST=true TEST_VARIANT=node
+after_success:
+ - 'if [ -f coverage/*.json ]; then bash <(curl -s https://codecov.io/bash) -f coverage/*.json; fi'
