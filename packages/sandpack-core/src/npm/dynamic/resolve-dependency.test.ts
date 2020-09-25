@@ -10,7 +10,7 @@ describe('resolve-dependency', () => {
     TarFetcher: class A {},
   }));
 
-  it('can resolve antd', async () => {
+  it('marks the original dependency requester as parent on subdependencies', async () => {
     const result = await resolveDependencyInfo(
       'antd',
       'https://pkg.csb.dev/ant-design/ant-design/commit/ad3a0ecb/antd',
