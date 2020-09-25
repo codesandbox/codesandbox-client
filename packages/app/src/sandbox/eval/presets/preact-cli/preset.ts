@@ -1,3 +1,5 @@
+import { Preset } from 'sandpack-core';
+
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
 import stylesTranspiler from '../../transpilers/style';
@@ -8,18 +10,16 @@ import lessTranspiler from '../../transpilers/less';
 
 import asyncTranspiler from './transpilers/async';
 
-import Preset from '..';
-
-export default function PreactPresetOld() {
+export default function PreactPreset() {
   const preactPreset = new Preset(
     'preact-cli',
     ['js', 'jsx', 'ts', 'tsx', 'json', 'less', 'scss', 'sass', 'styl', 'css'],
     {
       preact$: 'preact',
       // preact-compat aliases for supporting React dependencies:
-      react: 'preact-compat',
-      'react-dom': 'preact-compat',
-      'create-react-class': 'preact-compat/lib/create-react-class',
+      react: 'preact/compat',
+      'react-dom': 'preact/compat',
+      'create-react-class': 'preact/compat/lib/create-react-class',
       'react-addons-css-transition-group': 'preact-css-transition-group',
     }
   );
@@ -28,7 +28,7 @@ export default function PreactPresetOld() {
     {
       transpiler: babelTranspiler,
       options: {
-        isV7: false,
+        isV7: true,
         compileNodeModulesWithEnv: true,
         config: {
           presets: [
@@ -36,33 +36,24 @@ export default function PreactPresetOld() {
               'env',
               {
                 loose: true,
-                uglify: true,
                 modules: false,
                 exclude: [
                   'transform-regenerator',
-                  'transform-es2015-typeof-symbol',
+                  'transform-async-to-generator',
                 ],
               },
             ],
           ],
 
           plugins: [
-            'babel-plugin-syntax-dynamic-import',
-            'babel-plugin-transform-object-assign',
-            'babel-plugin-transform-decorators-legacy',
-            'babel-plugin-transform-class-properties',
-            'babel-plugin-transform-export-extensions',
-            'babel-plugin-transform-object-rest-spread',
-            'babel-plugin-transform-react-constant-elements',
-            ['babel-plugin-transform-react-jsx', { pragma: 'h' }],
-            [
-              'babel-plugin-jsx-pragmatic',
-              {
-                module: 'preact',
-                export: 'h',
-                import: 'h',
-              },
-            ],
+            'syntax-dynamic-import',
+            'transform-object-assign',
+            ['proposal-decorators', { legacy: true }],
+            ['proposal-class-properties', { loose: true }],
+            'proposal-object-rest-spread',
+            ['fast-async', { spec: true }],
+            'babel-plugin-macros',
+            ['transform-react-jsx', { pragma: 'h', pragmaFrag: 'Fragment' }],
           ],
         },
       },

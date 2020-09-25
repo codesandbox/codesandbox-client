@@ -20,7 +20,7 @@ import { PackageJSON } from '@codesandbox/common/lib/types';
 import { reactPresetV1, reactPresetV3 } from './presets/create-react-app';
 import reactTsPreset from './presets/create-react-app-typescript';
 import vuePreset from './presets/vue-cli';
-import { preactPreset, preactPresetOld } from './presets/preact-cli';
+import { preactPreset, preactPresetV8 } from './presets/preact-cli';
 import sveltePreset from './presets/svelte';
 import angularPreset from './presets/angular-cli';
 import parcelPreset from './presets/parcel';
@@ -44,7 +44,7 @@ export default function getPreset(template: string, pkg: PackageJSON) {
         return preactPreset();
       }
 
-      return preactPresetOld();
+      return preactPresetV8();
 
     case reactTs.name:
       return reactTsPreset();

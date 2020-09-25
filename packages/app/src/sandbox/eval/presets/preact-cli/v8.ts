@@ -1,3 +1,5 @@
+import { Preset } from 'sandpack-core';
+
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
 import stylesTranspiler from '../../transpilers/style';
@@ -8,18 +10,16 @@ import lessTranspiler from '../../transpilers/less';
 
 import asyncTranspiler from './transpilers/async';
 
-import Preset from '..';
-
-export default function PreactPreset() {
+export default function PreactPresetV8() {
   const preactPreset = new Preset(
     'preact-cli',
     ['js', 'jsx', 'ts', 'tsx', 'json', 'less', 'scss', 'sass', 'styl', 'css'],
     {
       preact$: 'preact',
       // preact-compat aliases for supporting React dependencies:
-      react: 'preact/compat',
-      'react-dom': 'preact/compat',
-      'create-react-class': 'preact/compat/lib/create-react-class',
+      react: 'preact-compat',
+      'react-dom': 'preact-compat',
+      'create-react-class': 'preact-compat/lib/create-react-class',
       'react-addons-css-transition-group': 'preact-css-transition-group',
     }
   );
