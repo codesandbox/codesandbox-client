@@ -80,6 +80,13 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
   const {
     state: {
       workspace: { selectedDependencies, hitToVersionMap },
+      editor: {
+        parsedConfigurations: {
+          package: {
+            parsed: { dependencies: installedDependencies },
+          },
+        },
+      },
     },
     actions,
   } = useOvermind();
@@ -94,6 +101,8 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
       return 0;
     }
   });
+
+  const versionInstalled = installedDependencies[dependency.name];
 
   const getTagName = (tags: DependencyType['tags'], version: string) =>
     Object.keys(tags).find(key => tags[key] === version);
@@ -189,6 +198,13 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
             )}
           </Element>
           <Element css={{ flexShrink: 0, width: 208 }}>
+            {versionInstalled ? (
+              <Stack justify="flex-end" marginBottom={2} align="center">
+                <Text block size={3}>
+                  Installed version: {versionInstalled}
+                </Text>
+              </Stack>
+            ) : null}
             <Select
               onClick={e => e.stopPropagation()}
               defaultValue={selectedVersion}
