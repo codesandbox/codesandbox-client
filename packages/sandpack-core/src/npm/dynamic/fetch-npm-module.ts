@@ -1,7 +1,7 @@
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import resolve from 'browser-resolve';
-import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
+import { DependencyNotFoundError } from '../../errors';
 import { Module } from '../../types/module';
 import Manager, { ReadFileCallback } from '../../manager';
 

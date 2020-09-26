@@ -1,8 +1,8 @@
-import { orderBy } from 'lodash-es';
+import { orderBy } from 'lodash';
 import querystring from 'querystring';
+
 import { NPMDependencies } from '../npm';
 import { Module } from '../types/module';
-
 import Manager from '../manager';
 import { Transpiler } from '../transpiler';
 import { TranspiledModule } from '../transpiled-module';

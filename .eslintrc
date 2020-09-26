@@ -70,7 +70,8 @@
         "exceptAfterSingleLine": true
       }
     ],
-    "max-classes-per-file": "off"
+    "max-classes-per-file": "off",
+    "no-empty-function": "off"
   },
   "overrides": [
     {

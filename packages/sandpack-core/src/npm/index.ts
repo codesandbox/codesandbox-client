@@ -1,4 +1,4 @@
-import { pickBy } from 'lodash-es';
+import { pickBy } from 'lodash';
 import { dispatch, actions } from 'codesandbox-api';
 
 import {

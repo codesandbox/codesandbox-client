@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-classes-per-file
-import { flattenDeep } from 'lodash-es';
+import { flattenDeep } from 'lodash';
 
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from '@codesandbox/common/lib/utils/debug';
@@ -9,6 +9,7 @@ import hashsum from 'hash-sum';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 
+import { measure, endMeasure } from '@codesandbox/common/lib/utils/metrics';
 import { Module } from '../types/module';
 import { SourceMap } from '../transpiler/utils/get-source-map';
 import ModuleError from './errors/module-error';
@@ -23,7 +24,6 @@ import Manager, { HMRStatus } from '../manager';
 import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
 import delay from '../utils/delay';
-import { measure, endMeasure } from '@codesandbox/common/lib/utils/metrics';
 
 declare const BrowserFS: any;
 
@@ -837,7 +837,7 @@ export class TranspiledModule {
             // We're in a reload loop! Ignore all caches!
 
             manager.clearCache();
-            manager.deleteAPICache().then(() => {
+            manager.deleteCurrentCache().then(() => {
               document.location.reload();
             });
           } else {

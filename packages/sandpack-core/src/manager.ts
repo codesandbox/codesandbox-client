@@ -1,4 +1,4 @@
-import { flattenDeep, uniq, values } from 'lodash-es';
+import { flattenDeep, uniq, values } from 'lodash';
 import { Protocol } from 'codesandbox-api';
 import resolve from 'browser-resolve';
 import fs from 'fs';
@@ -8,8 +8,7 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 import { measure, endMeasure } from '@codesandbox/common/lib/utils/metrics';
-import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
-import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
+import { DependencyNotFoundError, ModuleNotFoundError } from './errors';
 
 import { generateBenchmarkInterface } from './utils/benchmark';
 import { Module } from './types/module';
@@ -28,12 +27,7 @@ import dependenciesToQuery from './npm/dependencies-to-query';
 import { getDependencyName } from './utils/get-dependency-name';
 import { packageFilter } from './utils/resolve-utils';
 
-import {
-  ignoreNextCache,
-  deleteAPICache,
-  clearIndexedDBCache,
-  ManagerCache,
-} from './cache';
+import { CacheProvider, ManagerCache } from './cache/provider';
 import { splitQueryFromPath } from './transpiled-module/utils/query-path';
 import { IEvaluator } from './evaluator';
 import { setContributedProtocols } from './npm/dynamic/fetch-protocols';
@@ -107,6 +101,7 @@ type TManagerOptions = {
    */
   hasFileResolver: boolean;
   versionIdentifier: string;
+  cacheProvider: CacheProvider;
 };
 
 export type ReadFileCallback = (error: Error | null, code?: string) => void;
@@ -139,6 +134,7 @@ export default class Manager implements IEvaluator {
     dependencyDependencies: {},
     dependencyAliases: {},
   };
+
   webpackHMR: boolean;
   hardReload: boolean;
   hmrStatus: HMRStatus = 'idle';
@@ -159,9 +155,8 @@ export default class Manager implements IEvaluator {
   cachedPaths: { [path: string]: { [path: string]: string } };
 
   configurations: ParsedConfigurationFiles;
-
   stage: Stage;
-
+  private cacheProvider: CacheProvider;
   version: string;
 
   constructor(
@@ -185,6 +180,7 @@ export default class Manager implements IEvaluator {
     this.configurations = {};
     this.stage = 'transpilation';
     this.version = options.versionIdentifier;
+    this.cacheProvider = options.cacheProvider;
 
     /**
      * Contribute the file fetcher, which needs the manager to resolve the files
@@ -1080,10 +1076,10 @@ export default class Manager implements IEvaluator {
       }
       return t.errors.length > 0 || t.hasMissingDependencies;
     });
-    const flattenedTModulesToUpdate = (flattenDeep([
+    const flattenedTModulesToUpdate = flattenDeep([
       tModulesToUpdate,
       modulesWithErrors,
-    ]) as unknown) as TranspiledModule[];
+    ]);
 
     const allModulesToUpdate = uniq(flattenedTModulesToUpdate);
     const transpiledModulesToUpdate = allModulesToUpdate.filter(
@@ -1169,6 +1165,7 @@ export default class Manager implements IEvaluator {
     });
 
     return {
+      id: this.id,
       transpiledModules: serializedTModules,
       cachedPaths: this.cachedPaths,
       version: this.version,
@@ -1275,15 +1272,14 @@ export default class Manager implements IEvaluator {
     }
   }
 
-  deleteAPICache() {
-    ignoreNextCache();
-    return deleteAPICache(this.id, this.version);
+  deleteCurrentCache() {
+    return this.cacheProvider.delete(this.id, this.version);
   }
 
   async clearCache() {
     try {
       this.moduleDirectoriesCache = undefined;
-      await clearIndexedDBCache();
+      await this.cacheProvider.clear();
     } catch (ex) {
       if (process.env.NODE_ENV === 'development') {
         console.error(ex);

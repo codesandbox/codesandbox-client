@@ -1,14 +1,14 @@
-// @flow
+import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import buildProcess from './utils/process';
 
-const g = typeof window === 'undefined' ? self : window;
+const g = getGlobal();
 const requestFrame = (() => {
   const raf =
     g.requestAnimationFrame ||
     // @ts-ignore
     g.mozRequestAnimationFrame ||
     g.webkitRequestAnimationFrame ||
-    function (fn) {
+    function (fn: () => void) {
       return g.setTimeout(fn, 20);
     };
   return function (fn: (time: number) => void) {
@@ -60,7 +60,7 @@ export default function (
   try {
     const newCode = `(function evaluate(` + globalsCode + `) {` + code + `\n})`;
     // @ts-ignore
-    (0, eval)(newCode).apply(this, globalsValues);
+    (0, eval)(newCode).apply(this, globalsValues); // eslint-disable-line no-eval
 
     return module.exports;
   } catch (e) {

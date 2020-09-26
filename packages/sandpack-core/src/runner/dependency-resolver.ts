@@ -1,5 +1,4 @@
-// @ts-ignore
-import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
+import { DependencyNotFoundError } from '../errors';
 
 /**
  * Converts a dependency string to an actual dependency

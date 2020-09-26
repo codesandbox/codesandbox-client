@@ -23,7 +23,6 @@
     "browser-resolve": "CompuIves/node-browser-resolve",
     "codesandbox-api": "^0.0.24",
     "lodash-es": "^4.17.15",
-    "sandbox-hooks": "0.1.0",
     "source-map": "^0.7.3"
   }
 }

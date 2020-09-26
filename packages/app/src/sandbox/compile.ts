@@ -11,16 +11,12 @@ import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
 import { flatten } from 'lodash';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
-import {
-  consumeCache,
-  deleteAPICache,
-  saveCache,
-} from 'sandpack-core/lib/cache';
 import { Module } from 'sandpack-core/lib/types/module';
 import * as metrics from '@codesandbox/common/lib/utils/metrics';
 import { Manager, TranspiledModule } from 'sandpack-core';
 
 import { loadDependencies, NPMDependencies } from 'sandpack-core/lib/npm';
+import { consumeCache, deleteCache, saveCache } from './cache';
 import {
   evalBoilerplates,
   findBoilerplate,
@@ -33,6 +29,9 @@ import handleExternalResources from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
+import { MergedCacheProvider } from './caches/merged';
+import { IndexedDBCacheProvider } from './caches/indexed-db';
+import { APICacheProvider } from './caches/api';
 
 let initializedResizeListener = false;
 let manager: Manager | null = null;
@@ -313,6 +312,10 @@ function getDependencies(
   return returnedDependencies;
 }
 
+const cacheProvider = new MergedCacheProvider([
+  new IndexedDBCacheProvider(),
+  new APICacheProvider(),
+]);
 function initializeManager(
   sandboxId: string,
   template: TemplateType,
@@ -327,6 +330,7 @@ function initializeManager(
     {
       hasFileResolver,
       versionIdentifier: SCRIPT_VERSION,
+      cacheProvider,
     }
   );
 }
@@ -560,7 +564,7 @@ async function compile({
       manager.setManifest(manifest);
       // We save the state of transpiled modules, and load it here again. Gives
       // faster initial loads.
-      usedCache = await consumeCache(manager);
+      usedCache = await consumeCache(manager, cacheProvider);
     }
 
     metrics.measure('transpilation');
@@ -729,7 +733,8 @@ async function compile({
       managerModuleToTranspile,
       manager,
       changedModuleCount,
-      firstLoad
+      firstLoad,
+      cacheProvider
     );
 
     setTimeout(async () => {
@@ -756,7 +761,7 @@ async function compile({
       manager.clearCache();
 
       if (firstLoad && changedModuleCount === 0) {
-        await deleteAPICache(manager.id, SCRIPT_VERSION);
+        await deleteCache(manager.id, SCRIPT_VERSION, cacheProvider);
       }
     }
 

@@ -1,4 +1,4 @@
-import uniq from 'lodash-es/uniq';
+import uniq from 'lodash/uniq';
 import * as semver from 'semver';
 
 export interface ILambdaResponse {
