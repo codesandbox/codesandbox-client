@@ -46,7 +46,7 @@ function checkComment(match: string[]) {
 }
 
 export function getSyntaxInfoFromCode(code: string, path: string): SyntaxInfo {
-  let syntax: SyntaxInfo = {
+  const syntax: SyntaxInfo = {
     jsx: false,
   };
   if (path.endsWith('.min.js')) {
