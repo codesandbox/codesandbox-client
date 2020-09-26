@@ -1,0 +1,87 @@
+{
+  "name": "rc-picker",
+  "version": "2.1.0",
+  "description": "React date & time picker",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-picker"
+  ],
+  "main": "./lib/index",
+  "module": "./es/index",
+  "files": [
+    "assets/*.css",
+    "assets/*.less",
+    "es",
+    "lib",
+    "dist"
+  ],
+  "homepage": "https://react-component.github.io/picker",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/picker.git"
+  },
+  "bugs": {
+    "url": "http://github.com/react-component/picker/issues"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development father doc dev --storybook",
+    "build": "father doc build --storybook",
+    "compile": "father build && lessc assets/index.less assets/index.css",
+    "gh-pages": "npm run build && father doc deploy",
+    "prepublishOnly": "npm run compile && np --yolo --no-publish",
+    "lint": "eslint src/ --ext .ts,.tsx,.jsx,.js,.md",
+    "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "test": "father test",
+    "coverage": "father test --coverage",
+    "now-build": "npm run build"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.10.1",
+    "classnames": "^2.2.1",
+    "date-fns": "^2.15.0",
+    "dayjs": "^1.8.30",
+    "moment": "^2.24.0",
+    "rc-trigger": "^5.0.4",
+    "rc-util": "^5.0.1",
+    "shallowequal": "^1.1.0"
+  },
+  "engines": {
+    "node": ">=8.x"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.9",
+    "@types/enzyme": "^3.10.3",
+    "@types/jest": "^26.0.0",
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
+    "@types/shallowequal": "^1.1.1",
+    "@umijs/fabric": "^2.0.8",
+    "coveralls": "^3.0.6",
+    "cross-env": "^7.0.2",
+    "enzyme": "^3.0.0",
+    "enzyme-adapter-react-16": "^1.0.1",
+    "enzyme-to-json": "^3.4.0",
+    "eslint": "~7.9.0",
+    "eslint-plugin-eslint-comments": "^3.1.2",
+    "eslint-plugin-jest": "^24.0.0",
+    "eslint-plugin-react-hooks": "^4.0.2",
+    "eslint-plugin-unicorn": "^21.0.0",
+    "father": "^2.13.4",
+    "less": "^3.10.3",
+    "mockdate": "^3.0.2",
+    "np": "^6.2.3",
+    "prettier": "^2.0.5",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-test-renderer": "^16.0.0",
+    "typescript": "^4.0.2"
+  },
+  "cnpm": {
+    "mode": "npm"
+  },
+  "tnpm": {
+    "mode": "npm"
+  }
+}

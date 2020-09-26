@@ -46,7 +46,15 @@ export async function getAbsoluteDependency(
     return { name: depName, version: depVersion };
   }
 
-  const data = await fetchPackageJSON(depName, depVersion);
+  let data;
+  if (depName === 'cerebral' && depVersion === 'latest') {
+    // Bug in JSDelivr, this returns the wrong package.json (of a beta version). So use Unpkg
+    data = await fetchWithRetries(
+      `https://unpkg.com/cerebral@${encodeURIComponent('latest')}/package.json`
+    );
+  } else {
+    data = await fetchPackageJSON(depName, depVersion);
+  }
 
   return { name: depName, version: data.version };
 }
