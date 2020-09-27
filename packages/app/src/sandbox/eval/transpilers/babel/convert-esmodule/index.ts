@@ -38,7 +38,11 @@ export function convertEsModule(
     return usedName;
   };
 
-  let program = meriyah.parseModule(code, { next: true, raw: true, jsx: true });
+  let program = meriyah.parseModule(code, {
+    next: true,
+    raw: true,
+    jsx: true,
+  });
 
   let i = 0;
   let importOffset = 0;

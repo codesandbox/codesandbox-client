@@ -52,6 +52,19 @@ class BabelTranspiler extends WorkerTranspiler {
 
       const isNodeModule = path.startsWith('/node_modules');
 
+      /**
+       * We should never transpile babel-standalone, because it relies on code that runs
+       * in non-strict mode. Transpiling this code would add a "use strict;" piece, which
+       * would then break the code (because it expects `this` to be global). No transpiler
+       * can fix this, and because of this we need to just specifically ignore this file.
+       */
+      const shouldIgnore = path === '/node_modules/babel-standalone/babel.js';
+
+      if (shouldIgnore) {
+        resolve({ transpiledCode: code });
+        return;
+      }
+
       let convertedToEsmodule = false;
       let ast: Program | undefined;
       if (isESModule(newCode) && isNodeModule) {
@@ -80,7 +93,7 @@ class BabelTranspiler extends WorkerTranspiler {
         if (
           (loaderContext.options.simpleRequire || isNodeModule) &&
           !syntaxInfo.jsx &&
-          !(isESModule(newCode) && !convertedToEsmodule)
+          !(!convertedToEsmodule && syntaxInfo.esm)
         ) {
           regexGetRequireStatements(newCode).forEach(dependency => {
             if (dependency.isGlob) {

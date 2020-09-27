@@ -1,10 +1,10 @@
-import isESModule from '../../utils/is-es-module';
 import { getSyntaxInfoFromCode } from './syntax-info';
 
 export function shouldTranspile(code: string, path: string) {
-  if (isESModule(code)) {
+  const syntaxInformation = getSyntaxInfoFromCode(code, path);
+  if (syntaxInformation.esm) {
     return true;
   }
 
-  return getSyntaxInfoFromCode(code, path).jsx === true;
+  return syntaxInformation.jsx;
 }

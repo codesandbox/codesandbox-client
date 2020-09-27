@@ -1,17 +1,26 @@
 import { walk } from 'estree-walker';
 import { Program } from 'meriyah/dist/estree';
+import isESModule from 'sandbox/eval/utils/is-es-module';
 import { Syntax as n } from './convert-esmodule/syntax';
 
 export interface SyntaxInfo {
   jsx: boolean;
+  esm: boolean;
 }
 
 export function getSyntaxInfoFromAst(program: Program): SyntaxInfo {
-  const syntaxInfo: SyntaxInfo = { jsx: false };
+  const syntaxInfo: SyntaxInfo = { jsx: false, esm: false };
   walk(program, {
     enter(node) {
-      if (syntaxInfo.jsx) {
-        // We already know enough
+      const esmTypes: string[] = [
+        n.ImportDeclaration,
+        n.ExportAllDeclaration,
+        n.ExportDefaultDeclaration,
+        n.ExportNamedDeclaration,
+        n.ExportSpecifier,
+      ];
+      if (esmTypes.includes(node.type)) {
+        syntaxInfo.esm = true;
         this.skip();
       }
 
@@ -46,17 +55,24 @@ function checkComment(match: string[]) {
 }
 
 export function getSyntaxInfoFromCode(code: string, path: string): SyntaxInfo {
+  // Use getters so we can evaluate lazily
   const syntax: SyntaxInfo = {
-    jsx: false,
+    get jsx() {
+      const jsxMatch = code.match(JSXSyntax);
+
+      return jsxMatch && checkComment(jsxMatch);
+    },
+    get esm() {
+      return isESModule(code);
+    },
   };
+
   if (path.endsWith('.min.js')) {
     // This needs no transpiling and often fools our JSX check with <a etc...
-    return syntax;
-  }
-
-  const jsxMatch = code.match(JSXSyntax);
-  if (jsxMatch) {
-    syntax.jsx = checkComment(jsxMatch);
+    return {
+      jsx: false,
+      esm: false,
+    };
   }
 
   return syntax;
