@@ -1,8 +1,7 @@
 import _debug from '@codesandbox/common/lib/utils/debug';
 
-import Manager from 'sandbox/eval/manager';
+import { Manager, Preset } from 'sandpack-core';
 import { dispatch } from 'codesandbox-api';
-import Preset from '..';
 
 import stylesTranspiler from '../../transpilers/style';
 import babelTranspiler from '../../transpilers/babel';

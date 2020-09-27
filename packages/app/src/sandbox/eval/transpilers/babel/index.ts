@@ -5,15 +5,15 @@ import isESModule from 'sandbox/eval/utils/is-es-module';
 // @ts-ignore
 import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index';
 
-import delay from '../../../utils/delay';
-import { endMeasure, measure } from '../../../utils/metrics';
-import Manager from '../../manager';
-import { LoaderContext } from '../../transpiled-module';
+import delay from '@codesandbox/common/lib/utils/delay';
+import { endMeasure, measure } from '@codesandbox/common/lib/utils/metrics';
+import { Program } from 'meriyah/dist/estree';
+import { LoaderContext, Manager } from 'sandpack-core';
 import WorkerTranspiler from '../worker-transpiler';
 import getBabelConfig from './babel-parser';
-import { hasNewSyntax } from './check';
 import { convertEsModule } from './convert-esmodule';
 import regexGetRequireStatements from './worker/simple-get-require-statements';
+import { getSyntaxInfoFromAst, getSyntaxInfoFromCode } from './syntax-info';
 
 const global = window as any;
 
@@ -52,12 +52,28 @@ class BabelTranspiler extends WorkerTranspiler {
 
       const isNodeModule = path.startsWith('/node_modules');
 
+      /**
+       * We should never transpile babel-standalone, because it relies on code that runs
+       * in non-strict mode. Transpiling this code would add a "use strict;" piece, which
+       * would then break the code (because it expects `this` to be global). No transpiler
+       * can fix this, and because of this we need to just specifically ignore this file.
+       */
+      const shouldIgnore = path === '/node_modules/babel-standalone/babel.js';
+
+      if (shouldIgnore) {
+        resolve({ transpiledCode: code });
+        return;
+      }
+
       let convertedToEsmodule = false;
+      let ast: Program | undefined;
       if (isESModule(newCode) && isNodeModule) {
         try {
           measure(`esconvert-${path}`);
-          newCode = convertEsModule(newCode);
+          const esModuleInfo = convertEsModule(newCode);
+          newCode = esModuleInfo.code;
           endMeasure(`esconvert-${path}`, { silent: true });
+          ast = esModuleInfo.ast;
           convertedToEsmodule = true;
         } catch (e) {
           console.warn(
@@ -66,6 +82,9 @@ class BabelTranspiler extends WorkerTranspiler {
         }
       }
 
+      const syntaxInfo = ast
+        ? getSyntaxInfoFromAst(ast)
+        : getSyntaxInfoFromCode(newCode, path);
       try {
         // When we find a node_module that already is commonjs we will just get the
         // dependencies from the file and return the same code. We get the dependencies
@@ -73,8 +92,8 @@ class BabelTranspiler extends WorkerTranspiler {
         // faster than generating an AST from the code.
         if (
           (loaderContext.options.simpleRequire || isNodeModule) &&
-          !hasNewSyntax(newCode, path) &&
-          !(isESModule(newCode) && !convertedToEsmodule)
+          !syntaxInfo.jsx &&
+          !(!convertedToEsmodule && syntaxInfo.esm)
         ) {
           regexGetRequireStatements(newCode).forEach(dependency => {
             if (dependency.isGlob) {
@@ -96,9 +115,7 @@ class BabelTranspiler extends WorkerTranspiler {
       }
 
       const configs = loaderContext.options.configurations;
-
       const foundConfig = configs.babel && configs.babel.parsed;
-
       const loaderOptions = loaderContext.options || {};
 
       const dependencies =

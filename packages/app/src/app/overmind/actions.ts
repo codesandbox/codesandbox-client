@@ -189,7 +189,7 @@ export const signInVercelClicked: AsyncAction = async ({
 export const signOutVercelClicked: AsyncAction = async ({ state, effects }) => {
   if (state.user?.integrations?.zeit) {
     await effects.api.signoutVercel();
-    delete state.user.integrations.zeit;
+    state.user.integrations.zeit = null;
   }
 };
 
@@ -244,7 +244,7 @@ export const signOutGithubIntegration: AsyncAction = async ({
 }) => {
   if (state.user?.integrations?.github) {
     await effects.api.signoutGithubIntegration();
-    delete state.user.integrations.github;
+    state.user.integrations.github = null;
   }
 };
 

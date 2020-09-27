@@ -14,6 +14,16 @@ import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
 import { getInspectorStateService } from 'inspector/lib/sandbox';
 
 import {
+  consumeCache,
+  deleteAPICache,
+  saveCache,
+} from 'sandpack-core/lib/cache';
+import { Module } from 'sandpack-core/lib/types/module';
+import * as metrics from '@codesandbox/common/lib/utils/metrics';
+import { Manager, TranspiledModule } from 'sandpack-core';
+
+import { loadDependencies, NPMDependencies } from 'sandpack-core/lib/npm';
+import {
   evalBoilerplates,
   findBoilerplate,
   getBoilerplates,
@@ -21,15 +31,10 @@ import {
 import defaultBoilerplates from './boilerplates/default-boilerplates';
 import createCodeSandboxOverlay from './codesandbox-overlay';
 import getPreset from './eval';
-import { consumeCache, deleteAPICache, saveCache } from './eval/cache';
-import { Module } from './eval/types/module';
-import Manager from './eval/manager';
-import TranspiledModule from './eval/transpiled-module';
 import handleExternalResources from './external-resources';
-import { loadDependencies, NPMDependencies } from './npm';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
-import * as metrics from './utils/metrics';
+import { SCRIPT_VERSION } from '.';
 
 let initializedResizeListener = false;
 let manager: Manager | null = null;
@@ -61,11 +66,8 @@ export function getHTMLParts(html: string) {
   return { head: '', body: html };
 }
 
-function sendTestCount(
-  givenManager: Manager,
-  modules: { [path: string]: Module }
-) {
-  const { testRunner } = givenManager;
+let testRunner: import('./eval/tests/jest-lite').default | undefined;
+function sendTestCount(modules: { [path: string]: Module }) {
   const tests = testRunner.findTests(modules);
 
   dispatch({
@@ -326,6 +328,7 @@ function initializeManager(
     modules,
     {
       hasFileResolver,
+      versionIdentifier: SCRIPT_VERSION,
     }
   );
 }
@@ -497,12 +500,42 @@ async function compile({
     dependencies = await manager.preset.processDependencies(dependencies);
 
     metrics.measure('dependencies');
+
+    if (firstLoad) {
+      setScreen({
+        type: 'loading',
+        showFullScreen: firstLoad,
+        text: 'Installing Dependencies',
+      });
+    }
+
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
+      ({ done, total, remainingDependencies }) => {
+        const progress = total - done;
+        if (done === total) {
+          return;
+        }
+
+        if (progress <= 6) {
+          setScreen({
+            type: 'loading',
+            showFullScreen: firstLoad,
+            text: `Installing Dependencies ${progress}/${total} (${remainingDependencies.join(
+              ','
+            )})`,
+          });
+        } else {
+          setScreen({
+            type: 'loading',
+            showFullScreen: firstLoad,
+            text: `Installing Dependencies ${progress}/${total}`,
+          });
+        }
+      },
       {
         disableExternalConnection: disableDependencyPreprocessing,
         resolutions: parsedPackageJSON.resolutions,
-        showFullScreen: firstLoad,
       }
     );
     metrics.endMeasure('dependencies', { displayName: 'Dependencies' });
@@ -710,8 +743,13 @@ async function compile({
 
     setTimeout(async () => {
       try {
-        await manager.initializeTestRunner();
-        sendTestCount(manager, modules);
+        testRunner =
+          testRunner ||
+          (await import('./eval/tests/jest-lite')
+            .then(s => s.default)
+            .then(TestRunner => new TestRunner(manager)));
+
+        sendTestCount(modules);
       } catch (e) {
         if (process.env.NODE_ENV === 'development') {
           console.error('Test error', e);
@@ -727,7 +765,7 @@ async function compile({
       manager.clearCache();
 
       if (firstLoad && changedModuleCount === 0) {
-        await deleteAPICache(manager.id);
+        await deleteAPICache(manager.id, SCRIPT_VERSION);
       }
     }
 

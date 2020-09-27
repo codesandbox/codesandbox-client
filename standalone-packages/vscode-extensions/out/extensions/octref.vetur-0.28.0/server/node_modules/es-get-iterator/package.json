@@ -1,0 +1,89 @@
+{
+	"name": "es-get-iterator",
+	"version": "1.1.0",
+	"description": "Get an iterator for any JS language value. Works robustly across all environments, all versions.",
+	"main": "index",
+	"exports": {
+		".": [
+			{
+				"browser": "./index.js",
+				"import": "./node.mjs",
+				"default": "./node.js"
+			},
+			"./node.js"
+		],
+		"./package": "./package.json",
+		"./package.json": "./package.json"
+	},
+	"type": "commonjs",
+	"scripts": {
+		"prepublish": "safe-publish-latest",
+		"lint": "eslint --ext=js,mjs .",
+		"pretest": "npm run lint",
+		"tests-only": "nyc node test/${TEST_VARIANT-}",
+		"tests-esm": "nyc node test/node.mjs",
+		"test": "npm run tests-only && npm run tests-esm",
+		"posttest": "npx aud --production",
+		"version": "auto-changelog && git add CHANGELOG.md",
+		"postversion": "auto-changelog && git add CHANGELOG.md && git commit --no-edit --amend && git tag -f \"v$(node -e \"console.log(require('./package.json').version)\")\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ljharb/es-get-iterator.git"
+	},
+	"keywords": [
+		"iterator",
+		"Symbol.iterator",
+		"iterable",
+		"collection",
+		"next",
+		"iteration"
+	],
+	"author": "Jordan Harband <ljharb@gmail.com>",
+	"funding": {
+		"url": "https://github.com/sponsors/ljharb"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/ljharb/es-get-iterator/issues"
+	},
+	"homepage": "https://github.com/ljharb/es-get-iterator#readme",
+	"devDependencies": {
+		"@ljharb/eslint-config": "^16.0.0",
+		"auto-changelog": "^1.16.2",
+		"core-js": "^2.6.10 || ^3.4.2",
+		"es5-shim": "^4.5.13",
+		"es6-shim": "^0.35.5",
+		"eslint": "^6.8.0",
+		"for-each": "^0.3.3",
+		"has-bigints": "^1.0.0",
+		"nyc": "^10.3.2",
+		"object-inspect": "^1.7.0",
+		"safe-publish-latest": "^1.1.4",
+		"tape": "^5.0.0-next.3"
+	},
+	"testling": {
+		"files": "./test/index.js"
+	},
+	"greenkeeper": {
+		"ignore": [
+			"nyc"
+		]
+	},
+	"dependencies": {
+		"es-abstract": "^1.17.4",
+		"has-symbols": "^1.0.1",
+		"is-arguments": "^1.0.4",
+		"is-map": "^2.0.1",
+		"is-set": "^2.0.1",
+		"is-string": "^1.0.5",
+		"isarray": "^2.0.5"
+	},
+	"auto-changelog": {
+		"output": "CHANGELOG.md",
+		"template": "keepachangelog",
+		"unreleased": false,
+		"commitLimit": false,
+		"backfillLimit": false
+	}
+}

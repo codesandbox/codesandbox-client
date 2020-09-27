@@ -1,4 +1,4 @@
-import Transpiler, { TranspilerResult } from '..';
+import { TranspilerResult, Transpiler } from 'sandpack-core';
 
 class Base64Transpiler extends Transpiler {
   constructor() {

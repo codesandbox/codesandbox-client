@@ -1,0 +1,73 @@
+{
+  "name": "rc-tree-select",
+  "version": "4.1.2",
+  "description": "tree-select ui component for react",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-tree-select",
+    "tree-select"
+  ],
+  "homepage": "https://github.com/react-component/tree-select",
+  "author": "smith3816@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/react-component/tree-select.git"
+  },
+  "bugs": {
+    "url": "https://github.com/react-component/tree-select/issues"
+  },
+  "files": [
+    "es",
+    "lib",
+    "dist",
+    "assets/*.less",
+    "assets/*.css",
+    "assets/*.png",
+    "assets/*.gif"
+  ],
+  "license": "MIT",
+  "main": "./lib/index",
+  "module": "./es/index",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development father doc dev --storybook",
+    "build": "father doc build --storybook",
+    "compile": "father build",
+    "prepublishOnly": "npm run compile && np --yolo --no-publish --any-branch",
+    "lint": "eslint src/ examples/ --ext .tsx,.ts,.jsx,.js",
+    "prettier": "prettier '{src,tests}/**/*.{ts,tsx}' 'tests/**/*.js' --write",
+    "test": "father test",
+    "now-build": "npm run build"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.5",
+    "@types/react": "^16.8.19",
+    "@types/react-dom": "^16.8.4",
+    "@types/warning": "^3.0.0",
+    "cross-env": "^7.0.2",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme-to-json": "^3.4.0",
+    "eslint": "^7.1.0",
+    "father": "^2.13.2",
+    "np": "^6.2.0",
+    "rc-dialog": "^7.5.7",
+    "rc-field-form": "^1.0.0",
+    "rc-trigger": "^4.0.0",
+    "rc-virtual-list": "^1.1.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "typescript": "^3.5.2"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.10.1",
+    "classnames": "2.x",
+    "rc-select": "^11.1.1",
+    "rc-tree": "^3.8.0",
+    "rc-util": "^5.0.5"
+  }
+}

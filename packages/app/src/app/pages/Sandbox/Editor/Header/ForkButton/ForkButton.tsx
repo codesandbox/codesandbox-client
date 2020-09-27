@@ -59,7 +59,7 @@ const DisabledTeamItem = (props: TeamItemProps) => (
   </Menu.Item>
 );
 
-type TeamItem = {
+interface ITeamItem {
   teamId: string;
   teamName: string;
   teamAvatar: string | null;
@@ -67,7 +67,7 @@ type TeamItem = {
 };
 
 interface TeamOrUserItemProps {
-  item: TeamItem;
+  item: ITeamItem;
   forkClicked: (teamId: string) => void;
   disabled: boolean;
   isPersonal: boolean;
@@ -88,7 +88,7 @@ const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
     <TeamItem
       id={props.item.teamId}
       onSelect={() => {
-        const item = props.item as TeamItem;
+        const item = props.item as ITeamItem;
         props.forkClicked(item.teamId);
       }}
       name={props.item.teamName + (props.isPersonal ? ' (Personal)' : '')}
@@ -106,9 +106,9 @@ interface ForkButtonProps {
 export const ForkButton: React.FC<ForkButtonProps> = props => {
   const { state } = useOvermind();
   const { user } = props;
-  let teams: TeamItem[] = [];
-  let currentSpace: TeamItem | null = null;
-  let otherWorkspaces: TeamItem[] = [];
+  let teams: ITeamItem[] = [];
+  let currentSpace: ITeamItem | null = null;
+  let otherWorkspaces: ITeamItem[] = [];
 
   const userSpace = state.dashboard.teams.find(
     t => t.id === state.personalWorkspaceId

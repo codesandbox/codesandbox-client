@@ -177,7 +177,7 @@ export async function downloadPath(
 
   let code = r.code;
   try {
-    code = convertEsModule(r.code);
+    code = convertEsModule(r.code).code;
   } catch (e) {
     console.warn(e);
   }

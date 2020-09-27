@@ -408,6 +408,7 @@ export default class Content extends React.PureComponent<Props, State> {
       toggleSidebar,
       toggleLike,
       editorSize,
+      initialPath,
     } = this.props;
 
     const { isInProjectView } = this.state;
@@ -475,7 +476,7 @@ export default class Content extends React.PureComponent<Props, State> {
           url={options.url ? options.url : undefined}
           currentModule={mainModule}
           settings={this.getPreferences()}
-          initialPath={this.props.initialPath}
+          initialPath={initialPath}
           isInProjectView={isInProjectView}
           onClearErrors={this.clearErrors}
           onAction={this.handleAction}
@@ -506,6 +507,7 @@ export default class Content extends React.PureComponent<Props, State> {
           openInNewWindow={this.openInNewWindow}
           toggleLike={toggleLike}
           initialEditorSize={editorSize}
+          initialPath={initialPath}
           setEditorSize={this.setEditorSize}
           hideDevTools={hideDevTools}
           setDragging={this.setDragging}

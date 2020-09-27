@@ -26,7 +26,11 @@
       "packages/executors",
       "packages/template-icons",
       "packages/knobs",
-      "packages/inspector"
+      "packages/inspector",
+      "packages/vue3-transpiler",
+      "packages/vue3-browser-compiler",
+      "packages/browser-eslint-rules",
+      "packages/sandpack-core"
     ],
     "nohoist": [
       "**/react-codemirror2",
@@ -75,8 +79,8 @@
     "prettify": "prettier -w ."
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^1.13.0",
-    "@typescript-eslint/parser": "^1.13.0",
+    "@typescript-eslint/eslint-plugin": "^4.2.0",
+    "@typescript-eslint/parser": "^4.2.0",
     "opencollective": "^1.0.3"
   },
   "devDependencies": {
@@ -94,12 +98,12 @@
     "eslint-plugin-react": "~7.14.3",
     "eslint-plugin-react-hooks": "^4.1.0",
     "gulp": "^3.9.1",
-    "husky": "^2.2.0",
+    "husky": "^4.3.0",
     "lerna": "^3.16.4",
     "lint-staged": "^9.2.5",
     "prettier": "2.1.1",
     "pretty-quick": "^3.0.0",
-    "typescript": "3.9.2",
+    "typescript": "4.0.3",
     "username": "^5.1.0"
   },
   "husky": {

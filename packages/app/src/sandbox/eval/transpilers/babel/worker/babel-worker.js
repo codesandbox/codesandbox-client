@@ -609,7 +609,6 @@ self.addEventListener('message', async event => {
 
     if (!disableCodeSandboxPlugins) {
       if (
-        flattenedPresets.indexOf('env') > -1 &&
         Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
         version !== 7
       ) {

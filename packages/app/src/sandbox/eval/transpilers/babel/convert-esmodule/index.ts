@@ -22,13 +22,15 @@ import { customGenerator } from './generator';
 /**
  * Converts esmodule code to commonjs code, built to be as fast as possible
  */
-export function convertEsModule(code: string) {
+export function convertEsModule(
+  code: string
+): { code: string; ast: meriyah.ESTree.Program } {
   const usedVarNames = {};
   const varsToRename = {};
   const trackedExports = {};
 
   const getVarName = (name: string) => {
-    let usedName = name.replace(/(\.|-|@)/g, '');
+    let usedName = name.replace(/(\.|-|@|\?|&|=|{|})/g, '');
     while (usedVarNames[usedName]) {
       usedName += '_';
     }
@@ -36,7 +38,11 @@ export function convertEsModule(code: string) {
     return usedName;
   };
 
-  let program = meriyah.parseModule(code, { next: true });
+  let program = meriyah.parseModule(code, {
+    next: true,
+    raw: true,
+    jsx: true,
+  });
 
   let i = 0;
   let importOffset = 0;
@@ -511,5 +517,5 @@ export function convertEsModule(code: string) {
     generator: customGenerator,
   });
 
-  return `"use strict";\n${finalCode}`;
+  return { code: `"use strict";\n${finalCode}`, ast: program };
 }

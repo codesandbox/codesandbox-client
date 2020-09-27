@@ -1,0 +1,54 @@
+{
+  "name": "@ant-design/css-animation",
+  "version": "1.7.3",
+  "description": "css-animation",
+  "keywords": [
+    "css-animation"
+  ],
+  "homepage": "http://github.com/ant-design/css-animation",
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ant-design/css-animation.git"
+  },
+  "bugs": {
+    "url": "http://github.com/ant-design/css-animation/issues"
+  },
+  "license": "MIT",
+  "main": "./lib/index",
+  "module": "./es/index",
+  "files": [
+    "lib",
+    "es"
+  ],
+  "config": {
+    "port": 9001,
+    "entry": {
+      "css-animation": [
+        "./src/index.js"
+      ]
+    }
+  },
+  "scripts": {
+    "dist": "rc-tools run dist",
+    "build": "rc-tools run build",
+    "gh-pages": "rc-tools run gh-pages",
+    "start": "rc-tools run server",
+    "pub": "rc-tools run pub",
+    "compile": "rc-tools run compile",
+    "lint": "rc-tools run lint"
+  },
+  "devDependencies": {
+    "expect.js": "0.3.x",
+    "pre-commit": "1.x",
+    "rc-tools": "6.x",
+    "react": "15.x",
+    "react-dom": "15.x"
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
