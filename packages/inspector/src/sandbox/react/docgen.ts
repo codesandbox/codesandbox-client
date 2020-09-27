@@ -1,6 +1,10 @@
 // @ts-ignore
 import { parse } from 'react-docgen';
-import { FileComponentInformation, Prop } from 'src/common/fibers';
+import {
+  FileComponentInformation,
+  PropInfo,
+  TypeInfo,
+} from '../../common/fibers';
 
 export type PropTypeDescriptor = {
   name:
@@ -48,9 +52,9 @@ export type FlowLiteralType = FlowBaseType & {
 };
 
 export type FlowElementsType = FlowBaseType & {
-  name: string;
+  name: 'union';
   raw: string;
-  elements: Array<FlowTypeDescriptor>;
+  elements: Array<FlowLiteralType>;
 };
 
 export type FlowFunctionArgumentType = {
@@ -113,50 +117,65 @@ export interface DocgenOutput {
   description: string;
   displayName: string;
   methods: unknown[];
-  props: {
+  props?: {
     [propName: string]: PropDescriptor;
   };
 }
 
-function convertReactDocsType(propDescriptor: PropDescriptor): Prop['type'] {
+function getPropType(propDescriptor: PropDescriptor): TypeInfo | null {
   const types = propDescriptor.tsType || propDescriptor.flowType;
   if (types) {
     switch (types.name) {
       case 'union':
-        return 'enum';
+        const unionType = types as FlowElementsType;
+        return {
+          type: 'union',
+          options: unionType.elements,
+        };
       case 'number':
-        return 'number';
+        return {
+          type: 'number',
+        };
       case 'string':
-        return 'string';
+        return {
+          type: 'string',
+        };
       case 'boolean':
-        return 'boolean';
+        return { type: 'boolean' };
     }
   }
 
-  return 'object';
+  return null;
+}
+
+function convertReactDocsProp(
+  propName: string,
+  prop: PropDescriptor
+): PropInfo {
+  return {
+    name: propName,
+    description: prop.description,
+    required: Boolean(prop.required),
+    typeInfo: getPropType(prop),
+    defaultValue: prop.defaultValue && {
+      computed: prop.defaultValue.computed,
+      value: prop.defaultValue.value,
+    },
+  };
 }
 
 export function analyzeCode(code: string): FileComponentInformation {
   const result: DocgenOutput = parse(code);
 
+  const props = result.props || {};
+
   return {
     default: {
       name: result.displayName,
       description: result.description,
-      props: Object.keys(result.props).map(propName => {
-        const prop = result.props[propName];
-        const type = convertReactDocsType(prop) as Prop['type'];
-        return {
-          name: propName,
-          description: prop.description,
-          required: Boolean(prop.required),
-          type,
-          defaultValue: prop.defaultValue && {
-            computed: prop.defaultValue.computed,
-            value: prop.defaultValue.value,
-          },
-        };
-      }),
+      props: Object.keys(props).map(propName =>
+        convertReactDocsProp(propName, props[propName])
+      ),
     },
   };
 }

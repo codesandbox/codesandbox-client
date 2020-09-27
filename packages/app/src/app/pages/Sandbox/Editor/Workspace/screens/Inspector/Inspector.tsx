@@ -1,27 +1,53 @@
 import React, { useEffect } from 'react';
-import { Collapsible } from '@codesandbox/components';
+import { Collapsible, Stack, Text } from '@codesandbox/components';
 
-import { Fiber } from './Fiber';
 import {
   getInspectorStateService,
   EditorInspectorState,
 } from 'inspector/lib/editor';
-import { Fiber as FiberType } from 'inspector/lib/common/fibers';
+import {
+  Fiber as FiberType,
+  StaticComponentInformation,
+} from 'inspector/lib/common/fibers';
+
+import { useOvermind } from 'app/overmind';
+import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import { Fiber } from './Fiber';
+import { BaseKnob } from './Knobs';
 
 export const Inspector = () => {
+  const { actions, effects, state } = useOvermind();
   const inspectorStateService = React.useRef<EditorInspectorState>();
   const [fibers, setFibers] = React.useState<FiberType[]>([]);
   const [selectedFiber, setSelectedFiber] = React.useState<FiberType | null>(
     null
   );
+  const [
+    componentInformation,
+    setComponentInformation,
+  ] = React.useState<StaticComponentInformation | null>(null);
 
   useEffect(() => {
-    inspectorStateService.current = getInspectorStateService();
-    inspectorStateService.current.getFibers().then(fibers => {
-      setFibers(fibers);
+    const inspector = getInspectorStateService();
+    inspectorStateService.current = inspector;
+    inspector.getFibers().then(editorFibers => {
+      setFibers(editorFibers);
     });
-    inspectorStateService.current.onSelectionChanged(fiber => {
+    inspector.onSelectionChanged(fiber => {
       setSelectedFiber(fiber);
+
+      actions.editor.moduleSelected({ path: fiber.location.path }).then(() => {
+        effects.vscode.setSelectionFromRange({
+          startLineNumber: fiber.location.codePosition.startLineNumber,
+          endLineNumber: fiber.location.codePosition.endLineNumber,
+          startColumn: fiber.location.codePosition.startColumnNumber,
+          endColumn: fiber.location.codePosition.endColumnNumber,
+        });
+      });
+
+      inspector.getFiberComponentInformation(fiber.id).then(info => {
+        setComponentInformation(info);
+      });
     });
   }, []);
 
@@ -35,8 +61,33 @@ export const Inspector = () => {
               id={fiber.id}
               name={fiber.name || 'Anonymous'}
               depth={fiber.depth}
+              selected={selectedFiber?.id === fiber.id}
               onSelect={id => {
                 inspectorStateService.current.selectFiber(id);
+              }}
+              onMouseEnter={id => {
+                inspectorStateService.current.highlightFiber(id);
+
+                effects.vscode.highlightRange(
+                  fiber.location.path,
+                  {
+                    startLineNumber:
+                      fiber.location.codePosition.startLineNumber,
+                    endLineNumber: fiber.location.codePosition.endLineNumber,
+                    startColumn: fiber.location.codePosition.startColumnNumber,
+                    endColumn: fiber.location.codePosition.endColumnNumber,
+                  },
+                  '#6CC7F650',
+                  'inspector'
+                );
+              }}
+              onMouseLeave={id => {
+                inspectorStateService.current.stopHighlightFiber(id);
+
+                effects.vscode.clearHighlightedRange(
+                  fiber.location.path,
+                  'inspector'
+                );
               }}
             />
           ))}
@@ -44,9 +95,18 @@ export const Inspector = () => {
       </Collapsible>
       <Collapsible defaultOpen title="Knobs">
         {selectedFiber && (
-          <div style={{ marginTop: -16 }}>
-            {selectedFiber.name || 'Anonymous'}
-          </div>
+          <Stack
+            gap={2}
+            direction="vertical"
+            padding={3}
+            style={{ marginTop: -16 }}
+          >
+            <Text weight="bold" color="white">
+              {selectedFiber.name || 'Anonymous'}
+            </Text>
+
+            {componentInformation?.props.map(val => <BaseKnob key={val.name} label={val.name} />)}
+          </Stack>
         )}
       </Collapsible>
     </>

@@ -4,6 +4,7 @@ import {
   Module,
   Sandbox,
   UserSelection,
+  UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
@@ -339,6 +340,66 @@ export class ModelsHandler {
     if (!triggerChangeEvent) {
       this.isApplyingOperation = false;
     }
+  }
+
+  codeHighlights: { [source: string]: string } = {};
+  public createCodeHighlight(
+    path: string,
+    range: UserViewRange,
+    color: string,
+    source: string
+  ) {
+    const moduleModel = this.getModuleModelByPath(path);
+
+    if (!moduleModel?.model) {
+      return;
+    }
+
+    const model = moduleModel.model;
+    const selectionClassName = color + '-selection';
+
+    this.userClassesGenerated[selectionClassName] =
+      this.userClassesGenerated[selectionClassName] ||
+      `${css({
+        backgroundColor: color,
+        borderRadius: '3px',
+        minWidth: 7.6,
+      })}`;
+
+    const decorations = [
+      {
+        range: new this.monaco.Range(
+          range.startLineNumber,
+          range.startColumn,
+          range.endLineNumber,
+          range.endColumn
+        ),
+        options: {
+          className: this.userClassesGenerated[selectionClassName],
+          stickiness: 3, // GrowsOnlyWhenTypingAfter
+        },
+      },
+    ];
+
+    this.codeHighlights[source] = model.deltaDecorations(
+      this.codeHighlights[source] || [],
+      decorations
+    );
+  }
+
+  public clearCodeHighlight(path: string, source: string) {
+    const moduleModel = this.getModuleModelByPath(path);
+
+    if (!moduleModel?.model) {
+      return;
+    }
+
+    const model = moduleModel.model;
+
+    this.codeHighlights[source] = model.deltaDecorations(
+      this.codeHighlights[source] || [],
+      []
+    );
   }
 
   public clearUserSelections(userId: string) {

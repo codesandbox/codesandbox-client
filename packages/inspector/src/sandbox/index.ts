@@ -5,10 +5,11 @@ import {
   editorProxyIdentifier,
   sandboxProxyIdentifier,
 } from '../common/proxies';
-import { Fiber, Prop } from '../common/fibers';
+import { Fiber, StaticComponentInformation } from '../common/fibers';
 import * as ReactInspectorBridge from './react';
 import { ComponentInformationResolver } from './component-information';
 import { Disposable } from '../common/rpc/disposable';
+import { clearHighlight, highlightElement } from './highlight';
 
 type ResolverResult = {
   resolvedPath: string;
@@ -21,34 +22,57 @@ export interface Resolver {
 class Inspector extends Disposable implements ISandboxProxy {
   fibers = new Map<string, Fiber>();
   componentInfoResolver: ComponentInformationResolver;
+  bridge: ReactInspectorBridge.ReactBridge;
 
   constructor(private editorProxy: IEditorProxy, private resolver: Resolver) {
     super();
-    // @ts-ignore
-    window['fire'] = () => {
-      console.log(ReactInspectorBridge.getFibers());
-    };
 
+    window.inspector = this;
+    this.bridge = new ReactInspectorBridge.ReactBridge();
     this.componentInfoResolver = new ComponentInformationResolver(
-      this.resolver
+      this.resolver,
+      this.bridge
     );
     this.toDispose.push(this.componentInfoResolver);
   }
 
-  async $getFiberProps(id: string): Promise<Prop[]> {
+  async $getFiberComponentInformation(
+    id: string
+  ): Promise<StaticComponentInformation> {
     const fiber = this.fibers.get(id);
     if (!fiber) {
       throw new Error('Could not find fiber with id: ' + id);
     }
-    return [];
+    const fromPath = fiber.location.path;
+    const toPath = fiber.importLocation.importPath || './';
+    const definitions = await this.componentInfoResolver.getComponentDefinitions(
+      fromPath,
+      toPath
+    );
+
+    return definitions[fiber.importLocation.importName];
   }
 
+  private lastHighlightedId: string | null = null;
   $highlightFiber(id: string): void {
-    console.log('Got HighlightFiber', id);
+    const element = this.bridge.getElementForFiber(id);
+    this.lastHighlightedId = id;
+    highlightElement(element);
+  }
+
+  $stopHighlightFiber(id: string): void {
+    if (this.lastHighlightedId !== id) {
+      return;
+    }
+    this.lastHighlightedId = null;
+    clearHighlight();
   }
 
   async $getFibers(id?: string): Promise<Fiber[] | undefined> {
-    const fibers = ReactInspectorBridge.getFibers();
+    const fibers = this.bridge.getFibers();
+    fibers.forEach(fiber => {
+      this.fibers.set(fiber.id, fiber);
+    });
     return fibers;
   }
 }

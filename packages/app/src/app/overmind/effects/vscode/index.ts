@@ -705,6 +705,16 @@ export class VSCodeEffect {
     }
   }
 
+  public setSelectionFromRange(range: UserViewRange) {
+    const activeEditor = this.editorApi.getActiveCodeEditor();
+    if (!activeEditor) {
+      return;
+    }
+
+    this.revealRange(range);
+    activeEditor.setSelection(range);
+  }
+
   /**
    * Set the selection inside the editor
    * @param head Start of the selection
@@ -733,8 +743,20 @@ export class VSCodeEffect {
       anchorPos.column
     );
 
-    this.revealRange(range);
-    activeEditor.setSelection(range);
+    this.setSelectionFromRange(range);
+  }
+
+  public highlightRange(
+    path: string,
+    range: UserViewRange,
+    color: string,
+    source: string
+  ) {
+    this.modelsHandler.createCodeHighlight(path, range, color, source);
+  }
+
+  public clearHighlightedRange(path: string, source: string) {
+    this.modelsHandler.clearCodeHighlight(path, source);
   }
 
   // Communicates the endpoint for the WebsocketLSP

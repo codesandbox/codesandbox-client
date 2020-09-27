@@ -67,10 +67,15 @@ export interface ReactFiberRootNode {
   current: ReactFiber;
 }
 
+type Renderer = {
+  findHostInstanceByFiber(fiber: ReactFiber): HTMLElement;
+};
+
 declare global {
   interface Window {
     __REACT_DEVTOOLS_GLOBAL_HOOK__: {
       getFiberRoots(rendererId: number): Set<ReactFiberRootNode>;
+      renderers: Map<number, Renderer>;
     };
   }
 }
@@ -92,7 +97,7 @@ function convertFiber(
         startColumnNumber: _debugSource.columnNumber,
         startLineNumber: _debugSource.lineNumber,
         endColumnNumber: _debugSource.endColumnNumber,
-        endLineNumber: _debugSource.lineNumber,
+        endLineNumber: _debugSource.endLineNumber,
       },
     },
     importLocation: {
@@ -106,58 +111,77 @@ function convertFiber(
   };
 }
 
-function filterFibers(fiber: ReactFiber): Fiber[] {
-  let fibers: Fiber[] = [];
+export class ReactBridge {
+  private fiberToReact = new Map<string, ReactFiber>();
 
-  const isValidFiber = (fiber: ReactFiber) =>
-    fiber.type &&
-    fiber._debugSource &&
-    fiber._debugSource.importName &&
-    typeof fiber.type !== 'string' &&
-    typeof fiber.type !== 'symbol';
+  public getFibers(): Fiber[] {
+    const fiberRoots = [
+      ...window.__REACT_DEVTOOLS_GLOBAL_HOOK__.getFiberRoots(1),
+    ];
 
-  const possiblyAddFiber = (
-    fiber: ReactFiber,
-    parentFiber: ReactFiber | null,
-    depth: number,
-    childIndex: number
-  ) => {
-    if (isValidFiber(fiber)) {
-      fibers.push(convertFiber(fiber, parentFiber, depth, childIndex));
+    return this.filterFibers(fiberRoots[0].current);
+  }
+
+  public parseCode(path: string, code: string): FileComponentInformation {
+    return analyzeCode(code);
+  }
+
+  public getElementForFiber(id: string): HTMLElement {
+    const reactFiber = this.fiberToReact.get(id);
+    if (!reactFiber) {
+      throw new Error('Cannot find React fiber with id: ' + id);
     }
 
-    let chIndex = 0;
-    let sibling = fiber.sibling;
-    while (sibling) {
-      possiblyAddFiber(sibling, parentFiber, depth, ++chIndex);
-      sibling = sibling.sibling;
-    }
+    return window.__REACT_DEVTOOLS_GLOBAL_HOOK__.renderers
+      .get(1)!
+      .findHostInstanceByFiber(reactFiber);
+  }
 
-    if (fiber.child) {
+  private filterFibers(rootFiber: ReactFiber): Fiber[] {
+    const fibers: Fiber[] = [];
+
+    const isValidFiber = (fiber: ReactFiber) =>
+      fiber.type &&
+      fiber._debugSource &&
+      fiber._debugSource.importName &&
+      typeof fiber.type !== 'string' &&
+      typeof fiber.type !== 'symbol';
+
+    const possiblyAddFiber = (
+      fiber: ReactFiber,
+      parentFiber: ReactFiber | null,
+      depth: number,
+      childIndex: number
+    ) => {
       if (isValidFiber(fiber)) {
-        possiblyAddFiber(fiber.child, fiber, depth + 1, 0);
-      } else {
-        possiblyAddFiber(fiber.child, parentFiber, depth, 0);
+        const convertedFiber = convertFiber(
+          fiber,
+          parentFiber,
+          depth,
+          childIndex
+        );
+        this.fiberToReact.set(convertedFiber.id, fiber);
+        fibers.push(convertedFiber);
       }
-    }
-  };
 
-  possiblyAddFiber(fiber, null, 0, 0);
+      let chIndex = 0;
+      let sibling = fiber.sibling;
+      while (sibling) {
+        possiblyAddFiber(sibling, parentFiber, depth, ++chIndex);
+        sibling = sibling.sibling;
+      }
 
-  return fibers;
-}
+      if (fiber.child) {
+        if (isValidFiber(fiber)) {
+          possiblyAddFiber(fiber.child, fiber, depth + 1, 0);
+        } else {
+          possiblyAddFiber(fiber.child, parentFiber, depth, 0);
+        }
+      }
+    };
 
-export function getFibers(): Fiber[] {
-  const fiberRoots = [
-    ...window.__REACT_DEVTOOLS_GLOBAL_HOOK__.getFiberRoots(1),
-  ];
+    possiblyAddFiber(rootFiber, null, 0, 0);
 
-  return filterFibers(fiberRoots[0].current);
-}
-
-export function parseCode(
-  path: string,
-  code: string
-): FileComponentInformation {
-  return analyzeCode(code);
+    return fibers;
+  }
 }

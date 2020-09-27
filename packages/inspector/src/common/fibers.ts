@@ -27,36 +27,52 @@ export interface Fiber {
   childIndex: number;
 }
 
-interface StringProp extends BaseProp<string> {}
-interface EnumProp extends BaseProp<string> {}
-interface BooleanProp extends BaseProp<boolean> {}
-interface ObjectProp extends BaseProp<object> {}
-interface NumberProp extends BaseProp<number> {}
-
-interface BaseProp<T> {
-  type: string;
-  name: string;
-  required: boolean;
-  defaultValue?: {
-    computed: boolean;
-    value: T;
-  };
-  description?: string;
+export interface StringPropTypeInfo {
+  type: 'string';
 }
 
-export type Prop =
-  | StringProp
-  | BooleanProp
-  | EnumProp
-  | ObjectProp
-  | NumberProp;
+interface UnionOption {
+  name: 'literal';
+  value: string;
+}
+export interface UnionPropTypeInfo {
+  type: 'union';
+  options: UnionOption[];
+}
+export interface BooleanPropTypeInfo {
+  type: 'boolean';
+}
+export interface ObjectPropTypeInfo {
+  type: 'object';
+}
+export interface NumberPropTypeInfo {
+  type: 'number';
+}
 
-export interface ComponentInformation {
+export type TypeInfo =
+  | StringPropTypeInfo
+  | BooleanPropTypeInfo
+  | UnionPropTypeInfo
+  | ObjectPropTypeInfo
+  | NumberPropTypeInfo;
+
+export interface PropInfo {
+  name: string;
+  required: boolean;
+  description?: string;
+  defaultValue?: {
+    computed: boolean;
+    value: string;
+  };
+  typeInfo: TypeInfo | null;
+}
+
+export interface StaticComponentInformation {
   name: string;
   description?: string;
-  props: Prop[];
+  props: PropInfo[];
 }
 
 export type FileComponentInformation = {
-  [exportName: string]: ComponentInformation;
+  [exportName: string]: StaticComponentInformation;
 };

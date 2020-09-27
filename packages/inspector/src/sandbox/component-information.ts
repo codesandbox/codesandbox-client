@@ -1,22 +1,22 @@
 import { FileComponentInformation } from '../common/fibers';
-import { parseCode } from './react';
+import { ReactBridge } from './react';
 import { Disposable } from '../common/rpc/disposable';
 import { Resolver } from '.';
 
 export class ComponentInformationResolver extends Disposable {
-  private componentInformationByFile = new Map<
+  private staticComponentInformationByFile = new Map<
     string,
     FileComponentInformation
   >();
 
-  constructor(private resolver: Resolver) {
+  constructor(private resolver: Resolver, private bridge: ReactBridge) {
     super();
   }
 
   dispose() {
     super.dispose();
 
-    this.componentInformationByFile.clear();
+    this.staticComponentInformationByFile.clear();
   }
 
   /**
@@ -28,18 +28,19 @@ export class ComponentInformationResolver extends Disposable {
   ): Promise<FileComponentInformation> {
     const resolverResult = await this.resolver.resolve(fromPath, toPath);
 
-    const cachedInfo = this.componentInformationByFile.get(
+    const cachedInfo = this.staticComponentInformationByFile.get(
       resolverResult.resolvedPath
     );
     if (cachedInfo) {
       return cachedInfo;
     }
 
-    const componentDefinitions = parseCode(
+    const componentDefinitions = this.bridge.parseCode(
       resolverResult.resolvedPath,
       resolverResult.code
     );
-    this.componentInformationByFile.set(
+
+    this.staticComponentInformationByFile.set(
       resolverResult.resolvedPath,
       componentDefinitions
     );

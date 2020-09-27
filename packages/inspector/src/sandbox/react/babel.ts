@@ -114,6 +114,7 @@ export default ({ types: t }: { types: typeof types }) => {
       for (let i = 0; i < attributes.length; i++) {
         const attribute = attributes[i];
         if (attribute.type === 'JSXSpreadAttribute') {
+          // eslint-disable-next-line no-continue
           continue;
         }
 
@@ -130,11 +131,14 @@ export default ({ types: t }: { types: typeof types }) => {
         const fileNameIdentifier = path.scope.generateUidIdentifier(
           FILE_NAME_VAR
         );
+
         const scope = path.scope;
         if (scope) {
-          scope.push({
+          // Add the var to the root scope
+          scope.getProgramParent().push({
             id: fileNameIdentifier,
             init: t.stringLiteral(fileName),
+            unique: true,
           });
         }
         state.fileNameIdentifier = fileNameIdentifier;

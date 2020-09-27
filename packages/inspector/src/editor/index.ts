@@ -1,13 +1,15 @@
+import { orderBy } from 'lodash-es';
 import {
   IEditorProxy,
   ISandboxProxy,
   rpcProtocol,
   editorProxyIdentifier,
   sandboxProxyIdentifier,
-} from 'inspector/lib/common/proxies';
-import { Fiber } from 'inspector/lib/common/fibers';
-import { Emitter } from 'inspector/lib/common/rpc/event';
-import { orderBy } from 'lodash-es';
+} from '../common/proxies';
+import { Fiber , StaticComponentInformation } from '../common/fibers';
+import { Emitter } from '../common/rpc/event';
+
+
 
 export class EditorInspectorState implements IEditorProxy {
   private fibers = new Map<string, Fiber>();
@@ -19,7 +21,9 @@ export class EditorInspectorState implements IEditorProxy {
   private fiberChangedEmitter = new Emitter<Fiber>();
   public onFiberChanged = this.fiberChangedEmitter.event;
 
-  constructor(private sandboxProxy: ISandboxProxy) {}
+  constructor(private sandboxProxy: ISandboxProxy) {
+    window.eInspector = this;
+  }
 
   $fiberChanged(id: string, fiber: Fiber) {
     console.log('Getting Fiber Changed');
@@ -40,7 +44,14 @@ export class EditorInspectorState implements IEditorProxy {
     this.selectionChangedEmitter.fire(fiber);
   }
 
-  public async getFibers() {
+  public async getFiberComponentInformation(
+    id: string
+  ): Promise<StaticComponentInformation> {
+    const data = await this.sandboxProxy.$getFiberComponentInformation(id);
+    return data;
+  }
+
+  public async getFibers(): Promise<Fiber[]> {
     const fibers = await this.sandboxProxy.$getFibers();
     if (fibers) {
       fibers.forEach(fiber => {
@@ -54,13 +65,21 @@ export class EditorInspectorState implements IEditorProxy {
     return [];
   }
 
-  highlightFiber(id: string): void {
+  public highlightFiber(id: string): void {
     this.sandboxProxy.$highlightFiber(id);
   }
 
+  /**
+   * Stops highlighting of that fiber
+   * @param id We pass an ID to make sure that we're not "unhighlighting" fibers that are not there
+   */
+  public stopHighlightFiber(id: string): void {
+    this.sandboxProxy.$stopHighlightFiber(id);
+  }
+
   private buildFlatOrderedFiberList() {
-    let fibersByParent = new Map<string | null, Fiber[]>();
-    for (let fiber of this.fibers.values()) {
+    const fibersByParent = new Map<string | null, Fiber[]>();
+    for (const fiber of this.fibers.values()) {
       const existingParent = fibersByParent.get(fiber.parentFiberId);
       if (!existingParent) {
         fibersByParent.set(fiber.parentFiberId, [fiber]);
@@ -72,7 +91,7 @@ export class EditorInspectorState implements IEditorProxy {
     // TODO(@CompuIves)
     const orderedFibers: Fiber[] = [];
 
-    let currentFiber = fibersByParent.get(null);
+    const currentFiber = fibersByParent.get(null);
 
     return orderBy([...this.fibers.values()], fiber => [
       fiber.depth,
