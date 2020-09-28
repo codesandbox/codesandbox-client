@@ -24,38 +24,13 @@ export default function PreactPreset() {
     }
   );
 
-  preactPreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  preactPreset.registerTranspiler(module => /\.m?(t|j)sx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {
         isV7: true,
         compileNodeModulesWithEnv: true,
-        config: {
-          presets: [
-            [
-              'env',
-              {
-                loose: true,
-                modules: false,
-                exclude: [
-                  'transform-regenerator',
-                  'transform-async-to-generator',
-                ],
-              },
-            ],
-          ],
-
-          plugins: [
-            'syntax-dynamic-import',
-            'transform-object-assign',
-            ['proposal-decorators', { legacy: true }],
-            ['proposal-class-properties', { loose: true }],
-            'proposal-object-rest-spread',
-            ['fast-async', { spec: true }],
-            'babel-plugin-macros',
-            ['transform-react-jsx', { pragma: 'h', pragmaFrag: 'Fragment' }],
-          ],
-        },
+        // config is derived from babelrc at packages/common/src/templates/configuration/babelrc/index.ts
       },
     },
   ]);

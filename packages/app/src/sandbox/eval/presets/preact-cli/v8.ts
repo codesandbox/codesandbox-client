@@ -30,41 +30,7 @@ export default function PreactPresetV8() {
       options: {
         isV7: false,
         compileNodeModulesWithEnv: true,
-        config: {
-          presets: [
-            [
-              'env',
-              {
-                loose: true,
-                uglify: true,
-                modules: false,
-                exclude: [
-                  'transform-regenerator',
-                  'transform-es2015-typeof-symbol',
-                ],
-              },
-            ],
-          ],
-
-          plugins: [
-            'babel-plugin-syntax-dynamic-import',
-            'babel-plugin-transform-object-assign',
-            'babel-plugin-transform-decorators-legacy',
-            'babel-plugin-transform-class-properties',
-            'babel-plugin-transform-export-extensions',
-            'babel-plugin-transform-object-rest-spread',
-            'babel-plugin-transform-react-constant-elements',
-            ['babel-plugin-transform-react-jsx', { pragma: 'h' }],
-            [
-              'babel-plugin-jsx-pragmatic',
-              {
-                module: 'preact',
-                export: 'h',
-                import: 'h',
-              },
-            ],
-          ],
-        },
+        // config is derived from babelrc at packages/common/src/templates/configuration/babelrc/index.ts
       },
     },
   ]);
