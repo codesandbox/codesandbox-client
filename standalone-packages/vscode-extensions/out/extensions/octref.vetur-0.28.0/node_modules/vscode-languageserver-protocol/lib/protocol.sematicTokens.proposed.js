@@ -1,0 +1,93 @@
+/* --------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ * ------------------------------------------------------------------------------------------ */
+'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
+const messages_1 = require("./messages");
+/**
+ * A set of predefined token types. This set is not fixed
+ * an clients can specify additional token types via the
+ * corresponding client capabilities.
+ *
+ * @since 3.16.0 - Proposed state
+ */
+var SemanticTokenTypes;
+(function (SemanticTokenTypes) {
+    SemanticTokenTypes["comment"] = "comment";
+    SemanticTokenTypes["keyword"] = "keyword";
+    SemanticTokenTypes["string"] = "string";
+    SemanticTokenTypes["number"] = "number";
+    SemanticTokenTypes["regexp"] = "regexp";
+    SemanticTokenTypes["operator"] = "operator";
+    SemanticTokenTypes["namespace"] = "namespace";
+    SemanticTokenTypes["type"] = "type";
+    SemanticTokenTypes["struct"] = "struct";
+    SemanticTokenTypes["class"] = "class";
+    SemanticTokenTypes["interface"] = "interface";
+    SemanticTokenTypes["enum"] = "enum";
+    SemanticTokenTypes["typeParameter"] = "typeParameter";
+    SemanticTokenTypes["function"] = "function";
+    SemanticTokenTypes["member"] = "member";
+    SemanticTokenTypes["property"] = "property";
+    SemanticTokenTypes["macro"] = "macro";
+    SemanticTokenTypes["variable"] = "variable";
+    SemanticTokenTypes["parameter"] = "parameter";
+    SemanticTokenTypes["label"] = "label";
+})(SemanticTokenTypes = exports.SemanticTokenTypes || (exports.SemanticTokenTypes = {}));
+/**
+ * A set of predefined token modifiers. This set is not fixed
+ * an clients can specify additional token types via the
+ * corresponding client capabilities.
+ *
+ * @since 3.16.0 - Proposed state
+ */
+var SemanticTokenModifiers;
+(function (SemanticTokenModifiers) {
+    SemanticTokenModifiers["documentation"] = "documentation";
+    SemanticTokenModifiers["declaration"] = "declaration";
+    SemanticTokenModifiers["definition"] = "definition";
+    SemanticTokenModifiers["reference"] = "reference";
+    SemanticTokenModifiers["static"] = "static";
+    SemanticTokenModifiers["abstract"] = "abstract";
+    SemanticTokenModifiers["deprecated"] = "deprecated";
+    SemanticTokenModifiers["async"] = "async";
+    SemanticTokenModifiers["volatile"] = "volatile";
+    SemanticTokenModifiers["readonly"] = "readonly";
+})(SemanticTokenModifiers = exports.SemanticTokenModifiers || (exports.SemanticTokenModifiers = {}));
+/**
+ * @since 3.16.0 - Proposed state
+ */
+var SemanticTokens;
+(function (SemanticTokens) {
+    function is(value) {
+        const candidate = value;
+        return candidate !== undefined && (candidate.resultId === undefined || typeof candidate.resultId === 'string') &&
+            Array.isArray(candidate.data) && (candidate.data.length === 0 || typeof candidate.data[0] === 'number');
+    }
+    SemanticTokens.is = is;
+})(SemanticTokens = exports.SemanticTokens || (exports.SemanticTokens = {}));
+/**
+ * @since 3.16.0 - Proposed state
+ */
+var SemanticTokensRequest;
+(function (SemanticTokensRequest) {
+    SemanticTokensRequest.method = 'textDocument/semanticTokens';
+    SemanticTokensRequest.type = new messages_1.ProtocolRequestType(SemanticTokensRequest.method);
+})(SemanticTokensRequest = exports.SemanticTokensRequest || (exports.SemanticTokensRequest = {}));
+/**
+ * @since 3.16.0 - Proposed state
+ */
+var SemanticTokensEditsRequest;
+(function (SemanticTokensEditsRequest) {
+    SemanticTokensEditsRequest.method = 'textDocument/semanticTokens/edits';
+    SemanticTokensEditsRequest.type = new messages_1.ProtocolRequestType(SemanticTokensEditsRequest.method);
+})(SemanticTokensEditsRequest = exports.SemanticTokensEditsRequest || (exports.SemanticTokensEditsRequest = {}));
+/**
+ * @since 3.16.0 - Proposed state
+ */
+var SemanticTokensRangeRequest;
+(function (SemanticTokensRangeRequest) {
+    SemanticTokensRangeRequest.method = 'textDocument/semanticTokens/range';
+    SemanticTokensRangeRequest.type = new messages_1.ProtocolRequestType(SemanticTokensRangeRequest.method);
+})(SemanticTokensRangeRequest = exports.SemanticTokensRangeRequest || (exports.SemanticTokensRangeRequest = {}));

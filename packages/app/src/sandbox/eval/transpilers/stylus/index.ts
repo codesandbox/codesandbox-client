@@ -4,10 +4,9 @@
 // @ts-ignore
 import StylusWorker from 'worker-loader?publicPath=/&name=stylus-transpiler.[hash:8].worker.js!./stylus-worker';
 /* eslint-enable import/default */
+import { LoaderContext, TranspilerResult } from 'sandpack-core';
 
 import WorkerTranspiler from '../worker-transpiler';
-import { LoaderContext } from '../../transpiled-module';
-import { TranspilerResult } from '..';
 
 class StylusTranspiler extends WorkerTranspiler {
   worker: Worker;

@@ -1,4 +1,4 @@
-import Transpiler from '..';
+import { Transpiler } from 'sandpack-core';
 
 class JSONTranspiler extends Transpiler {
   doTranspilation(code: string) {

@@ -23,5 +23,3 @@ export interface FolderItemComponentProps {
   thumbnailRef?: React.Ref<HTMLDivElement>;
   opacity?: number;
 }
-
-type EditingProps = {};

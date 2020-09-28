@@ -16,6 +16,7 @@ export default function SplitView({
   sandbox,
   toggleLike,
   initialEditorSize = 50, // in percent
+  initialPath,
   hideDevTools,
   setEditorSize,
   setDragging: setDraggingProp,
@@ -141,6 +142,7 @@ export default function SplitView({
         openEditor={openEditor}
         openPreview={openPreview}
         smallTouchScreen={smallTouchScreen}
+        initialPath={initialPath}
       />
       <SplitPane
         split="vertical"
