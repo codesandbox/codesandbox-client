@@ -19,20 +19,20 @@ const config: ConfigurationFile = {
     resolveModule: (path: string) => { code: string } | undefined
   ) => {
     let isV7 = false;
-    let isP10 = false;
+    let isPreact10 = false;
 
     try {
       const packageJSON = resolveModule('/package.json');
       const parsed = JSON.parse(packageJSON.code || '');
 
       isV7 = isBabel7(parsed.dependencies, parsed.devDependencies);
-      isP10 = isPreact10(parsed.dependencies, parsed.devDependencies);
+      isPreact10 = isPreact10(parsed.dependencies, parsed.devDependencies);
     } catch (e) {
       console.error(e);
     }
 
     if (template === 'preact-cli') {
-      if (isP10) {
+      if (isPreact10) {
         return JSON.stringify(
           {
             presets: ['env', 'typescript'],
