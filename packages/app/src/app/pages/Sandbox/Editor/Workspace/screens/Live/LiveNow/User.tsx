@@ -71,7 +71,7 @@ export const User: FunctionComponent<Props> = ({ liveRole, user }) => {
 
       <Stack align="center" className="live-actions" gap={2}>
         {canChangeEditors ? (
-          <>
+          <div>
             {liveRole === 'spectator' ? (
               <Tooltip content="Make editor">
                 <AddIcon
@@ -89,7 +89,7 @@ export const User: FunctionComponent<Props> = ({ liveRole, user }) => {
                 />
               </Tooltip>
             ) : null}
-          </>
+          </div>
         ) : null}
 
         {canFollowUser ? (

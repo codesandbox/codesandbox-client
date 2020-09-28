@@ -96,18 +96,16 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   }
 
   return (
-    <>
-      <Menu.ContextMenu
-        visible={visible}
-        setVisibility={setVisibility}
-        position={position}
-        style={{ width: 120 }}
-      >
-        <Context.Provider value={{ setVisibility }}>
-          {menuOptions}
-        </Context.Provider>
-      </Menu.ContextMenu>
-    </>
+    <Menu.ContextMenu
+      visible={visible}
+      setVisibility={setVisibility}
+      position={position}
+      style={{ width: 120 }}
+    >
+      <Context.Provider value={{ setVisibility }}>
+        {menuOptions}
+      </Context.Provider>
+    </Menu.ContextMenu>
   );
 };
 

@@ -139,7 +139,7 @@ export const Navigation: FunctionComponent<Props> = ({
     >
       <SingletonTooltip placement="right">
         {singleton => (
-          <>
+          <div>
             {shownItems.map(item => (
               <IconComponent key={item.id} item={item} singleton={singleton} />
             ))}
@@ -152,7 +152,7 @@ export const Navigation: FunctionComponent<Props> = ({
                 isDisabled
               />
             ))}
-          </>
+          </div>
         )}
       </SingletonTooltip>
     </Container>
