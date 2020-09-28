@@ -9,7 +9,7 @@ export function isPreact10(
   if (preactVersion) {
     return (
       /^[a-z]/.test(preactVersion) ||
-      semver.intersects(preactVersion, '^10.0.0')
+      semver.intersects(preactVersion, '>=10.0.0')
     );
   }
 
