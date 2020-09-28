@@ -580,7 +580,7 @@ export const resolveOutOfSync: AsyncAction = async ({
 
           const sandboxModule = sandbox.modules.find(
             moduleItem => moduleItem.shortid === module.shortid
-          );
+          )!;
           sandboxModule.code = code;
           sandboxModule.uploadId = uploadId;
           sandboxModule.sha = sha;
