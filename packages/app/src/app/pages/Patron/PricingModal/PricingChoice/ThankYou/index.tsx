@@ -20,7 +20,7 @@ export const ThankYou: React.FC<ThankYouProps> = ({
     <SubTitle>
       {markedAsCancelled
         ? 'Your subscription will be automatically cancelled before your next billing date.'
-        : `Thank you <strong>so</strong> much for your support of ${price}!`}
+        : <span>Thank you <strong>so</strong> much for your support of {price}!</span>}
     </SubTitle>
   </Margin>
 );
