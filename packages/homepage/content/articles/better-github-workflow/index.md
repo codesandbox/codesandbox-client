@@ -6,7 +6,7 @@ photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
 title: A Better GitHub Workflow
 description:
   We've made it even easier for you to work with GitHub projects on CodeSandbox.
-date: 2020-07-08
+date: 2020-07-07
 ---
 
 We've made it even easier for you to work with GitHub projects on CodeSandbox.
