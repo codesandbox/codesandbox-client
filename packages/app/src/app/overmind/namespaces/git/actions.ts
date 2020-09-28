@@ -573,12 +573,23 @@ export const resolveOutOfSync: AsyncAction = async ({
         // If we are dealing with a private binary change, we need to bluntly update
         // the module
         if (git.sourceModulesByPath['/' + change.filename].sha) {
+          const code = git.sourceModulesByPath['/' + change.filename].code;
+          const uploadId = git.sourceModulesByPath['/' + change.filename]
+            .uploadId!;
+          const sha = git.sourceModulesByPath['/' + change.filename].sha!;
+
+          const sandboxModule = sandbox.modules.find(
+            moduleItem => moduleItem.shortid === module.shortid
+          );
+          sandboxModule.code = code;
+          sandboxModule.uploadId = uploadId;
+          sandboxModule.sha = sha;
+
           return effects.api
             .saveModulePrivateUpload(sandbox.id, module.shortid, {
-              code: git.sourceModulesByPath['/' + change.filename].code,
-              uploadId: git.sourceModulesByPath['/' + change.filename]
-                .uploadId!,
-              sha: git.sourceModulesByPath['/' + change.filename].sha!,
+              code,
+              uploadId,
+              sha,
             })
             .then(() => {});
         }
