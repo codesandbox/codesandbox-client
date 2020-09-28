@@ -6,11 +6,7 @@ import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import { DocumentationContent } from './_docs.elements';
 
-const normalize = value =>
-  value
-    .split(' ')
-    .join('-')
-    .toLowerCase();
+const normalize = value => value.split(' ').join('-').toLowerCase();
 
 const Docs = ({
   location,
