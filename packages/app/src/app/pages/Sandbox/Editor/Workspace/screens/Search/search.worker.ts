@@ -8,15 +8,16 @@ export default class SearchWorker {
       matches: [],
     }));
 
-    function String2Regex(s: string) {
-      const one = s.match(/\/(.+)\/.*/);
-      const two = s.match(/\/.+\/(.*)/);
-
-      if (one && two) {
-        return new RegExp(s.match(/\/(.+)\/.*/)[1], s.match(/\/.+\/(.*)/)[1]);
+    function searchString(s: string, termString: string) {
+      if (options.regex) {
+        try {
+          return s.search(termString);
+        } catch (e) {
+          console.error(e);
+          return s.indexOf(termString);
+        }
       }
-
-      return s;
+      return s.indexOf(termString);
     }
 
     function getAllMatches(text: string, searchTerm: string) {
@@ -25,13 +26,13 @@ export default class SearchWorker {
         return [];
       }
       let pointer = 0;
-      let index = text.substring(pointer).search(searchTerm);
+      let index = searchString(text.substring(pointer), searchTerm);
       const indices = [];
 
       while (index > -1) {
         indices.push([pointer + index, pointer + index + searchStrLen]);
         pointer += index + searchStrLen;
-        index = text.substring(pointer).search(searchTerm);
+        index = searchString(text.substring(pointer), searchTerm);
       }
       return indices;
     }
@@ -41,11 +42,12 @@ export default class SearchWorker {
         .map(file => {
           let s;
           if (options.caseSensitive) {
-            s = file.code.search(String2Regex(term));
+            s = searchString(file.code, term);
           } else {
-            s = file.code
-              .toLocaleLowerCase()
-              .search(String2Regex(term.toLowerCase()));
+            s = searchString(
+              file.code.toLocaleLowerCase(),
+              term.toLocaleLowerCase()
+            );
           }
 
           if (s !== -1) {
@@ -53,10 +55,10 @@ export default class SearchWorker {
             let searchTerm;
             if (options.caseSensitive) {
               str = file.code;
-              searchTerm = String2Regex(term);
+              searchTerm = term;
             } else {
               str = file.code.toLocaleLowerCase();
-              searchTerm = String2Regex(term.toLowerCase());
+              searchTerm = term.toLowerCase();
             }
             const matches = getAllMatches(str, searchTerm);
             return {
