@@ -139,6 +139,24 @@ export default {
       )
       .then(transformModule);
   },
+  saveModulePrivateUpload(
+    sandboxId: string,
+    moduleShortid: string,
+    data: {
+      code: string;
+      uploadId: string;
+      sha: string;
+    }
+  ): Promise<Module> {
+    return api
+      .put<IModuleAPIResponse>(
+        `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
+        {
+          module: data,
+        }
+      )
+      .then(transformModule);
+  },
   saveModules(sandboxId: string, modules: Module[]): Promise<Module[]> {
     return api
       .put<IModuleAPIResponse[]>(`/sandboxes/${sandboxId}/modules/mupdate`, {

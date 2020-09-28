@@ -570,6 +570,18 @@ export const resolveOutOfSync: AsyncAction = async ({
       modified.map(change => {
         const module = state.editor.modulesByPath['/' + change.filename];
 
+        // If we are dealing with a private binary change, we need to bluntly update
+        // the module
+        if (git.sourceModulesByPath['/' + change.filename].sha) {
+          return effects.api
+            .saveModulePrivateUpload(sandbox.id, module.shortid, {
+              code: git.sourceModulesByPath['/' + change.filename].code,
+              uploadId: git.sourceModulesByPath['/' + change.filename]
+                .uploadId!,
+              sha: git.sourceModulesByPath['/' + change.filename].sha!,
+            })
+            .then(() => {});
+        }
         actions.editor.setCode({
           moduleShortid: module.shortid,
           code: change.isBinary
