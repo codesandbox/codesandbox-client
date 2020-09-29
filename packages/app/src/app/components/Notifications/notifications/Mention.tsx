@@ -14,7 +14,6 @@ interface Props {
   insertedAt: string;
   id: string;
   read: boolean;
-  userId: string;
   sandboxId: string;
   mentionerUsername: string;
   mentionerAvatarUrl: string;

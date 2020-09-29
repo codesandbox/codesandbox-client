@@ -45,37 +45,35 @@ export const EnvVars: FunctionComponent = () => {
 
       {envVars ? (
         <List paddingTop={4}>
-          {Object.keys(envVars).map(keyName => (
-            <>
-              {editMode === keyName || !envVars[keyName] ? (
-                <VarForm
-                  name={keyName}
-                  onCancel={() => setEditMode(null)}
-                  onSubmit={({ name, value }) => {
-                    updateEnvironmentVariables({ name, value });
-                    setEditMode(null);
-                  }}
-                  value={envVars[keyName]}
-                />
-              ) : (
-                <ListItem justify="space-between" marginTop={editMode ? 4 : 0}>
-                  <Text>{keyName}</Text>
+          {Object.keys(envVars).map(keyName =>
+            editMode === keyName || !envVars[keyName] ? (
+              <VarForm
+                name={keyName}
+                onCancel={() => setEditMode(null)}
+                onSubmit={({ name, value }) => {
+                  updateEnvironmentVariables({ name, value });
+                  setEditMode(null);
+                }}
+                value={envVars[keyName]}
+              />
+            ) : (
+              <ListItem justify="space-between" marginTop={editMode ? 4 : 0}>
+                <Text>{keyName}</Text>
 
-                  <Stack gap={2}>
-                    <EditIcon
-                      onClick={() => setEditMode(keyName)}
-                      style={{ cursor: 'pointer' }}
-                    />
+                <Stack gap={2}>
+                  <EditIcon
+                    onClick={() => setEditMode(keyName)}
+                    style={{ cursor: 'pointer' }}
+                  />
 
-                    <DeleteIcon
-                      onClick={() => deleteEnvironmentVariable(keyName)}
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </Stack>
-                </ListItem>
-              )}
-            </>
-          ))}
+                  <DeleteIcon
+                    onClick={() => deleteEnvironmentVariable(keyName)}
+                    style={{ cursor: 'pointer' }}
+                  />
+                </Stack>
+              </ListItem>
+            )
+          )}
         </List>
       ) : null}
 

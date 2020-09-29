@@ -87,7 +87,6 @@ export const CollaboratorList = () => {
                 style={{ width: '100%', height: '100%', borderWidth: 0 }}
                 name={team.name}
                 avatar={team.avatarUrl}
-                removeBorder
               />
             }
             authorization={Authorization.Owner}
@@ -115,7 +114,6 @@ export const CollaboratorList = () => {
             key={collaborator.user.username}
           >
             <Collaborator
-              userId={collaborator.user.id}
               username={collaborator.user.username}
               avatarUrl={collaborator.user.avatarUrl}
               authorization={collaborator.authorization}

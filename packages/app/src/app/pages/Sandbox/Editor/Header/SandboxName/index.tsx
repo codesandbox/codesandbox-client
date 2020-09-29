@@ -147,8 +147,7 @@ export const SandboxName: FunctionComponent = () => {
         )}
 
         {updatingName && !git ? (
-          <>
-            <Form onSubmit={submitNameChange}>
+          <Form onSubmit={submitNameChange}>
               <NameInput
                 autoFocus
                 ref={(el: HTMLInputElement) => {
@@ -164,7 +163,6 @@ export const SandboxName: FunctionComponent = () => {
                 arial-label="sandbox name"
               />
             </Form>
-          </>
         ) : !git ? (
           owned ? (
             <Button

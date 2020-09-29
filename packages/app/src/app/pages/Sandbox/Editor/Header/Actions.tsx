@@ -137,29 +137,26 @@ export const Actions = () => {
         </Button>
       )}
 
-      {user?.experiments.collaborator && (
-        <>
-          {author ? (
-            <Collaborators
-              renderButton={props => (
-                <Button
-                  variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
-                  {...props}
-                >
-                  <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Share
-                </Button>
-              )}
-            />
-          ) : (
-            <Button
-              variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
-              onClick={() => modalOpened({ modal: 'share' })}
-            >
-              <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Embed
-            </Button>
-          )}
-        </>
-      )}
+      {user?.experiments.collaborator &&
+        (author ? (
+          <Collaborators
+            renderButton={props => (
+              <Button
+                variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
+                {...props}
+              >
+                <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Share
+              </Button>
+            )}
+          />
+        ) : (
+          <Button
+            variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
+            onClick={() => modalOpened({ modal: 'share' })}
+          >
+            <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Embed
+          </Button>
+        ))}
 
       {!user?.experiments.collaborator && (
         <Button
