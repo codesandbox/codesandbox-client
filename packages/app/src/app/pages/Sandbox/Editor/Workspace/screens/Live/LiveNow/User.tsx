@@ -98,25 +98,22 @@ export const User: FunctionComponent<Props> = ({ liveRole, user }) => {
       <Stack align="center" className="live-actions" gap={2}>
         {canChangeEditors ? <Tooltips /> : null}
 
-        {canFollowUser ? (
-          <>
-            {followingUserId === user.id ? (
-              <Tooltip content="Stop following">
-                <UnfollowIcon
-                  css={{ cursor: 'pointer' }}
-                  onClick={() => onStopFollow()}
-                />
-              </Tooltip>
-            ) : (
-              <Tooltip content="Follow along">
-                <FollowIcon
-                  css={{ cursor: 'pointer' }}
-                  onClick={() => onFollow({ liveUserId: user.id })}
-                />
-              </Tooltip>
-            )}
-          </>
-        ) : null}
+        {canFollowUser &&
+          (followingUserId === user.id ? (
+            <Tooltip content="Stop following">
+              <UnfollowIcon
+                css={{ cursor: 'pointer' }}
+                onClick={() => onStopFollow()}
+              />
+            </Tooltip>
+          ) : (
+            <Tooltip content="Follow along">
+              <FollowIcon
+                css={{ cursor: 'pointer' }}
+                onClick={() => onFollow({ liveUserId: user.id })}
+              />
+            </Tooltip>
+          ))}
       </Stack>
     </Stack>
   );

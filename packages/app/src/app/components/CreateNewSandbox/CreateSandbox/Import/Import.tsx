@@ -175,8 +175,8 @@ export const Import = () => {
               >
                 Stackbit
               </a>
-              . This generates a project for you that{"'"}s automatically set up
-              with any Theme, Site Generator and CMS.
+              . This generates a project for you that&apos;s automatically set
+              up with any Theme, Site Generator and CMS.
             </FeatureText>
             {!state.user ||
             (state.user.provider === 'google' &&

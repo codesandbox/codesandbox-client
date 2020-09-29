@@ -30,8 +30,7 @@ export const SortOptions: FunctionComponent = React.memo(() => {
   const setField = (f: string) => orderByChanged({ field: f, order });
 
   return (
-    <>
-      <Menu>
+    <Menu>
         <Stack align="center">
           <Menu.Button>
             <Text variant="muted">{FIELD_TO_NAME[field]}</Text>
@@ -54,6 +53,5 @@ export const SortOptions: FunctionComponent = React.memo(() => {
           ))}
         </Menu.List>
       </Menu>
-    </>
   );
 });

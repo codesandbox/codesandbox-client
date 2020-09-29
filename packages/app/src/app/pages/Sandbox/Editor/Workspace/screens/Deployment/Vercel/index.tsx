@@ -101,8 +101,7 @@ export const Vercel: FunctionComponent = () => {
           </Element>
         </>
       ) : (
-        <>
-          <Stack justify="space-between" marginX={2}>
+        <Stack justify="space-between" marginX={2}>
             <Stack direction="vertical">
               <Text variant="muted">Enables</Text>
 
@@ -117,7 +116,6 @@ export const Vercel: FunctionComponent = () => {
               Sign in
             </Button>
           </Stack>
-        </>
       )}
     </Integration>
   );

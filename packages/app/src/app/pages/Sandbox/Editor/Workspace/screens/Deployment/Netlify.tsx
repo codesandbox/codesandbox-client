@@ -42,8 +42,7 @@ export const Netlify: FunctionComponent = () => {
 
   return (
     template.netlify !== false && (
-      <>
-        <Integration icon={NetlifyIcon} title="Netlify">
+      <Integration icon={NetlifyIcon} title="Netlify">
           <Element marginBottom={netlifySite ? 6 : 0} marginX={2}>
             <Text block marginBottom={4} variant="muted">
               Deploy your sandbox site to{' '}
@@ -111,7 +110,6 @@ export const Netlify: FunctionComponent = () => {
             </List>
           )}
         </Integration>
-      </>
     )
   );
 };

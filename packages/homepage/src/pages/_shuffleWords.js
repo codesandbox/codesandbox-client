@@ -46,8 +46,8 @@ export default () => (
     import {'{ '}
     use
     <TextLoop interval={1500}>{shuffle(words).map(word => word)}</TextLoop>{' '}
-    {'  }'} from {"'"}
+    {'  }'} from '
     react
-    {"'"}
+    '
   </ShuffleWords>
 );

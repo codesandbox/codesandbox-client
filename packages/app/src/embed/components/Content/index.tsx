@@ -584,44 +584,43 @@ export default class Content extends React.PureComponent<Props, State> {
               />
             </div>
           </>
-          <>
-            {!this.state.running ? (
-              <RunOnClick onClick={() => this.setState({ running: true })} />
-            ) : (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: '100%',
-                }}
-              >
-                {views.map((devView, i) => (
-                  /* eslint-disable react/no-array-index-key */
-                  <DevTools
-                    key={i}
-                    devToolIndex={i}
-                    addedViews={{
-                      'codesandbox.browser': browserConfig,
-                    }}
-                    setDragging={this.setDragging}
-                    sandboxId={sandbox.id}
-                    template={sandbox.template}
-                    owned={false}
-                    primary={i === 0}
-                    hideTabs={i === 0}
-                    viewConfig={devView}
-                    setPane={this.setPane}
-                    currentDevToolIndex={
-                      this.state.currentDevToolPosition.devToolIndex
-                    }
-                    currentTabPosition={
-                      this.state.currentDevToolPosition.tabPosition
-                    }
-                  />
-                ))}
-              </div>
-            )}
-          </>
+
+          {!this.state.running ? (
+            <RunOnClick onClick={() => this.setState({ running: true })} />
+          ) : (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+              }}
+            >
+              {views.map((devView, i) => (
+                /* eslint-disable react/no-array-index-key */
+                <DevTools
+                  key={i}
+                  devToolIndex={i}
+                  addedViews={{
+                    'codesandbox.browser': browserConfig,
+                  }}
+                  setDragging={this.setDragging}
+                  sandboxId={sandbox.id}
+                  template={sandbox.template}
+                  owned={false}
+                  primary={i === 0}
+                  hideTabs={i === 0}
+                  viewConfig={devView}
+                  setPane={this.setPane}
+                  currentDevToolIndex={
+                    this.state.currentDevToolPosition.devToolIndex
+                  }
+                  currentTabPosition={
+                    this.state.currentDevToolPosition.tabPosition
+                  }
+                />
+              ))}
+            </div>
+          )}
         </SplitPane>
       </Container>
     );

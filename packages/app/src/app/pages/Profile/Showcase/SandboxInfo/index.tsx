@@ -39,7 +39,7 @@ export const SandboxInfo: FunctionComponent = () => {
     <Container>
       <Row alignItems="center">
         <Title>
-          {getSandboxName(showcasedSandbox)} {''}
+          {getSandboxName(showcasedSandbox)} 
           {isLoggedIn ? <Like sandbox={showcasedSandbox} /> : null}
         </Title>
       </Row>

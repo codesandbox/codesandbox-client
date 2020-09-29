@@ -52,7 +52,8 @@ export const Ports: FunctionComponent = () => {
           ))
         ) : (
           <Text block variant="muted" paddingX={2}>
-            {`No ports are open. Maybe the server is still starting or it doesn't open any ports.`}
+            No ports are open. Maybe the server is still starting or it
+            doesn&apos;t open any ports.
           </Text>
         )}
 

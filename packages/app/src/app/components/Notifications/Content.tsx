@@ -102,7 +102,7 @@ export const NotificationsContent = props => {
           {userNotifications.activeFilters.length ? (
             <Text align="center">No notifications match your search</Text>
           ) : (
-            <Text align="center">You don{"'"}t have any notifications</Text>
+            <Text align="center">You don&apos;t have any notifications</Text>
           )}
         </Element>
       );

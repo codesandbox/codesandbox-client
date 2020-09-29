@@ -108,7 +108,7 @@ export const Sandbox = React.memo<Props>(
                 </Text>
                 <GithubIntegration small />
                 <Text size={4} block align="center" marginTop={4}>
-                  If you{"'"}re importing a sandbox from an organization, make
+                  If you&apos;re importing a sandbox from an organization, make
                   sure to enable organization access{' '}
                   <a
                     href="https://github.com/settings/connections/applications/c07a89833b557afc7be2"

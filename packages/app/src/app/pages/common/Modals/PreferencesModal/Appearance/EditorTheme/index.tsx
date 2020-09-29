@@ -40,7 +40,8 @@ export const EditorTheme: FunctionComponent = () => {
       </Text>
 
       <Text block marginBottom={4} size={3} variant="muted">
-        {`After changing this setting you'll have to reload the browser and select 'Custom' as your color theme.`}
+        After changing this setting you&apos;ll have to reload the browser and
+        select &apos;Custom&apos; as your color theme.
       </Text>
 
       <PreferenceText
