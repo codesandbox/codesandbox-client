@@ -105,8 +105,7 @@ export class ConfigWizard extends React.Component<ConfigurationUIProps> {
             />
           </ConfigItem>
           <ConfigDescription>
-            Use &apos;single&apos; quotes instead of &quote;double&quote;
-            quotes.
+            Use {"'"}single{"'"} quotes instead of {'"'}double{'"'} quotes.
           </ConfigDescription>
         </PaddedConfig>
 
