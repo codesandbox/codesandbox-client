@@ -85,41 +85,39 @@ export const Textarea: React.FC<ITextareaProps> = React.forwardRef(
     );
 
     return (
-      <>
-        <Wrapper>
-          {autosize ? (
-            <Autosize value={innerValue} style={props.style}>
-              {(height: number) => (
-                <TextareaComponent
-                  value={innerValue}
-                  onChange={internalOnChange}
-                  maxLength={maxLength}
-                  ref={ref}
-                  {...props}
-                  style={{
-                    ...(props.style || {}),
-                    height,
-                  }}
-                />
-              )}
-            </Autosize>
-          ) : (
-            <TextareaComponent
-              value={innerValue}
-              onChange={internalOnChange}
-              maxLength={maxLength}
-              ref={ref}
-              {...props}
-            />
-          )}
+      <Wrapper>
+        {autosize ? (
+          <Autosize value={innerValue} style={props.style}>
+            {(height: number) => (
+              <TextareaComponent
+                value={innerValue}
+                onChange={internalOnChange}
+                maxLength={maxLength}
+                ref={ref}
+                {...props}
+                style={{
+                  ...(props.style || {}),
+                  height,
+                }}
+              />
+            )}
+          </Autosize>
+        ) : (
+          <TextareaComponent
+            value={innerValue}
+            onChange={internalOnChange}
+            maxLength={maxLength}
+            ref={ref}
+            {...props}
+          />
+        )}
 
-          {maxLength ? (
-            <Count limit={maxLength <= innerValue.length}>
-              {innerValue.length}/{maxLength}
-            </Count>
-          ) : null}
-        </Wrapper>
-      </>
+        {maxLength ? (
+          <Count limit={maxLength <= innerValue.length}>
+            {innerValue.length}/{maxLength}
+          </Count>
+        ) : null}
+      </Wrapper>
     );
   }
 );

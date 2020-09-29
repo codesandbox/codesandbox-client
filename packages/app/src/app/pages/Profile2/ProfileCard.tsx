@@ -213,24 +213,21 @@ export const Bio: React.FC<{
   bio: Profile['bio'];
   setBio: (bio: Profile['bio']) => void;
   editing: boolean;
-}> = ({ bio, editing, setBio }) => (
-  <>
-    {editing ? (
-      <Textarea
-        autosize
-        maxLength={280}
-        defaultValue={bio}
-        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
-          setBio(event.target.value)
-        }
-      />
-    ) : (
-      <Text size={3} variant="muted">
-        {bio}
-      </Text>
-    )}
-  </>
-);
+}> = ({ bio, editing, setBio }) =>
+  editing ? (
+    <Textarea
+      autosize
+      maxLength={280}
+      defaultValue={bio}
+      onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+        setBio(event.target.value)
+      }
+    />
+  ) : (
+    <Text size={3} variant="muted">
+      {bio}
+    </Text>
+  );
 
 const SocialLinks: React.FC<{
   username: Profile['username'];

@@ -266,9 +266,7 @@ export const GitHub = () => {
           <CreateRepo />
         </>
       ) : (
-        <>
-          <CreateRepo />
-        </>
+        <CreateRepo />
       )}
     </>
   );
