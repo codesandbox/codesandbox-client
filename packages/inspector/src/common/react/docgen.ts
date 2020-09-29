@@ -2,7 +2,7 @@
 import { parse } from 'react-docgen';
 import {
   FileComponentInformation,
-  PropInfo,
+  StaticPropInfo,
   TypeInfo,
 } from '../../common/fibers';
 
@@ -151,7 +151,7 @@ function getPropType(propDescriptor: PropDescriptor): TypeInfo | null {
 function convertReactDocsProp(
   propName: string,
   prop: PropDescriptor
-): PropInfo {
+): StaticPropInfo {
   return {
     name: propName,
     description: prop.description,
@@ -164,7 +164,7 @@ function convertReactDocsProp(
   };
 }
 
-export function analyzeCode(code: string): FileComponentInformation {
+export function analyzeComponentFile(code: string): FileComponentInformation {
   const result: DocgenOutput = parse(code);
 
   const props = result.props || {};

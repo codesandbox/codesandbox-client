@@ -1,5 +1,5 @@
 import { FileComponentInformation } from '../common/fibers';
-import { ReactBridge } from './react';
+import { ReactBridge } from '../common/react';
 import { Disposable } from '../common/rpc/disposable';
 import { Resolver } from '.';
 
@@ -35,7 +35,7 @@ export class ComponentInformationResolver extends Disposable {
       return cachedInfo;
     }
 
-    const componentDefinitions = this.bridge.parseCode(
+    const componentDefinitions = this.bridge.parseComponentFile(
       resolverResult.resolvedPath,
       resolverResult.code
     );

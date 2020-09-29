@@ -6,7 +6,7 @@ import {
   sandboxProxyIdentifier,
 } from '../common/proxies';
 import { Fiber, StaticComponentInformation } from '../common/fibers';
-import * as ReactInspectorBridge from './react';
+import * as ReactInspectorBridge from '../common/react';
 import { ComponentInformationResolver } from './component-information';
 import { Disposable } from '../common/rpc/disposable';
 import { clearHighlight, highlightElement } from './highlight';
@@ -19,21 +19,53 @@ export interface Resolver {
   resolve(fromPath: string, toPath: string): Promise<ResolverResult>;
 }
 
+class OverlayedResolver implements Resolver {
+  constructor(
+    private originalResolver: Resolver,
+    private documents: Map<string, string>
+  ) {}
+
+  async resolve(fromPath: string, toPath: string): Promise<ResolverResult> {
+    const result = await this.originalResolver.resolve(fromPath, toPath);
+
+    const memDocument = this.documents.get(result.resolvedPath);
+    if (memDocument !== undefined) {
+      return {
+        resolvedPath: result.resolvedPath,
+        code: memDocument,
+      };
+    }
+
+    return result;
+  }
+}
+
 class Inspector extends Disposable implements ISandboxProxy {
   fibers = new Map<string, Fiber>();
   componentInfoResolver: ComponentInformationResolver;
   bridge: ReactInspectorBridge.ReactBridge;
+  resolver: Resolver;
 
-  constructor(private editorProxy: IEditorProxy, private resolver: Resolver) {
+  documents = new Map<string, string>();
+
+  constructor(private editorProxy: IEditorProxy, resolver: Resolver) {
     super();
 
     window.inspector = this;
+
     this.bridge = new ReactInspectorBridge.ReactBridge();
+    this.resolver = new OverlayedResolver(resolver, this.documents);
     this.componentInfoResolver = new ComponentInformationResolver(
       this.resolver,
       this.bridge
     );
+
     this.toDispose.push(this.componentInfoResolver);
+  }
+
+  dispose() {
+    super.dispose();
+    this.documents.clear();
   }
 
   async $getFiberComponentInformation(

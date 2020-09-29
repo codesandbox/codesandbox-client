@@ -1,6 +1,6 @@
 import { Fiber, FileComponentInformation } from '../../common/fibers';
 import getComponentName from './internals/getComponentName';
-import { analyzeCode } from './docgen';
+import { analyzeComponentFile } from './docgen';
 
 /**
  * Additional properties have been added by CodeSandbox
@@ -122,8 +122,8 @@ export class ReactBridge {
     return this.filterFibers(fiberRoots[0].current);
   }
 
-  public parseCode(path: string, code: string): FileComponentInformation {
-    return analyzeCode(code);
+  public parseComponentFile(path: string, code: string): FileComponentInformation {
+    return analyzeComponentFile(code);
   }
 
   public getElementForFiber(id: string): HTMLElement {

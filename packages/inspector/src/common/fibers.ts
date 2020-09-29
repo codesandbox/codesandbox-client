@@ -1,4 +1,4 @@
-export interface Position {
+export interface CodeRange {
   startLineNumber: number;
   startColumnNumber: number;
   endLineNumber: number;
@@ -7,7 +7,7 @@ export interface Position {
 
 export interface CodeLocation {
   path: string;
-  codePosition: Position;
+  codePosition: CodeRange;
 }
 
 export interface Fiber {
@@ -56,7 +56,7 @@ export type TypeInfo =
   | ObjectPropTypeInfo
   | NumberPropTypeInfo;
 
-export interface PropInfo {
+export interface StaticPropInfo {
   name: string;
   required: boolean;
   description?: string;
@@ -70,7 +70,27 @@ export interface PropInfo {
 export interface StaticComponentInformation {
   name: string;
   description?: string;
-  props: PropInfo[];
+  props: StaticPropInfo[];
+}
+
+export interface SourcePropInfo {
+  name: string;
+  sourceValue: string;
+  // Not sure whether we should save the AST or the source
+  sourceAst: unknown;
+}
+
+/**
+ * Code information of the component, like which props are set with which source code
+ */
+export interface FiberSourceInformation {
+  props: SourcePropInfo[];
+}
+
+export interface FiberRuntimeInformation {
+  props: {
+    [propName: string]: unknown;
+  };
 }
 
 export type FileComponentInformation = {

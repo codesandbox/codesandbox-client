@@ -6,10 +6,8 @@ import {
   editorProxyIdentifier,
   sandboxProxyIdentifier,
 } from '../common/proxies';
-import { Fiber , StaticComponentInformation } from '../common/fibers';
+import { Fiber, StaticComponentInformation } from '../common/fibers';
 import { Emitter } from '../common/rpc/event';
-
-
 
 export class EditorInspectorState implements IEditorProxy {
   private fibers = new Map<string, Fiber>();
@@ -90,7 +88,6 @@ export class EditorInspectorState implements IEditorProxy {
 
     // TODO(@CompuIves)
     const orderedFibers: Fiber[] = [];
-
     const currentFiber = fibersByParent.get(null);
 
     return orderBy([...this.fibers.values()], fiber => [

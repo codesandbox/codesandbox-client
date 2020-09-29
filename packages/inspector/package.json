@@ -9,19 +9,34 @@
   ],
   "scripts": {
     "start": "tsc --watch",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "jest"
   },
   "peerDependencies": {},
   "devDependencies": {
     "@types/jest": "^26.0.14",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.4.0",
     "tslib": "^2.0.1",
     "typescript": "^4.0.3"
   },
   "dependencies": {
     "@babel/core": "^7.11.6",
     "@babel/helper-plugin-utils": "^7.10.4",
+    "@babel/parser": "^7.11.5",
     "@babel/traverse": "^7.11.5",
     "codesandbox-api": "^0.0.24",
     "react-docgen": "^5.3.0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "modulePathIgnorePatterns": [
+      "lib"
+    ],
+    "globals": {
+      "ts-jest": {
+        "diagnostics": false
+      }
+    }
   }
 }
