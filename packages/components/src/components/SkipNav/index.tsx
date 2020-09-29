@@ -32,11 +32,7 @@ export const SkipNavStyles = createGlobalStyle(
   })
 );
 
-const SkipNavLink = () => (
-  <>
-    <Reach.SkipNavLink />
-  </>
-);
+const SkipNavLink = () => <Reach.SkipNavLink />;
 
 const SkipNav = {
   Link: SkipNavLink,
