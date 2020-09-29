@@ -117,7 +117,7 @@ export const Prettier: FunctionComponent = () => {
         />
 
         <Text size={2} variant="muted">
-          Use &apos;single&apos; quotes instead of &quot;double&quot; quotes.
+          Use {"'"}single{"'"} quotes instead of {'"'}double{'"'} quotes.
         </Text>
 
         <Rule />

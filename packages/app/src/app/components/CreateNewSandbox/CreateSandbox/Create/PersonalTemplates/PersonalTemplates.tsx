@@ -109,7 +109,7 @@ export const PersonalTemplates = ({
     <>
       {hasNoTemplates && (
         <CenteredMessage>
-          You don&apos;t have any templates yet, go on and create or bookmark
+          You don{"'"}t have any templates yet, go on and create or bookmark
           some!
         </CenteredMessage>
       )}
