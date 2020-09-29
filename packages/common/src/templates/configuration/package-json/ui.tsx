@@ -54,7 +54,7 @@ export const ConfigWizard = ({ file }) => {
         </ConfigItem>
         <ConfigDescription>
           Used to make the project more easily searchable. This helps people
-          discover your package as it&apos;s listed in npm search.
+          discover your package as it{"'"}s listed in npm search.
         </ConfigDescription>
       </PaddedConfig>
 
