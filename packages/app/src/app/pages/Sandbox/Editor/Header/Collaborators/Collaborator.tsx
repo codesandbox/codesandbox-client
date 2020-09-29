@@ -116,7 +116,6 @@ interface ICollaboratorProps {
   lastSeenAt: string | null;
   avatarUrl: string;
   isViewingNow: boolean;
-  userId: string;
   readOnly?: boolean;
   warning?: string;
 }
