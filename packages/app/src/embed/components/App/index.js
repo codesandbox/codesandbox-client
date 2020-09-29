@@ -318,7 +318,7 @@ export default class App extends React.PureComponent<
         <Centered vertical horizontal>
           <Title delay={0.1}>Not Found</Title>
           <SubTitle delay={0.05}>
-            We could not find the sandbox you&apos;re looking for.
+            We could not find the sandbox you{"'"}re looking for.
           </SubTitle>
         </Centered>
       );

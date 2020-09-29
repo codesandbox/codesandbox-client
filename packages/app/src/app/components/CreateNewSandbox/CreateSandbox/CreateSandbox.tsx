@@ -89,7 +89,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
               />
             ) : null}
             <NewIcon scale={0.5} />
-            What&apos;s new
+            What{"'"}s new
           </Tab>
           {isFirstVisit ? (
             <Tab {...tab} stopId="Welcome">
