@@ -41,6 +41,32 @@ export const User: FunctionComponent<Props> = ({ liveRole, user }) => {
   // and you can't follow yourself
   const canFollowUser = !(liveRole === 'spectator' || loggedInUser);
 
+  const Tooltips = () => {
+    if (liveRole === 'spectator') {
+      return (
+        <Tooltip content="Make editor">
+          <AddIcon
+            css={{ cursor: 'pointer' }}
+            onClick={() => onAddEditorClicked(user.id)}
+          />
+        </Tooltip>
+      );
+    }
+
+    if (liveRole === 'editor') {
+      return (
+        <Tooltip content="Make spectator">
+          <RemoveIcon
+            css={{ cursor: 'pointer' }}
+            onClick={() => onRemoveEditorClicked(user.id)}
+          />
+        </Tooltip>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <Stack
       align="center"
@@ -70,27 +96,7 @@ export const User: FunctionComponent<Props> = ({ liveRole, user }) => {
       </Stack>
 
       <Stack align="center" className="live-actions" gap={2}>
-        {canChangeEditors ? (
-          <div>
-            {liveRole === 'spectator' ? (
-              <Tooltip content="Make editor">
-                <AddIcon
-                  css={{ cursor: 'pointer' }}
-                  onClick={() => onAddEditorClicked(user.id)}
-                />
-              </Tooltip>
-            ) : null}
-
-            {liveRole === 'editor' ? (
-              <Tooltip content="Make spectator">
-                <RemoveIcon
-                  css={{ cursor: 'pointer' }}
-                  onClick={() => onRemoveEditorClicked(user.id)}
-                />
-              </Tooltip>
-            ) : null}
-          </div>
-        ) : null}
+        {canChangeEditors ? <Tooltips /> : null}
 
         {canFollowUser ? (
           <>
