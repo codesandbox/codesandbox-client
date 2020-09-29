@@ -10,7 +10,7 @@ export const RoomNotFoundError: FunctionComponent = () => (
     </Text>
 
     <Text block marginTop={4} size={4}>
-      It seems like this session doesn&apos;t exist or has been closed
+      {`It seems like this session doesn't exist or has been closed`}
     </Text>
 
     <Link css={css({ textDecoration: 'none' })} to="/s">
