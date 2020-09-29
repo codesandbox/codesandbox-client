@@ -140,18 +140,30 @@ export const Navigation: FunctionComponent<Props> = ({
       <SingletonTooltip placement="right">
         {singleton => (
           <>
-            {shownItems.map(item => (
-              <IconComponent key={item.id} item={item} singleton={singleton} />
-            ))}
+            {shownItems.length ? (
+              shownItems.map(item => (
+                <IconComponent
+                  key={item.id}
+                  item={item}
+                  singleton={singleton}
+                />
+              ))
+            ) : (
+              <div />
+            )}
 
-            {disabledItems.map(item => (
-              <IconComponent
-                key={item.id}
-                item={item}
-                singleton={singleton}
-                isDisabled
-              />
-            ))}
+            {disabledItems.length ? (
+              disabledItems.map(item => (
+                <IconComponent
+                  key={item.id}
+                  item={item}
+                  singleton={singleton}
+                  isDisabled
+                />
+              ))
+            ) : (
+              <div />
+            )}
           </>
         )}
       </SingletonTooltip>
