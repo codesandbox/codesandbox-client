@@ -935,9 +935,7 @@ export const MenuPopover = forwardRef<any, MenuPopoverProps>(
         position={position}
       />
     ) : (
-      <>
-        <div {...commonProps} />
-      </>
+      <div {...commonProps} />
     );
   }
 );

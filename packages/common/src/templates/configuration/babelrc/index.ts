@@ -1,4 +1,5 @@
 import { isBabel7 } from '../../../utils/is-babel-7';
+import { isPreact10 } from '../../../utils/is-preact-10';
 
 import { ConfigurationFile } from '../types';
 
@@ -18,17 +19,46 @@ const config: ConfigurationFile = {
     resolveModule: (path: string) => { code: string } | undefined
   ) => {
     let isV7 = false;
+    let isPreactV10 = false;
 
     try {
       const packageJSON = resolveModule('/package.json');
       const parsed = JSON.parse(packageJSON.code || '');
 
       isV7 = isBabel7(parsed.dependencies, parsed.devDependencies);
+      isPreactV10 = isPreact10(parsed.dependencies, parsed.devDependencies);
     } catch (e) {
       console.error(e);
     }
 
     if (template === 'preact-cli') {
+      if (isPreactV10) {
+        return JSON.stringify(
+          {
+            presets: ['env', 'typescript'],
+            plugins: [
+              'syntax-dynamic-import',
+              'transform-object-assign',
+              ['proposal-decorators', { legacy: true }],
+              ['proposal-class-properties', { loose: true }],
+              'proposal-object-rest-spread',
+              'babel-plugin-macros',
+              ['transform-react-jsx', { pragma: 'h', pragmaFrag: 'Fragment' }],
+              [
+                'jsx-pragmatic',
+                {
+                  module: 'preact',
+                  export: 'h',
+                  import: 'h',
+                },
+              ],
+            ],
+          },
+          null,
+          2
+        );
+      }
+
       return JSON.stringify(
         {
           presets: ['latest', 'stage-1'],

@@ -2011,14 +2011,14 @@
         "signature": "70c61ff569aabdf2b36220da6c06caaa27e45cd7acac81a1966ab4ee2eadc4f2",
         "affectsGlobalScope": false
       },
-      "../../node_modules/@types/istanbul-reports/index.d.ts": {
-        "version": "93b59bc67329d5add033e3198583c39aa939cef891e6a2b763e0bea2b514ea9b",
-        "signature": "93b59bc67329d5add033e3198583c39aa939cef891e6a2b763e0bea2b514ea9b",
+      "./node_modules/@types/istanbul-reports/index.d.ts": {
+        "version": "905c3e8f7ddaa6c391b60c05b2f4c3931d7127ad717a080359db3df510b7bdab",
+        "signature": "905c3e8f7ddaa6c391b60c05b2f4c3931d7127ad717a080359db3df510b7bdab",
         "affectsGlobalScope": false
       },
-      "../../node_modules/@types/prettier/index.d.ts": {
-        "version": "29651525db5579157e617c77e869af8bfdc1130f5d811c1f759ad35b7bafc8ef",
-        "signature": "29651525db5579157e617c77e869af8bfdc1130f5d811c1f759ad35b7bafc8ef",
+      "./node_modules/@types/prettier/index.d.ts": {
+        "version": "38433e50f876a09a45b665837a2954003ae14606270a157491f2bb52edf10382",
+        "signature": "38433e50f876a09a45b665837a2954003ae14606270a157491f2bb52edf10382",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/algoliasearch/index.d.ts": {
@@ -2082,8 +2082,8 @@
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/debug/index.d.ts": {
-        "version": "9ea00c8a8f143d175d9c947e4c3149547d781ebbcc65fbf14d21a61dd585a2c4",
-        "signature": "9ea00c8a8f143d175d9c947e4c3149547d781ebbcc65fbf14d21a61dd585a2c4",
+        "version": "37a4038e69fb61043e363140b58d7d517d6f99f274adad0774f226ea2ee8c903",
+        "signature": "37a4038e69fb61043e363140b58d7d517d6f99f274adad0774f226ea2ee8c903",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/estree/index.d.ts": {
@@ -3309,12 +3309,6 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "../../node_modules/@types/istanbul-reports/index.d.ts": [
-        "../../node_modules/@types/istanbul-lib-coverage/index.d.ts",
-        "../../node_modules/@types/istanbul-lib-report/index.d.ts",
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
-      ],
       "../../node_modules/@types/jest-diff/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -5682,10 +5676,6 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "../../node_modules/@types/prettier/index.d.ts": [
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
-      ],
       "../../node_modules/@types/prop-types/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -6432,6 +6422,15 @@
         "./node_modules/@babel/types/lib/index.d.ts"
       ],
       "./node_modules/@babel/types/lib/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/@types/istanbul-reports/index.d.ts": [
+        "../../node_modules/@types/istanbul-lib-report/index.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/@types/prettier/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
@@ -6838,12 +6837,6 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "../../node_modules/@types/istanbul-reports/index.d.ts": [
-        "../../node_modules/@types/istanbul-lib-coverage/index.d.ts",
-        "../../node_modules/@types/istanbul-lib-report/index.d.ts",
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
-      ],
       "../../node_modules/@types/jest-diff/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -9211,10 +9204,6 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "../../node_modules/@types/prettier/index.d.ts": [
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
-      ],
       "../../node_modules/@types/prop-types/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -9964,6 +9953,15 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "./node_modules/@types/istanbul-reports/index.d.ts": [
+        "../../node_modules/@types/istanbul-lib-report/index.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./node_modules/@types/prettier/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "./node_modules/tslib/tslib.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -10077,7 +10075,6 @@
       "../../node_modules/@types/is-function/index.d.ts",
       "../../node_modules/@types/istanbul-lib-coverage/index.d.ts",
       "../../node_modules/@types/istanbul-lib-report/index.d.ts",
-      "../../node_modules/@types/istanbul-reports/index.d.ts",
       "../../node_modules/@types/jest-diff/index.d.ts",
       "../../node_modules/@types/jest/index.d.ts",
       "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
@@ -10455,7 +10452,6 @@
       "../../node_modules/@types/ot/index.d.ts",
       "../../node_modules/@types/parse-json/index.d.ts",
       "../../node_modules/@types/phoenix/index.d.ts",
-      "../../node_modules/@types/prettier/index.d.ts",
       "../../node_modules/@types/prop-types/index.d.ts",
       "../../node_modules/@types/q/index.d.ts",
       "../../node_modules/@types/rc-slider/index.d.ts",
@@ -10696,6 +10692,8 @@
       "../codesandbox-api/dist/types/typings/codesandbox.d.ts",
       "./node_modules/@babel/parser/typings/babel-parser.d.ts",
       "./node_modules/@babel/types/lib/index.d.ts",
+      "./node_modules/@types/istanbul-reports/index.d.ts",
+      "./node_modules/@types/prettier/index.d.ts",
       "./node_modules/tslib/tslib.d.ts",
       "./src/common/fibers.ts",
       "./src/common/proxies.ts",
