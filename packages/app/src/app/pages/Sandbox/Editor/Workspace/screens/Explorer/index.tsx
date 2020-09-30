@@ -26,7 +26,6 @@ export const Explorer: FunctionComponent<Props> = ({ readonly = false }) => {
       {template !== 'static' ? (
         <>
           <Dependencies readonly={readonly} />
-
           <ExternalResources readonly={readonly} />
         </>
       ) : null}

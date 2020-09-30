@@ -15,7 +15,6 @@ import { MemberAuthorization } from 'app/graphql/types';
 import { ForkIcon } from '../icons';
 
 interface TeamItemProps {
-  id: string;
   name: string;
   avatar: string | null;
   onSelect: () => void;
@@ -64,7 +63,7 @@ interface ITeamItem {
   teamName: string;
   teamAvatar: string | null;
   userAuthorizations: MemberAuthorization[];
-};
+}
 
 interface TeamOrUserItemProps {
   item: ITeamItem;
@@ -76,7 +75,6 @@ const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
   if (props.disabled) {
     return (
       <DisabledTeamItem
-        id={props.item.teamId}
         name={props.item.teamName}
         avatar={props.item.teamAvatar}
         onSelect={() => {}}
@@ -86,7 +84,6 @@ const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
 
   return (
     <TeamItem
-      id={props.item.teamId}
       onSelect={() => {
         const item = props.item as ITeamItem;
         props.forkClicked(item.teamId);

@@ -45,8 +45,7 @@ export const SandboxModifiedConflict = ({ conflict }) => {
     },
   } = useOvermind();
   return (
-    <>
-      <Button
+    <Button
         css={css({ width: 'auto' })}
         type="button"
         variant="secondary"
@@ -54,7 +53,6 @@ export const SandboxModifiedConflict = ({ conflict }) => {
       >
         Resolve by diff
       </Button>
-    </>
   );
 };
 
@@ -99,8 +97,7 @@ export const BothModifiedConflict = ({ conflict }) => {
     },
   } = useOvermind();
   return (
-    <>
-      <Button
+    <Button
         css={css({ width: 'auto' })}
         type="button"
         variant="secondary"
@@ -108,7 +105,6 @@ export const BothModifiedConflict = ({ conflict }) => {
       >
         Resolve by diff
       </Button>
-    </>
   );
 };
 

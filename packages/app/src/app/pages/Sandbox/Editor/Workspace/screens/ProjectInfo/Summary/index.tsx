@@ -75,8 +75,7 @@ export const Summary = () => {
   const [editing, setEditing] = React.useState(false);
 
   return (
-    <>
-      <Collapsible
+    <Collapsible
         title={customTemplate ? 'Template Info' : 'Sandbox Info'}
         defaultOpen
       >
@@ -216,7 +215,6 @@ export const Summary = () => {
           </ListItem>
         </List>
       </Collapsible>
-    </>
   );
 };
 

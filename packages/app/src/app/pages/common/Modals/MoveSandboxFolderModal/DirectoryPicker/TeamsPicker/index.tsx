@@ -21,20 +21,16 @@ export const TeamsPicker: FunctionComponent<Props> = ({
     return null;
   }
 
-  return (
-    <>
-      {data.me.teams.map(({ id, name }) => (
-        <TeamContainer key={id}>
-          <TeamName>{name}</TeamName>
+  return data.me.teams.map(({ id, name }) => (
+    <TeamContainer key={id}>
+      <TeamName>{name}</TeamName>
 
-          <SandboxesItem
-            currentPath={currentPath}
-            currentTeamId={currentTeamId}
-            teamId={id}
-            onSelect={onSelect}
-          />
-        </TeamContainer>
-      ))}
-    </>
-  );
+      <SandboxesItem
+        currentPath={currentPath}
+        currentTeamId={currentTeamId}
+        teamId={id}
+        onSelect={onSelect}
+      />
+    </TeamContainer>
+  ));
 };

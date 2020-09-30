@@ -16,47 +16,43 @@ export const Code = withTheme(({ value, language, theme }) => {
     }
     return 'js';
   };
-  return (
-    <>
-      {value ? (
-        <Highlight
-          {...defaultProps}
-          code={value}
-          language={language || defaultLanguage()}
-          // @ts-ignore
-          theme={makeTheme(theme.vscodeTheme)}
-        >
-          {({ className, style, tokens, getLineProps, getTokenProps }) => (
-            <Element
-              as="pre"
-              paddingX={4}
-              paddingY={2}
-              marginY={2}
-              className={className}
-              style={style}
-              css={css({
-                fontSize: 3,
-                whiteSpace: 'pre-wrap',
-                maxHeight: 400,
-                overflow: 'scroll',
-                fontFamily: "'dm', menlo, monospace",
+  return value ? (
+    <Highlight
+      {...defaultProps}
+      code={value}
+      language={language || defaultLanguage()}
+      // @ts-ignore
+      theme={makeTheme(theme.vscodeTheme)}
+    >
+      {({ className, style, tokens, getLineProps, getTokenProps }) => (
+        <Element
+          as="pre"
+          paddingX={4}
+          paddingY={2}
+          marginY={2}
+          className={className}
+          style={style}
+          css={css({
+            fontSize: 3,
+            whiteSpace: 'pre-wrap',
+            maxHeight: 400,
+            overflow: 'scroll',
+            fontFamily: "'dm', menlo, monospace",
 
-                '*': {
-                  wordBreak: 'break-all',
-                },
-              })}
-            >
-              {tokens.map((line, i) => (
-                <Element {...getLineProps({ line, key: i })}>
-                  {line.map((token, key) => (
-                    <Element as="span" {...getTokenProps({ token, key })} />
-                  ))}
-                </Element>
+            '*': {
+              wordBreak: 'break-all',
+            },
+          })}
+        >
+          {tokens.map((line, i) => (
+            <Element {...getLineProps({ line, key: i })}>
+              {line.map((token, key) => (
+                <Element as="span" {...getTokenProps({ token, key })} />
               ))}
             </Element>
-          )}
-        </Highlight>
-      ) : null}
-    </>
-  );
+          ))}
+        </Element>
+      )}
+    </Highlight>
+  ) : null;
 });

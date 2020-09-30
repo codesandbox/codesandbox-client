@@ -23,6 +23,8 @@
     "react/state-in-constructor": 0,
     "react/jsx-props-no-spreading": 0,
     "react/static-property-placement": 0,
+    "react/jsx-no-useless-fragment": "error",
+    "react/jsx-curly-brace-presence": 0,
     "import/no-extraneous-dependencies": 0,
     "import/no-cycle": "warn",
     "react/prop-types": 0,
