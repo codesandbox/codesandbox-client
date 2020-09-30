@@ -273,3 +273,4 @@ Thanks goes to these wonderful people
 
 Thanks to [Chromatic](https://www.chromaticqa.com/) for providing the visual
 testing platform that helps us catch unexpected changes.
+Thank you 😊,
