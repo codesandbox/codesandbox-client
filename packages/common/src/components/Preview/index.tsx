@@ -8,6 +8,7 @@ import {
 import debounce from 'lodash/debounce';
 import React from 'react';
 import { Spring } from 'react-spring/renderprops.cjs';
+import { ThemeProvider } from '@codesandbox/components';
 
 import { getModulePath } from '../../sandbox/modules';
 import getTemplate from '../../templates';
@@ -50,7 +51,7 @@ export type Props = {
   onMount?: (preview: BasePreview) => () => void;
   overlayMessage?: string;
   isInResponsiveView: boolean;
-  responsiveModeActions: any;
+  responsiveModeProps: any;
   /**
    * Whether to show a screenshot in the preview as a "placeholder" while loading
    * to reduce perceived loading time
@@ -575,6 +576,7 @@ class BasePreview extends React.Component<Props, State> {
 
     return (
       <Container
+        id="sandbox-preview-container"
         className={className}
         style={{
           position: 'relative',
@@ -602,68 +604,70 @@ class BasePreview extends React.Component<Props, State> {
           />
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
-        <ResponsiveWrapper
-          on={this.props.isInResponsiveView}
-          actions={this.props.responsiveModeActions}
-        >
-          <AnySpring
-            from={{ opacity: this.props.showScreenshotOverlay ? 0 : 1 }}
-            to={{
-              opacity: this.state.showScreenshot ? 0 : 1,
-            }}
+        <ThemeProvider theme={this.props.responsiveModeProps.theme.vscodeTheme}>
+          <ResponsiveWrapper
+            on={this.props.isInResponsiveView}
+            props={this.props.responsiveModeProps}
           >
-            {(style: { opacity: number }) => (
-              <>
-                <StyledFrame
-                  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-                  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-                  src={this.state.url}
-                  ref={this.setIframeElement}
-                  title={getSandboxName(sandbox)}
-                  id="sandbox-preview"
-                  style={{
-                    ...style,
-                    zIndex: 1,
-                    backgroundColor: 'white',
-                    pointerEvents:
-                      dragging || inactive || this.props.isResizing
-                        ? 'none'
-                        : 'initial',
-                  }}
-                />
-
-                {this.props.sandbox.screenshotUrl && style.opacity !== 1 && (
-                  <div
+            <AnySpring
+              from={{ opacity: this.props.showScreenshotOverlay ? 0 : 1 }}
+              to={{
+                opacity: this.state.showScreenshot ? 0 : 1,
+              }}
+            >
+              {(style: { opacity: number }) => (
+                <>
+                  <StyledFrame
+                    allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+                    sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+                    src={this.state.url}
+                    ref={this.setIframeElement}
+                    title={getSandboxName(sandbox)}
+                    id="sandbox-preview"
                     style={{
-                      overflow: 'hidden',
-                      width: '100%',
-                      position: 'absolute',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      top: showNavigation ? 35 : 0,
-                      zIndex: 0,
+                      ...style,
+                      zIndex: 1,
+                      backgroundColor: 'white',
+                      pointerEvents:
+                        dragging || inactive || this.props.isResizing
+                          ? 'none'
+                          : 'initial',
                     }}
-                  >
+                  />
+
+                  {this.props.sandbox.screenshotUrl && style.opacity !== 1 && (
                     <div
                       style={{
+                        overflow: 'hidden',
                         width: '100%',
-                        height: '100%',
-                        filter: `blur(2px)`,
-                        transform: 'scale(1.025, 1.025)',
-                        backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPositionX: 'center',
+                        position: 'absolute',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        top: showNavigation ? 35 : 0,
+                        zIndex: 0,
                       }}
-                    />
-                  </div>
-                )}
-              </>
-            )}
-          </AnySpring>
-        </ResponsiveWrapper>
+                    >
+                      <div
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          filter: `blur(2px)`,
+                          transform: 'scale(1.025, 1.025)',
+                          backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
+                          backgroundRepeat: 'no-repeat',
+                          backgroundPositionX: 'center',
+                        }}
+                      />
+                    </div>
+                  )}
+                </>
+              )}
+            </AnySpring>
+          </ResponsiveWrapper>
+        </ThemeProvider>
       </Container>
     );
   }

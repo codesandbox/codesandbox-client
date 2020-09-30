@@ -1,10 +1,9 @@
 import { ServerContainerStatus } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
+import { useTheme } from 'styled-components';
 import React, { FunctionComponent, useState } from 'react';
 import { useOvermind } from 'app/overmind';
-
-import { ResponsiveWrapper } from './ResponsiveWrapper';
 
 type Props = {
   hidden?: boolean;
@@ -18,16 +17,17 @@ export const Preview: FunctionComponent<Props> = ({
   options,
   runOnClick,
 }) => {
+  const theme = useTheme();
   const {
     actions: {
-      preview: { toggleResponsiveMode },
+      preview: previewActions,
       editor: { errorsCleared, previewActionReceived, projectViewToggled },
     },
     effects: {
       preview: { initializePreview },
     },
     state: {
-      preview: { mode },
+      preview,
       editor: {
         currentModule,
         currentSandbox,
@@ -63,33 +63,33 @@ export const Preview: FunctionComponent<Props> = ({
     return undefined;
   };
 
-  return (
-    <ResponsiveWrapper>
-      {running ? (
-        <BasePreview
-          currentModule={currentModule}
-          hide={hidden}
-          initialPath={initialPath}
-          isInProjectView={isInProjectView}
-          isInResponsiveView={mode === 'responsive'}
-          responsiveModeActions={{}}
-          isResizing={isResizing}
-          onAction={action => previewActionReceived(action)}
-          onClearErrors={() => errorsCleared()}
-          onMount={initializePreview}
-          noPreview={!previewWindowVisible}
-          onToggleProjectView={() => projectViewToggled()}
-          onToggleResponsiveView={() => toggleResponsiveMode()}
-          overlayMessage={getOverlayMessage()}
-          previewSecret={currentSandbox.previewSecret}
-          privacy={currentSandbox.privacy}
-          sandbox={currentSandbox}
-          settings={settings}
-          url={options.url}
-        />
-      ) : (
-        <RunOnClick onClick={() => setRunning(true)} />
-      )}
-    </ResponsiveWrapper>
+  return running ? (
+    <BasePreview
+      currentModule={currentModule}
+      hide={hidden}
+      initialPath={initialPath}
+      isInProjectView={isInProjectView}
+      isInResponsiveView={preview.mode === 'responsive'}
+      responsiveModeProps={{
+        state: preview,
+        actions: previewActions,
+        theme,
+      }}
+      isResizing={isResizing}
+      onAction={action => previewActionReceived(action)}
+      onClearErrors={() => errorsCleared()}
+      onMount={initializePreview}
+      noPreview={!previewWindowVisible}
+      onToggleProjectView={() => projectViewToggled()}
+      onToggleResponsiveView={previewActions.toggleResponsiveMode}
+      overlayMessage={getOverlayMessage()}
+      previewSecret={currentSandbox.previewSecret}
+      privacy={currentSandbox.privacy}
+      sandbox={currentSandbox}
+      settings={settings}
+      url={options.url}
+    />
+  ) : (
+    <RunOnClick onClick={() => setRunning(true)} />
   );
 };
