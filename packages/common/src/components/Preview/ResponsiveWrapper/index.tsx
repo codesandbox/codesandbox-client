@@ -1,10 +1,11 @@
-import { Element, Stack, Menu, Text } from '@codesandbox/components';
+import { Element, Stack, Text } from '@codesandbox/components';
 import { json } from 'overmind';
 import React, { useEffect, useState } from 'react';
-import { isEqual } from 'lodash-es';
+
 import styled from 'styled-components';
-import { ArrowDown, SwitchIcon } from './Icons';
+import { SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
+import { PresetMenu } from './PresetMenu';
 
 const Styled = styled(Element)<{
   width: string;
@@ -74,11 +75,6 @@ export const ResponsiveWrapper = ({
 
   if (!on) return children;
 
-  const activePresetName =
-    Object.keys(defaultPresets).find(preset =>
-      isEqual(defaultPresets[preset], resolution)
-    ) || 'Custom';
-
   const [resolutionWidth, resolutionHeight] = resolution;
 
   return (
@@ -113,31 +109,12 @@ export const ResponsiveWrapper = ({
             </Stack>
             <Text size={2}>({Math.floor(scale * 100)}%)</Text>
           </Stack>
-          <Menu>
-            <Menu.Button
-              style={{
-                color: theme['sideBar.foreground'],
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <Text>{activePresetName}</Text>
-              <Element marginLeft={1}>
-                <ArrowDown color={theme['sideBar.foreground']} />
-              </Element>
-            </Menu.Button>
-            <Menu.List>
-              {Object.keys(defaultPresets).map(preset => (
-                <Menu.Item
-                  key={preset}
-                  field={preset}
-                  onSelect={() => actions.setResolution(defaultPresets[preset])}
-                >
-                  {preset}
-                </Menu.Item>
-              ))}
-            </Menu.List>
-          </Menu>
+          <PresetMenu
+            onSelect={preset => actions.setResolution(preset)}
+            theme={theme}
+            resolution={resolution}
+            defaultPresets={defaultPresets}
+          />
         </Stack>
       </Element>
       <Styled scale={scale} width={width} height={height}>
