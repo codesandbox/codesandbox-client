@@ -19,6 +19,7 @@ export const Preview: FunctionComponent<Props> = ({
 }) => {
   const {
     actions: {
+      preview: { toggleResponsiveMode },
       editor: { errorsCleared, previewActionReceived, projectViewToggled },
     },
     effects: {
@@ -72,6 +73,7 @@ export const Preview: FunctionComponent<Props> = ({
       onMount={initializePreview}
       noPreview={!previewWindowVisible}
       onToggleProjectView={() => projectViewToggled()}
+      onToggleResponsiveView={() => toggleResponsiveMode()}
       overlayMessage={getOverlayMessage()}
       previewSecret={currentSandbox.previewSecret}
       privacy={currentSandbox.privacy}

@@ -35,6 +35,7 @@ export type Props = {
   onAction?: (action: Object) => void;
   onOpenNewWindow?: () => void;
   onToggleProjectView?: () => void;
+  onToggleResponsiveView?: () => void;
   isResizing?: boolean;
   onResize?: (height: number) => void;
   showNavigation?: boolean;
@@ -537,6 +538,12 @@ class BasePreview extends React.Component<Props, State> {
     }
   };
 
+  toggleResponsiveView = () => {
+    if (this.props.onToggleResponsiveView) {
+      this.props.onToggleResponsiveView();
+    }
+  };
+
   render() {
     const {
       showNavigation,
@@ -583,6 +590,9 @@ class BasePreview extends React.Component<Props, State> {
             isProjectView={isInProjectView}
             toggleProjectView={
               this.props.onToggleProjectView && this.toggleProjectView
+            }
+            toggleResponsiveView={
+              this.props.onToggleResponsiveView && this.toggleResponsiveView
             }
             openNewWindow={this.openNewWindow}
             zenMode={settings.zenMode}
