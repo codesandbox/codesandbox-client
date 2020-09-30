@@ -8,3 +8,11 @@ export const SwitchIcon = (props: { color: string }) => (
     />
   </svg>
 );
+export const ArrowDown = (props: { color: string }) => (
+  <svg width={7} height={5} fill="none" viewBox="0 0 5 3" {...props}>
+    <path
+      fill={props.color}
+      d="M2.07 2.003L.327.318.07.567l2 1.933 2-1.933-.272-.249L2.07 2.003z"
+    />
+  </svg>
+);

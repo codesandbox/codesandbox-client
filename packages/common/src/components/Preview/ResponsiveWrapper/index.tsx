@@ -3,7 +3,7 @@ import { json } from 'overmind';
 import React, { useEffect, useState } from 'react';
 import { isEqual } from 'lodash-es';
 import styled from 'styled-components';
-import { SwitchIcon } from './Icons';
+import { ArrowDown, SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 
 const Styled = styled(Element)<{
@@ -28,9 +28,8 @@ const Styled = styled(Element)<{
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%) scale(${props => props.scale});
     display: block;
-    zoom: ${props => props.scale};
   }
 `;
 
@@ -49,20 +48,27 @@ export const ResponsiveWrapper = ({
   const defaultWidth =
     document.getElementById('sandbox-preview-container')?.clientWidth - 20;
   const defaultHeight =
-    document.getElementById('sandbox-preview-container')?.clientHeight - 20;
+    document.getElementById('sandbox-preview-container')?.clientHeight - 100;
 
   useEffect(() => {
     const [w, h] = resolution;
     setWidth(w + 'px');
     setHeight(h + 'px');
+    let scaleToSet = 1;
 
     if (w > defaultWidth) {
-      setScale(defaultWidth / w);
-    } else if (h > defaultHeight) {
-      setScale(defaultHeight / h);
-    } else {
-      setScale(1);
+      scaleToSet = defaultWidth / w;
     }
+
+    if (h > defaultHeight) {
+      const heightToSet = defaultHeight / h;
+      if (heightToSet < scaleToSet) {
+        scaleToSet = heightToSet;
+      }
+    }
+
+    setScale(scaleToSet);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolution]);
 
@@ -108,7 +114,18 @@ export const ResponsiveWrapper = ({
             <Text size={2}>({Math.floor(scale * 100)}%)</Text>
           </Stack>
           <Menu>
-            <Menu.Button>{activePresetName}</Menu.Button>
+            <Menu.Button
+              style={{
+                color: theme['sideBar.foreground'],
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <Text>{activePresetName}</Text>
+              <Element marginLeft={1}>
+                <ArrowDown color={theme['sideBar.foreground']} />
+              </Element>
+            </Menu.Button>
             <Menu.List>
               {Object.keys(defaultPresets).map(preset => (
                 <Menu.Item

@@ -560,6 +560,8 @@ class BasePreview extends React.Component<Props, State> {
       noPreview,
       className,
       overlayMessage,
+      isInResponsiveView,
+      responsiveModeProps,
     } = this.props;
 
     const { urlInAddressBar, back, forward } = this.state;
@@ -604,10 +606,10 @@ class BasePreview extends React.Component<Props, State> {
           />
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
-        <ThemeProvider theme={this.props.responsiveModeProps.theme.vscodeTheme}>
+        <ThemeProvider theme={responsiveModeProps.theme.vscodeTheme}>
           <ResponsiveWrapper
-            on={this.props.isInResponsiveView}
-            props={this.props.responsiveModeProps}
+            on={isInResponsiveView}
+            props={responsiveModeProps}
           >
             <AnySpring
               from={{ opacity: this.props.showScreenshotOverlay ? 0 : 1 }}
