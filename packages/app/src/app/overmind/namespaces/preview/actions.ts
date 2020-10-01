@@ -1,6 +1,7 @@
 import { Action } from 'app/overmind';
 import { isEqual } from 'lodash-es';
 import { json } from 'overmind';
+import { PresetType } from './state';
 
 export const toggleResponsiveMode: Action = ({ state }) => {
   if (state.preview.mode === 'responsive') {
@@ -25,6 +26,10 @@ export const openDeletePresetModal: Action = ({ state }) => {
 
 export const openAddPresetModal: Action = ({ state }) => {
   state.currentModal = 'addPreset';
+};
+
+export const toggleEditPresets: Action = ({ state }) => {
+  state.preview.responsive.editMode = !state.preview.responsive.editMode;
 };
 
 export const deletePreset: Action = ({ state }) => {
@@ -53,4 +58,8 @@ export const addPreset: Action<{
   };
 
   state.preview.responsive.resolution = [width, height];
+};
+
+export const editPresets: Action<PresetType> = ({ state }, newPresets) => {
+  state.preview.responsive.presets = newPresets;
 };

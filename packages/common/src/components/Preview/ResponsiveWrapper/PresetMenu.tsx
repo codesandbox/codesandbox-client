@@ -9,6 +9,7 @@ type PresetMenuProps = {
   theme: ResponsiveWrapperProps['props']['theme'];
   resolution: ResponsiveWrapperProps['props']['state']['responsive']['resolution'];
   onSelect: (preset: [number, number]) => void;
+  openEditPresets: () => void;
 };
 
 export const PresetMenu = ({
@@ -16,6 +17,7 @@ export const PresetMenu = ({
   theme,
   resolution,
   onSelect,
+  openEditPresets,
 }: PresetMenuProps) => {
   const activePresetName =
     Object.keys(presets).find(preset => isEqual(presets[preset], resolution)) ||
@@ -45,7 +47,11 @@ export const PresetMenu = ({
             {preset}
           </Menu.Item>
         ))}
-        <Menu.Item key="edit-presets" field="edit-presets" onSelect={() => {}}>
+        <Menu.Item
+          key="edit-presets"
+          field="edit-presets"
+          onSelect={openEditPresets}
+        >
           Edit Presets
         </Menu.Item>
       </Menu.List>

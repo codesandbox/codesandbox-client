@@ -45,3 +45,12 @@ export const DeleteIcon = props => (
     />
   </svg>
 );
+
+export const CloseIcon = (props: { color: string }) => (
+  <svg width={17} height={17} fill="none" viewBox="0 0 17 17" {...props}>
+    <path
+      fill={props.color}
+      d="M16.523 1.735L15.068.281 8.523 6.826 1.977.281.523 1.735l6.545 6.546-6.545 6.545 1.454 1.455 6.546-6.546 6.545 6.546 1.455-1.455-6.546-6.545 6.546-6.546z"
+    />
+  </svg>
+);

@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { AddIcon, DeleteIcon, SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 import { PresetMenu } from './PresetMenu';
+import { EditPresets } from './EditMode';
 
 const Styled = styled(Element)<{
   width: string;
@@ -159,6 +160,7 @@ export const ResponsiveWrapper = ({
             <Text size={3}>({Math.floor(scale * 100)}%)</Text>
           </Stack>
           <PresetMenu
+            openEditPresets={actions.toggleEditPresets}
             onSelect={preset => actions.setResolution(preset)}
             theme={theme}
             resolution={resolution}
@@ -167,6 +169,9 @@ export const ResponsiveWrapper = ({
         </Stack>
       </Wrapper>
       <Styled scale={scale} width={width} height={height}>
+        {state.responsive.editMode ? (
+          <EditPresets theme={theme} state={state} actions={actions} />
+        ) : null}
         <div>{children}</div>
       </Styled>
     </>

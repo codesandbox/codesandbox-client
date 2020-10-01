@@ -8,6 +8,7 @@ export type ResponsiveWrapperProps = {
         defaultPresets: { [name: string]: [number, number] };
         scale: number;
         resolution: [number, number];
+        editMode: boolean;
       };
       mode: 'responsive' | null;
     };
@@ -15,6 +16,8 @@ export type ResponsiveWrapperProps = {
       setResolution: (size: number[]) => void;
       openDeletePresetModal: () => void;
       openAddPresetModal: () => void;
+      toggleEditPresets: () => void;
+      editPresets: (data: Object) => void;
     };
   };
   children?: any;

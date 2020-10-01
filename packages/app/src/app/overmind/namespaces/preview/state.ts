@@ -1,12 +1,13 @@
 import { RootState } from 'app/overmind';
 import { derived } from 'overmind';
 
-type PresetType = { [name: string]: [number, number] };
+export type PresetType = { [name: string]: [number, number] };
 type State = {
   responsive: {
     presets: PresetType;
     scale: number;
     resolution: [number, number];
+    editMode: boolean;
   };
   mode: 'responsive' | null;
 };
@@ -27,6 +28,7 @@ export const state: State = {
         }
       );
     }),
+    editMode: true,
     scale: 100,
     resolution: [320, 675],
   },
