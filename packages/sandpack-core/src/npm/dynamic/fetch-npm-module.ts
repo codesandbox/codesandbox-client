@@ -248,7 +248,7 @@ type DependencyVersionResult =
 async function getDependencyVersion(
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: string[] = DEFAULT_EXTENSIONS
+  defaultExtensions: string[] = DEFAULT_EXTENSIONS,
   dependencyName: string
 ): Promise<DependencyVersionResult | null> {
   const { manifest } = manager;
