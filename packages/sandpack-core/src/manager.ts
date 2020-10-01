@@ -772,10 +772,6 @@ export default class Manager implements IEvaluator {
     currentPath: string,
     defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
   ): Module {
-    if (path === 'graphql/type/definition') {
-      debugger;
-    }
-
     const dirredPath = pathUtils.dirname(currentPath);
     if (this.cachedPaths[dirredPath] === undefined) {
       this.cachedPaths[dirredPath] = {};
