@@ -18,7 +18,7 @@ with a browser. Enabling you to start new projects quickly and prototype
 rapidly. With CodeSandbox, you can create web apps, experiment with code, test
 ideas, and share creations easily.
 
-## Other CodeSandbox repositories
+## Other CodeSandbox repositories that we need
 
 CodeSandbox consists of several separate servers, some of which are open
 sourced.
