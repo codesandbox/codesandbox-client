@@ -8,7 +8,7 @@ import { AddIcon, DeleteIcon, SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 import { PresetMenu } from './PresetMenu';
 
-const Styled = styled(Element)<{
+const Styled = styled(Element) <{
   width: string;
   height: string;
   theme: any;

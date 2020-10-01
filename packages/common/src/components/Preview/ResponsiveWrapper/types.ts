@@ -17,5 +17,5 @@ export type ResponsiveWrapperProps = {
       openAddPresetModal: () => void;
     };
   };
-  children: React.ReactNode;
+  children?: any;
 };
