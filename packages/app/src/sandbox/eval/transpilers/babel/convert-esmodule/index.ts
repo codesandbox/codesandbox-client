@@ -78,19 +78,6 @@ export function convertEsModule(
     program.body.push(generateInteropRequire());
   }
 
-  /**
-   * We want wildcard exports to be at the end, to allow for definition of other exports
-   * first. It sounds strange, but there are cases like
-   * ```
-   * export function a() {}
-   * export * from './a';
-   * ```
-   *
-   * In that case the export from `./a` shouldn't override export `a`. That's why we set up
-   * a queue that we process at the end, to make sure that other exports go first.
-   */
-  const wildCardExportQueue: Statement[] = [];
-
   // If there is a declaration of `exports` (`var exports = []`), we need to rename this
   // variable as it's a reserved keyword
   let exportsDefined = false;
@@ -473,11 +460,6 @@ export function convertEsModule(
       });
     }
   }
-
-  wildCardExportQueue.forEach(statement => {
-    program.body.splice(importOffset, 0, statement);
-    importOffset++;
-  });
 
   if (
     Object.keys(varsToRename).length > 0 ||
