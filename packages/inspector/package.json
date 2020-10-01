@@ -14,6 +14,7 @@
   },
   "peerDependencies": {},
   "devDependencies": {
+    "@babel/types": "^7.11.5",
     "@types/jest": "^26.0.14",
     "jest": "^26.4.2",
     "ts-jest": "^26.4.0",

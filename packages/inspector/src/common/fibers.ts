@@ -75,16 +75,19 @@ export interface StaticComponentInformation {
 
 export interface SourcePropInfo {
   name: string;
-  sourceValue: string;
-  // Not sure whether we should save the AST or the source
-  sourceAst: unknown;
+  // sourceValue: string;
+  definitionPosition: CodeRange;
+  namePosition: CodeRange;
+  valuePosition: CodeRange | null;
 }
 
 /**
  * Code information of the component, like which props are set with which source code
  */
 export interface FiberSourceInformation {
-  props: SourcePropInfo[];
+  props: {
+    [propName: string]: SourcePropInfo;
+  };
 }
 
 export interface FiberRuntimeInformation {

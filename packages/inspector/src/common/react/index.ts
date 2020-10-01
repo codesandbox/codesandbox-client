@@ -1,6 +1,14 @@
-import { Fiber, FileComponentInformation } from '../../common/fibers';
+import { File } from '@babel/types';
+import {
+  CodeRange,
+  Fiber,
+  FileComponentInformation,
+  FiberSourceInformation,
+} from '../../common/fibers';
 import getComponentName from './internals/getComponentName';
 import { analyzeComponentFile } from './docgen';
+import { analyzeProps } from './analyze/component-instance';
+import { parse } from '@babel/parser';
 
 /**
  * Additional properties have been added by CodeSandbox
@@ -113,6 +121,7 @@ function convertFiber(
 
 export class ReactBridge {
   private fiberToReact = new Map<string, ReactFiber>();
+  private asts = new Map<string, File>();
 
   public getFibers(): Fiber[] {
     const fiberRoots = [
@@ -122,8 +131,19 @@ export class ReactBridge {
     return this.filterFibers(fiberRoots[0].current);
   }
 
-  public parseComponentFile(path: string, code: string): FileComponentInformation {
+  public parseComponentFile(
+    path: string,
+    code: string
+  ): FileComponentInformation {
     return analyzeComponentFile(code);
+  }
+
+  public getComponentInstanceInformation(
+    path: string,
+    code: string,
+    codeRange: CodeRange
+  ): FiberSourceInformation {
+    return analyzeProps(code, codeRange);
   }
 
   public getElementForFiber(id: string): HTMLElement {

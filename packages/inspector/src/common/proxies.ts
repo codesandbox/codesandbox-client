@@ -1,6 +1,10 @@
 import { RPCProtocolImpl, createProxyIdentifier } from './rpc';
 import { CodeSandboxAPIConnection } from './rpc/connection';
-import { Fiber, StaticComponentInformation } from './fibers';
+import {
+  Fiber,
+  StaticComponentInformation,
+  FiberSourceInformation,
+} from './fibers';
 
 export interface ISandboxProxy {
   $highlightFiber(id: string): void;
@@ -9,6 +13,10 @@ export interface ISandboxProxy {
   $getFiberComponentInformation(
     id: string
   ): Promise<StaticComponentInformation>;
+  $getFiberPropSources(
+    id: string,
+    code: string
+  ): Promise<FiberSourceInformation>;
 }
 
 export interface IEditorProxy {

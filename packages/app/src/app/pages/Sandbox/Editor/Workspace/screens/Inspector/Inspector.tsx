@@ -7,16 +7,28 @@ import {
 } from 'inspector/lib/editor';
 import {
   Fiber as FiberType,
+  FiberSourceInformation,
   StaticComponentInformation,
+  CodeRange,
 } from 'inspector/lib/common/fibers';
 
 import { useOvermind } from 'app/overmind';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import { Fiber } from './Fiber';
 import { BaseKnob } from './Knobs';
+import { UserViewRange } from '@codesandbox/common/lib/types';
+
+function componentRangeToViewRange(range: CodeRange): UserViewRange {
+  return {
+    startLineNumber: range.startLineNumber,
+    endLineNumber: range.endLineNumber,
+    startColumn: range.startColumnNumber,
+    endColumn: range.endColumnNumber,
+  };
+}
 
 export const Inspector = () => {
-  const { actions, effects, state } = useOvermind();
+  const { actions, effects } = useOvermind();
   const inspectorStateService = React.useRef<EditorInspectorState>();
   const [fibers, setFibers] = React.useState<FiberType[]>([]);
   const [selectedFiber, setSelectedFiber] = React.useState<FiberType | null>(
@@ -26,6 +38,10 @@ export const Inspector = () => {
     componentInformation,
     setComponentInformation,
   ] = React.useState<StaticComponentInformation | null>(null);
+  const [
+    propsSourceInformation,
+    setPropsSourceInformation,
+  ] = React.useState<FiberSourceInformation | null>(null);
 
   useEffect(() => {
     const inspector = getInspectorStateService();
@@ -34,6 +50,7 @@ export const Inspector = () => {
       setFibers(editorFibers);
     });
     inspector.onSelectionChanged(fiber => {
+      setComponentInformation(null);
       setSelectedFiber(fiber);
 
       actions.editor.moduleSelected({ path: fiber.location.path }).then(() => {
@@ -43,10 +60,20 @@ export const Inspector = () => {
           startColumn: fiber.location.codePosition.startColumnNumber,
           endColumn: fiber.location.codePosition.endColumnNumber,
         });
-      });
 
-      inspector.getFiberComponentInformation(fiber.id).then(info => {
-        setComponentInformation(info);
+        const model = effects.vscode.getModelByPath(fiber.location.path);
+        model.onDidChangeContent(e => {
+          inspector
+            .getFiberPropSources(fiber.id, model.getValue())
+            .then(setPropsSourceInformation);
+        });
+
+        inspector
+          .getFiberComponentInformation(fiber.id)
+          .then(setComponentInformation);
+        inspector
+          .getFiberPropSources(fiber.id, model.getValue())
+          .then(setPropsSourceInformation);
       });
     });
   }, []);
@@ -70,13 +97,7 @@ export const Inspector = () => {
 
                 effects.vscode.highlightRange(
                   fiber.location.path,
-                  {
-                    startLineNumber:
-                      fiber.location.codePosition.startLineNumber,
-                    endLineNumber: fiber.location.codePosition.endLineNumber,
-                    startColumn: fiber.location.codePosition.startColumnNumber,
-                    endColumn: fiber.location.codePosition.endColumnNumber,
-                  },
+                  componentRangeToViewRange(fiber.location.codePosition),
                   '#6CC7F650',
                   'inspector'
                 );
@@ -105,7 +126,26 @@ export const Inspector = () => {
               {selectedFiber.name || 'Anonymous'}
             </Text>
 
-            {componentInformation?.props.map(val => <BaseKnob key={val.name} label={val.name} />)}
+            {propsSourceInformation &&
+              componentInformation &&
+              componentInformation.props.map(val => (
+                <BaseKnob
+                  onClick={() => {
+                    const propInfo = propsSourceInformation.props[val.name];
+                    if (propInfo) {
+                      effects.vscode.highlightRange(
+                        selectedFiber.location.path,
+                        componentRangeToViewRange(propInfo.valuePosition),
+                        '#6CC7F650',
+                        'inspector-value'
+                      );
+                    }
+                  }}
+                  disabled={!propsSourceInformation.props[val.name]}
+                  key={val.name}
+                  label={val.name}
+                />
+              ))}
           </Stack>
         )}
       </Collapsible>

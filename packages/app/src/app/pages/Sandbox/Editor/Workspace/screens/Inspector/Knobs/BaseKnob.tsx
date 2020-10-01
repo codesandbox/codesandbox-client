@@ -4,6 +4,8 @@ import { Input, Stack } from '@codesandbox/components';
 
 interface BaseKnopProps {
   label: string;
+  disabled?: boolean;
+  onClick: () => void;
 }
 
 const nicify = (s: string) => {
@@ -16,7 +18,11 @@ const nicify = (s: string) => {
 };
 
 export const BaseKnob = (props: BaseKnopProps) => (
-  <Stack align="center" css={css({ fontWeight: 500 })}>
+  <Stack
+    onClick={props.onClick}
+    align="center"
+    css={css({ fontWeight: 500, opacity: props.disabled ? 0.5 : 1 })}
+  >
     <div style={{ flexGrow: 1, width: '100%' }}>{nicify(props.label)}</div>
 
     <Input css={css({ flexGrow: 2, width: '100%' })} />

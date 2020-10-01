@@ -10,7 +10,7 @@ import delay from '@codesandbox/common/lib/utils/delay';
 
 import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
 import { join } from '@codesandbox/common/lib/utils/path';
-import inspectorPlugin from 'inspector/lib/sandbox/react/babel';
+import inspectorPlugin from 'inspector/lib/common/react/babel';
 import patchedMacrosPlugin from './utils/macrosPatch';
 import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
@@ -500,7 +500,7 @@ function registerCodeSandboxPlugins() {
     infiniteLoops
   );
   Babel.registerPlugin(
-    '@codesandbox/inspector/lib/sandbox/react/babel',
+    '@codesandbox/inspector/lib/common/react/babel',
     inspectorPlugin
   );
 }

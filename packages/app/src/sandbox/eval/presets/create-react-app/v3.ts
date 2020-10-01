@@ -74,7 +74,7 @@ const BABEL7_CONFIG = {
   config: {
     plugins: [
       ['proposal-decorators', { legacy: true }],
-      '@codesandbox/inspector/lib/sandbox/react/babel',
+      '@codesandbox/inspector/lib/common/react/babel',
       'transform-flow-strip-types',
       'transform-destructuring',
       'babel-plugin-macros',

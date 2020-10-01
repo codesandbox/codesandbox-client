@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`can find props 1`] = `
+Object {
+  "label": Object {
+    "definitionPosition": Object {
+      "endColumnNumber": 32,
+      "endLineNumber": 14,
+      "startColumnNumber": 13,
+      "startLineNumber": 14,
+    },
+    "name": "label",
+    "namePosition": Object {
+      "endColumnNumber": 18,
+      "endLineNumber": 14,
+      "startColumnNumber": 13,
+      "startLineNumber": 14,
+    },
+    "valuePosition": Object {
+      "endColumnNumber": 32,
+      "endLineNumber": 14,
+      "startColumnNumber": 19,
+      "startLineNumber": 14,
+    },
+  },
+  "onClick": Object {
+    "definitionPosition": Object {
+      "endColumnNumber": 15,
+      "endLineNumber": 18,
+      "startColumnNumber": 13,
+      "startLineNumber": 16,
+    },
+    "name": "onClick",
+    "namePosition": Object {
+      "endColumnNumber": 20,
+      "endLineNumber": 16,
+      "startColumnNumber": 13,
+      "startLineNumber": 16,
+    },
+    "valuePosition": Object {
+      "endColumnNumber": 15,
+      "endLineNumber": 18,
+      "startColumnNumber": 21,
+      "startLineNumber": 16,
+    },
+  },
+  "padding": Object {
+    "definitionPosition": Object {
+      "endColumnNumber": 24,
+      "endLineNumber": 15,
+      "startColumnNumber": 13,
+      "startLineNumber": 15,
+    },
+    "name": "padding",
+    "namePosition": Object {
+      "endColumnNumber": 20,
+      "endLineNumber": 15,
+      "startColumnNumber": 13,
+      "startLineNumber": 15,
+    },
+    "valuePosition": Object {
+      "endColumnNumber": 24,
+      "endLineNumber": 15,
+      "startColumnNumber": 21,
+      "startLineNumber": 15,
+    },
+  },
+  "variant": Object {
+    "definitionPosition": Object {
+      "endColumnNumber": 32,
+      "endLineNumber": 13,
+      "startColumnNumber": 13,
+      "startLineNumber": 13,
+    },
+    "name": "variant",
+    "namePosition": Object {
+      "endColumnNumber": 20,
+      "endLineNumber": 13,
+      "startColumnNumber": 13,
+      "startLineNumber": 13,
+    },
+    "valuePosition": Object {
+      "endColumnNumber": 32,
+      "endLineNumber": 13,
+      "startColumnNumber": 21,
+      "startLineNumber": 13,
+    },
+  },
+}
+`;

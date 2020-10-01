@@ -6,8 +6,13 @@ import {
   editorProxyIdentifier,
   sandboxProxyIdentifier,
 } from '../common/proxies';
-import { Fiber, StaticComponentInformation } from '../common/fibers';
+import {
+  Fiber,
+  FiberSourceInformation,
+  StaticComponentInformation,
+} from '../common/fibers';
 import { Emitter } from '../common/rpc/event';
+import { ReactBridge } from '../common/react';
 
 export class EditorInspectorState implements IEditorProxy {
   private fibers = new Map<string, Fiber>();
@@ -18,6 +23,8 @@ export class EditorInspectorState implements IEditorProxy {
 
   private fiberChangedEmitter = new Emitter<Fiber>();
   public onFiberChanged = this.fiberChangedEmitter.event;
+
+  private bridge: ReactBridge = new ReactBridge();
 
   constructor(private sandboxProxy: ISandboxProxy) {
     window.eInspector = this;
@@ -73,6 +80,24 @@ export class EditorInspectorState implements IEditorProxy {
    */
   public stopHighlightFiber(id: string): void {
     this.sandboxProxy.$stopHighlightFiber(id);
+  }
+
+  public async getFiberPropSources(
+    id: string,
+    code: string
+  ): Promise<FiberSourceInformation> {
+    return this.sandboxProxy.$getFiberPropSources(id, code);
+    // Running it in the editor:
+    // const fiber = this.fibers.get(id);
+    // if (!fiber) {
+    //   throw new Error('Could not find fiber with id: ' + id);
+    // }
+
+    // return this.bridge.getComponentInstanceInformation(
+    //   fiber.location.path,
+    //   code,
+    //   fiber.location.codePosition
+    // );
   }
 
   private buildFlatOrderedFiberList() {

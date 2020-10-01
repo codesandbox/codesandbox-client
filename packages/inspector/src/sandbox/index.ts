@@ -85,6 +85,20 @@ class Inspector extends Disposable implements ISandboxProxy {
     return definitions[fiber.importLocation.importName];
   }
 
+  async $getFiberPropSources(id: string, code: string) {
+    const fiber = this.fibers.get(id);
+    if (!fiber) {
+      throw new Error('Could not find fiber with id: ' + id);
+    }
+
+    const resolveInfo = await this.resolver.resolve('/', fiber.location.path);
+    return this.bridge.getComponentInstanceInformation(
+      resolveInfo.resolvedPath,
+      code,
+      fiber.location.codePosition
+    );
+  }
+
   private lastHighlightedId: string | null = null;
   $highlightFiber(id: string): void {
     const element = this.bridge.getElementForFiber(id);

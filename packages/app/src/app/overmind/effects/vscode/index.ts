@@ -759,6 +759,11 @@ export class VSCodeEffect {
     this.modelsHandler.clearCodeHighlight(path, source);
   }
 
+  public getModelByPath(path: string) {
+    const moduleModel = this.modelsHandler.getModuleModelByPath(path);
+    return moduleModel.model;
+  }
+
   // Communicates the endpoint for the WebsocketLSP
   private createContainerForkHandler() {
     return () => {

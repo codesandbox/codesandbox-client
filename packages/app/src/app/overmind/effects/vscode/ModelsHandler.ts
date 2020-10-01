@@ -117,7 +117,7 @@ export class ModelsHandler {
     }
   }
 
-  private getModuleModelByPath(path: string): ModuleModel | undefined {
+  public getModuleModelByPath(path: string): ModuleModel | undefined {
     const fullPath = '/sandbox' + path;
 
     return this.moduleModels[fullPath];
