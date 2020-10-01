@@ -122,7 +122,19 @@ export default function initialize() {
   let refreshInitialized = false;
   const preset = new Preset(
     'create-react-app',
-    ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx', 'mjs'],
+    [
+      'web.mjs',
+      'mjs',
+      'web.js',
+      'js',
+      'web.ts',
+      'ts',
+      'web.tsx',
+      'tsx',
+      'json',
+      'web.jsx',
+      'jsx',
+    ],
     aliases,
     {
       hasDotEnv: true,

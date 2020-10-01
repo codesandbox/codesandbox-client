@@ -38,6 +38,7 @@ import { splitQueryFromPath } from './transpiled-module/utils/query-path';
 import { IEvaluator } from './evaluator';
 import { setContributedProtocols } from './npm/dynamic/fetch-protocols';
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
+import { DEFAULT_EXTENSIONS } from './utils/extensions';
 
 declare const BrowserFS: any;
 
@@ -769,7 +770,7 @@ export default class Manager implements IEvaluator {
   resolveModule(
     path: string,
     currentPath: string,
-    defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs']
+    defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
   ): Module {
     const dirredPath = pathUtils.dirname(currentPath);
     if (this.cachedPaths[dirredPath] === undefined) {

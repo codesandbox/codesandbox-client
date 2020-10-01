@@ -9,6 +9,7 @@ import { getFetchProtocol } from './fetch-protocols';
 import { getDependencyName } from '../../utils/get-dependency-name';
 import { packageFilter } from '../../utils/resolve-utils';
 import { TranspiledModule } from '../../transpiled-module';
+import { DEFAULT_EXTENSIONS } from '../../utils/extensions';
 
 export type Meta = {
   [path: string]: true;
@@ -128,7 +129,7 @@ function resolvePath(
   path: string,
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs'],
+  defaultExtensions: Array<string> = DEFAULT_EXTENSIONS,
   meta: Meta = {}
 ): Promise<string> {
   const currentPath = currentTModule.module.path;
@@ -247,7 +248,7 @@ type DependencyVersionResult =
 async function getDependencyVersion(
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: string[] = ['js', 'jsx', 'json', 'mjs'],
+  defaultExtensions: string[] = DEFAULT_EXTENSIONS,
   dependencyName: string
 ): Promise<DependencyVersionResult | null> {
   const { manifest } = manager;
@@ -337,7 +338,7 @@ export default async function fetchModule(
   path: string,
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs']
+  defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
 ): Promise<Module> {
   const currentPath = currentTModule.module.path;
   // Get the last part of the path as dependency name for paths like
