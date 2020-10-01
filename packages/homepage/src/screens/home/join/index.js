@@ -10,8 +10,7 @@ const Join = ({ src, ...style }) => {
   const y = useTransform(scrollY, [0, 20], [0, 5], { clamp: true });
 
   return (
-    <>
-      <JoinWrapper>
+    <JoinWrapper>
         <div>
           <Text>Join millions of people prototyping what’s next</Text>
           <Button href="/s">Create Sandbox, it’s free</Button>
@@ -33,7 +32,6 @@ const Join = ({ src, ...style }) => {
           />
         </motion.div>
       </JoinWrapper>
-    </>
   );
 };
 

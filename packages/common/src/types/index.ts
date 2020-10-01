@@ -548,6 +548,7 @@ export enum WindowOrientation {
 
 export type Profile = {
   viewCount: number;
+  githubUsername: string | null;
   username: string;
   subscriptionSince: string;
   showcasedSandboxShortid: string;

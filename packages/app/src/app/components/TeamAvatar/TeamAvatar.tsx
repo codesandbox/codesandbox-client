@@ -19,7 +19,6 @@ interface TeamAvatarProps {
   className?: string;
   avatar?: string | null;
   style?: React.CSSProperties;
-  removeBorder?: boolean;
 }
 
 const textSizes = {

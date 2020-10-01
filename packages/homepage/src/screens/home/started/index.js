@@ -27,8 +27,7 @@ const Started = () => {
   }, [parallaxRef]);
 
   return (
-    <>
-      <Grid>
+    <Grid>
         <Wrapper>
           <Title>Get started in an instant</Title>
           <H5>Start from a template, or GitHub</H5>
@@ -44,7 +43,6 @@ const Started = () => {
 
         <Img src={started} alt="started" />
       </Grid>
-    </>
   );
 };
 export default Started;

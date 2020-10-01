@@ -27,8 +27,7 @@ export const ViewOptions: FunctionComponent = React.memo(() => {
   } = useOvermind();
 
   return (
-    <>
-      <Menu>
+    <Menu>
         <Menu.Button>
           {viewMode === 'grid' ? <GridIcon /> : <ListIcon />}
         </Menu.Button>
@@ -52,6 +51,5 @@ export const ViewOptions: FunctionComponent = React.memo(() => {
           ))}
         </Menu.List>
       </Menu>
-    </>
   );
 });
