@@ -4,6 +4,7 @@ export type ResponsiveWrapperProps = {
     theme: any;
     state: {
       responsive: {
+        presets: { [name: string]: [number, number] };
         defaultPresets: { [name: string]: [number, number] };
         scale: number;
         resolution: [number, number];

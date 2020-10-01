@@ -40,7 +40,7 @@ export const ResponsiveWrapper = ({
   children,
 }: ResponsiveWrapperProps) => {
   const {
-    responsive: { scale: defaultScale, resolution, defaultPresets },
+    responsive: { scale: defaultScale, resolution, presets },
   } = state;
   const [width, setWidth] = useState<string>('100%');
   const [height, setHeight] = useState<string>('100%');
@@ -113,7 +113,7 @@ export const ResponsiveWrapper = ({
             onSelect={preset => actions.setResolution(preset)}
             theme={theme}
             resolution={resolution}
-            defaultPresets={defaultPresets}
+            presets={presets}
           />
         </Stack>
       </Element>
