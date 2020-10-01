@@ -30,6 +30,7 @@ import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
 import { RecoverFilesModal } from './RecoverFilesModal';
 import { TeamInviteModal } from './TeamInviteModal';
+import { DeletePreset } from './DeletePreset';
 import UploadModal from './UploadModal';
 
 const modals = {
@@ -83,6 +84,10 @@ const modals = {
   },
   deleteProfileSandbox: {
     Component: DeleteProfileSandboxModal,
+    width: 400,
+  },
+  deletePreset: {
+    Component: DeletePreset,
     width: 400,
   },
   emptyTrash: {

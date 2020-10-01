@@ -611,6 +611,7 @@ class BasePreview extends React.Component<Props, State> {
             props={responsiveModeProps}
           >
             <AnySpring
+              key="preview"
               from={{ opacity: this.props.showScreenshotOverlay ? 0 : 1 }}
               to={{
                 opacity: this.state.showScreenshot ? 0 : 1,
