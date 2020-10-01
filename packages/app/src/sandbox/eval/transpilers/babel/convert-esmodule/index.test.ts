@@ -429,6 +429,26 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('retains the order of re-exports', () => {
+    const code = `
+    export * from '@tensorflow/tfjs-core';
+    export * from '@tensorflow/tfjs-layers';
+    export * from '@tensorflow/tfjs-converter';
+    // Export data api as tf.data
+    import * as data from '@tensorflow/tfjs-data';
+    export { data };
+    `;
+
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+    expect(result.indexOf('tfjs-core')).toBeLessThan(
+      result.indexOf('tfjs-data')
+    );
+    expect(result.indexOf('tfjs-core')).toBeLessThan(
+      result.indexOf('tfjs-layers')
+    );
+  });
+
   describe('syntax info', () => {
     it('can detect jsx', () => {
       const code = `const a = <div>Hello</div>`;

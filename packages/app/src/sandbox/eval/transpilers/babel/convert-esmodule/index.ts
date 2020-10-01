@@ -104,6 +104,8 @@ export function convertEsModule(
     const statement = program.body[i];
 
     if (statement.type === n.ExportAllDeclaration) {
+      importOffset++;
+
       // export * from './test';
       // TO:
       // const _csb = require('./test');
@@ -124,6 +126,8 @@ export function convertEsModule(
       i++;
       program.body.splice(i, 0, generateAllExportsIterator(varName));
     } else if (statement.type === n.ExportNamedDeclaration) {
+      importOffset++;
+
       // export { a } from './test';
       // TO:
       // const _csb = require('./test');

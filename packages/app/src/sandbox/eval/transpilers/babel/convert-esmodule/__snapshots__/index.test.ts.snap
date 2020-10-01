@@ -644,6 +644,59 @@ function a() {
 "
 `;
 
+exports[`convert-esmodule retains the order of re-exports 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"data\\", {
+  enumerable: true,
+  configurable: true,
+  get: function $csbGet() {
+    return data;
+  }
+});
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var $csb__tfjscore = require(\\"@tensorflow/tfjs-core\\");
+Object.keys($csb__tfjscore).forEach(function (key) {
+  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (Object.prototype.hasOwnProperty.call(exports, key)) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    configurable: true,
+    get: function $csbGet() {
+      return $csb__tfjscore[key];
+    }
+  });
+});
+var $csb__tfjsdata = require(\\"@tensorflow/tfjs-data\\");
+var data = $csb__tfjsdata;
+var $csb__tfjslayers = require(\\"@tensorflow/tfjs-layers\\");
+Object.keys($csb__tfjslayers).forEach(function (key) {
+  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (Object.prototype.hasOwnProperty.call(exports, key)) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    configurable: true,
+    get: function $csbGet() {
+      return $csb__tfjslayers[key];
+    }
+  });
+});
+var $csb__tfjsconverter = require(\\"@tensorflow/tfjs-converter\\");
+Object.keys($csb__tfjsconverter).forEach(function (key) {
+  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (Object.prototype.hasOwnProperty.call(exports, key)) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    configurable: true,
+    get: function $csbGet() {
+      return $csb__tfjsconverter[key];
+    }
+  });
+});
+"
+`;
+
 exports[`convert-esmodule works with variables that are named exports 1`] = `
 "\\"use strict\\";
 Object.defineProperty(exports, \\"__esModule\\", {
