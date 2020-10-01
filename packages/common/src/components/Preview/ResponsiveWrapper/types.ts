@@ -11,7 +11,10 @@ export type ResponsiveWrapperProps = {
       };
       mode: 'responsive' | null;
     };
-    actions: { setResolution: (size: number[]) => void };
+    actions: {
+      setResolution: (size: number[]) => void;
+      openDeletePresetModal: () => void;
+    };
   };
   children: React.ReactNode;
 };

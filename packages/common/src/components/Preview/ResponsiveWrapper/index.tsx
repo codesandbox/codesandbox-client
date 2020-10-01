@@ -3,7 +3,7 @@ import { json } from 'overmind';
 import React, { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
-import { SwitchIcon } from './Icons';
+import { DeleteIcon, SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 import { PresetMenu } from './PresetMenu';
 
@@ -106,6 +106,19 @@ export const ResponsiveWrapper = ({
                 <SwitchIcon color={theme['sideBar.foreground']} />
               </button>{' '}
               <Text style={{ userSelect: 'none' }}>{resolutionHeight}</Text>
+              <button
+                type="button"
+                style={{
+                  padding: 0,
+                  border: 'none',
+                  background: 'transparent',
+                  outline: 'none',
+                  cursor: 'pointer',
+                }}
+                onClick={actions.openDeletePresetModal}
+              >
+                <DeleteIcon />
+              </button>
             </Stack>
             <Text size={2}>({Math.floor(scale * 100)}%)</Text>
           </Stack>
