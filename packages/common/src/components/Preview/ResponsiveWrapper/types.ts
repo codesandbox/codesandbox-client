@@ -12,5 +12,5 @@ export type ResponsiveWrapperProps = {
     };
     actions: { setResolution: (size: number[]) => void };
   };
-  children: React.ReactNode;
+  children?: any;
 };

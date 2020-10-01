@@ -74,10 +74,9 @@ const sseDomain = process.env.STAGING_API
   : 'codesandbox.io';
 
 const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
-  `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
-    process.env.NODE_ENV === 'development' || process.env.STAGING
-      ? sseDomain
-      : host()
+  `https://${sandbox ? `${sandbox.id}.` : ''}sse.${process.env.NODE_ENV === 'development' || process.env.STAGING
+    ? sseDomain
+    : host()
   }${initialPath}`;
 
 interface IModulesByPath {
@@ -216,8 +215,8 @@ class BasePreview extends React.Component<Props, State> {
     return this.serverPreview
       ? getSSEUrl(sandbox, initialPath)
       : frameUrl(sandbox, initialPath, {
-          useFallbackDomain: this.state && this.state.useFallbackDomain,
-        });
+        useFallbackDomain: this.state && this.state.useFallbackDomain,
+      });
   };
 
   static defaultProps = {
