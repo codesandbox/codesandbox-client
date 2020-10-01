@@ -25,5 +25,5 @@ export const state: State = {
     scale: 100,
     resolution: [320, 675],
   },
-  mode: null,
+  mode: 'responsive',
 };

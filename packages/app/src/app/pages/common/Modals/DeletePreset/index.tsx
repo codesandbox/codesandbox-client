@@ -13,8 +13,8 @@ export const DeletePreset: FunctionComponent = () => {
       description="Are you sure you want to to delete this preset?"
       onCancel={modalClosed}
       onPrimaryAction={() => {
-        preview.deletePreset();
         modalClosed();
+        preview.deletePreset();
       }}
       confirmMessage="Delete"
       type="danger"

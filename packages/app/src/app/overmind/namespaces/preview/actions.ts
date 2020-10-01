@@ -30,12 +30,14 @@ export const openAddPresetModal: Action = ({ state }) => {
 export const deletePreset: Action = ({ state }) => {
   const { presets, resolution } = state.preview.responsive;
 
-  const activePresetName =
-    Object.keys(presets).find(preset => isEqual(presets[preset], resolution)) ||
-    'Custom';
+  const activePresetName = Object.keys(presets).find(preset =>
+    isEqual(presets[preset], resolution)
+  );
 
-  delete presets[activePresetName];
-  state.preview.responsive.resolution = json(Object.values(presets)[0]);
+  if (activePresetName) {
+    delete presets[activePresetName.toString()];
+    state.preview.responsive.resolution = json(Object.values(presets)[0]);
+  }
 };
 
 export const addPreset: Action<{

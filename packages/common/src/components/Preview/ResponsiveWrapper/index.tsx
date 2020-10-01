@@ -1,4 +1,4 @@
-import { Element, Stack, Text, Button } from '@codesandbox/components';
+import { Element, Stack, Text, Button, Input } from '@codesandbox/components';
 import { json } from 'overmind';
 import React, { useEffect, useState } from 'react';
 import { isEqual } from 'lodash-es';
@@ -8,7 +8,7 @@ import { AddIcon, DeleteIcon, SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 import { PresetMenu } from './PresetMenu';
 
-const Styled = styled(Element) <{
+const Styled = styled(Element)<{
   width: string;
   height: string;
   theme: any;
@@ -32,6 +32,21 @@ const Styled = styled(Element) <{
     left: 50%;
     transform: translateX(-50%) translateY(-50%) scale(${props => props.scale});
     display: block;
+  }
+`;
+
+const Wrapper = styled(Element)`
+  background: ${props => props.theme['sideBar.background']};
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'] {
+    width: 50px;
+    -moz-appearance: textfield;
   }
 `;
 
@@ -77,22 +92,19 @@ export const ResponsiveWrapper = ({
   if (!on) return children;
 
   const [resolutionWidth, resolutionHeight] = resolution;
+
   const exists = Boolean(
     Object.keys(presets).find(preset => isEqual(resolution, presets[preset]))
-      .length
   );
   return (
     <>
-      <Element
-        paddingTop={4}
-        paddingX={6}
-        style={{ background: theme['sideBar.background'] }}
-      >
+      <Wrapper paddingTop={4} paddingX={6}>
         <Stack justify="center" paddingBottom={2} align="center" gap={2}>
           <Stack gap={2} align="center">
             {exists ? (
               <Button
                 variant="link"
+                style={{ padding: 0 }}
                 autoWidth
                 onClick={actions.openDeletePresetModal}
               >
@@ -101,6 +113,7 @@ export const ResponsiveWrapper = ({
             ) : (
               <Button
                 variant="link"
+                style={{ padding: 0 }}
                 autoWidth
                 onClick={actions.openAddPresetModal}
               >
@@ -109,24 +122,39 @@ export const ResponsiveWrapper = ({
             )}
             <Stack align="center" gap={1}>
               <Text style={{ userSelect: 'none' }} size={3}>
-                {resolutionWidth}{' '}
+                <Input
+                  type="number"
+                  style={{ height: 20 }}
+                  value={resolutionWidth}
+                  onChange={e =>
+                    actions.setResolution([
+                      parseInt(e.target.value, 10),
+                      resolutionHeight,
+                    ])
+                  }
+                />{' '}
               </Text>
-              <button
-                type="button"
-                style={{
-                  padding: 0,
-                  border: 'none',
-                  background: 'transparent',
-                  outline: 'none',
-                  cursor: 'pointer',
-                }}
+              <Button
+                style={{ padding: 0 }}
+                variant="link"
+                autoWidth
                 onClick={() =>
                   actions.setResolution(json(resolution).reverse())
                 }
               >
                 <SwitchIcon color={theme['sideBar.foreground']} />
-              </button>{' '}
-              <Text style={{ userSelect: 'none' }}>{resolutionHeight}</Text>
+              </Button>{' '}
+              <Input
+                onChange={e =>
+                  actions.setResolution([
+                    resolutionWidth,
+                    parseInt(e.target.value, 10),
+                  ])
+                }
+                type="number"
+                style={{ height: 20 }}
+                value={resolutionHeight}
+              />
             </Stack>
             <Text size={3}>({Math.floor(scale * 100)}%)</Text>
           </Stack>
@@ -137,7 +165,7 @@ export const ResponsiveWrapper = ({
             presets={presets}
           />
         </Stack>
-      </Element>
+      </Wrapper>
       <Styled scale={scale} width={width} height={height}>
         <div>{children}</div>
       </Styled>

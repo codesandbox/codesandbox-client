@@ -45,6 +45,9 @@ export const PresetMenu = ({
             {preset}
           </Menu.Item>
         ))}
+        <Menu.Item key="edit-presets" field="edit-presets" onSelect={() => {}}>
+          Edit Presets
+        </Menu.Item>
       </Menu.List>
     </Menu>
   );

@@ -18,22 +18,29 @@ export const ArrowDown = (props: { color: string }) => (
 );
 
 export const AddIcon = (props: { color: string }) => (
-  <svg width={8} height={9} fill="none" viewBox="0 0 6 7" {...props}>
-    <path
-      fill={props.color}
-      fillRule="evenodd"
-      d="M3 6.07a3 3 0 100-6 3 3 0 000 6zm-.2-5h.4v1.8H5v.4H3.2v1.8h-.4v-1.8H1v-.4h1.8v-1.8z"
-      clipRule="evenodd"
-    />
+  <svg width={10} height={10} fill="none" viewBox="0 0 8 8" {...props}>
+    <g clipPath="url(#clip0)">
+      <path
+        fill={props.color}
+        fillRule="evenodd"
+        d="M4 7.07a3 3 0 100-6 3 3 0 000 6zm-.2-5h.4v1.8H6v.4H4.2v1.8h-.4v-1.8H2v-.4h1.8v-1.8z"
+        clipRule="evenodd"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0">
+        <path fill={props.color} d="M0 0H8V8H0z" />
+      </clipPath>
+    </defs>
   </svg>
 );
 
 export const DeleteIcon = props => (
-  <svg width={8} height={8} fill="none" viewBox="0 0 6 6" {...props}>
+  <svg width={10} height={10} fill="none" viewBox="0 0 8 8" {...props}>
     <path
       fill="#F24E62"
       fillRule="evenodd"
-      d="M3.099 1.072A1.99 1.99 0 015.082 3.07a2 2 0 01-.416 1.224L1.884 1.491a1.965 1.965 0 011.215-.419zm-1.567.774l2.782 2.803a1.965 1.965 0 01-1.215.42A1.99 1.99 0 011.116 3.07a2 2 0 01.416-1.224zM3.099.57a2.49 2.49 0 012.48 2.5c0 1.38-1.11 2.5-2.48 2.5a2.49 2.49 0 01-2.481-2.5c0-1.38 1.11-2.5 2.48-2.5z"
+      d="M4.099 2.135c1.06 0 1.92.866 1.92 1.935 0 .433-.14.832-.378 1.154L2.953 2.517c.32-.24.717-.382 1.146-.382zm-1.542.78l2.687 2.709c-.32.24-.716.382-1.145.382-1.06 0-1.92-.867-1.92-1.936 0-.432.14-.832.378-1.154zM4.1 1.57a2.49 2.49 0 012.48 2.5c0 1.38-1.11 2.5-2.48 2.5a2.49 2.49 0 01-2.481-2.5c0-1.38 1.11-2.5 2.48-2.5z"
       clipRule="evenodd"
     />
   </svg>
