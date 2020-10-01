@@ -14,6 +14,7 @@ export type ResponsiveWrapperProps = {
     actions: {
       setResolution: (size: number[]) => void;
       openDeletePresetModal: () => void;
+      openAddPresetModal: () => void;
     };
   };
   children: React.ReactNode;

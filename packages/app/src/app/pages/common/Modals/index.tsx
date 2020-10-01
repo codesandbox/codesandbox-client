@@ -32,6 +32,7 @@ import { RecoverFilesModal } from './RecoverFilesModal';
 import { TeamInviteModal } from './TeamInviteModal';
 import { DeletePreset } from './DeletePreset';
 import UploadModal from './UploadModal';
+import { AddPreset } from './AddPreset';
 
 const modals = {
   preferences: {
@@ -88,6 +89,10 @@ const modals = {
   },
   deletePreset: {
     Component: DeletePreset,
+    width: 400,
+  },
+  addPreset: {
+    Component: AddPreset,
     width: 400,
   },
   emptyTrash: {

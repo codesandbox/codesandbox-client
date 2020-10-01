@@ -14,14 +14,17 @@ export const setResolution: Action<[number, number]> = (
   { state },
   newResolution
 ) => {
-  if (!newResolution) return null;
+  if (!newResolution) return;
 
   state.preview.responsive.resolution = json(newResolution);
-  return null;
 };
 
 export const openDeletePresetModal: Action = ({ state }) => {
   state.currentModal = 'deletePreset';
+};
+
+export const openAddPresetModal: Action = ({ state }) => {
+  state.currentModal = 'addPreset';
 };
 
 export const deletePreset: Action = ({ state }) => {
@@ -33,4 +36,19 @@ export const deletePreset: Action = ({ state }) => {
 
   delete presets[activePresetName];
   state.preview.responsive.resolution = json(Object.values(presets)[0]);
+};
+
+export const addPreset: Action<{
+  name: string;
+  width: number;
+  height: number;
+}> = ({ state }, { name, width, height }) => {
+  if (!name || !width || !height) return;
+
+  state.preview.responsive.presets = {
+    ...state.preview.responsive.presets,
+    [name]: [width, height],
+  };
+
+  state.preview.responsive.resolution = [width, height];
 };

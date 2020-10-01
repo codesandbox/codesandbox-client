@@ -1,9 +1,10 @@
-import { Element, Stack, Text } from '@codesandbox/components';
+import { Element, Stack, Text, Button } from '@codesandbox/components';
 import { json } from 'overmind';
 import React, { useEffect, useState } from 'react';
+import { isEqual } from 'lodash-es';
 
 import styled from 'styled-components';
-import { DeleteIcon, SwitchIcon } from './Icons';
+import { AddIcon, DeleteIcon, SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 import { PresetMenu } from './PresetMenu';
 
@@ -76,7 +77,10 @@ export const ResponsiveWrapper = ({
   if (!on) return children;
 
   const [resolutionWidth, resolutionHeight] = resolution;
-
+  const exists = Boolean(
+    Object.keys(presets).find(preset => isEqual(resolution, presets[preset]))
+      .length
+  );
   return (
     <>
       <Element
@@ -84,10 +88,27 @@ export const ResponsiveWrapper = ({
         paddingX={6}
         style={{ background: theme['sideBar.background'] }}
       >
-        <Stack justify="space-between" paddingBottom={2} align="center">
-          <Stack gap={1}>
+        <Stack justify="center" paddingBottom={2} align="center" gap={2}>
+          <Stack gap={2} align="center">
+            {exists ? (
+              <Button
+                variant="link"
+                autoWidth
+                onClick={actions.openDeletePresetModal}
+              >
+                <DeleteIcon />
+              </Button>
+            ) : (
+              <Button
+                variant="link"
+                autoWidth
+                onClick={actions.openAddPresetModal}
+              >
+                <AddIcon color={theme['sideBar.foreground']} />
+              </Button>
+            )}
             <Stack align="center" gap={1}>
-              <Text style={{ userSelect: 'none' }} size={2}>
+              <Text style={{ userSelect: 'none' }} size={3}>
                 {resolutionWidth}{' '}
               </Text>
               <button
@@ -106,21 +127,8 @@ export const ResponsiveWrapper = ({
                 <SwitchIcon color={theme['sideBar.foreground']} />
               </button>{' '}
               <Text style={{ userSelect: 'none' }}>{resolutionHeight}</Text>
-              <button
-                type="button"
-                style={{
-                  padding: 0,
-                  border: 'none',
-                  background: 'transparent',
-                  outline: 'none',
-                  cursor: 'pointer',
-                }}
-                onClick={actions.openDeletePresetModal}
-              >
-                <DeleteIcon />
-              </button>
             </Stack>
-            <Text size={2}>({Math.floor(scale * 100)}%)</Text>
+            <Text size={3}>({Math.floor(scale * 100)}%)</Text>
           </Stack>
           <PresetMenu
             onSelect={preset => actions.setResolution(preset)}
