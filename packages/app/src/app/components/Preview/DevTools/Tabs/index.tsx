@@ -2,6 +2,7 @@ import React from 'react';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { ViewTab } from '@codesandbox/common/lib/templates/template';
 import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Status, IViews } from '..';
 import { Actions, Container, Tabs } from './elements';
@@ -72,7 +73,14 @@ export const DevToolTabs = ({
                 setPane(i);
               }}
               devToolIndex={devToolIndex}
-              moveTab={moveTab}
+              moveTab={(prevPos, newPos) => {
+                if (moveTab) {
+                  track('DevTools - Move Pane', {
+                    pane: view.id,
+                  });
+                  moveTab(prevPos, newPos);
+                }
+              }}
               closeTab={
                 pane.closeable && panes.length !== 1 ? closeTab : undefined
               }
