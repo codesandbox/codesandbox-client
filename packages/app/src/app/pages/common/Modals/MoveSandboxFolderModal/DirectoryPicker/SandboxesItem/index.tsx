@@ -56,7 +56,11 @@ class SandboxesItemComponent extends React.Component<
 
     return connectDropTarget(
       <div>
-        <Query variables={{ teamId }} query={PATHED_SANDBOXES_FOLDER_QUERY}>
+        <Query
+          variables={{ teamId }}
+          query={PATHED_SANDBOXES_FOLDER_QUERY}
+          fetchPolicy="network-only"
+        >
           {result => {
             if (result.loading) {
               return (
