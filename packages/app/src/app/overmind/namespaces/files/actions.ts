@@ -890,3 +890,47 @@ export const syncSandbox: AsyncAction<any[]> = async (
       state.editor.currentSandbox
     );
 };
+
+export const updateWorkspaceConfig: AsyncAction<string> = async (
+  { state, actions },
+  code
+) => {
+  if (state.editor.currentSandbox.owned) {
+    const devtoolsModule = state.editor.modulesByPath[
+      '/.codesandbox/workspace.json'
+    ] as Module;
+
+    if (devtoolsModule) {
+      const updatedCode = JSON.stringify(
+        Object.assign(JSON.parse(devtoolsModule.code), JSON.parse(code))
+      );
+      actions.editor.codeChanged({
+        moduleShortid: devtoolsModule.shortid,
+        code: updatedCode,
+      });
+      await actions.editor.codeSaved({
+        code: updatedCode,
+        moduleShortid: devtoolsModule.shortid,
+        cbID: null,
+      });
+    } else {
+      await actions.files.createModulesByPath({
+        files: {
+          '/.codesandbox/workspace.json': {
+            content: code,
+            isBinary: false,
+          },
+        },
+      });
+    }
+  } else {
+    state.editor.workspaceConfigCode = state.editor.workspaceConfigCode
+      ? JSON.stringify(
+          Object.assign(
+            JSON.parse(state.editor.workspaceConfigCode),
+            JSON.parse(code)
+          )
+        )
+      : code;
+  }
+};

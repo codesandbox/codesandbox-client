@@ -1,10 +1,11 @@
 import { RootState } from 'app/overmind';
 import { derived } from 'overmind';
 
-export type PresetType = { [name: string]: [number, number] };
+export type Presets = { [name: string]: [number, number] };
+
 type State = {
   responsive: {
-    presets: PresetType;
+    presets: Presets;
     scale: number;
     resolution: [number, number];
     editMode: boolean;
@@ -14,20 +15,11 @@ type State = {
 
 export const state: State = {
   responsive: {
-    presets: derived((_, rootState: RootState) => {
-      const workspaceConfig = JSON.parse(
-        rootState.editor.workspaceConfigCode || '{}'
-      );
-
-      return (
-        workspaceConfig['preview-presets'] || {
-          Mobile: [320, 675],
-          Tablet: [1024, 765],
-          Desktop: [1920, 1080],
-          'Desktop HD': [1400, 800],
-        }
-      );
-    }),
+    presets: derived((_, rootState: RootState) =>
+      rootState.editor.workspaceConfig
+        ? rootState.editor.workspaceConfig['responsive-preview']
+        : {}
+    ),
     editMode: true,
     scale: 100,
     resolution: [320, 675],
