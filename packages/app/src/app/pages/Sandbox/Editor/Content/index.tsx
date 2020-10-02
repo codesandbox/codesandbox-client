@@ -129,7 +129,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
       >
         <SplitPane
           maxSize={-100}
-          onDragFinished={() => {
+          onDragFinished={props => {
             actions.editor.resizingStopped();
           }}
           onDragStarted={() => {
