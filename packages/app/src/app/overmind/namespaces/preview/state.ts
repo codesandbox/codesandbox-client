@@ -13,12 +13,19 @@ type State = {
   mode: 'responsive' | null;
 };
 
+export const defaultPresets: Presets = {
+  Mobile: [320, 675],
+  Tablet: [1024, 765],
+  Desktop: [1920, 1080],
+  'Desktop HD': [1400, 800],
+};
+
 export const state: State = {
   responsive: {
     presets: derived((_, rootState: RootState) =>
       rootState.editor.workspaceConfig
         ? rootState.editor.workspaceConfig['responsive-preview']
-        : {}
+        : defaultPresets
     ),
     editMode: true,
     scale: 100,
