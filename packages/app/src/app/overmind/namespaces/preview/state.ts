@@ -23,7 +23,8 @@ export const defaultPresets: Presets = {
 export const state: State = {
   responsive: {
     presets: derived((_, rootState: RootState) =>
-      rootState.editor.workspaceConfig
+      rootState.editor.workspaceConfig &&
+      rootState.editor.workspaceConfig['responsive-preview']
         ? rootState.editor.workspaceConfig['responsive-preview']
         : defaultPresets
     ),

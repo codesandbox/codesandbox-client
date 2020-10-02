@@ -50,7 +50,7 @@ export const deletePreset: AsyncAction = async ({ state, actions }) => {
     state.preview.responsive.resolution = json(Object.values(presets)[0]);
 
     const workspaceConfig = state.editor.workspaceConfig!;
-    const presetsCopy = json(workspaceConfig['responsive-preview']);
+    const presetsCopy = json(workspaceConfig['responsive-preview'] || {});
     delete presetsCopy[activePresetName.toString()];
     // Should not pass a string here, need to refactor the devtool tabs
     await actions.files.updateWorkspaceConfig(
@@ -69,7 +69,7 @@ export const addPreset: AsyncAction<{
   if (!name || !width || !height) return;
   state.preview.responsive.resolution = [width, height];
   const workspaceConfig = state.editor.workspaceConfig!;
-  const presetsCopy = json(workspaceConfig['responsive-preview']);
+  const presetsCopy = json(workspaceConfig['responsive-preview'] || {});
   presetsCopy[name] = [width, height];
   // Should not pass a string here, need to refactor the devtool tabs
   await actions.files.updateWorkspaceConfig(

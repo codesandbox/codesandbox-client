@@ -895,7 +895,7 @@ export const updateWorkspaceConfig: AsyncAction<string> = async (
   { state, actions },
   code
 ) => {
-  if (state.editor.currentSandbox.owned) {
+  if (state.editor.currentSandbox?.owned) {
     const devtoolsModule = state.editor.modulesByPath[
       '/.codesandbox/workspace.json'
     ] as Module;
