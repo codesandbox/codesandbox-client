@@ -1,13 +1,25 @@
-import { Action } from 'app/overmind';
+import { Action, AsyncAction } from 'app/overmind';
 import { isEqual } from 'lodash-es';
 import { json } from 'overmind';
-import { PresetType } from './state';
+import { Presets } from './state';
 
-export const toggleResponsiveMode: Action = ({ state }) => {
+export const toggleResponsiveMode: AsyncAction = async ({ state, actions }) => {
   if (state.preview.mode === 'responsive') {
     state.preview.mode = null;
   } else {
     state.preview.mode = 'responsive';
+    if (!state.editor.workspaceConfig) {
+      actions.files.updateWorkspaceConfig(
+        JSON.stringify({
+          'responsive-preview': {
+            Mobile: [320, 675],
+            Tablet: [1024, 765],
+            Desktop: [1920, 1080],
+            'Desktop HD': [1400, 800],
+          },
+        })
+      );
+    }
   }
 };
 
@@ -32,7 +44,7 @@ export const toggleEditPresets: Action = ({ state }) => {
   state.preview.responsive.editMode = !state.preview.responsive.editMode;
 };
 
-export const deletePreset: Action = ({ state }) => {
+export const deletePreset: AsyncAction = async ({ state, actions }) => {
   const { presets, resolution } = state.preview.responsive;
 
   const activePresetName = Object.keys(presets).find(preset =>
@@ -40,26 +52,45 @@ export const deletePreset: Action = ({ state }) => {
   );
 
   if (activePresetName) {
-    delete presets[activePresetName.toString()];
     state.preview.responsive.resolution = json(Object.values(presets)[0]);
+
+    const workspaceConfig = state.editor.workspaceConfig!;
+    const presetsCopy = json(workspaceConfig['responsive-preview']);
+    delete presetsCopy[activePresetName.toString()];
+    // Should not pass a string here, need to refactor the devtool tabs
+    await actions.files.updateWorkspaceConfig(
+      JSON.stringify({
+        'responsive-preview': presetsCopy,
+      })
+    );
   }
 };
 
-export const addPreset: Action<{
+export const addPreset: AsyncAction<{
   name: string;
   width: number;
   height: number;
-}> = ({ state }, { name, width, height }) => {
+}> = async ({ state, actions }, { name, width, height }) => {
   if (!name || !width || !height) return;
-
-  state.preview.responsive.presets = {
-    ...state.preview.responsive.presets,
-    [name]: [width, height],
-  };
-
   state.preview.responsive.resolution = [width, height];
+  const workspaceConfig = state.editor.workspaceConfig!;
+  const presetsCopy = json(workspaceConfig['responsive-preview']);
+  presetsCopy[name] = [width, height];
+  // Should not pass a string here, need to refactor the devtool tabs
+  await actions.files.updateWorkspaceConfig(
+    JSON.stringify({
+      'responsive-preview': presetsCopy,
+    })
+  );
 };
 
-export const editPresets: Action<PresetType> = ({ state }, newPresets) => {
-  state.preview.responsive.presets = newPresets;
+export const editPresets: AsyncAction<Presets> = async (
+  { actions },
+  newPresets
+) => {
+  await actions.files.updateWorkspaceConfig(
+    JSON.stringify({
+      'responsive-preview': newPresets,
+    })
+  );
 };

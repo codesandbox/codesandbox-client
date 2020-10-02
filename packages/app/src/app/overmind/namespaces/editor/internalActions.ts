@@ -576,33 +576,7 @@ export const updateDevtools: AsyncAction<{
     return;
   }
 
-  if (state.editor.currentSandbox.owned) {
-    const devtoolsModule =
-      state.editor.modulesByPath['/.codesandbox/workspace.json'];
-
-    if (devtoolsModule) {
-      actions.editor.codeChanged({
-        moduleShortid: devtoolsModule.shortid,
-        code,
-      });
-      await actions.editor.codeSaved({
-        code,
-        moduleShortid: devtoolsModule.shortid,
-        cbID: null,
-      });
-    } else {
-      await actions.files.createModulesByPath({
-        files: {
-          '/.codesandbox/workspace.json': {
-            content: code,
-            isBinary: false,
-          },
-        },
-      });
-    }
-  } else {
-    state.editor.workspaceConfigCode = code;
-  }
+  await actions.files.updateWorkspaceConfig(code);
 };
 
 export const updatePreviewCode: Action = ({ state, effects }) => {
