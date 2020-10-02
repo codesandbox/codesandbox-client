@@ -42,7 +42,14 @@ export class WebsocketLSP implements IForkHandler {
 
     this.endpoint = endpoint;
     this.io = io(
-      endpoint + `?type=language-server&pid=${pidCountByEndpoint[endpoint]++}`
+      endpoint + `?type=language-server&pid=${pidCountByEndpoint[endpoint]++}`,
+      {
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        randomizationFactor: 0.2,
+      }
     );
     this.io.on('connect', () => {
       this.messagesQueue.forEach(message => {
