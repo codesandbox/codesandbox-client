@@ -19,7 +19,7 @@ import { DirectoryPicker } from './DirectoryPicker';
 export const MoveSandboxFolderModal: FunctionComponent = () => {
   const {
     actions: { dashboard, refetchSandboxInfo, modals: modalsActions },
-    state: { activeTeamInfo, activeTeam, user, modals },
+    state: { activeTeamInfo, activeTeam, modals },
   } = useOvermind();
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
@@ -28,21 +28,11 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
   );
   const [teamId, setTeamId] = useState(activeTeam);
 
-  const [selectedTeam, setSelectedTeam] = useState(
-    activeTeamInfo
-      ? {
-          type: 'team' as const,
-          id: activeTeamInfo.id,
-          name: activeTeamInfo.name,
-          avatarUrl: activeTeamInfo.avatarUrl,
-        }
-      : {
-          type: 'user' as const,
-          id: user.id,
-          username: user.username,
-          avatarUrl: user.avatarUrl,
-        }
-  );
+  const [selectedTeam, setSelectedTeam] = useState({
+    id: activeTeamInfo.id,
+    name: activeTeamInfo.name,
+    avatarUrl: activeTeamInfo.avatarUrl,
+  });
 
   const handleMove = () => {
     setLoading(true);
@@ -102,7 +92,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
               <WorkspaceSelect
                 onSelect={workspace => {
                   setSelectedTeam(workspace);
-                  setTeamId(workspace.type === 'user' ? null : workspace.id);
+                  setTeamId(workspace.id);
                 }}
                 activeAccount={selectedTeam}
               />

@@ -9,22 +9,26 @@ import { useOvermind } from 'app/overmind';
 export const SignInModal = () => {
   const {
     actions: { toggleSignInModal },
-    state: { redirectOnLogin },
+    state: { redirectOnLogin, signInModalOpen, user },
   } = useOvermind();
 
   const closeModal = useCallback(
     event => {
-      if (event.keyCode === ESC && open) {
+      if (event.keyCode === ESC && signInModalOpen) {
         toggleSignInModal();
       }
     },
-    [toggleSignInModal]
+    [toggleSignInModal, signInModalOpen]
   );
 
   useEffect(() => {
     document.addEventListener('keydown', closeModal, false);
     return () => document.removeEventListener('keydown', closeModal, false);
   }, [closeModal]);
+
+  if (!signInModalOpen || user) {
+    return null;
+  }
 
   return (
     <ThemeProvider>

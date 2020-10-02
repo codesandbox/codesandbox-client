@@ -1,4 +1,9 @@
-import { convertEsModule } from '.';
+import { convertEsModule as convert } from '.';
+import { getSyntaxInfoFromAst } from '../syntax-info';
+
+function convertEsModule(code: string) {
+  return convert(code).code;
+}
 
 describe('convert-esmodule', () => {
   it('can convert reexports', () => {
@@ -424,11 +429,41 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
-  it('can convert + +', () => {
-    const code = `
-    c = (10.0, + +(15))
-    `;
+  describe('syntax info', () => {
+    it('can detect jsx', () => {
+      const code = `const a = <div>Hello</div>`;
+      const info = convert(code);
+      const syntaxInfo = getSyntaxInfoFromAst(info.ast);
+      expect(syntaxInfo.jsx).toBeTruthy();
+    });
 
-    expect(convertEsModule(code)).toMatchSnapshot();
+    it('can detect non jsx', () => {
+      const code = `const a = /<div>Hello<\\/div>/`;
+      const info = convert(code);
+      const syntaxInfo = getSyntaxInfoFromAst(info.ast);
+      expect(syntaxInfo.jsx).toBeFalsy();
+    });
+  });
+
+  describe('printer issues', () => {
+    it('can convert + +', () => {
+      const code = `
+      c = (10.0, + +(15))
+      `;
+
+      expect(convertEsModule(code)).toMatchSnapshot();
+    });
+
+    it('can convert -(--i)', () => {
+      const code = `a = -(--i)`;
+      expect(convertEsModule(code)).toBe('"use strict";\na = - --i;\n');
+    });
+
+    it('can convert unicode line breaks', () => {
+      const code = `const a = "[\\u2028]";`;
+      expect(convertEsModule(code)).toBe(
+        '"use strict";\nconst a = "[\\u2028]";\n'
+      );
+    });
   });
 });

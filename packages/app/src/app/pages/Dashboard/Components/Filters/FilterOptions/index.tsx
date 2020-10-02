@@ -42,8 +42,7 @@ export const FilterOptions: FunctionComponent<Props> = React.memo(
         : blacklistedTemplateAdded(name);
 
     return (
-      <>
-        <Menu>
+      <Menu>
           <Menu.Button>
             <Text
               variant={blacklistedTemplates.length ? 'active' : 'muted'}
@@ -110,7 +109,6 @@ export const FilterOptions: FunctionComponent<Props> = React.memo(
             )}
           </Menu.List>
         </Menu>
-      </>
     );
   }
 );

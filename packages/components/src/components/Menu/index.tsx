@@ -143,40 +143,36 @@ const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
   const suggestedWidth = 180;
 
   return (
-    <>
-      <Element as={ReachMenu.Menu} {...props}>
-        {({ isExpanded, dispatch }) => {
-          if (visible && !isExpanded) {
-            // keep it open if prop is set to visible
-            dispatch({ type: 'OPEN_MENU_AT_FIRST_ITEM' });
-          }
+    <Element as={ReachMenu.Menu} {...props}>
+      {({ isExpanded, dispatch }) => {
+        if (visible && !isExpanded) {
+          // keep it open if prop is set to visible
+          dispatch({ type: 'OPEN_MENU_AT_FIRST_ITEM' });
+        }
 
-          return (
-            <MenuContext.Provider value={{ trigger: null, portal: false }}>
-              <ReachMenu.MenuPopover
-                position={(targetRect, popoverRect) => ({
-                  position: 'fixed',
-                  left: Math.min(
-                    position.x,
-                    window.innerWidth -
-                      (popoverRect.width || suggestedWidth) -
-                      16
-                  ),
-                  top: Math.min(
-                    position.y,
-                    window.innerHeight -
-                      (popoverRect.height || suggestedHeight) -
-                      16
-                  ),
-                })}
-              >
-                <Menu.List>{props.children}</Menu.List>
-              </ReachMenu.MenuPopover>
-            </MenuContext.Provider>
-          );
-        }}
-      </Element>
-    </>
+        return (
+          <MenuContext.Provider value={{ trigger: null, portal: false }}>
+            <ReachMenu.MenuPopover
+              position={(targetRect, popoverRect) => ({
+                position: 'fixed',
+                left: Math.min(
+                  position.x,
+                  window.innerWidth - (popoverRect.width || suggestedWidth) - 16
+                ),
+                top: Math.min(
+                  position.y,
+                  window.innerHeight -
+                    (popoverRect.height || suggestedHeight) -
+                    16
+                ),
+              })}
+            >
+              <Menu.List>{props.children}</Menu.List>
+            </ReachMenu.MenuPopover>
+          </MenuContext.Provider>
+        );
+      }}
+    </Element>
   );
 };
 

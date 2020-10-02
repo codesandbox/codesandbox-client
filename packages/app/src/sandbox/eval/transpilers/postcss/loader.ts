@@ -3,7 +3,7 @@ import postcssImportPlugin from 'postcss-import';
 import { join } from 'path';
 import { isDependencyPath } from 'sandbox/eval/utils/is-dependency-path';
 
-import TranspiledModule, { LoaderContext } from '../../transpiled-module';
+import { LoaderContext, TranspiledModule } from 'sandpack-core';
 
 async function resolveCSSFile(
   loaderContext: LoaderContext,

@@ -9,7 +9,6 @@ import Tooltip, {
   SingletonTooltip,
 } from '@codesandbox/common/lib/components/Tooltip';
 import { formatVersion } from '@codesandbox/common/lib/utils/ci';
-
 import css from '@styled-system/css';
 import {
   ListAction,

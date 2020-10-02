@@ -80,6 +80,7 @@ export const FolderListItem = ({
               <form onSubmit={onSubmit}>
                 <Input
                   autoFocus
+                  required
                   value={newName}
                   onChange={onChange}
                   onKeyDown={onInputKeyDown}

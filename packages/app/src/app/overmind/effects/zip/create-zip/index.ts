@@ -13,6 +13,7 @@ import { Directory, Module, Sandbox } from '@codesandbox/common/lib/types';
 import { saveAs } from 'file-saver';
 import ignore from 'ignore';
 import JSZip from 'jszip';
+import { injectExternalResources } from 'app/utils/inject-resources-for-export';
 
 export const BLOB_ID = 'blob-url://';
 
@@ -215,7 +216,16 @@ export async function createZip(
     ignorer.add(gitIgnore ? gitIgnore.code : '');
   }
 
-  const filteredModules = modules.filter(module => {
+  let modifiedModules = modules;
+
+  if (sandbox.externalResources?.length > 0) {
+    modifiedModules = injectExternalResources(
+      modules,
+      sandbox.externalResources
+    );
+  }
+
+  const filteredModules = modifiedModules.filter(module => {
     // Relative path
     const path = getModulePath(modules, directories, module.id).substring(1);
     return !ignorer.ignores(path);

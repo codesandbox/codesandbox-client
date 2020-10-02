@@ -621,11 +621,7 @@ const Replies = ({ replies, replyCount, listRef, repliesRenderedCallback }) => {
           listStyle: 'none',
         }}
       >
-        <>
-          {replies.map(
-            reply => reply && <Reply reply={reply} key={reply.id} />
-          )}
-        </>
+        {replies.map(reply => reply && <Reply reply={reply} key={reply.id} />)}
       </motion.ul>
     </>
   );

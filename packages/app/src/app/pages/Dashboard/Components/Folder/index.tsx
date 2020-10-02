@@ -135,7 +135,13 @@ export const Folder = (folderItem: DashboardFolder) => {
   const [newName, setNewName] = React.useState(name);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewName(event.target.value);
+    const { value } = event.target;
+    if (value && value.trim()) {
+      event.target.setCustomValidity('');
+    } else {
+      event.target.setCustomValidity('Folder name is required.');
+    }
+    setNewName(value);
   };
   const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === ESC) {
@@ -192,22 +198,20 @@ export const Folder = (folderItem: DashboardFolder) => {
   };
 
   return (
-    <>
-      <div {...dragProps}>
-        <motion.div
-          initial={{ scale: 1 }}
-          animate={{ scale: isOver && canDrop ? 1.02 : 1 }}
-          {...dropProps}
-        >
-          <Component
-            {...folderProps}
-            {...interactionProps}
-            showDropStyles={isOver && canDrop}
-            {...props}
-          />
-        </motion.div>
-      </div>
-    </>
+    <div {...dragProps}>
+      <motion.div
+        initial={{ scale: 1 }}
+        animate={{ scale: isOver && canDrop ? 1.02 : 1 }}
+        {...dropProps}
+      >
+        <Component
+          {...folderProps}
+          {...interactionProps}
+          showDropStyles={isOver && canDrop}
+          {...props}
+        />
+      </motion.div>
+    </div>
   );
 };
 

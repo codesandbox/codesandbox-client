@@ -1,0 +1,76 @@
+{
+  "name": "rc-collapse",
+  "version": "2.0.1",
+  "description": "rc-collapse ui component for react",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-rc-collapse",
+    "rc-collapse",
+    "collapse",
+    "accordion"
+  ],
+  "homepage": "http://github.com/react-component/collapse",
+  "author": "eward.song@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/collapse.git"
+  },
+  "bugs": {
+    "url": "http://github.com/react-component/collapse/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "lib",
+    "es",
+    "assets/*.css"
+  ],
+  "main": "./lib/index",
+  "module": "./es/index",
+  "config": {
+    "port": 8002
+  },
+  "scripts": {
+    "build": "rc-tools run build",
+    "gh-pages": "rc-tools run gh-pages",
+    "start": "rc-tools run server",
+    "compile": "rc-tools run compile",
+    "pub": "rc-tools run pub",
+    "lint": "rc-tools run lint",
+    "test": "jest",
+    "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls"
+  },
+  "devDependencies": {
+    "coveralls": "^3.0.2",
+    "expect.js": "0.3.x",
+    "jest": "^20.0.1",
+    "jquery": "^3.3.1",
+    "pre-commit": "1.x",
+    "rc-tools": "6.x",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "string.prototype.repeat": "^1.0.0"
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "jest": {
+    "setupFiles": [
+      "./tests/setup.js"
+    ],
+    "collectCoverageFrom": [
+      "src/*"
+    ],
+    "transform": {
+      "\\.tsx?$": "./node_modules/rc-tools/scripts/jestPreprocessor.js",
+      "\\.jsx?$": "./node_modules/rc-tools/scripts/jestPreprocessor.js"
+    }
+  },
+  "dependencies": {
+    "@ant-design/css-animation": "^1.7.2",
+    "classnames": "2.x",
+    "rc-animate": "3.x",
+    "rc-util": "^5.2.1",
+    "shallowequal": "^1.1.0"
+  }
+}

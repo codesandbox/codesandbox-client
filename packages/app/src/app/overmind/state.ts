@@ -31,6 +31,7 @@ type State = {
   contributors: string[];
   user: CurrentUser | null;
   activeWorkspaceAuthorization: TeamMemberAuthorization;
+  personalWorkspaceId: string | null;
   activeTeam: string | null;
   activeTeamInfo: CurrentTeam | null;
   connected: boolean;
@@ -100,6 +101,7 @@ export const state: State = {
   ),
   activeTeam: null,
   activeTeamInfo: null,
+  personalWorkspaceId: null,
   connected: true,
   notifications: [],
   contributors: [],

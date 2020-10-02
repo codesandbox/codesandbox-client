@@ -8,6 +8,7 @@ import {
   IconButton,
   SkeletonText,
   Link,
+  Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
@@ -33,6 +34,7 @@ const useImageLoaded = (url: string) => {
 
 type SandboxTitleProps = {
   stoppedScrolling: boolean;
+  isFrozen: boolean;
   prNumber?: number;
   originalGit?: RepoFragmentDashboardFragment['originalGit'];
 } & Pick<
@@ -50,6 +52,7 @@ type SandboxTitleProps = {
 
 const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
   ({
+    isFrozen,
     originalGit,
     prNumber,
     editing,
@@ -86,6 +89,18 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
               <Icon name="pr" color="#5BC266" />
             </Link>
           ) : null}
+          {isFrozen && (
+            <Tooltip label={stoppedScrolling ? 'Frozen Sandbox' : null}>
+              <div style={{ display: 'inherit' }}>
+                <Icon
+                  style={{ minWidth: 14 }}
+                  title="Frozen Sandbox"
+                  name="frozen"
+                  size={14}
+                />
+              </div>
+            </Tooltip>
+          )}
           <PrivacyIcon />
           <Text size={3} weight="medium">
             {sandboxTitle}
@@ -114,7 +129,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
         <IconButton
           name="more"
           size={9}
-          title="Sandbox actions"
+          title="Sandbox Actions"
           onClick={onContextMenu}
         />
       )}
@@ -145,7 +160,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
           size={3}
           variant="muted"
         >
-          <Icon style={{ marginRight: 2, minWidth: 14 }} name="eye" size={14} />{' '}
+          <Icon style={{ marginRight: 4, minWidth: 14 }} name="eye" size={14} />{' '}
           <span
             style={{
               maxWidth: '100%',
@@ -298,6 +313,7 @@ export const SandboxCard = ({
       <SandboxTitle
         originalGit={sandbox.originalGit}
         prNumber={sandbox.prNumber}
+        isFrozen={sandbox.isFrozen && !sandbox.customTemplate}
         editing={editing}
         stoppedScrolling={stoppedScrolling}
         onContextMenu={onContextMenu}

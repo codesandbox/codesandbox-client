@@ -68,12 +68,18 @@ a:hover {
   }
 
   a {
-    color: #000;
+    color: #fff;
   }
 
   li:hover > a,
   a:hover {
     color: #fff;
-    background: #000;
+  }
+
+  hr {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    height: 1px;
+    color: #ededed;
   }
 }

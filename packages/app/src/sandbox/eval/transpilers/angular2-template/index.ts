@@ -1,6 +1,5 @@
 /* eslint-disable */
-import Transpiler from '../';
-import { LoaderContext } from '../../transpiled-module';
+import { Transpiler, LoaderContext } from 'sandpack-core';
 
 // using: regex, capture groups, and capture group variables.
 const templateUrlRegex = /templateUrl\s*:(\s*['"`](.*?)['"`]\s*([,}]))/gm;

@@ -1,11 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`convert-esmodule can convert + + 1`] = `
-"\\"use strict\\";
-c = (10, + +15);
-"
-`;
-
 exports[`convert-esmodule can convert class default exports 1`] = `
 "\\"use strict\\";
 Object.defineProperty(exports, \\"__esModule\\", {
@@ -55,7 +49,7 @@ exports.Test = Test;
 
 exports[`convert-esmodule can convert import expressions 1`] = `
 "\\"use strict\\";
-$csbImport(\\"test\\");
+$csbImport('test');
 "
 `;
 
@@ -165,7 +159,7 @@ exports[`convert-esmodule can convert weird default exports 1`] = `
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-var $csb__default = a = \\"b\\";
+var $csb__default = a = 'b';
 exports.default = $csb__default;
 "
 `;
@@ -198,11 +192,11 @@ var $csb__test = require(\\"./test\\");
 var T = $_csb__interopRequireDefault($csb__test);
 class T2 {
   a = () => {
-    return \\"test\\";
+    return 'test';
   }
-  b = \\"\\"
+  b = ''
   c = {}
-  static d = \\"\\"
+  static d = ''
 }
 function $_csb__interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
@@ -298,7 +292,7 @@ exports[`convert-esmodule doesn't set var definitions 1`] = `
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-var global = typeof window !== \\"undefined\\" ? window : {};
+var global = typeof  window !== 'undefined' ? window : {};
 exports.global = global;
 "
 `;
@@ -306,7 +300,7 @@ exports.global = global;
 exports[`convert-esmodule exports that are not on the root scope are not renamed 1`] = `
 "\\"use strict\\";
 function a() {
-  var exports = \\"blaat\\";
+  var exports = 'blaat';
 }
 "
 `;
@@ -560,7 +554,7 @@ Object.defineProperty(exports, \\"a\\", {
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-const a = \\"c\\";
+const a = 'c';
 "
 `;
 
@@ -600,7 +594,7 @@ Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
 var $csb__b = require(\\"./b\\");
-const c = \\"test\\";
+const c = 'test';
 "
 `;
 
@@ -631,15 +625,21 @@ var $csb__2 = require(\\"2\\");
 
 exports[`convert-esmodule parses and writes chars with linebreaks 1`] = `
 "\\"use strict\\";
-var WS_CHARS = \\"u2000-     　﻿\\";
+var WS_CHARS = 'u2000-\\\\u200a\\\\u2028\\\\u2029\\\\u202f\\\\u205f\\\\u3000\\\\ufeff';
+"
+`;
+
+exports[`convert-esmodule printer issues can convert + + 1`] = `
+"\\"use strict\\";
+c = (10.0, + + 15);
 "
 `;
 
 exports[`convert-esmodule renames exports that are already defined, even in block scope 1`] = `
 "\\"use strict\\";
-var __$csb_exports = \\"testtest\\";
+var __$csb_exports = 'testtest';
 function a() {
-  __$csb_exports = \\"blaat\\";
+  __$csb_exports = 'blaat';
 }
 "
 `;
@@ -650,7 +650,7 @@ Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
 var __$csb_exports = [eventedState, eventedShowHideState];
-__$csb_exports.push(\\"test\\");
+__$csb_exports.push('test');
 var $csb__default = __$csb_exports;
 exports.default = $csb__default;
 "

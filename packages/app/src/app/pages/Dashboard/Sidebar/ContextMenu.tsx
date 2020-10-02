@@ -6,6 +6,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { Position } from '../Components/Selection';
 import { DashboardBaseFolder } from '../types';
+import { NEW_FOLDER_ID } from './constants';
 
 const Context = React.createContext({
   setVisibility: null,
@@ -51,14 +52,16 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
     );
   } else if (folder.name === 'All Sandboxes') {
     menuOptions = (
-      <MenuItem onSelect={() => setNewFolderPath('/__NEW__')}>
+      <MenuItem onSelect={() => setNewFolderPath(`/${NEW_FOLDER_ID}`)}>
         New folder
       </MenuItem>
     );
   } else {
     menuOptions = (
       <>
-        <MenuItem onSelect={() => setNewFolderPath(folder.path + '/__NEW__')}>
+        <MenuItem
+          onSelect={() => setNewFolderPath(`${folder.path}/${NEW_FOLDER_ID}`)}
+        >
           New folder
         </MenuItem>
         <MenuItem onSelect={() => setRenaming(true)}>Rename folder</MenuItem>
@@ -93,18 +96,16 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   }
 
   return (
-    <>
-      <Menu.ContextMenu
-        visible={visible}
-        setVisibility={setVisibility}
-        position={position}
-        style={{ width: 120 }}
-      >
-        <Context.Provider value={{ setVisibility }}>
-          {menuOptions}
-        </Context.Provider>
-      </Menu.ContextMenu>
-    </>
+    <Menu.ContextMenu
+      visible={visible}
+      setVisibility={setVisibility}
+      position={position}
+      style={{ width: 120 }}
+    >
+      <Context.Provider value={{ setVisibility }}>
+        {menuOptions}
+      </Context.Provider>
+    </Menu.ContextMenu>
   );
 };
 

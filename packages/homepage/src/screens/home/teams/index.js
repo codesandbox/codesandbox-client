@@ -10,8 +10,7 @@ import algolia from '../../../assets/images/Algolia.svg';
 import { List, Title } from './elements';
 
 const Teams = () => (
-  <>
-    <motion.div
+  <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 0.6 }}
       transition={{
@@ -70,7 +69,6 @@ const Teams = () => (
         </li>
       </List>
     </motion.div>
-  </>
 );
 
 export default Teams;

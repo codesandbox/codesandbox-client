@@ -35,6 +35,7 @@ const GlobalStyles = createGlobalStyle`
   transition: all ${CLOSE_TIMEOUT_MS}ms ease;
   z-index: 10;
   opacity: 1;
+  max-height: 100vh;
 }
 
 .ReactModal__Html--open {
@@ -73,7 +74,7 @@ class ModalComponent extends React.Component {
       bottom: fullWidth ? 0 : 40,
       left: 0,
       right: 0,
-      margin: fullWidth ? 0 : `0 auto ${top}vh`,
+      margin: `0 auto`,
       fontFamily: "'Inter', sans-serif",
       outline: 'none',
     },
@@ -107,7 +108,7 @@ class ModalComponent extends React.Component {
           css={css({
             border: '1px solid',
             borderColor: 'sideBar.border',
-            borderRadius: fullWidth ? 0 : 'medium',
+            borderRadius: fullWidth ? 0 : '8px',
             backgroundColor: 'sideBar.background',
             boxShadow: 2,
             color: 'sideBar.foreground',

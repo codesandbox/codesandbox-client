@@ -18,17 +18,15 @@ import * as liveMessage from './liveMessageOperators';
 
 export const internal = internalActions;
 
-export const signInToRoom: AsyncAction<{
-  roomId: string;
-}> = withLoadApp(async ({ state, actions }, { roomId }) => {
-  state.signInModalOpen = true;
+export const signInToRoom: AsyncAction<string> = withLoadApp(
+  async ({ actions, state }, roomId) => {
+    state.signInModalOpen = true;
 
-  if (state.isLoggedIn) {
-    await actions.live.roomJoined({
-      roomId,
-    });
+    if (state.isLoggedIn) {
+      await actions.live.roomJoined(roomId);
+    }
   }
-});
+);
 
 export const onOperationError: Action<{
   moduleShortid: string;
@@ -40,58 +38,58 @@ export const onOperationError: Action<{
   });
 };
 
-export const roomJoined: AsyncAction<{
-  roomId: string;
-}> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {
-  if (!state.isLoggedIn) {
-    return;
+export const roomJoined: AsyncAction<string> = withLoadApp(
+  async ({ actions, effects, state }, roomId) => {
+    if (!state.isLoggedIn) {
+      return;
+    }
+
+    await effects.vscode.initialized;
+    await effects.vscode.closeAllTabs();
+
+    state.live.joinSource = 'live';
+
+    if (state.live.isLive) {
+      actions.live.internal.disconnect();
+    }
+
+    const sandbox = await actions.live.internal.initialize(roomId);
+
+    if (!sandbox) {
+      return;
+    }
+
+    if (state.updateStatus === 'available') {
+      const modal = 'liveVersionMismatch';
+      effects.analytics.track('Open Modal', { modal });
+      state.currentModal = modal;
+    }
+
+    await actions.internal.setCurrentSandbox(sandbox);
+
+    actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id });
+    const items = getItems(state);
+    const defaultItem = items.find(i => i.defaultOpen) || items[0];
+
+    state.workspace.openedWorkspaceItem = defaultItem.id;
+
+    await effects.vscode.changeSandbox(sandbox, fs => {
+      state.editor.modulesByPath = fs;
+    });
+
+    effects.vscode.startExtensionHost();
+    effects.vscode.openModule(state.editor.currentModule);
+
+    if (
+      sandbox.featureFlags.comments &&
+      hasPermission(sandbox.authorization, 'comment')
+    ) {
+      actions.comments.getSandboxComments(sandbox.id);
+    }
+
+    state.editor.isLoading = false;
   }
-
-  await effects.vscode.initialized;
-  await effects.vscode.closeAllTabs();
-
-  state.live.joinSource = 'live';
-
-  if (state.live.isLive) {
-    actions.live.internal.disconnect();
-  }
-
-  const sandbox = await actions.live.internal.initialize(roomId);
-
-  if (!sandbox) {
-    return;
-  }
-
-  if (state.updateStatus === 'available') {
-    const modal = 'liveVersionMismatch';
-    effects.analytics.track('Open Modal', { modal });
-    state.currentModal = modal;
-  }
-
-  await actions.internal.setCurrentSandbox(sandbox);
-
-  actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id });
-  const items = getItems(state);
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
-
-  state.workspace.openedWorkspaceItem = defaultItem.id;
-
-  await effects.vscode.changeSandbox(sandbox, fs => {
-    state.editor.modulesByPath = fs;
-  });
-
-  effects.vscode.startExtensionHost();
-  effects.vscode.openModule(state.editor.currentModule);
-
-  if (
-    sandbox.featureFlags.comments &&
-    hasPermission(sandbox.authorization, 'comment')
-  ) {
-    actions.comments.getSandboxComments(sandbox.id);
-  }
-
-  state.editor.isLoading = false;
-});
+);
 
 export const createLiveClicked: AsyncAction<string> = async (
   { actions, effects, state },

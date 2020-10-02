@@ -218,11 +218,8 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     async (event?: React.FormEvent<HTMLFormElement>) => {
       if (event) event.preventDefault();
       await actions.dashboard.renameSandbox({
-        page,
         id: sandbox.id,
         title: newTitle,
-        oldTitle: sandboxTitle,
-        repoName: sandbox.originalGit?.repo,
       });
       setRenaming(false);
       track('Dashboard - Rename sandbox', { dashboardVersion: 2 });

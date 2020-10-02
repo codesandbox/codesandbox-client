@@ -1,26 +1,33 @@
-import React from 'react';
-import { Collapsible, Text, Element } from '@codesandbox/components';
-import { Tasks } from './Tasks';
-import { Status } from './Status';
-import { Ports } from './Ports';
+import { Collapsible, Element, Text } from '@codesandbox/components';
+import React, { FunctionComponent } from 'react';
+
 import { Control } from './Control';
 import { EnvVars } from './EnvVars';
+import { Ports } from './Ports';
+import { Status } from './Status';
+import { Tasks } from './Tasks';
 
-export const Server = () => (
+export const Server: FunctionComponent = () => (
   <Collapsible defaultOpen title="Server Control Panel">
-    <Element padding={2} marginBottom={5}>
-      <Text weight="medium" block marginBottom={2}>
+    <Element marginBottom={5} padding={2}>
+      <Text block marginBottom={2} weight="medium">
         Server Sandbox
       </Text>
-      <Text variant="muted" block marginBottom={5}>
+
+      <Text block marginBottom={5} variant="muted">
         This sandbox is executed on a server. You can control the server from
         this panel.
       </Text>
+
       <Status />
     </Element>
+
     <Tasks />
+
     <Ports />
+
     <Control />
+
     <EnvVars />
   </Collapsible>
 );
