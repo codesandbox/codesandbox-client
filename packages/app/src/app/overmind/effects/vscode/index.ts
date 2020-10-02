@@ -123,6 +123,7 @@ export class VSCodeEffect {
   private modelCursorPositionListener: { dispose: Function };
   private modelViewRangeListener: { dispose: Function };
   private readOnly: boolean;
+  private websocketFsRequest: any;
   private elements = {
     editor: document.createElement('div'),
     editorPart: document.createElement('div'),
@@ -426,12 +427,16 @@ export class VSCodeEffect {
 
     if (isServer && this.options.getCurrentUser()?.experiments.containerLsp) {
       childProcess.addDefaultForkHandler(this.createContainerForkHandler());
-      const socket = this.createWebsocketFSRequest();
+      if (this.websocketFsRequest) {
+        this.websocketFsRequest.dispose();
+      }
+
+      this.websocketFsRequest = this.createWebsocketFSRequest();
       const cache = await this.createFileSystem('WebsocketFS', {
-        socket,
+        socket: this.websocketFsRequest,
       });
       const nodeModules = await this.createFileSystem('WebsocketFS', {
-        socket,
+        socket: this.websocketFsRequest,
       });
 
       this.mountableFilesystem.mount('/home/sandbox/.cache', cache);
@@ -755,6 +760,14 @@ export class VSCodeEffect {
     activeEditor.setSelection(range);
   }
 
+  disconnectWebsocketFsRequest() {
+    this.websocketFsRequest.disconnect();
+  }
+
+  connectWebsocketFsRequest() {
+    this.websocketFsRequest.connect();
+  }
+
   // Communicates the endpoint for the WebsocketLSP
   private createContainerForkHandler() {
     return () => {
@@ -794,13 +807,25 @@ export class VSCodeEffect {
   }
 
   private createWebsocketFSRequest() {
-    const socket = io(`${this.getLspEndpoint()}?type=go-to-definition`);
+    const socket = io(`${this.getLspEndpoint()}?type=go-to-definition`, {
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      randomizationFactor: 0.2,
+    });
     return {
       emit: (data, cb) => {
         socket.emit('go-to-definition', data, cb);
       },
       dispose: () => {
         socket.close();
+      },
+      disconnect: () => {
+        socket.disconnect();
+      },
+      connect: () => {
+        socket.connect();
       },
     };
   }

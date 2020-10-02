@@ -49,16 +49,19 @@ export const onSSEMessage: Action<{
         server.status = ServerStatus.DISCONNECTED;
         effects.codesandboxApi.disconnectSSE();
         effects.vscode.stopExtensionHost();
+        effects.vscode.disconnectWebsocketFsRequest();
       }
       break;
     case 'sandbox:start':
       server.containerStatus = ServerContainerStatus.SANDBOX_STARTED;
       effects.vscode.startExtensionHost();
+      effects.vscode.connectWebsocketFsRequest();
       break;
     case 'sandbox:stop':
       if (server.containerStatus !== ServerContainerStatus.HIBERNATED) {
         server.containerStatus = ServerContainerStatus.STOPPED;
         effects.vscode.stopExtensionHost();
+        effects.vscode.disconnectWebsocketFsRequest();
       }
       break;
     case 'sandbox:update':
@@ -68,6 +71,7 @@ export const onSSEMessage: Action<{
       server.containerStatus = ServerContainerStatus.HIBERNATED;
       effects.executor.closeExecutor();
       effects.vscode.stopExtensionHost();
+      effects.vscode.disconnectWebsocketFsRequest();
       break;
     case 'sandbox:status':
       if (data.status === 'starting-container') {
@@ -75,6 +79,7 @@ export const onSSEMessage: Action<{
       } else if (data.status === 'installing-packages') {
         server.containerStatus = ServerContainerStatus.CONTAINER_STARTED;
         effects.vscode.startExtensionHost();
+        effects.vscode.connectWebsocketFsRequest();
       }
       break;
     case 'sandbox:log':
