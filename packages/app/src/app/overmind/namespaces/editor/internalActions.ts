@@ -1,6 +1,7 @@
 import getTemplateDefinition, {
   TemplateType,
 } from '@codesandbox/common/lib/templates';
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import {
   Module,
   ModuleTab,
@@ -569,14 +570,17 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   });
 };
 
-export const updateDevtools: AsyncAction<{
-  code: string;
-}> = async ({ state, actions }, { code }) => {
+export const updateDevtools: AsyncAction<ViewConfig[]> = async (
+  { state, actions },
+  viewConfig
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
 
-  await actions.files.updateWorkspaceConfig(code);
+  await actions.files.updateWorkspaceConfig({
+    preview: viewConfig,
+  });
 };
 
 export const updatePreviewCode: Action = ({ state, effects }) => {

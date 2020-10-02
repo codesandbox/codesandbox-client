@@ -53,11 +53,9 @@ export const deletePreset: AsyncAction = async ({ state, actions }) => {
     const presetsCopy = json(workspaceConfig['responsive-preview'] || {});
     delete presetsCopy[activePresetName.toString()];
     // Should not pass a string here, need to refactor the devtool tabs
-    await actions.files.updateWorkspaceConfig(
-      JSON.stringify({
-        'responsive-preview': presetsCopy,
-      })
-    );
+    await actions.files.updateWorkspaceConfig({
+      'responsive-preview': presetsCopy,
+    });
   }
 };
 
@@ -72,20 +70,16 @@ export const addPreset: AsyncAction<{
   const presetsCopy = json(workspaceConfig['responsive-preview'] || {});
   presetsCopy[name] = [width, height];
   // Should not pass a string here, need to refactor the devtool tabs
-  await actions.files.updateWorkspaceConfig(
-    JSON.stringify({
-      'responsive-preview': presetsCopy,
-    })
-  );
+  await actions.files.updateWorkspaceConfig({
+    'responsive-preview': presetsCopy,
+  });
 };
 
 export const editPresets: AsyncAction<Presets> = async (
   { actions },
   newPresets
 ) => {
-  await actions.files.updateWorkspaceConfig(
-    JSON.stringify({
-      'responsive-preview': newPresets,
-    })
-  );
+  await actions.files.updateWorkspaceConfig({
+    'responsive-preview': newPresets,
+  });
 };

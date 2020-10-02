@@ -891,9 +891,9 @@ export const syncSandbox: AsyncAction<any[]> = async (
     );
 };
 
-export const updateWorkspaceConfig: AsyncAction<string> = async (
+export const updateWorkspaceConfig: AsyncAction<{}> = async (
   { state, actions },
-  code
+  update
 ) => {
   if (state.editor.currentSandbox?.owned) {
     const devtoolsModule = state.editor.modulesByPath[
@@ -902,7 +902,7 @@ export const updateWorkspaceConfig: AsyncAction<string> = async (
 
     if (devtoolsModule) {
       const updatedCode = JSON.stringify(
-        Object.assign(JSON.parse(devtoolsModule.code), JSON.parse(code))
+        Object.assign(JSON.parse(devtoolsModule.code), update)
       );
       actions.editor.codeChanged({
         moduleShortid: devtoolsModule.shortid,
@@ -917,20 +917,19 @@ export const updateWorkspaceConfig: AsyncAction<string> = async (
       await actions.files.createModulesByPath({
         files: {
           '/.codesandbox/workspace.json': {
-            content: code,
+            content: JSON.stringify(update, null, 2),
             isBinary: false,
           },
         },
       });
     }
   } else {
-    state.editor.workspaceConfigCode = state.editor.workspaceConfigCode
-      ? JSON.stringify(
-          Object.assign(
-            JSON.parse(state.editor.workspaceConfigCode),
-            JSON.parse(code)
-          )
-        )
-      : code;
+    state.editor.workspaceConfigCode = JSON.stringify(
+      state.editor.workspaceConfigCode
+        ? Object.assign(JSON.parse(state.editor.workspaceConfigCode), update)
+        : update,
+      null,
+      2
+    );
   }
 };

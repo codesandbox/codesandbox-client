@@ -67,10 +67,7 @@ export const persistCursorToUrl: Action<{
   // and all the browsers do too.
   if (newUrl) {
     effects.router.replace(
-      newUrl
-        .toString()
-        .replace(/%2F/g, '/')
-        .replace('%3A', ':')
+      newUrl.toString().replace(/%2F/g, '/').replace('%3A', ':')
     );
   }
 }, 500);
@@ -1176,13 +1173,9 @@ export const onDevToolsTabAdded: Action<{
     json(devToolTabs),
     tab
   );
-
-  const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
   const nextPos = position;
 
-  actions.editor.internal.updateDevtools({
-    code,
-  });
+  actions.editor.internal.updateDevtools(newDevToolTabs);
 
   state.editor.currentDevToolsPosition = nextPos;
 };
@@ -1197,11 +1190,8 @@ export const onDevToolsTabMoved: Action<{
     prevPos,
     nextPos
   );
-  const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
 
-  actions.editor.internal.updateDevtools({
-    code,
-  });
+  actions.editor.internal.updateDevtools(newDevToolTabs);
 
   state.editor.currentDevToolsPosition = nextPos;
 };
@@ -1212,11 +1202,8 @@ export const onDevToolsTabClosed: Action<{
   const { devToolTabs } = state.editor;
   const closePos = pos;
   const newDevToolTabs = closeDevToolsTabUtil(json(devToolTabs), closePos);
-  const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
 
-  actions.editor.internal.updateDevtools({
-    code,
-  });
+  actions.editor.internal.updateDevtools(newDevToolTabs);
 };
 
 export const onDevToolsPositionChanged: Action<{
