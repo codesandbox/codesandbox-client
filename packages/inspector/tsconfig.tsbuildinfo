@@ -322,8 +322,8 @@
         "affectsGlobalScope": false
       },
       "./src/common/proxies.ts": {
-        "version": "73250be754b25f63bcef1509400edde645dd347393f02b940c04ff83fba242ce",
-        "signature": "4b9e6645b8e89a7e33c038a4deb03c871bf4dc51660468f05db2624d01b8d050",
+        "version": "b1e6fe655193149b2cd1cd722d9b382313004f75ef100575ae49ed483c89b3d5",
+        "signature": "be66b9d97b3b623e011e73bc663809c6d885d6854f889634df7c310bfcd87d03",
         "affectsGlobalScope": false
       },
       "../../node_modules/@babel/types/lib/index.d.ts": {
@@ -1982,7 +1982,7 @@
         "affectsGlobalScope": false
       },
       "./src/editor/index.ts": {
-        "version": "a70833f1116c7545ff4a5c6bc1e9223c1bfe33c3cbfef4b1ca174913431ccac5",
+        "version": "7a532641bb1f72038ad004c0fe8f4da4b83c95d23bdb04eedeca0f7ee359d556",
         "signature": "dbdd1f1a4dcd2d590149f28a0909692b37dfb53523d13c3118e271d38982056a",
         "affectsGlobalScope": false
       },
@@ -1992,8 +1992,8 @@
         "affectsGlobalScope": false
       },
       "./src/sandbox/index.ts": {
-        "version": "992c0c49012e3e5d5d0923a12bd62369161ed129d83e6aa6ab07eea6f76cc199",
-        "signature": "5b1ac48227b523041f46c45500a8c843c518c623cf7ed72210bb49b68a4aaf01",
+        "version": "0fefbc6bbaa75949d7a2e777f19a182aa5b1584b45bfbc4baee0ba7fd307ecc4",
+        "signature": "93020485b5c46d1ccebb86971b4d83d701d6e4b8abf7fb6f5d212d7db95a15b7",
         "affectsGlobalScope": false
       },
       "./src/sandbox/component-information.ts": {
@@ -2082,8 +2082,8 @@
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/debug/index.d.ts": {
-        "version": "9ea00c8a8f143d175d9c947e4c3149547d781ebbcc65fbf14d21a61dd585a2c4",
-        "signature": "9ea00c8a8f143d175d9c947e4c3149547d781ebbcc65fbf14d21a61dd585a2c4",
+        "version": "37a4038e69fb61043e363140b58d7d517d6f99f274adad0774f226ea2ee8c903",
+        "signature": "37a4038e69fb61043e363140b58d7d517d6f99f274adad0774f226ea2ee8c903",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/estree/index.d.ts": {
@@ -3036,6 +3036,7 @@
       "esModuleInterop": true,
       "downlevelIteration": true,
       "outDir": "./lib",
+      "noEmitOnError": false,
       "watch": true,
       "configFilePath": "./tsconfig.json"
     },
@@ -10694,7 +10695,20 @@
       "./node_modules/@types/prettier/index.d.ts",
       "./node_modules/tslib/tslib.d.ts",
       "./src/common/fibers.ts",
-      "./src/common/proxies.ts",
+      [
+        "./src/common/proxies.ts",
+        [
+          {
+            "file": "./src/common/proxies.ts",
+            "start": 175,
+            "length": 22,
+            "messageText": "'FiberSourceInformation' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          }
+        ]
+      ],
       "./src/common/react/analyze/component-instance.test.ts",
       "./src/common/react/analyze/component-instance.ts",
       "./src/common/react/babel.ts",
@@ -10798,15 +10812,6 @@
           },
           {
             "file": "./src/editor/index.ts",
-            "start": 769,
-            "length": 6,
-            "messageText": "'bridge' is declared but its value is never read.",
-            "category": 1,
-            "code": 6133,
-            "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/editor/index.ts",
             "start": 875,
             "length": 10,
             "code": 2339,
@@ -10815,7 +10820,7 @@
           },
           {
             "file": "./src/editor/index.ts",
-            "start": 3089,
+            "start": 3001,
             "length": 13,
             "messageText": "'orderedFibers' is declared but its value is never read.",
             "category": 1,
@@ -10824,7 +10829,7 @@
           },
           {
             "file": "./src/editor/index.ts",
-            "start": 3128,
+            "start": 3040,
             "length": 12,
             "messageText": "'currentFiber' is declared but its value is never read.",
             "category": 1,
@@ -10858,7 +10863,7 @@
           },
           {
             "file": "./src/sandbox/index.ts",
-            "start": 3212,
+            "start": 2804,
             "length": 2,
             "messageText": "'id' is declared but its value is never read.",
             "category": 1,

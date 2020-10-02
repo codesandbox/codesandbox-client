@@ -13,10 +13,6 @@ export interface ISandboxProxy {
   $getFiberComponentInformation(
     id: string
   ): Promise<StaticComponentInformation>;
-  $getFiberPropSources(
-    id: string,
-    code: string
-  ): Promise<FiberSourceInformation>;
 }
 
 export interface IEditorProxy {

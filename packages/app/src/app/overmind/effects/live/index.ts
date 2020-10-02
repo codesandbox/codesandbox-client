@@ -5,7 +5,7 @@ import {
   Module,
   RoomInfo,
   UserSelection,
-  UserViewRange,
+  VSCodeRange,
 } from '@codesandbox/common/lib/types';
 import { blocker } from 'app/utils/blocker';
 import {
@@ -460,7 +460,7 @@ class Live {
   sendUserViewRange(
     moduleShortid: string | null,
     liveUserId: string,
-    viewRange: UserViewRange
+    viewRange: VSCodeRange
   ) {
     if (this.connectionsCount === 1) {
       return Promise.resolve();

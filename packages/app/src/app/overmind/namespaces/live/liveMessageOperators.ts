@@ -7,7 +7,7 @@ import {
   Module,
   RoomInfo,
   UserSelection,
-  UserViewRange,
+  VSCodeRange,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
@@ -527,7 +527,7 @@ export const onUserCurrentModule: Operator<LiveMessage<{
 export const onUserViewRange: Operator<LiveMessage<{
   liveUserId: string;
   moduleShortid: string;
-  viewRange: UserViewRange;
+  viewRange: VSCodeRange;
 }>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
   if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
     return;

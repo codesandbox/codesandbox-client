@@ -86,18 +86,17 @@ export class EditorInspectorState implements IEditorProxy {
     id: string,
     code: string
   ): Promise<FiberSourceInformation> {
-    return this.sandboxProxy.$getFiberPropSources(id, code);
     // Running it in the editor:
-    // const fiber = this.fibers.get(id);
-    // if (!fiber) {
-    //   throw new Error('Could not find fiber with id: ' + id);
-    // }
+    const fiber = this.fibers.get(id);
+    if (!fiber) {
+      throw new Error('Could not find fiber with id: ' + id);
+    }
 
-    // return this.bridge.getComponentInstanceInformation(
-    //   fiber.location.path,
-    //   code,
-    //   fiber.location.codePosition
-    // );
+    return this.bridge.getComponentInstanceInformation(
+      fiber.location.path,
+      code,
+      fiber.location.codePosition
+    );
   }
 
   private buildFlatOrderedFiberList() {

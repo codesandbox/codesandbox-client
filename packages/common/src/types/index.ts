@@ -211,7 +211,7 @@ export type User = {
 export type LiveUser = {
   username: string;
   selection: UserSelection | null;
-  viewRange: UserViewRange | null;
+  viewRange: VSCodeRange | null;
   id: string;
   currentModuleShortid: string | null;
   color: [number, number, number];
@@ -534,7 +534,7 @@ export type EditorSelection = {
   color: number[];
 };
 
-export type UserViewRange = {
+export type VSCodeRange = {
   startLineNumber: number;
   endLineNumber: number;
   startColumn: number;

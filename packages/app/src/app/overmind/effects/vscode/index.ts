@@ -10,7 +10,7 @@ import {
   Sandbox,
   SandboxFs,
   Settings,
-  UserViewRange,
+  VSCodeRange,
 } from '@codesandbox/common/lib/types';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
@@ -48,6 +48,7 @@ import {
   onSelectionChangeData,
 } from './ModelsHandler';
 import SandboxFsSync from './SandboxFsSync';
+import { SpanSubscription } from './SpanSubscription';
 import { getSelection } from './utils';
 import loadScript from './vscode-script-loader';
 import { Workbench } from './Workbench';
@@ -60,7 +61,7 @@ export type VsCodeOptions = {
   onCodeChange: (data: OnFileChangeData) => void;
   onOperationApplied: (data: OnOperationAppliedData) => void;
   onSelectionChanged: (selection: onSelectionChangeData) => void;
-  onViewRangeChanged: (viewRange: UserViewRange) => void;
+  onViewRangeChanged: (viewRange: VSCodeRange) => void;
   onCommentClick: (payload: {
     commentIds: string[];
     bounds: {
@@ -75,6 +76,8 @@ export type VsCodeOptions = {
   getSignal: any;
   getState: any;
 };
+
+export type ContentChangeListener = (change: TextOperation) => void;
 
 declare global {
   interface Window {
@@ -657,6 +660,46 @@ export class VSCodeEffect {
     }
   };
 
+  private modelDidChangeListeners = new Map<
+    string,
+    Set<ContentChangeListener>
+  >();
+  public onModelDidChange(
+    model: monaco.editor.ITextModel,
+    listener: ContentChangeListener
+  ) {
+    if (!this.modelDidChangeListeners.has(model.id)) {
+      this.modelDidChangeListeners.set(model.id, new Set());
+    }
+
+    const listeners = this.modelDidChangeListeners.get(model.id);
+    listeners.add(listener);
+
+    const dispose = () => {
+      listeners.delete(listener);
+      if (listeners.size === 0) {
+        this.modelDidChangeListeners.delete(model.id);
+      }
+    };
+
+    model.onWillDispose(() => {
+      dispose();
+    });
+
+    return {
+      dispose,
+    };
+  }
+
+  public async subscribeToSpan(path: string, range: VSCodeRange) {
+    const moduleModel = await this.modelsHandler.getModuleModelByPathWithModel(
+      path
+    );
+    const { model } = moduleModel;
+
+    return new SpanSubscription(model, this, range);
+  }
+
   /**
    * Reveal position in editor
    * @param scrollType 0 = smooth, 1 = immediate
@@ -697,7 +740,7 @@ export class VSCodeEffect {
    * Reveal revealLine in editor
    * @param scrollType 0 = smooth, 1 = immediate
    */
-  revealRange(range: UserViewRange, scrollType: 0 | 1 = 0) {
+  revealRange(range: VSCodeRange, scrollType: 0 | 1 = 0) {
     const activeEditor = this.editorApi.getActiveCodeEditor();
 
     if (activeEditor) {
@@ -705,7 +748,7 @@ export class VSCodeEffect {
     }
   }
 
-  public setSelectionFromRange(range: UserViewRange) {
+  public setSelectionFromRange(range: VSCodeRange) {
     const activeEditor = this.editorApi.getActiveCodeEditor();
     if (!activeEditor) {
       return;
@@ -748,7 +791,7 @@ export class VSCodeEffect {
 
   public highlightRange(
     path: string,
-    range: UserViewRange,
+    range: VSCodeRange,
     color: string,
     source: string
   ) {
@@ -1174,6 +1217,13 @@ export class VSCodeEffect {
       this.lint(data.title, data.model);
     }
 
+    const listeners = this.modelDidChangeListeners.get(data.model.id);
+    if (listeners) {
+      listeners.forEach(listener => {
+        listener(data.operation);
+      });
+    }
+
     this.options.onOperationApplied(data);
   };
 
@@ -1242,7 +1292,7 @@ export class VSCodeEffect {
       }
 
       let lastViewRange = null;
-      const isDifferentViewRange = (r1: UserViewRange, r2: UserViewRange) =>
+      const isDifferentViewRange = (r1: VSCodeRange, r2: VSCodeRange) =>
         r1.startLineNumber !== r2.startLineNumber ||
         r1.startColumn !== r2.startColumn ||
         r1.endLineNumber !== r2.endLineNumber ||

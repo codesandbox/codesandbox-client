@@ -4,7 +4,7 @@ import {
   Module,
   Sandbox,
   UserSelection,
-  UserViewRange,
+  VSCodeRange,
 } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
@@ -121,6 +121,21 @@ export class ModelsHandler {
     const fullPath = '/sandbox' + path;
 
     return this.moduleModels[fullPath];
+  }
+
+  public async getModuleModelByPathWithModel(
+    path: string
+  ): Promise<ModuleModel> {
+    const moduleModel = this.getOrCreateModuleModelByPath(path);
+
+    moduleModel.model =
+      moduleModel.model ||
+      (await this.editorApi.textFileService.models
+        .loadOrCreate(this.monaco.Uri.file('/sandbox' + moduleModel.path))
+        .then(textFileEditorModel => textFileEditorModel.load())
+        .then(textFileEditorModel => textFileEditorModel.textEditorModel));
+
+    return moduleModel;
   }
 
   private getOrCreateModuleModelByPath(path: string): ModuleModel {
@@ -345,7 +360,7 @@ export class ModelsHandler {
   codeHighlights: { [source: string]: string } = {};
   public createCodeHighlight(
     path: string,
-    range: UserViewRange,
+    range: VSCodeRange,
     color: string,
     source: string
   ) {

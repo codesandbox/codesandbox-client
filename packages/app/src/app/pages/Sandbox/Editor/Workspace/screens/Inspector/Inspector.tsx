@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { Collapsible, Stack, Text } from '@codesandbox/components';
+import * as childProcess from 'node-services/lib/child_process';
+import TSWorker from 'worker-loader!./ts-worker';
 
 import {
   getInspectorStateService,
@@ -13,12 +15,16 @@ import {
 } from 'inspector/lib/common/fibers';
 
 import { useOvermind } from 'app/overmind';
-import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import { Fiber } from './Fiber';
 import { BaseKnob } from './Knobs';
-import { UserViewRange } from '@codesandbox/common/lib/types';
+import { VSCodeRange } from '@codesandbox/common/lib/types';
 
-function componentRangeToViewRange(range: CodeRange): UserViewRange {
+childProcess.addForkHandler('ts-worker.ts', TSWorker);
+setTimeout(() => {
+  childProcess.fork('ts-worker.ts');
+}, 5000);
+
+function componentRangeToViewRange(range: CodeRange): VSCodeRange {
   return {
     startLineNumber: range.startLineNumber,
     endLineNumber: range.endLineNumber,
@@ -73,7 +79,26 @@ export const Inspector = () => {
           .then(setComponentInformation);
         inspector
           .getFiberPropSources(fiber.id, model.getValue())
-          .then(setPropsSourceInformation);
+          .then(sourceInfo => {
+            setPropsSourceInformation(sourceInfo);
+
+            Object.keys(sourceInfo.props).forEach(async prop => {
+              const source = sourceInfo.props[prop];
+              const subscription = await effects.vscode.subscribeToSpan(
+                fiber.location.path,
+                componentRangeToViewRange(source.valuePosition)
+              );
+
+              console.log(prop, subscription);
+
+              subscription.onContentChange(newContent => {
+                console.log(prop, 'CONTENT CHANGED', newContent);
+              });
+              subscription.onRangeChange(newRange => {
+                console.log(prop, 'RANGE CHANGED', newRange);
+              });
+            });
+          });
       });
     });
   }, []);
@@ -133,11 +158,21 @@ export const Inspector = () => {
                   onClick={() => {
                     const propInfo = propsSourceInformation.props[val.name];
                     if (propInfo) {
+                      const range = componentRangeToViewRange(
+                        propInfo.valuePosition
+                      );
                       effects.vscode.highlightRange(
                         selectedFiber.location.path,
-                        componentRangeToViewRange(propInfo.valuePosition),
+                        range,
                         '#6CC7F650',
                         'inspector-value'
+                      );
+
+                      console.log(
+                        effects.vscode.subscribeToSpan(
+                          selectedFiber.location.path,
+                          range
+                        )
                       );
                     }
                   }}

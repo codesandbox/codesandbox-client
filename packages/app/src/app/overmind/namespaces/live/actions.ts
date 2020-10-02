@@ -4,7 +4,7 @@ import {
   LiveMessageEvent,
   RoomInfo,
   UserSelection,
-  UserViewRange,
+  VSCodeRange,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';

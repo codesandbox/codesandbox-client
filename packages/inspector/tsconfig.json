@@ -25,6 +25,7 @@
     "jsx": "react",
     "esModuleInterop": true,
     "downlevelIteration": true,
-    "outDir": "lib"
+    "outDir": "lib",
+    "noEmitOnError": false
   }
 }

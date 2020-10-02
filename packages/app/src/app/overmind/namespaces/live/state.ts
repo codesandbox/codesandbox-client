@@ -2,7 +2,7 @@ import {
   LiveUser,
   RoomInfo,
   UserSelection,
-  UserViewRange,
+  VSCodeRange,
 } from '@codesandbox/common/lib/types';
 import { derived } from 'overmind';
 
@@ -21,7 +21,7 @@ type State = {
    */
   joinSource: 'sandbox' | 'live';
   currentSelection: UserSelection | null;
-  currentViewRange: UserViewRange | null;
+  currentViewRange: VSCodeRange | null;
   liveUser: LiveUser | null;
   isEditor: (liveUserId: string) => boolean;
   isCurrentEditor: boolean;
