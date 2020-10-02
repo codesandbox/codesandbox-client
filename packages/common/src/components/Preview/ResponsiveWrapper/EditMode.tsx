@@ -2,7 +2,7 @@ import { Button, Element, Stack, Text } from '@codesandbox/components';
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import Highlight, { defaultProps } from 'prism-react-renderer';
-import { makeTheme } from '@codesandbox/common/lib/utils/makeTheme';
+import { makeTheme } from '../../../utils/makeTheme';
 import { CloseIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 
