@@ -62,11 +62,33 @@ export const ResponsiveWrapper = ({
   const [width, setWidth] = useState<string>('100%');
   const [height, setHeight] = useState<string>('100%');
   const [scale, setScale] = useState<number>(defaultScale / 100);
+  const element = document.getElementById('sandbox-preview-container');
+  const [wrapperWidth, setWrapperWidth] = useState(element?.clientWidth - 20);
+  const [wrapperHeight, setWrapperHeight] = useState(
+    element?.clientHeight - 100
+  );
 
-  const defaultWidth =
-    document.getElementById('sandbox-preview-container')?.clientWidth - 20;
-  const defaultHeight =
-    document.getElementById('sandbox-preview-container')?.clientHeight - 100;
+  useEffect(() => {
+    let observer;
+    if (element) {
+      // TS does not know of ResizeObserver
+      // @ts-ignore
+      observer = new ResizeObserver(entries => {
+        entries.map(entry => {
+          if (entry.contentRect) {
+            const sizes = entry.contentRect;
+
+            setWrapperWidth(sizes.width - 20);
+            setWrapperHeight(sizes.height - 100);
+          }
+
+          return null;
+        });
+      });
+      observer.observe(element);
+    }
+    return () => (observer ? observer.disconnect() : null);
+  }, [element]);
 
   useEffect(() => {
     const [w, h] = resolution;
@@ -74,12 +96,12 @@ export const ResponsiveWrapper = ({
     setHeight(h + 'px');
     let scaleToSet = 1;
 
-    if (w > defaultWidth) {
-      scaleToSet = defaultWidth / w;
+    if (w > wrapperWidth) {
+      scaleToSet = wrapperWidth / w;
     }
 
-    if (h > defaultHeight) {
-      const heightToSet = defaultHeight / h;
+    if (h > wrapperHeight) {
+      const heightToSet = wrapperHeight / h;
       if (heightToSet < scaleToSet) {
         scaleToSet = heightToSet;
       }
@@ -88,7 +110,7 @@ export const ResponsiveWrapper = ({
     setScale(scaleToSet);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resolution]);
+  }, [resolution, wrapperWidth, wrapperHeight]);
 
   if (!on) return children;
 
@@ -97,6 +119,7 @@ export const ResponsiveWrapper = ({
   const exists = Boolean(
     Object.keys(presets).find(preset => isEqual(resolution, presets[preset]))
   );
+
   return (
     <>
       <Wrapper paddingTop={4} paddingX={6}>
@@ -157,7 +180,6 @@ export const ResponsiveWrapper = ({
                 value={resolutionHeight}
               />
             </Stack>
-            <Text size={3}>({Math.floor(scale * 100)}%)</Text>
           </Stack>
           <PresetMenu
             openEditPresets={actions.toggleEditPresets}
