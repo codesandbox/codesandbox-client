@@ -1,33 +1,81 @@
 import { orderBy } from 'lodash-es';
-import {
-  IEditorProxy,
-  ISandboxProxy,
-  rpcProtocol,
-  editorProxyIdentifier,
-  sandboxProxyIdentifier,
-} from '../common/proxies';
+import { IEditorProxy, ISandboxProxy } from '../common/proxies';
 import {
   Fiber,
   FiberSourceInformation,
   StaticComponentInformation,
 } from '../common/fibers';
 import { Emitter } from '../common/rpc/event';
-import { ReactBridge } from '../common/react';
+import { ReactEditorBridge } from '../common/react/editor';
+import { IEditorInterface, IModel } from './editor-api';
+import { Disposable } from '../common/rpc/disposable';
 
-export class EditorInspectorState implements IEditorProxy {
+export class EditorInspectorState extends Disposable implements IEditorProxy {
   private fibers = new Map<string, Fiber>();
-
   private selectedFiber: Fiber | null = null;
+
   private selectionChangedEmitter = new Emitter<Fiber>();
   public onSelectionChanged = this.selectionChangedEmitter.event;
 
   private fiberChangedEmitter = new Emitter<Fiber>();
   public onFiberChanged = this.fiberChangedEmitter.event;
 
-  private bridge: ReactBridge = new ReactBridge();
+  private bridge: ReactEditorBridge = new ReactEditorBridge();
 
-  constructor(private sandboxProxy: ISandboxProxy) {
+  private openedModels = new Map<string, IModel>();
+
+  constructor(
+    private sandboxProxy: ISandboxProxy,
+    private editorApi: IEditorInterface
+  ) {
+    super();
+    // @ts-expect-error
     window.eInspector = this;
+
+    this.editorApi.getModels().forEach(model => {
+      this.initializeModel(model);
+    });
+
+    this.toDispose.push(
+      this.editorApi.onModelAdded(({ model }) => {
+        this.initializeModel(model);
+      })
+    );
+
+    this.toDispose.push(
+      this.editorApi.onModelRemoved(({ model }) => {
+        const resource = model.getResource();
+        // TODO(@CompuIves): handle scheme
+        this.openedModels.delete(resource.path);
+      })
+    );
+  }
+
+  private initializeModel(model: IModel) {
+    const resource = model.getResource();
+    // TODO(@CompuIves): handle scheme
+    this.openedModels.set(resource.path, model);
+
+    this.toDispose.push(
+      model.onDidChangeContent(() => {
+        this.bridge.analyzeComponentLocations(
+          model.getResource().path,
+          model.getValue()
+        );
+      })
+    );
+  }
+
+  private getFibersFromPath(path: string): Fiber[] {
+    const fibers: Fiber[] = [];
+
+    this.fibers.forEach(fiber => {
+      if (fiber.location.path === path) {
+        fibers.push(fiber);
+      }
+    });
+
+    return fibers;
   }
 
   $fiberChanged(id: string, fiber: Fiber) {
@@ -120,16 +168,4 @@ export class EditorInspectorState implements IEditorProxy {
       fiber.parentFiberId,
     ]);
   }
-}
-
-let inspectorStateService: EditorInspectorState | undefined;
-
-export function getInspectorStateService() {
-  if (!inspectorStateService) {
-    const sandboxProxy = rpcProtocol.getProxy(sandboxProxyIdentifier);
-    inspectorStateService = new EditorInspectorState(sandboxProxy);
-    rpcProtocol.set(editorProxyIdentifier, inspectorStateService);
-  }
-
-  return inspectorStateService;
 }

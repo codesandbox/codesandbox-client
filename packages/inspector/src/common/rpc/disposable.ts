@@ -11,7 +11,7 @@ export class Disposable implements IDisposable {
 
   public dispose() {
     this.isDisposed = true;
-    this.toDispose.forEach((disposable) => {
+    this.toDispose.forEach(disposable => {
       disposable.dispose();
     });
   }

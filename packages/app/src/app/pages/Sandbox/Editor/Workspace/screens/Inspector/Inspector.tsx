@@ -1,12 +1,8 @@
 import React, { useEffect } from 'react';
 import { Collapsible, Stack, Text } from '@codesandbox/components';
-import * as childProcess from 'node-services/lib/child_process';
-import TSWorker from 'worker-loader!./ts-worker';
+// import * as childProcess from 'node-services/lib/child_process';
 
-import {
-  getInspectorStateService,
-  EditorInspectorState,
-} from 'inspector/lib/editor';
+import { EditorInspectorState } from 'inspector/lib/editor';
 import {
   Fiber as FiberType,
   FiberSourceInformation,
@@ -18,11 +14,13 @@ import { useOvermind } from 'app/overmind';
 import { Fiber } from './Fiber';
 import { BaseKnob } from './Knobs';
 import { VSCodeRange } from '@codesandbox/common/lib/types';
+import { VSCodeEditorBridge } from './editor-bridge';
+import { getInspectorStateService } from './inspector-singleton';
 
-childProcess.addForkHandler('ts-worker.ts', TSWorker);
-setTimeout(() => {
-  childProcess.fork('ts-worker.ts');
-}, 5000);
+// childProcess.addForkHandler('ts-worker.ts', TSWorker);
+// setTimeout(() => {
+//   childProcess.fork('ts-worker.ts');
+// }, 5000);
 
 function componentRangeToViewRange(range: CodeRange): VSCodeRange {
   return {
@@ -50,7 +48,10 @@ export const Inspector = () => {
   ] = React.useState<FiberSourceInformation | null>(null);
 
   useEffect(() => {
-    const inspector = getInspectorStateService();
+    const vscodeBridge = new VSCodeEditorBridge(effects.vscode);
+    const inspector = getInspectorStateService({
+      vscodeEffect: effects.vscode,
+    });
     inspectorStateService.current = inspector;
     inspector.getFibers().then(editorFibers => {
       setFibers(editorFibers);
@@ -60,12 +61,9 @@ export const Inspector = () => {
       setSelectedFiber(fiber);
 
       actions.editor.moduleSelected({ path: fiber.location.path }).then(() => {
-        effects.vscode.setSelectionFromRange({
-          startLineNumber: fiber.location.codePosition.startLineNumber,
-          endLineNumber: fiber.location.codePosition.endLineNumber,
-          startColumn: fiber.location.codePosition.startColumnNumber,
-          endColumn: fiber.location.codePosition.endColumnNumber,
-        });
+        effects.vscode.setSelectionFromRange(
+          componentRangeToViewRange(fiber.location.codePosition)
+        );
 
         const model = effects.vscode.getModelByPath(fiber.location.path);
         model.onDidChangeContent(e => {
@@ -89,8 +87,6 @@ export const Inspector = () => {
                 componentRangeToViewRange(source.valuePosition)
               );
 
-              console.log(prop, subscription);
-
               subscription.onContentChange(newContent => {
                 console.log(prop, 'CONTENT CHANGED', newContent);
               });
@@ -101,6 +97,10 @@ export const Inspector = () => {
           });
       });
     });
+
+    return () => {
+      vscodeBridge.dispose();
+    };
   }, []);
 
   return (

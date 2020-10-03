@@ -3,7 +3,7 @@ import { TextOperation } from 'ot';
 import { lineAndColumnToIndex } from './common';
 
 export default function convertChangeEventToOperation(
-  changeEvent: any,
+  changeEvent: monaco.editor.IModelContentChangedEvent,
   liveOperationCode: string
 ) {
   let otOperation: TextOperation;

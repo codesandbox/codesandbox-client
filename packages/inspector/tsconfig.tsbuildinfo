@@ -46,6 +46,11 @@
         "signature": "38130cdd16bd2318b9362f9d60dd9670f7e38708bb6131cf11fc78a41b2c34a0",
         "affectsGlobalScope": true
       },
+      "../../node_modules/typescript/lib/lib.webworker.d.ts": {
+        "version": "84f6201b368ae6773d5d21e8e0349e62f1a4fc14f8a5d204ec9abc857fc33a9d",
+        "signature": "84f6201b368ae6773d5d21e8e0349e62f1a4fc14f8a5d204ec9abc857fc33a9d",
+        "affectsGlobalScope": true
+      },
       "../../node_modules/typescript/lib/lib.es2015.core.d.ts": {
         "version": "46ee15e9fefa913333b61eaf6b18885900b139867d89832a515059b62cf16a17",
         "signature": "46ee15e9fefa913333b61eaf6b18885900b139867d89832a515059b62cf16a17",
@@ -217,12 +222,12 @@
         "affectsGlobalScope": false
       },
       "./src/common/fibers.ts": {
-        "version": "1c68780daab693779c443d9bd48ae33ed9465e7253121e96c4d0d18cea00e68c",
-        "signature": "4157b7b94a1b54c136437bcabd9fb3c085adcae50babf736b99f73f8415424a3",
+        "version": "528c8dbee9ee406b649b73d83147b9afa58adcfb098c4ea3792e830b25d86300",
+        "signature": "3d1a8af171ad2122f3810c6ce1906e06c4f4840043b3f76498ddbaf87ceae444",
         "affectsGlobalScope": false
       },
       "./src/common/rpc/disposable.ts": {
-        "version": "2ccbfbf43844830f9ba2d47698953d1909bc8f541d7852a3badcd009e0b58d02",
+        "version": "baa67731aaaa90dcade388403271325d693070fb252f52d437c1119673a4b8e6",
         "signature": "88fb56d5361314827571822701b74076d89d948167823562171219ee2e420b33",
         "affectsGlobalScope": false
       },
@@ -312,8 +317,8 @@
         "affectsGlobalScope": false
       },
       "./src/common/rpc/connection.ts": {
-        "version": "1f79f09bd17f3a1b258e225097ab0493b42bf59b7ebea41a7b2e453caabe874f",
-        "signature": "5bc91f0c918697176d0b5821a787156cd676823a2e75c95ca742526752c1297e",
+        "version": "6ab7cf794b16500827dc02e51116796dd79c5ca12f9ad7f396b1aaacba75010e",
+        "signature": "9a20b4235254eaa6f863aaf7ef3c9c03e3978fa4fd0270cd3e7bafb44377b6ff",
         "affectsGlobalScope": false
       },
       "./src/common/rpc/index.ts": {
@@ -322,7 +327,7 @@
         "affectsGlobalScope": false
       },
       "./src/common/proxies.ts": {
-        "version": "b1e6fe655193149b2cd1cd722d9b382313004f75ef100575ae49ed483c89b3d5",
+        "version": "7e70886873d794a68fb58e2b458459ca703cd922a5ca63b6a3ffa476dd533a8f",
         "signature": "be66b9d97b3b623e011e73bc663809c6d885d6854f889634df7c310bfcd87d03",
         "affectsGlobalScope": false
       },
@@ -366,9 +371,39 @@
         "signature": "0c20b615cbfbecb956e5c65ed584b7032e1ba8201d3043e84bfc1ea003b27244",
         "affectsGlobalScope": false
       },
+      "../../node_modules/typescript/lib/typescript.d.ts": {
+        "version": "d7b12d89dac50d74fc6e17b4429a2547026b6655d9a983bd442510770e68cca3",
+        "signature": "d7b12d89dac50d74fc6e17b4429a2547026b6655d9a983bd442510770e68cca3",
+        "affectsGlobalScope": false
+      },
+      "./src/common/rpc/worker/connection.ts": {
+        "version": "a47fe2c4bb6e68f09c8d1113c4ff3c0a2dc6dbe4a801124fec83ad912bc53a21",
+        "signature": "75e57c9058b55fc8cfab0a6c24792c914a78ffbbd63863ea2b740218345a2a3c",
+        "affectsGlobalScope": false
+      },
+      "./src/common/react/analyze/component-instance.ts": {
+        "version": "4e5e396607defaeb3a5dd0c0f7deea0cd2d2b362d5b8712a28176899d02629c4",
+        "signature": "a54902a8bf475382a95da2b9c44ddb82950e499951f319610a7b7bf63ca32ce1",
+        "affectsGlobalScope": false
+      },
+      "./src/common/react/analyze/proxies.ts": {
+        "version": "31edb3108f84b9ab8038f13f1a7995afc7b1f6b051468ce31e5e6e49b999e2b1",
+        "signature": "5e14aeb206be7d8ed44cc75ea3675ea624b63e055d613f0176a7a0becfd4ba1b",
+        "affectsGlobalScope": false
+      },
+      "./src/common/react/analyze/typescript-analyzer.worker.ts": {
+        "version": "70f177272a48c0c812af0ecba5db8179d49120b782376526a7a3a8c408dfeb77",
+        "signature": "eed6cf2161ada471e7743f3a3f9367b59094d50b0e8a3907e18b2e08e33615ca",
+        "affectsGlobalScope": false
+      },
       "./node_modules/@babel/types/lib/index.d.ts": {
         "version": "f4d27b39be5d82eb94f12c54a15e61f65decb27fb289353d11ef238de49bf5c2",
         "signature": "f4d27b39be5d82eb94f12c54a15e61f65decb27fb289353d11ef238de49bf5c2",
+        "affectsGlobalScope": false
+      },
+      "./src/common/react/editor.ts": {
+        "version": "b356c89ad1019f5f68fe218fd4f7674c4b25b4530c605e9a8d762a2acc21b348",
+        "signature": "2767f409d63445155c2f7a988762bd839f2ca6ac87117ba45ff22d5e0e7892a9",
         "affectsGlobalScope": false
       },
       "./src/common/react/internals/reactsymbols.ts": {
@@ -381,29 +416,29 @@
         "signature": "2f8664686cdce7cdeed3ddbfd971aeb6976dbc68df621683775d017c8a7a9b1e",
         "affectsGlobalScope": false
       },
-      "./node_modules/@babel/parser/typings/babel-parser.d.ts": {
-        "version": "04467c3822f065aee977f9e1225b86b9ac0e976cb42b0c8da0b893a3290920e1",
-        "signature": "04467c3822f065aee977f9e1225b86b9ac0e976cb42b0c8da0b893a3290920e1",
-        "affectsGlobalScope": false
-      },
-      "./src/common/react/analyze/component-instance.ts": {
-        "version": "3e876eb7203645ee7b95d44a0313d91c98db0677498d9b87d3ef203142ba4b79",
-        "signature": "6f642c005507213079f26a9734ea7aebdb7c7c4cc50bdcf9d7cd2a80d4bc12da",
-        "affectsGlobalScope": false
-      },
-      "./src/common/react/index.ts": {
-        "version": "50ba1d88520468ea46646a55c85d919691e8b0106c8ff2a664b962f2f7933b89",
-        "signature": "d5ff3acbee0a52cd58b0d3e7972e527ca3e8f50f8ee7f9c4d44572f0f5fe7b79",
+      "./src/common/react/sandbox.ts": {
+        "version": "67d5d8400b32e6732adfe349741946c7ef3826ee31b0e3c81aeaac02d26c644a",
+        "signature": "3f16a27941bdf7a82938d3f0fa70d7535ad3e5e967393dccde054b54c3f3e8d0",
         "affectsGlobalScope": true
       },
       "./src/common/react/analyze/component-instance.test.ts": {
-        "version": "47b8857099cef90a70fc4291ac57215b8b9402f91059da823c885a510866badb",
+        "version": "25ec9718cc069c97a402cc5134d2219d401838c6fed29d15c0a94dcee1e0a706",
         "signature": "36138b17dd5fa438a8eac13fcfcf7764e54f4076e185b5e94c232ded63eb8325",
         "affectsGlobalScope": false
       },
       "./src/common/react/internals/reacttypes.ts": {
         "version": "3ffc79b7ea67ca73cb9824531caf018329f4d9430208c69586810fcd4219e7b6",
         "signature": "d743cf1121eac6c76b7e8c688b52c173d6f19dd8d72bdf1716e210b54e7168f0",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/ot/index.d.ts": {
+        "version": "314525566041a9bef3b634b5baddf070dcfe471637173db379226978127b199b",
+        "signature": "314525566041a9bef3b634b5baddf070dcfe471637173db379226978127b199b",
+        "affectsGlobalScope": false
+      },
+      "./src/editor/editor-api.ts": {
+        "version": "16f3ded449a2d6c582d818aaf2a302c71cfe871fdb1f8c6d980c428e63e58fba",
+        "signature": "352e16b2746399e3c81fddff624bee35b9af9f5e24b42de459a425ea9f80b779",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/lodash/ts3.1/common/common.d.ts": {
@@ -1982,8 +2017,8 @@
         "affectsGlobalScope": false
       },
       "./src/editor/index.ts": {
-        "version": "7a532641bb1f72038ad004c0fe8f4da4b83c95d23bdb04eedeca0f7ee359d556",
-        "signature": "dbdd1f1a4dcd2d590149f28a0909692b37dfb53523d13c3118e271d38982056a",
+        "version": "66e7359a5d1b11f260f73b00306b48d4e9592e0d77de4f8979bbf404bc4cc1b1",
+        "signature": "ba741037d94a16c9a423997b1bd7d22202f0a2e57a8a68ed101267607ce14e18",
         "affectsGlobalScope": false
       },
       "./src/sandbox/highlight.ts": {
@@ -1992,13 +2027,13 @@
         "affectsGlobalScope": false
       },
       "./src/sandbox/index.ts": {
-        "version": "0fefbc6bbaa75949d7a2e777f19a182aa5b1584b45bfbc4baee0ba7fd307ecc4",
-        "signature": "93020485b5c46d1ccebb86971b4d83d701d6e4b8abf7fb6f5d212d7db95a15b7",
+        "version": "9f588c87f0865e2ed3c6e049d0d04e08da661cfefa00394e1007bee3b6c59647",
+        "signature": "ed1c6c257aa526f1d4bdc1a6b520d4847e72e34f760c47a7a6c448a4cf274ae3",
         "affectsGlobalScope": false
       },
       "./src/sandbox/component-information.ts": {
-        "version": "99796dedd34bcf6faa84d62d73babb330aef42192349b43d12e170ef341335ee",
-        "signature": "ad1293d6e2225dfeba583eb5068105822eb8e1823cb3dbcfa1c1412801f3f82a",
+        "version": "bf703caf14c6a5fad158820624ef17eae7030efc27f3518b1d4693d2b96b9d89",
+        "signature": "fa67901a7120f073b1b98cfa99162873c7108a5d648e64ad76da6979f7a6c574",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/istanbul-lib-coverage/index.d.ts": {
@@ -2082,8 +2117,8 @@
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/debug/index.d.ts": {
-        "version": "37a4038e69fb61043e363140b58d7d517d6f99f274adad0774f226ea2ee8c903",
-        "signature": "37a4038e69fb61043e363140b58d7d517d6f99f274adad0774f226ea2ee8c903",
+        "version": "9ea00c8a8f143d175d9c947e4c3149547d781ebbcc65fbf14d21a61dd585a2c4",
+        "signature": "9ea00c8a8f143d175d9c947e4c3149547d781ebbcc65fbf14d21a61dd585a2c4",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/estree/index.d.ts": {
@@ -2574,11 +2609,6 @@
       "../../node_modules/@types/npmlog/index.d.ts": {
         "version": "0d65b782b1a9b5891802ef2022c78481b19dfe133ba8d9f7596fe1320314342d",
         "signature": "0d65b782b1a9b5891802ef2022c78481b19dfe133ba8d9f7596fe1320314342d",
-        "affectsGlobalScope": false
-      },
-      "../../node_modules/@types/ot/index.d.ts": {
-        "version": "314525566041a9bef3b634b5baddf070dcfe471637173db379226978127b199b",
-        "signature": "314525566041a9bef3b634b5baddf070dcfe471637173db379226978127b199b",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/parse-json/index.d.ts": {
@@ -6336,6 +6366,14 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../node_modules/typescript/lib/lib.webworker.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/typescript/lib/typescript.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../@types/styled-components/index.d.ts": [
         "../../node_modules/@types/hoist-non-react-statics/index.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -6417,11 +6455,6 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "./node_modules/@babel/parser/typings/babel-parser.d.ts": [
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts",
-        "./node_modules/@babel/types/lib/index.d.ts"
-      ],
       "./node_modules/@babel/types/lib/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -6453,15 +6486,31 @@
       "./src/common/react/analyze/component-instance.test.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts",
         "./src/common/react/analyze/component-instance.ts"
       ],
       "./src/common/react/analyze/component-instance.ts": [
-        "../../node_modules/@types/babel__traverse/index.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
-        "./node_modules/@babel/parser/typings/babel-parser.d.ts",
-        "./node_modules/@babel/types/lib/index.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts",
         "./src/common/fibers.ts"
+      ],
+      "./src/common/react/analyze/proxies.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts",
+        "./src/common/fibers.ts",
+        "./src/common/rpc/index.ts"
+      ],
+      "./src/common/react/analyze/typescript-analyzer.worker.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts",
+        "./src/common/fibers.ts",
+        "./src/common/react/analyze/component-instance.ts",
+        "./src/common/react/analyze/proxies.ts",
+        "./src/common/rpc/index.ts",
+        "./src/common/rpc/worker/connection.ts"
       ],
       "./src/common/react/babel.ts": [
         "../../node_modules/@types/babel__core/index.d.ts",
@@ -6474,15 +6523,15 @@
         "../../node_modules/@types/node/util.d.ts",
         "./src/common/fibers.ts"
       ],
-      "./src/common/react/index.ts": [
+      "./src/common/react/editor.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
-        "./node_modules/@babel/parser/typings/babel-parser.d.ts",
         "./node_modules/@babel/types/lib/index.d.ts",
         "./src/common/fibers.ts",
-        "./src/common/react/analyze/component-instance.ts",
-        "./src/common/react/docgen.ts",
-        "./src/common/react/internals/getcomponentname.ts"
+        "./src/common/react/analyze/proxies.ts",
+        "./src/common/react/analyze/typescript-analyzer.worker.ts",
+        "./src/common/rpc/connection.ts",
+        "./src/common/rpc/index.ts"
       ],
       "./src/common/react/internals/getcomponentname.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -6496,6 +6545,13 @@
       "./src/common/react/internals/reacttypes.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
+      ],
+      "./src/common/react/sandbox.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "./src/common/fibers.ts",
+        "./src/common/react/docgen.ts",
+        "./src/common/react/internals/getcomponentname.ts"
       ],
       "./src/common/rpc/connection.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -6529,14 +6585,31 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "./src/common/rpc/worker/connection.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "./src/common/rpc/connection.ts",
+        "./src/common/rpc/disposable.ts",
+        "./src/common/rpc/event.ts"
+      ],
+      "./src/editor/editor-api.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/ot/index.d.ts",
+        "./src/common/fibers.ts",
+        "./src/common/rpc/disposable.ts",
+        "./src/common/rpc/event.ts"
+      ],
       "./src/editor/index.ts": [
         "../../node_modules/@types/lodash-es/index.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
         "./src/common/fibers.ts",
         "./src/common/proxies.ts",
-        "./src/common/react/index.ts",
-        "./src/common/rpc/event.ts"
+        "./src/common/react/editor.ts",
+        "./src/common/rpc/disposable.ts",
+        "./src/common/rpc/event.ts",
+        "./src/editor/editor-api.ts"
       ],
       "./src/index.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -6546,7 +6619,7 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
         "./src/common/fibers.ts",
-        "./src/common/react/index.ts",
+        "./src/common/react/sandbox.ts",
         "./src/common/rpc/disposable.ts",
         "./src/sandbox/index.ts"
       ],
@@ -6559,7 +6632,7 @@
         "../../node_modules/@types/node/util.d.ts",
         "./src/common/fibers.ts",
         "./src/common/proxies.ts",
-        "./src/common/react/index.ts",
+        "./src/common/react/sandbox.ts",
         "./src/common/rpc/disposable.ts",
         "./src/sandbox/component-information.ts",
         "./src/sandbox/highlight.ts"
@@ -9868,6 +9941,14 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../node_modules/typescript/lib/lib.webworker.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
+      "../../node_modules/typescript/lib/typescript.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../@types/styled-components/index.d.ts": [
         "../../node_modules/@types/hoist-non-react-statics/index.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -9949,11 +10030,6 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "./node_modules/@babel/parser/typings/babel-parser.d.ts": [
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts",
-        "./node_modules/@babel/types/lib/index.d.ts"
-      ],
       "./node_modules/@babel/types/lib/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -9976,7 +10052,13 @@
         "./src/common/rpc/index.ts"
       ],
       "./src/common/react/analyze/component-instance.ts": [
+        "../../node_modules/typescript/lib/typescript.d.ts",
         "./src/common/fibers.ts"
+      ],
+      "./src/common/react/analyze/proxies.ts": [
+        "../../node_modules/typescript/lib/typescript.d.ts",
+        "./src/common/fibers.ts",
+        "./src/common/rpc/index.ts"
       ],
       "./src/common/react/babel.ts": [
         "../../node_modules/@types/babel__core/index.d.ts",
@@ -9985,7 +10067,10 @@
       "./src/common/react/docgen.ts": [
         "./src/common/fibers.ts"
       ],
-      "./src/common/react/index.ts": [
+      "./src/common/react/editor.ts": [
+        "./src/common/fibers.ts"
+      ],
+      "./src/common/react/sandbox.ts": [
         "./src/common/fibers.ts"
       ],
       "./src/common/rpc/connection.ts": [
@@ -9999,21 +10084,34 @@
         "./src/common/rpc/connection.ts",
         "./src/common/rpc/disposable.ts"
       ],
+      "./src/common/rpc/worker/connection.ts": [
+        "./src/common/rpc/connection.ts",
+        "./src/common/rpc/disposable.ts",
+        "./src/common/rpc/event.ts"
+      ],
+      "./src/editor/editor-api.ts": [
+        "../../node_modules/@types/ot/index.d.ts",
+        "./src/common/fibers.ts",
+        "./src/common/rpc/disposable.ts",
+        "./src/common/rpc/event.ts"
+      ],
       "./src/editor/index.ts": [
         "./src/common/fibers.ts",
         "./src/common/proxies.ts",
-        "./src/common/rpc/event.ts"
+        "./src/common/rpc/disposable.ts",
+        "./src/common/rpc/event.ts",
+        "./src/editor/editor-api.ts"
       ],
       "./src/sandbox/component-information.ts": [
         "./src/common/fibers.ts",
-        "./src/common/react/index.ts",
+        "./src/common/react/sandbox.ts",
         "./src/common/rpc/disposable.ts",
         "./src/sandbox/index.ts"
       ],
       "./src/sandbox/index.ts": [
         "./src/common/fibers.ts",
         "./src/common/proxies.ts",
-        "./src/common/react/index.ts",
+        "./src/common/react/sandbox.ts",
         "./src/common/rpc/disposable.ts",
         "./src/sandbox/component-information.ts"
       ],
@@ -10549,6 +10647,40 @@
         [
           {
             "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+            "start": 930,
+            "length": 9,
+            "messageText": "Definitions of the following identifiers conflict with those in another file: EventListenerOrEventListenerObject, ImportExportKind, TableKind, ValueType, ExportValue, Exports, ImportValue, ModuleImports, Imports, name, HeadersInit, BodyInit, RequestInfo, BlobPart, DOMHighResTimeStamp, CanvasImageSource, OffscreenRenderingContext, MessageEventSource, ImageBitmapSource, OnErrorEventHandler, TimerHandler, PerformanceEntryList, ReadableStreamReadResult, VibratePattern, AlgorithmIdentifier, HashAlgorithmIdentifier, BigInteger, NamedCurve, GLenum, GLboolean, GLbitfield, GLint, GLsizei, GLintptr, GLsizeiptr, GLuint, GLfloat, GLclampf, TexImageSource, Float32List, Int32List, GLint64, GLuint64, Uint32List, BufferSource, DOMTimeStamp, FormDataEntryValue, IDBValidKey, Transferable, BinaryType, CanvasDirection, CanvasFillRule, CanvasLineCap, CanvasLineJoin, CanvasTextAlign, CanvasTextBaseline, ClientTypes, ColorSpaceConversion, EndingType, IDBCursorDirection, IDBRequestReadyState, IDBTransactionMode, ImageOrientation, ImageSmoothingQuality, KeyFormat, KeyType, KeyUsage, NotificationDirection, NotificationPermission, OffscreenRenderingContextId, PermissionName, PermissionState, PremultiplyAlpha, PushEncryptionKeyName, PushPermissionState, ReferrerPolicy, RequestCache, RequestCredentials, RequestDestination, RequestMode, RequestRedirect, ResizeQuality, ResponseType, ServiceWorkerState, ServiceWorkerUpdateViaCache, VisibilityState, WebGLPowerPreference, WorkerType, XMLHttpRequestResponseType",
+            "category": 1,
+            "code": 6200,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+                "start": 933,
+                "length": 9,
+                "messageText": "Conflicts are in this file.",
+                "category": 3,
+                "code": 6201
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+            "start": 110031,
+            "length": 10,
+            "messageText": "All declarations of 'privateKey' must have identical modifiers.",
+            "category": 1,
+            "code": 2687
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+            "start": 110058,
+            "length": 9,
+            "messageText": "All declarations of 'publicKey' must have identical modifiers.",
+            "category": 1,
+            "code": 2687
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
             "start": 190327,
             "length": 8,
             "messageText": "Duplicate identifier 'FormData'.",
@@ -10556,6 +10688,7 @@
             "code": 2300,
             "relatedInformation": [
               {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 1349,
                 "length": 8,
                 "messageText": "'FormData' was also declared here.",
@@ -10573,6 +10706,7 @@
             "code": 2300,
             "relatedInformation": [
               {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 1349,
                 "length": 8,
                 "messageText": "'FormData' was also declared here.",
@@ -10590,6 +10724,7 @@
             "code": 2451,
             "relatedInformation": [
               {
+                "file": "../../node_modules/@types/react-native/index.d.ts",
                 "start": 318053,
                 "length": 9,
                 "messageText": "'navigator' was also declared here.",
@@ -10607,6 +10742,7 @@
             "code": 2300,
             "relatedInformation": [
               {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 2920,
                 "length": 11,
                 "messageText": "'RequestInfo' was also declared here.",
@@ -10624,6 +10760,7 @@
             "code": 2300,
             "relatedInformation": [
               {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 7919,
                 "length": 26,
                 "messageText": "'XMLHttpRequestResponseType' was also declared here.",
@@ -10674,6 +10811,440 @@
       "../../node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "../../node_modules/typescript/lib/lib.esnext.promise.d.ts",
       "../../node_modules/typescript/lib/lib.esnext.string.d.ts",
+      [
+        "../../node_modules/typescript/lib/lib.webworker.d.ts",
+        [
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 933,
+            "length": 9,
+            "messageText": "Definitions of the following identifiers conflict with those in another file: EventListenerOrEventListenerObject, ImportExportKind, TableKind, ValueType, ExportValue, Exports, ImportValue, ModuleImports, Imports, name, HeadersInit, BodyInit, RequestInfo, BlobPart, DOMHighResTimeStamp, CanvasImageSource, OffscreenRenderingContext, MessageEventSource, ImageBitmapSource, OnErrorEventHandler, TimerHandler, PerformanceEntryList, ReadableStreamReadResult, VibratePattern, AlgorithmIdentifier, HashAlgorithmIdentifier, BigInteger, NamedCurve, GLenum, GLboolean, GLbitfield, GLint, GLsizei, GLintptr, GLsizeiptr, GLuint, GLfloat, GLclampf, TexImageSource, Float32List, Int32List, GLint64, GLuint64, Uint32List, BufferSource, DOMTimeStamp, FormDataEntryValue, IDBValidKey, Transferable, BinaryType, CanvasDirection, CanvasFillRule, CanvasLineCap, CanvasLineJoin, CanvasTextAlign, CanvasTextBaseline, ClientTypes, ColorSpaceConversion, EndingType, IDBCursorDirection, IDBRequestReadyState, IDBTransactionMode, ImageOrientation, ImageSmoothingQuality, KeyFormat, KeyType, KeyUsage, NotificationDirection, NotificationPermission, OffscreenRenderingContextId, PermissionName, PermissionState, PremultiplyAlpha, PushEncryptionKeyName, PushPermissionState, ReferrerPolicy, RequestCache, RequestCredentials, RequestDestination, RequestMode, RequestRedirect, ResizeQuality, ResponseType, ServiceWorkerState, ServiceWorkerUpdateViaCache, VisibilityState, WebGLPowerPreference, WorkerType, XMLHttpRequestResponseType",
+            "category": 1,
+            "code": 6200,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 930,
+                "length": 9,
+                "messageText": "Conflicts are in this file.",
+                "category": 3,
+                "code": 6201
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 2670,
+            "length": 10,
+            "messageText": "All declarations of 'privateKey' must have identical modifiers.",
+            "category": 1,
+            "code": 2687
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 2670,
+            "length": 10,
+            "messageText": "Subsequent property declarations must have the same type.  Property 'privateKey' must be of type 'CryptoKey', but here has type 'CryptoKey | undefined'.",
+            "category": 1,
+            "code": 2717,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 110031,
+                "length": 10,
+                "messageText": "'privateKey' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 2698,
+            "length": 9,
+            "messageText": "All declarations of 'publicKey' must have identical modifiers.",
+            "category": 1,
+            "code": 2687
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 2698,
+            "length": 9,
+            "messageText": "Subsequent property declarations must have the same type.  Property 'publicKey' must be of type 'CryptoKey', but here has type 'CryptoKey | undefined'.",
+            "category": 1,
+            "code": 2717,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 110058,
+                "length": 9,
+                "messageText": "'publicKey' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 35789,
+            "length": 17,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'DOMMatrixReadOnly' must be of type '{ new (init?: string | number[] | undefined): DOMMatrixReadOnly; prototype: DOMMatrixReadOnly; fromFloat32Array(array32: Float32Array): DOMMatrixReadOnly; fromFloat64Array(array64: Float64Array): DOMMatrixReadOnly; fromMatrix(other?: DOMMatrixInit | undefined): DOMMatrixReadOnly; toString(): string; }', but here has type '{ new (init?: string | number[] | undefined): DOMMatrixReadOnly; prototype: DOMMatrixReadOnly; fromFloat32Array(array32: Float32Array): DOMMatrixReadOnly; fromFloat64Array(array64: Float64Array): DOMMatrixReadOnly; fromMatrix(other?: DOMMatrixInit | undefined): DOMMatrixReadOnly; }'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 117399,
+                "length": 17,
+                "messageText": "'DOMMatrixReadOnly' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 38370,
+            "length": 24,
+            "messageText": "Duplicate number index signature.",
+            "category": 1,
+            "code": 2375
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 52320,
+            "length": 22,
+            "messageText": "Duplicate number index signature.",
+            "category": 1,
+            "code": 2375
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 55280,
+            "length": 8,
+            "messageText": "Duplicate identifier 'FormData'.",
+            "category": 1,
+            "code": 2300,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
+                "start": 1349,
+                "length": 8,
+                "messageText": "'FormData' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 55725,
+            "length": 8,
+            "messageText": "Duplicate identifier 'FormData'.",
+            "category": 1,
+            "code": 2300,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
+                "start": 1349,
+                "length": 8,
+                "messageText": "'FormData' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 55725,
+            "length": 8,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'FormData' must be of type '{ new (form?: HTMLFormElement | undefined): FormData; prototype: FormData; }', but here has type '{ new (): FormData; prototype: FormData; }'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 190772,
+                "length": 8,
+                "messageText": "'FormData' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 80888,
+            "length": 6,
+            "messageText": "Subsequent property declarations must have the same type.  Property 'canvas' must be of type 'OffscreenCanvas | HTMLCanvasElement', but here has type 'OffscreenCanvas'.",
+            "category": 1,
+            "code": 2717,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 371821,
+                "length": 6,
+                "messageText": "'canvas' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 88062,
+            "length": 12,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'Notification' must be of type '{ new (title: string, options?: NotificationOptions | undefined): Notification; prototype: Notification; readonly maxActions: number; readonly permission: NotificationPermission; requestPermission(deprecatedCallback?: NotificationPermissionCallback | undefined): Promise<...>; }', but here has type '{ new (title: string, options?: NotificationOptions | undefined): Notification; prototype: Notification; readonly maxActions: number; readonly permission: NotificationPermission; }'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 429753,
+                "length": 12,
+                "messageText": "'Notification' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 198506,
+            "length": 6,
+            "messageText": "Subsequent property declarations must have the same type.  Property 'canvas' must be of type 'OffscreenCanvas | HTMLCanvasElement', but here has type 'OffscreenCanvas'.",
+            "category": 1,
+            "code": 2717,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 729058,
+                "length": 6,
+                "messageText": "'canvas' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 248760,
+            "length": 9,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'onmessage' must be of type '((this: Window, ev: MessageEvent<any>) => any) | null', but here has type '((this: DedicatedWorkerGlobalScope, ev: MessageEvent<any>) => any) | null'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 820866,
+                "length": 9,
+                "messageText": "'onmessage' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 248853,
+            "length": 14,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'onmessageerror' must be of type '((this: Window, ev: MessageEvent<any>) => any) | null', but here has type '((this: DedicatedWorkerGlobalScope, ev: MessageEvent<any>) => any) | null'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 820939,
+                "length": 14,
+                "messageText": "'onmessageerror' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 249682,
+            "length": 8,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'location' must be of type 'Location', but here has type 'WorkerLocation'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 802831,
+                "length": 8,
+                "messageText": "'location' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 249720,
+            "length": 9,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'navigator' must be of type 'Navigator', but here has type 'WorkerNavigator'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 803004,
+                "length": 9,
+                "messageText": "'navigator' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 249720,
+            "length": 9,
+            "messageText": "Cannot redeclare block-scoped variable 'navigator'.",
+            "category": 1,
+            "code": 2451,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/@types/react-native/index.d.ts",
+                "start": 318053,
+                "length": 9,
+                "messageText": "'navigator' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 249760,
+            "length": 7,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'onerror' must be of type 'OnErrorEventHandler', but here has type '((this: DedicatedWorkerGlobalScope, ev: ErrorEvent) => any) | null'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 812539,
+                "length": 7,
+                "messageText": "'onerror' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 249849,
+            "length": 16,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'onlanguagechange' must be of type '((this: Window, ev: Event) => any) | null', but here has type '((this: DedicatedWorkerGlobalScope, ev: Event) => any) | null'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 820793,
+                "length": 16,
+                "messageText": "'onlanguagechange' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 249942,
+            "length": 9,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'onoffline' must be of type '((this: Window, ev: Event) => any) | null', but here has type '((this: DedicatedWorkerGlobalScope, ev: Event) => any) | null'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 821017,
+                "length": 9,
+                "messageText": "'onoffline' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 250028,
+            "length": 8,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'ononline' must be of type '((this: Window, ev: Event) => any) | null', but here has type '((this: DedicatedWorkerGlobalScope, ev: Event) => any) | null'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 821083,
+                "length": 8,
+                "messageText": "'ononline' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 250113,
+            "length": 18,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'onrejectionhandled' must be of type '((this: Window, ev: PromiseRejectionEvent) => any) | null', but here has type '((this: DedicatedWorkerGlobalScope, ev: PromiseRejectionEvent) => any) | null'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 821385,
+                "length": 18,
+                "messageText": "'onrejectionhandled' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 250224,
+            "length": 20,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'onunhandledrejection' must be of type '((this: Window, ev: PromiseRejectionEvent) => any) | null', but here has type '((this: DedicatedWorkerGlobalScope, ev: PromiseRejectionEvent) => any) | null'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 821549,
+                "length": 20,
+                "messageText": "'onunhandledrejection' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 250370,
+            "length": 4,
+            "messageText": "Subsequent variable declarations must have the same type.  Variable 'self' must be of type 'Window & typeof globalThis', but here has type 'WorkerGlobalScope & typeof globalThis'.",
+            "category": 1,
+            "code": 2403,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+                "start": 806095,
+                "length": 4,
+                "messageText": "'self' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          }
+        ]
+      ],
+      "../../node_modules/typescript/lib/typescript.d.ts",
       "../@types/styled-components/index.d.ts",
       "../codesandbox-api/dist/types/actions/correction.d.ts",
       "../codesandbox-api/dist/types/actions/editor.d.ts",
@@ -10689,65 +11260,66 @@
       "../codesandbox-api/dist/types/errors/index.d.ts",
       "../codesandbox-api/dist/types/protocol/protocol.d.ts",
       "../codesandbox-api/dist/types/typings/codesandbox.d.ts",
-      "./node_modules/@babel/parser/typings/babel-parser.d.ts",
       "./node_modules/@babel/types/lib/index.d.ts",
       "./node_modules/@types/istanbul-reports/index.d.ts",
       "./node_modules/@types/prettier/index.d.ts",
       "./node_modules/tslib/tslib.d.ts",
       "./src/common/fibers.ts",
+      "./src/common/proxies.ts",
+      "./src/common/react/analyze/component-instance.test.ts",
+      "./src/common/react/analyze/component-instance.ts",
+      "./src/common/react/analyze/proxies.ts",
       [
-        "./src/common/proxies.ts",
+        "./src/common/react/analyze/typescript-analyzer.worker.ts",
         [
           {
-            "file": "./src/common/proxies.ts",
-            "start": 175,
-            "length": 22,
-            "messageText": "'FiberSourceInformation' is declared but its value is never read.",
+            "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
+            "start": 480,
+            "length": 4,
+            "messageText": "'path' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          },
+          {
+            "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
+            "start": 494,
+            "length": 4,
+            "messageText": "'code' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          },
+          {
+            "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
+            "start": 592,
+            "length": 4,
+            "messageText": "'path' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          },
+          {
+            "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
+            "start": 701,
+            "length": 7,
+            "messageText": "'version' is declared but its value is never read.",
             "category": 1,
             "code": 6133,
             "reportsUnnecessary": true
           }
         ]
       ],
-      "./src/common/react/analyze/component-instance.test.ts",
-      "./src/common/react/analyze/component-instance.ts",
       "./src/common/react/babel.ts",
       "./src/common/react/docgen.ts",
       [
-        "./src/common/react/index.ts",
+        "./src/common/react/editor.ts",
         [
           {
-            "file": "./src/common/react/index.ts",
-            "start": 323,
-            "length": 38,
-            "messageText": "'parse' is declared but its value is never read.",
-            "category": 1,
-            "code": 6133,
-            "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/common/react/index.ts",
-            "start": 3114,
+            "file": "./src/common/react/editor.ts",
+            "start": 534,
             "length": 4,
             "messageText": "'asts' is declared but its value is never read.",
-            "category": 1,
-            "code": 6133,
-            "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/common/react/index.ts",
-            "start": 3368,
-            "length": 4,
-            "messageText": "'path' is declared but its value is never read.",
-            "category": 1,
-            "code": 6133,
-            "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/common/react/index.ts",
-            "start": 3521,
-            "length": 4,
-            "messageText": "'path' is declared but its value is never read.",
             "category": 1,
             "code": 6133,
             "reportsUnnecessary": true
@@ -10757,6 +11329,20 @@
       "./src/common/react/internals/getcomponentname.ts",
       "./src/common/react/internals/reactsymbols.ts",
       "./src/common/react/internals/reacttypes.ts",
+      [
+        "./src/common/react/sandbox.ts",
+        [
+          {
+            "file": "./src/common/react/sandbox.ts",
+            "start": 3152,
+            "length": 4,
+            "messageText": "'path' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          }
+        ]
+      ],
       "./src/common/rpc/connection.ts",
       "./src/common/rpc/deferred.ts",
       "./src/common/rpc/disposable.ts",
@@ -10798,12 +11384,14 @@
           }
         ]
       ],
+      "./src/common/rpc/worker/connection.ts",
+      "./src/editor/editor-api.ts",
       [
         "./src/editor/index.ts",
         [
           {
             "file": "./src/editor/index.ts",
-            "start": 485,
+            "start": 557,
             "length": 13,
             "messageText": "'selectedFiber' is declared but its value is never read.",
             "category": 1,
@@ -10812,15 +11400,16 @@
           },
           {
             "file": "./src/editor/index.ts",
-            "start": 875,
-            "length": 10,
-            "code": 2339,
+            "start": 1970,
+            "length": 17,
+            "messageText": "'getFibersFromPath' is declared but its value is never read.",
             "category": 1,
-            "messageText": "Property 'eInspector' does not exist on type 'Window & typeof globalThis'."
+            "code": 6133,
+            "reportsUnnecessary": true
           },
           {
             "file": "./src/editor/index.ts",
-            "start": 3001,
+            "start": 4294,
             "length": 13,
             "messageText": "'orderedFibers' is declared but its value is never read.",
             "category": 1,
@@ -10829,7 +11418,7 @@
           },
           {
             "file": "./src/editor/index.ts",
-            "start": 3040,
+            "start": 4333,
             "length": 12,
             "messageText": "'currentFiber' is declared but its value is never read.",
             "category": 1,
@@ -10846,7 +11435,7 @@
         [
           {
             "file": "./src/sandbox/index.ts",
-            "start": 1441,
+            "start": 1456,
             "length": 11,
             "messageText": "Property 'editorProxy' is declared but its value is never read.",
             "category": 1,
@@ -10855,15 +11444,7 @@
           },
           {
             "file": "./src/sandbox/index.ts",
-            "start": 1515,
-            "length": 9,
-            "code": 2339,
-            "category": 1,
-            "messageText": "Property 'inspector' does not exist on type 'Window & typeof globalThis'."
-          },
-          {
-            "file": "./src/sandbox/index.ts",
-            "start": 2804,
+            "start": 2850,
             "length": 2,
             "messageText": "'id' is declared but its value is never read.",
             "category": 1,

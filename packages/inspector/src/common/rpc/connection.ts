@@ -7,12 +7,13 @@ export interface IConnection {
   onReceive: Event<any>;
 }
 
-export class CodeSandboxAPIConnection extends Disposable
+export class CodeSandboxAPIConnection
+  extends Disposable
   implements IConnection {
   emitter = new Emitter();
   onReceive = this.emitter.event;
 
-  sender = Math.random() * 100000;
+  sender = Math.floor(Math.random() * 100000000);
 
   constructor() {
     super();
@@ -32,5 +33,35 @@ export class CodeSandboxAPIConnection extends Disposable
 
   send(message: any) {
     dispatch({ $type: 'rpc', $sender: this.sender, $data: message });
+  }
+}
+
+export class MainWorkerConnection extends Disposable implements IConnection {
+  workerInstance: Worker;
+  emitter = new Emitter();
+  onReceive = this.emitter.event;
+
+  constructor(workerClass: () => Worker) {
+    super();
+
+    this.workerInstance = workerClass();
+    this.workerInstance.addEventListener('message', this.onMessage);
+  }
+
+  onMessage = (message: MessageEvent<unknown>) => {
+    this.emitter.fire(message.data);
+  };
+
+  send(message: any): void {
+    if (this.isDisposed) {
+      return;
+    }
+
+    this.workerInstance.postMessage(message);
+  }
+
+  dispose() {
+    super.dispose();
+    this.workerInstance.removeEventListener('message', this.onMessage);
   }
 }

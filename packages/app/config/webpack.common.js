@@ -201,6 +201,26 @@ module.exports = {
         loader: `graphql-tag/loader`,
       },
       {
+        test: /\.worker\.ts$/i,
+        use: [
+          {
+            loader: 'worker-loader',
+          },
+          {
+            loader: 'babel-loader',
+            options: babelConfig,
+          },
+        ],
+      },
+      {
+        test: /\.worker\.js$/i,
+        use: [
+          {
+            loader: 'worker-loader',
+          },
+        ],
+      },
+      {
         test: /\.wasm$/,
         loader: 'file-loader',
         type: 'javascript/auto',

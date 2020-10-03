@@ -1,5 +1,5 @@
 import { FileComponentInformation } from '../common/fibers';
-import { ReactBridge } from '../common/react';
+import { ReactSandboxBridge } from '../common/react/sandbox';
 import { Disposable } from '../common/rpc/disposable';
 import { Resolver } from '.';
 
@@ -9,7 +9,7 @@ export class ComponentInformationResolver extends Disposable {
     FileComponentInformation
   >();
 
-  constructor(private resolver: Resolver, private bridge: ReactBridge) {
+  constructor(private resolver: Resolver, private bridge: ReactSandboxBridge) {
     super();
   }
 

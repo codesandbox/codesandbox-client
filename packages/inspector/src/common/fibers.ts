@@ -1,7 +1,19 @@
 export interface CodeRange {
+  /**
+   * Line number at which the range starts (starts at 1)
+   */
   startLineNumber: number;
+  /**
+   * Column number at which the range starts (starts at 1)
+   */
   startColumnNumber: number;
+  /**
+   * Line number at which the range ends (starts at 1)
+   */
   endLineNumber: number;
+  /**
+   * Column number at which the range ends (starts at 1)
+   */
   endColumnNumber: number;
 }
 

@@ -1,4 +1,9 @@
+import ts from 'typescript';
 import { analyzeProps } from './component-instance';
+
+function getAst(code: string) {
+  return ts.createSourceFile('App.tsx', code, ts.ScriptTarget.Latest, true);
+}
 
 it('can find props', () => {
   const code = `
@@ -28,11 +33,11 @@ it('can find props', () => {
   }
   `.trim();
 
-  const result = analyzeProps(code, {
+  const result = analyzeProps(getAst(code), {
     startLineNumber: 12,
     endLineNumber: 19,
-    startColumnNumber: 0,
-    endColumnNumber: 0,
+    startColumnNumber: 11,
+    endColumnNumber: 13,
   });
 
   expect(result.props).toMatchSnapshot();
@@ -45,11 +50,11 @@ it('can find props with children', () => {
   </Button>
 `.trim();
 
-  const result = analyzeProps(code, {
-    startLineNumber: 0,
-    endLineNumber: 4,
-    startColumnNumber: 0,
-    endColumnNumber: 0,
+  const result = analyzeProps(getAst(code), {
+    startLineNumber: 1,
+    endLineNumber: 1,
+    startColumnNumber: 1,
+    endColumnNumber: 9,
   });
 
   expect(Object.keys(result.props)).toEqual([]);
@@ -58,11 +63,11 @@ it('can find props with children', () => {
 it('can find props from children', () => {
   const code = `<Input><Button className="test" /></Input>`.trim();
 
-  const result = analyzeProps(code, {
+  const result = analyzeProps(getAst(code), {
     startLineNumber: 1,
     endLineNumber: 1,
-    startColumnNumber: 7,
-    endColumnNumber: 33,
+    startColumnNumber: 8,
+    endColumnNumber: 35,
   });
 
   expect(Object.keys(result.props)).toEqual(['className']);

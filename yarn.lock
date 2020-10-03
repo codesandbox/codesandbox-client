@@ -23763,6 +23763,7 @@ osenv@^0.1.0, osenv@^0.1.4, osenv@^0.1.5:
 ot@^0.0.15:
   version "0.0.15"
   resolved "https://registry.yarnpkg.com/ot/-/ot-0.0.15.tgz#98bd953e6283670a01868e7ef4d2d983a29cd6a7"
+  integrity sha1-mL2VPmKDZwoBho5+9NLZg6Kc1qc=
 
 overmind-devtools-client@8.0.2:
   version "8.0.2"

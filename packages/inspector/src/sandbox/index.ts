@@ -6,7 +6,7 @@ import {
   sandboxProxyIdentifier,
 } from '../common/proxies';
 import { Fiber, StaticComponentInformation } from '../common/fibers';
-import * as ReactInspectorBridge from '../common/react';
+import * as ReactInspectorBridge from '../common/react/sandbox';
 import { ComponentInformationResolver } from './component-information';
 import { Disposable } from '../common/rpc/disposable';
 import { clearHighlight, highlightElement } from './highlight';
@@ -43,7 +43,7 @@ class OverlayedResolver implements Resolver {
 class Inspector extends Disposable implements ISandboxProxy {
   fibers = new Map<string, Fiber>();
   componentInfoResolver: ComponentInformationResolver;
-  bridge: ReactInspectorBridge.ReactBridge;
+  bridge: ReactInspectorBridge.ReactSandboxBridge;
   resolver: Resolver;
 
   documents = new Map<string, string>();
@@ -51,9 +51,10 @@ class Inspector extends Disposable implements ISandboxProxy {
   constructor(private editorProxy: IEditorProxy, resolver: Resolver) {
     super();
 
+    // @ts-expect-error
     window.inspector = this;
 
-    this.bridge = new ReactInspectorBridge.ReactBridge();
+    this.bridge = new ReactInspectorBridge.ReactSandboxBridge();
     this.resolver = new OverlayedResolver(resolver, this.documents);
     this.componentInfoResolver = new ComponentInformationResolver(
       this.resolver,

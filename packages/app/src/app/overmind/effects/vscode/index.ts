@@ -25,6 +25,8 @@ import prettify from 'app/src/app/utils/prettify';
 import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
+import { IDisposable } from 'inspector/lib/common/rpc/disposable';
+import { IModel } from 'inspector/lib/editor/editor-api';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
 import { TextOperation } from 'ot';
@@ -41,6 +43,7 @@ import {
   initializeThemeCache,
 } from './initializers';
 import { Linter } from './Linter';
+import { TextModel } from './Model';
 import {
   ModelsHandler,
   OnFileChangeData,
@@ -805,6 +808,32 @@ export class VSCodeEffect {
   public getModelByPath(path: string) {
     const moduleModel = this.modelsHandler.getModuleModelByPath(path);
     return moduleModel.model;
+  }
+
+  /**
+   * Get all models and convert them to our version. Use this sparingly, we don't dispose the models
+   * that are being created here.
+   */
+  public getModels(): IModel[] {
+    return this.editorApi.textFileService.modelService
+      .getModels()
+      .map(model => new TextModel(model));
+  }
+
+  public onModelAdded(callback: (model: IModel) => void): IDisposable {
+    return this.editorApi.textFileService.modelService.onModelAdded(
+      (model: monaco.editor.ITextModel) => {
+        callback(new TextModel(model));
+      }
+    );
+  }
+
+  public onModelRemoved(callback: (model: IModel) => void): IDisposable {
+    return this.editorApi.textFileService.modelService.onModelRemoved(
+      (model: monaco.editor.ITextModel) => {
+        callback(new TextModel(model));
+      }
+    );
   }
 
   // Communicates the endpoint for the WebsocketLSP
