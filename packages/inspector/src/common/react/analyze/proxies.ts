@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { CodeRange, FiberSourceInformation } from '../../fibers';
+import { ComponentInstanceData } from '../../fibers';
 import { createProxyIdentifier } from '../../rpc';
 
 export type AnalyzeRequest = {
@@ -22,7 +22,7 @@ export interface Analyzer {
   /**
    * Get the props of the component at that specific location
    */
-  $getProps(path: string, range: CodeRange): Promise<FiberSourceInformation>;
+  $getComponentInstances(path: string): Promise<ComponentInstanceData[]>;
 }
 
 export const analyzerProxyIdentifier = createProxyIdentifier<Analyzer>(

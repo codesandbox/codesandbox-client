@@ -76,7 +76,7 @@ class Inspector extends Disposable implements ISandboxProxy {
     if (!fiber) {
       throw new Error('Could not find fiber with id: ' + id);
     }
-    const fromPath = fiber.location.path;
+    const fromPath = fiber.location.path.replace('/sandbox', '');
     const toPath = fiber.importLocation.importPath || './';
     const definitions = await this.componentInfoResolver.getComponentDefinitions(
       fromPath,

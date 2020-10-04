@@ -92,7 +92,7 @@ function convertFiber(
     name: getComponentName(fiber.type),
     inProject: true,
     location: {
-      path: _debugSource.fileName,
+      path: '/sandbox' + _debugSource.fileName,
       codePosition: {
         startColumnNumber: _debugSource.columnNumber,
         startLineNumber: _debugSource.lineNumber,

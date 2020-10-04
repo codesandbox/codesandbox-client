@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { analyzeProps } from './component-instance';
+import { analyzeComponentInstances } from './component-instance';
 
 function getAst(code: string) {
   return ts.createSourceFile('App.tsx', code, ts.ScriptTarget.Latest, true);
@@ -33,42 +33,45 @@ it('can find props', () => {
   }
   `.trim();
 
-  const result = analyzeProps(getAst(code), {
-    startLineNumber: 12,
-    endLineNumber: 19,
-    startColumnNumber: 11,
-    endColumnNumber: 13,
-  });
-
-  expect(result.props).toMatchSnapshot();
+  const result = analyzeComponentInstances(getAst(code), '/app.tsx');
+  expect(result).toMatchSnapshot();
 });
 
-it('can find props with children', () => {
+it('can find named imports', () => {
   const code = `
-  <Button>
-    <Input className="test" />
-  </Button>
+  import { Button } from './Button';
+  <Button />
 `.trim();
 
-  const result = analyzeProps(getAst(code), {
-    startLineNumber: 1,
-    endLineNumber: 1,
-    startColumnNumber: 1,
-    endColumnNumber: 9,
-  });
+  const result = analyzeComponentInstances(getAst(code), 'app.tsx');
 
-  expect(Object.keys(result.props)).toEqual([]);
+  expect(result[0].name).toBe('Button');
+  expect(result[0].importLocation?.importName).toBe('Button');
+  expect(result[0].importLocation?.importPath).toBe('./Button');
 });
 
-it('can find props from children', () => {
-  const code = `<Input><Button className="test" /></Input>`.trim();
+it('can find redirected imports', () => {
+  const code = `import { Button } from './Button';
+  
+  const AnotherButton = Button;
 
-  const result = analyzeProps(getAst(code), {
-    startLineNumber: 1,
-    endLineNumber: 1,
-    startColumnNumber: 8,
-    endColumnNumber: 35,
-  });
+  <AnotherButton />
+  `;
 
-  expect(Object.keys(result.props)).toEqual(['className']);
+  const result = analyzeComponentInstances(getAst(code), 'app.tsx');
+  expect(result[0].name).toBe('AnotherButton');
+  expect(result[0].importLocation?.importName).toBe('Button');
+  expect(result[0].importLocation?.importPath).toBe('./Button');
+});
+
+it('can find aliased imports', () => {
+  const code = `import { Button as AnotherButton } from './Button';
+
+  <AnotherButton />
+  `;
+
+  const result = analyzeComponentInstances(getAst(code), 'app.tsx');
+  expect(result[0].name).toBe('AnotherButton');
+  expect(result[0].importLocation?.importName).toBe('Button');
+  expect(result[0].importLocation?.importPath).toBe('./Button');
 });

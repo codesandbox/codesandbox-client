@@ -39,6 +39,18 @@ export interface Fiber {
   childIndex: number;
 }
 
+export interface ComponentInstanceData {
+  name: string;
+  location: CodeLocation;
+  importLocation:
+    | {
+        importName: string;
+        importPath: string | null;
+      }
+    | undefined;
+  props: { [propName: string]: SourcePropInfo };
+}
+
 export interface StringPropTypeInfo {
   type: 'string';
 }
@@ -91,15 +103,6 @@ export interface SourcePropInfo {
   definitionPosition: CodeRange;
   namePosition: CodeRange;
   valuePosition: CodeRange | null;
-}
-
-/**
- * Code information of the component, like which props are set with which source code
- */
-export interface FiberSourceInformation {
-  props: {
-    [propName: string]: SourcePropInfo;
-  };
 }
 
 export interface FiberRuntimeInformation {

@@ -1,9 +1,9 @@
 /// <reference lib="webworker" />
 import ts from 'typescript';
-import { CodeRange, FiberSourceInformation } from '../../fibers';
+import { ComponentInstanceData } from '../../fibers';
 import { RPCProtocolImpl } from '../../rpc';
 import { WorkerConnection } from '../../rpc/worker/connection';
-import { analyzeProps } from './component-instance';
+import { analyzeComponentInstances } from './component-instance';
 import { Analyzer, AnalyzeRequest, analyzerProxyIdentifier } from './proxies';
 
 class TypeScriptAnalyzer implements Analyzer {
@@ -28,16 +28,13 @@ class TypeScriptAnalyzer implements Analyzer {
     this.fileMap.set(path, sourceFile);
   }
 
-  async $getProps(
-    path: string,
-    range: CodeRange
-  ): Promise<FiberSourceInformation> {
+  async $getComponentInstances(path: string): Promise<ComponentInstanceData[]> {
     const ast = this.fileMap.get(path);
     if (!ast) {
       throw new Error(`Can't find file with path: '${path}'`);
     }
 
-    return analyzeProps(ast, range);
+    return analyzeComponentInstances(ast, path);
   }
 }
 

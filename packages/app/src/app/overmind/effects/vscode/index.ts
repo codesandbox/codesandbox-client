@@ -26,7 +26,7 @@ import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import { IDisposable } from 'inspector/lib/common/rpc/disposable';
-import { IModel } from 'inspector/lib/editor/editor-api';
+import { IModel, Resource } from 'inspector/lib/editor/editor-api';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
 import { TextOperation } from 'ot';
@@ -51,7 +51,6 @@ import {
   onSelectionChangeData,
 } from './ModelsHandler';
 import SandboxFsSync from './SandboxFsSync';
-import { SpanSubscription } from './SpanSubscription';
 import { getSelection } from './utils';
 import loadScript from './vscode-script-loader';
 import { Workbench } from './Workbench';
@@ -694,15 +693,6 @@ export class VSCodeEffect {
     };
   }
 
-  public async subscribeToSpan(path: string, range: VSCodeRange) {
-    const moduleModel = await this.modelsHandler.getModuleModelByPathWithModel(
-      path
-    );
-    const { model } = moduleModel;
-
-    return new SpanSubscription(model, this, range);
-  }
-
   /**
    * Reveal position in editor
    * @param scrollType 0 = smooth, 1 = immediate
@@ -834,6 +824,14 @@ export class VSCodeEffect {
         callback(new TextModel(model));
       }
     );
+  }
+
+  public async openModel(resource: Resource): Promise<IModel> {
+    const path = resource.path.replace('/sandbox', '');
+    return this.editorApi
+      .openFile(path)
+      .then(editor => editor.getModel())
+      .then(model => new TextModel(model));
   }
 
   // Communicates the endpoint for the WebsocketLSP

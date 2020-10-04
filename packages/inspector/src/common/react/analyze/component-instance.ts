@@ -1,10 +1,13 @@
 import ts from 'typescript';
-import { CodeRange, FiberSourceInformation } from '../../fibers';
+import * as tsutils from 'tsutils';
+import { CodeRange, ComponentInstanceData } from '../../fibers';
 
-export function analyzeProps(
+tsutils.getDeclarationOfBindingElement;
+
+export function analyzeComponentInstances(
   sourceFile: ts.SourceFile,
-  range: CodeRange
-): FiberSourceInformation {
+  path: string
+): ComponentInstanceData[] {
   function convertTSPosToRange(pos: number, end: number): CodeRange {
     const startRange = ts.getLineAndCharacterOfPosition(sourceFile, pos);
     const endRange = ts.getLineAndCharacterOfPosition(sourceFile, end);
@@ -16,48 +19,99 @@ export function analyzeProps(
     };
   }
 
-  const startPos = ts.getPositionOfLineAndCharacter(
-    sourceFile,
-    range.startLineNumber - 1,
-    range.startColumnNumber - 1
-  );
-  const endPos = ts.getPositionOfLineAndCharacter(
-    sourceFile,
-    range.endLineNumber - 1,
-    range.endColumnNumber - 1
-  );
+  function getPropInformation(attributes: ts.JsxAttributes) {
+    const props: ComponentInstanceData['props'] = {};
+    attributes.properties.forEach(property => {
+      if (ts.isJsxAttribute(property)) {
+        const name = property.name.text;
+        props[name] = {
+          name: name,
+          definitionPosition: convertTSPosToRange(
+            property.getStart(),
+            property.end
+          ),
+          namePosition: convertTSPosToRange(
+            property.getStart(),
+            property.name.end
+          ),
+          valuePosition: property.initializer
+            ? convertTSPosToRange(
+                property.initializer.pos,
+                property.initializer.end
+              )
+            : null,
+        };
+      }
+    });
+    return props;
+  }
 
-  const foundProps: FiberSourceInformation = { props: {} };
+  const variableUsage = tsutils.collectVariableUsage(sourceFile);
+  function getImportLocation(
+    node: ts.Identifier
+  ): ComponentInstanceData['importLocation'] | undefined {
+    for (let [key, value] of variableUsage) {
+      if (!value.uses.some(f => f.location === node)) {
+        continue;
+      }
+
+      const parent = key.parent;
+      if (ts.isImportSpecifier(parent)) {
+        const declaration = parent.parent.parent.parent;
+        const specifier = declaration.moduleSpecifier;
+        if (!ts.isStringLiteral(specifier)) {
+          continue;
+        }
+
+        const usedName = parent.propertyName || parent.name;
+        return {
+          importName: usedName.text,
+          importPath: specifier.text,
+        };
+      } else if (ts.isImportClause(parent)) {
+        const declaration = parent.parent;
+        const specifier = declaration.moduleSpecifier;
+        if (!ts.isStringLiteral(specifier)) {
+          continue;
+        }
+        return {
+          importName: 'default',
+          importPath: specifier.text,
+        };
+      } else if (
+        ts.isVariableDeclaration(parent) &&
+        parent.initializer &&
+        ts.isIdentifier(parent.initializer)
+      ) {
+        // Re-export
+        return getImportLocation(parent.initializer);
+      }
+    }
+
+    return undefined;
+  }
+
+  const componentInstances: ComponentInstanceData[] = [];
 
   const visitChild = (node: ts.Node) => {
-    if (ts.isJsxOpeningLikeElement(node)) {
-      if (node.pos >= startPos && node.end <= endPos) {
-        const attributes = node.attributes;
-        attributes.properties.forEach(property => {
-          if (ts.isJsxAttribute(property)) {
-            const name = property.name.text;
-            foundProps.props[name] = {
-              name: name,
-              definitionPosition: convertTSPosToRange(
-                property.getStart(),
-                property.end
-              ),
-              namePosition: convertTSPosToRange(
-                property.getStart(),
-                property.name.end
-              ),
-              valuePosition: property.initializer
-                ? convertTSPosToRange(
-                    property.initializer.pos,
-                    property.initializer.end
-                  )
-                : null,
-            };
-          }
-        });
-
+    if (ts.isJsxOpeningLikeElement(node) && ts.isIdentifier(node.tagName)) {
+      const { tagName } = node;
+      if (!ts.isIdentifier(tagName) || !tagName.text) {
         return;
       }
+      const componentInstance: ComponentInstanceData = {
+        name: tagName.text,
+        props: getPropInformation(node.attributes),
+        importLocation: getImportLocation(tagName),
+        location: {
+          path,
+          codePosition: convertTSPosToRange(node.getStart(), node.end),
+        },
+      };
+
+      componentInstances.push(componentInstance);
+
+      return;
     }
 
     node.forEachChild(visitChild);
@@ -65,5 +119,5 @@ export function analyzeProps(
 
   visitChild(sourceFile);
 
-  return foundProps;
+  return componentInstances;
 }

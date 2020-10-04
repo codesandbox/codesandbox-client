@@ -1,3 +1,5 @@
+import { Emitter } from './event';
+
 export interface IDisposable {
   /**
    * Dispose this object.
@@ -6,10 +8,14 @@ export interface IDisposable {
 }
 
 export class Disposable implements IDisposable {
+  private onWillDisposeEmitter = new Emitter<void>();
+  public onWillDispose = this.onWillDisposeEmitter.event;
+
   protected toDispose: IDisposable[] = [];
   public isDisposed = false;
 
   public dispose() {
+    this.onWillDisposeEmitter.fire();
     this.isDisposed = true;
     this.toDispose.forEach(disposable => {
       disposable.dispose();

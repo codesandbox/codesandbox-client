@@ -45,6 +45,10 @@ export class TextModel extends Disposable implements IModel {
     };
   }
 
+  getVersionId() {
+    return this.vscodeModel.getVersionId();
+  }
+
   getValue() {
     return this.vscodeModel.getValue();
   }

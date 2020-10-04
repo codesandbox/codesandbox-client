@@ -222,13 +222,18 @@
         "affectsGlobalScope": false
       },
       "./src/common/fibers.ts": {
-        "version": "528c8dbee9ee406b649b73d83147b9afa58adcfb098c4ea3792e830b25d86300",
-        "signature": "3d1a8af171ad2122f3810c6ce1906e06c4f4840043b3f76498ddbaf87ceae444",
+        "version": "56360cd4363d2ced1e56b9183cd2ea51e07903402d9af164b712a49c43253f87",
+        "signature": "6bdfeba4572bf66f06981c7ebed33353b98948da79e5351cc27e2bcae386b5d2",
+        "affectsGlobalScope": false
+      },
+      "./src/common/rpc/event.ts": {
+        "version": "557afe55c82ac9fe16ba13507d8a3fafd972492485b7a10b4327f0639235364b",
+        "signature": "689df2ef1661007c9a49e279a8f73c30a423d189c5a845f7be619c9a6f5ab8fe",
         "affectsGlobalScope": false
       },
       "./src/common/rpc/disposable.ts": {
-        "version": "baa67731aaaa90dcade388403271325d693070fb252f52d437c1119673a4b8e6",
-        "signature": "88fb56d5361314827571822701b74076d89d948167823562171219ee2e420b33",
+        "version": "0aad7ef2a292faefcb33a0fad71c12a366ab41ff538d60aa68a781bfdf04fc97",
+        "signature": "b6c44cdd8862b02c207428850af7f0b6eccfaa85ec9733ae8d65749077e63ec0",
         "affectsGlobalScope": false
       },
       "./src/common/rpc/deferred.ts": {
@@ -311,11 +316,6 @@
         "signature": "0b6ac132fe235ad9e88421cb7f9bc7c749e9a4841c462d294f3cdc17e6bb7a2c",
         "affectsGlobalScope": false
       },
-      "./src/common/rpc/event.ts": {
-        "version": "557afe55c82ac9fe16ba13507d8a3fafd972492485b7a10b4327f0639235364b",
-        "signature": "689df2ef1661007c9a49e279a8f73c30a423d189c5a845f7be619c9a6f5ab8fe",
-        "affectsGlobalScope": false
-      },
       "./src/common/rpc/connection.ts": {
         "version": "6ab7cf794b16500827dc02e51116796dd79c5ca12f9ad7f396b1aaacba75010e",
         "signature": "9a20b4235254eaa6f863aaf7ef3c9c03e3978fa4fd0270cd3e7bafb44377b6ff",
@@ -381,29 +381,114 @@
         "signature": "75e57c9058b55fc8cfab0a6c24792c914a78ffbbd63863ea2b740218345a2a3c",
         "affectsGlobalScope": false
       },
+      "../../node_modules/tsutils/typeguard/2.8/node.d.ts": {
+        "version": "0e6799121b634da16f228fe38fde9dbd7cb0b7feb33ad406237d7c06894abafb",
+        "signature": "0e6799121b634da16f228fe38fde9dbd7cb0b7feb33ad406237d7c06894abafb",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/typeguard/2.9/node.d.ts": {
+        "version": "07a39f6361bdd33ceb447b6ed34119257d07d3b7a2d2ef09ba0ce307f5d00ea0",
+        "signature": "07a39f6361bdd33ceb447b6ed34119257d07d3b7a2d2ef09ba0ce307f5d00ea0",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/typeguard/3.0/node.d.ts": {
+        "version": "2c2e17218a90fbf5038722f88bb1487f5b2ff524d02a5ce2fac058e29f28c815",
+        "signature": "2c2e17218a90fbf5038722f88bb1487f5b2ff524d02a5ce2fac058e29f28c815",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/typeguard/3.2/node.d.ts": {
+        "version": "e2cb191bd88d2b84c2211b003baf9496f492dadd63cc0684f30022ca428dbfe9",
+        "signature": "e2cb191bd88d2b84c2211b003baf9496f492dadd63cc0684f30022ca428dbfe9",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/typeguard/node.d.ts": {
+        "version": "34411990749abea90444cf767a3eb50c245e6a95168c62196d3428213c97dc2e",
+        "signature": "34411990749abea90444cf767a3eb50c245e6a95168c62196d3428213c97dc2e",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/typeguard/2.8/type.d.ts": {
+        "version": "26c738d1f570b4275c964069cfd2fda2b2f5656dd51533ea386d6f1ef33f795d",
+        "signature": "26c738d1f570b4275c964069cfd2fda2b2f5656dd51533ea386d6f1ef33f795d",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/typeguard/2.9/type.d.ts": {
+        "version": "77c11236dd07e088a925b21f4efaacc914135d4cfaf057f98e9b301c9ea8d154",
+        "signature": "77c11236dd07e088a925b21f4efaacc914135d4cfaf057f98e9b301c9ea8d154",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/typeguard/3.0/type.d.ts": {
+        "version": "c9a6d0333dc3a852a53c027b3047fddbe846e8d48242e2c801a4a572ad1c77c0",
+        "signature": "c9a6d0333dc3a852a53c027b3047fddbe846e8d48242e2c801a4a572ad1c77c0",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/typeguard/3.2/type.d.ts": {
+        "version": "a91996b7acb6a3c0e5c3d4567d1a75c9380f48ea0bd1e414f70cd97cd0855fd8",
+        "signature": "a91996b7acb6a3c0e5c3d4567d1a75c9380f48ea0bd1e414f70cd97cd0855fd8",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/typeguard/type.d.ts": {
+        "version": "5e607a7c4c78e4a1be02de7da776a906df462dfa81ab15ac556716ea77901613",
+        "signature": "5e607a7c4c78e4a1be02de7da776a906df462dfa81ab15ac556716ea77901613",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/typeguard/index.d.ts": {
+        "version": "2150982e9c87ea185cc915925a7f7f4fd22859a693da4dcbb9e6d05e563a3af7",
+        "signature": "2150982e9c87ea185cc915925a7f7f4fd22859a693da4dcbb9e6d05e563a3af7",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/util/convert-ast.d.ts": {
+        "version": "fa41e69e7f1099f8ba3f808829e4bdb220f910ffe763c685eb16730515008ade",
+        "signature": "fa41e69e7f1099f8ba3f808829e4bdb220f910ffe763c685eb16730515008ade",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/util/util.d.ts": {
+        "version": "53d165966e5493e827e055e5be69292bf08fdf7b6d23c8868d11150dfe525cbb",
+        "signature": "53d165966e5493e827e055e5be69292bf08fdf7b6d23c8868d11150dfe525cbb",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/util/usage.d.ts": {
+        "version": "693fe8ce1d477df75096a1a8fddf99090e8a7bf6e8c684735cf0928414208056",
+        "signature": "693fe8ce1d477df75096a1a8fddf99090e8a7bf6e8c684735cf0928414208056",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/util/control-flow.d.ts": {
+        "version": "fef494902b3d3ca6409be64b42063aabace3a448e4340b37bb8621b69151d431",
+        "signature": "fef494902b3d3ca6409be64b42063aabace3a448e4340b37bb8621b69151d431",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/util/type.d.ts": {
+        "version": "03cf8dc1ca67b0405a547d69c21ddf5f7437eef7b9ec9c31fca498ee1673ddaf",
+        "signature": "03cf8dc1ca67b0405a547d69c21ddf5f7437eef7b9ec9c31fca498ee1673ddaf",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/util/index.d.ts": {
+        "version": "8003dc1c0bf52b25026cc98cf4f97dc3f73dc49df24b486c452d0fa5a4b58427",
+        "signature": "8003dc1c0bf52b25026cc98cf4f97dc3f73dc49df24b486c452d0fa5a4b58427",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/tsutils/index.d.ts": {
+        "version": "1d2628fe09c769509c3401a418a4726bc9b3f14abc431861bbce827e8b903a48",
+        "signature": "1d2628fe09c769509c3401a418a4726bc9b3f14abc431861bbce827e8b903a48",
+        "affectsGlobalScope": false
+      },
       "./src/common/react/analyze/component-instance.ts": {
-        "version": "4e5e396607defaeb3a5dd0c0f7deea0cd2d2b362d5b8712a28176899d02629c4",
-        "signature": "a54902a8bf475382a95da2b9c44ddb82950e499951f319610a7b7bf63ca32ce1",
+        "version": "1394e78d1de9ee480b6c7b4b1597a3d5f284ce63587b7612b78f3a3d6002c6cf",
+        "signature": "52b39f476377c757833d2e97d88fe3c2f87f70ce6a67e17de690585e54e943f8",
         "affectsGlobalScope": false
       },
       "./src/common/react/analyze/proxies.ts": {
-        "version": "31edb3108f84b9ab8038f13f1a7995afc7b1f6b051468ce31e5e6e49b999e2b1",
-        "signature": "5e14aeb206be7d8ed44cc75ea3675ea624b63e055d613f0176a7a0becfd4ba1b",
+        "version": "960692b729567677349a0907d61624dfa572c9cf0e0116b01e4a2e3e19c9e5c3",
+        "signature": "c0b06b6c25070958da6f8181de06395cb164d0f115ba57e998d34b5151eee76f",
         "affectsGlobalScope": false
       },
       "./src/common/react/analyze/typescript-analyzer.worker.ts": {
-        "version": "70f177272a48c0c812af0ecba5db8179d49120b782376526a7a3a8c408dfeb77",
+        "version": "315135d785b919be4c2d77fbb130e240a833ba045935ea001caf3c2a045bb072",
         "signature": "eed6cf2161ada471e7743f3a3f9367b59094d50b0e8a3907e18b2e08e33615ca",
         "affectsGlobalScope": false
       },
-      "./node_modules/@babel/types/lib/index.d.ts": {
-        "version": "f4d27b39be5d82eb94f12c54a15e61f65decb27fb289353d11ef238de49bf5c2",
-        "signature": "f4d27b39be5d82eb94f12c54a15e61f65decb27fb289353d11ef238de49bf5c2",
-        "affectsGlobalScope": false
-      },
       "./src/common/react/editor.ts": {
-        "version": "b356c89ad1019f5f68fe218fd4f7674c4b25b4530c605e9a8d762a2acc21b348",
-        "signature": "2767f409d63445155c2f7a988762bd839f2ca6ac87117ba45ff22d5e0e7892a9",
+        "version": "d403c7c330d5810dce5abcf379552d59b4fd8efd50e19e1e6abec16891ff3b4d",
+        "signature": "0f5510c188892c5645e73539ecd5bb0278b7ebafcf7ee24e3804aa55e50c48ba",
         "affectsGlobalScope": false
       },
       "./src/common/react/internals/reactsymbols.ts": {
@@ -417,12 +502,12 @@
         "affectsGlobalScope": false
       },
       "./src/common/react/sandbox.ts": {
-        "version": "67d5d8400b32e6732adfe349741946c7ef3826ee31b0e3c81aeaac02d26c644a",
+        "version": "f4e3afbf6eedcb3f265775e18e1c16450ff1b06df36eb7325e0c231c04b2d103",
         "signature": "3f16a27941bdf7a82938d3f0fa70d7535ad3e5e967393dccde054b54c3f3e8d0",
         "affectsGlobalScope": true
       },
       "./src/common/react/analyze/component-instance.test.ts": {
-        "version": "25ec9718cc069c97a402cc5134d2219d401838c6fed29d15c0a94dcee1e0a706",
+        "version": "f61d7081f8fc99667940d72b8800a2636054447dae290d38cd71fb9a6b1c6b88",
         "signature": "36138b17dd5fa438a8eac13fcfcf7764e54f4076e185b5e94c232ded63eb8325",
         "affectsGlobalScope": false
       },
@@ -431,14 +516,24 @@
         "signature": "d743cf1121eac6c76b7e8c688b52c173d6f19dd8d72bdf1716e210b54e7168f0",
         "affectsGlobalScope": false
       },
+      "./src/common/utils/code-location.ts": {
+        "version": "24af4d00d92e18f6dcd7e4618a43c547aa9e33d53f56e610ec8d981039065a88",
+        "signature": "faf02dff4fc1cc0a995d0e8aa13b129eedaa4b1cb6e95f38ce5d9e404e527738",
+        "affectsGlobalScope": false
+      },
       "../../node_modules/@types/ot/index.d.ts": {
         "version": "314525566041a9bef3b634b5baddf070dcfe471637173db379226978127b199b",
         "signature": "314525566041a9bef3b634b5baddf070dcfe471637173db379226978127b199b",
         "affectsGlobalScope": false
       },
+      "./src/editor/span-subscription.ts": {
+        "version": "abf6d31df3e28736c1fec6da160b9a38a8d78600ba7897f68e33b29360ec5737",
+        "signature": "f82c87ebf99fe4ec781b5105b1b7ed4542150cb961311ed7dddfffbcdda8ef80",
+        "affectsGlobalScope": false
+      },
       "./src/editor/editor-api.ts": {
-        "version": "16f3ded449a2d6c582d818aaf2a302c71cfe871fdb1f8c6d980c428e63e58fba",
-        "signature": "352e16b2746399e3c81fddff624bee35b9af9f5e24b42de459a425ea9f80b779",
+        "version": "918a091e119401fc595962e3d71d04a30545514435aefd188232bd63353831cc",
+        "signature": "b58fc2007b82e07d4165ced0b330283772a512360173e990a828d3e8d5d2ae08",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/lodash/ts3.1/common/common.d.ts": {
@@ -2016,9 +2111,14 @@
         "signature": "0050c69914e7fcd5d823424cc6466e00eb5c17c49ea92a36e78399a690e07e52",
         "affectsGlobalScope": false
       },
+      "./src/editor/instance.ts": {
+        "version": "8a5e8c293e96208e10b1ea05ed59ae408fc7d2eb741e23332d85497cf867c79f",
+        "signature": "ad36fbac4c09cc7b2b2cb881ce803eb1ac562a8fc5506f122e5cdf6bd83505ac",
+        "affectsGlobalScope": false
+      },
       "./src/editor/index.ts": {
-        "version": "66e7359a5d1b11f260f73b00306b48d4e9592e0d77de4f8979bbf404bc4cc1b1",
-        "signature": "ba741037d94a16c9a423997b1bd7d22202f0a2e57a8a68ed101267607ce14e18",
+        "version": "62523bc8869dd8c30e067b8afdc76dca1063376ce8df80b2bc2de1496e981ba3",
+        "signature": "0492a1422a36c1c33b7e957845e9c3b17403755742ba58b033df3f6f5ccae648",
         "affectsGlobalScope": false
       },
       "./src/sandbox/highlight.ts": {
@@ -2027,7 +2127,7 @@
         "affectsGlobalScope": false
       },
       "./src/sandbox/index.ts": {
-        "version": "9f588c87f0865e2ed3c6e049d0d04e08da661cfefa00394e1007bee3b6c59647",
+        "version": "987b6ef0283156e1f1e6d518328149bab638faa4163900bad1e0f7320b1ddd21",
         "signature": "ed1c6c257aa526f1d4bdc1a6b520d4847e72e34f760c47a7a6c448a4cf274ae3",
         "affectsGlobalScope": false
       },
@@ -6202,6 +6302,108 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../node_modules/tsutils/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/index.d.ts",
+        "../../node_modules/tsutils/util/index.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/2.8/node.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/2.8/type.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/2.9/node.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/2.8/node.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/2.9/type.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/2.8/type.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/3.0/node.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/2.9/node.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/3.0/type.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/2.9/type.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/3.2/node.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/3.0/node.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/3.2/type.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/3.0/type.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/node.d.ts",
+        "../../node_modules/tsutils/typeguard/type.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/node.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/3.2/node.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/type.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/3.2/type.d.ts"
+      ],
+      "../../node_modules/tsutils/util/control-flow.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/util/convert-ast.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/util/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/util/control-flow.d.ts",
+        "../../node_modules/tsutils/util/convert-ast.d.ts",
+        "../../node_modules/tsutils/util/type.d.ts",
+        "../../node_modules/tsutils/util/usage.d.ts",
+        "../../node_modules/tsutils/util/util.d.ts"
+      ],
+      "../../node_modules/tsutils/util/type.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/util/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/util/usage.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/util/util.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/util/convert-ast.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
       "../../node_modules/typescript/lib/lib.dom.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -6455,10 +6657,6 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "./node_modules/@babel/types/lib/index.d.ts": [
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
-      ],
       "./node_modules/@types/istanbul-reports/index.d.ts": [
         "../../node_modules/@types/istanbul-lib-report/index.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -6492,6 +6690,7 @@
       "./src/common/react/analyze/component-instance.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/index.d.ts",
         "../../node_modules/typescript/lib/typescript.d.ts",
         "./src/common/fibers.ts"
       ],
@@ -6526,7 +6725,6 @@
       "./src/common/react/editor.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
-        "./node_modules/@babel/types/lib/index.d.ts",
         "./src/common/fibers.ts",
         "./src/common/react/analyze/proxies.ts",
         "./src/common/react/analyze/typescript-analyzer.worker.ts",
@@ -6566,7 +6764,8 @@
       ],
       "./src/common/rpc/disposable.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
+        "../../node_modules/@types/node/util.d.ts",
+        "./src/common/rpc/event.ts"
       ],
       "./src/common/rpc/event.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -6592,13 +6791,19 @@
         "./src/common/rpc/disposable.ts",
         "./src/common/rpc/event.ts"
       ],
+      "./src/common/utils/code-location.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "./src/common/fibers.ts"
+      ],
       "./src/editor/editor-api.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/@types/ot/index.d.ts",
         "./src/common/fibers.ts",
         "./src/common/rpc/disposable.ts",
-        "./src/common/rpc/event.ts"
+        "./src/common/rpc/event.ts",
+        "./src/editor/span-subscription.ts"
       ],
       "./src/editor/index.ts": [
         "../../node_modules/@types/lodash-es/index.d.ts",
@@ -6609,6 +6814,28 @@
         "./src/common/react/editor.ts",
         "./src/common/rpc/disposable.ts",
         "./src/common/rpc/event.ts",
+        "./src/common/utils/code-location.ts",
+        "./src/editor/editor-api.ts",
+        "./src/editor/instance.ts"
+      ],
+      "./src/editor/instance.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "./src/common/fibers.ts",
+        "./src/common/proxies.ts",
+        "./src/common/rpc/disposable.ts",
+        "./src/editor/editor-api.ts",
+        "./src/editor/index.ts",
+        "./src/editor/span-subscription.ts"
+      ],
+      "./src/editor/span-subscription.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/ot/index.d.ts",
+        "./src/common/fibers.ts",
+        "./src/common/rpc/disposable.ts",
+        "./src/common/rpc/event.ts",
+        "./src/common/utils/code-location.ts",
         "./src/editor/editor-api.ts"
       ],
       "./src/index.ts": [
@@ -9777,6 +10004,108 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../node_modules/tsutils/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/index.d.ts",
+        "../../node_modules/tsutils/util/index.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/2.8/node.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/2.8/type.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/2.9/node.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/2.8/node.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/2.9/type.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/2.8/type.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/3.0/node.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/2.9/node.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/3.0/type.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/2.9/type.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/3.2/node.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/3.0/node.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/3.2/type.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/3.0/type.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/node.d.ts",
+        "../../node_modules/tsutils/typeguard/type.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/node.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/3.2/node.d.ts"
+      ],
+      "../../node_modules/tsutils/typeguard/type.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/typeguard/3.2/type.d.ts"
+      ],
+      "../../node_modules/tsutils/util/control-flow.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/util/convert-ast.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/util/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/util/control-flow.d.ts",
+        "../../node_modules/tsutils/util/convert-ast.d.ts",
+        "../../node_modules/tsutils/util/type.d.ts",
+        "../../node_modules/tsutils/util/usage.d.ts",
+        "../../node_modules/tsutils/util/util.d.ts"
+      ],
+      "../../node_modules/tsutils/util/type.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/util/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/util/usage.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
+      "../../node_modules/tsutils/util/util.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/tsutils/util/convert-ast.d.ts",
+        "../../node_modules/typescript/lib/typescript.d.ts"
+      ],
       "../../node_modules/typescript/lib/lib.dom.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -10030,10 +10359,6 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "./node_modules/@babel/types/lib/index.d.ts": [
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
-      ],
       "./node_modules/@types/istanbul-reports/index.d.ts": [
         "../../node_modules/@types/istanbul-lib-report/index.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -10077,6 +10402,9 @@
         "./src/common/rpc/disposable.ts",
         "./src/common/rpc/event.ts"
       ],
+      "./src/common/rpc/disposable.ts": [
+        "./src/common/rpc/event.ts"
+      ],
       "./src/common/rpc/event.ts": [
         "./src/common/rpc/disposable.ts"
       ],
@@ -10089,6 +10417,9 @@
         "./src/common/rpc/disposable.ts",
         "./src/common/rpc/event.ts"
       ],
+      "./src/common/utils/code-location.ts": [
+        "./src/common/fibers.ts"
+      ],
       "./src/editor/editor-api.ts": [
         "../../node_modules/@types/ot/index.d.ts",
         "./src/common/fibers.ts",
@@ -10098,6 +10429,21 @@
       "./src/editor/index.ts": [
         "./src/common/fibers.ts",
         "./src/common/proxies.ts",
+        "./src/common/rpc/disposable.ts",
+        "./src/common/rpc/event.ts",
+        "./src/editor/editor-api.ts",
+        "./src/editor/instance.ts"
+      ],
+      "./src/editor/instance.ts": [
+        "./src/common/fibers.ts",
+        "./src/common/proxies.ts",
+        "./src/common/rpc/disposable.ts",
+        "./src/editor/editor-api.ts",
+        "./src/editor/index.ts"
+      ],
+      "./src/editor/span-subscription.ts": [
+        "../../node_modules/@types/ot/index.d.ts",
+        "./src/common/fibers.ts",
         "./src/common/rpc/disposable.ts",
         "./src/common/rpc/event.ts",
         "./src/editor/editor-api.ts"
@@ -10642,6 +10988,24 @@
       "../../node_modules/pretty-format/build/index.d.ts",
       "../../node_modules/pretty-format/build/types.d.ts",
       "../../node_modules/source-map/source-map.d.ts",
+      "../../node_modules/tsutils/index.d.ts",
+      "../../node_modules/tsutils/typeguard/2.8/node.d.ts",
+      "../../node_modules/tsutils/typeguard/2.8/type.d.ts",
+      "../../node_modules/tsutils/typeguard/2.9/node.d.ts",
+      "../../node_modules/tsutils/typeguard/2.9/type.d.ts",
+      "../../node_modules/tsutils/typeguard/3.0/node.d.ts",
+      "../../node_modules/tsutils/typeguard/3.0/type.d.ts",
+      "../../node_modules/tsutils/typeguard/3.2/node.d.ts",
+      "../../node_modules/tsutils/typeguard/3.2/type.d.ts",
+      "../../node_modules/tsutils/typeguard/index.d.ts",
+      "../../node_modules/tsutils/typeguard/node.d.ts",
+      "../../node_modules/tsutils/typeguard/type.d.ts",
+      "../../node_modules/tsutils/util/control-flow.d.ts",
+      "../../node_modules/tsutils/util/convert-ast.d.ts",
+      "../../node_modules/tsutils/util/index.d.ts",
+      "../../node_modules/tsutils/util/type.d.ts",
+      "../../node_modules/tsutils/util/usage.d.ts",
+      "../../node_modules/tsutils/util/util.d.ts",
       [
         "../../node_modules/typescript/lib/lib.dom.d.ts",
         [
@@ -10976,7 +11340,7 @@
             "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
             "start": 80888,
             "length": 6,
-            "messageText": "Subsequent property declarations must have the same type.  Property 'canvas' must be of type 'OffscreenCanvas | HTMLCanvasElement', but here has type 'OffscreenCanvas'.",
+            "messageText": "Subsequent property declarations must have the same type.  Property 'canvas' must be of type 'HTMLCanvasElement | OffscreenCanvas', but here has type 'OffscreenCanvas'.",
             "category": 1,
             "code": 2717,
             "relatedInformation": [
@@ -11012,7 +11376,7 @@
             "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
             "start": 198506,
             "length": 6,
-            "messageText": "Subsequent property declarations must have the same type.  Property 'canvas' must be of type 'OffscreenCanvas | HTMLCanvasElement', but here has type 'OffscreenCanvas'.",
+            "messageText": "Subsequent property declarations must have the same type.  Property 'canvas' must be of type 'HTMLCanvasElement | OffscreenCanvas', but here has type 'OffscreenCanvas'.",
             "category": 1,
             "code": 2717,
             "relatedInformation": [
@@ -11260,7 +11624,6 @@
       "../codesandbox-api/dist/types/errors/index.d.ts",
       "../codesandbox-api/dist/types/protocol/protocol.d.ts",
       "../codesandbox-api/dist/types/typings/codesandbox.d.ts",
-      "./node_modules/@babel/types/lib/index.d.ts",
       "./node_modules/@types/istanbul-reports/index.d.ts",
       "./node_modules/@types/prettier/index.d.ts",
       "./node_modules/tslib/tslib.d.ts",
@@ -11274,7 +11637,7 @@
         [
           {
             "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
-            "start": 480,
+            "start": 481,
             "length": 4,
             "messageText": "'path' is declared but its value is never read.",
             "category": 1,
@@ -11283,7 +11646,7 @@
           },
           {
             "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
-            "start": 494,
+            "start": 495,
             "length": 4,
             "messageText": "'code' is declared but its value is never read.",
             "category": 1,
@@ -11292,7 +11655,7 @@
           },
           {
             "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
-            "start": 592,
+            "start": 593,
             "length": 4,
             "messageText": "'path' is declared but its value is never read.",
             "category": 1,
@@ -11301,7 +11664,7 @@
           },
           {
             "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
-            "start": 701,
+            "start": 702,
             "length": 7,
             "messageText": "'version' is declared but its value is never read.",
             "category": 1,
@@ -11312,20 +11675,7 @@
       ],
       "./src/common/react/babel.ts",
       "./src/common/react/docgen.ts",
-      [
-        "./src/common/react/editor.ts",
-        [
-          {
-            "file": "./src/common/react/editor.ts",
-            "start": 534,
-            "length": 4,
-            "messageText": "'asts' is declared but its value is never read.",
-            "category": 1,
-            "code": 6133,
-            "reportsUnnecessary": true
-          }
-        ]
-      ],
+      "./src/common/react/editor.ts",
       "./src/common/react/internals/getcomponentname.ts",
       "./src/common/react/internals/reactsymbols.ts",
       "./src/common/react/internals/reacttypes.ts",
@@ -11334,7 +11684,7 @@
         [
           {
             "file": "./src/common/react/sandbox.ts",
-            "start": 3152,
+            "start": 3165,
             "length": 4,
             "messageText": "'path' is declared but its value is never read.",
             "category": 1,
@@ -11385,31 +11735,27 @@
         ]
       ],
       "./src/common/rpc/worker/connection.ts",
-      "./src/editor/editor-api.ts",
+      "./src/common/utils/code-location.ts",
+      [
+        "./src/editor/editor-api.ts",
+        [
+          {
+            "file": "./src/editor/editor-api.ts",
+            "start": 182,
+            "length": 55,
+            "messageText": "'SpanSubscription' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          }
+        ]
+      ],
       [
         "./src/editor/index.ts",
         [
           {
             "file": "./src/editor/index.ts",
-            "start": 557,
-            "length": 13,
-            "messageText": "'selectedFiber' is declared but its value is never read.",
-            "category": 1,
-            "code": 6133,
-            "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/editor/index.ts",
-            "start": 1970,
-            "length": 17,
-            "messageText": "'getFibersFromPath' is declared but its value is never read.",
-            "category": 1,
-            "code": 6133,
-            "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/editor/index.ts",
-            "start": 4294,
+            "start": 6422,
             "length": 13,
             "messageText": "'orderedFibers' is declared but its value is never read.",
             "category": 1,
@@ -11418,7 +11764,7 @@
           },
           {
             "file": "./src/editor/index.ts",
-            "start": 4333,
+            "start": 6461,
             "length": 12,
             "messageText": "'currentFiber' is declared but its value is never read.",
             "category": 1,
@@ -11427,6 +11773,48 @@
           }
         ]
       ],
+      [
+        "./src/editor/instance.ts",
+        [
+          {
+            "file": "./src/editor/instance.ts",
+            "start": 78,
+            "length": 5,
+            "messageText": "'Fiber' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          },
+          {
+            "file": "./src/editor/instance.ts",
+            "start": 1026,
+            "length": 5,
+            "messageText": "Property 'model' is declared but its value is never read.",
+            "category": 1,
+            "code": 6138,
+            "reportsUnnecessary": true
+          },
+          {
+            "file": "./src/editor/instance.ts",
+            "start": 1094,
+            "length": 9,
+            "messageText": "Property 'editorApi' is declared but its value is never read.",
+            "category": 1,
+            "code": 6138,
+            "reportsUnnecessary": true
+          },
+          {
+            "file": "./src/editor/instance.ts",
+            "start": 1297,
+            "length": 12,
+            "messageText": "'subscription' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          }
+        ]
+      ],
+      "./src/editor/span-subscription.ts",
       "./src/index.ts",
       "./src/sandbox/component-information.ts",
       "./src/sandbox/highlight.ts",
@@ -11444,7 +11832,7 @@
           },
           {
             "file": "./src/sandbox/index.ts",
-            "start": 2850,
+            "start": 2874,
             "length": 2,
             "messageText": "'id' is declared but its value is never read.",
             "category": 1,
