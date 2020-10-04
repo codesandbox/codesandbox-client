@@ -1,4 +1,5 @@
 import toml from 'markty-toml';
+import YAML from 'yamljs';
 import { parse } from '../../forked-vendors/jsonlint.browser';
 import { ConfigurationFile } from '../../templates/configuration/types';
 import { ParsedConfigurationFiles } from '../template';
@@ -94,7 +95,11 @@ export default function parseConfigurations(
           // never throws
           parsed = toml(code);
         } else {
-          parsed = parse(code);
+          try {
+            parsed = YAML.parse(code);
+          } catch (yamlErr) {
+            parsed = parse(code);
+          }
         }
 
         configurations[configurationFile.type] = {

@@ -1,4 +1,5 @@
 import React from 'react';
+import YAML from 'yamljs';
 import {
   ConfigDescription,
   PaddedConfig,
@@ -31,8 +32,12 @@ export class ConfigWizard extends React.Component<ConfigurationUIProps> {
     let error;
     try {
       parsedFile = JSON.parse(file);
-    } catch (e) {
-      error = e;
+    } catch (jsonErr) {
+      try {
+        parsedFile = YAML.parse(file);
+      } catch (yamlErr) {
+        error = jsonErr;
+      }
     }
 
     if (error) {
