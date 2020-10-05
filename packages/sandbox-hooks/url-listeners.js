@@ -25,10 +25,12 @@ function pathWithHash(location) {
   return `${location.pathname}${location.hash}`;
 }
 
+/*
 function isInsideVue(el) {
   if (el === document.body) return false;
   return el.__vue__ || el._vnode || isInsideVue(el.parentElement);
 }
+*/
 
 export default function setupHistoryListeners() {
   function handleMessage(data, source) {
@@ -108,6 +110,11 @@ export default function setupHistoryListeners() {
     }
   });
 
+  // We do not know why this is here. It currently breaks clicking on HASH links which is expected to
+  // scroll down to element id. It seems to be related to when clicking hashes with no content
+  // "/#" or "#" or "foo/#". We are commenting it out to see what breaks and will
+  // make sure to write a comment if anything else breaks, when fixing it
+  /*
   document.addEventListener(
     'click',
     ev => {
@@ -130,14 +137,13 @@ export default function setupHistoryListeners() {
           pushHistory(pathWithHash(document.location), null);
           sendUrlChange(document.location.href);
         }
-        // We do not know why this is here. It currently breaks clicking on HASH links which is expected to
-        // scroll down to element id. We are commenting it out to see what breaks and will
-        // make sure to write a comment if anything else breaks
-        // ev.preventDefault();
+
+        ev.preventDefault();
       }
     },
     true
   );
+  */
 
   pushHistory(pathWithHash(document.location), null);
 
