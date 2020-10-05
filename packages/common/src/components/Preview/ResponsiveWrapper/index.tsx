@@ -1,7 +1,7 @@
 import { Element, Stack, Text, Button, Input } from '@codesandbox/components';
 import { json } from 'overmind';
-import React, { useEffect, useState } from 'react';
-import { isEqual } from 'lodash-es';
+import React, { useCallback, useEffect, useState } from 'react';
+import { isEqual, debounce } from 'lodash-es';
 
 import styled from 'styled-components';
 import { AddIcon, DeleteIcon, SwitchIcon } from './Icons';
@@ -27,6 +27,7 @@ const Styled = styled(Element)<{
   > div > span {
     width: ${props => props.width};
     height: ${props => props.height};
+    transition: all 300ms ease;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -144,6 +145,8 @@ export const ResponsiveWrapper = ({
   const {
     responsive: { scale: defaultScale, resolution, presets },
   } = state;
+  const [inputWidth, setInputWidth] = useState(resolution[0]);
+  const [inputHeight, setInputHeight] = useState(resolution[0]);
   const [width, setWidth] = useState<string>('100%');
   const [height, setHeight] = useState<string>('100%');
   const [scale, setScale] = useState<number>(defaultScale / 100);
@@ -215,6 +218,20 @@ export const ResponsiveWrapper = ({
     Object.keys(presets).find(preset => isEqual(resolution, presets[preset]))
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSave = useCallback(
+    // @ts-ignore
+    debounce(([w, h]) => actions.setResolution([w, h]), 200),
+    []
+  );
+
+  const changeValues = (w: number, h: number) => {
+    setInputWidth(w);
+    setInputHeight(h);
+    // @ts-ignore
+    debouncedSave([w, h]);
+  };
+
   return (
     <>
       <Wrapper
@@ -249,12 +266,9 @@ export const ResponsiveWrapper = ({
                 <Input
                   type="number"
                   style={{ height: 20 }}
-                  value={resolutionWidth}
+                  value={inputWidth}
                   onChange={e =>
-                    actions.setResolution([
-                      parseInt(e.target.value, 10),
-                      resolutionHeight,
-                    ])
+                    changeValues(parseInt(e.target.value, 10), resolutionHeight)
                   }
                 />{' '}
               </Text>
@@ -270,14 +284,11 @@ export const ResponsiveWrapper = ({
               </Button>{' '}
               <Input
                 onChange={e =>
-                  actions.setResolution([
-                    resolutionWidth,
-                    parseInt(e.target.value, 10),
-                  ])
+                  changeValues(resolutionWidth, parseInt(e.target.value, 10))
                 }
                 type="number"
                 style={{ height: 20 }}
-                value={resolutionHeight}
+                value={inputHeight}
               />
             </Stack>
           </Stack>

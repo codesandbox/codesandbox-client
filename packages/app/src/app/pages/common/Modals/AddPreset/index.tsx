@@ -61,7 +61,7 @@ export const AddPreset: FunctionComponent<Props> = ({ id, user }) => {
   return (
     <Alert title="Add custom preset">
       <Element marginTop={4}>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} autoComplete="off">
           <Element marginBottom={4}>
             <Input
               autoFocus
