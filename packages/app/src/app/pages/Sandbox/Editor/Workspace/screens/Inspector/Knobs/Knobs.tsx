@@ -29,14 +29,22 @@ export const Knobs = ({ inspectorStateService }: KnobsProps) => {
         selectedProps &&
         componentInfo.props.map(propsSourceInformation => {
           const instancePropInfo = selectedProps[propsSourceInformation.name];
-          return (
-            <BaseKnob
-              disabled={!instancePropInfo}
-              key={propsSourceInformation.name}
-              name={propsSourceInformation.name}
-              componentInstance={selectedInstance}
-            />
-          );
+
+          if (instancePropInfo) {
+            return (
+              <BaseKnob
+                key={propsSourceInformation.name}
+                disabled={!instancePropInfo}
+                name={propsSourceInformation.name}
+                propInfo={propsSourceInformation}
+                componentInstance={selectedInstance}
+              />
+            );
+          } else {
+            return (
+              <div style={{ opacity: 0.5 }}>{propsSourceInformation.name}</div>
+            );
+          }
         })}
     </Stack>
   );

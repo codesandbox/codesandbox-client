@@ -34,14 +34,12 @@ export class SpanSubscription extends Disposable {
   private onDidContentChangeEmitter = new Emitter<{
     oldContent: string;
     content: string;
-    operation: TextOperation;
   }>();
   public onDidContentChange = this.onDidContentChangeEmitter.event;
 
   private onDidRangeChangeEmitter = new Emitter<{
     oldRange: CodeRange;
     range: CodeRange;
-    operation: TextOperation;
   }>();
   public onDidRangeChange = this.onDidRangeChangeEmitter.event;
 
@@ -85,10 +83,40 @@ export class SpanSubscription extends Disposable {
   }
 
   /**
+   * Update the range the subscription should act on
+   */
+  public updateRange(range: CodeRange) {
+    if (this.isDisposed) {
+      throw new Error('This span is disposed');
+    }
+
+    const lines = this.model.getLinesContent();
+    const oldRange = this.range;
+    const oldContent = this.model.getValueInRange(oldRange);
+    this.range = range;
+    this.otRange = new Selection.Range(
+      lineAndColumnToIndex(
+        lines,
+        range.startLineNumber,
+        range.startColumnNumber
+      ),
+      lineAndColumnToIndex(lines, range.endLineNumber, range.endColumnNumber)
+    );
+
+    const content = this.model.getValueInRange(range);
+    this.onDidRangeChangeEmitter.fire({ oldRange, range });
+    this.onDidContentChangeEmitter.fire({ oldContent, content });
+  }
+
+  /**
    * Change the content of this span. We generate the smallest possible change
    * and apply it to the current span, this can change the range and the content.
    */
   public setContent(code: string) {
+    if (this.isDisposed) {
+      throw new Error('This span is disposed');
+    }
+
     const fullCode = this.model.getValue();
     const codeSelection: CodeSelection = {
       positionLineNumber: this.range.endLineNumber,
@@ -159,7 +187,6 @@ export class SpanSubscription extends Disposable {
       this.onDidContentChangeEmitter.fire({
         content: this.textSpan,
         oldContent: oldTextSpan,
-        operation: change,
       });
     }
 
@@ -170,7 +197,6 @@ export class SpanSubscription extends Disposable {
       this.onDidRangeChangeEmitter.fire({
         range: newRange,
         oldRange,
-        operation: change,
       });
     }
   }

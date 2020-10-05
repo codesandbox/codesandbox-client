@@ -67,11 +67,9 @@ export interface ReactFiberRootNode {
   current: ReactFiber;
 }
 
-
-
 type Renderer = {
   findHostInstanceByFiber(fiber: ReactFiber): HTMLElement;
-  overrideProps(id: number, name: string, value: any): void;
+  overrideProps(fiber: ReactFiber, path: string[], value: any): void;
 };
 
 declare global {
@@ -79,7 +77,6 @@ declare global {
     __REACT_DEVTOOLS_GLOBAL_HOOK__: {
       getFiberRoots(rendererId: number): Set<ReactFiberRootNode>;
       renderers: Map<number, Renderer>;
-
     };
   }
 }
@@ -144,10 +141,16 @@ export class ReactSandboxBridge {
       .findHostInstanceByFiber(reactFiber);
   }
 
-  public setFiberProp(id: string, name: string, value: any) {
+  public setFiberProp(id: string, path: string[], value: any) {
+    const reactFiber = this.fiberToReact.get(id);
+
+    if (!reactFiber) {
+      throw new Error(`Can't find Fiber with id ${16}`);
+    }
+
     return window.__REACT_DEVTOOLS_GLOBAL_HOOK__.renderers
       .get(1)!
-      .overrideProps(parseInt(id, 10), name, value);
+      .overrideProps(reactFiber, path, value);
   }
 
   private filterFibers(rootFiber: ReactFiber): Fiber[] {

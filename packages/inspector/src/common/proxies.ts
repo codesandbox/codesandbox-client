@@ -10,7 +10,7 @@ export interface ISandboxProxy {
     id: string
   ): Promise<StaticComponentInformation>;
 
-  $setFiberProp(id: string, name: string, value: any): Promise<void>;
+  $setFiberProp(id: string, path: string[], value: any): Promise<void>;
 }
 
 export interface IEditorProxy {

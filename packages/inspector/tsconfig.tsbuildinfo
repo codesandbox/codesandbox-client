@@ -327,8 +327,8 @@
         "affectsGlobalScope": false
       },
       "./src/common/proxies.ts": {
-        "version": "0fa9f4448b5d414abb033d0152da65dddb6b3178224f0c78d2652bdbff41a2fa",
-        "signature": "2f25c25593ee8bd0388fd961b26d627dfebf3a4777ec4b062578c1c69e8ac616",
+        "version": "ff939e50e72eb007c2995c543747906a14463be052437cee0833c81a46a4a86d",
+        "signature": "efc95d0334de2a59055f7def343b838a284af07fb57899e3c87f5f43410e482b",
         "affectsGlobalScope": false
       },
       "../../node_modules/@babel/types/lib/index.d.ts": {
@@ -502,8 +502,8 @@
         "affectsGlobalScope": false
       },
       "./src/common/react/sandbox.ts": {
-        "version": "082485435ec2e462e928fda76b470ab316af2d7218ea51255c00e16843e43b2a",
-        "signature": "e06cc74946b62ebd5572bf9c09417fb537547ec207b7a9a97a955af1a31906bb",
+        "version": "d725517c0eec567eab02cfedcb20a7db9873546bcd63b4a1578e911b12b52a92",
+        "signature": "35d172c36a526d18b4328c2dcca29c45403399d2d1f7f524bfd39cb06e8985bd",
         "affectsGlobalScope": true
       },
       "./src/common/react/analyze/component-instance.test.ts": {
@@ -2117,13 +2117,13 @@
         "affectsGlobalScope": false
       },
       "./src/editor/span-subscription.ts": {
-        "version": "28cdf2fcb9f978de2fc3b5677e686a4c7830daf0d97165acfb82b60e7ac2714e",
-        "signature": "b3f0416b75c0d403a4d8f8060b013b78cac15abd09e5d9949946e4aca00705c8",
+        "version": "008e866a62d88cfe54eafcb96c2b9f945204834da38546d4d1a8b1bd54cdc4fb",
+        "signature": "d08c1ef8a34272d4c48ced9dc4b38c7845cfefebb1bfeee9cde5783f747bd275",
         "affectsGlobalScope": false
       },
       "./src/editor/instance.ts": {
-        "version": "333cd456787eabde3793f8ff3e441e7d262bee8036f8cdbc754511d88c29fadf",
-        "signature": "203a2a3701c6ee7cc7a6a14ae657083645adc3a5169444588c88b11c0084586f",
+        "version": "161cdef6594016ac50dcbc79e1aa72b3e1fc945f605265411f54bc305080b838",
+        "signature": "ceac3e34a1ab5ee8180b231a2de985ebd54febcde953a4a33c92602ad5261560",
         "affectsGlobalScope": false
       },
       "./src/editor/index.ts": {
@@ -10482,7 +10482,6 @@
         "./src/editor/span-subscription.ts"
       ],
       "./src/editor/span-subscription.ts": [
-        "../../node_modules/@types/ot/index.d.ts",
         "./src/common/fibers.ts",
         "./src/common/rpc/disposable.ts",
         "./src/common/rpc/event.ts",
@@ -11584,20 +11583,12 @@
         [
           {
             "file": "./src/common/react/sandbox.ts",
-            "start": 3229,
+            "start": 3235,
             "length": 4,
             "messageText": "'path' is declared but its value is never read.",
             "category": 1,
             "code": 6133,
             "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/common/react/sandbox.ts",
-            "start": 3770,
-            "length": 18,
-            "code": 2339,
-            "category": 1,
-            "messageText": "Property 'rendererInterfaces' does not exist on type '{ getFiberRoots(rendererId: number): Set<ReactFiberRootNode>; renderers: Map<number, Renderer>; }'."
           }
         ]
       ],
@@ -11691,25 +11682,7 @@
           },
           {
             "file": "./src/editor/instance.ts",
-            "start": 777,
-            "length": 5,
-            "messageText": "Property 'model' is declared but its value is never read.",
-            "category": 1,
-            "code": 6138,
-            "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/editor/instance.ts",
-            "start": 3314,
-            "length": 5,
-            "messageText": "Property 'model' is declared but its value is never read.",
-            "category": 1,
-            "code": 6138,
-            "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/editor/instance.ts",
-            "start": 3382,
+            "start": 3981,
             "length": 9,
             "messageText": "Property 'editorApi' is declared but its value is never read.",
             "category": 1,
@@ -11723,7 +11696,7 @@
         [
           {
             "file": "./src/editor/span-subscription.ts",
-            "start": 3376,
+            "start": 4179,
             "length": 19,
             "messageText": "'getOtRangeModifiers' is declared but its value is never read.",
             "category": 1,
@@ -11757,6 +11730,87 @@
             "category": 1,
             "code": 6133,
             "reportsUnnecessary": true
+          },
+          {
+            "file": "./src/sandbox/index.ts",
+            "start": 3073,
+            "length": 13,
+            "code": 2416,
+            "category": 1,
+            "messageText": {
+              "messageText": "Property '$setFiberProp' in type 'Inspector' is not assignable to the same property in base type 'ISandboxProxy'.",
+              "category": 1,
+              "code": 2416,
+              "next": [
+                {
+                  "messageText": "Type '(id: string, name: string, value: any) => Promise<void>' is not assignable to type '(id: string, path: string[], value: any) => Promise<void>'.",
+                  "category": 1,
+                  "code": 2322,
+                  "next": [
+                    {
+                      "messageText": "Types of parameters 'name' and 'path' are incompatible.",
+                      "category": 1,
+                      "code": 2328,
+                      "next": [
+                        {
+                          "messageText": "Type 'string[]' is not assignable to type 'string'.",
+                          "category": 1,
+                          "code": 2322
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "file": "./src/sandbox/index.ts",
+            "start": 3160,
+            "length": 4,
+            "code": 2345,
+            "category": 1,
+            "messageText": "Argument of type 'string' is not assignable to parameter of type 'string[]'."
+          },
+          {
+            "file": "./src/sandbox/index.ts",
+            "start": 3506,
+            "length": 21,
+            "code": 2345,
+            "category": 1,
+            "messageText": {
+              "messageText": "Argument of type 'Inspector' is not assignable to parameter of type 'ISandboxProxy'.",
+              "category": 1,
+              "code": 2345,
+              "next": [
+                {
+                  "messageText": "Types of property '$setFiberProp' are incompatible.",
+                  "category": 1,
+                  "code": 2326,
+                  "next": [
+                    {
+                      "messageText": "Type '(id: string, name: string, value: any) => Promise<void>' is not assignable to type '(id: string, path: string[], value: any) => Promise<void>'.",
+                      "category": 1,
+                      "code": 2322,
+                      "next": [
+                        {
+                          "messageText": "Types of parameters 'name' and 'path' are incompatible.",
+                          "category": 1,
+                          "code": 2328,
+                          "next": [
+                            {
+                              "messageText": "Type 'string[]' is not assignable to type 'string'.",
+                              "category": 1,
+                              "code": 2322
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
           }
         ]
       ],

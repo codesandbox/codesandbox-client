@@ -4,11 +4,21 @@ import { Input, Stack } from '@codesandbox/components';
 import { IComponentInstanceModel } from 'inspector/lib/editor/instance';
 
 import { useInspectorKnob } from '../../hooks/knob';
+import { StaticPropInfo } from 'inspector/lib/common/fibers';
+import { StringKnob } from './StringKnob';
+import { DefaultKnob } from './DefaultKnob';
 
 interface BaseKnopProps {
   name: string;
+  propInfo: StaticPropInfo;
   componentInstance: IComponentInstanceModel;
   disabled?: boolean;
+}
+
+export interface KnobProps {
+  propInfo: StaticPropInfo;
+  value: string;
+  setValue: (code: string) => void;
 }
 
 const nicify = (s: string) => {
@@ -26,6 +36,9 @@ export const BaseKnob = (props: BaseKnopProps) => {
     props.name
   );
 
+  const UsedKnob =
+    props.propInfo.typeInfo?.type === 'string' ? StringKnob : DefaultKnob;
+
   return (
     <Stack
       align="center"
@@ -33,13 +46,15 @@ export const BaseKnob = (props: BaseKnopProps) => {
     >
       <div style={{ flexGrow: 1, width: '100%' }}>{nicify(props.name)}</div>
 
-      <Input
-        onChange={e => {
-          setValue(e.target.value);
-        }}
-        value={value}
-        css={css({ flexGrow: 2, width: '100%' })}
-      />
+      <div css={css({ flexGrow: 2, width: '100%' })}>
+        {value !== null && (
+          <UsedKnob
+            value={value}
+            setValue={setValue}
+            propInfo={props.propInfo}
+          />
+        )}
+      </div>
     </Stack>
   );
 };

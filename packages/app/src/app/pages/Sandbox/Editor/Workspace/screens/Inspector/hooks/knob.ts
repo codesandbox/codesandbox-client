@@ -3,6 +3,7 @@ import {
   IComponentInstanceModel,
   InstanceProp,
 } from 'inspector/lib/editor/instance';
+import { IDisposable } from 'inspector/lib/common/rpc/disposable';
 
 interface UseKnobReturn {
   value: string;
@@ -17,22 +18,58 @@ export function useInspectorKnob(
     componentInstance.getInstanceProp(propName)!
   );
   const [value, setValue] = React.useState<string | null>(
-    instanceProp && instanceProp.getValue()
+    instanceProp?.getValue() || null
   );
 
   React.useEffect(() => {
-    if (instanceProp.valueSubscription) {
-      instanceProp.valueSubscription.onDidContentChange(event => {
-        setValue(event.content);
-      });
+    setInstanceProp(componentInstance.getInstanceProp(propName)!);
+  }, [propName, componentInstance]);
+
+  React.useEffect(() => {
+    let disposables: IDisposable[] = [];
+    if (instanceProp?.valueSubscription) {
+      disposables.push(
+        instanceProp.valueSubscription.onDidContentChange(event => {
+          setValue(event.content);
+        })
+      );
+
+      disposables.push(
+        instanceProp.valueSubscription.onWillDispose(() => {
+          setValue('');
+        })
+      );
+
+      setValue(instanceProp.valueSubscription.getContent());
+    } else {
+      setValue('');
     }
-  }, [instanceProp]);
+
+    return () => {
+      disposables.forEach(disposable => disposable.dispose());
+    };
+  }, [instanceProp, setValue]);
 
   return {
     value,
     setValue: (code: string) => {
+      let sourceCode = code;
+      if (sourceCode[0] !== '"' && sourceCode[0] !== '{') {
+        sourceCode = `{${sourceCode}}`;
+      }
       instanceProp.valueSubscription.setContent(code);
-      instanceProp.setFiberProp(JSON.parse(code));
+
+      let cleanedProp = code;
+      const isComputed = code[0] === '{' && code[code.length - 1] === '}';
+
+      if (isComputed) {
+        const splitCode = code.split('');
+        splitCode.pop();
+        splitCode.shift();
+        cleanedProp = splitCode.join('');
+      }
+
+      instanceProp.setFiberProp(JSON.parse(cleanedProp));
     },
   };
 }

@@ -76,6 +76,25 @@ export class InstanceProp extends Disposable {
   public setFiberProp(value: any) {
     this.componentInstance.setFiberProp(this.prop.name, value);
   }
+
+  public updateProp(prop: SourcePropInfo) {
+    this.definitionPosition = prop.definitionPosition;
+    this.namePosition = prop.namePosition;
+    this.valuePosition = prop.valuePosition;
+
+    this.definitionSubscription.updateRange(this.definitionPosition);
+    this.nameSubscription.updateRange(this.namePosition);
+    if (this.valuePosition) {
+      if (this.valueSubscription) {
+        this.valueSubscription.updateRange(this.valuePosition);
+      } else {
+        this.valueSubscription = new SpanSubscription(
+          this.model,
+          this.valuePosition
+        );
+      }
+    }
+  }
 }
 
 export type InstanceDataChangedEvent = {
@@ -100,7 +119,8 @@ export interface IComponentInstanceModel {
  *
  * And gives the functions needed to extract needed data, manipulate it, etc...
  */
-export class ComponentInstanceModel extends Disposable
+export class ComponentInstanceModel
+  extends Disposable
   implements IComponentInstanceModel {
   componentInfo: StaticComponentInformation | undefined;
   codePosition: CodeRange;
@@ -182,6 +202,27 @@ export class ComponentInstanceModel extends Disposable
     this.instanceData = instance;
     this.codePosition = instance.location.codePosition;
 
+    Object.keys(instance.props).forEach(prop => {
+      const existingPropInstance = this.props[prop];
+
+      if (existingPropInstance) {
+        existingPropInstance.updateProp(instance.props[prop]);
+      } else {
+        this.props[prop] = new InstanceProp(
+          this.model,
+          this,
+          instance.props[prop]
+        );
+      }
+    });
+
+    Object.keys(this.props).forEach(propName => {
+      if (!instance.props[propName]) {
+        this.props[propName].dispose();
+        delete this.props[propName];
+      }
+    });
+
     this.didInstanceDataChangeEmitter.fire({ instanceData: instance });
   }
 
@@ -192,6 +233,6 @@ export class ComponentInstanceModel extends Disposable
       throw new Error("Can't find fiber for " + name);
     }
 
-    await this.sandboxProxy.$setFiberProp(fiber.id, name, value);
+    await this.sandboxProxy.$setFiberProp(fiber.id, [name], value);
   }
 }
