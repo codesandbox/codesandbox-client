@@ -2,19 +2,13 @@ import { useTheme } from 'styled-components';
 import css from '@styled-system/css';
 import Highlight, { defaultProps } from 'prism-react-renderer';
 import { makeTheme } from '@codesandbox/common/lib/utils/makeTheme';
-import { CurrentUser } from '@codesandbox/common/lib/types';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { useOvermind } from 'app/overmind';
 import { Element, Button, Stack } from '@codesandbox/components';
 import React, { FunctionComponent, useEffect, useRef } from 'react';
 import { Alert } from '../Common/Alert';
 
-type Props = {
-  id?: string;
-  user?: CurrentUser;
-};
-
-export const EditPresets: FunctionComponent<Props> = ({ id, user }) => {
+export const EditPresets: FunctionComponent = () => {
   const {
     actions: { preview: previewActions, modalClosed },
     state: {
