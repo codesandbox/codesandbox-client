@@ -130,7 +130,10 @@ export default function setupHistoryListeners() {
           pushHistory(pathWithHash(document.location), null);
           sendUrlChange(document.location.href);
         }
-        ev.preventDefault();
+        // We do not know why this is here. It currently breaks clicking on HASH links which is expected to
+        // scroll down to element id. We are commenting it out to see what breaks and will
+        // make sure to write a comment if anything else breaks
+        // ev.preventDefault();
       }
     },
     true
