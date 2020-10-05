@@ -21,6 +21,7 @@ import { Container, Loading, StyledFrame } from './elements';
 import Navigator from './Navigator';
 import { ResponsiveWrapper } from './ResponsiveWrapper';
 import { Settings } from './types';
+import { hasPermission } from '../../utils/permission';
 
 export type Props = {
   sandbox: Sandbox;
@@ -610,6 +611,10 @@ class BasePreview extends React.Component<Props, State> {
           <ResponsiveWrapper
             on={isInResponsiveView}
             props={responsiveModeProps}
+            canChangePresets={hasPermission(
+              sandbox.authorization,
+              'write_code'
+            )}
           >
             <AnySpring
               key="preview"

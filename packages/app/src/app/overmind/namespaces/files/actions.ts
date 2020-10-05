@@ -6,6 +6,7 @@ import {
 import getDefinition from '@codesandbox/common/lib/templates';
 import { Directory, Module, UploadFile } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Action, AsyncAction } from 'app/overmind';
 import { RecoverData } from 'app/overmind/effects/moduleRecover';
 import { withOwnedSandbox } from 'app/overmind/factories';
@@ -895,7 +896,7 @@ export const updateWorkspaceConfig: AsyncAction<{}> = async (
   { state, actions },
   update
 ) => {
-  if (state.editor.currentSandbox?.owned) {
+  if (hasPermission(state.editor.currentSandbox!.authorization, 'write_code')) {
     const devtoolsModule = state.editor.modulesByPath[
       '/.codesandbox/workspace.json'
     ] as Module;

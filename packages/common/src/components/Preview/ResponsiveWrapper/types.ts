@@ -1,5 +1,6 @@
 export type ResponsiveWrapperProps = {
   on: boolean;
+  canChangePresets: boolean;
   props: {
     theme: any;
     state: {

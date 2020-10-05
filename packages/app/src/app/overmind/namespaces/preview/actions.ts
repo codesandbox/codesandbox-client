@@ -9,11 +9,9 @@ export const toggleResponsiveMode: AsyncAction = async ({ state, actions }) => {
   } else {
     state.preview.mode = 'responsive';
     if (!state.editor.workspaceConfig) {
-      actions.files.updateWorkspaceConfig(
-        JSON.stringify({
-          'responsive-preview': defaultPresets,
-        })
-      );
+      actions.files.updateWorkspaceConfig({
+        'responsive-preview': defaultPresets,
+      });
     }
   }
 };
@@ -52,7 +50,7 @@ export const deletePreset: AsyncAction = async ({ state, actions }) => {
     const workspaceConfig = state.editor.workspaceConfig!;
     const presetsCopy = json(workspaceConfig['responsive-preview'] || {});
     delete presetsCopy[activePresetName.toString()];
-    // Should not pass a string here, need to refactor the devtool tabs
+
     await actions.files.updateWorkspaceConfig({
       'responsive-preview': presetsCopy,
     });
@@ -69,7 +67,7 @@ export const addPreset: AsyncAction<{
   const workspaceConfig = state.editor.workspaceConfig!;
   const presetsCopy = json(workspaceConfig['responsive-preview'] || {});
   presetsCopy[name] = [width, height];
-  // Should not pass a string here, need to refactor the devtool tabs
+
   await actions.files.updateWorkspaceConfig({
     'responsive-preview': presetsCopy,
   });

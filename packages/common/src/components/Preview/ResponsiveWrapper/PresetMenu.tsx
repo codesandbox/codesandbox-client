@@ -5,6 +5,7 @@ import { ArrowDown } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 
 type PresetMenuProps = {
+  canChangePresets: boolean;
   presets: ResponsiveWrapperProps['props']['state']['responsive']['presets'];
   theme: ResponsiveWrapperProps['props']['theme'];
   resolution: ResponsiveWrapperProps['props']['state']['responsive']['resolution'];
@@ -18,6 +19,7 @@ export const PresetMenu = ({
   resolution,
   onSelect,
   openEditPresets,
+  canChangePresets,
 }: PresetMenuProps) => {
   const activePresetName =
     Object.keys(presets).find(preset => isEqual(presets[preset], resolution)) ||
@@ -47,13 +49,15 @@ export const PresetMenu = ({
             {preset}
           </Menu.Item>
         ))}
-        <Menu.Item
-          key="edit-presets"
-          field="edit-presets"
-          onSelect={openEditPresets}
-        >
-          Edit Presets
-        </Menu.Item>
+        {canChangePresets ? (
+          <Menu.Item
+            key="edit-presets"
+            field="edit-presets"
+            onSelect={openEditPresets}
+          >
+            Edit Presets
+          </Menu.Item>
+        ) : null}
       </Menu.List>
     </Menu>
   );

@@ -64,6 +64,7 @@ export const AddPreset: FunctionComponent<Props> = ({ id, user }) => {
         <form onSubmit={onSubmit}>
           <Element marginBottom={4}>
             <Input
+              autoFocus
               aria-label="Presets Name"
               name="name"
               onChange={e => setName(e.target.value)}

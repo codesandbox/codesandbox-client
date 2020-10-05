@@ -52,6 +52,7 @@ const Wrapper = styled(Element)`
 
 export const ResponsiveWrapper = ({
   on,
+  canChangePresets,
   props: { theme, state, actions },
   children,
 }: ResponsiveWrapperProps) => {
@@ -124,7 +125,7 @@ export const ResponsiveWrapper = ({
       <Wrapper paddingTop={4} paddingX={6}>
         <Stack justify="center" paddingBottom={2} align="center" gap={2}>
           <Stack gap={2} align="center">
-            {exists ? (
+            {exists && canChangePresets ? (
               <Button
                 variant="link"
                 style={{ padding: 0 }}
@@ -133,7 +134,8 @@ export const ResponsiveWrapper = ({
               >
                 <DeleteIcon />
               </Button>
-            ) : (
+            ) : null}
+            {!exists && canChangePresets ? (
               <Button
                 variant="link"
                 style={{ padding: 0 }}
@@ -142,7 +144,7 @@ export const ResponsiveWrapper = ({
               >
                 <AddIcon color={theme['sideBar.foreground']} />
               </Button>
-            )}
+            ) : null}
             <Stack align="center" gap={1}>
               <Text style={{ userSelect: 'none' }} size={3}>
                 <Input
@@ -186,6 +188,7 @@ export const ResponsiveWrapper = ({
             theme={theme}
             resolution={resolution}
             presets={presets}
+            canChangePresets={canChangePresets}
           />
         </Stack>
       </Wrapper>
