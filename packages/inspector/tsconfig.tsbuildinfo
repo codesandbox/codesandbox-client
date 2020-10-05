@@ -2142,8 +2142,8 @@
         "affectsGlobalScope": false
       },
       "./src/sandbox/index.ts": {
-        "version": "98cd10e8e54d900ea02a2742a5ccfe20088e02127b3af38a862e9af01c09938b",
-        "signature": "e4fc404d66dc28f7f8e1fdbb2b336cf370e2a94be9267d1e5c706958d0dd665b",
+        "version": "8550b9b063a5d3d099896d76ac87a10b826de3140ecc811f01647497e03a54f5",
+        "signature": "c8321be96d34c90b587a8c5a4e049803ed38b87045d0b3bc05d17ebc074cee53",
         "affectsGlobalScope": false
       },
       "./src/sandbox/component-information.ts": {
@@ -11730,87 +11730,6 @@
             "category": 1,
             "code": 6133,
             "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/sandbox/index.ts",
-            "start": 3073,
-            "length": 13,
-            "code": 2416,
-            "category": 1,
-            "messageText": {
-              "messageText": "Property '$setFiberProp' in type 'Inspector' is not assignable to the same property in base type 'ISandboxProxy'.",
-              "category": 1,
-              "code": 2416,
-              "next": [
-                {
-                  "messageText": "Type '(id: string, name: string, value: any) => Promise<void>' is not assignable to type '(id: string, path: string[], value: any) => Promise<void>'.",
-                  "category": 1,
-                  "code": 2322,
-                  "next": [
-                    {
-                      "messageText": "Types of parameters 'name' and 'path' are incompatible.",
-                      "category": 1,
-                      "code": 2328,
-                      "next": [
-                        {
-                          "messageText": "Type 'string[]' is not assignable to type 'string'.",
-                          "category": 1,
-                          "code": 2322
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "file": "./src/sandbox/index.ts",
-            "start": 3160,
-            "length": 4,
-            "code": 2345,
-            "category": 1,
-            "messageText": "Argument of type 'string' is not assignable to parameter of type 'string[]'."
-          },
-          {
-            "file": "./src/sandbox/index.ts",
-            "start": 3506,
-            "length": 21,
-            "code": 2345,
-            "category": 1,
-            "messageText": {
-              "messageText": "Argument of type 'Inspector' is not assignable to parameter of type 'ISandboxProxy'.",
-              "category": 1,
-              "code": 2345,
-              "next": [
-                {
-                  "messageText": "Types of property '$setFiberProp' are incompatible.",
-                  "category": 1,
-                  "code": 2326,
-                  "next": [
-                    {
-                      "messageText": "Type '(id: string, name: string, value: any) => Promise<void>' is not assignable to type '(id: string, path: string[], value: any) => Promise<void>'.",
-                      "category": 1,
-                      "code": 2322,
-                      "next": [
-                        {
-                          "messageText": "Types of parameters 'name' and 'path' are incompatible.",
-                          "category": 1,
-                          "code": 2328,
-                          "next": [
-                            {
-                              "messageText": "Type 'string[]' is not assignable to type 'string'.",
-                              "category": 1,
-                              "code": 2322
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
           }
         ]
       ],

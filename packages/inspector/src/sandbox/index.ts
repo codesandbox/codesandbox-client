@@ -109,8 +109,8 @@ class Inspector extends Disposable implements ISandboxProxy {
     return fibers;
   }
 
-  async $setFiberProp(id: string, name: string, value: any) {
-    this.bridge.setFiberProp(id, name, value);
+  async $setFiberProp(id: string, path: string[], value: any) {
+    this.bridge.setFiberProp(id, path, value);
   }
 }
 
