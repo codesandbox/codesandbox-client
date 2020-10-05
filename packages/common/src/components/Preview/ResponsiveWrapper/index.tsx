@@ -24,7 +24,7 @@ const Styled = styled(Element)<{
     position: relative;
   }
 
-  iframe {
+  > div > span {
     width: ${props => props.width};
     height: ${props => props.height};
     position: absolute;
@@ -50,6 +50,91 @@ const Wrapper = styled(Element)`
   }
 `;
 
+const ResizeWrapper = styled.span`
+  position: relative;
+  padding: 15px;
+`;
+
+const CornerResize = styled(Element)`
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  cursor: nwse-resize;
+  z-index: 2;
+`;
+
+const WidthResize = styled(Element)`
+  position: absolute;
+  right: 5px;
+  top: calc(50% - 2.5px);
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  cursor: ew-resize;
+  z-index: 2;
+`;
+
+const HeightResize = styled(Element)`
+  position: absolute;
+  bottom: 5px;
+  left: calc(50% - 2.5px);
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  cursor: ns-resize;
+  z-index: 2;
+`;
+
+const Cover = styled.div`
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+`;
+
+const useDragResize = (
+  resolution: [number, number],
+  scale: number,
+  [size, setSize]: [{ x?: number; y?: number }, (payload: any) => void],
+  setResolution: (resolution: [number, number]) => void
+) => {
+  useEffect(() => {
+    if (size) {
+      const initialWidth = resolution[0];
+      const initialHeight = resolution[1];
+      const mouseMoveListener: (event: MouseEvent) => void = event => {
+        setResolution([
+          'x' in size
+            ? (initialWidth - (size.x - event.clientX) * 2) * (2 - scale)
+            : resolution[0],
+          'y' in size
+            ? (initialHeight - (size.y - event.clientY) * 2) * (2 - scale)
+            : resolution[1],
+        ]);
+      };
+      const mouseUpListener: (event: MouseEvent) => void = () => {
+        setSize(null);
+        window.removeEventListener('mousemove', mouseMoveListener);
+        window.removeEventListener('mouseup', mouseUpListener);
+      };
+
+      window.addEventListener('mousemove', mouseMoveListener);
+      window.addEventListener('mouseup', mouseUpListener);
+
+      return () => {
+        window.removeEventListener('mousemove', mouseMoveListener);
+        window.removeEventListener('mouseup', mouseUpListener);
+      };
+    }
+    return () => {};
+  }, [size]);
+};
+
 export const ResponsiveWrapper = ({
   on,
   canChangePresets,
@@ -67,6 +152,9 @@ export const ResponsiveWrapper = ({
   const [wrapperHeight, setWrapperHeight] = useState(
     element?.clientHeight - 100
   );
+  const widthAndHeightResizer = useState<{ x: number; y: number } | null>(null);
+  const widthResizer = useState<{ x: number } | null>(null);
+  const heightResizer = useState<{ y: number } | null>(null);
 
   useEffect(() => {
     let observer;
@@ -89,6 +177,15 @@ export const ResponsiveWrapper = ({
     }
     return () => (observer ? observer.disconnect() : null);
   }, [element]);
+
+  useDragResize(
+    resolution,
+    scale,
+    widthAndHeightResizer,
+    actions.setResolution
+  );
+  useDragResize(resolution, scale, widthResizer, actions.setResolution);
+  useDragResize(resolution, scale, heightResizer, actions.setResolution);
 
   useEffect(() => {
     const [w, h] = resolution;
@@ -199,7 +296,36 @@ export const ResponsiveWrapper = ({
         width={on ? width : '100%'}
         height={on ? height : '100%'}
       >
-        <div>{children}</div>
+        <div>
+          <ResizeWrapper>
+            <CornerResize
+              onMouseDown={event => {
+                widthAndHeightResizer[1]({
+                  x: event.clientX,
+                  y: event.clientY,
+                });
+              }}
+            />
+            <WidthResize
+              onMouseDown={event => {
+                widthResizer[1]({
+                  x: event.clientX,
+                });
+              }}
+            />
+            <HeightResize
+              onMouseDown={event => {
+                heightResizer[1]({
+                  y: event.clientY,
+                });
+              }}
+            />
+            {widthAndHeightResizer[0] || widthResizer[0] || heightResizer[0] ? (
+              <Cover />
+            ) : null}
+            {children}
+          </ResizeWrapper>
+        </div>
       </Styled>
     </>
   );
