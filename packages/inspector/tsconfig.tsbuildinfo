@@ -222,8 +222,8 @@
         "affectsGlobalScope": false
       },
       "./src/common/fibers.ts": {
-        "version": "56360cd4363d2ced1e56b9183cd2ea51e07903402d9af164b712a49c43253f87",
-        "signature": "6bdfeba4572bf66f06981c7ebed33353b98948da79e5351cc27e2bcae386b5d2",
+        "version": "eb4c8bdcb5a0847af549bc90264b342608ecbcea907aeca604a8b89dcd08c9df",
+        "signature": "eafd2773510015ab762cb21c066c5500d10159b3d1fd7e37ae88580bf0133018",
         "affectsGlobalScope": false
       },
       "./src/common/rpc/event.ts": {
@@ -327,8 +327,8 @@
         "affectsGlobalScope": false
       },
       "./src/common/proxies.ts": {
-        "version": "7e70886873d794a68fb58e2b458459ca703cd922a5ca63b6a3ffa476dd533a8f",
-        "signature": "be66b9d97b3b623e011e73bc663809c6d885d6854f889634df7c310bfcd87d03",
+        "version": "0fa9f4448b5d414abb033d0152da65dddb6b3178224f0c78d2652bdbff41a2fa",
+        "signature": "2f25c25593ee8bd0388fd961b26d627dfebf3a4777ec4b062578c1c69e8ac616",
         "affectsGlobalScope": false
       },
       "../../node_modules/@babel/types/lib/index.d.ts": {
@@ -502,8 +502,8 @@
         "affectsGlobalScope": false
       },
       "./src/common/react/sandbox.ts": {
-        "version": "f4e3afbf6eedcb3f265775e18e1c16450ff1b06df36eb7325e0c231c04b2d103",
-        "signature": "3f16a27941bdf7a82938d3f0fa70d7535ad3e5e967393dccde054b54c3f3e8d0",
+        "version": "082485435ec2e462e928fda76b470ab316af2d7218ea51255c00e16843e43b2a",
+        "signature": "e06cc74946b62ebd5572bf9c09417fb537547ec207b7a9a97a955af1a31906bb",
         "affectsGlobalScope": true
       },
       "./src/common/react/analyze/component-instance.test.ts": {
@@ -526,14 +526,9 @@
         "signature": "314525566041a9bef3b634b5baddf070dcfe471637173db379226978127b199b",
         "affectsGlobalScope": false
       },
-      "./src/editor/span-subscription.ts": {
-        "version": "abf6d31df3e28736c1fec6da160b9a38a8d78600ba7897f68e33b29360ec5737",
-        "signature": "f82c87ebf99fe4ec781b5105b1b7ed4542150cb961311ed7dddfffbcdda8ef80",
-        "affectsGlobalScope": false
-      },
       "./src/editor/editor-api.ts": {
-        "version": "918a091e119401fc595962e3d71d04a30545514435aefd188232bd63353831cc",
-        "signature": "b58fc2007b82e07d4165ced0b330283772a512360173e990a828d3e8d5d2ae08",
+        "version": "17d0ea157e2c242ed595fc5a76c3d3dac72a41757b87ad42fa84d2074cb43e92",
+        "signature": "96a6ebddac0172786ea391011faf7a5ef4943625ac624465b76d981c5f3a258c",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/lodash/ts3.1/common/common.d.ts": {
@@ -2111,14 +2106,34 @@
         "signature": "0050c69914e7fcd5d823424cc6466e00eb5c17c49ea92a36e78399a690e07e52",
         "affectsGlobalScope": false
       },
+      "../common/lib/utils/diff/index.d.ts": {
+        "version": "81cb023197b47f6a8d384cb56bb99413d5e7891e1e9f3e1c648ce7f4b4a704e6",
+        "signature": "81cb023197b47f6a8d384cb56bb99413d5e7891e1e9f3e1c648ce7f4b4a704e6",
+        "affectsGlobalScope": false
+      },
+      "./src/editor/transform.ts": {
+        "version": "1ad83610e4e8e3e61808abfaf411430e63011a728b14feca70828f48bfd8133d",
+        "signature": "7d52dd41e80e7ff0e9dafa44b699996d83330cc6dc837cbd112b1b147f801e9a",
+        "affectsGlobalScope": false
+      },
+      "./src/editor/span-subscription.ts": {
+        "version": "28cdf2fcb9f978de2fc3b5677e686a4c7830daf0d97165acfb82b60e7ac2714e",
+        "signature": "b3f0416b75c0d403a4d8f8060b013b78cac15abd09e5d9949946e4aca00705c8",
+        "affectsGlobalScope": false
+      },
       "./src/editor/instance.ts": {
-        "version": "8a5e8c293e96208e10b1ea05ed59ae408fc7d2eb741e23332d85497cf867c79f",
-        "signature": "ad36fbac4c09cc7b2b2cb881ce803eb1ac562a8fc5506f122e5cdf6bd83505ac",
+        "version": "333cd456787eabde3793f8ff3e441e7d262bee8036f8cdbc754511d88c29fadf",
+        "signature": "203a2a3701c6ee7cc7a6a14ae657083645adc3a5169444588c88b11c0084586f",
         "affectsGlobalScope": false
       },
       "./src/editor/index.ts": {
-        "version": "62523bc8869dd8c30e067b8afdc76dca1063376ce8df80b2bc2de1496e981ba3",
-        "signature": "0492a1422a36c1c33b7e957845e9c3b17403755742ba58b033df3f6f5ccae648",
+        "version": "99f43d7c3b3d58076e84c5eb76f4dabbb636428c53c162e0f8797b9fe52d9cd7",
+        "signature": "2ff47c353d3d3c96486e31ef7c6e8587bb01802ce99c80faf36d3ee2da33004e",
+        "affectsGlobalScope": false
+      },
+      "./src/editor/transform.test.ts": {
+        "version": "8c85e1502b7000f189755b08aa9cad0ba9117390fb0307173790f6a447843a79",
+        "signature": "3b5418c39e40673ee3d0d650aab1d5c07f2752839a17669385e0db00f36c9e8a",
         "affectsGlobalScope": false
       },
       "./src/sandbox/highlight.ts": {
@@ -2127,8 +2142,8 @@
         "affectsGlobalScope": false
       },
       "./src/sandbox/index.ts": {
-        "version": "987b6ef0283156e1f1e6d518328149bab638faa4163900bad1e0f7320b1ddd21",
-        "signature": "ed1c6c257aa526f1d4bdc1a6b520d4847e72e34f760c47a7a6c448a4cf274ae3",
+        "version": "98cd10e8e54d900ea02a2742a5ccfe20088e02127b3af38a862e9af01c09938b",
+        "signature": "e4fc404d66dc28f7f8e1fdbb2b336cf370e2a94be9267d1e5c706958d0dd665b",
         "affectsGlobalScope": false
       },
       "./src/sandbox/component-information.ts": {
@@ -2217,8 +2232,8 @@
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/debug/index.d.ts": {
-        "version": "9ea00c8a8f143d175d9c947e4c3149547d781ebbcc65fbf14d21a61dd585a2c4",
-        "signature": "9ea00c8a8f143d175d9c947e4c3149547d781ebbcc65fbf14d21a61dd585a2c4",
+        "version": "37a4038e69fb61043e363140b58d7d517d6f99f274adad0774f226ea2ee8c903",
+        "signature": "37a4038e69fb61043e363140b58d7d517d6f99f274adad0774f226ea2ee8c903",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/estree/index.d.ts": {
@@ -6657,6 +6672,11 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../common/lib/utils/diff/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/ot/index.d.ts"
+      ],
       "./node_modules/@types/istanbul-reports/index.d.ts": [
         "../../node_modules/@types/istanbul-lib-report/index.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -6802,8 +6822,7 @@
         "../../node_modules/@types/ot/index.d.ts",
         "./src/common/fibers.ts",
         "./src/common/rpc/disposable.ts",
-        "./src/common/rpc/event.ts",
-        "./src/editor/span-subscription.ts"
+        "./src/common/rpc/event.ts"
       ],
       "./src/editor/index.ts": [
         "../../node_modules/@types/lodash-es/index.d.ts",
@@ -6824,6 +6843,7 @@
         "./src/common/fibers.ts",
         "./src/common/proxies.ts",
         "./src/common/rpc/disposable.ts",
+        "./src/common/rpc/event.ts",
         "./src/editor/editor-api.ts",
         "./src/editor/index.ts",
         "./src/editor/span-subscription.ts"
@@ -6832,11 +6852,24 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/@types/ot/index.d.ts",
+        "../common/lib/utils/diff/index.d.ts",
         "./src/common/fibers.ts",
         "./src/common/rpc/disposable.ts",
         "./src/common/rpc/event.ts",
         "./src/common/utils/code-location.ts",
-        "./src/editor/editor-api.ts"
+        "./src/editor/editor-api.ts",
+        "./src/editor/transform.ts"
+      ],
+      "./src/editor/transform.test.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/ot/index.d.ts",
+        "./src/editor/transform.ts"
+      ],
+      "./src/editor/transform.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/ot/index.d.ts"
       ],
       "./src/index.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -10359,6 +10392,11 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../common/lib/utils/diff/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/ot/index.d.ts"
+      ],
       "./node_modules/@types/istanbul-reports/index.d.ts": [
         "../../node_modules/@types/istanbul-lib-report/index.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -10438,8 +10476,10 @@
         "./src/common/fibers.ts",
         "./src/common/proxies.ts",
         "./src/common/rpc/disposable.ts",
+        "./src/common/rpc/event.ts",
         "./src/editor/editor-api.ts",
-        "./src/editor/index.ts"
+        "./src/editor/index.ts",
+        "./src/editor/span-subscription.ts"
       ],
       "./src/editor/span-subscription.ts": [
         "../../node_modules/@types/ot/index.d.ts",
@@ -10447,6 +10487,9 @@
         "./src/common/rpc/disposable.ts",
         "./src/common/rpc/event.ts",
         "./src/editor/editor-api.ts"
+      ],
+      "./src/editor/transform.ts": [
+        "../../node_modules/@types/ot/index.d.ts"
       ],
       "./src/sandbox/component-information.ts": [
         "./src/common/fibers.ts",
@@ -11042,96 +11085,6 @@
             "messageText": "All declarations of 'publicKey' must have identical modifiers.",
             "category": 1,
             "code": 2687
-          },
-          {
-            "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
-            "start": 190327,
-            "length": 8,
-            "messageText": "Duplicate identifier 'FormData'.",
-            "category": 1,
-            "code": 2300,
-            "relatedInformation": [
-              {
-                "file": "../../node_modules/@types/react-native/globals.d.ts",
-                "start": 1349,
-                "length": 8,
-                "messageText": "'FormData' was also declared here.",
-                "category": 3,
-                "code": 6203
-              }
-            ]
-          },
-          {
-            "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
-            "start": 190772,
-            "length": 8,
-            "messageText": "Duplicate identifier 'FormData'.",
-            "category": 1,
-            "code": 2300,
-            "relatedInformation": [
-              {
-                "file": "../../node_modules/@types/react-native/globals.d.ts",
-                "start": 1349,
-                "length": 8,
-                "messageText": "'FormData' was also declared here.",
-                "category": 3,
-                "code": 6203
-              }
-            ]
-          },
-          {
-            "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
-            "start": 803004,
-            "length": 9,
-            "messageText": "Cannot redeclare block-scoped variable 'navigator'.",
-            "category": 1,
-            "code": 2451,
-            "relatedInformation": [
-              {
-                "file": "../../node_modules/@types/react-native/index.d.ts",
-                "start": 318053,
-                "length": 9,
-                "messageText": "'navigator' was also declared here.",
-                "category": 3,
-                "code": 6203
-              }
-            ]
-          },
-          {
-            "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
-            "start": 822528,
-            "length": 11,
-            "messageText": "Duplicate identifier 'RequestInfo'.",
-            "category": 1,
-            "code": 2300,
-            "relatedInformation": [
-              {
-                "file": "../../node_modules/@types/react-native/globals.d.ts",
-                "start": 2920,
-                "length": 11,
-                "messageText": "'RequestInfo' was also declared here.",
-                "category": 3,
-                "code": 6203
-              }
-            ]
-          },
-          {
-            "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
-            "start": 835753,
-            "length": 26,
-            "messageText": "Duplicate identifier 'XMLHttpRequestResponseType'.",
-            "category": 1,
-            "code": 2300,
-            "relatedInformation": [
-              {
-                "file": "../../node_modules/@types/react-native/globals.d.ts",
-                "start": 7919,
-                "length": 26,
-                "messageText": "'XMLHttpRequestResponseType' was also declared here.",
-                "category": 3,
-                "code": 6203
-              }
-            ]
           }
         ]
       ],
@@ -11284,42 +11237,6 @@
           },
           {
             "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
-            "start": 55280,
-            "length": 8,
-            "messageText": "Duplicate identifier 'FormData'.",
-            "category": 1,
-            "code": 2300,
-            "relatedInformation": [
-              {
-                "file": "../../node_modules/@types/react-native/globals.d.ts",
-                "start": 1349,
-                "length": 8,
-                "messageText": "'FormData' was also declared here.",
-                "category": 3,
-                "code": 6203
-              }
-            ]
-          },
-          {
-            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
-            "start": 55725,
-            "length": 8,
-            "messageText": "Duplicate identifier 'FormData'.",
-            "category": 1,
-            "code": 2300,
-            "relatedInformation": [
-              {
-                "file": "../../node_modules/@types/react-native/globals.d.ts",
-                "start": 1349,
-                "length": 8,
-                "messageText": "'FormData' was also declared here.",
-                "category": 3,
-                "code": 6203
-              }
-            ]
-          },
-          {
-            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
             "start": 55725,
             "length": 8,
             "messageText": "Subsequent variable declarations must have the same type.  Variable 'FormData' must be of type '{ new (form?: HTMLFormElement | undefined): FormData; prototype: FormData; }', but here has type '{ new (): FormData; prototype: FormData; }'.",
@@ -11340,7 +11257,7 @@
             "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
             "start": 80888,
             "length": 6,
-            "messageText": "Subsequent property declarations must have the same type.  Property 'canvas' must be of type 'HTMLCanvasElement | OffscreenCanvas', but here has type 'OffscreenCanvas'.",
+            "messageText": "Subsequent property declarations must have the same type.  Property 'canvas' must be of type 'OffscreenCanvas | HTMLCanvasElement', but here has type 'OffscreenCanvas'.",
             "category": 1,
             "code": 2717,
             "relatedInformation": [
@@ -11376,7 +11293,7 @@
             "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
             "start": 198506,
             "length": 6,
-            "messageText": "Subsequent property declarations must have the same type.  Property 'canvas' must be of type 'HTMLCanvasElement | OffscreenCanvas', but here has type 'OffscreenCanvas'.",
+            "messageText": "Subsequent property declarations must have the same type.  Property 'canvas' must be of type 'OffscreenCanvas | HTMLCanvasElement', but here has type 'OffscreenCanvas'.",
             "category": 1,
             "code": 2717,
             "relatedInformation": [
@@ -11455,24 +11372,6 @@
               {
                 "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
                 "start": 803004,
-                "length": 9,
-                "messageText": "'navigator' was also declared here.",
-                "category": 3,
-                "code": 6203
-              }
-            ]
-          },
-          {
-            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
-            "start": 249720,
-            "length": 9,
-            "messageText": "Cannot redeclare block-scoped variable 'navigator'.",
-            "category": 1,
-            "code": 2451,
-            "relatedInformation": [
-              {
-                "file": "../../node_modules/@types/react-native/index.d.ts",
-                "start": 318053,
                 "length": 9,
                 "messageText": "'navigator' was also declared here.",
                 "category": 3,
@@ -11624,6 +11523,7 @@
       "../codesandbox-api/dist/types/errors/index.d.ts",
       "../codesandbox-api/dist/types/protocol/protocol.d.ts",
       "../codesandbox-api/dist/types/typings/codesandbox.d.ts",
+      "../common/lib/utils/diff/index.d.ts",
       "./node_modules/@types/istanbul-reports/index.d.ts",
       "./node_modules/@types/prettier/index.d.ts",
       "./node_modules/tslib/tslib.d.ts",
@@ -11684,12 +11584,20 @@
         [
           {
             "file": "./src/common/react/sandbox.ts",
-            "start": 3165,
+            "start": 3229,
             "length": 4,
             "messageText": "'path' is declared but its value is never read.",
             "category": 1,
             "code": 6133,
             "reportsUnnecessary": true
+          },
+          {
+            "file": "./src/common/react/sandbox.ts",
+            "start": 3770,
+            "length": 18,
+            "code": 2339,
+            "category": 1,
+            "messageText": "Property 'rendererInterfaces' does not exist on type '{ getFiberRoots(rendererId: number): Set<ReactFiberRootNode>; renderers: Map<number, Renderer>; }'."
           }
         ]
       ],
@@ -11736,26 +11644,22 @@
       ],
       "./src/common/rpc/worker/connection.ts",
       "./src/common/utils/code-location.ts",
-      [
-        "./src/editor/editor-api.ts",
-        [
-          {
-            "file": "./src/editor/editor-api.ts",
-            "start": 182,
-            "length": 55,
-            "messageText": "'SpanSubscription' is declared but its value is never read.",
-            "category": 1,
-            "code": 6133,
-            "reportsUnnecessary": true
-          }
-        ]
-      ],
+      "./src/editor/editor-api.ts",
       [
         "./src/editor/index.ts",
         [
           {
             "file": "./src/editor/index.ts",
-            "start": 6422,
+            "start": 129,
+            "length": 21,
+            "messageText": "'ComponentInstanceData' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          },
+          {
+            "file": "./src/editor/index.ts",
+            "start": 7230,
             "length": 13,
             "messageText": "'orderedFibers' is declared but its value is never read.",
             "category": 1,
@@ -11764,7 +11668,7 @@
           },
           {
             "file": "./src/editor/index.ts",
-            "start": 6461,
+            "start": 7269,
             "length": 12,
             "messageText": "'currentFiber' is declared but its value is never read.",
             "category": 1,
@@ -11778,7 +11682,7 @@
         [
           {
             "file": "./src/editor/instance.ts",
-            "start": 78,
+            "start": 91,
             "length": 5,
             "messageText": "'Fiber' is declared but its value is never read.",
             "category": 1,
@@ -11787,7 +11691,7 @@
           },
           {
             "file": "./src/editor/instance.ts",
-            "start": 1026,
+            "start": 777,
             "length": 5,
             "messageText": "Property 'model' is declared but its value is never read.",
             "category": 1,
@@ -11796,25 +11700,40 @@
           },
           {
             "file": "./src/editor/instance.ts",
-            "start": 1094,
-            "length": 9,
-            "messageText": "Property 'editorApi' is declared but its value is never read.",
+            "start": 3314,
+            "length": 5,
+            "messageText": "Property 'model' is declared but its value is never read.",
             "category": 1,
             "code": 6138,
             "reportsUnnecessary": true
           },
           {
             "file": "./src/editor/instance.ts",
-            "start": 1297,
-            "length": 12,
-            "messageText": "'subscription' is declared but its value is never read.",
+            "start": 3382,
+            "length": 9,
+            "messageText": "Property 'editorApi' is declared but its value is never read.",
+            "category": 1,
+            "code": 6138,
+            "reportsUnnecessary": true
+          }
+        ]
+      ],
+      [
+        "./src/editor/span-subscription.ts",
+        [
+          {
+            "file": "./src/editor/span-subscription.ts",
+            "start": 3376,
+            "length": 19,
+            "messageText": "'getOtRangeModifiers' is declared but its value is never read.",
             "category": 1,
             "code": 6133,
             "reportsUnnecessary": true
           }
         ]
       ],
-      "./src/editor/span-subscription.ts",
+      "./src/editor/transform.test.ts",
+      "./src/editor/transform.ts",
       "./src/index.ts",
       "./src/sandbox/component-information.ts",
       "./src/sandbox/highlight.ts",

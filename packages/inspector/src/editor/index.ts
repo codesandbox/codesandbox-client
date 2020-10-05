@@ -60,12 +60,12 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
     this.openedModels.set(resource.path, model);
 
     this.toDispose.push(
-      model.onDidChangeContent(() => {
-        this.bridge.analyzeComponentLocations(
-          model.getResource().path,
-          model.getValue(),
-          model.getVersionId()
-        );
+      model.onWillDispose(() => {
+        const instances = this.instances.get(resource.path);
+        if (instances) {
+          instances.forEach(val => val.dispose());
+        }
+        this.instances.delete(resource.path);
       })
     );
 
@@ -74,7 +74,19 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
       model.getValue(),
       model.getVersionId()
     );
-    await this.getComponentInstances(resource.path);
+    await this.getComponentInstances(resource.path, model);
+
+    this.toDispose.push(
+      model.onDidChangeContent(() => {
+        this.bridge
+          .analyzeComponentLocations(
+            resource.path,
+            model.getValue(),
+            model.getVersionId()
+          )
+          .then(() => this.getComponentInstances(resource.path, model));
+      })
+    );
   }
 
   $fiberChanged(id: string, fiber: Fiber) {
@@ -149,7 +161,7 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
     return componentInstance;
   }
 
-  public getFiberFromInstance(instance: ComponentInstanceModel): Fiber | null {
+  public getFiberFromInstance(instance: IComponentInstanceModel): Fiber | null {
     const location = instance.getInstanceInformation().location;
     for (const [_key, fiber] of this.fibers) {
       if (isSameStart(fiber.location.codePosition, location.codePosition)) {
@@ -193,23 +205,42 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
     this.sandboxProxy.$stopHighlightFiber(id);
   }
 
-  public async getComponentInstances(
-    path: string
-  ): Promise<ComponentInstanceData[]> {
+  private async getComponentInstances(
+    path: string,
+    model: IModel
+  ): Promise<any> {
     const result = await this.bridge.getComponentInstanceInformation(path);
-    this.instances.set(
-      path,
-      result.map(
-        instance =>
-          new ComponentInstanceModel(
-            instance,
-            this.openedModels.get(path)!,
-            this.sandboxProxy,
-            this.editorApi,
-            this
-          )
-      )
-    );
+    if (model.isDisposed) {
+      return;
+    }
+
+    const existingInstances = this.instances.get(path);
+
+    if (existingInstances) {
+      const orderChanged = existingInstances.some(
+        (inst, i) =>
+          !result[i] || result[i].name !== inst.getInstanceInformation().name
+      );
+      if (!orderChanged) {
+        result.forEach((inst, i) => {
+          existingInstances[i].updateModel(inst);
+        });
+      }
+    } else {
+      this.instances.set(
+        path,
+        result.map(
+          instance =>
+            new ComponentInstanceModel(
+              instance,
+              model,
+              this.sandboxProxy,
+              this.editorApi,
+              this
+            )
+        )
+      );
+    }
     return result;
   }
 

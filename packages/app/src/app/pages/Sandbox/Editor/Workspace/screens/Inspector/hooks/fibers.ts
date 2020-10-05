@@ -13,14 +13,9 @@ export function useInspectorFibers(
   ] = React.useState<IComponentInstanceModel | null>(
     inspectorStateService.getSelectedInstance()
   );
-  const selectFiber = (id: string) => {
-    inspectorStateService.selectFiber(id);
-  };
 
   React.useEffect(() => {
-    inspectorStateService.getFibers().then(fibers => {
-      setFibers(fibers);
-    });
+    inspectorStateService.getFibers().then(setFibers);
     const selectedListener = inspectorStateService.onSelectionChanged(
       instance => {
         setSelectedInstance(instance);
@@ -30,7 +25,7 @@ export function useInspectorFibers(
     return () => {
       selectedListener.dispose();
     };
-  }, []);
+  }, [inspectorStateService]);
 
   const selectedFiber = React.useMemo(() => {
     if (!selectedInstance) {
@@ -38,7 +33,7 @@ export function useInspectorFibers(
     }
 
     return inspectorStateService.getFiberFromInstance(selectedInstance);
-  }, [selectedInstance]);
+  }, [selectedInstance, inspectorStateService]);
 
   return { fibers, selectedFiber };
 }

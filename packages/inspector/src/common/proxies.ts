@@ -9,6 +9,8 @@ export interface ISandboxProxy {
   $getFiberComponentInformation(
     id: string
   ): Promise<StaticComponentInformation>;
+
+  $setFiberProp(id: string, name: string, value: any): Promise<void>;
 }
 
 export interface IEditorProxy {

@@ -9,7 +9,7 @@ type KnobsProps = {
 };
 
 export const Knobs = ({ inspectorStateService }: KnobsProps) => {
-  const { selectedInstance, componentInfo } = useInspectorKnobs(
+  const { selectedInstance, selectedProps, componentInfo } = useInspectorKnobs(
     inspectorStateService
   );
 
@@ -17,7 +17,7 @@ export const Knobs = ({ inspectorStateService }: KnobsProps) => {
     return null;
   }
 
-  const { name, props } = selectedInstance.getInstanceInformation();
+  const { name } = selectedInstance.getInstanceInformation();
 
   return (
     <Stack gap={2} direction="vertical" padding={3} style={{ marginTop: -16 }}>
@@ -26,33 +26,15 @@ export const Knobs = ({ inspectorStateService }: KnobsProps) => {
       </Text>
 
       {componentInfo &&
+        selectedProps &&
         componentInfo.props.map(propsSourceInformation => {
-          const instancePropInfo = selectedInstance.getInstanceInformation()
-            .props[propsSourceInformation.name];
+          const instancePropInfo = selectedProps[propsSourceInformation.name];
           return (
             <BaseKnob
-              onClick={() => {
-                if (instancePropInfo) {
-                  // const range = componentRangeToViewRange(
-                  //   instancePropInfo.valuePosition
-                  // );
-                  // effects.vscode.highlightRange(
-                  //   selectedInstance.location.path,
-                  //   range,
-                  //   '#6CC7F650',
-                  //   'inspector-value'
-                  // );
-                  // console.log(
-                  //   effects.vscode.subscribeToSpan(
-                  //     selectedInstance.location.path,
-                  //     range
-                  //   )
-                  // );
-                }
-              }}
               disabled={!instancePropInfo}
               key={propsSourceInformation.name}
-              label={propsSourceInformation.name}
+              name={propsSourceInformation.name}
+              componentInstance={selectedInstance}
             />
           );
         })}

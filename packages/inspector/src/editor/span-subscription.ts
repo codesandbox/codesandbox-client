@@ -1,12 +1,15 @@
 import { Selection, TextOperation } from 'ot';
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+
 import { Disposable } from '../common/rpc/disposable';
 import { IModel } from './editor-api';
-import { CodeRange } from '../common/fibers';
+import { CodeRange, CodeSelection } from '../common/fibers';
 import {
   lineAndColumnToIndex,
   indexToLineAndColumn,
 } from '../common/utils/code-location';
 import { Emitter } from '../common/rpc/event';
+import { transform } from './transform';
 
 function rangeEquals(a: CodeRange, b: CodeRange) {
   return (
@@ -74,6 +77,43 @@ export class SpanSubscription extends Disposable {
     this.textSpan = model.getValueInRange(range);
   }
 
+  /**
+   * Get the content of the span
+   */
+  public getContent() {
+    return this.textSpan;
+  }
+
+  /**
+   * Change the content of this span. We generate the smallest possible change
+   * and apply it to the current span, this can change the range and the content.
+   */
+  public setContent(code: string) {
+    const fullCode = this.model.getValue();
+    const codeSelection: CodeSelection = {
+      positionLineNumber: this.range.endLineNumber,
+      positionColumnNumber: this.range.endColumnNumber,
+      selectionStartLineNumber: this.range.startLineNumber,
+      selectionStartColumnNumber: this.range.startColumnNumber,
+    };
+
+    const diffOperation = getTextOperation(this.textSpan, code);
+    const operation = new TextOperation();
+    operation.retain(this.otRange.anchor);
+    diffOperation.ops.forEach(op => {
+      if (TextOperation.isDelete(op)) {
+        operation.delete(op as number);
+      } else if (TextOperation.isInsert(op)) {
+        operation.insert(op as string);
+      } else if (TextOperation.isRetain(op)) {
+        operation.retain(op as number);
+      }
+    });
+    operation.retain(fullCode.length - this.otRange.head);
+
+    this.model.pushEditOperation([codeSelection], operation);
+  }
+
   private getOtRangeModifiers() {
     if (
       this.stickinessBehaviour ===
@@ -96,8 +136,10 @@ export class SpanSubscription extends Disposable {
   }
 
   private handleContentChange(change: TextOperation) {
-    const { preTransform, postTransform } = this.getOtRangeModifiers();
-    this.otRange = postTransform(preTransform(this.otRange).transform(change));
+    // const { preTransform, postTransform } = this.getOtRangeModifiers();
+    // this.otRange = postTransform(preTransform(this.otRange).transform(change));
+    const nn = transform(change, [this.otRange.anchor, this.otRange.head]);
+    this.otRange = new Selection.Range(nn[0], nn[1]);
 
     const lines = this.model.getLinesContent();
     const rangeStart = indexToLineAndColumn(lines, this.otRange.anchor);

@@ -17,6 +17,13 @@ export interface CodeRange {
   endColumnNumber: number;
 }
 
+export interface CodeSelection {
+  selectionStartLineNumber: number;
+  selectionStartColumnNumber: number;
+  positionLineNumber: number;
+  positionColumnNumber: number;
+}
+
 export interface CodeLocation {
   path: string;
   codePosition: CodeRange;

@@ -1,8 +1,7 @@
 import { TextOperation } from 'ot';
-import { CodeRange } from '../common/fibers';
+import { CodeRange, CodeSelection } from '../common/fibers';
 import { Disposable } from '../common/rpc/disposable';
 import { Event } from '../common/rpc/event';
-import { SpanSubscription } from './span-subscription';
 
 export type Resource = {
   path: string;
@@ -26,6 +25,11 @@ export interface IModel extends Disposable {
    * Get the unique version number of the document. On every change we increment the number (even for undos/redos)
    */
   getVersionId(): number;
+
+  pushEditOperation(
+    selections: CodeSelection[],
+    operation: TextOperation
+  ): CodeSelection[] | null;
 
   onDidChangeContent: Event<OnDidChangeContentEvent>;
 }

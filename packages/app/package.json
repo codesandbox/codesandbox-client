@@ -189,7 +189,7 @@
     "react-color": "^2.17.3",
     "react-content-loader": "^4.2.2",
     "react-day-picker": "^7.2.4",
-    "react-devtools-inline": "^4.4.0",
+    "react-devtools-inline": "^4.8.2",
     "react-dnd": "^9.4.0",
     "react-dnd-html5-backend": "^9.4.0",
     "react-docgen": "^5.3.0",
