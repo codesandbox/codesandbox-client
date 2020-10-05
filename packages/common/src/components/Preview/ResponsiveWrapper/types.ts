@@ -8,7 +8,6 @@ export type ResponsiveWrapperProps = {
         defaultPresets: { [name: string]: [number, number] };
         scale: number;
         resolution: [number, number];
-        editMode: boolean;
       };
       mode: 'responsive' | null;
     };

@@ -8,7 +8,6 @@ type State = {
     presets: Presets;
     scale: number;
     resolution: [number, number];
-    editMode: boolean;
   };
   mode: 'responsive' | null;
 };
@@ -28,7 +27,6 @@ export const state: State = {
         ? rootState.editor.workspaceConfig['responsive-preview']
         : defaultPresets
     ),
-    editMode: true,
     scale: 100,
     resolution: [320, 675],
   },

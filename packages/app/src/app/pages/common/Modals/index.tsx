@@ -33,6 +33,7 @@ import { TeamInviteModal } from './TeamInviteModal';
 import { DeletePreset } from './DeletePreset';
 import UploadModal from './UploadModal';
 import { AddPreset } from './AddPreset';
+import { EditPresets } from './EditPresets';
 
 const modals = {
   preferences: {
@@ -94,6 +95,10 @@ const modals = {
   addPreset: {
     Component: AddPreset,
     width: 400,
+  },
+  editPresets: {
+    Component: EditPresets,
+    width: 600,
   },
   emptyTrash: {
     Component: EmptyTrash,

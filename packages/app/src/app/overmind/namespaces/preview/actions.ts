@@ -36,7 +36,7 @@ export const openAddPresetModal: Action = ({ state }) => {
 };
 
 export const toggleEditPresets: Action = ({ state }) => {
-  state.preview.responsive.editMode = !state.preview.responsive.editMode;
+  state.currentModal = 'editPresets';
 };
 
 export const deletePreset: AsyncAction = async ({ state, actions }) => {
