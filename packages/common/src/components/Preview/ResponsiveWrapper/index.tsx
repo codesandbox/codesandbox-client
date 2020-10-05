@@ -112,8 +112,6 @@ export const ResponsiveWrapper = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolution, wrapperWidth, wrapperHeight]);
 
-  if (!on) return children;
-
   const [resolutionWidth, resolutionHeight] = resolution;
 
   const exists = Boolean(
@@ -122,7 +120,11 @@ export const ResponsiveWrapper = ({
 
   return (
     <>
-      <Wrapper paddingTop={4} paddingX={6}>
+      <Wrapper
+        paddingTop={4}
+        paddingX={6}
+        style={{ display: on ? 'block' : 'none' }}
+      >
         <Stack justify="center" paddingBottom={2} align="center" gap={2}>
           <Stack gap={2} align="center">
             {exists && canChangePresets ? (
@@ -192,7 +194,11 @@ export const ResponsiveWrapper = ({
           />
         </Stack>
       </Wrapper>
-      <Styled scale={scale} width={width} height={height}>
+      <Styled
+        scale={on ? scale : 1}
+        width={on ? width : '100%'}
+        height={on ? height : '100%'}
+      >
         <div>{children}</div>
       </Styled>
     </>
