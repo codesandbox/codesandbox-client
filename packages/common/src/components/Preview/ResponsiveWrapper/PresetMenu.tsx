@@ -25,6 +25,17 @@ export const PresetMenu = ({
     Object.keys(presets).find(preset => isEqual(presets[preset], resolution)) ||
     'Custom';
 
+  const sortedPresetsByWidth = Object.keys(presets).sort((a, b) => {
+    if (presets[a][0] > presets[b][0]) {
+      return 1;
+    }
+    if (presets[a][0] < presets[b][0]) {
+      return -1;
+    }
+
+    return 0;
+  });
+
   return (
     <Menu>
       <Menu.Button
@@ -40,7 +51,7 @@ export const PresetMenu = ({
         </Element>
       </Menu.Button>
       <Menu.List>
-        {Object.keys(presets).map(preset => (
+        {sortedPresetsByWidth.map(preset => (
           <Menu.Item
             key={preset}
             field={preset}
