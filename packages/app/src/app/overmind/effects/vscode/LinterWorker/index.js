@@ -71,6 +71,8 @@ const allRules = {
     .default,
   '@typescript-eslint/no-useless-constructor': require('@typescript-eslint/eslint-plugin/dist/rules/no-useless-constructor')
     .default,
+  '@typescript-eslint/no-unused-expressions': require('@typescript-eslint/eslint-plugin/dist/rules/no-unused-expressions')
+    .default,
 };
 /* eslint-enable global-require */
 
