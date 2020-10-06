@@ -20,6 +20,7 @@ import {
   Jobs,
   ImageGallery,
   HeroSection,
+  TeamMemberRandom,
 } from './_elements';
 
 const Careers = ({
@@ -103,9 +104,60 @@ const Careers = ({
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
           `}
         >
+          <TeamMemberRandom
+            css={`
+              top: 200px;
+              left: -70px;
+              transform: rotate(-19.35deg);
+            `}
+          />
+          <TeamMemberRandom
+            css={`
+              top: 450px;
+              left: -90px;
+              opacity: 0.9;
+              transform: rotate(-20.49deg);
+            `}
+          />
+          <TeamMemberRandom
+            css={`
+              width: 50px;
+              height: 50px;
+              top: 700px;
+              left: -50px;
+              opacity: 0.7;
+              transform: rotate(-26.13deg);
+            `}
+          />
+          <TeamMemberRandom
+            css={`
+              top: 200px;
+              right: -70px;
+              transform: rotate(-11.4deg);
+            `}
+          />
+          <TeamMemberRandom
+            css={`
+              width: 55px;
+              height: 55px;
+              top: 450px;
+              right: -64px;
+              transform: rotate(26.25deg);
+              opacity: 0.8;
+            `}
+          />
+          <TeamMemberRandom
+            css={`
+              top: 760px;
+              right: -45px;
+              transform: rotate(18.44deg);
+            `}
+          />
           <PageTitle>Our Values</PageTitle>
+
           <TitleDescription
             css={`
               width: 640px;

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { RandomTeamMember } from '../../components/TeamMember';
 
 export const PageTitle = styled.h1`
   font-weight: 900;
@@ -91,4 +92,23 @@ export const ImageGallery = styled.div`
       display: none;
     }
   }
+`;
+
+export const TeamMemberRandom = styled(RandomTeamMember).attrs(() => ({
+  border: true,
+}))`
+  position: absolute;
+  border-width: 2px;
+  width: 55px;
+  height: 55px;
+  top: 450px;
+  right: -64px;
+  transform: rotate(26.25deg);
+  opacity: 0.8;
+  width: 70px;
+  height: 70px;
+
+  @media screen and (max-width: 970px) {
+    display: none;
+  } ;
 `;
