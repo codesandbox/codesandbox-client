@@ -1,14 +1,9 @@
 import React from 'react';
+import { Link } from 'gatsby';
 
 import Layout from '../../components/layout';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
-import {
-  ContentBlock,
-  Banner,
-  TitleWrapper,
-  Wrapper,
-} from '../embeds/_elements';
-import { H2 } from '../../components/Typography';
+import { Banner, TitleWrapper, Wrapper } from '../embeds/_elements';
 
 import KP from './images/kp.svg';
 import ArchesCapital from './images/arches-capital.svg';
@@ -20,31 +15,26 @@ import Sourcegraph from './images/sourcegraph.svg';
 import company from '../../assets/images/company.png';
 import company2x from '../../assets/images/company@2x.png';
 
-import {
-  Title,
-  SeoText,
-  Border,
-  Investors,
-  AngelInvestors,
-  HiringLink,
-} from './_elements';
+import { Title, Text, Investors, AngelInvestors } from './_elements';
+import TeamMember from '../../components/TeamMember';
 
 export default () => (
   <Layout>
-    <TitleAndMetaTags title="Accelerating Web Development - CodeSandbox" />
+    <TitleAndMetaTags title="Our Mission - CodeSandbox" />
     <Wrapper>
       <TitleWrapper>
-        <Title>Accelerating Web Development</Title>
+        <Title>Our Mission</Title>
       </TitleWrapper>
-      <SeoText>
+      <Text>
         Founded in 2017 by Ives van Hoorne and Bas Buursma, our mission is to
-        make web development faster. By removing complexity we enable web
-        developers to be more productive. By simplifying collaboration we make
-        it easier for teams to work on code together.
-      </SeoText>
+        enable creators to build and share their ideas. By removing complexity
+        and simplifying collaboration, we want to allow everyone to create with
+        code.
+      </Text>
       <Banner
         css={`
           height: auto;
+          margin-bottom: 258px;
         `}
       >
         <img
@@ -56,123 +46,144 @@ export default () => (
           alt="Company"
         />
       </Banner>
-
-      <ContentBlock>
-        <div>
-          <h3>Code, not infrastructure</h3>
-          We handle the development environment, taking on setup, tooling, and
-          provisioning, so it’s as fast as possible to start and build projects.
-        </div>
-
-        <div>
-          <h3>Shareable by default</h3>
-          We create solutions that enable developers to work from anywhere and
-          teams to build together in new and more effective ways.
-        </div>
-
-        <div>
-          <h3>Work like local</h3>
-          We equip developers with a local editor experience that’s familiar and
-          integrated with popular developer tools so the process of creation is
-          seamless.
-        </div>
-      </ContentBlock>
-      <Border />
-      <H2
+      <Title>Our Team</Title>
+      <Text
         css={`
-          text-align: center;
+          height: auto;
+          margin-bottom: 258px;
         `}
       >
-        Our Investors and Advisors
-      </H2>
-      <Investors>
-        <div>
-          <img src={KP} alt="KP" />
-        </div>
-        <div>
-          <img src={ArchesCapital} alt="ArchesCapital" />
-        </div>
-      </Investors>
-      <AngelInvestors>
-        <div>
-          <img src={Framer} alt="Framer" />
-          <b>Koen Bok</b>
-          Founder & CEO
-        </div>
-        <div>
-          <img src={Figma} alt="Figma" />
-          <b>Dylan Field</b>
-          Founder & CEO
-        </div>
-        <div>
-          <img src={Netlify} alt="Netlify" />
-          <b>Christian Bach</b>
-          Founder & President
-        </div>
-        <div>
-          <div
-            css={`
-              height: 97px;
-              margin-bottom: 1.625rem;
-            `}
-          />
-          <b>Petri Parvinen</b>
-          Angel Investor
-        </div>
-        <div>
-          <div
-            css={`
-              height: 97px;
-              margin-bottom: 1.625rem;
-            `}
-          />
-          <b>Marco Jansen</b>
-          Founder Catawiki
-        </div>
-        <div>
-          <img src={Netlify} alt="Netlify" />
-          <b>Mathias Biilmann</b>
-          Founder & CEO
-        </div>
-        <div>
-          <img src={Sourcegraph} alt="Sourcegraph" />
-          <b>Quinn Slack</b>
-          Founder & CEO
-        </div>
-        <div>
-          <img
-            src={Vercel}
-            alt="Vercel"
-            css={`
-              height: 97px;
-            `}
-          />
-          <b>Guillermo Rauch</b>
-          Founder & CEO
-        </div>
-      </AngelInvestors>
-      <Border />
-      <TitleWrapper>
-        <Title
+        We’re a small but growing remote-first team of creative professionals.
+        Although our headquarters are in Amsterdam, the Netherlands, most of our
+        staff work from home in locations spread around the world.
+        <Link
+          to={`/jobs`}
           css={`
-            text-align: center;
-            width: 100%;
-            margin-bottom: 2rem;
+            display: block;
+            margin-top: 40px;
+            text-decoration: none;
+            color: #0971f1;
+            font-weight: 700;
           `}
         >
-          Made by you, and the CodeSandbox team
-        </Title>
-      </TitleWrapper>
-      <SeoText
+          View open positions
+        </Link>
+      </Text>
+      <div
         css={`
-          text-align: center;
+          margin-bottom: 371px;
+          display: grid;
+          grid-template-columns: repeat(6, 102px);
+          grid-column-gap: 95px;
+          grid-row-gap: 55px;
         `}
       >
-        We're proudly open-source with more than 200 contributors and counting.
-        <br />
-        They collaborate with our growing, remote-first team.
-      </SeoText>
-      <HiringLink to="/jobs"> We’re Hiring!</HiringLink>
+        <TeamMember name="ives" />
+        <TeamMember name="bas" />
+        <TeamMember name="bogdan" />
+        <TeamMember name="oskar" />
+        <TeamMember name="sara" />
+        <TeamMember name="danny" />
+        <TeamMember name="gareth" />
+        <TeamMember name="sid" />
+        <TeamMember name="christian" />
+        <TeamMember name="sanne" />
+        <TeamMember name="andras" />
+      </div>
+      <div
+        css={`
+          margin-bottom: 325px;
+        `}
+      >
+        <Title>Our Investors </Title>
+        <Text>
+          Most recently we raised a Series A round, bringing our total funding
+          to $15M from top-tier VCs, operators, and Angels.
+        </Text>
+        <Investors>
+          <div>
+            <img src={KP} alt="KP" />
+          </div>
+          <div>
+            <img src={ArchesCapital} alt="ArchesCapital" />
+          </div>
+        </Investors>
+        <AngelInvestors>
+          <div>
+            <img src={Framer} alt="Framer" />
+            <b>Koen Bok</b>
+            Founder & CEO
+          </div>
+          <div>
+            <img src={Figma} alt="Figma" />
+            <b>Dylan Field</b>
+            Founder & CEO
+          </div>
+          <div>
+            <img src={Netlify} alt="Netlify" />
+            <b>Christian Bach</b>
+            Founder & President
+          </div>
+          <div>
+            <div
+              css={`
+                height: 97px;
+                margin-bottom: 1.625rem;
+              `}
+            />
+            <b>Petri Parvinen</b>
+            Angel Investor
+          </div>
+          <div>
+            <div
+              css={`
+                height: 97px;
+                margin-bottom: 1.625rem;
+              `}
+            />
+            <b>Marco Jansen</b>
+            Founder Catawiki
+          </div>
+          <div>
+            <img src={Netlify} alt="Netlify" />
+            <b>Mathias Biilmann</b>
+            Founder & CEO
+          </div>
+          <div>
+            <img src={Sourcegraph} alt="Sourcegraph" />
+            <b>Quinn Slack</b>
+            Founder & CEO
+          </div>
+          <div>
+            <img
+              src={Vercel}
+              alt="Vercel"
+              css={`
+                height: 97px;
+              `}
+            />
+            <b>Guillermo Rauch</b>
+            Founder & CEO
+          </div>
+        </AngelInvestors>
+      </div>
+      <Title>Press Kit</Title>
+      <Text>
+        Are you writing about us? Here are logos and product shots to download
+        and use in web and print media.
+        <a
+          href="#"
+          css={`
+            display: block;
+            margin-top: 40px;
+            text-decoration: none;
+            color: #0971f1;
+            font-weight: 700;
+          `}
+        >
+          Download Press Kit ↓
+        </a>
+      </Text>
     </Wrapper>
   </Layout>
 );

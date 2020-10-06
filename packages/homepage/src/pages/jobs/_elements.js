@@ -4,7 +4,7 @@ import { RandomTeamMember } from '../../components/TeamMember';
 export const PageTitle = styled.h1`
   font-weight: 900;
   font-size: 48px;
-  color: ${props => props.theme.white};
+  color: ${props => props.theme.homepage.white};
   margin-bottom: 40px;
 
   @media screen and (max-width: 900px) {
@@ -15,7 +15,7 @@ export const PageTitle = styled.h1`
 export const PageSubtitle = styled.h2`
   font-size: 23px;
   line-height: 1.5;
-  color: ${props => props.theme.white};
+  color: ${props => props.theme.homepage.white};
   font-weight: bold;
   margin-bottom: 24px;
 `;
@@ -24,7 +24,7 @@ export const TitleDescription = styled.p`
   font-weight: 400;
   font-size: 18px;
   line-height: 1.5;
-  color: ${props => props.theme.lightText};
+  color: ${props => props.theme.homepage.white};
   margin-bottom: 120px;
 `;
 
@@ -33,7 +33,7 @@ export const Job = styled.li`
   font-size: 19px;
   line-height: 33px;
   height: 64px;
-  color: ${props => props.theme.lightText};
+  color: ${props => props.theme.homepage.white};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -49,7 +49,7 @@ export const Jobs = styled.ul`
 
 export const HeroSection = styled.div`
   display: grid;
-  grid-template-columns: 522px 1fr;
+  grid-template-columns: 472px 1fr;
   grid-gap: 100px;
   margin-bottom: 140px;
 

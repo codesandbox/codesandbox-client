@@ -1,36 +1,26 @@
-import styled, { css } from 'styled-components';
-import { Link } from 'gatsby';
+import styled from 'styled-components';
 
 export const Title = styled.h1`
-  ${({ theme }) => css`
-    font-family: ${theme.homepage.appleFont};
-    font-weight: 500;
-    font-size: 2.5rem;
-    line-height: 3rem;
-    color: ${theme.homepage.white};
-    margin: 0.5rem 0;
-
-    ${theme.breakpoints.md} {
-      font-size: 1.5rem;
-      line-height: 1.2;
-      max-width: 80%;
-    }
-  `};
+  font-weight: 900;
+  font-size: 48px;
+  line-height: 57px;
+  text-align: center;
+  margin: auto;
+  margin-bottom: 40px;
+  max-width: 80%;
 `;
 
-export const SeoText = styled.p`
+export const Text = styled.p`
   color: ${props => props.theme.homepage.muted};
   font-style: normal;
-  font-weight: 500;
-  font-size: 1.4375rem;
-  line-height: 2rem;
-`;
-
-export const Border = styled.div`
-  height: 1px;
-  width: 100%;
-  background: ${props => props.theme.homepage.grey};
-  margin: 5rem 0;
+  font-weight: normal;
+  font-size: 28px;
+  line-height: 33px;
+  text-align: center;
+  width: 867px;
+  text-align: center;
+  margin: auto;
+  margin-bottom: 70px;
 `;
 
 export const Investors = styled.div`
@@ -87,17 +77,4 @@ export const AngelInvestors = styled.div`
       color: ${props => props.theme.homepage.white};
     }
   }
-`;
-
-export const HiringLink = styled(Link)`
-  font-weight: 500;
-  font-size: 32px;
-  line-height: 37px;
-  text-decoration: none;
-  text-align: center;
-  width: 100%;
-  display: block;
-  margin-top: 2.5rem;
-
-  color: ${props => props.theme.homepage.white};
 `;
