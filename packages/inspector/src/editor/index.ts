@@ -2,7 +2,6 @@ import { orderBy } from 'lodash-es';
 import { IEditorProxy, ISandboxProxy } from '../common/proxies';
 import {
   CodeLocation,
-  ComponentInstanceData,
   Fiber,
   StaticComponentInformation,
 } from '../common/fibers';

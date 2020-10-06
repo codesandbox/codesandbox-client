@@ -13,9 +13,9 @@ import { TextOperation } from 'ot';
  * Takes a model from VSCode, and converts it to a generic model fit for the purposes of CodeSandbox
  */
 export class TextModel extends Disposable implements IModel {
-  onDidChangeContentEmitter = new Emitter<OnDidChangeContentEvent>();
-  onDidChangeContent = this.onDidChangeContentEmitter.event;
-  lastKnownCode: string;
+  private onDidChangeContentEmitter = new Emitter<OnDidChangeContentEvent>();
+  public onDidChangeContent = this.onDidChangeContentEmitter.event;
+  private lastKnownCode: string;
 
   constructor(private vscodeModel: monaco.editor.ITextModel) {
     super();

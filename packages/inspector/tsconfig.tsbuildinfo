@@ -2127,7 +2127,7 @@
         "affectsGlobalScope": false
       },
       "./src/editor/index.ts": {
-        "version": "99f43d7c3b3d58076e84c5eb76f4dabbb636428c53c162e0f8797b9fe52d9cd7",
+        "version": "f024159dfd376e98742e041ddcd3e4176d1a8753c2ce533f3cf7c333db38e15f",
         "signature": "2ff47c353d3d3c96486e31ef7c6e8587bb01802ce99c80faf36d3ee2da33004e",
         "affectsGlobalScope": false
       },
@@ -11641,16 +11641,7 @@
         [
           {
             "file": "./src/editor/index.ts",
-            "start": 129,
-            "length": 21,
-            "messageText": "'ComponentInstanceData' is declared but its value is never read.",
-            "category": 1,
-            "code": 6133,
-            "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/editor/index.ts",
-            "start": 7230,
+            "start": 7205,
             "length": 13,
             "messageText": "'orderedFibers' is declared but its value is never read.",
             "category": 1,
@@ -11659,7 +11650,7 @@
           },
           {
             "file": "./src/editor/index.ts",
-            "start": 7269,
+            "start": 7244,
             "length": 12,
             "messageText": "'currentFiber' is declared but its value is never read.",
             "category": 1,
