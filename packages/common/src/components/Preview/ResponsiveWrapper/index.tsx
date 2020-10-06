@@ -165,6 +165,7 @@ export const ResponsiveWrapper = ({
                 value={isNaN(resolutionHeight) ? '' : resolutionHeight}
               />
             </Stack>
+            <Text size={3}>({Math.floor(scale * 100)}%)</Text>
           </Stack>
           <PresetMenu
             openEditPresets={actions.toggleEditPresets}

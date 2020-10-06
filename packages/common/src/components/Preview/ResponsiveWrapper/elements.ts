@@ -18,6 +18,8 @@ export const Styled = styled(Element)<{
   }
 
   > div > span {
+    min-width: 70px;
+    min-height: 130px;
     width: ${props => props.width};
     height: ${props => props.height};
     transition: all 300ms ease;
