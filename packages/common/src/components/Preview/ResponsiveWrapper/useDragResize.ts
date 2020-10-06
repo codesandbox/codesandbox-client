@@ -3,22 +3,15 @@ import { useEffect } from 'react';
 type useDragResizeProps = {
   resolution: [number, number];
   scale: number;
-  widthAndHeightResizer: [
-    size: { x?: number; y?: number },
-    setSize: (payload: any) => void
-  ];
+  resizer: [size: { x?: number; y?: number }, setSize: (payload: any) => void];
   setResolution: (resolution: [number, number]) => void;
-  setInputWidth: (w: number) => void;
-  setInputHeight: (h: number) => void;
 };
 
 export const useDragResize = ({
   resolution,
   scale,
-  widthAndHeightResizer: [size, setSize],
+  resizer: [size, setSize],
   setResolution,
-  setInputWidth,
-  setInputHeight,
 }: useDragResizeProps) => {
   useEffect(() => {
     if (size) {
@@ -33,8 +26,6 @@ export const useDragResize = ({
             ? (initialHeight - (size.y - event.clientY) * 2) * (2 - scale)
             : resolution[1];
         setResolution([width, height]);
-        setInputWidth(width);
-        setInputHeight(height);
       };
       const mouseUpListener: (event: MouseEvent) => void = () => {
         setSize(null);
@@ -51,5 +42,6 @@ export const useDragResize = ({
       };
     }
     return () => {};
+    // eslint-disable-next-line
   }, [size]);
 };

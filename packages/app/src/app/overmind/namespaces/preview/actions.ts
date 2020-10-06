@@ -22,7 +22,10 @@ export const setResolution: Action<[number, number]> = (
 ) => {
   if (!newResolution) return;
 
-  state.preview.responsive.resolution = json(newResolution);
+  state.preview.responsive.resolution = [
+    Math.round(newResolution[0]),
+    Math.round(newResolution[1]),
+  ];
 };
 
 export const openDeletePresetModal: Action = ({ state }) => {

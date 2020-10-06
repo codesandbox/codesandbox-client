@@ -1,7 +1,7 @@
 import { Stack, Text, Button, Input } from '@codesandbox/components';
 import { json } from 'overmind';
-import React, { useCallback, useEffect, useState } from 'react';
-import { isEqual, debounce } from 'lodash-es';
+import React, { useEffect, useState } from 'react';
+import { isEqual } from 'lodash-es';
 
 import { AddIcon, DeleteIcon, SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
@@ -9,6 +9,8 @@ import { PresetMenu } from './PresetMenu';
 import { useDragResize } from './useDragResize';
 import { Wrapper } from './elements';
 import { ResizeHandles } from './ResizeHandles';
+
+const MIN_SIZE = 100;
 
 export const ResponsiveWrapper = ({
   on,
@@ -19,11 +21,6 @@ export const ResponsiveWrapper = ({
   const {
     responsive: { scale: defaultScale, resolution, presets },
   } = state;
-  const [inputWidth, setInputWidth] = useState(resolution[0]);
-  const [inputHeight, setInputHeight] = useState(resolution[0]);
-  const [width, setWidth] = useState<string>('100%');
-  const [height, setHeight] = useState<string>('100%');
-  const [scale, setScale] = useState<number>(defaultScale / 100);
   const element = document.getElementById('sandbox-preview-container');
   const [wrapperWidth, setWrapperWidth] = useState(element?.clientWidth - 20);
   const [wrapperHeight, setWrapperHeight] = useState(
@@ -32,6 +29,23 @@ export const ResponsiveWrapper = ({
   const widthAndHeightResizer = useState<{ x: number; y: number } | null>(null);
   const widthResizer = useState<{ x: number } | null>(null);
   const heightResizer = useState<{ y: number } | null>(null);
+
+  const [resolutionWidth, resolutionHeight] = resolution;
+  const minResolutionWidth = Math.max(resolutionWidth || MIN_SIZE, MIN_SIZE);
+  const minResolutionHeight = Math.max(resolutionHeight || MIN_SIZE, MIN_SIZE);
+
+  let scale = defaultScale / 100;
+
+  if (minResolutionWidth > wrapperWidth) {
+    scale = wrapperWidth / minResolutionWidth;
+  }
+
+  if (minResolutionHeight > wrapperHeight) {
+    const heightToSet = wrapperHeight / minResolutionHeight;
+    if (heightToSet < scale) {
+      scale = heightToSet;
+    }
+  }
 
   useEffect(() => {
     let observer;
@@ -58,53 +72,27 @@ export const ResponsiveWrapper = ({
   useDragResize({
     resolution,
     scale,
-    widthAndHeightResizer,
+    resizer: widthAndHeightResizer,
     setResolution: actions.setResolution,
-    setInputWidth,
-    setInputHeight,
   });
 
-  useEffect(() => {
-    const [w, h] = resolution;
-    setWidth(w + 'px');
-    setHeight(h + 'px');
-    let scaleToSet = 1;
+  useDragResize({
+    resolution,
+    scale,
+    resizer: widthResizer,
+    setResolution: actions.setResolution,
+  });
 
-    if (w > wrapperWidth) {
-      scaleToSet = wrapperWidth / w;
-    }
-
-    if (h > wrapperHeight) {
-      const heightToSet = wrapperHeight / h;
-      if (heightToSet < scaleToSet) {
-        scaleToSet = heightToSet;
-      }
-    }
-
-    setScale(scaleToSet);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resolution, wrapperWidth, wrapperHeight]);
-
-  const [resolutionWidth, resolutionHeight] = resolution;
+  useDragResize({
+    resolution,
+    scale,
+    resizer: heightResizer,
+    setResolution: actions.setResolution,
+  });
 
   const exists = Boolean(
     Object.keys(presets).find(preset => isEqual(resolution, presets[preset]))
   );
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSave = useCallback(
-    // @ts-ignore
-    debounce(([w, h]) => actions.setResolution([w, h]), 200),
-    []
-  );
-
-  const changeValues = (w: number, h: number) => {
-    setInputWidth(w);
-    setInputHeight(h);
-    // @ts-ignore
-    debouncedSave([w, h]);
-  };
 
   return (
     <>
@@ -128,6 +116,12 @@ export const ResponsiveWrapper = ({
             {!exists && canChangePresets ? (
               <Button
                 variant="link"
+                disabled={
+                  isNaN(resolutionWidth) ||
+                  resolutionWidth < MIN_SIZE ||
+                  isNaN(resolutionHeight) ||
+                  resolutionHeight < MIN_SIZE
+                }
                 style={{ padding: 0 }}
                 autoWidth
                 onClick={actions.openAddPresetModal}
@@ -140,9 +134,12 @@ export const ResponsiveWrapper = ({
                 <Input
                   type="number"
                   style={{ height: 20 }}
-                  value={inputWidth}
+                  value={isNaN(resolutionWidth) ? '' : resolutionWidth}
                   onChange={e =>
-                    changeValues(parseInt(e.target.value, 10), resolutionHeight)
+                    actions.setResolution([
+                      parseInt(e.target.value, 10),
+                      resolutionHeight,
+                    ])
                   }
                 />{' '}
               </Text>
@@ -158,11 +155,14 @@ export const ResponsiveWrapper = ({
               </Button>{' '}
               <Input
                 onChange={e =>
-                  changeValues(resolutionWidth, parseInt(e.target.value, 10))
+                  actions.setResolution([
+                    resolutionWidth,
+                    parseInt(e.target.value, 10),
+                  ])
                 }
                 type="number"
                 style={{ height: 20 }}
-                value={inputHeight}
+                value={isNaN(resolutionHeight) ? '' : resolutionHeight}
               />
             </Stack>
           </Stack>
@@ -178,8 +178,8 @@ export const ResponsiveWrapper = ({
       </Wrapper>
       <ResizeHandles
         on={on}
-        width={width}
-        height={height}
+        width={minResolutionWidth + 'px'}
+        height={minResolutionHeight + 'px'}
         scale={scale}
         widthAndHeightResizer={widthAndHeightResizer}
         widthResizer={widthResizer}

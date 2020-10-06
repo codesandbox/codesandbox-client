@@ -58,6 +58,7 @@ export const CornerResize = styled(Element)`
   background-color: red;
   cursor: nwse-resize;
   z-index: 2;
+  user-select: none;
 `;
 
 export const WidthResize = styled(Element)`
@@ -69,6 +70,7 @@ export const WidthResize = styled(Element)`
   background-color: red;
   cursor: ew-resize;
   z-index: 2;
+  user-select: none;
 `;
 
 export const HeightResize = styled(Element)`
@@ -80,6 +82,7 @@ export const HeightResize = styled(Element)`
   background-color: red;
   cursor: ns-resize;
   z-index: 2;
+  user-select: none;
 `;
 
 export const Cover = styled.div`
