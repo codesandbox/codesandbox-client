@@ -17,6 +17,10 @@ export const Styled = styled(Element)<{
     position: relative;
   }
 
+  iframe {
+    border-radius: 2px;
+  }
+
   :not(.no-transition) > div > span {
     transition: all 300ms ease;
   }
