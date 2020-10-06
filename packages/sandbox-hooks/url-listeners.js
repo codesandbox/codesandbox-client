@@ -48,10 +48,12 @@ export default function setupHistoryListeners() {
         const newURL = document.location.href;
         sendUrlChange(newURL);
         window.dispatchEvent(new PopStateEvent('popstate', { state }));
-        disableNextHashChange = true;
-        window.dispatchEvent(
-          new HashChangeEvent('hashchange', { oldURL, newURL })
-        );
+        if (newURL.indexOf('#') !== -1) {
+          disableNextHashChange = true;
+          window.dispatchEvent(
+            new HashChangeEvent('hashchange', { oldURL, newURL })
+          );
+        }
       }
     },
 
