@@ -366,6 +366,9 @@ const TYPESCRIPT_PARSER_OPTIONS = {
     ],
     'no-useless-constructor': 'off',
     '@typescript-eslint/no-useless-constructor': 'warn',
+    // Fixes optional chaining
+    'no-unused-expressions': 'off',
+    '@typescript-eslint/no-unused-expressions': 'warn',
   },
 };
 
