@@ -114,6 +114,30 @@ const CodemirrorWrapper = styled.div`
   }
 `;
 
+const isValidValue = (value: string) => {
+  try {
+    const parsedValue = JSON.parse(value);
+
+    if (Array.isArray(parsedValue)) {
+      throw new Error('Invalid');
+    }
+
+    Object.keys(parsedValue).forEach(key => {
+      if (
+        !Array.isArray(parsedValue[key]) ||
+        typeof parsedValue[key][0] !== 'number' ||
+        typeof parsedValue[key][1] !== 'number'
+      ) {
+        throw new Error('Invalid');
+      }
+    });
+
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 export const EditPresets: FunctionComponent = () => {
   const {
     actions: { preview: previewActions, modalClosed },
@@ -125,6 +149,8 @@ export const EditPresets: FunctionComponent = () => {
     JSON.stringify(responsive.presets, null, 2)
   );
   const codemirrorContainer = React.useRef(null);
+
+  const isValid = isValidValue(value);
 
   const savePresets = () => {
     try {
@@ -180,7 +206,12 @@ export const EditPresets: FunctionComponent = () => {
           <Button onClick={modalClosed} variant="link" autoWidth type="button">
             Cancel
           </Button>
-          <Button autoWidth type="submit" onClick={savePresets}>
+          <Button
+            autoWidth
+            type="submit"
+            onClick={savePresets}
+            disabled={!isValid}
+          >
             Save Presets
           </Button>
         </Stack>
