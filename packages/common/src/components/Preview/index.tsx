@@ -602,6 +602,7 @@ class BasePreview extends React.Component<Props, State> {
             toggleResponsiveView={
               this.props.onToggleResponsiveView && this.toggleResponsiveView
             }
+            isInResponsivePreview={isInResponsiveView}
             openNewWindow={this.openNewWindow}
             zenMode={settings.zenMode}
           />

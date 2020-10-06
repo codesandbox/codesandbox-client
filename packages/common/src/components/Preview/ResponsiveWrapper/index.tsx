@@ -1,139 +1,14 @@
-import { Element, Stack, Text, Button, Input } from '@codesandbox/components';
+import { Stack, Text, Button, Input } from '@codesandbox/components';
 import { json } from 'overmind';
-import React, { useEffect, useState } from 'react';
-import { isEqual } from 'lodash-es';
+import React, { useCallback, useEffect, useState } from 'react';
+import { isEqual, debounce } from 'lodash-es';
 
-import styled from 'styled-components';
 import { AddIcon, DeleteIcon, SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 import { PresetMenu } from './PresetMenu';
-
-const Styled = styled(Element)<{
-  width: string;
-  height: string;
-  theme: any;
-  scale: number;
-}>`
-  height: 100%;
-
-  > div {
-    overflow: auto;
-    margin: auto;
-    background: ${props => props.theme['sideBar.background']};
-    height: 100%;
-    position: relative;
-  }
-
-  > div > span {
-    width: ${props => props.width};
-    height: ${props => props.height};
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%) scale(${props => props.scale});
-    display: block;
-  }
-`;
-
-const Wrapper = styled(Element)`
-  background: ${props => props.theme['sideBar.background']};
-
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  input[type='number'] {
-    width: 50px;
-    -moz-appearance: textfield;
-  }
-`;
-
-const ResizeWrapper = styled.span`
-  position: relative;
-  padding: 15px;
-`;
-
-const CornerResize = styled(Element)`
-  position: absolute;
-  bottom: 5px;
-  right: 5px;
-  width: 10px;
-  height: 10px;
-  background-color: red;
-  cursor: nwse-resize;
-  z-index: 2;
-`;
-
-const WidthResize = styled(Element)`
-  position: absolute;
-  right: 5px;
-  top: calc(50% - 2.5px);
-  width: 10px;
-  height: 10px;
-  background-color: red;
-  cursor: ew-resize;
-  z-index: 2;
-`;
-
-const HeightResize = styled(Element)`
-  position: absolute;
-  bottom: 5px;
-  left: calc(50% - 2.5px);
-  width: 10px;
-  height: 10px;
-  background-color: red;
-  cursor: ns-resize;
-  z-index: 2;
-`;
-
-const Cover = styled.div`
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`;
-
-const useDragResize = (
-  resolution: [number, number],
-  scale: number,
-  [size, setSize]: [{ x?: number; y?: number }, (payload: any) => void],
-  setResolution: (resolution: [number, number]) => void
-) => {
-  useEffect(() => {
-    if (size) {
-      const initialWidth = resolution[0];
-      const initialHeight = resolution[1];
-      const mouseMoveListener: (event: MouseEvent) => void = event => {
-        setResolution([
-          'x' in size
-            ? (initialWidth - (size.x - event.clientX) * 2) * (2 - scale)
-            : resolution[0],
-          'y' in size
-            ? (initialHeight - (size.y - event.clientY) * 2) * (2 - scale)
-            : resolution[1],
-        ]);
-      };
-      const mouseUpListener: (event: MouseEvent) => void = () => {
-        setSize(null);
-        window.removeEventListener('mousemove', mouseMoveListener);
-        window.removeEventListener('mouseup', mouseUpListener);
-      };
-
-      window.addEventListener('mousemove', mouseMoveListener);
-      window.addEventListener('mouseup', mouseUpListener);
-
-      return () => {
-        window.removeEventListener('mousemove', mouseMoveListener);
-        window.removeEventListener('mouseup', mouseUpListener);
-      };
-    }
-    return () => {};
-  }, [size]);
-};
+import { useDragResize } from './useDragResize';
+import { Wrapper } from './elements';
+import { ResizeHandles } from './ResizeHandles';
 
 export const ResponsiveWrapper = ({
   on,
@@ -144,6 +19,8 @@ export const ResponsiveWrapper = ({
   const {
     responsive: { scale: defaultScale, resolution, presets },
   } = state;
+  const [inputWidth, setInputWidth] = useState(resolution[0]);
+  const [inputHeight, setInputHeight] = useState(resolution[0]);
   const [width, setWidth] = useState<string>('100%');
   const [height, setHeight] = useState<string>('100%');
   const [scale, setScale] = useState<number>(defaultScale / 100);
@@ -178,14 +55,14 @@ export const ResponsiveWrapper = ({
     return () => (observer ? observer.disconnect() : null);
   }, [element]);
 
-  useDragResize(
+  useDragResize({
     resolution,
     scale,
     widthAndHeightResizer,
-    actions.setResolution
-  );
-  useDragResize(resolution, scale, widthResizer, actions.setResolution);
-  useDragResize(resolution, scale, heightResizer, actions.setResolution);
+    setResolution: actions.setResolution,
+    setInputWidth,
+    setInputHeight,
+  });
 
   useEffect(() => {
     const [w, h] = resolution;
@@ -214,6 +91,20 @@ export const ResponsiveWrapper = ({
   const exists = Boolean(
     Object.keys(presets).find(preset => isEqual(resolution, presets[preset]))
   );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSave = useCallback(
+    // @ts-ignore
+    debounce(([w, h]) => actions.setResolution([w, h]), 200),
+    []
+  );
+
+  const changeValues = (w: number, h: number) => {
+    setInputWidth(w);
+    setInputHeight(h);
+    // @ts-ignore
+    debouncedSave([w, h]);
+  };
 
   return (
     <>
@@ -249,12 +140,9 @@ export const ResponsiveWrapper = ({
                 <Input
                   type="number"
                   style={{ height: 20 }}
-                  value={resolutionWidth}
+                  value={inputWidth}
                   onChange={e =>
-                    actions.setResolution([
-                      parseInt(e.target.value, 10),
-                      resolutionHeight,
-                    ])
+                    changeValues(parseInt(e.target.value, 10), resolutionHeight)
                   }
                 />{' '}
               </Text>
@@ -270,14 +158,11 @@ export const ResponsiveWrapper = ({
               </Button>{' '}
               <Input
                 onChange={e =>
-                  actions.setResolution([
-                    resolutionWidth,
-                    parseInt(e.target.value, 10),
-                  ])
+                  changeValues(resolutionWidth, parseInt(e.target.value, 10))
                 }
                 type="number"
                 style={{ height: 20 }}
-                value={resolutionHeight}
+                value={inputHeight}
               />
             </Stack>
           </Stack>
@@ -291,42 +176,17 @@ export const ResponsiveWrapper = ({
           />
         </Stack>
       </Wrapper>
-      <Styled
-        scale={on ? scale : 1}
-        width={on ? width : '100%'}
-        height={on ? height : '100%'}
+      <ResizeHandles
+        on={on}
+        width={width}
+        height={height}
+        scale={scale}
+        widthAndHeightResizer={widthAndHeightResizer}
+        widthResizer={widthResizer}
+        heightResizer={heightResizer}
       >
-        <div>
-          <ResizeWrapper>
-            <CornerResize
-              onMouseDown={event => {
-                widthAndHeightResizer[1]({
-                  x: event.clientX,
-                  y: event.clientY,
-                });
-              }}
-            />
-            <WidthResize
-              onMouseDown={event => {
-                widthResizer[1]({
-                  x: event.clientX,
-                });
-              }}
-            />
-            <HeightResize
-              onMouseDown={event => {
-                heightResizer[1]({
-                  y: event.clientY,
-                });
-              }}
-            />
-            {widthAndHeightResizer[0] || widthResizer[0] || heightResizer[0] ? (
-              <Cover />
-            ) : null}
-            {children}
-          </ResizeWrapper>
-        </div>
-      </Styled>
+        {children}
+      </ResizeHandles>
     </>
   );
 };

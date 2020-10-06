@@ -28,6 +28,7 @@ export interface NavigatorProps {
   onForward?: () => void;
   openNewWindow?: () => void;
   toggleResponsiveView?: () => void;
+  isInResponsivePreview?: boolean;
   zenMode?: boolean;
   isProjectView: boolean;
 }
@@ -43,6 +44,7 @@ function Navigator({
   toggleProjectView,
   openNewWindow,
   toggleResponsiveView,
+  isInResponsivePreview,
   zenMode,
 }: NavigatorProps) {
   return (
@@ -82,7 +84,7 @@ function Navigator({
       {toggleResponsiveView && (
         <IconWithBackground onClick={toggleResponsiveView}>
           <Tooltip delay={0} content="Toggle Responsive Preview">
-            <ResponsivePreview />
+            <ResponsivePreview active={isInResponsivePreview} />
           </Tooltip>
         </IconWithBackground>
       )}
