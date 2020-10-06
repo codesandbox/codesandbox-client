@@ -88,7 +88,9 @@ export const Search = () => {
   };
 
   const searchFiles = (value: string) => {
-    searchCall({ value, files: modules });
+    if (value.length > 1) {
+      searchCall({ value, files: modules });
+    }
   };
 
   const getHeight = (i: string) => 32 + results[i].matches.length * 26;
