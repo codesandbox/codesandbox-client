@@ -42,6 +42,7 @@ export const ResizeHandles = ({
     scale={on ? scale : 1}
     width={on ? width : '100%'}
     height={on ? height : '100%'}
+    id="styled-resize-wrapper"
   >
     <div>
       <ResizeWrapper>

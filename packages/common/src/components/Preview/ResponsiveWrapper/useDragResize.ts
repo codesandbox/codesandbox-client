@@ -17,6 +17,9 @@ export const useDragResize = ({
     if (size) {
       const [initialWidth, initialHeight] = resolution;
       const mouseMoveListener: (event: MouseEvent) => void = event => {
+        document
+          .getElementById('styled-resize-wrapper')
+          .classList.add('no-transition');
         const width =
           'x' in size
             ? (initialWidth - (size.x - event.clientX) * 2) * (2 - scale)
@@ -31,6 +34,9 @@ export const useDragResize = ({
         setResolution([positiveWidth, positiveHeight]);
       };
       const mouseUpListener: (event: MouseEvent) => void = () => {
+        document
+          .getElementById('styled-resize-wrapper')
+          .classList.remove('no-transition');
         setSize(null);
         window.removeEventListener('mousemove', mouseMoveListener);
         window.removeEventListener('mouseup', mouseUpListener);

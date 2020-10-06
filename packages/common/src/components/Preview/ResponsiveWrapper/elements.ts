@@ -17,12 +17,16 @@ export const Styled = styled(Element)<{
     position: relative;
   }
 
+  :not(.no-transition) > div > span {
+    transition: all 300ms ease;
+  }
+
   > div > span {
     min-width: 70px;
     min-height: 130px;
     width: ${props => props.width};
     height: ${props => props.height};
-    transition: all 300ms ease;
+
     position: absolute;
     top: 50%;
     left: 50%;
