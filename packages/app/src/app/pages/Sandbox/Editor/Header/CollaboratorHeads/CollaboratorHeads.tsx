@@ -105,10 +105,7 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
 
 export const CollaboratorHeads: FunctionComponent = () => {
   const { state, actions } = useOvermind();
-
-  const liveUsers = React.useMemo(() => state.live.roomInfo?.users || [], [
-    state.live.roomInfo,
-  ]);
+  const liveUsers = state.live.roomInfo?.users || [];
 
   const liveUserId = state.live.liveUserId;
   const followingUserId = state.live.followingUserId;
