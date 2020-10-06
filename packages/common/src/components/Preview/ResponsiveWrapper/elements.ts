@@ -1,5 +1,6 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Element } from '@codesandbox/components';
+import { ResizeIcon } from './Icons';
 
 export const Styled = styled(Element)<{
   width: string;
@@ -59,40 +60,45 @@ export const ResizeWrapper = styled.span`
   padding: 15px;
 `;
 
-export const CornerResize = styled(Element)`
+export const CornerResize = styled(ResizeIcon)`
   position: absolute;
-  bottom: 5px;
-  right: 5px;
-  width: 10px;
-  height: 10px;
-  background-color: red;
+  bottom: 14px;
+  right: 14px;
   cursor: nwse-resize;
   z-index: 2;
+`;
+
+const sizeResize = css`
+  position: absolute;
+  border-radius: 50px;
+  opacity: 0.6;
+  background-color: ${props => props.theme['sideBar.foreground']};
+
+  z-index: 2;
   user-select: none;
+  transition: opacity 200ms ease;
+
+  :hover {
+    opacity: 1;
+  }
 `;
 
 export const WidthResize = styled(Element)`
-  position: absolute;
-  right: 5px;
-  top: calc(50% - 2.5px);
-  width: 10px;
-  height: 10px;
-  background-color: red;
+  right: 0;
+  top: calc(50% - 8px);
+  width: 4px;
+  height: 41px;
   cursor: ew-resize;
-  z-index: 2;
-  user-select: none;
+  ${sizeResize}
 `;
 
 export const HeightResize = styled(Element)`
-  position: absolute;
-  bottom: 5px;
-  left: calc(50% - 2.5px);
-  width: 10px;
-  height: 10px;
-  background-color: red;
+  bottom: 0;
+  left: calc(50% - 20.5px);
+  width: 41px;
+  height: 4px;
   cursor: ns-resize;
-  z-index: 2;
-  user-select: none;
+  ${sizeResize}
 `;
 
 export const Cover = styled.div`
