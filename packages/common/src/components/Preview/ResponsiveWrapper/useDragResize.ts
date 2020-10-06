@@ -25,7 +25,10 @@ export const useDragResize = ({
           'y' in size
             ? (initialHeight - (size.y - event.clientY) * 2) * (2 - scale)
             : resolution[1];
-        setResolution([width, height]);
+        const positiveWidth = width > 72 ? width : 72;
+        const positiveHeight = height > 130 ? height : 130;
+
+        setResolution([positiveWidth, positiveHeight]);
       };
       const mouseUpListener: (event: MouseEvent) => void = () => {
         setSize(null);
