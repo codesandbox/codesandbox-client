@@ -12,12 +12,11 @@ export const Title = styled.h1`
 
 export const Text = styled.p`
   color: ${props => props.theme.homepage.muted};
-  font-style: normal;
-  font-weight: normal;
   font-size: 28px;
   line-height: 33px;
   text-align: center;
   width: 867px;
+  max-width: 80%;
   text-align: center;
   margin: auto;
   margin-bottom: 70px;
@@ -84,6 +83,6 @@ export const AngelInvestors = styled.div`
   section {
     ${angelCSS}
     grid-template-columns: repeat(3, 1fr);
-    grid-column: -5 / 6;
+    grid-column: 1/-1;
   }
 `;
