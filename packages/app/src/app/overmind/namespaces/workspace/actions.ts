@@ -510,20 +510,21 @@ export const handleVersionChange: Action<{
   dependency: Dependency;
   version: string;
 }> = ({ state }, { dependency, version }) => {
-  const installedVersion =
-    state.editor.parsedConfigurations.package.parsed.dependencies[
-      dependency.objectID
-    ];
+  if (state.editor.parsedConfigurations?.package?.parsed?.dependencies) {
+    const installedVersion =
+      state.editor.parsedConfigurations.package.parsed.dependencies[
+        dependency.objectID
+      ];
 
-  /* Remove the dependency as the same version is already installed */
-  if (installedVersion === version) {
-    const selectedDependencies = state.workspace.selectedDependencies;
-    const versionMap = state.workspace.hitToVersionMap;
-    delete selectedDependencies[dependency.objectID];
-    delete versionMap[dependency.objectID];
-    return;
+    /* Remove the dependency as the same version is already installed */
+    if (installedVersion === version) {
+      const selectedDependencies = state.workspace.selectedDependencies;
+      const versionMap = state.workspace.hitToVersionMap;
+      delete selectedDependencies[dependency.objectID];
+      delete versionMap[dependency.objectID];
+      return;
+    }
   }
-
   state.workspace.hitToVersionMap[dependency.objectID] = version;
 };
 
