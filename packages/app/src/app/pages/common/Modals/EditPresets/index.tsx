@@ -7,27 +7,33 @@ import { getCodeMirror } from 'app/utils/codemirror';
 import { Alert } from '../Common/Alert';
 import { CodemirrorWrapper } from './codeMirrorTheme';
 
-const isValidValue = (value: string) => {
+const validateValue = (value: string) => {
   try {
     const parsedValue = JSON.parse(value);
 
-    if (Array.isArray(parsedValue)) {
-      throw new Error('Invalid');
+    if (
+      typeof parsedValue === 'object' &&
+      !Array.isArray(parsedValue) &&
+      parsedValue !== null
+    ) {
+      return Object.keys(parsedValue).reduce((aggr, key) => {
+        if (aggr) return aggr;
+
+        if (
+          !Array.isArray(parsedValue[key]) ||
+          typeof parsedValue[key][0] !== 'number' ||
+          typeof parsedValue[key][1] !== 'number'
+        ) {
+          return 'Invalid preset definition';
+        }
+
+        return aggr;
+      }, undefined);
     }
 
-    Object.keys(parsedValue).forEach(key => {
-      if (
-        !Array.isArray(parsedValue[key]) ||
-        typeof parsedValue[key][0] !== 'number' ||
-        typeof parsedValue[key][1] !== 'number'
-      ) {
-        throw new Error('Invalid');
-      }
-    });
-
-    return true;
+    return 'Invalid preset definition';
   } catch {
-    return false;
+    return 'Invalid JSON';
   }
 };
 
@@ -43,7 +49,7 @@ export const EditPresets: FunctionComponent = () => {
   );
   const codemirrorContainer = React.useRef(null);
 
-  const isValid = isValidValue(value);
+  const validationError = validateValue(value);
 
   const savePresets = () => {
     try {
@@ -96,6 +102,7 @@ export const EditPresets: FunctionComponent = () => {
     <Alert title="Edit Presets">
       <Element marginTop={4}>
         <CodemirrorWrapper ref={codemirrorContainer} />
+        <Element>{validationError}</Element>
         <Stack justify="flex-end" marginTop={11} gap={2}>
           <Button onClick={modalClosed} variant="link" autoWidth type="button">
             Cancel
@@ -104,7 +111,7 @@ export const EditPresets: FunctionComponent = () => {
             autoWidth
             type="submit"
             onClick={savePresets}
-            disabled={!isValid}
+            disabled={Boolean(validationError)}
           >
             Save Presets
           </Button>
