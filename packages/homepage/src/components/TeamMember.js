@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import ives from '../assets/images/people/ives.png';
 import bas from '../assets/images/people/bas.png';
 import bogdan from '../assets/images/people/bogdan.png';
@@ -50,7 +50,7 @@ const people = [
     team: 'Design',
   },
   {
-    name: 'Gareth',
+    name: 'Gareth Wilson',
     pic: gareth,
     color: '#F7A239',
     team: 'Marketing',
@@ -102,6 +102,55 @@ const Peep = styled.img`
   }}
 `;
 
+const beforeAndAfterStyles = css`
+  font-size: 19px;
+  line-height: 23px;
+  text-align: center;
+  position: absolute;
+  z-index: 10;
+  opacity: 0;
+  display: none;
+  transition: opacity 200ms ease;
+  transform: translateX(-50%);
+  left: 50%;
+`;
+
+const PersonWrapper = styled.div`
+  position: relative;
+  &:after {
+    content: '${props => props.team}';
+    ${beforeAndAfterStyles}
+    color: #757575;
+    top: calc(100% + 70px);
+  }
+
+  &:before {
+    content: '${props => props.personName}';
+    ${beforeAndAfterStyles}
+
+    font-weight: bold;
+    top: calc(100% + 8px);
+    width: 240px;
+    height: 120px;
+    padding: 32px;
+    background: #151515;
+    border: 1px solid #343434;
+
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.24),
+      0px 8px 4px rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    color: #fff;
+  }
+
+  :hover {
+    :before,
+    :after {
+      display: block;
+      opacity: 1;
+    }
+  }
+`;
+
 const TeamMember = ({ name, border, ...props }) => {
   // András, thank you
   const noAccentsName = str =>
@@ -112,13 +161,15 @@ const TeamMember = ({ name, border, ...props }) => {
 
   if (person) {
     return (
-      <Peep
-        border={border}
-        color={person.color}
-        src={person.pic}
-        alt={person.name}
-        {...props}
-      />
+      <PersonWrapper personName={person.name} team={person.team}>
+        <Peep
+          border={border}
+          color={person.color}
+          src={person.pic}
+          alt={person.name}
+          {...props}
+        />
+      </PersonWrapper>
     );
   }
 
