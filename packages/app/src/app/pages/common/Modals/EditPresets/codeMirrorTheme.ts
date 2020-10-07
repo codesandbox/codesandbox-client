@@ -1,8 +1,8 @@
 import { Element } from '@codesandbox/components';
 import styled, { css } from 'styled-components';
 
-export const CodemirrorWrapper = styled(Element)`
-  ${({ theme }) => {
+export const CodemirrorWrapper = styled(Element)<{ error?: boolean }>`
+  ${({ theme, error }) => {
     const { vscodeTheme, colors } = theme;
 
     const getTokenColor = (name: string) => {
@@ -25,15 +25,24 @@ export const CodemirrorWrapper = styled(Element)`
         letter-spacing: 0px;
         background: ${colors.editor.background};
         color: ${colors.sideBar.foreground};
-      }
+        transition: all 200ms ease;
+
+        border: 1px solid ${
+          error ? colors.errorForeground : colors.editor.background
+        };
+
       .CodeMirror-lines {
         padding: 8px 0;
       }
       .CodeMirror-gutters {
-        background-color: ${colors.sideBar.foreground};
+        background-color: ${colors.editor.background};
         padding-right: 10px;
         z-index: 3;
         border: none;
+      }
+
+      .CodeMirror-linenumber {
+        color: ${colors.sideBar.border};
       }
       div.CodeMirror-cursor {
         border-left: 2px solid ${colors.sideBar.foreground};

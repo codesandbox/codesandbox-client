@@ -1,6 +1,6 @@
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { useOvermind } from 'app/overmind';
-import { Element, Button, Stack } from '@codesandbox/components';
+import { Element, Button, Stack, Text } from '@codesandbox/components';
 import React, { FunctionComponent, useEffect } from 'react';
 import CodeMirror from 'codemirror';
 import { getCodeMirror } from 'app/utils/codemirror';
@@ -101,9 +101,14 @@ export const EditPresets: FunctionComponent = () => {
   return (
     <Alert title="Edit Presets">
       <Element marginTop={4}>
-        <CodemirrorWrapper ref={codemirrorContainer} />
-        <Element>{validationError}</Element>
-        <Stack justify="flex-end" marginTop={11} gap={2}>
+        <CodemirrorWrapper
+          error={Boolean(validationError)}
+          ref={codemirrorContainer}
+        />
+        <Text variant="danger" paddingTop={4} block style={{ minHeight: 36 }}>
+          {validationError}
+        </Text>
+        <Stack justify="flex-end" marginTop={4} gap={2}>
           <Button onClick={modalClosed} variant="link" autoWidth type="button">
             Cancel
           </Button>
