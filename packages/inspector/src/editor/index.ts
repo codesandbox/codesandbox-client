@@ -17,7 +17,7 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
   private instances = new Map<string, ComponentInstanceModel[]>();
   private selectedInstance: ComponentInstanceModel | null = null;
 
-  private selectionChangedEmitter = new Emitter<ComponentInstanceModel>();
+  private selectionChangedEmitter = new Emitter<ComponentInstanceModel | null>();
   public onSelectionChanged = this.selectionChangedEmitter.event;
 
   private fiberChangedEmitter = new Emitter<Fiber>();
@@ -209,6 +209,11 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
     model: IModel
   ): Promise<any> {
     const result = await this.bridge.getComponentInstanceInformation(path);
+    const { instances, version } = result;
+
+    if (model.getVersionId() !== version) {
+      return;
+    }
     if (model.isDisposed) {
       return;
     }
@@ -218,19 +223,54 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
     if (existingInstances) {
       const orderChanged = existingInstances.some(
         (inst, i) =>
-          !result[i] || result[i].name !== inst.getInstanceInformation().name
+          !instances[i] ||
+          instances[i].name !== inst.getInstanceInformation().name
       );
       if (orderChanged) {
-        // TODO: dispose existing ones
+        // If order changes we're going to reinitialize everything and do a best effort of getting
+        // our last selection back
+        const currentSelection = this.selectedInstance;
+        existingInstances.forEach(instance => {
+          instance.dispose();
+        });
+
+        this.instances.set(
+          path,
+          instances.map(
+            instance =>
+              new ComponentInstanceModel(
+                instance,
+                model,
+                this.sandboxProxy,
+                this.editorApi,
+                this
+              )
+          )
+        );
+
+        if (currentSelection) {
+          const similarReference = this.instances
+            .get(path)!
+            .find(
+              instance =>
+                isSameStart(
+                  instance.codePosition,
+                  currentSelection.codePosition
+                ) && instance.getName() === currentSelection.getName()
+            );
+
+          this.selectedInstance = similarReference || null;
+          this.selectionChangedEmitter.fire(this.selectedInstance);
+        }
       } else {
-        result.forEach((inst, i) => {
+        instances.forEach((inst, i) => {
           existingInstances[i].updateModel(inst);
         });
       }
     } else {
       this.instances.set(
         path,
-        result.map(
+        instances.map(
           instance =>
             new ComponentInstanceModel(
               instance,
@@ -242,7 +282,7 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
         )
       );
     }
-    return result;
+    return instances;
   }
 
   private buildFlatOrderedFiberList() {

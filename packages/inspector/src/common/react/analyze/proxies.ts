@@ -8,9 +8,9 @@ export type AnalyzeRequest = {
   path: string;
 };
 
-export type AnalyzeResponse = {
-  ast: ts.SourceFile;
+export type GetComponentInstancesResponse = {
   version: number;
+  instances: ComponentInstanceData[];
 };
 
 export interface Analyzer {
@@ -22,7 +22,7 @@ export interface Analyzer {
   /**
    * Get the props of the component at that specific location
    */
-  $getComponentInstances(path: string): Promise<ComponentInstanceData[]>;
+  $getComponentInstances(path: string): Promise<GetComponentInstancesResponse>;
 }
 
 export const analyzerProxyIdentifier = createProxyIdentifier<Analyzer>(

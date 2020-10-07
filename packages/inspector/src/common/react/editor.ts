@@ -1,12 +1,15 @@
 // @ts-expect-error This is a worker
 import WorkerAnalyzer from './analyze/typescript-analyzer.worker';
 
-import { ComponentInstanceData } from '../../common/fibers';
 import { RPCProtocolImpl } from '../rpc';
 import { MainWorkerConnection } from '../rpc/connection';
 // @ts-expect-error This is a worker
 import WorkerAnalyzer from './analyze/typescript-analyzer.worker';
-import { Analyzer, analyzerProxyIdentifier } from './analyze/proxies';
+import {
+  Analyzer,
+  analyzerProxyIdentifier,
+  GetComponentInstancesResponse,
+} from './analyze/proxies';
 
 export class ReactEditorBridge {
   private analyzerProxy: Analyzer;
@@ -35,7 +38,7 @@ export class ReactEditorBridge {
 
   public async getComponentInstanceInformation(
     path: string
-  ): Promise<ComponentInstanceData[]> {
+  ): Promise<GetComponentInstancesResponse> {
     return this.analyzerProxy.$getComponentInstances(path);
   }
 }

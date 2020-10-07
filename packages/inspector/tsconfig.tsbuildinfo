@@ -477,18 +477,18 @@
         "affectsGlobalScope": false
       },
       "./src/common/react/analyze/proxies.ts": {
-        "version": "960692b729567677349a0907d61624dfa572c9cf0e0116b01e4a2e3e19c9e5c3",
-        "signature": "c0b06b6c25070958da6f8181de06395cb164d0f115ba57e998d34b5151eee76f",
+        "version": "68b7a86c6568c7c02341c90bea025a082825eace22e9a6b93e6c6e444c21225b",
+        "signature": "b61723192361db693d61168e3dc9c0f2c134b6d74569ec3d257fd705fc471fd9",
         "affectsGlobalScope": false
       },
       "./src/common/react/analyze/typescript-analyzer.worker.ts": {
-        "version": "315135d785b919be4c2d77fbb130e240a833ba045935ea001caf3c2a045bb072",
+        "version": "76803be55ad1c3e5b9d14659c22e06c079466093f5057cf8b516f8679906f505",
         "signature": "eed6cf2161ada471e7743f3a3f9367b59094d50b0e8a3907e18b2e08e33615ca",
         "affectsGlobalScope": false
       },
       "./src/common/react/editor.ts": {
-        "version": "d403c7c330d5810dce5abcf379552d59b4fd8efd50e19e1e6abec16891ff3b4d",
-        "signature": "0f5510c188892c5645e73539ecd5bb0278b7ebafcf7ee24e3804aa55e50c48ba",
+        "version": "be7a722505a0288419514f018d8f66b844ee94299a31601b02ef67dfbc742829",
+        "signature": "eaea2bd00ba4cfa52073221300c04dd6026098ba0e44e4c1279b9ed9513526e9",
         "affectsGlobalScope": false
       },
       "./src/common/react/internals/reactsymbols.ts": {
@@ -2122,13 +2122,13 @@
         "affectsGlobalScope": false
       },
       "./src/editor/instance.ts": {
-        "version": "161cdef6594016ac50dcbc79e1aa72b3e1fc945f605265411f54bc305080b838",
-        "signature": "ceac3e34a1ab5ee8180b231a2de985ebd54febcde953a4a33c92602ad5261560",
+        "version": "a6b880b165023f51c5650395914825af76a4c0fcc16aeb74e4633eb006f87e2b",
+        "signature": "11863fef60005e7d3c07851825a61460f97942d07b169459824ed3630436b2d7",
         "affectsGlobalScope": false
       },
       "./src/editor/index.ts": {
-        "version": "f024159dfd376e98742e041ddcd3e4176d1a8753c2ce533f3cf7c333db38e15f",
-        "signature": "2ff47c353d3d3c96486e31ef7c6e8587bb01802ce99c80faf36d3ee2da33004e",
+        "version": "9d1df1e2d701bebd0376e62e5b03727d8037548577e8a759ac0ab0e6d84f9edb",
+        "signature": "c5b55f2dd9b8062bd0b252c788fe5d201a891918876e6443ffba2fdc16bde791",
         "affectsGlobalScope": false
       },
       "./src/editor/transform.test.ts": {
@@ -6745,7 +6745,6 @@
       "./src/common/react/editor.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
-        "./src/common/fibers.ts",
         "./src/common/react/analyze/proxies.ts",
         "./src/common/react/analyze/typescript-analyzer.worker.ts",
         "./src/common/rpc/connection.ts",
@@ -10419,7 +10418,6 @@
         "./src/common/fibers.ts"
       ],
       "./src/common/react/analyze/proxies.ts": [
-        "../../node_modules/typescript/lib/typescript.d.ts",
         "./src/common/fibers.ts",
         "./src/common/rpc/index.ts"
       ],
@@ -10431,7 +10429,7 @@
         "./src/common/fibers.ts"
       ],
       "./src/common/react/editor.ts": [
-        "./src/common/fibers.ts"
+        "./src/common/react/analyze/proxies.ts"
       ],
       "./src/common/react/sandbox.ts": [
         "./src/common/fibers.ts"
@@ -11530,13 +11528,35 @@
       "./src/common/proxies.ts",
       "./src/common/react/analyze/component-instance.test.ts",
       "./src/common/react/analyze/component-instance.ts",
-      "./src/common/react/analyze/proxies.ts",
+      [
+        "./src/common/react/analyze/proxies.ts",
+        [
+          {
+            "file": "./src/common/react/analyze/proxies.ts",
+            "start": 0,
+            "length": 28,
+            "messageText": "'ts' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          }
+        ]
+      ],
       [
         "./src/common/react/analyze/typescript-analyzer.worker.ts",
         [
           {
             "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
-            "start": 481,
+            "start": 63,
+            "length": 53,
+            "messageText": "'ComponentInstanceData' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          },
+          {
+            "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
+            "start": 586,
             "length": 4,
             "messageText": "'path' is declared but its value is never read.",
             "category": 1,
@@ -11545,7 +11565,7 @@
           },
           {
             "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
-            "start": 495,
+            "start": 600,
             "length": 4,
             "messageText": "'code' is declared but its value is never read.",
             "category": 1,
@@ -11554,18 +11574,9 @@
           },
           {
             "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
-            "start": 593,
+            "start": 698,
             "length": 4,
             "messageText": "'path' is declared but its value is never read.",
-            "category": 1,
-            "code": 6133,
-            "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
-            "start": 702,
-            "length": 7,
-            "messageText": "'version' is declared but its value is never read.",
             "category": 1,
             "code": 6133,
             "reportsUnnecessary": true
@@ -11641,7 +11652,7 @@
         [
           {
             "file": "./src/editor/index.ts",
-            "start": 7205,
+            "start": 8446,
             "length": 13,
             "messageText": "'orderedFibers' is declared but its value is never read.",
             "category": 1,
@@ -11650,7 +11661,7 @@
           },
           {
             "file": "./src/editor/index.ts",
-            "start": 7244,
+            "start": 8485,
             "length": 12,
             "messageText": "'currentFiber' is declared but its value is never read.",
             "category": 1,
@@ -11673,7 +11684,7 @@
           },
           {
             "file": "./src/editor/instance.ts",
-            "start": 3981,
+            "start": 4003,
             "length": 9,
             "messageText": "Property 'editorApi' is declared but its value is never read.",
             "category": 1,

@@ -104,6 +104,8 @@ export type InstanceDataChangedEvent = {
 export interface IComponentInstanceModel {
   didInstanceDataChange: Event<InstanceDataChangedEvent>;
 
+  getName(): string;
+
   getInstanceProp(name: string): InstanceProp | undefined;
   getInstanceInformation(): ComponentInstanceData;
   getComponentInformation(): Promise<StaticComponentInformation>;
@@ -172,6 +174,10 @@ export class ComponentInstanceModel
         this.codePosition = e.range;
       })
     );
+  }
+
+  public getName() {
+    return this.instanceData.name;
   }
 
   getInstanceProp(name: string) {

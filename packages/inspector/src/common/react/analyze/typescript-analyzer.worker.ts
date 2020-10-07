@@ -4,10 +4,20 @@ import { ComponentInstanceData } from '../../fibers';
 import { RPCProtocolImpl } from '../../rpc';
 import { WorkerConnection } from '../../rpc/worker/connection';
 import { analyzeComponentInstances } from './component-instance';
-import { Analyzer, AnalyzeRequest, analyzerProxyIdentifier } from './proxies';
+import {
+  Analyzer,
+  AnalyzeRequest,
+  analyzerProxyIdentifier,
+  GetComponentInstancesResponse,
+} from './proxies';
+
+type FileInfo = {
+  version: number;
+  sourceFile: ts.SourceFile;
+};
 
 class TypeScriptAnalyzer implements Analyzer {
-  fileMap = new Map<string, ts.SourceFile>();
+  fileMap = new Map<string, FileInfo>();
 
   $fileChanged(path: string, code: string): Promise<void> {
     throw new Error('Method not implemented.');
@@ -25,16 +35,21 @@ class TypeScriptAnalyzer implements Analyzer {
       true
     );
 
-    this.fileMap.set(path, sourceFile);
+    this.fileMap.set(path, { version, sourceFile });
   }
 
-  async $getComponentInstances(path: string): Promise<ComponentInstanceData[]> {
-    const ast = this.fileMap.get(path);
-    if (!ast) {
+  async $getComponentInstances(
+    path: string
+  ): Promise<GetComponentInstancesResponse> {
+    const file = this.fileMap.get(path);
+    if (!file) {
       throw new Error(`Can't find file with path: '${path}'`);
     }
 
-    return analyzeComponentInstances(ast, path);
+    return {
+      version: file.version,
+      instances: analyzeComponentInstances(file.sourceFile, path),
+    };
   }
 }
 
