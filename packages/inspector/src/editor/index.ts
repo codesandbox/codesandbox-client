@@ -220,7 +220,9 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
         (inst, i) =>
           !result[i] || result[i].name !== inst.getInstanceInformation().name
       );
-      if (!orderChanged) {
+      if (orderChanged) {
+        // TODO: dispose existing ones
+      } else {
         result.forEach((inst, i) => {
           existingInstances[i].updateModel(inst);
         });
