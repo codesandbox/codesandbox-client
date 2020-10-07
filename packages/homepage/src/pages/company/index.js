@@ -11,6 +11,8 @@ import Figma from './images/figma.svg';
 import Framer from './images/framer.svg';
 import Netlify from './images/netlify.svg';
 import Vercel from './images/vercel.svg';
+import eqt from './images/eqt.svg';
+import picnic from './images/picnic.svg';
 import Sourcegraph from './images/sourcegraph.svg';
 import company from '../../assets/images/company.png';
 import company2x from '../../assets/images/company@2x.png';
@@ -76,6 +78,10 @@ export default () => (
           grid-template-columns: repeat(6, 102px);
           grid-column-gap: 95px;
           grid-row-gap: 55px;
+
+          @media screen and (max-width: 1250px) {
+            grid-template-columns: repeat(auto-fit, minmax(102px, 1fr));
+          }
         `}
       >
         <TeamMember name="ives" />
@@ -102,6 +108,15 @@ export default () => (
         </Text>
         <Investors>
           <div>
+            <img
+              src={eqt}
+              css={`
+                width: 197px !important;
+              `}
+              alt="EQT"
+            />
+          </div>
+          <div>
             <img src={KP} alt="KP" />
           </div>
           <div>
@@ -120,41 +135,6 @@ export default () => (
             Founder & CEO
           </div>
           <div>
-            <img src={Netlify} alt="Netlify" />
-            <b>Christian Bach</b>
-            Founder & President
-          </div>
-          <div>
-            <div
-              css={`
-                height: 97px;
-                margin-bottom: 1.625rem;
-              `}
-            />
-            <b>Petri Parvinen</b>
-            Angel Investor
-          </div>
-          <div>
-            <div
-              css={`
-                height: 97px;
-                margin-bottom: 1.625rem;
-              `}
-            />
-            <b>Marco Jansen</b>
-            Founder Catawiki
-          </div>
-          <div>
-            <img src={Netlify} alt="Netlify" />
-            <b>Mathias Biilmann</b>
-            Founder & CEO
-          </div>
-          <div>
-            <img src={Sourcegraph} alt="Sourcegraph" />
-            <b>Quinn Slack</b>
-            Founder & CEO
-          </div>
-          <div>
             <img
               src={Vercel}
               alt="Vercel"
@@ -165,6 +145,58 @@ export default () => (
             <b>Guillermo Rauch</b>
             Founder & CEO
           </div>
+          <div>
+            <img src={Netlify} alt="Netlify" />
+            <b>Mathias Biilmann</b>
+            Founder & CEO
+          </div>
+          <section>
+            <div>
+              <img src={Sourcegraph} alt="Sourcegraph" />
+              <b>Quinn Slack</b>
+              Founder & CEO
+            </div>
+            <div>
+              <img src={Netlify} alt="Netlify" />
+              <b>Christian Bach</b>
+              Founder & President
+            </div>
+            <div>
+              <img src={picnic} alt="Picnic" />
+              <b>Daniel Gebler</b>
+              CTO Picnic
+            </div>
+            <div>
+              <div
+                css={`
+                  height: 97px;
+                  margin-bottom: 1.625rem;
+                `}
+              />
+              <b>Marco Jansen</b>
+              Founder Catawiki
+            </div>
+            <div>
+              <div
+                css={`
+                  height: 97px;
+                  margin-bottom: 1.625rem;
+                `}
+              />
+              <b>Petri Parvinen</b>
+              Angel Investor
+            </div>
+            <div>
+              <div
+                css={`
+                  height: 97px;
+                  margin-bottom: 1.625rem;
+                `}
+              />
+              <b>Andreas Blixt</b>
+              Angel Investor
+            </div>
+          </section>
         </AngelInvestors>
       </div>
       <Title>Press Kit</Title>

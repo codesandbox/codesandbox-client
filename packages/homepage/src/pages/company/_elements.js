@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Title = styled.h1`
   font-weight: 900;
@@ -25,7 +25,7 @@ export const Text = styled.p`
 
 export const Investors = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-gap: 1.5rem;
   justify-content: center;
   margin-top: 4rem;
@@ -35,7 +35,6 @@ export const Investors = styled.div`
   }
 
   > div {
-    background: #151515;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -43,11 +42,12 @@ export const Investors = styled.div`
 
     img {
       max-width: 100%;
+      width: 297px;
     }
   }
 `;
 
-export const AngelInvestors = styled.div`
+const angelCSS = css`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 1.5rem;
@@ -59,7 +59,6 @@ export const AngelInvestors = styled.div`
   }
 
   > div {
-    background: #151515;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -76,5 +75,15 @@ export const AngelInvestors = styled.div`
       font-size: 1.5rem;
       color: ${props => props.theme.homepage.white};
     }
+  }
+`;
+
+export const AngelInvestors = styled.div`
+  ${angelCSS}
+
+  section {
+    ${angelCSS}
+    grid-template-columns: repeat(3, 1fr);
+    grid-column: -5 / 6;
   }
 `;
