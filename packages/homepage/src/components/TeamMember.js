@@ -1,4 +1,5 @@
 import React from 'react';
+import { shuffle } from 'lodash-es';
 import styled, { css } from 'styled-components';
 import ives from '../assets/images/people/ives.png';
 import bas from '../assets/images/people/bas.png';
@@ -151,7 +152,7 @@ const PersonWrapper = styled.div`
   }
 `;
 
-const TeamMember = ({ name, border, ...props }) => {
+const TeamMember = ({ name, border, noHover, ...props }) => {
   // András, thank you
   const noAccentsName = str =>
     str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -159,9 +160,18 @@ const TeamMember = ({ name, border, ...props }) => {
     noAccentsName(p.name.toLocaleLowerCase()).includes(name.toLocaleLowerCase())
   );
 
+  const Wrapper = ({ children }) =>
+    noHover ? (
+      children
+    ) : (
+      <PersonWrapper personName={person.name} team={person.team}>
+        {children}
+      </PersonWrapper>
+    );
+
   if (person) {
     return (
-      <PersonWrapper personName={person.name} team={person.team}>
+      <Wrapper>
         <Peep
           border={border}
           color={person.color}
@@ -169,24 +179,14 @@ const TeamMember = ({ name, border, ...props }) => {
           alt={person.name}
           {...props}
         />
-      </PersonWrapper>
+      </Wrapper>
     );
   }
 
   return null;
 };
 
-export const RandomTeamMember = ({ border, ...props }) => {
-  const person = people[Math.floor(Math.random() * people.length)];
-  return (
-    <Peep
-      border={border}
-      color={person.color}
-      src={person.pic}
-      alt={person.name}
-      {...props}
-    />
-  );
-};
+export const getRandomTeamMembers = number =>
+  shuffle(people).splice(0, number + 2);
 
 export default TeamMember;

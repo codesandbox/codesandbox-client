@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { RandomTeamMember } from '../../components/TeamMember';
+import TeamMember from '../../components/TeamMember';
 
 export const PageTitle = styled.h1`
   font-weight: 900;
@@ -94,8 +94,10 @@ export const ImageGallery = styled.div`
   }
 `;
 
-export const TeamMemberRandom = styled(RandomTeamMember).attrs(() => ({
+export const TeamMemberRandom = styled(TeamMember).attrs(props => ({
   border: true,
+  noHover: true,
+  ...props,
 }))`
   position: absolute;
   border-width: 2px;
@@ -110,5 +112,5 @@ export const TeamMemberRandom = styled(RandomTeamMember).attrs(() => ({
 
   @media screen and (max-width: 970px) {
     display: none;
-  } ;
+  }
 `;
