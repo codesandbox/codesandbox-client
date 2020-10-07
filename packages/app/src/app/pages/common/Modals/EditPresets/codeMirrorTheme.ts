@@ -30,6 +30,7 @@ export const CodemirrorWrapper = styled(Element)<{ error?: boolean }>`
         border: 1px solid ${
           error ? colors.errorForeground : colors.editor.background
         };
+        border-radius: 2px;
 
       .CodeMirror-lines {
         padding: 8px 0;

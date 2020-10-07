@@ -24,16 +24,16 @@ const validateValue = (value: string) => {
           typeof parsedValue[key][0] !== 'number' ||
           typeof parsedValue[key][1] !== 'number'
         ) {
-          return 'Invalid preset definition';
+          return 'Error: Invalid preset definition';
         }
 
         return aggr;
       }, undefined);
     }
 
-    return 'Invalid preset definition';
+    return 'Error: Invalid preset definition';
   } catch {
-    return 'Invalid JSON';
+    return 'Error: Invalid JSON';
   }
 };
 
@@ -105,7 +105,13 @@ export const EditPresets: FunctionComponent = () => {
           error={Boolean(validationError)}
           ref={codemirrorContainer}
         />
-        <Text variant="danger" paddingTop={4} block style={{ minHeight: 36 }}>
+        <Text
+          variant="danger"
+          paddingTop={4}
+          size={3}
+          block
+          style={{ minHeight: 32 }}
+        >
           {validationError}
         </Text>
         <Stack justify="flex-end" marginTop={4} gap={2}>
