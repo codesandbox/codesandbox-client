@@ -16,14 +16,14 @@ const people = [
   {
     name: 'Ives van Hoorne',
     pic: ives,
-    color: '',
-    team: '',
+    color: '#F24E62',
+    team: 'Engineering',
   },
   {
     name: 'Bas Buursma',
     pic: bas,
-    color: '',
-    team: '',
+    color: '#76D0FB',
+    team: 'Operations',
   },
   {
     name: 'Oskar van Eeden',
