@@ -109,6 +109,11 @@ const Careers = ({
               flex-direction: column;
               align-items: center;
               position: relative;
+
+              *:not(img) {
+                position: relative;
+                z-index: 1;
+              }
             `}
           >
             <img
