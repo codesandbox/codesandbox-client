@@ -2,7 +2,16 @@ import styled, { css } from 'styled-components';
 import { Element } from '@codesandbox/components';
 import { ResizeIcon } from './Icons';
 
+export const MIN_SIZE_X = 72;
+
+export const MIN_SIZE_Y = 130;
+
+export const PADDING_OFFSET_X = 40;
+
+export const PADDING_OFFSET_Y = 100;
+
 export const Styled = styled(Element)<{
+  on: boolean;
   width: string;
   height: string;
   theme: any;
@@ -13,14 +22,21 @@ export const Styled = styled(Element)<{
   > div {
     overflow: auto;
     margin: auto;
-    background: ${props => props.theme['sideBar.background']};
+    background: ${props => props.theme['input.background']};
     height: 100%;
     position: relative;
   }
 
-  iframe {
-    border-radius: 2px;
-  }
+  ${props =>
+    props.on
+      ? css`
+          iframe {
+            border-radius: 2px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.24),
+              0px 8px 4px rgba(0, 0, 0, 0.12);
+          }
+        `
+      : null}
 
   :not(.no-transition) > div > span {
     transition: all 300ms ease;

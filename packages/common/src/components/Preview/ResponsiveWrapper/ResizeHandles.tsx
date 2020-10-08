@@ -39,6 +39,7 @@ export const ResizeHandles = ({
   children,
 }: ResizeHandlesProps) => (
   <Styled
+    on={on}
     scale={on ? scale : 1}
     width={on ? width : '100%'}
     height={on ? height : '100%'}

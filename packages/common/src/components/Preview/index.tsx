@@ -38,7 +38,6 @@ export type Props = {
   onAction?: (action: Object) => void;
   onOpenNewWindow?: () => void;
   onToggleProjectView?: () => void;
-  onToggleResponsiveView?: () => void;
   isResizing?: boolean;
   onResize?: (height: number) => void;
   showNavigation?: boolean;
@@ -51,7 +50,6 @@ export type Props = {
   className?: string;
   onMount?: (preview: BasePreview) => () => void;
   overlayMessage?: string;
-  isInResponsiveView?: boolean;
   responsiveModeProps?: any;
   /**
    * Whether to show a screenshot in the preview as a "placeholder" while loading
@@ -85,7 +83,7 @@ interface IModulesByPath {
   [path: string]: { path: string; code: null | string; isBinary?: boolean };
 }
 
-class BasePreview extends React.Component<Props, State> {
+class BasePreview extends React.PureComponent<Props, State> {
   serverPreview: boolean;
   element: HTMLIFrameElement;
   onUnmount: () => void;
@@ -543,12 +541,6 @@ class BasePreview extends React.Component<Props, State> {
     }
   };
 
-  toggleResponsiveView = () => {
-    if (this.props.onToggleResponsiveView) {
-      this.props.onToggleResponsiveView();
-    }
-  };
-
   render() {
     const {
       showNavigation,
@@ -561,7 +553,6 @@ class BasePreview extends React.Component<Props, State> {
       noPreview,
       className,
       overlayMessage,
-      isInResponsiveView,
       responsiveModeProps,
     } = this.props;
 
@@ -576,6 +567,8 @@ class BasePreview extends React.Component<Props, State> {
 
     // Weird TS typing bug
     const AnySpring = Spring as any;
+    const isInResponsivePreview =
+      this.props.responsiveModeProps.state.mode === 'responsive';
 
     return (
       <Container
@@ -600,9 +593,9 @@ class BasePreview extends React.Component<Props, State> {
               this.props.onToggleProjectView && this.toggleProjectView
             }
             toggleResponsiveView={
-              this.props.onToggleResponsiveView && this.toggleResponsiveView
+              this.props.responsiveModeProps.actions.toggleResponsiveMode
             }
-            isInResponsivePreview={isInResponsiveView}
+            isInResponsivePreview={isInResponsivePreview}
             openNewWindow={this.openNewWindow}
             zenMode={settings.zenMode}
           />
@@ -610,7 +603,7 @@ class BasePreview extends React.Component<Props, State> {
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
         <ThemeProvider theme={responsiveModeProps.theme.vscodeTheme}>
           <ResponsiveWrapper
-            on={isInResponsiveView}
+            on={isInResponsivePreview}
             props={responsiveModeProps}
             canChangePresets={hasPermission(
               sandbox.authorization,

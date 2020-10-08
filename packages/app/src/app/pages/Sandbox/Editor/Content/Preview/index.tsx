@@ -2,7 +2,7 @@ import { ServerContainerStatus } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
 import { useTheme } from 'styled-components';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useMemo, useState } from 'react';
 import { useOvermind } from 'app/overmind';
 
 type Props = {
@@ -41,6 +41,14 @@ export const Preview: FunctionComponent<Props> = ({
     },
   } = useOvermind();
   const [running, setRunning] = useState(!runOnClick);
+  const responsiveModeProps = useMemo(
+    () => ({
+      state: preview,
+      actions: previewActions,
+      theme,
+    }),
+    [preview, previewActions, theme]
+  );
 
   /**
    * Responsible for showing a message when something is happening with SSE. Only used
@@ -69,19 +77,13 @@ export const Preview: FunctionComponent<Props> = ({
       hide={hidden}
       initialPath={initialPath}
       isInProjectView={isInProjectView}
-      isInResponsiveView={preview.mode === 'responsive'}
-      responsiveModeProps={{
-        state: preview,
-        actions: previewActions,
-        theme,
-      }}
+      responsiveModeProps={responsiveModeProps}
       isResizing={isResizing}
-      onAction={action => previewActionReceived(action)}
-      onClearErrors={() => errorsCleared()}
+      onAction={previewActionReceived}
+      onClearErrors={errorsCleared}
       onMount={initializePreview}
       noPreview={!previewWindowVisible}
-      onToggleProjectView={() => projectViewToggled()}
-      onToggleResponsiveView={previewActions.toggleResponsiveMode}
+      onToggleProjectView={projectViewToggled}
       overlayMessage={getOverlayMessage()}
       previewSecret={currentSandbox.previewSecret}
       privacy={currentSandbox.privacy}

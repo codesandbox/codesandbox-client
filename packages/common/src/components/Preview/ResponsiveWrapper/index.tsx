@@ -7,10 +7,14 @@ import { AddIcon, DeleteIcon, SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 import { PresetMenu } from './PresetMenu';
 import { useDragResize } from './useDragResize';
-import { Wrapper } from './elements';
+import {
+  Wrapper,
+  PADDING_OFFSET_X,
+  PADDING_OFFSET_Y,
+  MIN_SIZE_X,
+  MIN_SIZE_Y,
+} from './elements';
 import { ResizeHandles } from './ResizeHandles';
-
-const MIN_SIZE = 100;
 
 export const ResponsiveWrapper = ({
   on,
@@ -22,17 +26,25 @@ export const ResponsiveWrapper = ({
     responsive: { scale: defaultScale, resolution, presets },
   } = state;
   const element = document.getElementById('sandbox-preview-container');
-  const [wrapperWidth, setWrapperWidth] = useState(element?.clientWidth - 20);
+  const [wrapperWidth, setWrapperWidth] = useState(
+    element?.clientWidth - PADDING_OFFSET_X
+  );
   const [wrapperHeight, setWrapperHeight] = useState(
-    element?.clientHeight - 100
+    element?.clientHeight - PADDING_OFFSET_Y
   );
   const widthAndHeightResizer = useState<{ x: number; y: number } | null>(null);
   const widthResizer = useState<{ x: number } | null>(null);
   const heightResizer = useState<{ y: number } | null>(null);
 
   const [resolutionWidth, resolutionHeight] = resolution;
-  const minResolutionWidth = Math.max(resolutionWidth || MIN_SIZE, MIN_SIZE);
-  const minResolutionHeight = Math.max(resolutionHeight || MIN_SIZE, MIN_SIZE);
+  const minResolutionWidth = Math.max(
+    resolutionWidth || MIN_SIZE_X,
+    MIN_SIZE_X
+  );
+  const minResolutionHeight = Math.max(
+    resolutionHeight || MIN_SIZE_Y,
+    MIN_SIZE_Y
+  );
 
   let scale = defaultScale / 100;
 
@@ -57,8 +69,8 @@ export const ResponsiveWrapper = ({
           if (entry.contentRect) {
             const sizes = entry.contentRect;
 
-            setWrapperWidth(sizes.width - 20);
-            setWrapperHeight(sizes.height - 100);
+            setWrapperWidth(sizes.width - PADDING_OFFSET_X);
+            setWrapperHeight(sizes.height - PADDING_OFFSET_Y);
           }
 
           return null;
@@ -96,12 +108,8 @@ export const ResponsiveWrapper = ({
 
   return (
     <>
-      <Wrapper
-        paddingTop={4}
-        paddingX={6}
-        style={{ display: on ? 'block' : 'none' }}
-      >
-        <Stack justify="center" paddingBottom={2} align="center" gap={2}>
+      <Wrapper paddingX={6} style={{ display: on ? 'block' : 'none' }}>
+        <Stack justify="center" paddingY={2} align="center" gap={2}>
           <Stack gap={2} align="center">
             {exists && canChangePresets ? (
               <Button
@@ -118,9 +126,9 @@ export const ResponsiveWrapper = ({
                 variant="link"
                 disabled={
                   isNaN(resolutionWidth) ||
-                  resolutionWidth < MIN_SIZE ||
+                  resolutionWidth < MIN_SIZE_X ||
                   isNaN(resolutionHeight) ||
-                  resolutionHeight < MIN_SIZE
+                  resolutionHeight < MIN_SIZE_Y
                 }
                 style={{ padding: 0 }}
                 autoWidth

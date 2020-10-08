@@ -1,4 +1,10 @@
 import { useEffect } from 'react';
+import {
+  MIN_SIZE_X,
+  MIN_SIZE_Y,
+  PADDING_OFFSET_X,
+  PADDING_OFFSET_Y,
+} from './elements';
 
 type useDragResizeProps = {
   resolution: [number, number];
@@ -28,10 +34,17 @@ export const useDragResize = ({
           'y' in size
             ? (initialHeight - (size.y - event.clientY) * 2) * (2 - scale)
             : resolution[1];
-        const positiveWidth = width > 72 ? width : 72;
-        const positiveHeight = height > 130 ? height : 130;
+        const positiveWidth = width > MIN_SIZE_X ? width : MIN_SIZE_X;
+        const positiveHeight = height > MIN_SIZE_Y ? height : MIN_SIZE_Y;
 
-        setResolution([positiveWidth, positiveHeight]);
+        // The preview can only be resized on its right and bottom side, which always align
+        // with the far bottom/right of the browser
+        if (
+          event.clientX < window.innerWidth - PADDING_OFFSET_X &&
+          event.clientY < window.innerHeight - PADDING_OFFSET_Y
+        ) {
+          setResolution([positiveWidth, positiveHeight]);
+        }
       };
       const mouseUpListener: (event: MouseEvent) => void = () => {
         document
