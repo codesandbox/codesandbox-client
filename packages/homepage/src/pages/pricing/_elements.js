@@ -154,6 +154,8 @@ export const FeatureTitle = styled.span`
 `;
 
 export const CardContainer = styled.div`
+  max-width: 90%;
+  margin: auto;
   width: 1324px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -162,11 +164,19 @@ export const CardContainer = styled.div`
   margin-top: 30px;
 
   ${props => props.theme.breakpoints.lg} {
-    grid-template-columns: minmax(100%, 26rem);
-    grid-template-areas:
-      'free'
-      'pro'
-      'team';
+    grid-template-columns: 1fr 1fr;
+
+    div:last-child {
+      grid-column: span 2;
+    }
+  }
+
+  @media screen and (max-width: 764px) {
+    grid-template-columns: 1fr;
+
+    div:last-child {
+      grid-column: 1;
+    }
   }
 `;
 
@@ -180,6 +190,8 @@ export const FeaturesTitle = styled.h3`
 `;
 
 export const TeamOrIndividualWrapper = styled.div`
+  max-width: 90%;
+  margin: auto;
   display: grid;
   grid-gap: 33px;
   grid-template-columns: repeat(3, 1fr);
@@ -187,4 +199,8 @@ export const TeamOrIndividualWrapper = styled.div`
   width: 1324px;
   font-weight: bold;
   font-size: 19px;
+
+  ${props => props.theme.breakpoints.lg} {
+    display: none;
+  }
 `;
