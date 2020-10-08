@@ -153,8 +153,24 @@ class Live {
         client_version: VERSION,
       });
 
+      // An offset between 1 and 1.7;
+      const defaultReconnectOffset = 1 + Math.random() * 0.7;
+      let isServerDown = false;
+      const reconnectAfterMsFunc = (tries: number) => {
+        if (isServerDown) {
+          return 3000 + Math.random() * 2000;
+        }
+
+        return (
+          [10, 50, 100, 150, 200, 250, 500, 1e3, 2e3][tries - 1] *
+          defaultReconnectOffset
+        );
+      };
+
       this.socket = new Socket(`${protocol}://${location.host}/socket`, {
         params,
+        // @ts-expect-error Wrong typings
+        reconnectAfterMs: reconnectAfterMsFunc,
       });
 
       let tries = 0;
@@ -171,6 +187,10 @@ class Live {
             // If we can't get a jwt because we're unauthorized, disconnect...
             this.socket.disconnect();
             tries = 0;
+          } else if (error.response?.status === 503) {
+            isServerDown = true;
+          } else {
+            isServerDown = false;
           }
         }
       });
