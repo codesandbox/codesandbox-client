@@ -65,6 +65,8 @@ export type Module = {
   insertedAt: string;
   updatedAt: string;
   path: string;
+  uploadId?: string;
+  sha?: string;
   type: 'file';
 };
 
@@ -301,6 +303,7 @@ export type GitFileCompare = {
   deletions: number;
   filename: string;
   status: 'added' | 'modified' | 'removed';
+  isBinary: boolean;
   content?: string;
 };
 
@@ -720,12 +723,12 @@ export type GitPathChanges = {
 };
 
 export type GitChanges = {
-  added: Array<{ path: string; content: string; encoding: 'utf-8' | 'binary' }>;
+  added: Array<{ path: string; content: string; encoding: 'utf-8' | 'base64' }>;
   deleted: string[];
   modified: Array<{
     path: string;
     content: string;
-    encoding: 'utf-8' | 'binary';
+    encoding: 'utf-8' | 'base64';
   }>;
 };
 

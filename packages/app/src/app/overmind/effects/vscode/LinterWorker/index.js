@@ -71,6 +71,8 @@ const allRules = {
     .default,
   '@typescript-eslint/no-useless-constructor': require('@typescript-eslint/eslint-plugin/dist/rules/no-useless-constructor')
     .default,
+  '@typescript-eslint/no-unused-expressions': require('@typescript-eslint/eslint-plugin/dist/rules/no-unused-expressions')
+    .default,
 };
 /* eslint-enable global-require */
 
@@ -366,6 +368,9 @@ const TYPESCRIPT_PARSER_OPTIONS = {
     ],
     'no-useless-constructor': 'off',
     '@typescript-eslint/no-useless-constructor': 'warn',
+    // Fixes optional chaining
+    'no-unused-expressions': 'off',
+    '@typescript-eslint/no-unused-expressions': 'warn',
   },
 };
 

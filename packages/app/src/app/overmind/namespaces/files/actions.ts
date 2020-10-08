@@ -1,7 +1,7 @@
 import {
   getDirectoryPath,
   getModulePath,
-  getModulesAndDirectoriesInDirectory,
+  getModulesAndDirectoriesInDirectory
 } from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
 import { Directory, Module, UploadFile } from '@codesandbox/common/lib/types';
@@ -15,7 +15,7 @@ import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 
 import {
   resolveDirectoryWrapped,
-  resolveModuleWrapped,
+  resolveModuleWrapped
 } from '../../utils/resolve-module-wrapped';
 import * as internalActions from './internalActions';
 
@@ -33,13 +33,13 @@ export const applyRecover: Action<Array<{
   recoveredList.forEach(({ recoverData, module }) => {
     actions.editor.codeChanged({
       moduleShortid: module.shortid,
-      code: recoverData.code,
+      code: recoverData.code
     });
     effects.vscode.setModuleCode(module);
   });
 
   effects.analytics.track('Files Recovered', {
-    fileCount: recoveredList.length,
+    fileCount: recoveredList.length
   });
 };
 
@@ -56,13 +56,13 @@ export const createRecoverDiffs: Action<Array<{
     const oldCode = module.code;
     actions.editor.codeChanged({
       moduleShortid: module.shortid,
-      code: recoverData.code,
+      code: recoverData.code
     });
     effects.vscode.openDiff(sandbox.id, module, oldCode);
   });
 
   effects.analytics.track('Files Recovered', {
-    fileCount: recoveredList.length,
+    fileCount: recoveredList.length
   });
 };
 
@@ -156,7 +156,7 @@ export const directoryCreated: AsyncAction<{
       insertedAt: new Date().toString(),
       updatedAt: new Date().toString(),
       type: 'directory' as 'directory',
-      path: (null as unknown) as string,
+      path: (null as unknown) as string
     };
 
     sandbox.directories.push(optimisticDirectory as Directory);
@@ -189,7 +189,7 @@ export const directoryCreated: AsyncAction<{
 
       Object.assign(directory, {
         id: newDirectory.id,
-        shortid: newDirectory.shortid,
+        shortid: newDirectory.shortid
       });
 
       effects.live.sendDirectoryCreated(directory);
@@ -203,7 +203,7 @@ export const directoryCreated: AsyncAction<{
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
       actions.internal.handleError({
         message: 'Unable to save new directory',
-        error,
+        error
       });
     }
   },
@@ -259,7 +259,7 @@ export const moduleMovedToDirectory: AsyncAction<{
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
       actions.internal.handleError({
         message: 'Could not save new module location',
-        error,
+        error
       });
     }
 
@@ -315,7 +315,7 @@ export const directoryMovedToDirectory: AsyncAction<{
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
       actions.internal.handleError({
         message: 'Could not save new directory location',
-        error,
+        error
       });
     }
 
@@ -349,7 +349,7 @@ export const directoryDeleted: AsyncAction<{
     )[0];
     const {
       removedModules,
-      removedDirectories,
+      removedDirectories
     } = getModulesAndDirectoriesInDirectory(
       removedDirectory,
       sandbox.modules,
@@ -393,7 +393,7 @@ export const directoryDeleted: AsyncAction<{
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
       actions.internal.handleError({
         message: 'Could not delete directory',
-        error,
+        error
       });
     }
 
@@ -427,7 +427,7 @@ export const directoryRenamed: AsyncAction<{
     actions.files.internal.renameDirectoryInState({
       directory,
       sandbox,
-      title,
+      title
     });
 
     actions.editor.internal.updatePreviewCode();
@@ -443,11 +443,11 @@ export const directoryRenamed: AsyncAction<{
       actions.files.internal.renameDirectoryInState({
         directory,
         sandbox,
-        title: oldTitle,
+        title: oldTitle
       });
       actions.internal.handleError({
         message: 'Could not rename directory',
-        error,
+        error
       });
     }
   },
@@ -473,7 +473,7 @@ export const gotUploadedFiles: AsyncAction<string> = async (
   } catch (error) {
     actions.internal.handleError({
       message: 'Unable to get uploaded files information',
-      error,
+      error
     });
   }
 };
@@ -491,7 +491,7 @@ export const addedFileToSandbox: AsyncAction<Pick<
       title: name,
       directoryShortid: null,
       code: url,
-      isBinary: true,
+      isBinary: true
     });
 
     effects.executor.updateFiles(state.editor.currentSandbox);
@@ -520,7 +520,7 @@ export const deletedUploadedFile: AsyncAction<string> = async (
     state.uploadedFiles.splice(index, 0, ...removedFiles);
     actions.internal.handleError({
       message: 'Unable to delete uploaded file',
-      error,
+      error
     });
   }
 };
@@ -544,28 +544,29 @@ export const filesUploaded: AsyncAction<{
       const { modules, directories } = await actions.files.internal.uploadFiles(
         {
           files,
-          directoryShortid,
+          directoryShortid
         }
       );
 
       actions.files.massCreateModules({
         modules,
         directories,
-        directoryShortid,
+        directoryShortid
       });
 
       effects.executor.updateFiles(sandbox);
+      actions.git.updateGitChanges();
     } catch (error) {
       if (error.message.indexOf('413') !== -1) {
         actions.internal.handleError({
           message: `The uploaded file is bigger than 7MB, contact hello@codesandbox.io if you want to raise this limit`,
           error,
-          hideErrorMessage: true,
+          hideErrorMessage: true
         });
       } else {
         actions.internal.handleError({
           message: 'Unable to upload files',
-          error,
+          error
         });
       }
     }
@@ -631,7 +632,7 @@ export const massCreateModules: AsyncAction<{
 
       actions.internal.handleError({
         message: 'Unable to create new files',
-        error,
+        error
       });
     }
   },
@@ -662,7 +663,7 @@ export const moduleCreated: AsyncAction<{
       sourceId: sandbox.sourceId,
       isNotSynced: true,
       ...(code ? { code } : {}),
-      ...(typeof isBinary === 'boolean' ? { isBinary } : {}),
+      ...(typeof isBinary === 'boolean' ? { isBinary } : {})
     });
 
     // We have to push the module to the array before we can figure out its path,
@@ -733,7 +734,7 @@ export const moduleCreated: AsyncAction<{
 
       actions.internal.handleError({
         message: 'Unable to save new file',
-        error,
+        error
       });
     }
 
@@ -806,7 +807,7 @@ export const createModulesByPath: AsyncAction<{
     modules,
     directories,
     directoryShortid: null,
-    cbID,
+    cbID
   });
 
   effects.executor.updateFiles(sandbox);
@@ -880,7 +881,7 @@ export const syncSandbox: AsyncAction<any[]> = async (
     actions.internal.handleError({
       message:
         "We weren't able to retrieve the latest files of the sandbox, please refresh",
-      error,
+      error
     });
   }
 
