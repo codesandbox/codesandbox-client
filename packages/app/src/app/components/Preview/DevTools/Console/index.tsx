@@ -103,7 +103,7 @@ class ConsoleComponent extends React.PureComponent<StyledProps, State> {
       case 'test-result': {
         const { result, error } = data;
 
-        const aggregatedResults = Decode(result);
+        const aggregatedResults = Decode(result) as any;
         if (!error) {
           if (aggregatedResults) {
             const { summaryMessage, failedMessages } = aggregatedResults;
@@ -227,18 +227,6 @@ class ConsoleComponent extends React.PureComponent<StyledProps, State> {
     } catch (e) {
       searchKeywordsHasError = true;
     }
-
-    window.console.log('messages', messages);
-
-    window.console.log(
-      JSON.stringify({
-        logs: messages,
-        variant: this.props.theme.light ? 'light' : 'dark',
-        styles: inspectorTheme(this.props.theme),
-        filter,
-        searchKeywords: searchKeywordsHasError ? '' : searchKeywords,
-      })
-    );
 
     return (
       <Container>
