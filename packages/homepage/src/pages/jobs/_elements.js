@@ -49,7 +49,7 @@ export const Jobs = styled.ul`
 
 export const HeroSection = styled.div`
   display: grid;
-  grid-template-columns: 472px 1fr;
+  grid-template-columns: 500px 1fr;
   grid-gap: 100px;
   margin-bottom: 140px;
 

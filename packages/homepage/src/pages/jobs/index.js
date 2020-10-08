@@ -12,6 +12,7 @@ import imageOne from '../../assets/images/jobs/one.png';
 import imageTwo from '../../assets/images/jobs/two.png';
 import imageThree from '../../assets/images/jobs/three.png';
 import imageFour from '../../assets/images/jobs/four.png';
+import worldMap from '../../assets/images/world-map.svg';
 
 import {
   PageTitle,
@@ -33,7 +34,7 @@ const Careers = ({
   return (
     <Layout>
       <ThemeProvider theme={codesandboxBlack}>
-        <PageContainer width={800}>
+        <PageContainer width={860}>
           <TitleAndMetaTags
             description="Find out here about careers and working at CodeSandbox!"
             title="Careers - CodeSandbox"
@@ -110,6 +111,17 @@ const Careers = ({
               position: relative;
             `}
           >
+            <img
+              src={worldMap}
+              alt=""
+              css={`
+                position: absolute;
+                opacity: 0.4;
+                z-index: 0;
+                width: 100vw;
+                max-width: 100vw;
+              `}
+            />
             <TeamMemberRandom
               name={team1.name}
               css={`

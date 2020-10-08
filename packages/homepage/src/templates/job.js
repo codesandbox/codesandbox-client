@@ -1,14 +1,21 @@
 import { graphql, Link } from 'gatsby';
 import React from 'react';
 
-import { Button, ThemeProvider } from '@codesandbox/components';
+import { ThemeProvider } from '@codesandbox/components';
 import codesandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
-import { ApplyButton, ContentBlock, Title } from './_job.elements';
+import {
+  ApplyButton,
+  ContentBlock,
+  Title,
+  BackButton,
+  Aside,
+  Grid,
+} from './_job.elements';
 
 export default ({
   data: {
@@ -22,26 +29,30 @@ export default ({
     <ThemeProvider theme={codesandboxBlack}>
       <TitleAndMetaTags title={`${title} - CodeSandbox Careers`} />
 
-      <PageContainer width={800}>
-        <Button autoWidth as={Link} to="/jobs">
-          See all jobs
-        </Button>
+      <PageContainer width={1024}>
+        <Grid>
+          <div>
+            <BackButton autoWidth as={Link} to="/jobs">
+              ← Back to Careers
+            </BackButton>
 
-        <Title>{title}</Title>
+            <Title>{title}</Title>
 
-        <ContentBlock dangerouslySetInnerHTML={{ __html: html }} />
-
-        <ContentBlock>
-          <h2>Applying</h2>
-
-          <p>
-            Not sure you meet 100% of our qualifications? Please apply anyway!
-          </p>
-        </ContentBlock>
-
-        <ApplyButton href={applyLink} autoWidth target="_blank">
-          Apply now
-        </ApplyButton>
+            <ContentBlock dangerouslySetInnerHTML={{ __html: html }} />
+          </div>
+          <Aside>
+            <ContentBlock>
+              <h2> Interested?</h2>
+              <p>
+                Please send us your recent work or GitHub projects that you’re
+                proud of, or open source contributions.
+              </p>
+              <ApplyButton href={applyLink} target="_blank">
+                Apply now
+              </ApplyButton>
+            </ContentBlock>
+          </Aside>
+        </Grid>
       </PageContainer>
     </ThemeProvider>
   </Layout>

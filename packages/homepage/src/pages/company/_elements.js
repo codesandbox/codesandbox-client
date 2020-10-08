@@ -29,7 +29,7 @@ export const Investors = styled.div`
   justify-content: center;
   margin-top: 4rem;
 
-  ${props => props.theme.breakpoints.md} {
+  ${props => props.theme.breakpoints.lg} {
     grid-template-columns: 1fr;
   }
 
