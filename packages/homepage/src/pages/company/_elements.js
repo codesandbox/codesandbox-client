@@ -7,7 +7,6 @@ export const Title = styled.h1`
   text-align: center;
   margin: auto;
   margin-bottom: 40px;
-  max-width: 80%;
 `;
 
 export const Text = styled.p`
@@ -15,8 +14,7 @@ export const Text = styled.p`
   font-size: 28px;
   line-height: 33px;
   text-align: center;
-  width: 867px;
-  max-width: 80%;
+  width: 862px;
   text-align: center;
   margin: auto;
   margin-bottom: 70px;

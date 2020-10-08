@@ -17,6 +17,15 @@ import Sourcegraph from './images/sourcegraph.svg';
 import company from '../../assets/images/company.png';
 import company2x from '../../assets/images/company@2x.png';
 
+import AX from '../../assets/images/flags/AX.png';
+import HU from '../../assets/images/flags/HU.png';
+import IN from '../../assets/images/flags/IN.png';
+import NL from '../../assets/images/flags/NL.png';
+import NO from '../../assets/images/flags/NO.png';
+import PO from '../../assets/images/flags/PO.png';
+import RO from '../../assets/images/flags/RO.png';
+import GM from '../../assets/images/flags/GM.png';
+
 import { Title, Text, Investors, AngelInvestors } from './_elements';
 import TeamMember from '../../components/TeamMember';
 
@@ -48,29 +57,96 @@ export default () => (
           alt="Company"
         />
       </Banner>
-      <Title>Our Team</Title>
-      <Text
+      <div
         css={`
-          height: auto;
-          margin-bottom: 258px;
+          width: 862px;
+          max-width: 80%;
+          margin: auto;
+          position: relative;
+
+          > img {
+            position: absolute;
+          }
         `}
       >
-        We’re a small but growing remote-first team of creative professionals.
-        Although our headquarters are in Amsterdam, the Netherlands, most of our
-        staff work from home in locations spread around the world.
-        <Link
-          to={`/jobs`}
+        <img
+          src={AX}
+          alt=""
           css={`
-            display: block;
-            margin-top: 40px;
-            text-decoration: none;
-            color: #0971f1;
-            font-weight: 700;
+            width: 54px;
+            opacity: 0.2;
+            transform: rotate(-7.39deg);
+            top: -56px;
+            left: 68px;
+          `}
+        />
+        <img
+          src={IN}
+          alt=""
+          css={`
+            width: 44.29px;
+            transform: rotate(-20.5deg);
+            left: -84px;
+          `}
+        />
+        <img
+          src={RO}
+          alt=""
+          css={`
+            top: 141px;
+            opacity: 0.6;
+            box-shadow: 0px 16px 32px rgba(0, 0, 0, 0.24),
+              0px 4px 4px rgba(0, 0, 0, 0.12);
+            transform: rotate(-19.5deg);
+            left: -94px;
+            width: 39.39px;
+          `}
+        />
+
+        <img
+          src={GM}
+          alt=""
+          css={`
+            top: 275px;
+            width: 44.71px;
+            opacity: 0.2;
+            box-shadow: 0px 16px 32px rgba(0, 0, 0, 0.24),
+              0px 4px 4px rgba(0, 0, 0, 0.12);
+            transform: rotate(-15deg);
+            left: 31px;
+          `}
+        />
+        {/* 
+        <img src={HU} alt="" css={``} />
+
+        <img src={NL} alt="" css={``} />
+        <img src={NO} alt="" css={``} />
+        <img src={PO} alt="" css={``} /> */}
+
+        <Title>Our Team</Title>
+        <Text
+          css={`
+            height: auto;
+            margin-bottom: 258px;
           `}
         >
-          View open positions
-        </Link>
-      </Text>
+          We’re a small but growing remote-first team of creative professionals.
+          Although our headquarters are in Amsterdam, the Netherlands, most of
+          our staff work from home in locations spread around the world.
+          <Link
+            to={`/jobs`}
+            css={`
+              display: block;
+              margin-top: 40px;
+              text-decoration: none;
+              color: #0971f1;
+              font-weight: 700;
+            `}
+          >
+            View open positions
+          </Link>
+        </Text>
+      </div>
       <div
         css={`
           margin-bottom: 371px;
