@@ -228,6 +228,18 @@ class ConsoleComponent extends React.PureComponent<StyledProps, State> {
       searchKeywordsHasError = true;
     }
 
+    window.console.log('messages', messages);
+
+    window.console.log(
+      JSON.stringify({
+        logs: messages,
+        variant: this.props.theme.light ? 'light' : 'dark',
+        styles: inspectorTheme(this.props.theme),
+        filter,
+        searchKeywords: searchKeywordsHasError ? '' : searchKeywords,
+      })
+    );
+
     return (
       <Container>
         <Messages
