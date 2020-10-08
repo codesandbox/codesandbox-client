@@ -22,7 +22,7 @@ export const CardTitle = styled.h3`
 `;
 
 export const Price = styled.h6`
-  font-weight: 500;
+  font-weight: 900;
   font-size: 2.25rem;
   text-align: center;
 
@@ -41,7 +41,7 @@ export const List = styled.ul`
   font-size: 1.4rem;
   text-align: left;
   color: ${props => props.theme.homepage.muted};
-  margin-top: 3rem;
+  margin-top: 30px;
   margin-left: 1rem;
 
   li span {
@@ -154,14 +154,12 @@ export const FeatureTitle = styled.span`
 `;
 
 export const CardContainer = styled.div`
+  width: 1324px;
   display: grid;
-  grid-template-columns: 26rem 26rem;
-  grid-template-areas:
-    'free pro'
-    'team team';
-  grid-gap: 2rem;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 33px;
   justify-content: center;
-  margin-top: 4rem;
+  margin-top: 30px;
 
   ${props => props.theme.breakpoints.lg} {
     grid-template-columns: minmax(100%, 26rem);
@@ -173,10 +171,20 @@ export const CardContainer = styled.div`
 `;
 
 export const FeaturesTitle = styled.h3`
-  font-weight: 500;
+  font-weight: bold;
   font-size: 2.25rem;
 
   color: ${props => props.theme.homepage.white};
   margin-bottom: 3.75rem;
   margin-top: 6rem;
+`;
+
+export const TeamOrIndividualWrapper = styled.div`
+  display: grid;
+  grid-gap: 33px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 6rem;
+  width: 1324px;
+  font-weight: bold;
+  font-size: 19px;
 `;
