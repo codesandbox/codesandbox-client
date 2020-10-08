@@ -205,7 +205,8 @@ export default () => (
         Are you writing about us? Here are logos and product shots to download
         and use in web and print media.
         <a
-          href="#"
+          href="/CodeSandbox Press Kit.zip"
+          download
           css={`
             display: block;
             margin-top: 40px;

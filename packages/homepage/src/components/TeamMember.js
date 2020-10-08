@@ -122,7 +122,7 @@ const PersonWrapper = styled.div`
     content: '${props => props.team}';
     ${beforeAndAfterStyles}
     color: #757575;
-    top: calc(100% + 70px);
+    top: calc(100% + 54px);
   }
 
   &:before {
@@ -131,9 +131,9 @@ const PersonWrapper = styled.div`
 
     font-weight: bold;
     top: calc(100% + 8px);
-    width: 240px;
-    height: 120px;
-    padding: 32px;
+    width: 208px;
+    height: 88px;
+    padding: 16px;
     background: #151515;
     border: 1px solid #343434;
 
