@@ -2,13 +2,12 @@ import React from 'react';
 import { isEqual } from 'lodash-es';
 import { Element, Menu, Text } from '@codesandbox/components';
 import { ArrowDown } from './Icons';
-import { ResponsiveWrapperProps } from './types';
 
 type PresetMenuProps = {
   canChangePresets: boolean;
-  presets: ResponsiveWrapperProps['props']['state']['responsive']['presets'];
-  theme: ResponsiveWrapperProps['props']['theme'];
-  resolution: ResponsiveWrapperProps['props']['state']['responsive']['resolution'];
+  presets: { [name: string]: [number, number] };
+  theme: any;
+  resolution: [number, number];
   onSelect: (preset: [number, number]) => void;
   openEditPresets: () => void;
 };
