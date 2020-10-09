@@ -158,15 +158,15 @@ class Live {
       let isServerDown = false;
       const reconnectAfterMs = (tries: number) => {
         if (isServerDown) {
-          return 3000 + Math.random() * 2000;
+          return Math.floor(3000 + Math.random() * 2000);
         }
 
         // Based on the times tried we slowly increase the reconnect timeout, so first time
         // we try to reconnect in 10ms, second time in 50ms, third time in 100ms, fourth time in 150ms,
         // etc...
-        return (
+        return Math.floor(
           [10, 50, 100, 150, 200, 250, 500, 1000, 2000][tries - 1] *
-          defaultReconnectOffset
+            defaultReconnectOffset
         );
       };
 
