@@ -32,15 +32,15 @@ export const ResizeHandles = ({
   heightResizer: [heightResizer, setHeightResizer],
   children,
 }: ResizeHandlesProps) => (
-  <Styled
-    on={on}
-    scale={on ? scale : 1}
-    width={on ? width : '100%'}
-    height={on ? height : '100%'}
-    id="styled-resize-wrapper"
-  >
+  <Styled on={on} id="styled-resize-wrapper">
     <div>
-      <ResizeWrapper>
+      <ResizeWrapper
+        style={{
+          width,
+          height,
+          transform: `translateX(-50%) translateY(-50%) scale(${scale})`,
+        }}
+      >
         <CornerResize
           onMouseDown={event => {
             setWidthAndHeightResizer({

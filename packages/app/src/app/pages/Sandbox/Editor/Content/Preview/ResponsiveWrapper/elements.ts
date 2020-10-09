@@ -12,10 +12,7 @@ export const PADDING_OFFSET_Y = 100;
 
 export const Styled = styled(Element)<{
   on: boolean;
-  width: string;
-  height: string;
   theme: any;
-  scale: number;
 }>`
   height: 100%;
 
@@ -45,13 +42,9 @@ export const Styled = styled(Element)<{
   > div > span {
     min-width: 70px;
     min-height: 130px;
-    width: ${props => props.width};
-    height: ${props => props.height};
-
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translateX(-50%) translateY(-50%) scale(${props => props.scale});
     display: block;
   }
 `;
