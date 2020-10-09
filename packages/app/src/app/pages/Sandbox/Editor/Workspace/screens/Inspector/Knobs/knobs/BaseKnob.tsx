@@ -7,6 +7,7 @@ import { useInspectorKnob } from '../../hooks/knob';
 import { StaticPropInfo } from 'inspector/lib/common/fibers';
 import { StringKnob } from './StringKnob';
 import { DefaultKnob } from './DefaultKnob';
+import { nicifyName } from '../utils/names';
 
 interface BaseKnopProps {
   name: string;
@@ -20,15 +21,6 @@ export interface KnobProps {
   value: string;
   setValue: (code: string) => void;
 }
-
-const nicify = (s: string) => {
-  const [firstChar, ...rest] = s.split('');
-
-  return [firstChar.toUpperCase(), ...rest]
-    .join('')
-    .split(/(?=[A-Z])/g)
-    .join(' ');
-};
 
 export const BaseKnob = (props: BaseKnopProps) => {
   const { value, setValue } = useInspectorKnob(
@@ -44,7 +36,7 @@ export const BaseKnob = (props: BaseKnopProps) => {
       align="center"
       css={css({ fontWeight: 500, opacity: props.disabled ? 0.5 : 1 })}
     >
-      <div style={{ flexGrow: 1, width: '100%' }}>{nicify(props.name)}</div>
+      <div style={{ flexGrow: 1, width: '100%' }}>{nicifyName(props.name)}</div>
 
       <div css={css({ flexGrow: 2, width: '100%' })}>
         {value !== null && (
