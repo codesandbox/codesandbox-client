@@ -153,8 +153,27 @@ class Live {
         client_version: VERSION,
       });
 
+      // An offset between 1 and 1.7;
+      const defaultReconnectOffset = 1 + Math.random() * 0.7;
+      let isServerDown = false;
+      const reconnectAfterMs = (tries: number) => {
+        if (isServerDown) {
+          return Math.floor(3000 + Math.random() * 2000);
+        }
+
+        // Based on the times tried we slowly increase the reconnect timeout, so first time
+        // we try to reconnect in 10ms, second time in 50ms, third time in 100ms, fourth time in 150ms,
+        // etc...
+        return Math.floor(
+          [10, 50, 100, 150, 200, 250, 500, 1000, 2000][tries - 1] *
+            defaultReconnectOffset
+        );
+      };
+
       this.socket = new Socket(`${protocol}://${location.host}/socket`, {
         params,
+        // @ts-expect-error Wrong typings
+        reconnectAfterMs,
       });
 
       let tries = 0;
@@ -171,6 +190,14 @@ class Live {
             // If we can't get a jwt because we're unauthorized, disconnect...
             this.socket.disconnect();
             tries = 0;
+          }
+
+          // We have a 503 Bad Gateway, which means that the server is struggling. We need to increase
+          // the timeout...
+          if (error.response?.status === 503) {
+            isServerDown = true;
+          } else {
+            isServerDown = false;
           }
         }
       });
