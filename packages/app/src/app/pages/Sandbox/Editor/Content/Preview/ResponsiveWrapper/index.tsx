@@ -1,8 +1,17 @@
-import { Stack, Text, Button, Input } from '@codesandbox/components';
+import {
+  Stack,
+  Text,
+  Button,
+  Input,
+  ThemeProvider,
+} from '@codesandbox/components';
 import { json } from 'overmind';
 import React, { useEffect, useState } from 'react';
 import { isEqual } from 'lodash-es';
 
+import { useTheme } from 'styled-components';
+import { useOvermind } from 'app/overmind';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { AddIcon, DeleteIcon, SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 import { PresetMenu } from './PresetMenu';
@@ -16,15 +25,17 @@ import {
 } from './elements';
 import { ResizeHandles } from './ResizeHandles';
 
-export const ResponsiveWrapper = ({
-  on,
-  canChangePresets,
-  props: { theme, state, actions },
-  children,
-}: ResponsiveWrapperProps) => {
-  const {
-    responsive: { scale: defaultScale, resolution, presets },
-  } = state;
+export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
+  const overmind = useOvermind();
+  const state = overmind.state.preview.responsive;
+  const actions = overmind.actions.preview;
+  const theme = useTheme();
+  const canChangePresets = hasPermission(
+    overmind.state.editor.currentSandbox!.authorization,
+    'write_code'
+  );
+  const on = overmind.state.preview.mode === 'responsive';
+  const resolution = state.resolution;
   const element = document.getElementById('sandbox-preview-container');
   const [wrapperWidth, setWrapperWidth] = useState(
     element?.clientWidth - PADDING_OFFSET_X
@@ -46,7 +57,7 @@ export const ResponsiveWrapper = ({
     MIN_SIZE_Y
   );
 
-  let scale = defaultScale / 100;
+  let scale = state.scale / 100;
 
   if (minResolutionWidth > wrapperWidth) {
     scale = wrapperWidth / minResolutionWidth;
@@ -103,11 +114,14 @@ export const ResponsiveWrapper = ({
   });
 
   const exists = Boolean(
-    Object.keys(presets).find(preset => isEqual(resolution, presets[preset]))
+    Object.keys(state.presets).find(preset =>
+      isEqual(resolution, state.presets[preset])
+    )
   );
 
   return (
-    <>
+    // @ts-ignore
+    <ThemeProvider theme={theme.vscodeTheme}>
       <Wrapper paddingX={6} style={{ display: on ? 'block' : 'none' }}>
         <Stack justify="center" paddingY={2} align="center" gap={2}>
           <Stack gap={2} align="center">
@@ -156,7 +170,9 @@ export const ResponsiveWrapper = ({
                 variant="link"
                 autoWidth
                 onClick={() =>
-                  actions.setResolution(json(resolution).reverse())
+                  actions.setResolution(
+                    json(resolution).reverse() as [number, number]
+                  )
                 }
               >
                 <SwitchIcon color={theme['sideBar.foreground']} />
@@ -180,7 +196,7 @@ export const ResponsiveWrapper = ({
             onSelect={preset => actions.setResolution(preset)}
             theme={theme}
             resolution={resolution}
-            presets={presets}
+            presets={state.presets}
             canChangePresets={canChangePresets}
           />
         </Stack>
@@ -196,6 +212,6 @@ export const ResponsiveWrapper = ({
       >
         {children}
       </ResizeHandles>
-    </>
+    </ThemeProvider>
   );
 };

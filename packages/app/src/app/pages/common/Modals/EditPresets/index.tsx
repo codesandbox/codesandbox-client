@@ -5,7 +5,7 @@ import React, { FunctionComponent, useEffect } from 'react';
 import CodeMirror from 'codemirror';
 import { getCodeMirror } from 'app/utils/codemirror';
 import { Alert } from '../Common/Alert';
-import { CodemirrorWrapper } from './codeMirrorTheme';
+import { CodeMirrorWrapper } from './CodeMirrorWrapper';
 
 const validateValue = (value: string) => {
   try {
@@ -101,7 +101,7 @@ export const EditPresets: FunctionComponent = () => {
   return (
     <Alert title="Edit Presets">
       <Element marginTop={4}>
-        <CodemirrorWrapper
+        <CodeMirrorWrapper
           error={Boolean(validationError)}
           ref={codemirrorContainer}
         />

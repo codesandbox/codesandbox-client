@@ -53,16 +53,16 @@ export type MultipleSandboxProps = {
 
 export type FeaturedSandboxProps = (SingleSandboxProps &
   MultipleSandboxProps) & {
+  title: string;
+  description: string;
+  height?: number;
+  pickSandbox: (args: {
+    id: string;
     title: string;
     description: string;
-    height?: number;
-    pickSandbox: (args: {
-      id: string;
-      title: string;
-      description: string;
-      screenshotUrl: string;
-    }) => void;
-  };
+    screenshotUrl: string;
+  }) => void;
+};
 
 export type FeaturedSandboxState = {
   sandbox: Sandbox | undefined;
@@ -72,7 +72,7 @@ export type FeaturedSandboxState = {
 export default class FeaturedSandbox extends React.PureComponent<
   FeaturedSandboxProps,
   FeaturedSandboxState
-  > {
+> {
   state: FeaturedSandboxState = {
     sandbox: undefined,
     showPreview: false,
@@ -213,24 +213,24 @@ export default class FeaturedSandbox extends React.PureComponent<
             </SandboxPreviewImage>
           </div>
         ) : (
-            <Transitionn
-              items={this.state.showPreview as any}
-              from={{ flex: 1, opacity: 1 }}
-              enter={{ opacity: 1, flex: 1 }}
-              leave={{
-                opacity: 0,
-                flex: 1,
-                position: 'absolute',
-                top: 0,
-                bottom: 0,
-                left: '50%',
-                right: 0,
-              }}
-              native
-            >
-              {show =>
-                show
-                  ? style => (
+          <Transitionn
+            items={this.state.showPreview as any}
+            from={{ flex: 1, opacity: 1 }}
+            enter={{ opacity: 1, flex: 1 }}
+            leave={{
+              opacity: 0,
+              flex: 1,
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: '50%',
+              right: 0,
+            }}
+            native
+          >
+            {show =>
+              show
+                ? style => (
                     <animated.div style={style}>
                       <Preview
                         sandbox={sandbox}
@@ -249,14 +249,12 @@ export default class FeaturedSandbox extends React.PureComponent<
                           prettierConfig: false,
                           zenMode: true,
                         }}
-                        isInResponsiveView={false}
-                        responsiveModeProps={{}}
                         isInProjectView
                         showNavigation={false}
                       />
                     </animated.div>
                   )
-                  : style => (
+                : style => (
                     <animated.div style={style}>
                       <div
                         style={{
@@ -272,8 +270,9 @@ export default class FeaturedSandbox extends React.PureComponent<
                             height: '100%',
                             width: '100%',
                             backgroundColor: 'white',
-                            backgroundImage: `url(${sandbox && sandbox.screenshotUrl
-                              })`,
+                            backgroundImage: `url(${
+                              sandbox && sandbox.screenshotUrl
+                            })`,
                             backgroundRepeat: 'no-repeat',
                             backgroundPositionX: 'center',
                             transform: 'scale(1.025, 1.025)',
@@ -284,9 +283,9 @@ export default class FeaturedSandbox extends React.PureComponent<
                       </SandboxPreviewImage>
                     </animated.div>
                   )
-              }
-            </Transitionn>
-          )}
+            }
+          </Transitionn>
+        )}
       </Container>
     );
   }

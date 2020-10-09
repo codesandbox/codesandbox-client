@@ -1,7 +1,7 @@
 import { Element } from '@codesandbox/components';
 import styled, { css } from 'styled-components';
 
-export const CodemirrorWrapper = styled(Element)<{ error?: boolean }>`
+export const CodeMirrorWrapper = styled(Element)<{ error?: boolean }>`
   ${({ theme, error }) => {
     const { vscodeTheme, colors } = theme;
 
@@ -28,7 +28,7 @@ export const CodemirrorWrapper = styled(Element)<{ error?: boolean }>`
         transition: all 200ms ease;
 
         border: 1px solid ${
-          error ? colors.errorForeground : colors.editor.background
+          error ? colors.errorForeground : colors.sideBar.border
         };
         border-radius: 2px;
 

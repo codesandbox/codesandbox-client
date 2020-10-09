@@ -14,17 +14,11 @@ type ResizeHandlesProps = {
   height: string;
   scale: number;
   widthAndHeightResizer: [
-    widthAndHeightResizer: { x: number; y: number } | null,
-    setWidthAndHeightResizer: ({ x, y }: { x: number; y: number }) => void
+    { x: number; y: number } | null,
+    ({ x, y }: { x: number; y: number }) => void
   ];
-  widthResizer: [
-    widthResizer: { x: number } | null,
-    setWidthResizer: ({ x: number }) => void
-  ];
-  heightResizer: [
-    heightResizer: { y: number } | null,
-    setHeightResizer: ({ y: number }) => void
-  ];
+  widthResizer: [{ x: number } | null, ({ x: number }) => void];
+  heightResizer: [{ y: number } | null, ({ y: number }) => void];
   children: React.ReactNode;
 };
 

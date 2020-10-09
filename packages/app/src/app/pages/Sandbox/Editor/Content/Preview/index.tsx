@@ -1,9 +1,11 @@
 import { ServerContainerStatus } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
-import { useTheme } from 'styled-components';
-import React, { FunctionComponent, useMemo, useState } from 'react';
+
+import React, { FunctionComponent, useState } from 'react';
 import { useOvermind } from 'app/overmind';
+
+import { ResponsiveWrapper } from './ResponsiveWrapper';
 
 type Props = {
   hidden?: boolean;
@@ -17,7 +19,6 @@ export const Preview: FunctionComponent<Props> = ({
   options,
   runOnClick,
 }) => {
-  const theme = useTheme();
   const {
     actions: {
       preview: previewActions,
@@ -41,14 +42,6 @@ export const Preview: FunctionComponent<Props> = ({
     },
   } = useOvermind();
   const [running, setRunning] = useState(!runOnClick);
-  const responsiveModeProps = useMemo(
-    () => ({
-      state: preview,
-      actions: previewActions,
-      theme,
-    }),
-    [preview, previewActions, theme]
-  );
 
   /**
    * Responsible for showing a message when something is happening with SSE. Only used
@@ -71,19 +64,23 @@ export const Preview: FunctionComponent<Props> = ({
     return undefined;
   };
 
+  const isInResponsivePreview = preview.mode === 'responsive';
+
   return running ? (
     <BasePreview
       currentModule={currentModule}
       hide={hidden}
       initialPath={initialPath}
       isInProjectView={isInProjectView}
-      responsiveModeProps={responsiveModeProps}
       isResizing={isResizing}
       onAction={previewActionReceived}
       onClearErrors={errorsCleared}
       onMount={initializePreview}
       noPreview={!previewWindowVisible}
       onToggleProjectView={projectViewToggled}
+      ResponsiveWrapper={ResponsiveWrapper}
+      isResponsiveModeActive={isInResponsivePreview}
+      toggleResponsiveMode={previewActions.toggleResponsiveMode}
       overlayMessage={getOverlayMessage()}
       previewSecret={currentSandbox.previewSecret}
       privacy={currentSandbox.privacy}

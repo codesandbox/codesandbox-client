@@ -9,7 +9,7 @@ import {
 type useDragResizeProps = {
   resolution: [number, number];
   scale: number;
-  resizer: [size: { x?: number; y?: number }, setSize: (payload: any) => void];
+  resizer: [{ x?: number; y?: number }, (payload: any) => void];
   setResolution: (resolution: [number, number]) => void;
 };
 
