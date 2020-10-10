@@ -7,6 +7,40 @@ export function isSameStart(a: CodeRange, b: CodeRange) {
   );
 }
 
+/**
+ * Test if `otherRange` is in `range`. If the ranges are equal, will return true.
+ */
+export function containsRange(
+  range: CodeRange,
+  otherRange: CodeRange
+): boolean {
+  if (
+    otherRange.startLineNumber < range.startLineNumber ||
+    otherRange.endLineNumber < range.startLineNumber
+  ) {
+    return false;
+  }
+  if (
+    otherRange.startLineNumber > range.endLineNumber ||
+    otherRange.endLineNumber > range.endLineNumber
+  ) {
+    return false;
+  }
+  if (
+    otherRange.startLineNumber === range.startLineNumber &&
+    otherRange.startColumnNumber < range.startColumnNumber
+  ) {
+    return false;
+  }
+  if (
+    otherRange.endLineNumber === range.endLineNumber &&
+    otherRange.endColumnNumber > range.endColumnNumber
+  ) {
+    return false;
+  }
+  return true;
+}
+
 export function stringifyCodeRange(a: CodeRange) {
   return `Start: { Line: ${a.startLineNumber}, Column: ${a.startColumnNumber} }, End: { Line: ${a.endLineNumber}, Column: ${a.endColumnNumber} }`;
 }

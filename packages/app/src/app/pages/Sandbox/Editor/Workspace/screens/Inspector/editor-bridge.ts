@@ -3,8 +3,10 @@ import { CodeRange } from 'inspector/lib/common/fibers';
 import { Disposable } from 'inspector/lib/common/rpc/disposable';
 import { Emitter } from 'inspector/lib/common/rpc/event';
 import {
+  ICodeEditor,
   IEditorInterface,
   IModel,
+  OnDidActiveEditorChangeEvent,
   OnModelAddedEvent,
   OnModelRemovedEvent,
   Resource,
@@ -12,10 +14,15 @@ import {
 import { componentRangeToViewRange } from './utils';
 
 export class VSCodeEditorBridge extends Disposable implements IEditorInterface {
-  onModelAddedEmitter = new Emitter<OnModelAddedEvent>();
-  onModelAdded = this.onModelAddedEmitter.event;
-  onModelRemovedEmitter = new Emitter<OnModelRemovedEvent>();
-  onModelRemoved = this.onModelRemovedEmitter.event;
+  private onDidActiveEditorChangeEmitter = new Emitter<
+    OnDidActiveEditorChangeEvent
+  >();
+  public onDidActiveEditorChange = this.onDidActiveEditorChangeEmitter.event;
+
+  private onModelAddedEmitter = new Emitter<OnModelAddedEvent>();
+  public onModelAdded = this.onModelAddedEmitter.event;
+  private onModelRemovedEmitter = new Emitter<OnModelRemovedEvent>();
+  public onModelRemoved = this.onModelRemovedEmitter.event;
 
   constructor(private vscode: typeof vscodeEffect) {
     super();
@@ -31,6 +38,16 @@ export class VSCodeEditorBridge extends Disposable implements IEditorInterface {
         this.onModelRemovedEmitter.fire({ model });
       })
     );
+
+    this.toDispose.push(
+      vscode.onDidActiveEditorChange(event => {
+        this.onDidActiveEditorChangeEmitter.fire(event);
+      })
+    );
+  }
+
+  getActiveEditor(): ICodeEditor | null {
+    return this.vscode.getActiveCodeEditor();
   }
 
   openModel(resource: Resource): Promise<IModel> {

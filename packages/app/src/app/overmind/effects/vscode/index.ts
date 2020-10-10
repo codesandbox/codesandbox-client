@@ -26,7 +26,13 @@ import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
 import FontFaceObserver from 'fontfaceobserver';
 import { IDisposable } from 'inspector/lib/common/rpc/disposable';
-import { IModel, Resource } from 'inspector/lib/editor/editor-api';
+import { Emitter } from 'inspector/lib/common/rpc/event';
+import {
+  ICodeEditor,
+  IModel,
+  OnDidActiveEditorChangeEvent,
+  Resource,
+} from 'inspector/lib/editor/editor-api';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
 import { TextOperation } from 'ot';
@@ -34,6 +40,7 @@ import { json } from 'overmind';
 import io from 'socket.io-client';
 
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
+import { CodeEditor } from './Editor';
 import {
   initializeCodeSandboxTheme,
   initializeCustomTheme,
@@ -141,6 +148,11 @@ export class VSCodeEffect {
   onSelectionChangeDebounced: VsCodeOptions['onSelectionChanged'] & {
     cancel(): void;
   };
+
+  private onDidActiveEditorChangeEmitter = new Emitter<
+    OnDidActiveEditorChangeEvent
+  >();
+  public onDidActiveEditorChange = this.onDidActiveEditorChangeEmitter.event;
 
   public initialize(options: VsCodeOptions) {
     this.options = options;
@@ -338,6 +350,15 @@ export class VSCodeEffect {
     }
 
     await this.modelsHandler.applyOperation(moduleShortid, operation);
+  }
+
+  public getActiveCodeEditor(): ICodeEditor | null {
+    const editor = this.editorApi.getActiveCodeEditor();
+    if (!editor) {
+      return null;
+    }
+
+    return new CodeEditor(editor);
   }
 
   public updateOptions(options: { readOnly: boolean }) {
@@ -1273,6 +1294,10 @@ export class VSCodeEffect {
     }
 
     const activeEditor = this.editorApi.getActiveCodeEditor();
+
+    this.onDidActiveEditorChangeEmitter.fire({
+      editor: (activeEditor && new CodeEditor(activeEditor)) || null,
+    });
 
     if (activeEditor && activeEditor.getModel()) {
       const modulePath = activeEditor.getModel().uri.path;

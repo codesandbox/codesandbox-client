@@ -35,32 +35,40 @@ export interface IModel extends Disposable {
 }
 
 export type OnDidChangeModelEvent = {
-  model: IModel;
+  oldModelUri: Resource | null;
+  newModelUri: Resource | null;
 };
 
 export type OnDidChangeCursorPositionEvent = {
-  position: CodePosition;
+  readonly position: CodePosition;
+  readonly secondaryPositions: CodePosition[];
+  readonly source: string;
 };
 
-export interface IEditor extends Disposable {
+export interface ICodeEditor extends Disposable {
   onDidChangeModel: Event<OnDidChangeModelEvent>;
   onDidChangeCursorPosition: Event<OnDidChangeCursorPositionEvent>;
 
   getId(): string;
-  getModel(): IModel;
+  getModel(): IModel | null;
 }
 
 export type OnModelAddedEvent = {
-  model: IModel;
+  readonly model: IModel;
 };
 export type OnModelRemovedEvent = {
-  model: IModel;
+  readonly model: IModel;
+};
+export type OnDidActiveEditorChangeEvent = {
+  readonly editor: ICodeEditor | null;
 };
 
 export interface IEditorInterface {
   onModelAdded: Event<OnModelAddedEvent>;
   onModelRemoved: Event<OnModelRemovedEvent>;
+  onDidActiveEditorChange: Event<OnDidActiveEditorChangeEvent>;
 
+  getActiveEditor(): ICodeEditor | null;
   getModels(): IModel[];
   openModel(resource: Resource): Promise<IModel>;
 

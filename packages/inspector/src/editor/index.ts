@@ -9,7 +9,11 @@ import { Emitter } from '../common/rpc/event';
 import { ReactEditorBridge } from '../common/react/editor';
 import { IEditorInterface, IModel } from './editor-api';
 import { Disposable } from '../common/rpc/disposable';
-import { isSameStart, stringifyCodeRange } from '../common/utils/code-location';
+import {
+  containsRange,
+  isSameStart,
+  stringifyCodeRange,
+} from '../common/utils/code-location';
 import { ComponentInstanceModel, IComponentInstanceModel } from './instance';
 
 export class EditorInspectorState extends Disposable implements IEditorProxy {
@@ -51,6 +55,24 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
         this.openedModels.delete(resource.path);
       })
     );
+
+    this.initializeEditor();
+  }
+
+  private initializeEditor() {
+    const activeEditor = this.editorApi.getActiveEditor();
+    // TODO: handle active editor changes and cases where model doesn't exist
+    activeEditor?.onDidChangeCursorPosition(event => {
+      this.selectComponentInstance({
+        path: activeEditor.getModel()?.getResource().path,
+        codePosition: {
+          startLineNumber: event.position.lineNumber,
+          endLineNumber: event.position.lineNumber,
+          startColumnNumber: event.position.columnNumber,
+          endColumnNumber: event.position.columnNumber,
+        },
+      });
+    });
   }
 
   private async initializeModel(model: IModel) {
@@ -141,7 +163,7 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
     }
 
     const componentInstance = instances.find(i =>
-      isSameStart(
+      containsRange(
         i.getInstanceInformation().location.codePosition,
         location.codePosition
       )

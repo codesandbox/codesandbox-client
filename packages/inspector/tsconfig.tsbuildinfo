@@ -517,8 +517,8 @@
         "affectsGlobalScope": false
       },
       "./src/common/utils/code-location.ts": {
-        "version": "24af4d00d92e18f6dcd7e4618a43c547aa9e33d53f56e610ec8d981039065a88",
-        "signature": "faf02dff4fc1cc0a995d0e8aa13b129eedaa4b1cb6e95f38ce5d9e404e527738",
+        "version": "eb246cf9fc93b7aa1eebdb9aaf4296d08f07198045bea42c662ac7be187937d8",
+        "signature": "4037f23795c8cd2a895e7730e8dfcfe2e70241eb83a27e29b913a6c76e110f6b",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/ot/index.d.ts": {
@@ -527,8 +527,8 @@
         "affectsGlobalScope": false
       },
       "./src/editor/editor-api.ts": {
-        "version": "8e4676e440fd550b2c5631ee854a1d07559555b2607c84799a5a6eebec1a329a",
-        "signature": "e0f1d4303b98d923f29ff74fe3454dcf6d71d547ee1c9cf188c2785073db404b",
+        "version": "b25848b2b9f4c5d6ff82bb7f7f74bda9f4139f34c7ae26a91e0cabb1941ef7fe",
+        "signature": "ac6162474df7b65d00b6ec904eeb62dde76d9f4879850a46d4c0a617beeeb9ad",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/lodash/ts3.1/common/common.d.ts": {
@@ -2132,8 +2132,8 @@
         "affectsGlobalScope": false
       },
       "./src/editor/index.ts": {
-        "version": "467d8b35617557357bd59006a6f8e92b0bdf74be29f7064a5b375207741035b0",
-        "signature": "c5b55f2dd9b8062bd0b252c788fe5d201a891918876e6443ffba2fdc16bde791",
+        "version": "c53fae7c3dad5dee8cab56a584542c403c9e843cf6be1bdeae3aa4d67e9c84fc",
+        "signature": "a2d44a17190ba8d70e24396fb58a90b69973a1bc890450bccc85346eed3056f5",
         "affectsGlobalScope": false
       },
       "./src/editor/transform.test.ts": {
@@ -11806,7 +11806,36 @@
         [
           {
             "file": "./src/editor/index.ts",
-            "start": 8519,
+            "start": 2159,
+            "length": 4,
+            "code": 2322,
+            "category": 1,
+            "messageText": {
+              "messageText": "Type 'string | undefined' is not assignable to type 'string'.",
+              "category": 1,
+              "code": 2322,
+              "next": [
+                {
+                  "messageText": "Type 'undefined' is not assignable to type 'string'.",
+                  "category": 1,
+                  "code": 2322
+                }
+              ]
+            },
+            "relatedInformation": [
+              {
+                "file": "./src/common/fibers.ts",
+                "start": 843,
+                "length": 4,
+                "messageText": "The expected type comes from property 'path' which is declared here on type 'CodeLocation'",
+                "category": 3,
+                "code": 6500
+              }
+            ]
+          },
+          {
+            "file": "./src/editor/index.ts",
+            "start": 9170,
             "length": 13,
             "messageText": "'orderedFibers' is declared but its value is never read.",
             "category": 1,
@@ -11815,7 +11844,7 @@
           },
           {
             "file": "./src/editor/index.ts",
-            "start": 8558,
+            "start": 9209,
             "length": 12,
             "messageText": "'currentFiber' is declared but its value is never read.",
             "category": 1,
