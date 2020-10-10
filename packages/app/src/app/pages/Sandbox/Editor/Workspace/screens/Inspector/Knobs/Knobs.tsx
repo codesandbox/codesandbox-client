@@ -1,17 +1,19 @@
 import React from 'react';
-import { Button, Stack, Text } from '@codesandbox/components';
+import { AnimateSharedLayout, motion } from 'framer-motion';
+import { Collapsible, Stack } from '@codesandbox/components';
 import { EditorInspectorState } from 'inspector/lib/editor';
 import { useInspectorKnobs } from '../hooks/knobs';
 import { BaseKnob } from './knobs/index';
-import { nicifyName } from './utils/names';
 import { groupBy, sortBy } from 'lodash-es';
-import css from '@styled-system/css';
+import { UnusedKnob } from './knobs/UnusedKnob';
+import { useOvermind } from 'app/overmind';
 
 type KnobsProps = {
   inspectorStateService: EditorInspectorState;
 };
 
 export const Knobs = ({ inspectorStateService }: KnobsProps) => {
+  const { actions } = useOvermind();
   const { selectedInstance, selectedProps, componentInfo } = useInspectorKnobs(
     inspectorStateService
   );
@@ -20,7 +22,8 @@ export const Knobs = ({ inspectorStateService }: KnobsProps) => {
     return null;
   }
 
-  const { name } = selectedInstance.getInstanceInformation();
+  const name = selectedInstance.getName();
+  const id = selectedInstance.getId();
 
   const { setProps = [], unsetProps = [] } = groupBy(
     componentInfo.props,
@@ -34,54 +37,64 @@ export const Knobs = ({ inspectorStateService }: KnobsProps) => {
   );
 
   return (
-    <Stack gap={2} direction="vertical" paddingY={3} style={{ marginTop: -16 }}>
-      <Text paddingX={3} weight="bold" color="white">
-        {name || 'Anonymous'}
-      </Text>
+    <Collapsible defaultOpen title={`Knobs (${name || 'Anonymous'})`}>
+      <Stack
+        gap={2}
+        direction="vertical"
+        paddingY={3}
+        style={{ marginTop: -16 }}
+      >
+        <AnimateSharedLayout>
+          <Stack paddingX={3} gap={2} direction="vertical">
+            {sortBy(setProps, 'name').map(propsSourceInformation => {
+              const instancePropInfo = selectedProps[
+                propsSourceInformation.name
+              ]!;
 
-      <Stack paddingX={3} gap={3} direction="vertical">
-        {sortBy(setProps, 'name').map(propsSourceInformation => {
-          const instancePropInfo = selectedProps[propsSourceInformation.name]!;
+              return (
+                <motion.div
+                  style={{ width: '100%' }}
+                  key={id + propsSourceInformation.name}
+                  layoutId={id + propsSourceInformation.name}
+                  layout
+                >
+                  <BaseKnob
+                    disabled={!instancePropInfo}
+                    name={propsSourceInformation.name}
+                    propInfo={propsSourceInformation}
+                    componentInstance={selectedInstance}
+                  />
+                </motion.div>
+              );
+            })}
+          </Stack>
+        </AnimateSharedLayout>
 
-          return (
-            <BaseKnob
-              key={propsSourceInformation.name}
-              disabled={!instancePropInfo}
-              name={propsSourceInformation.name}
-              propInfo={propsSourceInformation}
-              componentInstance={selectedInstance}
-            />
-          );
-        })}
+        <AnimateSharedLayout>
+          <Stack paddingX={1} direction="vertical">
+            {sortBy(unsetProps, 'name').map(propsSourceInformation => {
+              return (
+                <motion.div
+                  style={{ width: '100%' }}
+                  key={id + propsSourceInformation.name}
+                  layoutId={id + propsSourceInformation.name}
+                  layout
+                >
+                  <UnusedKnob
+                    onClick={async () => {
+                      await selectedInstance.addProp(
+                        propsSourceInformation.name
+                      );
+                    }}
+                    propName={propsSourceInformation.name}
+                    propType={propsSourceInformation.typeInfo?.type || null}
+                  />
+                </motion.div>
+              );
+            })}
+          </Stack>
+        </AnimateSharedLayout>
       </Stack>
-
-      <hr
-        css={css({ backgroundColor: 'sideBar.border' })}
-        style={{
-          width: '100%',
-          height: '1px',
-          border: 'none',
-          outline: 'none',
-        }}
-      />
-
-      <Stack paddingX={3} direction="vertical" gap={4}>
-        <Text size={2} variant="muted">
-          Unset Props
-        </Text>
-        {sortBy(unsetProps, 'name').map(propsSourceInformation => {
-          return (
-            <Stack align="center">
-              <Text style={{ width: '100%' }} key={propsSourceInformation.name}>
-                {nicifyName(propsSourceInformation.name)}
-              </Text>
-              <Text size={2} variant="muted" key={propsSourceInformation.name}>
-                {nicifyName(propsSourceInformation.typeInfo?.type || 'unknown')}
-              </Text>
-            </Stack>
-          );
-        })}
-      </Stack>
-    </Stack>
+    </Collapsible>
   );
 };

@@ -17,7 +17,7 @@ const Animated = ({ showMountAnimations, ...props }) => (
     initial={showMountAnimations ? { opacity: 0, height: 0 } : null}
     exit={{ opacity: 0, height: 0 }}
     style={{ width: '100%', overflow: 'hidden' }}
-    positionTransition
+    layout
   >
     <Element
       css={css({

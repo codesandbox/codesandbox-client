@@ -2,7 +2,6 @@ import { EditorInspectorState } from '.';
 import {
   CodeRange,
   ComponentInstanceData,
-  Fiber,
   SourcePropInfo,
   StaticComponentInformation,
 } from '../common/fibers';
@@ -14,6 +13,7 @@ import {
   RangeStickinessBehaviour,
   SpanSubscription,
 } from './span-subscription';
+import { addProp, InitializerType } from './utils/code-manipulation';
 
 export class InstanceProp extends Disposable {
   definitionPosition: CodeRange;
@@ -104,6 +104,7 @@ export type InstanceDataChangedEvent = {
 export interface IComponentInstanceModel {
   didInstanceDataChange: Event<InstanceDataChangedEvent>;
 
+  getId(): string;
   getName(): string;
 
   getInstanceProp(name: string): InstanceProp | undefined;
@@ -111,6 +112,7 @@ export interface IComponentInstanceModel {
   getComponentInformation(): Promise<StaticComponentInformation>;
 
   setFiberProp(name: string, value: any): Promise<void>;
+  addProp(name: string): Promise<void>;
 }
 
 /**
@@ -126,6 +128,7 @@ export class ComponentInstanceModel
   implements IComponentInstanceModel {
   componentInfo: StaticComponentInformation | undefined;
   codePosition: CodeRange;
+  private subscription: SpanSubscription;
   props: {
     [key: string]: InstanceProp;
   };
@@ -162,18 +165,22 @@ export class ComponentInstanceModel
       })
     );
 
-    const subscription = new SpanSubscription(
+    this.subscription = new SpanSubscription(
       model,
       instanceData.location.codePosition,
       RangeStickinessBehaviour.NeverGrowsWhenTypingAtEdges
     );
-    this.toDispose.push(subscription);
+    this.toDispose.push(this.subscription);
 
     this.toDispose.push(
-      subscription.onDidRangeChange(e => {
+      this.subscription.onDidRangeChange(e => {
         this.codePosition = e.range;
       })
     );
+  }
+
+  public getId() {
+    return `${this.codePosition.startLineNumber}:${this.codePosition.startColumnNumber}`;
   }
 
   public getName() {
@@ -240,5 +247,25 @@ export class ComponentInstanceModel
     }
 
     await this.sandboxProxy.$setFiberProp(fiber.id, [name], value);
+  }
+
+  public async addProp(name: string) {
+    const componentInformation = await this.getComponentInformation();
+
+    const propInfo = componentInformation.props.find(p => p.name === name);
+    if (!propInfo) {
+      throw new Error("This prop doesn't exist on the component");
+    }
+
+    const currentComponentCode = this.subscription.getContent();
+
+    let initializerType = InitializerType.Expression;
+    if (propInfo.typeInfo?.type === 'string') {
+      initializerType = InitializerType.String;
+    } else if (propInfo.typeInfo?.type === 'boolean') {
+      initializerType = InitializerType.Boolean;
+    }
+    const newCode = addProp(currentComponentCode, name, initializerType);
+    this.subscription.setContent(newCode);
   }
 }

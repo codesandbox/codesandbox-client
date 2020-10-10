@@ -1,5 +1,5 @@
 import { TextOperation } from 'ot';
-import { CodeRange, CodeSelection } from '../common/fibers';
+import { CodeRange, CodeSelection, CodePosition } from '../common/fibers';
 import { Disposable } from '../common/rpc/disposable';
 import { Event } from '../common/rpc/event';
 
@@ -32,6 +32,22 @@ export interface IModel extends Disposable {
   ): CodeSelection[] | null;
 
   onDidChangeContent: Event<OnDidChangeContentEvent>;
+}
+
+export type OnDidChangeModelEvent = {
+  model: IModel;
+};
+
+export type OnDidChangeCursorPositionEvent = {
+  position: CodePosition;
+};
+
+export interface IEditor extends Disposable {
+  onDidChangeModel: Event<OnDidChangeModelEvent>;
+  onDidChangeCursorPosition: Event<OnDidChangeCursorPositionEvent>;
+
+  getId(): string;
+  getModel(): IModel;
 }
 
 export type OnModelAddedEvent = {

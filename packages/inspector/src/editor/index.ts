@@ -221,11 +221,13 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
     const existingInstances = this.instances.get(path);
 
     if (existingInstances) {
-      const orderChanged = existingInstances.some(
-        (inst, i) =>
-          !instances[i] ||
-          instances[i].name !== inst.getInstanceInformation().name
-      );
+      const orderChanged =
+        existingInstances.length !== instances.length ||
+        existingInstances.some(
+          (inst, i) =>
+            !instances[i] ||
+            instances[i].name !== inst.getInstanceInformation().name
+        );
       if (orderChanged) {
         // If order changes we're going to reinitialize everything and do a best effort of getting
         // our last selection back

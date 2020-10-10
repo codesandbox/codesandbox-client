@@ -1,3 +1,14 @@
+export interface CodePosition {
+  /**
+   * Line number at which the range starts (starts at 1)
+   */
+  lineNumber: number;
+  /**
+   * Column number at which the range starts (starts at 1)
+   */
+  columnNumber: number;
+}
+
 export interface CodeRange {
   /**
    * Line number at which the range starts (starts at 1)

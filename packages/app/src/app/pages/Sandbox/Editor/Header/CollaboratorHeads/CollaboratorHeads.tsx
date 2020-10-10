@@ -158,7 +158,7 @@ export const CollaboratorHeads: FunctionComponent = () => {
           <AnimatePresence>
             {firstLiveUsers.map((user, i) => (
               <motion.div
-                positionTransition
+                layout
                 style={{
                   zIndex: 10 + liveUsers.length - i,
                   display: 'flex',

@@ -120,7 +120,7 @@ export const AllSandboxes = () => {
               ))
           : sandboxes.map((sandbox, index) => (
               <Column key={sandbox.id}>
-                <motion.div layoutTransition={{ duration: 0.15 }}>
+                <motion.div layout>
                   <SandboxCard
                     type={SandboxType.ALL_SANDBOX}
                     sandbox={sandbox}

@@ -1,5 +1,5 @@
-import { Input } from '@codesandbox/components';
 import React from 'react';
+import { Input } from '../components/Input';
 import { KnobProps } from './BaseKnob';
 
 const nicifyValue = (value: string) => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import css from '@styled-system/css';
-import { Input, Stack } from '@codesandbox/components';
+import { Stack } from '@codesandbox/components';
 import { IComponentInstanceModel } from 'inspector/lib/editor/instance';
 
 import { useInspectorKnob } from '../../hooks/knob';

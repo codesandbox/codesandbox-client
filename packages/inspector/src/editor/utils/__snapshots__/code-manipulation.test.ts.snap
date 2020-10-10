@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`multiline can add a prop 1`] = `
+"<Component
+  a={5}
+  test
+/>"
+`;
+
+exports[`multiline can add a prop 2`] = `
+"<Component
+  a={5}
+  test={}
+/>"
+`;
+
+exports[`multiline can add a prop 3`] = `
+"<Component
+  a={5}
+  test=\\"\\"
+/>"
+`;
+
+exports[`multiline can add a prop to selfclose same line 1`] = `
+"<Component
+  test
+  a={5}/>"
+`;
+
+exports[`multiline can add a prop to selfclose same line 2`] = `
+"<Component
+  test={}
+  a={5}/>"
+`;
+
+exports[`multiline can add a prop to selfclose same line 3`] = `
+"<Component
+  test=\\"\\"
+  a={5}/>"
+`;
+
+exports[`single line can add a prop for open 1`] = `"<Component a={5} test>"`;
+
+exports[`single line can add a prop for open 2`] = `"<Component a={5} test={}>"`;
+
+exports[`single line can add a prop for open 3`] = `"<Component a={5} test=\\"\\">"`;
+
+exports[`single line can add a prop for self closing 1`] = `"<Component a={5} test />"`;
+
+exports[`single line can add a prop for self closing 2`] = `"<Component a={5} test={} />"`;
+
+exports[`single line can add a prop for self closing 3`] = `"<Component a={5} test=\\"\\" />"`;

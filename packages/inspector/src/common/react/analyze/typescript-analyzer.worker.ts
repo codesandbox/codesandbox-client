@@ -1,6 +1,5 @@
 /// <reference lib="webworker" />
 import ts from 'typescript';
-import { ComponentInstanceData } from '../../fibers';
 import { RPCProtocolImpl } from '../../rpc';
 import { WorkerConnection } from '../../rpc/worker/connection';
 import { analyzeComponentInstances } from './component-instance';

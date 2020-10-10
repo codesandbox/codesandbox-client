@@ -15,6 +15,7 @@
     "lib": ["es2015", "dom"],
     "outDir": "lib",
     "declaration": true,
+    "declarationMap": true,
     "allowJs": false,
     "esModuleInterop": true
   }

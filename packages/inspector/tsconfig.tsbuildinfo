@@ -222,8 +222,8 @@
         "affectsGlobalScope": false
       },
       "./src/common/fibers.ts": {
-        "version": "eb4c8bdcb5a0847af549bc90264b342608ecbcea907aeca604a8b89dcd08c9df",
-        "signature": "eafd2773510015ab762cb21c066c5500d10159b3d1fd7e37ae88580bf0133018",
+        "version": "98be4c476222341031d066cb948d450ebcf438323289778553878b96895d85f3",
+        "signature": "5c0dd5cdbc63b4cc018b8f776ef5c5f55017646e0f842f590888035d8d099b95",
         "affectsGlobalScope": false
       },
       "./src/common/rpc/event.ts": {
@@ -482,7 +482,7 @@
         "affectsGlobalScope": false
       },
       "./src/common/react/analyze/typescript-analyzer.worker.ts": {
-        "version": "76803be55ad1c3e5b9d14659c22e06c079466093f5057cf8b516f8679906f505",
+        "version": "103cc4e51cf0e8b30ebb85cdf45eea14be3bbe515a52d68fd670788127062718",
         "signature": "eed6cf2161ada471e7743f3a3f9367b59094d50b0e8a3907e18b2e08e33615ca",
         "affectsGlobalScope": false
       },
@@ -527,8 +527,8 @@
         "affectsGlobalScope": false
       },
       "./src/editor/editor-api.ts": {
-        "version": "17d0ea157e2c242ed595fc5a76c3d3dac72a41757b87ad42fa84d2074cb43e92",
-        "signature": "96a6ebddac0172786ea391011faf7a5ef4943625ac624465b76d981c5f3a258c",
+        "version": "8e4676e440fd550b2c5631ee854a1d07559555b2607c84799a5a6eebec1a329a",
+        "signature": "e0f1d4303b98d923f29ff74fe3454dcf6d71d547ee1c9cf188c2785073db404b",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/lodash/ts3.1/common/common.d.ts": {
@@ -2121,19 +2121,29 @@
         "signature": "d08c1ef8a34272d4c48ced9dc4b38c7845cfefebb1bfeee9cde5783f747bd275",
         "affectsGlobalScope": false
       },
+      "./src/editor/utils/code-manipulation.ts": {
+        "version": "34e431bd311d8b66ef1fa544b355e6d154042562342d7b0a9b0aefcaf363c68c",
+        "signature": "bc19c8e1de51e0241b3a5a0877bff643aab775995527a9bc0d80c1e03ded1c24",
+        "affectsGlobalScope": false
+      },
       "./src/editor/instance.ts": {
-        "version": "a6b880b165023f51c5650395914825af76a4c0fcc16aeb74e4633eb006f87e2b",
-        "signature": "11863fef60005e7d3c07851825a61460f97942d07b169459824ed3630436b2d7",
+        "version": "7b6d28bc9b6147199bbfe079da391c877937283a60cb1548d64c803ae9b7dd58",
+        "signature": "4b583135e86b3b7d2acc04d248869f7666145a0b026ee23bfadb558a8b329f60",
         "affectsGlobalScope": false
       },
       "./src/editor/index.ts": {
-        "version": "9d1df1e2d701bebd0376e62e5b03727d8037548577e8a759ac0ab0e6d84f9edb",
+        "version": "467d8b35617557357bd59006a6f8e92b0bdf74be29f7064a5b375207741035b0",
         "signature": "c5b55f2dd9b8062bd0b252c788fe5d201a891918876e6443ffba2fdc16bde791",
         "affectsGlobalScope": false
       },
       "./src/editor/transform.test.ts": {
         "version": "8c85e1502b7000f189755b08aa9cad0ba9117390fb0307173790f6a447843a79",
         "signature": "3b5418c39e40673ee3d0d650aab1d5c07f2752839a17669385e0db00f36c9e8a",
+        "affectsGlobalScope": false
+      },
+      "./src/editor/utils/code-manipulation.test.ts": {
+        "version": "d5675e789cff610ab1254fa8b3c844da0dbbd76dfedaea5261e0c46a0725a439",
+        "signature": "253d1e8730e5a82eb06d060614f255164c86552ea91a2e0457a4dc7b1aa2f324",
         "affectsGlobalScope": false
       },
       "./src/sandbox/highlight.ts": {
@@ -6725,7 +6735,6 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/typescript/lib/typescript.d.ts",
-        "./src/common/fibers.ts",
         "./src/common/react/analyze/component-instance.ts",
         "./src/common/react/analyze/proxies.ts",
         "./src/common/rpc/index.ts",
@@ -6845,7 +6854,8 @@
         "./src/common/rpc/event.ts",
         "./src/editor/editor-api.ts",
         "./src/editor/index.ts",
-        "./src/editor/span-subscription.ts"
+        "./src/editor/span-subscription.ts",
+        "./src/editor/utils/code-manipulation.ts"
       ],
       "./src/editor/span-subscription.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -6869,6 +6879,15 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/@types/ot/index.d.ts"
+      ],
+      "./src/editor/utils/code-manipulation.test.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "./src/editor/utils/code-manipulation.ts"
+      ],
+      "./src/editor/utils/code-manipulation.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
       ],
       "./src/index.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -11082,6 +11101,96 @@
             "messageText": "All declarations of 'publicKey' must have identical modifiers.",
             "category": 1,
             "code": 2687
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+            "start": 190327,
+            "length": 8,
+            "messageText": "Duplicate identifier 'FormData'.",
+            "category": 1,
+            "code": 2300,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
+                "start": 1349,
+                "length": 8,
+                "messageText": "'FormData' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+            "start": 190772,
+            "length": 8,
+            "messageText": "Duplicate identifier 'FormData'.",
+            "category": 1,
+            "code": 2300,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
+                "start": 1349,
+                "length": 8,
+                "messageText": "'FormData' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+            "start": 803004,
+            "length": 9,
+            "messageText": "Cannot redeclare block-scoped variable 'navigator'.",
+            "category": 1,
+            "code": 2451,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/@types/react-native/index.d.ts",
+                "start": 318053,
+                "length": 9,
+                "messageText": "'navigator' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+            "start": 822528,
+            "length": 11,
+            "messageText": "Duplicate identifier 'RequestInfo'.",
+            "category": 1,
+            "code": 2300,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
+                "start": 2920,
+                "length": 11,
+                "messageText": "'RequestInfo' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
+            "start": 835753,
+            "length": 26,
+            "messageText": "Duplicate identifier 'XMLHttpRequestResponseType'.",
+            "category": 1,
+            "code": 2300,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
+                "start": 7919,
+                "length": 26,
+                "messageText": "'XMLHttpRequestResponseType' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
           }
         ]
       ],
@@ -11234,6 +11343,42 @@
           },
           {
             "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 55280,
+            "length": 8,
+            "messageText": "Duplicate identifier 'FormData'.",
+            "category": 1,
+            "code": 2300,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
+                "start": 1349,
+                "length": 8,
+                "messageText": "'FormData' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 55725,
+            "length": 8,
+            "messageText": "Duplicate identifier 'FormData'.",
+            "category": 1,
+            "code": 2300,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
+                "start": 1349,
+                "length": 8,
+                "messageText": "'FormData' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
             "start": 55725,
             "length": 8,
             "messageText": "Subsequent variable declarations must have the same type.  Variable 'FormData' must be of type '{ new (form?: HTMLFormElement | undefined): FormData; prototype: FormData; }', but here has type '{ new (): FormData; prototype: FormData; }'.",
@@ -11369,6 +11514,24 @@
               {
                 "file": "../../node_modules/typescript/lib/lib.dom.d.ts",
                 "start": 803004,
+                "length": 9,
+                "messageText": "'navigator' was also declared here.",
+                "category": 3,
+                "code": 6203
+              }
+            ]
+          },
+          {
+            "file": "../../node_modules/typescript/lib/lib.webworker.d.ts",
+            "start": 249720,
+            "length": 9,
+            "messageText": "Cannot redeclare block-scoped variable 'navigator'.",
+            "category": 1,
+            "code": 2451,
+            "relatedInformation": [
+              {
+                "file": "../../node_modules/@types/react-native/index.d.ts",
+                "start": 318053,
                 "length": 9,
                 "messageText": "'navigator' was also declared here.",
                 "category": 3,
@@ -11547,16 +11710,7 @@
         [
           {
             "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
-            "start": 63,
-            "length": 53,
-            "messageText": "'ComponentInstanceData' is declared but its value is never read.",
-            "category": 1,
-            "code": 6133,
-            "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
-            "start": 586,
+            "start": 532,
             "length": 4,
             "messageText": "'path' is declared but its value is never read.",
             "category": 1,
@@ -11565,7 +11719,7 @@
           },
           {
             "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
-            "start": 600,
+            "start": 546,
             "length": 4,
             "messageText": "'code' is declared but its value is never read.",
             "category": 1,
@@ -11574,7 +11728,7 @@
           },
           {
             "file": "./src/common/react/analyze/typescript-analyzer.worker.ts",
-            "start": 698,
+            "start": 644,
             "length": 4,
             "messageText": "'path' is declared but its value is never read.",
             "category": 1,
@@ -11652,7 +11806,7 @@
         [
           {
             "file": "./src/editor/index.ts",
-            "start": 8446,
+            "start": 8519,
             "length": 13,
             "messageText": "'orderedFibers' is declared but its value is never read.",
             "category": 1,
@@ -11661,7 +11815,7 @@
           },
           {
             "file": "./src/editor/index.ts",
-            "start": 8485,
+            "start": 8558,
             "length": 12,
             "messageText": "'currentFiber' is declared but its value is never read.",
             "category": 1,
@@ -11675,16 +11829,7 @@
         [
           {
             "file": "./src/editor/instance.ts",
-            "start": 91,
-            "length": 5,
-            "messageText": "'Fiber' is declared but its value is never read.",
-            "category": 1,
-            "code": 6133,
-            "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/editor/instance.ts",
-            "start": 4003,
+            "start": 4165,
             "length": 9,
             "messageText": "Property 'editorApi' is declared but its value is never read.",
             "category": 1,
@@ -11709,6 +11854,8 @@
       ],
       "./src/editor/transform.test.ts",
       "./src/editor/transform.ts",
+      "./src/editor/utils/code-manipulation.test.ts",
+      "./src/editor/utils/code-manipulation.ts",
       "./src/index.ts",
       "./src/sandbox/component-information.ts",
       "./src/sandbox/highlight.ts",

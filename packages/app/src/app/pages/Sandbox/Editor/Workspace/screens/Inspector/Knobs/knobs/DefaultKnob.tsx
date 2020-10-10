@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from '@codesandbox/components';
+import { Input } from '../components/Input';
 import { KnobProps } from './BaseKnob';
 
 const decodeValue = (value: string) => {

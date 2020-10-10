@@ -44,9 +44,8 @@ export const Inspector = () => {
       <Collapsible defaultOpen title="App Structure">
         <FiberList inspectorStateService={inspectorStateService} />
       </Collapsible>
-      <Collapsible defaultOpen title="Knobs">
-        <Knobs inspectorStateService={inspectorStateService} />
-      </Collapsible>
+
+      <Knobs inspectorStateService={inspectorStateService} />
     </>
   );
 };
