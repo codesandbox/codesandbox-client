@@ -9999,8 +9999,8 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
 
 console-feed@^3.1.7:
   version "3.1.7"
-  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-3.1.7.tgz#10c73741dd074791bcc09963eb68643387c721b1"
-  integrity sha512-XgLkcSM1/6JCHLL7ruenaV2PL9w1whAiOoUV+W0XlS7RKjfZ4KGapvxLnJnDTqNGpL4y9MEFhb4GB+NLUyj9FQ==
+  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-3.1.7.tgz#0a6baed931e0faf497791dd7536f43fe68320d9c"
+  integrity sha512-a/lWpS9PBDEejClDqM8iOi+UCP/uC5Ki4ptP6uv3WYI4ZONB1M+u3ruBuDVEb9DDyARcQPtI6wUDwSxfaoWzpw==
   dependencies:
     "@emotion/core" "^10.0.10"
     "@emotion/styled" "^10.0.12"
