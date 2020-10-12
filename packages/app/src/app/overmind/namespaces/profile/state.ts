@@ -1,6 +1,14 @@
 import { Profile, Sandbox, UserSandbox } from '@codesandbox/common/lib/types';
+import {
+  Collection,
+  SandboxFragmentDashboardFragment as CollectionSandbox,
+} from 'app/graphql/types';
 import { RootState } from 'app/overmind';
 import { derived } from 'overmind';
+
+type ProfileCollection = Pick<Collection, 'id' | 'path' | 'sandboxCount'> & {
+  sandboxes: CollectionSandbox[];
+};
 
 type State = {
   profiles: {
@@ -38,6 +46,7 @@ type State = {
     sandboxId: string | null;
     position: { x: number; y: number } | null;
   };
+  collections: ProfileCollection[];
 };
 
 export const state: State = {
@@ -57,6 +66,7 @@ export const state: State = {
   currentSortBy: 'view_count',
   currentSortDirection: 'desc',
   contextMenu: { sandboxId: null, position: null },
+  collections: [],
   isProfileCurrentUser: derived((currentState: State, rootState: RootState) =>
     Boolean(
       rootState.user && rootState.user.id === currentState.currentProfileId

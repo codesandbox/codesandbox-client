@@ -425,3 +425,51 @@ export const openContextMenu: Action<{
 export const closeContextMenu: Action = ({ state }) => {
   state.profile.contextMenu = { sandboxId: null, position: null };
 };
+
+export const fetchCollections: AsyncAction = async ({ state, effects }) => {
+  if (!state.profile.current) return;
+
+  try {
+    const data = await effects.gql.queries.getCollections({
+      teamId: state.profile.current.personalWorkspaceId,
+    });
+    if (!data || !data.me || !data.me.collections) {
+      return;
+    }
+
+    state.profile.collections = data.me.collections.map(collection => ({
+      ...collection,
+      sandboxes: [],
+    }));
+  } catch {
+    effects.notificationToast.error(
+      'There was a problem getting your sandboxes'
+    );
+  }
+};
+
+export const getSandboxesByPath: AsyncAction<{ path: string }> = async (
+  { state, effects },
+  { path }
+) => {
+  if (!state.profile.current) return;
+
+  try {
+    const data = await effects.gql.queries.sandboxesByPath({
+      path,
+      teamId: state.profile.current.personalWorkspaceId,
+    });
+    if (typeof data?.me?.collection?.sandboxes === 'undefined') {
+      return;
+    }
+
+    const collection = state.profile.collections.find(c => c.path === path);
+    if (!collection) return;
+
+    collection.sandboxes = data.me.collection.sandboxes;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your sandboxes'
+    );
+  }
+};
