@@ -11,7 +11,9 @@ export class WorkerConnection extends Disposable implements IConnection {
     super();
 
     self.addEventListener('message', event => {
-      this.emitter.fire(event.data);
+      if (typeof event.data === 'string') {
+        this.emitter.fire(event.data);
+      }
     });
   }
 

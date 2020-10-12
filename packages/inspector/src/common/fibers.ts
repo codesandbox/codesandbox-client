@@ -101,17 +101,22 @@ export type TypeInfo =
 export interface StaticPropInfo {
   name: string;
   required: boolean;
-  description?: string;
+  descriptions: string[];
+  jsdocTags: { name: string; text?: string }[];
   defaultValue?: {
     computed: boolean;
     value: string;
   };
-  typeInfo: TypeInfo | null;
+  typeInfo: {
+    type: string;
+    resolvedType: string;
+  };
 }
 
 export interface StaticComponentInformation {
   name: string;
-  description?: string;
+  descriptions: string[];
+  jsdocTags: { name: string; text?: string }[];
   props: StaticPropInfo[];
 }
 

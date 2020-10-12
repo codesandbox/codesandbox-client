@@ -1,8 +1,6 @@
 import ts from 'typescript';
 import * as tsutils from 'tsutils';
-import { CodeRange, ComponentInstanceData } from '../../fibers';
-
-tsutils.getDeclarationOfBindingElement;
+import { CodeRange, ComponentInstanceData } from '../../../fibers';
 
 export function analyzeComponentInstances(
   sourceFile: ts.SourceFile,

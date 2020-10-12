@@ -1,12 +1,8 @@
-import ts from 'typescript';
-import { ComponentInstanceData } from '../../fibers';
+import {
+  ComponentInstanceData,
+  StaticComponentInformation,
+} from '../../fibers';
 import { createProxyIdentifier } from '../../rpc';
-
-export type AnalyzeRequest = {
-  code: string;
-  version: number;
-  path: string;
-};
 
 export type GetComponentInstancesResponse = {
   version: number;
@@ -15,14 +11,19 @@ export type GetComponentInstancesResponse = {
 
 export interface Analyzer {
   // File update
-  $fileChanged(path: string, code: string): Promise<void>;
-  $fileDeleted(path: string): Promise<void>;
+  $fileChanged(path: string, code: string, version: number): void;
+  $fileDeleted(path: string): void;
 
-  $analyze(request: AnalyzeRequest): Promise<void>;
   /**
    * Get the props of the component at that specific location
    */
   $getComponentInstances(path: string): Promise<GetComponentInstancesResponse>;
+
+  $getComponentInfo(
+    relativePath: string,
+    fromPath: string,
+    exportName: string
+  ): Promise<StaticComponentInformation | undefined>;
 }
 
 export const analyzerProxyIdentifier = createProxyIdentifier<Analyzer>(

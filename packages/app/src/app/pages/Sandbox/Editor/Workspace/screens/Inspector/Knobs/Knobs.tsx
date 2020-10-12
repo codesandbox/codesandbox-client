@@ -13,7 +13,6 @@ type KnobsProps = {
 };
 
 export const Knobs = ({ inspectorStateService }: KnobsProps) => {
-  const { actions } = useOvermind();
   const { selectedInstance, selectedProps, componentInfo } = useInspectorKnobs(
     inspectorStateService
   );

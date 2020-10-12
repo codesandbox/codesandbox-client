@@ -23,16 +23,12 @@ export const Inspector = () => {
   ] = React.useState<EditorInspectorState | null>(null);
 
   useEffect(() => {
-    const vscodeBridge = new VSCodeEditorBridge(effects.vscode);
     const inspector = getInspectorStateService({
       vscodeEffect: effects.vscode,
     });
 
     setInspectorStateService(inspector);
-    return () => {
-      vscodeBridge.dispose();
-      inspector.dispose();
-    };
+    return () => {};
   }, []);
 
   if (!inspectorStateService) {

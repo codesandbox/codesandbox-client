@@ -8,7 +8,7 @@ import {
 import { Emitter } from '../common/rpc/event';
 import { ReactEditorBridge } from '../common/react/editor';
 import { IEditorInterface, IModel } from './editor-api';
-import { Disposable } from '../common/rpc/disposable';
+import { Disposable, IDisposable } from '../common/rpc/disposable';
 import {
   containsRange,
   isSameStart,
@@ -53,25 +53,46 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
         const resource = model.getResource();
         // TODO(@CompuIves): handle scheme
         this.openedModels.delete(resource.path);
+
+        this.bridge.modelRemoved(resource.path);
       })
     );
 
     this.initializeEditor();
+    this.toDispose.push(
+      editorApi.onDidActiveEditorChange(() => {
+        this.initializeEditor();
+      })
+    );
   }
 
+  cursorDisposable: IDisposable | null = null;
   private initializeEditor() {
     const activeEditor = this.editorApi.getActiveEditor();
+    if (!activeEditor) {
+      return;
+    }
+
     // TODO: handle active editor changes and cases where model doesn't exist
-    activeEditor?.onDidChangeCursorPosition(event => {
-      this.selectComponentInstance({
-        path: activeEditor.getModel()?.getResource().path,
-        codePosition: {
-          startLineNumber: event.position.lineNumber,
-          endLineNumber: event.position.lineNumber,
-          startColumnNumber: event.position.columnNumber,
-          endColumnNumber: event.position.columnNumber,
-        },
-      });
+    this.cursorDisposable = activeEditor.onDidChangeCursorPosition(event => {
+      const model = activeEditor.getModel();
+      if (!model) {
+        return;
+      }
+
+      try {
+        this.selectComponentInstance({
+          path: model.getResource().path,
+          codePosition: {
+            startLineNumber: event.position.lineNumber,
+            endLineNumber: event.position.lineNumber,
+            startColumnNumber: event.position.columnNumber,
+            endColumnNumber: event.position.columnNumber,
+          },
+        });
+      } catch (e) {
+        /* That's okay */
+      }
     });
   }
 
@@ -90,7 +111,7 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
       })
     );
 
-    await this.bridge.analyzeComponentLocations(
+    this.bridge.modelChanged(
       resource.path,
       model.getValue(),
       model.getVersionId()
@@ -99,13 +120,12 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
 
     this.toDispose.push(
       model.onDidChangeContent(() => {
-        this.bridge
-          .analyzeComponentLocations(
-            resource.path,
-            model.getValue(),
-            model.getVersionId()
-          )
-          .then(() => this.getComponentInstances(resource.path, model));
+        this.bridge.modelChanged(
+          resource.path,
+          model.getValue(),
+          model.getVersionId()
+        );
+        this.getComponentInstances(resource.path, model);
       })
     );
   }
@@ -139,7 +159,7 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
     const location = foundFiber.location;
     let instances = this.instances.get(location.path);
     const model = await this.editorApi.openModel({
-      scheme: 'file://',
+      scheme: 'file',
       path: location.path,
     });
     if (!instances) {
@@ -176,6 +196,10 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
       );
     }
 
+    if (componentInstance === this.selectedInstance) {
+      return this.selectedInstance;
+    }
+
     this.selectedInstance = componentInstance;
     this.selectionChangedEmitter.fire(componentInstance);
 
@@ -193,11 +217,16 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
     return null;
   }
 
-  public async getFiberComponentInformation(
-    id: string
-  ): Promise<StaticComponentInformation> {
-    const data = await this.sandboxProxy.$getFiberComponentInformation(id);
-    return data;
+  public async getComponentInformation(
+    relativePath: string,
+    fromPath: string,
+    exportName: string
+  ): Promise<StaticComponentInformation | undefined> {
+    return this.bridge.getComponentInformation(
+      relativePath,
+      fromPath,
+      exportName
+    );
   }
 
   public async getFibers(): Promise<Fiber[]> {

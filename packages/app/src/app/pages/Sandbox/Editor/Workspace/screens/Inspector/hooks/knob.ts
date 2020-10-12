@@ -4,6 +4,7 @@ import {
   InstanceProp,
 } from 'inspector/lib/editor/instance';
 import { IDisposable } from 'inspector/lib/common/rpc/disposable';
+import { useDisposableEffect } from './useDisposableEffect';
 
 interface UseKnobReturn {
   value: string;
@@ -25,30 +26,28 @@ export function useInspectorKnob(
     setInstanceProp(componentInstance.getInstanceProp(propName)!);
   }, [propName, componentInstance]);
 
-  React.useEffect(() => {
-    let disposables: IDisposable[] = [];
-    if (instanceProp?.valueSubscription) {
-      disposables.push(
-        instanceProp.valueSubscription.onDidContentChange(event => {
-          setValue(event.content);
-        })
-      );
+  useDisposableEffect(
+    toDispose => {
+      if (instanceProp?.valueSubscription) {
+        toDispose.push(
+          instanceProp.valueSubscription.onDidContentChange(event => {
+            setValue(event.content);
+          })
+        );
 
-      disposables.push(
-        instanceProp.valueSubscription.onWillDispose(() => {
-          setValue('');
-        })
-      );
+        toDispose.push(
+          instanceProp.valueSubscription.onWillDispose(() => {
+            setValue('');
+          })
+        );
 
-      setValue(instanceProp.valueSubscription.getContent());
-    } else {
-      setValue('');
-    }
-
-    return () => {
-      disposables.forEach(disposable => disposable.dispose());
-    };
-  }, [instanceProp, setValue]);
+        setValue(instanceProp.valueSubscription.getContent());
+      } else {
+        setValue('');
+      }
+    },
+    [instanceProp, setValue]
+  );
 
   return {
     value,

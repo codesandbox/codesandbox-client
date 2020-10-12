@@ -109,7 +109,7 @@ export interface IComponentInstanceModel {
 
   getInstanceProp(name: string): InstanceProp | undefined;
   getInstanceInformation(): ComponentInstanceData;
-  getComponentInformation(): Promise<StaticComponentInformation>;
+  getComponentInformation(): Promise<StaticComponentInformation | undefined>;
 
   setFiberProp(name: string, value: any): Promise<void>;
   addProp(name: string): Promise<void>;
@@ -196,17 +196,20 @@ export class ComponentInstanceModel
   }
 
   async getComponentInformation() {
-    const fiber = this.inspector.getFiberFromInstance(this);
+    const data = this.getInstanceInformation();
+    const fromPath = data.location.path;
+    const relativePath = data.importLocation?.importPath;
+    const exportName = data.importLocation?.importName;
 
-    if (!fiber) {
-      throw new Error("Can't find fiber");
+    if (!relativePath || !exportName) {
+      return undefined;
     }
 
-    if (!this.componentInfo) {
-      this.componentInfo = await this.sandboxProxy.$getFiberComponentInformation(
-        fiber.id
-      );
-    }
+    this.componentInfo = await this.inspector.getComponentInformation(
+      relativePath,
+      fromPath,
+      exportName
+    );
 
     return this.componentInfo;
   }
@@ -251,6 +254,10 @@ export class ComponentInstanceModel
 
   public async addProp(name: string) {
     const componentInformation = await this.getComponentInformation();
+
+    if (!componentInformation) {
+      throw new Error("Can't resolve component information");
+    }
 
     const propInfo = componentInformation.props.find(p => p.name === name);
     if (!propInfo) {

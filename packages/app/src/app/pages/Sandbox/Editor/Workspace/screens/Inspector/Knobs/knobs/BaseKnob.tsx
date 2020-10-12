@@ -29,7 +29,9 @@ export const BaseKnob = (props: BaseKnopProps) => {
   );
 
   const UsedKnob =
-    props.propInfo.typeInfo?.type === 'string' ? StringKnob : DefaultKnob;
+    props.propInfo.typeInfo?.resolvedType === 'string'
+      ? StringKnob
+      : DefaultKnob;
 
   return (
     <Stack

@@ -205,7 +205,7 @@ class SandboxFsSync {
     browserFs.mkdir(join('/sandbox', directory.path!), () => {});
   }
 
-  private onWorkerMessage = evt => {
+  private onWorkerMessage = (evt: MessageEvent<any>) => {
     if (evt.data.$fs_id && !this.workerIds.includes(evt.data.$fs_id)) {
       this.workerIds.push(evt.data.$fs_id);
     }

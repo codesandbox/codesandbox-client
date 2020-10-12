@@ -5,7 +5,7 @@ import {
   ComponentInstanceData,
   StaticComponentInformation,
 } from 'inspector/lib/common/fibers';
-import { IDisposable } from 'inspector/lib/common/rpc/disposable';
+import { useDisposableEffect } from './useDisposableEffect';
 
 export function useInspectorKnobs(inspectorStateService: EditorInspectorState) {
   const [
@@ -40,31 +40,27 @@ export function useInspectorKnobs(inspectorStateService: EditorInspectorState) {
     }
   }, [handleSelectionChange, inspectorStateService]);
 
-  React.useEffect(() => {
-    const listener = inspectorStateService.onSelectionChanged(instance => {
-      handleSelectionChange(instance);
-    });
+  useDisposableEffect(toDispose => {
+    toDispose.push(
+      inspectorStateService.onSelectionChanged(instance => {
+        handleSelectionChange(instance);
+      })
+    );
+  }, []);
 
-    return () => {
-      listener.dispose();
-    };
-  });
-
-  React.useEffect(() => {
-    let listener: IDisposable | null = null;
-    if (selectedInstance) {
-      setSelectedProps(selectedInstance.getInstanceInformation().props);
-      listener = selectedInstance.didInstanceDataChange(event => {
-        setSelectedProps(event.instanceData.props);
-      });
-    }
-
-    return () => {
-      if (listener) {
-        listener.dispose();
+  useDisposableEffect(
+    toDispose => {
+      if (selectedInstance) {
+        setSelectedProps(selectedInstance.getInstanceInformation().props);
+        toDispose.push(
+          selectedInstance.didInstanceDataChange(event => {
+            setSelectedProps(event.instanceData.props);
+          })
+        );
       }
-    };
-  }, [selectedInstance]);
+    },
+    [selectedInstance]
+  );
 
   return {
     selectedInstance,
