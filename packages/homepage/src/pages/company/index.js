@@ -116,12 +116,55 @@ export default () => (
             left: 31px;
           `}
         />
-        {/* 
-        <img src={HU} alt="" css={``} />
 
-        <img src={NL} alt="" css={``} />
-        <img src={NO} alt="" css={``} />
-        <img src={PO} alt="" css={``} /> */}
+        <img
+          src={NL}
+          alt=""
+          css={`
+            width: 36.55px;
+            opacity: 0.2;
+            transform: rotate(21deg);
+            top: -56px;
+            right: -120px;
+          `}
+        />
+        <img
+          src={NO}
+          alt=""
+          css={`
+            top: 20px;
+            width: 66.65px;
+            opacity: 0.21;
+            right: -84px;
+            box-shadow: 0px 16px 32px rgba(0, 0, 0, 0.24),
+              0px 4px 4px rgba(0, 0, 0, 0.12);
+            transform: rotate(20.44deg);
+          `}
+        />
+        <img
+          src={PO}
+          alt=""
+          css={`
+            top: 141px;
+            border: 1px solid #343434;
+            box-shadow: 0px 16px 32px rgba(0, 0, 0, 0.24),
+              0px 4px 4px rgba(0, 0, 0, 0.12);
+            transform: rotate(27.03deg);
+            right: -94px;
+            width: 39.39px;
+          `}
+        />
+        <img
+          src={HU}
+          alt=""
+          css={`
+            top: 275px;
+            width: 36.55px;
+            opacity: 0.3;
+            transform: rotate(21.59deg);
+            right: 31px;
+          `}
+        />
 
         <Title>Our Team</Title>
         <Text

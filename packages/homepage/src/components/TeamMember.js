@@ -8,7 +8,7 @@ import oskar from '../assets/images/people/oskar.png';
 import sara from '../assets/images/people/sara.png';
 import danny from '../assets/images/people/danny.png';
 import gareth from '../assets/images/people/gareth.png';
-import sid from '../assets/images/people/sid.png';
+import sid from '../assets/images/people/sid.jpg';
 import christian from '../assets/images/people/christian.png';
 import sanne from '../assets/images/people/sanne.png';
 import andras from '../assets/images/people/andras.png';
