@@ -19,7 +19,7 @@ export const NoSandboxAvailable: FunctionComponent = () => {
         <ErrorTitle>
           {`${
             isProfileCurrentUser ? `You don't` : `This user doesn't`
-          } have any sandboxes yet`}
+          } have a showcased sandbox yet`}
         </ErrorTitle>
       </Margin>
     </Centered>

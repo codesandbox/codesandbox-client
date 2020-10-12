@@ -7,7 +7,15 @@ export const profileMounted: AsyncAction<string> = withLoadApp(
     state.profile.isLoadingProfile = true;
     state.profile.notFound = false;
 
-    const profile = await effects.api.getProfile(username);
+    let profile: Profile;
+
+    try {
+      profile = await effects.api.getProfile(username);
+    } catch (error) {
+      state.profile.isLoadingProfile = false;
+      state.profile.notFound = true;
+      return;
+    }
 
     state.profile.profiles[profile.id] = profile;
     state.profile.currentProfileId = profile.id;
@@ -16,9 +24,13 @@ export const profileMounted: AsyncAction<string> = withLoadApp(
       profile.showcasedSandboxShortid &&
       !state.editor.sandboxes[profile.showcasedSandboxShortid]
     ) {
-      state.editor.sandboxes[
-        profile.showcasedSandboxShortid
-      ] = await effects.api.getSandbox(profile.showcasedSandboxShortid);
+      try {
+        state.editor.sandboxes[
+          profile.showcasedSandboxShortid
+        ] = await effects.api.getSandbox(profile.showcasedSandboxShortid);
+      } catch (e) {
+        // Ignore it
+      }
     }
 
     state.profile.isLoadingProfile = false;
