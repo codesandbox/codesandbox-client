@@ -45,13 +45,16 @@ export const Tabs = styled.ul`
 `;
 
 export const TabsWrapper = styled.div`
+  visibility: hidden;
   opacity: 0;
   transition: all 0.2s ease;
-  transition-delay: 1s;
+  transition-delay: 0.8s;
+  height: 0;
 
   ${props =>
     props.active &&
     css`
+      visibility: visible;
       opacity: 1;
     `}
 `;
@@ -63,12 +66,26 @@ export const VideoComponent = styled.video`
   transform: rotateX(60deg) rotateY(0deg) rotateZ(45deg) scale(1.2)
     translateY(-200px);
   max-width: 100%;
-  transition: all 1s cubic-bezier(0.85, 0, 0.15, 1);
+  transition: all 1.2s cubic-bezier(0.85, 0, 0.15, 1);
+  margin-bottom: 230px;
 
   ${props =>
     props.active &&
     css`
       opacity: 1;
-      transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
+      transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1)
+        translateY(230px);
     `}
+`;
+
+export const Paragraph = styled.p`
+  text-align: center;
+  width: 604px;
+  max-width: 100%;
+  margin: auto;
+  font-size: 19px;
+  line-height: 23px;
+  text-align: center;
+  margin-top: 40px;
+  min-height: 46px;
 `;

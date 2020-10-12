@@ -38,9 +38,7 @@ export const HeroWrapper = styled.section`
   text-align: center;
   overflow: hidden;
   padding: 0 2rem;
-  min-height: 768px;
-
-  perspective: 1000;
+  min-height: 700px;
 `;
 
 export const StyledEditorLink = styled.a`
