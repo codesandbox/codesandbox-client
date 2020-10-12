@@ -20,17 +20,31 @@ self.importScripts(
   `${process.env.CODESANDBOX_HOST}/static/browserfs12/browserfs.min.js`
 );
 
+/**
+ * This is extremely dirty to get the file system in this worker. We should move
+ * away from this as soon as possible
+ */
+function initializeFS() {
+  return require('./fs.sync.dirty').initializeBrowserFS({
+    syncSandbox: true,
+    syncTypes: true,
+  });
+}
+
 class TypeScriptAnalyzer implements Analyzer {
   private fileMap = new Map<string, FileInfo>();
-  private host: ts.LanguageServiceHost;
+  private host: ts.LanguageServiceHost | undefined;
+  private service: ts.LanguageService | undefined;
   private sys: ts.System;
-  private service: ts.LanguageService;
   private documentRegistry = ts.createDocumentRegistry();
 
   constructor() {
     this.sys = require('./system').createSystem();
-    this.host = this.createHost();
-    this.service = ts.createLanguageService(this.host, this.documentRegistry);
+
+    initializeFS().then(() => {
+      this.host = this.createHost();
+      this.service = ts.createLanguageService(this.host, this.documentRegistry);
+    });
 
     // @ts-expect-error Debugging purposes
     self.analyzer = this;
@@ -59,6 +73,10 @@ class TypeScriptAnalyzer implements Analyzer {
   async $getComponentInstances(
     path: string
   ): Promise<GetComponentInstancesResponse> {
+    if (!this.service) {
+      throw new Error('Service not initialized');
+    }
+
     const file = this.fileMap.get(path);
     const program = this.service.getProgram();
     if (!program) {
@@ -82,6 +100,10 @@ class TypeScriptAnalyzer implements Analyzer {
     fromPath: string,
     exportName: string
   ): Promise<StaticComponentInformation | undefined> {
+    if (!this.service) {
+      throw new Error('Service not initialized');
+    }
+
     const program = this.service.getProgram();
     if (!program) {
       throw new Error('Program not initialized');
@@ -117,7 +139,11 @@ class TypeScriptAnalyzer implements Analyzer {
       this.sys.readFile
     );
     if (tsConfig.config) {
-      return tsConfig.config;
+      return ts.convertCompilerOptionsFromJson(
+        tsConfig.config.compilerOptions,
+        '/sandbox',
+        'tsconfig.json'
+      ).options;
     }
 
     return ts.getDefaultCompilerOptions();
@@ -142,7 +168,9 @@ class TypeScriptAnalyzer implements Analyzer {
 
         const fileFromFS = this.sys.readFile(fileName);
         if (fileFromFS) {
-          return ts.ScriptSnapshot.fromString(fileFromFS);
+          const snapshot = ts.ScriptSnapshot.fromString(fileFromFS);
+          this.fileMap.set(fileName, { version: 0, snapshot });
+          return snapshot;
         }
 
         return undefined;
@@ -166,18 +194,4 @@ class TypeScriptAnalyzer implements Analyzer {
 }
 
 const rpcProtocol = new RPCProtocolImpl(new WorkerConnection());
-
-/**
- * This is extremely dirty to get the file system in this worker. We should move
- * away from this as soon as possible
- */
-function initializeFS() {
-  return require('./fs.sync.dirty').initializeBrowserFS({
-    syncSandbox: true,
-    syncTypes: true,
-  });
-}
-initializeFS().then(() => {
-  console.log(BrowserFS.BFSRequire('fs').readdirSync('/sandbox'));
-  rpcProtocol.set(analyzerProxyIdentifier, new TypeScriptAnalyzer());
-});
+rpcProtocol.set(analyzerProxyIdentifier, new TypeScriptAnalyzer());

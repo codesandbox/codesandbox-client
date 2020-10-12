@@ -487,7 +487,7 @@
         "affectsGlobalScope": false
       },
       "./src/common/react/analyze/worker/typescript-analyzer.worker.ts": {
-        "version": "94ebaf4147a668e933beb9f6dc0f54fc70c24a6929fa8e93c9ec13d3fc03d0d9",
+        "version": "3202cdb5c95e99bfa6b1df6f9d587d325bfc33d153af5612d1a1d2fae07867e4",
         "signature": "eed6cf2161ada471e7743f3a3f9367b59094d50b0e8a3907e18b2e08e33615ca",
         "affectsGlobalScope": false
       },
@@ -12488,7 +12488,7 @@
         [
           {
             "file": "./src/common/react/analyze/worker/typescript-analyzer.worker.ts",
-            "start": 4103,
+            "start": 4821,
             "length": 12,
             "code": 2339,
             "category": 1,
@@ -12496,7 +12496,7 @@
           },
           {
             "file": "./src/common/react/analyze/worker/typescript-analyzer.worker.ts",
-            "start": 4130,
+            "start": 4848,
             "length": 16,
             "code": 2339,
             "category": 1,
@@ -12504,19 +12504,11 @@
           },
           {
             "file": "./src/common/react/analyze/worker/typescript-analyzer.worker.ts",
-            "start": 4163,
+            "start": 4881,
             "length": 13,
             "code": 2339,
             "category": 1,
             "messageText": "Property 'normalizePath' does not exist on type 'typeof ts'."
-          },
-          {
-            "file": "./src/common/react/analyze/worker/typescript-analyzer.worker.ts",
-            "start": 4944,
-            "length": 9,
-            "messageText": "Cannot find name 'BrowserFS'.",
-            "category": 1,
-            "code": 2304
           }
         ]
       ],
