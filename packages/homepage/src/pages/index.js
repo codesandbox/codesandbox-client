@@ -1,6 +1,8 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import React from 'react';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
+
 import Layout, { WRAPPER_STYLING } from '../components/layout';
 
 import HeroB from '../screens/home/heroB';
@@ -12,8 +14,7 @@ import Teams from '../screens/home/teams';
 import Share from '../screens/home/share';
 import Join from '../screens/home/join';
 import Explore from '../screens/home/explore';
-
-import { identifyFromCookie } from '../utils/identifyFromCookie';
+import Video from '../screens/home/video';
 
 // eslint-disable-next-line
 console.log(
@@ -27,9 +28,12 @@ const Homepage = () => (
     <section
       css={`
         margin-bottom: 8rem;
+        max-width: 100vw;
+        overflow-x: hidden;
       `}
     >
       <HeroB />
+      <Video />
     </section>
 
     <div style={WRAPPER_STYLING}>
@@ -59,7 +63,5 @@ const Homepage = () => (
     </div>
   </Layout>
 );
-
-identifyFromCookie('heroAB', 'hero0529');
 
 export default Homepage;

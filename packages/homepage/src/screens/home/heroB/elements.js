@@ -31,7 +31,6 @@ export const EditorElement = styled.img`
 `;
 
 export const HeroWrapper = styled.section`
-  border-bottom: 1px solid #242424;
   position: relative;
   display: flex;
   justify-content: center;
@@ -42,38 +41,6 @@ export const HeroWrapper = styled.section`
   min-height: 768px;
 
   perspective: 1000;
-  } 
-
-  @media screen and (min-width: 576px) {
-    min-height: 768px;
-
-  }
-
-  @media screen and (min-width: 768px) {
-    min-height: 960px;
-
-  }
-
-  @media screen and (min-width: 960px) {
-    min-height: 1024px;
- }
-
-`;
-
-export const SignUp = styled.p`
-  font-size: 13px;
-  line-height: 0.8125rem;
-  text-align: center;
-  margin-top: 0.5rem;
-  color: #999;
-`;
-
-export const Border = styled.div`
-  position: absolute;
-  background: ${props => props.theme.homepage.grey};
-  left: 0;
-  width: 100%;
-  height: 1px;
 `;
 
 export const StyledEditorLink = styled.a`
@@ -102,23 +69,6 @@ export const StyledEditorLink = styled.a`
   }
 `;
 
-export const HeroBottom = styled.div`
-  position: absolute;
-  bottom: -10%;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  ${props => props.theme.breakpoints.sm} {
-    padding: 0 0.5rem;
-    line-height: 1.4;
-    bottom: -50px;
-  }
-`;
-
 export const CountText = styled.div`
   font-size: 1.25rem;
   color: #757575;
@@ -140,27 +90,6 @@ export const InspiredText = styled.span`
   }
 `;
 
-export const HeroImage = styled.img`
-  max-width: 576px;
-  min-width: 100%;
-  box-shadow: 0.25rem 0 2rem #000;
-
-  overflow: hidden;
-  border-radius: 4px;
-
-  @media screen and (min-width: 576px) {
-    max-width: 576px;
-  }
-
-  @media screen and (min-width: 768px) {
-    max-width: 768px;
-  }
-
-  @media screen and (min-width: 960px) {
-    max-width: 960px;
-  }
-`;
-
 export const Title = styled.h1`
   font-size: 3rem;
   line-height: 57px;
@@ -169,8 +98,8 @@ export const Title = styled.h1`
   color: ${props => props.theme.homepage.white};
   padding: 0;
   margin: 0;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+  margin-bottom: 1.5rem;
+  font-weight: 900;
 
   ${props => props.theme.breakpoints.md} {
     font-size: 1.8rem;
@@ -186,7 +115,7 @@ export const SubTitle = styled.h2`
   font-weight: normal;
   font-size: 1.125rem;
   line-height: 1.3;
-  color: ${props => props.theme.homepage.gray};
+  color: ${props => props.theme.homepage.muted};
   margin: 0;
   margin-bottom: 1rem;
 
