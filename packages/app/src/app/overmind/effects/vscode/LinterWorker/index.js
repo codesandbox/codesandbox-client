@@ -3,9 +3,9 @@ import semver from 'semver';
 
 import monkeypatch from './monkeypatch-babel-eslint';
 
-function isMinimalSemverVersion(version: string, minimalVersion: string) {
+function isMinimalSemverVersion(versionOrRange, minimalVersion) {
   try {
-    return semver.gte(version, minimalVersion);
+    return !semver.gtr(minimalVersion, versionOrRange);
   } catch (e) {
     // Semver couldn't be parsed, we assume that we're on the bleeding edge now, so true.
     return true;
