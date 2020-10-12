@@ -5,7 +5,8 @@ export function isPreact10(
   dependencies: Dependencies,
   devDependencies: Dependencies
 ) {
-  const preactVersion = dependencies.preact || devDependencies.preact;
+  const preactVersion =
+    (dependencies || {}).preact || (devDependencies || {}).preact;
   if (preactVersion) {
     return (
       /^[a-z]/.test(preactVersion) ||

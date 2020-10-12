@@ -401,7 +401,7 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
-  it('can convert normal exports', () => {
+  it('can convert exports containing overlapping exports', () => {
     const code = `
       export * from './some.js';
       export { default as some } from './some.js';
@@ -427,6 +427,85 @@ describe('convert-esmodule', () => {
     `;
 
     expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('retains the order of re-exports', () => {
+    const code = `
+    export * from '@tensorflow/tfjs-core';
+    import * as data2 from '@tensorflow/tfjs-test';
+    export * from '@tensorflow/tfjs-layers';
+    export * from '@tensorflow/tfjs-converter';
+    // Export data api as tf.data
+    import * as data from '@tensorflow/tfjs-data';
+    export { data };
+    `;
+
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+    expect(result.indexOf('tfjs-core')).toBeLessThan(
+      result.indexOf('tfjs-data')
+    );
+    expect(result.indexOf('tfjs-core')).toBeLessThan(
+      result.indexOf('tfjs-layers')
+    );
+  });
+
+  it("doesn't hoist single import above export", () => {
+    const code = `
+    export * from '@tensorflow/tfjs-core';
+    import * as data from '@tensorflow/tfjs-data';
+    `;
+
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+    expect(result.indexOf('tfjs-core')).toBeLessThan(
+      result.indexOf('tfjs-data')
+    );
+  });
+
+  it('keeps function under hoisted import', () => {
+    const code = `
+    function a() {
+      return data.test
+    }
+    export * from '@tensorflow/tfjs-core';
+    import * as data from '@tensorflow/tfjs-data';
+    `;
+
+    const result = convertEsModule(code);
+    expect(result.indexOf('function a')).toBeGreaterThan(
+      result.indexOf('tfjs-data')
+    );
+    expect(result.indexOf('tfjs-core')).toBeLessThan(
+      result.indexOf('tfjs-data')
+    );
+  });
+
+  it('hoists exports as well', () => {
+    const code = `
+      function a() {
+        return 5;
+      }
+
+      export { c } from './a';
+      export * as data from './b';
+    `;
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+    expect(result.indexOf('function a')).toBeGreaterThan(result.indexOf('./a'));
+    expect(result.indexOf('function a')).toBeGreaterThan(result.indexOf('./b'));
+  });
+
+  it('hoists function exports', () => {
+    const code = `
+    export { test, test2 } from './test/store.js';
+
+export function test3() {
+}
+    `;
+
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
   });
 
   describe('syntax info', () => {

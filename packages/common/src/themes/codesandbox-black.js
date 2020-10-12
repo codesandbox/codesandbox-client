@@ -115,7 +115,7 @@ const colors = {
   },
   editorWarning: {
     border: tokens.grays[600],
-    foreground: tokens.reds[300],
+    foreground: tokens.yellow,
   },
   editorWhitespace: {
     foreground: tokens.grays[500],
