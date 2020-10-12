@@ -6,7 +6,7 @@ export const MIN_SIZE_X = 72;
 
 export const MIN_SIZE_Y = 130;
 
-export const PADDING_OFFSET_X = 40;
+export const PADDING_OFFSET_X = 100;
 
 export const PADDING_OFFSET_Y = 100;
 
@@ -35,16 +35,12 @@ export const Styled = styled(Element)<{
         `
       : null}
 
-  :not(.no-transition) > div > span {
-    transition: all 300ms ease;
-  }
-
   > div > span {
     min-width: 70px;
     min-height: 130px;
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 0;
+    left: 0;
     display: block;
   }
 `;
@@ -66,13 +62,15 @@ export const Wrapper = styled(Element)`
 
 export const ResizeWrapper = styled.span`
   position: relative;
-  padding: 15px;
+  width: 100%;
+  height: 100%;
+  transform-origin: center;
 `;
 
 export const CornerResize = styled(ResizeIcon)`
   position: absolute;
-  bottom: 14px;
-  right: 14px;
+  bottom: -0;
+  right: 0;
   cursor: nwse-resize;
   z-index: 2;
 `;
@@ -93,7 +91,6 @@ const sizeResize = css`
 `;
 
 export const WidthResize = styled(Element)`
-  right: 0;
   top: calc(50% - 8px);
   width: 4px;
   height: 41px;
@@ -102,7 +99,6 @@ export const WidthResize = styled(Element)`
 `;
 
 export const HeightResize = styled(Element)`
-  bottom: 0;
   left: calc(50% - 20.5px);
   width: 41px;
   height: 4px;

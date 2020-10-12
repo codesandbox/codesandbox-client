@@ -15,7 +15,6 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { AddIcon, DeleteIcon, SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 import { PresetMenu } from './PresetMenu';
-import { useDragResize } from './useDragResize';
 import {
   Wrapper,
   PADDING_OFFSET_X,
@@ -46,28 +45,43 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
   const widthAndHeightResizer = useState<{ x: number; y: number } | null>(null);
   const widthResizer = useState<{ x: number } | null>(null);
   const heightResizer = useState<{ y: number } | null>(null);
-
   const [resolutionWidth, resolutionHeight] = resolution;
-  const minResolutionWidth = Math.max(
+
+  const minScaleResolutionWidth = Math.max(
     resolutionWidth || MIN_SIZE_X,
     MIN_SIZE_X
   );
-  const minResolutionHeight = Math.max(
+  const minScaleResolutionHeight = Math.max(
     resolutionHeight || MIN_SIZE_Y,
+    MIN_SIZE_Y
+  );
+
+  const minResolutionWidth = Math.max(
+    widthResizer[0]?.x ||
+      widthAndHeightResizer[0]?.x ||
+      resolutionWidth ||
+      MIN_SIZE_X,
+    MIN_SIZE_X
+  );
+  const minResolutionHeight = Math.max(
+    heightResizer[0]?.y ||
+      widthAndHeightResizer[0]?.y ||
+      resolutionHeight ||
+      MIN_SIZE_Y,
     MIN_SIZE_Y
   );
 
   let scale = state.scale / 100;
 
-  if (minResolutionWidth > wrapperWidth) {
-    scale = wrapperWidth / minResolutionWidth;
+  if (minScaleResolutionWidth > wrapperWidth - PADDING_OFFSET_X) {
+    scale = (wrapperWidth - PADDING_OFFSET_X) / minScaleResolutionWidth;
   }
 
-  if (minResolutionHeight > wrapperHeight) {
-    const heightToSet = wrapperHeight / minResolutionHeight;
-    if (heightToSet < scale) {
-      scale = heightToSet;
-    }
+  if (minScaleResolutionHeight > wrapperHeight - PADDING_OFFSET_Y) {
+    scale = Math.min(
+      (wrapperHeight - PADDING_OFFSET_Y) / minScaleResolutionHeight,
+      scale
+    );
   }
 
   useEffect(() => {
@@ -91,27 +105,6 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
     }
     return () => (observer ? observer.disconnect() : null);
   }, [element]);
-
-  useDragResize({
-    resolution,
-    scale,
-    resizer: widthAndHeightResizer,
-    setResolution: actions.setResolution,
-  });
-
-  useDragResize({
-    resolution,
-    scale,
-    resizer: widthResizer,
-    setResolution: actions.setResolution,
-  });
-
-  useDragResize({
-    resolution,
-    scale,
-    resizer: heightResizer,
-    setResolution: actions.setResolution,
-  });
 
   const exists = Boolean(
     Object.keys(state.presets).find(preset =>
@@ -156,7 +149,13 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
                 <Input
                   type="number"
                   style={{ height: 20 }}
-                  value={isNaN(resolutionWidth) ? '' : resolutionWidth}
+                  value={
+                    isNaN(resolutionWidth)
+                      ? ''
+                      : widthResizer[0]?.x ||
+                        widthAndHeightResizer[0]?.x ||
+                        resolutionWidth
+                  }
                   onChange={e =>
                     actions.setResolution([
                       parseInt(e.target.value, 10),
@@ -186,7 +185,13 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
                 }
                 type="number"
                 style={{ height: 20 }}
-                value={isNaN(resolutionHeight) ? '' : resolutionHeight}
+                value={
+                  isNaN(resolutionHeight)
+                    ? ''
+                    : heightResizer[0]?.y ||
+                      widthAndHeightResizer[0]?.y ||
+                      resolutionHeight
+                }
               />
             </Stack>
             <Text size={3}>({Math.floor(scale * 100)}%)</Text>
@@ -203,9 +208,10 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
       </Wrapper>
       <ResizeHandles
         on={on}
-        width={minResolutionWidth + 'px'}
-        height={minResolutionHeight + 'px'}
+        width={minResolutionWidth}
+        height={minResolutionHeight}
         scale={scale}
+        setResolution={actions.setResolution}
         widthAndHeightResizer={widthAndHeightResizer}
         widthResizer={widthResizer}
         heightResizer={heightResizer}
