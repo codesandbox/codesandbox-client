@@ -47,7 +47,7 @@ export const EditorToast = () => {
             fontSize: '12px',
             float: 'right',
             width: 'max-content',
-            borderBottomLeftRadius: 2,
+            borderTopLeftRadius: 2,
             color:
               (followingUser.color[0] * 299 +
                 followingUser.color[1] * 587 +
