@@ -103,7 +103,7 @@ class ConsoleComponent extends React.PureComponent<StyledProps, State> {
       case 'test-result': {
         const { result, error } = data;
 
-        const aggregatedResults = Decode(result);
+        const aggregatedResults = Decode(result) as any;
         if (!error) {
           if (aggregatedResults) {
             const { summaryMessage, failedMessages } = aggregatedResults;

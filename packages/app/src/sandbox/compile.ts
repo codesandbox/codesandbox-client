@@ -302,9 +302,7 @@ function getDependencies(
       returnedDependencies['babel-runtime'] || '6.26.0';
   }
 
-  // This is used for cache busting
-  returnedDependencies.csbbust = '1.0.0';
-  returnedDependencies['node-libs-browser'] = '2.2.0';
+  returnedDependencies['node-libs-browser'] = '2.2.1';
 
   preinstalledDependencies.forEach(dep => {
     if (returnedDependencies[dep]) {

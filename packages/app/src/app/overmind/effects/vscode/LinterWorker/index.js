@@ -3,9 +3,9 @@ import semver from 'semver';
 
 import monkeypatch from './monkeypatch-babel-eslint';
 
-function isMinimalSemverVersion(version: string, minimalVersion: string) {
+function isMinimalSemverVersion(versionOrRange, minimalVersion) {
   try {
-    return semver.gte(version, minimalVersion);
+    return !semver.gtr(minimalVersion, versionOrRange);
   } catch (e) {
     // Semver couldn't be parsed, we assume that we're on the bleeding edge now, so true.
     return true;
@@ -72,6 +72,8 @@ const allRules = {
   '@typescript-eslint/no-useless-constructor': require('@typescript-eslint/eslint-plugin/dist/rules/no-useless-constructor')
     .default,
   '@typescript-eslint/no-unused-expressions': require('@typescript-eslint/eslint-plugin/dist/rules/no-unused-expressions')
+    .default,
+  '@typescript-eslint/no-use-before-define': require('@typescript-eslint/eslint-plugin/dist/rules/no-use-before-define')
     .default,
 };
 /* eslint-enable global-require */
@@ -371,6 +373,9 @@ const TYPESCRIPT_PARSER_OPTIONS = {
     // Fixes optional chaining
     'no-unused-expressions': 'off',
     '@typescript-eslint/no-unused-expressions': 'warn',
+    // note you must disable the base rule as it can report incorrect errors
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': 'error',
   },
 };
 
