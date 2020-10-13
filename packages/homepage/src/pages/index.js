@@ -43,6 +43,9 @@ const Homepage = () => (
       <LoadInView>
         <Workspaces />
       </LoadInView>
+      <LoadInView>
+        <Teams />
+      </LoadInView>
     </div>
     <LoadInView>
       <Explore />
@@ -50,9 +53,6 @@ const Homepage = () => (
     <div style={WRAPPER_STYLING}>
       <LoadInView>
         <Experiment />
-      </LoadInView>
-      <LoadInView>
-        <Teams />
       </LoadInView>
       <LoadInView>
         <Share />

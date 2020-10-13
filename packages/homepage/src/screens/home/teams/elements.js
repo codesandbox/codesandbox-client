@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { P } from '../../../components/Typography';
 
 export const List = styled.ul`
   list-style: none;
@@ -10,6 +9,7 @@ export const List = styled.ul`
   margin-bottom: 12rem;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
 
   li:not(:last-child) {
     margin-right: 5rem;
@@ -26,8 +26,4 @@ export const List = styled.ul`
       text-align: center;
     }
   }
-`;
-export const Title = styled(P)`
-  text-align: center;
-  margin-top: 12rem;
 `;

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-
+import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import { H2, P, H3 } from '../../../components/Typography';
 
@@ -7,7 +7,22 @@ import { applyParallax } from '../../../utils/parallax';
 import usePrefersReducedMotion from '../../../utils/isReducedMOtion';
 import { BGIcon, GHIcon, NPMIcon, OptimizedIcon } from './icons';
 
-const Grid = styled.div`
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.5,
+    },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1 },
+};
+
+const Grid = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 38px;
@@ -17,7 +32,7 @@ const Grid = styled.div`
     grid-template-columns: 1fr;
   }
 `;
-const Feature = styled.div`
+const Feature = styled(motion.div)`
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -90,8 +105,8 @@ const DevExperience = () => {
       >
         The best JavaScript dev experience
       </H2>
-      <Grid>
-        <Feature ref={parallaxRef}>
+      <Grid variants={container} initial="hidden" animate="show">
+        <Feature variants={item} ref={parallaxRef}>
           <NPMIcon />
           <H3>Supercharged with npm</H3>
           <P muted>
@@ -99,7 +114,7 @@ const DevExperience = () => {
             efficiently.
           </P>
         </Feature>
-        <Feature ref={parallaxRef1}>
+        <Feature variants={item} ref={parallaxRef1}>
           <OptimizedIcon />
           <H3>Optimized for frameworks</H3>
           <P muted>
@@ -107,7 +122,7 @@ const DevExperience = () => {
             many more.
           </P>
         </Feature>
-        <Feature ref={parallaxRef2}>
+        <Feature variants={item} ref={parallaxRef2}>
           <GHIcon />
           <H3>Integrated with GitHub</H3>
           <P muted>
