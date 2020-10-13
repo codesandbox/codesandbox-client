@@ -10007,10 +10007,10 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
   integrity sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=
 
-console-feed@^3.1.7:
-  version "3.1.7"
-  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-3.1.7.tgz#0a6baed931e0faf497791dd7536f43fe68320d9c"
-  integrity sha512-a/lWpS9PBDEejClDqM8iOi+UCP/uC5Ki4ptP6uv3WYI4ZONB1M+u3ruBuDVEb9DDyARcQPtI6wUDwSxfaoWzpw==
+console-feed@^3.1.9:
+  version "3.1.9"
+  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-3.1.9.tgz#946191e5bf7a10fcabb478703129bc8b9eef5a9e"
+  integrity sha512-GAJCSTEvU3uZl4xVmYm7FONqzKelOj/+/+HZREb2w9CiOCjXRJtRP3nKiBYK8GszIDExiODEyz1WxWl2hHFkow==
   dependencies:
     "@emotion/core" "^10.0.10"
     "@emotion/styled" "^10.0.12"
