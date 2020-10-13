@@ -22,19 +22,23 @@ const videoTimesAndText = [
   },
   {
     time: 5,
-    text: 'text two',
+    text:
+      'A sandbox is a superfast development environment, purpose-built for rapid web development in the browser.',
   },
   {
     time: 10,
-    text: 'text three',
+    text:
+      'A sandbox is collaborative. Like a Google Doc but for code, you can get feedback and create together, in real-time or asynchronously.',
   },
   {
     time: 15,
-    text: 'text four',
+    text:
+      'A sandbox updates live, so you can see the effect of changes instantly, inline, as you code.',
   },
   {
     time: 20,
-    text: 'text five',
+    text:
+      'A sandbox can be shared with a click. Your friends, team, or colleagues can join in, or view your creation with just a URL.',
   },
 ];
 
