@@ -73,6 +73,8 @@ const allRules = {
     .default,
   '@typescript-eslint/no-unused-expressions': require('@typescript-eslint/eslint-plugin/dist/rules/no-unused-expressions')
     .default,
+  '@typescript-eslint/no-use-before-define': require('@typescript-eslint/eslint-plugin/dist/rules/no-use-before-define')
+    .default,
 };
 /* eslint-enable global-require */
 
@@ -371,6 +373,9 @@ const TYPESCRIPT_PARSER_OPTIONS = {
     // Fixes optional chaining
     'no-unused-expressions': 'off',
     '@typescript-eslint/no-unused-expressions': 'warn',
+    // note you must disable the base rule as it can report incorrect errors
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': 'error',
   },
 };
 
