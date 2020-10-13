@@ -375,7 +375,7 @@ const TYPESCRIPT_PARSER_OPTIONS = {
     '@typescript-eslint/no-unused-expressions': 'warn',
     // note you must disable the base rule as it can report incorrect errors
     'no-use-before-define': 'off',
-    '@typescript-eslint/no-use-before-define': ['error'],
+    '@typescript-eslint/no-use-before-define': 'error',
   },
 };
 
