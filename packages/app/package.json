@@ -284,7 +284,7 @@
     "@types/semver": "6.2.0",
     "@types/socket.io-client": "^1.4.32",
     "@types/stripe-v3": "^3.1.7",
-    "@types/styled-components": "^5.1.0",
+    "@types/styled-components": "^5.1.4",
     "acorn-dynamic-import": "^4.0.0",
     "babel-jest": "^24.8.0",
     "babel-loader": "8.0.2",
