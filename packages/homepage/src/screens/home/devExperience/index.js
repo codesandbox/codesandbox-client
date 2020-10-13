@@ -38,10 +38,10 @@ const Feature = styled(motion.div)`
   flex-direction: column;
   padding: 24px;
   padding-bottom: 56px;
-  border: 0.572728px solid #131212;
+  border: 0.572728px solid #343434;
   border-radius: 4px;
   text-align: center;
-  background: #040404;
+  background: #151515;
 
   svg,
   h3 {
