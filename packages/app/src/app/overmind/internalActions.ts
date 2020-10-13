@@ -1,4 +1,3 @@
-import { identify } from '@codesandbox/common/lib/utils/analytics';
 import {
   ModuleTab,
   NotificationButton,
