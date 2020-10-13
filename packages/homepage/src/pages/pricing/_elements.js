@@ -23,7 +23,7 @@ export const CardTitle = styled.h3`
 
 export const Price = styled.h6`
   font-weight: 900;
-  font-size: 2.25rem;
+  font-size: 2rem;
   text-align: center;
 
   color: ${props => props.theme.homepage.white};

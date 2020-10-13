@@ -215,7 +215,43 @@ export default () => (
         <TeamMember name="christian" />
         <TeamMember name="sanne" />
         <TeamMember name="andras" />
+        <Link
+          to={`/jobs`}
+          css={`
+            display: block;
+          `}
+        >
+          <div
+            css={`
+              border: 4px solid #242424;
+              height: 100%;
+              box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.24),
+                0px 8px 4px rgba(0, 0, 0, 0.12);
+              border-radius: 8px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: all 200ms ease;
+
+              :hover {
+                border: 4px solid white;
+
+                svg {
+                  transform: scale(1.1);
+                }
+              }
+            `}
+          >
+            <svg width="31" height="30" viewBox="0 0 31 30" fill="none">
+              <path
+                d="M16.975 0.2677H14.025V13.5427H0.75V16.4927H14.025V29.7677H16.975V16.4927H30.25V13.5427H16.975V0.2677Z"
+                fill="white"
+              />
+            </svg>
+          </div>
+        </Link>
       </div>
+
       <div
         css={`
           margin-bottom: 325px;

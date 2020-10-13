@@ -97,7 +97,7 @@ export default () => (
           <CardTitle>Pro Workspaces</CardTitle>
           <Price
             css={`
-              margin-top: 44px;
+              margin-top: 16px;
             `}
           >
             Join the waitlist
