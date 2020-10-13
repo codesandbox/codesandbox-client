@@ -1,4 +1,3 @@
-import { identify } from '@codesandbox/common/lib/utils/analytics';
 import {
   ModuleTab,
   NotificationButton,
@@ -436,28 +435,6 @@ export const handleError: Action<{
       title: message,
       message: error.message,
       status: NotificationStatus.ERROR,
-    });
-
-    return;
-  }
-
-  const { response } = error as ApiError;
-
-  if (response?.status === 401) {
-    // Reset existing sign in info
-    identify('signed_in', false);
-    effects.analytics.setAnonymousId();
-
-    // Allow user to sign in again in notification
-    effects.notificationToast.add({
-      message: 'Your session seems to be expired, please log in again...',
-      status: NotificationStatus.ERROR,
-      actions: {
-        primary: {
-          label: 'Sign in',
-          run: () => actions.signInClicked(),
-        },
-      },
     });
 
     return;
