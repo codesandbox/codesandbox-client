@@ -441,28 +441,6 @@ export const handleError: Action<{
     return;
   }
 
-  const { response } = error as ApiError;
-
-  if (response?.status === 401) {
-    // Reset existing sign in info
-    identify('signed_in', false);
-    effects.analytics.setAnonymousId();
-
-    // Allow user to sign in again in notification
-    effects.notificationToast.add({
-      message: 'Your session seems to be expired, please log in again...',
-      status: NotificationStatus.ERROR,
-      actions: {
-        primary: {
-          label: 'Sign in',
-          run: () => actions.signInClicked(),
-        },
-      },
-    });
-
-    return;
-  }
-
   error.message = actions.internal.getErrorMessage({ error });
 
   const notificationActions: NotificationMessage['actions'] = {};
