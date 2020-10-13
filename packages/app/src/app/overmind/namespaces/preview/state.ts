@@ -9,7 +9,7 @@ type State = {
     scale: number;
     resolution: [number, number];
   };
-  mode: 'responsive' | null;
+  mode: 'responsive' | 'add-comment' | null;
 };
 
 export const defaultPresets: Presets = {

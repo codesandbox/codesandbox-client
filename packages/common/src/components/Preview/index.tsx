@@ -50,6 +50,8 @@ export type Props = {
   ResponsiveWrapper?: React.FC<{ children: any }>;
   isResponsiveModeActive?: boolean;
   toggleResponsiveMode?: () => void;
+  togglePreviewComment?: () => void;
+  isAddingPreviewComment?: boolean;
   /**
    * Whether to show a screenshot in the preview as a "placeholder" while loading
    * to reduce perceived loading time
@@ -555,6 +557,8 @@ class BasePreview extends React.PureComponent<Props, State> {
       ResponsiveWrapper = ({ children }) => children,
       isResponsiveModeActive,
       toggleResponsiveMode,
+      togglePreviewComment,
+      isAddingPreviewComment,
     } = this.props;
 
     const { urlInAddressBar, back, forward } = this.state;
@@ -594,6 +598,8 @@ class BasePreview extends React.PureComponent<Props, State> {
             toggleResponsiveView={toggleResponsiveMode}
             isInResponsivePreview={isResponsiveModeActive}
             openNewWindow={this.openNewWindow}
+            togglePreviewComment={togglePreviewComment}
+            isAddingPreviewComment={isAddingPreviewComment}
             zenMode={settings.zenMode}
           />
         )}

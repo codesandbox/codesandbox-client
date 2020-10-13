@@ -84,3 +84,8 @@ export const editPresets: AsyncAction<Presets> = async (
     'responsive-preview': newPresets,
   });
 };
+
+export const togglePreviewComment: Action = ({ state }) => {
+  state.preview.mode =
+    state.preview.mode === 'add-comment' ? null : 'add-comment';
+};

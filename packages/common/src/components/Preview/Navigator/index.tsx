@@ -28,7 +28,9 @@ export interface NavigatorProps {
   onForward?: () => void;
   openNewWindow?: () => void;
   toggleResponsiveView?: () => void;
+  togglePreviewComment?: () => void;
   isInResponsivePreview?: boolean;
+  isAddingPreviewComment?: boolean;
   zenMode?: boolean;
   isProjectView: boolean;
 }
@@ -45,6 +47,8 @@ function Navigator({
   openNewWindow,
   toggleResponsiveView,
   isInResponsivePreview,
+  togglePreviewComment,
+  isAddingPreviewComment,
   zenMode,
 }: NavigatorProps) {
   return (
@@ -67,6 +71,13 @@ function Navigator({
       >
         <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
       </AddressBarContainer>
+      {togglePreviewComment && (
+        <IconWithBackground onClick={togglePreviewComment}>
+          <Tooltip delay={0} content="Add Preview Comment">
+            <ResponsivePreview active={isAddingPreviewComment} />
+          </Tooltip>
+        </IconWithBackground>
+      )}
       {!zenMode && toggleProjectView && (
         <IconWithBackground
           onClick={toggleProjectView}

@@ -64,8 +64,6 @@ export const Preview: FunctionComponent<Props> = ({
     return undefined;
   };
 
-  const isInResponsivePreview = preview.mode === 'responsive';
-
   return running ? (
     <BasePreview
       currentModule={currentModule}
@@ -79,13 +77,15 @@ export const Preview: FunctionComponent<Props> = ({
       noPreview={!previewWindowVisible}
       onToggleProjectView={projectViewToggled}
       ResponsiveWrapper={ResponsiveWrapper}
-      isResponsiveModeActive={isInResponsivePreview}
+      isResponsiveModeActive={preview.mode === 'responsive'}
       toggleResponsiveMode={previewActions.toggleResponsiveMode}
       overlayMessage={getOverlayMessage()}
       previewSecret={currentSandbox.previewSecret}
       privacy={currentSandbox.privacy}
       sandbox={currentSandbox}
       settings={settings}
+      togglePreviewComment={previewActions.togglePreviewComment}
+      isAddingPreviewComment={preview.mode === 'add-comment'}
       url={options.url}
     />
   ) : (
