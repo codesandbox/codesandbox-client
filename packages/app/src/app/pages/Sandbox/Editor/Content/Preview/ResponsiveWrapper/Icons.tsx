@@ -57,10 +57,10 @@ export const CloseIcon = (props: { color: string }) => (
 
 export const ResizeIcon = props => (
   <svg width={17} height={17} fill="none" viewBox="0 0 17 17" {...props}>
-    <g filter="url(#filter0_b)">
+    <g>
       <path fill="#fff" fillOpacity={0.2} d="M8 8l8-8v13a3 3 0 01-3 3H0l8-8z" />
     </g>
-    <g filter="url(#filter1_b)">
+    <g>
       <rect
         width={1}
         height={10}
@@ -72,7 +72,7 @@ export const ResizeIcon = props => (
         transform="rotate(45 14.071 7)"
       />
     </g>
-    <g filter="url(#filter2_b)">
+    <g>
       <rect
         width={1}
         height={6}
@@ -84,73 +84,5 @@ export const ResizeIcon = props => (
         transform="rotate(45 14.243 10)"
       />
     </g>
-    <defs>
-      <filter
-        id="filter0_b"
-        width={24}
-        height={24}
-        x={-4}
-        y={-4}
-        colorInterpolationFilters="sRGB"
-        filterUnits="userSpaceOnUse"
-      >
-        <feFlood floodOpacity={0} result="BackgroundImageFix" />
-        <feGaussianBlur in="BackgroundImage" stdDeviation={2} />
-        <feComposite
-          in2="SourceAlpha"
-          operator="in"
-          result="effect1_backgroundBlur"
-        />
-        <feBlend
-          in="SourceGraphic"
-          in2="effect1_backgroundBlur"
-          result="shape"
-        />
-      </filter>
-      <filter
-        id="filter1_b"
-        width={15.778}
-        height={15.778}
-        x={3}
-        y={3}
-        colorInterpolationFilters="sRGB"
-        filterUnits="userSpaceOnUse"
-      >
-        <feFlood floodOpacity={0} result="BackgroundImageFix" />
-        <feGaussianBlur in="BackgroundImage" stdDeviation={2} />
-        <feComposite
-          in2="SourceAlpha"
-          operator="in"
-          result="effect1_backgroundBlur"
-        />
-        <feBlend
-          in="SourceGraphic"
-          in2="effect1_backgroundBlur"
-          result="shape"
-        />
-      </filter>
-      <filter
-        id="filter2_b"
-        width={12.95}
-        height={12.95}
-        x={6}
-        y={6}
-        colorInterpolationFilters="sRGB"
-        filterUnits="userSpaceOnUse"
-      >
-        <feFlood floodOpacity={0} result="BackgroundImageFix" />
-        <feGaussianBlur in="BackgroundImage" stdDeviation={2} />
-        <feComposite
-          in2="SourceAlpha"
-          operator="in"
-          result="effect1_backgroundBlur"
-        />
-        <feBlend
-          in="SourceGraphic"
-          in2="effect1_backgroundBlur"
-          result="shape"
-        />
-      </filter>
-    </defs>
   </svg>
 );
