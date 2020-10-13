@@ -1,15 +1,15 @@
 import styled from 'styled-components';
 
 export const H2 = styled.h2`
-  font-size: 2.5rem;
   line-height: 57px;
+  font-weight: 900;
+  font-size: 48px;
   font-family: ${props => props.theme.homepage.appleFont};
 
   color: ${props => props.theme.homepage.white};
   padding: 0;
   margin: 0;
   margin-bottom: 0.5rem;
-  font-weight: 500;
 
   ${props => props.theme.breakpoints.md} {
     font-size: 1.8rem;
@@ -55,8 +55,8 @@ text-align: center;
 
 export const H3 = styled.h3`
   font-weight: bold;
-  font-size: 2rem;
-  line-height: 39px;
+  font-size: 23px;
+  line-height: 27px;
   margin: 0;
 
   color: ${props => props.theme.homepage.white};

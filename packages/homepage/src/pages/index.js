@@ -6,7 +6,7 @@ import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
 
 import HeroB from '../screens/home/heroB';
-import Prototype from '../screens/home/prototype';
+import DevExperience from '../screens/home/devExperience';
 import Started from '../screens/home/started';
 import LoadInView from '../components/LoadInView';
 import Experiment from '../screens/home/experiment';
@@ -38,7 +38,7 @@ const Homepage = () => (
 
     <div style={WRAPPER_STYLING}>
       <LoadInView>
-        <Prototype />
+        <DevExperience />
       </LoadInView>
       <LoadInView>
         <Started />
