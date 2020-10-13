@@ -7,7 +7,6 @@ import Layout, { WRAPPER_STYLING } from '../components/layout';
 
 import HeroB from '../screens/home/heroB';
 import DevExperience from '../screens/home/devExperience';
-import Started from '../screens/home/started';
 import LoadInView from '../components/LoadInView';
 import Experiment from '../screens/home/experiment';
 import Teams from '../screens/home/teams';
@@ -15,6 +14,7 @@ import Share from '../screens/home/share';
 import Join from '../screens/home/join';
 import Explore from '../screens/home/explore';
 import Video from '../screens/home/video';
+import Workspaces from '../screens/home/workspaces';
 
 // eslint-disable-next-line
 console.log(
@@ -41,7 +41,7 @@ const Homepage = () => (
         <DevExperience />
       </LoadInView>
       <LoadInView>
-        <Started />
+        <Workspaces />
       </LoadInView>
     </div>
     <LoadInView>

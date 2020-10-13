@@ -34,8 +34,8 @@ export const P = styled.p`
   ${props =>
     props.big &&
     `
-  font-size: 1.4375rem;
-  font-weight: 500;
+  font-size: 23px;
+  font-weight: normal;
   `}
 
   ${props =>

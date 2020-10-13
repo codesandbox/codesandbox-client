@@ -13,7 +13,7 @@ const Grid = styled.div`
   grid-gap: 38px;
   margin-bottom: 56px;
 
-  ${props => props.theme.breakpoints.lg} {
+  ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr;
   }
 `;
