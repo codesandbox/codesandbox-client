@@ -362,7 +362,7 @@
         "affectsGlobalScope": false
       },
       "./src/common/react/babel.ts": {
-        "version": "76ddf92600d8b85cc36deeb2fea3c7b285cad05a5576923e7453ad3dfc99ddae",
+        "version": "bc4d3816f51c25c036e152df1eec52c743f3594d1c293b0670f07b266cd72687",
         "signature": "4997c5b64194feb71fcff19c25f092af586e5727e0076b73986e1c2608b270b0",
         "affectsGlobalScope": false
       },
@@ -3161,9 +3161,14 @@
         "signature": "138ed06a4b3de6a4fdc32bf1ef0db8fc1cb041a6ef0cbd7558d5bbdd7b86de87",
         "affectsGlobalScope": false
       },
-      "../@types/styled-components/index.d.ts": {
-        "version": "d85b2f765767087214fe3e998a0c1d6a665d7b140edf51c57299b8dd77d76492",
-        "signature": "d85b2f765767087214fe3e998a0c1d6a665d7b140edf51c57299b8dd77d76492",
+      "../../node_modules/@types/styled-components/node_modules/csstype/index.d.ts": {
+        "version": "b3a4ee9791cdd4f5029b3ffe60b9cae1ac308a4238b0444f40a5222e4ecc5cc1",
+        "signature": "b3a4ee9791cdd4f5029b3ffe60b9cae1ac308a4238b0444f40a5222e4ecc5cc1",
+        "affectsGlobalScope": false
+      },
+      "../../node_modules/@types/styled-components/index.d.ts": {
+        "version": "6117cbe65a212348fceff9e04e373039e5818b9dd97d6dd364ea64e2412d9ef9",
+        "signature": "6117cbe65a212348fceff9e04e373039e5818b9dd97d6dd364ea64e2412d9ef9",
         "affectsGlobalScope": true
       },
       "../../node_modules/@types/tapable/index.d.ts": {
@@ -6290,6 +6295,17 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../node_modules/@types/styled-components/index.d.ts": [
+        "../../node_modules/@types/hoist-non-react-statics/index.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/react/index.d.ts",
+        "../../node_modules/@types/styled-components/node_modules/csstype/index.d.ts"
+      ],
+      "../../node_modules/@types/styled-components/node_modules/csstype/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../node_modules/@types/svgo/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -6795,13 +6811,6 @@
       "../../node_modules/typescript/lib/typescript.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
-      ],
-      "../@types/styled-components/index.d.ts": [
-        "../../node_modules/@types/hoist-non-react-statics/index.d.ts",
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts",
-        "../../node_modules/@types/react/index.d.ts",
-        "../../node_modules/csstype/index.d.ts"
       ],
       "../codesandbox-api/dist/types/actions/correction.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -10251,6 +10260,17 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../node_modules/@types/styled-components/index.d.ts": [
+        "../../node_modules/@types/hoist-non-react-statics/index.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/react/index.d.ts",
+        "../../node_modules/@types/styled-components/node_modules/csstype/index.d.ts"
+      ],
+      "../../node_modules/@types/styled-components/node_modules/csstype/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../node_modules/@types/svgo/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -10756,13 +10776,6 @@
       "../../node_modules/typescript/lib/typescript.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
-      ],
-      "../@types/styled-components/index.d.ts": [
-        "../../node_modules/@types/hoist-non-react-statics/index.d.ts",
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts",
-        "../../node_modules/@types/react/index.d.ts",
-        "../../node_modules/csstype/index.d.ts"
       ],
       "../codesandbox-api/dist/types/actions/correction.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
@@ -11645,6 +11658,8 @@
       "../../node_modules/@types/stack-utils/index.d.ts",
       "../../node_modules/@types/storybook__addon-actions/index.d.ts",
       "../../node_modules/@types/stripe-v3/index.d.ts",
+      "../../node_modules/@types/styled-components/index.d.ts",
+      "../../node_modules/@types/styled-components/node_modules/csstype/index.d.ts",
       "../../node_modules/@types/svgo/index.d.ts",
       "../../node_modules/@types/tapable/index.d.ts",
       "../../node_modules/@types/tern/index.d.ts",
@@ -11751,7 +11766,6 @@
             "code": 2300,
             "relatedInformation": [
               {
-                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 1349,
                 "length": 8,
                 "messageText": "'FormData' was also declared here.",
@@ -11769,7 +11783,6 @@
             "code": 2300,
             "relatedInformation": [
               {
-                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 1349,
                 "length": 8,
                 "messageText": "'FormData' was also declared here.",
@@ -11787,7 +11800,6 @@
             "code": 2451,
             "relatedInformation": [
               {
-                "file": "../../node_modules/@types/react-native/index.d.ts",
                 "start": 318053,
                 "length": 9,
                 "messageText": "'navigator' was also declared here.",
@@ -11805,7 +11817,6 @@
             "code": 2300,
             "relatedInformation": [
               {
-                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 2920,
                 "length": 11,
                 "messageText": "'RequestInfo' was also declared here.",
@@ -11823,7 +11834,6 @@
             "code": 2300,
             "relatedInformation": [
               {
-                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 7919,
                 "length": 26,
                 "messageText": "'XMLHttpRequestResponseType' was also declared here.",
@@ -11990,7 +12000,6 @@
             "code": 2300,
             "relatedInformation": [
               {
-                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 1349,
                 "length": 8,
                 "messageText": "'FormData' was also declared here.",
@@ -12008,7 +12017,6 @@
             "code": 2300,
             "relatedInformation": [
               {
-                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 1349,
                 "length": 8,
                 "messageText": "'FormData' was also declared here.",
@@ -12170,7 +12178,6 @@
             "code": 2451,
             "relatedInformation": [
               {
-                "file": "../../node_modules/@types/react-native/index.d.ts",
                 "start": 318053,
                 "length": 9,
                 "messageText": "'navigator' was also declared here.",
@@ -12308,7 +12315,6 @@
         ]
       ],
       "../../node_modules/typescript/lib/typescript.d.ts",
-      "../@types/styled-components/index.d.ts",
       "../codesandbox-api/dist/types/actions/correction.d.ts",
       "../codesandbox-api/dist/types/actions/editor.d.ts",
       "../codesandbox-api/dist/types/actions/error.d.ts",

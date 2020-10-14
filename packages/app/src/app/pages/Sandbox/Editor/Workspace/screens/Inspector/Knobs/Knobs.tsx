@@ -6,7 +6,6 @@ import { useInspectorKnobs } from '../hooks/knobs';
 import { BaseKnob } from './knobs/index';
 import { groupBy, sortBy } from 'lodash-es';
 import { UnusedKnob } from './knobs/UnusedKnob';
-import { useOvermind } from 'app/overmind';
 
 type KnobsProps = {
   inspectorStateService: EditorInspectorState;
@@ -34,6 +33,8 @@ export const Knobs = ({ inspectorStateService }: KnobsProps) => {
       }
     }
   );
+
+  console.log({ setProps, unsetProps });
 
   return (
     <Collapsible defaultOpen title={`Knobs (${name || 'Anonymous'})`}>
@@ -85,7 +86,7 @@ export const Knobs = ({ inspectorStateService }: KnobsProps) => {
                         propsSourceInformation.name
                       );
                     }}
-                    propName={propsSourceInformation.name}
+                    propName={propsSourceInformation.name || ''}
                     propType={propsSourceInformation.typeInfo?.type || null}
                   />
                 </motion.div>

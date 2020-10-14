@@ -102,9 +102,7 @@ export default ({ types: t }: { types: typeof types }) => {
       state: { fileNameIdentifier?: types.Identifier; filename?: string }
     ) {
       const id = t.jsxIdentifier(TRACE_ID);
-      const container = path.container as types.JSXElement;
-
-      const location = container.loc;
+      const location = path.node.loc;
       if (!location) {
         // the element was generated and doesn't have location information
         return;

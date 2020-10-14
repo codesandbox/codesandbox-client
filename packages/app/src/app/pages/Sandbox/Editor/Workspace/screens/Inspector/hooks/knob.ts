@@ -50,7 +50,7 @@ export function useInspectorKnob(
   );
 
   return {
-    value,
+    value: value,
     setValue: (code: string) => {
       let sourceCode = code;
       if (sourceCode[0] !== '"' && sourceCode[0] !== '{') {

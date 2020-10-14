@@ -18,7 +18,7 @@ interface BaseKnopProps {
 
 export interface KnobProps {
   propInfo: StaticPropInfo;
-  value: string;
+  value: string | null;
   setValue: (code: string) => void;
 }
 
