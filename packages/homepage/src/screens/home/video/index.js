@@ -45,6 +45,7 @@ const videoTimesAndText = [
 const Video = () => {
   const video = useRef();
   const [active, setActive] = useState(false);
+  const [errorOnVideoPlayback, setErrorOnVideoPlayback] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [activeTab, setActiveTab] = useState(1);
   useEffect(() => {
@@ -52,7 +53,11 @@ const Video = () => {
       const entryObserver = new IntersectionObserver(
         entries => {
           if (entries[0].isIntersecting === true) {
-            video.current.play();
+            try {
+              video.current.play();
+            } catch (e) {
+              setErrorOnVideoPlayback(true);
+            }
 
             setActive(true);
           }
@@ -148,13 +153,15 @@ const Video = () => {
         </TabsWrapper>
 
         <VideoComponent
+          muted
+          playsinline
           poster={posterSrc}
           src={videoSrc}
           ref={video}
           width={1024}
           height={592}
           active={active}
-          controls={prefersReducedMotion}
+          controls={prefersReducedMotion || errorOnVideoPlayback}
         />
       </section>
     </motion.div>
