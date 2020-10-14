@@ -82,6 +82,8 @@ interface IModulesByPath {
   [path: string]: { path: string; code: null | string; isBinary?: boolean };
 }
 
+const DefaultResponsiveWrapper = ({ children }) => children;
+
 class BasePreview extends React.PureComponent<Props, State> {
   serverPreview: boolean;
   element: HTMLIFrameElement;
@@ -552,7 +554,7 @@ class BasePreview extends React.PureComponent<Props, State> {
       noPreview,
       className,
       overlayMessage,
-      ResponsiveWrapper = ({ children }) => children,
+      ResponsiveWrapper = DefaultResponsiveWrapper,
       isResponsiveModeActive,
       toggleResponsiveMode,
     } = this.props;
