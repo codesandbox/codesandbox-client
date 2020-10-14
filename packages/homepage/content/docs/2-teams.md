@@ -1,47 +1,40 @@
 ---
-title: Teams
+title: Workspaces
 authors: ['CompuIves']
 description:
-  A team makes it easier to collaborate on sandboxes with others. In a team you
-  share ownership of the sandboxes and every sandbox automatically has a live
-  session open.
+  A workspace makes it easier to collaborate on sandboxes with others. In a workspace you
+  share ownership of the sandboxes so you can all work on them.
 ---
 
-## Creating a Team
+## Creating a Workspace
 
-You can create and manage teams from the dashboard.
+You can create and manage workspaces from the dashboard.
 
-![Create Team](./images/team-create.png)
+![Create Workspace](./images/workspace-create.png)
 
-As soon as you've created a team you will be shown the team overview.
+As soon as you've created a workspace you will be shown the team overview.
 
-![Team Overview](./images/team-overview.png)
+![Workspace Overview](./images/workspaces-overview.png)
 
-## Inviting Team Members
+## Inviting People to a Workspace
 
-There's no limit on how many team members a team can have. You can invite others
-by entering their username in the bottom left corner. They will get a
-notification (the bell icon in the header) in CodeSandbox when they are invited
-to a new team. From there they can accept or refuse the invitation.
-
-![Team Notifications](./images/team-invite.png)
+There's no limit on how many members a workspace can have. You can invite others
+by entering their username or email address and selecting 'Add Member'. They will get a
+notification (the bell icon in the header) in CodeSandbox and email when they are invited
+to a new workspace. From there they can accept or decline the invitation.
 
 ## Sharing Sandboxes
 
-On the dashboard, a team has a sidebar item called "Our Sandboxes" with
-directories, just like your personal sandboxes. You can create new sandboxes
-directly from here, or drag your own sandboxes from 'My Sandboxes' to 'Our
-Sandboxes'. All sandboxes in a team can be seen and edited by all team members.
+On the dashboard, you can choose which workspace you're in from the workspace drop-down at 
+the top-left. You can create new sandboxes
+directly from here, or from a difference workspace, select one or more sandboxes, right-click 
+and select 'Move to Folder', where you can choose the workspace and folder you want to move 
+them into. All sandboxes in a workspace can be seen and edited by all team members.
 We keep track of who originally created the sandbox though, and only the
 original creator of the sandbox can delete it.
 
-![Team Sandboxes](./images/team-sandboxes.png)
-
 ## Collaborating on Sandboxes
 
-Whenever you open a team sandbox, you also automatically open a live session.
-Other team members will join this live session if they open the sandbox as well.
-You can still invite other people who aren't members of the team to the live
-session.
-
-![Going Live](./images/live-live.png)
+You can other members can open a sandbox at the same time and see each other's cursor to work 
+together. You can still invite other people who aren't members of the team to the sandbox or 
+[live session](/docs/live).
