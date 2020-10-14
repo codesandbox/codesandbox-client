@@ -14,7 +14,7 @@ You can create and manage workspaces from the dashboard.
 
 As soon as you've created a workspace you will be shown the team overview.
 
-![Workspace Overview](./images/workspaces-overview.png)
+![Workspace Overview](./images/workspace-overview.png)
 
 ## Inviting People to a Workspace
 
