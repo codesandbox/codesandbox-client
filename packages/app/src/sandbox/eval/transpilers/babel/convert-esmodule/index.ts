@@ -486,7 +486,7 @@ export function convertEsModule(
     });
 
     // A second pass where we rename all references to imports that were marked before.
-    const scopeManager = escope.analyze(program);
+    const scopeManager = escope.analyze(program, {ecmaVersion: 6});
 
     scopeManager.acquire(program);
     scopeManager.scopes.forEach(scope => {

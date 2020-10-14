@@ -186,6 +186,16 @@ function $_csb__interopRequireDefault(obj) {
 "
 `;
 
+exports[`convert-esmodule can handle block scopes 1`] = `
+"\\"use strict\\";
+var $csb__utils = require(\\"@interop-ui/utils\\");
+if (true) {
+  let e = c;
+}
+(0, $csb__utils.getOppositeSide)();
+"
+`;
+
 exports[`convert-esmodule can handle class properties 1`] = `
 "\\"use strict\\";
 var $csb__test = require(\\"./test\\");
