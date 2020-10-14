@@ -30,8 +30,8 @@ You can choose which workspace you're in from the workspace drop-down at the top
 dashboard. You can create new sandboxes directly from here or from a different workspace, 
 select one or more sandboxes, right-click and select 'Move to Folder', where you can choose 
 the workspace and folder you want to move them into. All sandboxes in a workspace can be seen 
-and edited by all team members. We keep track of who created the sandbox, though, and only the 
-the original creator of the sandbox can delete it.
+or edited by other team members, depending on their permission levels. We keep track of who 
+created the sandbox, though, and only the the original creator of the sandbox can delete it.
 
 ## Collaborating on Sandboxes
 
