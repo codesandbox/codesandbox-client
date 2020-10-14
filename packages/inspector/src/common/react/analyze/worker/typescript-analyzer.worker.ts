@@ -33,18 +33,15 @@ function initializeFS() {
 
 class TypeScriptAnalyzer implements Analyzer {
   private fileMap = new Map<string, FileInfo>();
-  private host: ts.LanguageServiceHost | undefined;
-  private service: ts.LanguageService | undefined;
+  private host: ts.LanguageServiceHost;
+  private service: ts.LanguageService;
   private sys: ts.System;
   private documentRegistry = ts.createDocumentRegistry();
 
   constructor() {
     this.sys = require('./system').createSystem();
-
-    initializeFS().then(() => {
-      this.host = this.createHost();
-      this.service = ts.createLanguageService(this.host, this.documentRegistry);
-    });
+    this.host = this.createHost();
+    this.service = ts.createLanguageService(this.host, this.documentRegistry);
 
     // @ts-expect-error Debugging purposes
     self.analyzer = this;
@@ -73,10 +70,6 @@ class TypeScriptAnalyzer implements Analyzer {
   async $getComponentInstances(
     path: string
   ): Promise<GetComponentInstancesResponse> {
-    if (!this.service) {
-      throw new Error('Service not initialized');
-    }
-
     const file = this.fileMap.get(path);
     const program = this.service.getProgram();
     if (!program) {
@@ -100,10 +93,6 @@ class TypeScriptAnalyzer implements Analyzer {
     fromPath: string,
     exportName: string
   ): Promise<StaticComponentInformation | undefined> {
-    if (!this.service) {
-      throw new Error('Service not initialized');
-    }
-
     const program = this.service.getProgram();
     if (!program) {
       throw new Error('Program not initialized');
@@ -130,7 +119,12 @@ class TypeScriptAnalyzer implements Analyzer {
       );
     }
 
-    return analyzeComponent(sourceFile, exportName, program.getTypeChecker()!);
+    return analyzeComponent(
+      sourceFile,
+      lookupResult.resolvedModule.resolvedFileName,
+      exportName,
+      program.getTypeChecker()!
+    );
   }
 
   private getCompilationSettings = (): ts.CompilerOptions => {
@@ -176,8 +170,11 @@ class TypeScriptAnalyzer implements Analyzer {
         return undefined;
       },
       getDefaultLibFileName: options => {
+        // @ts-ignore
         return ts.combinePaths(
+          // @ts-ignore
           ts.getDirectoryPath(
+            // @ts-ignore
             ts.normalizePath(this.sys.getExecutingFilePath())
           ),
           ts.getDefaultLibFileName(options)
@@ -193,5 +190,7 @@ class TypeScriptAnalyzer implements Analyzer {
   }
 }
 
-const rpcProtocol = new RPCProtocolImpl(new WorkerConnection());
-rpcProtocol.set(analyzerProxyIdentifier, new TypeScriptAnalyzer());
+initializeFS().then(() => {
+  const rpcProtocol = new RPCProtocolImpl(new WorkerConnection());
+  rpcProtocol.set(analyzerProxyIdentifier, new TypeScriptAnalyzer());
+});

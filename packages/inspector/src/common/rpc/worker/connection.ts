@@ -15,6 +15,8 @@ export class WorkerConnection extends Disposable implements IConnection {
         this.emitter.fire(event.data);
       }
     });
+
+    this.send('ready');
   }
 
   send(message: any): void {

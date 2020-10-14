@@ -114,6 +114,7 @@ export interface StaticPropInfo {
 }
 
 export interface StaticComponentInformation {
+  path: string;
   name: string;
   descriptions: string[];
   jsdocTags: { name: string; text?: string }[];

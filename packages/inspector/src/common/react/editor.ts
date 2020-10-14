@@ -1,6 +1,3 @@
-// @ts-expect-error This is a worker
-import WorkerAnalyzer from './analyze/worker/typescript-analyzer.worker';
-
 import { RPCProtocolImpl } from '../rpc';
 import { MainWorkerConnection } from '../rpc/connection';
 // @ts-expect-error This is a worker

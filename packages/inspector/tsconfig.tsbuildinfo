@@ -222,8 +222,8 @@
         "affectsGlobalScope": false
       },
       "./src/common/fibers.ts": {
-        "version": "449002a6b56a87507ef661f946a7771517ad252078f7a0a2833b419bb1f31686",
-        "signature": "a56ba5e2b1f17ea755fb85e04f5efca19fde41711f23f52b606444a31a6416d0",
+        "version": "0a592e0957588b872db45c9d300d422bf6b828921a9d0941aa0eb04a3179f097",
+        "signature": "41929b44378881a18f7e4af9f8a93f9bef2331d824d7d070ffc21e15ca7fa74d",
         "affectsGlobalScope": false
       },
       "./src/common/rpc/event.ts": {
@@ -317,8 +317,8 @@
         "affectsGlobalScope": false
       },
       "./src/common/rpc/connection.ts": {
-        "version": "c9414a70f982be6ecc5386454000ed33e671b3e5ac6f60ae4fb919eb2e9132c0",
-        "signature": "25d096ce686e43014a884bf50aef7c0b938a12c468a927d05798090466a3779b",
+        "version": "94d54f4b3e76d35db2c15d60ddc766cb952b54ffd9891dbb79c7afc0f414d371",
+        "signature": "c1f2b91b8a00fc5728657fe4d6eb1e40b5edeed94a2441c46683c69b86a42ec3",
         "affectsGlobalScope": false
       },
       "./src/common/rpc/index.ts": {
@@ -377,7 +377,7 @@
         "affectsGlobalScope": false
       },
       "./src/common/rpc/worker/connection.ts": {
-        "version": "c458c1afecfada6c628b8227b6b4fc3bc3ad7daf9a5afc86181afaf2f6a7f77d",
+        "version": "52b21ca0f2feb98e5fff24de98f29795a2668862afc075b17f2b588a84cda683",
         "signature": "75e57c9058b55fc8cfab0a6c24792c914a78ffbbd63863ea2b740218345a2a3c",
         "affectsGlobalScope": false
       },
@@ -482,17 +482,17 @@
         "affectsGlobalScope": false
       },
       "./src/common/react/analyze/worker/component.ts": {
-        "version": "f034672824ba02efc34de73c2e22ba80fc219a53ab02e5ab8310203d5b94ff1e",
-        "signature": "e624a0232fc306c8682ee48e899da71c82f89f03b8b6ccf45faad536bef03100",
+        "version": "9899c8b5d9a12820c10dcb7c9820117c6c84b2fbb4e1b7b1d4037e6a87fa9909",
+        "signature": "d1b7f2f44d5fd92db38488360133f7b3d44a7a046a6b9c56f35e01b578df43c6",
         "affectsGlobalScope": false
       },
       "./src/common/react/analyze/worker/typescript-analyzer.worker.ts": {
-        "version": "3202cdb5c95e99bfa6b1df6f9d587d325bfc33d153af5612d1a1d2fae07867e4",
+        "version": "2904c591cc2ce311d2c21510a6c2c9e6a77a6ffb2a0a5442e894eef5a97ab9a4",
         "signature": "eed6cf2161ada471e7743f3a3f9367b59094d50b0e8a3907e18b2e08e33615ca",
         "affectsGlobalScope": false
       },
       "./src/common/react/editor.ts": {
-        "version": "4bfbd274887d8b66cfef065ae71eab2e85062026e652211d5b8d292a5ff9de6f",
+        "version": "ee59574572c94093a3778c5f62868b721ba385bfc3cda0a9f4eadbe12829bdf9",
         "signature": "83b621b7ab1058b23b880b48bdba892d20a3e2ef32d9486fa8aaa4d699cf441f",
         "affectsGlobalScope": false
       },
@@ -2561,6 +2561,11 @@
         "signature": "0050c69914e7fcd5d823424cc6466e00eb5c17c49ea92a36e78399a690e07e52",
         "affectsGlobalScope": false
       },
+      "./node_modules/@babel/types/lib/index.d.ts": {
+        "version": "f4d27b39be5d82eb94f12c54a15e61f65decb27fb289353d11ef238de49bf5c2",
+        "signature": "f4d27b39be5d82eb94f12c54a15e61f65decb27fb289353d11ef238de49bf5c2",
+        "affectsGlobalScope": false
+      },
       "../common/lib/utils/diff/index.d.ts": {
         "version": "81cb023197b47f6a8d384cb56bb99413d5e7891e1e9f3e1c648ce7f4b4a704e6",
         "signature": "81cb023197b47f6a8d384cb56bb99413d5e7891e1e9f3e1c648ce7f4b4a704e6",
@@ -2582,12 +2587,12 @@
         "affectsGlobalScope": false
       },
       "./src/editor/instance.ts": {
-        "version": "28e58a5ad379488d0b8169b6cbbd3d22b1070f107c0c70d661dd62bb6dae9fc2",
-        "signature": "c630519f796658734e4db37c03c90c1752ebd05d6505a1da7b162e840c143fd2",
+        "version": "f179672d89d601b81f52182c16ddb389849f3971ea3671b05e2fb1a14882016a",
+        "signature": "69bd67a24944c2805e5e1ff78871546578c12eb4e1aeeb12b756b6b0641d3ff1",
         "affectsGlobalScope": false
       },
       "./src/editor/index.ts": {
-        "version": "e5eb72042ef253c7dff26f9837dd8acb2cce36e4b0b6b6641472938848163de8",
+        "version": "00416e1be19ce1e173faee11b7598188ae3c0d5683583daf976145743a56e7c8",
         "signature": "8692cf2b3243e54206ed69d23f532e80d7023ea639cfe8913028065acd3c5c05",
         "affectsGlobalScope": false
       },
@@ -2621,14 +2626,14 @@
         "signature": "70c61ff569aabdf2b36220da6c06caaa27e45cd7acac81a1966ab4ee2eadc4f2",
         "affectsGlobalScope": false
       },
-      "./node_modules/@types/istanbul-reports/index.d.ts": {
-        "version": "905c3e8f7ddaa6c391b60c05b2f4c3931d7127ad717a080359db3df510b7bdab",
-        "signature": "905c3e8f7ddaa6c391b60c05b2f4c3931d7127ad717a080359db3df510b7bdab",
+      "../../node_modules/@types/istanbul-reports/index.d.ts": {
+        "version": "93b59bc67329d5add033e3198583c39aa939cef891e6a2b763e0bea2b514ea9b",
+        "signature": "93b59bc67329d5add033e3198583c39aa939cef891e6a2b763e0bea2b514ea9b",
         "affectsGlobalScope": false
       },
-      "./node_modules/@types/prettier/index.d.ts": {
-        "version": "38433e50f876a09a45b665837a2954003ae14606270a157491f2bb52edf10382",
-        "signature": "38433e50f876a09a45b665837a2954003ae14606270a157491f2bb52edf10382",
+      "../../node_modules/@types/prettier/index.d.ts": {
+        "version": "29651525db5579157e617c77e869af8bfdc1130f5d811c1f759ad35b7bafc8ef",
+        "signature": "29651525db5579157e617c77e869af8bfdc1130f5d811c1f759ad35b7bafc8ef",
         "affectsGlobalScope": false
       },
       "../../node_modules/@types/algoliasearch/index.d.ts": {
@@ -3665,6 +3670,12 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../node_modules/@types/istanbul-reports/index.d.ts": [
+        "../../node_modules/@types/istanbul-lib-coverage/index.d.ts",
+        "../../node_modules/@types/istanbul-lib-report/index.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../node_modules/@types/jest-diff/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -6032,6 +6043,10 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../node_modules/@types/prettier/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../node_modules/@types/prop-types/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -7098,12 +7113,7 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "./node_modules/@types/istanbul-reports/index.d.ts": [
-        "../../node_modules/@types/istanbul-lib-report/index.d.ts",
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
-      ],
-      "./node_modules/@types/prettier/index.d.ts": [
+      "./node_modules/@babel/types/lib/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
@@ -7150,7 +7160,6 @@
       "./src/common/react/analyze/worker/component.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
-        "../../node_modules/tsutils/index.d.ts",
         "../../node_modules/typescript/lib/typescript.d.ts",
         "./src/common/fibers.ts"
       ],
@@ -7229,6 +7238,7 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
         "../codesandbox-api/dist/types/codesandbox.d.ts",
+        "./src/common/rpc/deferred.ts",
         "./src/common/rpc/disposable.ts",
         "./src/common/rpc/event.ts"
       ],
@@ -7294,6 +7304,7 @@
       "./src/editor/instance.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts",
+        "./node_modules/@babel/types/lib/index.d.ts",
         "./src/common/fibers.ts",
         "./src/common/proxies.ts",
         "./src/common/rpc/disposable.ts",
@@ -7630,6 +7641,12 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../node_modules/@types/istanbul-reports/index.d.ts": [
+        "../../node_modules/@types/istanbul-lib-coverage/index.d.ts",
+        "../../node_modules/@types/istanbul-lib-report/index.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../node_modules/@types/jest-diff/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -9997,6 +10014,10 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
+      "../../node_modules/@types/prettier/index.d.ts": [
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../node_modules/@types/prop-types/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
@@ -11063,12 +11084,7 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
-      "./node_modules/@types/istanbul-reports/index.d.ts": [
-        "../../node_modules/@types/istanbul-lib-report/index.d.ts",
-        "../../node_modules/@types/node/ts3.2/util.d.ts",
-        "../../node_modules/@types/node/util.d.ts"
-      ],
-      "./node_modules/@types/prettier/index.d.ts": [
+      "./node_modules/@babel/types/lib/index.d.ts": [
         "../../node_modules/@types/node/ts3.2/util.d.ts",
         "../../node_modules/@types/node/util.d.ts"
       ],
@@ -11235,6 +11251,7 @@
       "../../node_modules/@types/is-function/index.d.ts",
       "../../node_modules/@types/istanbul-lib-coverage/index.d.ts",
       "../../node_modules/@types/istanbul-lib-report/index.d.ts",
+      "../../node_modules/@types/istanbul-reports/index.d.ts",
       "../../node_modules/@types/jest-diff/index.d.ts",
       "../../node_modules/@types/jest/index.d.ts",
       "../../node_modules/@types/jest/node_modules/jest-diff/build/cleanupsemantic.d.ts",
@@ -11612,6 +11629,7 @@
       "../../node_modules/@types/ot/index.d.ts",
       "../../node_modules/@types/parse-json/index.d.ts",
       "../../node_modules/@types/phoenix/index.d.ts",
+      "../../node_modules/@types/prettier/index.d.ts",
       "../../node_modules/@types/prop-types/index.d.ts",
       "../../node_modules/@types/q/index.d.ts",
       "../../node_modules/@types/rc-slider/index.d.ts",
@@ -11766,6 +11784,7 @@
             "code": 2300,
             "relatedInformation": [
               {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 1349,
                 "length": 8,
                 "messageText": "'FormData' was also declared here.",
@@ -11783,6 +11802,7 @@
             "code": 2300,
             "relatedInformation": [
               {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 1349,
                 "length": 8,
                 "messageText": "'FormData' was also declared here.",
@@ -11800,6 +11820,7 @@
             "code": 2451,
             "relatedInformation": [
               {
+                "file": "../../node_modules/@types/react-native/index.d.ts",
                 "start": 318053,
                 "length": 9,
                 "messageText": "'navigator' was also declared here.",
@@ -11817,6 +11838,7 @@
             "code": 2300,
             "relatedInformation": [
               {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 2920,
                 "length": 11,
                 "messageText": "'RequestInfo' was also declared here.",
@@ -11834,6 +11856,7 @@
             "code": 2300,
             "relatedInformation": [
               {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 7919,
                 "length": 26,
                 "messageText": "'XMLHttpRequestResponseType' was also declared here.",
@@ -12000,6 +12023,7 @@
             "code": 2300,
             "relatedInformation": [
               {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 1349,
                 "length": 8,
                 "messageText": "'FormData' was also declared here.",
@@ -12017,6 +12041,7 @@
             "code": 2300,
             "relatedInformation": [
               {
+                "file": "../../node_modules/@types/react-native/globals.d.ts",
                 "start": 1349,
                 "length": 8,
                 "messageText": "'FormData' was also declared here.",
@@ -12178,6 +12203,7 @@
             "code": 2451,
             "relatedInformation": [
               {
+                "file": "../../node_modules/@types/react-native/index.d.ts",
                 "start": 318053,
                 "length": 9,
                 "messageText": "'navigator' was also declared here.",
@@ -12365,30 +12391,42 @@
       "../common/lib/types/index.d.ts",
       "../common/lib/utils/diff/index.d.ts",
       "../common/lib/utils/global.d.ts",
-      "./node_modules/@types/istanbul-reports/index.d.ts",
-      "./node_modules/@types/prettier/index.d.ts",
+      "./node_modules/@babel/types/lib/index.d.ts",
       "./node_modules/tslib/tslib.d.ts",
       "./src/common/fibers.ts",
       "./src/common/proxies.ts",
       "./src/common/react/analyze/proxies.ts",
       "./src/common/react/analyze/worker/component-instance.test.ts",
       "./src/common/react/analyze/worker/component-instance.ts",
-      "./src/common/react/analyze/worker/component.test.ts",
+      [
+        "./src/common/react/analyze/worker/component.test.ts",
+        [
+          {
+            "file": "./src/common/react/analyze/worker/component.test.ts",
+            "start": 910,
+            "length": 94,
+            "messageText": "Expected 4 arguments, but got 3.",
+            "category": 1,
+            "code": 2554,
+            "relatedInformation": [
+              {
+                "file": "./src/common/react/analyze/worker/component.ts",
+                "start": 2561,
+                "length": 27,
+                "messageText": "An argument for 'typeChecker' was not provided.",
+                "category": 3,
+                "code": 6210
+              }
+            ]
+          }
+        ]
+      ],
       [
         "./src/common/react/analyze/worker/component.ts",
         [
           {
             "file": "./src/common/react/analyze/worker/component.ts",
-            "start": 29,
-            "length": 35,
-            "messageText": "'tsutils' is declared but its value is never read.",
-            "category": 1,
-            "code": 6133,
-            "reportsUnnecessary": true
-          },
-          {
-            "file": "./src/common/react/analyze/worker/component.ts",
-            "start": 1342,
+            "start": 1381,
             "length": 5,
             "messageText": "'value' is declared but its value is never read.",
             "category": 1,
@@ -12397,7 +12435,7 @@
           },
           {
             "file": "./src/common/react/analyze/worker/component.ts",
-            "start": 1725,
+            "start": 1764,
             "length": 14,
             "messageText": "'originalSymbol' is declared but its value is never read.",
             "category": 1,
@@ -12489,35 +12527,7 @@
           }
         ]
       ],
-      [
-        "./src/common/react/analyze/worker/typescript-analyzer.worker.ts",
-        [
-          {
-            "file": "./src/common/react/analyze/worker/typescript-analyzer.worker.ts",
-            "start": 4821,
-            "length": 12,
-            "code": 2339,
-            "category": 1,
-            "messageText": "Property 'combinePaths' does not exist on type 'typeof ts'."
-          },
-          {
-            "file": "./src/common/react/analyze/worker/typescript-analyzer.worker.ts",
-            "start": 4848,
-            "length": 16,
-            "code": 2339,
-            "category": 1,
-            "messageText": "Property 'getDirectoryPath' does not exist on type 'typeof ts'."
-          },
-          {
-            "file": "./src/common/react/analyze/worker/typescript-analyzer.worker.ts",
-            "start": 4881,
-            "length": 13,
-            "code": 2339,
-            "category": 1,
-            "messageText": "Property 'normalizePath' does not exist on type 'typeof ts'."
-          }
-        ]
-      ],
+      "./src/common/react/analyze/worker/typescript-analyzer.worker.ts",
       "./src/common/react/babel.ts",
       [
         "./src/common/react/docgen.ts",
@@ -12572,7 +12582,7 @@
             "relatedInformation": [
               {
                 "file": "./src/common/fibers.ts",
-                "start": 2790,
+                "start": 2806,
                 "length": 49,
                 "messageText": "The expected type comes from this index signature.",
                 "category": 3,
@@ -12649,7 +12659,7 @@
         [
           {
             "file": "./src/editor/index.ts",
-            "start": 9734,
+            "start": 10332,
             "length": 13,
             "messageText": "'orderedFibers' is declared but its value is never read.",
             "category": 1,
@@ -12658,7 +12668,7 @@
           },
           {
             "file": "./src/editor/index.ts",
-            "start": 9773,
+            "start": 10371,
             "length": 12,
             "messageText": "'currentFiber' is declared but its value is never read.",
             "category": 1,
@@ -12672,11 +12682,11 @@
         [
           {
             "file": "./src/editor/instance.ts",
-            "start": 4177,
-            "length": 9,
-            "messageText": "Property 'editorApi' is declared but its value is never read.",
+            "start": 0,
+            "length": 46,
+            "messageText": "'throwStatement' is declared but its value is never read.",
             "category": 1,
-            "code": 6138,
+            "code": 6133,
             "reportsUnnecessary": true
           }
         ]

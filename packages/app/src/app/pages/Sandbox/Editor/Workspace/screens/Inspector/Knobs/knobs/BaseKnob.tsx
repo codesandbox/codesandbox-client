@@ -38,9 +38,9 @@ export const BaseKnob = (props: BaseKnopProps) => {
       align="center"
       css={css({ fontWeight: 500, opacity: props.disabled ? 0.5 : 1 })}
     >
-      <div style={{ flexGrow: 1, width: '100%' }}>{nicifyName(props.name)}</div>
+      <div css={css({ flex: 1, width: '100%' })}>{nicifyName(props.name)}</div>
 
-      <div css={css({ flexGrow: 2, width: '100%' })}>
+      <div css={css({ flex: 2, width: '100%', marginLeft: 4 })}>
         {value !== null && (
           <UsedKnob
             value={value}

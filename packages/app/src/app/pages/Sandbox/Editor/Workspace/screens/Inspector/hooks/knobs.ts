@@ -57,6 +57,12 @@ export function useInspectorKnobs(inspectorStateService: EditorInspectorState) {
             setSelectedProps(event.instanceData.props);
           })
         );
+
+        toDispose.push(
+          selectedInstance.didComponentDataChange(event => {
+            setComponentInfo(event.componentData);
+          })
+        );
       }
     },
     [selectedInstance]

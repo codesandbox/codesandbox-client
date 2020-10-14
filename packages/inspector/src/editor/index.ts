@@ -188,6 +188,7 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
         location.codePosition
       )
     );
+
     if (!componentInstance) {
       throw new Error(
         `Cannot find a component instance at ${stringifyCodeRange(
@@ -200,7 +201,13 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
       return this.selectedInstance;
     }
 
+    if (this.selectedInstance) {
+      this.selectedInstance.unselect();
+    }
+
     this.selectedInstance = componentInstance;
+    this.selectedInstance.select();
+
     this.selectionChangedEmitter.fire(componentInstance);
 
     return componentInstance;
@@ -279,6 +286,7 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
             !instances[i] ||
             instances[i].name !== inst.getInstanceInformation().name
         );
+
       if (orderChanged) {
         // If order changes we're going to reinitialize everything and do a best effort of getting
         // our last selection back
@@ -306,7 +314,7 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
             .get(path)!
             .find(
               instance =>
-                isSameStart(
+                containsRange(
                   instance.codePosition,
                   currentSelection.codePosition
                 ) && instance.getName() === currentSelection.getName()
@@ -316,8 +324,23 @@ export class EditorInspectorState extends Disposable implements IEditorProxy {
           this.selectionChangedEmitter.fire(this.selectedInstance);
         }
       } else {
+        const fibersInFile = [...this.fibers.values()].filter(
+          fiber => fiber.location.path === path
+        );
         instances.forEach((inst, i) => {
-          existingInstances[i].updateModel(inst);
+          const existingInstance = existingInstances[i];
+          const fiber = fibersInFile.find(f =>
+            containsRange(
+              existingInstance.originalCodePosition,
+              f.location.codePosition
+            )
+          );
+
+          existingInstance.updateModel(inst);
+
+          if (fiber) {
+            fiber.location.codePosition = existingInstance.codePosition;
+          }
         });
       }
     } else {

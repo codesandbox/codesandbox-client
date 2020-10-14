@@ -34,8 +34,6 @@ export const Knobs = ({ inspectorStateService }: KnobsProps) => {
     }
   );
 
-  console.log({ setProps, unsetProps });
-
   return (
     <Collapsible defaultOpen title={`Knobs (${name || 'Anonymous'})`}>
       <Stack
@@ -44,56 +42,38 @@ export const Knobs = ({ inspectorStateService }: KnobsProps) => {
         paddingY={3}
         style={{ marginTop: -16 }}
       >
-        <AnimateSharedLayout>
-          <Stack paddingX={3} gap={2} direction="vertical">
-            {sortBy(setProps, 'name').map(propsSourceInformation => {
-              const instancePropInfo = selectedProps[
-                propsSourceInformation.name
-              ]!;
+        <Stack paddingX={3} gap={2} direction="vertical">
+          {sortBy(setProps, 'name').map(propsSourceInformation => {
+            const instancePropInfo = selectedProps[
+              propsSourceInformation.name
+            ]!;
 
-              return (
-                <motion.div
-                  style={{ width: '100%' }}
-                  key={id + propsSourceInformation.name}
-                  layoutId={id + propsSourceInformation.name}
-                  layout
-                >
-                  <BaseKnob
-                    disabled={!instancePropInfo}
-                    name={propsSourceInformation.name}
-                    propInfo={propsSourceInformation}
-                    componentInstance={selectedInstance}
-                  />
-                </motion.div>
-              );
-            })}
-          </Stack>
-        </AnimateSharedLayout>
+            return (
+              <BaseKnob
+                key={propsSourceInformation.name}
+                disabled={!instancePropInfo}
+                name={propsSourceInformation.name}
+                propInfo={propsSourceInformation}
+                componentInstance={selectedInstance}
+              />
+            );
+          })}
+        </Stack>
 
-        <AnimateSharedLayout>
-          <Stack paddingX={1} direction="vertical">
-            {sortBy(unsetProps, 'name').map(propsSourceInformation => {
-              return (
-                <motion.div
-                  style={{ width: '100%' }}
-                  key={id + propsSourceInformation.name}
-                  layoutId={id + propsSourceInformation.name}
-                  layout
-                >
-                  <UnusedKnob
-                    onClick={async () => {
-                      await selectedInstance.addProp(
-                        propsSourceInformation.name
-                      );
-                    }}
-                    propName={propsSourceInformation.name || ''}
-                    propType={propsSourceInformation.typeInfo?.type || null}
-                  />
-                </motion.div>
-              );
-            })}
-          </Stack>
-        </AnimateSharedLayout>
+        <Stack paddingX={1} direction="vertical">
+          {sortBy(unsetProps, 'name').map(propsSourceInformation => {
+            return (
+              <UnusedKnob
+                key={propsSourceInformation.name}
+                onClick={async () => {
+                  await selectedInstance.addProp(propsSourceInformation.name);
+                }}
+                propName={propsSourceInformation.name || ''}
+                propType={propsSourceInformation.typeInfo?.type || null}
+              />
+            );
+          })}
+        </Stack>
       </Stack>
     </Collapsible>
   );

@@ -1,3 +1,4 @@
+import { throwStatement } from '@babel/types';
 import { EditorInspectorState } from '.';
 import {
   CodeRange,
@@ -6,7 +7,7 @@ import {
   StaticComponentInformation,
 } from '../common/fibers';
 import { ISandboxProxy } from '../common/proxies';
-import { Disposable } from '../common/rpc/disposable';
+import { Disposable, IDisposable } from '../common/rpc/disposable';
 import { Emitter, Event } from '../common/rpc/event';
 import { IEditorInterface, IModel } from './editor-api';
 import {
@@ -101,8 +102,13 @@ export type InstanceDataChangedEvent = {
   instanceData: ComponentInstanceData;
 };
 
+export type ComponentDataChangedEvent = {
+  componentData: StaticComponentInformation | undefined;
+};
+
 export interface IComponentInstanceModel {
   didInstanceDataChange: Event<InstanceDataChangedEvent>;
+  didComponentDataChange: Event<ComponentDataChangedEvent>;
 
   getId(): string;
   getName(): string;
@@ -126,9 +132,15 @@ export interface IComponentInstanceModel {
 export class ComponentInstanceModel
   extends Disposable
   implements IComponentInstanceModel {
-  componentInfo: StaticComponentInformation | undefined;
-  codePosition: CodeRange;
+  private componentInfo: StaticComponentInformation | undefined;
+  public codePosition: CodeRange;
+  /**
+   * The code position that it got when initializing, this one is not optimistically updated,
+   * only on full updates or when newly initialized;
+   */
+  public originalCodePosition: CodeRange;
   private subscription: SpanSubscription;
+
   props: {
     [key: string]: InstanceProp;
   };
@@ -137,6 +149,11 @@ export class ComponentInstanceModel
     InstanceDataChangedEvent
   >();
   public didInstanceDataChange = this.didInstanceDataChangeEmitter.event;
+
+  private didComponentDataChangeEmitter = new Emitter<
+    ComponentDataChangedEvent
+  >();
+  public didComponentDataChange = this.didComponentDataChangeEmitter.event;
 
   constructor(
     private instanceData: ComponentInstanceData,
@@ -159,6 +176,7 @@ export class ComponentInstanceModel
     });
 
     this.codePosition = instanceData.location.codePosition;
+    this.originalCodePosition = instanceData.location.codePosition;
     this.toDispose.push(
       model.onWillDispose(() => {
         this.dispose();
@@ -187,11 +205,11 @@ export class ComponentInstanceModel
     return this.instanceData.name;
   }
 
-  getInstanceProp(name: string) {
+  public getInstanceProp(name: string) {
     return this.props[name];
   }
 
-  getInstanceInformation() {
+  public getInstanceInformation() {
     return this.instanceData;
   }
 
@@ -211,12 +229,17 @@ export class ComponentInstanceModel
       exportName
     );
 
+    this.didComponentDataChangeEmitter.fire({
+      componentData: this.componentInfo,
+    });
+
     return this.componentInfo;
   }
 
   updateModel(instance: ComponentInstanceData) {
     this.instanceData = instance;
     this.codePosition = instance.location.codePosition;
+    this.originalCodePosition = instance.location.codePosition;
 
     Object.keys(instance.props).forEach(prop => {
       const existingPropInstance = this.props[prop];
@@ -240,6 +263,34 @@ export class ComponentInstanceModel
     });
 
     this.didInstanceDataChangeEmitter.fire({ instanceData: instance });
+  }
+
+  private componentModelListener: ComponentInfoModelListener | undefined;
+
+  public async select() {
+    const componentInfo =
+      this.componentInfo || (await this.getComponentInformation());
+    if (!componentInfo) {
+      return;
+    }
+
+    /**
+     * Listen to changes to the component definition
+     */
+    this.componentModelListener = new ComponentInfoModelListener(
+      this.editorApi,
+      componentInfo.path
+    );
+    this.componentModelListener.componentInfoDidChange(() => {
+      this.getComponentInformation();
+    });
+    this.toDispose.push(this.componentModelListener);
+  }
+
+  public unselect() {
+    if (this.componentModelListener) {
+      this.componentModelListener.dispose();
+    }
   }
 
   public async setFiberProp(name: string, value: any) {
@@ -274,5 +325,48 @@ export class ComponentInstanceModel
     }
     const newCode = addProp(currentComponentCode, name, initializerType);
     this.subscription.setContent(newCode);
+  }
+}
+
+class ComponentInfoModelListener extends Disposable {
+  private componentInfoDidChangeEmitter = new Emitter<void>();
+  public componentInfoDidChange = this.componentInfoDidChangeEmitter.event;
+
+  constructor(private editorApi: IEditorInterface, path: string) {
+    super();
+
+    const model = this.editorApi
+      .getModels()
+      .find(model => model.getResource().path === path);
+
+    if (model) {
+      this.listenToModel(model);
+    }
+
+    this.toDispose.push(
+      this.editorApi.onModelAdded(event => {
+        if (event.model.getResource().path === path) {
+          this.listenToModel(event.model);
+        }
+      })
+    );
+  }
+
+  private componentModelListener: IDisposable | undefined;
+  listenToModel(model: IModel) {
+    if (this.componentModelListener) {
+      this.componentModelListener.dispose();
+    }
+
+    const disposable = model.onDidChangeContent(() => {
+      // Wait for the other event listeners to finish first. As one of those will send
+      // the new contents to the analyzer, which we then can use to ask for new info.
+      setTimeout(() => {
+        this.componentInfoDidChangeEmitter.fire();
+      }, 0);
+    });
+
+    this.componentModelListener = disposable;
+    this.toDispose.push(this.componentModelListener);
   }
 }

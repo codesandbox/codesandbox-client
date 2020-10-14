@@ -1,6 +1,5 @@
 import ts from 'typescript';
-import * as tsutils from 'tsutils';
-import { StaticComponentInformation } from '../../../fibers';
+import { StaticComponentInformation, StaticPropInfo } from '../../../fibers';
 
 function getComponentDocumentation(
   exportSymbol: ts.Symbol,
@@ -12,9 +11,13 @@ function getComponentDocumentation(
 function getFunctionPropInfo(
   declaration: ts.FunctionDeclaration,
   typeChecker: ts.TypeChecker
-) {
+): StaticPropInfo[] {
   const parameters = declaration.parameters;
   const propsParam = parameters[0];
+
+  if (!propsParam) {
+    return [];
+  }
 
   const defaults: {
     [prop: string]: {
@@ -87,6 +90,7 @@ function getFunctionPropInfo(
 
 export function analyzeComponent(
   sourceFile: ts.SourceFile,
+  path: string,
   exportName: string,
   typeChecker: ts.TypeChecker
 ): StaticComponentInformation | undefined {
@@ -107,6 +111,7 @@ export function analyzeComponent(
 
   if (ts.isFunctionDeclaration(declaration)) {
     const componentInfo: StaticComponentInformation = {
+      path,
       name: declaration.name?.text || 'Anonymous',
       descriptions: getComponentDocumentation(foundExportSymbol, typeChecker),
       jsdocTags: foundExportSymbol.getJsDocTags(),

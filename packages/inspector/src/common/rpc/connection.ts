@@ -1,6 +1,7 @@
 import { dispatch, listen } from 'codesandbox-api';
 import { Event, Emitter } from './event';
 import { Disposable } from './disposable';
+import { Deferred } from './deferred';
 
 export interface IConnection {
   send(message: any): void;
@@ -37,9 +38,10 @@ export class CodeSandboxAPIConnection
 }
 
 export class MainWorkerConnection extends Disposable implements IConnection {
-  workerInstance: Worker;
-  emitter = new Emitter();
-  onReceive = this.emitter.event;
+  private workerInstance: Worker;
+  private emitter = new Emitter();
+  private readyDeferred = new Deferred<void>();
+  public onReceive = this.emitter.event;
 
   constructor(workerClass: () => Worker) {
     super();
@@ -60,7 +62,11 @@ export class MainWorkerConnection extends Disposable implements IConnection {
 
   onMessage = (message: MessageEvent<unknown>) => {
     if (typeof message.data === 'string') {
-      this.emitter.fire(message.data);
+      if (message.data === 'ready') {
+        this.readyDeferred.resolve();
+      } else {
+        this.emitter.fire(message.data);
+      }
     } else {
       self.postMessage(message.data);
     }
@@ -71,7 +77,9 @@ export class MainWorkerConnection extends Disposable implements IConnection {
       return;
     }
 
-    this.workerInstance.postMessage(message);
+    this.readyDeferred.promise.then(() => {
+      this.workerInstance.postMessage(message);
+    });
   }
 
   dispose() {
