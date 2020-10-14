@@ -142,6 +142,19 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('can handle block scopes', () => {
+    const code = `
+    import{makeRect as t,getOppositeSide as e,getCollisions as n}from"@interop-ui/utils";
+
+    if (true) {
+      let e = c;
+    }
+    e();
+
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('handles export mutations', () => {
     const code = `
       export default function test() {}
