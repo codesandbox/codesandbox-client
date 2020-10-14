@@ -509,6 +509,20 @@ describe('convert-esmodule', () => {
     expect(result.indexOf('function a')).toBeGreaterThan(result.indexOf('./b'));
   });
 
+  it('keeps star exports after default export order', () => {
+    const code = `
+    export { default as withSearch } from "./withSearch";
+    export { default as WithSearch } from "./WithSearch";
+    export { a } from './test';
+    export * from "./containers";
+    `;
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+    expect(result.indexOf('./containers')).toBeGreaterThan(
+      result.indexOf('./withSearch')
+    );
+  });
+
   it('hoists function exports', () => {
     const code = `
     export { test, test2 } from './test/store.js';

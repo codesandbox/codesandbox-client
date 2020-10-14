@@ -39,6 +39,7 @@ Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
 var $csb__some = require(\\"./some.js\\");
+var $csb__some_ = $_csb__interopRequireDefault(require(\\"./some.js\\"));
 Object.defineProperty(exports, \\"some\\", {
   enumerable: true,
   configurable: true,
@@ -46,7 +47,6 @@ Object.defineProperty(exports, \\"some\\", {
     return $csb__some_.default;
   }
 });
-var $csb__some_ = $_csb__interopRequireDefault(require(\\"./some.js\\"));
 Object.keys($csb__some).forEach(function (key) {
   if (key === \\"default\\" || key === \\"__esModule\\") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
@@ -394,6 +394,7 @@ exports[`convert-esmodule handles default as exports 1`] = `
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
+var $csb__Field = $_csb__interopRequireDefault(require(\\"./Field\\"));
 Object.defineProperty(exports, \\"Field\\", {
   enumerable: true,
   configurable: true,
@@ -401,7 +402,6 @@ Object.defineProperty(exports, \\"Field\\", {
     return $csb__Field.default;
   }
 });
-var $csb__Field = $_csb__interopRequireDefault(require(\\"./Field\\"));
 function $_csb__interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     default: obj
@@ -704,6 +704,55 @@ exports[`convert-esmodule keeps import order 1`] = `
 "\\"use strict\\";
 var $csb__1 = require(\\"1\\");
 var $csb__2 = require(\\"2\\");
+"
+`;
+
+exports[`convert-esmodule keeps star exports after default export order 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var $csb__withSearch = $_csb__interopRequireDefault(require(\\"./withSearch\\"));
+Object.defineProperty(exports, \\"withSearch\\", {
+  enumerable: true,
+  configurable: true,
+  get: function $csbGet() {
+    return $csb__withSearch.default;
+  }
+});
+var $csb__WithSearch = $_csb__interopRequireDefault(require(\\"./WithSearch\\"));
+Object.defineProperty(exports, \\"WithSearch\\", {
+  enumerable: true,
+  configurable: true,
+  get: function $csbGet() {
+    return $csb__WithSearch.default;
+  }
+});
+var $csb__test = require(\\"./test\\");
+Object.defineProperty(exports, \\"a\\", {
+  enumerable: true,
+  configurable: true,
+  get: function $csbGet() {
+    return $csb__test.a;
+  }
+});
+var $csb__containers = require(\\"./containers\\");
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+Object.keys($csb__containers).forEach(function (key) {
+  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (Object.prototype.hasOwnProperty.call(exports, key)) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    configurable: true,
+    get: function $csbGet() {
+      return $csb__containers[key];
+    }
+  });
+});
 "
 `;
 

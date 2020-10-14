@@ -155,21 +155,24 @@ export function convertEsModule(
           // In this case there's a default re-export. So we need to wrap it in a interopRequireDefault to make sure
           // that default is exposed.
           addDefaultInterop();
-          program.body[i] = generateInteropRequireExpression(
-            {
-              type: n.CallExpression,
-              callee: {
-                type: n.Identifier,
-                name: 'require',
-              },
-              arguments: [
-                {
-                  type: n.Literal,
-                  value: source.value,
+          addNodeInImportSpace(
+            i,
+            generateInteropRequireExpression(
+              {
+                type: n.CallExpression,
+                callee: {
+                  type: n.Identifier,
+                  name: 'require',
                 },
-              ],
-            },
-            varName
+                arguments: [
+                  {
+                    type: n.Literal,
+                    value: source.value,
+                  },
+                ],
+              },
+              varName
+            )
           );
         } else {
           addNodeInImportSpace(
@@ -486,7 +489,7 @@ export function convertEsModule(
     });
 
     // A second pass where we rename all references to imports that were marked before.
-    const scopeManager = escope.analyze(program, {ecmaVersion: 6});
+    const scopeManager = escope.analyze(program, { ecmaVersion: 6 });
 
     scopeManager.acquire(program);
     scopeManager.scopes.forEach(scope => {
