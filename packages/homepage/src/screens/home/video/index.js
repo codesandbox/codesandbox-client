@@ -45,7 +45,6 @@ const videoTimesAndText = [
 const Video = () => {
   const video = useRef();
   const [active, setActive] = useState(false);
-  const [errorOnVideoPlayback, setErrorOnVideoPlayback] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [activeTab, setActiveTab] = useState(1);
   useEffect(() => {
@@ -53,12 +52,7 @@ const Video = () => {
       const entryObserver = new IntersectionObserver(
         entries => {
           if (entries[0].isIntersecting === true) {
-            try {
-              video.current.play();
-            } catch (e) {
-              setErrorOnVideoPlayback(true);
-            }
-
+            video.current.play();
             setActive(true);
           }
         },
@@ -161,7 +155,7 @@ const Video = () => {
           width={1024}
           height={592}
           active={active}
-          controls={prefersReducedMotion || errorOnVideoPlayback}
+          controls={prefersReducedMotion}
         />
       </section>
     </motion.div>
