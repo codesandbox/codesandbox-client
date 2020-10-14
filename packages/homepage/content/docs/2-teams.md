@@ -2,8 +2,9 @@
 title: Workspaces
 authors: ['CompuIves']
 description:
-  A workspace makes it easier to collaborate on sandboxes with others. In a workspace you
-  share ownership of the sandboxes so you can all work on them.
+  A workspace makes it easier to collaborate on code with others. In a workspace you share 
+  ownership of sandboxes and templates, and can keep organized with folders, to enable your 
+  entire team to work on sandboxes together.
 ---
 
 ## Creating a Workspace
