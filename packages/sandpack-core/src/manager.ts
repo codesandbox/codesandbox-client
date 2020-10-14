@@ -1245,11 +1245,13 @@ export default class Manager implements IEvaluator {
             tModules[id] = tModule;
           });
 
-          Object.keys(tModules).forEach(id => {
-            const tModule = tModules[id];
+          await Promise.all(
+            Object.keys(tModules).map(id => {
+              const tModule = tModules[id];
 
-            tModule.load(serializedTModules[id], tModules, this);
-          });
+              return tModule.load(serializedTModules[id], tModules, this);
+            })
+          );
           debug(`Loaded cache.`);
         }
       }
