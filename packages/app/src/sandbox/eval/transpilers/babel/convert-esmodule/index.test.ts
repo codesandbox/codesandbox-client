@@ -535,6 +535,25 @@ export function test3() {
     expect(result).toMatchSnapshot();
   });
 
+  it('predefines possible exports', () => {
+    const code = `
+      export const a = 5;
+      export function b() {};
+      export class c {};
+      const d = 5;
+      const e = 5;
+      export { d, e as e1 };
+      export const { f, g: bah } = b();
+      export default function h() {};
+      export default class i {};
+      export { j } from './foo';
+      export { k as l } from './foo';
+      export { m as default } from './foo';
+    `;
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+  });
+
   describe('syntax info', () => {
     it('can detect jsx', () => {
       const code = `const a = <div>Hello</div>`;
