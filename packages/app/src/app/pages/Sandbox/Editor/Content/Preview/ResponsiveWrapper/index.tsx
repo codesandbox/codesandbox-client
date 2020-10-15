@@ -5,6 +5,7 @@ import {
   Input,
   ThemeProvider,
 } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { json } from 'overmind';
 import React, { useEffect, useState } from 'react';
 import { isEqual } from 'lodash-es';
@@ -148,7 +149,11 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
               <Text style={{ userSelect: 'none' }} size={3}>
                 <Input
                   type="number"
-                  style={{ height: 20 }}
+                  css={css({
+                    height: 20,
+                    paddingRight: 0,
+                    '::-webkit-inner-spin-button': { padding: '12px 0' },
+                  })}
                   value={
                     isNaN(resolutionWidth)
                       ? ''
@@ -184,7 +189,11 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
                   ])
                 }
                 type="number"
-                style={{ height: 20 }}
+                css={css({
+                  height: 20,
+                  paddingRight: 0,
+                  '::-webkit-inner-spin-button': { padding: '12px 0' },
+                })}
                 value={
                   isNaN(resolutionHeight)
                     ? ''
@@ -194,7 +203,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
                 }
               />
             </Stack>
-            <Text size={3}>({Math.floor(scale * 100)}%)</Text>
+            <Text size={3}>(0.{Math.floor(scale * 100)}x)</Text>
           </Stack>
           <PresetMenu
             openEditPresets={actions.toggleEditPresets}

@@ -24,16 +24,9 @@ export const PresetMenu = ({
     Object.keys(presets).find(preset => isEqual(presets[preset], resolution)) ||
     'Custom';
 
-  const sortedPresetsByWidth = Object.keys(presets).sort((a, b) => {
-    if (presets[a][0] > presets[b][0]) {
-      return 1;
-    }
-    if (presets[a][0] < presets[b][0]) {
-      return -1;
-    }
-
-    return 0;
-  });
+  const sortedPresetsByWidth = Object.keys(presets).sort((a, b) =>
+    presets[a][0] > presets[b][0] ? 1 : -1
+  );
 
   return (
     <Menu>
