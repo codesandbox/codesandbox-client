@@ -1,4 +1,5 @@
 import React from 'react';
+import css from '@styled-system/css';
 import { isEqual } from 'lodash-es';
 import { Element, Menu, Text } from '@codesandbox/components';
 import { ArrowDown } from './Icons';
@@ -31,11 +32,12 @@ export const PresetMenu = ({
   return (
     <Menu>
       <Menu.Button
-        style={{
-          color: theme['sideBar.foreground'],
+        css={css({
+          color: 'sideBar.foreground',
           display: 'flex',
           alignItems: 'center',
-        }}
+          marginTop: '-3px',
+        })}
       >
         <Text>{activePresetName}</Text>
         <Element marginLeft={1}>

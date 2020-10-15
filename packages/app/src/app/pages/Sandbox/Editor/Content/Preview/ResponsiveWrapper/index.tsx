@@ -4,6 +4,7 @@ import {
   Button,
   Input,
   ThemeProvider,
+  IconButton,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { json } from 'overmind';
@@ -13,7 +14,7 @@ import { isEqual } from 'lodash-es';
 import { useTheme } from 'styled-components';
 import { useOvermind } from 'app/overmind';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { AddIcon, DeleteIcon, SwitchIcon } from './Icons';
+import { SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 import { PresetMenu } from './PresetMenu';
 import {
@@ -116,34 +117,28 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
   return (
     // @ts-ignore
     <ThemeProvider theme={theme.vscodeTheme}>
-      <Wrapper paddingX={6} style={{ display: on ? 'block' : 'none' }}>
+      <Wrapper paddingX={6} css={css({ display: on ? 'block' : 'none' })}>
         <Stack justify="center" paddingY={2} align="center" gap={2}>
           <Stack gap={2} align="center">
             {exists && canChangePresets ? (
-              <Button
-                variant="link"
-                style={{ padding: 0 }}
-                autoWidth
+              <IconButton
+                title="Remove Preset"
+                name="close"
                 onClick={actions.openDeletePresetModal}
-              >
-                <DeleteIcon />
-              </Button>
+              />
             ) : null}
             {!exists && canChangePresets ? (
-              <Button
-                variant="link"
+              <IconButton
                 disabled={
                   isNaN(resolutionWidth) ||
                   resolutionWidth < MIN_SIZE_X ||
                   isNaN(resolutionHeight) ||
                   resolutionHeight < MIN_SIZE_Y
                 }
-                style={{ padding: 0 }}
-                autoWidth
+                title="Add Preset"
+                name="add"
                 onClick={actions.openAddPresetModal}
-              >
-                <AddIcon color={theme['sideBar.foreground']} />
-              </Button>
+              />
             ) : null}
             <Stack align="center" gap={1}>
               <Text style={{ userSelect: 'none' }} size={3}>
@@ -170,7 +165,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
                 />{' '}
               </Text>
               <Button
-                style={{ padding: 0 }}
+                css={css({ padding: 0 })}
                 variant="link"
                 autoWidth
                 onClick={() =>
@@ -203,7 +198,14 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
                 }
               />
             </Stack>
-            <Text size={3}>(0.{Math.floor(scale * 100)}x)</Text>
+            <Text
+              css={css({
+                marginTop: '-3px',
+              })}
+              size={3}
+            >
+              (0.{Math.floor(scale * 100)}x)
+            </Text>
           </Stack>
           <PresetMenu
             openEditPresets={actions.toggleEditPresets}
