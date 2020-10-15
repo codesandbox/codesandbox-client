@@ -107,7 +107,7 @@ export function convertImageReferencesToMarkdownImages(
         // We do not check the full ![](FILE_NAME) signature, only (FILE_NAME)
         // as this is more than enough
         new RegExp('\\(' + metadata.fileName + '\\)', 'ig'),
-        `${reference.resource}`
+        `(${reference.resource})`
       );
     }
 
