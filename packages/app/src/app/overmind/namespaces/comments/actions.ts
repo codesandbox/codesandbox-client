@@ -84,6 +84,7 @@ export const updateComment: AsyncAction<{
         fileName,
         resolution: images[fileName].resolution,
         src: images[fileName].src,
+        url: '', // Typing issue on backend, need the url here
       })),
       userReferences: Object.keys(mentions).map(username => ({
         username,
@@ -511,6 +512,7 @@ export const saveComment: AsyncAction<CommentFragment> = async (
             resolution: (reference.metadata as ImageReferenceMetadata)
               .resolution,
             src: (reference.metadata as ImageReferenceMetadata).url,
+            url: '', // Backend typing issue, need the url here
           });
         }
         return aggr;

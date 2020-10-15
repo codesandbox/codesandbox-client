@@ -203,7 +203,7 @@ export type ImageReference = {
 export type ImageReferenceMetadata = {
   __typename?: 'ImageReferenceMetadata';
   fileName: Scalars['String'];
-  resolution: Array<Maybe<Scalars['Int']>>;
+  resolution: Array<Scalars['Int']>;
   uploadId: Scalars['UUID4'];
   url: Scalars['String'];
 };
