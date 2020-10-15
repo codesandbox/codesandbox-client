@@ -41,7 +41,7 @@ export const HeroWrapper = styled.section`
   min-height: 700px;
 
   ${props => props.theme.breakpoints.md} {
-    min-height: 100vw;
+    min-height: 110vw;
   }
 `;
 

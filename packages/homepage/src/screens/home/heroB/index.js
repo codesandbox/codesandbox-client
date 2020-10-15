@@ -42,45 +42,42 @@ export default () => (
       </SubTitle>
 
       <SandboxButtons>
-        <Sandbox
-          href="/s/new"
-          title="React"
-          style={{ backgroundImage: `url(${react})`, animationDelay: '0.5s' }}
-        />
+        <Sandbox href="/s/new" title="React" style={{ animationDelay: '0.5s' }}>
+          <img src={react} alt="React Template" />
+        </Sandbox>
         <Sandbox
           href="/s/vanilla"
           title="Vanilla"
           style={{
-            backgroundImage: `url(${vanilla})`,
             animationDelay: '0.6s',
           }}
-        />
-        <Sandbox
-          href="/s/vue"
-          title="Vue"
-          style={{ backgroundImage: `url(${vue})`, animationDelay: '0.7s' }}
-        />
+        >
+          <img src={vanilla} alt="Vanilla Template" />
+        </Sandbox>
+        <Sandbox href="/s/vue" title="Vue" style={{ animationDelay: '0.7s' }}>
+          <img src={vue} alt="Vue Template" />
+        </Sandbox>
         <Sandbox
           href="/s/angular"
           title="Angular"
           style={{
-            backgroundImage: `url(${angular})`,
             animationDelay: '0.8s',
           }}
-        />
+        >
+          <img src={angular} alt="angular Template" />
+        </Sandbox>
         <Sandbox
           href="/s/github/codesandbox-app/static-template/tree/master/"
           title="HTML 5"
           style={{
-            backgroundImage: `url(${html})`,
             animationDelay: '0.9s',
           }}
-        />
-        <Sandbox
-          href="/s"
-          title="More"
-          style={{ backgroundImage: `url(${more})`, animationDelay: '1.0s' }}
-        />
+        >
+          <img src={html} alt="HTML Template" />
+        </Sandbox>
+        <Sandbox href="/s" title="More" style={{ animationDelay: '1.0s' }}>
+          <img src={more} alt="More Template" />
+        </Sandbox>
       </SandboxButtons>
 
       <motion.div
