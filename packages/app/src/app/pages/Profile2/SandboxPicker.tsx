@@ -1,7 +1,19 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
-import { Stack, List, ListAction, Text } from '@codesandbox/components';
+import {
+  Stack,
+  List,
+  ListAction,
+  Text,
+  Icon,
+  Grid,
+  Column,
+  IconButton,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
+import { SandboxCard } from './SandboxCard';
+import { FolderCard } from './FolderCard';
+import { SandboxType } from './constants';
 
 export const SandboxPicker: React.FC = () => {
   const {
@@ -9,7 +21,7 @@ export const SandboxPicker: React.FC = () => {
       profile: { collections },
     },
     actions: {
-      profile: { fetchCollections, getSandboxesByPath },
+      profile: { fetchCollections, getSandboxesByPath, addFeaturedSandboxes },
     },
   } = useOvermind();
 
@@ -25,7 +37,7 @@ export const SandboxPicker: React.FC = () => {
 
   return (
     <Stack css={css({ backgroundColor: 'grays.800' })}>
-      <Stack
+      <List
         css={css({
           width: 240,
           borderRight: '1px solid',
@@ -34,41 +46,109 @@ export const SandboxPicker: React.FC = () => {
           paddingY: 4,
         })}
       >
-        <List css={{ width: '100%' }}>
-          {collections.map(collection => (
-            <ListAction
-              key={collection.path}
-              align="center"
-              css={css({ height: 10 })}
-              onClick={() => setPath(collection.path)}
-            >
-              <Text>
-                {collection.path === '/' ? 'All Sandboxes' : collection.path}
-              </Text>
-            </ListAction>
-          ))}
-        </List>
-      </Stack>
+        <ListAction
+          align="center"
+          gap={2}
+          css={css({ height: 10, paddingLeft: 4 })}
+          onClick={() => setPath('/')}
+        >
+          <Icon name="folder" />
+          <Text>All Sandboxes</Text>
+        </ListAction>
+        <SubCollections
+          collections={decorateCollections(collections)}
+          path="/"
+          setPath={setPath}
+        />
+      </List>
 
-      <ul>
+      <Grid
+        rowGap={6}
+        columnGap={6}
+        css={{
+          width: '100%',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+        }}
+      >
         {collections
           .filter(collection => collection.path.startsWith(selectedPath))
           .filter(collection => collection.path !== selectedPath)
           .map(collection => (
-            <li key={collection.path}>
-              <button type="button" onClick={() => setPath(collection.path)}>
-                {collection.path}
-              </button>
-            </li>
+            <Column key={collection.path}>
+              <FolderCard
+                collection={collection}
+                onClick={() => setPath(collection.path)}
+              />
+            </Column>
           ))}
-      </ul>
-      <ul>
         {collections
           .find(collection => collection.path === selectedPath)
           ?.sandboxes.map(sandbox => (
-            <li key={sandbox.id}>{sandbox.title || sandbox.alias}</li>
+            <Column key={sandbox.id}>
+              <SandboxCard
+                type={SandboxType.DEFAULT_SANDBOX}
+                sandbox={sandbox}
+                onClick={() => addFeaturedSandboxes({ sandboxId: sandbox.id })}
+              />
+            </Column>
           ))}
-      </ul>
+        <div />
+        <div />
+      </Grid>
     </Stack>
+  );
+};
+
+const decorateCollections = collections =>
+  collections.map(collection => {
+    const split = collection.path.split('/');
+
+    return {
+      path: collection.path,
+      parent: split.slice(0, -1).join('/') || '/',
+      level: split.length - 2,
+      name: split[split.length - 1],
+    };
+  });
+
+const getSubCollections = (collections, path) =>
+  collections.filter(
+    collection =>
+      collection.parent &&
+      collection.parent === path &&
+      collection.path !== path
+  );
+
+const SubCollections = ({ collections, path, setPath }) => {
+  const subCollections = getSubCollections(collections, path);
+
+  return (
+    <>
+      {subCollections.map(collection => (
+        <>
+          <ListAction
+            key={collection.path}
+            align="center"
+            gap={2}
+            css={css({
+              height: 10,
+              paddingLeft: 8 + 4 * collection.level,
+            })}
+            onClick={() => setPath(collection.path)}
+          >
+            {getSubCollections(collections, collection.path).length ? (
+              <IconButton name="caret" size={8} title="Toggle folders" />
+            ) : null}
+            <Icon name="folder" />
+            <Text>{collection.name}</Text>
+          </ListAction>
+          <SubCollections
+            collections={collections}
+            path={collection.path}
+            setPath={setPath}
+          />
+        </>
+      ))}
+    </>
   );
 };

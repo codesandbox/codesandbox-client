@@ -218,9 +218,12 @@ export const addFeaturedSandboxesInState: Action<{
 
   const sandbox = sandboxesOnPage.find(s => s.id === sandboxId);
 
+  // if it is added from sandbox picker, it's not on page
+  if (!sandbox) return;
+
   state.profile.current.featuredSandboxes = [
     ...state.profile.current.featuredSandboxes,
-    sandbox!,
+    sandbox,
   ];
 };
 

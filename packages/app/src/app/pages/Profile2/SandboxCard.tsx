@@ -23,7 +23,12 @@ export const SandboxCard: React.FC<{
   type?: SandboxType;
   sandbox: Sandbox;
   index?: number | null;
-}> = ({ type = SandboxType.DEFAULT_SANDBOX, sandbox, index = null }) => {
+}> = ({
+  type = SandboxType.DEFAULT_SANDBOX,
+  sandbox,
+  index = null,
+  ...props
+}) => {
   const {
     state: {
       user: loggedInUser,
@@ -227,6 +232,7 @@ export const SandboxCard: React.FC<{
             borderColor: 'blues.600',
           },
         })}
+        {...props}
       >
         <div
           css={css({
@@ -242,8 +248,10 @@ export const SandboxCard: React.FC<{
             borderColor: 'grays.600',
           })}
           style={{
-            backgroundImage: `url(${sandbox.screenshotUrl ||
-              `/api/v1/sandboxes/${sandbox.id}/screenshot.png`})`,
+            backgroundImage: `url(${
+              sandbox.screenshotUrl ||
+              `/api/v1/sandboxes/${sandbox.id}/screenshot.png`
+            })`,
           }}
         />
         <Stack justify="space-between">

@@ -6,7 +6,10 @@ import {
 import { RootState } from 'app/overmind';
 import { derived } from 'overmind';
 
-type ProfileCollection = Pick<Collection, 'id' | 'path' | 'sandboxCount'> & {
+export type ProfileCollection = Pick<
+  Collection,
+  'id' | 'path' | 'sandboxCount'
+> & {
   sandboxes: CollectionSandbox[];
 };
 
