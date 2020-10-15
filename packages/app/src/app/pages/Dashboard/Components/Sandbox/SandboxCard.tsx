@@ -208,39 +208,12 @@ export const SandboxCard = ({
   ...props
 }: SandboxItemComponentProps) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
-  const [guaranteedScreenshotUrl, setGuaranteedScreenshotUrl] = React.useState<
-    string
-  >(screenshotUrl);
-
-  const lastSandboxId = React.useRef(sandbox.id);
-  const imageLoaded = useImageLoaded(guaranteedScreenshotUrl);
-
   React.useEffect(() => {
     // We only want to render the screenshot once the user has stopped scrolling
     if (!isScrolling && !stoppedScrolling) {
       setStoppedScrolling(true);
     }
   }, [isScrolling, stoppedScrolling]);
-
-  React.useEffect(() => {
-    // We always try to show the cached screenshot first, if someone looks at a sandbox we will try to
-    // generate a new one based on the latest contents.
-    const generateScreenshotUrl = `/api/v1/sandboxes/${sandbox.id}/screenshot.png`;
-    if (
-      stoppedScrolling &&
-      (lastSandboxId.current !== sandbox.id || !guaranteedScreenshotUrl)
-    ) {
-      setGuaranteedScreenshotUrl(
-        sandbox.screenshotUrl || generateScreenshotUrl
-      );
-      lastSandboxId.current = sandbox.id;
-    }
-  }, [
-    stoppedScrolling,
-    guaranteedScreenshotUrl,
-    sandbox.id,
-    sandbox.screenshotUrl,
-  ]);
 
   return (
     <Stack
@@ -268,32 +241,12 @@ export const SandboxCard = ({
         },
       })}
     >
-      <div
-        ref={thumbnailRef}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '160px',
-          backgroundColor: '#242424',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat',
-          borderBottom: '1px solid',
-          borderColor: '#242424',
-          [imageLoaded
-            ? 'backgroundImage'
-            : null]: `url(${guaranteedScreenshotUrl})`,
-        }}
-      >
-        {imageLoaded ? null : (
-          <TemplateIcon
-            style={{ filter: 'grayscale(1)', opacity: 0.1 }}
-            width="60"
-            height="60"
-          />
-        )}
-      </div>
+      <Thumbnail
+        sandboxId={sandbox.id}
+        thumbnailRef={thumbnailRef}
+        TemplateIcon={TemplateIcon}
+        screenshotUrl={screenshotUrl}
+      />
       <div
         style={{
           position: 'absolute',
@@ -309,7 +262,6 @@ export const SandboxCard = ({
       >
         <TemplateIcon width="16" height="16" />
       </div>
-
       <SandboxTitle
         originalGit={sandbox.originalGit}
         prNumber={sandbox.prNumber}
@@ -325,7 +277,6 @@ export const SandboxCard = ({
         newTitle={newTitle}
         sandboxTitle={sandboxTitle}
       />
-
       <SandboxStats
         noDrag={noDrag}
         lastUpdated={lastUpdated}
@@ -333,6 +284,66 @@ export const SandboxCard = ({
         sandboxLocation={sandboxLocation}
       />
     </Stack>
+  );
+};
+
+const Thumbnail = ({
+  sandboxId,
+  thumbnailRef,
+  TemplateIcon,
+  screenshotUrl,
+}) => {
+  // 0. Use template icon as starting point and fallback
+  // 1. Use screenshotUrl if can be successfully loaded
+  // 2. After timeout, fetch latest screenshot. if successfully loaded, switch
+  const SCREENSHOT_TIMEOUT = 5000;
+
+  const [latestScreenshotUrl, setLatestScreenshotUrl] = React.useState(null);
+
+  const screenshotUrlLoaded = useImageLoaded(screenshotUrl);
+  const latestScreenshotUrlLoaded = useImageLoaded(latestScreenshotUrl);
+
+  let screenshotToUse: string;
+  if (latestScreenshotUrlLoaded) screenshotToUse = latestScreenshotUrl;
+  else if (screenshotUrlLoaded) screenshotToUse = screenshotUrl;
+
+  React.useEffect(
+    function lazyLoadLatestScreenshot() {
+      const timer = window.setTimeout(() => {
+        const url = `https://codesandbox.io/api/v1/sandboxes/${sandboxId}/screenshot.png`;
+        setLatestScreenshotUrl(url);
+      }, SCREENSHOT_TIMEOUT);
+
+      return () => window.clearTimeout(timer);
+    },
+    [sandboxId, setLatestScreenshotUrl]
+  );
+
+  return (
+    <div
+      ref={thumbnailRef}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '160px',
+        backgroundColor: '#242424',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+        borderBottom: '1px solid',
+        borderColor: '#242424',
+        [screenshotToUse ? 'backgroundImage' : null]: `url(${screenshotToUse})`,
+      }}
+    >
+      {!screenshotUrlLoaded && (
+        <TemplateIcon
+          style={{ filter: 'grayscale(1)', opacity: 0.1 }}
+          width="60"
+          height="60"
+        />
+      )}
+    </div>
   );
 };
 
