@@ -246,6 +246,7 @@ export const SandboxCard = ({
         thumbnailRef={thumbnailRef}
         TemplateIcon={TemplateIcon}
         screenshotUrl={screenshotUrl}
+        screenshotOutdated={sandbox.screenshotOutdated}
       />
       <div
         style={{
@@ -292,10 +293,11 @@ const Thumbnail = ({
   thumbnailRef,
   TemplateIcon,
   screenshotUrl,
+  screenshotOutdated,
 }) => {
   // 0. Use template icon as starting point and fallback
-  // 1. Use screenshotUrl if can be successfully loaded
-  // 2. After timeout, fetch latest screenshot. if successfully loaded, switch
+  // 1. se sandbox.screenshotUrl if it can be successfully loaded (might not exist)
+  // 2. If screenshot is outdated, lazily load a newer screenshot. Switch when image loaded.
   const SCREENSHOT_TIMEOUT = 5000;
 
   const [latestScreenshotUrl, setLatestScreenshotUrl] = React.useState(null);
@@ -310,13 +312,14 @@ const Thumbnail = ({
   React.useEffect(
     function lazyLoadLatestScreenshot() {
       const timer = window.setTimeout(() => {
+        if (!screenshotOutdated) return;
         const url = `https://codesandbox.io/api/v1/sandboxes/${sandboxId}/screenshot.png`;
         setLatestScreenshotUrl(url);
       }, SCREENSHOT_TIMEOUT);
 
       return () => window.clearTimeout(timer);
     },
-    [sandboxId, setLatestScreenshotUrl]
+    [sandboxId, screenshotOutdated, setLatestScreenshotUrl]
   );
 
   return (
