@@ -509,6 +509,20 @@ describe('convert-esmodule', () => {
     expect(result.indexOf('function a')).toBeGreaterThan(result.indexOf('./b'));
   });
 
+  it('keeps star exports after default export order', () => {
+    const code = `
+    export { default as withSearch } from "./withSearch";
+    export { default as WithSearch } from "./WithSearch";
+    export { a } from './test';
+    export * from "./containers";
+    `;
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+    expect(result.indexOf('./containers')).toBeGreaterThan(
+      result.indexOf('./withSearch')
+    );
+  });
+
   it('hoists function exports', () => {
     const code = `
     export { test, test2 } from './test/store.js';
@@ -517,6 +531,25 @@ export function test3() {
 }
     `;
 
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('predefines possible exports', () => {
+    const code = `
+      export const a = 5;
+      export function b() {};
+      export class c {};
+      const d = 5;
+      const e = 5;
+      export { d, e as e1 };
+      export const { f, g: bah } = b();
+      export default function h() {};
+      export default class i {};
+      export { j } from './foo';
+      export { k as l } from './foo';
+      export { m as default } from './foo';
+    `;
     const result = convertEsModule(code);
     expect(result).toMatchSnapshot();
   });
