@@ -28,6 +28,10 @@ const Homepage = () => (
         margin-bottom: 8rem;
         max-width: 100vw;
         overflow-x: hidden;
+
+        ${props => props.theme.breakpoints.md} {
+          overflow: visible;
+        }
       `}
     >
       <HeroB />

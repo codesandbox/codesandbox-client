@@ -39,6 +39,10 @@ export const HeroWrapper = styled.section`
   overflow: hidden;
   padding: 0 2rem;
   min-height: 700px;
+
+  ${props => props.theme.breakpoints.md} {
+    min-height: 100vw;
+  }
 `;
 
 export const StyledEditorLink = styled.a`
@@ -129,6 +133,10 @@ export const SandboxButtons = styled.section`
   width: auto;
   margin: 5rem 0;
   transition: all 200ms ease-in;
+
+  justify-content: center;
+  display: flex;
+  align-items: center;
 `;
 
 export const Sandbox = styled.a`
@@ -173,6 +181,9 @@ export const Sandbox = styled.a`
   @media screen and (min-width: 768px) {
     width: 4rem;
     height: 4rem;
+  }
+
+  @media screen and (min-width: 1024px) {
     margin: 0 2rem;
   }
 `;

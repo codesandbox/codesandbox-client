@@ -28,6 +28,8 @@ export default () => (
         position: 'absolute',
         top: '15%',
         textAlign: 'center',
+        maxWidth: '80%',
+        margin: 'auto',
       }}
     >
       <Title>Quickly prototype ideas with code</Title>

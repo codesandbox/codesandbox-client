@@ -34,6 +34,9 @@ export const Tabs = styled.ul`
   justify-content: center;
   list-style: none;
   margin: 0;
+  flex-wrap: wrap;
+  max-width: 80%;
+  margin: auto;
 
   li:last-child {
     padding-left: 13px;
@@ -69,12 +72,21 @@ export const VideoComponent = styled.video`
   transition: all 1.2s cubic-bezier(0.85, 0, 0.15, 1);
   margin-bottom: 230px;
 
+  ${props => props.theme.breakpoints.md} {
+    margin: auto;
+    transform: translateY(20px);
+  }
+
   ${props =>
     props.active &&
     css`
       opacity: 1;
       transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1)
         translateY(230px);
+
+      ${props.theme.breakpoints.md} {
+        transform: translateY(160px);
+      }
     `}
 `;
 

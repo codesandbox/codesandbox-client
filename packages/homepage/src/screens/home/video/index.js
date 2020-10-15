@@ -85,6 +85,10 @@ const Video = () => {
           width: 1024px;
           max-width: 90%;
           margin: auto;
+
+          ${props => props.theme.breakpoints.md} {
+            margin-top: 90px;
+          }
         `}
       >
         <TabsWrapper active={active}>
