@@ -20,7 +20,9 @@ export const Image = props => {
         onClick={() => setModalOpen(true)}
         css={css({
           maxWidth: '100%',
+          maxHeight: '100%',
           border: 'none',
+          height: 'auto',
         })}
       >
         <img
