@@ -114,6 +114,10 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
     )
   );
 
+  useEffect(() => {
+    actions.checkURLParameters();
+  }, []);
+
   return (
     // @ts-ignore
     <ThemeProvider theme={theme.vscodeTheme}>

@@ -3,29 +3,60 @@ import { isEqual } from 'lodash-es';
 import { json } from 'overmind';
 import { Presets, defaultPresets } from './state';
 
-export const toggleResponsiveMode: AsyncAction = async ({ state, actions }) => {
+export const toggleResponsiveMode: AsyncAction = async ({
+  state,
+  actions,
+  effects,
+}) => {
+  const newUrl = new URL(document.location.href);
   if (state.preview.mode === 'responsive') {
     state.preview.mode = null;
+    newUrl.searchParams.delete('resolutionWidth');
+    newUrl.searchParams.delete('resolutionHeight');
   } else {
     state.preview.mode = 'responsive';
+
+    newUrl.searchParams.set(
+      'resolutionWidth',
+      state.preview.responsive.resolution[0].toString()
+    );
+    newUrl.searchParams.set(
+      'resolutionHeight',
+      state.preview.responsive.resolution[1].toString()
+    );
+
     if (!state.editor.workspaceConfig) {
       actions.files.updateWorkspaceConfig({
         'responsive-preview': defaultPresets,
       });
     }
   }
+  if (newUrl) {
+    effects.router.replace(
+      newUrl.toString().replace(/%2F/g, '/').replace('%3A', ':')
+    );
+  }
 };
 
 export const setResolution: Action<[number, number]> = (
-  { state },
+  { state, effects },
   newResolution
 ) => {
   if (!newResolution) return;
+  const width = Math.round(newResolution[0]);
+  const height = Math.round(newResolution[1]);
 
-  state.preview.responsive.resolution = [
-    Math.round(newResolution[0]),
-    Math.round(newResolution[1]),
-  ];
+  state.preview.responsive.resolution = [width, height];
+
+  const newUrl = new URL(document.location.href);
+  newUrl.searchParams.set('resolutionWidth', width.toString());
+  newUrl.searchParams.set('resolutionHeight', height.toString());
+
+  if (newUrl) {
+    effects.router.replace(
+      newUrl.toString().replace(/%2F/g, '/').replace('%3A', ':')
+    );
+  }
 };
 
 export const openDeletePresetModal: Action = ({ state }) => {
@@ -83,4 +114,17 @@ export const editPresets: AsyncAction<Presets> = async (
   await actions.files.updateWorkspaceConfig({
     'responsive-preview': newPresets,
   });
+};
+
+export const checkURLParameters: Action = ({ effects, actions }) => {
+  const ULRResolutionWidth = effects.router.getParameter('resolutionWidth');
+  const URLResolutionHeight = effects.router.getParameter('resolutionHeight');
+
+  if (URLResolutionHeight && ULRResolutionWidth) {
+    actions.preview.toggleResponsiveMode();
+    actions.preview.setResolution([
+      parseInt(ULRResolutionWidth, 10),
+      parseInt(URLResolutionHeight, 10),
+    ]);
+  }
 };
