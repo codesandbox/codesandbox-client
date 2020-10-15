@@ -19,7 +19,10 @@ import {
 import { CommentWithRepliesFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
-import { convertUserReferencesToMentions } from 'app/overmind/utils/comments';
+import {
+  convertImageReferencesToMarkdownImages,
+  convertUserReferencesToMentions,
+} from 'app/overmind/utils/comments';
 import { motion, useAnimation } from 'framer-motion';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -27,7 +30,7 @@ import { createGlobalStyle } from 'styled-components';
 
 import { AvatarBlock } from '../components/AvatarBlock';
 import { EditComment } from '../components/EditComment';
-import { useCodesandboxMention } from '../hooks/useCodesandboxMention';
+import { useCodesandboxCommentEditor } from '../hooks/useCodesandboxCommentEditor';
 import { Reply, SkeletonReply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
 
@@ -217,9 +220,10 @@ const DialogAddComment: React.FC<{
   onDragHandlerPanEnd: () => void;
 }> = ({ comment, onSave, onDragHandlerPan, onDragHandlerPanEnd }) => {
   const { actions } = useOvermind();
-  const [elements] = useCodesandboxMention({
+  const [elements] = useCodesandboxCommentEditor({
     initialValue: '',
     initialMentions: {},
+    initialImages: {},
     onSubmit: onSave,
     fixed: false,
     props: {
@@ -416,7 +420,12 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
       >
         {!editing ? (
           <Element itemProp="text">
-            <Markdown source={comment.content} />
+            <Markdown
+              source={convertImageReferencesToMarkdownImages(
+                comment.content,
+                comment.references
+              )}
+            />
           </Element>
         ) : (
           <EditComment
@@ -424,11 +433,12 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
             initialMentions={convertUserReferencesToMentions(
               comment.references
             )}
-            onSave={async (newValue, mentions) => {
+            onSave={async (newValue, mentions, images) => {
               await comments.updateComment({
                 commentId: comment.id,
                 content: newValue,
                 mentions,
+                images,
               });
               setEditing(false);
             }}
@@ -629,13 +639,15 @@ const Replies = ({ replies, replyCount, listRef, repliesRenderedCallback }) => {
 
 const AddReply: React.FC<any> = ({ comment, ...props }) => {
   const { actions } = useOvermind();
-  const [elements] = useCodesandboxMention({
+  const [elements] = useCodesandboxCommentEditor({
     initialValue: '',
     initialMentions: {},
-    onSubmit: (value, mentions) => {
+    initialImages: {},
+    onSubmit: (value, mentions, images) => {
       actions.comments.saveNewComment({
         content: value,
         mentions,
+        images,
         parentCommentId: comment.id,
       });
       if (props.onSubmit) props.onSubmit();

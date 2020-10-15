@@ -9,10 +9,16 @@ export const codeReferenceMetadataFragment = gql`
   }
 `;
 
-export const usereferenceMetadataFragment = gql`
+export const userReferenceMetadataFragment = gql`
   fragment UserReferenceMetadata on UserReferenceMetadata {
     username
     userId
+  }
+`;
+
+export const imageReferenceMetadataFragment = gql`
+  fragment ImageReferenceMetadata on ImageReferenceMetadata {
+    fileName
   }
 `;
 
@@ -42,6 +48,9 @@ export const commentFragment = gql`
         ... on CodeReferenceMetadata {
           ...CodeReferenceMetadata
         }
+        ... on ImageReferenceMetadata {
+          ...ImageReferenceMetadata
+        }
       }
       resource
       type
@@ -58,7 +67,8 @@ export const commentFragment = gql`
     replyCount
   }
   ${codeReferenceMetadataFragment}
-  ${usereferenceMetadataFragment}
+  ${userReferenceMetadataFragment}
+  ${imageReferenceMetadataFragment}
 `;
 
 export const commentWithRepliesFragment = gql`
@@ -76,6 +86,9 @@ export const commentWithRepliesFragment = gql`
         }
         ... on CodeReferenceMetadata {
           ...CodeReferenceMetadata
+        }
+        ... on ImageReferenceMetadata {
+          ...ImageReferenceMetadata
         }
       }
       resource
@@ -97,5 +110,6 @@ export const commentWithRepliesFragment = gql`
   }
   ${commentFragment}
   ${codeReferenceMetadataFragment}
-  ${usereferenceMetadataFragment}
+  ${userReferenceMetadataFragment}
+  ${imageReferenceMetadataFragment}
 `;

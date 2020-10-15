@@ -13,6 +13,7 @@ import { css } from '@styled-system/css';
 import { Markdown } from 'app/components/Markdown';
 import { CodeReferenceMetadata, CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
+import { convertImageReferencesToMarkdownImages } from 'app/overmind/utils/comments';
 import React from 'react';
 
 import { AvatarBlock } from './components/AvatarBlock';
@@ -147,7 +148,12 @@ export const Comment = React.memo<{
           })}
         >
           <Text itemProp="text" block css={truncateText} marginBottom={2}>
-            <Markdown source={comment.content} />
+            <Markdown
+              source={convertImageReferencesToMarkdownImages(
+                comment.content,
+                comment.references
+              )}
+            />
           </Text>
           <Text variant="muted" size={2}>
             {getRepliesString(comment.replyCount)}

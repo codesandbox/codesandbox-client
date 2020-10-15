@@ -17,11 +17,14 @@ import {
   CommentChangedSubscription,
   CommentFragment,
   CommentRemovedSubscription,
+  ImageReference,
   UserReference,
   UserReferenceMetadata,
+  ImageReferenceMetadata,
 } from 'app/graphql/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import {
+  convertImagesToImageReferences,
   convertMentionsToMentionLinks,
   convertMentionsToUserReferences,
 } from 'app/overmind/utils/comments';
@@ -46,8 +49,12 @@ export const selectCommentsFilter: Action<CommentsFilterOption> = (
 export const updateComment: AsyncAction<{
   commentId: string;
   mentions: { [username: string]: UserQuery };
+  images: { [fileName: string]: { src: string; resolution: [number, number] } };
   content: string;
-}> = async ({ actions, effects, state }, { commentId, content, mentions }) => {
+}> = async (
+  { actions, effects, state },
+  { commentId, content, mentions, images }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -73,6 +80,11 @@ export const updateComment: AsyncAction<{
       content: comment.content,
       sandboxId,
       codeReferences: [],
+      imageReferences: Object.keys(images).map(fileName => ({
+        fileName,
+        resolution: images[fileName].resolution,
+        src: images[fileName].src,
+      })),
       userReferences: Object.keys(mentions).map(username => ({
         username,
         userId: mentions[username].id,
@@ -395,10 +407,16 @@ export const saveOptimisticComment: AsyncAction<{
 export const saveNewComment: AsyncAction<{
   content: string;
   mentions: { [username: string]: UserQuery };
+  images: {
+    [fileName: string]: {
+      src: string;
+      resolution: [number, number];
+    };
+  };
   parentCommentId?: string;
 }> = async (
   { state, actions },
-  { content: rawContent, mentions, parentCommentId }
+  { content: rawContent, mentions, images, parentCommentId }
 ) => {
   const user = state.user!;
   const sandbox = state.editor.currentSandbox!;
@@ -425,7 +443,10 @@ export const saveNewComment: AsyncAction<{
       username: user.username,
       avatarUrl: user.avatarUrl,
     },
-    references: convertMentionsToUserReferences(mentions),
+    references: [
+      ...convertMentionsToUserReferences(mentions),
+      ...convertImagesToImageReferences(images),
+    ],
     replyCount: 0,
   };
 
@@ -457,9 +478,14 @@ export const saveComment: AsyncAction<CommentFragment> = async (
   async function trySaveComment() {
     tryCount++;
 
-    const { userReferences, codeReferences } = comment.references.reduce<{
+    const {
+      userReferences,
+      codeReferences,
+      imageReferences,
+    } = comment.references.reduce<{
       userReferences: UserReference[];
       codeReferences: CodeReference[];
+      imageReferences: ImageReference[];
     }>(
       (aggr, reference) => {
         if (reference.type === 'user') {
@@ -479,12 +505,20 @@ export const saveComment: AsyncAction<CommentFragment> = async (
                 (reference.metadata as CodeReferenceMetadata).path
             )!.updatedAt,
           });
+        } else if (reference.type === 'image') {
+          aggr.imageReferences.push({
+            fileName: (reference.metadata as ImageReferenceMetadata).fileName,
+            resolution: (reference.metadata as ImageReferenceMetadata)
+              .resolution,
+            src: (reference.metadata as ImageReferenceMetadata).url,
+          });
         }
         return aggr;
       },
       {
         userReferences: [],
         codeReferences: [],
+        imageReferences: [],
       }
     );
     const baseCommentPayload = {
@@ -494,6 +528,7 @@ export const saveComment: AsyncAction<CommentFragment> = async (
       content: comment.content || '',
       userReferences,
       codeReferences,
+      imageReferences,
     };
 
     if (comment.anchorReference) {

@@ -6,6 +6,7 @@ import { BackIcon } from '../../icons/Back';
 import { ForwardIcon } from '../../icons/Forward';
 import { ReloadIcon } from '../../icons/Reload';
 import { ResponsivePreview } from '../../icons/ResponsivePreview';
+import { AddPreviewCommentIcon } from '../../icons/AddPreviewComment';
 
 import Tooltip from '../../Tooltip';
 
@@ -74,7 +75,7 @@ function Navigator({
       {togglePreviewComment && (
         <IconWithBackground onClick={togglePreviewComment}>
           <Tooltip delay={0} content="Add Preview Comment">
-            <ResponsivePreview active={isAddingPreviewComment} />
+            <AddPreviewCommentIcon active={isAddingPreviewComment} />
           </Tooltip>
         </IconWithBackground>
       )}
