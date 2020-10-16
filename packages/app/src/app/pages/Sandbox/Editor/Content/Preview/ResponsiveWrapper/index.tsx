@@ -124,14 +124,14 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
       <Wrapper paddingX={6} css={css({ display: on ? 'block' : 'none' })}>
         <Stack justify="center" paddingY={2} align="center" gap={2}>
           <Stack gap={2} align="center">
-            {exists && canChangePresets ? (
+            {exists ? (
               <IconButton
                 title="Remove Preset"
                 name="close"
                 onClick={actions.openDeletePresetModal}
               />
             ) : null}
-            {!exists && canChangePresets ? (
+            {!exists ? (
               <IconButton
                 disabled={
                   isNaN(resolutionWidth) ||

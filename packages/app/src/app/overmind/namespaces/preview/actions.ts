@@ -1,3 +1,4 @@
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Action, AsyncAction } from 'app/overmind';
 import { isEqual } from 'lodash-es';
 import { json } from 'overmind';
@@ -74,6 +75,15 @@ export const toggleEditPresets: Action = ({ state }) => {
 export const deletePreset: AsyncAction = async ({ state, actions }) => {
   const { presets, resolution } = state.preview.responsive;
 
+  const canChangePresets = hasPermission(
+    state.editor.currentSandbox!.authorization,
+    'write_code'
+  );
+
+  if (!canChangePresets) {
+    await actions.editor.forkSandboxClicked({});
+  }
+
   const activePresetName = Object.keys(presets).find(preset =>
     isEqual(presets[preset], resolution)
   );
@@ -81,8 +91,10 @@ export const deletePreset: AsyncAction = async ({ state, actions }) => {
   if (activePresetName) {
     state.preview.responsive.resolution = json(Object.values(presets)[0]);
 
-    const workspaceConfig = state.editor.workspaceConfig!;
-    const presetsCopy = json(workspaceConfig['responsive-preview'] || {});
+    const responsivePreviewConfig = state.editor.workspaceConfig
+      ? state.editor.workspaceConfig['responsive-preview']
+      : defaultPresets;
+    const presetsCopy = json(responsivePreviewConfig || {});
     delete presetsCopy[activePresetName.toString()];
 
     await actions.files.updateWorkspaceConfig({
@@ -98,8 +110,20 @@ export const addPreset: AsyncAction<{
 }> = async ({ state, actions }, { name, width, height }) => {
   if (!name || !width || !height) return;
   state.preview.responsive.resolution = [width, height];
-  const workspaceConfig = state.editor.workspaceConfig!;
-  const presetsCopy = json(workspaceConfig['responsive-preview'] || {});
+
+  const canChangePresets = hasPermission(
+    state.editor.currentSandbox!.authorization,
+    'write_code'
+  );
+
+  if (!canChangePresets) {
+    await actions.editor.forkSandboxClicked({});
+  }
+
+  const responsivePreviewConfig = state.editor.workspaceConfig
+    ? state.editor.workspaceConfig['responsive-preview']
+    : defaultPresets;
+  const presetsCopy = json(responsivePreviewConfig || {});
   presetsCopy[name] = [width, height];
 
   await actions.files.updateWorkspaceConfig({
