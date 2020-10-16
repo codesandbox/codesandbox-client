@@ -66,6 +66,10 @@ export default () => (
 
           > img {
             position: absolute;
+
+            @media screen and (max-width: 768px) {
+              display: none;
+            }
           }
         `}
       >
@@ -224,6 +228,7 @@ export default () => (
           <div
             css={`
               border: 4px solid #242424;
+              width: 102px;
               height: 100%;
               box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.24),
                 0px 8px 4px rgba(0, 0, 0, 0.12);

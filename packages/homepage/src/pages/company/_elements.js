@@ -18,6 +18,9 @@ export const Text = styled.p`
   text-align: center;
   margin: auto;
   margin-bottom: 70px;
+  max-width: 100%;
+  position: relative;
+  z-index: 1;
 `;
 
 export const Investors = styled.div`
