@@ -12,6 +12,10 @@ export const ImageWrapper = styled.div`
     grid-template-columns: repeat(4, 324px);
     justify-content: center;
     transform: rotateX(60deg) rotateY(0deg) rotateZ(39deg) translateY(-14rem) translateX(-3rem);
+
+    @media screen and (max-width: 600px) {
+      transform: rotateX(60deg) rotateY(0deg) rotateZ(39deg) translateY(-44rem) translateX(-6rem);
+    }
 }
 
     > div {
