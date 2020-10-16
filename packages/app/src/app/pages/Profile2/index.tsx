@@ -14,11 +14,11 @@
  * - Page number in url
  * - 404 page
  * - Logged out nav
+ * - Add option to set as header in context menu
  * - Foldable sidebar in picker
  *
  * Bugs:
  * - Sandbox is missing stats in picker
- * - While sandboxes load, we show nothing
  */
 
 import React from 'react';
