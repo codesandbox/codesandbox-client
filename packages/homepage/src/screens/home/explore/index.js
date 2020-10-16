@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from '../../../components/Button';
 import { H2, P } from '../../../components/Typography';
 import SandboxCount from '../../../components/SandboxCount';
@@ -16,39 +16,14 @@ import ten from '../../../assets/images/explore/10.png';
 // import five from '../../../assets/images/explore/5.png';
 // import nine from '../../../assets/images/explore/9.png';
 
-import {
-  ImageWrapper,
-  StylessButton,
-  Image,
-  Iframe,
-  Container,
-} from './elements';
+import { ImageWrapper, StylessButton, Container } from './elements';
 import { WRAPPER_STYLING } from '../../../components/layout';
 
-const Sandbox = ({ id, image }) => {
-  const [clicked, setClicked] = useState(null);
-
-  return (
-    <div>
-      {clicked ? (
-        <Iframe
-          title={id}
-          src={`https://codesandbox.io/embed/${id}?fontsize=14&hidenavigation=1&view=preview&hidedevtools=1`}
-          allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-          sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-        />
-      ) : (
-        <StylessButton
-          onClick={() => setClicked(true)}
-          // href={`https://codesandbox.io/s/${id}`}
-          target="_blank"
-        >
-          <Image src={image} alt={id} />
-        </StylessButton>
-      )}
-    </div>
-  );
-};
+const Sandbox = ({ id, image }) => (
+  <StylessButton href={`https://codesandbox.io/s/${id}`} target="_blank">
+    <img src={image} alt={id} />
+  </StylessButton>
+);
 
 const Experiment = () => (
   <div

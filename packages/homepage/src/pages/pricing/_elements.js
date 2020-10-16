@@ -38,7 +38,6 @@ export const List = styled.ul`
   list-style: none;
   margin: 0;
   font-style: normal;
-  font-size: 1.4rem;
   text-align: left;
   color: ${props => props.theme.homepage.muted};
   margin-top: 30px;

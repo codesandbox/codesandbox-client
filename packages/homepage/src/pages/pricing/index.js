@@ -109,7 +109,7 @@ export default () => (
               text-align: center;
               font-size: 16px;
               max-width: 298px;
-              margin: 30px auto 0 auto;
+              margin: 55px auto 0 auto;
             `}
           >
             Prototype, interview, and collaborate on code with your entire team.

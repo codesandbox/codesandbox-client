@@ -86,6 +86,9 @@ export const VideoComponent = styled.video`
 
       ${props.theme.breakpoints.md} {
         transform: translateY(160px);
+        height: auto;
+        margin-bottom: 310px;
+        margin-top: 200px;
       }
     `}
 `;

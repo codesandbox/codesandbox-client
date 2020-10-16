@@ -23,8 +23,7 @@ export const ImageWrapper = styled.div`
     cursor: pointer;
   }
 
-  img,
-  iframe {
+  img {
     transition: 250ms cubic-bezier(0.05, 0.03, 0.35, 1);
     border-radius: 0.5rem;
     height: 570px;
@@ -56,12 +55,4 @@ export const StylessButton = styled.a`
   padding: 0;
   margin: 0;
   text-decoration: none;
-`;
-
-export const Image = styled.img``;
-
-export const Iframe = styled.iframe`
-  border: 0;
-  border-radius: 4;
-  overflow: hidden;
 `;

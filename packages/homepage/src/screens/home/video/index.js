@@ -152,7 +152,7 @@ const Video = () => {
 
         <VideoComponent
           muted
-          playsinline
+          playsInline
           poster={posterSrc}
           src={videoSrc}
           ref={video}

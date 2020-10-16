@@ -122,7 +122,7 @@ const Careers = ({
               css={`
                 position: absolute;
                 opacity: 0.4;
-                z-index: 0;
+                z-index: -1;
                 width: 100vw;
                 max-width: 100vw;
               `}
@@ -261,7 +261,7 @@ const Careers = ({
                       color: #757575;
                     `}
                   >
-                    Remote (EU timezones)
+                    Remote
                   </span>
                 </Job>
               </Link>
