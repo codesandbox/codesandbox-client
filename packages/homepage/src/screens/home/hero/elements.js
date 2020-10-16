@@ -43,6 +43,10 @@ export const HeroWrapper = styled.section`
   ${props => props.theme.breakpoints.md} {
     min-height: 110vw;
   }
+
+  ${props => props.theme.breakpoints.sm} {
+    min-height: 115vw;
+  }
 `;
 
 export const StyledEditorLink = styled.a`

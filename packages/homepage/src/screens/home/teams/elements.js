@@ -10,6 +10,9 @@ export const List = styled.ul`
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  li {
+    margin-bottom: 2rem;
+  }
 
   li:not(:last-child) {
     margin-right: 5rem;
