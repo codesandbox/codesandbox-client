@@ -52,20 +52,35 @@ export const ApplyButton = styled(Button)`
 
 export const Aside = styled.aside`
   width: 192px;
+  position: sticky;
+  top: 70px;
+  align-self: flex-start;
+
+  @media screen and (max-width: 960px) {
+    display: none;
+  }
   p {
     font-size: 16px;
     line-height: 1.5;
   }
 `;
 
-export const Grid = styled.div`
-  ${({ theme }) => css`
-    grid-template-columns: 1fr 192px;
-    grid-gap: 88px;
-    display: grid;
+export const MobileAside = styled(Aside)`
+  display: none;
+  width: 100%;
+  position: initial;
+  @media screen and (max-width: 960px) {
+    display: block;
+  }
+`;
 
-    ${theme.breakpoints.lg} {
-      grid-template-columns: 1fr;
-    }
-  `};
+export const Grid = styled.div`
+  grid-template-columns: 1fr 192px;
+  grid-gap: 88px;
+  display: grid;
+
+  @media screen and (max-width: 960px) {
+    order: -1;
+    grid-template-columns: 1fr;
+  }
 `;
