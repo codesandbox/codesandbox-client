@@ -8,12 +8,11 @@ import {
   Icon,
   Grid,
   Column,
-  IconButton,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SandboxCard } from './SandboxCard';
 import { FolderCard } from './FolderCard';
-import { SandboxType } from './constants';
+import { SandboxType, ProfileCollectionType } from './constants';
 
 export const SandboxPicker: React.FC = () => {
   const {
@@ -99,19 +98,27 @@ export const SandboxPicker: React.FC = () => {
   );
 };
 
-const decorateCollections = collections =>
+type DecoraratedCollection = ProfileCollectionType & {
+  parent: string;
+  level: number;
+  name: string;
+};
+
+const decorateCollections = (
+  collections: ProfileCollectionType[]
+): DecoraratedCollection[] =>
   collections.map(collection => {
     const split = collection.path.split('/');
 
     return {
-      path: collection.path,
+      ...collection,
       parent: split.slice(0, -1).join('/') || '/',
       level: split.length - 2,
       name: split[split.length - 1],
     };
   });
 
-const getSubCollections = (collections, path) =>
+const getSubCollections = (collections, path: string) =>
   collections.filter(
     collection =>
       collection.parent &&
@@ -136,9 +143,6 @@ const SubCollections = ({ collections, path, setPath }) => {
             })}
             onClick={() => setPath(collection.path)}
           >
-            {getSubCollections(collections, collection.path).length ? (
-              <IconButton name="caret" size={8} title="Toggle folders" />
-            ) : null}
             <Icon name="folder" />
             <Text>{collection.name}</Text>
           </ListAction>

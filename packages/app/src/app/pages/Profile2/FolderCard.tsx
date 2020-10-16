@@ -1,8 +1,12 @@
 import React from 'react';
 import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { ProfileCollectionType } from './constants';
 
-export const FolderCard = ({ collection, ...props }) => (
+export const FolderCard: React.FC<{
+  collection: ProfileCollectionType;
+  onClick: (event: React.MouseEvent<HTMLDivElement>) => void;
+}> = ({ collection, onClick, ...props }) => (
   <Stack
     direction="vertical"
     gap={2}
@@ -20,6 +24,7 @@ export const FolderCard = ({ collection, ...props }) => (
         boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
       },
     })}
+    onClick={onClick}
     {...props}
   >
     <Stack

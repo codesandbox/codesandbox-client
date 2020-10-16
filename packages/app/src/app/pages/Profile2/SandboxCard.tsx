@@ -12,6 +12,7 @@ import {
 import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import css from '@styled-system/css';
 import { Sandbox } from '@codesandbox/common/lib/types';
+import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
 import { ENTER, SPACE, ALT } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { SandboxType, DropTarget } from './constants';
@@ -21,8 +22,9 @@ type DropResult = { name: DropTarget };
 
 export const SandboxCard: React.FC<{
   type?: SandboxType;
-  sandbox: Sandbox;
+  sandbox: Sandbox | SandboxFragmentDashboardFragment;
   index?: number | null;
+  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }> = ({
   type = SandboxType.DEFAULT_SANDBOX,
   sandbox,
@@ -165,6 +167,11 @@ export const SandboxCard: React.FC<{
   }
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (typeof props.onClick === 'function') {
+      props.onClick(event);
+      return;
+    }
+
     // we use on click instead of anchor tag so that safari renders
     // the html5 drag thumbnail instead of text
     if (isTargetInMenu(event)) return;
