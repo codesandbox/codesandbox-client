@@ -143,11 +143,38 @@ class Live {
     return this.connectionPromise;
   }
 
+  private jwtPromise: Promise<string> | undefined;
+  /**
+   * Will return a promise for new jwt token, but if there's already a request
+   * underway it will return the existing promise. This is to prevent spamming
+   * the server with thousands of requests.
+   */
+  private provideJwtCached() {
+    if (!this.jwtPromise) {
+      this.jwtPromise = this.provideJwtToken()
+        .catch(e => {
+          this.jwtPromise = undefined;
+          return Promise.reject(e);
+        })
+        .then(jwt => {
+          setTimeout(() => {
+            // Token expires after 10 seconds, for safety we actually cache the token
+            // for 5 seconds
+            this.jwtPromise = undefined;
+          }, 5000);
+
+          return jwt;
+        });
+    }
+
+    return this.jwtPromise;
+  }
+
   private connectionPromise: Promise<Socket>;
   private async connect(): Promise<Socket> {
     if (!this.socket) {
       const protocol = process.env.LOCAL_SERVER ? 'ws' : 'wss';
-      let jwt = await this.provideJwtToken();
+      let jwt = await this.provideJwtCached();
       const params = () => ({
         guardian_token: jwt,
         client_version: VERSION,
@@ -181,7 +208,7 @@ class Live {
         // Regenerate a new JWT for the reconnect. This can be out of sync or happen more often than needed, but it's important
         // to try multiple times in case there's a connection issue.
         try {
-          const newJwt = await this.provideJwtToken();
+          const newJwt = await this.provideJwtCached();
           jwt = newJwt;
           tries = 0;
         } catch (e) {
