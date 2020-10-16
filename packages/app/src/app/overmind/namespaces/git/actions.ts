@@ -8,10 +8,10 @@ import {
 } from '@codesandbox/common/lib/types';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { debounce, mutate, pipe } from 'overmind';
 
-import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import * as internalActions from './internalActions';
 import { createDiff } from './utils';
 
@@ -220,6 +220,36 @@ export const openSourceSandbox: Action = ({ state, effects }) => {
   effects.router.updateSandboxUrl({ git });
 };
 
+/*
+  Due to us creating new urls when syncing source, we have to move these updates
+  from the source back to the sandbox
+*/
+export const _updateBinaryUploads: AsyncAction<GitChanges> = async (
+  { state, actions },
+  changes
+) => {
+  const binariesToUpdate = changes.added
+    .filter(change => change.encoding === 'base64')
+    .concat(changes.modified.filter(change => change.encoding === 'base64'));
+
+  await Promise.all(
+    binariesToUpdate.map(change => {
+      const module = state.editor.modulesByPath[change.path] as Module;
+      const sourceModule = state.git.sourceModulesByPath[change.path];
+
+      actions.editor.codeChanged({
+        moduleShortid: module.shortid,
+        code: sourceModule.code,
+      });
+      return actions.editor.codeSaved({
+        moduleShortid: module.shortid,
+        code: sourceModule.code,
+        cbID: null,
+      });
+    })
+  );
+};
+
 export const createCommitClicked: AsyncAction = async ({
   state,
   effects,
@@ -262,6 +292,7 @@ export const createCommitClicked: AsyncAction = async ({
     sandbox.originalGit!.commitSha = commit.sha;
     sandbox.originalGitCommitSha = commit.sha;
     await actions.git._loadSourceSandbox();
+    await actions.git._updateBinaryUploads(changes);
     actions.git._setGitChanges();
     state.git.isCommitting = false;
     state.git.title = '';
@@ -338,17 +369,6 @@ export const createPrClicked: AsyncAction = async ({
       changes
     );
 
-    changes.added.forEach(change => {
-      git.sourceModulesByPath[change.path].code = change.content;
-    });
-    changes.modified.forEach(change => {
-      git.sourceModulesByPath[change.path].code = change.content;
-    });
-    changes.deleted.forEach(path => {
-      delete git.sourceModulesByPath[path];
-    });
-    actions.git._setGitChanges();
-
     sandbox.baseGit = {
       ...sandbox.originalGit,
     } as GitInfo;
@@ -363,11 +383,17 @@ export const createPrClicked: AsyncAction = async ({
     sandbox.originalGitCommitSha = pr.commitSha;
     sandbox.prNumber = pr.number;
     git.pr = pr;
-    git.isCreatingPr = false;
+
+    await actions.git._loadSourceSandbox();
+    await actions.git._updateBinaryUploads(changes);
+    actions.git._setGitChanges();
+
     git.title = '';
     git.description = '';
     state.git.conflicts = [];
     state.git.gitState = SandboxGitState.SYNCED;
+
+    git.isCreatingPr = false;
 
     effects.notificationToast.add({
       title: 'Successfully created your PR',
