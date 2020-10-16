@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import Button from '../../../components/Button';
 import { H2, P } from '../../../components/Typography';
 import SandboxCount from '../../../components/SandboxCount';
 import one from '../../../assets/images/explore/1.png';
@@ -16,81 +17,19 @@ import twelve from '../../../assets/images/explore/12.png';
 
 import {
   ImageWrapper,
-  Button,
-  Wrapper,
+  StylessButton,
   Image,
   Iframe,
   itemWidth,
-  viewPortMargin,
-  smallItemHeight,
   Container,
 } from './elements';
 import { WRAPPER_STYLING } from '../../../components/layout';
 
-const Sandbox = ({
-  id,
-  image,
-  big,
-  index = 0,
-  x,
-  y = 0,
-  shouldAnimate,
-  randomizeHeight = true,
-  wrapperWidth,
-}) => {
-  const [clicked] = useState(null);
-  const topOffset = React.useRef(
-    y + (randomizeHeight ? Math.random() * 120 : 0)
-  );
-
-  const element = React.useRef();
-
-  useEffect(() => {
-    let lastRender = Date.now();
-    let isRendering = true;
-
-    const render = () => {
-      const elapsedTime = Date.now() - lastRender;
-      const baseSpeed = shouldAnimate ? 5 : 0.5;
-      const deltaX = (baseSpeed * elapsedTime) / 1000;
-
-      if (element.current) {
-        let currentLeft = parseInt(
-          element.current.style.left.replace('px', ''),
-          10
-        );
-        if (currentLeft <= 0) {
-          currentLeft = wrapperWidth + itemWidth + viewPortMargin;
-        }
-        element.current.style.left = currentLeft - deltaX + 'px';
-      }
-
-      lastRender = Date.now();
-
-      if (isRendering) {
-        requestAnimationFrame(render);
-      }
-    };
-
-    if (element) {
-      render();
-    }
-
-    return () => {
-      isRendering = false;
-    };
-  }, [element, shouldAnimate, wrapperWidth]);
+const Sandbox = ({ id, image, big }) => {
+  const [clicked, setClicked] = useState(null);
 
   return (
-    <Wrapper
-      big={big}
-      index={index}
-      style={{
-        left: itemWidth + x,
-        top: topOffset.current,
-      }}
-      ref={element}
-    >
+    <div>
       {clicked ? (
         <Iframe
           big={big}
@@ -100,200 +39,95 @@ const Sandbox = ({
           sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
         />
       ) : (
-        <Button href={`https://codesandbox.io/s/${id}`} target="_blank">
+        <StylessButton
+          onClick={() => setClicked(true)}
+          // href={`https://codesandbox.io/s/${id}`}
+          target="_blank"
+        >
           <Image big={big} src={image} alt={id} />
-        </Button>
+        </StylessButton>
       )}
-    </Wrapper>
+    </div>
   );
 };
 
-const Experiment = () => {
-  const [hasMouseOver, setMouseOver] = React.useState(false);
-
-  const imageWrapperWidth = itemWidth * 11 + viewPortMargin - 270;
-  return (
-    <>
-      <div style={{ marginTop: '2rem', ...WRAPPER_STYLING }}>
-        <H2>Create Static Sites, Full-stack Web Apps, or Components</H2>
-        <P
-          big
-          muted
-          css={`
-            margin-bottom: 2rem;
-          `}
-        >
-          Explore some of the <SandboxCount />+ sandboxes crafted by our
-          community of creators.
-        </P>
-      </div>
-      <Container>
-        <ImageWrapper
-          width={imageWrapperWidth}
-          onMouseEnter={() => {
-            setMouseOver(true);
-          }}
-          onMouseLeave={() => {
-            setMouseOver(false);
-          }}
-        >
-          <section>
+const Experiment = () => (
+  <div
+    css={`
+      max-height: 100vh;
+      position: relative;
+      overflow: hidden;
+    `}
+  >
+    <div style={{ marginTop: '2rem', ...WRAPPER_STYLING, textAlign: 'center' }}>
+      <H2>Create Static Sites, Full-stack Web Apps, or Components</H2>
+      <P
+        big
+        muted
+        css={`
+          display: block;
+          margin-top: 24px;
+          margin-bottom: 40px;
+          text-align: center;
+        `}
+      >
+        Join a community of creators who’ve crafted <SandboxCount /> sandboxes
+        and counting.
+      </P>
+      <Button
+        style={{
+          padding: '.75rem 2rem',
+          marginBottom: '.5rem',
+          borderRadius: '.25rem',
+        }}
+        href="/s"
+      >
+        Get Started, it’s free
+      </Button>
+    </div>
+    <Container>
+      <ImageWrapper>
+        <section>
+          <div>
+            <Sandbox id="j0y0vpz59" big image={one} />
             <Sandbox
-              onOpenIframe={() => {
-                setMouseOver(true);
-              }}
-              shouldAnimate={!hasMouseOver}
-              index={0}
-              x={(itemWidth + 16) * 0}
-              id="j0y0vpz59"
-              big
-              image={one}
-              wrapperWidth={imageWrapperWidth}
-            />
-            <Sandbox
-              onOpenIframe={() => {
-                setMouseOver(true);
-              }}
-              shouldAnimate={!hasMouseOver}
               index={1}
               x={(itemWidth + 16) * 1}
               id="m7q0r29nn9"
               big
               image={two}
-              wrapperWidth={imageWrapperWidth}
             />
-
+          </div>
+          <div>
+            <Sandbox id="variants-uotor" image={three} />
+            <Sandbox id="ppxnl191zx" image={four} />
+          </div>
+          <div>
+            <Sandbox id="732j6q4620" image={five} />
             <Sandbox
-              onOpenIframe={() => {
-                setMouseOver(true);
-              }}
-              shouldAnimate={!hasMouseOver}
-              index={2}
-              x={(itemWidth + 16) * 2}
-              id="variants-uotor"
-              image={three}
-              randomizeHeight={false}
-              wrapperWidth={imageWrapperWidth}
-            />
-            <Sandbox
-              onOpenIframe={() => {
-                setMouseOver(true);
-              }}
-              shouldAnimate={!hasMouseOver}
-              index={2}
-              x={(itemWidth + 16) * 2}
-              y={smallItemHeight + 16}
-              id="ppxnl191zx"
-              image={four}
-              randomizeHeight={false}
-              wrapperWidth={imageWrapperWidth}
-            />
-
-            <Sandbox
-              onOpenIframe={() => {
-                setMouseOver(true);
-              }}
-              shouldAnimate={!hasMouseOver}
-              index={4}
-              x={(itemWidth + 16) * 3}
-              id="732j6q4620"
-              image={five}
-              wrapperWidth={imageWrapperWidth}
-            />
-            <Sandbox
-              onOpenIframe={() => {
-                setMouseOver(true);
-              }}
-              shouldAnimate={!hasMouseOver}
-              index={5}
-              x={(itemWidth + 16) * 4}
               id="react-three-fiber-untitled-game-i2160"
               big
               image={six}
-              wrapperWidth={imageWrapperWidth}
             />
+          </div>
+          <div>
+            <Sandbox id="ln0mi" big image={seven} />
 
-            <Sandbox
-              onOpenIframe={() => {
-                setMouseOver(true);
-              }}
-              shouldAnimate={!hasMouseOver}
-              index={6}
-              x={(itemWidth + 16) * 5}
-              id="ln0mi"
-              big
-              image={seven}
-              wrapperWidth={imageWrapperWidth}
-            />
+            <Sandbox id="yp21r" big image={eight} />
+          </div>
+          <div>
+            <Sandbox id="2wvzx" big image={nine} />
 
-            <Sandbox
-              onOpenIframe={() => {
-                setMouseOver(true);
-              }}
-              shouldAnimate={!hasMouseOver}
-              index={7}
-              x={(itemWidth + 16) * 6}
-              id="yp21r"
-              big
-              image={eight}
-              wrapperWidth={imageWrapperWidth}
-            />
+            <Sandbox id="prb9t" big image={ten} />
+          </div>
+          <div>
+            <Sandbox id="g1u8u" big image={eleven} />
 
-            <Sandbox
-              onOpenIframe={() => {
-                setMouseOver(true);
-              }}
-              shouldAnimate={!hasMouseOver}
-              index={8}
-              x={(itemWidth + 16) * 7}
-              id="2wvzx"
-              big
-              image={nine}
-              wrapperWidth={imageWrapperWidth}
-            />
-
-            <Sandbox
-              onOpenIframe={() => {
-                setMouseOver(true);
-              }}
-              shouldAnimate={!hasMouseOver}
-              index={9}
-              x={(itemWidth + 16) * 8}
-              id="prb9t"
-              big
-              image={ten}
-              wrapperWidth={imageWrapperWidth}
-            />
-
-            <Sandbox
-              onOpenIframe={() => {
-                setMouseOver(true);
-              }}
-              shouldAnimate={!hasMouseOver}
-              index={10}
-              x={(itemWidth + 16) * 9}
-              id="g1u8u"
-              big
-              image={eleven}
-              wrapperWidth={imageWrapperWidth}
-            />
-
-            <Sandbox
-              onOpenIframe={() => {
-                setMouseOver(true);
-              }}
-              shouldAnimate={!hasMouseOver}
-              index={11}
-              x={(itemWidth + 16) * 10}
-              id="b0ntj"
-              big
-              image={twelve}
-              wrapperWidth={imageWrapperWidth}
-            />
-          </section>
-        </ImageWrapper>
-      </Container>
-    </>
-  );
-};
+            <Sandbox id="b0ntj" big image={twelve} />
+          </div>
+        </section>
+      </ImageWrapper>
+    </Container>
+  </div>
+);
 export default Experiment;

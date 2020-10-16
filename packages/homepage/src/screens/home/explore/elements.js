@@ -1,58 +1,41 @@
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 export const itemWidth = 324;
 export const smallItemHeight = 420;
 export const bigItemHeight = 548;
-export const viewPortMargin = 60;
 
 export const Container = styled.div`
   position: relative;
-  height: 900px;
-
-  ${props => props.theme.breakpoints.md} {
-    transform: scale(0.75, 0.75);
-    transform-origin: 100% 0%;
-    height: 600px;
-  }
-
-  ${props => props.theme.breakpoints.sm} {
-    transform: scale(0.5, 0.5);
-    transform-origin: 100% 0%;
-    height: 340px;
-  }
 `;
 
 export const ImageWrapper = styled.div`
-  position: absolute;
-  margin-top: 2rem;
-  height: 900px;
-  right: 0;
-  top: 0;
-  width: ${props => props.width}px;
-  overflow: hidden;
+  position: relative;
+  transform: translateY(-380px);
+  section {
+    max-width: 100vw;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(320px, 100%));
+    grid-gap: 1rem;
+    justify-content: center;
+    transform: rotateX(60deg) rotateY(0deg) rotateZ(45deg) translateY(0rem)
+      translateX(-0rem);
 
-  margin-left: -${itemWidth + viewPortMargin}px;
-
-  ${props => props.theme.breakpoints.md} {
-    margin-top: 0;
+    > div {
+      display: grid;
+      grid-row-gap: 1rem;
+    }
   }
 
-  > section {
-    display: flex;
-    align-items: center;
-  }
+  img,
+  iframe {
+    transition: 250ms cubic-bezier(0.05, 0.03, 0.35, 1);
+    border-radius: 0.5rem;
+    height: 570px;
+    width: 100%;
 
-  img {
-    cursor: pointer;
-    max-width: initial;
-  }
-
-  div > div {
-    margin-bottom: 2rem;
-  }
-
-  div {
-    margin: 1rem;
+    :hover {
+      transform: scale(1.05);
+    }
   }
 
   &::-webkit-scrollbar {
@@ -70,7 +53,7 @@ export const ImageWrapper = styled.div`
   }
 `;
 
-export const Button = styled.a`
+export const StylessButton = styled.a`
   border: 0;
   background: transparent;
   padding: 0;
@@ -78,53 +61,9 @@ export const Button = styled.a`
   text-decoration: none;
 `;
 
-const floatAnimation = keyframes`
-  0% {
-    transform: translateY(10px);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
-
-  100% {
-    transform: translateY(10px);
-  }
-`;
-
-export const Wrapper = styled.div`
-  transition: 0.3s ease opacity;
-
-  animation: 7s ${floatAnimation} infinite;
-  animation-delay: ${props => (props.index || 0) * 250}ms;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
-
-  will-change: transform;
-  animation-fill-mode: backwards;
-  animation-timing-function: ease;
-
-  position: absolute;
-  left: ${props => props.index * 334}px;
-  top: 0;
-
-  width: ${itemWidth}px;
-  height: ${props =>
-    props.big ? bigItemHeight + 'px' : smallItemHeight + 'px'};
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
 export const Image = styled.img``;
 
 export const Iframe = styled.iframe`
-  width: ${itemWidth}px;
-  height: ${props =>
-    props.big ? bigItemHeight + 'px' : smallItemHeight + 'px'};
   border: 0;
   border-radius: 4;
   overflow: hidden;
