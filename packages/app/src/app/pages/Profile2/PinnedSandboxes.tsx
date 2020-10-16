@@ -14,6 +14,7 @@ export const PinnedSandboxes = () => {
       user: loggedInUser,
       profile: { current: user },
     },
+    actions: { modalOpened },
   } = useOvermind();
 
   const myProfile = loggedInUser?.username === user.username;
@@ -57,7 +58,12 @@ export const PinnedSandboxes = () => {
               transition: (theme: typeof designLanguage) =>
                 `background-color ${theme.speeds[2]}`,
               backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23757575' stroke-width='1' stroke-dasharray='8%2c8' stroke-dashoffset='4' stroke-linecap='square'/%3e%3c/svg%3e");border-radius: 4px;`,
+              ':hover': {
+                cursor: 'pointer',
+                backgroundColor: 'grays.700',
+              },
             })}
+            onClick={() => modalOpened({ modal: 'sandboxPicker' })}
           >
             <Text variant="muted" size={4} weight="medium" align="center">
               Drag your Sandbox here to pin them to your profile

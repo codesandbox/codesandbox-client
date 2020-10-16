@@ -14,6 +14,11 @@
  * - Page number in url
  * - 404 page
  * - Logged out nav
+ * - Foldable sidebar in picker
+ *
+ * Bugs:
+ * - Sandbox is missing stats in picker
+ * - While sandboxes load, we show nothing
  */
 
 import React from 'react';
@@ -36,7 +41,7 @@ import { PinnedSandboxes } from './PinnedSandboxes';
 import { AllSandboxes } from './AllSandboxes';
 import { SearchedSandboxes } from './SearchedSandboxes';
 import { LikedSandboxes } from './LikedSandboxes';
-import { SandboxPicker } from './SandboxPicker';
+
 import { ContextMenu } from './ContextMenu';
 
 export const Profile: React.FunctionComponent<RouteComponentProps<{
@@ -92,9 +97,6 @@ export const Profile: React.FunctionComponent<RouteComponentProps<{
             </Element>
             <Element css={css({ width: ['100%', 'calc(100% - 320px)'] })}>
               <Switch>
-                <Route path="/picker">
-                  <SandboxPicker />
-                </Route>
                 <Route path="/likes">
                   <LikedSandboxes />
                 </Route>
