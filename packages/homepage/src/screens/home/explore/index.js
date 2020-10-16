@@ -5,34 +5,33 @@ import SandboxCount from '../../../components/SandboxCount';
 import one from '../../../assets/images/explore/1.png';
 import two from '../../../assets/images/explore/2.png';
 import three from '../../../assets/images/explore/3.png';
-import four from '../../../assets/images/explore/4.png';
-import five from '../../../assets/images/explore/5.png';
+
 import six from '../../../assets/images/explore/6.png';
 import seven from '../../../assets/images/explore/7.png';
 import eight from '../../../assets/images/explore/8.png';
-import nine from '../../../assets/images/explore/9.png';
+
 import ten from '../../../assets/images/explore/10.png';
-import eleven from '../../../assets/images/explore/11.png';
-import twelve from '../../../assets/images/explore/12.png';
+
+// import four from '../../../assets/images/explore/4.png';
+// import five from '../../../assets/images/explore/5.png';
+// import nine from '../../../assets/images/explore/9.png';
 
 import {
   ImageWrapper,
   StylessButton,
   Image,
   Iframe,
-  itemWidth,
   Container,
 } from './elements';
 import { WRAPPER_STYLING } from '../../../components/layout';
 
-const Sandbox = ({ id, image, big }) => {
+const Sandbox = ({ id, image }) => {
   const [clicked, setClicked] = useState(null);
 
   return (
     <div>
       {clicked ? (
         <Iframe
-          big={big}
           title={id}
           src={`https://codesandbox.io/embed/${id}?fontsize=14&hidenavigation=1&view=preview&hidedevtools=1`}
           allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
@@ -44,7 +43,7 @@ const Sandbox = ({ id, image, big }) => {
           // href={`https://codesandbox.io/s/${id}`}
           target="_blank"
         >
-          <Image big={big} src={image} alt={id} />
+          <Image src={image} alt={id} />
         </StylessButton>
       )}
     </div>
@@ -88,43 +87,42 @@ const Experiment = () => (
     <Container>
       <ImageWrapper>
         <section>
-          <div>
-            <Sandbox id="j0y0vpz59" big image={one} />
-            <Sandbox
-              index={1}
-              x={(itemWidth + 16) * 1}
-              id="m7q0r29nn9"
-              big
-              image={two}
-            />
+          <div
+            css={`
+              align-items: flex-end;
+              display: grid;
+              transform: translateY(-95px);
+            `}
+          >
+            <Sandbox id="6hi1y" image={one} />
+          </div>
+          <div
+            css={`
+              transform: translateY(160px);
+            `}
+          >
+            <Sandbox id="i2160" image={ten} />
+            <Sandbox id="2wvzx" image={seven} />
           </div>
           <div>
-            <Sandbox id="variants-uotor" image={three} />
-            <Sandbox id="ppxnl191zx" image={four} />
+            <Sandbox id="jorpp" image={two} />
+            <Sandbox id="mh13b" image={three} />
           </div>
-          <div>
-            <Sandbox id="732j6q4620" image={five} />
-            <Sandbox
-              id="react-three-fiber-untitled-game-i2160"
-              big
-              image={six}
-            />
+          <div
+            css={`
+              transform: translateY(-270px);
+            `}
+          >
+            <Sandbox id="ln0mi" image={six} />
+            <Sandbox id="j0y0vpz59" image={eight} />
           </div>
-          <div>
-            <Sandbox id="ln0mi" big image={seven} />
-
-            <Sandbox id="yp21r" big image={eight} />
-          </div>
-          <div>
-            <Sandbox id="2wvzx" big image={nine} />
-
-            <Sandbox id="prb9t" big image={ten} />
-          </div>
-          <div>
-            <Sandbox id="g1u8u" big image={eleven} />
-
-            <Sandbox id="b0ntj" big image={twelve} />
-          </div>
+          {/* <div>
+            <Sandbox id="y3j31r13zz" image={nine} />
+          </div> */}
+          {/* <Sandbox id="uotor" image={five} />
+           */}
+          {/*
+            <Sandbox id="prb9t" image={four} /> */}
         </section>
       </ImageWrapper>
     </Container>

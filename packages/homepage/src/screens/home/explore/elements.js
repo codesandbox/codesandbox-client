@@ -1,29 +1,26 @@
 import styled from 'styled-components';
 
-export const itemWidth = 324;
-export const smallItemHeight = 420;
-export const bigItemHeight = 548;
-
 export const Container = styled.div`
   position: relative;
 `;
 
 export const ImageWrapper = styled.div`
   position: relative;
-  transform: translateY(-380px);
   section {
     max-width: 100vw;
     display: grid;
-    grid-template-columns: repeat(4, minmax(320px, 100%));
-    grid-gap: 1rem;
+    grid-template-columns: repeat(4, 324px);
     justify-content: center;
-    transform: rotateX(60deg) rotateY(0deg) rotateZ(45deg) translateY(0rem)
-      translateX(-0rem);
+    transform: rotateX(60deg) rotateY(0deg) rotateZ(39deg) translateY(-14rem) translateX(-3rem);
+}
 
     > div {
       display: grid;
-      grid-row-gap: 1rem;
     }
+  }
+
+  img {
+    cursor: pointer;
   }
 
   img,
