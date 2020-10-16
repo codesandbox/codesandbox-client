@@ -1,6 +1,7 @@
 import React from 'react';
 import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
+import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import { ProfileCollectionType } from './constants';
 
 export const FolderCard: React.FC<{
@@ -19,9 +20,11 @@ export const FolderCard: React.FC<{
       overflow: 'hidden',
       borderColor: 'grays.500',
       transition: 'box-shadow ease-in-out',
-      transitionDuration: theme => theme.speeds[4],
+
+      transitionDuration: (theme: typeof designLanguage) => theme.speeds[4],
       ':hover, :focus, :focus-within': {
-        boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+        boxShadow: (theme: typeof designLanguage) =>
+          '0 4px 16px 0 ' + theme.colors.grays[900],
       },
     })}
     onClick={onClick}

@@ -118,7 +118,10 @@ const decorateCollections = (
     };
   });
 
-const getSubCollections = (collections, path: string) =>
+const getSubCollections = (
+  collections: DecoraratedCollection[],
+  path: string
+) =>
   collections.filter(
     collection =>
       collection.parent &&
@@ -126,7 +129,11 @@ const getSubCollections = (collections, path: string) =>
       collection.path !== path
   );
 
-const SubCollections = ({ collections, path, setPath }) => {
+const SubCollections: React.FC<{
+  collections: DecoraratedCollection[];
+  path: string;
+  setPath: (path: string) => void;
+}> = ({ collections, path, setPath }) => {
   const subCollections = getSubCollections(collections, path);
 
   return (
