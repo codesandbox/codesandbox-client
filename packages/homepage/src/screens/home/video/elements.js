@@ -76,6 +76,13 @@ export const VideoComponent = styled.video`
     margin: auto;
     transform: translateY(20px);
   }
+  @media screen and (max-width: 450px) {
+    transform: translateY(-40px);
+  }
+
+  @media screen and (max-width: 450px) and (max-height: 750px) {
+    transform: translateY(-150px);
+  }
 
   ${props =>
     props.active &&
