@@ -140,15 +140,15 @@ export const editPresets: AsyncAction<Presets> = async (
   });
 };
 
-export const checkURLParameters: Action = ({ effects, actions }) => {
+export const checkURLParameters: Action = ({ state, effects }) => {
   const ULRResolutionWidth = effects.router.getParameter('resolutionWidth');
   const URLResolutionHeight = effects.router.getParameter('resolutionHeight');
 
   if (URLResolutionHeight && ULRResolutionWidth) {
-    actions.preview.toggleResponsiveMode();
-    actions.preview.setResolution([
+    state.preview.mode = 'responsive';
+    state.preview.responsive.resolution = [
       parseInt(ULRResolutionWidth, 10),
       parseInt(URLResolutionHeight, 10),
-    ]);
+    ];
   }
 };

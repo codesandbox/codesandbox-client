@@ -208,7 +208,11 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
               })}
               size={3}
             >
-              (0.{Math.floor(scale * 100)}x)
+              (
+              {Math.round(scale * 100) === 100
+                ? '1x'
+                : `0.${Math.round(scale * 100)}x`}
+              )
             </Text>
           </Stack>
           <PresetMenu
