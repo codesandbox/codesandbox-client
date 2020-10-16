@@ -74,6 +74,29 @@ const Video = () => {
     video.current.currentTime = videoTimesAndText[tab - 1].time;
   };
 
+  const activeTime = () => {
+    const times = videoTimesAndText.map(v => v.time);
+    const currentTime = video.current?.currentTime;
+
+    times.forEach((time, i) => {
+      if (currentTime > times[times.length - 1]) {
+        setActiveTab(times.length);
+      }
+      if (currentTime > time && currentTime < times[i + 1]) {
+        setActiveTab(i + 1);
+      }
+    });
+  };
+
+  useEffect(() => {
+    const videoEl = video.current;
+    videoEl.addEventListener('timeupdate', activeTime, true);
+
+    return () => {
+      videoEl.removeEventListener('timeupdate', activeTime, true);
+    };
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 140 }}
