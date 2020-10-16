@@ -43,6 +43,10 @@ export const SandboxPicker: React.FC<{ closeModal?: () => void }> = ({
     })();
   }, [selectedPath, getSandboxesByPath]);
 
+  const selectedCollection = decorateCollections(collections).find(
+    collection => collection.path === selectedPath
+  );
+
   const collectionsInPath = decorateCollections(collections)
     .filter(collection => collection.parent === selectedPath)
     .filter(collection => collection.path !== selectedPath);
@@ -78,81 +82,96 @@ export const SandboxPicker: React.FC<{ closeModal?: () => void }> = ({
         />
       </List>
 
-      {(collectionsInPath.length || sandboxesInPath.length) && !isLoading ? (
-        <Grid
-          rowGap={6}
-          columnGap={6}
+      <Stack direction="vertical" css={css({ width: '100%' })}>
+        <Text
+          size={5}
+          weight="bold"
+          block
           css={css({
-            width: '100%',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            padding: 5,
-            height: MODAL_HEIGHT,
-            overflowY: 'scroll',
-            '> [data-column]': { marginBottom: 5 },
+            borderBottom: '1px solid',
+            borderColor: 'grays.600',
+            paddingBottom: 2,
+            margin: 5,
           })}
         >
-          {collectionsInPath.map(collection => (
-            <Column key={collection.path} data-column>
-              <FolderCard
-                collection={collection}
-                onClick={() => setPath(collection.path)}
-              />
-            </Column>
-          ))}
-          {sandboxesInPath.map(sandbox => (
-            <Column key={sandbox.id} data-column>
-              <SandboxCard
-                type={SandboxType.DEFAULT_SANDBOX}
-                sandbox={sandbox}
-                onClick={() => {
-                  addFeaturedSandboxes({ sandboxId: sandbox.id });
-                  closeModal();
-                }}
-              />
-            </Column>
-          ))}
-          <div />
-          <div />
-          <div />
-        </Grid>
-      ) : (
-        <div style={{ width: '100%' }}>
-          {isLoading ? (
-            <Grid
-              rowGap={6}
-              columnGap={6}
-              css={css({
-                width: '100%',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                padding: 5,
-              })}
-            >
-              <Column>
-                <SkeletonCard />
+          {selectedCollection.name}
+        </Text>
+        {(collectionsInPath.length || sandboxesInPath.length) && !isLoading ? (
+          <Grid
+            rowGap={6}
+            columnGap={6}
+            css={css({
+              width: '100%',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              height: MODAL_HEIGHT,
+              padding: 5,
+              overflowY: 'scroll',
+              '> [data-column]': { marginBottom: 5 },
+            })}
+          >
+            {collectionsInPath.map(collection => (
+              <Column key={collection.path} data-column>
+                <FolderCard
+                  collection={collection}
+                  onClick={() => setPath(collection.path)}
+                />
               </Column>
-              <Column>
-                <SkeletonCard />
+            ))}
+            {sandboxesInPath.map(sandbox => (
+              <Column key={sandbox.id} data-column>
+                <SandboxCard
+                  type={SandboxType.DEFAULT_SANDBOX}
+                  sandbox={sandbox}
+                  onClick={() => {
+                    addFeaturedSandboxes({ sandboxId: sandbox.id });
+                    closeModal();
+                  }}
+                />
               </Column>
-              <Column>
-                <SkeletonCard />
-              </Column>
-              <Column>
-                <SkeletonCard />
-              </Column>
-            </Grid>
-          ) : (
-            <Stack
-              justify="center"
-              align="center"
-              css={{ width: '100%', height: MODAL_HEIGHT }}
-            >
-              <Text variant="muted" align="center">
-                Uh oh, you haven’t created any sandboxes in this folder yet!
-              </Text>
-            </Stack>
-          )}
-        </div>
-      )}
+            ))}
+            <div />
+            <div />
+            <div />
+          </Grid>
+        ) : (
+          <div style={{ width: '100%' }}>
+            {isLoading ? (
+              <Grid
+                rowGap={6}
+                columnGap={6}
+                css={css({
+                  width: '100%',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                  padding: 5,
+                })}
+              >
+                <Column>
+                  <SkeletonCard />
+                </Column>
+                <Column>
+                  <SkeletonCard />
+                </Column>
+                <Column>
+                  <SkeletonCard />
+                </Column>
+                <Column>
+                  <SkeletonCard />
+                </Column>
+              </Grid>
+            ) : (
+              <Stack
+                justify="center"
+                align="center"
+                css={{ width: '100%', height: MODAL_HEIGHT }}
+              >
+                <Text variant="muted" align="center">
+                  Uh oh, you haven’t created any sandboxes in this folder yet!
+                </Text>
+              </Stack>
+            )}
+          </div>
+        )}
+      </Stack>
     </Stack>
   );
 };
@@ -173,7 +192,7 @@ const decorateCollections = (
       ...collection,
       parent: split.slice(0, -1).join('/') || '/',
       level: split.length - 2,
-      name: split[split.length - 1],
+      name: split[split.length - 1] || 'All Sandboxes',
     };
   });
 
