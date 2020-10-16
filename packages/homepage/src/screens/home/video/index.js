@@ -11,7 +11,7 @@ import {
 } from './elements';
 import videoSrc from '../../../assets/videos/video.mp4';
 import posterSrc from '../../../assets/videos/video.png';
-import { Title } from '../heroB/elements';
+import { Title } from '../hero/elements';
 import usePrefersReducedMotion from '../../../utils/isReducedMOtion';
 
 const videoTimesAndText = [

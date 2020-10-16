@@ -5,7 +5,7 @@ import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import Layout, { WRAPPER_STYLING } from '../components/layout';
 
-import HeroB from '../screens/home/heroB';
+import Hero from '../screens/home/hero';
 import DevExperience from '../screens/home/devExperience';
 import LoadInView from '../components/LoadInView';
 import Quotes from '../screens/home/quotes';
@@ -34,7 +34,7 @@ const Homepage = () => (
         }
       `}
     >
-      <HeroB />
+      <Hero />
       <Video />
     </section>
 

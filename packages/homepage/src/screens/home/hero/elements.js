@@ -38,31 +38,11 @@ export const HeroWrapper = styled.section`
   text-align: center;
   overflow: hidden;
   padding: 0 2rem;
+  min-height: 700px;
 
-  height: 100vh;
-  min-height: 1080px;
-
-  perspective: 1000;
-
-  ${props => props.theme.breakpoints.sm} {
-    min-height: 800px;
+  ${props => props.theme.breakpoints.md} {
+    min-height: 110vw;
   }
-`;
-
-export const SignUp = styled.p`
-  font-size: 13px;
-  line-height: 0.8125rem;
-  text-align: center;
-  margin-top: 0.5rem;
-  color: #999;
-`;
-
-export const Border = styled.div`
-  position: absolute;
-  background: ${props => props.theme.homepage.grey};
-  left: 0;
-  width: 100%;
-  height: 1px;
 `;
 
 export const StyledEditorLink = styled.a`
@@ -91,23 +71,6 @@ export const StyledEditorLink = styled.a`
   }
 `;
 
-export const HeroBottom = styled.div`
-  position: absolute;
-  bottom: -30%;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  ${props => props.theme.breakpoints.sm} {
-    padding: 0 0.5rem;
-    line-height: 1.4;
-    bottom: -50px;
-  }
-`;
-
 export const CountText = styled.div`
   font-size: 1.25rem;
   color: #757575;
@@ -129,28 +92,16 @@ export const InspiredText = styled.span`
   }
 `;
 
-export const HeroImage = styled.img`
-  max-width: 1200px;
-  min-width: 100%;
-  overflow: hidden;
-  border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.3) 20px 14px 47px 0px;
-
-  ${props => props.theme.breakpoints.md} {
-    width: 120vw;
-  }
-`;
-
 export const Title = styled.h1`
-  font-size: 2.5rem;
+  font-size: 3rem;
   line-height: 57px;
   font-family: ${props => props.theme.homepage.appleFont};
 
   color: ${props => props.theme.homepage.white};
   padding: 0;
   margin: 0;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+  margin-bottom: 1.5rem;
+  font-weight: 900;
 
   ${props => props.theme.breakpoints.md} {
     font-size: 1.8rem;
@@ -166,11 +117,73 @@ export const SubTitle = styled.h2`
   font-weight: normal;
   font-size: 1.125rem;
   line-height: 1.3;
-  color: ${props => props.theme.homepage.white};
+  color: ${props => props.theme.homepage.muted};
   margin: 0;
   margin-bottom: 1rem;
 
   ${props => props.theme.breakpoints.sm} {
     font-size: 0.875rem;
+  }
+`;
+
+// All for the B variant for A/B test
+
+export const SandboxButtons = styled.section`
+  height: auto;
+  width: auto;
+  margin: 5rem 0;
+  transition: all 200ms ease-in;
+
+  justify-content: center;
+  display: flex;
+  align-items: center;
+`;
+
+export const Sandbox = styled.a`
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  margin: 0 0.75rem;
+  opacity: 0.4;
+  border: none;
+  background-color: transparent;
+  background-size: cover;
+
+  transition: all 200ms ease-in;
+
+  animation: easeInOutBack 1s cubic-bezier(0, -0.6, 0.12, 2) 1s backwards;
+
+  @keyframes easeInOutBack {
+    0% {
+      opacity: 0;
+      transform: scale(0.01);
+    }
+
+    100% {
+      opacity: 0.4;
+      transform: scale(1);
+    }
+  }
+
+  :hover {
+    cursor: pointer;
+    animation-play-state: paused;
+    transform: scale(1.2);
+    opacity: 1;
+  }
+
+  @media screen and (min-width: 576px) {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 1rem;
+  }
+
+  @media screen and (min-width: 768px) {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin: 0 2rem;
   }
 `;
