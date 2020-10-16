@@ -17,6 +17,8 @@ import { SandboxItemComponentProps } from './types';
 const useImageLoaded = (url: string) => {
   const [loaded, setLoaded] = React.useState(false);
   React.useEffect(() => {
+    if (!url) return;
+
     const img = new Image();
     img.onload = () => {
       setLoaded(true);
