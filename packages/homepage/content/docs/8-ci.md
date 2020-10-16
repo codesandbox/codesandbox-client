@@ -41,7 +41,7 @@ your library by creating a file called `ci.json` in a folder called
 `.codesandbox` (`.codesandbox/ci.json`) in the root of your repo. An example PR
 can be found [here](https://github.com/facebook/react/pull/17175).
 
-**Note:** CodeSandbox CI only works for public repositories for now
+**Note:** CodeSandbox CI only works in public repositories for now.
 
 ## Configuration
 
