@@ -199,7 +199,7 @@ const Quotes = () => {
               font-weight: 400;
             `}
           >
-            “It's dramatically improved my experience of sharing ideas”
+            “It feels much more like my local environment”
           </P>
           <div
             css={`
