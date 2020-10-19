@@ -1,15 +1,16 @@
 import React from 'react';
+
 import {
-  Styled,
-  Cover,
   CornerResize,
-  ResizeWrapper,
+  Cover,
   HeightResize,
-  WidthResize,
   MIN_SIZE_X,
   MIN_SIZE_Y,
   PADDING_OFFSET_X,
   PADDING_OFFSET_Y,
+  ResizeWrapper,
+  Styled,
+  WidthResize,
 } from './elements';
 
 type ResizeHandlesProps = {
@@ -67,8 +68,8 @@ const resize = (
       evt.clientX < window.innerWidth - PADDING_OFFSET_X &&
       evt.clientY < window.innerHeight - PADDING_OFFSET_Y
     ) {
-      newSize.x = 'x' in initialSize ? positiveWidth : newSize.x;
-      newSize.y = 'y' in initialSize ? positiveHeight : newSize.y;
+      newSize.x = 'x' in initialSize ? Math.round(positiveWidth) : newSize.x;
+      newSize.y = 'y' in initialSize ? Math.round(positiveHeight) : newSize.y;
     }
   }
 
