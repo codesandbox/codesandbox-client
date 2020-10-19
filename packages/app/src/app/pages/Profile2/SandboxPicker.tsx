@@ -75,11 +75,13 @@ export const SandboxPicker: React.FC<{ closeModal?: () => void }> = ({
           <Icon name="folder" />
           <Text>All Sandboxes</Text>
         </ListAction>
-        <SubCollections
-          collections={decorateCollections(collections)}
-          path="/"
-          setPath={setPath}
-        />
+        {collections.length ? (
+          <SubCollections
+            collections={decorateCollections(collections)}
+            path="/"
+            setPath={setPath}
+          />
+        ) : null}
       </List>
 
       <Stack direction="vertical" css={css({ width: '100%' })}>
@@ -94,7 +96,7 @@ export const SandboxPicker: React.FC<{ closeModal?: () => void }> = ({
             margin: 5,
           })}
         >
-          {selectedCollection.name}
+          {selectedCollection?.name || selectedPath}
         </Text>
         {(collectionsInPath.length || sandboxesInPath.length) && !isLoading ? (
           <Grid
