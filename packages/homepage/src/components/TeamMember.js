@@ -18,13 +18,13 @@ const people = [
     name: 'Ives van Hoorne',
     pic: ives,
     color: '#F24E62',
-    team: 'Engineering',
+    team: 'CEO & Founder',
   },
   {
     name: 'Bas Buursma',
     pic: bas,
     color: '#76D0FB',
-    team: 'Operations',
+    team: 'COO & Founder',
   },
   {
     name: 'Oskar van Eeden',
@@ -54,10 +54,10 @@ const people = [
     name: 'Gareth Wilson',
     pic: gareth,
     color: '#F7A239',
-    team: 'Marketing',
+    team: 'Growthsiddarth ',
   },
   {
-    name: 'Sid',
+    name: 'Siddharth Kshetrapal',
     pic: sid,
     color: '#F24E62',
     team: 'Engineering',
