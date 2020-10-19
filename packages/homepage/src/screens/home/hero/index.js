@@ -38,7 +38,7 @@ export default () => (
           margin-bottom: 2rem;
         `}
       >
-        An instant IDE and prototyping tool for rapid web development.
+        Free, instant, collaborative sandboxes for rapid web development.
       </SubTitle>
 
       <SandboxButtons>
