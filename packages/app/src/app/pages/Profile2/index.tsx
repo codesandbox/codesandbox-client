@@ -14,6 +14,11 @@
  * - Page number in url
  * - 404 page
  * - Logged out nav
+ * - Add option to set as header in context menu
+ * - Foldable sidebar in picker
+ *
+ * Bugs:
+ * - Sandbox is missing stats in picker
  */
 
 import React from 'react';
@@ -36,6 +41,7 @@ import { PinnedSandboxes } from './PinnedSandboxes';
 import { AllSandboxes } from './AllSandboxes';
 import { SearchedSandboxes } from './SearchedSandboxes';
 import { LikedSandboxes } from './LikedSandboxes';
+
 import { ContextMenu } from './ContextMenu';
 
 export const Profile: React.FunctionComponent<RouteComponentProps<{

@@ -567,6 +567,7 @@ export type Profile = {
   bio?: string;
   socialLinks?: string[];
   featuredSandboxes: Sandbox[];
+  personalWorkspaceId: string;
   teams: Array<{
     id: string;
     name: string;

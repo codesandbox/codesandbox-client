@@ -31,6 +31,7 @@ import { SurveyModal } from './SurveyModal';
 import { RecoverFilesModal } from './RecoverFilesModal';
 import { TeamInviteModal } from './TeamInviteModal';
 import UploadModal from './UploadModal';
+import { SandboxPickerModal } from './SandboxPickerModal';
 
 const modals = {
   preferences: {
@@ -125,6 +126,11 @@ const modals = {
     Component: SurveyModal,
     width: 850,
   },
+  sandboxPicker: {
+    Component: SandboxPickerModal,
+    width: '90%',
+    top: 10, // vh
+  },
 };
 
 const Modals: FunctionComponent = () => {
@@ -170,6 +176,7 @@ const Modals: FunctionComponent = () => {
           modal &&
           (typeof modal.width === 'function' ? modal.width() : modal.width)
         }
+        top={modal && modal.top}
         onClose={isKeyDown => actions.modalClosed()}
       >
         {modal

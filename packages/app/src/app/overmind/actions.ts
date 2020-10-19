@@ -88,7 +88,8 @@ type ModalName =
   | 'share'
   | 'signInForTemplates'
   | 'userSurvey'
-  | 'liveSessionEnded';
+  | 'liveSessionEnded'
+  | 'sandboxPicker';
 
 export const modalOpened: Action<{
   modal: ModalName;
