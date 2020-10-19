@@ -34,6 +34,7 @@ import {
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 import { Helmet } from 'react-helmet';
+import { NotFound } from 'app/pages/common/NotFound';
 import { Header } from './Header';
 import { ProfileCard } from './ProfileCard';
 import { ShowcaseSandbox } from './ShowcaseSandbox';
@@ -56,13 +57,17 @@ export const Profile: React.FunctionComponent<RouteComponentProps<{
       profile: { profileMounted },
     },
     state: {
-      profile: { current: user },
+      profile: { current: user, notFound },
     },
   } = useOvermind();
 
   React.useEffect(() => {
     profileMounted(username);
   }, [profileMounted, username]);
+
+  if (notFound) {
+    return <NotFound />;
+  }
 
   if (!user) return null;
 
