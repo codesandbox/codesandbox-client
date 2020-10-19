@@ -34,7 +34,7 @@ const Experiment = () => (
     `}
   >
     <div style={{ marginTop: '2rem', ...WRAPPER_STYLING, textAlign: 'center' }}>
-      <H2>Create Static Sites, Full-stack Web Apps, or Components</H2>
+      <H2>Create static sites, full-stack apps, or components</H2>
       <P
         big
         muted
