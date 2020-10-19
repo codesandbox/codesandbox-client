@@ -641,12 +641,14 @@ async function compile({
           manager.clearCompiledCache();
         }
 
+        const DEV_MODE = process.env.STAGING || process.env.LOCAL_SERVER;
+
         // Whether the server has provided the HTML file. If that isn't the case
         // we have to fall back to setting `document.body.innerHTML`, which isn't
         // preferred.
         const serverProvidedHTML =
           modules[htmlEntries[0]] || manager.preset.htmlDisabled;
-        if (!serverProvidedHTML || !firstLoad || process.env.LOCAL_SERVER) {
+        if (!serverProvidedHTML || !firstLoad || DEV_MODE) {
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
           // on the first run.
           document.body.innerHTML = body;
