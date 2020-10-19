@@ -12,6 +12,7 @@ import {
 import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import css from '@styled-system/css';
 import { Sandbox } from '@codesandbox/common/lib/types';
+import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
 import { ENTER, SPACE, ALT } from '@codesandbox/common/lib/utils/keycodes';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { SandboxType, DropTarget } from './constants';
@@ -21,9 +22,15 @@ type DropResult = { name: DropTarget };
 
 export const SandboxCard: React.FC<{
   type?: SandboxType;
-  sandbox: Sandbox;
+  sandbox: Sandbox | SandboxFragmentDashboardFragment;
   index?: number | null;
-}> = ({ type = SandboxType.DEFAULT_SANDBOX, sandbox, index = null }) => {
+  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
+}> = ({
+  type = SandboxType.DEFAULT_SANDBOX,
+  sandbox,
+  index = null,
+  ...props
+}) => {
   const {
     state: {
       user: loggedInUser,
@@ -160,6 +167,11 @@ export const SandboxCard: React.FC<{
   }
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (typeof props.onClick === 'function') {
+      props.onClick(event);
+      return;
+    }
+
     // we use on click instead of anchor tag so that safari renders
     // the html5 drag thumbnail instead of text
     if (isTargetInMenu(event)) return;
@@ -227,6 +239,7 @@ export const SandboxCard: React.FC<{
             borderColor: 'blues.600',
           },
         })}
+        {...props}
       >
         <div
           css={css({
@@ -242,8 +255,10 @@ export const SandboxCard: React.FC<{
             borderColor: 'grays.600',
           })}
           style={{
-            backgroundImage: `url(${sandbox.screenshotUrl ||
-              `/api/v1/sandboxes/${sandbox.id}/screenshot.png`})`,
+            backgroundImage: `url(${
+              sandbox.screenshotUrl ||
+              `/api/v1/sandboxes/${sandbox.id}/screenshot.png`
+            })`,
           }}
         />
         <Stack justify="space-between">

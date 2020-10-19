@@ -38,6 +38,7 @@ import { splitQueryFromPath } from './transpiled-module/utils/query-path';
 import { IEvaluator } from './evaluator';
 import { setContributedProtocols } from './npm/dynamic/fetch-protocols';
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
+import { DEFAULT_EXTENSIONS } from './utils/extensions';
 
 declare const BrowserFS: any;
 
@@ -139,6 +140,7 @@ export default class Manager implements IEvaluator {
     dependencyDependencies: {},
     dependencyAliases: {},
   };
+
   webpackHMR: boolean;
   hardReload: boolean;
   hmrStatus: HMRStatus = 'idle';
@@ -769,7 +771,7 @@ export default class Manager implements IEvaluator {
   resolveModule(
     path: string,
     currentPath: string,
-    defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs']
+    defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
   ): Module {
     const dirredPath = pathUtils.dirname(currentPath);
     if (this.cachedPaths[dirredPath] === undefined) {
@@ -1244,11 +1246,13 @@ export default class Manager implements IEvaluator {
             tModules[id] = tModule;
           });
 
-          Object.keys(tModules).forEach(id => {
-            const tModule = tModules[id];
+          await Promise.all(
+            Object.keys(tModules).map(id => {
+              const tModule = tModules[id];
 
-            tModule.load(serializedTModules[id], tModules, this);
-          });
+              return tModule.load(serializedTModules[id], tModules, this);
+            })
+          );
           debug(`Loaded cache.`);
         }
       }

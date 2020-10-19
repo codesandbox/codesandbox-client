@@ -531,17 +531,7 @@ export class DevTools extends React.PureComponent<Props, State> {
               setPane={this.setPane}
               devToolIndex={devToolIndex}
               status={this.state.status}
-              moveTab={
-                this.props.moveTab
-                  ? (prevPos, nextPos) => {
-                      track('DevTools - Move Pane', {
-                        pane: this.props.viewConfig.views[prevPos.tabPosition]
-                          .id,
-                      });
-                      this.props.moveTab(prevPos, nextPos);
-                    }
-                  : undefined
-              }
+              moveTab={this.props.moveTab}
               closeTab={this.props.closeTab}
             />
 

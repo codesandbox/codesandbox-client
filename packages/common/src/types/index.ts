@@ -65,6 +65,8 @@ export type Module = {
   insertedAt: string;
   updatedAt: string;
   path: string;
+  uploadId?: string;
+  sha?: string;
   type: 'file';
 };
 
@@ -301,6 +303,7 @@ export type GitFileCompare = {
   deletions: number;
   filename: string;
   status: 'added' | 'modified' | 'removed';
+  isBinary: boolean;
   content?: string;
 };
 
@@ -548,6 +551,7 @@ export enum WindowOrientation {
 
 export type Profile = {
   viewCount: number;
+  githubUsername: string | null;
   username: string;
   subscriptionSince: string;
   showcasedSandboxShortid: string;
@@ -563,6 +567,7 @@ export type Profile = {
   bio?: string;
   socialLinks?: string[];
   featuredSandboxes: Sandbox[];
+  personalWorkspaceId: string;
   teams: Array<{
     id: string;
     name: string;
@@ -719,12 +724,12 @@ export type GitPathChanges = {
 };
 
 export type GitChanges = {
-  added: Array<{ path: string; content: string; encoding: 'utf-8' | 'binary' }>;
+  added: Array<{ path: string; content: string; encoding: 'utf-8' | 'base64' }>;
   deleted: string[];
   modified: Array<{
     path: string;
     content: string;
-    encoding: 'utf-8' | 'binary';
+    encoding: 'utf-8' | 'base64';
   }>;
 };
 

@@ -7,7 +7,15 @@ export const profileMounted: AsyncAction<string> = withLoadApp(
     state.profile.isLoadingProfile = true;
     state.profile.notFound = false;
 
-    const profile = await effects.api.getProfile(username);
+    let profile: Profile;
+
+    try {
+      profile = await effects.api.getProfile(username);
+    } catch (error) {
+      state.profile.isLoadingProfile = false;
+      state.profile.notFound = true;
+      return;
+    }
 
     state.profile.profiles[profile.id] = profile;
     state.profile.currentProfileId = profile.id;
@@ -16,9 +24,13 @@ export const profileMounted: AsyncAction<string> = withLoadApp(
       profile.showcasedSandboxShortid &&
       !state.editor.sandboxes[profile.showcasedSandboxShortid]
     ) {
-      state.editor.sandboxes[
-        profile.showcasedSandboxShortid
-      ] = await effects.api.getSandbox(profile.showcasedSandboxShortid);
+      try {
+        state.editor.sandboxes[
+          profile.showcasedSandboxShortid
+        ] = await effects.api.getSandbox(profile.showcasedSandboxShortid);
+      } catch (e) {
+        // Ignore it
+      }
     }
 
     state.profile.isLoadingProfile = false;
@@ -218,9 +230,12 @@ export const addFeaturedSandboxesInState: Action<{
 
   const sandbox = sandboxesOnPage.find(s => s.id === sandboxId);
 
+  // if it is added from sandbox picker, it's not on page
+  if (!sandbox) return;
+
   state.profile.current.featuredSandboxes = [
     ...state.profile.current.featuredSandboxes,
-    sandbox!,
+    sandbox,
   ];
 };
 
@@ -424,4 +439,52 @@ export const openContextMenu: Action<{
 
 export const closeContextMenu: Action = ({ state }) => {
   state.profile.contextMenu = { sandboxId: null, position: null };
+};
+
+export const fetchCollections: AsyncAction = async ({ state, effects }) => {
+  if (!state.profile.current) return;
+
+  try {
+    const data = await effects.gql.queries.getCollections({
+      teamId: state.profile.current.personalWorkspaceId,
+    });
+    if (!data || !data.me || !data.me.collections) {
+      return;
+    }
+
+    state.profile.collections = data.me.collections.map(collection => ({
+      ...collection,
+      sandboxes: [],
+    }));
+  } catch {
+    effects.notificationToast.error(
+      'There was a problem getting your sandboxes'
+    );
+  }
+};
+
+export const getSandboxesByPath: AsyncAction<{ path: string }> = async (
+  { state, effects },
+  { path }
+) => {
+  if (!state.profile.current) return;
+
+  try {
+    const data = await effects.gql.queries.sandboxesByPath({
+      path,
+      teamId: state.profile.current.personalWorkspaceId,
+    });
+    if (typeof data?.me?.collection?.sandboxes === 'undefined') {
+      return;
+    }
+
+    const collection = state.profile.collections.find(c => c.path === path);
+    if (!collection) return;
+
+    collection.sandboxes = data.me.collection.sandboxes;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your sandboxes'
+    );
+  }
 };
