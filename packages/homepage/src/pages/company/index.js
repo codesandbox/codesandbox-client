@@ -325,7 +325,7 @@ export default () => (
             <div>
               <img src={picnic} alt="Picnic" />
               <b>Daniel Gebler</b>
-              CTO Picnic
+              Founder & CTO
             </div>
             <div>
               <div
@@ -335,7 +335,7 @@ export default () => (
                 `}
               />
               <b>Marco Jansen</b>
-              Founder Catawiki
+              Founder & CTO
             </div>
             <div>
               <div
