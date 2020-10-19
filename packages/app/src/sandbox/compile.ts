@@ -294,7 +294,7 @@ function getDependencies(
   // packager will only include the package.json for it.
   if (isBabel7(d, devDependencies)) {
     returnedDependencies['@babel/runtime'] =
-      returnedDependencies['@babel/runtime'] || '7.3.1';
+      returnedDependencies['@babel/runtime'] || '^7.3.1';
   } else {
     returnedDependencies['babel-runtime'] =
       returnedDependencies['babel-runtime'] || '6.26.0';
