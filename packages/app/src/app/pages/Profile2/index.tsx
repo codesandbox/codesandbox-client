@@ -1,23 +1,3 @@
-/**
- * Features:
- * - Sandbox picker
- *
- * API:
- * - Add github to social link based on provider
- * - Remove default showcase
- * - Filter out unlisted and private
- * - Don't show sandboxes from non-personal workspaces
- * - Tag personal workspace in API
- *
- * 5%
- * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
- * - Page number in url
- * - Logged out nav
- * - Add option to set as header in context menu
- * - Foldable sidebar in picker
- *
- */
-
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { ThemeProvider, Stack, Element } from '@codesandbox/components';
