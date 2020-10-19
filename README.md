@@ -23,13 +23,13 @@ ideas, and share creations easily.
 CodeSandbox consists of several separate servers, some of which are open
 sourced.
 
-- Client: the web application
-- Server: the [Phoenix](https://github.com/phoenixframework/phoenix) API server
-- Nginx: Nginx config files
+- Client: the web application.
+- Server: the [Phoenix](https://github.com/phoenixframework/phoenix) API server.
+- Nginx: Nginx config files.
 - [Git Extractor](https://github.com/codesandbox/codesandbox-importers):
-  responsible for extracting the source from a GitHub repository
+  responsible for extracting the source from a GitHub repository.
 - [CLI](https://github.com/codesandbox/codesandbox-importers/tree/master/packages/cli):
-  the CLI to upload a CodeSandbox project from your command line
+  the CLI to upload a CodeSandbox project from your command line.
 
 ## Contributors ✨
 
