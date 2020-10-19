@@ -56,7 +56,7 @@ const Experiment = () => (
         }}
         href="/s"
       >
-        Get Started, it’s free
+        Get started, it’s free
       </Button>
     </div>
     <Container>
