@@ -50,7 +50,7 @@ const Careers = ({
               (Netlify), and Dylan Field (Figma).
               <br />
               <br />
-              Used by over two million developers each month, including within
+              Used by over 2M developers each month, including within
               organizations like Shopify, Atlassian, and Stripe, creators have
               crafted over 10M apps on the platform since launch. It’s used by
               thousands of open source projects, including React, Vue, and
@@ -84,13 +84,13 @@ const Careers = ({
                   <span>✓</span> Flexible hours
                 </li>
                 <li>
-                  <span>✓</span> Unlimited vacation
+                  <span>✓</span> Generous vacation
                 </li>
                 <li>
                   <span>✓</span> Choose your own equipment
                 </li>
                 <li>
-                  <span>✓</span> Generous parental leave
+                  <span>✓</span> Sick and parental leave
                 </li>
               </ul>
             </div>
