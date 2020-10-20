@@ -36,7 +36,7 @@ export function convertEsModule(
   /**
    * All names we export, used to predefine the exports at the start
    */
-  const exportNames = new Set();
+  const exportNames = new Set<string>();
 
   const getVarName = (name: string) => {
     let usedName = name.replace(/(\.|-|@|\?|&|=|{|})/g, '');
@@ -91,53 +91,55 @@ export function convertEsModule(
    * Adds the export identifiers (exports.a = exports.b = exports.c = void 0)
    */
   function addExportVoids() {
-    if (exportNames.size === 0) {
-      return;
-    }
     const exportNamesArray = [...exportNames];
-    const totalNode = {
-      type: n.ExpressionStatement,
-      expression: {
-        type: n.AssignmentExpression,
-        operator: '=',
-      },
-    };
-    let currentNode: Partial<AssignmentExpression> = totalNode.expression;
-    while (exportNamesArray.length > 0) {
-      const exportName = exportNamesArray.pop();
-      currentNode.left = {
-        type: n.MemberExpression,
-        object: {
-          type: n.Identifier,
-          name: 'exports',
-        },
-        property: {
-          type: n.Identifier,
-          name: exportName,
-        } as Identifier,
-      };
-      if (exportNamesArray.length) {
-        // @ts-expect-error This will be filled in in the next loop
-        currentNode.right = {
+    while (exportNamesArray.length !== 0) {
+      // We need to chunk the exports by 50, otherwise this line will get too long
+      // and the visitor will create a Maximum call stack size exceeded error
+      const exportNamesToUse = exportNamesArray.splice(0, 50);
+      const totalNode = {
+        type: n.ExpressionStatement,
+        expression: {
           type: n.AssignmentExpression,
           operator: '=',
-        } as Partial<AssignmentExpression>;
-        currentNode = currentNode.right as Partial<AssignmentExpression>;
-      } else {
-        currentNode.right = {
-          type: n.UnaryExpression,
-          operator: 'void',
-          prefix: true,
-          argument: {
-            type: n.Literal,
-            value: 0,
+        },
+      };
+      let currentNode: Partial<AssignmentExpression> = totalNode.expression;
+      while (exportNamesToUse.length > 0) {
+        const exportName = exportNamesToUse.pop();
+        currentNode.left = {
+          type: n.MemberExpression,
+          object: {
+            type: n.Identifier,
+            name: 'exports',
           },
+          property: {
+            type: n.Identifier,
+            name: exportName,
+          } as Identifier,
         };
+        if (exportNamesToUse.length) {
+          // @ts-expect-error This will be filled in in the next loop
+          currentNode.right = {
+            type: n.AssignmentExpression,
+            operator: '=',
+          } as Partial<AssignmentExpression>;
+          currentNode = currentNode.right as Partial<AssignmentExpression>;
+        } else {
+          currentNode.right = {
+            type: n.UnaryExpression,
+            operator: 'void',
+            prefix: true,
+            argument: {
+              type: n.Literal,
+              value: 0,
+            },
+          };
+        }
       }
-    }
 
-    // @ts-expect-error TS thinks this is a partial type, but by now it's full
-    program.body.unshift(totalNode);
+      // @ts-expect-error TS thinks this is a partial type, but by now it's full
+      program.body.unshift(totalNode);
+    }
   }
 
   // If there is a declaration of `exports` (`var exports = []`), we need to rename this

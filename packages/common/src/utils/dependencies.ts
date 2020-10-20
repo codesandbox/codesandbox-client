@@ -71,7 +71,7 @@ export async function getAbsoluteDependencies(dependencies: Object) {
       try {
         const { version } = await getAbsoluteDependency(
           dep,
-          nonAbsoluteDependencies[dep]
+          newDependencies[dep]
         );
 
         newDependencies[dep] = version;
