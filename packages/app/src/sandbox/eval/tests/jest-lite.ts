@@ -181,7 +181,7 @@ export default class TestRunner {
    * })
    * ```
    *
-   * Right now we're making sure to clean the globals up in postRun
+   * Right now we're making sure to clean the globals up in teardown
    *
    * Related issue: https://github.com/codesandbox/codesandbox-client/issues/4922
    */
@@ -206,13 +206,6 @@ export default class TestRunner {
     });
 
     return globals;
-  }
-
-  private postRun(module: Module) {
-    const jestRuntimeGlobals = this.getRuntimeGlobals(module);
-    Object.keys(jestRuntimeGlobals).forEach(globalKey => {
-      delete window[globalKey];
-    });
   }
 
   static isTest(testPath: string) {
@@ -322,6 +315,12 @@ export default class TestRunner {
     Object.defineProperty(global, 'document', { value: null });
     this.dom = null;
     this.manager.envVariables = this.oldEnvVars;
+
+    // @ts-expect-error We don't have the module, but the module is only used in a lazy context
+    const jestRuntimeGlobals = this.getRuntimeGlobals();
+    Object.keys(jestRuntimeGlobals).forEach(globalKey => {
+      delete window[globalKey];
+    });
   }
 
   /* istanbul ignore next */
@@ -392,7 +391,6 @@ export default class TestRunner {
                 force: true,
                 globals: this.setTestGlobals(module),
               });
-              this.postRun(module);
             });
           }
 
@@ -400,7 +398,6 @@ export default class TestRunner {
             force: true,
             globals: this.setTestGlobals(t),
           });
-          this.postRun(t);
           this.ranTests.add(t.path);
         } catch (e) {
           this.ranTests.delete(t.path);
