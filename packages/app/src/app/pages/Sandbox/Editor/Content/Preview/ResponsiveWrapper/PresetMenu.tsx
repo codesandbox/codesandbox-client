@@ -36,7 +36,6 @@ export const PresetMenu = ({
           color: 'sideBar.foreground',
           display: 'flex',
           alignItems: 'center',
-          marginTop: '-3px',
         })}
       >
         <Text>{activePresetName}</Text>

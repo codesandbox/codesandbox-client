@@ -37,12 +37,12 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
   );
   const on = overmind.state.preview.mode === 'responsive';
   const resolution = state.resolution;
-  const element = document.getElementById('sandbox-preview-container');
+  const element = document.getElementById('styled-resize-wrapper');
   const [wrapperWidth, setWrapperWidth] = useState(
-    element?.clientWidth - PADDING_OFFSET_X
+    element?.getBoundingClientRect().width
   );
   const [wrapperHeight, setWrapperHeight] = useState(
-    element?.clientHeight - PADDING_OFFSET_Y
+    element?.getBoundingClientRect().height
   );
   const widthAndHeightResizer = useState<{ x: number; y: number } | null>(null);
   const widthResizer = useState<{ x: number } | null>(null);
@@ -75,15 +75,13 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
 
   let scale = state.scale / 100;
 
-  if (minScaleResolutionWidth > wrapperWidth - PADDING_OFFSET_X) {
-    scale = (wrapperWidth - PADDING_OFFSET_X) / minScaleResolutionWidth;
-  }
+  const hasHeightMostSpace =
+    wrapperWidth - resolutionWidth < wrapperHeight - resolutionHeight;
 
-  if (minScaleResolutionHeight > wrapperHeight - PADDING_OFFSET_Y) {
-    scale = Math.min(
-      (wrapperHeight - PADDING_OFFSET_Y) / minScaleResolutionHeight,
-      scale
-    );
+  if (hasHeightMostSpace && minScaleResolutionWidth > wrapperWidth) {
+    scale = (wrapperWidth - PADDING_OFFSET_X) / minScaleResolutionWidth;
+  } else if (minScaleResolutionHeight > wrapperHeight) {
+    scale = (wrapperHeight - PADDING_OFFSET_Y) / minScaleResolutionHeight;
   }
 
   useEffect(() => {
@@ -202,16 +200,11 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
                 }
               />
             </Stack>
-            <Text
-              css={css({
-                marginTop: '-3px',
-              })}
-              size={3}
-            >
+            <Text size={3}>
               (
-              {Math.round(scale * 100) === 100
+              {Math.ceil(scale * 100) === 100
                 ? '1x'
-                : `0.${Math.round(scale * 100)}x`}
+                : `0.${Math.ceil(scale * 100)}x`}
               )
             </Text>
           </Stack>
@@ -229,6 +222,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
         on={on}
         width={minResolutionWidth}
         height={minResolutionHeight}
+        wrapper={element as any}
         scale={scale}
         setResolution={actions.setResolution}
         widthAndHeightResizer={widthAndHeightResizer}
