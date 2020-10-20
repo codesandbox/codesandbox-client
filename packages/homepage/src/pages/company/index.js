@@ -39,8 +39,8 @@ export default () => (
       <Text>
         Founded in 2017 by Ives van Hoorne and Bas Buursma, our mission is to
         enable creators to build and share their ideas. By removing complexity
-        and simplifying collaboration, we want to allow everyone to create with
-        code.
+        and simplifying collaboration, we want to allow everyone to create things
+        with code.
       </Text>
       <Banner
         css={`
