@@ -55,7 +55,12 @@ export type PrivateRegistryOpts = {
    */
   proxyUrl?: string;
 
+  /**
+   * Whether we should only activate this registry for these scopes
+   */
   scopeWhitelist?: string[];
+
+  authToken?: string;
 };
 
 export class PrivateRegistryFetcher implements FetchProtocol {
@@ -68,14 +73,12 @@ export class PrivateRegistryFetcher implements FetchProtocol {
    */
   private proxyUrl: string | undefined;
   private scopeWhitelist: string[] | undefined;
+  private authToken: string | undefined;
 
-  constructor(
-    private registryLocation: string,
-    private authToken: string,
-    config: PrivateRegistryOpts
-  ) {
+  constructor(private registryLocation: string, config: PrivateRegistryOpts) {
     this.proxyUrl = config.proxyUrl;
     this.scopeWhitelist = config.scopeWhitelist;
+    this.authToken = config.authToken;
   }
 
   private getProxiedUrl(url: string) {
@@ -95,7 +98,9 @@ export class PrivateRegistryFetcher implements FetchProtocol {
     const headers = new Headers();
     headers.append('Accept', NPM_REGISTRY_ACCEPT_HEADER);
     headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', `Bearer ${this.authToken}`);
+    if (this.authToken) {
+      headers.append('Authorization', `Bearer ${this.authToken}`);
+    }
 
     return {
       method: 'get',

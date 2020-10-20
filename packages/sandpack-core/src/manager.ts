@@ -190,10 +190,10 @@ export default class Manager implements IEvaluator {
 
     const privateNpmRegistryProxy = new PrivateRegistryFetcher(
       'https://npm.pkg.github.com', // package registry url
-      'MY_TOKEN',
       {
         proxyUrl: 'https://registry-proxy.codesandbox.workers.dev/',
         scopeWhitelist: ['@codesandbox'],
+        authToken: 'TOKEN',
       }
     );
 
