@@ -4,7 +4,9 @@ import {
   Button,
   Input,
   ThemeProvider,
+  IconButton,
 } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { json } from 'overmind';
 import React, { useEffect, useState } from 'react';
 import { isEqual } from 'lodash-es';
@@ -12,7 +14,7 @@ import { isEqual } from 'lodash-es';
 import { useTheme } from 'styled-components';
 import { useOvermind } from 'app/overmind';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { AddIcon, DeleteIcon, SwitchIcon } from './Icons';
+import { SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
 import { PresetMenu } from './PresetMenu';
 import {
@@ -35,12 +37,12 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
   );
   const on = overmind.state.preview.mode === 'responsive';
   const resolution = state.resolution;
-  const element = document.getElementById('sandbox-preview-container');
+  const element = document.getElementById('styled-resize-wrapper');
   const [wrapperWidth, setWrapperWidth] = useState(
-    element?.clientWidth - PADDING_OFFSET_X
+    element?.getBoundingClientRect().width
   );
   const [wrapperHeight, setWrapperHeight] = useState(
-    element?.clientHeight - PADDING_OFFSET_Y
+    element?.getBoundingClientRect().height
   );
   const widthAndHeightResizer = useState<{ x: number; y: number } | null>(null);
   const widthResizer = useState<{ x: number } | null>(null);
@@ -73,15 +75,13 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
 
   let scale = state.scale / 100;
 
-  if (minScaleResolutionWidth > wrapperWidth - PADDING_OFFSET_X) {
-    scale = (wrapperWidth - PADDING_OFFSET_X) / minScaleResolutionWidth;
-  }
+  const hasHeightMostSpace =
+    wrapperWidth - resolutionWidth < wrapperHeight - resolutionHeight;
 
-  if (minScaleResolutionHeight > wrapperHeight - PADDING_OFFSET_Y) {
-    scale = Math.min(
-      (wrapperHeight - PADDING_OFFSET_Y) / minScaleResolutionHeight,
-      scale
-    );
+  if (hasHeightMostSpace && minScaleResolutionWidth > wrapperWidth) {
+    scale = (wrapperWidth - PADDING_OFFSET_X) / minScaleResolutionWidth;
+  } else if (minScaleResolutionHeight > wrapperHeight) {
+    scale = (wrapperHeight - PADDING_OFFSET_Y) / minScaleResolutionHeight;
   }
 
   useEffect(() => {
@@ -112,43 +112,45 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
     )
   );
 
+  useEffect(() => {
+    actions.checkURLParameters();
+  }, []);
+
   return (
     // @ts-ignore
     <ThemeProvider theme={theme.vscodeTheme}>
-      <Wrapper paddingX={6} style={{ display: on ? 'block' : 'none' }}>
+      <Wrapper paddingX={6} css={css({ display: on ? 'block' : 'none' })}>
         <Stack justify="center" paddingY={2} align="center" gap={2}>
           <Stack gap={2} align="center">
-            {exists && canChangePresets ? (
-              <Button
-                variant="link"
-                style={{ padding: 0 }}
-                autoWidth
+            {exists ? (
+              <IconButton
+                title="Remove Preset"
+                name="close"
                 onClick={actions.openDeletePresetModal}
-              >
-                <DeleteIcon />
-              </Button>
+              />
             ) : null}
-            {!exists && canChangePresets ? (
-              <Button
-                variant="link"
+            {!exists ? (
+              <IconButton
                 disabled={
                   isNaN(resolutionWidth) ||
                   resolutionWidth < MIN_SIZE_X ||
                   isNaN(resolutionHeight) ||
                   resolutionHeight < MIN_SIZE_Y
                 }
-                style={{ padding: 0 }}
-                autoWidth
+                title="Add Preset"
+                name="add"
                 onClick={actions.openAddPresetModal}
-              >
-                <AddIcon color={theme['sideBar.foreground']} />
-              </Button>
+              />
             ) : null}
             <Stack align="center" gap={1}>
               <Text style={{ userSelect: 'none' }} size={3}>
                 <Input
                   type="number"
-                  style={{ height: 20 }}
+                  css={css({
+                    height: 20,
+                    paddingRight: 0,
+                    '::-webkit-inner-spin-button': { padding: '12px 0' },
+                  })}
                   value={
                     isNaN(resolutionWidth)
                       ? ''
@@ -165,7 +167,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
                 />{' '}
               </Text>
               <Button
-                style={{ padding: 0 }}
+                css={css({ padding: 0 })}
                 variant="link"
                 autoWidth
                 onClick={() =>
@@ -184,7 +186,11 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
                   ])
                 }
                 type="number"
-                style={{ height: 20 }}
+                css={css({
+                  height: 20,
+                  paddingRight: 0,
+                  '::-webkit-inner-spin-button': { padding: '12px 0' },
+                })}
                 value={
                   isNaN(resolutionHeight)
                     ? ''
@@ -194,7 +200,13 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
                 }
               />
             </Stack>
-            <Text size={3}>({Math.floor(scale * 100)}%)</Text>
+            <Text size={3}>
+              (
+              {Math.ceil(scale * 100) === 100
+                ? '1x'
+                : `0.${Math.ceil(scale * 100)}x`}
+              )
+            </Text>
           </Stack>
           <PresetMenu
             openEditPresets={actions.toggleEditPresets}
@@ -210,6 +222,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
         on={on}
         width={minResolutionWidth}
         height={minResolutionHeight}
+        wrapper={element as any}
         scale={scale}
         setResolution={actions.setResolution}
         widthAndHeightResizer={widthAndHeightResizer}

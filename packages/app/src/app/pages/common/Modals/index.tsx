@@ -9,10 +9,13 @@ import { useOvermind } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
+import { AddPreset } from './AddPreset';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
+import { DeletePreset } from './DeletePreset';
 import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
 import { DeploymentModal } from './DeploymentModal';
+import { EditPresets } from './EditPresets';
 import { EmptyTrash } from './EmptyTrash';
 import ExportGitHubModal from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
@@ -22,18 +25,16 @@ import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import { PreferencesModal } from './PreferencesModal';
+import { RecoverFilesModal } from './RecoverFilesModal';
+import { SandboxPickerModal } from './SandboxPickerModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
 import { ShareModal } from './ShareModal';
 import SignInForTemplates from './SignInForTemplates';
 import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
-import { RecoverFilesModal } from './RecoverFilesModal';
 import { TeamInviteModal } from './TeamInviteModal';
-import { DeletePreset } from './DeletePreset';
 import UploadModal from './UploadModal';
-import { AddPreset } from './AddPreset';
-import { EditPresets } from './EditPresets';
 
 const modals = {
   preferences: {
@@ -140,6 +141,11 @@ const modals = {
     Component: SurveyModal,
     width: 850,
   },
+  sandboxPicker: {
+    Component: SandboxPickerModal,
+    width: '90%',
+    top: 10, // vh
+  },
 };
 
 const Modals: FunctionComponent = () => {
@@ -185,6 +191,7 @@ const Modals: FunctionComponent = () => {
           modal &&
           (typeof modal.width === 'function' ? modal.width() : modal.width)
         }
+        top={modal && modal.top}
         onClose={isKeyDown => actions.modalClosed()}
       >
         {modal

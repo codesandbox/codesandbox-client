@@ -6,9 +6,9 @@ export const MIN_SIZE_X = 72;
 
 export const MIN_SIZE_Y = 130;
 
-export const PADDING_OFFSET_X = 100;
+export const PADDING_OFFSET_X = 30;
 
-export const PADDING_OFFSET_Y = 100;
+export const PADDING_OFFSET_Y = 30;
 
 export const Styled = styled(Element)<{
   on: boolean;

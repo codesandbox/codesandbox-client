@@ -15,8 +15,8 @@ type State = {
 export const defaultPresets: Presets = {
   Mobile: [320, 675],
   Tablet: [1024, 765],
-  Desktop: [1920, 1080],
-  'Desktop HD': [1400, 800],
+  Desktop: [1400, 800],
+  'Desktop  HD': [1920, 1080],
 };
 
 export const state: State = {

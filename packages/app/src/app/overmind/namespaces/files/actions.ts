@@ -556,6 +556,7 @@ export const filesUploaded: AsyncAction<{
       });
 
       effects.executor.updateFiles(sandbox);
+      actions.git.updateGitChanges();
     } catch (error) {
       if (error.message.indexOf('413') !== -1) {
         actions.internal.handleError({

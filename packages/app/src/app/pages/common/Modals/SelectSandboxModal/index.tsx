@@ -39,13 +39,13 @@ export const SelectSandboxModal: FunctionComponent = () => {
         {userSandboxes.filter(Boolean).map(sandbox => (
           <ListAction
             justify="space-between"
-            disabled={sandbox.id === showcasedSandbox.id}
+            disabled={sandbox.id === showcasedSandbox?.id}
             key={sandbox.id}
             onClick={() => newSandboxShowcaseSelected(sandbox.id)}
           >
             <Element>
               {getSandboxName(sandbox)}
-              {sandbox.id === showcasedSandbox.id && ' (Selected)'}
+              {sandbox.id === showcasedSandbox?.id && ' (Selected)'}
             </Element>
 
             <Element>

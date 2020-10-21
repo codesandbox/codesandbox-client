@@ -495,10 +495,12 @@ export const setSelectedDependencies: Action<Dependency> = (
   dependency
 ) => {
   const selectedDependencies = state.workspace.selectedDependencies;
+  const versionMap = state.workspace.hitToVersionMap;
   const dep = json(dependency);
 
   if (selectedDependencies[dep.objectID]) {
     delete selectedDependencies[dep.objectID];
+    delete versionMap[dep.objectID];
   } else {
     selectedDependencies[dep.objectID] = dep;
   }
@@ -508,6 +510,21 @@ export const handleVersionChange: Action<{
   dependency: Dependency;
   version: string;
 }> = ({ state }, { dependency, version }) => {
+  if (state.editor.parsedConfigurations?.package?.parsed?.dependencies) {
+    const installedVersion =
+      state.editor.parsedConfigurations.package.parsed.dependencies[
+        dependency.objectID
+      ];
+
+    /* Remove the dependency as the same version is already installed */
+    if (installedVersion === version) {
+      const selectedDependencies = state.workspace.selectedDependencies;
+      const versionMap = state.workspace.hitToVersionMap;
+      delete selectedDependencies[dependency.objectID];
+      delete versionMap[dependency.objectID];
+      return;
+    }
+  }
   state.workspace.hitToVersionMap[dependency.objectID] = version;
 };
 
