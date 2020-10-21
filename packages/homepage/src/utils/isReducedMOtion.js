@@ -1,10 +1,10 @@
 import React from 'react';
 
 // https://joshwcomeau.com/react/prefers-reduced-motion/
-const QUERY = '(prefers-reduced-motion: no-preference)';
+const QUERY = '(prefers-reduced-motion: reduce)';
 const isRenderingOnServer = typeof window === 'undefined';
 const getInitialState = () =>
-  isRenderingOnServer ? true : !window.matchMedia(QUERY).matches;
+  isRenderingOnServer ? true : window.matchMedia(QUERY).matches;
 
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(

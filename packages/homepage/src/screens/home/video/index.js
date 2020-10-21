@@ -47,6 +47,7 @@ const Video = () => {
   const [active, setActive] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [activeTab, setActiveTab] = useState(1);
+
   useEffect(() => {
     if (!prefersReducedMotion) {
       const entryObserver = new IntersectionObserver(
