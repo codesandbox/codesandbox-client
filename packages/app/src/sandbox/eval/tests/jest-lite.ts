@@ -114,7 +114,7 @@ export default class TestRunner {
     this.sendMessage(messages.INITIALIZE);
   }
 
-  private getRuntimeGlobals(module: Module) {
+  public getRuntimeGlobals(module: Module) {
     const test = (testName: TestName, fn?: TestFn) =>
       dispatchJest({
         fn,

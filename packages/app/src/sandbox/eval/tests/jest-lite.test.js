@@ -39,7 +39,7 @@ describe('TestRunner class', () => {
     });
   });
 
-  describe('testGlobals', () => {
+  describe('getRuntimeGlobals', () => {
     it('returns an object', async () => {
       const testRunner = new TestRunner();
 
@@ -56,7 +56,7 @@ describe('TestRunner class', () => {
         document: _document,
         window: _window,
         global: _global,
-      } = testRunner.testGlobals();
+      } = testRunner.getRuntimeGlobals();
 
       expect(_it).toBeInstanceOf(Function);
       expect(_test).toBeInstanceOf(Function);
@@ -75,7 +75,7 @@ describe('TestRunner class', () => {
       beforeEach(async () => {
         testRunner = new TestRunner();
         await testRunner.initJSDOM();
-        _test = testRunner.testGlobals().test;
+        _test = testRunner.getRuntimeGlobals().test;
         fnSpy = jest.fn();
       });
 
