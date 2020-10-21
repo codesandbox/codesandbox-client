@@ -38,6 +38,7 @@ const resize = (
     initialMousePosition,
     wrapper,
     scale,
+    offset,
     resizer: [_, setSize],
     setResolution,
   }: {
@@ -49,6 +50,9 @@ const resize = (
     // and we might introduce stuff on the right side. Meaning our constraint logic
     // needs to know where the edges are
     wrapper: HTMLDivElement;
+    // We need to know the offset of the handle, which is different from the explicit width
+    // and height handles and the both direction resizer
+    offset: number;
     scale: number;
     resizer: [{ x?: number; y?: number }, (payload: any) => void];
     setResolution: (resolution: [number, number]) => void;
@@ -67,11 +71,11 @@ const resize = (
     } = wrapper.getBoundingClientRect();
     const maxClientX = Math.min(
       evt.clientX,
-      wrapperRight - PADDING_OFFSET_X + HANDLE_OFFSET
+      wrapperRight - PADDING_OFFSET_X + offset
     );
     const maxClientY = Math.min(
       evt.clientY,
-      wrapperBottom - PADDING_OFFSET_Y + HANDLE_OFFSET
+      wrapperBottom - PADDING_OFFSET_Y + offset
     );
     const width =
       'x' in initialMousePosition
@@ -136,6 +140,7 @@ export const ResizeHandles = ({
                 resolution: [width, height],
                 scale,
                 wrapper,
+                offset: 0,
                 initialMousePosition: { x: event.clientX, y: event.clientY },
                 resizer: widthAndHeightResizer,
                 setResolution,
@@ -152,6 +157,7 @@ export const ResizeHandles = ({
                 resolution: [width, height],
                 scale,
                 wrapper,
+                offset: HANDLE_OFFSET,
                 initialMousePosition: { x: event.clientX },
                 resizer: widthResizer,
                 setResolution,
@@ -169,6 +175,7 @@ export const ResizeHandles = ({
                 resolution: [width, height],
                 wrapper,
                 scale,
+                offset: HANDLE_OFFSET,
                 initialMousePosition: { y: event.clientY },
                 resizer: heightResizer,
                 setResolution,
