@@ -10,12 +10,10 @@ export const List = styled.ul`
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  li {
-    margin-bottom: 2rem;
-  }
+  text-align: center;
 
-  li:not(:last-child) {
-    margin-right: 5rem;
+  li {
+    margin: 2rem;
   }
 
   ${props => props.theme.breakpoints.md} {
