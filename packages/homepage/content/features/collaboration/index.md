@@ -24,7 +24,7 @@ columns: 2
 
 ### Team up on code
 
-Every sandbox is a collaborative coding environment and pair with friends and 
+Every sandbox is a collaborative coding environment for you to pair with friends and 
 colleagues on code, or work together in a team.
 
 With nothing to install, CodeSandbox lets you collaborate on code in real-time, you can
