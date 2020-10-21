@@ -9,6 +9,7 @@ export const PageTitle = styled.h1`
 
   @media screen and (max-width: 900px) {
     text-align: center;
+    font-size: 32px;
   }
 `;
 
@@ -26,6 +27,11 @@ export const TitleDescription = styled.p`
   line-height: 1.5;
   color: ${props => props.theme.homepage.white};
   margin-bottom: 120px;
+
+  @media screen and (max-width: 900px) {
+    font-size: 16px;
+    margin-bottom: 40px;
+  }
 `;
 
 export const Job = styled.li`
@@ -49,12 +55,12 @@ export const Jobs = styled.ul`
 
 export const HeroSection = styled.div`
   display: grid;
-  grid-template-columns: 500px 1fr;
+  grid-template-columns: 1fr 230px;
   grid-gap: 100px;
   margin-bottom: 140px;
 
   @media screen and (max-width: 900px) {
-    grid-template-columns: 522px;
+    grid-template-columns: 1fr;
     justify-content: center;
     grid-gap: 40px;
   }

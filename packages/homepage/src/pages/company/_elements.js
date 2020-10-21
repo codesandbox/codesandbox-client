@@ -21,6 +21,11 @@ export const Text = styled.p`
   max-width: 100%;
   position: relative;
   z-index: 1;
+
+  @media screen and (max-width: 768px) {
+    font-size: 18px;
+    line-height: 1.5;
+  }
 `;
 
 export const Investors = styled.div`
