@@ -25,20 +25,19 @@ export default () => (
       transition={{ duration: 1, ease: 'easeOut', staggerChildren: 0.5 }}
       style={{
         zIndex: 20,
-        position: 'absolute',
-        top: '15%',
         textAlign: 'center',
         maxWidth: '80%',
         margin: 'auto',
       }}
     >
-      <Title>Quickly prototype ideas with code</Title>
+      <Title>Quickly prototype ideas&nbsp;with&nbsp;code</Title>
       <SubTitle
         css={`
           margin-bottom: 2rem;
         `}
       >
-        Free, instant, collaborative sandboxes for rapid web development.
+        Free, instant, collaborative sandboxes for
+        rapid&nbsp;web&nbsp;development.
       </SubTitle>
 
       <SandboxButtons>

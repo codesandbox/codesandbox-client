@@ -71,6 +71,10 @@ export const VideoComponent = styled.video`
   max-width: 100%;
   transition: all 1.2s cubic-bezier(0.85, 0, 0.15, 1);
   margin-bottom: 230px;
+  border: 1px solid rgb(36, 36, 36);
+  box-shadow: 0px 9.55893px 19.1179px rgba(0, 0, 0, 0.24),
+    0px 9.55893px 4.77946px rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
 
   ${props => props.theme.breakpoints.md} {
     margin: auto;

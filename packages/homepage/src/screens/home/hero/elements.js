@@ -34,18 +34,24 @@ export const HeroWrapper = styled.section`
   position: relative;
   display: flex;
   justify-content: center;
-
   text-align: center;
-  overflow: hidden;
-  padding: 0 2rem;
-  min-height: 700px;
+  padding: 10rem 0 5rem 0;
+  margin-bottom:4rem;
+
+
+
 
   ${props => props.theme.breakpoints.md} {
-    min-height: 110vw;
+    padding: 5rem 0 5rem 0;
+    min-height: 74vh;
+    height:auto:
+
   }
 
   ${props => props.theme.breakpoints.sm} {
-    min-height: 115vw;
+    min-height: 100vh;
+    padding: 4rem 0 5rem 0;
+
   }
 `;
 
@@ -108,12 +114,12 @@ export const Title = styled.h1`
   font-weight: 900;
 
   ${props => props.theme.breakpoints.md} {
-    font-size: 1.8rem;
+    font-size: 3rem;
     line-height: 1.2;
   }
 
   ${props => props.theme.breakpoints.sm} {
-    font-size: 1.4rem;
+    font-size: 2rem;
   }
 `;
 
@@ -137,14 +143,13 @@ export const SandboxButtons = styled.section`
   width: auto;
   margin: 5rem 0;
   transition: all 200ms ease-in;
-
   justify-content: center;
   display: flex;
   align-items: center;
 `;
 
 export const Sandbox = styled.a`
-  display: inline-block;
+  display: flex;
   width: 2rem;
   height: 2rem;
   margin: 0 0.75rem;
@@ -152,10 +157,36 @@ export const Sandbox = styled.a`
   border: none;
   background-color: transparent;
   background-size: cover;
-
+  background-position: center center;
   transition: all 200ms ease-in;
+  justify-content: center;
 
   animation: easeInOutBack 1s cubic-bezier(0, -0.6, 0.12, 2) 1s backwards;
+
+  @media screen and (min-width: 576px) {
+    width: 6rem;
+    height: 6rem;
+    margin: 0 0.75rem;
+  }
+
+  @media screen and (min-width: 768px) {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 0.75rem;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 0.5rem;
+  }
+
+  :hover {
+    cursor: pointer;
+    animation-play-state: paused;
+    transform: scale(1.2);
+    opacity: 1;
+  }
 
   @keyframes easeInOutBack {
     0% {
@@ -167,27 +198,5 @@ export const Sandbox = styled.a`
       opacity: 0.4;
       transform: scale(1);
     }
-  }
-
-  :hover {
-    cursor: pointer;
-    animation-play-state: paused;
-    transform: scale(1.2);
-    opacity: 1;
-  }
-
-  @media screen and (min-width: 576px) {
-    width: 3rem;
-    height: 3rem;
-    margin: 0 1rem;
-  }
-
-  @media screen and (min-width: 768px) {
-    width: 4rem;
-    height: 4rem;
-  }
-
-  @media screen and (min-width: 1024px) {
-    margin: 0 2rem;
   }
 `;
