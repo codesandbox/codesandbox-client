@@ -9593,10 +9593,10 @@ codesandbox-import-utils@^2.1.9:
     istextorbinary "^2.2.1"
     lz-string "^1.4.4"
 
-codesandbox-import-utils@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-2.2.1.tgz#dd037154b0b19b998e51127c23aeeed501dc9e84"
-  integrity sha512-x7dJkyiePLnOXuQKDYxTOqcWe0KB37pYJH3xadBrXZJZkeOt8Rab4VPLn9kUCb9SKdFToHXz/petWA8rghPZ7Q==
+codesandbox-import-utils@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-2.2.2.tgz#2bf0aed166edb113951d2323725014daa8189d71"
+  integrity sha512-1fgtBq+WiUEN49qmVS1086pLFG5KZIhbrtf7IuJWTUGU1FIgu9DXxwmp2snEA9asFUhCx/dtzeWbMPxJRewQ7Q==
   dependencies:
     codesandbox-import-util-types "^2.2.1"
     istextorbinary "^2.2.1"
