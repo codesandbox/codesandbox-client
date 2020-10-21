@@ -53,18 +53,12 @@ describe('TestRunner class', () => {
         test: _test,
         expect: _expect,
         jest: _jest,
-        document: _document,
-        window: _window,
-        global: _global,
       } = testRunner.getRuntimeGlobals();
 
       expect(_it).toBeInstanceOf(Function);
       expect(_test).toBeInstanceOf(Function);
       expect(_expect).toBeInstanceOf(Function);
       expect(_jest).toBeInstanceOf(Object);
-      expect(_document).toBeInstanceOf(Object);
-      expect(_window).toBeInstanceOf(Object);
-      expect(_global).toBeInstanceOf(Object);
     });
 
     xdescribe('test', () => {
