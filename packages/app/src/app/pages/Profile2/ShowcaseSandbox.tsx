@@ -14,11 +14,12 @@ export const ShowcaseSandbox = () => {
     },
   } = useOvermind();
 
-  const [{ isOver, isDragging }, drop] = useDrop({
+  const [{ isOver, canDrop, isDragging }, drop] = useDrop({
     accept: [SandboxType.ALL_SANDBOX, SandboxType.PINNED_SANDBOX],
     drop: () => ({ name: DropTarget.SHOWCASED_SANDBOX }),
     collect: monitor => ({
       isOver: monitor.isOver(),
+      canDrop: monitor.canDrop(),
       isDragging: !!monitor.getItem(),
     }),
   });
@@ -37,7 +38,7 @@ export const ShowcaseSandbox = () => {
               top: 0,
               zIndex: 2,
               // reveal the drag area behind it
-              height: isDragging ? 0 : 360,
+              height: isDragging && canDrop ? 0 : 360,
               borderRadius: '4px',
               border: '1px solid',
               borderColor: 'grays.600',
