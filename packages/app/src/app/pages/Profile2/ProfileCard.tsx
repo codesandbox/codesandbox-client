@@ -242,7 +242,8 @@ const SocialLinks: React.FC<{
       <Stack direction="vertical" gap={4}>
         {socialLinks.map((link, index) => (
           <Input
-            key={link}
+            // eslint-disable-next-line
+            key={index}
             defaultValue={link}
             autoFocus
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
