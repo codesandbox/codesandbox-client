@@ -37,7 +37,7 @@ export function Tag({ tag, onRemove }: TagProps) {
           onClick={() => onRemove(tag)}
           marginLeft={1}
         >
-          <Icon name="cross" />
+          <Icon size={8} name="cross" />
         </Button>
       )}
     </TagElement>
