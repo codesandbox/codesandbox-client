@@ -168,6 +168,7 @@ export const ProfileCard = () => {
             <SocialLinks
               username={user.username}
               socialLinks={socialLinks}
+              githubUsername={user.githubUsername}
               editing={editing}
               setSocialLinks={setSocialLinks}
             />
@@ -232,9 +233,10 @@ export const Bio: React.FC<{
 const SocialLinks: React.FC<{
   username: Profile['username'];
   socialLinks: Profile['socialLinks'];
+  githubUsername: Profile['githubUsername'];
   editing: boolean;
   setSocialLinks: (socialLinks: Profile['socialLinks']) => void;
-}> = ({ username, socialLinks, setSocialLinks, editing }) => (
+}> = ({ username, socialLinks, githubUsername, setSocialLinks, editing }) => (
   <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
     {editing ? (
       <Stack direction="vertical" gap={4}>
@@ -265,6 +267,22 @@ const SocialLinks: React.FC<{
       </Stack>
     ) : (
       <>
+        {githubUsername && (
+          <Stack
+            as={Link}
+            href={`https://github.com/${githubUsername}`}
+            target="_blank"
+            gap={2}
+            align="center"
+          >
+            <Icon
+              name={getIconNameFromUrl(`https://github.com/${githubUsername}`)}
+            />
+            <Text size={3}>
+              {getPrettyLinkFromUrl(`https://github.com/${githubUsername}`)}
+            </Text>
+          </Stack>
+        )}
         {socialLinks.map(link => (
           <Stack
             as={Link}
