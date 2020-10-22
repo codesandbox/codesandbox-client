@@ -12,7 +12,7 @@ import {
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { camelizeKeys } from 'humps';
-import { json, mutate } from 'overmind';
+import { mutate } from 'overmind';
 
 import { Operator } from 'app/overmind';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
