@@ -110,7 +110,7 @@ export const ProfileCard = () => {
               <Stack gap={2} align="center">
                 <Icon name="heart" />
                 <Link as={RouterLink} to="/likes" size={3}>
-                  {user.givenLikeCount} Likes
+                  {user.givenLikeCount} Liked sandboxes
                 </Link>
               </Stack>
             </Stack>
