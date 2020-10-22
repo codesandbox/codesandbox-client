@@ -470,14 +470,10 @@ export const onUserSelection: Operator<LiveMessage<{
     );
 
     if (user) {
-      effects.vscode.updateUserSelections(module, [
-        {
-          userId: userSelectionLiveUserId,
-          name: user.username,
-          selection,
-          color: json(user.color),
-        },
-      ]);
+      effects.vscode.updateUserSelections(
+        module,
+        actions.live.internal.getSelectionsForModule(module)
+      );
 
       if (isFollowingUser) {
         actions.live.revealCursorPosition({
