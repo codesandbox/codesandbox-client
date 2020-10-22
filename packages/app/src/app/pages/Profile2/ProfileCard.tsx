@@ -84,7 +84,7 @@ export const ProfileCard = () => {
               css={css({
                 size: 64,
                 img: { borderRadius: 'medium' },
-                span: { fontSize: 3, height: 4, lineHeight: '16px' },
+                span: { fontSize: 2, height: 4, lineHeight: '14px' },
               })}
             />
             <Stack direction="vertical">
