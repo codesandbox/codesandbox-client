@@ -11,8 +11,12 @@ export const ShowcaseSandbox = () => {
   const {
     state: {
       profile: { showcasedSandbox },
+      user: loggedInUser,
+      profile: { current: user },
     },
   } = useOvermind();
+
+  const myProfile = loggedInUser?.username === user.username;
 
   const [{ isOver, canDrop, isDragging }, drop] = useDrop({
     accept: [SandboxType.ALL_SANDBOX, SandboxType.PINNED_SANDBOX],
@@ -23,6 +27,8 @@ export const ShowcaseSandbox = () => {
       isDragging: !!monitor.getItem(),
     }),
   });
+
+  if (!showcasedSandbox && !myProfile) return null;
 
   return (
     <div ref={drop} style={{ position: 'relative', height: 360 }}>

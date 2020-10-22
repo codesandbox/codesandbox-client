@@ -27,6 +27,8 @@ export const PinnedSandboxes = () => {
     }),
   });
 
+  if (!user.featuredSandboxes.length && !myProfile) return null;
+
   return (
     <Grid
       rowGap={6}
@@ -52,6 +54,7 @@ export const PinnedSandboxes = () => {
             justify="center"
             align="center"
             css={css({
+              display: ['none', 'flex', 'flex'],
               height: 240,
               padding: 4,
               backgroundColor: isOver ? 'grays.700' : 'transparent',

@@ -56,6 +56,7 @@ export const Profile: React.FunctionComponent<RouteComponentProps<{
           gap={104}
           css={css({
             width: '100vw',
+            minHeight: '100vh',
             backgroundColor: 'grays.900',
             color: 'white',
             fontFamily: 'Inter, sans-serif',
