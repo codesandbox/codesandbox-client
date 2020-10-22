@@ -75,7 +75,7 @@ export const ProfileCard = () => {
             paddingX: 6,
             paddingY: 6,
             // fix height to avoid jumping
-            height: myProfile ? 230 : 'auto',
+            minHeight: myProfile ? 230 : 'auto',
           })}
         >
           <Stack gap={4} align="center">
@@ -218,14 +218,14 @@ export const Bio: React.FC<{
   editing ? (
     <Textarea
       autosize
-      maxLength={280}
+      maxLength={160}
       defaultValue={bio}
       onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
         setBio(event.target.value)
       }
     />
   ) : (
-    <Text size={3} variant="muted">
+    <Text size={3} variant="muted" css={{ whiteSpace: 'pre-wrap' }}>
       {bio}
     </Text>
   );
