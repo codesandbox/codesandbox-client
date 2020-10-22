@@ -1,10 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import { H2, P, H3 } from '../../../components/Typography';
-
-import { applyParallax } from '../../../utils/parallax';
-import usePrefersReducedMotion from '../../../utils/isReducedMOtion';
 import { BGIcon, GHIcon, NPMIcon, OptimizedIcon } from './icons';
 
 const container = {
@@ -12,7 +9,7 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.5,
+      staggerChildren: 0.2,
     },
   },
 };
@@ -49,90 +46,67 @@ const Feature = styled(motion.div)`
   }
 `;
 
-const DevExperience = () => {
-  const parallaxRef = useRef(null);
-  const parallaxRef1 = useRef(null);
-  const parallaxRef2 = useRef(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
-  useEffect(() => {
-    if (!prefersReducedMotion) {
-      applyParallax(parallaxRef.current, {
-        speed: 1.1,
-        center: true,
-      });
-      applyParallax(parallaxRef1.current, {
-        speed: 1.1,
-        center: true,
-      });
-      applyParallax(parallaxRef2.current, {
-        speed: 1.1,
-        center: true,
-      });
-    }
-  }, [parallaxRef, prefersReducedMotion]);
+const DevExperience = () => (
+  <div
+    css={`
+      margin-bottom: 320px;
 
-  return (
-    <div
+      @media screen and (max-width: 1023px) {
+        margin-bottom: 130px;
+      }
+      * {
+        position: relative;
+        z-index: 1;
+      }
+    `}
+  >
+    <BGIcon
       css={`
-        margin-bottom: 320px;
+        position: absolute;
+        z-index: 0;
+        right: 0;
+        opacity: 0.89;
 
         @media screen and (max-width: 1023px) {
-          margin-bottom: 130px;
-        }
-        * {
-          position: relative;
-          z-index: 1;
+          display: none;
         }
       `}
+    />
+    <H2
+      css={`
+        text-align: center;
+        margin-bottom: 80px;
+      `}
     >
-      <BGIcon
-        css={`
-          position: absolute;
-          z-index: 0;
-          right: 0;
-          opacity: 0.89;
-
-          @media screen and (max-width: 1023px) {
-            display: none;
-          }
-        `}
-      />
-      <H2
-        css={`
-          text-align: center;
-          margin-bottom: 80px;
-        `}
-      >
-        The best JavaScript dev experience
-      </H2>
-      <Grid variants={container} initial="hidden" animate="show">
-        <Feature variants={item} ref={parallaxRef}>
-          <NPMIcon />
-          <H3>Supercharged with npm</H3>
-          <P muted>
-            Use any of the 1M+ packages to build real, powerful apps quickly and
-            efficiently.
-          </P>
-        </Feature>
-        <Feature variants={item} ref={parallaxRef1}>
-          <OptimizedIcon />
-          <H3>Optimized for frameworks</H3>
-          <P muted>
-            Custom environments built specifically for React, Vue, Angular, and
-            many more.
-          </P>
-        </Feature>
-        <Feature variants={item} ref={parallaxRef2}>
-          <GHIcon />
-          <H3>Integrated with GitHub</H3>
-          <P muted>
-            Import and run repos direct from GitHub. Or export your sandbox to a
-            repo.
-          </P>
-        </Feature>
-      </Grid>
-    </div>
-  );
-};
+      The best JavaScript dev experience
+    </H2>
+    <Grid variants={container} initial="hidden" animate="show">
+      <Feature variants={item}>
+        <NPMIcon />
+        <H3>Supercharged with npm</H3>
+        <P muted>
+          Use any of the 1M+ packages to build real, powerful apps quickly and
+          efficiently.
+        </P>
+      </Feature>
+      <Feature variants={item}>
+        <OptimizedIcon />
+        <H3>Optimized for frameworks</H3>
+        <P muted>
+          Custom environments built specifically for React, Vue, Angular, and
+          many more.
+        </P>
+      </Feature>
+      <Feature variants={item}>
+        <GHIcon />
+        <H3>Integrated with GitHub</H3>
+        <P muted>
+          Import and run repos direct from GitHub. Or export your sandbox to a
+          repo.
+        </P>
+      </Feature>
+    </Grid>
+  </div>
+);
 
 export default DevExperience;

@@ -47,6 +47,7 @@ const Video = () => {
   const [active, setActive] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [activeTab, setActiveTab] = useState(1);
+
   useEffect(() => {
     if (!prefersReducedMotion) {
       const entryObserver = new IntersectionObserver(
@@ -103,7 +104,8 @@ const Video = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, ease: 'easeOut' }}
       css={`
-        overflow: visible;
+        overflow: active ? "hidden" : 'initial';
+
       `}
     >
       <section

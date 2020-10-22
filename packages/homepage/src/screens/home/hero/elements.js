@@ -53,6 +53,10 @@ export const HeroWrapper = styled.section`
     padding: 4rem 0 5rem 0;
 
   }
+
+  ${props => props.theme.breakpoints.xs} {
+    min-height: 140vw;
+  }
 `;
 
 export const StyledEditorLink = styled.a`

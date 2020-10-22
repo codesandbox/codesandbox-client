@@ -11,6 +11,7 @@ import Footer from './Footer';
 
 const text = number => `@media only screen and (max-width: ${number}px)`;
 
+export const TINY_BREAKPOINT = 320;
 export const SMALL_BREAKPOINT = 576;
 export const MEDIUM_BREAKPOINT = 768;
 export const LARGE_BREAKPOINT = 1024;
@@ -19,6 +20,7 @@ export const EXTRA_LARGE_BREAKPOINT = 1200;
 const homepageTheme = {
   ...theme,
   breakpoints: {
+    xs: text(TINY_BREAKPOINT),
     sm: text(SMALL_BREAKPOINT),
     md: text(MEDIUM_BREAKPOINT),
     lg: text(LARGE_BREAKPOINT),
