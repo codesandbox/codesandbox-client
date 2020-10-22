@@ -32,6 +32,15 @@ const Grid = styled(motion.div)`
   margin-bottom: 56px;
 
   ${props => props.theme.breakpoints.md} {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media screen and (max-width: 767px) {
+    grid-gap: 24px;
+    grid-template-columns: 1fr;
+  }
+
+  ${props => props.theme.breakpoints.sm} {
     grid-template-columns: 1fr;
   }
 `;
@@ -45,6 +54,14 @@ const Feature = styled(motion.div)`
   border-radius: 4px;
   text-align: center;
   background: #151515;
+
+  ${props => props.theme.breakpoints.md} {
+    padding: 2rem 1.5rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    padding: 2rem 1rem;
+  }
 
   svg,
   h3 {

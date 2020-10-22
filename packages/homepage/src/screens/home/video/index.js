@@ -67,6 +67,8 @@ const Video = () => {
   useEffect(() => {
     if (prefersReducedMotion) {
       setActive(true);
+    } else {
+      setActive(false);
     }
   }, [prefersReducedMotion]);
 
@@ -185,7 +187,6 @@ const Video = () => {
           src={videoSrc}
           ref={video}
           width={1024}
-          // height={556}
           active={active}
           controls={prefersReducedMotion}
         />

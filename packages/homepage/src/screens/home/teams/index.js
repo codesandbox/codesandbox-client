@@ -19,7 +19,8 @@ const Teams = () => (
       ease: 'easeIn',
     }}
     css={`
-      margin: 80px auto;
+      margin: 0 auto;
+      padding: 1.5rem 0;
     `}
   >
     <P
