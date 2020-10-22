@@ -83,8 +83,7 @@ const resize = (
         : resolution[0];
     const height =
       'y' in initialMousePosition
-        ? initialHeight -
-          (initialMousePosition.y - maxClientY) * (2 - scale) * 2
+        ? initialHeight - (initialMousePosition.y - maxClientY) * (2 - scale)
         : resolution[1];
     const positiveWidth = width > MIN_SIZE_X ? width : MIN_SIZE_X;
     const positiveHeight = height > MIN_SIZE_Y ? height : MIN_SIZE_Y;
@@ -148,7 +147,7 @@ export const ResizeHandles = ({
             }}
             style={{
               right: `calc(50% - ${(width * scale) / 2}px)`,
-              bottom: `calc(50% - ${(height * scale) / 2}px)`,
+              top: `calc(${height * scale}px)`,
             }}
           />
           <WidthResize
@@ -167,6 +166,7 @@ export const ResizeHandles = ({
               right: `calc(50% - ${HANDLE_OFFSET}px - ${
                 (width * scale) / 2
               }px)`,
+              top: `calc(${(height / 2) * scale - 8}px)`,
             }}
           />
           <HeightResize
@@ -182,9 +182,7 @@ export const ResizeHandles = ({
               });
             }}
             style={{
-              bottom: `calc(50% - ${HANDLE_OFFSET}px - ${
-                (height * scale) / 2
-              }px)`,
+              top: `calc(${height * scale + HANDLE_OFFSET * 2}px)`,
             }}
           />
         </>
@@ -195,8 +193,8 @@ export const ResizeHandles = ({
             ? {
                 width,
                 height,
-                top: `calc(50% - ${height / 2}px)`,
                 left: `calc(50% - ${width / 2}px)`,
+                top: HANDLE_OFFSET,
                 transform: `scale(${scale})`,
               }
             : null
