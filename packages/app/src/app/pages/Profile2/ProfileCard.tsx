@@ -128,7 +128,7 @@ export const ProfileCard = () => {
             })}
           >
             <Text size={2} weight="bold">
-              Teams
+              Workspaces
             </Text>
             <Grid
               css={{ gridTemplateColumns: 'repeat(auto-fill, 26px)', gap: 12 }}
