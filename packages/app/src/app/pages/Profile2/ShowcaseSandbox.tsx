@@ -50,9 +50,9 @@ export const ShowcaseSandbox = () => {
             as="a"
             href={sandboxUrl({ id: showcasedSandbox.id })}
             variant="secondary"
-            autoWidth
             style={{
               position: 'absolute',
+              width: 'auto',
               zIndex: 3,
               bottom: 16,
               right: 16,
