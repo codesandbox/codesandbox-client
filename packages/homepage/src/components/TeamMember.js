@@ -133,7 +133,7 @@ const PersonWrapper = styled.div`
     top: calc(100% + 8px);
     width: 208px;
     height: 88px;
-    padding: 16px;
+    padding: 16px 4px;
     background: #151515;
     border: 1px solid #343434;
 
