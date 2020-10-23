@@ -63,7 +63,7 @@ const Careers = ({
               at CodeSandbox and help build the future of coding on the web.
             </TitleDescription>
             <div>
-              The Perks:
+              <h4>The Perks</h4>
               <ul
                 css={`
                   margin: 0;
