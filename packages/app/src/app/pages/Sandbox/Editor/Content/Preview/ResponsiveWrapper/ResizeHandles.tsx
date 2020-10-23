@@ -147,7 +147,7 @@ export const ResizeHandles = ({
             }}
             style={{
               right: `calc(50% - ${(width * scale) / 2}px)`,
-              top: `calc(${height * scale}px)`,
+              top: `calc(${height * scale + HANDLE_OFFSET}px)`,
             }}
           />
           <WidthResize
@@ -182,7 +182,7 @@ export const ResizeHandles = ({
               });
             }}
             style={{
-              top: `calc(${height * scale + HANDLE_OFFSET * 2}px)`,
+              top: `calc(${height * scale + HANDLE_OFFSET * 3}px)`,
             }}
           />
         </>
@@ -194,7 +194,7 @@ export const ResizeHandles = ({
                 width,
                 height,
                 left: `calc(50% - ${width / 2}px)`,
-                top: HANDLE_OFFSET,
+                top: HANDLE_OFFSET * 2,
                 transform: `scale(${scale})`,
               }
             : null
