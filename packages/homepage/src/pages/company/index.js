@@ -203,8 +203,12 @@ export default () => (
           grid-row-gap: 55px;
           justify-content: center;
 
-          @media screen and (max-width: 1250px) {
-            grid-template-columns: repeat(auto-fit, minmax(102px, 1fr));
+          ${props => props.theme.breakpoints.md} {
+            grid-template-columns: repeat(3, 80px);
+          }
+
+          ${props => props.theme.breakpoints.sm} {
+            grid-template-columns: repeat(2, 80px);
           }
         `}
       >
@@ -360,24 +364,31 @@ export default () => (
           </section>
         </AngelInvestors>
       </div>
-      <Title>Press Kit</Title>
-      <Text>
-        Are you writing about us? Here are logos and product shots to download
-        and use in web and print media.
-        <a
-          href="/CodeSandbox Press Kit.zip"
-          download
-          css={`
-            display: block;
-            margin-top: 40px;
-            text-decoration: none;
-            color: #0971f1;
-            font-weight: 700;
-          `}
-        >
-          Download Press Kit ↓
-        </a>
-      </Text>
+
+      <section
+        css={`
+          padding: 4rem 0 10rem 0;
+        `}
+      >
+        <Title>Press Kit</Title>
+        <Text>
+          Are you writing about us? Here are logos and product shots to download
+          and use in web and print media.
+          <a
+            href="/CodeSandbox Press Kit.zip"
+            download
+            css={`
+              display: block;
+              margin: 40px;
+              text-decoration: none;
+              color: #0971f1;
+              font-weight: 700;
+            `}
+          >
+            Download Press Kit ↓
+          </a>
+        </Text>
+      </section>
     </Wrapper>
   </Layout>
 );
