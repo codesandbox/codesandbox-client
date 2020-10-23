@@ -162,7 +162,7 @@ export const CardContainer = styled.div`
   justify-content: center;
   margin-top: 30px;
 
-  ${props => props.theme.breakpoints.lg} {
+  ${props => props.theme.breakpoints.xl} {
     grid-template-columns: 1fr 1fr;
 
     div:last-child {
@@ -170,7 +170,7 @@ export const CardContainer = styled.div`
     }
   }
 
-  @media screen and (max-width: 764px) {
+  ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr;
 
     div:last-child {
