@@ -39,8 +39,8 @@ export default () => (
       <Text>
         Founded in 2017 by Ives van Hoorne and Bas Buursma, our mission is to
         enable creators to build and share their ideas. By removing complexity
-        and simplifying collaboration, we want to allow everyone to create things
-        with code.
+        and simplifying collaboration, we want to allow everyone to create
+        things with code.
       </Text>
       <Banner
         css={`
@@ -88,7 +88,7 @@ export default () => (
           src={IN}
           alt=""
           css={`
-            width: 44.29px;
+            width: 44px;
             transform: rotate(-20.5deg);
             left: -84px;
           `}
@@ -103,7 +103,7 @@ export default () => (
               0px 4px 4px rgba(0, 0, 0, 0.12);
             transform: rotate(-19.5deg);
             left: -94px;
-            width: 39.39px;
+            width: 40px;
           `}
         />
 
@@ -198,8 +198,8 @@ export default () => (
         css={`
           margin-bottom: 371px;
           display: grid;
-          grid-template-columns: repeat(6, 102px);
-          grid-column-gap: 95px;
+          grid-template-columns: repeat(4, 80px);
+          grid-column-gap: 80px;
           grid-row-gap: 55px;
           justify-content: center;
 
@@ -228,8 +228,8 @@ export default () => (
           <div
             css={`
               border: 4px solid #242424;
-              width: 102px;
-              height: 100%;
+              width: 80px;
+              height: 80px;
               box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.24),
                 0px 8px 4px rgba(0, 0, 0, 0.12);
               border-radius: 8px;
@@ -239,7 +239,7 @@ export default () => (
               transition: all 200ms ease;
 
               :hover {
-                border: 4px solid white;
+                border: 2px solid white;
 
                 svg {
                   transform: scale(1.1);

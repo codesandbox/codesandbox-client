@@ -83,8 +83,8 @@ const people = [
 ];
 
 const Peep = styled.img`
-  width: 102px;
-  height: 102px;
+  width: 80px;
+  height: 80px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.24), 0px 8px 4px rgba(0, 0, 0, 0.12);
   border-radius: 8px;
 
@@ -94,7 +94,7 @@ const Peep = styled.img`
     }
 
     return `
-      border: 4px solid #343434;
+      border: 2px solid #343434;
       transition: all 200ms ease;
       &:hover {
         border: 4px solid ${props.color};
@@ -141,6 +141,9 @@ const PersonWrapper = styled.div`
       0px 8px 4px rgba(0, 0, 0, 0.12);
     border-radius: 8px;
     color: #fff;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
   }
 
   :hover {
