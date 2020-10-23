@@ -23,9 +23,14 @@ const Grid = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 38px;
-  margin-bottom: 56px;
+  margin: 4rem 0;
 
   ${props => props.theme.breakpoints.md} {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media screen and (max-width: 767px) {
+    grid-gap: 1rem;
     grid-template-columns: 1fr;
   }
 `;
@@ -33,12 +38,15 @@ const Feature = styled(motion.div)`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 24px;
-  padding-bottom: 56px;
-  border: 0.572728px solid #343434;
+  padding: 2.5rem 2rem;
+  border: 0.5px solid #343434;
   border-radius: 4px;
   text-align: center;
   background: #151515;
+
+  ${props => props.theme.breakpoints.md} {
+    padding: 1rem;
+  }
 
   svg,
   h3 {
@@ -49,7 +57,7 @@ const Feature = styled(motion.div)`
 const DevExperience = () => (
   <div
     css={`
-      margin-bottom: 320px;
+      margin: 10rem 0 20rem 0;
 
       @media screen and (max-width: 1023px) {
         margin-bottom: 130px;
@@ -65,7 +73,10 @@ const DevExperience = () => (
         position: absolute;
         z-index: 0;
         right: 0;
+        margin-top: -2rem;
         opacity: 0.89;
+        width: 100vw;
+        border-bottom: 0.5px solid #343434;
 
         @media screen and (max-width: 1023px) {
           display: none;

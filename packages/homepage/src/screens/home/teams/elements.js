@@ -13,18 +13,7 @@ export const List = styled.ul`
   text-align: center;
 
   li {
+    padding: 0;
     margin: 2rem;
-  }
-
-  ${props => props.theme.breakpoints.md} {
-    li:not(:last-child) {
-      margin-right: 0;
-      margin-bottom: 2rem;
-    }
-    li {
-      flex-shrink: 0;
-      width: 100%;
-      text-align: center;
-    }
   }
 `;

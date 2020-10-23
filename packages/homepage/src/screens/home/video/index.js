@@ -67,6 +67,8 @@ const Video = () => {
   useEffect(() => {
     if (prefersReducedMotion) {
       setActive(true);
+    } else {
+      setActive(false);
     }
   }, [prefersReducedMotion]);
 
@@ -105,14 +107,15 @@ const Video = () => {
       transition={{ duration: 1, ease: 'easeOut' }}
       css={`
         overflow: active ? "hidden" : 'initial';
+
       `}
     >
       <section
         css={`
           width: 1024px;
           max-width: 90%;
-          margin: auto;
-
+          margin: 0 auto;
+          padding: 4rem 0 5rem 0;
           ${props => props.theme.breakpoints.md} {
             margin-top: 90px;
           }
@@ -184,7 +187,6 @@ const Video = () => {
           src={videoSrc}
           ref={video}
           width={1024}
-          height={592}
           active={active}
           controls={prefersReducedMotion}
         />

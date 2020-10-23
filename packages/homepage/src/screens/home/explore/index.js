@@ -31,10 +31,14 @@ const Experiment = () => (
       max-height: 100vh;
       position: relative;
       overflow: hidden;
+      border-bottom: 1px solid #343434;
     `}
   >
     <div style={{ marginTop: '2rem', ...WRAPPER_STYLING, textAlign: 'center' }}>
-      <H2>Create static sites, components, or full-stack web apps</H2>
+      <H2 css={'white-space: pre-line;'}>
+        Create static sites,
+        components,&nbsp;or&nbsp;full-stack&nbsp;web&nbsp;apps
+      </H2>
       <P
         big
         muted
