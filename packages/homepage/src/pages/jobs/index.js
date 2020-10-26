@@ -81,16 +81,22 @@ const Careers = ({
                   <span>✓</span> Remote-first
                 </li>
                 <li>
-                  <span>✓</span> Flexible hours
+                  <span>✓</span> Competitive salary & equity
+                </li>
+                <li>
+                  <span>✓</span> Flexible working hours
                 </li>
                 <li>
                   <span>✓</span> Generous vacation
                 </li>
                 <li>
-                  <span>✓</span> Choose your own equipment
+                  <span>✓</span> Work equipment of your choice
                 </li>
                 <li>
-                  <span>✓</span> Sick and parental leave
+                  <span>✓</span> Personal development budget
+                </li>
+                <li>
+                  <span>✓</span> Parental leave
                 </li>
               </ul>
             </div>
