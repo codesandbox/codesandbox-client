@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 export const TabButton = styled.button`
   background: transparent;
@@ -9,6 +9,7 @@ export const TabButton = styled.button`
   padding-bottom: 12px;
   outline: none;
   cursor: pointer;
+  transition: color 300ms ease;
   ${props =>
     props.active &&
     css`
@@ -21,6 +22,8 @@ export const Tab = styled.li`
   color: ${props => props.theme.homepage.muted};
   padding-right: 13px;
   padding-left: 13px;
+  white-space: nowrap;
+  margin-bottom: 4px;
 
   ${props =>
     props.active &&
@@ -33,10 +36,8 @@ export const Tabs = styled.ul`
   display: flex;
   justify-content: center;
   list-style: none;
-  margin: 0;
-  flex-wrap: wrap;
-  max-width: 80%;
   margin: auto;
+  max-width: 80%;
 
   li:last-child {
     padding-left: 13px;
@@ -44,6 +45,12 @@ export const Tabs = styled.ul`
 
   li:first-child {
     padding-right: 13px;
+  }
+
+  ${props => props.theme.breakpoints.sm} {
+    max-width: 100%;
+    justify-content: flex-start;
+    overflow: scroll;
   }
 `;
 
@@ -109,7 +116,17 @@ export const VideoComponent = styled.video`
     `}
 `;
 
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+`;
+
 export const Paragraph = styled.p`
+  animation: 300ms ${fadeIn} ease-out;
   text-align: center;
   width: 604px;
   max-width: 100%;

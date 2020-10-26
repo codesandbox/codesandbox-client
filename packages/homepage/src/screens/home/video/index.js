@@ -100,6 +100,19 @@ const Video = () => {
     };
   }, []);
 
+  const tabListRef = useRef();
+  useEffect(() => {
+    if (!tabListRef.current) return;
+    const activeTabElement = tabListRef.current.querySelector(
+      '[aria-selected=true]'
+    );
+
+    tabListRef.current.scrollTo({
+      left: activeTabElement.offsetLeft - tabListRef.current.offsetLeft - 100,
+      behavior: 'smooth',
+    });
+  }, [activeTab]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 140 }}
@@ -130,8 +143,12 @@ const Video = () => {
           >
             What's a Sandbox?
           </Title>
-          <Tabs active={active}>
-            <Tab active={activeTab === 1}>
+          <Tabs active={active} role="tablist" ref={tabListRef}>
+            <Tab
+              role="tab"
+              active={activeTab === 1}
+              aria-selected={activeTab === 1}
+            >
               <TabButton
                 active={activeTab === 1}
                 onClick={() => setCurrentTab(1)}
@@ -140,7 +157,11 @@ const Video = () => {
                 No Setup
               </TabButton>
             </Tab>
-            <Tab active={activeTab === 2}>
+            <Tab
+              role="tab"
+              active={activeTab === 2}
+              aria-selected={activeTab === 2}
+            >
               <TabButton
                 active={activeTab === 2}
                 onClick={() => setCurrentTab(2)}
@@ -149,7 +170,11 @@ const Video = () => {
                 Superfast
               </TabButton>
             </Tab>
-            <Tab active={activeTab === 3}>
+            <Tab
+              role="tab"
+              active={activeTab === 3}
+              aria-selected={activeTab === 3}
+            >
               <TabButton
                 active={activeTab === 3}
                 onClick={() => setCurrentTab(3)}
@@ -158,7 +183,11 @@ const Video = () => {
                 Multiplayer
               </TabButton>
             </Tab>
-            <Tab active={activeTab === 4}>
+            <Tab
+              role="tab"
+              active={activeTab === 4}
+              aria-selected={activeTab === 4}
+            >
               <TabButton
                 active={activeTab === 4}
                 onClick={() => setCurrentTab(4)}
@@ -167,7 +196,11 @@ const Video = () => {
                 Updates Live
               </TabButton>
             </Tab>
-            <Tab active={activeTab === 5}>
+            <Tab
+              role="tab"
+              active={activeTab === 5}
+              aria-selected={activeTab === 5}
+            >
               <TabButton
                 active={activeTab === 5}
                 onClick={() => setCurrentTab(5)}
@@ -177,7 +210,9 @@ const Video = () => {
               </TabButton>
             </Tab>
           </Tabs>
-          <Paragraph>{videoTimesAndText[activeTab - 1].text}</Paragraph>
+          <Paragraph key={activeTab}>
+            {videoTimesAndText[activeTab - 1].text}
+          </Paragraph>
         </TabsWrapper>
 
         <VideoComponent
