@@ -75,6 +75,7 @@ const Video = () => {
   const setCurrentTab = tab => {
     setActiveTab(tab);
     video.current.currentTime = videoTimesAndText[tab - 1].time;
+    if (!video.playing) video.current.play();
   };
 
   const activeTime = () => {
@@ -117,10 +118,9 @@ const Video = () => {
     <motion.div
       initial={{ opacity: 0, y: 140 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1, ease: 'easeOut' }}
+      transition={{ delay: 1, duration: 1, ease: 'easeOut' }}
       css={`
         overflow: active ? "hidden" : 'initial';
-
       `}
     >
       <section
