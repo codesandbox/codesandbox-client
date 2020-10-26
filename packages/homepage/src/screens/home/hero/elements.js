@@ -41,6 +41,18 @@ export const HeroWrapper = styled.section`
   ${props => props.theme.breakpoints.md} {
     padding-top: 5rem;
   }
+
+  > div {
+    text-align: center;
+    max-width: 80%;
+    margin: auto;
+  }
+
+  ${props => props.theme.breakpoints.md} {
+    > div {
+      max-width: 90%;
+    }
+  }
 `;
 
 export const StyledEditorLink = styled.a`
@@ -138,9 +150,6 @@ export const SandboxButtons = styled.section`
 
 export const Sandbox = styled.a`
   display: flex;
-  width: 2rem;
-  height: 2rem;
-  margin: 0 0.75rem;
   opacity: 0.4;
   border: none;
   background-color: transparent;
@@ -148,25 +157,20 @@ export const Sandbox = styled.a`
   background-position: center center;
   transition: all 200ms ease-in;
   justify-content: center;
-
   animation: easeInOutBack 1s cubic-bezier(0, -0.6, 0.12, 2) 1s backwards;
 
-  @media screen and (min-width: 576px) {
-    width: 6rem;
-    height: 6rem;
-    margin: 0 0.75rem;
-  }
+  width: 4rem;
+  height: 4rem;
+  margin: 0 0.5rem;
 
-  @media screen and (min-width: 768px) {
+  ${props => props.theme.breakpoints.md} {
     width: 4rem;
     height: 4rem;
-    margin: 0 0.75rem;
   }
 
-  @media screen and (min-width: 1024px) {
-    width: 4rem;
-    height: 4rem;
-    margin: 0 0.5rem;
+  ${props => props.theme.breakpoints.sm} {
+    width: 2rem;
+    height: 2rem;
   }
 
   :hover {

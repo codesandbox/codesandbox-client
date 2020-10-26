@@ -25,9 +25,6 @@ export default () => (
       transition={{ duration: 1, ease: 'easeOut', staggerChildren: 0.5 }}
       style={{
         zIndex: 20,
-        textAlign: 'center',
-        maxWidth: '80%',
-        margin: 'auto',
       }}
     >
       <Title>Quickly prototype ideas&nbsp;with&nbsp;code</Title>
