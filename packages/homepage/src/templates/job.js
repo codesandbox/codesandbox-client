@@ -36,6 +36,10 @@ export default ({
             <BackButton autoWidth as={Link} to="/jobs">
               ← Back to Careers
             </BackButton>
+
+            <Title>{title}</Title>
+
+            <ContentBlock dangerouslySetInnerHTML={{ __html: html }} />
             <MobileAside>
               <ContentBlock>
                 <h2> Interested?</h2>
@@ -48,9 +52,6 @@ export default ({
                 </ApplyButton>
               </ContentBlock>
             </MobileAside>
-            <Title>{title}</Title>
-
-            <ContentBlock dangerouslySetInnerHTML={{ __html: html }} />
           </div>
           <Aside>
             <ContentBlock>
