@@ -48,20 +48,11 @@ const Feature = styled(motion.div)`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 24px;
-  padding-bottom: 56px;
+  padding: 44px 16px;
   border: 0.572728px solid #343434;
   border-radius: 4px;
   text-align: center;
   background: #151515;
-
-  ${props => props.theme.breakpoints.md} {
-    padding: 2rem 1.5rem;
-  }
-
-  @media screen and (max-width: 768px) {
-    padding: 2rem 1rem;
-  }
 
   svg,
   h3 {
@@ -95,8 +86,8 @@ const Quotes = () => (
       <Feature variants={item}>
         <P
           css={`
-            margin-bottom: 40px;
             font-weight: 400;
+            min-height: 104px;
           `}
         >
           “It's dramatically improved my experience of sharing ideas”
@@ -141,7 +132,7 @@ const Quotes = () => (
       <Feature variants={item}>
         <P
           css={`
-            margin-bottom: 40px;
+            min-height: 104px;
             font-weight: 400;
           `}
         >
@@ -187,7 +178,7 @@ const Quotes = () => (
       <Feature variants={item}>
         <P
           css={`
-            margin-bottom: 40px;
+            min-height: 104px;
             font-weight: 400;
           `}
         >
