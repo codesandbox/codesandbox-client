@@ -85,19 +85,6 @@ export const VideoComponent = styled.video`
 
   ${props => props.theme.breakpoints.md} {
     margin: auto;
-    transform: translateY(20px);
-  }
-
-  @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
-    transform: translateY(-250px);
-  }
-
-  @media screen and (max-width: 450px) {
-    transform: translateY(-40px);
-  }
-
-  @media screen and (max-width: 450px) and (max-height: 750px) {
-    transform: translateY(-150px);
   }
 
   ${props =>
