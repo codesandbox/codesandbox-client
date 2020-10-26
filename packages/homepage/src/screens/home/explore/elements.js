@@ -11,12 +11,13 @@ export const ImageWrapper = styled.div`
     display: grid;
     grid-template-columns: repeat(4, 324px);
     justify-content: center;
-    transform: rotateX(60deg) rotateY(0deg) rotateZ(39deg) translateY(-14rem) translateX(-3rem);
+    transform: rotateX(60deg) rotateY(0deg) rotateZ(39deg) translateY(-20rem)
+      translateX(-20rem);
 
-    @media screen and (max-width: 600px) {
-      transform: rotateX(60deg) rotateY(0deg) rotateZ(39deg) translateY(-44rem) translateX(-6rem);
+    ${props => props.theme.breakpoints.sm} {
+      transform: rotateX(60deg) rotateY(0deg) rotateZ(39deg) translateY(-40rem)
+        translateX(-10rem);
     }
-}
 
     > div {
       display: grid;
@@ -36,7 +37,6 @@ export const ImageWrapper = styled.div`
     :hover {
       transform: scale(1.05);
       z-index: 10;
-      
     }
   }
 

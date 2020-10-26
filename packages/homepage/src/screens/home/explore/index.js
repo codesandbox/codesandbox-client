@@ -79,11 +79,11 @@ const Experiment = () => (
               transform: translateY(160px);
             `}
           >
-            <Sandbox id="i2160" image={ten} />
+            <Sandbox id="jorpp" image={two} />
             <Sandbox id="2wvzx" image={seven} />
           </div>
           <div>
-            <Sandbox id="jorpp" image={two} />
+            <Sandbox id="i2160" image={ten} />
             <Sandbox id="mh13b" image={three} />
           </div>
           <div
