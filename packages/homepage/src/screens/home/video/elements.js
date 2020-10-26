@@ -61,6 +61,15 @@ export const TabsWrapper = styled.div`
   transition-delay: 0.8s;
   height: 0;
 
+  ${props => props.theme.breakpoints.md} {
+    visibility: visible;
+    opacity: 1;
+    height: 280px;
+  }
+  ${props => props.theme.breakpoints.xs} {
+    height: 320px;
+  }
+
   ${props =>
     props.active &&
     css`
@@ -72,9 +81,6 @@ export const TabsWrapper = styled.div`
 export const VideoComponent = styled.video`
   margin: 40px auto;
   display: block;
-  opacity: 0.6;
-  transform: rotateX(60deg) rotateY(0deg) rotateZ(45deg) scale(1.2)
-    translateY(-200px);
   max-width: 100%;
   transition: all 1.2s cubic-bezier(0.85, 0, 0.15, 1);
   margin-bottom: 230px;
@@ -83,8 +89,13 @@ export const VideoComponent = styled.video`
     0px 9.55893px 4.77946px rgba(0, 0, 0, 0.12);
   border-radius: 4px;
 
+  transform: rotateX(60deg) rotateY(0deg) rotateZ(45deg) scale(1.2)
+    translateY(-200px);
+  opacity: 0.6;
+
   ${props => props.theme.breakpoints.md} {
-    margin: auto;
+    transform: none;
+    opacity: 1;
   }
 
   ${props =>
@@ -95,10 +106,7 @@ export const VideoComponent = styled.video`
         translateY(230px);
 
       ${props.theme.breakpoints.md} {
-        transform: translateY(160px);
-        height: auto;
-        margin-bottom: 310px;
-        margin-top: 200px;
+        transform: none;
       }
     `}
 `;
