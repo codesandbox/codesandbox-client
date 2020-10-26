@@ -73,7 +73,7 @@ const DevExperience = () => (
         position: absolute;
         z-index: 0;
         right: 0;
-        margin-top: -2rem;
+        margin-top: -6rem;
         opacity: 0.89;
         width: 100vw;
         border-bottom: 0.5px solid #343434;

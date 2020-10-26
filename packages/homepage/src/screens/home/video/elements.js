@@ -83,7 +83,6 @@ export const VideoComponent = styled.video`
   display: block;
   max-width: 100%;
   transition: all 1.2s cubic-bezier(0.85, 0, 0.15, 1);
-  margin-bottom: 230px;
   border: 1px solid rgb(36, 36, 36);
   box-shadow: 0px 9.55893px 19.1179px rgba(0, 0, 0, 0.24),
     0px 9.55893px 4.77946px rgba(0, 0, 0, 0.12);
@@ -92,10 +91,12 @@ export const VideoComponent = styled.video`
   transform: rotateX(60deg) rotateY(0deg) rotateZ(45deg) scale(1.2)
     translateY(-200px);
   opacity: 0.6;
+  margin-bottom: 230px;
 
   ${props => props.theme.breakpoints.md} {
     transform: none;
     opacity: 1;
+    margin-bottom: 0;
   }
 
   ${props =>
