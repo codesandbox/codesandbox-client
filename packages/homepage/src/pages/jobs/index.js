@@ -43,8 +43,15 @@ const Careers = ({
           <PageTitle>Join CodeSandbox</PageTitle>
           <HeroSection>
             <TitleDescription>
-              CodeSandbox provides free, instant, collaborative sandboxes for
-              rapid web development. Founded in 2017, we’ve raised more than
+               We think that building applications should be more accessible and 
+               collaborative. We’re solving that with CodeSandbox; we’re building 
+               a next-generation development platform where everyone can build an 
+               application or contribute to it. It’s our goal to improve collaboration 
+               between developers and other team members, and make application 
+               development faster and easier.
+              <br />
+              <br />
+              Founded in 2017, we’ve raised more than
               $15M from top-tier VCs and prominent industry figures, including
               EQT Ventures, Kleiner Perkins, Christian Bach & Mathias Biilmann
               (Netlify), and Dylan Field (Figma).
@@ -57,10 +64,7 @@ const Careers = ({
               Babel, among others.
               <br />
               <br />
-              We’re making it easier for everyone to create things with code.
-              We’re removing the hassle of setting up a development environment,
-              installing tooling, and sharing your project with others. Join us
-              at CodeSandbox and help build the future of coding on the web.
+              Join us at CodeSandbox and help build the future of coding on the web.
             </TitleDescription>
             <div>
               <h4>The Perks</h4>
