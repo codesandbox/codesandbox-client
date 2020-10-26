@@ -36,26 +36,10 @@ export const HeroWrapper = styled.section`
   justify-content: center;
   text-align: center;
   padding: 10rem 0 5rem 0;
-  margin-bottom:4rem;
-
-
-
+  margin-bottom: 4rem;
 
   ${props => props.theme.breakpoints.md} {
-    padding: 5rem 0 5rem 0;
-    min-height: 74vh;
-    height:auto:
-
-  }
-
-  ${props => props.theme.breakpoints.sm} {
-    min-height: 100vh;
-    padding: 4rem 0 5rem 0;
-
-  }
-
-  ${props => props.theme.breakpoints.xs} {
-    min-height: 140vw;
+    padding-top: 5rem;
   }
 `;
 
