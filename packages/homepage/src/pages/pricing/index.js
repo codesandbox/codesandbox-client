@@ -38,7 +38,7 @@ export default () => (
           <CardTitle>Community</CardTitle>
           <Price
             css={`
-              margin-bottom: 53px;
+              min-height: 72px;
             `}
           >
             Free
@@ -66,8 +66,10 @@ export default () => (
       <Card>
         <div>
           <CardTitle>Pro</CardTitle>
-          <Price style={{ marginBottom: '0.5rem' }}>$9/Month</Price>
-          <PriceSubText>billed annually or $12 month-to-month</PriceSubText>
+          <div style={{ minHeight: 72 }}>
+            <Price style={{ marginBottom: '0.5rem' }}>$9/Month</Price>
+            <PriceSubText>billed annually or $12 month-to-month</PriceSubText>
+          </div>
           <List
             css={`
               color: white;
@@ -97,7 +99,7 @@ export default () => (
           <CardTitle>Pro Workspaces</CardTitle>
           <Price
             css={`
-              margin-top: 16px;
+              min-height: 72px;
             `}
           >
             Join the waitlist
@@ -106,16 +108,18 @@ export default () => (
             as="section"
             css={`
               color: white;
-              text-align: center;
               font-size: 16px;
-              max-width: 298px;
-              margin: 55px auto 0 auto;
+              margin: 0 auto;
+              ${props => props.theme.breakpoints.xl} {
+                max-width: 298px;
+                text-align: center;
+              }
             `}
           >
             Prototype, interview, and collaborate on code with your entire team.
             <br />
             <br />
-            Manage and work on sandboxes collectively—get feedback, or code
+            Manage and work on sandboxes collectively — get feedback, or code
             together.
             <br />
             <br />

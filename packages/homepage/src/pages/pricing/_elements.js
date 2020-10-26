@@ -6,7 +6,7 @@ export const Card = styled.div`
 
   background: ${props => (props.dark ? '#151515' : props.theme.homepage.blue)};
   border-radius: 0.25rem;
-  padding: 2.5rem;
+  padding: 2.5rem 1.5rem;
   text-align: center;
 
   display: flex;
