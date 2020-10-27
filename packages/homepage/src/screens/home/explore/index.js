@@ -34,7 +34,15 @@ const Experiment = () => (
       border-bottom: 1px solid #343434;
     `}
   >
-    <div style={{ marginTop: '2rem', ...WRAPPER_STYLING, textAlign: 'center' }}>
+    <div
+      style={{
+        marginTop: '2rem',
+        ...WRAPPER_STYLING,
+        textAlign: 'center',
+        position: 'relative',
+        zIndex: 2,
+      }}
+    >
       <H2 css={'white-space: pre-line;'}>
         Create static sites, components, <nobr>full-stack</nobr> web&nbsp;apps
       </H2>
