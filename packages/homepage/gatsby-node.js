@@ -20,9 +20,7 @@ const getBlogNodeInfo = ({
   photo,
 });
 const getDocsSlug = ({ node: { fileAbsolutePath } }) => {
-  const fileName = getRelativePath(fileAbsolutePath)
-    .split('/')
-    .reverse()[0];
+  const fileName = getRelativePath(fileAbsolutePath).split('/').reverse()[0];
 
   return fileName.split('.md')[0].split('-')[1];
 };
@@ -169,7 +167,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const docsTemplate = resolve(__dirname, './src/templates/docs.js');
   const blogTemplate = resolve(__dirname, './src/templates/post.js');
-  const jobTemplate = resolve(__dirname, './src/templates/job.js');
+
   const featureTemplate = resolve(__dirname, './src/templates/feature.js');
   // Redirect /index.html to root.
   createRedirect({
@@ -247,32 +245,6 @@ exports.createPages = async ({ graphql, actions }) => {
       },
     });
   });
-
-  // JOBS
-
-  const allJobs = await graphql(`
-    {
-      allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/jobs/" } }) {
-        edges {
-          node {
-            id
-            frontmatter {
-              slug
-            }
-          }
-        }
-      }
-    }
-  `);
-  if (allJobs.data) {
-    allJobs.data.allMarkdownRemark.edges.forEach(edge => {
-      createPage({
-        path: 'job/' + edge.node.frontmatter.slug,
-        component: jobTemplate,
-        context: { id: edge.node.id },
-      });
-    });
-  }
 
   // FEATURES
 
