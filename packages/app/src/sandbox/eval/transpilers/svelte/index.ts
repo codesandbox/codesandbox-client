@@ -4,10 +4,9 @@ import SvelteWorker from 'worker-loader?publicPath=/&name=svelte-transpiler.[has
 /* eslint-enable import/default */
 
 import semver from 'semver';
+import { LoaderContext, TranspilerResult } from 'sandpack-core';
 
 import WorkerTranspiler from '../worker-transpiler';
-import { LoaderContext } from '../../transpiled-module';
-import { TranspilerResult } from '..';
 
 class SvelteTranspiler extends WorkerTranspiler {
   worker: Worker;

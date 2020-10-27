@@ -4,11 +4,11 @@ import { Element } from '@codesandbox/components';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { useOvermind } from 'app/overmind';
-import { TeamIcon } from '@codesandbox/common/lib/components/icons/Team';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Authorization } from 'app/graphql/types';
 import { sortBy } from 'lodash-es';
 import { RoomInfo } from '@codesandbox/common/lib/types';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 import { CollaboratorItem, Collaborator, Invitation } from './Collaborator';
 
 const Animated = ({ showMountAnimations, ...props }) => (
@@ -78,14 +78,21 @@ export const CollaboratorList = () => {
         paddingBottom: 4,
       })}
     >
-      {team && (
+      {team && team.id !== author.personalWorkspaceId && (
         <Animated showMountAnimations={showMountAnimations}>
           <CollaboratorItem
             name={team.name}
-            avatarComponent={<TeamIcon width={24} height={24} />}
+            avatarComponent={
+              <TeamAvatar
+                style={{ width: '100%', height: '100%', borderWidth: 0 }}
+                name={team.name}
+                avatar={team.avatarUrl}
+              />
+            }
             authorization={Authorization.Owner}
             permissions={[]}
-            permissionText="Owner"
+            permissionText="Can Access"
+            subtext="All workspace members"
           />
         </Animated>
       )}
@@ -107,7 +114,6 @@ export const CollaboratorList = () => {
             key={collaborator.user.username}
           >
             <Collaborator
-              userId={collaborator.user.id}
               username={collaborator.user.username}
               avatarUrl={collaborator.user.avatarUrl}
               authorization={collaborator.authorization}

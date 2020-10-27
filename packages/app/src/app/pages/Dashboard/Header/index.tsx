@@ -28,7 +28,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
 
     const {
       actions: { openCreateSandboxModal },
-      state: { user, activeTeam },
+      state: { user, activeTeam, activeWorkspaceAuthorization },
     } = useOvermind();
 
     const history = useHistory();
@@ -95,6 +95,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
           <Button
             variant="primary"
             css={css({ width: 'auto', paddingX: 3 })}
+            disabled={activeWorkspaceAuthorization === 'READ'}
             onClick={() => {
               openCreateSandboxModal({});
             }}

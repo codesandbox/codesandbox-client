@@ -6,7 +6,6 @@ import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
 import { Notifications } from 'app/components/Notifications';
 
-import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 import {
   EmbedIcon,
   ForkIcon,
@@ -37,6 +36,7 @@ export const Actions = () => {
       hasLogIn,
       updateStatus,
       user,
+      activeWorkspaceAuthorization,
       live: { isLive },
       editor: {
         isForkingSandbox,
@@ -105,30 +105,26 @@ export const Actions = () => {
 
       {user?.experiments?.collaborator && isLive ? (
         <CollaboratorHeads />
+      ) : hasLogIn ? (
+        <TooltipButton
+          tooltip={userLiked ? 'Undo like sandbox' : 'Like sandbox'}
+          variant="link"
+          onClick={() => likeSandboxToggled(id)}
+        >
+          <LikeIcon
+            css={css({
+              height: 3,
+              marginRight: 1,
+              color: userLiked ? 'reds.500' : 'inherit',
+            })}
+          />{' '}
+          <span>{likeCount}</span>
+        </TooltipButton>
       ) : (
-        <>
-          {hasLogIn ? (
-            <TooltipButton
-              tooltip={userLiked ? 'Undo like sandbox' : 'Like sandbox'}
-              variant="link"
-              onClick={() => likeSandboxToggled(id)}
-            >
-              <LikeIcon
-                css={css({
-                  height: 3,
-                  marginRight: 1,
-                  color: userLiked ? 'reds.500' : 'inherit',
-                })}
-              />{' '}
-              <span>{likeCount}</span>
-            </TooltipButton>
-          ) : (
-            <Stack gap={1} paddingX={2} align="center">
-              <LikeIcon css={css({ height: 3 })} />
-              <span>{likeCount}</span>
-            </Stack>
-          )}
-        </>
+        <Stack gap={1} paddingX={2} align="center">
+          <LikeIcon css={css({ height: 3 })} />
+          <span>{likeCount}</span>
+        </Stack>
       )}
 
       {user?.curatorAt && (
@@ -141,29 +137,26 @@ export const Actions = () => {
         </Button>
       )}
 
-      {user?.experiments.collaborator && (
-        <>
-          {author ? (
-            <Collaborators
-              renderButton={props => (
-                <Button
-                  variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
-                  {...props}
-                >
-                  <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Share
-                </Button>
-              )}
-            />
-          ) : (
-            <Button
-              variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
-              onClick={() => modalOpened({ modal: 'share' })}
-            >
-              <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Embed
-            </Button>
-          )}
-        </>
-      )}
+      {user?.experiments.collaborator &&
+        (author ? (
+          <Collaborators
+            renderButton={props => (
+              <Button
+                variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
+                {...props}
+              >
+                <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Share
+              </Button>
+            )}
+          />
+        ) : (
+          <Button
+            variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
+            onClick={() => modalOpened({ modal: 'share' })}
+          >
+            <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Embed
+          </Button>
+        ))}
 
       {!user?.experiments.collaborator && (
         <Button
@@ -174,7 +167,7 @@ export const Actions = () => {
         </Button>
       )}
 
-      {user && NEW_DASHBOARD ? (
+      {user ? (
         <ForkButton
           user={user}
           forkClicked={teamId => forkSandboxClicked({ teamId })}
@@ -193,6 +186,7 @@ export const Actions = () => {
         variant="secondary"
         css={css({ paddingX: 3 })}
         onClick={() => openCreateSandboxModal({})}
+        disabled={activeWorkspaceAuthorization === 'READ'}
       >
         Create Sandbox
       </Button>

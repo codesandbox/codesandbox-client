@@ -65,6 +65,8 @@ export type Module = {
   insertedAt: string;
   updatedAt: string;
   path: string;
+  uploadId?: string;
+  sha?: string;
   type: 'file';
 };
 
@@ -301,6 +303,7 @@ export type GitFileCompare = {
   deletions: number;
   filename: string;
   status: 'added' | 'modified' | 'removed';
+  isBinary: boolean;
   content?: string;
 };
 
@@ -345,6 +348,8 @@ export type SandboxAuthor = {
   avatarUrl: string;
   badges: Badge[];
   subscriptionSince: string | null;
+  subscriptionPlan: 'pro' | 'patron';
+  personalWorkspaceId: string;
 };
 
 export enum CommentsFilterOption {
@@ -388,6 +393,7 @@ export type Sandbox = {
   team: {
     id: string;
     name: string;
+    avatarUrl: string | undefined;
   } | null;
   roomId: string | null;
   privacy: 0 | 1 | 2;
@@ -494,6 +500,7 @@ export type PackageJSON = {
   name: string;
   version: string;
   description?: string;
+  alias?: { [key: string]: string };
   keywords?: string[];
   main?: string;
   module?: string;
@@ -544,10 +551,12 @@ export enum WindowOrientation {
 
 export type Profile = {
   viewCount: number;
+  githubUsername: string | null;
   username: string;
   subscriptionSince: string;
   showcasedSandboxShortid: string;
   sandboxCount: number;
+  templateCount: number;
   receivedLikeCount: number;
   name: string;
   id: string;
@@ -557,6 +566,8 @@ export type Profile = {
   avatarUrl: string;
   bio?: string;
   socialLinks?: string[];
+  featuredSandboxes: Sandbox[];
+  personalWorkspaceId: string;
   teams: Array<{
     id: string;
     name: string;
@@ -713,12 +724,12 @@ export type GitPathChanges = {
 };
 
 export type GitChanges = {
-  added: Array<{ path: string; content: string; encoding: 'utf-8' | 'binary' }>;
+  added: Array<{ path: string; content: string; encoding: 'utf-8' | 'base64' }>;
   deleted: string[];
   modified: Array<{
     path: string;
     content: string;
-    encoding: 'utf-8' | 'binary';
+    encoding: 'utf-8' | 'base64';
   }>;
 };
 

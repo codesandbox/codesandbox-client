@@ -1,0 +1,4 @@
+ui: tdd
+color: true
+require: 'source-map-support/register'
+spec: './dist/**/*.test.js'

@@ -1,6 +1,10 @@
 import React from 'react';
+import { Profile } from '@codesandbox/common/lib/types';
 import { motion } from 'framer-motion';
+import { useOvermind } from 'app/overmind';
+import { Link as RouterLink } from 'react-router-dom';
 import {
+  Grid,
   Stack,
   Avatar,
   Text,
@@ -11,11 +15,10 @@ import {
   Input,
   Tooltip,
 } from '@codesandbox/components';
-import { TeamAvatar } from 'app/components/TeamAvatar';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 
-export const ProfileCard = ({ defaultEditing = false }) => {
+export const ProfileCard = () => {
   const {
     actions: {
       profile: { updateUserProfile },
@@ -26,11 +29,11 @@ export const ProfileCard = ({ defaultEditing = false }) => {
     },
   } = useOvermind();
 
-  const [editing, setEditing] = React.useState(defaultEditing);
+  const [editing, setEditing] = React.useState(false);
   const [bio, setBio] = React.useState(user.bio || '');
   const [socialLinks, setSocialLinks] = React.useState(user.socialLinks || []);
 
-  const onSubmit = event => {
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     updateUserProfile({ bio, socialLinks: socialLinks.filter(item => item) });
 
@@ -48,11 +51,12 @@ export const ProfileCard = ({ defaultEditing = false }) => {
 
   return (
     <Stack
-      as={motion.div}
+      as={motion.form}
+      onSubmit={onSubmit}
       direction="vertical"
       justify="space-between"
       css={css({
-        width: '320px',
+        width: '100%',
         minHeight: '320px',
         backgroundColor: 'grays.700',
         borderRadius: 'medium',
@@ -60,6 +64,7 @@ export const ProfileCard = ({ defaultEditing = false }) => {
         borderColor: 'grays.600',
         paddingTop: 2,
         paddingBottom: 6,
+        marginBottom: 8,
       })}
     >
       <Stack direction="vertical">
@@ -98,16 +103,20 @@ export const ProfileCard = ({ defaultEditing = false }) => {
             <Stack direction="vertical" gap={3}>
               <Stack gap={2} align="center">
                 <Icon name="box" />
-                <Text size={3}>{user.sandboxCount} Sandboxes</Text>
+                <Link as={RouterLink} to="/" size={3}>
+                  {user.sandboxCount + user.templateCount} Sandboxes
+                </Link>
               </Stack>
               <Stack gap={2} align="center">
                 <Icon name="heart" />
-                <Text size={3}>{user.receivedLikeCount} Likes</Text>
+                <Link as={RouterLink} to="/likes" size={3}>
+                  {user.givenLikeCount} Likes
+                </Link>
               </Stack>
             </Stack>
           )}
         </Stack>
-        {user.teams.length ? (
+        {user.teams.length > 1 ? (
           <Stack
             direction="vertical"
             gap={4}
@@ -119,11 +128,13 @@ export const ProfileCard = ({ defaultEditing = false }) => {
             })}
           >
             <Text size={2} weight="bold">
-              Team
+              Teams
             </Text>
-            <Stack gap={3}>
+            <Grid
+              css={{ gridTemplateColumns: 'repeat(auto-fill, 26px)', gap: 12 }}
+            >
               {user.teams
-                .slice()
+                .slice(1) // first one is always personal workspace
                 .sort((team1, team2) =>
                   team1.avatarUrl && !team2.avatarUrl ? -1 : 1
                 )
@@ -134,30 +145,35 @@ export const ProfileCard = ({ defaultEditing = false }) => {
                     </span>
                   </Tooltip>
                 ))}
-            </Stack>
+            </Grid>
           </Stack>
         ) : null}
-        <Stack
-          css={css({
-            paddingX: 6,
-            paddingY: 4,
-            marginBottom: 4,
-            borderTop: '1px solid',
-            borderColor: 'grays.600',
-          })}
-        >
-          <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
+
+        {socialLinks.length || editing ? (
+          <Stack
+            direction="vertical"
+            gap={4}
+            css={css({
+              width: '100%',
+              paddingX: 6,
+              paddingY: 4,
+              marginBottom: 4,
+              borderTop: '1px solid',
+              borderColor: 'grays.600',
+            })}
+          >
             <Text size={2} weight="bold">
               Other places
             </Text>
             <SocialLinks
               username={user.username}
               socialLinks={socialLinks}
+              githubUsername={user.githubUsername}
               editing={editing}
               setSocialLinks={setSocialLinks}
             />
           </Stack>
-        </Stack>
+        ) : null}
       </Stack>
 
       {myProfile ? (
@@ -171,13 +187,20 @@ export const ProfileCard = ({ defaultEditing = false }) => {
         >
           {editing ? (
             <>
-              <Button onClick={onSubmit}>Save changes</Button>
+              <Button type="submit">Save changes</Button>
               <Button variant="link" type="button" onClick={onCancel}>
                 Cancel
               </Button>
             </>
           ) : (
-            <Button variant="secondary" onClick={() => setEditing(true)}>
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                event.preventDefault();
+                setEditing(true);
+              }}
+            >
               Edit Profile
             </Button>
           )}
@@ -187,51 +210,42 @@ export const ProfileCard = ({ defaultEditing = false }) => {
   );
 };
 
-const Bio = ({ bio, editing, setBio }) => (
-  <>
-    {editing ? (
-      <Textarea
-        autosize
-        maxLength={280}
-        defaultValue={bio}
-        onChange={event => setBio(event.target.value)}
-      />
-    ) : (
-      <Text size={3} variant="muted">
-        {bio}
-      </Text>
-    )}
-  </>
-);
+export const Bio: React.FC<{
+  bio: Profile['bio'];
+  setBio: (bio: Profile['bio']) => void;
+  editing: boolean;
+}> = ({ bio, editing, setBio }) =>
+  editing ? (
+    <Textarea
+      autosize
+      maxLength={280}
+      defaultValue={bio}
+      onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+        setBio(event.target.value)
+      }
+    />
+  ) : (
+    <Text size={3} variant="muted">
+      {bio}
+    </Text>
+  );
 
-const SocialLinks = ({ username, socialLinks, editing, setSocialLinks }) => (
+const SocialLinks: React.FC<{
+  username: Profile['username'];
+  socialLinks: Profile['socialLinks'];
+  githubUsername: Profile['githubUsername'];
+  editing: boolean;
+  setSocialLinks: (socialLinks: Profile['socialLinks']) => void;
+}> = ({ username, socialLinks, githubUsername, setSocialLinks, editing }) => (
   <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
-    <Stack
-      as={Link}
-      href={`https://github.com/${username}`}
-      target="_blank"
-      gap={2}
-      align="center"
-    >
-      <Icon name="github" />
-      <Text size={3}>{username}</Text>
-    </Stack>
-
     {editing ? (
-      <Stack
-        as="form"
-        direction="vertical"
-        gap={4}
-        onSubmit={event => {
-          event.preventDefault();
-        }}
-      >
+      <Stack direction="vertical" gap={4}>
         {socialLinks.map((link, index) => (
           <Input
             key={link}
             defaultValue={link}
             autoFocus
-            onChange={event => {
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               const links = [...socialLinks];
               links[index] = event.target.value;
               setSocialLinks(links);
@@ -253,6 +267,22 @@ const SocialLinks = ({ username, socialLinks, editing, setSocialLinks }) => (
       </Stack>
     ) : (
       <>
+        {githubUsername && (
+          <Stack
+            as={Link}
+            href={`https://github.com/${githubUsername}`}
+            target="_blank"
+            gap={2}
+            align="center"
+          >
+            <Icon
+              name={getIconNameFromUrl(`https://github.com/${githubUsername}`)}
+            />
+            <Text size={3}>
+              {getPrettyLinkFromUrl(`https://github.com/${githubUsername}`)}
+            </Text>
+          </Stack>
+        )}
         {socialLinks.map(link => (
           <Stack
             as={Link}
@@ -271,15 +301,15 @@ const SocialLinks = ({ username, socialLinks, editing, setSocialLinks }) => (
   </Stack>
 );
 
-const getIconNameFromUrl = url => {
+const getIconNameFromUrl = (url: string) => {
   if (url.includes('github.com')) return 'github';
   if (url.includes('twitter.com')) return 'twitter';
   return 'globe';
 };
 
-const getPrettyLinkFromUrl = url =>
+const getPrettyLinkFromUrl = (url: string) =>
   url
     .replace('https://', '')
     .replace('http://', '')
     .replace('twitter.com/', '')
-    .replace('gituhb.com/', '');
+    .replace('github.com/', '');

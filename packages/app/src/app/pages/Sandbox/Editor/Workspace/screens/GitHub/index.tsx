@@ -243,7 +243,7 @@ export const GitHub = () => {
     );
   }
 
-  return (
+  return originalGit ? (
     <>
       {originalGit ? (
         <>
@@ -315,5 +315,7 @@ export const GitHub = () => {
         </>
       )}
     </>
+  ) : (
+    <CreateRepo />
   );
 };

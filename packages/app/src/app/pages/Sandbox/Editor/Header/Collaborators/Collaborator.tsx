@@ -112,12 +112,10 @@ export const CollaboratorItem = ({
 
 interface ICollaboratorProps {
   authorization: Authorization;
-  userId: string;
   username: string;
   lastSeenAt: string | null;
   avatarUrl: string;
   isViewingNow: boolean;
-
   readOnly?: boolean;
   warning?: string;
 }

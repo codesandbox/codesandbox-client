@@ -143,18 +143,64 @@ class Live {
     return this.connectionPromise;
   }
 
+  private jwtPromise: Promise<string> | undefined;
+  /**
+   * Will return a promise for new jwt token, but if there's already a request
+   * underway it will return the existing promise. This is to prevent spamming
+   * the server with thousands of requests.
+   */
+  private provideJwtCached() {
+    if (!this.jwtPromise) {
+      this.jwtPromise = this.provideJwtToken()
+        .catch(e => {
+          this.jwtPromise = undefined;
+          return Promise.reject(e);
+        })
+        .then(jwt => {
+          setTimeout(() => {
+            // Token expires after 10 seconds, for safety we actually cache the token
+            // for 5 seconds
+            this.jwtPromise = undefined;
+          }, 5000);
+
+          return jwt;
+        });
+    }
+
+    return this.jwtPromise;
+  }
+
   private connectionPromise: Promise<Socket>;
   private async connect(): Promise<Socket> {
     if (!this.socket) {
       const protocol = process.env.LOCAL_SERVER ? 'ws' : 'wss';
-      let jwt = await this.provideJwtToken();
+      let jwt = await this.provideJwtCached();
       const params = () => ({
         guardian_token: jwt,
         client_version: VERSION,
       });
 
+      // An offset between 1 and 1.7;
+      const defaultReconnectOffset = 1 + Math.random() * 0.7;
+      let isServerDown = false;
+      const reconnectAfterMs = (tries: number) => {
+        if (isServerDown) {
+          return Math.floor(3000 + Math.random() * 2000);
+        }
+
+        // Based on the times tried we slowly increase the reconnect timeout, so first time
+        // we try to reconnect in 10ms, second time in 50ms, third time in 100ms, fourth time in 150ms,
+        // etc...
+        return Math.floor(
+          [10, 50, 100, 150, 200, 250, 500, 1000, 2000][tries - 1] *
+            defaultReconnectOffset
+        );
+      };
+
       this.socket = new Socket(`${protocol}://${location.host}/socket`, {
         params,
+        // @ts-expect-error Wrong typings
+        reconnectAfterMs,
       });
 
       let tries = 0;
@@ -162,7 +208,7 @@ class Live {
         // Regenerate a new JWT for the reconnect. This can be out of sync or happen more often than needed, but it's important
         // to try multiple times in case there's a connection issue.
         try {
-          const newJwt = await this.provideJwtToken();
+          const newJwt = await this.provideJwtCached();
           jwt = newJwt;
           tries = 0;
         } catch (e) {
@@ -171,6 +217,14 @@ class Live {
             // If we can't get a jwt because we're unauthorized, disconnect...
             this.socket.disconnect();
             tries = 0;
+          }
+
+          // We have a 503 Bad Gateway, which means that the server is struggling. We need to increase
+          // the timeout...
+          if (error.response?.status === 503) {
+            isServerDown = true;
+          } else {
+            isServerDown = false;
           }
         }
       });

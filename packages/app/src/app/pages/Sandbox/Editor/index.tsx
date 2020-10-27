@@ -165,7 +165,7 @@ const Editor = ({ showNewSandboxModal }: EditorTypes) => {
               }}
             >
               {state.workspace.workspaceHidden ? <div /> : <Workspace />}
-              {<Content theme={localState.theme} />}
+              <Content theme={localState.theme} />
             </SplitPane>
             {showSkeleton || showNewSandboxModal ? (
               <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>

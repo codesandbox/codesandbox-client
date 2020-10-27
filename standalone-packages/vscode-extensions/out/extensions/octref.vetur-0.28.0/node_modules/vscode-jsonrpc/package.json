@@ -1,0 +1,29 @@
+{
+	"name": "vscode-jsonrpc",
+	"description": "A json rpc implementation over streams",
+	"version": "5.0.1",
+	"author": "Microsoft Corporation",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Microsoft/vscode-languageserver-node.git",
+		"directory": "jsonrpc"
+	},
+	"bugs": {
+		"url": "https://github.com/Microsoft/vscode-languageserver-node/issues"
+	},
+	"engines": {
+		"node": ">=8.0.0 || >=10.0.0"
+	},
+	"main": "./lib/main.js",
+	"typings": "./lib/main.d.ts",
+	"scripts": {
+		"prepublishOnly": "npm run clean && npm run compile && npm test",
+		"postpublish": "node ../build/npm/post-publish.js",
+		"compile": "node ../build/bin/tsc -b ./tsconfig.json",
+		"watch": "node ../build/bin/tsc -b ./tsconfig.json -w",
+		"test": "node ../node_modules/mocha/bin/_mocha",
+		"clean": "node ../node_modules/rimraf/bin.js lib",
+		"preversion": "npm test"
+	}
+}

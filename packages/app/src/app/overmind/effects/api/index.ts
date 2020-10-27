@@ -139,6 +139,24 @@ export default {
       )
       .then(transformModule);
   },
+  saveModulePrivateUpload(
+    sandboxId: string,
+    moduleShortid: string,
+    data: {
+      code: string;
+      uploadId: string;
+      sha: string;
+    }
+  ): Promise<Module> {
+    return api
+      .put<IModuleAPIResponse>(
+        `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
+        {
+          module: data,
+        }
+      )
+      .then(transformModule);
+  },
   saveModules(sandboxId: string, modules: Module[]): Promise<Module[]> {
     return api
       .put<IModuleAPIResponse[]>(`/sandboxes/${sandboxId}/modules/mupdate`, {
@@ -432,11 +450,16 @@ export default {
   },
   getUserSandboxes(
     username: string,
-    page: number
+    page: number | 'all' = 1,
+    sortBy: string = 'view_count',
+    direction: string = 'desc'
   ): Promise<{ [page: string]: Sandbox[] }> {
-    return api.get(`/users/${username}/sandboxes?sort_by=view_count`, {
-      page: String(page),
-    });
+    return api.get(
+      `/users/${username}/sandboxes?sort_by=${sortBy}&direction=${direction}`,
+      {
+        page: String(page),
+      }
+    );
   },
   getUserLikedSandboxes(
     username: string,
@@ -592,6 +615,16 @@ export default {
       user: {
         bio,
         socialLinks,
+      },
+    });
+  },
+  updateUserFeaturedSandboxes(
+    username: string,
+    featuredSandboxIds: string[]
+  ): Promise<Profile> {
+    return api.patch(`/users/${username}`, {
+      user: {
+        featuredSandboxes: featuredSandboxIds,
       },
     });
   },

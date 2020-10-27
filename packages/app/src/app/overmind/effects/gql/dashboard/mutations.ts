@@ -9,9 +9,11 @@ import {
   AddToFolderMutationVariables,
   MoveToTrashMutation,
   MoveToTrashMutationVariables,
-  ChangePrivacyMutationVariables,
   _PermanentlyDeleteSandboxesMutationVariables,
   ChangePrivacyMutation,
+  ChangePrivacyMutationVariables,
+  ChangeFrozenMutation,
+  ChangeFrozenMutationVariables,
   _PermanentlyDeleteSandboxesMutation,
   _LeaveTeamMutationVariables,
   _LeaveTeamMutation,
@@ -39,6 +41,8 @@ import {
   CreateFolderMutationVariables,
   SetTeamNameMutation,
   SetTeamNameMutationVariables,
+  ChangeTeamMemberAuthorizationMutation,
+  ChangeTeamMemberAuthorizationMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -145,6 +149,18 @@ export const changePrivacy: Query<
 > = gql`
   mutation changePrivacy($sandboxIds: [ID!]!, $privacy: Int!) {
     setSandboxesPrivacy(sandboxIds: $sandboxIds, privacy: $privacy) {
+      ...sandboxFragmentDashboard
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const changeFrozen: Query<
+  ChangeFrozenMutation,
+  ChangeFrozenMutationVariables
+> = gql`
+  mutation changeFrozen($sandboxIds: [ID!]!, $isFrozen: Boolean!) {
+    setSandboxesFrozen(sandboxIds: $sandboxIds, isFrozen: $isFrozen) {
       ...sandboxFragmentDashboard
     }
   }
@@ -293,4 +309,22 @@ export const setTeamName: Query<
     }
   }
   ${teamFragmentDashboard}
+`;
+
+export const changeTeamMemberAuthorization: Query<
+  ChangeTeamMemberAuthorizationMutation,
+  ChangeTeamMemberAuthorizationMutationVariables
+> = gql`
+  mutation ChangeTeamMemberAuthorization(
+    $teamId: ID!
+    $userId: ID!
+    $authorization: TeamMemberAuthorization!
+  ) {
+    changeTeamMemberAuthorizations(
+      teamId: $teamId
+      memberAuthorizations: { userId: $userId, authorization: $authorization }
+    ) {
+      id
+    }
+  }
 `;

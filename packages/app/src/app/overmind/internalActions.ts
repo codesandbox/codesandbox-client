@@ -1,4 +1,3 @@
-import { identify } from '@codesandbox/common/lib/utils/analytics';
 import {
   ModuleTab,
   NotificationButton,
@@ -7,7 +6,6 @@ import {
   ServerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
-import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 import history from 'app/utils/history';
 import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
@@ -20,6 +18,34 @@ import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
 import { Action, AsyncAction } from '.';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
+
+/**
+ * After getting the current user we need to hydrate the app with new data from that user.
+ * Everything with fetching for the user happens here.
+ */
+export const initializeNewUser: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  actions.dashboard.getTeams();
+  actions.internal.setPatronPrice();
+  effects.analytics.identify('signed_in', true);
+  effects.analytics.setUserId(state.user!.id, state.user!.email);
+
+  try {
+    actions.internal.trackCurrentTeams().catch(e => {});
+    actions.internal.identifyCurrentUser().catch(e => {});
+  } catch (e) {
+    // Not majorly important
+  }
+
+  actions.internal.showUserSurveyIfNeeded();
+  await effects.live.getSocket();
+  actions.userNotifications.internal.initialize();
+  actions.internal.setStoredSettings();
+  effects.api.preloadTemplates();
+};
 
 export const signIn: AsyncAction<{
   useExtraScopes?: boolean;
@@ -34,12 +60,7 @@ export const signIn: AsyncAction<{
     state.signInModalOpen = false;
     state.pendingUser = null;
     state.user = await effects.api.getCurrentUser();
-    await effects.live.getSocket();
-    actions.internal.setPatronPrice();
-    effects.analytics.identify('signed_in', true);
-    effects.analytics.setUserId(state.user.id, state.user.email);
-    actions.internal.setStoredSettings();
-    actions.userNotifications.internal.initialize(); // Seemed a bit different originally?
+    await actions.internal.initializeNewUser();
     actions.refetchSandboxInfo();
     state.hasLogIn = true;
     state.isAuthenticating = false;
@@ -200,9 +221,9 @@ export const switchCurrentWorkspaceBySandbox: Action<{ sandbox: Sandbox }> = (
   if (
     hasPermission(sandbox.authorization, 'owner') &&
     state.user &&
-    NEW_DASHBOARD
+    sandbox.team
   ) {
-    actions.setActiveTeam({ id: sandbox.team?.id || null });
+    actions.setActiveTeam({ id: sandbox.team.id });
   }
 };
 
@@ -419,28 +440,6 @@ export const handleError: Action<{
     return;
   }
 
-  const { response } = error as ApiError;
-
-  if (response?.status === 401) {
-    // Reset existing sign in info
-    identify('signed_in', false);
-    effects.analytics.setAnonymousId();
-
-    // Allow user to sign in again in notification
-    effects.notificationToast.add({
-      message: 'Your session seems to be expired, please log in again...',
-      status: NotificationStatus.ERROR,
-      actions: {
-        primary: {
-          label: 'Sign in',
-          run: () => actions.signInClicked(),
-        },
-      },
-    });
-
-    return;
-  }
-
   error.message = actions.internal.getErrorMessage({ error });
 
   const notificationActions: NotificationMessage['actions'] = {};
@@ -507,26 +506,12 @@ export const trackCurrentTeams: AsyncAction = async ({ effects, state }) => {
     return;
   }
 
-  if (NEW_DASHBOARD) {
-    if (state.activeTeamInfo) {
-      effects.analytics.setGroup('teamName', state.activeTeamInfo.name);
-      effects.analytics.setGroup('teamId', state.activeTeamInfo.id);
-    } else {
-      effects.analytics.setGroup('teamName', []);
-      effects.analytics.setGroup('teamId', []);
-    }
+  if (state.activeTeamInfo) {
+    effects.analytics.setGroup('teamName', state.activeTeamInfo.name);
+    effects.analytics.setGroup('teamId', state.activeTeamInfo.id);
   } else {
-    const { me } = await effects.gql.queries.teams({});
-    if (me) {
-      effects.analytics.setGroup(
-        'teamName',
-        me.teams.map(m => m.name)
-      );
-      effects.analytics.setGroup(
-        'teamId',
-        me.teams.map(m => m.id)
-      );
-    }
+    effects.analytics.setGroup('teamName', []);
+    effects.analytics.setGroup('teamId', []);
   }
 };
 
@@ -579,11 +564,12 @@ export const setViewModeForDashboard: Action = ({ effects, state }) => {
   }
 };
 
-export const setActiveTeamFromUrlOrStore: Action<void, string | null> = ({
+export const setActiveTeamFromUrlOrStore: AsyncAction<void, string> = async ({
   actions,
 }) =>
   actions.internal.setActiveTeamFromUrl() ||
-  actions.internal.setActiveTeamFromLocalStorage();
+  actions.internal.setActiveTeamFromLocalStorage() ||
+  actions.internal.setActiveTeamFromPersonalWorkspaceId();
 
 export const setActiveTeamFromLocalStorage: Action<void, string | null> = ({
   effects,
@@ -600,7 +586,6 @@ export const setActiveTeamFromLocalStorage: Action<void, string | null> = ({
 };
 
 export const setActiveTeamFromUrl: Action<void, string | null> = ({
-  effects,
   actions,
 }) => {
   const currentUrl =
@@ -611,10 +596,29 @@ export const setActiveTeamFromUrl: Action<void, string | null> = ({
 
   const searchParams = new URL(currentUrl).searchParams;
 
-  if (searchParams.get('workspace')) {
-    const teamId = searchParams.get('workspace');
-    actions.setActiveTeam({ id: teamId });
-    return teamId;
+  const workspaceParam = searchParams.get('workspace');
+  if (workspaceParam) {
+    actions.setActiveTeam({ id: workspaceParam });
+    return workspaceParam;
+  }
+
+  return null;
+};
+
+export const setActiveTeamFromPersonalWorkspaceId: AsyncAction<
+  void,
+  string
+> = async ({ actions, state, effects }) => {
+  const personalWorkspaceId = state.personalWorkspaceId;
+
+  if (personalWorkspaceId) {
+    actions.setActiveTeam({ id: personalWorkspaceId });
+    return personalWorkspaceId;
+  }
+  const res = await effects.gql.queries.getPersonalWorkspaceId({});
+  if (res.me) {
+    actions.setActiveTeam({ id: res.me.personalWorkspaceId });
+    return res.me.personalWorkspaceId;
   }
 
   return null;

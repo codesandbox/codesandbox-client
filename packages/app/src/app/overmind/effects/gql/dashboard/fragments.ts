@@ -1,40 +1,5 @@
 import { gql } from 'overmind-graphql';
 
-export const repoFragmentDashboard = gql`
-  fragment repoFragmentDashboard on Sandbox {
-    id
-    alias
-    title
-    insertedAt
-    updatedAt
-    removedAt
-    privacy
-    screenshotUrl
-    screenshotOutdated
-    likeCount
-    forkCount
-    viewCount
-    source {
-      template
-    }
-    baseGit {
-      branch
-      id
-      repo
-      username
-      path
-    }
-    originalGit {
-      branch
-      id
-      repo
-      username
-      path
-    }
-    prNumber
-  }
-`;
-
 export const sandboxFragmentDashboard = gql`
   fragment sandboxFragmentDashboard on Sandbox {
     id
@@ -45,6 +10,7 @@ export const sandboxFragmentDashboard = gql`
     updatedAt
     removedAt
     privacy
+    isFrozen
     screenshotUrl
     screenshotOutdated
     viewCount
@@ -72,6 +38,29 @@ export const sandboxFragmentDashboard = gql`
   }
 `;
 
+export const repoFragmentDashboard = gql`
+  fragment repoFragmentDashboard on Sandbox {
+    ...sandboxFragmentDashboard
+    baseGit {
+      branch
+      id
+      repo
+      username
+      path
+    }
+    originalGit {
+      branch
+      id
+      repo
+      username
+      path
+    }
+    prNumber
+  }
+
+  ${sandboxFragmentDashboard}
+`;
+
 export const sidebarCollectionDashboard = gql`
   fragment sidebarCollectionDashboard on Collection {
     id
@@ -87,17 +76,7 @@ export const templateFragmentDashboard = gql`
     iconUrl
     published
     sandbox {
-      id
-      alias
-      title
-      description
-      insertedAt
-      updatedAt
-      removedAt
-      viewCount
-      screenshotUrl
-      screenshotOutdated
-      privacy
+      ...sandboxFragmentDashboard
 
       git {
         id
@@ -121,6 +100,7 @@ export const templateFragmentDashboard = gql`
       }
     }
   }
+  ${sandboxFragmentDashboard}
 `;
 
 export const teamFragmentDashboard = gql`
@@ -130,6 +110,11 @@ export const teamFragmentDashboard = gql`
     description
     creatorId
     avatarUrl
+
+    userAuthorizations {
+      userId
+      authorization
+    }
 
     users {
       id
@@ -167,6 +152,11 @@ export const currentTeamInfoFragment = gql`
       id
       avatarUrl
       username
+    }
+
+    userAuthorizations {
+      userId
+      authorization
     }
   }
 `;

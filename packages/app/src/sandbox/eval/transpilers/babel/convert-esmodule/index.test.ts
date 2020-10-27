@@ -1,4 +1,9 @@
-import { convertEsModule } from '.';
+import { convertEsModule as convert } from '.';
+import { getSyntaxInfoFromAst } from '../syntax-info';
+
+function convertEsModule(code: string) {
+  return convert(code).code;
+}
 
 describe('convert-esmodule', () => {
   it('can convert reexports', () => {
@@ -133,6 +138,19 @@ describe('convert-esmodule', () => {
       async () => {
         const test = await test2()
       }
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('can handle block scopes', () => {
+    const code = `
+    import{makeRect as t,getOppositeSide as e,getCollisions as n}from"@interop-ui/utils";
+
+    if (true) {
+      let e = c;
+    }
+    e();
+
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });
@@ -396,7 +414,7 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
-  it('can convert normal exports', () => {
+  it('can convert exports containing overlapping exports', () => {
     const code = `
       export * from './some.js';
       export { default as some } from './some.js';
@@ -424,11 +442,153 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
-  it('can convert + +', () => {
+  it('retains the order of re-exports', () => {
     const code = `
-    c = (10.0, + +(15))
+    export * from '@tensorflow/tfjs-core';
+    import * as data2 from '@tensorflow/tfjs-test';
+    export * from '@tensorflow/tfjs-layers';
+    export * from '@tensorflow/tfjs-converter';
+    // Export data api as tf.data
+    import * as data from '@tensorflow/tfjs-data';
+    export { data };
     `;
 
-    expect(convertEsModule(code)).toMatchSnapshot();
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+    expect(result.indexOf('tfjs-core')).toBeLessThan(
+      result.indexOf('tfjs-data')
+    );
+    expect(result.indexOf('tfjs-core')).toBeLessThan(
+      result.indexOf('tfjs-layers')
+    );
+  });
+
+  it("doesn't hoist single import above export", () => {
+    const code = `
+    export * from '@tensorflow/tfjs-core';
+    import * as data from '@tensorflow/tfjs-data';
+    `;
+
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+    expect(result.indexOf('tfjs-core')).toBeLessThan(
+      result.indexOf('tfjs-data')
+    );
+  });
+
+  it('keeps function under hoisted import', () => {
+    const code = `
+    function a() {
+      return data.test
+    }
+    export * from '@tensorflow/tfjs-core';
+    import * as data from '@tensorflow/tfjs-data';
+    `;
+
+    const result = convertEsModule(code);
+    expect(result.indexOf('function a')).toBeGreaterThan(
+      result.indexOf('tfjs-data')
+    );
+    expect(result.indexOf('tfjs-core')).toBeLessThan(
+      result.indexOf('tfjs-data')
+    );
+  });
+
+  it('hoists exports as well', () => {
+    const code = `
+      function a() {
+        return 5;
+      }
+
+      export { c } from './a';
+      export * as data from './b';
+    `;
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+    expect(result.indexOf('function a')).toBeGreaterThan(result.indexOf('./a'));
+    expect(result.indexOf('function a')).toBeGreaterThan(result.indexOf('./b'));
+  });
+
+  it('keeps star exports after default export order', () => {
+    const code = `
+    export { default as withSearch } from "./withSearch";
+    export { default as WithSearch } from "./WithSearch";
+    export { a } from './test';
+    export * from "./containers";
+    `;
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+    expect(result.indexOf('./containers')).toBeGreaterThan(
+      result.indexOf('./withSearch')
+    );
+  });
+
+  it('hoists function exports', () => {
+    const code = `
+    export { test, test2 } from './test/store.js';
+
+export function test3() {
+}
+    `;
+
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('predefines possible exports', () => {
+    const code = `
+      export const a = 5;
+      export function b() {};
+      export class c {};
+      const d = 5;
+      const e = 5;
+      export { d, e as e1 };
+      export const { f, g: bah } = b();
+      export default function h() {};
+      export default class i {};
+      export { j } from './foo';
+      export { k as l } from './foo';
+      export { m as default } from './foo';
+    `;
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+  });
+
+  describe('syntax info', () => {
+    it('can detect jsx', () => {
+      const code = `const a = <div>Hello</div>`;
+      const info = convert(code);
+      const syntaxInfo = getSyntaxInfoFromAst(info.ast);
+      expect(syntaxInfo.jsx).toBeTruthy();
+    });
+
+    it('can detect non jsx', () => {
+      const code = `const a = /<div>Hello<\\/div>/`;
+      const info = convert(code);
+      const syntaxInfo = getSyntaxInfoFromAst(info.ast);
+      expect(syntaxInfo.jsx).toBeFalsy();
+    });
+  });
+
+  describe('printer issues', () => {
+    it('can convert + +', () => {
+      const code = `
+      c = (10.0, + +(15))
+      `;
+
+      expect(convertEsModule(code)).toMatchSnapshot();
+    });
+
+    it('can convert -(--i)', () => {
+      const code = `a = -(--i)`;
+      expect(convertEsModule(code)).toBe('"use strict";\na = - --i;\n');
+    });
+
+    it('can convert unicode line breaks', () => {
+      const code = `const a = "[\\u2028]";`;
+      expect(convertEsModule(code)).toBe(
+        '"use strict";\nconst a = "[\\u2028]";\n'
+      );
+    });
   });
 });

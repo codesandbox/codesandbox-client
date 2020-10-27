@@ -59,11 +59,11 @@ function getFolderName(item: GenericSandboxProps['item']): string {
 
 const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const {
-    state: { dashboard },
+    state: { dashboard, activeWorkspaceAuthorization },
     actions,
   } = useOvermind();
 
-  const { sandbox, type, noDrag, autoFork } = item;
+  const { sandbox, type } = item;
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
@@ -118,6 +118,13 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   const Component: React.FC<SandboxItemComponentProps> =
     viewMode === 'list' ? SandboxListItem : SandboxCard;
+
+  /** Access restrictions */
+  let { noDrag, autoFork } = item;
+  if (activeWorkspaceAuthorization === 'READ') {
+    noDrag = true;
+    autoFork = false;
+  }
 
   // interactions
   const {
@@ -211,11 +218,8 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     async (event?: React.FormEvent<HTMLFormElement>) => {
       if (event) event.preventDefault();
       await actions.dashboard.renameSandbox({
-        page,
         id: sandbox.id,
         title: newTitle,
-        oldTitle: sandboxTitle,
-        repoName: sandbox.originalGit?.repo,
       });
       setRenaming(false);
       track('Dashboard - Rename sandbox', { dashboardVersion: 2 });
@@ -244,8 +248,8 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   };
 
   const sandboxProps = {
-    autoFork: item.autoFork,
-    noDrag: item.noDrag,
+    autoFork,
+    noDrag,
     sandboxTitle,
     sandboxLocation,
     lastUpdated,
@@ -267,7 +271,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     opacity: isDragging ? 0.25 : 1,
   };
 
-  const dragProps = noDrag
+  const dragProps = sandboxProps.noDrag
     ? {}
     : {
         ref: dragRef,

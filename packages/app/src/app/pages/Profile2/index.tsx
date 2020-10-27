@@ -1,29 +1,40 @@
 import React from 'react';
-import {
-  ThemeProvider,
-  Element,
-  Stack,
-  Grid,
-  Column,
-  Text,
-  Stats,
-  Link,
-} from '@codesandbox/components';
-import css from '@styled-system/css';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOvermind } from 'app/overmind';
+import { ThemeProvider, Stack, Element } from '@codesandbox/components';
+import css from '@styled-system/css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  RouteComponentProps,
+} from 'react-router-dom';
+import { DndProvider } from 'react-dnd';
+import Backend from 'react-dnd-html5-backend';
+import { Helmet } from 'react-helmet';
+import { NotFound } from 'app/pages/common/NotFound';
 import { Header } from './Header';
 import { ProfileCard } from './ProfileCard';
+import { ShowcaseSandbox } from './ShowcaseSandbox';
+import { PinnedSandboxes } from './PinnedSandboxes';
+import { AllSandboxes } from './AllSandboxes';
+import { SearchedSandboxes } from './SearchedSandboxes';
+import { LikedSandboxes } from './LikedSandboxes';
 
-export const Profile = props => {
-  const { username } = props.match.params;
+import { ContextMenu } from './ContextMenu';
 
+export const Profile: React.FunctionComponent<RouteComponentProps<{
+  username: string;
+}>> = ({
+  match: {
+    params: { username },
+  },
+}) => {
   const {
     actions: {
       profile: { profileMounted },
     },
     state: {
-      profile: { current: user, showcasedSandbox },
+      profile: { current: user, notFound },
     },
   } = useOvermind();
 
@@ -31,131 +42,64 @@ export const Profile = props => {
     profileMounted(username);
   }, [profileMounted, username]);
 
+  if (notFound) {
+    return <NotFound />;
+  }
+
   if (!user) return null;
 
   return (
     <ThemeProvider>
-      <Stack
-        direction="vertical"
-        gap={104}
-        css={css({
-          height: '100%',
-          width: '100vw',
-          backgroundColor: 'grays.900',
-          color: 'white',
-          fontFamily: 'Inter, sans-serif',
-        })}
-      >
-        <Header />
+      <Router basename={`/u2/${user.username}`}>
+        <Stack
+          direction="vertical"
+          gap={104}
+          css={css({
+            height: '100vh',
+            width: '100vw',
+            backgroundColor: 'grays.900',
+            color: 'white',
+            fontFamily: 'Inter, sans-serif',
+          })}
+        >
+          <Helmet>
+            <title>{user.name || user.username} - CodeSandbox</title>
+          </Helmet>
+          <Header />
 
-        <Stack marginX={64} gap={8}>
-          <div>
-            <ProfileCard />
-          </div>
-          <Stack direction="vertical" gap={10} css={{ flexGrow: 1 }}>
-            {showcasedSandbox && (
-              <Element
-                as="iframe"
-                src={`https://${showcasedSandbox.id}.csb.app?standalone=1`}
-                css={css({
-                  backgroundColor: 'white',
-                  width: '100%',
-                  height: 360,
-                  borderRadius: '4px',
-                  overflow: 'hidden',
-                  border: '1px solid',
-                  borderColor: 'grays.600',
-                })}
-                title="React"
-                allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-                sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-              />
-            )}
-            <AllSandboxes />
-          </Stack>
-        </Stack>
-      </Stack>
-    </ThemeProvider>
-  );
-};
-
-const AllSandboxes = () => {
-  const {
-    actions: {
-      profile: { sandboxesPageChanged },
-    },
-    state: {
-      profile: {
-        current: { username },
-        isLoadingSandboxes,
-        sandboxes: fetchedSandboxes,
-      },
-    },
-  } = useOvermind();
-
-  const [page] = React.useState(0);
-
-  React.useEffect(() => {
-    sandboxesPageChanged(page);
-  }, [sandboxesPageChanged, page]);
-
-  if (isLoadingSandboxes) return <span>loading</span>;
-
-  if (!fetchedSandboxes[username]) return <span>none</span>;
-
-  const sandboxes = fetchedSandboxes[username][page];
-
-  return (
-    <Grid
-      rowGap={6}
-      columnGap={6}
-      css={{
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      }}
-    >
-      {sandboxes.map(sandbox => (
-        <Column key={sandbox.id}>
           <Stack
-            as={Link}
-            href={sandboxUrl({ id: sandbox.id, alias: sandbox.alias })}
-            direction="vertical"
-            gap={4}
+            gap={8}
             css={css({
-              backgroundColor: 'grays.700',
-              border: '1px solid',
-              borderColor: 'grays.600',
-              borderRadius: 'medium',
-              overflow: 'hidden',
-              ':hover, :focus, :focus-within': {
-                boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
-              },
+              flexDirection: ['column', 'row'],
+              marginX: [32, 64],
             })}
           >
-            <div
-              css={css({
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '160px',
-                backgroundColor: 'grays.600',
-                backgroundSize: 'cover',
-                backgroundPosition: 'top center',
-                backgroundRepeat: 'no-repeat',
-                borderBottom: '1px solid',
-                borderColor: 'grays.600',
-              })}
-              style={{
-                backgroundImage: `url(${sandbox.screenshotUrl ||
-                  `/api/v1/sandboxes/${sandbox.id}/screenshot.png`})`,
-              }}
-            />
-            <Stack direction="vertical" gap={2} marginX={4} marginBottom={4}>
-              <Text>{sandbox.title || sandbox.alias || sandbox.id}</Text>
-              <Stats sandbox={sandbox} />
-            </Stack>
+            <Element css={css({ width: ['100%', '320px'] })}>
+              <ProfileCard />
+            </Element>
+            <Element css={css({ width: ['100%', 'calc(100% - 320px)'] })}>
+              <Switch>
+                <Route path="/likes">
+                  <LikedSandboxes />
+                </Route>
+                <Route path="/search">
+                  <SearchedSandboxes />
+                </Route>
+                <Route path="/">
+                  <DndProvider backend={Backend}>
+                    <Stack direction="vertical" gap={14} css={{ flexGrow: 1 }}>
+                      <ShowcaseSandbox />
+                      <PinnedSandboxes />
+                      <AllSandboxes />
+                    </Stack>
+                  </DndProvider>
+                </Route>
+              </Switch>
+            </Element>
           </Stack>
-        </Column>
-      ))}
-    </Grid>
+        </Stack>
+        <ContextMenu />
+      </Router>
+    </ThemeProvider>
   );
 };

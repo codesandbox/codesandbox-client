@@ -11,12 +11,21 @@ export const Settings = () => {
   const { state } = useOvermind();
   const location = useLocation();
 
-  let Component;
+  const getComponent = () => {
+    if (location.pathname.includes('settings/new')) {
+      return NewTeam;
+    }
+    if (location.pathname.includes('invite')) {
+      return Invite;
+    }
+    if (state.activeTeam === state.personalWorkspaceId) {
+      return UserSettings;
+    }
 
-  if (location.pathname.includes('settings/new')) Component = NewTeam;
-  else if (location.pathname.includes('invite')) Component = Invite;
-  else if (state.activeTeam) Component = TeamSettings;
-  else Component = UserSettings;
+    return TeamSettings;
+  };
+
+  const Component = getComponent();
 
   return (
     <Element marginY={10}>

@@ -11,12 +11,15 @@ type FolderMenuProps = {
 };
 
 export const FolderMenu = ({ folder, setRenaming }: FolderMenuProps) => {
-  const { actions } = useOvermind();
+  const {
+    actions,
+    state: { activeWorkspaceAuthorization },
+  } = useOvermind();
   const { visible, setVisibility, position } = React.useContext(Context);
 
   const isDrafts = folder.path === '/drafts';
 
-  if (isDrafts)
+  if (isDrafts || activeWorkspaceAuthorization === 'READ')
     return (
       <Menu.ContextMenu
         visible={visible}

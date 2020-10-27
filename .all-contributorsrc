@@ -1596,6 +1596,24 @@
         "code",
         "plugin"
       ]
+    },
+    {
+      "login": "pablopunk",
+      "name": "Pablo Varela",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4324982?v=4",
+      "profile": "https://pablo.pink",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ryanpwaldon",
+      "name": "Ryan Waldon",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/12480362?v=4",
+      "profile": "https://github.com/ryanpwaldon",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

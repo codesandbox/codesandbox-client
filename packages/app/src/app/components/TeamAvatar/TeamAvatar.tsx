@@ -42,22 +42,21 @@ export const TeamAvatar = ({
   const avatarSize = size === 'bigger' ? '55px' : '26px';
 
   return avatar ? (
-    <>
-      <img
-        css={css({
-          maxWidth: avatarSize,
-          maxHeight: avatarSize,
-          borderRadius: 'small',
-          borderColor: 'sideBar.border',
-          borderStyle: 'solid',
-          borderWidth: 1,
-          boxSizing: 'border-box',
-        })}
-        style={style}
-        src={avatar}
-        alt={name}
-      />
-    </>
+    <img
+      css={css({
+        width: avatarSize,
+        height: avatarSize,
+        objectFit: 'cover',
+        borderRadius: 'small',
+        borderColor: 'sideBar.border',
+        borderStyle: 'solid',
+        borderWidth: 1,
+        boxSizing: 'border-box',
+      })}
+      style={style}
+      src={avatar}
+      alt={name}
+    />
   ) : (
     <Stack
       style={style}

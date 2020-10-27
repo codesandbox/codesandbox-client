@@ -8,6 +8,7 @@ import {
   IconButton,
   SkeletonText,
   Link,
+  Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
@@ -17,15 +18,22 @@ const useImageLoaded = (url: string) => {
   const [loaded, setLoaded] = React.useState(false);
   React.useEffect(() => {
     const img = new Image();
-    img.onload = () => {
-      setLoaded(true);
-    };
 
-    img.src = url;
+    if (url) {
+      img.onload = () => {
+        setLoaded(true);
+      };
 
-    if (img.complete) {
-      setLoaded(true);
+      img.src = url;
+
+      if (img.complete) {
+        setLoaded(true);
+      }
     }
+
+    return function cleanup() {
+      img.src = '';
+    };
   }, [url]);
 
   return loaded;
@@ -33,6 +41,7 @@ const useImageLoaded = (url: string) => {
 
 type SandboxTitleProps = {
   stoppedScrolling: boolean;
+  isFrozen: boolean;
   prNumber?: number;
   originalGit?: RepoFragmentDashboardFragment['originalGit'];
 } & Pick<
@@ -50,6 +59,7 @@ type SandboxTitleProps = {
 
 const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
   ({
+    isFrozen,
     originalGit,
     prNumber,
     editing,
@@ -86,6 +96,18 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
               <Icon name="pr" color="#5BC266" />
             </Link>
           ) : null}
+          {isFrozen && (
+            <Tooltip label={stoppedScrolling ? 'Frozen Sandbox' : null}>
+              <div style={{ display: 'inherit' }}>
+                <Icon
+                  style={{ minWidth: 14 }}
+                  title="Frozen Sandbox"
+                  name="frozen"
+                  size={14}
+                />
+              </div>
+            </Tooltip>
+          )}
           <PrivacyIcon />
           <Text size={3} weight="medium">
             {sandboxTitle}
@@ -114,7 +136,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
         <IconButton
           name="more"
           size={9}
-          title="Sandbox actions"
+          title="Sandbox Actions"
           onClick={onContextMenu}
         />
       )}
@@ -145,7 +167,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
           size={3}
           variant="muted"
         >
-          <Icon style={{ marginRight: 2, minWidth: 14 }} name="eye" size={14} />{' '}
+          <Icon style={{ marginRight: 4, minWidth: 14 }} name="eye" size={14} />{' '}
           <span
             style={{
               maxWidth: '100%',
@@ -193,39 +215,12 @@ export const SandboxCard = ({
   ...props
 }: SandboxItemComponentProps) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
-  const [guaranteedScreenshotUrl, setGuaranteedScreenshotUrl] = React.useState<
-    string
-  >(screenshotUrl);
-
-  const lastSandboxId = React.useRef(sandbox.id);
-  const imageLoaded = useImageLoaded(guaranteedScreenshotUrl);
-
   React.useEffect(() => {
     // We only want to render the screenshot once the user has stopped scrolling
     if (!isScrolling && !stoppedScrolling) {
       setStoppedScrolling(true);
     }
   }, [isScrolling, stoppedScrolling]);
-
-  React.useEffect(() => {
-    // We always try to show the cached screenshot first, if someone looks at a sandbox we will try to
-    // generate a new one based on the latest contents.
-    const generateScreenshotUrl = `/api/v1/sandboxes/${sandbox.id}/screenshot.png`;
-    if (
-      stoppedScrolling &&
-      (lastSandboxId.current !== sandbox.id || !guaranteedScreenshotUrl)
-    ) {
-      setGuaranteedScreenshotUrl(
-        sandbox.screenshotUrl || generateScreenshotUrl
-      );
-      lastSandboxId.current = sandbox.id;
-    }
-  }, [
-    stoppedScrolling,
-    guaranteedScreenshotUrl,
-    sandbox.id,
-    sandbox.screenshotUrl,
-  ]);
 
   return (
     <Stack
@@ -253,32 +248,13 @@ export const SandboxCard = ({
         },
       })}
     >
-      <div
-        ref={thumbnailRef}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '160px',
-          backgroundColor: '#242424',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat',
-          borderBottom: '1px solid',
-          borderColor: '#242424',
-          [imageLoaded
-            ? 'backgroundImage'
-            : null]: `url(${guaranteedScreenshotUrl})`,
-        }}
-      >
-        {imageLoaded ? null : (
-          <TemplateIcon
-            style={{ filter: 'grayscale(1)', opacity: 0.1 }}
-            width="60"
-            height="60"
-          />
-        )}
-      </div>
+      <Thumbnail
+        sandboxId={sandbox.id}
+        thumbnailRef={thumbnailRef}
+        TemplateIcon={TemplateIcon}
+        screenshotUrl={screenshotUrl}
+        screenshotOutdated={sandbox.screenshotOutdated}
+      />
       <div
         style={{
           position: 'absolute',
@@ -294,10 +270,10 @@ export const SandboxCard = ({
       >
         <TemplateIcon width="16" height="16" />
       </div>
-
       <SandboxTitle
         originalGit={sandbox.originalGit}
         prNumber={sandbox.prNumber}
+        isFrozen={sandbox.isFrozen && !sandbox.customTemplate}
         editing={editing}
         stoppedScrolling={stoppedScrolling}
         onContextMenu={onContextMenu}
@@ -309,7 +285,6 @@ export const SandboxCard = ({
         newTitle={newTitle}
         sandboxTitle={sandboxTitle}
       />
-
       <SandboxStats
         noDrag={noDrag}
         lastUpdated={lastUpdated}
@@ -317,6 +292,68 @@ export const SandboxCard = ({
         sandboxLocation={sandboxLocation}
       />
     </Stack>
+  );
+};
+
+const Thumbnail = ({
+  sandboxId,
+  thumbnailRef,
+  TemplateIcon,
+  screenshotUrl,
+  screenshotOutdated,
+}) => {
+  // 0. Use template icon as starting point and fallback
+  // 1. se sandbox.screenshotUrl if it can be successfully loaded (might not exist)
+  // 2. If screenshot is outdated, lazily load a newer screenshot. Switch when image loaded.
+  const SCREENSHOT_TIMEOUT = 5000;
+
+  const [latestScreenshotUrl, setLatestScreenshotUrl] = React.useState(null);
+
+  const screenshotUrlLoaded = useImageLoaded(screenshotUrl);
+  const latestScreenshotUrlLoaded = useImageLoaded(latestScreenshotUrl);
+
+  let screenshotToUse: string;
+  if (latestScreenshotUrlLoaded) screenshotToUse = latestScreenshotUrl;
+  else if (screenshotUrlLoaded) screenshotToUse = screenshotUrl;
+
+  React.useEffect(
+    function lazyLoadLatestScreenshot() {
+      const timer = window.setTimeout(() => {
+        if (!screenshotOutdated) return;
+        const url = `https://codesandbox.io/api/v1/sandboxes/${sandboxId}/screenshot.png`;
+        setLatestScreenshotUrl(url);
+      }, SCREENSHOT_TIMEOUT);
+
+      return () => window.clearTimeout(timer);
+    },
+    [sandboxId, screenshotOutdated, setLatestScreenshotUrl]
+  );
+
+  return (
+    <div
+      ref={thumbnailRef}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '160px',
+        backgroundColor: '#242424',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+        borderBottom: '1px solid',
+        borderColor: '#242424',
+        [screenshotToUse ? 'backgroundImage' : null]: `url(${screenshotToUse})`,
+      }}
+    >
+      {!screenshotUrlLoaded && (
+        <TemplateIcon
+          style={{ filter: 'grayscale(1)', opacity: 0.1 }}
+          width="60"
+          height="60"
+        />
+      )}
+    </div>
   );
 };
 

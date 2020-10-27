@@ -16,7 +16,7 @@ childProcess.addForkHandler(
   () => new WebsocketLSP()
 );
 childProcess.addForkHandler(
-  '/extensions/octref.vetur.0.16.2/server/dist/vueServerMain.js',
+  '/extensions/octref.vetur-0.28.0/server/dist/vueServerMain.js',
   VueWorker
 );
 childProcess.addForkHandler(

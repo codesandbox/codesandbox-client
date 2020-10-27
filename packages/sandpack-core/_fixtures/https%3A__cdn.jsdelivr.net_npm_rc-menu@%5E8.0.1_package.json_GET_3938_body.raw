@@ -1,0 +1,71 @@
+{
+  "name": "rc-menu",
+  "version": "8.7.1",
+  "description": "menu ui component for react",
+  "keywords": [
+    "react",
+    "react-component",
+    "menu",
+    "ui",
+    "react-menu"
+  ],
+  "files": [
+    "es",
+    "lib",
+    "assets/*.css",
+    "assets/*.less"
+  ],
+  "main": "./lib/index",
+  "module": "./es/index",
+  "homepage": "http://github.com/react-component/menu",
+  "maintainers": [
+    "yiminghe@gmail.com",
+    "hualei5280@gmail.com"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/menu.git"
+  },
+  "bugs": {
+    "url": "http://github.com/react-component/menu/issues"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development father doc dev --storybook",
+    "build": "father doc build --storybook",
+    "compile": "father build && lessc assets/index.less assets/index.css",
+    "prepublishOnly": "npm run compile && np --yolo --no-publish",
+    "lint": "eslint src/ examples/ --ext .tsx,.ts,.jsx,.js",
+    "test": "father test",
+    "coverage": "father test --coverage",
+    "now-build": "npm run build"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.10.1",
+    "classnames": "2.x",
+    "mini-store": "^3.0.1",
+    "omit.js": "^2.0.0",
+    "rc-motion": "^2.0.1",
+    "rc-trigger": "^5.0.4",
+    "rc-util": "^5.0.1",
+    "resize-observer-polyfill": "^1.5.0",
+    "shallowequal": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.4",
+    "@types/react": "^16.8.19",
+    "@types/react-dom": "^16.8.4",
+    "@types/warning": "^3.0.0",
+    "cross-env": "^7.0.0",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.0.2",
+    "enzyme-to-json": "^3.4.0",
+    "eslint": "^7.0.0",
+    "father": "^2.22.0",
+    "less": "^3.10.3",
+    "np": "^6.0.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "typescript": "^4.0.2"
+  }
+}

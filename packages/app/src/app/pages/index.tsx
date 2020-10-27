@@ -34,22 +34,22 @@ const DuplicateAccount = Loadable(() =>
 
 const routeDebugger = _debug('cs:app:router');
 
-const SignInAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
+const SignInAuth = Loadable(
+  () => import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
 );
-const SignIn = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './SignIn')
+const SignIn = Loadable(
+  () => import(/* webpackChunkName: 'page-sign-in' */ './SignIn')
 );
 const Live = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './Live').then(module => ({
-    default: module.LivePage,
+    default: module.Live,
   }))
 );
-const VercelSignIn = Loadable(() =>
-  import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
+const VercelSignIn = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
 );
-const PreviewAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
+const PreviewAuth = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
 );
 const NotFound = Loadable(() =>
   import(/* webpackChunkName: 'page-not-found' */ './common/NotFound').then(
@@ -97,8 +97,8 @@ const CliInstructions = Loadable(() =>
     /* webpackChunkName: 'page-cli-instructions' */ './CliInstructions'
   ).then(module => ({ default: module.CLIInstructions }))
 );
-const Patron = Loadable(() =>
-  import(/* webpackChunkName: 'page-patron' */ './Patron')
+const Patron = Loadable(
+  () => import(/* webpackChunkName: 'page-patron' */ './Patron')
 );
 const SignUp = Loadable(() =>
   import(/* webpackChunkName: 'page-signup' */ './SignUp').then(module => ({
@@ -111,6 +111,7 @@ const Curator = Loadable(() =>
     default: module.Curator,
   }))
 );
+// @ts-ignore
 const CodeSadbox = () => this[`💥`].kaboom();
 
 const Boundary = withRouter(ErrorBoundary);
@@ -118,7 +119,7 @@ const Boundary = withRouter(ErrorBoundary);
 const RoutesComponent: React.FC = () => {
   const {
     actions: { appUnmounted },
-    state: { signInModalOpen, user, modals },
+    state: { modals },
   } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
@@ -164,7 +165,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/new-dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
-            <Route path="/live/:id" component={Live} />
+            <Route path="/live/:roomId" component={Live} />
             <Route path="/signin" exact component={SignIn} />
             <Route path="/signin/duplicate" component={DuplicateAccount} />
             <Route path="/signup/:userId" exact component={SignUp} />
@@ -185,7 +186,7 @@ const RoutesComponent: React.FC = () => {
           </Switch>
         </Content>
         <Modals />
-        {signInModalOpen && !user ? <SignInModal /> : null}
+        <SignInModal />
         <CreateSandboxModal />
         {modals.moveSandboxModal.isCurrent && <MoveSandboxFolderModal />}
       </Boundary>

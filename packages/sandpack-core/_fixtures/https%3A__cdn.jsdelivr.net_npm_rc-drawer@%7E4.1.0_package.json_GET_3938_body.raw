@@ -1,0 +1,75 @@
+{
+  "name": "rc-drawer",
+  "version": "4.1.0",
+  "description": "drawer component for react",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-drawer",
+    "drawer",
+    "drawer-menu",
+    "rc-drawer-menu",
+    "react-drawer-menu",
+    "animation",
+    "drawer-motion",
+    "drawer-animation"
+  ],
+  "homepage": "https://github.com/ant-motion/drawer",
+  "author": "155259966@qq.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ant-motion/drawer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ant-motion/drawer/issues"
+  },
+  "files": [
+    "lib",
+    "assets/*.css",
+    "es"
+  ],
+  "licenses": "MIT",
+  "main": "./lib/index",
+  "module": "./es/index",
+  "scripts": {
+    "start": "rm -rf .storybook lib es && father doc dev --storybook",
+    "build": "father doc build --storybook",
+    "compile": "father build && lessc assets/index.less assets/index.css",
+    "prepublishOnly": "npm run compile && np --no-cleanup --yolo --no-publish",
+    "lint": "eslint src/ --ext .tsx,.ts",
+    "test": "father test",
+    "now-build": "npm run build"
+  },
+  "peerDependencies": {
+    "react": "*"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.9",
+    "@types/enzyme": "^3.1.15",
+    "@types/jest": "^25.1.0",
+    "@types/raf": "^3.4.0",
+    "@types/react": "^16.9.5",
+    "@types/react-dom": "^16.9.1",
+    "@types/warning": "^3.0.0",
+    "@umijs/fabric": "^2.0.0",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-to-json": "^3.4.2",
+    "eslint": "^7.0.0",
+    "father": "^2.13.2",
+    "jsonp": "^0.2.0",
+    "less": "^3.10.3",
+    "np": "^6.0.0",
+    "querystring": "^0.2.0",
+    "rc-test": "^6.0.1",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
+    "react-test-renderer": "^16.10.2",
+    "typescript": "^3.9.3"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.10.1",
+    "classnames": "^2.2.6",
+    "rc-util": "^5.0.1"
+  }
+}

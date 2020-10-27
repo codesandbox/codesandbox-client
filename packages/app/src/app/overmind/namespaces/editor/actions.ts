@@ -67,10 +67,7 @@ export const persistCursorToUrl: Action<{
   // and all the browsers do too.
   if (newUrl) {
     effects.router.replace(
-      newUrl
-        .toString()
-        .replace(/%2F/g, '/')
-        .replace('%3A', ':')
+      newUrl.toString().replace(/%2F/g, '/').replace('%3A', ':')
     );
   }
 }, 500);
@@ -131,6 +128,9 @@ export const addNpmDependency: AsyncAction<{
       version: newVersion,
       isDev: Boolean(isDev),
     });
+
+    actions.workspace.changeDependencySearch('');
+    actions.workspace.clearExplorerDependencies();
 
     effects.preview.executeCodeImmediately();
   }
@@ -372,7 +372,9 @@ export const onOperationApplied: Action<{
     code,
   });
 
-  actions.editor.internal.updatePreviewCode();
+  if (state.preferences.settings.livePreviewEnabled) {
+    actions.editor.internal.updatePreviewCode();
+  }
 
   // If we are in a state of sync, we set "revertModule" to set it as saved
   if (module.savedCode !== null && module.code === module.savedCode) {
@@ -602,7 +604,6 @@ export const forkExternalSandbox: AsyncAction<{
     state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
   } catch (error) {
-    console.error(error);
     actions.internal.handleError({
       message: 'We were unable to fork the sandbox',
       error,
@@ -868,9 +869,10 @@ export const updateEnvironmentVariables: AsyncAction<EnvironmentVariable> = asyn
   effects.codesandboxApi.restartSandbox();
 };
 
-export const deleteEnvironmentVariable: AsyncAction<{
-  name: string;
-}> = async ({ state, effects }, { name }) => {
+export const deleteEnvironmentVariable: AsyncAction<string> = async (
+  { effects, state },
+  name
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }

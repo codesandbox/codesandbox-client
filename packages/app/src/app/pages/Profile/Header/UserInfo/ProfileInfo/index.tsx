@@ -11,7 +11,13 @@ export const ProfileInfo: FunctionComponent = () => {
   const {
     state: {
       profile: {
-        current: { avatarUrl, name, subscriptionSince, username },
+        current: {
+          avatarUrl,
+          name,
+          subscriptionSince,
+          username,
+          githubUsername,
+        },
       },
     },
   } = useOvermind();
@@ -26,13 +32,15 @@ export const ProfileInfo: FunctionComponent = () => {
 
           <Username main={!name}>
             {username}
-            <a
-              href={`https://github.com/${username}`}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <GitHubIcon />
-            </a>
+            {githubUsername ? (
+              <a
+                href={`https://github.com/${githubUsername}`}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <GitHubIcon />
+              </a>
+            ) : null}
 
             {subscriptionSince && (
               <PatronStar subscriptionSince={subscriptionSince} />

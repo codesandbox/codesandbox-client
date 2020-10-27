@@ -1,5 +1,4 @@
-import { LoaderContext } from 'sandbox/eval/transpiled-module';
-import Transpiler from '..';
+import { LoaderContext, Transpiler } from 'sandpack-core';
 
 const HELPER_PATH = '/node_modules/csbbust/refresh-helper.js';
 

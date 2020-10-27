@@ -124,39 +124,37 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
         <TabContent {...tab} stopId="Create">
           {rProps =>
             !rProps.hidden && (
-              <>
-                <div {...rProps}>
-                  <MobileTabs>
-                    <Tab {...tab} className="active" stopId="Create">
-                      Create Sandbox
-                    </Tab>
-                    <Tab {...tab} stopId="Import">
-                      Import Project
-                    </Tab>
-                    {props.isModal ? (
-                      <CloseModal
-                        type="button"
-                        onClick={() => actions.modals.newSandboxModal.close()}
+              <div {...rProps}>
+                <MobileTabs>
+                  <Tab {...tab} className="active" stopId="Create">
+                    Create Sandbox
+                  </Tab>
+                  <Tab {...tab} stopId="Import">
+                    Import Project
+                  </Tab>
+                  {props.isModal ? (
+                    <CloseModal
+                      type="button"
+                      onClick={() => actions.modals.newSandboxModal.close()}
+                    >
+                      <svg
+                        width={10}
+                        height={10}
+                        fill="none"
+                        viewBox="0 0 10 10"
+                        {...props}
                       >
-                        <svg
-                          width={10}
-                          height={10}
-                          fill="none"
-                          viewBox="0 0 10 10"
-                          {...props}
-                        >
-                          <path
-                            fill="#fff"
-                            d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
-                          />
-                        </svg>
-                      </CloseModal>
-                    ) : null}
-                  </MobileTabs>
+                        <path
+                          fill="#fff"
+                          d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
+                        />
+                      </svg>
+                    </CloseModal>
+                  ) : null}
+                </MobileTabs>
 
-                  <Create collectionId={props.collectionId} />
-                </div>
-              </>
+                <Create collectionId={props.collectionId} />
+              </div>
             )
           }
         </TabContent>

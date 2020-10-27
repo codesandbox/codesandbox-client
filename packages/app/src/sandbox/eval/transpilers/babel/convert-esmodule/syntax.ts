@@ -66,4 +66,6 @@ export const Syntax = {
   WhileStatement: 'WhileStatement' as 'WhileStatement',
   WithStatement: 'WithStatement' as 'WithStatement',
   YieldExpression: 'YieldExpression' as 'YieldExpression',
+  JSXElement: 'JSXElement' as 'JSXElement',
+  ExportNamespaceSpecifier: 'ExportNamespaceSpecifier' as 'ExportNamespaceSpecifier',
 };

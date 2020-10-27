@@ -13,30 +13,35 @@ import { derived } from 'overmind';
 
 import { DELETE_ME_COLLECTION, OrderBy } from './types';
 
-type State = {
-  sandboxes: {
-    DRAFTS: Sandbox[] | null;
-    TEMPLATES: Template[] | null;
-    DELETED: Sandbox[] | null;
-    RECENT: Sandbox[] | null;
-    SEARCH: Sandbox[] | null;
-    TEMPLATE_HOME: Template[] | null;
-    RECENT_HOME: Sandbox[] | null;
-    ALL: {
-      [path: string]: Sandbox[];
-    } | null;
-    REPOS: {
-      [path: string]: {
-        branch: string;
-        name: string;
-        owner: string;
-        lastEdited: Date;
-        sandboxes: Repo[];
-      };
-    } | null;
-  };
+export type DashboardSandboxStructure = {
+  DRAFTS: Sandbox[] | null;
+  TEMPLATES: Template[] | null;
+  DELETED: Sandbox[] | null;
+  RECENT: Sandbox[] | null;
+  SEARCH: Sandbox[] | null;
+  TEMPLATE_HOME: Template[] | null;
+  RECENT_HOME: Sandbox[] | null;
+  ALL: {
+    [path: string]: Sandbox[];
+  } | null;
+  REPOS: {
+    [path: string]: {
+      branch: string;
+      name: string;
+      owner: string;
+      lastEdited: Date;
+      sandboxes: Repo[];
+    };
+  } | null;
+};
+
+export type State = {
+  sandboxes: DashboardSandboxStructure;
   teams: Array<
-    { __typename?: 'Team' } & Pick<Team, 'id' | 'name' | 'avatarUrl'>
+    { __typename?: 'Team' } & Pick<
+      Team,
+      'id' | 'name' | 'avatarUrl' | 'userAuthorizations'
+    >
   >;
   allCollections: DELETE_ME_COLLECTION[] | null;
   selectedSandboxes: string[];
@@ -64,18 +69,20 @@ type State = {
   };
 };
 
+export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
+  DRAFTS: null,
+  TEMPLATES: null,
+  DELETED: null,
+  RECENT: null,
+  SEARCH: null,
+  TEMPLATE_HOME: null,
+  RECENT_HOME: null,
+  ALL: null,
+  REPOS: null,
+};
+
 export const state: State = {
-  sandboxes: {
-    DRAFTS: null,
-    TEMPLATES: null,
-    DELETED: null,
-    RECENT: null,
-    TEMPLATE_HOME: null,
-    RECENT_HOME: null,
-    ALL: null,
-    REPOS: null,
-    SEARCH: null,
-  },
+  sandboxes: DEFAULT_DASHBOARD_SANDBOXES,
   viewMode: 'grid',
   allCollections: null,
   teams: [],
