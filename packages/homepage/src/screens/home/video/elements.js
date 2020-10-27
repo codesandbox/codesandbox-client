@@ -18,7 +18,7 @@ export const TabButton = styled.button`
 `;
 
 export const Tab = styled.li`
-  border-bottom: 1px solid ${props => props.theme.homepage.muted};
+  border-bottom: 1px solid rgb(52, 52, 52);
   color: ${props => props.theme.homepage.muted};
   padding-right: 13px;
   padding-left: 13px;
