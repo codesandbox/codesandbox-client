@@ -291,8 +291,6 @@ export const GitHub = () => {
                     : null}
                 </option>
               ))}
-              <option value={1}>strange-jones-frfp8 (pr)</option>
-              <option value={2}>strange-jones-frfp8</option>
             </Select>
           </Element>
           {getText()}
