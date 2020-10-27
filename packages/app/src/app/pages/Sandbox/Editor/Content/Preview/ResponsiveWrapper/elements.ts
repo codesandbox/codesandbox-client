@@ -64,7 +64,7 @@ export const ResizeWrapper = styled.span`
   position: relative;
   width: 100%;
   height: 100%;
-  transform-origin: center;
+  transform-origin: top;
 `;
 
 export const CornerResize = styled(ResizeIcon)`
@@ -91,7 +91,6 @@ const sizeResize = css`
 `;
 
 export const WidthResize = styled(Element)`
-  top: calc(50% - 8px);
   width: 4px;
   height: 41px;
   cursor: ew-resize;
@@ -113,4 +112,5 @@ export const Cover = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
+  user-select: none;
 `;
