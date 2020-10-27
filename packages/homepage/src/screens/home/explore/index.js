@@ -48,8 +48,8 @@ const Experiment = () => (
           text-align: center;
         `}
       >
-        Join a community of creators who’ve crafted <SandboxCount /> sandboxes
-        and counting.
+        Join a community of creators who’ve crafted <SandboxCount /> public
+        sandboxes and counting.
       </P>
       <Button
         style={{

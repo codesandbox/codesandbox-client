@@ -43,18 +43,18 @@ const Careers = ({
           <PageTitle>Join CodeSandbox</PageTitle>
           <HeroSection>
             <TitleDescription>
-               We think that building applications should be more accessible and 
-               collaborative. We’re solving that with CodeSandbox; we’re building 
-               a next-generation development platform where everyone can build an 
-               application or contribute to it. It’s our goal to improve collaboration 
-               between developers and other team members, and make application 
-               development faster and easier.
+              We think that building applications should be more accessible and
+              collaborative. We’re solving that with CodeSandbox; we’re building
+              a next-generation development platform where everyone can build an
+              application or contribute to it. It’s our goal to improve
+              collaboration between developers and other team members, and make
+              application development faster and easier.
               <br />
               <br />
-              Founded in 2017, we’ve raised more than
-              $15M from top-tier VCs and prominent industry figures, including
-              EQT Ventures, Kleiner Perkins, Christian Bach & Mathias Biilmann
-              (Netlify), and Dylan Field (Figma).
+              Founded in 2017, we’ve raised more than $15M from top-tier VCs and
+              prominent industry figures, including EQT Ventures, Kleiner
+              Perkins, Christian Bach & Mathias Biilmann (Netlify), and Dylan
+              Field (Figma).
               <br />
               <br />
               Used by over 2M developers each month, including within
@@ -64,7 +64,8 @@ const Careers = ({
               Babel, among others.
               <br />
               <br />
-              Join us at CodeSandbox and help build the future of coding on the web.
+              Join us at CodeSandbox and help build the future of coding on the
+              web.
             </TitleDescription>
             <div>
               <h4>The Perks</h4>
@@ -248,10 +249,10 @@ const Careers = ({
             </TitleDescription>
           </div>
           <PageSubtitle>Open Positions</PageSubtitle>
-
-          {jobs.map(({ node: { fields: { slug, title }, id } }) => (
-            <Jobs key={id}>
+          <Jobs>
+            {jobs.map(({ node: { fields: { slug, title }, id } }) => (
               <Link
+                key={id}
                 to={`/job/${slug}`}
                 css={`
                   text-decoration: none;
@@ -275,8 +276,8 @@ const Careers = ({
                   </span>
                 </Job>
               </Link>
-            </Jobs>
-          ))}
+            ))}
+          </Jobs>
         </PageContainer>
       </ThemeProvider>
     </Layout>

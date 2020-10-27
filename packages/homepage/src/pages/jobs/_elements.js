@@ -43,7 +43,7 @@ export const Job = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid #343434;
+  padding: 0 4px;
   border-bottom: 1px solid #343434;
 `;
 
@@ -51,6 +51,7 @@ export const Jobs = styled.ul`
   margin: 0;
   padding: 0;
   margin-bottom: 50px;
+  border-top: 1px solid #343434;
 `;
 
 export const HeroSection = styled.div`

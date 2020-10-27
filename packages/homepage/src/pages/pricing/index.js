@@ -126,7 +126,13 @@ export default () => (
             Currently in closed beta.
           </List>
         </div>
-        <Button white href="https://airtable.com/shrlgLSJWiX8rYqyG">
+        <Button
+          white
+          href="https://airtable.com/shrlgLSJWiX8rYqyG"
+          css={{
+            color: '#5962df',
+          }}
+        >
           Get early access
         </Button>
       </Card>
