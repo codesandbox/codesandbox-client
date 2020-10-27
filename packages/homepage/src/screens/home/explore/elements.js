@@ -6,6 +6,9 @@ export const Container = styled.div`
 
 export const ImageWrapper = styled.div`
   position: relative;
+  max-height: 500px;
+  overflow: hidden;
+
   section {
     max-width: 100vw;
     display: grid;
