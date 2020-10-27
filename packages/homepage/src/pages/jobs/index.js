@@ -1,4 +1,3 @@
-import { graphql, Link } from 'gatsby';
 import React from 'react';
 
 import { ThemeProvider } from '@codesandbox/components';
@@ -25,12 +24,25 @@ import {
   TeamMemberRandom,
 } from './_elements';
 
-const Careers = ({
-  data: {
-    allJobs: { edges: jobs },
-  },
-}) => {
+const Careers = () => {
   const [team1, team2, team3, team4, team5, team6] = getRandomTeamMembers(6);
+
+  const jobs = [
+    {
+      title: 'Product Engineer (Front-end)',
+      url: 'https://codesandbox.recruitee.com/o/product-engineer-frontend',
+    },
+    {
+      title: 'Product Engineer TypeScript Engineer (Full Stack)',
+      url: 'https://codesandbox.recruitee.com/o/typescript-engineer-full-stack',
+    },
+    {
+      title: 'Product Growth Engineer',
+      url:
+        'https://codesandbox.recruitee.com/o/product-growth-engineer-amsterdam',
+    },
+  ];
+
   return (
     <Layout>
       <ThemeProvider theme={codesandboxBlack}>
@@ -250,10 +262,12 @@ const Careers = ({
           </div>
           <PageSubtitle>Open Positions</PageSubtitle>
           <Jobs>
-            {jobs.map(({ node: { fields: { slug, title }, id } }) => (
-              <Link
-                key={id}
-                to={`/job/${slug}`}
+            {jobs.map(({ title, url }) => (
+              <a
+                href={url}
+                key={url}
+                about="_blank"
+                rel="noopener noreferrer"
                 css={`
                   text-decoration: none;
                 `}
@@ -275,7 +289,7 @@ const Careers = ({
                     Remote
                   </span>
                 </Job>
-              </Link>
+              </a>
             ))}
           </Jobs>
         </PageContainer>
@@ -283,23 +297,5 @@ const Careers = ({
     </Layout>
   );
 };
-
-export const query = graphql`
-  {
-    allJobs: allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/jobs/" } }
-    ) {
-      edges {
-        node {
-          fields {
-            slug
-            title
-          }
-          id
-        }
-      }
-    }
-  }
-`;
 
 export default Careers;
