@@ -284,8 +284,8 @@ export const GitHub = () => {
               </option>
               <option disabled>──────────</option>
               {forks.map((fork, index) => (
-                <option key={fork.id} value={fork.id} selected={index === 0}>
-                  {fork.title || fork.id} {index === 0 ? ' (current)' : null}
+                <option key={fork.id} value={fork.id} selected={fork.id === id}>
+                  {fork.title || fork.id} {fork.id === id ? ' (current)' : null}
                   {index > 0 && typeof fork.prNumber === 'number'
                     ? ' (pr)'
                     : null}
