@@ -33,13 +33,30 @@ const Careers = () => {
       url: 'https://codesandbox.recruitee.com/o/product-engineer-frontend',
     },
     {
-      title: 'Product Engineer TypeScript Engineer (Full Stack)',
-      url: 'https://codesandbox.recruitee.com/o/typescript-engineer-full-stack',
-    },
-    {
       title: 'Product Growth Engineer',
       url:
         'https://codesandbox.recruitee.com/o/product-growth-engineer-amsterdam',
+    },
+    {
+      title: 'TypeScript Engineer (Full Stack)',
+      url: 'https://codesandbox.recruitee.com/o/typescript-engineer-full-stack',
+    },
+    {
+      title: 'Head of Engineering',
+      url: 'https://codesandbox.recruitee.com/o/head-of-engineering',
+    },
+    {
+      title: 'Product Designer',
+      url: 'https://codesandbox.recruitee.com/o/product-designer',
+    },
+    {
+      title: 'Data Analyst',
+      url: 'https://codesandbox.recruitee.com/o/data-analyst',
+    },
+    {
+      title: 'Developer Marketing Coordinator',
+      url:
+        'https://codesandbox.recruitee.com/o/developer-marketing-coordinator',
     },
   ];
 
