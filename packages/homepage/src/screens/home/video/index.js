@@ -23,7 +23,7 @@ const videoTimesAndText = [
   {
     time: 6,
     text:
-      'A sandbox is a superfast development environment, purpose-built for rapid web development in the browser.',
+      'A sandbox is a superfast development environment. They’re purpose-built for rapid web development in the browser.',
   },
   {
     time: 13,
