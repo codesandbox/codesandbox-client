@@ -114,10 +114,6 @@ const Video = () => {
     });
   }, [activeTab]);
 
-  const controlsProps = {
-    controls: prefersReducedMotion,
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 140 }}
@@ -227,7 +223,6 @@ const Video = () => {
           ref={video}
           width={1024}
           active={active}
-          {...controlsProps}
         />
       </section>
     </motion.div>
