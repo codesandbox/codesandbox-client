@@ -44,6 +44,7 @@ export const Job = styled.li`
   justify-content: space-between;
   align-items: center;
   padding: 0 4px;
+  margin: 0;
   border-bottom: 1px solid #343434;
 `;
 
