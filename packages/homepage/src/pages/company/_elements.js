@@ -63,9 +63,8 @@ const angelCSS = css`
     grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
   }
 
-  ${props => props.theme.breakpoints.md} {
-    grid-template-columns: repeat(2, minmax(255px, 1fr));
-    grid-gap: 1rem;
+  ${props => props.theme.breakpoints.sm} {
+    grid-template-columns: repeat(1, minmax(255px, 1fr));
   }
 
   > div {
