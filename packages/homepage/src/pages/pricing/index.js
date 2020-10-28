@@ -699,9 +699,9 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Teams</FeatureTitle>
+          <FeatureTitle>Workspaces</FeatureTitle>
           <P muted small>
-            View and edit sandboxes with all team members.
+            View, edit, and manage sandboxes with a team.
           </P>
         </div>
         <span>✓</span>
