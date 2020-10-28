@@ -38,7 +38,7 @@ const Careers = () => {
         'https://codesandbox.recruitee.com/o/product-growth-engineer-amsterdam',
     },
     {
-      title: 'TypeScript Engineer (Full Stack)',
+      title: 'Senior Full Stack Engineer (TypeScript)',
       url: 'https://codesandbox.recruitee.com/o/typescript-engineer-full-stack',
     },
     {
