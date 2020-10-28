@@ -20,6 +20,8 @@ import { Container, Loading, StyledFrame } from './elements';
 import Navigator from './Navigator';
 import { Settings } from './types';
 
+const DefaultWrapper = ({ children }) => children;
+
 export type Props = {
   sandbox: Sandbox;
   privacy?: number;
@@ -554,7 +556,7 @@ class BasePreview extends React.PureComponent<Props, State> {
       noPreview,
       className,
       overlayMessage,
-      Wrapper = ({ children }) => children,
+      Wrapper = DefaultWrapper,
       isResponsiveModeActive,
       toggleResponsiveMode,
       togglePreviewComment,
