@@ -141,7 +141,7 @@ const Video = () => {
               margin-bottom: 40px;
             `}
           >
-            What's a Sandbox?
+            What’s a Sandbox?
           </Title>
           <Tabs active={active} role="tablist" ref={tabListRef}>
             <Tab
