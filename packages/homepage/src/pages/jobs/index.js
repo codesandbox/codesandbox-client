@@ -283,7 +283,7 @@ const Careers = () => {
               <a
                 href={url}
                 key={url}
-                about="_blank"
+                target="_blank"
                 rel="noopener noreferrer"
                 css={`
                   text-decoration: none;
