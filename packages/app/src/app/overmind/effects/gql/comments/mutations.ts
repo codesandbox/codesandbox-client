@@ -11,6 +11,8 @@ import {
   UnresolveCommentMutationVariables,
   UpdateCommentMutation,
   UpdateCommentMutationVariables,
+  CreatePreviewCommentMutation,
+  CreatePreviewCommentMutationVariables,
 } from 'app/graphql/types';
 import { Query, gql } from 'overmind-graphql';
 
@@ -59,6 +61,36 @@ export const createCodeComment: Query<
     $imageReferences: [ImageReference!]
   ) {
     createCodeComment(
+      id: $id
+      content: $content
+      sandboxId: $sandboxId
+      parentCommentId: $parentCommentId
+      anchorReference: $anchorReference
+      userReferences: $userReferences
+      codeReferences: $codeReferences
+      imageReferences: $imageReferences
+    ) {
+      ...Comment
+    }
+  }
+  ${commentFragment}
+`;
+
+export const createPreviewComment: Query<
+  CreatePreviewCommentMutation,
+  CreatePreviewCommentMutationVariables
+> = gql`
+  mutation CreatePreviewComment(
+    $id: ID
+    $content: String!
+    $sandboxId: ID!
+    $parentCommentId: ID
+    $anchorReference: PreviewReference!
+    $userReferences: [UserReference!]
+    $codeReferences: [CodeReference!]
+    $imageReferences: [ImageReference!]
+  ) {
+    createPreviewComment(
       id: $id
       content: $content
       sandboxId: $sandboxId

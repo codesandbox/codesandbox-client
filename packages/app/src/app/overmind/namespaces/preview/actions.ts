@@ -9,14 +9,24 @@ export const toggleResponsiveMode: AsyncAction = async ({
   actions,
   effects,
 }) => {
+  const existingMode = state.preview.mode;
   const newUrl = new URL(document.location.href);
-  if (state.preview.mode === 'responsive') {
-    state.preview.mode = null;
-    newUrl.searchParams.delete('resolutionWidth');
-    newUrl.searchParams.delete('resolutionHeight');
-  } else {
-    state.preview.mode = 'responsive';
 
+  switch (existingMode) {
+    case 'responsive':
+      state.preview.mode = null;
+      break;
+    case 'add-comment':
+      state.preview.mode = 'responsive-add-comment';
+      break;
+    case 'responsive-add-comment':
+      state.preview.mode = 'add-comment';
+      break;
+    default:
+      state.preview.mode = 'responsive';
+  }
+
+  if (state.preview.mode) {
     newUrl.searchParams.set(
       'resolutionWidth',
       state.preview.responsive.resolution[0].toString()
@@ -31,7 +41,11 @@ export const toggleResponsiveMode: AsyncAction = async ({
         'responsive-preview': defaultPresets,
       });
     }
+  } else {
+    newUrl.searchParams.delete('resolutionWidth');
+    newUrl.searchParams.delete('resolutionHeight');
   }
+
   if (newUrl) {
     effects.router.replace(
       newUrl.toString().replace(/%2F/g, '/').replace('%3A', ':')
@@ -141,8 +155,21 @@ export const editPresets: AsyncAction<Presets> = async (
 };
 
 export const togglePreviewComment: Action = ({ state }) => {
-  state.preview.mode =
-    state.preview.mode === 'add-comment' ? null : 'add-comment';
+  const existingMode = state.preview.mode;
+
+  switch (existingMode) {
+    case 'responsive':
+      state.preview.mode = 'responsive-add-comment';
+      break;
+    case 'add-comment':
+      state.preview.mode = null;
+      break;
+    case 'responsive-add-comment':
+      state.preview.mode = 'responsive';
+      break;
+    default:
+      state.preview.mode = 'add-comment';
+  }
 };
 
 export const checkURLParameters: Action = ({ state, effects }) => {

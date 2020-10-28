@@ -714,7 +714,6 @@ const getInitialPosition = currentCommentPositions => {
 const getEndPosition = (currentCommentPositions, isCodeComment, dialogRef) => {
   const OVERLAP_WITH_SIDEBAR = -20;
   const OFFSET_TOP_FOR_ALIGNMENT = -90;
-  const OFFSET_FOR_CODE = 500;
 
   let dialogPosition = { x: null, y: null };
 
@@ -722,7 +721,7 @@ const getEndPosition = (currentCommentPositions, isCodeComment, dialogRef) => {
     // if we know the expected dialog position
     // true for comments with code reference
     dialogPosition = {
-      x: currentCommentPositions.dialog.left + OFFSET_FOR_CODE,
+      x: currentCommentPositions.dialog.left,
       y: currentCommentPositions.dialog.top + OFFSET_TOP_FOR_ALIGNMENT,
     };
   } else if (currentCommentPositions?.trigger) {
@@ -731,7 +730,7 @@ const getEndPosition = (currentCommentPositions, isCodeComment, dialogRef) => {
 
     if (isCodeComment) {
       dialogPosition = {
-        x: currentCommentPositions.trigger.right + OFFSET_FOR_CODE,
+        x: currentCommentPositions.trigger.right,
         y: currentCommentPositions.trigger.top + OFFSET_TOP_FOR_ALIGNMENT,
       };
     } else {

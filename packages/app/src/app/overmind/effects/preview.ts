@@ -30,4 +30,18 @@ export default {
     const preview = await _preview.promise;
     preview.updateAddressbarUrl();
   },
+  async getIframBoundingRect() {
+    const preview = await _preview.promise;
+
+    return preview.element.getBoundingClientRect();
+  },
+  async getPreviewPath() {
+    const preview = await _preview.promise;
+
+    let path = preview.state.urlInAddressBar;
+
+    path = path.replace('http://', '').replace('https://', '');
+
+    return path.substr(path.indexOf('/'));
+  },
 };

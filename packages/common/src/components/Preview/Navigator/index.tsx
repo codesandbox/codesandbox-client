@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon as ComponentsIcon } from '@codesandbox/components';
 import { ModuleViewIcon } from '../../icons/ModuleView';
 import { ProjectViewIcon } from '../../icons/ProjectView';
 import { NewWindowIcon } from '../../icons/NewWindow';
@@ -6,7 +7,6 @@ import { BackIcon } from '../../icons/Back';
 import { ForwardIcon } from '../../icons/Forward';
 import { ReloadIcon } from '../../icons/Reload';
 import { ResponsivePreview } from '../../icons/ResponsivePreview';
-import { AddPreviewCommentIcon } from '../../icons/AddPreviewComment';
 
 import Tooltip from '../../Tooltip';
 
@@ -31,7 +31,7 @@ export interface NavigatorProps {
   toggleResponsiveView?: () => void;
   togglePreviewComment?: () => void;
   isInResponsivePreview?: boolean;
-  isAddingPreviewComment?: boolean;
+  isPreviewCommentModeActive?: boolean;
   zenMode?: boolean;
   isProjectView: boolean;
 }
@@ -49,7 +49,7 @@ function Navigator({
   toggleResponsiveView,
   isInResponsivePreview,
   togglePreviewComment,
-  isAddingPreviewComment,
+  isPreviewCommentModeActive,
   zenMode,
 }: NavigatorProps) {
   return (
@@ -73,9 +73,16 @@ function Navigator({
         <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
       </AddressBarContainer>
       {togglePreviewComment && (
-        <IconWithBackground onClick={togglePreviewComment}>
+        <IconWithBackground
+          onClick={togglePreviewComment}
+          style={{ color: isPreviewCommentModeActive ? '#FF3B30' : '#757575' }}
+        >
           <Tooltip delay={0} content="Add Preview Comment">
-            <AddPreviewCommentIcon active={isAddingPreviewComment} />
+            <ComponentsIcon
+              name="comment"
+              size={12}
+              style={{ top: -1, position: 'relative' }}
+            />
           </Tooltip>
         </IconWithBackground>
       )}

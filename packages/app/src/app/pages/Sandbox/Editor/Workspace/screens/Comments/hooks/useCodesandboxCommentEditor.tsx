@@ -117,9 +117,12 @@ export const useCodesandboxCommentEditor = ({
       }
     } else if (event.keyCode === ENTER && !event.shiftKey) {
       event.preventDefault();
-      const imageReferences = value
-        .match(markdownImageRegExp)
-        .map(imageLink => imageLink.match(imageFileNameRegExp)[1]);
+      const matchedImageReferences = value.match(markdownImageRegExp);
+      const imageReferences = matchedImageReferences
+        ? matchedImageReferences.map(
+            imageLink => imageLink.match(imageFileNameRegExp)[1]
+          )
+        : [];
       const actuallyIncludedImages = imageReferences.reduce(
         (aggr, fileName) => {
           if (images[fileName]) {

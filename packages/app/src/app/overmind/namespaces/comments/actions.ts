@@ -21,6 +21,7 @@ import {
   UserReference,
   UserReferenceMetadata,
   ImageReferenceMetadata,
+  PreviewReferenceMetadata,
 } from 'app/graphql/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import {
@@ -38,6 +39,9 @@ import { debounce, filter, map, mutate, pipe } from 'overmind';
 import * as uuid from 'uuid';
 
 import { OPTIMISTIC_COMMENT_ID } from './state';
+
+const PREVIEW_COMMENT_OFFSET = -500;
+const CODE_COMMENT_OFFSET = 500;
 
 export const selectCommentsFilter: Action<CommentsFilterOption> = (
   { state },
@@ -257,6 +261,38 @@ export const selectComment: AsyncAction<{
         },
       };
     }
+  } else if (
+    comment.anchorReference &&
+    comment.anchorReference.type === 'preview'
+  ) {
+    const metadata = comment.anchorReference
+      .metadata as PreviewReferenceMetadata;
+
+    state.preview.responsive.resolution = [metadata.width, metadata.height];
+    state.preview.mode = 'responsive';
+    state.comments.currentCommentId = commentId;
+
+    // We have to wait for the bubble to appear
+    await Promise.resolve();
+
+    const bubbleBounds = effects.browser.getElementBoundingRect(
+      '#preview-comment-bubble'
+    );
+
+    if (bubbleBounds) {
+      const left = bubbleBounds.left + PREVIEW_COMMENT_OFFSET;
+      const top = bubbleBounds.top;
+
+      state.comments.currentCommentPositions = {
+        trigger: bounds,
+        dialog: {
+          left,
+          top,
+          bottom: top,
+          right: left,
+        },
+      };
+    }
   } else {
     state.comments.currentCommentId = commentId;
     state.comments.currentCommentPositions = {
@@ -368,16 +404,101 @@ export const addOptimisticCodeComment: AsyncAction<CodeReferenceMetadata> = asyn
     top,
     bottom,
   } = await effects.vscode.getCodeReferenceBoundary(id, codeReference);
+
   state.comments.currentCommentId = id;
   state.comments.currentCommentPositions = {
     trigger: {
       left,
       top,
       bottom,
-      right,
+      right: right + CODE_COMMENT_OFFSET,
     },
     dialog: {
+      left: left + CODE_COMMENT_OFFSET,
+      top,
+      bottom,
+      right,
+    },
+  };
+};
+
+export const addOptimisticPreviewComment: AsyncAction<{
+  x: number;
+  y: number;
+  scale: number;
+}> = async ({ state, effects }, { x, y, scale }) => {
+  const sandbox = state.editor.currentSandbox!;
+  const user = state.user!;
+  const id = OPTIMISTIC_COMMENT_ID;
+  const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
+  const comments = state.comments.comments;
+  const previewIframeBounds = await effects.preview.getIframBoundingRect();
+  const previewPath = await effects.preview.getPreviewPath();
+  const metadata: PreviewReferenceMetadata = {
+    userAgent: effects.browser.getUserAgent(),
+    screenshotUrl: '',
+    width:
+      state.preview.mode === 'responsive-add-comment'
+        ? state.preview.responsive.resolution[0]
+        : previewIframeBounds.width,
+    height:
+      state.preview.mode === 'responsive-add-comment'
+        ? state.preview.responsive.resolution[1]
+        : previewIframeBounds.height,
+    x:
+      state.preview.mode === 'responsive-add-comment'
+        ? Math.round(x * (1 / scale))
+        : x,
+    y:
+      state.preview.mode === 'responsive-add-comment'
+        ? Math.round(y * (1 / scale))
+        : y,
+    previewPath,
+  };
+  const optimisticComment: CommentFragment = {
+    parentComment: null,
+    id,
+    anchorReference: {
+      id: uuid.v4(),
+      type: 'preview',
+      metadata,
+      resource: previewPath,
+    },
+    insertedAt: now,
+    updatedAt: now,
+    content: '',
+    isResolved: false,
+    user: {
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      avatarUrl: user.avatarUrl,
+    },
+    references: [],
+    replyCount: 0,
+  };
+
+  if (!comments[sandbox.id]) {
+    comments[sandbox.id] = {};
+  }
+
+  comments[sandbox.id][id] = optimisticComment;
+  state.comments.currentCommentId = id;
+
+  const left = x + previewIframeBounds.left;
+  const top = y + previewIframeBounds.top;
+  const bottom = top;
+  const right = left;
+
+  state.comments.currentCommentPositions = {
+    trigger: {
       left,
+      top,
+      bottom,
+      right: right + PREVIEW_COMMENT_OFFSET,
+    },
+    dialog: {
+      left: left + PREVIEW_COMMENT_OFFSET,
       top,
       bottom,
       right,
@@ -401,6 +522,12 @@ export const saveOptimisticComment: AsyncAction<{
   state.comments.comments[sandbox.id][id] = comment;
   state.comments.currentCommentId = state.comments.currentCommentId ? id : null;
   delete state.comments.comments[sandbox.id][OPTIMISTIC_COMMENT_ID];
+
+  if (state.preview.mode === 'responsive-add-comment') {
+    state.preview.mode = 'responsive';
+  } else {
+    state.preview.mode = null;
+  }
 
   return actions.comments.saveComment(comment);
 };
@@ -548,6 +675,20 @@ export const saveComment: AsyncAction<CommentFragment> = async (
             lastUpdatedAt: state.editor.currentSandbox!.modules.find(
               module => module.path === metadata.path
             )!.updatedAt,
+          },
+        });
+      } else if (reference.type === 'preview') {
+        const metadata = reference.metadata as PreviewReferenceMetadata;
+        await effects.gql.mutations.createPreviewComment({
+          ...baseCommentPayload,
+          anchorReference: {
+            height: metadata.height,
+            previewPath: metadata.previewPath,
+            userAgent: metadata.userAgent,
+            screenshotSrc: metadata.screenshotUrl || null,
+            width: metadata.width,
+            x: metadata.x,
+            y: metadata.y,
           },
         });
       }

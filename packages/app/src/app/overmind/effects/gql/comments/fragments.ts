@@ -22,6 +22,15 @@ export const imageReferenceMetadataFragment = gql`
   }
 `;
 
+export const previewReferenceMetadataFragment = gql`
+  fragment PreviewReferenceMetadata on PreviewReferenceMetadata {
+    width
+    height
+    x
+    y
+  }
+`;
+
 export const commentFragment = gql`
   fragment Comment on Comment {
     id
@@ -34,6 +43,9 @@ export const commentFragment = gql`
       metadata {
         ... on CodeReferenceMetadata {
           ...CodeReferenceMetadata
+        }
+        ... on PreviewReferenceMetadata {
+          ...PreviewReferenceMetadata
         }
       }
       resource
@@ -69,6 +81,7 @@ export const commentFragment = gql`
   ${codeReferenceMetadataFragment}
   ${userReferenceMetadataFragment}
   ${imageReferenceMetadataFragment}
+  ${previewReferenceMetadataFragment}
 `;
 
 export const commentWithRepliesFragment = gql`
@@ -78,6 +91,19 @@ export const commentWithRepliesFragment = gql`
     insertedAt
     updatedAt
     isResolved
+    anchorReference {
+      id
+      metadata {
+        ... on CodeReferenceMetadata {
+          ...CodeReferenceMetadata
+        }
+        ... on PreviewReferenceMetadata {
+          ...PreviewReferenceMetadata
+        }
+      }
+      resource
+      type
+    }
     references {
       id
       metadata {
@@ -112,4 +138,5 @@ export const commentWithRepliesFragment = gql`
   ${codeReferenceMetadataFragment}
   ${userReferenceMetadataFragment}
   ${imageReferenceMetadataFragment}
+  ${previewReferenceMetadataFragment}
 `;

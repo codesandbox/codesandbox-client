@@ -9,14 +9,14 @@ type State = {
     scale: number;
     resolution: [number, number];
   };
-  mode: 'responsive' | 'add-comment' | null;
+  mode: 'responsive' | 'add-comment' | 'responsive-add-comment' | null;
 };
 
 export const defaultPresets: Presets = {
   Mobile: [320, 675],
   Tablet: [1024, 765],
   Desktop: [1400, 800],
-  'Desktop  HD': [1920, 1080],
+  'Desktop HD': [1920, 1080],
 };
 
 export const state: State = {

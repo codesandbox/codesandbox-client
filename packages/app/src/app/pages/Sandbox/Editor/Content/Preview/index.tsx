@@ -76,8 +76,15 @@ export const Preview: FunctionComponent<Props> = ({
       onMount={initializePreview}
       noPreview={!previewWindowVisible}
       onToggleProjectView={projectViewToggled}
-      ResponsiveWrapper={ResponsiveWrapper}
-      isResponsiveModeActive={preview.mode === 'responsive'}
+      Wrapper={ResponsiveWrapper}
+      isResponsiveModeActive={
+        preview.mode === 'responsive' ||
+        preview.mode === 'responsive-add-comment'
+      }
+      isPreviewCommentModeActive={
+        preview.mode === 'add-comment' ||
+        preview.mode === 'responsive-add-comment'
+      }
       toggleResponsiveMode={previewActions.toggleResponsiveMode}
       overlayMessage={getOverlayMessage()}
       previewSecret={currentSandbox.previewSecret}
@@ -85,7 +92,6 @@ export const Preview: FunctionComponent<Props> = ({
       sandbox={currentSandbox}
       settings={settings}
       togglePreviewComment={previewActions.togglePreviewComment}
-      isAddingPreviewComment={preview.mode === 'add-comment'}
       url={options.url}
     />
   ) : (
