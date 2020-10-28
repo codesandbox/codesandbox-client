@@ -3,9 +3,9 @@ banner: ./images/banner.jpg
 slug: codesandbox-series-a-funding
 authors: ["Ives van Hoorne"]
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
-title: CodeSandbox Secures $12.7M Series A Funding to Continue Building the Future of Coding on the Web
+title: CodeSandbox Secures $12.7M Series A Funding
 description:
-  We're thrilled to announce we've raised a new round of $12.7 million Series A funding, led by EQT Ventures.
+  We're thrilled to announce we've raised a new round of $12.7 million Series A funding led by EQT Ventures to continue building the future of coding on the web.
 date: 2020-10-29
 ---
 
