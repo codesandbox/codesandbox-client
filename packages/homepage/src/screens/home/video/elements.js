@@ -47,6 +47,13 @@ export const Tabs = styled.ul`
     padding-right: 13px;
   }
 
+  /* hide scrollbar - webkit */
+  &::-webkit-scrollbar {
+    height: 0;
+  }
+  /* hide scrollbar - firefox */
+  scrollbar-width: none;
+
   ${props => props.theme.breakpoints.sm} {
     max-width: 100%;
     justify-content: flex-start;
