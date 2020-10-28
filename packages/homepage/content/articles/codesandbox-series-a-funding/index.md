@@ -76,7 +76,9 @@ help by providing feedback, which makes CodeSandbox better for everyone. Or you
 can help by joining us —
 [we've opportunities across engineering, design, growth, and ops](https://codesandbox.io/jobs).
 We're remote-first and take a peer-led approach to product development that's
-built around autonomous teams.
+built around autonomous teams. Plus, what we're building is truly exciting - a next-generation 
+development platform where everyone can build an application or contribute to it. We're not evolving 
+what already exists, we're tackling the problem afresh.
 
 We're excited about what's ahead, and we couldn't have gotten to where we are
 without you. Here's to building the future of coding on the web, together.
