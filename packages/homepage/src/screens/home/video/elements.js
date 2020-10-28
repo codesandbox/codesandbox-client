@@ -51,6 +51,20 @@ export const Tabs = styled.ul`
     max-width: 100%;
     justify-content: flex-start;
     overflow: scroll;
+
+    :after {
+      content: '';
+      position: absolute;
+      right: 0;
+      display: block;
+      height: 3rem;
+      width: 5rem;
+      background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 1) 100%
+      );
+    }
   }
 `;
 
