@@ -39,7 +39,8 @@ const Careers = () => {
     },
     {
       title: 'Senior Full Stack Engineer (TypeScript)',
-      url: 'https://codesandbox.recruitee.com/o/typescript-engineer-full-stack',
+      url:
+        'https://codesandbox.recruitee.com/o/senior-full-stack-engineer-typescript',
     },
     {
       title: 'Head of Engineering',
