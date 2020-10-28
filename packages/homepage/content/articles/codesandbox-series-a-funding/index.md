@@ -40,18 +40,19 @@ will unlock new use cases and further existing ones.
 
 ### What's next?
 
-In the years since we launched, the web development ecosystem has only become
-more complex and fragmented. Web development is increasingly distributed as
-product teams embrace remote working, and more people are getting involved in
-the development process. Designers, testers, product owners, and more all want
-to give feedback and iterate quickly. But they can't without asking a developer.
-Creation should be more accessible, and we're using this funding to make that a
-reality. Meaning designers won’t have to go through a developer to tweak the
-design, and non-developers won’t have to learn git to make simple contributions.
-We're making CodeSandbox the best tool for product teams and organizations to
-collaborate on code—not by taking local development and putting it in the Cloud,
-but with a web-first solution that’s faster, more collaborative, and easier to
-use for the whole team.
+In the years since we launched, the web development ecosystem has only become 
+more complex and fragmented. Web development is increasingly distributed as product 
+teams embrace remote working, and more people are getting involved in the development 
+process. Designers, testers, product owners, and more all want to give feedback and 
+iterate quickly. But they can't without asking a developer. Creation should be more 
+accessible, and we're using this funding to make that a reality. Meaning designers 
+won't have to go through a developer to tweak the design, and non-developers won't 
+have to learn git to make simple contributions.
+
+We're building a platform that makes CodeSandbox the best tool for whole product teams 
+and organizations to collaborate on code—not by taking local development and putting it 
+in the Cloud, but with a web-first solution that's faster, more collaborative, and easier 
+to use for the whole team.
 
 ### Get early access: Pro Workspaces
 
