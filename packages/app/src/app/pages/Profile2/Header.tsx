@@ -88,7 +88,6 @@ export const Header: React.FC = () => {
 
       <Stack align="center" gap={2}>
         <Button
-          variant="secondary"
           css={css({ width: 'auto', paddingX: 3 })}
           onClick={() => {
             openCreateSandboxModal({});

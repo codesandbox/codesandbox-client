@@ -11,17 +11,24 @@ export const ShowcaseSandbox = () => {
   const {
     state: {
       profile: { showcasedSandbox },
+      user: loggedInUser,
+      profile: { current: user },
     },
   } = useOvermind();
 
-  const [{ isOver, isDragging }, drop] = useDrop({
+  const myProfile = loggedInUser?.username === user.username;
+
+  const [{ isOver, canDrop, isDragging }, drop] = useDrop({
     accept: [SandboxType.ALL_SANDBOX, SandboxType.PINNED_SANDBOX],
     drop: () => ({ name: DropTarget.SHOWCASED_SANDBOX }),
     collect: monitor => ({
       isOver: monitor.isOver(),
+      canDrop: monitor.canDrop(),
       isDragging: !!monitor.getItem(),
     }),
   });
+
+  if (!showcasedSandbox && !myProfile) return null;
 
   return (
     <div ref={drop} style={{ position: 'relative', height: 360 }}>
@@ -37,7 +44,7 @@ export const ShowcaseSandbox = () => {
               top: 0,
               zIndex: 2,
               // reveal the drag area behind it
-              height: isDragging ? 0 : 360,
+              height: isDragging && canDrop ? 0 : 360,
               borderRadius: '4px',
               border: '1px solid',
               borderColor: 'grays.600',
@@ -50,9 +57,9 @@ export const ShowcaseSandbox = () => {
             as="a"
             href={sandboxUrl({ id: showcasedSandbox.id })}
             variant="secondary"
-            autoWidth
             style={{
               position: 'absolute',
+              width: 'auto',
               zIndex: 3,
               bottom: 16,
               right: 16,

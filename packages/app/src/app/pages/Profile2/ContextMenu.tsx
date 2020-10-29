@@ -21,6 +21,7 @@ export const ContextMenu = () => {
         changeSandboxPrivacy,
         deleteSandboxClicked,
         closeContextMenu,
+        newSandboxShowcaseSelected,
       },
     },
   } = useOvermind();
@@ -42,7 +43,7 @@ export const ContextMenu = () => {
   return (
     <Menu.ContextMenu visible setVisibility={setVisibility} position={position}>
       {myProfile && !likesPage && (
-        <>
+        <span>
           {isFeatured ? (
             <Menu.Item onSelect={() => removeFeaturedSandboxes({ sandboxId })}>
               Unpin sandbox
@@ -52,6 +53,13 @@ export const ContextMenu = () => {
               Pin sandbox
             </Menu.Item>
           )}
+        </span>
+      )}
+      {myProfile && !likesPage && (
+        <>
+          <Menu.Item onSelect={() => newSandboxShowcaseSelected(sandboxId)}>
+            Set as header
+          </Menu.Item>
           <Menu.Divider />
         </>
       )}

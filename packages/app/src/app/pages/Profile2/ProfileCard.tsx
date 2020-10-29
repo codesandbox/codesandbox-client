@@ -75,7 +75,7 @@ export const ProfileCard = () => {
             paddingX: 6,
             paddingY: 6,
             // fix height to avoid jumping
-            height: myProfile ? 230 : 'auto',
+            minHeight: myProfile ? 230 : 'auto',
           })}
         >
           <Stack gap={4} align="center">
@@ -84,7 +84,7 @@ export const ProfileCard = () => {
               css={css({
                 size: 64,
                 img: { borderRadius: 'medium' },
-                span: { fontSize: 3, height: 4, lineHeight: '16px' },
+                span: { fontSize: 2, height: 4, lineHeight: '14px' },
               })}
             />
             <Stack direction="vertical">
@@ -110,7 +110,7 @@ export const ProfileCard = () => {
               <Stack gap={2} align="center">
                 <Icon name="heart" />
                 <Link as={RouterLink} to="/likes" size={3}>
-                  {user.givenLikeCount} Likes
+                  {user.givenLikeCount} Liked sandboxes
                 </Link>
               </Stack>
             </Stack>
@@ -128,7 +128,7 @@ export const ProfileCard = () => {
             })}
           >
             <Text size={2} weight="bold">
-              Teams
+              Workspaces
             </Text>
             <Grid
               css={{ gridTemplateColumns: 'repeat(auto-fill, 26px)', gap: 12 }}
@@ -218,14 +218,14 @@ export const Bio: React.FC<{
   editing ? (
     <Textarea
       autosize
-      maxLength={280}
+      maxLength={160}
       defaultValue={bio}
       onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
         setBio(event.target.value)
       }
     />
   ) : (
-    <Text size={3} variant="muted">
+    <Text size={3} variant="muted" css={{ whiteSpace: 'pre-wrap' }}>
       {bio}
     </Text>
   );
@@ -242,7 +242,8 @@ const SocialLinks: React.FC<{
       <Stack direction="vertical" gap={4}>
         {socialLinks.map((link, index) => (
           <Input
-            key={link}
+            // eslint-disable-next-line
+            key={index}
             defaultValue={link}
             autoFocus
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {

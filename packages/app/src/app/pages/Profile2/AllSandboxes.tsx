@@ -47,6 +47,16 @@ export const AllSandboxes = () => {
     // only show public sandboxes on profile
     .filter(sandbox => sandbox.privacy === 0);
 
+  if (!sandboxes.length) {
+    return (
+      <Stack justify="center" align="center" css={css({ height: 320 })}>
+        <Text variant="muted" size={4} weight="medium" align="center">
+          This user does not have any sandboxes yet
+        </Text>
+      </Stack>
+    );
+  }
+
   return (
     <Stack as="section" direction="vertical" gap={6}>
       <Stack justify="space-between" align="center">
@@ -152,6 +162,8 @@ const Pagination = () => {
   const numberOfPages = Math.ceil(
     (sandboxCount + templateCount) / SANDBOXES_PER_PAGE
   );
+
+  if (numberOfPages < 2) return null;
 
   return (
     <nav role="navigation" aria-label="Pagination Navigation">
