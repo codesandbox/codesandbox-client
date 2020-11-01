@@ -124,4 +124,41 @@ export default {
 
     return el.getBoundingClientRect();
   },
+  cropImageToCoordinates(imageSrc: string, x: number, y: number): Promise<string> {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      const image = new Image()
+      image.onload = () => {
+        ctx.drawImage(image, 0, Math.max(0, y - 200), image.width, 400, 0, 0, image.width, 400)
+        console.log(canvas.toDataURL())
+        resolve(canvas.toDataURL())
+      }
+      image.src = imageSrc
+    })  
+  },
+  embedImageOnCoordinates(targetImageSrc: string, sourceImageSrc: string, x: number, y: number): Promise<string> {
+    const targetImage = new Promise<HTMLImageElement>((resolve) => {
+      const image = new Image()
+      image.onload = () => {
+        resolve(image)
+      }
+      image.src = targetImageSrc
+    })  
+
+    return targetImage.then((targetImage) => {
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        const image = new Image()
+        image.onload = () => {
+          ctx.drawImage(targetImage, 0, 0)
+          ctx.drawImage(image, x, y)
+          resolve(canvas.toDataURL())
+        }
+        image.src = sourceImageSrc
+
+      })
+    })
+  }
 };

@@ -42,6 +42,7 @@ import { OPTIMISTIC_COMMENT_ID } from './state';
 
 const PREVIEW_COMMENT_OFFSET = -500;
 const CODE_COMMENT_OFFSET = 500;
+const BUBBLE_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC8SURBVHgBxZO9EYJAEIW/PTG3BEogNIQKoBQ7QDvQTrQCCQwMrwMpwdxR3ANkGAIHjoA3czd7P+/b25lbYaBqG8WsSKnIEMJ229bjzUHutuzfl84YRxte5Bru+K8jawUV9tkBWvNVw4hxsgpJHMTUyybzWDP13caDaM2h1vzAR0Ji1Jzjqw+ZYdrThy9I5wEgNMzUXIBdGKBf2x8gnFxf+AIsAXsXTAdo5l8fuGUwylRR6nzRdGe52aJ/9AWAvjArPZuVDgAAAABJRU5ErkJggg=='
 
 export const selectCommentsFilter: Action<CommentsFilterOption> = (
   { state },
@@ -435,9 +436,11 @@ export const addOptimisticPreviewComment: AsyncAction<{
   const comments = state.comments.comments;
   const previewIframeBounds = await effects.preview.getIframBoundingRect();
   const previewPath = await effects.preview.getPreviewPath();
+  const screenshotWithBubble = await effects.browser.embedImageOnCoordinates(screenshot, BUBBLE_IMAGE, x, y)
+  const screenshotUrl = await effects.browser.cropImageToCoordinates(screenshotWithBubble, x, y)
   const metadata: PreviewReferenceMetadata = {
     userAgent: effects.browser.getUserAgent(),
-    screenshotUrl: screenshot,
+    screenshotUrl,
     width:
       state.preview.mode === 'responsive-add-comment'
         ? state.preview.responsive.resolution[0]

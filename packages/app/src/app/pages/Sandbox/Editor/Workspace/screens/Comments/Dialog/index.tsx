@@ -38,6 +38,7 @@ interface CommentDialogProps {
   comment: CommentWithRepliesFragment;
 }
 
+
 export const CommentDialog: React.FC<CommentDialogProps> = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
@@ -269,7 +270,12 @@ const DialogAddComment: React.FC<{
           />
         </Stack>
       </DragHandle>
-      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <img src={comment.anchorReference.metadata.screenshotUrl} /> : null}
+      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <Element css={css({
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 4
+      })}><img src={comment.anchorReference.metadata.screenshotUrl} /></Element> : null}
       {elements}
     </Stack>
   );
