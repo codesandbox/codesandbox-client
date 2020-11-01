@@ -269,6 +269,7 @@ const DialogAddComment: React.FC<{
           />
         </Stack>
       </DragHandle>
+      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <img src={comment.anchorReference.metadata.screenshotUrl} /> : null}
       {elements}
     </Stack>
   );

@@ -91,7 +91,7 @@ export const Preview: FunctionComponent<Props> = ({
       privacy={currentSandbox.privacy}
       sandbox={currentSandbox}
       settings={settings}
-      togglePreviewComment={previewActions.togglePreviewComment}
+      createPreviewComment={previewActions.createPreviewComment}
       url={options.url}
     />
   ) : (

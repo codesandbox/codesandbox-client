@@ -154,12 +154,13 @@ export const editPresets: AsyncAction<Presets> = async (
   });
 };
 
-export const togglePreviewComment: Action = ({ state }) => {
+export const createPreviewComment: Action = ({ state, effects }) => {
   const existingMode = state.preview.mode;
 
   switch (existingMode) {
     case 'responsive':
       state.preview.mode = 'responsive-add-comment';
+      effects.preview.takeScreenshot()
       break;
     case 'add-comment':
       state.preview.mode = null;
@@ -169,6 +170,7 @@ export const togglePreviewComment: Action = ({ state }) => {
       break;
     default:
       state.preview.mode = 'add-comment';
+      effects.preview.takeScreenshot()
   }
 };
 

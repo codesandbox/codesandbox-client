@@ -53,7 +53,7 @@ export type Props = {
   isResponsiveModeActive?: boolean;
   isPreviewCommentModeActive?: boolean;
   toggleResponsiveMode?: () => void;
-  togglePreviewComment?: () => void;
+  createPreviewComment?: () => void;
   /**
    * Whether to show a screenshot in the preview as a "placeholder" while loading
    * to reduce perceived loading time
@@ -559,7 +559,7 @@ class BasePreview extends React.PureComponent<Props, State> {
       Wrapper = DefaultWrapper,
       isResponsiveModeActive,
       toggleResponsiveMode,
-      togglePreviewComment,
+      createPreviewComment,
       isPreviewCommentModeActive,
     } = this.props;
 
@@ -601,7 +601,7 @@ class BasePreview extends React.PureComponent<Props, State> {
             isInResponsivePreview={isResponsiveModeActive}
             isPreviewCommentModeActive={isPreviewCommentModeActive}
             openNewWindow={this.openNewWindow}
-            togglePreviewComment={togglePreviewComment}
+            createPreviewComment={createPreviewComment}
             zenMode={settings.zenMode}
           />
         )}

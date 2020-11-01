@@ -29,7 +29,7 @@ export interface NavigatorProps {
   onForward?: () => void;
   openNewWindow?: () => void;
   toggleResponsiveView?: () => void;
-  togglePreviewComment?: () => void;
+  createPreviewComment?: () => void;
   isInResponsivePreview?: boolean;
   isPreviewCommentModeActive?: boolean;
   zenMode?: boolean;
@@ -48,7 +48,7 @@ function Navigator({
   openNewWindow,
   toggleResponsiveView,
   isInResponsivePreview,
-  togglePreviewComment,
+  createPreviewComment,
   isPreviewCommentModeActive,
   zenMode,
 }: NavigatorProps) {
@@ -72,9 +72,9 @@ function Navigator({
       >
         <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
       </AddressBarContainer>
-      {togglePreviewComment && (
+      {createPreviewComment && (
         <IconWithBackground
-          onClick={togglePreviewComment}
+          onClick={createPreviewComment}
           style={{ color: isPreviewCommentModeActive ? '#FF3B30' : '#757575' }}
         >
           <Tooltip delay={0} content="Add Preview Comment">

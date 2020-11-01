@@ -1,6 +1,7 @@
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
 import _debug from '@codesandbox/common/lib/utils/debug';
+import 'sandbox-hooks/screenshot';
 
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';

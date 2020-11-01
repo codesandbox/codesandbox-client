@@ -1,3 +1,4 @@
+import { listen } from 'codesandbox-api'
 import {
   CommentWithRepliesFragment,
   PreviewReferenceMetadata,
@@ -14,7 +15,7 @@ const Wrapper = styled.div({
   position: 'relative',
 });
 
-const ClickWrapper = styled.div<{ showCommentCursor: boolean }>(props => ({
+const Screenshot = styled.div<{ showCommentCursor: boolean }>(props => ({
   position: 'absolute',
   left: 0,
   top: 0,
@@ -56,8 +57,16 @@ type Props = {
 
 export const PreviewCommentWrapper = ({ children, scale }: Props) => {
   const { state, actions } = useOvermind();
+  const [screenshot, setScreenshot ] = React.useState<string | null>(null)
 
   const previewReference = getPreviewReference(state.comments.currentComment);
+
+  React.useEffect(() => listen((data: any) => {
+      if (data.type === 'screenshot-generated') {
+        setScreenshot(data.screenshot)
+      }
+    })
+  )
 
   let previewBubble = null;
 
@@ -99,7 +108,10 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
       {children}
       {state.preview.mode === 'add-comment' ||
       state.preview.mode === 'responsive-add-comment' ? (
-        <ClickWrapper
+        <Screenshot
+          style={screenshot ? {
+            backgroundImage: `url(${screenshot})`
+          } : undefined}
           showCommentCursor={!state.comments.currentComment}
           onClick={event => {
             const parentBounds = (event.target as any).parentNode.getBoundingClientRect();
@@ -107,6 +119,7 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
             actions.comments.addOptimisticPreviewComment({
               x: event.clientX - parentBounds.left,
               y: event.clientY - parentBounds.top,
+              screenshot,
               scale,
             });
           }}

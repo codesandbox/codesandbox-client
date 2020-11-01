@@ -1,3 +1,4 @@
+import { dispatch } from 'codesandbox-api'
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import { blocker } from 'app/utils/blocker';
 
@@ -44,4 +45,11 @@ export default {
 
     return path.substr(path.indexOf('/'));
   },
+  takeScreenshot() {
+    // this dispatch triggers a "screenshot-generated" message
+    // which is received inside the PreviewCommentWrapper
+    dispatch({
+      type: 'take-screenshot',
+    });
+  }
 };

@@ -426,7 +426,8 @@ export const addOptimisticPreviewComment: AsyncAction<{
   x: number;
   y: number;
   scale: number;
-}> = async ({ state, effects }, { x, y, scale }) => {
+  screenshot: string;
+}> = async ({ state, effects }, { x, y, scale, screenshot }) => {
   const sandbox = state.editor.currentSandbox!;
   const user = state.user!;
   const id = OPTIMISTIC_COMMENT_ID;
@@ -436,7 +437,7 @@ export const addOptimisticPreviewComment: AsyncAction<{
   const previewPath = await effects.preview.getPreviewPath();
   const metadata: PreviewReferenceMetadata = {
     userAgent: effects.browser.getUserAgent(),
-    screenshotUrl: '',
+    screenshotUrl: screenshot,
     width:
       state.preview.mode === 'responsive-add-comment'
         ? state.preview.responsive.resolution[0]
