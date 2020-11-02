@@ -8,7 +8,6 @@ import {
 type State = {
   gitState: SandboxGitState;
   repoTitle: string;
-  forks: { id: string; title: string | null; prNumber: number | null }[];
   sourceSandboxId: string | null;
   error: string | null;
   isExported: boolean;
@@ -49,7 +48,6 @@ type State = {
 export const state: State = {
   gitState: SandboxGitState.SYNCING,
   sourceCommitSha: null,
-  forks: [],
   baseCommitSha: null,
   repoTitle: '',
   sourceSandboxId: null,
