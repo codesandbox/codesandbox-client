@@ -49,7 +49,6 @@ export const loadGitSource: AsyncAction = async ({
   const sandbox = state.editor.currentSandbox!;
   state.git.isExported = false;
   state.git.pr = null;
-  state.git.forks = [];
   state.git.repoTitle = '';
 
   if (
@@ -112,25 +111,6 @@ export const loadGitSource: AsyncAction = async ({
     }
   }
 
-  try {
-    const { git } = await effects.gql.queries.getForks({
-      ...(sandbox.baseGit || sandbox.originalGit),
-      teamId: state.activeTeam || undefined,
-    });
-    state.git.forks = git
-      ? git.baseGitSandboxes
-          .concat(git.originalGitSandboxes)
-          .sort((a, b) => (a.id === sandbox.id ? -1 : 1))
-      : [];
-  } catch (error) {
-    actions.internal.handleError({
-      error,
-      message:
-        'We were not able to grab any forks of the source, please refresh or report the issue',
-    });
-    return;
-  }
-
   actions.git._setGitChanges();
   state.git.isFetching = false;
 };
@@ -186,9 +166,9 @@ export const createRepoClicked: AsyncAction = async ({
     state.currentModal = null;
 
     actions.editor.internal.forkSandbox({
-      sandboxId: `github/${git.username}/${git.repo}/tree/${
-        git.branch
-      }/${git.path || ''}`,
+      sandboxId: `github/${git.username}/${git.repo}/tree/${git.branch}/${
+        git.path || ''
+      }`,
     });
   } catch (error) {
     actions.internal.handleError({
@@ -238,12 +218,6 @@ export const openSourceSandbox: Action = ({ state, effects }) => {
     : state.editor.currentSandbox!.originalGit;
 
   effects.router.updateSandboxUrl({ git });
-};
-
-export const openSandboxFork: Action<string> = ({ effects }, id) => {
-  effects.analytics.track('GitHub - Open Forked Sandbox');
-
-  effects.router.updateSandboxUrl({ id });
 };
 
 /*
