@@ -262,8 +262,17 @@ export const SandboxCard: React.FC<{
           }}
         />
         <Stack justify="space-between">
-          <Stack direction="vertical" marginX={4} marginBottom={4}>
-            <Text css={css({ height: 7 })}>
+          <Stack
+            direction="vertical"
+            marginX={4}
+            marginBottom={4}
+            css={{ width: '100%' }}
+          >
+            <Text
+              size={3}
+              maxWidth="calc(100% - 24px)"
+              css={css({ height: 7 })}
+            >
               {sandbox.title || sandbox.alias || sandbox.id}
             </Text>
             <Stats sandbox={sandbox} />
