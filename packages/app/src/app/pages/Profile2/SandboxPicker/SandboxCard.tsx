@@ -20,6 +20,12 @@ const PrivacyIcons = {
   2: () => <Icon name="lock" size={12} />,
 };
 
+const privacyToName = {
+  0: 'Public',
+  1: 'Unlisted',
+  2: 'Private',
+};
+
 export const SandboxCard: React.FC<{
   sandbox: Sandbox | SandboxFragmentDashboardFragment;
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
@@ -47,6 +53,7 @@ export const SandboxCard: React.FC<{
   };
 
   const PrivacyIcon = PrivacyIcons[sandbox.privacy || 0];
+  const isPublic = sandbox.privacy === 0;
 
   return (
     <Stack
@@ -56,6 +63,8 @@ export const SandboxCard: React.FC<{
       onClick={onCardClick}
       onContextMenu={onContextMenu}
       css={css({
+        position: 'relative',
+
         backgroundColor: 'grays.700',
         border: '1px solid',
         borderColor:
@@ -66,6 +75,9 @@ export const SandboxCard: React.FC<{
         ':hover, :focus, :focus-within': {
           boxShadow: (theme: typeof designLanguage) =>
             '0 4px 16px 0 ' + theme.colors.grays[900],
+          '[data-footer]': {
+            opacity: 1,
+          },
         },
         ':focus, :focus-within': {
           outline: 'none',
@@ -73,6 +85,42 @@ export const SandboxCard: React.FC<{
         },
       })}
     >
+      {!isPublic && (
+        <Stack
+          align="center"
+          css={css({
+            position: 'absolute',
+            zIndex: 2,
+            height: 160 + 1, // match thumbnail height
+            ':hover': {
+              span: { opacity: 1 },
+            },
+          })}
+        >
+          <Text
+            size={3}
+            align="center"
+            css={css({ color: 'white', opacity: 0 })}
+          >
+            {privacyToName[sandbox.privacy]} sandboxes cannot be featured on
+            profile
+          </Text>
+          <Stack
+            justify="center"
+            align="center"
+            css={css({
+              position: 'absolute',
+              top: 2,
+              right: 2,
+              size: 6,
+              backgroundColor: 'grays.500',
+              borderRadius: 'medium',
+            })}
+          >
+            <PrivacyIcon />
+          </Stack>
+        </Stack>
+      )}
       <div
         css={css({
           display: 'flex',
@@ -85,6 +133,7 @@ export const SandboxCard: React.FC<{
           backgroundPosition: 'top center',
           backgroundRepeat: 'no-repeat',
           borderColor: 'grays.600',
+          opacity: isPublic ? 1 : 0.4,
         })}
         style={{
           backgroundImage: `url(${
@@ -93,19 +142,20 @@ export const SandboxCard: React.FC<{
           })`,
         }}
       />
-      <Stack justify="space-between">
+      <Stack
+        data-footer
+        justify="space-between"
+        css={{ opacity: isPublic ? 1 : 0.4 }}
+      >
         <Stack
           direction="vertical"
           marginX={4}
           marginBottom={4}
           css={{ width: '100%' }}
         >
-          <Stack gap={1} align="center" css={css({ height: 7 })}>
-            <PrivacyIcon />
-            <Text size={3} maxWidth="calc(100% - 24px)">
-              {sandbox.title || sandbox.alias || sandbox.id}
-            </Text>
-          </Stack>
+          <Text size={3} maxWidth="calc(100% - 24px)">
+            {sandbox.title || sandbox.alias || sandbox.id}
+          </Text>
           <Stats sandbox={sandbox} css={css({ svg: { size: '14px' } })} />
         </Stack>
         <IconButton
