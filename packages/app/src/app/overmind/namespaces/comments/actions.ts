@@ -276,24 +276,20 @@ export const selectComment: AsyncAction<{
     // We have to wait for the bubble to appear
     await Promise.resolve();
 
-    const bubbleBounds = effects.browser.getElementBoundingRect(
-      '#preview-comment-bubble'
-    );
+    const previewBounds = await effects.preview.getIframBoundingRect();
 
-    if (bubbleBounds) {
-      const left = bubbleBounds.left + PREVIEW_COMMENT_OFFSET;
-      const top = bubbleBounds.top;
+    const left = previewBounds.left + PREVIEW_COMMENT_OFFSET;
+    const top = previewBounds.top;
 
-      state.comments.currentCommentPositions = {
-        trigger: bounds,
-        dialog: {
-          left,
-          top,
-          bottom: top,
-          right: left,
-        },
-      };
-    }
+    state.comments.currentCommentPositions = {
+      trigger: bounds,
+      dialog: {
+        left,
+        top,
+        bottom: top,
+        right: left,
+      },
+    };
   } else {
     state.comments.currentCommentId = commentId;
     state.comments.currentCommentPositions = {
@@ -436,8 +432,19 @@ export const addOptimisticPreviewComment: AsyncAction<{
   const comments = state.comments.comments;
   const previewIframeBounds = await effects.preview.getIframBoundingRect();
   const previewPath = await effects.preview.getPreviewPath();
-  const screenshotWithBubble = await effects.browser.embedImageOnCoordinates(screenshot, BUBBLE_IMAGE, x, y)
-  const screenshotUrl = await effects.browser.cropImageToCoordinates(screenshotWithBubble, x, y)
+  const screenshotWithBubble = await effects.browser.embedImageOnCoordinates({
+    source: BUBBLE_IMAGE,
+    target: screenshot,
+    x,
+    y,
+  })
+  const screenshotUrl = await effects.browser.cropImageToCoordinates({
+    source: screenshotWithBubble,
+    cropWidth: 1000,
+    cropHeight: 400,
+    x,
+    y
+  })
   const metadata: PreviewReferenceMetadata = {
     userAgent: effects.browser.getUserAgent(),
     screenshotUrl,

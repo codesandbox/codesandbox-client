@@ -124,41 +124,84 @@ export default {
 
     return el.getBoundingClientRect();
   },
-  cropImageToCoordinates(imageSrc: string, x: number, y: number): Promise<string> {
+  cropImageToCoordinates({
+    source,
+    cropWidth,
+    cropHeight,
+    x,
+    y,
+  } : {
+    source: string, 
+    cropWidth: number,
+    cropHeight: number,
+    x: number,
+    y: number
+  }): Promise<string> {
     return new Promise((resolve) => {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       const image = new Image()
       image.onload = () => {
-        ctx.drawImage(image, 0, Math.max(0, y - 200), image.width, 400, 0, 0, image.width, 400)
-        console.log(canvas.toDataURL())
+        let spaceWeWantToUseWidth = cropWidth
+        let spaceWeWantToUseHeight = cropHeight
+
+        const rightSideSpace = Math.min(image.width - x, cropWidth / 2)
+        const bottomSideSpace = Math.min(image.height - y, cropHeight / 2)
+
+        spaceWeWantToUseWidth -= rightSideSpace
+        spaceWeWantToUseHeight -= bottomSideSpace
+
+        const leftSideSpace = Math.min(x, spaceWeWantToUseWidth)
+        const topSideSpace = Math.min(y, spaceWeWantToUseHeight)
+
+        const width = leftSideSpace + rightSideSpace
+        const height = bottomSideSpace + topSideSpace
+        const sx = x - leftSideSpace
+        const sy = y - topSideSpace
+
+        canvas.width = width
+        canvas.height = height
+
+        ctx.drawImage(image, sx, sy, width, height, 0, 0, width, height)    
+
         resolve(canvas.toDataURL())
       }
-      image.src = imageSrc
+      image.src = source
     })  
   },
-  embedImageOnCoordinates(targetImageSrc: string, sourceImageSrc: string, x: number, y: number): Promise<string> {
+  embedImageOnCoordinates({
+    target,
+    source,
+    x, y
+  } : {
+    target: string,
+    source: string,
+    x: number,
+    y: number,
+  }): Promise<string> {
     const targetImage = new Promise<HTMLImageElement>((resolve) => {
       const image = new Image()
       image.onload = () => {
         resolve(image)
       }
-      image.src = targetImageSrc
+      image.src = target
     })  
 
-    return targetImage.then((targetImage) => {
-      return new Promise((resolve) => {
+    return targetImage.then((targetImage) => new Promise((resolve) => {
+      const BUBBLE_OFFSET = 20
+
         const canvas = document.createElement('canvas')
+        canvas.width = targetImage.width + BUBBLE_OFFSET * 2
+        canvas.height = targetImage.height + BUBBLE_OFFSET * 2;
         const ctx = canvas.getContext('2d')
         const image = new Image()
         image.onload = () => {
-          ctx.drawImage(targetImage, 0, 0)
-          ctx.drawImage(image, x, y)
+          
+          ctx.drawImage(targetImage, BUBBLE_OFFSET, BUBBLE_OFFSET)
+          ctx.drawImage(image, x + BUBBLE_OFFSET, y + BUBBLE_OFFSET)
           resolve(canvas.toDataURL())
         }
-        image.src = sourceImageSrc
-
-      })
-    })
+        image.src = source
+      }))
   }
 };

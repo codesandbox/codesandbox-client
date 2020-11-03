@@ -68,40 +68,13 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
     })
   )
 
-  let previewBubble = null;
+  React.useEffect(() => {
+    if (screenshot && (!state.preview.mode  || state.preview.mode === 'responsive')) {
+      setScreenshot(null) 
+    }
+  }, [state.preview.mode]
+)
 
-  if (
-    previewReference &&
-    (state.preview.mode === 'responsive' ||
-      state.preview.mode === 'responsive-add-comment')
-  ) {
-    previewBubble = (
-      <PreviewBubble
-        id="preview-comment-bubble"
-        name="comment"
-        active
-        style={{
-          top: previewReference.y * Math.round(scale) + 'px',
-          left: previewReference.x * Math.round(scale) + 'px',
-        }}
-      />
-    );
-  } else if (
-    previewReference &&
-    (state.preview.mode == null || state.preview.mode === 'add-comment')
-  ) {
-    previewBubble = (
-      <PreviewBubble
-        id="preview-comment-bubble"
-        name="comment"
-        active
-        style={{
-          top: previewReference.y + 'px',
-          left: previewReference.x + 'px',
-        }}
-      />
-    );
-  }
 
   return (
     <Wrapper>
@@ -125,7 +98,17 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
           }}
         />
       ) : null}
-      {previewBubble}
+      { previewReference &&
+    (state.preview.mode === 'add-comment' ||
+      state.preview.mode === 'responsive-add-comment') ?       <PreviewBubble
+      id="preview-comment-bubble"
+      name="comment"
+      active
+      style={{
+        top: previewReference.y * Math.round(scale) + 'px',
+        left: previewReference.x * Math.round(scale) + 'px',
+      }}
+    /> : null}
     </Wrapper>
   );
 };

@@ -28,6 +28,7 @@ export const previewReferenceMetadataFragment = gql`
     height
     x
     y
+    screenshotUrl
   }
 `;
 

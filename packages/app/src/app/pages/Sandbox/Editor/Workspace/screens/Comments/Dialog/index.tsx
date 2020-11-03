@@ -214,6 +214,20 @@ export const Dialog: React.FC<CommentDialogProps> = props => {
   );
 };
 
+const PreviewScreenshot: React.FC<{url: string}> = ({ url }) => {
+  return (
+    <Element css={css({
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 4,
+      'img': {
+        maxWidth: '100%'
+      }
+    })}><img src={url} /></Element>
+  )
+}
+
 const DialogAddComment: React.FC<{
   comment: CommentWithRepliesFragment;
   onSave: (value: string, mentions: { [username: string]: UserQuery }) => void;
@@ -270,12 +284,7 @@ const DialogAddComment: React.FC<{
           />
         </Stack>
       </DragHandle>
-      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <Element css={css({
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 4
-      })}><img src={comment.anchorReference.metadata.screenshotUrl} /></Element> : null}
+      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <PreviewScreenshot url={comment.anchorReference.metadata.screenshotUrl} /> : null}
       {elements}
     </Stack>
   );
@@ -416,6 +425,7 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
           </Menu>
         </Stack>
       </Stack>
+      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <PreviewScreenshot url={comment.anchorReference.metadata.screenshotUrl} /> : null}
       <Element
         marginY={0}
         marginX={4}
