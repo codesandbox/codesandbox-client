@@ -24,7 +24,6 @@ export const SandboxCard: React.FC<{
   type?: SandboxType;
   sandbox: Sandbox | SandboxFragmentDashboardFragment;
   index?: number | null;
-  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }> = ({
   type = SandboxType.DEFAULT_SANDBOX,
   sandbox,
@@ -167,11 +166,6 @@ export const SandboxCard: React.FC<{
   }
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (typeof props.onClick === 'function') {
-      props.onClick(event);
-      return;
-    }
-
     // we use on click instead of anchor tag so that safari renders
     // the html5 drag thumbnail instead of text
     if (isTargetInMenu(event)) return;
