@@ -5,6 +5,7 @@ import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
 import React, { FunctionComponent, useState } from 'react';
 import { useOvermind } from 'app/overmind';
 
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { ResponsiveWrapper } from './ResponsiveWrapper';
 
 type Props = {
@@ -64,6 +65,10 @@ export const Preview: FunctionComponent<Props> = ({
     return undefined;
   };
 
+  const canAddComments =
+    currentSandbox.featureFlags.comments &&
+    hasPermission(currentSandbox.authorization, 'comment');
+
   return running ? (
     <BasePreview
       currentModule={currentModule}
@@ -91,7 +96,9 @@ export const Preview: FunctionComponent<Props> = ({
       privacy={currentSandbox.privacy}
       sandbox={currentSandbox}
       settings={settings}
-      createPreviewComment={previewActions.createPreviewComment}
+      createPreviewComment={
+        canAddComments && previewActions.createPreviewComment
+      }
       url={options.url}
     />
   ) : (

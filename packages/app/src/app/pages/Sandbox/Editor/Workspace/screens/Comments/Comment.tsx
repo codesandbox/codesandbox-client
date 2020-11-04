@@ -115,7 +115,7 @@ export const Comment = React.memo<{
             </Menu>
           </Stack>
         </Stack>
-        <Stack align="flex-start" marginBottom={2}>
+        <Stack align="center" marginBottom={2} gap={2}>
           {comment.anchorReference && comment.anchorReference.type === 'code' && (
             <Link
               variant="muted"
@@ -137,26 +137,24 @@ export const Comment = React.memo<{
           )}
           {comment.anchorReference &&
             comment.anchorReference.type === 'preview' && (
-              <Icon
-                name="responsive"
-                title="Preview Comment"
-                size={12}
-                marginRight={2}
-              />
+              <Icon name="responsive" title="Preview Comment" size={12} />
             )}
-          <Stack>
-            <Icon
-              name="comment"
-              title="Reply Count"
-              color="button.background"
-              size={12}
-              marginRight={1}
-            />
-            {comment.replyCount}
-            <VisuallyHidden itemProp="commentCount">
+          {comment.replyCount ? (
+            <Stack align="center" gap={1}>
+              <Icon
+                name="comment"
+                title="Reply Count"
+                size={12}
+                css={css({
+                  color: 'button.background',
+                })}
+              />
               {comment.replyCount}
-            </VisuallyHidden>
-          </Stack>
+              <VisuallyHidden itemProp="commentCount">
+                {comment.replyCount}
+              </VisuallyHidden>
+            </Stack>
+          ) : null}
         </Stack>
         <Element
           as="p"

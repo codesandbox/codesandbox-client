@@ -1,11 +1,10 @@
-import { dispatch } from 'codesandbox-api'
+import { dispatch } from 'codesandbox-api';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import { blocker } from 'app/utils/blocker';
 
 let _preview = blocker<BasePreview>();
 
-const PREVIEW_COMMENT_BUBBLE_OFFSET = 16
-
+const PREVIEW_COMMENT_BUBBLE_OFFSET = 16;
 
 export default {
   initialize() {},
@@ -62,77 +61,127 @@ export default {
     cropHeight,
     x,
     y,
-  } : {
-    screenshotSource: string, 
-    bubbleSource: string,
-    cropWidth: number,
-    cropHeight: number,
-    x: number,
-    y: number
+  }: {
+    screenshotSource: string;
+    bubbleSource: string;
+    cropWidth: number;
+    cropHeight: number;
+    x: number;
+    y: number;
   }): Promise<string> {
-    const screenshotResolver = new Promise<HTMLImageElement>((resolve) => {
-      const image = new Image()
+    const screenshotResolver = new Promise<HTMLImageElement>(resolve => {
+      const image = new Image();
       image.onload = () => {
-        resolve(image)
-      }
-      image.src = screenshotSource
-    })
+        resolve(image);
+      };
+      image.src = screenshotSource;
+    });
 
-    const bubbleResolver = new Promise<HTMLImageElement>((resolve) => {
-      const image = new Image()
+    const bubbleResolver = new Promise<HTMLImageElement>(resolve => {
+      const image = new Image();
       image.onload = () => {
-        resolve(image)
-      }
-      image.src = bubbleSource  
-    })
+        resolve(image);
+      };
+      image.src = bubbleSource;
+    });
 
-    return Promise.all([screenshotResolver, bubbleResolver]).then(([screenshot, bubble]) => {
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')
+    return Promise.all([screenshotResolver, bubbleResolver]).then(
+      ([screenshot, bubble]) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d')!;
 
+        let spaceWeWantToUseWidth = cropWidth;
+        let spaceWeWantToUseHeight = cropHeight;
 
-        let spaceWeWantToUseWidth = cropWidth
-        let spaceWeWantToUseHeight = cropHeight
+        const rightSideSpace = Math.min(screenshot.width - x, cropWidth / 2);
+        const bottomSideSpace = Math.min(screenshot.height - y, cropHeight / 2);
 
-        const rightSideSpace = Math.min(screenshot.width - x, cropWidth / 2)
-        const bottomSideSpace = Math.min(screenshot.height - y, cropHeight / 2)
+        spaceWeWantToUseWidth -= rightSideSpace;
+        spaceWeWantToUseHeight -= bottomSideSpace;
 
-        spaceWeWantToUseWidth -= rightSideSpace
-        spaceWeWantToUseHeight -= bottomSideSpace
+        const leftSideSpace = Math.min(x, spaceWeWantToUseWidth);
+        const topSideSpace = Math.min(y, spaceWeWantToUseHeight);
 
-        const leftSideSpace = Math.min(x, spaceWeWantToUseWidth)
-        const topSideSpace = Math.min(y, spaceWeWantToUseHeight)
+        const width = leftSideSpace + rightSideSpace;
+        const height = bottomSideSpace + topSideSpace;
+        const sx = x - leftSideSpace;
+        const sy = y - topSideSpace;
 
-        const width = leftSideSpace + rightSideSpace
-        const height = bottomSideSpace + topSideSpace
-        const sx = x - leftSideSpace
-        const sy = y - topSideSpace
+        canvas.width = width + PREVIEW_COMMENT_BUBBLE_OFFSET * 2;
+        canvas.height = height + PREVIEW_COMMENT_BUBBLE_OFFSET * 2;
 
-        canvas.width = width + PREVIEW_COMMENT_BUBBLE_OFFSET * 2
-        canvas.height = height + PREVIEW_COMMENT_BUBBLE_OFFSET * 2
+        const radius = 5;
 
-        const radius = 5
-
-       // console.log(width, spaceWeWantToUseWidth, sx, x)
+        // console.log(width, spaceWeWantToUseWidth, sx, x)
 
         ctx.beginPath();
-        ctx.moveTo(PREVIEW_COMMENT_BUBBLE_OFFSET + radius, PREVIEW_COMMENT_BUBBLE_OFFSET);
-        ctx.lineTo(PREVIEW_COMMENT_BUBBLE_OFFSET + width - radius, PREVIEW_COMMENT_BUBBLE_OFFSET);
-        ctx.quadraticCurveTo(PREVIEW_COMMENT_BUBBLE_OFFSET + width, PREVIEW_COMMENT_BUBBLE_OFFSET, PREVIEW_COMMENT_BUBBLE_OFFSET + width, PREVIEW_COMMENT_BUBBLE_OFFSET + radius);
-        ctx.lineTo(PREVIEW_COMMENT_BUBBLE_OFFSET + width, PREVIEW_COMMENT_BUBBLE_OFFSET + height - radius);
-        ctx.quadraticCurveTo(PREVIEW_COMMENT_BUBBLE_OFFSET + width, PREVIEW_COMMENT_BUBBLE_OFFSET + height, PREVIEW_COMMENT_BUBBLE_OFFSET + width - radius, PREVIEW_COMMENT_BUBBLE_OFFSET + height);
-        ctx.lineTo(PREVIEW_COMMENT_BUBBLE_OFFSET + radius, PREVIEW_COMMENT_BUBBLE_OFFSET + height);
-        ctx.quadraticCurveTo(PREVIEW_COMMENT_BUBBLE_OFFSET, PREVIEW_COMMENT_BUBBLE_OFFSET + height, PREVIEW_COMMENT_BUBBLE_OFFSET, PREVIEW_COMMENT_BUBBLE_OFFSET + height - radius);
-        ctx.lineTo(PREVIEW_COMMENT_BUBBLE_OFFSET, PREVIEW_COMMENT_BUBBLE_OFFSET + radius);
-        ctx.quadraticCurveTo(PREVIEW_COMMENT_BUBBLE_OFFSET, PREVIEW_COMMENT_BUBBLE_OFFSET, PREVIEW_COMMENT_BUBBLE_OFFSET + radius, PREVIEW_COMMENT_BUBBLE_OFFSET);
-        ctx.closePath(); 
-        ctx.save()
+        ctx.moveTo(
+          PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
+          PREVIEW_COMMENT_BUBBLE_OFFSET
+        );
+        ctx.lineTo(
+          PREVIEW_COMMENT_BUBBLE_OFFSET + width - radius,
+          PREVIEW_COMMENT_BUBBLE_OFFSET
+        );
+        ctx.quadraticCurveTo(
+          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
+          PREVIEW_COMMENT_BUBBLE_OFFSET,
+          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
+          PREVIEW_COMMENT_BUBBLE_OFFSET + radius
+        );
+        ctx.lineTo(
+          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
+          PREVIEW_COMMENT_BUBBLE_OFFSET + height - radius
+        );
+        ctx.quadraticCurveTo(
+          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
+          PREVIEW_COMMENT_BUBBLE_OFFSET + height,
+          PREVIEW_COMMENT_BUBBLE_OFFSET + width - radius,
+          PREVIEW_COMMENT_BUBBLE_OFFSET + height
+        );
+        ctx.lineTo(
+          PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
+          PREVIEW_COMMENT_BUBBLE_OFFSET + height
+        );
+        ctx.quadraticCurveTo(
+          PREVIEW_COMMENT_BUBBLE_OFFSET,
+          PREVIEW_COMMENT_BUBBLE_OFFSET + height,
+          PREVIEW_COMMENT_BUBBLE_OFFSET,
+          PREVIEW_COMMENT_BUBBLE_OFFSET + height - radius
+        );
+        ctx.lineTo(
+          PREVIEW_COMMENT_BUBBLE_OFFSET,
+          PREVIEW_COMMENT_BUBBLE_OFFSET + radius
+        );
+        ctx.quadraticCurveTo(
+          PREVIEW_COMMENT_BUBBLE_OFFSET,
+          PREVIEW_COMMENT_BUBBLE_OFFSET,
+          PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
+          PREVIEW_COMMENT_BUBBLE_OFFSET
+        );
+        ctx.closePath();
+        ctx.save();
         ctx.clip();
-        ctx.drawImage(screenshot, sx, sy, width, height, PREVIEW_COMMENT_BUBBLE_OFFSET, PREVIEW_COMMENT_BUBBLE_OFFSET, width, height)
-        ctx.restore()
-        ctx.drawImage(bubble, PREVIEW_COMMENT_BUBBLE_OFFSET + x - sx, PREVIEW_COMMENT_BUBBLE_OFFSET + y - sy)
+        ctx.drawImage(
+          screenshot,
+          sx,
+          sy,
+          width,
+          height,
+          PREVIEW_COMMENT_BUBBLE_OFFSET,
+          PREVIEW_COMMENT_BUBBLE_OFFSET,
+          width,
+          height
+        );
+        ctx.restore();
+        ctx.drawImage(
+          bubble,
+          PREVIEW_COMMENT_BUBBLE_OFFSET + x - sx,
+          PREVIEW_COMMENT_BUBBLE_OFFSET + y - sy
+        );
 
-        return canvas.toDataURL()
-    })
-  }
+        return canvas.toDataURL();
+      }
+    );
+  },
 };

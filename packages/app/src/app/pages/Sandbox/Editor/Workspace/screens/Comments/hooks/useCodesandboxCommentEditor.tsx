@@ -86,7 +86,7 @@ export const useCodesandboxCommentEditor = ({
   React.useEffect(() => {
     if (ref.current) {
       const onKeyDown = event => {
-        if (event.keyCode === ESC) {
+        if (event.keyCode === ESC && mention.query !== null) {
           event.stopPropagation();
         }
       };
@@ -99,7 +99,7 @@ export const useCodesandboxCommentEditor = ({
 
     return () => {};
     // eslint-disable-next-line
-  }, [ref.current]);
+  }, [ref.current, mention]);
 
   const onKeyDown = event => {
     if (mention.query !== null) {
