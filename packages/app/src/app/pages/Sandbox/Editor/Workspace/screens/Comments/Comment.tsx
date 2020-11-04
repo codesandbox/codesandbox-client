@@ -135,11 +135,23 @@ export const Comment = React.memo<{
               {(comment.anchorReference.metadata as CodeReferenceMetadata).path}
             </Link>
           )}
-          {comment.anchorReference && comment.anchorReference.type === 'preview' && (
-            <Icon name="responsive" title="Preview Comment" size={12} marginRight={2} />
-          )}
+          {comment.anchorReference &&
+            comment.anchorReference.type === 'preview' && (
+              <Icon
+                name="responsive"
+                title="Preview Comment"
+                size={12}
+                marginRight={2}
+              />
+            )}
           <Stack>
-            <Icon name="comment" title="Reply Count" size={12} marginRight={1} />
+            <Icon
+              name="comment"
+              title="Reply Count"
+              color="button.background"
+              size={12}
+              marginRight={1}
+            />
             {comment.replyCount}
             <VisuallyHidden itemProp="commentCount">
               {comment.replyCount}
@@ -171,9 +183,3 @@ export const Comment = React.memo<{
     </ListAction>
   );
 });
-
-const getRepliesString = length => {
-  if (length === 0) return 'No Replies';
-  if (length === 1) return '1 Reply';
-  return length + ' Replies';
-};
