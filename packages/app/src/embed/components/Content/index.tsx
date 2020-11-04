@@ -16,6 +16,7 @@ import {
   Settings,
 } from '@codesandbox/common/lib/types';
 import { Editor } from 'app/components/CodeEditor/types'; // eslint-disable-line
+import ReactResizeDetector from 'react-resize-detector';
 import {
   DevToolProps,
   DevTools,
@@ -494,132 +495,141 @@ export default class Content extends React.PureComponent<Props, State> {
     // we should really rename it
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
-        <SplitPane
-          sandbox={sandbox}
-          showEditor={showEditor}
-          showPreview={showPreview}
-          isSmallScreen={verticalMode}
-          sidebarOpen={sidebarOpen}
-          showNavigationActions={hideNavigation}
-          refresh={this.refresh}
-          openInNewWindow={this.openInNewWindow}
-          toggleLike={toggleLike}
-          initialEditorSize={editorSize}
-          initialPath={initialPath}
-          setEditorSize={this.setEditorSize}
-          hideDevTools={hideDevTools}
-          setDragging={this.setDragging}
-        >
-          <>
-            <Tabs>
-              <MenuInTabs onClick={toggleSidebar}>
-                <MenuIcon />
-              </MenuInTabs>
+        <ReactResizeDetector handleWidth>
+          {({ width }) => (
+            <SplitPane
+              sandbox={sandbox}
+              showEditor={showEditor}
+              showPreview={showPreview}
+              isSmallScreen={verticalMode}
+              sidebarOpen={sidebarOpen}
+              showNavigationActions={hideNavigation}
+              refresh={this.refresh}
+              openInNewWindow={this.openInNewWindow}
+              toggleLike={toggleLike}
+              initialEditorSize={editorSize}
+              initialPath={initialPath}
+              setEditorSize={this.setEditorSize}
+              editorSize={this.state.editorSize}
+              hideDevTools={hideDevTools}
+              setDragging={this.setDragging}
+              totalWidth={width}
+            >
+              <>
+                <Tabs>
+                  <MenuInTabs onClick={toggleSidebar}>
+                    <MenuIcon />
+                  </MenuInTabs>
 
-              {this.state.tabs.map((module, i) => {
-                const tabsWithSameName = this.state.tabs.filter(
-                  m => m.title === module.title
-                );
-                let dirName = null;
+                  {this.state.tabs.map((module, i) => {
+                    const tabsWithSameName = this.state.tabs.filter(
+                      m => m.title === module.title
+                    );
+                    let dirName = null;
 
-                if (tabsWithSameName.length > 1 && module.directoryShortid) {
-                  const dir = sandbox.directories.find(
-                    d => d.shortid === module.directoryShortid
-                  );
-                  if (dir) {
-                    dirName = dir.title;
-                  }
-                }
+                    if (
+                      tabsWithSameName.length > 1 &&
+                      module.directoryShortid
+                    ) {
+                      const dir = sandbox.directories.find(
+                        d => d.shortid === module.directoryShortid
+                      );
+                      if (dir) {
+                        dirName = dir.title;
+                      }
+                    }
 
-                const active = module.id === currentModule.id;
-                return (
-                  <Tab
-                    key={module.id}
-                    active={active}
-                    module={module}
-                    onClick={() => this.setCurrentModule(module.id)}
-                    tabCount={this.state.tabs.length}
-                    position={i}
-                    closeTab={this.closeTab}
-                    dirName={dirName}
-                  >
-                    {({ hovering, closeTab }) => (
-                      // TODO deduplicate this
-                      <>
-                        <TabTitle>{module.title}</TabTitle>
-                        {dirName && (
-                          <TabDir>
-                            ../
-                            {dirName}
-                          </TabDir>
+                    const active = module.id === currentModule.id;
+                    return (
+                      <Tab
+                        key={module.id}
+                        active={active}
+                        module={module}
+                        onClick={() => this.setCurrentModule(module.id)}
+                        tabCount={this.state.tabs.length}
+                        position={i}
+                        closeTab={this.closeTab}
+                        dirName={dirName}
+                      >
+                        {({ hovering, closeTab }) => (
+                          // TODO deduplicate this
+                          <>
+                            <TabTitle>{module.title}</TabTitle>
+                            {dirName && (
+                              <TabDir>
+                                ../
+                                {dirName}
+                              </TabDir>
+                            )}
+
+                            {this.renderTabStatus(hovering, closeTab)}
+                          </>
                         )}
-
-                        {this.renderTabStatus(hovering, closeTab)}
-                      </>
-                    )}
-                  </Tab>
-                );
-              })}
-            </Tabs>
-            <div
-              style={{
-                position: 'relative',
-                width: '100%',
-                height: '100%',
-              }}
-            >
-              <CodeEditor
-                onInitialized={this.onCodeEditorInitialized}
-                currentModule={currentModule || mainModule}
-                isModuleSynced={() => true}
-                sandbox={sandbox}
-                settings={this.getPreferences()}
-                readOnly={templateDefinition.isServer}
-                onChange={this.setCode}
-                onModuleChange={this.setCurrentModule}
-                highlightedLines={this.props.highlightedLines}
-                width={this.state.editorSize}
-              />
-            </div>
-          </>
-
-          {!this.state.running ? (
-            <RunOnClick onClick={() => this.setState({ running: true })} />
-          ) : (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
-              }}
-            >
-              {views.map((devView, i) => (
-                /* eslint-disable react/no-array-index-key */
-                <DevTools
-                  key={i}
-                  devToolIndex={i}
-                  addedViews={{
-                    'codesandbox.browser': browserConfig,
+                      </Tab>
+                    );
+                  })}
+                </Tabs>
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '100%',
+                    height: '100%',
                   }}
-                  setDragging={this.setDragging}
-                  sandboxId={sandbox.id}
-                  template={sandbox.template}
-                  owned={false}
-                  primary={i === 0}
-                  hideTabs={i === 0}
-                  viewConfig={devView}
-                  setPane={this.setPane}
-                  currentDevToolIndex={
-                    this.state.currentDevToolPosition.devToolIndex
-                  }
-                  currentTabPosition={
-                    this.state.currentDevToolPosition.tabPosition
-                  }
-                />
-              ))}
-            </div>
+                >
+                  <CodeEditor
+                    onInitialized={this.onCodeEditorInitialized}
+                    currentModule={currentModule || mainModule}
+                    isModuleSynced={() => true}
+                    sandbox={sandbox}
+                    settings={this.getPreferences()}
+                    readOnly={templateDefinition.isServer}
+                    onChange={this.setCode}
+                    onModuleChange={this.setCurrentModule}
+                    highlightedLines={this.props.highlightedLines}
+                    width={(this.state.editorSize / 100) * width}
+                  />
+                </div>
+              </>
+
+              {!this.state.running ? (
+                <RunOnClick onClick={() => this.setState({ running: true })} />
+              ) : (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                  }}
+                >
+                  {views.map((devView, i) => (
+                    /* eslint-disable react/no-array-index-key */
+                    <DevTools
+                      key={i}
+                      devToolIndex={i}
+                      addedViews={{
+                        'codesandbox.browser': browserConfig,
+                      }}
+                      setDragging={this.setDragging}
+                      sandboxId={sandbox.id}
+                      template={sandbox.template}
+                      owned={false}
+                      primary={i === 0}
+                      hideTabs={i === 0}
+                      viewConfig={devView}
+                      setPane={this.setPane}
+                      currentDevToolIndex={
+                        this.state.currentDevToolPosition.devToolIndex
+                      }
+                      currentTabPosition={
+                        this.state.currentDevToolPosition.tabPosition
+                      }
+                    />
+                  ))}
+                </div>
+              )}
+            </SplitPane>
           )}
-        </SplitPane>
+        </ReactResizeDetector>
       </Container>
     );
   }

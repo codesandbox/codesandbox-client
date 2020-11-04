@@ -16,9 +16,11 @@ export function SplitView({
   sandbox,
   toggleLike,
   initialEditorSize = 50, // in percent
+  totalWidth,
   initialPath,
   hideDevTools,
   setEditorSize,
+  editorSize,
   setDragging: setDraggingProp,
   ...props
 }) {
@@ -48,8 +50,13 @@ export function SplitView({
   const [size, setSize] = React.useState(initialSize);
 
   React.useEffect(() => {
-    setEditorSize(size);
-  }, [size, setEditorSize]);
+    if (totalWidth) {
+      // Set editor size in %
+      setEditorSize((size / totalWidth) * 100);
+    }
+
+    // Ignore the totalWidth on purpose: we don't want the sizer to move when window size changes at all
+  }, [size, setEditorSize]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // #2. We track dragging so that we can add an overlay on top
   // of the iframe which lets us keep focus on the resize toggle
@@ -99,7 +106,8 @@ export function SplitView({
     // so we set it to the size that already is set
     handleAutomaticSnapping(newSize || size);
 
-    setEditorSize(size);
+    // Set editor size in %
+    setEditorSize((size / totalWidth) * 100);
   };
 
   const openEditor = () => {
@@ -147,7 +155,7 @@ export function SplitView({
         maxSize={maxSize}
         // @ts-ignore
         onMouseEnter={onDragStarted}
-        size={size}
+        size={(editorSize / 100) * totalWidth}
         {...props}
       >
         <PaneContainer>{children[0]}</PaneContainer>

@@ -203,6 +203,7 @@
     "react-motion": "^0.5.0",
     "react-outside-click-handler": "^1.2.3",
     "react-refresh": "^0.7.2",
+    "react-resize-detector": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-show": "^3.0.4",
     "react-split-pane": "^0.1.87",
