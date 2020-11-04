@@ -28,7 +28,7 @@ export function SplitView({
     1. set inital size based on props
     2. let user move it around
     3. snap to edges
-    4. stay snapped on window.resize and sidebar toggle (not implemented)
+    4. stay snapped on window.resize and sidebar toggle
     5. introduce the resizer element with animation
   */
 
