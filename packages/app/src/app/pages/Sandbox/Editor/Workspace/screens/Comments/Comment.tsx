@@ -74,7 +74,7 @@ export const Comment = React.memo<{
         itemScope
         itemType="http://schema.org/Comment"
       >
-        <Stack align="flex-start" justify="space-between" marginBottom={4}>
+        <Stack align="flex-start" justify="space-between" marginBottom={2}>
           <AvatarBlock comment={comment} />
           <Stack align="center">
             {comment.isResolved && (
@@ -115,26 +115,37 @@ export const Comment = React.memo<{
             </Menu>
           </Stack>
         </Stack>
-        {comment.anchorReference && comment.anchorReference.type === 'code' && (
-          <Link
-            variant="muted"
-            css={css({
-              marginTop: -2,
-              opacity: 0.6,
-              paddingBottom: 2,
-              display: 'block',
-              transition: 'all ease',
-              transitionDuration: theme => theme.speeds[1],
+        <Stack align="flex-start" marginBottom={2}>
+          {comment.anchorReference && comment.anchorReference.type === 'code' && (
+            <Link
+              variant="muted"
+              css={css({
+                opacity: 0.6,
+                marginRight: 2,
+                display: 'block',
+                transition: 'all ease',
+                transitionDuration: theme => theme.speeds[1],
 
-              ':hover': {
-                opacity: 1,
-                color: 'sidebar.foreground',
-              },
-            })}
-          >
-            {(comment.anchorReference.metadata as CodeReferenceMetadata).path}
-          </Link>
-        )}
+                ':hover': {
+                  opacity: 1,
+                  color: 'sidebar.foreground',
+                },
+              })}
+            >
+              {(comment.anchorReference.metadata as CodeReferenceMetadata).path}
+            </Link>
+          )}
+          {comment.anchorReference && comment.anchorReference.type === 'preview' && (
+            <Icon name="responsive" title="Preview Comment" size={12} marginRight={2} />
+          )}
+          <Stack>
+            <Icon name="comment" title="Reply Count" size={12} marginRight={1} />
+            {comment.replyCount}
+            <VisuallyHidden itemProp="commentCount">
+              {comment.replyCount}
+            </VisuallyHidden>
+          </Stack>
+        </Stack>
         <Element
           as="p"
           marginY={0}
@@ -154,12 +165,6 @@ export const Comment = React.memo<{
                 comment.references
               )}
             />
-          </Text>
-          <Text variant="muted" size={2}>
-            {getRepliesString(comment.replyCount)}
-            <VisuallyHidden itemProp="commentCount">
-              {comment.replyCount}
-            </VisuallyHidden>
           </Text>
         </Element>
       </Element>
