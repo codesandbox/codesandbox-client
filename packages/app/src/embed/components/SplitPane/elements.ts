@@ -8,7 +8,7 @@ export const KNOB_WIDTH = 4;
  */
 export const RESIZER_GRAB_EXTRA_WIDTH = 4;
 
-export const Container = styled.div`
+export const Container = styled.div<{ isDragging: boolean }>`
   width: 100%;
   height: 100%;
 

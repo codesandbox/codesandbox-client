@@ -4,7 +4,7 @@ import { isSmallMobileScreen } from 'embed/util/mobile';
 import { GlobalActions, NavigationActions } from '../Actions';
 import { Container, PaneContainer, RESIZER_WIDTH } from './elements';
 
-export default function SplitView({
+export function SplitView({
   showEditor,
   showPreview,
   isSmallScreen,
@@ -127,12 +127,7 @@ export default function SplitView({
   const smallTouchScreen = isSmallMobileScreen();
 
   return (
-    <Container
-      isDragging={isDragging}
-      size={size}
-      maxSize={maxSize}
-      fullSize={size === maxSize}
-    >
+    <Container isDragging={isDragging}>
       <GlobalActions
         sandbox={sandbox}
         toggleLike={toggleLike}
@@ -150,6 +145,7 @@ export default function SplitView({
         onDragFinished={onDragFinished}
         minSize="0%"
         maxSize={maxSize}
+        // @ts-ignore
         onMouseEnter={onDragStarted}
         size={size}
         {...props}

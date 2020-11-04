@@ -35,7 +35,7 @@ import * as React from 'react';
 
 // borrow the menu icon from Header in case header is not shown
 import { MenuIcon } from '../legacy/Header/elements';
-import SplitPane from '../SplitPane';
+import { SplitView as SplitPane } from '../SplitPane';
 import { CodeEditor } from './CodeEditor';
 import { Container, MenuInTabs, Tabs } from './elements';
 
@@ -371,10 +371,8 @@ export default class Content extends React.PureComponent<Props, State> {
     }
   };
 
-  setEditorSize = editorSize => {
-    this.setState({
-      editorSize,
-    });
+  setEditorSize = (editorSize: number) => {
+    this.setState({ editorSize });
   };
 
   openInNewWindow = () => {

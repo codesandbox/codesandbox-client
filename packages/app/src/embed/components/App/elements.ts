@@ -25,7 +25,7 @@ export const Fullscreen = styled.div(
   })
 );
 
-export const Moving = styled.div`
+export const Moving = styled.div<{ sidebarOpen: boolean }>`
   transition: 0.3s ease all;
   display: flex;
   align-items: center;

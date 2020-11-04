@@ -5,7 +5,7 @@ import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import 'normalize.css';
 import '@codesandbox/common/lib/global.css';
 import track, { identifyOnce } from '@codesandbox/common/lib/utils/analytics';
-import App from './components/App';
+import { App } from './components/App';
 
 try {
   // If this value is not set, set it to false

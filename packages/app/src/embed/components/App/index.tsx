@@ -26,36 +26,42 @@ import { getTheme } from '../../theme';
 new Map(); // eslint-disable-line
 
 type State = {
-  notFound: boolean,
-  sandbox: ?Sandbox,
-  fontSize: number,
-  showEditor: boolean,
-  showPreview: boolean,
-  previewWindow: string,
-  isInProjectView: boolean,
-  currentModule: string,
-  initialPath: string,
-  sidebarOpen: boolean,
-  autoResize: boolean,
-  hideNavigation: boolean,
-  enableEslint: boolean,
-  useCodeMirror: boolean,
-  editorSize: number,
-  forceRefresh: boolean,
-  expandDevTools: boolean,
-  hideDevTools: boolean,
-  runOnClick: boolean,
-  verticalMode: boolean,
-  highlightedLines: Array<number>,
-  tabs?: Array<number>,
-  theme: string,
+  notFound: boolean;
+  sandbox: Sandbox | undefined;
+  fontSize: number;
+  showEditor: boolean;
+  showPreview: boolean;
+  previewWindow: string;
+  isInProjectView: boolean;
+  currentModule: string;
+  initialPath: string;
+  sidebarOpen: boolean;
+  autoResize: boolean;
+  hideNavigation: boolean;
+  enableEslint: boolean;
+  useCodeMirror: boolean;
+  editorSize: number;
+  forceRefresh: boolean;
+  expandDevTools: boolean;
+  hideDevTools: boolean;
+  runOnClick: boolean;
+  verticalMode: boolean;
+  highlightedLines: Array<number>;
+  tabs?: Array<string>;
+  theme: string;
 };
 
-export default class App extends React.PureComponent<
+declare global {
+  interface Window {
+    __SANDBOX_DATA__: any;
+  }
+}
+
+export class App extends React.PureComponent<
   {
-    id?: string,
-    embedOptions?: Object,
-    sandbox?: any,
+    id?: string;
+    embedOptions?: Object;
+    sandbox?: any;
   },
   State
 > {
@@ -148,7 +154,7 @@ export default class App extends React.PureComponent<
       });
     } else {
       try {
-        const response = await fetch(
+        const response = (await fetch(
           `${this.getAppOrigin()}/api/v1/sandboxes/${id}`,
           {
             headers: {
@@ -158,10 +164,12 @@ export default class App extends React.PureComponent<
           }
         )
           .then(res => res.json())
-          .then(camelizeKeys);
+          .then(camelizeKeys)) as {
+          data: Sandbox;
+        };
 
         document.title = `${
-          response.data.title || response.data.id
+          response.data.title || response.data.alias || response.data.id
         } - CodeSandbox`;
 
         this.setState({ sandbox: response.data });
@@ -173,7 +181,9 @@ export default class App extends React.PureComponent<
 
   UNSAFE_componentWillMount() {
     if (window.__SANDBOX_DATA__) {
-      this.setState({ sandbox: camelizeKeys(window.__SANDBOX_DATA__) });
+      this.setState({
+        sandbox: camelizeKeys(window.__SANDBOX_DATA__) as Sandbox,
+      });
     } else {
       const id = this.getId();
 
@@ -195,9 +205,9 @@ export default class App extends React.PureComponent<
 
   setCurrentModule = (id: string) => {
     const newState: {
-      currentModule: string,
-      showEditor?: boolean,
-      showPreview?: boolean,
+      currentModule: string;
+      showEditor?: boolean;
+      showPreview?: boolean;
     } = { currentModule: id };
 
     if (!this.state.showEditor) {
@@ -208,16 +218,17 @@ export default class App extends React.PureComponent<
       }
     }
 
-    this.setState(newState);
+    this.setState(oldState => ({ ...oldState, ...newState }));
   };
 
   toggleSidebar = () =>
     this.setState(state => ({ sidebarOpen: !state.sidebarOpen }));
 
-  // eslint-disable-next-line
-  setProjectView = (sandboxId?: ?string, isOpen: boolean, cb: Function) => {
-    return this.setState({ isInProjectView: isOpen }, cb);
-  };
+  setProjectView = (
+    sandboxId: string | undefined,
+    isOpen: boolean,
+    cb: () => void
+  ) => this.setState({ isInProjectView: isOpen }, cb);
 
   getCurrentModuleFromPath = (sandbox: Sandbox): Module => {
     const { currentModule: currentModulePath } = this.state;
@@ -343,6 +354,8 @@ export default class App extends React.PureComponent<
       runOnClick,
     } = this.state;
 
+    const currentModule = this.getCurrentModuleFromPath(sandbox);
+
     return (
       <ThemeProvider
         theme={{
@@ -353,14 +366,12 @@ export default class App extends React.PureComponent<
           <Content
             showEditor={showEditor}
             showPreview={showPreview}
-            setEditorView={this.setEditorView}
-            setPreviewView={this.setPreviewView}
-            setMixedView={this.setMixedView}
+            isNotSynced={currentModule.isNotSynced}
             previewWindow={previewWindow}
             isInProjectView={isInProjectView}
             setProjectView={this.setProjectView}
             sandbox={sandbox}
-            currentModule={this.getCurrentModuleFromPath(sandbox)}
+            currentModule={currentModule}
             hideNavigation={this.state.hideNavigation}
             autoResize={this.state.autoResize}
             fontSize={this.state.fontSize}
@@ -391,7 +402,7 @@ export default class App extends React.PureComponent<
 
     return (
       <ThemeProvider theme={theme}>
-        <Fullscreen sidebarOpen={this.state.sidebarOpen}>
+        <Fullscreen>
           {sandbox && (
             <Sidebar
               setCurrentModule={this.setCurrentModule}
