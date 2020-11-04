@@ -202,6 +202,12 @@ export const closeComment: Action = ({ state, effects }) => {
 
   state.comments.currentCommentId = null;
   state.comments.currentCommentPositions = null;
+
+  if (state.preview.mode === 'add-comment') {
+    state.preview.mode = null
+  } else if (state.preview.mode === 'responsive-add-comment')  {
+    state.preview.mode = 'responsive'
+  }
 };
 
 export const closeMultiCommentsSelector: Action = ({ state }) => {
@@ -432,18 +438,13 @@ export const addOptimisticPreviewComment: AsyncAction<{
   const comments = state.comments.comments;
   const previewIframeBounds = await effects.preview.getIframBoundingRect();
   const previewPath = await effects.preview.getPreviewPath();
-  const screenshotWithBubble = await effects.browser.embedImageOnCoordinates({
-    source: BUBBLE_IMAGE,
-    target: screenshot,
-    x,
-    y,
-  })
-  const screenshotUrl = await effects.browser.cropImageToCoordinates({
-    source: screenshotWithBubble,
+  const screenshotUrl = await effects.preview.createScreenshot({
+    screenshotSource: screenshot,
+    bubbleSource: BUBBLE_IMAGE,
     cropWidth: 1000,
     cropHeight: 400,
     x,
-    y
+    y,
   })
   const metadata: PreviewReferenceMetadata = {
     userAgent: effects.browser.getUserAgent(),

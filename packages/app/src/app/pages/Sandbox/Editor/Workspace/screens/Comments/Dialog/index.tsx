@@ -19,6 +19,7 @@ import {
 import { CommentWithRepliesFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
+import { Image } from 'app/components/Markdown/Image'
 import {
   convertImageReferencesToMarkdownImages,
   convertUserReferencesToMentions,
@@ -214,19 +215,17 @@ export const Dialog: React.FC<CommentDialogProps> = props => {
   );
 };
 
-const PreviewScreenshot: React.FC<{url: string}> = ({ url }) => {
-  return (
+const PreviewScreenshot: React.FC<{url: string}> = ({ url }) => (
     <Element css={css({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      marginBottom: 4,
+      paddingBottom: 4,
       'img': {
         maxWidth: '100%'
       }
-    })}><img src={url} /></Element>
+    })}><Image src={url} alt="Preview Screenshot" ignorePrivateSandboxRestriction /></Element>
   )
-}
 
 const DialogAddComment: React.FC<{
   comment: CommentWithRepliesFragment;
@@ -284,7 +283,7 @@ const DialogAddComment: React.FC<{
           />
         </Stack>
       </DragHandle>
-      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <PreviewScreenshot url={comment.anchorReference.metadata.screenshotUrl} /> : null}
+      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <PreviewScreenshot url={(comment.anchorReference.metadata as any).screenshotUrl} /> : null}
       {elements}
     </Stack>
   );
