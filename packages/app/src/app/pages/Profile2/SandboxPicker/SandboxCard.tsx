@@ -13,6 +13,7 @@ import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import css from '@styled-system/css';
 import { Sandbox } from '@codesandbox/common/lib/types';
 import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
+import { SandboxType } from '../constants';
 
 const PrivacyIcons = {
   0: () => null,
@@ -39,8 +40,12 @@ export const SandboxCard: React.FC<{
     },
   } = useOvermind();
 
+  const PrivacyIcon = PrivacyIcons[sandbox.privacy || 0];
+  const isPublic = sandbox.privacy === 0;
+
   const onCardClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (isTargetInMenu(event)) return;
+    if (!isPublic) return;
     onClick(event);
   };
 
@@ -48,12 +53,10 @@ export const SandboxCard: React.FC<{
     event.preventDefault();
     openContextMenu({
       sandboxId: sandbox.id,
+      sandboxType: SandboxType.PICKER_SANDBOX,
       position: { x: event.clientX, y: event.clientY },
     });
   };
-
-  const PrivacyIcon = PrivacyIcons[sandbox.privacy || 0];
-  const isPublic = sandbox.privacy === 0;
 
   return (
     <Stack
@@ -75,7 +78,7 @@ export const SandboxCard: React.FC<{
         ':hover, :focus, :focus-within': {
           boxShadow: (theme: typeof designLanguage) =>
             '0 4px 16px 0 ' + theme.colors.grays[900],
-          '[data-footer]': {
+          '[data-group-hover]': {
             opacity: 1,
           },
         },
@@ -92,14 +95,14 @@ export const SandboxCard: React.FC<{
             position: 'absolute',
             zIndex: 2,
             height: 160 + 1, // match thumbnail height
-            ':hover': {
-              span: { opacity: 1 },
-            },
+            backgroundColor: (theme: typeof designLanguage) =>
+              theme.colors.grays[500] + '40',
           })}
         >
           <Text
             size={3}
             align="center"
+            data-group-hover
             css={css({ color: 'white', opacity: 0 })}
           >
             {privacyToName[sandbox.privacy]} sandboxes cannot be featured on
@@ -143,7 +146,7 @@ export const SandboxCard: React.FC<{
         }}
       />
       <Stack
-        data-footer
+        data-group-hover
         justify="space-between"
         css={{ opacity: isPublic ? 1 : 0.4 }}
       >
@@ -153,7 +156,7 @@ export const SandboxCard: React.FC<{
           marginBottom={4}
           css={{ width: '100%' }}
         >
-          <Text size={3} maxWidth="calc(100% - 24px)">
+          <Text size={3} maxWidth="calc(100% - 24px)" css={css({ height: 7 })}>
             {sandbox.title || sandbox.alias || sandbox.id}
           </Text>
           <Stats sandbox={sandbox} css={css({ svg: { size: '14px' } })} />

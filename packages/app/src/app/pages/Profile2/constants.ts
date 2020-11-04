@@ -5,6 +5,7 @@ export enum SandboxType {
   ALL_SANDBOX = 'ALL_SANDBOX',
   PINNED_SANDBOX = 'PINNED_SANDBOX',
   DEFAULT_SANDBOX = 'DEFAULT_SANDBOX',
+  PICKER_SANDBOX = 'PICKER_SANDBOX',
 }
 
 export enum DropTarget {

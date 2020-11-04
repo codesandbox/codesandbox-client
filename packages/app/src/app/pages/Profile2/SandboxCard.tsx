@@ -178,6 +178,7 @@ export const SandboxCard: React.FC<{
     event.preventDefault();
     openContextMenu({
       sandboxId: sandbox.id,
+      sandboxType: type,
       position: { x: event.clientX, y: event.clientY },
     });
   };
@@ -192,6 +193,7 @@ export const SandboxCard: React.FC<{
       const rect = target.getBoundingClientRect();
       openContextMenu({
         sandboxId: sandbox.id,
+        sandboxType: type,
         position: { x: rect.right, y: rect.bottom },
       });
     } else if (event.keyCode === ENTER) {

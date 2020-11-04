@@ -3,6 +3,7 @@ import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useLocation } from 'react-router-dom';
 import { Menu } from '@codesandbox/components';
+import { SandboxType } from './constants';
 
 export const ContextMenu = () => {
   const {
@@ -10,7 +11,7 @@ export const ContextMenu = () => {
       user: loggedInUser,
       profile: {
         current: user,
-        contextMenu: { sandboxId, position },
+        contextMenu: { sandboxId, sandboxType, position },
       },
     },
     actions: {
@@ -39,6 +40,22 @@ export const ContextMenu = () => {
   const setVisibility = (visible: boolean) => {
     if (!visible) closeContextMenu();
   };
+
+  if (sandboxType === SandboxType.PICKER_SANDBOX) {
+    return (
+      <Menu.ContextMenu
+        visible
+        setVisibility={setVisibility}
+        position={position}
+      >
+        <Menu.Item
+          onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 0 })}
+        >
+          Make sandbox public
+        </Menu.Item>
+      </Menu.ContextMenu>
+    );
+  }
 
   return (
     <Menu.ContextMenu visible setVisibility={setVisibility} position={position}>
@@ -80,6 +97,7 @@ export const ContextMenu = () => {
       {myProfile && !likesPage && !isFeatured && (
         <>
           <Menu.Divider />
+
           <Menu.Item
             onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 1 })}
           >
