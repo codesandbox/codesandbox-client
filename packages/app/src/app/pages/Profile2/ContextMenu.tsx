@@ -24,6 +24,7 @@ export const ContextMenu = () => {
         closeContextMenu,
         newSandboxShowcaseSelected,
       },
+      modalClosed,
     },
   } = useOvermind();
   const location = useLocation();
@@ -48,6 +49,36 @@ export const ContextMenu = () => {
         setVisibility={setVisibility}
         position={position}
       >
+        <Menu.Item
+          onSelect={() => {
+            addFeaturedSandboxes({ sandboxId });
+            modalClosed();
+          }}
+        >
+          Pin sandbox
+        </Menu.Item>
+        <Menu.Item
+          onSelect={() => {
+            newSandboxShowcaseSelected(sandboxId);
+            modalClosed();
+          }}
+        >
+          Set as header
+        </Menu.Item>
+      </Menu.ContextMenu>
+    );
+  }
+
+  if (sandboxType === SandboxType.PRIVATE_SANDBOX) {
+    return (
+      <Menu.ContextMenu
+        visible
+        setVisibility={setVisibility}
+        position={position}
+      >
+        <Menu.Item data-disabled>Pin sandbox</Menu.Item>
+        <Menu.Item data-disabled>Set as header</Menu.Item>
+        <Menu.Divider />
         <Menu.Item
           onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 0 })}
         >

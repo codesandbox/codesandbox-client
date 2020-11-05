@@ -53,7 +53,9 @@ export const SandboxCard: React.FC<{
     event.preventDefault();
     openContextMenu({
       sandboxId: sandbox.id,
-      sandboxType: SandboxType.PICKER_SANDBOX,
+      sandboxType: isPublic
+        ? SandboxType.PICKER_SANDBOX
+        : SandboxType.PRIVATE_SANDBOX,
       position: { x: event.clientX, y: event.clientY },
     });
   };
@@ -94,7 +96,9 @@ export const SandboxCard: React.FC<{
           css={css({
             position: 'absolute',
             zIndex: 2,
+            width: '100%',
             height: 160 + 1, // match thumbnail height
+            padding: 4,
             backgroundColor: (theme: typeof designLanguage) =>
               theme.colors.grays[500] + '40',
           })}
@@ -103,10 +107,10 @@ export const SandboxCard: React.FC<{
             size={3}
             align="center"
             data-group-hover
-            css={css({ color: 'white', opacity: 0 })}
+            css={css({ color: 'white', width: '100%', opacity: 0 })}
           >
-            {privacyToName[sandbox.privacy]} sandboxes cannot be featured on
-            profile
+            {privacyToName[sandbox.privacy]} sandboxes cannot
+            <br /> be featured on profile
           </Text>
           <Stack
             justify="center"
@@ -119,6 +123,7 @@ export const SandboxCard: React.FC<{
               backgroundColor: 'grays.500',
               borderRadius: 'medium',
             })}
+            onClick={onContextMenu}
           >
             <PrivacyIcon />
           </Stack>

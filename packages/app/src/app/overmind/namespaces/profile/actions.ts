@@ -373,6 +373,13 @@ export const changeSandboxPrivacyInState: Action<Pick<
     if (sandbox.id === id) sandbox.privacy = privacy;
     return sandbox;
   });
+
+  // for picker
+  state.profile.collections.forEach(collection => {
+    collection.sandboxes.forEach(sandbox => {
+      if (sandbox.id === id) sandbox.privacy = privacy;
+    });
+  });
 };
 
 export const changeSandboxPrivacy: AsyncAction<Pick<
