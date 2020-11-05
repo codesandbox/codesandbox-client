@@ -11,12 +11,17 @@ listen(data => {
         allowTaint: false,
         // proxy: 'http://localhost:3002'
       }).then(canvas => {
-        const screenshot = canvas.toDataURL();
-
-        dispatch({
-          type: 'screenshot-generated',
-          screenshot,
-        });
+        let didICreateIt = false;
+        try {
+          const screenshot = canvas.toDataURL();
+          didICreateIt = true;
+          dispatch({
+            type: 'screenshot-generated',
+            screenshot,
+          });
+        } catch (error) {
+          console.error(error, didICreateIt);
+        }
       });
     });
   }
