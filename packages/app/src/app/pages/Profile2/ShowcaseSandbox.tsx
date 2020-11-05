@@ -114,7 +114,8 @@ export const ShowcaseSandbox = () => {
         })}
       >
         <Text variant="muted" size={4} weight="medium" align="center">
-          Drag Sandbox here to set as interactive header
+          Select a Sandbox or Drag a Sandbox here
+          <br /> to set as interactive header
         </Text>
       </Stack>
     </div>

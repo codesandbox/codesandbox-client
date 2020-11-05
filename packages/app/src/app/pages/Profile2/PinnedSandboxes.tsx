@@ -69,7 +69,7 @@ export const PinnedSandboxes = () => {
             onClick={() => modalOpened({ modal: 'sandboxPicker' })}
           >
             <Text variant="muted" size={4} weight="medium" align="center">
-              Drag your Sandbox here to pin them to your profile
+              Select a Sandbox or Drag a Sandbox here to pin it to your profile
             </Text>
           </Stack>
         </div>
