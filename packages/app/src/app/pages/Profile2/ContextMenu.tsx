@@ -32,6 +32,7 @@ export const ContextMenu = () => {
   if (!sandboxId) return null;
 
   const myProfile = loggedInUser?.username === user.username;
+  const isPro = loggedInUser && Boolean(loggedInUser.subscription);
   const likesPage = location.pathname === '/likes';
 
   const isFeatured = user.featuredSandboxes
@@ -130,12 +131,20 @@ export const ContextMenu = () => {
           <Menu.Divider />
 
           <Menu.Item
-            onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 1 })}
+            data-disabled={!isPro}
+            onSelect={() => {
+              if (!isPro) return;
+              changeSandboxPrivacy({ id: sandboxId, privacy: 1 });
+            }}
           >
             Make sandbox unlisted
           </Menu.Item>
           <Menu.Item
-            onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 2 })}
+            data-disabled={!isPro}
+            onSelect={() => {
+              if (!isPro) return;
+              changeSandboxPrivacy({ id: sandboxId, privacy: 2 });
+            }}
           >
             Make sandbox private
           </Menu.Item>
