@@ -1,7 +1,7 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useDrop } from 'react-dnd';
-import { Element, Button, Stack, Text } from '@codesandbox/components';
+import { Element, Button, Stack, Text, Icon } from '@codesandbox/components';
 import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
@@ -13,6 +13,10 @@ export const ShowcaseSandbox = () => {
       profile: { showcasedSandbox },
       user: loggedInUser,
       profile: { current: user },
+    },
+    actions: {
+      modalOpened,
+      profile: { newSandboxShowcaseSelected },
     },
   } = useOvermind();
 
@@ -53,13 +57,10 @@ export const ShowcaseSandbox = () => {
             allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
             sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
           />
-          <Button
-            as="a"
-            href={sandboxUrl({ id: showcasedSandbox.id })}
-            variant="secondary"
+          <Stack
+            gap={2}
             style={{
               position: 'absolute',
-              width: 'auto',
               zIndex: 3,
               bottom: 16,
               right: 16,
@@ -67,14 +68,33 @@ export const ShowcaseSandbox = () => {
               opacity: isDragging ? 0 : 1,
             }}
           >
-            Open sandbox
-          </Button>
+            <Button
+              as="a"
+              autoWidth
+              href={sandboxUrl({ id: showcasedSandbox.id })}
+              variant="secondary"
+            >
+              Open sandbox
+            </Button>
+            {myProfile && (
+              <Button
+                variant="secondary"
+                autoWidth
+                onClick={() => newSandboxShowcaseSelected(null)}
+              >
+                <Icon name="trash" />
+              </Button>
+            )}
+          </Stack>
         </>
       )}
 
       <Stack
         justify="center"
         align="center"
+        onClick={() =>
+          modalOpened({ modal: 'sandboxPicker', message: 'SHOWCASE' })
+        }
         css={css({
           position: 'absolute',
           top: 0,
@@ -86,6 +106,11 @@ export const ShowcaseSandbox = () => {
           transition: (theme: typeof designLanguage) =>
             `background-color ${theme.speeds[2]}`,
           backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23757575' stroke-width='1' stroke-dasharray='8%2c8' stroke-dashoffset='4' stroke-linecap='square'/%3e%3c/svg%3e");border-radius: 4px;`,
+
+          ':hover': {
+            cursor: 'pointer',
+            backgroundColor: 'grays.700',
+          },
         })}
       >
         <Text variant="muted" size={4} weight="medium" align="center">

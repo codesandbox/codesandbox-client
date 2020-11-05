@@ -22,9 +22,15 @@ export const SandboxPicker: React.FC<{ closeModal?: () => void }> = ({
   const {
     state: {
       profile: { collections },
+      currentModalMessage,
     },
     actions: {
-      profile: { fetchCollections, getSandboxesByPath, addFeaturedSandboxes },
+      profile: {
+        fetchCollections,
+        getSandboxesByPath,
+        newSandboxShowcaseSelected,
+        addFeaturedSandboxes,
+      },
     },
   } = useOvermind();
 
@@ -124,7 +130,11 @@ export const SandboxPicker: React.FC<{ closeModal?: () => void }> = ({
                 <SandboxCard
                   sandbox={sandbox}
                   onClick={() => {
-                    addFeaturedSandboxes({ sandboxId: sandbox.id });
+                    if (currentModalMessage === 'SHOWCASE') {
+                      newSandboxShowcaseSelected(sandbox.id);
+                    } else {
+                      addFeaturedSandboxes({ sandboxId: sandbox.id });
+                    }
                     closeModal();
                   }}
                 />

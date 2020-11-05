@@ -75,7 +75,7 @@ export const SandboxCard: React.FC<{
         borderColor:
           contextMenu.sandboxId === sandbox.id ? 'blues.600' : 'grays.600',
         borderRadius: 'medium',
-        cursor: 'pointer',
+        cursor: isPublic ? 'pointer' : 'normal',
         overflow: 'hidden',
         ':hover, :focus, :focus-within': {
           boxShadow: (theme: typeof designLanguage) =>
