@@ -7,7 +7,7 @@ listen(data => {
       html2canvas(document.body, {
         useCORS: true,
         logging: false,
-        allowTaint: true,
+        allowTaint: false,
       }).then(canvas => {
         dispatch({
           type: 'screenshot-generated',
