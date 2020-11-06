@@ -75,7 +75,7 @@ export const SandboxCard: React.FC<{
         borderColor:
           contextMenu.sandboxId === sandbox.id ? 'blues.600' : 'grays.600',
         borderRadius: 'medium',
-        cursor: isPublic ? 'pointer' : 'normal',
+        cursor: isPublic ? 'pointer' : 'default',
         overflow: 'hidden',
         ':hover, :focus, :focus-within': {
           boxShadow: (theme: typeof designLanguage) =>
@@ -107,7 +107,12 @@ export const SandboxCard: React.FC<{
             size={3}
             align="center"
             data-group-hover
-            css={css({ color: 'white', width: '100%', opacity: 0 })}
+            css={css({
+              color: 'white',
+              width: '100%',
+              opacity: 0,
+              textShadow: '1px 1px 2px #00000080',
+            })}
           >
             {privacyToName[sandbox.privacy]} sandboxes cannot
             <br /> be featured on profile
