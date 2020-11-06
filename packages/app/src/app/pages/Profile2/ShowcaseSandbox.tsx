@@ -32,10 +32,20 @@ export const ShowcaseSandbox = () => {
     }),
   });
 
-  if (!showcasedSandbox && !myProfile) return null;
+  if (!showcasedSandbox && !myProfile) {
+    // can't see it, can't set it
+    return null;
+  }
 
   return (
-    <div ref={drop} style={{ position: 'relative', height: 360 }}>
+    <Element
+      ref={drop}
+      css={css({
+        position: 'relative',
+        height: 360,
+        display: showcasedSandbox ? 'block' : ['none', 'block', 'block'],
+      })}
+    >
       {showcasedSandbox && (
         <>
           <Element
@@ -119,6 +129,6 @@ export const ShowcaseSandbox = () => {
           <br /> to set as interactive header
         </Text>
       </Stack>
-    </div>
+    </Element>
   );
 };
