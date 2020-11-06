@@ -160,7 +160,7 @@ export const createPreviewComment: Action = ({ state, effects }) => {
   switch (existingMode) {
     case 'responsive':
       state.preview.mode = 'responsive-add-comment';
-      effects.preview.takeScreenshot()
+      effects.preview.takeScreenshot(state.editor.currentSandbox!.privacy === 2)
       break;
     case 'add-comment':
       state.preview.mode = null;
@@ -170,7 +170,7 @@ export const createPreviewComment: Action = ({ state, effects }) => {
       break;
     default:
       state.preview.mode = 'add-comment';
-      effects.preview.takeScreenshot()
+      effects.preview.takeScreenshot(state.editor.currentSandbox!.privacy === 2)
   }
 };
 

@@ -47,11 +47,14 @@ export default {
 
     return path.substr(path.indexOf('/'));
   },
-  takeScreenshot() {
+  takeScreenshot(isPrivateSandbox: boolean) {
     // this dispatch triggers a "screenshot-generated" message
     // which is received inside the PreviewCommentWrapper
     dispatch({
       type: 'take-screenshot',
+      data: {
+        isPrivateSandbox
+      }
     });
   },
   createScreenshot({
