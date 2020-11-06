@@ -1,7 +1,8 @@
 ---
 title: Code Together With Your Team
 description:
-  Create a workspace to view and edit sandboxes with all team members in one place.
+  Create a workspace to view and edit sandboxes with all team members in one
+  place.
 slug: team
 tweetText: CodeSandbox is easy to use and has amazing integrations.
 tweetJob: UX Engineer, LogMeIn
@@ -18,7 +19,7 @@ columns: 3
 
 ### Ready to collaborate
 
-Sandboxes in a workspace are shared. So members can join, chat, and code 
+Sandboxes in a workspace are shared. So members can join, chat, and code
 together in real-time.
 
 </div>
