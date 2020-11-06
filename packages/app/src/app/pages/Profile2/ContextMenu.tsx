@@ -131,7 +131,7 @@ export const ContextMenu = () => {
           <Menu.Divider />
 
           <Menu.Item
-            data-disabled={!isPro}
+            data-disabled={isPro ? null : true}
             onSelect={() => {
               if (!isPro) return;
               changeSandboxPrivacy({ id: sandboxId, privacy: 1 });
@@ -140,7 +140,7 @@ export const ContextMenu = () => {
             Make sandbox unlisted
           </Menu.Item>
           <Menu.Item
-            data-disabled={!isPro}
+            data-disabled={isPro ? null : true}
             onSelect={() => {
               if (!isPro) return;
               changeSandboxPrivacy({ id: sandboxId, privacy: 2 });
