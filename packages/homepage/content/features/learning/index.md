@@ -45,8 +45,8 @@ at work, or from home.
 ### Re-use code shared by the community
 
 Leverage the collective knowledge of the CodeSandbox community. Search more than
-3M forkable sandboxes to see how others have tackled a problem or used a feature
-to kickstart your understanding.
+10M forkable sandboxes to see how others have tackled a problem or used a
+feature to kickstart your understanding.
 
 </div>
 
@@ -54,8 +54,8 @@ to kickstart your understanding.
 
 ### Learn faster together
 
-With Live, you can work on code with friends or colleagues in real-time, just
-like in a Google Doc.
+You can work on code with friends or colleagues in real-time, just like in a
+Google Doc.
 
 Pair up and share knowledge by walking through code. Or send a sandbox link to
 someone to get help or provide a solution.

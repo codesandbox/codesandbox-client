@@ -10,10 +10,10 @@ about: Did something not work?
 <!-- Please ensure you've completed the following steps by replacing [ ] with [x]-->
 
 - [ ] I have read the
-      [Contributing Guidelines](https://github.com/electron/electron/blob/master/CONTRIBUTING.md)
+      [Contributing Guidelines](https://github.com/codesandbox/codesandbox-client/blob/master/CONTRIBUTING.md)
       for this project.
 - [ ] I agree to follow the
-      [Code of Conduct](https://github.com/electron/electron/blob/master/CODE_OF_CONDUCT.md)
+      [Code of Conduct](https://github.com/codesandbox/codesandbox-client/blob/master/CODE_OF_CONDUCT.md)
       that this project adheres to.
 - [ ] I have searched the issue tracker for an issue that matches the one I want
       to file, without success.

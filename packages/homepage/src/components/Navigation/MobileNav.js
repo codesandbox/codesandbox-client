@@ -202,6 +202,7 @@ export default () => {
                   margin-top: 4rem;
                   display: block;
                   padding: 6px 21px;
+                  background: #5962df;
                 `}
                 className="button"
                 href="/s"

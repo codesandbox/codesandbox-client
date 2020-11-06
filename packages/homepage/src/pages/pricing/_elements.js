@@ -6,7 +6,7 @@ export const Card = styled.div`
 
   background: ${props => (props.dark ? '#151515' : props.theme.homepage.blue)};
   border-radius: 0.25rem;
-  padding: 2.5rem;
+  padding: 2.5rem 1.5rem;
   text-align: center;
 
   display: flex;
@@ -22,8 +22,8 @@ export const CardTitle = styled.h3`
 `;
 
 export const Price = styled.h6`
-  font-weight: 500;
-  font-size: 2.25rem;
+  font-weight: 900;
+  font-size: 2rem;
   text-align: center;
 
   color: ${props => props.theme.homepage.white};
@@ -38,10 +38,9 @@ export const List = styled.ul`
   list-style: none;
   margin: 0;
   font-style: normal;
-  font-size: 1.4rem;
   text-align: left;
   color: ${props => props.theme.homepage.muted};
-  margin-top: 3rem;
+  margin-top: 30px;
   margin-left: 1rem;
 
   li span {
@@ -154,29 +153,53 @@ export const FeatureTitle = styled.span`
 `;
 
 export const CardContainer = styled.div`
+  max-width: 90%;
+  margin: auto;
+  width: 1324px;
   display: grid;
-  grid-template-columns: 26rem 26rem;
-  grid-template-areas:
-    'free pro'
-    'team team';
-  grid-gap: 2rem;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 33px;
   justify-content: center;
-  margin-top: 4rem;
+  margin-top: 30px;
 
-  ${props => props.theme.breakpoints.lg} {
-    grid-template-columns: minmax(100%, 26rem);
-    grid-template-areas:
-      'free'
-      'pro'
-      'team';
+  ${props => props.theme.breakpoints.xl} {
+    grid-template-columns: 1fr 1fr;
+
+    div:last-child {
+      grid-column: span 2;
+    }
+  }
+
+  ${props => props.theme.breakpoints.md} {
+    grid-template-columns: 1fr;
+
+    div:last-child {
+      grid-column: 1;
+    }
   }
 `;
 
 export const FeaturesTitle = styled.h3`
-  font-weight: 500;
+  font-weight: bold;
   font-size: 2.25rem;
 
   color: ${props => props.theme.homepage.white};
   margin-bottom: 3.75rem;
   margin-top: 6rem;
+`;
+
+export const TeamOrIndividualWrapper = styled.div`
+  max-width: 90%;
+  margin: auto;
+  display: grid;
+  grid-gap: 33px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 6rem;
+  width: 1324px;
+  font-weight: bold;
+  font-size: 19px;
+
+  ${props => props.theme.breakpoints.lg} {
+    display: none;
+  }
 `;

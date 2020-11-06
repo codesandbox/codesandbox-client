@@ -61,6 +61,7 @@ export const ShowcaseSandbox = () => {
             gap={2}
             style={{
               position: 'absolute',
+              width: 'auto',
               zIndex: 3,
               bottom: 16,
               right: 16,
