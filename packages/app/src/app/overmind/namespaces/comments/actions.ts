@@ -443,8 +443,8 @@ export const addOptimisticPreviewComment: AsyncAction<{
     bubbleSource: BUBBLE_IMAGE,
     cropWidth: 1000,
     cropHeight: 400,
-    x,
-    y,
+    x: Math.round(x),
+    y: Math.round(y),
   })
   const metadata: PreviewReferenceMetadata = {
     userAgent: effects.browser.getUserAgent(),
