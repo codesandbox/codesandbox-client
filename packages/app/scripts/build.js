@@ -7,6 +7,7 @@ const filesize = require('filesize');
 const gzipSize = require('gzip-size').sync;
 const rimrafSync = require('rimraf').sync;
 const webpack = require('webpack');
+const commonConfig = require('../config/webpack.common');
 const config = require('../config/webpack.prod');
 const paths = require('../config/paths');
 const recursive = require('recursive-readdir');
@@ -36,6 +37,10 @@ function getDifferenceLabel(currentSize, previousSize) {
   } else {
     return '';
   }
+}
+
+function getStatsWarnings(multiStats) {
+  return [].concat(...multiStats.stats.map(x => x.compilation.warnings));
 }
 
 // First, read the current file sizes in build directory.
@@ -140,7 +145,7 @@ function build(previousSizeMap) {
 
     if (stats.hasWarnings()) {
       console.warn(chalk.yellow('Build warnings:'));
-      stats.compilation.warnings.forEach(({ name, message }) => {
+      getStatsWarnings(stats).forEach(({ name, message }) => {
         console.warn(chalk.yellow(`${name}: ${message}\n`));
       });
     }
@@ -175,7 +180,7 @@ function build(previousSizeMap) {
 
     let openCommand = process.platform === 'win32' ? 'start' : 'open';
     let homepagePath = require(paths.appPackageJson).homepage;
-    let publicPath = config.output.publicPath;
+    let publicPath = commonConfig.output.publicPath;
     if (homepagePath && homepagePath.indexOf('.github.io/') !== -1) {
       // "homepage": "http://user.github.io/project"
       console.log(
