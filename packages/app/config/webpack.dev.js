@@ -3,12 +3,14 @@ const merge = require('webpack-merge');
 // const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
 const commonConfig = require('./webpack.common');
+const setupEntries = require('./setup-entries');
 
 const devEntries = ['webpack-dev-server/client?/'];
 
 const APP_HOT = Boolean(process.env.APP_HOT);
+const SANDBOX_ONLY = !!process.env.SANDBOX_ONLY;
 
-module.exports = merge(
+const config = merge(
   {
     entry: {
       app: APP_HOT
@@ -38,7 +40,9 @@ module.exports = merge(
       new webpack.EvalSourceMapDevToolPlugin({
         include: /src\/app/,
       }),
-      new webpack.HotModuleReplacementPlugin(),
-    ],
+      !SANDBOX_ONLY && new webpack.HotModuleReplacementPlugin(),
+    ].filter(Boolean),
   }
 );
+
+module.exports = setupEntries(config);

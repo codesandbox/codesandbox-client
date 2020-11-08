@@ -13,6 +13,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VERSION = require('@codesandbox/common/lib/version').default;
 // const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
+const setupEntries = require('./setup-entries');
 
 const publicPath = '/';
 // const isMaster =
@@ -23,7 +24,7 @@ const publicPath = '/';
 
 const normalize = normalizeName({ name: true, automaticNameDelimiter: '~' });
 
-module.exports = merge(commonConfig, {
+const config = merge(commonConfig, {
   devtool: 'source-map',
   output: {
     filename: 'static/js/[name].[contenthash:9].js',
@@ -370,3 +371,5 @@ module.exports = merge(commonConfig, {
     //   }),
   ].filter(Boolean),
 });
+
+module.exports = setupEntries(config);

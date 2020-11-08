@@ -14,6 +14,7 @@ var { createProxyMiddleware } = require('http-proxy-middleware');
 var path = require('path');
 var httpProxy = require('http-proxy');
 const { platform } = require('os');
+var commonConfig = require('../config/webpack.common');
 var config = require('../config/webpack.dev');
 var paths = require('../config/paths');
 const { staticAssets } = require('../config/build');
@@ -33,6 +34,8 @@ var shouldClearConsole =
 // This is a little hacky.
 // It would be easier if webpack provided a rich error object.
 var friendlySyntaxErrorLabel = 'Syntax error:';
+const canHaveWebsocket = !Boolean(JSON.parse(process.env.SANDPACK || 'false'));
+
 function isLikelyASyntaxError(message) {
   return message.indexOf(friendlySyntaxErrorLabel) !== -1;
 }
@@ -65,6 +68,27 @@ function clearConsole() {
   }
 }
 
+function getCompiltaionWarnings(multiStats) {
+  // filter known warnings:
+  // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
+  //   in ./node_modules/typescript/lib/typescript.js
+  // CriticalDependencyWarning: Critical dependency: require function is used in a way in which dependencies cannot be statically extracted
+  //   in ./packages/app/node_modules/babel-plugin-macros/dist/index.js
+  // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
+  //   in ./packages/app/node_modules/cosmiconfig/dist/loaders.js
+  // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
+  //   in ./packages/app/src/app/components/CodeEditor/CodeMirror/index.js
+  return []
+    .concat(
+      ...multiStats.stats.map(x =>
+        x.compilation.warnings.concat(
+          ...x.compilation.children.map(child => child.warnings)
+        )
+      )
+    )
+    .filter(warning => warning.error.name !== 'CriticalDependencyWarning');
+}
+
 function setupCompiler(port, protocol) {
   // "Compiler" is a low-level interface to Webpack.
   // It lets us listen to some events and provide our own custom messages.
@@ -80,7 +104,7 @@ function setupCompiler(port, protocol) {
   // recompiling a bundle. WebpackDevServer takes care to pause serving the
   // bundle, so if you refresh, it'll wait instead of serving the old one.
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
-  compiler.hooks.invalid.tap('invalid', function(module) {
+  compiler.hooks.invalid.tap('invalid', function (module) {
     clearConsole();
     compileStart = Date.now();
     console.log(`Module ${chalk.yellow(module)} updated, re-compiling...`);
@@ -116,18 +140,7 @@ function setupCompiler(port, protocol) {
       return;
     }
 
-    // filter known warnings:
-    // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
-    //   in ./node_modules/typescript/lib/typescript.js
-    // CriticalDependencyWarning: Critical dependency: require function is used in a way in which dependencies cannot be statically extracted
-    //   in ./packages/app/node_modules/babel-plugin-macros/dist/index.js
-    // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
-    //   in ./packages/app/node_modules/cosmiconfig/dist/loaders.js
-    // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
-    //   in ./packages/app/src/app/components/CodeEditor/CodeMirror/index.js
-    const warnings = stats.compilation.warnings
-      .concat(...stats.compilation.children.map(child => child.warnings))
-      .filter(warning => warning.error.name !== 'CriticalDependencyWarning');
+    const warnings = getCompiltaionWarnings(stats);
     const hasWarnings = warnings.length > 0;
     if (hasWarnings) {
       console.log(chalk.yellow(`Compiled with warnings in ${took / 1000}s.\n`));
@@ -185,7 +198,7 @@ function openBrowser(port, protocol) {
 }
 
 function addMiddleware(devServer, index) {
-  devServer.use(function(req, res, next) {
+  devServer.use(function (req, res, next) {
     if (req.url === '/') {
       req.url = '/homepage';
     }
@@ -267,7 +280,7 @@ function runDevServer(port, protocol, index) {
   var devServer = new WebpackDevServer(compiler, {
     // It is important to tell WebpackDevServer to use the same "root" path
     // as we specified in the config. In development, we always serve from /.
-    publicPath: config.output.publicPath,
+    publicPath: commonConfig.output.publicPath,
     // WebpackDevServer is noisy by default so we emit custom message instead
     // by listening to the compiler events with `compiler.hooks[...].tap` calls above.
     quiet: true,
@@ -285,8 +298,8 @@ function runDevServer(port, protocol, index) {
     contentBase: false,
     clientLogLevel: 'warning',
     overlay: true,
-    inline: true,
-    hot: true,
+    inline: canHaveWebsocket,
+    hot: canHaveWebsocket,
     liveReload: process.env['DISABLE_REFRESH'] ? false : true,
   });
 
@@ -322,7 +335,7 @@ function run(port) {
       console.error('Got an error', error);
     });
     http
-      .createServer(function(req, res) {
+      .createServer(function (req, res) {
         if (req.url.includes('.js')) {
           proxy.web(req, res, { target: 'http://localhost:3000' });
         } else {
