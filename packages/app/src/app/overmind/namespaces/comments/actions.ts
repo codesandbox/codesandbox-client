@@ -200,6 +200,15 @@ export const closeComment: Action = ({ state, effects }) => {
 
   effects.analytics.track('Comments - Close Comments');
 
+  // When closing comments we want to move back to previous mode. This
+  // is related to users skimming through existing comments. But
+  // you can also close an optimistic preview comment, meaning you
+  // want to stay in the same mode as you probably want to add a new comment
+  if (state.comments.currentCommentId !== OPTIMISTIC_COMMENT_ID) {
+    state.preview.mode = state.preview.previousMode
+    state.preview.previousMode = null
+  }
+
   state.comments.currentCommentId = null;
   state.comments.currentCommentPositions = null;
 
@@ -208,9 +217,6 @@ export const closeComment: Action = ({ state, effects }) => {
   } else if (state.preview.mode === 'responsive-add-comment')  {
     state.preview.mode = 'responsive'
   }
-
-  state.preview.mode = state.preview.previousMode
-  state.preview.previousMode = null
 };
 
 export const closeMultiCommentsSelector: Action = ({ state }) => {
