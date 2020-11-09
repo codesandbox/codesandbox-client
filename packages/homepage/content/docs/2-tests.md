@@ -1,6 +1,6 @@
 ---
 title: Tests
-authors: ["CompuIves", "christianalfoni"]
+authors: ['CompuIves', 'christianalfoni']
 description: CodeSandbox has a native integration with a test runner.
 ---
 
