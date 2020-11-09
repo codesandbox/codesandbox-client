@@ -25,7 +25,7 @@ module.exports = config => {
         entry: {
           'sandpack-service-worker': path.join(
             paths.sandboxSrc,
-            'sandpack-service-worker.ts'
+            'sandpack/service-worker.ts'
           ),
         },
         output: {

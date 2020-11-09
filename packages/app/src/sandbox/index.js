@@ -12,9 +12,9 @@ import { getPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import compile, { getCurrentManager } from './compile';
+import { startSandpackController } from './sandpack/controller';
 
 const host = process.env.CODESANDBOX_HOST;
-const withServiceWorker = !process.env.SANDPACK;
 const debug = _debug('cs:sandbox');
 
 export const SCRIPT_VERSION =
@@ -27,7 +27,9 @@ endMeasure('boot', { lastTime: 0, displayName: 'Boot' });
 const ID = Math.floor(Math.random() * 1000000);
 
 requirePolyfills().then(() => {
-  if (withServiceWorker) {
+  if (process.env.SANDPACK) {
+    startSandpackController();
+  } else {
     registerServiceWorker('/sandbox-service-worker.js', {});
   }
 
