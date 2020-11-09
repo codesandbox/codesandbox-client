@@ -222,7 +222,8 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
         </Stack>
       </Wrapper>
       <ResizeHandles
-        on={overmind.state.preview.mode === 'responsive'}
+        on={on}
+        showResizeHandles={overmind.state.preview.mode === 'responsive'}
         width={minResolutionWidth}
         height={minResolutionHeight}
         wrapper={element as any}

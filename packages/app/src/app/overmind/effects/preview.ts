@@ -98,12 +98,8 @@ export default {
 
         const rightSideSpace = Math.min(screenshot.width - x, cropWidth / 2);
         const bottomSideSpace = Math.min(screenshot.height - y, cropHeight / 2);
-
-        spaceWeWantToUseWidth -= rightSideSpace;
-        spaceWeWantToUseHeight -= bottomSideSpace;
-
-        const leftSideSpace = Math.min(x, spaceWeWantToUseWidth);
-        const topSideSpace = Math.min(y, spaceWeWantToUseHeight);
+        const leftSideSpace = Math.min(x, cropWidth / 2);
+        const topSideSpace = Math.min(y, cropHeight / 2);
 
         const width = leftSideSpace + rightSideSpace;
         const height = bottomSideSpace + topSideSpace;
