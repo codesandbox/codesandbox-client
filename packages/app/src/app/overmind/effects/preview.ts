@@ -50,7 +50,7 @@ export default {
   takeScreenshot(isPrivateSandbox: boolean): Promise<string> {
     return new Promise((resolve, reject) => {
       let timeout
-      let start = Date.now()
+      const start = Date.now()
       
       const disposeListener = listen((data: any) => {
         if (data.type === 'screenshot-generated') {
@@ -64,7 +64,7 @@ export default {
 
       timeout = setTimeout(() => {
         disposeListener()
-        reject("Creating screenshot timed out")
+        reject(new Error("Creating screenshot timed out"))
       }, 3000)
 
       // this dispatch triggers a "screenshot-generated" message

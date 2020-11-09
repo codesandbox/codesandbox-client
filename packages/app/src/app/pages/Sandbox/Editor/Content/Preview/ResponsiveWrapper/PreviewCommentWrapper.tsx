@@ -1,4 +1,3 @@
-import { listen } from 'codesandbox-api'
 import {
   CommentWithRepliesFragment,
   PreviewReferenceMetadata,
@@ -76,7 +75,7 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
             if (state.preview.screenshot.isLoading) {
               return
             }
-            
+
             const parentBounds = (event.target as any).parentNode.getBoundingClientRect();
 
             actions.comments.addOptimisticPreviewComment({
