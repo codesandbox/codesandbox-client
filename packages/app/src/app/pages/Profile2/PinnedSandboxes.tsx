@@ -27,6 +27,8 @@ export const PinnedSandboxes = () => {
     }),
   });
 
+  if (!user.featuredSandboxes.length && !myProfile) return null;
+
   return (
     <Grid
       rowGap={6}
@@ -52,6 +54,7 @@ export const PinnedSandboxes = () => {
             justify="center"
             align="center"
             css={css({
+              display: ['none', 'flex', 'flex'],
               height: 240,
               padding: 4,
               backgroundColor: isOver ? 'grays.700' : 'transparent',
@@ -66,7 +69,7 @@ export const PinnedSandboxes = () => {
             onClick={() => modalOpened({ modal: 'sandboxPicker' })}
           >
             <Text variant="muted" size={4} weight="medium" align="center">
-              Drag your Sandbox here to pin them to your profile
+              Select a Sandbox or Drag a Sandbox here to pin it to your profile
             </Text>
           </Stack>
         </div>

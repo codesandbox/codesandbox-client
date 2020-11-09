@@ -1,6 +1,7 @@
 import { Sandbox, Profile } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
+import { SandboxType } from 'app/pages/Profile2/constants';
 
 export const profileMounted: AsyncAction<string> = withLoadApp(
   async ({ effects, state }, username) => {
@@ -372,6 +373,13 @@ export const changeSandboxPrivacyInState: Action<Pick<
     if (sandbox.id === id) sandbox.privacy = privacy;
     return sandbox;
   });
+
+  // for picker
+  state.profile.collections.forEach(collection => {
+    collection.sandboxes.forEach(sandbox => {
+      if (sandbox.id === id) sandbox.privacy = privacy;
+    });
+  });
 };
 
 export const changeSandboxPrivacy: AsyncAction<Pick<
@@ -432,13 +440,18 @@ export const searchQueryChanged: AsyncAction<string> = async (
 
 export const openContextMenu: Action<{
   sandboxId: Sandbox['id'];
+  sandboxType: SandboxType;
   position: { x: number; y: number };
-}> = ({ state }, { sandboxId, position }) => {
-  state.profile.contextMenu = { sandboxId, position };
+}> = ({ state }, { sandboxId, sandboxType, position }) => {
+  state.profile.contextMenu = { sandboxId, sandboxType, position };
 };
 
 export const closeContextMenu: Action = ({ state }) => {
-  state.profile.contextMenu = { sandboxId: null, position: null };
+  state.profile.contextMenu = {
+    sandboxId: null,
+    sandboxType: null,
+    position: null,
+  };
 };
 
 export const fetchCollections: AsyncAction = async ({ state, effects }) => {

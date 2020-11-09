@@ -372,7 +372,9 @@ export const onOperationApplied: Action<{
     code,
   });
 
-  actions.editor.internal.updatePreviewCode();
+  if (state.preferences.settings.livePreviewEnabled) {
+    actions.editor.internal.updatePreviewCode();
+  }
 
   // If we are in a state of sync, we set "revertModule" to set it as saved
   if (module.savedCode !== null && module.code === module.savedCode) {

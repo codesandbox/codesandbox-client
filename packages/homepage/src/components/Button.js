@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 const styles = css`
-  background: ${props => props.theme.homepage.primary};
+  background: #5962df;
   border-radius: 0.125rem;
   border: none;
   font-family: ${props => props.theme.homepage.appleFont};

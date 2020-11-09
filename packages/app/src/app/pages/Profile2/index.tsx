@@ -1,26 +1,3 @@
-/**
- * Features:
- * - Sandbox picker
- *
- * API:
- * - Add github to social link based on provider
- * - Remove default showcase
- * - Filter out unlisted and private
- * - Don't show sandboxes from non-personal workspaces
- * - Tag personal workspace in API
- *
- * 5%
- * - Get more sandboxes than required to fill All Sandboxes (or filter featured)
- * - Page number in url
- * - 404 page
- * - Logged out nav
- * - Add option to set as header in context menu
- * - Foldable sidebar in picker
- *
- * Bugs:
- * - Sandbox is missing stats in picker
- */
-
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { ThemeProvider, Stack, Element } from '@codesandbox/components';
@@ -34,6 +11,7 @@ import {
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 import { Helmet } from 'react-helmet';
+import { NotFound } from 'app/pages/common/NotFound';
 import { Header } from './Header';
 import { ProfileCard } from './ProfileCard';
 import { ShowcaseSandbox } from './ShowcaseSandbox';
@@ -56,13 +34,17 @@ export const Profile: React.FunctionComponent<RouteComponentProps<{
       profile: { profileMounted },
     },
     state: {
-      profile: { current: user },
+      profile: { current: user, notFound },
     },
   } = useOvermind();
 
   React.useEffect(() => {
     profileMounted(username);
   }, [profileMounted, username]);
+
+  if (notFound) {
+    return <NotFound />;
+  }
 
   if (!user) return null;
 
@@ -73,8 +55,8 @@ export const Profile: React.FunctionComponent<RouteComponentProps<{
           direction="vertical"
           gap={104}
           css={css({
-            height: '100vh',
             width: '100vw',
+            minHeight: '100vh',
             backgroundColor: 'grays.900',
             color: 'white',
             fontFamily: 'Inter, sans-serif',

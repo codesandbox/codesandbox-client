@@ -31,6 +31,7 @@ export const Title = styled(H2)`
   top: 180px;
   z-index: 2;
   max-width: 547px;
+
   margin: auto;
 
   ${props => props.theme.breakpoints.md} {
@@ -55,8 +56,7 @@ export const MacBookWrapper = styled.div`
 `;
 
 export const Titles = styled.h3`
-  font-style: normal;
-  font-weight: 500;
+  font-weight: 900;
   font-size: 2rem;
   line-height: 38px;
   text-align: center;

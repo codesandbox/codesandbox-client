@@ -5,6 +5,7 @@ import {
 } from 'app/graphql/types';
 import { RootState } from 'app/overmind';
 import { derived } from 'overmind';
+import { SandboxType } from 'app/pages/Profile2/constants';
 
 export type ProfileCollection = Pick<
   Collection,
@@ -47,6 +48,7 @@ type State = {
   currentSortDirection: 'asc' | 'desc';
   contextMenu: {
     sandboxId: string | null;
+    sandboxType: SandboxType | null;
     position: { x: number; y: number } | null;
   };
   collections: ProfileCollection[];
@@ -68,7 +70,7 @@ export const state: State = {
   sandboxToDeleteId: null,
   currentSortBy: 'view_count',
   currentSortDirection: 'desc',
-  contextMenu: { sandboxId: null, position: null },
+  contextMenu: { sandboxId: null, sandboxType: null, position: null },
   collections: [],
   isProfileCurrentUser: derived((currentState: State, rootState: RootState) =>
     Boolean(
