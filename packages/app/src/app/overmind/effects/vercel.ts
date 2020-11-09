@@ -109,7 +109,7 @@ export default (() => {
       const nowConfigs = sandbox.modules
         .filter(
           m =>
-            m.title === 'now.json' ||
+            m.title === 'vercel.json' ||
             (m.title === 'package.json' && JSON.parse(m.code).now)
         )
         .map(c => JSON.parse(c.code));
@@ -203,7 +203,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
   let nowJSON: any = {};
 
   const projectPackage = contents.files['package.json'];
-  const nowFile = contents.files['now.json'];
+  const nowFile = contents.files['vercel.json'];
 
   if (projectPackage) {
     const data = await projectPackage.async('text'); // eslint-disable-line no-await-in-loop
