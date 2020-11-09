@@ -6,9 +6,7 @@ description: CodeSandbox has a native integration with a test runner.
 
 ## How does CodeSandbox runs tests?
 
-Jest is a zero configuration test runner that allows you easily write JavaScript
-tests without setting anything up. More info on [Jest](https://jestjs.io/). CodeSandbox
-uses this library to run the tests directly in the browser. That means you can write tests,
+CodeSandbox uses [Jest](https://jestjs.io/) library to run the tests directly in the browser. That means you can write tests,
 but adding additional plugins is not possible in the Client Sandbox experience.
 
 ## How to write tests in the CodeSandbox Client Sandboxes
