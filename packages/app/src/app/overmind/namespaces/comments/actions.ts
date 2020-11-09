@@ -208,6 +208,9 @@ export const closeComment: Action = ({ state, effects }) => {
   } else if (state.preview.mode === 'responsive-add-comment')  {
     state.preview.mode = 'responsive'
   }
+
+  state.preview.mode = state.preview.previousMode
+  state.preview.previousMode = null
 };
 
 export const closeMultiCommentsSelector: Action = ({ state }) => {
@@ -276,6 +279,7 @@ export const selectComment: AsyncAction<{
       .metadata as PreviewReferenceMetadata;
 
     state.preview.responsive.resolution = [metadata.width, metadata.height];
+    state.preview.previousMode = state.preview.mode
     state.preview.mode = 'responsive';
     state.comments.currentCommentId = commentId;
 

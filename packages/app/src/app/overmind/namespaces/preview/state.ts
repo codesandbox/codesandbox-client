@@ -3,6 +3,8 @@ import { derived } from 'overmind';
 
 export type Presets = { [name: string]: [number, number] };
 
+type Mode = 'responsive' | 'add-comment' | 'responsive-add-comment' | null;
+
 type State = {
   responsive: {
     presets: Presets;
@@ -13,7 +15,8 @@ type State = {
     source: string | null
     isLoading: boolean
   }
-  mode: 'responsive' | 'add-comment' | 'responsive-add-comment' | null;
+  previousMode: Mode;
+  mode: Mode;
 };
 
 export const defaultPresets: Presets = {
@@ -38,5 +41,6 @@ export const state: State = {
     source: null,
     isLoading: false
   },
+  previousMode: null,
   mode: null,
 };
