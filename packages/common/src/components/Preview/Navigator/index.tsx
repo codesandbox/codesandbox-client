@@ -35,7 +35,7 @@ export interface NavigatorProps {
   isPreviewCommentModeActive?: boolean;
   zenMode?: boolean;
   isProjectView: boolean;
-  isScreenshotLoading: boolean;
+  isScreenshotLoading?: boolean;
 }
 
 function Navigator({

@@ -590,7 +590,7 @@ class BasePreview extends React.PureComponent<Props, State> {
         {showNavigation && (
           <Navigator
             url={url}
-            isScreenshotLoading={Boolean(isScreenshotLoading)}
+            isScreenshotLoading={isScreenshotLoading}
             onChange={this.updateUrl}
             onConfirm={this.sendUrl}
             onBack={back ? this.handleBack : null}
