@@ -1,9 +1,9 @@
 // Responsible for consuming and syncing with the server/local cache
 import localforage from 'localforage';
 import _debug from '@codesandbox/common/lib/utils/debug';
+import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 import Manager from './manager';
 import { SerializedTranspiledModule } from './transpiled-module';
-import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 
 const debug = _debug('cs:compiler:cache');
 
@@ -11,17 +11,18 @@ const host = process.env.CODESANDBOX_HOST;
 
 const MAX_CACHE_SIZE = 1024 * 1024 * 20;
 let APICacheUsed = false;
-
 try {
-  localforage.config({
-    name: 'CodeSandboxApp',
-    storeName: 'sandboxes', // Should be alphanumeric, with underscores.
-    description:
-      'Cached transpilations of the sandboxes, for faster initialization time.',
-  });
+  if (localforage.supports(localforage.INDEXEDDB)) {
+    localforage.config({
+      name: 'CodeSandboxApp',
+      storeName: 'sandboxes', // Should be alphanumeric, with underscores.
+      description:
+        'Cached transpilations of the sandboxes, for faster initialization time.',
+    });
 
-  // Prewarm store
-  localforage.keys();
+    // Prewarm store
+    localforage.keys();
+  }
 } catch (e) {
   console.warn('Problems initializing IndexedDB store.');
   console.warn(e);
@@ -71,7 +72,9 @@ export async function saveCache(
           'kb to indexedDB'
       );
     }
-    await localforage.setItem(manager.id, managerState);
+    if (localforage.supports(localforage.INDEXEDDB)) {
+      await localforage.setItem(manager.id, managerState);
+    }
   } catch (e) {
     if (process.env.NODE_ENV === 'development') {
       console.error(e);
@@ -191,9 +194,10 @@ export async function consumeCache(manager: Manager) {
     }
 
     const cacheData = (window as any).__SANDBOX_DATA__;
-    const localData: ManagerCache | undefined = await localforage.getItem(
-      manager.id
-    );
+    let localData: ManagerCache | undefined;
+    if (localforage.supports(localforage.INDEXEDDB)) {
+      localData = await localforage.getItem(manager.id);
+    }
 
     const cache = findCacheToUse(cacheData && cacheData.data, localData);
     if (cache) {
