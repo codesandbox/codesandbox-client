@@ -12,7 +12,7 @@ const host = process.env.CODESANDBOX_HOST;
 const MAX_CACHE_SIZE = 1024 * 1024 * 20;
 let APICacheUsed = false;
 try {
-  if (localforage.supports(localforage.INDEXEDDB)) {
+  if (window.indexedDB) {
     localforage.config({
       name: 'CodeSandboxApp',
       storeName: 'sandboxes', // Should be alphanumeric, with underscores.
@@ -41,7 +41,11 @@ function shouldSaveOnlineCache(firstRun: boolean, changes: number) {
 }
 
 export function clearIndexedDBCache() {
-  return localforage.clear();
+  if (window.indexedDB) {
+    return localforage.clear();
+  }
+
+  return null;
 }
 
 export async function saveCache(
@@ -72,7 +76,7 @@ export async function saveCache(
           'kb to indexedDB'
       );
     }
-    if (localforage.supports(localforage.INDEXEDDB)) {
+    if (window.indexedDB) {
       await localforage.setItem(manager.id, managerState);
     }
   } catch (e) {
@@ -195,7 +199,7 @@ export async function consumeCache(manager: Manager) {
 
     const cacheData = (window as any).__SANDBOX_DATA__;
     let localData: ManagerCache | undefined;
-    if (localforage.supports(localforage.INDEXEDDB)) {
+    if (window.indexedDB) {
       localData = await localforage.getItem(manager.id);
     }
 
