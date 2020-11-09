@@ -1,4 +1,5 @@
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { Action, AsyncAction } from 'app/overmind';
 import { isEqual } from 'lodash-es';
 import { json } from 'overmind';
@@ -15,6 +16,7 @@ export const toggleResponsiveMode: AsyncAction = async ({
     newUrl.searchParams.delete('resolutionWidth');
     newUrl.searchParams.delete('resolutionHeight');
   } else {
+    track('Responsive Preview - Toggled On');
     state.preview.mode = 'responsive';
 
     newUrl.searchParams.set(
@@ -109,6 +111,10 @@ export const addPreset: AsyncAction<{
   height: number;
 }> = async ({ state, actions }, { name, width, height }) => {
   if (!name || !width || !height) return;
+  track('Responsive Preview - Preset Created', {
+    width,
+    height,
+  });
   state.preview.responsive.resolution = [width, height];
 
   const canChangePresets = hasPermission(
