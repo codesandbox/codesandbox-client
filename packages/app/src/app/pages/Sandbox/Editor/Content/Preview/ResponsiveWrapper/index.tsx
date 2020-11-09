@@ -233,7 +233,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
         widthResizer={widthResizer}
         heightResizer={heightResizer}
       >
-        <PreviewCommentWrapper scale={scale}>{children}</PreviewCommentWrapper>
+        <PreviewCommentWrapper scale={on ? scale : 1}>{children}</PreviewCommentWrapper>
       </ResizeHandles>
     </ThemeProvider>
   );

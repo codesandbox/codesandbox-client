@@ -9,6 +9,10 @@ type State = {
     scale: number;
     resolution: [number, number];
   };
+  screenshot: {
+    source: string | null
+    isLoading: boolean
+  }
   mode: 'responsive' | 'add-comment' | 'responsive-add-comment' | null;
 };
 
@@ -29,6 +33,10 @@ export const state: State = {
     ),
     scale: 100,
     resolution: [320, 675],
+  },
+  screenshot: {
+    source: null,
+    isLoading: false
   },
   mode: null,
 };

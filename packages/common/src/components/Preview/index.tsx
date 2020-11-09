@@ -54,6 +54,7 @@ export type Props = {
   isPreviewCommentModeActive?: boolean;
   toggleResponsiveMode?: () => void;
   createPreviewComment?: () => void;
+  isScreenshotLoading?: boolean;
   /**
    * Whether to show a screenshot in the preview as a "placeholder" while loading
    * to reduce perceived loading time
@@ -560,6 +561,7 @@ class BasePreview extends React.PureComponent<Props, State> {
       isResponsiveModeActive,
       toggleResponsiveMode,
       createPreviewComment,
+      isScreenshotLoading,
       isPreviewCommentModeActive,
     } = this.props;
 
@@ -588,6 +590,7 @@ class BasePreview extends React.PureComponent<Props, State> {
         {showNavigation && (
           <Navigator
             url={url}
+            isScreenshotLoading={Boolean(isScreenshotLoading)}
             onChange={this.updateUrl}
             onConfirm={this.sendUrl}
             onBack={back ? this.handleBack : null}

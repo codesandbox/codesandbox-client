@@ -17,6 +17,7 @@ import {
   Icon,
   AddressBarContainer,
   IconWithBackground,
+  SpinnerWrapper,
 } from './elements';
 
 export interface NavigatorProps {
@@ -34,6 +35,7 @@ export interface NavigatorProps {
   isPreviewCommentModeActive?: boolean;
   zenMode?: boolean;
   isProjectView: boolean;
+  isScreenshotLoading: boolean;
 }
 
 function Navigator({
@@ -48,6 +50,7 @@ function Navigator({
   openNewWindow,
   toggleResponsiveView,
   isInResponsivePreview,
+  isScreenshotLoading,
   createPreviewComment,
   isPreviewCommentModeActive,
   zenMode,
@@ -75,14 +78,17 @@ function Navigator({
       {createPreviewComment && (
         <IconWithBackground
           onClick={createPreviewComment}
-          style={{ color: isPreviewCommentModeActive ? '#FF3B30' : '#757575' }}
+          style={{ color: isPreviewCommentModeActive && !isScreenshotLoading ? '#FF3B30' : '#757575' }}
         >
           <Tooltip delay={0} content="Add Preview Comment">
-            <ComponentsIcon
+            {isScreenshotLoading ? <SpinnerWrapper><ComponentsIcon
+              name="spinner"
+              size={16}
+            /></SpinnerWrapper> : <ComponentsIcon
               name="comment"
               size={12}
               style={{ top: -1, position: 'relative' }}
-            />
+            />}
           </Tooltip>
         </IconWithBackground>
       )}

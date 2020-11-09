@@ -96,6 +96,7 @@ export const Preview: FunctionComponent<Props> = ({
       privacy={currentSandbox.privacy}
       sandbox={currentSandbox}
       settings={settings}
+      isScreenshotLoading={preview.screenshot.isLoading}
       createPreviewComment={
         canAddComments && previewActions.createPreviewComment
       }

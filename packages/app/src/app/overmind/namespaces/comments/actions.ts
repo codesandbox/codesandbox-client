@@ -445,6 +445,7 @@ export const addOptimisticPreviewComment: AsyncAction<{
     cropHeight: 400,
     x: Math.round(x),
     y: Math.round(y),
+    scale
   })
   const metadata: PreviewReferenceMetadata = {
     userAgent: effects.browser.getUserAgent(),

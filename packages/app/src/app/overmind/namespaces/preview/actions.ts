@@ -154,13 +154,26 @@ export const editPresets: AsyncAction<Presets> = async (
   });
 };
 
-export const createPreviewComment: Action = ({ state, effects }) => {
+export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
   const existingMode = state.preview.mode;
+
+  state.preview.screenshot.source = null
+
+  const takeScreenshot = async () => {
+    try {
+      state.preview.screenshot.isLoading = true
+      const screenshot = await effects.preview.takeScreenshot(state.editor.currentSandbox!.privacy === 2)
+      state.preview.screenshot.isLoading = false
+      state.preview.screenshot.source = screenshot  
+    } catch {
+      // Not experienced this process erroring yet
+    }
+  }
 
   switch (existingMode) {
     case 'responsive':
       state.preview.mode = 'responsive-add-comment';
-      effects.preview.takeScreenshot(state.editor.currentSandbox!.privacy === 2)
+      await takeScreenshot()
       break;
     case 'add-comment':
       state.preview.mode = null;
@@ -170,7 +183,7 @@ export const createPreviewComment: Action = ({ state, effects }) => {
       break;
     default:
       state.preview.mode = 'add-comment';
-      effects.preview.takeScreenshot(state.editor.currentSandbox!.privacy === 2)
+      await takeScreenshot()
   }
 };
 

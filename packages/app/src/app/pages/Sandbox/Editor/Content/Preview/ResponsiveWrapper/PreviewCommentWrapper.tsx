@@ -58,24 +58,7 @@ type Props = {
 
 export const PreviewCommentWrapper = ({ children, scale }: Props) => {
   const { state, actions } = useOvermind();
-  const [screenshot, setScreenshot ] = React.useState<string | null>(null)
-
   const previewReference = getPreviewReference(state.comments.currentComment);
-
-  React.useEffect(() => listen((data: any) => {
-      if (data.type === 'screenshot-generated') {
-        setScreenshot(data.screenshot)
-      }
-    })
-  )
-
-  React.useEffect(() => {
-    if (screenshot && (!state.preview.mode  || state.preview.mode === 'responsive')) {
-      setScreenshot(null) 
-    }
-  }, [state.preview.mode]
-)
-
 
   return (
     <Wrapper>
@@ -83,17 +66,23 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
       {state.preview.mode === 'add-comment' ||
       state.preview.mode === 'responsive-add-comment' ? (
         <Screenshot
-          style={screenshot ? {
-            backgroundImage: `url(${screenshot})`
-          } : undefined}
+          style={state.preview.screenshot.source ? {
+            backgroundImage: `url(${state.preview.screenshot.source})`,
+          } : {
+            backgroundColor: state.preview.screenshot.isLoading ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0)'
+          }}
           showCommentCursor={!state.comments.currentComment}
           onClick={event => {
+            if (state.preview.screenshot.isLoading) {
+              return
+            }
+            
             const parentBounds = (event.target as any).parentNode.getBoundingClientRect();
 
             actions.comments.addOptimisticPreviewComment({
               x: event.clientX - parentBounds.left,
               y: event.clientY - parentBounds.top,
-              screenshot,
+              screenshot: state.preview.screenshot.source,
               scale,
             });
           }}

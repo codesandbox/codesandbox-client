@@ -1,4 +1,4 @@
-import { dispatch } from 'codesandbox-api';
+import { dispatch, listen } from 'codesandbox-api';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import { blocker } from 'app/utils/blocker';
 
@@ -47,15 +47,35 @@ export default {
 
     return path.substr(path.indexOf('/'));
   },
-  takeScreenshot(isPrivateSandbox: boolean) {
-    // this dispatch triggers a "screenshot-generated" message
-    // which is received inside the PreviewCommentWrapper
-    dispatch({
-      type: 'take-screenshot',
-      data: {
-        isPrivateSandbox
-      }
-    });
+  takeScreenshot(isPrivateSandbox: boolean): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let timeout
+      let start = Date.now()
+      
+      const disposeListener = listen((data: any) => {
+        if (data.type === 'screenshot-generated') {
+          clearTimeout(timeout)
+          const waitAtLeastMs = 250
+          const waitedMs = Date.now() - start
+          
+          setTimeout(() => resolve(data.screenshot), waitedMs > waitAtLeastMs ? 0 : waitAtLeastMs - waitedMs)
+        }
+      })
+
+      timeout = setTimeout(() => {
+        disposeListener()
+        reject("Creating screenshot timed out")
+      }, 3000)
+
+      // this dispatch triggers a "screenshot-generated" message
+      // which is received inside the PreviewCommentWrapper
+      dispatch({
+        type: 'take-screenshot',
+        data: {
+          isPrivateSandbox
+        }
+      });
+    })
   },
   createScreenshot({
     screenshotSource,
@@ -64,6 +84,7 @@ export default {
     cropHeight,
     x,
     y,
+    scale
   }: {
     screenshotSource: string;
     bubbleSource: string;
@@ -71,6 +92,7 @@ export default {
     cropHeight: number;
     x: number;
     y: number;
+    scale: number;
   }): Promise<string> {
     const screenshotResolver = new Promise<HTMLImageElement>(resolve => {
       const image = new Image();
@@ -92,9 +114,6 @@ export default {
       ([screenshot, bubble]) => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d')!;
-
-        let spaceWeWantToUseWidth = cropWidth;
-        let spaceWeWantToUseHeight = cropHeight;
 
         const rightSideSpace = Math.min(screenshot.width - x, cropWidth / 2);
         const bottomSideSpace = Math.min(screenshot.height - y, cropHeight / 2);
@@ -175,8 +194,8 @@ export default {
         ctx.restore();
         ctx.drawImage(
           bubble,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + x - sx,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + y - sy
+          (PREVIEW_COMMENT_BUBBLE_OFFSET + x - sx) * (2 - scale),
+          (PREVIEW_COMMENT_BUBBLE_OFFSET + y - sy) * (2 - scale)
         );
 
         return canvas.toDataURL();
