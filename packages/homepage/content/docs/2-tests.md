@@ -1,13 +1,14 @@
 ---
 title: Tests
-authors: ['CompuIves', 'christianalfoni']
+authors: ["CompuIves", "christianalfoni"]
 description: CodeSandbox has a native integration with a test runner.
 ---
 
 ## How does CodeSandbox runs tests?
 
-CodeSandbox uses [Jest](https://jestjs.io/) library to run the tests directly in the browser. That means you can write tests,
-but adding additional plugins is not possible in the Client Sandbox experience.
+CodeSandbox uses [Jest](https://jestjs.io) library to run the tests directly in
+the browser. That means you can write tests, but adding additional plugins is
+not possible in the Client Sandbox experience.
 
 ## How to write tests in the CodeSandbox Client Sandboxes
 
