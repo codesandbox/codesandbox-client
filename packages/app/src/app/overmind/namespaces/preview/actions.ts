@@ -192,7 +192,7 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
       await takeScreenshot()
   }
 
-  if (state.preview.mode.includes('comment')) {
+  if (state.preview.mode && state.preview.mode.includes('comment')) {
     effects.analytics.track('Preview Comment - Toggle', {
       mode: state.preview.mode
     })
