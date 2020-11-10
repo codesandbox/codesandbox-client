@@ -1,5 +1,6 @@
 // Responsible for consuming and syncing with the server/local cache
 import localforage from 'localforage';
+import * as memoryDriver from 'localforage-driver-memory';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 import Manager from './manager';
@@ -8,21 +9,26 @@ import { SerializedTranspiledModule } from './transpiled-module';
 const debug = _debug('cs:compiler:cache');
 
 const host = process.env.CODESANDBOX_HOST;
+localforage.defineDriver(memoryDriver);
+localforage.setDriver([
+  localforage.INDEXEDDB,
+  localforage.LOCALSTORAGE,
+  localforage.WEBSQL,
+  memoryDriver._driver,
+]);
 
 const MAX_CACHE_SIZE = 1024 * 1024 * 20;
 let APICacheUsed = false;
 try {
-  if (window.indexedDB) {
-    localforage.config({
-      name: 'CodeSandboxApp',
-      storeName: 'sandboxes', // Should be alphanumeric, with underscores.
-      description:
-        'Cached transpilations of the sandboxes, for faster initialization time.',
-    });
+  localforage.config({
+    name: 'CodeSandboxApp',
+    storeName: 'sandboxes', // Should be alphanumeric, with underscores.
+    description:
+      'Cached transpilations of the sandboxes, for faster initialization time.',
+  });
 
-    // Prewarm store
-    localforage.keys();
-  }
+  // Prewarm store
+  localforage.keys();
 } catch (e) {
   console.warn('Problems initializing IndexedDB store.');
   console.warn(e);
@@ -41,11 +47,7 @@ function shouldSaveOnlineCache(firstRun: boolean, changes: number) {
 }
 
 export function clearIndexedDBCache() {
-  if (window.indexedDB) {
-    return localforage.clear();
-  }
-
-  return null;
+  return localforage.clear();
 }
 
 export async function saveCache(
@@ -76,9 +78,8 @@ export async function saveCache(
           'kb to indexedDB'
       );
     }
-    if (window.indexedDB) {
-      await localforage.setItem(manager.id, managerState);
-    }
+
+    await localforage.setItem(manager.id, managerState);
   } catch (e) {
     if (process.env.NODE_ENV === 'development') {
       console.error(e);
@@ -198,10 +199,9 @@ export async function consumeCache(manager: Manager) {
     }
 
     const cacheData = (window as any).__SANDBOX_DATA__;
-    let localData: ManagerCache | undefined;
-    if (window.indexedDB) {
-      localData = await localforage.getItem(manager.id);
-    }
+    const localData: ManagerCache | undefined = await localforage.getItem(
+      manager.id
+    );
 
     const cache = findCacheToUse(cacheData && cacheData.data, localData);
     if (cache) {
