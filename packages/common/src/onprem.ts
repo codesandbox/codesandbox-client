@@ -1,3 +1,2 @@
-export default {
-    ROOT_URL: 'csb-bogdan.devs'
-}
+// eslint-disable-next-line react/jsx-no-useless-fragment
+export const CUSTOM_DOMAIN = 'csb-bogdan.devs'

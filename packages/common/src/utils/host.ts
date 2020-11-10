@@ -1,10 +1,10 @@
 // eslint-disable-next-line react/jsx-no-useless-fragment
-import onprem from '../onprem';
+import { CUSTOM_DOMAIN } from '../onprem';
 
 const IS_LOCAL_SERVER = Boolean(JSON.stringify(process.env.LOCAL_SERVER));
 export default () => {
-  if (onprem.ROOT_URL) {
-    return `https://${onprem.ROOT_URL}`;
+  if (CUSTOM_DOMAIN) {
+    return `https://${CUSTOM_DOMAIN}`;
   }
   
   if ('SANDPACK' in process.env) {
