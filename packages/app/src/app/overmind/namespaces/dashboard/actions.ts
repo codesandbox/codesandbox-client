@@ -902,6 +902,26 @@ export const getSearchSandboxes: AsyncAction = async ({ state, effects }) => {
   }
 };
 
+export const getAlwaysOnSandboxes: AsyncAction = async ({ state, effects }) => {
+  const { dashboard } = state;
+  try {
+    const activeTeam = state.activeTeam;
+    if (!activeTeam) return;
+
+    const data = await effects.gql.queries.alwaysOnTeamSandboxes({
+      teamId: activeTeam,
+    });
+
+    if (data?.me?.team?.sandboxes == null) return;
+
+    dashboard.sandboxes[sandboxesTypes.ALWAYS_ON] = data.me.team.sandboxes;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your sandboxes'
+    );
+  }
+};
+
 export const getPage: AsyncAction<sandboxesTypes> = async (
   { actions: { dashboard } },
   page
@@ -924,6 +944,9 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
       break;
     case sandboxesTypes.SEARCH:
       dashboard.getSearchSandboxes();
+      break;
+    case sandboxesTypes.ALWAYS_ON:
+      dashboard.getAlwaysOnSandboxes();
       break;
 
     default:

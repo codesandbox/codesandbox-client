@@ -240,7 +240,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           </MenuItem>
         ))}
       {hasAccess &&
-        activeTeamInfo.joinedPilotAt &&
+        activeTeamInfo?.joinedPilotAt &&
         activeWorkspaceAuthorization !== 'READ' &&
         getTemplate(sandbox.source.template as TemplateType).isServer &&
         (sandbox.alwaysOn ? (

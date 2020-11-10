@@ -35,6 +35,8 @@ import {
   GetTeamReposQuery,
   GetPersonalWorkspaceIdQuery,
   GetPersonalWorkspaceIdQueryVariables,
+  TeamAlwaysOnSandboxesQuery,
+  TeamAlwaysOnSandboxesQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -234,6 +236,22 @@ export const searchTeamSandboxes: Query<
   _SearchTeamSandboxesQueryVariables
 > = gql`
   query _SearchTeamSandboxes($teamId: UUID4!) {
+    me {
+      team(id: $teamId) {
+        sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
+          ...sandboxFragmentDashboard
+        }
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const alwaysOnTeamSandboxes: Query<
+  TeamAlwaysOnSandboxesQuery,
+  TeamAlwaysOnSandboxesQueryVariables
+> = gql`
+  query _AlwaysOnTeamSandboxes($teamId: UUID4!) {
     me {
       team(id: $teamId) {
         sandboxes(orderBy: { field: "updated_at", direction: DESC }) {

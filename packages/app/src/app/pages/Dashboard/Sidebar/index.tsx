@@ -196,11 +196,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.repos(activeTeam)}
             icon="fork"
           />
-          {activeTeamInfo.joinedPilotAt && (
+          {activeTeamInfo?.joinedPilotAt && (
             <RowItem
               name="Always On"
               page="always-on"
-              path={dashboardUrls.recents(activeTeam)}
+              path={dashboardUrls.alwaysOn(activeTeam)}
               icon="server"
             />
           )}

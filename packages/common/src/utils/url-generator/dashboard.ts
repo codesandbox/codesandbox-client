@@ -12,12 +12,7 @@ function appendTeamIdQueryParam(url: string, teamId?: string | null) {
 function sanitizePath(path: string) {
   return path
     .split('/')
-    .map(p =>
-      p
-        .split(' ')
-        .map(encodeURIComponent)
-        .join(' ')
-    )
+    .map(p => p.split(' ').map(encodeURIComponent).join(' '))
     .join('/');
 }
 
@@ -32,6 +27,9 @@ export const drafts = (teamId?: string | null) =>
 
 export const repos = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories`, teamId);
+
+export const alwaysOn = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/always-on`, teamId);
 
 export const templates = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/templates`, teamId);
