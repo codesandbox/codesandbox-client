@@ -1,6 +1,12 @@
-const IS_LOCAL_SERVER = Boolean(JSON.stringify(process.env.LOCAL_SERVER));
+// eslint-disable-next-line react/jsx-no-useless-fragment
+import onprem from '../onprem';
 
+const IS_LOCAL_SERVER = Boolean(JSON.stringify(process.env.LOCAL_SERVER));
 export default () => {
+  if (onprem.ROOT_URL) {
+    return `https://${onprem.ROOT_URL}`;
+  }
+  
   if ('SANDPACK' in process.env) {
     return '';
   }
@@ -17,9 +23,6 @@ export default () => {
     return `https://${process.env.STAGING_BRANCH}.build.csb.dev`;
   }
 
-  if ('ROOT_URL' in process.env) {
-    return process.env.ROOT_URL;
-  }
 
   return 'https://codesandbox.io';
 };
