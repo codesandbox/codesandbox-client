@@ -8,7 +8,8 @@ export type PageTypes =
   | 'templates'
   | 'drafts'
   | 'sandboxes'
-  | 'repos';
+  | 'repos'
+  | 'always-on';
 
 export type OrderBy = {
   field: string;

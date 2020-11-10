@@ -52,7 +52,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     name: string;
     avatarUrl: string;
   } | null>(null);
-  const { dashboard, activeTeam } = state;
+  const { dashboard, activeTeam, activeTeamInfo } = state;
 
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
@@ -196,6 +196,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.repos(activeTeam)}
             icon="fork"
           />
+          {activeTeamInfo.joinedPilotAt && (
+            <RowItem
+              name="Always On"
+              page="always-on"
+              path={dashboardUrls.recents(activeTeam)}
+              icon="server"
+            />
+          )}
           <RowItem
             name="Recently Modified"
             page="recents"
@@ -509,10 +517,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     });
   } else {
     subFolders = folders.filter(folder => {
-      const parentPath = folder.path
-        .split('/')
-        .slice(0, -1)
-        .join('/');
+      const parentPath = folder.path.split('/').slice(0, -1).join('/');
 
       return parentPath === folderPath;
     });

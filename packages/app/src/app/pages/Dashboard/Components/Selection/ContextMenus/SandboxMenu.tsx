@@ -1,7 +1,8 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
-import { Menu } from '@codesandbox/components';
 import { useHistory, useLocation } from 'react-router-dom';
+import { Menu } from '@codesandbox/components';
+import getTemplate, { TemplateType } from '@codesandbox/common/lib/templates';
 
 import {
   sandboxUrl,
@@ -19,7 +20,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   setRenaming,
 }) => {
   const {
-    state: { user, activeTeam, activeWorkspaceAuthorization },
+    state: { user, activeTeam, activeTeamInfo, activeWorkspaceAuthorization },
     effects,
     actions,
   } = useOvermind();
@@ -56,7 +57,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
     return (
       item.sandbox.author && item.sandbox.author.username === user.username
     );
-  }, [item, user]);
+  }, [item, user, activeTeam]);
 
   if (location.pathname.includes('deleted')) {
     if (activeWorkspaceAuthorization === 'READ') return null;
@@ -236,6 +237,33 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             }}
           >
             Freeze {label}
+          </MenuItem>
+        ))}
+      {hasAccess &&
+        activeTeamInfo.joinedPilotAt &&
+        activeWorkspaceAuthorization !== 'READ' &&
+        getTemplate(sandbox.source.template as TemplateType).isServer &&
+        (sandbox.alwaysOn ? (
+          <MenuItem
+            onSelect={() => {
+              actions.dashboard.changeSandboxesFrozen({
+                sandboxIds: [sandbox.id],
+                isFrozen: false,
+              });
+            }}
+          >
+            Disable {'"Always on"'}
+          </MenuItem>
+        ) : (
+          <MenuItem
+            onSelect={() => {
+              actions.dashboard.changeSandboxesFrozen({
+                sandboxIds: [sandbox.id],
+                isFrozen: true,
+              });
+            }}
+          >
+            Enable {'"Always on"'}
           </MenuItem>
         ))}
       {hasAccess &&

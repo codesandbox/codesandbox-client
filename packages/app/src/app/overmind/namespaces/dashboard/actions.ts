@@ -1241,3 +1241,41 @@ export const changeAuthorization: AsyncAction<{
     });
   }
 };
+
+export const changeSandboxesAlwaysOn: AsyncAction<{
+  sandboxIds: string[];
+  alwaysOn: boolean;
+}> = async ({ actions, effects }, { sandboxIds, alwaysOn }) => {
+  effects.analytics.track('Sandbox - Always On', {
+    alwaysOn,
+    source: 'dashboard',
+    dashboardVersion: 2,
+  });
+
+  // optimistic update
+  const {
+    changedSandboxes,
+  } = actions.dashboard.internal.changeSandboxesInState({
+    sandboxIds,
+    sandboxMutation: sandbox => ({ ...sandbox, alwaysOn }),
+  });
+
+  try {
+    await effects.gql.mutations.changeAlwaysOn({ sandboxIds, alwaysOn });
+  } catch (error) {
+    changedSandboxes.forEach(oldSandbox =>
+      actions.dashboard.internal.changeSandboxesInState({
+        sandboxIds: [oldSandbox.id],
+        sandboxMutation: sandbox => ({
+          ...sandbox,
+          alwaysOn: oldSandbox.alwaysOn,
+        }),
+      })
+    );
+
+    actions.internal.handleError({
+      message: "We weren't able to update the frozen status of the sandboxes",
+      error,
+    });
+  }
+};

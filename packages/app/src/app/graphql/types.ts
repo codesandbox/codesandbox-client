@@ -675,6 +675,7 @@ export type Sandbox = {
   title: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   viewCount: Scalars['Int'];
+  alwaysOn: Scalars['Boolean'];
 };
 
 /** A Sandbox */
@@ -1296,6 +1297,7 @@ export type SandboxFragmentDashboardFragment = {
   | 'viewCount'
   | 'authorId'
   | 'teamId'
+  | 'alwaysOn'
 > & {
     source: { __typename?: 'Source' } & Pick<Source, 'template'>;
     customTemplate: Maybe<{ __typename?: 'Template' } & Pick<Template, 'id'>>;
@@ -2431,5 +2433,16 @@ export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
   redeemTeamInviteToken: { __typename?: 'Team' } & Pick<
     Team,
     'id' | 'name' | 'joinedPilotAt'
+  >;
+};
+
+export type ChangeAlwaysOnMutationVariables = Exact<{
+  sandboxIds: Array<Scalars['ID']>;
+  alwaysOn: Scalars['Boolean'];
+}>;
+
+export type ChangeAlwaysOnMutation = { __typename?: 'RootMutationType' } & {
+  setSandboxesAlwaysOn: Array<
+    { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
   >;
 };
