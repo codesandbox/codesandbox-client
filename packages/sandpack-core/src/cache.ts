@@ -1,17 +1,24 @@
 // Responsible for consuming and syncing with the server/local cache
 import localforage from 'localforage';
+import * as memoryDriver from 'localforage-driver-memory';
 import _debug from '@codesandbox/common/lib/utils/debug';
+import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 import Manager from './manager';
 import { SerializedTranspiledModule } from './transpiled-module';
-import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 
 const debug = _debug('cs:compiler:cache');
 
 const host = process.env.CODESANDBOX_HOST;
+localforage.defineDriver(memoryDriver);
+localforage.setDriver([
+  localforage.INDEXEDDB,
+  localforage.LOCALSTORAGE,
+  localforage.WEBSQL,
+  memoryDriver._driver,
+]);
 
 const MAX_CACHE_SIZE = 1024 * 1024 * 20;
 let APICacheUsed = false;
-
 try {
   localforage.config({
     name: 'CodeSandboxApp',
@@ -71,6 +78,7 @@ export async function saveCache(
           'kb to indexedDB'
       );
     }
+
     await localforage.setItem(manager.id, managerState);
   } catch (e) {
     if (process.env.NODE_ENV === 'development') {
