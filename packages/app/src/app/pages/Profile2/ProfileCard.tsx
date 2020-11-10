@@ -10,6 +10,7 @@ import {
   Text,
   Link,
   Icon,
+  IconButton,
   Button,
   Textarea,
   Input,
@@ -239,19 +240,36 @@ const SocialLinks: React.FC<{
 }> = ({ username, socialLinks, githubUsername, setSocialLinks, editing }) => (
   <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
     {editing ? (
-      <Stack direction="vertical" gap={4}>
+      <Stack direction="vertical" gap={4} key={socialLinks.length}>
         {socialLinks.map((link, index) => (
-          <Input
-            // eslint-disable-next-line
-            key={index}
-            defaultValue={link}
-            autoFocus
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              const links = [...socialLinks];
-              links[index] = event.target.value;
-              setSocialLinks(links);
-            }}
-          />
+          <Stack
+            gap={1}
+            css={{ ':hover button, :focus-within button': { opacity: 1 } }}
+          >
+            <Input
+              // eslint-disable-next-line
+              key={index}
+              defaultValue={link}
+              autoFocus
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                const links = [...socialLinks];
+                links[index] = event.target.value;
+                setSocialLinks(links);
+              }}
+            />
+            <IconButton
+              title="Remove link"
+              name="cross"
+              size={10}
+              css={{ opacity: 0 }}
+              onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                const links = socialLinks.filter(
+                  (nestedLink, nestedIndex) => nestedIndex !== index
+                );
+                setSocialLinks(links);
+              }}
+            />
+          </Stack>
         ))}
 
         <Button

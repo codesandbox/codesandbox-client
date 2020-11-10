@@ -160,6 +160,8 @@ export const newSandboxShowcaseSelected: AsyncAction<string> = async (
   }
 
   state.profile.isLoadingProfile = false;
+
+  effects.analytics.track('Profile - Showcase Sandbox selected');
 };
 
 export const deleteSandboxClicked: Action<string> = ({ state }, id) => {
@@ -208,6 +210,8 @@ export const updateUserProfile: AsyncAction<Pick<
       bio,
       socialLinks
     );
+
+    effects.analytics.track('Profile - User profile updated');
   } catch (error) {
     // revert optimistic update
     state.profile.current.bio = oldBio;
@@ -272,6 +276,8 @@ export const addFeaturedSandboxes: AsyncAction<{
     );
 
     state.profile.current.featuredSandboxes = profile.featuredSandboxes;
+
+    effects.analytics.track('Profile - Sandbox pinned');
   } catch (error) {
     // rollback optimisic update
     actions.profile.removeFeaturedSandboxesInState({ sandboxId });
@@ -347,6 +353,7 @@ export const saveFeaturedSandboxesOrder: AsyncAction = async ({
       featuredSandboxIds
     );
     state.profile.current.featuredSandboxes = profile.featuredSandboxes;
+    effects.analytics.track('Profile - Pinnned sandboxes reorderd');
   } catch (error) {
     // TODO: rollback optimisic update
 
@@ -391,6 +398,7 @@ export const changeSandboxPrivacy: AsyncAction<Pick<
 
   try {
     await effects.api.updatePrivacy(id, privacy);
+    effects.analytics.track('Profile - Sandbox privacy changed');
   } catch (error) {
     // rollback optimistic update
     // it is safe to assume that the sandbox was public (privacy:0)
