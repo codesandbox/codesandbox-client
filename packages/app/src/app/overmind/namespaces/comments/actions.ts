@@ -441,6 +441,8 @@ export const addOptimisticPreviewComment: AsyncAction<{
   scale: number;
   screenshot: string;
 }> = async ({ state, effects }, { x, y, scale, screenshot }) => {
+  effects.analytics.track('Comments - Create Optimistic Preview Comment');
+
   const sandbox = state.editor.currentSandbox!;
   const user = state.user!;
   const id = OPTIMISTIC_COMMENT_ID;

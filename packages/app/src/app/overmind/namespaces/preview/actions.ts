@@ -1,5 +1,4 @@
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import track from '@codesandbox/common/lib/utils/analytics';
 import { Action, AsyncAction } from 'app/overmind';
 import { isEqual } from 'lodash-es';
 import { json } from 'overmind';
@@ -25,7 +24,7 @@ export const toggleResponsiveMode: AsyncAction = async ({
       break;
     default: {
       state.preview.mode = 'responsive';
-      track('Responsive Preview - Toggled On');
+      effects.analytics.track('Responsive Preview - Toggled On');
     }
   }
 
@@ -124,9 +123,9 @@ export const addPreset: AsyncAction<{
   name: string;
   width: number;
   height: number;
-}> = async ({ state, actions }, { name, width, height }) => {
+}> = async ({ state, actions, effects }, { name, width, height }) => {
   if (!name || !width || !height) return;
-  track('Responsive Preview - Preset Created', {
+  effects.analytics.track('Responsive Preview - Preset Created', {
     width,
     height,
   });
@@ -191,6 +190,12 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
     default:
       state.preview.mode = 'add-comment';
       await takeScreenshot()
+  }
+
+  if (state.preview.mode.includes('comment')) {
+    effects.analytics.track('Preview Comment - Toggle', {
+      mode: state.preview.mode
+    })
   }
 };
 
