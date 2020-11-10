@@ -1,3 +1,3 @@
 export default {
-    ROOT_URL: 'csb-bogdan.dev'
+    ROOT_URL: 'csb-bogdan.devs'
 }
