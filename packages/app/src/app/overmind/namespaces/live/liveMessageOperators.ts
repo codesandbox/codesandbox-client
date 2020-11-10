@@ -12,7 +12,7 @@ import {
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { camelizeKeys } from 'humps';
-import { json, mutate } from 'overmind';
+import { mutate } from 'overmind';
 
 import { Operator } from 'app/overmind';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
@@ -470,14 +470,10 @@ export const onUserSelection: Operator<LiveMessage<{
     );
 
     if (user) {
-      effects.vscode.updateUserSelections(module, [
-        {
-          userId: userSelectionLiveUserId,
-          name: user.username,
-          selection,
-          color: json(user.color),
-        },
-      ]);
+      effects.vscode.updateUserSelections(
+        module,
+        actions.live.internal.getSelectionsForModule(module)
+      );
 
       if (isFollowingUser) {
         actions.live.revealCursorPosition({

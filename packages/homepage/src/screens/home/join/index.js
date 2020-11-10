@@ -11,27 +11,27 @@ const Join = ({ src, ...style }) => {
 
   return (
     <JoinWrapper>
-        <div>
-          <Text>Join millions of people prototyping what’s next</Text>
-          <Button href="/s">Create Sandbox, it’s free</Button>
-        </div>
-        <motion.div
+      <div>
+        <Text>Join millions of people prototyping what’s next</Text>
+        <Button href="/s">Create a Sandbox, it’s free</Button>
+      </div>
+      <motion.div
+        css={`
+          align-self: flex-end;
+        `}
+        style={{ ...style, y }}
+      >
+        <IDE
+          src={HeroSmall}
+          alt="safari with codesandbox"
           css={`
-            align-self: flex-end;
+            width: 613px;
+            box-shadow: 0 0.5rem 2rem #040404;
+            border-radius: 0.25rem 0 0 0;
           `}
-          style={{ ...style, y }}
-        >
-          <IDE
-            src={HeroSmall}
-            alt="safari with codesandbox"
-            css={`
-              width: 613px;
-              box-shadow: 0 0.5rem 2rem #040404;
-              border-radius: 0.25rem 0 0 0;
-            `}
-          />
-        </motion.div>
-      </JoinWrapper>
+        />
+      </motion.div>
+    </JoinWrapper>
   );
 };
 

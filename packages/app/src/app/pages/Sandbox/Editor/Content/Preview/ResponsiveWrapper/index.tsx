@@ -6,6 +6,7 @@ import {
   ThemeProvider,
   IconButton,
 } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import css from '@styled-system/css';
 import { json } from 'overmind';
 import React, { useEffect, useState } from 'react';
@@ -213,7 +214,13 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
           </Stack>
           <PresetMenu
             openEditPresets={actions.toggleEditPresets}
-            onSelect={preset => actions.setResolution(preset)}
+            onSelect={preset => {
+              track('Responsive Preview - Preset Changed', {
+                width: preset[0],
+                height: preset[1],
+              });
+              actions.setResolution(preset);
+            }}
             theme={theme}
             resolution={resolution}
             presets={state.presets}

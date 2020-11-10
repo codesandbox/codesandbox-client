@@ -17,6 +17,7 @@ import {
   FeaturesTable,
   FeatureTitle,
   CardContainer,
+  TeamOrIndividualWrapper,
   FeaturesTitle,
 } from './_elements';
 
@@ -26,16 +27,22 @@ export default () => (
     <PageContainer width={1086}>
       <Title textCenter>Pricing</Title>
     </PageContainer>
+    <TeamOrIndividualWrapper>
+      <div>For individuals</div>
+      <div />
+      <div>For teams & businesses</div>
+    </TeamOrIndividualWrapper>
     <CardContainer>
-      <Card
-        dark
-        css={`
-          grid-area: free;
-        `}
-      >
+      <Card dark>
         <div>
           <CardTitle>Community</CardTitle>
-          <Price>Free</Price>
+          <Price
+            css={`
+              min-height: 72px;
+            `}
+          >
+            Free
+          </Price>
           <List>
             <li>
               <span>✓</span> Development & Prototyping
@@ -56,19 +63,16 @@ export default () => (
         </div>
         <Button href="/s">Create Sandbox, it’s free </Button>
       </Card>
-      <Card
-        css={`
-          grid-area: pro;
-        `}
-      >
+      <Card>
         <div>
           <CardTitle>Pro</CardTitle>
-          <Price style={{ marginBottom: '0.5rem' }}>$9/Month</Price>
-          <PriceSubText>billed annually or $12 month-to-month</PriceSubText>
+          <div style={{ minHeight: 72 }}>
+            <Price style={{ marginBottom: '0.5rem' }}>$9/Month</Price>
+            <PriceSubText>billed annually or $12 month-to-month</PriceSubText>
+          </div>
           <List
             css={`
               color: white;
-              margin-top: 1.5rem;
             `}
           >
             <li
@@ -87,40 +91,50 @@ export default () => (
         </Button>
       </Card>
       <Card
-        css={props => `
-          grid-area: team;
-          background: transparent;
-          border: 1px solid;
-          border-color: ${props.theme.homepage.grey};
-          height: auto;
+        css={`
+          background: #5962df;
         `}
       >
         <div>
-          <CardTitle>Team Pro</CardTitle>
-          <Price>Coming soon</Price>
-
-          <div
-            css={props => `
-              font-size: 1.4rem;
-              margin-bottom: 1rem;
-              color: ${props.theme.homepage.greyLight};
-            `}
-          >
-            Use CodeSandbox with your team
-          </div>
-        </div>
-        <div>
-          <Button
-            white
-            href="https://airtable.com/shrlgLSJWiX8rYqyG"
+          <CardTitle>Pro Workspaces</CardTitle>
+          <Price
             css={`
-              max-width: 20rem;
-              margin: 0 auto;
+              min-height: 72px;
             `}
           >
-            Get early access
-          </Button>
+            Join the waitlist
+          </Price>
+          <List
+            as="section"
+            css={`
+              color: white;
+              font-size: 16px;
+              margin: 0 auto;
+              ${props => props.theme.breakpoints.xl} {
+                max-width: 298px;
+                text-align: center;
+              }
+            `}
+          >
+            Prototype, interview, and collaborate on code with your entire team.
+            <br />
+            <br />
+            Manage and work on sandboxes collectively — get feedback, or code
+            together.
+            <br />
+            <br />
+            Currently in closed beta.
+          </List>
         </div>
+        <Button
+          white
+          href="https://airtable.com/shrlgLSJWiX8rYqyG"
+          css={{
+            color: '#5962df',
+          }}
+        >
+          Get early access
+        </Button>
       </Card>
     </CardContainer>
 
@@ -685,9 +699,9 @@ export default () => (
       </li>
       <li>
         <div>
-          <FeatureTitle>Teams</FeatureTitle>
+          <FeatureTitle>Workspaces</FeatureTitle>
           <P muted small>
-            View and edit sandboxes with all team members.
+            View, edit, and manage sandboxes with a team.
           </P>
         </div>
         <span>✓</span>

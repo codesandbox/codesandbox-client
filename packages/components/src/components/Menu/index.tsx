@@ -61,6 +61,13 @@ export const MenuStyles = createGlobalStyle(
         backgroundColor: 'menuList.hoverBackground',
         color: 'menuList.hoverForeground',
       },
+      '&[data-disabled], &[data-disabled]:hover': {
+        outline: 'none',
+        backgroundColor: 'transparent',
+        color: 'inherit',
+        opacity: 0.5,
+        cursor: 'not-allowed',
+      },
       // override reach ui styles
       font: 'inherit',
     },
