@@ -246,9 +246,9 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         (sandbox.alwaysOn ? (
           <MenuItem
             onSelect={() => {
-              actions.dashboard.changeSandboxesFrozen({
+              actions.dashboard.changeSandboxesAlwaysOn({
                 sandboxIds: [sandbox.id],
-                isFrozen: false,
+                alwaysOn: false,
               });
             }}
           >
@@ -257,9 +257,9 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         ) : (
           <MenuItem
             onSelect={() => {
-              actions.dashboard.changeSandboxesFrozen({
+              actions.dashboard.changeSandboxesAlwaysOn({
                 sandboxIds: [sandbox.id],
-                isFrozen: true,
+                alwaysOn: true,
               });
             }}
           >
