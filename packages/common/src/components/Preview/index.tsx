@@ -15,7 +15,7 @@ import { generateFileFromSandbox } from '../../templates/configuration/package-j
 import { Module, Sandbox } from '../../types';
 import track from '../../utils/analytics';
 import { getSandboxName } from '../../utils/get-sandbox-name';
-import { frameUrl, host } from '../../utils/url-generator';
+import { frameUrl } from '../../utils/url-generator';
 import { Container, Loading, StyledFrame } from './elements';
 import Navigator from './Navigator';
 import { Settings } from './types';
@@ -64,16 +64,17 @@ type State = {
   useFallbackDomain: boolean;
 };
 
-const sseDomain = process.env.STAGING_API
-  ? 'codesandbox.stream'
-  : 'codesandbox.io';
+let sseDomain = 'https://codesandbox.io';
+if (process.env.ENDPOINT) {
+  sseDomain = process.env.ENDPOINT;
+} else if (process.env.CODESANDBOX_HOST) {
+  sseDomain = process.env.CODESANDBOX_HOST;
+}
 
 const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
-  `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
-    process.env.NODE_ENV === 'development' || process.env.STAGING
-      ? sseDomain
-      : host()
-  }${initialPath}`;
+  `https://${sandbox ? `${sandbox.id}.` : ''}sse.${sseDomain
+    .replace('https://', '')
+    .replace('http://', '')}${initialPath}`;
 
 interface IModulesByPath {
   [path: string]: { path: string; code: null | string; isBinary?: boolean };

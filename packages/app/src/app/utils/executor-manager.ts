@@ -74,8 +74,12 @@ export class ExecutorsManager {
       this.executor = new ExecutorType();
     }
 
-    const sseHost = process.env.ENDPOINT || 'https://codesandbox.io';
-
+    let sseHost = 'https://codesandbox.io';
+    if (process.env.ENDPOINT) {
+      sseHost = process.env.ENDPOINT;
+    } else if (process.env.CODESANDBOX_HOST) {
+      sseHost = process.env.CODESANDBOX_HOST;
+    }
     await this.executor!.initialize({
       sandboxId: sandbox.id,
       files: getModulesToSend(sandbox),

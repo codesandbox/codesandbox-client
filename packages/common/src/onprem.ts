@@ -1,2 +1,2 @@
 // eslint-disable-next-line react/jsx-no-useless-fragment
-export default null;
+export default 'csb-bogdan.dev';

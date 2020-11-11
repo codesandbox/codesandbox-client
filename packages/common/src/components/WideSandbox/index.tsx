@@ -15,8 +15,15 @@ import {
   Author,
 } from './elements';
 
-const getScreenshot = id =>
-  `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
+let host = 'https://codesandbox.io';
+if (process.env.ENDPOINT) {
+  host = process.env.ENDPOINT;
+} else if (process.env.CODESANDBOX_HOST) {
+  host = process.env.CODESANDBOX_HOST;
+}
+
+const getScreenshot = (id: string) =>
+  `${host}/api/v1/sandboxes/${id}/screenshot.png`;
 
 /* eslint-disable camelcase */
 export type Props = {

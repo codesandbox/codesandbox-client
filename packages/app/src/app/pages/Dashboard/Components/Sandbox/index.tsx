@@ -18,6 +18,13 @@ import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../types';
 import { SandboxItemComponentProps } from './types';
 import { useDrag } from '../../utils/dnd';
 
+let host = 'https://codesandbox.io';
+if (process.env.ENDPOINT) {
+  host = process.env.ENDPOINT;
+} else if (process.env.CODESANDBOX_HOST) {
+  host = process.env.CODESANDBOX_HOST;
+}
+
 const PrivacyIcons = {
   0: () => null,
   1: () => <Icon name="link" size={12} />,
@@ -91,7 +98,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   // We set a fallback thumbnail in the API which is used for
   // both old and new dashboard, we can move this logic to the
   // backend when we deprecate the old dashboard
-  if (screenshotUrl === 'https://codesandbox.io/static/img/banner.png') {
+  if (screenshotUrl === `${host}/static/img/banner.png`) {
     screenshotUrl = '/static/img/default-sandbox-thumbnail.png';
   }
 

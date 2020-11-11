@@ -14,6 +14,13 @@ import css from '@styled-system/css';
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import { SandboxItemComponentProps } from './types';
 
+let host = 'https://codesandbox.io';
+if (process.env.ENDPOINT) {
+  host = process.env.ENDPOINT;
+} else if (process.env.CODESANDBOX_HOST) {
+  host = process.env.CODESANDBOX_HOST;
+}
+
 const useImageLoaded = (url: string) => {
   const [loaded, setLoaded] = React.useState(false);
   React.useEffect(() => {
@@ -320,7 +327,7 @@ const Thumbnail = ({
     function lazyLoadLatestScreenshot() {
       const timer = window.setTimeout(() => {
         if (!screenshotOutdated) return;
-        const url = `https://codesandbox.io/api/v1/sandboxes/${sandboxId}/screenshot.png`;
+        const url = `${host}/api/v1/sandboxes/${sandboxId}/screenshot.png`;
         setLatestScreenshotUrl(url);
       }, SCREENSHOT_TIMEOUT);
 

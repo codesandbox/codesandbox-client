@@ -23,8 +23,15 @@ import {
 } from './elements';
 import Tags from '../Tags';
 
+let host = 'https://codesandbox.io';
+if (process.env.ENDPOINT) {
+  host = process.env.ENDPOINT;
+} else if (process.env.CODESANDBOX_HOST) {
+  host = process.env.CODESANDBOX_HOST;
+}
+
 const getScreenshot = (id: string) =>
-  `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
+  `${host}/api/v1/sandboxes/${id}/screenshot.png`;
 
 /* eslint-disable camelcase */
 export interface Sandbox {

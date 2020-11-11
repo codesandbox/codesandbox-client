@@ -756,9 +756,12 @@ export class VSCodeEffect {
   private getLspEndpoint() {
     // return 'ws://localhost:1023';
     // TODO: merge host logic with executor-manager
-    const sseHost = process.env.CODESANDBOX_HOST
-      ? process.env.CODESANDBOX_HOST
-      : process.env.ENDPOINT || 'https://codesandbox.io';
+    let sseHost = 'https://codesandbox.io';
+    if (process.env.ENDPOINT) {
+      sseHost = process.env.ENDPOINT;
+    } else if (process.env.CODESANDBOX_HOST) {
+      sseHost = process.env.CODESANDBOX_HOST;
+    }
     return sseHost.replace(
       'https://',
       `wss://${this.options.getCurrentSandbox()?.id}-lsp.sse.`
