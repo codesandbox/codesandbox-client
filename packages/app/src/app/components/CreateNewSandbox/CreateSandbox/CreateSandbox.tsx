@@ -71,6 +71,17 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
     browser.storage.set(key, infoData.title);
   }, [browser.storage]);
 
+  const dashboardButtonAttrs = () => {
+    if (location.pathname.includes('/dashboard')) {
+      return {
+        onClick: actions.modals.newSandboxModal.close,
+      };
+    }
+    return {
+      to: '/dashboard',
+    };
+  };
+
   return (
     <ThemeProvider>
       <Container {...props}>
@@ -81,7 +92,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
           direction="vertical"
         >
           {hasLogIn ? (
-            <DashboardButton to="/dashboard">
+            <DashboardButton {...dashboardButtonAttrs()}>
               <Stack align="center" justify="center">
                 <BackIcon />
               </Stack>
