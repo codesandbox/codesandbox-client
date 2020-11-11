@@ -776,7 +776,9 @@ export class VSCodeEffect {
   }
 
   private createWebsocketFSRequest() {
-    const socket = io(`${this.getLspEndpoint()}?type=go-to-definition`);
+    const socket = io(`${this.getLspEndpoint()}?type=go-to-definition`,{
+      reconnectionAttempts: 10,
+    });
     return {
       emit: (data, cb) => {
         socket.emit('go-to-definition', data, cb);
