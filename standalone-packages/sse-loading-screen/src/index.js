@@ -36,8 +36,14 @@ if (process.env.NODE_ENV === 'development') {
 } else {
   hostParts = window.location.hostname.split('.');
 }
-const rootDomain = `codesandbox.${hostParts[hostParts.length - 1]}`;
-const sseLbHost = `sse-lb.${rootDomain}`;
+let rootDomain = `codesandbox.${hostParts[hostParts.length - 1]}`;
+let sseLbHost = `sse-lb.${rootDomain}`;
+
+if (hostParts[0] !== 'codesandbox' && hostParts[0] !== 'localhost') {
+  rootDomain = hostParts.join('.');
+  sseLbHost = null;
+}
+
 // parses sandboxId[-port]
 const sandboxId = hostParts[0].replace(/-\d+/, '');
 const port = hostParts[0].replace(/^\w+-?/, '');
@@ -237,11 +243,17 @@ async function start() {
   term.open(el);
 
   term.fit();
+  let socket = null
+  let sseHost = null
 
-  const res = await axios.get(`https://${sseLbHost}/api/cluster/${sandboxId}`);
-  const sseHost = res.data.hostname;
-
-  const socket = io(`https://${sseHost}`, {
+  if (sseLbHost) {
+    const res = await axios.get(`https://${sseLbHost}/api/cluster/${sandboxId}`);
+    sseHost = res.data.hostname;
+  } else {
+    sseHost = `sse.${rootDomain}`
+  }
+ 
+  socket = io(`https://${sseHost}`, {
     autoConnect: false,
     transports: ['websocket'],
     reconnectionAttempts: 5,

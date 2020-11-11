@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import io from 'socket.io-client';
 import { dispatch } from 'codesandbox-api';
 import _debug from 'debug';
@@ -76,15 +77,31 @@ export class ServerExecutor implements IExecutor {
     if (!this.sandboxId) {
       throw new Error('initializeSocket: sandboxId is not defined');
     }
-    const usedHost = this.host || 'https://codesandbox.io';
-    const sseLbHost = usedHost.replace('https://', 'https://sse-lb.');
-    const res = await axios.get(`${sseLbHost}/api/cluster/${this.sandboxId}`);
-    const sseHost = res.data.hostname;
-
-    this.socket = io(sseHost, {
-      autoConnect: false,
-      transports: ['websocket', 'polling'],
-    });
+    let usedHost = 'https://codesandbox.io';
+    if (process.env.ENDPOINT) {
+      usedHost = process.env.ENDPOINT;
+    } else if (this.host) {
+      usedHost = this.host;
+    } else if (process.env.CODESANDBOX_HOST) {
+      usedHost = process.env.CODESANDBOX_HOST;
+    }
+    if (
+      usedHost === 'https://codesandbox.io' ||
+      usedHost === 'https://codesandbox.stream'
+    ) {
+      const sseLbHost = usedHost.replace('https://', 'https://sse-lb.');
+      const res = await axios.get(`${sseLbHost}/api/cluster/${this.sandboxId}`);
+      const sseHost = res.data.hostname;
+      this.socket = io(sseHost, {
+        autoConnect: false,
+        transports: ['websocket', 'polling'],
+      });
+    } else {
+      this.socket = io(usedHost, {
+        autoConnect: false,
+        transports: ['websocket', 'polling'],
+      });
+    }
   }
 
   async initialize({ sandboxId, files, host }: ISetupParams) {

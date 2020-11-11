@@ -3,7 +3,7 @@ import CUSTOM_DOMAIN from '../onprem';
 
 const IS_LOCAL_SERVER = Boolean(JSON.stringify(process.env.LOCAL_SERVER));
 export default () => {
-  if (CUSTOM_DOMAIN) {
+  if (CUSTOM_DOMAIN && process.env.NODE_ENV !== 'development') {
     return `https://${CUSTOM_DOMAIN}`;
   }
 
