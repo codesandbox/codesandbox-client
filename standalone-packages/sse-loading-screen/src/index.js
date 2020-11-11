@@ -39,8 +39,9 @@ if (process.env.NODE_ENV === 'development') {
 let rootDomain = `codesandbox.${hostParts[hostParts.length - 1]}`;
 let sseLbHost = `sse-lb.${rootDomain}`;
 
+
 if (hostParts[0] !== 'codesandbox' && hostParts[0] !== 'localhost') {
-  rootDomain = hostParts.join('.');
+  rootDomain = `${hostParts[hostParts.length - 2]}.${hostParts[hostParts.length - 1]}`
   sseLbHost = null;
 }
 
