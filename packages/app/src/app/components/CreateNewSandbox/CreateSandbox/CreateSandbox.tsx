@@ -81,13 +81,20 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
           direction="vertical"
         >
           {hasLogIn ? (
-            <DashboardButton>
+            <DashboardButton to="/dashboard">
               <Stack align="center" justify="center">
                 <BackIcon />
               </Stack>
               Back to Dashboard
             </DashboardButton>
-          ) : null}
+          ) : (
+            <DashboardButton onClick={() => actions.signInClicked()}>
+              <Stack align="center" justify="center">
+                <BackIcon />
+              </Stack>
+              Sign in
+            </DashboardButton>
+          )}
           <Tabs {...tab} aria-label="My tabs">
             <Tab {...tab} stopId="New">
               {newChangelogToSee ? (

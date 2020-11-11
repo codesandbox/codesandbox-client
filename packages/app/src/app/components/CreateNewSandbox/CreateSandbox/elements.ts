@@ -42,7 +42,6 @@ export const Tabs = styled(TabList)`
 `;
 
 export const DashboardButton = styled(Button).attrs({
-  to: '/dashboard',
   variant: 'secondary',
 })`
   margin-top: 16px;
