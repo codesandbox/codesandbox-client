@@ -79,6 +79,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
     }
     return {
       to: '/dashboard',
+      onClick: actions.modals.newSandboxModal.close,
     };
   };
 
