@@ -1,4 +1,4 @@
-import { Element, ThemeProvider } from '@codesandbox/components';
+import { Element, Stack, ThemeProvider } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import latestChangelog from 'homepage/content/changelog';
@@ -13,6 +13,7 @@ import {
   Tab,
   TabContent,
   Tabs,
+  DashboardButton,
 } from './elements';
 import { Explore } from './Explore';
 import {
@@ -21,6 +22,7 @@ import {
   PlusIcon,
   StarIcon,
   UploadIcon,
+  BackIcon,
 } from './Icons';
 import { Import } from './Import';
 import { New } from './New';
@@ -37,7 +39,7 @@ interface CreateSandboxProps {
 
 export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
   const {
-    state: { isFirstVisit },
+    state: { isFirstVisit, hasLogIn },
     effects: { browser },
     actions,
   } = useOvermind();
@@ -69,47 +71,81 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
     browser.storage.set(key, infoData.title);
   }, [browser.storage]);
 
+  const dashboardButtonAttrs = () => {
+    if (location.pathname.includes('/dashboard')) {
+      return {
+        onClick: actions.modals.newSandboxModal.close,
+      };
+    }
+    return {
+      to: '/dashboard',
+      onClick: actions.modals.newSandboxModal.close,
+    };
+  };
+
   return (
     <ThemeProvider>
       <Container {...props}>
-        <Tabs {...tab} aria-label="My tabs">
-          <Tab {...tab} stopId="New">
-            {newChangelogToSee ? (
-              <Element
-                css={css({
-                  width: '5px',
-                  height: '5px',
-                  left: 29,
-                  top: 0,
-                  transform: 'translateY(100%)',
-                  borderRadius: '50%',
-                  position: 'absolute',
-                  backgroundColor: 'reds.500',
-                })}
-              />
-            ) : null}
-            <NewIcon scale={0.5} />
-            What{"'"}s new
-          </Tab>
-          {isFirstVisit ? (
-            <Tab {...tab} stopId="Welcome">
-              <CodeSandboxIcon scale={0.5} />
-              Welcome
+        <Stack
+          css={css({
+            paddingBottom: 4,
+          })}
+          direction="vertical"
+        >
+          {hasLogIn ? (
+            <DashboardButton {...dashboardButtonAttrs()}>
+              <Stack align="center" justify="center">
+                <BackIcon />
+              </Stack>
+              Back to Dashboard
+            </DashboardButton>
+          ) : (
+            <DashboardButton onClick={() => actions.signInClicked()}>
+              <Stack align="center" justify="center">
+                <BackIcon />
+              </Stack>
+              Sign in
+            </DashboardButton>
+          )}
+          <Tabs {...tab} aria-label="My tabs">
+            <Tab {...tab} stopId="New">
+              {newChangelogToSee ? (
+                <Element
+                  css={css({
+                    width: '5px',
+                    height: '5px',
+                    left: 29,
+                    top: 0,
+                    transform: 'translateY(100%)',
+                    borderRadius: '50%',
+                    position: 'absolute',
+                    backgroundColor: 'reds.500',
+                  })}
+                />
+              ) : null}
+              <NewIcon scale={0.5} />
+              What{"'"}s new
             </Tab>
-          ) : null}
-          <Tab {...tab} stopId="Create">
-            <PlusIcon scale={0.5} />
-            Create Sandbox
-          </Tab>
-          <Tab {...tab} stopId="Explore">
-            <StarIcon scale={0.5} />
-            Explore Templates
-          </Tab>
-          <Tab {...tab} stopId="Import">
-            <UploadIcon scale={0.5} />
-            Import Project
-          </Tab>
-        </Tabs>
+            {isFirstVisit ? (
+              <Tab {...tab} stopId="Welcome">
+                <CodeSandboxIcon scale={0.5} />
+                Welcome
+              </Tab>
+            ) : null}
+            <Tab {...tab} stopId="Create">
+              <PlusIcon scale={0.5} />
+              Create Sandbox
+            </Tab>
+            <Tab {...tab} stopId="Explore">
+              <StarIcon scale={0.5} />
+              Explore Templates
+            </Tab>
+            <Tab {...tab} stopId="Import">
+              <UploadIcon scale={0.5} />
+              Import Project
+            </Tab>
+          </Tabs>
+        </Stack>
         {isFirstVisit ? (
           <TabContent {...tab} stopId="Welcome">
             {rProps =>
@@ -158,7 +194,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
             )
           }
         </TabContent>
-
         <TabContent {...tab} stopId="New">
           {rProps =>
             !rProps.hidden && (
