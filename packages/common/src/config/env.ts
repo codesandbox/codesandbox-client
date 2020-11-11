@@ -15,6 +15,7 @@ export default Object.keys(process.env)
       return env;
     },
     {
+      'process.env.ENDPOINT': JSON.stringify(process.env.ENDPOINT),
       'process.env.NODE_ENV': NODE_ENV,
       'process.env.STAGING_API': STAGING_API,
       'process.env.CODESANDBOX_HOST': JSON.stringify(getHost()),

@@ -66,7 +66,12 @@ export const SignInModalElement = ({
 
     return null;
   };
-
+  let host = 'https://codesandbox.io';
+  if (process.env.ENDPOINT) {
+    host = process.env.ENDPOINT;
+  } else if (process.env.CODESANDBOX_HOST) {
+    host = process.env.CODESANDBOX_HOST;
+  }
   if (duplicateAccountStatus) {
     return (
       <Wrapper oneCol>
@@ -118,8 +123,8 @@ export const SignInModalElement = ({
           })}
         >
           By continuing, you agree to CodeSandbox{' '}
-          <a href="https://codesandbox.io/legal/terms">Terms of Service</a>,{' '}
-          <a href="https://codesandbox.io/legal/privacy">Privacy Policy</a>
+          <a href={`${host}/legal/terms`}>Terms of Service</a>,{' '}
+          <a href={`${host}/legal/privacy`}>Privacy Policy</a>
         </Text>
       </Element>
     </Wrapper>

@@ -46,8 +46,12 @@ export const DevAuthPage = withTheme(({ theme }) => {
         setError(e.message);
       });
   };
-
-  const baseSignInDomain = process.env.ENDPOINT || 'https://codesandbox.io';
+  let baseSignInDomain = 'https://codesandbox.io';
+  if (process.env.ENDPOINT) {
+    baseSignInDomain = process.env.ENDPOINT;
+  } else if (process.env.CODESANDBOX_HOST) {
+    baseSignInDomain = process.env.CODESANDBOX_HOST;
+  }
   const cliLoginUrl = `${baseSignInDomain}/cli/login`;
   return (
     <ThemeProvider theme={theme.vsCode}>
@@ -82,7 +86,9 @@ export const DevAuthPage = withTheme(({ theme }) => {
           >
             here
           </a>
-          . This token will sign you in with your account from codesandbox.io.
+          . <br />
+          This token will sign you in with your account from{' '}
+          {baseSignInDomain.replace('https://', '').replace('http://', '')}.
         </Text>
         <Stack justify="center" marginTop={4}>
           <Input
