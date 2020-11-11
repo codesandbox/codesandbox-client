@@ -756,7 +756,9 @@ export class VSCodeEffect {
   private getLspEndpoint() {
     // return 'ws://localhost:1023';
     // TODO: merge host logic with executor-manager
-    const sseHost = process.env.ENDPOINT || 'https://codesandbox.io';
+    const sseHost = process.env.CODESANDBOX_HOST
+      ? process.env.CODESANDBOX_HOST
+      : process.env.ENDPOINT || 'https://codesandbox.io';
     return sseHost.replace(
       'https://',
       `wss://${this.options.getCurrentSandbox()?.id}-lsp.sse.`
@@ -776,7 +778,9 @@ export class VSCodeEffect {
   }
 
   private createWebsocketFSRequest() {
-    const socket = io(`${this.getLspEndpoint()}?type=go-to-definition`);
+    const socket = io(`${this.getLspEndpoint()}?type=go-to-definition`, {
+      reconnectionAttempts: 10,
+    });
     return {
       emit: (data, cb) => {
         socket.emit('go-to-definition', data, cb);
