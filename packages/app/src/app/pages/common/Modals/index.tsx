@@ -9,10 +9,13 @@ import { useOvermind } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
+import { AddPreset } from './AddPreset';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
+import { DeletePreset } from './DeletePreset';
 import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
 import { DeploymentModal } from './DeploymentModal';
+import { EditPresets } from './EditPresets';
 import { EmptyTrash } from './EmptyTrash';
 import ExportGitHubModal from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
@@ -22,16 +25,16 @@ import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import { PreferencesModal } from './PreferencesModal';
+import { RecoverFilesModal } from './RecoverFilesModal';
+import { SandboxPickerModal } from './SandboxPickerModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
 import { ShareModal } from './ShareModal';
 import SignInForTemplates from './SignInForTemplates';
 import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
-import { RecoverFilesModal } from './RecoverFilesModal';
 import { TeamInviteModal } from './TeamInviteModal';
 import UploadModal from './UploadModal';
-import { SandboxPickerModal } from './SandboxPickerModal';
 
 const modals = {
   preferences: {
@@ -85,6 +88,18 @@ const modals = {
   deleteProfileSandbox: {
     Component: DeleteProfileSandboxModal,
     width: 400,
+  },
+  deletePreset: {
+    Component: DeletePreset,
+    width: 400,
+  },
+  addPreset: {
+    Component: AddPreset,
+    width: 400,
+  },
+  editPresets: {
+    Component: EditPresets,
+    width: 600,
   },
   emptyTrash: {
     Component: EmptyTrash,

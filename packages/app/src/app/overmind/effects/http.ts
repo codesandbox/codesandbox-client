@@ -9,9 +9,9 @@ export default {
   request: axios.request,
   blobToBase64: (url: string): Promise<string> =>
     fetch(url)
-      .then((response) => response.blob())
+      .then(response => response.blob())
       .then(
-        (blob) =>
+        blob =>
           new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = function () {
