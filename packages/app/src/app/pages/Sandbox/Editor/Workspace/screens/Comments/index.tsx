@@ -54,11 +54,15 @@ export const Comments: React.FC = () => {
 
   const onSubmit = (
     value: string,
-    mentions: { [username: string]: UserQuery }
+    mentions: { [username: string]: UserQuery },
+    images: {
+      [fileName: string]: { src: string; resolution: [number, number] };
+    }
   ) => {
     commentsActions.saveNewComment({
       content: value,
       mentions,
+      images,
     });
     scrollRef.current.scrollTop = 0;
   };

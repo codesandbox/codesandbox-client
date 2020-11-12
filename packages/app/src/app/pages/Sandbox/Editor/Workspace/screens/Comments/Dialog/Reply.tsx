@@ -4,7 +4,10 @@ import { Markdown } from 'app/components/Markdown';
 import { DIALOG_TRANSITION_DURATION } from 'app/constants';
 import { CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
-import { convertUserReferencesToMentions } from 'app/overmind/utils/comments';
+import {
+  convertImageReferencesToMarkdownImages,
+  convertUserReferencesToMentions,
+} from 'app/overmind/utils/comments';
 import React, { useState } from 'react';
 
 import { AvatarBlock } from '../components/AvatarBlock';
@@ -77,17 +80,23 @@ export const Reply = ({ reply }: ReplyProps) => {
       >
         {!editing ? (
           <Element itemProp="text">
-            <Markdown source={content} />
+            <Markdown
+              source={convertImageReferencesToMarkdownImages(
+                content,
+                reply.references
+              )}
+            />
           </Element>
         ) : (
           <EditComment
             initialValue={reply.content}
             initialMentions={convertUserReferencesToMentions(reply.references)}
-            onSave={async (newValue, mentions) => {
+            onSave={async (newValue, mentions, images) => {
               await actions.comments.updateComment({
                 commentId: reply.id,
                 content: newValue,
                 mentions,
+                images,
               });
               setEditing(false);
             }}

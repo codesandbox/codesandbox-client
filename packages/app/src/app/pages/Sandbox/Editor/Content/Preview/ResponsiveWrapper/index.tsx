@@ -26,6 +26,7 @@ import {
   MIN_SIZE_Y,
 } from './elements';
 import { ResizeHandles } from './ResizeHandles';
+import { PreviewCommentWrapper } from './PreviewCommentWrapper';
 
 export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
   const overmind = useOvermind();
@@ -36,7 +37,9 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
     overmind.state.editor.currentSandbox!.authorization,
     'write_code'
   );
-  const on = overmind.state.preview.mode === 'responsive';
+  const on =
+    overmind.state.preview.mode === 'responsive' ||
+    overmind.state.preview.mode === 'responsive-add-comment';
   const resolution = state.resolution;
   const element = document.getElementById('styled-resize-wrapper');
   const [wrapperWidth, setWrapperWidth] = useState(
@@ -227,6 +230,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
       </Wrapper>
       <ResizeHandles
         on={on}
+        showResizeHandles={overmind.state.preview.mode === 'responsive'}
         width={minResolutionWidth}
         height={minResolutionHeight}
         wrapper={element as any}
@@ -236,7 +240,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
         widthResizer={widthResizer}
         heightResizer={heightResizer}
       >
-        {children}
+        <PreviewCommentWrapper scale={on ? scale : 1}>{children}</PreviewCommentWrapper>
       </ResizeHandles>
     </ThemeProvider>
   );

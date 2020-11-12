@@ -15,6 +15,7 @@ import {
 
 type ResizeHandlesProps = {
   on: boolean;
+  showResizeHandles: boolean;
   width: number;
   height: number;
   wrapper: HTMLDivElement;
@@ -118,6 +119,7 @@ const resize = (
 };
 
 export const ResizeHandles = ({
+  showResizeHandles,
   on,
   width,
   height,
@@ -131,7 +133,7 @@ export const ResizeHandles = ({
 }: ResizeHandlesProps) => (
   <Styled on={on} id="styled-resize-wrapper">
     <div>
-      {on ? (
+      {showResizeHandles ? (
         <>
           <CornerResize
             onMouseDown={event => {
