@@ -7,7 +7,7 @@ let _preview = blocker<BasePreview>();
 const PREVIEW_COMMENT_BUBBLE_OFFSET = 16;
 
 export default {
-  initialize() {},
+  initialize() { },
   initializePreview(preview: any) {
     _preview.resolve(preview);
     return () => {
@@ -51,13 +51,13 @@ export default {
     return new Promise((resolve, reject) => {
       let timeout
       const start = Date.now()
-      
+
       const disposeListener = listen((data: any) => {
         if (data.type === 'screenshot-generated') {
           clearTimeout(timeout)
           const waitAtLeastMs = 250
           const waitedMs = Date.now() - start
-          
+
           setTimeout(() => resolve(data.screenshot), waitedMs > waitAtLeastMs ? 0 : waitAtLeastMs - waitedMs)
         }
       })
@@ -114,16 +114,17 @@ export default {
       ([screenshot, bubble]) => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d')!;
+        const dpr = window.devicePixelRatio || 1;
 
-        const rightSideSpace = Math.min(screenshot.width - x, cropWidth / 2);
-        const bottomSideSpace = Math.min(screenshot.height - y, cropHeight / 2);
-        const leftSideSpace = Math.min(x, cropWidth / 2);
-        const topSideSpace = Math.min(y, cropHeight / 2);
+        const rightSideSpace = Math.min(screenshot.width - x, (cropWidth / 2) * dpr);
+        const bottomSideSpace = Math.min(screenshot.height - y, (cropHeight / 2) * dpr);
+        const leftSideSpace = Math.min(x, cropWidth / 2) * dpr;
+        const topSideSpace = Math.min(y, cropHeight / 2) * dpr;
 
         const width = leftSideSpace + rightSideSpace;
         const height = bottomSideSpace + topSideSpace;
-        const sx = x - leftSideSpace;
-        const sy = y - topSideSpace;
+        const sx = (x * dpr) - leftSideSpace;
+        const sy = (y * dpr) - topSideSpace;
 
         canvas.width = width + PREVIEW_COMMENT_BUBBLE_OFFSET * 2;
         canvas.height = height + PREVIEW_COMMENT_BUBBLE_OFFSET * 2;
@@ -194,8 +195,8 @@ export default {
         ctx.restore();
         ctx.drawImage(
           bubble,
-          (PREVIEW_COMMENT_BUBBLE_OFFSET + x - sx) * (2 - scale),
-          (PREVIEW_COMMENT_BUBBLE_OFFSET + y - sy) * (2 - scale)
+          (PREVIEW_COMMENT_BUBBLE_OFFSET + (x * dpr) - sx) * (2 - scale),
+          (PREVIEW_COMMENT_BUBBLE_OFFSET + (y * dpr) - sy) * (2 - scale)
         );
 
         return canvas.toDataURL();
