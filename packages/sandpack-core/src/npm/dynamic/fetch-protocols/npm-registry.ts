@@ -34,6 +34,12 @@ type PackageRegistryInfo = {
   };
 };
 
+type TarbalUrlTransformer = (
+  name: string,
+  version: string,
+  url: string
+) => string;
+
 const NPM_REGISTRY_ACCEPT_HEADER =
   'application/vnd.npm.install-v1+json; q=1.0, application/json; q=0.8, */*';
 
@@ -45,7 +51,7 @@ function join(a: string, b: string) {
   return a + '/' + b;
 }
 
-export type PrivateRegistryOpts = {
+export type NpmRegistryOpts = {
   /**
    * A url that can act as a proxy, the request will be sent to this proxyUrl if set, with the
    * original url appended as `?registryurl=...`. So for example:
@@ -61,9 +67,14 @@ export type PrivateRegistryOpts = {
   scopeWhitelist?: string[];
 
   authToken?: string;
+
+  /**
+   * Allows you to overwrite the tarball url if you have a custom location for it.
+   */
+  provideTarballUrl?: TarbalUrlTransformer;
 };
 
-export class PrivateRegistryFetcher implements FetchProtocol {
+export class NpmRegistryFetcher implements FetchProtocol {
   private tarStore = new TarStore();
   private packageMetadata = new Map<string, Promise<PackageRegistryInfo>>();
   /**
@@ -74,11 +85,13 @@ export class PrivateRegistryFetcher implements FetchProtocol {
   private proxyUrl: string | undefined;
   private scopeWhitelist: string[] | undefined;
   private authToken: string | undefined;
+  private provideTarballUrl?: TarbalUrlTransformer;
 
-  constructor(private registryLocation: string, config: PrivateRegistryOpts) {
+  constructor(private registryLocation: string, config: NpmRegistryOpts) {
     this.proxyUrl = config.proxyUrl;
     this.scopeWhitelist = config.scopeWhitelist;
     this.authToken = config.authToken;
+    this.provideTarballUrl = config.provideTarballUrl;
   }
 
   private getProxiedUrl(url: string) {
@@ -86,6 +99,14 @@ export class PrivateRegistryFetcher implements FetchProtocol {
       return this.proxyUrl + '?registryurl=' + url;
     }
     return url;
+  }
+
+  private getTarballUrl(name: string, version: string, tarballUrl: string) {
+    if (this.provideTarballUrl) {
+      return this.provideTarballUrl(name, version, tarballUrl);
+    }
+
+    return this.getProxiedUrl(tarballUrl);
   }
 
   private getPackageUrl(name: string): string {
@@ -105,19 +126,28 @@ export class PrivateRegistryFetcher implements FetchProtocol {
     return {
       method: 'get',
       headers,
+      mode: 'cors',
     };
   }
 
   private fetchRegistry(url: string): Promise<PackageRegistryInfo> {
-    return fetchWithRetries(url, 3, this.getRequestInit()).then(x => {
-      if (!x.ok) {
-        return Promise.reject(
-          new Error('Could not fetch from ' + url + ', ' + x.statusText)
-        );
-      }
+    return fetchWithRetries(url, 3, this.getRequestInit())
+      .then(x => x.json())
+      .catch(async e => {
+        let errorMessage = 'Make sure the right auth token and URL are set';
+        if (e.responseObject) {
+          const res = await e.responseObject.json();
+          if (res.error) {
+            errorMessage = res.error;
+          } else if (res.errors?.detail) {
+            errorMessage = res.errors.detail[0];
+          }
+        }
 
-      return x.json();
-    });
+        return Promise.reject(
+          new Error(`Could not fetch from registry. ${errorMessage}.`)
+        );
+      });
   }
 
   private async getPackageMetadata(name: string): Promise<PackageRegistryInfo> {
@@ -181,14 +211,22 @@ export class PrivateRegistryFetcher implements FetchProtocol {
   ): Promise<string> {
     const versionInfo = await this.getVersionInfo(name, version);
 
-    const tarball = this.getProxiedUrl(versionInfo.dist.tarball);
+    const tarball = this.getTarballUrl(
+      name,
+      versionInfo.version,
+      versionInfo.dist.tarball
+    );
     return this.tarStore.file(name, tarball, path, this.getRequestInit());
   }
 
   public async meta(name: string, version: string): Promise<Meta> {
     const versionInfo = await this.getVersionInfo(name, version);
 
-    const tarball = this.getProxiedUrl(versionInfo.dist.tarball);
+    const tarball = this.getTarballUrl(
+      name,
+      versionInfo.version,
+      versionInfo.dist.tarball
+    );
     return this.tarStore.meta(name, tarball, this.getRequestInit());
   }
 

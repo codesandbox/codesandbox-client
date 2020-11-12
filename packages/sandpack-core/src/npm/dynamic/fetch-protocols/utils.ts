@@ -11,7 +11,13 @@ export async function fetchWithRetries(
         return x;
       }
 
-      throw new Error(`Could not fetch ${url}`);
+      const error: Error & {
+        responseObject?: Response;
+      } = new Error(`Could not fetch ${url}`);
+
+      error.responseObject = x;
+
+      throw error;
     });
 
   let lastTryTime = 0;

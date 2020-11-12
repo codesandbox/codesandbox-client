@@ -352,6 +352,12 @@ export type SandboxAuthor = {
   personalWorkspaceId: string;
 };
 
+export type NpmRegistry = {
+  enabledScopes: string[];
+  limitToScopes: boolean;
+  registryUrl: string;
+};
+
 export enum CommentsFilterOption {
   ALL = 'All',
   OPEN = 'Open',
@@ -369,6 +375,7 @@ export type Sandbox = {
   userLiked: boolean;
   modules: Module[];
   directories: Directory[];
+  customNpmRegistries: NpmRegistry[];
   featureFlags: {
     [key: string]: boolean;
   };

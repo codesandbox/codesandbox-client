@@ -52,6 +52,14 @@ export type ProtocolCondition = (
 
 export function setContributedProtocols(newProtocols: ProtocolDefinition[]) {
   contributedProtocols = newProtocols;
+  return contributedProtocols;
+}
+
+export function prependToContributedProtocols(
+  newProtocols: ProtocolDefinition[]
+) {
+  contributedProtocols.unshift(...newProtocols);
+  return contributedProtocols;
 }
 
 export function getFetchProtocol(

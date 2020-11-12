@@ -84,6 +84,7 @@ export const Preview: FunctionComponent<Props> = ({
       overlayMessage={getOverlayMessage()}
       previewSecret={currentSandbox.previewSecret}
       privacy={currentSandbox.privacy}
+      customNpmRegistries={currentSandbox.npmRegistries}
       sandbox={currentSandbox}
       settings={settings}
       url={options.url}

@@ -286,6 +286,7 @@ export const refetchSandboxInfo: AsyncAction = async ({
   sandbox.authorization = updatedSandbox.authorization;
   sandbox.privacy = updatedSandbox.privacy;
   sandbox.featureFlags = updatedSandbox.featureFlags;
+  sandbox.npmRegistries = updatedSandbox.npmRegistries;
 
   await actions.editor.internal.initializeSandbox(sandbox);
 };
