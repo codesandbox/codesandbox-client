@@ -115,16 +115,27 @@ export default {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d')!;
         const dpr = window.devicePixelRatio || 1;
+        const scaledX = x / scale * dpr;
+        const scaledY = y / scale * dpr;
+        const scaledHalfCropWidth = cropWidth / 2 * dpr;
+        const scaledHalfCropHeight = cropHeight / 2 * dpr;
 
-        const rightSideSpace = Math.min(screenshot.width - x, (cropWidth / 2) * dpr);
-        const bottomSideSpace = Math.min(screenshot.height - y, (cropHeight / 2) * dpr);
-        const leftSideSpace = Math.min(x, cropWidth / 2) * dpr;
-        const topSideSpace = Math.min(y, cropHeight / 2) * dpr;
+        const rightSideSpace = Math.min(screenshot.width - scaledX, scaledHalfCropWidth);
+        const bottomSideSpace = Math.min(screenshot.height - scaledY, scaledHalfCropHeight);
+        const leftSideSpace = Math.min(scaledX, scaledHalfCropWidth);
+        const topSideSpace = Math.min(scaledY, scaledHalfCropHeight);
 
-        const width = leftSideSpace + rightSideSpace;
-        const height = bottomSideSpace + topSideSpace;
-        const sx = (x * dpr) - leftSideSpace;
-        const sy = (y * dpr) - topSideSpace;
+        // Make sure we don't make our canvas bigger than our screenshot can fill
+        const width = Math.min(leftSideSpace + rightSideSpace, screenshot.width);
+        const height = Math.min(bottomSideSpace + topSideSpace, screenshot.height);
+
+        // Offset the screenshot enough to show the comment bubble, but not more
+        // than possible before we end up with transparent pixels
+        const sx = Math.min(scaledX - leftSideSpace, screenshot.width - width);
+        const sy = Math.min(scaledY - topSideSpace, screenshot.height - height);
+
+        const bubbleX = PREVIEW_COMMENT_BUBBLE_OFFSET + scaledX - sx;
+        const bubbleY = PREVIEW_COMMENT_BUBBLE_OFFSET + scaledY - sy;
 
         canvas.width = width + PREVIEW_COMMENT_BUBBLE_OFFSET * 2;
         canvas.height = height + PREVIEW_COMMENT_BUBBLE_OFFSET * 2;
@@ -193,8 +204,8 @@ export default {
         ctx.restore();
         ctx.drawImage(
           bubble,
-          (PREVIEW_COMMENT_BUBBLE_OFFSET + (x * dpr) - sx) / scale,
-          (PREVIEW_COMMENT_BUBBLE_OFFSET + (y * dpr) - sy) / scale
+          bubbleX,
+          bubbleY
         );
 
         return canvas.toDataURL();
