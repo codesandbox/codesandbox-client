@@ -16,9 +16,10 @@ You can configure your private npm registry in your Workspace Settings (link).
 
 ### Registry Host
 
-This can be either GitHub or Custom. When choosing GitHub, we'll connect to the
-GitHub Registry. When choosing `Custom` you have the option to define the npm
-registry host yourself.
+This can be either GitHub, npm or Custom. When choosing GitHub, we'll prefill
+the registry host with the GitHub Registry. When choosing npm, we'll prefill the
+host with the npm registry url. When choosing `Custom` you have the option to
+define the npm registry host yourself.
 
 ### Auth Token
 
@@ -105,7 +106,7 @@ validate the tokens that are sent in.
 
 We're still exploring the different options. If you're interested in working
 together with us on building and testing this, we'd love to hear from you at
-hello@codesandbox.io.
+[hello@codesandbox.io](mailto:hello@codesandbox.io).
 
 ### Can I use a .npmrc file?
 
