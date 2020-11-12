@@ -44,7 +44,10 @@ export const settings = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings`, teamId);
 
 export const registrySettings = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings/registry`, teamId);
+  appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/settings/npm-registry`,
+    teamId
+  );
 
 export const teamInvite = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings/invite`, teamId);
