@@ -74,8 +74,8 @@ collaboration and let multiple people view or edit code at the same time.
 CodeSandbox works in the browser, so there's nothing to install, and you don't
 need to set up machines for attendees. By creating templates to start from
 alongside worked solutions, attendees can go through exercises in the class and
-continue with them at home. All sandboxes are live, so you can collaborate on code with
-attendees or help those that get stuck along the way.
+continue with them at home. All sandboxes are live, so you can collaborate on
+code with attendees or help those that get stuck along the way.
 
 With support for backend as well as frontend development, you can kickstart
 projects at Hackathons. Give attendees a template to start from or repo to

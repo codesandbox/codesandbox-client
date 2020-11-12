@@ -3,6 +3,7 @@ import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useLocation } from 'react-router-dom';
 import { Menu } from '@codesandbox/components';
+import { SandboxType } from './constants';
 
 export const ContextMenu = () => {
   const {
@@ -10,7 +11,7 @@ export const ContextMenu = () => {
       user: loggedInUser,
       profile: {
         current: user,
-        contextMenu: { sandboxId, position },
+        contextMenu: { sandboxId, sandboxType, position },
       },
     },
     actions: {
@@ -23,6 +24,7 @@ export const ContextMenu = () => {
         closeContextMenu,
         newSandboxShowcaseSelected,
       },
+      modalClosed,
     },
   } = useOvermind();
   const location = useLocation();
@@ -30,6 +32,7 @@ export const ContextMenu = () => {
   if (!sandboxId) return null;
 
   const myProfile = loggedInUser?.username === user.username;
+  const isPro = loggedInUser && Boolean(loggedInUser.subscription);
   const likesPage = location.pathname === '/likes';
 
   const isFeatured = user.featuredSandboxes
@@ -39,6 +42,52 @@ export const ContextMenu = () => {
   const setVisibility = (visible: boolean) => {
     if (!visible) closeContextMenu();
   };
+
+  if (sandboxType === SandboxType.PICKER_SANDBOX) {
+    return (
+      <Menu.ContextMenu
+        visible
+        setVisibility={setVisibility}
+        position={position}
+      >
+        <Menu.Item
+          onSelect={() => {
+            addFeaturedSandboxes({ sandboxId });
+            modalClosed();
+          }}
+        >
+          Pin sandbox
+        </Menu.Item>
+        <Menu.Item
+          onSelect={() => {
+            newSandboxShowcaseSelected(sandboxId);
+            modalClosed();
+          }}
+        >
+          Set as header
+        </Menu.Item>
+      </Menu.ContextMenu>
+    );
+  }
+
+  if (sandboxType === SandboxType.PRIVATE_SANDBOX) {
+    return (
+      <Menu.ContextMenu
+        visible
+        setVisibility={setVisibility}
+        position={position}
+      >
+        <Menu.Item data-disabled>Pin sandbox</Menu.Item>
+        <Menu.Item data-disabled>Set as header</Menu.Item>
+        <Menu.Divider />
+        <Menu.Item
+          onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 0 })}
+        >
+          Make sandbox public
+        </Menu.Item>
+      </Menu.ContextMenu>
+    );
+  }
 
   return (
     <Menu.ContextMenu visible setVisibility={setVisibility} position={position}>
@@ -80,13 +129,22 @@ export const ContextMenu = () => {
       {myProfile && !likesPage && !isFeatured && (
         <>
           <Menu.Divider />
+
           <Menu.Item
-            onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 1 })}
+            data-disabled={isPro ? null : true}
+            onSelect={() => {
+              if (!isPro) return;
+              changeSandboxPrivacy({ id: sandboxId, privacy: 1 });
+            }}
           >
             Make sandbox unlisted
           </Menu.Item>
           <Menu.Item
-            onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 2 })}
+            data-disabled={isPro ? null : true}
+            onSelect={() => {
+              if (!isPro) return;
+              changeSandboxPrivacy({ id: sandboxId, privacy: 2 });
+            }}
           >
             Make sandbox private
           </Menu.Item>

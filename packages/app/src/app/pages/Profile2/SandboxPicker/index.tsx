@@ -12,7 +12,7 @@ import {
 import css from '@styled-system/css';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { FolderCard } from './FolderCard';
-import { SandboxType, ProfileCollectionType } from './constants';
+import { ProfileCollectionType } from '../constants';
 
 const MODAL_HEIGHT = '80vh';
 
@@ -22,9 +22,15 @@ export const SandboxPicker: React.FC<{ closeModal?: () => void }> = ({
   const {
     state: {
       profile: { collections },
+      currentModalMessage,
     },
     actions: {
-      profile: { fetchCollections, getSandboxesByPath, addFeaturedSandboxes },
+      profile: {
+        fetchCollections,
+        getSandboxesByPath,
+        newSandboxShowcaseSelected,
+        addFeaturedSandboxes,
+      },
     },
   } = useOvermind();
 
@@ -122,10 +128,13 @@ export const SandboxPicker: React.FC<{ closeModal?: () => void }> = ({
             {sandboxesInPath.map(sandbox => (
               <Column key={sandbox.id} data-column>
                 <SandboxCard
-                  type={SandboxType.DEFAULT_SANDBOX}
                   sandbox={sandbox}
                   onClick={() => {
-                    addFeaturedSandboxes({ sandboxId: sandbox.id });
+                    if (currentModalMessage === 'SHOWCASE') {
+                      newSandboxShowcaseSelected(sandbox.id);
+                    } else {
+                      addFeaturedSandboxes({ sandboxId: sandbox.id });
+                    }
                     closeModal();
                   }}
                 />
@@ -221,7 +230,7 @@ const SubCollections: React.FC<{
       {subCollections.map(collection => (
         <>
           <ListAction
-            key={collection.path}
+            key={collection.path || 'all'}
             align="center"
             gap={2}
             css={css({

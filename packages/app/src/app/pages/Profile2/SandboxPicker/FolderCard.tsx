@@ -2,7 +2,7 @@ import React from 'react';
 import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import designLanguage from '@codesandbox/components/lib/design-language/theme';
-import { ProfileCollectionType } from './constants';
+import { ProfileCollectionType } from '../constants';
 
 export const FolderCard: React.FC<{
   collection: ProfileCollectionType;

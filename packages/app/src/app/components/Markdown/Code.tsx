@@ -4,7 +4,7 @@ import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { withTheme } from 'styled-components';
-import { makeTheme } from './makeTheme/index';
+import { makeTheme } from '@codesandbox/common/lib/utils/makeTheme';
 
 export const Code = withTheme(({ value, language, theme }) => {
   const { state } = useOvermind();

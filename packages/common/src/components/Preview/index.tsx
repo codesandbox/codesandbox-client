@@ -47,6 +47,9 @@ export type Props = {
   className?: string;
   onMount?: (preview: BasePreview) => () => void;
   overlayMessage?: string;
+  ResponsiveWrapper?: React.FC<{ children: any }>;
+  isResponsiveModeActive?: boolean;
+  toggleResponsiveMode?: () => void;
   /**
    * Whether to show a screenshot in the preview as a "placeholder" while loading
    * to reduce perceived loading time
@@ -79,7 +82,9 @@ interface IModulesByPath {
   [path: string]: { path: string; code: null | string; isBinary?: boolean };
 }
 
-class BasePreview extends React.Component<Props, State> {
+const DefaultResponsiveWrapper = ({ children }) => children;
+
+class BasePreview extends React.PureComponent<Props, State> {
   serverPreview: boolean;
   element: HTMLIFrameElement;
   onUnmount: () => void;
@@ -549,6 +554,9 @@ class BasePreview extends React.Component<Props, State> {
       noPreview,
       className,
       overlayMessage,
+      ResponsiveWrapper = DefaultResponsiveWrapper,
+      isResponsiveModeActive,
+      toggleResponsiveMode,
     } = this.props;
 
     const { urlInAddressBar, back, forward } = this.state;
@@ -565,6 +573,7 @@ class BasePreview extends React.Component<Props, State> {
 
     return (
       <Container
+        id="sandbox-preview-container"
         className={className}
         style={{
           position: 'relative',
@@ -584,69 +593,74 @@ class BasePreview extends React.Component<Props, State> {
             toggleProjectView={
               this.props.onToggleProjectView && this.toggleProjectView
             }
+            toggleResponsiveView={toggleResponsiveMode}
+            isInResponsivePreview={isResponsiveModeActive}
             openNewWindow={this.openNewWindow}
             zenMode={settings.zenMode}
           />
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
-
-        <AnySpring
-          from={{ opacity: this.props.showScreenshotOverlay ? 0 : 1 }}
-          to={{
-            opacity: this.state.showScreenshot ? 0 : 1,
-          }}
-        >
-          {(style: { opacity: number }) => (
-            <>
-              <StyledFrame
-                allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-                sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-                src={this.state.url}
-                ref={this.setIframeElement}
-                title={getSandboxName(sandbox)}
-                id="sandbox-preview"
-                style={{
-                  ...style,
-                  zIndex: 1,
-                  backgroundColor: 'white',
-                  pointerEvents:
-                    dragging || inactive || this.props.isResizing
-                      ? 'none'
-                      : 'initial',
-                }}
-              />
-
-              {this.props.sandbox.screenshotUrl && style.opacity !== 1 && (
-                <div
+        <ResponsiveWrapper>
+          <AnySpring
+            key="preview"
+            from={{ opacity: this.props.showScreenshotOverlay ? 0 : 1 }}
+            to={{
+              opacity: this.state.showScreenshot ? 0 : 1,
+            }}
+          >
+            {(style: { opacity: number }) => (
+              <>
+                <StyledFrame
+                  key="PREVIEW"
+                  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+                  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+                  src={this.state.url}
+                  ref={this.setIframeElement}
+                  title={getSandboxName(sandbox)}
+                  id="sandbox-preview"
                   style={{
-                    overflow: 'hidden',
-                    width: '100%',
-                    position: 'absolute',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    top: showNavigation ? 35 : 0,
-                    zIndex: 0,
+                    ...style,
+                    zIndex: 1,
+                    backgroundColor: 'white',
+                    pointerEvents:
+                      dragging || inactive || this.props.isResizing
+                        ? 'none'
+                        : 'initial',
                   }}
-                >
+                />
+
+                {this.props.sandbox.screenshotUrl && style.opacity !== 1 && (
                   <div
                     style={{
+                      overflow: 'hidden',
                       width: '100%',
-                      height: '100%',
-                      filter: `blur(2px)`,
-                      transform: 'scale(1.025, 1.025)',
-                      backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPositionX: 'center',
+                      position: 'absolute',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      top: showNavigation ? 35 : 0,
+                      zIndex: 0,
                     }}
-                  />
-                </div>
-              )}
-            </>
-          )}
-        </AnySpring>
+                  >
+                    <div
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        filter: `blur(2px)`,
+                        transform: 'scale(1.025, 1.025)',
+                        backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPositionX: 'center',
+                      }}
+                    />
+                  </div>
+                )}
+              </>
+            )}
+          </AnySpring>
+        </ResponsiveWrapper>
       </Container>
     );
   }

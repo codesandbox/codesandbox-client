@@ -24,7 +24,6 @@ export const SandboxCard: React.FC<{
   type?: SandboxType;
   sandbox: Sandbox | SandboxFragmentDashboardFragment;
   index?: number | null;
-  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }> = ({
   type = SandboxType.DEFAULT_SANDBOX,
   sandbox,
@@ -167,11 +166,6 @@ export const SandboxCard: React.FC<{
   }
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (typeof props.onClick === 'function') {
-      props.onClick(event);
-      return;
-    }
-
     // we use on click instead of anchor tag so that safari renders
     // the html5 drag thumbnail instead of text
     if (isTargetInMenu(event)) return;
@@ -184,6 +178,7 @@ export const SandboxCard: React.FC<{
     event.preventDefault();
     openContextMenu({
       sandboxId: sandbox.id,
+      sandboxType: type,
       position: { x: event.clientX, y: event.clientY },
     });
   };
@@ -198,6 +193,7 @@ export const SandboxCard: React.FC<{
       const rect = target.getBoundingClientRect();
       openContextMenu({
         sandboxId: sandbox.id,
+        sandboxType: type,
         position: { x: rect.right, y: rect.bottom },
       });
     } else if (event.keyCode === ENTER) {
@@ -262,8 +258,17 @@ export const SandboxCard: React.FC<{
           }}
         />
         <Stack justify="space-between">
-          <Stack direction="vertical" marginX={4} marginBottom={4}>
-            <Text css={css({ height: 7 })}>
+          <Stack
+            direction="vertical"
+            marginX={4}
+            marginBottom={4}
+            css={{ width: '100%' }}
+          >
+            <Text
+              size={3}
+              maxWidth="calc(100% - 24px)"
+              css={css({ height: 7 })}
+            >
               {sandbox.title || sandbox.alias || sandbox.id}
             </Text>
             <Stats sandbox={sandbox} />
