@@ -160,3 +160,16 @@ export const currentTeamInfoFragment = gql`
     }
   }
 `;
+
+export const npmRegistryFragment = gql`
+  fragment npmRegistry on PrivateRegistry {
+    id
+    enabledScopes
+    limitToScopes
+    proxyEnabled
+    registryAuthKey
+    registryType
+    registryUrl
+    teamId
+  }
+`;

@@ -9,6 +9,7 @@ import {
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
   TeamMemberAuthorization,
+  CreateOrUpdateNpmRegistryMutationVariables,
 } from 'app/graphql/types';
 import { getDecoratedCollection } from './utils';
 import { OrderBy, sandboxesTypes } from './types';
@@ -1239,5 +1240,37 @@ export const changeAuthorization: AsyncAction<{
       userId,
       authorization: oldAuthorization,
     });
+  }
+};
+
+export const createOrUpdateCurrentNpmRegistry: AsyncAction<Omit<
+  CreateOrUpdateNpmRegistryMutationVariables,
+  'teamId'
+>> = async ({ state, actions, effects }, params) => {
+  await effects.gql.mutations.createOrUpdateNpmRegistry({
+    ...params,
+    teamId: state.activeTeam,
+  });
+
+  await actions.dashboard.fetchCurrentNpmRegistry({});
+};
+
+export const fetchCurrentNpmRegistry: AsyncAction<{}> = async ({
+  state,
+  effects,
+}) => {
+  const activeTeam = state.activeTeam;
+  if (!activeTeam) {
+    return;
+  }
+
+  const data = await effects.gql.queries.getPrivateNpmRegistry({
+    teamId: activeTeam,
+  });
+
+  // Check if active team is still the same
+  if (activeTeam === state.activeTeam) {
+    state.dashboard.workspaceSettings.npmRegistry =
+      data.me?.team?.privateRegistry || null;
   }
 };

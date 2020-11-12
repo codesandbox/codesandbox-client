@@ -43,6 +43,8 @@ import {
   SetTeamNameMutationVariables,
   ChangeTeamMemberAuthorizationMutation,
   ChangeTeamMemberAuthorizationMutationVariables,
+  CreateOrUpdateNpmRegistryMutation,
+  CreateOrUpdateNpmRegistryMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -51,6 +53,7 @@ import {
   sidebarCollectionDashboard,
   sandboxFragmentDashboard,
   currentTeamInfoFragment,
+  npmRegistryFragment,
 } from './fragments';
 
 export const createTeam: Query<
@@ -327,4 +330,32 @@ export const changeTeamMemberAuthorization: Query<
       id
     }
   }
+`;
+
+export const createOrUpdateNpmRegistry: Query<
+  CreateOrUpdateNpmRegistryMutation,
+  CreateOrUpdateNpmRegistryMutationVariables
+> = gql`
+  mutation CreateOrUpdateNpmRegistry(
+    $teamId: UUID4!
+    $registryType: RegistryType!
+    $registryUrl: String
+    $registryAuthKey: String!
+    $proxyEnabled: Boolean!
+    $limitToScopes: Boolean!
+    $enabledScopes: [String!]!
+  ) {
+    createOrUpdatePrivateRegistry(
+      teamId: $teamId
+      registryType: $registryType
+      registryUrl: $registryUrl
+      registryAuthKey: $registryAuthKey
+      proxyEnabled: $proxyEnabled
+      limitToScopes: $limitToScopes
+      enabledScopes: $enabledScopes
+    ) {
+      ...npmRegistry
+    }
+  }
+  ${npmRegistryFragment}
 `;
