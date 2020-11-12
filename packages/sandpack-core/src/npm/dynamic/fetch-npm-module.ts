@@ -76,7 +76,7 @@ async function getMeta(
     return metas[id];
   }
 
-  const protocol = getFetchProtocol(depVersion, useFallback);
+  const protocol = getFetchProtocol(depName, depVersion, useFallback);
 
   metas[id] = protocol.meta(nameWithoutAlias, depVersion).catch(e => {
     delete metas[id];
@@ -108,12 +108,16 @@ export async function downloadDependency(
     .replace(/#/g, '%23');
 
   const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
-  const protocol = getFetchProtocol(depVersion);
+  const protocol = getFetchProtocol(depName, depVersion);
 
   packages[id] = protocol
     .file(nameWithoutAlias, depVersion, relativePath)
     .catch(async () => {
-      const fallbackProtocol = getFetchProtocol(depVersion, true);
+      const fallbackProtocol = getFetchProtocol(
+        nameWithoutAlias,
+        depVersion,
+        true
+      );
       return fallbackProtocol.file(nameWithoutAlias, depVersion, relativePath);
     })
     .then(code => ({

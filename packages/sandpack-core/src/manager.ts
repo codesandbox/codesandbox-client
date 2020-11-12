@@ -39,6 +39,7 @@ import { IEvaluator } from './evaluator';
 import { setContributedProtocols } from './npm/dynamic/fetch-protocols';
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
 import { DEFAULT_EXTENSIONS } from './utils/extensions';
+import { PrivateRegistryFetcher } from './npm/dynamic/fetch-protocols/private-registry';
 
 declare const BrowserFS: any;
 
@@ -187,12 +188,26 @@ export default class Manager implements IEvaluator {
     this.stage = 'transpilation';
     this.version = options.versionIdentifier;
 
+    const privateNpmRegistryProxy = new PrivateRegistryFetcher(
+      'https://npm.pkg.github.com', // package registry url
+      {
+        proxyUrl: 'https://registry-proxy.codesandbox.workers.dev/',
+        scopeWhitelist: ['@codesandbox'],
+        authToken: 'TOKEN',
+      }
+    );
+
     /**
      * Contribute the file fetcher, which needs the manager to resolve the files
      */
     setContributedProtocols([
       {
-        condition: version => version.startsWith('file:'),
+        condition: privateNpmRegistryProxy.condition,
+        protocol: privateNpmRegistryProxy,
+      },
+      {
+        condition: (name: string, version: string) =>
+          version.startsWith('file:'),
         protocol: new FileFetcher(this),
       },
     ]);
