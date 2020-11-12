@@ -42,7 +42,8 @@ import { OPTIMISTIC_COMMENT_ID } from './state';
 
 const PREVIEW_COMMENT_OFFSET = -500;
 const CODE_COMMENT_OFFSET = 500;
-const BUBBLE_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC8SURBVHgBxZO9EYJAEIW/PTG3BEogNIQKoBQ7QDvQTrQCCQwMrwMpwdxR3ANkGAIHjoA3czd7P+/b25lbYaBqG8WsSKnIEMJ229bjzUHutuzfl84YRxte5Bru+K8jawUV9tkBWvNVw4hxsgpJHMTUyybzWDP13caDaM2h1vzAR0Ji1Jzjqw+ZYdrThy9I5wEgNMzUXIBdGKBf2x8gnFxf+AIsAXsXTAdo5l8fuGUwylRR6nzRdGe52aJ/9AWAvjArPZuVDgAAAABJRU5ErkJggg=='
+const BUBBLE_IMAGE =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC8SURBVHgBxZO9EYJAEIW/PTG3BEogNIQKoBQ7QDvQTrQCCQwMrwMpwdxR3ANkGAIHjoA3czd7P+/b25lbYaBqG8WsSKnIEMJ229bjzUHutuzfl84YRxte5Bru+K8jawUV9tkBWvNVw4hxsgpJHMTUyybzWDP13caDaM2h1vzAR0Ji1Jzjqw+ZYdrThy9I5wEgNMzUXIBdGKBf2x8gnFxf+AIsAXsXTAdo5l8fuGUwylRR6nzRdGe52aJ/9AWAvjArPZuVDgAAAABJRU5ErkJggg==';
 
 export const selectCommentsFilter: Action<CommentsFilterOption> = (
   { state },
@@ -205,17 +206,17 @@ export const closeComment: Action = ({ state, effects }) => {
   // you can also close an optimistic preview comment, meaning you
   // want to stay in the same mode as you probably want to add a new comment
   if (state.comments.currentCommentId !== OPTIMISTIC_COMMENT_ID) {
-    state.preview.mode = state.preview.previousMode
-    state.preview.previousMode = null
+    state.preview.mode = state.preview.previousMode;
+    state.preview.previousMode = null;
   }
 
   state.comments.currentCommentId = null;
   state.comments.currentCommentPositions = null;
 
   if (state.preview.mode === 'add-comment') {
-    state.preview.mode = null
-  } else if (state.preview.mode === 'responsive-add-comment')  {
-    state.preview.mode = 'responsive'
+    state.preview.mode = null;
+  } else if (state.preview.mode === 'responsive-add-comment') {
+    state.preview.mode = 'responsive';
   }
 };
 
@@ -285,7 +286,7 @@ export const selectComment: AsyncAction<{
       .metadata as PreviewReferenceMetadata;
 
     state.preview.responsive.resolution = [metadata.width, metadata.height];
-    state.preview.previousMode = state.preview.mode
+    state.preview.previousMode = state.preview.mode;
     state.preview.mode = 'responsive';
     state.comments.currentCommentId = commentId;
 
@@ -457,8 +458,8 @@ export const addOptimisticPreviewComment: AsyncAction<{
     cropHeight: 400,
     x: Math.round(x),
     y: Math.round(y),
-    scale
-  })
+    scale,
+  });
   const metadata: PreviewReferenceMetadata = {
     userAgent: effects.browser.getUserAgent(),
     screenshotUrl,
@@ -707,13 +708,13 @@ export const saveComment: AsyncAction<CommentFragment> = async (
         await effects.gql.mutations.createPreviewComment({
           ...baseCommentPayload,
           anchorReference: {
-            height: metadata.height,
+            height: Math.round(metadata.height),
             previewPath: metadata.previewPath,
             userAgent: metadata.userAgent,
             screenshotSrc: metadata.screenshotUrl || null,
-            width: metadata.width,
-            x: metadata.x,
-            y: metadata.y,
+            width: Math.round(metadata.width),
+            x: Math.round(metadata.x),
+            y: Math.round(metadata.y),
           },
         });
       }
