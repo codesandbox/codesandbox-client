@@ -59,6 +59,7 @@ interface ISwitchProps {
   id?: string;
   on?: boolean;
   defaultOn?: boolean;
+  disabled?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

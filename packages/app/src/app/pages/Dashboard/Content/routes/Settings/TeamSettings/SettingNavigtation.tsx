@@ -1,4 +1,4 @@
-import { Element, Link, Stack } from '@codesandbox/components';
+import { Link, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React from 'react';
 import { NavLink as RouterLink } from 'react-router-dom';
@@ -9,32 +9,30 @@ type NavigationLinkProps = {
   url: string;
 };
 
-const NavigationLink = (props: NavigationLinkProps) => {
-  return (
-    <Link
-      as={RouterLink}
-      to={props.url}
-      css={css({
-        transition: 'color',
-        transitionDuration: theme => theme.speeds[2],
-        display: 'inline-flex',
-        alignItems: 'center',
-        height: 10,
-        color: 'grays.400',
-        textDecoration: 'none',
-        '&:hover': {
-          color: 'white',
-        },
-      })}
-      // @ts-ignore NavLink Prop
-      exact
-      // @ts-ignore NavLink Prop
-      activeStyle={{ color: 'white' }}
-    >
-      {props.label}
-    </Link>
-  );
-};
+const NavigationLink = (props: NavigationLinkProps) => (
+  <Link
+    as={RouterLink}
+    to={props.url}
+    css={css({
+      transition: 'color',
+      transitionDuration: theme => theme.speeds[2],
+      display: 'inline-flex',
+      alignItems: 'center',
+      height: 10,
+      color: 'grays.400',
+      textDecoration: 'none',
+      '&:hover': {
+        color: 'white',
+      },
+    })}
+    // @ts-ignore NavLink Prop
+    exact
+    // @ts-ignore NavLink Prop
+    activeStyle={{ color: 'white' }}
+  >
+    {props.label}
+  </Link>
+);
 
 type SettingsNavigationProps = {
   teamId: string;

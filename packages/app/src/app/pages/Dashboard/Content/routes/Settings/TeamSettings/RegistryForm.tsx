@@ -38,12 +38,14 @@ type RegistryFormProps = {
   registry: NpmRegistryFragment | null;
   onSubmit: (params: CreateTeamParams) => void;
   isSubmitting: boolean;
+  disabled?: boolean;
 };
 
 export const RegistryForm = ({
   registry,
   onSubmit,
   isSubmitting,
+  disabled,
 }: RegistryFormProps) => {
   const theme = useTheme() as any;
 
@@ -110,6 +112,7 @@ export const RegistryForm = ({
                   onChange={e => {
                     setRegistryType(e.target.value);
                   }}
+                  disabled={disabled}
                 >
                   {Object.keys(RegistryType).map(type => (
                     <option value={RegistryType[type]} key={type}>
@@ -127,6 +130,7 @@ export const RegistryForm = ({
                       onChange={e => setRegistryUrl(e.target.value)}
                       required
                       pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
+                      disabled={disabled}
                     />
                   </CustomFormField>
                   <Text size={3} variant="muted">
@@ -140,6 +144,7 @@ export const RegistryForm = ({
                   value={authKey}
                   required
                   onChange={e => setAuthKey(e.target.value)}
+                  disabled={disabled}
                 />
               </CustomFormField>
             </Stack>
@@ -173,6 +178,7 @@ export const RegistryForm = ({
                       setIsLimitedToScopes(s => !s);
                     }}
                     on={isLimitedToScopes}
+                    disabled={disabled}
                   />
                 </CustomFormField>
                 <Text size={3} variant="muted">
@@ -209,6 +215,7 @@ export const RegistryForm = ({
                           title="Remove Scope"
                           size={9}
                           name="cross"
+                          disabled={disabled}
                         />
                       </Stack>
                     ))}
@@ -227,6 +234,7 @@ export const RegistryForm = ({
                         pattern="@\w+"
                         css={css({ width: '100%' })}
                         placeholder="@acme"
+                        disabled={disabled}
                         onInput={e => {
                           if (e.target.validity.patternMismatch) {
                             e.target.setCustomValidity(
@@ -237,7 +245,7 @@ export const RegistryForm = ({
                           }
                         }}
                       />
-                      <Button type="submit" autoWidth>
+                      <Button disabled={disabled} type="submit" autoWidth>
                         Add Scope
                       </Button>
                     </Stack>
@@ -248,7 +256,7 @@ export const RegistryForm = ({
           </Stack>
 
           <Stack gap={2} justify="flex-end" css={css({ width: '100%' })}>
-            <Button autoWidth variant="secondary">
+            <Button disabled={disabled} autoWidth variant="secondary">
               Cancel
             </Button>
             <Button
@@ -256,6 +264,7 @@ export const RegistryForm = ({
               type="submit"
               css={css({ width: '120px' })}
               variant="primary"
+              disabled={disabled}
             >
               Save Changes
             </Button>

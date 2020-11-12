@@ -1,16 +1,10 @@
 import React, { useEffect } from 'react';
-import {
-  FormField,
-  Grid,
-  Input,
-  Select,
-  Stack,
-  Text,
-} from '@codesandbox/components';
+import { Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { setActiveTeamFromPersonalWorkspaceId } from 'app/overmind/internalActions';
+
 import { useOvermind } from 'app/overmind';
 import { CreateTeamParams, RegistryForm } from './RegistryForm';
+import { Alert } from './Alert';
 
 export const RegistrySettings = () => {
   const { actions, state } = useOvermind();
@@ -40,26 +34,54 @@ export const RegistrySettings = () => {
     }
   };
 
+  let alert: { message: string } | null = null;
+
+  if (!state.activeTeamInfo?.joinedPilotAt) {
+    alert = {
+      message:
+        'Your workspace needs to be in the pilot to use a custom npm registry',
+    };
+  }
+
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <Stack
-      css={css({
-        backgroundColor: 'grays.900',
-        paddingY: 8,
-        paddingX: 11,
-        border: '1px solid',
-        borderColor: 'grays.500',
-        borderRadius: 4,
-      })}
-    >
-      <RegistryForm
-        onSubmit={onSubmit}
-        isSubmitting={submitting}
-        registry={state.dashboard.workspaceSettings.npmRegistry}
-      />
-    </Stack>
+    <>
+      {alert && <Alert message={alert.message} />}
+      <Stack
+        css={css({
+          backgroundColor: 'grays.900',
+          paddingY: 8,
+          paddingX: 11,
+          border: '1px solid',
+          borderColor: 'grays.500',
+          borderRadius: 'medium',
+          position: 'relative',
+        })}
+      >
+        {alert && (
+          <div
+            id="disabled-overlay"
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.4)',
+              pointerEvents: 'none',
+            }}
+          />
+        )}
+        <RegistryForm
+          onSubmit={onSubmit}
+          isSubmitting={submitting}
+          registry={state.dashboard.workspaceSettings.npmRegistry}
+          disabled={Boolean(alert)}
+        />
+      </Stack>
+    </>
   );
 };
