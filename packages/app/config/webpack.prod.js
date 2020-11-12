@@ -108,9 +108,9 @@ module.exports = merge(commonConfig, {
 
   plugins: [
     process.env.ANALYZE &&
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-    }),
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+      }),
     new webpack.DefinePlugin({ VERSION: JSON.stringify(VERSION) }),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
@@ -355,6 +355,10 @@ module.exports = merge(commonConfig, {
       {
         from: '../sse-hooks/dist',
         to: 'public/[name].[hash].[ext]',
+      },
+      {
+        from: '../sse-hooks/dist',
+        to: 'public/sse-hooks',
       },
     ]),
     new ImageminPlugin({
