@@ -36,7 +36,7 @@ export const Markdown = ({ source }) => (
     })}
   >
     <ReactMarkdown
-      source={source ? source.replace(/\n/gi, '&nbsp;\n\n') : source}
+      source={source.replace(/\n/gi, '&nbsp;\n\n')}
       transformLinkUri={null}
       renderers={{
         text: ({ children }) => (

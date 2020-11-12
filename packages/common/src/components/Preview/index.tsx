@@ -20,8 +20,6 @@ import { Container, Loading, StyledFrame } from './elements';
 import Navigator from './Navigator';
 import { Settings } from './types';
 
-const DefaultWrapper = ({ children }) => children;
-
 export type Props = {
   sandbox: Sandbox;
   privacy?: number;
@@ -49,12 +47,9 @@ export type Props = {
   className?: string;
   onMount?: (preview: BasePreview) => () => void;
   overlayMessage?: string;
-  Wrapper?: React.FC<{ children: any }>;
+  ResponsiveWrapper?: React.FC<{ children: any }>;
   isResponsiveModeActive?: boolean;
-  isPreviewCommentModeActive?: boolean;
   toggleResponsiveMode?: () => void;
-  createPreviewComment?: () => void;
-  isScreenshotLoading?: boolean;
   /**
    * Whether to show a screenshot in the preview as a "placeholder" while loading
    * to reduce perceived loading time
@@ -86,6 +81,8 @@ const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
 interface IModulesByPath {
   [path: string]: { path: string; code: null | string; isBinary?: boolean };
 }
+
+const DefaultResponsiveWrapper = ({ children }) => children;
 
 class BasePreview extends React.PureComponent<Props, State> {
   serverPreview: boolean;
@@ -557,12 +554,9 @@ class BasePreview extends React.PureComponent<Props, State> {
       noPreview,
       className,
       overlayMessage,
-      Wrapper = DefaultWrapper,
+      ResponsiveWrapper = DefaultResponsiveWrapper,
       isResponsiveModeActive,
       toggleResponsiveMode,
-      createPreviewComment,
-      isScreenshotLoading,
-      isPreviewCommentModeActive,
     } = this.props;
 
     const { urlInAddressBar, back, forward } = this.state;
@@ -590,7 +584,6 @@ class BasePreview extends React.PureComponent<Props, State> {
         {showNavigation && (
           <Navigator
             url={url}
-            isScreenshotLoading={isScreenshotLoading}
             onChange={this.updateUrl}
             onConfirm={this.sendUrl}
             onBack={back ? this.handleBack : null}
@@ -602,14 +595,12 @@ class BasePreview extends React.PureComponent<Props, State> {
             }
             toggleResponsiveView={toggleResponsiveMode}
             isInResponsivePreview={isResponsiveModeActive}
-            isPreviewCommentModeActive={isPreviewCommentModeActive}
             openNewWindow={this.openNewWindow}
-            createPreviewComment={createPreviewComment}
             zenMode={settings.zenMode}
           />
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
-        <Wrapper>
+        <ResponsiveWrapper>
           <AnySpring
             key="preview"
             from={{ opacity: this.props.showScreenshotOverlay ? 0 : 1 }}
@@ -669,7 +660,7 @@ class BasePreview extends React.PureComponent<Props, State> {
               </>
             )}
           </AnySpring>
-        </Wrapper>
+        </ResponsiveWrapper>
       </Container>
     );
   }

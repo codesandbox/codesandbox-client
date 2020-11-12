@@ -1,4 +1,5 @@
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { Action, AsyncAction } from 'app/overmind';
 import { isEqual } from 'lodash-es';
 import { json } from 'overmind';
@@ -9,26 +10,15 @@ export const toggleResponsiveMode: AsyncAction = async ({
   actions,
   effects,
 }) => {
-  const existingMode = state.preview.mode;
   const newUrl = new URL(document.location.href);
-  
-  switch (existingMode) {
-    case 'responsive':
-      state.preview.mode = null;
-      break;
-    case 'add-comment':
-      state.preview.mode = 'responsive-add-comment';
-      break;
-    case 'responsive-add-comment':
-      state.preview.mode = 'add-comment';
-      break;
-    default: {
-      state.preview.mode = 'responsive';
-      effects.analytics.track('Responsive Preview - Toggled On');
-    }
-  }
+  if (state.preview.mode === 'responsive') {
+    state.preview.mode = null;
+    newUrl.searchParams.delete('resolutionWidth');
+    newUrl.searchParams.delete('resolutionHeight');
+  } else {
+    track('Responsive Preview - Toggled On');
+    state.preview.mode = 'responsive';
 
-  if (state.preview.mode) {
     newUrl.searchParams.set(
       'resolutionWidth',
       state.preview.responsive.resolution[0].toString()
@@ -43,11 +33,7 @@ export const toggleResponsiveMode: AsyncAction = async ({
         'responsive-preview': defaultPresets,
       });
     }
-  } else {
-    newUrl.searchParams.delete('resolutionWidth');
-    newUrl.searchParams.delete('resolutionHeight');
   }
-
   if (newUrl) {
     effects.router.replace(
       newUrl.toString().replace(/%2F/g, '/').replace('%3A', ':')
@@ -123,9 +109,9 @@ export const addPreset: AsyncAction<{
   name: string;
   width: number;
   height: number;
-}> = async ({ state, actions, effects }, { name, width, height }) => {
+}> = async ({ state, actions }, { name, width, height }) => {
   if (!name || !width || !height) return;
-  effects.analytics.track('Responsive Preview - Preset Created', {
+  track('Responsive Preview - Preset Created', {
     width,
     height,
   });
@@ -158,45 +144,6 @@ export const editPresets: AsyncAction<Presets> = async (
   await actions.files.updateWorkspaceConfig({
     'responsive-preview': newPresets,
   });
-};
-
-export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
-  const existingMode = state.preview.mode;
-
-  state.preview.screenshot.source = null
-
-  const takeScreenshot = async () => {
-    try {
-      state.preview.screenshot.isLoading = true
-      const screenshot = await effects.preview.takeScreenshot(state.editor.currentSandbox!.privacy === 2)
-      state.preview.screenshot.isLoading = false
-      state.preview.screenshot.source = screenshot  
-    } catch {
-      // Not experienced this process erroring yet
-    }
-  }
-
-  switch (existingMode) {
-    case 'responsive':
-      state.preview.mode = 'responsive-add-comment';
-      await takeScreenshot()
-      break;
-    case 'add-comment':
-      state.preview.mode = null;
-      break;
-    case 'responsive-add-comment':
-      state.preview.mode = 'responsive';
-      break;
-    default:
-      state.preview.mode = 'add-comment';
-      await takeScreenshot()
-  }
-
-  if (state.preview.mode && state.preview.mode.includes('comment')) {
-    effects.analytics.track('Preview Comment - Toggle', {
-      mode: state.preview.mode
-    })
-  }
 };
 
 export const checkURLParameters: Action = ({ state, effects }) => {

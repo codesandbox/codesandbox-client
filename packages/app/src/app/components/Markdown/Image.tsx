@@ -4,17 +4,13 @@ import Modal from 'react-modal';
 import { Text, Element, Button, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-export const Image: React.FC<{
-  src: string
-  alt: string
-  ignorePrivateSandboxRestriction?: boolean
-}> = props => {
+export const Image = props => {
   const { state } = useOvermind();
   const [modalOpen, setModalOpen] = useState(false);
   const privateSandbox =
     state.editor.currentSandbox.privacy === 1 ||
     state.editor.currentSandbox.privacy === 2;
-  return props.ignorePrivateSandboxRestriction || privateSandbox ? (
+  return privateSandbox ? (
     <>
       <Button
         padding={0}
@@ -24,13 +20,11 @@ export const Image: React.FC<{
         onClick={() => setModalOpen(true)}
         css={css({
           maxWidth: '100%',
-          maxHeight: '100%',
           border: 'none',
-          height: 'auto',
         })}
       >
         <img
-          src={props.src}
+          {...props}
           alt={props.alt}
           css={css({
             maxWidth: '100%',

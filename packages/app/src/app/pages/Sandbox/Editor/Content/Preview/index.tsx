@@ -5,7 +5,6 @@ import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
 import React, { FunctionComponent, useState } from 'react';
 import { useOvermind } from 'app/overmind';
 
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { ResponsiveWrapper } from './ResponsiveWrapper';
 
 type Props = {
@@ -65,9 +64,7 @@ export const Preview: FunctionComponent<Props> = ({
     return undefined;
   };
 
-  const canAddComments =
-    currentSandbox.featureFlags.comments &&
-    hasPermission(currentSandbox.authorization, 'comment');
+  const isInResponsivePreview = preview.mode === 'responsive';
 
   return running ? (
     <BasePreview
@@ -81,25 +78,14 @@ export const Preview: FunctionComponent<Props> = ({
       onMount={initializePreview}
       noPreview={!previewWindowVisible}
       onToggleProjectView={projectViewToggled}
-      Wrapper={ResponsiveWrapper}
-      isResponsiveModeActive={
-        preview.mode === 'responsive' ||
-        preview.mode === 'responsive-add-comment'
-      }
-      isPreviewCommentModeActive={
-        preview.mode === 'add-comment' ||
-        preview.mode === 'responsive-add-comment'
-      }
+      ResponsiveWrapper={ResponsiveWrapper}
+      isResponsiveModeActive={isInResponsivePreview}
       toggleResponsiveMode={previewActions.toggleResponsiveMode}
       overlayMessage={getOverlayMessage()}
       previewSecret={currentSandbox.previewSecret}
       privacy={currentSandbox.privacy}
       sandbox={currentSandbox}
       settings={settings}
-      isScreenshotLoading={preview.screenshot.isLoading}
-      createPreviewComment={
-        canAddComments && previewActions.createPreviewComment
-      }
       url={options.url}
     />
   ) : (

@@ -7,42 +7,29 @@ import { convertMentionLinksToMentions } from 'app/overmind/utils/comments';
 import React, { Attributes } from 'react';
 
 import { useMention } from './useMention';
-import { useImageDrop } from './useImageDrop';
 
-const markdownImageRegExp = /!\[[^\]]*\]\((.*?)\)/gm;
-const imageFileNameRegExp = /\((.*)\)/;
-
-type Mentions = {
-  [mentionName: string]: UserQuery;
-};
-
-type Images = {
-  [fileName: string]: {
-    src: string;
-    resolution: [number, number];
-  };
-};
-
-export const useCodesandboxCommentEditor = ({
+export const useCodesandboxMention = ({
   initialValue,
   initialMentions,
-  initialImages,
   onSubmit,
   fixed,
   props = {},
 }: {
   initialValue: string;
-  initialMentions: Mentions;
-  initialImages: Images;
-  onSubmit: (value: string, mentions: Mentions, images: Images) => void;
+  initialMentions: {
+    [mentionName: string]: any;
+  };
+  onSubmit: (
+    value: string,
+    mentions: { [username: string]: UserQuery }
+  ) => void;
   fixed: boolean;
   props: typeof Textarea extends React.FC<infer P>
     ? P & { css?: Attributes['css'] }
     : never;
-}): [React.ReactElement, string, Mentions, Images] => {
+}): [React.ReactElement, string, { [username: string]: UserQuery }] => {
   const ref = React.useRef(null);
   const { state, actions } = useOvermind();
-  const [images, setImages] = React.useState(initialImages);
   const [value, setValue, mention, mentions] = useMention(
     ref,
     () => convertMentionLinksToMentions(initialValue),
@@ -55,21 +42,6 @@ export const useCodesandboxCommentEditor = ({
     [mention.query]
   );
   const users = state.comments.usersQueryResult;
-
-  useImageDrop({
-    onDrop: (name, src, resolution) => {
-      setImages(current => ({
-        ...current,
-        [name]: {
-          src,
-          resolution,
-        },
-      }));
-    },
-    ref,
-    setValue,
-    value,
-  });
 
   React.useEffect(() => {
     actions.comments.queryUsers(mention.query);
@@ -86,7 +58,7 @@ export const useCodesandboxCommentEditor = ({
   React.useEffect(() => {
     if (ref.current) {
       const onKeyDown = event => {
-        if (event.keyCode === ESC && mention.query !== null) {
+        if (event.keyCode === ESC) {
           event.stopPropagation();
         }
       };
@@ -99,7 +71,7 @@ export const useCodesandboxCommentEditor = ({
 
     return () => {};
     // eslint-disable-next-line
-  }, [ref.current, mention]);
+  }, [ref.current]);
 
   const onKeyDown = event => {
     if (mention.query !== null) {
@@ -117,25 +89,8 @@ export const useCodesandboxCommentEditor = ({
       }
     } else if (event.keyCode === ENTER && !event.shiftKey) {
       event.preventDefault();
-      const matchedImageReferences = value.match(markdownImageRegExp);
-      const imageReferences = matchedImageReferences
-        ? matchedImageReferences.map(
-            imageLink => imageLink.match(imageFileNameRegExp)[1]
-          )
-        : [];
-      const actuallyIncludedImages = imageReferences.reduce(
-        (aggr, fileName) => {
-          if (images[fileName]) {
-            aggr[fileName] = images[fileName];
-          }
-
-          return aggr;
-        },
-        {}
-      );
-
+      onSubmit(value, mentions);
       setValue('');
-      onSubmit(value, mentions, actuallyIncludedImages);
     }
   };
 
@@ -254,6 +209,5 @@ export const useCodesandboxCommentEditor = ({
     </div>,
     value,
     mentions,
-    images,
   ];
 };

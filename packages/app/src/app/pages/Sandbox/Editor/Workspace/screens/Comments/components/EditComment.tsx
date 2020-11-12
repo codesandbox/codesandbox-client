@@ -2,33 +2,20 @@ import { UserQuery } from '@codesandbox/common/lib/types';
 import { Button, Stack } from '@codesandbox/components';
 import React from 'react';
 
-import { useCodesandboxCommentEditor } from '../hooks/useCodesandboxCommentEditor';
+import { useCodesandboxMention } from '../hooks/useCodesandboxMention';
 
 export const EditComment: React.FC<{
   initialValue?: string;
   initialMentions?: { [mentionName: string]: UserQuery };
-  initialImages?: {
-    [fileName: string]: { src: string; resolution: [number, number] };
-  };
   onSave: (
     value: string,
-    mentions: { [mentionName: string]: UserQuery },
-    images: {
-      [fileName: string]: { src: string; resolution: [number, number] };
-    }
+    mentions: { [mentionName: string]: UserQuery }
   ) => void;
   onCancel: () => void;
-}> = ({
-  initialValue = '',
-  initialMentions = {},
-  initialImages = {},
-  onSave,
-  onCancel,
-}) => {
-  const [elements, value, mentions, images] = useCodesandboxCommentEditor({
+}> = ({ initialValue = '', initialMentions = {}, onSave, onCancel }) => {
+  const [elements, value, mentions] = useCodesandboxMention({
     initialValue,
     initialMentions,
-    initialImages,
     onSubmit: onSave,
     fixed: false,
     props: {
@@ -43,7 +30,7 @@ export const EditComment: React.FC<{
       as="form"
       onSubmit={event => {
         event.preventDefault();
-        onSave(value, mentions, images);
+        onSave(value, mentions);
       }}
       css={{
         position: 'relative',

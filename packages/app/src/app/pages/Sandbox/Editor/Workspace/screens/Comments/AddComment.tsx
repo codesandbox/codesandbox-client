@@ -3,23 +3,19 @@ import { Element } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import React from 'react';
 
-import { useCodesandboxCommentEditor } from './hooks/useCodesandboxCommentEditor';
+import { useCodesandboxMention } from './hooks/useCodesandboxMention';
 
 type Props = {
   onSubmit: (
     value: string,
-    mentions: { [username: string]: UserQuery },
-    images: {
-      [fileName: string]: { src: string; resolution: [number, number] };
-    }
+    mentions: { [username: string]: UserQuery }
   ) => void;
 };
 
 export const AddComment: React.FC<Props> = ({ onSubmit }) => {
-  const [elements] = useCodesandboxCommentEditor({
+  const [elements] = useCodesandboxMention({
     initialValue: '',
     initialMentions: {},
-    initialImages: {},
     onSubmit,
     fixed: true,
     props: {
