@@ -45,6 +45,9 @@ const CODE_COMMENT_OFFSET = 500;
 const BUBBLE_IMAGE =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC8SURBVHgBxZO9EYJAEIW/PTG3BEogNIQKoBQ7QDvQTrQCCQwMrwMpwdxR3ANkGAIHjoA3czd7P+/b25lbYaBqG8WsSKnIEMJ229bjzUHutuzfl84YRxte5Bru+K8jawUV9tkBWvNVw4hxsgpJHMTUyybzWDP13caDaM2h1vzAR0Ji1Jzjqw+ZYdrThy9I5wEgNMzUXIBdGKBf2x8gnFxf+AIsAXsXTAdo5l8fuGUwylRR6nzRdGe52aJ/9AWAvjArPZuVDgAAAABJRU5ErkJggg==';
 
+const BUBBLE_IMAGE_2X =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAFsSURBVHgBxZfBUcMwEEW/5ISzS1AqQNwYLoQOoAJaCBUAHUAHoQOoIOaQGW64A9QBPsMEs5IdBA6ZKImsfTM7icce79f3yt4VCKQe6xwfOIfAKR1qCkWRt6crCkNRUhQY4kkUZRVyX7HpgvpYK0hM6MrLXwlDmGKBW/FSGuwiwK34E9f0d4L9uBPz8grbCGhXPaOzCnEw5MbZf27IleQnWkdOblHIMHP37vDHgR5W3mXFiR8BbZW/9pjcixjiaLlL/COwBdd/cotqi9vhHHDWZ3hDShYY2UfROJDhBqmRzfYW7X5/R3oqqoWRdK9XHtyrXVIVjMEFfVdsDRyCD20FKPChrIBtvnCxySWY4RZQcQsw3AJKbgEFrwBqXjkFTG1PwCeAOmb7wyNA4H7ZlnEIMBj4/mOAtDRN6dxPTSkdMKhx0Z0NUjkQPphEhwrOteFrZsS+HKjI7gd80Vy4YTiNJcCP5zWecYDH0PH8G30scDsRZ7W6AAAAAElFTkSuQmCC';
+
 export const selectCommentsFilter: Action<CommentsFilterOption> = (
   { state },
   option
@@ -453,7 +456,7 @@ export const addOptimisticPreviewComment: AsyncAction<{
   const previewPath = await effects.preview.getPreviewPath();
   const screenshotUrl = await effects.preview.createScreenshot({
     screenshotSource: screenshot,
-    bubbleSource: BUBBLE_IMAGE,
+    bubbleSource: window.devicePixelRatio > 1 ? BUBBLE_IMAGE_2X : BUBBLE_IMAGE,
     cropWidth: 1000,
     cropHeight: 400,
     x: Math.round(x),
