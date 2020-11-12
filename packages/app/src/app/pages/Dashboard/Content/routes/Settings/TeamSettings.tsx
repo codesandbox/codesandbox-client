@@ -279,6 +279,21 @@ export const TeamSettings = () => {
                   Created by {created.username}
                 </Text>
               </Stack>
+              <Button
+                marginTop={2}
+                css={css({
+                  padding: 0,
+                  textDecoration: 'underline',
+                  width: 'auto',
+                })}
+                variant="link"
+                disabled={loading}
+                onClick={() =>
+                  actions.modalOpened({ modal: 'deleteWorkspace' })
+                }
+              >
+                Delete Workspace
+              </Button>
             </Card>
 
             <Card style={{ backgroundColor: 'white' }}>

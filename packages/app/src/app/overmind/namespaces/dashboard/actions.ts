@@ -1241,3 +1241,25 @@ export const changeAuthorization: AsyncAction<{
     });
   }
 };
+
+export const deleteWorkspace: AsyncAction = async ({
+  actions,
+  effects,
+  state,
+}) => {
+  if (!state.activeTeamInfo) return;
+
+  try {
+    await effects.gql.mutations.deleteWorkspace({ teamId: state.activeTeam });
+
+    actions.setActiveTeam({ id: state.personalWorkspaceId! });
+    actions.dashboard.getTeams();
+
+    effects.notificationToast.success(`Your workspace was deleted`);
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'There was a problem deleting your workspace',
+      error,
+    });
+  }
+};

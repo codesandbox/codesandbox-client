@@ -35,6 +35,7 @@ import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
 import { TeamInviteModal } from './TeamInviteModal';
 import UploadModal from './UploadModal';
+import { DeleteWorkspace } from './DeleteWorkspace';
 
 const modals = {
   preferences: {
@@ -52,6 +53,10 @@ const modals = {
   deployment: {
     Component: DeploymentModal,
     width: 600,
+  },
+  deleteWorkspace: {
+    Component: DeleteWorkspace,
+    width: 400,
   },
   recoveredFiles: {
     Component: RecoverFilesModal,
