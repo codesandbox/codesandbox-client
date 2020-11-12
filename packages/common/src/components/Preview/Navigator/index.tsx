@@ -78,17 +78,25 @@ function Navigator({
       {createPreviewComment && (
         <IconWithBackground
           onClick={createPreviewComment}
-          style={{ color: isPreviewCommentModeActive && !isScreenshotLoading ? '#FF3B30' : '#757575' }}
+          style={{
+            color:
+              isPreviewCommentModeActive && !isScreenshotLoading
+                ? '#FF3B30'
+                : '#757575',
+          }}
         >
           <Tooltip delay={0} content="Add Preview Comment">
-            {isScreenshotLoading ? <SpinnerWrapper><ComponentsIcon
-              name="spinner"
-              size={16}
-            /></SpinnerWrapper> : <ComponentsIcon
-              name="comment"
-              size={12}
-              style={{ top: -1, position: 'relative' }}
-            />}
+            {isScreenshotLoading ? (
+              <SpinnerWrapper>
+                <ComponentsIcon name="spinner" />
+              </SpinnerWrapper>
+            ) : (
+              <ComponentsIcon
+                name="comment"
+                size={12}
+                style={{ top: -1, position: 'relative' }}
+              />
+            )}
           </Tooltip>
         </IconWithBackground>
       )}
