@@ -33,6 +33,9 @@ export class WebpackTranspiler extends Transpiler {
       return result;
     };
 
+    // Todo; this whole conversion from http strings to buffers should be done on the CodeSandbox
+    // side in a pre-transpiler. Ideally code like this should be unaware of the implementation
+    // details of http strings, and just work with buffers instead.
     const codeIsHttp = code.startsWith('http');
     const webpackCode = codeIsHttp
       ? await fetch(loaderContext._module.module.code)
