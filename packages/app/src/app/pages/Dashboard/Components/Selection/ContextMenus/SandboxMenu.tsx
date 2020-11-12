@@ -43,10 +43,21 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
   // responding with teamId == null for personal templates anymore.
-  const hasAccess = React.useMemo(
-    () => item.sandbox.teamId === activeTeam || item.sandbox.teamId === null,
-    [item, activeTeam]
-  );
+  const hasAccess = React.useMemo(() => {
+    if (item.sandbox.teamId === activeTeam) {
+      return true;
+    }
+
+    if (item.sandbox.teamId === null) {
+      if (!item.sandbox.authorId) {
+        return false;
+      }
+
+      return true;
+    }
+
+    return false;
+  }, [item, activeTeam]);
 
   const isOwner = React.useMemo(() => {
     if (item.type !== 'template') {
@@ -208,9 +219,11 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           )}
         </>
       ) : null}
-      <Menu.Divider />
       {hasAccess && activeWorkspaceAuthorization !== 'READ' && (
-        <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
+        <>
+          <Menu.Divider />
+          <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
+        </>
       )}
       {hasAccess &&
         activeWorkspaceAuthorization !== 'READ' &&
@@ -260,34 +273,36 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             Make Sandbox a Template
           </MenuItem>
         ))}
-      <Menu.Divider />
-      {hasAccess &&
-        activeWorkspaceAuthorization !== 'READ' &&
-        (isTemplate ? (
-          <MenuItem
-            onSelect={() => {
-              const template = item as DashboardTemplate;
-              actions.dashboard.deleteTemplate({
-                sandboxId: template.sandbox.id,
-                templateId: template.template.id,
-              });
-              setVisibility(false);
-            }}
-          >
-            Delete Template
-          </MenuItem>
-        ) : (
-          <MenuItem
-            onSelect={() => {
-              actions.dashboard.deleteSandbox({
-                ids: [sandbox.id],
-              });
-              setVisibility(false);
-            }}
-          >
-            Delete Sandbox
-          </MenuItem>
-        ))}
+      {hasAccess && activeWorkspaceAuthorization !== 'READ' && (
+        <>
+          <Menu.Divider />
+          {isTemplate ? (
+            <MenuItem
+              onSelect={() => {
+                const template = item as DashboardTemplate;
+                actions.dashboard.deleteTemplate({
+                  sandboxId: template.sandbox.id,
+                  templateId: template.template.id,
+                });
+                setVisibility(false);
+              }}
+            >
+              Delete Template
+            </MenuItem>
+          ) : (
+            <MenuItem
+              onSelect={() => {
+                actions.dashboard.deleteSandbox({
+                  ids: [sandbox.id],
+                });
+                setVisibility(false);
+              }}
+            >
+              Delete Sandbox
+            </MenuItem>
+          )}
+        </>
+      )}
     </Menu.ContextMenu>
   );
 };
