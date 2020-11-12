@@ -131,8 +131,6 @@ export default {
 
         const radius = 5;
 
-        // console.log(width, spaceWeWantToUseWidth, sx, x)
-
         ctx.beginPath();
         ctx.moveTo(
           PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
@@ -195,8 +193,8 @@ export default {
         ctx.restore();
         ctx.drawImage(
           bubble,
-          (PREVIEW_COMMENT_BUBBLE_OFFSET + (x * dpr) - sx) * (2 - scale),
-          (PREVIEW_COMMENT_BUBBLE_OFFSET + (y * dpr) - sy) * (2 - scale)
+          (PREVIEW_COMMENT_BUBBLE_OFFSET + (x * dpr) - sx) / scale,
+          (PREVIEW_COMMENT_BUBBLE_OFFSET + (y * dpr) - sy) / scale
         );
 
         return canvas.toDataURL();
