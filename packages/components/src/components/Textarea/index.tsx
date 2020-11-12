@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import Rect from '@reach/rect';
-import VisuallyHidden from '@reach/visually-hidden';
 import { Stack, Input, Text } from '../..';
 
 export interface ITextareaProps
@@ -126,14 +125,32 @@ const Autosize = ({ value, style = {}, ...props }) => (
   <Rect>
     {({ rect, ref }) => (
       <>
-        <VisuallyHidden>
+        <span
+          style={{
+            border: 0,
+            clip: 'rect(0 0 0 0)',
+            height: '1px',
+            margin: '-1px',
+            overflow: 'hidden',
+            padding: 0,
+            position: 'absolute',
+            // Do not use "1px" as we need to use pre-wrap to
+            // deal with height resize related to not explicitly
+            // using linebreak (ENTER) as well
+            // width: "1px",
+
+            // https://medium.com/@jessebeach/beware-smushed-off-screen-accessible-text-5952a4c2cbfe
+            whiteSpace: 'nowrap',
+            wordWrap: 'normal',
+          }}
+        >
           <Text
             block
             ref={ref}
             size={3}
             style={{
               // match textarea styles
-              whiteSpace: 'pre',
+              whiteSpace: 'pre-wrap',
               lineHeight: 1.2,
               minHeight: 64,
               padding: 8,
@@ -142,7 +159,7 @@ const Autosize = ({ value, style = {}, ...props }) => (
           >
             {value + ' '}
           </Text>
-        </VisuallyHidden>
+        </span>
         {props.children(rect ? rect.height + 20 : 0)}
       </>
     )}
