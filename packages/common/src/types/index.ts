@@ -375,7 +375,7 @@ export type Sandbox = {
   userLiked: boolean;
   modules: Module[];
   directories: Directory[];
-  customNpmRegistries: NpmRegistry[];
+  npmRegistries: NpmRegistry[];
   featureFlags: {
     [key: string]: boolean;
   };
