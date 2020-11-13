@@ -6,6 +6,7 @@ import {
   ThemeProvider,
   IconButton,
 } from '@codesandbox/components';
+import ResizeObserver from 'resize-observer-polyfill';
 import track from '@codesandbox/common/lib/utils/analytics';
 import css from '@styled-system/css';
 import { json } from 'overmind';
@@ -88,8 +89,6 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
   useEffect(() => {
     let observer;
     if (element) {
-      // TS does not know of ResizeObserver
-      // @ts-ignore
       observer = new ResizeObserver(entries => {
         entries.map(entry => {
           if (entry.contentRect) {
