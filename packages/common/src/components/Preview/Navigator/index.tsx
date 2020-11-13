@@ -5,6 +5,7 @@ import { NewWindowIcon } from '../../icons/NewWindow';
 import { BackIcon } from '../../icons/Back';
 import { ForwardIcon } from '../../icons/Forward';
 import { ReloadIcon } from '../../icons/Reload';
+import { ResponsivePreview } from '../../icons/ResponsivePreview';
 
 import Tooltip from '../../Tooltip';
 
@@ -26,6 +27,8 @@ export interface NavigatorProps {
   onBack?: () => void;
   onForward?: () => void;
   openNewWindow?: () => void;
+  toggleResponsiveView?: () => void;
+  isInResponsivePreview?: boolean;
   zenMode?: boolean;
   isProjectView: boolean;
 }
@@ -40,6 +43,8 @@ function Navigator({
   isProjectView,
   toggleProjectView,
   openNewWindow,
+  toggleResponsiveView,
+  isInResponsivePreview,
   zenMode,
 }: NavigatorProps) {
   return (
@@ -73,6 +78,13 @@ function Navigator({
             placement="left"
           >
             {isProjectView ? <ProjectViewIcon /> : <ModuleViewIcon />}
+          </Tooltip>
+        </IconWithBackground>
+      )}
+      {toggleResponsiveView && (
+        <IconWithBackground onClick={toggleResponsiveView}>
+          <Tooltip delay={0} content="Toggle Responsive Preview">
+            <ResponsivePreview active={isInResponsivePreview} />
           </Tooltip>
         </IconWithBackground>
       )}

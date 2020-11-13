@@ -61,6 +61,11 @@ type State = {
   quickActionsOpen: boolean;
   previewWindowVisible: boolean;
   workspaceConfigCode: string;
+  workspaceConfig: {
+    'responsive-preview'?: {
+      [preset: string]: [number, number];
+    };
+  } | null;
   statusBar: boolean;
   previewWindowOrientation: WindowOrientation;
   canWriteCode: boolean;
@@ -135,6 +140,23 @@ export const state: State = {
    * the actual content in the localStorage.
    */
   workspaceConfigCode: '',
+  workspaceConfig: derived(
+    ({ currentSandbox, modulesByPath, workspaceConfigCode }: State) => {
+      if (!currentSandbox) {
+        return null;
+      }
+
+      if (currentSandbox.owned) {
+        return modulesByPath['/.codesandbox/workspace.json']
+          ? JSON.parse(
+              (modulesByPath['/.codesandbox/workspace.json'] as Module).code
+            )
+          : null;
+      }
+
+      return workspaceConfigCode ? JSON.parse(workspaceConfigCode) : null;
+    }
+  ),
   currentDevToolsPosition: {
     devToolIndex: 0,
     tabPosition: 0,

@@ -140,6 +140,7 @@ export default class Manager implements IEvaluator {
     dependencyDependencies: {},
     dependencyAliases: {},
   };
+
   webpackHMR: boolean;
   hardReload: boolean;
   hmrStatus: HMRStatus = 'idle';

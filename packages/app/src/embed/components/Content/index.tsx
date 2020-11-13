@@ -464,6 +464,8 @@ export default class Content extends React.PureComponent<Props, State> {
       views[1].open = expandDevTools;
     }
 
+    const preferences = this.getPreferences();
+
     const browserConfig: IViewType = {
       id: 'codesandbox.browser',
       title: options =>
@@ -475,7 +477,7 @@ export default class Content extends React.PureComponent<Props, State> {
           hide={hidden}
           url={options.url ? options.url : undefined}
           currentModule={mainModule}
-          settings={this.getPreferences()}
+          settings={preferences}
           initialPath={initialPath}
           isInProjectView={isInProjectView}
           onClearErrors={this.clearErrors}

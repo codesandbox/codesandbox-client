@@ -637,3 +637,32 @@ export const server = props => (
     />
   </Element>
 );
+
+export const add = (props) => (
+  <svg width={10} height={10} fill="none" viewBox="0 0 8 8" {...props}>
+    <g clipPath="url(#clip0)">
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M4 7.07a3 3 0 100-6 3 3 0 000 6zm-.2-5h.4v1.8H6v.4H4.2v1.8h-.4v-1.8H2v-.4h1.8v-1.8z"
+        clipRule="evenodd"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0">
+        <path fill="currentColor" d="M0 0H8V8H0z" />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+export const close = props => (
+  <svg width={10} height={10} fill="none" viewBox="0 0 8 8" {...props}>
+    <path
+      fill="#F24E62"
+      fillRule="evenodd"
+      d="M4.099 2.135c1.06 0 1.92.866 1.92 1.935 0 .433-.14.832-.378 1.154L2.953 2.517c.32-.24.717-.382 1.146-.382zm-1.542.78l2.687 2.709c-.32.24-.716.382-1.145.382-1.06 0-1.92-.867-1.92-1.936 0-.432.14-.832.378-1.154zM4.1 1.57a2.49 2.49 0 012.48 2.5c0 1.38-1.11 2.5-2.48 2.5a2.49 2.49 0 01-2.481-2.5c0-1.38 1.11-2.5 2.48-2.5z"
+      clipRule="evenodd"
+    />
+  </svg>
+);

@@ -37,7 +37,8 @@ const Blog = ({
         <PageTitle>CodeSandbox Blog</PageTitle>
 
         <PageSubtitle>
-          Read all about new releases, tips, tricks, and how CodeSandbox is built
+          Read all about new releases, tips, tricks, and how CodeSandbox is
+          built
         </PageSubtitle>
       </Header>
 
