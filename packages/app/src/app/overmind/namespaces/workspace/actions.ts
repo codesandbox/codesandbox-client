@@ -550,8 +550,8 @@ export const sandboxAlwaysOnChanged: AsyncAction<{
   state.editor.currentSandbox.alwaysOn = alwaysOn;
 
   try {
-    await effects.gql.mutations.changeAlwaysOn({
-      sandboxIds: [state.editor.currentSandbox.id],
+    await effects.gql.mutations.changeSandboxAlwaysOn({
+      sandboxId: state.editor.currentSandbox.id,
       alwaysOn,
     });
   } catch (error) {

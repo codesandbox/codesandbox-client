@@ -15,7 +15,14 @@ export const AlwaysOn: FunctionComponent = () => {
     },
   } = useOvermind();
 
-  const onChange = () => sandboxAlwaysOnChanged({ alwaysOn: !alwaysOn });
+  const onChange = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.MouseEvent<HTMLDivElement>
+  ) => {
+    event.preventDefault();
+    sandboxAlwaysOnChanged({ alwaysOn: !alwaysOn });
+  };
 
   return (
     <ListAction

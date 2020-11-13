@@ -163,7 +163,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
       </Text>
     );
 
-    const sandboxLocationText = (
+    const sandboxLocationText = sandboxLocation && (
       <Text key="location" maxWidth="100%">
         {sandboxLocation}
       </Text>
