@@ -40,6 +40,12 @@ type RegistryFormProps = {
   disabled?: boolean;
 };
 
+const nameMap = {
+  Github: 'GitHub',
+  Npm: 'npm',
+  Custom: 'Custom',
+};
+
 export const RegistryForm = ({
   registry,
   onSubmit,
@@ -121,7 +127,7 @@ export const RegistryForm = ({
                 >
                   {Object.keys(RegistryType).map(type => (
                     <option value={RegistryType[type]} key={type}>
-                      {type}
+                      {nameMap[type] || type}
                     </option>
                   ))}
                 </Select>
@@ -139,7 +145,15 @@ export const RegistryForm = ({
                     />
                   </CustomFormField>
                   <Text size={3} variant="muted">
-                    Is your registry behind a VPN? Please read here: ...
+                    Is your registry behind a VPN? Please read this{' '}
+                    <a
+                      href="https://codesandbox.io/docs/custom-npm-registry"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      post
+                    </a>
+                    .
                   </Text>
                 </div>
               )}
@@ -196,7 +210,7 @@ export const RegistryForm = ({
                 <CustomFormField label="Enabled Scopes">
                   <Stack
                     gap={2}
-                    css={css({ width: '100%', marginTop: 2 })}
+                    css={css({ width: '100%' })}
                     direction="vertical"
                   >
                     {scopes.map((scope, i) => (
