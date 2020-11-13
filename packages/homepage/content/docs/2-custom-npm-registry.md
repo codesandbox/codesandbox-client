@@ -12,7 +12,8 @@ available for all Pro Workspaces, you can access the settings
 
 ## Configuration
 
-You can configure your private npm registry in your Workspace Settings (link).
+You can configure your private npm registry in your
+[Workspace Settings](https://codesandbox.io/dashboard/settings/npm-registry).
 
 ### Registry Host
 
