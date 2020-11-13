@@ -874,8 +874,6 @@ async function executeTaskIfAvailable() {
  * latest version.
  */
 export default function queueTask(data: CompileOptions) {
-  console.log(data);
-
   // If same task is running, ignore it.
   if (runningTask && JSON.stringify(runningTask) === JSON.stringify(data)) {
     return;
