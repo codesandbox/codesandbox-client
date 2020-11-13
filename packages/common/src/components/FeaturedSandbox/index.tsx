@@ -251,6 +251,7 @@ export default class FeaturedSandbox extends React.PureComponent<
                         }}
                         isInProjectView
                         showNavigation={false}
+                        customNpmRegistries={sandbox.customNpmRegistries}
                       />
                     </animated.div>
                   )
