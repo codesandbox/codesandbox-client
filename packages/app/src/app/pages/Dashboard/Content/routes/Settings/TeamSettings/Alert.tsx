@@ -1,9 +1,13 @@
 import React from 'react';
-import { Icon, Stack, Text } from '@codesandbox/components';
+import { Icon, Stack, Text, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 interface AlertProps {
   message: string;
+  cta?: {
+    label: string;
+    href: string;
+  };
 }
 
 export const Alert = (props: AlertProps) => (
@@ -12,14 +16,31 @@ export const Alert = (props: AlertProps) => (
       backgroundColor: 'grays.600',
       borderRadius: 'medium',
       height: 9,
-      paddingLeft: 2,
+      paddingX: 2,
     })}
     gap={4}
     align="center"
   >
     <Icon size={24} name="info" />
-    <Text color="white" weight="medium" size={2}>
+    <Text css={css({ width: '100%' })} color="white" weight="medium" size={2}>
       {props.message}
     </Text>
+
+    {props.cta && (
+      <Link
+        size={2}
+        css={css({
+          color: 'blues.600',
+          display: 'block',
+          minWidth: 'fit-content',
+          fontWeight: 'medium',
+        })}
+        target="_blank"
+        rel="noreferrer noopener"
+        href={props.cta.href}
+      >
+        {props.cta.label}
+      </Link>
+    )}
   </Stack>
 );

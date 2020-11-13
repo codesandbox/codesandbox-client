@@ -19,7 +19,9 @@ export const RegistrySettings = () => {
     } finally {
       setLoading(false);
     }
-  }, [setLoading, actions.dashboard]);
+    // We need to add "activeTeam"
+    // eslint-disable-next-line
+  }, [setLoading, actions.dashboard, state.activeTeam]);
 
   useEffect(() => {
     loadCurrentNpmRegistry();
@@ -34,12 +36,27 @@ export const RegistrySettings = () => {
     }
   };
 
-  let alert: { message: string } | null = null;
+  let alert: {
+    message: string;
+    cta?: {
+      label: string;
+      href: string;
+    };
+  } | null = null;
 
   if (!state.activeTeamInfo?.joinedPilotAt) {
     alert = {
       message:
-        'Your workspace needs to be in the pilot to use a custom npm registry',
+        'Your workspace needs to be in the pro pilot to use a custom npm registry.',
+
+      cta: {
+        label: 'Apply for Pilot',
+        href: 'https://airtable.com/shrlgLSJWiX8rYqyG',
+      },
+    };
+  } else if (state.activeWorkspaceAuthorization !== 'ADMIN') {
+    alert = {
+      message: 'Only the admin can change or add a custom npm registry.',
     };
   }
 
@@ -49,7 +66,7 @@ export const RegistrySettings = () => {
 
   return (
     <>
-      {alert && <Alert message={alert.message} />}
+      {alert && <Alert message={alert.message} cta={alert.cta} />}
       <Stack
         css={css({
           backgroundColor: 'grays.900',

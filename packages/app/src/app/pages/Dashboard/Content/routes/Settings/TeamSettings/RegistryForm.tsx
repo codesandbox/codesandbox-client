@@ -5,7 +5,6 @@ import {
   Input,
   Text,
   FormField,
-  Switch,
   Button,
   IconButton,
 } from '@codesandbox/components';
@@ -52,6 +51,7 @@ export const RegistryForm = ({
   const [registryType, setRegistryType] = React.useState<RegistryType>(
     registry?.registryType || RegistryType.Npm
   );
+  // eslint-disable-next-line
   const [isLimitedToScopes, setIsLimitedToScopes] = React.useState<boolean>(
     registry?.limitToScopes || true
   );
@@ -65,22 +65,27 @@ export const RegistryForm = ({
     registry?.enabledScopes || []
   );
 
-  const addScope = (scope: string) => {
-    if (scopes.includes(scope)) {
-      return;
-    }
-
-    setScopes(oldScopes => [...oldScopes, scope]);
+  const addScope = () => {
+    setScopes(oldScopes => [...oldScopes, '']);
   };
-  const removeScope = (scope: string) => {
-    setScopes(oldScopes => oldScopes.filter(s => s !== scope));
+
+  const removeScope = (index: number) => {
+    setScopes(oldScopes => oldScopes.filter((_is, i) => i !== index));
+  };
+
+  const editScope = (scope: string, index: number) => {
+    setScopes(s => {
+      const copiedScopes = [...s];
+      copiedScopes[index] = scope;
+      return copiedScopes;
+    });
   };
 
   const serializeValues = (): CreateTeamParams => ({
     registryAuthKey: authKey,
     registryType,
     limitToScopes: isLimitedToScopes,
-    enabledScopes: scopes,
+    enabledScopes: scopes.filter(s => s !== ''),
     registryUrl,
     proxyEnabled: true,
   });
@@ -168,7 +173,7 @@ export const RegistryForm = ({
             <Stack css={css({ width: '100%' })} gap={5} direction="vertical">
               <Text size={4}>Scopes</Text>
 
-              <div>
+              {/* <div>
                 <CustomFormField
                   direction="horizontal"
                   label="Enable registry for specific npm scopes"
@@ -185,7 +190,7 @@ export const RegistryForm = ({
                   Enabling the registry for specific scopes will improve sandbox
                   load performance.
                 </Text>
-              </div>
+              </div> */}
 
               {isLimitedToScopes && (
                 <CustomFormField label="Enabled Scopes">
@@ -194,23 +199,35 @@ export const RegistryForm = ({
                     css={css({ width: '100%', marginTop: 2 })}
                     direction="vertical"
                   >
-                    {scopes.map(scope => (
+                    {scopes.map((scope, i) => (
                       <Stack
                         align="center"
                         direction="horizontal"
                         css={css({ width: '100%' })}
                       >
-                        <Text
-                          variant="muted"
+                        <Input
+                          required
+                          pattern="@\w+"
                           css={css({ width: '100%' })}
-                          size={3}
-                          key={scope}
-                        >
-                          {scope}
-                        </Text>
+                          placeholder="@acme"
+                          disabled={disabled}
+                          value={scope}
+                          onInput={e => {
+                            if (e.target.validity.patternMismatch) {
+                              e.target.setCustomValidity(
+                                "Scope has to start with an '@' and have no slashes"
+                              );
+                            } else {
+                              e.target.setCustomValidity('');
+                            }
+                          }}
+                          onChange={e => {
+                            editScope(e.target.value, i);
+                          }}
+                        />
                         <IconButton
                           onClick={() => {
-                            removeScope(scope);
+                            removeScope(i);
                           }}
                           title="Remove Scope"
                           size={9}
@@ -219,36 +236,18 @@ export const RegistryForm = ({
                         />
                       </Stack>
                     ))}
-                    <Stack
-                      onSubmit={e => {
-                        e.preventDefault();
-                        addScope(e.target[0].value);
-                        e.target[0].value = '';
+
+                    <Button
+                      variant="link"
+                      disabled={disabled}
+                      type="submit"
+                      onClick={e => {
+                        addScope();
                       }}
-                      as="form"
-                      css={css({ width: '100%' })}
-                      gap={2}
+                      autoWidth
                     >
-                      <Input
-                        required
-                        pattern="@\w+"
-                        css={css({ width: '100%' })}
-                        placeholder="@acme"
-                        disabled={disabled}
-                        onInput={e => {
-                          if (e.target.validity.patternMismatch) {
-                            e.target.setCustomValidity(
-                              "Scope has to start with an '@' and have no slashes"
-                            );
-                          } else {
-                            e.target.setCustomValidity('');
-                          }
-                        }}
-                      />
-                      <Button disabled={disabled} type="submit" autoWidth>
-                        Add Scope
-                      </Button>
-                    </Stack>
+                      Add Scope
+                    </Button>
                   </Stack>
                 </CustomFormField>
               )}
