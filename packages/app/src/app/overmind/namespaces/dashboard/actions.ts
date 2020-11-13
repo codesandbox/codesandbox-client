@@ -1283,8 +1283,6 @@ export const changeSandboxAlwaysOn: AsyncAction<{
     sandboxMutation: sandbox => ({ ...sandbox, alwaysOn }),
   });
 
-  const sandboxes = state.dashboard.sandboxes.ALWAYS_ON;
-
   // optimisically remove from always on
   if (!alwaysOn && state.dashboard.sandboxes.ALWAYS_ON) {
     state.dashboard.sandboxes.ALWAYS_ON = state.dashboard.sandboxes.ALWAYS_ON.filter(
