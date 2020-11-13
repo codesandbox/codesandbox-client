@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useOvermind } from 'app/overmind';
-import { Element, Stack, Switch } from '@codesandbox/components';
+import { Element, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import {
