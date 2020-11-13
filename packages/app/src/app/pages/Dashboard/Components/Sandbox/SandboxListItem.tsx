@@ -24,6 +24,7 @@ export const SandboxListItem = ({
   TemplateIcon,
   PrivacyIcon,
   screenshotUrl,
+  alwaysOn,
   // interactions
   selected,
   onClick,
@@ -121,7 +122,7 @@ export const SandboxListItem = ({
         </Stack>
       </Column>
       <Column span={[0, 2, 2]} as={Stack} align="center">
-        {sandbox.alwaysOn && (
+        {alwaysOn && (
           <Text size={3} css={css({ color: 'green' })} maxWidth="100%">
             Always On
           </Text>

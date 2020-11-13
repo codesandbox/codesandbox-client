@@ -213,6 +213,7 @@ export const SandboxCard = ({
   TemplateIcon,
   PrivacyIcon,
   screenshotUrl,
+  alwaysOn,
   // interactions
   isScrolling,
   selected,
@@ -308,7 +309,7 @@ export const SandboxCard = ({
         lastUpdated={lastUpdated}
         viewCount={viewCount}
         sandboxLocation={sandboxLocation}
-        alwaysOn={sandbox.alwaysOn}
+        alwaysOn={alwaysOn}
       />
     </Stack>
   );
