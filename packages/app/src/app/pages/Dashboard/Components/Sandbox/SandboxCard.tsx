@@ -146,39 +146,57 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type SandboxStatsProps = Pick<
   SandboxItemComponentProps,
-  'noDrag' | 'viewCount' | 'sandboxLocation' | 'lastUpdated'
+  'noDrag' | 'viewCount' | 'sandboxLocation' | 'lastUpdated' | 'alwaysOn'
 >;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
-  ({ noDrag, viewCount, sandboxLocation, lastUpdated }) => {
-    let finalText = viewCount;
+  ({ noDrag, viewCount, sandboxLocation, lastUpdated, alwaysOn }) => {
+    const views = (
+      <Stack align="center" key="views">
+        <Icon style={{ marginRight: 4, minWidth: 14 }} name="eye" size={14} />{' '}
+        {viewCount}
+      </Stack>
+    );
 
-    if (!noDrag) {
-      finalText += ` • ${shortDistance(lastUpdated)}`;
-    }
+    const lastUpdatedText = (
+      <Text key="last-updated" css={{ whiteSpace: 'nowrap' }}>
+        {shortDistance(lastUpdated)}
+      </Text>
+    );
 
-    if (sandboxLocation) {
-      finalText += ` • ${sandboxLocation}`;
+    const sandboxLocationText = (
+      <Text key="location" maxWidth="100%">
+        {sandboxLocation}
+      </Text>
+    );
+
+    const alwaysOnText = (
+      <Text key="always-on" css={css({ color: 'green' })}>
+        Always On
+      </Text>
+    );
+
+    let footer = [];
+
+    if (alwaysOn) {
+      footer = [sandboxLocationText, alwaysOnText];
+    } else {
+      footer = [views, noDrag ? null : lastUpdatedText, sandboxLocationText];
     }
 
     return (
       <div style={{ margin: '0 16px' }}>
-        <Text
-          style={{ display: 'flex', alignItems: 'center' }}
+        <Stack
+          as={Text}
+          align="center"
+          gap={1}
           size={3}
           variant="muted"
+          css={css({
+            '> *:not(:last-child):after': { content: `'•'`, marginLeft: 1 },
+          })}
         >
-          <Icon style={{ marginRight: 4, minWidth: 14 }} name="eye" size={14} />{' '}
-          <span
-            style={{
-              maxWidth: '100%',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {finalText}
-          </span>
-        </Text>
+          {footer.map(item => item)}
+        </Stack>
       </div>
     );
   }
@@ -290,6 +308,7 @@ export const SandboxCard = ({
         lastUpdated={lastUpdated}
         viewCount={viewCount}
         sandboxLocation={sandboxLocation}
+        alwaysOn={sandbox.alwaysOn}
       />
     </Stack>
   );

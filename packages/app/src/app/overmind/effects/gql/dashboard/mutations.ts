@@ -43,8 +43,8 @@ import {
   SetTeamNameMutationVariables,
   ChangeTeamMemberAuthorizationMutation,
   ChangeTeamMemberAuthorizationMutationVariables,
-  ChangeAlwaysOnMutation,
-  ChangeAlwaysOnMutationVariables,
+  ChangeSandboxAlwaysOnMutation,
+  ChangeSandboxAlwaysOnMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -331,12 +331,12 @@ export const changeTeamMemberAuthorization: Query<
   }
 `;
 
-export const changeAlwaysOn: Query<
-  ChangeAlwaysOnMutation,
-  ChangeAlwaysOnMutationVariables
+export const changeSandboxAlwaysOn: Query<
+  ChangeSandboxAlwaysOnMutation,
+  ChangeSandboxAlwaysOnMutationVariables
 > = gql`
-  mutation alwaysOn($sandboxIds: [ID!]!, $isFrozen: Boolean!) {
-    setSandboxesAlwaysOn(sandboxIds: $sandboxIds, alwaysOn: $alwaysOn) {
+  mutation setSandboxAlwaysOn($sandboxId: ID!, $alwaysOn: Boolean!) {
+    setSandboxAlwaysOn(sandboxId: $sandboxId, alwaysOn: $alwaysOn) {
       ...sandboxFragmentDashboard
     }
   }

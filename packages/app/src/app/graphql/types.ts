@@ -2454,13 +2454,15 @@ export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
   >;
 };
 
-export type ChangeAlwaysOnMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
+export type ChangeSandboxAlwaysOnMutationVariables = Exact<{
+  sandboxId: Scalars['ID'];
   alwaysOn: Scalars['Boolean'];
 }>;
 
-export type ChangeAlwaysOnMutation = { __typename?: 'RootMutationType' } & {
-  setSandboxesAlwaysOn: Array<
+export type ChangeSandboxAlwaysOnMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  setSandboxAlwaysOn: Array<
     { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
   >;
 };

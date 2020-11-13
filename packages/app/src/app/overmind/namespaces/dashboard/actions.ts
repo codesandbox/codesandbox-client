@@ -1265,10 +1265,10 @@ export const changeAuthorization: AsyncAction<{
   }
 };
 
-export const changeSandboxesAlwaysOn: AsyncAction<{
-  sandboxIds: string[];
+export const changeSandboxAlwaysOn: AsyncAction<{
+  sandboxId: string;
   alwaysOn: boolean;
-}> = async ({ actions, effects }, { sandboxIds, alwaysOn }) => {
+}> = async ({ state, actions, effects }, { sandboxId, alwaysOn }) => {
   effects.analytics.track('Sandbox - Always On', {
     alwaysOn,
     source: 'dashboard',
@@ -1279,12 +1279,23 @@ export const changeSandboxesAlwaysOn: AsyncAction<{
   const {
     changedSandboxes,
   } = actions.dashboard.internal.changeSandboxesInState({
-    sandboxIds,
+    sandboxIds: [sandboxId],
     sandboxMutation: sandbox => ({ ...sandbox, alwaysOn }),
   });
 
+  const sandboxes = state.dashboard.sandboxes.ALWAYS_ON;
+
+  // optimisically remove from always on
+  if (!alwaysOn && state.dashboard.sandboxes.ALWAYS_ON) {
+    state.dashboard.sandboxes.ALWAYS_ON = state.dashboard.sandboxes.ALWAYS_ON.filter(
+      sandbox => {
+        return sandbox.id !== sandboxId;
+      }
+    );
+  }
+
   try {
-    await effects.gql.mutations.changeAlwaysOn({ sandboxIds, alwaysOn });
+    await effects.gql.mutations.changeSandboxAlwaysOn({ sandboxId, alwaysOn });
   } catch (error) {
     changedSandboxes.forEach(oldSandbox =>
       actions.dashboard.internal.changeSandboxesInState({
@@ -1297,7 +1308,8 @@ export const changeSandboxesAlwaysOn: AsyncAction<{
     );
 
     actions.internal.handleError({
-      message: "We weren't able to update the frozen status of the sandboxes",
+      message:
+        "We weren't able to update the enable Always On for this sandbox",
       error,
     });
   }

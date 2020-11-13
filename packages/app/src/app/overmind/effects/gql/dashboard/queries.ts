@@ -254,7 +254,7 @@ export const alwaysOnTeamSandboxes: Query<
   query _AlwaysOnTeamSandboxes($teamId: UUID4!) {
     me {
       team(id: $teamId) {
-        sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
+        sandboxes(alwaysOn: true) {
           ...sandboxFragmentDashboard
         }
       }
