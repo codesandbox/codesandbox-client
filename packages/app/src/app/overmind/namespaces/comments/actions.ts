@@ -300,11 +300,11 @@ export const selectComment: AsyncAction<{
 
     const left = previewBounds.left + PREVIEW_COMMENT_OFFSET;
     const top = previewBounds.top;
-
     state.comments.currentCommentPositions = {
       trigger: bounds,
       dialog: {
-        left,
+        // never go over the left of the screen
+        left: left >= 20 ? left : 20,
         top,
         bottom: top,
         right: left,
