@@ -1303,10 +1303,13 @@ export const changeSandboxAlwaysOn: AsyncAction<{
       })
     );
 
+    // this is odd to handle it in the action
+    // TODO: we need a cleaner way to read graphql errors
+    const message = error.response?.errors[0]?.message;
+
     actions.internal.handleError({
-      message:
-        "We weren't able to update the enable Always On for this sandbox",
-      error,
+      message: 'We were not able to update Always-On for this sandbox',
+      error: { name: 'Always on', message },
     });
   }
 };

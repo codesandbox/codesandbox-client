@@ -68,9 +68,13 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
       <Stack justify="center" align="center" marginTop={120}>
         <Stack
           direction="vertical"
+          justify="space-between"
           align="center"
-          gap={8}
-          css={{ width: 500, height: '100vh', userSelect: 'none' }}
+          css={{
+            width: 500,
+            height: 'calc(100vh - 280px)',
+            userSelect: 'none',
+          }}
         >
           <Stack direction="vertical" align="center" gap={9}>
             <Icon name="server" size={60} />
@@ -84,10 +88,13 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
                 Perfect for APIs and scheduled tasks.
               </Text>
               <Text variant="muted" align="center">
-                Right-click on any server sandbox and enable “Always-On.”
+                Right-click on any server sandbox and enable “Always-On”
               </Text>
             </Stack>
           </Stack>
+          <Text variant="muted">
+            Pilot users can make up to 3 server sandboxes always-on
+          </Text>
         </Stack>
       </Stack>
     );

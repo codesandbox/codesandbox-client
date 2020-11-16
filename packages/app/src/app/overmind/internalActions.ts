@@ -379,6 +379,7 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
     if ('errors' in result) {
       const errors = values(result.errors)[0];
       const fields = Object.keys(result.errors);
+
       if (Array.isArray(errors)) {
         if (errors[0]) {
           if (fields[0] === 'detail') {
