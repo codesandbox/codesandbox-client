@@ -7,29 +7,42 @@ import { convertMentionLinksToMentions } from 'app/overmind/utils/comments';
 import React, { Attributes } from 'react';
 
 import { useMention } from './useMention';
+import { useImageDrop } from './useImageDrop';
 
-export const useCodesandboxMention = ({
+const markdownImageRegExp = /!\[[^\]]*\]\((.*?)\)/gm;
+const imageFileNameRegExp = /\((.*)\)/;
+
+type Mentions = {
+  [mentionName: string]: UserQuery;
+};
+
+type Images = {
+  [fileName: string]: {
+    src: string;
+    resolution: [number, number];
+  };
+};
+
+export const useCodesandboxCommentEditor = ({
   initialValue,
   initialMentions,
+  initialImages,
   onSubmit,
   fixed,
   props = {},
 }: {
   initialValue: string;
-  initialMentions: {
-    [mentionName: string]: any;
-  };
-  onSubmit: (
-    value: string,
-    mentions: { [username: string]: UserQuery }
-  ) => void;
+  initialMentions: Mentions;
+  initialImages: Images;
+  onSubmit: (value: string, mentions: Mentions, images: Images) => void;
   fixed: boolean;
   props: typeof Textarea extends React.FC<infer P>
     ? P & { css?: Attributes['css'] }
     : never;
-}): [React.ReactElement, string, { [username: string]: UserQuery }] => {
+}): [React.ReactElement, string, Mentions, Images] => {
   const ref = React.useRef(null);
   const { state, actions } = useOvermind();
+  const [images, setImages] = React.useState(initialImages);
   const [value, setValue, mention, mentions] = useMention(
     ref,
     () => convertMentionLinksToMentions(initialValue),
@@ -42,6 +55,21 @@ export const useCodesandboxMention = ({
     [mention.query]
   );
   const users = state.comments.usersQueryResult;
+
+  useImageDrop({
+    onDrop: (name, src, resolution) => {
+      setImages(current => ({
+        ...current,
+        [name]: {
+          src,
+          resolution,
+        },
+      }));
+    },
+    ref,
+    setValue,
+    value,
+  });
 
   React.useEffect(() => {
     actions.comments.queryUsers(mention.query);
@@ -58,7 +86,7 @@ export const useCodesandboxMention = ({
   React.useEffect(() => {
     if (ref.current) {
       const onKeyDown = event => {
-        if (event.keyCode === ESC) {
+        if (event.keyCode === ESC && mention.query !== null) {
           event.stopPropagation();
         }
       };
@@ -71,7 +99,7 @@ export const useCodesandboxMention = ({
 
     return () => {};
     // eslint-disable-next-line
-  }, [ref.current]);
+  }, [ref.current, mention]);
 
   const onKeyDown = event => {
     if (mention.query !== null) {
@@ -89,8 +117,25 @@ export const useCodesandboxMention = ({
       }
     } else if (event.keyCode === ENTER && !event.shiftKey) {
       event.preventDefault();
-      onSubmit(value, mentions);
+      const matchedImageReferences = value.match(markdownImageRegExp);
+      const imageReferences = matchedImageReferences
+        ? matchedImageReferences.map(
+            imageLink => imageLink.match(imageFileNameRegExp)[1]
+          )
+        : [];
+      const actuallyIncludedImages = imageReferences.reduce(
+        (aggr, fileName) => {
+          if (images[fileName]) {
+            aggr[fileName] = images[fileName];
+          }
+
+          return aggr;
+        },
+        {}
+      );
+
       setValue('');
+      onSubmit(value, mentions, actuallyIncludedImages);
     }
   };
 
@@ -209,5 +254,6 @@ export const useCodesandboxMention = ({
     </div>,
     value,
     mentions,
+    images,
   ];
 };
