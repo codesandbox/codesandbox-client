@@ -147,6 +147,7 @@ export const templates: TemplateType[] = [
   'styleguidist',
   'gridsome',
   'vuepress',
+  'docusaurus',
   'mdx-deck',
   'quasar-framework',
   'unibit',

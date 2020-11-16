@@ -16,7 +16,7 @@ Reason, as well as vanilla JavaScript that uses Parcel, and one for static
 
 We also have container templates for: Node.js, Angular, Adonis, Gatsby, Marko,
 Nuxt, Next, Sapper, Apollo, Ember, Nest, Styleguidist, MDX Deck, Gridsome,
-Quasar, and Vuepress.
+Quasar, Docusaurus and Vuepress.
 
 [Create a sandbox from a template](https://codesandbox.io/s/), or read more
 about the
