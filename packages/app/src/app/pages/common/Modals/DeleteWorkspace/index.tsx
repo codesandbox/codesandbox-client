@@ -7,17 +7,19 @@ import { Alert } from '../Common/Alert';
 export const DeleteWorkspace: FunctionComponent = () => {
   const {
     actions: { dashboard, modalClosed },
-    state: { activeTeamInfo },
+    state: { activeTeamInfo, user },
   } = useOvermind();
   const [teamName, setTeamName] = useState('');
-
+  const otherUsers = (activeTeamInfo.users || []).filter(
+    teamPerson => teamPerson.id !== user.id
+  ).length;
   return (
     <Alert title="Delete Workspace">
       <Text size={3} block>
         Are you sure you want to delete this Workspace? This action is{' '}
         <b>irreversible</b> and it will <b>delete all sandboxes</b> in this
         workspace{' '}
-        {activeTeamInfo.users.length ? (
+        {otherUsers ? (
           <Text>
             and will also <b>delete the workspace</b> for all other members.{' '}
             <br />
@@ -47,7 +49,7 @@ export const DeleteWorkspace: FunctionComponent = () => {
           <i>{activeTeamInfo.name}</i>) in the input below:
         </Text>
         <Input value={teamName} onChange={e => setTeamName(e.target.value)} />
-        <Stack marginTop={4} justify="space-between">
+        <Stack gap={2} marginTop={4} align="center" justify="flex-end">
           <Button autoWidth variant="secondary" onClick={modalClosed}>
             Cancel
           </Button>
