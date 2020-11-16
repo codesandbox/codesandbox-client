@@ -1252,7 +1252,9 @@ export const deleteWorkspace: AsyncAction = async ({
   try {
     await effects.gql.mutations.deleteWorkspace({ teamId: state.activeTeam });
 
+    actions.modalClosed();
     actions.setActiveTeam({ id: state.personalWorkspaceId! });
+    effects.router.redirectToDashboard();
     actions.dashboard.getTeams();
 
     effects.notificationToast.success(`Your workspace was deleted`);
