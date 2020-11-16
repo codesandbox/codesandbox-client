@@ -265,7 +265,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               });
             }}
           >
-            Disable {'"Always on"'}
+            Disable {'"Always-on"'}
           </MenuItem>
         ) : (
           <MenuItem
@@ -276,7 +276,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               });
             }}
           >
-            Enable {'"Always on"'}
+            Enable {'"Always-on"'}
           </MenuItem>
         ))}
       {hasAccess &&

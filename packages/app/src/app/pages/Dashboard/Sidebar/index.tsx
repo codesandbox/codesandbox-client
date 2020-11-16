@@ -198,7 +198,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           />
           {activeTeamInfo?.joinedPilotAt && (
             <RowItem
-              name="Always On"
+              name="Always-On"
               page="always-on"
               path={dashboardUrls.alwaysOn(activeTeam)}
               icon="server"

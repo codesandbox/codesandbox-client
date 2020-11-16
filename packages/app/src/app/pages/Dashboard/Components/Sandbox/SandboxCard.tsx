@@ -171,7 +171,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
 
     const alwaysOnText = (
       <Text key="always-on" css={css({ color: 'green' })}>
-        Always On
+        Always-On
       </Text>
     );
 

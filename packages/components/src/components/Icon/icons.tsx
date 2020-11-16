@@ -624,7 +624,7 @@ export const frozen = props => (
 export const server = props => (
   <Element
     as="svg"
-    viewBox="0 0 10 11"
+    viewBox="0 0 16 16"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
@@ -638,7 +638,7 @@ export const server = props => (
   </Element>
 );
 
-export const add = (props) => (
+export const add = props => (
   <svg width={10} height={10} fill="none" viewBox="0 0 8 8" {...props}>
     <g clipPath="url(#clip0)">
       <path

@@ -12,7 +12,7 @@ export const AlwaysOn = () => {
     actions,
     state: {
       activeTeam,
-      dashboard: { sandboxes, getFilteredSandboxes },
+      dashboard: { sandboxes },
     },
   } = useOvermind();
 
@@ -21,7 +21,7 @@ export const AlwaysOn = () => {
   }, [actions.dashboard, activeTeam]);
 
   const items: DashboardGridItem[] = sandboxes.ALWAYS_ON
-    ? getFilteredSandboxes(sandboxes.ALWAYS_ON).map(sandbox => ({
+    ? sandboxes.ALWAYS_ON.map(sandbox => ({
         type: 'sandbox',
         sandbox,
       }))
@@ -32,9 +32,9 @@ export const AlwaysOn = () => {
   return (
     <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
-        <title>Always On - CodeSandbox</title>
+        <title>Always-On - CodeSandbox</title>
       </Helmet>
-      <Header title="Always On" activeTeam={activeTeam} showViewOptions />
+      <Header title="Always-On" activeTeam={activeTeam} showViewOptions />
       <VariableGrid page={pageType} items={items} />
     </SelectionProvider>
   );

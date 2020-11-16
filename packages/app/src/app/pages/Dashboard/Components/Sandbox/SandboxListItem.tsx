@@ -124,7 +124,7 @@ export const SandboxListItem = ({
       <Column span={[0, 2, 2]} as={Stack} align="center">
         {alwaysOn && (
           <Text size={3} css={css({ color: 'green' })} maxWidth="100%">
-            Always On
+            Always-On
           </Text>
         )}
       </Column>
