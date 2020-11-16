@@ -100,7 +100,7 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
   const selectedVersion =
     hitToVersionMap[dependency.objectID] || dependency.tags.latest;
 
-  const versionInstalled = installedDependencies[dependency.name];
+  const versionInstalled = (installedDependencies || {})[dependency.name];
 
   const isDependencySelected = Boolean(
     json(selectedDependencies)[dependency.objectID]
