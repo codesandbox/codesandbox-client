@@ -94,8 +94,8 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
       name="comment"
       active
       style={{
-        top: previewReference.y * Math.round(scale) + 'px',
-        left: previewReference.x * Math.round(scale) + 'px',
+        top: Math.round(previewReference.y) + 'px',
+        left: Math.round(previewReference.x) + 'px',
       }}
     /> : null}
     </Wrapper>
