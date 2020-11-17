@@ -708,49 +708,42 @@ export type RootSubscriptionTypeSandboxChangedArgs = {
 /** A Sandbox */
 export type Sandbox = {
   __typename?: 'Sandbox';
-  team: Maybe<Team>;
-  description: Maybe<Scalars['String']>;
-  screenshotUrl: Maybe<Scalars['String']>;
-  alwaysOn: Maybe<Scalars['Boolean']>;
-  viewCount: Scalars['Int'];
   alias: Maybe<Scalars['String']>;
-  privacy: Scalars['Int'];
-  isSse: Maybe<Scalars['Boolean']>;
-  forkedTemplate: Maybe<Template>;
-  removedAt: Maybe<Scalars['String']>;
-  forkCount: Scalars['Int'];
-  updatedAt: Scalars['String'];
-  collection: Maybe<Collection>;
-  /** If the sandbox is a template this will be set */
-  customTemplate: Maybe<Template>;
-  collaborators: Array<Collaborator>;
   author: Maybe<User>;
+  authorId: Maybe<Scalars['UUID4']>;
+  authorization: Authorization;
   /** If the sandbox has created a PR, this will refer to the git that you will merge into */
   baseGit: Maybe<Git>;
-  insertedAt: Scalars['String'];
-  screenshotOutdated: Scalars['Boolean'];
-  isFrozen: Scalars['Boolean'];
-  comments: Array<Comment>;
-  title: Maybe<Scalars['String']>;
-  /** If a PR has been opened on the sandbox, this will be set to the PR number */
-  prNumber: Maybe<Scalars['Int']>;
+  collaborators: Array<Collaborator>;
+  collection: Maybe<Collection>;
   comment: Maybe<Comment>;
-  id: Scalars['ID'];
-  teamId: Maybe<Scalars['UUID4']>;
+  comments: Array<Comment>;
+  /** If the sandbox is a template this will be set */
+  customTemplate: Maybe<Template>;
+  description: Maybe<Scalars['String']>;
+  forkCount: Scalars['Int'];
+  forkedTemplate: Maybe<Template>;
   /** If the sandbox has a git repo tied to it this will be set */
   git: Maybe<Git>;
+  id: Scalars['ID'];
+  insertedAt: Scalars['String'];
+  invitations: Array<Invitation>;
+  isFrozen: Scalars['Boolean'];
+  likeCount: Scalars['Int'];
   /** If the sandbox has been forked from a git sandbox this will be set */
   originalGit: Maybe<Git>;
-  authorization: Authorization;
-  authorId: Maybe<Scalars['UUID4']>;
-  invitations: Array<Invitation>;
+  /** If a PR has been opened on the sandbox, this will be set to the PR number */
+  prNumber: Maybe<Scalars['Int']>;
+  privacy: Scalars['Int'];
+  removedAt: Maybe<Scalars['String']>;
+  screenshotOutdated: Scalars['Boolean'];
+  screenshotUrl: Maybe<Scalars['String']>;
   source: Source;
   team: Maybe<Team>;
   teamId: Maybe<Scalars['UUID4']>;
   title: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   viewCount: Scalars['Int'];
-  likeCount: Scalars['Int'];
   alwaysOn: Scalars['Boolean'];
 };
 
