@@ -45,6 +45,8 @@ import {
   ChangeTeamMemberAuthorizationMutationVariables,
   ChangeSandboxAlwaysOnMutation,
   ChangeSandboxAlwaysOnMutationVariables,
+  DeleteWorkspaceMutation,
+  DeleteWorkspaceMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -341,4 +343,10 @@ export const changeSandboxAlwaysOn: Query<
     }
   }
   ${sandboxFragmentDashboard}
+`;
+
+export const deleteWorkspace: Query<DeleteWorkspaceMutation, DeleteWorkspaceMutationVariables> = gql`
+  mutation DeleteWorkspace($teamId: UUID4!) {
+    deleteWorkspace(teamId: $teamId)
+  }
 `;

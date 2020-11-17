@@ -3,6 +3,7 @@ import {
   CommentFragment,
   Reference,
   UserReferenceMetadata,
+  ImageReferenceMetadata,
 } from 'app/graphql/types';
 
 export function convertMentionsToMentionLinks(
@@ -71,4 +72,45 @@ export function convertUserReferencesToMentions(
 
     return aggr;
   }, {});
+}
+
+export function convertImagesToImageReferences(images: {
+  [fileName: string]: { src: string; resolution: [number, number] };
+}) {
+  return Object.keys(images).reduce<
+    (Reference & { metadata: ImageReferenceMetadata })[]
+  >((aggr, key) => {
+    const image = images[key];
+    return aggr.concat({
+      id: '',
+      type: 'image',
+      resource: '',
+      metadata: {
+        fileName: key,
+        resolution: image.resolution,
+        uploadId: 0,
+        url: image.src,
+      },
+    });
+  }, []);
+}
+
+export function convertImageReferencesToMarkdownImages(
+  value: string,
+  imageReferences: CommentFragment['references']
+) {
+  return imageReferences.reduce<string>((aggr, reference) => {
+    if (reference.type === 'image') {
+      const metadata = reference.metadata as ImageReferenceMetadata;
+
+      return aggr.replace(
+        // We do not check the full ![](FILE_NAME) signature, only (FILE_NAME)
+        // as this is more than enough
+        new RegExp('\\(' + metadata.fileName + '\\)', 'ig'),
+        `(${reference.resource})`
+      );
+    }
+
+    return aggr;
+  }, value);
 }
