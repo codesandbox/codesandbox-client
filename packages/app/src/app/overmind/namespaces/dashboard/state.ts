@@ -201,6 +201,10 @@ export const state: State = {
           return field.toLowerCase();
         }
 
+        if (orderField === 'views') {
+          return sandbox.viewCount;
+        }
+
         return sandbox[orderField];
       }) as Sandbox[]).filter(
         x =>
