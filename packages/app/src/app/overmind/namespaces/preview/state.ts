@@ -12,9 +12,9 @@ type State = {
     resolution: [number, number];
   };
   screenshot: {
-    source: string | null
-    isLoading: boolean
-  }
+    source: string | null;
+    isLoading: boolean;
+  };
   previousMode: Mode;
   mode: Mode;
 };
@@ -39,7 +39,7 @@ export const state: State = {
   },
   screenshot: {
     source: null,
-    isLoading: false
+    isLoading: false,
   },
   previousMode: null,
   mode: null,
