@@ -46,7 +46,6 @@ export const SettingNavigation = (props: SettingsNavigationProps) => (
       css={css({
         width: '100%',
         borderStyle: 'solid',
-
         borderWidth: 0,
         borderBottomWidth: 1,
         borderColor: 'grays.500',

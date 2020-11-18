@@ -65,7 +65,7 @@ export const RegistrySettings = () => {
   }
 
   return (
-    <>
+    <Stack direction="vertical" gap={6}>
       {alert && <Alert message={alert.message} cta={alert.cta} />}
       <Stack
         css={css({
@@ -99,6 +99,6 @@ export const RegistrySettings = () => {
           disabled={Boolean(alert)}
         />
       </Stack>
-    </>
+    </Stack>
   );
 };
