@@ -118,7 +118,9 @@ export const RegistryForm = ({
             gap={13}
           >
             <Stack css={css({ width: '100%' })} gap={5} direction="vertical">
-              <Text size={4}>Registry</Text>
+              <Text weight="bold" size={4}>
+                Registry
+              </Text>
 
               <CustomFormField label="Registry Host">
                 <Select
@@ -188,7 +190,9 @@ export const RegistryForm = ({
               />
             </Stack>
             <Stack css={css({ width: '100%' })} gap={5} direction="vertical">
-              <Text size={4}>Scopes</Text>
+              <Text weight="bold" size={4}>
+                Scopes
+              </Text>
 
               {/* <div>
                 <CustomFormField
