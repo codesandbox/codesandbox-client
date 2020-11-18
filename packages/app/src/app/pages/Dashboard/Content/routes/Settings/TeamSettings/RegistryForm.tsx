@@ -96,6 +96,9 @@ export const RegistryForm = ({
     proxyEnabled: true,
   });
 
+  // We make sure to always show one input field
+  const prefilledScopes = scopes.length === 0 ? [''] : scopes;
+
   return (
     <Media query={`(min-width: ${theme.breakpoints[2]})`}>
       {isHorizontal => (
@@ -213,7 +216,7 @@ export const RegistryForm = ({
                     css={css({ width: '100%' })}
                     direction="vertical"
                   >
-                    {scopes.map((scope, i) => (
+                    {prefilledScopes.map((scope, i) => (
                       <Stack
                         align="center"
                         direction="horizontal"
@@ -223,7 +226,7 @@ export const RegistryForm = ({
                           required
                           pattern="@\w+"
                           css={css({ width: '100%' })}
-                          placeholder="@acme"
+                          placeholder="Enter a scope (@acme)"
                           disabled={disabled}
                           value={scope}
                           onInput={e => {
