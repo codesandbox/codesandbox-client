@@ -108,6 +108,7 @@ export const RegistryForm = ({
             onSubmit(serializeValues());
           }}
           as="form"
+          autoComplete="false"
           gap={8}
           css={css({ width: '100%' })}
           direction="vertical"
