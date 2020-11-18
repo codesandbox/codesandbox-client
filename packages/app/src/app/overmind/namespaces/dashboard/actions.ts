@@ -1247,12 +1247,23 @@ export const createOrUpdateCurrentNpmRegistry: AsyncAction<Omit<
   CreateOrUpdateNpmRegistryMutationVariables,
   'teamId'
 >> = async ({ state, actions, effects }, params) => {
-  await effects.gql.mutations.createOrUpdateNpmRegistry({
-    ...params,
-    teamId: state.activeTeam,
-  });
+  try {
+    await effects.gql.mutations.createOrUpdateNpmRegistry({
+      ...params,
+      teamId: state.activeTeam,
+    });
 
-  await actions.dashboard.fetchCurrentNpmRegistry({});
+    await actions.dashboard.fetchCurrentNpmRegistry({});
+
+    effects.notificationToast.success(
+      'Successfully saved new registry settings!'
+    );
+  } catch (e) {
+    actions.internal.handleError({
+      message: 'There was a problem saving the registry settings',
+      error: e,
+    });
+  }
 };
 
 export const fetchCurrentNpmRegistry: AsyncAction<{}> = async ({
