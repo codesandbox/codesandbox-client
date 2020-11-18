@@ -97,7 +97,7 @@ export class ServerExecutor implements IExecutor {
         transports: ['websocket', 'polling'],
       });
     } else {
-      this.socket = io(`sse.${usedHost}`, {
+      this.socket = io(`${usedHost.replace('https://', 'https://sse.')}`, {
         autoConnect: false,
         transports: ['websocket', 'polling'],
       });
