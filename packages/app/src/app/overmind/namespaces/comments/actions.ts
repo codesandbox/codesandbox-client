@@ -3,6 +3,7 @@ import {
   Module,
   UserQuery,
 } from '@codesandbox/common/lib/types';
+import { isEqual } from 'lodash-es';
 import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import {
@@ -288,15 +289,24 @@ export const selectComment: AsyncAction<{
     const metadata = comment.anchorReference
       .metadata as PreviewReferenceMetadata;
 
-    state.preview.responsive.resolution = [metadata.width, metadata.height];
-    state.preview.previousMode = state.preview.mode;
-    state.preview.mode = 'responsive';
+    const previewBounds = await effects.preview.getIframeBoundingRect();
+
+    // if it wasn't in preview mode do not put it in preview mode
+    if (
+      !isEqual(
+        [metadata.width, metadata.height],
+        [previewBounds.width, previewBounds.height]
+      )
+    ) {
+      state.preview.responsive.resolution = [metadata.width, metadata.height];
+      state.preview.previousMode = state.preview.mode;
+      state.preview.mode = 'responsive';
+    }
+
     state.comments.currentCommentId = commentId;
 
     // We have to wait for the bubble to appear
     await Promise.resolve();
-
-    const previewBounds = await effects.preview.getIframBoundingRect();
 
     const left = previewBounds.left + PREVIEW_COMMENT_OFFSET;
     const top = previewBounds.top;
@@ -452,7 +462,7 @@ export const addOptimisticPreviewComment: AsyncAction<{
   const id = OPTIMISTIC_COMMENT_ID;
   const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
   const comments = state.comments.comments;
-  const previewIframeBounds = await effects.preview.getIframBoundingRect();
+  const previewIframeBounds = await effects.preview.getIframeBoundingRect();
   const previewPath = await effects.preview.getPreviewPath();
   const screenshotUrl = await effects.preview.createScreenshot({
     screenshotSource: screenshot,
