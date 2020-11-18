@@ -1,6 +1,7 @@
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import sourceMaps from 'rollup-plugin-sourcemaps';
+import json from 'rollup-plugin-json';
 import camelCase from 'lodash.camelcase';
 import typescript from 'rollup-plugin-typescript2';
 import uglify from 'rollup-plugin-uglify';
@@ -37,6 +38,7 @@ function getConfig({ isUMD }) {
     },
     external: isUMD ? [] : id => id === 'react' || /codemirror/.test(id),
     plugins: [
+      json(),
       // Compile TypeScript files
       typescript({ useTsconfigDeclarationDir: true }),
       // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)

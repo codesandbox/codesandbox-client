@@ -29,7 +29,7 @@ requirePolyfills().then(() => {
   registerServiceWorker('/sandbox-service-worker.js', {});
 
   function sendReady() {
-    dispatch({ type: 'initialized', id: ID });
+    dispatch({ type: 'initialized', url: document.location.href, id: ID });
   }
 
   async function handleMessage(data, source) {

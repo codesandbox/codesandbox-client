@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { listen, dispatch } from 'codesandbox-api';
-import classNames from 'classnames';
+import { listen } from 'codesandbox-api';
 
 import RefreshIcon from './RefreshIcon';
 import BackwardIcon from './BackwardIcon';
@@ -8,7 +7,7 @@ import ForwardIcon from './ForwardIcon';
 
 import withSandpack from '../../utils/with-sandpack';
 import { ISandpackContext } from '../../types';
-import cn from '../../utils/cn';
+import { styled } from '../../stitches.config';
 
 interface Props {
   sandpack: ISandpackContext;
@@ -22,6 +21,46 @@ interface State {
   backwardNavigationStack: Array<string>;
   forwardNavigationStack: Array<string>;
 }
+
+const NavigatorContainer = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  backgroundColor: 'rgb(245, 245, 245)',
+  width: '100%',
+  padding: '0.5rem',
+  borderRadius: '2px',
+  borderBottom: '1px solid #ddd',
+  '&:first-child': { marginLeft: '0' },
+  '&:last-child': { marginLeft: '0' },
+});
+
+const NavigatorInput = styled('input', {
+  backgroundColor: 'white',
+  width: '100%',
+  padding: '0.25rem 0.5rem',
+  borderRadius: '4px',
+  border: '1px solid #ddd',
+  fontSize: '0.875rem',
+  margin: '0 0.25rem',
+  flex: 1,
+});
+
+const NavigatorButton = styled('button', {
+  transition: '0.3s ease background-color',
+  padding: '2px',
+  margin: '0 0.25rem',
+  fontSize: '1.25rem',
+  backgroundColor: 'transparent',
+  border: '0',
+  outline: '0',
+  display: 'flex',
+  alignItems: 'center',
+  color: 'rgb(114, 114, 114)',
+  verticalAlign: 'middle',
+  cursor: 'pointer',
+
+  ':hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+});
 
 class Navigator extends React.Component<Props, State> {
   listener: Function;
@@ -45,8 +84,12 @@ class Navigator extends React.Component<Props, State> {
 
   handleMessage = (message: any) => {
     switch (message.type) {
+      case 'initialized': {
+        this.setState(this.getUrlState(message.url));
+        break;
+      }
+
       case 'urlchange': {
-        console.log('urlchange');
         this.setState(this.getUrlState(message.url));
         break;
       }
@@ -63,9 +106,9 @@ class Navigator extends React.Component<Props, State> {
 
     if (match && match[1]) {
       return match[1];
-    } else {
-      return url;
     }
+
+    return url;
   }
 
   getUrlState = (url: string) => {
@@ -192,32 +235,22 @@ class Navigator extends React.Component<Props, State> {
     const { sandpack, className, ...props } = this.props;
 
     return (
-      <div
-        className={classNames(className, cn('Navigator', 'container'))}
-        {...props}
-      >
-        <button
-          className={cn('Navigator', 'button')}
-          onClick={this.onBackwardNavigation}
-        >
+      <NavigatorContainer className={className} {...props}>
+        <NavigatorButton onClick={this.onBackwardNavigation}>
           <BackwardIcon />
-        </button>
-        <button
-          className={cn('Navigator', 'button')}
-          onClick={this.onFowardNavigation}
-        >
+        </NavigatorButton>
+        <NavigatorButton onClick={this.onFowardNavigation}>
           <ForwardIcon />
-        </button>
-        <button className={cn('Navigator', 'button')} onClick={this.onRefresh}>
+        </NavigatorButton>
+        <NavigatorButton onClick={this.onRefresh}>
           <RefreshIcon />
-        </button>
-        <input
-          className={cn('Navigator', 'input')}
+        </NavigatorButton>
+        <NavigatorInput
           onChange={this.onInputChange}
           onKeyDown={this.onKeyDown}
           value={browserPath}
         />
-      </div>
+      </NavigatorContainer>
     );
   }
 }

@@ -3,12 +3,18 @@ import * as React from 'react';
 import ModuleList from './ModuleList';
 import SandpackConsumer from '../SandpackConsumer';
 
-import cn from '../../utils/cn';
+import { styled } from '../../stitches.config';
 
 export interface Props {
   style?: Object;
   className?: string;
 }
+
+const Container = styled('div', {
+  backgroundColor: '#24282a',
+  color: 'white',
+  paddingTop: '0.5em',
+});
 
 export default class FileExplorer extends React.PureComponent<Props> {
   render() {
@@ -16,17 +22,14 @@ export default class FileExplorer extends React.PureComponent<Props> {
     return (
       <SandpackConsumer>
         {sandpack => (
-          <div
-            className={`${className} ${cn('FileExplorer', 'container')}`}
-            {...props}
-          >
+          <Container className={className} {...props}>
             <ModuleList
               selectFile={sandpack.openFile}
               files={sandpack.files}
               prefixedPath="/"
               openedPath={sandpack.openedPath}
             />
-          </div>
+          </Container>
         )}
       </SandpackConsumer>
     );

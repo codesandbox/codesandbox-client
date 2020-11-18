@@ -7,11 +7,7 @@ import generatePackageJSON, {
   getPackageJSON,
 } from '../utils/generate-package-json';
 import version from '../version';
-import {
-  IManagerState,
-  IModuleError,
-  ManagerStatus,
-} from '../typings/types';
+import { IManagerState, IModuleError, ManagerStatus } from '../typings/types';
 
 export interface IManagerOptions {
   /**
@@ -80,10 +76,10 @@ export interface ISandboxInfo {
   disableDependencyPreprocessing?: boolean;
 }
 
-const BUNDLER_URL =
-  process.env.CODESANDBOX_ENV === 'development'
-    ? 'http://localhost:3002'
-    : `https://sandpack-${version.replace(/\./g, '-')}.codesandbox.io`;
+console.log(process.env.CODESANDBOX_ENV);
+const BUNDLER_URL = true
+  ? 'http://localhost:3000'
+  : `https://sandpack-${version.replace(/\./g, '-')}.codesandbox.io`;
 
 export default class PreviewManager {
   selector: string | undefined;
@@ -176,7 +172,10 @@ export default class PreviewManager {
         case 'action': {
           if (mes.action === 'show-error') {
             const { title, path, message, line, column } = mes;
-            this.errors = [...this.errors, { title, path, message, line, column }];
+            this.errors = [
+              ...this.errors,
+              { title, path, message, line, column },
+            ];
           }
           break;
         }
@@ -294,7 +293,9 @@ export default class PreviewManager {
       }));
   }
 
-  public getManagerTranspilerContext = (): Promise<{ [transpiler: string]: Object }> =>
+  public getManagerTranspilerContext = (): Promise<{
+    [transpiler: string]: Object;
+  }> =>
     new Promise(resolve => {
       const listener = listen((message: any) => {
         if (message.type === 'transpiler-context') {
@@ -304,7 +305,7 @@ export default class PreviewManager {
         }
       });
 
-        this.dispatch({ type: 'get-transpiler-context' });
+      this.dispatch({ type: 'get-transpiler-context' });
     });
 
   private getFiles() {

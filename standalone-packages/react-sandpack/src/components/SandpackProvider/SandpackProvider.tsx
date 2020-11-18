@@ -9,6 +9,7 @@ import {
   ISandpackContext,
   IModuleError,
   ManagerStatus,
+  IFile,
 } from '../../types';
 
 export interface State {
@@ -28,6 +29,7 @@ export interface Props {
   files: IFiles;
   initialPath?: string;
   entry?: string;
+  openedPath?: string;
   dependencies?: {
     [depName: string]: string;
   };
@@ -72,7 +74,7 @@ export default class SandpackProvider extends React.PureComponent<
         props.entry
       ),
       browserPath: props.initialPath || '/',
-      openedPath: props.entry || '/index.js',
+      openedPath: props.openedPath || props.entry || '/index.js',
       iframe: null,
       managerState: undefined,
       errors: [],
@@ -136,10 +138,10 @@ export default class SandpackProvider extends React.PureComponent<
   }
 
   getOptions = () => ({
-      bundlerURL: this.props.bundlerURL,
-      fileResolver: this.props.fileResolver,
-      skipEval: this.props.skipEval,
-    });
+    bundlerURL: this.props.bundlerURL,
+    fileResolver: this.props.fileResolver,
+    skipEval: this.props.skipEval,
+  });
 
   setupFrame = (el: HTMLIFrameElement) => {
     if (el) {
@@ -163,12 +165,22 @@ export default class SandpackProvider extends React.PureComponent<
     }
   };
 
+  updateCurrentFile = (file: IFile) => {
+    if (file.code !== this.state.files[this.state.openedPath]?.code) {
+      this.updateFiles({
+        ...this.state.files,
+        [this.state.openedPath]: file,
+      });
+    }
+  };
+
   updateFiles = (files: IFiles) => {
     this.setState({ files });
 
     if (this.props.onFileChange) {
       this.props.onFileChange(files, this._getSandpackState());
     }
+
     if (this.manager) {
       this.manager.updatePreview({
         showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
@@ -248,6 +260,7 @@ export default class SandpackProvider extends React.PureComponent<
       getManagerTranspilerContext: this.getManagerTranspilerContext,
       browserFrame: iframe,
       updateFiles: this.updateFiles,
+      updateCurrentFile: this.updateCurrentFile,
       bundlerURL: this.manager ? this.manager.bundlerURL : undefined,
     };
   };

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IFiles, IFile } from '../../../types';
+import { IFiles } from '../../../types';
 
 import File from '../File';
 import Directory from '../Directory';

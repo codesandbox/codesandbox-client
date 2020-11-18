@@ -143,7 +143,7 @@ export default function initialize() {
           dependencies['react-dom'] &&
           isMinimalReactVersion(dependencies['react-dom'], '16.9.0')
         ) {
-          return { ...dependencies, 'react-refresh': '0.8.1' };
+          return { ...dependencies, 'react-refresh': '0.9.0' };
         }
 
         return dependencies;

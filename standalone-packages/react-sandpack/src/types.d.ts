@@ -62,6 +62,7 @@ export interface ISandpackContext {
   openedPath: string;
   errors: Array<IModuleError>;
   files: IFiles;
+  updateCurrentFile: (file: IFile) => void;
   openFile: (path: string) => void;
   updateFiles: (files: IFiles) => void;
   getManagerTranspilerContext: () => Promise<{ [transpiler: string]: Object }>;

@@ -359,10 +359,7 @@ function sendResize() {
 
   if (lastHeight !== height) {
     if (document.body) {
-      dispatch({
-        type: 'resize',
-        height,
-      });
+      dispatch({ type: 'resize', height });
     }
   }
 

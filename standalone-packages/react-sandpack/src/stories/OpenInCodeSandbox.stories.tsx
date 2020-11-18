@@ -1,15 +1,9 @@
 import React from 'react';
-import JSXAddon from 'storybook-addon-jsx';
-import { storiesOf, setAddon } from '@storybook/react';
 
-import SandpackProvider from '../src/components/SandpackProvider/index.ts';
-import OpenInCodeSandbox from '../src/components/OpenInCodeSandbox/index.ts';
+import SandpackProvider from '../components/SandpackProvider';
+import OpenInCodeSandbox from '../components/OpenInCodeSandbox';
 
-setAddon(JSXAddon);
-
-const stories = storiesOf('Export To CodeSandbox', module);
-
-stories.addWithJSX('minimal', () => (
+export const Minimal = () => (
   <SandpackProvider
     entry="/index.js"
     files={{
@@ -21,9 +15,9 @@ stories.addWithJSX('minimal', () => (
   >
     <OpenInCodeSandbox />
   </SandpackProvider>
-));
+);
 
-stories.addWithJSX('with multiple files', () => (
+export const WithMultipleFiles = () => (
   <SandpackProvider
     entry="/index.js"
     files={{
@@ -43,9 +37,9 @@ stories.addWithJSX('with multiple files', () => (
   >
     <OpenInCodeSandbox />
   </SandpackProvider>
-));
+);
 
-stories.addWithJSX('with render prop', () => (
+export const WithRenderProp = () => (
   <SandpackProvider
     entry="/index.js"
     files={{
@@ -61,4 +55,4 @@ stories.addWithJSX('with render prop', () => (
       }}
     />
   </SandpackProvider>
-));
+);

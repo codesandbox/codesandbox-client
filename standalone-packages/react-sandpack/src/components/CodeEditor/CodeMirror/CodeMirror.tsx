@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { IInstance, Controlled } from 'react-codemirror2';
+import { IInstance } from 'react-codemirror2';
 import codemirror from 'codemirror';
 
 import withSandpack from '../../../utils/with-sandpack';
-import cn from '../../../utils/cn';
 import { ISandpackContext } from '../../../types';
 
 import CodeMirrorComponent from '../../../helper-components/CodeMirror';
@@ -11,7 +10,7 @@ import CodeMirrorComponent from '../../../helper-components/CodeMirror';
 interface Props {
   sandpack: ISandpackContext;
   codeMirrorOptions: codemirror.EditorConfiguration;
-  style?: Object;
+  style?: React.CSSProperties;
   className?: string;
 }
 
