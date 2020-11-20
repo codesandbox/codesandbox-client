@@ -9,11 +9,20 @@ export const AlwaysOn: FunctionComponent = () => {
       workspace: { sandboxAlwaysOnChanged },
     },
     state: {
+      activeTeamInfo,
+      activeWorkspaceAuthorization,
       editor: {
         currentSandbox: { alwaysOn },
       },
     },
   } = useOvermind();
+
+  if (
+    !activeTeamInfo?.joinedPilotAt ||
+    activeWorkspaceAuthorization === 'READ'
+  ) {
+    return null;
+  }
 
   const onChange = (
     event:
