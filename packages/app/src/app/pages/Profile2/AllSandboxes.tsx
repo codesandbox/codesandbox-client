@@ -4,10 +4,13 @@ import {
   Column,
   Stack,
   Text,
+  Link,
+  Icon,
   IconButton,
   Menu,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import { motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
@@ -28,6 +31,7 @@ export const AllSandboxes = () => {
         sandboxes: fetchedSandboxes,
       },
     },
+    effects: { browser },
   } = useOvermind();
 
   const featuredSandboxIds = featuredSandboxes.map(sandbox => sandbox.id);
@@ -59,6 +63,8 @@ export const AllSandboxes = () => {
 
   return (
     <Stack as="section" direction="vertical" gap={6}>
+      <UpgradeBanner />
+
       <Stack justify="space-between" align="center">
         {featuredSandboxes.length ? (
           <Text size={7} weight="bold">
@@ -193,5 +199,89 @@ const Pagination = () => {
         </li>
       </Stack>
     </nav>
+  );
+};
+
+const UpgradeBanner = () => {
+  const {
+    state: {
+      user,
+      profile: { current },
+    },
+    effects: { browser },
+  } = useOvermind();
+
+  const myProfile = user?.username === current.username;
+  const isPro = user && Boolean(user.subscription);
+
+  const showUpgradeMessage =
+    myProfile && (browser.storage.get('PROFILE_SHOW_UPGRADE') || true);
+
+  const dontShowUpgradeMessage = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    browser.storage.set('PROFILE_SHOW_UPGRADE', false);
+  };
+
+  if (!showUpgradeMessage) return null;
+
+  return (
+    <Stack
+      as={Link}
+      href="/pro"
+      justify="space-between"
+      align="center"
+      css={css({
+        backgroundColor: 'grays.600',
+        borderRadius: 'medium',
+        paddingLeft: 3,
+        paddingRight: 2,
+        paddingY: 2,
+        transitionProperty: 'transform',
+        transitionDuration: (theme: typeof designLanguage) => theme.speeds[2],
+        ':hover': {
+          transform: 'scale(1.01)',
+        },
+      })}
+    >
+      {isPro ? (
+        <Stack align="center" gap={4}>
+          <Icon
+            name="eye"
+            size={16}
+            css={css({
+              flexShrink: 0,
+              display: ['none', 'block', 'block'],
+            })}
+          />
+          <Text size={2} css={{ lineHeight: '16px' }}>
+            Change your default privacy to hide your drafts
+          </Text>
+        </Stack>
+      ) : (
+        <Stack align="center" gap={4}>
+          <Icon
+            name="eye"
+            size={16}
+            css={css({
+              flexShrink: 0,
+              display: ['none', 'block', 'block'],
+            })}
+          />
+          <Text size={2} css={{ lineHeight: '16px' }}>
+            <Text css={css({ color: 'blues.700' })}>Upgrade to Pro</Text> to
+            change your sandbox permissions to hide your drafts
+          </Text>
+        </Stack>
+      )}
+
+      <IconButton
+        name="cross"
+        size={12}
+        title="Don't show me this again"
+        onClick={dontShowUpgradeMessage}
+      />
+    </Stack>
   );
 };
