@@ -19,6 +19,7 @@ import {
   IconWithBackground,
   SpinnerWrapper,
 } from './elements';
+import { Sandbox } from '../../../types';
 
 export interface NavigatorProps {
   url: string;
@@ -36,9 +37,11 @@ export interface NavigatorProps {
   zenMode?: boolean;
   isProjectView: boolean;
   isScreenshotLoading?: boolean;
+  sandbox: Sandbox;
 }
 
 function Navigator({
+  sandbox,
   url,
   onChange,
   onConfirm,
@@ -75,7 +78,8 @@ function Navigator({
       >
         <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
       </AddressBarContainer>
-      {createPreviewComment && (
+
+      {createPreviewComment && !sandbox.isSse && (
         <IconWithBackground
           onClick={createPreviewComment}
           style={{
