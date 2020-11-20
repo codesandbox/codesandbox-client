@@ -606,6 +606,7 @@ class BasePreview extends React.PureComponent<Props, State> {
             openNewWindow={this.openNewWindow}
             createPreviewComment={createPreviewComment}
             zenMode={settings.zenMode}
+            sandbox={sandbox}
           />
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
