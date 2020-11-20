@@ -37,7 +37,7 @@ export interface NavigatorProps {
   zenMode?: boolean;
   isProjectView: boolean;
   isScreenshotLoading?: boolean;
-  sandbox: Sandbox;
+  sandbox?: Sandbox;
 }
 
 function Navigator({
@@ -79,7 +79,7 @@ function Navigator({
         <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
       </AddressBarContainer>
 
-      {createPreviewComment && !sandbox.isSse && (
+      {createPreviewComment && !(sandbox || {}).isSse && (
         <IconWithBackground
           onClick={createPreviewComment}
           style={{
