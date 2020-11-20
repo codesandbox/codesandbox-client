@@ -24,6 +24,7 @@ export const AlwaysOn = () => {
     ? sandboxes.ALWAYS_ON.map(sandbox => ({
         type: 'sandbox',
         sandbox,
+        noDrag: true,
       }))
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 

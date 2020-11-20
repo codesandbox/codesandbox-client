@@ -274,12 +274,13 @@ const linkStyles = {
   flexShrink: 0,
 };
 
-const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents'];
+const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents', 'always-on'];
 const canNotAcceptFolders: PageTypes[] = [
   'home',
   'recents',
   'drafts',
   'templates',
+  'always-on',
 ];
 
 const isSamePath = (
