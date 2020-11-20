@@ -7,7 +7,7 @@ let _preview = blocker<BasePreview>();
 const PREVIEW_COMMENT_BUBBLE_OFFSET = 16;
 
 export default {
-  initialize() { },
+  initialize() {},
   initializePreview(preview: any) {
     _preview.resolve(preview);
     return () => {
@@ -33,7 +33,7 @@ export default {
     const preview = await _preview.promise;
     preview.updateAddressbarUrl();
   },
-  async getIframBoundingRect() {
+  async getIframeBoundingRect() {
     const preview = await _preview.promise;
 
     return preview.element.getBoundingClientRect();
@@ -49,33 +49,36 @@ export default {
   },
   takeScreenshot(isPrivateSandbox: boolean): Promise<string> {
     return new Promise((resolve, reject) => {
-      let timeout
-      const start = Date.now()
+      let timeout;
+      const start = Date.now();
 
       const disposeListener = listen((data: any) => {
         if (data.type === 'screenshot-generated') {
-          clearTimeout(timeout)
-          const waitAtLeastMs = 250
-          const waitedMs = Date.now() - start
+          clearTimeout(timeout);
+          const waitAtLeastMs = 250;
+          const waitedMs = Date.now() - start;
 
-          setTimeout(() => resolve(data.screenshot), waitedMs > waitAtLeastMs ? 0 : waitAtLeastMs - waitedMs)
+          setTimeout(
+            () => resolve(data.screenshot),
+            waitedMs > waitAtLeastMs ? 0 : waitAtLeastMs - waitedMs
+          );
         }
-      })
+      });
 
       timeout = setTimeout(() => {
-        disposeListener()
-        reject(new Error("Creating screenshot timed out"))
-      }, 3000)
+        disposeListener();
+        reject(new Error('Creating screenshot timed out'));
+      }, 3000);
 
       // this dispatch triggers a "screenshot-generated" message
       // which is received inside the PreviewCommentWrapper
       dispatch({
         type: 'take-screenshot',
         data: {
-          isPrivateSandbox
-        }
+          isPrivateSandbox,
+        },
       });
-    })
+    });
   },
   createScreenshot({
     screenshotSource,
@@ -84,7 +87,7 @@ export default {
     cropHeight,
     x,
     y,
-    scale
+    scale,
   }: {
     screenshotSource: string;
     bubbleSource: string;
@@ -115,19 +118,31 @@ export default {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d')!;
         const dpr = window.devicePixelRatio || 1;
-        const scaledX = x / scale * dpr;
-        const scaledY = y / scale * dpr;
-        const scaledHalfCropWidth = cropWidth / 2 * dpr;
-        const scaledHalfCropHeight = cropHeight / 2 * dpr;
+        const scaledX = (x / scale) * dpr;
+        const scaledY = (y / scale) * dpr;
+        const scaledHalfCropWidth = (cropWidth / 2) * dpr;
+        const scaledHalfCropHeight = (cropHeight / 2) * dpr;
 
-        const rightSideSpace = Math.min(screenshot.width - scaledX, scaledHalfCropWidth);
-        const bottomSideSpace = Math.min(screenshot.height - scaledY, scaledHalfCropHeight);
+        const rightSideSpace = Math.min(
+          screenshot.width - scaledX,
+          scaledHalfCropWidth
+        );
+        const bottomSideSpace = Math.min(
+          screenshot.height - scaledY,
+          scaledHalfCropHeight
+        );
         const leftSideSpace = Math.min(scaledX, scaledHalfCropWidth);
         const topSideSpace = Math.min(scaledY, scaledHalfCropHeight);
 
         // Make sure we don't make our canvas bigger than our screenshot can fill
-        const width = Math.min(leftSideSpace + rightSideSpace, screenshot.width);
-        const height = Math.min(bottomSideSpace + topSideSpace, screenshot.height);
+        const width = Math.min(
+          leftSideSpace + rightSideSpace,
+          screenshot.width
+        );
+        const height = Math.min(
+          bottomSideSpace + topSideSpace,
+          screenshot.height
+        );
 
         // Offset the screenshot enough to show the comment bubble, but not more
         // than possible before we end up with transparent pixels
@@ -202,11 +217,7 @@ export default {
           height
         );
         ctx.restore();
-        ctx.drawImage(
-          bubble,
-          bubbleX,
-          bubbleY
-        );
+        ctx.drawImage(bubble, bubbleX, bubbleY);
 
         return canvas.toDataURL();
       }
