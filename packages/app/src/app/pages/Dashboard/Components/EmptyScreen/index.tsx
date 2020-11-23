@@ -93,7 +93,20 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
             </Stack>
           </Stack>
           <Text variant="muted">
-            Pilot users can make up to 3 server sandboxes always-on
+            Pilot users can make up to 3 server sandboxes always-on. <br />
+            <Button
+              as={Text}
+              variant="link"
+              onClick={() =>
+                actions.modalOpened({
+                  modal: 'feedback',
+                  message: "I'd like more Always-On sandboxes",
+                })
+              }
+            >
+              Contact us
+            </Button>
+            if you need more Always on Sandboxes
           </Text>
         </Stack>
       </Stack>
