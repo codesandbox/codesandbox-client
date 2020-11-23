@@ -74,14 +74,53 @@ export const Sandbox = React.memo<Props>(
       } = state;
 
       if (error) {
+        let errorMessage = null;
         const isGithub = match?.params?.id.includes('github');
+        const notLoggedIn = error.status === 404 && !isLoggedIn && isGithub;
 
+        if (notLoggedIn) {
+          errorMessage = (
+            <Element marginTop={9} style={{ maxWidth: 400, width: '100%' }}>
+              <Text size={4} block align="center" marginBottom={4}>
+                Did you try to open a private GitHub repository and are you a{' '}
+                <Link to="/pro">pro</Link>? Then you might need to sign in:
+              </Text>
+              <Button onClick={() => actions.signInClicked()}>Sign in</Button>
+            </Element>
+          );
+        }
+
+        if (isLoggedIn && isGithub && error.status !== 422) {
+          errorMessage = (
+            <Element marginTop={9} style={{ maxWidth: 400, width: '100%' }}>
+              <Text size={4} block align="center" marginBottom={4}>
+                Did you try to open a private GitHub repository and are you a{' '}
+                <Link to="/pro">pro</Link>? Then you might need to get private
+                access:
+              </Text>
+              <GithubIntegration small />
+              <Text size={4} block align="center" marginTop={4}>
+                If you{"'"}re importing a sandbox from an organization, make
+                sure to enable organization access{' '}
+                <a
+                  href="https://github.com/settings/connections/applications/c07a89833b557afc7be2"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  here
+                </a>
+                .
+              </Text>
+            </Element>
+          );
+        }
         return (
           <>
             <Text weight="bold" size={6} marginBottom={4}>
               Something went wrong
             </Text>
             <Text size={4}>{error.message}</Text>
+
             <Grid
               marginTop={4}
               style={{
@@ -99,28 +138,8 @@ export const Sandbox = React.memo<Props>(
                 <Button>{hasLogIn ? 'Dashboard' : 'Homepage'}</Button>
               </a>
             </Grid>
-            {isLoggedIn && isGithub && error.status !== 422 && (
-              <Element marginTop={9} style={{ maxWidth: 400, width: '100%' }}>
-                <Text size={4} block align="center" marginBottom={4}>
-                  Did you try to open a private GitHub repository and are you a{' '}
-                  <Link to="/pro">pro</Link>? Then you might need to get private
-                  access:
-                </Text>
-                <GithubIntegration small />
-                <Text size={4} block align="center" marginTop={4}>
-                  If you{"'"}re importing a sandbox from an organization, make
-                  sure to enable organization access{' '}
-                  <a
-                    href="https://github.com/settings/connections/applications/c07a89833b557afc7be2"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    here
-                  </a>
-                  .
-                </Text>
-              </Element>
-            )}
+
+            {errorMessage}
           </>
         );
       }
