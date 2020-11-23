@@ -55,6 +55,22 @@ export const Markdown = ({ source }) => (
             {children}
           </Text>
         ),
+        blockquote: ({ children }) => (
+          <Text
+            block
+            variant="muted"
+            size={3}
+            css={css({
+              p: {
+                display: 'inline',
+              },
+              ':before': { content: 'open-quote' },
+              ':after': { content: 'close-quote' },
+            })}
+          >
+            {children}
+          </Text>
+        ),
         code: Code,
         link: LinkElement,
         linkReference: props => <Link {...props}>{props.children}</Link>,
