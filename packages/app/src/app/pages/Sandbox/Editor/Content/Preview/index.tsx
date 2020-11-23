@@ -1,6 +1,7 @@
 import { ServerContainerStatus } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
+import { PREVIEW_COMMENTS_ON } from '@codesandbox/common/lib/utils/feature-flags';
 
 import React, { FunctionComponent, useState } from 'react';
 import { useOvermind } from 'app/overmind';
@@ -66,6 +67,7 @@ export const Preview: FunctionComponent<Props> = ({
   };
 
   const canAddComments =
+    localStorage.getItem(PREVIEW_COMMENTS_ON) &&
     currentSandbox.featureFlags.comments &&
     hasPermission(currentSandbox.authorization, 'comment');
 
