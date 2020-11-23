@@ -44,7 +44,7 @@ export const Markdown = ({ source }) => (
             variant="muted"
             size={3}
             css={css({
-              wordBreak: 'break-all',
+              wordBreak: 'break-word',
             })}
           >
             {children}
