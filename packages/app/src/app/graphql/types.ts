@@ -1501,6 +1501,9 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
         'id' | 'name' | 'username' | 'avatarUrl'
       >
     >;
+    settings: {
+      minimumPrivacy: Sandbox['privacy'];
+    };
   };
 
 export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
@@ -1939,11 +1942,11 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
                   'userId' | 'authorization'
                 >
               >;
+              settings: {
+                minimumPrivacy: Sandbox['privacy'];
+              };
             }
         >;
-        settings: {
-          minimumPrivacy: Sandbox['privacy'];
-        };
       }
   >;
 };
