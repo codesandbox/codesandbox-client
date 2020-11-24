@@ -779,6 +779,9 @@ export type Team = {
   templates: Array<Template>;
   userAuthorizations: Array<UserAuthorization>;
   users: Array<User>;
+  settings: {
+    minimumPrivacy: Sandbox['privacy'];
+  };
 };
 
 export type TeamDraftsArgs = {
@@ -1522,6 +1525,9 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         'userId' | 'authorization'
       >
     >;
+    settings: {
+      minimumPrivacy: Sandbox['privacy'];
+    };
   };
 
 export type _CreateTeamMutationVariables = Exact<{
@@ -2571,4 +2577,16 @@ export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
     Team,
     'id' | 'name' | 'joinedPilotAt'
   >;
+};
+
+export type SetTeamMinimumPrivacyMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
+  updateDrafts: boolean;
+}>;
+
+export type SetTeamMinimumPrivacyMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
 };

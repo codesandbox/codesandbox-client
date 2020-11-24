@@ -1,5 +1,5 @@
 import React from 'react';
-// import { useOvermind } from 'app/overmind';
+import { useOvermind } from 'app/overmind';
 import {
   Stack,
   Text,
@@ -25,21 +25,30 @@ const privacyOptions = {
   },
 };
 
-export const DefaultPrivacy: React.FC<{ closeModal?: () => void }> = ({
+export const MinimumPrivacy: React.FC<{ closeModal?: () => void }> = ({
   closeModal,
 }) => {
-  // const {
-  //   state: { currentModalMessage },
-  // } = useOvermind();
+  const {
+    state: {
+      activeTeamInfo: { settings },
+    },
+    actions: {
+      dashboard: { setTeamMinimumPrivacy },
+      profile: { fetchSandboxes },
+    },
+  } = useOvermind();
 
-  const [defaultPrivacy, setDefaultPrivacy] = React.useState(0);
+  const [minimumPrivacy, setMinimumPrivacy] = React.useState(
+    settings.minimumPrivacy
+  );
+  const [updateDrafts, setUpdateDrafts] = React.useState(true);
 
   return (
     <Stack
       direction="vertical"
       justify="space-between"
       gap={114}
-      css={css({ backgroundColor: 'grays.800', padding: 8 })}
+      css={css({ backgroundColor: 'grays.800', paddingY: 8, paddingX: 6 })}
     >
       <Stack direction="vertical" gap={8}>
         <Stack direction="vertical" gap={8}>
@@ -48,23 +57,28 @@ export const DefaultPrivacy: React.FC<{ closeModal?: () => void }> = ({
           </Text>
           <Stack direction="vertical" gap={3}>
             <Select
-              icon={privacyOptions[defaultPrivacy].icon}
-              value={defaultPrivacy}
-              onChange={({ target: { value } }) => setDefaultPrivacy(value)}
+              icon={privacyOptions[minimumPrivacy].icon}
+              value={minimumPrivacy}
+              onChange={({ target: { value } }) =>
+                setMinimumPrivacy(parseInt(value, 10))
+              }
             >
               <option value={0}>Public</option>
               <option value={1}>Unlisted</option>
               <option value={2}>Private</option>
             </Select>
             <Text variant="muted" size={2}>
-              {privacyOptions[defaultPrivacy].description}
+              {privacyOptions[minimumPrivacy].description}
             </Text>
           </Stack>
-          <Stack justify="space-between">
+          <Stack justify="space-between" as="label">
             <Text size={3}>
               Apply this privacy to all my Drafts - old and new
             </Text>
-            <Switch defaultOn />
+            <Switch
+              on={updateDrafts}
+              onChange={() => setUpdateDrafts(!updateDrafts)}
+            />
           </Stack>
         </Stack>
       </Stack>
@@ -74,8 +88,14 @@ export const DefaultPrivacy: React.FC<{ closeModal?: () => void }> = ({
         </Button>
         <Button
           autoWidth
-          onClick={() => {
+          onClick={async () => {
+            await setTeamMinimumPrivacy({
+              minimumPrivacy,
+              updateDrafts,
+              source: 'Profiles',
+            });
             closeModal();
+            fetchSandboxes();
           }}
         >
           Change Privacy

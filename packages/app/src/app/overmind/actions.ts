@@ -91,7 +91,7 @@ type ModalName =
   | 'userSurvey'
   | 'liveSessionEnded'
   | 'sandboxPicker'
-  | 'defaultPrivacy';
+  | 'minimumPrivacy';
 
 export const modalOpened: Action<{
   modal: ModalName;

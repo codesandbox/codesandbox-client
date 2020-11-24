@@ -1265,3 +1265,31 @@ export const deleteWorkspace: AsyncAction = async ({
     });
   }
 };
+
+export const setTeamMinimumPrivacy: AsyncAction<{
+  minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
+  updateDrafts?: boolean;
+  source: string;
+}> = async (
+  { state, effects },
+  { minimumPrivacy, updateDrafts = false, source }
+) => {
+  effects.analytics.track('Team - Change minimum privacy', {
+    minimumPrivacy,
+    source,
+  });
+
+  state.activeTeamInfo.settings.minimumPrivacy = minimumPrivacy;
+
+  try {
+    await effects.gql.mutations.setTeamMinimumPrivacy({
+      teamId: state.activeTeam,
+      minimumPrivacy,
+      updateDrafts,
+    });
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem updating your settings'
+    );
+  }
+};
