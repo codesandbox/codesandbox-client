@@ -1279,7 +1279,9 @@ export const setTeamMinimumPrivacy: AsyncAction<{
     source,
   });
 
-  state.activeTeamInfo.settings.minimumPrivacy = minimumPrivacy;
+  if (state?.activeTeamInfo?.settings) {
+    state.activeTeamInfo.settings.minimumPrivacy = minimumPrivacy;
+  }
 
   try {
     await effects.gql.mutations.setTeamMinimumPrivacy({
