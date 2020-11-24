@@ -44,7 +44,7 @@ const Experiment = () => (
       }}
     >
       <H2 css={'white-space: pre-line;'}>
-        Create static sites,components, <nobr>full-stack</nobr>
+        Create static sites, components, <nobr>full-stack</nobr>
         &nbsp;web&nbsp;apps
       </H2>
       <P
