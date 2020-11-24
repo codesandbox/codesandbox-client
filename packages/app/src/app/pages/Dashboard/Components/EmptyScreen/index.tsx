@@ -93,7 +93,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
             </Stack>
           </Stack>
           <Text variant="muted">
-            Pilot users can make up to 3 server sandboxes always-on. <br />
+            Pilot users can make up to 3 server sandboxes Always-On. <br />
             <Button
               as={Text}
               variant="link"
