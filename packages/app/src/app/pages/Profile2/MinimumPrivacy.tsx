@@ -30,7 +30,8 @@ export const MinimumPrivacy: React.FC<{ closeModal?: () => void }> = ({
 }) => {
   const {
     state: {
-      activeTeamInfo: { settings },
+      dashboard: { teams },
+      personalWorkspaceId,
     },
     actions: {
       dashboard: { setTeamMinimumPrivacy },
@@ -38,9 +39,11 @@ export const MinimumPrivacy: React.FC<{ closeModal?: () => void }> = ({
     },
   } = useOvermind();
 
+  const personalWorkspace = teams.find(team => team.id === personalWorkspaceId);
   const [minimumPrivacy, setMinimumPrivacy] = React.useState(
-    settings.minimumPrivacy
+    personalWorkspace.settings.minimumPrivacy
   );
+
   const [updateDrafts, setUpdateDrafts] = React.useState(true);
 
   return (
@@ -90,6 +93,7 @@ export const MinimumPrivacy: React.FC<{ closeModal?: () => void }> = ({
           autoWidth
           onClick={async () => {
             await setTeamMinimumPrivacy({
+              teamId: personalWorkspaceId,
               minimumPrivacy,
               updateDrafts,
               source: 'Profiles',

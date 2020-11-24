@@ -1267,29 +1267,33 @@ export const deleteWorkspace: AsyncAction = async ({
 };
 
 export const setTeamMinimumPrivacy: AsyncAction<{
+  teamId: string;
   minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
   updateDrafts?: boolean;
   source: string;
 }> = async (
   { state, effects },
-  { minimumPrivacy, updateDrafts = false, source }
+  { teamId, minimumPrivacy, updateDrafts = false, source }
 ) => {
   effects.analytics.track('Team - Change minimum privacy', {
     minimumPrivacy,
     source,
   });
 
-  if (state?.activeTeamInfo?.settings) {
-    state.activeTeamInfo.settings.minimumPrivacy = minimumPrivacy;
-  }
-
   try {
     await effects.gql.mutations.setTeamMinimumPrivacy({
-      teamId:
-        source === 'Profiles' ? state.personalWorkspaceId : state.activeTeam,
+      teamId,
       minimumPrivacy,
       updateDrafts,
     });
+
+    const selectedTeam = state.dashboard.teams.find(
+      team => team.id === state.personalWorkspaceId
+    );
+
+    if (selectedTeam) {
+      selectedTeam.settings.minimumPrivacy = minimumPrivacy;
+    }
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem updating your settings'

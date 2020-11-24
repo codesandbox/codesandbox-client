@@ -207,7 +207,8 @@ const UpgradeBanner = () => {
     state: {
       user,
       profile: { current },
-      activeTeamInfo,
+      dashboard: { teams },
+      personalWorkspaceId,
     },
     actions: { modalOpened },
     effects: { browser },
@@ -229,6 +230,8 @@ const UpgradeBanner = () => {
   };
 
   if (!showUpgradeMessage) return null;
+
+  const personalWorkspace = teams.find(team => team.id === personalWorkspaceId);
 
   return (
     <Stack
@@ -265,7 +268,7 @@ const UpgradeBanner = () => {
         />
         {isPro ? (
           <Text size={2} css={{ lineHeight: '16px' }}>
-            {activeTeamInfo.settings.minimumPrivacy === 0
+            {personalWorkspace.settings.minimumPrivacy === 0
               ? 'Change default privacy settings to hide your drafts'
               : 'Your drafts are hidden. Change default privacy settings to show drafts'}
           </Text>
