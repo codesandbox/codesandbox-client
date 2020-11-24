@@ -36,6 +36,7 @@ import { SurveyModal } from './SurveyModal';
 import { TeamInviteModal } from './TeamInviteModal';
 import UploadModal from './UploadModal';
 import { DeleteWorkspace } from './DeleteWorkspace';
+import { DefaultPrivacyModal } from './DefaultPrivacyModal';
 
 const modals = {
   preferences: {
@@ -150,6 +151,10 @@ const modals = {
     Component: SandboxPickerModal,
     width: '90%',
     top: 10, // vh
+  },
+  defaultPrivacy: {
+    Component: DefaultPrivacyModal,
+    width: 450,
   },
 };
 

@@ -31,7 +31,6 @@ export const AllSandboxes = () => {
         sandboxes: fetchedSandboxes,
       },
     },
-    effects: { browser },
   } = useOvermind();
 
   const featuredSandboxIds = featuredSandboxes.map(sandbox => sandbox.id);
@@ -208,6 +207,7 @@ const UpgradeBanner = () => {
       user,
       profile: { current },
     },
+    actions: { modalOpened },
     effects: { browser },
   } = useOvermind();
 
@@ -228,8 +228,11 @@ const UpgradeBanner = () => {
 
   return (
     <Stack
-      as={Link}
-      href="/pro"
+      as={isPro ? Stack : Link}
+      href={isPro ? null : '/pro'}
+      onClick={() => {
+        modalOpened({ modal: 'defaultPrivacy' });
+      }}
       justify="space-between"
       align="center"
       css={css({
@@ -240,41 +243,29 @@ const UpgradeBanner = () => {
         paddingY: 2,
         transitionProperty: 'transform',
         transitionDuration: (theme: typeof designLanguage) => theme.speeds[2],
-        ':hover': {
-          transform: 'scale(1.01)',
-        },
+        ':hover': { transform: 'scale(1.01)' },
       })}
     >
-      {isPro ? (
-        <Stack align="center" gap={4}>
-          <Icon
-            name="eye"
-            size={16}
-            css={css({
-              flexShrink: 0,
-              display: ['none', 'block', 'block'],
-            })}
-          />
+      <Stack align="center" gap={4}>
+        <Icon
+          name="eye"
+          size={16}
+          css={css({
+            flexShrink: 0,
+            display: ['none', 'block', 'block'],
+          })}
+        />
+        {isPro ? (
           <Text size={2} css={{ lineHeight: '16px' }}>
             Change your default privacy to hide your drafts
           </Text>
-        </Stack>
-      ) : (
-        <Stack align="center" gap={4}>
-          <Icon
-            name="eye"
-            size={16}
-            css={css({
-              flexShrink: 0,
-              display: ['none', 'block', 'block'],
-            })}
-          />
+        ) : (
           <Text size={2} css={{ lineHeight: '16px' }}>
             <Text css={css({ color: 'blues.700' })}>Upgrade to Pro</Text> to
             change your sandbox permissions to hide your drafts
           </Text>
-        </Stack>
-      )}
+        )}
+      </Stack>
 
       <IconButton
         name="cross"
