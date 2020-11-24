@@ -239,7 +239,8 @@ const UpgradeBanner = () => {
       href={isPro ? null : '/pro'}
       variant="link"
       onClick={event => {
-        modalOpened({ modal: 'minimumPrivacy' });
+        // if not pro, the link will take care of it
+        if (isPro) modalOpened({ modal: 'minimumPrivacy' });
       }}
       justify="space-between"
       align="center"
