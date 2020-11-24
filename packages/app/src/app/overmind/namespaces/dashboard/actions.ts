@@ -1285,7 +1285,8 @@ export const setTeamMinimumPrivacy: AsyncAction<{
 
   try {
     await effects.gql.mutations.setTeamMinimumPrivacy({
-      teamId: state.activeTeam,
+      teamId:
+        source === 'Profiles' ? state.personalWorkspaceId : state.activeTeam,
       minimumPrivacy,
       updateDrafts,
     });
