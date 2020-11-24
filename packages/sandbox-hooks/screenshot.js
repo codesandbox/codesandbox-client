@@ -11,9 +11,11 @@ export default function setupScreenshotListener() {
           // which means we need to force the CORS attribute. This removes cookies, but no worries,
           // it is a public sandbox. In private sandboxes same origin requests does indeed go to
           // same origin, where we need the cookie, so no CORS being set there
-          useCORS: (_, isSameOrigin) => !(data.data.isPrivateSandbox && isSameOrigin),
+          useCORS: (_, isSameOrigin) =>
+            !(data.data.isPrivateSandbox && isSameOrigin),
           logging: false,
           allowTaint: false,
+          foreignObjectRendering: true,
         }).then(canvas => {
           dispatch({
             type: 'screenshot-generated',
