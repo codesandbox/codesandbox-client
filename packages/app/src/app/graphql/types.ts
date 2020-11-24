@@ -1941,6 +1941,9 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
               >;
             }
         >;
+        settings: {
+          minimumPrivacy: Sandbox['privacy'];
+        };
       }
   >;
 };
