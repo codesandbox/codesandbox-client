@@ -1,0 +1,1231 @@
+{
+    "fileTypes": [],
+    "injectionSelector": "L:source.js -comment -(string - meta.embedded), L:source.jsx -comment -(string - meta.embedded), L:source.js.jsx -comment -(string - meta.embedded), L:source.ts -comment -(string - meta.embedded), L:source.tsx -comment -(string - meta.embedded)",
+    "patterns": [
+        {
+            "begin": "(?i)(/)(?=(\\*\\s*\\b(?:css|css\\.erb|html|htm|shtml|xhtml|inc|tmpl|tpl|ini|conf|java|bsh|lua|Makefile|makefile|GNUmakefile|OCamlMakefile|perl|pl|pm|pod|t|PL|psgi|vcl|R|r|s|S|Rprofile|ruby|rb|rbx|rjs|Rakefile|rake|cgi|fcgi|gemspec|irbrc|Capfile|ru|prawn|Cheffile|Gemfile|Guardfile|Hobofile|Vagrantfile|Appraisals|Rantfile|Berksfile|Berksfile\\.lock|Thorfile|Puppetfile|php|php3|php4|php5|phpt|phtml|aw|ctp|sql|ddl|dml|vb|xml|xsd|tld|jsp|pt|cpt|dtml|rss|opml|xsl|xslt|yaml|yml|bat|batch|clj|cljs|clojure|coffee|Cakefile|coffee\\.erb|c|h|cpp|c\\+\\+|cxx|patch|diff|rej|dockerfile|Dockerfile|COMMIT_EDITMSG|MERGE_MSG|git\\-rebase\\-todo|go|golang|qgl|graphql|groovy|gvy|jade|pug|js|jsx|javascript|es6|mjs|regexp|json|sublime\\-settings|sublime\\-menu|sublime\\-keymap|sublime\\-mousemap|sublime\\-theme|sublime\\-build|sublime\\-project|sublime\\-completions|less|md|markdown|objectivec|objective\\-c|mm|objc|obj\\-c|m|h|scss|perl6|p6|pl6|pm6|nqp|powershell|ps1|psm1|psd1|python|py|py3|rpy|pyw|cpy|SConstruct|Sconstruct|sconstruct|SConscript|gyp|gypi|re|rust|rs|scala|sbt|shell|sh|bash|zsh|bashrc|bash_profile|bash_login|profile|bash_logout|\\.textmate_init|typescript|ts|tsx|cs|csharp|c\\#|fs|fsharp|f\\#|dart|glsl)\\b\\s*\\*/)\\s*`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                }
+            },
+            "end": "(`)",
+            "endCaptures": {
+                "0": {
+                    "name": "string.js"
+                },
+                "1": {
+                    "name": "punctuation.definition.string.template.end.js"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#commentTaggedTemplate-css"
+                },
+                {
+                    "include": "#commentTaggedTemplate-basic"
+                },
+                {
+                    "include": "#commentTaggedTemplate-ini"
+                },
+                {
+                    "include": "#commentTaggedTemplate-java"
+                },
+                {
+                    "include": "#commentTaggedTemplate-lua"
+                },
+                {
+                    "include": "#commentTaggedTemplate-makefile"
+                },
+                {
+                    "include": "#commentTaggedTemplate-perl"
+                },
+                {
+                    "include": "#commentTaggedTemplate-r"
+                },
+                {
+                    "include": "#commentTaggedTemplate-ruby"
+                },
+                {
+                    "include": "#commentTaggedTemplate-php"
+                },
+                {
+                    "include": "#commentTaggedTemplate-sql"
+                },
+                {
+                    "include": "#commentTaggedTemplate-vs_net"
+                },
+                {
+                    "include": "#commentTaggedTemplate-xml"
+                },
+                {
+                    "include": "#commentTaggedTemplate-xsl"
+                },
+                {
+                    "include": "#commentTaggedTemplate-yaml"
+                },
+                {
+                    "include": "#commentTaggedTemplate-dosbatch"
+                },
+                {
+                    "include": "#commentTaggedTemplate-clojure"
+                },
+                {
+                    "include": "#commentTaggedTemplate-coffee"
+                },
+                {
+                    "include": "#commentTaggedTemplate-c"
+                },
+                {
+                    "include": "#commentTaggedTemplate-cpp"
+                },
+                {
+                    "include": "#commentTaggedTemplate-diff"
+                },
+                {
+                    "include": "#commentTaggedTemplate-dockerfile"
+                },
+                {
+                    "include": "#commentTaggedTemplate-git_commit"
+                },
+                {
+                    "include": "#commentTaggedTemplate-git_rebase"
+                },
+                {
+                    "include": "#commentTaggedTemplate-go"
+                },
+                {
+                    "include": "#commentTaggedTemplate-graphql"
+                },
+                {
+                    "include": "#commentTaggedTemplate-groovy"
+                },
+                {
+                    "include": "#commentTaggedTemplate-pug"
+                },
+                {
+                    "include": "#commentTaggedTemplate-js"
+                },
+                {
+                    "include": "#commentTaggedTemplate-js_regexp"
+                },
+                {
+                    "include": "#commentTaggedTemplate-json"
+                },
+                {
+                    "include": "#commentTaggedTemplate-less"
+                },
+                {
+                    "include": "#commentTaggedTemplate-md"
+                },
+                {
+                    "include": "#commentTaggedTemplate-objc"
+                },
+                {
+                    "include": "#commentTaggedTemplate-scss"
+                },
+                {
+                    "include": "#commentTaggedTemplate-perl6"
+                },
+                {
+                    "include": "#commentTaggedTemplate-powershell"
+                },
+                {
+                    "include": "#commentTaggedTemplate-python"
+                },
+                {
+                    "include": "#commentTaggedTemplate-regexp_python"
+                },
+                {
+                    "include": "#commentTaggedTemplate-rust"
+                },
+                {
+                    "include": "#commentTaggedTemplate-scala"
+                },
+                {
+                    "include": "#commentTaggedTemplate-shell"
+                },
+                {
+                    "include": "#commentTaggedTemplate-ts"
+                },
+                {
+                    "include": "#commentTaggedTemplate-tsx"
+                },
+                {
+                    "include": "#commentTaggedTemplate-csharp"
+                },
+                {
+                    "include": "#commentTaggedTemplate-fsharp"
+                },
+                {
+                    "include": "#commentTaggedTemplate-dart"
+                },
+                {
+                    "include": "#commentTaggedTemplate-glsl"
+                }
+            ]
+        }
+    ],
+    "scopeName": "inline.template-tagged-languages",
+    "repository": {
+        "commentTaggedTemplate-css": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.css",
+            "contentName": "meta.embedded.block.css",
+            "begin": "(?i)(\\*\\s*\\b(?:css|css\\.erb)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.css"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-basic": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.basic",
+            "contentName": "meta.embedded.block.basic",
+            "begin": "(?i)(\\*\\s*\\b(?:html|htm|shtml|xhtml|inc|tmpl|tpl)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "text.html.basic"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-ini": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.ini",
+            "contentName": "meta.embedded.block.ini",
+            "begin": "(?i)(\\*\\s*\\b(?:ini|conf)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.ini"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-java": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.java",
+            "contentName": "meta.embedded.block.java",
+            "begin": "(?i)(\\*\\s*\\b(?:java|bsh)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.java"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-lua": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.lua",
+            "contentName": "meta.embedded.block.lua",
+            "begin": "(?i)(\\*\\s*\\b(?:lua)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.lua"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-makefile": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.makefile",
+            "contentName": "meta.embedded.block.makefile",
+            "begin": "(?i)(\\*\\s*\\b(?:Makefile|makefile|GNUmakefile|OCamlMakefile)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.makefile"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-perl": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.perl",
+            "contentName": "meta.embedded.block.perl",
+            "begin": "(?i)(\\*\\s*\\b(?:perl|pl|pm|pod|t|PL|psgi|vcl)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.perl"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-r": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.r",
+            "contentName": "meta.embedded.block.r",
+            "begin": "(?i)(\\*\\s*\\b(?:R|r|s|S|Rprofile)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.r"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-ruby": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.ruby",
+            "contentName": "meta.embedded.block.ruby",
+            "begin": "(?i)(\\*\\s*\\b(?:ruby|rb|rbx|rjs|Rakefile|rake|cgi|fcgi|gemspec|irbrc|Capfile|ru|prawn|Cheffile|Gemfile|Guardfile|Hobofile|Vagrantfile|Appraisals|Rantfile|Berksfile|Berksfile\\.lock|Thorfile|Puppetfile)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.ruby"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-php": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.php",
+            "contentName": "meta.embedded.block.php",
+            "begin": "(?i)(\\*\\s*\\b(?:php|php3|php4|php5|phpt|phtml|aw|ctp)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "text.html.basic"
+                },
+                {
+                    "include": "source.php"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-sql": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.sql",
+            "contentName": "meta.embedded.block.sql",
+            "begin": "(?i)(\\*\\s*\\b(?:sql|ddl|dml)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.sql"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-vs_net": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.vs_net",
+            "contentName": "meta.embedded.block.vs_net",
+            "begin": "(?i)(\\*\\s*\\b(?:vb)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.asp.vb.net"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-xml": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.xml",
+            "contentName": "meta.embedded.block.xml",
+            "begin": "(?i)(\\*\\s*\\b(?:xml|xsd|tld|jsp|pt|cpt|dtml|rss|opml)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "text.xml"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-xsl": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.xsl",
+            "contentName": "meta.embedded.block.xsl",
+            "begin": "(?i)(\\*\\s*\\b(?:xsl|xslt)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "text.xml.xsl"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-yaml": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.yaml",
+            "contentName": "meta.embedded.block.yaml",
+            "begin": "(?i)(\\*\\s*\\b(?:yaml|yml)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.yaml"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-dosbatch": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.dosbatch",
+            "contentName": "meta.embedded.block.dosbatch",
+            "begin": "(?i)(\\*\\s*\\b(?:bat|batch)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.dosbatch"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-clojure": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.clojure",
+            "contentName": "meta.embedded.block.clojure",
+            "begin": "(?i)(\\*\\s*\\b(?:clj|cljs|clojure)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.clojure"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-coffee": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.coffee",
+            "contentName": "meta.embedded.block.coffee",
+            "begin": "(?i)(\\*\\s*\\b(?:coffee|Cakefile|coffee\\.erb)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.coffee"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-c": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.c",
+            "contentName": "meta.embedded.block.c",
+            "begin": "(?i)(\\*\\s*\\b(?:c|h)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.c"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-cpp": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.cpp",
+            "contentName": "meta.embedded.block.cpp",
+            "begin": "(?i)(\\*\\s*\\b(?:cpp|c\\+\\+|cxx)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.cpp"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-diff": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.diff",
+            "contentName": "meta.embedded.block.diff",
+            "begin": "(?i)(\\*\\s*\\b(?:patch|diff|rej)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.diff"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-dockerfile": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.dockerfile",
+            "contentName": "meta.embedded.block.dockerfile",
+            "begin": "(?i)(\\*\\s*\\b(?:dockerfile|Dockerfile)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.dockerfile"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-git_commit": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.git_commit",
+            "contentName": "meta.embedded.block.git_commit",
+            "begin": "(?i)(\\*\\s*\\b(?:COMMIT_EDITMSG|MERGE_MSG)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "text.git-commit"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-git_rebase": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.git_rebase",
+            "contentName": "meta.embedded.block.git_rebase",
+            "begin": "(?i)(\\*\\s*\\b(?:git\\-rebase\\-todo)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "text.git-rebase"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-go": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.go",
+            "contentName": "meta.embedded.block.go",
+            "begin": "(?i)(\\*\\s*\\b(?:go|golang)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.go"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-graphql": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.graphql",
+            "contentName": "meta.embedded.block.graphql",
+            "begin": "(?i)(\\*\\s*\\b(?:qgl|graphql)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.graphql"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-groovy": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.groovy",
+            "contentName": "meta.embedded.block.groovy",
+            "begin": "(?i)(\\*\\s*\\b(?:groovy|gvy)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.groovy"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-pug": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.pug",
+            "contentName": "meta.embedded.block.pug",
+            "begin": "(?i)(\\*\\s*\\b(?:jade|pug)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "text.pug"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-js": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.js",
+            "contentName": "meta.embedded.block.js",
+            "begin": "(?i)(\\*\\s*\\b(?:js|jsx|javascript|es6|mjs)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.js"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-js_regexp": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.js_regexp",
+            "contentName": "meta.embedded.block.js_regexp",
+            "begin": "(?i)(\\*\\s*\\b(?:regexp)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.js.regexp"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-json": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.json",
+            "contentName": "meta.embedded.block.json",
+            "begin": "(?i)(\\*\\s*\\b(?:json|sublime\\-settings|sublime\\-menu|sublime\\-keymap|sublime\\-mousemap|sublime\\-theme|sublime\\-build|sublime\\-project|sublime\\-completions)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.json"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-less": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.less",
+            "contentName": "meta.embedded.block.less",
+            "begin": "(?i)(\\*\\s*\\b(?:less)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.css.less"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-md": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.md",
+            "contentName": "meta.embedded.block.md",
+            "begin": "(?i)(\\*\\s*\\b(?:md|markdown)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "text.html.markdown"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-objc": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.objc",
+            "contentName": "meta.embedded.block.objc",
+            "begin": "(?i)(\\*\\s*\\b(?:objectivec|objective\\-c|mm|objc|obj\\-c|m|h)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.objc"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-scss": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.scss",
+            "contentName": "meta.embedded.block.scss",
+            "begin": "(?i)(\\*\\s*\\b(?:scss)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.css.scss"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-perl6": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.perl6",
+            "contentName": "meta.embedded.block.perl6",
+            "begin": "(?i)(\\*\\s*\\b(?:perl6|p6|pl6|pm6|nqp)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.perl.6"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-powershell": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.powershell",
+            "contentName": "meta.embedded.block.powershell",
+            "begin": "(?i)(\\*\\s*\\b(?:powershell|ps1|psm1|psd1)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.powershell"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-python": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.python",
+            "contentName": "meta.embedded.block.python",
+            "begin": "(?i)(\\*\\s*\\b(?:python|py|py3|rpy|pyw|cpy|SConstruct|Sconstruct|sconstruct|SConscript|gyp|gypi)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.python"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-regexp_python": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.regexp_python",
+            "contentName": "meta.embedded.block.regexp_python",
+            "begin": "(?i)(\\*\\s*\\b(?:re)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.regexp.python"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-rust": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.rust",
+            "contentName": "meta.embedded.block.rust",
+            "begin": "(?i)(\\*\\s*\\b(?:rust|rs)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.rust"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-scala": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.scala",
+            "contentName": "meta.embedded.block.scala",
+            "begin": "(?i)(\\*\\s*\\b(?:scala|sbt)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.scala"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-shell": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.shell",
+            "contentName": "meta.embedded.block.shell",
+            "begin": "(?i)(\\*\\s*\\b(?:shell|sh|bash|zsh|bashrc|bash_profile|bash_login|profile|bash_logout|\\.textmate_init)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.shell"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-ts": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.ts",
+            "contentName": "meta.embedded.block.ts",
+            "begin": "(?i)(\\*\\s*\\b(?:typescript|ts)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.ts"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-tsx": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.tsx",
+            "contentName": "meta.embedded.block.tsx",
+            "begin": "(?i)(\\*\\s*\\b(?:tsx)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.tsx"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-csharp": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.csharp",
+            "contentName": "meta.embedded.block.csharp",
+            "begin": "(?i)(\\*\\s*\\b(?:cs|csharp|c\\#)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.cs"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-fsharp": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.fsharp",
+            "contentName": "meta.embedded.block.fsharp",
+            "begin": "(?i)(\\*\\s*\\b(?:fs|fsharp|f\\#)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.fsharp"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-dart": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.dart",
+            "contentName": "meta.embedded.block.dart",
+            "begin": "(?i)(\\*\\s*\\b(?:dart)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.dart"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        },
+        "commentTaggedTemplate-glsl": {
+            "name": "string.js.taggedTemplate.commentTaggedTemplate.glsl",
+            "contentName": "meta.embedded.block.glsl",
+            "begin": "(?i)(\\*\\s*\\b(?:glsl)\\b\\s*\\*/)\\s*(`)",
+            "beginCaptures": {
+                "1": {
+                    "name": "comment.block.ts"
+                },
+                "2": {
+                    "name": "punctuation.definition.string.template.begin.js"
+                }
+            },
+            "end": "(?=`)",
+            "patterns": [
+                {
+                    "include": "source.glsl"
+                },
+                {
+                    "match": "."
+                }
+            ]
+        }
+    }
+}
