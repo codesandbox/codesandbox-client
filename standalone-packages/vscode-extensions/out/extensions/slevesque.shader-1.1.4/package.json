@@ -1,0 +1,130 @@
+{
+	"name": "shader",
+	"displayName": "Shader languages support for VS Code",
+	"description": "Syntax highlighter for shader language (hlsl, glsl, cg) ",
+	"version": "1.1.4",
+	"publisher": "slevesque",
+	"categories": [
+		"Programming Languages"
+	],
+	"license": "LICENSE.md",
+	"icon": "icon.png",
+	"bugs": {
+		"url": "https://github.com/stef-levesque/vscode-shader/issues"
+	},
+	"homepage": "https://github.com/stef-levesque/vscode-shader/blob/master/README.md",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/stef-levesque/vscode-shader.git"
+	},
+	"galleryBanner": {
+		"color": "#5c2d91",
+		"theme": "dark"
+	},
+	"engines": {
+		"vscode": "^1.17.0"
+	},
+	"keywords": [
+		"shader",
+		"hlsl",
+		"glsl",
+		"Cg"
+	],
+	"contributes": {
+		"languages": [
+			{
+				"id": "hlsl",
+				"extensions": [
+					".sf"
+				]
+			},
+			{
+				"id": "glsl",
+				"aliases": [
+					"GLSL",
+					"OpenGL Shading Language",
+					"glsl"
+				],
+				"extensions": [
+					".vs",
+					".fs",
+					".gs",
+					".comp",
+					".vert",
+					".tesc",
+					".tese",
+					".frag",
+					".geom",
+					".glsl",
+					".glslv",
+					".glslf",
+					".glslg"
+				],
+				"configuration": "./glsl.configuration.json"
+			},
+			{
+				"id": "cg",
+				"aliases": [
+					"Cg",
+					"C for Graphics",
+					"cg"
+				],
+				"extensions": [
+					".cg"
+				],
+				"configuration": "./cg.configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "glsl",
+				"scopeName": "source.glsl",
+				"path": "./syntaxes/glsl.tmLanguage"
+			},
+			{
+				"language": "cg",
+				"scopeName": "source.cg",
+				"path": "./syntaxes/cg.tmLanguage"
+			}
+		],
+		"configuration": {
+			"title": "VS Code Shader Configuration",
+			"type": "object",
+			"properties": {
+				"hlsl.suggest.basic": {
+					"type": "boolean",
+					"default": true,
+					"description": "Configures if the extension HLSL language suggestions are enabled."
+				},
+				"hlsl.openDocOnSide": {
+					"type": "boolean",
+					"default": true,
+					"description": "Open the HLSL Documentation links on the side"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"test": "npm run compile && node ./node_modules/vscode/bin/test"
+	},
+	"devDependencies": {
+		"typescript": "^2.5.3",
+		"vscode": "^1.1.5",
+		"@types/node": "^7.0.43",
+		"@types/mocha": "^2.2.42"
+	},
+	"dependencies": {
+		"follow-redirects": "^1.5.8",
+		"jsdom": "^11.3.0",
+		"tmp": "0.0.33"
+	},
+	"__metadata": {
+		"id": "3a63675f-7987-4cff-a411-d4a9568f560c",
+		"publisherId": "30cbfd41-b05d-4739-9271-f782deb68b9e",
+		"publisherDisplayName": "slevesque"
+	}
+}
