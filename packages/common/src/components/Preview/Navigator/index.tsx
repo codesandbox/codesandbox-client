@@ -79,7 +79,7 @@ function Navigator({
         <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
       </AddressBarContainer>
 
-      {createPreviewComment && !(sandbox || {}).isSse && (
+      {createPreviewComment && (
         <IconWithBackground
           onClick={createPreviewComment}
           style={{
