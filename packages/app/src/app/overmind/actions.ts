@@ -90,7 +90,8 @@ type ModalName =
   | 'signInForTemplates'
   | 'userSurvey'
   | 'liveSessionEnded'
-  | 'sandboxPicker';
+  | 'sandboxPicker'
+  | 'minimumPrivacy';
 
 export const modalOpened: Action<{
   modal: ModalName;

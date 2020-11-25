@@ -779,6 +779,9 @@ export type Team = {
   templates: Array<Template>;
   userAuthorizations: Array<UserAuthorization>;
   users: Array<User>;
+  settings: {
+    minimumPrivacy: Sandbox['privacy'];
+  };
 };
 
 export type TeamDraftsArgs = {
@@ -1498,6 +1501,9 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
         'id' | 'name' | 'username' | 'avatarUrl'
       >
     >;
+    settings: {
+      minimumPrivacy: Sandbox['privacy'];
+    };
   };
 
 export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
@@ -1522,6 +1528,9 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         'userId' | 'authorization'
       >
     >;
+    settings: {
+      minimumPrivacy: Sandbox['privacy'];
+    };
   };
 
 export type _CreateTeamMutationVariables = Exact<{
@@ -1933,6 +1942,9 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
                   'userId' | 'authorization'
                 >
               >;
+              settings: {
+                minimumPrivacy: Sandbox['privacy'];
+              };
             }
         >;
       }
@@ -2571,4 +2583,16 @@ export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
     Team,
     'id' | 'name' | 'joinedPilotAt'
   >;
+};
+
+export type SetTeamMinimumPrivacyMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
+  updateDrafts: boolean;
+}>;
+
+export type SetTeamMinimumPrivacyMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
 };

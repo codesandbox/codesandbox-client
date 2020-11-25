@@ -210,6 +210,9 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
           userId
           authorization
         }
+        settings {
+          minimumPrivacy
+        }
       }
     }
   }

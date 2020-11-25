@@ -40,7 +40,7 @@ export type State = {
   teams: Array<
     { __typename?: 'Team' } & Pick<
       Team,
-      'id' | 'name' | 'avatarUrl' | 'userAuthorizations'
+      'id' | 'name' | 'avatarUrl' | 'userAuthorizations' | 'settings'
     >
   >;
   allCollections: DELETE_ME_COLLECTION[] | null;
