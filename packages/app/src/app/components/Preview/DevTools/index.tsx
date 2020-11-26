@@ -105,7 +105,7 @@ type Props = {
   hideTabs?: boolean;
   currentDevToolIndex: number;
   currentTabPosition: number;
-  disableLogging: boolean;
+  disableLogging?: boolean;
 };
 type State = {
   status: { [title: string]: Status | undefined };
