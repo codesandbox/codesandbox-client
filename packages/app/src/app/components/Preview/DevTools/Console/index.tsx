@@ -230,20 +230,37 @@ class ConsoleComponent extends React.PureComponent<StyledProps, State> {
 
     return (
       <Container>
-        <Messages
-          ref={el => {
-            this.list = el;
-          }}
-        >
-          <ConsoleFeed
-            logs={messages}
-            variant={this.props.theme.light ? 'light' : 'dark'}
-            styles={inspectorTheme(this.props.theme)}
-            filter={filter}
-            searchKeywords={searchKeywordsHasError ? '' : searchKeywords}
-          />
-        </Messages>
-        <ConsoleInput evaluateConsole={this.evaluateConsole} />
+        {this.props.disableLogging ? (
+          <span
+            style={{
+              fontFamily: 'Inter',
+              fontWeight: 600,
+              fontSize: '0.875rem',
+              height: 22,
+              textAlign: 'center',
+              paddingTop: 60,
+            }}
+          >
+            In browser logging is disabled
+          </span>
+        ) : (
+          <>
+            <Messages
+              ref={el => {
+                this.list = el;
+              }}
+            >
+              <ConsoleFeed
+                logs={messages}
+                variant={this.props.theme.light ? 'light' : 'dark'}
+                styles={inspectorTheme(this.props.theme)}
+                filter={filter}
+                searchKeywords={searchKeywordsHasError ? '' : searchKeywords}
+              />
+            </Messages>
+            <ConsoleInput evaluateConsole={this.evaluateConsole} />
+          </>
+        )}
       </Container>
     );
   }
