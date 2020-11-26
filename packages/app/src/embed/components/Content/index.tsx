@@ -70,6 +70,7 @@ type Props = {
   toggleSidebar: () => void;
   toggleLike: () => void;
   editorSize: number;
+  disableLogging: boolean;
 };
 
 type State = {
