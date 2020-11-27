@@ -77,6 +77,7 @@ export const connectionChanged: Action<boolean> = ({ state }, connected) => {
 };
 
 type ModalName =
+  | 'deleteWorkspace'
   | 'deleteDeployment'
   | 'deleteSandbox'
   | 'feedback'
@@ -89,7 +90,8 @@ type ModalName =
   | 'signInForTemplates'
   | 'userSurvey'
   | 'liveSessionEnded'
-  | 'sandboxPicker';
+  | 'sandboxPicker'
+  | 'minimumPrivacy';
 
 export const modalOpened: Action<{
   modal: ModalName;

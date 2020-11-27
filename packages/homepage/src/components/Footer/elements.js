@@ -37,10 +37,9 @@ export const Nav = styled.section`
 `;
 
 export const Social = styled.ul`
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: repeat(2, 1rem);
+  display: flex;
   justify-content: center;
+  align-items: center;
   padding: 0;
   margin: 0;
   list-style: none;

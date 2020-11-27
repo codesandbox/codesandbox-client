@@ -1266,22 +1266,89 @@ export const createOrUpdateCurrentNpmRegistry: AsyncAction<Omit<
   }
 };
 
+export const deleteWorkspace: AsyncAction = async ({
+  actions,
+  effects,
+  state,
+}) => {
+  if (!state.activeTeamInfo) return;
+
+  try {
+    await effects.gql.mutations.deleteWorkspace({ teamId: state.activeTeam });
+
+    actions.modalClosed();
+    actions.setActiveTeam({ id: state.personalWorkspaceId! });
+    effects.router.redirectToDashboard();
+    actions.dashboard.getTeams();
+
+    effects.notificationToast.success(`Your workspace was deleted`);
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'There was a problem deleting your workspace',
+      error,
+    });
+  }
+};
+
 export const fetchCurrentNpmRegistry: AsyncAction<{}> = async ({
   state,
   effects,
+  actions,
 }) => {
   const activeTeam = state.activeTeam;
   if (!activeTeam) {
     return;
   }
 
-  const data = await effects.gql.queries.getPrivateNpmRegistry({
-    teamId: activeTeam,
+  try {
+    const data = await effects.gql.queries.getPrivateNpmRegistry({
+      teamId: activeTeam,
+    });
+
+    // Check if active team is still the same
+    if (activeTeam === state.activeTeam) {
+      state.dashboard.workspaceSettings.npmRegistry =
+        data.me?.team?.privateRegistry || null;
+    }
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'There was a problem fetcing the registry',
+      error,
+    });
+  }
+};
+
+export const setTeamMinimumPrivacy: AsyncAction<{
+  teamId: string;
+  minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
+  updateDrafts?: boolean;
+  source: string;
+}> = async (
+  { state, effects },
+  { teamId, minimumPrivacy, updateDrafts = false, source }
+) => {
+  effects.analytics.track('Team - Change minimum privacy', {
+    minimumPrivacy,
+    source,
   });
 
-  // Check if active team is still the same
-  if (activeTeam === state.activeTeam) {
-    state.dashboard.workspaceSettings.npmRegistry =
-      data.me?.team?.privateRegistry || null;
+  try {
+    await effects.gql.mutations.setTeamMinimumPrivacy({
+      teamId,
+      minimumPrivacy,
+      updateDrafts,
+    });
+
+    const selectedTeam = state.dashboard.teams.find(
+      team => team.id === state.personalWorkspaceId
+    );
+
+    if (selectedTeam) {
+      selectedTeam.settings.minimumPrivacy = minimumPrivacy;
+    }
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem updating your settings'
+    );
   }
 };

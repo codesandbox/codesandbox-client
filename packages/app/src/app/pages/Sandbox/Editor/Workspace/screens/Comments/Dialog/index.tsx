@@ -19,7 +19,11 @@ import {
 import { CommentWithRepliesFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
-import { convertUserReferencesToMentions } from 'app/overmind/utils/comments';
+import { Image } from 'app/components/Markdown/Image'
+import {
+  convertImageReferencesToMarkdownImages,
+  convertUserReferencesToMentions,
+} from 'app/overmind/utils/comments';
 import { motion, useAnimation } from 'framer-motion';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -27,13 +31,14 @@ import { createGlobalStyle } from 'styled-components';
 
 import { AvatarBlock } from '../components/AvatarBlock';
 import { EditComment } from '../components/EditComment';
-import { useCodesandboxMention } from '../hooks/useCodesandboxMention';
+import { useCodesandboxCommentEditor } from '../hooks/useCodesandboxCommentEditor';
 import { Reply, SkeletonReply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
 
 interface CommentDialogProps {
   comment: CommentWithRepliesFragment;
 }
+
 
 export const CommentDialog: React.FC<CommentDialogProps> = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
@@ -210,6 +215,18 @@ export const Dialog: React.FC<CommentDialogProps> = props => {
   );
 };
 
+const PreviewScreenshot: React.FC<{url: string}> = ({ url }) => (
+    <Element css={css({
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingBottom: 4,
+      'img': {
+        maxWidth: '100%'
+      }
+    })}><Image src={url} alt="Preview Screenshot" ignorePrivateSandboxRestriction /></Element>
+  )
+
 const DialogAddComment: React.FC<{
   comment: CommentWithRepliesFragment;
   onSave: (value: string, mentions: { [username: string]: UserQuery }) => void;
@@ -217,9 +234,10 @@ const DialogAddComment: React.FC<{
   onDragHandlerPanEnd: () => void;
 }> = ({ comment, onSave, onDragHandlerPan, onDragHandlerPanEnd }) => {
   const { actions } = useOvermind();
-  const [elements] = useCodesandboxMention({
+  const [elements] = useCodesandboxCommentEditor({
     initialValue: '',
     initialMentions: {},
+    initialImages: {},
     onSubmit: onSave,
     fixed: false,
     props: {
@@ -265,6 +283,7 @@ const DialogAddComment: React.FC<{
           />
         </Stack>
       </DragHandle>
+      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <PreviewScreenshot url={(comment.anchorReference.metadata as any).screenshotUrl} /> : null}
       {elements}
     </Stack>
   );
@@ -405,6 +424,7 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
           </Menu>
         </Stack>
       </Stack>
+      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <PreviewScreenshot url={comment.anchorReference.metadata.screenshotUrl} /> : null}
       <Element
         marginY={0}
         marginX={4}
@@ -416,7 +436,12 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
       >
         {!editing ? (
           <Element itemProp="text">
-            <Markdown source={comment.content} />
+            <Markdown
+              source={convertImageReferencesToMarkdownImages(
+                comment.content,
+                comment.references
+              )}
+            />
           </Element>
         ) : (
           <EditComment
@@ -424,11 +449,12 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
             initialMentions={convertUserReferencesToMentions(
               comment.references
             )}
-            onSave={async (newValue, mentions) => {
+            onSave={async (newValue, mentions, images) => {
               await comments.updateComment({
                 commentId: comment.id,
                 content: newValue,
                 mentions,
+                images,
               });
               setEditing(false);
             }}
@@ -629,13 +655,15 @@ const Replies = ({ replies, replyCount, listRef, repliesRenderedCallback }) => {
 
 const AddReply: React.FC<any> = ({ comment, ...props }) => {
   const { actions } = useOvermind();
-  const [elements] = useCodesandboxMention({
+  const [elements] = useCodesandboxCommentEditor({
     initialValue: '',
     initialMentions: {},
-    onSubmit: (value, mentions) => {
+    initialImages: {},
+    onSubmit: (value, mentions, images) => {
       actions.comments.saveNewComment({
         content: value,
         mentions,
+        images,
         parentCommentId: comment.id,
       });
       if (props.onSubmit) props.onSubmit();
@@ -702,7 +730,6 @@ const getInitialPosition = currentCommentPositions => {
 const getEndPosition = (currentCommentPositions, isCodeComment, dialogRef) => {
   const OVERLAP_WITH_SIDEBAR = -20;
   const OFFSET_TOP_FOR_ALIGNMENT = -90;
-  const OFFSET_FOR_CODE = 500;
 
   let dialogPosition = { x: null, y: null };
 
@@ -710,7 +737,7 @@ const getEndPosition = (currentCommentPositions, isCodeComment, dialogRef) => {
     // if we know the expected dialog position
     // true for comments with code reference
     dialogPosition = {
-      x: currentCommentPositions.dialog.left + OFFSET_FOR_CODE,
+      x: currentCommentPositions.dialog.left,
       y: currentCommentPositions.dialog.top + OFFSET_TOP_FOR_ALIGNMENT,
     };
   } else if (currentCommentPositions?.trigger) {
@@ -719,7 +746,7 @@ const getEndPosition = (currentCommentPositions, isCodeComment, dialogRef) => {
 
     if (isCodeComment) {
       dialogPosition = {
-        x: currentCommentPositions.trigger.right + OFFSET_FOR_CODE,
+        x: currentCommentPositions.trigger.right,
         y: currentCommentPositions.trigger.top + OFFSET_TOP_FOR_ALIGNMENT,
       };
     } else {

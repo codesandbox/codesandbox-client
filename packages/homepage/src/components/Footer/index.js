@@ -3,6 +3,7 @@ import { Link } from 'gatsby';
 import { P } from '../Typography';
 import Github from '../../assets/icons/github';
 import Twitter from '../../assets/icons/twitter';
+import Discord from '../../assets/icons/discord';
 import { FooterWrapper, Nav, Social } from './elements';
 
 const Footer = () => (
@@ -158,6 +159,11 @@ const Footer = () => (
       <li>
         <a title="Go to Twitter" href="https://twitter.com/codesandbox">
           <Twitter />
+        </a>
+      </li>
+      <li>
+        <a title="Join our Discord Server" href="https://discord.gg/5BpufEP7MH">
+          <Discord />
         </a>
       </li>
     </Social>

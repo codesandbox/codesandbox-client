@@ -1,10 +1,12 @@
 import { ServerContainerStatus } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
+import { PREVIEW_COMMENTS_ON } from '@codesandbox/common/lib/utils/feature-flags';
 
 import React, { FunctionComponent, useState } from 'react';
 import { useOvermind } from 'app/overmind';
 
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { ResponsiveWrapper } from './ResponsiveWrapper';
 
 type Props = {
@@ -64,7 +66,10 @@ export const Preview: FunctionComponent<Props> = ({
     return undefined;
   };
 
-  const isInResponsivePreview = preview.mode === 'responsive';
+  const canAddComments =
+    localStorage.getItem(PREVIEW_COMMENTS_ON) &&
+    currentSandbox.featureFlags.comments &&
+    hasPermission(currentSandbox.authorization, 'comment');
 
   return running ? (
     <BasePreview
@@ -78,8 +83,15 @@ export const Preview: FunctionComponent<Props> = ({
       onMount={initializePreview}
       noPreview={!previewWindowVisible}
       onToggleProjectView={projectViewToggled}
-      ResponsiveWrapper={ResponsiveWrapper}
-      isResponsiveModeActive={isInResponsivePreview}
+      Wrapper={ResponsiveWrapper}
+      isResponsiveModeActive={
+        preview.mode === 'responsive' ||
+        preview.mode === 'responsive-add-comment'
+      }
+      isPreviewCommentModeActive={
+        preview.mode === 'add-comment' ||
+        preview.mode === 'responsive-add-comment'
+      }
       toggleResponsiveMode={previewActions.toggleResponsiveMode}
       overlayMessage={getOverlayMessage()}
       previewSecret={currentSandbox.previewSecret}
@@ -87,6 +99,10 @@ export const Preview: FunctionComponent<Props> = ({
       customNpmRegistries={currentSandbox.npmRegistries}
       sandbox={currentSandbox}
       settings={settings}
+      isScreenshotLoading={preview.screenshot.isLoading}
+      createPreviewComment={
+        canAddComments && previewActions.createPreviewComment
+      }
       url={options.url}
     />
   ) : (

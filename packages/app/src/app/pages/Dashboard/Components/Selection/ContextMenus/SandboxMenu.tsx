@@ -219,9 +219,11 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           )}
         </>
       ) : null}
-      <Menu.Divider />
       {hasAccess && activeWorkspaceAuthorization !== 'READ' && (
-        <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
+        <>
+          <Menu.Divider />
+          <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
+        </>
       )}
       {hasAccess &&
         activeWorkspaceAuthorization !== 'READ' &&
@@ -271,34 +273,36 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             Make Sandbox a Template
           </MenuItem>
         ))}
-      <Menu.Divider />
-      {hasAccess &&
-        activeWorkspaceAuthorization !== 'READ' &&
-        (isTemplate ? (
-          <MenuItem
-            onSelect={() => {
-              const template = item as DashboardTemplate;
-              actions.dashboard.deleteTemplate({
-                sandboxId: template.sandbox.id,
-                templateId: template.template.id,
-              });
-              setVisibility(false);
-            }}
-          >
-            Delete Template
-          </MenuItem>
-        ) : (
-          <MenuItem
-            onSelect={() => {
-              actions.dashboard.deleteSandbox({
-                ids: [sandbox.id],
-              });
-              setVisibility(false);
-            }}
-          >
-            Delete Sandbox
-          </MenuItem>
-        ))}
+      {hasAccess && activeWorkspaceAuthorization !== 'READ' && (
+        <>
+          <Menu.Divider />
+          {isTemplate ? (
+            <MenuItem
+              onSelect={() => {
+                const template = item as DashboardTemplate;
+                actions.dashboard.deleteTemplate({
+                  sandboxId: template.sandbox.id,
+                  templateId: template.template.id,
+                });
+                setVisibility(false);
+              }}
+            >
+              Delete Template
+            </MenuItem>
+          ) : (
+            <MenuItem
+              onSelect={() => {
+                actions.dashboard.deleteSandbox({
+                  ids: [sandbox.id],
+                });
+                setVisibility(false);
+              }}
+            >
+              Delete Sandbox
+            </MenuItem>
+          )}
+        </>
+      )}
     </Menu.ContextMenu>
   );
 };

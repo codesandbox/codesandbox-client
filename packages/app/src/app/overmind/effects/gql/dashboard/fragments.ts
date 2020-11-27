@@ -158,6 +158,10 @@ export const currentTeamInfoFragment = gql`
       userId
       authorization
     }
+
+    settings {
+      minimumPrivacy
+    }
   }
 `;
 

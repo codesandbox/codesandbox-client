@@ -297,6 +297,11 @@ export class Workbench {
       'Follow Us on Twitter',
       'https://twitter.com/codesandbox'
     );
+    addBrowserNavigationCommand(
+      'codesandbox.help.discord',
+      'Join our discord server',
+      'https://discord.gg/5BpufEP7MH'
+    );
 
     this.addWorkbenchAction({
       id: 'codesandbox.help.feedback',

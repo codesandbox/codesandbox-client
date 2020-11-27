@@ -54,7 +54,7 @@
     "start": "yarn build:deps && cross-env NODE_ENV=development lerna run start --scope @codesandbox/common --scope @codesandbox/components --scope app --parallel",
     "start:common": "lerna run start --scope @codesandbox/common --stream",
     "start:components": "lerna run start --scope @codesandbox/components --stream",
-    "start:dev_api": "concurrently --raw \"cd packages/app && yarn start:dev_api\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
+    "start:dev_api": "(tmux new-session -d -s csb \"NODE_OPTIONS=--max_old_space_size=8192 concurrently --raw 'cd packages/app && yarn start:dev_api' 'cd packages/common && yarn start' 'cd packages/components && yarn start'\" || tmux attach -t csb) && tmux attach -t csb",
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
     "start:fast": "cross-env NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:profiling": "cross-env NODE_ENV=production PROFILING=true concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
