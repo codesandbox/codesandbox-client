@@ -111,6 +111,10 @@ export const teamFragmentDashboard = gql`
     creatorId
     avatarUrl
 
+    settings {
+      minimumPrivacy
+    }
+
     userAuthorizations {
       userId
       authorization

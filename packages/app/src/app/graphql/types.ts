@@ -1532,6 +1532,9 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
   Team,
   'id' | 'name' | 'description' | 'creatorId' | 'avatarUrl'
 > & {
+    settings: Maybe<
+      { __typename?: 'Settings' } & Pick<Settings, 'minimumPrivacy'>
+    >;
     userAuthorizations: Array<
       { __typename?: 'UserAuthorization' } & Pick<
         UserAuthorization,
