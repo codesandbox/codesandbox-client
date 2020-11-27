@@ -32,6 +32,7 @@ import {
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
+import { isPrivateScope } from 'app/utils/private-registry';
 import { debounce } from 'lodash-es';
 import { TextOperation } from 'ot';
 import { json } from 'overmind';
@@ -114,13 +115,39 @@ export const addNpmDependency: AsyncAction<{
   isDev?: boolean;
 }> = withOwnedSandbox(
   async ({ actions, effects, state }, { name, version, isDev }) => {
-    effects.analytics.track('Add NPM Dependency');
+    const currentSandbox = state.editor.currentSandbox;
+    const isPrivatePackage =
+      currentSandbox && isPrivateScope(currentSandbox, name);
+
+    effects.analytics.track('Add NPM Dependency', {
+      private: isPrivatePackage,
+    });
     state.currentModal = null;
     let newVersion = version || 'latest';
 
     if (!isAbsoluteVersion(newVersion)) {
-      const dependency = await effects.api.getDependency(name, newVersion);
-      newVersion = dependency.version;
+      if (isPrivatePackage) {
+        try {
+          const manifest = await effects.api.getDependencyManifest(
+            currentSandbox.id,
+            name
+          );
+          const absoluteVersion = manifest['dist-tags'][newVersion];
+
+          if (absoluteVersion) {
+            newVersion = absoluteVersion;
+          }
+        } catch (e) {
+          actions.internal.handleError({
+            error: e,
+            message: 'There was a problem adding the private package',
+          });
+          return;
+        }
+      } else {
+        const dependency = await effects.api.getDependency(name, newVersion);
+        newVersion = dependency.version;
+      }
     }
 
     await actions.editor.internal.addNpmDependencyToPackageJson({
