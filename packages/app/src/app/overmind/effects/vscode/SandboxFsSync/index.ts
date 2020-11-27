@@ -15,10 +15,12 @@ import delay from '@codesandbox/common/lib/utils/delay';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
+import { isPrivateScope } from 'app/utils/private-registry';
 import { json } from 'overmind';
 
 import { WAIT_INITIAL_TYPINGS_MS } from '../constants';
 import { appendFile, mkdir, rename, rmdir, unlink, writeFile } from './utils';
+import { fetchPrivateDependency } from './private-type-fetch';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 
@@ -69,6 +71,7 @@ async function requestPackager(url: string, retryCount = 0, method = 'GET') {
 
 type SandboxFsSyncOptions = {
   getSandboxFs: () => SandboxFs;
+  getSandbox: () => Sandbox;
 };
 
 class SandboxFsSync {
@@ -241,7 +244,7 @@ class SandboxFsSync {
   // We pass in either existing or new syncId. This allows us to evaluate
   // if we are just going to pass existing types or start up a new round
   // to fetch types
-  private async syncDependencyTypings(fsId?) {
+  private async syncDependencyTypings(fsId?: string) {
     try {
       this.typesInfo = await this.getTypesInfo();
       const syncDetails = await this.getDependencyTypingsSyncDetails();
@@ -470,7 +473,55 @@ class SandboxFsSync {
     }
   }
 
+  private fetchedPrivateDependencies = new Set<string>();
+  /**
+   * Fetch the dependency typings of a private package. We have different behaviour here,
+   * instead of fetching directly from the type fetcher we fetch the tar directly, and
+   * extract the `.d.ts` & `.ts` files from it. This doesn't account for all transient dependencies
+   * of this dependency though, that's why we also download the "subdependencies" using the normal
+   * fetching strategy (`fetchDependencyTypingFiles`).
+   *
+   * There's a risk we'll run in a deadlock in this approach; if `a` needs `b` and `b` needs `a`, we'll
+   * recursively keep calling the same functions. To prevent this we keep track of which dependencies have
+   * been processed and skip if those have been added already.
+   */
+  private async fetchPrivateDependencyTypingsFiles(
+    name: string,
+    version: string
+  ): Promise<{ [f: string]: string }> {
+    if (this.fetchedPrivateDependencies.has(name)) {
+      return {};
+    }
+
+    const { dtsFiles, dependencies } = await fetchPrivateDependency(
+      name,
+      version
+    );
+
+    this.fetchedPrivateDependencies.add(name);
+
+    const totalFiles: { [f: string]: string } = dtsFiles;
+    dependencies.map(async dep => {
+      const files = await this.fetchDependencyTypingFiles(
+        dep.name,
+        dep.version
+      );
+      Object.keys(files).forEach(f => {
+        totalFiles[f] = files[f];
+      });
+    });
+
+    return totalFiles;
+  }
+
   private async fetchDependencyTypingFiles(name: string, version: string) {
+    const sandbox = this.options.getSandbox();
+    const isPrivatePackage = sandbox && isPrivateScope(sandbox, name);
+
+    if (isPrivatePackage) {
+      return this.fetchPrivateDependencyTypingsFiles(name, version);
+    }
+
     const dependencyQuery = encodeURIComponent(`${name}@${version}`);
 
     try {
