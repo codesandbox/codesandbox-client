@@ -10,6 +10,7 @@ import {
   RepoFragmentDashboardFragment,
   TeamMemberAuthorization,
   CreateOrUpdateNpmRegistryMutationVariables,
+  DeleteNpmRegistryMutationVariables,
 } from 'app/graphql/types';
 import { getDecoratedCollection } from './utils';
 import { OrderBy, sandboxesTypes } from './types';
@@ -1240,6 +1241,33 @@ export const changeAuthorization: AsyncAction<{
       userId,
       authorization: oldAuthorization,
     });
+  }
+};
+
+export const deleteCurrentNpmRegistry: AsyncAction<Omit<
+  DeleteNpmRegistryMutationVariables,
+  'teamId'
+>> = async ({ state, actions, effects }, params) => {
+  const confirmed = await actions.modals.alertModal.open({
+    title: 'Are you sure?',
+    message: 'This will reset the current private npm registry information.',
+  });
+  if (confirmed) {
+    try {
+      await effects.gql.mutations.deleteNpmRegistry({
+        ...params,
+        teamId: state.activeTeam,
+      });
+
+      await actions.dashboard.fetchCurrentNpmRegistry({});
+
+      effects.notificationToast.success('Successfully reset the registry!');
+    } catch (e) {
+      actions.internal.handleError({
+        message: 'There was a problem resetting the registry settings',
+        error: e,
+      });
+    }
   }
 };
 

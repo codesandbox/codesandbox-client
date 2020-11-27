@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Stack } from '@codesandbox/components';
+import { Button, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 import { useOvermind } from 'app/overmind';
@@ -10,6 +10,17 @@ export const RegistrySettings = () => {
   const { actions, state } = useOvermind();
   const [loading, setLoading] = React.useState(true);
   const [submitting, setSubmitting] = React.useState(false);
+  const [resetting, setResetting] = React.useState(false);
+
+  React.useEffect(() => {
+    if (resetting) {
+      setResetting(false);
+    }
+  }, [resetting, setResetting]);
+
+  const resetForm = () => {
+    setResetting(true);
+  };
 
   const loadCurrentNpmRegistry = React.useCallback(async () => {
     setLoading(true);
@@ -92,12 +103,36 @@ export const RegistrySettings = () => {
             }}
           />
         )}
-        <RegistryForm
-          onSubmit={onSubmit}
-          isSubmitting={submitting}
-          registry={state.dashboard.workspaceSettings.npmRegistry}
-          disabled={Boolean(alert)}
-        />
+        {!resetting && (
+          <RegistryForm
+            onCancel={() => {
+              resetForm();
+            }}
+            onSubmit={onSubmit}
+            isSubmitting={submitting}
+            registry={state.dashboard.workspaceSettings.npmRegistry}
+            disabled={Boolean(alert)}
+          />
+        )}
+      </Stack>
+
+      <Stack justify="center" align="center">
+        <Button
+          variant="link"
+          onClick={() =>
+            actions.dashboard.deleteCurrentNpmRegistry({}).then(() => {
+              resetForm();
+            })
+          }
+          css={css({
+            maxWidth: 150,
+            ':hover:not(:disabled)': {
+              color: 'reds.200',
+            },
+          })}
+        >
+          Reset Registry
+        </Button>
       </Stack>
     </Stack>
   );

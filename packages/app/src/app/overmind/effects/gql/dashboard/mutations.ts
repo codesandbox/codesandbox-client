@@ -45,6 +45,8 @@ import {
   ChangeTeamMemberAuthorizationMutationVariables,
   CreateOrUpdateNpmRegistryMutation,
   CreateOrUpdateNpmRegistryMutationVariables,
+  DeleteNpmRegistryMutation,
+  DeleteNpmRegistryMutationVariables,
   DeleteWorkspaceMutation,
   DeleteWorkspaceMutationVariables,
   SetTeamMinimumPrivacyMutation,
@@ -349,7 +351,7 @@ export const createOrUpdateNpmRegistry: Query<
     $limitToScopes: Boolean!
     $enabledScopes: [String!]!
   ) {
-    createOrUpdatePrivateRegistry(
+    createOrUpdatePrivateNpmRegistry(
       teamId: $teamId
       registryType: $registryType
       registryUrl: $registryUrl
@@ -358,6 +360,18 @@ export const createOrUpdateNpmRegistry: Query<
       limitToScopes: $limitToScopes
       enabledScopes: $enabledScopes
     ) {
+      ...npmRegistry
+    }
+  }
+  ${npmRegistryFragment}
+`;
+
+export const deleteNpmRegistry: Query<
+  DeleteNpmRegistryMutation,
+  DeleteNpmRegistryMutationVariables
+> = gql`
+  mutation DeleteNpmRegistry($teamId: UUID4!) {
+    deletePrivateNpmRegistry(teamId: $teamId) {
       ...npmRegistry
     }
   }

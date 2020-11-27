@@ -318,8 +318,6 @@ export type RootMutationType = {
   resolveComment: Comment;
   /** Set a user's notification preferences */
   updateNotificationPreferences: NotificationPreferences;
-  /** Delete a private registry */
-  deletePrivateRegistry: Maybe<PrivateRegistry>;
   changeSandboxInvitationAuthorization: Invitation;
   setSandboxesFrozen: Array<Sandbox>;
   /** Unbookmark a template */
@@ -339,10 +337,10 @@ export type RootMutationType = {
   updateComment: Comment;
   /** Mark all notifications as read */
   markAllNotificationsAsRead: User;
+  /** Delete a private registry */
+  deletePrivateNpmRegistry: Maybe<PrivateRegistry>;
   /** Update notification read status */
   updateNotificationReadStatus: Notification;
-  /** Create or Update a private registry */
-  createOrUpdatePrivateRegistry: PrivateRegistry;
   /** Mark one notification as read */
   markNotificationAsRead: Notification;
   /** Delete sandboxes */
@@ -399,6 +397,8 @@ export type RootMutationType = {
   redeemSandboxInvitation: Invitation;
   /** Change authorization of a collaborator */
   changeCollaboratorAuthorization: Collaborator;
+  /** Create or Update a private registry */
+  createOrUpdatePrivateNpmRegistry: PrivateRegistry;
 };
 
 export type RootMutationTypeBookmarkTemplateArgs = {
@@ -425,10 +425,6 @@ export type RootMutationTypeUpdateNotificationPreferencesArgs = {
   emailCommentMention: Maybe<Scalars['Boolean']>;
   emailCommentReply: Maybe<Scalars['Boolean']>;
   emailNewComment: Maybe<Scalars['Boolean']>;
-};
-
-export type RootMutationTypeDeletePrivateRegistryArgs = {
-  teamId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeChangeSandboxInvitationAuthorizationArgs = {
@@ -486,19 +482,13 @@ export type RootMutationTypeUpdateCommentArgs = {
   userReferences: Maybe<Array<UserReference>>;
 };
 
+export type RootMutationTypeDeletePrivateNpmRegistryArgs = {
+  teamId: Scalars['UUID4'];
+};
+
 export type RootMutationTypeUpdateNotificationReadStatusArgs = {
   notificationId: Scalars['UUID4'];
   read: Scalars['Boolean'];
-};
-
-export type RootMutationTypeCreateOrUpdatePrivateRegistryArgs = {
-  enabledScopes: Array<Scalars['String']>;
-  limitToScopes: Scalars['Boolean'];
-  proxyEnabled: Scalars['Boolean'];
-  registryAuthKey: Maybe<Scalars['String']>;
-  registryType: RegistryType;
-  registryUrl: Maybe<Scalars['String']>;
-  teamId: Scalars['UUID4'];
 };
 
 export type RootMutationTypeMarkNotificationAsReadArgs = {
@@ -669,6 +659,16 @@ export type RootMutationTypeChangeCollaboratorAuthorizationArgs = {
   authorization: Authorization;
   sandboxId: Scalars['ID'];
   username: Scalars['String'];
+};
+
+export type RootMutationTypeCreateOrUpdatePrivateNpmRegistryArgs = {
+  enabledScopes: Array<Scalars['String']>;
+  limitToScopes: Scalars['Boolean'];
+  proxyEnabled: Scalars['Boolean'];
+  registryAuthKey: Maybe<Scalars['String']>;
+  registryType: RegistryType;
+  registryUrl: Maybe<Scalars['String']>;
+  teamId: Scalars['UUID4'];
 };
 
 export type RootQueryType = {
@@ -1836,9 +1836,19 @@ export type CreateOrUpdateNpmRegistryMutationVariables = Exact<{
 export type CreateOrUpdateNpmRegistryMutation = {
   __typename?: 'RootMutationType';
 } & {
-  createOrUpdatePrivateRegistry: {
+  createOrUpdatePrivateNpmRegistry: {
     __typename?: 'PrivateRegistry';
   } & NpmRegistryFragment;
+};
+
+export type DeleteNpmRegistryMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+}>;
+
+export type DeleteNpmRegistryMutation = { __typename?: 'RootMutationType' } & {
+  deletePrivateNpmRegistry: Maybe<
+    { __typename?: 'PrivateRegistry' } & NpmRegistryFragment
+  >;
 };
 
 export type DeleteWorkspaceMutationVariables = Exact<{

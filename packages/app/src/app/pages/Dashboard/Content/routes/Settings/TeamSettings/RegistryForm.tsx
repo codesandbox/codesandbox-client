@@ -38,6 +38,7 @@ export type CreateTeamParams = Omit<
 
 type RegistryFormProps = {
   registry: NpmRegistryFragment | null;
+  onCancel: () => void;
   onSubmit: (params: CreateTeamParams) => void;
   isSubmitting: boolean;
   disabled?: boolean;
@@ -51,6 +52,7 @@ const nameMap = {
 
 export const RegistryForm = ({
   registry,
+  onCancel,
   onSubmit,
   isSubmitting,
   disabled,
@@ -303,7 +305,14 @@ export const RegistryForm = ({
           </Stack>
 
           <Stack gap={2} justify="flex-end" css={css({ width: '100%' })}>
-            <Button disabled={disabled} autoWidth variant="secondary">
+            <Button
+              onClick={() => {
+                onCancel();
+              }}
+              disabled={disabled}
+              autoWidth
+              variant="secondary"
+            >
               Cancel
             </Button>
             <Button
