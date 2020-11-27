@@ -109,6 +109,10 @@ We're still exploring the different options. If you're interested in working
 together with us on building and testing this, we'd love to hear from you at
 [hello@codesandbox.io](mailto:hello@codesandbox.io).
 
+<!--
+Commented because we don't support this yet, and still unsure whether we actually should
+support this.
+
 ### Can I use a .npmrc file?
 
 If you have a `.npmrc` in your sandbox, and the sandbox belongs to a Pro
@@ -116,7 +120,7 @@ Workspace, we'll use the credentials in the `.npmrc` to fetch packages. However,
 we discourage this approach, since you'd share your registry auth token with
 anyone visiting the sandbox. Using the Workspace Setting ensures that any
 collaborator of a sandbox can use the private registry without getting access to
-the token.
+the token. -->
 
 ### Does this work with container sandboxes?
 
