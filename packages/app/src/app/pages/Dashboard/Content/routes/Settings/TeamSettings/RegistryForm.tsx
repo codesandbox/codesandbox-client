@@ -7,6 +7,9 @@ import {
   FormField,
   Button,
   IconButton,
+  Icon,
+  Link,
+  Tooltip,
 } from '@codesandbox/components';
 import {
   CreateOrUpdateNpmRegistryMutationVariables,
@@ -119,9 +122,32 @@ export const RegistryForm = ({
             gap={13}
           >
             <Stack css={css({ width: '100%' })} gap={5} direction="vertical">
-              <Text weight="bold" size={4}>
-                Registry
-              </Text>
+              <Stack gap={1} align="center">
+                <Text weight="bold" size={4}>
+                  Registry
+                </Text>
+
+                <Link
+                  href="https://codesandbox.io/docs/custom-npm-registry"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  css={css({
+                    color: 'grays.400',
+                  })}
+                >
+                  <Tooltip label="Documentation">
+                    <div
+                      css={css({
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      })}
+                    >
+                      <Icon aria-label="Documentation" size={18} name="info" />
+                    </div>
+                  </Tooltip>
+                </Link>
+              </Stack>
 
               <CustomFormField label="Registry Host">
                 <Select
@@ -151,13 +177,13 @@ export const RegistryForm = ({
                     />
                   </CustomFormField>
                   <Text size={3} variant="muted">
-                    Is your registry behind a VPN? Please read this{' '}
+                    Is your registry behind a VPN? Please read these{' '}
                     <a
                       href="https://codesandbox.io/docs/custom-npm-registry"
                       target="_blank"
                       rel="noreferrer noopener"
                     >
-                      post
+                      docs
                     </a>
                     .
                   </Text>
