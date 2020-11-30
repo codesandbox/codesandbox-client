@@ -71,7 +71,7 @@ async function requestPackager(url: string, retryCount = 0, method = 'GET') {
 
 type SandboxFsSyncOptions = {
   getSandboxFs: () => SandboxFs;
-  getSandbox: () => Sandbox;
+  getCurrentSandbox: () => Sandbox | null;
 };
 
 class SandboxFsSync {
@@ -389,7 +389,7 @@ class SandboxFsSync {
   // We send new packages to all registered workers
   private setAndSendPackageTypes(
     name: string,
-    types: { [name: string]: string }
+    types: { [name: string]: { module: { code: string } } }
   ) {
     if (!this.isDisposed) {
       if (!this.types[name]) {
@@ -488,19 +488,20 @@ class SandboxFsSync {
   private async fetchPrivateDependencyTypingsFiles(
     name: string,
     version: string
-  ): Promise<{ [f: string]: string }> {
+  ): Promise<{ [f: string]: { module: { code: string } } }> {
     if (this.fetchedPrivateDependencies.has(name)) {
       return {};
     }
 
     const { dtsFiles, dependencies } = await fetchPrivateDependency(
+      this.options.getCurrentSandbox()!,
       name,
       version
     );
 
     this.fetchedPrivateDependencies.add(name);
 
-    const totalFiles: { [f: string]: string } = dtsFiles;
+    const totalFiles: { [f: string]: { module: { code: string } } } = dtsFiles;
     dependencies.map(async dep => {
       const files = await this.fetchDependencyTypingFiles(
         dep.name,
@@ -514,8 +515,11 @@ class SandboxFsSync {
     return totalFiles;
   }
 
-  private async fetchDependencyTypingFiles(name: string, version: string) {
-    const sandbox = this.options.getSandbox();
+  private async fetchDependencyTypingFiles(
+    name: string,
+    version: string
+  ): Promise<{ [path: string]: { module: { code: string } } }> {
+    const sandbox = this.options.getCurrentSandbox();
     const isPrivatePackage = sandbox && isPrivateScope(sandbox, name);
 
     if (isPrivatePackage) {

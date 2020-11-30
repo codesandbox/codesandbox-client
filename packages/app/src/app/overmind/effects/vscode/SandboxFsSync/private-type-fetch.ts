@@ -2,7 +2,7 @@ import { Sandbox } from '@codesandbox/common/lib/types';
 import { NpmRegistryFetcher } from 'sandpack-core/lib/npm/dynamic/fetch-protocols/npm-registry';
 
 type Output = {
-  dtsFiles: { [p: string]: string };
+  dtsFiles: { [p: string]: { module: { code: string } } };
   dependencies: Array<{ name: string; version: string }>;
 };
 
@@ -26,5 +26,26 @@ export async function fetchPrivateDependency(
   });
 
   const meta = await fetcher.meta(name, version);
-  const filePaths = Object.keys(meta).filter(file => file.endsWith('.ts'));
+  const validFilePaths = Object.keys(meta).filter(
+    file => file.endsWith('.ts') || file.endsWith('/package.json')
+  );
+  const validFiles = {};
+
+  await Promise.all(
+    validFilePaths.map(async filePath => {
+      const file = await fetcher.file(name, version, filePath);
+      validFiles[`/${name}${filePath}`] = { module: { code: file } };
+    })
+  );
+
+  const packageJSONPath = `/package.json`;
+  const packageJSONCode = await fetcher.file(name, version, packageJSONPath);
+  const deps: { [dep: string]: string } = JSON.parse(packageJSONCode)
+    .dependencies;
+  const depArray = Object.keys(deps).map(depName => ({
+    name: depName,
+    version: deps[depName],
+  }));
+
+  return { dtsFiles: validFiles, dependencies: depArray };
 }
