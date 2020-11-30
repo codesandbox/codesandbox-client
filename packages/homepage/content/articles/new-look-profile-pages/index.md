@@ -5,7 +5,7 @@ authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
 title: Showcase Your Sandboxes with All New Profile Pages
 description: Let folks know a little bit about yourself and your creations with our new look profile pages.
-date: 2020-03-04
+date: 2020-12-02
 ---
 
 At CodeSandbox, our mission is to enable creators to build and share their ideas. By removing complexity and simplifying collaboration, we want to allow everyone to create things with code and share them with friends, colleagues, or the world. Profile pages on CodeSandbox are where you can share your sandboxes and let folks know a little bit about yourself and your creations. They're a great place to showcase your work and link from your website, social bio, or resume.
