@@ -19,7 +19,7 @@ I'm trying to bring open-source more into my work life. I was involved in open s
 
 This is great because I can satisfy my creative drive and have fun. At work, I need to solve unusual challenges and problems that, at least on the outside, seem to have little to do with CAD and industrial computation. But they, directly and indirectly, help grow both the open-source libraries I create and the applications built with it, like our products. We get contributors and people interested in what we do and it helps us get the word out.
 
-https://codesandbox.io/s/gkfhr?autoresize=1&fontsize=14&hidenavigation=1&theme=dark
+https://codesandbox.io/s/gkfhr?autoresize=1&fontsize=14&hidenavigation=1&theme=dark&hidedevtools=1
 
 ## How did you get into it?
 It was just a hobby. I got into Android, and as I started to hack away, I created something like a firmware based on Google's AOSP. It was called Paranoid Android, and when it got bigger, a team formed around it. For me, being active in open source was taking too much time. I stopped, and for a long time, I did not touch it at all.
@@ -33,7 +33,7 @@ I started to incorporate my own ideas, and it got bigger. I think that nowadays,
 ## Who are the people or projects that inspired you while you were learning?
 One of my biggest inspirations was [Christopher Chedeau](https://codesandbox.io/u/vjeux) because he was doing things that no one has thought of, like CSS in JS, auto-formatting with Prettier, or [Animated](https://codesandbox.io/examples/package/animated), which is still the primary approach for animation on React Native. The way it worked was completely out of the box as it doesn't animate by props but outside of React. Christopher was always very helpful and supportive of everything I did.
 
-https://codesandbox.io/s/prb9t?autoresize=1&fontsize=14&hidenavigation=1&theme=dark
+https://codesandbox.io/s/prb9t?autoresize=1&fontsize=14&hidenavigation=1&theme=dark&hidedevtools=1
 
 ## A tip for beginners
 If you visit [react-three-fiber](https://github.com/pmndrs/react-three-fiber) on GitHub, there is a fundamentals section where you can start easily on a simple thing. Then go through the documentation of Three.JS and try out stuff.
@@ -41,6 +41,6 @@ If you visit [react-three-fiber](https://github.com/pmndrs/react-three-fiber) on
 ## A project to fork
 I would choose the react-three-fiber demo. It's a template that has two rotating, interactive cubes. Fork it, try changing some values, and then scroll through our API to see what the various settings and hooks do.
 
-https://codesandbox.io/s/r3f-basic-demo-rrppl0y8l4?autoresize=1&fontsize=14&hidenavigation=1&theme=dark
+https://codesandbox.io/s/r3f-basic-demo-rrppl0y8l4?autoresize=1&fontsize=14&hidenavigation=1&theme=dark&hidedevtools=1
 
 Profile pages on CodeSandbox are where you can share your sandboxes and let folks know a little bit about yourself and your creations. They're a great place to showcase your work and link from your website, social bio, or resume. [Register or sign in](https://codesandbox.io/signin) to make your own.
