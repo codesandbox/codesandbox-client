@@ -126,7 +126,7 @@ export const addNpmDependency: AsyncAction<{
     let newVersion = version || 'latest';
 
     if (!isAbsoluteVersion(newVersion)) {
-      if (isPrivatePackage) {
+      if (isPrivatePackage && currentSandbox) {
         try {
           const manifest = await effects.api.getDependencyManifest(
             currentSandbox.id,

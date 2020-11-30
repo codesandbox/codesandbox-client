@@ -1371,7 +1371,7 @@ export const setTeamMinimumPrivacy: AsyncAction<{
       team => team.id === state.personalWorkspaceId
     );
 
-    if (selectedTeam) {
+    if (selectedTeam && selectedTeam.settings) {
       selectedTeam.settings.minimumPrivacy = minimumPrivacy;
     }
   } catch (error) {
