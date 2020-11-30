@@ -138,10 +138,39 @@ export const addNpmDependency: AsyncAction<{
             newVersion = absoluteVersion;
           }
         } catch (e) {
-          actions.internal.handleError({
-            error: e,
-            message: 'There was a problem adding the private package',
-          });
+          if (currentSandbox.privacy !== 2) {
+            effects.notificationToast.add({
+              status: NotificationStatus.ERROR,
+              title: 'There was a problem adding the private package',
+              message:
+                'Private packages can only be added to private sandboxes',
+              actions: {
+                primary: {
+                  label: 'Make Sandbox Private',
+                  run: async () => {
+                    await actions.workspace.sandboxPrivacyChanged({
+                      privacy: 2,
+                      source: 'Private Package Notification',
+                    });
+                    actions.editor.addNpmDependency({ name, version });
+                  },
+                },
+                secondary: {
+                  label: 'Learn More',
+                  run: () => {
+                    effects.browser.openWindow(
+                      'https://codesandbox.io/docs/custom-npm-registry'
+                    );
+                  },
+                },
+              },
+            });
+          } else {
+            actions.internal.handleError({
+              error: e,
+              message: 'There was a problem adding the private package',
+            });
+          }
           return;
         }
       } else {

@@ -269,6 +269,8 @@ class SandboxFsSync {
 
             Object.assign(removedTypings, typings);
 
+            this.fetchedPrivateDependencies.delete(removedDep.name);
+
             delete this.types[removedDep.name];
           });
 
