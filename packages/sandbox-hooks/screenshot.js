@@ -15,7 +15,6 @@ export default function setupScreenshotListener() {
             !(data.data.isPrivateSandbox && isSameOrigin),
           logging: false,
           allowTaint: false,
-          foreignObjectRendering: true,
         }).then(canvas => {
           dispatch({
             type: 'screenshot-generated',
