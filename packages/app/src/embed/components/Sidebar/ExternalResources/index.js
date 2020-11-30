@@ -33,18 +33,15 @@ function ExternalResources({ sandbox }) {
 
   return (
     <Container>
-      {externalResources.length > 0 && (
-        <>
-          {externalResources.map(dep => (
-            <Row key={dep}>
-              <span>{getName(dep)}</span>
-              <a href={dep} rel="nofollow noopener noreferrer" target="_blank">
-                open
-              </a>
-            </Row>
-          ))}
-        </>
-      )}
+      {externalResources.length > 0 &&
+        externalResources.map(dep => (
+          <Row key={dep}>
+            <span>{getName(dep)}</span>
+            <a href={dep} rel="nofollow noopener noreferrer" target="_blank">
+              open
+            </a>
+          </Row>
+        ))}
     </Container>
   );
 }

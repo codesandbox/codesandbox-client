@@ -159,46 +159,44 @@ export const Import = () => {
           <ImportFromGithub />
         </Column>
 
-        <>
-          <VerticalSeparator />
-          <Column>
-            <FeatureName>
-              <StackbitIcon style={{ marginRight: '1rem' }} />
-              Import from Stackbit
-            </FeatureName>
-            <FeatureText>
-              Create a project using{' '}
-              <a
-                href="https://www.stackbit.com/"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                Stackbit
-              </a>
-              . This generates a project for you that{"'"}s automatically set up
-              with any Theme, Site Generator and CMS.
-            </FeatureText>
-            {!state.user ||
-            (state.user.provider === 'google' &&
-              !state.user.integrations.github) ? (
-              <Button
-                autoWidth
-                onClick={() =>
-                  actions.signInButtonClicked({ provider: 'github' })
-                }
-              >
-                <Icon name="github" marginRight={2} />
-                Sign in with GitHub
-              </Button>
-            ) : (
-              <StackbitButton
-                style={{ fontSize: 11 }}
-                username={state.user.username}
-                closeModal={() => actions.modalClosed()}
-              />
-            )}
-          </Column>
-        </>
+        <VerticalSeparator />
+        <Column>
+          <FeatureName>
+            <StackbitIcon style={{ marginRight: '1rem' }} />
+            Import from Stackbit
+          </FeatureName>
+          <FeatureText>
+            Create a project using{' '}
+            <a
+              href="https://www.stackbit.com/"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Stackbit
+            </a>
+            . This generates a project for you that{"'"}s automatically set up
+            with any Theme, Site Generator and CMS.
+          </FeatureText>
+          {!state.user ||
+          (state.user.provider === 'google' &&
+            !state.user.integrations.github) ? (
+            <Button
+              autoWidth
+              onClick={() =>
+                actions.signInButtonClicked({ provider: 'github' })
+              }
+            >
+              <Icon name="github" marginRight={2} />
+              Sign in with GitHub
+            </Button>
+          ) : (
+            <StackbitButton
+              style={{ fontSize: 11 }}
+              username={state.user.username}
+              closeModal={() => actions.modalClosed()}
+            />
+          )}
+        </Column>
       </Features>
       <ImportChoices>
         <a href="/docs/importing#export-with-cli">

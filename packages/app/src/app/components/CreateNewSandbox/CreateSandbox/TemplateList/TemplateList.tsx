@@ -345,108 +345,102 @@ export const TemplateList = ({
   );
 
   let offset = 0;
-  return (
-    <>
-      {templateInfos.map(
-        ({ templates, title, key, isOwned }, templateInfoIndex) => {
-          if (templateInfoIndex > 0) {
-            offset += templateInfos[templateInfoIndex - 1].templates.length;
-          }
+  return templateInfos.map(
+    ({ templates, title, key, isOwned }, templateInfoIndex) => {
+      if (templateInfoIndex > 0) {
+        offset += templateInfos[templateInfoIndex - 1].templates.length;
+      }
 
-          if (templates.length === 0) {
-            return null;
-          }
+      if (templates.length === 0) {
+        return null;
+      }
 
-          return (
-            <TemplateInfoContainer key={key}>
-              {title !== undefined && <SubHeader>{title}</SubHeader>}
-              <Grid
-                columnCount={window.screen.availWidth < 600 ? 1 : columnCount}
-              >
-                {templates.map((template: TemplateFragment, i) => {
-                  const index = offset + i;
-                  const focused = focusedTemplateIndex === offset + i;
-                  const owner = template.sandbox
-                    ? template.sandbox.collection?.team?.name ||
-                      template.sandbox.author?.username
-                    : '';
+      return (
+        <TemplateInfoContainer key={key}>
+          {title !== undefined && <SubHeader>{title}</SubHeader>}
+          <Grid columnCount={window.screen.availWidth < 600 ? 1 : columnCount}>
+            {templates.map((template: TemplateFragment, i) => {
+              const index = offset + i;
+              const focused = focusedTemplateIndex === offset + i;
+              const owner = template.sandbox
+                ? template.sandbox.collection?.team?.name ||
+                  template.sandbox.author?.username
+                : '';
 
-                  const shortKey = showSecondaryShortcuts
-                    ? index < 9
-                      ? `${MODIFIER_KEY}+${index + 1}`
-                      : ''
-                    : '';
-                  const detailText = focused ? '↵' : shortKey;
+              const shortKey = showSecondaryShortcuts
+                ? index < 9
+                  ? `${MODIFIER_KEY}+${index + 1}`
+                  : ''
+                : '';
+              const detailText = focused ? '↵' : shortKey;
 
-                  return (
-                    <SandboxCard
-                      key={template.id}
-                      title={getSandboxName(template.sandbox)}
-                      iconUrl={template.iconUrl}
-                      // @ts-ignore
-                      environment={template.sandbox.source.template}
-                      owner={owner}
-                      color={template.color}
-                      onFocus={() => {
-                        safeSetFocusedTemplate(() => index);
-                      }}
-                      onMouseOver={() => {
-                        // This is to prevent selecting with your mouse on scroll move
-                        if (Date.now() - lastMouseMoveEventAt.current < 500) {
-                          safeSetFocusedTemplate(() => index);
-                        }
-                      }}
-                      onKeyPress={e => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
+              return (
+                <SandboxCard
+                  key={template.id}
+                  title={getSandboxName(template.sandbox)}
+                  iconUrl={template.iconUrl}
+                  // @ts-ignore
+                  environment={template.sandbox.source.template}
+                  owner={owner}
+                  color={template.color}
+                  onFocus={() => {
+                    safeSetFocusedTemplate(() => index);
+                  }}
+                  onMouseOver={() => {
+                    // This is to prevent selecting with your mouse on scroll move
+                    if (Date.now() - lastMouseMoveEventAt.current < 500) {
+                      safeSetFocusedTemplate(() => index);
+                    }
+                  }}
+                  onKeyPress={e => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
 
-                          track('Template Modal - Open Sandbox', {
-                            source: 'enter',
-                          });
-                          openSandbox(
-                            template.sandbox,
-                            isMac ? e.metaKey : e.ctrlKey
-                          );
-                        }
-                      }}
-                      onClick={e => {
-                        e.preventDefault();
+                      track('Template Modal - Open Sandbox', {
+                        source: 'enter',
+                      });
+                      openSandbox(
+                        template.sandbox,
+                        isMac ? e.metaKey : e.ctrlKey
+                      );
+                    }
+                  }}
+                  onClick={e => {
+                    e.preventDefault();
 
-                        track('Template Modal - Open Sandbox', {
-                          source: 'click',
-                        });
-                        openSandbox(
-                          template.sandbox,
-                          isMac ? e.metaKey : e.ctrlKey
-                        );
-                      }}
-                      focused={focused}
-                      detailText={detailText}
-                      DetailComponent={
-                        isOwned
-                          ? () => (
-                              <Tooltip content="Edit Template">
-                                <EditIcon
-                                  onClick={evt => {
-                                    evt.stopPropagation();
-                                    actions.modalClosed();
-                                  }}
-                                  to={sandboxUrl(template.sandbox)}
-                                >
-                                  <MdEditIcon />
-                                </EditIcon>
-                              </Tooltip>
-                            )
-                          : undefined
-                      }
-                    />
-                  );
-                })}
-              </Grid>
-            </TemplateInfoContainer>
-          );
-        }
-      )}
-    </>
+                    track('Template Modal - Open Sandbox', {
+                      source: 'click',
+                    });
+                    openSandbox(
+                      template.sandbox,
+                      isMac ? e.metaKey : e.ctrlKey
+                    );
+                  }}
+                  focused={focused}
+                  detailText={detailText}
+                  DetailComponent={
+                    isOwned
+                      ? () => (
+                          <Tooltip content="Edit Template">
+                            <EditIcon
+                              onClick={evt => {
+                                evt.stopPropagation();
+                                actions.modalClosed();
+                              }}
+                              to={sandboxUrl(template.sandbox)}
+                            >
+                              <MdEditIcon />
+                            </EditIcon>
+                          </Tooltip>
+                        )
+                      : undefined
+                  }
+                />
+              );
+            })}
+          </Grid>
+        </TemplateInfoContainer>
+      );
+    }
   );
 };

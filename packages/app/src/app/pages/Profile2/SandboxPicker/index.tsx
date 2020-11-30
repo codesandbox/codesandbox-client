@@ -225,30 +225,26 @@ const SubCollections: React.FC<{
 }> = ({ collections, path, setPath }) => {
   const subCollections = getSubCollections(collections, path);
 
-  return (
+  return subCollections.map(collection => (
     <>
-      {subCollections.map(collection => (
-        <>
-          <ListAction
-            key={collection.path || 'all'}
-            align="center"
-            gap={2}
-            css={css({
-              height: 10,
-              paddingLeft: 8 + 4 * collection.level,
-            })}
-            onClick={() => setPath(collection.path)}
-          >
-            <Icon name="folder" />
-            <Text>{collection.name}</Text>
-          </ListAction>
-          <SubCollections
-            collections={collections}
-            path={collection.path}
-            setPath={setPath}
-          />
-        </>
-      ))}
+      <ListAction
+        key={collection.path || 'all'}
+        align="center"
+        gap={2}
+        css={css({
+          height: 10,
+          paddingLeft: 8 + 4 * collection.level,
+        })}
+        onClick={() => setPath(collection.path)}
+      >
+        <Icon name="folder" />
+        <Text>{collection.name}</Text>
+      </ListAction>
+      <SubCollections
+        collections={collections}
+        path={collection.path}
+        setPath={setPath}
+      />
     </>
-  );
+  ));
 };

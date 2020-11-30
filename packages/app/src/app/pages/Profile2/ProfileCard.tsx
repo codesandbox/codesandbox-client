@@ -286,6 +286,7 @@ const SocialLinks: React.FC<{
       </Stack>
     ) : (
       <>
+        {!githubUsername && !socialLinks?.length ? <div /> : null}
         {githubUsername && (
           <Stack
             as={Link}
