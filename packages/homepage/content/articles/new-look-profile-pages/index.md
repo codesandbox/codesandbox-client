@@ -27,6 +27,6 @@ This profile update is part of a series of design work we've undertaken across C
 All new user profiles are live now, so jump in and make your profile your own.
 
 ## Thanks
-As part of this work, we've talked to a bunch of folks. We want to thank [xananax](https://twitter.com/xananax), [code_wonders](https://twitter.com/code_wonders), [Prashant Chaudhari](pandaa880), [Sourav Kumar Nanda](https://twitter.com/SouravInsights), [paulwvnjohi](https://twitter.com/paulwvnjohi), [Aleksandra Sikora](https://twitter.com/aleksandrasays), and other members of the CodeSandbox community for their thoughtful feedback. As well as [Siddharth Kshetrapal](https://twitter.com/siddharthkp) and [Danny Ruchtie](https://twitter.com/druchtie) for their hard work on this.
+As part of this work, we've talked to a bunch of folks. We want to thank [xananax](https://twitter.com/xananax), [code_wonders](https://twitter.com/code_wonders), [Prashant Chaudhari](https://twitter.com/pandaa880), [Sourav Kumar Nanda](https://twitter.com/SouravInsights), [paulwvnjohi](https://twitter.com/paulwvnjohi), [Aleksandra Sikora](https://twitter.com/aleksandrasays), and other members of the CodeSandbox community for their thoughtful feedback. As well as [Siddharth Kshetrapal](https://twitter.com/siddharthkp) and [Danny Ruchtie](https://twitter.com/druchtie) for their hard work on this.
 
 We're excited to see your new profile pages!
