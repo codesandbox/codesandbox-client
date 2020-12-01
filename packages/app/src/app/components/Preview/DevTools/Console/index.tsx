@@ -241,7 +241,7 @@ class ConsoleComponent extends React.PureComponent<StyledProps, State> {
               paddingTop: 60,
             }}
           >
-            In browser logging is disabled
+            In browser logging is disabled, you can enable it in sandbox.config.json.
           </span>
         ) : (
           <>
