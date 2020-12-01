@@ -22,7 +22,7 @@ I got into it soon after I started learning to code. I had previously bought a S
 
 From there, I swapped the Leap Motion for a Myo armband that uses muscle data to make the ball move when I execute certain gestures, and I also swapped the robotic ball for a drone... I kept experimenting with different devices and different technologies to see what was possible.
 
-https://codesandbox.io/s/t08zd?autoresize=1&fontsize=14&hidenavigation=1&theme=dark&view=preview
+https://codesandbox.io/s/t08zd?autoresize=1&fontsize=14&hidenavigation=1&theme=dark&view=preview&hidedevtools=1
 
 ## Who are the people or projects that inspired you while you were learning?
 The project that I found the most inspiring was the [Johnny-Five JavaScript library](http://johnny-five.io/), created by Rick Waldron. I don't think I would have created as many things as I did without this library. The fact that it allows JavaScript developers to build projects using microcontrollers and sensors is just amazing.
@@ -38,6 +38,6 @@ One of my favorite projects is the one I called [HVBRD](http://bit.ly/hvbrd), wh
 
 Fork it and play around with changing the 3D landscape design or adding different 3D objects to the scene.
 
-https://codesandbox.io/s/hvbrd-sockets-ln0mi?autoresize=1&fontsize=14&hidenavigation=1&theme=dark&view=preview
+https://codesandbox.io/s/hvbrd-sockets-ln0mi?autoresize=1&fontsize=14&hidenavigation=1&theme=dark&view=preview&hidedevtools=1
 
 Profile pages on CodeSandbox are where you can share your sandboxes and let folks know a little bit about yourself and your creations. They're a great place to showcase your work and link from your website, social bio, or resume. [Register or sign in](https://codesandbox.io/signin) to make your own.
