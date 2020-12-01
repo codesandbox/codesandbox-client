@@ -154,7 +154,7 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
             />
           </ConfigItem>
           <ConfigDescription>
-            Disable the in browser console to prevent slowing down of the page
+            Disable the in-browser console to prevent slowing down of the page when there are many logs to the console.
           </ConfigDescription>
         </PaddedConfig>
       ) : null}
