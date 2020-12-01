@@ -22,7 +22,7 @@ chrome.browserAction.onClicked.addListener(function onClicked(tab) {
 chrome.commands.onCommand.addListener(function (command) {
   if (command === 'take-screenshot') {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      var currTab = tabs[0];
+      const currTab = tabs[0];
       if (currTab) { // Sanity check
         chrome.tabs.sendMessage(currTab.id, { type: 'start' }, function (response) { });
       }
@@ -49,12 +49,9 @@ function findBounds(tabId) {
 
         const COLOR_OFFSET = 30;
 
-        const probablyColor = (source, target) => {
-          return source <= target + COLOR_OFFSET && source >= target - COLOR_OFFSET;
-        };
+        const probablyColor = (source, target) => source <= target + COLOR_OFFSET && source >= target - COLOR_OFFSET;
 
-        const isIndicator = (x) => {
-          return (
+        const isIndicator = (x) => (
             probablyColor(imageData.data[x], 255) &&
             probablyColor(imageData.data[x + 1], 0) &&
             probablyColor(imageData.data[x + 2], 0) &&
@@ -67,7 +64,6 @@ function findBounds(tabId) {
             probablyColor(imageData.data[x + 9], 0) &&
             probablyColor(imageData.data[x + 10], 255)
           );
-        };
 
         const findIndicator = (initialX) => {
           for (let x = initialX; x < size; x += 4) {
