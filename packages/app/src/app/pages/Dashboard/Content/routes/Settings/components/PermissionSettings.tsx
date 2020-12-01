@@ -6,7 +6,6 @@ import {
   Column,
   Stack,
   Text,
-  Link,
   Icon,
   Select,
   Switch,
