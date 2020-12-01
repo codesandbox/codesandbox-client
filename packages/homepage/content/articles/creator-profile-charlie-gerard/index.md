@@ -1,5 +1,5 @@
 ---
-banner: ./images/banner.jpg
+banner: ./images/banner.png
 slug: creator-profile-charlie-gerard
 authors: ['Siddharth Kshetrapal']
 photo: https://avatars0.githubusercontent.com/u/1863771?s=460&v=4
