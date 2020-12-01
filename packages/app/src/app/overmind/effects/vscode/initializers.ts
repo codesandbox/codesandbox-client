@@ -115,6 +115,13 @@ export function initializeCodeSandboxTheme() {
 }
 
 export function installCustomTheme(id: string, name: string, theme: string) {
+  let uiTheme: string;
+  try {
+    uiTheme = JSON5.parse(theme).type;
+  } catch {
+    uiTheme = 'dark';
+  }
+
   const packageJSON = {
     name: id,
     displayName: name,
@@ -124,7 +131,7 @@ export function installCustomTheme(id: string, name: string, theme: string) {
     license: 'SEE LICENSE IN LICENSE.md',
     repository: {
       type: 'git',
-      url: 'https://github.com/sdras/night-owl-vscode-theme',
+      url: 'https://github.com/codesandbox/codesandbox-client',
     },
     keywords: [],
     scripts: {
@@ -132,7 +139,7 @@ export function installCustomTheme(id: string, name: string, theme: string) {
     },
     galleryBanner: {
       color: '#061526',
-      theme: 'dark',
+      theme: uiTheme,
     },
     engines: {
       vscode: '^1.17.0',
@@ -142,7 +149,7 @@ export function installCustomTheme(id: string, name: string, theme: string) {
       themes: [
         {
           label: name,
-          uiTheme: 'vs-dark',
+          uiTheme: uiTheme === 'dark' ? 'vs-dark' : 'vs',
           path: './themes/custom-color-theme.json',
         },
       ],
