@@ -199,6 +199,26 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
   }
 };
 
+export const createPreviewCommentFromExtension: Action<string> = ({ state, effects }, dataUrl) => {
+  const existingMode = state.preview.mode;
+
+  state.preview.screenshot.source = dataUrl
+
+  switch (existingMode) {
+    case 'responsive':
+      state.preview.mode = 'responsive-add-comment';
+      break;
+    default:
+      state.preview.mode = 'add-comment';
+  }
+
+  if (state.preview.mode && state.preview.mode.includes('comment')) {
+    effects.analytics.track('Preview Comment - From Extension', {
+      mode: state.preview.mode
+    })
+  } 
+}
+
 export const checkURLParameters: Action = ({ state, effects }) => {
   const ULRResolutionWidth = effects.router.getParameter('resolutionWidth');
   const URLResolutionHeight = effects.router.getParameter('resolutionHeight');

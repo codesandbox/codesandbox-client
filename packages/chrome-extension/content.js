@@ -11,6 +11,10 @@ const addButton = () => {
   // Get the toolbar
   const toolbar = document.querySelector('.file-navigation');
 
+  if (!toolbar) {
+    return
+  }
+
   // Get everything after https://github.com/
   const URL = window.location.pathname;
 
@@ -30,3 +34,87 @@ const addButton = () => {
   toolbar.querySelector('get-repo').parentElement.before(button);
 };
 addButton();
+
+chrome.extension.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.type === "start") {
+    start();
+  } else if (request.type === "screenshot-bounds-found") {
+    const indicator1 = document.getElementById('screenshot-indicator-1')
+    const indicator2 = document.getElementById('screenshot-indicator-2')
+
+    if (indicator1) {
+      indicator1.parentNode.removeChild(indicator1)
+    }
+
+    if (indicator2) {
+      indicator2.parentNode.removeChild(indicator2)
+    }
+
+    send({
+      type: "screenshot-snap",
+      bounds: request.bounds
+    })
+  } else if (request.type === "screenshot-taken") {
+    window.postMessage({
+      type: 'extension-screenshot-taken',
+      url: request.url
+    })
+  }
+
+  sendResponse({});
+});
+
+function send(request) {
+  chrome.extension.sendMessage(request, function (response) { });
+}
+
+function start() {
+  const iframe = document.querySelector('#sandbox-preview')
+
+  const createPixel = (color) => {
+    const pixel = document.createElement('div')
+    pixel.style.float = 'left'
+    pixel.style.width = '1px'
+    pixel.style.height = '1px'
+    pixel.style.backgroundColor = color
+
+    return pixel
+  }
+
+  const createIndicator = () => {
+    const indicator = document.createElement('div')
+
+    indicator.style.position = 'absolute'
+    indicator.style.width = '3px'
+    indicator.style.height = '1px'
+    indicator.style.zIndex = '9999999999999999'
+
+    indicator.appendChild(createPixel('red'))
+    indicator.appendChild(createPixel('green'))
+    indicator.appendChild(createPixel('blue'))
+
+    return indicator
+  }
+
+  const topLeftIndicator = createIndicator()
+  topLeftIndicator.id = 'screenshot-indicator-1'
+  topLeftIndicator.style.top = '0'
+  topLeftIndicator.style.left = '0'
+  const bottomRightIndicator = createIndicator()
+  bottomRightIndicator.id = 'screenshot-indicator-2'
+  bottomRightIndicator.style.bottom = '0'
+  bottomRightIndicator.style.right = '0'
+
+  iframe.parentNode.appendChild(topLeftIndicator)
+  iframe.parentNode.appendChild(bottomRightIndicator)
+
+  // Have to wait for indicators to show up
+  setTimeout(() => {
+    send({
+      type: "screenshot"
+    })
+  }, 10)
+}
+
+send({ type: "enable" });
+
