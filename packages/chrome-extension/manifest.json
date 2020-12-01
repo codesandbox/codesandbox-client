@@ -43,7 +43,9 @@
       "matches": [
         "https://github.com/*",
         "https://codesandbox.io/*",
-        "https://codesandbox.test/*"
+        "https://codesandbox.test/*",
+        "https://codesandbox.stream/*",
+        "https://*.build.csb.dev/*"
       ]
     }
   ]
