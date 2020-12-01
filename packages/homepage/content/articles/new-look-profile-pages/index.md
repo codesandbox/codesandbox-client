@@ -17,9 +17,8 @@ https://youtu.be/7e07Mew-3MU
 ## A little bit about you
 The first section is all about you. There's your profile image, username, as well as your bio. Here you can tell folks what you're all about—your passions, specialties, and the kinds of things you work on. Below that, you can add links to other sites, like your personal homepage and the social profiles you use. Like [Tiffany White](https://codesandbox.io/u/twhite96), for example, who in addition to their GitHub profile, links to their personal site and Twitch stream too.
 
-![Community Member Profiles](https://sk8cl.csb.app/AllProfiles.jpg)
-
 ## Showcase your sandboxes
+![Community Member Profiles](https://sk8cl.csb.app/AllProfiles.jpg)
 One of the main parts of the new profile page is the header. You can optionally embed a sandbox of your choice, which captures what your creations are all about. It could be an [interactive visualization](https://codesandbox.io/u/DannyRuchtie), an [example for a library you made](https://codesandbox.io/u/camflan), or, if you're like [Sanne](https://codesandbox.io/u/sannek), a cute cat that watches your cursor move around the page.
 
 Beneath that, you can pin other sandboxes that you'd like to highlight. [Paul Henschel](https://codesandbox.io/u/drcmda), the creator of react-three-fiber, chose to pin four sandboxes demoing different features of that library. There's no limit here, so choose as many or as few as you like. After that, we list all your other public projects, which folks can list either by view count or chronologically by creation date.
