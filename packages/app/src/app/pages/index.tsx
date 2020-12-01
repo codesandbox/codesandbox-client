@@ -170,7 +170,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/signin/duplicate" component={DuplicateAccount} />
             <Route path="/signup/:userId" exact component={SignUp} />
             <Route path="/signin/:jwt?" component={SignInAuth} />
-            <Route path="/u/:username" component={Profile} />
+            <Route path="/u/:username" component={Profile2} />
             <Route path="/u2/:username" component={Profile2} />
             <Route path="/search" component={Search} />
             <Route path="/patron" component={Patron} />
