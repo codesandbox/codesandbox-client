@@ -38,6 +38,7 @@ type SettingsNavigationProps = {
   teamId: string;
   css?: any;
   style?: React.CSSProperties;
+  isAdmin?: boolean;
 };
 
 export const SettingNavigation = (props: SettingsNavigationProps) => (
@@ -56,10 +57,12 @@ export const SettingNavigation = (props: SettingsNavigationProps) => (
         url={dashboardUrls.settings(props.teamId)}
         label="Workspace"
       />
-      <NavigationLink
-        url={dashboardUrls.permissionSettings(props.teamId)}
-        label="Permissions"
-      />
+      {props.isAdmin && (
+        <NavigationLink
+          url={dashboardUrls.permissionSettings(props.teamId)}
+          label="Permissions"
+        />
+      )}
     </Stack>
   </Stack>
 );

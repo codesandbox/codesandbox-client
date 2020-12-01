@@ -49,7 +49,7 @@ export const UserSettings = () => {
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
           })}
         >
-          <SettingNavigation teamId={activeTeam} />
+          <SettingNavigation teamId={activeTeam} isAdmin={true} />
           <BrowserRouter>
             <Switch location={location}>
               <Route

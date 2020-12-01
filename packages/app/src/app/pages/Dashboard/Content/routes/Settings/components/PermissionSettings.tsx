@@ -6,9 +6,11 @@ import {
   Column,
   Stack,
   Text,
+  Link,
   Icon,
   Select,
   Switch,
+  Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -37,11 +39,19 @@ const privacyOptions = {
 
 const MinimumPrivacy = () => {
   const {
-    state: { activeTeamInfo },
+    state: { activeTeamInfo, user, personalWorkspaceId },
     actions: {
       dashboard: { setTeamMinimumPrivacy },
     },
   } = useOvermind();
+
+  const isTeamPro = activeTeamInfo.joinedPilotAt;
+  const isPersonalPro =
+    activeTeamInfo.id === personalWorkspaceId &&
+    user &&
+    Boolean(user.subscription);
+
+  const hasFeature = isTeamPro || isPersonalPro;
 
   const [minimumPrivacy, setMinimumPrivacy] = React.useState(
     activeTeamInfo.settings.minimumPrivacy
@@ -71,13 +81,49 @@ const MinimumPrivacy = () => {
         borderRadius: 'medium',
       })}
     >
-      <Stack direction="vertical" gap={8}>
+      <Stack
+        direction="vertical"
+        gap={8}
+        css={{ opacity: hasFeature ? 1 : 0.4 }}
+      >
         <Stack direction="vertical" gap={8}>
-          <Text size={4} weight="bold">
-            Default Privacy
-          </Text>
+          <Stack justify="space-between">
+            <Text size={4} weight="bold">
+              Default Privacy
+            </Text>
+            {!hasFeature && (
+              <Tooltip
+                label={`Upgrade to ${
+                  activeTeamInfo.id === personalWorkspaceId
+                    ? 'Pro'
+                    : 'Pro Workspaces'
+                } to change default privacy settings to hide your drafts.`}
+              >
+                <Stack gap={1} align="center">
+                  <Text
+                    size={3}
+                    weight="bold"
+                    css={css({
+                      color:
+                        activeTeamInfo.id === personalWorkspaceId
+                          ? 'white'
+                          : 'purple',
+                    })}
+                  >
+                    Pro
+                  </Text>
+                  <Text size={3} weight="bold">
+                    {activeTeamInfo.id !== personalWorkspaceId && 'Workspace'}
+                  </Text>
+                  <Icon name="info" size={12} />
+                </Stack>
+              </Tooltip>
+            )}
+          </Stack>
+
           <Stack direction="vertical" gap={3}>
             <Select
+              disabled={!hasFeature}
               icon={privacyOptions[minimumPrivacy].icon}
               value={minimumPrivacy}
               onChange={({ target: { value } }) =>
@@ -98,6 +144,7 @@ const MinimumPrivacy = () => {
             </Text>
             <Switch
               on={updateDrafts}
+              disabled={!hasFeature}
               onChange={() => setUpdateDrafts(!updateDrafts)}
             />
           </Stack>
@@ -106,6 +153,7 @@ const MinimumPrivacy = () => {
       <Stack justify="flex-end">
         <Button
           autoWidth
+          disabled={!hasFeature}
           onClick={async () => {
             await setTeamMinimumPrivacy({
               teamId: activeTeamInfo.id,

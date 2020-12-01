@@ -15,6 +15,7 @@ import {
   useLocation,
 } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
+import { TeamMemberAuthorization } from 'app/graphql/types';
 
 import { SettingNavigation } from '../components/Navigation';
 import { PermissionSettings } from '../components/PermissionSettings';
@@ -22,13 +23,21 @@ import { WorkspaceSettings } from './WorkspaceSettings';
 
 export const TeamSettings = () => {
   const {
-    state: { user: stateUser, activeTeam, activeTeamInfo: team },
+    state: {
+      user: stateUser,
+      activeTeam,
+      activeTeamInfo: team,
+      activeWorkspaceAuthorization,
+    },
   } = useOvermind();
   const location = useLocation();
 
   if (!team || !stateUser) {
     return <Header title="Workspace Settings" activeTeam={null} />;
   }
+
+  const isAdmin =
+    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
 
   return (
     <>
@@ -52,7 +61,7 @@ export const TeamSettings = () => {
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
           })}
         >
-          <SettingNavigation teamId={activeTeam} />
+          <SettingNavigation teamId={activeTeam} isAdmin={isAdmin} />
           <BrowserRouter>
             <RouterSwitch location={location}>
               <Route
