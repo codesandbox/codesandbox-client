@@ -60,14 +60,21 @@ interface ISwitchProps {
   on?: boolean;
   defaultOn?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
 }
 
-export const Switch: React.FC<ISwitchProps> = ({ on, defaultOn, ...props }) => (
+export const Switch: React.FC<ISwitchProps> = ({
+  on,
+  defaultOn,
+  disabled,
+  ...props
+}) => (
   <SwitchContainer as="label">
     <SwitchInput
       type="checkbox"
       checked={on}
       defaultChecked={defaultOn}
+      disabled={disabled}
       {...props}
     />
     <SwitchBackground data-component="SwitchBackground">
