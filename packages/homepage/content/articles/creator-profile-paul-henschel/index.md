@@ -5,7 +5,7 @@ authors: ['Siddharth Kshetrapal']
 photo: https://avatars0.githubusercontent.com/u/1863771?s=460&v=4
 title: Fusing Open Source and Work with Paul Henschel
 description: Coders and creators of all kinds use CodeSandbox to prototype and share their ideas. This creator profile showcases the sandboxes of web animation pioneer Paul Henschel and we chat about the symbiotic relationship he's forged between his open-source contributions and professional work.
-date: 2020-12-08
+date: 2020-12-01
 ---
 
 Coders and creators of all kinds use CodeSandbox to prototype and share their ideas. This creator profile showcases the sandboxes of web animation pioneer [Paul Henschel](https://codesandbox.io/u/drcmda) and we chat about the symbiotic relationship he's forged between his open-source contributions and professional work.
