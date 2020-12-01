@@ -1,6 +1,7 @@
 ---
 title: Using a Custom NPM Registry
 authors: ['CompuIves']
+slug: /custom-npm-registry
 description:
   You can use your own private npm registry if you have Workspace Pro.
 ---
