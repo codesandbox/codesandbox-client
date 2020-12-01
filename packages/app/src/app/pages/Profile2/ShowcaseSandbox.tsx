@@ -21,6 +21,7 @@ export const ShowcaseSandbox = () => {
   } = useOvermind();
 
   const myProfile = loggedInUser?.username === user.username;
+  const isPro = user && Boolean(user.subscriptionSince);
 
   const [{ isOver, canDrop, isDragging }, drop] = useDrop({
     accept: [SandboxType.ALL_SANDBOX, SandboxType.PINNED_SANDBOX],
@@ -67,27 +68,45 @@ export const ShowcaseSandbox = () => {
             allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
             sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
           />
-          <Stack
-            gap={2}
-            style={{
-              position: 'absolute',
-              width: 'auto',
-              zIndex: 3,
-              bottom: 16,
-              right: 16,
-              // hide when new sandbox is being dragged
-              opacity: isDragging ? 0 : 1,
-            }}
-          >
-            <Button
-              as="a"
-              autoWidth
-              href={sandboxUrl({ id: showcasedSandbox.id })}
-              variant="secondary"
+          {/* This code is a bit lol because we 
+              inject the "Open Sandbox" watermark on the server
+              for non-pro users. So here we check for Pro and add
+              a "Open Sandbox" user to avoid duplicate buttons.
+          */}
+          {isPro && (
+            <Stack
+              style={{
+                position: 'absolute',
+                width: 'auto',
+                zIndex: 3,
+                bottom: 16,
+                right: 16,
+                // hide when new sandbox is being dragged
+                opacity: isDragging ? 0 : 1,
+              }}
             >
-              Open sandbox
-            </Button>
-            {myProfile && (
+              <Button
+                as="a"
+                autoWidth
+                href={sandboxUrl({ id: showcasedSandbox.id })}
+                variant="secondary"
+              >
+                Open sandbox
+              </Button>
+            </Stack>
+          )}
+          {myProfile && (
+            <Stack
+              style={{
+                position: 'absolute',
+                width: 'auto',
+                zIndex: 3,
+                top: 16,
+                right: 16,
+                // hide when new sandbox is being dragged
+                opacity: isDragging ? 0 : 1,
+              }}
+            >
               <Button
                 variant="secondary"
                 autoWidth
@@ -95,8 +114,8 @@ export const ShowcaseSandbox = () => {
               >
                 <Icon name="trash" />
               </Button>
-            )}
-          </Stack>
+            </Stack>
+          )}
         </>
       )}
 
