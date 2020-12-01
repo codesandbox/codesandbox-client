@@ -5,7 +5,7 @@ authors: ['Siddharth Kshetrapal']
 photo: https://avatars0.githubusercontent.com/u/1863771?s=460&v=4
 title: Bridging the Gap Between Design and Code with Segun Adebayo
 description: Coders and creators of all kinds use CodeSandbox to prototype and share their ideas. This creator profile showcases the sandboxes of Design Systems expert and Entrepreneur Segun Adebayo. We chat to him about how he turned a problem into a way to break down barriers between designers and developers.
-date: 2021-01-05
+date: 2020-11-29
 ---
 
 Coders and creators of all kinds use CodeSandbox to prototype and share their ideas. This creator profile showcases the sandboxes of Design Systems expert and Entrepreneur [Segun Adebayo](https://codesandbox.io/u/segunadebayo). We chat to him about how he turned a problem into a way to break down barriers between designers and developers.
