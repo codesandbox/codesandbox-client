@@ -32,15 +32,11 @@ this key with anyone else who has access to your sandbox. Read more about that
 
 ### Specific Scopes
 
-When enabling this option, we will only use your private registry for the
-packages that are behind the specified scopes. For example, if you have defined
-`@acme` as an enabled scope, we will only use the registry to fetch packages
+We only use your private registry for the
+packages that are behind specified scopes. For example, if you defined
+`@acme` as an enabled scope, we only use the registry to fetch packages
 that have this scope (like `@acme/design-system`). For all other packages we'll
 use the public registry.
-
-Enabling the private registry only for specific scopes will make your sandboxes
-faster, as we can only store caches and optimizations for packages in the public
-registry.
 
 ## Security
 
