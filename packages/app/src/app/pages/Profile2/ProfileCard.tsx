@@ -104,13 +104,13 @@ export const ProfileCard = () => {
             <Stack direction="vertical" gap={3}>
               <Stack gap={2} align="center">
                 <Icon name="box" />
-                <Link as={RouterLink} to="/" size={3}>
+                <Link as={RouterLink} to={`/u/${user.username}`} size={3}>
                   {user.sandboxCount + user.templateCount} Sandboxes
                 </Link>
               </Stack>
               <Stack gap={2} align="center">
                 <Icon name="heart" />
-                <Link as={RouterLink} to="/likes" size={3}>
+                <Link as={RouterLink} to={`/u/${user.username}/likes`} size={3}>
                   {user.givenLikeCount} Liked sandboxes
                 </Link>
               </Stack>
