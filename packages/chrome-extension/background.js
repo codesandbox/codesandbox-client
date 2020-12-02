@@ -1,8 +1,5 @@
-chrome.extension.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.type === "enable") {
-    chrome.pageAction.show(sender.tab.id);
-  }
-  else if (request.type === "screenshot") {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.type === "screenshot") {
     findBounds(sender.tab.id);
   }
   else if (request.type === "screenshot-snap") {
@@ -22,7 +19,7 @@ chrome.browserAction.onClicked.addListener(function onClicked(tab) {
 chrome.commands.onCommand.addListener(function (command) {
   if (command === 'take-screenshot') {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      const currTab = tabs[0];
+      var currTab = tabs[0];
       if (currTab) { // Sanity check
         chrome.tabs.sendMessage(currTab.id, { type: 'start' }, function (response) { });
       }
@@ -49,21 +46,25 @@ function findBounds(tabId) {
 
         const COLOR_OFFSET = 30;
 
-        const probablyColor = (source, target) => source <= target + COLOR_OFFSET && source >= target - COLOR_OFFSET;
+        const probablyColor = (source, target) => {
+          return source <= target + COLOR_OFFSET && source >= target - COLOR_OFFSET;
+        };
 
-        const isIndicator = (x) => (
+        const isIndicator = (x) => {
+          return (
             probablyColor(imageData.data[x], 255) &&
             probablyColor(imageData.data[x + 1], 0) &&
             probablyColor(imageData.data[x + 2], 0) &&
             // Skipping alpha
             probablyColor(imageData.data[x + 4], 0) &&
-            probablyColor(imageData.data[x + 5], 128) &&
+            probablyColor(imageData.data[x + 5], 255) &&
             probablyColor(imageData.data[x + 6], 0) &&
             // skipping alpha
             probablyColor(imageData.data[x + 8], 0) &&
             probablyColor(imageData.data[x + 9], 0) &&
             probablyColor(imageData.data[x + 10], 255)
           );
+        };
 
         const findIndicator = (initialX) => {
           for (let x = initialX; x < size; x += 4) {
@@ -75,19 +76,19 @@ function findBounds(tabId) {
 
         const indicatorTopLeft = findIndicator(0);
         const indicatorBottomRight = findIndicator(indicatorTopLeft * 4 + 4);
-        const indicatorTopLeftY = parseInt(indicatorTopLeft / imageData.width, 10);
+        const indicatorTopLeftY = parseInt(indicatorTopLeft / imageData.width, 10)
         const indicatorTopLeftX =
-          indicatorTopLeft - indicatorTopLeftY * imageData.width;
+          indicatorTopLeft - indicatorTopLeftY * imageData.width
         const indicatorBottomRightY = parseInt(
           indicatorBottomRight / imageData.width,
           10
-        );
+        )
         const indicatorBottomRightX =
-          indicatorBottomRight - indicatorBottomRightY * imageData.width;
+          indicatorBottomRight - indicatorBottomRightY * imageData.width
         const width = indicatorBottomRightX - indicatorTopLeftX;
         const height = indicatorBottomRightY - indicatorTopLeftY;
 
-        chrome.tabs.sendMessage(tab.id, { type: "screenshot-bounds-found", bounds: { left: indicatorTopLeftX, top: indicatorTopLeftY, width, height } }, function (response) { });
+        chrome.tabs.sendMessage(tab.id, { type: "screenshot-bounds-found", bounds: { left: indicatorTopLeftX - 2, top: indicatorTopLeftY - 2, width: width + 4, height: height + 4 } }, function (response) { });
       }
       image.src = dataUrl;
     });
