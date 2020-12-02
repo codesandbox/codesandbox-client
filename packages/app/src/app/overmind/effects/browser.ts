@@ -124,4 +124,7 @@ export default {
 
     return el.getBoundingClientRect();
   },
+  onWindowMessage(cb: (event: MessageEvent) => void) {
+    window.addEventListener('message', cb)
+  }
 };
