@@ -6,6 +6,8 @@ description:
   You can use your own private npm registry if you have Workspace Pro.
 ---
 
+**Note: Custom NPM Registry support is currently only available to Pro Workspace pilot members. [Sign up to join the waitlist](https://airtable.com/shrlgLSJWiX8rYqyG).**
+
 The custom private npm registry setting makes it possible for sandboxes in your
 workspace to retrieve npm packages from your own npm registry. This setting is
 available for all Pro Workspaces, you can access the settings
