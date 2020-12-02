@@ -29,6 +29,7 @@ export interface TabProps {
   canDrag: boolean;
   status: Status | undefined;
   options: object;
+  disableLogging: boolean;
 }
 
 interface DragProps {
@@ -97,6 +98,7 @@ export const PaneTab = ({
   closeTab,
   index,
   options,
+  disableLogging,
 }: TabProps & DragProps) => {
   useGlobalDim(isDragging);
 
@@ -113,9 +115,14 @@ export const PaneTab = ({
       >
         <div style={{ flex: 1 }}>{title}</div>
 
-        {devToolIndex !== 0 && status && (
+        {devToolIndex !== 0 && status && pane.title !== 'Console' && (
           <UnreadDevToolsCount status={status.type} unread={status.unread} />
         )}
+
+        {pane.title === 'Console' && !disableLogging && (
+          <UnreadDevToolsCount status={status.type} unread={status.unread} />
+        )}
+
         {closeTab && (
           <CloseTab
             onClick={() =>

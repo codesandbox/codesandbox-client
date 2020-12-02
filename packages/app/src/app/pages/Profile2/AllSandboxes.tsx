@@ -23,12 +23,14 @@ export const AllSandboxes = () => {
       profile: { fetchSandboxes, sortByChanged, sortDirectionChanged },
     },
     state: {
+      user: loggedInUser,
       profile: {
         current: { username, featuredSandboxes },
         currentSandboxesPage,
         isLoadingSandboxes,
         currentSortBy,
         currentSortDirection,
+        showcasedSandbox,
         sandboxes: fetchedSandboxes,
       },
     },
@@ -61,8 +63,20 @@ export const AllSandboxes = () => {
     );
   }
 
+  const myProfile = loggedInUser?.username === username;
+
+  // For new profiles which don't have any showcased or featured sandboxes
+  // we pull this section up to align with the profile card vertically
+  const isOnlySection =
+    !myProfile && !showcasedSandbox && !featuredSandboxes.length;
+
   return (
-    <Stack as="section" direction="vertical" gap={6}>
+    <Stack
+      as="section"
+      direction="vertical"
+      gap={6}
+      style={{ marginTop: isOnlySection ? -50 : 0 }}
+    >
       <UpgradeBanner />
 
       <Stack justify="space-between" align="center">
