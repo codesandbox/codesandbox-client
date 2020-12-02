@@ -58,11 +58,6 @@ const NotFound = Loadable(() =>
     })
   )
 );
-const Profile = Loadable(() =>
-  import(/* webpackChunkName: 'page-profile' */ './Profile').then(module => ({
-    default: module.Profile,
-  }))
-);
 const Profile2 = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile2').then(module => ({
     default: module.Profile,
