@@ -56,7 +56,6 @@ export const MenuStyles = createGlobalStyle(
       paddingX: 3,
       cursor: 'pointer',
       outline: 'none',
-      display: 'block',
       color: 'menuList.foreground',
       '&[data-selected], :hover': {
         outline: 'none',
@@ -230,23 +229,30 @@ const MenuItem = props => (
 type MenuLinkProps = {
   to?: string;
   href?: string;
+  title?: string;
   children: any;
 };
 
 const MenuLink: React.FunctionComponent<MenuLinkProps> = ({
   children,
   to,
+  title,
   href,
 }) => {
   if (to) {
     return (
-      <ReachMenu.MenuLink data-component="MenuLink" as={Link} to={to}>
+      <ReachMenu.MenuLink
+        data-component="MenuLink"
+        as={Link}
+        to={to}
+        title={title}
+      >
         {children}
       </ReachMenu.MenuLink>
     );
   }
   return (
-    <ReachMenu.MenuLink data-component="MenuLink" href={href}>
+    <ReachMenu.MenuLink data-component="MenuLink" href={href} title={title}>
       {children}
     </ReachMenu.MenuLink>
   );

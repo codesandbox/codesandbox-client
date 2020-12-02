@@ -205,13 +205,21 @@ export const Actions = () => {
               <MoreMenuIcon />
             </Button>
           ) : (
-            <Avatar
+            <Button
               as={UserMenu.Button}
-              user={{ ...user, subscriptionSince: null }}
               css={css({
-                size: '26px', // match button size next to it
+                display: 'flex',
+                width: 26,
+                height: 26, // match button size next to it
               })}
-            />
+            >
+              <Avatar
+                user={{ ...user, subscriptionSince: null }}
+                css={css({
+                  size: '26px', // match button size next to it
+                })}
+              />
+            </Button>
           )}
         </UserMenu>
       ) : (

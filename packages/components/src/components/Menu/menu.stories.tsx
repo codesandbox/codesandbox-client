@@ -137,7 +137,9 @@ export const MenuWithLinks = () => (
           </Stack>
         </Menu.Link>
         <Menu.Item>Menu Item</Menu.Item>
-        <Menu.Link href="/internal">Menu Link</Menu.Link>
+        <Menu.Link href="/internal">
+          <Stack align="center">Menu Link</Stack>
+        </Menu.Link>
       </Menu.List>
     </Menu>
   </>

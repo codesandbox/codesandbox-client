@@ -16,7 +16,7 @@ import {
   profileUrl,
   searchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { Menu, Stack } from '@codesandbox/components';
+import { Menu, Stack, Element } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 
@@ -44,143 +44,145 @@ export const UserMenu: FunctionComponent & {
   const showManageSubscription = user.subscription?.plan === 'pro';
 
   return (
-    <Menu>
-      {props.children || (
-        <ProfileImage
-          alt={user.username}
-          width={30}
-          height={30}
-          src={user.avatarUrl}
-          as={Menu.Button}
-        />
-      )}
-
-      <Menu.List>
-        <Menu.Link to={profileUrl(user.username)}>
-          <Stack align="center">
-            <Icon>
-              <UserIcon />
-            </Icon>
-            My Profile
-          </Stack>
-        </Menu.Link>
-
-        <Menu.Divider />
-
-        <Menu.Link to={dashboardUrl()}>
-          <Stack align="center">
-            <Icon>
-              <DashboardIcon />
-            </Icon>
-            Dashboard
-          </Stack>
-        </Menu.Link>
-
-        <Menu.Link href="/docs">
-          <Stack align="center">
-            <Icon>
-              <DocumentationIcon />
-            </Icon>
-            Documentation
-          </Stack>
-        </Menu.Link>
-
-        <Menu.Link to={searchUrl()}>
-          <Stack align="center">
-            <Icon>
-              <SearchIcon />
-            </Icon>
-            Search Sandboxes
-          </Stack>
-        </Menu.Link>
-
-        {showCurator && (
-          <Menu.Link to={curatorUrl()}>
-            <Stack align="center">
-              <Icon>
-                <CuratorIcon />
-              </Icon>
-              Curator Dashboard
-            </Stack>
-          </Menu.Link>
+    <Element>
+      <Menu>
+        {props.children || (
+          <ProfileImage
+            alt={user.username}
+            width={30}
+            height={30}
+            src={user.avatarUrl}
+            as={Menu.Button}
+          />
         )}
 
-        {showPatron && (
-          <Menu.Link to={patronUrl()}>
+        <Menu.List>
+          <Menu.Link to={profileUrl(user.username)}>
             <Stack align="center">
               <Icon>
-                <PatronIcon />
+                <UserIcon />
               </Icon>
-              Patron Page
+              My Profile
             </Stack>
           </Menu.Link>
-        )}
 
-        {showBecomePro && (
-          <Menu.Link href="/pricing">
+          <Menu.Divider />
+
+          <Menu.Link to={dashboardUrl()}>
             <Stack align="center">
               <Icon>
-                <ProIcon />
+                <DashboardIcon />
               </Icon>
-              Upgrade to Pro
+              Dashboard
             </Stack>
           </Menu.Link>
-        )}
 
-        <Menu.Divider />
-
-        {showManageSubscription && (
-          <Menu.Link href="/pro">
+          <Menu.Link href="/docs">
             <Stack align="center">
               <Icon>
-                <ProIcon />
+                <DocumentationIcon />
               </Icon>
-              Manage Subscription
+              Documentation
             </Stack>
           </Menu.Link>
-        )}
 
-        <Menu.Item onClick={() => gotUploadedFiles(null)}>
-          <Stack align="center">
-            <Icon>
-              <FolderIcon />
-            </Icon>
-            Storage Management
-          </Stack>
-        </Menu.Item>
+          <Menu.Link to={searchUrl()}>
+            <Stack align="center">
+              <Icon>
+                <SearchIcon />
+              </Icon>
+              Search Sandboxes
+            </Stack>
+          </Menu.Link>
 
-        <Menu.Item onClick={() => modalOpened({ modal: 'preferences' })}>
-          <Stack align="center">
-            <Icon>
-              <CogIcon />
-            </Icon>
-            Preferences
-          </Stack>
-        </Menu.Item>
+          {showCurator && (
+            <Menu.Link to={curatorUrl()}>
+              <Stack align="center">
+                <Icon>
+                  <CuratorIcon />
+                </Icon>
+                Curator Dashboard
+              </Stack>
+            </Menu.Link>
+          )}
 
-        <Menu.Divider />
+          {showPatron && (
+            <Menu.Link to={patronUrl()}>
+              <Stack align="center">
+                <Icon>
+                  <PatronIcon />
+                </Icon>
+                Patron Page
+              </Stack>
+            </Menu.Link>
+          )}
 
-        <Menu.Item onClick={() => modalOpened({ modal: 'feedback' })}>
-          <Stack align="center">
-            <Icon>
-              <ChatIcon />
-            </Icon>
-            Submit Feedback
-          </Stack>
-        </Menu.Item>
+          {showBecomePro && (
+            <Menu.Link href="/pricing">
+              <Stack align="center">
+                <Icon>
+                  <ProIcon />
+                </Icon>
+                Upgrade to Pro
+              </Stack>
+            </Menu.Link>
+          )}
 
-        <Menu.Divider />
+          <Menu.Divider />
 
-        <Menu.Item onClick={() => signOutClicked()}>
-          <Stack align="center">
-            <Icon>
-              <ExitIcon />
-            </Icon>
-            Sign out
-          </Stack>
-        </Menu.Item>
-      </Menu.List>
-    </Menu>
+          {showManageSubscription && (
+            <Menu.Link href="/pro">
+              <Stack align="center">
+                <Icon>
+                  <ProIcon />
+                </Icon>
+                Manage Subscription
+              </Stack>
+            </Menu.Link>
+          )}
+
+          <Menu.Item onClick={() => gotUploadedFiles(null)}>
+            <Stack align="center">
+              <Icon>
+                <FolderIcon />
+              </Icon>
+              Storage Management
+            </Stack>
+          </Menu.Item>
+
+          <Menu.Item onClick={() => modalOpened({ modal: 'preferences' })}>
+            <Stack align="center">
+              <Icon>
+                <CogIcon />
+              </Icon>
+              Preferences
+            </Stack>
+          </Menu.Item>
+
+          <Menu.Divider />
+
+          <Menu.Item onClick={() => modalOpened({ modal: 'feedback' })}>
+            <Stack align="center">
+              <Icon>
+                <ChatIcon />
+              </Icon>
+              Submit Feedback
+            </Stack>
+          </Menu.Item>
+
+          <Menu.Divider />
+
+          <Menu.Item onClick={() => signOutClicked()}>
+            <Stack align="center">
+              <Icon>
+                <ExitIcon />
+              </Icon>
+              Sign out
+            </Stack>
+          </Menu.Item>
+        </Menu.List>
+      </Menu>
+    </Element>
   );
 };
 
