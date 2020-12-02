@@ -466,7 +466,7 @@ export const addOptimisticPreviewComment: AsyncAction<{
     cropHeight: 400,
     x: Math.round(x),
     y: Math.round(y),
-    scale,
+    scale: state.preview.screenshot.fromExtension ? 1 : scale,
   });
   const isResponsive = state.preview.mode === 'responsive-add-comment';
   const metadata: PreviewReferenceMetadata = {
