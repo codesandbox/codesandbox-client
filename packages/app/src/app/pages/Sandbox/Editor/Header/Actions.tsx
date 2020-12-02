@@ -195,6 +195,7 @@ export const Actions = () => {
         <UserMenu>
           {user?.experiments.collaborator ? (
             <Button
+              as={UserMenu.Button}
               variant="secondary"
               css={css({
                 width: 26,
@@ -205,6 +206,7 @@ export const Actions = () => {
             </Button>
           ) : (
             <Avatar
+              as={UserMenu.Button}
               user={{ ...user, subscriptionSince: null }}
               css={css({
                 size: '26px', // match button size next to it
