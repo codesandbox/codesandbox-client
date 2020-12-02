@@ -89,4 +89,4 @@ https://codesandbox.io/s/hvbrd-sockets-ln0mi?autoresize=1&fontsize=14&hidenaviga
 Profile pages on CodeSandbox are where you can share your sandboxes and let
 folks know a little bit about yourself and your creations. They're a great place
 to showcase your work and link from your website, social bio, or resume.
-[Register or sign in](https://codesandbox.io/signin) to make your own.
+[Register or sign in](/signin) to make your own.
