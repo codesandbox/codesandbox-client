@@ -43,7 +43,7 @@ export const ProfileCard = () => {
   };
 
   const onCancel = () => {
-    setBio(user.bio);
+    setBio(user.bio || '');
     setSocialLinks(user.socialLinks);
     setEditing(false);
   };
