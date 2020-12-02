@@ -198,6 +198,7 @@ export const RegistryForm = ({
                   required
                   onChange={e => setAuthKey(e.target.value)}
                   disabled={disabled}
+                  type="password"
                 />
               </CustomFormField>
             </Stack>
