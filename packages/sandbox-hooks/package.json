@@ -8,12 +8,14 @@
     "directory": "packages/sandbox-hooks"
   },
   "scripts": {
+    "build": "rimraf html2canvas-lib && tsc",
     "build-sse-404": "rimraf dist && parcel build --no-source-maps not-found-screen/index.html && node inline-js"
   },
   "dependencies": {
     "@codesandbox/common": "^1.0.8",
     "codesandbox-api": "0.0.24",
     "console-feed": "^3.1.9",
+    "css-line-break": "^1.1.1",
     "react-dev-utils": "3.1.1"
   },
   "devDependencies": {

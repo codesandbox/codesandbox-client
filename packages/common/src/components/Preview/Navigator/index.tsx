@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon as ComponentsIcon } from '@codesandbox/components';
 import { ModuleViewIcon } from '../../icons/ModuleView';
 import { ProjectViewIcon } from '../../icons/ProjectView';
 import { NewWindowIcon } from '../../icons/NewWindow';
@@ -16,7 +17,9 @@ import {
   Icon,
   AddressBarContainer,
   IconWithBackground,
+  SpinnerWrapper,
 } from './elements';
+import { Sandbox } from '../../../types';
 
 export interface NavigatorProps {
   url: string;
@@ -28,12 +31,17 @@ export interface NavigatorProps {
   onForward?: () => void;
   openNewWindow?: () => void;
   toggleResponsiveView?: () => void;
+  createPreviewComment?: () => void;
   isInResponsivePreview?: boolean;
+  isPreviewCommentModeActive?: boolean;
   zenMode?: boolean;
   isProjectView: boolean;
+  isScreenshotLoading?: boolean;
+  sandbox?: Sandbox;
 }
 
 function Navigator({
+  sandbox,
   url,
   onChange,
   onConfirm,
@@ -45,6 +53,9 @@ function Navigator({
   openNewWindow,
   toggleResponsiveView,
   isInResponsivePreview,
+  isScreenshotLoading,
+  createPreviewComment,
+  isPreviewCommentModeActive,
   zenMode,
 }: NavigatorProps) {
   return (
@@ -67,6 +78,32 @@ function Navigator({
       >
         <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
       </AddressBarContainer>
+
+      {createPreviewComment && (
+        <IconWithBackground
+          onClick={createPreviewComment}
+          style={{
+            color:
+              isPreviewCommentModeActive && !isScreenshotLoading
+                ? '#FF3B30'
+                : '#757575',
+          }}
+        >
+          <Tooltip delay={0} content="Add Preview Comment">
+            {isScreenshotLoading ? (
+              <SpinnerWrapper>
+                <ComponentsIcon name="spinner" />
+              </SpinnerWrapper>
+            ) : (
+              <ComponentsIcon
+                name="comment"
+                size={12}
+                style={{ top: -1, position: 'relative' }}
+              />
+            )}
+          </Tooltip>
+        </IconWithBackground>
+      )}
       {!zenMode && toggleProjectView && (
         <IconWithBackground
           onClick={toggleProjectView}

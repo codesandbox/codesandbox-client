@@ -40,7 +40,7 @@ export type State = {
   teams: Array<
     { __typename?: 'Team' } & Pick<
       Team,
-      'id' | 'name' | 'avatarUrl' | 'userAuthorizations'
+      'id' | 'name' | 'avatarUrl' | 'userAuthorizations' | 'settings'
     >
   >;
   allCollections: DELETE_ME_COLLECTION[] | null;
@@ -199,6 +199,10 @@ export const state: State = {
         if (orderField === 'title') {
           const field = sandbox.title || sandbox.alias || sandbox.id;
           return field.toLowerCase();
+        }
+
+        if (orderField === 'views') {
+          return sandbox.viewCount;
         }
 
         return sandbox[orderField];

@@ -43,6 +43,10 @@ import {
   SetTeamNameMutationVariables,
   ChangeTeamMemberAuthorizationMutation,
   ChangeTeamMemberAuthorizationMutationVariables,
+  DeleteWorkspaceMutation,
+  DeleteWorkspaceMutationVariables,
+  SetTeamMinimumPrivacyMutation,
+  SetTeamMinimumPrivacyMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -325,6 +329,34 @@ export const changeTeamMemberAuthorization: Query<
       memberAuthorizations: { userId: $userId, authorization: $authorization }
     ) {
       id
+    }
+  }
+`;
+
+export const deleteWorkspace: Query<
+  DeleteWorkspaceMutation,
+  DeleteWorkspaceMutationVariables
+> = gql`
+  mutation DeleteWorkspace($teamId: UUID4!) {
+    deleteWorkspace(teamId: $teamId)
+  }
+`;
+
+export const setTeamMinimumPrivacy: Query<
+  SetTeamMinimumPrivacyMutation,
+  SetTeamMinimumPrivacyMutationVariables
+> = gql`
+  mutation SetTeamMinimumPrivacy(
+    $teamId: UUID4!
+    $minimumPrivacy: Int!
+    $updateDrafts: Boolean!
+  ) {
+    setTeamMinimumPrivacy(
+      teamId: $teamId
+      minimumPrivacy: $minimumPrivacy
+      updateDrafts: $updateDrafts
+    ) {
+      minimumPrivacy
     }
   }
 `;

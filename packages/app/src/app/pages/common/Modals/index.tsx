@@ -35,6 +35,8 @@ import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
 import { TeamInviteModal } from './TeamInviteModal';
 import UploadModal from './UploadModal';
+import { DeleteWorkspace } from './DeleteWorkspace';
+import { MinimumPrivacyModal } from './MinimumPrivacyModal';
 
 const modals = {
   preferences: {
@@ -52,6 +54,10 @@ const modals = {
   deployment: {
     Component: DeploymentModal,
     width: 600,
+  },
+  deleteWorkspace: {
+    Component: DeleteWorkspace,
+    width: 400,
   },
   recoveredFiles: {
     Component: RecoverFilesModal,
@@ -145,6 +151,10 @@ const modals = {
     Component: SandboxPickerModal,
     width: '90%',
     top: 10, // vh
+  },
+  minimumPrivacy: {
+    Component: MinimumPrivacyModal,
+    width: 450,
   },
 };
 

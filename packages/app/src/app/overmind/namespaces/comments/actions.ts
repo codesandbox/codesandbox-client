@@ -17,11 +17,15 @@ import {
   CommentChangedSubscription,
   CommentFragment,
   CommentRemovedSubscription,
+  ImageReference,
   UserReference,
   UserReferenceMetadata,
+  ImageReferenceMetadata,
+  PreviewReferenceMetadata,
 } from 'app/graphql/types';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import {
+  convertImagesToImageReferences,
   convertMentionsToMentionLinks,
   convertMentionsToUserReferences,
 } from 'app/overmind/utils/comments';
@@ -36,6 +40,14 @@ import * as uuid from 'uuid';
 
 import { OPTIMISTIC_COMMENT_ID } from './state';
 
+const PREVIEW_COMMENT_OFFSET = -500;
+const CODE_COMMENT_OFFSET = 500;
+const BUBBLE_IMAGE =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC8SURBVHgBxZO9EYJAEIW/PTG3BEogNIQKoBQ7QDvQTrQCCQwMrwMpwdxR3ANkGAIHjoA3czd7P+/b25lbYaBqG8WsSKnIEMJ229bjzUHutuzfl84YRxte5Bru+K8jawUV9tkBWvNVw4hxsgpJHMTUyybzWDP13caDaM2h1vzAR0Ji1Jzjqw+ZYdrThy9I5wEgNMzUXIBdGKBf2x8gnFxf+AIsAXsXTAdo5l8fuGUwylRR6nzRdGe52aJ/9AWAvjArPZuVDgAAAABJRU5ErkJggg==';
+
+const BUBBLE_IMAGE_2X =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAFsSURBVHgBxZfBUcMwEEW/5ISzS1AqQNwYLoQOoAJaCBUAHUAHoQOoIOaQGW64A9QBPsMEs5IdBA6ZKImsfTM7icce79f3yt4VCKQe6xwfOIfAKR1qCkWRt6crCkNRUhQY4kkUZRVyX7HpgvpYK0hM6MrLXwlDmGKBW/FSGuwiwK34E9f0d4L9uBPz8grbCGhXPaOzCnEw5MbZf27IleQnWkdOblHIMHP37vDHgR5W3mXFiR8BbZW/9pjcixjiaLlL/COwBdd/cotqi9vhHHDWZ3hDShYY2UfROJDhBqmRzfYW7X5/R3oqqoWRdK9XHtyrXVIVjMEFfVdsDRyCD20FKPChrIBtvnCxySWY4RZQcQsw3AJKbgEFrwBqXjkFTG1PwCeAOmb7wyNA4H7ZlnEIMBj4/mOAtDRN6dxPTSkdMKhx0Z0NUjkQPphEhwrOteFrZsS+HKjI7gd80Vy4YTiNJcCP5zWecYDH0PH8G30scDsRZ7W6AAAAAElFTkSuQmCC';
+
 export const selectCommentsFilter: Action<CommentsFilterOption> = (
   { state },
   option
@@ -46,8 +58,12 @@ export const selectCommentsFilter: Action<CommentsFilterOption> = (
 export const updateComment: AsyncAction<{
   commentId: string;
   mentions: { [username: string]: UserQuery };
+  images: { [fileName: string]: { src: string; resolution: [number, number] } };
   content: string;
-}> = async ({ actions, effects, state }, { commentId, content, mentions }) => {
+}> = async (
+  { actions, effects, state },
+  { commentId, content, mentions, images }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -73,6 +89,12 @@ export const updateComment: AsyncAction<{
       content: comment.content,
       sandboxId,
       codeReferences: [],
+      imageReferences: Object.keys(images).map(fileName => ({
+        fileName,
+        resolution: images[fileName].resolution,
+        src: images[fileName].src,
+        url: '', // Typing issue on backend, need the url here
+      })),
       userReferences: Object.keys(mentions).map(username => ({
         username,
         userId: mentions[username].id,
@@ -182,8 +204,23 @@ export const closeComment: Action = ({ state, effects }) => {
 
   effects.analytics.track('Comments - Close Comments');
 
+  // When closing comments we want to move back to previous mode. This
+  // is related to users skimming through existing comments. But
+  // you can also close an optimistic preview comment, meaning you
+  // want to stay in the same mode as you probably want to add a new comment
+  if (state.comments.currentCommentId !== OPTIMISTIC_COMMENT_ID) {
+    state.preview.mode = state.preview.previousMode;
+    state.preview.previousMode = null;
+  }
+
   state.comments.currentCommentId = null;
   state.comments.currentCommentPositions = null;
+
+  if (state.preview.mode === 'add-comment') {
+    state.preview.mode = null;
+  } else if (state.preview.mode === 'responsive-add-comment') {
+    state.preview.mode = 'responsive';
+  }
 };
 
 export const closeMultiCommentsSelector: Action = ({ state }) => {
@@ -244,6 +281,40 @@ export const selectComment: AsyncAction<{
         },
       };
     }
+  } else if (
+    comment.anchorReference &&
+    comment.anchorReference.type === 'preview'
+  ) {
+    const metadata = comment.anchorReference
+      .metadata as PreviewReferenceMetadata;
+
+    const previewBounds = await effects.preview.getIframeBoundingRect();
+    // if it wasn't in preview mode do not put it in preview mode
+    if (metadata.responsive) {
+      state.preview.responsive.resolution = [metadata.width, metadata.height];
+      state.preview.previousMode = state.preview.mode;
+      state.preview.mode = 'responsive';
+    } else {
+      state.preview.mode = null;
+    }
+
+    state.comments.currentCommentId = commentId;
+
+    // We have to wait for the bubble to appear
+    await Promise.resolve();
+
+    const left = previewBounds.left + PREVIEW_COMMENT_OFFSET;
+    const top = previewBounds.top;
+    state.comments.currentCommentPositions = {
+      trigger: bounds,
+      dialog: {
+        // never go over the left of the screen
+        left: left >= 20 ? left : 20,
+        top,
+        bottom: top,
+        right: left,
+      },
+    };
   } else {
     state.comments.currentCommentId = commentId;
     state.comments.currentCommentPositions = {
@@ -355,16 +426,107 @@ export const addOptimisticCodeComment: AsyncAction<CodeReferenceMetadata> = asyn
     top,
     bottom,
   } = await effects.vscode.getCodeReferenceBoundary(id, codeReference);
+
   state.comments.currentCommentId = id;
   state.comments.currentCommentPositions = {
     trigger: {
       left,
       top,
       bottom,
-      right,
+      right: right + CODE_COMMENT_OFFSET,
     },
     dialog: {
+      left: left + CODE_COMMENT_OFFSET,
+      top,
+      bottom,
+      right,
+    },
+  };
+};
+
+export const addOptimisticPreviewComment: AsyncAction<{
+  x: number;
+  y: number;
+  scale: number;
+  screenshot: string;
+}> = async ({ state, effects }, { x, y, scale, screenshot }) => {
+  effects.analytics.track('Comments - Create Optimistic Preview Comment');
+
+  const sandbox = state.editor.currentSandbox!;
+  const user = state.user!;
+  const id = OPTIMISTIC_COMMENT_ID;
+  const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
+  const comments = state.comments.comments;
+  const previewIframeBounds = await effects.preview.getIframeBoundingRect();
+  const previewPath = await effects.preview.getPreviewPath();
+  const screenshotUrl = await effects.preview.createScreenshot({
+    screenshotSource: screenshot,
+    bubbleSource: window.devicePixelRatio > 1 ? BUBBLE_IMAGE_2X : BUBBLE_IMAGE,
+    cropWidth: 1000,
+    cropHeight: 400,
+    x: Math.round(x),
+    y: Math.round(y),
+    scale,
+  });
+  const isResponsive = state.preview.mode === 'responsive-add-comment';
+  const metadata: PreviewReferenceMetadata = {
+    userAgent: effects.browser.getUserAgent(),
+    responsive: isResponsive,
+    screenshotUrl,
+    width: isResponsive
+      ? state.preview.responsive.resolution[0]
+      : previewIframeBounds.width,
+    height: isResponsive
+      ? state.preview.responsive.resolution[1]
+      : previewIframeBounds.height,
+    x: isResponsive ? Math.round(x * (1 / scale)) : x,
+    y: isResponsive ? Math.round(y * (1 / scale)) : y,
+    previewPath,
+  };
+  const optimisticComment: CommentFragment = {
+    parentComment: null,
+    id,
+    anchorReference: {
+      id: uuid.v4(),
+      type: 'preview',
+      metadata,
+      resource: previewPath,
+    },
+    insertedAt: now,
+    updatedAt: now,
+    content: '',
+    isResolved: false,
+    user: {
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      avatarUrl: user.avatarUrl,
+    },
+    references: [],
+    replyCount: 0,
+  };
+
+  if (!comments[sandbox.id]) {
+    comments[sandbox.id] = {};
+  }
+
+  comments[sandbox.id][id] = optimisticComment;
+  state.comments.currentCommentId = id;
+
+  const left = x + previewIframeBounds.left;
+  const top = y + previewIframeBounds.top;
+  const bottom = top;
+  const right = left;
+
+  state.comments.currentCommentPositions = {
+    trigger: {
       left,
+      top,
+      bottom,
+      right: right + PREVIEW_COMMENT_OFFSET,
+    },
+    dialog: {
+      left: left + PREVIEW_COMMENT_OFFSET,
       top,
       bottom,
       right,
@@ -389,16 +551,28 @@ export const saveOptimisticComment: AsyncAction<{
   state.comments.currentCommentId = state.comments.currentCommentId ? id : null;
   delete state.comments.comments[sandbox.id][OPTIMISTIC_COMMENT_ID];
 
+  if (state.preview.mode === 'responsive-add-comment') {
+    state.preview.mode = 'responsive';
+  } else {
+    state.preview.mode = null;
+  }
+
   return actions.comments.saveComment(comment);
 };
 
 export const saveNewComment: AsyncAction<{
   content: string;
   mentions: { [username: string]: UserQuery };
+  images: {
+    [fileName: string]: {
+      src: string;
+      resolution: [number, number];
+    };
+  };
   parentCommentId?: string;
 }> = async (
   { state, actions },
-  { content: rawContent, mentions, parentCommentId }
+  { content: rawContent, mentions, images, parentCommentId }
 ) => {
   const user = state.user!;
   const sandbox = state.editor.currentSandbox!;
@@ -425,7 +599,10 @@ export const saveNewComment: AsyncAction<{
       username: user.username,
       avatarUrl: user.avatarUrl,
     },
-    references: convertMentionsToUserReferences(mentions),
+    references: [
+      ...convertMentionsToUserReferences(mentions),
+      ...convertImagesToImageReferences(images),
+    ],
     replyCount: 0,
   };
 
@@ -457,9 +634,14 @@ export const saveComment: AsyncAction<CommentFragment> = async (
   async function trySaveComment() {
     tryCount++;
 
-    const { userReferences, codeReferences } = comment.references.reduce<{
+    const {
+      userReferences,
+      codeReferences,
+      imageReferences,
+    } = comment.references.reduce<{
       userReferences: UserReference[];
       codeReferences: CodeReference[];
+      imageReferences: ImageReference[];
     }>(
       (aggr, reference) => {
         if (reference.type === 'user') {
@@ -479,12 +661,21 @@ export const saveComment: AsyncAction<CommentFragment> = async (
                 (reference.metadata as CodeReferenceMetadata).path
             )!.updatedAt,
           });
+        } else if (reference.type === 'image') {
+          aggr.imageReferences.push({
+            fileName: (reference.metadata as ImageReferenceMetadata).fileName,
+            resolution: (reference.metadata as ImageReferenceMetadata)
+              .resolution,
+            src: (reference.metadata as ImageReferenceMetadata).url,
+            url: '', // Backend typing issue, need the url here
+          });
         }
         return aggr;
       },
       {
         userReferences: [],
         codeReferences: [],
+        imageReferences: [],
       }
     );
     const baseCommentPayload = {
@@ -494,6 +685,7 @@ export const saveComment: AsyncAction<CommentFragment> = async (
       content: comment.content || '',
       userReferences,
       codeReferences,
+      imageReferences,
     };
 
     if (comment.anchorReference) {
@@ -511,6 +703,22 @@ export const saveComment: AsyncAction<CommentFragment> = async (
             lastUpdatedAt: state.editor.currentSandbox!.modules.find(
               module => module.path === metadata.path
             )!.updatedAt,
+          },
+        });
+      } else if (reference.type === 'preview') {
+        const isResponsive = state.preview.mode === 'responsive-add-comment';
+        const metadata = reference.metadata as PreviewReferenceMetadata;
+        await effects.gql.mutations.createPreviewComment({
+          ...baseCommentPayload,
+          anchorReference: {
+            responsive: isResponsive,
+            height: Math.round(metadata.height),
+            previewPath: metadata.previewPath,
+            userAgent: metadata.userAgent,
+            screenshotSrc: metadata.screenshotUrl || null,
+            width: Math.round(metadata.width),
+            x: Math.round(metadata.x),
+            y: Math.round(metadata.y),
           },
         });
       }
