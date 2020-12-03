@@ -36,12 +36,10 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
       ),
     ];
 
-    const preventForksOutsideWorkspace = true;
-
     return (
       <Tooltip
         label={
-          preventForksOutsideWorkspace
+          disabled
             ? 'Selected sandbox(es) can not be forked outside of the workspace'
             : null
         }
