@@ -182,7 +182,7 @@ const SandboxSecurity = () => {
     },
   } = useOvermind();
 
-  const hasFeature = true;
+  const hasFeature = joinedPilotAt;
 
   const [preventSandboxExport, setPreventSandboxExport] = React.useState(
     settings.preventSandboxExport
