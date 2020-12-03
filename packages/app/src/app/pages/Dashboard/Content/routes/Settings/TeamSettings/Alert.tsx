@@ -16,12 +16,12 @@ export const Alert = (props: AlertProps) => (
       backgroundColor: 'grays.600',
       borderRadius: 'medium',
       height: 9,
-      paddingX: 2,
+      paddingX: 3,
     })}
     gap={4}
     align="center"
   >
-    <Icon size={24} name="info" />
+    <Icon size={16} name="info" />
     <Text css={css({ width: '100%' })} color="white" weight="medium" size={2}>
       {props.message}
     </Text>
@@ -34,6 +34,7 @@ export const Alert = (props: AlertProps) => (
           display: 'block',
           minWidth: 'fit-content',
           fontWeight: 'medium',
+          paddingRight: 1,
         })}
         target="_blank"
         rel="noreferrer noopener"
