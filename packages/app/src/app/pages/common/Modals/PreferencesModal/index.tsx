@@ -116,7 +116,7 @@ export const PreferencesModal: FunctionComponent = () => {
       isLoggedIn,
       isPatron,
       user,
-      preferences: { itemId = 'preferencesSync' },
+      preferences: { itemId = 'appearance' },
     },
   } = useOvermind();
   const items = getItems(isLoggedIn, isPatron, user);
