@@ -124,7 +124,7 @@ export const RegistryForm = ({
             gap={13}
           >
             <Stack css={css({ width: '100%' })} gap={5} direction="vertical">
-              <Stack gap={1} align="center">
+              <Stack gap={2} align="center">
                 <Text weight="bold" size={4}>
                   Registry
                 </Text>
@@ -145,7 +145,7 @@ export const RegistryForm = ({
                         alignItems: 'center',
                       })}
                     >
-                      <Icon aria-label="Documentation" size={18} name="info" />
+                      <Icon aria-label="Documentation" size={12} name="info" />
                     </div>
                   </Tooltip>
                 </Link>
