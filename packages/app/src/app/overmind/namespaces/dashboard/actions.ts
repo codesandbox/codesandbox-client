@@ -9,6 +9,8 @@ import {
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
   TeamMemberAuthorization,
+  CreateOrUpdateNpmRegistryMutationVariables,
+  DeleteNpmRegistryMutationVariables,
 } from 'app/graphql/types';
 import { getDecoratedCollection } from './utils';
 import { OrderBy, sandboxesTypes } from './types';
@@ -160,7 +162,7 @@ export const removeFromTeam: AsyncAction<string> = async (
     };
   } catch {
     effects.notificationToast.error(
-      'There has been a problem removing them from your team'
+      'There has been a problem removing them from your workspace'
     );
   }
 };
@@ -179,11 +181,11 @@ export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
     actions.dashboard.getTeams();
 
     effects.notificationToast.success(
-      `You successfully left the ${state.activeTeamInfo.name} team`
+      `You successfully left the ${state.activeTeamInfo.name} workspace`
     );
   } catch (e) {
     effects.notificationToast.error(
-      'There has been a problem removing your from the team'
+      'There has been a problem removing your from the workspace'
     );
   }
 };
@@ -222,7 +224,7 @@ export const inviteToTeam: AsyncAction<string> = async (
     }
 
     effects.notificationToast.success(
-      `Successfully invited ${value} to your team`
+      `Successfully invited ${value} to your workspace`
     );
   } catch (e) {
     const errorMessageExists =
@@ -230,7 +232,7 @@ export const inviteToTeam: AsyncAction<string> = async (
     effects.notificationToast.error(
       errorMessageExists
         ? e.response.errors[0].message
-        : `There was a problem inviting ${value} to your team`
+        : `There was a problem inviting ${value} to your workspace`
     );
   }
 };
@@ -1239,5 +1241,142 @@ export const changeAuthorization: AsyncAction<{
       userId,
       authorization: oldAuthorization,
     });
+  }
+};
+
+export const deleteCurrentNpmRegistry: AsyncAction<Omit<
+  DeleteNpmRegistryMutationVariables,
+  'teamId'
+>> = async ({ state, actions, effects }, params) => {
+  const confirmed = await actions.modals.alertModal.open({
+    title: 'Are you sure?',
+    message: 'This will reset the current private npm registry information.',
+  });
+  if (confirmed) {
+    try {
+      await effects.gql.mutations.deleteNpmRegistry({
+        ...params,
+        teamId: state.activeTeam,
+      });
+
+      await actions.dashboard.fetchCurrentNpmRegistry({});
+
+      effects.notificationToast.success('Successfully reset the registry!');
+    } catch (e) {
+      actions.internal.handleError({
+        message: 'There was a problem resetting the registry settings',
+        error: e,
+      });
+    }
+  }
+};
+
+export const createOrUpdateCurrentNpmRegistry: AsyncAction<Omit<
+  CreateOrUpdateNpmRegistryMutationVariables,
+  'teamId'
+>> = async ({ state, actions, effects }, params) => {
+  try {
+    await effects.gql.mutations.createOrUpdateNpmRegistry({
+      ...params,
+      teamId: state.activeTeam,
+    });
+
+    await actions.dashboard.fetchCurrentNpmRegistry({});
+
+    effects.notificationToast.success(
+      'Successfully saved new registry settings!'
+    );
+  } catch (e) {
+    actions.internal.handleError({
+      message: 'There was a problem saving the registry settings',
+      error: e,
+    });
+  }
+};
+
+export const deleteWorkspace: AsyncAction = async ({
+  actions,
+  effects,
+  state,
+}) => {
+  if (!state.activeTeamInfo) return;
+
+  try {
+    await effects.gql.mutations.deleteWorkspace({ teamId: state.activeTeam });
+
+    actions.modalClosed();
+    actions.setActiveTeam({ id: state.personalWorkspaceId! });
+    effects.router.redirectToDashboard();
+    actions.dashboard.getTeams();
+
+    effects.notificationToast.success(`Your workspace was deleted`);
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'There was a problem deleting your workspace',
+      error,
+    });
+  }
+};
+
+export const fetchCurrentNpmRegistry: AsyncAction<{}> = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  const activeTeam = state.activeTeam;
+  if (!activeTeam) {
+    return;
+  }
+
+  try {
+    const data = await effects.gql.queries.getPrivateNpmRegistry({
+      teamId: activeTeam,
+    });
+
+    // Check if active team is still the same
+    if (activeTeam === state.activeTeam) {
+      state.dashboard.workspaceSettings.npmRegistry =
+        data.me?.team?.privateRegistry || null;
+    }
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'There was a problem fetcing the registry',
+      error,
+    });
+  }
+};
+
+export const setTeamMinimumPrivacy: AsyncAction<{
+  teamId: string;
+  minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
+  updateDrafts?: boolean;
+  source: string;
+}> = async (
+  { state, effects },
+  { teamId, minimumPrivacy, updateDrafts = false, source }
+) => {
+  effects.analytics.track('Team - Change minimum privacy', {
+    minimumPrivacy,
+    source,
+  });
+
+  try {
+    await effects.gql.mutations.setTeamMinimumPrivacy({
+      teamId,
+      minimumPrivacy,
+      updateDrafts,
+    });
+
+    const selectedTeam = state.dashboard.teams.find(
+      team => team.id === state.personalWorkspaceId
+    );
+
+    if (selectedTeam && selectedTeam.settings) {
+      selectedTeam.settings.minimumPrivacy = minimumPrivacy;
+    }
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem updating your settings'
+    );
   }
 };

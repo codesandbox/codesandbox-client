@@ -1,4 +1,4 @@
-import Preset from '..';
+import { Preset } from 'sandpack-core';
 
 import stylesTranspiler from '../../transpilers/style';
 import babelTranspiler from '../../transpilers/babel';

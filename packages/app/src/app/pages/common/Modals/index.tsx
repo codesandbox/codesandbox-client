@@ -9,10 +9,13 @@ import { useOvermind } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
+import { AddPreset } from './AddPreset';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
+import { DeletePreset } from './DeletePreset';
 import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
 import { DeploymentModal } from './DeploymentModal';
+import { EditPresets } from './EditPresets';
 import { EmptyTrash } from './EmptyTrash';
 import ExportGitHubModal from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
@@ -22,16 +25,23 @@ import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import { PreferencesModal } from './PreferencesModal';
+import { RecoverFilesModal } from './RecoverFilesModal';
+import { SandboxPickerModal } from './SandboxPickerModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
 import { ShareModal } from './ShareModal';
 import SignInForTemplates from './SignInForTemplates';
 import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
-import { RecoverFilesModal } from './RecoverFilesModal';
 import { TeamInviteModal } from './TeamInviteModal';
 import UploadModal from './UploadModal';
+<<<<<<< HEAD
 import { ApplyPrefrences } from './ApplyPreferences';
+=======
+import { DeleteWorkspace } from './DeleteWorkspace';
+import { MinimumPrivacyModal } from './MinimumPrivacyModal';
+import { GenericAlertModal } from './GenericAlertModal';
+>>>>>>> 60e19124d266deb1abe00eb691df0432c7fe7df1
 
 const modals = {
   preferences: {
@@ -49,6 +59,10 @@ const modals = {
   deployment: {
     Component: DeploymentModal,
     width: 600,
+  },
+  deleteWorkspace: {
+    Component: DeleteWorkspace,
+    width: 400,
   },
   recoveredFiles: {
     Component: RecoverFilesModal,
@@ -86,6 +100,18 @@ const modals = {
     Component: DeleteProfileSandboxModal,
     width: 400,
   },
+  deletePreset: {
+    Component: DeletePreset,
+    width: 400,
+  },
+  addPreset: {
+    Component: AddPreset,
+    width: 400,
+  },
+  editPresets: {
+    Component: EditPresets,
+    width: 600,
+  },
   emptyTrash: {
     Component: EmptyTrash,
     width: 400,
@@ -96,7 +122,7 @@ const modals = {
   },
   searchDependencies: {
     Component: SearchDependenciesModal,
-    width: 600,
+    width: 716,
   },
   liveSessionEnded: {
     Component: LiveSessionEnded,
@@ -129,6 +155,15 @@ const modals = {
   userSurvey: {
     Component: SurveyModal,
     width: 850,
+  },
+  sandboxPicker: {
+    Component: SandboxPickerModal,
+    width: '90%',
+    top: 10, // vh
+  },
+  minimumPrivacy: {
+    Component: MinimumPrivacyModal,
+    width: 450,
   },
 };
 
@@ -167,6 +202,8 @@ const Modals: FunctionComponent = () => {
 
   const modal = currentModal && modals[currentModal];
 
+  const { state } = useOvermind();
+
   return (
     <ThemeProvider theme={localState.theme.vscodeTheme}>
       <Modal
@@ -175,6 +212,7 @@ const Modals: FunctionComponent = () => {
           modal &&
           (typeof modal.width === 'function' ? modal.width() : modal.width)
         }
+        top={modal && modal.top}
         onClose={isKeyDown => actions.modalClosed()}
       >
         {modal
@@ -183,6 +221,8 @@ const Modals: FunctionComponent = () => {
             })
           : null}
       </Modal>
+
+      {state.modals.alertModal.isCurrent && <GenericAlertModal />}
     </ThemeProvider>
   );
 };

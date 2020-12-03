@@ -119,7 +119,7 @@ export default class FeaturedSandbox extends React.PureComponent<
     });
   };
 
-  async componentWillReceiveProps(nextProps: FeaturedSandboxProps) {
+  async UNSAFE_componentWillReceiveProps(nextProps: FeaturedSandboxProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.fetchSandbox(nextProps.sandboxId).then(sandbox => {
         this.setState({ sandbox });
@@ -251,6 +251,7 @@ export default class FeaturedSandbox extends React.PureComponent<
                         }}
                         isInProjectView
                         showNavigation={false}
+                        customNpmRegistries={sandbox.npmRegistries}
                       />
                     </animated.div>
                   )
@@ -270,8 +271,9 @@ export default class FeaturedSandbox extends React.PureComponent<
                             height: '100%',
                             width: '100%',
                             backgroundColor: 'white',
-                            backgroundImage: `url(${sandbox &&
-                              sandbox.screenshotUrl})`,
+                            backgroundImage: `url(${
+                              sandbox && sandbox.screenshotUrl
+                            })`,
                             backgroundRepeat: 'no-repeat',
                             backgroundPositionX: 'center',
                             transform: 'scale(1.025, 1.025)',

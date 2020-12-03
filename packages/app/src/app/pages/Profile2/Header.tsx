@@ -34,7 +34,7 @@ export const Header: React.FC = () => {
       css={css({
         boxSizing: 'border-box',
         fontFamily: 'Inter, sans-serif',
-        height: 12,
+        minHeight: 12,
         backgroundColor: 'titleBar.activeBackground',
         color: 'titleBar.activeForeground',
         borderBottom: '1px solid',
@@ -88,7 +88,6 @@ export const Header: React.FC = () => {
 
       <Stack align="center" gap={2}>
         <Button
-          variant="secondary"
           css={css({ width: 'auto', paddingX: 3 })}
           onClick={() => {
             openCreateSandboxModal({});

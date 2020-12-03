@@ -1,0 +1,61 @@
+{
+	"name": "del-cli",
+	"version": "3.0.1",
+	"description": "Delete files and directories - Cross-platform",
+	"license": "MIT",
+	"repository": "sindresorhus/del-cli",
+	"funding": "https://github.com/sponsors/sindresorhus",
+	"author": {
+		"name": "Sindre Sorhus",
+		"email": "sindresorhus@gmail.com",
+		"url": "https://sindresorhus.com"
+	},
+	"bin": {
+		"del": "cli.js",
+		"del-cli": "cli.js"
+	},
+	"engines": {
+		"node": ">=8"
+	},
+	"scripts": {
+		"test": "xo && ava"
+	},
+	"files": [
+		"cli.js"
+	],
+	"keywords": [
+		"cli-app",
+		"cli",
+		"delete",
+		"del",
+		"remove",
+		"destroy",
+		"trash",
+		"unlink",
+		"clean",
+		"cleaning",
+		"cleanup",
+		"rm",
+		"rmrf",
+		"rimraf",
+		"rmdir",
+		"glob",
+		"file",
+		"files",
+		"folder",
+		"directory",
+		"fs",
+		"filesystem",
+		"cross-platform"
+	],
+	"dependencies": {
+		"del": "^5.1.0",
+		"meow": "^6.1.1"
+	},
+	"devDependencies": {
+		"ava": "^2.3.0",
+		"execa": "^2.0.4",
+		"temp-write": "^4.0.0",
+		"xo": "^0.24.0"
+	}
+}

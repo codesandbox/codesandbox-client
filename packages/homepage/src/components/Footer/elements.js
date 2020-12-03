@@ -8,7 +8,6 @@ export const FooterWrapper = styled.footer`
 
 export const Nav = styled.section`
   padding-top: 2.5rem;
-  border-top: 1px solid ${props => props.theme.homepage.grey};
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   grid-gap: 3rem;
@@ -38,10 +37,9 @@ export const Nav = styled.section`
 `;
 
 export const Social = styled.ul`
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: repeat(2, 1rem);
+  display: flex;
   justify-content: center;
+  align-items: center;
   padding: 0;
   margin: 0;
   list-style: none;

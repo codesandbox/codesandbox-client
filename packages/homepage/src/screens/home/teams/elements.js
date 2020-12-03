@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { P } from '../../../components/Typography';
 
 export const List = styled.ul`
   list-style: none;
@@ -10,24 +9,11 @@ export const List = styled.ul`
   margin-bottom: 12rem;
   flex-wrap: wrap;
   justify-content: center;
-
-  li:not(:last-child) {
-    margin-right: 5rem;
-  }
-
-  ${props => props.theme.breakpoints.md} {
-    li:not(:last-child) {
-      margin-right: 0;
-      margin-bottom: 2rem;
-    }
-    li {
-      flex-shrink: 0;
-      width: 100%;
-      text-align: center;
-    }
-  }
-`;
-export const Title = styled(P)`
+  align-items: center;
   text-align: center;
-  margin-top: 12rem;
+
+  li {
+    padding: 0;
+    margin: 2rem;
+  }
 `;

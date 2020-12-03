@@ -10,15 +10,43 @@
     "48": "./assets/icon48.png",
     "128": "./assets/icon128.png"
   },
-  "permissions": ["activeTab", "tabs"],
+  "commands": {
+    "take-screenshot": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Take screenshot"
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "tabs"
+  ],
   "browser_action": {
     "default_popup": "popup.html"
   },
+  "background": {
+    "persistent": true,
+    "scripts": [
+      "background.js"
+    ]
+  },
   "content_scripts": [
     {
-      "css": ["styles.css"],
-      "js": ["content.js"],
-      "matches": ["https://github.com/*"]
+      "css": [
+        "styles.css"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "matches": [
+        "https://github.com/*",
+        "https://codesandbox.io/*",
+        "https://codesandbox.test/*",
+        "https://codesandbox.stream/*",
+        "https://*.build.csb.dev/*"
+      ]
     }
   ]
 }

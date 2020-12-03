@@ -21,3 +21,14 @@ export const moveSandboxModal: {
   state: { sandboxIds: [], collectionIds: [], defaultOpenedPath: null },
   result: undefined,
 };
+
+export const alertModal: {
+  state: {
+    title: string;
+    message?: string;
+  };
+  result: boolean;
+} = {
+  state: { title: 'Are you sure?' },
+  result: false,
+};

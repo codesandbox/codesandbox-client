@@ -20,10 +20,10 @@ export const useFilteredItems = (params: Params) => {
     },
   } = useOvermind();
   const [items, setItems] = useState<Array<DashboardGridItem>>([]);
-  const sandboxesForPath =
-    sandboxes.REPOS && param
-      ? getFilteredSandboxes(sandboxes.REPOS[param].sandboxes || [])
-      : [];
+  const sandboxesExist = sandboxes.REPOS && param && sandboxes.REPOS[param];
+  const sandboxesForPath = sandboxesExist
+    ? getFilteredSandboxes(sandboxes.REPOS[param].sandboxes || [])
+    : [];
 
   const repos = (sandboxes.REPOS && Object.values(sandboxes.REPOS)) || [];
 

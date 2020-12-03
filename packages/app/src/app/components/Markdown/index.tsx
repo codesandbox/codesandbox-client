@@ -36,7 +36,7 @@ export const Markdown = ({ source }) => (
     })}
   >
     <ReactMarkdown
-      source={source.replace(/\n/gi, '&nbsp;\n\n')}
+      source={source ? source.replace(/\n/gi, '&nbsp;\n\n') : source}
       transformLinkUri={null}
       renderers={{
         text: ({ children }) => (
@@ -44,7 +44,7 @@ export const Markdown = ({ source }) => (
             variant="muted"
             size={3}
             css={css({
-              wordBreak: 'break-all',
+              wordBreak: 'break-word',
             })}
           >
             {children}
@@ -52,6 +52,22 @@ export const Markdown = ({ source }) => (
         ),
         heading: ({ children }) => (
           <Text block variant="muted" size={3}>
+            {children}
+          </Text>
+        ),
+        blockquote: ({ children }) => (
+          <Text
+            block
+            variant="muted"
+            size={3}
+            css={css({
+              p: {
+                display: 'inline',
+              },
+              ':before': { content: 'open-quote' },
+              ':after': { content: 'close-quote' },
+            })}
+          >
             {children}
           </Text>
         ),

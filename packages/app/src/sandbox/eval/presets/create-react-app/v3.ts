@@ -1,8 +1,7 @@
 import _debug from '@codesandbox/common/lib/utils/debug';
 
-import Manager from 'sandbox/eval/manager';
+import { Manager, Preset } from 'sandpack-core';
 import { dispatch } from 'codesandbox-api';
-import Preset from '..';
 
 import stylesTranspiler from '../../transpilers/style';
 import babelTranspiler from '../../transpilers/babel';
@@ -123,7 +122,19 @@ export default function initialize() {
   let refreshInitialized = false;
   const preset = new Preset(
     'create-react-app',
-    ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx', 'mjs'],
+    [
+      'web.mjs',
+      'mjs',
+      'web.js',
+      'js',
+      'web.ts',
+      'ts',
+      'web.tsx',
+      'tsx',
+      'json',
+      'web.jsx',
+      'jsx',
+    ],
     aliases,
     {
       hasDotEnv: true,

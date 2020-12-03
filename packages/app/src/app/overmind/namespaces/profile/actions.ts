@@ -1,13 +1,22 @@
-import { Sandbox } from '@codesandbox/common/lib/types';
+import { Sandbox, Profile } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
+import { SandboxType } from 'app/pages/Profile2/constants';
 
 export const profileMounted: AsyncAction<string> = withLoadApp(
   async ({ effects, state }, username) => {
     state.profile.isLoadingProfile = true;
     state.profile.notFound = false;
 
-    const profile = await effects.api.getProfile(username);
+    let profile: Profile;
+
+    try {
+      profile = await effects.api.getProfile(username);
+    } catch (error) {
+      state.profile.isLoadingProfile = false;
+      state.profile.notFound = true;
+      return;
+    }
 
     state.profile.profiles[profile.id] = profile;
     state.profile.currentProfileId = profile.id;
@@ -16,9 +25,13 @@ export const profileMounted: AsyncAction<string> = withLoadApp(
       profile.showcasedSandboxShortid &&
       !state.editor.sandboxes[profile.showcasedSandboxShortid]
     ) {
-      state.editor.sandboxes[
-        profile.showcasedSandboxShortid
-      ] = await effects.api.getSandbox(profile.showcasedSandboxShortid);
+      try {
+        state.editor.sandboxes[
+          profile.showcasedSandboxShortid
+        ] = await effects.api.getSandbox(profile.showcasedSandboxShortid);
+      } catch (e) {
+        // Ignore it
+      }
     }
 
     state.profile.isLoadingProfile = false;
@@ -147,6 +160,8 @@ export const newSandboxShowcaseSelected: AsyncAction<string> = async (
   }
 
   state.profile.isLoadingProfile = false;
+
+  effects.analytics.track('Profile - Showcase Sandbox selected');
 };
 
 export const deleteSandboxClicked: Action<string> = ({ state }, id) => {
@@ -177,10 +192,10 @@ export const sandboxDeleted: AsyncAction = async ({ state, effects }) => {
   state.profile.isLoadingSandboxes = false;
 };
 
-export const updateUserProfile: AsyncAction<{
-  bio: string;
-  socialLinks: string[];
-}> = async ({ actions, effects, state }, { bio, socialLinks }) => {
+export const updateUserProfile: AsyncAction<Pick<
+  Profile,
+  'bio' | 'socialLinks'
+>> = async ({ actions, effects, state }, { bio = '', socialLinks = [] }) => {
   if (!state.profile.current) return;
 
   // optimistic update
@@ -195,6 +210,8 @@ export const updateUserProfile: AsyncAction<{
       bio,
       socialLinks
     );
+
+    effects.analytics.track('Profile - User profile updated');
   } catch (error) {
     // revert optimistic update
     state.profile.current.bio = oldBio;
@@ -208,7 +225,7 @@ export const updateUserProfile: AsyncAction<{
 };
 
 export const addFeaturedSandboxesInState: Action<{
-  sandboxId: string;
+  sandboxId: Sandbox['id'];
 }> = ({ state, actions, effects }, { sandboxId }) => {
   if (!state.profile.current) return;
 
@@ -218,14 +235,17 @@ export const addFeaturedSandboxesInState: Action<{
 
   const sandbox = sandboxesOnPage.find(s => s.id === sandboxId);
 
+  // if it is added from sandbox picker, it's not on page
+  if (!sandbox) return;
+
   state.profile.current.featuredSandboxes = [
     ...state.profile.current.featuredSandboxes,
-    sandbox!,
+    sandbox,
   ];
 };
 
 export const removeFeaturedSandboxesInState: Action<{
-  sandboxId: string;
+  sandboxId: Sandbox['id'];
 }> = ({ state, actions, effects }, { sandboxId }) => {
   if (!state.profile.current) return;
 
@@ -235,7 +255,7 @@ export const removeFeaturedSandboxesInState: Action<{
 };
 
 export const addFeaturedSandboxes: AsyncAction<{
-  sandboxId: string;
+  sandboxId: Sandbox['id'];
 }> = async ({ actions, effects, state }, { sandboxId }) => {
   if (!state.profile.current) return;
 
@@ -256,6 +276,8 @@ export const addFeaturedSandboxes: AsyncAction<{
     );
 
     state.profile.current.featuredSandboxes = profile.featuredSandboxes;
+
+    effects.analytics.track('Profile - Sandbox pinned');
   } catch (error) {
     // rollback optimisic update
     actions.profile.removeFeaturedSandboxesInState({ sandboxId });
@@ -268,7 +290,7 @@ export const addFeaturedSandboxes: AsyncAction<{
 };
 
 export const removeFeaturedSandboxes: AsyncAction<{
-  sandboxId: string;
+  sandboxId: Sandbox['id'];
 }> = async ({ actions, effects, state }, { sandboxId }) => {
   if (!state.profile.current) return;
 
@@ -331,6 +353,7 @@ export const saveFeaturedSandboxesOrder: AsyncAction = async ({
       featuredSandboxIds
     );
     state.profile.current.featuredSandboxes = profile.featuredSandboxes;
+    effects.analytics.track('Profile - Pinnned sandboxes reorderd');
   } catch (error) {
     // TODO: rollback optimisic update
 
@@ -341,10 +364,10 @@ export const saveFeaturedSandboxesOrder: AsyncAction = async ({
   }
 };
 
-export const changeSandboxPrivacyInState: Action<{
-  sandboxId: string;
-  privacy: 0 | 1 | 2;
-}> = ({ state, actions, effects }, { sandboxId, privacy }) => {
+export const changeSandboxPrivacyInState: Action<Pick<
+  Sandbox,
+  'id' | 'privacy'
+>> = ({ state, actions, effects }, { id, privacy }) => {
   if (!state.profile.current) {
     return;
   }
@@ -354,25 +377,36 @@ export const changeSandboxPrivacyInState: Action<{
   const sandboxes = state.profile.sandboxes[username][page];
 
   state.profile.sandboxes[username][page] = sandboxes.map(sandbox => {
-    if (sandbox.id === sandboxId) sandbox.privacy = privacy;
+    if (sandbox.id === id) sandbox.privacy = privacy;
     return sandbox;
+  });
+
+  // for picker
+  state.profile.collections.forEach(collection => {
+    collection.sandboxes.forEach(sandbox => {
+      if (sandbox.id === id) sandbox.privacy = privacy;
+    });
   });
 };
 
-export const changeSandboxPrivacy: AsyncAction<{
-  sandboxId: string;
-  privacy: 0 | 1 | 2;
-}> = async ({ state, actions, effects }, { sandboxId, privacy }) => {
+export const changeSandboxPrivacy: AsyncAction<Pick<
+  Sandbox,
+  'id' | 'privacy'
+>> = async ({ state, actions, effects }, { id, privacy }) => {
   // optimisitc update
-  actions.profile.changeSandboxPrivacyInState({ sandboxId, privacy });
+  actions.profile.changeSandboxPrivacyInState({ id, privacy });
 
   try {
-    await effects.api.updatePrivacy(sandboxId, privacy);
+    await effects.api.updatePrivacy(id, privacy);
+    effects.analytics.track('Profile - Sandbox privacy changed');
   } catch (error) {
     // rollback optimistic update
     // it is safe to assume that the sandbox was public (privacy:0)
     // earlier because it was on profiles
-    actions.profile.changeSandboxPrivacyInState({ sandboxId, privacy: 0 });
+    actions.profile.changeSandboxPrivacyInState({
+      id,
+      privacy: 0,
+    });
 
     actions.internal.handleError({
       message: "We weren't able to update sandbox privacy",
@@ -409,5 +443,69 @@ export const searchQueryChanged: AsyncAction<string> = async (
   // We check for isLoading to avoid multiple requests
   if (!state.profile.isLoadingSandboxes) {
     await actions.profile.fetchAllSandboxes();
+  }
+};
+
+export const openContextMenu: Action<{
+  sandboxId: Sandbox['id'];
+  sandboxType: SandboxType;
+  position: { x: number; y: number };
+}> = ({ state }, { sandboxId, sandboxType, position }) => {
+  state.profile.contextMenu = { sandboxId, sandboxType, position };
+};
+
+export const closeContextMenu: Action = ({ state }) => {
+  state.profile.contextMenu = {
+    sandboxId: null,
+    sandboxType: null,
+    position: null,
+  };
+};
+
+export const fetchCollections: AsyncAction = async ({ state, effects }) => {
+  if (!state.profile.current) return;
+
+  try {
+    const data = await effects.gql.queries.getCollections({
+      teamId: state.profile.current.personalWorkspaceId,
+    });
+    if (!data || !data.me || !data.me.collections) {
+      return;
+    }
+
+    state.profile.collections = data.me.collections.map(collection => ({
+      ...collection,
+      sandboxes: [],
+    }));
+  } catch {
+    effects.notificationToast.error(
+      'There was a problem getting your sandboxes'
+    );
+  }
+};
+
+export const getSandboxesByPath: AsyncAction<{ path: string }> = async (
+  { state, effects },
+  { path }
+) => {
+  if (!state.profile.current) return;
+
+  try {
+    const data = await effects.gql.queries.sandboxesByPath({
+      path,
+      teamId: state.profile.current.personalWorkspaceId,
+    });
+    if (typeof data?.me?.collection?.sandboxes === 'undefined') {
+      return;
+    }
+
+    const collection = state.profile.collections.find(c => c.path === path);
+    if (!collection) return;
+
+    collection.sandboxes = data.me.collection.sandboxes;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your sandboxes'
+    );
   }
 };

@@ -1,66 +1,85 @@
-import Tooltip, {
-  SingletonTooltip,
-} from '@codesandbox/common/lib/components/Tooltip';
-import { formatVersion } from '@codesandbox/common/lib/utils/ci';
-import {
-  Button,
-  Link,
-  ListAction,
-  Select,
-  SidebarRow,
-  Stack,
-  Text,
-} from '@codesandbox/components';
-import css from '@styled-system/css';
-import algoliasearch from 'algoliasearch/lite';
-import compareVersions from 'compare-versions';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 import RefreshIcon from 'react-icons/lib/md/refresh';
 import ArrowDropDown from 'react-icons/lib/md/keyboard-arrow-down';
 import ArrowDropUp from 'react-icons/lib/md/keyboard-arrow-up';
-
+import algoliasearch from 'algoliasearch/lite';
+import compareVersions from 'compare-versions';
+import Tooltip, {
+  SingletonTooltip,
+} from '@codesandbox/common/lib/components/Tooltip';
+import { formatVersion } from '@codesandbox/common/lib/utils/ci';
+import css from '@styled-system/css';
+import {
+  ListAction,
+  Stack,
+  SidebarRow,
+  Select,
+  Text,
+  Link,
+  Button,
+  Icon,
+} from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import { isPrivateScope } from 'app/utils/private-registry';
 
 import { BundleSizes } from './BundleSizes';
+
+interface Props {
+  dependencies: { [dep: string]: string };
+  dependency: string;
+  onRemove: (dep: string) => void;
+  onRefresh: (dep: string, version?: string) => void;
+}
 
 const client = algoliasearch('OFCNCOG2CU', '00383ecd8441ead30b1b0ff981c426f5');
 const index = client.initIndex('npm-search');
 
-type Props = {
-  dependencies: { [dependency: string]: string };
-  dependency: string;
-};
-export const Dependency: FunctionComponent<Props> = ({
+export const Dependency = ({
   dependencies,
   dependency,
-}) => {
-  const {
-    actions: {
-      editor: { addNpmDependency, npmDependencyRemoved },
-    },
-  } = useOvermind();
-  const [open, setOpen] = useState(false);
+  onRemove,
+  onRefresh,
+}: Props) => {
+  const { state } = useOvermind();
+
   const [version, setVersion] = useState(null);
+  const [open, setOpen] = useState(false);
   const [versions, setVersions] = useState([]);
 
+  const isPrivatePackage =
+    state.editor.currentSandbox &&
+    isPrivateScope(state.editor.currentSandbox, dependency);
+
+  const isPrivatePackageInPublicSandbox =
+    isPrivatePackage && state.editor.currentSandbox?.privacy !== 2;
+
   const setVersionsForLatestPkg = (pkg: string) => {
+    if (isPrivatePackage) {
+      return;
+    }
+
     fetch(`/api/v1/dependencies/${pkg}`)
       .then(response => response.json())
-      .then(({ data }) => setVersion(data.version))
+      .then(data => setVersion(data.data.version))
       .catch(err => {
         if (process.env.NODE_ENV === 'development') {
           console.error(err); // eslint-disable-line no-console
         }
       });
   };
+
   useEffect(() => {
+    if (isPrivatePackage) {
+      return;
+    }
+
     // @ts-ignore
     index.getObject(dependency, ['versions']).then(({ versions: results }) => {
       const orderedVersions = Object.keys(results).sort((a, b) => {
         try {
           return compareVersions(b, a);
-        } catch {
+        } catch (e) {
           return 0;
         }
       });
@@ -77,23 +96,22 @@ export const Dependency: FunctionComponent<Props> = ({
       console.error(e);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isPrivatePackage]);
 
   const handleRemove = e => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
-
-    npmDependencyRemoved(dependency);
+    onRemove(dependency);
   };
+
   const handleRefresh = e => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
-
-    addNpmDependency({ name: dependency });
+    onRefresh(dependency);
   };
 
   if (typeof dependencies[dependency] !== 'string') {
@@ -103,34 +121,37 @@ export const Dependency: FunctionComponent<Props> = ({
   return (
     <>
       <ListAction
+        justify="space-between"
         align="center"
         css={css({
           position: 'relative',
-
           '.actions': {
             backgroundColor: 'sideBar.background',
             display: 'none',
           },
-
           ':hover .actions': {
             backgroundColor: 'list.hoverBackground',
             display: 'flex',
           },
         })}
-        justify="space-between"
       >
         <Link
-          css={{ maxWidth: '60%', position: 'absolute', zIndex: 2 }}
           href={`/examples/package/${dependency}`}
-          maxWidth="60%"
           target="_blank"
           title={dependency}
+          maxWidth="60%"
+          css={{
+            position: 'absolute',
+            zIndex: 2,
+            maxWidth: '60%',
+          }}
         >
           {dependency}
         </Link>
 
         <Stack
           align="center"
+          justify="flex-end"
           css={css({
             position: 'absolute',
             right: 2,
@@ -138,16 +159,21 @@ export const Dependency: FunctionComponent<Props> = ({
             flexShrink: 1,
             width: '100%',
           })}
-          justify="flex-end"
         >
-          <Text maxWidth="30%" variant="muted">
-            {formatVersion(dependencies[dependency])}{' '}
-            {version && <span>({formatVersion(version)})</span>}
-          </Text>
+          {isPrivatePackageInPublicSandbox ? (
+            <Icon width={18} height={18} color="orange" name="warning" />
+          ) : (
+            <Text variant="muted" maxWidth="30%">
+              {formatVersion(dependencies[dependency])}{' '}
+              {version && <span>({formatVersion(version)})</span>}
+            </Text>
+          )}
         </Stack>
 
         <Stack
+          className="actions"
           align="center"
+          justify="flex-end"
           css={css({
             position: 'absolute',
             right: 0,
@@ -155,61 +181,75 @@ export const Dependency: FunctionComponent<Props> = ({
             zIndex: 2, // overlay on dependency name
             paddingLeft: 1,
           })}
-          className="actions"
-          justify="flex-end"
         >
-          <Select
-            css={{ width: '80px' }}
-            onChange={({ target: { value } }) =>
-              addNpmDependency({ name: dependency, version: value })
-            }
-            value={versions.find(v => v === dependencies[dependency])}
-          >
-            {versions.map(a => (
-              <option key={a}>{a}</option>
-            ))}
-          </Select>
+          {versions.length === 0 ? null : (
+            <Select
+              css={{ width: '80px' }}
+              value={versions.find(v => v === dependencies[dependency])}
+              onChange={e => onRefresh(dependency, e.target.value)}
+            >
+              {versions.map(a => (
+                <option key={a}>{a}</option>
+              ))}
+            </Select>
+          )}
 
           <SingletonTooltip>
             {singleton => (
               <>
-                <Tooltip
-                  content={open ? 'Hide sizes' : 'Show sizes'}
-                  singleton={singleton}
-                  style={{ outline: 'none' }}
-                >
-                  <Button
-                    css={css({ minWidth: 5 })}
-                    onClick={() => setOpen(show => !show)}
-                    variant="link"
+                {!isPrivatePackage && (
+                  <Tooltip
+                    content={open ? 'Hide sizes' : 'Show sizes'}
+                    style={{ outline: 'none' }}
+                    singleton={singleton}
                   >
-                    {open ? <ArrowDropUp /> : <ArrowDropDown />}
-                  </Button>
-                </Tooltip>
+                    <Button
+                      variant="link"
+                      onClick={() => setOpen(!open)}
+                      css={css({ minWidth: 5 })}
+                    >
+                      {open ? <ArrowDropUp /> : <ArrowDropDown />}
+                    </Button>
+                  </Tooltip>
+                )}
 
-                <Tooltip
-                  content="Update to latest"
-                  singleton={singleton}
-                  style={{ outline: 'none' }}
-                >
-                  <Button
-                    css={css({ minWidth: 5 })}
-                    onClick={handleRefresh}
-                    variant="link"
+                {isPrivatePackageInPublicSandbox ? (
+                  <Tooltip
+                    content="Private packages only work in private sandboxes"
+                    style={{ outline: 'none', display: 'flex' }}
+                    singleton={singleton}
                   >
-                    <RefreshIcon />
-                  </Button>
-                </Tooltip>
-
+                    <Icon
+                      width={18}
+                      height={18}
+                      color="orange"
+                      name="warning"
+                    />
+                  </Tooltip>
+                ) : (
+                  <Tooltip
+                    content="Update to latest"
+                    style={{ outline: 'none' }}
+                    singleton={singleton}
+                  >
+                    <Button
+                      variant="link"
+                      onClick={handleRefresh}
+                      css={css({ minWidth: 5 })}
+                    >
+                      <RefreshIcon />
+                    </Button>
+                  </Tooltip>
+                )}
                 <Tooltip
                   content="Remove"
                   style={{ outline: 'none' }}
                   singleton={singleton}
                 >
                   <Button
-                    css={css({ minWidth: 5 })}
-                    onClick={handleRemove}
                     variant="link"
+                    onClick={handleRemove}
+                    css={css({ minWidth: 5 })}
                   >
                     <CrossIcon />
                   </Button>
@@ -219,7 +259,6 @@ export const Dependency: FunctionComponent<Props> = ({
           </SingletonTooltip>
         </Stack>
       </ListAction>
-
       {open ? (
         <SidebarRow marginX={2}>
           <BundleSizes

@@ -45,9 +45,7 @@ const CollaboratorContent = () => {
 export const Collaborators: FunctionComponent<{
   renderButton: (any) => JSX.Element;
 }> = ({ renderButton }) => (
-  <>
-    <Overlay event="Collaborators" content={CollaboratorContent}>
-      {open => renderButton({ onClick: () => open() })}
-    </Overlay>
-  </>
+  <Overlay event="Collaborators" content={CollaboratorContent}>
+    {open => renderButton({ onClick: () => open() })}
+  </Overlay>
 );

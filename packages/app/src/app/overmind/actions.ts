@@ -77,6 +77,7 @@ export const connectionChanged: Action<boolean> = ({ state }, connected) => {
 };
 
 type ModalName =
+  | 'deleteWorkspace'
   | 'deleteDeployment'
   | 'deleteSandbox'
   | 'feedback'
@@ -88,7 +89,9 @@ type ModalName =
   | 'share'
   | 'signInForTemplates'
   | 'userSurvey'
-  | 'liveSessionEnded';
+  | 'liveSessionEnded'
+  | 'sandboxPicker'
+  | 'minimumPrivacy';
 
 export const modalOpened: Action<{
   modal: ModalName;
@@ -189,7 +192,7 @@ export const signInVercelClicked: AsyncAction = async ({
 export const signOutVercelClicked: AsyncAction = async ({ state, effects }) => {
   if (state.user?.integrations?.zeit) {
     await effects.api.signoutVercel();
-    delete state.user.integrations.zeit;
+    state.user.integrations.zeit = null;
   }
 };
 
@@ -244,7 +247,7 @@ export const signOutGithubIntegration: AsyncAction = async ({
 }) => {
   if (state.user?.integrations?.github) {
     await effects.api.signoutGithubIntegration();
-    delete state.user.integrations.github;
+    state.user.integrations.github = null;
   }
 };
 
@@ -285,6 +288,7 @@ export const refetchSandboxInfo: AsyncAction = async ({
   sandbox.authorization = updatedSandbox.authorization;
   sandbox.privacy = updatedSandbox.privacy;
   sandbox.featureFlags = updatedSandbox.featureFlags;
+  sandbox.npmRegistries = updatedSandbox.npmRegistries;
 
   await actions.editor.internal.initializeSandbox(sandbox);
 };

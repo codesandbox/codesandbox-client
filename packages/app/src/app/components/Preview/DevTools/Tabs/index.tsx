@@ -2,6 +2,7 @@ import React from 'react';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { ViewTab } from '@codesandbox/common/lib/templates/template';
 import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Status, IViews } from '..';
 import { Actions, Container, Tabs } from './elements';
@@ -21,6 +22,7 @@ export interface Props {
 
   panes: ViewTab[];
   views: IViews;
+  disableLogging: boolean;
 }
 
 export const DevToolTabs = ({
@@ -33,6 +35,7 @@ export const DevToolTabs = ({
   setPane,
   moveTab,
   closeTab,
+  disableLogging,
   status,
 }: Props) => {
   const currentPane = views[panes[currentPaneIndex].id];
@@ -59,6 +62,7 @@ export const DevToolTabs = ({
           /* eslint-disable react/no-array-index-key */
           return (
             <TypedTab
+              disableLogging={disableLogging}
               canDrag={panes.length !== 1}
               pane={view}
               options={pane.options || {}}
@@ -72,7 +76,14 @@ export const DevToolTabs = ({
                 setPane(i);
               }}
               devToolIndex={devToolIndex}
-              moveTab={moveTab}
+              moveTab={(prevPos, newPos) => {
+                if (moveTab) {
+                  track('DevTools - Move Pane', {
+                    pane: view.id,
+                  });
+                  moveTab(prevPos, newPos);
+                }
+              }}
               closeTab={
                 pane.closeable && panes.length !== 1 ? closeTab : undefined
               }

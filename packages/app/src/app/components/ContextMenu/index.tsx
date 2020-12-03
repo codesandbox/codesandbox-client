@@ -15,7 +15,7 @@ interface ItemType {
   action: () => boolean | void;
 }
 
-export type Item = ItemType | ItemType[];
+export type ContextMenuItemType = ItemType | ItemType[];
 
 type ChildrenProps =
   | {
@@ -28,7 +28,7 @@ type ChildrenProps =
     };
 
 type Props = {
-  items: Item[];
+  items: ContextMenuItemType[];
   onContextMenu?: OnContextMenu;
   style?: React.CSSProperties;
   className?: string;

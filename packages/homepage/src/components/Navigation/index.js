@@ -145,7 +145,13 @@ const Navigation = () => {
                       </li>
                     )}
                     <LogIn onMouseEnter={() => setOpenedNav(null)}>
-                      <Button className="button" href="/s">
+                      <Button
+                        css={`
+                          background: #5962df;
+                        `}
+                        className="button"
+                        href="/s"
+                      >
                         Create Sandbox
                       </Button>
                       {user && (

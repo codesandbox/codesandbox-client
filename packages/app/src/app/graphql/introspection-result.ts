@@ -14,6 +14,24 @@ const result: IntrospectionResultData = {
     types: [
       {
         kind: 'UNION',
+        name: 'ReferenceMetadata',
+        possibleTypes: [
+          {
+            name: 'CodeReferenceMetadata',
+          },
+          {
+            name: 'ImageReferenceMetadata',
+          },
+          {
+            name: 'PreviewReferenceMetadata',
+          },
+          {
+            name: 'UserReferenceMetadata',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
         name: 'BookmarkEntity',
         possibleTypes: [
           {
@@ -21,18 +39,6 @@ const result: IntrospectionResultData = {
           },
           {
             name: 'User',
-          },
-        ],
-      },
-      {
-        kind: 'UNION',
-        name: 'ReferenceMetadata',
-        possibleTypes: [
-          {
-            name: 'CodeReferenceMetadata',
-          },
-          {
-            name: 'UserReferenceMetadata',
           },
         ],
       },

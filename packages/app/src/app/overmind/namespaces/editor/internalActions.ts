@@ -1,6 +1,7 @@
 import getTemplateDefinition, {
   TemplateType,
 } from '@codesandbox/common/lib/templates';
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import {
   Module,
   ModuleTab,
@@ -569,40 +570,17 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   });
 };
 
-export const updateDevtools: AsyncAction<{
-  code: string;
-}> = async ({ state, actions }, { code }) => {
+export const updateDevtools: AsyncAction<ViewConfig[]> = async (
+  { state, actions },
+  viewConfig
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
 
-  if (state.editor.currentSandbox.owned) {
-    const devtoolsModule =
-      state.editor.modulesByPath['/.codesandbox/workspace.json'];
-
-    if (devtoolsModule) {
-      actions.editor.codeChanged({
-        moduleShortid: devtoolsModule.shortid,
-        code,
-      });
-      await actions.editor.codeSaved({
-        code,
-        moduleShortid: devtoolsModule.shortid,
-        cbID: null,
-      });
-    } else {
-      await actions.files.createModulesByPath({
-        files: {
-          '/.codesandbox/workspace.json': {
-            content: code,
-            isBinary: false,
-          },
-        },
-      });
-    }
-  } else {
-    state.editor.workspaceConfigCode = code;
-  }
+  await actions.files.updateWorkspaceConfig({
+    preview: viewConfig,
+  });
 };
 
 export const updatePreviewCode: Action = ({ state, effects }) => {

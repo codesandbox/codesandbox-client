@@ -47,10 +47,6 @@ export const DocumentationContent = styled.div`
       text-decoration: none;
     }
 
-    .gatsby-resp-image-link {
-      display: block;
-    }
-
     table {
       width: 100%;
       max-width: 100%;
@@ -90,17 +86,10 @@ export const DocumentationContent = styled.div`
       border-radius: 0.25rem;
     }
 
-    span.gatsby-resp-image-background-image {
-      padding-bottom: 0 !important;
-    }
-
     img.gatsby-resp-image-image {
       background: #242424;
       border: 1px solid #242424;
       border-radius: 4px;
-      margin: 40px 0 !important;
-      display: block;
-      position: relative;
     }
 
     code,

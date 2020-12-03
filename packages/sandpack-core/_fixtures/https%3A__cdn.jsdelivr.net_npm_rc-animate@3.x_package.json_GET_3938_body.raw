@@ -1,0 +1,64 @@
+{
+  "name": "rc-animate",
+  "version": "3.1.1",
+  "description": "css-transition ui component for react",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-animate",
+    "animate"
+  ],
+  "files": [
+    "es",
+    "lib"
+  ],
+  "homepage": "https://github.com/react-component/animate",
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/animate.git"
+  },
+  "bugs": {
+    "url": "http://github.com/react-component/animate/issues"
+  },
+  "license": "MIT",
+  "main": "./lib/Animate",
+  "module": "./es/Animate",
+  "config": {
+    "port": 8201
+  },
+  "scripts": {
+    "build": "rc-tools run build",
+    "gh-pages": "rc-tools run gh-pages",
+    "start": "rc-tools run server",
+    "pub": "rc-tools run pub",
+    "lint": "rc-tools run lint",
+    "karma": "rc-test run karma",
+    "saucelabs": "rc-test run saucelabs",
+    "test": "rc-test run test",
+    "chrome-test": "rc-test run chrome-test",
+    "coverage": "rc-test run coverage",
+    "prepublish": "rc-tools run guard",
+    "now-build": "npm run build"
+  },
+  "devDependencies": {
+    "core-js": "^2.5.1",
+    "expect.js": "0.3.x",
+    "jquery": "^3.3.1",
+    "pre-commit": "1.x",
+    "rc-test": "6.x",
+    "rc-tools": "8.x",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "velocity-animate": "~1.2.2"
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "@ant-design/css-animation": "^1.7.2",
+    "raf": "^3.4.0",
+    "rc-util": "^4.15.3"
+  }
+}

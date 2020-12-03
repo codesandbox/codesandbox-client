@@ -35,22 +35,20 @@ export const FormField: React.FC<IFormFieldProps> = ({
 
   if (direction === 'horizontal') {
     return (
-      <>
-        <Stack
-          direction="horizontal"
-          justify="space-between"
-          align="center"
-          css={{ minHeight: 8, paddingX: 2 }}
-          {...props}
-        >
-          <LabelWrapper>
-            <Label htmlFor={inputId} size={3}>
-              {label}
-            </Label>
-          </LabelWrapper>
-          {InputElement}
-        </Stack>
-      </>
+      <Stack
+        direction="horizontal"
+        justify="space-between"
+        align="center"
+        css={{ minHeight: 8, paddingX: 2 }}
+        {...props}
+      >
+        <LabelWrapper>
+          <Label htmlFor={inputId} size={3}>
+            {label}
+          </Label>
+        </LabelWrapper>
+        {InputElement}
+      </Stack>
     );
   }
 

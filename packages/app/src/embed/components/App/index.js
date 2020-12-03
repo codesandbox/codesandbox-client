@@ -160,8 +160,9 @@ export default class App extends React.PureComponent<
           .then(res => res.json())
           .then(camelizeKeys);
 
-        document.title = `${response.data.title ||
-          response.data.id} - CodeSandbox`;
+        document.title = `${
+          response.data.title || response.data.id
+        } - CodeSandbox`;
 
         this.setState({ sandbox: response.data });
       } catch (e) {
@@ -317,9 +318,7 @@ export default class App extends React.PureComponent<
         <Centered vertical horizontal>
           <Title delay={0.1}>Not Found</Title>
           <SubTitle delay={0.05}>
-            We could not find the sandbox you
-            {"'"}
-            re looking for.
+            We could not find the sandbox you{"'"}re looking for.
           </SubTitle>
         </Centered>
       );
@@ -394,13 +393,11 @@ export default class App extends React.PureComponent<
       <ThemeProvider theme={theme}>
         <Fullscreen sidebarOpen={this.state.sidebarOpen}>
           {sandbox && (
-            <>
-              <Sidebar
-                setCurrentModule={this.setCurrentModule}
-                currentModule={this.getCurrentModuleFromPath(sandbox).id}
-                sandbox={sandbox}
-              />
-            </>
+            <Sidebar
+              setCurrentModule={this.setCurrentModule}
+              currentModule={this.getCurrentModuleFromPath(sandbox).id}
+              sandbox={sandbox}
+            />
           )}
           <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>
         </Fullscreen>

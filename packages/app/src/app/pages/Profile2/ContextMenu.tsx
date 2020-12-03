@@ -3,14 +3,17 @@ import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useLocation } from 'react-router-dom';
 import { Menu } from '@codesandbox/components';
+import { SandboxType } from './constants';
 
-export const ContextMenu = ({
-  visible,
-  setVisibility,
-  position,
-  sandboxId,
-}) => {
+export const ContextMenu = () => {
   const {
+    state: {
+      user: loggedInUser,
+      profile: {
+        current: user,
+        contextMenu: { sandboxId, sandboxType, position },
+      },
+    },
     actions: {
       editor: { forkExternalSandbox },
       profile: {
@@ -18,32 +21,78 @@ export const ContextMenu = ({
         removeFeaturedSandboxes,
         changeSandboxPrivacy,
         deleteSandboxClicked,
+        closeContextMenu,
+        newSandboxShowcaseSelected,
       },
-    },
-    state: {
-      user: loggedInUser,
-      profile: { current: user },
+      modalClosed,
     },
   } = useOvermind();
   const location = useLocation();
 
-  if (!visible) return null;
+  if (!sandboxId) return null;
 
   const myProfile = loggedInUser?.username === user.username;
+  const isPro = loggedInUser && Boolean(loggedInUser.subscription);
   const likesPage = location.pathname === '/likes';
 
   const isFeatured = user.featuredSandboxes
     .map(sandbox => sandbox.id)
     .includes(sandboxId);
 
+  const setVisibility = (visible: boolean) => {
+    if (!visible) closeContextMenu();
+  };
+
+  if (sandboxType === SandboxType.PICKER_SANDBOX) {
+    return (
+      <Menu.ContextMenu
+        visible
+        setVisibility={setVisibility}
+        position={position}
+      >
+        <Menu.Item
+          onSelect={() => {
+            addFeaturedSandboxes({ sandboxId });
+            modalClosed();
+          }}
+        >
+          Pin sandbox
+        </Menu.Item>
+        <Menu.Item
+          onSelect={() => {
+            newSandboxShowcaseSelected(sandboxId);
+            modalClosed();
+          }}
+        >
+          Set as header
+        </Menu.Item>
+      </Menu.ContextMenu>
+    );
+  }
+
+  if (sandboxType === SandboxType.PRIVATE_SANDBOX) {
+    return (
+      <Menu.ContextMenu
+        visible
+        setVisibility={setVisibility}
+        position={position}
+      >
+        <Menu.Item data-disabled>Pin sandbox</Menu.Item>
+        <Menu.Item data-disabled>Set as header</Menu.Item>
+        <Menu.Divider />
+        <Menu.Item
+          onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 0 })}
+        >
+          Make sandbox public
+        </Menu.Item>
+      </Menu.ContextMenu>
+    );
+  }
+
   return (
-    <Menu.ContextMenu
-      visible={visible}
-      setVisibility={setVisibility}
-      position={position}
-    >
+    <Menu.ContextMenu visible setVisibility={setVisibility} position={position}>
       {myProfile && !likesPage && (
-        <>
+        <span>
           {isFeatured ? (
             <Menu.Item onSelect={() => removeFeaturedSandboxes({ sandboxId })}>
               Unpin sandbox
@@ -53,6 +102,13 @@ export const ContextMenu = ({
               Pin sandbox
             </Menu.Item>
           )}
+        </span>
+      )}
+      {myProfile && !likesPage && (
+        <>
+          <Menu.Item onSelect={() => newSandboxShowcaseSelected(sandboxId)}>
+            Set as header
+          </Menu.Item>
           <Menu.Divider />
         </>
       )}
@@ -73,13 +129,22 @@ export const ContextMenu = ({
       {myProfile && !likesPage && !isFeatured && (
         <>
           <Menu.Divider />
+
           <Menu.Item
-            onSelect={() => changeSandboxPrivacy({ sandboxId, privacy: 1 })}
+            data-disabled={isPro ? null : true}
+            onSelect={() => {
+              if (!isPro) return;
+              changeSandboxPrivacy({ id: sandboxId, privacy: 1 });
+            }}
           >
             Make sandbox unlisted
           </Menu.Item>
           <Menu.Item
-            onSelect={() => changeSandboxPrivacy({ sandboxId, privacy: 2 })}
+            data-disabled={isPro ? null : true}
+            onSelect={() => {
+              if (!isPro) return;
+              changeSandboxPrivacy({ id: sandboxId, privacy: 2 });
+            }}
           >
             Make sandbox private
           </Menu.Item>

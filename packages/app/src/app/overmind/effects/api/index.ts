@@ -12,6 +12,7 @@ import {
   GitPathChanges,
   GitPr,
   Module,
+  NpmManifest,
   PaymentDetails,
   PickedSandboxes,
   PopularSandboxes,
@@ -94,6 +95,11 @@ export default {
   getDependency(name: string, tag: string): Promise<Dependency> {
     return api.get(`/dependencies/${name}@${tag}`);
   },
+  getDependencyManifest(sandboxId: string, name: string): Promise<NpmManifest> {
+    return api.get(
+      `/sandboxes/${sandboxId}/npm_registry/${name.replace('/', '%2f')}`
+    );
+  },
   async getSandbox(id: string): Promise<Sandbox> {
     const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
 
@@ -136,6 +142,24 @@ export default {
         `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
         {
           module: { code },
+        }
+      )
+      .then(transformModule);
+  },
+  saveModulePrivateUpload(
+    sandboxId: string,
+    moduleShortid: string,
+    data: {
+      code: string;
+      uploadId: string;
+      sha: string;
+    }
+  ): Promise<Module> {
+    return api
+      .put<IModuleAPIResponse>(
+        `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
+        {
+          module: data,
         }
       )
       .then(transformModule);
