@@ -75,6 +75,11 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const moveToFolder = () => {
     actions.modals.moveSandboxModal.open({
       sandboxIds: [...sandboxes, ...templates].map(s => s.sandbox.id),
+      preventLeavingWorkspace: Boolean(
+        [...sandboxes, ...templates].find(
+          s => s.sandbox.preventLeavingWorkspace
+        )
+      ),
     });
   };
 

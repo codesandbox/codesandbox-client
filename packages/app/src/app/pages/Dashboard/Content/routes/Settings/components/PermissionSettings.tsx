@@ -13,16 +13,26 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-export const PermissionSettings = () => (
-  <Grid columnGap={12}>
-    <Column span={[12, 12, 6]}>
-      <MinimumPrivacy />
-    </Column>
-    <Column span={[12, 12, 6]}>
-      <SandboxSecurity />
-    </Column>
-  </Grid>
-);
+export const PermissionSettings = () => {
+  const {
+    state: {
+      activeTeamInfo: { joinedPilotAt },
+    },
+  } = useOvermind();
+
+  return (
+    <Grid columnGap={12}>
+      <Column span={[12, 12, 6]}>
+        <MinimumPrivacy />
+      </Column>
+      {joinedPilotAt && (
+        <Column span={[12, 12, 6]}>
+          <SandboxSecurity />
+        </Column>
+      )}
+    </Grid>
+  );
+};
 
 const privacyOptions = {
   0: {
@@ -175,14 +185,12 @@ const MinimumPrivacy = () => {
 const SandboxSecurity = () => {
   const {
     state: {
-      activeTeamInfo: { joinedPilotAt, settings },
+      activeTeamInfo: { settings },
     },
     actions: {
       dashboard: { setWorkspaceSandboxSettings },
     },
   } = useOvermind();
-
-  const hasFeature = joinedPilotAt;
 
   const [preventSandboxExport, setPreventSandboxExport] = React.useState(
     settings.preventSandboxExport
@@ -213,31 +221,12 @@ const SandboxSecurity = () => {
         borderRadius: 'medium',
       })}
     >
-      <Stack
-        direction="vertical"
-        gap={8}
-        css={{ opacity: hasFeature ? 1 : 0.4 }}
-      >
+      <Stack direction="vertical" gap={8}>
         <Stack direction="vertical" gap={8}>
           <Stack justify="space-between">
             <Text size={4} weight="bold">
               Sandbox Security
             </Text>
-            {!hasFeature && (
-              <Tooltip
-                label={`Upgrade to Pro Workspaces to change default privacy settings to hide your drafts.`}
-              >
-                <Stack gap={1} align="center">
-                  <Text size={3} weight="bold" css={css({ color: 'purple' })}>
-                    Pro
-                  </Text>
-                  <Text size={3} weight="bold">
-                    Workspace
-                  </Text>
-                  <Icon name="info" size={12} />
-                </Stack>
-              </Tooltip>
-            )}
           </Stack>
 
           <Stack justify="space-between" as="label">
@@ -246,7 +235,6 @@ const SandboxSecurity = () => {
             </Text>
             <Switch
               on={preventSandboxLeaving}
-              disabled={!hasFeature}
               onChange={() => setPreventSandboxLeaving(!preventSandboxLeaving)}
             />
           </Stack>
@@ -254,7 +242,6 @@ const SandboxSecurity = () => {
             <Text size={3}>Disable exporting sandboxes as .zip</Text>
             <Switch
               on={preventSandboxExport}
-              disabled={!hasFeature}
               onChange={() => setPreventSandboxLeaving(!preventSandboxExport)}
             />
           </Stack>
@@ -263,7 +250,6 @@ const SandboxSecurity = () => {
       <Stack justify="flex-end">
         <Button
           autoWidth
-          disabled={!hasFeature}
           onClick={() => {
             setWorkspaceSandboxSettings({
               preventSandboxLeaving,

@@ -100,16 +100,6 @@ interface ForkButtonProps {
   user: CurrentUser;
 }
 
-const ConditionalTooltip = ({ condition, label, children }) => {
-  if (condition) {
-    return (
-      <Tooltip label={label}>
-        <div>{children}</div>
-      </Tooltip>
-    );
-  } else return children;
-};
-
 export const ForkButton: React.FC<ForkButtonProps> = props => {
   const { state } = useOvermind();
   const { user } = props;
@@ -166,72 +156,79 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
         </Button>
       )}
       {otherWorkspaces.length ? (
-        <ConditionalTooltip
-          condition={preventForksOutsideWorkspace}
-          label="This sandbox can not be forked outside of the workspace"
+        <Tooltip
+          label={
+            preventForksOutsideWorkspace
+              ? 'This sandbox can not be forked outside of the workspace'
+              : null
+          }
         >
-          <Menu>
-            <Menu.Button
-              variant={props.variant}
-              disabled={preventForksOutsideWorkspace}
-              css={
-                state.activeWorkspaceAuthorization === 'READ'
-                  ? {}
-                  : {
-                      width: '26px',
-                      borderTopLeftRadius: 0,
-                      borderBottomLeftRadius: 0,
+          <div>
+            <Menu>
+              <Menu.Button
+                variant={props.variant}
+                disabled={preventForksOutsideWorkspace}
+                css={
+                  state.activeWorkspaceAuthorization === 'READ'
+                    ? {}
+                    : {
+                        width: '26px',
+                        borderTopLeftRadius: 0,
+                        borderBottomLeftRadius: 0,
+                      }
+                }
+              >
+                {state.activeWorkspaceAuthorization === 'READ' ? (
+                  <>
+                    <ForkIcon css={css({ height: 3, marginRight: 1 })} />{' '}
+                    <Text css={css({ marginRight: 2 })}>Fork</Text>
+                  </>
+                ) : null}
+
+                <Icon size={8} name="caret" />
+              </Menu.Button>
+
+              <Menu.List
+                css={css({
+                  fontSize: 2,
+                  lineHeight: 1,
+                })}
+                style={{
+                  paddingTop: 4,
+                  paddingBottom: 4,
+                  marginLeft: '-4rem',
+                  marginTop: -4,
+                }}
+              >
+                {currentSpace && (
+                  <TeamOrUserItem
+                    forkClicked={props.forkClicked}
+                    item={currentSpace}
+                    disabled={state.activeWorkspaceAuthorization === 'READ'}
+                    isPersonal={
+                      currentSpace.teamId === state.personalWorkspaceId
                     }
-              }
-            >
-              {state.activeWorkspaceAuthorization === 'READ' ? (
-                <>
-                  <ForkIcon css={css({ height: 3, marginRight: 1 })} />{' '}
-                  <Text css={css({ marginRight: 2 })}>Fork</Text>
-                </>
-              ) : null}
+                  />
+                )}
 
-              <Icon size={8} name="caret" />
-            </Menu.Button>
-
-            <Menu.List
-              css={css({
-                fontSize: 2,
-                lineHeight: 1,
-              })}
-              style={{
-                paddingTop: 4,
-                paddingBottom: 4,
-                marginLeft: '-4rem',
-                marginTop: -4,
-              }}
-            >
-              {currentSpace && (
-                <TeamOrUserItem
-                  forkClicked={props.forkClicked}
-                  item={currentSpace}
-                  disabled={state.activeWorkspaceAuthorization === 'READ'}
-                  isPersonal={currentSpace.teamId === state.personalWorkspaceId}
-                />
-              )}
-
-              <Menu.Divider />
-              {otherWorkspaces.map((space, i) => (
-                <TeamOrUserItem
-                  isPersonal={space.teamId === state.personalWorkspaceId}
-                  key={space.teamId}
-                  forkClicked={props.forkClicked}
-                  item={space}
-                  disabled={
-                    space.userAuthorizations.find(
-                      authorization => authorization.userId === user.id
-                    )?.authorization === 'READ'
-                  }
-                />
-              ))}
-            </Menu.List>
-          </Menu>
-        </ConditionalTooltip>
+                <Menu.Divider />
+                {otherWorkspaces.map((space, i) => (
+                  <TeamOrUserItem
+                    isPersonal={space.teamId === state.personalWorkspaceId}
+                    key={space.teamId}
+                    forkClicked={props.forkClicked}
+                    item={space}
+                    disabled={
+                      space.userAuthorizations.find(
+                        authorization => authorization.userId === user.id
+                      )?.authorization === 'READ'
+                    }
+                  />
+                ))}
+              </Menu.List>
+            </Menu>
+          </div>
+        </Tooltip>
       ) : null}
     </Stack>
   );

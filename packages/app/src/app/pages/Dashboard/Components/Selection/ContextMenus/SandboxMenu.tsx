@@ -163,6 +163,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           onSelect={() => {
             actions.modals.moveSandboxModal.open({
               sandboxIds: [item.sandbox.id],
+              preventLeavingWorkspace: item.sandbox.preventLeavingWorkspace,
             });
           }}
         >

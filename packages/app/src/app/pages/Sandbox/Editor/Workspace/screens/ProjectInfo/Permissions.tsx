@@ -81,7 +81,7 @@ export const Permissions: FunctionComponent = () => {
               justify="space-between"
               onClick={togglePreventSandboxLeaving}
             >
-              <Label htmlFor="frozen">Disable forking</Label>
+              <Label htmlFor="frozen">Prevent Leaving Workspace</Label>
               <Switch
                 on={currentSandbox.preventLeavingWorkspace}
                 onChange={togglePreventSandboxLeaving}
