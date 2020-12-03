@@ -131,6 +131,8 @@ export const SandboxName: FunctionComponent = () => {
                 onClick={() =>
                   modals.moveSandboxModal.open({
                     sandboxIds: [currentSandbox.id],
+                    preventLeavingWorkspace:
+                      currentSandbox.preventLeavingWorkspace,
                   })
                 }
                 arial-label="Change sandbox folder"
@@ -148,21 +150,21 @@ export const SandboxName: FunctionComponent = () => {
 
         {updatingName && !git ? (
           <Form onSubmit={submitNameChange}>
-              <NameInput
-                autoFocus
-                ref={(el: HTMLInputElement) => {
-                  if (el) {
-                    el.focus();
-                  }
-                }}
-                onBlur={handleBlur}
-                onChange={handleInputUpdate}
-                onKeyUp={handleKeyUp}
-                placeholder={name}
-                value={value}
-                arial-label="sandbox name"
-              />
-            </Form>
+            <NameInput
+              autoFocus
+              ref={(el: HTMLInputElement) => {
+                if (el) {
+                  el.focus();
+                }
+              }}
+              onBlur={handleBlur}
+              onChange={handleInputUpdate}
+              onKeyUp={handleKeyUp}
+              placeholder={name}
+              value={value}
+              arial-label="sandbox name"
+            />
+          </Form>
         ) : !git ? (
           owned ? (
             <Button
