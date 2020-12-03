@@ -116,24 +116,26 @@ export const RegistrySettings = () => {
         )}
       </Stack>
 
-      <Stack justify="center" align="center">
-        <Button
-          variant="link"
-          onClick={() =>
-            actions.dashboard.deleteCurrentNpmRegistry({}).then(() => {
-              resetForm();
-            })
-          }
-          css={css({
-            maxWidth: 150,
-            ':hover:not(:disabled)': {
-              color: 'reds.200',
-            },
-          })}
-        >
-          Reset Registry
-        </Button>
-      </Stack>
+      {state.activeWorkspaceAuthorization === 'ADMIN' && (
+        <Stack justify="center" align="center">
+          <Button
+            variant="link"
+            onClick={() =>
+              actions.dashboard.deleteCurrentNpmRegistry({}).then(() => {
+                resetForm();
+              })
+            }
+            css={css({
+              maxWidth: 150,
+              ':hover:not(:disabled)': {
+                color: 'reds.200',
+              },
+            })}
+          >
+            Reset Registry
+          </Button>
+        </Stack>
+      )}
     </Stack>
   );
 };
