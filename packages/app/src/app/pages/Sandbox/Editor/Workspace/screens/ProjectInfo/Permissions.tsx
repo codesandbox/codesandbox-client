@@ -1,3 +1,5 @@
+import React, { FunctionComponent } from 'react';
+import { useOvermind } from 'app/overmind';
 import {
   Collapsible,
   Link,
@@ -7,13 +9,15 @@ import {
   Label,
   Switch,
   ListAction,
+  Icon,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
-
-import { GlobeIcon } from './icons';
+const icons = {
+  0: () => <Icon size={10} name="globe" />,
+  1: () => <Icon size={10} name="link" />,
+  2: () => <Icon size={10} name="lock" />,
+};
 
 export const Permissions: FunctionComponent = () => {
   const {
@@ -45,7 +49,7 @@ export const Permissions: FunctionComponent = () => {
         <Stack css={css({ paddingX: 2 })} direction="vertical" gap={4}>
           <Select
             disabled={!isPaidUser}
-            icon={GlobeIcon}
+            icon={icons[currentSandbox.privacy]}
             onChange={({ target: { value } }) =>
               sandboxPrivacyChanged({
                 privacy: Number(value) as 0 | 1 | 2,
