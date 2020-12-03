@@ -11,7 +11,7 @@ export const toggleResponsiveMode: AsyncAction = async ({
 }) => {
   const existingMode = state.preview.mode;
   const newUrl = new URL(document.location.href);
-  
+
   switch (existingMode) {
     case 'responsive':
       state.preview.mode = null;
@@ -163,23 +163,26 @@ export const editPresets: AsyncAction<Presets> = async (
 export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
   const existingMode = state.preview.mode;
 
-  state.preview.screenshot.source = null
+  state.preview.screenshot.source = null;
+  state.preview.screenshot.fromExtension = false;
 
   const takeScreenshot = async () => {
     try {
-      state.preview.screenshot.isLoading = true
-      const screenshot = await effects.preview.takeScreenshot(state.editor.currentSandbox!.privacy === 2)
-      state.preview.screenshot.isLoading = false
-      state.preview.screenshot.source = screenshot  
+      state.preview.screenshot.isLoading = true;
+      const screenshot = await effects.preview.takeScreenshot(
+        state.editor.currentSandbox!.privacy === 2
+      );
+      state.preview.screenshot.isLoading = false;
+      state.preview.screenshot.source = screenshot;
     } catch {
       // Not experienced this process erroring yet
     }
-  }
+  };
 
   switch (existingMode) {
     case 'responsive':
       state.preview.mode = 'responsive-add-comment';
-      await takeScreenshot()
+      await takeScreenshot();
       break;
     case 'add-comment':
       state.preview.mode = null;
@@ -189,13 +192,37 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
       break;
     default:
       state.preview.mode = 'add-comment';
-      await takeScreenshot()
+      await takeScreenshot();
   }
 
   if (state.preview.mode && state.preview.mode.includes('comment')) {
     effects.analytics.track('Preview Comment - Toggle', {
-      mode: state.preview.mode
-    })
+      mode: state.preview.mode,
+    });
+  }
+};
+
+export const createPreviewCommentFromExtension: Action<string> = (
+  { state, effects },
+  dataUrl
+) => {
+  const existingMode = state.preview.mode;
+
+  state.preview.screenshot.source = dataUrl;
+  state.preview.screenshot.fromExtension = true;
+
+  switch (existingMode) {
+    case 'responsive':
+      state.preview.mode = 'responsive-add-comment';
+      break;
+    default:
+      state.preview.mode = 'add-comment';
+  }
+
+  if (state.preview.mode && state.preview.mode.includes('comment')) {
+    effects.analytics.track('Preview Comment - From Extension', {
+      mode: state.preview.mode,
+    });
   }
 };
 

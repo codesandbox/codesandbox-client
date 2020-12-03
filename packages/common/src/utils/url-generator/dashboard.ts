@@ -49,6 +49,12 @@ export const registrySettings = (teamId?: string | null) =>
     teamId
   );
 
+export const permissionSettings = (teamId?: string | null) =>
+  appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/settings/permissions`,
+    teamId
+  );
+
 export const teamInvite = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings/invite`, teamId);
 

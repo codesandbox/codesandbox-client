@@ -29,6 +29,13 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('can convert imports with spaces', () => {
+    const code = `
+      import aTest from 'a test';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('can convert default exports', () => {
     const code = `
       export default function test() {}

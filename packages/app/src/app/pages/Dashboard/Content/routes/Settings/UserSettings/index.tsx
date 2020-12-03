@@ -1,44 +1,31 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
-import { useOvermind } from 'app/overmind';
 import { Element, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { Header } from 'app/pages/Dashboard/Components/Header';
-import {
-  GRID_MAX_WIDTH,
-  GUTTER,
-} from 'app/pages/Dashboard/Components/VariableGrid';
-import {
-  Route,
-  BrowserRouter,
-  Switch as RouterSwitch,
-  useLocation,
-} from 'react-router-dom';
+import { useOvermind } from 'app/overmind';
+import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
+import { Route, BrowserRouter, Switch, useLocation } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
-import { TeamMemberAuthorization } from 'app/graphql/types';
-
+import { Header } from '../../../../Components/Header';
+import { GRID_MAX_WIDTH, GUTTER } from '../../../../Components/VariableGrid';
 import { SettingNavigation } from '../components/Navigation';
-import { PermissionSettings } from '../components/PermissionSettings';
 import { WorkspaceSettings } from './WorkspaceSettings';
-import { RegistrySettings } from './RegistrySettings';
+import { PermissionSettings } from '../components/PermissionSettings';
 
-export const TeamSettings = () => {
+export const UserSettings = () => {
   const {
-    state: {
-      user: stateUser,
-      activeTeam,
-      activeTeamInfo: team,
-      activeWorkspaceAuthorization,
-    },
+    state: { user, activeTeam },
+    actions,
   } = useOvermind();
+
+  useEffect(() => {
+    actions.dashboard.dashboardMounted();
+  }, [actions.dashboard]);
+
   const location = useLocation();
 
-  if (!team || !stateUser) {
-    return <Header title="Workspace Settings" activeTeam={null} />;
+  if (!user) {
+    return <Header title="Settings" activeTeam={activeTeam} />;
   }
-
-  const isAdmin =
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
 
   return (
     <>
@@ -62,13 +49,9 @@ export const TeamSettings = () => {
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
           })}
         >
-          <SettingNavigation teamId={activeTeam} isAdmin={isAdmin} />
+          <SettingNavigation teamId={activeTeam} isAdmin />
           <BrowserRouter>
-            <RouterSwitch location={location}>
-              <Route
-                component={RegistrySettings}
-                path={dashboardUrls.registrySettings()}
-              />
+            <Switch location={location}>
               <Route
                 component={PermissionSettings}
                 path={dashboardUrls.permissionSettings()}
@@ -77,7 +60,7 @@ export const TeamSettings = () => {
                 component={WorkspaceSettings}
                 path={dashboardUrls.settings()}
               />
-            </RouterSwitch>
+            </Switch>
           </BrowserRouter>
         </Stack>
       </Element>

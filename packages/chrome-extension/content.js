@@ -11,6 +11,10 @@ const addButton = () => {
   // Get the toolbar
   const toolbar = document.querySelector('.file-navigation');
 
+  if (!toolbar) {
+    return
+  }
+
   // Get everything after https://github.com/
   const URL = window.location.pathname;
 
@@ -30,3 +34,46 @@ const addButton = () => {
   toolbar.querySelector('get-repo').parentElement.before(button);
 };
 addButton();
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.type === "start") {
+    start();
+  } else if (request.type === "screenshot-bounds-found") {
+    const indicator1 = document.getElementById('screenshot-indicator-1')
+    const indicator2 = document.getElementById('screenshot-indicator-2')
+
+    indicator1.style.display = 'none'
+    indicator2.style.display = 'none'
+
+    send({
+      type: "screenshot-snap",
+      bounds: request.bounds
+    })
+  } else if (request.type === "screenshot-taken") {
+    window.postMessage({
+      type: 'extension-screenshot-taken',
+      url: request.url
+    })
+  }
+
+  sendResponse({});
+});
+
+function send(request) {
+  chrome.runtime.sendMessage(request, function (response) { });
+}
+
+function start() {
+  const topLeftIndicator = document.querySelector('#screenshot-indicator-1')
+  const bottomRightIndicator = document.querySelector('#screenshot-indicator-2')
+
+  topLeftIndicator.style.display = 'block'
+  bottomRightIndicator.style.display = 'block'
+
+  // Have to wait for indicators to show up
+  setTimeout(() => {
+    send({
+      type: "screenshot"
+    })
+  }, 100)
+}
