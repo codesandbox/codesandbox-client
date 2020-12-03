@@ -275,6 +275,11 @@ export const RegistryForm = ({
                           onChange={e => {
                             editScope(e.target.value, i);
                           }}
+                          onBlur={e => {
+                            if (e.target.value.trim() === '') {
+                              removeScope(i);
+                            }
+                          }}
                         />
                         <IconButton
                           onClick={() => {
