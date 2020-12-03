@@ -25,7 +25,7 @@ export const Privacy: FunctionComponent = () => {
   const isPaidUser = user?.subscription;
 
   return (
-    <Collapsible defaultOpen title="Privacy">
+    <Collapsible defaultOpen title="Permissions">
       <Stack css={css({ paddingX: 3 })} direction="vertical" gap={4}>
         <Select
           disabled={!isPaidUser}

@@ -431,6 +431,8 @@ export type Sandbox = {
   version: number;
   screenshotUrl: string | null;
   previewSecret: string | null;
+  preventLeavingWorkspace: boolean;
+  preventExport: boolean;
 };
 
 export type PrettierConfig = {

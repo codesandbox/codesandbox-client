@@ -1343,14 +1343,10 @@ export const setWorkspaceSandboxSettings: AsyncAction<{
 export const setPreventSandboxesLeavingWorkspace: AsyncAction<{
   sandboxIds: string[];
   preventLeavingWorkspace: boolean;
-  source: 'Dashboard' | 'Editor';
-}> = async (
-  { state, effects },
-  { sandboxIds, preventLeavingWorkspace, source }
-) => {
-  // optimistic update
+}> = async ({ state, effects }, { sandboxIds, preventLeavingWorkspace }) => {
+  // TODO: optimistic update
 
-  effects.analytics.track(`${source} - Change sandbox permissions`, {
+  effects.analytics.track(`Dashboard - Change sandbox permissions`, {
     preventLeavingWorkspace,
   });
 
@@ -1371,11 +1367,10 @@ export const setPreventSandboxesLeavingWorkspace: AsyncAction<{
 export const setPreventSandboxesExport: AsyncAction<{
   sandboxIds: string[];
   preventExport: boolean;
-  source: 'Dashboard' | 'Editor';
-}> = async ({ state, effects }, { sandboxIds, preventExport, source }) => {
-  // optimistic update
+}> = async ({ state, effects }, { sandboxIds, preventExport }) => {
+  // TODO: optimistic update
 
-  effects.analytics.track(`${source} - Change sandbox permissions`, {
+  effects.analytics.track(`Dashboard - Change sandbox permissions`, {
     preventExport,
   });
 

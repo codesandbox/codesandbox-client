@@ -153,7 +153,6 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
                 preventLeavingWorkspace: true,
-                source: 'Dashboard',
               });
             },
           },
@@ -163,7 +162,6 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
                 preventLeavingWorkspace: false,
-                source: 'Dashboard',
               });
             },
           },
@@ -173,7 +171,6 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
               actions.dashboard.setPreventSandboxesExport({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
                 preventExport: true,
-                source: 'Dashboard',
               });
             },
           },
@@ -183,7 +180,6 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
               actions.dashboard.setPreventSandboxesExport({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
                 preventExport: false,
-                source: 'Dashboard',
               });
             },
           },

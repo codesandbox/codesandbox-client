@@ -1579,3 +1579,57 @@ export const changeInvitationAuthorization: AsyncAction<{
     }
   }
 };
+
+export const setPreventSandboxLeaving: AsyncAction<boolean> = async (
+  { effects, state },
+  preventLeavingWorkspace
+) => {
+  if (!state.editor.currentSandbox) return;
+
+  // optimistic update
+  const oldValue = state.editor.currentSandbox.preventLeavingWorkspace;
+  state.editor.currentSandbox.preventLeavingWorkspace = preventLeavingWorkspace;
+
+  effects.analytics.track(`Editor - Change sandbox permissions`, {
+    preventLeavingWorkspace,
+  });
+
+  try {
+    await effects.gql.mutations.setPreventSandboxesLeavingWorkspace({
+      sandboxIds: [state.editor.currentSandbox.id],
+      preventLeavingWorkspace,
+    });
+  } catch (error) {
+    state.editor.currentSandbox.preventLeavingWorkspace = oldValue;
+    effects.notificationToast.error(
+      'There was a problem updating your sandbox permissions'
+    );
+  }
+};
+
+export const setPreventSandboxExport: AsyncAction<boolean> = async (
+  { effects, state },
+  preventExport
+) => {
+  if (!state.editor.currentSandbox) return;
+
+  // optimistic update
+  const oldValue = state.editor.currentSandbox.preventExport;
+  state.editor.currentSandbox.preventExport = preventExport;
+
+  effects.analytics.track(`Editor - Change sandbox permissions`, {
+    preventExport,
+  });
+
+  try {
+    await effects.gql.mutations.setPreventSandboxesExport({
+      sandboxIds: [state.editor.currentSandbox.id],
+      preventExport,
+    });
+  } catch (error) {
+    state.editor.currentSandbox.preventExport = oldValue;
+    effects.notificationToast.error(
+      'There was a problem updating your sandbox permissions'
+    );
+  }
+};

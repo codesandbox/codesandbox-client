@@ -283,7 +283,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
                 sandboxIds: [sandbox.id],
                 preventLeavingWorkspace: false,
-                source: 'Dashboard',
               });
             }}
           >
@@ -295,7 +294,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
                 sandboxIds: [sandbox.id],
                 preventLeavingWorkspace: true,
-                source: 'Dashboard',
               });
             }}
           >
@@ -312,7 +310,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               actions.dashboard.setPreventSandboxesExport({
                 sandboxIds: [sandbox.id],
                 preventExport: false,
-                source: 'Dashboard',
               });
             }}
           >
@@ -324,7 +321,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               actions.dashboard.setPreventSandboxesExport({
                 sandboxIds: [sandbox.id],
                 preventExport: true,
-                source: 'Dashboard',
               });
             }}
           >
