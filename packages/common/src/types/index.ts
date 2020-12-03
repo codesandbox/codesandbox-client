@@ -815,3 +815,12 @@ export interface IModuleStateModule {
 export interface IModuleState {
   [moduleId: string]: IModuleStateModule;
 }
+
+export type SettingsSync = {
+  id: string;
+  insertedAt: string;
+  name: string;
+  settings: string;
+  updatedAt: string;
+  userId: string;
+};

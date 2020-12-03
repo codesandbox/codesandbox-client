@@ -24,6 +24,7 @@ import { CodeFormatting } from './CodeFormatting';
 import { EditorSettings } from './EditorPageSettings/EditorSettings';
 import { PreviewSettings } from './EditorPageSettings/PreviewSettings';
 import { Experiments } from './Experiments';
+import { PreferencesSync } from './PreferencesSync';
 import { Integrations } from './Integrations';
 import { KeyMapping } from './KeyMapping';
 import { PaymentInfo } from './PaymentInfo';
@@ -101,6 +102,12 @@ const getItems = (
       id: 'experiments',
       title: 'Experiments',
     },
+    user && {
+      Content: PreferencesSync,
+      Icon: FlaskIcon,
+      id: 'preferencesSync',
+      title: 'Preferences Sync',
+    },
   ].filter(Boolean);
 
 export const PreferencesModal: FunctionComponent = () => {
@@ -109,7 +116,7 @@ export const PreferencesModal: FunctionComponent = () => {
       isLoggedIn,
       isPatron,
       user,
-      preferences: { itemId = 'appearance' },
+      preferences: { itemId = 'preferencesSync' },
     },
   } = useOvermind();
   const items = getItems(isLoggedIn, isPatron, user);

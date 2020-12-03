@@ -159,3 +159,128 @@ export const toggleContainerLspExperiment: AsyncAction = async ({
     effects.notificationToast.error('Unable to toggl LSP experiment');
   }
 };
+
+export const getVSCodeSettings = () => {
+  const fs = window.BrowserFS.BFSRequire('fs');
+  const all = fs.readdirSync('/vscode');
+  const files = {};
+
+  const readFromDirectory = (path: string) => {
+    const filesInDirectory = fs.readdirSync(path);
+
+    filesInDirectory.forEach(p => {
+      const newPath = path + '/' + p;
+      if (fs.statSync(newPath).isDirectory()) {
+        readFromDirectory(newPath);
+      } else {
+        files[newPath] = fs.readFileSync(newPath).toString();
+      }
+    });
+  };
+
+  all.forEach(dir => {
+    const a = `/vscode/` + dir;
+
+    if (fs.statSync(a).isDirectory()) {
+      readFromDirectory(a);
+    } else {
+      files[a] = fs.readFileSync(a).toString();
+    }
+  });
+
+  return files;
+};
+
+export const getUserSettings: AsyncAction = async ({ state, effects }) => {
+  const { settingsSync } = state.preferences;
+  settingsSync.fetching = true;
+
+  const response = await effects.api.getUserSettings();
+
+  settingsSync.settings = response;
+  settingsSync.fetching = false;
+};
+
+export const syncSettings: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  state.preferences.settingsSync.syncing = true;
+  try {
+    const vscode = actions.preferences.getVSCodeSettings({});
+    const LOCAL_STORAGE_KEYS = [
+      'vs-global://colorThemeData',
+      'settings.customVSCodeTheme',
+      'VIEW_MODE_DASHBOARD',
+      'vs-global://iconThemeData',
+    ];
+    const themeData = {};
+
+    LOCAL_STORAGE_KEYS.forEach(key => {
+      themeData[key] = localStorage.getItem(key);
+    });
+
+    const {
+      id,
+      insertedAt,
+      name,
+      settings,
+      updatedAt,
+    } = await effects.api.createUserSettings({
+      name: state.user.username,
+      settings: JSON.stringify({
+        themeData,
+        vscode,
+      }),
+    });
+
+    state.preferences.settingsSync.syncing = false;
+    state.preferences.settingsSync.settings = [
+      {
+        id,
+        insertedAt,
+        name,
+        settings,
+        updatedAt,
+      },
+    ];
+    effects.notificationToast.success(
+      'Your Preferences have been sucefully synced'
+    );
+  } catch (e) {
+    effects.notificationToast.error(
+      'There has been a problem syncing your Preferences'
+    );
+  }
+};
+
+export const applyPreferences: AsyncAction = async ({ state, effects }) => {
+  const { settings } = state.preferences.settingsSync.settings[0];
+  const fs = window.BrowserFS.BFSRequire('fs');
+
+  try {
+    const parsedSyncedSettings = JSON.parse(settings);
+
+    Object.keys(parsedSyncedSettings.themeData).forEach(key => {
+      localStorage.setItem(key, parsedSyncedSettings.themeData[key]);
+    });
+
+    Object.keys(parsedSyncedSettings.vscode).forEach(key => {
+      fs.writeFileSync(key, parsedSyncedSettings.vscode[key]);
+    });
+    effects.notificationToast.error(
+      'Your settings have been applied. The page will now reload'
+    );
+
+    window.setTimeout(() => location.reload(), 1000);
+  } catch (e) {
+    effects.notificationToast.error(
+      'There has been a problem applying your Preferences'
+    );
+  }
+};
+
+export const openApplySettingsModal: Action = ({ state }) => {
+  state.currentModal = 'applyPreferences';
+};

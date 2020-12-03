@@ -31,6 +31,7 @@ import { SurveyModal } from './SurveyModal';
 import { RecoverFilesModal } from './RecoverFilesModal';
 import { TeamInviteModal } from './TeamInviteModal';
 import UploadModal from './UploadModal';
+import { ApplyPrefrences } from './ApplyPreferences';
 
 const modals = {
   preferences: {
@@ -119,6 +120,10 @@ const modals = {
   },
   feedback: {
     Component: FeedbackModal,
+    width: 450,
+  },
+  applyPreferences: {
+    Component: ApplyPrefrences,
     width: 450,
   },
   userSurvey: {

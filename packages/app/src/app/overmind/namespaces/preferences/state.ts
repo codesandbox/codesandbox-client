@@ -16,6 +16,20 @@ type State = {
   paymentDetails: PaymentDetails | null;
   runOnClick: boolean;
   keybindings: any;
+  settingsSync: {
+    syncing: boolean;
+    applying: boolean;
+    fetching: boolean;
+    settings:
+      | {
+          id: string;
+          insertedAt: string;
+          name: string;
+          settings: string;
+          updatedAt: string;
+        }[]
+      | null;
+  };
 };
 
 export const state: State = {
@@ -75,8 +89,14 @@ export const state: State = {
   showPreview: true,
   showDevtools: false,
   runOnClick: false,
+  settingsSync: {
+    syncing: false,
+    applying: false,
+    fetching: false,
+    settings: null,
+  },
   keybindings: derived((currentState: State) => {
-    const userBindings = currentState.settings.keybindings;
+    const userBindings = currentState.settings.keybindings || [];
     const userBindingsMap = userBindings.reduce(
       (bindings, binding) => ({
         ...bindings,
