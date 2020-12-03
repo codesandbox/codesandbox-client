@@ -19,7 +19,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   setRenaming,
 }) => {
   const {
-    state: { user, activeTeam, activeWorkspaceAuthorization },
+    state: { user, activeTeam, activeTeamInfo, activeWorkspaceAuthorization },
     effects,
     actions,
   } = useOvermind();
@@ -40,6 +40,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
   const label = isTemplate ? 'Template' : 'Sandbox';
   const isPro = user && Boolean(user.subscription);
+  const isTeamPro = activeTeamInfo.joinedPilotAt;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
   // responding with teamId == null for personal templates anymore.
@@ -168,7 +169,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Move to Folder
         </MenuItem>
       ) : null}
-      {activeWorkspaceAuthorization !== 'READ' && (
+      {activeWorkspaceAuthorization !== 'READ' && !sandbox.preventExport && (
         <MenuItem
           onSelect={() => {
             actions.dashboard.downloadSandboxes([sandbox.id]);
@@ -271,6 +272,63 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             }}
           >
             Make Sandbox a Template
+          </MenuItem>
+        ))}
+      {hasAccess &&
+        isTeamPro &&
+        activeWorkspaceAuthorization === 'ADMIN' &&
+        (sandbox.preventLeavingWorkspace ? (
+          <MenuItem
+            onSelect={() => {
+              actions.dashboard.setPreventSandboxesLeavingWorkspace({
+                sandboxIds: [sandbox.id],
+                preventLeavingWorkspace: false,
+                source: 'Dashboard',
+              });
+            }}
+          >
+            Allow Leaving Workspace
+          </MenuItem>
+        ) : (
+          <MenuItem
+            onSelect={() => {
+              actions.dashboard.setPreventSandboxesLeavingWorkspace({
+                sandboxIds: [sandbox.id],
+                preventLeavingWorkspace: true,
+                source: 'Dashboard',
+              });
+            }}
+          >
+            Prevent Leaving Workspace
+          </MenuItem>
+        ))}
+
+      {hasAccess &&
+        isTeamPro &&
+        activeWorkspaceAuthorization === 'ADMIN' &&
+        (sandbox.preventExport ? (
+          <MenuItem
+            onSelect={() => {
+              actions.dashboard.setPreventSandboxesExport({
+                sandboxIds: [sandbox.id],
+                preventExport: false,
+                source: 'Dashboard',
+              });
+            }}
+          >
+            Allow Export as .zip
+          </MenuItem>
+        ) : (
+          <MenuItem
+            onSelect={() => {
+              actions.dashboard.setPreventSandboxesExport({
+                sandboxIds: [sandbox.id],
+                preventExport: true,
+                source: 'Dashboard',
+              });
+            }}
+          >
+            Prevent Export as .zip
           </MenuItem>
         ))}
       {hasAccess && activeWorkspaceAuthorization !== 'READ' && (

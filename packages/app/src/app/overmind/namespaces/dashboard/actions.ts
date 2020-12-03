@@ -1340,30 +1340,55 @@ export const setWorkspaceSandboxSettings: AsyncAction<{
   }
 };
 
-export const setPreventSandboxesExport: AsyncAction<{
+export const setPreventSandboxesLeavingWorkspace: AsyncAction<{
   sandboxIds: string[];
-  preventSandboxExport: boolean;
+  preventLeavingWorkspace: boolean;
   source: 'Dashboard' | 'Editor';
 }> = async (
   { state, effects },
-  { sandboxIds, preventSandboxExport, source }
+  { sandboxIds, preventLeavingWorkspace, source }
 ) => {
   // optimistic update
 
   effects.analytics.track(`${source} - Change sandbox permissions`, {
-    preventSandboxExport,
+    preventLeavingWorkspace,
+  });
+
+  try {
+    await effects.gql.mutations.setPreventSandboxesLeavingWorkspace({
+      sandboxIds,
+      preventLeavingWorkspace,
+    });
+
+    effects.notificationToast.success('Sandbox permissions updated.');
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem updating your sandbox permissions'
+    );
+  }
+};
+
+export const setPreventSandboxesExport: AsyncAction<{
+  sandboxIds: string[];
+  preventExport: boolean;
+  source: 'Dashboard' | 'Editor';
+}> = async ({ state, effects }, { sandboxIds, preventExport, source }) => {
+  // optimistic update
+
+  effects.analytics.track(`${source} - Change sandbox permissions`, {
+    preventExport,
   });
 
   try {
     await effects.gql.mutations.setPreventSandboxesExport({
       sandboxIds,
-      preventSandboxExport,
+      preventExport,
     });
 
-    effects.notificationToast.success('Workspace sandbox permissions updated.');
+    effects.notificationToast.success('Sandbox permissions updated.');
   } catch (error) {
     effects.notificationToast.error(
-      'There was a problem updating your workspace settings'
+      'There was a problem updating your sandbox permissions'
     );
   }
 };

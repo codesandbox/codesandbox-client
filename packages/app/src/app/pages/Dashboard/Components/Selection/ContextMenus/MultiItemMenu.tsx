@@ -142,6 +142,54 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     },
   ].filter(Boolean);
 
+  const isTeamPro = state.activeTeamInfo.joinedPilotAt;
+
+  const PROTECTED_SANDBOXES_ITEMS =
+    isTeamPro && state.activeWorkspaceAuthorization === 'ADMIN'
+      ? [
+          sandboxes.some(s => !s.sandbox.preventLeavingWorkspace) && {
+            label: 'Allow Leaving Workspace',
+            fn: () => {
+              actions.dashboard.setPreventSandboxesLeavingWorkspace({
+                sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+                preventLeavingWorkspace: true,
+                source: 'Dashboard',
+              });
+            },
+          },
+          sandboxes.some(s => s.sandbox.preventLeavingWorkspace) && {
+            label: 'Prevent Leaving Workspace',
+            fn: () => {
+              actions.dashboard.setPreventSandboxesLeavingWorkspace({
+                sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+                preventLeavingWorkspace: false,
+                source: 'Dashboard',
+              });
+            },
+          },
+          sandboxes.some(s => !s.sandbox.preventExport) && {
+            label: 'Allow Export as .zip',
+            fn: () => {
+              actions.dashboard.setPreventSandboxesExport({
+                sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+                preventExport: true,
+                source: 'Dashboard',
+              });
+            },
+          },
+          sandboxes.some(s => s.sandbox.preventExport) && {
+            label: 'Prevent Export as .zip',
+            fn: () => {
+              actions.dashboard.setPreventSandboxesExport({
+                sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+                preventExport: false,
+                source: 'Dashboard',
+              });
+            },
+          },
+        ].filter(Boolean)
+      : [];
+
   const EXPORT = { label: 'Export Items', fn: exportItems };
   const DELETE = { label: 'Delete Items', fn: deleteItems };
   const RECOVER = {
@@ -199,6 +247,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
       DIVIDER,
       MOVE_ITEMS,
       CONVERT_TO_TEMPLATE,
+      ...PROTECTED_SANDBOXES_ITEMS,
       DIVIDER,
       DELETE,
     ];

@@ -748,6 +748,9 @@ export type Sandbox = {
   invitations: Array<Invitation>;
   /** If the sandbox is a template this will be set */
   customTemplate: Maybe<Template>;
+  /** sandbox permissisons */
+  preventLeavingWorkspace: Scalars['Boolean'];
+  preventExport: Scalars['Boolean'];
 };
 
 /** A Sandbox */
@@ -781,8 +784,8 @@ export type Team = {
   users: Array<User>;
   settings: {
     minimumPrivacy: Sandbox['privacy'];
-    preventSandboxExport: boolean;
-    preventSandboxLeaving: boolean;
+    preventSandboxLeaving: Sandbox['preventLeavingWorkspace'];
+    preventSandboxExport: Sandbox['preventExport'];
   };
 };
 
@@ -1432,6 +1435,8 @@ export type SandboxFragmentDashboardFragment = {
   | 'viewCount'
   | 'authorId'
   | 'teamId'
+  | 'preventLeavingWorkspace'
+  | 'preventExport'
 > & {
     source: { __typename?: 'Source' } & Pick<Source, 'template'>;
     customTemplate: Maybe<{ __typename?: 'Template' } & Pick<Template, 'id'>>;
@@ -2216,6 +2221,8 @@ export type SandboxFragment = { __typename?: 'Sandbox' } & Pick<
   | 'screenshotUrl'
   | 'screenshotOutdated'
   | 'teamId'
+  | 'preventLeavingWorkspace'
+  | 'preventExport'
 > & {
     source: { __typename?: 'Source' } & Pick<Source, 'template'>;
     customTemplate: Maybe<{ __typename?: 'Template' } & Pick<Template, 'id'>>;
@@ -2608,23 +2615,23 @@ export type SetWorkspaceSandboxSettingsMutation = {
 };
 
 export type SetPreventSandboxesLeavingWorkspaceMutationVariables = Exact<{
-  teamId: Scalars['UUID4'];
-  preventSandboxLeaving: CurrentTeamInfoFragmentFragment['settings']['preventSandboxLeaving'];
+  sandboxIds: Array<Sandbox['id']>;
+  preventLeavingWorkspace: Sandbox['preventLeavingWorkspace'];
 }>;
 
 export type SetPreventSandboxesLeavingWorkspaceMutation = {
   __typename?: 'RootMutationType';
 } & {
-  preventSandboxLeaving: CurrentTeamInfoFragmentFragment['settings']['preventSandboxLeaving'];
+  preventLeavingWorkspace: Sandbox['preventLeavingWorkspace'];
 };
 
 export type SetPreventSandboxesExportWorkspaceMutationVariables = Exact<{
-  teamId: Scalars['UUID4'];
-  preventSandboxExport: CurrentTeamInfoFragmentFragment['settings']['preventSandboxExport'];
+  sandboxIds: Array<Sandbox['id']>;
+  preventExport: Sandbox['preventExport'];
 }>;
 
 export type SetPreventSandboxesExportWorkspaceMutation = {
   __typename?: 'RootMutationType';
 } & {
-  preventSandboxExport: CurrentTeamInfoFragmentFragment['settings']['preventSandboxExport'];
+  preventExport: Sandbox['preventExport'];
 };

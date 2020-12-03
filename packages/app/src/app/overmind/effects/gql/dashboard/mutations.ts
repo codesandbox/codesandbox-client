@@ -392,11 +392,11 @@ export const setPreventSandboxesLeavingWorkspace: Query<
   SetPreventSandboxesLeavingWorkspaceMutationVariables
 > = gql`
   mutation SetPreventSandboxesLeavingWorkspace(
-    $teamId: UUID4!
+    $sandboxIds: [ID!]!
     $preventSandboxLeaving: Boolean!
   ) {
     SetPreventSandboxesLeavingWorkspace(
-      teamId: $teamId
+      sandboxIds: $sandboxIds
       preventSandboxLeaving: $preventSandboxLeaving
     ) {
       preventSandboxLeaving
@@ -409,14 +409,14 @@ export const setPreventSandboxesExport: Query<
   SetPreventSandboxesExportWorkspaceMutationVariables
 > = gql`
   mutation setPreventSandboxesExportWorkspace(
-    $teamId: UUID4!
-    $preventSandboxExport: Boolean!
+    $sandboxIds: [ID!]!
+    $preventExport: Boolean!
   ) {
     setPreventSandboxesExportWorkspace(
-      teamId: $teamId
-      preventSandboxExport: $preventSandboxExport
+      sandboxIds: $sandboxIds
+      preventExport: $preventSandboxExport
     ) {
-      preventSandboxExport
+      preventExport
     }
   }
 `;
