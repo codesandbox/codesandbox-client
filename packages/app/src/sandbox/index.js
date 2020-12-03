@@ -117,6 +117,7 @@ requirePolyfills().then(() => {
           entry: '/' + x.data.entry,
           externalResources: x.data.externalResources,
           dependencies: x.data.npmDependencies,
+          customNpmRegistries: x.data.npmRegistries,
           hasActions: false,
           template: x.data.template,
           version: 3,

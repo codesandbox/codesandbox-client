@@ -59,8 +59,8 @@ interface ISwitchProps {
   id?: string;
   on?: boolean;
   defaultOn?: boolean;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const Switch: React.FC<ISwitchProps> = ({
