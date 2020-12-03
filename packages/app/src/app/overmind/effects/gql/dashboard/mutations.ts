@@ -47,6 +47,12 @@ import {
   DeleteWorkspaceMutationVariables,
   SetTeamMinimumPrivacyMutation,
   SetTeamMinimumPrivacyMutationVariables,
+  SetWorkspaceSandboxSettingsMutation,
+  SetWorkspaceSandboxSettingsMutationVariables,
+  SetPreventSandboxesLeavingWorkspaceMutation,
+  SetPreventSandboxesLeavingWorkspaceMutationVariables,
+  SetPreventSandboxesExportWorkspaceMutation,
+  SetPreventSandboxesExportWorkspaceMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -357,6 +363,60 @@ export const setTeamMinimumPrivacy: Query<
       updateDrafts: $updateDrafts
     ) {
       minimumPrivacy
+    }
+  }
+`;
+
+export const setWorkspaceSandboxSettings: Query<
+  SetWorkspaceSandboxSettingsMutation,
+  SetWorkspaceSandboxSettingsMutationVariables
+> = gql`
+  mutation SetWorkspaceSandboxSettings(
+    $teamId: UUID4!
+    $preventSandboxLeaving: Boolean!
+    $preventSandboxExport: Boolean!
+  ) {
+    setTeamMinimumPrivacy(
+      teamId: $teamId
+      preventSandboxLeaving: $preventSandboxLeaving
+      preventSandboxExport: $preventSandboxExport
+    ) {
+      preventSandboxLeaving
+      preventSandboxExport
+    }
+  }
+`;
+
+export const setPreventSandboxesLeavingWorkspace: Query<
+  SetPreventSandboxesLeavingWorkspaceMutation,
+  SetPreventSandboxesLeavingWorkspaceMutationVariables
+> = gql`
+  mutation SetPreventSandboxesLeavingWorkspace(
+    $teamId: UUID4!
+    $preventSandboxLeaving: Boolean!
+  ) {
+    SetPreventSandboxesLeavingWorkspace(
+      teamId: $teamId
+      preventSandboxLeaving: $preventSandboxLeaving
+    ) {
+      preventSandboxLeaving
+    }
+  }
+`;
+
+export const setPreventSandboxesExport: Query<
+  SetPreventSandboxesExportWorkspaceMutation,
+  SetPreventSandboxesExportWorkspaceMutationVariables
+> = gql`
+  mutation setPreventSandboxesExportWorkspace(
+    $teamId: UUID4!
+    $preventSandboxExport: Boolean!
+  ) {
+    setPreventSandboxesExportWorkspace(
+      teamId: $teamId
+      preventSandboxExport: $preventSandboxExport
+    ) {
+      preventSandboxExport
     }
   }
 `;

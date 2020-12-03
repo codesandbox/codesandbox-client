@@ -18,6 +18,9 @@ export const PermissionSettings = () => (
     <Column span={[12, 12, 6]}>
       <MinimumPrivacy />
     </Column>
+    <Column span={[12, 12, 6]}>
+      <SandboxSecurity />
+    </Column>
   </Grid>
 );
 
@@ -163,6 +166,112 @@ const MinimumPrivacy = () => {
           }}
         >
           Change Privacy
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
+
+const SandboxSecurity = () => {
+  const {
+    state: {
+      activeTeamInfo: { joinedPilotAt, settings },
+    },
+    actions: {
+      dashboard: { setWorkspaceSandboxSettings },
+    },
+  } = useOvermind();
+
+  const hasFeature = true;
+
+  const [preventSandboxExport, setPreventSandboxExport] = React.useState(
+    settings.preventSandboxExport
+  );
+  const [preventSandboxLeaving, setPreventSandboxLeaving] = React.useState(
+    settings.preventSandboxLeaving
+  );
+
+  React.useEffect(
+    function resetOnWorkspaceChange() {
+      setPreventSandboxLeaving(settings.preventSandboxLeaving);
+      setPreventSandboxExport(settings.preventSandboxExport);
+    },
+    [settings.preventSandboxLeaving, settings.preventSandboxExport]
+  );
+
+  return (
+    <Stack
+      direction="vertical"
+      justify="space-between"
+      gap={114}
+      css={css({
+        backgroundColor: 'grays.800',
+        paddingY: 8,
+        paddingX: 6,
+        border: '1px solid',
+        borderColor: 'grays.500',
+        borderRadius: 'medium',
+      })}
+    >
+      <Stack
+        direction="vertical"
+        gap={8}
+        css={{ opacity: hasFeature ? 1 : 0.4 }}
+      >
+        <Stack direction="vertical" gap={8}>
+          <Stack justify="space-between">
+            <Text size={4} weight="bold">
+              Sandbox Security
+            </Text>
+            {!hasFeature && (
+              <Tooltip
+                label={`Upgrade to Pro Workspaces to change default privacy settings to hide your drafts.`}
+              >
+                <Stack gap={1} align="center">
+                  <Text size={3} weight="bold" css={css({ color: 'purple' })}>
+                    Pro
+                  </Text>
+                  <Text size={3} weight="bold">
+                    Workspace
+                  </Text>
+                  <Icon name="info" size={12} />
+                </Stack>
+              </Tooltip>
+            )}
+          </Stack>
+
+          <Stack justify="space-between" as="label">
+            <Text size={3}>
+              Disable forking and moving sandboxes outside of the workspace
+            </Text>
+            <Switch
+              on={preventSandboxLeaving}
+              disabled={!hasFeature}
+              onChange={() => setPreventSandboxLeaving(!preventSandboxLeaving)}
+            />
+          </Stack>
+          <Stack justify="space-between" as="label">
+            <Text size={3}>Disable exporting sandboxes as .zip</Text>
+            <Switch
+              on={preventSandboxExport}
+              disabled={!hasFeature}
+              onChange={() => setPreventSandboxLeaving(!preventSandboxExport)}
+            />
+          </Stack>
+        </Stack>
+      </Stack>
+      <Stack justify="flex-end">
+        <Button
+          autoWidth
+          disabled={!hasFeature}
+          onClick={() => {
+            setWorkspaceSandboxSettings({
+              preventSandboxLeaving,
+              preventSandboxExport,
+            });
+          }}
+        >
+          Change Settings
         </Button>
       </Stack>
     </Stack>

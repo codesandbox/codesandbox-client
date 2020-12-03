@@ -781,6 +781,8 @@ export type Team = {
   users: Array<User>;
   settings: {
     minimumPrivacy: Sandbox['privacy'];
+    preventSandboxExport: boolean;
+    preventSandboxLeaving: boolean;
   };
 };
 
@@ -1481,7 +1483,7 @@ export type TemplateFragmentDashboardFragment = {
 
 export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
   Team,
-  'id' | 'name' | 'description' | 'creatorId' | 'avatarUrl'
+  'id' | 'name' | 'description' | 'creatorId' | 'avatarUrl' | 'settings'
 > & {
     userAuthorizations: Array<
       { __typename?: 'UserAuthorization' } & Pick<
@@ -1501,9 +1503,6 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
         'id' | 'name' | 'username' | 'avatarUrl'
       >
     >;
-    settings: {
-      minimumPrivacy: Sandbox['privacy'];
-    };
   };
 
 export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
@@ -1515,6 +1514,7 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
   | 'joinedPilotAt'
   | 'name'
   | 'avatarUrl'
+  | 'settings'
 > & {
     users: Array<
       { __typename?: 'User' } & Pick<User, 'id' | 'avatarUrl' | 'username'>
@@ -1528,9 +1528,6 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         'userId' | 'authorization'
       >
     >;
-    settings: {
-      minimumPrivacy: Sandbox['privacy'];
-    };
   };
 
 export type _CreateTeamMutationVariables = Exact<{
@@ -2595,4 +2592,39 @@ export type SetTeamMinimumPrivacyMutation = {
   __typename?: 'RootMutationType';
 } & {
   minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
+};
+
+export type SetWorkspaceSandboxSettingsMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  preventSandboxLeaving: CurrentTeamInfoFragmentFragment['settings']['preventSandboxLeaving'];
+  preventSandboxExport: CurrentTeamInfoFragmentFragment['settings']['preventSandboxExport'];
+}>;
+
+export type SetWorkspaceSandboxSettingsMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  preventSandboxLeaving: CurrentTeamInfoFragmentFragment['settings']['preventSandboxLeaving'];
+  preventSandboxExport: CurrentTeamInfoFragmentFragment['settings']['preventSandboxExport'];
+};
+
+export type SetPreventSandboxesLeavingWorkspaceMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  preventSandboxLeaving: CurrentTeamInfoFragmentFragment['settings']['preventSandboxLeaving'];
+}>;
+
+export type SetPreventSandboxesLeavingWorkspaceMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  preventSandboxLeaving: CurrentTeamInfoFragmentFragment['settings']['preventSandboxLeaving'];
+};
+
+export type SetPreventSandboxesExportWorkspaceMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  preventSandboxExport: CurrentTeamInfoFragmentFragment['settings']['preventSandboxExport'];
+}>;
+
+export type SetPreventSandboxesExportWorkspaceMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  preventSandboxExport: CurrentTeamInfoFragmentFragment['settings']['preventSandboxExport'];
 };
