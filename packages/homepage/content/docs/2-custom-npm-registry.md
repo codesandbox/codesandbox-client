@@ -6,7 +6,9 @@ description:
   You can use your own private npm registry if you have Workspace Pro.
 ---
 
-**Note: Custom NPM Registry support is currently only available to Pro Workspace pilot members. [Sign up to join the waitlist](https://airtable.com/shrlgLSJWiX8rYqyG).**
+**Note: Custom NPM Registry support is currently only available to Pro Workspace
+pilot members.
+[Sign up to join the waitlist](https://airtable.com/shrlgLSJWiX8rYqyG).**
 
 The custom private npm registry setting makes it possible for sandboxes in your
 workspace to retrieve npm packages from your own npm registry. This setting is
@@ -34,11 +36,10 @@ this key with anyone else who has access to your sandbox. Read more about that
 
 ### Specific Scopes
 
-We only use your private registry for the
-packages that are behind specified scopes. For example, if you defined
-`@acme` as an enabled scope, we only use the registry to fetch packages
-that have this scope (like `@acme/design-system`). For all other packages we'll
-use the public registry.
+We only use your private registry for the packages that are behind specified
+scopes. For example, if you defined `@acme` as an enabled scope, we only use the
+registry to fetch packages that have this scope (like `@acme/design-system`).
+For all other packages we'll use the public registry.
 
 ## Security
 
@@ -65,7 +66,7 @@ of the sandbox, they also won't have access to your private npm registry
 anymore. There's no need to re-roll tokens, as tokens are generated based on a
 sandbox-user combination.
 
-![Request structure of the custom registry implementation](./images/custom-registry-infra.png)
+![Request structure of the custom registry implementation](./images/custom-registry-infra.jpg)
 
 ## Common Questions
 
