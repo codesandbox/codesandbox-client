@@ -31,12 +31,13 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
         2
       );
       if (property.includes('.')) {
-        const children = property.split('.');
+        const [parent, key] = property.split('.');
         code = JSON.stringify(
           {
             ...file,
-            [children[0]]: {
-              [children[1]]: value,
+            [parent]: {
+              ...file[parent],
+              [key]: value,
             },
           },
           null,
@@ -154,24 +155,40 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
             />
           </ConfigItem>
           <ConfigDescription>
-            Disable the in-browser console to prevent slowing down of the page when there are many logs to the console.
+            Disable the in-browser console to prevent slowing down of the page
+            when there are many logs to the console.
           </ConfigDescription>
         </PaddedConfig>
       ) : null}
       {currentTemplate.isServer ? (
-        <PaddedConfig>
-          <PaddedPreference
-            title="Port"
-            type="number"
-            innerStyle={{ width: '5rem' }}
-            min={1024}
-            max={65535}
-            {...bindValue(parsedFile, 'container.port')}
-          />
-          <ConfigDescription>
-            What is the main port of your application. Values from 1024 to 65535
-          </ConfigDescription>
-        </PaddedConfig>
+        <>
+          <PaddedConfig>
+            <PaddedPreference
+              title="Port"
+              type="number"
+              innerStyle={{ width: '5rem' }}
+              min={1024}
+              max={65535}
+              {...bindValue(parsedFile, 'container.port')}
+            />
+            <ConfigDescription>
+              What is the main port of your application. Values from 1024 to
+              65535
+            </ConfigDescription>
+          </PaddedConfig>
+          <PaddedConfig>
+            <PaddedPreference
+              title="Node Version"
+              type="dropdown"
+              options={['10', '12', '14']}
+              {...bindValue(parsedFile, 'container.node')}
+            />
+            <ConfigDescription>
+              Which node version to use for this sandbox. Please restart the
+              server after changing.
+            </ConfigDescription>
+          </PaddedConfig>
+        </>
       ) : null}
     </div>
   );
