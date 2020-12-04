@@ -783,11 +783,6 @@ export type Sandbox = {
   screenshotOutdated: Scalars['Boolean'];
   /** If the sandbox is a template this will be set */
   customTemplate: Maybe<Template>;
-<<<<<<< HEAD
-  /** sandbox permissisons */
-  preventLeavingWorkspace: Scalars['Boolean'];
-  preventExport: Scalars['Boolean'];
-=======
   author: Maybe<User>;
   source: Source;
   teamId: Maybe<Scalars['UUID4']>;
@@ -798,7 +793,9 @@ export type Sandbox = {
   forkCount: Scalars['Int'];
   isFrozen: Scalars['Boolean'];
   title: Maybe<Scalars['String']>;
->>>>>>> master
+  /** sandbox permissisons */
+  preventLeavingWorkspace: Scalars['Boolean'];
+  preventExport: Scalars['Boolean'];
 };
 
 /** A Sandbox */
@@ -809,6 +806,8 @@ export type SandboxCommentArgs = {
 export type Settings = {
   __typename?: 'Settings';
   minimumPrivacy: Scalars['Int'];
+  preventSandboxLeaving: Sandbox['preventLeavingWorkspace'];
+  preventSandboxExport: Sandbox['preventExport'];
 };
 
 export type Source = {
@@ -837,14 +836,6 @@ export type Team = {
   templates: Array<Template>;
   userAuthorizations: Array<UserAuthorization>;
   users: Array<User>;
-<<<<<<< HEAD
-  settings: {
-    minimumPrivacy: Sandbox['privacy'];
-    preventSandboxLeaving: Sandbox['preventLeavingWorkspace'];
-    preventSandboxExport: Sandbox['preventExport'];
-  };
-=======
->>>>>>> master
 };
 
 export type TeamDraftsArgs = {
