@@ -1,14 +1,3 @@
-import { ChatIcon } from '@codesandbox/common/lib/components/icons/Chat';
-import { CogIcon } from '@codesandbox/common/lib/components/icons/Cog';
-import { CuratorIcon } from '@codesandbox/common/lib/components/icons/Curator';
-import { DashboardIcon } from '@codesandbox/common/lib/components/icons/Dashboard';
-import { DocumentationIcon } from '@codesandbox/common/lib/components/icons/Documentation';
-import { ExitIcon } from '@codesandbox/common/lib/components/icons/Exit';
-import { FolderIcon } from '@codesandbox/common/lib/components/icons/Folder';
-import { PatronIcon } from '@codesandbox/common/lib/components/icons/Patron';
-import { SearchIcon } from '@codesandbox/common/lib/components/icons/Search';
-import { UserIcon } from '@codesandbox/common/lib/components/icons/User';
-import { ProIcon } from '@codesandbox/common/lib/components/icons/Pro';
 import {
   curatorUrl,
   dashboardUrl,
@@ -16,11 +5,11 @@ import {
   profileUrl,
   searchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { Menu, Stack, Element } from '@codesandbox/components';
+import { Menu, Stack, Element, Icon, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 
-import { Icon, ProfileImage } from './elements';
+import { ProfileImage } from './elements';
 
 export const UserMenu: FunctionComponent & {
   Button: (props: any) => JSX.Element;
@@ -58,126 +47,102 @@ export const UserMenu: FunctionComponent & {
 
         <Menu.List>
           <Menu.Link to={profileUrl(user.username)}>
-            <Stack align="center">
-              <Icon>
-                <UserIcon />
-              </Icon>
-              My Profile
+            <Stack align="center" gap={1}>
+              <Icon name="profile" size={24} />
+              <Text>My Profile</Text>
             </Stack>
           </Menu.Link>
 
           <Menu.Divider />
 
           <Menu.Link to={dashboardUrl()}>
-            <Stack align="center">
-              <Icon>
-                <DashboardIcon />
-              </Icon>
-              Dashboard
+            <Stack align="center" gap={1}>
+              <Icon name="dashboard" size={24} />
+              <Text>Dashboard</Text>
             </Stack>
           </Menu.Link>
 
           <Menu.Link href="/docs">
-            <Stack align="center">
-              <Icon>
-                <DocumentationIcon />
-              </Icon>
-              Documentation
+            <Stack align="center" gap={1}>
+              <Icon name="documentation" size={24} />
+              <Text>Documentation</Text>
             </Stack>
           </Menu.Link>
 
           <Menu.Link to={searchUrl()}>
-            <Stack align="center">
-              <Icon>
-                <SearchIcon />
-              </Icon>
-              Search Sandboxes
+            <Stack align="center" gap={1}>
+              <Icon name="searchBubble" size={24} />
+              <Text>Search Sandboxes</Text>
             </Stack>
           </Menu.Link>
 
-          {showCurator && (
+          {!showCurator && (
             <Menu.Link to={curatorUrl()}>
-              <Stack align="center">
-                <Icon>
-                  <CuratorIcon />
-                </Icon>
-                Curator Dashboard
+              <Stack align="center" gap={1}>
+                <Icon name="curator" size={24} />
+                <Text>Curator Dashboard</Text>
               </Stack>
             </Menu.Link>
           )}
 
           {showPatron && (
             <Menu.Link to={patronUrl()}>
-              <Stack align="center">
-                <Icon>
-                  <PatronIcon />
-                </Icon>
-                Patron Page
+              <Stack align="center" gap={1}>
+                <Icon name="patron" size={24} />
+                <Text>Patron Page</Text>
               </Stack>
             </Menu.Link>
           )}
 
-          {showBecomePro && (
+          {!showBecomePro && (
             <Menu.Link href="/pricing">
-              <Stack align="center">
-                <Icon>
-                  <ProIcon />
-                </Icon>
-                Upgrade to Pro
+              <Stack align="center" gap={1}>
+                <Icon name="proBadge" size={24} />
+                <Text>Upgrade to Pro</Text>
               </Stack>
             </Menu.Link>
           )}
 
           <Menu.Divider />
 
-          {showManageSubscription && (
+          {!showManageSubscription && (
             <Menu.Link href="/pro">
-              <Stack align="center">
-                <Icon>
-                  <ProIcon />
-                </Icon>
-                Manage Subscription
+              <Stack align="center" gap={1}>
+                <Icon name="proBadge" size={24} />
+                <Text>Manage Subscription</Text>
               </Stack>
             </Menu.Link>
           )}
 
           <Menu.Item onClick={() => gotUploadedFiles(null)}>
-            <Stack align="center">
-              <Icon>
-                <FolderIcon />
-              </Icon>
-              Storage Management
+            <Stack align="center" gap={1}>
+              <Icon name="folder" size={24} />
+              <Text>Storage Management</Text>
             </Stack>
           </Menu.Item>
 
           <Menu.Item onClick={() => modalOpened({ modal: 'preferences' })}>
-            <Stack align="center">
-              <Icon>
-                <CogIcon />
-              </Icon>
-              Preferences
+            <Stack align="center" gap={2} paddingLeft={1}>
+              <Icon name="gear" size={16} />
+              <Text>Preferences</Text>
             </Stack>
           </Menu.Item>
 
           <Menu.Divider />
 
           <Menu.Item onClick={() => modalOpened({ modal: 'feedback' })}>
-            <Stack align="center">
-              <Icon>
-                <ChatIcon />
-              </Icon>
-              Submit Feedback
+            <Stack align="center" gap={1}>
+              <Icon name="feedback" size={24} />
+              <Text>Submit Feedback</Text>
             </Stack>
           </Menu.Item>
 
           <Menu.Divider />
 
           <Menu.Item onClick={() => signOutClicked()}>
-            <Stack align="center">
-              <Icon>
-                <ExitIcon />
-              </Icon>
-              Sign out
+            <Stack align="center" gap={1}>
+              <Icon name="signout" size={24} />
+              <Text>Sign out</Text>
             </Stack>
           </Menu.Item>
         </Menu.List>

@@ -32,7 +32,7 @@ export const MenuStyles = createGlobalStyle(
     '[data-reach-menu]': {
       zIndex: 11, // TODO: we need to sort out our z indexes!
       fontFamily: 'Inter, sans-serif',
-      fontWeight: 500,
+      fontWeight: 400,
     },
     '[data-reach-menu][hidden],[data-reach-menu-popover][hidden]': {
       display: 'none',
