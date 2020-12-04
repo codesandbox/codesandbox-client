@@ -131,8 +131,7 @@ export const SandboxName: FunctionComponent = () => {
                 onClick={() =>
                   modals.moveSandboxModal.open({
                     sandboxIds: [currentSandbox.id],
-                    preventLeavingWorkspace:
-                      currentSandbox.preventLeavingWorkspace,
+                    preventSandboxLeaving: currentSandbox.preventSandboxLeaving,
                   })
                 }
                 arial-label="Change sandbox folder"

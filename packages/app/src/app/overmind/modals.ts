@@ -15,7 +15,7 @@ export const moveSandboxModal: {
     sandboxIds: string[];
     collectionIds?: string[];
     defaultOpenedPath?: string | null;
-    preventLeavingWorkspace?: boolean;
+    preventSandboxLeaving?: boolean;
   };
   result: undefined;
 } = {
@@ -23,7 +23,7 @@ export const moveSandboxModal: {
     sandboxIds: [],
     collectionIds: [],
     defaultOpenedPath: null,
-    preventLeavingWorkspace: false,
+    preventSandboxLeaving: false,
   },
   result: undefined,
 };

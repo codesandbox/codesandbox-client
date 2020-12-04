@@ -57,6 +57,8 @@ import {
   SetPreventSandboxesLeavingWorkspaceMutationVariables,
   SetPreventSandboxesExportWorkspaceMutation,
   SetPreventSandboxesExportWorkspaceMutationVariables,
+  SetDefaultTeamMemberAuthorizationMutation,
+  SetDefaultTeamMemberAuthorizationMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -416,12 +418,12 @@ export const setWorkspaceSandboxSettings: Query<
   SetWorkspaceSandboxSettingsMutation,
   SetWorkspaceSandboxSettingsMutationVariables
 > = gql`
-  mutation SetWorkspaceSandboxSettings(
+  mutation setWorkspaceSandboxSettings(
     $teamId: UUID4!
     $preventSandboxLeaving: Boolean!
     $preventSandboxExport: Boolean!
   ) {
-    setTeamMinimumPrivacy(
+    setWorkspaceSandboxSettings(
       teamId: $teamId
       preventSandboxLeaving: $preventSandboxLeaving
       preventSandboxExport: $preventSandboxExport
@@ -436,15 +438,15 @@ export const setPreventSandboxesLeavingWorkspace: Query<
   SetPreventSandboxesLeavingWorkspaceMutation,
   SetPreventSandboxesLeavingWorkspaceMutationVariables
 > = gql`
-  mutation SetPreventSandboxesLeavingWorkspace(
+  mutation setPreventSandboxesLeavingWorkspace(
     $sandboxIds: [ID!]!
     $preventSandboxLeaving: Boolean!
   ) {
-    SetPreventSandboxesLeavingWorkspace(
+    setPreventSandboxesLeavingWorkspace(
       sandboxIds: $sandboxIds
       preventSandboxLeaving: $preventSandboxLeaving
     ) {
-      preventSandboxLeaving
+      id
     }
   }
 `;
@@ -462,6 +464,23 @@ export const setPreventSandboxesExport: Query<
       preventExport: $preventSandboxExport
     ) {
       preventExport
+    }
+  }
+`;
+
+export const setDefaultTeamMemberAuthorization: Query<
+  SetDefaultTeamMemberAuthorizationMutation,
+  SetDefaultTeamMemberAuthorizationMutationVariables
+> = gql`
+  mutation setDefaultTeamMemberAuthorization(
+    $teamId: UUID4!
+    $defaultAuthorization: String!
+  ) {
+    setDefaultTeamMemberAuthorization(
+      teamId: $teamId
+      defaultAuthorization: $defaultAuthorization
+    ) {
+      defaultAuthorization
     }
   }
 `;

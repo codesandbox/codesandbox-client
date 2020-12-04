@@ -100,7 +100,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   }
 
   const preventExport =
-    true || activeWorkspaceAuthorization === 'READ' || sandbox.preventExport;
+    activeWorkspaceAuthorization === 'READ' || sandbox.preventExport;
 
   // TODO(@CompuIves): refactor this to an array
 
@@ -167,7 +167,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           onSelect={() => {
             actions.modals.moveSandboxModal.open({
               sandboxIds: [item.sandbox.id],
-              preventLeavingWorkspace: item.sandbox.preventLeavingWorkspace,
+              preventSandboxLeaving: item.sandbox.preventSandboxLeaving,
             });
           }}
         >
@@ -291,12 +291,12 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       {hasAccess &&
         isTeamPro &&
         activeWorkspaceAuthorization === 'ADMIN' &&
-        (sandbox.preventLeavingWorkspace ? (
+        (sandbox.preventSandboxLeaving ? (
           <MenuItem
             onSelect={() => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
                 sandboxIds: [sandbox.id],
-                preventLeavingWorkspace: false,
+                preventSandboxLeaving: false,
               });
             }}
           >
@@ -307,7 +307,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             onSelect={() => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
                 sandboxIds: [sandbox.id],
-                preventLeavingWorkspace: true,
+                preventSandboxLeaving: true,
               });
             }}
           >

@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { TeamMemberAuthorization } from 'app/graphql/types';
 
 export const PermissionSettings = () => {
   const {
@@ -188,7 +189,10 @@ const SandboxSecurity = () => {
       activeTeamInfo: { settings },
     },
     actions: {
-      dashboard: { setWorkspaceSandboxSettings },
+      dashboard: {
+        setWorkspaceSandboxSettings,
+        setDefaultTeamMemberAuthorization,
+      },
     },
   } = useOvermind();
 
@@ -199,13 +203,32 @@ const SandboxSecurity = () => {
     settings.preventSandboxLeaving
   );
 
+  const [defaultAuthorization, setDefaultAuthorization] = React.useState(
+    settings.defaultAuthorization
+  );
+
   React.useEffect(
     function resetOnWorkspaceChange() {
       setPreventSandboxLeaving(settings.preventSandboxLeaving);
       setPreventSandboxExport(settings.preventSandboxExport);
+      setDefaultAuthorization(settings.defaultAuthorization);
     },
-    [settings.preventSandboxLeaving, settings.preventSandboxExport]
+    [
+      settings.preventSandboxLeaving,
+      settings.preventSandboxExport,
+      settings.defaultAuthorization,
+    ]
   );
+
+  const permissionMap = { ADMIN: 'Admin', WRITE: 'Editor', READ: 'Viewer' };
+
+  const onSubmit = () => {
+    setWorkspaceSandboxSettings({
+      preventSandboxLeaving,
+      preventSandboxExport,
+    });
+    setDefaultTeamMemberAuthorization({ defaultAuthorization });
+  };
 
   return (
     <Stack
@@ -229,7 +252,7 @@ const SandboxSecurity = () => {
             </Text>
           </Stack>
 
-          <Stack justify="space-between" as="label">
+          <Stack as="label" justify="space-between" align="center">
             <Text size={3}>
               Disable forking and moving sandboxes outside of the workspace
             </Text>
@@ -238,25 +261,33 @@ const SandboxSecurity = () => {
               onChange={() => setPreventSandboxLeaving(!preventSandboxLeaving)}
             />
           </Stack>
-          <Stack justify="space-between" as="label">
+          <Stack as="label" justify="space-between" align="center">
             <Text size={3}>Disable exporting sandboxes as .zip</Text>
             <Switch
               on={preventSandboxExport}
-              onChange={() => setPreventSandboxLeaving(!preventSandboxExport)}
+              onChange={() => setPreventSandboxExport(!preventSandboxExport)}
             />
+          </Stack>
+          <Stack justify="space-between" align="center">
+            <Text size={3}>Default new member role</Text>
+            <Select
+              css={{ width: 120 }}
+              value={defaultAuthorization}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+                setDefaultAuthorization(
+                  event.target.value as TeamMemberAuthorization
+                )
+              }
+            >
+              <option value="WRITE">{permissionMap.WRITE}</option>
+              <option value="READ">{permissionMap.READ}</option>
+              <option value="ADMIN">{permissionMap.ADMIN}</option>
+            </Select>
           </Stack>
         </Stack>
       </Stack>
       <Stack justify="flex-end">
-        <Button
-          autoWidth
-          onClick={() => {
-            setWorkspaceSandboxSettings({
-              preventSandboxLeaving,
-              preventSandboxExport,
-            });
-          }}
-        >
+        <Button autoWidth onClick={onSubmit}>
           Change Settings
         </Button>
       </Stack>

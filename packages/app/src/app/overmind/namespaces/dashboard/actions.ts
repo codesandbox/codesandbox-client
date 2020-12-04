@@ -1424,22 +1424,39 @@ export const setWorkspaceSandboxSettings: AsyncAction<{
 
 export const setPreventSandboxesLeavingWorkspace: AsyncAction<{
   sandboxIds: string[];
-  preventLeavingWorkspace: boolean;
-}> = async ({ state, effects }, { sandboxIds, preventLeavingWorkspace }) => {
-  // TODO: optimistic update
+  preventSandboxLeaving: boolean;
+}> = async (
+  { state, actions, effects },
+  { sandboxIds, preventSandboxLeaving }
+) => {
+  const {
+    changedSandboxes,
+  } = actions.dashboard.internal.changeSandboxesInState({
+    sandboxIds,
+    sandboxMutation: sandbox => ({ ...sandbox, preventSandboxLeaving }),
+  });
 
   effects.analytics.track(`Dashboard - Change sandbox permissions`, {
-    preventLeavingWorkspace,
+    preventSandboxLeaving,
   });
 
   try {
     await effects.gql.mutations.setPreventSandboxesLeavingWorkspace({
       sandboxIds,
-      preventLeavingWorkspace,
+      preventSandboxLeaving,
     });
 
     effects.notificationToast.success('Sandbox permissions updated.');
   } catch (error) {
+    changedSandboxes.forEach(oldSandbox =>
+      actions.dashboard.internal.changeSandboxesInState({
+        sandboxIds: [oldSandbox.id],
+        sandboxMutation: sandbox => ({
+          ...sandbox,
+          preventSandboxLeaving: oldSandbox.preventSandboxLeaving,
+        }),
+      })
+    );
     effects.notificationToast.error(
       'There was a problem updating your sandbox permissions'
     );
@@ -1449,8 +1466,13 @@ export const setPreventSandboxesLeavingWorkspace: AsyncAction<{
 export const setPreventSandboxesExport: AsyncAction<{
   sandboxIds: string[];
   preventExport: boolean;
-}> = async ({ state, effects }, { sandboxIds, preventExport }) => {
-  // TODO: optimistic update
+}> = async ({ state, actions, effects }, { sandboxIds, preventExport }) => {
+  const {
+    changedSandboxes,
+  } = actions.dashboard.internal.changeSandboxesInState({
+    sandboxIds,
+    sandboxMutation: sandbox => ({ ...sandbox, preventExport }),
+  });
 
   effects.analytics.track(`Dashboard - Change sandbox permissions`, {
     preventExport,
@@ -1464,8 +1486,45 @@ export const setPreventSandboxesExport: AsyncAction<{
 
     effects.notificationToast.success('Sandbox permissions updated.');
   } catch (error) {
+    // changedSandboxes.forEach(oldSandbox =>
+    //   actions.dashboard.internal.changeSandboxesInState({
+    //     sandboxIds: [oldSandbox.id],
+    //     sandboxMutation: sandbox => ({
+    //       ...sandbox,
+    //       preventExport: oldSandbox.preventExport,
+    //     }),
+    //   })
+    // );
     effects.notificationToast.error(
       'There was a problem updating your sandbox permissions'
+    );
+  }
+};
+
+export const setDefaultTeamMemberAuthorization: AsyncAction<{
+  defaultAuthorization: TeamMemberAuthorization;
+}> = async ({ state, effects }, { defaultAuthorization }) => {
+  effects.analytics.track('Team - Change default authorization', {
+    defaultAuthorization,
+  });
+
+  const teamId = state.activeTeam;
+  // optimistic update
+  const oldValue = state.activeTeamInfo.settings.defaultAuthorization;
+  state.activeTeamInfo.settings.defaultAuthorization = defaultAuthorization;
+
+  try {
+    await effects.gql.mutations.setDefaultTeamMemberAuthorization({
+      teamId,
+      defaultAuthorization,
+    });
+
+    effects.notificationToast.success('Default member permissions updated.');
+  } catch (error) {
+    state.activeTeamInfo.settings.defaultAuthorization = oldValue;
+
+    effects.notificationToast.error(
+      'There was a problem updating default member permissions'
     );
   }
 };

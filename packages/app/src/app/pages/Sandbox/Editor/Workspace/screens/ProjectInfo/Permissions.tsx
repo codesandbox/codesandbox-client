@@ -37,7 +37,7 @@ export const Permissions: FunctionComponent = () => {
   const isTeamPro = activeTeamInfo.joinedPilotAt;
 
   const togglePreventSandboxLeaving = () => {
-    setPreventSandboxLeaving(!currentSandbox.preventLeavingWorkspace);
+    setPreventSandboxLeaving(!currentSandbox.preventSandboxLeaving);
   };
   const togglePreventExport = () => {
     setPreventSandboxExport(!currentSandbox.preventExport);
@@ -83,7 +83,7 @@ export const Permissions: FunctionComponent = () => {
             >
               <Label htmlFor="frozen">Prevent Leaving Workspace</Label>
               <Switch
-                on={currentSandbox.preventLeavingWorkspace}
+                on={currentSandbox.preventSandboxLeaving}
                 onChange={togglePreventSandboxLeaving}
               />
             </ListAction>

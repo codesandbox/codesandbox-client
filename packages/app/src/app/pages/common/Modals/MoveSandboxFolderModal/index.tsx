@@ -34,8 +34,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     avatarUrl: activeTeamInfo.avatarUrl,
   });
 
-  const preventLeavingWorkspace =
-    modals.moveSandboxModal.preventLeavingWorkspace;
+  const preventSandboxLeaving = modals.moveSandboxModal.preventSandboxLeaving;
 
   const handleMove = () => {
     setLoading(true);
@@ -94,7 +93,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
             >
               <WorkspaceSelect
                 activeAccount={selectedTeam}
-                disabled={preventLeavingWorkspace}
+                disabled={preventSandboxLeaving}
                 onSelect={workspace => {
                   setSelectedTeam(workspace);
                   setTeamId(workspace.id);

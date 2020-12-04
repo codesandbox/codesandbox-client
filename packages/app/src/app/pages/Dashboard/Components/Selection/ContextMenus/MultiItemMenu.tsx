@@ -75,10 +75,8 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const moveToFolder = () => {
     actions.modals.moveSandboxModal.open({
       sandboxIds: [...sandboxes, ...templates].map(s => s.sandbox.id),
-      preventLeavingWorkspace: Boolean(
-        [...sandboxes, ...templates].find(
-          s => s.sandbox.preventLeavingWorkspace
-        )
+      preventSandboxLeaving: Boolean(
+        [...sandboxes, ...templates].find(s => s.sandbox.preventSandboxLeaving)
       ),
     });
   };
@@ -152,21 +150,21 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const PROTECTED_SANDBOXES_ITEMS =
     isTeamPro && state.activeWorkspaceAuthorization === 'ADMIN'
       ? [
-          sandboxes.some(s => !s.sandbox.preventLeavingWorkspace) && {
+          sandboxes.some(s => !s.sandbox.preventSandboxLeaving) && {
             label: 'Allow Leaving Workspace',
             fn: () => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-                preventLeavingWorkspace: true,
+                preventSandboxLeaving: true,
               });
             },
           },
-          sandboxes.some(s => s.sandbox.preventLeavingWorkspace) && {
+          sandboxes.some(s => s.sandbox.preventSandboxLeaving) && {
             label: 'Prevent Leaving Workspace',
             fn: () => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-                preventLeavingWorkspace: false,
+                preventSandboxLeaving: false,
               });
             },
           },

@@ -14,6 +14,8 @@ export const sandboxFragmentDashboard = gql`
     screenshotUrl
     screenshotOutdated
     viewCount
+    preventSandboxLeaving
+    preventExport
 
     source {
       template
@@ -167,6 +169,7 @@ export const currentTeamInfoFragment = gql`
       minimumPrivacy
       preventSandboxExport
       preventSandboxLeaving
+      defaultAuthorization
     }
   }
 `;

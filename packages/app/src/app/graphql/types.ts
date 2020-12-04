@@ -794,7 +794,7 @@ export type Sandbox = {
   isFrozen: Scalars['Boolean'];
   title: Maybe<Scalars['String']>;
   /** sandbox permissisons */
-  preventLeavingWorkspace: Scalars['Boolean'];
+  preventSandboxLeaving: Scalars['Boolean'];
   preventExport: Scalars['Boolean'];
 };
 
@@ -806,8 +806,9 @@ export type SandboxCommentArgs = {
 export type Settings = {
   __typename?: 'Settings';
   minimumPrivacy: Scalars['Int'];
-  preventSandboxLeaving: Sandbox['preventLeavingWorkspace'];
+  preventSandboxLeaving: Sandbox['preventSandboxLeaving'];
   preventSandboxExport: Sandbox['preventExport'];
+  defaultAuthorization: TeamMemberAuthorization;
 };
 
 export type Source = {
@@ -1484,7 +1485,7 @@ export type SandboxFragmentDashboardFragment = {
   | 'viewCount'
   | 'authorId'
   | 'teamId'
-  | 'preventLeavingWorkspace'
+  | 'preventSandboxLeaving'
   | 'preventExport'
 > & {
     source: { __typename?: 'Source' } & Pick<Source, 'template'>;
@@ -1560,7 +1561,10 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
     settings: Maybe<
       { __typename?: 'Settings' } & Pick<
         Settings,
-        'minimumPrivacy' | 'preventSandboxExport' | 'preventSandboxLeaving'
+        | 'minimumPrivacy'
+        | 'preventSandboxExport'
+        | 'preventSandboxLeaving'
+        | 'defaultAuthorization'
       >
     >;
   };
@@ -1590,7 +1594,10 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
     settings: Maybe<
       { __typename?: 'Settings' } & Pick<
         Settings,
-        'minimumPrivacy' | 'preventSandboxExport' | 'preventSandboxLeaving'
+        | 'minimumPrivacy'
+        | 'preventSandboxExport'
+        | 'preventSandboxLeaving'
+        | 'defaultAuthorization'
       >
     >;
   };
@@ -2065,6 +2072,7 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
                   | 'minimumPrivacy'
                   | 'preventSandboxExport'
                   | 'preventSandboxLeaving'
+                  | 'defaultAuthorization'
                 >
               >;
             }
@@ -2359,7 +2367,7 @@ export type SandboxFragment = { __typename?: 'Sandbox' } & Pick<
   | 'screenshotUrl'
   | 'screenshotOutdated'
   | 'teamId'
-  | 'preventLeavingWorkspace'
+  | 'preventSandboxLeaving'
   | 'preventExport'
 > & {
     source: { __typename?: 'Source' } & Pick<Source, 'template'>;
@@ -2742,13 +2750,13 @@ export type SetWorkspaceSandboxSettingsMutation = {
 
 export type SetPreventSandboxesLeavingWorkspaceMutationVariables = Exact<{
   sandboxIds: Array<Sandbox['id']>;
-  preventLeavingWorkspace: Sandbox['preventLeavingWorkspace'];
+  preventSandboxLeaving: Sandbox['preventSandboxLeaving'];
 }>;
 
 export type SetPreventSandboxesLeavingWorkspaceMutation = {
   __typename?: 'RootMutationType';
 } & {
-  preventLeavingWorkspace: Sandbox['preventLeavingWorkspace'];
+  id: Sandbox['preventExport'];
 };
 
 export type SetPreventSandboxesExportWorkspaceMutationVariables = Exact<{
@@ -2759,5 +2767,16 @@ export type SetPreventSandboxesExportWorkspaceMutationVariables = Exact<{
 export type SetPreventSandboxesExportWorkspaceMutation = {
   __typename?: 'RootMutationType';
 } & {
-  preventExport: Sandbox['preventExport'];
+  id: Sandbox['preventExport'];
+};
+
+export type SetDefaultTeamMemberAuthorizationMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  defaultAuthorization: TeamMemberAuthorization;
+}>;
+
+export type SetDefaultTeamMemberAuthorizationMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  defaultAuthorization: TeamMemberAuthorization;
 };

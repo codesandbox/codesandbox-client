@@ -1638,25 +1638,25 @@ export const changeInvitationAuthorization: AsyncAction<{
 
 export const setPreventSandboxLeaving: AsyncAction<boolean> = async (
   { effects, state },
-  preventLeavingWorkspace
+  preventSandboxLeaving
 ) => {
   if (!state.editor.currentSandbox) return;
 
   // optimistic update
-  const oldValue = state.editor.currentSandbox.preventLeavingWorkspace;
-  state.editor.currentSandbox.preventLeavingWorkspace = preventLeavingWorkspace;
+  const oldValue = state.editor.currentSandbox.preventSandboxLeaving;
+  state.editor.currentSandbox.preventSandboxLeaving = preventSandboxLeaving;
 
   effects.analytics.track(`Editor - Change sandbox permissions`, {
-    preventLeavingWorkspace,
+    preventSandboxLeaving,
   });
 
   try {
     await effects.gql.mutations.setPreventSandboxesLeavingWorkspace({
       sandboxIds: [state.editor.currentSandbox.id],
-      preventLeavingWorkspace,
+      preventSandboxLeaving,
     });
   } catch (error) {
-    state.editor.currentSandbox.preventLeavingWorkspace = oldValue;
+    state.editor.currentSandbox.preventSandboxLeaving = oldValue;
     effects.notificationToast.error(
       'There was a problem updating your sandbox permissions'
     );
