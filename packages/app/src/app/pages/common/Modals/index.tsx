@@ -38,6 +38,7 @@ import UploadModal from './UploadModal';
 import { DeleteWorkspace } from './DeleteWorkspace';
 import { MinimumPrivacyModal } from './MinimumPrivacyModal';
 import { GenericAlertModal } from './GenericAlertModal';
+import { useLocation } from 'react-router-dom';
 
 const modals = {
   preferences: {
@@ -160,9 +161,12 @@ const modals = {
 };
 
 const Modals: FunctionComponent = () => {
+  const [themeProps, setThemeProps] = useState({});
+  const { pathname } = useLocation();
   const {
     actions,
     state: {
+      modals,
       preferences: {
         settings: { customVSCodeTheme },
       },
@@ -192,12 +196,19 @@ const Modals: FunctionComponent = () => {
     }
   }, [localState.customVSCodeTheme, customVSCodeTheme]);
 
+  useEffect(() => {
+    setThemeProps(
+      pathname.includes('/s/')
+        ? {
+            theme: localState.theme.vscodeTheme,
+          }
+        : {}
+    );
+  }, [pathname]);
+
   const modal = currentModal && modals[currentModal];
-
-  const { state } = useOvermind();
-
   return (
-    <ThemeProvider theme={localState.theme.vscodeTheme}>
+    <ThemeProvider {...themeProps}>
       <Modal
         isOpen={Boolean(modal)}
         width={
@@ -214,7 +225,7 @@ const Modals: FunctionComponent = () => {
           : null}
       </Modal>
 
-      {state.modals.alertModal.isCurrent && <GenericAlertModal />}
+      {modals.alertModal.isCurrent && <GenericAlertModal />}
     </ThemeProvider>
   );
 };
