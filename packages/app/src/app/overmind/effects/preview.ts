@@ -101,7 +101,7 @@ export default {
             isPrivateSandbox,
           },
         });
-      }, 10);
+      }, 100);
     });
   },
   createScreenshot({
