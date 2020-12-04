@@ -273,11 +273,9 @@ const SandboxSecurity = () => {
             <Select
               css={{ width: 120 }}
               value={defaultAuthorization}
-              onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
-                setDefaultAuthorization(
-                  event.target.value as TeamMemberAuthorization
-                )
-              }
+              onChange={({ target: { value } }) => {
+                setDefaultAuthorization(value as TeamMemberAuthorization);
+              }}
             >
               <option value="WRITE">{permissionMap.WRITE}</option>
               <option value="READ">{permissionMap.READ}</option>

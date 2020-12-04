@@ -1392,10 +1392,7 @@ export const setWorkspaceSandboxSettings: AsyncAction<{
   { state, effects },
   { preventSandboxLeaving, preventSandboxExport }
 ) => {
-  effects.analytics.track('Team - Change workspace sandbox permissions', {
-    preventSandboxLeaving,
-    preventSandboxExport,
-  });
+  if (!state.activeTeamInfo || !state.activeTeamInfo.settings) return;
 
   const teamId = state.activeTeam;
   // optimistic update
@@ -1403,6 +1400,11 @@ export const setWorkspaceSandboxSettings: AsyncAction<{
   const oldExportValue = state.activeTeamInfo.settings.preventSandboxExport;
   state.activeTeamInfo.settings.preventSandboxLeaving = preventSandboxLeaving;
   state.activeTeamInfo.settings.preventSandboxExport = preventSandboxExport;
+
+  effects.analytics.track('Team - Change workspace sandbox permissions', {
+    preventSandboxLeaving,
+    preventSandboxExport,
+  });
 
   try {
     await effects.gql.mutations.setWorkspaceSandboxSettings({
@@ -1504,14 +1506,17 @@ export const setPreventSandboxesExport: AsyncAction<{
 export const setDefaultTeamMemberAuthorization: AsyncAction<{
   defaultAuthorization: TeamMemberAuthorization;
 }> = async ({ state, effects }, { defaultAuthorization }) => {
-  effects.analytics.track('Team - Change default authorization', {
-    defaultAuthorization,
-  });
+  if (!state.activeTeamInfo || !state.activeTeamInfo.settings) return;
 
   const teamId = state.activeTeam;
+
   // optimistic update
   const oldValue = state.activeTeamInfo.settings.defaultAuthorization;
   state.activeTeamInfo.settings.defaultAuthorization = defaultAuthorization;
+
+  effects.analytics.track('Team - Change default authorization', {
+    defaultAuthorization,
+  });
 
   try {
     await effects.gql.mutations.setDefaultTeamMemberAuthorization({
