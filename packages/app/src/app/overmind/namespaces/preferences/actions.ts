@@ -211,9 +211,9 @@ export const syncSettings: AsyncAction = async ({
     const vscode = actions.preferences.getVSCodeSettings({});
     const LOCAL_STORAGE_KEYS = [
       'vs-global://colorThemeData',
-      'settings.customVSCodeTheme',
       'VIEW_MODE_DASHBOARD',
       'vs-global://iconThemeData',
+      ...Object.keys(localStorage).filter(key => key.includes('settings.')),
     ];
     const themeData = {};
 
@@ -269,7 +269,7 @@ export const applyPreferences: AsyncAction = async ({ state, effects }) => {
     Object.keys(parsedSyncedSettings.vscode).forEach(key => {
       fs.writeFileSync(key, parsedSyncedSettings.vscode[key]);
     });
-    effects.notificationToast.error(
+    effects.notificationToast.success(
       'Your settings have been applied. The page will now reload'
     );
 
