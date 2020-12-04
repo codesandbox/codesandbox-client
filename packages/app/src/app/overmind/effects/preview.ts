@@ -63,9 +63,12 @@ export default {
       };
 
       window.addEventListener('message', extensionListener);
-      window.postMessage({
-        type: 'extension-screenshot',
-      });
+      window.postMessage(
+        {
+          type: 'extension-screenshot',
+        },
+        '*'
+      );
 
       waitForExtension = setTimeout(() => {
         window.removeEventListener('message', extensionListener);
