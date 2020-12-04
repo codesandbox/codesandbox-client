@@ -457,13 +457,13 @@ export const setPreventSandboxesExport: Query<
 > = gql`
   mutation setPreventSandboxesExportWorkspace(
     $sandboxIds: [ID!]!
-    $preventExport: Boolean!
+    $preventSandboxExport: Boolean!
   ) {
     setPreventSandboxesExportWorkspace(
       sandboxIds: $sandboxIds
-      preventExport: $preventSandboxExport
+      preventSandboxExport: $preventSandboxExport
     ) {
-      preventExport
+      preventSandboxExport
     }
   }
 `;

@@ -37,10 +37,10 @@ export const Permissions: FunctionComponent = () => {
   const isTeamPro = activeTeamInfo.joinedPilotAt;
 
   const togglePreventSandboxLeaving = () => {
-    setPreventSandboxLeaving(!currentSandbox.preventSandboxLeaving);
+    setPreventSandboxLeaving(!currentSandbox.permissions.preventSandboxLeaving);
   };
-  const togglePreventExport = () => {
-    setPreventSandboxExport(!currentSandbox.preventExport);
+  const togglePreventSandboxExport = () => {
+    setPreventSandboxExport(!currentSandbox.permissions.preventSandboxExport);
   };
 
   return (
@@ -83,15 +83,18 @@ export const Permissions: FunctionComponent = () => {
             >
               <Label htmlFor="frozen">Prevent Leaving Workspace</Label>
               <Switch
-                on={currentSandbox.preventSandboxLeaving}
+                on={currentSandbox.permissions.preventSandboxLeaving}
                 onChange={togglePreventSandboxLeaving}
               />
             </ListAction>
-            <ListAction justify="space-between" onClick={togglePreventExport}>
+            <ListAction
+              justify="space-between"
+              onClick={togglePreventSandboxExport}
+            >
               <Label htmlFor="frozen">Disable export</Label>
               <Switch
-                on={currentSandbox.preventExport}
-                onChange={togglePreventExport}
+                on={currentSandbox.permissions.preventSandboxExport}
+                onChange={togglePreventSandboxExport}
               />
             </ListAction>
           </Stack>

@@ -99,8 +99,9 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
     );
   }
 
-  const preventExport =
-    activeWorkspaceAuthorization === 'READ' || sandbox.preventExport;
+  const preventSandboxExport =
+    activeWorkspaceAuthorization === 'READ' ||
+    sandbox.permissions.preventSandboxExport;
 
   // TODO(@CompuIves): refactor this to an array
 
@@ -167,7 +168,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           onSelect={() => {
             actions.modals.moveSandboxModal.open({
               sandboxIds: [item.sandbox.id],
-              preventSandboxLeaving: item.sandbox.preventSandboxLeaving,
+              preventSandboxLeaving:
+                item.sandbox.permissions.preventSandboxLeaving,
             });
           }}
         >
@@ -177,14 +179,16 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
       <Tooltip
         label={
-          preventExport ? 'You do not permission to export this sandbox' : null
+          preventSandboxExport
+            ? 'You do not permission to export this sandbox'
+            : null
         }
       >
         <div>
           <MenuItem
-            data-disabled={preventExport}
+            data-disabled={preventSandboxExport}
             onSelect={() => {
-              if (preventExport) return;
+              if (preventSandboxExport) return;
               actions.dashboard.downloadSandboxes([sandbox.id]);
             }}
           >
@@ -291,7 +295,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       {hasAccess &&
         isTeamPro &&
         activeWorkspaceAuthorization === 'ADMIN' &&
-        (sandbox.preventSandboxLeaving ? (
+        (sandbox.permissions.preventSandboxLeaving ? (
           <MenuItem
             onSelect={() => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
@@ -318,12 +322,12 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       {hasAccess &&
         isTeamPro &&
         activeWorkspaceAuthorization === 'ADMIN' &&
-        (sandbox.preventExport ? (
+        (sandbox.permissions.preventSandboxExport ? (
           <MenuItem
             onSelect={() => {
               actions.dashboard.setPreventSandboxesExport({
                 sandboxIds: [sandbox.id],
-                preventExport: false,
+                preventSandboxExport: false,
               });
             }}
           >
@@ -334,7 +338,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             onSelect={() => {
               actions.dashboard.setPreventSandboxesExport({
                 sandboxIds: [sandbox.id],
-                preventExport: true,
+                preventSandboxExport: true,
               });
             }}
           >

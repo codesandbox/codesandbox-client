@@ -14,8 +14,6 @@ export const sandboxFragmentDashboard = gql`
     screenshotUrl
     screenshotOutdated
     viewCount
-    preventSandboxLeaving
-    preventExport
 
     source {
       template
@@ -37,6 +35,11 @@ export const sandboxFragmentDashboard = gql`
 
     authorId
     teamId
+
+    permissions {
+      preventSandboxLeaving
+      preventSandboxExport
+    }
   }
 `;
 

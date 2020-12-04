@@ -133,7 +133,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
   }
 
   const preventForksOutsideWorkspace =
-    state.activeTeamInfo.settings.preventSandboxLeaving;
+    state.editor.currentSandbox.permissions.preventSandboxLeaving;
 
   return (
     <Stack>

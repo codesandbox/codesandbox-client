@@ -633,14 +633,14 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
 );
 
 export const createZipClicked: Action = ({ state, effects }) => {
-
-  
   if (!state.editor.currentSandbox) {
     return;
   }
 
-  if (state.editor.currentSandbox.preventExport) {
-    effects.notificationToast.error('You do not permission to export this sandbox');
+  if (state.editor.currentSandbox.permissions.preventSandboxExport) {
+    effects.notificationToast.error(
+      'You do not permission to export this sandbox'
+    );
     return;
   }
 
@@ -1651,8 +1651,9 @@ export const setPreventSandboxLeaving: AsyncAction<boolean> = async (
   if (!state.editor.currentSandbox) return;
 
   // optimistic update
-  const oldValue = state.editor.currentSandbox.preventSandboxLeaving;
-  state.editor.currentSandbox.preventSandboxLeaving = preventSandboxLeaving;
+  const oldValue =
+    state.editor.currentSandbox.permissions.preventSandboxLeaving;
+  state.editor.currentSandbox.permissions.preventSandboxLeaving = preventSandboxLeaving;
 
   effects.analytics.track(`Editor - Change sandbox permissions`, {
     preventSandboxLeaving,
@@ -1664,7 +1665,7 @@ export const setPreventSandboxLeaving: AsyncAction<boolean> = async (
       preventSandboxLeaving,
     });
   } catch (error) {
-    state.editor.currentSandbox.preventSandboxLeaving = oldValue;
+    state.editor.currentSandbox.permissions.preventSandboxLeaving = oldValue;
     effects.notificationToast.error(
       'There was a problem updating your sandbox permissions'
     );
@@ -1673,25 +1674,25 @@ export const setPreventSandboxLeaving: AsyncAction<boolean> = async (
 
 export const setPreventSandboxExport: AsyncAction<boolean> = async (
   { effects, state },
-  preventExport
+  preventSandboxExport
 ) => {
   if (!state.editor.currentSandbox) return;
 
   // optimistic update
-  const oldValue = state.editor.currentSandbox.preventExport;
-  state.editor.currentSandbox.preventExport = preventExport;
+  const oldValue = state.editor.currentSandbox.permissions.preventSandboxExport;
+  state.editor.currentSandbox.permissions.preventSandboxExport = preventSandboxExport;
 
   effects.analytics.track(`Editor - Change sandbox permissions`, {
-    preventExport,
+    preventSandboxExport,
   });
 
   try {
     await effects.gql.mutations.setPreventSandboxesExport({
       sandboxIds: [state.editor.currentSandbox.id],
-      preventExport,
+      preventSandboxExport,
     });
   } catch (error) {
-    state.editor.currentSandbox.preventExport = oldValue;
+    state.editor.currentSandbox.permissions.preventSandboxExport = oldValue;
     effects.notificationToast.error(
       'There was a problem updating your sandbox permissions'
     );

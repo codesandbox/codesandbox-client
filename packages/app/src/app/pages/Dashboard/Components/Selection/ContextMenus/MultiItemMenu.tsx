@@ -76,7 +76,9 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     actions.modals.moveSandboxModal.open({
       sandboxIds: [...sandboxes, ...templates].map(s => s.sandbox.id),
       preventSandboxLeaving: Boolean(
-        [...sandboxes, ...templates].find(s => s.sandbox.preventSandboxLeaving)
+        [...sandboxes, ...templates].find(
+          s => s.sandbox.permissions.preventSandboxLeaving
+        )
       ),
     });
   };
@@ -150,7 +152,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const PROTECTED_SANDBOXES_ITEMS =
     isTeamPro && state.activeWorkspaceAuthorization === 'ADMIN'
       ? [
-          sandboxes.some(s => !s.sandbox.preventSandboxLeaving) && {
+          sandboxes.some(s => !s.sandbox.permissions.preventSandboxLeaving) && {
             label: 'Allow Leaving Workspace',
             fn: () => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
@@ -159,7 +161,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
               });
             },
           },
-          sandboxes.some(s => s.sandbox.preventSandboxLeaving) && {
+          sandboxes.some(s => s.sandbox.permissions.preventSandboxLeaving) && {
             label: 'Prevent Leaving Workspace',
             fn: () => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
@@ -168,21 +170,21 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
               });
             },
           },
-          sandboxes.some(s => !s.sandbox.preventExport) && {
+          sandboxes.some(s => !s.sandbox.permissions.preventSandboxExport) && {
             label: 'Allow Export as .zip',
             fn: () => {
               actions.dashboard.setPreventSandboxesExport({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-                preventExport: true,
+                preventSandboxExport: true,
               });
             },
           },
-          sandboxes.some(s => s.sandbox.preventExport) && {
+          sandboxes.some(s => s.sandbox.permissions.preventSandboxExport) && {
             label: 'Prevent Export as .zip',
             fn: () => {
               actions.dashboard.setPreventSandboxesExport({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-                preventExport: false,
+                preventSandboxExport: false,
               });
             },
           },

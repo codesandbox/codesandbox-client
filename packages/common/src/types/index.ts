@@ -469,8 +469,10 @@ export type Sandbox = {
   version: number;
   screenshotUrl: string | null;
   previewSecret: string | null;
-  preventSandboxLeaving: boolean;
-  preventExport: boolean;
+  permissions: {
+    preventSandboxLeaving: boolean;
+    preventSandboxExport: boolean;
+  };
 };
 
 export type PrettierConfig = {

@@ -212,8 +212,8 @@ export class Workbench {
     });
 
     if (
-      this.controller.getState().editor.currentSandbox &&
-      this.controller.getState().editor.currentSandbox.preventExport
+      this.controller.getState().editor?.currentSandbox?.permissions
+        .preventSandboxExport
     ) {
       // don't add the option to add export
     } else {

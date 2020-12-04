@@ -752,6 +752,11 @@ export type RootSubscriptionTypeSandboxChangedArgs = {
   sandboxId: Scalars['ID'];
 };
 
+export type SandboxPermissions = {
+  preventSandboxLeaving: Scalars['Boolean'];
+  preventSandboxExport: Scalars['Boolean'];
+};
+
 /** A Sandbox */
 export type Sandbox = {
   __typename?: 'Sandbox';
@@ -794,8 +799,7 @@ export type Sandbox = {
   isFrozen: Scalars['Boolean'];
   title: Maybe<Scalars['String']>;
   /** sandbox permissisons */
-  preventSandboxLeaving: Scalars['Boolean'];
-  preventExport: Scalars['Boolean'];
+  permissions: SandboxPermissions;
 };
 
 /** A Sandbox */
@@ -806,8 +810,8 @@ export type SandboxCommentArgs = {
 export type Settings = {
   __typename?: 'Settings';
   minimumPrivacy: Scalars['Int'];
-  preventSandboxLeaving: Sandbox['preventSandboxLeaving'];
-  preventSandboxExport: Sandbox['preventExport'];
+  preventSandboxLeaving: Sandbox['permissions']['preventSandboxLeaving'];
+  preventSandboxExport: Sandbox['permissions']['preventSandboxExport'];
   defaultAuthorization: TeamMemberAuthorization;
 };
 
@@ -1485,8 +1489,6 @@ export type SandboxFragmentDashboardFragment = {
   | 'viewCount'
   | 'authorId'
   | 'teamId'
-  | 'preventSandboxLeaving'
-  | 'preventExport'
 > & {
     source: { __typename?: 'Source' } & Pick<Source, 'template'>;
     customTemplate: Maybe<{ __typename?: 'Template' } & Pick<Template, 'id'>>;
@@ -1494,6 +1496,7 @@ export type SandboxFragmentDashboardFragment = {
       { __typename?: 'Template' } & Pick<Template, 'id' | 'color' | 'iconUrl'>
     >;
     collection: Maybe<{ __typename?: 'Collection' } & Pick<Collection, 'path'>>;
+    permissions: Exact<SandboxPermissions>;
   };
 
 export type RepoFragmentDashboardFragment = { __typename?: 'Sandbox' } & Pick<
@@ -2367,8 +2370,6 @@ export type SandboxFragment = { __typename?: 'Sandbox' } & Pick<
   | 'screenshotUrl'
   | 'screenshotOutdated'
   | 'teamId'
-  | 'preventSandboxLeaving'
-  | 'preventExport'
 > & {
     source: { __typename?: 'Source' } & Pick<Source, 'template'>;
     customTemplate: Maybe<{ __typename?: 'Template' } & Pick<Template, 'id'>>;
@@ -2378,6 +2379,7 @@ export type SandboxFragment = { __typename?: 'Sandbox' } & Pick<
     collection: Maybe<
       { __typename?: 'Collection' } & Pick<Collection, 'path' | 'teamId'>
     >;
+    permissions: Exact<SandboxPermissions>;
   };
 
 export type TeamFragment = { __typename?: 'Team' } & Pick<
@@ -2750,24 +2752,24 @@ export type SetWorkspaceSandboxSettingsMutation = {
 
 export type SetPreventSandboxesLeavingWorkspaceMutationVariables = Exact<{
   sandboxIds: Array<Sandbox['id']>;
-  preventSandboxLeaving: Sandbox['preventSandboxLeaving'];
+  preventSandboxLeaving: Sandbox['permissions']['preventSandboxLeaving'];
 }>;
 
 export type SetPreventSandboxesLeavingWorkspaceMutation = {
   __typename?: 'RootMutationType';
 } & {
-  id: Sandbox['preventExport'];
+  id: Sandbox['id'];
 };
 
 export type SetPreventSandboxesExportWorkspaceMutationVariables = Exact<{
   sandboxIds: Array<Sandbox['id']>;
-  preventExport: Sandbox['preventExport'];
+  preventSandboxExport: Sandbox['permissions']['preventSandboxExport'];
 }>;
 
 export type SetPreventSandboxesExportWorkspaceMutation = {
   __typename?: 'RootMutationType';
 } & {
-  id: Sandbox['preventExport'];
+  id: Sandbox['id'];
 };
 
 export type SetDefaultTeamMemberAuthorizationMutationVariables = Exact<{

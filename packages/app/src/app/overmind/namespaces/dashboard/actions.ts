@@ -1435,7 +1435,10 @@ export const setPreventSandboxesLeavingWorkspace: AsyncAction<{
     changedSandboxes,
   } = actions.dashboard.internal.changeSandboxesInState({
     sandboxIds,
-    sandboxMutation: sandbox => ({ ...sandbox, preventSandboxLeaving }),
+    sandboxMutation: sandbox => ({
+      ...sandbox,
+      permissions: { ...sandbox.permissions, preventSandboxLeaving },
+    }),
   });
 
   effects.analytics.track(`Dashboard - Change sandbox permissions`, {
@@ -1455,7 +1458,7 @@ export const setPreventSandboxesLeavingWorkspace: AsyncAction<{
         sandboxIds: [oldSandbox.id],
         sandboxMutation: sandbox => ({
           ...sandbox,
-          preventSandboxLeaving: oldSandbox.preventSandboxLeaving,
+          permissions: { ...oldSandbox.permissions },
         }),
       })
     );
@@ -1467,24 +1470,30 @@ export const setPreventSandboxesLeavingWorkspace: AsyncAction<{
 
 export const setPreventSandboxesExport: AsyncAction<{
   sandboxIds: string[];
-  preventExport: boolean;
-}> = async ({ state, actions, effects }, { sandboxIds, preventExport }) => {
+  preventSandboxExport: boolean;
+}> = async (
+  { state, actions, effects },
+  { sandboxIds, preventSandboxExport }
+) => {
   // optimistic update
   const {
     changedSandboxes,
   } = actions.dashboard.internal.changeSandboxesInState({
     sandboxIds,
-    sandboxMutation: sandbox => ({ ...sandbox, preventExport }),
+    sandboxMutation: sandbox => ({
+      ...sandbox,
+      permissions: { ...sandbox.permissions, preventSandboxExport },
+    }),
   });
 
   effects.analytics.track(`Dashboard - Change sandbox permissions`, {
-    preventExport,
+    preventSandboxExport,
   });
 
   try {
     await effects.gql.mutations.setPreventSandboxesExport({
       sandboxIds,
-      preventExport,
+      preventSandboxExport,
     });
 
     effects.notificationToast.success('Sandbox permissions updated.');
@@ -1494,7 +1503,7 @@ export const setPreventSandboxesExport: AsyncAction<{
         sandboxIds: [oldSandbox.id],
         sandboxMutation: sandbox => ({
           ...sandbox,
-          preventExport: oldSandbox.preventExport,
+          permissions: { ...oldSandbox.permissions },
         }),
       })
     );
