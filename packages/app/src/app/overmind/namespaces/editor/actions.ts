@@ -633,9 +633,17 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
 );
 
 export const createZipClicked: Action = ({ state, effects }) => {
+
+  
   if (!state.editor.currentSandbox) {
     return;
   }
+
+  if (state.editor.currentSandbox.preventExport) {
+    effects.notificationToast.error('You do not permission to export this sandbox');
+    return;
+  }
+
   effects.zip.download(state.editor.currentSandbox);
 };
 

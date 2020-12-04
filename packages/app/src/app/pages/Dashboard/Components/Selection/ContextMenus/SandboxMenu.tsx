@@ -177,7 +177,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
       <Tooltip
         label={
-          preventExport ? 'You do not permissions to export this sandbox' : null
+          preventExport ? 'You do not permission to export this sandbox' : null
         }
       >
         <div>
