@@ -469,7 +469,7 @@ export type Sandbox = {
   version: number;
   screenshotUrl: string | null;
   previewSecret: string | null;
-  preventLeavingWorkspace: boolean;
+  preventSandboxLeaving: boolean;
   preventExport: boolean;
 };
 
