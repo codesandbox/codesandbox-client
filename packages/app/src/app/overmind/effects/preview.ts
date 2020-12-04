@@ -47,37 +47,61 @@ export default {
 
     return path.substr(path.indexOf('/'));
   },
-  takeScreenshot(isPrivateSandbox: boolean): Promise<string> {
+  takeScreenshot(
+    isPrivateSandbox: boolean,
+    noExtensionCallback: Function
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
-      let timeout;
-      const start = Date.now();
-
-      const disposeListener = listen((data: any) => {
-        if (data.type === 'screenshot-generated') {
-          clearTimeout(timeout);
-          const waitAtLeastMs = 250;
-          const waitedMs = Date.now() - start;
-
-          setTimeout(
-            () => resolve(data.screenshot),
-            waitedMs > waitAtLeastMs ? 0 : waitAtLeastMs - waitedMs
-          );
+      let waitForExtension;
+      const extensionListener = event => {
+        if (event.data.type === 'extension-screenshot-started') {
+          clearTimeout(waitForExtension);
+        } else if (event.data.type === 'extension-screenshot-taken') {
+          window.removeEventListener('message', extensionListener);
+          resolve(event.data.url);
         }
-      });
+      };
 
-      timeout = setTimeout(() => {
-        disposeListener();
-        reject(new Error('Creating screenshot timed out'));
-      }, 3000);
-
-      // this dispatch triggers a "screenshot-generated" message
-      // which is received inside the PreviewCommentWrapper
-      dispatch({
-        type: 'take-screenshot',
-        data: {
-          isPrivateSandbox,
+      window.addEventListener('message', extensionListener);
+      window.postMessage(
+        {
+          type: 'extension-screenshot',
         },
-      });
+        '*'
+      );
+
+      waitForExtension = setTimeout(() => {
+        window.removeEventListener('message', extensionListener);
+        noExtensionCallback();
+
+        let timeout;
+        const start = Date.now();
+
+        const disposeListener = listen((data: any) => {
+          if (data.type === 'screenshot-generated') {
+            clearTimeout(timeout);
+            const waitAtLeastMs = 250;
+            const waitedMs = Date.now() - start;
+
+            setTimeout(
+              () => resolve(data.screenshot),
+              waitedMs > waitAtLeastMs ? 0 : waitAtLeastMs - waitedMs
+            );
+          }
+        });
+
+        timeout = setTimeout(() => {
+          disposeListener();
+          reject(new Error('Creating screenshot timed out'));
+        }, 3000);
+
+        dispatch({
+          type: 'take-screenshot',
+          data: {
+            isPrivateSandbox,
+          },
+        });
+      }, 10);
     });
   },
   createScreenshot({

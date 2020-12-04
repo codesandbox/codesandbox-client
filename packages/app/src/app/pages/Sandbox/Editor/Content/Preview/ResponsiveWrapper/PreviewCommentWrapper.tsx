@@ -25,7 +25,7 @@ const Screenshot = styled.div<{ showCommentCursor: boolean }>(props => ({
   cursor: props.showCommentCursor
     ? `url('data:image/svg+xml;utf8,<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16H0V8Z" fill="%23FF3B30"/></svg>'), auto`
     : 'inherit',
-  backgroundSize: 'cover'
+  backgroundSize: 'cover',
 }));
 
 const PreviewBubble = styled(Icon)<{ active: boolean }>({
@@ -58,6 +58,18 @@ type Props = {
 export const PreviewCommentWrapper = ({ children, scale }: Props) => {
   const { state, actions } = useOvermind();
   const previewReference = getPreviewReference(state.comments.currentComment);
+  const screenshotRef = React.useRef(null);
+
+  // Fixes issue with cursor not changing
+  React.useEffect(() => {
+    if (
+      state.preview.screenshot.source &&
+      state.preview.screenshot.fromExtension
+    ) {
+      screenshotRef.current.style.display = 'none';
+      screenshotRef.current.style.display = 'block';
+    }
+  }, [state.preview.screenshot.source, state.preview.screenshot.fromExtension]);
 
   return (
     <Wrapper>
@@ -65,15 +77,22 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
       {state.preview.mode === 'add-comment' ||
       state.preview.mode === 'responsive-add-comment' ? (
         <Screenshot
-          style={state.preview.screenshot.source ? {
-            backgroundImage: `url(${state.preview.screenshot.source})`,
-          } : {
-            backgroundColor: state.preview.screenshot.isLoading ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0)'
-          }}
+          ref={screenshotRef}
+          style={
+            state.preview.screenshot.source
+              ? {
+                  backgroundImage: `url(${state.preview.screenshot.source})`,
+                }
+              : {
+                  backgroundColor: state.preview.screenshot.isLoading
+                    ? 'rgba(0,0,0,0.5)'
+                    : 'rgba(0,0,0,0)',
+                }
+          }
           showCommentCursor={!state.comments.currentComment}
           onClick={event => {
             if (state.preview.screenshot.isLoading) {
-              return
+              return;
             }
 
             const parentBounds = (event.target as any).parentNode.getBoundingClientRect();
@@ -87,17 +106,19 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
           }}
         />
       ) : null}
-      { previewReference &&
-    (state.preview.mode === 'add-comment' ||
-      state.preview.mode === 'responsive-add-comment') ?       <PreviewBubble
-      id="preview-comment-bubble"
-      name="comment"
-      active
-      style={{
-        top: Math.round(previewReference.y) + 'px',
-        left: Math.round(previewReference.x) + 'px',
-      }}
-    /> : null}
+      {previewReference &&
+      (state.preview.mode === 'add-comment' ||
+        state.preview.mode === 'responsive-add-comment') ? (
+        <PreviewBubble
+          id="preview-comment-bubble"
+          name="comment"
+          active
+          style={{
+            top: Math.round(previewReference.y) + 'px',
+            left: Math.round(previewReference.x) + 'px',
+          }}
+        />
+      ) : null}
     </Wrapper>
   );
 };

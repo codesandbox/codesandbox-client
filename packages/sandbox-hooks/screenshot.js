@@ -28,4 +28,17 @@ export default function setupScreenshotListener() {
       });
     }
   });
+
+  const listener = event => {
+    if (
+      event.key === 's' &&
+      event.shiftKey &&
+      (event.metaKey || event.ctrlKey)
+    ) {
+      dispatch({
+        type: 'take-screenshot',
+      });
+    }
+  };
+  window.addEventListener('keydown', listener);
 }
