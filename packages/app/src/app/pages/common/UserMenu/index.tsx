@@ -76,7 +76,7 @@ export const UserMenu: FunctionComponent & {
             </Stack>
           </Menu.Link>
 
-          {!showCurator && (
+          {showCurator && (
             <Menu.Link to={curatorUrl()}>
               <Stack align="center" gap={1}>
                 <Icon name="curator" size={24} />
@@ -94,7 +94,7 @@ export const UserMenu: FunctionComponent & {
             </Menu.Link>
           )}
 
-          {!showBecomePro && (
+          {showBecomePro && (
             <Menu.Link href="/pricing">
               <Stack align="center" gap={1}>
                 <Icon name="proBadge" size={24} />
@@ -105,7 +105,7 @@ export const UserMenu: FunctionComponent & {
 
           <Menu.Divider />
 
-          {!showManageSubscription && (
+          {showManageSubscription && (
             <Menu.Link href="/pro">
               <Stack align="center" gap={1}>
                 <Icon name="proBadge" size={24} />
