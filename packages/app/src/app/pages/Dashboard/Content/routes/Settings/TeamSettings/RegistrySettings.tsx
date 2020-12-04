@@ -116,7 +116,7 @@ export const RegistrySettings = () => {
         )}
       </Stack>
 
-      {state.activeWorkspaceAuthorization === 'ADMIN' && (
+      {!alert && (
         <Stack justify="center" align="center">
           <Button
             variant="link"
