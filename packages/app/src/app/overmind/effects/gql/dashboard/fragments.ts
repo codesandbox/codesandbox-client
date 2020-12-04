@@ -165,6 +165,8 @@ export const currentTeamInfoFragment = gql`
 
     settings {
       minimumPrivacy
+      preventSandboxExport
+      preventSandboxLeaving
     }
   }
 `;

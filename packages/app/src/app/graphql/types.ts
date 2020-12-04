@@ -1537,11 +1537,8 @@ export type TemplateFragmentDashboardFragment = {
 
 export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
   Team,
-  'id' | 'name' | 'description' | 'creatorId' | 'avatarUrl' | 'settings'
+  'id' | 'name' | 'description' | 'creatorId' | 'avatarUrl'
 > & {
-    settings: Maybe<
-      { __typename?: 'Settings' } & Pick<Settings, 'minimumPrivacy'>
-    >;
     userAuthorizations: Array<
       { __typename?: 'UserAuthorization' } & Pick<
         UserAuthorization,
@@ -1558,6 +1555,12 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
       { __typename?: 'User' } & Pick<
         User,
         'id' | 'name' | 'username' | 'avatarUrl'
+      >
+    >;
+    settings: Maybe<
+      { __typename?: 'Settings' } & Pick<
+        Settings,
+        'minimumPrivacy' | 'preventSandboxExport' | 'preventSandboxLeaving'
       >
     >;
   };
@@ -1571,7 +1574,6 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
   | 'joinedPilotAt'
   | 'name'
   | 'avatarUrl'
-  | 'settings'
 > & {
     users: Array<
       { __typename?: 'User' } & Pick<User, 'id' | 'avatarUrl' | 'username'>
@@ -1583,6 +1585,12 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
       { __typename?: 'UserAuthorization' } & Pick<
         UserAuthorization,
         'userId' | 'authorization'
+      >
+    >;
+    settings: Maybe<
+      { __typename?: 'Settings' } & Pick<
+        Settings,
+        'minimumPrivacy' | 'preventSandboxExport' | 'preventSandboxLeaving'
       >
     >;
   };
@@ -2052,7 +2060,12 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
                 >
               >;
               settings: Maybe<
-                { __typename?: 'Settings' } & Pick<Settings, 'minimumPrivacy'>
+                { __typename?: 'Settings' } & Pick<
+                  Settings,
+                  | 'minimumPrivacy'
+                  | 'preventSandboxExport'
+                  | 'preventSandboxLeaving'
+                >
               >;
             }
         >;
