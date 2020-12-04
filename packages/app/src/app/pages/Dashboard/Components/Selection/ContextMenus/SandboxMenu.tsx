@@ -1,6 +1,6 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
-import { Menu } from '@codesandbox/components';
+import { Menu, Tooltip } from '@codesandbox/components';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import {
@@ -98,6 +98,10 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       </Menu.ContextMenu>
     );
   }
+
+  const preventExport =
+    true || activeWorkspaceAuthorization === 'READ' || sandbox.preventExport;
+
   // TODO(@CompuIves): refactor this to an array
 
   return (
@@ -170,15 +174,24 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Move to Folder
         </MenuItem>
       ) : null}
-      {activeWorkspaceAuthorization !== 'READ' && !sandbox.preventExport && (
-        <MenuItem
-          onSelect={() => {
-            actions.dashboard.downloadSandboxes([sandbox.id]);
-          }}
-        >
-          Export {label}
-        </MenuItem>
-      )}
+
+      <Tooltip
+        label={
+          preventExport ? 'You do not permissions to export this sandbox' : null
+        }
+      >
+        <div>
+          <MenuItem
+            data-disabled={preventExport}
+            onSelect={() => {
+              if (preventExport) return;
+              actions.dashboard.downloadSandboxes([sandbox.id]);
+            }}
+          >
+            Export {label}
+          </MenuItem>
+        </div>
+      </Tooltip>
 
       {hasAccess && activeWorkspaceAuthorization !== 'READ' && isPro ? (
         <>
