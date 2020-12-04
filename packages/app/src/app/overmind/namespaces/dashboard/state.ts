@@ -3,6 +3,7 @@ import {
   RepoFragmentDashboardFragment as Repo,
   Team,
   TemplateFragmentDashboardFragment as Template,
+  NpmRegistryFragment,
 } from 'app/graphql/types';
 import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
@@ -43,6 +44,9 @@ export type State = {
       'id' | 'name' | 'avatarUrl' | 'userAuthorizations' | 'settings'
     >
   >;
+  workspaceSettings: {
+    npmRegistry: NpmRegistryFragment | null;
+  };
   allCollections: DELETE_ME_COLLECTION[] | null;
   selectedSandboxes: string[];
   trashSandboxIds: string[];
@@ -86,6 +90,9 @@ export const state: State = {
   viewMode: 'grid',
   allCollections: null,
   teams: [],
+  workspaceSettings: {
+    npmRegistry: null,
+  },
   recentSandboxesByTime: derived(({ sandboxes }: State) => {
     const recentSandboxes = sandboxes.RECENT;
 

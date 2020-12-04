@@ -9,6 +9,8 @@ import {
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
   TeamMemberAuthorization,
+  CreateOrUpdateNpmRegistryMutationVariables,
+  DeleteNpmRegistryMutationVariables,
 } from 'app/graphql/types';
 import { getDecoratedCollection } from './utils';
 import { OrderBy, sandboxesTypes } from './types';
@@ -1242,6 +1244,56 @@ export const changeAuthorization: AsyncAction<{
   }
 };
 
+export const deleteCurrentNpmRegistry: AsyncAction<Omit<
+  DeleteNpmRegistryMutationVariables,
+  'teamId'
+>> = async ({ state, actions, effects }, params) => {
+  const confirmed = await actions.modals.alertModal.open({
+    title: 'Are you sure?',
+    message: 'This will reset the current private npm registry information.',
+  });
+  if (confirmed) {
+    try {
+      await effects.gql.mutations.deleteNpmRegistry({
+        ...params,
+        teamId: state.activeTeam,
+      });
+
+      await actions.dashboard.fetchCurrentNpmRegistry({});
+
+      effects.notificationToast.success('Successfully reset the registry!');
+    } catch (e) {
+      actions.internal.handleError({
+        message: 'There was a problem resetting the registry settings',
+        error: e,
+      });
+    }
+  }
+};
+
+export const createOrUpdateCurrentNpmRegistry: AsyncAction<Omit<
+  CreateOrUpdateNpmRegistryMutationVariables,
+  'teamId'
+>> = async ({ state, actions, effects }, params) => {
+  try {
+    await effects.gql.mutations.createOrUpdateNpmRegistry({
+      ...params,
+      teamId: state.activeTeam,
+    });
+
+    await actions.dashboard.fetchCurrentNpmRegistry({});
+
+    effects.notificationToast.success(
+      'Successfully saved new registry settings!'
+    );
+  } catch (e) {
+    actions.internal.handleError({
+      message: 'There was a problem saving the registry settings',
+      error: e,
+    });
+  }
+};
+
 export const deleteWorkspace: AsyncAction = async ({
   actions,
   effects,
@@ -1261,6 +1313,34 @@ export const deleteWorkspace: AsyncAction = async ({
   } catch (error) {
     actions.internal.handleError({
       message: 'There was a problem deleting your workspace',
+      error,
+    });
+  }
+};
+
+export const fetchCurrentNpmRegistry: AsyncAction<{}> = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  const activeTeam = state.activeTeam;
+  if (!activeTeam) {
+    return;
+  }
+
+  try {
+    const data = await effects.gql.queries.getPrivateNpmRegistry({
+      teamId: activeTeam,
+    });
+
+    // Check if active team is still the same
+    if (activeTeam === state.activeTeam) {
+      state.dashboard.workspaceSettings.npmRegistry =
+        data.me?.team?.privateRegistry || null;
+    }
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'There was a problem fetcing the registry',
       error,
     });
   }
@@ -1291,7 +1371,9 @@ export const setTeamMinimumPrivacy: AsyncAction<{
       team => team.id === state.personalWorkspaceId
     );
 
-    if (selectedTeam) selectedTeam.settings.minimumPrivacy = minimumPrivacy;
+    if (selectedTeam && selectedTeam.settings) {
+      selectedTeam.settings.minimumPrivacy = minimumPrivacy;
+    }
 
     if (source === 'Dashboard') {
       effects.notificationToast.success('Minimum privacy updated.');
