@@ -1469,6 +1469,7 @@ export const setPreventSandboxesExport: AsyncAction<{
   sandboxIds: string[];
   preventExport: boolean;
 }> = async ({ state, actions, effects }, { sandboxIds, preventExport }) => {
+  // optimistic update
   const {
     changedSandboxes,
   } = actions.dashboard.internal.changeSandboxesInState({
@@ -1488,15 +1489,15 @@ export const setPreventSandboxesExport: AsyncAction<{
 
     effects.notificationToast.success('Sandbox permissions updated.');
   } catch (error) {
-    // changedSandboxes.forEach(oldSandbox =>
-    //   actions.dashboard.internal.changeSandboxesInState({
-    //     sandboxIds: [oldSandbox.id],
-    //     sandboxMutation: sandbox => ({
-    //       ...sandbox,
-    //       preventExport: oldSandbox.preventExport,
-    //     }),
-    //   })
-    // );
+    changedSandboxes.forEach(oldSandbox =>
+      actions.dashboard.internal.changeSandboxesInState({
+        sandboxIds: [oldSandbox.id],
+        sandboxMutation: sandbox => ({
+          ...sandbox,
+          preventExport: oldSandbox.preventExport,
+        }),
+      })
+    );
     effects.notificationToast.error(
       'There was a problem updating your sandbox permissions'
     );
