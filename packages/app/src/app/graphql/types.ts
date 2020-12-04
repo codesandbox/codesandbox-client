@@ -386,7 +386,7 @@ export type RootMutationType = {
   /** Clear notification unread count */
   clearNotificationCount: User;
   /** Set minimum privacy level for workspace */
-  setTeamMinimumPrivacy: Settings;
+  setTeamMinimumPrivacy: TeamSettings;
   setSandboxesPrivacy: Array<Sandbox>;
   /** Revoke an invitation to a team */
   revokeTeamInvitation: Team;
@@ -807,11 +807,11 @@ export type SandboxCommentArgs = {
   commentId: Scalars['UUID4'];
 };
 
-export type Settings = {
+export type TeamSettings = {
   __typename?: 'Settings';
   minimumPrivacy: Scalars['Int'];
-  preventSandboxLeaving: Sandbox['permissions']['preventSandboxLeaving'];
-  preventSandboxExport: Sandbox['permissions']['preventSandboxExport'];
+  preventSandboxLeaving: SandboxPermissions['preventSandboxLeaving'];
+  preventSandboxExport: SandboxPermissions['preventSandboxExport'];
   defaultAuthorization: TeamMemberAuthorization;
 };
 
@@ -837,7 +837,7 @@ export type Team = {
   name: Scalars['String'];
   privateRegistry: Maybe<PrivateRegistry>;
   sandboxes: Array<Sandbox>;
-  settings: Maybe<Settings>;
+  settings: Maybe<TeamSettings>;
   templates: Array<Template>;
   userAuthorizations: Array<UserAuthorization>;
   users: Array<User>;
@@ -1563,7 +1563,7 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
     >;
     settings: Maybe<
       { __typename?: 'Settings' } & Pick<
-        Settings,
+        TeamSettings,
         | 'minimumPrivacy'
         | 'preventSandboxExport'
         | 'preventSandboxLeaving'
@@ -1594,15 +1594,7 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         'userId' | 'authorization'
       >
     >;
-    settings: Maybe<
-      { __typename?: 'Settings' } & Pick<
-        Settings,
-        | 'minimumPrivacy'
-        | 'preventSandboxExport'
-        | 'preventSandboxLeaving'
-        | 'defaultAuthorization'
-      >
-    >;
+    settings: Maybe<TeamSettings>;
   };
 
 export type NpmRegistryFragment = { __typename?: 'PrivateRegistry' } & Pick<
@@ -1895,7 +1887,7 @@ export type SetTeamMinimumPrivacyMutation = {
   __typename?: 'RootMutationType';
 } & {
   setTeamMinimumPrivacy: { __typename?: 'Settings' } & Pick<
-    Settings,
+    TeamSettings,
     'minimumPrivacy'
   >;
 };
@@ -2071,7 +2063,7 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
               >;
               settings: Maybe<
                 { __typename?: 'Settings' } & Pick<
-                  Settings,
+                  TeamSettings,
                   | 'minimumPrivacy'
                   | 'preventSandboxExport'
                   | 'preventSandboxLeaving'
@@ -2739,20 +2731,20 @@ export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
 
 export type SetWorkspaceSandboxSettingsMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
-  preventSandboxLeaving: CurrentTeamInfoFragmentFragment['settings']['preventSandboxLeaving'];
-  preventSandboxExport: CurrentTeamInfoFragmentFragment['settings']['preventSandboxExport'];
+  preventSandboxLeaving: TeamSettings['preventSandboxLeaving'];
+  preventSandboxExport: TeamSettings['preventSandboxExport'];
 }>;
 
 export type SetWorkspaceSandboxSettingsMutation = {
   __typename?: 'RootMutationType';
 } & {
-  preventSandboxLeaving: CurrentTeamInfoFragmentFragment['settings']['preventSandboxLeaving'];
-  preventSandboxExport: CurrentTeamInfoFragmentFragment['settings']['preventSandboxExport'];
+  preventSandboxLeaving: TeamSettings['preventSandboxLeaving'];
+  preventSandboxExport: TeamSettings['preventSandboxExport'];
 };
 
 export type SetPreventSandboxesLeavingWorkspaceMutationVariables = Exact<{
   sandboxIds: Array<Sandbox['id']>;
-  preventSandboxLeaving: Sandbox['permissions']['preventSandboxLeaving'];
+  preventSandboxLeaving: SandboxPermissions['preventSandboxLeaving'];
 }>;
 
 export type SetPreventSandboxesLeavingWorkspaceMutation = {
@@ -2763,7 +2755,7 @@ export type SetPreventSandboxesLeavingWorkspaceMutation = {
 
 export type SetPreventSandboxesExportWorkspaceMutationVariables = Exact<{
   sandboxIds: Array<Sandbox['id']>;
-  preventSandboxExport: Sandbox['permissions']['preventSandboxExport'];
+  preventSandboxExport: SandboxPermissions['preventSandboxExport'];
 }>;
 
 export type SetPreventSandboxesExportWorkspaceMutation = {
