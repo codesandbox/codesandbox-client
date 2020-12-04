@@ -35,13 +35,10 @@ import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
 import { TeamInviteModal } from './TeamInviteModal';
 import UploadModal from './UploadModal';
-<<<<<<< HEAD
 import { ApplyPrefrences } from './ApplyPreferences';
-=======
 import { DeleteWorkspace } from './DeleteWorkspace';
 import { MinimumPrivacyModal } from './MinimumPrivacyModal';
 import { GenericAlertModal } from './GenericAlertModal';
->>>>>>> 60e19124d266deb1abe00eb691df0432c7fe7df1
 
 const modals = {
   preferences: {
