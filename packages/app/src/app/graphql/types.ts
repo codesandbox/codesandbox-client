@@ -2722,19 +2722,6 @@ export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
     'id' | 'name' | 'joinedPilotAt'
   >;
 };
-<<<<<<< HEAD
-
-export type SetTeamMinimumPrivacyMutationVariables = Exact<{
-  teamId: Scalars['UUID4'];
-  minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
-  updateDrafts: boolean;
-}>;
-
-export type SetTeamMinimumPrivacyMutation = {
-  __typename?: 'RootMutationType';
-} & {
-  minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
-};
 
 export type SetWorkspaceSandboxSettingsMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
@@ -2770,5 +2757,3 @@ export type SetPreventSandboxesExportWorkspaceMutation = {
 } & {
   preventExport: Sandbox['preventExport'];
 };
-=======
->>>>>>> master
