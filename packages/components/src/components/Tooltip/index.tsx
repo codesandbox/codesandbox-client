@@ -82,7 +82,6 @@ export const TooltipStyles = createGlobalStyle(
 );
 interface TooltipProps {
   label: string | null;
-  condition: boolean;
   children: React.ReactElement;
 }
 
@@ -101,13 +100,6 @@ const Tooltip: React.FC<TooltipProps> = props => {
   const { isVisible, triggerRect } = tooltip;
 
   if (props.label === null) {
-    return props.children;
-  }
-
-  /** The tooltip can be rendered conditionally
-   *  useful for explaining when an item is disabled or unavailable
-   */
-  if (typeof props.condition === 'undefined' && !props.condition) {
     return props.children;
   }
 
