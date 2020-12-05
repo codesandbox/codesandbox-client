@@ -1,4 +1,5 @@
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { Action, AsyncAction } from 'app/overmind';
 import { isEqual } from 'lodash-es';
 import { json } from 'overmind';
@@ -164,7 +165,7 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
   const existingMode = state.preview.mode;
 
   state.preview.screenshot.source = null;
-  state.preview.screenshot.fromExtension = false;
+  state.preview.screenshot.isCanvasScreenshot = true;
 
   const takeScreenshot = async () => {
     try {
@@ -172,6 +173,23 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
         state.editor.currentSandbox!.privacy === 2,
         () => {
           state.preview.screenshot.isLoading = true;
+          state.preview.screenshot.isCanvasScreenshot = false;
+          if (!effects.browserExtension.hasNotifiedImprovedScreenshots()) {
+            effects.notificationToast.add({
+              status: NotificationStatus.NOTICE,
+              message:
+                'By installing the CodeSandbox browser extension you will get a better experience creating Preview Comments',
+              actions: {
+                primary: {
+                  label: 'Install extension',
+                  run: () => {
+                    effects.browserExtension.install();
+                  },
+                },
+              },
+            });
+            effects.browserExtension.setNotifiedImprovedScreenshots();
+          }
         }
       );
       state.preview.screenshot.isLoading = false;
