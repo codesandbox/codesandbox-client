@@ -165,6 +165,7 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
   const existingMode = state.preview.mode;
 
   state.preview.screenshot.source = null;
+  state.preview.screenshot.isCanvasScreenshot = true;
 
   const takeScreenshot = async () => {
     try {
@@ -172,6 +173,7 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
         state.editor.currentSandbox!.privacy === 2,
         () => {
           state.preview.screenshot.isLoading = true;
+          state.preview.screenshot.isCanvasScreenshot = false;
           if (!effects.browserExtension.hasNotifiedImprovedScreenshots()) {
             effects.notificationToast.add({
               status: NotificationStatus.NOTICE,

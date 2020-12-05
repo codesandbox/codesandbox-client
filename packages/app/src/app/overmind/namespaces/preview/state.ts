@@ -14,6 +14,7 @@ type State = {
   screenshot: {
     source: string | null;
     isLoading: boolean;
+    isCanvasScreenshot: boolean;
   };
   previousMode: Mode;
   mode: Mode;
@@ -40,6 +41,7 @@ export const state: State = {
   screenshot: {
     source: null,
     isLoading: false,
+    isCanvasScreenshot: true,
   },
   previousMode: null,
   mode: null,
