@@ -43,6 +43,10 @@ import {
   SetTeamNameMutationVariables,
   ChangeTeamMemberAuthorizationMutation,
   ChangeTeamMemberAuthorizationMutationVariables,
+  CreateOrUpdateNpmRegistryMutation,
+  CreateOrUpdateNpmRegistryMutationVariables,
+  DeleteNpmRegistryMutation,
+  DeleteNpmRegistryMutationVariables,
   DeleteWorkspaceMutation,
   DeleteWorkspaceMutationVariables,
   SetTeamMinimumPrivacyMutation,
@@ -55,6 +59,7 @@ import {
   sidebarCollectionDashboard,
   sandboxFragmentDashboard,
   currentTeamInfoFragment,
+  npmRegistryFragment,
 } from './fragments';
 
 export const createTeam: Query<
@@ -331,6 +336,46 @@ export const changeTeamMemberAuthorization: Query<
       id
     }
   }
+`;
+
+export const createOrUpdateNpmRegistry: Query<
+  CreateOrUpdateNpmRegistryMutation,
+  CreateOrUpdateNpmRegistryMutationVariables
+> = gql`
+  mutation CreateOrUpdateNpmRegistry(
+    $teamId: UUID4!
+    $registryType: RegistryType!
+    $registryUrl: String
+    $registryAuthKey: String!
+    $proxyEnabled: Boolean!
+    $limitToScopes: Boolean!
+    $enabledScopes: [String!]!
+  ) {
+    createOrUpdatePrivateNpmRegistry(
+      teamId: $teamId
+      registryType: $registryType
+      registryUrl: $registryUrl
+      registryAuthKey: $registryAuthKey
+      proxyEnabled: $proxyEnabled
+      limitToScopes: $limitToScopes
+      enabledScopes: $enabledScopes
+    ) {
+      ...npmRegistry
+    }
+  }
+  ${npmRegistryFragment}
+`;
+
+export const deleteNpmRegistry: Query<
+  DeleteNpmRegistryMutation,
+  DeleteNpmRegistryMutationVariables
+> = gql`
+  mutation DeleteNpmRegistry($teamId: UUID4!) {
+    deletePrivateNpmRegistry(teamId: $teamId) {
+      ...npmRegistry
+    }
+  }
+  ${npmRegistryFragment}
 `;
 
 export const deleteWorkspace: Query<

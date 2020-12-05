@@ -38,7 +38,6 @@ type SettingsNavigationProps = {
   teamId: string;
   css?: any;
   style?: React.CSSProperties;
-  isAdmin?: boolean;
 };
 
 export const SettingNavigation = (props: SettingsNavigationProps) => (
@@ -59,14 +58,8 @@ export const SettingNavigation = (props: SettingsNavigationProps) => (
       />
       <NavigationLink
         url={dashboardUrls.registrySettings(props.teamId)}
-        label="Npm Registry"
+        label="Registry Settings"
       />
-      {props.isAdmin && (
-        <NavigationLink
-          url={dashboardUrls.permissionSettings(props.teamId)}
-          label="Permissions"
-        />
-      )}
     </Stack>
   </Stack>
 );

@@ -35,6 +35,8 @@ import {
   GetTeamReposQuery,
   GetPersonalWorkspaceIdQuery,
   GetPersonalWorkspaceIdQueryVariables,
+  GetPrivateNpmRegistryQuery,
+  GetPrivateNpmRegistryQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -44,6 +46,7 @@ import {
   templateFragmentDashboard,
   repoFragmentDashboard,
   currentTeamInfoFragment,
+  npmRegistryFragment,
 } from './fragments';
 
 export const deletedPersonalSandboxes: Query<
@@ -362,4 +365,20 @@ export const getPersonalWorkspaceId: Query<
       personalWorkspaceId
     }
   }
+`;
+
+export const getPrivateNpmRegistry: Query<
+  GetPrivateNpmRegistryQuery,
+  GetPrivateNpmRegistryQueryVariables
+> = gql`
+  query getPrivateNpmRegistry($teamId: UUID4!) {
+    me {
+      team(id: $teamId) {
+        privateRegistry {
+          ...npmRegistry
+        }
+      }
+    }
+  }
+  ${npmRegistryFragment}
 `;

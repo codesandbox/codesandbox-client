@@ -1,3 +1,5 @@
+import { valid } from 'semver';
+
 async function fetchWithRetries(url: string) {
   let err: Error;
   for (let i = 0; i < 5; i++) {
@@ -36,6 +38,10 @@ export function isAbsoluteVersion(version: string) {
   const isAbsolute = /^\d+\.\d+\.\d+$/.test(version);
 
   return isAbsolute || /\//.test(version);
+}
+
+export function isValidSemver(version: string) {
+  return Boolean(valid(version));
 }
 
 export async function getAbsoluteDependency(

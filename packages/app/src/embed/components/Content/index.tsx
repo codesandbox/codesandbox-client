@@ -474,6 +474,7 @@ export default class Content extends React.PureComponent<Props, State> {
       Content: ({ hidden, options }: DevToolProps) => (
         <BasePreview
           onInitialized={this.onPreviewInitialized}
+          customNpmRegistries={sandbox.npmRegistries}
           sandbox={sandbox}
           hide={hidden}
           url={options.url ? options.url : undefined}

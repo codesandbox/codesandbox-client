@@ -20,6 +20,7 @@ import { TeamMemberAuthorization } from 'app/graphql/types';
 import { SettingNavigation } from '../components/Navigation';
 import { PermissionSettings } from '../components/PermissionSettings';
 import { WorkspaceSettings } from './WorkspaceSettings';
+import { RegistrySettings } from './RegistrySettings';
 
 export const TeamSettings = () => {
   const {
@@ -64,6 +65,10 @@ export const TeamSettings = () => {
           <SettingNavigation teamId={activeTeam} isAdmin={isAdmin} />
           <BrowserRouter>
             <RouterSwitch location={location}>
+              <Route
+                component={RegistrySettings}
+                path={dashboardUrls.registrySettings()}
+              />
               <Route
                 component={PermissionSettings}
                 path={dashboardUrls.permissionSettings()}
