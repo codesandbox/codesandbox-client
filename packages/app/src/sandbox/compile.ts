@@ -18,9 +18,11 @@ import {
 } from 'sandpack-core/lib/cache';
 import { Module } from 'sandpack-core/lib/types/module';
 import * as metrics from '@codesandbox/common/lib/utils/metrics';
+import { NpmRegistry } from '@codesandbox/common/lib/types';
 import { Manager, TranspiledModule } from 'sandpack-core';
 
 import { loadDependencies, NPMDependencies } from 'sandpack-core/lib/npm';
+import { NpmRegistryFetcher } from 'sandpack-core/lib/npm/dynamic/fetch-protocols/npm-registry';
 import {
   evalBoilerplates,
   findBoilerplate,
@@ -316,9 +318,12 @@ function initializeManager(
   template: TemplateType,
   modules: { [path: string]: Module },
   configurations: ParsedConfigurationFiles,
-  { hasFileResolver = false }: { hasFileResolver?: boolean } = {}
+  {
+    hasFileResolver = false,
+    customNpmRegistries = [],
+  }: { hasFileResolver?: boolean; customNpmRegistries?: NpmRegistry[] } = {}
 ) {
-  return new Manager(
+  const newManager = new Manager(
     sandboxId,
     getPreset(template, configurations.package.parsed),
     modules,
@@ -327,6 +332,30 @@ function initializeManager(
       versionIdentifier: SCRIPT_VERSION,
     }
   );
+
+  // Add the custom registered npm registries
+  customNpmRegistries.forEach(registry => {
+    const cleanUrl = registry.registryUrl.replace(/\/$/, '');
+
+    const options = registry.limitToScopes
+      ? {
+          scopeWhitelist: registry.enabledScopes,
+          // With our custom proxy on the server we want to handle downloading
+          // the tarball. So we proxy it.
+          provideTarballUrl: (name: string, version: string) =>
+            `${cleanUrl}/${name.replace('/', '%2f')}/${version}`,
+        }
+      : {};
+
+    const protocol = new NpmRegistryFetcher(cleanUrl, options);
+
+    newManager.prependNpmProtocolDefinition({
+      protocol,
+      condition: protocol.condition,
+    });
+  });
+
+  return newManager;
 }
 
 async function updateManager(
@@ -395,6 +424,7 @@ inject();
 interface CompileOptions {
   sandboxId: string;
   modules: { [path: string]: Module };
+  customNpmRegistries?: NpmRegistry[];
   externalResources: string[];
   hasActions?: boolean;
   isModuleView?: boolean;
@@ -411,6 +441,7 @@ async function compile({
   sandboxId,
   modules,
   externalResources,
+  customNpmRegistries = [],
   hasActions,
   isModuleView = false,
   template,
@@ -485,6 +516,7 @@ async function compile({
       manager ||
       initializeManager(sandboxId, template, modules, configurations, {
         hasFileResolver,
+        customNpmRegistries,
       });
 
     let dependencies: NPMDependencies = getDependencies(

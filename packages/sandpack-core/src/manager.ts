@@ -36,7 +36,10 @@ import {
 } from './cache';
 import { splitQueryFromPath } from './transpiled-module/utils/query-path';
 import { IEvaluator } from './evaluator';
-import { setContributedProtocols } from './npm/dynamic/fetch-protocols';
+import {
+  prependToContributedProtocols,
+  ProtocolDefinition,
+} from './npm/dynamic/fetch-protocols';
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
 import { DEFAULT_EXTENSIONS } from './utils/extensions';
 
@@ -191,9 +194,10 @@ export default class Manager implements IEvaluator {
     /**
      * Contribute the file fetcher, which needs the manager to resolve the files
      */
-    setContributedProtocols([
+    prependToContributedProtocols([
       {
-        condition: version => version.startsWith('file:'),
+        condition: (name: string, version: string) =>
+          version.startsWith('file:'),
         protocol: new FileFetcher(this),
       },
     ]);
@@ -227,6 +231,10 @@ export default class Manager implements IEvaluator {
     if (options.hasFileResolver) {
       this.setupFileResolver();
     }
+  }
+
+  prependNpmProtocolDefinition(protocol: ProtocolDefinition) {
+    prependToContributedProtocols([protocol]);
   }
 
   async evaluate(path: string, baseTModule?: TranspiledModule): Promise<any> {

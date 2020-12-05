@@ -88,6 +88,18 @@ $csbImport('test');
 "
 `;
 
+exports[`convert-esmodule can convert imports with spaces 1`] = `
+"\\"use strict\\";
+var $csb__atest = require(\\"a test\\");
+var aTest = $_csb__interopRequireDefault($csb__atest);
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+"
+`;
+
 exports[`convert-esmodule can convert named imports 1`] = `
 "\\"use strict\\";
 var $csb__b = require(\\"./b\\");

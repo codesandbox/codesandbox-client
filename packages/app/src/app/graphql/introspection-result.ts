@@ -14,18 +14,6 @@ const result: IntrospectionResultData = {
     types: [
       {
         kind: 'UNION',
-        name: 'BookmarkEntity',
-        possibleTypes: [
-          {
-            name: 'Team',
-          },
-          {
-            name: 'User',
-          },
-        ],
-      },
-      {
-        kind: 'UNION',
         name: 'ReferenceMetadata',
         possibleTypes: [
           {
@@ -39,6 +27,18 @@ const result: IntrospectionResultData = {
           },
           {
             name: 'UserReferenceMetadata',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'BookmarkEntity',
+        possibleTypes: [
+          {
+            name: 'Team',
+          },
+          {
+            name: 'User',
           },
         ],
       },
