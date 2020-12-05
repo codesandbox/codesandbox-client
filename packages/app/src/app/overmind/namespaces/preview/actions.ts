@@ -165,7 +165,6 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
   const existingMode = state.preview.mode;
 
   state.preview.screenshot.source = null;
-  state.preview.screenshot.fromExtension = false;
 
   const takeScreenshot = async () => {
     try {
