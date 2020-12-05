@@ -1,12 +1,15 @@
 import { FEATURES } from './features';
 import { Logger } from './logger';
+
 export class CacheStorage {
   static create(name, options) {
     return (CacheStorage._caches[name] = new Cache(name, options));
   }
+
   static destroy(name) {
     delete CacheStorage._caches[name];
   }
+
   static open(name) {
     const cache = CacheStorage._caches[name];
     if (typeof cache !== 'undefined') {
@@ -14,6 +17,7 @@ export class CacheStorage {
     }
     throw new Error(`Cache with key "${name}" not found`);
   }
+
   static getOrigin(url) {
     const link = CacheStorage._link;
     if (!link) {
@@ -23,13 +27,16 @@ export class CacheStorage {
     link.href = link.href; // IE9, LOL! - http://jsfiddle.net/niklasvh/2e48b/
     return link.protocol + link.hostname + link.port;
   }
+
   static isSameOrigin(src) {
     return CacheStorage.getOrigin(src) === CacheStorage._origin;
   }
+
   static setContext(window) {
     CacheStorage._link = window.document.createElement('a');
     CacheStorage._origin = CacheStorage.getOrigin(window.location.href);
   }
+
   static getInstance() {
     const current = CacheStorage._current;
     if (current === null) {
@@ -37,9 +44,11 @@ export class CacheStorage {
     }
     return current;
   }
+
   static attachInstance(cache) {
     CacheStorage._current = cache;
   }
+
   static detachInstance() {
     CacheStorage._current = null;
   }
@@ -53,6 +62,7 @@ export class Cache {
     this._options = options;
     this._cache = {};
   }
+
   addImage(src) {
     const result = Promise.resolve();
     if (this.has(src)) {
@@ -64,10 +74,12 @@ export class Cache {
     }
     return result;
   }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   match(src) {
     return this._cache[src];
   }
+
   async loadImage(key) {
     const isSameOrigin = CacheStorage.isSameOrigin(key);
     const useCORS =
@@ -92,7 +104,7 @@ export class Cache {
       const img = new Image();
       img.onload = () => resolve(img);
       img.onerror = reject;
-      //ios safari 10.3 taints canvas with data urls unless crossOrigin is set to anonymous
+      // ios safari 10.3 taints canvas with data urls unless crossOrigin is set to anonymous
       if (isInlineBase64Image(src) ||
         // MODIFY: Check for function and evaluate
         typeof this._options.useCORS === 'function' && this._options.useCORS(isSameOrigin) ||
@@ -109,12 +121,15 @@ export class Cache {
       }
     });
   }
+
   has(key) {
     return typeof this._cache[key] !== 'undefined';
   }
+
   keys() {
     return Promise.resolve(Object.keys(this._cache));
   }
+
   proxy(src) {
     const proxy = this._options.proxy;
     if (!proxy) {

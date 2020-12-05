@@ -119,7 +119,7 @@ export const onInitialize: OnInitialize = async (
   actions.internal.setViewModeForDashboard();
 
   effects.browser.onWindowMessage(event => {
-    if (event.data.type === 'take-screenshot') {
+    if (event.data.type === 'screenshot-requested-from-preview') {
       actions.preview.createPreviewComment();
     }
   });

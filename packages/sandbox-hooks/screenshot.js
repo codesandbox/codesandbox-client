@@ -37,7 +37,7 @@ export default function setupScreenshotListener() {
       (event.metaKey || event.ctrlKey)
     ) {
       dispatch({
-        type: 'take-screenshot',
+        type: 'screenshot-requested-from-preview',
       });
     }
   };
