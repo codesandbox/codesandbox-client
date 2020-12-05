@@ -117,4 +117,10 @@ export const onInitialize: OnInitialize = async (
 
   actions.internal.showPrivacyPolicyNotification();
   actions.internal.setViewModeForDashboard();
+
+  effects.browser.onWindowMessage(event => {
+    if (event.data.type === 'take-screenshot') {
+      actions.preview.createPreviewComment();
+    }
+  });
 };
