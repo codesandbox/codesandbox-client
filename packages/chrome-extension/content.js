@@ -67,10 +67,11 @@ window.addEventListener('message', (event) => {
   if (event.source !== window)
     return
 
-  if (event.data.type === 'extension-screenshot') {
+  if (event.data.type === 'extension-ping') {
     window.postMessage({
-      type: 'extension-screenshot-started'
+      type: 'extension-pong'
     })
+  } else if (event.data.type === 'extension-screenshot') {
     screenshot()
   }
 })
