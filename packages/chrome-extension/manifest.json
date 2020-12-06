@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "CodeSandbox",
   "short_name": "CodeSandbox",
-  "version": "2.0",
+  "version": "3.0",
   "description": "Quickly open a new Sandbox and this extentions adds an 'Open in CodeSandbox' button to GitHub repos",
   "homepage_url": "https://codesandbox.io",
   "icons": {
@@ -19,26 +19,18 @@
       "description": "Take screenshot"
     }
   },
-  "permissions": [
-    "<all_urls>"
-  ],
+  "permissions": ["<all_urls>"],
   "browser_action": {
     "default_popup": "popup.html"
   },
   "background": {
     "persistent": true,
-    "scripts": [
-      "background.js"
-    ]
+    "scripts": ["background.js"]
   },
   "content_scripts": [
     {
-      "css": [
-        "styles.css"
-      ],
-      "js": [
-        "content.js"
-      ],
+      "css": ["styles.css"],
+      "js": ["content.js"],
       "matches": [
         "https://github.com/*",
         "https://codesandbox.io/*",
