@@ -63,7 +63,6 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
   // Fixes issue with cursor not changing
   React.useEffect(() => {
     if (state.preview.screenshot.source) {
-      screenshotRef.current.style.display = 'none';
       screenshotRef.current.style.display = 'block';
     }
   }, [state.preview.screenshot.source]);
@@ -79,6 +78,7 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
             state.preview.screenshot.source
               ? {
                   backgroundImage: `url(${state.preview.screenshot.source})`,
+                  display: 'none',
                 }
               : {
                   backgroundColor: state.preview.screenshot.isLoading

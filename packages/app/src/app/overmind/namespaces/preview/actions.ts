@@ -162,6 +162,12 @@ export const editPresets: AsyncAction<Presets> = async (
 };
 
 export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
+  const currentSandbox = state.editor.currentSandbox;
+
+  if (!currentSandbox || !effects.preview.canAddComments(currentSandbox)) {
+    return;
+  }
+
   const existingMode = state.preview.mode;
 
   state.preview.screenshot.source = null;
