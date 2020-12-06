@@ -23,8 +23,8 @@ const Screenshot = styled.div({
   top: 0,
   zIndex: 1,
   color: '#FF3B30',
-  width: '100%',
-  height: '100%',
+  width: 0,
+  height: 0,
   backgroundSize: 'cover',
 });
 
@@ -59,9 +59,28 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
   const { state, actions } = useOvermind();
   const previewReference = getPreviewReference(state.comments.currentComment);
 
-  const showScreenshot =
-    state.preview.mode === 'add-comment' ||
-    state.preview.mode === 'responsive-add-comment';
+  const getScreenshotStyle = () => {
+    if (
+      state.preview.mode !== 'add-comment' &&
+      state.preview.mode !== 'responsive-add-comment'
+    ) {
+      return {};
+    }
+
+    return state.preview.screenshot.source
+      ? {
+          backgroundImage: `url(${state.preview.screenshot.source})`,
+          width: '100%',
+          height: '100%',
+        }
+      : {
+          backgroundColor: state.preview.screenshot.isLoading
+            ? 'rgba(0,0,0,0.5)'
+            : 'rgba(0,0,0,0)',
+          width: '100%',
+          height: '100%',
+        };
+  };
 
   return (
     <Wrapper
@@ -71,35 +90,23 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
       }
     >
       {children}
-      {showScreenshot ? (
-        <Screenshot
-          style={
-            state.preview.screenshot.source
-              ? {
-                  backgroundImage: `url(${state.preview.screenshot.source})`,
-                }
-              : {
-                  backgroundColor: state.preview.screenshot.isLoading
-                    ? 'rgba(0,0,0,0.5)'
-                    : 'rgba(0,0,0,0)',
-                }
+      <Screenshot
+        style={getScreenshotStyle()}
+        onClick={event => {
+          if (state.preview.screenshot.isLoading) {
+            return;
           }
-          onClick={event => {
-            if (state.preview.screenshot.isLoading) {
-              return;
-            }
 
-            const parentBounds = (event.target as any).parentNode.getBoundingClientRect();
+          const parentBounds = (event.target as any).parentNode.getBoundingClientRect();
 
-            actions.comments.addOptimisticPreviewComment({
-              x: event.clientX - parentBounds.left,
-              y: event.clientY - parentBounds.top,
-              screenshot: state.preview.screenshot.source,
-              scale,
-            });
-          }}
-        />
-      ) : null}
+          actions.comments.addOptimisticPreviewComment({
+            x: event.clientX - parentBounds.left,
+            y: event.clientY - parentBounds.top,
+            screenshot: state.preview.screenshot.source,
+            scale,
+          });
+        }}
+      />
       {previewReference &&
       (state.preview.mode === 'add-comment' ||
         state.preview.mode === 'responsive-add-comment') ? (
