@@ -123,4 +123,8 @@ export const onInitialize: OnInitialize = async (
       actions.preview.createPreviewComment();
     }
   });
+
+  effects.browserExtension.hasExtension().then(hasExtension => {
+    actions.preview.setExtension(hasExtension);
+  });
 };

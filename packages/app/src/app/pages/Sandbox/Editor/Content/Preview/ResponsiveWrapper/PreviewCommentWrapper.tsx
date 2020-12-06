@@ -63,7 +63,9 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
   // Fixes issue with cursor not changing
   React.useEffect(() => {
     if (state.preview.screenshot.source) {
-      screenshotRef.current.style.display = 'block';
+      requestAnimationFrame(() => {
+        screenshotRef.current.style.display = 'block';
+      });
     }
   }, [state.preview.screenshot.source]);
 
@@ -86,7 +88,10 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
                     : 'rgba(0,0,0,0)',
                 }
           }
-          showCommentCursor={!state.comments.currentComment}
+          showCommentCursor={
+            !state.comments.currentComment &&
+            Boolean(state.preview.screenshot.source)
+          }
           onClick={event => {
             if (state.preview.screenshot.isLoading) {
               return;
