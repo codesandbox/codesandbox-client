@@ -19,18 +19,26 @@
       "description": "Take screenshot"
     }
   },
-  "permissions": ["<all_urls>"],
+  "permissions": [
+    "<all_urls>"
+  ],
   "browser_action": {
     "default_popup": "popup.html"
   },
   "background": {
     "persistent": true,
-    "scripts": ["background.js"]
+    "scripts": [
+      "background.js"
+    ]
   },
   "content_scripts": [
     {
-      "css": ["styles.css"],
-      "js": ["content.js"],
+      "css": [
+        "styles.css"
+      ],
+      "js": [
+        "content.js"
+      ],
       "matches": [
         "https://github.com/*",
         "https://codesandbox.io/*",
